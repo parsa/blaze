@@ -1045,9 +1045,9 @@
 
    using CustomType = CustomVector<double,aligned,padded>;
 
-   std::unique_ptr<int[],Deallocate> memory1( allocate<double>( 4UL ) );
-   std::unique_ptr<int[],Deallocate> memory2( allocate<double>( 4UL ) );
-   std::unique_ptr<int[],Deallocate> memory3( allocate<double>( 4UL ) );
+   std::unique_ptr<double[],Deallocate> memory1( allocate<double>( 4UL ) );
+   std::unique_ptr<double[],Deallocate> memory2( allocate<double>( 4UL ) );
+   std::unique_ptr<double[],Deallocate> memory3( allocate<double>( 4UL ) );
 
    // Creating padded custom vectors of size 3 and a capacity of 4
    CustomType a( memory1.get(), 3UL, 4UL );
@@ -1071,9 +1071,9 @@
 
    using CustomType = CustomVector<double,aligned,unpadded>;
 
-   std::unique_ptr<int[],Deallocate> memory1( allocate<double>( 3UL ) );
-   std::unique_ptr<int[],Deallocate> memory2( allocate<double>( 3UL ) );
-   std::unique_ptr<int[],Deallocate> memory3( allocate<double>( 3UL ) );
+   std::unique_ptr<double[],Deallocate> memory1( allocate<double>( 3UL ) );
+   std::unique_ptr<double[],Deallocate> memory2( allocate<double>( 3UL ) );
+   std::unique_ptr<double[],Deallocate> memory3( allocate<double>( 3UL ) );
 
    // Creating unpadded custom vector of size 3
    CustomType a( allocate<double>( 3UL ), 3UL );
@@ -3504,9 +3504,9 @@
 
    using CustomType = CustomMatrix<double,aligned,padded>;
 
-   std::unique_ptr<int[],Deallocate> memory1( allocate<double>( 12UL ) );
-   std::unique_ptr<int[],Deallocate> memory2( allocate<double>( 12UL ) );
-   std::unique_ptr<int[],Deallocate> memory3( allocate<double>( 12UL ) );
+   std::unique_ptr<double[],Deallocate> memory1( allocate<double>( 12UL ) );
+   std::unique_ptr<double[],Deallocate> memory2( allocate<double>( 12UL ) );
+   std::unique_ptr<double[],Deallocate> memory3( allocate<double>( 12UL ) );
 
    // Creating padded custom 3x3 matrix with an additional padding element in each row
    CustomType A( memory1.get(), 3UL, 3UL, 4UL );
@@ -3530,9 +3530,9 @@
 
    using CustomType = CustomMatrix<double,aligned,unpadded>;
 
-   std::unique_ptr<int[],Deallocate> memory1( allocate<double>( 9UL ) );
-   std::unique_ptr<int[],Deallocate> memory2( allocate<double>( 9UL ) );
-   std::unique_ptr<int[],Deallocate> memory3( allocate<double>( 9UL ) );
+   std::unique_ptr<double[],Deallocate> memory1( allocate<double>( 9UL ) );
+   std::unique_ptr<double[],Deallocate> memory2( allocate<double>( 9UL ) );
+   std::unique_ptr<double[],Deallocate> memory3( allocate<double>( 9UL ) );
 
    // Creating unpadded custom 3x3 matrix
    CustomType A( memory1.get(), 3UL, 3UL );
@@ -4709,7 +4709,7 @@
 // function with matrices of any other element type or with a sparse matrix results in a compile
 // time error!
 //
-// \note The function is depending on LAPACK kernels. Thus the function can only be used if the
+// \note The function is depending on LAPACK kernels. Thus the function can only be used if a
 // fitting LAPACK library is available and linked to the executable. Otherwise a linker error
 // will be created.
 //
@@ -5185,7 +5185,7 @@
 // \c complex<float> or \c complex<double> element type. The attempt to call the function with
 // matrices of any other element type or with a sparse matrix results in a compile time error!
 //
-// \note The function is depending on LAPACK kernels. Thus the function can only be used if the
+// \note The function is depending on LAPACK kernels. Thus the function can only be used if a
 // fitting LAPACK library is available and linked to the executable. Otherwise a linker error
 // will be created.
 //
@@ -5207,15 +5207,16 @@
    tolerance = max(m,n) * max(s) * epsilon,
    \endcode
 
-// where \c m is the number of rows of \a dm, \c n is the number of columns of \a dm, \c max(s)
-// is the maximum singular value of \a dm and epsilon is the difference between 1 and the least
-// value greater than 1 that is representable by the floating point type of the singular values.
+// where \c m is the number of rows of the dense matrix, \c n is the number of columns of the
+// dense matrix, \c max(s) is the maximum singular value of the dense matrix and \c epsilon is
+// the difference between 1 and the least value greater than 1 that is representable by the
+// floating point type of the singular values.
 //
 // \note The \c rank() function can only be used for dense matrices with \c float, \c double,
 // \c complex<float> or \c complex<double> element type. The attempt to call the function with
 // matrices of any other element type or with a sparse matrix results in a compile time error!
 //
-// \note The function is depending on LAPACK kernels. Thus the function can only be used if the
+// \note The function is depending on LAPACK kernels. Thus the function can only be used if a
 // fitting LAPACK library is available and linked to the executable. Otherwise a linker error
 // will be created.
 //
@@ -14400,6 +14401,15 @@
    #define BLAZE_BLAS_MODE 1
    \endcode
 
+// By default, \b Blaze assumes a 32-bit BLAS library. Via the \c BLAZE_BLAS_IS_64BIT compilation
+// switch, the 64-bit BLAS mode can be selected:
+
+   \code
+   #define BLAZE_BLAS_IS_64BIT 1
+   \endcode
+
+// Note that the \c BLAZE_BLAS_IS_64BIT switch also has an effect on the \ref lapack_functions.
+//
 // In case the selected BLAS library provides parallel execution, the \c BLAZE_BLAS_IS_PARALLEL
 // switch should be activated to prevent \b Blaze from parallelizing on its own:
 
@@ -14419,6 +14429,7 @@
 
    \code
    #define BLAZE_BLAS_MODE 1
+   #define BLAZE_BLAS_IS_64BIT 1
    #define BLAZE_BLAS_IS_PARALLEL 1
    #define BLAZE_BLAS_INCLUDE_FILE <cblas.h>
    #include <blaze/Blaze.h>
@@ -15186,15 +15197,15 @@
    \code
    namespace blaze {
 
-   float dotu( int n, const float* x, int incX, const float* y, int incY );
+   float dotu( blas_int_t n, const float* x, blas_int_t incX, const float* y, blas_int_t incY );
 
-   double dotu( int n, const double* x, int incX, const double* y, int incY );
+   double dotu( blas_int_t n, const double* x, blas_int_t incX, const double* y, blas_int_t incY );
 
-   complex<float> dotu( int n, const complex<float>* x, int incX,
-                        const complex<float>* y, int incY );
+   complex<float> dotu( blas_int_t n, const complex<float>* x, blas_int_t incX,
+                        const complex<float>* y, blas_int_t incY );
 
-   complex<double> dotu( int n, const complex<double>* x, int incX,
-                         const complex<double>* y, int incY );
+   complex<double> dotu( blas_int_t n, const complex<double>* x, blas_int_t incX,
+                         const complex<double>* y, blas_int_t incY );
 
    template< typename VT1, bool TF1, typename VT2, bool TF2 >
    ElementType_<VT1> dotu( const DenseVector<VT1,TF1>& x, const DenseVector<VT2,TF2>& y );
@@ -15211,15 +15222,15 @@
    \code
    namespace blaze {
 
-   float dotc( int n, const float* x, int incX, const float* y, int incY );
+   float dotc( blas_int_t n, const float* x, blas_int_t incX, const float* y, blas_int_t incY );
 
-   double dotc( int n, const double* x, int incX, const double* y, int incY );
+   double dotc( blas_int_t n, const double* x, blas_int_t incX, const double* y, blas_int_t incY );
 
-   complex<float> dotc( int n, const complex<float>* x, int incX,
-                        const complex<float>* y, int incY );
+   complex<float> dotc( blas_int_t n, const complex<float>* x, blas_int_t incX,
+                        const complex<float>* y, blas_int_t incY );
 
-   complex<double> dotc( int n, const complex<double>* x, int incX,
-                         const complex<double>* y, int incY );
+   complex<double> dotc( blas_int_t n, const complex<double>* x, blas_int_t incX,
+                         const complex<double>* y, blas_int_t incY );
 
    template< typename VT1, bool TF1, typename VT2, bool TF2 >
    ElementType_<VT1> dotc( const DenseVector<VT1,TF1>& x, const DenseVector<VT2,TF2>& y );
@@ -15235,15 +15246,15 @@
    \code
    namespace blaze {
 
-   void axpy( int n, float alpha, const float* x, int incX, float* y, int incY );
+   void axpy( blas_int_t n, float alpha, const float* x, blas_int_t incX, float* y, blas_int_t incY );
 
-   void axpy( int n, double alpha, const double* x, int incX, double* y, int incY );
+   void axpy( blas_int_t n, double alpha, const double* x, blas_int_t incX, double* y, blas_int_t incY );
 
-   void axpy( int n, complex<float> alpha, const complex<float>* x,
-              int incX, complex<float>* y, int incY );
+   void axpy( blas_int_t n, complex<float> alpha, const complex<float>* x,
+              blas_int_t incX, complex<float>* y, blas_int_t incY );
 
-   void axpy( int n, complex<double> alpha, const complex<double>* x,
-              int incX, complex<double>* y, int incY );
+   void axpy( blas_int_t n, complex<double> alpha, const complex<double>* x,
+              blas_int_t incX, complex<double>* y, blas_int_t incY );
 
    template< typename VT1, bool TF1, typename VT2, bool TF2, typename ST >
    void axpy( const DenseVector<VT1,TF1>& x, const DenseVector<VT2,TF2>& y, ST alpha );
@@ -15262,21 +15273,21 @@
    \code
    namespace blaze {
 
-   void gemv( CBLAS_ORDER layout, CBLAS_TRANSPOSE transA, int m, int n, float alpha,
-              const float* A, int lda, const float* x, int incX,
-              float beta, float* y, int incY );
+   void gemv( char trans, blas_int_t m, blas_int_t n, float alpha, const float* A,
+              blas_int_t lda, const float* x, blas_int_t incX, float beta, float* y,
+              blas_int_t incY );
 
-   void gemv( CBLAS_ORDER layout, CBLAS_TRANSPOSE transA, int m, int n, double alpha,
-              const double* A, int lda, const double* x, int incX,
-              double beta, double* y, int incY );
+   void gemv( char trans, blas_int_t m, blas_int_t n, double alpha, const double* A,
+              blas_int_t lda, const double* x, blas_int_t incX, double beta, double* y,
+              blas_int_t incY );
 
-   void gemv( CBLAS_ORDER layout, CBLAS_TRANSPOSE transA, int m, int n, complex<float> alpha,
-              const complex<float>* A, int lda, const complex<float>* x, int incX,
-              complex<float> beta, complex<float>* y, int incY );
+   void gemv( char trans, blas_int_t m, blas_int_t n, complex<float> alpha,
+              const complex<float>* A, blas_int_t lda, const complex<float>* x,
+              blas_int_t incX, complex<float> beta, complex<float>* y, blas_int_t incY );
 
-   void gemv( CBLAS_ORDER layout, CBLAS_TRANSPOSE transA, int m, int n, complex<double> alpha,
-              const complex<double>* A, int lda, const complex<double>* x, int incX,
-              complex<double> beta, complex<double>* y, int incY );
+   void gemv( char trans, blas_int_t m, blas_int_t n, complex<double> alpha,
+              const complex<double>* A, blas_int_t lda, const complex<double>* x,
+              blas_int_t incX, complex<double> beta, complex<double>* y, blas_int_t incY );
 
    template< typename VT1, typename MT1, bool SO, typename VT2, typename ST >
    void gemv( DenseVector<VT1,false>& y, const DenseMatrix<MT1,SO>& A,
@@ -15285,6 +15296,34 @@
    template< typename VT1, typename VT2, typename MT1, bool SO, typename ST >
    void gemv( DenseVector<VT1,true>& y, const DenseVector<VT2,true>& x,
               const DenseMatrix<MT1,SO>& A, ST alpha, ST beta );
+
+   } // namespace blaze
+   \endcode
+
+// In addition, there is a set of wrapper functions that build on the CBLAS funcions for the
+// general matrix/vector multiplication (\c cblas_sgemv(), \c cblas_dgemv(), \c cblas_cgemv(),
+// and \c cblas_zgemv()):
+
+   \code
+   namespace blaze {
+
+   void gemv( CBLAS_ORDER layout, CBLAS_TRANSPOSE transA, blas_int_t m, blas_int_t n,
+              float alpha, const float* A, blas_int_t lda, const float* x, blas_int_t incX,
+              float beta, float* y, blas_int_t incY );
+
+   void gemv( CBLAS_ORDER layout, CBLAS_TRANSPOSE transA, blas_int_t m, blas_int_t n,
+              double alpha, const double* A, blas_int_t lda, const double* x, blas_int_t incX,
+              double beta, double* y, blas_int_t incY );
+
+   void gemv( CBLAS_ORDER layout, CBLAS_TRANSPOSE transA, blas_int_t m, blas_int_t n,
+              complex<float> alpha, const complex<float>* A, blas_int_t lda,
+              const complex<float>* x, blas_int_t incX, complex<float> beta,
+              complex<float>* y, blas_int_t incY );
+
+   void gemv( CBLAS_ORDER layout, CBLAS_TRANSPOSE transA, blas_int_t m, blas_int_t n,
+              complex<double> alpha, const complex<double>* A, blas_int_t lda,
+              const complex<double>* x, blas_int_t incX, complex<double> beta,
+              complex<double>* y, blas_int_t incY );
 
    } // namespace blaze
    \endcode
@@ -15298,17 +15337,45 @@
    \code
    namespace blaze {
 
-   void trmv( CBLAS_ORDER order, CBLAS_UPLO uplo, CBLAS_TRANSPOSE transA, CBLAS_DIAG diag,
-              int n, const float* A, int lda, float* x, int incX );
+   void trmv( char uplo, char trans, char diag, blas_int_t n, const float* A,
+              blas_int_t lda, float* x, blas_int_t incX );
+
+   void trmv( char uplo, char trans, char diag, blas_int_t n, const double* A,
+              blas_int_t lda, double* x, blas_int_t incX );
+
+   void trmv( char uplo, char trans, char diag, blas_int_t n, const complex<float>* A,
+              blas_int_t lda, complex<float>* x, blas_int_t incX );
+
+   void trmv( char uplo, char trans, char diag, blas_int_t n, const complex<double>* A,
+              blas_int_t lda, complex<double>* x, blas_int_t incX );
+
+   template< typename VT, typename MT, bool SO >
+   void trmv( DenseVector<VT,false>& x, const DenseMatrix<MT,SO>& A, char uplo, char diag );
+
+   template< typename VT, typename MT, bool SO >
+   void trmv( DenseVector<VT,true>& x, const DenseMatrix<MT,SO>& A, char uplo, char diag );
+
+   } // namespace blaze
+   \endcode
+
+// In addition, there is a set of wrapper functions that build on the CBLAS funcions for the
+// matrix/vector multiplication with a triangular matrix (\c cblas_strmv(), \c cblas_dtrmv(),
+// \c cblas_ctrmv(), and \c cblas_ztrmv()):
+
+   \code
+   namespace blaze {
 
    void trmv( CBLAS_ORDER order, CBLAS_UPLO uplo, CBLAS_TRANSPOSE transA, CBLAS_DIAG diag,
-              int n, const double* A, int lda, double* x, int incX );
+              blas_int_t n, const float* A, blas_int_t lda, float* x, blas_int_t incX );
 
    void trmv( CBLAS_ORDER order, CBLAS_UPLO uplo, CBLAS_TRANSPOSE transA, CBLAS_DIAG diag,
-              int n, const complex<float>* A, int lda, complex<float>* x, int incX );
+              blas_int_t n, const double* A, blas_int_t lda, double* x, blas_int_t incX );
 
    void trmv( CBLAS_ORDER order, CBLAS_UPLO uplo, CBLAS_TRANSPOSE transA, CBLAS_DIAG diag,
-              int n, const complex<double>* A, int lda, complex<double>* x, int incX );
+              blas_int_t n, const complex<float>* A, blas_int_t lda, complex<float>* x, blas_int_t incX );
+
+   void trmv( CBLAS_ORDER order, CBLAS_UPLO uplo, CBLAS_TRANSPOSE transA, CBLAS_DIAG diag,
+              blas_int_t n, const complex<double>* A, blas_int_t lda, complex<double>* x, blas_int_t incX );
 
    template< typename VT, typename MT, bool SO >
    void trmv( DenseVector<VT,false>& x, const DenseMatrix<MT,SO>& A, CBLAS_UPLO uplo );
@@ -15330,25 +15397,57 @@
    \code
    namespace blaze {
 
-   void gemm( CBLAS_ORDER order, CBLAS_TRANSPOSE transA, CBLAS_TRANSPOSE transB,
-              int m, int n, int k, float alpha, const float* A, int lda,
-              const float* B, int ldb, float beta, float* C, int ldc );
+   void gemm( char transA, char transB, blas_int_t m, blas_int_t n, blas_int_t k,
+              float alpha, const float* A, blas_int_t lda, const float* B,
+              blas_int_t ldb, float beta, float* C, blas_int_t ldc );
 
-   void gemm( CBLAS_ORDER order, CBLAS_TRANSPOSE transA, CBLAS_TRANSPOSE transB,
-              int m, int n, int k, double alpha, const double* A, int lda,
-              const double* B, int ldb, double beta, float* C, int ldc );
+   void gemm( char transA, char transB, blas_int_t m, blas_int_t n, blas_int_t k,
+              double alpha, const double* A, blas_int_t lda, const double* B,
+              blas_int_t ldb, double beta, double* C, blas_int_t ldc );
 
-   void gemm( CBLAS_ORDER order, CBLAS_TRANSPOSE transA, CBLAS_TRANSPOSE transB,
-              int m, int n, int k, complex<float> alpha, const complex<float>* A, int lda,
-              const complex<float>* B, int ldb, complex<float> beta, float* C, int ldc );
+   void gemm( char transA, char transB, blas_int_t m, blas_int_t n, blas_int_t k,
+              complex<float> alpha, const complex<float>* A, blas_int_t lda,
+              const complex<float>* B, blas_int_t ldb, complex<float> beta,
+              complex<float>* C, blas_int_t ldc );
 
-   void gemm( CBLAS_ORDER order, CBLAS_TRANSPOSE transA, CBLAS_TRANSPOSE transB,
-              int m, int n, int k, complex<double> alpha, const complex<double>* A, int lda,
-              const complex<double>* B, int ldb, complex<double> beta, float* C, int ldc );
+   void gemm( char transA, char transB, blas_int_t m, blas_int_t n, blas_int_t k,
+              complex<double> alpha, const complex<double>* A, blas_int_t lda,
+              const complex<double>* B, blas_int_t ldb, complex<double> beta,
+              complex<double>* C, blas_int_t ldc );
 
    template< typename MT1, bool SO1, typename MT2, bool SO2, typename MT3, bool SO3, typename ST >
    void gemm( DenseMatrix<MT1,SO1>& C, const DenseMatrix<MT2,SO2>& A,
               const DenseMatrix<MT3,SO3>& B, ST alpha, ST beta );
+
+   } // namespace blaze
+   \endcode
+
+// In addition, there is a set of wrapper functions that build on the CBLAS funcions for the
+// general matrix/matrix multiplication (\c cblas_sgemm(), \c cblas_dgemm(), \c cblas_cgemm(),
+// and \c cblas_zgemm()):
+
+   \code
+   namespace blaze {
+
+   void gemm( CBLAS_ORDER order, CBLAS_TRANSPOSE transA, CBLAS_TRANSPOSE transB,
+              blas_int_t m, blas_int_t n, blas_int_t k, float alpha, const float* A,
+              blas_int_t lda, const float* B, blas_int_t ldb, float beta, float* C,
+              blas_int_t ldc );
+
+   void gemm( CBLAS_ORDER order, CBLAS_TRANSPOSE transA, CBLAS_TRANSPOSE transB,
+              blas_int_t m, blas_int_t n, blas_int_t k, double alpha, const double* A,
+              blas_int_t lda, const double* B, blas_int_t ldb, double beta, float* C,
+              blas_int_t ldc );
+
+   void gemm( CBLAS_ORDER order, CBLAS_TRANSPOSE transA, CBLAS_TRANSPOSE transB,
+              blas_int_t m, blas_int_t n, blas_int_t k, complex<float> alpha,
+              const complex<float>* A, blas_int_t lda, const complex<float>* B,
+              blas_int_t ldb, complex<float> beta, float* C, blas_int_t ldc );
+
+   void gemm( CBLAS_ORDER order, CBLAS_TRANSPOSE transA, CBLAS_TRANSPOSE transB,
+              blas_int_t m, blas_int_t n, blas_int_t k, complex<double> alpha,
+              const complex<double>* A, blas_int_t lda, const complex<double>* B,
+              blas_int_t ldb, complex<double> beta, float* C, blas_int_t ldc );x
 
    } // namespace blaze
    \endcode
@@ -15362,21 +15461,49 @@
    \code
    namespace blaze {
 
-   void trmm( CBLAS_ORDER order, CBLAS_SIDE side, CBLAS_UPLO uplo, CBLAS_TRANSPOSE transA,
-              CBLAS_DIAG diag, int m, int n, float alpha, const float* A,
-              int lda, float* B, int ldb );
+   void trmm( char side, char uplo, char transA, char diag, blas_int_t m, blas_int_t n,
+              float alpha, const float* A, blas_int_t lda, float* B, blas_int_t ldb );
+
+   void trmm( char side, char uplo, char transA, char diag, blas_int_t m, blas_int_t n,
+              double alpha, const double* A, blas_int_t lda, double* B, blas_int_t ldb );
+
+   void trmm( char side, char uplo, char transA, char diag, blas_int_t m, blas_int_t n,
+              complex<float> alpha, const complex<float>* A, blas_int_t lda,
+              complex<float>* B, blas_int_t ldb );
+
+   void trmm( char side, char uplo, char transA, char diag, blas_int_t m, blas_int_t n,
+              complex<double> alpha, const complex<double>* A, blas_int_t lda,
+              complex<double>* B, blas_int_t ldb );
+
+   template< typename MT1, bool SO1, typename MT2, bool SO2, typename ST >
+   void trmm( DenseMatrix<MT1,SO1>& B, const DenseMatrix<MT2,SO2>& A,
+              char side, char uplo, char diag, ST alpha );
+
+   } // namespace blaze
+   \endcode
+
+// In addition, there is a set of wrapper functions that build on the CBLAS funcions for the
+// matrix/matrix multiplication with a triangular matrix (\c cblas_strmm(), \c cblas_dtrmm(),
+// \c cblas_ctrmm(), and \c cblas_ztrmm()):
+
+   \code
+   namespace blaze {
 
    void trmm( CBLAS_ORDER order, CBLAS_SIDE side, CBLAS_UPLO uplo, CBLAS_TRANSPOSE transA,
-              CBLAS_DIAG diag, int m, int n, double alpha, const double* A,
-              int lda, double* B, int ldb );
+              CBLAS_DIAG diag, blas_int_t m, blas_int_t n, float alpha, const float* A,
+              blas_int_t lda, float* B, blas_int_t ldb );
 
    void trmm( CBLAS_ORDER order, CBLAS_SIDE side, CBLAS_UPLO uplo, CBLAS_TRANSPOSE transA,
-              CBLAS_DIAG diag, int m, int n, complex<float> alpha, const complex<float>* A,
-              int lda, complex<float>* B, int ldb );
+              CBLAS_DIAG diag, blas_int_t m, blas_int_t n, double alpha, const double* A,
+              blas_int_t lda, double* B, blas_int_t ldb );
 
    void trmm( CBLAS_ORDER order, CBLAS_SIDE side, CBLAS_UPLO uplo, CBLAS_TRANSPOSE transA,
-              CBLAS_DIAG diag, int m, int n, complex<double> alpha, const complex<double>* A,
-              int lda, complex<double>* B, int ldb );
+              CBLAS_DIAG diag, blas_int_t m, blas_int_t n, complex<float> alpha,
+              const complex<float>* A, blas_int_t lda, complex<float>* B, blas_int_t ldb );
+
+   void trmm( CBLAS_ORDER order, CBLAS_SIDE side, CBLAS_UPLO uplo, CBLAS_TRANSPOSE transA,
+              CBLAS_DIAG diag, blas_int_t m, blas_int_t n, complex<double> alpha,
+              const complex<double>* A, blas_int_t lda, complex<double>* B, blas_int_t ldb );
 
    template< typename MT1, bool SO1, typename MT2, bool SO2, typename ST >
    void trmm( DenseMatrix<MT1,SO1>& B, const DenseMatrix<MT2,SO2>& A,
@@ -15393,21 +15520,53 @@
    \code
    namespace blaze {
 
-   void trsm( CBLAS_ORDER order, CBLAS_SIDE side, CBLAS_UPLO uplo, CBLAS_TRANSPOSE transA,
-              CBLAS_DIAG diag, int m, int n, float alpha, const float* A,
-              int lda, float* B, int ldb );
+   void trsm( char side, char uplo, char transA, char diag, blas_int_t m, blas_int_t n,
+              float alpha, const float* A, blas_int_t lda, float* B, blas_int_t ldb );
+
+   void trsm( char side, char uplo, char transA, char diag, blas_int_t m, blas_int_t n,
+              double alpha, const double* A, blas_int_t lda, double* B, blas_int_t ldb );
+
+   void trsm( char side, char uplo, char transA, char diag, blas_int_t m, blas_int_t n,
+              complex<float> alpha, const complex<float>* A, blas_int_t lda,
+              complex<float>* B, blas_int_t ldb );
+
+   void trsm( char side, char uplo, char transA, char diag, blas_int_t m, blas_int_t n,
+              complex<double> alpha, const complex<double>* A, blas_int_t lda,
+              complex<double>* B, blas_int_t ldb );
+
+   template< typename MT, bool SO, typename VT, bool TF, typename ST >
+   void trsm( const DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& b,
+              char side, char uplo, char diag, ST alpha );
+
+   template< typename MT1, bool SO1, typename MT2, bool SO2, typename ST >
+   void trsm( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B,
+              char side, char uplo, char diag, ST alpha );
+
+   } // namespace blaze
+   \endcode
+
+// In addition, there is a set of wrapper functions that build on the CBLAS funcions for solving
+// a triangular system of equations (\c cblas_strsm(), \c cblas_dtrsm(), \c cblas_ctrsm(), and
+// \c cblas_ztrsm()):
+
+   \code
+   namespace blaze {
 
    void trsm( CBLAS_ORDER order, CBLAS_SIDE side, CBLAS_UPLO uplo, CBLAS_TRANSPOSE transA,
-              CBLAS_DIAG diag, int m, int n, double alpha, const double* A,
-              int lda, double* B, int ldb );
+              CBLAS_DIAG diag, blas_int_t m, blas_int_t n, float alpha, const float* A,
+              blas_int_t lda, float* B, blas_int_t ldb );
 
    void trsm( CBLAS_ORDER order, CBLAS_SIDE side, CBLAS_UPLO uplo, CBLAS_TRANSPOSE transA,
-              CBLAS_DIAG diag, int m, int n, complex<float> alpha, const complex<float>* A,
-              int lda, complex<float>* B, int ldb );
+              CBLAS_DIAG diag, blas_int_t m, blas_int_t n, double alpha, const double* A,
+              blas_int_t lda, double* B, blas_int_t ldb );
 
    void trsm( CBLAS_ORDER order, CBLAS_SIDE side, CBLAS_UPLO uplo, CBLAS_TRANSPOSE transA,
-              CBLAS_DIAG diag, int m, int n, complex<double> alpha, const complex<double>* A,
-              int lda, complex<double>* B, int ldb );
+              CBLAS_DIAG diag, blas_int_t m, blas_int_t n, complex<float> alpha,
+              const complex<float>* A, blas_int_t lda, complex<float>* B, blas_int_t ldb );
+
+   void trsm( CBLAS_ORDER order, CBLAS_SIDE side, CBLAS_UPLO uplo, CBLAS_TRANSPOSE transA,
+              CBLAS_DIAG diag, blas_int_t m, blas_int_t n, complex<double> alpha,
+              const complex<double>* A, blas_int_t lda, complex<double>* B, blas_int_t ldb );
 
    template< typename MT, bool SO, typename VT, bool TF, typename ST >
    void trsm( const DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& b,
@@ -15447,35 +15606,42 @@
 // provide the parameters of the original LAPACK functions and thus provide maximum flexibility:
 
    \code
+   using blaze::blas_int_t;
+
    constexpr size_t N( 100UL );
 
    blaze::DynamicMatrix<double,blaze::columnMajor> A( N, N );
    // ... Initializing the matrix
 
-   const int m    ( numeric_cast<int>( A.rows()    ) );  // == N
-   const int n    ( numeric_cast<int>( A.columns() ) );  // == N
-   const int lda  ( numeric_cast<int>( A.spacing() ) );  // >= N
-   const int lwork( n*lda );
+   const blas_int_t m    ( numeric_cast<blas_int_t>( A.rows()    ) );  // == N
+   const blas_int_t n    ( numeric_cast<blas_int_t>( A.columns() ) );  // == N
+   const blas_int_t lda  ( numeric_cast<blas_int_t>( A.spacing() ) );  // >= N
+   const blas_int_t lwork( n*lda );
 
-   const std::unique_ptr<int[]> ipiv( new int[N] );        // No initialization required
-   const std::unique_ptr<double[]> work( new double[N] );  // No initialization required
+   const std::unique_ptr<blas_int_t[]> ipiv( new blas_int_t[N] );  // No initialization required
+   const std::unique_ptr<double[]> work( new double[N] );          // No initialization required
 
-   int info( 0 );
+   blas_int_t info( 0 );
 
    getrf( m, n, A.data(), lda, ipiv.get(), &info );                  // Reports failure via 'info'
    getri( n, A.data(), lda, ipiv.get(), work.get(), lwork, &info );  // Reports failure via 'info'
    \endcode
 
+// In this context, \c blas_int_t is either a 32-bit or 64-bit signed integral type, depending
+// on the setting of the \c BLAZE_BLAS_IS_64BIT compilation switch (see \ref blas_mode).
+//
 // Additionally, \b Blaze provides wrappers that provide a higher level of abstraction. These
 // wrappers provide a maximum of convenience:
 
    \code
+   using blaze::blas_int_t;
+
    constexpr size_t N( 100UL );
 
    blaze::DynamicMatrix<double,blaze::columnMajor> A( N, N );
    // ... Initializing the matrix
 
-   const std::unique_ptr<int[]> ipiv( new int[N] );  // No initialization required
+   const std::unique_ptr<blas_int_t[]> ipiv( new blas_int_t[N] );  // No initialization required
 
    getrf( A, ipiv.get() );  // Cannot fail
    getri( A, ipiv.get() );  // Reports failure via exception
@@ -15507,16 +15673,16 @@
    \code
    namespace blaze {
 
-   void getrf( int m, int n, float* A, int lda, int* ipiv, int* info );
+   void getrf( blas_int_t m, blas_int_t n, float* A, blas_int_t lda, blas_int_t* ipiv, blas_int_t* info );
 
-   void getrf( int m, int n, double* A, int lda, int* ipiv, int* info );
+   void getrf( blas_int_t m, blas_int_t n, double* A, blas_int_t lda, blas_int_t* ipiv, blas_int_t* info );
 
-   void getrf( int m, int n, complex<float>* A, int lda, int* ipiv, int* info );
+   void getrf( blas_int_t m, blas_int_t n, complex<float>* A, blas_int_t lda, blas_int_t* ipiv, blas_int_t* info );
 
-   void getrf( int m, int n, complex<double>* A, int lda, int* ipiv, int* info );
+   void getrf( blas_int_t m, blas_int_t n, complex<double>* A, blas_int_t lda, blas_int_t* ipiv, blas_int_t* info );
 
    template< typename MT, bool SO >
-   void getrf( DenseMatrix<MT,SO>& A, int* ipiv );
+   void getrf( DenseMatrix<MT,SO>& A, blas_int_t* ipiv );
 
    } // namespace blaze
    \endcode
@@ -15545,16 +15711,16 @@
    \code
    namespace blaze {
 
-   void sytrf( char uplo, int n, float* A, int lda, int* ipiv, float* work, int lwork, int* info );
+   void sytrf( char uplo, blas_int_t n, float* A, blas_int_t lda, blas_int_t* ipiv, float* work, blas_int_t lwork, blas_int_t* info );
 
-   void sytrf( char uplo, int n, double* A, int lda, int* ipiv, double* work, int lwork, int* info );
+   void sytrf( char uplo, blas_int_t n, double* A, blas_int_t lda, blas_int_t* ipiv, double* work, blas_int_t lwork, blas_int_t* info );
 
-   void sytrf( char uplo, int n, complex<float>* A, int lda, int* ipiv, complex<float>* work, int lwork, int* info );
+   void sytrf( char uplo, blas_int_t n, complex<float>* A, blas_int_t lda, blas_int_t* ipiv, complex<float>* work, blas_int_t lwork, blas_int_t* info );
 
-   void sytrf( char uplo, int n, complex<double>* A, int lda, int* ipiv, complex<double>* work, int lwork, int* info );
+   void sytrf( char uplo, blas_int_t n, complex<double>* A, blas_int_t lda, blas_int_t* ipiv, complex<double>* work, blas_int_t lwork, blas_int_t* info );
 
    template< typename MT, bool SO >
-   void sytrf( DenseMatrix<MT,SO>& A, char uplo, int* ipiv );
+   void sytrf( DenseMatrix<MT,SO>& A, char uplo, blas_int_t* ipiv );
 
    } // namespace blaze
    \endcode
@@ -15583,12 +15749,12 @@
    \code
    namespace blaze {
 
-   void hetrf( char uplo, int n, complex<float>* A, int lda, int* ipiv, complex<float>* work, int lwork, int* info );
+   void hetrf( char uplo, blas_int_t n, complex<float>* A, blas_int_t lda, blas_int_t* ipiv, complex<float>* work, blas_int_t lwork, blas_int_t* info );
 
-   void hetrf( char uplo, int n, complex<double>* A, int lda, int* ipiv, complex<double>* work, int lwork, int* info );
+   void hetrf( char uplo, blas_int_t n, complex<double>* A, blas_int_t lda, blas_int_t* ipiv, complex<double>* work, blas_int_t lwork, blas_int_t* info );
 
    template< typename MT, bool SO >
-   void hetrf( DenseMatrix<MT,SO>& A, char uplo, int* ipiv );
+   void hetrf( DenseMatrix<MT,SO>& A, char uplo, blas_int_t* ipiv );
 
    } // namespace blaze
    \endcode
@@ -15618,13 +15784,13 @@
    \code
    namespace blaze {
 
-   void potrf( char uplo, int n, float* A, int lda, int* info );
+   void potrf( char uplo, blas_int_t n, float* A, blas_int_t lda, blas_int_t* info );
 
-   void potrf( char uplo, int n, double* A, int lda, int* info );
+   void potrf( char uplo, blas_int_t n, double* A, blas_int_t lda, blas_int_t* info );
 
-   void potrf( char uplo, int n, complex<float>* A, int lda, int* info );
+   void potrf( char uplo, blas_int_t n, complex<float>* A, blas_int_t lda, blas_int_t* info );
 
-   void potrf( char uplo, int n, complex<double>* A, int lda, int* info );
+   void potrf( char uplo, blas_int_t n, complex<double>* A, blas_int_t lda, blas_int_t* info );
 
    template< typename MT, bool SO >
    void potrf( DenseMatrix<MT,SO>& A, char uplo );
@@ -15650,13 +15816,13 @@
    \code
    namespace blaze {
 
-   void geqrf( int m, int n, float* A, int lda, float* tau, float* work, int lwork, int* info );
+   void geqrf( blas_int_t m, blas_int_t n, float* A, blas_int_t lda, float* tau, float* work, blas_int_t lwork, blas_int_t* info );
 
-   void geqrf( int m, int n, double* A, int lda, double* tau, double* work, int lwork, int* info );
+   void geqrf( blas_int_t m, blas_int_t n, double* A, blas_int_t lda, double* tau, double* work, blas_int_t lwork, blas_int_t* info );
 
-   void geqrf( int m, int n, complex<float>* A, int lda, complex<float>* tau, complex<float>* work, int lwork, int* info );
+   void geqrf( blas_int_t m, blas_int_t n, complex<float>* A, blas_int_t lda, complex<float>* tau, complex<float>* work, blas_int_t lwork, blas_int_t* info );
 
-   void geqrf( int m, int n, complex<double>* A, int lda, complex<double>* tau, complex<double>* work, int lwork, int* info );
+   void geqrf( blas_int_t m, blas_int_t n, complex<double>* A, blas_int_t lda, complex<double>* tau, complex<double>* work, blas_int_t lwork, blas_int_t* info );
 
    template< typename MT, bool SO >
    void geqrf( DenseMatrix<MT,SO>& A, typename MT::ElementType* tau );
@@ -15690,33 +15856,33 @@
    \code
    namespace blaze {
 
-   void orgqr( int m, int n, int k, float* A, int lda, const float* tau, float* work, int lwork, int* info );
+   void orgqr( blas_int_t m, blas_int_t n, blas_int_t k, float* A, blas_int_t lda, const float* tau, float* work, blas_int_t lwork, blas_int_t* info );
 
-   void orgqr( int m, int n, int k, double* A, int lda, const double* tau, double* work, int lwork, int* info );
+   void orgqr( blas_int_t m, blas_int_t n, blas_int_t k, double* A, blas_int_t lda, const double* tau, double* work, blas_int_t lwork, blas_int_t* info );
 
    template< typename MT, bool SO >
    void orgqr( DenseMatrix<MT,SO>& A, const typename MT::ElementType* tau );
 
 
-   void org2r( int m, int n, int k, float* A, int lda, const float* tau, float* work, int* info );
+   void org2r( blas_int_t m, blas_int_t n, blas_int_t k, float* A, blas_int_t lda, const float* tau, float* work, blas_int_t* info );
 
-   void org2r( int m, int n, int k, double* A, int lda, const double* tau, double* work, int* info );
+   void org2r( blas_int_t m, blas_int_t n, blas_int_t k, double* A, blas_int_t lda, const double* tau, double* work, blas_int_t* info );
 
    template< typename MT, bool SO >
    void org2r( DenseMatrix<MT,SO>& A, const typename MT::ElementType* tau );
 
 
-   void ungqr( int m, int n, int k, complex<float>* A, int lda, const complex<float>* tau, complex<float>* work, int lwork, int* info );
+   void ungqr( blas_int_t m, blas_int_t n, blas_int_t k, complex<float>* A, blas_int_t lda, const complex<float>* tau, complex<float>* work, blas_int_t lwork, blas_int_t* info );
 
-   void ungqr( int m, int n, int k, complex<double>* A, int lda, const complex<double>* tau, complex<double>* work, int lwork, int* info );
+   void ungqr( blas_int_t m, blas_int_t n, blas_int_t k, complex<double>* A, blas_int_t lda, const complex<double>* tau, complex<double>* work, blas_int_t lwork, blas_int_t* info );
 
    template< typename MT, bool SO >
    void ungqr( DenseMatrix<MT,SO>& A, const typename MT::ElementType* tau );
 
 
-   void ung2r( int m, int n, int k, complex<float>* A, int lda, const complex<float>* tau, complex<float>* work, int* info );
+   void ung2r( blas_int_t m, blas_int_t n, blas_int_t k, complex<float>* A, blas_int_t lda, const complex<float>* tau, complex<float>* work, blas_int_t* info );
 
-   void ung2r( int m, int n, int k, complex<double>* A, int lda, const complex<double>* tau, complex<double>* work, int* info );
+   void ung2r( blas_int_t m, blas_int_t n, blas_int_t k, complex<double>* A, blas_int_t lda, const complex<double>* tau, complex<double>* work, blas_int_t* info );
 
    template< typename MT, bool SO >
    void ung2r( DenseMatrix<MT,SO>& A, const typename MT::ElementType* tau );
@@ -15731,17 +15897,17 @@
    \code
    namespace blaze {
 
-   void ormqr( char side, char trans, int m, int n, int k, const float* A, int lda, const float* tau, float* C, int ldc, float* work, int lwork, int* info );
+   void ormqr( char side, char trans, blas_int_t m, blas_int_t n, blas_int_t k, const float* A, blas_int_t lda, const float* tau, float* C, blas_int_t ldc, float* work, blas_int_t lwork, blas_int_t* info );
 
-   void ormqr( char side, char trans, int m, int n, int k, const double* A, int lda, const double* tau, double* C, int ldc, double* work, int lwork, int* info );
+   void ormqr( char side, char trans, blas_int_t m, blas_int_t n, blas_int_t k, const double* A, blas_int_t lda, const double* tau, double* C, blas_int_t ldc, double* work, blas_int_t lwork, blas_int_t* info );
 
    template< typename MT1, bool SO1, typename MT2, bool SO2 >
    void ormqr( DenseMatrix<MT1,SO1>& C, const DenseMatrix<MT2,SO2>& A, char side, char trans, const ElementType_<MT2>* tau );
 
 
-   void unmqr( char side, char trans, int m, int n, int k, const complex<float>* A, int lda, const complex<float>* tau, complex<float>* C, int ldc, complex<float>* work, int lwork, int* info );
+   void unmqr( char side, char trans, blas_int_t m, blas_int_t n, blas_int_t k, const complex<float>* A, blas_int_t lda, const complex<float>* tau, complex<float>* C, blas_int_t ldc, complex<float>* work, blas_int_t lwork, blas_int_t* info );
 
-   void unmqr( char side, char trans, int m, int n, int k, const complex<double>* A, int lda, const complex<double>* tau, complex<double>* C, int ldc, complex<double>* work, int lwork, int* info );
+   void unmqr( char side, char trans, blas_int_t m, blas_int_t n, blas_int_t k, const complex<double>* A, blas_int_t lda, const complex<double>* tau, complex<double>* C, blas_int_t ldc, complex<double>* work, blas_int_t lwork, blas_int_t* info );
 
    template< typename MT1, bool SO, typename MT2 >
    void unmqr( DenseMatrix<MT1,SO>& C, DenseMatrix<MT2,SO>& A, char side, char trans, ElementType_<MT2>* tau );
@@ -15757,13 +15923,13 @@
    \code
    namespace blaze {
 
-   void gerqf( int m, int n, float* A, int lda, float* tau, float* work, int lwork, int* info );
+   void gerqf( blas_int_t m, blas_int_t n, float* A, blas_int_t lda, float* tau, float* work, blas_int_t lwork, blas_int_t* info );
 
-   void gerqf( int m, int n, double* A, int lda, double* tau, double* work, int lwork, int* info );
+   void gerqf( blas_int_t m, blas_int_t n, double* A, blas_int_t lda, double* tau, double* work, blas_int_t lwork, blas_int_t* info );
 
-   void gerqf( int m, int n, complex<float>* A, int lda, complex<float>* tau, complex<float>* work, int lwork, int* info );
+   void gerqf( blas_int_t m, blas_int_t n, complex<float>* A, blas_int_t lda, complex<float>* tau, complex<float>* work, blas_int_t lwork, blas_int_t* info );
 
-   void gerqf( int m, int n, complex<double>* A, int lda, complex<double>* tau, complex<double>* work, int lwork, int* info );
+   void gerqf( blas_int_t m, blas_int_t n, complex<double>* A, blas_int_t lda, complex<double>* tau, complex<double>* work, blas_int_t lwork, blas_int_t* info );
 
    template< typename MT, bool SO >
    void gerqf( DenseMatrix<MT,SO>& A, typename MT::ElementType* tau );
@@ -15798,33 +15964,33 @@
    \code
    namespace blaze {
 
-   void orgrq( int m, int n, int k, float* A, int lda, const float* tau, float* work, int lwork, int* info );
+   void orgrq( blas_int_t m, blas_int_t n, blas_int_t k, float* A, blas_int_t lda, const float* tau, float* work, blas_int_t lwork, blas_int_t* info );
 
-   void orgrq( int m, int n, int k, double* A, int lda, const double* tau, double* work, int lwork, int* info );
+   void orgrq( blas_int_t m, blas_int_t n, blas_int_t k, double* A, blas_int_t lda, const double* tau, double* work, blas_int_t lwork, blas_int_t* info );
 
    template< typename MT, bool SO >
    void orgrq( DenseMatrix<MT,SO>& A, const typename MT::ElementType* tau );
 
 
-   void orgr2( int m, int n, int k, float* A, int lda, const float* tau, float* work, int* info );
+   void orgr2( blas_int_t m, blas_int_t n, blas_int_t k, float* A, blas_int_t lda, const float* tau, float* work, blas_int_t* info );
 
-   void orgr2( int m, int n, int k, double* A, int lda, const double* tau, double* work, int* info );
+   void orgr2( blas_int_t m, blas_int_t n, blas_int_t k, double* A, blas_int_t lda, const double* tau, double* work, blas_int_t* info );
 
    template< typename MT, bool SO >
    void orgr2( DenseMatrix<MT,SO>& A, const typename MT::ElementType* tau );
 
 
-   void ungrq( int m, int n, int k, complex<float>* A, int lda, const complex<float>* tau, complex<float>* work, int lwork, int* info );
+   void ungrq( blas_int_t m, blas_int_t n, blas_int_t k, complex<float>* A, blas_int_t lda, const complex<float>* tau, complex<float>* work, blas_int_t lwork, blas_int_t* info );
 
-   void ungrq( int m, int n, int k, complex<double>* A, int lda, const complex<double>* tau, complex<double>* work, int lwork, int* info );
+   void ungrq( blas_int_t m, blas_int_t n, blas_int_t k, complex<double>* A, blas_int_t lda, const complex<double>* tau, complex<double>* work, blas_int_t lwork, blas_int_t* info );
 
    template< typename MT, bool SO >
    void ungrq( DenseMatrix<MT,SO>& A, const typename MT::ElementType* tau );
 
 
-   void ungr2( int m, int n, int k, complex<float>* A, int lda, const complex<float>* tau, complex<float>* work, int* info );
+   void ungr2( blas_int_t m, blas_int_t n, blas_int_t k, complex<float>* A, blas_int_t lda, const complex<float>* tau, complex<float>* work, blas_int_t* info );
 
-   void ungr2( int m, int n, int k, complex<double>* A, int lda, const complex<double>* tau, complex<double>* work, int* info );
+   void ungr2( blas_int_t m, blas_int_t n, blas_int_t k, complex<double>* A, blas_int_t lda, const complex<double>* tau, complex<double>* work, blas_int_t* info );
 
    template< typename MT, bool SO >
    void ungr2( DenseMatrix<MT,SO>& A, const typename MT::ElementType* tau );
@@ -15839,17 +16005,17 @@
    \code
    namespace blaze {
 
-   void ormrq( char side, char trans, int m, int n, int k, const float* A, int lda, const float* tau, float* C, int ldc, float* work, int lwork, int* info );
+   void ormrq( char side, char trans, blas_int_t m, blas_int_t n, blas_int_t k, const float* A, blas_int_t lda, const float* tau, float* C, blas_int_t ldc, float* work, blas_int_t lwork, blas_int_t* info );
 
-   void ormrq( char side, char trans, int m, int n, int k, const double* A, int lda, const double* tau, double* C, int ldc, double* work, int lwork, int* info );
+   void ormrq( char side, char trans, blas_int_t m, blas_int_t n, blas_int_t k, const double* A, blas_int_t lda, const double* tau, double* C, blas_int_t ldc, double* work, blas_int_t lwork, blas_int_t* info );
 
    template< typename MT1, bool SO1, typename MT2, bool SO2 >
    void ormrq( DenseMatrix<MT1,SO1>& C, const DenseMatrix<MT2,SO2>& A, char side, char trans, const ElementType_<MT2>* tau );
 
 
-   void unmrq( char side, char trans, int m, int n, int k, const complex<float>* A, int lda, const complex<float>* tau, complex<float>* C, int ldc, complex<float>* work, int lwork, int* info );
+   void unmrq( char side, char trans, blas_int_t m, blas_int_t n, blas_int_t k, const complex<float>* A, blas_int_t lda, const complex<float>* tau, complex<float>* C, blas_int_t ldc, complex<float>* work, blas_int_t lwork, blas_int_t* info );
 
-   void unmrq( char side, char trans, int m, int n, int k, const complex<double>* A, int lda, const complex<double>* tau, complex<double>* C, int ldc, complex<double>* work, int lwork, int* info );
+   void unmrq( char side, char trans, blas_int_t m, blas_int_t n, blas_int_t k, const complex<double>* A, blas_int_t lda, const complex<double>* tau, complex<double>* C, blas_int_t ldc, complex<double>* work, blas_int_t lwork, blas_int_t* info );
 
    template< typename MT1, bool SO, typename MT2 >
    void unmrq( DenseMatrix<MT1,SO>& C, DenseMatrix<MT2,SO>& A, char side, char trans, ElementType_<MT2>* tau );
@@ -15865,13 +16031,13 @@
    \code
    namespace blaze {
 
-   void geqlf( int m, int n, float* A, int lda, float* tau, float* work, int lwork, int* info );
+   void geqlf( blas_int_t m, blas_int_t n, float* A, blas_int_t lda, float* tau, float* work, blas_int_t lwork, blas_int_t* info );
 
-   void geqlf( int m, int n, double* A, int lda, double* tau, double* work, int lwork, int* info );
+   void geqlf( blas_int_t m, blas_int_t n, double* A, blas_int_t lda, double* tau, double* work, blas_int_t lwork, blas_int_t* info );
 
-   void geqlf( int m, int n, complex<float>* A, int lda, complex<float>* tau, complex<float>* work, int lwork, int* info );
+   void geqlf( blas_int_t m, blas_int_t n, complex<float>* A, blas_int_t lda, complex<float>* tau, complex<float>* work, blas_int_t lwork, blas_int_t* info );
 
-   void geqlf( int m, int n, complex<double>* A, int lda, complex<double>* tau, complex<double>* work, int lwork, int* info );
+   void geqlf( blas_int_t m, blas_int_t n, complex<double>* A, blas_int_t lda, complex<double>* tau, complex<double>* work, blas_int_t lwork, blas_int_t* info );
 
    template< typename MT, bool SO >
    void geqlf( DenseMatrix<MT,SO>& A, typename MT::ElementType* tau );
@@ -15906,33 +16072,33 @@
    \code
    namespace blaze {
 
-   void orgql( int m, int n, int k, float* A, int lda, const float* tau, float* work, int lwork, int* info );
+   void orgql( blas_int_t m, blas_int_t n, blas_int_t k, float* A, blas_int_t lda, const float* tau, float* work, blas_int_t lwork, blas_int_t* info );
 
-   void orgql( int m, int n, int k, double* A, int lda, const double* tau, double* work, int lwork, int* info );
+   void orgql( blas_int_t m, blas_int_t n, blas_int_t k, double* A, blas_int_t lda, const double* tau, double* work, blas_int_t lwork, blas_int_t* info );
 
    template< typename MT, bool SO >
    void orgql( DenseMatrix<MT,SO>& A, const typename MT::ElementType* tau );
 
 
-   void org2l( int m, int n, int k, float* A, int lda, const float* tau, float* work, int* info );
+   void org2l( blas_int_t m, blas_int_t n, blas_int_t k, float* A, blas_int_t lda, const float* tau, float* work, blas_int_t* info );
 
-   void org2l( int m, int n, int k, double* A, int lda, const double* tau, double* work, int* info );
+   void org2l( blas_int_t m, blas_int_t n, blas_int_t k, double* A, blas_int_t lda, const double* tau, double* work, blas_int_t* info );
 
    template< typename MT, bool SO >
    void org2l( DenseMatrix<MT,SO>& A, const typename MT::ElementType* tau );
 
 
-   void ungql( int m, int n, int k, complex<float>* A, int lda, const complex<float>* tau, complex<float>* work, int lwork, int* info );
+   void ungql( blas_int_t m, blas_int_t n, blas_int_t k, complex<float>* A, blas_int_t lda, const complex<float>* tau, complex<float>* work, blas_int_t lwork, blas_int_t* info );
 
-   void ungql( int m, int n, int k, complex<double>* A, int lda, const complex<double>* tau, complex<double>* work, int lwork, int* info );
+   void ungql( blas_int_t m, blas_int_t n, blas_int_t k, complex<double>* A, blas_int_t lda, const complex<double>* tau, complex<double>* work, blas_int_t lwork, blas_int_t* info );
 
    template< typename MT, bool SO >
    void ungql( DenseMatrix<MT,SO>& A, const typename MT::ElementType* tau );
 
 
-   void ung2l( int m, int n, int k, complex<float>* A, int lda, const complex<float>* tau, complex<float>* work, int* info );
+   void ung2l( blas_int_t m, blas_int_t n, blas_int_t k, complex<float>* A, blas_int_t lda, const complex<float>* tau, complex<float>* work, blas_int_t* info );
 
-   void ung2l( int m, int n, int k, complex<double>* A, int lda, const complex<double>* tau, complex<double>* work, int* info );
+   void ung2l( blas_int_t m, blas_int_t n, blas_int_t k, complex<double>* A, blas_int_t lda, const complex<double>* tau, complex<double>* work, blas_int_t* info );
 
    template< typename MT, bool SO >
    void ung2l( DenseMatrix<MT,SO>& A, const typename MT::ElementType* tau );
@@ -15947,17 +16113,17 @@
    \code
    namespace blaze {
 
-   void ormql( char side, char trans, int m, int n, int k, const float* A, int lda, const float* tau, float* C, int ldc, float* work, int lwork, int* info );
+   void ormql( char side, char trans, blas_int_t m, blas_int_t n, blas_int_t k, const float* A, blas_int_t lda, const float* tau, float* C, blas_int_t ldc, float* work, blas_int_t lwork, blas_int_t* info );
 
-   void ormql( char side, char trans, int m, int n, int k, const double* A, int lda, const double* tau, double* C, int ldc, double* work, int lwork, int* info );
+   void ormql( char side, char trans, blas_int_t m, blas_int_t n, blas_int_t k, const double* A, blas_int_t lda, const double* tau, double* C, blas_int_t ldc, double* work, blas_int_t lwork, blas_int_t* info );
 
    template< typename MT1, bool SO1, typename MT2, bool SO2 >
    void ormql( DenseMatrix<MT1,SO1>& C, const DenseMatrix<MT2,SO2>& A, char side, char trans, const ElementType_<MT2>* tau );
 
 
-   void unmql( char side, char trans, int m, int n, int k, const complex<float>* A, int lda, const complex<float>* tau, complex<float>* C, int ldc, complex<float>* work, int lwork, int* info );
+   void unmql( char side, char trans, blas_int_t m, blas_int_t n, blas_int_t k, const complex<float>* A, blas_int_t lda, const complex<float>* tau, complex<float>* C, blas_int_t ldc, complex<float>* work, blas_int_t lwork, blas_int_t* info );
 
-   void unmql( char side, char trans, int m, int n, int k, const complex<double>* A, int lda, const complex<double>* tau, complex<double>* C, int ldc, complex<double>* work, int lwork, int* info );
+   void unmql( char side, char trans, blas_int_t m, blas_int_t n, blas_int_t k, const complex<double>* A, blas_int_t lda, const complex<double>* tau, complex<double>* C, blas_int_t ldc, complex<double>* work, blas_int_t lwork, blas_int_t* info );
 
    template< typename MT1, bool SO, typename MT2 >
    void unmql( DenseMatrix<MT1,SO>& C, DenseMatrix<MT2,SO>& A, char side, char trans, ElementType_<MT2>* tau );
@@ -15973,13 +16139,13 @@
    \code
    namespace blaze {
 
-   void gelqf( int m, int n, float* A, int lda, float* tau, float* work, int lwork, int* info );
+   void gelqf( blas_int_t m, blas_int_t n, float* A, blas_int_t lda, float* tau, float* work, blas_int_t lwork, blas_int_t* info );
 
-   void gelqf( int m, int n, double* A, int lda, double* tau, double* work, int lwork, int* info );
+   void gelqf( blas_int_t m, blas_int_t n, double* A, blas_int_t lda, double* tau, double* work, blas_int_t lwork, blas_int_t* info );
 
-   void gelqf( int m, int n, complex<float>* A, int lda, complex<float>* tau, complex<float>* work, int lwork, int* info );
+   void gelqf( blas_int_t m, blas_int_t n, complex<float>* A, blas_int_t lda, complex<float>* tau, complex<float>* work, blas_int_t lwork, blas_int_t* info );
 
-   void gelqf( int m, int n, complex<double>* A, int lda, complex<double>* tau, complex<double>* work, int lwork, int* info );
+   void gelqf( blas_int_t m, blas_int_t n, complex<double>* A, blas_int_t lda, complex<double>* tau, complex<double>* work, blas_int_t lwork, blas_int_t* info );
 
    template< typename MT, bool SO >
    void gelqf( DenseMatrix<MT,SO>& A, typename MT::ElementType* tau );
@@ -16013,33 +16179,33 @@
    \code
    namespace blaze {
 
-   void orglq( int m, int n, int k, float* A, int lda, const float* tau, float* work, int lwork, int* info );
+   void orglq( blas_int_t m, blas_int_t n, blas_int_t k, float* A, blas_int_t lda, const float* tau, float* work, blas_int_t lwork, blas_int_t* info );
 
-   void orglq( int m, int n, int k, double* A, int lda, const double* tau, double* work, int lwork, int* info );
+   void orglq( blas_int_t m, blas_int_t n, blas_int_t k, double* A, blas_int_t lda, const double* tau, double* work, blas_int_t lwork, blas_int_t* info );
 
    template< typename MT, bool SO >
    void orglq( DenseMatrix<MT,SO>& A, const typename MT::ElementType* tau );
 
 
-   void orgl2( int m, int n, int k, float* A, int lda, const float* tau, float* work, int* info );
+   void orgl2( blas_int_t m, blas_int_t n, blas_int_t k, float* A, blas_int_t lda, const float* tau, float* work, blas_int_t* info );
 
-   void orgl2( int m, int n, int k, double* A, int lda, const double* tau, double* work, int* info );
+   void orgl2( blas_int_t m, blas_int_t n, blas_int_t k, double* A, blas_int_t lda, const double* tau, double* work, blas_int_t* info );
 
    template< typename MT, bool SO >
    void orgl2( DenseMatrix<MT,SO>& A, const typename MT::ElementType* tau );
 
 
-   void unglq( int m, int n, int k, complex<float>* A, int lda, const complex<float>* tau, complex<float>* work, int lwork, int* info );
+   void unglq( blas_int_t m, blas_int_t n, blas_int_t k, complex<float>* A, blas_int_t lda, const complex<float>* tau, complex<float>* work, blas_int_t lwork, blas_int_t* info );
 
-   void unglq( int m, int n, int k, complex<double>* A, int lda, const complex<double>* tau, complex<double>* work, int lwork, int* info );
+   void unglq( blas_int_t m, blas_int_t n, blas_int_t k, complex<double>* A, blas_int_t lda, const complex<double>* tau, complex<double>* work, blas_int_t lwork, blas_int_t* info );
 
    template< typename MT, bool SO >
    void unglq( DenseMatrix<MT,SO>& A, const typename MT::ElementType* tau );
 
 
-   void ungl2( int m, int n, int k, complex<float>* A, int lda, const complex<float>* tau, complex<float>* work, int* info );
+   void ungl2( blas_int_t m, blas_int_t n, blas_int_t k, complex<float>* A, blas_int_t lda, const complex<float>* tau, complex<float>* work, blas_int_t* info );
 
-   void ungl2( int m, int n, int k, complex<double>* A, int lda, const complex<double>* tau, complex<double>* work, int* info );
+   void ungl2( blas_int_t m, blas_int_t n, blas_int_t k, complex<double>* A, blas_int_t lda, const complex<double>* tau, complex<double>* work, blas_int_t* info );
 
    template< typename MT, bool SO >
    void ungl2( DenseMatrix<MT,SO>& A, const typename MT::ElementType* tau );
@@ -16054,17 +16220,17 @@
    \code
    namespace blaze {
 
-   void ormlq( char side, char trans, int m, int n, int k, const float* A, int lda, const float* tau, float* C, int ldc, float* work, int lwork, int* info );
+   void ormlq( char side, char trans, blas_int_t m, blas_int_t n, blas_int_t k, const float* A, blas_int_t lda, const float* tau, float* C, blas_int_t ldc, float* work, blas_int_t lwork, blas_int_t* info );
 
-   void ormlq( char side, char trans, int m, int n, int k, const double* A, int lda, const double* tau, double* C, int ldc, double* work, int lwork, int* info );
+   void ormlq( char side, char trans, blas_int_t m, blas_int_t n, blas_int_t k, const double* A, blas_int_t lda, const double* tau, double* C, blas_int_t ldc, double* work, blas_int_t lwork, blas_int_t* info );
 
    template< typename MT1, bool SO1, typename MT2, bool SO2 >
    void ormlq( DenseMatrix<MT1,SO1>& C, const DenseMatrix<MT2,SO2>& A, char side, char trans, const ElementType_<MT2>* tau );
 
 
-   void unmlq( char side, char trans, int m, int n, int k, const complex<float>* A, int lda, const complex<float>* tau, complex<float>* C, int ldc, complex<float>* work, int lwork, int* info );
+   void unmlq( char side, char trans, blas_int_t m, blas_int_t n, blas_int_t k, const complex<float>* A, blas_int_t lda, const complex<float>* tau, complex<float>* C, blas_int_t ldc, complex<float>* work, blas_int_t lwork, blas_int_t* info );
 
-   void unmlq( char side, char trans, int m, int n, int k, const complex<double>* A, int lda, const complex<double>* tau, complex<double>* C, int ldc, complex<double>* work, int lwork, int* info );
+   void unmlq( char side, char trans, blas_int_t m, blas_int_t n, blas_int_t k, const complex<double>* A, blas_int_t lda, const complex<double>* tau, complex<double>* C, blas_int_t ldc, complex<double>* work, blas_int_t lwork, blas_int_t* info );
 
    template< typename MT1, bool SO, typename MT2 >
    void unmlq( DenseMatrix<MT1,SO>& C, DenseMatrix<MT2,SO>& A, char side, char trans, ElementType_<MT2>* tau );
@@ -16088,16 +16254,16 @@
    \code
    namespace blaze {
 
-   void getri( int n, float* A, int lda, const int* ipiv, float* work, int lwork, int* info );
+   void getri( blas_int_t n, float* A, blas_int_t lda, const blas_int_t* ipiv, float* work, blas_int_t lwork, blas_int_t* info );
 
-   void getri( int n, double* A, int lda, const int* ipiv, double* work, int lwork, int* info );
+   void getri( blas_int_t n, double* A, blas_int_t lda, const blas_int_t* ipiv, double* work, blas_int_t lwork, blas_int_t* info );
 
-   void getri( int n, complex<float>* A, int lda, const int* ipiv, complex<float>* work, int lwork, int* info );
+   void getri( blas_int_t n, complex<float>* A, blas_int_t lda, const blas_int_t* ipiv, complex<float>* work, blas_int_t lwork, blas_int_t* info );
 
-   void getri( int n, complex<double>* A, int lda, const int* ipiv, complex<double>* work, int lwork, int* info );
+   void getri( blas_int_t n, complex<double>* A, blas_int_t lda, const blas_int_t* ipiv, complex<double>* work, blas_int_t lwork, blas_int_t* info );
 
    template< typename MT, bool SO >
-   void getri( DenseMatrix<MT,SO>& A, const int* ipiv );
+   void getri( DenseMatrix<MT,SO>& A, const blas_int_t* ipiv );
 
    } // namespace blaze
    \endcode
@@ -16120,16 +16286,16 @@
    \code
    namespace blaze {
 
-   void sytri( char uplo, int n, float* A, int lda, const int* ipiv, float* work, int* info );
+   void sytri( char uplo, blas_int_t n, float* A, blas_int_t lda, const blas_int_t* ipiv, float* work, blas_int_t* info );
 
-   void sytri( char uplo, int n, double* A, int lda, const int* ipiv, double* work, int* info );
+   void sytri( char uplo, blas_int_t n, double* A, blas_int_t lda, const blas_int_t* ipiv, double* work, blas_int_t* info );
 
-   void sytri( char uplo, int n, complex<float>* A, int lda, const int* ipiv, complex<float>* work, int* info );
+   void sytri( char uplo, blas_int_t n, complex<float>* A, blas_int_t lda, const blas_int_t* ipiv, complex<float>* work, blas_int_t* info );
 
-   void sytri( char uplo, int n, complex<double>* A, int lda, const int* ipiv, complex<double>* work, int* info );
+   void sytri( char uplo, blas_int_t n, complex<double>* A, blas_int_t lda, const blas_int_t* ipiv, complex<double>* work, blas_int_t* info );
 
    template< typename MT, bool SO >
-   void sytri( DenseMatrix<MT,SO>& A, char uplo, const int* ipiv );
+   void sytri( DenseMatrix<MT,SO>& A, char uplo, const blas_int_t* ipiv );
 
    } // namespace blaze
    \endcode
@@ -16152,12 +16318,12 @@
    \code
    namespace blaze {
 
-   void hetri( char uplo, int n, complex<float>* A, int lda, const int* ipiv, complex<float>* work, int* info );
+   void hetri( char uplo, blas_int_t n, complex<float>* A, blas_int_t lda, const blas_int_t* ipiv, complex<float>* work, blas_int_t* info );
 
-   void hetri( char uplo, int n, complex<double>* A, int lda, const int* ipiv, complex<double>* work, int* info );
+   void hetri( char uplo, blas_int_t n, complex<double>* A, blas_int_t lda, const blas_int_t* ipiv, complex<double>* work, blas_int_t* info );
 
    template< typename MT, bool SO >
-   void hetri( DenseMatrix<MT,SO>& A, char uplo, const int* ipiv );
+   void hetri( DenseMatrix<MT,SO>& A, char uplo, const blas_int_t* ipiv );
 
    } // namespace blaze
    \endcode
@@ -16180,13 +16346,13 @@
    \code
    namespace blaze {
 
-   void potri( char uplo, int n, float* A, int lda, int* info );
+   void potri( char uplo, blas_int_t n, float* A, blas_int_t lda, blas_int_t* info );
 
-   void potri( char uplo, int n, double* A, int lda, int* info );
+   void potri( char uplo, blas_int_t n, double* A, blas_int_t lda, blas_int_t* info );
 
-   void potri( char uplo, int n, complex<float>* A, int lda, int* info );
+   void potri( char uplo, blas_int_t n, complex<float>* A, blas_int_t lda, blas_int_t* info );
 
-   void potri( char uplo, int n, complex<double>* A, int lda, int* info );
+   void potri( char uplo, blas_int_t n, complex<double>* A, blas_int_t lda, blas_int_t* info );
 
    template< typename MT, bool SO >
    void potri( DenseMatrix<MT,SO>& A, char uplo );
@@ -16212,13 +16378,13 @@
    \code
    namespace blaze {
 
-   void trtri( char uplo, char diag, int n, float* A, int lda, int* info );
+   void trtri( char uplo, char diag, blas_int_t n, float* A, blas_int_t lda, blas_int_t* info );
 
-   void trtri( char uplo, char diag, int n, double* A, int lda, int* info );
+   void trtri( char uplo, char diag, blas_int_t n, double* A, blas_int_t lda, blas_int_t* info );
 
-   void trtri( char uplo, char diag, int n, complex<float>* A, int lda, int* info );
+   void trtri( char uplo, char diag, blas_int_t n, complex<float>* A, blas_int_t lda, blas_int_t* info );
 
-   void trtri( char uplo, char diag, int n, complex<double>* A, int lda, int* info );
+   void trtri( char uplo, char diag, blas_int_t n, complex<double>* A, blas_int_t lda, blas_int_t* info );
 
    template< typename MT, bool SO >
    void trtri( DenseMatrix<MT,SO>& A, char uplo, char diag );
@@ -16269,19 +16435,19 @@
    \code
    namespace blaze {
 
-   void getrs( char trans, int n, int nrhs, const float* A, int lda, const int* ipiv, float* B, int ldb, int* info );
+   void getrs( char trans, blas_int_t n, blas_int_t nrhs, const float* A, blas_int_t lda, const blas_int_t* ipiv, float* B, blas_int_t ldb, blas_int_t* info );
 
-   void getrs( char trans, int n, int nrhs, const double* A, int lda, const int* ipiv, double* B, int ldb, int* info );
+   void getrs( char trans, blas_int_t n, blas_int_t nrhs, const double* A, blas_int_t lda, const blas_int_t* ipiv, double* B, blas_int_t ldb, blas_int_t* info );
 
-   void getrs( char trans, int n, const complex<float>* A, int lda, const int* ipiv, complex<float>* B, int ldb, int* info );
+   void getrs( char trans, blas_int_t n, const complex<float>* A, blas_int_t lda, const blas_int_t* ipiv, complex<float>* B, blas_int_t ldb, blas_int_t* info );
 
-   void getrs( char trans, int n, const complex<double>* A, int lda, const int* ipiv, complex<double>* B, int ldb, int* info );
+   void getrs( char trans, blas_int_t n, const complex<double>* A, blas_int_t lda, const blas_int_t* ipiv, complex<double>* B, blas_int_t ldb, blas_int_t* info );
 
    template< typename MT, bool SO, typename VT, bool TF >
-   void getrs( const DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& b, char trans, const int* ipiv );
+   void getrs( const DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& b, char trans, const blas_int_t* ipiv );
 
    template< typename MT1, bool SO1, typename MT2, bool SO2 >
-   void getrs( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B, char trans, const int* ipiv );
+   void getrs( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B, char trans, const blas_int_t* ipiv );
 
    } // namespace blaze
    \endcode
@@ -16308,19 +16474,19 @@
    \code
    namespace blaze {
 
-   void sytrs( char uplo, int n, int nrhs, const float* A, int lda, const int* ipiv, float* B, int ldb, int* info );
+   void sytrs( char uplo, blas_int_t n, blas_int_t nrhs, const float* A, blas_int_t lda, const blas_int_t* ipiv, float* B, blas_int_t ldb, blas_int_t* info );
 
-   void sytrs( char uplo, int n, int nrhs, const double* A, int lda, const int* ipiv, double* B, int ldb, int* info );
+   void sytrs( char uplo, blas_int_t n, blas_int_t nrhs, const double* A, blas_int_t lda, const blas_int_t* ipiv, double* B, blas_int_t ldb, blas_int_t* info );
 
-   void sytrs( char uplo, int n, int nrhs, const complex<float>* A, int lda, const int* ipiv, complex<float>* B, int ldb, int* info );
+   void sytrs( char uplo, blas_int_t n, blas_int_t nrhs, const complex<float>* A, blas_int_t lda, const blas_int_t* ipiv, complex<float>* B, blas_int_t ldb, blas_int_t* info );
 
-   void sytrs( char uplo, int n, int nrhs, const complex<double>* A, int lda, const int* ipiv, complex<double>* B, int ldb, int* info );
+   void sytrs( char uplo, blas_int_t n, blas_int_t nrhs, const complex<double>* A, blas_int_t lda, const blas_int_t* ipiv, complex<double>* B, blas_int_t ldb, blas_int_t* info );
 
    template< typename MT, bool SO, typename VT, bool TF >
-   void sytrs( const DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& b, char uplo, const int* ipiv );
+   void sytrs( const DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& b, char uplo, const blas_int_t* ipiv );
 
    template< typename MT1, bool SO1, typename MT2, bool SO2 >
-   void sytrs( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B, char uplo, const int* ipiv );
+   void sytrs( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B, char uplo, const blas_int_t* ipiv );
 
    } // namespace blaze
    \endcode
@@ -16347,15 +16513,15 @@
    \code
    namespace blaze {
 
-   void hetrs( char uplo, int n, int nrhs, const complex<float>* A, int lda, const int* ipiv, complex<float>* B, int ldb, int* info );
+   void hetrs( char uplo, blas_int_t n, blas_int_t nrhs, const complex<float>* A, blas_int_t lda, const blas_int_t* ipiv, complex<float>* B, blas_int_t ldb, blas_int_t* info );
 
-   void hetrs( char uplo, int n, int nrhs, const complex<double>* A, int lda, const int* ipiv, complex<double>* B, int ldb, int* info );
+   void hetrs( char uplo, blas_int_t n, blas_int_t nrhs, const complex<double>* A, blas_int_t lda, const blas_int_t* ipiv, complex<double>* B, blas_int_t ldb, blas_int_t* info );
 
    template< typename MT, bool SO, typename VT, bool TF >
-   void hetrs( const DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& b, char uplo, const int* ipiv );
+   void hetrs( const DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& b, char uplo, const blas_int_t* ipiv );
 
    template< typename MT1, bool SO1, typename MT2, bool SO2 >
-   void hetrs( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B, char uplo, const int* ipiv );
+   void hetrs( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B, char uplo, const blas_int_t* ipiv );
 
    } // namespace blaze
    \endcode
@@ -16382,13 +16548,13 @@
    \code
    namespace blaze {
 
-   void potrs( char uplo, int n, int nrhs, const float* A, int lda, float* B, int ldb, int* info );
+   void potrs( char uplo, blas_int_t n, blas_int_t nrhs, const float* A, blas_int_t lda, float* B, blas_int_t ldb, blas_int_t* info );
 
-   void potrs( char uplo, int n, int nrhs, const double* A, int lda, double* B, int ldb, int* info );
+   void potrs( char uplo, blas_int_t n, blas_int_t nrhs, const double* A, blas_int_t lda, double* B, blas_int_t ldb, blas_int_t* info );
 
-   void potrs( char uplo, int n, int nrhs, const complex<float>* A, int lda, complex<float>* B, int ldb, int* info );
+   void potrs( char uplo, blas_int_t n, blas_int_t nrhs, const complex<float>* A, blas_int_t lda, complex<float>* B, blas_int_t ldb, blas_int_t* info );
 
-   void potrs( char uplo, int n, int nrhs, const complex<double>* A, int lda, complex<double>* B, int ldb, int* info );
+   void potrs( char uplo, blas_int_t n, blas_int_t nrhs, const complex<double>* A, blas_int_t lda, complex<double>* B, blas_int_t ldb, blas_int_t* info );
 
    template< typename MT, bool SO, typename VT, bool TF >
    void potrs( const DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& b, char uplo );
@@ -16420,13 +16586,13 @@
    \code
    namespace blaze {
 
-   void trtrs( char uplo, char trans, char diag, int n, int nrhs, const float* A, int lda, float* B, int ldb, int* info );
+   void trtrs( char uplo, char trans, char diag, blas_int_t n, blas_int_t nrhs, const float* A, blas_int_t lda, float* B, blas_int_t ldb, blas_int_t* info );
 
-   void trtrs( char uplo, char trans, char diag, int n, int nrhs, const double* A, int lda, double* B, int ldb, int* info );
+   void trtrs( char uplo, char trans, char diag, blas_int_t n, blas_int_t nrhs, const double* A, blas_int_t lda, double* B, blas_int_t ldb, blas_int_t* info );
 
-   void trtrs( char uplo, char trans, char diag, int n, int nrhs, const complex<float>* A, int lda, complex<float>* B, int ldb, int* info );
+   void trtrs( char uplo, char trans, char diag, blas_int_t n, blas_int_t nrhs, const complex<float>* A, blas_int_t lda, complex<float>* B, blas_int_t ldb, blas_int_t* info );
 
-   void trtrs( char uplo, char trans, char diag, int n, int nrhs, const complex<double>* A, int lda, complex<double>* B, int ldb, int* info );
+   void trtrs( char uplo, char trans, char diag, blas_int_t n, blas_int_t nrhs, const complex<double>* A, blas_int_t lda, complex<double>* B, blas_int_t ldb, blas_int_t* info );
 
    template< typename MT, bool SO, typename VT, bool TF >
    void trtrs( const DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& b, char uplo, char trans, char diag );
@@ -16484,19 +16650,19 @@
    \code
    namespace blaze {
 
-   void gesv( int n, int nrhs, float* A, int lda, int* ipiv, float* B, int ldb, int* info );
+   void gesv( blas_int_t n, blas_int_t nrhs, float* A, blas_int_t lda, blas_int_t* ipiv, float* B, blas_int_t ldb, blas_int_t* info );
 
-   void gesv( int n, int nrhs, double* A, int lda, int* ipiv, double* B, int ldb, int* info );
+   void gesv( blas_int_t n, blas_int_t nrhs, double* A, blas_int_t lda, blas_int_t* ipiv, double* B, blas_int_t ldb, blas_int_t* info );
 
-   void gesv( int n, int nrhs, complex<float>* A, int lda, int* ipiv, complex<float>* B, int ldb, int* info );
+   void gesv( blas_int_t n, blas_int_t nrhs, complex<float>* A, blas_int_t lda, blas_int_t* ipiv, complex<float>* B, blas_int_t ldb, blas_int_t* info );
 
-   void gesv( int n, int nrhs, complex<double>* A, int lda, int* ipiv, complex<double>* B, int ldb, int* info );
+   void gesv( blas_int_t n, blas_int_t nrhs, complex<double>* A, blas_int_t lda, blas_int_t* ipiv, complex<double>* B, blas_int_t ldb, blas_int_t* info );
 
    template< typename MT, bool SO, typename VT, bool TF >
-   void gesv( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& b, int* ipiv );
+   void gesv( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& b, blas_int_t* ipiv );
 
    template< typename MT1, bool SO1, typename MT2, bool SO2 >
-   void gesv( DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B, int* ipiv );
+   void gesv( DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B, blas_int_t* ipiv );
 
    } // namespace blaze
    \endcode
@@ -16525,19 +16691,19 @@
    \code
    namespace blaze {
 
-   void sysv( char uplo, int n, int nrhs, float* A, int lda, int* ipiv, float* B, int ldb, float* work, int lwork, int* info );
+   void sysv( char uplo, blas_int_t n, blas_int_t nrhs, float* A, blas_int_t lda, blas_int_t* ipiv, float* B, blas_int_t ldb, float* work, blas_int_t lwork, blas_int_t* info );
 
-   void sysv( char uplo, int n, int nrhs, double* A, int lda, int* ipiv, double* B, int ldb, double* work, int lwork, int* info );
+   void sysv( char uplo, blas_int_t n, blas_int_t nrhs, double* A, blas_int_t lda, blas_int_t* ipiv, double* B, blas_int_t ldb, double* work, blas_int_t lwork, blas_int_t* info );
 
-   void sysv( char uplo, int n, int nrhs, complex<float>* A, int lda, int* ipiv, complex<float>* B, int ldb, complex<float>* work, int lwork, int* info );
+   void sysv( char uplo, blas_int_t n, blas_int_t nrhs, complex<float>* A, blas_int_t lda, blas_int_t* ipiv, complex<float>* B, blas_int_t ldb, complex<float>* work, blas_int_t lwork, blas_int_t* info );
 
-   void sysv( char uplo, int n, int nrhs, complex<double>* A, int lda, int* ipiv, complex<double>* B, int ldb, complex<double>* work, int lwork, int* info );
+   void sysv( char uplo, blas_int_t n, blas_int_t nrhs, complex<double>* A, blas_int_t lda, blas_int_t* ipiv, complex<double>* B, blas_int_t ldb, complex<double>* work, blas_int_t lwork, blas_int_t* info );
 
    template< typename MT, bool SO, typename VT, bool TF >
-   void sysv( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& b, char uplo, int* ipiv );
+   void sysv( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& b, char uplo, blas_int_t* ipiv );
 
    template< typename MT1, bool SO1, typename MT2, bool SO2 >
-   void sysv( DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B, char uplo, int* ipiv );
+   void sysv( DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B, char uplo, blas_int_t* ipiv );
 
    } // namespace blaze
    \endcode
@@ -16568,15 +16734,15 @@
    \code
    namespace blaze {
 
-   void hesv( char uplo, int n, int nrhs, complex<float>* A, int lda, int* ipiv, complex<float>* B, int ldb, complex<float>* work, int lwork, int* info );
+   void hesv( char uplo, blas_int_t n, blas_int_t nrhs, complex<float>* A, blas_int_t lda, blas_int_t* ipiv, complex<float>* B, blas_int_t ldb, complex<float>* work, blas_int_t lwork, blas_int_t* info );
 
-   void hesv( char uplo, int n, int nrhs, complex<double>* A, int lda, int* ipiv, complex<double>* B, int ldb, complex<double>* work, int lwork, int* info );
+   void hesv( char uplo, blas_int_t n, blas_int_t nrhs, complex<double>* A, blas_int_t lda, blas_int_t* ipiv, complex<double>* B, blas_int_t ldb, complex<double>* work, blas_int_t lwork, blas_int_t* info );
 
    template< typename MT, bool SO, typename VT, bool TF >
-   void hesv( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& b, char uplo, int* ipiv );
+   void hesv( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& b, char uplo, blas_int_t* ipiv );
 
    template< typename MT1, bool SO1, typename MT2, bool SO2 >
-   void hesv( DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B, char uplo, int* ipiv );
+   void hesv( DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B, char uplo, blas_int_t* ipiv );
 
    } // namespace blaze
    \endcode
@@ -16607,13 +16773,13 @@
    \code
    namespace blaze {
 
-   void posv( char uplo, int n, int nrhs, float* A, int lda, float* B, int ldb, int* info );
+   void posv( char uplo, blas_int_t n, blas_int_t nrhs, float* A, blas_int_t lda, float* B, blas_int_t ldb, blas_int_t* info );
 
-   void posv( char uplo, int n, int nrhs, double* A, int lda, double* B, int ldb, int* info );
+   void posv( char uplo, blas_int_t n, blas_int_t nrhs, double* A, blas_int_t lda, double* B, blas_int_t ldb, blas_int_t* info );
 
-   void posv( char uplo, int n, int nrhs, complex<float>* A, int lda, complex<float>* B, int ldb, int* info );
+   void posv( char uplo, blas_int_t n, blas_int_t nrhs, complex<float>* A, blas_int_t lda, complex<float>* B, blas_int_t ldb, blas_int_t* info );
 
-   void posv( char uplo, int n, int nrhs, complex<double>* A, int lda, complex<double>* B, int ldb, int* info );
+   void posv( char uplo, blas_int_t n, blas_int_t nrhs, complex<double>* A, blas_int_t lda, complex<double>* B, blas_int_t ldb, blas_int_t* info );
 
    template< typename MT, bool SO, typename VT, bool TF >
    void posv( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& b, char uplo );
@@ -16649,13 +16815,13 @@
    \code
    namespace blaze {
 
-   void trsv( char uplo, char trans, char diag, int n, const float* A, int lda, float* x, int incX );
+   void trsv( char uplo, char trans, char diag, blas_int_t n, const float* A, blas_int_t lda, float* x, blas_int_t incX );
 
-   void trsv( char uplo, char trans, char diag, int n, const double* A, int lda, double* x, int incX );
+   void trsv( char uplo, char trans, char diag, blas_int_t n, const double* A, blas_int_t lda, double* x, blas_int_t incX );
 
-   void trsv( char uplo, char trans, char diag, int n, const complex<float>* A, int lda, complex<float>* x, int incX );
+   void trsv( char uplo, char trans, char diag, blas_int_t n, const complex<float>* A, blas_int_t lda, complex<float>* x, blas_int_t incX );
 
-   void trsv( char uplo, char trans, char diag, int n, const complex<double>* A, int lda, complex<double>* x, int incX );
+   void trsv( char uplo, char trans, char diag, blas_int_t n, const complex<double>* A, blas_int_t lda, complex<double>* x, blas_int_t incX );
 
    template< typename MT, bool SO, typename VT, bool TF >
    void trsv( const DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& b, char uplo, char trans, char diag );
@@ -16691,13 +16857,13 @@
    \code
    namespace blaze {
 
-   void geev( char jobvl, char jobvr, int n, float* A, int lda, float* wr, float* wi, float* VL, int ldvl, float* VR, int ldvr, float* work, int lwork, int* info );
+   void geev( char jobvl, char jobvr, blas_int_t n, float* A, blas_int_t lda, float* wr, float* wi, float* VL, blas_int_t ldvl, float* VR, blas_int_t ldvr, float* work, blas_int_t lwork, blas_int_t* info );
 
-   void geev( char jobvl, char jobvr, int n, double* A, int lda, double* wr, double* wi, double* VL, int ldvl, double* VR, int ldvr, double* work, int lwork, int* info );
+   void geev( char jobvl, char jobvr, blas_int_t n, double* A, blas_int_t lda, double* wr, double* wi, double* VL, blas_int_t ldvl, double* VR, blas_int_t ldvr, double* work, blas_int_t lwork, blas_int_t* info );
 
-   void geev( char jobvl, char jobvr, int n, complex<float>* A, int lda, complex<float>* w, complex<float>* VL, int ldvl, complex<float>* VR, int ldvr, complex<float>* work, int lwork, float* rwork, int* info );
+   void geev( char jobvl, char jobvr, blas_int_t n, complex<float>* A, blas_int_t lda, complex<float>* w, complex<float>* VL, blas_int_t ldvl, complex<float>* VR, blas_int_t ldvr, complex<float>* work, blas_int_t lwork, float* rwork, blas_int_t* info );
 
-   void geev( char jobvl, char jobvr, int n, complex<double>* A, int lda, complex<double>* w, complex<double>* VL, int ldvl, complex<double>* VR, int ldvr, complex<double>* work, int lwork, double* rwork, int* info );
+   void geev( char jobvl, char jobvr, blas_int_t n, complex<double>* A, blas_int_t lda, complex<double>* w, complex<double>* VL, blas_int_t ldvl, complex<double>* VR, blas_int_t ldvr, complex<double>* work, blas_int_t lwork, double* rwork, blas_int_t* info );
 
    template< typename MT, bool SO, typename VT, bool TF >
    void geev( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& w );
@@ -16756,9 +16922,9 @@
    \code
    namespace blaze {
 
-   void syev( char jobz, char uplo, int n, float* A, int lda, float* w, float* work, int lwork, int* info );
+   void syev( char jobz, char uplo, blas_int_t n, float* A, blas_int_t lda, float* w, float* work, blas_int_t lwork, blas_int_t* info );
 
-   void syev( char jobz, char uplo, int n, double* A, int lda, double* w, double* work, int lwork, int* info );
+   void syev( char jobz, char uplo, blas_int_t n, double* A, blas_int_t lda, double* w, double* work, blas_int_t lwork, blas_int_t* info );
 
    template< typename MT, bool SO, typename VT, bool TF >
    void syev( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& w, char jobz, char uplo );
@@ -16773,9 +16939,9 @@
    \code
    namespace blaze {
 
-   void syevd( char jobz, char uplo, int n, float* A, int lda, float* w, float* work, int lwork, int* iwork, int liwork, int* info );
+   void syevd( char jobz, char uplo, blas_int_t n, float* A, blas_int_t lda, float* w, float* work, blas_int_t lwork, blas_int_t* iwork, blas_int_t liwork, blas_int_t* info );
 
-   void syevd( char jobz, char uplo, int n, double* A, int lda, double* w, double* work, int lwork, int* iwork, int liwork, int* info );
+   void syevd( char jobz, char uplo, blas_int_t n, double* A, blas_int_t lda, double* w, double* work, blas_int_t lwork, blas_int_t* iwork, blas_int_t liwork, blas_int_t* info );
 
    template< typename MT, bool SO, typename VT, bool TF >
    void syevd( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& w, char jobz, char uplo );
@@ -16805,9 +16971,9 @@
    \code
    namespace blaze {
 
-   void syevx( char jobz, char range, char uplo, int n, float* A, int lda, float vl, float vu, int il, int iu, float abstol, int* m, float* w, float* Z, int ldz, float* work, int lwork, int* iwork, int* ifail, int* info );
+   void syevx( char jobz, char range, char uplo, blas_int_t n, float* A, blas_int_t lda, float vl, float vu, blas_int_t il, blas_int_t iu, float abstol, blas_int_t* m, float* w, float* Z, blas_int_t ldz, float* work, blas_int_t lwork, blas_int_t* iwork, blas_int_t* ifail, blas_int_t* info );
 
-   void syevx( char jobz, char range, char uplo, int n, double* A, int lda, double vl, double vu, int il, int iu, double abstol, int* m, double* w, double* Z, int ldz, double* work, int lwork, int* iwork, int* ifail, int* info );
+   void syevx( char jobz, char range, char uplo, blas_int_t n, double* A, blas_int_t lda, double vl, double vu, blas_int_t il, blas_int_t iu, double abstol, blas_int_t* m, double* w, double* Z, blas_int_t ldz, double* work, blas_int_t lwork, blas_int_t* iwork, blas_int_t* ifail, blas_int_t* info );
 
    template< typename MT, bool SO, typename VT, bool TF >
    size_t syevx( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& w, char uplo );
@@ -16862,9 +17028,9 @@
    \code
    namespace blaze {
 
-   void heev( char jobz, char uplo, int n, complex<float>* A, int lda, float* w, complex<float>* work, int lwork, float* rwork, int* info );
+   void heev( char jobz, char uplo, blas_int_t n, complex<float>* A, blas_int_t lda, float* w, complex<float>* work, blas_int_t lwork, float* rwork, blas_int_t* info );
 
-   void heev( char jobz, char uplo, int n, complex<double>* A, int lda, double* w, complex<double>* work, int lwork, float* rwork, int* info );
+   void heev( char jobz, char uplo, blas_int_t n, complex<double>* A, blas_int_t lda, double* w, complex<double>* work, blas_int_t lwork, float* rwork, blas_int_t* info );
 
    template< typename MT, bool SO, typename VT, bool TF >
    void heev( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& w, char jobz, char uplo );
@@ -16879,9 +17045,9 @@
    \code
    namespace blaze {
 
-   void heevd( char jobz, char uplo, int n, complex<float>* A, int lda, float* w, complex<float>* work, int lwork, float* rwork, int* lrwork, int* iwork, int* liwork, int* info );
+   void heevd( char jobz, char uplo, blas_int_t n, complex<float>* A, blas_int_t lda, float* w, complex<float>* work, blas_int_t lwork, float* rwork, blas_int_t* lrwork, blas_int_t* iwork, blas_int_t* liwork, blas_int_t* info );
 
-   void heevd( char jobz, char uplo, int n, complex<double>* A, int lda, double* w, complex<double>* work, int lwork, double* rwork, int lrwork, int* iwork, int* liwork, int* info );
+   void heevd( char jobz, char uplo, blas_int_t n, complex<double>* A, blas_int_t lda, double* w, complex<double>* work, blas_int_t lwork, double* rwork, blas_int_t lrwork, blas_int_t* iwork, blas_int_t* liwork, blas_int_t* info );
 
    template< typename MT, bool SO, typename VT, bool TF >
    void heevd( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& w, char jobz, char uplo );
@@ -16911,9 +17077,9 @@
    \code
    namespace blaze {
 
-   void heevx( char jobz, char range, char uplo, int n, complex<float>* A, int lda, float vl, float vu, int il, int iu, float abstol, int* m, float* w, complex<float>* Z, int ldz, complex<float>* work, int lwork, float* rwork, int* iwork, int* ifail, int* info );
+   void heevx( char jobz, char range, char uplo, blas_int_t n, complex<float>* A, blas_int_t lda, float vl, float vu, blas_int_t il, blas_int_t iu, float abstol, blas_int_t* m, float* w, complex<float>* Z, blas_int_t ldz, complex<float>* work, blas_int_t lwork, float* rwork, blas_int_t* iwork, blas_int_t* ifail, blas_int_t* info );
 
-   void heevx( char jobz, char range, char uplo, int n, complex<double>* A, int lda, double vl, double vu, int il, int iu, double abstol, int* m, double* w, complex<double>* Z, int ldz, complex<double>* work, int lwork, double* rwork, int* iwork, int* ifail, int* info );
+   void heevx( char jobz, char range, char uplo, blas_int_t n, complex<double>* A, blas_int_t lda, double vl, double vu, blas_int_t il, blas_int_t iu, double abstol, blas_int_t* m, double* w, complex<double>* Z, blas_int_t ldz, complex<double>* work, blas_int_t lwork, double* rwork, blas_int_t* iwork, blas_int_t* ifail, blas_int_t* info );
 
    template< typename MT, bool SO, typename VT, bool TF >
    size_t heevx( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& w, char uplo );
@@ -16969,13 +17135,13 @@
    \code
    namespace blaze {
 
-   void gesvd( char jobu, char jobv, int m, int n, float* A, int lda, float* s, float* U, int ldu, float* V, int ldv, float* work, int lwork, int* info );
+   void gesvd( char jobu, char jobv, blas_int_t m, blas_int_t n, float* A, blas_int_t lda, float* s, float* U, blas_int_t ldu, float* V, blas_int_t ldv, float* work, blas_int_t lwork, blas_int_t* info );
 
-   void gesvd( char jobu, char jobv, int m, int n, double* A, int lda, double* s, double* U, int ldu, double* V, int ldv, double* work, int lwork, int* info );
+   void gesvd( char jobu, char jobv, blas_int_t m, blas_int_t n, double* A, blas_int_t lda, double* s, double* U, blas_int_t ldu, double* V, blas_int_t ldv, double* work, blas_int_t lwork, blas_int_t* info );
 
-   void gesvd( char jobu, char jobv, int m, int n, complex<float>* A, int lda, float* s, complex<float>* U, int ldu, complex<float>* V, int ldv, complex<float>* work, int lwork, float* rwork, int* info );
+   void gesvd( char jobu, char jobv, blas_int_t m, blas_int_t n, complex<float>* A, blas_int_t lda, float* s, complex<float>* U, blas_int_t ldu, complex<float>* V, blas_int_t ldv, complex<float>* work, blas_int_t lwork, float* rwork, blas_int_t* info );
 
-   void gesvd( char jobu, char jobv, int m, int n, complex<double>* A, int lda, double* s, complex<double>* U, int ldu, complex<double>* V, int ldv, complex<double>* work, int lwork, double* rwork, int* info );
+   void gesvd( char jobu, char jobv, blas_int_t m, blas_int_t n, complex<double>* A, blas_int_t lda, double* s, complex<double>* U, blas_int_t ldu, complex<double>* V, blas_int_t ldv, complex<double>* work, blas_int_t lwork, double* rwork, blas_int_t* info );
 
    template< typename MT, bool SO, typename VT, bool TF >
    void gesvd( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& s, char jobu, char jobv );
@@ -17001,13 +17167,13 @@
    \code
    namespace blaze {
 
-   void gesdd( char jobz, int m, int n, float* A, int lda, float* s, float* U, int ldu, float* V, int ldv, float* work, int lwork, int* iwork, int* info );
+   void gesdd( char jobz, blas_int_t m, blas_int_t n, float* A, blas_int_t lda, float* s, float* U, blas_int_t ldu, float* V, blas_int_t ldv, float* work, blas_int_t lwork, blas_int_t* iwork, blas_int_t* info );
 
-   void gesdd( char jobz, int m, int n, double* A, int lda, double* s, double* U, int ldu, double* V, int ldv, double* work, int lwork, int* iwork, int* info );
+   void gesdd( char jobz, blas_int_t m, blas_int_t n, double* A, blas_int_t lda, double* s, double* U, blas_int_t ldu, double* V, blas_int_t ldv, double* work, blas_int_t lwork, blas_int_t* iwork, blas_int_t* info );
 
-   void gesdd( char jobz, int m, int n, complex<float>* A, int lda, float* s, complex<float>* U, int ldu, complex<float>* V, int ldv, complex<float>* work, int lwork, float* rwork, int* iwork, int* info );
+   void gesdd( char jobz, blas_int_t m, blas_int_t n, complex<float>* A, blas_int_t lda, float* s, complex<float>* U, blas_int_t ldu, complex<float>* V, blas_int_t ldv, complex<float>* work, blas_int_t lwork, float* rwork, blas_int_t* iwork, blas_int_t* info );
 
-   void gesdd( char jobz, int m, int n, complex<double>* A, int lda, double* s, complex<double>* U, int ldu, complex<double>* V, int ldv, complex<double>* work, int lwork, double* rwork, int* iwork, int* info );
+   void gesdd( char jobz, blas_int_t m, blas_int_t n, complex<double>* A, blas_int_t lda, double* s, complex<double>* U, blas_int_t ldu, complex<double>* V, blas_int_t ldv, complex<double>* work, blas_int_t lwork, double* rwork, blas_int_t* iwork, blas_int_t* info );
 
    template< typename MT, bool SO, typename VT, bool TF >
    void gesdd( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& s );
@@ -17043,13 +17209,13 @@
    \code
    namespace blaze {
 
-   void gesvdx( char jobu, char jobv, char range, int m, int n, float* A, int lda, float vl, float vu, int il, int iu, int* ns, float* s, float* U, int ldu, float* V, int ldv, float* work, int lwork, int* iwork, int* info );
+   void gesvdx( char jobu, char jobv, char range, blas_int_t m, blas_int_t n, float* A, blas_int_t lda, float vl, float vu, blas_int_t il, blas_int_t iu, blas_int_t* ns, float* s, float* U, blas_int_t ldu, float* V, blas_int_t ldv, float* work, blas_int_t lwork, blas_int_t* iwork, blas_int_t* info );
 
-   void gesvdx( char jobu, char jobv, char range, int m, int n, double* A, int lda, double vl, double vu, int il, int iu, int* ns, double* s, double* U, int ldu, double* V, int ldv, double* work, int lwork, int* iwork, int* info );
+   void gesvdx( char jobu, char jobv, char range, blas_int_t m, blas_int_t n, double* A, blas_int_t lda, double vl, double vu, blas_int_t il, blas_int_t iu, blas_int_t* ns, double* s, double* U, blas_int_t ldu, double* V, blas_int_t ldv, double* work, blas_int_t lwork, blas_int_t* iwork, blas_int_t* info );
 
-   void gesvdx( char jobu, char jobv, char range, int m, int n, complex<float>* A, int lda, float vl, float vu, int il, int iu, int* ns, float* s, complex<float>* U, int ldu, complex<float>* V, int ldv, complex<float>* work, int lwork, float* rwork, int* iwork, int* info );
+   void gesvdx( char jobu, char jobv, char range, blas_int_t m, blas_int_t n, complex<float>* A, blas_int_t lda, float vl, float vu, blas_int_t il, blas_int_t iu, blas_int_t* ns, float* s, complex<float>* U, blas_int_t ldu, complex<float>* V, blas_int_t ldv, complex<float>* work, blas_int_t lwork, float* rwork, blas_int_t* iwork, blas_int_t* info );
 
-   void gesvdx( char jobu, char jobv, char range, int m, int n, complex<double>* A, int lda, double vl, double vu, int il, int iu, int* ns, double* s, complex<double>* U, int ldu, complex<double>* V, int ldv, complex<double>* work, int lwork, double* rwork, int* iwork, int* info );
+   void gesvdx( char jobu, char jobv, char range, blas_int_t m, blas_int_t n, complex<double>* A, blas_int_t lda, double vl, double vu, blas_int_t il, blas_int_t iu, blas_int_t* ns, double* s, complex<double>* U, blas_int_t ldu, complex<double>* V, blas_int_t ldv, complex<double>* work, blas_int_t lwork, double* rwork, blas_int_t* iwork, blas_int_t* info );
 
    template< typename MT, bool SO, typename VT, bool TF >
    size_t gesvdx( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& s );
