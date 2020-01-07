@@ -14355,6 +14355,10 @@
 // symbol manually before including any \b Blaze header file:
 
    \code
+   g++ ... -DBLAZE_DEFAULT_TRANSPOSE_FLAG=blaze::columnVector ...
+   \endcode
+
+   \code
    #define BLAZE_DEFAULT_TRANSPOSE_FLAG blaze::columnVector
    #include <blaze/Blaze.h>
    \endcode
@@ -14381,6 +14385,10 @@
 
 // Alternatively the default storage order can be specified via command line or by defining this
 // symbol manually before including any \b Blaze header file:
+
+   \code
+   g++ ... -DBLAZE_DEFAULT_STORAGE_ORDER=blaze::rowMajor ...
+   \endcode
 
    \code
    #define BLAZE_DEFAULT_STORAGE_ORDER blaze::rowMajor
@@ -14428,6 +14436,10 @@
 // manually before including any \b Blaze header file:
 
    \code
+   g++ ... -DBLAZE_BLAS_MODE=1 -DBLAZE_BLAS_IS_64BIT=1 -DBLAZE_BLAS_IS_PARALLEL=1 -DBLAZE_BLAS_INCLUDE_FILE='<cblas.h>' ...
+   \endcode
+
+   \code
    #define BLAZE_BLAS_MODE 1
    #define BLAZE_BLAS_IS_64BIT 1
    #define BLAZE_BLAS_IS_PARALLEL 1
@@ -14455,7 +14467,11 @@
 // before including any \b Blaze header file:
 
    \code
-   #define BLAZE_CACHE_SIZE 3145728UL
+   g++ ... -DBLAZE_CACHE_SIZE=3145728 ...
+   \endcode
+
+   \code
+   #define BLAZE_CACHE_SIZE 3145728
    #include <blaze/Blaze.h>
    \endcode
 
@@ -14474,6 +14490,10 @@
 
 // It is also possible to (de-)activate vectorization via command line or by defining this symbol
 // manually before including any \b Blaze header file:
+
+   \code
+   g++ ... -DBLAZE_USE_VECTORIZATION=1 ...
+   \endcode
 
    \code
    #define BLAZE_USE_VECTORIZATION 1
@@ -14525,6 +14545,10 @@
 // symbol manually before including any \b Blaze header file:
 
    \code
+   g++ ... -DBLAZE_USE_PADDING=1 ...
+   \endcode
+
+   \code
    #define BLAZE_USE_PADDING 1
    #include <blaze/Blaze.h>
    \endcode
@@ -14552,6 +14576,10 @@
 
 // Alternatively streaming can be (de-)activated via command line or by defining this symbol
 // manually before including any \b Blaze header file:
+
+   \code
+   g++ ... -DBLAZE_USE_STREAMING=1 ...
+   \endcode
 
    \code
    #define BLAZE_USE_STREAMING 1
