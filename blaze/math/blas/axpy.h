@@ -62,7 +62,7 @@ namespace blaze {
 /*!\name BLAS wrapper functions (axpy) */
 //@{
 template< typename VT1, bool TF1, typename VT2, bool TF2, typename ST >
-void axpy( const DenseVector<VT1,TF1>& x, const DenseVector<VT2,TF2>& y, ST alpha );
+void axpy( DenseVector<VT1,TF1>& x, const DenseVector<VT2,TF2>& y, ST alpha );
 //@}
 //*************************************************************************************************
 

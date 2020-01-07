@@ -72,7 +72,6 @@ ElementType_t<VT1> dotc( const DenseVector<VT1,TF1>& x, const DenseVector<VT2,TF
 
 
 //*************************************************************************************************
-#if BLAZE_BLAS_MODE
 /*!\brief BLAS kernel for a dense vector complex conjugate dot product (\f$ s=\vec{x}*\vec{y} \f$).
 // \ingroup blas
 //
@@ -105,7 +104,6 @@ ElementType_t<VT1> dotc( const DenseVector<VT1,TF1>& x, const DenseVector<VT2,TF
 
    return dotc( n, (~x).data(), 1, (~y).data(), 1 );
 }
-#endif
 //*************************************************************************************************
 
 } // namespace blaze

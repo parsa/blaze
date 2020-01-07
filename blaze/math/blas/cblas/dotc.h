@@ -41,6 +41,7 @@
 //*************************************************************************************************
 
 #include <blaze/math/blas/Types.h>
+#include <blaze/system/BLAS.h>
 #include <blaze/util/Complex.h>
 #include <blaze/util/StaticAssert.h>
 #include <blaze/util/Types.h>
@@ -62,12 +63,6 @@ float sdot_( blaze::blas_int_t* n, float* x, blaze::blas_int_t* incX,
 
 double ddot_( blaze::blas_int_t* n, double* x, blaze::blas_int_t* incX,
               double* y, blaze::blas_int_t* incY );
-
-blaze::fortran_complex8 cdotc_( blaze::blas_int_t* n, float* x, blaze::blas_int_t* incX,
-                                float* y, blaze::blas_int_t* incY );
-
-blaze::fortran_complex16 zdotc_( blaze::blas_int_t* n, double* x, blaze::blas_int_t* incX,
-                                 double* y, blaze::blas_int_t* incY );
 
 }
 #endif
@@ -185,18 +180,18 @@ inline complex<float> dotc( blas_int_t n, const complex<float>* x, blas_int_t in
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<float> ) == 2UL*sizeof( float ) );
 
-#if defined(INTEL_MKL_VERSION)
-   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( blas_int_t ) );
-   BLAZE_STATIC_ASSERT( sizeof( MKL_Complex8 ) == sizeof( complex<float> ) );
-   using ET = MKL_Complex8;
+   complex<float> tmp;
+
+#ifdef OPENBLAS_VERSION
+   cblas_cdotc_sub( n, reinterpret_cast<const float*>( x ), incX,
+                    reinterpret_cast<const float*>( y ), incY,
+                    reinterpret_cast<openblas_complex_float*>( &tmp ) );
 #else
-   using ET = float;
+   cblas_cdotc_sub( n, reinterpret_cast<const float*>( x ), incX,
+                    reinterpret_cast<const float*>( y ), incY, &tmp );
 #endif
 
-   const auto tmp( cdotc_( &n, const_cast<ET*>( reinterpret_cast<const ET*>( x ) ), &incX,
-                           const_cast<ET*>( reinterpret_cast<const ET*>( y ) ), &incY ) );
-
-   return complex<float>( tmp.real, tmp.imag );
+   return tmp;
 }
 //*************************************************************************************************
 
@@ -225,18 +220,18 @@ inline complex<double> dotc( blas_int_t n, const complex<double>* x, blas_int_t 
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<double> ) == 2UL*sizeof( double ) );
 
-#if defined(INTEL_MKL_VERSION)
-   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( blas_int_t ) );
-   BLAZE_STATIC_ASSERT( sizeof( MKL_Complex16 ) == sizeof( complex<double> ) );
-   using ET = MKL_Complex16;
+   complex<double> tmp;
+
+#ifdef OPENBLAS_VERSION
+   cblas_zdotc_sub( n, reinterpret_cast<const double*>( x ), incX,
+                    reinterpret_cast<const double*>( y ), incY,
+                    reinterpret_cast<openblas_complex_double*>( &tmp ) );
 #else
-   using ET = double;
+   cblas_zdotc_sub( n, reinterpret_cast<const double*>( x ), incX,
+                    reinterpret_cast<const double*>( y ), incY, &tmp );
 #endif
 
-   const auto tmp( zdotc_( &n, const_cast<ET*>( reinterpret_cast<const ET*>( x ) ), &incX,
-                           const_cast<ET*>( reinterpret_cast<const ET*>( y ) ), &incY ) );
-
-   return complex<double>( tmp.real, tmp.imag );
+   return tmp;
 }
 //*************************************************************************************************
 

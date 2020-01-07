@@ -83,9 +83,10 @@ void trsm( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B,
 // \ingroup blas
 //
 // \param A The system matrix.
-// \param B The matrix of right-hand sides.
+// \param b The right-hand side vector.
 // \param side \c 'L' to compute \f$ A*\vec{x}=\alpha*\vec{b} \f$, \c 'R' to compute \f$ \vec{x}^T*A=\alpha*\vec{b}^T \f$.
 // \param uplo \c 'L' to use the lower triangle from \a A, \c 'U' to use the upper triangle.
+// \param diag \c 'U' in case of a unitriangular matrix, \c 'N' otherwise.
 // \param alpha The scaling factor for \f$ \vec{b} \f$.
 // \return void
 //
@@ -146,6 +147,7 @@ inline void trsm( const DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& b,
 // \param B The matrix of right-hand sides.
 // \param side \c 'L' to compute \f$ A*X=\alpha*B \f$, \c 'R' to compute \f$ X*A=\alpha*B \f$.
 // \param uplo \c 'L' to use the lower triangle from \a A, \c 'U' to use the upper triangle.
+// \param diag \c 'U' in case of a unitriangular matrix, \c 'N' otherwise.
 // \param alpha The scaling factor for \f$ B \f$.
 // \return void
 //
