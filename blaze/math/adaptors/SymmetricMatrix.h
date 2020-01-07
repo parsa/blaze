@@ -1049,7 +1049,7 @@ struct DeclHermTrait< SymmetricMatrix<MT,SO,DF,NF> >
 template< typename MT, bool SO, bool DF, bool NF >
 struct DeclLowTrait< SymmetricMatrix<MT,SO,DF,NF> >
 {
-   using Type = DiagonalMatrix<MT,SO,NF>;
+   using Type = DiagonalMatrix<MT,SO,DF>;
 };
 /*! \endcond */
 //*************************************************************************************************
