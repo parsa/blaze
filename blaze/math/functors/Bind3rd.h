@@ -112,6 +112,7 @@ struct Bind3rd
    /*!\brief Returns the result of the wrapped operation for the given SIMD vectors.
    //
    // \param a1 The 1st given SIMD vector.
+   // \param a2 The 2nd given SIMD vector.
    // \param args The remaining SIMD vectors.
    // \return The result of the wrapped operation for the given SIMD vectors.
    */

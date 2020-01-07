@@ -109,7 +109,7 @@ struct Bind1st
    //**********************************************************************************************
    /*!\brief Returns the result of the wrapped operation for the given SIMD vectors.
    //
-   // \param a The remaining SIMD vectors.
+   // \param args The remaining SIMD vectors.
    // \return The result of the wrapped operation for the given SIMD vectors.
    */
    template< typename... Args >

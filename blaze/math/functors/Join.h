@@ -129,7 +129,7 @@ struct Join
    //**********************************************************************************************
    /*!\brief Returns the result of the wrapped operation for the given SIMD vectors.
    //
-   // \param a The remaining SIMD vectors.
+   // \param args The given SIMD vectors.
    // \return The result of the wrapped operation for the given SIMD vectors.
    */
    template< typename... Args >

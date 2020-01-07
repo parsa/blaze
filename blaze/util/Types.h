@@ -194,8 +194,8 @@ using fortran_charlen_t = size_t;
 */
 struct fortran_complex8
 {
-   float real;
-   float imag;
+   float real;  //!< The real part of the complex number.
+   float imag;  //!< The imaginary part of the complex number.
 };
 //*************************************************************************************************
 
@@ -206,8 +206,8 @@ struct fortran_complex8
 */
 struct fortran_complex16
 {
-   double real;
-   double imag;
+   double real;  //!< The real part of the complex number.
+   double imag;  //!< The imaginary part of the complex number.
 };
 //*************************************************************************************************
 
