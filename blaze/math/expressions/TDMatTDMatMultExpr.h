@@ -64,6 +64,7 @@
 #include <blaze/math/functors/DeclUpp.h>
 #include <blaze/math/functors/Noop.h>
 #include <blaze/math/shims/Conjugate.h>
+#include <blaze/math/shims/PrevMultiple.h>
 #include <blaze/math/shims/Reset.h>
 #include <blaze/math/shims/Serial.h>
 #include <blaze/math/SIMD.h>
@@ -918,8 +919,8 @@ class TDMatTDMatMultExpr
 
       BLAZE_INTERNAL_ASSERT( !( SYM || HERM || LOW || UPP ) || ( M == N ), "Broken invariant detected" );
 
-      const size_t ipos( remainder ? ( M & size_t(-SIMDSIZE) ) : M );
-      BLAZE_INTERNAL_ASSERT( !remainder || ( M - ( M % SIMDSIZE ) ) == ipos, "Invalid end calculation" );
+      const size_t ipos( remainder ? prevMultiple( M, SIMDSIZE ) : M );
+      BLAZE_INTERNAL_ASSERT( ipos <= M, "Invalid end calculation" );
 
       size_t i( 0UL );
 
@@ -2241,7 +2242,8 @@ class TDMatTDMatMultExpr
             BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
 
             const size_t inum( iend - ibegin );
-            const size_t ipos( ibegin + ( inum & size_t(-2) ) );
+            const size_t ipos( ibegin + prevMultiple( inum, 2UL ) );
+            BLAZE_INTERNAL_ASSERT( ipos <= ibegin+inum, "Invalid end calculation" );
 
             for( size_t i=ibegin; i<ipos; i+=2UL ) {
                C(i    ,j) += A(i    ,k) * B(k,j);
@@ -2292,7 +2294,8 @@ class TDMatTDMatMultExpr
          BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
 
          const size_t inum( iend - ibegin );
-         const size_t ipos( ibegin + ( inum & size_t(-2) ) );
+         const size_t ipos( ibegin + prevMultiple( inum, 2UL ) );
+         BLAZE_INTERNAL_ASSERT( ipos <= ibegin+inum, "Invalid end calculation" );
 
          for( size_t i=ibegin; i<ipos; i+=2UL ) {
             C(i    ,j) += A(i    ,j) * B(j,j);
@@ -2342,7 +2345,8 @@ class TDMatTDMatMultExpr
          BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
 
          const size_t inum( iend - ibegin );
-         const size_t ipos( ibegin + ( inum & size_t(-2) ) );
+         const size_t ipos( ibegin + prevMultiple( inum, 2UL ) );
+         BLAZE_INTERNAL_ASSERT( ipos <= ibegin+inum, "Invalid end calculation" );
 
          for( size_t i=ibegin; i<ipos; i+=2UL ) {
             C(i    ,j) += A(i    ,i    ) * B(i    ,j);
@@ -2487,8 +2491,8 @@ class TDMatTDMatMultExpr
 
       BLAZE_INTERNAL_ASSERT( !( LOW || UPP ) || ( M == N ), "Broken invariant detected" );
 
-      const size_t ipos( remainder ? ( M & size_t(-SIMDSIZE) ) : M );
-      BLAZE_INTERNAL_ASSERT( !remainder || ( M - ( M % SIMDSIZE ) ) == ipos, "Invalid end calculation" );
+      const size_t ipos( remainder ? prevMultiple( M, SIMDSIZE ) : M );
+      BLAZE_INTERNAL_ASSERT( ipos <= M, "Invalid end calculation" );
 
       size_t i( 0UL );
 
@@ -3379,7 +3383,8 @@ class TDMatTDMatMultExpr
             BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
 
             const size_t inum( iend - ibegin );
-            const size_t ipos( ibegin + ( inum & size_t(-2) ) );
+            const size_t ipos( ibegin + prevMultiple( inum, 2UL ) );
+            BLAZE_INTERNAL_ASSERT( ipos <= ibegin+inum, "Invalid end calculation" );
 
             for( size_t i=ibegin; i<ipos; i+=2UL ) {
                C(i    ,j) -= A(i    ,k) * B(k,j);
@@ -3430,7 +3435,8 @@ class TDMatTDMatMultExpr
          BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
 
          const size_t inum( iend - ibegin );
-         const size_t ipos( ibegin + ( inum & size_t(-2) ) );
+         const size_t ipos( ibegin + prevMultiple( inum, 2UL ) );
+         BLAZE_INTERNAL_ASSERT( ipos <= ibegin+inum, "Invalid end calculation" );
 
          for( size_t i=ibegin; i<ipos; i+=2UL ) {
             C(i    ,j) -= A(i    ,j) * B(j,j);
@@ -3480,7 +3486,8 @@ class TDMatTDMatMultExpr
          BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
 
          const size_t inum( iend - ibegin );
-         const size_t ipos( ibegin + ( inum & size_t(-2) ) );
+         const size_t ipos( ibegin + prevMultiple( inum, 2UL ) );
+         BLAZE_INTERNAL_ASSERT( ipos <= ibegin+inum, "Invalid end calculation" );
 
          for( size_t i=ibegin; i<ipos; i+=2UL ) {
             C(i    ,j) -= A(i    ,i    ) * B(i    ,j);
@@ -3625,8 +3632,8 @@ class TDMatTDMatMultExpr
 
       BLAZE_INTERNAL_ASSERT( !( LOW || UPP ) || ( M == N ), "Broken invariant detected" );
 
-      const size_t ipos( remainder ? ( M & size_t(-SIMDSIZE) ) : M );
-      BLAZE_INTERNAL_ASSERT( !remainder || ( M - ( M % SIMDSIZE ) ) == ipos, "Invalid end calculation" );
+      const size_t ipos( remainder ? prevMultiple( M, SIMDSIZE ) : M );
+      BLAZE_INTERNAL_ASSERT( ipos <= M, "Invalid end calculation" );
 
       size_t i( 0UL );
 
@@ -5575,8 +5582,8 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
 
       BLAZE_INTERNAL_ASSERT( !( SYM || HERM || LOW || UPP ) || ( M == N ), "Broken invariant detected" );
 
-      const size_t ipos( remainder ? ( M & size_t(-SIMDSIZE) ) : M );
-      BLAZE_INTERNAL_ASSERT( !remainder || ( M - ( M % SIMDSIZE ) ) == ipos, "Invalid end calculation" );
+      const size_t ipos( remainder ? prevMultiple( M, SIMDSIZE ) : M );
+      BLAZE_INTERNAL_ASSERT( ipos <= M, "Invalid end calculation" );
 
       const SIMDType factor( set( scalar ) );
 
@@ -6909,7 +6916,8 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
          BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
 
          const size_t inum( iend - ibegin );
-         const size_t ipos( ibegin + ( inum & size_t(-2) ) );
+         const size_t ipos( ibegin + prevMultiple( inum, 2UL ) );
+         BLAZE_INTERNAL_ASSERT( ipos <= ibegin+inum, "Invalid end calculation" );
 
          for( size_t i=ibegin; i<ipos; i+=2UL ) {
             C(i    ,j) += A(i    ,j) * B(j,j) * scalar;
@@ -6959,7 +6967,8 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
          BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
 
          const size_t inum( iend - ibegin );
-         const size_t ipos( ibegin + ( inum & size_t(-2) ) );
+         const size_t ipos( ibegin + prevMultiple( inum, 2UL ) );
+         BLAZE_INTERNAL_ASSERT( ipos <= ibegin+inum, "Invalid end calculation" );
 
          for( size_t i=ibegin; i<ipos; i+=2UL ) {
             C(i    ,j) += A(i    ,i    ) * B(i    ,j) * scalar;
@@ -7104,8 +7113,8 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
 
       BLAZE_INTERNAL_ASSERT( !( LOW || UPP ) || ( M == N ), "Broken invariant detected" );
 
-      const size_t ipos( remainder ? ( M & size_t(-SIMDSIZE) ) : M );
-      BLAZE_INTERNAL_ASSERT( !remainder || ( M - ( M % SIMDSIZE ) ) == ipos, "Invalid end calculation" );
+      const size_t ipos( remainder ? prevMultiple( M, SIMDSIZE ) : M );
+      BLAZE_INTERNAL_ASSERT( ipos <= M, "Invalid end calculation" );
 
       const SIMDType factor( set( scalar ) );
 
@@ -8137,7 +8146,8 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
          BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
 
          const size_t inum( iend - ibegin );
-         const size_t ipos( ibegin + ( inum & size_t(-2) ) );
+         const size_t ipos( ibegin + prevMultiple( inum, 2UL ) );
+         BLAZE_INTERNAL_ASSERT( ipos <= ibegin+inum, "Invalid end calculation" );
 
          for( size_t i=ibegin; i<ipos; i+=2UL ) {
             C(i    ,j) -= A(i    ,j) * B(j,j) * scalar;
@@ -8187,7 +8197,8 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
          BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
 
          const size_t inum( iend - ibegin );
-         const size_t ipos( ibegin + ( inum & size_t(-2) ) );
+         const size_t ipos( ibegin + prevMultiple( inum, 2UL ) );
+         BLAZE_INTERNAL_ASSERT( ipos <= ibegin+inum, "Invalid end calculation" );
 
          for( size_t i=ibegin; i<ipos; i+=2UL ) {
             C(i    ,j) -= A(i    ,i    ) * B(i    ,j) * scalar;
@@ -8332,8 +8343,8 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
 
       BLAZE_INTERNAL_ASSERT( !( LOW || UPP ) || ( M == N ), "Broken invariant detected" );
 
-      const size_t ipos( remainder ? ( M & size_t(-SIMDSIZE) ) : M );
-      BLAZE_INTERNAL_ASSERT( !remainder || ( M - ( M % SIMDSIZE ) ) == ipos, "Invalid end calculation" );
+      const size_t ipos( remainder ? prevMultiple( M, SIMDSIZE ) : M );
+      BLAZE_INTERNAL_ASSERT( ipos <= M, "Invalid end calculation" );
 
       const SIMDType factor( set( scalar ) );
 

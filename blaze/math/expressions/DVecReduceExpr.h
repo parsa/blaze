@@ -46,6 +46,7 @@
 #include <blaze/math/functors/Max.h>
 #include <blaze/math/functors/Min.h>
 #include <blaze/math/functors/Mult.h>
+#include <blaze/math/shims/PrevMultiple.h>
 #include <blaze/math/SIMD.h>
 #include <blaze/math/typetraits/HasLoad.h>
 #include <blaze/math/typetraits/IsPadded.h>
@@ -191,8 +192,8 @@ inline auto dvecreduce( const DenseVector<VT,TF>& dv, OP op )
 
    if( N >= SIMDSIZE )
    {
-      const size_t ipos( N & size_t(-SIMDSIZE) );
-      BLAZE_INTERNAL_ASSERT( ( N - ( N % SIMDSIZE ) ) == ipos, "Invalid end calculation" );
+      const size_t ipos( prevMultiple( N, SIMDSIZE ) );
+      BLAZE_INTERNAL_ASSERT( ipos <= N, "Invalid end calculation" );
 
       SIMDTrait_t<ET> xmm1( tmp.load(0UL) );
 
@@ -266,8 +267,8 @@ inline auto dvecreduce( const DenseVector<VT,TF>& dv, Add /*op*/ )
 
    if( !remainder || N >= SIMDSIZE )
    {
-      const size_t ipos( ( remainder )?( N & size_t(-SIMDSIZE) ):( N ) );
-      BLAZE_INTERNAL_ASSERT( !remainder || ( N - ( N % SIMDSIZE ) ) == ipos, "Invalid end calculation" );
+      const size_t ipos( remainder ? prevMultiple( N, SIMDSIZE ) : N );
+      BLAZE_INTERNAL_ASSERT( ipos <= N, "Invalid end calculation" );
 
       SIMDTrait_t<ET> xmm1( tmp.load(0UL) );
 

@@ -61,6 +61,7 @@
 #include <blaze/math/functors/Div.h>
 #include <blaze/math/functors/Mult.h>
 #include <blaze/math/functors/Sub.h>
+#include <blaze/math/shims/PrevMultiple.h>
 #include <blaze/math/shims/Serial.h>
 #include <blaze/math/SIMD.h>
 #include <blaze/math/traits/MapTrait.h>
@@ -722,8 +723,8 @@ class DVecDVecOuterExpr
       const size_t M( A.rows() );
       const size_t N( A.columns() );
 
-      const size_t jpos( N & size_t(-2) );
-      BLAZE_INTERNAL_ASSERT( ( N - ( N % 2UL ) ) == jpos, "Invalid end calculation" );
+      const size_t jpos( prevMultiple( N, 2UL ) );
+      BLAZE_INTERNAL_ASSERT( jpos <= N, "Invalid end calculation" );
 
       for( size_t i=0UL; i<M; ++i ) {
          for( size_t j=0UL; j<jpos; j+=2UL ) {
@@ -764,8 +765,8 @@ class DVecDVecOuterExpr
       const size_t M( A.rows() );
       const size_t N( A.columns() );
 
-      const size_t jpos( remainder ? ( N & size_t(-SIMDSIZE) ) : N );
-      BLAZE_INTERNAL_ASSERT( !remainder || ( N - ( N % SIMDSIZE ) ) == jpos, "Invalid end calculation" );
+      const size_t jpos( remainder ? prevMultiple( N, SIMDSIZE ) : N );
+      BLAZE_INTERNAL_ASSERT( jpos <= N, "Invalid end calculation" );
 
       auto xbegin( x.begin() );
 
@@ -850,8 +851,8 @@ class DVecDVecOuterExpr
       const size_t M( A.rows() );
       const size_t N( A.columns() );
 
-      const size_t ipos( M & size_t(-2) );
-      BLAZE_INTERNAL_ASSERT( ( M - ( M % 2UL ) ) == ipos, "Invalid end calculation" );
+      const size_t ipos( prevMultiple( M, 2UL ) );
+      BLAZE_INTERNAL_ASSERT( ipos <= M, "Invalid end calculation" );
 
       for( size_t j=0UL; j<N; ++j ) {
          for( size_t i=0UL; i<ipos; i+=2UL ) {
@@ -892,8 +893,8 @@ class DVecDVecOuterExpr
       const size_t M( A.rows() );
       const size_t N( A.columns() );
 
-      const size_t ipos( remainder ? ( M & size_t(-SIMDSIZE) ) : M );
-      BLAZE_INTERNAL_ASSERT( !remainder || ( M - ( M % SIMDSIZE ) ) == ipos, "Invalid end calculation" );
+      const size_t ipos( remainder ? prevMultiple( M, SIMDSIZE ) : M );
+      BLAZE_INTERNAL_ASSERT( ipos <= M, "Invalid end calculation" );
 
       auto ybegin( y.begin() );
 
@@ -1014,8 +1015,8 @@ class DVecDVecOuterExpr
       const size_t M( A.rows() );
       const size_t N( A.columns() );
 
-      const size_t jpos( N & size_t(-2) );
-      BLAZE_INTERNAL_ASSERT( ( N - ( N % 2UL ) ) == jpos, "Invalid end calculation" );
+      const size_t jpos( prevMultiple( N, 2UL ) );
+      BLAZE_INTERNAL_ASSERT( jpos <= N, "Invalid end calculation" );
 
       for( size_t i=0UL; i<M; ++i ) {
          for( size_t j=0UL; j<jpos; j+=2UL ) {
@@ -1056,8 +1057,8 @@ class DVecDVecOuterExpr
       const size_t M( A.rows() );
       const size_t N( A.columns() );
 
-      const size_t jpos( remainder ? ( N & size_t(-SIMDSIZE) ) : N );
-      BLAZE_INTERNAL_ASSERT( !remainder || ( N - ( N % SIMDSIZE ) ) == jpos, "Invalid end calculation" );
+      const size_t jpos( remainder ? prevMultiple( N, SIMDSIZE ) : N );
+      BLAZE_INTERNAL_ASSERT( jpos <= N, "Invalid end calculation" );
 
       auto xbegin( x.begin() );
 
@@ -1142,8 +1143,8 @@ class DVecDVecOuterExpr
       const size_t M( A.rows() );
       const size_t N( A.columns() );
 
-      const size_t ipos( M & size_t(-2) );
-      BLAZE_INTERNAL_ASSERT( ( M - ( M % 2UL ) ) == ipos, "Invalid end calculation" );
+      const size_t ipos( prevMultiple( M, 2UL ) );
+      BLAZE_INTERNAL_ASSERT( ipos <= M, "Invalid end calculation" );
 
       for( size_t j=0UL; j<N; ++j ) {
          for( size_t i=0UL; i<ipos; i+=2UL ) {
@@ -1184,8 +1185,8 @@ class DVecDVecOuterExpr
       const size_t M( A.rows() );
       const size_t N( A.columns() );
 
-      const size_t ipos( remainder ? ( M & size_t(-SIMDSIZE) ) : M );
-      BLAZE_INTERNAL_ASSERT( !remainder || ( M - ( M % SIMDSIZE ) ) == ipos, "Invalid end calculation" );
+      const size_t ipos( remainder ? prevMultiple( M, SIMDSIZE ) : M );
+      BLAZE_INTERNAL_ASSERT( ipos <= M, "Invalid end calculation" );
 
       auto ybegin( y.begin() );
 
@@ -1274,8 +1275,8 @@ class DVecDVecOuterExpr
       const size_t M( A.rows() );
       const size_t N( A.columns() );
 
-      const size_t jpos( N & size_t(-2) );
-      BLAZE_INTERNAL_ASSERT( ( N - ( N % 2UL ) ) == jpos, "Invalid end calculation" );
+      const size_t jpos( prevMultiple( N, 2UL ) );
+      BLAZE_INTERNAL_ASSERT( jpos <= N, "Invalid end calculation" );
 
       for( size_t i=0UL; i<M; ++i ) {
          for( size_t j=0UL; j<jpos; j+=2UL ) {
@@ -1316,8 +1317,8 @@ class DVecDVecOuterExpr
       const size_t M( A.rows() );
       const size_t N( A.columns() );
 
-      const size_t jpos( remainder ? ( N & size_t(-SIMDSIZE) ) : N );
-      BLAZE_INTERNAL_ASSERT( !remainder || ( N - ( N % SIMDSIZE ) ) == jpos, "Invalid end calculation" );
+      const size_t jpos( remainder ? prevMultiple( N, SIMDSIZE ) : N );
+      BLAZE_INTERNAL_ASSERT( jpos <= N, "Invalid end calculation" );
 
       auto xbegin( x.begin() );
 
@@ -1402,8 +1403,8 @@ class DVecDVecOuterExpr
       const size_t M( A.rows() );
       const size_t N( A.columns() );
 
-      const size_t ipos( M & size_t(-2) );
-      BLAZE_INTERNAL_ASSERT( ( M - ( M % 2UL ) ) == ipos, "Invalid end calculation" );
+      const size_t ipos( prevMultiple( M, 2UL ) );
+      BLAZE_INTERNAL_ASSERT( ipos <= M, "Invalid end calculation" );
 
       for( size_t j=0UL; j<N; ++j ) {
          for( size_t i=0UL; i<ipos; i+=2UL ) {
@@ -1444,8 +1445,8 @@ class DVecDVecOuterExpr
       const size_t M( A.rows() );
       const size_t N( A.columns() );
 
-      const size_t ipos( remainder ? ( M & size_t(-SIMDSIZE) ) : M );
-      BLAZE_INTERNAL_ASSERT( !remainder || ( M - ( M % SIMDSIZE ) ) == ipos, "Invalid end calculation" );
+      const size_t ipos( remainder ? prevMultiple( M, SIMDSIZE ) : M );
+      BLAZE_INTERNAL_ASSERT( ipos <= M, "Invalid end calculation" );
 
       auto ybegin( y.begin() );
 
@@ -1534,8 +1535,8 @@ class DVecDVecOuterExpr
       const size_t M( A.rows() );
       const size_t N( A.columns() );
 
-      const size_t jpos( N & size_t(-2) );
-      BLAZE_INTERNAL_ASSERT( ( N - ( N % 2UL ) ) == jpos, "Invalid end calculation" );
+      const size_t jpos( prevMultiple( N, 2UL ) );
+      BLAZE_INTERNAL_ASSERT( jpos <= N, "Invalid end calculation" );
 
       for( size_t i=0UL; i<M; ++i ) {
          for( size_t j=0UL; j<jpos; j+=2UL ) {
@@ -1576,8 +1577,8 @@ class DVecDVecOuterExpr
       const size_t M( A.rows() );
       const size_t N( A.columns() );
 
-      const size_t jpos( remainder ? ( N & size_t(-SIMDSIZE) ) : N );
-      BLAZE_INTERNAL_ASSERT( !remainder || ( N - ( N % SIMDSIZE ) ) == jpos, "Invalid end calculation" );
+      const size_t jpos( remainder ? prevMultiple( N, SIMDSIZE ) : N );
+      BLAZE_INTERNAL_ASSERT( jpos <= N, "Invalid end calculation" );
 
       auto xbegin( x.begin() );
 
@@ -1662,8 +1663,8 @@ class DVecDVecOuterExpr
       const size_t M( A.rows() );
       const size_t N( A.columns() );
 
-      const size_t ipos( M & size_t(-2) );
-      BLAZE_INTERNAL_ASSERT( ( M - ( M % 2UL ) ) == ipos, "Invalid end calculation" );
+      const size_t ipos( prevMultiple( M, 2UL ) );
+      BLAZE_INTERNAL_ASSERT( ipos <= M, "Invalid end calculation" );
 
       for( size_t j=0UL; j<N; ++j ) {
          for( size_t i=0UL; i<ipos; i+=2UL ) {
@@ -1704,8 +1705,8 @@ class DVecDVecOuterExpr
       const size_t M( A.rows() );
       const size_t N( A.columns() );
 
-      const size_t ipos( remainder ? ( M & size_t(-SIMDSIZE) ) : M );
-      BLAZE_INTERNAL_ASSERT( !remainder || ( M - ( M % SIMDSIZE ) ) == ipos, "Invalid end calculation" );
+      const size_t ipos( remainder ? prevMultiple( M, SIMDSIZE ) : M );
+      BLAZE_INTERNAL_ASSERT( ipos <= M, "Invalid end calculation" );
 
       auto ybegin( y.begin() );
 

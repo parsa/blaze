@@ -63,6 +63,7 @@
 #include <blaze/math/functors/Noop.h>
 #include <blaze/math/shims/Conjugate.h>
 #include <blaze/math/shims/IsDefault.h>
+#include <blaze/math/shims/PrevMultiple.h>
 #include <blaze/math/shims/Reset.h>
 #include <blaze/math/shims/Serial.h>
 #include <blaze/math/traits/DeclDiagTrait.h>
@@ -631,8 +632,8 @@ class TDMatSMatMultExpr
          const auto end( B.end(j) );
 
          const size_t nonzeros( B.nonZeros(j) );
-         const size_t kpos( nonzeros & size_t(-4) );
-         BLAZE_INTERNAL_ASSERT( ( nonzeros - ( nonzeros % 4UL ) ) == kpos, "Invalid end calculation" );
+         const size_t kpos( prevMultiple( nonzeros, 4UL ) );
+         BLAZE_INTERNAL_ASSERT( kpos <= nonzeros, "Invalid end calculation" );
 
          for( size_t k=0UL; k<kpos; k+=4UL )
          {
@@ -666,8 +667,8 @@ class TDMatSMatMultExpr
             BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
 
             const size_t inum( iend - ibegin );
-            const size_t ipos( ibegin + ( inum & size_t(-4) ) );
-            BLAZE_INTERNAL_ASSERT( ( ibegin + inum - ( inum % 4UL ) ) == ipos, "Invalid end calculation" );
+            const size_t ipos( ibegin + prevMultiple( inum, 4UL ) );
+            BLAZE_INTERNAL_ASSERT( ipos <= ibegin+inum, "Invalid end calculation" );
 
             size_t i( ibegin );
 
@@ -717,8 +718,8 @@ class TDMatSMatMultExpr
             BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
 
             const size_t inum( iend - ibegin );
-            const size_t ipos( ibegin + ( inum & size_t(-4) ) );
-            BLAZE_INTERNAL_ASSERT( ( ibegin + inum - ( inum % 4UL ) ) == ipos, "Invalid end calculation" );
+            const size_t ipos( ibegin + prevMultiple( inum, 4UL ) );
+            BLAZE_INTERNAL_ASSERT( ipos <= ibegin+inum, "Invalid end calculation" );
 
             size_t i( ibegin );
 
@@ -991,8 +992,8 @@ class TDMatSMatMultExpr
                BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
 
                const size_t inum( iend - ibegin );
-               const size_t ipos( ibegin + ( inum & size_t(-4) ) );
-               BLAZE_INTERNAL_ASSERT( ( ibegin + inum - ( inum % 4UL ) ) == ipos, "Invalid end calculation" );
+               const size_t ipos( ibegin + prevMultiple( inum, 4UL ) );
+               BLAZE_INTERNAL_ASSERT( ipos <= ibegin+inum, "Invalid end calculation" );
 
                for( i=ibegin; i<ipos; i+=4UL ) {
                   C(i    ,j1) += A(i    ,j) * element->value();
@@ -1062,8 +1063,8 @@ class TDMatSMatMultExpr
          const auto end( B.end(j) );
 
          const size_t nonzeros( B.nonZeros(j) );
-         const size_t kpos( nonzeros & size_t(-4) );
-         BLAZE_INTERNAL_ASSERT( ( nonzeros - ( nonzeros % 4UL ) ) == kpos, "Invalid end calculation" );
+         const size_t kpos( prevMultiple( nonzeros, 4UL ) );
+         BLAZE_INTERNAL_ASSERT( kpos <= nonzeros, "Invalid end calculation" );
 
          for( size_t k=0UL; k<kpos; k+=4UL )
          {
@@ -1097,8 +1098,8 @@ class TDMatSMatMultExpr
             BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
 
             const size_t inum( iend - ibegin );
-            const size_t ipos( ibegin + ( inum & size_t(-4) ) );
-            BLAZE_INTERNAL_ASSERT( ( ibegin + inum - ( inum % 4UL ) ) == ipos, "Invalid end calculation" );
+            const size_t ipos( ibegin + prevMultiple( inum, 4UL ) );
+            BLAZE_INTERNAL_ASSERT( ipos <= ibegin+inum, "Invalid end calculation" );
 
             size_t i( ibegin );
 
@@ -1148,8 +1149,8 @@ class TDMatSMatMultExpr
             BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
 
             const size_t inum( iend - ibegin );
-            const size_t ipos( ibegin + ( inum & size_t(-4) ) );
-            BLAZE_INTERNAL_ASSERT( ( ibegin + inum - ( inum % 4UL ) ) == ipos, "Invalid end calculation" );
+            const size_t ipos( ibegin + prevMultiple( inum, 4UL ) );
+            BLAZE_INTERNAL_ASSERT( ipos <= ibegin+inum, "Invalid end calculation" );
 
             size_t i( ibegin );
 
@@ -1376,8 +1377,8 @@ class TDMatSMatMultExpr
                BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
 
                const size_t inum( iend - ibegin );
-               const size_t ipos( ibegin + ( inum & size_t(-4) ) );
-               BLAZE_INTERNAL_ASSERT( ( ibegin + inum - ( inum % 4UL ) ) == ipos, "Invalid end calculation" );
+               const size_t ipos( ibegin + prevMultiple( inum, 4UL ) );
+               BLAZE_INTERNAL_ASSERT( ipos <= ibegin+inum, "Invalid end calculation" );
 
                for( i=ibegin; i<ipos; i+=4UL ) {
                   C(i    ,j1) -= A(i    ,j) * element->value();
@@ -1447,8 +1448,8 @@ class TDMatSMatMultExpr
          const auto end( B.end(j) );
 
          const size_t nonzeros( B.nonZeros(j) );
-         const size_t kpos( nonzeros & size_t(-4) );
-         BLAZE_INTERNAL_ASSERT( ( nonzeros - ( nonzeros % 4UL ) ) == kpos, "Invalid end calculation" );
+         const size_t kpos( prevMultiple( nonzeros, 4UL ) );
+         BLAZE_INTERNAL_ASSERT( kpos <= nonzeros, "Invalid end calculation" );
 
          for( size_t k=0UL; k<kpos; k+=4UL )
          {
@@ -1482,8 +1483,8 @@ class TDMatSMatMultExpr
             BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
 
             const size_t inum( iend - ibegin );
-            const size_t ipos( ibegin + ( inum & size_t(-4) ) );
-            BLAZE_INTERNAL_ASSERT( ( ibegin + inum - ( inum % 4UL ) ) == ipos, "Invalid end calculation" );
+            const size_t ipos( ibegin + prevMultiple( inum, 4UL ) );
+            BLAZE_INTERNAL_ASSERT( ipos <= ibegin+inum, "Invalid end calculation" );
 
             size_t i( ibegin );
 
@@ -1533,8 +1534,8 @@ class TDMatSMatMultExpr
             BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
 
             const size_t inum( iend - ibegin );
-            const size_t ipos( ibegin + ( inum & size_t(-4) ) );
-            BLAZE_INTERNAL_ASSERT( ( ibegin + inum - ( inum % 4UL ) ) == ipos, "Invalid end calculation" );
+            const size_t ipos( ibegin + prevMultiple( inum, 4UL ) );
+            BLAZE_INTERNAL_ASSERT( ipos <= ibegin+inum, "Invalid end calculation" );
 
             size_t i( ibegin );
 

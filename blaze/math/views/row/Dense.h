@@ -61,6 +61,7 @@
 #include <blaze/math/InitializerList.h>
 #include <blaze/math/shims/Clear.h>
 #include <blaze/math/shims/IsDefault.h>
+#include <blaze/math/shims/PrevMultiple.h>
 #include <blaze/math/shims/Reset.h>
 #include <blaze/math/SIMD.h>
 #include <blaze/math/traits/CrossTrait.h>
@@ -1700,7 +1701,9 @@ inline auto Row<MT,true,true,SF,CRAs...>::assign( const DenseVector<VT,true>& rh
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
-   const size_t jpos( (~rhs).size() & size_t(-2) );
+   const size_t jpos( prevMultiple( (~rhs).size(), 2UL ) );
+   BLAZE_INTERNAL_ASSERT( jpos <= (~rhs).size(), "Invalid end calculation" );
+
    for( size_t j=0UL; j<jpos; j+=2UL ) {
       matrix_(row(),j    ) = (~rhs)[j    ];
       matrix_(row(),j+1UL) = (~rhs)[j+1UL];
@@ -1739,8 +1742,8 @@ inline auto Row<MT,true,true,SF,CRAs...>::assign( const DenseVector<VT,true>& rh
 
    const size_t columns( size() );
 
-   const size_t jpos( ( remainder )?( columns & size_t(-SIMDSIZE) ):( columns ) );
-   BLAZE_INTERNAL_ASSERT( !remainder || ( columns - ( columns % (SIMDSIZE) ) ) == jpos, "Invalid end calculation" );
+   const size_t jpos( remainder ? prevMultiple( columns, SIMDSIZE ) : columns );
+   BLAZE_INTERNAL_ASSERT( jpos <= columns, "Invalid end calculation" );
 
    size_t j( 0UL );
    Iterator left( begin() );
@@ -1823,7 +1826,9 @@ inline auto Row<MT,true,true,SF,CRAs...>::addAssign( const DenseVector<VT,true>&
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
-   const size_t jpos( (~rhs).size() & size_t(-2) );
+   const size_t jpos( prevMultiple( (~rhs).size(), 2UL ) );
+   BLAZE_INTERNAL_ASSERT( jpos <= (~rhs).size(), "Invalid end calculation" );
+
    for( size_t j=0UL; j<jpos; j+=2UL ) {
       matrix_(row(),j    ) += (~rhs)[j    ];
       matrix_(row(),j+1UL) += (~rhs)[j+1UL];
@@ -1862,8 +1867,8 @@ inline auto Row<MT,true,true,SF,CRAs...>::addAssign( const DenseVector<VT,true>&
 
    const size_t columns( size() );
 
-   const size_t jpos( ( remainder )?( columns & size_t(-SIMDSIZE) ):( columns ) );
-   BLAZE_INTERNAL_ASSERT( !remainder || ( columns - ( columns % (SIMDSIZE) ) ) == jpos, "Invalid end calculation" );
+   const size_t jpos( remainder ? prevMultiple( columns, SIMDSIZE ) : columns );
+   BLAZE_INTERNAL_ASSERT( jpos <= columns, "Invalid end calculation" );
 
    size_t j( 0UL );
    Iterator left( begin() );
@@ -1934,7 +1939,9 @@ inline auto Row<MT,true,true,SF,CRAs...>::subAssign( const DenseVector<VT,true>&
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
-   const size_t jpos( (~rhs).size() & size_t(-2) );
+   const size_t jpos( prevMultiple( (~rhs).size(), 2UL ) );
+   BLAZE_INTERNAL_ASSERT( jpos <= (~rhs).size(), "Invalid end calculation" );
+
    for( size_t j=0UL; j<jpos; j+=2UL ) {
       matrix_(row(),j    ) -= (~rhs)[j    ];
       matrix_(row(),j+1UL) -= (~rhs)[j+1UL];
@@ -1973,8 +1980,8 @@ inline auto Row<MT,true,true,SF,CRAs...>::subAssign( const DenseVector<VT,true>&
 
    const size_t columns( size() );
 
-   const size_t jpos( ( remainder )?( columns & size_t(-SIMDSIZE) ):( columns ) );
-   BLAZE_INTERNAL_ASSERT( !remainder || ( columns - ( columns % (SIMDSIZE) ) ) == jpos, "Invalid end calculation" );
+   const size_t jpos( remainder ? prevMultiple( columns, SIMDSIZE ) : columns );
+   BLAZE_INTERNAL_ASSERT( jpos <= columns, "Invalid end calculation" );
 
    size_t j( 0UL );
    Iterator left( begin() );
@@ -2045,7 +2052,9 @@ inline auto Row<MT,true,true,SF,CRAs...>::multAssign( const DenseVector<VT,true>
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
-   const size_t jpos( (~rhs).size() & size_t(-2) );
+   const size_t jpos( prevMultiple( (~rhs).size(), 2UL ) );
+   BLAZE_INTERNAL_ASSERT( jpos <= (~rhs).size(), "Invalid end calculation" );
+
    for( size_t j=0UL; j<jpos; j+=2UL ) {
       matrix_(row(),j    ) *= (~rhs)[j    ];
       matrix_(row(),j+1UL) *= (~rhs)[j+1UL];
@@ -2084,8 +2093,8 @@ inline auto Row<MT,true,true,SF,CRAs...>::multAssign( const DenseVector<VT,true>
 
    const size_t columns( size() );
 
-   const size_t jpos( ( remainder )?( columns & size_t(-SIMDSIZE) ):( columns ) );
-   BLAZE_INTERNAL_ASSERT( !remainder || ( columns - ( columns % (SIMDSIZE) ) ) == jpos, "Invalid end calculation" );
+   const size_t jpos( remainder ? prevMultiple( columns, SIMDSIZE ) : columns );
+   BLAZE_INTERNAL_ASSERT( jpos <= columns, "Invalid end calculation" );
 
    size_t j( 0UL );
    Iterator left( begin() );
@@ -2169,7 +2178,9 @@ inline auto Row<MT,true,true,SF,CRAs...>::divAssign( const DenseVector<VT,true>&
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
-   const size_t jpos( (~rhs).size() & size_t(-2) );
+   const size_t jpos( prevMultiple( (~rhs).size(), 2UL ) );
+   BLAZE_INTERNAL_ASSERT( jpos <= (~rhs).size(), "Invalid end calculation" );
+
    for( size_t j=0UL; j<jpos; j+=2UL ) {
       matrix_(row(),j    ) /= (~rhs)[j    ];
       matrix_(row(),j+1UL) /= (~rhs)[j+1UL];
@@ -2206,8 +2217,8 @@ inline auto Row<MT,true,true,SF,CRAs...>::divAssign( const DenseVector<VT,true>&
 
    const size_t columns( size() );
 
-   const size_t jpos( columns & size_t(-SIMDSIZE) );
-   BLAZE_INTERNAL_ASSERT( ( columns - ( columns % (SIMDSIZE) ) ) == jpos, "Invalid end calculation" );
+   const size_t jpos( prevMultiple( columns, SIMDSIZE ) );
+   BLAZE_INTERNAL_ASSERT( jpos <= columns, "Invalid end calculation" );
 
    size_t j( 0UL );
    Iterator left( begin() );
@@ -3873,7 +3884,9 @@ inline void Row<MT,false,true,false,CRAs...>::assign( const DenseVector<VT,true>
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
-   const size_t jpos( (~rhs).size() & size_t(-2) );
+   const size_t jpos( prevMultiple( (~rhs).size(), 2UL ) );
+   BLAZE_INTERNAL_ASSERT( jpos <= (~rhs).size(), "Invalid end calculation" );
+
    for( size_t j=0UL; j<jpos; j+=2UL ) {
       matrix_(row(),j    ) = (~rhs)[j    ];
       matrix_(row(),j+1UL) = (~rhs)[j+1UL];
@@ -3930,7 +3943,9 @@ inline void Row<MT,false,true,false,CRAs...>::addAssign( const DenseVector<VT,tr
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
-   const size_t jpos( (~rhs).size() & size_t(-2) );
+   const size_t jpos( prevMultiple( (~rhs).size(), 2UL ) );
+   BLAZE_INTERNAL_ASSERT( jpos <= (~rhs).size(), "Invalid end calculation" );
+
    for( size_t j=0UL; j<jpos; j+=2UL ) {
       matrix_(row(),j    ) += (~rhs)[j    ];
       matrix_(row(),j+1UL) += (~rhs)[j+1UL];
@@ -3987,7 +4002,9 @@ inline void Row<MT,false,true,false,CRAs...>::subAssign( const DenseVector<VT,tr
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
-   const size_t jpos( (~rhs).size() & size_t(-2) );
+   const size_t jpos( prevMultiple( (~rhs).size(), 2UL ) );
+   BLAZE_INTERNAL_ASSERT( jpos <= (~rhs).size(), "Invalid end calculation" );
+
    for( size_t j=0UL; j<jpos; j+=2UL ) {
       matrix_(row(),j    ) -= (~rhs)[j    ];
       matrix_(row(),j+1UL) -= (~rhs)[j+1UL];
@@ -4044,7 +4061,9 @@ inline void Row<MT,false,true,false,CRAs...>::multAssign( const DenseVector<VT,t
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
-   const size_t jpos( (~rhs).size() & size_t(-2) );
+   const size_t jpos( prevMultiple( (~rhs).size(), 2UL ) );
+   BLAZE_INTERNAL_ASSERT( jpos <= (~rhs).size(), "Invalid end calculation" );
+
    for( size_t j=0UL; j<jpos; j+=2UL ) {
       matrix_(row(),j    ) *= (~rhs)[j    ];
       matrix_(row(),j+1UL) *= (~rhs)[j+1UL];
@@ -4114,7 +4133,9 @@ inline void Row<MT,false,true,false,CRAs...>::divAssign( const DenseVector<VT,tr
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
-   const size_t jpos( (~rhs).size() & size_t(-2) );
+   const size_t jpos( prevMultiple( (~rhs).size(), 2UL ) );
+   BLAZE_INTERNAL_ASSERT( jpos <= (~rhs).size(), "Invalid end calculation" );
+
    for( size_t j=0UL; j<jpos; j+=2UL ) {
       matrix_(row(),j    ) /= (~rhs)[j    ];
       matrix_(row(),j+1UL) /= (~rhs)[j+1UL];
@@ -5681,7 +5702,9 @@ inline auto Row<MT,false,true,true,CRAs...>::assign( const DenseVector<VT,true>&
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
-   const size_t ipos( (~rhs).size() & size_t(-2) );
+   const size_t ipos( prevMultiple( (~rhs).size(), 2UL ) );
+   BLAZE_INTERNAL_ASSERT( ipos <= (~rhs).size(), "Invalid end calculation" );
+
    for( size_t i=0UL; i<ipos; i+=2UL ) {
       matrix_(i    ,row()) = (~rhs)[i    ];
       matrix_(i+1UL,row()) = (~rhs)[i+1UL];
@@ -5719,8 +5742,8 @@ inline auto Row<MT,false,true,true,CRAs...>::assign( const DenseVector<VT,true>&
 
    const size_t rows( size() );
 
-   const size_t ipos( ( remainder )?( rows & size_t(-SIMDSIZE) ):( rows ) );
-   BLAZE_INTERNAL_ASSERT( !remainder || ( rows - ( rows % (SIMDSIZE) ) ) == ipos, "Invalid end calculation" );
+   const size_t ipos( remainder ? prevMultiple( rows, SIMDSIZE ) : rows );
+   BLAZE_INTERNAL_ASSERT( ipos <= rows, "Invalid end calculation" );
 
    size_t i( 0UL );
    Iterator left( begin() );
@@ -5801,7 +5824,9 @@ inline auto Row<MT,false,true,true,CRAs...>::addAssign( const DenseVector<VT,tru
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
-   const size_t ipos( (~rhs).size() & size_t(-2) );
+   const size_t ipos( prevMultiple( (~rhs).size(), 2UL ) );
+   BLAZE_INTERNAL_ASSERT( ipos <= (~rhs).size(), "Invalid end calculation" );
+
    for( size_t i=0UL; i<ipos; i+=2UL ) {
       matrix_(i    ,row()) += (~rhs)[i    ];
       matrix_(i+1UL,row()) += (~rhs)[i+1UL];
@@ -5839,8 +5864,8 @@ inline auto Row<MT,false,true,true,CRAs...>::addAssign( const DenseVector<VT,tru
 
    const size_t rows( size() );
 
-   const size_t ipos( ( remainder )?( rows & size_t(-SIMDSIZE) ):( rows ) );
-   BLAZE_INTERNAL_ASSERT( !remainder || ( rows - ( rows % (SIMDSIZE) ) ) == ipos, "Invalid end calculation" );
+   const size_t ipos( remainder ? prevMultiple( rows, SIMDSIZE ) : rows );
+   BLAZE_INTERNAL_ASSERT( ipos <= rows, "Invalid end calculation" );
 
    size_t i( 0UL );
    Iterator left( begin() );
@@ -5909,7 +5934,9 @@ inline auto Row<MT,false,true,true,CRAs...>::subAssign( const DenseVector<VT,tru
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
-   const size_t ipos( (~rhs).size() & size_t(-2) );
+   const size_t ipos( prevMultiple( (~rhs).size(), 2UL ) );
+   BLAZE_INTERNAL_ASSERT( ipos <= (~rhs).size(), "Invalid end calculation" );
+
    for( size_t i=0UL; i<ipos; i+=2UL ) {
       matrix_(i    ,row()) -= (~rhs)[i    ];
       matrix_(i+1UL,row()) -= (~rhs)[i+1UL];
@@ -5947,8 +5974,8 @@ inline auto Row<MT,false,true,true,CRAs...>::subAssign( const DenseVector<VT,tru
 
    const size_t rows( size() );
 
-   const size_t ipos( ( remainder )?( rows & size_t(-SIMDSIZE) ):( rows ) );
-   BLAZE_INTERNAL_ASSERT( !remainder || ( rows - ( rows % (SIMDSIZE) ) ) == ipos, "Invalid end calculation" );
+   const size_t ipos( remainder ? prevMultiple( rows, SIMDSIZE ) : rows );
+   BLAZE_INTERNAL_ASSERT( ipos <= rows, "Invalid end calculation" );
 
    size_t i( 0UL );
    Iterator left( begin() );
@@ -6017,7 +6044,9 @@ inline auto Row<MT,false,true,true,CRAs...>::multAssign( const DenseVector<VT,tr
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
-   const size_t ipos( (~rhs).size() & size_t(-2) );
+   const size_t ipos( prevMultiple( (~rhs).size(), 2UL ) );
+   BLAZE_INTERNAL_ASSERT( ipos <= (~rhs).size(), "Invalid end calculation" );
+
    for( size_t i=0UL; i<ipos; i+=2UL ) {
       matrix_(i    ,row()) *= (~rhs)[i    ];
       matrix_(i+1UL,row()) *= (~rhs)[i+1UL];
@@ -6055,8 +6084,8 @@ inline auto Row<MT,false,true,true,CRAs...>::multAssign( const DenseVector<VT,tr
 
    const size_t rows( size() );
 
-   const size_t ipos( ( remainder )?( rows & size_t(-SIMDSIZE) ):( rows ) );
-   BLAZE_INTERNAL_ASSERT( !remainder || ( rows - ( rows % (SIMDSIZE) ) ) == ipos, "Invalid end calculation" );
+   const size_t ipos( remainder ? prevMultiple( rows, SIMDSIZE ) : rows );
+   BLAZE_INTERNAL_ASSERT( ipos <= rows, "Invalid end calculation" );
 
    size_t i( 0UL );
    Iterator left( begin() );
@@ -6138,7 +6167,9 @@ inline auto Row<MT,false,true,true,CRAs...>::divAssign( const DenseVector<VT,tru
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
-   const size_t ipos( (~rhs).size() & size_t(-2) );
+   const size_t ipos( prevMultiple( (~rhs).size(), 2UL ) );
+   BLAZE_INTERNAL_ASSERT( ipos <= (~rhs).size(), "Invalid end calculation" );
+
    for( size_t i=0UL; i<ipos; i+=2UL ) {
       matrix_(i    ,row()) /= (~rhs)[i    ];
       matrix_(i+1UL,row()) /= (~rhs)[i+1UL];
@@ -6174,8 +6205,8 @@ inline auto Row<MT,false,true,true,CRAs...>::divAssign( const DenseVector<VT,tru
 
    const size_t rows( size() );
 
-   const size_t ipos( rows & size_t(-SIMDSIZE) );
-   BLAZE_INTERNAL_ASSERT( ( rows - ( rows % (SIMDSIZE) ) ) == ipos, "Invalid end calculation" );
+   const size_t ipos( prevMultiple( rows, SIMDSIZE ) );
+   BLAZE_INTERNAL_ASSERT( ipos <= rows, "Invalid end calculation" );
 
    size_t i( 0UL );
    Iterator left( begin() );

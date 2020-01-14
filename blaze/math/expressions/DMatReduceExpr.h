@@ -60,6 +60,7 @@
 #include <blaze/math/functors/Min.h>
 #include <blaze/math/functors/Mult.h>
 #include <blaze/math/ReductionFlag.h>
+#include <blaze/math/shims/PrevMultiple.h>
 #include <blaze/math/shims/Serial.h>
 #include <blaze/math/SIMD.h>
 #include <blaze/math/traits/ReduceTrait.h>
@@ -1656,8 +1657,8 @@ inline auto dmatreduce( const DenseMatrix<MT,false>& dm, OP op )
 
    if( N >= SIMDSIZE )
    {
-      const size_t jpos( N & size_t(-SIMDSIZE) );
-      BLAZE_INTERNAL_ASSERT( ( N - ( N % SIMDSIZE ) ) == jpos, "Invalid end calculation" );
+      const size_t jpos( prevMultiple( N, SIMDSIZE ) );
+      BLAZE_INTERNAL_ASSERT( jpos <= N, "Invalid end calculation" );
 
       SIMDTrait_t<ET> xmm1;
 
@@ -1833,8 +1834,8 @@ inline auto dmatreduce( const DenseMatrix<MT,false>& dm, Add /*op*/ )
 
    if( !remainder || N >= SIMDSIZE )
    {
-      const size_t jpos( ( remainder )?( N & size_t(-SIMDSIZE) ):( N ) );
-      BLAZE_INTERNAL_ASSERT( !remainder || ( N - ( N % SIMDSIZE ) ) == jpos, "Invalid end calculation" );
+      const size_t jpos( remainder ? prevMultiple( N, SIMDSIZE ) : N );
+      BLAZE_INTERNAL_ASSERT( jpos <= N, "Invalid end calculation" );
 
       SIMDTrait_t<ET> xmm1;
       size_t i( 0UL );

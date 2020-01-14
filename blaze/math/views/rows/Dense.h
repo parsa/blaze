@@ -58,6 +58,7 @@
 #include <blaze/math/expressions/DenseMatrix.h>
 #include <blaze/math/expressions/View.h>
 #include <blaze/math/InitializerList.h>
+#include <blaze/math/shims/PrevMultiple.h>
 #include <blaze/math/shims/Reset.h>
 #include <blaze/math/SIMD.h>
 #include <blaze/math/traits/AddTrait.h>
@@ -2119,8 +2120,8 @@ inline auto Rows<MT,true,true,SF,CRAs...>::assign( const DenseMatrix<MT2,false>&
    BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
 
-   const size_t jpos( columns() & size_t(-2) );
-   BLAZE_INTERNAL_ASSERT( ( columns() - ( columns() % 2UL ) ) == jpos, "Invalid end calculation" );
+   const size_t jpos( prevMultiple( columns(), 2UL ) );
+   BLAZE_INTERNAL_ASSERT( jpos <= columns(), "Invalid end calculation" );
 
    for( size_t i=0UL; i<rows(); ++i ) {
       const size_t index( idx(i) );
@@ -2164,8 +2165,8 @@ inline auto Rows<MT,true,true,SF,CRAs...>::assign( const DenseMatrix<MT2,false>&
    BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
 
-   const size_t jpos( columns() & size_t(-SIMDSIZE) );
-   BLAZE_INTERNAL_ASSERT( ( columns() - ( columns() % (SIMDSIZE) ) ) == jpos, "Invalid end calculation" );
+   const size_t jpos( prevMultiple( columns(), SIMDSIZE ) );
+   BLAZE_INTERNAL_ASSERT( jpos <= columns(), "Invalid end calculation" );
 
    if( useStreaming &&
        rows()*columns() > ( cacheSize / ( sizeof(ElementType) * 3UL ) ) &&
@@ -2242,7 +2243,9 @@ inline void Rows<MT,true,true,SF,CRAs...>::assign( const DenseMatrix<MT2,true>& 
 
    if( rows() < block && columns() < block )
    {
-      const size_t jpos( (~rhs).columns() & size_t(-2) );
+      const size_t jpos( prevMultiple( (~rhs).columns(), 2UL ) );
+      BLAZE_INTERNAL_ASSERT( jpos <= (~rhs).columns(), "Invalid end calculation" );
+
       for( size_t i=0UL; i<rows(); ++i ) {
          const size_t index( idx(i) );
          for( size_t j=0UL; j<jpos; j+=2UL ) {
@@ -2368,8 +2371,8 @@ inline auto Rows<MT,true,true,SF,CRAs...>::addAssign( const DenseMatrix<MT2,fals
    BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
 
-   const size_t jpos( columns() & size_t(-2) );
-   BLAZE_INTERNAL_ASSERT( ( columns() - ( columns() % 2UL ) ) == jpos, "Invalid end calculation" );
+   const size_t jpos( prevMultiple( columns(), 2UL ) );
+   BLAZE_INTERNAL_ASSERT( jpos <= columns(), "Invalid end calculation" );
 
    for( size_t i=0UL; i<rows(); ++i )
    {
@@ -2422,15 +2425,15 @@ inline auto Rows<MT,true,true,SF,CRAs...>::addAssign( const DenseMatrix<MT2,fals
    for( size_t i=0UL; i<rows(); ++i )
    {
       const size_t jbegin( ( IsUpper_v<MT2> )
-                           ?( ( IsStrictlyUpper_v<MT2> ? i+1UL : i ) & size_t(-SIMDSIZE) )
+                           ?( prevMultiple( ( IsStrictlyUpper_v<MT2> ? i+1UL : i ), SIMDSIZE ) )
                            :( 0UL ) );
       const size_t jend  ( ( IsLower_v<MT2> )
                            ?( IsStrictlyLower_v<MT2> ? i : i+1UL )
                            :( columns() ) );
       BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
-      const size_t jpos( jend & size_t(-SIMDSIZE) );
-      BLAZE_INTERNAL_ASSERT( ( jend - ( jend % (SIMDSIZE) ) ) == jpos, "Invalid end calculation" );
+      const size_t jpos( prevMultiple( jend, SIMDSIZE ) );
+      BLAZE_INTERNAL_ASSERT( jpos <= jend, "Invalid end calculation" );
 
       size_t j( jbegin );
       Iterator left( begin(i) + jbegin );
@@ -2484,7 +2487,9 @@ inline void Rows<MT,true,true,SF,CRAs...>::addAssign( const DenseMatrix<MT2,true
 
    if( rows() < block && columns() < block )
    {
-      const size_t jpos( (~rhs).columns() & size_t(-2) );
+      const size_t jpos( prevMultiple( (~rhs).columns(), 2UL ) );
+      BLAZE_INTERNAL_ASSERT( jpos <= (~rhs).columns(), "Invalid end calculation" );
+
       for( size_t i=0UL; i<rows(); ++i ) {
          const size_t index( idx(i) );
          for( size_t j=0UL; j<jpos; j+=2UL ) {
@@ -2610,8 +2615,8 @@ inline auto Rows<MT,true,true,SF,CRAs...>::subAssign( const DenseMatrix<MT2,fals
    BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
 
-   const size_t jpos( columns() & size_t(-2) );
-   BLAZE_INTERNAL_ASSERT( ( columns() - ( columns() % 2UL ) ) == jpos, "Invalid end calculation" );
+   const size_t jpos( prevMultiple( columns(), 2UL ) );
+   BLAZE_INTERNAL_ASSERT( jpos <= columns(), "Invalid end calculation" );
 
    for( size_t i=0UL; i<rows(); ++i )
    {
@@ -2665,15 +2670,15 @@ inline auto Rows<MT,true,true,SF,CRAs...>::subAssign( const DenseMatrix<MT2,fals
    for( size_t i=0UL; i<rows(); ++i )
    {
       const size_t jbegin( ( IsUpper_v<MT2> )
-                           ?( ( IsStrictlyUpper_v<MT2> ? i+1UL : i ) & size_t(-SIMDSIZE) )
+                           ?( prevMultiple( ( IsStrictlyUpper_v<MT2> ? i+1UL : i ), SIMDSIZE ) )
                            :( 0UL ) );
       const size_t jend  ( ( IsLower_v<MT2> )
                            ?( IsStrictlyLower_v<MT2> ? i : i+1UL )
                            :( columns() ) );
       BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
-      const size_t jpos( jend & size_t(-SIMDSIZE) );
-      BLAZE_INTERNAL_ASSERT( ( jend - ( jend % (SIMDSIZE) ) ) == jpos, "Invalid end calculation" );
+      const size_t jpos( prevMultiple( jend, SIMDSIZE ) );
+      BLAZE_INTERNAL_ASSERT( jpos <= jend, "Invalid end calculation" );
 
       size_t j( jbegin );
       Iterator left( begin(i) + jbegin );
@@ -2727,7 +2732,9 @@ inline void Rows<MT,true,true,SF,CRAs...>::subAssign( const DenseMatrix<MT2,true
 
    if( rows() < block && columns() < block )
    {
-      const size_t jpos( (~rhs).columns() & size_t(-2) );
+      const size_t jpos( prevMultiple( (~rhs).columns(), 2UL ) );
+      BLAZE_INTERNAL_ASSERT( jpos <= (~rhs).columns(), "Invalid end calculation" );
+
       for( size_t i=0UL; i<rows(); ++i ) {
          const size_t index( idx(i) );
          for( size_t j=0UL; j<jpos; j+=2UL ) {
@@ -2853,8 +2860,8 @@ inline auto Rows<MT,true,true,SF,CRAs...>::schurAssign( const DenseMatrix<MT2,fa
    BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
 
-   const size_t jpos( columns() & size_t(-2) );
-   BLAZE_INTERNAL_ASSERT( ( columns() - ( columns() % 2UL ) ) == jpos, "Invalid end calculation" );
+   const size_t jpos( prevMultiple( columns(), 2UL ) );
+   BLAZE_INTERNAL_ASSERT( jpos <= columns(), "Invalid end calculation" );
 
    for( size_t i=0UL; i<rows(); ++i ) {
       const size_t index( idx(i) );
@@ -2900,8 +2907,8 @@ inline auto Rows<MT,true,true,SF,CRAs...>::schurAssign( const DenseMatrix<MT2,fa
 
    for( size_t i=0UL; i<rows(); ++i )
    {
-      const size_t jpos( columns() & size_t(-SIMDSIZE) );
-      BLAZE_INTERNAL_ASSERT( ( columns() - ( columns() % (SIMDSIZE) ) ) == jpos, "Invalid end calculation" );
+      const size_t jpos( prevMultiple( columns(), SIMDSIZE ) );
+      BLAZE_INTERNAL_ASSERT( jpos <= columns(), "Invalid end calculation" );
 
       size_t j( 0UL );
       Iterator left( begin(i) );
@@ -2955,7 +2962,9 @@ inline void Rows<MT,true,true,SF,CRAs...>::schurAssign( const DenseMatrix<MT2,tr
 
    if( rows() < block && columns() < block )
    {
-      const size_t jpos( (~rhs).columns() & size_t(-2) );
+      const size_t jpos( prevMultiple( (~rhs).columns(), 2UL ) );
+      BLAZE_INTERNAL_ASSERT( jpos <= (~rhs).columns(), "Invalid end calculation" );
+
       for( size_t i=0UL; i<rows(); ++i ) {
          const size_t index( idx(i) );
          for( size_t j=0UL; j<jpos; j+=2UL ) {
@@ -5130,8 +5139,8 @@ inline void Rows<MT,false,true,false,CRAs...>::assign( const DenseMatrix<MT2,fal
    BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
 
-   const size_t jpos( columns() & size_t(-2) );
-   BLAZE_INTERNAL_ASSERT( ( columns() - ( columns() % 2UL ) ) == jpos, "Invalid end calculation" );
+   const size_t jpos( prevMultiple( columns(), 2UL ) );
+   BLAZE_INTERNAL_ASSERT( jpos <= columns(), "Invalid end calculation" );
 
    for( size_t i=0UL; i<rows(); ++i ) {
       const size_t index( idx(i) );
@@ -5177,7 +5186,9 @@ inline void Rows<MT,false,true,false,CRAs...>::assign( const DenseMatrix<MT2,tru
 
    if( rows() < block && columns() < block )
    {
-      const size_t jpos( (~rhs).columns() & size_t(-2) );
+      const size_t jpos( prevMultiple( (~rhs).columns(), 2UL ) );
+      BLAZE_INTERNAL_ASSERT( jpos <= (~rhs).columns(), "Invalid end calculation" );
+
       for( size_t i=0UL; i<rows(); ++i ) {
          const size_t index( idx(i) );
          for( size_t j=0UL; j<jpos; j+=2UL ) {
@@ -5298,8 +5309,8 @@ inline void Rows<MT,false,true,false,CRAs...>::addAssign( const DenseMatrix<MT2,
    BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
 
-   const size_t jpos( columns() & size_t(-2) );
-   BLAZE_INTERNAL_ASSERT( ( columns() - ( columns() % 2UL ) ) == jpos, "Invalid end calculation" );
+   const size_t jpos( prevMultiple( columns(), 2UL ) );
+   BLAZE_INTERNAL_ASSERT( jpos <= columns(), "Invalid end calculation" );
 
    for( size_t i=0UL; i<rows(); ++i )
    {
@@ -5351,7 +5362,9 @@ inline void Rows<MT,false,true,false,CRAs...>::addAssign( const DenseMatrix<MT2,
 
    if( rows() < block && columns() < block )
    {
-      const size_t jpos( (~rhs).columns() & size_t(-2) );
+      const size_t jpos( prevMultiple( (~rhs).columns(), 2UL ) );
+      BLAZE_INTERNAL_ASSERT( jpos <= (~rhs).columns(), "Invalid end calculation" );
+
       for( size_t i=0UL; i<rows(); ++i ) {
          const size_t index( idx(i) );
          for( size_t j=0UL; j<jpos; j+=2UL ) {
@@ -5472,8 +5485,8 @@ inline void Rows<MT,false,true,false,CRAs...>::subAssign( const DenseMatrix<MT2,
    BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
 
-   const size_t jpos( columns() & size_t(-2) );
-   BLAZE_INTERNAL_ASSERT( ( columns() - ( columns() % 2UL ) ) == jpos, "Invalid end calculation" );
+   const size_t jpos( prevMultiple( columns(), 2UL ) );
+   BLAZE_INTERNAL_ASSERT( jpos <= columns(), "Invalid end calculation" );
 
    for( size_t i=0UL; i<rows(); ++i )
    {
@@ -5526,7 +5539,9 @@ inline void Rows<MT,false,true,false,CRAs...>::subAssign( const DenseMatrix<MT2,
 
    if( rows() < block && columns() < block )
    {
-      const size_t jpos( (~rhs).columns() & size_t(-2) );
+      const size_t jpos( prevMultiple( (~rhs).columns(), 2UL ) );
+      BLAZE_INTERNAL_ASSERT( jpos <= (~rhs).columns(), "Invalid end calculation" );
+
       for( size_t i=0UL; i<rows(); ++i ) {
          const size_t index( idx(i) );
          for( size_t j=0UL; j<jpos; j+=2UL ) {
@@ -5647,8 +5662,8 @@ inline void Rows<MT,false,true,false,CRAs...>::schurAssign( const DenseMatrix<MT
    BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
 
-   const size_t jpos( columns() & size_t(-2) );
-   BLAZE_INTERNAL_ASSERT( ( columns() - ( columns() % 2UL ) ) == jpos, "Invalid end calculation" );
+   const size_t jpos( prevMultiple( columns(), 2UL ) );
+   BLAZE_INTERNAL_ASSERT( jpos <= columns(), "Invalid end calculation" );
 
    for( size_t i=0UL; i<rows(); ++i ) {
       const size_t index( idx(i) );
@@ -5694,7 +5709,9 @@ inline void Rows<MT,false,true,false,CRAs...>::schurAssign( const DenseMatrix<MT
 
    if( rows() < block && columns() < block )
    {
-      const size_t jpos( (~rhs).columns() & size_t(-2) );
+      const size_t jpos( prevMultiple( (~rhs).columns(), 2UL ) );
+      BLAZE_INTERNAL_ASSERT( jpos <= (~rhs).columns(), "Invalid end calculation" );
+
       for( size_t i=0UL; i<rows(); ++i ) {
          const size_t index( idx(i) );
          for( size_t j=0UL; j<jpos; j+=2UL ) {

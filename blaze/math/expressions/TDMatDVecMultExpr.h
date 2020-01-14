@@ -56,6 +56,7 @@
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/expressions/MatVecMultExpr.h>
 #include <blaze/math/expressions/VecScalarMultExpr.h>
+#include <blaze/math/shims/PrevMultiple.h>
 #include <blaze/math/shims/Reset.h>
 #include <blaze/math/shims/Serial.h>
 #include <blaze/math/SIMD.h>
@@ -503,7 +504,8 @@ class TDMatDVecMultExpr
             BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
 
             const size_t inum( iend - ibegin );
-            const size_t ipos( ibegin + ( inum & size_t(-2) ) );
+            const size_t ipos( ibegin + prevMultiple( inum, 2UL ) );
+            BLAZE_INTERNAL_ASSERT( ipos <= ibegin+inum, "Invalid end calculation" );
 
             for( size_t i=ibegin; i<ipos; i+=2UL ) {
                y[i    ] += A(i    ,j) * x[j];
@@ -575,8 +577,8 @@ class TDMatDVecMultExpr
       const size_t M( A.rows()    );
       const size_t N( A.columns() );
 
-      const size_t ipos( remainder ? ( M & size_t(-SIMDSIZE) ) : M );
-      BLAZE_INTERNAL_ASSERT( !remainder || ( M - ( M % SIMDSIZE ) ) == ipos, "Invalid end calculation" );
+      const size_t ipos( remainder ? prevMultiple( M, SIMDSIZE ) : M );
+      BLAZE_INTERNAL_ASSERT( ipos <= M, "Invalid end calculation" );
 
       size_t i( 0UL );
 
@@ -806,11 +808,11 @@ class TDMatDVecMultExpr
                                ?( min( itmp, ( IsStrictlyUpper_v<MT1> ? jend-1UL : jend ) ) )
                                :( itmp ) );
 
-            const size_t ipos( remainder ? ( iend & size_t(-SIMDSIZE) ) : iend );
-            BLAZE_INTERNAL_ASSERT( !remainder || ( iend - ( iend % SIMDSIZE ) ) == ipos, "Invalid end calculation" );
+            const size_t ipos( remainder ? prevMultiple( iend, SIMDSIZE ) : iend );
+            BLAZE_INTERNAL_ASSERT( ipos <= iend, "Invalid end calculation" );
 
             size_t i( ( IsLower_v<MT1> )
-                      ?( max( ii, ( IsStrictlyLower_v<MT1> ? jj+1UL : jj ) & size_t(-SIMDSIZE) ) )
+                      ?( max( ii, prevMultiple( ( IsStrictlyLower_v<MT1> ? jj+1UL : jj ), SIMDSIZE ) ) )
                       :( ii ) );
 
             for( ; (i+SIMDSIZE*7UL) < ipos; i+=SIMDSIZE*8UL )
@@ -1124,7 +1126,8 @@ class TDMatDVecMultExpr
             BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
 
             const size_t inum( iend - ibegin );
-            const size_t ipos( ibegin + ( inum & size_t(-2) ) );
+            const size_t ipos( ibegin + prevMultiple( inum, 2UL ) );
+            BLAZE_INTERNAL_ASSERT( ipos <= ibegin+inum, "Invalid end calculation" );
 
             for( size_t i=ibegin; i<ipos; i+=2UL ) {
                y[i    ] += A(i    ,j) * x[j];
@@ -1189,8 +1192,8 @@ class TDMatDVecMultExpr
       const size_t M( A.rows()    );
       const size_t N( A.columns() );
 
-      const size_t ipos( remainder ? ( M & size_t(-SIMDSIZE) ) : M );
-      BLAZE_INTERNAL_ASSERT( !remainder || ( M - ( M % SIMDSIZE ) ) == ipos, "Invalid end calculation" );
+      const size_t ipos( remainder ? prevMultiple( M, SIMDSIZE ) : M );
+      BLAZE_INTERNAL_ASSERT( ipos <= M, "Invalid end calculation" );
 
       size_t i( 0UL );
 
@@ -1414,11 +1417,11 @@ class TDMatDVecMultExpr
                                ?( min( itmp, ( IsStrictlyUpper_v<MT1> ? jend-1UL : jend ) ) )
                                :( itmp ) );
 
-            const size_t ipos( remainder ? ( iend & size_t(-SIMDSIZE) ) : iend );
-            BLAZE_INTERNAL_ASSERT( !remainder || ( iend - ( iend % SIMDSIZE ) ) == ipos, "Invalid end calculation" );
+            const size_t ipos( remainder ? prevMultiple( iend, SIMDSIZE ) : iend );
+            BLAZE_INTERNAL_ASSERT( ipos <= iend, "Invalid end calculation" );
 
             size_t i( ( IsLower_v<MT1> )
-                      ?( max( ii, ( IsStrictlyLower_v<MT1> ? jj+1UL : jj ) & size_t(-SIMDSIZE) ) )
+                      ?( max( ii, prevMultiple( ( IsStrictlyLower_v<MT1> ? jj+1UL : jj ), SIMDSIZE ) ) )
                       :( ii ) );
 
             for( ; (i+SIMDSIZE*7UL) < ipos; i+=SIMDSIZE*8UL )
@@ -1707,7 +1710,8 @@ class TDMatDVecMultExpr
             BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
 
             const size_t inum( iend - ibegin );
-            const size_t ipos( ibegin + ( inum & size_t(-2) ) );
+            const size_t ipos( ibegin + prevMultiple( inum, 2UL ) );
+            BLAZE_INTERNAL_ASSERT( ipos <= ibegin+inum, "Invalid end calculation" );
 
             for( size_t i=ibegin; i<ipos; i+=2UL ) {
                y[i    ] -= A(i    ,j) * x[j];
@@ -1773,8 +1777,8 @@ class TDMatDVecMultExpr
       const size_t M( A.rows()    );
       const size_t N( A.columns() );
 
-      const size_t ipos( remainder ? ( M & size_t(-SIMDSIZE) ) : M );
-      BLAZE_INTERNAL_ASSERT( !remainder || ( M - ( M % SIMDSIZE ) ) == ipos, "Invalid end calculation" );
+      const size_t ipos( remainder ? prevMultiple( M, SIMDSIZE ) : M );
+      BLAZE_INTERNAL_ASSERT( ipos <= M, "Invalid end calculation" );
 
       size_t i( 0UL );
 
@@ -1999,11 +2003,11 @@ class TDMatDVecMultExpr
                                ?( min( itmp, ( IsStrictlyUpper_v<MT1> ? jend-1UL : jend ) ) )
                                :( itmp ) );
 
-            const size_t ipos( remainder ? ( iend & size_t(-SIMDSIZE) ) : iend );
-            BLAZE_INTERNAL_ASSERT( !remainder || ( iend - ( iend % SIMDSIZE ) ) == ipos, "Invalid end calculation" );
+            const size_t ipos( remainder ? prevMultiple( iend, SIMDSIZE ) : iend );
+            BLAZE_INTERNAL_ASSERT( ipos <= iend, "Invalid end calculation" );
 
             size_t i( ( IsLower_v<MT1> )
-                      ?( max( ii, ( IsStrictlyLower_v<MT1> ? jj+1UL : jj ) & size_t(-SIMDSIZE) ) )
+                      ?( max( ii, prevMultiple( ( IsStrictlyLower_v<MT1> ? jj+1UL : jj ), SIMDSIZE ) ) )
                       :( ii ) );
 
             for( ; (i+SIMDSIZE*7UL) < ipos; i+=SIMDSIZE*8UL )
@@ -2895,7 +2899,8 @@ class DVecScalarMultExpr< TDMatDVecMultExpr<MT,VT>, ST, false >
             BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
 
             const size_t inum( iend - ibegin );
-            const size_t ipos( ibegin + ( inum & size_t(-2) ) );
+            const size_t ipos( ibegin + prevMultiple( inum, 2UL ) );
+            BLAZE_INTERNAL_ASSERT( ipos <= ibegin+inum, "Invalid end calculation" );
 
             for( size_t i=ibegin; i<ipos; i+=2UL ) {
                y[i    ] += A(i    ,j) * x[j];
@@ -2975,8 +2980,8 @@ class DVecScalarMultExpr< TDMatDVecMultExpr<MT,VT>, ST, false >
       const size_t M( A.rows()    );
       const size_t N( A.columns() );
 
-      const size_t ipos( remainder ? ( M & size_t(-SIMDSIZE) ) : M );
-      BLAZE_INTERNAL_ASSERT( !remainder || ( M - ( M % SIMDSIZE ) ) == ipos, "Invalid end calculation" );
+      const size_t ipos( remainder ? prevMultiple( M, SIMDSIZE ) : M );
+      BLAZE_INTERNAL_ASSERT( ipos <= M, "Invalid end calculation" );
 
       const SIMDType factor( set( scalar ) );
 
@@ -3210,11 +3215,11 @@ class DVecScalarMultExpr< TDMatDVecMultExpr<MT,VT>, ST, false >
                                ?( min( itmp, ( IsStrictlyUpper_v<MT1> ? jend-1UL : jend ) ) )
                                :( itmp ) );
 
-            const size_t ipos( remainder ? ( iend & size_t(-SIMDSIZE) ) : iend );
-            BLAZE_INTERNAL_ASSERT( !remainder || ( iend - ( iend % SIMDSIZE ) ) == ipos, "Invalid end calculation" );
+            const size_t ipos( remainder ? prevMultiple( iend, SIMDSIZE ) : iend );
+            BLAZE_INTERNAL_ASSERT( ipos <= iend, "Invalid end calculation" );
 
             size_t i( ( IsLower_v<MT1> )
-                      ?( max( ii, ( IsStrictlyLower_v<MT1> ? jj+1UL : jj ) & size_t(-SIMDSIZE) ) )
+                      ?( max( ii, prevMultiple( ( IsStrictlyLower_v<MT1> ? jj+1UL : jj ), SIMDSIZE ) ) )
                       :( ii ) );
 
             for( ; (i+SIMDSIZE*7UL) < ipos; i+=SIMDSIZE*8UL )
@@ -3563,8 +3568,8 @@ class DVecScalarMultExpr< TDMatDVecMultExpr<MT,VT>, ST, false >
       const size_t M( A.rows()    );
       const size_t N( A.columns() );
 
-      const size_t ipos( remainder ? ( M & size_t(-SIMDSIZE) ) : M );
-      BLAZE_INTERNAL_ASSERT( !remainder || ( M - ( M % SIMDSIZE ) ) == ipos, "Invalid end calculation" );
+      const size_t ipos( remainder ? prevMultiple( M, SIMDSIZE ) : M );
+      BLAZE_INTERNAL_ASSERT( ipos <= M, "Invalid end calculation" );
 
       const SIMDType factor( set( scalar ) );
 
@@ -3797,11 +3802,11 @@ class DVecScalarMultExpr< TDMatDVecMultExpr<MT,VT>, ST, false >
                                ?( min( itmp, ( IsStrictlyUpper_v<MT1> ? jend-1UL : jend ) ) )
                                :( itmp ) );
 
-            const size_t ipos( remainder ? ( iend & size_t(-SIMDSIZE) ) : iend );
-            BLAZE_INTERNAL_ASSERT( !remainder || ( iend - ( iend % SIMDSIZE ) ) == ipos, "Invalid end calculation" );
+            const size_t ipos( remainder ? prevMultiple( iend, SIMDSIZE ) : iend );
+            BLAZE_INTERNAL_ASSERT( ipos <= iend, "Invalid end calculation" );
 
             size_t i( ( IsLower_v<MT1> )
-                      ?( max( ii, ( IsStrictlyLower_v<MT1> ? jj+1UL : jj ) & size_t(-SIMDSIZE) ) )
+                      ?( max( ii, prevMultiple( ( IsStrictlyLower_v<MT1> ? jj+1UL : jj ), SIMDSIZE ) ) )
                       :( ii ) );
 
             for( ; (i+SIMDSIZE*7UL) < ipos; i+=SIMDSIZE*8UL )
@@ -4127,8 +4132,8 @@ class DVecScalarMultExpr< TDMatDVecMultExpr<MT,VT>, ST, false >
       const size_t M( A.rows()    );
       const size_t N( A.columns() );
 
-      const size_t ipos( remainder ? ( M & size_t(-SIMDSIZE) ) : M );
-      BLAZE_INTERNAL_ASSERT( !remainder || ( M - ( M % SIMDSIZE ) ) == ipos, "Invalid end calculation" );
+      const size_t ipos( remainder ? prevMultiple( M, SIMDSIZE ) : M );
+      BLAZE_INTERNAL_ASSERT( ipos <= M, "Invalid end calculation" );
 
       const SIMDType factor( set( scalar ) );
 
@@ -4361,11 +4366,11 @@ class DVecScalarMultExpr< TDMatDVecMultExpr<MT,VT>, ST, false >
                                ?( min( itmp, ( IsStrictlyUpper_v<MT1> ? jend-1UL : jend ) ) )
                                :( itmp ) );
 
-            const size_t ipos( remainder ? ( iend & size_t(-SIMDSIZE) ) : iend );
-            BLAZE_INTERNAL_ASSERT( !remainder || ( iend - ( iend % SIMDSIZE ) ) == ipos, "Invalid end calculation" );
+            const size_t ipos( remainder ? prevMultiple( iend, SIMDSIZE ) : iend );
+            BLAZE_INTERNAL_ASSERT( ipos <= iend, "Invalid end calculation" );
 
             size_t i( ( IsLower_v<MT1> )
-                      ?( max( ii, ( IsStrictlyLower_v<MT1> ? jj+1UL : jj ) & size_t(-SIMDSIZE) ) )
+                      ?( max( ii, prevMultiple( ( IsStrictlyLower_v<MT1> ? jj+1UL : jj ), SIMDSIZE ) ) )
                       :( ii ) );
 
             for( ; (i+SIMDSIZE*7UL) < ipos; i+=SIMDSIZE*8UL )

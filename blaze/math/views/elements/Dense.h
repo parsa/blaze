@@ -57,6 +57,7 @@
 #include <blaze/math/InitializerList.h>
 #include <blaze/math/shims/Clear.h>
 #include <blaze/math/shims/IsDefault.h>
+#include <blaze/math/shims/PrevMultiple.h>
 #include <blaze/math/shims/Reset.h>
 #include <blaze/math/traits/CrossTrait.h>
 #include <blaze/math/traits/ElementsTrait.h>
@@ -1641,7 +1642,9 @@ inline void Elements<VT,TF,true,CEAs...>::assign( const DenseVector<VT2,TF>& rhs
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
-   const size_t ipos( size() & size_t(-2) );
+   const size_t ipos( prevMultiple( size(), 2UL ) );
+   BLAZE_INTERNAL_ASSERT( ipos <= size(), "Invalid end calculation" );
+
    for( size_t i=0UL; i<ipos; i+=2UL ) {
       vector_[idx(i    )] = (~rhs)[i    ];
       vector_[idx(i+1UL)] = (~rhs)[i+1UL];
@@ -1701,7 +1704,9 @@ inline void Elements<VT,TF,true,CEAs...>::addAssign( const DenseVector<VT2,TF>& 
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
-   const size_t ipos( size() & size_t(-2) );
+   const size_t ipos( prevMultiple( size(), 2UL ) );
+   BLAZE_INTERNAL_ASSERT( ipos <= size(), "Invalid end calculation" );
+
    for( size_t i=0UL; i<ipos; i+=2UL ) {
       vector_[idx(i    )] += (~rhs)[i    ];
       vector_[idx(i+1UL)] += (~rhs)[i+1UL];
@@ -1761,7 +1766,9 @@ inline void Elements<VT,TF,true,CEAs...>::subAssign( const DenseVector<VT2,TF>& 
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
-   const size_t ipos( size() & size_t(-2) );
+   const size_t ipos( prevMultiple( size(), 2UL ) );
+   BLAZE_INTERNAL_ASSERT( ipos <= size(), "Invalid end calculation" );
+
    for( size_t i=0UL; i<ipos; i+=2UL ) {
       vector_[idx(i    )] -= (~rhs)[i    ];
       vector_[idx(i+1UL)] -= (~rhs)[i+1UL];
@@ -1821,7 +1828,9 @@ inline void Elements<VT,TF,true,CEAs...>::multAssign( const DenseVector<VT2,TF>&
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
-   const size_t ipos( size() & size_t(-2) );
+   const size_t ipos( prevMultiple( size(), 2UL ) );
+   BLAZE_INTERNAL_ASSERT( ipos <= size(), "Invalid end calculation" );
+
    for( size_t i=0UL; i<ipos; i+=2UL ) {
       vector_[idx(i    )] *= (~rhs)[i    ];
       vector_[idx(i+1UL)] *= (~rhs)[i+1UL];
@@ -1894,7 +1903,9 @@ inline void Elements<VT,TF,true,CEAs...>::divAssign( const DenseVector<VT2,TF>& 
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
-   const size_t ipos( size() & size_t(-2) );
+   const size_t ipos( prevMultiple( size(), 2UL ) );
+   BLAZE_INTERNAL_ASSERT( ipos <= size(), "Invalid end calculation" );
+
    for( size_t i=0UL; i<ipos; i+=2UL ) {
       vector_[idx(i    )] /= (~rhs)[i    ];
       vector_[idx(i+1UL)] /= (~rhs)[i+1UL];

@@ -59,6 +59,7 @@
 #include <blaze/math/InitializerList.h>
 #include <blaze/math/shims/Clear.h>
 #include <blaze/math/shims/IsDefault.h>
+#include <blaze/math/shims/PrevMultiple.h>
 #include <blaze/math/shims/Reset.h>
 #include <blaze/math/traits/BandTrait.h>
 #include <blaze/math/traits/CrossTrait.h>
@@ -1797,7 +1798,9 @@ inline void Band<MT,TF,true,false,CBAs...>::assign( const DenseVector<VT,TF>& rh
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
-   const size_t ipos( (~rhs).size() & size_t(-2) );
+   const size_t ipos( prevMultiple( (~rhs).size(), 2UL ) );
+   BLAZE_INTERNAL_ASSERT( ipos <= (~rhs).size(), "Invalid end calculation" );
+
    for( size_t i=0UL; i<ipos; i+=2UL ) {
       matrix_(row()+i    ,column()+i    ) = (~rhs)[i    ];
       matrix_(row()+i+1UL,column()+i+1UL) = (~rhs)[i+1UL];
@@ -1859,7 +1862,9 @@ inline void Band<MT,TF,true,false,CBAs...>::addAssign( const DenseVector<VT,TF>&
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
-   const size_t ipos( (~rhs).size() & size_t(-2) );
+   const size_t ipos( prevMultiple( (~rhs).size(), 2UL ) );
+   BLAZE_INTERNAL_ASSERT( ipos <= (~rhs).size(), "Invalid end calculation" );
+
    for( size_t i=0UL; i<ipos; i+=2UL ) {
       matrix_(row()+i    ,column()+i    ) += (~rhs)[i    ];
       matrix_(row()+i+1UL,column()+i+1UL) += (~rhs)[i+1UL];
@@ -1921,7 +1926,9 @@ inline void Band<MT,TF,true,false,CBAs...>::subAssign( const DenseVector<VT,TF>&
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
-   const size_t ipos( (~rhs).size() & size_t(-2) );
+   const size_t ipos( prevMultiple( (~rhs).size(), 2UL ) );
+   BLAZE_INTERNAL_ASSERT( ipos <= (~rhs).size(), "Invalid end calculation" );
+
    for( size_t i=0UL; i<ipos; i+=2UL ) {
       matrix_(row()+i    ,column()+i    ) -= (~rhs)[i    ];
       matrix_(row()+i+1UL,column()+i+1UL) -= (~rhs)[i+1UL];
@@ -1983,7 +1990,9 @@ inline void Band<MT,TF,true,false,CBAs...>::multAssign( const DenseVector<VT,TF>
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
-   const size_t ipos( (~rhs).size() & size_t(-2) );
+   const size_t ipos( prevMultiple( (~rhs).size(), 2UL ) );
+   BLAZE_INTERNAL_ASSERT( ipos <= (~rhs).size(), "Invalid end calculation" );
+
    for( size_t i=0UL; i<ipos; i+=2UL ) {
       matrix_(row()+i    ,column()+i    ) *= (~rhs)[i    ];
       matrix_(row()+i+1UL,column()+i+1UL) *= (~rhs)[i+1UL];
@@ -2056,7 +2065,9 @@ inline void Band<MT,TF,true,false,CBAs...>::divAssign( const DenseVector<VT,TF>&
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
-   const size_t ipos( (~rhs).size() & size_t(-2) );
+   const size_t ipos( prevMultiple( (~rhs).size(), 2UL ) );
+   BLAZE_INTERNAL_ASSERT( ipos <= (~rhs).size(), "Invalid end calculation" );
+
    for( size_t i=0UL; i<ipos; i+=2UL ) {
       matrix_(row()+i    ,column()+i    ) /= (~rhs)[i    ];
       matrix_(row()+i+1UL,column()+i+1UL) /= (~rhs)[i+1UL];

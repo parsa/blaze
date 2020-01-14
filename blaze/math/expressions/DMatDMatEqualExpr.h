@@ -44,6 +44,7 @@
 #include <blaze/math/expressions/DenseMatrix.h>
 #include <blaze/math/RelaxationFlag.h>
 #include <blaze/math/shims/Equal.h>
+#include <blaze/math/shims/PrevMultiple.h>
 #include <blaze/math/SIMD.h>
 #include <blaze/math/typetraits/HasSIMDEqual.h>
 #include <blaze/math/typetraits/IsPadded.h>
@@ -181,8 +182,8 @@ inline auto equal( const DenseMatrix<MT1,false>& lhs, const DenseMatrix<MT2,fals
    const size_t M( A.rows()    );
    const size_t N( A.columns() );
 
-   const size_t jpos( ( remainder )?( N & size_t(-SIMDSIZE) ):( N ) );
-   BLAZE_INTERNAL_ASSERT( !remainder || ( N - ( N % SIMDSIZE ) ) == jpos, "Invalid end calculation" );
+   const size_t jpos( remainder ? prevMultiple( N, SIMDSIZE ) : N );
+   BLAZE_INTERNAL_ASSERT( jpos <= N, "Invalid end calculation" );
 
    for( size_t i=0UL; i<M; ++i )
    {
@@ -294,8 +295,8 @@ inline auto equal( const DenseMatrix<MT1,true>& lhs, const DenseMatrix<MT2,true>
    const size_t M( A.rows()    );
    const size_t N( A.columns() );
 
-   const size_t ipos( ( remainder )?( M & size_t(-SIMDSIZE) ):( M ) );
-   BLAZE_INTERNAL_ASSERT( !remainder || ( M - ( M % SIMDSIZE ) ) == ipos, "Invalid end calculation" );
+   const size_t ipos( remainder ? prevMultiple( M, SIMDSIZE ) : M );
+   BLAZE_INTERNAL_ASSERT( ipos <= M, "Invalid end calculation" );
 
    for( size_t j=0UL; j<N; ++j )
    {

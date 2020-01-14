@@ -61,6 +61,7 @@
 #include <blaze/math/shims/Evaluate.h>
 #include <blaze/math/shims/Invert.h>
 #include <blaze/math/shims/IsZero.h>
+#include <blaze/math/shims/PrevMultiple.h>
 #include <blaze/math/SIMD.h>
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/typetraits/HasLoad.h>
@@ -307,8 +308,8 @@ inline decltype(auto) norm_backend( const DenseMatrix<MT,false>& dm, Abs abs, Po
 
    constexpr bool remainder( !usePadding || !IsPadded_v< RemoveReference_t<CT> > );
 
-   const size_t jpos( ( remainder )?( N & size_t(-SIMDSIZE) ):( N ) );
-   BLAZE_INTERNAL_ASSERT( !remainder || ( N - ( N % SIMDSIZE ) ) == jpos, "Invalid end calculation" );
+   const size_t jpos( remainder ? prevMultiple( N, SIMDSIZE ) : N );
+   BLAZE_INTERNAL_ASSERT( jpos <= N, "Invalid end calculation" );
 
    SIMDTrait_t<ET> xmm1, xmm2, xmm3, xmm4;
    ET norm{};
@@ -379,8 +380,8 @@ inline decltype(auto) norm_backend( const DenseMatrix<MT,true>& dm, Abs abs, Pow
 
    constexpr bool remainder( !usePadding || !IsPadded_v< RemoveReference_t<CT> > );
 
-   const size_t ipos( ( remainder )?( M & size_t(-SIMDSIZE) ):( M ) );
-   BLAZE_INTERNAL_ASSERT( !remainder || ( M - ( M % SIMDSIZE ) ) == ipos, "Invalid end calculation" );
+   const size_t ipos( remainder ? prevMultiple( M, SIMDSIZE ) :M );
+   BLAZE_INTERNAL_ASSERT( ipos <= M, "Invalid end calculation" );
 
    SIMDTrait_t<ET> xmm1, xmm2, xmm3, xmm4;
    ET norm{};

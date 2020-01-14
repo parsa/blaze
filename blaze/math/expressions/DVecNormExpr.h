@@ -61,6 +61,7 @@
 #include <blaze/math/shims/Evaluate.h>
 #include <blaze/math/shims/Invert.h>
 #include <blaze/math/shims/IsZero.h>
+#include <blaze/math/shims/PrevMultiple.h>
 #include <blaze/math/SIMD.h>
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/typetraits/HasLoad.h>
@@ -218,8 +219,8 @@ inline decltype(auto) norm_backend( const DenseVector<VT,TF>& dv, Abs abs, Power
 
    constexpr bool remainder( !usePadding || !IsPadded_v< RemoveReference_t<VT> > );
 
-   const size_t ipos( ( remainder )?( N & size_t(-SIMDSIZE) ):( N ) );
-   BLAZE_INTERNAL_ASSERT( !remainder || ( N - ( N % SIMDSIZE ) ) == ipos, "Invalid end calculation" );
+   const size_t ipos( remainder ? prevMultiple( N, SIMDSIZE ) : N );
+   BLAZE_INTERNAL_ASSERT( ipos <= N, "Invalid end calculation" );
 
    SIMDTrait_t<ET> xmm1, xmm2, xmm3, xmm4;
    size_t i( 0UL );

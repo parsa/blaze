@@ -43,6 +43,7 @@
 #include <blaze/math/Aliases.h>
 #include <blaze/math/Exception.h>
 #include <blaze/math/expressions/DenseVector.h>
+#include <blaze/math/shims/PrevMultiple.h>
 #include <blaze/math/SIMD.h>
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/typetraits/HasSIMDAdd.h>
@@ -200,8 +201,8 @@ inline auto dvecdvecinner( const DenseVector<VT1,true>& lhs, const DenseVector<V
 
    const size_t N( left.size() );
 
-   const size_t ipos( ( remainder )?( N & size_t(-SIMDSIZE) ):( N ) );
-   BLAZE_INTERNAL_ASSERT( !remainder || ( N - ( N % SIMDSIZE ) ) == ipos, "Invalid end calculation" );
+   const size_t ipos( remainder ? prevMultiple( N, SIMDSIZE ): N );
+   BLAZE_INTERNAL_ASSERT( ipos <= N, "Invalid end calculation" );
 
    SIMDTrait_t<MultType> xmm1, xmm2, xmm3, xmm4;
    size_t i( 0UL );

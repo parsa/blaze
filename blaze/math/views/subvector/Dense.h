@@ -59,6 +59,7 @@
 #include <blaze/math/InitializerList.h>
 #include <blaze/math/shims/Clear.h>
 #include <blaze/math/shims/IsDefault.h>
+#include <blaze/math/shims/PrevMultiple.h>
 #include <blaze/math/shims/Reset.h>
 #include <blaze/math/SIMD.h>
 #include <blaze/math/traits/CrossTrait.h>
@@ -2117,7 +2118,9 @@ inline auto Subvector<VT,unaligned,TF,true,CSAs...>::assign( const DenseVector<V
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
-   const size_t ipos( size() & size_t(-2) );
+   const size_t ipos( prevMultiple( size(), 2UL ) );
+   BLAZE_INTERNAL_ASSERT( ipos <= size(), "Invalid end calculation" );
+
    for( size_t i=0UL; i<ipos; i+=2UL ) {
       vector_[offset()+i    ] = (~rhs)[i    ];
       vector_[offset()+i+1UL] = (~rhs)[i+1UL];
@@ -2153,8 +2156,8 @@ inline auto Subvector<VT,unaligned,TF,true,CSAs...>::assign( const DenseVector<V
 
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
-   const size_t ipos( size() & size_t(-SIMDSIZE) );
-   BLAZE_INTERNAL_ASSERT( ( size() - ( size() % (SIMDSIZE) ) ) == ipos, "Invalid end calculation" );
+   const size_t ipos( prevMultiple( size(), SIMDSIZE ) );
+   BLAZE_INTERNAL_ASSERT( ipos <= size(), "Invalid end calculation" );
 
    size_t i( 0UL );
    Iterator left( begin() );
@@ -2239,7 +2242,9 @@ inline auto Subvector<VT,unaligned,TF,true,CSAs...>::addAssign( const DenseVecto
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
-   const size_t ipos( size() & size_t(-2) );
+   const size_t ipos( prevMultiple( size(), 2UL ) );
+   BLAZE_INTERNAL_ASSERT( ipos <= size(), "Invalid end calculation" );
+
    for( size_t i=0UL; i<ipos; i+=2UL ) {
       vector_[offset()+i    ] += (~rhs)[i    ];
       vector_[offset()+i+1UL] += (~rhs)[i+1UL];
@@ -2275,8 +2280,8 @@ inline auto Subvector<VT,unaligned,TF,true,CSAs...>::addAssign( const DenseVecto
 
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
-   const size_t ipos( size() & size_t(-SIMDSIZE) );
-   BLAZE_INTERNAL_ASSERT( ( size() - ( size() % (SIMDSIZE) ) ) == ipos, "Invalid end calculation" );
+   const size_t ipos( prevMultiple( size(), SIMDSIZE ) );
+   BLAZE_INTERNAL_ASSERT( ipos <= size(), "Invalid end calculation" );
 
    size_t i( 0UL );
    Iterator left( begin() );
@@ -2347,7 +2352,9 @@ inline auto Subvector<VT,unaligned,TF,true,CSAs...>::subAssign( const DenseVecto
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
-   const size_t ipos( size() & size_t(-2) );
+   const size_t ipos( prevMultiple( size(), 2UL ) );
+   BLAZE_INTERNAL_ASSERT( ipos <= size(), "Invalid end calculation" );
+
    for( size_t i=0UL; i<ipos; i+=2UL ) {
       vector_[offset()+i    ] -= (~rhs)[i    ];
       vector_[offset()+i+1UL] -= (~rhs)[i+1UL];
@@ -2383,8 +2390,8 @@ inline auto Subvector<VT,unaligned,TF,true,CSAs...>::subAssign( const DenseVecto
 
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
-   const size_t ipos( size() & size_t(-SIMDSIZE) );
-   BLAZE_INTERNAL_ASSERT( ( size() - ( size() % (SIMDSIZE) ) ) == ipos, "Invalid end calculation" );
+   const size_t ipos( prevMultiple( size(), SIMDSIZE ) );
+   BLAZE_INTERNAL_ASSERT( ipos <= size(), "Invalid end calculation" );
 
    size_t i( 0UL );
    Iterator left( begin() );
@@ -2455,7 +2462,9 @@ inline auto Subvector<VT,unaligned,TF,true,CSAs...>::multAssign( const DenseVect
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
-   const size_t ipos( size() & size_t(-2) );
+   const size_t ipos( prevMultiple( size(), 2UL ) );
+   BLAZE_INTERNAL_ASSERT( ipos <= size(), "Invalid end calculation" );
+
    for( size_t i=0UL; i<ipos; i+=2UL ) {
       vector_[offset()+i    ] *= (~rhs)[i    ];
       vector_[offset()+i+1UL] *= (~rhs)[i+1UL];
@@ -2491,8 +2500,8 @@ inline auto Subvector<VT,unaligned,TF,true,CSAs...>::multAssign( const DenseVect
 
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
-   const size_t ipos( size() & size_t(-SIMDSIZE) );
-   BLAZE_INTERNAL_ASSERT( ( size() - ( size() % (SIMDSIZE) ) ) == ipos, "Invalid end calculation" );
+   const size_t ipos( prevMultiple( size(), SIMDSIZE ) );
+   BLAZE_INTERNAL_ASSERT( ipos <= size(), "Invalid end calculation" );
 
    size_t i( 0UL );
    Iterator left( begin() );
@@ -2576,7 +2585,9 @@ inline auto Subvector<VT,unaligned,TF,true,CSAs...>::divAssign( const DenseVecto
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
-   const size_t ipos( size() & size_t(-2) );
+   const size_t ipos( prevMultiple( size(), 2UL ) );
+   BLAZE_INTERNAL_ASSERT( ipos <= size(), "Invalid end calculation" );
+
    for( size_t i=0UL; i<ipos; i+=2UL ) {
       vector_[offset()+i    ] /= (~rhs)[i    ];
       vector_[offset()+i+1UL] /= (~rhs)[i+1UL];
@@ -2612,8 +2623,8 @@ inline auto Subvector<VT,unaligned,TF,true,CSAs...>::divAssign( const DenseVecto
 
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
-   const size_t ipos( size() & size_t(-SIMDSIZE) );
-   BLAZE_INTERNAL_ASSERT( ( size() - ( size() % (SIMDSIZE) ) ) == ipos, "Invalid end calculation" );
+   const size_t ipos( prevMultiple( size(), SIMDSIZE ) );
+   BLAZE_INTERNAL_ASSERT( ipos <= size(), "Invalid end calculation" );
 
    size_t i( 0UL );
    Iterator left( begin() );
@@ -4234,7 +4245,9 @@ inline auto Subvector<VT,aligned,TF,true,CSAs...>::assign( const DenseVector<VT2
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
-   const size_t ipos( size() & size_t(-2) );
+   const size_t ipos( prevMultiple( size(), 2UL ) );
+   BLAZE_INTERNAL_ASSERT( ipos <= size(), "Invalid end calculation" );
+
    for( size_t i=0UL; i<ipos; i+=2UL ) {
       vector_[offset()+i    ] = (~rhs)[i    ];
       vector_[offset()+i+1UL] = (~rhs)[i+1UL];
@@ -4270,8 +4283,8 @@ inline auto Subvector<VT,aligned,TF,true,CSAs...>::assign( const DenseVector<VT2
 
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
-   const size_t ipos( size() & size_t(-SIMDSIZE) );
-   BLAZE_INTERNAL_ASSERT( ( size() - ( size() % (SIMDSIZE) ) ) == ipos, "Invalid end calculation" );
+   const size_t ipos( prevMultiple( size(), SIMDSIZE ) );
+   BLAZE_INTERNAL_ASSERT( ipos <= size(), "Invalid end calculation" );
 
    size_t i( 0UL );
    Iterator left( begin() );
@@ -4354,7 +4367,9 @@ inline auto Subvector<VT,aligned,TF,true,CSAs...>::addAssign( const DenseVector<
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
-   const size_t ipos( size() & size_t(-2) );
+   const size_t ipos( prevMultiple( size(), 2UL ) );
+   BLAZE_INTERNAL_ASSERT( ipos <= size(), "Invalid end calculation" );
+
    for( size_t i=0UL; i<ipos; i+=2UL ) {
       vector_[offset()+i    ] += (~rhs)[i    ];
       vector_[offset()+i+1UL] += (~rhs)[i+1UL];
@@ -4390,8 +4405,8 @@ inline auto Subvector<VT,aligned,TF,true,CSAs...>::addAssign( const DenseVector<
 
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
-   const size_t ipos( size() & size_t(-SIMDSIZE) );
-   BLAZE_INTERNAL_ASSERT( ( size() - ( size() % (SIMDSIZE) ) ) == ipos, "Invalid end calculation" );
+   const size_t ipos( prevMultiple( size(), SIMDSIZE ) );
+   BLAZE_INTERNAL_ASSERT( ipos <= size(), "Invalid end calculation" );
 
    size_t i( 0UL );
    Iterator left( begin() );
@@ -4462,7 +4477,9 @@ inline auto Subvector<VT,aligned,TF,true,CSAs...>::subAssign( const DenseVector<
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
-   const size_t ipos( size() & size_t(-2) );
+   const size_t ipos( prevMultiple( size(), 2UL ) );
+   BLAZE_INTERNAL_ASSERT( ipos <= size(), "Invalid end calculation" );
+
    for( size_t i=0UL; i<ipos; i+=2UL ) {
       vector_[offset()+i    ] -= (~rhs)[i    ];
       vector_[offset()+i+1UL] -= (~rhs)[i+1UL];
@@ -4498,8 +4515,8 @@ inline auto Subvector<VT,aligned,TF,true,CSAs...>::subAssign( const DenseVector<
 
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
-   const size_t ipos( size() & size_t(-SIMDSIZE) );
-   BLAZE_INTERNAL_ASSERT( ( size() - ( size() % (SIMDSIZE) ) ) == ipos, "Invalid end calculation" );
+   const size_t ipos( prevMultiple( size(), SIMDSIZE ) );
+   BLAZE_INTERNAL_ASSERT( ipos <= size(), "Invalid end calculation" );
 
    size_t i( 0UL );
    Iterator left( begin() );
@@ -4570,7 +4587,9 @@ inline auto Subvector<VT,aligned,TF,true,CSAs...>::multAssign( const DenseVector
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
-   const size_t ipos( size() & size_t(-2) );
+   const size_t ipos( prevMultiple( size(), 2UL ) );
+   BLAZE_INTERNAL_ASSERT( ipos <= size(), "Invalid end calculation" );
+
    for( size_t i=0UL; i<ipos; i+=2UL ) {
       vector_[offset()+i    ] *= (~rhs)[i    ];
       vector_[offset()+i+1UL] *= (~rhs)[i+1UL];
@@ -4606,8 +4625,8 @@ inline auto Subvector<VT,aligned,TF,true,CSAs...>::multAssign( const DenseVector
 
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
-   const size_t ipos( size() & size_t(-SIMDSIZE) );
-   BLAZE_INTERNAL_ASSERT( ( size() - ( size() % (SIMDSIZE) ) ) == ipos, "Invalid end calculation" );
+   const size_t ipos( prevMultiple( size(), SIMDSIZE ) );
+   BLAZE_INTERNAL_ASSERT( ipos <= size(), "Invalid end calculation" );
 
    size_t i( 0UL );
    Iterator left( begin() );
@@ -4691,7 +4710,9 @@ inline auto Subvector<VT,aligned,TF,true,CSAs...>::divAssign( const DenseVector<
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
-   const size_t ipos( size() & size_t(-2) );
+   const size_t ipos( prevMultiple( size(), 2UL ) );
+   BLAZE_INTERNAL_ASSERT( ipos <= size(), "Invalid end calculation" );
+
    for( size_t i=0UL; i<ipos; i+=2UL ) {
       vector_[offset()+i    ] /= (~rhs)[i    ];
       vector_[offset()+i+1UL] /= (~rhs)[i+1UL];
@@ -4727,8 +4748,8 @@ inline auto Subvector<VT,aligned,TF,true,CSAs...>::divAssign( const DenseVector<
 
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
-   const size_t ipos( size() & size_t(-SIMDSIZE) );
-   BLAZE_INTERNAL_ASSERT( ( size() - ( size() % (SIMDSIZE) ) ) == ipos, "Invalid end calculation" );
+   const size_t ipos( prevMultiple( size(), SIMDSIZE ) );
+   BLAZE_INTERNAL_ASSERT( ipos <= size(), "Invalid end calculation" );
 
    size_t i( 0UL );
    Iterator left( begin() );

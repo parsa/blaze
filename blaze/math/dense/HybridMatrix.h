@@ -55,6 +55,7 @@
 #include <blaze/math/shims/Conjugate.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/shims/NextMultiple.h>
+#include <blaze/math/shims/PrevMultiple.h>
 #include <blaze/math/shims/Serial.h>
 #include <blaze/math/SIMD.h>
 #include <blaze/math/traits/AddTrait.h>
@@ -2726,8 +2727,8 @@ inline auto HybridMatrix<Type,M,N,SO>::assign( const DenseMatrix<MT,SO2>& rhs )
 
    constexpr bool remainder( !usePadding || !IsPadded_v<MT> );
 
-   const size_t jpos( ( remainder )?( n_ & size_t(-SIMDSIZE) ):( n_ ) );
-   BLAZE_INTERNAL_ASSERT( !remainder || ( n_ - ( n_ % (SIMDSIZE) ) ) == jpos, "Invalid end calculation" );
+   const size_t jpos( remainder ? prevMultiple( n_, SIMDSIZE ) : n_ );
+   BLAZE_INTERNAL_ASSERT( jpos <= n_, "Invalid end calculation" );
 
    for( size_t i=0UL; i<m_; ++i )
    {
@@ -2877,15 +2878,15 @@ inline auto HybridMatrix<Type,M,N,SO>::addAssign( const DenseMatrix<MT,SO2>& rhs
    for( size_t i=0UL; i<m_; ++i )
    {
       const size_t jbegin( ( IsUpper_v<MT> )
-                           ?( ( IsStrictlyUpper_v<MT> ? i+1UL : i ) & size_t(-SIMDSIZE) )
+                           ?( prevMultiple( ( IsStrictlyUpper_v<MT> ? i+1UL : i ), SIMDSIZE ) )
                            :( 0UL ) );
       const size_t jend  ( ( IsLower_v<MT> )
                            ?( IsStrictlyLower_v<MT> ? i : i+1UL )
                            :( n_ ) );
       BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
-      const size_t jpos( ( remainder )?( jend & size_t(-SIMDSIZE) ):( jend ) );
-      BLAZE_INTERNAL_ASSERT( !remainder || ( jend - ( jend % (SIMDSIZE) ) ) == jpos, "Invalid end calculation" );
+      const size_t jpos( remainder ? prevMultiple( jend, SIMDSIZE ) : jend );
+      BLAZE_INTERNAL_ASSERT( jpos <= jend, "Invalid end calculation" );
 
       size_t j( jbegin );
 
@@ -3033,15 +3034,15 @@ inline auto HybridMatrix<Type,M,N,SO>::subAssign( const DenseMatrix<MT,SO2>& rhs
    for( size_t i=0UL; i<m_; ++i )
    {
       const size_t jbegin( ( IsUpper_v<MT> )
-                           ?( ( IsStrictlyUpper_v<MT> ? i+1UL : i ) & size_t(-SIMDSIZE) )
+                           ?( prevMultiple( ( IsStrictlyUpper_v<MT> ? i+1UL : i ), SIMDSIZE ) )
                            :( 0UL ) );
       const size_t jend  ( ( IsLower_v<MT> )
                            ?( IsStrictlyLower_v<MT> ? i : i+1UL )
                            :( n_ ) );
       BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
-      const size_t jpos( ( remainder )?( jend & size_t(-SIMDSIZE) ):( jend ) );
-      BLAZE_INTERNAL_ASSERT( !remainder || ( jend - ( jend % (SIMDSIZE) ) ) == jpos, "Invalid end calculation" );
+      const size_t jpos( remainder ? prevMultiple( jend, SIMDSIZE ) : jend );
+      BLAZE_INTERNAL_ASSERT( jpos <= jend, "Invalid end calculation" );
 
       size_t j( jbegin );
 
@@ -3171,8 +3172,8 @@ inline auto HybridMatrix<Type,M,N,SO>::schurAssign( const DenseMatrix<MT,SO2>& r
 
    for( size_t i=0UL; i<m_; ++i )
    {
-      const size_t jpos( ( remainder )?( n_ & size_t(-SIMDSIZE) ):( n_ ) );
-      BLAZE_INTERNAL_ASSERT( !remainder || ( n_ - ( n_ % (SIMDSIZE) ) ) == jpos, "Invalid end calculation" );
+      const size_t jpos( remainder ? prevMultiple( n_, SIMDSIZE ) : n_ );
+      BLAZE_INTERNAL_ASSERT( jpos <= n_, "Invalid end calculation" );
 
       size_t j( 0UL );
 
@@ -5758,8 +5759,8 @@ inline auto HybridMatrix<Type,M,N,true>::assign( const DenseMatrix<MT,SO>& rhs )
 
    constexpr bool remainder( !usePadding || !IsPadded_v<MT> );
 
-   const size_t ipos( ( remainder )?( m_ & size_t(-SIMDSIZE) ):( m_ ) );
-   BLAZE_INTERNAL_ASSERT( !remainder || ( m_ - ( m_ % (SIMDSIZE) ) ) == ipos, "Invalid end calculation" );
+   const size_t ipos( remainder ? prevMultiple( m_, SIMDSIZE ) : m_ );
+   BLAZE_INTERNAL_ASSERT( ipos <= m_, "Invalid end calculation" );
 
    for( size_t j=0UL; j<n_; ++j )
    {
@@ -5913,15 +5914,15 @@ inline auto HybridMatrix<Type,M,N,true>::addAssign( const DenseMatrix<MT,SO>& rh
    for( size_t j=0UL; j<n_; ++j )
    {
       const size_t ibegin( ( IsLower_v<MT> )
-                           ?( ( IsStrictlyLower_v<MT> ? j+1UL : j ) & size_t(-SIMDSIZE) )
+                           ?( prevMultiple( ( IsStrictlyLower_v<MT> ? j+1UL : j ), SIMDSIZE ) )
                            :( 0UL ) );
       const size_t iend  ( ( IsUpper_v<MT> )
                            ?( IsStrictlyUpper_v<MT> ? j : j+1UL )
                            :( m_ ) );
       BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
 
-      const size_t ipos( ( remainder )?( iend & size_t(-SIMDSIZE) ):( iend ) );
-      BLAZE_INTERNAL_ASSERT( !remainder || ( iend - ( iend % (SIMDSIZE) ) ) == ipos, "Invalid end calculation" );
+      const size_t ipos( remainder ? prevMultiple( iend, SIMDSIZE ) : iend );
+      BLAZE_INTERNAL_ASSERT( ipos <= iend, "Invalid end calculation" );
 
       size_t i( ibegin );
 
@@ -6073,15 +6074,15 @@ inline auto HybridMatrix<Type,M,N,true>::subAssign( const DenseMatrix<MT,SO>& rh
    for( size_t j=0UL; j<n_; ++j )
    {
       const size_t ibegin( ( IsLower_v<MT> )
-                           ?( ( IsStrictlyLower_v<MT> ? j+1UL : j ) & size_t(-SIMDSIZE) )
+                           ?( prevMultiple( ( IsStrictlyLower_v<MT> ? j+1UL : j ), SIMDSIZE ) )
                            :( 0UL ) );
       const size_t iend  ( ( IsUpper_v<MT> )
                            ?( IsStrictlyUpper_v<MT> ? j : j+1UL )
                            :( m_ ) );
       BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
 
-      const size_t ipos( ( remainder )?( iend & size_t(-SIMDSIZE) ):( iend ) );
-      BLAZE_INTERNAL_ASSERT( !remainder || ( iend - ( iend % (SIMDSIZE) ) ) == ipos, "Invalid end calculation" );
+      const size_t ipos( remainder ? prevMultiple( iend, SIMDSIZE ) : iend );
+      BLAZE_INTERNAL_ASSERT( ipos <= iend, "Invalid end calculation" );
 
       size_t i( ibegin );
 
@@ -6215,8 +6216,8 @@ inline auto HybridMatrix<Type,M,N,true>::schurAssign( const DenseMatrix<MT,SO>& 
 
    for( size_t j=0UL; j<n_; ++j )
    {
-      const size_t ipos( ( remainder )?( m_ & size_t(-SIMDSIZE) ):( m_ ) );
-      BLAZE_INTERNAL_ASSERT( !remainder || ( m_ - ( m_ % (SIMDSIZE) ) ) == ipos, "Invalid end calculation" );
+      const size_t ipos( remainder ? prevMultiple( m_, SIMDSIZE ) : m_ );
+      BLAZE_INTERNAL_ASSERT( ipos <= m_, "Invalid end calculation" );
 
       size_t i( 0UL );
 

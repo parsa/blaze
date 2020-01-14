@@ -63,6 +63,7 @@
 #include <blaze/math/functors/DeclUpp.h>
 #include <blaze/math/functors/Noop.h>
 #include <blaze/math/shims/Conjugate.h>
+#include <blaze/math/shims/PrevMultiple.h>
 #include <blaze/math/shims/Reset.h>
 #include <blaze/math/shims/Serial.h>
 #include <blaze/math/SIMD.h>
@@ -1099,14 +1100,14 @@ class DMatTDMatMultExpr
          for( ; (j+3UL) <= jend; j+=3UL )
          {
             const size_t kbegin( ( IsUpper_v<MT4> )
-                                 ?( ( IsLower_v<MT5> ? max( i, j ) : i ) & size_t(-SIMDSIZE) )
-                                 :( IsLower_v<MT5> ? ( j & size_t(-SIMDSIZE) ) : 0UL ) );
+                                 ?( prevMultiple( ( IsLower_v<MT5> ? max( i, j ) : i ), SIMDSIZE ) )
+                                 :( IsLower_v<MT5> ? prevMultiple( j, SIMDSIZE ) : 0UL ) );
             const size_t kend( ( IsLower_v<MT4> )
                                ?( IsUpper_v<MT5> ? min( i+3UL, j+3UL ) : ( i+3UL ) )
                                :( IsUpper_v<MT5> ? ( j+3UL ) : K ) );
 
-            const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
-            BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
+            const size_t kpos( remainder ? prevMultiple( kend, SIMDSIZE ) : kend );
+            BLAZE_INTERNAL_ASSERT( kpos <= kend, "Invalid end calculation" );
 
             size_t k( kbegin );
 
@@ -1219,14 +1220,14 @@ class DMatTDMatMultExpr
          for( ; (j+2UL) <= jend; j+=2UL )
          {
             const size_t kbegin( ( IsUpper_v<MT4> )
-                                 ?( ( IsLower_v<MT5> ? max( i, j ) : i ) & size_t(-SIMDSIZE) )
-                                 :( IsLower_v<MT5> ? ( j & size_t(-SIMDSIZE) ) : 0UL ) );
+                                 ?( prevMultiple( ( IsLower_v<MT5> ? max( i, j ) : i ), SIMDSIZE ) )
+                                 :( IsLower_v<MT5> ? prevMultiple( j, SIMDSIZE ) : 0UL ) );
             const size_t kend( ( IsLower_v<MT4> )
                                ?( IsUpper_v<MT5> ? min( i+3UL, j+2UL ) : ( i+3UL ) )
                                :( IsUpper_v<MT5> ? ( j+2UL ) : K ) );
 
-            const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
-            BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
+            const size_t kpos( remainder ? prevMultiple( kend, SIMDSIZE ) : kend );
+            BLAZE_INTERNAL_ASSERT( kpos <= kend, "Invalid end calculation" );
 
             size_t k( kbegin );
 
@@ -1313,12 +1314,12 @@ class DMatTDMatMultExpr
          if( j < jend )
          {
             const size_t kbegin( ( IsUpper_v<MT4> )
-                                 ?( ( IsLower_v<MT5> ? max( i, j ) : i ) & size_t(-SIMDSIZE) )
-                                 :( IsLower_v<MT5> ? ( j & size_t(-SIMDSIZE) ) : 0UL ) );
+                                 ?( prevMultiple( ( IsLower_v<MT5> ? max( i, j ) : i ), SIMDSIZE ) )
+                                 :( IsLower_v<MT5> ? prevMultiple( j, SIMDSIZE ) : 0UL ) );
             const size_t kend( ( IsLower_v<MT4> )?( i+3UL ):( K ) );
 
-            const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
-            BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
+            const size_t kpos( remainder ? prevMultiple( kend, SIMDSIZE ) : kend );
+            BLAZE_INTERNAL_ASSERT( kpos <= kend, "Invalid end calculation" );
 
             size_t k( kbegin );
 
@@ -1402,14 +1403,14 @@ class DMatTDMatMultExpr
          for( ; (j+4UL) <= jend; j+=4UL )
          {
             const size_t kbegin( ( IsUpper_v<MT4> )
-                                 ?( ( IsLower_v<MT5> ? max( i, j ) : i ) & size_t(-SIMDSIZE) )
-                                 :( IsLower_v<MT5> ? ( j & size_t(-SIMDSIZE) ) : 0UL ) );
+                                 ?( prevMultiple( ( IsLower_v<MT5> ? max( i, j ) : i ), SIMDSIZE ) )
+                                 :( IsLower_v<MT5> ? prevMultiple( j, SIMDSIZE ) : 0UL ) );
             const size_t kend( ( IsLower_v<MT4> )
                                ?( IsUpper_v<MT5> ? min( i+2UL, j+4UL ) : ( i+2UL ) )
                                :( IsUpper_v<MT5> ? ( j+4UL ) : K ) );
 
-            const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
-            BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
+            const size_t kpos( remainder ? prevMultiple( kend, SIMDSIZE ) : kend );
+            BLAZE_INTERNAL_ASSERT( kpos <= kend, "Invalid end calculation" );
 
             size_t k( kbegin );
 
@@ -1514,14 +1515,14 @@ class DMatTDMatMultExpr
          for( ; (j+2UL) <= jend; j+=2UL )
          {
             const size_t kbegin( ( IsUpper_v<MT4> )
-                                 ?( ( IsLower_v<MT5> ? max( i, j ) : i ) & size_t(-SIMDSIZE) )
-                                 :( IsLower_v<MT5> ? ( j & size_t(-SIMDSIZE) ) : 0UL ) );
+                                 ?( prevMultiple( ( IsLower_v<MT5> ? max( i, j ) : i ), SIMDSIZE ) )
+                                 :( IsLower_v<MT5> ? prevMultiple( j, SIMDSIZE ) : 0UL ) );
             const size_t kend( ( IsLower_v<MT4> )
                                ?( IsUpper_v<MT5> ? min( i+2UL, j+2UL ) : ( i+2UL ) )
                                :( IsUpper_v<MT5> ? ( j+2UL ) : K ) );
 
-            const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
-            BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
+            const size_t kpos( remainder ? prevMultiple( kend, SIMDSIZE ) : kend );
+            BLAZE_INTERNAL_ASSERT( kpos <= kend, "Invalid end calculation" );
 
             size_t k( kbegin );
 
@@ -1590,12 +1591,12 @@ class DMatTDMatMultExpr
          if( j < jend )
          {
             const size_t kbegin( ( IsUpper_v<MT4> )
-                                 ?( ( IsLower_v<MT5> ? max( i, j ) : i ) & size_t(-SIMDSIZE) )
-                                 :( IsLower_v<MT5> ? ( j & size_t(-SIMDSIZE) ) : 0UL ) );
+                                 ?( prevMultiple( ( IsLower_v<MT5> ? max( i, j ) : i ), SIMDSIZE ) )
+                                 :( IsLower_v<MT5> ? prevMultiple( j, SIMDSIZE ) : 0UL ) );
             const size_t kend( ( IsLower_v<MT4> )?( i+2UL ):( K ) );
 
-            const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
-            BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
+            const size_t kpos( remainder ? prevMultiple( kend, SIMDSIZE ) : kend );
+            BLAZE_INTERNAL_ASSERT( kpos <= kend, "Invalid end calculation" );
 
             size_t k( kbegin );
 
@@ -1668,12 +1669,12 @@ class DMatTDMatMultExpr
          for( ; !( LOW && UPP ) && (j+4UL) <= jend; j+=4UL )
          {
             const size_t kbegin( ( IsUpper_v<MT4> )
-                                 ?( ( IsLower_v<MT5> ? max( i, j ) : i ) & size_t(-SIMDSIZE) )
-                                 :( IsLower_v<MT5> ? ( j & size_t(-SIMDSIZE) ) : 0UL ) );
+                                 ?( prevMultiple( ( IsLower_v<MT5> ? max( i, j ) : i ), SIMDSIZE ) )
+                                 :( IsLower_v<MT5> ? prevMultiple( j, SIMDSIZE ) : 0UL ) );
             const size_t kend( ( IsUpper_v<MT5> )?( j+4UL ):( K ) );
 
-            const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
-            BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
+            const size_t kpos( remainder ? prevMultiple( kend, SIMDSIZE ) : kend );
+            BLAZE_INTERNAL_ASSERT( kpos <= kend, "Invalid end calculation" );
 
             size_t k( kbegin );
 
@@ -1736,12 +1737,12 @@ class DMatTDMatMultExpr
          for( ; !( LOW && UPP ) && (j+2UL) <= jend; j+=2UL )
          {
             const size_t kbegin( ( IsUpper_v<MT4> )
-                                 ?( ( IsLower_v<MT5> ? max( i, j ) : i ) & size_t(-SIMDSIZE) )
-                                 :( IsLower_v<MT5> ? ( j & size_t(-SIMDSIZE) ) : 0UL ) );
+                                 ?( prevMultiple( ( IsLower_v<MT5> ? max( i, j ) : i ), SIMDSIZE ) )
+                                 :( IsLower_v<MT5> ? prevMultiple( j, SIMDSIZE ) : 0UL ) );
             const size_t kend( ( IsUpper_v<MT5> )?( j+2UL ):( K ) );
 
-            const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
-            BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
+            const size_t kpos( remainder ? prevMultiple( kend, SIMDSIZE ) : kend );
+            BLAZE_INTERNAL_ASSERT( kpos <= kend, "Invalid end calculation" );
 
             size_t k( kbegin );
 
@@ -1788,11 +1789,11 @@ class DMatTDMatMultExpr
          if( j < jend )
          {
             const size_t kbegin( ( IsUpper_v<MT4> )
-                                 ?( ( IsLower_v<MT5> ? max( i, j ) : i ) & size_t(-SIMDSIZE) )
-                                 :( IsLower_v<MT5> ? ( j & size_t(-SIMDSIZE) ) : 0UL ) );
+                                 ?( prevMultiple( ( IsLower_v<MT5> ? max( i, j ) : i ), SIMDSIZE ) )
+                                 :( IsLower_v<MT5> ? prevMultiple( j, SIMDSIZE ) : 0UL ) );
 
-            const size_t kpos( remainder ? ( K & size_t(-SIMDSIZE) ) : K );
-            BLAZE_INTERNAL_ASSERT( !remainder || ( K - ( K % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
+            const size_t kpos( remainder ? prevMultiple( K, SIMDSIZE ) : K );
+            BLAZE_INTERNAL_ASSERT( kpos <= K, "Invalid end calculation" );
 
             size_t k( kbegin );
 
@@ -1894,14 +1895,14 @@ class DMatTDMatMultExpr
          for( ; (j+2UL) <= jend; j+=2UL )
          {
             const size_t kbegin( ( IsUpper_v<MT4> )
-                                 ?( ( IsLower_v<MT5> ? max( i, j ) : i ) & size_t(-SIMDSIZE) )
-                                 :( IsLower_v<MT5> ? ( j & size_t(-SIMDSIZE) ) : 0UL ) );
+                                 ?( prevMultiple( ( IsLower_v<MT5> ? max( i, j ) : i ), SIMDSIZE ) )
+                                 :( IsLower_v<MT5> ? prevMultiple( j, SIMDSIZE ) : 0UL ) );
             const size_t kend( ( IsLower_v<MT4> )
                                ?( IsUpper_v<MT5> ? min( i+4UL, j+2UL ) : ( i+4UL ) )
                                :( IsUpper_v<MT5> ? ( j+2UL ) : K ) );
 
-            const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
-            BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
+            const size_t kpos( remainder ? prevMultiple( kend, SIMDSIZE ) : kend );
+            BLAZE_INTERNAL_ASSERT( kpos <= kend, "Invalid end calculation" );
 
             size_t k( kbegin );
 
@@ -2006,12 +2007,12 @@ class DMatTDMatMultExpr
          if( j < jend )
          {
             const size_t kbegin( ( IsUpper_v<MT4> )
-                                 ?( ( IsLower_v<MT5> ? max( i, j ) : i ) & size_t(-SIMDSIZE) )
-                                 :( IsLower_v<MT5> ? ( j & size_t(-SIMDSIZE) ) : 0UL ) );
+                                 ?( prevMultiple( ( IsLower_v<MT5> ? max( i, j ) : i ), SIMDSIZE ) )
+                                 :( IsLower_v<MT5> ? prevMultiple( j, SIMDSIZE ) : 0UL ) );
             const size_t kend( ( IsLower_v<MT4> )?( i+4UL ):( K ) );
 
-            const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
-            BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
+            const size_t kpos( remainder ? prevMultiple( kend, SIMDSIZE ) : kend );
+            BLAZE_INTERNAL_ASSERT( kpos <= kend, "Invalid end calculation" );
 
             size_t k( kbegin );
 
@@ -2106,14 +2107,14 @@ class DMatTDMatMultExpr
          for( ; (j+3UL) <= jend; j+=3UL )
          {
             const size_t kbegin( ( IsUpper_v<MT4> )
-                                 ?( ( IsLower_v<MT5> ? max( i, j ) : i ) & size_t(-SIMDSIZE) )
-                                 :( IsLower_v<MT5> ? ( j & size_t(-SIMDSIZE) ) : 0UL ) );
+                                 ?( prevMultiple( ( IsLower_v<MT5> ? max( i, j ) : i ), SIMDSIZE ) )
+                                 :( IsLower_v<MT5> ? prevMultiple( j, SIMDSIZE ) : 0UL ) );
             const size_t kend( ( IsLower_v<MT4> )
                                ?( IsUpper_v<MT5> ? min( i+3UL, j+3UL ) : ( i+3UL ) )
                                :( IsUpper_v<MT5> ? ( j+3UL ) : K ) );
 
-            const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
-            BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
+            const size_t kpos( remainder ? prevMultiple( kend, SIMDSIZE ) : kend );
+            BLAZE_INTERNAL_ASSERT( kpos <= kend, "Invalid end calculation" );
 
             size_t k( kbegin );
 
@@ -2226,14 +2227,14 @@ class DMatTDMatMultExpr
          for( ; (j+2UL) <= jend; j+=2UL )
          {
             const size_t kbegin( ( IsUpper_v<MT4> )
-                                 ?( ( IsLower_v<MT5> ? max( i, j ) : i ) & size_t(-SIMDSIZE) )
-                                 :( IsLower_v<MT5> ? ( j & size_t(-SIMDSIZE) ) : 0UL ) );
+                                 ?( prevMultiple( ( IsLower_v<MT5> ? max( i, j ) : i ), SIMDSIZE ) )
+                                 :( IsLower_v<MT5> ? prevMultiple( j, SIMDSIZE ) : 0UL ) );
             const size_t kend( ( IsLower_v<MT4> )
                                ?( IsUpper_v<MT5> ? min( i+3UL, j+2UL ) : ( i+3UL ) )
                                :( IsUpper_v<MT5> ? ( j+2UL ) : K ) );
 
-            const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
-            BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
+            const size_t kpos( remainder ? prevMultiple( kend, SIMDSIZE ) : kend );
+            BLAZE_INTERNAL_ASSERT( kpos <= kend, "Invalid end calculation" );
 
             size_t k( kbegin );
 
@@ -2320,12 +2321,12 @@ class DMatTDMatMultExpr
          if( j < jend )
          {
             const size_t kbegin( ( IsUpper_v<MT4> )
-                                 ?( ( IsLower_v<MT5> ? max( i, j ) : i ) & size_t(-SIMDSIZE) )
-                                 :( IsLower_v<MT5> ? ( j & size_t(-SIMDSIZE) ) : 0UL ) );
+                                 ?( prevMultiple( ( IsLower_v<MT5> ? max( i, j ) : i ), SIMDSIZE ) )
+                                 :( IsLower_v<MT5> ? prevMultiple( j, SIMDSIZE ) : 0UL ) );
             const size_t kend( ( IsLower_v<MT4> )?( i+3UL ):( K ) );
 
-            const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
-            BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
+            const size_t kpos( remainder ? prevMultiple( kend, SIMDSIZE ) : kend );
+            BLAZE_INTERNAL_ASSERT( kpos <= kend, "Invalid end calculation" );
 
             size_t k( kbegin );
 
@@ -2409,14 +2410,14 @@ class DMatTDMatMultExpr
          for( ; (j+2UL) <= jend; j+=2UL )
          {
             const size_t kbegin( ( IsUpper_v<MT4> )
-                                 ?( ( IsLower_v<MT5> ? max( i, j ) : i ) & size_t(-SIMDSIZE) )
-                                 :( IsLower_v<MT5> ? ( j & size_t(-SIMDSIZE) ) : 0UL ) );
+                                 ?( prevMultiple( ( IsLower_v<MT5> ? max( i, j ) : i ), SIMDSIZE ) )
+                                 :( IsLower_v<MT5> ? prevMultiple( j, SIMDSIZE ) : 0UL ) );
             const size_t kend( ( IsLower_v<MT4> )
                                ?( IsUpper_v<MT5> ? min( i+2UL, j+2UL ) : ( i+2UL ) )
                                :( IsUpper_v<MT5> ? ( j+2UL ) : K ) );
 
-            const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
-            BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
+            const size_t kpos( remainder ? prevMultiple( kend, SIMDSIZE ) : kend );
+            BLAZE_INTERNAL_ASSERT( kpos <= kend, "Invalid end calculation" );
 
             size_t k( kbegin );
 
@@ -2485,12 +2486,12 @@ class DMatTDMatMultExpr
          if( j < jend )
          {
             const size_t kbegin( ( IsUpper_v<MT4> )
-                                 ?( ( IsLower_v<MT5> ? max( i, j ) : i ) & size_t(-SIMDSIZE) )
-                                 :( IsLower_v<MT5> ? ( j & size_t(-SIMDSIZE) ) : 0UL ) );
+                                 ?( prevMultiple( ( IsLower_v<MT5> ? max( i, j ) : i ), SIMDSIZE ) )
+                                 :( IsLower_v<MT5> ? prevMultiple( j, SIMDSIZE ) : 0UL ) );
             const size_t kend( ( IsLower_v<MT4> )?( i+2UL ):( K ) );
 
-            const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
-            BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
+            const size_t kpos( remainder ? prevMultiple( kend, SIMDSIZE ) : kend );
+            BLAZE_INTERNAL_ASSERT( kpos <= kend, "Invalid end calculation" );
 
             size_t k( kbegin );
 
@@ -2563,12 +2564,12 @@ class DMatTDMatMultExpr
          for( ; !( LOW && UPP ) && (j+2UL) <= jend; j+=2UL )
          {
             const size_t kbegin( ( IsUpper_v<MT4> )
-                                 ?( ( IsLower_v<MT5> ? max( i, j ) : i ) & size_t(-SIMDSIZE) )
-                                 :( IsLower_v<MT5> ? ( j & size_t(-SIMDSIZE) ) : 0UL ) );
+                                 ?( prevMultiple( ( IsLower_v<MT5> ? max( i, j ) : i ), SIMDSIZE ) )
+                                 :( IsLower_v<MT5> ? prevMultiple( j, SIMDSIZE ) : 0UL ) );
             const size_t kend( ( IsUpper_v<MT5> )?( j+2UL ):( K ) );
 
-            const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
-            BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
+            const size_t kpos( remainder ? prevMultiple( kend, SIMDSIZE ) : kend );
+            BLAZE_INTERNAL_ASSERT( kpos <= kend, "Invalid end calculation" );
 
             size_t k( kbegin );
 
@@ -2615,11 +2616,11 @@ class DMatTDMatMultExpr
          if( j < jend )
          {
             const size_t kbegin( ( IsUpper_v<MT4> )
-                                 ?( ( IsLower_v<MT5> ? max( i, j ) : i ) & size_t(-SIMDSIZE) )
-                                 :( IsLower_v<MT5> ? ( j & size_t(-SIMDSIZE) ) : 0UL ) );
+                                 ?( prevMultiple( ( IsLower_v<MT5> ? max( i, j ) : i ), SIMDSIZE ) )
+                                 :( IsLower_v<MT5> ? prevMultiple( j, SIMDSIZE ) : 0UL ) );
 
-            const size_t kpos( remainder ? ( K & size_t(-SIMDSIZE) ) : K );
-            BLAZE_INTERNAL_ASSERT( !remainder || ( K - ( K % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
+            const size_t kpos( remainder ? prevMultiple( K, SIMDSIZE ) : K );
+            BLAZE_INTERNAL_ASSERT( kpos <= K, "Invalid end calculation" );
 
             size_t k( kbegin );
 
@@ -2969,7 +2970,8 @@ class DMatTDMatMultExpr
             BLAZE_INTERNAL_ASSERT( kbegin < kend, "Invalid loop indices detected" );
 
             const size_t knum( kend - kbegin );
-            const size_t kpos( kbegin + ( knum & size_t(-2) ) );
+            const size_t kpos( kbegin + prevMultiple( knum, 2UL ) );
+            BLAZE_INTERNAL_ASSERT( kpos <= kbegin+knum, "Invalid end calculation" );
 
             for( size_t k=kbegin; k<kpos; k+=2UL ) {
                C(i,j) += A(i,k    ) * B(k    ,j);
@@ -3059,7 +3061,8 @@ class DMatTDMatMultExpr
             BLAZE_INTERNAL_ASSERT( kbegin < kend, "Invalid loop indices detected" );
 
             const size_t knum( kend - kbegin );
-            const size_t kpos( kbegin + ( knum & size_t(-2) ) );
+            const size_t kpos( kbegin + prevMultiple( knum, 2UL ) );
+            BLAZE_INTERNAL_ASSERT( kpos <= kbegin+knum, "Invalid end calculation" );
 
             for( size_t k=kbegin; k<kpos; k+=2UL ) {
                C(i,j) += A(i,k    ) * B(k    ,j);
@@ -3108,7 +3111,8 @@ class DMatTDMatMultExpr
          BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
          const size_t jnum( jend - jbegin );
-         const size_t jpos( jbegin + ( jnum & size_t(-2) ) );
+         const size_t jpos( jbegin + prevMultiple( jnum, 2UL ) );
+         BLAZE_INTERNAL_ASSERT( jpos <= jbegin+jnum, "Invalid end calculation" );
 
          for( size_t j=jbegin; j<jpos; j+=2UL ) {
             C(i,j    ) += A(i,j    ) * B(j    ,j    );
@@ -3252,7 +3256,8 @@ class DMatTDMatMultExpr
          BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
 
          const size_t inum( iend - ibegin );
-         const size_t ipos( ibegin + ( inum & size_t(-2) ) );
+         const size_t ipos( ibegin + prevMultiple( inum, 2UL ) );
+         BLAZE_INTERNAL_ASSERT( ipos <= ibegin+inum, "Invalid end calculation" );
 
          for( size_t i=ibegin; i<ipos; i+=2UL ) {
             C(i    ,j) += A(i    ,i    ) * B(i    ,j);
@@ -3357,14 +3362,14 @@ class DMatTDMatMultExpr
          for( ; (j+3UL) <= jend; j+=3UL )
          {
             const size_t kbegin( ( IsUpper_v<MT4> )
-                                 ?( ( IsLower_v<MT5> ? max( i, j ) : i ) & size_t(-SIMDSIZE) )
-                                 :( IsLower_v<MT5> ? ( j & size_t(-SIMDSIZE) ) : 0UL ) );
+                                 ?( prevMultiple( ( IsLower_v<MT5> ? max( i, j ) : i ), SIMDSIZE ) )
+                                 :( IsLower_v<MT5> ? prevMultiple( j, SIMDSIZE ) : 0UL ) );
             const size_t kend( ( IsLower_v<MT4> )
                                ?( IsUpper_v<MT5> ? min( i+3UL, j+3UL ) : ( i+3UL ) )
                                :( IsUpper_v<MT5> ? ( j+3UL ) : K ) );
 
-            const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
-            BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
+            const size_t kpos( remainder ? prevMultiple( kend, SIMDSIZE ) : kend );
+            BLAZE_INTERNAL_ASSERT( kpos <= kend, "Invalid end calculation" );
 
             size_t k( kbegin );
 
@@ -3445,14 +3450,14 @@ class DMatTDMatMultExpr
          for( ; (j+2UL) <= jend; j+=2UL )
          {
             const size_t kbegin( ( IsUpper_v<MT4> )
-                                 ?( ( IsLower_v<MT5> ? max( i, j ) : i ) & size_t(-SIMDSIZE) )
-                                 :( IsLower_v<MT5> ? ( j & size_t(-SIMDSIZE) ) : 0UL ) );
+                                 ?( prevMultiple( ( IsLower_v<MT5> ? max( i, j ) : i ), SIMDSIZE ) )
+                                 :( IsLower_v<MT5> ? prevMultiple( j, SIMDSIZE ) : 0UL ) );
             const size_t kend( ( IsLower_v<MT4> )
                                ?( IsUpper_v<MT5> ? min( i+3UL, j+2UL ) : ( i+3UL ) )
                                :( IsUpper_v<MT5> ? ( j+2UL ) : K ) );
 
-            const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
-            BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
+            const size_t kpos( remainder ? prevMultiple( kend, SIMDSIZE ) : kend );
+            BLAZE_INTERNAL_ASSERT( kpos <= kend, "Invalid end calculation" );
 
             size_t k( kbegin );
 
@@ -3516,12 +3521,12 @@ class DMatTDMatMultExpr
          if( j < jend )
          {
             const size_t kbegin( ( IsUpper_v<MT4> )
-                                 ?( ( IsLower_v<MT5> ? max( i, j ) : i ) & size_t(-SIMDSIZE) )
-                                 :( IsLower_v<MT5> ? ( j & size_t(-SIMDSIZE) ) : 0UL ) );
+                                 ?( prevMultiple( ( IsLower_v<MT5> ? max( i, j ) : i ), SIMDSIZE ) )
+                                 :( IsLower_v<MT5> ? prevMultiple( j, SIMDSIZE ) : 0UL ) );
             const size_t kend( ( IsLower_v<MT4> )?( i+3UL ):( K ) );
 
-            const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
-            BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
+            const size_t kpos( remainder ? prevMultiple( kend, SIMDSIZE ) : kend );
+            BLAZE_INTERNAL_ASSERT( kpos <= kend, "Invalid end calculation" );
 
             size_t k( kbegin );
 
@@ -3568,14 +3573,14 @@ class DMatTDMatMultExpr
          for( ; !( LOW && UPP ) && (j+4UL) <= jend; j+=4UL )
          {
             const size_t kbegin( ( IsUpper_v<MT4> )
-                                 ?( ( IsLower_v<MT5> ? max( i, j ) : i ) & size_t(-SIMDSIZE) )
-                                 :( IsLower_v<MT5> ? ( j & size_t(-SIMDSIZE) ) : 0UL ) );
+                                 ?( prevMultiple( ( IsLower_v<MT5> ? max( i, j ) : i ), SIMDSIZE ) )
+                                 :( IsLower_v<MT5> ? prevMultiple( j, SIMDSIZE ) : 0UL ) );
             const size_t kend( ( IsLower_v<MT4> )
                                ?( IsUpper_v<MT5> ? min( i+2UL, j+4UL ) : ( i+2UL ) )
                                :( IsUpper_v<MT5> ? ( j+4UL ) : K ) );
 
-            const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
-            BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
+            const size_t kpos( remainder ? prevMultiple( kend, SIMDSIZE ) : kend );
+            BLAZE_INTERNAL_ASSERT( kpos <= kend, "Invalid end calculation" );
 
             size_t k( kbegin );
 
@@ -3651,14 +3656,14 @@ class DMatTDMatMultExpr
          for( ; (j+2UL) <= jend; j+=2UL )
          {
             const size_t kbegin( ( IsUpper_v<MT4> )
-                                 ?( ( IsLower_v<MT5> ? max( i, j ) : i ) & size_t(-SIMDSIZE) )
-                                 :( IsLower_v<MT5> ? ( j & size_t(-SIMDSIZE) ) : 0UL ) );
+                                 ?( prevMultiple( ( IsLower_v<MT5> ? max( i, j ) : i ), SIMDSIZE ) )
+                                 :( IsLower_v<MT5> ? prevMultiple( j, SIMDSIZE ) : 0UL ) );
             const size_t kend( ( IsLower_v<MT4> )
                                ?( IsUpper_v<MT5> ? min( i+2UL, j+2UL ) : ( i+2UL ) )
                                :( IsUpper_v<MT5> ? ( j+2UL ) : K ) );
 
-            const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
-            BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
+            const size_t kpos( remainder ? prevMultiple( kend, SIMDSIZE ) : kend );
+            BLAZE_INTERNAL_ASSERT( kpos <= kend, "Invalid end calculation" );
 
             size_t k( kbegin );
 
@@ -3710,12 +3715,12 @@ class DMatTDMatMultExpr
          if( j < jend )
          {
             const size_t kbegin( ( IsUpper_v<MT4> )
-                                 ?( ( IsLower_v<MT5> ? max( i, j ) : i ) & size_t(-SIMDSIZE) )
-                                 :( IsLower_v<MT5> ? ( j & size_t(-SIMDSIZE) ) : 0UL ) );
+                                 ?( prevMultiple( ( IsLower_v<MT5> ? max( i, j ) : i ), SIMDSIZE ) )
+                                 :( IsLower_v<MT5> ? prevMultiple( j, SIMDSIZE ) : 0UL ) );
             const size_t kend( ( IsLower_v<MT4> )?( i+2UL ):( K ) );
 
-            const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
-            BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
+            const size_t kpos( remainder ? prevMultiple( kend, SIMDSIZE ) : kend );
+            BLAZE_INTERNAL_ASSERT( kpos <= kend, "Invalid end calculation" );
 
             size_t k( kbegin );
 
@@ -3757,12 +3762,12 @@ class DMatTDMatMultExpr
          for( ; !( LOW && UPP ) && (j+4UL) <= jend; j+=4UL )
          {
             const size_t kbegin( ( IsUpper_v<MT4> )
-                                 ?( ( IsLower_v<MT5> ? max( i, j ) : i ) & size_t(-SIMDSIZE) )
-                                 :( IsLower_v<MT5> ? ( j & size_t(-SIMDSIZE) ) : 0UL ) );
+                                 ?( prevMultiple( ( IsLower_v<MT5> ? max( i, j ) : i ), SIMDSIZE ) )
+                                 :( IsLower_v<MT5> ? prevMultiple( j, SIMDSIZE ) : 0UL ) );
             const size_t kend( ( IsUpper_v<MT5> )?( j+4UL ):( K ) );
 
-            const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
-            BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
+            const size_t kpos( remainder ? prevMultiple( kend, SIMDSIZE ) : kend );
+            BLAZE_INTERNAL_ASSERT( kpos <= kend, "Invalid end calculation" );
 
             size_t k( kbegin );
 
@@ -3808,12 +3813,12 @@ class DMatTDMatMultExpr
          for( ; (j+2UL) <= jend; j+=2UL )
          {
             const size_t kbegin( ( IsUpper_v<MT4> )
-                                 ?( ( IsLower_v<MT5> ? max( i, j ) : i ) & size_t(-SIMDSIZE) )
-                                 :( IsLower_v<MT5> ? ( j & size_t(-SIMDSIZE) ) : 0UL ) );
+                                 ?( prevMultiple( ( IsLower_v<MT5> ? max( i, j ) : i ), SIMDSIZE ) )
+                                 :( IsLower_v<MT5> ? prevMultiple( j, SIMDSIZE ) : 0UL ) );
             const size_t kend( ( IsUpper_v<MT5> )?( j+2UL ):( K ) );
 
-            const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
-            BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
+            const size_t kpos( remainder ? prevMultiple( kend, SIMDSIZE ) : kend );
+            BLAZE_INTERNAL_ASSERT( kpos <= kend, "Invalid end calculation" );
 
             size_t k( kbegin );
 
@@ -3849,11 +3854,11 @@ class DMatTDMatMultExpr
          if( j < jend )
          {
             const size_t kbegin( ( IsUpper_v<MT4> )
-                                 ?( ( IsLower_v<MT5> ? max( i, j ) : i ) & size_t(-SIMDSIZE) )
-                                 :( IsLower_v<MT5> ? ( j & size_t(-SIMDSIZE) ) : 0UL ) );
+                                 ?( prevMultiple( ( IsLower_v<MT5> ? max( i, j ) : i ), SIMDSIZE ) )
+                                 :( IsLower_v<MT5> ? prevMultiple( j, SIMDSIZE ) : 0UL ) );
 
-            const size_t kpos( remainder ? ( K & size_t(-SIMDSIZE) ) : K );
-            BLAZE_INTERNAL_ASSERT( !remainder || ( K - ( K % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
+            const size_t kpos( remainder ? prevMultiple( K, SIMDSIZE ) : K );
+            BLAZE_INTERNAL_ASSERT( kpos <= K, "Invalid end calculation" );
 
             size_t k( kbegin );
 
@@ -3921,14 +3926,14 @@ class DMatTDMatMultExpr
          for( ; (j+2UL) <= N; j+=2UL )
          {
             const size_t kbegin( ( IsUpper_v<MT4> )
-                                 ?( ( IsLower_v<MT5> ? max( i, j ) : i ) & size_t(-SIMDSIZE) )
-                                 :( IsLower_v<MT5> ? ( j & size_t(-SIMDSIZE) ) : 0UL ) );
+                                 ?( prevMultiple( ( IsLower_v<MT5> ? max( i, j ) : i ), SIMDSIZE ) )
+                                 :( IsLower_v<MT5> ? prevMultiple( j, SIMDSIZE ) : 0UL ) );
             const size_t kend( ( IsLower_v<MT4> )
                                ?( IsUpper_v<MT5> ? min( i+4UL, j+2UL ) : ( i+4UL ) )
                                :( IsUpper_v<MT5> ? ( j+2UL ) : K ) );
 
-            const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
-            BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
+            const size_t kpos( remainder ? prevMultiple( kend, SIMDSIZE ) : kend );
+            BLAZE_INTERNAL_ASSERT( kpos <= kend, "Invalid end calculation" );
 
             size_t k( kbegin );
 
@@ -4004,12 +4009,12 @@ class DMatTDMatMultExpr
          if( j < N )
          {
             const size_t kbegin( ( IsUpper_v<MT4> )
-                                 ?( ( IsLower_v<MT5> ? max( i, j ) : i ) & size_t(-SIMDSIZE) )
-                                 :( IsLower_v<MT5> ? ( j & size_t(-SIMDSIZE) ) : 0UL ) );
+                                 ?( prevMultiple( ( IsLower_v<MT5> ? max( i, j ) : i ), SIMDSIZE ) )
+                                 :( IsLower_v<MT5> ? prevMultiple( j, SIMDSIZE ) : 0UL ) );
             const size_t kend( ( IsLower_v<MT4> )?( i+4UL ):( K ) );
 
-            const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
-            BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
+            const size_t kpos( remainder ? prevMultiple( kend, SIMDSIZE ) : kend );
+            BLAZE_INTERNAL_ASSERT( kpos <= kend, "Invalid end calculation" );
 
             size_t k( kbegin );
 
@@ -4060,14 +4065,14 @@ class DMatTDMatMultExpr
          for( ; (j+3UL) <= N; j+=3UL )
          {
             const size_t kbegin( ( IsUpper_v<MT4> )
-                                 ?( ( IsLower_v<MT5> ? max( i, j ) : i ) & size_t(-SIMDSIZE) )
-                                 :( IsLower_v<MT5> ? ( j & size_t(-SIMDSIZE) ) : 0UL ) );
+                                 ?( prevMultiple( ( IsLower_v<MT5> ? max( i, j ) : i ), SIMDSIZE ) )
+                                 :( IsLower_v<MT5> ? prevMultiple( j, SIMDSIZE ) : 0UL ) );
             const size_t kend( ( IsLower_v<MT4> )
                                ?( IsUpper_v<MT5> ? min( i+3UL, j+3UL ) : ( i+3UL ) )
                                :( IsUpper_v<MT5> ? ( j+3UL ) : K ) );
 
-            const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
-            BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
+            const size_t kpos( remainder ? prevMultiple( kend, SIMDSIZE ) : kend );
+            BLAZE_INTERNAL_ASSERT( kpos <= kend, "Invalid end calculation" );
 
             size_t k( kbegin );
 
@@ -4148,14 +4153,14 @@ class DMatTDMatMultExpr
          for( ; (j+2UL) <= N; j+=2UL )
          {
             const size_t kbegin( ( IsUpper_v<MT4> )
-                                 ?( ( IsLower_v<MT5> ? max( i, j ) : i ) & size_t(-SIMDSIZE) )
-                                 :( IsLower_v<MT5> ? ( j & size_t(-SIMDSIZE) ) : 0UL ) );
+                                 ?( prevMultiple( ( IsLower_v<MT5> ? max( i, j ) : i ), SIMDSIZE ) )
+                                 :( IsLower_v<MT5> ? prevMultiple( j, SIMDSIZE ) : 0UL ) );
             const size_t kend( ( IsLower_v<MT4> )
                                ?( IsUpper_v<MT5> ? min( i+3UL, j+2UL ) : ( i+3UL ) )
                                :( IsUpper_v<MT5> ? ( j+2UL ) : K ) );
 
-            const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
-            BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
+            const size_t kpos( remainder ? prevMultiple( kend, SIMDSIZE ) : kend );
+            BLAZE_INTERNAL_ASSERT( kpos <= kend, "Invalid end calculation" );
 
             size_t k( kbegin );
 
@@ -4219,12 +4224,12 @@ class DMatTDMatMultExpr
          if( j < N )
          {
             const size_t kbegin( ( IsUpper_v<MT4> )
-                                 ?( ( IsLower_v<MT5> ? max( i, j ) : i ) & size_t(-SIMDSIZE) )
-                                 :( IsLower_v<MT5> ? ( j & size_t(-SIMDSIZE) ) : 0UL ) );
+                                 ?( prevMultiple( ( IsLower_v<MT5> ? max( i, j ) : i ), SIMDSIZE ) )
+                                 :( IsLower_v<MT5> ? prevMultiple( j, SIMDSIZE ) : 0UL ) );
             const size_t kend( ( IsLower_v<MT4> )?( i+3UL ):( K ) );
 
-            const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
-            BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
+            const size_t kpos( remainder ? prevMultiple( kend, SIMDSIZE ) : kend );
+            BLAZE_INTERNAL_ASSERT( kpos <= kend, "Invalid end calculation" );
 
             size_t k( kbegin );
 
@@ -4271,14 +4276,14 @@ class DMatTDMatMultExpr
          for( ; (j+2UL) <= jend; j+=2UL )
          {
             const size_t kbegin( ( IsUpper_v<MT4> )
-                                 ?( ( IsLower_v<MT5> ? max( i, j ) : i ) & size_t(-SIMDSIZE) )
-                                 :( IsLower_v<MT5> ? ( j & size_t(-SIMDSIZE) ) : 0UL ) );
+                                 ?( prevMultiple( ( IsLower_v<MT5> ? max( i, j ) : i ), SIMDSIZE ) )
+                                 :( IsLower_v<MT5> ? prevMultiple( j, SIMDSIZE ) : 0UL ) );
             const size_t kend( ( IsLower_v<MT4> )
                                ?( IsUpper_v<MT5> ? min( i+2UL, j+2UL ) : ( i+2UL ) )
                                :( IsUpper_v<MT5> ? ( j+2UL ) : K ) );
 
-            const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
-            BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
+            const size_t kpos( remainder ? prevMultiple( kend, SIMDSIZE ) : kend );
+            BLAZE_INTERNAL_ASSERT( kpos <= kend, "Invalid end calculation" );
 
             size_t k( kbegin );
 
@@ -4330,12 +4335,12 @@ class DMatTDMatMultExpr
          if( j < jend )
          {
             const size_t kbegin( ( IsUpper_v<MT4> )
-                                 ?( ( IsLower_v<MT5> ? max( i, j ) : i ) & size_t(-SIMDSIZE) )
-                                 :( IsLower_v<MT5> ? ( j & size_t(-SIMDSIZE) ) : 0UL ) );
+                                 ?( prevMultiple( ( IsLower_v<MT5> ? max( i, j ) : i ), SIMDSIZE ) )
+                                 :( IsLower_v<MT5> ? prevMultiple( j, SIMDSIZE ) : 0UL ) );
             const size_t kend( ( IsLower_v<MT4> )?( i+2UL ):( K ) );
 
-            const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
-            BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
+            const size_t kpos( remainder ? prevMultiple( kend, SIMDSIZE ) : kend );
+            BLAZE_INTERNAL_ASSERT( kpos <= kend, "Invalid end calculation" );
 
             size_t k( kbegin );
 
@@ -4377,12 +4382,12 @@ class DMatTDMatMultExpr
          for( ; (j+2UL) <= jend; j+=2UL )
          {
             const size_t kbegin( ( IsUpper_v<MT4> )
-                                 ?( ( IsLower_v<MT5> ? max( i, j ) : i ) & size_t(-SIMDSIZE) )
-                                 :( IsLower_v<MT5> ? ( j & size_t(-SIMDSIZE) ) : 0UL ) );
+                                 ?( prevMultiple( ( IsLower_v<MT5> ? max( i, j ) : i ), SIMDSIZE ) )
+                                 :( IsLower_v<MT5> ? prevMultiple( j, SIMDSIZE ) : 0UL ) );
             const size_t kend( ( IsUpper_v<MT5> )?( j+2UL ):( K ) );
 
-            const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
-            BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
+            const size_t kpos( remainder ? prevMultiple( kend, SIMDSIZE ) : kend );
+            BLAZE_INTERNAL_ASSERT( kpos <= kend, "Invalid end calculation" );
 
             size_t k( kbegin );
 
@@ -4418,11 +4423,11 @@ class DMatTDMatMultExpr
          if( j < jend )
          {
             const size_t kbegin( ( IsUpper_v<MT4> )
-                                 ?( ( IsLower_v<MT5> ? max( i, j ) : i ) & size_t(-SIMDSIZE) )
-                                 :( IsLower_v<MT5> ? ( j & size_t(-SIMDSIZE) ) : 0UL ) );
+                                 ?( prevMultiple( ( IsLower_v<MT5> ? max( i, j ) : i ), SIMDSIZE ) )
+                                 :( IsLower_v<MT5> ? prevMultiple( j, SIMDSIZE ) : 0UL ) );
 
-            const size_t kpos( remainder ? ( K & size_t(-SIMDSIZE) ) : K );
-            BLAZE_INTERNAL_ASSERT( !remainder || ( K - ( K % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
+            const size_t kpos( remainder ? prevMultiple( K, SIMDSIZE ) : K );
+            BLAZE_INTERNAL_ASSERT( kpos <= K, "Invalid end calculation" );
 
             size_t k( kbegin );
 
@@ -4719,7 +4724,8 @@ class DMatTDMatMultExpr
             BLAZE_INTERNAL_ASSERT( kbegin < kend, "Invalid loop indices detected" );
 
             const size_t knum( kend - kbegin );
-            const size_t kpos( kbegin + ( knum & size_t(-2) ) );
+            const size_t kpos( kbegin + prevMultiple( knum, 2UL ) );
+            BLAZE_INTERNAL_ASSERT( kpos <= kbegin+knum, "Invalid end calculation" );
 
             for( size_t k=kbegin; k<kpos; k+=2UL ) {
                C(i,j) -= A(i,k    ) * B(k    ,j);
@@ -4809,7 +4815,8 @@ class DMatTDMatMultExpr
             BLAZE_INTERNAL_ASSERT( kbegin < kend, "Invalid loop indices detected" );
 
             const size_t knum( kend - kbegin );
-            const size_t kpos( kbegin + ( knum & size_t(-2) ) );
+            const size_t kpos( kbegin + prevMultiple( knum, 2UL ) );
+            BLAZE_INTERNAL_ASSERT( kpos <= kbegin+knum, "Invalid end calculation" );
 
             for( size_t k=kbegin; k<kpos; k+=2UL ) {
                C(i,j) -= A(i,k    ) * B(k    ,j);
@@ -4858,7 +4865,8 @@ class DMatTDMatMultExpr
          BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
          const size_t jnum( jend - jbegin );
-         const size_t jpos( jbegin + ( jnum & size_t(-2) ) );
+         const size_t jpos( jbegin + prevMultiple( jnum, 2UL ) );
+         BLAZE_INTERNAL_ASSERT( jpos <= jbegin+jnum, "Invalid end calculation" );
 
          for( size_t j=jbegin; j<jpos; j+=2UL ) {
             C(i,j    ) -= A(i,j    ) * B(j    ,j    );
@@ -5002,7 +5010,8 @@ class DMatTDMatMultExpr
          BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
 
          const size_t inum( iend - ibegin );
-         const size_t ipos( ibegin + ( inum & size_t(-2) ) );
+         const size_t ipos( ibegin + prevMultiple( inum, 2UL ) );
+         BLAZE_INTERNAL_ASSERT( ipos <= ibegin+inum, "Invalid end calculation" );
 
          for( size_t i=ibegin; i<ipos; i+=2UL ) {
             C(i    ,j) -= A(i    ,i    ) * B(i    ,j);
@@ -5107,14 +5116,14 @@ class DMatTDMatMultExpr
          for( ; (j+3UL) <= jend; j+=3UL )
          {
             const size_t kbegin( ( IsUpper_v<MT4> )
-                                 ?( ( IsLower_v<MT5> ? max( i, j ) : i ) & size_t(-SIMDSIZE) )
-                                 :( IsLower_v<MT5> ? ( j & size_t(-SIMDSIZE) ) : 0UL ) );
+                                 ?( prevMultiple( ( IsLower_v<MT5> ? max( i, j ) : i ), SIMDSIZE ) )
+                                 :( IsLower_v<MT5> ? prevMultiple( j, SIMDSIZE ) : 0UL ) );
             const size_t kend( ( IsLower_v<MT4> )
                                ?( IsUpper_v<MT5> ? min( i+3UL, j+3UL ) : ( i+3UL ) )
                                :( IsUpper_v<MT5> ? ( j+3UL ) : K ) );
 
-            const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
-            BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
+            const size_t kpos( remainder ? prevMultiple( kend, SIMDSIZE ) : kend );
+            BLAZE_INTERNAL_ASSERT( kpos <= kend, "Invalid end calculation" );
 
             size_t k( kbegin );
 
@@ -5195,14 +5204,14 @@ class DMatTDMatMultExpr
          for( ; (j+2UL) <= jend; j+=2UL )
          {
             const size_t kbegin( ( IsUpper_v<MT4> )
-                                 ?( ( IsLower_v<MT5> ? max( i, j ) : i ) & size_t(-SIMDSIZE) )
-                                 :( IsLower_v<MT5> ? ( j & size_t(-SIMDSIZE) ) : 0UL ) );
+                                 ?( prevMultiple( ( IsLower_v<MT5> ? max( i, j ) : i ), SIMDSIZE ) )
+                                 :( IsLower_v<MT5> ? prevMultiple( j, SIMDSIZE ) : 0UL ) );
             const size_t kend( ( IsLower_v<MT4> )
                                ?( IsUpper_v<MT5> ? min( i+3UL, j+2UL ) : ( i+3UL ) )
                                :( IsUpper_v<MT5> ? ( j+2UL ) : K ) );
 
-            const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
-            BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
+            const size_t kpos( remainder ? prevMultiple( kend, SIMDSIZE ) : kend );
+            BLAZE_INTERNAL_ASSERT( kpos <= kend, "Invalid end calculation" );
 
             size_t k( kbegin );
 
@@ -5266,12 +5275,12 @@ class DMatTDMatMultExpr
          if( j < jend )
          {
             const size_t kbegin( ( IsUpper_v<MT4> )
-                                 ?( ( IsLower_v<MT5> ? max( i, j ) : i ) & size_t(-SIMDSIZE) )
-                                 :( IsLower_v<MT5> ? ( j & size_t(-SIMDSIZE) ) : 0UL ) );
+                                 ?( prevMultiple( ( IsLower_v<MT5> ? max( i, j ) : i ), SIMDSIZE ) )
+                                 :( IsLower_v<MT5> ? prevMultiple( j, SIMDSIZE ) : 0UL ) );
             const size_t kend( ( IsLower_v<MT4> )?( i+3UL ):( K ) );
 
-            const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
-            BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
+            const size_t kpos( remainder ? prevMultiple( kend, SIMDSIZE ) : kend );
+            BLAZE_INTERNAL_ASSERT( kpos <= kend, "Invalid end calculation" );
 
             size_t k( kbegin );
 
@@ -5318,14 +5327,14 @@ class DMatTDMatMultExpr
          for( ; !( LOW && UPP ) && (j+4UL) <= jend; j+=4UL )
          {
             const size_t kbegin( ( IsUpper_v<MT4> )
-                                 ?( ( IsLower_v<MT5> ? max( i, j ) : i ) & size_t(-SIMDSIZE) )
-                                 :( IsLower_v<MT5> ? ( j & size_t(-SIMDSIZE) ) : 0UL ) );
+                                 ?( prevMultiple( ( IsLower_v<MT5> ? max( i, j ) : i ), SIMDSIZE ) )
+                                 :( IsLower_v<MT5> ? prevMultiple( j, SIMDSIZE ) : 0UL ) );
             const size_t kend( ( IsLower_v<MT4> )
                                ?( IsUpper_v<MT5> ? min( i+2UL, j+4UL ) : ( i+2UL ) )
                                :( IsUpper_v<MT5> ? ( j+4UL ) : K ) );
 
-            const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
-            BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
+            const size_t kpos( remainder ? prevMultiple( kend, SIMDSIZE ) : kend );
+            BLAZE_INTERNAL_ASSERT( kpos <= kend, "Invalid end calculation" );
 
             size_t k( kbegin );
 
@@ -5401,14 +5410,14 @@ class DMatTDMatMultExpr
          for( ; (j+2UL) <= jend; j+=2UL )
          {
             const size_t kbegin( ( IsUpper_v<MT4> )
-                                 ?( ( IsLower_v<MT5> ? max( i, j ) : i ) & size_t(-SIMDSIZE) )
-                                 :( IsLower_v<MT5> ? ( j & size_t(-SIMDSIZE) ) : 0UL ) );
+                                 ?( prevMultiple( ( IsLower_v<MT5> ? max( i, j ) : i ), SIMDSIZE ) )
+                                 :( IsLower_v<MT5> ? prevMultiple( j, SIMDSIZE ) : 0UL ) );
             const size_t kend( ( IsLower_v<MT4> )
                                ?( IsUpper_v<MT5> ? min( i+2UL, j+2UL ) : ( i+2UL ) )
                                :( IsUpper_v<MT5> ? ( j+2UL ) : K ) );
 
-            const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
-            BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
+            const size_t kpos( remainder ? prevMultiple( kend, SIMDSIZE ) : kend );
+            BLAZE_INTERNAL_ASSERT( kpos <= kend, "Invalid end calculation" );
 
             size_t k( kbegin );
 
@@ -5460,12 +5469,12 @@ class DMatTDMatMultExpr
          if( j < jend )
          {
             const size_t kbegin( ( IsUpper_v<MT4> )
-                                 ?( ( IsLower_v<MT5> ? max( i, j ) : i ) & size_t(-SIMDSIZE) )
-                                 :( IsLower_v<MT5> ? ( j & size_t(-SIMDSIZE) ) : 0UL ) );
+                                 ?( prevMultiple( ( IsLower_v<MT5> ? max( i, j ) : i ), SIMDSIZE ) )
+                                 :( IsLower_v<MT5> ? prevMultiple( j, SIMDSIZE ) : 0UL ) );
             const size_t kend( ( IsLower_v<MT4> )?( i+2UL ):( K ) );
 
-            const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
-            BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
+            const size_t kpos( remainder ? prevMultiple( kend, SIMDSIZE ) : kend );
+            BLAZE_INTERNAL_ASSERT( kpos <= kend, "Invalid end calculation" );
 
             size_t k( kbegin );
 
@@ -5507,12 +5516,12 @@ class DMatTDMatMultExpr
          for( ; !( LOW && UPP ) && (j+4UL) <= jend; j+=4UL )
          {
             const size_t kbegin( ( IsUpper_v<MT4> )
-                                 ?( ( IsLower_v<MT5> ? max( i, j ) : i ) & size_t(-SIMDSIZE) )
-                                 :( IsLower_v<MT5> ? ( j & size_t(-SIMDSIZE) ) : 0UL ) );
+                                 ?( prevMultiple( ( IsLower_v<MT5> ? max( i, j ) : i ), SIMDSIZE ) )
+                                 :( IsLower_v<MT5> ? prevMultiple( j, SIMDSIZE ) : 0UL ) );
             const size_t kend( ( IsUpper_v<MT5> )?( j+4UL ):( K ) );
 
-            const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
-            BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
+            const size_t kpos( remainder ? prevMultiple( kend, SIMDSIZE ) : kend );
+            BLAZE_INTERNAL_ASSERT( kpos <= kend, "Invalid end calculation" );
 
             size_t k( kbegin );
 
@@ -5558,12 +5567,12 @@ class DMatTDMatMultExpr
          for( ; (j+2UL) <= jend; j+=2UL )
          {
             const size_t kbegin( ( IsUpper_v<MT4> )
-                                 ?( ( IsLower_v<MT5> ? max( i, j ) : i ) & size_t(-SIMDSIZE) )
-                                 :( IsLower_v<MT5> ? ( j & size_t(-SIMDSIZE) ) : 0UL ) );
+                                 ?( prevMultiple( ( IsLower_v<MT5> ? max( i, j ) : i ), SIMDSIZE ) )
+                                 :( IsLower_v<MT5> ? prevMultiple( j, SIMDSIZE ) : 0UL ) );
             const size_t kend( ( IsUpper_v<MT5> )?( j+2UL ):( K ) );
 
-            const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
-            BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
+            const size_t kpos( remainder ? prevMultiple( kend, SIMDSIZE ) : kend );
+            BLAZE_INTERNAL_ASSERT( kpos <= kend, "Invalid end calculation" );
 
             size_t k( kbegin );
 
@@ -5599,11 +5608,11 @@ class DMatTDMatMultExpr
          if( j < jend )
          {
             const size_t kbegin( ( IsUpper_v<MT4> )
-                                 ?( ( IsLower_v<MT5> ? max( i, j ) : i ) & size_t(-SIMDSIZE) )
-                                 :( IsLower_v<MT5> ? ( j & size_t(-SIMDSIZE) ) : 0UL ) );
+                                 ?( prevMultiple( ( IsLower_v<MT5> ? max( i, j ) : i ), SIMDSIZE ) )
+                                 :( IsLower_v<MT5> ? prevMultiple( j, SIMDSIZE ) : 0UL ) );
 
-            const size_t kpos( remainder ? ( K & size_t(-SIMDSIZE) ) : K );
-            BLAZE_INTERNAL_ASSERT( !remainder || ( K - ( K % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
+            const size_t kpos( remainder ? prevMultiple( K, SIMDSIZE ) : K );
+            BLAZE_INTERNAL_ASSERT( kpos <= K, "Invalid end calculation" );
 
             size_t k( kbegin );
 
@@ -5671,14 +5680,14 @@ class DMatTDMatMultExpr
          for( ; (j+2UL) <= N; j+=2UL )
          {
             const size_t kbegin( ( IsUpper_v<MT4> )
-                                 ?( ( IsLower_v<MT5> ? max( i, j ) : i ) & size_t(-SIMDSIZE) )
-                                 :( IsLower_v<MT5> ? ( j & size_t(-SIMDSIZE) ) : 0UL ) );
+                                 ?( prevMultiple( ( IsLower_v<MT5> ? max( i, j ) : i ), SIMDSIZE ) )
+                                 :( IsLower_v<MT5> ? prevMultiple( j, SIMDSIZE ) : 0UL ) );
             const size_t kend( ( IsLower_v<MT4> )
                                ?( IsUpper_v<MT5> ? min( i+4UL, j+2UL ) : ( i+4UL ) )
                                :( IsUpper_v<MT5> ? ( j+2UL ) : K ) );
 
-            const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
-            BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
+            const size_t kpos( remainder ? prevMultiple( kend, SIMDSIZE ) : kend );
+            BLAZE_INTERNAL_ASSERT( kpos <= kend, "Invalid end calculation" );
 
             size_t k( kbegin );
 
@@ -5754,12 +5763,12 @@ class DMatTDMatMultExpr
          if( j < N )
          {
             const size_t kbegin( ( IsUpper_v<MT4> )
-                                 ?( ( IsLower_v<MT5> ? max( i, j ) : i ) & size_t(-SIMDSIZE) )
-                                 :( IsLower_v<MT5> ? ( j & size_t(-SIMDSIZE) ) : 0UL ) );
+                                 ?( prevMultiple( ( IsLower_v<MT5> ? max( i, j ) : i ), SIMDSIZE ) )
+                                 :( IsLower_v<MT5> ? prevMultiple( j, SIMDSIZE ) : 0UL ) );
             const size_t kend( ( IsLower_v<MT4> )?( i+4UL ):( K ) );
 
-            const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
-            BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
+            const size_t kpos( remainder ? prevMultiple( kend, SIMDSIZE ) : kend );
+            BLAZE_INTERNAL_ASSERT( kpos <= kend, "Invalid end calculation" );
 
             size_t k( kbegin );
 
@@ -5810,14 +5819,14 @@ class DMatTDMatMultExpr
          for( ; (j+3UL) <= N; j+=3UL )
          {
             const size_t kbegin( ( IsUpper_v<MT4> )
-                                 ?( ( IsLower_v<MT5> ? max( i, j ) : i ) & size_t(-SIMDSIZE) )
-                                 :( IsLower_v<MT5> ? ( j & size_t(-SIMDSIZE) ) : 0UL ) );
+                                 ?( prevMultiple( ( IsLower_v<MT5> ? max( i, j ) : i ), SIMDSIZE ) )
+                                 :( IsLower_v<MT5> ? prevMultiple( j, SIMDSIZE ) : 0UL ) );
             const size_t kend( ( IsLower_v<MT4> )
                                ?( IsUpper_v<MT5> ? min( i+3UL, j+3UL ) : ( i+3UL ) )
                                :( IsUpper_v<MT5> ? ( j+3UL ) : K ) );
 
-            const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
-            BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
+            const size_t kpos( remainder ? prevMultiple( kend, SIMDSIZE ) : kend );
+            BLAZE_INTERNAL_ASSERT( kpos <= kend, "Invalid end calculation" );
 
             size_t k( kbegin );
 
@@ -5898,14 +5907,14 @@ class DMatTDMatMultExpr
          for( ; (j+2UL) <= N; j+=2UL )
          {
             const size_t kbegin( ( IsUpper_v<MT4> )
-                                 ?( ( IsLower_v<MT5> ? max( i, j ) : i ) & size_t(-SIMDSIZE) )
-                                 :( IsLower_v<MT5> ? ( j & size_t(-SIMDSIZE) ) : 0UL ) );
+                                 ?( prevMultiple( ( IsLower_v<MT5> ? max( i, j ) : i ), SIMDSIZE ) )
+                                 :( IsLower_v<MT5> ? prevMultiple( j, SIMDSIZE ) : 0UL ) );
             const size_t kend( ( IsLower_v<MT4> )
                                ?( IsUpper_v<MT5> ? min( i+3UL, j+2UL ) : ( i+3UL ) )
                                :( IsUpper_v<MT5> ? ( j+2UL ) : K ) );
 
-            const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
-            BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
+            const size_t kpos( remainder ? prevMultiple( kend, SIMDSIZE ) : kend );
+            BLAZE_INTERNAL_ASSERT( kpos <= kend, "Invalid end calculation" );
 
             size_t k( kbegin );
 
@@ -5969,12 +5978,12 @@ class DMatTDMatMultExpr
          if( j < N )
          {
             const size_t kbegin( ( IsUpper_v<MT4> )
-                                 ?( ( IsLower_v<MT5> ? max( i, j ) : i ) & size_t(-SIMDSIZE) )
-                                 :( IsLower_v<MT5> ? ( j & size_t(-SIMDSIZE) ) : 0UL ) );
+                                 ?( prevMultiple( ( IsLower_v<MT5> ? max( i, j ) : i ), SIMDSIZE ) )
+                                 :( IsLower_v<MT5> ? prevMultiple( j, SIMDSIZE ) : 0UL ) );
             const size_t kend( ( IsLower_v<MT4> )?( i+3UL ):( K ) );
 
-            const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
-            BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
+            const size_t kpos( remainder ? prevMultiple( kend, SIMDSIZE ) : kend );
+            BLAZE_INTERNAL_ASSERT( kpos <= kend, "Invalid end calculation" );
 
             size_t k( kbegin );
 
@@ -6021,14 +6030,14 @@ class DMatTDMatMultExpr
          for( ; (j+2UL) <= jend; j+=2UL )
          {
             const size_t kbegin( ( IsUpper_v<MT4> )
-                                 ?( ( IsLower_v<MT5> ? max( i, j ) : i ) & size_t(-SIMDSIZE) )
-                                 :( IsLower_v<MT5> ? ( j & size_t(-SIMDSIZE) ) : 0UL ) );
+                                 ?( prevMultiple( ( IsLower_v<MT5> ? max( i, j ) : i ), SIMDSIZE ) )
+                                 :( IsLower_v<MT5> ? prevMultiple( j, SIMDSIZE ) : 0UL ) );
             const size_t kend( ( IsLower_v<MT4> )
                                ?( IsUpper_v<MT5> ? min( i+2UL, j+2UL ) : ( i+2UL ) )
                                :( IsUpper_v<MT5> ? ( j+2UL ) : K ) );
 
-            const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
-            BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
+            const size_t kpos( remainder ? prevMultiple( kend, SIMDSIZE ) : kend );
+            BLAZE_INTERNAL_ASSERT( kpos <= kend, "Invalid end calculation" );
 
             size_t k( kbegin );
 
@@ -6080,12 +6089,12 @@ class DMatTDMatMultExpr
          if( j < jend )
          {
             const size_t kbegin( ( IsUpper_v<MT4> )
-                                 ?( ( IsLower_v<MT5> ? max( i, j ) : i ) & size_t(-SIMDSIZE) )
-                                 :( IsLower_v<MT5> ? ( j & size_t(-SIMDSIZE) ) : 0UL ) );
+                                 ?( prevMultiple( ( IsLower_v<MT5> ? max( i, j ) : i ), SIMDSIZE ) )
+                                 :( IsLower_v<MT5> ? prevMultiple( j, SIMDSIZE ) : 0UL ) );
             const size_t kend( ( IsLower_v<MT4> )?( i+2UL ):( K ) );
 
-            const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
-            BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
+            const size_t kpos( remainder ? prevMultiple( kend, SIMDSIZE ) : kend );
+            BLAZE_INTERNAL_ASSERT( kpos <= kend, "Invalid end calculation" );
 
             size_t k( kbegin );
 
@@ -6127,12 +6136,12 @@ class DMatTDMatMultExpr
          for( ; (j+2UL) <= jend; j+=2UL )
          {
             const size_t kbegin( ( IsUpper_v<MT4> )
-                                 ?( ( IsLower_v<MT5> ? max( i, j ) : i ) & size_t(-SIMDSIZE) )
-                                 :( IsLower_v<MT5> ? ( j & size_t(-SIMDSIZE) ) : 0UL ) );
+                                 ?( prevMultiple( ( IsLower_v<MT5> ? max( i, j ) : i ), SIMDSIZE ) )
+                                 :( IsLower_v<MT5> ? prevMultiple( j, SIMDSIZE ) : 0UL ) );
             const size_t kend( ( IsUpper_v<MT5> )?( j+2UL ):( K ) );
 
-            const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
-            BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
+            const size_t kpos( remainder ? prevMultiple( kend, SIMDSIZE ) : kend );
+            BLAZE_INTERNAL_ASSERT( kpos <= kend, "Invalid end calculation" );
 
             size_t k( kbegin );
 
@@ -6168,11 +6177,11 @@ class DMatTDMatMultExpr
          if( j < jend )
          {
             const size_t kbegin( ( IsUpper_v<MT4> )
-                                 ?( ( IsLower_v<MT5> ? max( i, j ) : i ) & size_t(-SIMDSIZE) )
-                                 :( IsLower_v<MT5> ? ( j & size_t(-SIMDSIZE) ) : 0UL ) );
+                                 ?( prevMultiple( ( IsLower_v<MT5> ? max( i, j ) : i ), SIMDSIZE ) )
+                                 :( IsLower_v<MT5> ? prevMultiple( j, SIMDSIZE ) : 0UL ) );
 
-            const size_t kpos( remainder ? ( K & size_t(-SIMDSIZE) ) : K );
-            BLAZE_INTERNAL_ASSERT( !remainder || ( K - ( K % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
+            const size_t kpos( remainder ? prevMultiple( K, SIMDSIZE ) : K );
+            BLAZE_INTERNAL_ASSERT( kpos <= K, "Invalid end calculation" );
 
             size_t k( kbegin );
 
@@ -7566,14 +7575,14 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
          for( ; (j+3UL) <= jend; j+=3UL )
          {
             const size_t kbegin( ( IsUpper_v<MT4> )
-                                 ?( ( IsLower_v<MT5> ? max( i, j ) : i ) & size_t(-SIMDSIZE) )
-                                 :( IsLower_v<MT5> ? ( j & size_t(-SIMDSIZE) ) : 0UL ) );
+                                 ?( prevMultiple( ( IsLower_v<MT5> ? max( i, j ) : i ), SIMDSIZE ) )
+                                 :( IsLower_v<MT5> ? prevMultiple( j, SIMDSIZE ) : 0UL ) );
             const size_t kend( ( IsLower_v<MT4> )
                                ?( IsUpper_v<MT5> ? min( i+3UL, j+3UL ) : ( i+3UL ) )
                                :( IsUpper_v<MT5> ? ( j+3UL ) : K ) );
 
-            const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
-            BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
+            const size_t kpos( remainder ? prevMultiple( kend, SIMDSIZE ) : kend );
+            BLAZE_INTERNAL_ASSERT( kpos <= kend, "Invalid end calculation" );
 
             size_t k( kbegin );
 
@@ -7686,14 +7695,14 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
          for( ; (j+2UL) <= jend; j+=2UL )
          {
             const size_t kbegin( ( IsUpper_v<MT4> )
-                                 ?( ( IsLower_v<MT5> ? max( i, j ) : i ) & size_t(-SIMDSIZE) )
-                                 :( IsLower_v<MT5> ? ( j & size_t(-SIMDSIZE) ) : 0UL ) );
+                                 ?( prevMultiple( ( IsLower_v<MT5> ? max( i, j ) : i ), SIMDSIZE ) )
+                                 :( IsLower_v<MT5> ? prevMultiple( j, SIMDSIZE ) : 0UL ) );
             const size_t kend( ( IsLower_v<MT4> )
                                ?( IsUpper_v<MT5> ? min( i+3UL, j+2UL ) : ( i+3UL ) )
                                :( IsUpper_v<MT5> ? ( j+2UL ) : K ) );
 
-            const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
-            BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
+            const size_t kpos( remainder ? prevMultiple( kend, SIMDSIZE ) : kend );
+            BLAZE_INTERNAL_ASSERT( kpos <= kend, "Invalid end calculation" );
 
             size_t k( kbegin );
 
@@ -7780,12 +7789,12 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
          if( j < jend )
          {
             const size_t kbegin( ( IsUpper_v<MT4> )
-                                 ?( ( IsLower_v<MT5> ? max( i, j ) : i ) & size_t(-SIMDSIZE) )
-                                 :( IsLower_v<MT5> ? ( j & size_t(-SIMDSIZE) ) : 0UL ) );
+                                 ?( prevMultiple( ( IsLower_v<MT5> ? max( i, j ) : i ), SIMDSIZE ) )
+                                 :( IsLower_v<MT5> ? prevMultiple( j, SIMDSIZE ) : 0UL ) );
             const size_t kend( ( IsLower_v<MT4> )?( i+3UL ):( K ) );
 
-            const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
-            BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
+            const size_t kpos( remainder ? prevMultiple( kend, SIMDSIZE ) : kend );
+            BLAZE_INTERNAL_ASSERT( kpos <= kend, "Invalid end calculation" );
 
             size_t k( kbegin );
 
@@ -7869,14 +7878,14 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
          for( ; (j+4UL) <= jend; j+=4UL )
          {
             const size_t kbegin( ( IsUpper_v<MT4> )
-                                 ?( ( IsLower_v<MT5> ? max( i, j ) : i ) & size_t(-SIMDSIZE) )
-                                 :( IsLower_v<MT5> ? ( j & size_t(-SIMDSIZE) ) : 0UL ) );
+                                 ?( prevMultiple( ( IsLower_v<MT5> ? max( i, j ) : i ), SIMDSIZE ) )
+                                 :( IsLower_v<MT5> ? prevMultiple( j, SIMDSIZE ) : 0UL ) );
             const size_t kend( ( IsLower_v<MT4> )
                                ?( IsUpper_v<MT5> ? min( i+2UL, j+4UL ) : ( i+2UL ) )
                                :( IsUpper_v<MT5> ? ( j+4UL ) : K ) );
 
-            const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
-            BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
+            const size_t kpos( remainder ? prevMultiple( kend, SIMDSIZE ) : kend );
+            BLAZE_INTERNAL_ASSERT( kpos <= kend, "Invalid end calculation" );
 
             size_t k( kbegin );
 
@@ -7981,14 +7990,14 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
          for( ; (j+2UL) <= jend; j+=2UL )
          {
             const size_t kbegin( ( IsUpper_v<MT4> )
-                                 ?( ( IsLower_v<MT5> ? max( i, j ) : i ) & size_t(-SIMDSIZE) )
-                                 :( IsLower_v<MT5> ? ( j & size_t(-SIMDSIZE) ) : 0UL ) );
+                                 ?( prevMultiple( ( IsLower_v<MT5> ? max( i, j ) : i ), SIMDSIZE ) )
+                                 :( IsLower_v<MT5> ? prevMultiple( j, SIMDSIZE ) : 0UL ) );
             const size_t kend( ( IsLower_v<MT4> )
                                ?( IsUpper_v<MT5> ? min( i+2UL, j+2UL ) : ( i+2UL ) )
                                :( IsUpper_v<MT5> ? ( j+2UL ) : K ) );
 
-            const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
-            BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
+            const size_t kpos( remainder ? prevMultiple( kend, SIMDSIZE ) : kend );
+            BLAZE_INTERNAL_ASSERT( kpos <= kend, "Invalid end calculation" );
 
             size_t k( kbegin );
 
@@ -8057,12 +8066,12 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
          if( j < jend )
          {
             const size_t kbegin( ( IsUpper_v<MT4> )
-                                 ?( ( IsLower_v<MT5> ? max( i, j ) : i ) & size_t(-SIMDSIZE) )
-                                 :( IsLower_v<MT5> ? ( j & size_t(-SIMDSIZE) ) : 0UL ) );
+                                 ?( prevMultiple( ( IsLower_v<MT5> ? max( i, j ) : i ), SIMDSIZE ) )
+                                 :( IsLower_v<MT5> ? prevMultiple( j, SIMDSIZE ) : 0UL ) );
             const size_t kend( ( IsLower_v<MT4> )?( i+2UL ):( K ) );
 
-            const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
-            BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
+            const size_t kpos( remainder ? prevMultiple( kend, SIMDSIZE ) : kend );
+            BLAZE_INTERNAL_ASSERT( kpos <= kend, "Invalid end calculation" );
 
             size_t k( kbegin );
 
@@ -8135,12 +8144,12 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
          for( ; !( LOW && UPP ) && (j+4UL) <= jend; j+=4UL )
          {
             const size_t kbegin( ( IsUpper_v<MT4> )
-                                 ?( ( IsLower_v<MT5> ? max( i, j ) : i ) & size_t(-SIMDSIZE) )
-                                 :( IsLower_v<MT5> ? ( j & size_t(-SIMDSIZE) ) : 0UL ) );
+                                 ?( prevMultiple( ( IsLower_v<MT5> ? max( i, j ) : i ), SIMDSIZE ) )
+                                 :( IsLower_v<MT5> ? prevMultiple( j, SIMDSIZE ) : 0UL ) );
             const size_t kend( ( IsUpper_v<MT5> )?( j+4UL ):( K ) );
 
-            const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
-            BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
+            const size_t kpos( remainder ? prevMultiple( kend, SIMDSIZE ) : kend );
+            BLAZE_INTERNAL_ASSERT( kpos <= kend, "Invalid end calculation" );
 
             size_t k( kbegin );
 
@@ -8203,12 +8212,12 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
          for( ; !( LOW && UPP ) && (j+2UL) <= jend; j+=2UL )
          {
             const size_t kbegin( ( IsUpper_v<MT4> )
-                                 ?( ( IsLower_v<MT5> ? max( i, j ) : i ) & size_t(-SIMDSIZE) )
-                                 :( IsLower_v<MT5> ? ( j & size_t(-SIMDSIZE) ) : 0UL ) );
+                                 ?( prevMultiple( ( IsLower_v<MT5> ? max( i, j ) : i ), SIMDSIZE ) )
+                                 :( IsLower_v<MT5> ? prevMultiple( j, SIMDSIZE ) : 0UL ) );
             const size_t kend( ( IsUpper_v<MT5> )?( j+2UL ):( K ) );
 
-            const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
-            BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
+            const size_t kpos( remainder ? prevMultiple( kend, SIMDSIZE ) : kend );
+            BLAZE_INTERNAL_ASSERT( kpos <= kend, "Invalid end calculation" );
 
             size_t k( kbegin );
 
@@ -8255,11 +8264,11 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
          if( j < jend )
          {
             const size_t kbegin( ( IsUpper_v<MT4> )
-                                 ?( ( IsLower_v<MT5> ? max( i, j ) : i ) & size_t(-SIMDSIZE) )
-                                 :( IsLower_v<MT5> ? ( j & size_t(-SIMDSIZE) ) : 0UL ) );
+                                 ?( prevMultiple( ( IsLower_v<MT5> ? max( i, j ) : i ), SIMDSIZE ) )
+                                 :( IsLower_v<MT5> ? prevMultiple( j, SIMDSIZE ) : 0UL ) );
 
-            const size_t kpos( remainder ? ( K & size_t(-SIMDSIZE) ) : K );
-            BLAZE_INTERNAL_ASSERT( !remainder || ( K - ( K % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
+            const size_t kpos( remainder ? prevMultiple( K, SIMDSIZE ) : K );
+            BLAZE_INTERNAL_ASSERT( kpos <= K, "Invalid end calculation" );
 
             size_t k( kbegin );
 
@@ -8361,14 +8370,14 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
          for( ; (j+2UL) <= jend; j+=2UL )
          {
             const size_t kbegin( ( IsUpper_v<MT4> )
-                                 ?( ( IsLower_v<MT5> ? max( i, j ) : i ) & size_t(-SIMDSIZE) )
-                                 :( IsLower_v<MT5> ? ( j & size_t(-SIMDSIZE) ) : 0UL ) );
+                                 ?( prevMultiple( ( IsLower_v<MT5> ? max( i, j ) : i ), SIMDSIZE ) )
+                                 :( IsLower_v<MT5> ? prevMultiple( j, SIMDSIZE ) : 0UL ) );
             const size_t kend( ( IsLower_v<MT4> )
                                ?( IsUpper_v<MT5> ? min( i+4UL, j+2UL ) : ( i+4UL ) )
                                :( IsUpper_v<MT5> ? ( j+2UL ) : K ) );
 
-            const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
-            BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
+            const size_t kpos( remainder ? prevMultiple( kend, SIMDSIZE ) : kend );
+            BLAZE_INTERNAL_ASSERT( kpos <= kend, "Invalid end calculation" );
 
             size_t k( kbegin );
 
@@ -8473,12 +8482,12 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
          if( j < jend )
          {
             const size_t kbegin( ( IsUpper_v<MT4> )
-                                 ?( ( IsLower_v<MT5> ? max( i, j ) : i ) & size_t(-SIMDSIZE) )
-                                 :( IsLower_v<MT5> ? ( j & size_t(-SIMDSIZE) ) : 0UL ) );
+                                 ?( prevMultiple( ( IsLower_v<MT5> ? max( i, j ) : i ), SIMDSIZE ) )
+                                 :( IsLower_v<MT5> ? prevMultiple( j, SIMDSIZE ) : 0UL ) );
             const size_t kend( ( IsLower_v<MT4> )?( i+4UL ):( K ) );
 
-            const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
-            BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
+            const size_t kpos( remainder ? prevMultiple( kend, SIMDSIZE ) : kend );
+            BLAZE_INTERNAL_ASSERT( kpos <= kend, "Invalid end calculation" );
 
             size_t k( kbegin );
 
@@ -8573,14 +8582,14 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
          for( ; (j+3UL) <= jend; j+=3UL )
          {
             const size_t kbegin( ( IsUpper_v<MT4> )
-                                 ?( ( IsLower_v<MT5> ? max( i, j ) : i ) & size_t(-SIMDSIZE) )
-                                 :( IsLower_v<MT5> ? ( j & size_t(-SIMDSIZE) ) : 0UL ) );
+                                 ?( prevMultiple( ( IsLower_v<MT5> ? max( i, j ) : i ), SIMDSIZE ) )
+                                 :( IsLower_v<MT5> ? prevMultiple( j, SIMDSIZE ) : 0UL ) );
             const size_t kend( ( IsLower_v<MT4> )
                                ?( IsUpper_v<MT5> ? min( i+3UL, j+3UL ) : ( i+3UL ) )
                                :( IsUpper_v<MT5> ? ( j+3UL ) : K ) );
 
-            const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
-            BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
+            const size_t kpos( remainder ? prevMultiple( kend, SIMDSIZE ) : kend );
+            BLAZE_INTERNAL_ASSERT( kpos <= kend, "Invalid end calculation" );
 
             size_t k( kbegin );
 
@@ -8693,14 +8702,14 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
          for( ; (j+2UL) <= jend; j+=2UL )
          {
             const size_t kbegin( ( IsUpper_v<MT4> )
-                                 ?( ( IsLower_v<MT5> ? max( i, j ) : i ) & size_t(-SIMDSIZE) )
-                                 :( IsLower_v<MT5> ? ( j & size_t(-SIMDSIZE) ) : 0UL ) );
+                                 ?( prevMultiple( ( IsLower_v<MT5> ? max( i, j ) : i ), SIMDSIZE ) )
+                                 :( IsLower_v<MT5> ? prevMultiple( j, SIMDSIZE ) : 0UL ) );
             const size_t kend( ( IsLower_v<MT4> )
                                ?( IsUpper_v<MT5> ? min( i+3UL, j+2UL ) : ( i+3UL ) )
                                :( IsUpper_v<MT5> ? ( j+2UL ) : K ) );
 
-            const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
-            BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
+            const size_t kpos( remainder ? prevMultiple( kend, SIMDSIZE ) : kend );
+            BLAZE_INTERNAL_ASSERT( kpos <= kend, "Invalid end calculation" );
 
             size_t k( kbegin );
 
@@ -8787,12 +8796,12 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
          if( j < jend )
          {
             const size_t kbegin( ( IsUpper_v<MT4> )
-                                 ?( ( IsLower_v<MT5> ? max( i, j ) : i ) & size_t(-SIMDSIZE) )
-                                 :( IsLower_v<MT5> ? ( j & size_t(-SIMDSIZE) ) : 0UL ) );
+                                 ?( prevMultiple( ( IsLower_v<MT5> ? max( i, j ) : i ), SIMDSIZE ) )
+                                 :( IsLower_v<MT5> ? prevMultiple( j, SIMDSIZE ) : 0UL ) );
             const size_t kend( ( IsLower_v<MT4> )?( i+3UL ):( K ) );
 
-            const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
-            BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
+            const size_t kpos( remainder ? prevMultiple( kend, SIMDSIZE ) : kend );
+            BLAZE_INTERNAL_ASSERT( kpos <= kend, "Invalid end calculation" );
 
             size_t k( kbegin );
 
@@ -8876,14 +8885,14 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
          for( ; (j+2UL) <= jend; j+=2UL )
          {
             const size_t kbegin( ( IsUpper_v<MT4> )
-                                 ?( ( IsLower_v<MT5> ? max( i, j ) : i ) & size_t(-SIMDSIZE) )
-                                 :( IsLower_v<MT5> ? ( j & size_t(-SIMDSIZE) ) : 0UL ) );
+                                 ?( prevMultiple( ( IsLower_v<MT5> ? max( i, j ) : i ), SIMDSIZE ) )
+                                 :( IsLower_v<MT5> ? prevMultiple( j, SIMDSIZE ) : 0UL ) );
             const size_t kend( ( IsLower_v<MT4> )
                                ?( IsUpper_v<MT5> ? min( i+2UL, j+2UL ) : ( i+2UL ) )
                                :( IsUpper_v<MT5> ? ( j+2UL ) : K ) );
 
-            const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
-            BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
+            const size_t kpos( remainder ? prevMultiple( kend, SIMDSIZE ) : kend );
+            BLAZE_INTERNAL_ASSERT( kpos <= kend, "Invalid end calculation" );
 
             size_t k( kbegin );
 
@@ -8952,12 +8961,12 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
          if( j < jend )
          {
             const size_t kbegin( ( IsUpper_v<MT4> )
-                                 ?( ( IsLower_v<MT5> ? max( i, j ) : i ) & size_t(-SIMDSIZE) )
-                                 :( IsLower_v<MT5> ? ( j & size_t(-SIMDSIZE) ) : 0UL ) );
+                                 ?( prevMultiple( ( IsLower_v<MT5> ? max( i, j ) : i ), SIMDSIZE ) )
+                                 :( IsLower_v<MT5> ? prevMultiple( j, SIMDSIZE ) : 0UL ) );
             const size_t kend( ( IsLower_v<MT4> )?( i+2UL ):( K ) );
 
-            const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
-            BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
+            const size_t kpos( remainder ? prevMultiple( kend, SIMDSIZE ) : kend );
+            BLAZE_INTERNAL_ASSERT( kpos <= kend, "Invalid end calculation" );
 
             size_t k( kbegin );
 
@@ -9030,12 +9039,12 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
          for( ; (j+2UL) <= jend; j+=2UL )
          {
             const size_t kbegin( ( IsUpper_v<MT4> )
-                                 ?( ( IsLower_v<MT5> ? max( i, j ) : i ) & size_t(-SIMDSIZE) )
-                                 :( IsLower_v<MT5> ? ( j & size_t(-SIMDSIZE) ) : 0UL ) );
+                                 ?( prevMultiple( ( IsLower_v<MT5> ? max( i, j ) : i ), SIMDSIZE ) )
+                                 :( IsLower_v<MT5> ? prevMultiple( j, SIMDSIZE ) : 0UL ) );
             const size_t kend( ( IsUpper_v<MT5> )?( j+2UL ):( K ) );
 
-            const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
-            BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
+            const size_t kpos( remainder ? prevMultiple( kend, SIMDSIZE ) : kend );
+            BLAZE_INTERNAL_ASSERT( kpos <= kend, "Invalid end calculation" );
 
             size_t k( kbegin );
 
@@ -9082,11 +9091,11 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
          if( j < jend )
          {
             const size_t kbegin( ( IsUpper_v<MT4> )
-                                 ?( ( IsLower_v<MT5> ? max( i, j ) : i ) & size_t(-SIMDSIZE) )
-                                 :( IsLower_v<MT5> ? ( j & size_t(-SIMDSIZE) ) : 0UL ) );
+                                 ?( prevMultiple( ( IsLower_v<MT5> ? max( i, j ) : i ), SIMDSIZE ) )
+                                 :( IsLower_v<MT5> ? prevMultiple( j, SIMDSIZE ) : 0UL ) );
 
-            const size_t kpos( remainder ? ( K & size_t(-SIMDSIZE) ) : K );
-            BLAZE_INTERNAL_ASSERT( !remainder || ( K - ( K % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
+            const size_t kpos( remainder ? prevMultiple( K, SIMDSIZE ) : K );
+            BLAZE_INTERNAL_ASSERT( kpos <= K, "Invalid end calculation" );
 
             size_t k( kbegin );
 
@@ -9420,7 +9429,8 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
          BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
          const size_t jnum( jend - jbegin );
-         const size_t jpos( jbegin + ( jnum & size_t(-2) ) );
+         const size_t jpos( jbegin + prevMultiple( jnum, 2UL ) );
+         BLAZE_INTERNAL_ASSERT( jpos <= jbegin+jnum, "Invalid end calculation" );
 
          for( size_t j=jbegin; j<jpos; j+=2UL ) {
             C(i,j    ) += A(i,j    ) * B(j    ,j    ) * scalar;
@@ -9564,7 +9574,8 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
          BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
 
          const size_t inum( iend - ibegin );
-         const size_t ipos( ibegin + ( inum & size_t(-2) ) );
+         const size_t ipos( ibegin + prevMultiple( inum, 2UL ) );
+         BLAZE_INTERNAL_ASSERT( ipos <= ibegin+inum, "Invalid end calculation" );
 
          for( size_t i=ibegin; i<ipos; i+=2UL ) {
             C(i    ,j) += A(i    ,i    ) * B(i    ,j) * scalar;
@@ -9669,14 +9680,14 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
          for( ; (j+3UL) <= jend; j+=3UL )
          {
             const size_t kbegin( ( IsUpper_v<MT4> )
-                                 ?( ( IsLower_v<MT5> ? max( i, j ) : i ) & size_t(-SIMDSIZE) )
-                                 :( IsLower_v<MT5> ? ( j & size_t(-SIMDSIZE) ) : 0UL ) );
+                                 ?( prevMultiple( ( IsLower_v<MT5> ? max( i, j ) : i ), SIMDSIZE ) )
+                                 :( IsLower_v<MT5> ? prevMultiple( j, SIMDSIZE ) : 0UL ) );
             const size_t kend( ( IsLower_v<MT4> )
                                ?( IsUpper_v<MT5> ? min( i+3UL, j+3UL ) : ( i+3UL ) )
                                :( IsUpper_v<MT5> ? ( j+3UL ) : K ) );
 
-            const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
-            BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
+            const size_t kpos( remainder ? prevMultiple( kend, SIMDSIZE ) : kend );
+            BLAZE_INTERNAL_ASSERT( kpos <= kend, "Invalid end calculation" );
 
             size_t k( kbegin );
 
@@ -9777,14 +9788,14 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
          for( ; (j+2UL) <= jend; j+=2UL )
          {
             const size_t kbegin( ( IsUpper_v<MT4> )
-                                 ?( ( IsLower_v<MT5> ? max( i, j ) : i ) & size_t(-SIMDSIZE) )
-                                 :( IsLower_v<MT5> ? ( j & size_t(-SIMDSIZE) ) : 0UL ) );
+                                 ?( prevMultiple( ( IsLower_v<MT5> ? max( i, j ) : i ), SIMDSIZE ) )
+                                 :( IsLower_v<MT5> ? prevMultiple( j, SIMDSIZE ) : 0UL ) );
             const size_t kend( ( IsLower_v<MT4> )
                                ?( IsUpper_v<MT5> ? min( i+3UL, j+2UL ) : ( i+3UL ) )
                                :( IsUpper_v<MT5> ? ( j+2UL ) : K ) );
 
-            const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
-            BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
+            const size_t kpos( remainder ? prevMultiple( kend, SIMDSIZE ) : kend );
+            BLAZE_INTERNAL_ASSERT( kpos <= kend, "Invalid end calculation" );
 
             size_t k( kbegin );
 
@@ -9862,12 +9873,12 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
          if( j < jend )
          {
             const size_t kbegin( ( IsUpper_v<MT4> )
-                                 ?( ( IsLower_v<MT5> ? max( i, j ) : i ) & size_t(-SIMDSIZE) )
-                                 :( IsLower_v<MT5> ? ( j & size_t(-SIMDSIZE) ) : 0UL ) );
+                                 ?( prevMultiple( ( IsLower_v<MT5> ? max( i, j ) : i ), SIMDSIZE ) )
+                                 :( IsLower_v<MT5> ? prevMultiple( j, SIMDSIZE ) : 0UL ) );
             const size_t kend( ( IsLower_v<MT4> )?( i+3UL ):( K ) );
 
-            const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
-            BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
+            const size_t kpos( remainder ? prevMultiple( kend, SIMDSIZE ) : kend );
+            BLAZE_INTERNAL_ASSERT( kpos <= kend, "Invalid end calculation" );
 
             size_t k( kbegin );
 
@@ -9922,14 +9933,14 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
          for( ; !( LOW && UPP ) && (j+4UL) <= jend; j+=4UL )
          {
             const size_t kbegin( ( IsUpper_v<MT4> )
-                                 ?( ( IsLower_v<MT5> ? max( i, j ) : i ) & size_t(-SIMDSIZE) )
-                                 :( IsLower_v<MT5> ? ( j & size_t(-SIMDSIZE) ) : 0UL ) );
+                                 ?( prevMultiple( ( IsLower_v<MT5> ? max( i, j ) : i ), SIMDSIZE ) )
+                                 :( IsLower_v<MT5> ? prevMultiple( j, SIMDSIZE ) : 0UL ) );
             const size_t kend( ( IsLower_v<MT4> )
                                ?( IsUpper_v<MT5> ? min( i+2UL, j+4UL ) : ( i+2UL ) )
                                :( IsUpper_v<MT5> ? ( j+4UL ) : K ) );
 
-            const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
-            BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
+            const size_t kpos( remainder ? prevMultiple( kend, SIMDSIZE ) : kend );
+            BLAZE_INTERNAL_ASSERT( kpos <= kend, "Invalid end calculation" );
 
             size_t k( kbegin );
 
@@ -10023,14 +10034,14 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
          for( ; (j+2UL) <= jend; j+=2UL )
          {
             const size_t kbegin( ( IsUpper_v<MT4> )
-                                 ?( ( IsLower_v<MT5> ? max( i, j ) : i ) & size_t(-SIMDSIZE) )
-                                 :( IsLower_v<MT5> ? ( j & size_t(-SIMDSIZE) ) : 0UL ) );
+                                 ?( prevMultiple( ( IsLower_v<MT5> ? max( i, j ) : i ), SIMDSIZE ) )
+                                 :( IsLower_v<MT5> ? prevMultiple( j, SIMDSIZE ) : 0UL ) );
             const size_t kend( ( IsLower_v<MT4> )
                                ?( IsUpper_v<MT5> ? min( i+2UL, j+2UL ) : ( i+2UL ) )
                                :( IsUpper_v<MT5> ? ( j+2UL ) : K ) );
 
-            const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
-            BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
+            const size_t kpos( remainder ? prevMultiple( kend, SIMDSIZE ) : kend );
+            BLAZE_INTERNAL_ASSERT( kpos <= kend, "Invalid end calculation" );
 
             size_t k( kbegin );
 
@@ -10092,12 +10103,12 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
          if( j < jend )
          {
             const size_t kbegin( ( IsUpper_v<MT4> )
-                                 ?( ( IsLower_v<MT5> ? max( i, j ) : i ) & size_t(-SIMDSIZE) )
-                                 :( IsLower_v<MT5> ? ( j & size_t(-SIMDSIZE) ) : 0UL ) );
+                                 ?( prevMultiple( ( IsLower_v<MT5> ? max( i, j ) : i ), SIMDSIZE ) )
+                                 :( IsLower_v<MT5> ? prevMultiple( j, SIMDSIZE ) : 0UL ) );
             const size_t kend( ( IsLower_v<MT4> )?( i+2UL ):( K ) );
 
-            const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
-            BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
+            const size_t kpos( remainder ? prevMultiple( kend, SIMDSIZE ) : kend );
+            BLAZE_INTERNAL_ASSERT( kpos <= kend, "Invalid end calculation" );
 
             size_t k( kbegin );
 
@@ -10145,12 +10156,12 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
          for( ; !( LOW && UPP ) && (j+4UL) <= jend; j+=4UL )
          {
             const size_t kbegin( ( IsUpper_v<MT4> )
-                                 ?( ( IsLower_v<MT5> ? max( i, j ) : i ) & size_t(-SIMDSIZE) )
-                                 :( IsLower_v<MT5> ? ( j & size_t(-SIMDSIZE) ) : 0UL ) );
+                                 ?( prevMultiple( ( IsLower_v<MT5> ? max( i, j ) : i ), SIMDSIZE ) )
+                                 :( IsLower_v<MT5> ? prevMultiple( j, SIMDSIZE ) : 0UL ) );
             const size_t kend( ( IsUpper_v<MT5> )?( j+4UL ):( K ) );
 
-            const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
-            BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
+            const size_t kpos( remainder ? prevMultiple( kend, SIMDSIZE ) : kend );
+            BLAZE_INTERNAL_ASSERT( kpos <= kend, "Invalid end calculation" );
 
             size_t k( kbegin );
 
@@ -10206,12 +10217,12 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
          for( ; (j+2UL) <= jend; j+=2UL )
          {
             const size_t kbegin( ( IsUpper_v<MT4> )
-                                 ?( ( IsLower_v<MT5> ? max( i, j ) : i ) & size_t(-SIMDSIZE) )
-                                 :( IsLower_v<MT5> ? ( j & size_t(-SIMDSIZE) ) : 0UL ) );
+                                 ?( prevMultiple( ( IsLower_v<MT5> ? max( i, j ) : i ), SIMDSIZE ) )
+                                 :( IsLower_v<MT5> ? prevMultiple( j, SIMDSIZE ) : 0UL ) );
             const size_t kend( ( IsUpper_v<MT5> )?( j+2UL ):( K ) );
 
-            const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
-            BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
+            const size_t kpos( remainder ? prevMultiple( kend, SIMDSIZE ) : kend );
+            BLAZE_INTERNAL_ASSERT( kpos <= kend, "Invalid end calculation" );
 
             size_t k( kbegin );
 
@@ -10253,11 +10264,11 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
          if( j < jend )
          {
             const size_t kbegin( ( IsUpper_v<MT4> )
-                                 ?( ( IsLower_v<MT5> ? max( i, j ) : i ) & size_t(-SIMDSIZE) )
-                                 :( IsLower_v<MT5> ? ( j & size_t(-SIMDSIZE) ) : 0UL ) );
+                                 ?( prevMultiple( ( IsLower_v<MT5> ? max( i, j ) : i ), SIMDSIZE ) )
+                                 :( IsLower_v<MT5> ? prevMultiple( j, SIMDSIZE ) : 0UL ) );
 
-            const size_t kpos( remainder ? ( K & size_t(-SIMDSIZE) ) : K );
-            BLAZE_INTERNAL_ASSERT( !remainder || ( K - ( K % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
+            const size_t kpos( remainder ? prevMultiple( K, SIMDSIZE ) : K );
+            BLAZE_INTERNAL_ASSERT( kpos <= K, "Invalid end calculation" );
 
             size_t k( kbegin );
 
@@ -10329,14 +10340,14 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
          for( ; (j+2UL) <= N; j+=2UL )
          {
             const size_t kbegin( ( IsUpper_v<MT4> )
-                                 ?( ( IsLower_v<MT5> ? max( i, j ) : i ) & size_t(-SIMDSIZE) )
-                                 :( IsLower_v<MT5> ? ( j & size_t(-SIMDSIZE) ) : 0UL ) );
+                                 ?( prevMultiple( ( IsLower_v<MT5> ? max( i, j ) : i ), SIMDSIZE ) )
+                                 :( IsLower_v<MT5> ? prevMultiple( j, SIMDSIZE ) : 0UL ) );
             const size_t kend( ( IsLower_v<MT4> )
                                ?( IsUpper_v<MT5> ? min( i+4UL, j+2UL ) : ( i+4UL ) )
                                :( IsUpper_v<MT5> ? ( j+2UL ) : K ) );
 
-            const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
-            BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
+            const size_t kpos( remainder ? prevMultiple( kend, SIMDSIZE ) : kend );
+            BLAZE_INTERNAL_ASSERT( kpos <= kend, "Invalid end calculation" );
 
             size_t k( kbegin );
 
@@ -10430,12 +10441,12 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
          if( j < N )
          {
             const size_t kbegin( ( IsUpper_v<MT4> )
-                                 ?( ( IsLower_v<MT5> ? max( i, j ) : i ) & size_t(-SIMDSIZE) )
-                                 :( IsLower_v<MT5> ? ( j & size_t(-SIMDSIZE) ) : 0UL ) );
+                                 ?( prevMultiple( ( IsLower_v<MT5> ? max( i, j ) : i ), SIMDSIZE ) )
+                                 :( IsLower_v<MT5> ? prevMultiple( j, SIMDSIZE ) : 0UL ) );
             const size_t kend( ( IsLower_v<MT4> )?( i+4UL ):( K ) );
 
-            const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
-            BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
+            const size_t kpos( remainder ? prevMultiple( kend, SIMDSIZE ) : kend );
+            BLAZE_INTERNAL_ASSERT( kpos <= kend, "Invalid end calculation" );
 
             size_t k( kbegin );
 
@@ -10496,14 +10507,14 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
          for( ; (j+3UL) <= N; j+=3UL )
          {
             const size_t kbegin( ( IsUpper_v<MT4> )
-                                 ?( ( IsLower_v<MT5> ? max( i, j ) : i ) & size_t(-SIMDSIZE) )
-                                 :( IsLower_v<MT5> ? ( j & size_t(-SIMDSIZE) ) : 0UL ) );
+                                 ?( prevMultiple( ( IsLower_v<MT5> ? max( i, j ) : i ), SIMDSIZE ) )
+                                 :( IsLower_v<MT5> ? prevMultiple( j, SIMDSIZE ) : 0UL ) );
             const size_t kend( ( IsLower_v<MT4> )
                                ?( IsUpper_v<MT5> ? min( i+3UL, j+3UL ) : ( i+3UL ) )
                                :( IsUpper_v<MT5> ? ( j+3UL ) : K ) );
 
-            const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
-            BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
+            const size_t kpos( remainder ? prevMultiple( kend, SIMDSIZE ) : kend );
+            BLAZE_INTERNAL_ASSERT( kpos <= kend, "Invalid end calculation" );
 
             size_t k( kbegin );
 
@@ -10604,14 +10615,14 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
          for( ; (j+2UL) <= N; j+=2UL )
          {
             const size_t kbegin( ( IsUpper_v<MT4> )
-                                 ?( ( IsLower_v<MT5> ? max( i, j ) : i ) & size_t(-SIMDSIZE) )
-                                 :( IsLower_v<MT5> ? ( j & size_t(-SIMDSIZE) ) : 0UL ) );
+                                 ?( prevMultiple( ( IsLower_v<MT5> ? max( i, j ) : i ), SIMDSIZE ) )
+                                 :( IsLower_v<MT5> ? prevMultiple( j, SIMDSIZE ) : 0UL ) );
             const size_t kend( ( IsLower_v<MT4> )
                                ?( IsUpper_v<MT5> ? min( i+3UL, j+2UL ) : ( i+3UL ) )
                                :( IsUpper_v<MT5> ? ( j+2UL ) : K ) );
 
-            const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
-            BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
+            const size_t kpos( remainder ? prevMultiple( kend, SIMDSIZE ) : kend );
+            BLAZE_INTERNAL_ASSERT( kpos <= kend, "Invalid end calculation" );
 
             size_t k( kbegin );
 
@@ -10689,12 +10700,12 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
          if( j < N )
          {
             const size_t kbegin( ( IsUpper_v<MT4> )
-                                 ?( ( IsLower_v<MT5> ? max( i, j ) : i ) & size_t(-SIMDSIZE) )
-                                 :( IsLower_v<MT5> ? ( j & size_t(-SIMDSIZE) ) : 0UL ) );
+                                 ?( prevMultiple( ( IsLower_v<MT5> ? max( i, j ) : i ), SIMDSIZE ) )
+                                 :( IsLower_v<MT5> ? prevMultiple( j, SIMDSIZE ) : 0UL ) );
             const size_t kend( ( IsLower_v<MT4> )?( i+3UL ):( K ) );
 
-            const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
-            BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
+            const size_t kpos( remainder ? prevMultiple( kend, SIMDSIZE ) : kend );
+            BLAZE_INTERNAL_ASSERT( kpos <= kend, "Invalid end calculation" );
 
             size_t k( kbegin );
 
@@ -10749,14 +10760,14 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
          for( ; (j+2UL) <= jend; j+=2UL )
          {
             const size_t kbegin( ( IsUpper_v<MT4> )
-                                 ?( ( IsLower_v<MT5> ? max( i, j ) : i ) & size_t(-SIMDSIZE) )
-                                 :( IsLower_v<MT5> ? ( j & size_t(-SIMDSIZE) ) : 0UL ) );
+                                 ?( prevMultiple( ( IsLower_v<MT5> ? max( i, j ) : i ), SIMDSIZE ) )
+                                 :( IsLower_v<MT5> ? prevMultiple( j, SIMDSIZE ) : 0UL ) );
             const size_t kend( ( IsLower_v<MT4> )
                                ?( IsUpper_v<MT5> ? min( i+2UL, j+2UL ) : ( i+2UL ) )
                                :( IsUpper_v<MT5> ? ( j+2UL ) : K ) );
 
-            const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
-            BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
+            const size_t kpos( remainder ? prevMultiple( kend, SIMDSIZE ) : kend );
+            BLAZE_INTERNAL_ASSERT( kpos <= kend, "Invalid end calculation" );
 
             size_t k( kbegin );
 
@@ -10818,12 +10829,12 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
          if( j < jend )
          {
             const size_t kbegin( ( IsUpper_v<MT4> )
-                                 ?( ( IsLower_v<MT5> ? max( i, j ) : i ) & size_t(-SIMDSIZE) )
-                                 :( IsLower_v<MT5> ? ( j & size_t(-SIMDSIZE) ) : 0UL ) );
+                                 ?( prevMultiple( ( IsLower_v<MT5> ? max( i, j ) : i ), SIMDSIZE ) )
+                                 :( IsLower_v<MT5> ? prevMultiple( j, SIMDSIZE ) : 0UL ) );
             const size_t kend( ( IsLower_v<MT4> )?( i+2UL ):( K ) );
 
-            const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
-            BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
+            const size_t kpos( remainder ? prevMultiple( kend, SIMDSIZE ) : kend );
+            BLAZE_INTERNAL_ASSERT( kpos <= kend, "Invalid end calculation" );
 
             size_t k( kbegin );
 
@@ -10871,12 +10882,12 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
          for( ; (j+2UL) <= jend; j+=2UL )
          {
             const size_t kbegin( ( IsUpper_v<MT4> )
-                                 ?( ( IsLower_v<MT5> ? max( i, j ) : i ) & size_t(-SIMDSIZE) )
-                                 :( IsLower_v<MT5> ? ( j & size_t(-SIMDSIZE) ) : 0UL ) );
+                                 ?( prevMultiple( ( IsLower_v<MT5> ? max( i, j ) : i ), SIMDSIZE ) )
+                                 :( IsLower_v<MT5> ? prevMultiple( j, SIMDSIZE ) : 0UL ) );
             const size_t kend( ( IsUpper_v<MT5> )?( j+2UL ):( K ) );
 
-            const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
-            BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
+            const size_t kpos( remainder ? prevMultiple( kend, SIMDSIZE ) : kend );
+            BLAZE_INTERNAL_ASSERT( kpos <= kend, "Invalid end calculation" );
 
             size_t k( kbegin );
 
@@ -10918,11 +10929,11 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
          if( j < jend )
          {
             const size_t kbegin( ( IsUpper_v<MT4> )
-                                 ?( ( IsLower_v<MT5> ? max( i, j ) : i ) & size_t(-SIMDSIZE) )
-                                 :( IsLower_v<MT5> ? ( j & size_t(-SIMDSIZE) ) : 0UL ) );
+                                 ?( prevMultiple( ( IsLower_v<MT5> ? max( i, j ) : i ), SIMDSIZE ) )
+                                 :( IsLower_v<MT5> ? prevMultiple( j, SIMDSIZE ) : 0UL ) );
 
-            const size_t kpos( remainder ? ( K & size_t(-SIMDSIZE) ) : K );
-            BLAZE_INTERNAL_ASSERT( !remainder || ( K - ( K % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
+            const size_t kpos( remainder ? prevMultiple( K, SIMDSIZE ) : K );
+            BLAZE_INTERNAL_ASSERT( kpos <= K, "Invalid end calculation" );
 
             size_t k( kbegin );
 
@@ -11209,7 +11220,8 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
          BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
          const size_t jnum( jend - jbegin );
-         const size_t jpos( jbegin + ( jnum & size_t(-2) ) );
+         const size_t jpos( jbegin + prevMultiple( jnum, 2UL ) );
+         BLAZE_INTERNAL_ASSERT( jpos <= jbegin+jnum, "Invalid end calculation" );
 
          for( size_t j=jbegin; j<jpos; j+=2UL ) {
             C(i,j    ) -= A(i,j    ) * B(j    ,j    ) * scalar;
@@ -11355,7 +11367,8 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
          BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
 
          const size_t inum( iend - ibegin );
-         const size_t ipos( ibegin + ( inum & size_t(-2) ) );
+         const size_t ipos( ibegin + prevMultiple( inum, 2UL ) );
+         BLAZE_INTERNAL_ASSERT( ipos <= ibegin+inum, "Invalid end calculation" );
 
          for( size_t i=ibegin; i<ipos; i+=2UL ) {
             C(i    ,j) -= A(i    ,i    ) * B(i    ,j) * scalar;
@@ -11460,14 +11473,14 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
          for( ; (j+3UL) <= jend; j+=3UL )
          {
             const size_t kbegin( ( IsUpper_v<MT4> )
-                                 ?( ( IsLower_v<MT5> ? max( i, j ) : i ) & size_t(-SIMDSIZE) )
-                                 :( IsLower_v<MT5> ? ( j & size_t(-SIMDSIZE) ) : 0UL ) );
+                                 ?( prevMultiple( ( IsLower_v<MT5> ? max( i, j ) : i ), SIMDSIZE ) )
+                                 :( IsLower_v<MT5> ? prevMultiple( j, SIMDSIZE ) : 0UL ) );
             const size_t kend( ( IsLower_v<MT4> )
                                ?( IsUpper_v<MT5> ? min( i+3UL, j+3UL ) : ( i+3UL ) )
                                :( IsUpper_v<MT5> ? ( j+3UL ) : K ) );
 
-            const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
-            BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
+            const size_t kpos( remainder ? prevMultiple( kend, SIMDSIZE ) : kend );
+            BLAZE_INTERNAL_ASSERT( kpos <= kend, "Invalid end calculation" );
 
             size_t k( kbegin );
 
@@ -11568,14 +11581,14 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
          for( ; (j+2UL) <= jend; j+=2UL )
          {
             const size_t kbegin( ( IsUpper_v<MT4> )
-                                 ?( ( IsLower_v<MT5> ? max( i, j ) : i ) & size_t(-SIMDSIZE) )
-                                 :( IsLower_v<MT5> ? ( j & size_t(-SIMDSIZE) ) : 0UL ) );
+                                 ?( prevMultiple( ( IsLower_v<MT5> ? max( i, j ) : i ), SIMDSIZE ) )
+                                 :( IsLower_v<MT5> ? prevMultiple( j, SIMDSIZE ) : 0UL ) );
             const size_t kend( ( IsLower_v<MT4> )
                                ?( IsUpper_v<MT5> ? min( i+3UL, j+2UL ) : ( i+3UL ) )
                                :( IsUpper_v<MT5> ? ( j+2UL ) : K ) );
 
-            const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
-            BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
+            const size_t kpos( remainder ? prevMultiple( kend, SIMDSIZE ) : kend );
+            BLAZE_INTERNAL_ASSERT( kpos <= kend, "Invalid end calculation" );
 
             size_t k( kbegin );
 
@@ -11653,12 +11666,12 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
          if( j < jend )
          {
             const size_t kbegin( ( IsUpper_v<MT4> )
-                                 ?( ( IsLower_v<MT5> ? max( i, j ) : i ) & size_t(-SIMDSIZE) )
-                                 :( IsLower_v<MT5> ? ( j & size_t(-SIMDSIZE) ) : 0UL ) );
+                                 ?( prevMultiple( ( IsLower_v<MT5> ? max( i, j ) : i ), SIMDSIZE ) )
+                                 :( IsLower_v<MT5> ? prevMultiple( j, SIMDSIZE ) : 0UL ) );
             const size_t kend( ( IsLower_v<MT4> )?( i+3UL ):( K ) );
 
-            const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
-            BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
+            const size_t kpos( remainder ? prevMultiple( kend, SIMDSIZE ) : kend );
+            BLAZE_INTERNAL_ASSERT( kpos <= kend, "Invalid end calculation" );
 
             size_t k( kbegin );
 
@@ -11713,14 +11726,14 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
          for( ; !( LOW && UPP ) && (j+4UL) <= jend; j+=4UL )
          {
             const size_t kbegin( ( IsUpper_v<MT4> )
-                                 ?( ( IsLower_v<MT5> ? max( i, j ) : i ) & size_t(-SIMDSIZE) )
-                                 :( IsLower_v<MT5> ? ( j & size_t(-SIMDSIZE) ) : 0UL ) );
+                                 ?( prevMultiple( ( IsLower_v<MT5> ? max( i, j ) : i ), SIMDSIZE ) )
+                                 :( IsLower_v<MT5> ? prevMultiple( j, SIMDSIZE ) : 0UL ) );
             const size_t kend( ( IsLower_v<MT4> )
                                ?( IsUpper_v<MT5> ? min( i+2UL, j+4UL ) : ( i+2UL ) )
                                :( IsUpper_v<MT5> ? ( j+4UL ) : K ) );
 
-            const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
-            BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
+            const size_t kpos( remainder ? prevMultiple( kend, SIMDSIZE ) : kend );
+            BLAZE_INTERNAL_ASSERT( kpos <= kend, "Invalid end calculation" );
 
             size_t k( kbegin );
 
@@ -11814,14 +11827,14 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
          for( ; (j+2UL) <= jend; j+=2UL )
          {
             const size_t kbegin( ( IsUpper_v<MT4> )
-                                 ?( ( IsLower_v<MT5> ? max( i, j ) : i ) & size_t(-SIMDSIZE) )
-                                 :( IsLower_v<MT5> ? ( j & size_t(-SIMDSIZE) ) : 0UL ) );
+                                 ?( prevMultiple( ( IsLower_v<MT5> ? max( i, j ) : i ), SIMDSIZE ) )
+                                 :( IsLower_v<MT5> ? prevMultiple( j, SIMDSIZE ) : 0UL ) );
             const size_t kend( ( IsLower_v<MT4> )
                                ?( IsUpper_v<MT5> ? min( i+2UL, j+2UL ) : ( i+2UL ) )
                                :( IsUpper_v<MT5> ? ( j+2UL ) : K ) );
 
-            const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
-            BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
+            const size_t kpos( remainder ? prevMultiple( kend, SIMDSIZE ) : kend );
+            BLAZE_INTERNAL_ASSERT( kpos <= kend, "Invalid end calculation" );
 
             size_t k( kbegin );
 
@@ -11883,12 +11896,12 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
          if( j < jend )
          {
             const size_t kbegin( ( IsUpper_v<MT4> )
-                                 ?( ( IsLower_v<MT5> ? max( i, j ) : i ) & size_t(-SIMDSIZE) )
-                                 :( IsLower_v<MT5> ? ( j & size_t(-SIMDSIZE) ) : 0UL ) );
+                                 ?( prevMultiple( ( IsLower_v<MT5> ? max( i, j ) : i ), SIMDSIZE ) )
+                                 :( IsLower_v<MT5> ? prevMultiple( j, SIMDSIZE ) : 0UL ) );
             const size_t kend( ( IsLower_v<MT4> )?( i+2UL ):( K ) );
 
-            const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
-            BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
+            const size_t kpos( remainder ? prevMultiple( kend, SIMDSIZE ) : kend );
+            BLAZE_INTERNAL_ASSERT( kpos <= kend, "Invalid end calculation" );
 
             size_t k( kbegin );
 
@@ -11936,12 +11949,12 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
          for( ; !( LOW && UPP ) && (j+4UL) <= jend; j+=4UL )
          {
             const size_t kbegin( ( IsUpper_v<MT4> )
-                                 ?( ( IsLower_v<MT5> ? max( i, j ) : i ) & size_t(-SIMDSIZE) )
-                                 :( IsLower_v<MT5> ? ( j & size_t(-SIMDSIZE) ) : 0UL ) );
+                                 ?( prevMultiple( ( IsLower_v<MT5> ? max( i, j ) : i ), SIMDSIZE ) )
+                                 :( IsLower_v<MT5> ? prevMultiple( j, SIMDSIZE ) : 0UL ) );
             const size_t kend( ( IsUpper_v<MT5> )?( j+4UL ):( K ) );
 
-            const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
-            BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
+            const size_t kpos( remainder ? prevMultiple( kend, SIMDSIZE ) : kend );
+            BLAZE_INTERNAL_ASSERT( kpos <= kend, "Invalid end calculation" );
 
             size_t k( kbegin );
 
@@ -11997,12 +12010,12 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
          for( ; (j+2UL) <= jend; j+=2UL )
          {
             const size_t kbegin( ( IsUpper_v<MT4> )
-                                 ?( ( IsLower_v<MT5> ? max( i, j ) : i ) & size_t(-SIMDSIZE) )
-                                 :( IsLower_v<MT5> ? ( j & size_t(-SIMDSIZE) ) : 0UL ) );
+                                 ?( prevMultiple( ( IsLower_v<MT5> ? max( i, j ) : i ), SIMDSIZE ) )
+                                 :( IsLower_v<MT5> ? prevMultiple( j, SIMDSIZE ) : 0UL ) );
             const size_t kend( ( IsUpper_v<MT5> )?( j+2UL ):( K ) );
 
-            const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
-            BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
+            const size_t kpos( remainder ? prevMultiple( kend, SIMDSIZE ) : kend );
+            BLAZE_INTERNAL_ASSERT( kpos <= kend, "Invalid end calculation" );
 
             size_t k( kbegin );
 
@@ -12044,11 +12057,11 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
          if( j < jend )
          {
             const size_t kbegin( ( IsUpper_v<MT4> )
-                                 ?( ( IsLower_v<MT5> ? max( i, j ) : i ) & size_t(-SIMDSIZE) )
-                                 :( IsLower_v<MT5> ? ( j & size_t(-SIMDSIZE) ) : 0UL ) );
+                                 ?( prevMultiple( ( IsLower_v<MT5> ? max( i, j ) : i ), SIMDSIZE ) )
+                                 :( IsLower_v<MT5> ? prevMultiple( j, SIMDSIZE ) : 0UL ) );
 
-            const size_t kpos( remainder ? ( K & size_t(-SIMDSIZE) ) : K );
-            BLAZE_INTERNAL_ASSERT( !remainder || ( K - ( K % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
+            const size_t kpos( remainder ? prevMultiple( K, SIMDSIZE ) : K );
+            BLAZE_INTERNAL_ASSERT( kpos <= K, "Invalid end calculation" );
 
             size_t k( kbegin );
 
@@ -12120,14 +12133,14 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
          for( ; (j+2UL) <= N; j+=2UL )
          {
             const size_t kbegin( ( IsUpper_v<MT4> )
-                                 ?( ( IsLower_v<MT5> ? max( i, j ) : i ) & size_t(-SIMDSIZE) )
-                                 :( IsLower_v<MT5> ? ( j & size_t(-SIMDSIZE) ) : 0UL ) );
+                                 ?( prevMultiple( ( IsLower_v<MT5> ? max( i, j ) : i ), SIMDSIZE ) )
+                                 :( IsLower_v<MT5> ? prevMultiple( j, SIMDSIZE ) : 0UL ) );
             const size_t kend( ( IsLower_v<MT4> )
                                ?( IsUpper_v<MT5> ? min( i+4UL, j+2UL ) : ( i+4UL ) )
                                :( IsUpper_v<MT5> ? ( j+2UL ) : K ) );
 
-            const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
-            BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
+            const size_t kpos( remainder ? prevMultiple( kend, SIMDSIZE ) : kend );
+            BLAZE_INTERNAL_ASSERT( kpos <= kend, "Invalid end calculation" );
 
             size_t k( kbegin );
 
@@ -12222,12 +12235,12 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
          if( j < N )
          {
             const size_t kbegin( ( IsUpper_v<MT4> )
-                                 ?( ( IsLower_v<MT5> ? max( i, j ) : i ) & size_t(-SIMDSIZE) )
-                                 :( IsLower_v<MT5> ? ( j & size_t(-SIMDSIZE) ) : 0UL ) );
+                                 ?( prevMultiple( ( IsLower_v<MT5> ? max( i, j ) : i ), SIMDSIZE ) )
+                                 :( IsLower_v<MT5> ? prevMultiple( j, SIMDSIZE ) : 0UL ) );
             const size_t kend( ( IsLower_v<MT4> )?( i+4UL ):( K ) );
 
-            const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
-            BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
+            const size_t kpos( remainder ? prevMultiple( kend, SIMDSIZE ) : kend );
+            BLAZE_INTERNAL_ASSERT( kpos <= kend, "Invalid end calculation" );
 
             size_t k( kbegin );
 
@@ -12288,14 +12301,14 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
          for( ; (j+3UL) <= N; j+=3UL )
          {
             const size_t kbegin( ( IsUpper_v<MT4> )
-                                 ?( ( IsLower_v<MT5> ? max( i, j ) : i ) & size_t(-SIMDSIZE) )
-                                 :( IsLower_v<MT5> ? ( j & size_t(-SIMDSIZE) ) : 0UL ) );
+                                 ?( prevMultiple( ( IsLower_v<MT5> ? max( i, j ) : i ), SIMDSIZE ) )
+                                 :( IsLower_v<MT5> ? prevMultiple( j, SIMDSIZE ) : 0UL ) );
             const size_t kend( ( IsLower_v<MT4> )
                                ?( IsUpper_v<MT5> ? min( i+3UL, j+3UL ) : ( i+3UL ) )
                                :( IsUpper_v<MT5> ? ( j+3UL ) : K ) );
 
-            const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
-            BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
+            const size_t kpos( remainder ? prevMultiple( kend, SIMDSIZE ) : kend );
+            BLAZE_INTERNAL_ASSERT( kpos <= kend, "Invalid end calculation" );
 
             size_t k( kbegin );
 
@@ -12397,14 +12410,14 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
          for( ; (j+2UL) <= N; j+=2UL )
          {
             const size_t kbegin( ( IsUpper_v<MT4> )
-                                 ?( ( IsLower_v<MT5> ? max( i, j ) : i ) & size_t(-SIMDSIZE) )
-                                 :( IsLower_v<MT5> ? ( j & size_t(-SIMDSIZE) ) : 0UL ) );
+                                 ?( prevMultiple( ( IsLower_v<MT5> ? max( i, j ) : i ), SIMDSIZE ) )
+                                 :( IsLower_v<MT5> ? prevMultiple( j, SIMDSIZE ) : 0UL ) );
             const size_t kend( ( IsLower_v<MT4> )
                                ?( IsUpper_v<MT5> ? min( i+3UL, j+2UL ) : ( i+3UL ) )
                                :( IsUpper_v<MT5> ? ( j+2UL ) : K ) );
 
-            const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
-            BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
+            const size_t kpos( remainder ? prevMultiple( kend, SIMDSIZE ) : kend );
+            BLAZE_INTERNAL_ASSERT( kpos <= kend, "Invalid end calculation" );
 
             size_t k( kbegin );
 
@@ -12483,12 +12496,12 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
          if( j < N )
          {
             const size_t kbegin( ( IsUpper_v<MT4> )
-                                 ?( ( IsLower_v<MT5> ? max( i, j ) : i ) & size_t(-SIMDSIZE) )
-                                 :( IsLower_v<MT5> ? ( j & size_t(-SIMDSIZE) ) : 0UL ) );
+                                 ?( prevMultiple( ( IsLower_v<MT5> ? max( i, j ) : i ), SIMDSIZE ) )
+                                 :( IsLower_v<MT5> ? prevMultiple( j, SIMDSIZE ) : 0UL ) );
             const size_t kend( ( IsLower_v<MT4> )?( i+3UL ):( K ) );
 
-            const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
-            BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
+            const size_t kpos( remainder ? prevMultiple( kend, SIMDSIZE ) : kend );
+            BLAZE_INTERNAL_ASSERT( kpos <= kend, "Invalid end calculation" );
 
             size_t k( kbegin );
 
@@ -12543,14 +12556,14 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
          for( ; (j+2UL) <= jend; j+=2UL )
          {
             const size_t kbegin( ( IsUpper_v<MT4> )
-                                 ?( ( IsLower_v<MT5> ? max( i, j ) : i ) & size_t(-SIMDSIZE) )
-                                 :( IsLower_v<MT5> ? ( j & size_t(-SIMDSIZE) ) : 0UL ) );
+                                 ?( prevMultiple( ( IsLower_v<MT5> ? max( i, j ) : i ), SIMDSIZE ) )
+                                 :( IsLower_v<MT5> ? prevMultiple( j, SIMDSIZE ) : 0UL ) );
             const size_t kend( ( IsLower_v<MT4> )
                                ?( IsUpper_v<MT5> ? min( i+2UL, j+2UL ) : ( i+2UL ) )
                                :( IsUpper_v<MT5> ? ( j+2UL ) : K ) );
 
-            const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
-            BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
+            const size_t kpos( remainder ? prevMultiple( kend, SIMDSIZE ) : kend );
+            BLAZE_INTERNAL_ASSERT( kpos <= kend, "Invalid end calculation" );
 
             size_t k( kbegin );
 
@@ -12612,12 +12625,12 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
          if( j < jend )
          {
             const size_t kbegin( ( IsUpper_v<MT4> )
-                                 ?( ( IsLower_v<MT5> ? max( i, j ) : i ) & size_t(-SIMDSIZE) )
-                                 :( IsLower_v<MT5> ? ( j & size_t(-SIMDSIZE) ) : 0UL ) );
+                                 ?( prevMultiple( ( IsLower_v<MT5> ? max( i, j ) : i ), SIMDSIZE ) )
+                                 :( IsLower_v<MT5> ? prevMultiple( j, SIMDSIZE ) : 0UL ) );
             const size_t kend( ( IsLower_v<MT4> )?( i+2UL ):( K ) );
 
-            const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
-            BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
+            const size_t kpos( remainder ? prevMultiple( kend, SIMDSIZE ) : kend );
+            BLAZE_INTERNAL_ASSERT( kpos <= kend, "Invalid end calculation" );
 
             size_t k( kbegin );
 
@@ -12665,12 +12678,12 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
          for( ; (j+2UL) <= jend; j+=2UL )
          {
             const size_t kbegin( ( IsUpper_v<MT4> )
-                                 ?( ( IsLower_v<MT5> ? max( i, j ) : i ) & size_t(-SIMDSIZE) )
-                                 :( IsLower_v<MT5> ? ( j & size_t(-SIMDSIZE) ) : 0UL ) );
+                                 ?( prevMultiple( ( IsLower_v<MT5> ? max( i, j ) : i ), SIMDSIZE ) )
+                                 :( IsLower_v<MT5> ? prevMultiple( j, SIMDSIZE ) : 0UL ) );
             const size_t kend( ( IsUpper_v<MT5> )?( j+2UL ):( K ) );
 
-            const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
-            BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
+            const size_t kpos( remainder ? prevMultiple( kend, SIMDSIZE ) : kend );
+            BLAZE_INTERNAL_ASSERT( kpos <= kend, "Invalid end calculation" );
 
             size_t k( kbegin );
 
@@ -12712,11 +12725,11 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
          if( j < jend )
          {
             const size_t kbegin( ( IsUpper_v<MT4> )
-                                 ?( ( IsLower_v<MT5> ? max( i, j ) : i ) & size_t(-SIMDSIZE) )
-                                 :( IsLower_v<MT5> ? ( j & size_t(-SIMDSIZE) ) : 0UL ) );
+                                 ?( prevMultiple( ( IsLower_v<MT5> ? max( i, j ) : i ), SIMDSIZE ) )
+                                 :( IsLower_v<MT5> ? prevMultiple( j, SIMDSIZE ) : 0UL ) );
 
-            const size_t kpos( remainder ? ( K & size_t(-SIMDSIZE) ) : K );
-            BLAZE_INTERNAL_ASSERT( !remainder || ( K - ( K % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
+            const size_t kpos( remainder ? prevMultiple( K, SIMDSIZE ) : K );
+            BLAZE_INTERNAL_ASSERT( kpos <= K, "Invalid end calculation" );
 
             size_t k( kbegin );
 

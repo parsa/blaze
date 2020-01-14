@@ -44,6 +44,7 @@
 #include <blaze/math/expressions/DenseVector.h>
 #include <blaze/math/RelaxationFlag.h>
 #include <blaze/math/shims/Equal.h>
+#include <blaze/math/shims/PrevMultiple.h>
 #include <blaze/math/SIMD.h>
 #include <blaze/math/typetraits/HasSIMDEqual.h>
 #include <blaze/math/typetraits/IsPadded.h>
@@ -177,8 +178,8 @@ inline auto equal( const DenseVector<VT1,TF1>& lhs, const DenseVector<VT2,TF2>& 
 
    const size_t N( a.size() );
 
-   const size_t ipos( ( remainder )?( N & size_t(-SIMDSIZE) ):( N ) );
-   BLAZE_INTERNAL_ASSERT( !remainder || ( N - ( N % SIMDSIZE ) ) == ipos, "Invalid end calculation" );
+   const size_t ipos( remainder ? prevMultiple( N, SIMDSIZE ) : N );
+   BLAZE_INTERNAL_ASSERT( ipos <= N, "Invalid end calculation" );
 
    size_t i( 0UL );
 

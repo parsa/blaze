@@ -56,6 +56,7 @@
 #include <blaze/math/shims/Clear.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/shims/NextMultiple.h>
+#include <blaze/math/shims/PrevMultiple.h>
 #include <blaze/math/shims/Serial.h>
 #include <blaze/math/SIMD.h>
 #include <blaze/math/traits/AddTrait.h>
@@ -2191,8 +2192,8 @@ inline auto StaticVector<Type,N,TF>::assign( const DenseVector<VT,TF>& rhs )
 
    constexpr bool remainder( !usePadding || !IsPadded_v<VT> );
 
-   constexpr size_t ipos( ( remainder )?( N & size_t(-SIMDSIZE) ):( N ) );
-   BLAZE_INTERNAL_ASSERT( !remainder || ( N - ( N % (SIMDSIZE) ) ) == ipos, "Invalid end calculation" );
+   constexpr size_t ipos( remainder ? prevMultiple( N, SIMDSIZE ) : N );
+   BLAZE_INTERNAL_ASSERT( ipos <= N, "Invalid end calculation" );
 
    size_t i( 0UL );
 
@@ -2281,8 +2282,8 @@ inline auto StaticVector<Type,N,TF>::addAssign( const DenseVector<VT,TF>& rhs )
 
    constexpr bool remainder( !usePadding || !IsPadded_v<VT> );
 
-   constexpr size_t ipos( ( remainder )?( N & size_t(-SIMDSIZE) ):( N ) );
-   BLAZE_INTERNAL_ASSERT( !remainder || ( N - ( N % (SIMDSIZE) ) ) == ipos, "Invalid end calculation" );
+   constexpr size_t ipos( remainder ? prevMultiple( N, SIMDSIZE ) : N );
+   BLAZE_INTERNAL_ASSERT( ipos <= N, "Invalid end calculation" );
 
    size_t i( 0UL );
 
@@ -2371,8 +2372,8 @@ inline auto StaticVector<Type,N,TF>::subAssign( const DenseVector<VT,TF>& rhs )
 
    constexpr bool remainder( !usePadding || !IsPadded_v<VT> );
 
-   constexpr size_t ipos( ( remainder )?( N & size_t(-SIMDSIZE) ):( N ) );
-   BLAZE_INTERNAL_ASSERT( !remainder || ( N - ( N % (SIMDSIZE) ) ) == ipos, "Invalid end calculation" );
+   constexpr size_t ipos( remainder ? prevMultiple( N, SIMDSIZE ) : N );
+   BLAZE_INTERNAL_ASSERT( ipos <= N, "Invalid end calculation" );
 
    size_t i( 0UL );
 
@@ -2461,8 +2462,8 @@ inline auto StaticVector<Type,N,TF>::multAssign( const DenseVector<VT,TF>& rhs )
 
    constexpr bool remainder( !usePadding || !IsPadded_v<VT> );
 
-   constexpr size_t ipos( ( remainder )?( N & size_t(-SIMDSIZE) ):( N ) );
-   BLAZE_INTERNAL_ASSERT( !remainder || ( N - ( N % (SIMDSIZE) ) ) == ipos, "Invalid end calculation" );
+   constexpr size_t ipos( remainder ? prevMultiple( N, SIMDSIZE ) : N );
+   BLAZE_INTERNAL_ASSERT( ipos <= N, "Invalid end calculation" );
 
    size_t i( 0UL );
 
@@ -2553,8 +2554,8 @@ inline auto StaticVector<Type,N,TF>::divAssign( const DenseVector<VT,TF>& rhs )
 
    BLAZE_INTERNAL_ASSERT( (~rhs).size() == N, "Invalid vector sizes" );
 
-   constexpr size_t ipos( N & size_t(-SIMDSIZE) );
-   BLAZE_INTERNAL_ASSERT( ( N - ( N % (SIMDSIZE) ) ) == ipos, "Invalid end calculation" );
+   constexpr size_t ipos( prevMultiple( N, SIMDSIZE ) );
+   BLAZE_INTERNAL_ASSERT( ipos <= N, "Invalid end calculation" );
 
    size_t i( 0UL );
 
