@@ -14417,6 +14417,8 @@
    \endcode
 
 // Note that the \c BLAZE_BLAS_IS_64BIT switch also has an effect on the \ref lapack_functions.
+// Please also note that it might additionally be necessary to use a compilation switch to put
+// the BLAS/LAPACK library into 64-bit mode (e.g. \c MKL_ILP64 for the Intel MKL library).
 //
 // In case the selected BLAS library provides parallel execution, the \c BLAZE_BLAS_IS_PARALLEL
 // switch should be activated to prevent \b Blaze from parallelizing on its own:
