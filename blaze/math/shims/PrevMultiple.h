@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze/math/shims/NextMultiple.h
-//  \brief Header file for the nextMultiple shim
+//  \file blaze/math/shims/PrevMultiple.h
+//  \brief Header file for the prevMultiple shim
 //
 //  Copyright (C) 2012-2019 Klaus Iglberger - All Rights Reserved
 //
@@ -32,8 +32,8 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_MATH_SHIMS_NEXTMULTIPLE_H_
-#define _BLAZE_MATH_SHIMS_NEXTMULTIPLE_H_
+#ifndef _BLAZE_MATH_SHIMS_PREVMULTIPLE_H_
+#define _BLAZE_MATH_SHIMS_PREVMULTIPLE_H_
 
 
 //*************************************************************************************************
@@ -47,27 +47,27 @@ namespace blaze {
 
 //=================================================================================================
 //
-//  NEXTMULTIPLE SHIM
+//  PREVMULTIPLE SHIM
 //
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Rounds up an integral value to the next multiple of a given factor.
+/*!\brief Rounds down an integral value to the previous multiple of a given factor.
 // \ingroup math
 //
-// \param value The integral value to be rounded up \f$[1..\infty)\f$.
+// \param value The integral value to be rounded down \f$[1..\infty)\f$.
 // \param factor The factor of the multiple \f$[1..\infty)\f$.
-// \return The next multiple of the given factor.
+// \return The previous multiple of the given factor.
 //
-// This function rounds up the given integral value to the next multiple of the given integral
-// factor. In case the integral value is already a multiple of the given factor, the value itself
-// is returned. Note that the attempt to use the function with non-integral types results in a
-// compilation error!
+// This function rounds down the given integral value to the previous multiple of the given
+// integral factor. In case the integral value is already a multiple of the given factor, the
+// value itself is returned. Note that the attempt to use the function with non-integral types
+// results in a compilation error!
 */
 template< typename T1, typename T2 >
-BLAZE_ALWAYS_INLINE constexpr auto nextMultiple( T1 value, T2 factor ) noexcept
+BLAZE_ALWAYS_INLINE constexpr auto prevMultiple( T1 value, T2 factor ) noexcept
 {
-   return ( value + ( factor - ( value % factor ) ) % factor );
+   return ( value - ( value % factor ) );
 }
 //*************************************************************************************************
 

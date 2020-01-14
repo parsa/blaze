@@ -88,6 +88,7 @@
 #include <blaze/math/shims/Pow2.h>
 #include <blaze/math/shims/Pow3.h>
 #include <blaze/math/shims/Pow4.h>
+#include <blaze/math/shims/PrevMultiple.h>
 #include <blaze/math/shims/Qdrt.h>
 #include <blaze/math/shims/Real.h>
 #include <blaze/math/shims/Reset.h>
