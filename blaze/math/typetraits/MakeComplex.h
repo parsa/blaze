@@ -55,8 +55,9 @@ namespace blaze {
 /*!\brief Converting the given type to the matching 'complex' type.
 // \ingroup type_traits
 //
-// The MakeComplex type trait converts the given floating point type \a T to the
-// matching 'complex' type with the same cv-qualifiers. Other types are converted to TODO
+// The MakeComplex type trait converts the given floating point type \a T to the matching
+// 'complex' type with the same cv-qualifiers. 'complex' types are preserved. For all other
+// types, including integral types, no type conversion is performed.
 
    \code
    blaze::MakeComplex< float                    >::Type  // Results in 'complex<float>'
@@ -64,6 +65,9 @@ namespace blaze {
    blaze::MakeComplex< const long double        >::Type  // Results in 'const complex<long double>'
    blaze::MakeComplex< volatile complex<double> >::Type  // Results in 'volatile complex<double>'
    \endcode
+
+// Note that it is possible to add support for other data types by specializing the MakeComplex
+// class template.
 */
 template< typename T >
 struct MakeComplex
