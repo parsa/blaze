@@ -15220,7 +15220,8 @@
 // \subsection blas_level_1_dotu Dot Product (dotu)
 //
 // The following wrapper functions provide a generic interface for the BLAS functions for the
-// dot product of two dense vectors (\c sdot(), \c ddot(), \c cdotu_sub(), and \c zdotu_sub()):
+// dot product of two dense vectors (\c cblas_sdot(), \c cblas_ddot(), \c cblas_cdotu_sub(), and
+// \c cblas_zdotu_sub()):
 
    \code
    namespace blaze {
@@ -15244,8 +15245,8 @@
 // \subsection blas_level_1_dotc Complex Conjugate Dot Product (dotc)
 //
 // The following wrapper functions provide a generic interface for the BLAS functions for the
-// complex conjugate dot product of two dense vectors (\c sdot(), \c ddot(), \c cdotc_sub(),
-// and \c zdotc_sub()):
+// complex conjugate dot product of two dense vectors (\c cblas_sdot(), \c cblas_ddot(),
+// \c cblas_cdotc_sub(), and \c cblas_zdotc_sub()):
 
    \code
    namespace blaze {
@@ -15269,7 +15270,8 @@
 // \subsection blas_level_1_axpy Axpy Product (axpy)
 //
 // The following wrapper functions provide a generic interface for the BLAS functions for the
-// axpy product of two dense vectors (\c saxpy(), \c daxpy(), \c caxpy(), and \c zaxpy()):
+// axpy product of two dense vectors (\c cblas_saxpy(), \c cblas_daxpy(), \c cblas_caxpy(), and
+// \c cblas_zaxpy()):
 
    \code
    namespace blaze {
@@ -15296,39 +15298,6 @@
 // \subsection blas_level_2_gemv General Matrix/Vector Multiplication (gemv)
 //
 // The following wrapper functions provide a generic interface for the BLAS functions for the
-// general matrix/vector multiplication (\c sgemv(), \c dgemv(), \c cgemv(), and \c zgemv()):
-
-   \code
-   namespace blaze {
-
-   void gemv( char trans, blas_int_t m, blas_int_t n, float alpha, const float* A,
-              blas_int_t lda, const float* x, blas_int_t incX, float beta, float* y,
-              blas_int_t incY );
-
-   void gemv( char trans, blas_int_t m, blas_int_t n, double alpha, const double* A,
-              blas_int_t lda, const double* x, blas_int_t incX, double beta, double* y,
-              blas_int_t incY );
-
-   void gemv( char trans, blas_int_t m, blas_int_t n, complex<float> alpha,
-              const complex<float>* A, blas_int_t lda, const complex<float>* x,
-              blas_int_t incX, complex<float> beta, complex<float>* y, blas_int_t incY );
-
-   void gemv( char trans, blas_int_t m, blas_int_t n, complex<double> alpha,
-              const complex<double>* A, blas_int_t lda, const complex<double>* x,
-              blas_int_t incX, complex<double> beta, complex<double>* y, blas_int_t incY );
-
-   template< typename VT1, typename MT1, bool SO, typename VT2, typename ST >
-   void gemv( DenseVector<VT1,false>& y, const DenseMatrix<MT1,SO>& A,
-              const DenseVector<VT2,false>& x, ST alpha, ST beta );
-
-   template< typename VT1, typename VT2, typename MT1, bool SO, typename ST >
-   void gemv( DenseVector<VT1,true>& y, const DenseVector<VT2,true>& x,
-              const DenseMatrix<MT1,SO>& A, ST alpha, ST beta );
-
-   } // namespace blaze
-   \endcode
-
-// In addition, there is a set of wrapper functions that build on the CBLAS funcions for the
 // general matrix/vector multiplication (\c cblas_sgemv(), \c cblas_dgemv(), \c cblas_cgemv(),
 // and \c cblas_zgemv()):
 
@@ -15359,34 +15328,6 @@
 // \n \subsection blas_level_2_trmv Triangular Matrix/Vector Multiplication (trmv)
 //
 // The following wrapper functions provide a generic interface for the BLAS functions for the
-// matrix/vector multiplication with a triangular matrix (\c strmv(), \c dtrmv(), \c ctrmv(),
-// and \c ztrmv()):
-
-   \code
-   namespace blaze {
-
-   void trmv( char uplo, char trans, char diag, blas_int_t n, const float* A,
-              blas_int_t lda, float* x, blas_int_t incX );
-
-   void trmv( char uplo, char trans, char diag, blas_int_t n, const double* A,
-              blas_int_t lda, double* x, blas_int_t incX );
-
-   void trmv( char uplo, char trans, char diag, blas_int_t n, const complex<float>* A,
-              blas_int_t lda, complex<float>* x, blas_int_t incX );
-
-   void trmv( char uplo, char trans, char diag, blas_int_t n, const complex<double>* A,
-              blas_int_t lda, complex<double>* x, blas_int_t incX );
-
-   template< typename VT, typename MT, bool SO >
-   void trmv( DenseVector<VT,false>& x, const DenseMatrix<MT,SO>& A, char uplo, char diag );
-
-   template< typename VT, typename MT, bool SO >
-   void trmv( DenseVector<VT,true>& x, const DenseMatrix<MT,SO>& A, char uplo, char diag );
-
-   } // namespace blaze
-   \endcode
-
-// In addition, there is a set of wrapper functions that build on the CBLAS funcions for the
 // matrix/vector multiplication with a triangular matrix (\c cblas_strmv(), \c cblas_dtrmv(),
 // \c cblas_ctrmv(), and \c cblas_ztrmv()):
 
@@ -15420,37 +15361,6 @@
 // \subsection blas_level_3_gemm General Matrix/Matrix Multiplication (gemm)
 //
 // The following wrapper functions provide a generic interface for the BLAS functions for the
-// general matrix/matrix multiplication (\c sgemm(), \c dgemm(), \c cgemm(), and \c zgemm()):
-
-   \code
-   namespace blaze {
-
-   void gemm( char transA, char transB, blas_int_t m, blas_int_t n, blas_int_t k,
-              float alpha, const float* A, blas_int_t lda, const float* B,
-              blas_int_t ldb, float beta, float* C, blas_int_t ldc );
-
-   void gemm( char transA, char transB, blas_int_t m, blas_int_t n, blas_int_t k,
-              double alpha, const double* A, blas_int_t lda, const double* B,
-              blas_int_t ldb, double beta, double* C, blas_int_t ldc );
-
-   void gemm( char transA, char transB, blas_int_t m, blas_int_t n, blas_int_t k,
-              complex<float> alpha, const complex<float>* A, blas_int_t lda,
-              const complex<float>* B, blas_int_t ldb, complex<float> beta,
-              complex<float>* C, blas_int_t ldc );
-
-   void gemm( char transA, char transB, blas_int_t m, blas_int_t n, blas_int_t k,
-              complex<double> alpha, const complex<double>* A, blas_int_t lda,
-              const complex<double>* B, blas_int_t ldb, complex<double> beta,
-              complex<double>* C, blas_int_t ldc );
-
-   template< typename MT1, bool SO1, typename MT2, bool SO2, typename MT3, bool SO3, typename ST >
-   void gemm( DenseMatrix<MT1,SO1>& C, const DenseMatrix<MT2,SO2>& A,
-              const DenseMatrix<MT3,SO3>& B, ST alpha, ST beta );
-
-   } // namespace blaze
-   \endcode
-
-// In addition, there is a set of wrapper functions that build on the CBLAS funcions for the
 // general matrix/matrix multiplication (\c cblas_sgemm(), \c cblas_dgemm(), \c cblas_cgemm(),
 // and \c cblas_zgemm()):
 
@@ -15483,34 +15393,6 @@
 // \n \subsection blas_level_3_trmm Triangular Matrix/Matrix Multiplication (trmm)
 //
 // The following wrapper functions provide a generic interface for the BLAS functions for the
-// matrix/matrix multiplication with a triangular matrix (\c strmm(), \c dtrmm(), \c ctrmm(), and
-// \c ztrmm()):
-
-   \code
-   namespace blaze {
-
-   void trmm( char side, char uplo, char transA, char diag, blas_int_t m, blas_int_t n,
-              float alpha, const float* A, blas_int_t lda, float* B, blas_int_t ldb );
-
-   void trmm( char side, char uplo, char transA, char diag, blas_int_t m, blas_int_t n,
-              double alpha, const double* A, blas_int_t lda, double* B, blas_int_t ldb );
-
-   void trmm( char side, char uplo, char transA, char diag, blas_int_t m, blas_int_t n,
-              complex<float> alpha, const complex<float>* A, blas_int_t lda,
-              complex<float>* B, blas_int_t ldb );
-
-   void trmm( char side, char uplo, char transA, char diag, blas_int_t m, blas_int_t n,
-              complex<double> alpha, const complex<double>* A, blas_int_t lda,
-              complex<double>* B, blas_int_t ldb );
-
-   template< typename MT1, bool SO1, typename MT2, bool SO2, typename ST >
-   void trmm( DenseMatrix<MT1,SO1>& B, const DenseMatrix<MT2,SO2>& A,
-              char side, char uplo, char diag, ST alpha );
-
-   } // namespace blaze
-   \endcode
-
-// In addition, there is a set of wrapper functions that build on the CBLAS funcions for the
 // matrix/matrix multiplication with a triangular matrix (\c cblas_strmm(), \c cblas_dtrmm(),
 // \c cblas_ctrmm(), and \c cblas_ztrmm()):
 
@@ -15543,37 +15425,6 @@
 // \n \subsection blas_level_3_trsm Triangular System Solver (trsm)
 //
 // The following wrapper functions provide a generic interface for the BLAS functions for solving
-// a triangular system of equations (\c strsm(), \c dtrsm(), \c ctrsm(), and \c ztrsm()):
-
-   \code
-   namespace blaze {
-
-   void trsm( char side, char uplo, char transA, char diag, blas_int_t m, blas_int_t n,
-              float alpha, const float* A, blas_int_t lda, float* B, blas_int_t ldb );
-
-   void trsm( char side, char uplo, char transA, char diag, blas_int_t m, blas_int_t n,
-              double alpha, const double* A, blas_int_t lda, double* B, blas_int_t ldb );
-
-   void trsm( char side, char uplo, char transA, char diag, blas_int_t m, blas_int_t n,
-              complex<float> alpha, const complex<float>* A, blas_int_t lda,
-              complex<float>* B, blas_int_t ldb );
-
-   void trsm( char side, char uplo, char transA, char diag, blas_int_t m, blas_int_t n,
-              complex<double> alpha, const complex<double>* A, blas_int_t lda,
-              complex<double>* B, blas_int_t ldb );
-
-   template< typename MT, bool SO, typename VT, bool TF, typename ST >
-   void trsm( const DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& b,
-              char side, char uplo, char diag, ST alpha );
-
-   template< typename MT1, bool SO1, typename MT2, bool SO2, typename ST >
-   void trsm( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B,
-              char side, char uplo, char diag, ST alpha );
-
-   } // namespace blaze
-   \endcode
-
-// In addition, there is a set of wrapper functions that build on the CBLAS funcions for solving
 // a triangular system of equations (\c cblas_strsm(), \c cblas_dtrsm(), \c cblas_ctrsm(), and
 // \c cblas_ztrsm()):
 
