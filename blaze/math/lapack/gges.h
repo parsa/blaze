@@ -428,7 +428,7 @@ inline void gges( DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B,
    DynamicMatrix<double,rowMajor> B( 5UL, 5UL );  // The second general matrix
    // ... Initialization
 
-   const auto select = []( T* alphar, T* alphai, T* beta ) -> int {
+   const auto select = []( T* alphar, T* alphai, T* beta ) -> blas_int_t {
       return *alphar > 0.0;
    };
 
@@ -907,7 +907,7 @@ inline void gges( DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B,
    DynamicMatrix<double,rowMajor> B( 5UL, 5UL );  // The second general matrix
    // ... Initialization
 
-   const auto select = []( T* alphar, T* alphai, T* beta ) -> int {
+   const auto select = []( T* alphar, T* alphai, T* beta ) -> blas_int_t {
       return *alphar > 0.0;
    };
 

@@ -58,32 +58,32 @@
 extern "C" {
 
 void sgges_( char* jobvsl, char* jobvsr, char* sort,
-             int (*selctg)( const float*, const float*, const float* ), blaze::blas_int_t* n,
-             float* A, blaze::blas_int_t* lda, float* B, blaze::blas_int_t* ldb,
+             blaze::blas_int_t (*selctg)( const float*, const float*, const float* ),
+             blaze::blas_int_t* n, float* A, blaze::blas_int_t* lda, float* B, blaze::blas_int_t* ldb,
              blaze::blas_int_t* sdim, float* alphar, float* alphai, float* beta, float* VSL,
              blaze::blas_int_t* ldvsl, float* VSR, blaze::blas_int_t* ldvsr, float* work,
              blaze::blas_int_t* lwork, blaze::blas_int_t* bwork, blaze::blas_int_t* info,
              blaze::fortran_charlen_t njobvsl, blaze::fortran_charlen_t njobvsr,
              blaze::fortran_charlen_t nsort );
 void dgges_( char* jobvsl, char* jobvsr, char* sort,
-             int (*selctg)( const double*, const double*, const double* ), blaze::blas_int_t* n,
-             double* A, blaze::blas_int_t* lda, double* B, blaze::blas_int_t* ldb,
+             blaze::blas_int_t (*selctg)( const double*, const double*, const double* ),
+             blaze::blas_int_t* n, double* A, blaze::blas_int_t* lda, double* B, blaze::blas_int_t* ldb,
              blaze::blas_int_t* sdim, double* alphar, double* alphai, double* beta, double* VSL,
              blaze::blas_int_t* ldvsl, double* VSR, blaze::blas_int_t* ldvsr, double* work,
              blaze::blas_int_t* lwork, blaze::blas_int_t* bwork, blaze::blas_int_t* info,
              blaze::fortran_charlen_t njobvsl, blaze::fortran_charlen_t njobvsr,
              blaze::fortran_charlen_t nsort );
 void cgges_( char* jobvsl, char* jobvsr, char* sort,
-             int (*selctg)( const float*, const float* ), blaze::blas_int_t* n,
-             float* A, blaze::blas_int_t* lda, float* B, blaze::blas_int_t* ldb,
+             blaze::blas_int_t (*selctg)( const float*, const float* ),
+             blaze::blas_int_t* n, float* A, blaze::blas_int_t* lda, float* B, blaze::blas_int_t* ldb,
              blaze::blas_int_t* sdim, float* alpha, float* beta, float* VSL, blaze::blas_int_t* ldvsl,
              float* VSR, blaze::blas_int_t* ldvsr, float* work, blaze::blas_int_t* lwork,
              float* rwork, blaze::blas_int_t* bwork, blaze::blas_int_t* info,
              blaze::fortran_charlen_t njobvsl, blaze::fortran_charlen_t njobvsr,
              blaze::fortran_charlen_t nsort );
 void zgges_( char* jobvsl, char* jobvsr, char* sort,
-             int (*selctg)( const double*, const double* ), blaze::blas_int_t* n,
-             double* A, blaze::blas_int_t* lda, double* B, blaze::blas_int_t* ldb,
+             blaze::blas_int_t (*selctg)( const double*, const double* ),
+             blaze::blas_int_t* n, double* A, blaze::blas_int_t* lda, double* B, blaze::blas_int_t* ldb,
              blaze::blas_int_t* sdim, double* alpha, double* beta, double* VSL, blaze::blas_int_t* ldvsl,
              double* VSR, blaze::blas_int_t* ldvsr, double* work, blaze::blas_int_t* lwork,
              double* rwork, blaze::blas_int_t* bwork, blaze::blas_int_t* info,
@@ -110,7 +110,7 @@ namespace blaze {
 /*!\name LAPACK generalized Schur decomposition functions (gges) */
 //@{
 void gges( char jobvsl, char jobvsr, char sort,
-           int (*selctg)( const float*, const float*, const float* ), blas_int_t n,
+           blas_int_t (*selctg)( const float*, const float*, const float* ), blas_int_t n,
            float* A, blas_int_t lda, float* B, blas_int_t ldb,
            blas_int_t* sdim, float* alphar, float* alphai, float* beta,
            float* VSL, blas_int_t ldvsl, float* VSR,
@@ -118,7 +118,7 @@ void gges( char jobvsl, char jobvsr, char sort,
            blas_int_t* bwork, blas_int_t* info );
 
 void gges( char jobvsl, char jobvsr, char sort,
-           int (*selctg)( const double*, const double*, const double* ), blas_int_t n,
+           blas_int_t (*selctg)( const double*, const double*, const double* ), blas_int_t n,
            double* A, blas_int_t lda, double* B, blas_int_t ldb,
            blas_int_t* sdim, double* alphar, double* alphai, double* beta,
            double* VSL, blas_int_t ldvsl, double* VSR,
@@ -126,7 +126,7 @@ void gges( char jobvsl, char jobvsr, char sort,
            blas_int_t* bwork, blas_int_t* info );
 
 void gges( char jobvsl, char jobvsr, char sort,
-           int (*selctg)( const complex<float>*, const complex<float>* ), blas_int_t n,
+           blas_int_t (*selctg)( const complex<float>*, const complex<float>* ), blas_int_t n,
            complex<float>* A, blas_int_t lda, complex<float>* B, blas_int_t ldb,
            blas_int_t* sdim, complex<float>* alpha, complex<float>* beta,
            complex<float>* VSL, blas_int_t ldvsl, complex<float>* VSR,
@@ -134,7 +134,7 @@ void gges( char jobvsl, char jobvsr, char sort,
            float* rwork, blas_int_t* bwork, blas_int_t* info );
 
 void gges( char jobvsl, char jobvsr, char sort,
-           int (*selctg)( const complex<double>*, const complex<double>* ), blas_int_t n,
+           blas_int_t (*selctg)( const complex<double>*, const complex<double>* ), blas_int_t n,
            complex<double>* A, blas_int_t lda, complex<double>* B, blas_int_t ldb,
            blas_int_t* sdim, complex<double>* alpha, complex<double>* beta,
            complex<double>* VSL, blas_int_t ldvsl, complex<double>* VSR,
@@ -193,11 +193,11 @@ void gges( char jobvsl, char jobvsr, char sort,
 //   - \c 'V': The right Schur vectors of \a (A,B) are computed and returned in \a VSR.
 //   - \c 'N': The right Schur vectors of \a (A,B) are not computed.
 //
-// Via the parameter \a selctg it is possible to select specific eigenvalues. \a selctg is a
-// pointer to a function of three single precision floating point arguments returning an \c int
-// value. In case \a sort is set to \c 'N', \a selctg is not referenced, else if sort is set to
-// \c 'S' \a selctg is used to select eigenvalues to sort to the top left of the Schur form. An
-// eigenvalue \f$ (alphar[j]+alphai[j]*i)/beta[j] \f$ is selected if
+// Via the parameter \a selctg it is possible to select specific eigenvalues. \a selctg is
+// a pointer to a function of three single precision floating point arguments returning a
+// \c blas_int_t value. In case \a sort is set to \c 'N', \a selctg is not referenced, else
+// if sort is set to \c 'S' \a selctg is used to select eigenvalues to sort to the top left
+// of the Schur form. An eigenvalue \f$ (alphar[j]+alphai[j]*i)/beta[j] \f$ is selected if
 
    \code
    selctg( &alphar[j], &alphai[j], &beta[j])
@@ -225,7 +225,7 @@ void gges( char jobvsl, char jobvsr, char sort,
 // linker error.
 */
 inline void gges( char jobvsl, char jobvsr, char sort,
-                  int (*selctg)( const float*, const float*, const float* ), blas_int_t n,
+                  blas_int_t (*selctg)( const float*, const float*, const float* ), blas_int_t n,
                   float* A, blas_int_t lda, float* B, blas_int_t ldb,
                   blas_int_t* sdim, float* alphar, float* alphai, float* beta,
                   float* VSL, blas_int_t ldvsl, float* VSR,
@@ -295,11 +295,11 @@ inline void gges( char jobvsl, char jobvsr, char sort,
 //   - \c 'V': The right Schur vectors of \a (A,B) are computed and returned in \a VSR.
 //   - \c 'N': The right Schur vectors of \a (A,B) are not computed.
 //
-// Via the parameter \a selctg it is possible to select specific eigenvalues. \a selctg is a
-// pointer to a function of three double precision floating point arguments returning an \c int
-// value. In case \a sort is set to \c 'N', \a selctg is not referenced, else if sort is set to
-// \c 'S' \a selctg is used to select eigenvalues to sort to the top left of the Schur form. An
-// eigenvalue \f$ (alphar[j]+alphai[j]*i)/beta[j] \f$ is selected if
+// Via the parameter \a selctg it is possible to select specific eigenvalues. \a selctg is
+// a pointer to a function of three double precision floating point arguments returning an
+// \c blas_int_t value. In case \a sort is set to \c 'N', \a selctg is not referenced, else
+// if sort is set to \c 'S' \a selctg is used to select eigenvalues to sort to the top left
+// of the Schur form. An eigenvalue \f$ (alphar[j]+alphai[j]*i)/beta[j] \f$ is selected if
 
    \code
    selctg( &alphar[j], &alphai[j], &beta[j])
@@ -327,7 +327,7 @@ inline void gges( char jobvsl, char jobvsr, char sort,
 // linker error.
 */
 inline void gges( char jobvsl, char jobvsr, char sort,
-                  int (*selctg)( const double*, const double*, const double* ), blas_int_t n,
+                  blas_int_t (*selctg)( const double*, const double*, const double* ), blas_int_t n,
                   double* A, blas_int_t lda, double* B, blas_int_t ldb,
                   blas_int_t* sdim, double* alphar, double* alphai, double* beta,
                   double* VSL, blas_int_t ldvsl, double* VSR,
@@ -398,10 +398,10 @@ inline void gges( char jobvsl, char jobvsr, char sort,
 //   - \c 'N': The right Schur vectors of \a (A,B) are not computed.
 //
 // Via the parameter \a selctg it is possible to select specific eigenvalues. \a selctg is a
-// pointer to a function of two single precision complex arguments returning an \c int value.
-// In case \a sort is set to \c 'N', \a selctg is not referenced, else if sort is set to \c 'S'
-// \a selctg is used to select eigenvalues to sort to the top left of the Schur form. An
-// eigenvalue \f$ alpha[j]/beta[j] \f$ is selected if
+// pointer to a function of two single precision complex arguments returning an \c blas_int_t
+// value. In case \a sort is set to \c 'N', \a selctg is not referenced, else if sort is set
+// to \c 'S' \a selctg is used to select eigenvalues to sort to the top left of the Schur form.
+// An eigenvalue \f$ alpha[j]/beta[j] \f$ is selected if
 
    \code
    selctg( &alpha[j], &beta[j])
@@ -429,7 +429,7 @@ inline void gges( char jobvsl, char jobvsr, char sort,
 // linker error.
 */
 inline void gges( char jobvsl, char jobvsr, char sort,
-                  int (*selctg)( const complex<float>*, const complex<float>* ), blas_int_t n,
+                  blas_int_t (*selctg)( const complex<float>*, const complex<float>* ), blas_int_t n,
                   complex<float>* A, blas_int_t lda, complex<float>* B, blas_int_t ldb,
                   blas_int_t* sdim, complex<float>* alpha, complex<float>* beta,
                   complex<float>* VSL, blas_int_t ldvsl, complex<float>* VSR,
@@ -445,7 +445,7 @@ inline void gges( char jobvsl, char jobvsr, char sort,
    using Selctg = MKL_INT (*)( const ET*, const ET* );
 #else
    using ET = float;
-   using Selctg = int (*)( const ET*, const ET* );
+   using Selctg = blas_int_t (*)( const ET*, const ET* );
 #endif
 
    cgges_( &jobvsl, &jobvsr, &sort, reinterpret_cast<Selctg>( selctg ), &n,
@@ -511,10 +511,10 @@ inline void gges( char jobvsl, char jobvsr, char sort,
 //   - \c 'N': The right Schur vectors of \a (A,B) are not computed.
 //
 // Via the parameter \a selctg it is possible to select specific eigenvalues. \a selctg is a
-// pointer to a function of two double precision complex arguments returning an \c int value.
-// In case \a sort is set to \c 'N', \a selctg is not referenced, else if sort is set to \c 'S'
-// \a selctg is used to select eigenvalues to sort to the top left of the Schur form. An
-// eigenvalue \f$ alpha[j]/beta[j] \f$ is selected if
+// pointer to a function of two double precision complex arguments returning an \c blas_int_t
+// value. In case \a sort is set to \c 'N', \a selctg is not referenced, else if sort is set
+// to \c 'S' \a selctg is used to select eigenvalues to sort to the top left of the Schur form.
+// An eigenvalue \f$ alpha[j]/beta[j] \f$ is selected if
 
    \code
    selctg( &alpha[j], &beta[j])
@@ -542,7 +542,7 @@ inline void gges( char jobvsl, char jobvsr, char sort,
 // linker error.
 */
 inline void gges( char jobvsl, char jobvsr, char sort,
-                  int (*selctg)( const complex<double>*, const complex<double>* ), blas_int_t n,
+                  blas_int_t (*selctg)( const complex<double>*, const complex<double>* ), blas_int_t n,
                   complex<double>* A, blas_int_t lda, complex<double>* B, blas_int_t ldb,
                   blas_int_t* sdim, complex<double>* alpha, complex<double>* beta,
                   complex<double>* VSL, blas_int_t ldvsl, complex<double>* VSR,
@@ -558,7 +558,7 @@ inline void gges( char jobvsl, char jobvsr, char sort,
    using Selctg = MKL_INT (*)( const ET*, const ET* );
 #else
    using ET = double;
-   using Selctg = int (*)( const ET*, const ET* );
+   using Selctg = blas_int_t (*)( const ET*, const ET* );
 #endif
 
    zgges_( &jobvsl, &jobvsr, &sort, reinterpret_cast<Selctg>( selctg ), &n,
