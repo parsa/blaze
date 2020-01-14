@@ -58,12 +58,12 @@ namespace blaze {
 
 //=================================================================================================
 //
-//  BLAS WRAPPER FUNCTIONS (DOTC)
+//  BLAS DOT PRODUCT (DOTC)
 //
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\name BLAS wrapper functions (dotc) */
+/*!\name BLAS dot product functions (dotc) */
 //@{
 template< typename VT1, bool TF1, typename VT2, bool TF2 >
 ElementType_t<VT1> dotc( const DenseVector<VT1,TF1>& x, const DenseVector<VT2,TF2>& y );
@@ -77,7 +77,7 @@ ElementType_t<VT1> dotc( const DenseVector<VT1,TF1>& x, const DenseVector<VT2,TF
 //
 // \param x The left-hand side dense vector operand.
 // \param y The right-hand side dense vector operand.
-// \return void
+// \return The result of the complex conjugate dot product computation.
 //
 // This function performs the dot product of the complex conjugate of a dense vector with another
 // dense vector based on the BLAS dotc() functions. Note that the function only works for vectors

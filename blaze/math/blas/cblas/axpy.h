@@ -41,39 +41,9 @@
 //*************************************************************************************************
 
 #include <blaze/math/blas/Types.h>
+#include <blaze/system/BLAS.h>
 #include <blaze/util/Complex.h>
 #include <blaze/util/StaticAssert.h>
-
-
-//=================================================================================================
-//
-//  BLAS FORWARD DECLARATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-#if !defined(INTEL_MKL_VERSION)
-extern "C" {
-
-void saxpy_( blaze::blas_int_t* n, float* alpha, float* x, blaze::blas_int_t* incX,
-             float* y, blaze::blas_int_t* incY );
-
-void daxpy_( blaze::blas_int_t* n, double* alpha, double* x, blaze::blas_int_t* incX,
-             double* y, blaze::blas_int_t* incY );
-
-void caxpy_( blaze::blas_int_t* n, float* alpha, float* x, blaze::blas_int_t* incX,
-             float* y, blaze::blas_int_t* incY );
-
-void zaxpy_( blaze::blas_int_t* n, double* alpha, double* x, blaze::blas_int_t* incX,
-             double* y, blaze::blas_int_t* incY );
-
-}
-#endif
-/*! \endcond */
-//*************************************************************************************************
-
-
 
 
 namespace blaze {
@@ -87,6 +57,8 @@ namespace blaze {
 //*************************************************************************************************
 /*!\name BLAS scaled vector addition functions (axpy) */
 //@{
+#if BLAZE_BLAS_MODE
+
 void axpy( blas_int_t n, float alpha, const float* x, blas_int_t incX,
            float* y, blas_int_t incY );
 
@@ -98,11 +70,14 @@ void axpy( blas_int_t n, complex<float> alpha, const complex<float>* x, blas_int
 
 void axpy( blas_int_t n, complex<double> alpha, const complex<double>* x, blas_int_t incX,
            complex<double>* y, blas_int_t incY );
+
+#endif
 //@}
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+#if BLAZE_BLAS_MODE
 /*!\brief BLAS kernel for scaled dense vector addition for single precision operands
 //        (\f$ \vec{y}+=\alpha*\vec{x} \f$).
 // \ingroup blas
@@ -116,7 +91,7 @@ void axpy( blas_int_t n, complex<double> alpha, const complex<double>* x, blas_i
 // \return void
 //
 // This function performs the a scaled dense vector addition for single precision operands based
-// on the BLAS saxpy() function (\f$ \vec{y}+=\alpha*\vec{x} \f$).
+// on the cblas_saxpy() function (\f$ \vec{y}+=\alpha*\vec{x} \f$).
 //
 // \note This function can only be used if a fitting BLAS library, which supports this function,
 // is available and linked to the executable. Otherwise a call to this function will result in a
@@ -125,16 +100,14 @@ void axpy( blas_int_t n, complex<double> alpha, const complex<double>* x, blas_i
 inline void axpy( blas_int_t n, float alpha, const float* x, blas_int_t incX,
                   float* y, blas_int_t incY )
 {
-#if defined(INTEL_MKL_VERSION)
-   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( blas_int_t ) );
-#endif
-
-   saxpy_( &n, &alpha, const_cast<float*>( x ), &incX, y, &incY );
+   cblas_saxpy( n, alpha, x, incX, y, incY );
 }
+#endif
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+#if BLAZE_BLAS_MODE
 /*!\brief BLAS kernel for scaled dense vector addition for double precision operands
 //        (\f$ \vec{y}+=\alpha*\vec{x} \f$).
 // \ingroup blas
@@ -148,7 +121,7 @@ inline void axpy( blas_int_t n, float alpha, const float* x, blas_int_t incX,
 // \return void
 //
 // This function performs the a scaled dense vector addition for double precision operands based
-// on the BLAS daxpy() function (\f$ \vec{y}+=\alpha*\vec{x} \f$).
+// on the cblas_daxpy() function (\f$ \vec{y}+=\alpha*\vec{x} \f$).
 //
 // \note This function can only be used if a fitting BLAS library, which supports this function,
 // is available and linked to the executable. Otherwise a call to this function will result in a
@@ -157,16 +130,14 @@ inline void axpy( blas_int_t n, float alpha, const float* x, blas_int_t incX,
 inline void axpy( blas_int_t n, double alpha, const double* x, blas_int_t incX,
                   double* y, blas_int_t incY )
 {
-#if defined(INTEL_MKL_VERSION)
-   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( blas_int_t ) );
-#endif
-
-   daxpy_( &n, &alpha, const_cast<double*>( x ), &incX, y, &incY );
+   cblas_daxpy( n, alpha, x, incX, y, incY );
 }
+#endif
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+#if BLAZE_BLAS_MODE
 /*!\brief BLAS kernel for scaled dense vector addition for single precision complex operands
 //        (\f$ \vec{y}+=\alpha*\vec{x} \f$).
 // \ingroup blas
@@ -180,7 +151,7 @@ inline void axpy( blas_int_t n, double alpha, const double* x, blas_int_t incX,
 // \return void
 //
 // This function performs the a scaled dense vector addition for single precision complex
-// operands based on the BLAS caxpy() function (\f$ \vec{y}+=\alpha*\vec{x} \f$).
+// operands based on the cblas_caxpy() function (\f$ \vec{y}+=\alpha*\vec{x} \f$).
 //
 // \note This function can only be used if a fitting BLAS library, which supports this function,
 // is available and linked to the executable. Otherwise a call to this function will result in a
@@ -191,22 +162,15 @@ inline void axpy( blas_int_t n, complex<float> alpha, const complex<float>* x, b
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<float> ) == 2UL*sizeof( float ) );
 
-#if defined(INTEL_MKL_VERSION)
-   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( blas_int_t ) );
-   BLAZE_STATIC_ASSERT( sizeof( MKL_Complex8 ) == sizeof( complex<float> ) );
-   using ET = MKL_Complex8;
-#else
-   using ET = float;
-#endif
-
-   caxpy_( &n, reinterpret_cast<float*>( &alpha ),
-           const_cast<ET*>( reinterpret_cast<const ET*>( x ) ), &incX,
-           reinterpret_cast<ET*>( y ), &incY );
+   cblas_caxpy( n, reinterpret_cast<const float*>( &alpha ),
+                reinterpret_cast<const float*>( x ), incX, reinterpret_cast<float*>( y ), incY );
 }
+#endif
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+#if BLAZE_BLAS_MODE
 /*!\brief BLAS kernel for scaled dense vector addition for double precision complex operands
 //        (\f$ \vec{y}+=\alpha*\vec{x} \f$).
 // \ingroup blas
@@ -220,7 +184,7 @@ inline void axpy( blas_int_t n, complex<float> alpha, const complex<float>* x, b
 // \return void
 //
 // This function performs the a scaled dense vector addition for double precision complex
-// operands based on the BLAS zaxpy() function (\f$ \vec{y}+=\alpha*\vec{x} \f$).
+// operands based on the cblas_zaxpy() function (\f$ \vec{y}+=\alpha*\vec{x} \f$).
 //
 // \note This function can only be used if a fitting BLAS library, which supports this function,
 // is available and linked to the executable. Otherwise a call to this function will result in a
@@ -231,18 +195,10 @@ inline void axpy( blas_int_t n, complex<double> alpha, const complex<double>* x,
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<double> ) == 2UL*sizeof( double ) );
 
-#if defined(INTEL_MKL_VERSION)
-   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( blas_int_t ) );
-   BLAZE_STATIC_ASSERT( sizeof( MKL_Complex16 ) == sizeof( complex<double> ) );
-   using ET = MKL_Complex16;
-#else
-   using ET = double;
-#endif
-
-   zaxpy_( &n, reinterpret_cast<double*>( &alpha ),
-           const_cast<ET*>( reinterpret_cast<const ET*>( x ) ), &incX,
-           reinterpret_cast<ET*>( y ), &incY );
+   cblas_zaxpy( n, reinterpret_cast<const double*>( &alpha ),
+                reinterpret_cast<const double*>( x ), incX, reinterpret_cast<double*>( y ), incY );
 }
+#endif
 //*************************************************************************************************
 
 } // namespace blaze

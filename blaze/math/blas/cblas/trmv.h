@@ -44,43 +44,6 @@
 #include <blaze/system/BLAS.h>
 #include <blaze/util/Complex.h>
 #include <blaze/util/StaticAssert.h>
-#include <blaze/util/Types.h>
-
-
-//=================================================================================================
-//
-//  BLAS FORWARD DECLARATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-#if !defined(INTEL_MKL_VERSION)
-extern "C" {
-
-void strmv_( char* uplo, char* trans, char* diag, blaze::blas_int_t* n, float* A,
-             blaze::blas_int_t* lda, float* x, blaze::blas_int_t* incX,
-             blaze::fortran_charlen_t nuplo, blaze::fortran_charlen_t ntransA,
-             blaze::fortran_charlen_t ntransB );
-void dtrmv_( char* uplo, char* trans, char* diag, blaze::blas_int_t* n, double* A,
-             blaze::blas_int_t* lda, double* x, blaze::blas_int_t* incX,
-             blaze::fortran_charlen_t nuplo, blaze::fortran_charlen_t ntransA,
-             blaze::fortran_charlen_t ntransB );
-void ctrmv_( char* uplo, char* trans, char* diag, blaze::blas_int_t* n, float* A,
-             blaze::blas_int_t* lda, float* x, blaze::blas_int_t* incX,
-             blaze::fortran_charlen_t nuplo, blaze::fortran_charlen_t ntransA,
-             blaze::fortran_charlen_t ntransB );
-void ztrmv_( char* uplo, char* trans, char* diag, blaze::blas_int_t* n, double* A,
-             blaze::blas_int_t* lda, double* x, blaze::blas_int_t* incX,
-             blaze::fortran_charlen_t nuplo, blaze::fortran_charlen_t ntransA,
-             blaze::fortran_charlen_t ntransB );
-
-}
-#endif
-/*! \endcond */
-//*************************************************************************************************
-
-
 
 
 namespace blaze {
@@ -93,214 +56,6 @@ namespace blaze {
 
 //*************************************************************************************************
 /*!\name BLAS triangular matrix/vector multiplication functions (trmv) */
-//@{
-void trmv( char uplo, char trans, char diag, blas_int_t n, const float* A,
-           blas_int_t lda, float* x, blas_int_t incX );
-
-void trmv( char uplo, char trans, char diag, blas_int_t n, const double* A,
-           blas_int_t lda, double* x, blas_int_t incX );
-
-void trmv( char uplo, char trans, char diag, blas_int_t n, const complex<float>* A,
-           blas_int_t lda, complex<float>* x, blas_int_t incX );
-
-void trmv( char uplo, char trans, char diag, blas_int_t n, const complex<double>* A,
-           blas_int_t lda, complex<double>* x, blas_int_t incX );
-//@}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief BLAS kernel for a triangular column-major dense matrix/dense vector multiplication for
-//        single precision operands (\f$ \vec{x}=A*\vec{x} \f$).
-// \ingroup blas
-//
-// \param uplo \c 'L' to use the lower triangle from \a A, \c 'U' to use the upper triangle.
-// \param trans \c 'N' to use \a A, \c 'T' to use \a A^T, or \c 'C' to use \a A^H.
-// \param diag \c 'U' in case of a unitriangular matrix, \c 'N' otherwise.
-// \param n The number of rows/columns of matrix \a A \f$[0..\infty)\f$.
-// \param A Pointer to the first element of matrix \a A.
-// \param lda The total number of elements between two rows/columns of matrix \a A \f$[0..\infty)\f$.
-// \param x Pointer to the first element of vector \a x.
-// \param incX The stride within vector \a x.
-// \return void
-//
-// This function performs the multiplication of a single precision triangular column-major matrix
-// by a vector based on the strmv() function (\f$ \vec{x}=A*\vec{x} \f$).
-//
-// For more information on the strmv() function, see the LAPACK online documentation browser:
-//
-//        http://www.netlib.org/lapack/explore-html/
-//
-// \note This function can only be used if a fitting BLAS library, which supports this function,
-// is available and linked to the executable. Otherwise a call to this function will result in a
-// linker error.
-*/
-inline void trmv( char uplo, char trans, char diag, blas_int_t n, const float* A,
-                  blas_int_t lda, float* x, blas_int_t incX )
-{
-#if defined(INTEL_MKL_VERSION)
-   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( blas_int_t ) );
-#endif
-
-   strmv_( &uplo, &trans, &diag, &n, const_cast<float*>( A ), &lda, x, &incX
-#if !defined(INTEL_MKL_VERSION)
-         , blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1)
-#endif
-         );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief BLAS kernel for a triangular column-major dense matrix/dense vector multiplication for
-//        double precision operands (\f$ \vec{x}=A*\vec{x} \f$).
-// \ingroup blas
-//
-// \param uplo \c 'L' to use the lower triangle from \a A, \c 'U' to use the upper triangle.
-// \param trans \c 'N' to use \a A, \c 'T' to use \a A^T, or \c 'C' to use \a A^H.
-// \param diag \c 'U' in case of a unitriangular matrix, \c 'N' otherwise.
-// \param n The number of rows/columns of matrix \a A \f$[0..\infty)\f$.
-// \param A Pointer to the first element of matrix \a A.
-// \param lda The total number of elements between two rows/columns of matrix \a A \f$[0..\infty)\f$.
-// \param x Pointer to the first element of vector \a x.
-// \param incX The stride within vector \a x.
-// \return void
-//
-// This function performs the multiplication of a double precision triangular column-major matrix
-// by a vector based on the dtrmv() function (\f$ \vec{x}=A*\vec{x} \f$).
-//
-// For more information on the dtrmv() function, see the LAPACK online documentation browser:
-//
-//        http://www.netlib.org/lapack/explore-html/
-//
-// \note This function can only be used if a fitting BLAS library, which supports this function,
-// is available and linked to the executable. Otherwise a call to this function will result in a
-// linker error.
-*/
-inline void trmv( char uplo, char trans, char diag, blas_int_t n, const double* A,
-                  blas_int_t lda, double* x, blas_int_t incX )
-{
-#if defined(INTEL_MKL_VERSION)
-   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( blas_int_t ) );
-#endif
-
-   dtrmv_( &uplo, &trans, &diag, &n, const_cast<double*>( A ), &lda, x, &incX
-#if !defined(INTEL_MKL_VERSION)
-         , blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1)
-#endif
-         );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief BLAS kernel for a triangular column-major dense matrix/dense vector multiplication for
-//        single precision complex operands (\f$ \vec{x}=A*\vec{x} \f$).
-// \ingroup blas
-//
-// \param uplo \c 'L' to use the lower triangle from \a A, \c 'U' to use the upper triangle.
-// \param trans \c 'N' to use \a A, \c 'T' to use \a A^T, or \c 'C' to use \a A^H.
-// \param diag \c 'U' in case of a unitriangular matrix, \c 'N' otherwise.
-// \param n The number of rows/columns of matrix \a A \f$[0..\infty)\f$.
-// \param A Pointer to the first element of matrix \a A.
-// \param lda The total number of elements between two rows/columns of matrix \a A \f$[0..\infty)\f$.
-// \param x Pointer to the first element of vector \a x.
-// \param incX The stride within vector \a x.
-// \return void
-//
-// This function performs the multiplication of a single precision complex triangular column-major
-// matrix by a vector based on the ctrmv() function (\f$ \vec{x}=A*\vec{x} \f$).
-//
-// For more information on the ctrmv() function, see the LAPACK online documentation browser:
-//
-//        http://www.netlib.org/lapack/explore-html/
-//
-// \note This function can only be used if a fitting BLAS library, which supports this function,
-// is available and linked to the executable. Otherwise a call to this function will result in a
-// linker error.
-*/
-inline void trmv( char uplo, char trans, char diag, blas_int_t n, const complex<float>* A,
-                  blas_int_t lda, complex<float>* x, blas_int_t incX )
-{
-   BLAZE_STATIC_ASSERT( sizeof( complex<float> ) == 2UL*sizeof( float ) );
-
-#if defined(INTEL_MKL_VERSION)
-   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( blas_int_t ) );
-   BLAZE_STATIC_ASSERT( sizeof( MKL_Complex8 ) == sizeof( complex<float> ) );
-   using ET = MKL_Complex8;
-#else
-   using ET = float;
-#endif
-
-   ctrmv_( &uplo, &trans, &diag, &n, const_cast<ET*>( reinterpret_cast<const ET*>( A ) ), &lda,
-           reinterpret_cast<ET*>( x ), &incX
-#if !defined(INTEL_MKL_VERSION)
-         , blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1)
-#endif
-         );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief BLAS kernel for a triangular column-major dense matrix/dense vector multiplication for
-//        double precision complex operands (\f$ \vec{x}=A*\vec{x} \f$).
-// \ingroup blas
-//
-// \param uplo \c 'L' to use the lower triangle from \a A, \c 'U' to use the upper triangle.
-// \param trans \c 'N' to use \a A, \c 'T' to use \a A^T, or \c 'C' to use \a A^H.
-// \param diag \c 'U' in case of a unitriangular matrix, \c 'N' otherwise.
-// \param n The number of rows/columns of matrix \a A \f$[0..\infty)\f$.
-// \param A Pointer to the first element of matrix \a A.
-// \param lda The total number of elements between two rows/columns of matrix \a A \f$[0..\infty)\f$.
-// \param x Pointer to the first element of vector \a x.
-// \param incX The stride within vector \a x.
-// \return void
-//
-// This function performs the multiplication of a double precision complex triangular column-major
-// matrix by a vector based on the ztrmv() function (\f$ \vec{x}=A*\vec{x} \f$).
-//
-// For more information on the ztrmv() function, see the LAPACK online documentation browser:
-//
-//        http://www.netlib.org/lapack/explore-html/
-//
-// \note This function can only be used if a fitting BLAS library, which supports this function,
-// is available and linked to the executable. Otherwise a call to this function will result in a
-// linker error.
-*/
-inline void trmv( char uplo, char trans, char diag, blas_int_t n, const complex<double>* A,
-                  blas_int_t lda, complex<double>* x, blas_int_t incX )
-{
-   BLAZE_STATIC_ASSERT( sizeof( complex<double> ) == 2UL*sizeof( double ) );
-
-#if defined(INTEL_MKL_VERSION)
-   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( blas_int_t ) );
-   BLAZE_STATIC_ASSERT( sizeof( MKL_Complex16 ) == sizeof( complex<double> ) );
-   using ET = MKL_Complex16;
-#else
-   using ET = double;
-#endif
-
-   ztrmv_( &uplo, &trans, &diag, &n, const_cast<ET*>( reinterpret_cast<const ET*>( A ) ), &lda,
-           reinterpret_cast<ET*>( x ), &incX
-#if !defined(INTEL_MKL_VERSION)
-         , blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1)
-#endif
-         );
-}
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  CBLAS WRAPPER FUNCTIONS (TRMV)
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*!\name BLAS wrapper functions (trmv) */
 //@{
 #if BLAZE_BLAS_MODE
 
@@ -344,10 +99,14 @@ void trmv( CBLAS_ORDER order, CBLAS_UPLO uplo, CBLAS_TRANSPOSE transA,
 //
 // This function performs the multiplication of a single precision triangular matrix by a vector
 // based on the cblas_strmv() function.
+//
+// \note This function can only be used if a fitting BLAS library, which supports this function,
+// is available and linked to the executable. Otherwise a call to this function will result in a
+// linker error.
 */
-BLAZE_ALWAYS_INLINE void trmv( CBLAS_ORDER order, CBLAS_UPLO uplo, CBLAS_TRANSPOSE transA,
-                               CBLAS_DIAG diag, blas_int_t n, const float* A, blas_int_t lda,
-                               float* x, blas_int_t incX )
+inline void trmv( CBLAS_ORDER order, CBLAS_UPLO uplo, CBLAS_TRANSPOSE transA,
+                  CBLAS_DIAG diag, blas_int_t n, const float* A, blas_int_t lda,
+                  float* x, blas_int_t incX )
 {
    cblas_strmv( order, uplo, transA, diag, n, A, lda, x, incX );
 }
@@ -374,10 +133,14 @@ BLAZE_ALWAYS_INLINE void trmv( CBLAS_ORDER order, CBLAS_UPLO uplo, CBLAS_TRANSPO
 //
 // This function performs the multiplication of a double precision triangular matrix by a vector
 // based on the cblas_dtrmv() function.
+//
+// \note This function can only be used if a fitting BLAS library, which supports this function,
+// is available and linked to the executable. Otherwise a call to this function will result in a
+// linker error.
 */
-BLAZE_ALWAYS_INLINE void trmv( CBLAS_ORDER order, CBLAS_UPLO uplo, CBLAS_TRANSPOSE transA,
-                               CBLAS_DIAG diag, blas_int_t n, const double* A, blas_int_t lda,
-                               double* x, blas_int_t incX )
+inline void trmv( CBLAS_ORDER order, CBLAS_UPLO uplo, CBLAS_TRANSPOSE transA,
+                  CBLAS_DIAG diag, blas_int_t n, const double* A, blas_int_t lda,
+                  double* x, blas_int_t incX )
 {
    cblas_dtrmv( order, uplo, transA, diag, n, A, lda, x, incX );
 }
@@ -404,10 +167,14 @@ BLAZE_ALWAYS_INLINE void trmv( CBLAS_ORDER order, CBLAS_UPLO uplo, CBLAS_TRANSPO
 //
 // This function performs the multiplication of a single precision complex triangular matrix by a
 // vector based on the cblas_ctrmv() function.
+//
+// \note This function can only be used if a fitting BLAS library, which supports this function,
+// is available and linked to the executable. Otherwise a call to this function will result in a
+// linker error.
 */
-BLAZE_ALWAYS_INLINE void trmv( CBLAS_ORDER order, CBLAS_UPLO uplo, CBLAS_TRANSPOSE transA,
-                               CBLAS_DIAG diag, blas_int_t n, const complex<float>* A,
-                               blas_int_t lda, complex<float>* x, blas_int_t incX )
+inline void trmv( CBLAS_ORDER order, CBLAS_UPLO uplo, CBLAS_TRANSPOSE transA,
+                  CBLAS_DIAG diag, blas_int_t n, const complex<float>* A,
+                  blas_int_t lda, complex<float>* x, blas_int_t incX )
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<float> ) == 2UL*sizeof( float ) );
 
@@ -437,10 +204,14 @@ BLAZE_ALWAYS_INLINE void trmv( CBLAS_ORDER order, CBLAS_UPLO uplo, CBLAS_TRANSPO
 //
 // This function performs the multiplication of a double precision complex triangular matrix by a
 // vector based on the cblas_ztrmv() function.
+//
+// \note This function can only be used if a fitting BLAS library, which supports this function,
+// is available and linked to the executable. Otherwise a call to this function will result in a
+// linker error.
 */
-BLAZE_ALWAYS_INLINE void trmv( CBLAS_ORDER order, CBLAS_UPLO uplo, CBLAS_TRANSPOSE transA,
-                               CBLAS_DIAG diag, blas_int_t n, const complex<double>* A,
-                               blas_int_t lda, complex<double>* x, blas_int_t incX )
+inline void trmv( CBLAS_ORDER order, CBLAS_UPLO uplo, CBLAS_TRANSPOSE transA,
+                  CBLAS_DIAG diag, blas_int_t n, const complex<double>* A,
+                  blas_int_t lda, complex<double>* x, blas_int_t incX )
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<double> ) == 2UL*sizeof( double ) );
 

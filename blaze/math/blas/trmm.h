@@ -57,111 +57,12 @@ namespace blaze {
 
 //=================================================================================================
 //
-//  BLAS WRAPPER FUNCTIONS (TRMM)
+//  BLAS TRIANGULAR MATRIX MULTIPLICATION FUNCTIONS (TRMM)
 //
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\name BLAS wrapper functions (trmm) */
-//@{
-template< typename MT1, bool SO1, typename MT2, bool SO2, typename ST >
-void trmm( DenseMatrix<MT1,SO1>& B, const DenseMatrix<MT2,SO2>& A,
-           char side, char uplo, char diag, ST alpha );
-//@}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief BLAS kernel for a triangular dense matrix/dense matrix multiplication
-//        (\f$ B=\alpha*A*B \f$ or \f$ B=\alpha*B*A \f$).
-// \ingroup blas
-//
-// \param B The target dense matrix.
-// \param A The dense matrix multiplication operand.
-// \param side \c 'L' to compute \f$ B=\alpha*A*B \f$, \c 'R' to compute \f$ B=\alpha*B*A \f$.
-// \param uplo \c 'L' to use the lower triangle from \a A, \c 'U' to use the upper triangle.
-// \param diag \c 'U' in case of a unitriangular matrix, \c 'N' otherwise.
-// \param alpha The scaling factor for \f$ A*B \f$ or \f$ B*A \f$.
-// \return void
-//
-// This function performs the scaling and multiplication of a triangular matrix by a matrix
-// based on the BLAS trmm() functions. Note that the function only works for matrices with
-// \c float, \c double, \c complex<float>, and \c complex<double> element type. The attempt to
-// call the function with matrices of any other element type results in a compile time error.
-// Also note that matrix \a A is expected to be a square matrix.
-//
-// \note This function can only be used if a fitting BLAS library, which supports this function,
-// is available and linked to the executable. Otherwise a call to this function will result in a
-// linker error.
-*/
-template< typename MT1   // Type of the target matrix
-        , bool SO1       // Storage order of the target matrix
-        , typename MT2   // Type of the left-hand side matrix operand
-        , bool SO2       // Storage order of the left-hand side matrix operand
-        , typename ST >  // Type of the scalar factor
-inline void trmm( DenseMatrix<MT1,SO1>& B, const DenseMatrix<MT2,SO2>& A,
-                  char side, char uplo, char diag, ST alpha )
-{
-   BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( MT1 );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( MT2 );
-
-   BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( MT1 );
-   BLAZE_CONSTRAINT_MUST_HAVE_CONST_DATA_ACCESS  ( MT2 );
-
-   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<MT1> );
-   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<MT2> );
-
-   BLAZE_INTERNAL_ASSERT( isSquare( ~A ), "Non-square triangular matrix detected" );
-   BLAZE_INTERNAL_ASSERT( side == 'L'  || side == 'R', "Invalid side argument detected" );
-   BLAZE_INTERNAL_ASSERT( uplo == 'L' || uplo == 'U', "Invalid uplo argument detected" );
-   BLAZE_INTERNAL_ASSERT( diag == 'U' || diag == 'N', "Invalid diag argument detected" );
-
-   if( IsRowMajorMatrix_v<MT1> )
-   {
-      const char transA( IsRowMajorMatrix_v<MT2> ? 'N' : 'T' );
-
-      const blas_int_t m  ( numeric_cast<blas_int_t>( (~A).rows() )    );
-      const blas_int_t n  ( numeric_cast<blas_int_t>( (~A).columns() ) );
-      const blas_int_t lda( numeric_cast<blas_int_t>( (~A).spacing() ) );
-      const blas_int_t ldb( numeric_cast<blas_int_t>( (~B).spacing() ) );
-
-      ( side == 'L' )?( side = 'R' ):( side = 'L' );
-
-      if( IsRowMajorMatrix_v<MT2> ) {
-         ( uplo == 'L' )?( uplo = 'U' ):( uplo = 'L' );
-      }
-
-      trmm( side, uplo, transA, diag, m, n, alpha, (~A).data(), lda, (~B).data(), ldb );
-   }
-   else
-   {
-      const char transA( IsRowMajorMatrix_v<MT2> ? 'T' : 'N' );
-
-      const blas_int_t m  ( numeric_cast<blas_int_t>( (~A).rows() )    );
-      const blas_int_t n  ( numeric_cast<blas_int_t>( (~A).columns() ) );
-      const blas_int_t lda( numeric_cast<blas_int_t>( (~A).spacing() ) );
-      const blas_int_t ldb( numeric_cast<blas_int_t>( (~B).spacing() ) );
-
-      if( IsRowMajorMatrix_v<MT2> ) {
-         ( uplo == 'L' )?( uplo = 'U' ):( uplo = 'L' );
-      }
-
-      trmm( side, uplo, transA, diag, m, n, alpha, (~A).data(), lda, (~B).data(), ldb );
-   }
-}
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  CBLAS WRAPPER FUNCTIONS (TRMM)
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*!\name BLAS wrapper functions (trmm) */
+/*!\name BLAS triangular matrix multiplication functions (trmm) */
 //@{
 #if BLAZE_BLAS_MODE
 

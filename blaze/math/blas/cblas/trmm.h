@@ -44,47 +44,6 @@
 #include <blaze/system/BLAS.h>
 #include <blaze/util/Complex.h>
 #include <blaze/util/StaticAssert.h>
-#include <blaze/util/Types.h>
-
-
-//=================================================================================================
-//
-//  BLAS FORWARD DECLARATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-#if !defined(INTEL_MKL_VERSION)
-extern "C" {
-
-void strmm_( char* side, char* uplo, char* transA, char* diag, blaze::blas_int_t* m,
-             blaze::blas_int_t* n, float* alpha, float* A, blaze::blas_int_t* lda,
-             float* B, blaze::blas_int_t* ldb, blaze::fortran_charlen_t nside,
-             blaze::fortran_charlen_t nuplo, blaze::fortran_charlen_t ntransA,
-             blaze::fortran_charlen_t ndiag );
-void dtrmm_( char* side, char* uplo, char* transA, char* diag, blaze::blas_int_t* m,
-             blaze::blas_int_t* n, double* alpha, double* A, blaze::blas_int_t* lda,
-             double* B, blaze::blas_int_t* ldb, blaze::fortran_charlen_t nside,
-             blaze::fortran_charlen_t nuplo, blaze::fortran_charlen_t ntransA,
-             blaze::fortran_charlen_t ndiag );
-void ctrmm_( char* side, char* uplo, char* transA, char* diag, blaze::blas_int_t* m,
-             blaze::blas_int_t* n, float* alpha, float* A, blaze::blas_int_t* lda,
-             float* B, blaze::blas_int_t* ldb, blaze::fortran_charlen_t nside,
-             blaze::fortran_charlen_t nuplo, blaze::fortran_charlen_t ntransA,
-             blaze::fortran_charlen_t ndiag );
-void ztrmm_( char* side, char* uplo, char* transA, char* diag, blaze::blas_int_t* m,
-             blaze::blas_int_t* n, double* alpha, double* A, blaze::blas_int_t* lda,
-             double* B, blaze::blas_int_t* ldb, blaze::fortran_charlen_t nside,
-             blaze::fortran_charlen_t nuplo, blaze::fortran_charlen_t ntransA,
-             blaze::fortran_charlen_t ndiag );
-
-}
-#endif
-/*! \endcond */
-//*************************************************************************************************
-
-
 
 
 namespace blaze {
@@ -98,240 +57,6 @@ namespace blaze {
 //*************************************************************************************************
 /*!\name BLAS triangular matrix multiplication functions (trmm) */
 //@{
-void trmm( char side, char uplo, char transA, char diag, blas_int_t m, blas_int_t n,
-           float alpha, const float* A, blas_int_t lda, float* B, blas_int_t ldb );
-
-void trmm( char side, char uplo, char transA, char diag, blas_int_t m, blas_int_t n,
-           double alpha, const double* A, blas_int_t lda, double* B, blas_int_t ldb );
-
-void trmm( char side, char uplo, char transA, char diag, blas_int_t m, blas_int_t n,
-           complex<float> alpha, const complex<float>* A, blas_int_t lda,
-           complex<float>* B, blas_int_t ldb );
-
-void trmm( char side, char uplo, char transA, char diag, blas_int_t m, blas_int_t n,
-           complex<double> alpha, const complex<double>* A, blas_int_t lda,
-           complex<double>* B, blas_int_t ldb );
-//@}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief BLAS kernel for a triangular dense matrix/dense matrix multiplication with single
-//        precision matrices (\f$ B=\alpha*A*B \f$ or \f$ B=\alpha*B*A \f$).
-// \ingroup blas
-//
-// \param side \c 'L' to compute \f$ B=\alpha*A*B \f$, \c 'R' to compute \f$ B=\alpha*B*A \f$.
-// \param uplo \c 'L' to use the lower triangle from \a A, \c 'U' to use the upper triangle.
-// \param transA \c 'N' to use \a A, \c 'T' or \c 'C' to use \a A^T.
-// \param diag \c 'U' in case of a unitriangular matrix, \c 'N' otherwise.
-// \param m The number of rows of matrix \a B \f$[0..\infty)\f$.
-// \param n The number of columns of matrix \a B \f$[0..\infty)\f$.
-// \param alpha The scaling factor for \f$ A*B \f$ or \f$ B*A \f$.
-// \param A Pointer to the first element of the triangular matrix \a A.
-// \param lda The total number of elements between two rows/columns of matrix \a A \f$[0..\infty)\f$.
-// \param B Pointer to the first element of matrix \a B.
-// \param ldb The total number of elements between two rows/columns of matrix \a B \f$[0..\infty)\f$.
-// \return void
-//
-// This function performs the scaling and multiplication of a triangular single precision matrix
-// by a matrix based on the strmm() function (\f$ B=\alpha*A*B \f$ or \f$ B=\alpha*B*A \f$). Note
-// that matrix \a A is expected to be a square matrix.
-//
-// For more information on the strmm() function, see the LAPACK online documentation browser:
-//
-//        http://www.netlib.org/lapack/explore-html/
-//
-// \note This function can only be used if a fitting BLAS library, which supports this function,
-// is available and linked to the executable. Otherwise a call to this function will result in a
-// linker error.
-*/
-inline void trmm( char side, char uplo, char transA, char diag, blas_int_t m, blas_int_t n,
-                  float alpha, const float* A, blas_int_t lda, float* B, blas_int_t ldb )
-{
-#if defined(INTEL_MKL_VERSION)
-   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( blas_int_t ) );
-#endif
-
-   strmm_( &side, &uplo, &transA, &diag, &m, &n, &alpha, const_cast<float*>( A ), &lda, B, &ldb
-#if !defined(INTEL_MKL_VERSION)
-         , blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1),
-           blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1)
-#endif
-         );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief BLAS kernel for a triangular dense matrix/dense matrix multiplication with double
-//        precision matrices (\f$ B=\alpha*A*B \f$ or \f$ B=\alpha*B*A \f$).
-// \ingroup blas
-//
-// \param side \c 'L' to compute \f$ B=\alpha*A*B \f$, \c 'R' to compute \f$ B=\alpha*B*A \f$.
-// \param uplo \c 'L' to use the lower triangle from \a A, \c 'U' to use the upper triangle.
-// \param transA \c 'N' to use \a A, \c 'T' or \c 'C' to use \a A^T.
-// \param diag \c 'U' in case of a unitriangular matrix, \c 'N' otherwise.
-// \param m The number of rows of matrix \a B \f$[0..\infty)\f$.
-// \param n The number of columns of matrix \a B \f$[0..\infty)\f$.
-// \param alpha The scaling factor for \f$ A*B \f$ or \f$ B*A \f$.
-// \param A Pointer to the first element of the triangular matrix \a A.
-// \param lda The total number of elements between two rows/columns of matrix \a A \f$[0..\infty)\f$.
-// \param B Pointer to the first element of matrix \a B.
-// \param ldb The total number of elements between two rows/columns of matrix \a B \f$[0..\infty)\f$.
-// \return void
-//
-// This function performs the scaling and multiplication of a triangular double precision matrix
-// by a matrix based on the dtrmm() function (\f$ B=\alpha*A*B \f$ or \f$ B=\alpha*B*A \f$). Note
-// that matrix \a A is expected to be a square matrix.
-//
-// For more information on the dtrmm() function, see the LAPACK online documentation browser:
-//
-//        http://www.netlib.org/lapack/explore-html/
-//
-// \note This function can only be used if a fitting BLAS library, which supports this function,
-// is available and linked to the executable. Otherwise a call to this function will result in a
-// linker error.
-*/
-inline void trmm( char side, char uplo, char transA, char diag, blas_int_t m, blas_int_t n,
-                  double alpha, const double* A, blas_int_t lda, double* B, blas_int_t ldb )
-{
-#if defined(INTEL_MKL_VERSION)
-   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( blas_int_t ) );
-#endif
-
-   dtrmm_( &side, &uplo, &transA, &diag, &m, &n, &alpha, const_cast<double*>( A ), &lda, B, &ldb
-#if !defined(INTEL_MKL_VERSION)
-         , blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1),
-           blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1)
-#endif
-         );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief BLAS kernel for a triangular dense matrix/dense matrix multiplication with single
-//        precision complex matrices (\f$ B=\alpha*A*B \f$ or \f$ B=\alpha*B*A \f$).
-// \ingroup blas
-//
-// \param side \c 'L' to compute \f$ B=\alpha*A*B \f$, \c 'R' to compute \f$ B=\alpha*B*A \f$.
-// \param uplo \c 'L' to use the lower triangle from \a A, \c 'U' to use the upper triangle.
-// \param transA \c 'N' to use \a A, \c 'T' to use \a A^T, or \c 'C' to use \a A^H.
-// \param diag \c 'U' in case of a unitriangular matrix, \c 'N' otherwise.
-// \param m The number of rows of matrix \a B \f$[0..\infty)\f$.
-// \param n The number of columns of matrix \a B \f$[0..\infty)\f$.
-// \param alpha The scaling factor for \f$ A*B \f$ or \f$ B*A \f$.
-// \param A Pointer to the first element of the triangular matrix \a A.
-// \param lda The total number of elements between two rows/columns of matrix \a A \f$[0..\infty)\f$.
-// \param B Pointer to the first element of matrix \a B.
-// \param ldb The total number of elements between two rows/columns of matrix \a B \f$[0..\infty)\f$.
-// \return void
-//
-// This function performs the scaling and multiplication of a triangular single precision complex
-// matrix by a matrix based on the ctrmm() function (\f$ B=\alpha*A*B \f$ or \f$ B=\alpha*B*A \f$).
-// Note that matrix \a A is expected to be a square matrix.
-//
-// For more information on the ctrmm() function, see the LAPACK online documentation browser:
-//
-//        http://www.netlib.org/lapack/explore-html/
-//
-// \note This function can only be used if a fitting BLAS library, which supports this function,
-// is available and linked to the executable. Otherwise a call to this function will result in a
-// linker error.
-*/
-inline void trmm( char side, char uplo, char transA, char diag, blas_int_t m, blas_int_t n,
-                  complex<float> alpha, const complex<float>* A, blas_int_t lda,
-                  complex<float>* B, blas_int_t ldb )
-{
-   BLAZE_STATIC_ASSERT( sizeof( complex<float> ) == 2UL*sizeof( float ) );
-
-#if defined(INTEL_MKL_VERSION)
-   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( blas_int_t ) );
-   BLAZE_STATIC_ASSERT( sizeof( MKL_Complex8 ) == sizeof( complex<float> ) );
-   using ET = MKL_Complex8;
-#else
-   using ET = float;
-#endif
-
-   ctrmm_( &side, &uplo, &transA, &diag, &m, &n, reinterpret_cast<ET*>( &alpha ),
-           const_cast<ET*>( reinterpret_cast<const ET*>( A ) ), &lda,
-           reinterpret_cast<ET*>( B ), &ldb
-#if !defined(INTEL_MKL_VERSION)
-         , blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1),
-           blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1)
-#endif
-         );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief BLAS kernel for a triangular dense matrix/dense matrix multiplication with double
-//        precision complex matrices (\f$ B=\alpha*A*B \f$ or \f$ B=\alpha*B*A \f$).
-// \ingroup blas
-//
-// \param side \c 'L' to compute \f$ B=\alpha*A*B \f$, \c 'R' to compute \f$ B=\alpha*B*A \f$.
-// \param uplo \c 'L' to use the lower triangle from \a A, \c 'U' to use the upper triangle.
-// \param transA \c 'N' to use \a A, \c 'T' to use \a A^T, or \c 'C' to use \a A^H.
-// \param diag \c 'U' in case of a unitriangular matrix, \c 'N' otherwise.
-// \param m The number of rows of matrix \a B \f$[0..\infty)\f$.
-// \param n The number of columns of matrix \a B \f$[0..\infty)\f$.
-// \param alpha The scaling factor for \f$ A*B \f$ or \f$ B*A \f$.
-// \param A Pointer to the first element of the triangular matrix \a A.
-// \param lda The total number of elements between two rows/columns of matrix \a A \f$[0..\infty)\f$.
-// \param B Pointer to the first element of matrix \a B.
-// \param ldb The total number of elements between two rows/columns of matrix \a B \f$[0..\infty)\f$.
-// \return void
-//
-// This function performs the scaling and multiplication of a triangular double precision complex
-// matrix by a matrix based on the ztrmm() function (\f$ B=\alpha*A*B \f$ or \f$ B=\alpha*B*A \f$).
-// Note that matrix \a A is expected to be a square matrix.
-//
-// For more information on the ztrmm() function, see the LAPACK online documentation browser:
-//
-//        http://www.netlib.org/lapack/explore-html/
-//
-// \note This function can only be used if a fitting BLAS library, which supports this function,
-// is available and linked to the executable. Otherwise a call to this function will result in a
-// linker error.
-*/
-inline void trmm( char side, char uplo, char transA, char diag, blas_int_t m, blas_int_t n,
-                  complex<double> alpha, const complex<double>* A, blas_int_t lda,
-                  complex<double>* B, blas_int_t ldb )
-{
-   BLAZE_STATIC_ASSERT( sizeof( complex<double> ) == 2UL*sizeof( double ) );
-
-#if defined(INTEL_MKL_VERSION)
-   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( blas_int_t ) );
-   BLAZE_STATIC_ASSERT( sizeof( MKL_Complex16 ) == sizeof( complex<double> ) );
-   using ET = MKL_Complex16;
-#else
-   using ET = double;
-#endif
-
-   ztrmm_( &side, &uplo, &transA, &diag, &m, &n, reinterpret_cast<ET*>( &alpha ),
-           const_cast<ET*>( reinterpret_cast<const ET*>( A ) ), &lda,
-           reinterpret_cast<ET*>( B ), &ldb
-#if !defined(INTEL_MKL_VERSION)
-         , blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1),
-           blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1)
-#endif
-         );
-}
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  CBLAS WRAPPER FUNCTIONS (TRMM)
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*!\name BLAS wrapper functions (trmm) */
-//@{
 #if BLAZE_BLAS_MODE
 
 void trmm( CBLAS_ORDER order, CBLAS_SIDE side, CBLAS_UPLO uplo,
@@ -363,11 +88,11 @@ void trmm( CBLAS_ORDER order, CBLAS_SIDE side, CBLAS_UPLO uplo,
 //        precision matrices (\f$ B=\alpha*A*B \f$ or \f$ B=\alpha*B*A \f$).
 // \ingroup blas
 //
-// \param order Specifies the storage order of matrix \a A (\a CblasRowMajor or \a CblasColMajor).
-// \param side \a CblasLeft to compute \f$ B=\alpha*A*B \f$, \a CblasRight to compute \f$ B=\alpha*B*A \f$.
-// \param uplo \a CblasLower to use the lower triangle from \a A, \a CblasUpper to use the upper triangle.
-// \param transA Specifies whether to transpose matrix \a A (\a CblasNoTrans or \a CblasTrans).
-// \param diag Specifies whether \a A is unitriangular (\a CblasNonUnit or \a CblasUnit).
+// \param order Specifies the storage order of matrix \a A (\c CblasRowMajor or \c CblasColMajor).
+// \param side \c CblasLeft to compute \f$ B=\alpha*A*B \f$, \c CblasRight to compute \f$ B=\alpha*B*A \f$.
+// \param uplo \c CblasLower to use the lower triangle from \a A, \c CblasUpper to use the upper triangle.
+// \param transA Specifies whether to transpose matrix \a A (\c CblasNoTrans or \c CblasTrans).
+// \param diag Specifies whether \a A is unitriangular (\c CblasNonUnit or \c CblasUnit).
 // \param m The number of rows of matrix \a B \f$[0..\infty)\f$.
 // \param n The number of columns of matrix \a B \f$[0..\infty)\f$.
 // \param alpha The scaling factor for \f$ A*B \f$ or \f$ B*A \f$.
@@ -400,11 +125,11 @@ inline void trmm( CBLAS_ORDER order, CBLAS_SIDE side, CBLAS_UPLO uplo,
 //        precision matrices (\f$ B=\alpha*A*B \f$ or \f$ B=\alpha*B*A \f$).
 // \ingroup blas
 //
-// \param order Specifies the storage order of matrix \a A (\a CblasRowMajor or \a CblasColMajor).
-// \param side \a CblasLeft to compute \f$ B=\alpha*A*B \f$, \a CblasRight to compute \f$ B=\alpha*B*A \f$.
-// \param uplo \a CblasLower to use the lower triangle from \a A, \a CblasUpper to use the upper triangle.
-// \param transA Specifies whether to transpose matrix \a A (\a CblasNoTrans or \a CblasTrans).
-// \param diag Specifies whether \a A is unitriangular (\a CblasNonUnit or \a CblasUnit).
+// \param order Specifies the storage order of matrix \a A (\c CblasRowMajor or \c CblasColMajor).
+// \param side \c CblasLeft to compute \f$ B=\alpha*A*B \f$, \c CblasRight to compute \f$ B=\alpha*B*A \f$.
+// \param uplo \c CblasLower to use the lower triangle from \a A, \c CblasUpper to use the upper triangle.
+// \param transA Specifies whether to transpose matrix \a A (\c CblasNoTrans or \c CblasTrans).
+// \param diag Specifies whether \a A is unitriangular (\c CblasNonUnit or \c CblasUnit).
 // \param m The number of rows of matrix \a B \f$[0..\infty)\f$.
 // \param n The number of columns of matrix \a B \f$[0..\infty)\f$.
 // \param alpha The scaling factor for \f$ A*B \f$ or \f$ B*A \f$.
@@ -437,11 +162,11 @@ inline void trmm( CBLAS_ORDER order, CBLAS_SIDE side, CBLAS_UPLO uplo,
 //        precision complex matrices (\f$ B=\alpha*A*B \f$ or \f$ B=\alpha*B*A \f$).
 // \ingroup blas
 //
-// \param order Specifies the storage order of matrix \a A (\a CblasRowMajor or \a CblasColMajor).
-// \param side \a CblasLeft to compute \f$ B=\alpha*A*B \f$, \a CblasRight to compute \f$ B=\alpha*B*A \f$.
-// \param uplo \a CblasLower to use the lower triangle from \a A, \a CblasUpper to use the upper triangle.
-// \param transA Specifies whether to transpose matrix \a A (\a CblasNoTrans or \a CblasTrans).
-// \param diag Specifies whether \a A is unitriangular (\a CblasNonUnit or \a CblasUnit).
+// \param order Specifies the storage order of matrix \a A (\c CblasRowMajor or \c CblasColMajor).
+// \param side \c CblasLeft to compute \f$ B=\alpha*A*B \f$, \c CblasRight to compute \f$ B=\alpha*B*A \f$.
+// \param uplo \c CblasLower to use the lower triangle from \a A, \c CblasUpper to use the upper triangle.
+// \param transA Specifies whether to transpose matrix \a A (\c CblasNoTrans or \c CblasTrans).
+// \param diag Specifies whether \a A is unitriangular (\c CblasNonUnit or \c CblasUnit).
 // \param m The number of rows of matrix \a B \f$[0..\infty)\f$.
 // \param n The number of columns of matrix \a B \f$[0..\infty)\f$.
 // \param alpha The scaling factor for \f$ A*B \f$ or \f$ B*A \f$.
@@ -478,11 +203,11 @@ inline void trmm( CBLAS_ORDER order, CBLAS_SIDE side, CBLAS_UPLO uplo,
 //        precision complex matrices (\f$ B=\alpha*A*B \f$ or \f$ B=\alpha*B*A \f$).
 // \ingroup blas
 //
-// \param order Specifies the storage order of matrix \a A (\a CblasRowMajor or \a CblasColMajor).
-// \param side \a CblasLeft to compute \f$ B=\alpha*A*B \f$, \a CblasRight to compute \f$ B=\alpha*B*A \f$.
-// \param uplo \a CblasLower to use the lower triangle from \a A, \a CblasUpper to use the upper triangle.
-// \param transA Specifies whether to transpose matrix \a A (\a CblasNoTrans or \a CblasTrans).
-// \param diag Specifies whether \a A is unitriangular (\a CblasNonUnit or \a CblasUnit).
+// \param order Specifies the storage order of matrix \a A (\c CblasRowMajor or \c CblasColMajor).
+// \param side \c CblasLeft to compute \f$ B=\alpha*A*B \f$, \c CblasRight to compute \f$ B=\alpha*B*A \f$.
+// \param uplo \c CblasLower to use the lower triangle from \a A, \c CblasUpper to use the upper triangle.
+// \param transA Specifies whether to transpose matrix \a A (\c CblasNoTrans or \c CblasTrans).
+// \param diag Specifies whether \a A is unitriangular (\c CblasNonUnit or \c CblasUnit).
 // \param m The number of rows of matrix \a B \f$[0..\infty)\f$.
 // \param n The number of columns of matrix \a B \f$[0..\infty)\f$.
 // \param alpha The scaling factor for \f$ A*B \f$ or \f$ B*A \f$.

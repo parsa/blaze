@@ -53,12 +53,12 @@ namespace blaze {
 
 //=================================================================================================
 //
-//  BLAS WRAPPER FUNCTIONS (DOTU)
+//  BLAS DOT PRODUCT (DOTU)
 //
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\name BLAS wrapper functions (dotu) */
+/*!\name BLAS dot product functions (dotu) */
 //@{
 template< typename VT1, bool TF1, typename VT2, bool TF2 >
 ElementType_t<VT1> dotu( const DenseVector<VT1,TF1>& x, const DenseVector<VT2,TF2>& y );
@@ -72,7 +72,7 @@ ElementType_t<VT1> dotu( const DenseVector<VT1,TF1>& x, const DenseVector<VT2,TF
 //
 // \param x The left-hand side dense vector operand.
 // \param y The right-hand side dense vector operand.
-// \return void
+// \return The result of the dot product computation.
 //
 // This function performs the dense vector dot product based on the BLAS dotu() functions. Note
 // that the function only works for vectors with \c float, \c double, \c complex<float>, or

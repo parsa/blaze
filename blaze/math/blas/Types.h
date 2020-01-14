@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <blaze/system/BLAS.h>
 #include <blaze/util/Types.h>
 
 
@@ -55,7 +56,9 @@ namespace blaze {
 /*!\brief Signed integer type used in the BLAS/LAPACK wrapper functions.
 // \ingroup math
 */
-#if BLAZE_BLAS_IS_64BIT
+#if BLAZE_BLAS_IS_64BIT && ( defined(INTEL_MKL_VERSION) || defined(MKL_ILP64) )
+using blas_int_t = long long int;
+#elif BLAS_BLAS_IS_64BIT
 using blas_int_t = int64_t;
 #else
 using blas_int_t = int32_t;

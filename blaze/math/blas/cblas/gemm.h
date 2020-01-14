@@ -44,43 +44,6 @@
 #include <blaze/system/BLAS.h>
 #include <blaze/util/Complex.h>
 #include <blaze/util/StaticAssert.h>
-#include <blaze/util/Types.h>
-
-
-//=================================================================================================
-//
-//  BLAS FORWARD DECLARATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-#if !defined(INTEL_MKL_VERSION)
-extern "C" {
-
-void sgemm_( char* transA, char* transB, blaze::blas_int_t* m, blaze::blas_int_t* n,
-             blaze::blas_int_t* k, float* alpha, float* A, blaze::blas_int_t* lda,
-             float* B, blaze::blas_int_t* ldb, float* beta, float* C, blaze::blas_int_t* ldc,
-             blaze::fortran_charlen_t ntransA, blaze::fortran_charlen_t ntransB );
-void dgemm_( char* transA, char* transB, blaze::blas_int_t* m, blaze::blas_int_t* n,
-             blaze::blas_int_t* k, double* alpha, double* A, blaze::blas_int_t* lda,
-             double* B, blaze::blas_int_t* ldb, double* beta, double* C, blaze::blas_int_t* ldc,
-             blaze::fortran_charlen_t ntransA, blaze::fortran_charlen_t ntransB );
-void cgemm_( char* transA, char* transB, blaze::blas_int_t* m, blaze::blas_int_t* n,
-             blaze::blas_int_t* k, float* alpha, float* A, blaze::blas_int_t* lda,
-             float* B, blaze::blas_int_t* ldb, float* beta, float* C, blaze::blas_int_t* ldc,
-             blaze::fortran_charlen_t ntransA, blaze::fortran_charlen_t ntransB );
-void zgemm_( char* transA, char* transB, blaze::blas_int_t* m, blaze::blas_int_t* n,
-             blaze::blas_int_t* k, double* alpha, double* A, blaze::blas_int_t* lda,
-             double* B, blaze::blas_int_t* ldb, double* beta, double* C, blaze::blas_int_t* ldc,
-             blaze::fortran_charlen_t ntransA, blaze::fortran_charlen_t ntransB );
-
-}
-#endif
-/*! \endcond */
-//*************************************************************************************************
-
-
 
 
 namespace blaze {
@@ -93,252 +56,6 @@ namespace blaze {
 
 //*************************************************************************************************
 /*!\name BLAS general matrix multiplication functions (gemm) */
-//@{
-void gemm( char transA, char transB, blas_int_t m, blas_int_t n, blas_int_t k,
-           float alpha, const float* A, blas_int_t lda, const float* B,
-           blas_int_t ldb, float beta, float* C, blas_int_t ldc );
-
-void gemm( char transA, char transB, blas_int_t m, blas_int_t n, blas_int_t k,
-           double alpha, const double* A, blas_int_t lda, const double* B,
-           blas_int_t ldb, double beta, double* C, blas_int_t ldc );
-
-void gemm( char transA, char transB, blas_int_t m, blas_int_t n, blas_int_t k,
-           complex<float> alpha, const complex<float>* A, blas_int_t lda,
-           const complex<float>* B, blas_int_t ldb, complex<float> beta,
-           complex<float>* C, blas_int_t ldc );
-
-void gemm( char transA, char transB, blas_int_t m, blas_int_t n, blas_int_t k,
-           complex<double> alpha, const complex<double>* A, blas_int_t lda,
-           const complex<double>* B, blas_int_t ldb, complex<double> beta,
-           complex<double>* C, blas_int_t ldc );
-//@}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief BLAS kernel for a dense matrix/dense matrix multiplication with single precision
-//        column-major matrices (\f$ C=\alpha*A*B+\beta*C \f$).
-// \ingroup blas
-//
-// \param transA \c 'N' to use \a A, \c 'T' or \c 'C' to use \a A^T.
-// \param transB \c 'N' to use \a B, \c 'T' or \c 'C' to use \a B^T.
-// \param m The number of rows of matrix \a A and \a C \f$[0..\infty)\f$.
-// \param n The number of columns of matrix \a B and \a C \f$[0..\infty)\f$.
-// \param k The number of columns of matrix \a A and rows in matrix \a B \f$[0..\infty)\f$.
-// \param alpha The scaling factor for \f$ A*B \f$.
-// \param A Pointer to the first element of matrix \a A.
-// \param lda The total number of elements between two rows/columns of matrix \a A \f$[0..\infty)\f$.
-// \param B Pointer to the first element of matrix \a B.
-// \param ldb The total number of elements between two rows/columns of matrix \a B \f$[0..\infty)\f$.
-// \param beta The scaling factor for \f$ C \f$.
-// \param C Pointer to the first element of matrix \a C.
-// \param ldc The total number of elements between two rows/columns of matrix \a C \f$[0..\infty)\f$.
-// \return void
-//
-// This function performs the dense matrix/dense matrix multiplication for general single
-// precision matrices based on the BLAS sgemm() function (\f$ C=\alpha*A*B+\beta*C \f$).
-//
-// For more information on the sgemm() function, see the LAPACK online documentation browser:
-//
-//        http://www.netlib.org/lapack/explore-html/
-//
-// \note This function can only be used if a fitting BLAS library, which supports this function,
-// is available and linked to the executable. Otherwise a call to this function will result in a
-// linker error.
-*/
-inline void gemm( char transA, char transB, blas_int_t m, blas_int_t n, blas_int_t k,
-                  float alpha, const float* A, blas_int_t lda, const float* B,
-                  blas_int_t ldb, float beta, float* C, blas_int_t ldc )
-{
-#if defined(INTEL_MKL_VERSION)
-   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( blas_int_t ) );
-#endif
-
-   sgemm_( &transA, &transB, &m, &n, &k, &alpha, const_cast<float*>( A ), &lda,
-           const_cast<float*>( B ), &ldb, &beta, C, &ldc
-#if !defined(INTEL_MKL_VERSION)
-         , blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1)
-#endif
-         );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief BLAS kernel for a dense matrix/dense matrix multiplication with double precision
-//        column-major matrices (\f$ C=\alpha*A*B+\beta*C \f$).
-// \ingroup blas
-//
-// \param transA \c 'N' to use \a A, \c 'T' or \c 'C' to use \a A^T.
-// \param transB \c 'N' to use \a B, \c 'T' or \c 'C' to use \a B^T.
-// \param m The number of rows of matrix \a A and \a C \f$[0..\infty)\f$.
-// \param n The number of columns of matrix \a B and \a C \f$[0..\infty)\f$.
-// \param k The number of columns of matrix \a A and rows in matrix \a B \f$[0..\infty)\f$.
-// \param alpha The scaling factor for \f$ A*B \f$.
-// \param A Pointer to the first element of matrix \a A.
-// \param lda The total number of elements between two rows/columns of matrix \a A \f$[0..\infty)\f$.
-// \param B Pointer to the first element of matrix \a B.
-// \param ldb The total number of elements between two rows/columns of matrix \a B \f$[0..\infty)\f$.
-// \param beta The scaling factor for \f$ C \f$.
-// \param C Pointer to the first element of matrix \a C.
-// \param ldc The total number of elements between two rows/columns of matrix \a C \f$[0..\infty)\f$.
-// \return void
-//
-// This function performs the dense matrix/dense matrix multiplication for general double
-// precision matrices based on the BLAS dgemm() function (\f$ C=\alpha*A*B+\beta*C \f$).
-//
-// For more information on the dgemm() function, see the LAPACK online documentation browser:
-//
-//        http://www.netlib.org/lapack/explore-html/
-//
-// \note This function can only be used if a fitting BLAS library, which supports this function,
-// is available and linked to the executable. Otherwise a call to this function will result in a
-// linker error.
-*/
-inline void gemm( char transA, char transB, blas_int_t m, blas_int_t n, blas_int_t k,
-                  double alpha, const double* A, blas_int_t lda, const double* B,
-                  blas_int_t ldb, double beta, double* C, blas_int_t ldc )
-{
-#if defined(INTEL_MKL_VERSION)
-   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( blas_int_t ) );
-#endif
-
-   dgemm_( &transA, &transB, &m, &n, &k, &alpha, const_cast<double*>( A ), &lda,
-           const_cast<double*>( B ), &ldb, &beta, C, &ldc
-#if !defined(INTEL_MKL_VERSION)
-         , blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1)
-#endif
-         );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief BLAS kernel for a dense matrix/dense matrix multiplication with single precision
-//        complex column-major matrices (\f$ C=\alpha*A*B+\beta*C \f$).
-// \ingroup blas
-//
-// \param transA \c 'N' to use \a A, \c 'T' to use \a A^T, or \c 'C' to use \a A^H.
-// \param transB \c 'N' to use \a B, \c 'T' to use \a B^T, or \c 'C' to use \a B^H.
-// \param m The number of rows of matrix \a A and \a C \f$[0..\infty)\f$.
-// \param n The number of columns of matrix \a B and \a C \f$[0..\infty)\f$.
-// \param k The number of columns of matrix \a A and rows in matrix \a B \f$[0..\infty)\f$.
-// \param alpha The scaling factor for \f$ A*B \f$.
-// \param A Pointer to the first element of matrix \a A.
-// \param lda The total number of elements between two rows/columns of matrix \a A \f$[0..\infty)\f$.
-// \param B Pointer to the first element of matrix \a B.
-// \param ldb The total number of elements between two rows/columns of matrix \a B \f$[0..\infty)\f$.
-// \param beta The scaling factor for \f$ C \f$.
-// \param C Pointer to the first element of matrix \a C.
-// \param ldc The total number of elements between two rows/columns of matrix \a C \f$[0..\infty)\f$.
-// \return void
-//
-// This function performs the dense matrix/dense matrix multiplication for general single
-// precision complex matrices based on the BLAS cgemm() function (\f$ C=\alpha*A*B+\beta*C \f$).
-//
-// For more information on the cgemm() function, see the LAPACK online documentation browser:
-//
-//        http://www.netlib.org/lapack/explore-html/
-//
-// \note This function can only be used if a fitting BLAS library, which supports this function,
-// is available and linked to the executable. Otherwise a call to this function will result in a
-// linker error.
-*/
-inline void gemm( char transA, char transB, blas_int_t m, blas_int_t n, blas_int_t k,
-                  complex<float> alpha, const complex<float>* A, blas_int_t lda,
-                  const complex<float>* B, blas_int_t ldb, complex<float> beta,
-                  complex<float>* C, blas_int_t ldc )
-{
-   BLAZE_STATIC_ASSERT( sizeof( complex<float> ) == 2UL*sizeof( float ) );
-
-#if defined(INTEL_MKL_VERSION)
-   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( blas_int_t ) );
-   BLAZE_STATIC_ASSERT( sizeof( MKL_Complex8 ) == sizeof( complex<float> ) );
-   using ET = MKL_Complex8;
-#else
-   using ET = float;
-#endif
-
-   cgemm_( &transA, &transB, &m, &n, &k, reinterpret_cast<ET*>( &alpha ),
-           const_cast<ET*>( reinterpret_cast<const ET*>( A ) ), &lda,
-           const_cast<ET*>( reinterpret_cast<const ET*>( B ) ), &ldb,
-           reinterpret_cast<ET*>( &beta ), reinterpret_cast<ET*>( C ), &ldc
-#if !defined(INTEL_MKL_VERSION)
-         , blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1)
-#endif
-         );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief BLAS kernel for a dense matrix/dense matrix multiplication with double precision
-//        complex column-major matrices (\f$ C=\alpha*A*B+\beta*C \f$).
-// \ingroup blas
-//
-// \param transA \c 'N' to use \a A, \c 'T' to use \a A^T, or \c 'C' to use \a A^H.
-// \param transB \c 'N' to use \a B, \c 'T' to use \a B^T, or \c 'C' to use \a B^H.
-// \param m The number of rows of matrix \a A and \a C \f$[0..\infty)\f$.
-// \param n The number of columns of matrix \a B and \a C \f$[0..\infty)\f$.
-// \param k The number of columns of matrix \a A and rows in matrix \a B \f$[0..\infty)\f$.
-// \param alpha The scaling factor for \f$ A*B \f$.
-// \param A Pointer to the first element of matrix \a A.
-// \param lda The total number of elements between two rows/columns of matrix \a A \f$[0..\infty)\f$.
-// \param B Pointer to the first element of matrix \a B.
-// \param ldb The total number of elements between two rows/columns of matrix \a B \f$[0..\infty)\f$.
-// \param beta The scaling factor for \f$ C \f$.
-// \param C Pointer to the first element of matrix \a C.
-// \param ldc The total number of elements between two rows/columns of matrix \a C \f$[0..\infty)\f$.
-// \return void
-//
-// This function performs the dense matrix/dense matrix multiplication for general double
-// precision complex matrices based on the BLAS zgemm() function (\f$ C=\alpha*A*B+\beta*C \f$).
-//
-// For more information on the zgemm() function, see the LAPACK online documentation browser:
-//
-//        http://www.netlib.org/lapack/explore-html/
-//
-// \note This function can only be used if a fitting BLAS library, which supports this function,
-// is available and linked to the executable. Otherwise a call to this function will result in a
-// linker error.
-*/
-inline void gemm( char transA, char transB, blas_int_t m, blas_int_t n, blas_int_t k,
-                  complex<double> alpha, const complex<double>* A, blas_int_t lda,
-                  const complex<double>* B, blas_int_t ldb, complex<double> beta,
-                  complex<double>* C, blas_int_t ldc )
-{
-   BLAZE_STATIC_ASSERT( sizeof( complex<double> ) == 2UL*sizeof( double ) );
-
-#if defined(INTEL_MKL_VERSION)
-   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( blas_int_t ) );
-   BLAZE_STATIC_ASSERT( sizeof( MKL_Complex16 ) == sizeof( complex<double> ) );
-   using ET = MKL_Complex16;
-#else
-   using ET = double;
-#endif
-
-   zgemm_( &transA, &transB, &m, &n, &k, reinterpret_cast<ET*>( &alpha ),
-           const_cast<ET*>( reinterpret_cast<const ET*>( A ) ), &lda,
-           const_cast<ET*>( reinterpret_cast<const ET*>( B ) ), &ldb,
-           reinterpret_cast<ET*>( &beta ), reinterpret_cast<ET*>( C ), &ldc
-#if !defined(INTEL_MKL_VERSION)
-         , blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1)
-#endif
-         );
-}
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  CBLAS WRAPPER FUNCTIONS (GEMM)
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*!\name BLAS wrapper functions (gemm) */
 //@{
 #if BLAZE_BLAS_MODE
 
@@ -389,8 +106,8 @@ void gemm( CBLAS_ORDER order, CBLAS_TRANSPOSE transA, CBLAS_TRANSPOSE transB,
 // \param ldc The total number of elements between two rows/columns of matrix \a C \f$[0..\infty)\f$.
 // \return void
 //
-// This function performs the dense matrix/dense matrix multiplication for single precision
-// matrices based on the BLAS cblas_sgemm() function.
+// This function performs the dense matrix/dense matrix multiplication for general single
+// precision matrices based on the cblas_sgemm() function (\f$ C=\alpha*A*B+\beta*C \f$).
 //
 // \note This function can only be used if a fitting BLAS library, which supports this function,
 // is available and linked to the executable. Otherwise a call to this function will result in a
@@ -430,7 +147,7 @@ inline void gemm( CBLAS_ORDER order, CBLAS_TRANSPOSE transA, CBLAS_TRANSPOSE tra
 // \return void
 //
 // This function performs the dense matrix/dense matrix multiplication for double precision
-// matrices based on the BLAS cblas_dgemm() function.
+// matrices based on the cblas_dgemm() function.
 //
 // \note This function can only be used if a fitting BLAS library, which supports this function,
 // is available and linked to the executable. Otherwise a call to this function will result in a
@@ -470,7 +187,7 @@ inline void gemm( CBLAS_ORDER order, CBLAS_TRANSPOSE transA, CBLAS_TRANSPOSE tra
 // \return void
 //
 // This function performs the dense matrix/dense matrix multiplication for single precision
-// complex matrices based on the BLAS cblas_cgemm() function.
+// complex matrices based on the cblas_cgemm() function.
 //
 // \note This function can only be used if a fitting BLAS library, which supports this function,
 // is available and linked to the executable. Otherwise a call to this function will result in a
@@ -514,7 +231,7 @@ inline void gemm( CBLAS_ORDER order, CBLAS_TRANSPOSE transA, CBLAS_TRANSPOSE tra
 // \return void
 //
 // This function performs the dense matrix/dense matrix multiplication for double precision
-// complex matrices based on the BLAS cblas_zgemm() function.
+// complex matrices based on the cblas_zgemm() function.
 //
 // \note This function can only be used if a fitting BLAS library, which supports this function,
 // is available and linked to the executable. Otherwise a call to this function will result in a

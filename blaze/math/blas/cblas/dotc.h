@@ -44,32 +44,6 @@
 #include <blaze/system/BLAS.h>
 #include <blaze/util/Complex.h>
 #include <blaze/util/StaticAssert.h>
-#include <blaze/util/Types.h>
-
-
-//=================================================================================================
-//
-//  BLAS FORWARD DECLARATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-#if !defined(INTEL_MKL_VERSION)
-extern "C" {
-
-float sdot_( blaze::blas_int_t* n, float* x, blaze::blas_int_t* incX,
-             float* y, blaze::blas_int_t* incY );
-
-double ddot_( blaze::blas_int_t* n, double* x, blaze::blas_int_t* incX,
-              double* y, blaze::blas_int_t* incY );
-
-}
-#endif
-/*! \endcond */
-//*************************************************************************************************
-
-
 
 
 namespace blaze {
@@ -83,6 +57,8 @@ namespace blaze {
 //*************************************************************************************************
 /*!\name BLAS dot product functions (dotc) */
 //@{
+#if BLAZE_BLAS_MODE
+
 float dotc( blas_int_t n, const float* x, blas_int_t incX, const float* y, blas_int_t incY );
 
 double dotc( blas_int_t n, const double* x, blas_int_t incX, const double* y, blas_int_t incY );
@@ -92,11 +68,14 @@ complex<float> dotc( blas_int_t n, const complex<float>* x, blas_int_t incX,
 
 complex<double> dotc( blas_int_t n, const complex<double>* x, blas_int_t incX,
                       const complex<double>* y, blas_int_t incY );
+
+#endif
 //@}
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+#if BLAZE_BLAS_MODE
 /*!\brief BLAS kernel for a dense vector complex conjugate dot product for single precision operands
 //        (\f$ s=\vec{x}*\vec{y} \f$).
 // \ingroup blas
@@ -106,10 +85,10 @@ complex<double> dotc( blas_int_t n, const complex<double>* x, blas_int_t incX,
 // \param incX The stride within vector \a x.
 // \param y Pointer to the first element of vector \a y.
 // \param incY The stride within vector \a y.
-// \return void
+// \return The result of the complex conjugate dot product computation.
 //
 // This function performs the dense vector complex conjugate dot product for single precision
-// operands based on the BLAS sdot() function (\f$ s=\vec{x}*\vec{y} \f$).
+// operands based on the cblas_sdot() function (\f$ s=\vec{x}*\vec{y} \f$).
 //
 // \note This function can only be used if a fitting BLAS library, which supports this function,
 // is available and linked to the executable. Otherwise a call to this function will result in a
@@ -117,16 +96,14 @@ complex<double> dotc( blas_int_t n, const complex<double>* x, blas_int_t incX,
 */
 inline float dotc( blas_int_t n, const float* x, blas_int_t incX, const float* y, blas_int_t incY )
 {
-#if defined(INTEL_MKL_VERSION)
-   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( blas_int_t ) );
-#endif
-
-   return sdot_( &n, const_cast<float*>( x ), &incX, const_cast<float*>( y ), &incY );
+   return cblas_sdot( n, x, incX, y, incY );
 }
+#endif
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+#if BLAZE_BLAS_MODE
 /*!\brief BLAS kernel for a dense vector complex conjugate dot product for double precision operands
 //        (\f$ s=\vec{x}*\vec{y} \f$).
 // \ingroup blas
@@ -136,10 +113,10 @@ inline float dotc( blas_int_t n, const float* x, blas_int_t incX, const float* y
 // \param incX The stride within vector \a x.
 // \param y Pointer to the first element of vector \a y.
 // \param incY The stride within vector \a y.
-// \return void
+// \return The result of the complex conjugate dot product computation.
 //
 // This function performs the dense vector complex conjugate dot product for double precision
-// operands based on the BLAS ddot() function (\f$ s=\vec{x}*\vec{y} \f$).
+// operands based on the cblas_ddot() function (\f$ s=\vec{x}*\vec{y} \f$).
 //
 // \note This function can only be used if a fitting BLAS library, which supports this function,
 // is available and linked to the executable. Otherwise a call to this function will result in a
@@ -147,16 +124,14 @@ inline float dotc( blas_int_t n, const float* x, blas_int_t incX, const float* y
 */
 inline double dotc( blas_int_t n, const double* x, blas_int_t incX, const double* y, blas_int_t incY )
 {
-#if defined(INTEL_MKL_VERSION)
-   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( blas_int_t ) );
-#endif
-
-   return ddot_( &n, const_cast<double*>( x ), &incX, const_cast<double*>( y ), &incY );
+   return cblas_ddot( n, x, incX, y, incY );
 }
+#endif
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+#if BLAZE_BLAS_MODE
 /*!\brief BLAS kernel for a dense vector complex conjugate dot product for single precision
 //        complex operands (\f$ s=\vec{x}*\vec{y} \f$).
 // \ingroup blas
@@ -166,10 +141,10 @@ inline double dotc( blas_int_t n, const double* x, blas_int_t incX, const double
 // \param incX The stride within vector \a x.
 // \param y Pointer to the first element of vector \a y.
 // \param incY The stride within vector \a y.
-// \return void
+// \return The result of the complex conjugate dot product computation.
 //
 // This function performs the dense vector complex conjugate dot product for single precision
-// complex operands based on the BLAS cdotc() function (\f$ s=\vec{x}*\vec{y} \f$).
+// complex operands based on the cblas_cdotc() function (\f$ s=\vec{x}*\vec{y} \f$).
 //
 // \note This function can only be used if a fitting BLAS library, which supports this function,
 // is available and linked to the executable. Otherwise a call to this function will result in a
@@ -193,10 +168,12 @@ inline complex<float> dotc( blas_int_t n, const complex<float>* x, blas_int_t in
 
    return tmp;
 }
+#endif
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+#if BLAZE_BLAS_MODE
 /*!\brief BLAS kernel for a dense vector complex conjugate dot product for double precision
 //        complex operands (\f$ s=\vec{x}*\vec{y} \f$).
 // \ingroup blas
@@ -206,10 +183,10 @@ inline complex<float> dotc( blas_int_t n, const complex<float>* x, blas_int_t in
 // \param incX The stride within vector \a x.
 // \param y Pointer to the first element of vector \a y.
 // \param incY The stride within vector \a y.
-// \return void
+// \return The result of the complex conjugate dot product computation.
 //
 // This function performs the dense vector complex conjugate dot product for double precision
-// complex operands based on the BLAS zdotc() function (\f$ s=\vec{x}*\vec{y} \f$).
+// complex operands based on the cblas_zdotc() function (\f$ s=\vec{x}*\vec{y} \f$).
 //
 // \note This function can only be used if a fitting BLAS library, which supports this function,
 // is available and linked to the executable. Otherwise a call to this function will result in a
@@ -233,6 +210,7 @@ inline complex<double> dotc( blas_int_t n, const complex<double>* x, blas_int_t 
 
    return tmp;
 }
+#endif
 //*************************************************************************************************
 
 } // namespace blaze

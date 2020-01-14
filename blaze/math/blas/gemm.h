@@ -56,21 +56,26 @@ namespace blaze {
 
 //=================================================================================================
 //
-//  BLAS WRAPPER FUNCTIONS (GEMM)
+//  BLAS GENERAL MATRIX MULTIPLICATION FUNCTIONS (GEMM)
 //
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\name BLAS wrapper functions (gemm) */
+/*!\name BLAS general matrix multiplication functions (gemm) */
 //@{
+#if BLAZE_BLAS_MODE
+
 template< typename MT1, bool SO1, typename MT2, bool SO2, typename MT3, bool SO3, typename ST >
 void gemm( DenseMatrix<MT1,SO1>& C, const DenseMatrix<MT2,SO2>& A,
            const DenseMatrix<MT3,SO3>& B, ST alpha, ST beta );
+
+#endif
 //@}
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+#if BLAZE_BLAS_MODE
 /*!\brief BLAS kernel for a dense matrix/dense matrix multiplication (\f$ C=\alpha*A*B+\beta*C \f$).
 // \ingroup blas
 //
@@ -112,35 +117,19 @@ inline void gemm( DenseMatrix<MT1,SO1>& C, const DenseMatrix<MT2,SO2>& A,
    BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<MT2> );
    BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<MT3> );
 
-   if( IsRowMajorMatrix_v<MT1> )
-   {
-      const char transB( IsRowMajorMatrix_v<MT3> ? 'N' : 'T' );
-      const char transA( IsRowMajorMatrix_v<MT2> ? 'N' : 'T' );
+   const blas_int_t m  ( numeric_cast<blas_int_t>( (~A).rows() )    );
+   const blas_int_t n  ( numeric_cast<blas_int_t>( (~B).columns() ) );
+   const blas_int_t k  ( numeric_cast<blas_int_t>( (~A).columns() ) );
+   const blas_int_t lda( numeric_cast<blas_int_t>( (~A).spacing() ) );
+   const blas_int_t ldb( numeric_cast<blas_int_t>( (~B).spacing() ) );
+   const blas_int_t ldc( numeric_cast<blas_int_t>( (~C).spacing() ) );
 
-      const blas_int_t m  ( numeric_cast<blas_int_t>( (~B).columns() ) );
-      const blas_int_t n  ( numeric_cast<blas_int_t>( (~A).rows()    ) );
-      const blas_int_t k  ( numeric_cast<blas_int_t>( (~B).rows()    ) );
-      const blas_int_t lda( numeric_cast<blas_int_t>( (~A).spacing() ) );
-      const blas_int_t ldb( numeric_cast<blas_int_t>( (~B).spacing() ) );
-      const blas_int_t ldc( numeric_cast<blas_int_t>( (~C).spacing() ) );
-
-      gemm( transB, transA, m, n, k, alpha, (~B).data(), ldb, (~A).data(), lda, beta, (~C).data(), ldc );
-   }
-   else
-   {
-      const char transA( IsRowMajorMatrix_v<MT2> ? 'T' : 'N' );
-      const char transB( IsRowMajorMatrix_v<MT3> ? 'T' : 'N' );
-
-      const blas_int_t m  ( numeric_cast<blas_int_t>( (~A).rows() )    );
-      const blas_int_t n  ( numeric_cast<blas_int_t>( (~B).columns() ) );
-      const blas_int_t k  ( numeric_cast<blas_int_t>( (~A).columns() ) );
-      const blas_int_t lda( numeric_cast<blas_int_t>( (~A).spacing() ) );
-      const blas_int_t ldb( numeric_cast<blas_int_t>( (~B).spacing() ) );
-      const blas_int_t ldc( numeric_cast<blas_int_t>( (~C).spacing() ) );
-
-      gemm( transA, transB, m, n, k, alpha, (~A).data(), lda, (~B).data(), ldb, beta, (~C).data(), ldc );
-   }
+   gemm( ( IsRowMajorMatrix_v<MT1> )?( CblasRowMajor ):( CblasColMajor ),
+         ( SO1 == SO2 )?( CblasNoTrans ):( CblasTrans ),
+         ( SO1 == SO3 )?( CblasNoTrans ):( CblasTrans ),
+         m, n, k, alpha, (~A).data(), lda, (~B).data(), ldb, beta, (~C).data(), ldc );
 }
+#endif
 //*************************************************************************************************
 
 } // namespace blaze

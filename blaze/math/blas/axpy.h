@@ -54,12 +54,12 @@ namespace blaze {
 
 //=================================================================================================
 //
-//  BLAS WRAPPER FUNCTIONS (AXPY)
+//  BLAS SCALED VECTOR ADDITION (AXPY)
 //
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\name BLAS wrapper functions (axpy) */
+/*!\name BLAS scaled vector addition functions (axpy) */
 //@{
 template< typename VT1, bool TF1, typename VT2, bool TF2, typename ST >
 void axpy( DenseVector<VT1,TF1>& x, const DenseVector<VT2,TF2>& y, ST alpha );

@@ -56,13 +56,15 @@ namespace blaze {
 
 //=================================================================================================
 //
-//  BLAS WRAPPER FUNCTIONS (GEMV)
+//  BLAS GENERAL MATRIX/VECTOR MULTIPLICATION FUNCTIONS (GEMV)
 //
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\name BLAS wrapper functions (gemv) */
+/*!\name BLAS general matrix/vector multiplication functions (gemv) */
 //@{
+#if BLAZE_BLAS_MODE
+
 template< typename VT1, typename MT1, bool SO, typename VT2, typename ST >
 void gemv( DenseVector<VT1,false>& y, const DenseMatrix<MT1,SO>& A,
            const DenseVector<VT2,false>& x, ST alpha, ST beta );
@@ -70,11 +72,14 @@ void gemv( DenseVector<VT1,false>& y, const DenseMatrix<MT1,SO>& A,
 template< typename VT1, typename VT2, typename MT1, bool SO, typename ST >
 void gemv( DenseVector<VT1,true>& y, const DenseVector<VT2,true>& x,
            const DenseMatrix<MT1,SO>& A, ST alpha, ST beta );
+
+#endif
 //@}
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+#if BLAZE_BLAS_MODE
 /*!\brief BLAS kernel for a dense matrix/dense vector multiplication
 //        (\f$ \vec{y}=\alpha*A*\vec{x}+\beta*\vec{y} \f$).
 // \ingroup blas
@@ -115,18 +120,19 @@ inline void gemv( DenseVector<VT1,false>& y, const DenseMatrix<MT1,SO>& A,
    BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<MT1> );
    BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<VT2> );
 
-   const char trans( IsRowMajorMatrix_v<MT1> ? 'T' : 'N' );
-
-   const blas_int_t m  ( numeric_cast<blas_int_t>( IsRowMajorMatrix_v<MT1> ? (~A).columns() : (~A).rows() ) );
-   const blas_int_t n  ( numeric_cast<blas_int_t>( IsRowMajorMatrix_v<MT1> ? (~A).rows() : (~A).columns() ) );
+   const blas_int_t m  ( numeric_cast<blas_int_t>( (~A).rows() )    );
+   const blas_int_t n  ( numeric_cast<blas_int_t>( (~A).columns() ) );
    const blas_int_t lda( numeric_cast<blas_int_t>( (~A).spacing() ) );
 
-   gemv( trans, m, n, alpha, (~A).data(), lda, (~x).data(), 1, beta, (~y).data(), 1 );
+   gemv( ( SO )?( CblasColMajor ):( CblasRowMajor ), CblasNoTrans, m, n, alpha,
+         (~A).data(), lda, (~x).data(), 1, beta, (~y).data(), 1 );
 }
+#endif
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+#if BLAZE_BLAS_MODE
 /*!\brief BLAS kernel for a transpose dense vector/dense matrix multiplication
 //        (\f$ \vec{y}^T=\alpha*\vec{x}^T*A+\beta*\vec{y}^T \f$).
 // \ingroup blas
@@ -167,14 +173,14 @@ inline void gemv( DenseVector<VT1,true>& y, const DenseVector<VT2,true>& x,
    BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<MT1> );
    BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<VT2> );
 
-   const char trans( IsRowMajorMatrix_v<MT1> ? 'N' : 'T' );
-
-   const blas_int_t m  ( numeric_cast<blas_int_t>( IsRowMajorMatrix_v<MT1> ? (~A).columns() : (~A).rows() ) );
-   const blas_int_t n  ( numeric_cast<blas_int_t>( IsRowMajorMatrix_v<MT1> ? (~A).rows() : (~A).columns() ) );
+   const blas_int_t m  ( numeric_cast<blas_int_t>( (~A).rows() )    );
+   const blas_int_t n  ( numeric_cast<blas_int_t>( (~A).columns() ) );
    const blas_int_t lda( numeric_cast<blas_int_t>( (~A).spacing() ) );
 
-   gemv( trans, m, n, alpha, (~A).data(), lda, (~x).data(), 1, beta, (~y).data(), 1 );
+   gemv( ( SO )?( CblasColMajor ):( CblasRowMajor ), CblasTrans, m, n, alpha,
+         (~A).data(), lda, (~x).data(), 1, beta, (~y).data(), 1 );
 }
+#endif
 //*************************************************************************************************
 
 } // namespace blaze
