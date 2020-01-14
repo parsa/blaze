@@ -41,7 +41,6 @@
 //*************************************************************************************************
 
 #include <string>
-#include <blaze/math/shims/Sign.h>
 
 
 namespace blazetest {
@@ -82,6 +81,8 @@ class OperationTest
    /*!\name Test functions */
    //@{
    void testSign();
+   void testNextMultiple();
+   void testPrevMultiple();
    //@}
    //**********************************************************************************************
 
