@@ -32,6 +32,7 @@
 //*************************************************************************************************
 
 #include <iterator>
+#include <blaze/math/AlignmentFlag.h>
 #include <blaze/math/SIMD.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/MaybeUnused.h>
@@ -53,8 +54,8 @@ namespace blaze {
 // The UniformIterator represents a generic random-access iterator that can be used for uniform
 // vectors and specific rows/columns of uniform matrices.
 */
-template< typename Type  // Type of the elements
-        , bool AF >      // Alignment flag
+template< typename Type       // Type of the elements
+        , AlignmentFlag AF >  // Alignment flag
 class UniformIterator
 {
  public:
@@ -82,7 +83,7 @@ class UniformIterator
    explicit constexpr UniformIterator() noexcept;
    explicit constexpr UniformIterator( Type* ptr, size_t index ) noexcept;
 
-   template< typename Other, bool AF2 >
+   template< typename Other, AlignmentFlag AF2 >
    constexpr UniformIterator( const UniformIterator<Other,AF2>& it ) noexcept;
 
    UniformIterator( const UniformIterator& ) = default;
@@ -165,8 +166,8 @@ class UniformIterator
 //*************************************************************************************************
 /*!\brief Default constructor for the UniformIterator class.
 */
-template< typename Type  // Type of the elements
-        , bool AF >      // Alignment flag
+template< typename Type       // Type of the elements
+        , AlignmentFlag AF >  // Alignment flag
 constexpr UniformIterator<Type,AF>::UniformIterator() noexcept
    : ptr_  ( nullptr )  // Pointer to the element
    , index_( 0UL )      // Index of the current element
@@ -180,8 +181,8 @@ constexpr UniformIterator<Type,AF>::UniformIterator() noexcept
 // \param ptr Pointer to the element.
 // \param index The index of the initial element.
 */
-template< typename Type  // Type of the elements
-        , bool AF >      // Alignment flag
+template< typename Type       // Type of the elements
+        , AlignmentFlag AF >  // Alignment flag
 constexpr UniformIterator<Type,AF>::UniformIterator( Type* ptr, size_t index ) noexcept
    : ptr_  ( ptr )    // Pointer to the element
    , index_( index )  // Index of the current element
@@ -194,10 +195,10 @@ constexpr UniformIterator<Type,AF>::UniformIterator( Type* ptr, size_t index ) n
 //
 // \param it The foreign UniformIterator instance to be copied.
 */
-template< typename Type   // Type of the elements
-        , bool AF >       // Alignment flag
-template< typename Other  // Type of the foreign elements
-        , bool AF2 >      // Alignment flag of the foreign iterator
+template< typename Type        // Type of the elements
+        , AlignmentFlag AF >   // Alignment flag
+template< typename Other       // Type of the foreign elements
+        , AlignmentFlag AF2 >  // Alignment flag of the foreign iterator
 constexpr UniformIterator<Type,AF>::UniformIterator( const UniformIterator<Other,AF2>& it ) noexcept
    : ptr_  ( it.ptr() )  // Pointer to the element
    , index_( it.idx() )  // Index of the current element
@@ -219,8 +220,8 @@ constexpr UniformIterator<Type,AF>::UniformIterator( const UniformIterator<Other
 // \param inc The increment of the iterator.
 // \return Reference to the incremented iterator.
 */
-template< typename Type  // Type of the elements
-        , bool AF >      // Alignment flag
+template< typename Type       // Type of the elements
+        , AlignmentFlag AF >  // Alignment flag
 constexpr UniformIterator<Type,AF>&
    UniformIterator<Type,AF>::operator+=( ptrdiff_t inc ) noexcept
 {
@@ -236,8 +237,8 @@ constexpr UniformIterator<Type,AF>&
 // \param dec The decrement of the iterator.
 // \return Reference to the decremented iterator.
 */
-template< typename Type  // Type of the elements
-        , bool AF >      // Alignment flag
+template< typename Type       // Type of the elements
+        , AlignmentFlag AF >  // Alignment flag
 constexpr UniformIterator<Type,AF>&
    UniformIterator<Type,AF>::operator-=( ptrdiff_t dec ) noexcept
 {
@@ -260,8 +261,8 @@ constexpr UniformIterator<Type,AF>&
 //
 // \return Reference to the incremented iterator.
 */
-template< typename Type  // Type of the elements
-        , bool AF >      // Alignment flag
+template< typename Type       // Type of the elements
+        , AlignmentFlag AF >  // Alignment flag
 constexpr UniformIterator<Type,AF>&
    UniformIterator<Type,AF>::operator++() noexcept
 {
@@ -276,8 +277,8 @@ constexpr UniformIterator<Type,AF>&
 //
 // \return The previous position of the iterator.
 */
-template< typename Type  // Type of the elements
-        , bool AF >      // Alignment flag
+template< typename Type       // Type of the elements
+        , AlignmentFlag AF >  // Alignment flag
 constexpr const UniformIterator<Type,AF>
    UniformIterator<Type,AF>::operator++( int ) noexcept
 {
@@ -291,8 +292,8 @@ constexpr const UniformIterator<Type,AF>
 //
 // \return Reference to the decremented iterator.
 */
-template< typename Type  // Type of the elements
-        , bool AF >      // Alignment flag
+template< typename Type       // Type of the elements
+        , AlignmentFlag AF >  // Alignment flag
 constexpr UniformIterator<Type,AF>&
    UniformIterator<Type,AF>::operator--() noexcept
 {
@@ -307,8 +308,8 @@ constexpr UniformIterator<Type,AF>&
 //
 // \return The previous position of the iterator.
 */
-template< typename Type  // Type of the elements
-        , bool AF >      // Alignment flag
+template< typename Type       // Type of the elements
+        , AlignmentFlag AF >  // Alignment flag
 constexpr const UniformIterator<Type,AF>
    UniformIterator<Type,AF>::operator--( int ) noexcept
 {
@@ -331,8 +332,8 @@ constexpr const UniformIterator<Type,AF>
 // \param index Access index.
 // \return Reference to the accessed value.
 */
-template< typename Type  // Type of the elements
-        , bool AF >      // Alignment flag
+template< typename Type       // Type of the elements
+        , AlignmentFlag AF >  // Alignment flag
 constexpr typename UniformIterator<Type,AF>::ReferenceType
    UniformIterator<Type,AF>::operator[]( size_t index ) const noexcept
 {
@@ -348,8 +349,8 @@ constexpr typename UniformIterator<Type,AF>::ReferenceType
 //
 // \return Reference to the current element.
 */
-template< typename Type  // Type of the elements
-        , bool AF >      // Alignment flag
+template< typename Type       // Type of the elements
+        , AlignmentFlag AF >  // Alignment flag
 constexpr typename UniformIterator<Type,AF>::ReferenceType
    UniformIterator<Type,AF>::operator*() const noexcept
 {
@@ -363,8 +364,8 @@ constexpr typename UniformIterator<Type,AF>::ReferenceType
 //
 // \return Pointer to the element at the current iterator position.
 */
-template< typename Type  // Type of the elements
-        , bool AF >      // Alignment flag
+template< typename Type       // Type of the elements
+        , AlignmentFlag AF >  // Alignment flag
 constexpr typename UniformIterator<Type,AF>::PointerType
    UniformIterator<Type,AF>::operator->() const noexcept
 {
@@ -386,8 +387,8 @@ constexpr typename UniformIterator<Type,AF>::PointerType
 //
 // \return Pointer to the current memory location.
 */
-template< typename Type  // Type of the elements
-        , bool AF >      // Alignment flag
+template< typename Type       // Type of the elements
+        , AlignmentFlag AF >  // Alignment flag
 constexpr typename UniformIterator<Type,AF>::PointerType
    UniformIterator<Type,AF>::ptr() const noexcept
 {
@@ -401,8 +402,8 @@ constexpr typename UniformIterator<Type,AF>::PointerType
 //
 // \return Index to the current element.
 */
-template< typename Type  // Type of the elements
-        , bool AF >      // Alignment flag
+template< typename Type       // Type of the elements
+        , AlignmentFlag AF >  // Alignment flag
 constexpr size_t
    UniformIterator<Type,AF>::idx() const noexcept
 {
@@ -430,8 +431,8 @@ constexpr size_t
 // of expression templates. Calling this function explicitly might result in erroneous results
 // and/or in compilation errors.
 */
-template< typename Type  // Type of the elements
-        , bool AF >      // Alignment flag
+template< typename Type       // Type of the elements
+        , AlignmentFlag AF >  // Alignment flag
 inline const typename UniformIterator<Type,AF>::SIMDType
    UniformIterator<Type,AF>::load() const noexcept
 {
@@ -453,8 +454,8 @@ inline const typename UniformIterator<Type,AF>::SIMDType
 // evaluation of expression templates. Calling this function explicitly might result in erroneous
 // results and/or in compilation errors.
 */
-template< typename Type  // Type of the elements
-        , bool AF >      // Alignment flag
+template< typename Type       // Type of the elements
+        , AlignmentFlag AF >  // Alignment flag
 inline const typename UniformIterator<Type,AF>::SIMDType
    UniformIterator<Type,AF>::loada() const noexcept
 {
@@ -473,8 +474,8 @@ inline const typename UniformIterator<Type,AF>::SIMDType
 // evaluation of expression templates. Calling this function explicitly might result in erroneous
 // results and/or in compilation errors.
 */
-template< typename Type  // Type of the elements
-        , bool AF >      // Alignment flag
+template< typename Type       // Type of the elements
+        , AlignmentFlag AF >  // Alignment flag
 inline const typename UniformIterator<Type,AF>::SIMDType
    UniformIterator<Type,AF>::loadu() const noexcept
 {
@@ -494,43 +495,43 @@ inline const typename UniformIterator<Type,AF>::SIMDType
 //*************************************************************************************************
 /*!\name UniformIterator operators */
 //@{
-template< typename T1, bool AF1, typename T2, bool AF2 >
+template< typename T1, AlignmentFlag AF1, typename T2, AlignmentFlag AF2 >
 constexpr bool
    operator==( const UniformIterator<T1,AF1>& lhs, const UniformIterator<T2,AF2>& rhs ) noexcept;
 
-template< typename T1, bool AF1, typename T2, bool AF2 >
+template< typename T1, AlignmentFlag AF1, typename T2, AlignmentFlag AF2 >
 constexpr bool
    operator!=( const UniformIterator<T1,AF1>& lhs, const UniformIterator<T2,AF2>& rhs ) noexcept;
 
-template< typename T1, bool AF1, typename T2, bool AF2 >
+template< typename T1, AlignmentFlag AF1, typename T2, AlignmentFlag AF2 >
 constexpr bool
    operator<( const UniformIterator<T1,AF1>& lhs, const UniformIterator<T2,AF2>& rhs ) noexcept;
 
-template< typename T1, bool AF1, typename T2, bool AF2 >
+template< typename T1, AlignmentFlag AF1, typename T2, AlignmentFlag AF2 >
 constexpr bool
    operator>( const UniformIterator<T1,AF1>& lhs, const UniformIterator<T2,AF2>& rhs ) noexcept;
 
-template< typename T1, bool AF1, typename T2, bool AF2 >
+template< typename T1, AlignmentFlag AF1, typename T2, AlignmentFlag AF2 >
 constexpr bool
    operator<=( const UniformIterator<T1,AF1>& lhs, const UniformIterator<T2,AF2>& rhs ) noexcept;
 
-template< typename T1, bool AF1, typename T2, bool AF2 >
+template< typename T1, AlignmentFlag AF1, typename T2, AlignmentFlag AF2 >
 constexpr bool
    operator>=( const UniformIterator<T1,AF1>& lhs, const UniformIterator<T2,AF2>& rhs ) noexcept;
 
-template< typename Type, bool AF >
+template< typename Type, AlignmentFlag AF >
 constexpr const UniformIterator<Type,AF>
    operator+( const UniformIterator<Type,AF>& it, ptrdiff_t inc ) noexcept;
 
-template< typename Type, bool AF >
+template< typename Type, AlignmentFlag AF >
 constexpr const UniformIterator<Type,AF>
    operator+( ptrdiff_t inc, const UniformIterator<Type,AF>& it ) noexcept;
 
-template< typename Type, bool AF >
+template< typename Type, AlignmentFlag AF >
 constexpr const UniformIterator<Type,AF>
    operator-( const UniformIterator<Type,AF>& it, ptrdiff_t inc ) noexcept;
 
-template< typename Type, bool AF >
+template< typename Type, AlignmentFlag AF >
 constexpr ptrdiff_t
    operator-( const UniformIterator<Type,AF>& lhs, const UniformIterator<Type,AF>& rhs ) noexcept;
 //@}
@@ -544,10 +545,10 @@ constexpr ptrdiff_t
 // \param rhs The right-hand side iterator.
 // \return \a true if the iterators refer to the same element, \a false if not.
 */
-template< typename T1  // Element type of the left-hand side iterator
-        , bool AF1     // Alignment flag of the left-hand side iterator
-        , typename T2  // Element type of the right-hand side iterator
-        , bool AF2 >   // Alignment flag of the right-hand side iterator
+template< typename T1          // Element type of the left-hand side iterator
+        , AlignmentFlag AF1    // Alignment flag of the left-hand side iterator
+        , typename T2          // Element type of the right-hand side iterator
+        , AlignmentFlag AF2 >  // Alignment flag of the right-hand side iterator
 constexpr bool
    operator==( const UniformIterator<T1,AF1>& lhs, const UniformIterator<T2,AF2>& rhs ) noexcept
 {
@@ -563,10 +564,10 @@ constexpr bool
 // \param rhs The right-hand side iterator.
 // \return \a true if the iterators don't refer to the same element, \a false if they do.
 */
-template< typename T1  // Element type of the left-hand side iterator
-        , bool AF1     // Alignment flag of the left-hand side iterator
-        , typename T2  // Element type of the right-hand side iterator
-        , bool AF2 >   // Alignment flag of the right-hand side iterator
+template< typename T1          // Element type of the left-hand side iterator
+        , AlignmentFlag AF1    // Alignment flag of the left-hand side iterator
+        , typename T2          // Element type of the right-hand side iterator
+        , AlignmentFlag AF2 >  // Alignment flag of the right-hand side iterator
 constexpr bool
    operator!=( const UniformIterator<T1,AF1>& lhs, const UniformIterator<T2,AF2>& rhs ) noexcept
 {
@@ -582,10 +583,10 @@ constexpr bool
 // \param rhs The right-hand side iterator.
 // \return \a true if the left-hand side iterator is smaller, \a false if not.
 */
-template< typename T1  // Element type of the left-hand side iterator
-        , bool AF1     // Alignment flag of the left-hand side iterator
-        , typename T2  // Element type of the right-hand side iterator
-        , bool AF2 >   // Alignment flag of the right-hand side iterator
+template< typename T1          // Element type of the left-hand side iterator
+        , AlignmentFlag AF1    // Alignment flag of the left-hand side iterator
+        , typename T2          // Element type of the right-hand side iterator
+        , AlignmentFlag AF2 >  // Alignment flag of the right-hand side iterator
 constexpr bool
    operator<( const UniformIterator<T1,AF1>& lhs, const UniformIterator<T2,AF2>& rhs ) noexcept
 {
@@ -601,10 +602,10 @@ constexpr bool
 // \param rhs The right-hand side iterator.
 // \return \a true if the left-hand side iterator is greater, \a false if not.
 */
-template< typename T1  // Element type of the left-hand side iterator
-        , bool AF1     // Alignment flag of the left-hand side iterator
-        , typename T2  // Element type of the right-hand side iterator
-        , bool AF2 >   // Alignment flag of the right-hand side iterator
+template< typename T1          // Element type of the left-hand side iterator
+        , AlignmentFlag AF1    // Alignment flag of the left-hand side iterator
+        , typename T2          // Element type of the right-hand side iterator
+        , AlignmentFlag AF2 >  // Alignment flag of the right-hand side iterator
 constexpr bool
    operator>( const UniformIterator<T1,AF1>& lhs, const UniformIterator<T2,AF2>& rhs ) noexcept
 {
@@ -620,10 +621,10 @@ constexpr bool
 // \param rhs The right-hand side iterator.
 // \return \a true if the left-hand side iterator is less or equal, \a false if not.
 */
-template< typename T1  // Element type of the left-hand side iterator
-        , bool AF1     // Alignment flag of the left-hand side iterator
-        , typename T2  // Element type of the right-hand side iterator
-        , bool AF2 >   // Alignment flag of the right-hand side iterator
+template< typename T1          // Element type of the left-hand side iterator
+        , AlignmentFlag AF1    // Alignment flag of the left-hand side iterator
+        , typename T2          // Element type of the right-hand side iterator
+        , AlignmentFlag AF2 >  // Alignment flag of the right-hand side iterator
 constexpr bool
    operator<=( const UniformIterator<T1,AF1>& lhs, const UniformIterator<T2,AF2>& rhs ) noexcept
 {
@@ -639,10 +640,10 @@ constexpr bool
 // \param rhs The right-hand side iterator.
 // \return \a true if the left-hand side iterator is greater or equal, \a false if not.
 */
-template< typename T1  // Element type of the left-hand side iterator
-        , bool AF1     // Alignment flag of the left-hand side iterator
-        , typename T2  // Element type of the right-hand side iterator
-        , bool AF2 >   // Alignment flag of the right-hand side iterator
+template< typename T1          // Element type of the left-hand side iterator
+        , AlignmentFlag AF1    // Alignment flag of the left-hand side iterator
+        , typename T2          // Element type of the right-hand side iterator
+        , AlignmentFlag AF2 >  // Alignment flag of the right-hand side iterator
 constexpr bool
    operator>=( const UniformIterator<T1,AF1>& lhs, const UniformIterator<T2,AF2>& rhs ) noexcept
 {
@@ -658,8 +659,8 @@ constexpr bool
 // \param inc The number of elements the iterator is incremented.
 // \return The incremented iterator.
 */
-template< typename Type  // Element type of the iterator
-        , bool AF >      // Alignment flag of the iterator
+template< typename Type       // Element type of the iterator
+        , AlignmentFlag AF >  // Alignment flag of the iterator
 constexpr const UniformIterator<Type,AF>
    operator+( const UniformIterator<Type,AF>& it, ptrdiff_t inc ) noexcept
 {
@@ -675,8 +676,8 @@ constexpr const UniformIterator<Type,AF>
 // \param it The iterator to be incremented.
 // \return The incremented iterator.
 */
-template< typename Type  // Element type of the iterator
-        , bool AF >      // Alignment flag of the iterator
+template< typename Type       // Element type of the iterator
+        , AlignmentFlag AF >  // Alignment flag of the iterator
 constexpr const UniformIterator<Type,AF>
    operator+( ptrdiff_t inc, const UniformIterator<Type,AF>& it ) noexcept
 {
@@ -692,8 +693,8 @@ constexpr const UniformIterator<Type,AF>
 // \param dec The number of elements the iterator is decremented.
 // \return The decremented iterator.
 */
-template< typename Type  // Element type of the iterator
-        , bool AF >      // Alignment flag of the iterator
+template< typename Type       // Element type of the iterator
+        , AlignmentFlag AF >  // Alignment flag of the iterator
 constexpr const UniformIterator<Type,AF>
    operator-( const UniformIterator<Type,AF>& it, ptrdiff_t dec ) noexcept
 {
@@ -709,8 +710,8 @@ constexpr const UniformIterator<Type,AF>
 // \param rhs The right-hand side iterator.
 // \return The number of elements between the two iterators.
 */
-template< typename Type  // Element type of the iterator
-        , bool AF >      // Alignment flag of the iterator
+template< typename Type       // Element type of the iterator
+        , AlignmentFlag AF >  // Alignment flag of the iterator
 constexpr ptrdiff_t
    operator-( const UniformIterator<Type,AF>& lhs, const UniformIterator<Type,AF>& rhs ) noexcept
 {
