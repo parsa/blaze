@@ -66,6 +66,24 @@ enum AlignmentFlag : bool
 };
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Negating the given alignment flag.
+// \ingroup math
+//
+// \param flag The given alignment flag to be negated.
+// \return The negated alignment flag.
+//
+// This logical NOT operator negates the given alignment flag. In case the given flag represents
+// \a unaligned, the function returns \a aligned, in case it represents \a aligned it returns
+// \a unaligned.
+*/
+constexpr AlignmentFlag operator!( AlignmentFlag flag ) noexcept
+{
+   return static_cast<AlignmentFlag>( !static_cast<bool>( flag ) );
+}
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif
