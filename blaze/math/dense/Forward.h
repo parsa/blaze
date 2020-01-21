@@ -53,7 +53,7 @@ namespace blaze {
 //
 //=================================================================================================
 
-template< typename, bool, bool, bool, typename > class CustomMatrix;
+template< typename, AlignmentFlag, PaddingFlag, bool, typename > class CustomMatrix;
 template< typename, AlignmentFlag, PaddingFlag, bool, typename > class CustomVector;
 template< typename, bool > class DynamicVector;
 template< typename, bool > class DynamicMatrix;
