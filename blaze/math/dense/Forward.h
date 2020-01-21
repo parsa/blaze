@@ -40,6 +40,8 @@
 // Includes
 //*************************************************************************************************
 
+#include <blaze/math/AlignmentFlag.h>
+#include <blaze/math/PaddingFlag.h>
 #include <blaze/util/Types.h>
 
 
@@ -52,7 +54,7 @@ namespace blaze {
 //=================================================================================================
 
 template< typename, bool, bool, bool, typename > class CustomMatrix;
-template< typename, bool, bool, bool, typename > class CustomVector;
+template< typename, AlignmentFlag, PaddingFlag, bool, typename > class CustomVector;
 template< typename, bool > class DynamicVector;
 template< typename, bool > class DynamicMatrix;
 template< typename, size_t, size_t, bool > class HybridMatrix;

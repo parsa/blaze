@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <blaze/math/AlignmentFlag.h>
 #include <blaze/math/dense/CustomVector.h>
 #include <blaze/math/dense/DynamicVector.h>
 #include <blaze/math/dense/StaticVector.h>
@@ -64,11 +65,11 @@ namespace blaze {
 //
 // This specialization of the Rand class randomizes instances of CustomVector.
 */
-template< typename Type  // Data type of the vector
-        , bool AF        // Alignment flag
-        , bool PF        // Padding flag
-        , bool TF        // Transpose flag
-        , typename RT >  // Result type
+template< typename Type     // Data type of the vector
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , bool TF           // Transpose flag
+        , typename RT >     // Result type
 class Rand< CustomVector<Type,AF,PF,TF,RT> >
 {
  public:
@@ -93,11 +94,11 @@ class Rand< CustomVector<Type,AF,PF,TF,RT> >
 // \param vector The vector to be randomized.
 // \return void
 */
-template< typename Type  // Data type of the vector
-        , bool AF        // Alignment flag
-        , bool PF        // Padding flag
-        , bool TF        // Transpose flag
-        , typename RT >  // Result type
+template< typename Type     // Data type of the vector
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , bool TF           // Transpose flag
+        , typename RT >     // Result type
 inline void Rand< CustomVector<Type,AF,PF,TF,RT> >::randomize( CustomVector<Type,AF,PF,TF,RT>& vector ) const
 {
    using blaze::randomize;
@@ -120,12 +121,12 @@ inline void Rand< CustomVector<Type,AF,PF,TF,RT> >::randomize( CustomVector<Type
 // \param max The largest possible value for a vector element.
 // \return void
 */
-template< typename Type   // Data type of the vector
-        , bool AF         // Alignment flag
-        , bool PF         // Padding flag
-        , bool TF         // Transpose flag
-        , typename RT >   // Result type
-template< typename Arg >  // Min/max argument type
+template< typename Type     // Data type of the vector
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , bool TF           // Transpose flag
+        , typename RT >     // Result type
+template< typename Arg >    // Min/max argument type
 inline void Rand< CustomVector<Type,AF,PF,TF,RT> >::randomize( CustomVector<Type,AF,PF,TF,RT>& vector,
                                                                const Arg& min, const Arg& max ) const
 {
