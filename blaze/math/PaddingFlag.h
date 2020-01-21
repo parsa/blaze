@@ -45,11 +45,12 @@ namespace blaze {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Padding flag for unpadded vectors and matrices.
+/*!\brief Padding flag for (un-)padded vectors and matrices.
 // \ingroup math
 //
-// Via this flag it is possible to specify custom vectors and matrices as unpadded. The following
-// example demonstrates the setup of an unaligned, unpadded custom column vector of size 7:
+// Via these flags it is possible to specify custom vectors and matrices as unpadded or padded.
+// The following examples demonstrate the setup of an unaligned, unpadded and aligned, padded
+// custom column vector of size 7, respectively:
 
    \code
    using blaze::CustomVector;
@@ -60,17 +61,6 @@ namespace blaze {
    std::vector<int> vec( 7UL );
    CustomVector<int,unaligned,unpadded,columnVector> a( &vec[0], 7UL );
    \endcode
-*/
-constexpr bool unpadded = false;
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Padding flag for padded vectors and matrices.
-// \ingroup math
-//
-// Via this flag it is possible to specify custom vectors and matrices as aligned. The following
-// example demonstrates the setup of an aligned, padded custom column vector of size 7:
 
    \code
    using blaze::CustomVector;
@@ -83,7 +73,29 @@ constexpr bool unpadded = false;
    CustomVector<int,aligned,padded,columnVector> a( &vec[0], 7UL, 16UL );
    \endcode
 */
-constexpr bool padded = true;
+enum PaddingFlag : bool
+{
+   unpadded = false,  //!< Flag for unpadded vectors and matrices.
+   padded   = true    //!< Flag for padded vectors and matrices.
+};
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Negating the given padding flag.
+// \ingroup math
+//
+// \param flag The given padding flag to be negated.
+// \return The negated padding flag.
+//
+// This logical NOT operator negates the given padding flag. In case the given flag represents
+// \a unpadded, the function returns \a padded, in case it represents \a padded it returns
+// \a unpadded.
+*/
+constexpr PaddingFlag operator!( PaddingFlag flag ) noexcept
+{
+   return static_cast<PaddingFlag>( !static_cast<bool>( flag ) );
+}
 //*************************************************************************************************
 
 } // namespace blaze
