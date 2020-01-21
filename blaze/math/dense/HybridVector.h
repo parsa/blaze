@@ -34,6 +34,7 @@
 #include <array>
 #include <utility>
 #include <blaze/math/Aliases.h>
+#include <blaze/math/AlignmentFlag.h>
 #include <blaze/math/constraints/DenseVector.h>
 #include <blaze/math/constraints/RequiresEvaluation.h>
 #include <blaze/math/constraints/TransposeFlag.h>
@@ -207,7 +208,7 @@ class HybridVector
    static constexpr size_t NN = ( usePadding ? nextMultiple( N, SIMDSIZE ) : N );
 
    //! Compilation switch for the choice of alignment.
-   static constexpr bool align = ( NN >= SIMDSIZE );
+   static constexpr AlignmentFlag align = ( NN >= SIMDSIZE ? aligned : unaligned );
    //**********************************************************************************************
 
  public:

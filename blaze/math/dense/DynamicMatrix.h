@@ -223,6 +223,12 @@ template< typename Type                    // Data type of the matrix
 class DynamicMatrix
    : public DenseMatrix< DynamicMatrix<Type,SO>, SO >
 {
+ private:
+   //**********************************************************************************************
+   //! Compilation switch for the choice of alignment.
+   static constexpr AlignmentFlag align = ( usePadding ? aligned : unaligned );
+   //**********************************************************************************************
+
  public:
    //**Type definitions****************************************************************************
    using This          = DynamicMatrix<Type,SO>;    //!< Type of this DynamicMatrix instance.
@@ -240,8 +246,8 @@ class DynamicMatrix
    using Pointer        = Type*;        //!< Pointer to a non-constant matrix value.
    using ConstPointer   = const Type*;  //!< Pointer to a constant matrix value.
 
-   using Iterator      = DenseIterator<Type,usePadding>;        //!< Iterator over non-constant elements.
-   using ConstIterator = DenseIterator<const Type,usePadding>;  //!< Iterator over constant elements.
+   using Iterator      = DenseIterator<Type,align>;        //!< Iterator over non-constant elements.
+   using ConstIterator = DenseIterator<const Type,align>;  //!< Iterator over constant elements.
    //**********************************************************************************************
 
    //**Rebind struct definition********************************************************************
@@ -3204,6 +3210,12 @@ template< typename Type >  // Data type of the matrix
 class DynamicMatrix<Type,true>
    : public DenseMatrix< DynamicMatrix<Type,true>, true >
 {
+ private:
+   //**********************************************************************************************
+   //! Compilation switch for the choice of alignment.
+   static constexpr AlignmentFlag align = ( usePadding ? aligned : unaligned );
+   //**********************************************************************************************
+
  public:
    //**Type definitions****************************************************************************
    using This          = DynamicMatrix<Type,true>;   //!< Type of this DynamicMatrix instance.
@@ -3221,8 +3233,8 @@ class DynamicMatrix<Type,true>
    using Pointer        = Type*;        //!< Pointer to a non-constant matrix value.
    using ConstPointer   = const Type*;  //!< Pointer to a constant matrix value.
 
-   using Iterator      = DenseIterator<Type,usePadding>;        //!< Iterator over non-constant elements.
-   using ConstIterator = DenseIterator<const Type,usePadding>;  //!< Iterator over constant elements.
+   using Iterator      = DenseIterator<Type,align>;        //!< Iterator over non-constant elements.
+   using ConstIterator = DenseIterator<const Type,align>;  //!< Iterator over constant elements.
    //**********************************************************************************************
 
    //**Rebind struct definition********************************************************************

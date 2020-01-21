@@ -42,6 +42,7 @@
 
 #include <utility>
 #include <blaze/math/Aliases.h>
+#include <blaze/math/AlignmentFlag.h>
 #include <blaze/math/constraints/Diagonal.h>
 #include <blaze/math/constraints/Symmetric.h>
 #include <blaze/math/dense/DenseIterator.h>
@@ -234,7 +235,7 @@ class StaticMatrix
    static constexpr size_t NN = ( usePadding ? nextMultiple( N, SIMDSIZE ) : N );
 
    //! Compilation switch for the choice of alignment.
-   static constexpr bool align = ( usePadding || NN % SIMDSIZE == 0UL );
+   static constexpr AlignmentFlag align = ( usePadding || NN % SIMDSIZE == 0UL ? aligned : unaligned );
    //**********************************************************************************************
 
  public:
@@ -3160,7 +3161,7 @@ class StaticMatrix<Type,M,N,true>
    static constexpr size_t MM = ( usePadding ? nextMultiple( M, SIMDSIZE ) : M );
 
    //! Compilation switch for the choice of alignment.
-   static constexpr bool align = ( usePadding || MM % SIMDSIZE == 0UL );
+   static constexpr AlignmentFlag align = ( usePadding || MM % SIMDSIZE == 0UL ? aligned : unaligned );
    //**********************************************************************************************
 
  public:
