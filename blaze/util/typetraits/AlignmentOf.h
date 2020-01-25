@@ -43,6 +43,7 @@
 #include <type_traits>
 #include <blaze/system/Vectorization.h>
 #include <blaze/util/Complex.h>
+#include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsVectorizable.h>
 
 

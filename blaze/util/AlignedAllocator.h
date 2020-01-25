@@ -42,6 +42,7 @@
 
 #include <blaze/util/MaybeUnused.h>
 #include <blaze/util/Memory.h>
+#include <blaze/util/Types.h>
 #include <blaze/util/typetraits/AlignmentOf.h>
 
 
