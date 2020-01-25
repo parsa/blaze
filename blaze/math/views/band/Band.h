@@ -92,13 +92,14 @@
    using BandType = decltype( blaze::band<1L>( std::declval<MatrixType>() ) );
    \endcode
 
-// The resulting view can be treated as any other vector, i.e. it can be assigned to, it can be
+// This resulting view can be treated as any other vector, i.e. it can be assigned to, it can be
 // copied from, and it can be used in arithmetic operations. By default, bands are considered
-// column vectors, but this setting can be changed via the \c defaultTransposeFlag switch. The
-// reference can also be used on both sides of an assignment: The band can either be used as an
-// alias to grant write access to a specific band of a matrix primitive on the left-hand side of
-// an assignment or to grant read-access to a specific band of a matrix primitive or expression
-// on the right-hand side of an assignment. The following example demonstrates this in detail:
+// column vectors, but this setting can be changed via the \c BLAZE_DEFAULT_TRANSPOSE_FLAG switch
+// (see \ref transpose_flag). The reference can also be used on both sides of an assignment: The
+// band can either be used as an alias to grant write access to a specific band of a matrix
+// primitive on the left-hand side of an assignment or to grant read-access to a specific band of
+// a matrix primitive or expression on the right-hand side of an assignment. The following example
+// demonstrates this in detail:
 
    \code
    blaze::DynamicVector<double,blaze::rowVector> x;
@@ -330,12 +331,12 @@
 
 // The resulting view can be treated as any other vector, i.e. it can be assigned to, it can be
 // copied from, and it can be used in arithmetic operations. By default, diagonals are considered
-// column vectors, but this setting can be changed via the \c defaultTransposeFlag switch. The
-// reference can also be used on both sides of an assignment: The diagonal can either be used as
-// an alias to grant write access to a specific diagonal of a matrix primitive on the left-hand
-// side of an assignment or to grant read-access to a specific diagonal of a matrix primitive or
-// expression on the right-hand side of an assignment. The following example demonstrates this
-// in detail:
+// column vectors, but this setting can be changed via the \c BLAZE_DEFAULT_TRANSPOSE_FLAG switch
+// (see \ref transpose_flag). The reference can also be used on both sides of an assignment: The
+// diagonal can either be used as an alias to grant write access to a specific diagonal of a matrix
+// primitive on the left-hand side of an assignment or to grant read-access to a specific diagonal
+// of a matrix primitive or expression on the right-hand side of an assignment. The following
+// example demonstrates this in detail:
 
    \code
    blaze::DynamicVector<double,blaze::rowVector> x;
