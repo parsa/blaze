@@ -46,6 +46,7 @@
 #include <blaze/math/RelaxationFlag.h>
 #include <blaze/math/shims/Equal.h>
 #include <blaze/math/shims/IsDefault.h>
+#include <blaze/system/MacroDisable.h>
 #include <blaze/util/Types.h>
 
 

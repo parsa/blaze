@@ -76,6 +76,7 @@
 #include <blaze/math/views/elements/BaseTemplate.h>
 #include <blaze/math/views/elements/Dense.h>
 #include <blaze/math/views/elements/Sparse.h>
+#include <blaze/system/MacroDisable.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/FunctionTrace.h>

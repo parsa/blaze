@@ -52,6 +52,7 @@
 #include <blaze/math/expressions/DenseVector.h>
 #include <blaze/math/lapack/clapack/gges.h>
 #include <blaze/math/shims/Equal.h>
+#include <blaze/system/MacroDisable.h>
 #include <blaze/util/algorithms/Max.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/Complex.h>

@@ -42,6 +42,7 @@
 
 #include <blaze/math/expressions/Vector.h>
 #include <blaze/math/typetraits/IsSparseVector.h>
+#include <blaze/system/MacroDisable.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/FunctionTrace.h>

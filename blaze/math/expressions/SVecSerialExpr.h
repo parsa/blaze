@@ -49,6 +49,7 @@
 #include <blaze/math/expressions/VecSerialExpr.h>
 #include <blaze/math/expressions/SparseVector.h>
 #include <blaze/math/typetraits/IsExpression.h>
+#include <blaze/system/MacroDisable.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/FunctionTrace.h>
 #include <blaze/util/mpl/If.h>

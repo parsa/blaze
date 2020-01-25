@@ -52,6 +52,7 @@
 #include <blaze/math/typetraits/IsSIMDCombinable.h>
 #include <blaze/math/typetraits/IsSMPAssignable.h>
 #include <blaze/math/views/Subvector.h>
+#include <blaze/system/MacroDisable.h>
 #include <blaze/system/SMP.h>
 #include <blaze/util/algorithms/Min.h>
 #include <blaze/util/Assert.h>

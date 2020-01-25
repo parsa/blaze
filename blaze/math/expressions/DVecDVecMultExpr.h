@@ -65,6 +65,7 @@
 #include <blaze/math/typetraits/RequiresEvaluation.h>
 #include <blaze/system/HostDevice.h>
 #include <blaze/system/Inline.h>
+#include <blaze/system/MacroDisable.h>
 #include <blaze/system/Thresholds.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/EnableIf.h>

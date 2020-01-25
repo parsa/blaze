@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <blaze/system/MacroDisable.h>
 #include <blaze/util/Types.h>
 
 

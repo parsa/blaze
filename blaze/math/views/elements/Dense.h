@@ -68,6 +68,7 @@
 #include <blaze/math/views/Check.h>
 #include <blaze/math/views/elements/BaseTemplate.h>
 #include <blaze/math/views/elements/ElementsData.h>
+#include <blaze/system/MacroDisable.h>
 #include <blaze/system/Thresholds.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/mpl/If.h>

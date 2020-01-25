@@ -48,6 +48,7 @@
 #include <blaze/math/expressions/DenseVector.h>
 #include <blaze/system/BLAS.h>
 #include <blaze/system/Inline.h>
+#include <blaze/system/MacroDisable.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/Complex.h>
 #include <blaze/util/NumericCast.h>

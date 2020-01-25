@@ -46,6 +46,7 @@
 #include <blaze/math/constraints/Computation.h>
 #include <blaze/math/constraints/ConstDataAccess.h>
 #include <blaze/math/expressions/DenseVector.h>
+#include <blaze/system/MacroDisable.h>
 #include <blaze/util/NumericCast.h>
 
 

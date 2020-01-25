@@ -49,6 +49,7 @@
 #include <blaze/math/expressions/DenseMatrix.h>
 #include <blaze/math/expressions/DenseVector.h>
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
+#include <blaze/system/MacroDisable.h>
 #include <blaze/util/NumericCast.h>
 
 
