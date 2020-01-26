@@ -42,6 +42,7 @@
 #include <iostream>
 #include <blaze/math/dense/DenseVector.h>
 #include <blaze/math/DynamicVector.h>
+#include <blaze/math/StaticVector.h>
 #include <blazetest/mathtest/densevector/GeneralTest.h>
 #include <blazetest/mathtest/IsEqual.h>
 
@@ -96,6 +97,11 @@ GeneralTest::GeneralTest()
    testNot();
    testAnd();
    testOr();
+   testGenerate();
+   testLinspace();
+   testLogspace();
+   testUniform();
+   testZero();
 }
 //*************************************************************************************************
 
@@ -2440,6 +2446,524 @@ void GeneralTest::testOr()
              << " Details:\n"
              << "   Result:\n" << c << "\n"
              << "   Expected result:\n( 1 1 1 0 1 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c generate() functions for dense vectors.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the \c generate() functions for dense vectors. In case an
+// error is detected, a \a std::runtime_error exception is thrown.
+*/
+void GeneralTest::testGenerate()
+{
+   test_ = "generate() function";
+
+   // Empty integer vector
+   {
+      const blaze::DynamicVector<int> vec(
+         blaze::generate( 0UL, []( size_t ){ return 2; } ) );
+
+      const blaze::DynamicVector<int> ref{};
+
+      if( vec != ref ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Generating empty integer vector failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec << "\n"
+             << "   Expected result:\n" << ref << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Single element integer vector ( 2 )
+   {
+      const blaze::DynamicVector<int> vec(
+         blaze::generate( 1UL, []( size_t ){ return 2; } ) );
+
+      const blaze::DynamicVector<int> ref{ 2 };
+
+      if( vec != ref ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Generating single element integer vector failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec << "\n"
+             << "   Expected result:\n" << ref << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Uniform integer vector ( 2, 2, 2, 2, 2 )
+   {
+      const blaze::DynamicVector<int> vec(
+         blaze::generate( 5UL, []( size_t ){ return 2; } ) );
+
+      const blaze::DynamicVector<int> ref{ 2, 2, 2, 2, 2 };
+
+      if( vec != ref ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Generating uniform integer vector failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec << "\n"
+             << "   Expected result:\n" << ref << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Linearly spaced float vector ( 2.1, 3.2, 4.3, 5.4 )
+   {
+      const blaze::DynamicVector<float> vec(
+         blaze::generate( 4UL, []( size_t index ){ return 2.1F + 1.1F*index; } ) );
+
+      const blaze::DynamicVector<float> ref{ 2.1F, 3.2F, 4.3F, 5.4F };
+
+      if( vec != ref ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Generating linearly spaced float vector failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec << "\n"
+             << "   Expected result:\n" << ref << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Logarithmically spaced double vector ( 10.0, 100.0, 1000.0, 10000.0 )
+   {
+      const blaze::DynamicVector<double> vec(
+         blaze::generate( 4UL, []( size_t index ){ return blaze::exp10( 1.0 + 1.0*index ); } ) );
+
+      const blaze::DynamicVector<double> ref{ 10.0, 100.0, 1000.0, 10000.0 };
+
+      if( vec != ref ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Generating logarithmically spaced double vector failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec << "\n"
+             << "   Expected result:\n" << ref << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Vector of vectors
+   {
+      using VT = blaze::StaticVector<int,2UL>;
+
+      const blaze::DynamicVector<VT> vec(
+         blaze::generate( 4UL, []( size_t index ) { return evaluate( VT{ 1, 2 } + index ); } ) );
+
+      const blaze::DynamicVector<VT> ref{ { 1, 2 }, { 2, 3 }, { 3, 4 }, { 4, 5 } };
+
+      if( vec != ref ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Generating vector of vectors failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec << "\n"
+             << "   Expected result:\n" << ref << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c linspace() functions for dense vectors.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the \c linspace() functions for dense vectors. In case an
+// error is detected, a \a std::runtime_error exception is thrown.
+*/
+void GeneralTest::testLinspace()
+{
+   test_ = "linspace() function";
+
+   // Empty integer vector
+   {
+      const blaze::DynamicVector<int> vec( blaze::linspace( 0UL, 2, 5 ) );
+      const blaze::DynamicVector<int> ref{};
+
+      if( vec != ref ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Generating empty integer vector failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec << "\n"
+             << "   Expected result:\n" << ref << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Single element integer vector ( 5 )
+   {
+      const blaze::DynamicVector<int> vec( blaze::linspace( 1UL, 2, 5 ) );
+      const blaze::DynamicVector<int> ref{ 5 };
+
+      if( vec != ref ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Generating single element integer vector failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec << "\n"
+             << "   Expected result:\n" << ref << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Uniform integer vector ( 2, 2, 2, 2, 2 )
+   {
+      const blaze::DynamicVector<int> vec( blaze::linspace( 4UL, 2, 2 ) );
+      const blaze::DynamicVector<int> ref{ 2, 2, 2, 2 };
+
+      if( vec != ref ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Generating uniform integer vector failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec << "\n"
+             << "   Expected result:\n" << ref << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Linearly spaced float vector ( 2.1, 3.2, 4.3, 5.4 )
+   {
+      const blaze::DynamicVector<float> vec( blaze::linspace( 4UL, 2.1F, 5.4F ) );
+      const blaze::DynamicVector<float> ref{ 2.1F, 3.2F, 4.3F, 5.4F };
+
+      if( vec != ref ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Generating linearly spaced float vector failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec << "\n"
+             << "   Expected result:\n" << ref << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Linearly spaced float vector ( 5.4, 4.3, 3.2, 2.1 )
+   {
+      const blaze::DynamicVector<float> vec( blaze::linspace( 4UL, 5.4F, 2.1F ) );
+      const blaze::DynamicVector<float> ref{ 5.4F, 4.3F, 3.2F, 2.1F };
+
+      if( vec != ref ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Generating linearly spaced float vector failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec << "\n"
+             << "   Expected result:\n" << ref << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Vector of vectors
+   {
+      using VT = blaze::StaticVector<int,2UL>;
+
+      const blaze::DynamicVector<VT> vec( blaze::linspace( 4UL, VT{ 1, 2 }, VT{ 4, 5 } ) );
+      const blaze::DynamicVector<VT> ref{ { 1, 2 }, { 2, 3 }, { 3, 4 }, { 4, 5 } };
+
+      if( vec != ref ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Generating vector of vectors failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec << "\n"
+             << "   Expected result:\n" << ref << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c logspace() functions for dense vectors.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the \c logspace() functions for dense vectors. In case an
+// error is detected, a \a std::runtime_error exception is thrown.
+*/
+void GeneralTest::testLogspace()
+{
+   test_ = "logspace() function";
+
+   // Empty integer vector
+   {
+      const blaze::DynamicVector<int> vec( blaze::logspace( 0UL, 0, 3 ) );
+      const blaze::DynamicVector<int> ref{};
+
+      if( vec != ref ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Generating empty integer vector failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec << "\n"
+             << "   Expected result:\n" << ref << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Single element integer vector ( 1000 )
+   {
+      const blaze::DynamicVector<int> vec( blaze::logspace( 1UL, 0, 3 ) );
+      const blaze::DynamicVector<int> ref{ 1000 };
+
+      if( vec != ref ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Generating single element integer vector failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec << "\n"
+             << "   Expected result:\n" << ref << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Uniform integer vector ( 10, 10, 10, 10 )
+   {
+      const blaze::DynamicVector<int> vec( blaze::logspace( 4UL, 1, 1 ) );
+      const blaze::DynamicVector<int> ref{ 10, 10, 10, 10 };
+
+      if( vec != ref ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Generating uniform integer vector failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec << "\n"
+             << "   Expected result:\n" << ref << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Logarithmically spaced float vector ( 1.0, 10.0, 100.0, 1000.0 )
+   {
+      const blaze::DynamicVector<float> vec( blaze::logspace( 4UL, 0.0F, 3.0F ) );
+      const blaze::DynamicVector<float> ref{ 1.0F, 10.0F, 100.0F, 1000.0F };
+
+      if( vec != ref ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Generating logarithmically spaced float vector failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec << "\n"
+             << "   Expected result:\n" << ref << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Logarithmically spaced float vector ( 1000.0, 100.0, 10.0, 1.0 )
+   {
+      const blaze::DynamicVector<float> vec( blaze::logspace( 4UL, 3.0F, 0.0F ) );
+      const blaze::DynamicVector<float> ref{ 1000.0F, 100.0F, 10.0F, 1.0F };
+
+      if( vec != ref ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Generating logarithmically spaced float vector failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec << "\n"
+             << "   Expected result:\n" << ref << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Vector of vectors
+   {
+      using VT = blaze::StaticVector<int,2UL>;
+
+      const blaze::DynamicVector<VT> vec( blaze::logspace( 4UL, VT{ 0, 1 }, VT{ 3, 4 } ) );
+      const blaze::DynamicVector<VT> ref{ { 1, 10 }, { 10, 100 }, { 100, 1000 }, { 1000, 10000 } };
+
+      if( vec != ref ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Generating vector of vectors failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec << "\n"
+             << "   Expected result:\n" << ref << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c uniform() functions for dense vectors.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the \c uniform() functions for dense vectors. In case an
+// error is detected, a \a std::runtime_error exception is thrown.
+*/
+void GeneralTest::testUniform()
+{
+   test_ = "uniform() function";
+
+   // Empty integer vector
+   {
+      const blaze::DynamicVector<int> vec( blaze::uniform( 0UL, 5 ) );
+      const blaze::DynamicVector<int> ref{};
+
+      if( vec != ref ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Generating empty integer vector failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec << "\n"
+             << "   Expected result:\n" << ref << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Single element integer vector ( 5 )
+   {
+      const blaze::DynamicVector<int> vec( blaze::uniform( 1UL, 5 ) );
+      const blaze::DynamicVector<int> ref{ 5 };
+
+      if( vec != ref ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Generating single element integer vector failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec << "\n"
+             << "   Expected result:\n" << ref << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Uniform float vector ( 2.1, 2.1, 2.1, 2.1 )
+   {
+      const blaze::DynamicVector<float> vec( blaze::uniform( 4UL, 2.1f ) );
+      const blaze::DynamicVector<float> ref{ 2.1F, 2.1F, 2.1F, 2.1F };
+
+      if( vec != ref ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Generating uniform float vector failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec << "\n"
+             << "   Expected result:\n" << ref << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Uniform vector of vectors
+   {
+      using VT = blaze::StaticVector<int,2UL>;
+
+      const blaze::DynamicVector<VT> vec( blaze::uniform( 4UL, VT{ 1, 2 } ) );
+      const blaze::DynamicVector<VT> ref{ { 1, 2 }, { 1, 2 }, { 1, 2 }, { 1, 2 } };
+
+      if( vec != ref ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Generating vector of vectors failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec << "\n"
+             << "   Expected result:\n" << ref << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c zero() functions for dense vectors.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the \c zero() functions for dense vectors. In case an
+// error is detected, a \a std::runtime_error exception is thrown.
+*/
+void GeneralTest::testZero()
+{
+   test_ = "zero() function";
+
+   // Empty integer vector
+   {
+      const blaze::DynamicVector<int> vec( blaze::zero<int>( 0UL ) );
+      const blaze::DynamicVector<int> ref{};
+
+      if( vec != ref ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Generating empty integer vector failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec << "\n"
+             << "   Expected result:\n" << ref << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Single element integer vector ( 0 )
+   {
+      const blaze::DynamicVector<int> vec( blaze::zero<int>( 1UL ) );
+      const blaze::DynamicVector<int> ref{ 0 };
+
+      if( vec != ref ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Generating single element integer vector failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec << "\n"
+             << "   Expected result:\n" << ref << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Uniform float vector ( 0.0, 0.0, 0.0, 0.0 )
+   {
+      const blaze::DynamicVector<float> vec( blaze::zero<float>( 4UL ) );
+      const blaze::DynamicVector<float> ref{ 0.0F, 0.0F, 0.0F, 0.0F };
+
+      if( vec != ref ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Generating zero float vector failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec << "\n"
+             << "   Expected result:\n" << ref << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Uniform vector of vectors
+   {
+      using VT = blaze::StaticVector<int,2UL>;
+
+      const blaze::DynamicVector<VT> vec( blaze::uniform( 4UL, VT{} ) );
+      const blaze::DynamicVector<VT> ref{ VT{}, VT{}, VT{}, VT{} };
+
+      if( vec != ref ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Generating vector of vectors failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec << "\n"
+             << "   Expected result:\n" << ref << "\n";
          throw std::runtime_error( oss.str() );
       }
    }

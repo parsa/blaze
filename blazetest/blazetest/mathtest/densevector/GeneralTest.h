@@ -110,6 +110,11 @@ class GeneralTest
    void testNot();
    void testAnd();
    void testOr();
+   void testGenerate();
+   void testLinspace();
+   void testLogspace();
+   void testUniform();
+   void testZero();
 
    template< typename Type >
    void checkSize( const Type& vector, size_t expectedSize ) const;
