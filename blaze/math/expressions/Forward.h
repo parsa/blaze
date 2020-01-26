@@ -110,6 +110,7 @@ template< typename, typename,typename > class DVecDVecOuterExpr;
 template< typename, typename, bool > class DVecDVecSubExpr;
 template< typename, bool > class DVecEvalExpr;
 template< typename, bool, size_t... > class DVecExpandExpr;
+template< typename, typename, bool > class DVecGenExpr;
 template< typename, typename, bool > class DVecMapExpr;
 template< typename, bool > class DVecNoAliasExpr;
 template< typename, bool > class DVecNoSIMDExpr;
