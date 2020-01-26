@@ -181,6 +181,7 @@
 #include <blaze/math/typetraits/IsLower.h>
 #include <blaze/math/typetraits/IsMatEvalExpr.h>
 #include <blaze/math/typetraits/IsMatExpExpr.h>
+#include <blaze/math/typetraits/IsMatGenExpr.h>
 #include <blaze/math/typetraits/IsMatInvExpr.h>
 #include <blaze/math/typetraits/IsMatMapExpr.h>
 #include <blaze/math/typetraits/IsMatMatAddExpr.h>

@@ -87,6 +87,7 @@
 #include <blaze/math/constraints/Lower.h>
 #include <blaze/math/constraints/MatEvalExpr.h>
 #include <blaze/math/constraints/MatExpExpr.h>
+#include <blaze/math/constraints/MatGenExpr.h>
 #include <blaze/math/constraints/MatInvExpr.h>
 #include <blaze/math/constraints/MatMapExpr.h>
 #include <blaze/math/constraints/MatMatAddExpr.h>
