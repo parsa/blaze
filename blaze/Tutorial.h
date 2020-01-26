@@ -84,6 +84,7 @@
 //                <li> \ref vector_operations_vector_expansion </li>
 //                <li> \ref vector_operations_statistic_operations </li>
 //                <li> \ref vector_operations_declaration_operations </li>
+//                <li> \ref vector_operations_vector_generators </li>
 //             </ul>
 //          </li>
 //       </ul>
@@ -3051,6 +3052,133 @@
 // (which can be violated invariants or wrong computation results)!
 //
 //
+// \n \section vector_operations_vector_generators Vector Generators
+// <hr>
+//
+// \subsection vector_operations_generate generate()
+//
+// The \c generate() function returns a dense vector filled elementwise via the given custom
+// operation. By default, the returned vector is a column vector, but this setting can be changed
+// via the \c BLAZE_DEFAULT_TRANSPOSE_FLAG switch (see \ref transpose_flag). Alternatively it is
+// possible to specify the transpose flag explicitly.\n
+// The following example demonstrates the use of the \c generate() function:
+
+   \code
+   using blaze::generate;
+   using blaze::columnVector;
+   using blaze::rowVector;
+
+   // Generates the homogeneous integer vector ( 2 2 2 2 2 )
+   blaze::DynamicVector<int,columnVector> a;
+   a = generate( 5UL, []( size_t index ){ return 2; } );
+
+   // Generates the linearly spaced float vector ( 2.1 3.2 4.3 5.4 )
+   blaze::DynamicVector<float,columnVector> b;
+   b = generate( 4UL, []( size_t index ){ return 2.1F + 1.1F*index; } );
+
+   // Generates the logarithmically spaced double vector ( 1.0 10.0 100.0 1000.0 )
+   blaze::DynamicVector<double,columnVector> c;
+   c = generate<columnVector>( 4UL, []( size_t index ){ return blaze::exp10( 1.0 + 1.0*index ); } );
+
+   // Generates the vector of integer vectors ( ( 1 2 ) ( 2 3 ) ( 3 4 ) ( 4 5 ) )
+   using VT = blaze::StaticVector<int,2UL>;
+   blaze::StaticVector<VT,4UL,rowVector> d;
+   d = generate<rowVector>( []( size_t index ) { return evaluate( VT{ 1, 2 } + index ); } );
+   \endcode
+
+// \n \subsection vector_operations_linspace linspace()
+//
+// The \c linspace() function returns a dense vector filled with linearly spaced elements. By
+// default, the returned vector is a column vector, but this setting can be changed via the
+// \c BLAZE_DEFAULT_TRANSPOSE_FLAG switch (see \ref transpose_flag). Alternatively it is possible
+// to specify the transpose flag explicitly.\n
+// The following example demonstrates the use of the \c linspace() function:
+
+   \code
+   using blaze::linspace;
+   using blaze::columnVector;
+   using blaze::rowVector;
+
+   // Generates the linearly spaced integer vector ( 2 3 4 5 6 )
+   blaze::DynamicVector<int,columnVector> a;
+   a = linspace( 5UL, 2, 6 );
+
+   // Generates the linearly spaced integer vector ( 6 5 4 3 2 )
+   blaze::DynamicVector<int,columnVector> b;
+   b = linspace<columnVector>( 5UL, 6, 2 );
+
+   // Generates the linearly spaced float vector ( 2.1 3.2 4.3 5.4 )
+   blaze::DynamicVector<float,rowVector> c;
+   c = linspace<rowVector>( 4UL, 2.1F, 5.4F );
+   \endcode
+
+// \n \subsection vector_operations_logspace logspace()
+//
+// The \c logspace() function returns a dense vector filled with logarithmically spaced elements.
+// By default, the returned vector is a column vector, but this setting can be changed via the
+// \c BLAZE_DEFAULT_TRANSPOSE_FLAG switch (see \ref transpose_flag). Alternatively it is possible
+// to specify the transpose flag explicitly.\n
+// The following example demonstrates the use of the \c logspace() function:
+
+   \code
+   using blaze::logspace;
+   using blaze::columnVector;
+   using blaze::rowVector;
+
+   // Generates the logarithmically spaced double vector ( 1 10 100 1000 )
+   blaze::DynamicVector<int,columnVector> a;
+   a = logspace( 4UL, 0, 3 );
+
+   // Generates the logarithmically spaced double vector ( 1000.0 100.0 10.0 1.0 )
+   blaze::DynamicVector<double,rowVector> b;
+   b = logspace<rowVector>( 4UL, 3.0, 0.0 );
+   \endcode
+
+// \n \subsection vector_operations_uniform uniform()
+//
+// The \c uniform() function creates a uniform vector of the given size. By default, the
+// resulting uniform vector is a column vector, but this setting can be changed via the
+// \c BLAZE_DEFAULT_TRANSPOSE_FLAG switch (see \ref transpose_flag). Alternatively it is
+// possible to specify the transpose flag explicitly.\n
+// The following example demonstrates the use of the \c uniform() function:
+
+   \code
+   using blaze::uniform;
+   using blaze::columnVector;
+   using blaze::rowVector;
+
+   // Creates the uniform column vector ( 1 1 1 1 1 )
+   auto u1 = uniform( 5UL, 1 );
+
+   // Creates the uniform column vector ( 1.2 1.2 1.2 )
+   auto u2 = uniform<columnVector>( 3UL, 1.2 );
+
+   // Creates the uniform row vector ( 5U 5U 5U 5U )
+   auto u3 = uniform<rowVector>( 4UL, 5U );
+   \endcode
+
+// \n \subsection vector_operations_zero zero()
+//
+// The \c zero() function creates a zero vector of the given element type and size. By default,
+// the resulting zero vector is a column vector, but this setting can be changed via the
+// \c BLAZE_DEFAULT_TRANSPOSE_FLAG switch (see \ref transpose_flag).
+// The following example demonstrates the use of the \c zero() function:
+
+   \code
+   using blaze::zero;
+   using blaze::columnVector;
+   using blaze::rowVector;
+
+   // Creates the zero column vector ( 0 0 0 0 0 )
+   auto z1 = zero<int>( 5UL );
+
+   // Creates the zero column vector ( 0.0 0.0 0.0 )
+   auto z2 = zero<double,columnVector>( 3UL );
+
+   // Creates the zero row vector ( 0U 0U 0U 0U )
+   auto z3 = zero<unsigned int,rowVector>( 4UL );
+   \endcode
+
 // \n Previous: \ref vector_types &nbsp; &nbsp; Next: \ref matrices
 */
 //*************************************************************************************************
