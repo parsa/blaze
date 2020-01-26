@@ -160,6 +160,7 @@
 #include <blaze/math/constraints/Upper.h>
 #include <blaze/math/constraints/VecEvalExpr.h>
 #include <blaze/math/constraints/VecExpandExpr.h>
+#include <blaze/math/constraints/VecGenExpr.h>
 #include <blaze/math/constraints/VecMapExpr.h>
 #include <blaze/math/constraints/VecNoAliasExpr.h>
 #include <blaze/math/constraints/VecNoSIMDExpr.h>

@@ -251,6 +251,7 @@
 #include <blaze/math/typetraits/IsUpper.h>
 #include <blaze/math/typetraits/IsVecEvalExpr.h>
 #include <blaze/math/typetraits/IsVecExpandExpr.h>
+#include <blaze/math/typetraits/IsVecGenExpr.h>
 #include <blaze/math/typetraits/IsVecMapExpr.h>
 #include <blaze/math/typetraits/IsVecNoAliasExpr.h>
 #include <blaze/math/typetraits/IsVecNoSIMDExpr.h>
