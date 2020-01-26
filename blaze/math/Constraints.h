@@ -78,6 +78,7 @@
 #include <blaze/math/constraints/ExpandExpr.h>
 #include <blaze/math/constraints/Expression.h>
 #include <blaze/math/constraints/General.h>
+#include <blaze/math/constraints/GenExpr.h>
 #include <blaze/math/constraints/Hermitian.h>
 #include <blaze/math/constraints/Identity.h>
 #include <blaze/math/constraints/Initializer.h>

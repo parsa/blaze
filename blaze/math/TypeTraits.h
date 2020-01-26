@@ -172,6 +172,7 @@
 #include <blaze/math/typetraits/IsExpandExpr.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsGeneral.h>
+#include <blaze/math/typetraits/IsGenExpr.h>
 #include <blaze/math/typetraits/IsHermitian.h>
 #include <blaze/math/typetraits/IsIdentity.h>
 #include <blaze/math/typetraits/IsInitializer.h>
