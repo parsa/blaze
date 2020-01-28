@@ -128,20 +128,20 @@ namespace blaze {
 /*!\name Random number functions */
 //@{
 template< typename T >
-inline T rand();
+T rand();
 
 template< typename T, typename... Args >
-inline T rand( Args&&... args );
+T rand( Args&&... args );
 
 template< typename T >
-inline void randomize( T&& value );
+void randomize( T&& value );
 
 template< typename T, typename... Args >
-inline void randomize( T&& value, Args&&... args );
+void randomize( T&& value, Args&&... args );
 
-inline uint32_t defaultSeed();
-inline uint32_t getSeed();
-inline void     setSeed( uint32_t seed );
+uint32_t defaultSeed();
+uint32_t getSeed();
+void     setSeed( uint32_t seed );
 //@}
 //*************************************************************************************************
 
