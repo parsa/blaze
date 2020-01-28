@@ -75,6 +75,7 @@ template< typename, typename, bool > class DMatDVecSolveExpr;
 template< typename, bool > class DMatEigenExpr;
 template< typename, bool > class DMatEvalExpr;
 template< typename, bool > class DMatExpExpr;
+template< typename, typename, bool > class DMatGenExpr;
 template< typename, bool > class DMatInvExpr;
 template< typename, typename, bool > class DMatMapExpr;
 template< typename, bool > class DMatNoAliasExpr;

@@ -80,6 +80,7 @@
 #include <blaze/math/expressions/DMatEigenExpr.h>
 #include <blaze/math/expressions/DMatEvalExpr.h>
 #include <blaze/math/expressions/DMatExpExpr.h>
+#include <blaze/math/expressions/DMatGenExpr.h>
 #include <blaze/math/expressions/DMatInvExpr.h>
 #include <blaze/math/expressions/DMatMapExpr.h>
 #include <blaze/math/expressions/DMatMeanExpr.h>
