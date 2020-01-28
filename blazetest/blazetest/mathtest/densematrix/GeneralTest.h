@@ -125,6 +125,9 @@ class GeneralTest
    void testNot();
    void testAnd();
    void testOr();
+   void testGenerate();
+   void testUniform();
+   void testZero();
 
    template< typename Type >
    void checkRows( const Type& matrix, size_t expectedRows ) const;

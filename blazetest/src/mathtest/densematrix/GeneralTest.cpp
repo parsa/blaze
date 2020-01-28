@@ -107,6 +107,9 @@ GeneralTest::GeneralTest()
    testNot();
    testAnd();
    testOr();
+   testGenerate();
+   testUniform();
+   testZero();
 }
 //*************************************************************************************************
 
@@ -10867,6 +10870,573 @@ void GeneralTest::testOr()
                                         "( 1 1 1 0 )\n";
             throw std::runtime_error( oss.str() );
          }
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c generate() functions for dense matrices.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the \c generate() functions for dense matrices. In case an
+// error is detected, a \a std::runtime_error exception is thrown.
+*/
+void GeneralTest::testGenerate()
+{
+   //=====================================================================================
+   // Row-major matrix tests
+   //=====================================================================================
+
+   // Empty integer matrix
+   {
+      const blaze::DynamicMatrix<int,blaze::rowMajor> mat(
+         blaze::generate( 0UL, 0UL, []( size_t, size_t ){ return 2; } ) );
+
+      const blaze::DynamicMatrix<int> ref{};
+
+      if( mat != ref ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Generating empty integer matrix failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat << "\n"
+             << "   Expected result:\n" << ref << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Single element integer matrix ( ( 2 ) )
+   {
+      const blaze::DynamicMatrix<int,blaze::rowMajor> mat(
+         blaze::generate( 1UL, 1UL, []( size_t, size_t ){ return 2; } ) );
+
+      const blaze::DynamicMatrix<int,blaze::rowMajor> ref{ { 2 } };
+
+      if( mat != ref ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Generating single element integer matrix failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat << "\n"
+             << "   Expected result:\n" << ref << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Uniform integer matrix ( ( 2, 2, 2 ), ( 2, 2, 2 ) )
+   {
+      const blaze::DynamicMatrix<int,blaze::rowMajor> mat(
+         blaze::generate( 2UL, 3UL, []( size_t, size_t ){ return 2; } ) );
+
+      const blaze::DynamicMatrix<int,blaze::rowMajor> ref{ { 2, 2, 2 }, { 2, 2, 2 } };
+
+      if( mat != ref ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Generating uniform integer matrix failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat << "\n"
+             << "   Expected result:\n" << ref << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Linearly spaced float matrix ( ( 2.1, 3.2, 4.3 ), ( 5.4, 6.5, 7.6 ) )
+   {
+      const blaze::DynamicMatrix<float,blaze::rowMajor> mat(
+         blaze::generate( 2UL, 3UL, []( size_t i, size_t j ){ return 2.1F + 1.1F*(i*3UL+j); } ) );
+
+      const blaze::DynamicMatrix<float,blaze::rowMajor> ref{ { 2.1F, 3.2F, 4.3F },
+                                                             { 5.4F, 6.5F, 7.6F } };
+
+      if( mat != ref ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Generating linearly spaced float matrix failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat << "\n"
+             << "   Expected result:\n" << ref << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Logarithmically spaced double matrix ( ( 10.0, 100.0 ), ( 1000.0, 10000.0 ) )
+   {
+      const blaze::DynamicMatrix<double,blaze::rowMajor> mat(
+         blaze::generate( 2UL, 2UL, []( size_t i, size_t j ){ return blaze::exp10( 1.0 + 1.0*(i*2UL+j) ); } ) );
+
+      const blaze::DynamicMatrix<double,blaze::rowMajor> ref{ {   10.0,   100.0 },
+                                                              { 1000.0, 10000.0 } };
+
+      if( mat != ref ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Generating logarithmically spaced double matrix failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat << "\n"
+             << "   Expected result:\n" << ref << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Vector of vectors
+   {
+      using VT = blaze::StaticVector<int,2UL>;
+
+      const blaze::DynamicMatrix<VT,blaze::rowMajor> mat(
+         blaze::generate( 2UL, 2UL, []( size_t i, size_t j ) { return evaluate( VT{ 1, 2 } + i*2UL + j ); } ) );
+
+      const blaze::DynamicMatrix<VT,blaze::rowMajor> ref{ { { 1, 2 }, { 2, 3 } },
+                                                          { { 3, 4 }, { 4, 5 } } };
+
+      if( mat != ref ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Generating matrix of vectors failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat << "\n"
+             << "   Expected result:\n" << ref << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major matrix tests
+   //=====================================================================================
+
+   // Empty integer matrix
+   {
+      const blaze::DynamicMatrix<int,blaze::columnMajor> mat(
+         blaze::generate( 0UL, 0UL, []( size_t, size_t ){ return 2; } ) );
+
+      const blaze::DynamicMatrix<int> ref{};
+
+      if( mat != ref ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Generating empty integer matrix failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat << "\n"
+             << "   Expected result:\n" << ref << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Single element integer matrix ( ( 2 ) )
+   {
+      const blaze::DynamicMatrix<int,blaze::columnMajor> mat(
+         blaze::generate( 1UL, 1UL, []( size_t, size_t ){ return 2; } ) );
+
+      const blaze::DynamicMatrix<int,blaze::columnMajor> ref{ { 2 } };
+
+      if( mat != ref ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Generating single element integer matrix failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat << "\n"
+             << "   Expected result:\n" << ref << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Uniform integer matrix ( ( 2, 2, 2 ), ( 2, 2, 2 ) )
+   {
+      const blaze::DynamicMatrix<int,blaze::columnMajor> mat(
+         blaze::generate( 2UL, 3UL, []( size_t, size_t ){ return 2; } ) );
+
+      const blaze::DynamicMatrix<int,blaze::columnMajor> ref{ { 2, 2, 2 }, { 2, 2, 2 } };
+
+      if( mat != ref ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Generating uniform integer matrix failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat << "\n"
+             << "   Expected result:\n" << ref << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Linearly spaced float matrix ( ( 2.1, 3.2, 4.3 ), ( 5.4, 6.5, 7.6 ) )
+   {
+      const blaze::DynamicMatrix<float,blaze::columnMajor> mat(
+         blaze::generate( 2UL, 3UL, []( size_t i, size_t j ){ return 2.1F + 1.1F*(i*3UL+j); } ) );
+
+      const blaze::DynamicMatrix<float,blaze::columnMajor> ref{ { 2.1F, 3.2F, 4.3F },
+                                                                { 5.4F, 6.5F, 7.6F } };
+
+      if( mat != ref ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Generating linearly spaced float matrix failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat << "\n"
+             << "   Expected result:\n" << ref << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Logarithmically spaced double matrix ( ( 10.0, 100.0 ), ( 1000.0, 10000.0 ) )
+   {
+      const blaze::DynamicMatrix<double,blaze::columnMajor> mat(
+         blaze::generate( 2UL, 2UL, []( size_t i, size_t j ){ return blaze::exp10( 1.0 + 1.0*(i*2UL+j) ); } ) );
+
+      const blaze::DynamicMatrix<double,blaze::columnMajor> ref{ {   10.0,   100.0 },
+                                                                 { 1000.0, 10000.0 } };
+
+      if( mat != ref ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Generating logarithmically spaced double matrix failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat << "\n"
+             << "   Expected result:\n" << ref << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Vector of vectors
+   {
+      using VT = blaze::StaticVector<int,2UL>;
+
+      const blaze::DynamicMatrix<VT,blaze::columnMajor> mat(
+         blaze::generate( 2UL, 2UL, []( size_t i, size_t j ) { return evaluate( VT{ 1, 2 } + i*2UL + j ); } ) );
+
+      const blaze::DynamicMatrix<VT,blaze::columnMajor> ref{ { { 1, 2 }, { 2, 3 } },
+                                                             { { 3, 4 }, { 4, 5 } } };
+
+      if( mat != ref ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Generating matrix of vectors failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat << "\n"
+             << "   Expected result:\n" << ref << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c uniform() functions for dense matrices.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the \c uniform() functions for dense matrices. In case an
+// error is detected, a \a std::runtime_error exception is thrown.
+*/
+void GeneralTest::testUniform()
+{
+   //=====================================================================================
+   // Row-major matrix tests
+   //=====================================================================================
+
+   // Empty integer matrix
+   {
+      const blaze::DynamicMatrix<int,blaze::rowMajor> mat( blaze::uniform( 0UL, 0UL, 5 ) );
+      const blaze::DynamicMatrix<int,blaze::rowMajor> ref{};
+
+      if( mat != ref ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Generating empty integer matrix failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat << "\n"
+             << "   Expected result:\n" << ref << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Single element integer matrix ( ( 5 ) )
+   {
+      const blaze::DynamicMatrix<int,blaze::rowMajor> mat( blaze::uniform( 1UL, 1UL, 5 ) );
+      const blaze::DynamicMatrix<int,blaze::rowMajor> ref{ { 5 } };
+
+      if( mat != ref ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Generating single element integer matrix failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat << "\n"
+             << "   Expected result:\n" << ref << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Uniform float matrix ( ( 2.1, 2.1, 2.1 ), ( 2.1, 2.1, 2.1 ) )
+   {
+      const blaze::DynamicMatrix<float,blaze::rowMajor> mat( blaze::uniform( 2UL, 3UL, 2.1f ) );
+      const blaze::DynamicMatrix<float,blaze::rowMajor> ref{ { 2.1F, 2.1F, 2.1F },
+                                                             { 2.1F, 2.1F, 2.1F } };
+
+      if( mat != ref ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Generating uniform float matrix failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat << "\n"
+             << "   Expected result:\n" << ref << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Uniform matrix of vectors
+   {
+      using VT = blaze::StaticVector<int,2UL>;
+
+      const blaze::DynamicMatrix<VT,blaze::rowMajor> mat( blaze::uniform( 2UL, 3UL, VT{ 1, 2 } ) );
+      const blaze::DynamicMatrix<VT,blaze::rowMajor> ref{ { { 1, 2 }, { 1, 2 }, { 1, 2 } },
+                                                          { { 1, 2 }, { 1, 2 }, { 1, 2 } } };
+
+      if( mat != ref ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Generating matrix of vectors failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat << "\n"
+             << "   Expected result:\n" << ref << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major matrix tests
+   //=====================================================================================
+
+   // Empty integer matrix
+   {
+      const blaze::DynamicMatrix<int,blaze::columnMajor> mat( blaze::uniform( 0UL, 0UL, 5 ) );
+      const blaze::DynamicMatrix<int,blaze::columnMajor> ref{};
+
+      if( mat != ref ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Generating empty integer matrix failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat << "\n"
+             << "   Expected result:\n" << ref << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Single element integer matrix ( ( 5 ) )
+   {
+      const blaze::DynamicMatrix<int,blaze::columnMajor> mat( blaze::uniform( 1UL, 1UL, 5 ) );
+      const blaze::DynamicMatrix<int,blaze::columnMajor> ref{ { 5 } };
+
+      if( mat != ref ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Generating single element integer matrix failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat << "\n"
+             << "   Expected result:\n" << ref << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Uniform float matrix ( ( 2.1, 2.1, 2.1 ), ( 2.1, 2.1, 2.1 ) )
+   {
+      const blaze::DynamicMatrix<float,blaze::columnMajor> mat( blaze::uniform( 2UL, 3UL, 2.1f ) );
+      const blaze::DynamicMatrix<float,blaze::columnMajor> ref{ { 2.1F, 2.1F, 2.1F },
+                                                                { 2.1F, 2.1F, 2.1F } };
+
+      if( mat != ref ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Generating uniform float matrix failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat << "\n"
+             << "   Expected result:\n" << ref << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Uniform matrix of vectors
+   {
+      using VT = blaze::StaticVector<int,2UL>;
+
+      const blaze::DynamicMatrix<VT,blaze::columnMajor> mat( blaze::uniform( 2UL, 3UL, VT{ 1, 2 } ) );
+      const blaze::DynamicMatrix<VT,blaze::columnMajor> ref{ { { 1, 2 }, { 1, 2 }, { 1, 2 } },
+                                                             { { 1, 2 }, { 1, 2 }, { 1, 2 } } };
+
+      if( mat != ref ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Generating matrix of vectors failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat << "\n"
+             << "   Expected result:\n" << ref << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c zero() functions for dense matrices.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the \c zero() functions for dense matrices. In case an
+// error is detected, a \a std::runtime_error exception is thrown.
+*/
+void GeneralTest::testZero()
+{
+   //=====================================================================================
+   // Row-major matrix tests
+   //=====================================================================================
+
+   // Empty integer matrix
+   {
+      const blaze::DynamicMatrix<int,blaze::rowMajor> mat( blaze::zero<int>( 0UL, 0UL ) );
+      const blaze::DynamicMatrix<int,blaze::rowMajor> ref{};
+
+      if( mat != ref ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Generating empty integer matrix failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat << "\n"
+             << "   Expected result:\n" << ref << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Single element integer matrix ( ( 0 ) )
+   {
+      const blaze::DynamicMatrix<int,blaze::rowMajor> mat( blaze::zero<int>( 1UL, 1UL ) );
+      const blaze::DynamicMatrix<int,blaze::rowMajor> ref{ { 0 } };
+
+      if( mat != ref ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Generating single element integer matrix failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat << "\n"
+             << "   Expected result:\n" << ref << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Uniform float matrix ( ( 0.0, 0.0, 0.0 ), ( 0.0, 0.0, 0.0 ) )
+   {
+      const blaze::DynamicMatrix<float,blaze::rowMajor> mat( blaze::zero<float>( 2UL, 3UL ) );
+      const blaze::DynamicMatrix<float,blaze::rowMajor> ref{ { 0.0F, 0.0F, 0.0F },
+                                                             { 0.0F, 0.0F, 0.0F } };
+
+      if( mat != ref ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Generating zero float matrix failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat << "\n"
+             << "   Expected result:\n" << ref << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Uniform matrix of vectors
+   {
+      using VT = blaze::StaticVector<int,2UL>;
+
+      const blaze::DynamicMatrix<VT,blaze::rowMajor> mat( blaze::uniform( 2UL, 3UL, VT{} ) );
+      const blaze::DynamicMatrix<VT,blaze::rowMajor> ref{ { VT{}, VT{}, VT{} },
+                                                          { VT{}, VT{}, VT{} } };
+
+      if( mat != ref ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Generating matrix of vectors failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat << "\n"
+             << "   Expected result:\n" << ref << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major matrix tests
+   //=====================================================================================
+
+   // Empty integer matrix
+   {
+      const blaze::DynamicMatrix<int,blaze::columnMajor> mat( blaze::zero<int>( 0UL, 0UL ) );
+      const blaze::DynamicMatrix<int,blaze::columnMajor> ref{};
+
+      if( mat != ref ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Generating empty integer matrix failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat << "\n"
+             << "   Expected result:\n" << ref << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Single element integer matrix ( ( 0 ) )
+   {
+      const blaze::DynamicMatrix<int,blaze::columnMajor> mat( blaze::zero<int>( 1UL, 1UL ) );
+      const blaze::DynamicMatrix<int,blaze::columnMajor> ref{ { 0 } };
+
+      if( mat != ref ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Generating single element integer matrix failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat << "\n"
+             << "   Expected result:\n" << ref << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Uniform float matrix ( ( 0.0, 0.0, 0.0 ), ( 0.0, 0.0, 0.0 ) )
+   {
+      const blaze::DynamicMatrix<float,blaze::columnMajor> mat( blaze::zero<float>( 2UL, 3UL ) );
+      const blaze::DynamicMatrix<float,blaze::columnMajor> ref{ { 0.0F, 0.0F, 0.0F },
+                                                                { 0.0F, 0.0F, 0.0F } };
+
+      if( mat != ref ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Generating zero float matrix failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat << "\n"
+             << "   Expected result:\n" << ref << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Uniform matrix of vectors
+   {
+      using VT = blaze::StaticVector<int,2UL>;
+
+      const blaze::DynamicMatrix<VT,blaze::columnMajor> mat( blaze::uniform( 2UL, 3UL, VT{} ) );
+      const blaze::DynamicMatrix<VT,blaze::columnMajor> ref{ { VT{}, VT{}, VT{} },
+                                                             { VT{}, VT{}, VT{} } };
+
+      if( mat != ref ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Generating matrix of vectors failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat << "\n"
+             << "   Expected result:\n" << ref << "\n";
+         throw std::runtime_error( oss.str() );
       }
    }
 }
