@@ -782,24 +782,52 @@ decltype(auto) declherm( const SparseMatrix<MT,SO>& );
 
 
 template< typename MT, bool SO >
-decltype(auto) decllow( const DenseMatrix<MT,SO>& dm );
+decltype(auto) decllow( const DenseMatrix<MT,SO>& );
 
 template< typename MT, bool SO >
-decltype(auto) decllow( const SparseMatrix<MT,SO>& sm );
-
-
-template< typename MT, bool SO >
-decltype(auto) declupp( const DenseMatrix<MT,SO>& dm );
-
-template< typename MT, bool SO >
-decltype(auto) declupp( const SparseMatrix<MT,SO>& sm );
+decltype(auto) decllow( const SparseMatrix<MT,SO>& );
 
 
 template< typename MT, bool SO >
-decltype(auto) decldiag( const DenseMatrix<MT,SO>& dm );
+decltype(auto) declunilow( const DenseMatrix<MT,SO>& );
 
 template< typename MT, bool SO >
-decltype(auto) decldiag( const SparseMatrix<MT,SO>& sm );
+decltype(auto) declunilow( const SparseMatrix<MT,SO>& );
+
+
+template< typename MT, bool SO >
+decltype(auto) declstrlow( const DenseMatrix<MT,SO>& );
+
+template< typename MT, bool SO >
+decltype(auto) declstrlow( const SparseMatrix<MT,SO>& );
+
+
+template< typename MT, bool SO >
+decltype(auto) declupp( const DenseMatrix<MT,SO>& );
+
+template< typename MT, bool SO >
+decltype(auto) declupp( const SparseMatrix<MT,SO>& );
+
+
+template< typename MT, bool SO >
+decltype(auto) decluniupp( const DenseMatrix<MT,SO>& );
+
+template< typename MT, bool SO >
+decltype(auto) decluniupp( const SparseMatrix<MT,SO>& );
+
+
+template< typename MT, bool SO >
+decltype(auto) declstrupp( const DenseMatrix<MT,SO>& );
+
+template< typename MT, bool SO >
+decltype(auto) declstrupp( const SparseMatrix<MT,SO>& );
+
+
+template< typename MT, bool SO >
+decltype(auto) decldiag( const DenseMatrix<MT,SO>& );
+
+template< typename MT, bool SO >
+decltype(auto) decldiag( const SparseMatrix<MT,SO>& );
 
 } // namespace blaze
 
