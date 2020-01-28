@@ -113,6 +113,7 @@
 //                <li> \ref matrix_operations_scalar_expansion </li>
 //                <li> \ref matrix_operations_statistic_operations </li>
 //                <li> \ref matrix_operations_declaration_operations </li>
+//                <li> \ref matrix_operations_matrix_generators </li>
 //                <li> \ref matrix_operations_matrix_inversion </li>
 //                <li> \ref matrix_operations_matrix_exponential </li>
 //                <li> \ref matrix_operations_decomposition </li>
@@ -3068,19 +3069,19 @@
    using blaze::columnVector;
    using blaze::rowVector;
 
-   // Generates the homogeneous integer vector ( 2 2 2 2 2 )
+   // Generates the homogeneous integer vector ( 2, 2, 2, 2, 2 )
    blaze::DynamicVector<int,columnVector> a;
    a = generate( 5UL, []( size_t index ){ return 2; } );
 
-   // Generates the linearly spaced float vector ( 2.1 3.2 4.3 5.4 )
+   // Generates the linearly spaced float vector ( 2.1, 3.2, 4.3, 5.4 )
    blaze::DynamicVector<float,columnVector> b;
    b = generate( 4UL, []( size_t index ){ return 2.1F + 1.1F*index; } );
 
-   // Generates the logarithmically spaced double vector ( 1.0 10.0 100.0 1000.0 )
+   // Generates the logarithmically spaced double vector ( 1.0, 10.0, 100.0, 1000.0 )
    blaze::DynamicVector<double,columnVector> c;
    c = generate<columnVector>( 4UL, []( size_t index ){ return blaze::exp10( 1.0 + 1.0*index ); } );
 
-   // Generates the vector of integer vectors ( ( 1 2 ) ( 2 3 ) ( 3 4 ) ( 4 5 ) )
+   // Generates the vector of integer vectors ( ( 1, 2 ), ( 2, 3 ), ( 3, 4 ), ( 4, 5 ) )
    using VT = blaze::StaticVector<int,2UL>;
    blaze::StaticVector<VT,4UL,rowVector> d;
    d = generate<rowVector>( []( size_t index ) { return evaluate( VT{ 1, 2 } + index ); } );
@@ -3099,15 +3100,15 @@
    using blaze::columnVector;
    using blaze::rowVector;
 
-   // Generates the linearly spaced integer vector ( 2 3 4 5 6 )
+   // Generates the linearly spaced integer vector ( 2, 3, 4, 5, 6 )
    blaze::DynamicVector<int,columnVector> a;
    a = linspace( 5UL, 2, 6 );
 
-   // Generates the linearly spaced integer vector ( 6 5 4 3 2 )
+   // Generates the linearly spaced integer vector ( 6, 5, 4, 3, 2 )
    blaze::DynamicVector<int,columnVector> b;
    b = linspace<columnVector>( 5UL, 6, 2 );
 
-   // Generates the linearly spaced float vector ( 2.1 3.2 4.3 5.4 )
+   // Generates the linearly spaced float vector ( 2.1, 3.2, 4.3, 5.4 )
    blaze::DynamicVector<float,rowVector> c;
    c = linspace<rowVector>( 4UL, 2.1F, 5.4F );
    \endcode
@@ -3125,11 +3126,11 @@
    using blaze::columnVector;
    using blaze::rowVector;
 
-   // Generates the logarithmically spaced double vector ( 1 10 100 1000 )
+   // Generates the logarithmically spaced double vector ( 1, 10, 100, 1000 )
    blaze::DynamicVector<int,columnVector> a;
    a = logspace( 4UL, 0, 3 );
 
-   // Generates the logarithmically spaced double vector ( 1000.0 100.0 10.0 1.0 )
+   // Generates the logarithmically spaced double vector ( 1000.0, 100.0, 10.0, 1.0 )
    blaze::DynamicVector<double,rowVector> b;
    b = logspace<rowVector>( 4UL, 3.0, 0.0 );
    \endcode
@@ -3147,13 +3148,13 @@
    using blaze::columnVector;
    using blaze::rowVector;
 
-   // Creates the uniform column vector ( 1 1 1 1 1 )
+   // Creates the uniform column vector ( 1, 1, 1, 1, 1 )
    auto u1 = uniform( 5UL, 1 );
 
-   // Creates the uniform column vector ( 1.2 1.2 1.2 )
+   // Creates the uniform column vector ( 1.2, 1.2, 1.2 )
    auto u2 = uniform<columnVector>( 3UL, 1.2 );
 
-   // Creates the uniform row vector ( 5U 5U 5U 5U )
+   // Creates the uniform row vector ( 5U, 5U, 5U, 5U )
    auto u3 = uniform<rowVector>( 4UL, 5U );
    \endcode
 
@@ -3161,7 +3162,8 @@
 //
 // The \c zero() function creates a zero vector of the given element type and size. By default,
 // the resulting zero vector is a column vector, but this setting can be changed via the
-// \c BLAZE_DEFAULT_TRANSPOSE_FLAG switch (see \ref transpose_flag).
+// \c BLAZE_DEFAULT_TRANSPOSE_FLAG switch (see \ref transpose_flag). Alternatively it is
+// possible to specify the transpose flag explicitly.\n
 // The following example demonstrates the use of the \c zero() function:
 
    \code
@@ -3169,13 +3171,13 @@
    using blaze::columnVector;
    using blaze::rowVector;
 
-   // Creates the zero column vector ( 0 0 0 0 0 )
+   // Creates the zero column vector ( 0, 0, 0, 0, 0 )
    auto z1 = zero<int>( 5UL );
 
-   // Creates the zero column vector ( 0.0 0.0 0.0 )
+   // Creates the zero column vector ( 0.0, 0.0, 0.0 )
    auto z2 = zero<double,columnVector>( 3UL );
 
-   // Creates the zero row vector ( 0U 0U 0U 0U )
+   // Creates the zero row vector ( 0U, 0U, 0U, 0U )
    auto z3 = zero<unsigned int,rowVector>( 4UL );
    \endcode
 
@@ -6651,6 +6653,100 @@
 // (which can be violated invariants or wrong computation results)!
 //
 //
+// \n \section matrix_operations_matrix_generators Matrix Generators
+// <hr>
+//
+// \subsection matrix_operations_generate generate()
+//
+// The \c generate() function returns a dense matrix filled elementwise via the given custom
+// binary operation. By default, the returned matrix is a row-major matrix, but this setting can
+// be changed via the \c BLAZE_DEFAULT_STORAGE_ORDER switch (see \ref storage_order). Alternatively
+// it is possible to specify the storage order explicitly.\n
+// The following example demonstrates the use of the \c generate() function:
+
+   \code
+   using blaze::generate;
+   using blaze::rowMajor;
+   using blaze::columnMajor>
+
+   // Generates the uniform integer matrix ( ( 2, 2, 2 ), ( 2, 2, 2 ) )
+   blaze::DynamicMatrix<int,rowMajor> A;
+   A = generate( 2UL, 3UL, []( size_t i, size_t j ){ return 2; } );
+
+   // Generates the linearly spaced float matrix ( ( 2.1, 3.2, 4.3 ), ( 5.4, 6.5, 7.6 ) )
+   blaze::DynamicMatrix<float,rowMajor> B;
+   B = generate( 2UL, 3UL, []( size_t i, size_t j ){ return 2.1F + 1.1F*(i*3UL+j); } );
+
+   // Generates the logarithmically spaced double vector ( ( 1.0, 10.0 ), ( 100.0, 1000.0 ) )
+   blaze::DynamicMatrix<double,rowMajor> C;
+   C = generate<rowMajor>( 2UL, 2UL, []( size_t i, size_t j ) { return blaze::exp10( 1.0 + 1.0*(i*2UL+j) ); } );
+
+   // Generates the vector of integer vectors ( ( 1, 2 ), ( 2, 3 ), ( 3, 4 ), ( 4, 5 ) )
+   using VT = StaticVector<int,2UL>;
+   blaze::DynamicMatrix<VT,columnMajor> D;
+   D = generate<columnMajor>( 2UL, 2UL, []( size_t i, size_t j ) { return evaluate( VT{ 1, 2 } + (i*2UL+j) ); } );
+   \endcode
+
+// \n \subsection matrix_operations_uniform uniform()
+//
+// The \c uniform() function creates a uniform matrix of the given size. By default, the
+// resulting uniform matrix is a row-major matrix, but this setting can be changed via the
+// \c BLAZE_DEFAULT_STORAGE_ORDER switch (see \ref storage_order). Alternatively it is
+// possible to specify the storage order explicitly.\n
+// The following example demonstrates the use of the \c uniform() function:
+
+   \code
+   using blaze::uniform;
+   using blaze::rowMajor;
+   using blaze::columnMajor;
+
+   // Creates the uniform row-major matrix
+   //    ( 1, 1, 1, 1, 1 )
+   //    ( 1, 1, 1, 1, 1 )
+   auto U1 = uniform( 2UL, 5UL, 1 );
+
+   // Creates the uniform row-major matrix
+   //    ( 1.2, 1.2 )
+   //    ( 1.2, 1.2 )
+   //    ( 1.2, 1.2 )
+   auto U2 = uniform<rowMajor>( 3UL, 2UL, 1.2 );
+
+   // Creates the uniform column-major matrix
+   //   ( 5U, 5U, 5U, 5U, 5U, 5U, 5U )
+   //   ( 5U, 5U, 5U, 5U, 5U, 5U, 5U )
+   auto U3 = uniform<columnMajor>( 2UL, 7UL, 5U );
+   \endcode
+
+// \n \subsection matrix_operations_zero zero()
+//
+// The \c zero() function creates a zero matrix of the given element type and size. By default,
+// the resulting zero matrix is a row-major matrix, but this setting can be changed via the
+// \c BLAZE_DEFAULT_STORAGE_ORDER switch (see \ref storage_order). Alternatively it is possible
+// to specify the storage order explicitly.\n
+// The following example demonstrates the use of the \c zero() function:
+
+   \code
+   using blaze::zero;
+   using blaze::rowMajor;
+   using blaze::columnMajor;
+
+   // Creates the row-major zero matrix
+   //    ( 0, 0, 0, 0, 0 )
+   //    ( 0, 0, 0, 0, 0 )
+   auto Z1 = zero<int>( 2UL, 5UL );
+
+   // Creates the row-major zero matrix
+   //    ( 0.0, 0.0 )
+   //    ( 0.0, 0.0 )
+   //    ( 0.0, 0.0 )
+   auto Z2 = zero<double,rowMajor>( 3UL, 2UL );
+
+   // Creates the column-major zero matrix
+   //    ( 0U, 0U, 0U, 0U, 0U, 0U, 0U )
+   //    ( 0U, 0U, 0U, 0U, 0U, 0U, 0U )
+   auto Z3 = zero<unsigned int,columnMajor>( 2UL, 7UL );
+   \endcode
+
 // \n \section matrix_operations_matrix_inversion Matrix Inversion
 // <hr>
 //
