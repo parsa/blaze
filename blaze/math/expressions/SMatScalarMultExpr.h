@@ -347,10 +347,10 @@ class SMatScalarMultExpr
    //**********************************************************************************************
 
    //**Begin function******************************************************************************
-   /*!\brief Returns an iterator to the first non-zero element of row \a i.
+   /*!\brief Returns an iterator to the first non-zero element of row/column \a i.
    //
-   // \param i The row index.
-   // \return Iterator to the first non-zero element of row \a i.
+   // \param i The row/column index.
+   // \return Iterator to the first non-zero element of row/column \a i.
    */
    inline ConstIterator begin( size_t i ) const {
       return ConstIterator( matrix_.begin(i), scalar_ );
@@ -358,10 +358,10 @@ class SMatScalarMultExpr
    //**********************************************************************************************
 
    //**End function********************************************************************************
-   /*!\brief Returns an iterator just past the last non-zero element of row \a i.
+   /*!\brief Returns an iterator just past the last non-zero element of row/column \a i.
    //
-   // \param i The row index.
-   // \return Iterator just past the last non-zero element of row \a i.
+   // \param i The row/column index.
+   // \return Iterator just past the last non-zero element of row/column \a i.
    */
    inline ConstIterator end( size_t i ) const {
       return ConstIterator( matrix_.end(i), scalar_ );

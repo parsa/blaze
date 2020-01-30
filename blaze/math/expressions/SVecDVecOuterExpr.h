@@ -393,7 +393,7 @@ class SVecDVecOuterExpr
    //**Begin function******************************************************************************
    /*!\brief Returns an iterator to the first non-zero element of column \a i.
    //
-   // \param i The row index.
+   // \param i The column index.
    // \return Iterator to the first non-zero element of column \a i.
    */
    inline ConstIterator begin( size_t i ) const {
@@ -404,7 +404,7 @@ class SVecDVecOuterExpr
    //**End function********************************************************************************
    /*!\brief Returns an iterator just past the last non-zero element of column \a i.
    //
-   // \param i The row index.
+   // \param i The column index.
    // \return Iterator just past the last non-zero element of column \a i.
    */
    inline ConstIterator end( size_t i ) const {
