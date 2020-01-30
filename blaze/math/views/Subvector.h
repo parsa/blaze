@@ -1471,7 +1471,7 @@ inline decltype(auto) elements( VT&& sv, T* indices, size_t n, REAs... args )
 
    if( isChecked ) {
       for( size_t i=0UL; i<n; ++i ) {
-         if( sv.size() <= indices[i] ) {
+         if( sv.size() <= size_t( indices[i] ) ) {
             BLAZE_THROW_INVALID_ARGUMENT( "Invalid elements specification" );
          }
       }
@@ -1514,7 +1514,7 @@ inline decltype(auto) elements( VT&& sv, P p, size_t n, REAs... args )
 
    if( isChecked ) {
       for( size_t i=0UL; i<n; ++i ) {
-         if( sv.size() <= p(i) ) {
+         if( sv.size() <= size_t( p(i) ) ) {
             BLAZE_THROW_INVALID_ARGUMENT( "Invalid elements specification" );
          }
       }
