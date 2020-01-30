@@ -64,7 +64,7 @@ namespace blaze {
 template< typename Type >
 BLAZE_ALWAYS_INLINE constexpr void clear( Type& clearable )
 {
-   clearable = Type(0);
+   clearable = Type();
 }
 //*************************************************************************************************
 
