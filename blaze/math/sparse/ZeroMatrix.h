@@ -1335,19 +1335,19 @@ inline void erase( ZeroMatrix<Type,SO>& m, size_t i, Iterator first, Iterator la
    using blaze::columnMajor;
 
    // Creates the row-major zero matrix
-   //    ( 0 0 0 0 0 )
-   //    ( 0 0 0 0 0 )
+   //    ( 0, 0, 0, 0, 0 )
+   //    ( 0, 0, 0, 0, 0 )
    auto Z1 = zero<int>( 2UL, 5UL );
 
    // Creates the row-major zero matrix
-   //    ( 0.0 0.0 )
-   //    ( 0.0 0.0 )
-   //    ( 0.0 0.0 )
+   //    ( 0.0, 0.0 )
+   //    ( 0.0, 0.0 )
+   //    ( 0.0, 0.0 )
    auto Z2 = zero<double,rowMajor>( 3UL, 2UL );
 
    // Creates the column-major zero matrix
-   //    ( 0U 0U 0U 0U 0U 0U 0U )
-   //    ( 0U 0U 0U 0U 0U 0U 0U )
+   //    ( 0U, 0U, 0U, 0U, 0U, 0U, 0U )
+   //    ( 0U, 0U, 0U, 0U, 0U, 0U, 0U )
    auto Z3 = zero<unsigned int,columnMajor>( 2UL, 7UL );
    \endcode
 */

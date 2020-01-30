@@ -1091,13 +1091,13 @@ inline void erase( ZeroVector<Type,TF>& m, Iterator first, Iterator last, Pred p
    using blaze::columnVector;
    using blaze::rowVector;
 
-   // Creates the zero column vector ( 0 0 0 0 0 )
+   // Creates the zero column vector ( 0, 0, 0, 0, 0 )
    auto z1 = zero<int>( 5UL );
 
-   // Creates the zero column vector ( 0.0 0.0 0.0 )
+   // Creates the zero column vector ( 0.0, 0.0, 0.0 )
    auto z2 = zero<double,columnVector>( 3UL );
 
-   // Creates the zero row vector ( 0U 0U 0U 0U )
+   // Creates the zero row vector ( 0U, 0U, 0U, 0U )
    auto z3 = zero<unsigned int,rowVector>( 4UL );
    \endcode
 */
