@@ -1325,13 +1325,13 @@ constexpr void swap( UniformVector<Type,TF>& a, UniformVector<Type,TF>& b ) noex
    using blaze::columnVector;
    using blaze::rowVector;
 
-   // Creates the uniform column vector ( 1 1 1 1 1 )
+   // Creates the uniform column vector ( 1, 1, 1, 1, 1 )
    auto u1 = uniform( 5UL, 1 );
 
-   // Creates the uniform column vector ( 1.2 1.2 1.2 )
+   // Creates the uniform column vector ( 1.2, 1.2, 1.2 )
    auto u2 = uniform<columnVector>( 3UL, 1.2 );
 
-   // Creates the uniform row vector ( 5U 5U 5U 5U )
+   // Creates the uniform row vector ( 5U, 5U, 5U, 5U )
    auto u3 = uniform<rowVector>( 4UL, 5U );
    \endcode
 */
