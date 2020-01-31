@@ -51,6 +51,7 @@
 #include <blaze/math/expressions/DenseMatrix.h>
 #include <blaze/math/lapack/clapack/potrf.h>
 #include <blaze/math/ReductionFlag.h>
+#include <blaze/math/RelaxationFlag.h>
 #include <blaze/math/shims/Conjugate.h>
 #include <blaze/math/shims/Equal.h>
 #include <blaze/math/shims/IsDefault.h>
@@ -1216,40 +1217,40 @@ inline MT1& operator^=( DenseMatrix<MT1,SO1>&& lhs, const DenseMatrix<MT2,SO2>& 
 template< typename MT, bool SO >
 bool isnan( const DenseMatrix<MT,SO>& dm );
 
-template< bool RF, typename MT, bool SO >
+template< RelaxationFlag RF, typename MT, bool SO >
 bool isSymmetric( const DenseMatrix<MT,SO>& dm );
 
-template< bool RF, typename MT, bool SO >
+template< RelaxationFlag RF, typename MT, bool SO >
 bool isHermitian( const DenseMatrix<MT,SO>& dm );
 
-template< bool RF, typename MT, bool SO >
+template< RelaxationFlag RF, typename MT, bool SO >
 bool isUniform( const DenseMatrix<MT,SO>& dm );
 
-template< bool RF, typename MT, bool SO >
+template< RelaxationFlag RF, typename MT, bool SO >
 bool isZero( const DenseMatrix<MT,SO>& dm );
 
-template< bool RF, typename MT, bool SO >
+template< RelaxationFlag RF, typename MT, bool SO >
 bool isLower( const DenseMatrix<MT,SO>& dm );
 
-template< bool RF, typename MT, bool SO >
+template< RelaxationFlag RF, typename MT, bool SO >
 bool isUniLower( const DenseMatrix<MT,SO>& dm );
 
-template< bool RF, typename MT, bool SO >
+template< RelaxationFlag RF, typename MT, bool SO >
 bool isStrictlyLower( const DenseMatrix<MT,SO>& dm );
 
-template< bool RF, typename MT, bool SO >
+template< RelaxationFlag RF, typename MT, bool SO >
 bool isUpper( const DenseMatrix<MT,SO>& dm );
 
-template< bool RF, typename MT, bool SO >
+template< RelaxationFlag RF, typename MT, bool SO >
 bool isUniUpper( const DenseMatrix<MT,SO>& dm );
 
-template< bool RF, typename MT, bool SO >
+template< RelaxationFlag RF, typename MT, bool SO >
 bool isStrictlyUpper( const DenseMatrix<MT,SO>& dm );
 
-template< bool RF, typename MT, bool SO >
+template< RelaxationFlag RF, typename MT, bool SO >
 bool isDiagonal( const DenseMatrix<MT,SO>& dm );
 
-template< bool RF, typename MT, bool SO >
+template< RelaxationFlag RF, typename MT, bool SO >
 bool isIdentity( const DenseMatrix<MT,SO>& dm );
 
 template< typename MT, bool SO >
@@ -1337,9 +1338,9 @@ bool isnan( const DenseMatrix<MT,SO>& dm )
 // However, note that this might require the complete evaluation of the expression, including
 // the generation of a temporary matrix.
 */
-template< bool RF      // Relaxation flag
-        , typename MT  // Type of the dense matrix
-        , bool SO >    // Storage order
+template< RelaxationFlag RF  // Relaxation flag
+        , typename MT        // Type of the dense matrix
+        , bool SO >          // Storage order
 bool isSymmetric( const DenseMatrix<MT,SO>& dm )
 {
    using CT = CompositeType_t<MT>;
@@ -1415,9 +1416,9 @@ bool isSymmetric( const DenseMatrix<MT,SO>& dm )
 // However, note that this might require the complete evaluation of the expression, including
 // the generation of a temporary matrix.
 */
-template< bool RF      // Relaxation flag
-        , typename MT  // Type of the dense matrix
-        , bool SO >    // Storage order
+template< RelaxationFlag RF  // Relaxation flag
+        , typename MT        // Type of the dense matrix
+        , bool SO >          // Storage order
 bool isHermitian( const DenseMatrix<MT,SO>& dm )
 {
    using ET = ElementType_t<MT>;
@@ -1468,8 +1469,8 @@ bool isHermitian( const DenseMatrix<MT,SO>& dm )
 // \param dm The dense matrix to be checked.
 // \return \a true if the matrix is a uniform matrix, \a false if not.
 */
-template< bool RF        // Relaxation flag
-        , typename MT >  // Type of the dense matrix
+template< RelaxationFlag RF  // Relaxation flag
+        , typename MT >      // Type of the dense matrix
 bool isUniform_backend( const DenseMatrix<MT,false>& dm, TrueType )
 {
    BLAZE_CONSTRAINT_MUST_BE_TRIANGULAR_MATRIX_TYPE( MT );
@@ -1512,8 +1513,8 @@ bool isUniform_backend( const DenseMatrix<MT,false>& dm, TrueType )
 // \param dm The dense matrix to be checked.
 // \return \a true if the matrix is a uniform matrix, \a false if not.
 */
-template< bool RF        // Relaxation flag
-        , typename MT >  // Type of the dense matrix
+template< RelaxationFlag RF  // Relaxation flag
+        , typename MT >      // Type of the dense matrix
 bool isUniform_backend( const DenseMatrix<MT,true>& dm, TrueType )
 {
    BLAZE_CONSTRAINT_MUST_BE_TRIANGULAR_MATRIX_TYPE( MT );
@@ -1556,8 +1557,8 @@ bool isUniform_backend( const DenseMatrix<MT,true>& dm, TrueType )
 // \param dm The dense matrix to be checked.
 // \return \a true if the matrix is a uniform matrix, \a false if not.
 */
-template< bool RF        // Relaxation flag
-        , typename MT >  // Type of the dense matrix
+template< RelaxationFlag RF  // Relaxation flag
+        , typename MT >      // Type of the dense matrix
 bool isUniform_backend( const DenseMatrix<MT,false>& dm, FalseType )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_TRIANGULAR_MATRIX_TYPE( MT );
@@ -1589,8 +1590,8 @@ bool isUniform_backend( const DenseMatrix<MT,false>& dm, FalseType )
 // \param dm The dense matrix to be checked.
 // \return \a true if the matrix is a uniform matrix, \a false if not.
 */
-template< bool RF        // Relaxation flag
-        , typename MT >  // Type of the dense matrix
+template< RelaxationFlag RF  // Relaxation flag
+        , typename MT >      // Type of the dense matrix
 bool isUniform_backend( const DenseMatrix<MT,true>& dm, FalseType )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_TRIANGULAR_MATRIX_TYPE( MT );
@@ -1647,9 +1648,9 @@ bool isUniform_backend( const DenseMatrix<MT,true>& dm, FalseType )
 // However, note that this might require the complete evaluation of the expression, including
 // the generation of a temporary matrix.
 */
-template< bool RF      // Relaxation flag
-        , typename MT  // Type of the dense matrix
-        , bool SO >    // Storage order
+template< RelaxationFlag RF  // Relaxation flag
+        , typename MT        // Type of the dense matrix
+        , bool SO >          // Storage order
 bool isUniform( const DenseMatrix<MT,SO>& dm )
 {
    if( IsUniform_v<MT> ||
@@ -1700,9 +1701,9 @@ bool isUniform( const DenseMatrix<MT,SO>& dm )
 // However, note that this might require the complete evaluation of the expression, including
 // the generation of a temporary matrix.
 */
-template< bool RF      // Relaxation flag
-        , typename MT  // Type of the dense matrix
-        , bool SO >    // Storage order
+template< RelaxationFlag RF  // Relaxation flag
+        , typename MT        // Type of the dense matrix
+        , bool SO >          // Storage order
 bool isZero( const DenseMatrix<MT,SO>& dm )
 {
    const size_t M( (~dm).rows()    );
@@ -1802,9 +1803,9 @@ bool isZero( const DenseMatrix<MT,SO>& dm )
 // However, note that this might require the complete evaluation of the expression, including
 // the generation of a temporary matrix.
 */
-template< bool RF      // Relaxation flag
-        , typename MT  // Type of the dense matrix
-        , bool SO >    // Storage order
+template< RelaxationFlag RF  // Relaxation flag
+        , typename MT        // Type of the dense matrix
+        , bool SO >          // Storage order
 bool isLower( const DenseMatrix<MT,SO>& dm )
 {
    using RT  = ResultType_t<MT>;
@@ -1890,9 +1891,9 @@ bool isLower( const DenseMatrix<MT,SO>& dm )
 // However, note that this might require the complete evaluation of the expression, including
 // the generation of a temporary matrix.
 */
-template< bool RF      // Relaxation flag
-        , typename MT  // Type of the dense matrix
-        , bool SO >    // Storage order
+template< RelaxationFlag RF  // Relaxation flag
+        , typename MT        // Type of the dense matrix
+        , bool SO >          // Storage order
 bool isUniLower( const DenseMatrix<MT,SO>& dm )
 {
    using RT  = ResultType_t<MT>;
@@ -1977,9 +1978,9 @@ bool isUniLower( const DenseMatrix<MT,SO>& dm )
 // However, note that this might require the complete evaluation of the expression, including
 // the generation of a temporary matrix.
 */
-template< bool RF      // Relaxation flag
-        , typename MT  // Type of the dense matrix
-        , bool SO >    // Storage order
+template< RelaxationFlag RF  // Relaxation flag
+        , typename MT        // Type of the dense matrix
+        , bool SO >          // Storage order
 bool isStrictlyLower( const DenseMatrix<MT,SO>& dm )
 {
    using RT  = ResultType_t<MT>;
@@ -2069,9 +2070,9 @@ bool isStrictlyLower( const DenseMatrix<MT,SO>& dm )
 // However, note that this might require the complete evaluation of the expression, including
 // the generation of a temporary matrix.
 */
-template< bool RF      // Relaxation flag
-        , typename MT  // Type of the dense matrix
-        , bool SO >    // Storage order
+template< RelaxationFlag RF  // Relaxation flag
+        , typename MT        // Type of the dense matrix
+        , bool SO >          // Storage order
 bool isUpper( const DenseMatrix<MT,SO>& dm )
 {
    using RT  = ResultType_t<MT>;
@@ -2157,9 +2158,9 @@ bool isUpper( const DenseMatrix<MT,SO>& dm )
 // However, note that this might require the complete evaluation of the expression, including
 // the generation of a temporary matrix.
 */
-template< bool RF      // Relaxation flag
-        , typename MT  // Type of the dense matrix
-        , bool SO >    // Storage order
+template< RelaxationFlag RF  // Relaxation flag
+        , typename MT        // Type of the dense matrix
+        , bool SO >          // Storage order
 bool isUniUpper( const DenseMatrix<MT,SO>& dm )
 {
    using RT  = ResultType_t<MT>;
@@ -2244,9 +2245,9 @@ bool isUniUpper( const DenseMatrix<MT,SO>& dm )
 // However, note that this might require the complete evaluation of the expression, including
 // the generation of a temporary matrix.
 */
-template< bool RF      // Relaxation flag
-        , typename MT  // Type of the dense matrix
-        , bool SO >    // Storage order
+template< RelaxationFlag RF  // Relaxation flag
+        , typename MT        // Type of the dense matrix
+        , bool SO >          // Storage order
 bool isStrictlyUpper( const DenseMatrix<MT,SO>& dm )
 {
    using RT  = ResultType_t<MT>;
@@ -2337,9 +2338,9 @@ bool isStrictlyUpper( const DenseMatrix<MT,SO>& dm )
 // However, note that this might require the complete evaluation of the expression, including
 // the generation of a temporary matrix.
 */
-template< bool RF      // Relaxation flag
-        , typename MT  // Type of the dense matrix
-        , bool SO >    // Storage order
+template< RelaxationFlag RF  // Relaxation flag
+        , typename MT        // Type of the dense matrix
+        , bool SO >          // Storage order
 bool isDiagonal( const DenseMatrix<MT,SO>& dm )
 {
    using RT  = ResultType_t<MT>;
@@ -2442,9 +2443,9 @@ bool isDiagonal( const DenseMatrix<MT,SO>& dm )
 // However, note that this might require the complete evaluation of the expression, including
 // the generation of a temporary matrix.
 */
-template< bool RF      // Relaxation flag
-        , typename MT  // Type of the dense matrix
-        , bool SO >    // Storage order
+template< RelaxationFlag RF  // Relaxation flag
+        , typename MT        // Type of the dense matrix
+        , bool SO >          // Storage order
 bool isIdentity( const DenseMatrix<MT,SO>& dm )
 {
    using RT  = ResultType_t<MT>;

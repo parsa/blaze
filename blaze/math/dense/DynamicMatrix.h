@@ -52,6 +52,7 @@
 #include <blaze/math/expressions/SparseMatrix.h>
 #include <blaze/math/Forward.h>
 #include <blaze/math/InitializerList.h>
+#include <blaze/math/RelaxationFlag.h>
 #include <blaze/math/shims/Clear.h>
 #include <blaze/math/shims/Conjugate.h>
 #include <blaze/math/shims/IsDefault.h>
@@ -6206,7 +6207,7 @@ void reset( DynamicMatrix<Type,SO>& m, size_t i );
 template< typename Type, bool SO >
 void clear( DynamicMatrix<Type,SO>& m );
 
-template< bool RF, typename Type, bool SO >
+template< RelaxationFlag RF, typename Type, bool SO >
 bool isDefault( const DynamicMatrix<Type,SO>& m );
 
 template< typename Type, bool SO >
@@ -6297,9 +6298,9 @@ inline void clear( DynamicMatrix<Type,SO>& m )
    if( isDefault<relaxed>( A ) ) { ... }
    \endcode
 */
-template< bool RF        // Relaxation flag
-        , typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
+template< RelaxationFlag RF  // Relaxation flag
+        , typename Type      // Data type of the matrix
+        , bool SO >          // Storage order
 inline bool isDefault( const DynamicMatrix<Type,SO>& m )
 {
    return ( m.rows() == 0UL && m.columns() == 0UL );

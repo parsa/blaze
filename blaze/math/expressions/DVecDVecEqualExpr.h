@@ -113,11 +113,11 @@ struct DVecDVecEqualExprHelper
 // a direct comparison of two floating point numbers should be avoided. This function offers the
 // possibility to compare two floating-point vectors with a certain accuracy margin.
 */
-template< bool RF       // Relaxation flag
-        , typename VT1  // Type of the left-hand side dense vector
-        , bool TF1      // Transpose flag of the left-hand side dense vector
-        , typename VT2  // Type of the right-hand side dense vector
-        , bool TF2 >    // Transpose flag of the right-hand side dense vector
+template< RelaxationFlag RF  // Relaxation flag
+        , typename VT1       // Type of the left-hand side dense vector
+        , bool TF1           // Transpose flag of the left-hand side dense vector
+        , typename VT2       // Type of the right-hand side dense vector
+        , bool TF2 >         // Transpose flag of the right-hand side dense vector
 inline auto equal( const DenseVector<VT1,TF1>& lhs, const DenseVector<VT2,TF2>& rhs )
    -> DisableIf_t< DVecDVecEqualExprHelper<VT1,VT2>::value, bool >
 {
@@ -154,11 +154,11 @@ inline auto equal( const DenseVector<VT1,TF1>& lhs, const DenseVector<VT2,TF2>& 
 // a direct comparison of two floating point numbers should be avoided. This function offers the
 // possibility to compare two floating-point vectors with a certain accuracy margin.
 */
-template< bool RF       // Relaxation flag
-        , typename VT1  // Type of the left-hand side dense vector
-        , bool TF1      // Transpose flag of the left-hand side dense vector
-        , typename VT2  // Type of the right-hand side dense vector
-        , bool TF2 >    // Transpose flag of the right-hand side dense vector
+template< RelaxationFlag RF  // Relaxation flag
+        , typename VT1       // Type of the left-hand side dense vector
+        , bool TF1           // Transpose flag of the left-hand side dense vector
+        , typename VT2       // Type of the right-hand side dense vector
+        , bool TF2 >         // Transpose flag of the right-hand side dense vector
 inline auto equal( const DenseVector<VT1,TF1>& lhs, const DenseVector<VT2,TF2>& rhs )
    -> EnableIf_t< DVecDVecEqualExprHelper<VT1,VT2>::value, bool >
 {

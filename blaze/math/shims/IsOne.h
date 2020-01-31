@@ -100,8 +100,8 @@ namespace blaze {
    complex<double> c4( 0.0, 1.0 );       //    false            |     false
    \endcode
 */
-template< bool RF          // Relaxation flag
-        , typename Type >  // Type of the given value/object
+template< RelaxationFlag RF  // Relaxation flag
+        , typename Type >    // Type of the given value/object
 BLAZE_ALWAYS_INLINE EnableIf_t< IsNumeric_v<Type>, bool > isOne( const Type& v )
 {
    return equal<RF>( v, Type(1) );
@@ -117,8 +117,8 @@ BLAZE_ALWAYS_INLINE EnableIf_t< IsNumeric_v<Type>, bool > isOne( const Type& v )
 // \param v The value/object to be tested.
 // \return \a false.
 */
-template< bool RF          // Relaxation flag
-        , typename Type >  // Type of the given value/object
+template< RelaxationFlag RF  // Relaxation flag
+        , typename Type >    // Type of the given value/object
 BLAZE_ALWAYS_INLINE DisableIf_t< IsNumeric_v<Type>, bool > isOne( const Type& v ) noexcept
 {
    MAYBE_UNUSED( v );

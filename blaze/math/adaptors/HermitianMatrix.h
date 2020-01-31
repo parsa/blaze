@@ -49,6 +49,7 @@
 #include <blaze/math/Exception.h>
 #include <blaze/math/Forward.h>
 #include <blaze/math/InversionFlag.h>
+#include <blaze/math/RelaxationFlag.h>
 #include <blaze/math/shims/Conjugate.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/shims/IsDivisor.h>
@@ -127,7 +128,7 @@ void reset( HermitianMatrix<MT,SO,DF>& m, size_t i );
 template< typename MT, bool SO, bool DF >
 void clear( HermitianMatrix<MT,SO,DF>& m );
 
-template< bool RF, typename MT, bool SO, bool DF >
+template< RelaxationFlag RF, typename MT, bool SO, bool DF >
 bool isDefault( const HermitianMatrix<MT,SO,DF>& m );
 
 template< typename MT, bool SO, bool DF >
@@ -221,10 +222,10 @@ inline void clear( HermitianMatrix<MT,SO,DF>& m )
    if( isDefault<relaxed>( A ) ) { ... }
    \endcode
 */
-template< bool RF      // Relaxation flag
-        , typename MT  // Type of the adapted matrix
-        , bool SO      // Storage order of the adapted matrix
-        , bool DF >    // Density flag
+template< RelaxationFlag RF  // Relaxation flag
+        , typename MT        // Type of the adapted matrix
+        , bool SO            // Storage order of the adapted matrix
+        , bool DF >          // Density flag
 inline bool isDefault( const HermitianMatrix<MT,SO,DF>& m )
 {
    return isDefault<RF>( m.matrix_ );

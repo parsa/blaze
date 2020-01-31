@@ -97,8 +97,8 @@ namespace blaze {
    complex<double> c3( 1.0, 0.0  );  //    false              |    false
    \endcode
 */
-template< bool RF          // Relaxation flag
-        , typename Type >  // Type of the given value/object
+template< RelaxationFlag RF  // Relaxation flag
+        , typename Type >    // Type of the given value/object
 BLAZE_ALWAYS_INLINE EnableIf_t< IsNumeric_v<Type>, bool > isZero( const Type& v ) noexcept
 {
    return isDefault<RF>( v );

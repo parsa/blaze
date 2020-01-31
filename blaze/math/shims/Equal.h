@@ -72,9 +72,9 @@ namespace blaze {
 // the limited machine accuracy into account (\a blaze::relaxed). In case the two values/objects
 // are equal, the function returns \a true, otherwise it returns \a false.
 */
-template< bool RF      // Relaxation flag
-        , typename T1  // Type of the left-hand side value/object
-        , typename T2  // Type of the right-hand side value/object
+template< RelaxationFlag RF  // Relaxation flag
+        , typename T1        // Type of the left-hand side value/object
+        , typename T2        // Type of the right-hand side value/object
         , typename = EnableIf_t< ( IsSigned_v<T1> && IsSigned_v<T2> ) ||
                                  ( IsUnsigned_v<T1> && IsUnsigned_v<T2> ) > >
 constexpr bool equal( const T1& a, const T2& b )
@@ -102,7 +102,7 @@ constexpr bool equal( const T1& a, const T2& b )
 //
 //       http://www.cygnus-software.com/papers/comparingfloats/comparingfloats.htm
 */
-template< bool RF >  // Relaxation flag
+template< RelaxationFlag RF >  // Relaxation flag
 inline bool equal( float a, float b )
 {
    if( RF == relaxed ) {
@@ -135,7 +135,7 @@ inline bool equal( float a, float b )
 //
 //       http://www.cygnus-software.com/papers/comparingfloats/comparingfloats.htm
 */
-template< bool RF >  // Relaxation flag
+template< RelaxationFlag RF >  // Relaxation flag
 inline bool equal( float a, double b )
 {
    return equal<RF>( a, static_cast<float>( b ) );
@@ -162,7 +162,7 @@ inline bool equal( float a, double b )
 //
 //       http://www.cygnus-software.com/papers/comparingfloats/comparingfloats.htm
 */
-template< bool RF >  // Relaxation flag
+template< RelaxationFlag RF >  // Relaxation flag
 inline bool equal( float a, long double b )
 {
    return equal<RF>( a, static_cast<float>( b ) );
@@ -185,7 +185,7 @@ inline bool equal( float a, long double b )
 // should be avoided. This function offers the possibility to compare two floating-point values
 // with a certain accuracy margin.
 */
-template< bool RF >  // Relaxation flag
+template< RelaxationFlag RF >  // Relaxation flag
 inline bool equal( double a, float b )
 {
    return equal<RF>( static_cast<float>( a ), b );
@@ -212,7 +212,7 @@ inline bool equal( double a, float b )
 //
 //       http://www.cygnus-software.com/papers/comparingfloats/comparingfloats.htm
 */
-template< bool RF >  // Relaxation flag
+template< RelaxationFlag RF >  // Relaxation flag
 inline bool equal( double a, double b )
 {
    if( RF == relaxed ) {
@@ -245,7 +245,7 @@ inline bool equal( double a, double b )
 //
 //       http://www.cygnus-software.com/papers/comparingfloats/comparingfloats.htm
 */
-template< bool RF >  // Relaxation flag
+template< RelaxationFlag RF >  // Relaxation flag
 inline bool equal( double a, long double b )
 {
    return equal<RF>( a, static_cast<double>( b ) );
@@ -272,7 +272,7 @@ inline bool equal( double a, long double b )
 //
 //       http://www.cygnus-software.com/papers/comparingfloats/comparingfloats.htm
 */
-template< bool RF >  // Relaxation flag
+template< RelaxationFlag RF >  // Relaxation flag
 inline bool equal( long double a, float b )
 {
    return equal<RF>( static_cast<float>( a ), b );
@@ -299,7 +299,7 @@ inline bool equal( long double a, float b )
 //
 //       http://www.cygnus-software.com/papers/comparingfloats/comparingfloats.htm
 */
-template< bool RF >  // Relaxation flag
+template< RelaxationFlag RF >  // Relaxation flag
 inline bool equal( long double a, double b )
 {
    return equal<RF>( static_cast<double>( a ), b );
@@ -326,7 +326,7 @@ inline bool equal( long double a, double b )
 //
 //       http://www.cygnus-software.com/papers/comparingfloats/comparingfloats.htm
 */
-template< bool RF >  // Relaxation flag
+template< RelaxationFlag RF >  // Relaxation flag
 inline bool equal( long double a, long double b )
 {
    if( RF == relaxed ) {
@@ -354,9 +354,9 @@ inline bool equal( long double a, long double b )
 // real part of the complex value with the scalar. In case these two values match and in case
 // the imaginary part is zero, the function returns \a true. Otherwise it returns \a false.
 */
-template< bool RF        // Relaxation flag
-        , typename T1    // Type of the left-hand side complex value
-        , typename T2 >  // Type of the right-hand side scalar value
+template< RelaxationFlag RF  // Relaxation flag
+        , typename T1        // Type of the left-hand side complex value
+        , typename T2 >      // Type of the right-hand side scalar value
 inline bool equal( complex<T1> a, T2 b )
 {
    return equal<RF>( real( a ), b ) && equal<RF>( imag( a ), T1() );
@@ -378,9 +378,9 @@ inline bool equal( complex<T1> a, T2 b )
 // scalar with the real part of the complex value. In case these two values match and in case
 // the imaginary part is zero, the function returns \a true. Otherwise it returns \a false.
 */
-template< bool RF        // Relaxation flag
-        , typename T1    // Type of the left-hand side scalar value
-        , typename T2 >  // Type of the right-hand side complex value
+template< RelaxationFlag RF  // Relaxation flag
+        , typename T1        // Type of the left-hand side scalar value
+        , typename T2 >      // Type of the right-hand side complex value
 inline bool equal( T1 a, complex<T2> b )
 {
    return equal<RF>( a, real( b ) ) && equal<RF>( imag( b ), T2() );
@@ -402,9 +402,9 @@ inline bool equal( T1 a, complex<T2> b )
 // a direct comparison of two floating point numbers should be avoided. This function offers the
 // possibility to compare two floating-point values with a certain accuracy margin.
 */
-template< bool RF        // Relaxation flag
-        , typename T1    // Type of the left-hand side complex value
-        , typename T2 >  // Type of the right-hand side complex value
+template< RelaxationFlag RF  // Relaxation flag
+        , typename T1        // Type of the left-hand side complex value
+        , typename T2 >      // Type of the right-hand side complex value
 inline bool equal( complex<T1> a, complex<T2> b )
 {
    return equal<RF>( real( a ), real( b ) ) && equal<RF>( imag( a ), imag( b ) );

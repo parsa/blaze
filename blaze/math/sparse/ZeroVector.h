@@ -45,6 +45,7 @@
 #include <blaze/math/expressions/Expression.h>
 #include <blaze/math/expressions/SparseVector.h>
 #include <blaze/math/Forward.h>
+#include <blaze/math/RelaxationFlag.h>
 #include <blaze/math/shims/IsZero.h>
 #include <blaze/math/sparse/ValueIndexPair.h>
 #include <blaze/math/traits/AddTrait.h>
@@ -803,7 +804,7 @@ constexpr void reset( ZeroVector<Type,TF>& m ) noexcept;
 template< typename Type, bool TF >
 constexpr void clear( ZeroVector<Type,TF>& m ) noexcept;
 
-template< bool RF, typename Type, bool TF >
+template< RelaxationFlag RF, typename Type, bool TF >
 constexpr bool isDefault( const ZeroVector<Type,TF>& m ) noexcept;
 
 template< typename Type, bool TF >
@@ -871,9 +872,9 @@ constexpr void clear( ZeroVector<Type,TF>& v ) noexcept
    if( isDefault<relaxed>( z ) ) { ... }
    \endcode
 */
-template< bool RF        // Relaxation flag
-        , typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
+template< RelaxationFlag RF  // Relaxation flag
+        , typename Type      // Data type of the vector
+        , bool TF >          // Transpose flag
 constexpr bool isDefault( const ZeroVector<Type,TF>& v ) noexcept
 {
    return ( v.size() == 0UL );

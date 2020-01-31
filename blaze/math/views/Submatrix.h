@@ -68,6 +68,7 @@
 #include <blaze/math/expressions/VecTVecMultExpr.h>
 #include <blaze/math/InversionFlag.h>
 #include <blaze/math/ReductionFlag.h>
+#include <blaze/math/RelaxationFlag.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/shims/Serial.h>
 #include <blaze/math/typetraits/HasConstDataAccess.h>
@@ -2575,11 +2576,11 @@ inline void clear( Submatrix<MT,AF,SO,DF,CSAs...>&& sm )
    if( isDefault<relaxed>( submatrix( A, 12UL, 13UL, 22UL, 33UL ) ) ) { ... }
    \endcode
 */
-template< bool RF           // Relaxation flag
-        , typename MT       // Type of the dense matrix
-        , AlignmentFlag AF  // Alignment flag
-        , bool SO           // Storage order
-        , size_t... CSAs >  // Compile time submatrix arguments
+template< RelaxationFlag RF  // Relaxation flag
+        , typename MT        // Type of the dense matrix
+        , AlignmentFlag AF   // Alignment flag
+        , bool SO            // Storage order
+        , size_t... CSAs >   // Compile time submatrix arguments
 inline bool isDefault( const Submatrix<MT,AF,SO,true,CSAs...>& sm )
 {
    using blaze::isDefault;
@@ -2629,11 +2630,11 @@ inline bool isDefault( const Submatrix<MT,AF,SO,true,CSAs...>& sm )
    if( isDefault<relaxed>( submatrix( A, 12UL, 13UL, 22UL, 33UL ) ) ) { ... }
    \endcode
 */
-template< bool RF           // Relaxation flag
-        , typename MT       // Type of the sparse matrix
-        , AlignmentFlag AF  // Alignment flag
-        , bool SO           // Storage order
-        , size_t... CSAs >  // Compile time submatrix arguments
+template< RelaxationFlag RF  // Relaxation flag
+        , typename MT        // Type of the sparse matrix
+        , AlignmentFlag AF   // Alignment flag
+        , bool SO            // Storage order
+        , size_t... CSAs >   // Compile time submatrix arguments
 inline bool isDefault( const Submatrix<MT,AF,SO,false,CSAs...>& sm )
 {
    using blaze::isDefault;

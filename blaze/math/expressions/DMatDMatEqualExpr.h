@@ -113,9 +113,9 @@ struct DMatDMatEqualExprHelper
 // a direct comparison of two floating point numbers should be avoided. This function offers the
 // possibility to compare two floating-point matrices with a certain accuracy margin.
 */
-template< bool RF         // Relaxation flag
-        , typename MT1    // Type of the left-hand side dense matrix
-        , typename MT2 >  // Type of the right-hand side dense matrix
+template< RelaxationFlag RF  // Relaxation flag
+        , typename MT1       // Type of the left-hand side dense matrix
+        , typename MT2 >     // Type of the right-hand side dense matrix
 inline auto equal( const DenseMatrix<MT1,false>& lhs, const DenseMatrix<MT2,false>& rhs )
    -> DisableIf_t< DMatDMatEqualExprHelper<MT1,MT2>::value, bool >
 {
@@ -157,9 +157,9 @@ inline auto equal( const DenseMatrix<MT1,false>& lhs, const DenseMatrix<MT2,fals
 // a direct comparison of two floating point numbers should be avoided. This function offers the
 // possibility to compare two floating-point matrices with a certain accuracy margin.
 */
-template< bool RF         // Relaxation flag
-        , typename MT1    // Type of the left-hand side dense matrix
-        , typename MT2 >  // Type of the right-hand side dense matrix
+template< RelaxationFlag RF  // Relaxation flag
+        , typename MT1       // Type of the left-hand side dense matrix
+        , typename MT2 >     // Type of the right-hand side dense matrix
 inline auto equal( const DenseMatrix<MT1,false>& lhs, const DenseMatrix<MT2,false>& rhs )
    -> EnableIf_t< DMatDMatEqualExprHelper<MT1,MT2>::value, bool >
 {
@@ -226,9 +226,9 @@ inline auto equal( const DenseMatrix<MT1,false>& lhs, const DenseMatrix<MT2,fals
 // a direct comparison of two floating point numbers should be avoided. This function offers the
 // possibility to compare two floating-point matrices with a certain accuracy margin.
 */
-template< bool RF         // Relaxation flag
-        , typename MT1    // Type of the left-hand side dense matrix
-        , typename MT2 >  // Type of the right-hand side dense matrix
+template< RelaxationFlag RF  // Relaxation flag
+        , typename MT1       // Type of the left-hand side dense matrix
+        , typename MT2 >     // Type of the right-hand side dense matrix
 inline auto equal( const DenseMatrix<MT1,true>& lhs, const DenseMatrix<MT2,true>& rhs )
    -> DisableIf_t< DMatDMatEqualExprHelper<MT1,MT2>::value, bool >
 {
@@ -270,9 +270,9 @@ inline auto equal( const DenseMatrix<MT1,true>& lhs, const DenseMatrix<MT2,true>
 // a direct comparison of two floating point numbers should be avoided. This function offers the
 // possibility to compare two floating-point matrices with a certain accuracy margin.
 */
-template< bool RF         // Relaxation flag
-        , typename MT1    // Type of the left-hand side dense matrix
-        , typename MT2 >  // Type of the right-hand side dense matrix
+template< RelaxationFlag RF  // Relaxation flag
+        , typename MT1       // Type of the left-hand side dense matrix
+        , typename MT2 >     // Type of the right-hand side dense matrix
 inline auto equal( const DenseMatrix<MT1,true>& lhs, const DenseMatrix<MT2,true>& rhs )
    -> EnableIf_t< DMatDMatEqualExprHelper<MT1,MT2>::value, bool >
 {
@@ -339,10 +339,10 @@ inline auto equal( const DenseMatrix<MT1,true>& lhs, const DenseMatrix<MT2,true>
 // a direct comparison of two floating point numbers should be avoided. This function offers the
 // possibility to compare two floating-point matrices with a certain accuracy margin.
 */
-template< bool RF       // Relaxation flag
-        , typename MT1  // Type of the left-hand side dense matrix
-        , typename MT2  // Type of the right-hand side dense matrix
-        , bool SO >     // Storage order
+template< RelaxationFlag RF  // Relaxation flag
+        , typename MT1       // Type of the left-hand side dense matrix
+        , typename MT2       // Type of the right-hand side dense matrix
+        , bool SO >          // Storage order
 inline bool equal( const DenseMatrix<MT1,SO>& lhs, const DenseMatrix<MT2,!SO>& rhs )
 {
    using CT1 = CompositeType_t<MT1>;

@@ -48,6 +48,7 @@
 #include <blaze/math/expressions/DenseMatrix.h>
 #include <blaze/math/expressions/Expression.h>
 #include <blaze/math/Forward.h>
+#include <blaze/math/RelaxationFlag.h>
 #include <blaze/math/shims/Clear.h>
 #include <blaze/math/shims/Conjugate.h>
 #include <blaze/math/shims/IsDefault.h>
@@ -1423,7 +1424,7 @@ constexpr void reset( UniformMatrix<Type,SO>& m );
 template< typename Type, bool SO >
 constexpr void clear( UniformMatrix<Type,SO>& m );
 
-template< bool RF, typename Type, bool SO >
+template< RelaxationFlag RF, typename Type, bool SO >
 constexpr bool isDefault( const UniformMatrix<Type,SO>& m );
 
 template< typename Type, bool SO >
@@ -1492,9 +1493,9 @@ constexpr void clear( UniformMatrix<Type,SO>& m )
    if( isDefault<relaxed>( A ) ) { ... }
    \endcode
 */
-template< bool RF        // Relaxation flag
-        , typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
+template< RelaxationFlag RF  // Relaxation flag
+        , typename Type      // Data type of the matrix
+        , bool SO >          // Storage order
 constexpr bool isDefault( const UniformMatrix<Type,SO>& m )
 {
    return ( m.rows() == 0UL && m.columns() == 0UL );

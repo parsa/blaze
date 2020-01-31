@@ -5792,7 +5792,7 @@ void reset( CompressedMatrix<Type,SO>& m, size_t i );
 template< typename Type, bool SO >
 void clear( CompressedMatrix<Type,SO>& m );
 
-template< bool RF, typename Type, bool SO >
+template< RelaxationFlag RF, typename Type, bool SO >
 bool isDefault( const CompressedMatrix<Type,SO>& m );
 
 template< typename Type, bool SO >
@@ -5883,9 +5883,9 @@ inline void clear( CompressedMatrix<Type,SO>& m )
    if( isDefault<relaxed>( A ) ) { ... }
    \endcode
 */
-template< bool RF        // Relaxation flag
-        , typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
+template< RelaxationFlag RF  // Relaxation flag
+        , typename Type      // Data type of the matrix
+        , bool SO >          // Storage order
 inline bool isDefault( const CompressedMatrix<Type,SO>& m )
 {
    return ( m.rows() == 0UL && m.columns() == 0UL );

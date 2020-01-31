@@ -58,7 +58,6 @@
 #include <blaze/math/expressions/SparseMatrix.h>
 #include <blaze/math/expressions/View.h>
 #include <blaze/math/InitializerList.h>
-#include <blaze/math/RelaxationFlag.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/sparse/SparseElement.h>
 #include <blaze/math/traits/AddTrait.h>

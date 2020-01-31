@@ -2337,7 +2337,7 @@ void reset( CompressedVector<Type,TF>& v );
 template< typename Type, bool TF >
 void clear( CompressedVector<Type,TF>& v );
 
-template< bool RF, typename Type, bool TF >
+template< RelaxationFlag RF, typename Type, bool TF >
 bool isDefault( const CompressedVector<Type,TF>& v );
 
 template< typename Type, bool TF >
@@ -2405,9 +2405,9 @@ inline void clear( CompressedVector<Type,TF>& v )
    if( isDefault<relaxed>( a ) ) { ... }
    \endcode
 */
-template< bool RF        // Relaxation flag
-        , typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
+template< RelaxationFlag RF  // Relaxation flag
+        , typename Type      // Data type of the vector
+        , bool TF >          // Transpose flag
 inline bool isDefault( const CompressedVector<Type,TF>& v )
 {
    return ( v.size() == 0UL );

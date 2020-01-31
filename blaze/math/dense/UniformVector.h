@@ -47,6 +47,7 @@
 #include <blaze/math/Exception.h>
 #include <blaze/math/expressions/DenseVector.h>
 #include <blaze/math/expressions/Expression.h>
+#include <blaze/math/RelaxationFlag.h>
 #include <blaze/math/shims/Clear.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/SIMD.h>
@@ -1177,7 +1178,7 @@ constexpr void reset( UniformVector<Type,TF>& v );
 template< typename Type, bool TF >
 constexpr void clear( UniformVector<Type,TF>& v );
 
-template< bool RF, typename Type, bool TF >
+template< RelaxationFlag RF, typename Type, bool TF >
 constexpr bool isDefault( const UniformVector<Type,TF>& v );
 
 template< typename Type, bool TF >
@@ -1245,9 +1246,9 @@ constexpr void clear( UniformVector<Type,TF>& v )
    if( isDefault<relaxed>( a ) ) { ... }
    \endcode
 */
-template< bool RF        // Relaxation flag
-        , typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
+template< RelaxationFlag RF  // Relaxation flag
+        , typename Type      // Data type of the vector
+        , bool TF >          // Transpose flag
 constexpr bool isDefault( const UniformVector<Type,TF>& v )
 {
    return ( v.size() == 0UL );

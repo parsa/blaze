@@ -71,10 +71,10 @@ namespace blaze {
 // function offers the possibility to compare two floating-point matrices with a certain accuracy
 // margin.
 */
-template< bool RF         // Relaxation flag
-        , typename MT1    // Type of the left-hand side dense matrix
-        , bool SO         // Storage order of the left-hand side dense matrix
-        , typename MT2 >  // Type of the right-hand side sparse matrix
+template< RelaxationFlag RF  // Relaxation flag
+        , typename MT1       // Type of the left-hand side dense matrix
+        , bool SO            // Storage order of the left-hand side dense matrix
+        , typename MT2 >     // Type of the right-hand side sparse matrix
 inline bool equal( const DenseMatrix<MT1,SO>& lhs, const SparseMatrix<MT2,false>& rhs )
 {
    using CT1 = CompositeType_t<MT1>;
@@ -125,10 +125,10 @@ inline bool equal( const DenseMatrix<MT1,SO>& lhs, const SparseMatrix<MT2,false>
 // function offers the possibility to compare two floating-point matrices with a certain accuracy
 // margin.
 */
-template< bool RF         // Relaxation flag
-        , typename MT1    // Type of the left-hand side dense matrix
-        , bool SO         // Storage order of the left-hand side dense matrix
-        , typename MT2 >  // Type of the right-hand side sparse matrix
+template< RelaxationFlag RF  // Relaxation flag
+        , typename MT1       // Type of the left-hand side dense matrix
+        , bool SO            // Storage order of the left-hand side dense matrix
+        , typename MT2 >     // Type of the right-hand side sparse matrix
 inline bool equal( const DenseMatrix<MT1,SO>& lhs, const SparseMatrix<MT2,true>& rhs )
 {
    using CT1 = CompositeType_t<MT1>;
@@ -179,11 +179,11 @@ inline bool equal( const DenseMatrix<MT1,SO>& lhs, const SparseMatrix<MT2,true>&
 // function offers the possibility to compare two floating-point matrices with a certain accuracy
 // margin.
 */
-template< bool RF       // Relaxation flag
-        , typename MT1  // Type of the left-hand side sparse matrix
-        , bool SO1      // Storage order of the left-hand side sparse matrix
-        , typename MT2  // Type of the right-hand side dense matrix
-        , bool SO2 >    // Storage order of the right-hand side dense matrix
+template< RelaxationFlag RF  // Relaxation flag
+        , typename MT1       // Type of the left-hand side sparse matrix
+        , bool SO1           // Storage order of the left-hand side sparse matrix
+        , typename MT2       // Type of the right-hand side dense matrix
+        , bool SO2 >         // Storage order of the right-hand side dense matrix
 inline bool equal( const SparseMatrix<MT1,SO1>& lhs, const DenseMatrix<MT2,SO2>& rhs )
 {
    return equal<RF>( rhs, lhs );

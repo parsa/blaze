@@ -69,9 +69,9 @@ namespace blaze {
 // a direct comparison of two floating point numbers should be avoided. This function offers the
 // possibility to compare two floating-point matrices with a certain accuracy margin.
 */
-template< bool RF         // Relaxation flag
-        , typename MT1    // Type of the left-hand side sparse matrix
-        , typename MT2 >  // Type of the right-hand side sparse matrix
+template< RelaxationFlag RF  // Relaxation flag
+        , typename MT1       // Type of the left-hand side sparse matrix
+        , typename MT2 >     // Type of the right-hand side sparse matrix
 inline bool equal( const SparseMatrix<MT1,false>& lhs, const SparseMatrix<MT2,false>& rhs )
 {
    using CT1 = CompositeType_t<MT1>;
@@ -148,9 +148,9 @@ inline bool equal( const SparseMatrix<MT1,false>& lhs, const SparseMatrix<MT2,fa
 // a direct comparison of two floating point numbers should be avoided. This function offers the
 // possibility to compare two floating-point matrices with a certain accuracy margin.
 */
-template< bool RF         // Relaxation flag
-        , typename MT1    // Type of the left-hand side sparse matrix
-        , typename MT2 >  // Type of the right-hand side sparse matrix
+template< RelaxationFlag RF  // Relaxation flag
+        , typename MT1       // Type of the left-hand side sparse matrix
+        , typename MT2 >     // Type of the right-hand side sparse matrix
 inline bool equal( const SparseMatrix<MT1,true>& lhs, const SparseMatrix<MT2,true>& rhs )
 {
    using CT1 = CompositeType_t<MT1>;
@@ -227,10 +227,10 @@ inline bool equal( const SparseMatrix<MT1,true>& lhs, const SparseMatrix<MT2,tru
 // a direct comparison of two floating point numbers should be avoided. This function offers the
 // possibility to compare two floating-point matrices with a certain accuracy margin.
 */
-template< bool RF       // Relaxation flag
-        , typename MT1  // Type of the left-hand side sparse matrix
-        , typename MT2  // Type of the right-hand side sparse matrix
-        , bool SO >     // Storage order
+template< RelaxationFlag RF  // Relaxation flag
+        , typename MT1       // Type of the left-hand side sparse matrix
+        , typename MT2       // Type of the right-hand side sparse matrix
+        , bool SO >          // Storage order
 inline bool equal( const SparseMatrix<MT1,SO>& lhs, const SparseMatrix<MT2,!SO>& rhs )
 {
    const OppositeType_t<MT2> tmp( ~rhs );

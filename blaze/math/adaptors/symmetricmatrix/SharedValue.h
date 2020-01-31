@@ -41,6 +41,7 @@
 //*************************************************************************************************
 
 #include <memory>
+#include <blaze/math/RelaxationFlag.h>
 #include <blaze/util/constraints/Const.h>
 #include <blaze/util/constraints/Pointer.h>
 #include <blaze/util/constraints/Reference.h>
@@ -297,10 +298,10 @@ inline bool operator!=( const SharedValue<T1>& lhs, const SharedValue<T2>& rhs )
 //*************************************************************************************************
 /*!\name SharedValue global functions */
 //@{
-template< bool RF, typename Type >
+template< RelaxationFlag RF, typename Type >
 bool isDefault( const SharedValue<Type>& value );
 
-template< bool RF, typename T1, typename T2 >
+template< RelaxationFlag RF, typename T1, typename T2 >
 bool equal( const SharedValue<T1>& lhs, const SharedValue<T2>& rhs );
 //@}
 //*************************************************************************************************
@@ -316,7 +317,7 @@ bool equal( const SharedValue<T1>& lhs, const SharedValue<T2>& rhs );
 // This function checks whether the given shared value is in default state. In case it is in
 // default state, the function returns \a true, otherwise it returns \a false.
 */
-template< bool RF, typename Type >
+template< RelaxationFlag RF, typename Type >
 inline bool isDefault( const SharedValue<Type>& value )
 {
    using blaze::isDefault;
@@ -338,7 +339,7 @@ inline bool isDefault( const SharedValue<Type>& value )
 // machine accuracy into account. In case the two values are equal, the function returns
 // \a true, otherwise it returns \a false.
 */
-template< bool RF, typename T1, typename T2 >
+template< RelaxationFlag RF, typename T1, typename T2 >
 inline bool equal( const SharedValue<T1>& a, const SharedValue<T2>& b )
 {
    return equal<RF>( *a, *b );

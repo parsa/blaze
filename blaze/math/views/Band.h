@@ -60,6 +60,7 @@
 #include <blaze/math/expressions/VecExpandExpr.h>
 #include <blaze/math/expressions/VecTVecMapExpr.h>
 #include <blaze/math/expressions/VecTVecMultExpr.h>
+#include <blaze/math/RelaxationFlag.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/typetraits/HasConstDataAccess.h>
 #include <blaze/math/typetraits/HasMutableDataAccess.h>
@@ -1137,7 +1138,7 @@ inline void clear( Band<MT,TF,DF,MF,CBAs...>&& band )
    if( isDefault<relaxed>( band( A, 0UL ) ) ) { ... }
    \endcode
 */
-template< bool RF              // Relaxation flag
+template< RelaxationFlag RF    // Relaxation flag
         , typename MT          // Type of the dense matrix
         , bool TF              // Transpose flag
         , bool MF              // Multiplication flag
@@ -1180,7 +1181,7 @@ inline bool isDefault( const Band<MT,TF,true,MF,CBAs...>& band )
    if( isDefault<relaxed>( band( A, 0UL ) ) ) { ... }
    \endcode
 */
-template< bool RF              // Relaxation flag
+template< RelaxationFlag RF    // Relaxation flag
         , typename MT          // Type of the sparse matrix
         , bool TF              // Transpose flag
         , bool MF              // Multiplication flag

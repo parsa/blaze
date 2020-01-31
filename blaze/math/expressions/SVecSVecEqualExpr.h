@@ -69,11 +69,11 @@ namespace blaze {
 // a direct comparison of two floating point numbers should be avoided. This function offers the
 // possibility to compare two floating-point vectors with a certain accuracy margin.
 */
-template< bool RF       // Relaxation flag
-        , typename VT1  // Type of the left-hand side sparse vector
-        , bool TF1      // Transpose flag of the left-hand side sparse vector
-        , typename VT2  // Type of the right-hand side sparse vector
-        , bool TF2 >    // Transpose flag of the right-hand side sparse vector
+template< RelaxationFlag RF  // Relaxation flag
+        , typename VT1       // Type of the left-hand side sparse vector
+        , bool TF1           // Transpose flag of the left-hand side sparse vector
+        , typename VT2       // Type of the right-hand side sparse vector
+        , bool TF2 >         // Transpose flag of the right-hand side sparse vector
 inline bool equal( const SparseVector<VT1,TF1>& lhs, const SparseVector<VT2,TF2>& rhs )
 {
    using CT1 = CompositeType_t<VT1>;

@@ -62,6 +62,7 @@
 #include <blaze/math/expressions/VecTVecMapExpr.h>
 #include <blaze/math/expressions/VecTVecMultExpr.h>
 #include <blaze/math/functors/Bind2nd.h>
+#include <blaze/math/RelaxationFlag.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/typetraits/HasConstDataAccess.h>
 #include <blaze/math/typetraits/HasMutableDataAccess.h>
@@ -1065,11 +1066,11 @@ inline void clear( Row<MT,SO,DF,SF,CRAs...>&& row )
    if( isDefault<relaxed>( row( A, 0UL ) ) ) { ... }
    \endcode
 */
-template< bool RF           // Relaxation flag
-        , typename MT       // Type of the matrix
-        , bool SO           // Storage order
-        , bool SF           // Symmetry flag
-        , size_t... CRAs >  // Compile time row arguments
+template< RelaxationFlag RF  // Relaxation flag
+        , typename MT        // Type of the matrix
+        , bool SO            // Storage order
+        , bool SF            // Symmetry flag
+        , size_t... CRAs >   // Compile time row arguments
 inline bool isDefault( const Row<MT,SO,true,SF,CRAs...>& row )
 {
    using blaze::isDefault;
@@ -1108,11 +1109,11 @@ inline bool isDefault( const Row<MT,SO,true,SF,CRAs...>& row )
    if( isDefault<relaxed>( row( A, 0UL ) ) ) { ... }
    \endcode
 */
-template< bool RF           // Relaxation flag
-        , typename MT       // Type of the matrix
-        , bool SO           // Storage order
-        , bool SF           // Symmetry flag
-        , size_t... CRAs >  // Compile time row arguments
+template< RelaxationFlag RF  // Relaxation flag
+        , typename MT        // Type of the matrix
+        , bool SO            // Storage order
+        , bool SF            // Symmetry flag
+        , size_t... CRAs >   // Compile time row arguments
 inline bool isDefault( const Row<MT,SO,false,SF,CRAs...>& row )
 {
    using blaze::isDefault;

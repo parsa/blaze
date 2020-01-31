@@ -487,16 +487,16 @@ void reset( const MatrixAccessProxy<MT>& proxy );
 template< typename MT >
 void clear( const MatrixAccessProxy<MT>& proxy );
 
-template< bool RF, typename MT >
+template< RelaxationFlag RF, typename MT >
 bool isDefault( const MatrixAccessProxy<MT>& proxy );
 
-template< bool RF, typename MT >
+template< RelaxationFlag RF, typename MT >
 bool isReal( const MatrixAccessProxy<MT>& proxy );
 
-template< bool RF, typename MT >
+template< RelaxationFlag RF, typename MT >
 bool isZero( const MatrixAccessProxy<MT>& proxy );
 
-template< bool RF, typename MT >
+template< RelaxationFlag RF, typename MT >
 bool isOne( const MatrixAccessProxy<MT>& proxy );
 
 template< typename MT >
@@ -567,7 +567,7 @@ inline void clear( const MatrixAccessProxy<MT>& proxy )
 // This function checks whether the element represented by the access proxy is in default state.
 // In case it is in default state, the function returns \a true, otherwise it returns \a false.
 */
-template< bool RF, typename MT >
+template< RelaxationFlag RF, typename MT >
 inline bool isDefault( const MatrixAccessProxy<MT>& proxy )
 {
    using blaze::isDefault;
@@ -589,7 +589,7 @@ inline bool isDefault( const MatrixAccessProxy<MT>& proxy )
 // the element is of complex type, the function returns \a true if the imaginary part is equal
 // to 0. Otherwise it returns \a false.
 */
-template< bool RF, typename MT >
+template< RelaxationFlag RF, typename MT >
 inline bool isReal( const MatrixAccessProxy<MT>& proxy )
 {
    using blaze::isReal;
@@ -609,7 +609,7 @@ inline bool isReal( const MatrixAccessProxy<MT>& proxy )
 // This function checks whether the element represented by the access proxy represents the numeric
 // value 0. In case it is 0, the function returns \a true, otherwise it returns \a false.
 */
-template< bool RF, typename MT >
+template< RelaxationFlag RF, typename MT >
 inline bool isZero( const MatrixAccessProxy<MT>& proxy )
 {
    using blaze::isZero;
@@ -629,7 +629,7 @@ inline bool isZero( const MatrixAccessProxy<MT>& proxy )
 // This function checks whether the element represented by the access proxy represents the numeric
 // value 1. In case it is 1, the function returns \a true, otherwise it returns \a false.
 */
-template< bool RF, typename MT >
+template< RelaxationFlag RF, typename MT >
 inline bool isOne( const MatrixAccessProxy<MT>& proxy )
 {
    using blaze::isOne;

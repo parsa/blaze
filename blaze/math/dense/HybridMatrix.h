@@ -52,6 +52,7 @@
 #include <blaze/math/expressions/SparseMatrix.h>
 #include <blaze/math/Forward.h>
 #include <blaze/math/InitializerList.h>
+#include <blaze/math/RelaxationFlag.h>
 #include <blaze/math/shims/Clear.h>
 #include <blaze/math/shims/Conjugate.h>
 #include <blaze/math/shims/IsDefault.h>
@@ -6324,7 +6325,7 @@ void reset( HybridMatrix<Type,M,N,SO>& m, size_t i );
 template< typename Type, size_t M, size_t N, bool SO >
 void clear( HybridMatrix<Type,M,N,SO>& m );
 
-template< bool RF, typename Type, size_t M, size_t N, bool SO >
+template< RelaxationFlag RF, typename Type, size_t M, size_t N, bool SO >
 bool isDefault( const HybridMatrix<Type,M,N,SO>& m );
 
 template< typename Type, size_t M, size_t N, bool SO >
@@ -6421,11 +6422,11 @@ inline void clear( HybridMatrix<Type,M,N,SO>& m )
    if( isDefault<relaxed>( A ) ) { ... }
    \endcode
 */
-template< bool RF        // Relaxation flag
-        , typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N       // Number of columns
-        , bool SO >      // Storage order
+template< RelaxationFlag RF  // Relaxation flag
+        , typename Type      // Data type of the matrix
+        , size_t M           // Number of rows
+        , size_t N           // Number of columns
+        , bool SO >          // Storage order
 inline bool isDefault( const HybridMatrix<Type,M,N,SO>& m )
 {
    return ( m.rows() == 0UL && m.columns() == 0UL );

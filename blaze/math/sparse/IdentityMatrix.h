@@ -49,6 +49,7 @@
 #include <blaze/math/expressions/SparseMatrix.h>
 #include <blaze/math/expressions/SparseVector.h>
 #include <blaze/math/Forward.h>
+#include <blaze/math/RelaxationFlag.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/sparse/ValueIndexPair.h>
 #include <blaze/math/traits/DeclDiagTrait.h>
@@ -1117,7 +1118,7 @@ constexpr void reset( IdentityMatrix<Type,SO>& m, size_t i ) noexcept;
 template< typename Type, bool SO >
 constexpr void clear( IdentityMatrix<Type,SO>& m ) noexcept;
 
-template< bool RF, typename Type, bool SO >
+template< RelaxationFlag RF, typename Type, bool SO >
 constexpr bool isDefault( const IdentityMatrix<Type,SO>& m ) noexcept;
 
 template< typename Type, bool SO >
@@ -1208,9 +1209,9 @@ constexpr void clear( IdentityMatrix<Type,SO>& m ) noexcept
    if( isDefault<relaxed>( I ) ) { ... }
    \endcode
 */
-template< bool RF        // Relaxation flag
-        , typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
+template< RelaxationFlag RF  // Relaxation flag
+        , typename Type      // Data type of the matrix
+        , bool SO >          // Storage order
 constexpr bool isDefault( const IdentityMatrix<Type,SO>& m ) noexcept
 {
    return ( m.rows() == 0UL );

@@ -55,6 +55,7 @@
 #include <blaze/math/Forward.h>
 #include <blaze/math/InitializerList.h>
 #include <blaze/math/PaddingFlag.h>
+#include <blaze/math/RelaxationFlag.h>
 #include <blaze/math/shims/Clear.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/shims/NextMultiple.h>
@@ -5076,7 +5077,7 @@ void reset( CustomVector<Type,AF,PF,TF,RT>& v );
 template< typename Type, AlignmentFlag AF, PaddingFlag PF, bool TF, typename RT >
 void clear( CustomVector<Type,AF,PF,TF,RT>& v );
 
-template< bool RF, typename Type, AlignmentFlag AF, PaddingFlag PF, bool TF, typename RT >
+template< RelaxationFlag RF, typename Type, AlignmentFlag AF, PaddingFlag PF, bool TF, typename RT >
 bool isDefault( const CustomVector<Type,AF,PF,TF,RT>& v );
 
 template< typename Type, AlignmentFlag AF, PaddingFlag PF, bool TF, typename RT >
@@ -5154,12 +5155,12 @@ inline void clear( CustomVector<Type,AF,PF,TF,RT>& v )
    if( isDefault<relaxed>( a ) ) { ... }
    \endcode
 */
-template< bool RF           // Relaxation flag
-        , typename Type     // Data type of the vector
-        , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF    // Padding flag
-        , bool TF           // Transpose flag
-        , typename RT >     // Result type
+template< RelaxationFlag RF  // Relaxation flag
+        , typename Type      // Data type of the vector
+        , AlignmentFlag AF   // Alignment flag
+        , PaddingFlag PF     // Padding flag
+        , bool TF            // Transpose flag
+        , typename RT >      // Result type
 inline bool isDefault( const CustomVector<Type,AF,PF,TF,RT>& v )
 {
    return ( v.size() == 0UL );

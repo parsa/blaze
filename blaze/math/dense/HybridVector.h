@@ -45,6 +45,7 @@
 #include <blaze/math/Forward.h>
 #include <blaze/math/Infinity.h>
 #include <blaze/math/InitializerList.h>
+#include <blaze/math/RelaxationFlag.h>
 #include <blaze/math/shims/Clear.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/shims/NextMultiple.h>
@@ -2670,7 +2671,7 @@ constexpr void reset( HybridVector<Type,N,TF>& v );
 template< typename Type, size_t N, bool TF >
 constexpr void clear( HybridVector<Type,N,TF>& v );
 
-template< bool RF, typename Type, size_t N, bool TF >
+template< RelaxationFlag RF, typename Type, size_t N, bool TF >
 bool isDefault( const HybridVector<Type,N,TF>& v );
 
 template< typename Type, size_t N, bool TF >
@@ -2740,10 +2741,10 @@ constexpr void clear( HybridVector<Type,N,TF>& v )
    if( isDefault<relaxed>( a ) ) { ... }
    \endcode
 */
-template< bool RF        // Relaxation flag
-        , typename Type  // Data type of the vector
-        , size_t N       // Number of elements
-        , bool TF >      // Transpose flag
+template< RelaxationFlag RF  // Relaxation flag
+        , typename Type      // Data type of the vector
+        , size_t N           // Number of elements
+        , bool TF >          // Transpose flag
 inline bool isDefault( const HybridVector<Type,N,TF>& v )
 {
    return ( v.size() == 0UL );

@@ -60,6 +60,7 @@
 #include <blaze/math/expressions/VecVecMapExpr.h>
 #include <blaze/math/expressions/VecVecMultExpr.h>
 #include <blaze/math/expressions/VecVecSubExpr.h>
+#include <blaze/math/RelaxationFlag.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/shims/Serial.h>
 #include <blaze/math/typetraits/HasConstDataAccess.h>
@@ -1645,11 +1646,11 @@ inline void clear( Subvector<VT,AF,TF,DF,CSAs...>&& sv )
    if( isDefault<relaxed>( subvector( v, 10UL, 20UL ) ) ) { ... }
    \endcode
 */
-template< bool RF           // Relaxation flag
-        , typename VT       // Type of the dense vector
-        , AlignmentFlag AF  // Alignment flag
-        , bool TF           // Transpose flag
-        , size_t... CSAs >  // Compile time subvector arguments
+template< RelaxationFlag RF  // Relaxation flag
+        , typename VT        // Type of the dense vector
+        , AlignmentFlag AF   // Alignment flag
+        , bool TF            // Transpose flag
+        , size_t... CSAs >   // Compile time subvector arguments
 inline bool isDefault( const Subvector<VT,AF,TF,true,CSAs...>& sv )
 {
    using blaze::isDefault;
@@ -1689,11 +1690,11 @@ inline bool isDefault( const Subvector<VT,AF,TF,true,CSAs...>& sv )
    if( isDefault<relaxed>( subvector( v, 10UL, 20UL ) ) ) { ... }
    \endcode
 */
-template< bool RF           // Relaxation flag
-        , typename VT       // Type of the sparse vector
-        , AlignmentFlag AF  // Alignment flag
-        , bool TF           // Transpose flag
-        , size_t... CSAs >  // Compile time subvector arguments
+template< RelaxationFlag RF  // Relaxation flag
+        , typename VT        // Type of the sparse vector
+        , AlignmentFlag AF   // Alignment flag
+        , bool TF            // Transpose flag
+        , size_t... CSAs >   // Compile time subvector arguments
 inline bool isDefault( const Subvector<VT,AF,TF,false,CSAs...>& sv )
 {
    using blaze::isDefault;

@@ -64,6 +64,7 @@
 #include <blaze/math/expressions/VecVecMultExpr.h>
 #include <blaze/math/expressions/VecVecSubExpr.h>
 #include <blaze/math/InitializerList.h>
+#include <blaze/math/RelaxationFlag.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/shims/Serial.h>
 #include <blaze/math/typetraits/HasConstDataAccess.h>
@@ -1586,7 +1587,7 @@ inline void clear( Elements<VT,TF,DF,CEAs...>&& e )
    if( isDefault<relaxed>( elements( v, { 5UL, 10UL, 15UL } ) ) ) { ... }
    \endcode
 */
-template< bool RF             // Relaxation flag
+template< RelaxationFlag RF   // Relaxation flag
         , typename VT         // Type of the dense vector
         , bool TF             // Transpose flag
         , typename... CEAs >  // Compile time element arguments
@@ -1628,7 +1629,7 @@ inline bool isDefault( const Elements<VT,TF,true,CEAs...>& e )
    if( isDefault<relaxed>( elements( v, { 5UL, 10UL, 15UL } ) ) ) { ... }
    \endcode
 */
-template< bool RF             // Relaxation flag
+template< RelaxationFlag RF   // Relaxation flag
         , typename VT         // Type of the sparse vector
         , bool TF             // Transpose flag
         , typename... CEAs >  // Compile time element arguments

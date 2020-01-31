@@ -43,6 +43,7 @@
 #include <blaze/math/Aliases.h>
 #include <blaze/math/expressions/DenseVector.h>
 #include <blaze/math/Exception.h>
+#include <blaze/math/RelaxationFlag.h>
 #include <blaze/math/shims/Equal.h>
 #include <blaze/math/shims/IsDivisor.h>
 #include <blaze/math/shims/IsNaN.h>
@@ -1119,8 +1120,11 @@ bool isnan( const DenseVector<VT,TF>& dv );
 template< typename VT, bool TF >
 bool isDivisor( const DenseVector<VT,TF>& dv );
 
-template< bool RF, typename VT, bool TF >
+template< RelaxationFlag RF, typename VT, bool TF >
 bool isUniform( const DenseVector<VT,TF>& dv );
+
+template< RelaxationFlag RF, typename VT, bool TF >
+bool isZero( const DenseVector<VT,TF>& dv );
 //@}
 //*************************************************************************************************
 
@@ -1222,9 +1226,9 @@ bool isDivisor( const DenseVector<VT,TF>& dv )
 // However, note that this might require the complete evaluation of the expression, including
 // the generation of a temporary vector.
 */
-template< bool RF      // Relaxation flag
-        , typename VT  // Type of the dense vector
-        , bool TF >    // Transpose flag
+template< RelaxationFlag RF  // Relaxation flag
+        , typename VT        // Type of the dense vector
+        , bool TF >          // Transpose flag
 bool isUniform( const DenseVector<VT,TF>& dv )
 {
    if( IsUniform_v<VT> || (~dv).size() < 2UL )
@@ -1277,9 +1281,9 @@ bool isUniform( const DenseVector<VT,TF>& dv )
 // However, note that this might require the complete evaluation of the expression, including
 // the generation of a temporary vector.
 */
-template< bool RF      // Relaxation flag
-        , typename VT  // Type of the dense vector
-        , bool TF >    // Transpose flag
+template< RelaxationFlag RF  // Relaxation flag
+        , typename VT        // Type of the dense vector
+        , bool TF >          // Transpose flag
 bool isZero( const DenseVector<VT,TF>& dv )
 {
    if( IsZero_v<VT> || (~dv).size() == 0UL )

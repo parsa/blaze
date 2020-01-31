@@ -62,6 +62,7 @@
 #include <blaze/math/expressions/VecTVecMapExpr.h>
 #include <blaze/math/expressions/VecTVecMultExpr.h>
 #include <blaze/math/functors/Bind2nd.h>
+#include <blaze/math/RelaxationFlag.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/typetraits/HasConstDataAccess.h>
 #include <blaze/math/typetraits/HasMutableDataAccess.h>
@@ -1068,11 +1069,11 @@ inline void clear( Column<MT,SO,DF,SF,CCAs...>&& column )
    if( isDefault<relaxed>( column( A, 0UL ) ) ) { ... }
    \endcode
 */
-template< bool RF           // Relaxation flag
-        , typename MT       // Type of the dense matrix
-        , bool SO           // Storage order
-        , bool SF           // Symmetry flag
-        , size_t... CCAs >  // Compile time column arguments
+template< RelaxationFlag RF  // Relaxation flag
+        , typename MT        // Type of the dense matrix
+        , bool SO            // Storage order
+        , bool SF            // Symmetry flag
+        , size_t... CCAs >   // Compile time column arguments
 inline bool isDefault( const Column<MT,SO,true,SF,CCAs...>& column )
 {
    using blaze::isDefault;
@@ -1111,11 +1112,11 @@ inline bool isDefault( const Column<MT,SO,true,SF,CCAs...>& column )
    if( isDefault<relaxed>( column( A, 0UL ) ) ) { ... }
    \endcode
 */
-template< bool RF           // Relaxation flag
-        , typename MT       // Type of the sparse matrix
-        , bool SO           // Storage order
-        , bool SF           // Symmetry flag
-        , size_t... CCAs >  // Compile time column arguments
+template< RelaxationFlag RF  // Relaxation flag
+        , typename MT        // Type of the sparse matrix
+        , bool SO            // Storage order
+        , bool SF            // Symmetry flag
+        , size_t... CCAs >   // Compile time column arguments
 inline bool isDefault( const Column<MT,SO,false,SF,CCAs...>& column )
 {
    using blaze::isDefault;

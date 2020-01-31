@@ -50,6 +50,7 @@
 #include <blaze/math/constraints/Upper.h>
 #include <blaze/math/constraints/View.h>
 #include <blaze/math/proxy/Proxy.h>
+#include <blaze/math/RelaxationFlag.h>
 #include <blaze/math/shims/Clear.h>
 #include <blaze/math/shims/Invert.h>
 #include <blaze/math/shims/IsDefault.h>
@@ -599,16 +600,16 @@ void clear( const SymmetricValue<MT>& value );
 template< typename MT >
 void invert( const SymmetricValue<MT>& value );
 
-template< bool RF, typename MT >
+template< RelaxationFlag RF, typename MT >
 bool isDefault( const SymmetricValue<MT>& value );
 
-template< bool RF, typename MT >
+template< RelaxationFlag RF, typename MT >
 bool isReal( const SymmetricValue<MT>& value );
 
-template< bool RF, typename MT >
+template< RelaxationFlag RF, typename MT >
 bool isZero( const SymmetricValue<MT>& value );
 
-template< bool RF, typename MT >
+template< RelaxationFlag RF, typename MT >
 bool isOne( const SymmetricValue<MT>& value );
 
 template< typename MT >
@@ -676,7 +677,7 @@ inline void invert( const SymmetricValue<MT>& value )
 // This function checks whether the symmetric value is in default state. In case it is in
 // default state, the function returns \a true, otherwise it returns \a false.
 */
-template< bool RF, typename MT >
+template< RelaxationFlag RF, typename MT >
 inline bool isDefault( const SymmetricValue<MT>& value )
 {
    using blaze::isDefault;
@@ -698,7 +699,7 @@ inline bool isDefault( const SymmetricValue<MT>& value )
 // type, the function returns \a true if the imaginary part is equal to 0. Otherwise it returns
 // \a false.
 */
-template< bool RF, typename MT >
+template< RelaxationFlag RF, typename MT >
 inline bool isReal( const SymmetricValue<MT>& value )
 {
    using blaze::isReal;
@@ -718,7 +719,7 @@ inline bool isReal( const SymmetricValue<MT>& value )
 // This function checks whether the symmetric value represents the numeric value 0. In case it
 // is 0, the function returns \a true, otherwise it returns \a false.
 */
-template< bool RF, typename MT >
+template< RelaxationFlag RF, typename MT >
 inline bool isZero( const SymmetricValue<MT>& value )
 {
    using blaze::isZero;
@@ -738,7 +739,7 @@ inline bool isZero( const SymmetricValue<MT>& value )
 // This function checks whether the symmetric value represents the numeric value 1. In case it
 // is 1, the function returns \a true, otherwise it returns \a false.
 */
-template< bool RF, typename MT >
+template< RelaxationFlag RF, typename MT >
 inline bool isOne( const SymmetricValue<MT>& value )
 {
    using blaze::isOne;

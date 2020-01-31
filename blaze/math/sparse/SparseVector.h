@@ -44,6 +44,7 @@
 #include <blaze/math/Aliases.h>
 #include <blaze/math/Exception.h>
 #include <blaze/math/expressions/SparseVector.h>
+#include <blaze/math/RelaxationFlag.h>
 #include <blaze/math/shims/Equal.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/shims/IsNaN.h>
@@ -266,10 +267,10 @@ inline auto operator/=( SparseVector<VT,TF>&& vec, ST scalar )
 template< typename VT, bool TF >
 bool isnan( const SparseVector<VT,TF>& sv );
 
-template< bool RF, typename VT, bool TF >
+template< RelaxationFlag RF, typename VT, bool TF >
 bool isUniform( const SparseVector<VT,TF>& sv );
 
-template< bool RF, typename VT, bool TF >
+template< RelaxationFlag RF, typename VT, bool TF >
 bool isZero( const SparseVector<VT,TF>& sv );
 //@}
 //*************************************************************************************************
@@ -345,9 +346,9 @@ inline bool isnan( const SparseVector<VT,TF>& sv )
 // However, note that this might require the complete evaluation of the expression, including
 // the generation of a temporary vector.
 */
-template< bool RF      // Relaxation flag
-        , typename VT  // Type of the sparse vector
-        , bool TF >    // Transpose flag
+template< RelaxationFlag RF  // Relaxation flag
+        , typename VT        // Type of the sparse vector
+        , bool TF >          // Transpose flag
 bool isUniform( const SparseVector<VT,TF>& sv )
 {
    using CT = CompositeType_t<VT>;
@@ -417,9 +418,9 @@ bool isUniform( const SparseVector<VT,TF>& sv )
 // However, note that this might require the complete evaluation of the expression, including
 // the generation of a temporary vector.
 */
-template< bool RF      // Relaxation flag
-        , typename VT  // Type of the sparse vector
-        , bool TF >    // Transpose flag
+template< RelaxationFlag RF  // Relaxation flag
+        , typename VT        // Type of the sparse vector
+        , bool TF >          // Transpose flag
 bool isZero( const SparseVector<VT,TF>& sv )
 {
    if( IsZero_v<VT> || (~sv).nonZeros() == 0UL )

@@ -475,16 +475,16 @@ void reset( const VectorAccessProxy<VT>& proxy );
 template< typename VT >
 void clear( const VectorAccessProxy<VT>& proxy );
 
-template< bool RF, typename VT >
+template< RelaxationFlag RF, typename VT >
 bool isDefault( const VectorAccessProxy<VT>& proxy );
 
-template< bool RF, typename VT >
+template< RelaxationFlag RF, typename VT >
 bool isReal( const VectorAccessProxy<VT>& proxy );
 
-template< bool RF, typename VT >
+template< RelaxationFlag RF, typename VT >
 bool isZero( const VectorAccessProxy<VT>& proxy );
 
-template< bool RF, typename VT >
+template< RelaxationFlag RF, typename VT >
 bool isOne( const VectorAccessProxy<VT>& proxy );
 
 template< typename VT >
@@ -546,7 +546,7 @@ inline void clear( const VectorAccessProxy<VT>& proxy )
 // This function checks whether the element represented by the access proxy is in default state.
 // In case it is in default state, the function returns \a true, otherwise it returns \a false.
 */
-template< bool RF, typename VT >
+template< RelaxationFlag RF, typename VT >
 inline bool isDefault( const VectorAccessProxy<VT>& proxy )
 {
    using blaze::isDefault;
@@ -568,7 +568,7 @@ inline bool isDefault( const VectorAccessProxy<VT>& proxy )
 // the element is of complex type, the function returns \a true if the imaginary part is equal
 // to 0. Otherwise it returns \a false.
 */
-template< bool RF, typename VT >
+template< RelaxationFlag RF, typename VT >
 inline bool isReal( const VectorAccessProxy<VT>& proxy )
 {
    using blaze::isReal;
@@ -588,7 +588,7 @@ inline bool isReal( const VectorAccessProxy<VT>& proxy )
 // This function checks whether the element represented by the access proxy represents the numeric
 // value 0. In case it is 0, the function returns \a true, otherwise it returns \a false.
 */
-template< bool RF, typename VT >
+template< RelaxationFlag RF, typename VT >
 inline bool isZero( const VectorAccessProxy<VT>& proxy )
 {
    using blaze::isZero;
@@ -608,7 +608,7 @@ inline bool isZero( const VectorAccessProxy<VT>& proxy )
 // This function checks whether the element represented by the access proxy represents the numeric
 // value 1. In case it is 1, the function returns \a true, otherwise it returns \a false.
 */
-template< bool RF, typename VT >
+template< RelaxationFlag RF, typename VT >
 inline bool isOne( const VectorAccessProxy<VT>& proxy )
 {
    using blaze::isOne;

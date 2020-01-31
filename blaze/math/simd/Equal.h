@@ -67,8 +67,8 @@ namespace blaze {
 //
 // This operation is only available for SSE2, AVX2, MIC, and AVX-512.
 */
-template< bool RF       // Relaxation flag
-        , typename T >  // Type of both operands
+template< RelaxationFlag RF  // Relaxation flag
+        , typename T >       // Type of both operands
 BLAZE_ALWAYS_INLINE bool equal( const SIMDi8<T>& a, const SIMDi8<T>& b ) noexcept
 #if BLAZE_AVX512BW_MODE
 {
@@ -100,8 +100,8 @@ BLAZE_ALWAYS_INLINE bool equal( const SIMDi8<T>& a, const SIMDi8<T>& b ) noexcep
 //
 // This operation is only available for SSE2, AVX2, MIC, and AVX-512.
 */
-template< bool RF       // Relaxation flag
-        , typename T >  // Type of both operands
+template< RelaxationFlag RF  // Relaxation flag
+        , typename T >       // Type of both operands
 BLAZE_ALWAYS_INLINE bool equal( const SIMDci8<T>& a, const SIMDci8<T>& b ) noexcept
 #if BLAZE_AVX512BW_MODE
 {
@@ -176,8 +176,8 @@ BLAZE_ALWAYS_INLINE bool operator==( const SIMDci8<T>& a, const SIMDci8<T>& b ) 
 //
 // This operation is only available for SSE2, AVX2, MIC, and AVX-512.
 */
-template< bool RF       // Relaxation flag
-        , typename T >  // Type of both operands
+template< RelaxationFlag RF  // Relaxation flag
+        , typename T >       // Type of both operands
 BLAZE_ALWAYS_INLINE bool equal( const SIMDi16<T>& a, const SIMDi16<T>& b ) noexcept
 #if BLAZE_AVX512BW_MODE
 {
@@ -209,8 +209,8 @@ BLAZE_ALWAYS_INLINE bool equal( const SIMDi16<T>& a, const SIMDi16<T>& b ) noexc
 //
 // This operation is only available for SSE2, AVX2, MIC, and AVX-512.
 */
-template< bool RF       // Relaxation flag
-        , typename T >  // Type of both operands
+template< RelaxationFlag RF  // Relaxation flag
+        , typename T >       // Type of both operands
 BLAZE_ALWAYS_INLINE bool equal( const SIMDci16<T>& a, const SIMDci16<T>& b ) noexcept
 #if BLAZE_AVX512BW_MODE
 {
@@ -286,8 +286,8 @@ BLAZE_ALWAYS_INLINE bool operator==( const SIMDci16<T>& a, const SIMDci16<T>& b 
 //
 // This operation is only available for SSE2, AVX2, MIC, and AVX-512.
 */
-template< bool RF       // Relaxation flag
-        , typename T >  // Type of both operands
+template< RelaxationFlag RF  // Relaxation flag
+        , typename T >       // Type of both operands
 BLAZE_ALWAYS_INLINE bool equal( const SIMDi32<T>& a, const SIMDi32<T>& b ) noexcept
 #if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
 {
@@ -319,8 +319,8 @@ BLAZE_ALWAYS_INLINE bool equal( const SIMDi32<T>& a, const SIMDi32<T>& b ) noexc
 //
 // This operation is only available for SSE2, AVX2, MIC, and AVX-512.
 */
-template< bool RF       // Relaxation flag
-        , typename T >  // Type of both operands
+template< RelaxationFlag RF  // Relaxation flag
+        , typename T >       // Type of both operands
 BLAZE_ALWAYS_INLINE bool equal( const SIMDci32<T>& a, const SIMDci32<T>& b ) noexcept
 #if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
 {
@@ -397,8 +397,8 @@ BLAZE_ALWAYS_INLINE bool operator==( const SIMDci32<T>& a, const SIMDci32<T>& b 
 //
 // This operation is only available for SSE4.1, AVX2, MIC, and AVX-512.
 */
-template< bool RF       // Relaxation flag
-        , typename T >  // Type of both operands
+template< RelaxationFlag RF  // Relaxation flag
+        , typename T >       // Type of both operands
 BLAZE_ALWAYS_INLINE bool equal( const SIMDi64<T>& a, const SIMDi64<T>& b ) noexcept
 #if BLAZE_AVX512F_MODE
 {
@@ -430,8 +430,8 @@ BLAZE_ALWAYS_INLINE bool equal( const SIMDi64<T>& a, const SIMDi64<T>& b ) noexc
 //
 // This operation is only available for SSE4.1, AVX2, MIC, and AVX-512.
 */
-template< bool RF       // Relaxation flag
-        , typename T >  // Type of both operands
+template< RelaxationFlag RF  // Relaxation flag
+        , typename T >       // Type of both operands
 BLAZE_ALWAYS_INLINE bool equal( const SIMDci64<T>& a, const SIMDci64<T>& b ) noexcept
 #if BLAZE_AVX512F_MODE
 {
@@ -512,7 +512,7 @@ BLAZE_ALWAYS_INLINE bool operator==( const SIMDci64<T>& a, const SIMDci64<T>& b 
 //
 // This operation is only available for SSE, AVX, MIC, and AVX-512.
 */
-template< bool RF >  // Relaxation flag
+template< RelaxationFlag RF >  // Relaxation flag
 BLAZE_ALWAYS_INLINE bool equal( const SIMDfloat& a, const SIMDfloat& b ) noexcept
 #if ( BLAZE_AVX512F_MODE || BLAZE_MIC_MODE ) && BLAZE_GNU_COMPILER
 = delete;
@@ -580,7 +580,7 @@ BLAZE_ALWAYS_INLINE bool equal( const SIMDfloat& a, const SIMDfloat& b ) noexcep
 //
 // This operation is only available for SSE, AVX, MIC, and AVX-512.
 */
-template< bool RF >  // Relaxation flag
+template< RelaxationFlag RF >  // Relaxation flag
 BLAZE_ALWAYS_INLINE bool equal( const SIMDcfloat& a, const SIMDcfloat& b ) noexcept
 #if ( BLAZE_AVX512F_MODE || BLAZE_MIC_MODE ) && BLAZE_GNU_COMPILER
 = delete;
@@ -720,7 +720,7 @@ BLAZE_ALWAYS_INLINE bool operator==( const SIMDcfloat& a, const SIMDcfloat& b ) 
 //
 // This operation is only available for SSE2, AVX, MIC, and AVX-512.
 */
-template< bool RF >  // Relaxation flag
+template< RelaxationFlag RF >  // Relaxation flag
 BLAZE_ALWAYS_INLINE bool equal( const SIMDdouble& a, const SIMDdouble& b ) noexcept
 #if ( BLAZE_AVX512F_MODE || BLAZE_MIC_MODE ) && BLAZE_GNU_COMPILER
 = delete;
@@ -789,7 +789,7 @@ BLAZE_ALWAYS_INLINE bool equal( const SIMDdouble& a, const SIMDdouble& b ) noexc
 //
 // This operation is only available for SSE2, AVX, MIC, and AVX-512.
 */
-template< bool RF >  // Relaxation flag
+template< RelaxationFlag RF >  // Relaxation flag
 BLAZE_ALWAYS_INLINE bool equal( const SIMDcdouble& a, const SIMDcdouble& b ) noexcept
 #if ( BLAZE_AVX512F_MODE || BLAZE_MIC_MODE ) && BLAZE_GNU_COMPILER
 = delete;

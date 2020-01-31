@@ -44,7 +44,6 @@
 #include <iosfwd>
 #include <blaze/math/Aliases.h>
 #include <blaze/math/expressions/Vector.h>
-#include <blaze/math/RelaxationFlag.h>
 #include <blaze/math/TransposeFlag.h>
 #include <blaze/math/views/Elements.h>
 

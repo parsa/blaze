@@ -46,6 +46,7 @@
 #include <blaze/math/constraints/Triangular.h>
 #include <blaze/math/constraints/UniTriangular.h>
 #include <blaze/math/expressions/SparseMatrix.h>
+#include <blaze/math/RelaxationFlag.h>
 #include <blaze/math/shims/Conjugate.h>
 #include <blaze/math/shims/Equal.h>
 #include <blaze/math/shims/IsDefault.h>
@@ -299,40 +300,40 @@ inline auto operator/=( SparseMatrix<MT,SO>&& mat, ST scalar )
 template< typename MT, bool SO >
 bool isnan( const SparseMatrix<MT,SO>& sm );
 
-template< bool RF, typename MT, bool SO >
+template< RelaxationFlag RF, typename MT, bool SO >
 bool isSymmetric( const SparseMatrix<MT,SO>& sm );
 
-template< bool RF, typename MT, bool SO >
+template< RelaxationFlag RF, typename MT, bool SO >
 bool isHermitian( const SparseMatrix<MT,SO>& sm );
 
-template< bool RF, typename MT, bool SO >
+template< RelaxationFlag RF, typename MT, bool SO >
 bool isUniform( const SparseMatrix<MT,SO>& sm );
 
-template< bool RF, typename MT, bool SO >
+template< RelaxationFlag RF, typename MT, bool SO >
 bool isZero( const SparseMatrix<MT,SO>& sm );
 
-template< bool RF, typename MT, bool SO >
+template< RelaxationFlag RF, typename MT, bool SO >
 bool isLower( const SparseMatrix<MT,SO>& sm );
 
-template< bool RF, typename MT, bool SO >
+template< RelaxationFlag RF, typename MT, bool SO >
 bool isUniLower( const SparseMatrix<MT,SO>& sm );
 
-template< bool RF, typename MT, bool SO >
+template< RelaxationFlag RF, typename MT, bool SO >
 bool isStrictlyLower( const SparseMatrix<MT,SO>& sm );
 
-template< bool RF, typename MT, bool SO >
+template< RelaxationFlag RF, typename MT, bool SO >
 bool isUpper( const SparseMatrix<MT,SO>& sm );
 
-template< bool RF, typename MT, bool SO >
+template< RelaxationFlag RF, typename MT, bool SO >
 bool isUniUpper( const SparseMatrix<MT,SO>& sm );
 
-template< bool RF, typename MT, bool SO >
+template< RelaxationFlag RF, typename MT, bool SO >
 bool isStrictlyUpper( const SparseMatrix<MT,SO>& sm );
 
-template< bool RF, typename MT, bool SO >
+template< RelaxationFlag RF, typename MT, bool SO >
 bool isDiagonal( const SparseMatrix<MT,SO>& sm );
 
-template< bool RF, typename MT, bool SO >
+template< RelaxationFlag RF, typename MT, bool SO >
 bool isIdentity( const SparseMatrix<MT,SO>& sm );
 //@}
 //*************************************************************************************************
@@ -415,9 +416,9 @@ bool isnan( const SparseMatrix<MT,SO>& sm )
 // However, note that this might require the complete evaluation of the expression, including
 // the generation of a temporary matrix.
 */
-template< bool RF      // Relaxation flag
-        , typename MT  // Type of the sparse matrix
-        , bool SO >    // Storage order
+template< RelaxationFlag RF  // Relaxation flag
+        , typename MT        // Type of the sparse matrix
+        , bool SO >          // Storage order
 bool isSymmetric( const SparseMatrix<MT,SO>& sm )
 {
    using RT  = ResultType_t<MT>;
@@ -507,9 +508,9 @@ bool isSymmetric( const SparseMatrix<MT,SO>& sm )
 // However, note that this might require the complete evaluation of the expression, including
 // the generation of a temporary matrix.
 */
-template< bool RF      // Relaxation flag
-        , typename MT  // Type of the sparse matrix
-        , bool SO >    // Storage order
+template< RelaxationFlag RF  // Relaxation flag
+        , typename MT        // Type of the sparse matrix
+        , bool SO >          // Storage order
 bool isHermitian( const SparseMatrix<MT,SO>& sm )
 {
    using RT  = ResultType_t<MT>;
@@ -579,8 +580,8 @@ bool isHermitian( const SparseMatrix<MT,SO>& sm )
 // \param sm The sparse matrix to be checked.
 // \return \a true if the matrix is a uniform matrix, \a false if not.
 */
-template< bool RF        // Relaxation flag
-        , typename MT >  // Type of the sparse matrix
+template< RelaxationFlag RF  // Relaxation flag
+        , typename MT >      // Type of the sparse matrix
 bool isUniform_backend( const SparseMatrix<MT,false>& sm, TrueType )
 {
    BLAZE_CONSTRAINT_MUST_BE_TRIANGULAR_MATRIX_TYPE( MT );
@@ -613,8 +614,8 @@ bool isUniform_backend( const SparseMatrix<MT,false>& sm, TrueType )
 // \param sm The sparse matrix to be checked.
 // \return \a true if the matrix is a uniform matrix, \a false if not.
 */
-template< bool RF        // Relaxation flag
-        , typename MT >  // Type of the sparse matrix
+template< RelaxationFlag RF  // Relaxation flag
+        , typename MT >      // Type of the sparse matrix
 bool isUniform_backend( const SparseMatrix<MT,true>& sm, TrueType )
 {
    BLAZE_CONSTRAINT_MUST_BE_TRIANGULAR_MATRIX_TYPE( MT );
@@ -647,8 +648,8 @@ bool isUniform_backend( const SparseMatrix<MT,true>& sm, TrueType )
 // \param sm The sparse matrix to be checked.
 // \return \a true if the matrix is a uniform matrix, \a false if not.
 */
-template< bool RF        // Relaxation flag
-        , typename MT >  // Type of the sparse matrix
+template< RelaxationFlag RF  // Relaxation flag
+        , typename MT >      // Type of the sparse matrix
 bool isUniform_backend( const SparseMatrix<MT,false>& sm, FalseType )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_TRIANGULAR_MATRIX_TYPE( MT );
@@ -696,8 +697,8 @@ bool isUniform_backend( const SparseMatrix<MT,false>& sm, FalseType )
 // \param sm The sparse matrix to be checked.
 // \return \a true if the matrix is a uniform matrix, \a false if not.
 */
-template< bool RF        // Relaxation flag
-        , typename MT >  // Type of the sparse matrix
+template< RelaxationFlag RF  // Relaxation flag
+        , typename MT >      // Type of the sparse matrix
 bool isUniform_backend( const SparseMatrix<MT,true>& sm, FalseType )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_TRIANGULAR_MATRIX_TYPE( MT );
@@ -770,9 +771,9 @@ bool isUniform_backend( const SparseMatrix<MT,true>& sm, FalseType )
 // However, note that this might require the complete evaluation of the expression, including
 // the generation of a temporary matrix.
 */
-template< bool RF      // Relaxation flag
-        , typename MT  // Type of the sparse matrix
-        , bool SO >    // Storage order
+template< RelaxationFlag RF  // Relaxation flag
+        , typename MT        // Type of the sparse matrix
+        , bool SO >          // Storage order
 bool isUniform( const SparseMatrix<MT,SO>& sm )
 {
    if( IsUniform_v<MT> ||
@@ -823,9 +824,9 @@ bool isUniform( const SparseMatrix<MT,SO>& sm )
 // However, note that this might require the complete evaluation of the expression, including
 // the generation of a temporary matrix.
 */
-template< bool RF      // Relaxation flag
-        , typename MT  // Type of the sparse matrix
-        , bool SO >    // Storage order
+template< RelaxationFlag RF  // Relaxation flag
+        , typename MT        // Type of the sparse matrix
+        , bool SO >          // Storage order
 bool isZero( const SparseMatrix<MT,SO>& sm )
 {
    const size_t M( (~sm).rows()    );
@@ -897,9 +898,9 @@ bool isZero( const SparseMatrix<MT,SO>& sm )
 // However, note that this might require the complete evaluation of the expression, including
 // the generation of a temporary matrix.
 */
-template< bool RF      // Relaxation flag
-        , typename MT  // Type of the sparse matrix
-        , bool SO >    // Storage order
+template< RelaxationFlag RF  // Relaxation flag
+        , typename MT        // Type of the sparse matrix
+        , bool SO >          // Storage order
 bool isLower( const SparseMatrix<MT,SO>& sm )
 {
    using RT  = ResultType_t<MT>;
@@ -987,9 +988,9 @@ bool isLower( const SparseMatrix<MT,SO>& sm )
 // However, note that this might require the complete evaluation of the expression, including
 // the generation of a temporary matrix.
 */
-template< bool RF      // Relaxation flag
-        , typename MT  // Type of the sparse matrix
-        , bool SO >    // Storage order
+template< RelaxationFlag RF  // Relaxation flag
+        , typename MT        // Type of the sparse matrix
+        , bool SO >          // Storage order
 bool isUniLower( const SparseMatrix<MT,SO>& sm )
 {
    using RT  = ResultType_t<MT>;
@@ -1093,9 +1094,9 @@ bool isUniLower( const SparseMatrix<MT,SO>& sm )
 // However, note that this might require the complete evaluation of the expression, including
 // the generation of a temporary matrix.
 */
-template< bool RF      // Relaxation flag
-        , typename MT  // Type of the sparse matrix
-        , bool SO >    // Storage order
+template< RelaxationFlag RF  // Relaxation flag
+        , typename MT        // Type of the sparse matrix
+        , bool SO >          // Storage order
 bool isStrictlyLower( const SparseMatrix<MT,SO>& sm )
 {
    using RT  = ResultType_t<MT>;
@@ -1187,9 +1188,9 @@ bool isStrictlyLower( const SparseMatrix<MT,SO>& sm )
 // However, note that this might require the complete evaluation of the expression, including
 // the generation of a temporary matrix.
 */
-template< bool RF      // Relaxation flag
-        , typename MT  // Type of the sparse matrix
-        , bool SO >    // Storage order
+template< RelaxationFlag RF  // Relaxation flag
+        , typename MT        // Type of the sparse matrix
+        , bool SO >          // Storage order
 bool isUpper( const SparseMatrix<MT,SO>& sm )
 {
    using RT  = ResultType_t<MT>;
@@ -1277,9 +1278,9 @@ bool isUpper( const SparseMatrix<MT,SO>& sm )
 // However, note that this might require the complete evaluation of the expression, including
 // the generation of a temporary matrix.
 */
-template< bool RF      // Relaxation flag
-        , typename MT  // Type of the sparse matrix
-        , bool SO >    // Storage order
+template< RelaxationFlag RF  // Relaxation flag
+        , typename MT        // Type of the sparse matrix
+        , bool SO >          // Storage order
 bool isUniUpper( const SparseMatrix<MT,SO>& sm )
 {
    using RT  = ResultType_t<MT>;
@@ -1383,9 +1384,9 @@ bool isUniUpper( const SparseMatrix<MT,SO>& sm )
 // However, note that this might require the complete evaluation of the expression, including
 // the generation of a temporary matrix.
 */
-template< bool RF      // Relaxation flag
-        , typename MT  // Type of the sparse matrix
-        , bool SO >    // Storage order
+template< RelaxationFlag RF  // Relaxation flag
+        , typename MT        // Type of the sparse matrix
+        , bool SO >          // Storage order
 bool isStrictlyUpper( const SparseMatrix<MT,SO>& sm )
 {
    using RT  = ResultType_t<MT>;
@@ -1477,9 +1478,9 @@ bool isStrictlyUpper( const SparseMatrix<MT,SO>& sm )
 // However, note that this might require the complete evaluation of the expression, including
 // the generation of a temporary matrix.
 */
-template< bool RF      // Relaxation flag
-        , typename MT  // Type of the sparse matrix
-        , bool SO >    // Storage order
+template< RelaxationFlag RF  // Relaxation flag
+        , typename MT        // Type of the sparse matrix
+        , bool SO >          // Storage order
 bool isDiagonal( const SparseMatrix<MT,SO>& sm )
 {
    using RT  = ResultType_t<MT>;
@@ -1561,9 +1562,9 @@ bool isDiagonal( const SparseMatrix<MT,SO>& sm )
 // However, note that this might require the complete evaluation of the expression, including
 // the generation of a temporary matrix.
 */
-template< bool RF      // Relaxation flag
-        , typename MT  // Type of the sparse matrix
-        , bool SO >    // Storage order
+template< RelaxationFlag RF  // Relaxation flag
+        , typename MT        // Type of the sparse matrix
+        , bool SO >          // Storage order
 bool isIdentity( const SparseMatrix<MT,SO>& sm )
 {
    using RT  = ResultType_t<MT>;

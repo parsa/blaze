@@ -50,6 +50,7 @@
 #include <blaze/math/proxy/DenseVectorProxy.h>
 #include <blaze/math/proxy/SparseMatrixProxy.h>
 #include <blaze/math/proxy/SparseVectorProxy.h>
+#include <blaze/math/RelaxationFlag.h>
 #include <blaze/math/shims/Abs.h>
 #include <blaze/math/shims/Acos.h>
 #include <blaze/math/shims/Acosh.h>
@@ -955,25 +956,25 @@ void invert( const Proxy<PT,RT>& proxy );
 template< InversionFlag IF, typename PT, typename RT >
 void invert( const Proxy<PT,RT>& proxy );
 
-template< bool RF, typename PT, typename RT >
+template< RelaxationFlag RF, typename PT, typename RT >
 bool isReal( const Proxy<PT,RT>& proxy );
 
-template< bool RF, typename PT, typename RT >
+template< RelaxationFlag RF, typename PT, typename RT >
 bool isZero( const Proxy<PT,RT>& proxy );
 
-template< bool RF, typename PT, typename RT >
+template< RelaxationFlag RF, typename PT, typename RT >
 bool isOne( const Proxy<PT,RT>& proxy );
 
 template< typename PT, typename RT >
 bool isnan( const Proxy<PT,RT>& proxy );
 
-template< bool RF, typename PT1, typename RT1, typename PT2, typename RT2 >
+template< RelaxationFlag RF, typename PT1, typename RT1, typename PT2, typename RT2 >
 bool equal( const Proxy<PT1,RT1>& lhs, const Proxy<PT2,RT2>& rhs );
 
-template< bool RF, typename PT, typename RT, typename T, typename = DisableIf_t< IsProxy_v<T> > >
+template< RelaxationFlag RF, typename PT, typename RT, typename T, typename = DisableIf_t< IsProxy_v<T> > >
 bool equal( const Proxy<PT,RT>& lhs, const T& rhs );
 
-template< bool RF, typename T, typename PT, typename RT, typename = DisableIf_t< IsProxy_v<T> > >
+template< RelaxationFlag RF, typename T, typename PT, typename RT, typename = DisableIf_t< IsProxy_v<T> > >
 bool equal( const T& lhs, const Proxy<PT,RT>& rhs );
 //@}
 //*************************************************************************************************
@@ -2196,7 +2197,7 @@ inline void invert( const Proxy<PT,RT>& proxy )
 // the element is of complex type, the function returns \a true if the imaginary part is
 // equal to 0. Otherwise it returns \a false.
 */
-template< bool RF, typename PT, typename RT >
+template< RelaxationFlag RF, typename PT, typename RT >
 inline bool isReal( const Proxy<PT,RT>& proxy )
 {
    using blaze::isReal;
@@ -2216,7 +2217,7 @@ inline bool isReal( const Proxy<PT,RT>& proxy )
 // This function checks whether the element represented by the proxy represents the numeric
 // value 0. In case it is 0, the function returns \a true, otherwise it returns \a false.
 */
-template< bool RF, typename PT, typename RT >
+template< RelaxationFlag RF, typename PT, typename RT >
 inline bool isZero( const Proxy<PT,RT>& proxy )
 {
    using blaze::isZero;
@@ -2236,7 +2237,7 @@ inline bool isZero( const Proxy<PT,RT>& proxy )
 // This function checks whether the element represented by the proxy represents the numeric
 // value 1. In case it is 1, the function returns \a true, otherwise it returns \a false.
 */
-template< bool RF, typename PT, typename RT >
+template< RelaxationFlag RF, typename PT, typename RT >
 inline bool isOne( const Proxy<PT,RT>& proxy )
 {
    using blaze::isOne;
@@ -2274,7 +2275,7 @@ inline bool isnan( const Proxy<PT,RT>& proxy )
 // \param rhs The right-hand side Proxy object.
 // \return \a true if both referenced values are equal, \a false if they are not.
 */
-template< bool RF, typename PT1, typename RT1, typename PT2, typename RT2 >
+template< RelaxationFlag RF, typename PT1, typename RT1, typename PT2, typename RT2 >
 inline bool equal( const Proxy<PT1,RT1>& lhs, const Proxy<PT2,RT2>& rhs )
 {
    return equal<RF>( (~lhs).get(), (~rhs).get() );
@@ -2290,7 +2291,7 @@ inline bool equal( const Proxy<PT1,RT1>& lhs, const Proxy<PT2,RT2>& rhs )
 // \param rhs The right-hand side object of other type.
 // \return \a true if the referenced value and the other object are equal, \a false if they are not.
 */
-template< bool RF, typename PT, typename RT, typename T, typename >
+template< RelaxationFlag RF, typename PT, typename RT, typename T, typename >
 inline bool equal( const Proxy<PT,RT>& lhs, const T& rhs )
 {
    return equal<RF>( (~lhs).get(), rhs );
@@ -2306,7 +2307,7 @@ inline bool equal( const Proxy<PT,RT>& lhs, const T& rhs )
 // \param rhs The right-hand side Proxy object.
 // \return \a true if the other object and the referenced value are equal, \a false if they are not.
 */
-template< bool RF, typename T, typename PT, typename RT, typename >
+template< RelaxationFlag RF, typename T, typename PT, typename RT, typename >
 inline bool equal( const T& lhs, const Proxy<PT,RT>& rhs )
 {
    return equal<RF>( lhs, (~rhs).get() );

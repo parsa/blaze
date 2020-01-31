@@ -55,6 +55,7 @@
 #include <blaze/math/functors/Clear.h>
 #include <blaze/math/InitializerList.h>
 #include <blaze/math/PaddingFlag.h>
+#include <blaze/math/RelaxationFlag.h>
 #include <blaze/math/shims/Clear.h>
 #include <blaze/math/shims/Conjugate.h>
 #include <blaze/math/shims/IsDefault.h>
@@ -6204,7 +6205,7 @@ void reset( CustomMatrix<Type,AF,PF,SO,RT>& m, size_t i );
 template< typename Type, AlignmentFlag AF, PaddingFlag PF, bool SO, typename RT >
 void clear( CustomMatrix<Type,AF,PF,SO,RT>& m );
 
-template< bool RF, typename Type, AlignmentFlag AF, PaddingFlag PF, bool SO, typename RT >
+template< RelaxationFlag RF, typename Type, AlignmentFlag AF, PaddingFlag PF, bool SO, typename RT >
 bool isDefault( const CustomMatrix<Type,AF,PF,SO,RT>& m );
 
 template< typename Type, AlignmentFlag AF, PaddingFlag PF, bool SO, typename RT >
@@ -6307,12 +6308,12 @@ inline void clear( CustomMatrix<Type,AF,PF,SO,RT>& m )
    if( isDefault<relaxed>( A ) ) { ... }
    \endcode
 */
-template< bool RF           // Relaxation flag
-        , typename Type     // Data type of the matrix
-        , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF    // Padding flag
-        , bool SO           // Storage order
-        , typename RT >     // Result type
+template< RelaxationFlag RF  // Relaxation flag
+        , typename Type      // Data type of the matrix
+        , AlignmentFlag AF   // Alignment flag
+        , PaddingFlag PF     // Padding flag
+        , bool SO            // Storage order
+        , typename RT >      // Result type
 inline bool isDefault( const CustomMatrix<Type,AF,PF,SO,RT>& m )
 {
    return ( m.rows() == 0UL && m.columns() == 0UL );

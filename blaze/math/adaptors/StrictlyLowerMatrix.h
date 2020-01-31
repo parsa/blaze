@@ -45,6 +45,7 @@
 #include <blaze/math/adaptors/strictlylowermatrix/Sparse.h>
 #include <blaze/math/constraints/RequiresEvaluation.h>
 #include <blaze/math/Forward.h>
+#include <blaze/math/RelaxationFlag.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/traits/AddTrait.h>
 #include <blaze/math/traits/DeclDiagTrait.h>
@@ -121,7 +122,7 @@ void reset( StrictlyLowerMatrix<MT,SO,DF>& m, size_t i );
 template< typename MT, bool SO, bool DF >
 void clear( StrictlyLowerMatrix<MT,SO,DF>& m );
 
-template< bool RF, typename MT, bool SO, bool DF >
+template< RelaxationFlag RF, typename MT, bool SO, bool DF >
 bool isDefault( const StrictlyLowerMatrix<MT,SO,DF>& m );
 
 template< typename MT, bool SO, bool DF >
@@ -201,10 +202,10 @@ inline void clear( StrictlyLowerMatrix<MT,SO,DF>& m )
 // This function checks whether the resizable strictly lower triangular matrix is in default
 // state.
 */
-template< bool RF      // Relaxation flag
-        , typename MT  // Type of the adapted matrix
-        , bool SO      // Storage order of the adapted matrix
-        , bool DF >    // Density flag
+template< RelaxationFlag RF  // Relaxation flag
+        , typename MT        // Type of the adapted matrix
+        , bool SO            // Storage order of the adapted matrix
+        , bool DF >          // Density flag
 inline bool isDefault_backend( const StrictlyLowerMatrix<MT,SO,DF>& m, TrueType )
 {
    return ( m.rows() == 0UL );
@@ -224,10 +225,10 @@ inline bool isDefault_backend( const StrictlyLowerMatrix<MT,SO,DF>& m, TrueType 
 // This function checks whether the fixed-size strictly lower triangular matrix is in default
 // state.
 */
-template< bool RF      // Relaxation flag
-        , typename MT  // Type of the adapted matrix
-        , bool SO      // Storage order of the adapted matrix
-        , bool DF >    // Density flag
+template< RelaxationFlag RF  // Relaxation flag
+        , typename MT        // Type of the adapted matrix
+        , bool SO            // Storage order of the adapted matrix
+        , bool DF >          // Density flag
 inline bool isDefault_backend( const StrictlyLowerMatrix<MT,SO,DF>& m, FalseType )
 {
    if( SO ) {
@@ -279,10 +280,10 @@ inline bool isDefault_backend( const StrictlyLowerMatrix<MT,SO,DF>& m, FalseType
    if( isDefault<relaxed>( A ) ) { ... }
    \endcode
 */
-template< bool RF      // Relaxation flag
-        , typename MT  // Type of the adapted matrix
-        , bool SO      // Storage order of the adapted matrix
-        , bool DF >    // Density flag
+template< RelaxationFlag RF  // Relaxation flag
+        , typename MT        // Type of the adapted matrix
+        , bool SO            // Storage order of the adapted matrix
+        , bool DF >          // Density flag
 inline bool isDefault( const StrictlyLowerMatrix<MT,SO,DF>& m )
 {
    return isDefault_backend<RF>( m, typename IsResizable<MT>::Type() );

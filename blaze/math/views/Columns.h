@@ -72,6 +72,7 @@
 #include <blaze/math/InitializerList.h>
 #include <blaze/math/InversionFlag.h>
 #include <blaze/math/ReductionFlag.h>
+#include <blaze/math/RelaxationFlag.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/shims/Serial.h>
 #include <blaze/math/StorageOrder.h>
@@ -1929,7 +1930,7 @@ inline void clear( Columns<MT,SO,DF,SF,CCAs...>&& columns )
    if( isDefault<relaxed>( columns( A, { 2UL, 4UL, 6UL, 8UL } ) ) ) { ... }
    \endcode
 */
-template< bool RF             // Relaxation flag
+template< RelaxationFlag RF   // Relaxation flag
         , typename MT         // Type of the dense matrix
         , bool SO             // Storage order
         , bool SF             // Symmetry flag
@@ -1983,7 +1984,7 @@ inline bool isDefault( const Columns<MT,SO,true,SF,CCAs...>& columns )
    if( isDefault<relaxed>( columns( A, { 2UL, 4UL, 6UL, 8UL } ) ) ) { ... }
    \endcode
 */
-template< bool RF             // Relaxation flag
+template< RelaxationFlag RF   // Relaxation flag
         , typename MT         // Type of the dense matrix
         , bool SO             // Storage order
         , bool SF             // Symmetry flag
