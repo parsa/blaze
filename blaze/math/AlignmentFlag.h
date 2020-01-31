@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
 //  \file blaze/math/AlignmentFlag.h
-//  \brief Header file for the alignment flag values
+//  \brief Header file for the alignment flag enumeration
 //
 //  Copyright (C) 2012-2019 Klaus Iglberger - All Rights Reserved
 //
