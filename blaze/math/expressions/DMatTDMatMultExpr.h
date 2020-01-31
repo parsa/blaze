@@ -3570,7 +3570,7 @@ class DMatTDMatMultExpr
          const size_t jend( LOW ? i+2UL : N );
          size_t j( UPP ? i : 0UL );
 
-         for( ; !( LOW && UPP ) && (j+4UL) <= jend; j+=4UL )
+         for( ; (j+4UL) <= jend; j+=4UL )
          {
             const size_t kbegin( ( IsUpper_v<MT4> )
                                  ?( prevMultiple( ( IsLower_v<MT5> ? max( i, j ) : i ), SIMDSIZE ) )
@@ -3754,7 +3754,7 @@ class DMatTDMatMultExpr
          }
       }
 
-      if( i < M )
+      for( ; i<M; ++i )
       {
          const size_t jend( LOW ? i+1UL : N );
          size_t j( UPP ? i : 0UL );
@@ -5324,7 +5324,7 @@ class DMatTDMatMultExpr
          const size_t jend( LOW ? i+2UL : N );
          size_t j( UPP ? i : 0UL );
 
-         for( ; !( LOW && UPP ) && (j+4UL) <= jend; j+=4UL )
+         for( ; (j+4UL) <= jend; j+=4UL )
          {
             const size_t kbegin( ( IsUpper_v<MT4> )
                                  ?( prevMultiple( ( IsLower_v<MT5> ? max( i, j ) : i ), SIMDSIZE ) )
@@ -5508,7 +5508,7 @@ class DMatTDMatMultExpr
          }
       }
 
-      if( i < M )
+      for( ; i<M; ++i )
       {
          const size_t jend( LOW ? i+1UL : N );
          size_t j( UPP ? i : 0UL );
@@ -9930,7 +9930,7 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
          const size_t jend( LOW ? i+2UL : N );
          size_t j( UPP ? i : 0UL );
 
-         for( ; !( LOW && UPP ) && (j+4UL) <= jend; j+=4UL )
+         for( ; (j+4UL) <= jend; j+=4UL )
          {
             const size_t kbegin( ( IsUpper_v<MT4> )
                                  ?( prevMultiple( ( IsLower_v<MT5> ? max( i, j ) : i ), SIMDSIZE ) )
@@ -10148,7 +10148,7 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
          }
       }
 
-      if( i < M )
+      for( ; i<M; ++i )
       {
          const size_t jend( LOW ? i+1UL : N );
          size_t j( UPP ? i : 0UL );
@@ -11723,7 +11723,7 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
          const size_t jend( LOW ? i+2UL : N );
          size_t j( UPP ? i : 0UL );
 
-         for( ; !( LOW && UPP ) && (j+4UL) <= jend; j+=4UL )
+         for( ; (j+4UL) <= jend; j+=4UL )
          {
             const size_t kbegin( ( IsUpper_v<MT4> )
                                  ?( prevMultiple( ( IsLower_v<MT5> ? max( i, j ) : i ), SIMDSIZE ) )
@@ -11941,7 +11941,7 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
          }
       }
 
-      if( i < M )
+      for( ; i<M; ++i )
       {
          const size_t jend( LOW ? i+1UL : N );
          size_t j( UPP ? i : 0UL );
