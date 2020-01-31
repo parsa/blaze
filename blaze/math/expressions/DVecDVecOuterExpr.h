@@ -247,9 +247,9 @@ class DVecDVecOuterExpr
       // \param op The custom binary operation.
       */
       inline ConstIterator( LeftIteratorType left, RightIteratorType right, OP op )
-         : left_ ( left  )  // Iterator to the current left-hand side element
-         , right_( right )  // Iterator to the current right-hand side element
-         , op_   ( op    )  // The custom binary operation
+         : left_ ( left  )          // Iterator to the current left-hand side element
+         , right_( right )          // Iterator to the current right-hand side element
+         , op_   ( std::move(op) )  // The custom binary operation
       {}
       //*******************************************************************************************
 
@@ -484,9 +484,9 @@ class DVecDVecOuterExpr
    // \param op The custom binary operation.
    */
    inline DVecDVecOuterExpr( const VT1& lhs, const VT2& rhs, OP op ) noexcept
-      : lhs_( lhs )  // Left-hand side dense vector of the map expression
-      , rhs_( rhs )  // Right-hand side dense vector of the map expression
-      , op_ ( op  )  // The custom binary operation
+      : lhs_( lhs )            // Left-hand side dense vector of the map expression
+      , rhs_( rhs )            // Right-hand side dense vector of the map expression
+      , op_ ( std::move(op) )  // The custom binary operation
    {}
    //**********************************************************************************************
 
@@ -2005,7 +2005,7 @@ inline decltype(auto)
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = const DVecDVecOuterExpr<VT1,VT2,OP>;
-   return ReturnType( ~lhs, ~rhs, op );
+   return ReturnType( ~lhs, ~rhs, std::move(op) );
 }
 //*************************************************************************************************
 

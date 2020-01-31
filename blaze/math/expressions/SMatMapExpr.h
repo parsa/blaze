@@ -187,8 +187,8 @@ class SMatMapExpr
       // \param op The custom unary operation.
       */
       inline ConstIterator( IteratorType it, OP op )
-         : it_( it )  // Iterator over the elements of the sparse matrix expression
-         , op_( op )  // The custom unary operation
+         : it_( it )             // Iterator over the elements of the sparse matrix expression
+         , op_( std::move(op) )  // The custom unary operation
       {}
       //*******************************************************************************************
 
@@ -296,8 +296,8 @@ class SMatMapExpr
    // \param op The custom unary operation.
    */
    inline SMatMapExpr( const MT& sm, OP op ) noexcept
-      : sm_( sm )  // Sparse matrix of the map expression
-      , op_( op )  // The custom unary operation
+      : sm_( sm )             // Sparse matrix of the map expression
+      , op_( std::move(op) )  // The custom unary operation
    {}
    //**********************************************************************************************
 
@@ -971,7 +971,7 @@ inline decltype(auto) map( const SparseMatrix<MT,SO>& sm, OP op )
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = const SMatMapExpr<MT,OP,SO>;
-   return ReturnType( ~sm, op );
+   return ReturnType( ~sm, std::move(op) );
 }
 //*************************************************************************************************
 
@@ -1001,7 +1001,7 @@ inline decltype(auto) forEach( const SparseMatrix<MT,SO>& sm, OP op )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( ~sm, op );
+   return map( ~sm, std::move(op) );
 }
 //*************************************************************************************************
 

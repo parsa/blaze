@@ -183,9 +183,9 @@ class DMatTDMatMapExpr
    // \param op The custom unary operation.
    */
    inline DMatTDMatMapExpr( const MT1& lhs, const MT2& rhs, OP op ) noexcept
-      : lhs_( lhs )  // Left-hand side dense matrix of the map expression
-      , rhs_( rhs )  // Right-hand side dense matrix of the map expression
-      , op_ ( op  )  // The custom unary operation
+      : lhs_( lhs )            // Left-hand side dense matrix of the map expression
+      , rhs_( rhs )            // Right-hand side dense matrix of the map expression
+      , op_ ( std::move(op) )  // The custom unary operation
    {}
    //**********************************************************************************************
 
@@ -978,7 +978,7 @@ inline const DMatTDMatMapExpr<MT1,MT2,OP>
    BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
 
-   return DMatTDMatMapExpr<MT1,MT2,OP>( ~lhs, ~rhs, op );
+   return DMatTDMatMapExpr<MT1,MT2,OP>( ~lhs, ~rhs, std::move(op) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1010,7 +1010,7 @@ inline decltype(auto)
    BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
 
-   return map( trans( ~lhs ), ~rhs, op );
+   return map( trans( ~lhs ), ~rhs, std::move(op) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1043,7 +1043,7 @@ inline decltype(auto)
    BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
 
-   return map( ~lhs, trans( ~rhs ), op );
+   return map( ~lhs, trans( ~rhs ), std::move(op) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1086,7 +1086,7 @@ inline decltype(auto)
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
-   return map_backend( ~lhs, ~rhs, op );
+   return map_backend( ~lhs, ~rhs, std::move(op) );
 }
 //*************************************************************************************************
 
@@ -1117,7 +1117,7 @@ inline const DMatTDMatMapExpr<MT1,MT2,OP>
    BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
 
-   return DMatTDMatMapExpr<MT1,MT2,OP>( ~lhs, ~rhs, op );
+   return DMatTDMatMapExpr<MT1,MT2,OP>( ~lhs, ~rhs, std::move(op) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1149,7 +1149,7 @@ inline decltype(auto)
    BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
 
-   return map( ~lhs, trans( ~rhs ), op );
+   return map( ~lhs, trans( ~rhs ), std::move(op) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1182,7 +1182,7 @@ inline decltype(auto)
    BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
 
-   return map( trans( ~lhs ), ~rhs, op );
+   return map( trans( ~lhs ), ~rhs, std::move(op) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1225,7 +1225,7 @@ inline decltype(auto)
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
-   return map_backend( ~lhs, ~rhs, op );
+   return map_backend( ~lhs, ~rhs, std::move(op) );
 }
 //*************************************************************************************************
 

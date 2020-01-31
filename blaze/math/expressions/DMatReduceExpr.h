@@ -181,8 +181,8 @@ class DMatReduceExpr<MT,OP,columnwise>
    // \param op The reduction operation.
    */
    inline DMatReduceExpr( const MT& dm, OP op ) noexcept
-      : dm_( dm )  // Dense matrix of the reduction expression
-      , op_( op )  // The reduction operation
+      : dm_( dm )             // Dense matrix of the reduction expression
+      , op_( std::move(op) )  // The reduction operation
    {}
    //**********************************************************************************************
 
@@ -851,9 +851,9 @@ class DMatReduceExpr<MT,OP,rowwise>
       // \param op The reduction operation.
       */
       inline ConstIterator( Operand dm, size_t index, OP op )
-         : dm_   ( dm    )  // Dense matrix of the reduction expression
-         , index_( index )  // Index to the current matrix row
-         , op_   ( op    )  // The reduction operation
+         : dm_   ( dm    )          // Dense matrix of the reduction expression
+         , index_( index )          // Index to the current matrix row
+         , op_   ( std::move(op) )  // The reduction operation
       {}
       //*******************************************************************************************
 
@@ -1070,8 +1070,8 @@ class DMatReduceExpr<MT,OP,rowwise>
    // \param op The reduction operation.
    */
    inline DMatReduceExpr( const MT& dm, OP op ) noexcept
-      : dm_( dm )  // Dense matrix of the reduction expression
-      , op_( op )  // The reduction operation
+      : dm_( dm )             // Dense matrix of the reduction expression
+      , op_( std::move(op) )  // The reduction operation
    {}
    //**********************************************************************************************
 
@@ -1977,7 +1977,7 @@ template< typename MT    // Type of the dense matrix
         , typename OP >  // Type of the reduction operation
 inline ElementType_t<MT> dmatreduce( const DenseMatrix<MT,true>& dm, OP op )
 {
-   return dmatreduce( trans( ~dm ), op );
+   return dmatreduce( trans( ~dm ), std::move(op) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -2019,7 +2019,7 @@ inline decltype(auto) reduce( const DenseMatrix<MT,SO>& dm, OP op )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return dmatreduce( ~dm, op );
+   return dmatreduce( ~dm, std::move(op) );
 }
 //*************************************************************************************************
 
@@ -2039,7 +2039,7 @@ template< size_t RF      // Reduction flag
 inline const DMatReduceExpr<MT,OP,RF> reduce_backend( const DenseMatrix<MT,false>& dm, OP op )
 {
    using ReturnType = const DMatReduceExpr<MT,OP,RF>;
-   return ReturnType( ~dm, op );
+   return ReturnType( ~dm, std::move(op) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -2059,7 +2059,7 @@ template< size_t RF      // Reduction flag
         , typename OP >  // Type of the reduction operation
 inline decltype(auto) reduce_backend( const DenseMatrix<MT,true>& dm, OP op )
 {
-   return trans( reduce<1UL-RF>( trans( ~dm ), op ) );
+   return trans( reduce<1UL-RF>( trans( ~dm ), std::move(op) ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -2121,7 +2121,7 @@ inline decltype(auto) reduce( const DenseMatrix<MT,SO>& dm, OP op )
 
    BLAZE_STATIC_ASSERT_MSG( RF < 2UL, "Invalid reduction flag" );
 
-   return reduce_backend<RF>( ~dm, op );
+   return reduce_backend<RF>( ~dm, std::move(op) );
 }
 //*************************************************************************************************
 

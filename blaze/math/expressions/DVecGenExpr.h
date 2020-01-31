@@ -139,8 +139,8 @@ class DVecGenExpr
       // \param op The custom unary operation.
       */
       inline BLAZE_DEVICE_CALLABLE ConstIterator( size_t index, OP op )
-         : index_( index )  // Index of the current vector element
-         , op_   ( op )     // The custom unary operation
+         : index_( index )          // Index of the current vector element
+         , op_   ( std::move(op) )  // The custom unary operation
       {}
       //*******************************************************************************************
 

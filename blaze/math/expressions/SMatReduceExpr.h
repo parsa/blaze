@@ -173,8 +173,8 @@ class SMatReduceExpr<MT,OP,columnwise>
    // \param op The reduction operation.
    */
    inline SMatReduceExpr( const MT& sm, OP op ) noexcept
-      : sm_( sm )  // Sparse matrix of the reduction expression
-      , op_( op )  // The reduction operation
+      : sm_( sm )             // Sparse matrix of the reduction expression
+      , op_( std::move(op) )  // The reduction operation
    {}
    //**********************************************************************************************
 
@@ -843,9 +843,9 @@ class SMatReduceExpr<MT,OP,rowwise>
       // \param op The reduction operation.
       */
       inline ConstIterator( Operand sm, size_t index, OP op )
-         : sm_   ( sm    )  // Sparse matrix of the reduction expression
-         , index_( index )  // Index to the current matrix row
-         , op_   ( op    )  // The reduction operation
+         : sm_   ( sm )             // Sparse matrix of the reduction expression
+         , index_( index )          // Index to the current matrix row
+         , op_   ( std::move(op) )  // The reduction operation
       {}
       //*******************************************************************************************
 
@@ -1062,8 +1062,8 @@ class SMatReduceExpr<MT,OP,rowwise>
    // \param op The reduction operation.
    */
    inline SMatReduceExpr( const MT& sm, OP op ) noexcept
-      : sm_( sm )  // Sparse matrix of the reduction expression
-      , op_( op )  // The reduction operation
+      : sm_( sm )             // Sparse matrix of the reduction expression
+      , op_( std::move(op) )  // The reduction operation
    {}
    //**********************************************************************************************
 
@@ -1587,7 +1587,7 @@ template< size_t RF      // Reduction flag
 inline const SMatReduceExpr<MT,OP,RF> reduce_backend( const SparseMatrix<MT,false>& sm, OP op )
 {
    using ReturnType = const SMatReduceExpr<MT,OP,RF>;
-   return ReturnType( ~sm, op );
+   return ReturnType( ~sm, std::move(op) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1607,7 +1607,7 @@ template< size_t RF      // Reduction flag
         , typename OP >  // Type of the reduction operation
 inline decltype(auto) reduce_backend( const SparseMatrix<MT,true>& sm, OP op )
 {
-   return trans( reduce<1UL-RF>( trans( ~sm ), op ) );
+   return trans( reduce<1UL-RF>( trans( ~sm ), std::move(op) ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1663,7 +1663,7 @@ inline decltype(auto) reduce( const SparseMatrix<MT,SO>& sm, OP op )
 
    BLAZE_STATIC_ASSERT_MSG( RF < 2UL, "Invalid reduction flag" );
 
-   return reduce_backend<RF>( ~sm, op );
+   return reduce_backend<RF>( ~sm, std::move(op) );
 }
 //*************************************************************************************************
 

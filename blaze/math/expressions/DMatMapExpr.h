@@ -197,8 +197,8 @@ class DMatMapExpr
       // \param op The custom unary operation.
       */
       inline BLAZE_DEVICE_CALLABLE ConstIterator( IteratorType it, OP op )
-         : it_( it )  // Iterator to the current matrix element
-         , op_( op )  // The custom unary operation
+         : it_( it )             // Iterator to the current matrix element
+         , op_( std::move(op) )  // The custom unary operation
       {}
       //*******************************************************************************************
 
@@ -431,8 +431,8 @@ class DMatMapExpr
    // \param op The custom unary operation.
    */
    inline DMatMapExpr( const MT& dm, OP op ) noexcept
-      : dm_( dm )  // Dense matrix of the map expression
-      , op_( op )  // The custom unary operation
+      : dm_( dm )             // Dense matrix of the map expression
+      , op_( std::move(op) )  // The custom unary operation
    {}
    //**********************************************************************************************
 
@@ -1099,7 +1099,7 @@ inline decltype(auto) map( const DenseMatrix<MT,SO>& dm, OP op )
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = const DMatMapExpr<MT,OP,SO>;
-   return ReturnType( ~dm, op );
+   return ReturnType( ~dm, std::move(op) );
 }
 //*************************************************************************************************
 
@@ -1129,7 +1129,7 @@ inline decltype(auto) forEach( const DenseMatrix<MT,SO>& dm, OP op )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( ~dm, op );
+   return map( ~dm, std::move(op) );
 }
 //*************************************************************************************************
 

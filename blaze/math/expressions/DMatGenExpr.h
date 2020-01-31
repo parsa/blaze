@@ -83,7 +83,7 @@ namespace blaze {
 // dense matrix via the generate() function.
 */
 template< typename MT  // Type of the dense matrix
-        , typename OP  // Type of the custom operation
+        , typename OP  // Type of the custom binary operation
         , bool SO >    // Storage order
 class DMatGenExpr
    : public MatGenExpr< DenseMatrix< DMatGenExpr<MT,OP,SO>, SO > >
@@ -136,9 +136,9 @@ class DMatGenExpr
       // \param op The custom binary operation.
       */
       inline BLAZE_DEVICE_CALLABLE ConstIterator( size_t m, size_t n, OP op )
-         : m_ ( m  )  // Row index of the current matrix element
-         , n_ ( n  )  // Column index of the current matrix element
-         , op_( op )  // The custom binary operation
+         : m_ ( m )              // Row index of the current matrix element
+         , n_ ( n )              // Column index of the current matrix element
+         , op_( std::move(op) )  // The custom binary operation
       {}
       //*******************************************************************************************
 

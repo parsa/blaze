@@ -194,8 +194,8 @@ class DVecMapExpr
       // \param op The custom unary operation.
       */
       inline BLAZE_DEVICE_CALLABLE ConstIterator( IteratorType it, OP op )
-         : it_( it )  // Iterator to the current vector element
-         , op_( op )  // The custom unary operation
+         : it_( it )             // Iterator to the current vector element
+         , op_( std::move(op) )  // The custom unary operation
       {}
       //*******************************************************************************************
 
@@ -429,8 +429,8 @@ class DVecMapExpr
    // \param op The custom unary operation.
    */
    inline DVecMapExpr( const VT& dv, OP op ) noexcept
-      : dv_( dv )  // Dense vector of the map expression
-      , op_( op )  // The custom unary operation
+      : dv_( dv )             // Dense vector of the map expression
+      , op_( std::move(op) )  // The custom unary operation
    {}
    //**********************************************************************************************
 
@@ -1098,7 +1098,7 @@ inline decltype(auto) map( const DenseVector<VT,TF>& dv, OP op )
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = const DVecMapExpr<VT,OP,TF>;
-   return ReturnType( ~dv, op );
+   return ReturnType( ~dv, std::move(op) );
 }
 //*************************************************************************************************
 
@@ -1128,7 +1128,7 @@ inline decltype(auto) forEach( const DenseVector<VT,TF>& dv, OP op )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( ~dv, op );
+   return map( ~dv, std::move(op) );
 }
 //*************************************************************************************************
 

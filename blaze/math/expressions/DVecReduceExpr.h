@@ -387,7 +387,7 @@ inline decltype(auto) reduce( const DenseVector<VT,TF>& dv, OP op )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return dvecreduce( ~dv, op );
+   return dvecreduce( ~dv, std::move(op) );
 }
 //*************************************************************************************************
 

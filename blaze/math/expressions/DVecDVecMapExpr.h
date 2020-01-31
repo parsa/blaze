@@ -216,9 +216,9 @@ class DVecDVecMapExpr
       // \param op The custom binary operation.
       */
       inline ConstIterator( LeftIteratorType left, RightIteratorType right, OP op )
-         : left_ ( left  )  // Iterator to the current left-hand side element
-         , right_( right )  // Iterator to the current right-hand side element
-         , op_   ( op    )  // The custom binary operation
+         : left_ ( left  )          // Iterator to the current left-hand side element
+         , right_( right )          // Iterator to the current right-hand side element
+         , op_   ( std::move(op) )  // The custom binary operation
       {}
       //*******************************************************************************************
 
@@ -457,9 +457,9 @@ class DVecDVecMapExpr
    // \param op The custom binary operation.
    */
    inline DVecDVecMapExpr( const VT1& lhs, const VT2& rhs, OP op ) noexcept
-      : lhs_( lhs )  // Left-hand side dense vector of the map expression
-      , rhs_( rhs )  // Right-hand side dense vector of the map expression
-      , op_ ( op  )  // The custom binary operation
+      : lhs_( lhs )            // Left-hand side dense vector of the map expression
+      , rhs_( rhs )            // Right-hand side dense vector of the map expression
+      , op_ ( std::move(op) )  // The custom binary operation
    {}
    //**********************************************************************************************
 
@@ -1103,7 +1103,7 @@ inline decltype(auto)
    }
 
    using ReturnType = const DVecDVecMapExpr<VT1,VT2,OP,TF>;
-   return ReturnType( ~lhs, ~rhs, op );
+   return ReturnType( ~lhs, ~rhs, std::move(op) );
 }
 //*************************************************************************************************
 
@@ -1138,7 +1138,7 @@ inline decltype(auto)
    BLAZE_FUNCTION_TRACE;
 
    const MakePair mp{};
-   return map( map( map( ~dv1, ~dv2, mp ), ~dv3, mp ), join( op ) );
+   return map( map( map( ~dv1, ~dv2, mp ), ~dv3, mp ), join( std::move(op) ) );
 }
 //*************************************************************************************************
 
@@ -1175,7 +1175,7 @@ inline decltype(auto)
    BLAZE_FUNCTION_TRACE;
 
    const MakePair mp{};
-   return map( map( map( map( ~dv1, ~dv2, mp ), ~dv3, mp ), ~dv4, mp ), join( op ) );
+   return map( map( map( map( ~dv1, ~dv2, mp ), ~dv3, mp ), ~dv4, mp ), join( std::move(op) ) );
 }
 //*************************************************************************************************
 
@@ -1215,7 +1215,7 @@ inline decltype(auto)
    BLAZE_FUNCTION_TRACE;
 
    const MakePair mp{};
-   return map( map( map( map( map( ~dv1, ~dv2, mp ), ~dv3, mp ), ~dv4, mp ), ~dv5, mp ), join( op ) );
+   return map( map( map( map( map( ~dv1, ~dv2, mp ), ~dv3, mp ), ~dv4, mp ), ~dv5, mp ), join( std::move(op) ) );
 }
 //*************************************************************************************************
 
@@ -1257,7 +1257,7 @@ inline decltype(auto)
    BLAZE_FUNCTION_TRACE;
 
    const MakePair mp{};
-   return map( map( map( map( map( map( ~dv1, ~dv2, mp ), ~dv3, mp ), ~dv4, mp ), ~dv5, mp ), ~dv6, mp ), join( op ) );
+   return map( map( map( map( map( map( ~dv1, ~dv2, mp ), ~dv3, mp ), ~dv4, mp ), ~dv5, mp ), ~dv6, mp ), join( std::move(op) ) );
 }
 //*************************************************************************************************
 

@@ -185,8 +185,8 @@ class SVecMapExpr
       // \param op The custom unary operation.
       */
       inline ConstIterator( IteratorType it, OP op )
-         : it_( it )  // Iterator over the elements of the sparse vector expression
-         , op_( op )  // The custom unary operation
+         : it_( it )             // Iterator over the elements of the sparse vector expression
+         , op_( std::move(op) )  // The custom unary operation
       {}
       //*******************************************************************************************
 
@@ -294,8 +294,8 @@ class SVecMapExpr
    // \param op The custom unary operation.
    */
    inline SVecMapExpr( const VT& sv, OP op ) noexcept
-      : sv_( sv )  // Sparse vector of the map expression
-      , op_( op )  // The custom unary operation
+      : sv_( sv )             // Sparse vector of the map expression
+      , op_( std::move(op) )  // The custom unary operation
    {}
    //**********************************************************************************************
 
@@ -859,7 +859,7 @@ inline decltype(auto) map( const SparseVector<VT,TF>& sv, OP op )
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = const SVecMapExpr<VT,OP,TF>;
-   return ReturnType( ~sv, op );
+   return ReturnType( ~sv, std::move(op) );
 }
 //*************************************************************************************************
 
@@ -889,7 +889,7 @@ inline decltype(auto) forEach( const SparseVector<VT,TF>& sv, OP op )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( ~sv, op );
+   return map( ~sv, std::move(op) );
 }
 //*************************************************************************************************
 
