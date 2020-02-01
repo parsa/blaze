@@ -100,9 +100,9 @@ namespace blaze {
 // The DMatReduceExpr class represents the compile time expression for partial reduction operations
 // of row-major dense matrices.
 */
-template< typename MT  // Type of the dense matrix
-        , typename OP  // Type of the reduction operation
-        , size_t RF >  // Reduction flag
+template< typename MT         // Type of the dense matrix
+        , typename OP         // Type of the reduction operation
+        , ReductionFlag RF >  // Reduction flag
 class DMatReduceExpr
 {};
 //*************************************************************************************************
@@ -2033,9 +2033,9 @@ inline decltype(auto) reduce( const DenseMatrix<MT,SO>& dm, OP op )
 // \param op The reduction operation.
 // \return The result of the reduction operation.
 */
-template< size_t RF      // Reduction flag
-        , typename MT    // Type of the dense matrix
-        , typename OP >  // Type of the reduction operation
+template< ReductionFlag RF  // Reduction flag
+        , typename MT       // Type of the dense matrix
+        , typename OP >     // Type of the reduction operation
 inline const DMatReduceExpr<MT,OP,RF> reduce_backend( const DenseMatrix<MT,false>& dm, OP op )
 {
    using ReturnType = const DMatReduceExpr<MT,OP,RF>;
@@ -2054,12 +2054,13 @@ inline const DMatReduceExpr<MT,OP,RF> reduce_backend( const DenseMatrix<MT,false
 // \param op The reduction operation.
 // \return The result of the reduction operation.
 */
-template< size_t RF      // Reduction flag
-        , typename MT    // Type of the dense matrix
-        , typename OP >  // Type of the reduction operation
+template< ReductionFlag RF  // Reduction flag
+        , typename MT       // Type of the dense matrix
+        , typename OP >     // Type of the reduction operation
 inline decltype(auto) reduce_backend( const DenseMatrix<MT,true>& dm, OP op )
 {
-   return trans( reduce<1UL-RF>( trans( ~dm ), std::move(op) ) );
+   constexpr ReductionFlag RF2( RF == rowwise ? columnwise : rowwise );
+   return trans( reduce<RF2>( trans( ~dm ), std::move(op) ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -2111,10 +2112,10 @@ inline decltype(auto) reduce_backend( const DenseMatrix<MT,true>& dm, OP op )
 // behavior is non-deterministic if \a op is not associative or not commutative. Also, the
 // operation is undefined if the given reduction operation modifies the values.
 */
-template< size_t RF      // Reduction flag
-        , typename MT    // Type of the dense matrix
-        , bool SO        // Storage order
-        , typename OP >  // Type of the reduction operation
+template< ReductionFlag RF  // Reduction flag
+        , typename MT       // Type of the dense matrix
+        , bool SO           // Storage order
+        , typename OP >     // Type of the reduction operation
 inline decltype(auto) reduce( const DenseMatrix<MT,SO>& dm, OP op )
 {
    BLAZE_FUNCTION_TRACE;
@@ -2187,9 +2188,9 @@ inline decltype(auto) sum( const DenseMatrix<MT,SO>& dm )
 
 // Please note that the evaluation order of the reduction operation is unspecified.
 */
-template< size_t RF    // Reduction flag
-        , typename MT  // Type of the dense matrix
-        , bool SO >    // Storage order
+template< ReductionFlag RF  // Reduction flag
+        , typename MT       // Type of the dense matrix
+        , bool SO >         // Storage order
 inline decltype(auto) sum( const DenseMatrix<MT,SO>& dm )
 {
    BLAZE_FUNCTION_TRACE;
@@ -2260,9 +2261,9 @@ inline decltype(auto) prod( const DenseMatrix<MT,SO>& dm )
 
 // Please note that the evaluation order of the reduction operation is unspecified.
 */
-template< size_t RF    // Reduction flag
-        , typename MT  // Type of the dense matrix
-        , bool SO >    // Storage order
+template< ReductionFlag RF  // Reduction flag
+        , typename MT       // Type of the dense matrix
+        , bool SO >         // Storage order
 inline decltype(auto) prod( const DenseMatrix<MT,SO>& dm )
 {
    BLAZE_FUNCTION_TRACE;
@@ -2331,9 +2332,9 @@ inline decltype(auto) min( const DenseMatrix<MT,SO>& dm )
    rowmin = min<rowwise>( A );  // Results in ( 0, 1 )
    \endcode
 */
-template< size_t RF    // Reduction flag
-        , typename MT  // Type of the dense matrix
-        , bool SO >    // Storage order
+template< ReductionFlag RF  // Reduction flag
+        , typename MT       // Type of the dense matrix
+        , bool SO >         // Storage order
 inline decltype(auto) min( const DenseMatrix<MT,SO>& dm )
 {
    BLAZE_FUNCTION_TRACE;
@@ -2402,9 +2403,9 @@ inline decltype(auto) max( const DenseMatrix<MT,SO>& dm )
    rowmax = max<rowwise>( A );  // Results in ( 2, 4 )
    \endcode
 */
-template< size_t RF    // Reduction flag
-        , typename MT  // Type of the dense matrix
-        , bool SO >    // Storage order
+template< ReductionFlag RF  // Reduction flag
+        , typename MT       // Type of the dense matrix
+        , bool SO >         // Storage order
 inline decltype(auto) max( const DenseMatrix<MT,SO>& dm )
 {
    BLAZE_FUNCTION_TRACE;

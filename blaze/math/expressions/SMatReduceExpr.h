@@ -91,9 +91,9 @@ namespace blaze {
 // The SMatReduceExpr class represents the compile time expression for partial reduction operations
 // of row-major sparse matrices.
 */
-template< typename MT  // Type of the sparse matrix
-        , typename OP  // Type of the reduction operation
-        , size_t RF >  // Reduction flag
+template< typename MT         // Type of the sparse matrix
+        , typename OP         // Type of the reduction operation
+        , ReductionFlag RF >  // Reduction flag
 class SMatReduceExpr
 {};
 //*************************************************************************************************
@@ -1581,9 +1581,9 @@ inline decltype(auto) reduce( const SparseMatrix<MT,SO>& sm, OP op )
 // \param op The reduction operation.
 // \return The result of the reduction operation.
 */
-template< size_t RF      // Reduction flag
-        , typename MT    // Type of the sparse matrix
-        , typename OP >  // Type of the reduction operation
+template< ReductionFlag RF  // Reduction flag
+        , typename MT       // Type of the sparse matrix
+        , typename OP >     // Type of the reduction operation
 inline const SMatReduceExpr<MT,OP,RF> reduce_backend( const SparseMatrix<MT,false>& sm, OP op )
 {
    using ReturnType = const SMatReduceExpr<MT,OP,RF>;
@@ -1602,12 +1602,13 @@ inline const SMatReduceExpr<MT,OP,RF> reduce_backend( const SparseMatrix<MT,fals
 // \param op The reduction operation.
 // \return The result of the reduction operation.
 */
-template< size_t RF      // Reduction flag
-        , typename MT    // Type of the sparse matrix
-        , typename OP >  // Type of the reduction operation
+template< ReductionFlag RF  // Reduction flag
+        , typename MT       // Type of the sparse matrix
+        , typename OP >     // Type of the reduction operation
 inline decltype(auto) reduce_backend( const SparseMatrix<MT,true>& sm, OP op )
 {
-   return trans( reduce<1UL-RF>( trans( ~sm ), std::move(op) ) );
+   constexpr ReductionFlag RF2( RF == rowwise ? columnwise : rowwise );
+   return trans( reduce<RF2>( trans( ~sm ), std::move(op) ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1653,10 +1654,10 @@ inline decltype(auto) reduce_backend( const SparseMatrix<MT,true>& sm, OP op )
 // behavior is non-deterministic if \a op is not associative or not commutative. Also, the
 // operation is undefined if the given reduction operation modifies the values.
 */
-template< size_t RF      // Reduction flag
-        , typename MT    // Type of the sparse matrix
-        , bool SO        // Storage order
-        , typename OP >  // Type of the reduction operation
+template< ReductionFlag RF  // Reduction flag
+        , typename MT       // Type of the sparse matrix
+        , bool SO           // Storage order
+        , typename OP >     // Type of the reduction operation
 inline decltype(auto) reduce( const SparseMatrix<MT,SO>& sm, OP op )
 {
    BLAZE_FUNCTION_TRACE;
@@ -1730,9 +1731,9 @@ inline decltype(auto) sum( const SparseMatrix<MT,SO>& sm )
 
 // Please note that the evaluation order of the reduction operation is unspecified.
 */
-template< size_t RF    // Reduction flag
-        , typename MT  // Type of the sparse matrix
-        , bool SO >    // Storage order
+template< ReductionFlag RF  // Reduction flag
+        , typename MT       // Type of the sparse matrix
+        , bool SO >         // Storage order
 inline decltype(auto) sum( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
@@ -1804,9 +1805,9 @@ inline decltype(auto) prod( const SparseMatrix<MT,SO>& sm )
 
 // Please note that the evaluation order of the reduction operation is unspecified.
 */
-template< size_t RF    // Reduction flag
-        , typename MT  // Type of the sparse matrix
-        , bool SO >    // Storage order
+template< ReductionFlag RF  // Reduction flag
+        , typename MT       // Type of the sparse matrix
+        , bool SO >         // Storage order
 inline decltype(auto) prod( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
@@ -1882,9 +1883,9 @@ inline decltype(auto) min( const SparseMatrix<MT,SO>& sm )
    rowmin = min<rowwise>( A );  // Results in ( 1, 1 )
    \endcode
 */
-template< size_t RF    // Reduction flag
-        , typename MT  // Type of the sparse matrix
-        , bool SO >    // Storage order
+template< ReductionFlag RF  // Reduction flag
+        , typename MT       // Type of the sparse matrix
+        , bool SO >         // Storage order
 inline decltype(auto) min( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
@@ -1960,9 +1961,9 @@ inline decltype(auto) max( const SparseMatrix<MT,SO>& sm )
    rowmax = max<rowwise>( A );  // Results in ( -1, -1 )
    \endcode
 */
-template< size_t RF    // Reduction flag
-        , typename MT  // Type of the sparse matrix
-        , bool SO >    // Storage order
+template< ReductionFlag RF  // Reduction flag
+        , typename MT       // Type of the sparse matrix
+        , bool SO >         // Storage order
 inline decltype(auto) max( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;

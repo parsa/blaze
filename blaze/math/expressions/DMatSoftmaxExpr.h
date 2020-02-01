@@ -131,9 +131,9 @@ auto softmax( const DenseMatrix<MT,SO>& dm )
    C = softmax<columnwise>( A );
    \endcode
 */
-template< bool RF      // Reduction flag
-        , typename MT  // Type of the dense matrix
-        , bool SO >    // Storage order
+template< ReductionFlag RF  // Reduction flag
+        , typename MT       // Type of the dense matrix
+        , bool SO >         // Storage order
 auto softmax( const DenseMatrix<MT,SO>& dm )
 {
    auto tmp( evaluate( exp( ~dm ) ) );

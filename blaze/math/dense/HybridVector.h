@@ -45,6 +45,7 @@
 #include <blaze/math/Forward.h>
 #include <blaze/math/Infinity.h>
 #include <blaze/math/InitializerList.h>
+#include <blaze/math/ReductionFlag.h>
 #include <blaze/math/RelaxationFlag.h>
 #include <blaze/math/shims/Clear.h>
 #include <blaze/math/shims/IsDefault.h>
@@ -3208,7 +3209,7 @@ struct BinaryMapTraitEval2< T1, T2, OP
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T, typename OP, size_t RF >
+template< typename T, typename OP, ReductionFlag RF >
 struct PartialReduceTraitEval2< T, OP, RF
                               , EnableIf_t< IsMatrix_v<T> &&
                                             ( Size_v<T,0UL> == DefaultSize_v ||

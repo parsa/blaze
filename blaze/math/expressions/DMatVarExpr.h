@@ -156,9 +156,9 @@ inline decltype(auto) var( const DenseMatrix<MT,SO>& dm )
 // \param dm The given general dense matrix for the variance computation.
 // \return The row-/column-wise variance of the given matrix.
 */
-template< size_t RF    // Reduction flag
-        , typename MT  // Type of the dense matrix
-        , bool SO >    // Storage order
+template< ReductionFlag RF  // Reduction flag
+        , typename MT       // Type of the dense matrix
+        , bool SO >         // Storage order
 decltype(auto) var_backend( const DenseMatrix<MT,SO>& dm, FalseType )
 {
    using BT = UnderlyingBuiltin_t<MT>;
@@ -183,9 +183,9 @@ decltype(auto) var_backend( const DenseMatrix<MT,SO>& dm, FalseType )
 // \param dm The given general dense matrix for the variance computation.
 // \return The row-/column-wise variance of the given matrix.
 */
-template< size_t RF    // Reduction flag
-        , typename MT  // Type of the dense matrix
-        , bool SO >    // Storage order
+template< ReductionFlag RF  // Reduction flag
+        , typename MT       // Type of the dense matrix
+        , bool SO >         // Storage order
 decltype(auto) var_backend( const DenseMatrix<MT,SO>& dm, TrueType )
 {
    const size_t n( RF == rowwise ? rows( ~dm ) : columns( ~dm ) );
@@ -235,9 +235,9 @@ decltype(auto) var_backend( const DenseMatrix<MT,SO>& dm, TrueType )
 // than 2 or in case \a RF is set to \a columnwise and the number of rows of the given matrix is
 // smaller than 2, a \a std::invalid_argument is thrown.
 */
-template< size_t RF    // Reduction flag
-        , typename MT  // Type of the dense matrix
-        , bool SO >    // Storage order
+template< ReductionFlag RF  // Reduction flag
+        , typename MT       // Type of the dense matrix
+        , bool SO >         // Storage order
 inline decltype(auto) var( const DenseMatrix<MT,SO>& dm )
 {
    BLAZE_FUNCTION_TRACE;

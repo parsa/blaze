@@ -41,6 +41,7 @@
 //*************************************************************************************************
 
 #include <blaze/math/expressions/ReduceExpr.h>
+#include <blaze/math/ReductionFlag.h>
 
 
 namespace blaze {
@@ -62,8 +63,8 @@ namespace blaze {
 // publicly from the MatReduceExpr base class, the IsMatReduceExpr type trait recognizes the
 // class as valid matrix reduction expression template.
 */
-template< typename VT  // Vector base type of the expression
-        , size_t RF >  // Reduction flag
+template< typename VT         // Vector base type of the expression
+        , ReductionFlag RF >  // Reduction flag
 struct MatReduceExpr
    : public ReduceExpr<VT>
 {};

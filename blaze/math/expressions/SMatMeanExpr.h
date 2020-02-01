@@ -157,9 +157,9 @@ inline decltype(auto) mean( const SparseMatrix<MT,SO>& sm )
 // \param sm The given general sparse matrix for the mean computation.
 // \return The row-/column-wise mean of the given matrix.
 */
-template< size_t RF    // Reduction flag
-        , typename MT  // Type of the sparse matrix
-        , bool SO >    // Storage order
+template< ReductionFlag RF  // Reduction flag
+        , typename MT       // Type of the sparse matrix
+        , bool SO >         // Storage order
 decltype(auto) mean_backend( const SparseMatrix<MT,SO>& sm, FalseType )
 {
    using BT = UnderlyingBuiltin_t<MT>;
@@ -183,9 +183,9 @@ decltype(auto) mean_backend( const SparseMatrix<MT,SO>& sm, FalseType )
 // \param sm The given general sparse matrix for the mean computation.
 // \return The row-/column-wise mean of the given matrix.
 */
-template< size_t RF    // Reduction flag
-        , typename MT  // Type of the sparse matrix
-        , bool SO >    // Storage order
+template< ReductionFlag RF  // Reduction flag
+        , typename MT       // Type of the sparse matrix
+        , bool SO >         // Storage order
 decltype(auto) mean_backend( const SparseMatrix<MT,SO>& sm, TrueType )
 {
    const size_t n( RF == rowwise ? rows( ~sm ) : columns( ~sm ) );
@@ -236,9 +236,9 @@ decltype(auto) mean_backend( const SparseMatrix<MT,SO>& sm, TrueType )
 // case \a RF is set to \a columnwise and the number of rows of the given matrix is 0, a
 // \a std::invalid_argument is thrown.
 */
-template< size_t RF    // Reduction flag
-        , typename MT  // Type of the sparse matrix
-        , bool SO >    // Storage order
+template< ReductionFlag RF  // Reduction flag
+        , typename MT       // Type of the sparse matrix
+        , bool SO >         // Storage order
 decltype(auto) mean( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;

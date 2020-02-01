@@ -87,8 +87,8 @@ namespace blaze {
 // The SMatVarExpr class represents the compile time expression for the computation of the
 // row-/column-wise variance function on row-major sparse matrices.
 */
-template< typename MT  // Type of the sparse matrix
-        , size_t RF >  // Reduction flag
+template< typename MT         // Type of the sparse matrix
+        , ReductionFlag RF >  // Reduction flag
 class SMatVarExpr
 {};
 //*************************************************************************************************
@@ -1226,8 +1226,8 @@ inline decltype(auto) var( const SparseMatrix<MT,SO>& sm )
 // \param sm The given row-major sparse matrix for the variance computation.
 // \return The result of the variance operation.
 */
-template< size_t RF      // Reduction flag
-        , typename MT >  // Type of the sparse matrix
+template< ReductionFlag RF  // Reduction flag
+        , typename MT >     // Type of the sparse matrix
 inline const SMatVarExpr<MT,RF> var_backend( const SparseMatrix<MT,false>& sm )
 {
    using ReturnType = const SMatVarExpr<MT,RF>;
@@ -1245,11 +1245,12 @@ inline const SMatVarExpr<MT,RF> var_backend( const SparseMatrix<MT,false>& sm )
 // \param sm The given column-major sparse matrix for the variance computation.
 // \return The result of the variance operation.
 */
-template< size_t RF      // Reduction flag
-        , typename MT >  // Type of the sparse matrix
+template< ReductionFlag RF  // Reduction flag
+        , typename MT >     // Type of the sparse matrix
 inline decltype(auto) var_backend( const SparseMatrix<MT,true>& sm )
 {
-   return trans( var<1UL-RF>( trans( ~sm ) ) );
+   constexpr ReductionFlag RF2( RF == rowwise ? columnwise : rowwise );
+   return trans( var<RF2>( trans( ~sm ) ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1291,9 +1292,9 @@ inline decltype(auto) var_backend( const SparseMatrix<MT,true>& sm )
 // than 2 or in case \a RF is set to \a columnwise and the number of rows of the given matrix is
 // smaller than 2, a \a std::invalid_argument is thrown.
 */
-template< size_t RF    // Reduction flag
-        , typename MT  // Type of the sparse matrix
-        , bool SO >    // Storage order
+template< ReductionFlag RF  // Reduction flag
+        , typename MT       // Type of the sparse matrix
+        , bool SO >         // Storage order
 inline decltype(auto) var( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;

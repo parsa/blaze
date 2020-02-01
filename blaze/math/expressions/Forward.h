@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <blaze/math/ReductionFlag.h>
 #include <blaze/system/MacroDisable.h>
 #include <blaze/util/Types.h>
 
@@ -687,13 +688,13 @@ decltype(auto) reduce( const SparseVector<VT,TF>&, OP );
 template< typename MT, bool SO, typename OP >
 decltype(auto) reduce( const DenseMatrix<MT,SO>&, OP );
 
-template< size_t RF, typename MT, bool SO, typename OP >
+template< ReductionFlag RF, typename MT, bool SO, typename OP >
 decltype(auto) reduce( const DenseMatrix<MT,SO>&, OP );
 
 template< typename MT, bool SO, typename OP >
 decltype(auto) reduce( const SparseMatrix<MT,SO>&, OP );
 
-template< size_t RF, typename MT, bool SO, typename OP >
+template< ReductionFlag, typename MT, bool SO, typename OP >
 decltype(auto) reduce( const SparseMatrix<MT,SO>&, OP );
 
 
@@ -719,13 +720,13 @@ decltype(auto) mean( const SparseVector<VT,TF>& );
 template< typename MT, bool SO >
 decltype(auto) mean( const DenseMatrix<MT,SO>& );
 
-template< size_t RF, typename MT, bool SO >
+template< ReductionFlag, typename MT, bool SO >
 decltype(auto) mean( const DenseMatrix<MT,SO>& );
 
 template< typename MT, bool SO >
 decltype(auto) mean( const SparseMatrix<MT,SO>& );
 
-template< size_t RF, typename MT, bool SO >
+template< ReductionFlag, typename MT, bool SO >
 decltype(auto) mean( const SparseMatrix<MT,SO>& );
 
 
@@ -738,13 +739,13 @@ decltype(auto) var( const SparseVector<VT,TF>& );
 template< typename MT, bool SO >
 decltype(auto) var( const DenseMatrix<MT,SO>& );
 
-template< size_t RF, typename MT, bool SO >
+template< ReductionFlag, typename MT, bool SO >
 decltype(auto) var( const DenseMatrix<MT,SO>& );
 
 template< typename MT, bool SO >
 decltype(auto) var( const SparseMatrix<MT,SO>& );
 
-template< size_t RF, typename MT, bool SO >
+template< ReductionFlag, typename MT, bool SO >
 decltype(auto) var( const SparseMatrix<MT,SO>& );
 
 
@@ -757,13 +758,13 @@ decltype(auto) stddev( const SparseVector<VT,TF>& );
 template< typename MT, bool SO >
 decltype(auto) stddev( const DenseMatrix<MT,SO>& );
 
-template< size_t RF, typename MT, bool SO >
+template< ReductionFlag, typename MT, bool SO >
 decltype(auto) stddev( const DenseMatrix<MT,SO>& );
 
 template< typename MT, bool SO >
 decltype(auto) stddev( const SparseMatrix<MT,SO>& );
 
-template< size_t RF, typename MT, bool SO >
+template< ReductionFlag, typename MT, bool SO >
 decltype(auto) stddev( const SparseMatrix<MT,SO>& );
 
 

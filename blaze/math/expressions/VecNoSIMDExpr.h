@@ -58,6 +58,7 @@
 #include <blaze/math/expressions/VecVecMapExpr.h>
 #include <blaze/math/expressions/VecVecMultExpr.h>
 #include <blaze/math/expressions/VecVecSubExpr.h>
+#include <blaze/math/ReductionFlag.h>
 #include <blaze/util/FunctionTrace.h>
 
 
@@ -467,8 +468,8 @@ inline decltype(auto) nosimd( const TVecMatMultExpr<VT>& vector )
 // This function returns an expression representing the SIMD-disabled matrix reduction
 // operation.
 */
-template< typename VT  // Vector base type of the expression
-        , size_t RF >  // Reduction flag
+template< typename VT         // Vector base type of the expression
+        , ReductionFlag RF >  // Reduction flag
 inline decltype(auto) nosimd( const MatReduceExpr<VT,RF>& vector )
 {
    BLAZE_FUNCTION_TRACE;

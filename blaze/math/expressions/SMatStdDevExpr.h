@@ -127,9 +127,9 @@ inline decltype(auto) stddev( const SparseMatrix<MT,SO>& sm )
 // than 2 or in case \a RF is set to \a columnwise and the number of rows of the given matrix is
 // smaller than 2, a \a std::invalid_argument is thrown.
 */
-template< size_t RF    // Reduction flag
-        , typename MT  // Type of the sparse matrix
-        , bool SO >    // Storage order
+template< ReductionFlag RF  // Reduction flag
+        , typename MT       // Type of the sparse matrix
+        , bool SO >         // Storage order
 inline decltype(auto) stddev( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;

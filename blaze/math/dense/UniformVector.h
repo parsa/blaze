@@ -47,6 +47,7 @@
 #include <blaze/math/Exception.h>
 #include <blaze/math/expressions/DenseVector.h>
 #include <blaze/math/expressions/Expression.h>
+#include <blaze/math/ReductionFlag.h>
 #include <blaze/math/RelaxationFlag.h>
 #include <blaze/math/shims/Clear.h>
 #include <blaze/math/shims/IsDefault.h>
@@ -1639,7 +1640,7 @@ struct BinaryMapTraitEval1< T1, T2, OP
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T, typename OP, size_t RF >
+template< typename T, typename OP, ReductionFlag RF >
 struct PartialReduceTraitEval1< T, OP, RF
                               , EnableIf_t< IsMatrix_v<T> && IsUniform_v<T> > >
 {
