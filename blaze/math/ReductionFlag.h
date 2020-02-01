@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
 //  \file blaze/math/ReductionFlag.h
-//  \brief Header file for the reduction flags
+//  \brief Header file for the reduction flag enumeration
 //
 //  Copyright (C) 2012-2019 Klaus Iglberger - All Rights Reserved
 //
@@ -52,42 +52,30 @@ namespace blaze {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Reduction flag for row-wise reduction operations.
+/*!\brief Reduction flag for row-wise or column-wise reduction operations.
+// \ingroup math
 //
-// This flag can be used to perform row-wise reduction operations on matrices. The following
-// example shows the row-wise summation of a row-major matrix:
+// This flag can be used to perform row-wise or column-wise reduction operations on matrices.
+// The following example shows both the row-wise and column-wise summation of a dense matrix:
 
    \code
    using blaze::rowMajor;
    using blaze::columnVector;
-
-   blaze::DynamicMatrix<int,rowMajor> A{ { 4, 1, 2 }, { -2, 0, 3 } };
-   blaze::DynamicVector<int,columnVector> v;
-
-   v = sum<rowwise>( A );  // Results in ( 7, 1 )
-   \endcode
-*/
-constexpr size_t rowwise = 1UL;
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Reduction flag for column-wise reduction operations.
-//
-// This flag can be used to perform column-wise reduction operations on matrices. The following
-// example shows the column-wise summation of a column-major matrix:
-
-   \code
-   using blaze::columnMajor;
    using blaze::rowVector;
 
-   blaze::DynamicMatrix<int,columnMajor> A{ { 4, 1, 2 }, { -2, 0, 3 } };
-   blaze::DynamicVector<int,rowVector> v;
+   blaze::DynamicMatrix<int,rowMajor> A{ { 4, 1, 2 }, { -2, 0, 3 } };
+   blaze::DynamicVector<int,columnVector> v1;
+   blaze::DynamicVector<int,rowVector> v2;
 
-   v = sum<columnwise>( A );  // Results in ( 2, 1, 5 )
+   v1 = sum<rowwise>( A );     // Results in ( 7, 1 )
+   v2 = sum<columnwise>( A );  // Results in ( 2, 1, 5 )
    \endcode
 */
-constexpr size_t columnwise = 0UL;
+enum ReductionFlag : size_t
+{
+   columnwise = 0UL,  //!< Flag for column-wise reduction operations.
+   rowwise    = 1UL   //!< Flag for row-wise reduction operations.
+};
 //*************************************************************************************************
 
 } // namespace blaze
