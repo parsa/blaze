@@ -101,7 +101,7 @@ class OperationTest
    using TOMT = blaze::TransposeType_t<OMT>;  //!< Transpose matrix type with opposite storage order.
 
    //! Dense vector result type of the row-wise reduction operation.
-   using DRE = blaze::ReduceTrait_t<MT,blaze::Add,1UL>;
+   using DRE = blaze::ReduceTrait_t<MT,blaze::Add,blaze::rowwise>;
 
    using DET  = blaze::ElementType_t<DRE>;    //!< Element type of the dense result.
    using TDRE = blaze::TransposeType_t<DRE>;  //!< Transpose dense result type.
@@ -122,11 +122,11 @@ class OperationTest
 
    //! Type of the vector map expression
    using MatReduceExprType =
-      blaze::RemoveCVRef_t< decltype( blaze::sum<1UL>( std::declval<MT>() ) ) >;
+      blaze::RemoveCVRef_t< decltype( blaze::sum<blaze::rowwise>( std::declval<MT>() ) ) >;
 
    //! Type of the transpose vector map expression
    using TMatReduceExprType =
-      blaze::RemoveCVRef_t< decltype( blaze::sum<1UL>( std::declval<OMT>() ) ) >;
+      blaze::RemoveCVRef_t< decltype( blaze::sum<blaze::rowwise>( std::declval<OMT>() ) ) >;
    //**********************************************************************************************
 
  public:
@@ -507,6 +507,7 @@ void OperationTest<MT>::testBasicOperation( OP op )
    if( BLAZETEST_MATHTEST_TEST_BASIC_OPERATION > 1 )
    {
       using blaze::reduce;
+      using blaze::rowwise;
 
 
       //=====================================================================================
@@ -520,9 +521,9 @@ void OperationTest<MT>::testBasicOperation( OP op )
 
          try {
             initResults();
-            dres_   = reduce<1UL>( mat_, op );
-            sres_   = reduce<1UL>( mat_, op );
-            refres_ = reduce<1UL>( refmat_, op );
+            dres_   = reduce<rowwise>( mat_, op );
+            sres_   = reduce<rowwise>( mat_, op );
+            refres_ = reduce<rowwise>( refmat_, op );
          }
          catch( std::exception& ex ) {
             convertException<MT>( ex );
@@ -532,9 +533,9 @@ void OperationTest<MT>::testBasicOperation( OP op )
 
          try {
             initResults();
-            dres_   = reduce<1UL>( omat_, op );
-            sres_   = reduce<1UL>( omat_, op );
-            refres_ = reduce<1UL>( refmat_, op );
+            dres_   = reduce<rowwise>( omat_, op );
+            sres_   = reduce<rowwise>( omat_, op );
+            refres_ = reduce<rowwise>( refmat_, op );
          }
          catch( std::exception& ex ) {
             convertException<OMT>( ex );
@@ -550,9 +551,9 @@ void OperationTest<MT>::testBasicOperation( OP op )
 
          try {
             initResults();
-            dres_   = reduce<1UL>( eval( mat_ ), op );
-            sres_   = reduce<1UL>( eval( mat_ ), op );
-            refres_ = reduce<1UL>( eval( refmat_ ), op );
+            dres_   = reduce<rowwise>( eval( mat_ ), op );
+            sres_   = reduce<rowwise>( eval( mat_ ), op );
+            refres_ = reduce<rowwise>( eval( refmat_ ), op );
          }
          catch( std::exception& ex ) {
             convertException<MT>( ex );
@@ -562,9 +563,9 @@ void OperationTest<MT>::testBasicOperation( OP op )
 
          try {
             initResults();
-            dres_   = reduce<1UL>( eval( omat_ ), op );
-            sres_   = reduce<1UL>( eval( omat_ ), op );
-            refres_ = reduce<1UL>( eval( refmat_ ), op );
+            dres_   = reduce<rowwise>( eval( omat_ ), op );
+            sres_   = reduce<rowwise>( eval( omat_ ), op );
+            refres_ = reduce<rowwise>( eval( refmat_ ), op );
          }
          catch( std::exception& ex ) {
             convertException<OMT>( ex );
@@ -585,9 +586,9 @@ void OperationTest<MT>::testBasicOperation( OP op )
 
          try {
             initResults();
-            dres_   += reduce<1UL>( mat_, op );
-            sres_   += reduce<1UL>( mat_, op );
-            refres_ += reduce<1UL>( refmat_, op );
+            dres_   += reduce<rowwise>( mat_, op );
+            sres_   += reduce<rowwise>( mat_, op );
+            refres_ += reduce<rowwise>( refmat_, op );
          }
          catch( std::exception& ex ) {
             convertException<MT>( ex );
@@ -597,9 +598,9 @@ void OperationTest<MT>::testBasicOperation( OP op )
 
          try {
             initResults();
-            dres_   += reduce<1UL>( omat_, op );
-            sres_   += reduce<1UL>( omat_, op );
-            refres_ += reduce<1UL>( refmat_, op );
+            dres_   += reduce<rowwise>( omat_, op );
+            sres_   += reduce<rowwise>( omat_, op );
+            refres_ += reduce<rowwise>( refmat_, op );
          }
          catch( std::exception& ex ) {
             convertException<OMT>( ex );
@@ -615,9 +616,9 @@ void OperationTest<MT>::testBasicOperation( OP op )
 
          try {
             initResults();
-            dres_   += reduce<1UL>( eval( mat_ ), op );
-            sres_   += reduce<1UL>( eval( mat_ ), op );
-            refres_ += reduce<1UL>( eval( refmat_ ), op );
+            dres_   += reduce<rowwise>( eval( mat_ ), op );
+            sres_   += reduce<rowwise>( eval( mat_ ), op );
+            refres_ += reduce<rowwise>( eval( refmat_ ), op );
          }
          catch( std::exception& ex ) {
             convertException<MT>( ex );
@@ -627,9 +628,9 @@ void OperationTest<MT>::testBasicOperation( OP op )
 
          try {
             initResults();
-            dres_   += reduce<1UL>( eval( omat_ ), op );
-            sres_   += reduce<1UL>( eval( omat_ ), op );
-            refres_ += reduce<1UL>( eval( refmat_ ), op );
+            dres_   += reduce<rowwise>( eval( omat_ ), op );
+            sres_   += reduce<rowwise>( eval( omat_ ), op );
+            refres_ += reduce<rowwise>( eval( refmat_ ), op );
          }
          catch( std::exception& ex ) {
             convertException<OMT>( ex );
@@ -650,9 +651,9 @@ void OperationTest<MT>::testBasicOperation( OP op )
 
          try {
             initResults();
-            dres_   -= reduce<1UL>( mat_, op );
-            sres_   -= reduce<1UL>( mat_, op );
-            refres_ -= reduce<1UL>( refmat_, op );
+            dres_   -= reduce<rowwise>( mat_, op );
+            sres_   -= reduce<rowwise>( mat_, op );
+            refres_ -= reduce<rowwise>( refmat_, op );
          }
          catch( std::exception& ex ) {
             convertException<MT>( ex );
@@ -662,9 +663,9 @@ void OperationTest<MT>::testBasicOperation( OP op )
 
          try {
             initResults();
-            dres_   -= reduce<1UL>( omat_, op );
-            sres_   -= reduce<1UL>( omat_, op );
-            refres_ -= reduce<1UL>( refmat_, op );
+            dres_   -= reduce<rowwise>( omat_, op );
+            sres_   -= reduce<rowwise>( omat_, op );
+            refres_ -= reduce<rowwise>( refmat_, op );
          }
          catch( std::exception& ex ) {
             convertException<OMT>( ex );
@@ -680,9 +681,9 @@ void OperationTest<MT>::testBasicOperation( OP op )
 
          try {
             initResults();
-            dres_   -= reduce<1UL>( eval( mat_ ), op );
-            sres_   -= reduce<1UL>( eval( mat_ ), op );
-            refres_ -= reduce<1UL>( eval( refmat_ ), op );
+            dres_   -= reduce<rowwise>( eval( mat_ ), op );
+            sres_   -= reduce<rowwise>( eval( mat_ ), op );
+            refres_ -= reduce<rowwise>( eval( refmat_ ), op );
          }
          catch( std::exception& ex ) {
             convertException<MT>( ex );
@@ -692,9 +693,9 @@ void OperationTest<MT>::testBasicOperation( OP op )
 
          try {
             initResults();
-            dres_   -= reduce<1UL>( eval( omat_ ), op );
-            sres_   -= reduce<1UL>( eval( omat_ ), op );
-            refres_ -= reduce<1UL>( eval( refmat_ ), op );
+            dres_   -= reduce<rowwise>( eval( omat_ ), op );
+            sres_   -= reduce<rowwise>( eval( omat_ ), op );
+            refres_ -= reduce<rowwise>( eval( refmat_ ), op );
          }
          catch( std::exception& ex ) {
             convertException<OMT>( ex );
@@ -715,9 +716,9 @@ void OperationTest<MT>::testBasicOperation( OP op )
 
          try {
             initResults();
-            dres_   *= reduce<1UL>( mat_, op );
-            sres_   *= reduce<1UL>( mat_, op );
-            refres_ *= reduce<1UL>( refmat_, op );
+            dres_   *= reduce<rowwise>( mat_, op );
+            sres_   *= reduce<rowwise>( mat_, op );
+            refres_ *= reduce<rowwise>( refmat_, op );
          }
          catch( std::exception& ex ) {
             convertException<MT>( ex );
@@ -727,9 +728,9 @@ void OperationTest<MT>::testBasicOperation( OP op )
 
          try {
             initResults();
-            dres_   *= reduce<1UL>( omat_, op );
-            sres_   *= reduce<1UL>( omat_, op );
-            refres_ *= reduce<1UL>( refmat_, op );
+            dres_   *= reduce<rowwise>( omat_, op );
+            sres_   *= reduce<rowwise>( omat_, op );
+            refres_ *= reduce<rowwise>( refmat_, op );
          }
          catch( std::exception& ex ) {
             convertException<OMT>( ex );
@@ -745,9 +746,9 @@ void OperationTest<MT>::testBasicOperation( OP op )
 
          try {
             initResults();
-            dres_   *= reduce<1UL>( eval( mat_ ), op );
-            sres_   *= reduce<1UL>( eval( mat_ ), op );
-            refres_ *= reduce<1UL>( eval( refmat_ ), op );
+            dres_   *= reduce<rowwise>( eval( mat_ ), op );
+            sres_   *= reduce<rowwise>( eval( mat_ ), op );
+            refres_ *= reduce<rowwise>( eval( refmat_ ), op );
          }
          catch( std::exception& ex ) {
             convertException<MT>( ex );
@@ -757,9 +758,9 @@ void OperationTest<MT>::testBasicOperation( OP op )
 
          try {
             initResults();
-            dres_   *= reduce<1UL>( eval( omat_ ), op );
-            sres_   *= reduce<1UL>( eval( omat_ ), op );
-            refres_ *= reduce<1UL>( eval( refmat_ ), op );
+            dres_   *= reduce<rowwise>( eval( omat_ ), op );
+            sres_   *= reduce<rowwise>( eval( omat_ ), op );
+            refres_ *= reduce<rowwise>( eval( refmat_ ), op );
          }
          catch( std::exception& ex ) {
             convertException<OMT>( ex );
@@ -773,7 +774,7 @@ void OperationTest<MT>::testBasicOperation( OP op )
       // Reduction operation with division assignment
       //=====================================================================================
 
-      if( blaze::isDivisor( reduce<1UL>( mat_, op ) ) )
+      if( blaze::isDivisor( reduce<rowwise>( mat_, op ) ) )
       {
          // Reduction operation with division assignment with the given matrix
          {
@@ -782,9 +783,9 @@ void OperationTest<MT>::testBasicOperation( OP op )
 
             try {
                initResults();
-               dres_   /= reduce<1UL>( mat_, op );
-               sres_   /= reduce<1UL>( mat_, op );
-               refres_ /= reduce<1UL>( refmat_, op );
+               dres_   /= reduce<rowwise>( mat_, op );
+               sres_   /= reduce<rowwise>( mat_, op );
+               refres_ /= reduce<rowwise>( refmat_, op );
             }
             catch( std::exception& ex ) {
                convertException<MT>( ex );
@@ -794,9 +795,9 @@ void OperationTest<MT>::testBasicOperation( OP op )
 
             try {
                initResults();
-               dres_   /= reduce<1UL>( omat_, op );
-               sres_   /= reduce<1UL>( omat_, op );
-               refres_ /= reduce<1UL>( refmat_, op );
+               dres_   /= reduce<rowwise>( omat_, op );
+               sres_   /= reduce<rowwise>( omat_, op );
+               refres_ /= reduce<rowwise>( refmat_, op );
             }
             catch( std::exception& ex ) {
                convertException<OMT>( ex );
@@ -812,9 +813,9 @@ void OperationTest<MT>::testBasicOperation( OP op )
 
             try {
                initResults();
-               dres_   /= reduce<1UL>( eval( mat_ ), op );
-               sres_   /= reduce<1UL>( eval( mat_ ), op );
-               refres_ /= reduce<1UL>( eval( refmat_ ), op );
+               dres_   /= reduce<rowwise>( eval( mat_ ), op );
+               sres_   /= reduce<rowwise>( eval( mat_ ), op );
+               refres_ /= reduce<rowwise>( eval( refmat_ ), op );
             }
             catch( std::exception& ex ) {
                convertException<MT>( ex );
@@ -824,9 +825,9 @@ void OperationTest<MT>::testBasicOperation( OP op )
 
             try {
                initResults();
-               dres_   /= reduce<1UL>( eval( omat_ ), op );
-               sres_   /= reduce<1UL>( eval( omat_ ), op );
-               refres_ /= reduce<1UL>( eval( refmat_ ), op );
+               dres_   /= reduce<rowwise>( eval( omat_ ), op );
+               sres_   /= reduce<rowwise>( eval( omat_ ), op );
+               refres_ /= reduce<rowwise>( eval( refmat_ ), op );
             }
             catch( std::exception& ex ) {
                convertException<OMT>( ex );
@@ -860,6 +861,7 @@ void OperationTest<MT>::testNegatedOperation( OP op )
    if( BLAZETEST_MATHTEST_TEST_NEGATED_OPERATION > 1 )
    {
       using blaze::reduce;
+      using blaze::rowwise;
 
 
       //=====================================================================================
@@ -873,9 +875,9 @@ void OperationTest<MT>::testNegatedOperation( OP op )
 
          try {
             initResults();
-            dres_   = -reduce<1UL>( mat_, op );
-            sres_   = -reduce<1UL>( mat_, op );
-            refres_ = -reduce<1UL>( refmat_, op );
+            dres_   = -reduce<rowwise>( mat_, op );
+            sres_   = -reduce<rowwise>( mat_, op );
+            refres_ = -reduce<rowwise>( refmat_, op );
          }
          catch( std::exception& ex ) {
             convertException<MT>( ex );
@@ -885,9 +887,9 @@ void OperationTest<MT>::testNegatedOperation( OP op )
 
          try {
             initResults();
-            dres_   = -reduce<1UL>( omat_, op );
-            sres_   = -reduce<1UL>( omat_, op );
-            refres_ = -reduce<1UL>( refmat_, op );
+            dres_   = -reduce<rowwise>( omat_, op );
+            sres_   = -reduce<rowwise>( omat_, op );
+            refres_ = -reduce<rowwise>( refmat_, op );
          }
          catch( std::exception& ex ) {
             convertException<OMT>( ex );
@@ -903,9 +905,9 @@ void OperationTest<MT>::testNegatedOperation( OP op )
 
          try {
             initResults();
-            dres_   = -reduce<1UL>( eval( mat_ ), op );
-            sres_   = -reduce<1UL>( eval( mat_ ), op );
-            refres_ = -reduce<1UL>( eval( refmat_ ), op );
+            dres_   = -reduce<rowwise>( eval( mat_ ), op );
+            sres_   = -reduce<rowwise>( eval( mat_ ), op );
+            refres_ = -reduce<rowwise>( eval( refmat_ ), op );
          }
          catch( std::exception& ex ) {
             convertException<MT>( ex );
@@ -915,9 +917,9 @@ void OperationTest<MT>::testNegatedOperation( OP op )
 
          try {
             initResults();
-            dres_   = -reduce<1UL>( eval( omat_ ), op );
-            sres_   = -reduce<1UL>( eval( omat_ ), op );
-            refres_ = -reduce<1UL>( eval( refmat_ ), op );
+            dres_   = -reduce<rowwise>( eval( omat_ ), op );
+            sres_   = -reduce<rowwise>( eval( omat_ ), op );
+            refres_ = -reduce<rowwise>( eval( refmat_ ), op );
          }
          catch( std::exception& ex ) {
             convertException<OMT>( ex );
@@ -938,9 +940,9 @@ void OperationTest<MT>::testNegatedOperation( OP op )
 
          try {
             initResults();
-            dres_   += -reduce<1UL>( mat_, op );
-            sres_   += -reduce<1UL>( mat_, op );
-            refres_ += -reduce<1UL>( refmat_, op );
+            dres_   += -reduce<rowwise>( mat_, op );
+            sres_   += -reduce<rowwise>( mat_, op );
+            refres_ += -reduce<rowwise>( refmat_, op );
          }
          catch( std::exception& ex ) {
             convertException<MT>( ex );
@@ -950,9 +952,9 @@ void OperationTest<MT>::testNegatedOperation( OP op )
 
          try {
             initResults();
-            dres_   += -reduce<1UL>( omat_, op );
-            sres_   += -reduce<1UL>( omat_, op );
-            refres_ += -reduce<1UL>( refmat_, op );
+            dres_   += -reduce<rowwise>( omat_, op );
+            sres_   += -reduce<rowwise>( omat_, op );
+            refres_ += -reduce<rowwise>( refmat_, op );
          }
          catch( std::exception& ex ) {
             convertException<OMT>( ex );
@@ -968,9 +970,9 @@ void OperationTest<MT>::testNegatedOperation( OP op )
 
          try {
             initResults();
-            dres_   += -reduce<1UL>( eval( mat_ ), op );
-            sres_   += -reduce<1UL>( eval( mat_ ), op );
-            refres_ += -reduce<1UL>( eval( refmat_ ), op );
+            dres_   += -reduce<rowwise>( eval( mat_ ), op );
+            sres_   += -reduce<rowwise>( eval( mat_ ), op );
+            refres_ += -reduce<rowwise>( eval( refmat_ ), op );
          }
          catch( std::exception& ex ) {
             convertException<MT>( ex );
@@ -980,9 +982,9 @@ void OperationTest<MT>::testNegatedOperation( OP op )
 
          try {
             initResults();
-            dres_   += -reduce<1UL>( eval( omat_ ), op );
-            sres_   += -reduce<1UL>( eval( omat_ ), op );
-            refres_ += -reduce<1UL>( eval( refmat_ ), op );
+            dres_   += -reduce<rowwise>( eval( omat_ ), op );
+            sres_   += -reduce<rowwise>( eval( omat_ ), op );
+            refres_ += -reduce<rowwise>( eval( refmat_ ), op );
          }
          catch( std::exception& ex ) {
             convertException<OMT>( ex );
@@ -1003,9 +1005,9 @@ void OperationTest<MT>::testNegatedOperation( OP op )
 
          try {
             initResults();
-            dres_   -= -reduce<1UL>( mat_, op );
-            sres_   -= -reduce<1UL>( mat_, op );
-            refres_ -= -reduce<1UL>( refmat_, op );
+            dres_   -= -reduce<rowwise>( mat_, op );
+            sres_   -= -reduce<rowwise>( mat_, op );
+            refres_ -= -reduce<rowwise>( refmat_, op );
          }
          catch( std::exception& ex ) {
             convertException<MT>( ex );
@@ -1015,9 +1017,9 @@ void OperationTest<MT>::testNegatedOperation( OP op )
 
          try {
             initResults();
-            dres_   -= -reduce<1UL>( omat_, op );
-            sres_   -= -reduce<1UL>( omat_, op );
-            refres_ -= -reduce<1UL>( refmat_, op );
+            dres_   -= -reduce<rowwise>( omat_, op );
+            sres_   -= -reduce<rowwise>( omat_, op );
+            refres_ -= -reduce<rowwise>( refmat_, op );
          }
          catch( std::exception& ex ) {
             convertException<OMT>( ex );
@@ -1033,9 +1035,9 @@ void OperationTest<MT>::testNegatedOperation( OP op )
 
          try {
             initResults();
-            dres_   -= -reduce<1UL>( eval( mat_ ), op );
-            sres_   -= -reduce<1UL>( eval( mat_ ), op );
-            refres_ -= -reduce<1UL>( eval( refmat_ ), op );
+            dres_   -= -reduce<rowwise>( eval( mat_ ), op );
+            sres_   -= -reduce<rowwise>( eval( mat_ ), op );
+            refres_ -= -reduce<rowwise>( eval( refmat_ ), op );
          }
          catch( std::exception& ex ) {
             convertException<MT>( ex );
@@ -1045,9 +1047,9 @@ void OperationTest<MT>::testNegatedOperation( OP op )
 
          try {
             initResults();
-            dres_   -= -reduce<1UL>( eval( omat_ ), op );
-            sres_   -= -reduce<1UL>( eval( omat_ ), op );
-            refres_ -= -reduce<1UL>( eval( refmat_ ), op );
+            dres_   -= -reduce<rowwise>( eval( omat_ ), op );
+            sres_   -= -reduce<rowwise>( eval( omat_ ), op );
+            refres_ -= -reduce<rowwise>( eval( refmat_ ), op );
          }
          catch( std::exception& ex ) {
             convertException<OMT>( ex );
@@ -1068,9 +1070,9 @@ void OperationTest<MT>::testNegatedOperation( OP op )
 
          try {
             initResults();
-            dres_   *= -reduce<1UL>( mat_, op );
-            sres_   *= -reduce<1UL>( mat_, op );
-            refres_ *= -reduce<1UL>( refmat_, op );
+            dres_   *= -reduce<rowwise>( mat_, op );
+            sres_   *= -reduce<rowwise>( mat_, op );
+            refres_ *= -reduce<rowwise>( refmat_, op );
          }
          catch( std::exception& ex ) {
             convertException<MT>( ex );
@@ -1080,9 +1082,9 @@ void OperationTest<MT>::testNegatedOperation( OP op )
 
          try {
             initResults();
-            dres_   *= -reduce<1UL>( omat_, op );
-            sres_   *= -reduce<1UL>( omat_, op );
-            refres_ *= -reduce<1UL>( refmat_, op );
+            dres_   *= -reduce<rowwise>( omat_, op );
+            sres_   *= -reduce<rowwise>( omat_, op );
+            refres_ *= -reduce<rowwise>( refmat_, op );
          }
          catch( std::exception& ex ) {
             convertException<OMT>( ex );
@@ -1098,9 +1100,9 @@ void OperationTest<MT>::testNegatedOperation( OP op )
 
          try {
             initResults();
-            dres_   *= -reduce<1UL>( eval( mat_ ), op );
-            sres_   *= -reduce<1UL>( eval( mat_ ), op );
-            refres_ *= -reduce<1UL>( eval( refmat_ ), op );
+            dres_   *= -reduce<rowwise>( eval( mat_ ), op );
+            sres_   *= -reduce<rowwise>( eval( mat_ ), op );
+            refres_ *= -reduce<rowwise>( eval( refmat_ ), op );
          }
          catch( std::exception& ex ) {
             convertException<MT>( ex );
@@ -1110,9 +1112,9 @@ void OperationTest<MT>::testNegatedOperation( OP op )
 
          try {
             initResults();
-            dres_   *= -reduce<1UL>( eval( omat_ ), op );
-            sres_   *= -reduce<1UL>( eval( omat_ ), op );
-            refres_ *= -reduce<1UL>( eval( refmat_ ), op );
+            dres_   *= -reduce<rowwise>( eval( omat_ ), op );
+            sres_   *= -reduce<rowwise>( eval( omat_ ), op );
+            refres_ *= -reduce<rowwise>( eval( refmat_ ), op );
          }
          catch( std::exception& ex ) {
             convertException<OMT>( ex );
@@ -1126,7 +1128,7 @@ void OperationTest<MT>::testNegatedOperation( OP op )
       // Negated reduction operation with division assignment
       //=====================================================================================
 
-      if( blaze::isDivisor( reduce<1UL>( mat_, op ) ) )
+      if( blaze::isDivisor( reduce<rowwise>( mat_, op ) ) )
       {
          // Negated reduction operation with division assignment with the given matrix
          {
@@ -1135,9 +1137,9 @@ void OperationTest<MT>::testNegatedOperation( OP op )
 
             try {
                initResults();
-               dres_   /= -reduce<1UL>( mat_, op );
-               sres_   /= -reduce<1UL>( mat_, op );
-               refres_ /= -reduce<1UL>( refmat_, op );
+               dres_   /= -reduce<rowwise>( mat_, op );
+               sres_   /= -reduce<rowwise>( mat_, op );
+               refres_ /= -reduce<rowwise>( refmat_, op );
             }
             catch( std::exception& ex ) {
                convertException<MT>( ex );
@@ -1147,9 +1149,9 @@ void OperationTest<MT>::testNegatedOperation( OP op )
 
             try {
                initResults();
-               dres_   /= -reduce<1UL>( omat_, op );
-               sres_   /= -reduce<1UL>( omat_, op );
-               refres_ /= -reduce<1UL>( refmat_, op );
+               dres_   /= -reduce<rowwise>( omat_, op );
+               sres_   /= -reduce<rowwise>( omat_, op );
+               refres_ /= -reduce<rowwise>( refmat_, op );
             }
             catch( std::exception& ex ) {
                convertException<OMT>( ex );
@@ -1165,9 +1167,9 @@ void OperationTest<MT>::testNegatedOperation( OP op )
 
             try {
                initResults();
-               dres_   /= -reduce<1UL>( eval( mat_ ), op );
-               sres_   /= -reduce<1UL>( eval( mat_ ), op );
-               refres_ /= -reduce<1UL>( eval( refmat_ ), op );
+               dres_   /= -reduce<rowwise>( eval( mat_ ), op );
+               sres_   /= -reduce<rowwise>( eval( mat_ ), op );
+               refres_ /= -reduce<rowwise>( eval( refmat_ ), op );
             }
             catch( std::exception& ex ) {
                convertException<MT>( ex );
@@ -1177,9 +1179,9 @@ void OperationTest<MT>::testNegatedOperation( OP op )
 
             try {
                initResults();
-               dres_   /= -reduce<1UL>( eval( omat_ ), op );
-               sres_   /= -reduce<1UL>( eval( omat_ ), op );
-               refres_ /= -reduce<1UL>( eval( refmat_ ), op );
+               dres_   /= -reduce<rowwise>( eval( omat_ ), op );
+               sres_   /= -reduce<rowwise>( eval( omat_ ), op );
+               refres_ /= -reduce<rowwise>( eval( refmat_ ), op );
             }
             catch( std::exception& ex ) {
                convertException<OMT>( ex );
@@ -1221,6 +1223,7 @@ void OperationTest<MT>::testScaledOperation( OP op, T scalar )
    if( BLAZETEST_MATHTEST_TEST_SCALED_OPERATION > 1 )
    {
       using blaze::reduce;
+      using blaze::rowwise;
 
 
       //=====================================================================================
@@ -1232,7 +1235,7 @@ void OperationTest<MT>::testScaledOperation( OP op, T scalar )
          test_ = "Self-scaling (v*=s)";
 
          try {
-            dres_   = reduce<1UL>( mat_, op );
+            dres_   = reduce<rowwise>( mat_, op );
             sres_   = dres_;
             refres_ = dres_;
 
@@ -1264,7 +1267,7 @@ void OperationTest<MT>::testScaledOperation( OP op, T scalar )
          test_ = "Self-scaling (v=v*s)";
 
          try {
-            dres_   = reduce<1UL>( mat_, op );
+            dres_   = reduce<rowwise>( mat_, op );
             sres_   = dres_;
             refres_ = dres_;
 
@@ -1296,7 +1299,7 @@ void OperationTest<MT>::testScaledOperation( OP op, T scalar )
          test_ = "Self-scaling (v=s*v)";
 
          try {
-            dres_   = reduce<1UL>( mat_, op );
+            dres_   = reduce<rowwise>( mat_, op );
             sres_   = dres_;
             refres_ = dres_;
 
@@ -1328,7 +1331,7 @@ void OperationTest<MT>::testScaledOperation( OP op, T scalar )
          test_ = "Self-scaling (v/=s)";
 
          try {
-            dres_   = reduce<1UL>( mat_, op );
+            dres_   = reduce<rowwise>( mat_, op );
             sres_   = dres_;
             refres_ = dres_;
 
@@ -1360,7 +1363,7 @@ void OperationTest<MT>::testScaledOperation( OP op, T scalar )
          test_ = "Self-scaling (v=v/s)";
 
          try {
-            dres_   = reduce<1UL>( mat_, op );
+            dres_   = reduce<rowwise>( mat_, op );
             sres_   = dres_;
             refres_ = dres_;
 
@@ -1394,9 +1397,9 @@ void OperationTest<MT>::testScaledOperation( OP op, T scalar )
 
          try {
             initResults();
-            dres_   = scalar * reduce<1UL>( mat_, op );
-            sres_   = scalar * reduce<1UL>( mat_, op );
-            refres_ = scalar * reduce<1UL>( refmat_, op );
+            dres_   = scalar * reduce<rowwise>( mat_, op );
+            sres_   = scalar * reduce<rowwise>( mat_, op );
+            refres_ = scalar * reduce<rowwise>( refmat_, op );
          }
          catch( std::exception& ex ) {
             convertException<MT>( ex );
@@ -1406,9 +1409,9 @@ void OperationTest<MT>::testScaledOperation( OP op, T scalar )
 
          try {
             initResults();
-            dres_   = scalar * reduce<1UL>( omat_, op );
-            sres_   = scalar * reduce<1UL>( omat_, op );
-            refres_ = scalar * reduce<1UL>( refmat_, op );
+            dres_   = scalar * reduce<rowwise>( omat_, op );
+            sres_   = scalar * reduce<rowwise>( omat_, op );
+            refres_ = scalar * reduce<rowwise>( refmat_, op );
          }
          catch( std::exception& ex ) {
             convertException<OMT>( ex );
@@ -1424,9 +1427,9 @@ void OperationTest<MT>::testScaledOperation( OP op, T scalar )
 
          try {
             initResults();
-            dres_   = scalar * reduce<1UL>( eval( mat_ ), op );
-            sres_   = scalar * reduce<1UL>( eval( mat_ ), op );
-            refres_ = scalar * reduce<1UL>( eval( refmat_ ), op );
+            dres_   = scalar * reduce<rowwise>( eval( mat_ ), op );
+            sres_   = scalar * reduce<rowwise>( eval( mat_ ), op );
+            refres_ = scalar * reduce<rowwise>( eval( refmat_ ), op );
          }
          catch( std::exception& ex ) {
             convertException<MT>( ex );
@@ -1436,9 +1439,9 @@ void OperationTest<MT>::testScaledOperation( OP op, T scalar )
 
          try {
             initResults();
-            dres_   = scalar * reduce<1UL>( eval( omat_ ), op );
-            sres_   = scalar * reduce<1UL>( eval( omat_ ), op );
-            refres_ = scalar * reduce<1UL>( eval( refmat_ ), op );
+            dres_   = scalar * reduce<rowwise>( eval( omat_ ), op );
+            sres_   = scalar * reduce<rowwise>( eval( omat_ ), op );
+            refres_ = scalar * reduce<rowwise>( eval( refmat_ ), op );
          }
          catch( std::exception& ex ) {
             convertException<OMT>( ex );
@@ -1459,9 +1462,9 @@ void OperationTest<MT>::testScaledOperation( OP op, T scalar )
 
          try {
             initResults();
-            dres_   = reduce<1UL>( mat_, op ) * scalar;
-            sres_   = reduce<1UL>( mat_, op ) * scalar;
-            refres_ = reduce<1UL>( refmat_, op ) * scalar;
+            dres_   = reduce<rowwise>( mat_, op ) * scalar;
+            sres_   = reduce<rowwise>( mat_, op ) * scalar;
+            refres_ = reduce<rowwise>( refmat_, op ) * scalar;
          }
          catch( std::exception& ex ) {
             convertException<MT>( ex );
@@ -1471,9 +1474,9 @@ void OperationTest<MT>::testScaledOperation( OP op, T scalar )
 
          try {
             initResults();
-            dres_   = reduce<1UL>( omat_, op ) * scalar;
-            sres_   = reduce<1UL>( omat_, op ) * scalar;
-            refres_ = reduce<1UL>( refmat_, op ) * scalar;
+            dres_   = reduce<rowwise>( omat_, op ) * scalar;
+            sres_   = reduce<rowwise>( omat_, op ) * scalar;
+            refres_ = reduce<rowwise>( refmat_, op ) * scalar;
          }
          catch( std::exception& ex ) {
             convertException<OMT>( ex );
@@ -1489,9 +1492,9 @@ void OperationTest<MT>::testScaledOperation( OP op, T scalar )
 
          try {
             initResults();
-            dres_   = reduce<1UL>( eval( mat_ ), op ) * scalar;
-            sres_   = reduce<1UL>( eval( mat_ ), op ) * scalar;
-            refres_ = reduce<1UL>( eval( refmat_ ), op ) * scalar;
+            dres_   = reduce<rowwise>( eval( mat_ ), op ) * scalar;
+            sres_   = reduce<rowwise>( eval( mat_ ), op ) * scalar;
+            refres_ = reduce<rowwise>( eval( refmat_ ), op ) * scalar;
          }
          catch( std::exception& ex ) {
             convertException<MT>( ex );
@@ -1501,9 +1504,9 @@ void OperationTest<MT>::testScaledOperation( OP op, T scalar )
 
          try {
             initResults();
-            dres_   = reduce<1UL>( eval( omat_ ), op ) * scalar;
-            sres_   = reduce<1UL>( eval( omat_ ), op ) * scalar;
-            refres_ = reduce<1UL>( eval( refmat_ ), op ) * scalar;
+            dres_   = reduce<rowwise>( eval( omat_ ), op ) * scalar;
+            sres_   = reduce<rowwise>( eval( omat_ ), op ) * scalar;
+            refres_ = reduce<rowwise>( eval( refmat_ ), op ) * scalar;
          }
          catch( std::exception& ex ) {
             convertException<OMT>( ex );
@@ -1524,9 +1527,9 @@ void OperationTest<MT>::testScaledOperation( OP op, T scalar )
 
          try {
             initResults();
-            dres_   = reduce<1UL>( mat_, op ) / scalar;
-            sres_   = reduce<1UL>( mat_, op ) / scalar;
-            refres_ = reduce<1UL>( refmat_, op ) / scalar;
+            dres_   = reduce<rowwise>( mat_, op ) / scalar;
+            sres_   = reduce<rowwise>( mat_, op ) / scalar;
+            refres_ = reduce<rowwise>( refmat_, op ) / scalar;
          }
          catch( std::exception& ex ) {
             convertException<MT>( ex );
@@ -1536,9 +1539,9 @@ void OperationTest<MT>::testScaledOperation( OP op, T scalar )
 
          try {
             initResults();
-            dres_   = reduce<1UL>( omat_, op ) / scalar;
-            sres_   = reduce<1UL>( omat_, op ) / scalar;
-            refres_ = reduce<1UL>( refmat_, op ) / scalar;
+            dres_   = reduce<rowwise>( omat_, op ) / scalar;
+            sres_   = reduce<rowwise>( omat_, op ) / scalar;
+            refres_ = reduce<rowwise>( refmat_, op ) / scalar;
          }
          catch( std::exception& ex ) {
             convertException<OMT>( ex );
@@ -1554,9 +1557,9 @@ void OperationTest<MT>::testScaledOperation( OP op, T scalar )
 
          try {
             initResults();
-            dres_   = reduce<1UL>( eval( mat_ ), op ) / scalar;
-            sres_   = reduce<1UL>( eval( mat_ ), op ) / scalar;
-            refres_ = reduce<1UL>( eval( refmat_ ), op ) / scalar;
+            dres_   = reduce<rowwise>( eval( mat_ ), op ) / scalar;
+            sres_   = reduce<rowwise>( eval( mat_ ), op ) / scalar;
+            refres_ = reduce<rowwise>( eval( refmat_ ), op ) / scalar;
          }
          catch( std::exception& ex ) {
             convertException<MT>( ex );
@@ -1566,9 +1569,9 @@ void OperationTest<MT>::testScaledOperation( OP op, T scalar )
 
          try {
             initResults();
-            dres_   = reduce<1UL>( eval( omat_ ), op ) / scalar;
-            sres_   = reduce<1UL>( eval( omat_ ), op ) / scalar;
-            refres_ = reduce<1UL>( eval( refmat_ ), op ) / scalar;
+            dres_   = reduce<rowwise>( eval( omat_ ), op ) / scalar;
+            sres_   = reduce<rowwise>( eval( omat_ ), op ) / scalar;
+            refres_ = reduce<rowwise>( eval( refmat_ ), op ) / scalar;
          }
          catch( std::exception& ex ) {
             convertException<OMT>( ex );
@@ -1589,9 +1592,9 @@ void OperationTest<MT>::testScaledOperation( OP op, T scalar )
 
          try {
             initResults();
-            dres_   += scalar * reduce<1UL>( mat_, op );
-            sres_   += scalar * reduce<1UL>( mat_, op );
-            refres_ += scalar * reduce<1UL>( refmat_, op );
+            dres_   += scalar * reduce<rowwise>( mat_, op );
+            sres_   += scalar * reduce<rowwise>( mat_, op );
+            refres_ += scalar * reduce<rowwise>( refmat_, op );
          }
          catch( std::exception& ex ) {
             convertException<MT>( ex );
@@ -1601,9 +1604,9 @@ void OperationTest<MT>::testScaledOperation( OP op, T scalar )
 
          try {
             initResults();
-            dres_   += scalar * reduce<1UL>( omat_, op );
-            sres_   += scalar * reduce<1UL>( omat_, op );
-            refres_ += scalar * reduce<1UL>( refmat_, op );
+            dres_   += scalar * reduce<rowwise>( omat_, op );
+            sres_   += scalar * reduce<rowwise>( omat_, op );
+            refres_ += scalar * reduce<rowwise>( refmat_, op );
          }
          catch( std::exception& ex ) {
             convertException<OMT>( ex );
@@ -1619,9 +1622,9 @@ void OperationTest<MT>::testScaledOperation( OP op, T scalar )
 
          try {
             initResults();
-            dres_   += scalar * reduce<1UL>( eval( mat_ ), op );
-            sres_   += scalar * reduce<1UL>( eval( mat_ ), op );
-            refres_ += scalar * reduce<1UL>( eval( refmat_ ), op );
+            dres_   += scalar * reduce<rowwise>( eval( mat_ ), op );
+            sres_   += scalar * reduce<rowwise>( eval( mat_ ), op );
+            refres_ += scalar * reduce<rowwise>( eval( refmat_ ), op );
          }
          catch( std::exception& ex ) {
             convertException<MT>( ex );
@@ -1631,9 +1634,9 @@ void OperationTest<MT>::testScaledOperation( OP op, T scalar )
 
          try {
             initResults();
-            dres_   += scalar * reduce<1UL>( eval( omat_ ), op );
-            sres_   += scalar * reduce<1UL>( eval( omat_ ), op );
-            refres_ += scalar * reduce<1UL>( eval( refmat_ ), op );
+            dres_   += scalar * reduce<rowwise>( eval( omat_ ), op );
+            sres_   += scalar * reduce<rowwise>( eval( omat_ ), op );
+            refres_ += scalar * reduce<rowwise>( eval( refmat_ ), op );
          }
          catch( std::exception& ex ) {
             convertException<OMT>( ex );
@@ -1654,9 +1657,9 @@ void OperationTest<MT>::testScaledOperation( OP op, T scalar )
 
          try {
             initResults();
-            dres_   += reduce<1UL>( mat_, op ) * scalar;
-            sres_   += reduce<1UL>( mat_, op ) * scalar;
-            refres_ += reduce<1UL>( refmat_, op ) * scalar;
+            dres_   += reduce<rowwise>( mat_, op ) * scalar;
+            sres_   += reduce<rowwise>( mat_, op ) * scalar;
+            refres_ += reduce<rowwise>( refmat_, op ) * scalar;
          }
          catch( std::exception& ex ) {
             convertException<MT>( ex );
@@ -1666,9 +1669,9 @@ void OperationTest<MT>::testScaledOperation( OP op, T scalar )
 
          try {
             initResults();
-            dres_   += reduce<1UL>( omat_, op ) * scalar;
-            sres_   += reduce<1UL>( omat_, op ) * scalar;
-            refres_ += reduce<1UL>( refmat_, op ) * scalar;
+            dres_   += reduce<rowwise>( omat_, op ) * scalar;
+            sres_   += reduce<rowwise>( omat_, op ) * scalar;
+            refres_ += reduce<rowwise>( refmat_, op ) * scalar;
          }
          catch( std::exception& ex ) {
             convertException<OMT>( ex );
@@ -1684,9 +1687,9 @@ void OperationTest<MT>::testScaledOperation( OP op, T scalar )
 
          try {
             initResults();
-            dres_   += reduce<1UL>( eval( mat_ ), op ) * scalar;
-            sres_   += reduce<1UL>( eval( mat_ ), op ) * scalar;
-            refres_ += reduce<1UL>( eval( refmat_ ), op ) * scalar;
+            dres_   += reduce<rowwise>( eval( mat_ ), op ) * scalar;
+            sres_   += reduce<rowwise>( eval( mat_ ), op ) * scalar;
+            refres_ += reduce<rowwise>( eval( refmat_ ), op ) * scalar;
          }
          catch( std::exception& ex ) {
             convertException<MT>( ex );
@@ -1696,9 +1699,9 @@ void OperationTest<MT>::testScaledOperation( OP op, T scalar )
 
          try {
             initResults();
-            dres_   += reduce<1UL>( eval( omat_ ), op ) * scalar;
-            sres_   += reduce<1UL>( eval( omat_ ), op ) * scalar;
-            refres_ += reduce<1UL>( eval( refmat_ ), op ) * scalar;
+            dres_   += reduce<rowwise>( eval( omat_ ), op ) * scalar;
+            sres_   += reduce<rowwise>( eval( omat_ ), op ) * scalar;
+            refres_ += reduce<rowwise>( eval( refmat_ ), op ) * scalar;
          }
          catch( std::exception& ex ) {
             convertException<OMT>( ex );
@@ -1719,9 +1722,9 @@ void OperationTest<MT>::testScaledOperation( OP op, T scalar )
 
          try {
             initResults();
-            dres_   += reduce<1UL>( mat_, op ) / scalar;
-            sres_   += reduce<1UL>( mat_, op ) / scalar;
-            refres_ += reduce<1UL>( refmat_, op ) / scalar;
+            dres_   += reduce<rowwise>( mat_, op ) / scalar;
+            sres_   += reduce<rowwise>( mat_, op ) / scalar;
+            refres_ += reduce<rowwise>( refmat_, op ) / scalar;
          }
          catch( std::exception& ex ) {
             convertException<MT>( ex );
@@ -1731,9 +1734,9 @@ void OperationTest<MT>::testScaledOperation( OP op, T scalar )
 
          try {
             initResults();
-            dres_   += reduce<1UL>( omat_, op ) / scalar;
-            sres_   += reduce<1UL>( omat_, op ) / scalar;
-            refres_ += reduce<1UL>( refmat_, op ) / scalar;
+            dres_   += reduce<rowwise>( omat_, op ) / scalar;
+            sres_   += reduce<rowwise>( omat_, op ) / scalar;
+            refres_ += reduce<rowwise>( refmat_, op ) / scalar;
          }
          catch( std::exception& ex ) {
             convertException<OMT>( ex );
@@ -1749,9 +1752,9 @@ void OperationTest<MT>::testScaledOperation( OP op, T scalar )
 
          try {
             initResults();
-            dres_   += reduce<1UL>( eval( mat_ ), op ) / scalar;
-            sres_   += reduce<1UL>( eval( mat_ ), op ) / scalar;
-            refres_ += reduce<1UL>( eval( refmat_ ), op ) / scalar;
+            dres_   += reduce<rowwise>( eval( mat_ ), op ) / scalar;
+            sres_   += reduce<rowwise>( eval( mat_ ), op ) / scalar;
+            refres_ += reduce<rowwise>( eval( refmat_ ), op ) / scalar;
          }
          catch( std::exception& ex ) {
             convertException<MT>( ex );
@@ -1761,9 +1764,9 @@ void OperationTest<MT>::testScaledOperation( OP op, T scalar )
 
          try {
             initResults();
-            dres_   += reduce<1UL>( eval( omat_ ), op ) / scalar;
-            sres_   += reduce<1UL>( eval( omat_ ), op ) / scalar;
-            refres_ += reduce<1UL>( eval( refmat_ ), op ) / scalar;
+            dres_   += reduce<rowwise>( eval( omat_ ), op ) / scalar;
+            sres_   += reduce<rowwise>( eval( omat_ ), op ) / scalar;
+            refres_ += reduce<rowwise>( eval( refmat_ ), op ) / scalar;
          }
          catch( std::exception& ex ) {
             convertException<OMT>( ex );
@@ -1784,9 +1787,9 @@ void OperationTest<MT>::testScaledOperation( OP op, T scalar )
 
          try {
             initResults();
-            dres_   -= scalar * reduce<1UL>( mat_, op );
-            sres_   -= scalar * reduce<1UL>( mat_, op );
-            refres_ -= scalar * reduce<1UL>( refmat_, op );
+            dres_   -= scalar * reduce<rowwise>( mat_, op );
+            sres_   -= scalar * reduce<rowwise>( mat_, op );
+            refres_ -= scalar * reduce<rowwise>( refmat_, op );
          }
          catch( std::exception& ex ) {
             convertException<MT>( ex );
@@ -1796,9 +1799,9 @@ void OperationTest<MT>::testScaledOperation( OP op, T scalar )
 
          try {
             initResults();
-            dres_   -= scalar * reduce<1UL>( omat_, op );
-            sres_   -= scalar * reduce<1UL>( omat_, op );
-            refres_ -= scalar * reduce<1UL>( refmat_, op );
+            dres_   -= scalar * reduce<rowwise>( omat_, op );
+            sres_   -= scalar * reduce<rowwise>( omat_, op );
+            refres_ -= scalar * reduce<rowwise>( refmat_, op );
          }
          catch( std::exception& ex ) {
             convertException<OMT>( ex );
@@ -1814,9 +1817,9 @@ void OperationTest<MT>::testScaledOperation( OP op, T scalar )
 
          try {
             initResults();
-            dres_   -= scalar * reduce<1UL>( eval( mat_ ), op );
-            sres_   -= scalar * reduce<1UL>( eval( mat_ ), op );
-            refres_ -= scalar * reduce<1UL>( eval( refmat_ ), op );
+            dres_   -= scalar * reduce<rowwise>( eval( mat_ ), op );
+            sres_   -= scalar * reduce<rowwise>( eval( mat_ ), op );
+            refres_ -= scalar * reduce<rowwise>( eval( refmat_ ), op );
          }
          catch( std::exception& ex ) {
             convertException<MT>( ex );
@@ -1826,9 +1829,9 @@ void OperationTest<MT>::testScaledOperation( OP op, T scalar )
 
          try {
             initResults();
-            dres_   -= scalar * reduce<1UL>( eval( omat_ ), op );
-            sres_   -= scalar * reduce<1UL>( eval( omat_ ), op );
-            refres_ -= scalar * reduce<1UL>( eval( refmat_ ), op );
+            dres_   -= scalar * reduce<rowwise>( eval( omat_ ), op );
+            sres_   -= scalar * reduce<rowwise>( eval( omat_ ), op );
+            refres_ -= scalar * reduce<rowwise>( eval( refmat_ ), op );
          }
          catch( std::exception& ex ) {
             convertException<OMT>( ex );
@@ -1849,9 +1852,9 @@ void OperationTest<MT>::testScaledOperation( OP op, T scalar )
 
          try {
             initResults();
-            dres_   -= reduce<1UL>( mat_, op ) * scalar;
-            sres_   -= reduce<1UL>( mat_, op ) * scalar;
-            refres_ -= reduce<1UL>( refmat_, op ) * scalar;
+            dres_   -= reduce<rowwise>( mat_, op ) * scalar;
+            sres_   -= reduce<rowwise>( mat_, op ) * scalar;
+            refres_ -= reduce<rowwise>( refmat_, op ) * scalar;
          }
          catch( std::exception& ex ) {
             convertException<MT>( ex );
@@ -1861,9 +1864,9 @@ void OperationTest<MT>::testScaledOperation( OP op, T scalar )
 
          try {
             initResults();
-            dres_   -= reduce<1UL>( omat_, op ) * scalar;
-            sres_   -= reduce<1UL>( omat_, op ) * scalar;
-            refres_ -= reduce<1UL>( refmat_, op ) * scalar;
+            dres_   -= reduce<rowwise>( omat_, op ) * scalar;
+            sres_   -= reduce<rowwise>( omat_, op ) * scalar;
+            refres_ -= reduce<rowwise>( refmat_, op ) * scalar;
          }
          catch( std::exception& ex ) {
             convertException<OMT>( ex );
@@ -1879,9 +1882,9 @@ void OperationTest<MT>::testScaledOperation( OP op, T scalar )
 
          try {
             initResults();
-            dres_   -= reduce<1UL>( eval( mat_ ), op ) * scalar;
-            sres_   -= reduce<1UL>( eval( mat_ ), op ) * scalar;
-            refres_ -= reduce<1UL>( eval( refmat_ ), op ) * scalar;
+            dres_   -= reduce<rowwise>( eval( mat_ ), op ) * scalar;
+            sres_   -= reduce<rowwise>( eval( mat_ ), op ) * scalar;
+            refres_ -= reduce<rowwise>( eval( refmat_ ), op ) * scalar;
          }
          catch( std::exception& ex ) {
             convertException<MT>( ex );
@@ -1891,9 +1894,9 @@ void OperationTest<MT>::testScaledOperation( OP op, T scalar )
 
          try {
             initResults();
-            dres_   -= reduce<1UL>( eval( omat_ ), op ) * scalar;
-            sres_   -= reduce<1UL>( eval( omat_ ), op ) * scalar;
-            refres_ -= reduce<1UL>( eval( refmat_ ), op ) * scalar;
+            dres_   -= reduce<rowwise>( eval( omat_ ), op ) * scalar;
+            sres_   -= reduce<rowwise>( eval( omat_ ), op ) * scalar;
+            refres_ -= reduce<rowwise>( eval( refmat_ ), op ) * scalar;
          }
          catch( std::exception& ex ) {
             convertException<OMT>( ex );
@@ -1914,9 +1917,9 @@ void OperationTest<MT>::testScaledOperation( OP op, T scalar )
 
          try {
             initResults();
-            dres_   -= reduce<1UL>( mat_, op ) / scalar;
-            sres_   -= reduce<1UL>( mat_, op ) / scalar;
-            refres_ -= reduce<1UL>( refmat_, op ) / scalar;
+            dres_   -= reduce<rowwise>( mat_, op ) / scalar;
+            sres_   -= reduce<rowwise>( mat_, op ) / scalar;
+            refres_ -= reduce<rowwise>( refmat_, op ) / scalar;
          }
          catch( std::exception& ex ) {
             convertException<MT>( ex );
@@ -1926,9 +1929,9 @@ void OperationTest<MT>::testScaledOperation( OP op, T scalar )
 
          try {
             initResults();
-            dres_   -= reduce<1UL>( omat_, op ) / scalar;
-            sres_   -= reduce<1UL>( omat_, op ) / scalar;
-            refres_ -= reduce<1UL>( refmat_, op ) / scalar;
+            dres_   -= reduce<rowwise>( omat_, op ) / scalar;
+            sres_   -= reduce<rowwise>( omat_, op ) / scalar;
+            refres_ -= reduce<rowwise>( refmat_, op ) / scalar;
          }
          catch( std::exception& ex ) {
             convertException<OMT>( ex );
@@ -1944,9 +1947,9 @@ void OperationTest<MT>::testScaledOperation( OP op, T scalar )
 
          try {
             initResults();
-            dres_   -= reduce<1UL>( eval( mat_ ), op ) / scalar;
-            sres_   -= reduce<1UL>( eval( mat_ ), op ) / scalar;
-            refres_ -= reduce<1UL>( eval( refmat_ ), op ) / scalar;
+            dres_   -= reduce<rowwise>( eval( mat_ ), op ) / scalar;
+            sres_   -= reduce<rowwise>( eval( mat_ ), op ) / scalar;
+            refres_ -= reduce<rowwise>( eval( refmat_ ), op ) / scalar;
          }
          catch( std::exception& ex ) {
             convertException<MT>( ex );
@@ -1956,9 +1959,9 @@ void OperationTest<MT>::testScaledOperation( OP op, T scalar )
 
          try {
             initResults();
-            dres_   -= reduce<1UL>( eval( omat_ ), op ) / scalar;
-            sres_   -= reduce<1UL>( eval( omat_ ), op ) / scalar;
-            refres_ -= reduce<1UL>( eval( refmat_ ), op ) / scalar;
+            dres_   -= reduce<rowwise>( eval( omat_ ), op ) / scalar;
+            sres_   -= reduce<rowwise>( eval( omat_ ), op ) / scalar;
+            refres_ -= reduce<rowwise>( eval( refmat_ ), op ) / scalar;
          }
          catch( std::exception& ex ) {
             convertException<OMT>( ex );
@@ -1979,9 +1982,9 @@ void OperationTest<MT>::testScaledOperation( OP op, T scalar )
 
          try {
             initResults();
-            dres_   *= scalar * reduce<1UL>( mat_, op );
-            sres_   *= scalar * reduce<1UL>( mat_, op );
-            refres_ *= scalar * reduce<1UL>( refmat_, op );
+            dres_   *= scalar * reduce<rowwise>( mat_, op );
+            sres_   *= scalar * reduce<rowwise>( mat_, op );
+            refres_ *= scalar * reduce<rowwise>( refmat_, op );
          }
          catch( std::exception& ex ) {
             convertException<MT>( ex );
@@ -1991,9 +1994,9 @@ void OperationTest<MT>::testScaledOperation( OP op, T scalar )
 
          try {
             initResults();
-            dres_   *= scalar * reduce<1UL>( omat_, op );
-            sres_   *= scalar * reduce<1UL>( omat_, op );
-            refres_ *= scalar * reduce<1UL>( refmat_, op );
+            dres_   *= scalar * reduce<rowwise>( omat_, op );
+            sres_   *= scalar * reduce<rowwise>( omat_, op );
+            refres_ *= scalar * reduce<rowwise>( refmat_, op );
          }
          catch( std::exception& ex ) {
             convertException<OMT>( ex );
@@ -2009,9 +2012,9 @@ void OperationTest<MT>::testScaledOperation( OP op, T scalar )
 
          try {
             initResults();
-            dres_   *= scalar * reduce<1UL>( eval( mat_ ), op );
-            sres_   *= scalar * reduce<1UL>( eval( mat_ ), op );
-            refres_ *= scalar * reduce<1UL>( eval( refmat_ ), op );
+            dres_   *= scalar * reduce<rowwise>( eval( mat_ ), op );
+            sres_   *= scalar * reduce<rowwise>( eval( mat_ ), op );
+            refres_ *= scalar * reduce<rowwise>( eval( refmat_ ), op );
          }
          catch( std::exception& ex ) {
             convertException<MT>( ex );
@@ -2021,9 +2024,9 @@ void OperationTest<MT>::testScaledOperation( OP op, T scalar )
 
          try {
             initResults();
-            dres_   *= scalar * reduce<1UL>( eval( omat_ ), op );
-            sres_   *= scalar * reduce<1UL>( eval( omat_ ), op );
-            refres_ *= scalar * reduce<1UL>( eval( refmat_ ), op );
+            dres_   *= scalar * reduce<rowwise>( eval( omat_ ), op );
+            sres_   *= scalar * reduce<rowwise>( eval( omat_ ), op );
+            refres_ *= scalar * reduce<rowwise>( eval( refmat_ ), op );
          }
          catch( std::exception& ex ) {
             convertException<OMT>( ex );
@@ -2044,9 +2047,9 @@ void OperationTest<MT>::testScaledOperation( OP op, T scalar )
 
          try {
             initResults();
-            dres_   *= reduce<1UL>( mat_, op ) * scalar;
-            sres_   *= reduce<1UL>( mat_, op ) * scalar;
-            refres_ *= reduce<1UL>( refmat_, op ) * scalar;
+            dres_   *= reduce<rowwise>( mat_, op ) * scalar;
+            sres_   *= reduce<rowwise>( mat_, op ) * scalar;
+            refres_ *= reduce<rowwise>( refmat_, op ) * scalar;
          }
          catch( std::exception& ex ) {
             convertException<MT>( ex );
@@ -2056,9 +2059,9 @@ void OperationTest<MT>::testScaledOperation( OP op, T scalar )
 
          try {
             initResults();
-            dres_   *= reduce<1UL>( omat_, op ) * scalar;
-            sres_   *= reduce<1UL>( omat_, op ) * scalar;
-            refres_ *= reduce<1UL>( refmat_, op ) * scalar;
+            dres_   *= reduce<rowwise>( omat_, op ) * scalar;
+            sres_   *= reduce<rowwise>( omat_, op ) * scalar;
+            refres_ *= reduce<rowwise>( refmat_, op ) * scalar;
          }
          catch( std::exception& ex ) {
             convertException<OMT>( ex );
@@ -2074,9 +2077,9 @@ void OperationTest<MT>::testScaledOperation( OP op, T scalar )
 
          try {
             initResults();
-            dres_   *= reduce<1UL>( eval( mat_ ), op ) * scalar;
-            sres_   *= reduce<1UL>( eval( mat_ ), op ) * scalar;
-            refres_ *= reduce<1UL>( eval( refmat_ ), op ) * scalar;
+            dres_   *= reduce<rowwise>( eval( mat_ ), op ) * scalar;
+            sres_   *= reduce<rowwise>( eval( mat_ ), op ) * scalar;
+            refres_ *= reduce<rowwise>( eval( refmat_ ), op ) * scalar;
          }
          catch( std::exception& ex ) {
             convertException<MT>( ex );
@@ -2086,9 +2089,9 @@ void OperationTest<MT>::testScaledOperation( OP op, T scalar )
 
          try {
             initResults();
-            dres_   *= reduce<1UL>( eval( omat_ ), op ) * scalar;
-            sres_   *= reduce<1UL>( eval( omat_ ), op ) * scalar;
-            refres_ *= reduce<1UL>( eval( refmat_ ), op ) * scalar;
+            dres_   *= reduce<rowwise>( eval( omat_ ), op ) * scalar;
+            sres_   *= reduce<rowwise>( eval( omat_ ), op ) * scalar;
+            refres_ *= reduce<rowwise>( eval( refmat_ ), op ) * scalar;
          }
          catch( std::exception& ex ) {
             convertException<OMT>( ex );
@@ -2109,9 +2112,9 @@ void OperationTest<MT>::testScaledOperation( OP op, T scalar )
 
          try {
             initResults();
-            dres_   *= reduce<1UL>( mat_, op ) / scalar;
-            sres_   *= reduce<1UL>( mat_, op ) / scalar;
-            refres_ *= reduce<1UL>( refmat_, op ) / scalar;
+            dres_   *= reduce<rowwise>( mat_, op ) / scalar;
+            sres_   *= reduce<rowwise>( mat_, op ) / scalar;
+            refres_ *= reduce<rowwise>( refmat_, op ) / scalar;
          }
          catch( std::exception& ex ) {
             convertException<MT>( ex );
@@ -2121,9 +2124,9 @@ void OperationTest<MT>::testScaledOperation( OP op, T scalar )
 
          try {
             initResults();
-            dres_   *= reduce<1UL>( omat_, op ) / scalar;
-            sres_   *= reduce<1UL>( omat_, op ) / scalar;
-            refres_ *= reduce<1UL>( refmat_, op ) / scalar;
+            dres_   *= reduce<rowwise>( omat_, op ) / scalar;
+            sres_   *= reduce<rowwise>( omat_, op ) / scalar;
+            refres_ *= reduce<rowwise>( refmat_, op ) / scalar;
          }
          catch( std::exception& ex ) {
             convertException<OMT>( ex );
@@ -2139,9 +2142,9 @@ void OperationTest<MT>::testScaledOperation( OP op, T scalar )
 
          try {
             initResults();
-            dres_   *= reduce<1UL>( eval( mat_ ), op ) / scalar;
-            sres_   *= reduce<1UL>( eval( mat_ ), op ) / scalar;
-            refres_ *= reduce<1UL>( eval( refmat_ ), op ) / scalar;
+            dres_   *= reduce<rowwise>( eval( mat_ ), op ) / scalar;
+            sres_   *= reduce<rowwise>( eval( mat_ ), op ) / scalar;
+            refres_ *= reduce<rowwise>( eval( refmat_ ), op ) / scalar;
          }
          catch( std::exception& ex ) {
             convertException<MT>( ex );
@@ -2151,9 +2154,9 @@ void OperationTest<MT>::testScaledOperation( OP op, T scalar )
 
          try {
             initResults();
-            dres_   *= reduce<1UL>( eval( omat_ ), op ) / scalar;
-            sres_   *= reduce<1UL>( eval( omat_ ), op ) / scalar;
-            refres_ *= reduce<1UL>( eval( refmat_ ), op ) / scalar;
+            dres_   *= reduce<rowwise>( eval( omat_ ), op ) / scalar;
+            sres_   *= reduce<rowwise>( eval( omat_ ), op ) / scalar;
+            refres_ *= reduce<rowwise>( eval( refmat_ ), op ) / scalar;
          }
          catch( std::exception& ex ) {
             convertException<OMT>( ex );
@@ -2167,7 +2170,7 @@ void OperationTest<MT>::testScaledOperation( OP op, T scalar )
       // Scaled reduction operation with division assignment (s*OP)
       //=====================================================================================
 
-      if( blaze::isDivisor( reduce<1UL>( mat_, op ) ) )
+      if( blaze::isDivisor( reduce<rowwise>( mat_, op ) ) )
       {
          // Scaled reduction operation with division assignment with the given matrix
          {
@@ -2176,9 +2179,9 @@ void OperationTest<MT>::testScaledOperation( OP op, T scalar )
 
             try {
                initResults();
-               dres_   /= scalar * reduce<1UL>( mat_, op );
-               sres_   /= scalar * reduce<1UL>( mat_, op );
-               refres_ /= scalar * reduce<1UL>( refmat_, op );
+               dres_   /= scalar * reduce<rowwise>( mat_, op );
+               sres_   /= scalar * reduce<rowwise>( mat_, op );
+               refres_ /= scalar * reduce<rowwise>( refmat_, op );
             }
             catch( std::exception& ex ) {
                convertException<MT>( ex );
@@ -2188,9 +2191,9 @@ void OperationTest<MT>::testScaledOperation( OP op, T scalar )
 
             try {
                initResults();
-               dres_   /= scalar * reduce<1UL>( omat_, op );
-               sres_   /= scalar * reduce<1UL>( omat_, op );
-               refres_ /= scalar * reduce<1UL>( refmat_, op );
+               dres_   /= scalar * reduce<rowwise>( omat_, op );
+               sres_   /= scalar * reduce<rowwise>( omat_, op );
+               refres_ /= scalar * reduce<rowwise>( refmat_, op );
             }
             catch( std::exception& ex ) {
                convertException<OMT>( ex );
@@ -2206,9 +2209,9 @@ void OperationTest<MT>::testScaledOperation( OP op, T scalar )
 
             try {
                initResults();
-               dres_   /= scalar * reduce<1UL>( eval( mat_ ), op );
-               sres_   /= scalar * reduce<1UL>( eval( mat_ ), op );
-               refres_ /= scalar * reduce<1UL>( eval( refmat_ ), op );
+               dres_   /= scalar * reduce<rowwise>( eval( mat_ ), op );
+               sres_   /= scalar * reduce<rowwise>( eval( mat_ ), op );
+               refres_ /= scalar * reduce<rowwise>( eval( refmat_ ), op );
             }
             catch( std::exception& ex ) {
                convertException<MT>( ex );
@@ -2218,9 +2221,9 @@ void OperationTest<MT>::testScaledOperation( OP op, T scalar )
 
             try {
                initResults();
-               dres_   /= scalar * reduce<1UL>( eval( omat_ ), op );
-               sres_   /= scalar * reduce<1UL>( eval( omat_ ), op );
-               refres_ /= scalar * reduce<1UL>( eval( refmat_ ), op );
+               dres_   /= scalar * reduce<rowwise>( eval( omat_ ), op );
+               sres_   /= scalar * reduce<rowwise>( eval( omat_ ), op );
+               refres_ /= scalar * reduce<rowwise>( eval( refmat_ ), op );
             }
             catch( std::exception& ex ) {
                convertException<OMT>( ex );
@@ -2235,7 +2238,7 @@ void OperationTest<MT>::testScaledOperation( OP op, T scalar )
       // Scaled reduction operation with division assignment (OP*s)
       //=====================================================================================
 
-      if( blaze::isDivisor( reduce<1UL>( mat_, op ) ) )
+      if( blaze::isDivisor( reduce<rowwise>( mat_, op ) ) )
       {
          // Scaled reduction operation with division assignment with the given matrix
          {
@@ -2244,9 +2247,9 @@ void OperationTest<MT>::testScaledOperation( OP op, T scalar )
 
             try {
                initResults();
-               dres_   /= reduce<1UL>( mat_, op ) * scalar;
-               sres_   /= reduce<1UL>( mat_, op ) * scalar;
-               refres_ /= reduce<1UL>( refmat_, op ) * scalar;
+               dres_   /= reduce<rowwise>( mat_, op ) * scalar;
+               sres_   /= reduce<rowwise>( mat_, op ) * scalar;
+               refres_ /= reduce<rowwise>( refmat_, op ) * scalar;
             }
             catch( std::exception& ex ) {
                convertException<MT>( ex );
@@ -2256,9 +2259,9 @@ void OperationTest<MT>::testScaledOperation( OP op, T scalar )
 
             try {
                initResults();
-               dres_   /= reduce<1UL>( omat_, op ) * scalar;
-               sres_   /= reduce<1UL>( omat_, op ) * scalar;
-               refres_ /= reduce<1UL>( refmat_, op ) * scalar;
+               dres_   /= reduce<rowwise>( omat_, op ) * scalar;
+               sres_   /= reduce<rowwise>( omat_, op ) * scalar;
+               refres_ /= reduce<rowwise>( refmat_, op ) * scalar;
             }
             catch( std::exception& ex ) {
                convertException<OMT>( ex );
@@ -2274,9 +2277,9 @@ void OperationTest<MT>::testScaledOperation( OP op, T scalar )
 
             try {
                initResults();
-               dres_   /= reduce<1UL>( eval( mat_ ), op ) * scalar;
-               sres_   /= reduce<1UL>( eval( mat_ ), op ) * scalar;
-               refres_ /= reduce<1UL>( eval( refmat_ ), op ) * scalar;
+               dres_   /= reduce<rowwise>( eval( mat_ ), op ) * scalar;
+               sres_   /= reduce<rowwise>( eval( mat_ ), op ) * scalar;
+               refres_ /= reduce<rowwise>( eval( refmat_ ), op ) * scalar;
             }
             catch( std::exception& ex ) {
                convertException<MT>( ex );
@@ -2286,9 +2289,9 @@ void OperationTest<MT>::testScaledOperation( OP op, T scalar )
 
             try {
                initResults();
-               dres_   /= reduce<1UL>( eval( omat_ ), op ) * scalar;
-               sres_   /= reduce<1UL>( eval( omat_ ), op ) * scalar;
-               refres_ /= reduce<1UL>( eval( refmat_ ), op ) * scalar;
+               dres_   /= reduce<rowwise>( eval( omat_ ), op ) * scalar;
+               sres_   /= reduce<rowwise>( eval( omat_ ), op ) * scalar;
+               refres_ /= reduce<rowwise>( eval( refmat_ ), op ) * scalar;
             }
             catch( std::exception& ex ) {
                convertException<OMT>( ex );
@@ -2303,7 +2306,7 @@ void OperationTest<MT>::testScaledOperation( OP op, T scalar )
       // Scaled reduction operation with division assignment (OP/s)
       //=====================================================================================
 
-      if( blaze::isDivisor( reduce<1UL>( mat_, op ) / scalar ) )
+      if( blaze::isDivisor( reduce<rowwise>( mat_, op ) / scalar ) )
       {
          // Scaled reduction operation with division assignment with the given matrix
          {
@@ -2312,9 +2315,9 @@ void OperationTest<MT>::testScaledOperation( OP op, T scalar )
 
             try {
                initResults();
-               dres_   /= reduce<1UL>( mat_, op ) / scalar;
-               sres_   /= reduce<1UL>( mat_, op ) / scalar;
-               refres_ /= reduce<1UL>( refmat_, op ) / scalar;
+               dres_   /= reduce<rowwise>( mat_, op ) / scalar;
+               sres_   /= reduce<rowwise>( mat_, op ) / scalar;
+               refres_ /= reduce<rowwise>( refmat_, op ) / scalar;
             }
             catch( std::exception& ex ) {
                convertException<MT>( ex );
@@ -2324,9 +2327,9 @@ void OperationTest<MT>::testScaledOperation( OP op, T scalar )
 
             try {
                initResults();
-               dres_   /= reduce<1UL>( omat_, op ) / scalar;
-               sres_   /= reduce<1UL>( omat_, op ) / scalar;
-               refres_ /= reduce<1UL>( refmat_, op ) / scalar;
+               dres_   /= reduce<rowwise>( omat_, op ) / scalar;
+               sres_   /= reduce<rowwise>( omat_, op ) / scalar;
+               refres_ /= reduce<rowwise>( refmat_, op ) / scalar;
             }
             catch( std::exception& ex ) {
                convertException<OMT>( ex );
@@ -2342,9 +2345,9 @@ void OperationTest<MT>::testScaledOperation( OP op, T scalar )
 
             try {
                initResults();
-               dres_   /= reduce<1UL>( eval( mat_ ), op ) / scalar;
-               sres_   /= reduce<1UL>( eval( mat_ ), op ) / scalar;
-               refres_ /= reduce<1UL>( eval( refmat_ ), op ) / scalar;
+               dres_   /= reduce<rowwise>( eval( mat_ ), op ) / scalar;
+               sres_   /= reduce<rowwise>( eval( mat_ ), op ) / scalar;
+               refres_ /= reduce<rowwise>( eval( refmat_ ), op ) / scalar;
             }
             catch( std::exception& ex ) {
                convertException<MT>( ex );
@@ -2354,9 +2357,9 @@ void OperationTest<MT>::testScaledOperation( OP op, T scalar )
 
             try {
                initResults();
-               dres_   /= reduce<1UL>( eval( omat_ ), op ) / scalar;
-               sres_   /= reduce<1UL>( eval( omat_ ), op ) / scalar;
-               refres_ /= reduce<1UL>( eval( refmat_ ), op ) / scalar;
+               dres_   /= reduce<rowwise>( eval( omat_ ), op ) / scalar;
+               sres_   /= reduce<rowwise>( eval( omat_ ), op ) / scalar;
+               refres_ /= reduce<rowwise>( eval( refmat_ ), op ) / scalar;
             }
             catch( std::exception& ex ) {
                convertException<OMT>( ex );
@@ -2390,6 +2393,7 @@ void OperationTest<MT>::testTransOperation( OP op )
    if( BLAZETEST_MATHTEST_TEST_TRANS_OPERATION > 1 )
    {
       using blaze::reduce;
+      using blaze::rowwise;
 
 
       //=====================================================================================
@@ -2403,9 +2407,9 @@ void OperationTest<MT>::testTransOperation( OP op )
 
          try {
             initTransposeResults();
-            tdres_   = trans( reduce<1UL>( mat_, op ) );
-            tsres_   = trans( reduce<1UL>( mat_, op ) );
-            trefres_ = trans( reduce<1UL>( refmat_, op ) );
+            tdres_   = trans( reduce<rowwise>( mat_, op ) );
+            tsres_   = trans( reduce<rowwise>( mat_, op ) );
+            trefres_ = trans( reduce<rowwise>( refmat_, op ) );
          }
          catch( std::exception& ex ) {
             convertException<MT>( ex );
@@ -2415,9 +2419,9 @@ void OperationTest<MT>::testTransOperation( OP op )
 
          try {
             initTransposeResults();
-            tdres_   = trans( reduce<1UL>( omat_, op ) );
-            tsres_   = trans( reduce<1UL>( omat_, op ) );
-            trefres_ = trans( reduce<1UL>( refmat_, op ) );
+            tdres_   = trans( reduce<rowwise>( omat_, op ) );
+            tsres_   = trans( reduce<rowwise>( omat_, op ) );
+            trefres_ = trans( reduce<rowwise>( refmat_, op ) );
          }
          catch( std::exception& ex ) {
             convertException<OMT>( ex );
@@ -2433,9 +2437,9 @@ void OperationTest<MT>::testTransOperation( OP op )
 
          try {
             initTransposeResults();
-            tdres_   = trans( reduce<1UL>( eval( mat_ ), op ) );
-            tsres_   = trans( reduce<1UL>( eval( mat_ ), op ) );
-            trefres_ = trans( reduce<1UL>( eval( refmat_ ), op ) );
+            tdres_   = trans( reduce<rowwise>( eval( mat_ ), op ) );
+            tsres_   = trans( reduce<rowwise>( eval( mat_ ), op ) );
+            trefres_ = trans( reduce<rowwise>( eval( refmat_ ), op ) );
          }
          catch( std::exception& ex ) {
             convertException<MT>( ex );
@@ -2445,9 +2449,9 @@ void OperationTest<MT>::testTransOperation( OP op )
 
          try {
             initTransposeResults();
-            tdres_   = trans( reduce<1UL>( eval( omat_ ), op ) );
-            tsres_   = trans( reduce<1UL>( eval( omat_ ), op ) );
-            trefres_ = trans( reduce<1UL>( eval( refmat_ ), op ) );
+            tdres_   = trans( reduce<rowwise>( eval( omat_ ), op ) );
+            tsres_   = trans( reduce<rowwise>( eval( omat_ ), op ) );
+            trefres_ = trans( reduce<rowwise>( eval( refmat_ ), op ) );
          }
          catch( std::exception& ex ) {
             convertException<OMT>( ex );
@@ -2468,9 +2472,9 @@ void OperationTest<MT>::testTransOperation( OP op )
 
          try {
             initTransposeResults();
-            tdres_   += trans( reduce<1UL>( mat_, op ) );
-            tsres_   += trans( reduce<1UL>( mat_, op ) );
-            trefres_ += trans( reduce<1UL>( refmat_, op ) );
+            tdres_   += trans( reduce<rowwise>( mat_, op ) );
+            tsres_   += trans( reduce<rowwise>( mat_, op ) );
+            trefres_ += trans( reduce<rowwise>( refmat_, op ) );
          }
          catch( std::exception& ex ) {
             convertException<MT>( ex );
@@ -2480,9 +2484,9 @@ void OperationTest<MT>::testTransOperation( OP op )
 
          try {
             initTransposeResults();
-            tdres_   += trans( reduce<1UL>( omat_, op ) );
-            tsres_   += trans( reduce<1UL>( omat_, op ) );
-            trefres_ += trans( reduce<1UL>( refmat_, op ) );
+            tdres_   += trans( reduce<rowwise>( omat_, op ) );
+            tsres_   += trans( reduce<rowwise>( omat_, op ) );
+            trefres_ += trans( reduce<rowwise>( refmat_, op ) );
          }
          catch( std::exception& ex ) {
             convertException<OMT>( ex );
@@ -2498,9 +2502,9 @@ void OperationTest<MT>::testTransOperation( OP op )
 
          try {
             initTransposeResults();
-            tdres_   += trans( reduce<1UL>( eval( mat_ ), op ) );
-            tsres_   += trans( reduce<1UL>( eval( mat_ ), op ) );
-            trefres_ += trans( reduce<1UL>( eval( refmat_ ), op ) );
+            tdres_   += trans( reduce<rowwise>( eval( mat_ ), op ) );
+            tsres_   += trans( reduce<rowwise>( eval( mat_ ), op ) );
+            trefres_ += trans( reduce<rowwise>( eval( refmat_ ), op ) );
          }
          catch( std::exception& ex ) {
             convertException<MT>( ex );
@@ -2510,9 +2514,9 @@ void OperationTest<MT>::testTransOperation( OP op )
 
          try {
             initTransposeResults();
-            tdres_   += trans( reduce<1UL>( eval( omat_ ), op ) );
-            tsres_   += trans( reduce<1UL>( eval( omat_ ), op ) );
-            trefres_ += trans( reduce<1UL>( eval( refmat_ ), op ) );
+            tdres_   += trans( reduce<rowwise>( eval( omat_ ), op ) );
+            tsres_   += trans( reduce<rowwise>( eval( omat_ ), op ) );
+            trefres_ += trans( reduce<rowwise>( eval( refmat_ ), op ) );
          }
          catch( std::exception& ex ) {
             convertException<OMT>( ex );
@@ -2533,9 +2537,9 @@ void OperationTest<MT>::testTransOperation( OP op )
 
          try {
             initTransposeResults();
-            tdres_   -= trans( reduce<1UL>( mat_, op ) );
-            tsres_   -= trans( reduce<1UL>( mat_, op ) );
-            trefres_ -= trans( reduce<1UL>( refmat_, op ) );
+            tdres_   -= trans( reduce<rowwise>( mat_, op ) );
+            tsres_   -= trans( reduce<rowwise>( mat_, op ) );
+            trefres_ -= trans( reduce<rowwise>( refmat_, op ) );
          }
          catch( std::exception& ex ) {
             convertException<MT>( ex );
@@ -2545,9 +2549,9 @@ void OperationTest<MT>::testTransOperation( OP op )
 
          try {
             initTransposeResults();
-            tdres_   -= trans( reduce<1UL>( omat_, op ) );
-            tsres_   -= trans( reduce<1UL>( omat_, op ) );
-            trefres_ -= trans( reduce<1UL>( refmat_, op ) );
+            tdres_   -= trans( reduce<rowwise>( omat_, op ) );
+            tsres_   -= trans( reduce<rowwise>( omat_, op ) );
+            trefres_ -= trans( reduce<rowwise>( refmat_, op ) );
          }
          catch( std::exception& ex ) {
             convertException<OMT>( ex );
@@ -2563,9 +2567,9 @@ void OperationTest<MT>::testTransOperation( OP op )
 
          try {
             initTransposeResults();
-            tdres_   -= trans( reduce<1UL>( eval( mat_ ), op ) );
-            tsres_   -= trans( reduce<1UL>( eval( mat_ ), op ) );
-            trefres_ -= trans( reduce<1UL>( eval( refmat_ ), op ) );
+            tdres_   -= trans( reduce<rowwise>( eval( mat_ ), op ) );
+            tsres_   -= trans( reduce<rowwise>( eval( mat_ ), op ) );
+            trefres_ -= trans( reduce<rowwise>( eval( refmat_ ), op ) );
          }
          catch( std::exception& ex ) {
             convertException<MT>( ex );
@@ -2575,9 +2579,9 @@ void OperationTest<MT>::testTransOperation( OP op )
 
          try {
             initTransposeResults();
-            tdres_   -= trans( reduce<1UL>( eval( omat_ ), op ) );
-            tsres_   -= trans( reduce<1UL>( eval( omat_ ), op ) );
-            trefres_ -= trans( reduce<1UL>( eval( refmat_ ), op ) );
+            tdres_   -= trans( reduce<rowwise>( eval( omat_ ), op ) );
+            tsres_   -= trans( reduce<rowwise>( eval( omat_ ), op ) );
+            trefres_ -= trans( reduce<rowwise>( eval( refmat_ ), op ) );
          }
          catch( std::exception& ex ) {
             convertException<OMT>( ex );
@@ -2598,9 +2602,9 @@ void OperationTest<MT>::testTransOperation( OP op )
 
          try {
             initTransposeResults();
-            tdres_   *= trans( reduce<1UL>( mat_, op ) );
-            tsres_   *= trans( reduce<1UL>( mat_, op ) );
-            trefres_ *= trans( reduce<1UL>( refmat_, op ) );
+            tdres_   *= trans( reduce<rowwise>( mat_, op ) );
+            tsres_   *= trans( reduce<rowwise>( mat_, op ) );
+            trefres_ *= trans( reduce<rowwise>( refmat_, op ) );
          }
          catch( std::exception& ex ) {
             convertException<MT>( ex );
@@ -2610,9 +2614,9 @@ void OperationTest<MT>::testTransOperation( OP op )
 
          try {
             initTransposeResults();
-            tdres_   *= trans( reduce<1UL>( omat_, op ) );
-            tsres_   *= trans( reduce<1UL>( omat_, op ) );
-            trefres_ *= trans( reduce<1UL>( refmat_, op ) );
+            tdres_   *= trans( reduce<rowwise>( omat_, op ) );
+            tsres_   *= trans( reduce<rowwise>( omat_, op ) );
+            trefres_ *= trans( reduce<rowwise>( refmat_, op ) );
          }
          catch( std::exception& ex ) {
             convertException<OMT>( ex );
@@ -2628,9 +2632,9 @@ void OperationTest<MT>::testTransOperation( OP op )
 
          try {
             initTransposeResults();
-            tdres_   *= trans( reduce<1UL>( eval( mat_ ), op ) );
-            tsres_   *= trans( reduce<1UL>( eval( mat_ ), op ) );
-            trefres_ *= trans( reduce<1UL>( eval( refmat_ ), op ) );
+            tdres_   *= trans( reduce<rowwise>( eval( mat_ ), op ) );
+            tsres_   *= trans( reduce<rowwise>( eval( mat_ ), op ) );
+            trefres_ *= trans( reduce<rowwise>( eval( refmat_ ), op ) );
          }
          catch( std::exception& ex ) {
             convertException<MT>( ex );
@@ -2640,9 +2644,9 @@ void OperationTest<MT>::testTransOperation( OP op )
 
          try {
             initTransposeResults();
-            tdres_   *= trans( reduce<1UL>( eval( omat_ ), op ) );
-            tsres_   *= trans( reduce<1UL>( eval( omat_ ), op ) );
-            trefres_ *= trans( reduce<1UL>( eval( refmat_ ), op ) );
+            tdres_   *= trans( reduce<rowwise>( eval( omat_ ), op ) );
+            tsres_   *= trans( reduce<rowwise>( eval( omat_ ), op ) );
+            trefres_ *= trans( reduce<rowwise>( eval( refmat_ ), op ) );
          }
          catch( std::exception& ex ) {
             convertException<OMT>( ex );
@@ -2656,7 +2660,7 @@ void OperationTest<MT>::testTransOperation( OP op )
       // Transpose reduction operation with division assignment
       //=====================================================================================
 
-      if( blaze::isDivisor( reduce<1UL>( mat_, op ) ) )
+      if( blaze::isDivisor( reduce<rowwise>( mat_, op ) ) )
       {
          // Transpose reduction operation with division assignment with the given matrix
          {
@@ -2665,9 +2669,9 @@ void OperationTest<MT>::testTransOperation( OP op )
 
             try {
                initTransposeResults();
-               tdres_   /= trans( reduce<1UL>( mat_, op ) );
-               tsres_   /= trans( reduce<1UL>( mat_, op ) );
-               trefres_ /= trans( reduce<1UL>( refmat_, op ) );
+               tdres_   /= trans( reduce<rowwise>( mat_, op ) );
+               tsres_   /= trans( reduce<rowwise>( mat_, op ) );
+               trefres_ /= trans( reduce<rowwise>( refmat_, op ) );
             }
             catch( std::exception& ex ) {
                convertException<MT>( ex );
@@ -2677,9 +2681,9 @@ void OperationTest<MT>::testTransOperation( OP op )
 
             try {
                initTransposeResults();
-               tdres_   /= trans( reduce<1UL>( omat_, op ) );
-               tsres_   /= trans( reduce<1UL>( omat_, op ) );
-               trefres_ /= trans( reduce<1UL>( refmat_, op ) );
+               tdres_   /= trans( reduce<rowwise>( omat_, op ) );
+               tsres_   /= trans( reduce<rowwise>( omat_, op ) );
+               trefres_ /= trans( reduce<rowwise>( refmat_, op ) );
             }
             catch( std::exception& ex ) {
                convertException<OMT>( ex );
@@ -2695,9 +2699,9 @@ void OperationTest<MT>::testTransOperation( OP op )
 
             try {
                initTransposeResults();
-               tdres_   /= trans( reduce<1UL>( eval( mat_ ), op ) );
-               tsres_   /= trans( reduce<1UL>( eval( mat_ ), op ) );
-               trefres_ /= trans( reduce<1UL>( eval( refmat_ ), op ) );
+               tdres_   /= trans( reduce<rowwise>( eval( mat_ ), op ) );
+               tsres_   /= trans( reduce<rowwise>( eval( mat_ ), op ) );
+               trefres_ /= trans( reduce<rowwise>( eval( refmat_ ), op ) );
             }
             catch( std::exception& ex ) {
                convertException<MT>( ex );
@@ -2707,9 +2711,9 @@ void OperationTest<MT>::testTransOperation( OP op )
 
             try {
                initTransposeResults();
-               tdres_   /= trans( reduce<1UL>( eval( omat_ ), op ) );
-               tsres_   /= trans( reduce<1UL>( eval( omat_ ), op ) );
-               trefres_ /= trans( reduce<1UL>( eval( refmat_ ), op ) );
+               tdres_   /= trans( reduce<rowwise>( eval( omat_ ), op ) );
+               tsres_   /= trans( reduce<rowwise>( eval( omat_ ), op ) );
+               trefres_ /= trans( reduce<rowwise>( eval( refmat_ ), op ) );
             }
             catch( std::exception& ex ) {
                convertException<OMT>( ex );
@@ -2743,6 +2747,7 @@ void OperationTest<MT>::testCTransOperation( OP op )
    if( BLAZETEST_MATHTEST_TEST_CTRANS_OPERATION > 1 )
    {
       using blaze::reduce;
+      using blaze::rowwise;
 
 
       //=====================================================================================
@@ -2756,9 +2761,9 @@ void OperationTest<MT>::testCTransOperation( OP op )
 
          try {
             initTransposeResults();
-            tdres_   = ctrans( reduce<1UL>( mat_, op ) );
-            tsres_   = ctrans( reduce<1UL>( mat_, op ) );
-            trefres_ = ctrans( reduce<1UL>( refmat_, op ) );
+            tdres_   = ctrans( reduce<rowwise>( mat_, op ) );
+            tsres_   = ctrans( reduce<rowwise>( mat_, op ) );
+            trefres_ = ctrans( reduce<rowwise>( refmat_, op ) );
          }
          catch( std::exception& ex ) {
             convertException<MT>( ex );
@@ -2768,9 +2773,9 @@ void OperationTest<MT>::testCTransOperation( OP op )
 
          try {
             initTransposeResults();
-            tdres_   = ctrans( reduce<1UL>( omat_, op ) );
-            tsres_   = ctrans( reduce<1UL>( omat_, op ) );
-            trefres_ = ctrans( reduce<1UL>( refmat_, op ) );
+            tdres_   = ctrans( reduce<rowwise>( omat_, op ) );
+            tsres_   = ctrans( reduce<rowwise>( omat_, op ) );
+            trefres_ = ctrans( reduce<rowwise>( refmat_, op ) );
          }
          catch( std::exception& ex ) {
             convertException<OMT>( ex );
@@ -2786,9 +2791,9 @@ void OperationTest<MT>::testCTransOperation( OP op )
 
          try {
             initTransposeResults();
-            tdres_   = ctrans( reduce<1UL>( eval( mat_ ), op ) );
-            tsres_   = ctrans( reduce<1UL>( eval( mat_ ), op ) );
-            trefres_ = ctrans( reduce<1UL>( eval( refmat_ ), op ) );
+            tdres_   = ctrans( reduce<rowwise>( eval( mat_ ), op ) );
+            tsres_   = ctrans( reduce<rowwise>( eval( mat_ ), op ) );
+            trefres_ = ctrans( reduce<rowwise>( eval( refmat_ ), op ) );
          }
          catch( std::exception& ex ) {
             convertException<MT>( ex );
@@ -2798,9 +2803,9 @@ void OperationTest<MT>::testCTransOperation( OP op )
 
          try {
             initTransposeResults();
-            tdres_   = ctrans( reduce<1UL>( eval( omat_ ), op ) );
-            tsres_   = ctrans( reduce<1UL>( eval( omat_ ), op ) );
-            trefres_ = ctrans( reduce<1UL>( eval( refmat_ ), op ) );
+            tdres_   = ctrans( reduce<rowwise>( eval( omat_ ), op ) );
+            tsres_   = ctrans( reduce<rowwise>( eval( omat_ ), op ) );
+            trefres_ = ctrans( reduce<rowwise>( eval( refmat_ ), op ) );
          }
          catch( std::exception& ex ) {
             convertException<OMT>( ex );
@@ -2821,9 +2826,9 @@ void OperationTest<MT>::testCTransOperation( OP op )
 
          try {
             initTransposeResults();
-            tdres_   += ctrans( reduce<1UL>( mat_, op ) );
-            tsres_   += ctrans( reduce<1UL>( mat_, op ) );
-            trefres_ += ctrans( reduce<1UL>( refmat_, op ) );
+            tdres_   += ctrans( reduce<rowwise>( mat_, op ) );
+            tsres_   += ctrans( reduce<rowwise>( mat_, op ) );
+            trefres_ += ctrans( reduce<rowwise>( refmat_, op ) );
          }
          catch( std::exception& ex ) {
             convertException<MT>( ex );
@@ -2833,9 +2838,9 @@ void OperationTest<MT>::testCTransOperation( OP op )
 
          try {
             initTransposeResults();
-            tdres_   += ctrans( reduce<1UL>( omat_, op ) );
-            tsres_   += ctrans( reduce<1UL>( omat_, op ) );
-            trefres_ += ctrans( reduce<1UL>( refmat_, op ) );
+            tdres_   += ctrans( reduce<rowwise>( omat_, op ) );
+            tsres_   += ctrans( reduce<rowwise>( omat_, op ) );
+            trefres_ += ctrans( reduce<rowwise>( refmat_, op ) );
          }
          catch( std::exception& ex ) {
             convertException<OMT>( ex );
@@ -2851,9 +2856,9 @@ void OperationTest<MT>::testCTransOperation( OP op )
 
          try {
             initTransposeResults();
-            tdres_   += ctrans( reduce<1UL>( eval( mat_ ), op ) );
-            tsres_   += ctrans( reduce<1UL>( eval( mat_ ), op ) );
-            trefres_ += ctrans( reduce<1UL>( eval( refmat_ ), op ) );
+            tdres_   += ctrans( reduce<rowwise>( eval( mat_ ), op ) );
+            tsres_   += ctrans( reduce<rowwise>( eval( mat_ ), op ) );
+            trefres_ += ctrans( reduce<rowwise>( eval( refmat_ ), op ) );
          }
          catch( std::exception& ex ) {
             convertException<MT>( ex );
@@ -2863,9 +2868,9 @@ void OperationTest<MT>::testCTransOperation( OP op )
 
          try {
             initTransposeResults();
-            tdres_   += ctrans( reduce<1UL>( eval( omat_ ), op ) );
-            tsres_   += ctrans( reduce<1UL>( eval( omat_ ), op ) );
-            trefres_ += ctrans( reduce<1UL>( eval( refmat_ ), op ) );
+            tdres_   += ctrans( reduce<rowwise>( eval( omat_ ), op ) );
+            tsres_   += ctrans( reduce<rowwise>( eval( omat_ ), op ) );
+            trefres_ += ctrans( reduce<rowwise>( eval( refmat_ ), op ) );
          }
          catch( std::exception& ex ) {
             convertException<OMT>( ex );
@@ -2886,9 +2891,9 @@ void OperationTest<MT>::testCTransOperation( OP op )
 
          try {
             initTransposeResults();
-            tdres_   -= ctrans( reduce<1UL>( mat_, op ) );
-            tsres_   -= ctrans( reduce<1UL>( mat_, op ) );
-            trefres_ -= ctrans( reduce<1UL>( refmat_, op ) );
+            tdres_   -= ctrans( reduce<rowwise>( mat_, op ) );
+            tsres_   -= ctrans( reduce<rowwise>( mat_, op ) );
+            trefres_ -= ctrans( reduce<rowwise>( refmat_, op ) );
          }
          catch( std::exception& ex ) {
             convertException<MT>( ex );
@@ -2898,9 +2903,9 @@ void OperationTest<MT>::testCTransOperation( OP op )
 
          try {
             initTransposeResults();
-            tdres_   -= ctrans( reduce<1UL>( omat_, op ) );
-            tsres_   -= ctrans( reduce<1UL>( omat_, op ) );
-            trefres_ -= ctrans( reduce<1UL>( refmat_, op ) );
+            tdres_   -= ctrans( reduce<rowwise>( omat_, op ) );
+            tsres_   -= ctrans( reduce<rowwise>( omat_, op ) );
+            trefres_ -= ctrans( reduce<rowwise>( refmat_, op ) );
          }
          catch( std::exception& ex ) {
             convertException<OMT>( ex );
@@ -2916,9 +2921,9 @@ void OperationTest<MT>::testCTransOperation( OP op )
 
          try {
             initTransposeResults();
-            tdres_   -= ctrans( reduce<1UL>( eval( mat_ ), op ) );
-            tsres_   -= ctrans( reduce<1UL>( eval( mat_ ), op ) );
-            trefres_ -= ctrans( reduce<1UL>( eval( refmat_ ), op ) );
+            tdres_   -= ctrans( reduce<rowwise>( eval( mat_ ), op ) );
+            tsres_   -= ctrans( reduce<rowwise>( eval( mat_ ), op ) );
+            trefres_ -= ctrans( reduce<rowwise>( eval( refmat_ ), op ) );
          }
          catch( std::exception& ex ) {
             convertException<MT>( ex );
@@ -2928,9 +2933,9 @@ void OperationTest<MT>::testCTransOperation( OP op )
 
          try {
             initTransposeResults();
-            tdres_   -= ctrans( reduce<1UL>( eval( omat_ ), op ) );
-            tsres_   -= ctrans( reduce<1UL>( eval( omat_ ), op ) );
-            trefres_ -= ctrans( reduce<1UL>( eval( refmat_ ), op ) );
+            tdres_   -= ctrans( reduce<rowwise>( eval( omat_ ), op ) );
+            tsres_   -= ctrans( reduce<rowwise>( eval( omat_ ), op ) );
+            trefres_ -= ctrans( reduce<rowwise>( eval( refmat_ ), op ) );
          }
          catch( std::exception& ex ) {
             convertException<OMT>( ex );
@@ -2951,9 +2956,9 @@ void OperationTest<MT>::testCTransOperation( OP op )
 
          try {
             initTransposeResults();
-            tdres_   *= ctrans( reduce<1UL>( mat_, op ) );
-            tsres_   *= ctrans( reduce<1UL>( mat_, op ) );
-            trefres_ *= ctrans( reduce<1UL>( refmat_, op ) );
+            tdres_   *= ctrans( reduce<rowwise>( mat_, op ) );
+            tsres_   *= ctrans( reduce<rowwise>( mat_, op ) );
+            trefres_ *= ctrans( reduce<rowwise>( refmat_, op ) );
          }
          catch( std::exception& ex ) {
             convertException<MT>( ex );
@@ -2963,9 +2968,9 @@ void OperationTest<MT>::testCTransOperation( OP op )
 
          try {
             initTransposeResults();
-            tdres_   *= ctrans( reduce<1UL>( omat_, op ) );
-            tsres_   *= ctrans( reduce<1UL>( omat_, op ) );
-            trefres_ *= ctrans( reduce<1UL>( refmat_, op ) );
+            tdres_   *= ctrans( reduce<rowwise>( omat_, op ) );
+            tsres_   *= ctrans( reduce<rowwise>( omat_, op ) );
+            trefres_ *= ctrans( reduce<rowwise>( refmat_, op ) );
          }
          catch( std::exception& ex ) {
             convertException<OMT>( ex );
@@ -2981,9 +2986,9 @@ void OperationTest<MT>::testCTransOperation( OP op )
 
          try {
             initTransposeResults();
-            tdres_   *= ctrans( reduce<1UL>( eval( mat_ ), op ) );
-            tsres_   *= ctrans( reduce<1UL>( eval( mat_ ), op ) );
-            trefres_ *= ctrans( reduce<1UL>( eval( refmat_ ), op ) );
+            tdres_   *= ctrans( reduce<rowwise>( eval( mat_ ), op ) );
+            tsres_   *= ctrans( reduce<rowwise>( eval( mat_ ), op ) );
+            trefres_ *= ctrans( reduce<rowwise>( eval( refmat_ ), op ) );
          }
          catch( std::exception& ex ) {
             convertException<MT>( ex );
@@ -2993,9 +2998,9 @@ void OperationTest<MT>::testCTransOperation( OP op )
 
          try {
             initTransposeResults();
-            tdres_   *= ctrans( reduce<1UL>( eval( omat_ ), op ) );
-            tsres_   *= ctrans( reduce<1UL>( eval( omat_ ), op ) );
-            trefres_ *= ctrans( reduce<1UL>( eval( refmat_ ), op ) );
+            tdres_   *= ctrans( reduce<rowwise>( eval( omat_ ), op ) );
+            tsres_   *= ctrans( reduce<rowwise>( eval( omat_ ), op ) );
+            trefres_ *= ctrans( reduce<rowwise>( eval( refmat_ ), op ) );
          }
          catch( std::exception& ex ) {
             convertException<OMT>( ex );
@@ -3009,7 +3014,7 @@ void OperationTest<MT>::testCTransOperation( OP op )
       // Conjugate transpose reduction operation with division assignment
       //=====================================================================================
 
-      if( blaze::isDivisor( reduce<1UL>( mat_, op ) ) )
+      if( blaze::isDivisor( reduce<rowwise>( mat_, op ) ) )
       {
          // Conjugate transpose reduction operation with division assignment with the given matrix
          {
@@ -3018,9 +3023,9 @@ void OperationTest<MT>::testCTransOperation( OP op )
 
             try {
                initTransposeResults();
-               tdres_   /= ctrans( reduce<1UL>( mat_, op ) );
-               tsres_   /= ctrans( reduce<1UL>( mat_, op ) );
-               trefres_ /= ctrans( reduce<1UL>( refmat_, op ) );
+               tdres_   /= ctrans( reduce<rowwise>( mat_, op ) );
+               tsres_   /= ctrans( reduce<rowwise>( mat_, op ) );
+               trefres_ /= ctrans( reduce<rowwise>( refmat_, op ) );
             }
             catch( std::exception& ex ) {
                convertException<MT>( ex );
@@ -3030,9 +3035,9 @@ void OperationTest<MT>::testCTransOperation( OP op )
 
             try {
                initTransposeResults();
-               tdres_   /= ctrans( reduce<1UL>( omat_, op ) );
-               tsres_   /= ctrans( reduce<1UL>( omat_, op ) );
-               trefres_ /= ctrans( reduce<1UL>( refmat_, op ) );
+               tdres_   /= ctrans( reduce<rowwise>( omat_, op ) );
+               tsres_   /= ctrans( reduce<rowwise>( omat_, op ) );
+               trefres_ /= ctrans( reduce<rowwise>( refmat_, op ) );
             }
             catch( std::exception& ex ) {
                convertException<OMT>( ex );
@@ -3048,9 +3053,9 @@ void OperationTest<MT>::testCTransOperation( OP op )
 
             try {
                initTransposeResults();
-               tdres_   /= ctrans( reduce<1UL>( eval( mat_ ), op ) );
-               tsres_   /= ctrans( reduce<1UL>( eval( mat_ ), op ) );
-               trefres_ /= ctrans( reduce<1UL>( eval( refmat_ ), op ) );
+               tdres_   /= ctrans( reduce<rowwise>( eval( mat_ ), op ) );
+               tsres_   /= ctrans( reduce<rowwise>( eval( mat_ ), op ) );
+               trefres_ /= ctrans( reduce<rowwise>( eval( refmat_ ), op ) );
             }
             catch( std::exception& ex ) {
                convertException<MT>( ex );
@@ -3060,9 +3065,9 @@ void OperationTest<MT>::testCTransOperation( OP op )
 
             try {
                initTransposeResults();
-               tdres_   /= ctrans( reduce<1UL>( eval( omat_ ), op ) );
-               tsres_   /= ctrans( reduce<1UL>( eval( omat_ ), op ) );
-               trefres_ /= ctrans( reduce<1UL>( eval( refmat_ ), op ) );
+               tdres_   /= ctrans( reduce<rowwise>( eval( omat_ ), op ) );
+               tsres_   /= ctrans( reduce<rowwise>( eval( omat_ ), op ) );
+               trefres_ /= ctrans( reduce<rowwise>( eval( refmat_ ), op ) );
             }
             catch( std::exception& ex ) {
                convertException<OMT>( ex );
@@ -3097,6 +3102,7 @@ void OperationTest<MT>::testSubvectorOperation( OP op, blaze::TrueType )
    if( BLAZETEST_MATHTEST_TEST_SUBVECTOR_OPERATION > 1 )
    {
       using blaze::reduce;
+      using blaze::rowwise;
 
 
       if( mat_.rows() == 0UL )
@@ -3116,9 +3122,9 @@ void OperationTest<MT>::testSubvectorOperation( OP op, blaze::TrueType )
             initResults();
             for( size_t index=0UL, size=0UL; index<mat_.rows(); index+=size ) {
                size = blaze::rand<size_t>( 1UL, mat_.rows() - index );
-               subvector( dres_  , index, size ) = subvector( reduce<1UL>( mat_, op )   , index, size );
-               subvector( sres_  , index, size ) = subvector( reduce<1UL>( mat_, op )   , index, size );
-               subvector( refres_, index, size ) = subvector( reduce<1UL>( refmat_, op ), index, size );
+               subvector( dres_  , index, size ) = subvector( reduce<rowwise>( mat_, op )   , index, size );
+               subvector( sres_  , index, size ) = subvector( reduce<rowwise>( mat_, op )   , index, size );
+               subvector( refres_, index, size ) = subvector( reduce<rowwise>( refmat_, op ), index, size );
             }
          }
          catch( std::exception& ex ) {
@@ -3131,9 +3137,9 @@ void OperationTest<MT>::testSubvectorOperation( OP op, blaze::TrueType )
             initResults();
             for( size_t index=0UL, size=0UL; index<omat_.rows(); index+=size ) {
                size = blaze::rand<size_t>( 1UL, omat_.rows() - index );
-               subvector( dres_  , index, size ) = subvector( reduce<1UL>( omat_, op )  , index, size );
-               subvector( sres_  , index, size ) = subvector( reduce<1UL>( omat_, op )  , index, size );
-               subvector( refres_, index, size ) = subvector( reduce<1UL>( refmat_, op ), index, size );
+               subvector( dres_  , index, size ) = subvector( reduce<rowwise>( omat_, op )  , index, size );
+               subvector( sres_  , index, size ) = subvector( reduce<rowwise>( omat_, op )  , index, size );
+               subvector( refres_, index, size ) = subvector( reduce<rowwise>( refmat_, op ), index, size );
             }
          }
          catch( std::exception& ex ) {
@@ -3152,9 +3158,9 @@ void OperationTest<MT>::testSubvectorOperation( OP op, blaze::TrueType )
             initResults();
             for( size_t index=0UL, size=0UL; index<mat_.rows(); index+=size ) {
                size = blaze::rand<size_t>( 1UL, mat_.rows() - index );
-               subvector( dres_  , index, size ) = subvector( reduce<1UL>( eval( mat_ ), op )   , index, size );
-               subvector( sres_  , index, size ) = subvector( reduce<1UL>( eval( mat_ ), op )   , index, size );
-               subvector( refres_, index, size ) = subvector( reduce<1UL>( eval( refmat_ ), op ), index, size );
+               subvector( dres_  , index, size ) = subvector( reduce<rowwise>( eval( mat_ ), op )   , index, size );
+               subvector( sres_  , index, size ) = subvector( reduce<rowwise>( eval( mat_ ), op )   , index, size );
+               subvector( refres_, index, size ) = subvector( reduce<rowwise>( eval( refmat_ ), op ), index, size );
             }
          }
          catch( std::exception& ex ) {
@@ -3167,9 +3173,9 @@ void OperationTest<MT>::testSubvectorOperation( OP op, blaze::TrueType )
             initResults();
             for( size_t index=0UL, size=0UL; index<omat_.rows(); index+=size ) {
                size = blaze::rand<size_t>( 1UL, omat_.rows() - index );
-               subvector( dres_  , index, size ) = subvector( reduce<1UL>( eval( omat_ ), op )  , index, size );
-               subvector( sres_  , index, size ) = subvector( reduce<1UL>( eval( omat_ ), op )  , index, size );
-               subvector( refres_, index, size ) = subvector( reduce<1UL>( eval( refmat_ ), op ), index, size );
+               subvector( dres_  , index, size ) = subvector( reduce<rowwise>( eval( omat_ ), op )  , index, size );
+               subvector( sres_  , index, size ) = subvector( reduce<rowwise>( eval( omat_ ), op )  , index, size );
+               subvector( refres_, index, size ) = subvector( reduce<rowwise>( eval( refmat_ ), op ), index, size );
             }
          }
          catch( std::exception& ex ) {
@@ -3193,9 +3199,9 @@ void OperationTest<MT>::testSubvectorOperation( OP op, blaze::TrueType )
             initResults();
             for( size_t index=0UL, size=0UL; index<mat_.rows(); index+=size ) {
                size = blaze::rand<size_t>( 1UL, mat_.rows() - index );
-               subvector( dres_  , index, size ) += subvector( reduce<1UL>( mat_, op )   , index, size );
-               subvector( sres_  , index, size ) += subvector( reduce<1UL>( mat_, op )   , index, size );
-               subvector( refres_, index, size ) += subvector( reduce<1UL>( refmat_, op ), index, size );
+               subvector( dres_  , index, size ) += subvector( reduce<rowwise>( mat_, op )   , index, size );
+               subvector( sres_  , index, size ) += subvector( reduce<rowwise>( mat_, op )   , index, size );
+               subvector( refres_, index, size ) += subvector( reduce<rowwise>( refmat_, op ), index, size );
             }
          }
          catch( std::exception& ex ) {
@@ -3208,9 +3214,9 @@ void OperationTest<MT>::testSubvectorOperation( OP op, blaze::TrueType )
             initResults();
             for( size_t index=0UL, size=0UL; index<omat_.rows(); index+=size ) {
                size = blaze::rand<size_t>( 1UL, omat_.rows() - index );
-               subvector( dres_  , index, size ) += subvector( reduce<1UL>( omat_, op )  , index, size );
-               subvector( sres_  , index, size ) += subvector( reduce<1UL>( omat_, op )  , index, size );
-               subvector( refres_, index, size ) += subvector( reduce<1UL>( refmat_, op ), index, size );
+               subvector( dres_  , index, size ) += subvector( reduce<rowwise>( omat_, op )  , index, size );
+               subvector( sres_  , index, size ) += subvector( reduce<rowwise>( omat_, op )  , index, size );
+               subvector( refres_, index, size ) += subvector( reduce<rowwise>( refmat_, op ), index, size );
             }
          }
          catch( std::exception& ex ) {
@@ -3229,9 +3235,9 @@ void OperationTest<MT>::testSubvectorOperation( OP op, blaze::TrueType )
             initResults();
             for( size_t index=0UL, size=0UL; index<mat_.rows(); index+=size ) {
                size = blaze::rand<size_t>( 1UL, mat_.rows() - index );
-               subvector( dres_  , index, size ) += subvector( reduce<1UL>( eval( mat_ ), op )   , index, size );
-               subvector( sres_  , index, size ) += subvector( reduce<1UL>( eval( mat_ ), op )   , index, size );
-               subvector( refres_, index, size ) += subvector( reduce<1UL>( eval( refmat_ ), op ), index, size );
+               subvector( dres_  , index, size ) += subvector( reduce<rowwise>( eval( mat_ ), op )   , index, size );
+               subvector( sres_  , index, size ) += subvector( reduce<rowwise>( eval( mat_ ), op )   , index, size );
+               subvector( refres_, index, size ) += subvector( reduce<rowwise>( eval( refmat_ ), op ), index, size );
             }
          }
          catch( std::exception& ex ) {
@@ -3244,9 +3250,9 @@ void OperationTest<MT>::testSubvectorOperation( OP op, blaze::TrueType )
             initResults();
             for( size_t index=0UL, size=0UL; index<omat_.rows(); index+=size ) {
                size = blaze::rand<size_t>( 1UL, omat_.rows() - index );
-               subvector( dres_  , index, size ) += subvector( reduce<1UL>( eval( omat_ ), op )  , index, size );
-               subvector( sres_  , index, size ) += subvector( reduce<1UL>( eval( omat_ ), op )  , index, size );
-               subvector( refres_, index, size ) += subvector( reduce<1UL>( eval( refmat_ ), op ), index, size );
+               subvector( dres_  , index, size ) += subvector( reduce<rowwise>( eval( omat_ ), op )  , index, size );
+               subvector( sres_  , index, size ) += subvector( reduce<rowwise>( eval( omat_ ), op )  , index, size );
+               subvector( refres_, index, size ) += subvector( reduce<rowwise>( eval( refmat_ ), op ), index, size );
             }
          }
          catch( std::exception& ex ) {
@@ -3270,9 +3276,9 @@ void OperationTest<MT>::testSubvectorOperation( OP op, blaze::TrueType )
             initResults();
             for( size_t index=0UL, size=0UL; index<mat_.rows(); index+=size ) {
                size = blaze::rand<size_t>( 1UL, mat_.rows() - index );
-               subvector( dres_  , index, size ) -= subvector( reduce<1UL>( mat_, op )   , index, size );
-               subvector( sres_  , index, size ) -= subvector( reduce<1UL>( mat_, op )   , index, size );
-               subvector( refres_, index, size ) -= subvector( reduce<1UL>( refmat_, op ), index, size );
+               subvector( dres_  , index, size ) -= subvector( reduce<rowwise>( mat_, op )   , index, size );
+               subvector( sres_  , index, size ) -= subvector( reduce<rowwise>( mat_, op )   , index, size );
+               subvector( refres_, index, size ) -= subvector( reduce<rowwise>( refmat_, op ), index, size );
             }
          }
          catch( std::exception& ex ) {
@@ -3285,9 +3291,9 @@ void OperationTest<MT>::testSubvectorOperation( OP op, blaze::TrueType )
             initResults();
             for( size_t index=0UL, size=0UL; index<omat_.rows(); index+=size ) {
                size = blaze::rand<size_t>( 1UL, omat_.rows() - index );
-               subvector( dres_  , index, size ) -= subvector( reduce<1UL>( omat_, op )  , index, size );
-               subvector( sres_  , index, size ) -= subvector( reduce<1UL>( omat_, op )  , index, size );
-               subvector( refres_, index, size ) -= subvector( reduce<1UL>( refmat_, op ), index, size );
+               subvector( dres_  , index, size ) -= subvector( reduce<rowwise>( omat_, op )  , index, size );
+               subvector( sres_  , index, size ) -= subvector( reduce<rowwise>( omat_, op )  , index, size );
+               subvector( refres_, index, size ) -= subvector( reduce<rowwise>( refmat_, op ), index, size );
             }
          }
          catch( std::exception& ex ) {
@@ -3306,9 +3312,9 @@ void OperationTest<MT>::testSubvectorOperation( OP op, blaze::TrueType )
             initResults();
             for( size_t index=0UL, size=0UL; index<mat_.rows(); index+=size ) {
                size = blaze::rand<size_t>( 1UL, mat_.rows() - index );
-               subvector( dres_  , index, size ) -= subvector( reduce<1UL>( eval( mat_ ), op )   , index, size );
-               subvector( sres_  , index, size ) -= subvector( reduce<1UL>( eval( mat_ ), op )   , index, size );
-               subvector( refres_, index, size ) -= subvector( reduce<1UL>( eval( refmat_ ), op ), index, size );
+               subvector( dres_  , index, size ) -= subvector( reduce<rowwise>( eval( mat_ ), op )   , index, size );
+               subvector( sres_  , index, size ) -= subvector( reduce<rowwise>( eval( mat_ ), op )   , index, size );
+               subvector( refres_, index, size ) -= subvector( reduce<rowwise>( eval( refmat_ ), op ), index, size );
             }
          }
          catch( std::exception& ex ) {
@@ -3321,9 +3327,9 @@ void OperationTest<MT>::testSubvectorOperation( OP op, blaze::TrueType )
             initResults();
             for( size_t index=0UL, size=0UL; index<omat_.rows(); index+=size ) {
                size = blaze::rand<size_t>( 1UL, omat_.rows() - index );
-               subvector( dres_  , index, size ) -= subvector( reduce<1UL>( eval( omat_ ), op )  , index, size );
-               subvector( sres_  , index, size ) -= subvector( reduce<1UL>( eval( omat_ ), op )  , index, size );
-               subvector( refres_, index, size ) -= subvector( reduce<1UL>( eval( refmat_ ), op ), index, size );
+               subvector( dres_  , index, size ) -= subvector( reduce<rowwise>( eval( omat_ ), op )  , index, size );
+               subvector( sres_  , index, size ) -= subvector( reduce<rowwise>( eval( omat_ ), op )  , index, size );
+               subvector( refres_, index, size ) -= subvector( reduce<rowwise>( eval( refmat_ ), op ), index, size );
             }
          }
          catch( std::exception& ex ) {
@@ -3347,9 +3353,9 @@ void OperationTest<MT>::testSubvectorOperation( OP op, blaze::TrueType )
             initResults();
             for( size_t index=0UL, size=0UL; index<mat_.rows(); index+=size ) {
                size = blaze::rand<size_t>( 1UL, mat_.rows() - index );
-               subvector( dres_  , index, size ) *= subvector( reduce<1UL>( mat_, op )   , index, size );
-               subvector( sres_  , index, size ) *= subvector( reduce<1UL>( mat_, op )   , index, size );
-               subvector( refres_, index, size ) *= subvector( reduce<1UL>( refmat_, op ), index, size );
+               subvector( dres_  , index, size ) *= subvector( reduce<rowwise>( mat_, op )   , index, size );
+               subvector( sres_  , index, size ) *= subvector( reduce<rowwise>( mat_, op )   , index, size );
+               subvector( refres_, index, size ) *= subvector( reduce<rowwise>( refmat_, op ), index, size );
             }
          }
          catch( std::exception& ex ) {
@@ -3362,9 +3368,9 @@ void OperationTest<MT>::testSubvectorOperation( OP op, blaze::TrueType )
             initResults();
             for( size_t index=0UL, size=0UL; index<omat_.rows(); index+=size ) {
                size = blaze::rand<size_t>( 1UL, omat_.rows() - index );
-               subvector( dres_  , index, size ) *= subvector( reduce<1UL>( omat_, op )  , index, size );
-               subvector( sres_  , index, size ) *= subvector( reduce<1UL>( omat_, op )  , index, size );
-               subvector( refres_, index, size ) *= subvector( reduce<1UL>( refmat_, op ), index, size );
+               subvector( dres_  , index, size ) *= subvector( reduce<rowwise>( omat_, op )  , index, size );
+               subvector( sres_  , index, size ) *= subvector( reduce<rowwise>( omat_, op )  , index, size );
+               subvector( refres_, index, size ) *= subvector( reduce<rowwise>( refmat_, op ), index, size );
             }
          }
          catch( std::exception& ex ) {
@@ -3383,9 +3389,9 @@ void OperationTest<MT>::testSubvectorOperation( OP op, blaze::TrueType )
             initResults();
             for( size_t index=0UL, size=0UL; index<mat_.rows(); index+=size ) {
                size = blaze::rand<size_t>( 1UL, mat_.rows() - index );
-               subvector( dres_  , index, size ) *= subvector( reduce<1UL>( eval( mat_ ), op )   , index, size );
-               subvector( sres_  , index, size ) *= subvector( reduce<1UL>( eval( mat_ ), op )   , index, size );
-               subvector( refres_, index, size ) *= subvector( reduce<1UL>( eval( refmat_ ), op ), index, size );
+               subvector( dres_  , index, size ) *= subvector( reduce<rowwise>( eval( mat_ ), op )   , index, size );
+               subvector( sres_  , index, size ) *= subvector( reduce<rowwise>( eval( mat_ ), op )   , index, size );
+               subvector( refres_, index, size ) *= subvector( reduce<rowwise>( eval( refmat_ ), op ), index, size );
             }
          }
          catch( std::exception& ex ) {
@@ -3398,9 +3404,9 @@ void OperationTest<MT>::testSubvectorOperation( OP op, blaze::TrueType )
             initResults();
             for( size_t index=0UL, size=0UL; index<omat_.rows(); index+=size ) {
                size = blaze::rand<size_t>( 1UL, omat_.rows() - index );
-               subvector( dres_  , index, size ) *= subvector( reduce<1UL>( eval( omat_ ), op )  , index, size );
-               subvector( sres_  , index, size ) *= subvector( reduce<1UL>( eval( omat_ ), op )  , index, size );
-               subvector( refres_, index, size ) *= subvector( reduce<1UL>( eval( refmat_ ), op ), index, size );
+               subvector( dres_  , index, size ) *= subvector( reduce<rowwise>( eval( omat_ ), op )  , index, size );
+               subvector( sres_  , index, size ) *= subvector( reduce<rowwise>( eval( omat_ ), op )  , index, size );
+               subvector( refres_, index, size ) *= subvector( reduce<rowwise>( eval( refmat_ ), op ), index, size );
             }
          }
          catch( std::exception& ex ) {
@@ -3424,10 +3430,10 @@ void OperationTest<MT>::testSubvectorOperation( OP op, blaze::TrueType )
             initResults();
             for( size_t index=0UL, size=0UL; index<mat_.rows(); index+=size ) {
                size = blaze::rand<size_t>( 1UL, mat_.rows() - index );
-               if( !blaze::isDivisor( subvector( reduce<1UL>( mat_, op ), index, size ) ) ) continue;
-               subvector( dres_  , index, size ) /= subvector( reduce<1UL>( mat_, op )   , index, size );
-               subvector( sres_  , index, size ) /= subvector( reduce<1UL>( mat_, op )   , index, size );
-               subvector( refres_, index, size ) /= subvector( reduce<1UL>( refmat_, op ), index, size );
+               if( !blaze::isDivisor( subvector( reduce<rowwise>( mat_, op ), index, size ) ) ) continue;
+               subvector( dres_  , index, size ) /= subvector( reduce<rowwise>( mat_, op )   , index, size );
+               subvector( sres_  , index, size ) /= subvector( reduce<rowwise>( mat_, op )   , index, size );
+               subvector( refres_, index, size ) /= subvector( reduce<rowwise>( refmat_, op ), index, size );
             }
          }
          catch( std::exception& ex ) {
@@ -3440,10 +3446,10 @@ void OperationTest<MT>::testSubvectorOperation( OP op, blaze::TrueType )
             initResults();
             for( size_t index=0UL, size=0UL; index<omat_.rows(); index+=size ) {
                size = blaze::rand<size_t>( 1UL, omat_.rows() - index );
-               if( !blaze::isDivisor( subvector( reduce<1UL>( omat_, op ), index, size ) ) ) continue;
-               subvector( dres_  , index, size ) /= subvector( reduce<1UL>( omat_, op )  , index, size );
-               subvector( sres_  , index, size ) /= subvector( reduce<1UL>( omat_, op )  , index, size );
-               subvector( refres_, index, size ) /= subvector( reduce<1UL>( refmat_, op ), index, size );
+               if( !blaze::isDivisor( subvector( reduce<rowwise>( omat_, op ), index, size ) ) ) continue;
+               subvector( dres_  , index, size ) /= subvector( reduce<rowwise>( omat_, op )  , index, size );
+               subvector( sres_  , index, size ) /= subvector( reduce<rowwise>( omat_, op )  , index, size );
+               subvector( refres_, index, size ) /= subvector( reduce<rowwise>( refmat_, op ), index, size );
             }
          }
          catch( std::exception& ex ) {
@@ -3462,10 +3468,10 @@ void OperationTest<MT>::testSubvectorOperation( OP op, blaze::TrueType )
             initResults();
             for( size_t index=0UL, size=0UL; index<mat_.rows(); index+=size ) {
                size = blaze::rand<size_t>( 1UL, mat_.rows() - index );
-               if( !blaze::isDivisor( subvector( reduce<1UL>( mat_, op ), index, size ) ) ) continue;
-               subvector( dres_  , index, size ) /= subvector( reduce<1UL>( eval( mat_ ), op )   , index, size );
-               subvector( sres_  , index, size ) /= subvector( reduce<1UL>( eval( mat_ ), op )   , index, size );
-               subvector( refres_, index, size ) /= subvector( reduce<1UL>( eval( refmat_ ), op ), index, size );
+               if( !blaze::isDivisor( subvector( reduce<rowwise>( mat_, op ), index, size ) ) ) continue;
+               subvector( dres_  , index, size ) /= subvector( reduce<rowwise>( eval( mat_ ), op )   , index, size );
+               subvector( sres_  , index, size ) /= subvector( reduce<rowwise>( eval( mat_ ), op )   , index, size );
+               subvector( refres_, index, size ) /= subvector( reduce<rowwise>( eval( refmat_ ), op ), index, size );
             }
          }
          catch( std::exception& ex ) {
@@ -3478,10 +3484,10 @@ void OperationTest<MT>::testSubvectorOperation( OP op, blaze::TrueType )
             initResults();
             for( size_t index=0UL, size=0UL; index<omat_.rows(); index+=size ) {
                size = blaze::rand<size_t>( 1UL, omat_.rows() - index );
-               if( !blaze::isDivisor( subvector( reduce<1UL>( omat_, op ), index, size ) ) ) continue;
-               subvector( dres_  , index, size ) /= subvector( reduce<1UL>( eval( omat_ ), op )  , index, size );
-               subvector( sres_  , index, size ) /= subvector( reduce<1UL>( eval( omat_ ), op )  , index, size );
-               subvector( refres_, index, size ) /= subvector( reduce<1UL>( eval( refmat_ ), op ), index, size );
+               if( !blaze::isDivisor( subvector( reduce<rowwise>( omat_, op ), index, size ) ) ) continue;
+               subvector( dres_  , index, size ) /= subvector( reduce<rowwise>( eval( omat_ ), op )  , index, size );
+               subvector( sres_  , index, size ) /= subvector( reduce<rowwise>( eval( omat_ ), op )  , index, size );
+               subvector( refres_, index, size ) /= subvector( reduce<rowwise>( eval( refmat_ ), op ), index, size );
             }
          }
          catch( std::exception& ex ) {
@@ -3532,6 +3538,7 @@ void OperationTest<MT>::testElementsOperation( OP op, blaze::TrueType )
    if( BLAZETEST_MATHTEST_TEST_ELEMENTS_OPERATION > 1 )
    {
       using blaze::reduce;
+      using blaze::rowwise;
 
 
       if( mat_.rows() == 0UL )
@@ -3556,9 +3563,9 @@ void OperationTest<MT>::testElementsOperation( OP op, blaze::TrueType )
             initResults();
             for( size_t index=0UL, n=0UL; index<indices.size(); index+=n ) {
                n = blaze::rand<size_t>( 1UL, indices.size() - index );
-               elements( dres_  , &indices[index], n ) = elements( reduce<1UL>( mat_, op )   , &indices[index], n );
-               elements( sres_  , &indices[index], n ) = elements( reduce<1UL>( mat_, op )   , &indices[index], n );
-               elements( refres_, &indices[index], n ) = elements( reduce<1UL>( refmat_, op ), &indices[index], n );
+               elements( dres_  , &indices[index], n ) = elements( reduce<rowwise>( mat_, op )   , &indices[index], n );
+               elements( sres_  , &indices[index], n ) = elements( reduce<rowwise>( mat_, op )   , &indices[index], n );
+               elements( refres_, &indices[index], n ) = elements( reduce<rowwise>( refmat_, op ), &indices[index], n );
             }
          }
          catch( std::exception& ex ) {
@@ -3571,9 +3578,9 @@ void OperationTest<MT>::testElementsOperation( OP op, blaze::TrueType )
             initResults();
             for( size_t index=0UL, n=0UL; index<indices.size(); index+=n ) {
                n = blaze::rand<size_t>( 1UL, indices.size() - index );
-               elements( dres_  , &indices[index], n ) = elements( reduce<1UL>( omat_, op )  , &indices[index], n );
-               elements( sres_  , &indices[index], n ) = elements( reduce<1UL>( omat_, op )  , &indices[index], n );
-               elements( refres_, &indices[index], n ) = elements( reduce<1UL>( refmat_, op ), &indices[index], n );
+               elements( dres_  , &indices[index], n ) = elements( reduce<rowwise>( omat_, op )  , &indices[index], n );
+               elements( sres_  , &indices[index], n ) = elements( reduce<rowwise>( omat_, op )  , &indices[index], n );
+               elements( refres_, &indices[index], n ) = elements( reduce<rowwise>( refmat_, op ), &indices[index], n );
             }
          }
          catch( std::exception& ex ) {
@@ -3592,9 +3599,9 @@ void OperationTest<MT>::testElementsOperation( OP op, blaze::TrueType )
             initResults();
             for( size_t index=0UL, n=0UL; index<indices.size(); index+=n ) {
                n = blaze::rand<size_t>( 1UL, indices.size() - index );
-               elements( dres_  , &indices[index], n ) = elements( eval( reduce<1UL>( mat_, op ) ), &indices[index], n );
-               elements( sres_  , &indices[index], n ) = elements( eval( reduce<1UL>( mat_, op ) ), &indices[index], n );
-               elements( refres_, &indices[index], n ) = elements( eval( reduce<1UL>( refmat_, op ) ), &indices[index], n );
+               elements( dres_  , &indices[index], n ) = elements( eval( reduce<rowwise>( mat_, op ) ), &indices[index], n );
+               elements( sres_  , &indices[index], n ) = elements( eval( reduce<rowwise>( mat_, op ) ), &indices[index], n );
+               elements( refres_, &indices[index], n ) = elements( eval( reduce<rowwise>( refmat_, op ) ), &indices[index], n );
             }
          }
          catch( std::exception& ex ) {
@@ -3607,9 +3614,9 @@ void OperationTest<MT>::testElementsOperation( OP op, blaze::TrueType )
             initResults();
             for( size_t index=0UL, n=0UL; index<indices.size(); index+=n ) {
                n = blaze::rand<size_t>( 1UL, indices.size() - index );
-               elements( dres_  , &indices[index], n ) = elements( eval( reduce<1UL>( omat_, op ) ), &indices[index], n );
-               elements( sres_  , &indices[index], n ) = elements( eval( reduce<1UL>( omat_, op ) ), &indices[index], n );
-               elements( refres_, &indices[index], n ) = elements( eval( reduce<1UL>( refmat_, op ) ), &indices[index], n );
+               elements( dres_  , &indices[index], n ) = elements( eval( reduce<rowwise>( omat_, op ) ), &indices[index], n );
+               elements( sres_  , &indices[index], n ) = elements( eval( reduce<rowwise>( omat_, op ) ), &indices[index], n );
+               elements( refres_, &indices[index], n ) = elements( eval( reduce<rowwise>( refmat_, op ) ), &indices[index], n );
             }
          }
          catch( std::exception& ex ) {
@@ -3633,9 +3640,9 @@ void OperationTest<MT>::testElementsOperation( OP op, blaze::TrueType )
             initResults();
             for( size_t index=0UL, n=0UL; index<indices.size(); index+=n ) {
                n = blaze::rand<size_t>( 1UL, indices.size() - index );
-               elements( dres_  , &indices[index], n ) += elements( reduce<1UL>( mat_, op )   , &indices[index], n );
-               elements( sres_  , &indices[index], n ) += elements( reduce<1UL>( mat_, op )   , &indices[index], n );
-               elements( refres_, &indices[index], n ) += elements( reduce<1UL>( refmat_, op ), &indices[index], n );
+               elements( dres_  , &indices[index], n ) += elements( reduce<rowwise>( mat_, op )   , &indices[index], n );
+               elements( sres_  , &indices[index], n ) += elements( reduce<rowwise>( mat_, op )   , &indices[index], n );
+               elements( refres_, &indices[index], n ) += elements( reduce<rowwise>( refmat_, op ), &indices[index], n );
             }
          }
          catch( std::exception& ex ) {
@@ -3648,9 +3655,9 @@ void OperationTest<MT>::testElementsOperation( OP op, blaze::TrueType )
             initResults();
             for( size_t index=0UL, n=0UL; index<indices.size(); index+=n ) {
                n = blaze::rand<size_t>( 1UL, indices.size() - index );
-               elements( dres_  , &indices[index], n ) += elements( reduce<1UL>( omat_, op )  , &indices[index], n );
-               elements( sres_  , &indices[index], n ) += elements( reduce<1UL>( omat_, op )  , &indices[index], n );
-               elements( refres_, &indices[index], n ) += elements( reduce<1UL>( refmat_, op ), &indices[index], n );
+               elements( dres_  , &indices[index], n ) += elements( reduce<rowwise>( omat_, op )  , &indices[index], n );
+               elements( sres_  , &indices[index], n ) += elements( reduce<rowwise>( omat_, op )  , &indices[index], n );
+               elements( refres_, &indices[index], n ) += elements( reduce<rowwise>( refmat_, op ), &indices[index], n );
             }
          }
          catch( std::exception& ex ) {
@@ -3669,9 +3676,9 @@ void OperationTest<MT>::testElementsOperation( OP op, blaze::TrueType )
             initResults();
             for( size_t index=0UL, n=0UL; index<indices.size(); index+=n ) {
                n = blaze::rand<size_t>( 1UL, indices.size() - index );
-               elements( dres_  , &indices[index], n ) += elements( eval( reduce<1UL>( mat_, op ) ), &indices[index], n );
-               elements( sres_  , &indices[index], n ) += elements( eval( reduce<1UL>( mat_, op ) ), &indices[index], n );
-               elements( refres_, &indices[index], n ) += elements( eval( reduce<1UL>( refmat_, op ) ), &indices[index], n );
+               elements( dres_  , &indices[index], n ) += elements( eval( reduce<rowwise>( mat_, op ) ), &indices[index], n );
+               elements( sres_  , &indices[index], n ) += elements( eval( reduce<rowwise>( mat_, op ) ), &indices[index], n );
+               elements( refres_, &indices[index], n ) += elements( eval( reduce<rowwise>( refmat_, op ) ), &indices[index], n );
             }
          }
          catch( std::exception& ex ) {
@@ -3684,9 +3691,9 @@ void OperationTest<MT>::testElementsOperation( OP op, blaze::TrueType )
             initResults();
             for( size_t index=0UL, n=0UL; index<indices.size(); index+=n ) {
                n = blaze::rand<size_t>( 1UL, indices.size() - index );
-               elements( dres_  , &indices[index], n ) += elements( eval( reduce<1UL>( omat_, op ) ), &indices[index], n );
-               elements( sres_  , &indices[index], n ) += elements( eval( reduce<1UL>( omat_, op ) ), &indices[index], n );
-               elements( refres_, &indices[index], n ) += elements( eval( reduce<1UL>( refmat_, op ) ), &indices[index], n );
+               elements( dres_  , &indices[index], n ) += elements( eval( reduce<rowwise>( omat_, op ) ), &indices[index], n );
+               elements( sres_  , &indices[index], n ) += elements( eval( reduce<rowwise>( omat_, op ) ), &indices[index], n );
+               elements( refres_, &indices[index], n ) += elements( eval( reduce<rowwise>( refmat_, op ) ), &indices[index], n );
             }
          }
          catch( std::exception& ex ) {
@@ -3710,9 +3717,9 @@ void OperationTest<MT>::testElementsOperation( OP op, blaze::TrueType )
             initResults();
             for( size_t index=0UL, n=0UL; index<indices.size(); index+=n ) {
                n = blaze::rand<size_t>( 1UL, indices.size() - index );
-               elements( dres_  , &indices[index], n ) -= elements( reduce<1UL>( mat_, op )   , &indices[index], n );
-               elements( sres_  , &indices[index], n ) -= elements( reduce<1UL>( mat_, op )   , &indices[index], n );
-               elements( refres_, &indices[index], n ) -= elements( reduce<1UL>( refmat_, op ), &indices[index], n );
+               elements( dres_  , &indices[index], n ) -= elements( reduce<rowwise>( mat_, op )   , &indices[index], n );
+               elements( sres_  , &indices[index], n ) -= elements( reduce<rowwise>( mat_, op )   , &indices[index], n );
+               elements( refres_, &indices[index], n ) -= elements( reduce<rowwise>( refmat_, op ), &indices[index], n );
             }
          }
          catch( std::exception& ex ) {
@@ -3725,9 +3732,9 @@ void OperationTest<MT>::testElementsOperation( OP op, blaze::TrueType )
             initResults();
             for( size_t index=0UL, n=0UL; index<indices.size(); index+=n ) {
                n = blaze::rand<size_t>( 1UL, indices.size() - index );
-               elements( dres_  , &indices[index], n ) -= elements( reduce<1UL>( omat_, op )  , &indices[index], n );
-               elements( sres_  , &indices[index], n ) -= elements( reduce<1UL>( omat_, op )  , &indices[index], n );
-               elements( refres_, &indices[index], n ) -= elements( reduce<1UL>( refmat_, op ), &indices[index], n );
+               elements( dres_  , &indices[index], n ) -= elements( reduce<rowwise>( omat_, op )  , &indices[index], n );
+               elements( sres_  , &indices[index], n ) -= elements( reduce<rowwise>( omat_, op )  , &indices[index], n );
+               elements( refres_, &indices[index], n ) -= elements( reduce<rowwise>( refmat_, op ), &indices[index], n );
             }
          }
          catch( std::exception& ex ) {
@@ -3746,9 +3753,9 @@ void OperationTest<MT>::testElementsOperation( OP op, blaze::TrueType )
             initResults();
             for( size_t index=0UL, n=0UL; index<indices.size(); index+=n ) {
                n = blaze::rand<size_t>( 1UL, indices.size() - index );
-               elements( dres_  , &indices[index], n ) -= elements( eval( reduce<1UL>( mat_, op ) ), &indices[index], n );
-               elements( sres_  , &indices[index], n ) -= elements( eval( reduce<1UL>( mat_, op ) ), &indices[index], n );
-               elements( refres_, &indices[index], n ) -= elements( eval( reduce<1UL>( refmat_, op ) ), &indices[index], n );
+               elements( dres_  , &indices[index], n ) -= elements( eval( reduce<rowwise>( mat_, op ) ), &indices[index], n );
+               elements( sres_  , &indices[index], n ) -= elements( eval( reduce<rowwise>( mat_, op ) ), &indices[index], n );
+               elements( refres_, &indices[index], n ) -= elements( eval( reduce<rowwise>( refmat_, op ) ), &indices[index], n );
             }
          }
          catch( std::exception& ex ) {
@@ -3761,9 +3768,9 @@ void OperationTest<MT>::testElementsOperation( OP op, blaze::TrueType )
             initResults();
             for( size_t index=0UL, n=0UL; index<indices.size(); index+=n ) {
                n = blaze::rand<size_t>( 1UL, indices.size() - index );
-               elements( dres_  , &indices[index], n ) -= elements( eval( reduce<1UL>( omat_, op ) ), &indices[index], n );
-               elements( sres_  , &indices[index], n ) -= elements( eval( reduce<1UL>( omat_, op ) ), &indices[index], n );
-               elements( refres_, &indices[index], n ) -= elements( eval( reduce<1UL>( refmat_, op ) ), &indices[index], n );
+               elements( dres_  , &indices[index], n ) -= elements( eval( reduce<rowwise>( omat_, op ) ), &indices[index], n );
+               elements( sres_  , &indices[index], n ) -= elements( eval( reduce<rowwise>( omat_, op ) ), &indices[index], n );
+               elements( refres_, &indices[index], n ) -= elements( eval( reduce<rowwise>( refmat_, op ) ), &indices[index], n );
             }
          }
          catch( std::exception& ex ) {
@@ -3787,9 +3794,9 @@ void OperationTest<MT>::testElementsOperation( OP op, blaze::TrueType )
             initResults();
             for( size_t index=0UL, n=0UL; index<indices.size(); index+=n ) {
                n = blaze::rand<size_t>( 1UL, indices.size() - index );
-               elements( dres_  , &indices[index], n ) *= elements( reduce<1UL>( mat_, op )   , &indices[index], n );
-               elements( sres_  , &indices[index], n ) *= elements( reduce<1UL>( mat_, op )   , &indices[index], n );
-               elements( refres_, &indices[index], n ) *= elements( reduce<1UL>( refmat_, op ), &indices[index], n );
+               elements( dres_  , &indices[index], n ) *= elements( reduce<rowwise>( mat_, op )   , &indices[index], n );
+               elements( sres_  , &indices[index], n ) *= elements( reduce<rowwise>( mat_, op )   , &indices[index], n );
+               elements( refres_, &indices[index], n ) *= elements( reduce<rowwise>( refmat_, op ), &indices[index], n );
             }
          }
          catch( std::exception& ex ) {
@@ -3802,9 +3809,9 @@ void OperationTest<MT>::testElementsOperation( OP op, blaze::TrueType )
             initResults();
             for( size_t index=0UL, n=0UL; index<indices.size(); index+=n ) {
                n = blaze::rand<size_t>( 1UL, indices.size() - index );
-               elements( dres_  , &indices[index], n ) *= elements( reduce<1UL>( omat_, op )  , &indices[index], n );
-               elements( sres_  , &indices[index], n ) *= elements( reduce<1UL>( omat_, op )  , &indices[index], n );
-               elements( refres_, &indices[index], n ) *= elements( reduce<1UL>( refmat_, op ), &indices[index], n );
+               elements( dres_  , &indices[index], n ) *= elements( reduce<rowwise>( omat_, op )  , &indices[index], n );
+               elements( sres_  , &indices[index], n ) *= elements( reduce<rowwise>( omat_, op )  , &indices[index], n );
+               elements( refres_, &indices[index], n ) *= elements( reduce<rowwise>( refmat_, op ), &indices[index], n );
             }
          }
          catch( std::exception& ex ) {
@@ -3823,9 +3830,9 @@ void OperationTest<MT>::testElementsOperation( OP op, blaze::TrueType )
             initResults();
             for( size_t index=0UL, n=0UL; index<indices.size(); index+=n ) {
                n = blaze::rand<size_t>( 1UL, indices.size() - index );
-               elements( dres_  , &indices[index], n ) *= elements( eval( reduce<1UL>( mat_, op ) ), &indices[index], n );
-               elements( sres_  , &indices[index], n ) *= elements( eval( reduce<1UL>( mat_, op ) ), &indices[index], n );
-               elements( refres_, &indices[index], n ) *= elements( eval( reduce<1UL>( refmat_, op ) ), &indices[index], n );
+               elements( dres_  , &indices[index], n ) *= elements( eval( reduce<rowwise>( mat_, op ) ), &indices[index], n );
+               elements( sres_  , &indices[index], n ) *= elements( eval( reduce<rowwise>( mat_, op ) ), &indices[index], n );
+               elements( refres_, &indices[index], n ) *= elements( eval( reduce<rowwise>( refmat_, op ) ), &indices[index], n );
             }
          }
          catch( std::exception& ex ) {
@@ -3838,9 +3845,9 @@ void OperationTest<MT>::testElementsOperation( OP op, blaze::TrueType )
             initResults();
             for( size_t index=0UL, n=0UL; index<indices.size(); index+=n ) {
                n = blaze::rand<size_t>( 1UL, indices.size() - index );
-               elements( dres_  , &indices[index], n ) *= elements( eval( reduce<1UL>( omat_, op ) ), &indices[index], n );
-               elements( sres_  , &indices[index], n ) *= elements( eval( reduce<1UL>( omat_, op ) ), &indices[index], n );
-               elements( refres_, &indices[index], n ) *= elements( eval( reduce<1UL>( refmat_, op ) ), &indices[index], n );
+               elements( dres_  , &indices[index], n ) *= elements( eval( reduce<rowwise>( omat_, op ) ), &indices[index], n );
+               elements( sres_  , &indices[index], n ) *= elements( eval( reduce<rowwise>( omat_, op ) ), &indices[index], n );
+               elements( refres_, &indices[index], n ) *= elements( eval( reduce<rowwise>( refmat_, op ) ), &indices[index], n );
             }
          }
          catch( std::exception& ex ) {
@@ -3864,10 +3871,10 @@ void OperationTest<MT>::testElementsOperation( OP op, blaze::TrueType )
             initResults();
             for( size_t index=0UL, n=0UL; index<indices.size(); index+=n ) {
                n = blaze::rand<size_t>( 1UL, indices.size() - index );
-               if( !blaze::isDivisor( elements( reduce<1UL>( mat_, op ), &indices[index], n ) ) ) continue;
-               elements( dres_  , &indices[index], n ) /= elements( reduce<1UL>( mat_, op )   , &indices[index], n );
-               elements( sres_  , &indices[index], n ) /= elements( reduce<1UL>( mat_, op )   , &indices[index], n );
-               elements( refres_, &indices[index], n ) /= elements( reduce<1UL>( refmat_, op ), &indices[index], n );
+               if( !blaze::isDivisor( elements( reduce<rowwise>( mat_, op ), &indices[index], n ) ) ) continue;
+               elements( dres_  , &indices[index], n ) /= elements( reduce<rowwise>( mat_, op )   , &indices[index], n );
+               elements( sres_  , &indices[index], n ) /= elements( reduce<rowwise>( mat_, op )   , &indices[index], n );
+               elements( refres_, &indices[index], n ) /= elements( reduce<rowwise>( refmat_, op ), &indices[index], n );
             }
          }
          catch( std::exception& ex ) {
@@ -3880,10 +3887,10 @@ void OperationTest<MT>::testElementsOperation( OP op, blaze::TrueType )
             initResults();
             for( size_t index=0UL, n=0UL; index<indices.size(); index+=n ) {
                n = blaze::rand<size_t>( 1UL, indices.size() - index );
-               if( !blaze::isDivisor( elements( reduce<1UL>( omat_, op ), &indices[index], n ) ) ) continue;
-               elements( dres_  , &indices[index], n ) /= elements( reduce<1UL>( omat_, op )  , &indices[index], n );
-               elements( sres_  , &indices[index], n ) /= elements( reduce<1UL>( omat_, op )  , &indices[index], n );
-               elements( refres_, &indices[index], n ) /= elements( reduce<1UL>( refmat_, op ), &indices[index], n );
+               if( !blaze::isDivisor( elements( reduce<rowwise>( omat_, op ), &indices[index], n ) ) ) continue;
+               elements( dres_  , &indices[index], n ) /= elements( reduce<rowwise>( omat_, op )  , &indices[index], n );
+               elements( sres_  , &indices[index], n ) /= elements( reduce<rowwise>( omat_, op )  , &indices[index], n );
+               elements( refres_, &indices[index], n ) /= elements( reduce<rowwise>( refmat_, op ), &indices[index], n );
             }
          }
          catch( std::exception& ex ) {
@@ -3902,10 +3909,10 @@ void OperationTest<MT>::testElementsOperation( OP op, blaze::TrueType )
             initResults();
             for( size_t index=0UL, n=0UL; index<indices.size(); index+=n ) {
                n = blaze::rand<size_t>( 1UL, indices.size() - index );
-               if( !blaze::isDivisor( elements( reduce<1UL>( mat_, op ), &indices[index], n ) ) ) continue;
-               elements( dres_  , &indices[index], n ) /= elements( eval( reduce<1UL>( mat_, op ) ), &indices[index], n );
-               elements( sres_  , &indices[index], n ) /= elements( eval( reduce<1UL>( mat_, op ) ), &indices[index], n );
-               elements( refres_, &indices[index], n ) /= elements( eval( reduce<1UL>( refmat_, op ) ), &indices[index], n );
+               if( !blaze::isDivisor( elements( reduce<rowwise>( mat_, op ), &indices[index], n ) ) ) continue;
+               elements( dres_  , &indices[index], n ) /= elements( eval( reduce<rowwise>( mat_, op ) ), &indices[index], n );
+               elements( sres_  , &indices[index], n ) /= elements( eval( reduce<rowwise>( mat_, op ) ), &indices[index], n );
+               elements( refres_, &indices[index], n ) /= elements( eval( reduce<rowwise>( refmat_, op ) ), &indices[index], n );
             }
          }
          catch( std::exception& ex ) {
@@ -3918,10 +3925,10 @@ void OperationTest<MT>::testElementsOperation( OP op, blaze::TrueType )
             initResults();
             for( size_t index=0UL, n=0UL; index<indices.size(); index+=n ) {
                n = blaze::rand<size_t>( 1UL, indices.size() - index );
-               if( !blaze::isDivisor( elements( reduce<1UL>( omat_, op ), &indices[index], n ) ) ) continue;
-               elements( dres_  , &indices[index], n ) /= elements( eval( reduce<1UL>( omat_, op ) ), &indices[index], n );
-               elements( sres_  , &indices[index], n ) /= elements( eval( reduce<1UL>( omat_, op ) ), &indices[index], n );
-               elements( refres_, &indices[index], n ) /= elements( eval( reduce<1UL>( refmat_, op ) ), &indices[index], n );
+               if( !blaze::isDivisor( elements( reduce<rowwise>( omat_, op ), &indices[index], n ) ) ) continue;
+               elements( dres_  , &indices[index], n ) /= elements( eval( reduce<rowwise>( omat_, op ) ), &indices[index], n );
+               elements( sres_  , &indices[index], n ) /= elements( eval( reduce<rowwise>( omat_, op ) ), &indices[index], n );
+               elements( refres_, &indices[index], n ) /= elements( eval( reduce<rowwise>( refmat_, op ) ), &indices[index], n );
             }
          }
          catch( std::exception& ex ) {
