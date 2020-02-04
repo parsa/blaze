@@ -1464,7 +1464,7 @@
 // \n \section vector_operations_element_access Element Access
 // <hr>
 //
-// \n \subsection vector_operations_subscript_operator_1 Subscript Operator
+// \subsection vector_operations_subscript_operator_1 Subscript Operator
 //
 // The easiest and most intuitive way to access a dense or sparse vector is via the subscript
 // operator. The indices to access a vector are zero-based:
@@ -1568,6 +1568,19 @@
    for( CompressedVector<int>::ConstIterator it=cbegin( v2 ); it!=cend( v2 ); ++it ) {
       // ...
    }
+   \endcode
+
+// \n \subsection vector_operations_data .data() / data()
+//
+// Sometimes it is necessary to acquire a pointer to the first element of the underlying array
+// of a dense vector. For that purpose the \c data() member function or the free \c data() function
+// can be used:
+
+   \code
+   // Instantiating a dynamic vector with 10 elements
+   blaze::DynamicVector<int> v( 10UL );
+   v.data();   // Returns a pointer to the first element of the dynamic vector
+   data( v );  // Same effect as the member function
    \endcode
 
 // \n \section vector_operations_element_insertion Element Insertion
@@ -4120,7 +4133,7 @@
 // \n \section matrix_operations_element_access Element Access
 // <hr>
 //
-// \n \subsection matrix_operations_function_call_operator_1 Function Call Operator
+// \subsection matrix_operations_function_call_operator_1 Function Call Operator
 //
 // The easiest way to access a specific dense or sparse matrix element is via the function call
 // operator. The indices to access a matrix are zero-based:
@@ -4243,6 +4256,26 @@
    }
    \endcode
 
+// \n \subsection matrix_operations_data .data() / data()
+//
+// Sometimes it is necessary to acquire a pointer to the first element of the underlying array
+// of a dense matrix. For that purpose the \c data() member function or the free \c data() function
+// can be used:
+
+   \code
+   // Instantiating a dynamic vector with 10 elements
+   blaze::DynamicMatrix<int> A( 5UL, 7UL );
+   A.data();   // Returns a pointer to the first element of the dynamic matrix
+   data( A );  // Same effect as the member function
+   \endcode
+
+// Note that you can NOT assume that all matrix elements lie adjacent to each other! The dense
+// matrix may use techniques such as padding to improve the alignment of the data. Whereas the
+// number of elements within a row/column are given by the \ref matrix_operations_rows "rows()" and
+// \ref matrix_operations_columns "columns()" functions, respectively, the total number of elements including
+// padding is given by the \ref matrix_operations_spacing "spacing()" function.
+//
+//
 // \n \section matrix_operations_element_insertion Element Insertion
 // <hr>
 //
