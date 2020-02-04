@@ -47,6 +47,7 @@
 #include <blaze/math/Forward.h>
 #include <blaze/math/RelaxationFlag.h>
 #include <blaze/math/shims/IsZero.h>
+#include <blaze/math/sparse/Forward.h>
 #include <blaze/math/sparse/ValueIndexPair.h>
 #include <blaze/math/traits/AddTrait.h>
 #include <blaze/math/traits/ColumnsTrait.h>
@@ -178,8 +179,8 @@ namespace blaze {
    E = Z * 2.0;  // Scaling of a zero matrix
    \endcode
 */
-template< typename Type                    // Data type of the matrix
-        , bool SO = defaultStorageOrder >  // Storage order
+template< typename Type  // Data type of the matrix
+        , bool SO >      // Storage order
 class ZeroMatrix
    : public Expression< SparseMatrix< ZeroMatrix<Type,SO>, SO > >
 {

@@ -36,6 +36,14 @@
 #define _BLAZE_MATH_SPARSE_FORWARD_H_
 
 
+//*************************************************************************************************
+// Includes
+//*************************************************************************************************
+
+#include <blaze/system/StorageOrder.h>
+#include <blaze/system/TransposeFlag.h>
+
+
 namespace blaze {
 
 //=================================================================================================
@@ -44,11 +52,25 @@ namespace blaze {
 //
 //=================================================================================================
 
-template< typename, bool > class CompressedMatrix;
-template< typename, bool > class CompressedVector;
-template< typename, bool > class IdentityMatrix;
-template< typename, bool > class ZeroMatrix;
-template< typename, bool > class ZeroVector;
+template< typename Type                     // Data type of the vector
+        , bool TF = defaultTransposeFlag >  // Transpose flag
+class CompressedVector;
+
+template< typename Type                    // Data type of the matrix
+        , bool SO = defaultStorageOrder >  // Storage order
+class CompressedMatrix;
+
+template< typename Type                    // Data type of the matrix
+        , bool SO = defaultStorageOrder >  // Storage order
+class IdentityMatrix;
+
+template< typename Type                     // Data type of the vector
+        , bool TF = defaultTransposeFlag >  // Transpose flag
+class ZeroVector;
+
+template< typename Type                    // Data type of the matrix
+        , bool SO = defaultStorageOrder >  // Storage order
+class ZeroMatrix;
 
 } // namespace blaze
 

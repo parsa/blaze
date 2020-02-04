@@ -51,6 +51,7 @@
 #include <blaze/math/Forward.h>
 #include <blaze/math/RelaxationFlag.h>
 #include <blaze/math/shims/IsDefault.h>
+#include <blaze/math/sparse/Forward.h>
 #include <blaze/math/sparse/ValueIndexPair.h>
 #include <blaze/math/traits/DeclDiagTrait.h>
 #include <blaze/math/traits/DeclHermTrait.h>
@@ -82,8 +83,6 @@
 #include <blaze/math/typetraits/LowType.h>
 #include <blaze/math/typetraits/StorageOrder.h>
 #include <blaze/math/typetraits/YieldsIdentity.h>
-#include <blaze/system/StorageOrder.h>
-#include <blaze/system/TransposeFlag.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Const.h>
 #include <blaze/util/constraints/Numeric.h>
@@ -182,8 +181,8 @@ namespace blaze {
    F = A * 2.0;  // Scaling of an identity matrix
    \endcode
 */
-template< typename Type                    // Data type of the matrix
-        , bool SO = defaultStorageOrder >  // Storage order
+template< typename Type  // Data type of the matrix
+        , bool SO >      // Storage order
 class IdentityMatrix
    : public Expression< SparseMatrix< IdentityMatrix<Type,SO>, SO > >
 {

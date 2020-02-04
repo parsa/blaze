@@ -47,6 +47,7 @@
 #include <blaze/math/Forward.h>
 #include <blaze/math/RelaxationFlag.h>
 #include <blaze/math/shims/IsZero.h>
+#include <blaze/math/sparse/Forward.h>
 #include <blaze/math/sparse/ValueIndexPair.h>
 #include <blaze/math/traits/AddTrait.h>
 #include <blaze/math/traits/BandTrait.h>
@@ -166,8 +167,8 @@ namespace blaze {
    e = z * 2.0;  // Scaling of a zero vector
    \endcode
 */
-template< typename Type                     // Data type of the vector
-        , bool TF = defaultTransposeFlag >  // Transpose flag
+template< typename Type  // Data type of the vector
+        , bool TF >      // Transpose flag
 class ZeroVector
    : public Expression< SparseVector< ZeroVector<Type,TF>, TF > >
 {
