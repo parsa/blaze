@@ -44,6 +44,7 @@
 #include <blaze/util/algorithms/DestroyAt.h>
 #include <blaze/util/algorithms/Max.h>
 #include <blaze/util/algorithms/Min.h>
+#include <blaze/util/algorithms/Minmax.h>
 #include <blaze/util/algorithms/Transfer.h>
 #include <blaze/util/algorithms/UninitializedDefaultConstruct.h>
 #include <blaze/util/algorithms/UninitializedMove.h>
