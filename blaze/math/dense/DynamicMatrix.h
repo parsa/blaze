@@ -47,6 +47,7 @@
 #include <blaze/math/constraints/Diagonal.h>
 #include <blaze/math/constraints/Symmetric.h>
 #include <blaze/math/dense/DenseIterator.h>
+#include <blaze/math/dense/Forward.h>
 #include <blaze/math/Exception.h>
 #include <blaze/math/expressions/DenseMatrix.h>
 #include <blaze/math/expressions/SparseMatrix.h>
@@ -107,9 +108,7 @@
 #include <blaze/system/Inline.h>
 #include <blaze/system/Optimizations.h>
 #include <blaze/system/Restrict.h>
-#include <blaze/system/StorageOrder.h>
 #include <blaze/system/Thresholds.h>
-#include <blaze/system/TransposeFlag.h>
 #include <blaze/util/algorithms/Max.h>
 #include <blaze/util/algorithms/Min.h>
 #include <blaze/util/algorithms/Transfer.h>
@@ -219,8 +218,8 @@ namespace blaze {
    F *= A * D;    // Multiplication assignment
    \endcode
 */
-template< typename Type                    // Data type of the matrix
-        , bool SO = defaultStorageOrder >  // Storage order
+template< typename Type  // Data type of the matrix
+        , bool SO >      // Storage order
 class DynamicMatrix
    : public DenseMatrix< DynamicMatrix<Type,SO>, SO >
 {

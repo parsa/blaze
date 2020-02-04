@@ -42,7 +42,10 @@
 
 #include <blaze/math/AlignmentFlag.h>
 #include <blaze/math/PaddingFlag.h>
+#include <blaze/system/StorageOrder.h>
+#include <blaze/system/TransposeFlag.h>
 #include <blaze/util/Types.h>
+#include <blaze/util/typetraits/RemoveConst.h>
 
 
 namespace blaze {
@@ -53,16 +56,64 @@ namespace blaze {
 //
 //=================================================================================================
 
-template< typename, AlignmentFlag, PaddingFlag, bool, typename > class CustomMatrix;
-template< typename, AlignmentFlag, PaddingFlag, bool, typename > class CustomVector;
-template< typename, bool > class DynamicVector;
-template< typename, bool > class DynamicMatrix;
-template< typename, size_t, size_t, bool > class HybridMatrix;
-template< typename, size_t, bool > class HybridVector;
-template< typename, size_t, size_t, bool > class StaticMatrix;
-template< typename, size_t, bool > class StaticVector;
-template< typename, bool > class UniformMatrix;
-template< typename, bool > class UniformVector;
+template< typename Type                     // Data type of the vector
+        , size_t N                          // Number of elements
+        , bool TF = defaultTransposeFlag >  // Transpose flag
+class StaticVector;
+
+template< typename Type                    // Data type of the matrix
+        , size_t M                         // Number of rows
+        , size_t N                         // Number of columns
+        , bool SO = defaultStorageOrder >  // Storage order
+class StaticMatrix;
+
+template< typename Type                     // Data type of the vector
+        , size_t N                          // Number of elements
+        , bool TF = defaultTransposeFlag >  // Transpose flag
+class HybridVector;
+
+template< typename Type                    // Data type of the matrix
+        , size_t M                         // Number of rows
+        , size_t N                         // Number of columns
+        , bool SO = defaultStorageOrder >  // Storage order
+class HybridMatrix;
+
+template< typename Type                     // Data type of the vector
+        , bool TF = defaultTransposeFlag >  // Transpose flag
+class DynamicVector;
+
+template< typename Type                    // Data type of the matrix
+        , bool SO = defaultStorageOrder >  // Storage order
+class DynamicMatrix;
+
+template< typename Type                                          // Data type of the vector
+        , AlignmentFlag AF                                       // Alignment flag
+        , PaddingFlag PF                                         // Padding flag
+        , bool TF = defaultTransposeFlag                         // Transpose flag
+        , typename RT = DynamicVector<RemoveConst_t<Type>,TF> >  // Result type
+class CustomVector;
+
+template< typename Type                                          // Data type of the matrix
+        , AlignmentFlag AF                                       // Alignment flag
+        , PaddingFlag PF                                         // Padding flag
+        , bool SO = defaultStorageOrder                          // Storage order
+        , typename RT = DynamicMatrix<RemoveConst_t<Type>,SO> >  // Result type
+class CustomMatrix;
+
+template< typename Type                     // Data type of the vector
+        , bool TF = defaultTransposeFlag >  // Transpose flag
+class UniformVector;
+
+template< typename Type                    // Data type of the matrix
+        , bool SO = defaultStorageOrder >  // Storage order
+class UniformMatrix;
+
+template< typename Type                     // Data type of the vector
+        , bool TF = defaultTransposeFlag >  // Transpose flag
+class InitializerVector;
+
+template< typename Type >  // Data type of the matrix
+class InitializerMatrix;
 
 } // namespace blaze
 

@@ -44,6 +44,7 @@
 #include <blaze/math/Aliases.h>
 #include <blaze/math/AlignmentFlag.h>
 #include <blaze/math/dense/UniformIterator.h>
+#include <blaze/math/dense/Forward.h>
 #include <blaze/math/Exception.h>
 #include <blaze/math/expressions/DenseMatrix.h>
 #include <blaze/math/expressions/Expression.h>
@@ -82,7 +83,6 @@
 #include <blaze/math/typetraits/YieldsUniform.h>
 #include <blaze/math/typetraits/YieldsZero.h>
 #include <blaze/system/Inline.h>
-#include <blaze/system/StorageOrder.h>
 #include <blaze/system/Thresholds.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Const.h>
@@ -181,8 +181,8 @@ namespace blaze {
    D *= A * B;    // Multiplication assignment
    \endcode
 */
-template< typename Type                    // Data type of the matrix
-        , bool SO = defaultStorageOrder >  // Storage order
+template< typename Type  // Data type of the matrix
+        , bool SO >      // Storage order
 class UniformMatrix
    : public Expression< DenseMatrix< UniformMatrix<Type,SO>, SO > >
 {

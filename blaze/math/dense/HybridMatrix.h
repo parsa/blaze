@@ -47,6 +47,7 @@
 #include <blaze/math/constraints/Diagonal.h>
 #include <blaze/math/constraints/Symmetric.h>
 #include <blaze/math/dense/DenseIterator.h>
+#include <blaze/math/dense/Forward.h>
 #include <blaze/math/Exception.h>
 #include <blaze/math/expressions/DenseMatrix.h>
 #include <blaze/math/expressions/SparseMatrix.h>
@@ -104,8 +105,6 @@
 #include <blaze/math/typetraits/StorageOrder.h>
 #include <blaze/system/Inline.h>
 #include <blaze/system/Optimizations.h>
-#include <blaze/system/StorageOrder.h>
-#include <blaze/system/TransposeFlag.h>
 #include <blaze/util/algorithms/Max.h>
 #include <blaze/util/algorithms/Min.h>
 #include <blaze/util/AlignedArray.h>
@@ -225,10 +224,10 @@ namespace blaze {
    F *= A * D;    // Multiplication assignment
    \endcode
 */
-template< typename Type                    // Data type of the matrix
-        , size_t M                         // Number of rows
-        , size_t N                         // Number of columns
-        , bool SO = defaultStorageOrder >  // Storage order
+template< typename Type  // Data type of the matrix
+        , size_t M       // Number of rows
+        , size_t N       // Number of columns
+        , bool SO >      // Storage order
 class HybridMatrix
    : public DenseMatrix< HybridMatrix<Type,M,N,SO>, SO >
 {

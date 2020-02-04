@@ -48,7 +48,7 @@
 #include <blaze/math/constraints/RequiresEvaluation.h>
 #include <blaze/math/constraints/TransposeFlag.h>
 #include <blaze/math/dense/DenseIterator.h>
-#include <blaze/math/dense/DynamicVector.h>
+#include <blaze/math/dense/Forward.h>
 #include <blaze/math/Exception.h>
 #include <blaze/math/expressions/DenseVector.h>
 #include <blaze/math/expressions/SparseVector.h>
@@ -82,7 +82,6 @@
 #include <blaze/system/Inline.h>
 #include <blaze/system/Optimizations.h>
 #include <blaze/system/Thresholds.h>
-#include <blaze/system/TransposeFlag.h>
 #include <blaze/util/AlignmentCheck.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Pointer.h>
@@ -388,11 +387,11 @@ namespace blaze {
    A = a * trans( b );  // Outer product between two vectors
    \endcode
 */
-template< typename Type                                          // Data type of the vector
-        , AlignmentFlag AF                                       // Alignment flag
-        , PaddingFlag PF                                         // Padding flag
-        , bool TF = defaultTransposeFlag                         // Transpose flag
-        , typename RT = DynamicVector<RemoveConst_t<Type>,TF> >  // Result type
+template< typename Type     // Data type of the vector
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , bool TF           // Transpose flag
+        , typename RT >     // Result type
 class CustomVector
    : public DenseVector< CustomVector<Type,AF,PF,TF,RT>, TF >
 {

@@ -52,7 +52,6 @@
 #include <blaze/math/typetraits/HighType.h>
 #include <blaze/math/typetraits/IsInitializer.h>
 #include <blaze/math/typetraits/LowType.h>
-#include <blaze/system/TransposeFlag.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Const.h>
 #include <blaze/util/constraints/Pointer.h>
@@ -169,8 +168,8 @@ namespace blaze {
    A = a * trans( b );  // Outer product between two vectors
    \endcode
 */
-template< typename Type                     // Data type of the vector
-        , bool TF = defaultTransposeFlag >  // Transpose flag
+template< typename Type  // Data type of the vector
+        , bool TF >      // Transpose flag
 class InitializerVector
    : public DenseVector< InitializerVector<Type,TF>, TF >
 {
