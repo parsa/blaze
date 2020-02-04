@@ -111,6 +111,7 @@
 #include <blaze/math/functors/MakePair.h>
 #include <blaze/math/functors/Max.h>
 #include <blaze/math/functors/Min.h>
+#include <blaze/math/functors/Minmax.h>
 #include <blaze/math/functors/ModuloAssign.h>
 #include <blaze/math/functors/Mult.h>
 #include <blaze/math/functors/MultAssign.h>

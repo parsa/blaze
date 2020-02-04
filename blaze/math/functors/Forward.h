@@ -122,6 +122,7 @@ struct MAC;
 struct MakePair;
 struct Max;
 struct Min;
+struct Minmax;
 struct ModuloAssign;
 struct Mult;
 struct MultAssign;
