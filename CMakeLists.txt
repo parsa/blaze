@@ -261,6 +261,17 @@ configure_file ("${CMAKE_CURRENT_LIST_DIR}/cmake/Alignment.h.in"
 
 
 #==================================================================================================
+# Configure padding
+#==================================================================================================
+
+set(BLAZE_PADDING "blaze::padded" CACHE STRING "Specify the default padding flag for all vectors and matrices of the Blaze library")
+set_property(CACHE BLAZE_PADDING PROPERTY STRINGS "blaze::padded;blaze::unpadded")
+
+configure_file ("${CMAKE_CURRENT_LIST_DIR}/cmake/Padding.h.in"
+                "${CMAKE_CURRENT_BINARY_DIR}/blaze/config/Padding.h")
+
+
+#==================================================================================================
 # Configure vectorization
 #==================================================================================================
 
