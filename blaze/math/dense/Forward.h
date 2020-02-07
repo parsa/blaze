@@ -65,10 +65,12 @@ template< typename Type                            // Data type of the vector
         , PaddingFlag PF = defaultPaddingFlag >    // Padding flag
 class StaticVector;
 
-template< typename Type                    // Data type of the matrix
-        , size_t M                         // Number of rows
-        , size_t N                         // Number of columns
-        , bool SO = defaultStorageOrder >  // Storage order
+template< typename Type                            // Data type of the matrix
+        , size_t M                                 // Number of rows
+        , size_t N                                 // Number of columns
+        , bool SO = defaultStorageOrder            // Storage order
+        , AlignmentFlag AF = defaultAlignmentFlag  // Alignment flag
+        , PaddingFlag PF = defaultPaddingFlag >    // Padding flag
 class StaticMatrix;
 
 template< typename Type                     // Data type of the vector
