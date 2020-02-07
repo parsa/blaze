@@ -80,10 +80,12 @@ template< typename Type                         // Data type of the vector
         , PaddingFlag = defaultPaddingFlag >    // Padding flag
 class HybridVector;
 
-template< typename Type                    // Data type of the matrix
-        , size_t M                         // Number of rows
-        , size_t N                         // Number of columns
-        , bool SO = defaultStorageOrder >  // Storage order
+template< typename Type                            // Data type of the matrix
+        , size_t M                                 // Number of rows
+        , size_t N                                 // Number of columns
+        , bool SO = defaultStorageOrder            // Storage order
+        , AlignmentFlag AF = defaultAlignmentFlag  // Alignment flag
+        , PaddingFlag PF = defaultPaddingFlag >    // Padding flag
 class HybridMatrix;
 
 template< typename Type                     // Data type of the vector
