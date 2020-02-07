@@ -217,7 +217,7 @@ inline decltype(auto) norm_backend( const DenseVector<VT,TF>& dv, Abs abs, Power
 
    const size_t N( tmp.size() );
 
-   constexpr bool remainder( !usePadding || !IsPadded_v< RemoveReference_t<VT> > );
+   constexpr bool remainder( !IsPadded_v< RemoveReference_t<VT> > );
 
    const size_t ipos( remainder ? prevMultiple( N, SIMDSIZE ) : N );
    BLAZE_INTERNAL_ASSERT( ipos <= N, "Invalid end calculation" );

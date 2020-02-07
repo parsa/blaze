@@ -177,7 +177,7 @@ inline auto equal( const DenseMatrix<MT1,false>& lhs, const DenseMatrix<MT2,fals
    CT2 B( ~rhs );
 
    constexpr size_t SIMDSIZE = SIMDTrait< ElementType_t<MT1> >::size;
-   constexpr bool remainder( !usePadding || !IsPadded_v<XT1> || !IsPadded_v<XT2> );
+   constexpr bool remainder( !IsPadded_v<XT1> || !IsPadded_v<XT2> );
 
    const size_t M( A.rows()    );
    const size_t N( A.columns() );
@@ -290,7 +290,7 @@ inline auto equal( const DenseMatrix<MT1,true>& lhs, const DenseMatrix<MT2,true>
    CT2 B( ~rhs );
 
    constexpr size_t SIMDSIZE = SIMDTrait< ElementType_t<MT1> >::size;
-   constexpr bool remainder( !usePadding || !IsPadded_v<XT1> || !IsPadded_v<XT2> );
+   constexpr bool remainder( !IsPadded_v<XT1> || !IsPadded_v<XT2> );
 
    const size_t M( A.rows()    );
    const size_t N( A.columns() );

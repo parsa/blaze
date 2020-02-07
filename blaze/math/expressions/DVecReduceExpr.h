@@ -260,7 +260,7 @@ inline auto dvecreduce( const DenseVector<VT,TF>& dv, Add /*op*/ )
 
    BLAZE_INTERNAL_ASSERT( tmp.size() == N, "Invalid vector size" );
 
-   constexpr bool remainder( !usePadding || !IsPadded_v< RemoveReference_t<CT> > );
+   constexpr bool remainder( !IsPadded_v< RemoveReference_t<CT> > );
    constexpr size_t SIMDSIZE = SIMDTrait<ET>::size;
 
    ET redux{};

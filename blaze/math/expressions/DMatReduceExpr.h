@@ -1828,7 +1828,7 @@ inline auto dmatreduce( const DenseMatrix<MT,false>& dm, Add /*op*/ )
    BLAZE_INTERNAL_ASSERT( tmp.rows()    == M, "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( tmp.columns() == N, "Invalid number of columns" );
 
-   constexpr bool remainder( !usePadding || !IsPadded_v< RemoveReference_t<CT> > );
+   constexpr bool remainder( !IsPadded_v< RemoveReference_t<CT> > );
    constexpr size_t SIMDSIZE = SIMDTrait<ET>::size;
 
    ET redux{};

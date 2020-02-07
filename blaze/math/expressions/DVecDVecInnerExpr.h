@@ -198,7 +198,7 @@ inline auto dvecdvecinner( const DenseVector<VT1,true>& lhs, const DenseVector<V
    CT2 right( ~rhs );
 
    constexpr size_t SIMDSIZE = SIMDTrait<MultType>::size;
-   constexpr bool remainder( !usePadding || !IsPadded_v<XT1> || !IsPadded_v<XT2> );
+   constexpr bool remainder( !IsPadded_v<XT1> || !IsPadded_v<XT2> );
 
    const size_t N( left.size() );
 
