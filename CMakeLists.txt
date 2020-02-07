@@ -250,6 +250,17 @@ configure_file ("${CMAKE_CURRENT_LIST_DIR}/cmake/StorageOrder.h.in"
 
 
 #==================================================================================================
+# Configure alignment
+#==================================================================================================
+
+set(BLAZE_ALIGNMENT "blaze::aligned" CACHE STRING "Specify the default alignment for all vectors and matrices of the Blaze library.")
+set_property(CACHE BLAZE_ALIGNMENT PROPERTY STRINGS "blaze::aligned;blaze::unaligned")
+
+configure_file ("${CMAKE_CURRENT_LIST_DIR}/cmake/Alignment.h.in"
+                "${CMAKE_CURRENT_BINARY_DIR}/blaze/config/Alignment.h")
+
+
+#==================================================================================================
 # Configure vectorization
 #==================================================================================================
 
