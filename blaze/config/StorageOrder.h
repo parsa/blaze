@@ -49,7 +49,7 @@
    StaticMatrix<double,3UL,3UL> B;
    \endcode
 
-// Valid settings for the defaultStorageOrder are blaze::rowMajor and blaze::columnMajor.
+// Valid settings for the BLAZE_DEFAULT_STORAGE_ORDER are blaze::rowMajor and blaze::columnMajor.
 //
 // \note It is possible to specify the default storage order via command line or by defining
 // this symbol manually before including any Blaze header file:
