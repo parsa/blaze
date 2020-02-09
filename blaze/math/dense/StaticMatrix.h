@@ -848,7 +848,8 @@ template< typename Type     // Data type of the matrix
         , AlignmentFlag AF  // Alignment flag
         , PaddingFlag PF >  // Padding flag
 constexpr StaticMatrix<Type,M,N,SO,AF,PF>::StaticMatrix( const StaticMatrix& m )
-   : v_( m.v_ )  // The statically allocated matrix elements
+   : BaseType()  // Initialization of the base class
+   , v_( m.v_ )  // The statically allocated matrix elements
 {
    BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
 }
@@ -3921,7 +3922,8 @@ template< typename Type     // Data type of the matrix
         , AlignmentFlag AF  // Alignment flag
         , PaddingFlag PF >  // Padding flag
 constexpr StaticMatrix<Type,M,N,true,AF,PF>::StaticMatrix( const StaticMatrix& m )
-   : v_( m.v_ )  // The statically allocated matrix elements
+   : BaseType()  // Initialization of the base class
+   , v_( m.v_ )  // The statically allocated matrix elements
 {
    BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
 }

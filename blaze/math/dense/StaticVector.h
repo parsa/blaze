@@ -821,7 +821,8 @@ template< typename Type     // Data type of the vector
         , AlignmentFlag AF  // Alignment flag
         , PaddingFlag PF >  // Padding flag
 constexpr StaticVector<Type,N,TF,AF,PF>::StaticVector( const StaticVector& v )
-   : v_( v.v_ )  // The statically allocated vector elements
+   : BaseType()  // Initialization of the base class
+   , v_( v.v_ )  // The statically allocated vector elements
 {
    BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
 }

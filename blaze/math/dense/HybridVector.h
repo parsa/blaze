@@ -844,7 +844,8 @@ template< typename Type     // Data type of the vector
         , AlignmentFlag AF  // Alignment flag
         , PaddingFlag PF >  // Padding flag
 constexpr HybridVector<Type,N,TF,AF,PF>::HybridVector( const HybridVector& v )
-   : v_   ( v.v_ )     // The statically allocated vector elements
+   : BaseType()        // Initialization of the base class
+   , v_   ( v.v_ )     // The statically allocated vector elements
    , size_( v.size_ )  // The current size/dimension of the vector
 {
    BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );

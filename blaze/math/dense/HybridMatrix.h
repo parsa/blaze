@@ -920,7 +920,8 @@ template< typename Type     // Data type of the matrix
         , AlignmentFlag AF  // Alignment flag
         , PaddingFlag PF >  // Padding flag
 constexpr HybridMatrix<Type,M,N,SO,AF,PF>::HybridMatrix( const HybridMatrix& m )
-   : v_( m.v_ )  // The statically allocated matrix elements
+   : BaseType()  // Initialization of the base class
+   , v_( m.v_ )  // The statically allocated matrix elements
    , m_( m.m_ )  // The current number of rows of the matrix
    , n_( m.n_ )  // The current number of columns of the matrix{
 {
@@ -4112,7 +4113,8 @@ template< typename Type     // Data type of the matrix
         , AlignmentFlag AF  // Alignment flag
         , PaddingFlag PF >  // Padding flag
 constexpr HybridMatrix<Type,M,N,true,AF,PF>::HybridMatrix( const HybridMatrix& m )
-   : v_( m.v_ )  // The statically allocated matrix elements
+   : BaseType()  // Initialization of the base class
+   , v_( m.v_ )  // The statically allocated matrix elements
    , m_( m.m_ )  // The current number of rows of the matrix
    , n_( m.n_ )  // The current number of columns of the matrix
 {
