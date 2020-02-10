@@ -706,11 +706,11 @@
    #include <blaze/math/StaticVector.h>
    \endcode
 
-// The type of the elements, the number of elements, and the transpose flag of the vector can
-// be specified via the three template parameters:
+// The type of the elements, the number of elements, the transpose flag, the alignment, and the
+// padding of the vector can be specified via the five template parameters:
 
    \code
-   template< typename Type, size_t N, bool TF >
+   template< typename Type, size_t N, bool TF, AlignmentFlag AF, PaddingFlag PF >
    class StaticVector;
    \endcode
 
@@ -720,6 +720,12 @@
 //             only used for tiny and small vectors.
 //  - \c TF  : specifies whether the vector is a row vector (\c blaze::rowVector) or a column
 //             vector (\c blaze::columnVector). The default value is \c blaze::columnVector.
+//  - \c AF  : specifies whether the first element of the vector is properly aligned with
+//             respect to the available instruction set (SSE, AVX, ...). Possible values are
+//             \c blaze::aligned and \c blaze::unaligned. The default value is \c blaze::aligned.
+//  - \c PF  : specifies whether the vector should be padded to maximize the efficiency of
+//             vectorized operations. Possible values are \c blaze::padded and \c blaze::unpadded.
+//             The default value is \c blaze::padded.
 //
 // The blaze::StaticVector is perfectly suited for small to medium vectors whose size is known at
 // compile time:
@@ -731,15 +737,18 @@
    // Definition of a 4-dimensional single precision column vector
    blaze::StaticVector<float,4UL,blaze::columnVector> b;
 
-   // Definition of a 6-dimensional double precision row vector
-   blaze::StaticVector<double,6UL,blaze::rowVector> c;
+   // Definition of an unaligned, unpadded 6-dimensional double precision row vector
+   blaze::StaticVector<double,6UL,blaze::rowVector,blaze::unaligned,blaze::unpadded> c;
    \endcode
 
-// The elements of a blaze::StaticVector are possibly over-aligned to meet the alignment
-// requirements of the available instruction set (SSE, AVX, AVX-512, ...). The alignment
-// for fundamental types (\c short, \c int, \c float, \c double, ...) and complex types
-// (\c complex<float>, \c complex<double>, ...) is 16 bytes for SSE, 32 bytes for AVX, and
-// 64 bytes for AVX-512. All other types are aligned according to their intrinsic alignment:
+// \subsubsection vector_types_static_vector_alignment Alignment
+//
+// In case \c AF is set to \c blaze::aligned, the elements of a blaze::StaticVector are possibly
+// over-aligned to meet the alignment requirements of the available instruction set (SSE, AVX,
+// AVX-512, ...). The alignment for fundamental types (\c short, \c int, \c float, \c double, ...)
+// and complex types (\c complex<float>, \c complex<double>, ...) is 16 bytes for SSE, 32 bytes
+// for AVX, and 64 bytes for AVX-512. All other types are aligned according to their intrinsic
+// alignment:
 
    \code
    struct Int { int i; };
@@ -753,9 +762,18 @@
    alignof( VT3 );  // Evaluates to 'alignof( Int )'
    \endcode
 
-// Please note that for this reason a blaze::StaticVector cannot be used in containers using
-// dynamic memory such as \c std::vector without additionally providing an allocator that can
-// provide over-aligned memory:
+// Note that an aligned blaze::StaticVector instance may be bigger than the sum of its data
+// elements:
+
+   \code
+   sizeof( VT1 );  // Evaluates to 32 for both SSE and AVX
+   sizeof( VT2 );  // Evaluates to 16 for SSE and 32 for AVX
+   sizeof( VT3 );  // Evaluates to 20; no special alignment requirements
+   \endcode
+
+// Please note that for this reason an aligned blaze::StaticVector cannot be used in containers
+// using dynamic memory such as \c std::vector without additionally providing an allocator that
+// can provide over-aligned memory:
 
    \code
    using Type = blaze::StaticVector<double,3UL>;
@@ -765,6 +783,45 @@
    std::vector<Type,Allocator> v2;  // Properly aligned for AVX or AVX-512
    \endcode
 
+// \subsubsection vector_types_static_vector_padding Padding
+//
+// Adding padding elements to the end of a blaze::StaticVector can have a significant impact on
+// the performance. For instance, assuming that AVX is available, then two padded 3-dimensional
+// vectors of double precision values can be added via a single SIMD addition operation:
+
+   \code
+   using blaze::StaticVector;
+   using blaze::columnVector;
+   using blaze::aligned;
+   using blaze::unaligned;
+   using blaze::padded;
+   using blaze::unpadded;
+
+   StaticVector<double,3UL,columnVector,aligned,padded> a1, b1, c1;
+   StaticVector<double,3UL,columnVector,unaligned,unpadded> a2, b2, c2;
+
+   // ... Initialization
+
+   c1 = a1 + b1;  // AVX-based vector addition; maximum performance
+   c2 = a2 + b2;  // Scalar vector addition; limited performance
+
+   sizeof( a1 );  // Evaluates to 32 for SSE and AVX, and 64 for AVX-512
+   sizeof( a2 );  // Evaluates to 24 for SSE, AVX, and AVX-512 (minimum size)
+   \endcode
+
+// Due to padding, the first addition will run at maximum performance. On the flip side, the size
+// of each vector instance is increased due to the padding elements. The total size of an instance
+// depends on the number of elements and width of the available instruction set (16 bytes for
+// SSE, 32 bytes for AVX, and 64 bytes for AVX-512).
+//
+// The second addition will be limited in performance since due to the number of elements some of
+// the elements need to be handled in a scalar operation. However, the size of an \c unaligned,
+// \c unpadded blaze::StaticVector instance is guaranteed to be the sum of its elements.
+//
+// Please also note that \b Blaze will zero initialize the padding elements in order to achieve
+// maximum performance!
+//
+//
 // \n \subsection vector_types_dynamic_vector DynamicVector
 //
 // The blaze::DynamicVector class template is the representation of an arbitrary sized vector
@@ -812,11 +869,11 @@
    #include <blaze/math/HybridVector.h>
    \endcode
 
-// The type of the elements, the number of elements, and the transpose flag of the vector can
-// be specified via the three template parameters:
+// The type of the elements, the maximum number of elements, the transpose flag, the alignment,
+// and the padding of the vector can be specified via the five template parameters:
 
    \code
-   template< typename Type, size_t N, bool TF >
+   template< typename Type, size_t N, bool TF, AlignmentFlag AF, PaddingFlag PF >
    class HybridVector;
    \endcode
 
@@ -826,6 +883,12 @@
 //             is only used for tiny and small vectors.
 //  - \c TF  : specifies whether the vector is a row vector (\c blaze::rowVector) or a column
 //             vector (\c blaze::columnVector). The default value is \c blaze::columnVector.
+//  - \c AF  : specifies whether the first element of the vector is properly aligned with
+//             respect to the available instruction set (SSE, AVX, ...). Possible values are
+//             \c blaze::aligned and \c blaze::unaligned. The default value is \c blaze::aligned.
+//  - \c PF  : specifies whether the vector should be padded to maximize the efficiency of
+//             vectorized operations. Possible values are \c blaze::padded and \c blaze::unpadded.
+//             The default value is \c blaze::padded.
 //
 // The blaze::HybridVector is a suitable choice for small to medium vectors, whose size is not
 // known at compile time or not fixed at runtime, but whose maximum size is known at compile
@@ -838,15 +901,18 @@
    // Definition of a 4-dimensional single precision column vector with a maximum size of 16
    blaze::HybridVector<float,16UL,blaze::columnVector> b( 4UL );
 
-   // Definition of a double precision row vector with size 0 and a maximum size of 6
-   blaze::HybridVector<double,6UL,blaze::rowVector> c;
+   // Definition of a unaligned, unpadded double precision row vector with size 0 and a maximum size of 6
+   blaze::HybridVector<double,6UL,blaze::rowVector,blaze::unaligned,blaze::unpadded> c;
    \endcode
 
-// The elements of a blaze::HybridVector are possibly over-aligned to meet the alignment
-// requirements of the available instruction set (SSE, AVX, AVX-512, ...). The alignment
-// for fundamental types (\c short, \c int, \c float, \c double, ...) and complex types
-// (\c complex<float>, \c complex<double>, ...) is 16 bytes for SSE, 32 bytes for AVX, and
-// 64 bytes for AVX-512. All other types are aligned according to their intrinsic alignment:
+// \subsubsection vector_types_hybrid_vector_alignment Alignment
+//
+// In case \c AF is set to \c blaze::aligned, the elements of a blaze::HybridVector are possibly
+// over-aligned to meet the alignment requirements of the available instruction set (SSE, AVX,
+// AVX-512, ...). The alignment for fundamental types (\c short, \c int, \c float, \c double, ...)
+// and complex types (\c complex<float>, \c complex<double>, ...) is 16 bytes for SSE, 32 bytes
+// for AVX, and 64 bytes for AVX-512. All other types are aligned according to their intrinsic
+// alignment:
 
    \code
    struct Int { int i; };
@@ -860,9 +926,18 @@
    alignof( VT3 );  // Evaluates to 'alignof( Int )'
    \endcode
 
-// Please note that for this reason a blaze::HybridVector cannot be used in containers using
-// dynamic memory such as \c std::vector without additionally providing an allocator that can
-// provide over-aligned memory:
+// Note that an aligned blaze::HybridVector instance may be bigger than an according unaligned
+// blaze::HybridVector:
+
+   \code
+   sizeof( VT1 );  // Evaluates to 32 for both SSE and AVX
+   sizeof( VT2 );  // Evaluates to 16 for SSE and 32 for AVX
+   sizeof( VT3 );  // Evaluates to 20; no special alignment requirements
+   \endcode
+
+// Please note that for this reason an aligned blaze::HybridVector cannot be used in containers
+// using dynamic memory such as \c std::vector without additionally providing an allocator that
+// can provide over-aligned memory:
 
    \code
    using Type = blaze::HybridVector<double,3UL>;
@@ -872,6 +947,46 @@
    std::vector<Type,Allocator> v2;  // Properly aligned for AVX or AVX-512
    \endcode
 
+// \subsubsection vector_types_hybrid_vector_padding Padding
+//
+// Adding padding elements to the end of a blaze::HybridVector can have a significant impact on
+// the performance. For instance, assuming that AVX is available, then two padded 3-dimensional
+// vectors of double precision values can be added via a single SIMD addition operation:
+
+   \code
+   using blaze::HybridVector;
+   using blaze::columnVector;
+   using blaze::aligned;
+   using blaze::unaligned;
+   using blaze::padded;
+   using blaze::unpadded;
+
+   HybridVector<double,3UL,columnVector,aligned,padded> a1, b1, c1;
+   HybridVector<double,3UL,columnVector,unaligned,unpadded> a2, b2, c2;
+
+   // ... Resizing and initialization
+
+   c1 = a1 + b1;  // AVX-based vector addition; maximum performance
+   c2 = a2 + b2;  // Scalar vector addition; limited performance
+
+   sizeof( a1 );  // Evaluates to 48 for SSE,  64 and AVX, and 128 for AVX-512
+   sizeof( a2 );  // Evaluates to 32 for SSE, AVX, and AVX-512 (minimum size)
+   \endcode
+
+// Due to padding, the first addition will run at maximum performance. On the flip side, the size
+// of each vector instance is increased due to the padding elements. The total size of an instance
+// depends on the number of elements and width of the available instruction set (16 bytes for
+// SSE, 32 bytes for AVX, and 64 bytes for AVX-512).
+//
+// The second addition will be limited in performance since due to the number of elements some of
+// the elements need to be handled in a scalar operation. However, the size of an \c unaligned,
+// \c unpadded blaze::HybridVector instance is guaranteed to be the sum of its elements plus the
+// necessary data members to store the current size.
+//
+// Please also note that \b Blaze will zero initialize the padding elements in order to achieve
+// maximum performance!
+//
+//
 // \n \subsection vector_types_custom_vector CustomVector
 //
 // The blaze::CustomVector class template provides the functionality to represent an external
@@ -3294,11 +3409,11 @@
    #include <blaze/math/StaticMatrix.h>
    \endcode
 
-// The type of the elements, the number of rows and columns, and the storage order of the matrix
-// can be specified via the four template parameters:
+// The type of the elements, the number of rows and columns, the storage order of the matrix,
+// the alignment and the padding of the matrix can be specified via the six template parameters:
 
    \code
-   template< typename Type, size_t M, size_t N, bool SO >
+   template< typename Type, size_t M, size_t N, bool SO, AlignmentFlag AF, PaddingFlag PF >
    class StaticMatrix;
    \endcode
 
@@ -3309,6 +3424,12 @@
 //             that StaticMatrix is only used for tiny and small matrices.
 //  - \c SO  : specifies the storage order (blaze::rowMajor, blaze::columnMajor) of the matrix.
 //             The default value is blaze::rowMajor.
+//  - \c AF  : specifies whether the first element of every row/column is properly aligned with
+//             respect to the available instruction set (SSE, AVX, ...). Possible values are
+//             \c blaze::aligned and \c blaze::unaligned. The default value is \c blaze::aligned.
+//  - \c PF  : specifies whether every row/column of the matrix should be padded to maximize the
+//             efficiency of vectorized operations. Possible values are \c blaze::padded and
+//             \c blaze::unpadded. The default value is \c blaze::padded.
 //
 // The blaze::StaticMatrix is perfectly suited for small to medium matrices whose dimensions are
 // known at compile time:
@@ -3320,26 +3441,38 @@
    // Definition of a 4x6 single precision row-major matrix
    blaze::StaticMatrix<float,4UL,6UL,blaze::rowMajor> B;
 
-   // Definition of a 6x4 double precision column-major matrix
-   blaze::StaticMatrix<double,6UL,4UL,blaze::columnMajor> C;
+   // Definition of an unaligned, unpadded 6x4 double precision column-major matrix
+   blaze::StaticMatrix<double,6UL,4UL,blaze::columnMajor,blaze::unaligned,blaze::unpadded> C;
    \endcode
 
-// The elements of a blaze::StaticMatrix are possibly over-aligned to meet the alignment
-// requirements of the available instruction set (SSE, AVX, AVX-512, ...). The alignment
-// for fundamental types (\c short, \c int, \c float, \c double, ...) and complex types
-// (\c complex<float>, \c complex<double>, ...) is 16 bytes for SSE, 32 bytes for AVX, and
-// 64 bytes for AVX-512. All other types are aligned according to their intrinsic alignment:
+// \subsubsection matrix_types_static_matrix_alignment Alignment
+//
+// In case \c AF is set to \c blaze::aligned, the elements of a blaze::StaticMatrix are possibly
+// over-aligned to meet the alignment requirements of the available instruction set (SSE, AVX,
+// AVX-512, ...). The alignment for fundamental types (\c short, \c int, \c float, \c double, ...)
+// and complex types (\c complex<float>, \c complex<double>, ...) is 16 bytes for SSE, 32 bytes
+// for AVX, and 64 bytes for AVX-512. All other types are aligned according to their intrinsic
+// alignment:
 
    \code
    struct Int { int i; };
 
-   using MT1 = blaze::StaticMatrix<double,3UL>;
-   using MT2 = blaze::StaticMatrix<complex<float>,2UL>;
-   using MT3 = blaze::StaticMatrix<Int,5UL>;
+   using MT1 = blaze::StaticMatrix<double,3UL,5UL>;
+   using MT2 = blaze::StaticMatrix<complex<float>,2UL,3UL>;
+   using MT3 = blaze::StaticMatrix<Int,5UL,4UL>;
 
    alignof( MT1 );  // Evaluates to 16 for SSE, 32 for AVX, and 64 for AVX-512
    alignof( MT2 );  // Evaluates to 16 for SSE, 32 for AVX, and 64 for AVX-512
    alignof( MT3 );  // Evaluates to 'alignof( Int )'
+   \endcode
+
+// Note that an aligned blaze::StaticMatrix instance may be bigger than the sum of its data
+// elements:
+
+   \code
+   sizeof( MT1 );  // Evaluates to 160 for SSE, and 192 for AVX and AVX-512
+   sizeof( MT2 );  // Evaluates to 64 for SSE and AVX and 128 for AVX-512
+   sizeof( MT3 );  // Evaluates to 80; no special alignment requirements
    \endcode
 
 // Please note that for this reason a blaze::StaticMatrix cannot be used in containers using
@@ -3347,13 +3480,52 @@
 // provide over-aligned memory:
 
    \code
-   using Type = blaze::StaticMatrix<double,3UL>;
+   using Type = blaze::StaticMatrix<double,3UL,5UL>;
    using Allocator = blaze::AlignedAllocator<Type>;
 
    std::vector<Type> v1;  // Might be misaligned for AVX or AVX-512
    std::vector<Type,Allocator> v2;  // Properly aligned for AVX or AVX-512
    \endcode
 
+// \subsubsection matrix_types_static_matrix_padding Padding
+//
+// Adding padding elements to the end of every row or column of a blaze::StaticMatrix can have a
+// significant impact on the performance. For instance, assuming that AVX is available, then two
+// padded 3x3 matrices of double precision values can be added with three SIMD addition operations:
+
+   \code
+   using blaze::StaticMatrix;
+   using blaze::rowMajor;
+   using blaze::aligned;
+   using blaze::unaligned;
+   using blaze::padded;
+   using blaze::unpadded;
+
+   StaticMatrix<double,3UL,3UL,rowMajor,aligned,padded> A1, B1, C1;
+   StaticMatrix<double,3UL,3UL,rowMajor,unaligned,unpadded> A2, B2, C2;
+
+   // ... Initialization
+
+   C1 = A1 + B1;  // AVX-based matrix addition; maximum performance
+   C2 = A2 + B2;  // Scalar matrix addition; limited performance
+
+   sizeof( A1 );  // Evaluates to 96 for SSE and AVX, and 192 for AVX-512
+   sizeof( A2 );  // Evaluates to 72 for SSE, AVX, and AVX-512 (minimum size)
+   \endcode
+
+// Due to padding, the first addition will run at maximum performance. On the flip side, the size
+// of each matrix instance is increased due to the padding elements. The total size of an instance
+// depends on the number of elements and width of the available instruction set (16 bytes for
+// SSE, 32 bytes for AVX, and 64 bytes for AVX-512).
+//
+// The second addition will be limited in performance since due to the number of elements some of
+// the elements need to be handled in a scalar operation. However, the size of an \c unaligned,
+// \c unpadded blaze::StaticMatrix instance is guaranteed to be the sum of its elements.
+//
+// Please also note that \b Blaze will zero initialize the padding elements in order to achieve
+// maximum performance!
+//
+//
 // \n \subsection matrix_types_dynamic_matrix DynamicMatrix
 //
 // The blaze::DynamicMatrix class template is the representation of an arbitrary sized matrix
@@ -3404,21 +3576,28 @@
    #include <blaze/math/HybridMatrix.h>
    \endcode
 
-// The type of the elements, the maximum number of rows and columns and the storage order of the
-// matrix can be specified via the four template parameters:
+// The type of the elements, the maximum number of rows and columns, the storage order of the
+// matrix, the alignment and the padding of the matrix can be specified via the six template
+// parameters:
 
    \code
-   template< typename Type, size_t M, size_t N, bool SO >
+   template< typename Type, size_t M, size_t N, bool SO, AlignmentFlag AF, PaddingFlag PF >
    class HybridMatrix;
    \endcode
 
-//  - Type: specifies the type of the matrix elements. HybridMatrix can be used with any
-//          non-cv-qualified, non-reference, non-pointer element type.
-//  - M   : specifies the maximum number of rows of the matrix.
-//  - N   : specifies the maximum number of columns of the matrix. Note that it is expected
-//          that HybridMatrix is only used for tiny and small matrices.
-//  - SO  : specifies the storage order (blaze::rowMajor, blaze::columnMajor) of the matrix.
-//          The default value is blaze::rowMajor.
+//  - \c Type: specifies the type of the matrix elements. HybridMatrix can be used with any
+//             non-cv-qualified, non-reference, non-pointer element type.
+//  - \c M   : specifies the maximum number of rows of the matrix.
+//  - \c N   : specifies the maximum number of columns of the matrix. Note that it is expected
+//             that HybridMatrix is only used for tiny and small matrices.
+//  - \c SO  : specifies the storage order (blaze::rowMajor, blaze::columnMajor) of the matrix.
+//             The default value is blaze::rowMajor.
+//  - \c AF  : specifies whether the first element of every row/column is properly aligned with
+//             respect to the available instruction set (SSE, AVX, ...). Possible values are
+//             \c blaze::aligned and \c blaze::unaligned. The default value is \c blaze::aligned.
+//  - \c PF  : specifies whether every row/column of the matrix should be padded to maximize the
+//             efficiency of vectorized operations. Possible values are \c blaze::padded and
+//             \c blaze::unpadded. The default value is \c blaze::padded.
 //
 // The blaze::HybridMatrix is a suitable choice for small to medium matrices, whose dimensions
 // are not known at compile time or not fixed at runtime, but whose maximum dimensions are known
@@ -3431,26 +3610,38 @@
    // Definition of a 4x6 single precision row-major matrix with maximum dimensions of 12x16
    blaze::HybridMatrix<float,12UL,16UL,blaze::rowMajor> B( 4UL, 6UL );
 
-   // Definition of a 0x0 double precision column-major matrix and maximum dimensions of 6x6
-   blaze::HybridMatrix<double,6UL,6UL,blaze::columnMajor> C;
+   // Definition of an unaligned, unpadded 0x0 double precision column-major matrix and maximum dimensions of 6x6
+   blaze::HybridMatrix<double,6UL,6UL,blaze::columnMajor,blaze::unaligned,blaze::unpadded> C;
    \endcode
 
-// The elements of a blaze::HybridMatrix are possibly over-aligned to meet the alignment
-// requirements of the available instruction set (SSE, AVX, AVX-512, ...). The alignment
-// for fundamental types (\c short, \c int, \c float, \c double, ...) and complex types
-// (\c complex<float>, \c complex<double>, ...) is 16 bytes for SSE, 32 bytes for AVX, and
-// 64 bytes for AVX-512. All other types are aligned according to their intrinsic alignment:
+// \subsubsection matrix_types_hybrid_matrix_alignment Alignment
+//
+// In case \c AF is set to \c blaze::aligned, the elements of a blaze::HybridMatrix are possibly
+// over-aligned to meet the alignment requirements of the available instruction set (SSE, AVX,
+// AVX-512, ...). The alignment for fundamental types (\c short, \c int, \c float, \c double, ...)
+// and complex types (\c complex<float>, \c complex<double>, ...) is 16 bytes for SSE, 32 bytes
+// for AVX, and 64 bytes for AVX-512. All other types are aligned according to their intrinsic
+// alignment:
 
    \code
    struct Int { int i; };
 
-   using MT1 = blaze::HybridMatrix<double,3UL>;
-   using MT2 = blaze::HybridMatrix<complex<float>,2UL>;
-   using MT3 = blaze::HybridMatrix<Int,5UL>;
+   using MT1 = blaze::HybridMatrix<double,3UL,5UL>;
+   using MT2 = blaze::HybridMatrix<complex<float>,2UL,3UL>;
+   using MT3 = blaze::HybridMatrix<Int,5UL,4UL>;
 
    alignof( MT1 );  // Evaluates to 16 for SSE, 32 for AVX, and 64 for AVX-512
    alignof( MT2 );  // Evaluates to 16 for SSE, 32 for AVX, and 64 for AVX-512
    alignof( MT3 );  // Evaluates to 'alignof( Int )'
+   \endcode
+
+// Note that an aligned blaze::HybridMatrix instance may be bigger than an according unaligned
+// blaze::HybridMatrix:
+
+   \code
+   sizeof( MT1 );  // Evaluates to 160 for SSE, 224 for AVX, and 256 for AVX-512
+   sizeof( MT2 );  // Evaluates to 80 for SSE, 96 for AVX, and 192 for AVX-512
+   sizeof( MT3 );  // Evaluates to 96; no special alignment requirements
    \endcode
 
 // Please note that for this reason a blaze::HybridMatrix cannot be used in containers using
@@ -3458,13 +3649,53 @@
 // provide over-aligned memory:
 
    \code
-   using Type = blaze::HybridMatrix<double,3UL>;
+   using Type = blaze::HybridMatrix<double,3UL,5UL>;
    using Allocator = blaze::AlignedAllocator<Type>;
 
    std::vector<Type> v1;  // Might be misaligned for AVX or AVX-512
    std::vector<Type,Allocator> v2;  // Properly aligned for AVX or AVX-512
    \endcode
 
+// \subsubsection matrix_types_hybrid_matrix_padding Padding
+//
+// Adding padding elements to the end of every row or column of a blaze::HybridMatrix can have a
+// significant impact on the performance. For instance, assuming that AVX is available, then two
+// padded 3x3 matrices of double precision values can be added with three SIMD addition operations:
+
+   \code
+   using blaze::HybridMatrix;
+   using blaze::rowMajor;
+   using blaze::aligned;
+   using blaze::unaligned;
+   using blaze::padded;
+   using blaze::unpadded;
+
+   HybridMatrix<double,3UL,3UL,rowMajor,aligned,padded> A1, B1, C1;
+   HybridMatrix<double,3UL,3UL,rowMajor,unaligned,unpadded> A2, B2, C2;
+
+   // ... Initialization
+
+   C1 = A1 + B1;  // AVX-based matrix addition; maximum performance
+   C2 = A2 + B2;  // Scalar matrix addition; limited performance
+
+   sizeof( A1 );  // Evaluates to 112 for SSE, 128 for AVX, and 256 for AVX-512
+   sizeof( A2 );  // Evaluates to 88 for SSE, AVX, and AVX-512 (minimum size)
+   \endcode
+
+// Due to padding, the first addition will run at maximum performance. On the flip side, the size
+// of each matrix instance is increased due to the padding elements. The total size of an instance
+// depends on the number of elements and width of the available instruction set (16 bytes for
+// SSE, 32 bytes for AVX, and 64 bytes for AVX-512).
+//
+// The second addition will be limited in performance since due to the number of elements some of
+// the elements need to be handled in a scalar operation. However, the size of an \c unaligned,
+// \c unpadded blaze::HybridMatrix instance is guaranteed to be the sum of its elements plus the.
+// necessary data members to store the current number of rows and columns.
+//
+// Please also note that \b Blaze will zero initialize the padding elements in order to achieve
+// maximum performance!
+//
+//
 // \n \subsection matrix_types_custom_matrix CustomMatrix
 //
 // The blaze::CustomMatrix class template provides the functionality to represent an external
