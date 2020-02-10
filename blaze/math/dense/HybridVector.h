@@ -3418,7 +3418,7 @@ struct PartialReduceTraitEval2< T, OP, RF
    using ET = ElementType_t<T>;
    using RT = decltype( std::declval<OP>()( std::declval<ET>(), std::declval<ET>() ) );
 
-   static constexpr bool TF = ( RF == 0UL );
+   static constexpr bool TF = ( RF == columnwise );
 
    static constexpr size_t N = MaxSize_v< T, TF ? 1UL : 0UL >;
 
