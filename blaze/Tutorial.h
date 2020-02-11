@@ -15015,37 +15015,71 @@
 // <tt><blaze/config/Thresholds.h></tt>.
 //
 //
-// \n \section padding Padding
+// \n \section alignment Alignment
 // <hr>
 //
-// By default the \b Blaze library uses padding for all dense vectors and matrices in order to
-// achieve maximum performance in all operations. Due to padding, the proper alignment of data
-// elements can be guaranteed and the need for remainder loops is minimized. However, on the
-// downside padding introduces an additional memory overhead, which can be large depending on
-// the used data type.
-//
-// The configuration file <tt>./blaze/config/Optimizations.h</tt> provides a compile time switch
-// that can be used to (de-)activate padding:
+// For performance reasons, the vector types \ref vector_types_static_vector and
+// \ref vector_types_hybrid_vector and the matrix types \ref matrix_types_static_matrix and
+// \ref matrix_types_hybrid_matrix by default make use of aligned memory. Via the configuration
+// file <tt>./blaze/config/Alignment.h</tt> it is possible to define the default alignment flag:
 
    \code
-   #define BLAZE_USE_PADDING 1
+   #define BLAZE_DEFAULT_ALIGNMENT_FLAG blaze::aligned
    \endcode
 
-// Alternatively it is possible to (de-)activate padding via command line or by defining this
-// symbol manually before including any \b Blaze header file:
+// Alternatively it is possible set the default alignment flag via command line or by defining
+// this symbol manually before including any \b Blaze header file:
 
    \code
-   g++ ... -DBLAZE_USE_PADDING=1 ...
+   g++ ... -DBLAZE_DEFAULT_ALIGNMENT_FLAG=blaze::aligned ...
    \endcode
 
    \code
-   #define BLAZE_USE_PADDING 1
+   #define BLAZE_DEFAULT_ALIGNMENT_FLAG blaze::aligned
    #include <blaze/Blaze.h>
    \endcode
 
-// If \c BLAZE_USE_PADDING is set to 1 padding is enabled for all dense vectors and matrices, if
-// it is set to 0 padding is disabled. Note however that disabling padding can considerably reduce
-// the performance of all dense vector and matrix operations!
+// If \c BLAZE_DEFAULT_ALIGNMENT_FLAG is set to \c blaze::aligned then \ref vector_types_static_vector,
+// \ref vector_types_hybrid_vector, \ref matrix_types_static_matrix, and \ref matrix_types_hybrid_matrix
+// use aligned memory by default. If it is set to \c blaze::unaligned they don't enforce aligned
+// memory. Note however that disabling alignment can considerably reduce the performance of all
+// operations with these vector and matrix types!
+//
+//
+// \n \section padding Padding
+// <hr>
+//
+// By default the \b Blaze library uses padding for the vector types \ref vector_types_static_vector
+// and \ref vector_types_hybrid_vector and the matrix types \ref matrix_types_static_matrix and
+// \ref matrix_types_hybrid_matrix in order to achieve maximum performance in all operations. Due
+// to padding, the proper alignment of data elements can be guaranteed and the need for remainder
+// loops is minimized. However, on the downside padding introduces an additional memory overhead,
+// which can be large depending on the used data type.
+//
+// The configuration file <tt>./blaze/config/Padding.h</tt> provides a compile time switch that
+// can be used to define the default padding flag:
+
+   \code
+   #define BLAZE_DEFAULT_PADDING_FLAG blaze::padded
+   \endcode
+
+// Alternatively it is possible to define the default padding flag via command line or by defining
+// this symbol manually before including any \b Blaze header file:
+
+   \code
+   g++ ... -DBLAZE_DEFAULT_PADDING_FLAG=blaze::padded ...
+   \endcode
+
+   \code
+   #define BLAZE_DEFAULT_PADDING_FLAG blaze::padded
+   #include <blaze/Blaze.h>
+   \endcode
+
+// If \c BLAZE_DEFAULT_ALIGNMENT_FLAG is set to \c blaze::padded, by default padding is enabled
+// for \ref vector_types_static_vector, \ref vector_types_hybrid_vector, \ref matrix_types_static_matrix
+// and \ref matrix_types_hybrid_matrix. If it is set to \c blaze::unpadded, then padding is by
+// default disabled. Note however that disabling padding can considerably reduce the performance
+// of all dense vector and matrix operations!
 //
 //
 // \n \section streaming Streaming (Non-Temporal Stores)
@@ -17878,8 +17912,9 @@
 // <hr>
 // \section faq_padding A StaticVector/StaticMatrix is larger than expected. Is this a bug?
 //
-// The size of a \c StaticVector, \c StaticMatrix, \c HybridVector, or \c HybridMatrix can
-// indeed be larger than expected:
+// The size of a \ref vector_types_static_vector, \ref matrix_types_static_matrix,
+// \ref vector_types_hybrid_vector, or \ref matrix_types_hybrid_matrix can indeed be larger
+// than expected:
 
    \code
    StaticVector<int,3> a;
@@ -17893,7 +17928,8 @@
 // SIMD vectorization even for small vectors. For that reason \b Blaze by default uses padding
 // elements for all dense vectors and matrices to guarantee that at least a single SIMD vector
 // can be loaded. Depending on the used SIMD technology that can significantly increase the size
-// of a \c StaticVector, \c StaticMatrix, \c HybridVector or \c HybridMatrix:
+// of a \ref vector_types_static_vector, \ref matrix_types_static_matrix,
+// \ref vector_types_hybrid_vector, or \ref matrix_types_hybrid_matrix :
 
    \code
    StaticVector<int,3> a;
@@ -17905,35 +17941,42 @@
                  // (under the assumption that an integer occupies 4 bytes)
    \endcode
 
-// The configuration file <tt>./blaze/config/Optimizations.h</tt> provides a compile time switch
+// The configuration files <tt>./blaze/config/Padding.h</tt> provides a compile time switch
 // that can be used to (de-)activate padding:
 
    \code
-   #define BLAZE_USE_PADDING 1
+   #define BLAZE_DEFAULT_PADDING_FLAG blaze::padded
    \endcode
 
 // Alternatively it is possible to (de-)activate padding via command line or by defining this
 // symbol manually before including any \b Blaze header file:
 
    \code
-   #define BLAZE_USE_PADDING 1
+   g++ ... -BLAZE_DEFAULT_PADDING_FLAG=blaze::padded ...
+   \endcode
+
+   \code
+   #define BLAZE_DEFAULT_PADDING_FLAG blaze::padded
    #include <blaze/Blaze.h>
    \endcode
 
-// If \c BLAZE_USE_PADDING is set to 1 padding is enabled for all dense vectors and matrices, if
-// it is set to 0 padding is disabled. Note however that disabling padding can considerably reduce
-// the performance of all dense vector and matrix operations!
+// If \c BLAZE_DEFAULT_ALIGNMENT_FLAG is set to \c blaze::padded, by default padding is enabled
+// for \ref vector_types_static_vector, \ref vector_types_hybrid_vector, \ref matrix_types_static_matrix,
+// and \ref matrix_types_hybrid_matrix. If it is set to \c blaze::unpadded, then padding is by
+// default disabled. Note however that disabling padding can considerably reduce the performance
+// of all dense vector and matrix operations!
 //
 //
 // <hr>
 // \section faq_alignment Despite disabling padding, a StaticVector/StaticMatrix is still larger than expected. Is this a bug?
 //
-// Despite disabling padding via the \c BLAZE_USE_PADDING compile time switch (see \ref faq_padding),
-// the size of a \c StaticVector, \c StaticMatrix, \c HybridVector, or \c HybridMatrix can still
-// be larger than expected:
+// Despite disabling padding via the \c BLAZE_DEFAULT_PADDING_FLAG compile time switch (see
+// \ref faq_padding), the size of a \ref vector_types_static_vector, \ref matrix_types_static_matrix,
+// \ref vector_types_hybrid_vector, or \ref matrix_types_hybrid_matrix can still be larger than
+// expected:
 
    \code
-   #define BLAZE_USE_PADDING 1
+   #define BLAZE_DEFAULT_PADDING_FLAG blaze::unpadded
    #include <blaze/Blaze.h>
 
    StaticVector<int,3> a;
@@ -17953,8 +17996,34 @@
 // vectorization, which is why \b Blaze does not enforce a 32 byte (for AVX) or even 64 byte
 // alignment (for AVX-512).
 //
-// It is possible to disable the vectorization entirely by the compile time switch in the
-// <tt>./blaze/config/Vectorization.h</tt> configuration file:
+// It is possible to disable the SIMD-specific alignment for \ref vector_types_static_vector,
+// \ref matrix_types_static_matrix, \ref vector_types_hybrid_vector, or \ref matrix_types_hybrid_matrix
+// via the compile time switch in the <tt>./blaze/config/Alignment.h</tt> configuration file:
+
+   \code
+   #define BLAZE_DEFAULT_ALIGNMENT_FLAG blaze::aligned
+   \endcode
+
+// Alternatively it is possible set the default alignment flag via command line or by defining
+// this symbol manually before including any \b Blaze header file:
+
+   \code
+   g++ ... -DBLAZE_DEFAULT_ALIGNMENT_FLAG=blaze::aligned ...
+   \endcode
+
+   \code
+   #define BLAZE_DEFAULT_ALIGNMENT_FLAG blaze::aligned
+   #include <blaze/Blaze.h>
+   \endcode
+
+// If \c BLAZE_DEFAULT_ALIGNMENT_FLAG is set to \c blaze::aligned then \ref vector_types_static_vector,
+// \ref vector_types_hybrid_vector, \ref matrix_types_static_matrix, and \ref matrix_types_hybrid_matrix
+// use aligned memory by default. If it is set to \c blaze::unaligned they don't enforce aligned
+// memory. Note however that disabling alignment can considerably reduce the performance of all
+// operations with these vector and matrix types!
+//
+// Alternatively it is possible to disable the vectorization entirely by the compile time switch
+// in the <tt>./blaze/config/Vectorization.h</tt> configuration file:
 
    \code
    #define BLAZE_USE_VECTORIZATION 1
@@ -17962,6 +18031,10 @@
 
 // It is also possible to (de-)activate vectorization via command line or by defining this symbol
 // manually before including any \b Blaze header file:
+
+   \code
+   g++ ... -DBLAZE_USE_VECTORIZATION=1 ...
+   \endcode
 
    \code
    #define BLAZE_USE_VECTORIZATION 1
@@ -17978,12 +18051,13 @@
 // <hr>
 // \section faq_std_vector I experience crashes when using StaticVector/StaticMatrix in a std::vector. Is this a bug?
 //
-// With active vectorization the elements of a \c StaticVector, \c HybridVector, \c StaticMatrix,
-// and \c HybridMatrix are possibly over-aligned to meet the alignment requirements of the
-// available instruction set (SSE, AVX, AVX-512, ...). The alignment for fundamental types
-// (\c short, \c int, \c float, \c double, ...) and complex types (\c complex<float>,
-// \c complex<double>, ...) is 16 bytes for SSE, 32 bytes for AVX, and 64 bytes for AVX-512. All
-// other types are aligned according to their intrinsic alignment:
+// With active vectorization the elements of a \ref vector_types_static_vector,
+// \ref vector_types_hybrid_vector, \ref matrix_types_static_matrix, and \ref matrix_types_hybrid_matrix
+// are possibly over-aligned to meet the alignment requirements of the available instruction set
+// (SSE, AVX, AVX-512, ...). The alignment for fundamental types (\c short, \c int, \c float,
+// \c double, ...) and complex types (\c complex<float>, \c complex<double>, ...) is 16 bytes
+// for SSE, 32 bytes for AVX, and 64 bytes for AVX-512. All other types are aligned according to
+// their intrinsic alignment:
 
    \code
    struct Int { int i; };
@@ -17997,9 +18071,10 @@
    alignof( VT3 );  // Evaluates to 'alignof( Int )'
    \endcode
 
-// For this reason \c StaticVector, \c HybridVector, \c StaticMatrix, and \c HybridMatrix cannot
-// be used in containers using dynamic memory such as \c std::vector without additionally providing
-// an allocator that can provide over-aligned memory:
+// For this reason \ref vector_types_static_vector, \ref vector_types_hybrid_vector,
+// \ref matrix_types_static_matrix, and \ref matrix_types_hybrid_matrix cannot be used in
+// containers using dynamic memory such as \c std::vector without additionally providing an
+// allocator that can provide over-aligned memory:
 
    \code
    using Type = blaze::StaticVector<double,3UL>;
