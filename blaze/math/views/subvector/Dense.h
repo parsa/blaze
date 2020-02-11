@@ -665,9 +665,7 @@ class Subvector<VT,unaligned,TF,true,CSAs...>
    //! Helper structure for the explicit application of the SFINAE principle.
    template< typename VT2 >
    static constexpr bool VectorizedAddAssign_v =
-      ( useOptimizedKernels &&
-        simdEnabled && VT2::simdEnabled &&
-        IsSIMDCombinable_v< ElementType, ElementType_t<VT2> > &&
+      ( VectorizedAssign_v<VT2> &&
         HasSIMDAdd_v< ElementType, ElementType_t<VT2> > );
    //**********************************************************************************************
 
@@ -675,19 +673,15 @@ class Subvector<VT,unaligned,TF,true,CSAs...>
    //! Helper structure for the explicit application of the SFINAE principle.
    template< typename VT2 >
    static constexpr bool VectorizedSubAssign_v =
-      ( useOptimizedKernels &&
-        simdEnabled && VT2::simdEnabled &&
-        IsSIMDCombinable_v< ElementType, ElementType_t<VT2> > &&
-       HasSIMDSub_v< ElementType, ElementType_t<VT2> > );
+      ( VectorizedAssign_v<VT2> &&
+        HasSIMDSub_v< ElementType, ElementType_t<VT2> > );
    //**********************************************************************************************
 
    //**********************************************************************************************
    //! Helper structure for the explicit application of the SFINAE principle.
    template< typename VT2 >
    static constexpr bool VectorizedMultAssign_v =
-      ( useOptimizedKernels &&
-        simdEnabled && VT2::simdEnabled &&
-        IsSIMDCombinable_v< ElementType, ElementType_t<VT2> > &&
+      ( VectorizedAssign_v<VT2> &&
         HasSIMDMult_v< ElementType, ElementType_t<VT2> > );
    //**********************************************************************************************
 
@@ -695,9 +689,7 @@ class Subvector<VT,unaligned,TF,true,CSAs...>
    //! Helper structure for the explicit application of the SFINAE principle.
    template< typename VT2 >
    static constexpr bool VectorizedDivAssign_v =
-      ( useOptimizedKernels &&
-        simdEnabled && VT2::simdEnabled &&
-        IsSIMDCombinable_v< ElementType, ElementType_t<VT2> > &&
+      ( VectorizedAssign_v<VT2> &&
         HasSIMDDiv_v< ElementType, ElementType_t<VT2> > );
    //**********************************************************************************************
 
@@ -2812,9 +2804,7 @@ class Subvector<VT,aligned,TF,true,CSAs...>
    //! Helper structure for the explicit application of the SFINAE principle.
    template< typename VT2 >
    static constexpr bool VectorizedAddAssign_v =
-      ( useOptimizedKernels &&
-        simdEnabled && VT2::simdEnabled &&
-        IsSIMDCombinable_v< ElementType, ElementType_t<VT2> > &&
+      ( VectorizedAssign_v<VT2> &&
         HasSIMDAdd_v< ElementType, ElementType_t<VT2> > );
    //**********************************************************************************************
 
@@ -2822,9 +2812,7 @@ class Subvector<VT,aligned,TF,true,CSAs...>
    //! Helper structure for the explicit application of the SFINAE principle.
    template< typename VT2 >
    static constexpr bool VectorizedSubAssign_v =
-      ( useOptimizedKernels &&
-        simdEnabled && VT2::simdEnabled &&
-        IsSIMDCombinable_v< ElementType, ElementType_t<VT2> > &&
+      ( VectorizedAssign_v<VT2> &&
         HasSIMDSub_v< ElementType, ElementType_t<VT2> > );
    //**********************************************************************************************
 
@@ -2832,9 +2820,7 @@ class Subvector<VT,aligned,TF,true,CSAs...>
    //! Helper structure for the explicit application of the SFINAE principle.
    template< typename VT2 >
    static constexpr bool VectorizedMultAssign_v =
-      ( useOptimizedKernels &&
-        simdEnabled && VT2::simdEnabled &&
-        IsSIMDCombinable_v< ElementType, ElementType_t<VT2> > &&
+      ( VectorizedAssign_v<VT2> &&
         HasSIMDMult_v< ElementType, ElementType_t<VT2> > );
    //**********************************************************************************************
 
@@ -2842,9 +2828,7 @@ class Subvector<VT,aligned,TF,true,CSAs...>
    //! Helper structure for the explicit application of the SFINAE principle.
    template< typename VT2 >
    static constexpr bool VectorizedDivAssign_v =
-      ( useOptimizedKernels &&
-        simdEnabled && VT2::simdEnabled &&
-        IsSIMDCombinable_v< ElementType, ElementType_t<VT2> > &&
+      ( VectorizedAssign_v<VT2> &&
         HasSIMDDiv_v< ElementType, ElementType_t<VT2> > );
    //**********************************************************************************************
 

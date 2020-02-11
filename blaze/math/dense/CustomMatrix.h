@@ -581,9 +581,7 @@ class CustomMatrix
    //! Helper variable template for the explicit application of the SFINAE principle.
    template< typename MT >
    static constexpr bool VectorizedAddAssign_v =
-      ( useOptimizedKernels &&
-        simdEnabled && MT::simdEnabled &&
-        IsSIMDCombinable_v< Type, ElementType_t<MT> > &&
+      ( VectorizedAssign_v<MT> &&
         HasSIMDAdd_v< Type, ElementType_t<MT> > &&
         !IsDiagonal_v<MT> );
    /*! \endcond */
@@ -594,9 +592,7 @@ class CustomMatrix
    //! Helper variable template for the explicit application of the SFINAE principle.
    template< typename MT >
    static constexpr bool VectorizedSubAssign_v =
-      ( useOptimizedKernels &&
-        simdEnabled && MT::simdEnabled &&
-        IsSIMDCombinable_v< Type, ElementType_t<MT> > &&
+      ( VectorizedAssign_v<MT> &&
         HasSIMDSub_v< Type, ElementType_t<MT> > &&
         !IsDiagonal_v<MT> );
    /*! \endcond */
@@ -607,9 +603,7 @@ class CustomMatrix
    //! Helper variable template for the explicit application of the SFINAE principle.
    template< typename MT >
    static constexpr bool VectorizedSchurAssign_v =
-      ( useOptimizedKernels &&
-        simdEnabled && MT::simdEnabled &&
-        IsSIMDCombinable_v< Type, ElementType_t<MT> > &&
+      ( VectorizedAssign_v<MT> &&
         HasSIMDMult_v< Type, ElementType_t<MT> > );
    /*! \endcond */
    //**********************************************************************************************
@@ -3469,9 +3463,7 @@ class CustomMatrix<Type,AF,PF,true,RT>
    //! Helper variable template for the explicit application of the SFINAE principle.
    template< typename MT >
    static constexpr bool VectorizedAddAssign_v =
-      ( useOptimizedKernels &&
-        simdEnabled && MT::simdEnabled &&
-        IsSIMDCombinable_v< Type, ElementType_t<MT> > &&
+      ( VectorizedAssign_v<MT> &&
         HasSIMDAdd_v< Type, ElementType_t<MT> > &&
         !IsDiagonal_v<MT> );
    //**********************************************************************************************
@@ -3480,9 +3472,7 @@ class CustomMatrix<Type,AF,PF,true,RT>
    //! Helper variable template for the explicit application of the SFINAE principle.
    template< typename MT >
    static constexpr bool VectorizedSubAssign_v =
-      ( useOptimizedKernels &&
-        simdEnabled && MT::simdEnabled &&
-        IsSIMDCombinable_v< Type, ElementType_t<MT> > &&
+      ( VectorizedAssign_v<MT> &&
         HasSIMDSub_v< Type, ElementType_t<MT> > &&
         !IsDiagonal_v<MT> );
    //**********************************************************************************************
@@ -3491,9 +3481,7 @@ class CustomMatrix<Type,AF,PF,true,RT>
    //! Helper variable template for the explicit application of the SFINAE principle.
    template< typename MT >
    static constexpr bool VectorizedSchurAssign_v =
-      ( useOptimizedKernels &&
-        simdEnabled && MT::simdEnabled &&
-        IsSIMDCombinable_v< Type, ElementType_t<MT> > &&
+      ( VectorizedAssign_v<MT> &&
         HasSIMDMult_v< Type, ElementType_t<MT> > );
    //**********************************************************************************************
 

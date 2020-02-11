@@ -720,9 +720,7 @@ class Submatrix<MT,unaligned,false,true,CSAs...>
    //! Helper variable template for the explicit application of the SFINAE principle.
    template< typename MT2 >
    static constexpr bool VectorizedAddAssign_v =
-      ( useOptimizedKernels &&
-        simdEnabled && MT2::simdEnabled &&
-        IsSIMDCombinable_v< ElementType, ElementType_t<MT2> > &&
+      ( VectorizedAssign_v<MT2> &&
         HasSIMDAdd_v< ElementType, ElementType_t<MT2> > &&
         !IsDiagonal_v<MT2> );
    //**********************************************************************************************
@@ -731,9 +729,7 @@ class Submatrix<MT,unaligned,false,true,CSAs...>
    //! Helper variable template for the explicit application of the SFINAE principle.
    template< typename MT2 >
    static constexpr bool VectorizedSubAssign_v =
-      ( useOptimizedKernels &&
-        simdEnabled && MT2::simdEnabled &&
-        IsSIMDCombinable_v< ElementType, ElementType_t<MT2> > &&
+      ( VectorizedAssign_v<MT2> &&
         HasSIMDSub_v< ElementType, ElementType_t<MT2> > &&
         !IsDiagonal_v<MT2> );
    //**********************************************************************************************
@@ -742,9 +738,7 @@ class Submatrix<MT,unaligned,false,true,CSAs...>
    //! Helper variable template for the explicit application of the SFINAE principle.
    template< typename MT2 >
    static constexpr bool VectorizedSchurAssign_v =
-      ( useOptimizedKernels &&
-        simdEnabled && MT2::simdEnabled &&
-        IsSIMDCombinable_v< ElementType, ElementType_t<MT2> > &&
+      ( VectorizedAssign_v<MT2> &&
         HasSIMDMult_v< ElementType, ElementType_t<MT2> > );
    //**********************************************************************************************
 
@@ -4000,9 +3994,7 @@ class Submatrix<MT,unaligned,true,true,CSAs...>
    //! Helper variable template for the explicit application of the SFINAE principle.
    template< typename MT2 >
    static constexpr bool VectorizedAddAssign_v =
-      ( useOptimizedKernels &&
-        simdEnabled && MT2::simdEnabled &&
-        IsSIMDCombinable_v< ElementType, ElementType_t<MT2> > &&
+      ( VectorizedAssign_v<MT2> &&
         HasSIMDAdd_v< ElementType, ElementType_t<MT2> > &&
         !IsDiagonal_v<MT2> );
    //**********************************************************************************************
@@ -4011,9 +4003,7 @@ class Submatrix<MT,unaligned,true,true,CSAs...>
    //! Helper variable template for the explicit application of the SFINAE principle.
    template< typename MT2 >
    static constexpr bool VectorizedSubAssign_v =
-      ( useOptimizedKernels &&
-        simdEnabled && MT2::simdEnabled &&
-        IsSIMDCombinable_v< ElementType, ElementType_t<MT2> > &&
+      ( VectorizedAssign_v<MT2> &&
         HasSIMDSub_v< ElementType, ElementType_t<MT2> > &&
         !IsDiagonal_v<MT2> );
    //**********************************************************************************************
@@ -4022,9 +4012,7 @@ class Submatrix<MT,unaligned,true,true,CSAs...>
    //! Helper variable template for the explicit application of the SFINAE principle.
    template< typename MT2 >
    static constexpr bool VectorizedSchurAssign_v =
-      ( useOptimizedKernels &&
-        simdEnabled && MT2::simdEnabled &&
-        IsSIMDCombinable_v< ElementType, ElementType_t<MT2> > &&
+      ( VectorizedAssign_v<MT2> &&
         HasSIMDMult_v< ElementType, ElementType_t<MT2> > );
    //**********************************************************************************************
 
@@ -6825,9 +6813,7 @@ class Submatrix<MT,aligned,false,true,CSAs...>
    //! Helper variable template for the explicit application of the SFINAE principle.
    template< typename MT2 >
    static constexpr bool VectorizedAddAssign_v =
-      ( useOptimizedKernels &&
-        simdEnabled && MT2::simdEnabled &&
-        IsSIMDCombinable_v< ElementType, ElementType_t<MT2> > &&
+      ( VectorizedAssign_v<MT2> &&
         HasSIMDAdd_v< ElementType, ElementType_t<MT2> > &&
         !IsDiagonal_v<MT2> );
    //**********************************************************************************************
@@ -6836,9 +6822,7 @@ class Submatrix<MT,aligned,false,true,CSAs...>
    //! Helper variable template for the explicit application of the SFINAE principle.
    template< typename MT2 >
    static constexpr bool VectorizedSubAssign_v =
-      ( useOptimizedKernels &&
-        simdEnabled && MT2::simdEnabled &&
-        IsSIMDCombinable_v< ElementType, ElementType_t<MT2> > &&
+      ( VectorizedAssign_v<MT2> &&
         HasSIMDSub_v< ElementType, ElementType_t<MT2> > &&
         !IsDiagonal_v<MT2> );
    //**********************************************************************************************
@@ -6847,9 +6831,7 @@ class Submatrix<MT,aligned,false,true,CSAs...>
    //! Helper variable template for the explicit application of the SFINAE principle.
    template< typename MT2 >
    static constexpr bool VectorizedSchurAssign_v =
-      ( useOptimizedKernels &&
-        simdEnabled && MT2::simdEnabled &&
-        IsSIMDCombinable_v< ElementType, ElementType_t<MT2> > &&
+      ( VectorizedAssign_v<MT2> &&
         HasSIMDMult_v< ElementType, ElementType_t<MT2> > );
    //**********************************************************************************************
 
@@ -9686,9 +9668,7 @@ class Submatrix<MT,aligned,true,true,CSAs...>
    //! Helper variable template for the explicit application of the SFINAE principle.
    template< typename MT2 >
    static constexpr bool VectorizedAddAssign_v =
-      ( useOptimizedKernels &&
-        simdEnabled && MT2::simdEnabled &&
-        IsSIMDCombinable_v< ElementType, ElementType_t<MT2> > &&
+      ( VectorizedAssign_v<MT2> &&
         HasSIMDAdd_v< ElementType, ElementType_t<MT2> > &&
         !IsDiagonal_v<MT2> );
    //**********************************************************************************************
@@ -9697,9 +9677,7 @@ class Submatrix<MT,aligned,true,true,CSAs...>
    //! Helper variable template for the explicit application of the SFINAE principle.
    template< typename MT2 >
    static constexpr bool VectorizedSubAssign_v =
-      ( useOptimizedKernels &&
-        simdEnabled && MT2::simdEnabled &&
-        IsSIMDCombinable_v< ElementType, ElementType_t<MT2> > &&
+      ( VectorizedAssign_v<MT2> &&
         HasSIMDSub_v< ElementType, ElementType_t<MT2> > &&
         !IsDiagonal_v<MT2> );
    //**********************************************************************************************
@@ -9708,9 +9686,7 @@ class Submatrix<MT,aligned,true,true,CSAs...>
    //! Helper variable template for the explicit application of the SFINAE principle.
    template< typename MT2 >
    static constexpr bool VectorizedSchurAssign_v =
-      ( useOptimizedKernels &&
-        simdEnabled && MT2::simdEnabled &&
-        IsSIMDCombinable_v< ElementType, ElementType_t<MT2> > &&
+      ( VectorizedAssign_v<MT2> &&
         HasSIMDMult_v< ElementType, ElementType_t<MT2> > );
    //**********************************************************************************************
 

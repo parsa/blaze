@@ -430,12 +430,8 @@ class StaticMatrix
    //! Helper variable template for the explicit application of the SFINAE principle.
    template< typename MT >
    static constexpr bool VectorizedAddAssign_v =
-      ( useOptimizedKernels &&
-        NN >= SIMDSIZE &&
-        simdEnabled && MT::simdEnabled &&
-        IsSIMDCombinable_v< Type, ElementType_t<MT> > &&
+      ( VectorizedAssign_v<MT> &&
         HasSIMDAdd_v< Type, ElementType_t<MT> > &&
-        IsRowMajorMatrix_v<MT> &&
         !IsDiagonal_v<MT> );
    /*! \endcond */
    //**********************************************************************************************
@@ -445,12 +441,8 @@ class StaticMatrix
    //! Helper variable template for the explicit application of the SFINAE principle.
    template< typename MT >
    static constexpr bool VectorizedSubAssign_v =
-      ( useOptimizedKernels &&
-        NN >= SIMDSIZE &&
-        simdEnabled && MT::simdEnabled &&
-        IsSIMDCombinable_v< Type, ElementType_t<MT> > &&
+      ( VectorizedAssign_v<MT> &&
         HasSIMDSub_v< Type, ElementType_t<MT> > &&
-        IsRowMajorMatrix_v<MT> &&
         !IsDiagonal_v<MT> );
    /*! \endcond */
    //**********************************************************************************************
@@ -460,12 +452,8 @@ class StaticMatrix
    //! Helper variable template for the explicit application of the SFINAE principle.
    template< typename MT >
    static constexpr bool VectorizedSchurAssign_v =
-      ( useOptimizedKernels &&
-        NN >= SIMDSIZE &&
-        simdEnabled && MT::simdEnabled &&
-        IsSIMDCombinable_v< Type, ElementType_t<MT> > &&
-        HasSIMDMult_v< Type, ElementType_t<MT> > &&
-        IsRowMajorMatrix_v<MT> );
+      ( VectorizedAssign_v<MT> &&
+        HasSIMDMult_v< Type, ElementType_t<MT> > );
    /*! \endcond */
    //**********************************************************************************************
 
@@ -3534,12 +3522,8 @@ class StaticMatrix<Type,M,N,true,AF,PF>
    //! Helper variable template for the explicit application of the SFINAE principle.
    template< typename MT >
    static constexpr bool VectorizedAddAssign_v =
-      ( useOptimizedKernels &&
-        MM >= SIMDSIZE &&
-        simdEnabled && MT::simdEnabled &&
-        IsSIMDCombinable_v< Type, ElementType_t<MT> > &&
+      ( VectorizedAssign_v<MT> &&
         HasSIMDAdd_v< Type, ElementType_t<MT> > &&
-        IsColumnMajorMatrix_v<MT> &&
         !IsDiagonal_v<MT> );
    //**********************************************************************************************
 
@@ -3547,12 +3531,8 @@ class StaticMatrix<Type,M,N,true,AF,PF>
    //! Helper variable template for the explicit application of the SFINAE principle.
    template< typename MT >
    static constexpr bool VectorizedSubAssign_v =
-      ( useOptimizedKernels &&
-        MM >= SIMDSIZE &&
-        simdEnabled && MT::simdEnabled &&
-        IsSIMDCombinable_v< Type, ElementType_t<MT> > &&
+      ( VectorizedAssign_v<MT> &&
         HasSIMDSub_v< Type, ElementType_t<MT> > &&
-        IsColumnMajorMatrix_v<MT> &&
         !IsDiagonal_v<MT> );
    //**********************************************************************************************
 
@@ -3560,12 +3540,8 @@ class StaticMatrix<Type,M,N,true,AF,PF>
    //! Helper variable template for the explicit application of the SFINAE principle.
    template< typename MT >
    static constexpr bool VectorizedSchurAssign_v =
-      ( useOptimizedKernels &&
-        MM >= SIMDSIZE &&
-        simdEnabled && MT::simdEnabled &&
-        IsSIMDCombinable_v< Type, ElementType_t<MT> > &&
-        HasSIMDMult_v< Type, ElementType_t<MT> > &&
-        IsColumnMajorMatrix_v<MT> );
+      ( VectorizedAssign_v<MT> &&
+        HasSIMDMult_v< Type, ElementType_t<MT> > );
    //**********************************************************************************************
 
  public:
