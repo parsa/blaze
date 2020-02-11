@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <array>
 #include <blaze/system/Standard.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/IntegerSequence.h>

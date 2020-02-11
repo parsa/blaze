@@ -41,6 +41,7 @@
 //*************************************************************************************************
 
 #include <algorithm>
+#include <array>
 #include <utility>
 #include <blaze/math/Aliases.h>
 #include <blaze/math/AlignmentFlag.h>
