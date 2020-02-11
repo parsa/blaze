@@ -1690,7 +1690,7 @@ template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
 inline size_t DynamicVector<Type,TF>::addPadding( size_t value ) const noexcept
 {
-   if( usePadding && IsVectorizable_v<Type> )
+   if( IsVectorizable_v<Type> )
       return nextMultiple<size_t>( value, SIMDSIZE );
    else return value;
 }
@@ -2110,7 +2110,7 @@ inline auto DynamicVector<Type,TF>::assign( const DenseVector<VT,TF>& rhs )
 
    BLAZE_INTERNAL_ASSERT( size_ == (~rhs).size(), "Invalid vector sizes" );
 
-   constexpr bool remainder( !usePadding || !IsPadded_v<VT> );
+   constexpr bool remainder( !IsPadded_v<VT> );
 
    const size_t ipos( remainder ? prevMultiple( size_, SIMDSIZE ) : size_ );
    BLAZE_INTERNAL_ASSERT( ipos <= size_, "Invalid end calculation" );
@@ -2119,7 +2119,9 @@ inline auto DynamicVector<Type,TF>::assign( const DenseVector<VT,TF>& rhs )
    Iterator left( begin() );
    ConstIterator_t<VT> right( (~rhs).begin() );
 
-   if( useStreaming && size_ > ( cacheSize/( sizeof(Type) * 3UL ) ) && !(~rhs).isAliased( this ) )
+   if( useStreaming &&
+       ( size_ > ( cacheSize/( sizeof(Type) * 3UL ) ) ) &&
+       !(~rhs).isAliased( this ) )
    {
       for( ; i<ipos; i+=SIMDSIZE ) {
          left.stream( right.load() ); left += SIMDSIZE; right += SIMDSIZE;
@@ -2224,7 +2226,7 @@ inline auto DynamicVector<Type,TF>::addAssign( const DenseVector<VT,TF>& rhs )
 
    BLAZE_INTERNAL_ASSERT( size_ == (~rhs).size(), "Invalid vector sizes" );
 
-   constexpr bool remainder( !usePadding || !IsPadded_v<VT> );
+   constexpr bool remainder( !IsPadded_v<VT> );
 
    const size_t ipos( remainder ? prevMultiple( size_, SIMDSIZE ) : size_ );
    BLAZE_INTERNAL_ASSERT( ipos <= size_, "Invalid end calculation" );
@@ -2326,7 +2328,7 @@ inline auto DynamicVector<Type,TF>::subAssign( const DenseVector<VT,TF>& rhs )
 
    BLAZE_INTERNAL_ASSERT( size_ == (~rhs).size(), "Invalid vector sizes" );
 
-   constexpr bool remainder( !usePadding || !IsPadded_v<VT> );
+   constexpr bool remainder( !IsPadded_v<VT> );
 
    const size_t ipos( remainder ? prevMultiple( size_, SIMDSIZE ) : size_ );
    BLAZE_INTERNAL_ASSERT( ipos <= size_, "Invalid end calculation" );
@@ -2428,7 +2430,7 @@ inline auto DynamicVector<Type,TF>::multAssign( const DenseVector<VT,TF>& rhs )
 
    BLAZE_INTERNAL_ASSERT( size_ == (~rhs).size(), "Invalid vector sizes" );
 
-   constexpr bool remainder( !usePadding || !IsPadded_v<VT> );
+   constexpr bool remainder( !IsPadded_v<VT> );
 
    const size_t ipos( remainder ? prevMultiple( size_, SIMDSIZE ) : size_ );
    BLAZE_INTERNAL_ASSERT( ipos <= size_, "Invalid end calculation" );
@@ -2780,7 +2782,7 @@ struct IsContiguous< DynamicVector<T,TF> >
 /*! \cond BLAZE_INTERNAL */
 template< typename T, bool TF >
 struct IsPadded< DynamicVector<T,TF> >
-   : public BoolConstant<usePadding>
+   : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************

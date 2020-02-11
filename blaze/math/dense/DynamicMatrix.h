@@ -223,12 +223,6 @@ template< typename Type  // Data type of the matrix
 class DynamicMatrix
    : public DenseMatrix< DynamicMatrix<Type,SO>, SO >
 {
- private:
-   //**********************************************************************************************
-   //! Compilation switch for the choice of alignment.
-   static constexpr AlignmentFlag align = ( usePadding ? aligned : unaligned );
-   //**********************************************************************************************
-
  public:
    //**Type definitions****************************************************************************
    using This          = DynamicMatrix<Type,SO>;    //!< Type of this DynamicMatrix instance.
@@ -246,8 +240,8 @@ class DynamicMatrix
    using Pointer        = Type*;        //!< Pointer to a non-constant matrix value.
    using ConstPointer   = const Type*;  //!< Pointer to a constant matrix value.
 
-   using Iterator      = DenseIterator<Type,align>;        //!< Iterator over non-constant elements.
-   using ConstIterator = DenseIterator<const Type,align>;  //!< Iterator over constant elements.
+   using Iterator      = DenseIterator<Type,aligned>;        //!< Iterator over non-constant elements.
+   using ConstIterator = DenseIterator<const Type,aligned>;  //!< Iterator over constant elements.
    //**********************************************************************************************
 
    //**Rebind struct definition********************************************************************
@@ -1867,7 +1861,7 @@ template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
 inline size_t DynamicMatrix<Type,SO>::addPadding( size_t value ) const noexcept
 {
-   if( usePadding && IsVectorizable_v<Type> )
+   if( IsVectorizable_v<Type> )
       return nextMultiple<size_t>( value, SIMDSIZE );
    else return value;
 }
@@ -2092,7 +2086,7 @@ template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
 inline bool DynamicMatrix<Type,SO>::isAligned() const noexcept
 {
-   return ( usePadding || columns() % SIMDSIZE == 0UL );
+   return true;
 }
 //*************************************************************************************************
 
@@ -2136,10 +2130,7 @@ template< typename Type  // Data type of the matrix
 BLAZE_ALWAYS_INLINE typename DynamicMatrix<Type,SO>::SIMDType
    DynamicMatrix<Type,SO>::load( size_t i, size_t j ) const noexcept
 {
-   if( usePadding )
-      return loada( i, j );
-   else
-      return loadu( i, j );
+   return loada( i, j );
 }
 //*************************************************************************************************
 
@@ -2171,7 +2162,7 @@ BLAZE_ALWAYS_INLINE typename DynamicMatrix<Type,SO>::SIMDType
    BLAZE_INTERNAL_ASSERT( i < m_, "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( j < n_, "Invalid column access index" );
    BLAZE_INTERNAL_ASSERT( j + SIMDSIZE <= nn_, "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( !usePadding || j % SIMDSIZE == 0UL, "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( j % SIMDSIZE == 0UL, "Invalid column access index" );
    BLAZE_INTERNAL_ASSERT( checkAlignment( v_+i*nn_+j ), "Invalid alignment detected" );
 
    return loada( v_+i*nn_+j );
@@ -2233,10 +2224,7 @@ template< typename Type  // Data type of the matrix
 BLAZE_ALWAYS_INLINE void
    DynamicMatrix<Type,SO>::store( size_t i, size_t j, const SIMDType& value ) noexcept
 {
-   if( usePadding )
-      storea( i, j, value );
-   else
-      storeu( i, j, value );
+   storea( i, j, value );
 }
 //*************************************************************************************************
 
@@ -2269,7 +2257,7 @@ BLAZE_ALWAYS_INLINE void
    BLAZE_INTERNAL_ASSERT( i < m_, "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( j < n_, "Invalid column access index" );
    BLAZE_INTERNAL_ASSERT( j + SIMDSIZE <= nn_, "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( !usePadding || j % SIMDSIZE == 0UL, "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( j % SIMDSIZE == 0UL, "Invalid column access index" );
    BLAZE_INTERNAL_ASSERT( checkAlignment( v_+i*nn_+j ), "Invalid alignment detected" );
 
    storea( v_+i*nn_+j, value );
@@ -2340,7 +2328,7 @@ BLAZE_ALWAYS_INLINE void
    BLAZE_INTERNAL_ASSERT( i < m_, "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( j < n_, "Invalid column access index" );
    BLAZE_INTERNAL_ASSERT( j + SIMDSIZE <= nn_, "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( !usePadding || j % SIMDSIZE == 0UL, "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( j % SIMDSIZE == 0UL, "Invalid column access index" );
    BLAZE_INTERNAL_ASSERT( checkAlignment( v_+i*nn_+j ), "Invalid alignment detected" );
 
    stream( v_+i*nn_+j, value );
@@ -2406,13 +2394,14 @@ inline auto DynamicMatrix<Type,SO>::assign( const DenseMatrix<MT,SO>& rhs )
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
-   constexpr bool remainder( !usePadding || !IsPadded_v<MT> );
+   constexpr bool remainder( !IsPadded_v<MT> );
 
    const size_t jpos( remainder ? prevMultiple( n_, SIMDSIZE ) : n_ );
    BLAZE_INTERNAL_ASSERT( jpos <= n_, "Invalid end calculation" );
 
-   if( usePadding && useStreaming &&
-       ( m_*n_ > ( cacheSize / ( sizeof(Type) * 3UL ) ) ) && !(~rhs).isAliased( this ) )
+   if( useStreaming &&
+       ( m_*n_ > ( cacheSize / ( sizeof(Type) * 3UL ) ) ) &&
+       !(~rhs).isAliased( this ) )
    {
       for( size_t i=0UL; i<m_; ++i )
       {
@@ -2620,7 +2609,7 @@ inline auto DynamicMatrix<Type,SO>::addAssign( const DenseMatrix<MT,SO>& rhs )
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
-   constexpr bool remainder( !usePadding || !IsPadded_v<MT> );
+   constexpr bool remainder( !IsPadded_v<MT> );
 
    for( size_t i=0UL; i<m_; ++i )
    {
@@ -2834,7 +2823,7 @@ inline auto DynamicMatrix<Type,SO>::subAssign( const DenseMatrix<MT,SO>& rhs )
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
-   constexpr bool remainder( !usePadding || !IsPadded_v<MT> );
+   constexpr bool remainder( !IsPadded_v<MT> );
 
    for( size_t i=0UL; i<m_; ++i )
    {
@@ -3032,7 +3021,7 @@ inline auto DynamicMatrix<Type,SO>::schurAssign( const DenseMatrix<MT,SO>& rhs )
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
-   constexpr bool remainder( !usePadding || !IsPadded_v<MT> );
+   constexpr bool remainder( !IsPadded_v<MT> );
 
    for( size_t i=0UL; i<m_; ++i )
    {
@@ -3204,12 +3193,6 @@ template< typename Type >  // Data type of the matrix
 class DynamicMatrix<Type,true>
    : public DenseMatrix< DynamicMatrix<Type,true>, true >
 {
- private:
-   //**********************************************************************************************
-   //! Compilation switch for the choice of alignment.
-   static constexpr AlignmentFlag align = ( usePadding ? aligned : unaligned );
-   //**********************************************************************************************
-
  public:
    //**Type definitions****************************************************************************
    using This          = DynamicMatrix<Type,true>;   //!< Type of this DynamicMatrix instance.
@@ -3227,8 +3210,8 @@ class DynamicMatrix<Type,true>
    using Pointer        = Type*;        //!< Pointer to a non-constant matrix value.
    using ConstPointer   = const Type*;  //!< Pointer to a constant matrix value.
 
-   using Iterator      = DenseIterator<Type,align>;        //!< Iterator over non-constant elements.
-   using ConstIterator = DenseIterator<const Type,align>;  //!< Iterator over constant elements.
+   using Iterator      = DenseIterator<Type,aligned>;        //!< Iterator over non-constant elements.
+   using ConstIterator = DenseIterator<const Type,aligned>;  //!< Iterator over constant elements.
    //**********************************************************************************************
 
    //**Rebind struct definition********************************************************************
@@ -4828,7 +4811,7 @@ inline void DynamicMatrix<Type,true>::swap( DynamicMatrix& m ) noexcept
 template< typename Type >  // Data type of the matrix
 inline size_t DynamicMatrix<Type,true>::addPadding( size_t values ) const noexcept
 {
-   if( usePadding && IsVectorizable_v<Type> )
+   if( IsVectorizable_v<Type> )
       return nextMultiple<size_t>( values, SIMDSIZE );
    else return values;
 }
@@ -5060,7 +5043,7 @@ inline bool DynamicMatrix<Type,true>::isAliased( const Other* alias ) const noex
 template< typename Type >  // Data type of the matrix
 inline bool DynamicMatrix<Type,true>::isAligned() const noexcept
 {
-   return ( usePadding || rows() % SIMDSIZE == 0UL );
+   return true;
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -5105,10 +5088,7 @@ template< typename Type >  // Data type of the matrix
 BLAZE_ALWAYS_INLINE typename DynamicMatrix<Type,true>::SIMDType
    DynamicMatrix<Type,true>::load( size_t i, size_t j ) const noexcept
 {
-   if( usePadding )
-      return loada( i, j );
-   else
-      return loadu( i, j );
+   return loada( i, j );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -5139,7 +5119,7 @@ BLAZE_ALWAYS_INLINE typename DynamicMatrix<Type,true>::SIMDType
 
    BLAZE_INTERNAL_ASSERT( i < m_, "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( i + SIMDSIZE <= mm_, "Invalid row access index" );
-   BLAZE_INTERNAL_ASSERT( !usePadding || i % SIMDSIZE == 0UL, "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( i % SIMDSIZE == 0UL, "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( j < n_, "Invalid column access index" );
    BLAZE_INTERNAL_ASSERT( checkAlignment( v_+i+j*mm_ ), "Invalid alignment detected" );
 
@@ -5202,10 +5182,7 @@ template< typename Type >  // Data type of the matrix
 BLAZE_ALWAYS_INLINE void
    DynamicMatrix<Type,true>::store( size_t i, size_t j, const SIMDType& value ) noexcept
 {
-   if( usePadding )
-      storea( i, j, value );
-   else
-      storeu( i, j, value );
+   storea( i, j, value );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -5237,7 +5214,7 @@ BLAZE_ALWAYS_INLINE void
 
    BLAZE_INTERNAL_ASSERT( i < m_, "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( i + SIMDSIZE <= mm_, "Invalid row access index" );
-   BLAZE_INTERNAL_ASSERT( !usePadding || i % SIMDSIZE == 0UL, "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( i % SIMDSIZE == 0UL, "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( j < n_, "Invalid column access index" );
    BLAZE_INTERNAL_ASSERT( checkAlignment( v_+i+j*mm_ ), "Invalid alignment detected" );
 
@@ -5308,7 +5285,7 @@ BLAZE_ALWAYS_INLINE void
 
    BLAZE_INTERNAL_ASSERT( i < m_, "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( i + SIMDSIZE <= mm_, "Invalid row access index" );
-   BLAZE_INTERNAL_ASSERT( !usePadding || i % SIMDSIZE == 0UL, "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( i % SIMDSIZE == 0UL, "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( j < n_, "Invalid column access index" );
    BLAZE_INTERNAL_ASSERT( checkAlignment( v_+i+j*mm_ ), "Invalid alignment detected" );
 
@@ -5377,13 +5354,14 @@ inline auto DynamicMatrix<Type,true>::assign( const DenseMatrix<MT,true>& rhs )
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
-   constexpr bool remainder( !usePadding || !IsPadded_v<MT> );
+   constexpr bool remainder( !IsPadded_v<MT> );
 
    const size_t ipos( remainder ? prevMultiple( m_, SIMDSIZE ) : m_ );
    BLAZE_INTERNAL_ASSERT( ipos <= m_, "Invalid end calculation" );
 
-   if( usePadding && useStreaming &&
-       ( m_*n_ > ( cacheSize / ( sizeof(Type) * 3UL ) ) ) && !(~rhs).isAliased( this ) )
+   if( useStreaming &&
+       ( m_*n_ > ( cacheSize / ( sizeof(Type) * 3UL ) ) ) &&
+       !(~rhs).isAliased( this ) )
    {
       for( size_t j=0UL; j<n_; ++j )
       {
@@ -5596,7 +5574,7 @@ inline auto DynamicMatrix<Type,true>::addAssign( const DenseMatrix<MT,true>& rhs
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
-   constexpr bool remainder( !usePadding || !IsPadded_v<MT> );
+   constexpr bool remainder( !IsPadded_v<MT> );
 
    for( size_t j=0UL; j<n_; ++j )
    {
@@ -5815,7 +5793,7 @@ inline auto DynamicMatrix<Type,true>::subAssign( const DenseMatrix<MT,true>& rhs
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
-   constexpr bool remainder( !usePadding || !IsPadded_v<MT> );
+   constexpr bool remainder( !IsPadded_v<MT> );
 
    for( size_t j=0UL; j<n_; ++j )
    {
@@ -6018,7 +5996,7 @@ inline auto DynamicMatrix<Type,true>::schurAssign( const DenseMatrix<MT,true>& r
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
-   constexpr bool remainder( !usePadding || !IsPadded_v<MT> );
+   constexpr bool remainder( !IsPadded_v<MT> );
 
    for( size_t j=0UL; j<n_; ++j )
    {
@@ -6387,7 +6365,7 @@ struct HasMutableDataAccess< DynamicMatrix<T,SO> >
 /*! \cond BLAZE_INTERNAL */
 template< typename T, bool SO >
 struct IsAligned< DynamicMatrix<T,SO> >
-   : public BoolConstant<usePadding>
+   : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -6423,7 +6401,7 @@ struct IsContiguous< DynamicMatrix<T,SO> >
 /*! \cond BLAZE_INTERNAL */
 template< typename T, bool SO >
 struct IsPadded< DynamicMatrix<T,SO> >
-   : public BoolConstant<usePadding>
+   : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************
