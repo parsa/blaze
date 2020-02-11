@@ -332,6 +332,26 @@ using Rebind_t = typename T1::template Rebind<T2>::Other;
 
 
 //*************************************************************************************************
+/*!\brief Alias declaration for nested \c rebind class templates.
+// \ingroup aliases
+//
+// The rebind_t alias declaration provides a convenient shortcut to access the nested \a rebind
+// class template of the given type \a T1. The following code example shows both ways to access
+// the nested class template:
+
+   \code
+   using Type1 = typename T1::template rebind<T2>::Other;
+   using Type2 = rebind_t<T1,T2>;
+
+   BLAZE_CONSTRAINT_MUST_BE_STRICTLY_SAME_TYPE( Type1, Type2 );
+   \endcode
+*/
+template< typename T1, typename T2 >
+using rebind_t = typename T1::template rebind<T2>::other;
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Alias declaration for nested \c Reference type definitions.
 // \ingroup aliases
 //
