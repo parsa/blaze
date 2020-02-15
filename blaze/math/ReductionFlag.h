@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
 //  \file blaze/math/ReductionFlag.h
-//  \brief Header file for the reduction flag enumeration
+//  \brief Header file for the reduction flags
 //
 //  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
@@ -52,30 +52,49 @@ namespace blaze {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Reduction flag for row-wise or column-wise reduction operations.
-// \ingroup math
+/*!\brief Type of the reduction flags.
+*/
+using ReductionFlag = size_t;
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Reduction flag for row-wise reduction operations.
 //
-// This flag can be used to perform row-wise or column-wise reduction operations on matrices.
-// The following example shows both the row-wise and column-wise summation of a dense matrix:
+// This flag can be used to perform row-wise reduction operations on matrices. The following
+// example shows the row-wise summation of a row-major matrix:
 
    \code
    using blaze::rowMajor;
    using blaze::columnVector;
-   using blaze::rowVector;
 
    blaze::DynamicMatrix<int,rowMajor> A{ { 4, 1, 2 }, { -2, 0, 3 } };
-   blaze::DynamicVector<int,columnVector> v1;
-   blaze::DynamicVector<int,rowVector> v2;
+   blaze::DynamicVector<int,columnVector> v;
 
-   v1 = sum<rowwise>( A );     // Results in ( 7, 1 )
-   v2 = sum<columnwise>( A );  // Results in ( 2, 1, 5 )
+   v = sum<rowwise>( A );  // Results in ( 7, 1 )
    \endcode
 */
-enum ReductionFlag : size_t
-{
-   columnwise = 0UL,  //!< Flag for column-wise reduction operations.
-   rowwise    = 1UL   //!< Flag for row-wise reduction operations.
-};
+constexpr ReductionFlag rowwise = 1UL;
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Reduction flag for column-wise reduction operations.
+//
+// This flag can be used to perform column-wise reduction operations on matrices. The following
+// example shows the column-wise summation of a column-major matrix:
+
+   \code
+   using blaze::columnMajor;
+   using blaze::rowVector;
+
+   blaze::DynamicMatrix<int,columnMajor> A{ { 4, 1, 2 }, { -2, 0, 3 } };
+   blaze::DynamicVector<int,rowVector> v;
+
+   v = sum<columnwise>( A );  // Results in ( 2, 1, 5 )
+   \endcode
+*/
+constexpr ReductionFlag columnwise = 0UL;
 //*************************************************************************************************
 
 } // namespace blaze
