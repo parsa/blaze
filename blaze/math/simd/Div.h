@@ -61,13 +61,43 @@ namespace blaze {
 // \param b The right-hand side SIMD operand.
 // \return The result of the division.
 //
-// This operation is only available for AVX-512.
+// This operation is only available for AVX2 and AVX-512.
 */
 BLAZE_ALWAYS_INLINE const SIMDint8
    operator/( const SIMDint8& a, const SIMDint8& b ) noexcept
 #if BLAZE_SVML_MODE && BLAZE_AVX512BW_MODE
 {
    return _mm512_div_epi8( a.value, b.value );
+}
+#elif BLAZE_SVML_MODE && BLAZE_AVX2_MODE
+{
+   return _mm256_div_epi8( a.value, b.value );
+}
+#else
+= delete;
+#endif
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Division of two vectors of 8-bit unsigned integral SIMD values.
+// \ingroup simd
+//
+// \param a The left-hand side SIMD operand.
+// \param b The right-hand side SIMD operand.
+// \return The result of the division.
+//
+// This operation is only available for AVX2 and AVX-512.
+*/
+BLAZE_ALWAYS_INLINE const SIMDuint8
+   operator/( const SIMDuint8& a, const SIMDuint8& b ) noexcept
+#if BLAZE_SVML_MODE && BLAZE_AVX512BW_MODE
+{
+   return _mm512_div_epu8( a.value, b.value );
+}
+#elif BLAZE_SVML_MODE && BLAZE_AVX2_MODE
+{
+   return _mm256_div_epu8( a.value, b.value );
 }
 #else
 = delete;
@@ -83,13 +113,43 @@ BLAZE_ALWAYS_INLINE const SIMDint8
 // \param b The right-hand side scalars.
 // \return The result of the division.
 //
-// This operation is only available for AVX-512.
+// This operation is only available for AVX2 and AVX-512.
 */
 BLAZE_ALWAYS_INLINE const SIMDcint8
    operator/( const SIMDcint8& a, const SIMDint8& b ) noexcept
 #if BLAZE_SVML_MODE && BLAZE_AVX512BW_MODE
 {
    return _mm512_div_epi8( a.value, b.value );
+}
+#elif BLAZE_SVML_MODE && BLAZE_AVX2_MODE
+{
+   return _mm256_div_epi8( a.value, b.value );
+}
+#else
+= delete;
+#endif
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Scaling of a vector of 8-bit unsigned integral complex SIMD values.
+// \ingroup simd
+//
+// \param a The left-hand side complex values to be scaled.
+// \param b The right-hand side scalars.
+// \return The result of the division.
+//
+// This operation is only available for AVX2 and AVX-512.
+*/
+BLAZE_ALWAYS_INLINE const SIMDcuint8
+   operator/( const SIMDcuint8& a, const SIMDuint8& b ) noexcept
+#if BLAZE_SVML_MODE && BLAZE_AVX512BW_MODE
+{
+   return _mm512_div_epu8( a.value, b.value );
+}
+#elif BLAZE_SVML_MODE && BLAZE_AVX2_MODE
+{
+   return _mm256_div_epu8( a.value, b.value );
 }
 #else
 = delete;
@@ -113,13 +173,43 @@ BLAZE_ALWAYS_INLINE const SIMDcint8
 // \param b The right-hand side SIMD operand.
 // \return The result of the division.
 //
-// This operation is only available for AVX-512.
+// This operation is only available for AVX2 and AVX-512.
 */
 BLAZE_ALWAYS_INLINE const SIMDint16
    operator/( const SIMDint16& a, const SIMDint16& b ) noexcept
 #if BLAZE_SVML_MODE && BLAZE_AVX512BW_MODE
 {
    return _mm512_div_epi16( a.value, b.value );
+}
+#elif BLAZE_SVML_MODE && BLAZE_AVX2_MODE
+{
+   return _mm256_div_epi16( a.value, b.value );
+}
+#else
+= delete;
+#endif
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Division of two vectors of 16-bit unsigned integral SIMD values.
+// \ingroup simd
+//
+// \param a The left-hand side SIMD operand.
+// \param b The right-hand side SIMD operand.
+// \return The result of the division.
+//
+// This operation is only available for AVX2 and AVX-512.
+*/
+BLAZE_ALWAYS_INLINE const SIMDuint16
+   operator/( const SIMDuint16& a, const SIMDuint16& b ) noexcept
+#if BLAZE_SVML_MODE && BLAZE_AVX512BW_MODE
+{
+   return _mm512_div_epu16( a.value, b.value );
+}
+#elif BLAZE_SVML_MODE && BLAZE_AVX2_MODE
+{
+   return _mm256_div_epu16( a.value, b.value );
 }
 #else
 = delete;
@@ -135,13 +225,43 @@ BLAZE_ALWAYS_INLINE const SIMDint16
 // \param b The right-hand side scalars.
 // \return The result of the division.
 //
-// This operation is only available for AVX-512.
+// This operation is only available for AVX2 and AVX-512.
 */
 BLAZE_ALWAYS_INLINE const SIMDcint16
    operator/( const SIMDcint16& a, const SIMDint16& b ) noexcept
 #if BLAZE_SVML_MODE && BLAZE_AVX512BW_MODE
 {
    return _mm512_div_epi16( a.value, b.value );
+}
+#elif BLAZE_SVML_MODE && BLAZE_AVX2_MODE
+{
+   return _mm256_div_epi16( a.value, b.value );
+}
+#else
+= delete;
+#endif
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Scaling of a vector of 16-bit unsigned integral complex SIMD values.
+// \ingroup simd
+//
+// \param a The left-hand side complex values to be scaled.
+// \param b The right-hand side scalars.
+// \return The result of the division.
+//
+// This operation is only available for AVX2 and AVX-512.
+*/
+BLAZE_ALWAYS_INLINE const SIMDcuint16
+   operator/( const SIMDcuint16& a, const SIMDuint16& b ) noexcept
+#if BLAZE_SVML_MODE && BLAZE_AVX512BW_MODE
+{
+   return _mm512_div_epu16( a.value, b.value );
+}
+#elif BLAZE_SVML_MODE && BLAZE_AVX2_MODE
+{
+   return _mm256_div_epu16( a.value, b.value );
 }
 #else
 = delete;
@@ -165,13 +285,43 @@ BLAZE_ALWAYS_INLINE const SIMDcint16
 // \param b The right-hand side SIMD operand.
 // \return The result of the division.
 //
-// This operation is only available for MIC and AVX-512.
+// This operation is only available for AVX2, MIC, and AVX-512.
 */
 BLAZE_ALWAYS_INLINE const SIMDint32
    operator/( const SIMDint32& a, const SIMDint32& b ) noexcept
 #if BLAZE_SVML_MODE && ( BLAZE_AVX512F_MODE || BLAZE_MIC_MODE )
 {
    return _mm512_div_epi32( a.value, b.value );
+}
+#elif BLAZE_SVML_MODE && BLAZE_AVX2_MODE
+{
+   return _mm256_div_epi32( a.value, b.value );
+}
+#else
+= delete;
+#endif
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Division of two vectors of 32-bit unsigned integral SIMD values.
+// \ingroup simd
+//
+// \param a The left-hand side SIMD operand.
+// \param b The right-hand side SIMD operand.
+// \return The result of the division.
+//
+// This operation is only available for AVX2, MIC, and AVX-512.
+*/
+BLAZE_ALWAYS_INLINE const SIMDuint32
+   operator/( const SIMDuint32& a, const SIMDuint32& b ) noexcept
+#if BLAZE_SVML_MODE && ( BLAZE_AVX512F_MODE || BLAZE_MIC_MODE )
+{
+   return _mm512_div_epu32( a.value, b.value );
+}
+#elif BLAZE_SVML_MODE && BLAZE_AVX2_MODE
+{
+   return _mm256_div_epu32( a.value, b.value );
 }
 #else
 = delete;
@@ -187,13 +337,43 @@ BLAZE_ALWAYS_INLINE const SIMDint32
 // \param b The right-hand side scalars.
 // \return The result of the division.
 //
-// This operation is only available for MIC and AVX-512.
+// This operation is only available for AVX2, MIC, and AVX-512.
 */
 BLAZE_ALWAYS_INLINE const SIMDcint32
    operator/( const SIMDcint32& a, const SIMDint32& b ) noexcept
 #if BLAZE_SVML_MODE && ( BLAZE_AVX512F_MODE || BLAZE_MIC_MODE )
 {
    return _mm512_div_epi32( a.value, b.value );
+}
+#elif BLAZE_SVML_MODE && BLAZE_AVX2_MODE
+{
+   return _mm256_div_epi32( a.value, b.value );
+}
+#else
+= delete;
+#endif
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Scaling of a vector of 32-bit unsigned integral complex SIMD values.
+// \ingroup simd
+//
+// \param a The left-hand side complex values to be scaled.
+// \param b The right-hand side scalars.
+// \return The result of the division.
+//
+// This operation is only available for AVX2, MIC, and AVX-512.
+*/
+BLAZE_ALWAYS_INLINE const SIMDcuint32
+   operator/( const SIMDcuint32& a, const SIMDuint32& b ) noexcept
+#if BLAZE_SVML_MODE && ( BLAZE_AVX512F_MODE || BLAZE_MIC_MODE )
+{
+   return _mm512_div_epu32( a.value, b.value );
+}
+#elif BLAZE_SVML_MODE && BLAZE_AVX2_MODE
+{
+   return _mm256_div_epu32( a.value, b.value );
 }
 #else
 = delete;
@@ -217,13 +397,43 @@ BLAZE_ALWAYS_INLINE const SIMDcint32
 // \param b The right-hand side SIMD operand.
 // \return The result of the division.
 //
-// This operation is only available for MIC and AVX-512.
+// This operation is only available for AVX2, MIC, and AVX-512.
 */
 BLAZE_ALWAYS_INLINE const SIMDint64
    operator/( const SIMDint64& a, const SIMDint64& b ) noexcept
 #if BLAZE_SVML_MODE && ( BLAZE_AVX512F_MODE || BLAZE_MIC_MODE )
 {
    return _mm512_div_epi64( a.value, b.value );
+}
+#elif BLAZE_SVML_MODE && BLAZE_AVX2_MODE
+{
+   return _mm256_div_epi64( a.value, b.value );
+}
+#else
+= delete;
+#endif
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Division of two vectors of 64-bit unsigned integral SIMD values.
+// \ingroup simd
+//
+// \param a The left-hand side SIMD operand.
+// \param b The right-hand side SIMD operand.
+// \return The result of the division.
+//
+// This operation is only available for AVX2, MIC, and AVX-512.
+*/
+BLAZE_ALWAYS_INLINE const SIMDuint64
+   operator/( const SIMDuint64& a, const SIMDuint64& b ) noexcept
+#if BLAZE_SVML_MODE && ( BLAZE_AVX512F_MODE || BLAZE_MIC_MODE )
+{
+   return _mm512_div_epu64( a.value, b.value );
+}
+#elif BLAZE_SVML_MODE && BLAZE_AVX2_MODE
+{
+   return _mm256_div_epu64( a.value, b.value );
 }
 #else
 = delete;
@@ -239,13 +449,43 @@ BLAZE_ALWAYS_INLINE const SIMDint64
 // \param b The right-hand side scalars.
 // \return The result of the division.
 //
-// This operation is only available for MIC and AVX-512.
+// This operation is only available for AVX2, MIC, and AVX-512.
 */
 BLAZE_ALWAYS_INLINE const SIMDcint64
    operator/( const SIMDcint64& a, const SIMDint64& b ) noexcept
 #if BLAZE_SVML_MODE && ( BLAZE_AVX512F_MODE || BLAZE_MIC_MODE )
 {
-   return _mm512_div_epi64( (~a).value, (~b).value );
+   return _mm512_div_epi64( a.value, b.value );
+}
+#elif BLAZE_SVML_MODE && BLAZE_AVX2_MODE
+{
+   return _mm256_div_epi64( a.value, b.value );
+}
+#else
+= delete;
+#endif
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Scaling of a vector of 64-bit unsigned integral complex SIMD values.
+// \ingroup simd
+//
+// \param a The left-hand side complex values to be scaled.
+// \param b The right-hand side scalars.
+// \return The result of the division.
+//
+// This operation is only available for AVX2, MIC, and AVX-512.
+*/
+BLAZE_ALWAYS_INLINE const SIMDcuint64
+   operator/( const SIMDcuint64& a, const SIMDuint64& b ) noexcept
+#if BLAZE_SVML_MODE && ( BLAZE_AVX512F_MODE || BLAZE_MIC_MODE )
+{
+   return _mm512_div_epu64( a.value, b.value );
+}
+#elif BLAZE_SVML_MODE && BLAZE_AVX2_MODE
+{
+   return _mm256_div_epu64( a.value, b.value );
 }
 #else
 = delete;
