@@ -311,11 +311,11 @@ void ClassTest::testAlignment( const std::string& type )
 
    {
       using AlignedUnpadded =
-         blaze::StaticMatrix<Type,7UL,32UL,blaze::rowMajor,blaze::aligned,blaze::unpadded>;
+         blaze::StaticMatrix<Type,7UL,64UL,blaze::rowMajor,blaze::aligned,blaze::unpadded>;
 
       BLAZE_STATIC_ASSERT( blaze::IsAligned_v<AlignedUnpadded> );
       BLAZE_STATIC_ASSERT( !blaze::IsPadded_v<AlignedUnpadded> );
-      BLAZE_STATIC_ASSERT( sizeof(AlignedUnpadded) == sizeof(Type)*7UL*blaze::nextMultiple( 32UL, SIMDSIZE ) );
+      BLAZE_STATIC_ASSERT( sizeof(AlignedUnpadded) == sizeof(Type)*7UL*blaze::nextMultiple( 64UL, SIMDSIZE ) );
 
       const AlignedUnpadded mat;
 
@@ -340,11 +340,11 @@ void ClassTest::testAlignment( const std::string& type )
 
    {
       using AlignedUnpadded =
-         blaze::StaticMatrix<Type,32UL,5UL,blaze::columnMajor,blaze::aligned,blaze::unpadded>;
+         blaze::StaticMatrix<Type,64UL,5UL,blaze::columnMajor,blaze::aligned,blaze::unpadded>;
 
       BLAZE_STATIC_ASSERT( blaze::IsAligned_v<AlignedUnpadded> );
       BLAZE_STATIC_ASSERT( !blaze::IsPadded_v<AlignedUnpadded> );
-      BLAZE_STATIC_ASSERT( sizeof(AlignedUnpadded) == sizeof(Type)*5UL*blaze::nextMultiple( 32UL, SIMDSIZE ) );
+      BLAZE_STATIC_ASSERT( sizeof(AlignedUnpadded) == sizeof(Type)*5UL*blaze::nextMultiple( 64UL, SIMDSIZE ) );
 
       const AlignedUnpadded mat;
 
@@ -483,7 +483,7 @@ void ClassTest::testAlignment( const std::string& type )
 
    {
       using AlignedUnpadded =
-         blaze::StaticMatrix<Type,7UL,32UL,blaze::rowMajor,blaze::aligned,blaze::unpadded>;
+         blaze::StaticMatrix<Type,7UL,64UL,blaze::rowMajor,blaze::aligned,blaze::unpadded>;
 
       const AlignedUnpadded init;
       const std::array<AlignedUnpadded,7UL> mats{ init, init, init, init, init, init, init };
@@ -512,7 +512,7 @@ void ClassTest::testAlignment( const std::string& type )
 
    {
       using AlignedUnpadded =
-         blaze::StaticMatrix<Type,32UL,5UL,blaze::columnMajor,blaze::aligned,blaze::unpadded>;
+         blaze::StaticMatrix<Type,64UL,5UL,blaze::columnMajor,blaze::aligned,blaze::unpadded>;
 
       const AlignedUnpadded init;
       const std::array<AlignedUnpadded,7UL> mats{ init, init, init, init, init, init, init };
@@ -611,7 +611,7 @@ void ClassTest::testAlignment( const std::string& type )
 
    {
       using AlignedPadded =
-         blaze::StaticMatrix<Type,7UL,32UL,blaze::rowMajor,blaze::aligned,blaze::padded>;
+         blaze::StaticMatrix<Type,7UL,64UL,blaze::rowMajor,blaze::aligned,blaze::padded>;
       using AllocatorType = blaze::AlignedAllocator<AlignedPadded>;
 
       const AlignedPadded init;
@@ -641,7 +641,7 @@ void ClassTest::testAlignment( const std::string& type )
 
    {
       using AlignedPadded =
-         blaze::StaticMatrix<Type,32UL,5UL,blaze::columnMajor,blaze::aligned,blaze::padded>;
+         blaze::StaticMatrix<Type,64UL,5UL,blaze::columnMajor,blaze::aligned,blaze::padded>;
       using AllocatorType = blaze::AlignedAllocator<AlignedPadded>;
 
       const AlignedPadded init;
