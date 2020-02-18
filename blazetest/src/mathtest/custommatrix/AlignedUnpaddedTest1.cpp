@@ -37,6 +37,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <array>
 #include <cstdlib>
 #include <iostream>
 #include <memory>
@@ -794,9 +795,36 @@ void AlignedUnpaddedTest::testAssignment()
    //=====================================================================================
 
    {
-      test_ = "Row-major CustomMatrix array assignment";
+      test_ = "Row-major CustomMatrix static array assignment";
 
       const int array[2UL][3UL] = { { 1, 2, 3 }, { 4, 5, 6 } };
+      std::unique_ptr<int[],blaze::Deallocate> memory( blaze::allocate<int>( 32UL ) );
+      MT mat( memory.get(), 2UL, 3UL, 16UL );
+      mat = array;
+
+      checkRows    ( mat,  2UL );
+      checkColumns ( mat,  3UL );
+      checkCapacity( mat, 32UL );
+      checkNonZeros( mat,  6UL );
+      checkNonZeros( mat,  0UL, 3UL );
+      checkNonZeros( mat,  1UL, 3UL );
+
+      if( mat(0,0) != 1 || mat(0,1) != 2 || mat(0,2) != 3 ||
+          mat(1,0) != 4 || mat(1,1) != 5 || mat(1,2) != 6 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat << "\n"
+             << "   Expected result:\n( 1 2 3 )\n( 4 5 6 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major CustomMatrix std::array assignment";
+
+      const std::array<std::array<int,3UL>,2UL> array{ { { 1, 2, 3 }, { 4, 5, 6 } } };
       std::unique_ptr<int[],blaze::Deallocate> memory( blaze::allocate<int>( 32UL ) );
       MT mat( memory.get(), 2UL, 3UL, 16UL );
       mat = array;
@@ -1800,9 +1828,37 @@ void AlignedUnpaddedTest::testAssignment()
    //=====================================================================================
 
    {
-      test_ = "Column-major CustomMatrix array initialization constructor";
+      test_ = "Column-major CustomMatrix static array assignment";
 
       const int array[2][3] = { { 1, 2, 3 }, { 4, 5, 6 } };
+      std::unique_ptr<int[],blaze::Deallocate> memory( blaze::allocate<int>( 48UL ) );
+      OMT mat( memory.get(), 2UL, 3UL, 16UL );
+      mat = array;
+
+      checkRows    ( mat,  2UL );
+      checkColumns ( mat,  3UL );
+      checkCapacity( mat, 48UL );
+      checkNonZeros( mat,  6UL );
+      checkNonZeros( mat,  0UL, 2UL );
+      checkNonZeros( mat,  1UL, 2UL );
+      checkNonZeros( mat,  2UL, 2UL );
+
+      if( mat(0,0) != 1 || mat(0,1) != 2 || mat(0,2) != 3 ||
+          mat(1,0) != 4 || mat(1,1) != 5 || mat(1,2) != 6 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat << "\n"
+             << "   Expected result:\n( 1 2 3 )\n( 4 5 6 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Column-major CustomMatrix std::array assignment";
+
+      const std::array<std::array<int,3UL>,2UL> array{ { { 1, 2, 3 }, { 4, 5, 6 } } };
       std::unique_ptr<int[],blaze::Deallocate> memory( blaze::allocate<int>( 48UL ) );
       OMT mat( memory.get(), 2UL, 3UL, 16UL );
       mat = array;
