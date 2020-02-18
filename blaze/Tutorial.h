@@ -4162,10 +4162,11 @@
 
 // \n \subsection matrix_operations_array_construction Array Construction
 //
-// Alternatively, all dense matrix classes offer a constructor for an initialization with a
-// dynamic or static array. If the matrix is initialized from a dynamic array, the constructor
-// expects the dimensions of values provided by the array as first and second argument, the
-// array as third argument. In case of a static array, the fixed size of the array is used:
+// Alternatively, all dense matrix classes offer a constructor for an initialization with a dynamic
+// or static array, or with a \c std::array. If the matrix is initialized from a dynamic array, the
+// constructor expects the dimensions of values provided by the array as first and second argument,
+// the array as third argument. In case of a static array or \c std::array, the fixed size of the
+// array is used:
 
    \code
    const std::unique_ptr<double[]> array1( new double[6] );
@@ -4174,6 +4175,9 @@
 
    int array2[2][2] = { { 4, -5 }, { -6, 7 } };
    blaze::StaticMatrix<int,2UL,2UL,rowMajor> M13( array2 );
+
+   const std::array<std::array<float,3UL>,2UL> array3{ { { 1, 2, 3 }, { 4, 5, 6 } } };
+   blaze::StaticMatrix<int,2UL,3UL> M14( array3 );
    \endcode
 
 // \n \subsection matrix_operations_initializer_list_construction
@@ -4182,10 +4186,10 @@
 // initializer list:
 
    \code
-   blaze::DynamicMatrix<float,columnMajor> M14{ {  3.1F,  6.4F },
+   blaze::DynamicMatrix<float,columnMajor> M15{ {  3.1F,  6.4F },
                                                 { -0.9F, -1.2F },
                                                 {  4.8F,  0.6F } };
-   blaze::CompressedMatrix<int,rowMajor> M15{ { 3 },
+   blaze::CompressedMatrix<int,rowMajor> M16{ { 3 },
                                               { 1 },
                                               { 0, 2 } };
    \endcode
@@ -4204,13 +4208,13 @@
 // All dense and sparse matrices can be created as a copy of another dense or sparse matrix.
 
    \code
-   StaticMatrix<int,5UL,4UL,rowMajor> M16( M6 );    // Instantiation of the dense row-major matrix M16
+   StaticMatrix<int,5UL,4UL,rowMajor> M17( M6 );    // Instantiation of the dense row-major matrix M16
                                                     // as copy of the dense row-major matrix M6.
-   DynamicMatrix<float,columnMajor> M17( M8 );      // Instantiation of the dense column-major matrix M17
+   DynamicMatrix<float,columnMajor> M18( M8 );      // Instantiation of the dense column-major matrix M17
                                                     // as copy of the sparse column-major matrix M8.
-   CompressedMatrix<double,columnMajor> M18( M7 );  // Instantiation of the compressed column-major matrix
+   CompressedMatrix<double,columnMajor> M19( M7 );  // Instantiation of the compressed column-major matrix
                                                     // M18 as copy of the dense row-major matrix M7.
-   CompressedMatrix<float,rowMajor> M19( M8 );      // Instantiation of the compressed row-major matrix
+   CompressedMatrix<float,rowMajor> M20( M8 );      // Instantiation of the compressed row-major matrix
                                                     // M19 as copy of the compressed column-major matrix M8.
    \endcode
 
@@ -4218,9 +4222,9 @@
 // number of rows and/or columns:
 
    \code
-   StaticMatrix<int,4UL,5UL,rowMajor> M20( M6 );     // Runtime error: Number of rows and columns
+   StaticMatrix<int,4UL,5UL,rowMajor> M21( M6 );     // Runtime error: Number of rows and columns
                                                      // does not match!
-   StaticMatrix<int,4UL,4UL,columnMajor> M21( M9 );  // Compile time error: Number of columns does
+   StaticMatrix<int,4UL,4UL,columnMajor> M22( M9 );  // Compile time error: Number of columns does
                                                      // not match!
    \endcode
 
