@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <array>
 #include <algorithm>
 #include <utility>
 #include <blaze/math/Aliases.h>
@@ -292,6 +293,9 @@ class DynamicMatrix
    template< typename Other, size_t Rows, size_t Cols >
    inline DynamicMatrix( const Other (&array)[Rows][Cols] );
 
+   template< typename Other, size_t Rows, size_t Cols >
+   inline DynamicMatrix( const std::array<std::array<Other,Cols>,Rows>& array );
+
    inline DynamicMatrix( const DynamicMatrix& m );
    inline DynamicMatrix( DynamicMatrix&& m ) noexcept;
 
@@ -335,6 +339,9 @@ class DynamicMatrix
 
    template< typename Other, size_t Rows, size_t Cols >
    inline DynamicMatrix& operator=( const Other (&array)[Rows][Cols] );
+
+   template< typename Other, size_t Rows, size_t Cols >
+   inline DynamicMatrix& operator=( const std::array<std::array<Other,Cols>,Rows>& array );
 
    inline DynamicMatrix& operator=( const DynamicMatrix& rhs );
    inline DynamicMatrix& operator=( DynamicMatrix&& rhs ) noexcept;
@@ -551,6 +558,9 @@ DynamicMatrix( size_t, size_t, Type* ) -> DynamicMatrix< RemoveCV_t<Type> >;
 template< typename Type, size_t M, size_t N >
 DynamicMatrix( Type (&)[M][N] ) -> DynamicMatrix< RemoveCV_t<Type> >;
 
+template< typename Type, size_t M, size_t N >
+DynamicMatrix( std::array<std::array<Type,N>,M> ) -> DynamicMatrix<Type>;
+
 #endif
 //*************************************************************************************************
 
@@ -738,6 +748,46 @@ template< typename Other  // Data type of the static array
         , size_t Rows     // Number of rows of the static array
         , size_t Cols >   // Number of columns of the static array
 inline DynamicMatrix<Type,SO>::DynamicMatrix( const Other (&array)[Rows][Cols] )
+   : DynamicMatrix( Rows, Cols )
+{
+   for( size_t i=0UL; i<Rows; ++i ) {
+      for( size_t j=0UL; j<Cols; ++j ) {
+         v_[i*nn_+j] = array[i][j];
+      }
+   }
+
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Initialization of all matrix elements from the given std::array.
+//
+// \param array The given std::array for the initialization.
+//
+// This constructor offers the option to directly initialize the elements of the matrix with
+// a std::array:
+
+   \code
+   using blaze::rowMajor;
+
+   const std::array<std::array<int,3UL>,3UL> init{ { { 1, 2, 3 },
+                                                     { 4, 5 },
+                                                     { 7, 8, 9 } } };
+   blaze::DynamicMatrix<int,rowMajor> A( init );
+   \endcode
+
+// The matrix is sized according to the size of the std::array and initialized with the values
+// from the given std::array. Missing values are initialized with default values (as e.g. the
+// value 6 in the example).
+*/
+template< typename Type   // Data type of the matrix
+        , bool SO >       // Storage order
+template< typename Other  // Data type of the std::array
+        , size_t Rows     // Number of rows of the std::array
+        , size_t Cols >   // Number of columns of the std::array
+inline DynamicMatrix<Type,SO>::DynamicMatrix( const std::array<std::array<Other,Cols>,Rows>& array )
    : DynamicMatrix( Rows, Cols )
 {
    for( size_t i=0UL; i<Rows; ++i ) {
@@ -1254,6 +1304,47 @@ template< typename Other  // Data type of the static array
         , size_t Rows     // Number of rows of the static array
         , size_t Cols >   // Number of columns of the static array
 inline DynamicMatrix<Type,SO>& DynamicMatrix<Type,SO>::operator=( const Other (&array)[Rows][Cols] )
+{
+   resize( Rows, Cols, false );
+
+   for( size_t i=0UL; i<Rows; ++i )
+      for( size_t j=0UL; j<Cols; ++j )
+         v_[i*nn_+j] = array[i][j];
+
+   return *this;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Array assignment to all matrix elements.
+//
+// \param array The given std::array for the assignment.
+// \return Reference to the assigned matrix.
+//
+// This assignment operator offers the option to directly set all elements of the matrix:
+
+   \code
+   using blaze::rowMajor;
+
+   const std::array<std::array<int,3UL>,3UL> init{ { { 1, 2, 3 },
+                                                     { 4, 5 },
+                                                     { 7, 8, 9 } } };
+   blaze::DynamicMatrix<int,rowMajor> A;
+   A = init;
+   \endcode
+
+// The matrix is resized according to the size of the std::array and assigned the values of the
+// given std::array. Missing values are initialized with default values (as e.g. the value 6 in
+// the example).
+*/
+template< typename Type   // Data type of the matrix
+        , bool SO >       // Storage order
+template< typename Other  // Data type of the std::array
+        , size_t Rows     // Number of rows of the std::array
+        , size_t Cols >   // Number of columns of the std::array
+inline DynamicMatrix<Type,SO>&
+   DynamicMatrix<Type,SO>::operator=( const std::array<std::array<Other,Cols>,Rows>& array )
 {
    resize( Rows, Cols, false );
 
@@ -3262,6 +3353,9 @@ class DynamicMatrix<Type,true>
    template< typename Other, size_t Rows, size_t Cols >
    inline DynamicMatrix( const Other (&array)[Rows][Cols] );
 
+   template< typename Other, size_t Rows, size_t Cols >
+   inline DynamicMatrix( const std::array<std::array<Other,Cols>,Rows>& array );
+
    inline DynamicMatrix( const DynamicMatrix& m );
    inline DynamicMatrix( DynamicMatrix&& m );
 
@@ -3305,6 +3399,9 @@ class DynamicMatrix<Type,true>
 
    template< typename Other, size_t Rows, size_t Cols >
    inline DynamicMatrix& operator=( const Other (&array)[Rows][Cols] );
+
+   template< typename Other, size_t Rows, size_t Cols >
+   inline DynamicMatrix& operator=( const std::array<std::array<Other,Cols>,Rows>& array );
 
    inline DynamicMatrix& operator=( const DynamicMatrix& rhs );
    inline DynamicMatrix& operator=( DynamicMatrix&& rhs );
@@ -3684,6 +3781,47 @@ template< typename Other   // Data type of the static array
         , size_t Rows      // Number of rows of the static array
         , size_t Cols >    // Number of columns of the static array
 inline DynamicMatrix<Type,true>::DynamicMatrix( const Other (&array)[Rows][Cols] )
+   : DynamicMatrix( Rows, Cols )
+{
+   for( size_t j=0UL; j<Cols; ++j ) {
+      for( size_t i=0UL; i<Rows; ++i ) {
+         v_[i+j*mm_] = array[i][j];
+      }
+   }
+
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Initialization of all matrix elements from the given std::array.
+//
+// \param array The given std::array for the initialization.
+//
+// This constructor offers the option to directly initialize the elements of the matrix with
+// a std::array:
+
+   \code
+   using blaze::columnMajor;
+
+   const std::array<std::array<int,3UL>,3UL> init{ { { 1, 2, 3 },
+                                                     { 4, 5 },
+                                                     { 7, 8, 9 } } };
+   blaze::DynamicMatrix<int,columnMajor> A( init );
+   \endcode
+
+// The matrix is sized according to the size of the std::array and initialized with the values
+// from the given std::array. Missing values are initialized with default values (as e.g. the
+// value 6 in the example).
+*/
+template< typename Type >  // Data type of the matrix
+template< typename Other   // Data type of the std::array
+        , size_t Rows      // Number of rows of the std::array
+        , size_t Cols >    // Number of columns of the std::array
+inline DynamicMatrix<Type,true>::DynamicMatrix( const std::array<std::array<Other,Cols>,Rows>& array )
    : DynamicMatrix( Rows, Cols )
 {
    for( size_t j=0UL; j<Cols; ++j ) {
@@ -4196,6 +4334,48 @@ template< typename Other   // Data type of the static array
         , size_t Rows      // Number of rows of the static array
         , size_t Cols >    // Number of columns of the static array
 inline DynamicMatrix<Type,true>& DynamicMatrix<Type,true>::operator=( const Other (&array)[Rows][Cols] )
+{
+   resize( Rows, Cols, false );
+
+   for( size_t j=0UL; j<Cols; ++j )
+      for( size_t i=0UL; i<Rows; ++i )
+         v_[i+j*mm_] = array[i][j];
+
+   return *this;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Array assignment to all matrix elements.
+//
+// \param array The given std::array for the assignment.
+// \return Reference to the assigned matrix.
+//
+// This assignment operator offers the option to directly set all elements of the matrix:
+
+   \code
+   using blaze::columnMajor;
+
+   const std::array<std::array<int,3UL>,3UL> init{ { { 1, 2, 3 },
+                                                     { 4, 5 },
+                                                     { 7, 8, 9 } };
+   blaze::DynamicMatrix<int,columnMajor> A;
+   A = init;
+   \endcode
+
+// The matrix is resized according to the size of the std::array and assigned the values of the
+// given std::array. Missing values are initialized with default values (as e.g. the value 6 in
+// the example).
+*/
+template< typename Type >  // Data type of the matrix
+template< typename Other   // Data type of the std::array
+        , size_t Rows      // Number of rows of the std::array
+        , size_t Cols >    // Number of columns of the std::array
+inline DynamicMatrix<Type,true>&
+   DynamicMatrix<Type,true>::operator=( const std::array<std::array<Other,Cols>,Rows>& array )
 {
    resize( Rows, Cols, false );
 
