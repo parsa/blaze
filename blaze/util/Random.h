@@ -140,8 +140,12 @@ template< typename T, typename... Args >
 void randomize( T&& value, Args&&... args );
 
 uint32_t defaultSeed();
+
+template< typename RNG = DefaultRNG >
 uint32_t getSeed();
-void     setSeed( uint32_t seed );
+
+template< typename RNG = DefaultRNG >
+void setSeed( uint32_t seed );
 //@}
 //*************************************************************************************************
 
@@ -166,7 +170,7 @@ void     setSeed( uint32_t seed );
 //
 //   http://en.cppreference.com/w/cpp/numeric/random
 */
-template< typename Type >  // Type of the random number generator
+template< typename RNG = DefaultRNG >  // Type of the random number generator
 class Random
    : private NonCreatable
 {
@@ -175,15 +179,15 @@ class Random
    /*!\name Member variables */
    //@{
    static uint32_t seed_;  //!< The current seed for the variate generator.
-   static Type     rng_;   //!< The mersenne twister variate generator.
+   static RNG      rng_;   //!< The mersenne twister variate generator.
    //@}
    //**********************************************************************************************
 
    //**Friend declarations*************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   template< typename T > friend class Rand;
-                          friend uint32_t getSeed();
-                          friend void     setSeed( uint32_t seed );
+   template< typename > friend class Rand;
+   template< typename > friend uint32_t getSeed();
+   template< typename > friend void     setSeed( uint32_t seed );
    /*! \endcond */
    //**********************************************************************************************
 };
@@ -198,8 +202,8 @@ class Random
 //
 //=================================================================================================
 
-template< typename Type > uint32_t Random<Type>::seed_( defaultSeed() );
-template< typename Type > Type     Random<Type>::rng_ ( defaultSeed() );
+template< typename RNG > uint32_t Random<RNG>::seed_( defaultSeed() );
+template< typename RNG > RNG      Random<RNG>::rng_ ( defaultSeed() );
 
 
 
@@ -252,7 +256,7 @@ template< typename T >  // Type of the random number
 inline T Rand<T>::generate() const
 {
    std::uniform_int_distribution<T> dist( 0, std::numeric_limits<T>::max() );
-   return dist( Random<RNG>::rng_ );
+   return dist( Random<>::rng_ );
 }
 //*************************************************************************************************
 
@@ -274,7 +278,7 @@ inline T Rand<T>::generate( T min, T max ) const
 {
    BLAZE_INTERNAL_ASSERT( min <= max, "Invalid min/max value pair" );
    std::uniform_int_distribution<T> dist( min, max );
-   return dist( Random<RNG>::rng_ );
+   return dist( Random<>::rng_ );
 }
 //*************************************************************************************************
 
@@ -368,7 +372,7 @@ class Rand<float>
 inline float Rand<float>::generate() const
 {
    std::uniform_real_distribution<float> dist( 0.0, 1.0 );
-   return dist( Random<RNG>::rng_ );
+   return dist( Random<>::rng_ );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -391,7 +395,7 @@ inline float Rand<float>::generate( float min, float max ) const
 {
    BLAZE_INTERNAL_ASSERT( min <= max, "Invalid min/max values" );
    std::uniform_real_distribution<float> dist( min, max );
-   return dist( Random<RNG>::rng_ );
+   return dist( Random<>::rng_ );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -487,7 +491,7 @@ class Rand<double>
 inline double Rand<double>::generate() const
 {
    std::uniform_real_distribution<double> dist( 0.0, 1.0 );
-   return dist( Random<RNG>::rng_ );
+   return dist( Random<>::rng_ );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -510,7 +514,7 @@ inline double Rand<double>::generate( double min, double max ) const
 {
    BLAZE_INTERNAL_ASSERT( min <= max, "Invalid min/max values" );
    std::uniform_real_distribution<double> dist( min, max );
-   return dist( Random<RNG>::rng_ );
+   return dist( Random<>::rng_ );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -606,7 +610,7 @@ class Rand<long double>
 inline long double Rand<long double>::generate() const
 {
    std::uniform_real_distribution<long double> dist( 0.0, 1.0 );
-   return dist( Random<RNG>::rng_ );
+   return dist( Random<>::rng_ );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -629,7 +633,7 @@ inline long double Rand<long double>::generate( long double min, long double max
 {
    BLAZE_INTERNAL_ASSERT( min <= max, "Invalid min/max values" );
    std::uniform_real_distribution<long double> dist( min, max );
-   return dist( Random<RNG>::rng_ );
+   return dist( Random<>::rng_ );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -974,6 +978,7 @@ inline uint32_t defaultSeed()
 //
 // \return The current seed of the random number generator.
 */
+template< typename RNG >  // Type of the random number generator
 inline uint32_t getSeed()
 {
    return Random<RNG>::seed_;
@@ -991,6 +996,7 @@ inline uint32_t getSeed()
 // This function can be used to set the seed for the random number generation in order to
 // create a reproducible series of random numbers.
 */
+template< typename RNG >  // Type of the random number generator
 inline void setSeed( uint32_t seed )
 {
    Random<RNG>::seed_ = seed;

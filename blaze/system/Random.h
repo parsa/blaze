@@ -54,7 +54,7 @@ namespace blaze {
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-using RNG = BLAZE_RANDOM_NUMBER_GENERATOR;
+using DefaultRNG = BLAZE_RANDOM_NUMBER_GENERATOR;
 /*! \endcond */
 //*************************************************************************************************
 
