@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <array>
 #include <utility>
 #include <blaze/math/Aliases.h>
 #include <blaze/math/AlignmentFlag.h>
@@ -312,6 +313,9 @@ class StaticMatrix
    template< typename Other, size_t Rows, size_t Cols >
    inline StaticMatrix( const Other (&array)[Rows][Cols] );
 
+   template< typename Other, size_t Rows, size_t Cols >
+   StaticMatrix( const std::array<std::array<Other,Cols>,Rows>& array );
+
    constexpr StaticMatrix( const StaticMatrix& m );
 
    template< typename Other, bool SO2, AlignmentFlag AF2, PaddingFlag PF2 >
@@ -357,6 +361,9 @@ class StaticMatrix
 
    template< typename Other, size_t Rows, size_t Cols >
    inline StaticMatrix& operator=( const Other (&array)[Rows][Cols] );
+
+   template< typename Other, size_t Rows, size_t Cols >
+   inline StaticMatrix& operator=( const std::array<std::array<Other,Cols>,Rows>& array );
 
    constexpr StaticMatrix& operator=( const StaticMatrix& rhs );
 
@@ -585,6 +592,9 @@ class StaticMatrix
 template< typename Type, size_t M, size_t N >
 StaticMatrix( Type (&)[M][N] ) -> StaticMatrix< RemoveCV_t<Type>, M, N >;
 
+template< typename Type, size_t M, size_t N >
+StaticMatrix( std::array<std::array<Type,N>,M> ) -> StaticMatrix<Type,M,N>;
+
 #endif
 //*************************************************************************************************
 
@@ -805,6 +815,53 @@ template< typename Other    // Data type of the static array
         , size_t Rows       // Number of rows of the static array
         , size_t Cols >     // Number of columns of the static array
 inline StaticMatrix<Type,M,N,SO,AF,PF>::StaticMatrix( const Other (&array)[Rows][Cols] )
+   // v_ is intentionally left uninitialized
+{
+   BLAZE_STATIC_ASSERT( Rows == M && Cols == N );
+
+   for( size_t i=0UL; i<M; ++i ) {
+      for( size_t j=0UL; j<N; ++j )
+         v_[i*NN+j] = array[i][j];
+
+      for( size_t j=N; j<NN; ++j )
+            v_[i*NN+j] = Type();
+   }
+
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Initialization of all matrix elements from the given std::array.
+//
+// \param array The given std::array for the initialization.
+//
+// This constructor offers the option to directly initialize the elements of the matrix with
+// a std::array:
+
+   \code
+   using blaze::rowMajor;
+
+   const std::array<std::array<int,3>,3> init = { { { 1, 2, 3 },
+                                                    { 4, 5 },
+                                                    { 7, 8, 9 } } };
+   blaze::StaticMatrix<int,3,3,rowMajor> A( init );
+   \endcode
+
+// The matrix is initialized with the values from the given std::array. Missing values are
+// initialized with default values (as e.g. the value 6 in the example).
+*/
+template< typename Type     // Data type of the matrix
+        , size_t M          // Number of rows
+        , size_t N          // Number of columns
+        , bool SO           // Storage order
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF >  // Padding flag
+template< typename Other    // Data type of the std::array
+        , size_t Rows       // Number of rows of the std::array
+        , size_t Cols >     // Number of columns of the std::array
+inline StaticMatrix<Type,M,N,SO,AF,PF>::StaticMatrix( const std::array<std::array<Other,Cols>,Rows>& array )
    // v_ is intentionally left uninitialized
 {
    BLAZE_STATIC_ASSERT( Rows == M && Cols == N );
@@ -1415,6 +1472,52 @@ template< typename Other    // Data type of the static array
         , size_t Cols >     // Number of columns of the static array
 inline StaticMatrix<Type,M,N,SO,AF,PF>&
    StaticMatrix<Type,M,N,SO,AF,PF>::operator=( const Other (&array)[Rows][Cols] )
+{
+   BLAZE_STATIC_ASSERT( Rows == M && Cols == N );
+
+   for( size_t i=0UL; i<M; ++i )
+      for( size_t j=0UL; j<N; ++j )
+         v_[i*NN+j] = array[i][j];
+
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
+
+   return *this;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Array assignment to all matrix elements.
+//
+// \param array The given std::array for the assignment.
+// \return Reference to the assigned matrix.
+//
+// This assignment operator offers the option to directly set all elements of the matrix:
+
+   \code
+   using blaze::rowMajor;
+
+   const std::array<std::array<int,3UL>,3UL> init = { { { 1, 2, 3 },
+                                                        { 4, 5 },
+                                                        { 7, 8, 9 } };
+   blaze::StaticMatrix<int,3UL,3UL,rowMajor> A;
+   A = init;
+   \endcode
+
+// The matrix is assigned the values from the given std::array. Missing values are initialized
+// with default values (as e.g. the value 6 in the example).
+*/
+template< typename Type     // Data type of the matrix
+        , size_t M          // Number of rows
+        , size_t N          // Number of columns
+        , bool SO           // Storage order
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF >  // Padding flag
+template< typename Other    // Data type of the static array
+        , size_t Rows       // Number of rows of the static array
+        , size_t Cols >     // Number of columns of the static array
+inline StaticMatrix<Type,M,N,SO,AF,PF>&
+   StaticMatrix<Type,M,N,SO,AF,PF>::operator=( const std::array<std::array<Other,Cols>,Rows>& array )
 {
    BLAZE_STATIC_ASSERT( Rows == M && Cols == N );
 
@@ -3407,6 +3510,9 @@ class StaticMatrix<Type,M,N,true,AF,PF>
    template< typename Other, size_t Rows, size_t Cols >
    inline StaticMatrix( const Other (&array)[Rows][Cols] );
 
+   template< typename Other, size_t Rows, size_t Cols >
+   StaticMatrix( const std::array<std::array<Other,Cols>,Rows>& array );
+
    constexpr StaticMatrix( const StaticMatrix& m );
 
    template< typename Other, bool SO2, AlignmentFlag AF2, PaddingFlag PF2 >
@@ -3452,6 +3558,9 @@ class StaticMatrix<Type,M,N,true,AF,PF>
 
    template< typename Other, size_t Rows, size_t Cols >
    inline StaticMatrix& operator=( const Other (&array)[Rows][Cols] );
+
+   template< typename Other, size_t Rows, size_t Cols >
+   inline StaticMatrix& operator=( const std::array<std::array<Other,Cols>,Rows>& array );
 
    constexpr StaticMatrix& operator=( const StaticMatrix& rhs );
 
@@ -3866,6 +3975,54 @@ template< typename Other    // Data type of the static array
         , size_t Rows       // Number of rows of the static array
         , size_t Cols >     // Number of columns of the static array
 inline StaticMatrix<Type,M,N,true,AF,PF>::StaticMatrix( const Other (&array)[Rows][Cols] )
+   // v_ is intentionally left uninitialized
+{
+   BLAZE_STATIC_ASSERT( Rows == M && Cols == N );
+
+   for( size_t j=0UL; j<N; ++j ) {
+      for( size_t i=0UL; i<M; ++i )
+         v_[i+j*MM] = array[i][j];
+
+      for( size_t i=M; i<MM; ++i )
+         v_[i+j*MM] = Type();
+   }
+
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Initialization of all matrix elements from the given std::array.
+//
+// \param array The given std::array for the initialization.
+//
+// This constructor offers the option to directly initialize the elements of the matrix with
+// a std::array:
+
+   \code
+   using blaze::columnMajor;
+
+   const std::array<std::array<int,3>,3> init = { { { 1, 2, 3 },
+                                                    { 4, 5 },
+                                                    { 7, 8, 9 } } };
+   blaze::StaticMatrix<int,3,3,columnMajor> A( init );
+   \endcode
+
+// The matrix is initialized with the values from the given std::array. Missing values are
+// initialized with default values (as e.g. the value 6 in the example).
+*/
+template< typename Type     // Data type of the matrix
+        , size_t M          // Number of rows
+        , size_t N          // Number of columns
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF >  // Padding flag
+template< typename Other    // Data type of the std::array
+        , size_t Rows       // Number of rows of the std::array
+        , size_t Cols >     // Number of columns of the std::array
+inline StaticMatrix<Type,M,N,true,AF,PF>::StaticMatrix( const std::array<std::array<Other,Cols>,Rows>& array )
    // v_ is intentionally left uninitialized
 {
    BLAZE_STATIC_ASSERT( Rows == M && Cols == N );
@@ -4475,6 +4632,51 @@ inline StaticMatrix<Type,M,N,true,AF,PF>&
    return *this;
 }
 /*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Array assignment to all matrix elements.
+//
+// \param array The given std::array for the assignment.
+// \return Reference to the assigned matrix.
+//
+// This assignment operator offers the option to directly set all elements of the matrix:
+
+   \code
+   using blaze::rowMajor;
+
+   const std::array<std::array<int,3UL>,3UL> init = { { { 1, 2, 3 },
+                                                        { 4, 5 },
+                                                        { 7, 8, 9 } };
+   blaze::StaticMatrix<int,3UL,3UL,rowMajor> A;
+   A = init;
+   \endcode
+
+// The matrix is assigned the values from the given std::array. Missing values are initialized
+// with default values (as e.g. the value 6 in the example).
+*/
+template< typename Type     // Data type of the matrix
+        , size_t M          // Number of rows
+        , size_t N          // Number of columns
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF >  // Padding flag
+template< typename Other    // Data type of the static array
+        , size_t Rows       // Number of rows of the static array
+        , size_t Cols >     // Number of columns of the static array
+inline StaticMatrix<Type,M,N,true,AF,PF>&
+   StaticMatrix<Type,M,N,true,AF,PF>::operator=( const std::array<std::array<Other,Cols>,Rows>& array )
+{
+   BLAZE_STATIC_ASSERT( Rows == M && Cols == N );
+
+   for( size_t j=0UL; j<N; ++j )
+      for( size_t i=0UL; i<M; ++i )
+         v_[i+j*MM] = array[i][j];
+
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
+
+   return *this;
+}
 //*************************************************************************************************
 
 
