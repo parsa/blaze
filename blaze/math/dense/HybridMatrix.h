@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <array>
 #include <algorithm>
 #include <utility>
 #include <blaze/math/Aliases.h>
@@ -320,6 +321,9 @@ class HybridMatrix
    template< typename Other, size_t Rows, size_t Cols >
    inline HybridMatrix( const Other (&array)[Rows][Cols] );
 
+   template< typename Other, size_t Rows, size_t Cols >
+   inline HybridMatrix( const std::array<std::array<Other,Cols>,Rows>& array );
+
    constexpr HybridMatrix( const HybridMatrix& m );
 
    template< typename MT, bool SO2 >
@@ -362,6 +366,9 @@ class HybridMatrix
 
    template< typename Other, size_t Rows, size_t Cols >
    constexpr HybridMatrix& operator=( const Other (&array)[Rows][Cols] );
+
+   template< typename Other, size_t Rows, size_t Cols >
+   constexpr HybridMatrix& operator=( const std::array<std::array<Other,Cols>,Rows>& array );
 
    constexpr HybridMatrix& operator=( const HybridMatrix& rhs );
 
@@ -582,6 +589,9 @@ class HybridMatrix
 
 template< typename Type, size_t M, size_t N >
 HybridMatrix( Type (&)[M][N] ) -> HybridMatrix< RemoveCV_t<Type>, M, N >;
+
+template< typename Type, size_t M, size_t N >
+HybridMatrix( std::array<std::array<Type,N>,M> ) -> HybridMatrix<Type,M,N>;
 
 #endif
 //*************************************************************************************************
@@ -865,6 +875,65 @@ template< typename Other    // Data type of the static array
         , size_t Rows       // Number of rows of the static array
         , size_t Cols >     // Number of columns of the static array
 inline HybridMatrix<Type,M,N,SO,AF,PF>::HybridMatrix( const Other (&array)[Rows][Cols] )
+   : m_( Rows )  // The current number of rows of the matrix
+   , n_( Cols )  // The current number of columns of the matrix
+   // v_ is intentionally left uninitialized
+{
+   BLAZE_STATIC_ASSERT( Rows <= M );
+   BLAZE_STATIC_ASSERT( Cols <= N );
+
+   for( size_t i=0UL; i<Rows; ++i ) {
+      for( size_t j=0UL; j<Cols; ++j )
+         v_[i*NN+j] = array[i][j];
+
+      if( IsNumeric_v<Type> ) {
+         for( size_t j=Cols; j<NN; ++j )
+            v_[i*NN+j] = Type();
+      }
+   }
+
+   if( IsNumeric_v<Type> ) {
+      for( size_t i=Rows; i<M; ++i )
+         for( size_t j=0UL; j<NN; ++j )
+            v_[i*NN+j] = Type();
+   }
+
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Initialization of all matrix elements from the given std::array.
+//
+// \param array The given std::array for the initialization.
+//
+// This constructor offers the option to directly initialize the elements of the matrix with
+// a std::array:
+
+   \code
+   using blaze::rowMajor;
+
+   const std::array<std::array<int,3UL>,3UL> init{ { { 1, 2, 3 },
+                                                     { 4, 5 },
+                                                     { 7, 8, 9 } } };
+   blaze::HybridMatrix<int,3,3,rowMajor> A( init );
+   \endcode
+
+// The matrix is sized according to the size of the std::array and initialized with the values
+// from the given std::array. Missing values are initialized with default values (as e.g. the
+// value 6 in the example).
+*/
+template< typename Type     // Data type of the matrix
+        , size_t M          // Number of rows
+        , size_t N          // Number of columns
+        , bool SO           // Storage order
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF >  // Padding flag
+template< typename Other    // Data type of the static array
+        , size_t Rows       // Number of rows of the static array
+        , size_t Cols >     // Number of columns of the static array
+inline HybridMatrix<Type,M,N,SO,AF,PF>::HybridMatrix( const std::array<std::array<Other,Cols>,Rows>& array )
    : m_( Rows )  // The current number of rows of the matrix
    , n_( Cols )  // The current number of columns of the matrix
    // v_ is intentionally left uninitialized
@@ -1473,6 +1542,53 @@ template< typename Other    // Data type of the static array
         , size_t Cols >     // Number of columns of the static array
 constexpr HybridMatrix<Type,M,N,SO,AF,PF>&
    HybridMatrix<Type,M,N,SO,AF,PF>::operator=( const Other (&array)[Rows][Cols] )
+{
+   BLAZE_STATIC_ASSERT( Rows <= M );
+   BLAZE_STATIC_ASSERT( Cols <= N );
+
+   resize( Rows, Cols );
+
+   for( size_t i=0UL; i<Rows; ++i )
+      for( size_t j=0UL; j<Cols; ++j )
+         v_[i*NN+j] = array[i][j];
+
+   return *this;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Array assignment to all matrix elements.
+//
+// \param array The given std::array for the assignment.
+// \return Reference to the assigned matrix.
+//
+// This assignment operator offers the option to directly set all elements of the matrix:
+
+   \code
+   using blaze::rowMajor;
+
+   const std::array<std::array<int,3UL>,3UL> init{ { { 1, 2, 3 },
+                                                     { 4, 5 },
+                                                     { 7, 8, 9 } } };
+   blaze::HybridMatrix<int,3UL,3UL,rowMajor> A;
+   A = init;
+   \endcode
+
+// The matrix is assigned the values from the given static array. Missing values are initialized
+// wit default values (as e.g. the value 6 in the example).
+*/
+template< typename Type     // Data type of the matrix
+        , size_t M          // Number of rows
+        , size_t N          // Number of columns
+        , bool SO           // Storage order
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF >  // Padding flag
+template< typename Other    // Data type of the static array
+        , size_t Rows       // Number of rows of the static array
+        , size_t Cols >     // Number of columns of the static array
+constexpr HybridMatrix<Type,M,N,SO,AF,PF>&
+   HybridMatrix<Type,M,N,SO,AF,PF>::operator=( const std::array<std::array<Other,Cols>,Rows>& array )
 {
    BLAZE_STATIC_ASSERT( Rows <= M );
    BLAZE_STATIC_ASSERT( Cols <= N );
@@ -3530,6 +3646,9 @@ class HybridMatrix<Type,M,N,true,AF,PF>
    template< typename Other, size_t Rows, size_t Cols >
    inline HybridMatrix( const Other (&array)[Rows][Cols] );
 
+   template< typename Other, size_t Rows, size_t Cols >
+   inline HybridMatrix( const std::array<std::array<Other,Cols>,Rows>& array );
+
    constexpr HybridMatrix( const HybridMatrix& m );
 
    template< typename MT, bool SO >
@@ -3572,6 +3691,9 @@ class HybridMatrix<Type,M,N,true,AF,PF>
 
    template< typename Other, size_t Rows, size_t Cols >
    constexpr HybridMatrix& operator=( const Other (&array)[Rows][Cols] );
+
+   template< typename Other, size_t Rows, size_t Cols >
+   constexpr HybridMatrix& operator=( const std::array<std::array<Other,Cols>,Rows>& array );
 
    constexpr HybridMatrix& operator=( const HybridMatrix& rhs );
 
@@ -4045,6 +4167,66 @@ template< typename Other    // Data type of the static array
         , size_t Rows       // Number of rows of the static array
         , size_t Cols >     // Number of columns of the static array
 inline HybridMatrix<Type,M,N,true,AF,PF>::HybridMatrix( const Other (&array)[Rows][Cols] )
+   : m_( Rows )  // The current number of rows of the matrix
+   , n_( Cols )  // The current number of columns of the matrix
+   // v_ is intentionally left uninitialized
+{
+   BLAZE_STATIC_ASSERT( Rows <= M );
+   BLAZE_STATIC_ASSERT( Cols <= N );
+
+   for( size_t j=0UL; j<Cols; ++j ) {
+      for( size_t i=0UL; i<Rows; ++i )
+         v_[i+j*MM] = array[i][j];
+
+      if( IsNumeric_v<Type> ) {
+         for( size_t i=Rows; i<MM; ++i )
+            v_[i+j*MM] = Type();
+      }
+   }
+
+   if( IsNumeric_v<Type> ) {
+      for( size_t j=Cols; j<N; ++j )
+         for( size_t i=0UL; i<MM; ++i )
+            v_[i+j*MM] = Type();
+   }
+
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Initialization of all matrix elements from the given std::array.
+//
+// \param array The given std::array for the initialization.
+//
+// This constructor offers the option to directly initialize the elements of the matrix with
+// a std::array:
+
+   \code
+   using blaze::columnMajor;
+
+   const std::array<std::array<int,3UL>,3UL> init{ { { 1, 2, 3 },
+                                                     { 4, 5 },
+                                                     { 7, 8, 9 } } };
+   blaze::HybridMatrix<int,3,3,columnMajor> A( init );
+   \endcode
+
+// The matrix is sized according to the size of the std::array and initialized with the values
+// from the given array. Missing values are initialized with default values (as e.g. the value 6
+// in the example).
+*/
+template< typename Type     // Data type of the matrix
+        , size_t M          // Number of rows
+        , size_t N          // Number of columns
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF >  // Padding flag
+template< typename Other    // Data type of the static array
+        , size_t Rows       // Number of rows of the static array
+        , size_t Cols >     // Number of columns of the static array
+inline HybridMatrix<Type,M,N,true,AF,PF>::HybridMatrix( const std::array<std::array<Other,Cols>,Rows>& array )
    : m_( Rows )  // The current number of rows of the matrix
    , n_( Cols )  // The current number of columns of the matrix
    // v_ is intentionally left uninitialized
@@ -4640,6 +4822,54 @@ template< typename Other    // Data type of the static array
         , size_t Cols >     // Number of columns of the static array
 constexpr HybridMatrix<Type,M,N,true,AF,PF>&
    HybridMatrix<Type,M,N,true,AF,PF>::operator=( const Other (&array)[Rows][Cols] )
+{
+   BLAZE_STATIC_ASSERT( Rows <= M );
+   BLAZE_STATIC_ASSERT( Cols <= N );
+
+   resize( Rows, Cols );
+
+   for( size_t j=0UL; j<Cols; ++j )
+      for( size_t i=0UL; i<Rows; ++i )
+         v_[i+j*MM] = array[i][j];
+
+   return *this;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Array assignment to all matrix elements.
+//
+// \param array The given std::array for the assignment.
+// \return Reference to the assigned matrix.
+//
+// This assignment operator offers the option to directly set all elements of the matrix:
+
+   \code
+   using blaze::columnMajor;
+
+   const std::array<std::array<int,3UL>,3UL> init{ { { 1, 2, 3 },
+                                                     { 4, 5 },
+                                                     { 7, 8, 9 } } };
+   blaze::HybridMatrix<int,3UL,3UL,columnMajor> A;
+   A = init;
+   \endcode
+
+// The matrix is assigned the values from the given static array. Missing values are initialized
+// with default values (as e.g. the value 6 in the example).
+*/
+template< typename Type     // Data type of the matrix
+        , size_t M          // Number of rows
+        , size_t N          // Number of columns
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF >  // Padding flag
+template< typename Other    // Data type of the static array
+        , size_t Rows       // Number of rows of the static array
+        , size_t Cols >     // Number of columns of the static array
+constexpr HybridMatrix<Type,M,N,true,AF,PF>&
+   HybridMatrix<Type,M,N,true,AF,PF>::operator=( const std::array<std::array<Other,Cols>,Rows>& array )
 {
    BLAZE_STATIC_ASSERT( Rows <= M );
    BLAZE_STATIC_ASSERT( Cols <= N );
