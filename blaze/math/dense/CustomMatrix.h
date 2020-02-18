@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <array>
 #include <algorithm>
 #include <utility>
 #include <blaze/math/Aliases.h>
@@ -518,6 +519,9 @@ class CustomMatrix
 
    template< typename Other, size_t Rows, size_t Cols >
    inline CustomMatrix& operator=( const Other (&array)[Rows][Cols] );
+
+   template< typename Other, size_t Rows, size_t Cols >
+   inline CustomMatrix& operator=( const std::array<std::array<Other,Cols>,Rows>& array );
 
    inline CustomMatrix& operator=( const CustomMatrix& rhs );
    inline CustomMatrix& operator=( CustomMatrix&& rhs ) noexcept;
@@ -1366,6 +1370,59 @@ template< typename Other    // Data type of the static array
         , size_t Cols >     // Number of columns of the static array
 inline CustomMatrix<Type,AF,PF,SO,RT>&
    CustomMatrix<Type,AF,PF,SO,RT>::operator=( const Other (&array)[Rows][Cols] )
+{
+   if( m_ != Rows || n_ != Cols ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid array size" );
+   }
+
+   for( size_t i=0UL; i<Rows; ++i )
+      for( size_t j=0UL; j<Cols; ++j )
+         v_[i*nn_+j] = array[i][j];
+
+   return *this;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Array assignment to all matrix elements.
+//
+// \param array The given std::array for the assignment.
+// \return Reference to the assigned matrix.
+// \exception std::invalid_argument Invalid array size.
+//
+// This assignment operator offers the option to directly set all elements of the matrix:
+
+   \code
+   using blaze::unaligned;
+   using blaze::unpadded;
+   using blaze::rowMajor;
+
+   const int array[9] = { 0, 0, 0,
+                          0, 0, 0,
+                          0, 0, 0 };
+   const std::array<std::array<int,3UL>,3UL> init{ { { 1, 2, 3 },
+                                                     { 4, 5 },
+                                                     { 7, 8, 9 } } };
+   blaze::CustomMatrix<int,unaligned,unpadded,rowMajor> A( array, 3UL, 3UL );
+   A = init;
+   \endcode
+
+// The matrix is assigned the values from the given std::array. Missing values are initialized
+// with default values (as e.g. the value 6 in the example). Note that the size of the std::array
+// must match the size of the custom matrix. Otherwise a \a std::invalid_argument exception is
+// thrown. Also note that after the assignment \a array will have the same entries as \a init.
+*/
+template< typename Type     // Data type of the matrix
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , bool SO           // Storage order
+        , typename RT >     // Result type
+template< typename Other    // Data type of the static array
+        , size_t Rows       // Number of rows of the static array
+        , size_t Cols >     // Number of columns of the static array
+inline CustomMatrix<Type,AF,PF,SO,RT>&
+   CustomMatrix<Type,AF,PF,SO,RT>::operator=( const std::array<std::array<Other,Cols>,Rows>& array )
 {
    if( m_ != Rows || n_ != Cols ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid array size" );
@@ -3404,6 +3461,9 @@ class CustomMatrix<Type,AF,PF,true,RT>
    template< typename Other, size_t Rows, size_t Cols >
    inline CustomMatrix& operator=( const Other (&array)[Rows][Cols] );
 
+   template< typename Other, size_t Rows, size_t Cols >
+   inline CustomMatrix& operator=( const std::array<std::array<Other,Cols>,Rows>& array );
+
    inline CustomMatrix& operator=( const CustomMatrix& rhs );
    inline CustomMatrix& operator=( CustomMatrix&& rhs ) noexcept;
 
@@ -4233,6 +4293,60 @@ template< typename Other    // Data type of the static array
         , size_t Cols >     // Number of columns of the static array
 inline CustomMatrix<Type,AF,PF,true,RT>&
    CustomMatrix<Type,AF,PF,true,RT>::operator=( const Other (&array)[Rows][Cols] )
+{
+   if( m_ != Rows || n_ != Cols ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid array size" );
+   }
+
+   for( size_t j=0UL; j<Cols; ++j )
+      for( size_t i=0UL; i<Rows; ++i )
+         v_[i+j*mm_] = array[i][j];
+
+   return *this;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Array assignment to all matrix elements.
+//
+// \param array The given std::array for the assignment.
+// \return Reference to the assigned matrix.
+// \exception std::invalid_argument Invalid array size.
+//
+// This assignment operator offers the option to directly set all elements of the matrix:
+
+   \code
+   using blaze::unaligned;
+   using blaze::unpadded;
+   using blaze::columnMajor;
+
+   const int array[9] = { 0, 0, 0,
+                          0, 0, 0,
+                          0, 0, 0 };
+   const std::array<std::array<int,3UL>,3UL> init{ { { 1, 2, 3 },
+                                                     { 4, 5 },
+                                                     { 7, 8, 9 } } };
+   blaze::CustomMatrix<int,unaligned,unpadded,columnMajor> A( array, 3UL, 3UL );
+   A = init;
+   \endcode
+
+// The matrix is assigned the values from the given std::array. Missing values are initialized
+// with default values (as e.g. the value 6 in the example). Note that the size of the std::array
+// must match the size of the custom matrix. Otherwise a \a std::invalid_argument exception is
+// thrown. Also note that after the assignment \a array will have the same entries as \a init.
+*/
+template< typename Type     // Data type of the matrix
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , typename RT >     // Result type
+template< typename Other    // Data type of the static array
+        , size_t Rows       // Number of rows of the static array
+        , size_t Cols >     // Number of columns of the static array
+inline CustomMatrix<Type,AF,PF,true,RT>&
+   CustomMatrix<Type,AF,PF,true,RT>::operator=( const std::array<std::array<Other,Cols>,Rows>& array )
 {
    if( m_ != Rows || n_ != Cols ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid array size" );
