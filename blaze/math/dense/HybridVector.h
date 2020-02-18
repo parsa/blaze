@@ -211,15 +211,6 @@ template< typename Type     // Data type of the vector
 class HybridVector
    : public DenseVector< HybridVector<Type,N,TF,AF,PF>, TF >
 {
- private:
-   //**********************************************************************************************
-   //! The number of elements packed within a single SIMD vector.
-   static constexpr size_t SIMDSIZE = SIMDTrait<Type>::size;
-
-   //! Alignment adjustment.
-   static constexpr size_t NN = ( PF == padded ? nextMultiple( N, SIMDSIZE ) : N );
-   //**********************************************************************************************
-
  public:
    //**Type definitions****************************************************************************
    using This          = HybridVector<Type,N,TF,AF,PF>;   //!< Type of this HybridVector instance.
@@ -383,6 +374,14 @@ class HybridVector
    //**********************************************************************************************
 
  private:
+   //**********************************************************************************************
+   //! The number of elements packed within a single SIMD vector.
+   static constexpr size_t SIMDSIZE = SIMDTrait<Type>::size;
+
+   //! Alignment adjustment.
+   static constexpr size_t NN = ( PF == padded ? nextMultiple( N, SIMDSIZE ) : N );
+   //**********************************************************************************************
+
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
    //! Helper variable template for the explicit application of the SFINAE principle.

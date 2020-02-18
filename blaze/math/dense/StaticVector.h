@@ -218,15 +218,6 @@ template< typename Type     // Data type of the vector
 class StaticVector
    : public DenseVector< StaticVector<Type,N,TF,AF,PF>, TF >
 {
- private:
-   //**********************************************************************************************
-   //! The number of elements packed within a single SIMD vector.
-   static constexpr size_t SIMDSIZE = SIMDTrait<Type>::size;
-
-   //! Alignment adjustment.
-   static constexpr size_t NN = ( PF == padded ? nextMultiple( N, SIMDSIZE ) : N );
-   //**********************************************************************************************
-
  public:
    //**Type definitions****************************************************************************
    using This          = StaticVector<Type,N,TF,AF,PF>;   //!< Type of this StaticVector instance.
@@ -392,6 +383,14 @@ class StaticVector
    //**********************************************************************************************
 
  private:
+   //**********************************************************************************************
+   //! The number of elements packed within a single SIMD vector.
+   static constexpr size_t SIMDSIZE = SIMDTrait<Type>::size;
+
+   //! Alignment adjustment.
+   static constexpr size_t NN = ( PF == padded ? nextMultiple( N, SIMDSIZE ) : N );
+   //**********************************************************************************************
+
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
    //! Helper variable template for the explicit application of the SFINAE principle.

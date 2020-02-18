@@ -243,15 +243,6 @@ template< typename Type     // Data type of the matrix
 class HybridMatrix
    : public DenseMatrix< HybridMatrix<Type,M,N,SO,AF,PF>, SO >
 {
- private:
-   //**********************************************************************************************
-   //! The number of elements packed within a single SIMD element.
-   static constexpr size_t SIMDSIZE = SIMDTrait<Type>::size;
-
-   //! Alignment adjustment.
-   static constexpr size_t NN = ( PF == padded ? nextMultiple( N, SIMDSIZE ) : N );
-   //**********************************************************************************************
-
  public:
    //**Type definitions****************************************************************************
    using This          = HybridMatrix<Type,M,N,SO,AF,PF>;   //!< Type of this HybridMatrix instance.
@@ -424,6 +415,14 @@ class HybridMatrix
    //**********************************************************************************************
 
  private:
+   //**********************************************************************************************
+   //! The number of elements packed within a single SIMD element.
+   static constexpr size_t SIMDSIZE = SIMDTrait<Type>::size;
+
+   //! Alignment adjustment.
+   static constexpr size_t NN = ( PF == padded ? nextMultiple( N, SIMDSIZE ) : N );
+   //**********************************************************************************************
+
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
    //! Helper variable template for the explicit application of the SFINAE principle.
@@ -3568,15 +3567,6 @@ template< typename Type     // Data type of the matrix
 class HybridMatrix<Type,M,N,true,AF,PF>
    : public DenseMatrix< HybridMatrix<Type,M,N,true,AF,PF>, true >
 {
- private:
-   //**********************************************************************************************
-   //! The number of elements packed within a single SIMD element.
-   static constexpr size_t SIMDSIZE = SIMDTrait<Type>::size;
-
-   //! Alignment adjustment.
-   static constexpr size_t MM = ( PF == padded ? nextMultiple( M, SIMDSIZE ) : M );
-   //**********************************************************************************************
-
  public:
    //**Type definitions****************************************************************************
    using This          = HybridMatrix<Type,M,N,true,AF,PF>;   //!< Type of this HybridMatrix instance.
@@ -3749,6 +3739,14 @@ class HybridMatrix<Type,M,N,true,AF,PF>
    //**********************************************************************************************
 
  private:
+   //**********************************************************************************************
+   //! The number of elements packed within a single SIMD element.
+   static constexpr size_t SIMDSIZE = SIMDTrait<Type>::size;
+
+   //! Alignment adjustment.
+   static constexpr size_t MM = ( PF == padded ? nextMultiple( M, SIMDSIZE ) : M );
+   //**********************************************************************************************
+
    //**********************************************************************************************
    //! Helper variable template for the explicit application of the SFINAE principle.
    template< typename MT >
