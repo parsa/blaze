@@ -68,6 +68,9 @@ namespace densevector {
 */
 UniformTest::UniformTest()
 {
+   testIsNan();
+   testIsInf();
+   testIsFinite();
    testIsUniform();
    testIsZero();
    testMean();
@@ -84,6 +87,194 @@ UniformTest::UniformTest()
 //  TEST FUNCTIONS
 //
 //=================================================================================================
+
+//*************************************************************************************************
+/*!\brief Test of the \c isnan() function for dense vectors.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the \c isnan() function for dense vectors. In case an
+// error is detected, a \a std::runtime_error exception is thrown.
+*/
+void UniformTest::testIsNan()
+{
+   test_ = "isnan() function";
+
+   // isnan with 0-dimensional uniform vector (non-NAN)
+   {
+      blaze::UniformVector<float,blaze::rowVector> vec;
+
+      if( blaze::isnan( vec ) != false ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Invalid isnan evaluation\n"
+             << " Details:\n"
+             << "   Vector:\n" << vec << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // isnan with 6-dimensional uniform vector (non-NAN)
+   {
+      blaze::UniformVector<float,blaze::rowVector> vec( 6UL, 1.2 );
+
+      if( blaze::isnan( vec ) != false ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Invalid isnan evaluation\n"
+             << " Details:\n"
+             << "   Vector:\n" << vec << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // isnan with 6-dimensional uniform vector (NAN)
+   {
+      blaze::UniformVector<float,blaze::rowVector> vec( 6UL, NAN );
+
+      if( blaze::isnan( vec ) != true ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Invalid isnan evaluation\n"
+             << " Details:\n"
+             << "   Vector:\n" << vec << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c isinf() function for dense vectors.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the \c isinf() function for dense vectors. In case an
+// error is detected, a \a std::runtime_error exception is thrown.
+*/
+void UniformTest::testIsInf()
+{
+   test_ = "isinf() function";
+
+   // isinf with 0-dimensional uniform vector (non-inf)
+   {
+      blaze::UniformVector<float,blaze::rowVector> vec;
+
+      if( blaze::isinf( vec ) != false ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Invalid isinf evaluation\n"
+             << " Details:\n"
+             << "   Vector:\n" << vec << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // isinf with 6-dimensional vector (non-inf)
+   {
+      blaze::UniformVector<float,blaze::rowVector> vec( 6UL, 1.2F );
+
+      if( blaze::isinf( vec ) != false ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Invalid isinf evaluation\n"
+             << " Details:\n"
+             << "   Vector:\n" << vec << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // isinf with 6-dimensional vector (HUGE_VALF)
+   {
+      blaze::UniformVector<float,blaze::rowVector> vec( 6UL, HUGE_VALF );
+
+      if( blaze::isinf( vec ) != true ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Invalid isinf evaluation\n"
+             << " Details:\n"
+             << "   Vector:\n" << vec << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c isfinite() function for dense vectors.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the \c isfinite() function for dense vectors. In case an
+// error is detected, a \a std::runtime_error exception is thrown.
+*/
+void UniformTest::testIsFinite()
+{
+   test_ = "isfinite() function";
+
+   // isfinite with 0-dimensional vector (finite)
+   {
+      blaze::UniformVector<float,blaze::rowVector> vec;
+
+      if( blaze::isfinite( vec ) != true ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Invalid isfinite evaluation\n"
+             << " Details:\n"
+             << "   Vector:\n" << vec << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // isfinite with 6-dimensional vector (finite)
+   {
+      blaze::UniformVector<float,blaze::rowVector> vec( 6UL, 1.2F );
+
+      if( blaze::isfinite( vec ) != true ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Invalid isfinite evaluation\n"
+             << " Details:\n"
+             << "   Vector:\n" << vec << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // isfinite with 6-dimensional vector (NAN)
+   {
+      blaze::UniformVector<float,blaze::rowVector> vec( 6UL, NAN );
+
+      if( blaze::isfinite( vec ) != false ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Invalid isfinite evaluation\n"
+             << " Details:\n"
+             << "   Vector:\n" << vec << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // isfinite with 6-dimensional vector (HUGE_VALF)
+   {
+      blaze::UniformVector<float,blaze::rowVector> vec( 6UL, HUGE_VALF );
+
+      if( blaze::isfinite( vec ) != false ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Invalid isfinite evaluation\n"
+             << " Details:\n"
+             << "   Vector:\n" << vec << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+}
+//*************************************************************************************************
+
 
 //*************************************************************************************************
 /*!\brief Test of the \c isUniform() function for dense vectors.

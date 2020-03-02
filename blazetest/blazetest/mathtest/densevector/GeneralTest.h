@@ -84,6 +84,8 @@ class GeneralTest
    /*!\name Test functions */
    //@{
    void testIsNan();
+   void testIsInf();
+   void testIsFinite();
    void testIsUniform();
    void testIsZero();
    void testNormalize();

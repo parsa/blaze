@@ -71,6 +71,8 @@ namespace densevector {
 GeneralTest::GeneralTest()
 {
    testIsNan();
+   testIsInf();
+   testIsFinite();
    testIsUniform();
    testIsZero();
    testNormalize();
@@ -127,7 +129,7 @@ void GeneralTest::testIsNan()
 {
    test_ = "isnan() function";
 
-   // isnan with 0-dimensional vector
+   // isnan with 0-dimensional vector (non-NAN)
    {
       blaze::DynamicVector<float,blaze::rowVector> vec;
 
@@ -141,9 +143,9 @@ void GeneralTest::testIsNan()
       }
    }
 
-   // isnan with empty 9-dimensional vector
+   // isnan with 6-dimensional vector (non-NAN)
    {
-      blaze::DynamicVector<float,blaze::rowVector> vec( 9UL, 0.0F );
+      blaze::DynamicVector<float,blaze::rowVector> vec{ 1.2F, -2.1F, 3.2F, -4.1F, 5.2F, -6.1F };
 
       if( blaze::isnan( vec ) != false ) {
          std::ostringstream oss;
@@ -155,18 +157,144 @@ void GeneralTest::testIsNan()
       }
    }
 
-   // isnan with filled 9-dimensional vector
+   // isnan with 6-dimensional vector (NAN)
    {
-      blaze::DynamicVector<float,blaze::rowVector> vec( 9UL, 0.0F );
-      vec[3] =  1.0F;
-      vec[4] = -2.0F;
-      vec[6] =  3.0F;
-      vec[8] =  4.0F;
+      blaze::DynamicVector<float,blaze::rowVector> vec{ 1.2F, -2.1F, 3.2F, -4.1F, NAN, -6.1F };
 
-      if( blaze::isnan( vec ) != false ) {
+      if( blaze::isnan( vec ) != true ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Invalid isnan evaluation\n"
+             << " Details:\n"
+             << "   Vector:\n" << vec << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c isinf() function for dense vectors.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the \c isinf() function for dense vectors. In case an
+// error is detected, a \a std::runtime_error exception is thrown.
+*/
+void GeneralTest::testIsInf()
+{
+   test_ = "isinf() function";
+
+   // isinf with 0-dimensional vector (non-inf)
+   {
+      blaze::DynamicVector<float,blaze::rowVector> vec;
+
+      if( blaze::isinf( vec ) != false ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Invalid isinf evaluation\n"
+             << " Details:\n"
+             << "   Vector:\n" << vec << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // isinf with 6-dimensional vector (non-inf)
+   {
+      blaze::DynamicVector<float,blaze::rowVector> vec{ 1.2F, -2.1F, 3.2F, -4.1F, 5.2F, -6.1F };
+
+      if( blaze::isinf( vec ) != false ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Invalid isinf evaluation\n"
+             << " Details:\n"
+             << "   Vector:\n" << vec << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // isinf with 6-dimensional vector (HUGE_VALF)
+   {
+      blaze::DynamicVector<float,blaze::rowVector> vec{ 1.2F, -2.1F, 3.2F, -4.1F, HUGE_VALF, -6.1F };
+
+      if( blaze::isinf( vec ) != true ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Invalid isinf evaluation\n"
+             << " Details:\n"
+             << "   Vector:\n" << vec << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c isfinite() function for dense vectors.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the \c isfinite() function for dense vectors. In case an
+// error is detected, a \a std::runtime_error exception is thrown.
+*/
+void GeneralTest::testIsFinite()
+{
+   test_ = "isfinite() function";
+
+   // isfinite with 0-dimensional vector (finite)
+   {
+      blaze::DynamicVector<float,blaze::rowVector> vec;
+
+      if( blaze::isfinite( vec ) != true ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Invalid isfinite evaluation\n"
+             << " Details:\n"
+             << "   Vector:\n" << vec << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // isfinite with 6-dimensional vector (finite)
+   {
+      blaze::DynamicVector<float,blaze::rowVector> vec{ 1.2F, -2.1F, 3.2F, -4.1F, 5.2F, -6.1F };
+
+      if( blaze::isfinite( vec ) != true ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Invalid isfinite evaluation\n"
+             << " Details:\n"
+             << "   Vector:\n" << vec << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // isfinite with 6-dimensional vector (NAN)
+   {
+      blaze::DynamicVector<float,blaze::rowVector> vec{ 1.2F, -2.1F, 3.2F, -4.1F, NAN, -6.1F };
+
+      if( blaze::isfinite( vec ) != false ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Invalid isfinite evaluation\n"
+             << " Details:\n"
+             << "   Vector:\n" << vec << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // isfinite with 6-dimensional vector (HUGE_VALF)
+   {
+      blaze::DynamicVector<float,blaze::rowVector> vec{ 1.2F, -2.1F, 3.2F, -4.1F, HUGE_VALF, -6.1F };
+
+      if( blaze::isfinite( vec ) != false ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Invalid isfinite evaluation\n"
              << " Details:\n"
              << "   Vector:\n" << vec << "\n";
          throw std::runtime_error( oss.str() );
