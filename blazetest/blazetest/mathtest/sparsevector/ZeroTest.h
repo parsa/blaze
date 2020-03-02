@@ -83,6 +83,9 @@ class ZeroTest
    //**Test functions******************************************************************************
    /*!\name Test functions */
    //@{
+   void testIsNan();
+   void testIsInf();
+   void testIsFinite();
    void testIsUniform();
    void testIsZero();
    void testMean();

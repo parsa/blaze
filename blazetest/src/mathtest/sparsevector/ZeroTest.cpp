@@ -68,6 +68,9 @@ namespace sparsevector {
 */
 ZeroTest::ZeroTest()
 {
+   testIsNan();
+   testIsInf();
+   testIsFinite();
    testIsUniform();
    testIsZero();
    testMean();
@@ -84,6 +87,138 @@ ZeroTest::ZeroTest()
 //  TEST FUNCTIONS
 //
 //=================================================================================================
+
+//*************************************************************************************************
+/*!\brief Test of the \c isnan() function for sparse vectors.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the \c isnan() function for sparse vectors. In case an
+// error is detected, a \a std::runtime_error exception is thrown.
+*/
+void ZeroTest::testIsNan()
+{
+   test_ = "isnan() function";
+
+   // isnan with 0-dimensional vector
+   {
+      blaze::ZeroVector<float,blaze::rowVector> vec;
+
+      if( blaze::isnan( vec ) != false ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Invalid isnan evaluation\n"
+             << " Details:\n"
+             << "   Vector:\n" << vec << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // isnan with empty 9-dimensional vector (non-NAN)
+   {
+      blaze::ZeroVector<float,blaze::rowVector> vec( 9UL );
+
+      if( blaze::isnan( vec ) != false ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Invalid isnan evaluation\n"
+             << " Details:\n"
+             << "   Vector:\n" << vec << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c isinf() function for sparse vectors.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the \c isinf() function for sparse vectors. In case an
+// error is detected, a \a std::runtime_error exception is thrown.
+*/
+void ZeroTest::testIsInf()
+{
+   test_ = "isinf() function";
+
+   // isinf with 0-dimensional vector
+   {
+      blaze::ZeroVector<float,blaze::rowVector> vec;
+
+      if( blaze::isinf( vec ) != false ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Invalid isinf evaluation\n"
+             << " Details:\n"
+             << "   Vector:\n" << vec << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // isinf with empty 9-dimensional vector (non-inf)
+   {
+      blaze::ZeroVector<float,blaze::rowVector> vec( 9UL );
+
+      if( blaze::isinf( vec ) != false ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Invalid isinf evaluation\n"
+             << " Details:\n"
+             << "   Vector:\n" << vec << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c isfinite() function for sparse vectors.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the \c isfinite() function for sparse vectors. In case an
+// error is detected, a \a std::runtime_error exception is thrown.
+*/
+void ZeroTest::testIsFinite()
+{
+   test_ = "isfinite() function";
+
+   // isfinite with 0-dimensional vector
+   {
+      blaze::ZeroVector<float,blaze::rowVector> vec;
+
+      if( blaze::isfinite( vec ) != true ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Invalid isfinite evaluation\n"
+             << " Details:\n"
+             << "   Vector:\n" << vec << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // isfinite with empty 9-dimensional vector (non-finite)
+   {
+      blaze::ZeroVector<float,blaze::rowVector> vec( 9UL );
+
+      if( blaze::isfinite( vec ) != true ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Invalid isfinite evaluation\n"
+             << " Details:\n"
+             << "   Vector:\n" << vec << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+}
+//*************************************************************************************************
+
 
 //*************************************************************************************************
 /*!\brief Test of the \c isUniform() function for sparse vectors.

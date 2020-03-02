@@ -70,6 +70,8 @@ namespace sparsevector {
 GeneralTest::GeneralTest()
 {
    testIsNan();
+   testIsInf();
+   testIsFinite();
    testIsUniform();
    testIsZero();
    testNormalize();
@@ -126,7 +128,7 @@ void GeneralTest::testIsNan()
       }
    }
 
-   // isnan with empty 9-dimensional vector
+   // isnan with empty 9-dimensional vector (non-NAN)
    {
       blaze::CompressedVector<float,blaze::rowVector> vec( 9UL );
 
@@ -140,7 +142,7 @@ void GeneralTest::testIsNan()
       }
    }
 
-   // isnan with filled 9-dimensional vector
+   // isnan with 9-dimensional vector (non-NAN)
    {
       blaze::CompressedVector<float,blaze::rowVector> vec( 9UL );
       vec[3] =  1.0F;
@@ -152,6 +154,202 @@ void GeneralTest::testIsNan()
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Invalid isnan evaluation\n"
+             << " Details:\n"
+             << "   Vector:\n" << vec << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // isnan with 9-dimensional vector (NAN)
+   {
+      blaze::CompressedVector<float,blaze::rowVector> vec( 9UL );
+      vec[3] =  1.0F;
+      vec[4] = -2.0F;
+      vec[6] =   NAN;
+      vec[8] =  4.0F;
+
+      if( blaze::isnan( vec ) != true ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Invalid isnan evaluation\n"
+             << " Details:\n"
+             << "   Vector:\n" << vec << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c isinf() function for sparse vectors.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the \c isinf() function for sparse vectors. In case an
+// error is detected, a \a std::runtime_error exception is thrown.
+*/
+void GeneralTest::testIsInf()
+{
+   test_ = "isinf() function";
+
+   // isinf with 0-dimensional vector
+   {
+      blaze::CompressedVector<float,blaze::rowVector> vec;
+
+      if( blaze::isinf( vec ) != false ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Invalid isinf evaluation\n"
+             << " Details:\n"
+             << "   Vector:\n" << vec << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // isinf with empty 9-dimensional vector (non-inf)
+   {
+      blaze::CompressedVector<float,blaze::rowVector> vec( 9UL );
+
+      if( blaze::isinf( vec ) != false ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Invalid isinf evaluation\n"
+             << " Details:\n"
+             << "   Vector:\n" << vec << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // isinf with 9-dimensional vector (non-inf)
+   {
+      blaze::CompressedVector<float,blaze::rowVector> vec( 9UL );
+      vec[3] =  1.0F;
+      vec[4] = -2.0F;
+      vec[6] =  3.0F;
+      vec[8] =  4.0F;
+
+      if( blaze::isinf( vec ) != false ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Invalid isinf evaluation\n"
+             << " Details:\n"
+             << "   Vector:\n" << vec << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // isinf with 9-dimensional vector (inf)
+   {
+      blaze::CompressedVector<float,blaze::rowVector> vec( 9UL );
+      vec[3] =      1.0F;
+      vec[4] =     -2.0F;
+      vec[6] = HUGE_VALF;
+      vec[8] =      4.0F;
+
+      if( blaze::isinf( vec ) != true ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Invalid isinf evaluation\n"
+             << " Details:\n"
+             << "   Vector:\n" << vec << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c isfinite() function for sparse vectors.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the \c isfinite() function for sparse vectors. In case an
+// error is detected, a \a std::runtime_error exception is thrown.
+*/
+void GeneralTest::testIsFinite()
+{
+   test_ = "isfinite() function";
+
+   // isfinite with 0-dimensional vector
+   {
+      blaze::CompressedVector<float,blaze::rowVector> vec;
+
+      if( blaze::isfinite( vec ) != true ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Invalid isfinite evaluation\n"
+             << " Details:\n"
+             << "   Vector:\n" << vec << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // isfinite with empty 9-dimensional vector (finite)
+   {
+      blaze::CompressedVector<float,blaze::rowVector> vec( 9UL );
+
+      if( blaze::isfinite( vec ) != true ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Invalid isfinite evaluation\n"
+             << " Details:\n"
+             << "   Vector:\n" << vec << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // isfinite with 9-dimensional vector (finite)
+   {
+      blaze::CompressedVector<float,blaze::rowVector> vec( 9UL );
+      vec[3] =  1.0F;
+      vec[4] = -2.0F;
+      vec[6] =  3.0F;
+      vec[8] =  4.0F;
+
+      if( blaze::isfinite( vec ) != true ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Invalid isfinite evaluation\n"
+             << " Details:\n"
+             << "   Vector:\n" << vec << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // isfinite with 9-dimensional vector (NAN)
+   {
+      blaze::CompressedVector<float,blaze::rowVector> vec( 9UL );
+      vec[3] =  1.0F;
+      vec[4] = -2.0F;
+      vec[6] =   NAN;
+      vec[8] =  4.0F;
+
+      if( blaze::isfinite( vec ) != false ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Invalid isfinite evaluation\n"
+             << " Details:\n"
+             << "   Vector:\n" << vec << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // isfinite with 9-dimensional vector (HUGE_VALF)
+   {
+      blaze::CompressedVector<float,blaze::rowVector> vec( 9UL );
+      vec[3] =      1.0F;
+      vec[4] =     -2.0F;
+      vec[6] = HUGE_VALF;
+      vec[8] =      4.0F;
+
+      if( blaze::isfinite( vec ) != false ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Invalid isfinite evaluation\n"
              << " Details:\n"
              << "   Vector:\n" << vec << "\n";
          throw std::runtime_error( oss.str() );
