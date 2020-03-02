@@ -47,6 +47,8 @@
 #include <blaze/math/RelaxationFlag.h>
 #include <blaze/math/shims/Equal.h>
 #include <blaze/math/shims/IsDefault.h>
+#include <blaze/math/shims/IsFinite.h>
+#include <blaze/math/shims/IsInf.h>
 #include <blaze/math/shims/IsNaN.h>
 #include <blaze/math/shims/IsZero.h>
 #include <blaze/math/shims/Pow2.h>
@@ -267,6 +269,12 @@ inline auto operator/=( SparseVector<VT,TF>&& vec, ST scalar )
 template< typename VT, bool TF >
 bool isnan( const SparseVector<VT,TF>& sv );
 
+template< typename VT, bool TF >
+bool isinf( const SparseVector<VT,TF>& sv );
+
+template< typename VT, bool TF >
+bool isfinite( const SparseVector<VT,TF>& sv );
+
 template< RelaxationFlag RF, typename VT, bool TF >
 bool isUniform( const SparseVector<VT,TF>& sv );
 
@@ -292,14 +300,14 @@ bool isZero( const SparseVector<VT,TF>& sv );
    // ... Resizing and initialization
    if( isnan( a ) ) { ... }
    \endcode
-
-// Note that this function only works for vectors with floating point elements. The attempt to
-// use it for a vector with a non-floating point element type results is a compile time error.
 */
 template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
 inline bool isnan( const SparseVector<VT,TF>& sv )
 {
+   if( !IsFloatingPoint_v< ElementType_t<VT> > )
+      return false;
+
    using CT = CompositeType_t<VT>;
 
    CT a( ~sv );  // Evaluation of the sparse vector operand
@@ -309,6 +317,80 @@ inline bool isnan( const SparseVector<VT,TF>& sv )
       if( isnan( element->value() ) ) return true;
    }
    return false;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Checks the given sparse vector for infinite elements.
+// \ingroup sparse_vector
+//
+// \param sv The sparse vector to be checked for infinite elements.
+// \return \a true if at least one element of the vector is infinite, \a false otherwise.
+//
+// This function checks the N-dimensional sparse vector for infinite (inf) elements. If at
+// least one element of the vector is infinite, the function returns \a true, otherwise
+// it returns \a false.
+
+   \code
+   blaze::CompressedVector<double> a;
+   // ... Resizing and initialization
+   if( isinf( a ) ) { ... }
+   \endcode
+*/
+template< typename VT  // Type of the sparse vector
+        , bool TF >    // Transpose flag
+inline bool isinf( const SparseVector<VT,TF>& sv )
+{
+   if( !IsFloatingPoint_v< ElementType_t<VT> > )
+      return false;
+
+   using CT = CompositeType_t<VT>;
+
+   CT a( ~sv );  // Evaluation of the sparse vector operand
+
+   const auto end( a.end() );
+   for( auto element=a.begin(); element!=end; ++element ) {
+      if( isinf( element->value() ) ) return true;
+   }
+   return false;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Checks the given sparse vector for finite elements.
+// \ingroup sparse_vector
+//
+// \param sv The sparse vector to be checked for finite elements.
+// \return \a true if all elements of the vector are finite, \a false otherwise.
+//
+// This function checks if all elements of the N-dimensional sparse vector are finite elements
+// (i.e. normal, subnormal or zero elements, but not infinite or NaN). If all elements of the
+// vector are finite, the function returns \a true, otherwise it returns \a false.
+
+   \code
+   blaze::CompressedVector<double> a;
+   // ... Resizing and initialization
+   if( isfinite( a ) ) { ... }
+   \endcode
+*/
+template< typename VT  // Type of the sparse vector
+        , bool TF >    // Transpose flag
+inline bool isfinite( const SparseVector<VT,TF>& sv )
+{
+   if( !IsFloatingPoint_v< ElementType_t<VT> > )
+      return true;
+
+   using CT = CompositeType_t<VT>;
+
+   CT a( ~sv );  // Evaluation of the sparse vector operand
+
+   const auto end( a.end() );
+   for( auto element=a.begin(); element!=end; ++element ) {
+      if( !isfinite( element->value() ) ) return false;
+   }
+   return true;
 }
 //*************************************************************************************************
 
