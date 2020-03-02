@@ -55,7 +55,6 @@
 #include <blaze/math/shims/Clear.h>
 #include <blaze/math/shims/Invert.h>
 #include <blaze/math/shims/IsDefault.h>
-#include <blaze/math/shims/IsNaN.h>
 #include <blaze/math/shims/IsOne.h>
 #include <blaze/math/shims/IsReal.h>
 #include <blaze/math/shims/IsZero.h>
@@ -597,9 +596,6 @@ bool isZero( const UniUpperValue<MT>& value );
 
 template< RelaxationFlag RF, typename MT >
 bool isOne( const UniUpperValue<MT>& value );
-
-template< typename MT >
-bool isnan( const UniUpperValue<MT>& value );
 //@}
 //*************************************************************************************************
 
@@ -731,26 +727,6 @@ inline bool isOne( const UniUpperValue<MT>& value )
    using blaze::isOne;
 
    return isOne<RF>( value.get() );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Returns whether the uniupper value is not a number.
-// \ingroup uniupper_matrix
-//
-// \param value The given uniupper value.
-// \return \a true in case the uniupper value is in not a number, \a false otherwise.
-//
-// This function checks whether the uniupper value is not a number (NaN). In case it is not a
-// number, the function returns \a true, otherwise it returns \a false.
-*/
-template< typename MT >
-inline bool isnan( const UniUpperValue<MT>& value )
-{
-   using blaze::isnan;
-
-   return isnan( value.get() );
 }
 //*************************************************************************************************
 

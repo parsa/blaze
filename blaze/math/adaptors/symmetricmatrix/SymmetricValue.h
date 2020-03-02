@@ -54,7 +54,6 @@
 #include <blaze/math/shims/Clear.h>
 #include <blaze/math/shims/Invert.h>
 #include <blaze/math/shims/IsDefault.h>
-#include <blaze/math/shims/IsNaN.h>
 #include <blaze/math/shims/IsOne.h>
 #include <blaze/math/shims/IsReal.h>
 #include <blaze/math/shims/IsZero.h>
@@ -611,9 +610,6 @@ bool isZero( const SymmetricValue<MT>& value );
 
 template< RelaxationFlag RF, typename MT >
 bool isOne( const SymmetricValue<MT>& value );
-
-template< typename MT >
-bool isnan( const SymmetricValue<MT>& value );
 //@}
 //*************************************************************************************************
 
@@ -745,26 +741,6 @@ inline bool isOne( const SymmetricValue<MT>& value )
    using blaze::isOne;
 
    return isOne<RF>( value.get() );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Returns whether the symmetric value is not a number.
-// \ingroup symmetric_matrix
-//
-// \param value The given symmetric value.
-// \return \a true in case the symmetric value is in not a number, \a false otherwise.
-//
-// This function checks whether the symmetric value is not a number (NaN). In case it is not a
-// number, the function returns \a true, otherwise it returns \a false.
-*/
-template< typename MT >
-inline bool isnan( const SymmetricValue<MT>& value )
-{
-   using blaze::isnan;
-
-   return isnan( value.get() );
 }
 //*************************************************************************************************
 

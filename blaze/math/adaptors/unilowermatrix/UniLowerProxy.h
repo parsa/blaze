@@ -55,7 +55,6 @@
 #include <blaze/math/shims/Clear.h>
 #include <blaze/math/shims/Invert.h>
 #include <blaze/math/shims/IsDefault.h>
-#include <blaze/math/shims/IsNaN.h>
 #include <blaze/math/shims/IsOne.h>
 #include <blaze/math/shims/IsReal.h>
 #include <blaze/math/shims/IsZero.h>
@@ -708,9 +707,6 @@ bool isZero( const UniLowerProxy<MT>& proxy );
 
 template< RelaxationFlag RF, typename MT >
 bool isOne( const UniLowerProxy<MT>& proxy );
-
-template< typename MT >
-bool isnan( const UniLowerProxy<MT>& proxy );
 //@}
 //*************************************************************************************************
 
@@ -844,26 +840,6 @@ inline bool isOne( const UniLowerProxy<MT>& proxy )
    using blaze::isOne;
 
    return isOne<RF>( proxy.get() );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Returns whether the represented element is not a number.
-// \ingroup unilower_matrix
-//
-// \param proxy The given access proxy.
-// \return \a true in case the represented element is in not a number, \a false otherwise.
-//
-// This function checks whether the element represented by the access proxy is not a number (NaN).
-// In case it is not a number, the function returns \a true, otherwise it returns \a false.
-*/
-template< typename MT >
-inline bool isnan( const UniLowerProxy<MT>& proxy )
-{
-   using blaze::isnan;
-
-   return isnan( proxy.get() );
 }
 //*************************************************************************************************
 

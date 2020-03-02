@@ -74,6 +74,8 @@
 #include <blaze/math/shims/InvCbrt.h>
 #include <blaze/math/shims/Invert.h>
 #include <blaze/math/shims/InvSqrt.h>
+#include <blaze/math/shims/IsFinite.h>
+#include <blaze/math/shims/IsInf.h>
 #include <blaze/math/shims/IsNaN.h>
 #include <blaze/math/shims/IsOne.h>
 #include <blaze/math/shims/IsReal.h>
@@ -967,6 +969,12 @@ bool isOne( const Proxy<PT,RT>& proxy );
 
 template< typename PT, typename RT >
 bool isnan( const Proxy<PT,RT>& proxy );
+
+template< typename PT, typename RT >
+bool isinf( const Proxy<PT,RT>& proxy );
+
+template< typename PT, typename RT >
+bool isfinite( const Proxy<PT,RT>& proxy );
 
 template< RelaxationFlag RF, typename PT1, typename RT1, typename PT2, typename RT2 >
 bool equal( const Proxy<PT1,RT1>& lhs, const Proxy<PT2,RT2>& rhs );
@@ -2248,14 +2256,14 @@ inline bool isOne( const Proxy<PT,RT>& proxy )
 
 
 //*************************************************************************************************
-/*!\brief Returns whether the represented element is not a number.
+/*!\brief Returns whether the represented element is not-a-number.
 // \ingroup math
 //
 // \param proxy The given proxy instance.
-// \return \a true in case the represented element is in not a number, \a false otherwise.
+// \return \a true in case the represented element is not-a-number, \a false otherwise.
 //
-// This function checks whether the element represented by the proxy is not a number (NaN).
-// In case it is not a number, the function returns \a true, otherwise it returns \a false.
+// This function checks whether the element represented by the proxy is not-a-number (NaN).
+// In case it is not-a-number, the function returns \a true, otherwise it returns \a false.
 */
 template< typename PT, typename RT >
 inline bool isnan( const Proxy<PT,RT>& proxy )
@@ -2263,6 +2271,47 @@ inline bool isnan( const Proxy<PT,RT>& proxy )
    using blaze::isnan;
 
    return isnan( (~proxy).get() );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns whether the represented element is infinite.
+// \ingroup math
+//
+// \param proxy The given proxy instance.
+// \return \a true in case the represented element is infinite, \a false otherwise.
+//
+// This function checks whether the element represented by the proxy is infinite (inf).
+// In case it is infinite, the function returns \a true, otherwise it returns \a false.
+*/
+template< typename PT, typename RT >
+inline bool isinf( const Proxy<PT,RT>& proxy )
+{
+   using blaze::isinf;
+
+   return isinf( (~proxy).get() );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns whether the represented element is finite.
+// \ingroup math
+//
+// \param proxy The given proxy instance.
+// \return \a true in case the represented element is finite, \a false otherwise.
+//
+// This function checks whether the element represented by the proxy is finite (i.e.
+// normal, subnormal or zero elements, but not infinite or NaN). In case it is finite,
+// the function returns \a true, otherwise it returns \a false.
+*/
+template< typename PT, typename RT >
+inline bool isfinite( const Proxy<PT,RT>& proxy )
+{
+   using blaze::isfinite;
+
+   return isfinite( (~proxy).get() );
 }
 //*************************************************************************************************
 
