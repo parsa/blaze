@@ -50,6 +50,8 @@
 #include <blaze/math/shims/Conjugate.h>
 #include <blaze/math/shims/Equal.h>
 #include <blaze/math/shims/IsDefault.h>
+#include <blaze/math/shims/IsFinite.h>
+#include <blaze/math/shims/IsInf.h>
 #include <blaze/math/shims/IsNaN.h>
 #include <blaze/math/shims/IsOne.h>
 #include <blaze/math/shims/IsReal.h>
@@ -300,6 +302,12 @@ inline auto operator/=( SparseMatrix<MT,SO>&& mat, ST scalar )
 template< typename MT, bool SO >
 bool isnan( const SparseMatrix<MT,SO>& sm );
 
+template< typename MT, bool SO >
+bool isinf( const SparseMatrix<MT,SO>& sm );
+
+template< typename MT, bool SO >
+bool isfinite( const SparseMatrix<MT,SO>& sm );
+
 template< RelaxationFlag RF, typename MT, bool SO >
 bool isSymmetric( const SparseMatrix<MT,SO>& sm );
 
@@ -355,14 +363,14 @@ bool isIdentity( const SparseMatrix<MT,SO>& sm );
    // ... Initialization
    if( isnan( A ) ) { ... }
    \endcode
-
-// Note that this function only works for matrices with floating point elements. The attempt to
-// use it for a matrix with a non-floating point element type results in a compile time error.
 */
 template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
 bool isnan( const SparseMatrix<MT,SO>& sm )
 {
+   if( !IsFloatingPoint_v< ElementType_t<MT> > )
+      return false;
+
    CompositeType_t<MT> A( ~sm );  // Evaluation of the sparse matrix operand
 
    if( SO == rowMajor ) {
@@ -379,6 +387,94 @@ bool isnan( const SparseMatrix<MT,SO>& sm )
    }
 
    return false;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Checks the given sparse matrix for infinite elements.
+// \ingroup sparse_matrix
+//
+// \param sm The sparse matrix to be checked for infinite elements.
+// \return \a true if at least one element of the sparse matrix is infinite, \a false otherwise.
+//
+// This function checks the sparse matrix for infinite (inf) elements. If at least one
+// element of the matrix is infinite, the function returns \a true, otherwise it returns
+// \a false.
+
+   \code
+   blaze::CompressedMatrix<double> A( 3UL, 4UL );
+   // ... Initialization
+   if( isinf( A ) ) { ... }
+   \endcode
+*/
+template< typename MT  // Type of the sparse matrix
+        , bool SO >    // Storage order
+bool isinf( const SparseMatrix<MT,SO>& sm )
+{
+   if( !IsFloatingPoint_v< ElementType_t<MT> > )
+      return false;
+
+   CompositeType_t<MT> A( ~sm );  // Evaluation of the sparse matrix operand
+
+   if( SO == rowMajor ) {
+      for( size_t i=0UL; i<A.rows(); ++i ) {
+         for( auto element=A.begin(i); element!=A.end(i); ++element )
+            if( isinf( element->value() ) ) return true;
+      }
+   }
+   else {
+      for( size_t j=0UL; j<A.columns(); ++j ) {
+         for( auto element=A.begin(j); element!=A.end(j); ++element )
+            if( isinf( element->value() ) ) return true;
+      }
+   }
+
+   return false;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Checks the given sparse matrix for finite elements.
+// \ingroup sparse_matrix
+//
+// \param sm The sparsre matrix to be checked for finite elements.
+// \return \a true if all elements of the matrix are finite, \a false otherwise.
+//
+// This function checks if all elements of the sparse matrix are finite elements (i.e. normal,
+// subnormal or zero elements, but not infinite or NaN). If all elements of the matrix are
+// finite, the function returns \a true, otherwise it returns \a false.
+
+   \code
+   blaze::CompressedMatrix<double> A( 3UL, 4UL );
+   // ... Initialization
+   if( isfinite( A ) ) { ... }
+   \endcode
+*/
+template< typename MT  // Type of the sparse matrix
+        , bool SO >    // Storage order
+bool isfinite( const SparseMatrix<MT,SO>& sm )
+{
+   if( !IsFloatingPoint_v< ElementType_t<MT> > )
+      return true;
+
+   CompositeType_t<MT> A( ~sm );  // Evaluation of the sparse matrix operand
+
+   if( SO == rowMajor ) {
+      for( size_t i=0UL; i<A.rows(); ++i ) {
+         for( auto element=A.begin(i); element!=A.end(i); ++element )
+            if( !isfinite( element->value() ) ) return false;
+      }
+   }
+   else {
+      for( size_t j=0UL; j<A.columns(); ++j ) {
+         for( auto element=A.begin(j); element!=A.end(j); ++element )
+            if( !isfinite( element->value() ) ) return false;
+      }
+   }
+
+   return true;
 }
 //*************************************************************************************************
 
