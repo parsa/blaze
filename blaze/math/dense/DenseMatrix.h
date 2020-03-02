@@ -56,6 +56,8 @@
 #include <blaze/math/shims/Equal.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/shims/IsDivisor.h>
+#include <blaze/math/shims/IsFinite.h>
+#include <blaze/math/shims/IsInf.h>
 #include <blaze/math/shims/IsNaN.h>
 #include <blaze/math/shims/IsOne.h>
 #include <blaze/math/shims/IsReal.h>
@@ -90,6 +92,7 @@
 #include <blaze/util/NumericCast.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsBuiltin.h>
+#include <blaze/util/typetraits/IsFloatingPoint.h>
 #include <blaze/util/typetraits/IsNumeric.h>
 
 
@@ -1217,6 +1220,12 @@ inline MT1& operator^=( DenseMatrix<MT1,SO1>&& lhs, const DenseMatrix<MT2,SO2>& 
 template< typename MT, bool SO >
 bool isnan( const DenseMatrix<MT,SO>& dm );
 
+template< typename MT, bool SO >
+bool isinf( const DenseMatrix<MT,SO>& dm );
+
+template< typename MT, bool SO >
+bool isfinite( const DenseMatrix<MT,SO>& dm );
+
 template< RelaxationFlag RF, typename MT, bool SO >
 bool isSymmetric( const DenseMatrix<MT,SO>& dm );
 
@@ -1263,7 +1272,7 @@ bool isPositiveDefinite( const DenseMatrix<MT,SO>& dm );
 /*!\brief Checks the given dense matrix for not-a-number elements.
 // \ingroup dense_matrix
 //
-// \param dm The matrix to be checked for not-a-number elements.
+// \param dm The dense matrix to be checked for not-a-number elements.
 // \return \a true if at least one element of the matrix is not-a-number, \a false otherwise.
 //
 // This function checks the dense matrix for not-a-number (NaN) elements. If at least one
@@ -1275,32 +1284,135 @@ bool isPositiveDefinite( const DenseMatrix<MT,SO>& dm );
    // ... Initialization
    if( isnan( A ) ) { ... }
    \endcode
-
-// Note that this function only works for matrices with floating point elements. The attempt to
-// use it for a matrix with a non-floating point element type results in a compile time error.
 */
 template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order
 bool isnan( const DenseMatrix<MT,SO>& dm )
 {
+   if( !IsFloatingPoint_v< ElementType_t<MT> > )
+      return false;
+
    using CT = CompositeType_t<MT>;
 
    CT A( ~dm );  // Evaluation of the dense matrix operand
 
    if( SO == rowMajor ) {
       for( size_t i=0UL; i<A.rows(); ++i ) {
-         for( size_t j=0UL; j<A.columns(); ++j )
+         const size_t jbegin( IsUpper_v<MT> ? i : 0UL );
+         const size_t jend  ( IsLower_v<MT> ? i+1UL : A.columns() );
+         for( size_t j=jbegin; j<jend; ++j )
             if( isnan( A(i,j) ) ) return true;
       }
    }
    else {
       for( size_t j=0UL; j<A.columns(); ++j ) {
-         for( size_t i=0UL; i<A.rows(); ++i )
+         const size_t ibegin( IsLower_v<MT> ? j : 0UL );
+         const size_t iend  ( IsUpper_v<MT> ? j+1UL : A.rows() );
+         for( size_t i=ibegin; i<iend; ++i )
             if( isnan( A(i,j) ) ) return true;
       }
    }
 
    return false;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Checks the given dense matrix for infinite elements.
+// \ingroup dense_matrix
+//
+// \param dm The dense matrix to be checked for infinite elements.
+// \return \a true if at least one element of the matrix is infinite, \a false otherwise.
+//
+// This function checks the dense matrix for infinite (NaN) elements. If at least one element
+// of the matrix is infinite, the function returns \a true, otherwise it returns \a false.
+
+   \code
+   blaze::DynamicMatrix<double> A( 3UL, 4UL );
+   // ... Initialization
+   if( isinf( A ) ) { ... }
+   \endcode
+*/
+template< typename MT  // Type of the dense matrix
+        , bool SO >    // Storage order
+bool isinf( const DenseMatrix<MT,SO>& dm )
+{
+   if( !IsFloatingPoint_v< ElementType_t<MT> > )
+      return false;
+
+   using CT = CompositeType_t<MT>;
+
+   CT A( ~dm );  // Evaluation of the dense matrix operand
+
+   if( SO == rowMajor ) {
+      for( size_t i=0UL; i<A.rows(); ++i ) {
+         const size_t jbegin( IsUpper_v<MT> ? i : 0UL );
+         const size_t jend  ( IsLower_v<MT> ? i+1UL : A.columns() );
+         for( size_t j=jbegin; j<jend; ++j )
+            if( isinf( A(i,j) ) ) return true;
+      }
+   }
+   else {
+      for( size_t j=0UL; j<A.columns(); ++j ) {
+         const size_t ibegin( IsLower_v<MT> ? j : 0UL );
+         const size_t iend  ( IsUpper_v<MT> ? j+1UL : A.rows() );
+         for( size_t i=ibegin; i<iend; ++i )
+            if( isinf( A(i,j) ) ) return true;
+      }
+   }
+
+   return false;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Checks the given dense matrix for finite elements.
+// \ingroup dense_matrix
+//
+// \param dm The dense matrix to be checked for finite elements.
+// \return \a true if all elements of the matrix are finite, \a false otherwise.
+//
+// This function checks if all elements of the dense matrix are finite elements (i.e. normal,
+// subnormal or zero elements, but not infinite or NaN). If all elements of the matrix are
+// finite, the function returns \a true, otherwise it returns \a false.
+
+   \code
+   blaze::DynamicMatrix<double> A( 3UL, 4UL );
+   // ... Initialization
+   if( isfinite( A ) ) { ... }
+   \endcode
+*/
+template< typename MT  // Type of the dense matrix
+        , bool SO >    // Storage order
+bool isfinite( const DenseMatrix<MT,SO>& dm )
+{
+   if( !IsFloatingPoint_v< ElementType_t<MT> > )
+      return true;
+
+   using CT = CompositeType_t<MT>;
+
+   CT A( ~dm );  // Evaluation of the dense matrix operand
+
+   if( SO == rowMajor ) {
+      for( size_t i=0UL; i<A.rows(); ++i ) {
+         const size_t jbegin( IsUpper_v<MT> ? i : 0UL );
+         const size_t jend  ( IsLower_v<MT> ? i+1UL : A.columns() );
+         for( size_t j=jbegin; j<jend; ++j )
+            if( !isfinite( A(i,j) ) ) return false;
+      }
+   }
+   else {
+      for( size_t j=0UL; j<A.columns(); ++j ) {
+         const size_t ibegin( IsLower_v<MT> ? j : 0UL );
+         const size_t iend  ( IsUpper_v<MT> ? j+1UL : A.rows() );
+         for( size_t i=ibegin; i<iend; ++i )
+            if( !isfinite( A(i,j) ) ) return false;
+      }
+   }
+
+   return true;
 }
 //*************************************************************************************************
 
