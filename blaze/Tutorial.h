@@ -1980,9 +1980,48 @@
    \endcode
 
 // If at least one element of the vector is not-a-number, the function returns \c true, otherwise
-// it returns \c false. Please note that this function only works for vectors with floating point
-// elements. The attempt to use it for a vector with a non-floating point element type results in
-// a compile time error.
+// it returns \c false.
+//
+//
+// \n \subsection vector_operations_isinf isinf()
+//
+// The \c isinf() function checks the given dense or sparse vector for infinite (\c inf) elements:
+
+   \code
+   blaze::DynamicVector<double> a;
+   // ... Resizing and initialization
+   if( isinf( a ) ) { ... }
+   \endcode
+
+   \code
+   blaze::CompressedVector<double> a;
+   // ... Resizing and initialization
+   if( isinf( a ) ) { ... }
+   \endcode
+
+// If at least one element of the vector is infinite, the function returns \c true, otherwise it
+// returns \c false.
+//
+//
+// \n \subsection vector_operations_isfinite isfinite()
+//
+// The \c isfinite() function checks if all elements of the given dense or sparse vector are
+// finite elements (i.e. normal, subnormal or zero elements, but not infinite or NaN):
+
+   \code
+   blaze::DynamicVector<double> a;
+   // ... Resizing and initialization
+   if( isfinite( a ) ) { ... }
+   \endcode
+
+   \code
+   blaze::CompressedVector<double> a;
+   // ... Resizing and initialization
+   if( isfinite( a ) ) { ... }
+   \endcode
+
+// If all elements of the vector are finite, the function returns \c true, otherwise it returns
+// \c false.
 //
 //
 // \n \subsection vector_operations_isdefault isDefault()
@@ -4905,9 +4944,48 @@
    \endcode
 
 // If at least one element of the matrix is not-a-number, the function returns \c true, otherwise
-// it returns \c false. Please note that this function only works for matrices with floating point
-// elements. The attempt to use it for a matrix with a non-floating point element type results in
-// a compile time error.
+// it returns \c false.
+//
+//
+// \n \subsection matrix_operations_isinf isinf()
+//
+// The \c isinf() function checks the given dense or sparse matrix for infinite (\c inf) elements:
+
+   \code
+   blaze::DynamicMatrix<double> A( 3UL, 4UL );
+   // ... Initialization
+   if( isinf( A ) ) { ... }
+   \endcode
+
+   \code
+   blaze::CompressedMatrix<double> A( 3UL, 4UL );
+   // ... Initialization
+   if( isinf( A ) ) { ... }
+   \endcode
+
+// If at least one element of the matrix is infinite, the function returns \c true, otherwise it
+// returns \c false.
+//
+//
+// \n \subsection matrix_operations_isfinite isfinite()
+//
+// The \c isfinite() function checks if all elements of the given dense or sparse matrix are
+// finite elements (i.e. normal, subnormal or zero elements, but not infinite or NaN):
+
+   \code
+   blaze::DynamicMatrix<double> A( 3UL, 4UL );
+   // ... Initialization
+   if( isfinite( A ) ) { ... }
+   \endcode
+
+   \code
+   blaze::CompressedMatrix<double> A( 3UL, 4UL );
+   // ... Initialization
+   if( isfinite( A ) ) { ... }
+   \endcode
+
+// If all elements of the matrix are finite, the function returns \c true, otherwise it returns
+// \c false.
 //
 //
 // \n \subsection matrix_operations_isdefault isDefault()
