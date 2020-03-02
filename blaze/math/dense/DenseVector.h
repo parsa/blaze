@@ -46,6 +46,8 @@
 #include <blaze/math/RelaxationFlag.h>
 #include <blaze/math/shims/Equal.h>
 #include <blaze/math/shims/IsDivisor.h>
+#include <blaze/math/shims/IsFinite.h>
+#include <blaze/math/shims/IsInf.h>
 #include <blaze/math/shims/IsNaN.h>
 #include <blaze/math/shims/IsZero.h>
 #include <blaze/math/shims/Pow2.h>
@@ -58,6 +60,7 @@
 #include <blaze/util/constraints/Numeric.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/Types.h>
+#include <blaze/util/typetraits/IsFloatingPoint.h>
 #include <blaze/util/typetraits/IsNumeric.h>
 #include <blaze/util/typetraits/RemoveReference.h>
 
@@ -1118,6 +1121,12 @@ template< typename VT, bool TF >
 bool isnan( const DenseVector<VT,TF>& dv );
 
 template< typename VT, bool TF >
+bool isinf( const DenseVector<VT,TF>& dv );
+
+template< typename VT, bool TF >
+bool isfinite( const DenseVector<VT,TF>& dv );
+
+template< typename VT, bool TF >
 bool isDivisor( const DenseVector<VT,TF>& dv );
 
 template< RelaxationFlag RF, typename VT, bool TF >
@@ -1133,7 +1142,7 @@ bool isZero( const DenseVector<VT,TF>& dv );
 /*!\brief Checks the given dense vector for not-a-number elements.
 // \ingroup dense_vector
 //
-// \param dv The vector to be checked for not-a-number elements.
+// \param dv The dense vector to be checked for not-a-number elements.
 // \return \a true if at least one element of the vector is not-a-number, \a false otherwise.
 //
 // This function checks the N-dimensional dense vector for not-a-number (NaN) elements. If at
@@ -1145,20 +1154,87 @@ bool isZero( const DenseVector<VT,TF>& dv );
    // ... Resizing and initialization
    if( isnan( a ) ) { ... }
    \endcode
-
-// Note that this function only works for vectors with floating point elements. The attempt to
-// use it for a vector with a non-floating point element type results in a compile time error.
 */
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
 bool isnan( const DenseVector<VT,TF>& dv )
 {
+   if( !IsFloatingPoint_v< ElementType_t<VT> > )
+      return false;
+
    CompositeType_t<VT> a( ~dv );  // Evaluation of the dense vector operand
 
    for( size_t i=0UL; i<a.size(); ++i ) {
       if( isnan( a[i] ) ) return true;
    }
    return false;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Checks the given dense vector for infinite elements.
+// \ingroup dense_vector
+//
+// \param dv The dense vector to be checked for infinite elements.
+// \return \a true if at least one element of the vector is infinite, \a false otherwise.
+//
+// This function checks the N-dimensional dense vector for infinite elements. If at least one
+// element of the vector is infinite, the function returns \a true, otherwise it returns \a false.
+
+   \code
+   blaze::DynamicVector<double> a;
+   // ... Resizing and initialization
+   if( isinf( a ) ) { ... }
+   \endcode
+*/
+template< typename VT  // Type of the dense vector
+        , bool TF >    // Transpose flag
+bool isinf( const DenseVector<VT,TF>& dv )
+{
+   if( !IsFloatingPoint_v< ElementType_t<VT> > )
+      return false;
+
+   CompositeType_t<VT> a( ~dv );  // Evaluation of the dense vector operand
+
+   for( size_t i=0UL; i<a.size(); ++i ) {
+      if( isinf( a[i] ) ) return true;
+   }
+   return false;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Checks the given dense vector for finite elements.
+// \ingroup dense_vector
+//
+// \param dv The dense vector to be checked for finite elements.
+// \return \a true if all elements of the vector are finite, \a false otherwise.
+//
+// This function checks if all elements of the N-dimensional dense vector are finite elements
+// (i.e. normal, subnormal or zero elements, but not infinite or NaN). If all elements of the
+// vector are finite, the function returns \a true, otherwise it returns \a false.
+
+   \code
+   blaze::DynamicVector<double> a;
+   // ... Resizing and initialization
+   if( isfinite( a ) ) { ... }
+   \endcode
+*/
+template< typename VT  // Type of the dense vector
+        , bool TF >    // Transpose flag
+bool isfinite( const DenseVector<VT,TF>& dv )
+{
+   if( !IsFloatingPoint_v< ElementType_t<VT> > )
+      return true;
+
+   CompositeType_t<VT> a( ~dv );  // Evaluation of the dense vector operand
+
+   for( size_t i=0UL; i<a.size(); ++i ) {
+      if( !isfinite( a[i] ) ) return false;
+   }
+   return true;
 }
 //*************************************************************************************************
 
