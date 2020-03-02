@@ -88,6 +88,9 @@ class IdentityTest
    //**Test functions******************************************************************************
    /*!\name Test functions */
    //@{
+   void testIsNan();
+   void testIsInf();
+   void testIsFinite();
    void testIsSymmetric();
    void testIsHermitian();
    void testIsUniform();

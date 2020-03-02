@@ -68,6 +68,9 @@ namespace sparsematrix {
 */
 UniUpperTest::UniUpperTest()
 {
+   testIsNan();
+   testIsInf();
+   testIsFinite();
    testIsSymmetric();
    testIsHermitian();
    testIsUniform();
@@ -91,6 +94,595 @@ UniUpperTest::UniUpperTest()
 //  TEST FUNCTIONS
 //
 //=================================================================================================
+
+//*************************************************************************************************
+/*!\brief Test of the \c isnan() function for sparse matrices.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the \c isnan() function for sparse matrices. In case an
+// error is detected, a \a std::runtime_error exception is thrown.
+*/
+void UniUpperTest::testIsNan()
+{
+   //=====================================================================================
+   // Row-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Row-major isnan()";
+
+      // isnan with 0x0 matrix
+      {
+         blaze::UniUpperMatrix< blaze::CompressedMatrix<float,blaze::rowMajor> > mat;
+
+         checkRows    ( mat, 0UL );
+         checkColumns ( mat, 0UL );
+         checkNonZeros( mat, 0UL );
+
+         if( blaze::isnan( mat ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isnan evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // isnan with empty 3x3 matrix (non-NAN)
+      {
+         blaze::UniUpperMatrix< blaze::CompressedMatrix<float,blaze::rowMajor> > mat( 3UL );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkNonZeros( mat, 3UL );
+
+         if( blaze::isnan( mat ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isnan evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // isnan with 3x3 matrix (non-NAN)
+      {
+         blaze::UniUpperMatrix< blaze::CompressedMatrix<float,blaze::rowMajor> > mat( 3UL );
+         mat(0,2) = 4.0F;
+         mat(1,2) = 5.0F;
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkNonZeros( mat, 5UL );
+
+         if( blaze::isnan( mat ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isnan evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // isnan with 3x3 matrix (NAN)
+      {
+         blaze::UniUpperMatrix< blaze::CompressedMatrix<float,blaze::rowMajor> > mat( 3UL );
+         mat(0,2) = 4.0F;
+         mat(1,2) =  NAN;
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkNonZeros( mat, 5UL );
+
+         if( blaze::isnan( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isnan evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Column-major isnan()";
+
+      // isnan with 0x0 matrix
+      {
+         blaze::UniUpperMatrix< blaze::CompressedMatrix<float,blaze::columnMajor> > mat;
+
+         checkRows    ( mat, 0UL );
+         checkColumns ( mat, 0UL );
+         checkNonZeros( mat, 0UL );
+
+         if( blaze::isnan( mat ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isnan evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // isnan with empty 3x3 matrix (non-NAN)
+      {
+         blaze::UniUpperMatrix< blaze::CompressedMatrix<float,blaze::columnMajor> > mat( 3UL );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkNonZeros( mat, 3UL );
+
+         if( blaze::isnan( mat ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isnan evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // isnan with 3x3 matrix (non-NAN)
+      {
+         blaze::UniUpperMatrix< blaze::CompressedMatrix<float,blaze::columnMajor> > mat( 3UL );
+         mat(0,2) = 4.0F;
+         mat(1,2) = 5.0F;
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkNonZeros( mat, 5UL );
+
+         if( blaze::isnan( mat ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isnan evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // isnan with 3x3 matrix (NAN)
+      {
+         blaze::UniUpperMatrix< blaze::CompressedMatrix<float,blaze::columnMajor> > mat( 3UL );
+         mat(0,2) = 4.0F;
+         mat(1,2) =  NAN;
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkNonZeros( mat, 5UL );
+
+         if( blaze::isnan( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isnan evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c isinf() function for sparse matrices.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the \c isinf() function for sparse matrices. In case an
+// error is detected, a \a std::runtime_error exception is thrown.
+*/
+void UniUpperTest::testIsInf()
+{
+   //=====================================================================================
+   // Row-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Row-major isinf()";
+
+      // isinf with 0x0 matrix
+      {
+         blaze::UniUpperMatrix< blaze::CompressedMatrix<float,blaze::rowMajor> > mat;
+
+         checkRows    ( mat, 0UL );
+         checkColumns ( mat, 0UL );
+         checkNonZeros( mat, 0UL );
+
+         if( blaze::isinf( mat ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isinf evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // isinf with empty 3x3 matrix (non-inf)
+      {
+         blaze::UniUpperMatrix< blaze::CompressedMatrix<float,blaze::rowMajor> > mat( 3UL );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkNonZeros( mat, 3UL );
+
+         if( blaze::isinf( mat ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isinf evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // isinf with 3x3 matrix (non-inf)
+      {
+         blaze::UniUpperMatrix< blaze::CompressedMatrix<float,blaze::rowMajor> > mat( 3UL );
+         mat(0,2) = 4.0F;
+         mat(1,2) = 5.0F;
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkNonZeros( mat, 5UL );
+
+         if( blaze::isinf( mat ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isinf evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // isinf with 3x3 matrix (HUGE_VALF)
+      {
+         blaze::UniUpperMatrix< blaze::CompressedMatrix<float,blaze::rowMajor> > mat( 3UL );
+         mat(0,2) =      4.0F;
+         mat(1,2) = HUGE_VALF;
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkNonZeros( mat, 5UL );
+
+         if( blaze::isinf( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isinf evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Column-major isinf()";
+
+      // isinf with 0x0 matrix
+      {
+         blaze::UniUpperMatrix< blaze::CompressedMatrix<float,blaze::columnMajor> > mat;
+
+         checkRows    ( mat, 0UL );
+         checkColumns ( mat, 0UL );
+         checkNonZeros( mat, 0UL );
+
+         if( blaze::isinf( mat ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isinf evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // isinf with empty 3x3 matrix (non-inf)
+      {
+         blaze::UniUpperMatrix< blaze::CompressedMatrix<float,blaze::columnMajor> > mat( 3UL );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkNonZeros( mat, 3UL );
+
+         if( blaze::isinf( mat ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isinf evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // isinf with 3x3 matrix (non-inf)
+      {
+         blaze::UniUpperMatrix< blaze::CompressedMatrix<float,blaze::columnMajor> > mat( 3UL );
+         mat(0,2) = 4.0F;
+         mat(1,2) = 5.0F;
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkNonZeros( mat, 5UL );
+
+         if( blaze::isinf( mat ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isinf evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // isinf with 3x3 matrix (HUGE_VALF)
+      {
+         blaze::UniUpperMatrix< blaze::CompressedMatrix<float,blaze::columnMajor> > mat( 3UL );
+         mat(0,2) =      4.0F;
+         mat(1,2) = HUGE_VALF;
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkNonZeros( mat, 5UL );
+
+         if( blaze::isinf( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isinf evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c isfinite() function for sparse matrices.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the \c isfinite() function for sparse matrices. In case an
+// error is detected, a \a std::runtime_error exception is thrown.
+*/
+void UniUpperTest::testIsFinite()
+{
+   //=====================================================================================
+   // Row-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Row-major isfinite()";
+
+      // isfinite with 0x0 matrix
+      {
+         blaze::UniUpperMatrix< blaze::CompressedMatrix<float,blaze::rowMajor> > mat;
+
+         checkRows    ( mat, 0UL );
+         checkColumns ( mat, 0UL );
+         checkNonZeros( mat, 0UL );
+
+         if( blaze::isfinite( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isfinite evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // isfinite with empty 3x3 matrix (finite)
+      {
+         blaze::UniUpperMatrix< blaze::CompressedMatrix<float,blaze::rowMajor> > mat( 3UL );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkNonZeros( mat, 3UL );
+
+         if( blaze::isfinite( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isfinite evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // isfinite with 3x3 matrix (finite)
+      {
+         blaze::UniUpperMatrix< blaze::CompressedMatrix<float,blaze::rowMajor> > mat( 3UL );
+         mat(0,2) = 4.0F;
+         mat(1,2) = 5.0F;
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkNonZeros( mat, 5UL );
+
+         if( blaze::isfinite( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isfinite evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // isfinite with 3x3 matrix (NAN)
+      {
+         blaze::UniUpperMatrix< blaze::CompressedMatrix<float,blaze::rowMajor> > mat( 3UL );
+         mat(0,2) = 4.0F;
+         mat(1,2) =  NAN;
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkNonZeros( mat, 5UL );
+
+         if( blaze::isfinite( mat ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isfinite evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // isfinite with 3x3 matrix (HUGE_VALF)
+      {
+         blaze::UniUpperMatrix< blaze::CompressedMatrix<float,blaze::rowMajor> > mat( 3UL );
+         mat(0,2) =      4.0F;
+         mat(1,2) = HUGE_VALF;
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkNonZeros( mat, 5UL );
+
+         if( blaze::isfinite( mat ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isfinite evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Column-major isfinite()";
+
+      // isfinite with 0x0 matrix
+      {
+         blaze::UniUpperMatrix< blaze::CompressedMatrix<float,blaze::columnMajor> > mat;
+
+         checkRows    ( mat, 0UL );
+         checkColumns ( mat, 0UL );
+         checkNonZeros( mat, 0UL );
+
+         if( blaze::isfinite( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isfinite evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // isfinite with empty 3x3 matrix (finite)
+      {
+         blaze::UniUpperMatrix< blaze::CompressedMatrix<float,blaze::columnMajor> > mat( 3UL );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkNonZeros( mat, 3UL );
+
+         if( blaze::isfinite( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isfinite evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // isfinite with 3x3 matrix (finite)
+      {
+         blaze::UniUpperMatrix< blaze::CompressedMatrix<float,blaze::columnMajor> > mat( 3UL );
+         mat(0,2) = 4.0F;
+         mat(1,2) = 5.0F;
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkNonZeros( mat, 5UL );
+
+         if( blaze::isfinite( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isfinite evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // isfinite with 3x3 matrix (NAN)
+      {
+         blaze::UniUpperMatrix< blaze::CompressedMatrix<float,blaze::columnMajor> > mat( 3UL );
+         mat(0,2) = 4.0F;
+         mat(1,2) =  NAN;
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkNonZeros( mat, 5UL );
+
+         if( blaze::isfinite( mat ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isfinite evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // isfinite with 3x3 matrix (HUGE_VALF)
+      {
+         blaze::UniUpperMatrix< blaze::CompressedMatrix<float,blaze::columnMajor> > mat( 3UL );
+         mat(0,2) =      4.0F;
+         mat(1,2) = HUGE_VALF;
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkNonZeros( mat, 5UL );
+
+         if( blaze::isfinite( mat ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isfinite evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+}
+//*************************************************************************************************
+
 
 //*************************************************************************************************
 /*!\brief Test of the \c isSymmetric() function for sparse matrices.
