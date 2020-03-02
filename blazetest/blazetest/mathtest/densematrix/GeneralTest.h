@@ -89,6 +89,8 @@ class GeneralTest
    /*!\name Test functions */
    //@{
    void testIsNan();
+   void testIsInf();
+   void testIsFinite();
    void testIsSquare();
    void testIsSymmetric();
    void testIsHermitian();

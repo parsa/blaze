@@ -71,6 +71,8 @@ namespace densematrix {
 GeneralTest::GeneralTest()
 {
    testIsNan();
+   testIsInf();
+   testIsFinite();
    testIsSquare();
    testIsSymmetric();
    testIsHermitian();
@@ -140,7 +142,7 @@ void GeneralTest::testIsNan()
    {
       test_ = "Row-major isnan()";
 
-      // isnan with 0x0 matrix
+      // isnan with 0x0 matrix (non-NAN)
       {
          blaze::DynamicMatrix<float,blaze::rowMajor> mat;
 
@@ -158,13 +160,16 @@ void GeneralTest::testIsNan()
          }
       }
 
-      // isnan with empty 3x5 matrix
+      // isnan with 3x5 matrix (non-NAN)
       {
-         blaze::DynamicMatrix<float,blaze::rowMajor> mat( 3UL, 5UL, 0.0F );
+         blaze::DynamicMatrix<float,blaze::rowMajor> mat
+            { {  1.2F, -2.1F,  3.2F, -4.1F,  5.2F },
+              { -2.1F,  3.2F, -4.1F,  5.2F, -6.1F },
+              {  3.2F, -4.1F,  5.2F, -6.1F,  7.2F } };
 
-         checkRows    ( mat, 3UL );
-         checkColumns ( mat, 5UL );
-         checkNonZeros( mat, 0UL );
+         checkRows    ( mat,  3UL );
+         checkColumns ( mat,  5UL );
+         checkNonZeros( mat, 15UL );
 
          if( blaze::isnan( mat ) != false ) {
             std::ostringstream oss;
@@ -176,19 +181,18 @@ void GeneralTest::testIsNan()
          }
       }
 
-      // isnan with filled 4x2 matrix
+      // isnan with 3x5 matrix (NAN)
       {
-         blaze::DynamicMatrix<float,blaze::rowMajor> mat( 4UL, 2UL, 0.0F );
-         mat(1,1) =  1.0F;
-         mat(2,0) = -2.0F;
-         mat(2,1) =  3.0F;
-         mat(3,0) =  4.0F;
+         blaze::DynamicMatrix<float,blaze::rowMajor> mat
+            { {  1.2F, -2.1F,  3.2F, -4.1F,  5.2F },
+              { -2.1F,  3.2F, -4.1F,  5.2F, -6.1F },
+              {  3.2F, -4.1F,   NAN, -6.1F,  7.2F } };
 
-         checkRows    ( mat, 4UL );
-         checkColumns ( mat, 2UL );
-         checkNonZeros( mat, 4UL );
+         checkRows    ( mat,  3UL );
+         checkColumns ( mat,  5UL );
+         checkNonZeros( mat, 15UL );
 
-         if( blaze::isnan( mat ) != false ) {
+         if( blaze::isnan( mat ) != true ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Invalid isnan evaluation\n"
@@ -207,7 +211,7 @@ void GeneralTest::testIsNan()
    {
       test_ = "Column-major isnan()";
 
-      // isnan with 0x0 matrix
+      // isnan with 0x0 matrix (non-NAN)
       {
          blaze::DynamicMatrix<float,blaze::columnMajor> mat;
 
@@ -225,13 +229,16 @@ void GeneralTest::testIsNan()
          }
       }
 
-      // isnan with empty 3x5 matrix
+      // isnan with 3x5 matrix (non-NAN)
       {
-         blaze::DynamicMatrix<float,blaze::columnMajor> mat( 3UL, 5UL, 0.0F );
+         blaze::DynamicMatrix<float,blaze::columnMajor> mat
+            { {  1.2F, -2.1F,  3.2F, -4.1F,  5.2F },
+              { -2.1F,  3.2F, -4.1F,  5.2F, -6.1F },
+              {  3.2F, -4.1F,  5.2F, -6.1F,  7.2F } };
 
-         checkRows    ( mat, 3UL );
-         checkColumns ( mat, 5UL );
-         checkNonZeros( mat, 0UL );
+         checkRows    ( mat,  3UL );
+         checkColumns ( mat,  5UL );
+         checkNonZeros( mat, 15UL );
 
          if( blaze::isnan( mat ) != false ) {
             std::ostringstream oss;
@@ -243,22 +250,365 @@ void GeneralTest::testIsNan()
          }
       }
 
-      // isnan with filled 4x2 matrix
+      // isnan with 3x5 matrix (NAN)
       {
-         blaze::DynamicMatrix<float,blaze::columnMajor> mat( 4UL, 2UL, 0.0F );
-         mat(1,1) =  1.0F;
-         mat(2,0) = -2.0F;
-         mat(2,1) =  3.0F;
-         mat(3,0) =  4.0F;
+         blaze::DynamicMatrix<float,blaze::columnMajor> mat
+            { {  1.2F, -2.1F,  3.2F, -4.1F,  5.2F },
+              { -2.1F,  3.2F, -4.1F,  5.2F, -6.1F },
+              {  3.2F, -4.1F,   NAN, -6.1F,  7.2F } };
 
-         checkRows    ( mat, 4UL );
-         checkColumns ( mat, 2UL );
-         checkNonZeros( mat, 4UL );
+         checkRows    ( mat,  3UL );
+         checkColumns ( mat,  5UL );
+         checkNonZeros( mat, 15UL );
 
-         if( blaze::isnan( mat ) != false ) {
+         if( blaze::isnan( mat ) != true ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Invalid isnan evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c isinf() function for dense matrices.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the \c isinf() function for dense matrices. In case an
+// error is detected, a \a std::runtime_error exception is thrown.
+*/
+void GeneralTest::testIsInf()
+{
+   //=====================================================================================
+   // Row-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Row-major isinf()";
+
+      // isinf with 0x0 matrix (non-inf)
+      {
+         blaze::DynamicMatrix<float,blaze::rowMajor> mat;
+
+         checkRows    ( mat, 0UL );
+         checkColumns ( mat, 0UL );
+         checkNonZeros( mat, 0UL );
+
+         if( blaze::isinf( mat ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isinf evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // isinf with 3x5 matrix (non-inf)
+      {
+         blaze::DynamicMatrix<float,blaze::rowMajor> mat
+            { {  1.2F, -2.1F,  3.2F, -4.1F,  5.2F },
+              { -2.1F,  3.2F, -4.1F,  5.2F, -6.1F },
+              {  3.2F, -4.1F,  5.2F, -6.1F,  7.2F } };
+
+         checkRows    ( mat,  3UL );
+         checkColumns ( mat,  5UL );
+         checkNonZeros( mat, 15UL );
+
+         if( blaze::isinf( mat ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isinf evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // isinf with 3x5 matrix (HUGE_VALF)
+      {
+         blaze::DynamicMatrix<float,blaze::rowMajor> mat
+            { {  1.2F, -2.1F,      3.2F, -4.1F,  5.2F },
+              { -2.1F,  3.2F,     -4.1F,  5.2F, -6.1F },
+              {  3.2F, -4.1F, HUGE_VALF, -6.1F,  7.2F } };
+
+         checkRows    ( mat,  3UL );
+         checkColumns ( mat,  5UL );
+         checkNonZeros( mat, 15UL );
+
+         if( blaze::isinf( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isinf evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Column-major isinf()";
+
+      // isinf with 0x0 matrix (non-inf)
+      {
+         blaze::DynamicMatrix<float,blaze::columnMajor> mat;
+
+         checkRows    ( mat, 0UL );
+         checkColumns ( mat, 0UL );
+         checkNonZeros( mat, 0UL );
+
+         if( blaze::isinf( mat ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isinf evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // isinf with 3x5 matrix (non-inf)
+      {
+         blaze::DynamicMatrix<float,blaze::columnMajor> mat
+            { {  1.2F, -2.1F,  3.2F, -4.1F,  5.2F },
+              { -2.1F,  3.2F, -4.1F,  5.2F, -6.1F },
+              {  3.2F, -4.1F,  5.2F, -6.1F,  7.2F } };
+
+         checkRows    ( mat,  3UL );
+         checkColumns ( mat,  5UL );
+         checkNonZeros( mat, 15UL );
+
+         if( blaze::isinf( mat ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isinf evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // isinf with 3x5 matrix (HUGE_VALF)
+      {
+         blaze::DynamicMatrix<float,blaze::columnMajor> mat
+            { {  1.2F, -2.1F,      3.2F, -4.1F,  5.2F },
+              { -2.1F,  3.2F,     -4.1F,  5.2F, -6.1F },
+              {  3.2F, -4.1F, HUGE_VALF, -6.1F,  7.2F } };
+
+         checkRows    ( mat,  3UL );
+         checkColumns ( mat,  5UL );
+         checkNonZeros( mat, 15UL );
+
+         if( blaze::isinf( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isnan evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c isfinite() function for dense matrices.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the \c isfinite() function for dense matrices. In case an
+// error is detected, a \a std::runtime_error exception is thrown.
+*/
+void GeneralTest::testIsFinite()
+{
+   //=====================================================================================
+   // Row-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Row-major isfinite()";
+
+      // isinf with 0x0 matrix (finite)
+      {
+         blaze::DynamicMatrix<float,blaze::rowMajor> mat;
+
+         checkRows    ( mat, 0UL );
+         checkColumns ( mat, 0UL );
+         checkNonZeros( mat, 0UL );
+
+         if( blaze::isfinite( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isfinite evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // isfinite with 3x5 matrix (finite)
+      {
+         blaze::DynamicMatrix<float,blaze::rowMajor> mat
+            { {  1.2F, -2.1F,  3.2F, -4.1F,  5.2F },
+              { -2.1F,  3.2F, -4.1F,  5.2F, -6.1F },
+              {  3.2F, -4.1F,  5.2F, -6.1F,  7.2F } };
+
+         checkRows    ( mat,  3UL );
+         checkColumns ( mat,  5UL );
+         checkNonZeros( mat, 15UL );
+
+         if( blaze::isfinite( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isfinite evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // isfinite with 3x5 matrix (NAN)
+      {
+         blaze::DynamicMatrix<float,blaze::rowMajor> mat
+            { {  1.2F, -2.1F,  3.2F, -4.1F,  5.2F },
+              { -2.1F,  3.2F, -4.1F,  5.2F, -6.1F },
+              {  3.2F, -4.1F,   NAN, -6.1F,  7.2F } };
+
+         checkRows    ( mat,  3UL );
+         checkColumns ( mat,  5UL );
+         checkNonZeros( mat, 15UL );
+
+         if( blaze::isfinite( mat ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isfinite evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // isfinite with 3x5 matrix (HUGE_VALF)
+      {
+         blaze::DynamicMatrix<float,blaze::rowMajor> mat
+            { {  1.2F, -2.1F,      3.2F, -4.1F,  5.2F },
+              { -2.1F,  3.2F,     -4.1F,  5.2F, -6.1F },
+              {  3.2F, -4.1F, HUGE_VALF, -6.1F,  7.2F } };
+
+         checkRows    ( mat,  3UL );
+         checkColumns ( mat,  5UL );
+         checkNonZeros( mat, 15UL );
+
+         if( blaze::isfinite( mat ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isfinite evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Column-major isfinite()";
+
+      // isinf with 0x0 matrix (finite)
+      {
+         blaze::DynamicMatrix<float,blaze::columnMajor> mat;
+
+         checkRows    ( mat, 0UL );
+         checkColumns ( mat, 0UL );
+         checkNonZeros( mat, 0UL );
+
+         if( blaze::isfinite( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isfinite evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // isfinite with 3x5 matrix (finite)
+      {
+         blaze::DynamicMatrix<float,blaze::columnMajor> mat
+            { {  1.2F, -2.1F,  3.2F, -4.1F,  5.2F },
+              { -2.1F,  3.2F, -4.1F,  5.2F, -6.1F },
+              {  3.2F, -4.1F,  5.2F, -6.1F,  7.2F } };
+
+         checkRows    ( mat,  3UL );
+         checkColumns ( mat,  5UL );
+         checkNonZeros( mat, 15UL );
+
+         if( blaze::isfinite( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isfinite evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // isfinite with 3x5 matrix (NAN)
+      {
+         blaze::DynamicMatrix<float,blaze::columnMajor> mat
+            { {  1.2F, -2.1F,  3.2F, -4.1F,  5.2F },
+              { -2.1F,  3.2F, -4.1F,  5.2F, -6.1F },
+              {  3.2F, -4.1F,   NAN, -6.1F,  7.2F } };
+
+         checkRows    ( mat,  3UL );
+         checkColumns ( mat,  5UL );
+         checkNonZeros( mat, 15UL );
+
+         if( blaze::isfinite( mat ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isfinite evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // isfinite with 3x5 matrix (HUGE_VALF)
+      {
+         blaze::DynamicMatrix<float,blaze::columnMajor> mat
+            { {  1.2F, -2.1F,      3.2F, -4.1F,  5.2F },
+              { -2.1F,  3.2F,     -4.1F,  5.2F, -6.1F },
+              {  3.2F, -4.1F, HUGE_VALF, -6.1F,  7.2F } };
+
+         checkRows    ( mat,  3UL );
+         checkColumns ( mat,  5UL );
+         checkNonZeros( mat, 15UL );
+
+         if( blaze::isfinite( mat ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isfinite evaluation\n"
                 << " Details:\n"
                 << "   Matrix:\n" << mat << "\n";
             throw std::runtime_error( oss.str() );
