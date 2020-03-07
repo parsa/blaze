@@ -331,7 +331,7 @@ class DMatSMatKronExpr
 
             for( size_t l=0UL; l<N; ++l ) {
                for( size_t i=ibegin; i<iend; ++i ) {
-                  if( !isDefault( A(i,j) ) ) {
+                  if( !isDefault<strict>( A(i,j) ) ) {
                      const auto bbegin( B.begin(l) );
                      const auto bend  ( B.end(l) );
                      for( auto belem=bbegin; belem!=bend; ++belem ) {
@@ -356,7 +356,7 @@ class DMatSMatKronExpr
 
             for( size_t k=0UL; k<M; ++k ) {
                for( size_t j=jbegin; j<jend; ++j ) {
-                  if( !isDefault( A(i,j) ) ) {
+                  if( !isDefault<strict>( A(i,j) ) ) {
                      const auto bbegin( B.begin(k) );
                      const auto bend  ( B.end(k) );
                      for( auto belem=bbegin; belem!=bend; ++belem ) {
@@ -438,7 +438,7 @@ class DMatSMatKronExpr
 
             for( size_t l=0UL; l<N; ++l ) {
                for( size_t i=ibegin; i<iend; ++i ) {
-                  if( !isDefault( A(i,j) ) ) {
+                  if( !isDefault<strict>( A(i,j) ) ) {
                      const auto end( B.end(l) );
                      for( auto belem=B.begin(l); belem!=end; ++belem ) {
                         (~lhs).append( i*M+belem->index(), j*N+l, A(i,j) * belem->value(), true );
@@ -462,7 +462,7 @@ class DMatSMatKronExpr
 
             for( size_t k=0UL; k<M; ++k ) {
                for( size_t j=jbegin; j<jend; ++j ) {
-                  if( !isDefault( A(i,j) ) ) {
+                  if( !isDefault<strict>( A(i,j) ) ) {
                      const auto bend( B.end(k) );
                      for( auto belem=B.begin(k); belem!=bend; ++belem )
                         (~lhs).append( i*M+k, j*N+belem->index(), A(i,j) * belem->value(), true );
@@ -526,7 +526,7 @@ class DMatSMatKronExpr
 
             for( size_t l=0UL; l<N; ++l ) {
                for( size_t i=ibegin; i<iend; ++i ) {
-                  if( !isDefault( A(i,j) ) ) {
+                  if( !isDefault<strict>( A(i,j) ) ) {
                      const auto end( B.end(l) );
                      for( auto belem=B.begin(l); belem!=end; ++belem )
                         (~lhs).append( i*M+belem->index(), j*N+l, A(i,j) * belem->value(), true );
@@ -567,7 +567,7 @@ class DMatSMatKronExpr
 
             for( size_t k=0UL; k<M; ++k ) {
                for( size_t j=jbegin; j<jend; ++j ) {
-                  if( !isDefault( A(i,j) ) ) {
+                  if( !isDefault<strict>( A(i,j) ) ) {
                      const auto end( B.end(k) );
                      for( auto belem=B.begin(k); belem!=end; ++belem ) {
                         (~lhs).append( i*M+k, j*N+belem->index(), A(i,j) * belem->value(), true );
@@ -631,7 +631,7 @@ class DMatSMatKronExpr
 
             for( size_t l=0UL; l<N; ++l ) {
                for( size_t i=ibegin; i<iend; ++i ) {
-                  if( !isDefault( A(i,j) ) ) {
+                  if( !isDefault<strict>( A(i,j) ) ) {
                      const auto bbegin( B.begin(l) );
                      const auto bend  ( B.end(l) );
                      for( auto belem=bbegin; belem!=bend; ++belem )
@@ -655,7 +655,7 @@ class DMatSMatKronExpr
 
             for( size_t k=0UL; k<M; ++k ) {
                for( size_t j=jbegin; j<jend; ++j ) {
-                  if( !isDefault( A(i,j) ) ) {
+                  if( !isDefault<strict>( A(i,j) ) ) {
                      const auto bbegin( B.begin(k) );
                      const auto bend  ( B.end(k) );
                      for( auto belem=bbegin; belem!=bend; ++belem )
@@ -724,7 +724,7 @@ class DMatSMatKronExpr
 
             for( size_t l=0UL; l<N; ++l ) {
                for( size_t i=ibegin; i<iend; ++i ) {
-                  if( !isDefault( A(i,j) ) ) {
+                  if( !isDefault<strict>( A(i,j) ) ) {
                      const auto bbegin( B.begin(l) );
                      const auto bend  ( B.end(l) );
                      for( auto belem=bbegin; belem!=bend; ++belem )
@@ -748,7 +748,7 @@ class DMatSMatKronExpr
 
             for( size_t k=0UL; k<M; ++k ) {
                for( size_t j=jbegin; j<jend; ++j ) {
-                  if( !isDefault( A(i,j) ) ) {
+                  if( !isDefault<strict>( A(i,j) ) ) {
                      const auto bbegin( B.begin(k) );
                      const auto bend  ( B.end(k) );
                      for( auto belem=bbegin; belem!=bend; ++belem )
@@ -815,7 +815,7 @@ class DMatSMatKronExpr
                {
                   size_t k( 0UL );
 
-                  if( !isDefault( A(i,j) ) ) {
+                  if( !isDefault<strict>( A(i,j) ) ) {
                      for( auto belem=bbegin; belem!=bend; ++belem, ++k ) {
                         for( ; k<belem->index(); ++k )
                            reset( (~lhs)(i*M+k,j*N+l) );
@@ -842,7 +842,7 @@ class DMatSMatKronExpr
                {
                   size_t l( 0UL );
 
-                  if( !isDefault( A(i,j) ) ) {
+                  if( !isDefault<strict>( A(i,j) ) ) {
                      for( auto belem=bbegin; belem!=bend; ++belem, ++l ) {
                         for( ; l<belem->index(); ++l )
                            reset( (~lhs)(i*M+k,j*N+l) );

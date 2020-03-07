@@ -290,7 +290,7 @@ class DVecDVecKronExpr
       const size_t N( y.size() );
 
       for( size_t i=0UL; i<x.size(); ++i ) {
-         if( !isDefault( x[i] ) ) {
+         if( !isDefault<strict>( x[i] ) ) {
             for( size_t j=0UL; j<N; ++j )
                (~lhs)[i*N+j] = x[i] * y[j];
          }
@@ -361,7 +361,7 @@ class DVecDVecKronExpr
       const size_t N( y.size() );
 
       for( size_t i=0UL; i<x.size(); ++i ) {
-         if( !isDefault( x[i] ) ) {
+         if( !isDefault<strict>( x[i] ) ) {
             for( size_t j=0UL; j<N; ++j )
                (~lhs)[i*N+j] += x[i] * y[j];
          }
@@ -404,7 +404,7 @@ class DVecDVecKronExpr
       const size_t N( y.size() );
 
       for( size_t i=0UL; i<x.size(); ++i ) {
-         if( !isDefault( x[i] ) ) {
+         if( !isDefault<strict>( x[i] ) ) {
             for( size_t j=0UL; j<N; ++j )
                (~lhs)[i*N+j] -= x[i] * y[j];
          }
@@ -447,7 +447,7 @@ class DVecDVecKronExpr
       const size_t N( y.size() );
 
       for( size_t i=0UL; i<x.size(); ++i ) {
-         if( !isDefault( x[i] ) ) {
+         if( !isDefault<strict>( x[i] ) ) {
             for( size_t j=0UL; j<N; ++j )
                (~lhs)[i*N+j] *= x[i] * y[j];
          }
@@ -493,7 +493,7 @@ class DVecDVecKronExpr
       const size_t N( y.size() );
 
       for( size_t i=0UL; i<x.size(); ++i ) {
-         if( !isDefault( x[i] ) ) {
+         if( !isDefault<strict>( x[i] ) ) {
             for( size_t j=0UL; j<N; ++j )
                (~lhs)[i*N+j] /= x[i] * y[j];
          }

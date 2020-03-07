@@ -281,7 +281,7 @@ class DVecSVecKronExpr
       const auto yend( y.end() );
 
       for( size_t i=0UL; i<x.size(); ++i ) {
-         if( !isDefault( x[i] ) ) {
+         if( !isDefault<strict>( x[i] ) ) {
             for( auto yelem=y.begin(); yelem!=yend; ++yelem )
                (~lhs)[i*N+yelem->index()] = x[i] * yelem->value();
          }
@@ -320,7 +320,7 @@ class DVecSVecKronExpr
       const auto yend( y.end() );
 
       for( size_t i=0UL; i<x.size(); ++i ) {
-         if( !isDefault( x[i] ) ) {
+         if( !isDefault<strict>( x[i] ) ) {
             for( auto yelem=y.begin(); yelem!=yend; ++yelem )
                (~lhs).append( i*N+yelem->index(), x[i] * yelem->value(), true );
          }
@@ -359,7 +359,7 @@ class DVecSVecKronExpr
       const auto yend( y.end() );
 
       for( size_t i=0UL; i<x.size(); ++i ) {
-         if( !isDefault( x[i] ) ) {
+         if( !isDefault<strict>( x[i] ) ) {
             for( auto yelem=y.begin(); yelem!=yend; ++yelem )
                (~lhs)[i*N+yelem->index()] += x[i] * yelem->value();
          }
@@ -403,7 +403,7 @@ class DVecSVecKronExpr
       const auto yend( y.end() );
 
       for( size_t i=0UL; i<x.size(); ++i ) {
-         if( !isDefault( x[i] ) ) {
+         if( !isDefault<strict>( x[i] ) ) {
             for( auto yelem=y.begin(); yelem!=yend; ++yelem )
                (~lhs)[i*N+yelem->index()] -= x[i] * yelem->value();
          }
@@ -447,7 +447,7 @@ class DVecSVecKronExpr
       const auto yend( y.end() );
 
       for( size_t i=0UL; i<x.size(); ++i ) {
-         if( !isDefault( x[i] ) )
+         if( !isDefault<strict>( x[i] ) )
          {
             size_t j( 0UL );
 

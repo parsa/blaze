@@ -315,7 +315,7 @@ class DMatDMatKronExpr
       {
          for( size_t i=0UL; i<A.rows(); ++i ) {
             for( size_t j=0UL; j<A.columns(); ++j ) {
-               if( !isDefault( A(i,j) ) ) {
+               if( !isDefault<strict>( A(i,j) ) ) {
                   for( size_t l=0UL; l<N; ++l )
                      for( size_t k=0UL; k<M; ++k )
                         (~lhs)(i*M+k,j*N+l) = A(i,j) * B(k,l);
@@ -333,7 +333,7 @@ class DMatDMatKronExpr
          for( size_t i=0UL; i<A.rows(); ++i ) {
             for( size_t k=0UL; k<M; ++k ) {
                for( size_t j=0UL; j<A.columns(); ++j ) {
-                  if( !isDefault( A(i,j) ) ) {
+                  if( !isDefault<strict>( A(i,j) ) ) {
                      for( size_t l=0UL; l<N; ++l )
                         (~lhs)(i*M+k,j*N+l) = A(i,j) * B(k,l);
                   }
@@ -385,7 +385,7 @@ class DMatDMatKronExpr
          for( size_t j=0UL; j<A.columns(); ++j ) {
             for( size_t l=0UL; l<N; ++l ) {
                for( size_t i=0UL; i<A.rows(); ++i ) {
-                  if( !isDefault( A(i,j) ) ) {
+                  if( !isDefault<strict>( A(i,j) ) ) {
                      for( size_t k=0UL; k<M; ++k )
                         (~lhs)(i*M+k,j*N+l) = A(i,j) * B(k,l);
                   }
@@ -401,7 +401,7 @@ class DMatDMatKronExpr
       {
          for( size_t j=0UL; j<A.columns(); ++j ) {
             for( size_t i=0UL; i<A.rows(); ++i ) {
-               if( !isDefault( A(i,j) ) ) {
+               if( !isDefault<strict>( A(i,j) ) ) {
                   for( size_t k=0UL; k<M; ++k )
                      for( size_t l=0UL; l<N; ++l )
                         (~lhs)(i*M+k,j*N+l) = A(i,j) * B(k,l);
@@ -489,7 +489,7 @@ class DMatDMatKronExpr
       {
          for( size_t i=0UL; i<A.rows(); ++i )
             for( size_t j=0UL; j<A.columns(); ++j )
-               if( !isDefault( A(i,j) ) )
+               if( !isDefault<strict>( A(i,j) ) )
                   for( size_t l=0UL; l<N; ++l )
                   {
                      const size_t kbegin( ( IsLower_v<MT2> )
@@ -518,7 +518,7 @@ class DMatDMatKronExpr
                BLAZE_INTERNAL_ASSERT( lbegin <= lend, "Invalid loop indices detected" );
 
                for( size_t j=0UL; j<A.columns(); ++j )
-                  if( !isDefault( A(i,j) ) )
+                  if( !isDefault<strict>( A(i,j) ) )
                      for( size_t l=lbegin; l<lend; ++l )
                         (~lhs)(i*M+k,j*N+l) += A(i,j) * B(k,l);
             }
@@ -572,7 +572,7 @@ class DMatDMatKronExpr
                BLAZE_INTERNAL_ASSERT( kbegin <= kend, "Invalid loop indices detected" );
 
                for( size_t i=0UL; i<A.rows(); ++i )
-                  if( !isDefault( A(i,j) ) )
+                  if( !isDefault<strict>( A(i,j) ) )
                      for( size_t k=kbegin; k<kend; ++k )
                         (~lhs)(i*M+k,j*N+l) += A(i,j) * B(k,l);
             }
@@ -581,7 +581,7 @@ class DMatDMatKronExpr
       {
          for( size_t j=0UL; j<A.columns(); ++j )
             for( size_t i=0UL; i<A.rows(); ++i )
-               if( !isDefault( A(i,j) ) )
+               if( !isDefault<strict>( A(i,j) ) )
                   for( size_t k=0UL; k<M; ++k )
                   {
                      const size_t lbegin( ( IsUpper_v<MT2> )
@@ -639,7 +639,7 @@ class DMatDMatKronExpr
       {
          for( size_t i=0UL; i<A.rows(); ++i )
             for( size_t j=0UL; j<A.columns(); ++j )
-               if( !isDefault( A(i,j) ) )
+               if( !isDefault<strict>( A(i,j) ) )
                   for( size_t l=0UL; l<N; ++l )
                   {
                      const size_t kbegin( ( IsLower_v<MT2> )
@@ -668,7 +668,7 @@ class DMatDMatKronExpr
                BLAZE_INTERNAL_ASSERT( lbegin <= lend, "Invalid loop indices detected" );
 
                for( size_t j=0UL; j<A.columns(); ++j )
-                  if( !isDefault( A(i,j) ) )
+                  if( !isDefault<strict>( A(i,j) ) )
                      for( size_t l=lbegin; l<lend; ++l )
                         (~lhs)(i*M+k,j*N+l) -= A(i,j) * B(k,l);
             }
@@ -722,7 +722,7 @@ class DMatDMatKronExpr
                BLAZE_INTERNAL_ASSERT( kbegin <= kend, "Invalid loop indices detected" );
 
                for( size_t i=0UL; i<A.rows(); ++i )
-                  if( !isDefault( A(i,j) ) )
+                  if( !isDefault<strict>( A(i,j) ) )
                      for( size_t k=kbegin; k<kend; ++k )
                         (~lhs)(i*M+k,j*N+l) -= A(i,j) * B(k,l);
             }
@@ -731,7 +731,7 @@ class DMatDMatKronExpr
       {
          for( size_t j=0UL; j<A.columns(); ++j )
             for( size_t i=0UL; i<A.rows(); ++i )
-               if( !isDefault( A(i,j) ) )
+               if( !isDefault<strict>( A(i,j) ) )
                   for( size_t k=0UL; k<M; ++k )
                   {
                      const size_t lbegin( ( IsUpper_v<MT2> )
@@ -789,7 +789,7 @@ class DMatDMatKronExpr
       {
          for( size_t i=0UL; i<A.rows(); ++i ) {
             for( size_t j=0UL; j<A.columns(); ++j ) {
-               if( !isDefault( A(i,j) ) ) {
+               if( !isDefault<strict>( A(i,j) ) ) {
                   for( size_t l=0UL; l<N; ++l )
                      for( size_t k=0UL; k<M; ++k )
                         (~lhs)(i*M+k,j*N+l) *= A(i,j) * B(k,l);
@@ -807,7 +807,7 @@ class DMatDMatKronExpr
          for( size_t i=0UL; i<A.rows(); ++i ) {
             for( size_t k=0UL; k<M; ++k ) {
                for( size_t j=0UL; j<A.columns(); ++j ) {
-                  if( !isDefault( A(i,j) ) ) {
+                  if( !isDefault<strict>( A(i,j) ) ) {
                      for( size_t l=0UL; l<N; ++l )
                         (~lhs)(i*M+k,j*N+l) *= A(i,j) * B(k,l);
                   }
@@ -859,7 +859,7 @@ class DMatDMatKronExpr
          for( size_t j=0UL; j<A.columns(); ++j ) {
             for( size_t l=0UL; l<N; ++l ) {
                for( size_t i=0UL; i<A.rows(); ++i ) {
-                  if( !isDefault( A(i,j) ) ) {
+                  if( !isDefault<strict>( A(i,j) ) ) {
                      for( size_t k=0UL; k<M; ++k )
                         (~lhs)(i*M+k,j*N+l) *= A(i,j) * B(k,l);
                   }
@@ -875,7 +875,7 @@ class DMatDMatKronExpr
       {
          for( size_t j=0UL; j<A.columns(); ++j ) {
             for( size_t i=0UL; i<A.rows(); ++i ) {
-               if( !isDefault( A(i,j) ) ) {
+               if( !isDefault<strict>( A(i,j) ) ) {
                   for( size_t k=0UL; k<M; ++k )
                      for( size_t l=0UL; l<N; ++l )
                         (~lhs)(i*M+k,j*N+l) *= A(i,j) * B(k,l);
