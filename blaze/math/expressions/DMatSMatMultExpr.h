@@ -787,12 +787,10 @@ class DMatSMatMultExpr
 
       const ForwardFunctor fwd;
 
-      if( IsSymmetric_v<MT1> && IsSymmetric_v<MT2> )
-         assign( ~lhs, fwd( trans( rhs.lhs_ ) * trans( rhs.rhs_ ) ) );
-      else if( IsSymmetric_v<MT1> )
-         assign( ~lhs, fwd( trans( rhs.lhs_ ) * rhs.rhs_ ) );
-      else
-         assign( ~lhs, fwd( rhs.lhs_ * trans( rhs.rhs_ ) ) );
+      decltype(auto) A( transIf< IsSymmetric_v<MT1> >( rhs.lhs_ ) );
+      decltype(auto) B( transIf< IsSymmetric_v<MT2> >( rhs.rhs_ ) );
+
+      assign( ~lhs, fwd( A * B ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -980,12 +978,10 @@ class DMatSMatMultExpr
 
       const ForwardFunctor fwd;
 
-      if( IsSymmetric_v<MT1> && IsSymmetric_v<MT2> )
-         addAssign( ~lhs, fwd( trans( rhs.lhs_ ) * trans( rhs.rhs_ ) ) );
-      else if( IsSymmetric_v<MT1> )
-         addAssign( ~lhs, fwd( trans( rhs.lhs_ ) * rhs.rhs_ ) );
-      else
-         addAssign( ~lhs, fwd( rhs.lhs_ * trans( rhs.rhs_ ) ) );
+      decltype(auto) A( transIf< IsSymmetric_v<MT1> >( rhs.lhs_ ) );
+      decltype(auto) B( transIf< IsSymmetric_v<MT2> >( rhs.rhs_ ) );
+
+      addAssign( ~lhs, fwd( A * B ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -1177,12 +1173,10 @@ class DMatSMatMultExpr
 
       const ForwardFunctor fwd;
 
-      if( IsSymmetric_v<MT1> && IsSymmetric_v<MT2> )
-         subAssign( ~lhs, fwd( trans( rhs.lhs_ ) * trans( rhs.rhs_ ) ) );
-      else if( IsSymmetric_v<MT1> )
-         subAssign( ~lhs, fwd( trans( rhs.lhs_ ) * rhs.rhs_ ) );
-      else
-         subAssign( ~lhs, fwd( rhs.lhs_ * trans( rhs.rhs_ ) ) );
+      decltype(auto) A( transIf< IsSymmetric_v<MT1> >( rhs.lhs_ ) );
+      decltype(auto) B( transIf< IsSymmetric_v<MT2> >( rhs.rhs_ ) );
+
+      subAssign( ~lhs, fwd( A * B ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -1346,12 +1340,10 @@ class DMatSMatMultExpr
 
       const ForwardFunctor fwd;
 
-      if( IsSymmetric_v<MT1> && IsSymmetric_v<MT2> )
-         smpAssign( ~lhs, fwd( trans( rhs.lhs_ ) * trans( rhs.rhs_ ) ) );
-      else if( IsSymmetric_v<MT1> )
-         smpAssign( ~lhs, fwd( trans( rhs.lhs_ ) * rhs.rhs_ ) );
-      else
-         smpAssign( ~lhs, fwd( rhs.lhs_ * trans( rhs.rhs_ ) ) );
+      decltype(auto) A( transIf< IsSymmetric_v<MT1> >( rhs.lhs_ ) );
+      decltype(auto) B( transIf< IsSymmetric_v<MT2> >( rhs.rhs_ ) );
+
+      smpAssign( ~lhs, fwd( A * B ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -1425,12 +1417,10 @@ class DMatSMatMultExpr
 
       const ForwardFunctor fwd;
 
-      if( IsSymmetric_v<MT1> && IsSymmetric_v<MT2> )
-         smpAddAssign( ~lhs, fwd( trans( rhs.lhs_ ) * trans( rhs.rhs_ ) ) );
-      else if( IsSymmetric_v<MT1> )
-         smpAddAssign( ~lhs, fwd( trans( rhs.lhs_ ) * rhs.rhs_ ) );
-      else
-         smpAddAssign( ~lhs, fwd( rhs.lhs_ * trans( rhs.rhs_ ) ) );
+      decltype(auto) A( transIf< IsSymmetric_v<MT1> >( rhs.lhs_ ) );
+      decltype(auto) B( transIf< IsSymmetric_v<MT2> >( rhs.rhs_ ) );
+
+      smpAddAssign( ~lhs, fwd( A * B ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -1509,12 +1499,10 @@ class DMatSMatMultExpr
 
       const ForwardFunctor fwd;
 
-      if( IsSymmetric_v<MT1> && IsSymmetric_v<MT2> )
-         smpSubAssign( ~lhs, fwd( trans( rhs.lhs_ ) * trans( rhs.rhs_ ) ) );
-      else if( IsSymmetric_v<MT1> )
-         smpSubAssign( ~lhs, fwd( trans( rhs.lhs_ ) * rhs.rhs_ ) );
-      else
-         smpSubAssign( ~lhs, fwd( rhs.lhs_ * trans( rhs.rhs_ ) ) );
+      decltype(auto) A( transIf< IsSymmetric_v<MT1> >( rhs.lhs_ ) );
+      decltype(auto) B( transIf< IsSymmetric_v<MT2> >( rhs.rhs_ ) );
+
+      smpSubAssign( ~lhs, fwd( A * B ) );
    }
    /*! \endcond */
    //**********************************************************************************************

@@ -2111,12 +2111,10 @@ class TDMatTDMatMultExpr
 
       const ForwardFunctor fwd;
 
-      if( IsSymmetric_v<MT1> && IsSymmetric_v<MT2> )
-         assign( ~lhs, fwd( trans( rhs.lhs_ ) * trans( rhs.rhs_ ) ) );
-      else if( IsSymmetric_v<MT1> )
-         assign( ~lhs, fwd( trans( rhs.lhs_ ) * rhs.rhs_ ) );
-      else
-         assign( ~lhs, fwd( rhs.lhs_ * trans( rhs.rhs_ ) ) );
+      decltype(auto) A( transIf< IsSymmetric_v<MT1> >( rhs.lhs_ ) );
+      decltype(auto) B( transIf< IsSymmetric_v<MT2> >( rhs.rhs_ ) );
+
+      assign( ~lhs, fwd( A * B ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -3248,12 +3246,10 @@ class TDMatTDMatMultExpr
 
       const ForwardFunctor fwd;
 
-      if( IsSymmetric_v<MT1> && IsSymmetric_v<MT2> )
-         addAssign( ~lhs, fwd( trans( rhs.lhs_ ) * trans( rhs.rhs_ ) ) );
-      else if( IsSymmetric_v<MT1> )
-         addAssign( ~lhs, fwd( trans( rhs.lhs_ ) * rhs.rhs_ ) );
-      else
-         addAssign( ~lhs, fwd( rhs.lhs_ * trans( rhs.rhs_ ) ) );
+      decltype(auto) A( transIf< IsSymmetric_v<MT1> >( rhs.lhs_ ) );
+      decltype(auto) B( transIf< IsSymmetric_v<MT2> >( rhs.rhs_ ) );
+
+      addAssign( ~lhs, fwd( A * B ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -4390,12 +4386,10 @@ class TDMatTDMatMultExpr
 
       const ForwardFunctor fwd;
 
-      if( IsSymmetric_v<MT1> && IsSymmetric_v<MT2> )
-         subAssign( ~lhs, fwd( trans( rhs.lhs_ ) * trans( rhs.rhs_ ) ) );
-      else if( IsSymmetric_v<MT1> )
-         subAssign( ~lhs, fwd( trans( rhs.lhs_ ) * rhs.rhs_ ) );
-      else
-         subAssign( ~lhs, fwd( rhs.lhs_ * trans( rhs.rhs_ ) ) );
+      decltype(auto) A( transIf< IsSymmetric_v<MT1> >( rhs.lhs_ ) );
+      decltype(auto) B( transIf< IsSymmetric_v<MT2> >( rhs.rhs_ ) );
+
+      subAssign( ~lhs, fwd( A * B ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -4564,12 +4558,10 @@ class TDMatTDMatMultExpr
 
       const ForwardFunctor fwd;
 
-      if( IsSymmetric_v<MT1> && IsSymmetric_v<MT2> )
-         smpAssign( ~lhs, fwd( trans( rhs.lhs_ ) * trans( rhs.rhs_ ) ) );
-      else if( IsSymmetric_v<MT1> )
-         smpAssign( ~lhs, fwd( trans( rhs.lhs_ ) * rhs.rhs_ ) );
-      else
-         smpAssign( ~lhs, fwd( rhs.lhs_ * trans( rhs.rhs_ ) ) );
+      decltype(auto) A( transIf< IsSymmetric_v<MT1> >( rhs.lhs_ ) );
+      decltype(auto) B( transIf< IsSymmetric_v<MT2> >( rhs.rhs_ ) );
+
+      smpAssign( ~lhs, fwd( A * B ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -4648,12 +4640,10 @@ class TDMatTDMatMultExpr
 
       const ForwardFunctor fwd;
 
-      if( IsSymmetric_v<MT1> && IsSymmetric_v<MT2> )
-         smpAddAssign( ~lhs, fwd( trans( rhs.lhs_ ) * trans( rhs.rhs_ ) ) );
-      else if( IsSymmetric_v<MT1> )
-         smpAddAssign( ~lhs, fwd( trans( rhs.lhs_ ) * rhs.rhs_ ) );
-      else
-         smpAddAssign( ~lhs, fwd( rhs.lhs_ * trans( rhs.rhs_ ) ) );
+      decltype(auto) A( transIf< IsSymmetric_v<MT1> >( rhs.lhs_ ) );
+      decltype(auto) B( transIf< IsSymmetric_v<MT2> >( rhs.rhs_ ) );
+
+      smpAddAssign( ~lhs, fwd( A * B ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -4736,12 +4726,10 @@ class TDMatTDMatMultExpr
 
       const ForwardFunctor fwd;
 
-      if( IsSymmetric_v<MT1> && IsSymmetric_v<MT2> )
-         smpSubAssign( ~lhs, fwd( trans( rhs.lhs_ ) * trans( rhs.rhs_ ) ) );
-      else if( IsSymmetric_v<MT1> )
-         smpSubAssign( ~lhs, fwd( trans( rhs.lhs_ ) * rhs.rhs_ ) );
-      else
-         smpSubAssign( ~lhs, fwd( rhs.lhs_ * trans( rhs.rhs_ ) ) );
+      decltype(auto) A( transIf< IsSymmetric_v<MT1> >( rhs.lhs_ ) );
+      decltype(auto) B( transIf< IsSymmetric_v<MT2> >( rhs.rhs_ ) );
+
+      smpSubAssign( ~lhs, fwd( A * B ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -6772,15 +6760,10 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
 
       const ForwardFunctor fwd;
 
-      LeftOperand_t<MMM>  left ( rhs.matrix_.leftOperand()  );
-      RightOperand_t<MMM> right( rhs.matrix_.rightOperand() );
+      decltype(auto) A( transIf< IsSymmetric_v<MT1> >( rhs.matrix_.leftOperand()  ) );
+      decltype(auto) B( transIf< IsSymmetric_v<MT2> >( rhs.matrix_.rightOperand() ) );
 
-      if( IsSymmetric_v<MT1> && IsSymmetric_v<MT2> )
-         assign( ~lhs, fwd( trans( left ) * trans( right ) ) * rhs.scalar_ );
-      else if( IsSymmetric_v<MT1> )
-         assign( ~lhs, fwd( trans( left ) * right ) * rhs.scalar_ );
-      else
-         assign( ~lhs, fwd( left * trans( right ) ) * rhs.scalar_ );
+      assign( ~lhs, fwd( A * B ) * rhs.scalar_ );
    }
    //**********************************************************************************************
 
@@ -7998,15 +7981,10 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
 
       const ForwardFunctor fwd;
 
-      LeftOperand_t<MMM>  left ( rhs.matrix_.leftOperand()  );
-      RightOperand_t<MMM> right( rhs.matrix_.rightOperand() );
+      decltype(auto) A( transIf< IsSymmetric_v<MT1> >( rhs.matrix_.leftOperand()  ) );
+      decltype(auto) B( transIf< IsSymmetric_v<MT2> >( rhs.matrix_.rightOperand() ) );
 
-      if( IsSymmetric_v<MT1> && IsSymmetric_v<MT2> )
-         addAssign( ~lhs, fwd( trans( left ) * trans( right ) ) * rhs.scalar_ );
-      else if( IsSymmetric_v<MT1> )
-         addAssign( ~lhs, fwd( trans( left ) * right ) * rhs.scalar_ );
-      else
-         addAssign( ~lhs, fwd( left * trans( right ) ) * rhs.scalar_ );
+      addAssign( ~lhs, fwd( A * B ) * rhs.scalar_ );
    }
    //**********************************************************************************************
 
@@ -9227,15 +9205,10 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
 
       const ForwardFunctor fwd;
 
-      LeftOperand_t<MMM>  left ( rhs.matrix_.leftOperand()  );
-      RightOperand_t<MMM> right( rhs.matrix_.rightOperand() );
+      decltype(auto) A( transIf< IsSymmetric_v<MT1> >( rhs.matrix_.leftOperand()  ) );
+      decltype(auto) B( transIf< IsSymmetric_v<MT2> >( rhs.matrix_.rightOperand() ) );
 
-      if( IsSymmetric_v<MT1> && IsSymmetric_v<MT2> )
-         subAssign( ~lhs, fwd( trans( left ) * trans( right ) ) * rhs.scalar_ );
-      else if( IsSymmetric_v<MT1> )
-         subAssign( ~lhs, fwd( trans( left ) * right ) * rhs.scalar_ );
-      else
-         subAssign( ~lhs, fwd( left * trans( right ) ) * rhs.scalar_ );
+      subAssign( ~lhs, fwd( A * B ) * rhs.scalar_ );
    }
    //**********************************************************************************************
 
@@ -9403,15 +9376,10 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
 
       const ForwardFunctor fwd;
 
-      LeftOperand_t<MMM>  left ( rhs.matrix_.leftOperand()  );
-      RightOperand_t<MMM> right( rhs.matrix_.rightOperand() );
+      decltype(auto) A( transIf< IsSymmetric_v<MT1> >( rhs.matrix_.leftOperand()  ) );
+      decltype(auto) B( transIf< IsSymmetric_v<MT2> >( rhs.matrix_.rightOperand() ) );
 
-      if( IsSymmetric_v<MT1> && IsSymmetric_v<MT2> )
-         smpAssign( ~lhs, fwd( trans( left ) * trans( right ) ) * rhs.scalar_ );
-      else if( IsSymmetric_v<MT1> )
-         smpAssign( ~lhs, fwd( trans( left ) * right ) * rhs.scalar_ );
-      else
-         smpAssign( ~lhs, fwd( left * trans( right ) ) * rhs.scalar_ );
+      smpAssign( ~lhs, fwd( A * B ) * rhs.scalar_ );
    }
    //**********************************************************************************************
 
@@ -9489,15 +9457,10 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
 
       const ForwardFunctor fwd;
 
-      LeftOperand_t<MMM>  left ( rhs.matrix_.leftOperand()  );
-      RightOperand_t<MMM> right( rhs.matrix_.rightOperand() );
+      decltype(auto) A( transIf< IsSymmetric_v<MT1> >( rhs.matrix_.leftOperand()  ) );
+      decltype(auto) B( transIf< IsSymmetric_v<MT2> >( rhs.matrix_.rightOperand() ) );
 
-      if( IsSymmetric_v<MT1> && IsSymmetric_v<MT2> )
-         smpAddAssign( ~lhs, fwd( trans( left ) * trans( right ) ) * rhs.scalar_ );
-      else if( IsSymmetric_v<MT1> )
-         smpAddAssign( ~lhs, fwd( trans( left ) * right ) * rhs.scalar_ );
-      else
-         smpAddAssign( ~lhs, fwd( left * trans( right ) ) * rhs.scalar_ );
+      smpAddAssign( ~lhs, fwd( A * B ) * rhs.scalar_ );
    }
    //**********************************************************************************************
 
@@ -9579,15 +9542,10 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
 
       const ForwardFunctor fwd;
 
-      LeftOperand_t<MMM>  left ( rhs.matrix_.leftOperand()  );
-      RightOperand_t<MMM> right( rhs.matrix_.rightOperand() );
+      decltype(auto) A( transIf< IsSymmetric_v<MT1> >( rhs.matrix_.leftOperand()  ) );
+      decltype(auto) B( transIf< IsSymmetric_v<MT2> >( rhs.matrix_.rightOperand() ) );
 
-      if( IsSymmetric_v<MT1> && IsSymmetric_v<MT2> )
-         smpSubAssign( ~lhs, fwd( trans( left ) * trans( right ) ) * rhs.scalar_ );
-      else if( IsSymmetric_v<MT1> )
-         smpSubAssign( ~lhs, fwd( trans( left ) * right ) * rhs.scalar_ );
-      else
-         smpSubAssign( ~lhs, fwd( left * trans( right ) ) * rhs.scalar_ );
+      smpSubAssign( ~lhs, fwd( A * B ) * rhs.scalar_ );
    }
    //**********************************************************************************************
 
