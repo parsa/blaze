@@ -42,6 +42,7 @@
 
 #include <blaze/math/ReductionFlag.h>
 #include <blaze/system/MacroDisable.h>
+#include <blaze/util/IntegralConstant.h>
 #include <blaze/util/Types.h>
 
 
@@ -587,6 +588,13 @@ decltype(auto) transTo( const DenseVector<VT,TF>& );
 
 template< bool TTF, typename VT, bool TF >
 decltype(auto) transTo( const SparseVector<VT,TF>& );
+
+
+template< bool B, typename MT, bool SO >
+decltype(auto) transIf( const DenseMatrix<MT,SO>& );
+
+template< bool B, typename MT, bool SO >
+decltype(auto) transIf( const SparseMatrix<MT,SO>& );
 
 
 template< typename VT, bool TF >

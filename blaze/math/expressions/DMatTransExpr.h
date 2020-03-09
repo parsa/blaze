@@ -63,6 +63,7 @@
 #include <blaze/util/Assert.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/FunctionTrace.h>
+#include <blaze/util/IntegralConstant.h>
 #include <blaze/util/InvalidType.h>
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/Types.h>
@@ -764,6 +765,69 @@ inline decltype(auto) trans( const DenseMatrix<MT,SO>& dm )
 
    using ReturnType = const DMatTransExpr<MT,!SO>;
    return ReturnType( ~dm );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Conditional calculation of the transpose of the given dense matrix.
+// \ingroup dense_matrix
+//
+// \param dm The dense matrix to be transposed.
+// \return The transpose of the matrix.
+//
+// This function does not calculate the transpose of the given dense matrix and returns a
+// reference to the matrix.
+*/
+template< typename MT  // Type of the dense matrix
+        , bool SO >    // Storage order
+inline decltype(auto) transIf( FalseType, const DenseMatrix<MT,SO>& dm )
+{
+   return ~dm;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Conditional calculation of the transpose of the given dense matrix.
+// \ingroup dense_matrix
+//
+// \param dm The dense matrix to be transposed.
+// \return The transpose of the matrix.
+//
+// This function calculates the transpose of the given dense matrix and returns an expression
+// representing the transpose of the given dense matrix.
+*/
+template< typename MT  // Type of the dense matrix
+        , bool SO >    // Storage order
+inline decltype(auto) transIf( TrueType, const DenseMatrix<MT,SO>& dm )
+{
+   return trans( ~dm );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Conditional calculation of the transpose of the given dense matrix.
+// \ingroup dense_matrix
+//
+// \param dm The dense matrix to be transposed.
+// \return The transpose of the matrix.
+//
+// In case the given compile time condition evaluates to \a true, this function returns an
+// expression representing the transpose of the given dense matrix. Otherwise the function
+// returns a reference to the given matrix.
+*/
+template< bool B       // Compile time condition
+        , typename MT  // Type of the dense matrix
+        , bool SO >    // Storage order
+inline decltype(auto) transIf( const DenseMatrix<MT,SO>& dm )
+{
+   return transIf( BoolConstant<B>(), ~dm );
 }
 //*************************************************************************************************
 

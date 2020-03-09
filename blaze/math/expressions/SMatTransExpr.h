@@ -730,6 +730,69 @@ inline decltype(auto) trans( const SparseMatrix<MT,SO>& sm )
 }
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Conditional calculation of the transpose of the given sparse matrix.
+// \ingroup sparse_matrix
+//
+// \param sm The sparse matrix to be transposed.
+// \return The transpose of the matrix.
+//
+// This function does not calculate the transpose of the given sparse matrix and returns a
+// reference to the matrix.
+*/
+template< typename MT  // Type of the sparse matrix
+        , bool SO >    // Storage order
+inline decltype(auto) transIf( FalseType, const SparseMatrix<MT,SO>& sm )
+{
+   return ~sm;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Conditional calculation of the transpose of the given sparse matrix.
+// \ingroup sparse_matrix
+//
+// \param sm The sparse matrix to be transposed.
+// \return The transpose of the matrix.
+//
+// This function calculates the transpose of the given sparse matrix and returns an expression
+// representing the transpose of the given sparse matrix.
+*/
+template< typename MT  // Type of the sparse matrix
+        , bool SO >    // Storage order
+inline decltype(auto) transIf( TrueType, const SparseMatrix<MT,SO>& sm )
+{
+   return trans( ~sm );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Conditional calculation of the transpose of the given sparse matrix.
+// \ingroup sparse_matrix
+//
+// \param sm The sparse matrix to be transposed.
+// \return The transpose of the matrix.
+//
+// In case the given compile time condition evaluates to \a true, this function returns an
+// expression representing the transpose of the given sparse matrix. Otherwise the function
+// returns a reference to the given matrix.
+*/
+template< bool B       // Compile time condition
+        , typename MT  // Type of the sparse matrix
+        , bool SO >    // Storage order
+inline decltype(auto) transIf( const SparseMatrix<MT,SO>& sm )
+{
+   return transIf( BoolConstant<B>(), ~sm );
+}
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif
