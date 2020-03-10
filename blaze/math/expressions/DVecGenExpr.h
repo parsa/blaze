@@ -648,15 +648,18 @@ inline decltype(auto) linspace( size_t size, T start, T end )
    using BT = UnderlyingBuiltin_t<T>;
    using ET = If_t< IsFloatingPoint_v<BT>, BT, double >;
 
+   ET divisor{ 1.0 };
+
    if( size > 2UL ) {
-      end -= start;
-      end /= static_cast<ET>( size - 1UL );
+      divisor = static_cast<ET>( size - 1UL );
    }
    else {
       start = end;
    }
 
-   return generate<TF>( size, [ start=std::move(start), delta=std::move(end) ]( size_t index ) {
+   auto delta( evaluate( ( end - start ) / divisor ) );
+
+   return generate<TF>( size, [ start=std::move(start), delta=std::move(delta) ]( size_t index ) {
       return evaluate( start + index*delta );
    } );
 }
@@ -701,15 +704,18 @@ inline decltype(auto) logspace( size_t size, T start, T end )
    using BT = UnderlyingBuiltin_t<T>;
    using ET = If_t< IsFloatingPoint_v<BT>, BT, double >;
 
+   ET divisor{ 1.0 };
+
    if( size > 2UL ) {
-      end -= start;
-      end /= static_cast<ET>( size - 1UL );
+      divisor = static_cast<ET>( size - 1UL );
    }
    else {
       start = end;
    }
 
-   return generate<TF>( size, [ start=std::move(start), delta=std::move(end) ]( size_t index ) {
+   auto delta( evaluate( ( end - start ) / divisor ) );
+
+   return generate<TF>( size, [ start=std::move(start), delta=std::move(delta) ]( size_t index ) {
       return evaluate( exp10( start + index*delta ) );
    } );
 }
