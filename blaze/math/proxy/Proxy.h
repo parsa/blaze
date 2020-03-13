@@ -1539,6 +1539,27 @@ inline decltype(auto) log( const Proxy<PT,RT>& proxy )
 
 
 //*************************************************************************************************
+/*!\brief Computing the natural logarithm of the represented element.
+// \ingroup math
+//
+// \param proxy The given proxy instance.
+// \return The natural logarithm of the represented element + 1.
+//
+// This function computes the natural logarithm of the element + 1 represented by the proxy. In
+// case the proxy represents a vector- or matrix-like data structure the function returns
+// an expression representing the natural logarithm of the elements of the vector/matrix.
+*/
+template< typename PT, typename RT >
+inline decltype(auto) log1p( const Proxy<PT,RT>& proxy )
+{
+   using blaze::log1p;
+
+   return log1p( (~proxy).get() );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Computing the binary logarithm of the represented element.
 // \ingroup math
 //
@@ -2260,7 +2281,7 @@ inline bool isOne( const Proxy<PT,RT>& proxy )
 // \ingroup math
 //
 // \param proxy The given proxy instance.
-// \return \a true in case the represented element is not-a-number, \a false otherwise.
+// \return \a true in case the represented element is in not-a-number, \a false otherwise.
 //
 // This function checks whether the element represented by the proxy is not-a-number (NaN).
 // In case it is not-a-number, the function returns \a true, otherwise it returns \a false.
@@ -2289,7 +2310,6 @@ template< typename PT, typename RT >
 inline bool isinf( const Proxy<PT,RT>& proxy )
 {
    using blaze::isinf;
-
    return isinf( (~proxy).get() );
 }
 //*************************************************************************************************
@@ -2310,10 +2330,10 @@ template< typename PT, typename RT >
 inline bool isfinite( const Proxy<PT,RT>& proxy )
 {
    using blaze::isfinite;
-
    return isfinite( (~proxy).get() );
 }
 //*************************************************************************************************
+
 
 
 //*************************************************************************************************

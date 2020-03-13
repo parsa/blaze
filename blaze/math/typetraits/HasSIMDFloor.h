@@ -66,7 +66,12 @@ using HasSIMDFloorHelper =
                  ( ( !bool( BLAZE_MIC_MODE ) && !bool( BLAZE_AVX512F_MODE ) &&
                      ( bool( BLAZE_SSE4_MODE ) || bool( BLAZE_AVX_MODE ) ) ) ||
                    ( bool( BLAZE_SVML_MODE ) && bool( BLAZE_MIC_MODE     ) ) ||
-                   ( bool( BLAZE_SVML_MODE ) && bool( BLAZE_AVX512F_MODE ) ) ) >;
+                   ( bool( BLAZE_SVML_MODE ) && bool( BLAZE_AVX512F_MODE ) ) ) ||
+                   ( bool( BLAZE_SLEEF_MODE ) &&
+                     (
+                         bool( BLAZE_AVX512F_MODE ) || bool( BLAZE_MIC_MODE ) || bool( BLAZE_AVX_MODE ) || bool( BLAZE_SSE_MODE )
+                     )
+                   )>;
 /*! \endcond */
 //*************************************************************************************************
 

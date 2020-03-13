@@ -61,16 +61,13 @@ namespace blaze {
 // \param a The vector of single precision floating point values.
 // \return The resulting vector.
 //
-// This operation is only available via the SVML for SSE, AVX, MIC, and AVX-512.
+// This operation is only available via the SVML or SLEEF for SSE, AVX, MIC, and AVX-512.
 */
 template< typename T >  // Type of the operand
 BLAZE_ALWAYS_INLINE const SIMDfloat ceil( const SIMDf32<T>& a ) noexcept
-#if BLAZE_SVML_MODE && ( BLAZE_AVX512F_MODE || BLAZE_MIC_MODE )
-{
+#if BLAZE_SVML_MODE && ( BLAZE_AVX512F_MODE  || BLAZE_MIC_MODE )
    return _mm512_ceil_ps( (~a).eval().value );
 }
-#elif BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
-= delete;
 #elif BLAZE_AVX_MODE
 {
    return _mm256_ceil_ps( (~a).eval().value );
@@ -78,6 +75,14 @@ BLAZE_ALWAYS_INLINE const SIMDfloat ceil( const SIMDf32<T>& a ) noexcept
 #elif BLAZE_SSE4_MODE
 {
    return _mm_ceil_ps( (~a).eval().value );
+}
+#elif BLAZE_SLEEF_MODE && ( BLAZE_AVX512F_MODE  || BLAZE_MIC_MODE )
+{
+   return Sleef_ceilf16_avx512f( (~a).eval().value );
+}
+#elif BLAZE_SLEEF_MODE && ( BLAZE_SSE2_MODE || BLAZE_SSE_MODE )
+{
+   return Sleef_ceilf4( (~a).eval().value );
 }
 #else
 = delete;
@@ -101,16 +106,13 @@ BLAZE_ALWAYS_INLINE const SIMDfloat ceil( const SIMDf32<T>& a ) noexcept
 // \param a The vector of double precision floating point values.
 // \return The resulting vector.
 //
-// This operation is only available via the SVML for SSE, AVX, MIC, and AVX-512.
+// This operation is only available via the SVML or SLEEF for SSE, AVX, MIC, and AVX-512.
 */
 template< typename T >  // Type of the operand
 BLAZE_ALWAYS_INLINE const SIMDdouble ceil( const SIMDf64<T>& a ) noexcept
-#if BLAZE_SVML_MODE && ( BLAZE_AVX512F_MODE || BLAZE_MIC_MODE )
-{
+#if BLAZE_SVML_MODE && ( BLAZE_AVX512F_MODE  || BLAZE_MIC_MODE )
    return _mm512_ceil_pd( (~a).eval().value );
 }
-#elif BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
-= delete;
 #elif BLAZE_AVX_MODE
 {
    return _mm256_ceil_pd( (~a).eval().value );
@@ -118,6 +120,14 @@ BLAZE_ALWAYS_INLINE const SIMDdouble ceil( const SIMDf64<T>& a ) noexcept
 #elif BLAZE_SSE4_MODE
 {
    return _mm_ceil_pd( (~a).eval().value );
+}
+#elif BLAZE_SLEEF_MODE && ( BLAZE_AVX512F_MODE  || BLAZE_MIC_MODE )
+{
+   return Sleef_ceild8_avx512f( (~a).eval().value );
+}
+#elif BLAZE_SLEEF_MODE && ( BLAZE_SSE2_MODE || BLAZE_SSE_MODE )
+{
+   return Sleef_ceild2( (~a).eval().value );
 }
 #else
 = delete;

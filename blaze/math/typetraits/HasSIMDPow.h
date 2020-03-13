@@ -66,7 +66,7 @@ template< typename T1    // Type of the left-hand side operand
 using HasSIMDPowHelper =
    BoolConstant< IsSame_v<T1,T2> &&
                  ( IsFloat_v<T1> || IsDouble_v<T1> ) &&
-                 bool( BLAZE_SVML_MODE ) &&
+                 bool( BLAZE_FUNCTIONAL_SIMD_MODE ) &&
                  ( bool( BLAZE_SSE_MODE     ) ||
                    bool( BLAZE_AVX_MODE     ) ||
                    bool( BLAZE_MIC_MODE     ) ||
