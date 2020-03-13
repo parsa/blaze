@@ -55,6 +55,7 @@
 #include <blaze/math/typetraits/IsRestricted.h>
 #include <blaze/math/typetraits/IsUniform.h>
 #include <blaze/math/typetraits/IsZero.h>
+#include <blaze/math/typetraits/UnderlyingBuiltin.h>
 #include <blaze/system/MacroDisable.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Numeric.h>
@@ -63,7 +64,6 @@
 #include <blaze/util/typetraits/IsFloatingPoint.h>
 #include <blaze/util/typetraits/IsNumeric.h>
 #include <blaze/util/typetraits/RemoveReference.h>
-#include <blaze/util/typetraits/UnderlyingBuiltin.h>
 
 
 namespace blaze {
