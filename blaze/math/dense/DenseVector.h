@@ -63,6 +63,7 @@
 #include <blaze/util/typetraits/IsFloatingPoint.h>
 #include <blaze/util/typetraits/IsNumeric.h>
 #include <blaze/util/typetraits/RemoveReference.h>
+#include <blaze/util/typetraits/UnderlyingBuiltin.h>
 
 
 namespace blaze {
@@ -1159,7 +1160,7 @@ template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
 bool isnan( const DenseVector<VT,TF>& dv )
 {
-   if( !IsFloatingPoint_v< ElementType_t<VT> > )
+   if( !IsFloatingPoint_v< UnderlyingBuiltin_t<VT> > )
       return false;
 
    CompositeType_t<VT> a( ~dv );  // Evaluation of the dense vector operand
@@ -1192,7 +1193,7 @@ template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
 bool isinf( const DenseVector<VT,TF>& dv )
 {
-   if( !IsFloatingPoint_v< ElementType_t<VT> > )
+   if( !IsFloatingPoint_v< UnderlyingBuiltin_t<VT> > )
       return false;
 
    CompositeType_t<VT> a( ~dv );  // Evaluation of the dense vector operand
@@ -1226,7 +1227,7 @@ template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
 bool isfinite( const DenseVector<VT,TF>& dv )
 {
-   if( !IsFloatingPoint_v< ElementType_t<VT> > )
+   if( !IsFloatingPoint_v< UnderlyingBuiltin_t<VT> > )
       return true;
 
    CompositeType_t<VT> a( ~dv );  // Evaluation of the dense vector operand

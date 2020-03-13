@@ -368,7 +368,7 @@ template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
 bool isnan( const SparseMatrix<MT,SO>& sm )
 {
-   if( !IsFloatingPoint_v< ElementType_t<MT> > )
+   if( !IsFloatingPoint_v< UnderlyingBuiltin_t<MT> > )
       return false;
 
    CompositeType_t<MT> A( ~sm );  // Evaluation of the sparse matrix operand
@@ -412,7 +412,7 @@ template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
 bool isinf( const SparseMatrix<MT,SO>& sm )
 {
-   if( !IsFloatingPoint_v< ElementType_t<MT> > )
+   if( !IsFloatingPoint_v< UnderlyingBuiltin_t<MT> > )
       return false;
 
    CompositeType_t<MT> A( ~sm );  // Evaluation of the sparse matrix operand
@@ -456,7 +456,7 @@ template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
 bool isfinite( const SparseMatrix<MT,SO>& sm )
 {
-   if( !IsFloatingPoint_v< ElementType_t<MT> > )
+   if( !IsFloatingPoint_v< UnderlyingBuiltin_t<MT> > )
       return true;
 
    CompositeType_t<MT> A( ~sm );  // Evaluation of the sparse matrix operand

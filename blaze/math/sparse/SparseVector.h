@@ -305,7 +305,7 @@ template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
 inline bool isnan( const SparseVector<VT,TF>& sv )
 {
-   if( !IsFloatingPoint_v< ElementType_t<VT> > )
+   if( !IsFloatingPoint_v< UnderlyingBuiltin_t<VT> > )
       return false;
 
    using CT = CompositeType_t<VT>;
@@ -342,7 +342,7 @@ template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
 inline bool isinf( const SparseVector<VT,TF>& sv )
 {
-   if( !IsFloatingPoint_v< ElementType_t<VT> > )
+   if( !IsFloatingPoint_v< UnderlyingBuiltin_t<VT> > )
       return false;
 
    using CT = CompositeType_t<VT>;
@@ -379,7 +379,7 @@ template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
 inline bool isfinite( const SparseVector<VT,TF>& sv )
 {
-   if( !IsFloatingPoint_v< ElementType_t<VT> > )
+   if( !IsFloatingPoint_v< UnderlyingBuiltin_t<VT> > )
       return true;
 
    using CT = CompositeType_t<VT>;

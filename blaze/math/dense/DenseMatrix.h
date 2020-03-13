@@ -1289,7 +1289,7 @@ template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order
 bool isnan( const DenseMatrix<MT,SO>& dm )
 {
-   if( !IsFloatingPoint_v< ElementType_t<MT> > )
+   if( !IsFloatingPoint_v< UnderlyingBuiltin_t<MT> > )
       return false;
 
    using CT = CompositeType_t<MT>;
@@ -1338,7 +1338,7 @@ template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order
 bool isinf( const DenseMatrix<MT,SO>& dm )
 {
-   if( !IsFloatingPoint_v< ElementType_t<MT> > )
+   if( !IsFloatingPoint_v< UnderlyingBuiltin_t<MT> > )
       return false;
 
    using CT = CompositeType_t<MT>;
@@ -1388,7 +1388,7 @@ template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order
 bool isfinite( const DenseMatrix<MT,SO>& dm )
 {
-   if( !IsFloatingPoint_v< ElementType_t<MT> > )
+   if( !IsFloatingPoint_v< UnderlyingBuiltin_t<MT> > )
       return true;
 
    using CT = CompositeType_t<MT>;
