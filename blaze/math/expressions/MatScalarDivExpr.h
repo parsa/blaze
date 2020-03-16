@@ -40,9 +40,14 @@
 // Includes
 //*************************************************************************************************
 
+#include <blaze/math/Aliases.h>
 #include <blaze/math/Exception.h>
 #include <blaze/math/expressions/DivExpr.h>
+#include <blaze/math/typetraits/IsInvertible.h>
+#include <blaze/util/Assert.h>
+#include <blaze/util/EnableIf.h>
 #include <blaze/util/FunctionTrace.h>
+#include <blaze/util/typetraits/IsNumeric.h>
 
 
 namespace blaze {
@@ -68,6 +73,98 @@ template< typename MT >  // Matrix base type of the expression
 struct MatScalarDivExpr
    : public DivExpr<MT>
 {};
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  GLOBAL RESTRUCTURING BINARY ARITHMETIC OPERATORS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Multiplication operator for the multiplication of a matrix-scalar division expression
+//        and a scalar value (\f$ A=(B/s1)*s2 \f$).
+// \ingroup math
+//
+// \param mat The left-hand side matrix-scalar division.
+// \param scalar The right-hand side scalar value for the multiplication.
+// \return The scaled result matrix.
+//
+// This operator implements a performance optimized treatment of the multiplication of a
+// matrix-scalar division expression and a scalar value.
+*/
+template< typename MT  // Matrix base type of the expression
+        , typename ST  // Type of the right-hand side scalar
+        , EnableIf_t< IsNumeric_v<ST> &&
+                      ( IsInvertible_v<ST> ||
+                        IsInvertible_v< RightOperand_t< MatrixType_t<MT> > > ) >* = nullptr >
+inline decltype(auto) operator*( const MatScalarDivExpr<MT>& mat, ST scalar )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return (~mat).leftOperand() * ( scalar / (~mat).rightOperand() );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Multiplication operator for the multiplication of a scalar value and a matrix-scalar
+//        division expression (\f$ A=s2*(B/s1) \f$).
+// \ingroup math
+//
+// \param scalar The left-hand side scalar value for the multiplication.
+// \param mat The right-hand side matrix-scalar division.
+// \return The scaled result matrix.
+//
+// This operator implements a performance optimized treatment of the multiplication of a
+// scalar value and a matrix-scalar division expression.
+*/
+template< typename ST  // Type of the left-hand side scalar
+        , typename MT  // Matrix base type of the expression
+        , EnableIf_t< IsNumeric_v<ST> &&
+                      ( IsInvertible_v<ST> ||
+                        IsInvertible_v< RightOperand_t< MatrixType_t<MT> > > ) >* = nullptr >
+inline decltype(auto) operator*( ST scalar, const MatScalarDivExpr<MT>& mat )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return (~mat).leftOperand() * ( scalar / (~mat).rightOperand() );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Division operator for the division of a dense matrix-scalar division expression
+//        and a scalar value (\f$ A=(B/s1)/s2 \f$).
+// \ingroup dense_matrix
+//
+// \param mat The left-hand side dense matrix-scalar division.
+// \param scalar The right-hand side scalar value for the division.
+// \return The scaled result matrix.
+//
+// This operator implements a performance optimized treatment of the division of a dense
+// matrix-scalar division expression and a scalar value.
+*/
+template< typename MT  // Matrix base type of the expression
+        , typename ST  // Type of the right-hand side scalar
+        , EnableIf_t< IsNumeric_v<ST> >* = nullptr >
+inline decltype(auto) operator/( const MatScalarDivExpr<MT>& mat, ST scalar )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   BLAZE_USER_ASSERT( scalar != ST(0), "Division by zero detected" );
+
+   return (~mat).leftOperand() / ( (~mat).rightOperand() * scalar );
+}
+/*! \endcond */
 //*************************************************************************************************
 
 
