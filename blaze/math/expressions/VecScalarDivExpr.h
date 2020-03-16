@@ -40,8 +40,14 @@
 // Includes
 //*************************************************************************************************
 
+
+#include <blaze/math/Aliases.h>
 #include <blaze/math/expressions/DivExpr.h>
+#include <blaze/math/typetraits/IsInvertible.h>
+#include <blaze/util/Assert.h>
+#include <blaze/util/EnableIf.h>
 #include <blaze/util/FunctionTrace.h>
+#include <blaze/util/typetraits/IsNumeric.h>
 
 
 namespace blaze {
@@ -67,6 +73,98 @@ template< typename VT >  // Vector base type of the expression
 struct VecScalarDivExpr
    : public DivExpr<VT>
 {};
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  GLOBAL RESTRUCTURING BINARY ARITHMETIC OPERATORS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Multiplication operator for the multiplication of a vector-scalar division
+//        expression and a scalar value (\f$ \vec{a}=(\vec{b}/s1)*s2 \f$).
+// \ingroup math
+//
+// \param vec The left-hand side vector-scalar division.
+// \param scalar The right-hand side scalar value for the multiplication.
+// \return The scaled result vector.
+//
+// This operator implements a performance optimized treatment of the multiplication of a
+// vector-scalar division expression and a scalar value.
+*/
+template< typename VT  // Vector base type of the expression
+        , typename ST  // Type of the right-hand side scalar
+        , EnableIf_t< IsNumeric_v<ST> &&
+                      ( IsInvertible_v<ST> ||
+                        IsInvertible_v< RightOperand_t< VectorType_t<VT> > > ) >* = nullptr >
+inline decltype(auto) operator*( const VecScalarDivExpr<VT>& vec, ST scalar )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return (~vec).leftOperand() * ( scalar / (~vec).rightOperand() );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Multiplication operator for the multiplication of a scalar value and a vector-scalar
+//        division expression (\f$ \vec{a}=s2*(\vec{b}/s1) \f$).
+// \ingroup math
+//
+// \param scalar The left-hand side scalar value for the multiplication.
+// \param vec The right-hand side vector-scalar division.
+// \return The scaled result vector.
+//
+// This operator implements a performance optimized treatment of the multiplication of a
+// scalar value and a vector-scalar division expression.
+*/
+template< typename ST  // Type of the left-hand side scalar
+        , typename VT  // Vector base type of the expression
+        , EnableIf_t< IsNumeric_v<ST> &&
+                      ( IsInvertible_v<ST> ||
+                        IsInvertible_v< RightOperand_t< VectorType_t<VT> > > ) >* = nullptr >
+inline decltype(auto) operator*( ST scalar, const VecScalarDivExpr<VT>& vec )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return (~vec).leftOperand() * ( scalar / (~vec).rightOperand() );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Division operator for the division of a vector-scalar division expression
+//        and a scalar value (\f$ \vec{a}=(\vec{b}/s1)/s2 \f$).
+// \ingroup math
+//
+// \param vec The left-hand side vector-scalar division.
+// \param scalar The right-hand side scalar value for the division.
+// \return The scaled result vector.
+//
+// This operator implements a performance optimized treatment of the division of a vector-scalar
+// division expression and a scalar value.
+*/
+template< typename VT  // Vector base type of the expression
+        , typename ST  // Type of the right-hand side scalar
+        , EnableIf_t< IsNumeric_v<ST> >* = nullptr >
+inline decltype(auto) operator/( const VecScalarDivExpr<VT>& vec, ST scalar )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   BLAZE_USER_ASSERT( scalar != ST(0), "Division by zero detected" );
+
+   return (~vec).leftOperand() / ( (~vec).rightOperand() * scalar );
+}
+/*! \endcond */
 //*************************************************************************************************
 
 
