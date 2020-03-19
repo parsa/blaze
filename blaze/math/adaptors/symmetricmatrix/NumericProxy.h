@@ -137,7 +137,8 @@ class NumericProxy
    /*!\name Constructors */
    //@{
    inline NumericProxy( MT& matrix, size_t row, size_t column );
-   inline NumericProxy( const NumericProxy& np );
+
+   NumericProxy( const NumericProxy& ) = default;
    //@}
    //**********************************************************************************************
 
@@ -248,20 +249,6 @@ inline NumericProxy<MT>::NumericProxy( MT& matrix, size_t row, size_t column )
    : matrix_( matrix )  // Reference to the adapted matrix
    , row_   ( row    )  // Row index of the accessed matrix element
    , column_( column )  // Column index of the accessed matrix element
-{}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief The copy constructor for NumericProxy.
-//
-// \param np Numeric proxy to be copied.
-*/
-template< typename MT >  // Type of the adapted matrix
-inline NumericProxy<MT>::NumericProxy( const NumericProxy& np )
-   : matrix_( np.matrix_ )  // Reference to the adapted matrix
-   , row_   ( np.row_    )  // Row index of the accessed matrix element
-   , column_( np.column_ )  // Column index of the accessed matrix element
 {}
 //*************************************************************************************************
 

@@ -142,6 +142,15 @@ class UniLowerValue
    /*!\name Constructors */
    //@{
    inline UniLowerValue( RepresentedType& value, bool diagonal );
+
+   UniLowerValue( const UniLowerValue& ) = default;
+   //@}
+   //**********************************************************************************************
+
+   //**Destructor**********************************************************************************
+   /*!\name Destructor */
+   //@{
+   ~UniLowerValue() = default;
    //@}
    //**********************************************************************************************
 

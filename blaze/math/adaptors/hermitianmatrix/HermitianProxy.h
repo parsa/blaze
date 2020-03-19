@@ -138,7 +138,8 @@ class HermitianProxy
    /*!\name Constructors */
    //@{
    inline HermitianProxy( MT& matrix, size_t row, size_t column );
-   inline HermitianProxy( const HermitianProxy& hp );
+
+   HermitianProxy( const HermitianProxy& ) = default;
    //@}
    //**********************************************************************************************
 
@@ -252,20 +253,6 @@ inline HermitianProxy<MT>::HermitianProxy( MT& matrix, size_t row, size_t column
    : value1_  ( matrix(row,column) )  // Reference to the first accessed matrix element
    , value2_  ( matrix(column,row) )  // Reference to the second accessed matrix element
    , diagonal_( row == column )       // Flag for the accessed matrix element
-{}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief The copy constructor for HermitianProxy.
-//
-// \param hp Numeric proxy to be copied.
-*/
-template< typename MT >  // Type of the adapted matrix
-inline HermitianProxy<MT>::HermitianProxy( const HermitianProxy& hp )
-   : value1_  ( hp.value1_   )  // Reference to the first accessed matrix element
-   , value2_  ( hp.value2_   )  // Reference to the second accessed matrix element
-   , diagonal_( hp.diagonal_ )  // Flag for the accessed matrix element
 {}
 //*************************************************************************************************
 

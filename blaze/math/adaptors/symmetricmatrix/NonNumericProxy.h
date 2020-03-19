@@ -127,7 +127,8 @@ class NonNumericProxy
    /*!\name Constructors */
    //@{
    inline NonNumericProxy( MT& sm, size_t i, size_t j );
-   inline NonNumericProxy( const NonNumericProxy& nnp );
+
+   NonNumericProxy( const NonNumericProxy& ) = default;
    //@}
    //**********************************************************************************************
 
@@ -243,23 +244,6 @@ inline NonNumericProxy<MT>::NonNumericProxy( MT& matrix, size_t i, size_t j )
    }
 
    BLAZE_INTERNAL_ASSERT( matrix_.find(i_,j_)->value() == matrix_.find(j_,i_)->value(), "Unbalance detected" );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief The copy constructor for NonNumericProxy.
-//
-// \param nnp Non-numeric access proxy to be copied.
-*/
-template< typename MT >  // Type of the adapted matrix
-inline NonNumericProxy<MT>::NonNumericProxy( const NonNumericProxy& nnp )
-   : matrix_( nnp.matrix_ )  // Reference to the adapted matrix
-   , i_     ( nnp.i_ )       // Row-index of the accessed matrix element
-   , j_     ( nnp.j_ )       // Column-index of the accessed matrix element
-{
-   BLAZE_INTERNAL_ASSERT( matrix_.find(i_,j_) != matrix_.end( rmm ? i_ : j_ ), "Missing matrix element detected" );
-   BLAZE_INTERNAL_ASSERT( matrix_.find(j_,i_) != matrix_.end( rmm ? j_ : i_ ), "Missing matrix element detected" );
 }
 //*************************************************************************************************
 

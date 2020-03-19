@@ -144,7 +144,8 @@ class UniLowerProxy
    /*!\name Constructors */
    //@{
    inline UniLowerProxy( MT& matrix, size_t row, size_t column );
-   inline UniLowerProxy( const UniLowerProxy& ulp );
+
+   UniLowerProxy( const UniLowerProxy& ) = default;
    //@}
    //**********************************************************************************************
 
@@ -255,20 +256,6 @@ inline UniLowerProxy<MT>::UniLowerProxy( MT& matrix, size_t row, size_t column )
    : value_ ( matrix( row, column ) )  // Reference to the accessed matrix element
    , row_   ( row    )                 // Row index of the accessed matrix element
    , column_( column )                 // Column index of the accessed matrix element
-{}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief The copy constructor for LowerProxy.
-//
-// \param ulp Proxy to be copied.
-*/
-template< typename MT >  // Type of the adapted matrix
-inline UniLowerProxy<MT>::UniLowerProxy( const UniLowerProxy& ulp )
-   : value_ ( ulp.value_  )  // Reference to the accessed matrix element
-   , row_   ( ulp.row_    )  // Row index of the accessed matrix element
-   , column_( ulp.column_ )  // Column index of the accessed matrix element
 {}
 //*************************************************************************************************
 

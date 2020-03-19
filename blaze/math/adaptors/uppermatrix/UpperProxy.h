@@ -117,7 +117,8 @@ class UpperProxy
    /*!\name Constructors */
    //@{
    inline UpperProxy( MT& matrix, size_t row, size_t column );
-   inline UpperProxy( const UpperProxy& up );
+
+   UpperProxy( const UpperProxy& ) = default;
    //@}
    //**********************************************************************************************
 
@@ -221,19 +222,6 @@ template< typename MT >  // Type of the adapted matrix
 inline UpperProxy<MT>::UpperProxy( MT& matrix, size_t row, size_t column )
    : value_     ( matrix( row, column ) )  // Reference to the accessed matrix element
    , restricted_( column < row )           // Access flag for the accessed matrix element
-{}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief The copy constructor for UpperProxy.
-//
-// \param up Upper proxy to be copied.
-*/
-template< typename MT >  // Type of the adapted matrix
-inline UpperProxy<MT>::UpperProxy( const UpperProxy& up )
-   : value_     ( up.value_      )  // Reference to the accessed matrix element
-   , restricted_( up.restricted_ )  // Access flag for the accessed matrix element
 {}
 //*************************************************************************************************
 

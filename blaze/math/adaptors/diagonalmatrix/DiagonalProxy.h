@@ -117,7 +117,8 @@ class DiagonalProxy
    /*!\name Constructors */
    //@{
    inline DiagonalProxy( MT& matrix, size_t row, size_t column );
-   inline DiagonalProxy( const DiagonalProxy& dp );
+
+   DiagonalProxy( const DiagonalProxy& ) = default;
    //@}
    //**********************************************************************************************
 
@@ -221,19 +222,6 @@ template< typename MT >  // Type of the adapted matrix
 inline DiagonalProxy<MT>::DiagonalProxy( MT& matrix, size_t row, size_t column )
    : value_     ( matrix( row, column ) )  // Reference to the accessed matrix element
    , restricted_( row != column )          // Access flag for the accessed matrix element
-{}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief The copy constructor for DiagonalProxy.
-//
-// \param dp Diagonal proxy to be copied.
-*/
-template< typename MT >  // Type of the adapted matrix
-inline DiagonalProxy<MT>::DiagonalProxy( const DiagonalProxy& dp )
-   : value_     ( dp.value_      )  // Reference to the accessed matrix element
-   , restricted_( dp.restricted_ )  // Access flag for the accessed matrix element
 {}
 //*************************************************************************************************
 

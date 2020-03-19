@@ -144,7 +144,8 @@ class UniUpperProxy
    /*!\name Constructors */
    //@{
    inline UniUpperProxy( MT& matrix, size_t row, size_t column );
-   inline UniUpperProxy( const UniUpperProxy& uup );
+
+   UniUpperProxy( const UniUpperProxy& ) = default;
    //@}
    //**********************************************************************************************
 
@@ -255,20 +256,6 @@ inline UniUpperProxy<MT>::UniUpperProxy( MT& matrix, size_t row, size_t column )
    : value_ ( matrix( row, column ) )  // Reference to the accessed matrix element
    , row_   ( row    )                 // Row index of the accessed matrix element
    , column_( column )                 // Column index of the accessed matrix element
-{}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief The copy constructor for UniUpperProxy.
-//
-// \param uup Proxy to be copied.
-*/
-template< typename MT >  // Type of the adapted matrix
-inline UniUpperProxy<MT>::UniUpperProxy( const UniUpperProxy& uup )
-   : value_ ( uup.value_  )  // Reference to the accessed matrix element
-   , row_   ( uup.row_    )  // Row index of the accessed matrix element
-   , column_( uup.column_ )  // Column index of the accessed matrix element
 {}
 //*************************************************************************************************
 

@@ -117,7 +117,8 @@ class LowerProxy
    /*!\name Constructors */
    //@{
    inline LowerProxy( MT& matrix, size_t row, size_t column );
-   inline LowerProxy( const LowerProxy& lp );
+
+   LowerProxy( const LowerProxy& ) = default;
    //@}
    //**********************************************************************************************
 
@@ -221,19 +222,6 @@ template< typename MT >  // Type of the adapted matrix
 inline LowerProxy<MT>::LowerProxy( MT& matrix, size_t row, size_t column )
    : value_     ( matrix( row, column ) )  // Reference to the accessed matrix element
    , restricted_( row < column )           // Access flag for the accessed matrix element
-{}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief The copy constructor for LowerProxy.
-//
-// \param lp Lower proxy to be copied.
-*/
-template< typename MT >  // Type of the adapted matrix
-inline LowerProxy<MT>::LowerProxy( const LowerProxy& lp )
-   : value_     ( lp.value_      )  // Reference to the accessed matrix element
-   , restricted_( lp.restricted_ )  // Access flag for the accessed matrix element
 {}
 //*************************************************************************************************
 

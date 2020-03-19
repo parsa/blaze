@@ -119,7 +119,8 @@ class StrictlyUpperProxy
    /*!\name Constructors */
    //@{
    inline StrictlyUpperProxy( MT& matrix, size_t row, size_t column );
-   inline StrictlyUpperProxy( const StrictlyUpperProxy& uup );
+
+   StrictlyUpperProxy( const StrictlyUpperProxy& ) = default;
    //@}
    //**********************************************************************************************
 
@@ -223,19 +224,6 @@ template< typename MT >  // Type of the adapted matrix
 inline StrictlyUpperProxy<MT>::StrictlyUpperProxy( MT& matrix, size_t row, size_t column )
    : value_     ( matrix( row, column ) )  // Reference to the accessed matrix element
    , restricted_( column <= row )          // Access flag for the accessed matrix element
-{}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief The copy constructor for StrictlyUpperProxy.
-//
-// \param uup Proxy to be copied.
-*/
-template< typename MT >  // Type of the adapted matrix
-inline StrictlyUpperProxy<MT>::StrictlyUpperProxy( const StrictlyUpperProxy& uup )
-   : value_     ( uup.value_      )  // Reference to the accessed matrix element
-   , restricted_( uup.restricted_ )  // Access flag for the accessed matrix element
 {}
 //*************************************************************************************************
 

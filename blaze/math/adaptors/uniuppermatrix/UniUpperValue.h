@@ -142,6 +142,15 @@ class UniUpperValue
    /*!\name Constructors */
    //@{
    inline UniUpperValue( RepresentedType& value, bool diagonal );
+
+   UniUpperValue( const UniUpperValue& ) = default;
+   //@}
+   //**********************************************************************************************
+
+   //**Destructor**********************************************************************************
+   /*!\name Destructor */
+   //@{
+   ~UniUpperValue() = default;
    //@}
    //**********************************************************************************************
 

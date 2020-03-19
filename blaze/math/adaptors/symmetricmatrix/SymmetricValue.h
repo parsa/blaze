@@ -154,6 +154,15 @@ class SymmetricValue
    /*!\name Constructors */
    //@{
    inline SymmetricValue( IteratorType pos, MT* matrix, size_t index );
+
+   SymmetricValue( const SymmetricValue& ) = default;
+   //@}
+   //**********************************************************************************************
+
+   //**Destructor**********************************************************************************
+   /*!\name Destructor */
+   //@{
+   ~SymmetricValue() = default;
    //@}
    //**********************************************************************************************
 

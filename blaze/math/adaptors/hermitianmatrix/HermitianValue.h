@@ -157,6 +157,15 @@ class HermitianValue
    /*!\name Constructors */
    //@{
    inline HermitianValue( IteratorType pos, MT* matrix, size_t index );
+
+   HermitianValue( const HermitianValue& ) = default;
+   //@}
+   //**********************************************************************************************
+
+   //**Destructor**********************************************************************************
+   /*!\name Destructor */
+   //@{
+   ~HermitianValue() = default;
    //@}
    //**********************************************************************************************
 

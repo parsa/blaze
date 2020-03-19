@@ -119,7 +119,8 @@ class StrictlyLowerProxy
    /*!\name Constructors */
    //@{
    inline StrictlyLowerProxy( MT& matrix, size_t row, size_t column );
-   inline StrictlyLowerProxy( const StrictlyLowerProxy& ulp );
+
+   StrictlyLowerProxy( const StrictlyLowerProxy& ) = default;
    //@}
    //**********************************************************************************************
 
@@ -223,19 +224,6 @@ template< typename MT >  // Type of the adapted matrix
 inline StrictlyLowerProxy<MT>::StrictlyLowerProxy( MT& matrix, size_t row, size_t column )
    : value_     ( matrix( row, column ) )  // Reference to the accessed matrix element
    , restricted_( row <= column )          // Access flag for the accessed matrix element
-{}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief The copy constructor for LowerProxy.
-//
-// \param slp Proxy to be copied.
-*/
-template< typename MT >  // Type of the adapted matrix
-inline StrictlyLowerProxy<MT>::StrictlyLowerProxy( const StrictlyLowerProxy& slp )
-   : value_     ( slp.value_      )  // Reference to the accessed matrix element
-   , restricted_( slp.restricted_ )  // Access flag for the accessed matrix element
 {}
 //*************************************************************************************************
 
