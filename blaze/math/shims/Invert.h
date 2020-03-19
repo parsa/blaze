@@ -68,8 +68,8 @@ namespace blaze {
 //
 // \note A division by zero is only checked by an user assert.
 */
-template< typename T >
-BLAZE_ALWAYS_INLINE constexpr EnableIf_t< IsIntegral_v<T>, double > inv( T a ) noexcept
+template< typename T, EnableIf_t< IsIntegral_v<T> >* = nullptr >
+BLAZE_ALWAYS_INLINE constexpr double inv( T a ) noexcept
 {
    BLAZE_USER_ASSERT( a != T(0), "Division by zero detected" );
    return ( 1.0 / a );
