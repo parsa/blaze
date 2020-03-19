@@ -43,6 +43,7 @@
 #include <blaze/math/expressions/Expression.h>
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/shims/Invert.h>
+#include <blaze/math/typetraits/IsMatScalarMultExpr.h>
 #include <blaze/util/FunctionTrace.h>
 
 
@@ -150,7 +151,8 @@ inline decltype(auto)
 */
 template< typename MT1  // Matrix base type of the left-hand side expression
         , typename MT2  // Type of the right-hand side dense matrix
-        , bool SO >     // Storage order of the right-hand side dense matrix
+        , bool SO       // Storage order of the right-hand side dense matrix
+        , DisableIf_t< IsMatScalarMultExpr_v<MT2> >* = nullptr >
 inline decltype(auto)
    operator*( const MatInvExpr<MT1>& lhs, const DenseMatrix<MT2,SO>& rhs )
 {
@@ -178,7 +180,8 @@ inline decltype(auto)
 */
 template< typename MT1    // Type of the left-hand side dense matrix
         , bool SO         // Storage order of the left-hand side dense matrix
-        , typename MT2 >  // Matrix base type of the right-hand side expression
+        , typename MT2    // Matrix base type of the right-hand side expression
+        , DisableIf_t< IsMatScalarMultExpr_v<MT1> >* = nullptr >
 inline decltype(auto)
    operator*( const DenseMatrix<MT1,SO>& lhs, const MatInvExpr<MT2>& rhs )
 {
