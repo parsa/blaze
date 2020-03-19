@@ -100,6 +100,180 @@ class SparseMatrix
 //=================================================================================================
 
 //*************************************************************************************************
+/*!\name SparseMatrix global functions */
+//@{
+template< typename MT, bool SO >
+typename MT::Iterator find( SparseMatrix<MT,SO>& sm, size_t i, size_t j );
+
+template< typename MT, bool SO >
+typename MT::ConstIterator find( const SparseMatrix<MT,SO>& sm, size_t i, size_t j );
+
+template< typename MT, bool SO >
+typename MT::Iterator lowerBound( SparseMatrix<MT,SO>& sm, size_t i, size_t j );
+
+template< typename MT, bool SO >
+typename MT::ConstIterator lowerBound( const SparseMatrix<MT,SO>& sm, size_t i, size_t j );
+
+template< typename MT, bool SO >
+typename MT::Iterator upperBound( SparseMatrix<MT,SO>& sm, size_t i, size_t j );
+
+template< typename MT, bool SO >
+typename MT::ConstIterator upperBound( const SparseMatrix<MT,SO>& sm, size_t i, size_t j );
+//@}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Searches for a specific matrix element.
+// \ingroup sparse_matrix
+//
+// \param sm The given sparse matrix.
+// \param i The row index of the search element. The index has to be in the range \f$[0..M-1]\f$.
+// \param j The column index of the search element. The index has to be in the range \f$[0..N-1]\f$.
+// \return Iterator to the element in case the index is found, end() iterator otherwise.
+//
+// This function can be used to check whether a specific element is contained in the sparse
+// matrix. It specifically searches for the element with row index \a i and column index \a j.
+// In case the element is found, the function returns an row/column iterator to the element.
+// Otherwise an iterator just past the last non-zero element of row \a i or column \a j (the
+// end() iterator) is returned. Note that the returned sparse matrix iterator is subject to
+// invalidation due to inserting operations via the function call operator, the set()
+// function or the insert() function!
+*/
+template< typename MT, bool SO >
+typename MT::Iterator find( SparseMatrix<MT,SO>& sm, size_t i, size_t j )
+{
+   return (~sm).find( i, j );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Searches for a specific matrix element.
+// \ingroup sparse_matrix
+//
+// \param sm The given sparse matrix.
+// \param i The row index of the search element. The index has to be in the range \f$[0..M-1]\f$.
+// \param j The column index of the search element. The index has to be in the range \f$[0..N-1]\f$.
+// \return Iterator to the element in case the index is found, end() iterator otherwise.
+//
+// This function can be used to check whether a specific element is contained in the sparse
+// matrix. It specifically searches for the element with row index \a i and column index \a j.
+// In case the element is found, the function returns an row/column iterator to the element.
+// Otherwise an iterator just past the last non-zero element of row \a i or column \a j (the
+// end() iterator) is returned. Note that the returned sparse matrix iterator is subject to
+// invalidation due to inserting operations via the function call operator, the set()
+// function or the insert() function!
+*/
+template< typename MT, bool SO >
+typename MT::ConstIterator find( const SparseMatrix<MT,SO>& sm, size_t i, size_t j )
+{
+   return (~sm).find( i, j );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns an iterator to the first index not less than the given index.
+// \ingroup sparse_matrix
+//
+// \param sm The given sparse matrix.
+// \param i The row index of the search element. The index has to be in the range \f$[0..M-1]\f$.
+// \param j The column index of the search element. The index has to be in the range \f$[0..N-1]\f$.
+// \return Iterator to the first index not less than the given index, end() iterator otherwise.
+//
+// In case of a row-major matrix, this function returns a row iterator to the first element with
+// an index not less than the given column index. In case of a column-major matrix, the function
+// returns a column iterator to the first element with an index not less than the given row
+// index. In combination with the upperBound() function this function can be used to create a
+// pair of iterators specifying a range of indices. Note that the returned sparse matrix iterator
+// is subject to invalidation due to inserting operations via the function call operator, the
+// set() function or the insert() function!
+*/
+template< typename MT, bool SO >
+typename MT::Iterator lowerBound( SparseMatrix<MT,SO>& sm, size_t i, size_t j )
+{
+   return (~sm).lowerBound( i, j );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns an iterator to the first index not less than the given index.
+// \ingroup sparse_matrix
+//
+// \param sm The given sparse matrix.
+// \param i The row index of the search element. The index has to be in the range \f$[0..M-1]\f$.
+// \param j The column index of the search element. The index has to be in the range \f$[0..N-1]\f$.
+// \return Iterator to the first index not less than the given index, end() iterator otherwise.
+//
+// In case of a row-major matrix, this function returns a row iterator to the first element with
+// an index not less than the given column index. In case of a column-major matrix, the function
+// returns a column iterator to the first element with an index not less than the given row
+// index. In combination with the upperBound() function this function can be used to create a
+// pair of iterators specifying a range of indices. Note that the returned sparse matrix iterator
+// is subject to invalidation due to inserting operations via the function call operator, the
+// set() function or the insert() function!
+*/
+template< typename MT, bool SO >
+typename MT::ConstIterator lowerBound( const SparseMatrix<MT,SO>& sm, size_t i, size_t j )
+{
+   return (~sm).lowerBound( i, j );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns an iterator to the first index greater than the given index.
+// \ingroup sparse_matrix
+//
+// \param sm The given sparse matrix.
+// \param i The row index of the search element. The index has to be in the range \f$[0..M-1]\f$.
+// \param j The column index of the search element. The index has to be in the range \f$[0..N-1]\f$.
+// \return Iterator to the first index greater than the given index, end() iterator otherwise.
+//
+// In case of a row-major matrix, this function returns a row iterator to the first element with
+// an index greater than the given column index. In case of a column-major matrix, the function
+// returns a column iterator to the first element with an index greater than the given row
+// index. In combination with the lowerBound() function this function can be used to create a
+// pair of iterators specifying a range of indices. Note that the returned sparse matrix iterator
+// is subject to invalidation due to inserting operations via the function call operator, the
+// set() function or or the insert() function!
+*/
+template< typename MT, bool SO >
+typename MT::Iterator upperBound( SparseMatrix<MT,SO>& sm, size_t i, size_t j )
+{
+   return (~sm).upperBound( i, j );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns an iterator to the first index greater than the given index.
+// \ingroup sparse_matrix
+//
+// \param sm The given sparse matrix.
+// \param i The row index of the search element. The index has to be in the range \f$[0..M-1]\f$.
+// \param j The column index of the search element. The index has to be in the range \f$[0..N-1]\f$.
+// \return Iterator to the first index greater than the given index, end() iterator otherwise.
+//
+// In case of a row-major matrix, this function returns a row iterator to the first element with
+// an index greater than the given column index. In case of a column-major matrix, the function
+// returns a column iterator to the first element with an index greater than the given row
+// index. In combination with the lowerBound() function this function can be used to create a
+// pair of iterators specifying a range of indices. Note that the returned sparse matrix iterator
+// is subject to invalidation due to inserting operations via the function call operator, the
+// set() function or or the insert() function!
+*/
+template< typename MT, bool SO >
+typename MT::ConstIterator upperBound( const SparseMatrix<MT,SO>& sm, size_t i, size_t j )
+{
+   return (~sm).upperBound( i, j );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Backend implementation of the \c resetLower() function for row-major sparse matrices.
 // \ingroup sparse_matrix
