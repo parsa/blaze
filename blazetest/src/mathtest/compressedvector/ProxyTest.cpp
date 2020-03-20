@@ -2137,6 +2137,50 @@ void ProxyTest::testFind()
       }
    }
 
+   {
+      test_ = "find( VectorAccessProxy, size_t )";
+
+      SVV vec( 3UL, 1UL );
+      vec[0] = SV( 5UL, 3UL );
+      vec[0][1] = 2;
+      vec[0][2] = 3;
+      vec[0][4] = 5;
+
+      SV::Iterator pos( find( vec[0], 2UL ) );
+
+      checkSize    ( vec, 3UL );
+      checkCapacity( vec, 1UL );
+      checkNonZeros( vec, 1UL );
+
+      checkSize    ( vec[0], 5UL );
+      checkCapacity( vec[0], 3UL );
+      checkNonZeros( vec[0], 3UL );
+      checkSize    ( vec[1], 0UL );
+      checkSize    ( vec[2], 0UL );
+
+      if( pos == vec[0].end() ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Element could not be found\n"
+             << " Details:\n"
+             << "   Required index = 2\n"
+             << "   Current vector:\n" << vec[0] << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      else if( pos->index() != 2 || pos->value() != 3 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Wrong element found\n"
+             << " Details:\n"
+             << "   Required index = 2\n"
+             << "   Found index    = " << pos->index() << "\n"
+             << "   Expected value = 3\n"
+             << "   Value at index = " << pos->value() << "\n"
+             << "   Current vector:\n" << vec[0] << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
 
    //=====================================================================================
    // Matrix elements
@@ -2151,7 +2195,54 @@ void ProxyTest::testFind()
       vec[0](1,2) = 3;
       vec[0](1,4) = 5;
 
-      SM::Iterator pos( vec[0].find( 1UL, 2 ) );
+      SM::Iterator pos( vec[0].find( 1UL, 2UL ) );
+
+      checkSize    ( vec, 3UL );
+      checkCapacity( vec, 1UL );
+      checkNonZeros( vec, 1UL );
+
+      checkRows    ( vec[0], 2UL );
+      checkColumns ( vec[0], 5UL );
+      checkCapacity( vec[0], 3UL );
+      checkNonZeros( vec[0], 3UL );
+      checkRows    ( vec[1], 0UL );
+      checkColumns ( vec[1], 0UL );
+      checkRows    ( vec[2], 0UL );
+      checkColumns ( vec[2], 0UL );
+
+      if( pos == vec[0].end( 1UL ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Element could not be found\n"
+             << " Details:\n"
+             << "   Required index = 2\n"
+             << "   Current matrix:\n" << vec[0] << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      else if( pos->index() != 2 || pos->value() != 3 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Wrong element found\n"
+             << " Details:\n"
+             << "   Required index = 2\n"
+             << "   Found index    = " << pos->index() << "\n"
+             << "   Expected value = 3\n"
+             << "   Value at index = " << pos->value() << "\n"
+             << "   Current matrix:\n" << vec[0] << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "find( VectorAccessProxy, size_t, size_t )";
+
+      SMV vec( 3UL, 1UL );
+      vec[0] = SM( 2UL, 5UL, 3UL );
+      vec[0](1,1) = 2;
+      vec[0](1,2) = 3;
+      vec[0](1,4) = 5;
+
+      SM::Iterator pos( find( vec[0], 1UL, 2UL ) );
 
       checkSize    ( vec, 3UL );
       checkCapacity( vec, 1UL );
@@ -2251,6 +2342,50 @@ void ProxyTest::testLowerBound()
       }
    }
 
+   {
+      test_ = "lowerBound( VectorAccessProxy, size_t )";
+
+      SVV vec( 3UL, 1UL );
+      vec[0] = SV( 5UL, 3UL );
+      vec[0][1] = 2;
+      vec[0][2] = 3;
+      vec[0][4] = 5;
+
+      SV::Iterator pos( lowerBound( vec[0], 3UL ) );
+
+      checkSize    ( vec, 3UL );
+      checkCapacity( vec, 1UL );
+      checkNonZeros( vec, 1UL );
+
+      checkSize    ( vec[0], 5UL );
+      checkCapacity( vec[0], 3UL );
+      checkNonZeros( vec[0], 3UL );
+      checkSize    ( vec[1], 0UL );
+      checkSize    ( vec[2], 0UL );
+
+      if( pos == vec[0].end() ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Element could not be found\n"
+             << " Details:\n"
+             << "   Required index = 3\n"
+             << "   Current vector:\n" << vec[0] << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      else if( pos->index() != 4 || pos->value() != 5 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Wrong element found\n"
+             << " Details:\n"
+             << "   Required index = 4\n"
+             << "   Found index    = " << pos->index() << "\n"
+             << "   Expected value = 5\n"
+             << "   Value at index = " << pos->value() << "\n"
+             << "   Current vector:\n" << vec[0] << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
 
    //=====================================================================================
    // Matrix elements
@@ -2266,6 +2401,53 @@ void ProxyTest::testLowerBound()
       vec[0](1,4) = 5;
 
       SM::Iterator pos( vec[0].lowerBound( 1UL, 3 ) );
+
+      checkSize    ( vec, 3UL );
+      checkCapacity( vec, 1UL );
+      checkNonZeros( vec, 1UL );
+
+      checkRows    ( vec[0], 2UL );
+      checkColumns ( vec[0], 5UL );
+      checkCapacity( vec[0], 3UL );
+      checkNonZeros( vec[0], 3UL );
+      checkRows    ( vec[1], 0UL );
+      checkColumns ( vec[1], 0UL );
+      checkRows    ( vec[2], 0UL );
+      checkColumns ( vec[2], 0UL );
+
+      if( pos == vec[0].end( 1UL ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Element could not be found\n"
+             << " Details:\n"
+             << "   Required index = 3\n"
+             << "   Current matrix:\n" << vec[0] << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      else if( pos->index() != 4 || pos->value() != 5 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Wrong element found\n"
+             << " Details:\n"
+             << "   Required index = 4\n"
+             << "   Found index    = " << pos->index() << "\n"
+             << "   Expected value = 5\n"
+             << "   Value at index = " << pos->value() << "\n"
+             << "   Current matrix:\n" << vec[0] << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "lowerBound( VectorAccessProxy, size_t, size_t )";
+
+      SMV vec( 3UL, 1UL );
+      vec[0] = SM( 2UL, 5UL, 3UL );
+      vec[0](1,1) = 2;
+      vec[0](1,2) = 3;
+      vec[0](1,4) = 5;
+
+      SM::Iterator pos( lowerBound( vec[0], 1UL, 3UL ) );
 
       checkSize    ( vec, 3UL );
       checkCapacity( vec, 1UL );
@@ -2365,6 +2547,50 @@ void ProxyTest::testUpperBound()
       }
    }
 
+   {
+      test_ = "upperBound( VectorAccessProxy, size_t )";
+
+      SVV vec( 3UL, 1UL );
+      vec[0] = SV( 5UL, 3UL );
+      vec[0][1] = 2;
+      vec[0][2] = 3;
+      vec[0][4] = 5;
+
+      SV::Iterator pos( upperBound( vec[0], 3UL ) );
+
+      checkSize    ( vec, 3UL );
+      checkCapacity( vec, 1UL );
+      checkNonZeros( vec, 1UL );
+
+      checkSize    ( vec[0], 5UL );
+      checkCapacity( vec[0], 3UL );
+      checkNonZeros( vec[0], 3UL );
+      checkSize    ( vec[1], 0UL );
+      checkSize    ( vec[2], 0UL );
+
+      if( pos == vec[0].end() ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Element could not be found\n"
+             << " Details:\n"
+             << "   Required index = 3\n"
+             << "   Current vector:\n" << vec[0] << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      else if( pos->index() != 4 || pos->value() != 5 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Wrong element found\n"
+             << " Details:\n"
+             << "   Required index = 4\n"
+             << "   Found index    = " << pos->index() << "\n"
+             << "   Expected value = 5\n"
+             << "   Value at index = " << pos->value() << "\n"
+             << "   Current vector:\n" << vec[0] << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
 
    //=====================================================================================
    // Matrix elements
@@ -2380,6 +2606,53 @@ void ProxyTest::testUpperBound()
       vec[0](1,4) = 5;
 
       SM::Iterator pos( vec[0].upperBound( 1UL, 3 ) );
+
+      checkSize    ( vec, 3UL );
+      checkCapacity( vec, 1UL );
+      checkNonZeros( vec, 1UL );
+
+      checkRows    ( vec[0], 2UL );
+      checkColumns ( vec[0], 5UL );
+      checkCapacity( vec[0], 3UL );
+      checkNonZeros( vec[0], 3UL );
+      checkRows    ( vec[1], 0UL );
+      checkColumns ( vec[1], 0UL );
+      checkRows    ( vec[2], 0UL );
+      checkColumns ( vec[2], 0UL );
+
+      if( pos == vec[0].end( 1UL ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Element could not be found\n"
+             << " Details:\n"
+             << "   Required index = 3\n"
+             << "   Current matrix:\n" << vec[0] << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      else if( pos->index() != 4 || pos->value() != 5 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Wrong element found\n"
+             << " Details:\n"
+             << "   Required index = 4\n"
+             << "   Found index    = " << pos->index() << "\n"
+             << "   Expected value = 5\n"
+             << "   Value at index = " << pos->value() << "\n"
+             << "   Current matrix:\n" << vec[0] << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "upperBound( VectorAccessProxy, size_t, size_t )";
+
+      SMV vec( 3UL, 1UL );
+      vec[0] = SM( 2UL, 5UL, 3UL );
+      vec[0](1,1) = 2;
+      vec[0](1,2) = 3;
+      vec[0](1,4) = 5;
+
+      SM::Iterator pos( upperBound( vec[0], 1UL, 3UL ) );
 
       checkSize    ( vec, 3UL );
       checkCapacity( vec, 1UL );

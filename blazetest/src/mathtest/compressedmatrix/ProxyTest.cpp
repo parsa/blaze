@@ -4141,6 +4141,52 @@ void ProxyTest::testFind()
       }
    }
 
+   {
+      test_ = "Row-major find( MatrixAccessProxy, size_t )";
+
+      SVM mat( 2UL, 2UL, 4UL );
+      mat(0,0) = SV( 5UL, 3UL );
+      mat(0,0)[1] = 2;
+      mat(0,0)[2] = 3;
+      mat(0,0)[4] = 5;
+
+      SV::Iterator pos( find( mat(0,0), 2UL ) );
+
+      checkRows    ( mat, 2UL );
+      checkColumns ( mat, 2UL );
+      checkCapacity( mat, 4UL );
+      checkNonZeros( mat, 1UL );
+
+      checkSize    ( mat(0,0), 5UL );
+      checkCapacity( mat(0,0), 3UL );
+      checkNonZeros( mat(0,0), 3UL );
+      checkSize    ( mat(0,1), 0UL );
+      checkSize    ( mat(1,0), 0UL );
+      checkSize    ( mat(1,1), 0UL );
+
+      if( pos == mat(0,0).end() ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Element could not be found\n"
+             << " Details:\n"
+             << "   Required index = 2\n"
+             << "   Current vector:\n" << mat(0,0) << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      else if( pos->index() != 2 || pos->value() != 3 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Wrong element found\n"
+             << " Details:\n"
+             << "   Required index = 2\n"
+             << "   Found index    = " << pos->index() << "\n"
+             << "   Expected value = 3\n"
+             << "   Value at index = " << pos->value() << "\n"
+             << "   Current vector:\n" << mat(0,0) << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
 
    //=====================================================================================
    // Row-major matrix tests with matrix elements
@@ -4156,6 +4202,56 @@ void ProxyTest::testFind()
       mat(0,0)(1,4) = 5;
 
       SM::Iterator pos( mat(0,0).find( 1UL, 2 ) );
+
+      checkRows    ( mat, 2UL );
+      checkColumns ( mat, 2UL );
+      checkCapacity( mat, 4UL );
+      checkNonZeros( mat, 1UL );
+
+      checkRows    ( mat(0,0), 2UL );
+      checkColumns ( mat(0,0), 5UL );
+      checkCapacity( mat(0,0), 3UL );
+      checkNonZeros( mat(0,0), 3UL );
+      checkRows    ( mat(0,1), 0UL );
+      checkColumns ( mat(0,1), 0UL );
+      checkRows    ( mat(1,0), 0UL );
+      checkColumns ( mat(1,0), 0UL );
+      checkRows    ( mat(1,1), 0UL );
+      checkColumns ( mat(1,1), 0UL );
+
+      if( pos == mat(0,0).end( 1UL ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Element could not be found\n"
+             << " Details:\n"
+             << "   Required index = 2\n"
+             << "   Current matrix:\n" << mat(0,0) << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      else if( pos->index() != 2 || pos->value() != 3 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Wrong element found\n"
+             << " Details:\n"
+             << "   Required index = 2\n"
+             << "   Found index    = " << pos->index() << "\n"
+             << "   Expected value = 3\n"
+             << "   Value at index = " << pos->value() << "\n"
+             << "   Current matrix:\n" << mat(0,0) << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major find( MatrixAccessProxy, size_t, size_t )";
+
+      SMM mat( 2UL, 2UL, 4UL );
+      mat(0,0) = SM( 2UL, 5UL, 3UL );
+      mat(0,0)(1,1) = 2;
+      mat(0,0)(1,2) = 3;
+      mat(0,0)(1,4) = 5;
+
+      SM::Iterator pos( find( mat(0,0), 1UL, 2UL ) );
 
       checkRows    ( mat, 2UL );
       checkColumns ( mat, 2UL );
@@ -4247,6 +4343,52 @@ void ProxyTest::testFind()
       }
    }
 
+   {
+      test_ = "Column-major find( MatrixAccessProxy, size_t )";
+
+      OSVM mat( 2UL, 2UL, 4UL );
+      mat(0,0) = SV( 5UL, 3UL );
+      mat(0,0)[1] = 2;
+      mat(0,0)[2] = 3;
+      mat(0,0)[4] = 5;
+
+      SV::Iterator pos( find( mat(0,0), 2UL ) );
+
+      checkRows    ( mat, 2UL );
+      checkColumns ( mat, 2UL );
+      checkCapacity( mat, 4UL );
+      checkNonZeros( mat, 1UL );
+
+      checkSize    ( mat(0,0), 5UL );
+      checkCapacity( mat(0,0), 3UL );
+      checkNonZeros( mat(0,0), 3UL );
+      checkSize    ( mat(0,1), 0UL );
+      checkSize    ( mat(1,0), 0UL );
+      checkSize    ( mat(1,1), 0UL );
+
+      if( pos == mat(0,0).end() ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Element could not be found\n"
+             << " Details:\n"
+             << "   Required index = 2\n"
+             << "   Current vector:\n" << mat(0,0) << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      else if( pos->index() != 2 || pos->value() != 3 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Wrong element found\n"
+             << " Details:\n"
+             << "   Required index = 2\n"
+             << "   Found index    = " << pos->index() << "\n"
+             << "   Expected value = 3\n"
+             << "   Value at index = " << pos->value() << "\n"
+             << "   Current vector:\n" << mat(0,0) << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
 
    //=====================================================================================
    // Column-major matrix tests with matrix elements
@@ -4262,6 +4404,56 @@ void ProxyTest::testFind()
       mat(0,0)(1,4) = 5;
 
       SM::Iterator pos( mat(0,0).find( 1UL, 2 ) );
+
+      checkRows    ( mat, 2UL );
+      checkColumns ( mat, 2UL );
+      checkCapacity( mat, 4UL );
+      checkNonZeros( mat, 1UL );
+
+      checkRows    ( mat(0,0), 2UL );
+      checkColumns ( mat(0,0), 5UL );
+      checkCapacity( mat(0,0), 3UL );
+      checkNonZeros( mat(0,0), 3UL );
+      checkRows    ( mat(0,1), 0UL );
+      checkColumns ( mat(0,1), 0UL );
+      checkRows    ( mat(1,0), 0UL );
+      checkColumns ( mat(1,0), 0UL );
+      checkRows    ( mat(1,1), 0UL );
+      checkColumns ( mat(1,1), 0UL );
+
+      if( pos == mat(0,0).end( 1UL ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Element could not be found\n"
+             << " Details:\n"
+             << "   Required index = 2\n"
+             << "   Current matrix:\n" << mat(0,0) << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      else if( pos->index() != 2 || pos->value() != 3 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Wrong element found\n"
+             << " Details:\n"
+             << "   Required index = 2\n"
+             << "   Found index    = " << pos->index() << "\n"
+             << "   Expected value = 3\n"
+             << "   Value at index = " << pos->value() << "\n"
+             << "   Current matrix:\n" << mat(0,0) << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Column-major find( MatrixAccessProxy, size_t, size_t )";
+
+      OSMM mat( 2UL, 2UL, 4UL );
+      mat(0,0) = SM( 2UL, 5UL, 3UL );
+      mat(0,0)(1,1) = 2;
+      mat(0,0)(1,2) = 3;
+      mat(0,0)(1,4) = 5;
+
+      SM::Iterator pos( find( mat(0,0), 1UL, 2UL ) );
 
       checkRows    ( mat, 2UL );
       checkColumns ( mat, 2UL );
@@ -4366,6 +4558,52 @@ void ProxyTest::testLowerBound()
       }
    }
 
+   {
+      test_ = "Row-major lowerBound( MatrixAccessProxy, size_t )";
+
+      SVM mat( 2UL, 2UL, 4UL );
+      mat(0,0) = SV( 5UL, 3UL );
+      mat(0,0)[1] = 2;
+      mat(0,0)[2] = 3;
+      mat(0,0)[4] = 5;
+
+      SV::Iterator pos( lowerBound( mat(0,0), 3UL ) );
+
+      checkRows    ( mat, 2UL );
+      checkColumns ( mat, 2UL );
+      checkCapacity( mat, 4UL );
+      checkNonZeros( mat, 1UL );
+
+      checkSize    ( mat(0,0), 5UL );
+      checkCapacity( mat(0,0), 3UL );
+      checkNonZeros( mat(0,0), 3UL );
+      checkSize    ( mat(0,1), 0UL );
+      checkSize    ( mat(1,0), 0UL );
+      checkSize    ( mat(1,1), 0UL );
+
+      if( pos == mat(0,0).end() ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Element could not be found\n"
+             << " Details:\n"
+             << "   Required index = 3\n"
+             << "   Current vector:\n" << mat(0,0) << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      else if( pos->index() != 4 || pos->value() != 5 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Wrong element found\n"
+             << " Details:\n"
+             << "   Required index = 4\n"
+             << "   Found index    = " << pos->index() << "\n"
+             << "   Expected value = 5\n"
+             << "   Value at index = " << pos->value() << "\n"
+             << "   Current vector:\n" << mat(0,0) << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
 
    //=====================================================================================
    // Row-major matrix tests with matrix elements
@@ -4381,6 +4619,56 @@ void ProxyTest::testLowerBound()
       mat(0,0)(1,4) = 5;
 
       SM::Iterator pos( mat(0,0).lowerBound( 1UL, 3 ) );
+
+      checkRows    ( mat, 2UL );
+      checkColumns ( mat, 2UL );
+      checkCapacity( mat, 4UL );
+      checkNonZeros( mat, 1UL );
+
+      checkRows    ( mat(0,0), 2UL );
+      checkColumns ( mat(0,0), 5UL );
+      checkCapacity( mat(0,0), 3UL );
+      checkNonZeros( mat(0,0), 3UL );
+      checkRows    ( mat(0,1), 0UL );
+      checkColumns ( mat(0,1), 0UL );
+      checkRows    ( mat(1,0), 0UL );
+      checkColumns ( mat(1,0), 0UL );
+      checkRows    ( mat(1,1), 0UL );
+      checkColumns ( mat(1,1), 0UL );
+
+      if( pos == mat(0,0).end( 1UL ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Element could not be found\n"
+             << " Details:\n"
+             << "   Required index = 3\n"
+             << "   Current matrix:\n" << mat(0,0) << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      else if( pos->index() != 4 || pos->value() != 5 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Wrong element found\n"
+             << " Details:\n"
+             << "   Required index = 4\n"
+             << "   Found index    = " << pos->index() << "\n"
+             << "   Expected value = 5\n"
+             << "   Value at index = " << pos->value() << "\n"
+             << "   Current matrix:\n" << mat(0,0) << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major lowerBound( MatrixAccessProxy, size_t, size_t )";
+
+      SMM mat( 2UL, 2UL, 4UL );
+      mat(0,0) = SM( 2UL, 5UL, 3UL );
+      mat(0,0)(1,1) = 2;
+      mat(0,0)(1,2) = 3;
+      mat(0,0)(1,4) = 5;
+
+      SM::Iterator pos( lowerBound( mat(0,0), 1UL, 3UL ) );
 
       checkRows    ( mat, 2UL );
       checkColumns ( mat, 2UL );
@@ -4472,6 +4760,52 @@ void ProxyTest::testLowerBound()
       }
    }
 
+   {
+      test_ = "Column-major lowerBound( MatrixAccessProxy, size_t )";
+
+      SVM mat( 2UL, 2UL, 4UL );
+      mat(0,0) = SV( 5UL, 3UL );
+      mat(0,0)[1] = 2;
+      mat(0,0)[2] = 3;
+      mat(0,0)[4] = 5;
+
+      SV::Iterator pos( lowerBound( mat(0,0), 3UL ) );
+
+      checkRows    ( mat, 2UL );
+      checkColumns ( mat, 2UL );
+      checkCapacity( mat, 4UL );
+      checkNonZeros( mat, 1UL );
+
+      checkSize    ( mat(0,0), 5UL );
+      checkCapacity( mat(0,0), 3UL );
+      checkNonZeros( mat(0,0), 3UL );
+      checkSize    ( mat(0,1), 0UL );
+      checkSize    ( mat(1,0), 0UL );
+      checkSize    ( mat(1,1), 0UL );
+
+      if( pos == mat(0,0).end() ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Element could not be found\n"
+             << " Details:\n"
+             << "   Required index = 3\n"
+             << "   Current vector:\n" << mat(0,0) << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      else if( pos->index() != 4 || pos->value() != 5 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Wrong element found\n"
+             << " Details:\n"
+             << "   Required index = 4\n"
+             << "   Found index    = " << pos->index() << "\n"
+             << "   Expected value = 5\n"
+             << "   Value at index = " << pos->value() << "\n"
+             << "   Current vector:\n" << mat(0,0) << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
 
    //=====================================================================================
    // Column-major matrix tests with matrix elements
@@ -4487,6 +4821,56 @@ void ProxyTest::testLowerBound()
       mat(0,0)(1,4) = 5;
 
       SM::Iterator pos( mat(0,0).lowerBound( 1UL, 3 ) );
+
+      checkRows    ( mat, 2UL );
+      checkColumns ( mat, 2UL );
+      checkCapacity( mat, 4UL );
+      checkNonZeros( mat, 1UL );
+
+      checkRows    ( mat(0,0), 2UL );
+      checkColumns ( mat(0,0), 5UL );
+      checkCapacity( mat(0,0), 3UL );
+      checkNonZeros( mat(0,0), 3UL );
+      checkRows    ( mat(0,1), 0UL );
+      checkColumns ( mat(0,1), 0UL );
+      checkRows    ( mat(1,0), 0UL );
+      checkColumns ( mat(1,0), 0UL );
+      checkRows    ( mat(1,1), 0UL );
+      checkColumns ( mat(1,1), 0UL );
+
+      if( pos == mat(0,0).end( 1UL ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Element could not be found\n"
+             << " Details:\n"
+             << "   Required index = 3\n"
+             << "   Current matrix:\n" << mat(0,0) << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      else if( pos->index() != 4 || pos->value() != 5 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Wrong element found\n"
+             << " Details:\n"
+             << "   Required index = 4\n"
+             << "   Found index    = " << pos->index() << "\n"
+             << "   Expected value = 5\n"
+             << "   Value at index = " << pos->value() << "\n"
+             << "   Current matrix:\n" << mat(0,0) << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Column-major lowerBound( MatrixAccessProxy, size_t, size_t )";
+
+      SMM mat( 2UL, 2UL, 4UL );
+      mat(0,0) = SM( 2UL, 5UL, 3UL );
+      mat(0,0)(1,1) = 2;
+      mat(0,0)(1,2) = 3;
+      mat(0,0)(1,4) = 5;
+
+      SM::Iterator pos( lowerBound( mat(0,0), 1UL, 3UL ) );
 
       checkRows    ( mat, 2UL );
       checkColumns ( mat, 2UL );
@@ -4591,6 +4975,52 @@ void ProxyTest::testUpperBound()
       }
    }
 
+   {
+      test_ = "Row-major upperBound( MatrixAccessProxy, size_t )";
+
+      SVM mat( 2UL, 2UL, 4UL );
+      mat(0,0) = SV( 5UL, 3UL );
+      mat(0,0)[1] = 2;
+      mat(0,0)[2] = 3;
+      mat(0,0)[4] = 5;
+
+      SV::Iterator pos( upperBound( mat(0,0), 3UL ) );
+
+      checkRows    ( mat, 2UL );
+      checkColumns ( mat, 2UL );
+      checkCapacity( mat, 4UL );
+      checkNonZeros( mat, 1UL );
+
+      checkSize    ( mat(0,0), 5UL );
+      checkCapacity( mat(0,0), 3UL );
+      checkNonZeros( mat(0,0), 3UL );
+      checkSize    ( mat(0,1), 0UL );
+      checkSize    ( mat(1,0), 0UL );
+      checkSize    ( mat(1,1), 0UL );
+
+      if( pos == mat(0,0).end() ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Element could not be found\n"
+             << " Details:\n"
+             << "   Required index = 3\n"
+             << "   Current vector:\n" << mat(0,0) << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      else if( pos->index() != 4 || pos->value() != 5 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Wrong element found\n"
+             << " Details:\n"
+             << "   Required index = 4\n"
+             << "   Found index    = " << pos->index() << "\n"
+             << "   Expected value = 5\n"
+             << "   Value at index = " << pos->value() << "\n"
+             << "   Current vector:\n" << mat(0,0) << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
 
    //=====================================================================================
    // Row-major matrix tests with matrix elements
@@ -4606,6 +5036,56 @@ void ProxyTest::testUpperBound()
       mat(0,0)(1,4) = 5;
 
       SM::Iterator pos( mat(0,0).upperBound( 1UL, 3 ) );
+
+      checkRows    ( mat, 2UL );
+      checkColumns ( mat, 2UL );
+      checkCapacity( mat, 4UL );
+      checkNonZeros( mat, 1UL );
+
+      checkRows    ( mat(0,0), 2UL );
+      checkColumns ( mat(0,0), 5UL );
+      checkCapacity( mat(0,0), 3UL );
+      checkNonZeros( mat(0,0), 3UL );
+      checkRows    ( mat(0,1), 0UL );
+      checkColumns ( mat(0,1), 0UL );
+      checkRows    ( mat(1,0), 0UL );
+      checkColumns ( mat(1,0), 0UL );
+      checkRows    ( mat(1,1), 0UL );
+      checkColumns ( mat(1,1), 0UL );
+
+      if( pos == mat(0,0).end( 1UL ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Element could not be found\n"
+             << " Details:\n"
+             << "   Required index = 3\n"
+             << "   Current matrix:\n" << mat(0,0) << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      else if( pos->index() != 4 || pos->value() != 5 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Wrong element found\n"
+             << " Details:\n"
+             << "   Required index = 4\n"
+             << "   Found index    = " << pos->index() << "\n"
+             << "   Expected value = 5\n"
+             << "   Value at index = " << pos->value() << "\n"
+             << "   Current matrix:\n" << mat(0,0) << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major upperBound( MatrixAccessProxy, size_t, size_t )";
+
+      SMM mat( 2UL, 2UL, 4UL );
+      mat(0,0) = SM( 2UL, 5UL, 3UL );
+      mat(0,0)(1,1) = 2;
+      mat(0,0)(1,2) = 3;
+      mat(0,0)(1,4) = 5;
+
+      SM::Iterator pos( upperBound( mat(0,0), 1UL, 3UL ) );
 
       checkRows    ( mat, 2UL );
       checkColumns ( mat, 2UL );
@@ -4697,6 +5177,52 @@ void ProxyTest::testUpperBound()
       }
    }
 
+   {
+      test_ = "Column-major MatrixAccessProxy::upperBound( size_t )";
+
+      SVM mat( 2UL, 2UL, 4UL );
+      mat(0,0) = SV( 5UL, 3UL );
+      mat(0,0)[1] = 2;
+      mat(0,0)[2] = 3;
+      mat(0,0)[4] = 5;
+
+      SV::Iterator pos( upperBound( mat(0,0), 3UL ) );
+
+      checkRows    ( mat, 2UL );
+      checkColumns ( mat, 2UL );
+      checkCapacity( mat, 4UL );
+      checkNonZeros( mat, 1UL );
+
+      checkSize    ( mat(0,0), 5UL );
+      checkCapacity( mat(0,0), 3UL );
+      checkNonZeros( mat(0,0), 3UL );
+      checkSize    ( mat(0,1), 0UL );
+      checkSize    ( mat(1,0), 0UL );
+      checkSize    ( mat(1,1), 0UL );
+
+      if( pos == mat(0,0).end() ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Element could not be found\n"
+             << " Details:\n"
+             << "   Required index = 3\n"
+             << "   Current vector:\n" << mat(0,0) << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      else if( pos->index() != 4 || pos->value() != 5 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Wrong element found\n"
+             << " Details:\n"
+             << "   Required index = 4\n"
+             << "   Found index    = " << pos->index() << "\n"
+             << "   Expected value = 5\n"
+             << "   Value at index = " << pos->value() << "\n"
+             << "   Current vector:\n" << mat(0,0) << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
 
    //=====================================================================================
    // Column-major matrix tests with matrix elements
@@ -4712,6 +5238,56 @@ void ProxyTest::testUpperBound()
       mat(0,0)(1,4) = 5;
 
       SM::Iterator pos( mat(0,0).upperBound( 1UL, 3 ) );
+
+      checkRows    ( mat, 2UL );
+      checkColumns ( mat, 2UL );
+      checkCapacity( mat, 4UL );
+      checkNonZeros( mat, 1UL );
+
+      checkRows    ( mat(0,0), 2UL );
+      checkColumns ( mat(0,0), 5UL );
+      checkCapacity( mat(0,0), 3UL );
+      checkNonZeros( mat(0,0), 3UL );
+      checkRows    ( mat(0,1), 0UL );
+      checkColumns ( mat(0,1), 0UL );
+      checkRows    ( mat(1,0), 0UL );
+      checkColumns ( mat(1,0), 0UL );
+      checkRows    ( mat(1,1), 0UL );
+      checkColumns ( mat(1,1), 0UL );
+
+      if( pos == mat(0,0).end( 1UL ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Element could not be found\n"
+             << " Details:\n"
+             << "   Required index = 3\n"
+             << "   Current matrix:\n" << mat(0,0) << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      else if( pos->index() != 4 || pos->value() != 5 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Wrong element found\n"
+             << " Details:\n"
+             << "   Required index = 4\n"
+             << "   Found index    = " << pos->index() << "\n"
+             << "   Expected value = 5\n"
+             << "   Value at index = " << pos->value() << "\n"
+             << "   Current matrix:\n" << mat(0,0) << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Column-major upperBound( MatrixAccessProxy, size_t, size_t )";
+
+      SMM mat( 2UL, 2UL, 4UL );
+      mat(0,0) = SM( 2UL, 5UL, 3UL );
+      mat(0,0)(1,1) = 2;
+      mat(0,0)(1,2) = 3;
+      mat(0,0)(1,4) = 5;
+
+      SM::Iterator pos( upperBound( mat(0,0), 1UL, 3UL ) );
 
       checkRows    ( mat, 2UL );
       checkColumns ( mat, 2UL );
