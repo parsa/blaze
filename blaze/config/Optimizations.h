@@ -34,6 +34,39 @@
 
 
 //*************************************************************************************************
+/*!\brief Configuration of the padding of dynamic vectors and matrices.
+// \ingroup config
+//
+// This configuration switch enables/disables the padding of DynamicVector and DynamicMatrix.
+// Padding is used by the Blaze library in order to achieve maximum performance for both dense
+// vector and matrix operations. Due to padding, the proper alignment of data elements can be
+// guaranteed and the need for remainder loops is minimized. In case padding is enabled, it is
+// enabled only for the DynamicVector and DynamicMatrix class templates. Other dense vector and
+// matrix classes are not affected. If padding is disabled, both DynamicVector and DynamicMatrix
+// don't apply padding.
+//
+// Possible settings for padding:
+//  - Disabled: \b 0
+//  - Enabled : \b 1
+//
+// \warning Note that disabling padding can considerably reduce the performance of operations
+// with DynamicVector and DynamicMatrix.
+//
+// \note It is possible to (de-)activate padding via command line or by defining this symbol
+// manually before including any Blaze header file:
+
+   \code
+   #define BLAZE_USE_PADDING 1
+   #include <blaze/Blaze.h>
+   \endcode
+*/
+#ifndef BLAZE_USE_PADDING
+#define BLAZE_USE_PADDING 1
+#endif
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Configuration of the streaming behavior.
 // \ingroup config
 //
