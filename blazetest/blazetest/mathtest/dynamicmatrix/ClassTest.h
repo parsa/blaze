@@ -253,7 +253,7 @@ void ClassTest::testAlignment( const std::string& type )
    {
       const RowMajorMatrixType mat( 7UL, 5UL );
 
-      const size_t rows( mat.rows() );
+      const size_t rows( blaze::usePadding ? mat.rows() : 1UL );
 
       for( size_t i=0UL; i<rows; ++i )
       {
@@ -275,7 +275,7 @@ void ClassTest::testAlignment( const std::string& type )
    {
       const ColumnMajorMatrixType mat( 7UL, 5UL );
 
-      const size_t columns( mat.columns() );
+      const size_t columns( blaze::usePadding ? mat.columns() : 1UL );
 
       for( size_t j=0UL; j<columns; ++j )
       {
@@ -305,7 +305,7 @@ void ClassTest::testAlignment( const std::string& type )
 
       for( size_t i=0UL; i<mats.size(); ++i )
       {
-         const size_t rows( mats[i].rows() );
+         const size_t rows( blaze::usePadding ? mats[i].rows() : 1UL );
 
          for( size_t j=0UL; j<rows; ++j )
          {
@@ -331,7 +331,7 @@ void ClassTest::testAlignment( const std::string& type )
 
       for( size_t i=0UL; i<mats.size(); ++i )
       {
-         const size_t columns( mats[i].columns() );
+         const size_t columns( blaze::usePadding ? mats[i].columns() : 1UL );
 
          for( size_t j=0UL; j<columns; ++j )
          {
@@ -362,7 +362,7 @@ void ClassTest::testAlignment( const std::string& type )
 
       for( size_t i=0UL; i<mats.size(); ++i )
       {
-         const size_t rows( mats[i].rows() );
+         const size_t rows( blaze::usePadding ? mats[i].rows() : 1UL );
 
          for( size_t j=0UL; j<rows; ++j )
          {
@@ -388,7 +388,7 @@ void ClassTest::testAlignment( const std::string& type )
 
       for( size_t i=0UL; i<mats.size(); ++i )
       {
-         const size_t columns( mats[i].columns() );
+         const size_t columns( blaze::usePadding ? mats[i].columns() : 1UL );
 
          for( size_t j=0UL; j<columns; ++j )
          {
