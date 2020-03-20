@@ -1798,7 +1798,7 @@
 // subscript operator is performing this lookup automatically, it is also possible to use the
 // \c find(), \c lowerBound(), and \c upperBound() member functions for a manual lookup.
 //
-// \n \subsection vector_operations_find .find()
+// \n \subsection vector_operations_find .find() / find()
 //
 // The \c find() function can be used to check whether a specific element is contained in a sparse
 // vector. It specifically searches for the element at the given index. In case the element is
@@ -1822,7 +1822,14 @@
    }
    \endcode
 
-// \n \subsection vector_operations_lowerbound .lowerBound()
+// Alternatively, the free function \c find() can be used to find a specific element in a sparse
+// vector:
+
+   \code
+   find( a, 7 );  // Searching the element at index 7; same effect as the member function
+   \endcode
+
+// \n \subsection vector_operations_lowerbound .lowerBound() / lowerBound()
 //
 // The \c lowerBound() function returns an iterator to the first element with an index not less
 // then the given index. In combination with the \c upperBound() function this function can be
@@ -1837,16 +1844,22 @@
    // ... Initialization of the vector
 
    // Searching the lower bound of index 17.
-   CompressedVector<int>::Iterator pos1( A.lowerBound( 17 ) );
+   CompressedVector<int>::Iterator pos1( a.lowerBound( 17 ) );
 
    // Searching the upper bound of index 28
-   CompressedVector<int>::Iterator pos2( A.upperBound( 28 ) );
+   CompressedVector<int>::Iterator pos2( a.upperBound( 28 ) );
 
    // Erasing all elements in the specified range
    a.erase( pos1, pos2 );
    \endcode
 
-// \n \subsection vector_operations_upperbound .upperBound()
+// Alternatively, the free function \c lowerBound() can be used to:
+
+   \code
+   lowerBound( a, 17 );  // Searching the lower bound of index 17; same effect as the member function
+   \endcode
+
+// \n \subsection vector_operations_upperbound .upperBound() / upperBound()
 //
 // The \c upperBound() function returns an iterator to the first element with an index greater then
 // the given index. In combination with the \c lowerBound() function this function can be used to
@@ -1861,13 +1874,19 @@
    // ... Initialization of the vector
 
    // Searching the lower bound of index 17.
-   CompressedVector<int>::Iterator pos1( A.lowerBound( 17 ) );
+   CompressedVector<int>::Iterator pos1( a.lowerBound( 17 ) );
 
    // Searching the upper bound of index 28
-   CompressedVector<int>::Iterator pos2( A.upperBound( 28 ) );
+   CompressedVector<int>::Iterator pos2( a.upperBound( 28 ) );
 
    // Erasing all elements in the specified range
    a.erase( pos1, pos2 );
+   \endcode
+
+// Alternatively, the free function \c upperBound() can be used to:
+
+   \code
+   upperBound( a, 28 );  // Searching the upper bound of index 28; same effect as the member function
    \endcode
 
 // \n \section vector_operations_non_modifying_operations Non-Modifying Operations
@@ -4678,7 +4697,7 @@
 // function call operator is performing this lookup automatically, it is also possible to use the
 // \c find(), \c lowerBound(), and \c upperBound() member functions for a manual lookup.
 //
-// \n \subsection matrix_operations_find .find()
+// \n \subsection matrix_operations_find .find() / find()
 //
 // The \c find() function can be used to check whether a specific element is contained in the
 // sparse matrix. It specifically searches for the element at the specified position. In case
@@ -4702,7 +4721,14 @@
    }
    \endcode
 
-// \n \subsection matrix_operations_lowerbound .lowerBound()
+// Alternatively, the free function \c find() can be used to find a specific element in a sparse
+// matrix:
+
+   \code
+   find( A, 7, 17 );  // Searching the element at position (7,17); same effect as the member function
+   \endcode
+
+// \n \subsection matrix_operations_lowerbound .lowerBound() / lowerBound()
 //
 // In case of a row-major matrix, this function returns a row iterator to the first element with
 // an index not less then the given column index. In case of a column-major matrix, the function
@@ -4728,7 +4754,13 @@
    A.erase( 7, pos1, pos2 );
    \endcode
 
-// \n \subsection matrix_operations_upperbound .upperBound()
+// Alternatively, the free function \c lowerBound() can be used to:
+
+   \code
+   lowerBound( A, 7, 17 );  // Searching the lower bound of (7,17); same effect as the member function
+   \endcode
+
+// \n \subsection matrix_operations_upperbound .upperBound() / upperBound()
 //
 // In case of a row-major matrix, this function returns a row iterator to the first element with
 // an index greater then the given column index. In case of a column-major matrix, the function
@@ -4752,6 +4784,12 @@
 
    // Erasing all elements in the specified range
    A.erase( 9, pos1, pos2 );
+   \endcode
+
+// Alternatively, the free function \c upperBound() can be used to:
+
+   \code
+   upperBound( A, 28, 9 );  // Searching the upper bound of (28,9); same effect as the member function
    \endcode
 
 // \n \section matrix_operations_non_modifying_operations Non-Modifying Operations
