@@ -1101,6 +1101,18 @@ void reset( const SparseMatrixProxy<PT,MT>& proxy, size_t i );
 
 template< typename PT, typename MT >
 void clear( const SparseMatrixProxy<PT,MT>& proxy );
+
+template< typename PT, typename MT >
+typename SparseMatrixProxy<PT,MT>::Iterator
+   find( const SparseMatrixProxy<PT,MT>& proxy, size_t i, size_t j );
+
+template< typename PT, typename MT >
+typename SparseMatrixProxy<PT,MT>::Iterator
+   lowerBound( const SparseMatrixProxy<PT,MT>& proxy, size_t i, size_t j );
+
+template< typename PT, typename MT >
+typename SparseMatrixProxy<PT,MT>::Iterator
+   upperBound( const SparseMatrixProxy<PT,MT>& proxy, size_t i, size_t j );
 //@}
 //*************************************************************************************************
 
@@ -1439,6 +1451,63 @@ template< typename PT    // Type of the proxy
 BLAZE_ALWAYS_INLINE void clear( const SparseMatrixProxy<PT,MT>& proxy )
 {
    proxy.clear();
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Searches for a specific matrix element.
+// \ingroup math
+//
+// \param proxy The given access proxy.
+// \param i The row index of the search element. The index has to be in the range \f$[0..M-1]\f$.
+// \param j The column index of the search element. The index has to be in the range \f$[0..N-1]\f$.
+// \return Iterator to the element in case the index is found, end() iterator otherwise.
+*/
+template< typename PT    // Type of the proxy
+        , typename MT >  // Type of the sparse matrix
+BLAZE_ALWAYS_INLINE typename SparseMatrixProxy<PT,MT>::Iterator
+   find( const SparseMatrixProxy<PT,MT>& proxy, size_t i, size_t j )
+{
+   return proxy.find( i, j );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns an iterator to the first index not less than the given index.
+// \ingroup math
+//
+// \param proxy The given access proxy.
+// \param i The row index of the search element. The index has to be in the range \f$[0..M-1]\f$.
+// \param j The column index of the search element. The index has to be in the range \f$[0..N-1]\f$.
+// \return Iterator to the first index not less than the given index, end() iterator otherwise.
+*/
+template< typename PT    // Type of the proxy
+        , typename MT >  // Type of the sparse matrix
+BLAZE_ALWAYS_INLINE typename SparseMatrixProxy<PT,MT>::Iterator
+   lowerBound( const SparseMatrixProxy<PT,MT>& proxy, size_t i, size_t j )
+{
+   return proxy.lowerBound( i, j );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns an iterator to the first index greater than the given index.
+// \ingroup math
+//
+// \param proxy The given access proxy.
+// \param i The row index of the search element. The index has to be in the range \f$[0..M-1]\f$.
+// \param j The column index of the search element. The index has to be in the range \f$[0..N-1]\f$.
+// \return Iterator to the first index greater than the given index, end() iterator otherwise.
+*/
+template< typename PT    // Type of the proxy
+        , typename MT >  // Type of the sparse matrix
+BLAZE_ALWAYS_INLINE typename SparseMatrixProxy<PT,MT>::Iterator
+   upperBound( const SparseMatrixProxy<PT,MT>& proxy, size_t i, size_t j )
+{
+   return proxy.upperBound( i, j );
 }
 //*************************************************************************************************
 

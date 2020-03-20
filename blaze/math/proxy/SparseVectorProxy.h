@@ -146,11 +146,8 @@ class SparseVectorProxy
    /*!\name Lookup functions */
    //@{
    inline Iterator find      ( size_t index ) const;
-   inline Iterator find      ( size_t i, size_t j ) const;
    inline Iterator lowerBound( size_t index ) const;
-   inline Iterator lowerBound( size_t i, size_t j ) const;
    inline Iterator upperBound( size_t index ) const;
-   inline Iterator upperBound( size_t i, size_t j ) const;
    //@}
    //**********************************************************************************************
 
@@ -810,6 +807,18 @@ void reset( const SparseVectorProxy<PT,VT>& proxy );
 
 template< typename PT, typename VT >
 void clear( const SparseVectorProxy<PT,VT>& proxy );
+
+template< typename PT, typename VT >
+typename SparseVectorProxy<PT,VT>::Iterator
+   find( const SparseVectorProxy<PT,VT>& proxy );
+
+template< typename PT, typename VT >
+typename SparseVectorProxy<PT,VT>::Iterator
+   lowerBound( const SparseVectorProxy<PT,VT>& proxy );
+
+template< typename PT, typename VT >
+typename SparseVectorProxy<PT,VT>::Iterator
+   upperBound( const SparseVectorProxy<PT,VT>& proxy );
 //@}
 //*************************************************************************************************
 
@@ -985,6 +994,60 @@ template< typename PT    // Type of the proxy
 BLAZE_ALWAYS_INLINE void clear( const SparseVectorProxy<PT,VT>& proxy )
 {
    proxy.clear();
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Searches for a specific sparse vector element.
+// \ingroup math
+//
+// \param proxy The given access proxy.
+// \param index The index of the search element. The index has to be in the range \f$[0..N-1]\f$.
+// \return Iterator to the element in case the index is found, end() iterator otherwise.
+*/
+template< typename PT    // Type of the proxy
+        , typename VT >  // Type of the sparse vector
+BLAZE_ALWAYS_INLINE typename SparseVectorProxy<PT,VT>::Iterator
+   find( const SparseVectorProxy<PT,VT>& proxy, size_t index )
+{
+   return proxy.find( index );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns an iterator to the first index not less then the given index.
+// \ingroup math
+//
+// \param proxy The given access proxy.
+// \param index The index of the search element. The index has to be in the range \f$[0..N-1]\f$.
+// \return Iterator to the first index not less then the given index, end() iterator otherwise.
+*/
+template< typename PT    // Type of the proxy
+        , typename VT >  // Type of the sparse vector
+BLAZE_ALWAYS_INLINE typename SparseVectorProxy<PT,VT>::Iterator
+   lowerBound( const SparseVectorProxy<PT,VT>& proxy, size_t index )
+{
+   return proxy.lowerBound( index );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns an iterator to the first index greater then the given index.
+// \ingroup math
+//
+// \param proxy The given access proxy.
+// \param index The index of the search element. The index has to be in the range \f$[0..N-1]\f$.
+// \return Iterator to the first index greater then the given index, end() iterator otherwise.
+*/
+template< typename PT    // Type of the proxy
+        , typename VT >  // Type of the sparse vector
+BLAZE_ALWAYS_INLINE typename SparseVectorProxy<PT,VT>::Iterator
+   upperBound( const SparseVectorProxy<PT,VT>& proxy, size_t index )
+{
+   return proxy.upperBound( index );
 }
 //*************************************************************************************************
 
