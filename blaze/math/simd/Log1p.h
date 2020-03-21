@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
 //  \file blaze/math/simd/Log1p.h
-//  \brief Header file for the SIMD natural logarithm 1p functionality
+//  \brief Header file for the SIMD log1p functionality
 //
 //  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
@@ -47,7 +47,6 @@
 
 namespace blaze {
 
-
 //=================================================================================================
 //
 //  32-BIT FLOATING POINT SIMD TYPES
@@ -55,18 +54,18 @@ namespace blaze {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Computes the natural logarithm of x + 1 for a vector of single precision floating point values.
+/*!\brief Computes the natural logarithm of x+1 for a vector of single precision floating point values.
 // \ingroup simd
 //
 // \param a The vector of single precision floating point values.
 // \return The resulting vector.
 //
-// This operation is only available via the SVML or SLEEF for SSE, AVX, MIC, and AVX-512.
+// This operation is only available via the SLEEF for SSE, AVX, MIC, and AVX-512.
 */
 template< typename T >  // Type of the operand
 BLAZE_ALWAYS_INLINE const SIMDfloat log1p( const SIMDf32<T>& a ) noexcept
 #if BLAZE_SLEEF_MODE
-#  if ( BLAZE_AVX512F_MODE  || BLAZE_MIC_MODE )
+#  if ( BLAZE_AVX512F_MODE || BLAZE_MIC_MODE )
 {
    return Sleef_log1pf16_u10avx512f( (~a).eval().value );
 }
@@ -74,11 +73,11 @@ BLAZE_ALWAYS_INLINE const SIMDfloat log1p( const SIMDf32<T>& a ) noexcept
 {
    return Sleef_log1pf8_u10avx2( (~a).eval().value );
 }
-#  elif BLAZE_AVX2_MODE
+#  elif BLAZE_AVX_MODE
 {
-   return Sleef_log1pf8_u10avx2( (~a).eval().value );
+   return Sleef_log1pf8_u10avx( (~a).eval().value );
 }
-#  elif ( BLAZE_SSE_MODE || BLAZE_SSE2_MODE || BLAZE_SSE4_MODE )
+#  elif BLAZE_SSE_MODE
 {
    return Sleef_log1pf4_u10( (~a).eval().value );
 }
@@ -98,18 +97,18 @@ BLAZE_ALWAYS_INLINE const SIMDfloat log1p( const SIMDf32<T>& a ) noexcept
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Computes the natural logarithm of x + 1 for a vector of double precision floating point values.
+/*!\brief Computes the natural logarithm of x+1 for a vector of double precision floating point values.
 // \ingroup simd
 //
 // \param a The vector of double precision floating point values.
 // \return The resulting vector.
 //
-// This operation is only available via the SVML or SLEEF for SSE, AVX, MIC, and AVX-512.
+// This operation is only available via the SLEEF for SSE, AVX, MIC, and AVX-512.
 */
 template< typename T >  // Type of the operand
 BLAZE_ALWAYS_INLINE const SIMDdouble log1p( const SIMDf64<T>& a ) noexcept
 #if BLAZE_SLEEF_MODE
-#  if ( BLAZE_AVX512F_MODE  || BLAZE_MIC_MODE )
+#  if ( BLAZE_AVX512F_MODE || BLAZE_MIC_MODE )
 {
    return Sleef_log1pd8_u10avx512f( (~a).eval().value );
 }
@@ -121,7 +120,7 @@ BLAZE_ALWAYS_INLINE const SIMDdouble log1p( const SIMDf64<T>& a ) noexcept
 {
    return Sleef_log1pd4_u10avx( (~a).eval().value );
 }
-#  elif ( BLAZE_SSE_MODE || BLAZE_SSE2_MODE || BLAZE_SSE4_MODE )
+#  elif BLAZE_SSE_MODE
 {
    return Sleef_log1pd2_u10( (~a).eval().value );
 }

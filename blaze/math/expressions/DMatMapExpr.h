@@ -1855,37 +1855,6 @@ inline decltype(auto) exp10( const DenseMatrix<MT,SO>& dm )
 
 
 //*************************************************************************************************
-/*!\brief Computes the lower gamma function for each single element of the dense matrix \a dm.
-// \ingroup dense_matrix
-//
-// \param dm The input matrix; all elements must be in the range \f$[0..\infty)\f$.
-// \return The lower gamma function of each single element of \a dm.
-//
-// The \a lgamma() function computes natural lower gamma function for each element of the input matrix \a dm.
-// The function returns an expression representing this operation.\n
-// The following example demonstrates the use of the \a lgamma() function:
-
-   \code
-   blaze::DynamicMatrix<double> A, B;
-   // ... Resizing and initialization
-   B = lgamma( A );
-   \endcode
-
-// \note All elements are expected to be in the range \f$[0..\infty)\f$. No runtime checks are
-// performed to assert this precondition!
-*/
-template< typename MT  // Type of the dense matrix
-        , bool SO >    // Storage order
-inline decltype(auto) lgamma( const DenseMatrix<MT,SO>& dm )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   return map( ~dm, LGamma() );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
 /*!\brief Computes the natural logarithm for each single element of the dense matrix \a dm.
 // \ingroup dense_matrix
 //
@@ -1979,16 +1948,16 @@ inline decltype(auto) log10( const DenseMatrix<MT,SO>& dm )
 
 
 //*************************************************************************************************
-/*!\brief Computes the natural logarithm of x + 1 for each single element of the dense matrix \a dm.
+/*!\brief Computes the natural logarithm of x+1 for each single element of the dense matrix \a dm.
 // \ingroup dense_matrix
 //
 // \param dm The input matrix; all elements must be in the range \f$[0..\infty)\f$.
-// \return The natural logarithm of x = 1 for each single element of \a dm.
+// \return The natural logarithm of x+1 for each single element of \a dm.
 //
-// The \a log1p() function computes natural logarithm of x + 1 for each element of the input matrix \a dm.
-// The function returns an expression representing this operation.\n
-// This may be preferred over the natural log for higher precision computing the natural logarithm
-// of a quantity very close to 1.
+// The \a log1p() function computes the natural logarithm of x+1 for each element of the input
+// matrix \a dm. This may be preferred over the natural logarithm for higher precision computing
+// the natural logarithm of a quantity very close to 1. The function returns an expression
+// representing this operation.\n
 // The following example demonstrates the use of the \a log1p() function:
 
    \code
@@ -2007,6 +1976,39 @@ inline decltype(auto) log1p( const DenseMatrix<MT,SO>& dm )
    BLAZE_FUNCTION_TRACE;
 
    return map( ~dm, Log1p() );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Computes the natural logarithm of the absolute value of the gamma function for each
+//        single element of the dense matrix \a dm.
+// \ingroup dense_matrix
+//
+// \param dm The input matrix; all elements must be in the range \f$[0..\infty)\f$.
+// \return The natural logarithm of the absolute value of the gamma function of each single element of \a dm.
+//
+// The \a lgamma() function computes the natural logarithm of the absolute value of the gamma
+// function for each element of the input matrix \a dm. The function returns an expression
+// representing this operation.\n
+// The following example demonstrates the use of the \a lgamma() function:
+
+   \code
+   blaze::DynamicMatrix<double> A, B;
+   // ... Resizing and initialization
+   B = lgamma( A );
+   \endcode
+
+// \note All elements are expected to be in the range \f$[0..\infty)\f$. No runtime checks are
+// performed to assert this precondition!
+*/
+template< typename MT  // Type of the dense matrix
+        , bool SO >    // Storage order
+inline decltype(auto) lgamma( const DenseMatrix<MT,SO>& dm )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return map( ~dm, LGamma() );
 }
 //*************************************************************************************************
 

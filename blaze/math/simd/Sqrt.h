@@ -64,7 +64,7 @@ namespace blaze {
 */
 template< typename T >  // Type of the operand
 BLAZE_ALWAYS_INLINE const SIMDfloat sqrt( const SIMDf32<T>& a ) noexcept
-#if ( BLAZE_AVX512F_MODE  || BLAZE_MIC_MODE )
+#if ( BLAZE_AVX512F_MODE || BLAZE_MIC_MODE )
 {
    return _mm512_sqrt_ps( (~a).eval().value );
 }
@@ -72,7 +72,7 @@ BLAZE_ALWAYS_INLINE const SIMDfloat sqrt( const SIMDf32<T>& a ) noexcept
 {
    return _mm256_sqrt_ps( (~a).eval().value );
 }
-#elif BLAZE_SSE2_MODE
+#elif BLAZE_SSE_MODE
 {
    return _mm_sqrt_ps( (~a).eval().value );
 }
@@ -101,7 +101,7 @@ BLAZE_ALWAYS_INLINE const SIMDfloat sqrt( const SIMDf32<T>& a ) noexcept
 */
 template< typename T >  // Type of the operand
 BLAZE_ALWAYS_INLINE const SIMDdouble sqrt( const SIMDf64<T>& a ) noexcept
-#if ( BLAZE_AVX512F_MODE  || BLAZE_MIC_MODE )
+#if ( BLAZE_AVX512F_MODE || BLAZE_MIC_MODE )
 {
    return _mm512_sqrt_pd( (~a).eval().value );
 }

@@ -65,7 +65,7 @@ namespace blaze {
 template< typename T >  // Type of the operand
 BLAZE_ALWAYS_INLINE const SIMDfloat acosh( const SIMDf32<T>& a ) noexcept
 #if BLAZE_SVML_MODE
-#  if ( BLAZE_AVX512F_MODE  || BLAZE_MIC_MODE )
+#  if ( BLAZE_AVX512F_MODE || BLAZE_MIC_MODE )
 {
    return _mm512_acosh_ps( (~a).eval().value );
 }
@@ -79,7 +79,7 @@ BLAZE_ALWAYS_INLINE const SIMDfloat acosh( const SIMDf32<T>& a ) noexcept
 }
 #  endif
 #elif BLAZE_SLEEF_MODE
-#  if ( BLAZE_AVX512F_MODE  || BLAZE_MIC_MODE )
+#  if ( BLAZE_AVX512F_MODE || BLAZE_MIC_MODE )
 {
    return Sleef_acoshf16_u10avx512f( (~a).eval().value );
 }
@@ -122,7 +122,7 @@ BLAZE_ALWAYS_INLINE const SIMDfloat acosh( const SIMDf32<T>& a ) noexcept
 template< typename T >  // Type of the operand
 BLAZE_ALWAYS_INLINE const SIMDdouble acosh( const SIMDf64<T>& a ) noexcept
 #if BLAZE_SVML_MODE
-#  if ( BLAZE_AVX512F_MODE  || BLAZE_MIC_MODE )
+#  if ( BLAZE_AVX512F_MODE || BLAZE_MIC_MODE )
 {
    return _mm512_acosh_pd( (~a).eval().value );
 }
@@ -136,7 +136,7 @@ BLAZE_ALWAYS_INLINE const SIMDdouble acosh( const SIMDf64<T>& a ) noexcept
 }
 #  endif
 #elif BLAZE_SLEEF_MODE
-#  if ( BLAZE_AVX512F_MODE  || BLAZE_MIC_MODE )
+#  if ( BLAZE_AVX512F_MODE || BLAZE_MIC_MODE )
 {
    return Sleef_acoshd8_u10( (~a).eval().value );
 }

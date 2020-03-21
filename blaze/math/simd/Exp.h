@@ -65,7 +65,7 @@ namespace blaze {
 template< typename T >  // Type of the operand
 BLAZE_ALWAYS_INLINE const SIMDfloat exp( const SIMDf32<T>& a ) noexcept
 #if BLAZE_SVML_MODE
-#  if ( BLAZE_AVX512F_MODE  || BLAZE_MIC_MODE )
+#  if ( BLAZE_AVX512F_MODE || BLAZE_MIC_MODE )
 {
    return _mm512_exp_ps( (~a).eval().value );
 }
@@ -79,7 +79,7 @@ BLAZE_ALWAYS_INLINE const SIMDfloat exp( const SIMDf32<T>& a ) noexcept
 }
 #  endif
 #elif BLAZE_SLEEF_MODE
-#  if ( BLAZE_AVX512F_MODE  || BLAZE_MIC_MODE )
+#  if ( BLAZE_AVX512F_MODE || BLAZE_MIC_MODE )
 {
    return Sleef_expf16_u10avx512f( (~a).eval().value );
 }
@@ -91,7 +91,7 @@ BLAZE_ALWAYS_INLINE const SIMDfloat exp( const SIMDf32<T>& a ) noexcept
 {
    return Sleef_expf8_u10avx( (~a).eval().value );
 }
-#  elif ( BLAZE_SSE_MODE || BLAZE_SSE2_MODE || BLAZE_SSE4_MODE )
+#  elif BLAZE_SSE_MODE
 {
    return Sleef_expf4_u10( (~a).eval().value );
 }
@@ -122,7 +122,7 @@ BLAZE_ALWAYS_INLINE const SIMDfloat exp( const SIMDf32<T>& a ) noexcept
 template< typename T >  // Type of the operand
 BLAZE_ALWAYS_INLINE const SIMDdouble exp( const SIMDf64<T>& a ) noexcept
 #if BLAZE_SVML_MODE
-#  if ( BLAZE_AVX512F_MODE  || BLAZE_MIC_MODE )
+#  if ( BLAZE_AVX512F_MODE || BLAZE_MIC_MODE )
 {
    return _mm512_exp_pd( (~a).eval().value );
 }
@@ -136,7 +136,7 @@ BLAZE_ALWAYS_INLINE const SIMDdouble exp( const SIMDf64<T>& a ) noexcept
 }
 #  endif
 #elif BLAZE_SLEEF_MODE
-#  if ( BLAZE_AVX512F_MODE  || BLAZE_MIC_MODE )
+#  if ( BLAZE_AVX512F_MODE || BLAZE_MIC_MODE )
 {
    return Sleef_expd8_u10avx512f( (~a).eval().value );
 }
@@ -148,7 +148,7 @@ BLAZE_ALWAYS_INLINE const SIMDdouble exp( const SIMDf64<T>& a ) noexcept
 {
    return Sleef_expd4_u10avx( (~a).eval().value );
 }
-#  elif ( BLAZE_SSE_MODE || BLAZE_SSE2_MODE || BLAZE_SSE4_MODE )
+#  elif BLAZE_SSE_MODE
 {
    return Sleef_expd2_u10( (~a).eval().value );
 }

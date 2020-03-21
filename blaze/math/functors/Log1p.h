@@ -63,16 +63,16 @@ namespace blaze {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Generic wrapper for the log() function.
+/*!\brief Generic wrapper for the log1p() function.
 // \ingroup functors
 */
 struct Log1p
 {
    //**********************************************************************************************
-   /*!\brief Returns the result of the log() function for the given object/value.
+   /*!\brief Returns the result of the log1p() function for the given object/value.
    //
    // \param a The given object/value.
-   // \return The result of the log() function for the given object/value.
+   // \return The result of the log1p() function for the given object/value.
    */
    template< typename T >
    BLAZE_ALWAYS_INLINE BLAZE_DEVICE_CALLABLE decltype(auto) operator()( const T& a ) const
@@ -99,10 +99,10 @@ struct Log1p
    //**********************************************************************************************
 
    //**********************************************************************************************
-   /*!\brief Returns the result of the log() function for the given SIMD vector.
+   /*!\brief Returns the result of the log1p() function for the given SIMD vector.
    //
    // \param a The given SIMD vector.
-   // \return The result of the log() function for the given SIMD vector.
+   // \return The result of the log1p() function for the given SIMD vector.
    */
    template< typename T >
    BLAZE_ALWAYS_INLINE decltype(auto) load( const T& a ) const

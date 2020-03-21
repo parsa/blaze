@@ -92,11 +92,11 @@ BLAZE_ALWAYS_INLINE const SIMDfloat pow( const SIMDf32<T>& a, const SIMDf32<T>& 
 {
    return Sleef_powf8_u10avx( (~a).eval().value, (~b).eval().value );
 }
-#  elif ( BLAZE_SSE_MODE || BLAZE_SSE2_MODE || BLAZE_SSE4_MODE )
+#  elif BLAZE_SSE_MODE
 {
    return Sleef_powf4_u10( (~a).eval().value, (~b).eval().value );
 }
-#endif
+#  endif
 #else
 = delete;
 #endif
@@ -150,11 +150,11 @@ BLAZE_ALWAYS_INLINE const SIMDdouble pow( const SIMDf64<T>& a, const SIMDf64<T>&
 {
    return Sleef_powd4_u10avx( (~a).eval().value, (~b).eval().value );
 }
-#  elif ( BLAZE_SSE_MODE || BLAZE_SSE2_MODE || BLAZE_SSE4_MODE )
+#  elif BLAZE_SSE_MODE
 {
    return Sleef_powd2_u10( (~a).eval().value, (~b).eval().value );
 }
-#endif
+#  endif
 #else
 = delete;
 #endif

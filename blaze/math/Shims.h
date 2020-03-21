@@ -82,7 +82,9 @@
 #include <blaze/math/shims/IsReal.h>
 #include <blaze/math/shims/IsZero.h>
 #include <blaze/math/shims/Less.h>
+#include <blaze/math/shims/LGamma.h>
 #include <blaze/math/shims/Log.h>
+#include <blaze/math/shims/Log1p.h>
 #include <blaze/math/shims/Log2.h>
 #include <blaze/math/shims/Log10.h>
 #include <blaze/math/shims/NextMultiple.h>

@@ -55,18 +55,18 @@ namespace blaze {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Computes the lgamma for a vector of single precision floating point values.
+/*!\brief Computes the lgamma function for a vector of single precision floating point values.
 // \ingroup simd
 //
 // \param a The vector of single precision floating point values.
 // \return The resulting vector.
 //
-// This operation is only available via the SVML or SLEEF for SSE, AVX, MIC, and AVX-512.
+// This operation is only available via the SLEEF for SSE, AVX, MIC, and AVX-512.
 */
 template< typename T >  // Type of the operand
 BLAZE_ALWAYS_INLINE const SIMDfloat lgamma( const SIMDf32<T>& a ) noexcept
 #if BLAZE_SLEEF_MODE
-#  if ( BLAZE_AVX512F_MODE  || BLAZE_MIC_MODE )
+#  if ( BLAZE_AVX512F_MODE || BLAZE_MIC_MODE )
 {
    return Sleef_lgammaf16_u10avx512f( (~a).eval().value );
 }
@@ -106,18 +106,18 @@ BLAZE_ALWAYS_INLINE const SIMDfloat lgamma( const SIMDf32<T>& a ) noexcept
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Computes the natural lgamma for a vector of double precision floating point values.
+/*!\brief Computes the lgamma function for a vector of double precision floating point values.
 // \ingroup simd
 //
 // \param a The vector of double precision floating point values.
 // \return The resulting vector.
 //
-// This operation is only available via the SVML or SLEEF for SSE, AVX, MIC, and AVX-512.
+// This operation is only available via the SLEEF for SSE, AVX, MIC, and AVX-512.
 */
 template< typename T >  // Type of the operand
 BLAZE_ALWAYS_INLINE const SIMDdouble lgamma( const SIMDf64<T>& a ) noexcept
 #if BLAZE_SLEEF_MODE
-#  if ( BLAZE_AVX512F_MODE  || BLAZE_MIC_MODE )
+#  if ( BLAZE_AVX512F_MODE || BLAZE_MIC_MODE )
 {
    return Sleef_lgammad8_u10avx512f( (~a).eval().value );
 }

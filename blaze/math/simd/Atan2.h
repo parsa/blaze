@@ -100,7 +100,7 @@ BLAZE_ALWAYS_INLINE const SIMDfloat atan2( const SIMDf32<T>& a, const SIMDf32<T>
    return Sleef_atan2f4_u10sse2( (~a).eval().value, (~b).eval().value );
 #    endif
 }
-#endif
+#  endif
 #else
 = delete;
 #endif
@@ -162,7 +162,7 @@ BLAZE_ALWAYS_INLINE const SIMDdouble atan2( const SIMDf64<T>& a, const SIMDf64<T
    return Sleef_atan2d2_u10sse2( (~a).eval().value, (~b).eval().value );
 #    endif
 }
-#endif
+#  endif
 #else
 = delete;
 #endif

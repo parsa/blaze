@@ -47,7 +47,6 @@
 
 namespace blaze {
 
-
 //=================================================================================================
 //
 //  32-BIT FLOATING POINT SIMD TYPES
@@ -66,7 +65,7 @@ namespace blaze {
 template< typename T >  // Type of the operand
 BLAZE_ALWAYS_INLINE const SIMDfloat log2( const SIMDf32<T>& a ) noexcept
 #if BLAZE_SVML_MODE
-#  if ( BLAZE_AVX512F_MODE  || BLAZE_MIC_MODE )
+#  if ( BLAZE_AVX512F_MODE || BLAZE_MIC_MODE )
 {
    return _mm512_log2_ps( (~a).eval().value );
 }
@@ -80,7 +79,7 @@ BLAZE_ALWAYS_INLINE const SIMDfloat log2( const SIMDf32<T>& a ) noexcept
 }
 #  endif
 #elif BLAZE_SLEEF_MODE
-#  if ( BLAZE_AVX512F_MODE  || BLAZE_MIC_MODE )
+#  if ( BLAZE_AVX512F_MODE || BLAZE_MIC_MODE )
 {
    return Sleef_log2f16_u10avx512f( (~a).eval().value );
 }
@@ -92,7 +91,7 @@ BLAZE_ALWAYS_INLINE const SIMDfloat log2( const SIMDf32<T>& a ) noexcept
 {
    return Sleef_log2f8_u10avx( (~a).eval().value );
 }
-#  elif ( BLAZE_SSE2_MODE || BLAZE_SSE4_MODE || BLAZE_SSE_MODE )
+#  elif BLAZE_SSE_MODE
 {
    return Sleef_log2f4_u10( (~a).eval().value );
 }
@@ -101,6 +100,8 @@ BLAZE_ALWAYS_INLINE const SIMDfloat log2( const SIMDf32<T>& a ) noexcept
 = delete;
 #endif
 //*************************************************************************************************
+
+
 
 
 //=================================================================================================
@@ -121,7 +122,7 @@ BLAZE_ALWAYS_INLINE const SIMDfloat log2( const SIMDf32<T>& a ) noexcept
 template< typename T >  // Type of the operand
 BLAZE_ALWAYS_INLINE const SIMDdouble log2( const SIMDf64<T>& a ) noexcept
 #if BLAZE_SVML_MODE
-#  if ( BLAZE_AVX512F_MODE  || BLAZE_MIC_MODE )
+#  if ( BLAZE_AVX512F_MODE || BLAZE_MIC_MODE )
 {
    return _mm512_log2_pd( (~a).eval().value );
 }
@@ -135,7 +136,7 @@ BLAZE_ALWAYS_INLINE const SIMDdouble log2( const SIMDf64<T>& a ) noexcept
 }
 #  endif
 #elif BLAZE_SLEEF_MODE
-#  if ( BLAZE_AVX512F_MODE  || BLAZE_MIC_MODE )
+#  if ( BLAZE_AVX512F_MODE || BLAZE_MIC_MODE )
 {
    return Sleef_log2d8_u10avx512f( (~a).eval().value );
 }
@@ -147,7 +148,7 @@ BLAZE_ALWAYS_INLINE const SIMDdouble log2( const SIMDf64<T>& a ) noexcept
 {
    return Sleef_log2d4_u10avx( (~a).eval().value );
 }
-#  elif ( BLAZE_SSE2_MODE || BLAZE_SSE_MODE || BLAZE_SSE4_MODE )
+#  elif BLAZE_SSE_MODE
 {
    return Sleef_log2d2_u10( (~a).eval().value );
 }

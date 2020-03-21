@@ -95,12 +95,10 @@ BLAZE_ALWAYS_INLINE const SIMDfloat hypot( const SIMDf32<T>& a, const SIMDf32<T>
 {
    return Sleef_hypotf8_u05avx( (~a).eval().value, (~b).eval().value );
 }
-#  elif ( BLAZE_SSE_MODE || BLAZE_SSE2_MODE || BLAZE_SSE4_MODE )
+#  elif BLAZE_SSE_MODE
 {
    return Sleef_hypotf4_u05( (~a).eval().value, (~b).eval().value );
 }
-#  else
-   = delete;
 #  endif
 #else
 = delete;
@@ -158,11 +156,11 @@ BLAZE_ALWAYS_INLINE const SIMDdouble hypot( const SIMDf64<T>& a, const SIMDf64<T
 {
    return Sleef_hypotd4_u05avx( (~a).eval().value, (~b).eval().value );
 }
-#  elif ( BLAZE_SSE_MODE || BLAZE_SSE2_MODE || BLAZE_SSE4_MODE )
+#  elif BLAZE_SSE_MODE
 {
    return Sleef_hypotd2_u05( (~a).eval().value, (~b).eval().value );
 }
-#endif
+#  endif
 #else
 = delete;
 #endif

@@ -63,10 +63,9 @@ namespace blaze {
 template< typename T >  // Type of the operand
 using HasSIMDLGammaHelper =
    BoolConstant< ( IsFloat_v<T> || IsDouble_v<T> ) &&
-                 (bool( BLAZE_SLEEF_MODE )) &&
+                 bool( BLAZE_SLEEF_MODE ) &&
                  ( bool( BLAZE_SSE_MODE     ) ||
                    bool( BLAZE_AVX_MODE     ) ||
-                   bool( BLAZE_AVX2_MODE    ) ||
                    bool( BLAZE_MIC_MODE     ) ||
                    bool( BLAZE_AVX512F_MODE ) ) >;
 /*! \endcond */
@@ -74,16 +73,16 @@ using HasSIMDLGammaHelper =
 
 
 //*************************************************************************************************
-/*!\brief Availability of a SIMD natural logarithm operation for the given data type.
+/*!\brief Availability of a SIMD lgamma operation for the given data type.
 // \ingroup math_type_traits
 //
 // Depending on the available instruction set (SSE, SSE2, SSE3, SSE4, AVX, AVX2, MIC, ...) and
-// the used compiler, this type trait provides the information whether a SIMD natural logarithm
-// operation exists for the given data type \a T (ignoring the cv-qualifiers). In case the SIMD
-// operation is available, the \a value member constant is set to \a true, the nested type
-// definition \a Type is \a TrueType, and the class derives from \a TrueType. Otherwise \a value
-// is set to \a false, \a Type is \a FalseType, and the class derives from \a FalseType. The
-// following example assumes that the Intel SVML is available:
+// the used compiler, this type trait provides the information whether a SIMD lgamma operation
+// exists for the given data type \a T (ignoring the cv-qualifiers). In case the SIMD operation
+// is available, the \a value member constant is set to \a true, the nested type definition
+// \a Type is \a TrueType, and the class derives from \a TrueType. Otherwise \a value is set
+// to \a false, \a Type is \a FalseType, and the class derives from \a FalseType. The following
+// example assumes that the Intel SVML is available:
 
    \code
    blaze::HasSIMDLGamma< float >::value         // Evaluates to 1

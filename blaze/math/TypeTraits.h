@@ -107,7 +107,9 @@
 #include <blaze/math/typetraits/HasSIMDHypot.h>
 #include <blaze/math/typetraits/HasSIMDInvCbrt.h>
 #include <blaze/math/typetraits/HasSIMDInvSqrt.h>
+#include <blaze/math/typetraits/HasSIMDLGamma.h>
 #include <blaze/math/typetraits/HasSIMDLog.h>
+#include <blaze/math/typetraits/HasSIMDLog1p.h>
 #include <blaze/math/typetraits/HasSIMDLog2.h>
 #include <blaze/math/typetraits/HasSIMDLog10.h>
 #include <blaze/math/typetraits/HasSIMDMax.h>

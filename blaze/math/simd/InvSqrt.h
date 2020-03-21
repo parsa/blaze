@@ -60,7 +60,7 @@ namespace blaze {
 // \param a The vector of single precision floating point values.
 // \return The resulting vector.
 //
-// This operation is only available via the SVML or SLEEF for SSE, AVX, MIC, and AVX-512.
+// This operation is only available via the SVML for SSE, AVX, MIC, and AVX-512.
 */
 template< typename T >  // Type of the operand
 BLAZE_ALWAYS_INLINE const SIMDfloat invsqrt( const SIMDf32<T>& a ) noexcept
@@ -97,7 +97,7 @@ BLAZE_ALWAYS_INLINE const SIMDfloat invsqrt( const SIMDf32<T>& a ) noexcept
 // \param a The vector of double precision floating point values.
 // \return The resulting vector.
 //
-// This operation is only available via the SVML or SLEEF for SSE, AVX, MIC, and AVX-512.
+// This operation is only available via the SVML for SSE, AVX, MIC, and AVX-512.
 */
 template< typename T >  // Type of the operand
 BLAZE_ALWAYS_INLINE const SIMDdouble invsqrt( const SIMDf64<T>& a ) noexcept

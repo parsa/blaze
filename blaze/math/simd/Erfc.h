@@ -66,21 +66,21 @@ namespace blaze {
 template< typename T >  // Type of the operand
 BLAZE_ALWAYS_INLINE const SIMDfloat erfc( const SIMDf32<T>& a ) noexcept
 #if BLAZE_SVML_MODE
-#  if ( BLAZE_AVX512F_MODE  || BLAZE_MIC_MODE )
+#  if ( BLAZE_AVX512F_MODE || BLAZE_MIC_MODE )
 {
-   return _mm512_erfc_pd( (~a).eval().value );
+   return _mm512_erfc_ps( (~a).eval().value );
 }
 #  elif BLAZE_AVX_MODE
 {
-   return _mm256_erfc_pd( (~a).eval().value );
+   return _mm256_erfc_ps( (~a).eval().value );
 }
 #  elif BLAZE_SSE_MODE
 {
-   return _mm_erfc_pd( (~a).eval().value );
+   return _mm_erfc_ps( (~a).eval().value );
 }
 #  endif
 #elif BLAZE_SLEEF_MODE
-#  if ( BLAZE_AVX512F_MODE  || BLAZE_MIC_MODE )
+#  if ( BLAZE_AVX512F_MODE || BLAZE_MIC_MODE )
 {
    return Sleef_erfcf16_u15avx512f( (~a).eval().value );
 }
@@ -92,7 +92,7 @@ BLAZE_ALWAYS_INLINE const SIMDfloat erfc( const SIMDf32<T>& a ) noexcept
 {
    return Sleef_erfcf8_u15avx( (~a).eval().value );
 }
-#  elif ( BLAZE_SSE_MODE || BLAZE_SSE2_MODE || BLAZE_SSE4_MODE )
+#  elif BLAZE_SSE_MODE
 {
    return Sleef_erfcf4_u15( (~a).eval().value );
 }
@@ -124,7 +124,7 @@ BLAZE_ALWAYS_INLINE const SIMDfloat erfc( const SIMDf32<T>& a ) noexcept
 template< typename T >  // Type of the operand
 BLAZE_ALWAYS_INLINE const SIMDdouble erfc( const SIMDf64<T>& a ) noexcept
 #if BLAZE_SVML_MODE
-#  if ( BLAZE_AVX512F_MODE  || BLAZE_MIC_MODE )
+#  if ( BLAZE_AVX512F_MODE || BLAZE_MIC_MODE )
 {
    return _mm512_erfc_pd( (~a).eval().value );
 }
@@ -138,7 +138,7 @@ BLAZE_ALWAYS_INLINE const SIMDdouble erfc( const SIMDf64<T>& a ) noexcept
 }
 #  endif
 #elif BLAZE_SLEEF_MODE
-#  if ( BLAZE_AVX512F_MODE  || BLAZE_MIC_MODE )
+#  if ( BLAZE_AVX512F_MODE || BLAZE_MIC_MODE )
 {
    return Sleef_erfcd8_u15avx512f( (~a).eval().value );
 }
@@ -150,7 +150,7 @@ BLAZE_ALWAYS_INLINE const SIMDdouble erfc( const SIMDf64<T>& a ) noexcept
 {
    return Sleef_erfcd4_u15avx( (~a).eval().value );
 }
-#  elif ( BLAZE_SSE_MODE || BLAZE_SSE2_MODE || BLAZE_SSE4_MODE )
+#  elif BLAZE_SSE_MODE
 {
    return Sleef_erfcd2_u15( (~a).eval().value );
 }

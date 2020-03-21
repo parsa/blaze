@@ -1857,68 +1857,6 @@ inline decltype(auto) exp10( const DenseVector<VT,TF>& dv )
 
 
 //*************************************************************************************************
-/*!\brief Computes the natural logarithm + 1 for each single element of the dense vector \a dv.
-// \ingroup dense_vector
-//
-// \param dv The input vector; all elements must be in the range \f$[-1..\infty)\f$.
-// \return The natural logarithm of each single element of \a dv.
-//
-// The \a log1p() function computes log1p for each element of the input vector \a dv.
-// The function returns an expression representing this operation.
-// This may be preferred over the natural log for higher precision computing the natural logarithm\
-// of a quantity very close to 1.\n
-// The following example demonstrates the use of the \a log1p() function:
-
-   \code
-   blaze::DynamicVector<double> a, b;
-   // ... Resizing and initialization
-   b = log1p( a );
-   \endcode
-
-// \note All elements are expected to be in the range \f$[-1..\infty)\f$. No runtime checks are
-// performed to assert this precondition!
-*/
-template< typename VT  // Type of the dense vector
-        , bool TF >    // Transpose flag
-inline decltype(auto) log1p( const DenseVector<VT,TF>& dv )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   return map( ~dv, Log1p() );
-}
-//*************************************************************************************************
-
-//*************************************************************************************************
-/*!\brief Computes the lower gamma function for each single element of the dense vector \a dm.
-// \ingroup dense_vector
-//
-// \param dm The input vector; all elements must be in the range \f$[0..\infty)\f$.
-// \return The natural logarithm of each single element of \a dm.
-//
-// The \a lgamma() function computes natural lower gamma function for each element of the input vector \a dm.
-// The function returns an expression representing this operation.\n
-// The following example demonstrates the use of the \a lgamma() function:
-
-   \code
-   blaze::DynamicMatrix<double> A, B;
-   // ... Resizing and initialization
-   B = lgamma( A );
-   \endcode
-
-// \note All elements are expected to be in the range \f$[0..\infty)\f$. No runtime checks are
-// performed to assert this precondition!
-*/
-template< typename VT  // Type of the dense vector
-        , bool SO >    // Storage order
-inline decltype(auto) lgamma( const DenseVector<VT,SO>& dm )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   return map( ~dm, LGamma() );
-}
-//*************************************************************************************************
-
-//*************************************************************************************************
 /*!\brief Computes the natural logarithm for each single element of the dense vector \a dv.
 // \ingroup dense_vector
 //
@@ -2007,6 +1945,72 @@ inline decltype(auto) log10( const DenseVector<VT,TF>& dv )
    BLAZE_FUNCTION_TRACE;
 
    return map( ~dv, Log10() );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Computes the natural logarithm of x+1 for each single element of the dense vector \a dv.
+// \ingroup dense_vector
+//
+// \param dv The input vector; all elements must be in the range \f$[-1..\infty)\f$.
+// \return The natural logarithm of x+1 of each single element of \a dv.
+//
+// The \a log1p() function computes the natural logarithm of x+1 for each element of the input
+// vector \a dv. This may be preferred over the natural logarithm for higher precision computing
+// the natural logarithm of a quantity very close to 1. The function returns an expression
+// representing this operation.\n
+// The following example demonstrates the use of the \a log1p() function:
+
+   \code
+   blaze::DynamicVector<double> a, b;
+   // ... Resizing and initialization
+   b = log1p( a );
+   \endcode
+
+// \note All elements are expected to be in the range \f$[-1..\infty)\f$. No runtime checks are
+// performed to assert this precondition!
+*/
+template< typename VT  // Type of the dense vector
+        , bool TF >    // Transpose flag
+inline decltype(auto) log1p( const DenseVector<VT,TF>& dv )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return map( ~dv, Log1p() );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Computes the natural logarithm of the absolute value of the gamma function for each
+//        single element of the dense vector \a dv.
+// \ingroup dense_vector
+//
+// \param dv The input vector; all elements must be in the range \f$[0..\infty)\f$.
+// \return The natural logarithm of the absolute value of the gamma function of each single element of \a dv.
+//
+// The \a lgamma() function computes the natural logarithm of the absolute value of the gamma
+// function for each element of the input vector \a dv. The function returns an expression
+// representing this operation.\n
+// The following example demonstrates the use of the \a lgamma() function:
+
+   \code
+   blaze::DynamicVector<double> a, b;
+   // ... Resizing and initialization
+   b = lgamma( a );
+   \endcode
+
+// \note All elements are expected to be in the range \f$[0..\infty)\f$. No runtime checks are
+// performed to assert this precondition!
+*/
+template< typename VT  // Type of the dense vector
+        , bool SO >    // Storage order
+inline decltype(auto) lgamma( const DenseVector<VT,SO>& dv )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return map( ~dv, LGamma() );
 }
 //*************************************************************************************************
 
