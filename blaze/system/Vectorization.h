@@ -102,6 +102,15 @@
 /*! \endcond */
 //*************************************************************************************************
 
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+#if defined(__SSE4_1__ ) || defined(__SSE4_2__) || defined(__SSE2__) || defined(__SSE3__) || defined(__SSSE3__)
+#  ifndef __SSE__
+#    define __SSE__
+#  endif
+#endif
+/*! \endcond */
+//*************************************************************************************************
 
 
 
@@ -350,6 +359,38 @@
 #endif
 //*************************************************************************************************
 
+//*************************************************************************************************
+/*!\brief Compilation switch for the Sleef mode.
+// \ingroup system
+//
+// This compilation switch enables/disables the SVML mode. In case the Sleef
+// (i.e. in case an Intel compiler is used) the Blaze library attempts to vectorize several
+// linear algebra operations by SVML intrinsics. In case the Sleef mode is disabled, the
+// Blaze library chooses default, non-vectorized functionality for the operations.
+*/
+#ifndef BLAZE_SLEEF_MODE
+#  if BLAZE_USE_VECTORIZATION && defined(__SLEEF_H__) && (__SSE2__ || __AVX2__ || __AVX512F__)
+#    define BLAZE_SLEEF_MODE 1
+#  else
+#    define BLAZE_SLEEF_MODE 0
+#  endif
+#endif
+//*************************************************************************************************
+
+//*************************************************************************************************
+/*!\brief Compilation switch for either the Sleef or SVML modes.
+// \ingroup system
+//
+// This compilation switch enables/disables vectorized compilation for functional operations
+// with SVML (i.e. in case an Intel compiler is used) or the Sleef mathematical library,
+// in which case the Blaze library attempts to vectorize several
+// linear algebra operations by SVML intrinsics. In case the Sleef and SVML modes are disabled,
+// the Blaze library chooses default, non-vectorized functionality for these operations.
+*/
+#ifndef BLAZE_FUNCTIONAL_SIMD_MODE
+#  define BLAZE_FUNCTIONAL_SIMD_MODE (BLAZE_SLEEF_MODE || BLAZE_SVML_MODE)
+#endif
+//*************************************************************************************************
 
 
 

@@ -1483,6 +1483,71 @@ inline decltype(auto) exp10( const SparseVector<VT,TF>& sv )
 
 
 //*************************************************************************************************
+/*!\brief Computes the lower gamma of each non-zero element of the sparse vector \a sv.
+// \ingroup sparse_vector
+//
+// \param sv The input vector; all non-zero elements must be in the range \f$[0..\infty)\f$.
+// \return The lower gamma of each non-zero element of \a sv.
+//
+// The \a lgamma() function computes the lgamma for each non-zero element.
+// The function returns an expression representing this operation.\n
+// The following example demonstrates the use of the \a lgamma() function:
+
+   \code
+   blaze::CompressedVector<double> a, b;
+   // ... Resizing and initialization
+   b = lgamma( a );
+   \endcode
+
+// \note All non-zero elements are expected to be in the range \f$[0..\infty)\f$. No runtime
+// checks are performed to assert this precondition!
+*/
+template< typename VT  // Type of the sparse vector
+        , bool TF >    // Transpose flag
+inline decltype(auto) lgamma( const SparseVector<VT,TF>& sv )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return map( ~sv, LGamma() );
+}
+
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Computes the natural logarithm + 1 of each non-zero element of the sparse vector \a sv.
+// \ingroup sparse_vector
+//
+// \param sv The input vector; all non-zero elements must be in the range \f$[-1..\infty)\f$.
+// \return The natural logaritm of each non-zero element of \a sv.
+//
+// The \a log1p() function computes the log1p for each non-zero element
+// vector \a sv.
+// This may be preferred over the natural log for higher precision computing the natural logarithm
+// of a quantity very close to 1.
+// The function returns an expression representing this operation.\n
+// The following example demonstrates the use of the \a log1p() function:
+
+   \code
+   blaze::CompressedVector<double> a, b;
+   // ... Resizing and initialization
+   b = log1p( a );
+   \endcode
+
+// \note All non-zero elements are expected to be in the range \f$[-1..\infty)\f$. No runtime
+// checks are performed to assert this precondition!
+*/
+template< typename VT  // Type of the sparse vector
+        , bool TF >    // Transpose flag
+inline decltype(auto) log1p( const SparseVector<VT,TF>& sv )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return map( ~sv, Log1p() );
+}
+//*************************************************************************************************
+
+//*************************************************************************************************
 /*!\brief Computes the natural logarithm of each non-zero element of the sparse vector \a sv.
 // \ingroup sparse_vector
 //

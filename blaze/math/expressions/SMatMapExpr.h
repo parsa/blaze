@@ -1595,6 +1595,38 @@ inline decltype(auto) exp10( const SparseMatrix<MT,SO>& sm )
 
 
 //*************************************************************************************************
+/*!\brief Computes the natural logarithm of x + 1 for each single element of the sparse matrix \a sm.
+// \ingroup dense_matrix
+//
+// \param sm The input matrix; all elements must be in the range \f$[-1..\infty)\f$.
+// \return The natural logarithm of each single element + 1 of \a sm.
+//
+// The \a log1p() function computes natural logarithm of x + 1 for each element of the input matrix \a sm.
+// The function returns an expression representing this operation.
+// This may be preferred over the natural log for higher precision computing the natural logarithm
+// of a quantity very close to 1.\n
+// The following example demonstrates the use of the \a log1p() function:
+
+   \code
+   blaze::DynamicMatrix<double> A, B;
+   // ... Resizing and initialization
+   B = log1p( A );
+   \endcode
+
+// \note All elements are expected to be in the range \f$[0..\infty)\f$. No runtime checks are
+// performed to assert this precondition!
+*/
+template< typename MT  // Type of the dense matrix
+        , bool SO >    // Storage order
+inline decltype(auto) log1p( const SparseMatrix<MT,SO>& sm )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return map( ~sm, Log1p() );
+}
+//*************************************************************************************************
+
+//*************************************************************************************************
 /*!\brief Computes the natural logarithm for each non-zero element of the sparse matrix \a sm.
 // \ingroup sparse_matrix
 //
@@ -1657,13 +1689,13 @@ inline decltype(auto) log2( const SparseMatrix<MT,SO>& sm )
 
 
 //*************************************************************************************************
-/*!\brief Computes the common logarithm for each non-zero element of the sparse matrix \a sm.
+/*!\brief Computes the base-10 logarithm for each non-zero element of the sparse matrix \a sm.
 // \ingroup sparse_matrix
 //
 // \param sm The input matrix; all non-zero elements must be in the range \f$[0..\infty)\f$.
-// \return The common logarithm of each non-zero element of \a sm.
+// \return The base-10 logarithm of each non-zero element of \a sm.
 //
-// The \a log10() function computes the common logarithm for each non-zero element of the input
+// The \a log10() function computes the base-10 logarithm for each non-zero element of the input
 // matrix \a sm. The function returns an expression representing this operation.\n
 // The following example demonstrates the use of the \a log10() function:
 
@@ -1686,6 +1718,36 @@ inline decltype(auto) log10( const SparseMatrix<MT,SO>& sm )
 }
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Computes the lower gamma for each single element of the sparse matrix \a sm.
+// \ingroup dense_matrix
+//
+// \param sm The input matrix; all elements must be in the range \f$[0..\infty)\f$.
+// \return The lower gamma of each single element of \a sm.
+//
+// The \a lgamma() function computes lower gamma for each element of the input matrix \a sm.
+// The function returns an expression representing this operation.\n
+// The following example demonstrates the use of the \a lgamma() function:
+
+   \code
+   blaze::DynamicMatrix<double> A, B;
+   // ... Resizing and initialization
+   B = lgamma( A );
+   \endcode
+
+// \note All elements are expected to be in the range \f$[0..\infty)\f$. No runtime checks are
+// performed to assert this precondition!
+*/
+template< typename MT  // Type of the dense matrix
+        , bool SO >    // Storage order
+inline decltype(auto) lgamma( const SparseMatrix<MT,SO>& sm )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return map( ~sm, LGamma() );
+}
+//*************************************************************************************************
 
 //*************************************************************************************************
 /*!\brief Computes the sine for each non-zero element of the sparse matrix \a sm.

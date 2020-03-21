@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze/math/simd/InvSqrt.h
-//  \brief Header file for the SIMD inverse square root functionality
+//  \file blaze/math/shims/LGamma.h
+//  \brief Header file for the lgamma shim
 //
 //  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
@@ -32,90 +32,30 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_MATH_SIMD_INVSQRT_H_
-#define _BLAZE_MATH_SIMD_INVSQRT_H_
+#ifndef _BLAZE_MATH_SHIMS_LGAMMA_H_
+#define _BLAZE_MATH_SHIMS_LGAMMA_H_
 
 
 //*************************************************************************************************
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/simd/BasicTypes.h>
-#include <blaze/system/Inline.h>
-#include <blaze/system/Vectorization.h>
+#include <cmath>
 
 
 namespace blaze {
 
 //=================================================================================================
 //
-//  32-BIT FLOATING POINT SIMD TYPES
+//  LGAMMA SHIM
 //
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Computes the inverse square root for a vector of single precision floating point values.
-// \ingroup simd
-//
-// \param a The vector of single precision floating point values.
-// \return The resulting vector.
-//
-// This operation is only available via the SVML or SLEEF for SSE, AVX, MIC, and AVX-512.
+/*!\brief Import of the std::lgamma() function into the Blaze namespace.
+// \ingroup math_shims
 */
-template< typename T >  // Type of the operand
-BLAZE_ALWAYS_INLINE const SIMDfloat invsqrt( const SIMDf32<T>& a ) noexcept
-#if BLAZE_SVML_MODE && ( BLAZE_AVX512F_MODE || BLAZE_MIC_MODE )
-{
-   return _mm512_invsqrt_ps( (~a).eval().value );
-}
-#elif BLAZE_SVML_MODE && BLAZE_AVX_MODE
-{
-   return _mm256_invsqrt_ps( (~a).eval().value );
-}
-#elif BLAZE_SVML_MODE && BLAZE_SSE_MODE
-{
-   return _mm_rsqrt_ps( (~a).eval().value );
-}
-#else
-= delete;
-#endif
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  64-BIT FLOATING POINT SIMD TYPES
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*!\brief Computes the inverse square root for a vector of double precision floating point values.
-// \ingroup simd
-//
-// \param a The vector of double precision floating point values.
-// \return The resulting vector.
-//
-// This operation is only available via the SVML or SLEEF for SSE, AVX, MIC, and AVX-512.
-*/
-template< typename T >  // Type of the operand
-BLAZE_ALWAYS_INLINE const SIMDdouble invsqrt( const SIMDf64<T>& a ) noexcept
-#if BLAZE_SVML_MODE && ( BLAZE_AVX512F_MODE || BLAZE_MIC_MODE )
-{
-   return _mm512_invsqrt_pd( (~a).eval().value );
-}
-#elif BLAZE_SVML_MODE && BLAZE_AVX_MODE
-{
-   return _mm256_invsqrt_pd( (~a).eval().value );
-}
-#elif BLAZE_SVML_MODE && BLAZE_SSE_MODE
-{
-   return _mm_invsqrt_pd( (~a).eval().value );
-}
-#else
-= delete;
-#endif
+using std::lgamma;
 //*************************************************************************************************
 
 } // namespace blaze

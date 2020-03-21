@@ -60,22 +60,46 @@ namespace blaze {
 // \param a The vector of single precision floating point values.
 // \return The resulting vector.
 //
-// This operation is only available via the SVML for SSE, AVX, MIC, and AVX-512.
+// This operation is only available via the SVML or SLEEF for SSE, AVX, MIC, and AVX-512.
 */
 template< typename T >  // Type of the operand
 BLAZE_ALWAYS_INLINE const SIMDfloat cbrt( const SIMDf32<T>& a ) noexcept
-#if BLAZE_SVML_MODE && ( BLAZE_AVX512F_MODE || BLAZE_MIC_MODE )
+#if BLAZE_SVML_MODE
+#  if ( BLAZE_AVX512F_MODE  || BLAZE_MIC_MODE )
 {
    return _mm512_cbrt_ps( (~a).eval().value );
 }
-#elif BLAZE_SVML_MODE && BLAZE_AVX_MODE
+#  elif BLAZE_AVX_MODE
 {
    return _mm256_cbrt_ps( (~a).eval().value );
 }
-#elif BLAZE_SVML_MODE && BLAZE_SSE_MODE
+#  elif BLAZE_SSE_MODE
 {
    return _mm_cbrt_ps( (~a).eval().value );
 }
+#  endif
+#elif BLAZE_SLEEF_MODE
+#  if ( BLAZE_AVX512F_MODE  || BLAZE_MIC_MODE )
+{
+   return Sleef_cbrtf16_u10avx512f( (~a).eval().value );
+}
+#  elif BLAZE_AVX2_MODE
+{
+   return Sleef_cbrtf8_u10avx2( (~a).eval().value );
+}
+#  elif BLAZE_AVX_MODE
+{
+   return Sleef_cbrtf8_u10avx( (~a).eval().value );
+}
+#  elif BLAZE_SSE4_MODE
+{
+   return Sleef_cbrtf4_u10sse4( (~a).eval().value );
+}
+#  elif ( BLAZE_SSE_MODE || BLAZE_SSE2_MODE )
+{
+   return Sleef_cbrtf4_u10( (~a).eval().value );
+}
+#  endif
 #else
 = delete;
 #endif
@@ -97,22 +121,50 @@ BLAZE_ALWAYS_INLINE const SIMDfloat cbrt( const SIMDf32<T>& a ) noexcept
 // \param a The vector of double precision floating point values.
 // \return The resulting vector.
 //
-// This operation is only available via the SVML for SSE, AVX, MIC, and AVX-512.
+// This operation is only available via the SVML or SLEEF for SSE, AVX, MIC, and AVX-512.
 */
 template< typename T >  // Type of the operand
 BLAZE_ALWAYS_INLINE const SIMDdouble cbrt( const SIMDf64<T>& a ) noexcept
-#if BLAZE_SVML_MODE && ( BLAZE_AVX512F_MODE || BLAZE_MIC_MODE )
+#if BLAZE_SVML_MODE
+#  if ( BLAZE_AVX512F_MODE  || BLAZE_MIC_MODE )
 {
    return _mm512_cbrt_pd( (~a).eval().value );
 }
-#elif BLAZE_SVML_MODE && BLAZE_AVX_MODE
+#  elif BLAZE_AVX_MODE
 {
    return _mm256_cbrt_pd( (~a).eval().value );
 }
-#elif BLAZE_SVML_MODE && BLAZE_SSE_MODE
+#  elif BLAZE_SSE_MODE
 {
    return _mm_cbrt_pd( (~a).eval().value );
 }
+#  endif
+#elif BLAZE_SLEEF_MODE
+#  if ( BLAZE_AVX512F_MODE  || BLAZE_MIC_MODE )
+{
+   return Sleef_cbrtd8_u10avx512f( (~a).eval().value );
+}
+#  elif BLAZE_AVX2_MODE
+{
+   return Sleef_cbrtd4_u10avx2( (~a).eval().value );
+}
+#  elif BLAZE_AVX_MODE
+{
+   return Sleef_cbrtd4_u10avx( (~a).eval().value );
+}
+#  elif BLAZE_SSE4_MODE
+{
+   return Sleef_cbrtd2_u10sse4( (~a).eval().value );
+}
+#  elif BLAZE_SSE2_MODE
+{
+   return Sleef_cbrtd2_u10sse2( (~a).eval().value );
+}
+#  elif BLAZE_SSE_MODE
+{
+   return Sleef_cbrtd2_u10( (~a).eval().value );
+}
+#  endif
 #else
 = delete;
 #endif

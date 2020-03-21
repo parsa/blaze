@@ -60,13 +60,9 @@ namespace blaze {
 */
 template< typename T >  // Type of the operand
 using HasSIMDSqrtHelper =
-   BoolConstant< ( IsFloat_v<T> &&
+   BoolConstant< (( IsFloat_v<T>  || IsDouble_v<T>) &&
+                    BLAZE_FUNCTIONAL_SIMD_MODE &&
                    ( bool( BLAZE_SSE_MODE     ) ||
-                     bool( BLAZE_AVX_MODE     ) ||
-                     bool( BLAZE_MIC_MODE     ) ||
-                     bool( BLAZE_AVX512F_MODE ) ) ) ||
-                 ( IsDouble_v<T> &&
-                   ( bool( BLAZE_SSE2_MODE    ) ||
                      bool( BLAZE_AVX_MODE     ) ||
                      bool( BLAZE_MIC_MODE     ) ||
                      bool( BLAZE_AVX512F_MODE ) ) ) >;

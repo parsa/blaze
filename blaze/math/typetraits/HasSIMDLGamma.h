@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze/math/typetraits/HasSIMDLog10.h
-//  \brief Header file for the HasSIMDLog10 type trait
+//  \file blaze/math/typetraits/HasSIMDLGamma.h
+//  \brief Header file for the HasSIMDLGamma type trait
 //
 //  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
@@ -32,8 +32,8 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_MATH_TYPETRAITS_HASSIMDLOG10_H_
-#define _BLAZE_MATH_TYPETRAITS_HASSIMDLOG10_H_
+#ifndef _BLAZE_MATH_TYPETRAITS_HASSIMDLGAMMA_H_
+#define _BLAZE_MATH_TYPETRAITS_HASSIMDLGAMMA_H_
 
 
 //*************************************************************************************************
@@ -57,13 +57,13 @@ namespace blaze {
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Auxiliary alias declaration for the HasSIMDLog10 type trait.
+/*!\brief Auxiliary alias declaration for the HasSIMDLGamma type trait.
 // \ingroup math_type_traits
 */
 template< typename T >  // Type of the operand
-using HasSIMDLog10Helper =
+using HasSIMDLGammaHelper =
    BoolConstant< ( IsFloat_v<T> || IsDouble_v<T> ) &&
-                 bool( BLAZE_FUNCTIONAL_SIMD_MODE ) &&
+                 (bool( BLAZE_SLEEF_MODE )) &&
                  ( bool( BLAZE_SSE_MODE     ) ||
                    bool( BLAZE_AVX_MODE     ) ||
                    bool( BLAZE_AVX2_MODE    ) ||
@@ -74,11 +74,11 @@ using HasSIMDLog10Helper =
 
 
 //*************************************************************************************************
-/*!\brief Availability of a SIMD common logarithm operation for the given data type.
+/*!\brief Availability of a SIMD natural logarithm operation for the given data type.
 // \ingroup math_type_traits
 //
 // Depending on the available instruction set (SSE, SSE2, SSE3, SSE4, AVX, AVX2, MIC, ...) and
-// the used compiler, this type trait provides the information whether a SIMD common logarithm
+// the used compiler, this type trait provides the information whether a SIMD natural logarithm
 // operation exists for the given data type \a T (ignoring the cv-qualifiers). In case the SIMD
 // operation is available, the \a value member constant is set to \a true, the nested type
 // definition \a Type is \a TrueType, and the class derives from \a TrueType. Otherwise \a value
@@ -86,36 +86,36 @@ using HasSIMDLog10Helper =
 // following example assumes that the Intel SVML is available:
 
    \code
-   blaze::HasSIMDLog10< float >::value         // Evaluates to 1
-   blaze::HasSIMDLog10< double >::Type         // Results in TrueType
-   blaze::HasSIMDLog10< const double >         // Is derived from TrueType
-   blaze::HasSIMDLog10< unsigned int >::value  // Evaluates to 0
-   blaze::HasSIMDLog10< long double >::Type    // Results in FalseType
-   blaze::HasSIMDLog10< complex<double> >      // Is derived from FalseType
+   blaze::HasSIMDLGamma< float >::value         // Evaluates to 1
+   blaze::HasSIMDLGamma< double >::Type         // Results in TrueType
+   blaze::HasSIMDLGamma< const double >         // Is derived from TrueType
+   blaze::HasSIMDLGamma< unsigned int >::value  // Evaluates to 0
+   blaze::HasSIMDLGamma< long double >::Type    // Results in FalseType
+   blaze::HasSIMDLGamma< complex<double> >      // Is derived from FalseType
    \endcode
 */
 template< typename T >  // Type of the operand
-struct HasSIMDLog10
-   : public BoolConstant< HasSIMDLog10Helper< RemoveCVRef_t<T> >::value >
+struct HasSIMDLGamma
+   : public BoolConstant< HasSIMDLGammaHelper< RemoveCVRef_t<T> >::value >
 {};
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\brief Auxiliary variable template for the HasSIMDLog10 type trait.
+/*!\brief Auxiliary variable template for the HasSIMDLGamma type trait.
 // \ingroup math_type_traits
 //
-// The HasSIMDLog10_v variable template provides a convenient shortcut to access the nested
-// \a value of the HasSIMDLog10 class template. For instance, given the type \a T the following
+// The HasSIMDLGamma_v variable template provides a convenient shortcut to access the nested
+// \a value of the HasSIMDLGamma class template. For instance, given the type \a T the following
 // two statements are identical:
 
    \code
-   constexpr bool value1 = blaze::HasSIMDLog10<T>::value;
-   constexpr bool value2 = blaze::HasSIMDLog10_v<T>;
+   constexpr bool value1 = blaze::HasSIMDLGamma<T>::value;
+   constexpr bool value2 = blaze::HasSIMDLGamma_v<T>;
    \endcode
 */
 template< typename T >  // Type of the operand
-constexpr bool HasSIMDLog10_v = HasSIMDLog10<T>::value;
+constexpr bool HasSIMDLGamma_v = HasSIMDLGamma<T>::value;
 //*************************************************************************************************
 
 } // namespace blaze

@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze/math/simd/Erf.h
-//  \brief Header file for the SIMD error function (erf) functionality
+//  \file blaze/math/typetraits/HasSIMDLog1p.h
+//  \brief Header file for the HasSIMDLog1p type trait
 //
 //  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
@@ -32,126 +32,90 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_MATH_SIMD_ERF_H_
-#define _BLAZE_MATH_SIMD_ERF_H_
+#ifndef _BLAZE_MATH_TYPETRAITS_HASSIMDLOG1P_H_
+#define _BLAZE_MATH_TYPETRAITS_HASSIMDLOG1P_H_
 
 
 //*************************************************************************************************
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/simd/BasicTypes.h>
-#include <blaze/system/Inline.h>
 #include <blaze/system/Vectorization.h>
+#include <blaze/util/IntegralConstant.h>
+#include <blaze/util/typetraits/IsDouble.h>
+#include <blaze/util/typetraits/IsFloat.h>
+#include <blaze/util/typetraits/RemoveCVRef.h>
 
 
 namespace blaze {
 
 //=================================================================================================
 //
-//  32-BIT FLOATING POINT SIMD TYPES
+//  CLASS DEFINITION
 //
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Computes the error function for a vector of single precision floating point values.
-// \ingroup simd
-//
-// \param a The vector of single precision floating point values.
-// \return The resulting vector.
-//
-// This operation is only available via the SVML or SLEEF for SSE, AVX, MIC, and AVX-512.
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Auxiliary alias declaration for the HasSIMDLog1p type trait.
+// \ingroup math_type_traits
 */
 template< typename T >  // Type of the operand
-BLAZE_ALWAYS_INLINE const SIMDfloat erf( const SIMDf32<T>& a ) noexcept
-#if BLAZE_SVML_MODE
-#  if ( BLAZE_AVX512F_MODE  || BLAZE_MIC_MODE )
-{
-   return _mm512_erf_ps( (~a).eval().value );
-}
-#  elif BLAZE_AVX_MODE
-{
-   return _mm256_erf_ps( (~a).eval().value );
-}
-#  elif BLAZE_SSE_MODE
-{
-   return _mm_erf_ps( (~a).eval().value );
-}
-#  endif
-#elif BLAZE_SLEEF_MODE
-#  if ( BLAZE_AVX512F_MODE  || BLAZE_MIC_MODE )
-{
-   return Sleef_erff16_u10avx512f( (~a).eval().value );
-}
-#  elif BLAZE_AVX_MODE
-{
-   return Sleef_erff8_u10avx( (~a).eval().value );
-}
-#  elif ( BLAZE_AVX2_MODE || BLAZE_AVX_MODE )
-{
-   return Sleef_erff8_u10( (~a).eval().value );
-}
-#  elif ( BLAZE_SSE_MODE || BLAZE_SSE2_MODE || BLAZE_SSE4_MODE )
-{
-   return Sleef_erff4_u10( (~a).eval().value );
-}
-#  endif
-#else
-= delete;
-#endif
+using HasSIMDLog1pHelper =
+   BoolConstant< ( IsFloat_v<T> || IsDouble_v<T> ) &&
+                 (bool( BLAZE_SLEEF_MODE )) &&
+                 ( bool( BLAZE_SSE_MODE     ) ||
+                   bool( BLAZE_AVX_MODE     ) ||
+                   bool( BLAZE_AVX2_MODE    ) ||
+                   bool( BLAZE_MIC_MODE     ) ||
+                   bool( BLAZE_AVX512F_MODE ) ) >;
+/*! \endcond */
 //*************************************************************************************************
 
 
-
-
-//=================================================================================================
-//
-//  64-BIT FLOATING POINT SIMD TYPES
-//
-//=================================================================================================
-
 //*************************************************************************************************
-/*!\brief Computes the error function for a vector of double precision floating point values.
-// \ingroup simd
+/*!\brief Availability of a SIMD natural logarithm operation for the given data type.
+// \ingroup math_type_traits
 //
-// \param a The vector of double precision floating point values.
-// \return The resulting vector.
-//
-// This operation is only available via the SVML or SLEEF for SSE, AVX, MIC, and AVX-512.
+// Depending on the available instruction set (SSE, SSE2, SSE3, SSE4, AVX, AVX2, MIC, ...) and
+// the used compiler, this type trait provides the information whether a SIMD natural logarithm
+// operation exists for the given data type \a T (ignoring the cv-qualifiers). In case the SIMD
+// operation is available, the \a value member constant is set to \a true, the nested type
+// definition \a Type is \a TrueType, and the class derives from \a TrueType. Otherwise \a value
+// is set to \a false, \a Type is \a FalseType, and the class derives from \a FalseType. The
+// following example assumes that the Intel SVML is available:
+
+   \code
+   blaze::HasSIMDLog1p< float >::value         // Evaluates to 1
+   blaze::HasSIMDLog1p< double >::Type         // Results in TrueType
+   blaze::HasSIMDLog1p< const double >         // Is derived from TrueType
+   blaze::HasSIMDLog1p< unsigned int >::value  // Evaluates to 0
+   blaze::HasSIMDLog1p< long double >::Type    // Results in FalseType
+   blaze::HasSIMDLog1p< complex<double> >      // Is derived from FalseType
+   \endcode
 */
 template< typename T >  // Type of the operand
-BLAZE_ALWAYS_INLINE const SIMDdouble erf( const SIMDf64<T>& a ) noexcept
-#if BLAZE_SVML_MODE
-#  if ( BLAZE_AVX512F_MODE  || BLAZE_MIC_MODE )
-{
-   return _mm512_erf_pd( (~a).eval().value );
-}
-#  elif BLAZE_AVX_MODE
-{
-   return _mm256_erf_pd( (~a).eval().value );
-}
-#  elif BLAZE_SSE_MODE
-{
-   return _mm_erf_pd( (~a).eval().value );
-}
-#  endif
-#elif BLAZE_SLEEF_MODE
-#  if ( BLAZE_AVX512F_MODE  || BLAZE_MIC_MODE )
-{
-   return Sleef_erfd8_u10avx512f( (~a).eval().value );
-}
-#  elif ( BLAZE_AVX2_MODE || BLAZE_AVX_MODE )
-{
-   return Sleef_erfd4_u10( (~a).eval().value );
-}
-#  elif ( BLAZE_SSE_MODE || BLAZE_SSE2_MODE || BLAZE_SSE4_MODE )
-{
-   return Sleef_erfd2_u10( (~a).eval().value );
-}
-#  endif
-#else
-= delete;
-#endif
+struct HasSIMDLog1p
+   : public BoolConstant< HasSIMDLog1pHelper< RemoveCVRef_t<T> >::value >
+{};
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Auxiliary variable template for the HasSIMDLog1p type trait.
+// \ingroup math_type_traits
+//
+// The HasSIMDLog1p_v variable template provides a convenient shortcut to access the nested
+// \a value of the HasSIMDLog1p class template. For instance, given the type \a T the following
+// two statements are identical:
+
+   \code
+   constexpr bool value1 = blaze::HasSIMDLog1p<T>::value;
+   constexpr bool value2 = blaze::HasSIMDLog1p_v<T>;
+   \endcode
+*/
+template< typename T >  // Type of the operand
+constexpr bool HasSIMDLog1p_v = HasSIMDLog1p<T>::value;
 //*************************************************************************************************
 
 } // namespace blaze
