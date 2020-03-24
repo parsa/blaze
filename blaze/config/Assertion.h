@@ -45,8 +45,8 @@
 //  - Deactivated: \b 0
 //  - Activated  : \b 1
 //
-// \note It is possible to (de-)activate internal assertions via command line or by defining
-// this symbol manually before including any Blaze header file:
+// \note It is possible to (de-)activate internal assertions via command line by defining this
+// symbol manually before including any Blaze header file:
 
    \code
    #define BLAZE_INTERNAL_ASSERTION 1
@@ -71,7 +71,7 @@
 //  - Deactivated: \b 0
 //  - Activated  : \b 1
 //
-// \note It is possible to (de-)activate user assertions via command line or by defining this
+// \note It is possible to (de-)activate user assertions via command line by defining this
 // symbol manually before including any Blaze header file:
 
    \code

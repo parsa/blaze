@@ -53,7 +53,7 @@
 // size of \f$ 2000 \times 2000 \f$). Note that in case the Blaze debug mode is active, this
 // threshold will be replaced by the blaze::DMATDVECMULT_DEBUG_THRESHOLD value.
 //
-// \note It is possible to specify this threshold via command line or by defining this symbol
+// \note It is possible to specify this threshold via command line by defining this symbol
 // manually before including any Blaze header file:
 
    \code
@@ -81,7 +81,7 @@
 // size of \f$ 250 \times 250 \f$). Note that in case the Blaze debug mode is active, this
 // threshold will be replaced by the blaze::TDMATDVECMULT_DEBUG_THRESHOLD value.
 //
-// \note It is possible to specify this threshold via command line or by defining this symbol
+// \note It is possible to specify this threshold via command line by defining this symbol
 // manually before including any Blaze header file:
 
    \code
@@ -109,7 +109,7 @@
 // size of \f$ 250 \times 250 \f$). Note that in case the Blaze debug mode is active, this
 // threshold will be replaced by the blaze::TDVECDMATMULT_DEBUG_THRESHOLD value.
 //
-// \note It is possible to specify this threshold via command line or by defining this symbol
+// \note It is possible to specify this threshold via command line by defining this symbol
 // manually before including any Blaze header file:
 
    \code
@@ -137,7 +137,7 @@
 // size of \f$ 2000 \times 2000 \f$). Note that in case the Blaze debug mode is active, this
 // threshold will be replaced by the blaze::TDVECTDMATMULT_DEBUG_THRESHOLD value.
 //
-// \note It is possible to specify this threshold via command line or by defining this symbol
+// \note It is possible to specify this threshold via command line by defining this symbol
 // manually before including any Blaze header file:
 
    \code
@@ -165,7 +165,7 @@
 // size of \f$ 70 \times 70 \f$). Note that in case the Blaze debug mode is active, this
 // threshold will be replaced by the blaze::DMATDMATMULT_DEBUG_THRESHOLD value.
 //
-// \note It is possible to specify this threshold via command line or by defining this symbol
+// \note It is possible to specify this threshold via command line by defining this symbol
 // manually before including any Blaze header file:
 
    \code
@@ -193,7 +193,7 @@
 // size of \f$ 70 \times 70 \f$). Note that in case the Blaze debug mode is active, this
 // threshold will be replaced by the blaze::DMATTDMATMULT_DEBUG_THRESHOLD value.
 //
-// \note It is possible to specify this threshold via command line or by defining this symbol
+// \note It is possible to specify this threshold via command line by defining this symbol
 // manually before including any Blaze header file:
 
    \code
@@ -221,7 +221,7 @@
 // size of \f$ 70 \times 70 \f$). Note that in case the Blaze debug mode is active, this
 // threshold will be replaced by the blaze::TDMATDMATMULT_DEBUG_THRESHOLD value.
 //
-// \note It is possible to specify this threshold via command line or by defining this symbol
+// \note It is possible to specify this threshold via command line by defining this symbol
 // manually before including any Blaze header file:
 
    \code
@@ -249,7 +249,7 @@
 // size of \f$ 70 \times 70 \f$). Note that in case the Blaze debug mode is active, this
 // threshold will be replaced by the blaze::TDMATTDMATMULT_DEBUG_THRESHOLD value.
 //
-// \note It is possible to specify this threshold via command line or by defining this symbol
+// \note It is possible to specify this threshold via command line by defining this symbol
 // manually before including any Blaze header file:
 
    \code
@@ -277,7 +277,7 @@
 // size of \f$ 50 \times 50 \f$). Note that in case the Blaze debug mode is active, this
 // threshold will be replaced by the blaze::DMATSMATMULT_DEBUG_THRESHOLD value.
 //
-// \note It is possible to specify this threshold via command line or by defining this symbol
+// \note It is possible to specify this threshold via command line by defining this symbol
 // manually before including any Blaze header file:
 
    \code
@@ -305,7 +305,7 @@
 // size of \f$ 50 \times 50 \f$). Note that in case the Blaze debug mode is active, this
 // threshold will be replaced by the blaze::TDMATSMATMULT_DEBUG_THRESHOLD value.
 //
-// \note It is possible to specify this threshold via command line or by defining this symbol
+// \note It is possible to specify this threshold via command line by defining this symbol
 // manually before including any Blaze header file:
 
    \code
@@ -333,7 +333,7 @@
 // size of \f$ 100 \times 100 \f$). Note that in case the Blaze debug mode is active, this
 // threshold will be replaced by the blaze::TSMATDMATMULT_DEBUG_THRESHOLD value.
 //
-// \note It is possible to specify this threshold via command line or by defining this symbol
+// \note It is possible to specify this threshold via command line by defining this symbol
 // manually before including any Blaze header file:
 
    \code
@@ -361,7 +361,7 @@
 // size of \f$ 150 \times 150 \f$). Note that in case the Blaze debug mode is active, this
 // threshold will be replaced by the blaze::TSMATTDMATMULT_DEBUG_THRESHOLD value.
 //
-// \note It is possible to specify this threshold via command line or by defining this symbol
+// \note It is possible to specify this threshold via command line by defining this symbol
 // manually before including any Blaze header file:
 
    \code
@@ -402,7 +402,7 @@
 // The default setting for this threshold is 38000. In case the threshold is set to 0, the
 // operation is unconditionally executed in parallel.
 //
-// \note It is possible to specify this threshold via command line or by defining this symbol
+// \note It is possible to specify this threshold via command line by defining this symbol
 // manually before including any Blaze header file:
 
    \code
@@ -435,7 +435,7 @@
 // The default setting for this threshold is 51000. In case the threshold is set to 0, the
 // operation is unconditionally executed in parallel.
 //
-// \note It is possible to specify this threshold via command line or by defining this symbol
+// \note It is possible to specify this threshold via command line by defining this symbol
 // manually before including any Blaze header file:
 
    \code
@@ -468,7 +468,7 @@
 // The default setting for this threshold is 38000. In case the threshold is set to 0, the
 // operation is unconditionally executed in parallel.
 //
-// \note It is possible to specify this threshold via command line or by defining this symbol
+// \note It is possible to specify this threshold via command line by defining this symbol
 // manually before including any Blaze header file:
 
    \code
@@ -501,7 +501,7 @@
 // The default setting for this threshold is 38000. In case the threshold is set to 0, the
 // operation is unconditionally executed in parallel.
 //
-// \note It is possible to specify this threshold via command line or by defining this symbol
+// \note It is possible to specify this threshold via command line by defining this symbol
 // manually before including any Blaze header file:
 
    \code
@@ -534,7 +534,7 @@
 // The default setting for this threshold is 38000. In case the threshold is set to 0, the
 // operation is unconditionally executed in parallel.
 //
-// \note It is possible to specify this threshold via command line or by defining this symbol
+// \note It is possible to specify this threshold via command line by defining this symbol
 // manually before including any Blaze header file:
 
    \code
@@ -567,7 +567,7 @@
 // The default setting for this threshold is 38000. In case the threshold is set to 0, the
 // operation is unconditionally executed in parallel.
 //
-// \note It is possible to specify this threshold via command line or by defining this symbol
+// \note It is possible to specify this threshold via command line by defining this symbol
 // manually before including any Blaze header file:
 
    \code
@@ -601,7 +601,7 @@
 // \f$ 290 \times 290 \f$). In case the threshold is set to 0, the operation is unconditionally
 // executed in parallel.
 //
-// \note It is possible to specify this threshold via command line or by defining this symbol
+// \note It is possible to specify this threshold via command line by defining this symbol
 // manually before including any Blaze header file:
 
    \code
@@ -634,7 +634,7 @@
 // The default setting for this threshold is 330. In case the threshold is set to 0, the operation
 // is unconditionally executed in parallel.
 //
-// \note It is possible to specify this threshold via command line or by defining this symbol
+// \note It is possible to specify this threshold via command line by defining this symbol
 // manually before including any Blaze header file:
 
    \code
@@ -667,7 +667,7 @@
 // The default setting for this threshold is 360. In case the threshold is set to 0, the operation
 // is unconditionally executed in parallel.
 //
-// \note It is possible to specify this threshold via command line or by defining this symbol
+// \note It is possible to specify this threshold via command line by defining this symbol
 // manually before including any Blaze header file:
 
    \code
@@ -700,7 +700,7 @@
 // The default setting for this threshold is 370. In case the threshold is set to 0, the operation
 // is unconditionally executed in parallel.
 //
-// \note It is possible to specify this threshold via command line or by defining this symbol
+// \note It is possible to specify this threshold via command line by defining this symbol
 // manually before including any Blaze header file:
 
    \code
@@ -733,7 +733,7 @@
 // The default setting for this threshold is 340. In case the threshold is set to 0, the operation
 // is unconditionally executed in parallel.
 //
-// \note It is possible to specify this threshold via command line or by defining this symbol
+// \note It is possible to specify this threshold via command line by defining this symbol
 // manually before including any Blaze header file:
 
    \code
@@ -766,7 +766,7 @@
 // The default setting for this threshold is 480. In case the threshold is set to 0, the operation
 // is unconditionally executed in parallel.
 //
-// \note It is possible to specify this threshold via command line or by defining this symbol
+// \note It is possible to specify this threshold via command line by defining this symbol
 // manually before including any Blaze header file:
 
    \code
@@ -799,7 +799,7 @@
 // The default setting for this threshold is 910. In case the threshold is set to 0, the operation
 // is unconditionally executed in parallel.
 //
-// \note It is possible to specify this threshold via command line or by defining this symbol
+// \note It is possible to specify this threshold via command line by defining this symbol
 // manually before including any Blaze header file:
 
    \code
@@ -832,7 +832,7 @@
 // The default setting for this threshold is 910. In case the threshold is set to 0, the operation
 // is unconditionally executed in parallel.
 //
-// \note It is possible to specify this threshold via command line or by defining this symbol
+// \note It is possible to specify this threshold via command line by defining this symbol
 // manually before including any Blaze header file:
 
    \code
@@ -865,7 +865,7 @@
 // The default setting for this threshold is 480. In case the threshold is set to 0, the operation
 // is unconditionally executed in parallel.
 //
-// \note It is possible to specify this threshold via command line or by defining this symbol
+// \note It is possible to specify this threshold via command line by defining this symbol
 // manually before including any Blaze header file:
 
    \code
@@ -898,7 +898,7 @@
 // The default setting for this threshold is 600. In case the threshold is set to 0, the operation
 // is unconditionally executed in parallel.
 //
-// \note It is possible to specify this threshold via command line or by defining this symbol
+// \note It is possible to specify this threshold via command line by defining this symbol
 // manually before including any Blaze header file:
 
    \code
@@ -931,7 +931,7 @@
 // The default setting for this threshold is 1250. In case the threshold is set to 0, the operation
 // is unconditionally executed in parallel.
 //
-// \note It is possible to specify this threshold via command line or by defining this symbol
+// \note It is possible to specify this threshold via command line by defining this symbol
 // manually before including any Blaze header file:
 
    \code
@@ -964,7 +964,7 @@
 // The default setting for this threshold is 1190. In case the threshold is set to 0, the operation
 // is unconditionally executed in parallel.
 //
-// \note It is possible to specify this threshold via command line or by defining this symbol
+// \note It is possible to specify this threshold via command line by defining this symbol
 // manually before including any Blaze header file:
 
    \code
@@ -997,7 +997,7 @@
 // The default setting for this threshold is 530. In case the threshold is set to 0, the operation
 // is unconditionally executed in parallel.
 //
-// \note It is possible to specify this threshold via command line or by defining this symbol
+// \note It is possible to specify this threshold via command line by defining this symbol
 // manually before including any Blaze header file:
 
    \code
@@ -1030,7 +1030,7 @@
 // The default setting for this threshold is 260. In case the threshold is set to 0, the operation
 // is unconditionally executed in parallel.
 //
-// \note It is possible to specify this threshold via command line or by defining this symbol
+// \note It is possible to specify this threshold via command line by defining this symbol
 // manually before including any Blaze header file:
 
    \code
@@ -1063,7 +1063,7 @@
 // The default setting for this threshold is 2160. In case the threshold is set to 0, the operation
 // is unconditionally executed in parallel.
 //
-// \note It is possible to specify this threshold via command line or by defining this symbol
+// \note It is possible to specify this threshold via command line by defining this symbol
 // manually before including any Blaze header file:
 
    \code
@@ -1096,7 +1096,7 @@
 // The default setting for this threshold is 2160. In case the threshold is set to 0, the operation
 // is unconditionally executed in parallel.
 //
-// \note It is possible to specify this threshold via command line or by defining this symbol
+// \note It is possible to specify this threshold via command line by defining this symbol
 // manually before including any Blaze header file:
 
    \code
@@ -1129,7 +1129,7 @@
 // The default setting for this threshold is 260. In case the threshold is set to 0, the operation
 // is unconditionally executed in parallel.
 //
-// \note It is possible to specify this threshold via command line or by defining this symbol
+// \note It is possible to specify this threshold via command line by defining this symbol
 // manually before including any Blaze header file:
 
    \code
@@ -1163,7 +1163,7 @@
 // \f$ 220 \times 220 \f$). In case the threshold is set to 0, the operation is unconditionally
 // executed in parallel.
 //
-// \note It is possible to specify this threshold via command line or by defining this symbol
+// \note It is possible to specify this threshold via command line by defining this symbol
 // manually before including any Blaze header file:
 
    \code
@@ -1197,7 +1197,7 @@
 // \f$ 220 \times 220 \f$). In case the threshold is set to 0, the operation is unconditionally
 // executed in parallel.
 //
-// \note It is possible to specify this threshold via command line or by defining this symbol
+// \note It is possible to specify this threshold via command line by defining this symbol
 // manually before including any Blaze header file:
 
    \code
@@ -1232,7 +1232,7 @@
 // \f$ 190 \times 190 \f$). In case the threshold is set to 0, the operation is unconditionally
 // executed in parallel.
 //
-// \note It is possible to specify this threshold via command line or by defining this symbol
+// \note It is possible to specify this threshold via command line by defining this symbol
 // manually before including any Blaze header file:
 
    \code
@@ -1268,7 +1268,7 @@
 // \f$ 175 \times 175 \f$). In case the threshold is set to 0, the operation is unconditionally
 // executed in parallel.
 //
-// \note It is possible to specify this threshold via command line or by defining this symbol
+// \note It is possible to specify this threshold via command line by defining this symbol
 // manually before including any Blaze header file:
 
    \code
@@ -1303,7 +1303,7 @@
 // \f$ 190 \times 190 \f$). In case the threshold is set to 0, the operation is unconditionally
 // executed in parallel.
 //
-// \note It is possible to specify this threshold via command line or by defining this symbol
+// \note It is possible to specify this threshold via command line by defining this symbol
 // manually before including any Blaze header file:
 
    \code
@@ -1339,7 +1339,7 @@
 // \f$ 175 \times 175 \f$). In case the threshold is set to 0, the operation is unconditionally
 // executed in parallel.
 //
-// \note It is possible to specify this threshold via command line or by defining this symbol
+// \note It is possible to specify this threshold via command line by defining this symbol
 // manually before including any Blaze header file:
 
    \code
@@ -1374,7 +1374,7 @@
 // \f$ 190 \times 190 \f$). In case the threshold is set to 0, the operation is unconditionally
 // executed in parallel.
 //
-// \note It is possible to specify this threshold via command line or by defining this symbol
+// \note It is possible to specify this threshold via command line by defining this symbol
 // manually before including any Blaze header file:
 
    \code
@@ -1410,7 +1410,7 @@
 // \f$ 175 \times 175 \f$). In case the threshold is set to 0, the operation is unconditionally
 // executed in parallel.
 //
-// \note It is possible to specify this threshold via command line or by defining this symbol
+// \note It is possible to specify this threshold via command line by defining this symbol
 // manually before including any Blaze header file:
 
    \code
@@ -1444,7 +1444,7 @@
 // \f$ 55 \times 55 \f$). In case the threshold is set to 0, the operation is unconditionally
 // executed in parallel.
 //
-// \note It is possible to specify this threshold via command line or by defining this symbol
+// \note It is possible to specify this threshold via command line by defining this symbol
 // manually before including any Blaze header file:
 
    \code
@@ -1478,7 +1478,7 @@
 // \f$ 55 \times 55 \f$). In case the threshold is set to 0, the operation is unconditionally
 // executed in parallel.
 //
-// \note It is possible to specify this threshold via command line or by defining this symbol
+// \note It is possible to specify this threshold via command line by defining this symbol
 // manually before including any Blaze header file:
 
    \code
@@ -1512,7 +1512,7 @@
 // \f$ 55 \times 55 \f$). In case the threshold is set to 0, the operation is unconditionally
 // executed in parallel.
 //
-// \note It is possible to specify this threshold via command line or by defining this symbol
+// \note It is possible to specify this threshold via command line by defining this symbol
 // manually before including any Blaze header file:
 
    \code
@@ -1546,7 +1546,7 @@
 // \f$ 55 \times 55 \f$). In case the threshold is set to 0, the operation is unconditionally
 // executed in parallel.
 //
-// \note It is possible to specify this threshold via command line or by defining this symbol
+// \note It is possible to specify this threshold via command line by defining this symbol
 // manually before including any Blaze header file:
 
    \code
@@ -1580,7 +1580,7 @@
 // \f$ 64 \times 64 \f$). In case the threshold is set to 0, the operation is unconditionally
 // executed in parallel.
 //
-// \note It is possible to specify this threshold via command line or by defining this symbol
+// \note It is possible to specify this threshold via command line by defining this symbol
 // manually before including any Blaze header file:
 
    \code
@@ -1614,7 +1614,7 @@
 // \f$ 68 \times 68 \f$). In case the threshold is set to 0, the operation is unconditionally
 // executed in parallel.
 //
-// \note It is possible to specify this threshold via command line or by defining this symbol
+// \note It is possible to specify this threshold via command line by defining this symbol
 // manually before including any Blaze header file:
 
    \code
@@ -1648,7 +1648,7 @@
 // \f$ 90 \times 90 \f$). In case the threshold is set to 0, the operation is unconditionally
 // executed in parallel.
 //
-// \note It is possible to specify this threshold via command line or by defining this symbol
+// \note It is possible to specify this threshold via command line by defining this symbol
 // manually before including any Blaze header file:
 
    \code
@@ -1682,7 +1682,7 @@
 // \f$ 90 \times 90 \f$). In case the threshold is set to 0, the operation
 // is unconditionally executed in parallel.
 //
-// \note It is possible to specify this threshold via command line or by defining this symbol
+// \note It is possible to specify this threshold via command line by defining this symbol
 // manually before including any Blaze header file:
 
    \code
@@ -1716,7 +1716,7 @@
 // \f$ 88 \times 88 \f$). In case the threshold is set to 0, the operation
 // is unconditionally executed in parallel.
 //
-// \note It is possible to specify this threshold via command line or by defining this symbol
+// \note It is possible to specify this threshold via command line by defining this symbol
 // manually before including any Blaze header file:
 
    \code
@@ -1750,7 +1750,7 @@
 // \f$ 72 \times 72 \f$). In case the threshold is set to 0, the operation is unconditionally
 // executed in parallel.
 //
-// \note It is possible to specify this threshold via command line or by defining this symbol
+// \note It is possible to specify this threshold via command line by defining this symbol
 // manually before including any Blaze header file:
 
    \code
@@ -1784,7 +1784,7 @@
 // \f$ 66 \times 66 \f$). In case the threshold is set to 0, the operation is unconditionally
 // executed in parallel.
 //
-// \note It is possible to specify this threshold via command line or by defining this symbol
+// \note It is possible to specify this threshold via command line by defining this symbol
 // manually before including any Blaze header file:
 
    \code
@@ -1818,7 +1818,7 @@
 // \f$ 66 \times 66 \f$). In case the threshold is set to 0, the operation is unconditionally
 // executed in parallel.
 //
-// \note It is possible to specify this threshold via command line or by defining this symbol
+// \note It is possible to specify this threshold via command line by defining this symbol
 // manually before including any Blaze header file:
 
    \code
@@ -1852,7 +1852,7 @@
 // \f$ 150 \times 150 \f$). In case the threshold is set to 0, the operation is unconditionally
 // executed in parallel.
 //
-// \note It is possible to specify this threshold via command line or by defining this symbol
+// \note It is possible to specify this threshold via command line by defining this symbol
 // manually before including any Blaze header file:
 
    \code
@@ -1886,7 +1886,7 @@
 // \f$ 140 \times 140 \f$). In case the threshold is set to 0, the operation is unconditionally
 // executed in parallel.
 //
-// \note It is possible to specify this threshold via command line or by defining this symbol
+// \note It is possible to specify this threshold via command line by defining this symbol
 // manually before including any Blaze header file:
 
    \code
@@ -1920,7 +1920,7 @@
 // \f$ 140 \times 140 \f$). In case the threshold is set to 0, the operation is unconditionally
 // executed in parallel.
 //
-// \note It is possible to specify this threshold via command line or by defining this symbol
+// \note It is possible to specify this threshold via command line by defining this symbol
 // manually before including any Blaze header file:
 
    \code
@@ -1954,7 +1954,7 @@
 // \f$ 150 \times 150 \f$). In case the threshold is set to 0, the operation is unconditionally
 // executed in parallel.
 //
-// \note It is possible to specify this threshold via command line or by defining this symbol
+// \note It is possible to specify this threshold via command line by defining this symbol
 // manually before including any Blaze header file:
 
    \code
@@ -1987,7 +1987,7 @@
 // The default setting for this threshold is 180. In case the threshold is set to 0, the operation
 // is unconditionally executed in parallel.
 //
-// \note It is possible to specify this threshold via command line or by defining this symbol
+// \note It is possible to specify this threshold via command line by defining this symbol
 // manually before including any Blaze header file:
 
    \code
@@ -2020,7 +2020,7 @@
 // The default setting for this threshold is 180. In case the threshold is set to 0, the operation
 // is unconditionally executed in parallel.
 //
-// \note It is possible to specify this threshold via command line or by defining this symbol
+// \note It is possible to specify this threshold via command line by defining this symbol
 // manually before including any Blaze header file:
 
    \code

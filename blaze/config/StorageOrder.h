@@ -51,8 +51,8 @@
 
 // Valid settings for the BLAZE_DEFAULT_STORAGE_ORDER are blaze::rowMajor and blaze::columnMajor.
 //
-// \note It is possible to specify the default storage order via command line or by defining
-// this symbol manually before including any Blaze header file:
+// \note It is possible to specify the default storage order via command line by defining this
+// symbol manually before including any Blaze header file:
 
    \code
    #define BLAZE_DEFAULT_STORAGE_ORDER blaze::rowMajor

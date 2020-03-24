@@ -46,7 +46,7 @@
 //  - Deactivated: \b 0
 //  - Activated  : \b 1 (default)
 //
-// \note It is possible to (de-)activate the shared-memory parallelization via command line or by
+// \note It is possible to (de-)activate the shared-memory parallelization via command line by
 // defining this symbol manually before including any Blaze header file:
 
    \code

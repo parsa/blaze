@@ -43,7 +43,7 @@
 // The size of the cache is specified in Byte. For instance, a cache of 3 MiByte must therefore
 // be specified as 3145728.
 //
-// \note It is possible to specify the cache size via command line or by defining this symbol
+// \note It is possible to specify the cache size via command line by defining this symbol
 // manually before including any Blaze header file:
 
    \code

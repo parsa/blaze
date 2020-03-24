@@ -47,8 +47,8 @@
 //  - Deactivated: \b 0 (default)
 //  - Activated  : \b 1
 //
-// \note It is possible to (de-)activate the debug mode via command line or by defining this
-// symbol manually before including any Blaze header file:
+// \note It is possible to (de-)activate the debug mode via command line by defining this symbol
+// manually before including any Blaze header file:
 
    \code
    #define BLAZE_USE_DEBUG_MODE 1
@@ -73,8 +73,8 @@
 //  - Deactivated: \b 0 (default)
 //  - Activated  : \b 1
 //
-// \note It is possible to (de-)activate function traces via command line or by defining this
-// symbol manually before including any Blaze header file:
+// \note It is possible to (de-)activate function traces via command line by defining this symbol
+// manually before including any Blaze header file:
 
    \code
    #define BLAZE_USE_FUNCTION_TRACES 1

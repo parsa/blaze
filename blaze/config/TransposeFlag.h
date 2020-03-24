@@ -51,8 +51,8 @@
 
 // Valid settings for the BLAZE_DEFAULT_TRANSPOSE_FLAG are blaze::rowVector and blaze::columnVector.
 //
-// \note It is possible to specify the default transpose flag via command line or by defining
-// this symbol manually before including any Blaze header file:
+// \note It is possible to specify the default transpose flag via command line by defining this
+// symbol manually before including any Blaze header file:
 
    \code
    #define BLAZE_DEFAULT_TRANSPOSE_FLAG blaze::columnVector
