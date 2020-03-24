@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze/Forward.h
-//  \brief Header file for all forward declarations of the Blaze library
+//  \file blaze/math/Forward.h
+//  \brief Header file for all forward declarations of the math module
 //
 //  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
@@ -32,17 +32,20 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_FORWARD_H_
-#define _BLAZE_FORWARD_H_
+#ifndef _BLAZE_MATH_FORWARD_H_
+#define _BLAZE_MATH_FORWARD_H_
 
 
-//*************************************************************************************************
-// Includes
-//*************************************************************************************************
+namespace blaze {
 
-#include <blaze/math/Forward.h>
-#include <blaze/system/StorageOrder.h>
-#include <blaze/system/TransposeFlag.h>
-#include <blaze/util/Forward.h>
+//=================================================================================================
+//
+//  ::blaze NAMESPACE FORWARD DECLARATIONS
+//
+//=================================================================================================
+
+template< typename Type > class AlignedAllocator;
+
+} // namespace blaze
 
 #endif
