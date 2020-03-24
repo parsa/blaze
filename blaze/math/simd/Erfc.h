@@ -40,6 +40,9 @@
 // Includes
 //*************************************************************************************************
 
+#if BLAZE_SLEEF_MODE
+#  include <sleef.h>
+#endif
 #include <blaze/math/simd/BasicTypes.h>
 #include <blaze/system/Inline.h>
 #include <blaze/system/Vectorization.h>
@@ -66,7 +69,7 @@ namespace blaze {
 template< typename T >  // Type of the operand
 BLAZE_ALWAYS_INLINE const SIMDfloat erfc( const SIMDf32<T>& a ) noexcept
 #if BLAZE_SVML_MODE
-#  if ( BLAZE_AVX512F_MODE || BLAZE_MIC_MODE )
+#  if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
 {
    return _mm512_erfc_ps( (~a).eval().value );
 }
@@ -80,17 +83,13 @@ BLAZE_ALWAYS_INLINE const SIMDfloat erfc( const SIMDf32<T>& a ) noexcept
 }
 #  endif
 #elif BLAZE_SLEEF_MODE
-#  if ( BLAZE_AVX512F_MODE || BLAZE_MIC_MODE )
+#  if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
 {
-   return Sleef_erfcf16_u15avx512f( (~a).eval().value );
-}
-#  elif BLAZE_AVX2_MODE
-{
-   return Sleef_erfcf8_u15avx2( (~a).eval().value );
+   return Sleef_erfcf16_u15( (~a).eval().value );
 }
 #  elif BLAZE_AVX_MODE
 {
-   return Sleef_erfcf8_u15avx( (~a).eval().value );
+   return Sleef_erfcf8_u15( (~a).eval().value );
 }
 #  elif BLAZE_SSE_MODE
 {
@@ -124,7 +123,7 @@ BLAZE_ALWAYS_INLINE const SIMDfloat erfc( const SIMDf32<T>& a ) noexcept
 template< typename T >  // Type of the operand
 BLAZE_ALWAYS_INLINE const SIMDdouble erfc( const SIMDf64<T>& a ) noexcept
 #if BLAZE_SVML_MODE
-#  if ( BLAZE_AVX512F_MODE || BLAZE_MIC_MODE )
+#  if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
 {
    return _mm512_erfc_pd( (~a).eval().value );
 }
@@ -138,17 +137,13 @@ BLAZE_ALWAYS_INLINE const SIMDdouble erfc( const SIMDf64<T>& a ) noexcept
 }
 #  endif
 #elif BLAZE_SLEEF_MODE
-#  if ( BLAZE_AVX512F_MODE || BLAZE_MIC_MODE )
+#  if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
 {
-   return Sleef_erfcd8_u15avx512f( (~a).eval().value );
-}
-#  elif BLAZE_AVX2_MODE
-{
-   return Sleef_erfcd4_u15avx2( (~a).eval().value );
+   return Sleef_erfcd8_u15( (~a).eval().value );
 }
 #  elif BLAZE_AVX_MODE
 {
-   return Sleef_erfcd4_u15avx( (~a).eval().value );
+   return Sleef_erfcd4_u15( (~a).eval().value );
 }
 #  elif BLAZE_SSE_MODE
 {

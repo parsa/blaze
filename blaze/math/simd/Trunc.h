@@ -40,6 +40,9 @@
 // Includes
 //*************************************************************************************************
 
+#if BLAZE_SLEEF_MODE
+#  include <sleef.h>
+#endif
 #include <blaze/math/simd/BasicTypes.h>
 #include <blaze/system/Inline.h>
 #include <blaze/system/Vectorization.h>
@@ -66,7 +69,7 @@ namespace blaze {
 template< typename T >  // Type of the operand
 BLAZE_ALWAYS_INLINE const SIMDfloat trunc( const SIMDf32<T>& a ) noexcept
 #if BLAZE_SVML_MODE
-#  if ( BLAZE_AVX512F_MODE || BLAZE_MIC_MODE )
+#  if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
 {
    return _mm512_trunc_ps( (~a).eval().value );
 }
@@ -80,9 +83,9 @@ BLAZE_ALWAYS_INLINE const SIMDfloat trunc( const SIMDf32<T>& a ) noexcept
 }
 #  endif
 #elif BLAZE_SLEEF_MODE
-#  if ( BLAZE_AVX512F_MODE || BLAZE_MIC_MODE )
+#  if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
 {
-   return Sleef_truncf16_avx512f( (~a).eval().value );
+   return Sleef_truncf16( (~a).eval().value );
 }
 #  elif BLAZE_AVX_MODE
 {
@@ -120,7 +123,7 @@ BLAZE_ALWAYS_INLINE const SIMDfloat trunc( const SIMDf32<T>& a ) noexcept
 template< typename T >  // Type of the operand
 BLAZE_ALWAYS_INLINE const SIMDdouble trunc( const SIMDf64<T>& a ) noexcept
 #if BLAZE_SVML_MODE
-#  if ( BLAZE_AVX512F_MODE || BLAZE_MIC_MODE )
+#  if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
 {
    return _mm512_trunc_pd( (~a).eval().value );
 }
@@ -134,9 +137,9 @@ BLAZE_ALWAYS_INLINE const SIMDdouble trunc( const SIMDf64<T>& a ) noexcept
 }
 #  endif
 #elif BLAZE_SLEEF_MODE
-#  if ( BLAZE_AVX512F_MODE || BLAZE_MIC_MODE )
+#  if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
 {
-   return Sleef_truncd8_avx512f( (~a).eval().value );
+   return Sleef_truncd8( (~a).eval().value );
 }
 #  elif BLAZE_AVX_MODE
 {

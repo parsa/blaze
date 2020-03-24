@@ -40,6 +40,9 @@
 // Includes
 //*************************************************************************************************
 
+#if BLAZE_SLEEF_MODE
+#  include <sleef.h>
+#endif
 #include <blaze/math/simd/BasicTypes.h>
 #include <blaze/system/Inline.h>
 #include <blaze/system/Vectorization.h>
@@ -81,23 +84,11 @@ BLAZE_ALWAYS_INLINE const SIMDfloat atan( const SIMDf32<T>& a ) noexcept
 #elif BLAZE_SLEEF_MODE
 #  if ( BLAZE_AVX512F_MODE  || BLAZE_MIC_MODE )
 {
-   return Sleef_atanf16_u10avx512f( (~a).eval().value );
-}
-#  elif BLAZE_AVX2_MODE
-{
-   return Sleef_atanf8_u10avx2( (~a).eval().value );
+   return Sleef_atanf16_u10( (~a).eval().value );
 }
 #  elif BLAZE_AVX_MODE
 {
-   return Sleef_atanf8_u10avx( (~a).eval().value );
-}
-#  elif BLAZE_SSE4_MODE
-{
-   return Sleef_atanf4_u10sse4( (~a).eval().value );
-}
-#  elif BLAZE_SSE2_MODE
-{
-   return Sleef_atanf4_u10sse2( (~a).eval().value );
+   return Sleef_atanf8_u10( (~a).eval().value );
 }
 #  elif BLAZE_SSE_MODE
 {
@@ -146,23 +137,11 @@ BLAZE_ALWAYS_INLINE const SIMDdouble atan( const SIMDf64<T>& a ) noexcept
 #elif BLAZE_SLEEF_MODE
 #  if ( BLAZE_AVX512F_MODE  || BLAZE_MIC_MODE )
 {
-   return Sleef_atand8_u10avx512f( (~a).eval().value );
-}
-#  elif BLAZE_AVX2_MODE
-{
-   return Sleef_atand4_u10avx2( (~a).eval().value );
+   return Sleef_atand8_u10( (~a).eval().value );
 }
 #  elif BLAZE_AVX_MODE
 {
-   return Sleef_atand4_u10avx( (~a).eval().value );
-}
-#  elif BLAZE_SSE4_MODE
-{
-   return Sleef_atand2_u10sse4( (~a).eval().value );
-}
-#  elif BLAZE_SSE2_MODE
-{
-   return Sleef_atand2_u10sse2( (~a).eval().value );
+   return Sleef_atand4_u10( (~a).eval().value );
 }
 #  elif BLAZE_SSE_MODE
 {

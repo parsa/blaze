@@ -368,21 +368,6 @@
 //*************************************************************************************************
 
 
-//*************************************************************************************************
-/*!\brief Compilation switch for either the Sleef or SVML modes.
-// \ingroup system
-//
-// This compilation switch enables/disables vectorized compilation for functional operations
-// with SVML (i.e. in case an Intel compiler is used) or the Sleef mathematical library. In
-// case either SVML or Sleef is enabled, the Blaze library attempts to vectorize several
-// linear algebra operations by the according intrinsics. In case the Sleef and SVML modes
-// are disabled, the Blaze library chooses default, non-vectorized functionality for these
-// operations.
-*/
-#define BLAZE_FUNCTIONAL_SIMD_MODE ( BLAZE_SLEEF_MODE || BLAZE_SVML_MODE )
-//*************************************************************************************************
-
-
 
 
 //=================================================================================================

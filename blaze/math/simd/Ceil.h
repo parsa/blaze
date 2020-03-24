@@ -40,6 +40,9 @@
 // Includes
 //*************************************************************************************************
 
+#if BLAZE_SLEEF_MODE
+#  include <sleef.h>
+#endif
 #include <blaze/math/simd/BasicTypes.h>
 #include <blaze/system/Inline.h>
 #include <blaze/system/Vectorization.h>
@@ -69,6 +72,12 @@ BLAZE_ALWAYS_INLINE const SIMDfloat ceil( const SIMDf32<T>& a ) noexcept
 {
    return _mm512_ceil_ps( (~a).eval().value );
 }
+#elif BLAZE_SLEEF_MODE && ( BLAZE_AVX512F_MODE || BLAZE_MIC_MODE )
+{
+   return Sleef_ceilf16( (~a).eval().value );
+}
+#elif BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
+= delete;
 #elif BLAZE_AVX_MODE
 {
    return _mm256_ceil_ps( (~a).eval().value );
@@ -76,14 +85,6 @@ BLAZE_ALWAYS_INLINE const SIMDfloat ceil( const SIMDf32<T>& a ) noexcept
 #elif BLAZE_SSE4_MODE
 {
    return _mm_ceil_ps( (~a).eval().value );
-}
-#elif BLAZE_SLEEF_MODE && ( BLAZE_AVX512F_MODE || BLAZE_MIC_MODE )
-{
-   return Sleef_ceilf16_avx512f( (~a).eval().value );
-}
-#elif BLAZE_SLEEF_MODE && BLAZE_SSE_MODE
-{
-   return Sleef_ceilf4( (~a).eval().value );
 }
 #else
 = delete;
@@ -115,6 +116,12 @@ BLAZE_ALWAYS_INLINE const SIMDdouble ceil( const SIMDf64<T>& a ) noexcept
 {
    return _mm512_ceil_pd( (~a).eval().value );
 }
+#elif BLAZE_SLEEF_MODE && ( BLAZE_AVX512F_MODE || BLAZE_MIC_MODE )
+{
+   return Sleef_ceild8( (~a).eval().value );
+}
+#elif BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
+= delete;
 #elif BLAZE_AVX_MODE
 {
    return _mm256_ceil_pd( (~a).eval().value );
@@ -122,14 +129,6 @@ BLAZE_ALWAYS_INLINE const SIMDdouble ceil( const SIMDf64<T>& a ) noexcept
 #elif BLAZE_SSE4_MODE
 {
    return _mm_ceil_pd( (~a).eval().value );
-}
-#elif BLAZE_SLEEF_MODE && ( BLAZE_AVX512F_MODE || BLAZE_MIC_MODE )
-{
-   return Sleef_ceild8_avx512f( (~a).eval().value );
-}
-#elif BLAZE_SLEEF_MODE && BLAZE_SSE_MODE
-{
-   return Sleef_ceild2( (~a).eval().value );
 }
 #else
 = delete;

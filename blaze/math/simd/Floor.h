@@ -40,6 +40,9 @@
 // Includes
 //*************************************************************************************************
 
+#if BLAZE_SLEEF_MODE
+#  include <sleef.h>
+#endif
 #include <blaze/math/simd/BasicTypes.h>
 #include <blaze/system/Inline.h>
 #include <blaze/system/Vectorization.h>
@@ -69,6 +72,10 @@ BLAZE_ALWAYS_INLINE const SIMDfloat floor( const SIMDf32<T>& a ) noexcept
 {
    return _mm512_floor_ps( (~a).eval().value );
 }
+#elif BLAZE_SLEEF_MODE && ( BLAZE_AVX512F_MODE || BLAZE_MIC_MODE )
+{
+   return Sleef_floorf16( (~a).eval().value );
+}
 #elif BLAZE_AVX_MODE
 {
    return _mm256_floor_ps((~a).eval().value);
@@ -77,16 +84,6 @@ BLAZE_ALWAYS_INLINE const SIMDfloat floor( const SIMDf32<T>& a ) noexcept
 {
     return _mm_floor_ps((~a).eval().value);
 }
-#elif BLAZE_SLEEF_MODE
-#  if ( BLAZE_AVX512F_MODE || BLAZE_MIC_MODE )
-{
-   return Sleef_floorf16_avx512f( (~a).eval().value );
-}
-#  elif BLAZE_SSE_MODE
-{
-   return Sleef_floorf4( (~a).eval().value );
-}
-#  endif
 #else
 = delete;
 #endif
@@ -117,6 +114,10 @@ BLAZE_ALWAYS_INLINE const SIMDdouble floor( const SIMDf64<T>& a ) noexcept
 {
    return _mm512_floor_pd( (~a).eval().value );
 }
+#elif BLAZE_SLEEF_MODE && ( BLAZE_AVX512F_MODE || BLAZE_MIC_MODE )
+{
+   return Sleef_floord8( (~a).eval().value );
+}
 #elif BLAZE_AVX_MODE
 {
    return _mm256_floor_pd((~a).eval().value);
@@ -125,16 +126,6 @@ BLAZE_ALWAYS_INLINE const SIMDdouble floor( const SIMDf64<T>& a ) noexcept
 {
     return _mm_floor_pd((~a).eval().value);
 }
-#elif BLAZE_SLEEF_MODE
-#  if ( BLAZE_AVX512F_MODE || BLAZE_MIC_MODE )
-{
-   return Sleef_floord8_avx512f( (~a).eval().value );
-}
-#  elif BLAZE_SSE_MODE
-{
-   return Sleef_floord2( (~a).eval().value );
-}
-#  endif
 #else
 = delete;
 #endif

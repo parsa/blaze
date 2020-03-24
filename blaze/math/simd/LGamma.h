@@ -40,13 +40,15 @@
 // Includes
 //*************************************************************************************************
 
+#if BLAZE_SLEEF_MODE
+#  include <sleef.h>
+#endif
 #include <blaze/math/simd/BasicTypes.h>
 #include <blaze/system/Inline.h>
 #include <blaze/system/Vectorization.h>
 
 
 namespace blaze {
-
 
 //=================================================================================================
 //
@@ -66,25 +68,13 @@ namespace blaze {
 template< typename T >  // Type of the operand
 BLAZE_ALWAYS_INLINE const SIMDfloat lgamma( const SIMDf32<T>& a ) noexcept
 #if BLAZE_SLEEF_MODE
-#  if ( BLAZE_AVX512F_MODE || BLAZE_MIC_MODE )
+#  if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
 {
-   return Sleef_lgammaf16_u10avx512f( (~a).eval().value );
-}
-#  elif BLAZE_AVX2_MODE
-{
-   return Sleef_lgammaf8_u10avx2( (~a).eval().value );
+   return Sleef_lgammaf16_u10( (~a).eval().value );
 }
 #  elif BLAZE_AVX_MODE
 {
-   return Sleef_lgammaf8_u10avx( (~a).eval().value );
-}
-#  elif BLAZE_SSE4_MODE
-{
-   return Sleef_lgammaf4_u10sse4( (~a).eval().value );
-}
-#  elif BLAZE_SSE2_MODE
-{
-   return Sleef_lgammaf4_u10sse2( (~a).eval().value );
+   return Sleef_lgammaf8_u10( (~a).eval().value );
 }
 #  elif BLAZE_SSE_MODE
 {
@@ -117,25 +107,13 @@ BLAZE_ALWAYS_INLINE const SIMDfloat lgamma( const SIMDf32<T>& a ) noexcept
 template< typename T >  // Type of the operand
 BLAZE_ALWAYS_INLINE const SIMDdouble lgamma( const SIMDf64<T>& a ) noexcept
 #if BLAZE_SLEEF_MODE
-#  if ( BLAZE_AVX512F_MODE || BLAZE_MIC_MODE )
+#  if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
 {
-   return Sleef_lgammad8_u10avx512f( (~a).eval().value );
-}
-#  elif BLAZE_AVX2_MODE
-{
-   return Sleef_lgammad4_u10avx2( (~a).eval().value );
+   return Sleef_lgammad8_u10( (~a).eval().value );
 }
 #  elif BLAZE_AVX_MODE
 {
-   return Sleef_lgammad4_u10avx( (~a).eval().value );
-}
-#  elif BLAZE_SSE4_MODE
-{
-   return Sleef_lgammad2_u10sse4( (~a).eval().value );
-}
-#  elif BLAZE_SSE2_MODE
-{
-   return Sleef_lgammad2_u10sse2( (~a).eval().value );
+   return Sleef_lgammad4_u10( (~a).eval().value );
 }
 #  elif BLAZE_SSE_MODE
 {

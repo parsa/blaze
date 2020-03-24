@@ -40,6 +40,9 @@
 // Includes
 //*************************************************************************************************
 
+#if BLAZE_SLEEF_MODE
+#  include <sleef.h>
+#endif
 #include <blaze/math/simd/BasicTypes.h>
 #include <blaze/system/Inline.h>
 #include <blaze/system/Vectorization.h>
@@ -65,7 +68,7 @@ namespace blaze {
 template< typename T >  // Type of the operand
 BLAZE_ALWAYS_INLINE const SIMDfloat erf( const SIMDf32<T>& a ) noexcept
 #if BLAZE_SVML_MODE
-#  if ( BLAZE_AVX512F_MODE || BLAZE_MIC_MODE )
+#  if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
 {
    return _mm512_erf_ps( (~a).eval().value );
 }
@@ -79,13 +82,9 @@ BLAZE_ALWAYS_INLINE const SIMDfloat erf( const SIMDf32<T>& a ) noexcept
 }
 #  endif
 #elif BLAZE_SLEEF_MODE
-#  if ( BLAZE_AVX512F_MODE || BLAZE_MIC_MODE )
+#  if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
 {
-   return Sleef_erff16_u10avx512f( (~a).eval().value );
-}
-#  elif BLAZE_AVX_MODE
-{
-   return Sleef_erff8_u10avx( (~a).eval().value );
+   return Sleef_erff16_u10( (~a).eval().value );
 }
 #  elif BLAZE_AVX_MODE
 {
@@ -122,7 +121,7 @@ BLAZE_ALWAYS_INLINE const SIMDfloat erf( const SIMDf32<T>& a ) noexcept
 template< typename T >  // Type of the operand
 BLAZE_ALWAYS_INLINE const SIMDdouble erf( const SIMDf64<T>& a ) noexcept
 #if BLAZE_SVML_MODE
-#  if ( BLAZE_AVX512F_MODE || BLAZE_MIC_MODE )
+#  if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
 {
    return _mm512_erf_pd( (~a).eval().value );
 }
@@ -136,9 +135,9 @@ BLAZE_ALWAYS_INLINE const SIMDdouble erf( const SIMDf64<T>& a ) noexcept
 }
 #  endif
 #elif BLAZE_SLEEF_MODE
-#  if ( BLAZE_AVX512F_MODE || BLAZE_MIC_MODE )
+#  if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
 {
-   return Sleef_erfd8_u10avx512f( (~a).eval().value );
+   return Sleef_erfd8_u10( (~a).eval().value );
 }
 #  elif BLAZE_AVX_MODE
 {

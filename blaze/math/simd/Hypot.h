@@ -40,6 +40,9 @@
 // Includes
 //*************************************************************************************************
 
+#if BLAZE_SLEEF_MODE
+#  include <sleef.h>
+#endif
 #include <blaze/math/simd/BasicTypes.h>
 #include <blaze/system/Inline.h>
 #include <blaze/system/Vectorization.h>
@@ -69,7 +72,7 @@ namespace blaze {
 template< typename T >  // Type of the operand
 BLAZE_ALWAYS_INLINE const SIMDfloat hypot( const SIMDf32<T>& a, const SIMDf32<T>& b ) noexcept
 #if BLAZE_SVML_MODE
-#  if ( BLAZE_AVX512F_MODE || BLAZE_MIC_MODE )
+#  if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
 {
    return _mm512_hypot_ps( (~a).eval().value, (~b).eval().value );
 }
@@ -83,7 +86,7 @@ BLAZE_ALWAYS_INLINE const SIMDfloat hypot( const SIMDf32<T>& a, const SIMDf32<T>
 }
 #  endif
 #elif BLAZE_SLEEF_MODE
-#  if ( BLAZE_AVX512F_MODE || BLAZE_MIC_MODE )
+#  if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
 {
    return Sleef_hypotf16_u05avx512f( (~a).eval().value, (~b).eval().value );
 }
@@ -130,7 +133,7 @@ BLAZE_ALWAYS_INLINE const SIMDfloat hypot( const SIMDf32<T>& a, const SIMDf32<T>
 template< typename T >  // Type of the operand
 BLAZE_ALWAYS_INLINE const SIMDdouble hypot( const SIMDf64<T>& a, const SIMDf64<T>& b ) noexcept
 #if BLAZE_SVML_MODE
-#  if ( BLAZE_AVX512F_MODE || BLAZE_MIC_MODE )
+#  if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
 {
    return _mm512_hypot_pd( (~a).eval().value, (~b).eval().value );
 }
@@ -144,7 +147,7 @@ BLAZE_ALWAYS_INLINE const SIMDdouble hypot( const SIMDf64<T>& a, const SIMDf64<T
 }
 #  endif
 #elif BLAZE_SLEEF_MODE
-#  if ( BLAZE_AVX512F_MODE || BLAZE_MIC_MODE )
+#  if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
 {
    return Sleef_hypotd8_u05avx512f( (~a).eval().value, (~b).eval().value );
 }
