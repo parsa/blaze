@@ -15121,6 +15121,31 @@
 // limitation for a large number of operations!
 //
 //
+// \n \section sleef Sleef
+// <hr>
+//
+// For several complex operations \b Blaze can make use of the Sleef library for vectorization
+// (https://github.com/shibatch/sleef). This compilation switch enables/disables the vectorization
+// by means of Sleef. In case the switch is set to 1, \b Blaze uses Sleef for instance for the
+// vectorized computation of trigonometric functions (i.e. \c sin(), \c cos(), \c tan(), etc.)
+// and exponential functions (i.e. \c exp(), \c log(), ...).
+
+   \code
+   #define BLAZE_USE_SLEEF 1
+   \endcode
+
+// It is also possible to enable/disable Sleef vectorization via command line by defining this
+// symbol manually before including any \b Blaze header file:
+
+   \code
+   g++ ... -DBLAZE_USE_SLEEF=1 ...
+   \endcode
+
+   \code
+   #define BLAZE_USE_SLEEF 1
+   #include <blaze/Blaze.h>
+   \endcode
+
 // \n \section thresholds Thresholds
 // <hr>
 //
