@@ -2695,17 +2695,19 @@
 // Note that in case of sparse vectors only the non-zero elements are taken into account!
 //
 //
-// \n \subsection vector_operations_log log() / log2() / log10()
+// \n \subsection vector_operations_log log() / log2() / log10() / log1p() / lgamma()
 //
-// The \c log(), \c log2() and \c log10() functions can be used to compute the natural, binary
-// and common logarithm of each element of a vector:
+// The \c log(), \c log2(), \c log10(), \c log1p() and \c lgamma() functions can be used to
+// compute the natural, binary and common logarithm of each element of a vector:
 
    \code
    blaze::StaticVector<double,3UL> a, b;
 
-   b = log( a );    // Computes the natural logarithm of each element
-   b = log2( a );   // Computes the binary logarithm of each element
-   b = log10( a );  // Computes the common logarithm of each element
+   b = log( a );     // Computes the natural logarithm of each element
+   b = log2( a );    // Computes the binary logarithm of each element
+   b = log10( a );   // Computes the common logarithm of each element
+   b = log1p( a );   // Computes the natural logarithm of x+1 of each element
+   b = lgamma( a );  // Computes the natural logarithm of the absolute value of the gamma function
    \endcode
 
 // \n \subsection vector_operations_trigonometric_functions sin() / cos() / tan() / asin() / acos() / atan()
@@ -5972,17 +5974,19 @@
 // Note that in case of sparse matrices only the non-zero elements are taken into account!
 //
 //
-// \n \subsection matrix_operators_log log() / log2() / log10()
+// \n \subsection matrix_operators_log log() / log2() / log10() / log1p() / lgamma()
 //
-// The \c log(), \c log2() and \c log10() functions can be used to compute the natural, binary
-// and common logarithm of each element of a matrix:
+// The \c log(), \c log2(), \c log10(), \c log1p() and \c lgamma() functions can be used to
+// compute the natural, binary and common logarithm of each element of a matrix:
 
    \code
    blaze::StaticMatrix<double,3UL,3UL> A, B;
 
-   B = log( A );    // Computes the natural logarithm of each element
-   B = log2( A );   // Computes the binary logarithm of each element
-   B = log10( A );  // Computes the common logarithm of each element
+   B = log( A );     // Computes the natural logarithm of each element
+   B = log2( A );    // Computes the binary logarithm of each element
+   B = log10( A );   // Computes the common logarithm of each element
+   B = log1p( A );   // Computes the natural logarithm of x+1 of each element
+   B = lgamma( A );  // Computes the natural logarithm of the absolute value of the gamma function
    \endcode
 
 // \n \subsection matrix_operators_trigonometric_functions sin() / cos() / tan() / asin() / acos() / atan()
@@ -14959,7 +14963,7 @@
    #define BLAZE_DEFAULT_TRANSPOSE_FLAG blaze::columnVector
    \endcode
 
-// Alternatively the default transpose flag can be specified via command line or by defining this
+// Alternatively the default transpose flag can be specified via command line by defining this
 // symbol manually before including any \b Blaze header file:
 
    \code
@@ -14991,7 +14995,7 @@
    #define BLAZE_DEFAULT_STORAGE_ORDER blaze::rowMajor
    \endcode
 
-// Alternatively the default storage order can be specified via command line or by defining this
+// Alternatively the default storage order can be specified via command line by defining this
 // symbol manually before including any \b Blaze header file:
 
    \code
@@ -15042,8 +15046,8 @@
    #define BLAZE_BLAS_INCLUDE_FILE <cblas.h>
    \endcode
 
-// Alternatively, all settings can be specified via command line or by defining the symbols
-// manually before including any \b Blaze header file:
+// Alternatively, all settings can be specified via command line by defining the symbols manually
+// before including any \b Blaze header file:
 
    \code
    g++ ... -DBLAZE_BLAS_MODE=1 -DBLAZE_BLAS_IS_64BIT=1 -DBLAZE_BLAS_IS_PARALLEL=1 -DBLAZE_BLAS_INCLUDE_FILE='<cblas.h>' ...
@@ -15073,8 +15077,8 @@
    #define BLAZE_CACHE_SIZE 3145728UL;
    \endcode
 
-// The cache size can also be specified via command line or by defining this symbol manually
-// before including any \b Blaze header file:
+// The cache size can also be specified via command line by defining this symbol manually before
+// including any \b Blaze header file:
 
    \code
    g++ ... -DBLAZE_CACHE_SIZE=3145728 ...
@@ -15098,7 +15102,7 @@
    #define BLAZE_USE_VECTORIZATION 1
    \endcode
 
-// It is also possible to (de-)activate vectorization via command line or by defining this symbol
+// It is also possible to (de-)activate vectorization via command line by defining this symbol
 // manually before including any \b Blaze header file:
 
    \code
@@ -15147,8 +15151,8 @@
    #define BLAZE_DEFAULT_ALIGNMENT_FLAG blaze::aligned
    \endcode
 
-// Alternatively it is possible set the default alignment flag via command line or by defining
-// this symbol manually before including any \b Blaze header file:
+// Alternatively it is possible set the default alignment flag via command line by defining this
+// symbol manually before including any \b Blaze header file:
 
    \code
    g++ ... -DBLAZE_DEFAULT_ALIGNMENT_FLAG=blaze::aligned ...
@@ -15183,7 +15187,7 @@
    #define BLAZE_DEFAULT_PADDING_FLAG blaze::padded
    \endcode
 
-// Alternatively it is possible to define the default padding flag via command line or by defining
+// Alternatively it is possible to define the default padding flag via command line by defining
 // this symbol manually before including any \b Blaze header file:
 
    \code
@@ -15218,7 +15222,7 @@
    #define BLAZE_USE_STREAMING 1
    \endcode
 
-// Alternatively streaming can be (de-)activated via command line or by defining this symbol
+// Alternatively streaming can be (de-)activated via command line by defining this symbol
 // manually before including any \b Blaze header file:
 
    \code
@@ -18068,8 +18072,8 @@
    #define BLAZE_DEFAULT_PADDING_FLAG blaze::padded
    \endcode
 
-// Alternatively it is possible to (de-)activate padding via command line or by defining this
-// symbol manually before including any \b Blaze header file:
+// Alternatively it is possible to (de-)activate padding via command line by defining this symbol
+// manually before including any \b Blaze header file:
 
    \code
    g++ ... -BLAZE_DEFAULT_PADDING_FLAG=blaze::padded ...
@@ -18124,8 +18128,8 @@
    #define BLAZE_DEFAULT_ALIGNMENT_FLAG blaze::aligned
    \endcode
 
-// Alternatively it is possible set the default alignment flag via command line or by defining
-// this symbol manually before including any \b Blaze header file:
+// Alternatively it is possible set the default alignment flag via command line by defining this
+// symbol manually before including any \b Blaze header file:
 
    \code
    g++ ... -DBLAZE_DEFAULT_ALIGNMENT_FLAG=blaze::aligned ...
@@ -18149,7 +18153,7 @@
    #define BLAZE_USE_VECTORIZATION 1
    \endcode
 
-// It is also possible to (de-)activate vectorization via command line or by defining this symbol
+// It is also possible to (de-)activate vectorization via command line by defining this symbol
 // manually before including any \b Blaze header file:
 
    \code
@@ -18211,7 +18215,7 @@
    #define BLAZE_USE_VECTORIZATION 1
    \endcode
 
-// It is also possible to (de-)activate vectorization via command line or by defining this symbol
+// It is also possible to (de-)activate vectorization via command line by defining this symbol
 // manually before including any \b Blaze header file:
 
    \code
