@@ -360,12 +360,10 @@
 // In case the Sleef mode is disabled, the Blaze library chooses default, non-vectorized
 // functionality for the operations.
 */
-#ifndef BLAZE_SLEEF_MODE
-#  if BLAZE_USE_VECTORIZATION && defined(__SLEEF_H__) && ( BLAZE_SSE_MODE || BLAZE_AVX_MODE || BLAZE_AVX512F_MODE )
-#    define BLAZE_SLEEF_MODE 1
-#  else
-#    define BLAZE_SLEEF_MODE 0
-#  endif
+#if BLAZE_USE_VECTORIZATION && BLAZE_USE_SLEEF
+#  define BLAZE_SLEEF_MODE 1
+#else
+#  define BLAZE_SLEEF_MODE 0
 #endif
 //*************************************************************************************************
 
@@ -383,6 +381,7 @@
 */
 #define BLAZE_FUNCTIONAL_SIMD_MODE ( BLAZE_SLEEF_MODE || BLAZE_SVML_MODE )
 //*************************************************************************************************
+
 
 
 

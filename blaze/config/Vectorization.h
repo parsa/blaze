@@ -50,7 +50,7 @@
 //  - Deactivated: \b 0
 //  - Activated  : \b 1 (default)
 //
-// \note It is possible to (de-)activate vectorization via command line or by defining this
+// \note It is possible to (de-)activate vectorization via command line by defining this
 // symbol manually before including any Blaze header file:
 
    \code
@@ -60,5 +60,33 @@
 */
 #ifndef BLAZE_USE_VECTORIZATION
 #define BLAZE_USE_VECTORIZATION 1
+#endif
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Compilation switch for enabling/disabling vectorization by means of the Sleef library.
+// \ingroup config
+//
+// For several complex operations Blaze can make use of the Sleef library for vectorization
+// (https://github.com/shibatch/sleef). This compilation switch enables/disables the vectorization
+// by means of Sleef. In case the switch is set to 1, Blaze uses Sleef for instance for the
+// vectorized computation of trigonometric functions (i.e. \c sin(), \c cos(), \c tan(), etc.)
+// and exponential functions (i.e. \c exp(), \c log(), ...).
+//
+// Possible settings for the Sleef switch:
+//  - Deactivated: \b 0 (default)
+//  - Activated  : \b 1
+//
+// \note It is possible to enable/disable Sleef vectorization via command line by defining this
+// symbol manually before including any Blaze header file:
+
+   \code
+   #define BLAZE_USE_SLEEF 1
+   #include <blaze/Blaze.h>
+   \endcode
+*/
+#ifndef BLAZE_USE_SLEEF
+#define BLAZE_USE_SLEEF 0
 #endif
 //*************************************************************************************************
