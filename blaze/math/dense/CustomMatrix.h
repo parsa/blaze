@@ -45,7 +45,10 @@
 #include <utility>
 #include <blaze/math/Aliases.h>
 #include <blaze/math/AlignmentFlag.h>
+#include <blaze/math/constraints/ColumnMajorMatrix.h>
+#include <blaze/math/constraints/DenseMatrix.h>
 #include <blaze/math/constraints/Diagonal.h>
+#include <blaze/math/constraints/RowMajorMatrix.h>
 #include <blaze/math/constraints/Symmetric.h>
 #include <blaze/math/dense/DenseIterator.h>
 #include <blaze/math/dense/Forward.h>
@@ -65,6 +68,8 @@
 #include <blaze/math/shims/PrevMultiple.h>
 #include <blaze/math/shims/Serial.h>
 #include <blaze/math/SIMD.h>
+#include <blaze/math/typetraits/CustomOppositeType.h>
+#include <blaze/math/typetraits/CustomTransposeType.h>
 #include <blaze/math/typetraits/HasConstDataAccess.h>
 #include <blaze/math/typetraits/HasMutableDataAccess.h>
 #include <blaze/math/typetraits/HasSIMDAdd.h>
@@ -91,6 +96,7 @@
 #include <blaze/util/algorithms/Min.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/AlignmentCheck.h>
+#include <blaze/util/constraints/Const.h>
 #include <blaze/util/constraints/Pointer.h>
 #include <blaze/util/constraints/Reference.h>
 #include <blaze/util/constraints/Vectorizable.h>
@@ -418,10 +424,10 @@ class CustomMatrix
    using ResultType = RT;
 
    //! Result type with opposite storage order for expression template evaluations.
-   using OppositeType = OppositeType_t<RT>;
+   using OppositeType = CustomOppositeType_t<RT>;
 
    //! Transpose type for expression template evaluations.
-   using TransposeType = TransposeType_t<RT>;
+   using TransposeType = CustomTransposeType_t<RT>;
 
    using ElementType   = Type;                      //!< Type of the matrix elements.
    using SIMDType      = SIMDTrait_t<ElementType>;  //!< SIMD type of the matrix elements.
@@ -487,7 +493,7 @@ class CustomMatrix
    //**Destructor**********************************************************************************
    /*!\name Destructor */
    //@{
-   ~CustomMatrix() = default;
+   inline ~CustomMatrix();
    //@}
    //**********************************************************************************************
 
@@ -881,6 +887,32 @@ inline CustomMatrix<Type,AF,PF,SO,RT>::CustomMatrix( CustomMatrix&& m ) noexcept
    m.v_  = nullptr;
 
    BLAZE_INTERNAL_ASSERT( m.data() == nullptr, "Invalid data reference detected" );
+}
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  DESTRUCTOR
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*!\brief The destructor for CustomMatrix.
+*/
+template< typename Type     // Data type of the matrix
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , bool SO           // Storage order
+        , typename RT >     // Result type
+inline CustomMatrix<Type,AF,PF,SO,RT>::~CustomMatrix()
+{
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( RT );
+   BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( RT );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_CONST( RT );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_VOLATILE( RT );
 }
 //*************************************************************************************************
 
@@ -3359,10 +3391,10 @@ class CustomMatrix<Type,AF,PF,true,RT>
    using ResultType = RT;
 
    //! Result type with opposite storage order for expression template evaluations.
-   using OppositeType = OppositeType_t<RT>;
+   using OppositeType = CustomOppositeType_t<RT>;
 
    //! Transpose type for expression template evaluations.
-   using TransposeType = TransposeType_t<RT>;
+   using TransposeType = CustomTransposeType_t<RT>;
 
    using ElementType   = Type;                      //!< Type of the matrix elements.
    using SIMDType      = SIMDTrait_t<ElementType>;  //!< SIMD type of the matrix elements.
@@ -3428,7 +3460,7 @@ class CustomMatrix<Type,AF,PF,true,RT>
    //**Destructor**********************************************************************************
    /*!\name Destructor */
    //@{
-   ~CustomMatrix() = default;
+   inline ~CustomMatrix();
    //@}
    //**********************************************************************************************
 
@@ -3811,6 +3843,33 @@ inline CustomMatrix<Type,AF,PF,true,RT>::CustomMatrix( CustomMatrix&& m ) noexce
    m.v_  = nullptr;
 
    BLAZE_INTERNAL_ASSERT( m.data() == nullptr, "Invalid data reference detected" );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  DESTRUCTOR
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief The destructor for CustomMatrix.
+*/
+template< typename Type     // Data type of the matrix
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , typename RT >     // Result type
+inline CustomMatrix<Type,AF,PF,true,RT>::~CustomMatrix()
+{
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( RT );
+   BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( RT );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_CONST( RT );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_VOLATILE( RT );
 }
 /*! \endcond */
 //*************************************************************************************************
