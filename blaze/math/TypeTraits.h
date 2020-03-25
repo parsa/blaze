@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <blaze/math/typetraits/CustomTransposeType.h>
 #include <blaze/math/typetraits/HasAbs.h>
 #include <blaze/math/typetraits/HasAcos.h>
 #include <blaze/math/typetraits/HasAcosh.h>
