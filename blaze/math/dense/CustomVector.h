@@ -66,6 +66,7 @@
 #include <blaze/math/traits/CrossTrait.h>
 #include <blaze/math/traits/DivTrait.h>
 #include <blaze/math/traits/MultTrait.h>
+#include <blaze/math/typetraits/CustomTransposeType.h>
 #include <blaze/math/typetraits/HasConstDataAccess.h>
 #include <blaze/math/typetraits/HasMutableDataAccess.h>
 #include <blaze/math/typetraits/HasSIMDAdd.h>
@@ -85,6 +86,7 @@
 #include <blaze/system/Thresholds.h>
 #include <blaze/util/AlignmentCheck.h>
 #include <blaze/util/Assert.h>
+#include <blaze/util/constraints/Const.h>
 #include <blaze/util/constraints/Pointer.h>
 #include <blaze/util/constraints/Reference.h>
 #include <blaze/util/constraints/Vectorizable.h>
@@ -405,7 +407,7 @@ class CustomVector
    using ResultType = RT;
 
    //! Transpose type for expression template evaluations.
-   using TransposeType = TransposeType_t<ResultType>;
+   using TransposeType = CustomTransposeType_t<RT>;
 
    using ElementType   = Type;                      //!< Type of the vector elements.
    using SIMDType      = SIMDTrait_t<ElementType>;  //!< SIMD type of the vector elements.
@@ -470,7 +472,7 @@ class CustomVector
    //**Destructor**********************************************************************************
    /*!\name Destructor */
    //@{
-   ~CustomVector() = default;
+   inline ~CustomVector();
    //@}
    //**********************************************************************************************
 
@@ -679,8 +681,6 @@ class CustomVector
    BLAZE_CONSTRAINT_MUST_NOT_BE_POINTER_TYPE( Type );
    BLAZE_CONSTRAINT_MUST_NOT_BE_REFERENCE_TYPE( Type );
    BLAZE_CONSTRAINT_MUST_NOT_BE_VOLATILE( Type );
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( RT );
-   BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( RT, TF );
    /*! \endcond */
    //**********************************************************************************************
 };
@@ -823,6 +823,32 @@ inline CustomVector<Type,AF,PF,TF,RT>::CustomVector( CustomVector&& v ) noexcept
    v.v_    = nullptr;
 
    BLAZE_INTERNAL_ASSERT( v.data() == nullptr, "Invalid data reference detected" );
+}
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  DESTRUCTOR
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*!\brief The destructor for CustomVector.
+*/
+template< typename Type     // Data type of the vector
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , bool TF           // Transpose flag
+        , typename RT >     // Result type
+inline CustomVector<Type,AF,PF,TF,RT>::~CustomVector()
+{
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( RT );
+   BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( RT, TF );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_CONST( RT );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_VOLATILE( RT );
 }
 //*************************************************************************************************
 
@@ -2738,7 +2764,7 @@ class CustomVector<Type,AF,padded,TF,RT>
    using ResultType = RT;
 
    //! Transpose type for expression template evaluations.
-   using TransposeType = TransposeType_t<ResultType>;
+   using TransposeType = CustomTransposeType_t<RT>;
 
    using ElementType   = Type;                      //!< Type of the vector elements.
    using SIMDType      = SIMDTrait_t<ElementType>;  //!< SIMD type of the vector elements.
@@ -2802,7 +2828,7 @@ class CustomVector<Type,AF,padded,TF,RT>
    //**Destructor**********************************************************************************
    /*!\name Destructor */
    //@{
-   ~CustomVector() = default;
+   inline ~CustomVector();
    //@}
    //**********************************************************************************************
 
@@ -3000,8 +3026,6 @@ class CustomVector<Type,AF,padded,TF,RT>
    BLAZE_CONSTRAINT_MUST_NOT_BE_POINTER_TYPE( Type );
    BLAZE_CONSTRAINT_MUST_NOT_BE_REFERENCE_TYPE( Type );
    BLAZE_CONSTRAINT_MUST_NOT_BE_VOLATILE( Type );
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( RT );
-   BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( RT, TF );
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -3128,6 +3152,33 @@ inline CustomVector<Type,AF,padded,TF,RT>::CustomVector( CustomVector&& v ) noex
    v.v_        = nullptr;
 
    BLAZE_INTERNAL_ASSERT( v.data() == nullptr, "Invalid data reference detected" );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  DESTRUCTOR
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief The destructor for CustomVector.
+*/
+template< typename Type     // Data type of the vector
+        , AlignmentFlag AF  // Alignment flag
+        , bool TF           // Transpose flag
+        , typename RT >     // Result type
+inline CustomVector<Type,AF,padded,TF,RT>::~CustomVector()
+{
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( RT );
+   BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( RT, TF );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_CONST( RT );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_VOLATILE( RT );
 }
 /*! \endcond */
 //*************************************************************************************************
