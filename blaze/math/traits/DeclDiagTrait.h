@@ -67,16 +67,7 @@ template< typename, typename = void > struct DeclDiagTraitEval;
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename T >
-auto evalDeclDiagTrait( T& )
-   -> typename DeclDiagTraitEval<T>::Type;
-
-template< typename T >
-auto evalDeclDiagTrait( const T& )
-   -> typename DeclDiagTrait<T>::Type;
-
-template< typename T >
-auto evalDeclDiagTrait( const volatile T& )
-   -> typename DeclDiagTrait<T>::Type;
+auto evalDeclDiagTrait( const volatile T& ) -> DeclDiagTraitEval<T>;
 /*! \endcond */
 //*************************************************************************************************
 
@@ -88,11 +79,10 @@ auto evalDeclDiagTrait( const volatile T& )
 // \section decldiagtrait_general General
 //
 // The DeclDiagTrait class template offers the possibility to select the resulting data type
-// of a generic decldiag() operation on the given type \a MT. DeclDiagTrait defines the nested
-// type \a Type, which represents the resulting data type of the decldiag() operation. In case
-// the given data type is not a dense or sparse matrix type, the resulting data type \a Type is
-// set to \a INVALID_TYPE. Note that \a const and \a volatile qualifiers and reference modifiers
-// are generally ignored.
+// of a generic decldiag() operation on the given type \a MT. In case the given type \a MT is
+// a dense or sparse matrix type, DeclDiagTrait defines the nested type \a Type, which represents
+// the resulting data type of the decldiag() operation. Otherwise there is no nested type \a Type.
+// Note that \a const and \a volatile qualifiers and reference modifiers are generally ignored.
 //
 //
 // \section decldiagtrait_specializations Creating custom specializations
@@ -133,14 +123,8 @@ auto evalDeclDiagTrait( const volatile T& )
 */
 template< typename MT >  // Type of the matrix
 struct DeclDiagTrait
-{
- public:
-   //**********************************************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   using Type = decltype( evalDeclDiagTrait( std::declval<MT&>() ) );
-   /*! \endcond */
-   //**********************************************************************************************
-};
+   : public decltype( evalDeclDiagTrait( std::declval<MT&>() ) )
+{};
 //*************************************************************************************************
 
 
@@ -170,9 +154,7 @@ using DeclDiagTrait_t = typename DeclDiagTrait<MT>::Type;
 template< typename MT  // Type of the matrix
         , typename >   // Restricting condition
 struct DeclDiagTraitEval
-{
-   using Type = INVALID_TYPE;
-};
+{};
 /*! \endcond */
 //*************************************************************************************************
 
