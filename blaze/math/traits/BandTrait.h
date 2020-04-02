@@ -66,28 +66,10 @@ template< typename, ptrdiff_t, typename = void > struct BandTraitEval2;
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< ptrdiff_t I, typename T >
-auto evalBandTrait( T& )
-   -> typename BandTraitEval1<T,I>::Type;
+auto evalBandTrait( const volatile T& ) -> BandTraitEval1<T,I>;
 
 template< typename T >
-auto evalBandTrait( T& )
-   -> typename BandTraitEval2<T,inf>::Type;
-
-template< ptrdiff_t I, typename T >
-auto evalBandTrait( const T& )
-   -> typename BandTrait<T,I>::Type;
-
-template< typename T >
-auto evalBandTrait( const T& )
-   -> typename BandTrait<T>::Type;
-
-template< ptrdiff_t I, typename T >
-auto evalBandTrait( const volatile T& )
-   -> typename BandTrait<T,I>::Type;
-
-template< typename T >
-auto evalBandTrait( const volatile T& )
-   -> typename BandTrait<T>::Type;
+auto evalBandTrait( const volatile T& ) -> BandTraitEval1<T,inf>;
    /*! \endcond */
 //*************************************************************************************************
 
@@ -99,11 +81,10 @@ auto evalBandTrait( const volatile T& )
 // \section bandtrait_general General
 //
 // The BandTrait class template offers the possibility to select the resulting data type when
-// creating a view on a specific band of a dense or sparse matrix. BandTrait defines the nested
-// type \a Type, which represents the resulting data type of the band operation. In case the
-// given data type is not a dense or sparse matrix type, the resulting data type \a Type is
-// set to \a INVALID_TYPE. Note that \a const and \a volatile qualifiers and reference modifiers
-// are generally ignored.
+// creating a view on a specific band of a dense or sparse matrix. In case the given type \a MT
+// is a dense or sparse matrix type, BandTrait defines the nested type \a Type, which represents
+// the resulting data type of the band operation. Otherwise there is no nested type \a Type.
+// Note that \a const and \a volatile qualifiers and reference modifiers are generally ignored.
 //
 //
 // \section bandtrait_specializations Creating custom specializations
@@ -141,14 +122,8 @@ auto evalBandTrait( const volatile T& )
 template< typename MT          // Type of the matrix
         , ptrdiff_t... CBAs >  // Compile time band arguments
 struct BandTrait
-{
- public:
-   //**********************************************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   using Type = decltype( evalBandTrait<CBAs...>( std::declval<MT&>() ) );
-   /*! \endcond */
-   //**********************************************************************************************
-};
+   : public decltype( evalBandTrait<CBAs...>( std::declval<MT&>() ) )
+{};
 //*************************************************************************************************
 
 
@@ -180,9 +155,8 @@ template< typename MT  // Type of the matrix
         , ptrdiff_t I  // Compile time band index
         , typename >   // Restricting condition
 struct BandTraitEval1
-{
-   using Type = typename BandTraitEval2<MT,I>::Type;
-};
+   : public BandTraitEval2<MT,I>
+{};
 /*! \endcond */
 //*************************************************************************************************
 
@@ -196,9 +170,7 @@ template< typename MT  // Type of the matrix
         , ptrdiff_t I  // Compile time band index
         , typename >   // Restricting condition
 struct BandTraitEval2
-{
-   using Type = INVALID_TYPE;
-};
+{};
 /*! \endcond */
 //*************************************************************************************************
 
