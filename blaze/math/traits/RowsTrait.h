@@ -41,7 +41,6 @@
 //*************************************************************************************************
 
 #include <utility>
-#include <blaze/util/InvalidType.h>
 #include <blaze/util/Types.h>
 
 
@@ -64,17 +63,8 @@ template< typename, size_t, typename = void > struct RowsTraitEval2;
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< size_t M, typename T >
-auto evalRowsTrait( T& )
-   -> typename RowsTraitEval1<T,M>::Type;
-
-template< size_t M, typename T >
-auto evalRowsTrait( const T& )
-   -> typename RowsTrait<T,M>::Type;
-
 template< size_t M , typename T >
-auto evalRowsTrait( const volatile T& )
-   -> typename RowsTrait<T,M>::Type;
+auto evalRowsTrait( const volatile T& ) -> RowsTraitEval1<T,M>;
 /*! \endcond */
 //*************************************************************************************************
 
@@ -86,11 +76,10 @@ auto evalRowsTrait( const volatile T& )
 // \section rowstrait_general General
 //
 // The RowsTrait class template offers the possibility to select the resulting data type when
-// creating a view on a set of rows of a dense or sparse matrix. RowsTrait defines the nested
-// type \a Type, which represents the resulting data type of the rows operation. In case the
-// given data type is not a dense or sparse matrix type, the resulting data type \a Type is
-// set to \a INVALID_TYPE. Note that \a const and \a volatile qualifiers and reference modifiers
-// are generally ignored.
+// creating a view on a set of rows of a dense or sparse matrix. In case the given type \a MT
+// is a dense or sparse matrix type, RowsTrait defines the nested type \a Type, which represents
+// the resulting data type of the rows operation. Otherwise there is no nested type \a Type.
+// Note that \a const and \a volatile qualifiers and reference modifiers are generally ignored.
 //
 //
 // \section rowstrait_specializations Creating custom specializations
@@ -128,14 +117,8 @@ auto evalRowsTrait( const volatile T& )
 template< typename MT  // Type of the matrix
         , size_t M >   // Number of compile time indices
 struct RowsTrait
-{
- public:
-   //**********************************************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   using Type = decltype( evalRowsTrait<M>( std::declval<MT&>() ) );
-   /*! \endcond */
-   //**********************************************************************************************
-};
+   : public decltype( evalRowsTrait<M>( std::declval<MT&>() ) )
+{};
 //*************************************************************************************************
 
 
@@ -167,12 +150,8 @@ template< typename MT  // Type of the matrix
         , size_t M     // Number of compile time indices
         , typename >   // Restricting condition
 struct RowsTraitEval1
-{
- public:
-   //**********************************************************************************************
-   using Type = typename RowsTraitEval2<MT,M>::Type;
-   //**********************************************************************************************
-};
+   : public RowsTraitEval2<MT,M>
+{};
 /*! \endcond */
 //*************************************************************************************************
 
@@ -186,12 +165,7 @@ template< typename MT  // Type of the matrix
         , size_t M     // Number of compile time indices
         , typename >   // Restricting condition
 struct RowsTraitEval2
-{
- public:
-   //**********************************************************************************************
-   using Type = INVALID_TYPE;
-   //**********************************************************************************************
-};
+{};
 /*! \endcond */
 //*************************************************************************************************
 
