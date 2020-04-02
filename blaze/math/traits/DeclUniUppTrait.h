@@ -45,7 +45,6 @@
 #include <blaze/math/typetraits/IsMatrix.h>
 #include <blaze/math/typetraits/Size.h>
 #include <blaze/util/EnableIf.h>
-#include <blaze/util/InvalidType.h>
 
 
 namespace blaze {
@@ -67,16 +66,7 @@ template< typename, typename = void > struct DeclUniUppTraitEval;
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename T >
-auto evalDeclUniUppTrait( T& )
-   -> typename DeclUniUppTraitEval<T>::Type;
-
-template< typename T >
-auto evalDeclUniUppTrait( const T& )
-   -> typename DeclUniUppTrait<T>::Type;
-
-template< typename T >
-auto evalDeclUniUppTrait( const volatile T& )
-   -> typename DeclUniUppTrait<T>::Type;
+auto evalDeclUniUppTrait( const volatile T& ) -> DeclUniUppTraitEval<T>;
 /*! \endcond */
 //*************************************************************************************************
 
@@ -88,10 +78,10 @@ auto evalDeclUniUppTrait( const volatile T& )
 // \section decluniupptrait_general General
 //
 // The DeclUniUppTrait class template offers the possibility to select the resulting data type
-// of a generic decluniupp() operation on the given type \a MT. DeclUniUppTrait defines the nested
-// type \a Type, which represents the resulting data type of the decluniupp() operation. In case
-// the given data type is not a dense or sparse matrix type, the resulting data type \a Type is
-// set to \a INVALID_TYPE. Note that \a const and \a volatile qualifiers and reference modifiers
+// of a generic decluniupp() operation on the given type \a MT. In case the given type \a MT
+// is a dense or sparse matrix type, DeclUniUppTrait defines the nested type \a Type, which
+// represents the resulting data type of the decluniupp() operation. Otherwise there is no
+// nested type \a Type. Note that \a const and \a volatile qualifiers and reference modifiers
 // are generally ignored.
 //
 //
@@ -134,14 +124,8 @@ auto evalDeclUniUppTrait( const volatile T& )
 */
 template< typename MT >  // Type of the matrix
 struct DeclUniUppTrait
-{
- public:
-   //**********************************************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   using Type = decltype( evalDeclUniUppTrait( std::declval<MT&>() ) );
-   /*! \endcond */
-   //**********************************************************************************************
-};
+   : public decltype( evalDeclUniUppTrait( std::declval<MT&>() ) )
+{};
 //*************************************************************************************************
 
 
@@ -171,9 +155,7 @@ using DeclUniUppTrait_t = typename DeclUniUppTrait<MT>::Type;
 template< typename MT  // Type of the matrix
         , typename >   // Restricting condition
 struct DeclUniUppTraitEval
-{
-   using Type = INVALID_TYPE;
-};
+{};
 /*! \endcond */
 //*************************************************************************************************
 
