@@ -52,8 +52,9 @@ default: all
 
 all: $(BIN) addtrait bandtrait columntrait columnstrait crosstrait decldiagtrait declhermtrait \
      declidtrait decllowtrait declstrlowtrait declstrupptrait declsymtrait declunilowtrait \
-     decluniupptrait declupptrait divtrait elementstrait expandtrait krontrait maptrait \
-     multtrait rowtrait rowstrait schurtrait solvetrait submatrixtrait subtrait subvectortrait
+     decluniupptrait declupptrait declzerotrait divtrait elementstrait expandtrait krontrait \
+     maptrait multtrait rowtrait rowstrait schurtrait solvetrait submatrixtrait subtrait \
+     subvectortrait
 
 essential: all
 
@@ -139,6 +140,11 @@ declupptrait:
 	@echo "Building the DeclUppTrait tests..."
 	@$(MAKE) --no-print-directory -C ./declupptrait $(MAKECMDGOALS)
 
+declzerotrait:
+	@echo
+	@echo "Building the DeclZeroTrait tests..."
+	@$(MAKE) --no-print-directory -C ./declzerotrait $(MAKECMDGOALS)
+
 divtrait:
 	@echo
 	@echo "Building the DivTrait tests..."
@@ -223,6 +229,7 @@ reset:
 	@$(MAKE) --no-print-directory -C ./declunilowtrait reset
 	@$(MAKE) --no-print-directory -C ./decluniupptrait reset
 	@$(MAKE) --no-print-directory -C ./declupptrait reset
+	@$(MAKE) --no-print-directory -C ./declzerotrait reset
 	@$(MAKE) --no-print-directory -C ./divtrait reset
 	@$(MAKE) --no-print-directory -C ./elementstrait reset
 	@$(MAKE) --no-print-directory -C ./expandtrait reset
@@ -254,6 +261,7 @@ clean:
 	@$(MAKE) --no-print-directory -C ./declunilowtrait clean
 	@$(MAKE) --no-print-directory -C ./decluniupptrait clean
 	@$(MAKE) --no-print-directory -C ./declupptrait clean
+	@$(MAKE) --no-print-directory -C ./declzerotrait clean
 	@$(MAKE) --no-print-directory -C ./divtrait clean
 	@$(MAKE) --no-print-directory -C ./elementstrait clean
 	@$(MAKE) --no-print-directory -C ./expandtrait clean
@@ -273,5 +281,6 @@ clean:
 .PHONY: default all essential single reset clean \
         addtrait bandtrait columntrait columnstrait crosstrait decldiagtrait declhermtrait \
         declidtrait decllowtrait declstrlowtrait declstrupptrait declsymtrait declunilowtrait \
-        decluniupptrait declupptrait divtrait elementstrait expandtrait krontrait maptrait \
-        multtrait rowtrait rowstrait schurtrait solvetrait submatrixtrait subtrait subvectortrait
+        decluniupptrait declupptrait declzerotrait divtrait elementstrait expandtrait krontrait \
+        maptrait multtrait rowtrait rowstrait schurtrait solvetrait submatrixtrait subtrait \
+        subvectortrait
