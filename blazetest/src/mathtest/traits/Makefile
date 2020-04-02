@@ -52,7 +52,8 @@ default: all
 
 all: $(BIN) addtrait crosstrait decldiagtrait declhermtrait decllowtrait declstrlowtrait \
      declstrupptrait declsymtrait declunilowtrait decluniupptrait declupptrait divtrait \
-     expandtrait krontrait maptrait multtrait schurtrait solvetrait subtrait subvectortrait
+     elementstrait expandtrait krontrait maptrait multtrait schurtrait solvetrait subtrait \
+     subvectortrait
 
 essential: all
 
@@ -123,6 +124,11 @@ divtrait:
 	@echo "Building the DivTrait tests..."
 	@$(MAKE) --no-print-directory -C ./divtrait $(MAKECMDGOALS)
 
+elementstrait:
+	@echo
+	@echo "Building the ElementsTrait tests..."
+	@$(MAKE) --no-print-directory -C ./elementstrait $(MAKECMDGOALS)
+
 expandtrait:
 	@echo
 	@echo "Building the ExpandTrait tests..."
@@ -179,6 +185,7 @@ reset:
 	@$(MAKE) --no-print-directory -C ./decluniupptrait reset
 	@$(MAKE) --no-print-directory -C ./declupptrait reset
 	@$(MAKE) --no-print-directory -C ./divtrait reset
+	@$(MAKE) --no-print-directory -C ./elementstrait reset
 	@$(MAKE) --no-print-directory -C ./expandtrait reset
 	@$(MAKE) --no-print-directory -C ./krontrait reset
 	@$(MAKE) --no-print-directory -C ./maptrait reset
@@ -202,6 +209,7 @@ clean:
 	@$(MAKE) --no-print-directory -C ./decluniupptrait clean
 	@$(MAKE) --no-print-directory -C ./declupptrait clean
 	@$(MAKE) --no-print-directory -C ./divtrait clean
+	@$(MAKE) --no-print-directory -C ./elementstrait clean
 	@$(MAKE) --no-print-directory -C ./expandtrait clean
 	@$(MAKE) --no-print-directory -C ./krontrait clean
 	@$(MAKE) --no-print-directory -C ./maptrait clean
@@ -216,4 +224,5 @@ clean:
 .PHONY: default all essential single reset clean \
         addtrait crosstrait decldiagtrait declhermtrait decllowtrait declstrlowtrait \
         declstrupptrait declsymtrait declunilowtrait decluniupptrait declupptrait divtrait \
-        expandtrait krontrait maptrait multtrait schurtrait solvetrait subtrait subvectortrait
+        elementstrait expandtrait krontrait maptrait multtrait schurtrait solvetrait subtrait \
+        subvectortrait
