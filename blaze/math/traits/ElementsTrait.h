@@ -41,7 +41,6 @@
 //*************************************************************************************************
 
 #include <utility>
-#include <blaze/util/InvalidType.h>
 #include <blaze/util/Types.h>
 
 
@@ -65,16 +64,7 @@ template< typename, size_t, typename = void > struct ElementsTraitEval2;
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< size_t N, typename T >
-auto evalElementsTrait( T& )
-   -> typename ElementsTraitEval1<T,N>::Type;
-
-template< size_t N, typename T >
-auto evalElementsTrait( const T& )
-   -> typename ElementsTrait<T,N>::Type;
-
-template< size_t N, typename T >
-auto evalElementsTrait( const volatile T& )
-   -> typename ElementsTrait<T,N>::Type;
+auto evalElementsTrait( const volatile T& ) -> ElementsTraitEval1<T,N>;
 /*! \endcond */
 //*************************************************************************************************
 
@@ -86,11 +76,10 @@ auto evalElementsTrait( const volatile T& )
 // \section elementstrait_general General
 //
 // The ElementsTrait class template offers the possibility to select the resulting data type
-// when selecting elements from a dense or sparse vector. ElementsTrait defines the nested
-// type \a Type, which represents the resulting data type of the elements operation. In case
-// the given data type is not a dense or sparse vector type, the resulting data type \a Type
-// is set to \a INVALID_TYPE. Note that \a const and \a volatile qualifiers and reference
-// modifiers are generally ignored.
+// when selecting elements from a dense or sparse vector. In case the given type \a VT is a
+// dense or sparse vector type, ElementsTrait defines the nested type \a Type, which represents
+// the resulting data type of the elements operation. Otherwise there is no nested type \a Type.
+// Note that \a const and \a volatile qualifiers and reference modifiers are generally ignored.
 //
 //
 // \section elementstrait_specializations Creating custom specializations
@@ -128,14 +117,8 @@ auto evalElementsTrait( const volatile T& )
 template< typename VT  // Type of the vector
         , size_t N >   // Number of compile time indices
 struct ElementsTrait
-{
- public:
-   //**********************************************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   using Type = decltype( evalElementsTrait<N>( std::declval<VT&>() ) );
-   /*! \endcond */
-   //**********************************************************************************************
-};
+   : public decltype( evalElementsTrait<N>( std::declval<VT&>() ) )
+{};
 //*************************************************************************************************
 
 
@@ -167,12 +150,8 @@ template< typename VT  // Type of the vector
         , size_t N     // Number of compile time indices
         , typename >   // Restricting condition
 struct ElementsTraitEval1
-{
- public:
-   //**********************************************************************************************
-   using Type = typename ElementsTraitEval2<VT,N>::Type;
-   //**********************************************************************************************
-};
+   : public ElementsTraitEval2<VT,N>
+{};
 /*! \endcond */
 //*************************************************************************************************
 
@@ -186,12 +165,7 @@ template< typename VT  // Type of the vector
         , size_t N     // Number of compile time indices
         , typename >   // Restricting condition
 struct ElementsTraitEval2
-{
- public:
-   //**********************************************************************************************
-   using Type = INVALID_TYPE;
-   //**********************************************************************************************
-};
+{};
 /*! \endcond */
 //*************************************************************************************************
 
