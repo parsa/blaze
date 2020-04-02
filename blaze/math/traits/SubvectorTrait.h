@@ -42,7 +42,6 @@
 
 #include <utility>
 #include <blaze/math/Infinity.h>
-#include <blaze/util/InvalidType.h>
 #include <blaze/util/Types.h>
 
 
@@ -66,28 +65,10 @@ template< typename, size_t, size_t, typename = void > struct SubvectorTraitEval2
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< size_t I, size_t N, typename T >
-auto evalSubvectorTrait( T& )
-   -> typename SubvectorTraitEval1<T,I,N>::Type;
+auto evalSubvectorTrait( const volatile T& ) -> SubvectorTraitEval1<T,I,N>;
 
 template< typename T >
-auto evalSubvectorTrait( T& )
-   -> typename SubvectorTraitEval1<T,inf,inf>::Type;
-
-template< size_t I, size_t N, typename T >
-auto evalSubvectorTrait( const T& )
-   -> typename SubvectorTrait<T,I,N>::Type;
-
-template< typename T >
-auto evalSubvectorTrait( const T& )
-   -> typename SubvectorTrait<T>::Type;
-
-template< size_t I, size_t N, typename T >
-auto evalSubvectorTrait( const volatile T& )
-   -> typename SubvectorTrait<T,I,N>::Type;
-
-template< typename T >
-auto evalSubvectorTrait( const volatile T& )
-   -> typename SubvectorTrait<T>::Type;
+auto evalSubvectorTrait( const volatile T& ) -> SubvectorTraitEval1<T,inf,inf>;
 /*! \endcond */
 //*************************************************************************************************
 
@@ -99,11 +80,10 @@ auto evalSubvectorTrait( const volatile T& )
 // \section subvectortrait_general General
 //
 // The SubvectorTrait class template offers the possibility to select the resulting data type
-// when creating a subvector of a dense or sparse vector. SubvectorTrait defines the nested
-// type \a Type, which represents the resulting data type of the subvector operation. In case
-// the given data type is not a dense or sparse vector type, the resulting data type \a Type
-// is set to \a INVALID_TYPE. Note that \a const and \a volatile qualifiers and reference
-// modifiers are generally ignored.
+// when creating a subvector of a dense or sparse vector. In case the given type \a VT is a
+// dense or sparse vector type, SubvectorTrait defines the nested type \a Type, which represents
+// the resulting data type of the subvector operation. Otherwise there is no nested type \a Type.
+// Note that \a const and \a volatile qualifiers and reference modifiers are generally ignored.
 //
 //
 // \section subvectortrait_specializations Creating custom specializations
@@ -142,14 +122,8 @@ auto evalSubvectorTrait( const volatile T& )
 template< typename VT       // Type of the vector
         , size_t... CSAs >  // Compile time subvector arguments
 struct SubvectorTrait
-{
- public:
-   //**********************************************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   using Type = decltype( evalSubvectorTrait<CSAs...>( std::declval<VT&>() ) );
-   /*! \endcond */
-   //**********************************************************************************************
-};
+   : public decltype( evalSubvectorTrait<CSAs...>( std::declval<VT&>() ) )
+{};
 //*************************************************************************************************
 
 
@@ -182,12 +156,8 @@ template< typename VT  // Type of the vector
         , size_t N     // Number of elements
         , typename >   // Restricting condition
 struct SubvectorTraitEval1
-{
- public:
-   //**********************************************************************************************
-   using Type = typename SubvectorTraitEval2<VT,I,N>::Type;
-   //**********************************************************************************************
-};
+   : public SubvectorTraitEval2<VT,I,N>
+{};
 /*! \endcond */
 //*************************************************************************************************
 
@@ -202,12 +172,7 @@ template< typename VT  // Type of the vector
         , size_t N     // Number of elements
         , typename >   // Restricting condition
 struct SubvectorTraitEval2
-{
- public:
-   //**********************************************************************************************
-   using Type = INVALID_TYPE;
-   //**********************************************************************************************
-};
+{};
 /*! \endcond */
 //*************************************************************************************************
 
