@@ -45,7 +45,6 @@
 #include <blaze/math/typetraits/IsMatrix.h>
 #include <blaze/math/typetraits/Size.h>
 #include <blaze/util/EnableIf.h>
-#include <blaze/util/InvalidType.h>
 
 
 namespace blaze {
@@ -67,16 +66,7 @@ template< typename, typename = void > struct DeclLowTraitEval;
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename T >
-auto evalDeclLowTrait( T& )
-   -> typename DeclLowTraitEval<T>::Type;
-
-template< typename T >
-auto evalDeclLowTrait( const T& )
-   -> typename DeclLowTrait<T>::Type;
-
-template< typename T >
-auto evalDeclLowTrait( const volatile T& )
-   -> typename DeclLowTrait<T>::Type;
+auto evalDeclLowTrait( const volatile T& ) -> DeclLowTraitEval<T>;
 /*! \endcond */
 //*************************************************************************************************
 
@@ -88,11 +78,10 @@ auto evalDeclLowTrait( const volatile T& )
 // \section decllowtrait_general General
 //
 // The DeclLowTrait class template offers the possibility to select the resulting data type
-// of a generic decllow() operation on the given type \a MT. DeclLowTrait defines the nested
-// type \a Type, which represents the resulting data type of the decllow() operation. In case
-// the given data type is not a dense or sparse matrix type, the resulting data type \a Type is
-// set to \a INVALID_TYPE. Note that \a const and \a volatile qualifiers and reference modifiers
-// are generally ignored.
+// of a generic decllow() operation on the given type \a MT. In case the given type \a MT is
+// a dense or sparse matrix type, DeclLowTrait defines the nested type \a Type, which represents
+// the resulting data type of the decllow() operation. Otherwise there is no nested type \a Type.
+// Note that \a const and \a volatile qualifiers and reference modifiers are generally ignored.
 //
 //
 // \section decllowtrait_specializations Creating custom specializations
@@ -133,14 +122,8 @@ auto evalDeclLowTrait( const volatile T& )
 */
 template< typename MT >  // Type of the matrix
 struct DeclLowTrait
-{
- public:
-   //**********************************************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   using Type = decltype( evalDeclLowTrait( std::declval<MT&>() ) );
-   /*! \endcond */
-   //**********************************************************************************************
-};
+   : public decltype( evalDeclLowTrait( std::declval<MT&>() ) )
+{};
 //*************************************************************************************************
 
 
@@ -170,9 +153,7 @@ using DeclLowTrait_t = typename DeclLowTrait<MT>::Type;
 template< typename MT  // Type of the matrix
         , typename >   // Restricting condition
 struct DeclLowTraitEval
-{
-   using Type = INVALID_TYPE;
-};
+{};
 /*! \endcond */
 //*************************************************************************************************
 
