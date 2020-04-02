@@ -1220,8 +1220,11 @@ struct LowType< SymmetricMatrix<MT1,SO1,DF1,NF1>, SymmetricMatrix<MT2,SO2,DF2,NF
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, size_t I, size_t N >
 struct SubmatrixTraitEval1< MT, I, I, N, N
-                          , EnableIf_t< IsSymmetric_v<MT> &&
-                                        !IsDiagonal_v<MT> > >
+                          , EnableIf_t< I != inf && N != inf &&
+                                        IsSymmetric_v<MT> &&
+                                        !IsDiagonal_v<MT> &&
+                                        !IsUniform_v<MT> &&
+                                        !IsZero_v<MT> > >
 {
    using Type = SymmetricMatrix< typename SubmatrixTraitEval2<MT,I,I,N,N>::Type >;
 };

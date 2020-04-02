@@ -2301,7 +2301,9 @@ struct LowType< StrictlyUpperMatrix<MT1,SO1,DF1>, StrictlyUpperMatrix<MT2,SO2,DF
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, size_t I, size_t N >
 struct SubmatrixTraitEval1< MT, I, I, N, N
-                          , EnableIf_t< IsStrictlyUpper_v<MT> > >
+                          , EnableIf_t< I != inf && N != inf &&
+                                        IsStrictlyUpper_v<MT> &&
+                                        !IsZero_v<MT> > >
 {
    using Type = StrictlyUpperMatrix< typename SubmatrixTraitEval2<MT,I,I,N,N>::Type >;
 };

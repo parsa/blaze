@@ -2352,8 +2352,10 @@ struct LowType< DiagonalMatrix<MT1,SO1,DF1>, DiagonalMatrix<MT2,SO2,DF2> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, size_t I, size_t N >
 struct SubmatrixTraitEval1< MT, I, I, N, N
-                          , EnableIf_t< IsDiagonal_v<MT> &&
-                                        !IsIdentity_v<MT> > >
+                          , EnableIf_t< I != inf && N != inf &&
+                                        IsDiagonal_v<MT> &&
+                                        !IsIdentity_v<MT> &&
+                                        !IsZero_v<MT> > >
 {
    using Type = DiagonalMatrix< typename SubmatrixTraitEval2<MT,I,I,N,N>::Type >;
 };

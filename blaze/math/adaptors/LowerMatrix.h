@@ -2386,10 +2386,13 @@ struct LowType< LowerMatrix<MT1,SO1,DF1>, LowerMatrix<MT2,SO2,DF2> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, size_t I, size_t N >
 struct SubmatrixTraitEval1< MT, I, I, N, N
-                          , EnableIf_t< IsLower_v<MT> &&
+                          , EnableIf_t< I != inf && N != inf &&
+                                        IsLower_v<MT> &&
                                         !IsUniLower_v<MT> &&
                                         !IsStrictlyLower_v<MT> &&
-                                        !IsDiagonal_v<MT> > >
+                                        !IsDiagonal_v<MT> &&
+                                        !IsUniform_v<MT> &&
+                                        !IsZero_v<MT> > >
 {
    using Type = LowerMatrix< typename SubmatrixTraitEval2<MT,I,I,N,N>::Type >;
 };
