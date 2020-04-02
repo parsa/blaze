@@ -45,7 +45,6 @@
 #include <blaze/math/typetraits/IsMatrix.h>
 #include <blaze/math/typetraits/Size.h>
 #include <blaze/util/EnableIf.h>
-#include <blaze/util/InvalidType.h>
 
 
 namespace blaze {
@@ -67,16 +66,7 @@ template< typename, typename = void > struct DeclStrUppTraitEval;
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename T >
-auto evalDeclStrUppTrait( T& )
-   -> typename DeclStrUppTraitEval<T>::Type;
-
-template< typename T >
-auto evalDeclStrUppTrait( const T& )
-   -> typename DeclStrUppTrait<T>::Type;
-
-template< typename T >
-auto evalDeclStrUppTrait( const volatile T& )
-   -> typename DeclStrUppTrait<T>::Type;
+auto evalDeclStrUppTrait( const volatile T& ) -> DeclStrUppTraitEval<T>;
 /*! \endcond */
 //*************************************************************************************************
 
@@ -88,10 +78,10 @@ auto evalDeclStrUppTrait( const volatile T& )
 // \section declstrupptrait_general General
 //
 // The DeclStrUppTrait class template offers the possibility to select the resulting data type
-// of a generic declstrupp() operation on the given type \a MT. DeclStrUppTrait defines the nested
-// type \a Type, which represents the resulting data type of the declstrupp() operation. In case
-// the given data type is not a dense or sparse matrix type, the resulting data type \a Type is
-// set to \a INVALID_TYPE. Note that \a const and \a volatile qualifiers and reference modifiers
+// of a generic declstrupp() operation on the given type \a MT. In case the given type \a MT
+// is a dense or sparse matrix type, DeclStrUppTrait defines the nested type \a Type, which
+// represents the resulting data type of the declstrupp() operation. Otherwise there is no
+// nested type \a Type. Note that \a const and \a volatile qualifiers and reference modifiers
 // are generally ignored.
 //
 //
@@ -134,14 +124,8 @@ auto evalDeclStrUppTrait( const volatile T& )
 */
 template< typename MT >  // Type of the matrix
 struct DeclStrUppTrait
-{
- public:
-   //**********************************************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   using Type = decltype( evalDeclStrUppTrait( std::declval<MT&>() ) );
-   /*! \endcond */
-   //**********************************************************************************************
-};
+   : public decltype( evalDeclStrUppTrait( std::declval<MT&>() ) )
+{};
 //*************************************************************************************************
 
 
@@ -171,9 +155,7 @@ using DeclStrUppTrait_t = typename DeclStrUppTrait<MT>::Type;
 template< typename MT  // Type of the matrix
         , typename >   // Restricting condition
 struct DeclStrUppTraitEval
-{
-   using Type = INVALID_TYPE;
-};
+{};
 /*! \endcond */
 //*************************************************************************************************
 
