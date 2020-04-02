@@ -52,8 +52,8 @@ default: all
 
 all: $(BIN) addtrait crosstrait decldiagtrait declhermtrait decllowtrait declstrlowtrait \
      declstrupptrait declsymtrait declunilowtrait decluniupptrait declupptrait divtrait \
-     elementstrait expandtrait krontrait maptrait multtrait schurtrait solvetrait subtrait \
-     subvectortrait
+     elementstrait expandtrait krontrait maptrait multtrait schurtrait solvetrait \
+     submatrixtrait subtrait subvectortrait
 
 essential: all
 
@@ -159,6 +159,11 @@ solvetrait:
 	@echo "Building the SolveTrait tests..."
 	@$(MAKE) --no-print-directory -C ./solvetrait $(MAKECMDGOALS)
 
+submatrixtrait:
+	@echo
+	@echo "Building the SubmatrixTrait tests..."
+	@$(MAKE) --no-print-directory -C ./submatrixtrait $(MAKECMDGOALS)
+
 subtrait:
 	@echo
 	@echo "Building the SubTrait tests..."
@@ -192,6 +197,7 @@ reset:
 	@$(MAKE) --no-print-directory -C ./multtrait reset
 	@$(MAKE) --no-print-directory -C ./schurtrait reset
 	@$(MAKE) --no-print-directory -C ./solvetrait reset
+	@$(MAKE) --no-print-directory -C ./submatrixtrait reset
 	@$(MAKE) --no-print-directory -C ./subtrait reset
 	@$(MAKE) --no-print-directory -C ./subvectortrait reset
 
@@ -216,6 +222,7 @@ clean:
 	@$(MAKE) --no-print-directory -C ./multtrait clean
 	@$(MAKE) --no-print-directory -C ./schurtrait clean
 	@$(MAKE) --no-print-directory -C ./solvetrait clean
+	@$(MAKE) --no-print-directory -C ./submatrixtrait clean
 	@$(MAKE) --no-print-directory -C ./subtrait clean
 	@$(MAKE) --no-print-directory -C ./subvectortrait clean
 
@@ -224,5 +231,5 @@ clean:
 .PHONY: default all essential single reset clean \
         addtrait crosstrait decldiagtrait declhermtrait decllowtrait declstrlowtrait \
         declstrupptrait declsymtrait declunilowtrait decluniupptrait declupptrait divtrait \
-        elementstrait expandtrait krontrait maptrait multtrait schurtrait solvetrait subtrait \
-        subvectortrait
+        elementstrait expandtrait krontrait maptrait multtrait schurtrait solvetrait \
+        submatrixtrait subtrait subvectortrait
