@@ -120,7 +120,7 @@ class Columns<MT,true,false,SF,CCAs...>
    //**********************************************************************************************
 
    //**Compile time flags**************************************************************************
-   static constexpr size_t N = sizeof...( CCAs );  //! Number of compile time indices.
+   using DataType::N;  //!< Number of compile time indices.
    //**********************************************************************************************
 
  public:
@@ -2254,7 +2254,7 @@ class Columns<MT,false,false,false,CCAs...>
    //**********************************************************************************************
 
    //**Compile time flags**************************************************************************
-   static constexpr size_t N = sizeof...( CCAs );  //! Number of compile time indices.
+   using DataType::N;  //!< Number of compile time indices.
    //**********************************************************************************************
 
  public:
@@ -4689,7 +4689,7 @@ class Columns<MT,false,false,true,CCAs...>
    //**********************************************************************************************
 
    //**Compile time flags**************************************************************************
-   static constexpr size_t N = sizeof...( CCAs );  //! Number of compile time indices.
+   using DataType::N;  //!< Number of compile time indices.
    //**********************************************************************************************
 
  public:
