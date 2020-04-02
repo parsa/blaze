@@ -810,15 +810,15 @@ void clear( const SparseVectorProxy<PT,VT>& proxy );
 
 template< typename PT, typename VT >
 typename SparseVectorProxy<PT,VT>::Iterator
-   find( const SparseVectorProxy<PT,VT>& proxy );
+   find( const SparseVectorProxy<PT,VT>& proxy, size_t index );
 
 template< typename PT, typename VT >
 typename SparseVectorProxy<PT,VT>::Iterator
-   lowerBound( const SparseVectorProxy<PT,VT>& proxy );
+   lowerBound( const SparseVectorProxy<PT,VT>& proxy, size_t index );
 
 template< typename PT, typename VT >
 typename SparseVectorProxy<PT,VT>::Iterator
-   upperBound( const SparseVectorProxy<PT,VT>& proxy );
+   upperBound( const SparseVectorProxy<PT,VT>& proxy, size_t index );
 //@}
 //*************************************************************************************************
 
