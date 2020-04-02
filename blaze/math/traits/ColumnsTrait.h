@@ -41,7 +41,6 @@
 //*************************************************************************************************
 
 #include <utility>
-#include <blaze/util/InvalidType.h>
 #include <blaze/util/Types.h>
 
 
@@ -65,16 +64,7 @@ template< typename, size_t, typename = void > struct ColumnsTraitEval2;
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< size_t N, typename T >
-auto evalColumnsTrait( T& )
-   -> typename ColumnsTraitEval1<T,N>::Type;
-
-template< size_t N, typename T >
-auto evalColumnsTrait( const T& )
-   -> typename ColumnsTrait<T,N>::Type;
-
-template< size_t N, typename T >
-auto evalColumnsTrait( const volatile T& )
-   -> typename ColumnsTrait<T,N>::Type;
+auto evalColumnsTrait( const volatile T& ) -> ColumnsTraitEval1<T,N>;
 /*! \endcond */
 //*************************************************************************************************
 
@@ -85,12 +75,11 @@ auto evalColumnsTrait( const volatile T& )
 //
 // \section columnstrait_general General
 //
-// The ColumnsTrait class template offers the possibility to select the resulting data type
-// when creating a view on a set of columns of a dense or sparse matrix. ColumnsTrait defines
-// the nested type \a Type, which represents the resulting data type of the columns operation.
-// In case the given data type is not a dense or sparse matrix type, the resulting data type
-// \a Type is set to \a INVALID_TYPE. Note that \a const and \a volatile qualifiers and
-// reference modifiers are generally ignored.
+// The ColumnsTrait class template offers the possibility to select the resulting data type when
+// creating a view on a set of columns of a dense or sparse matrix. In case the given type \a MT
+// is a dense or sparse matrix type, ColumnsTrait defines the nested type \a Type, which represents
+// the resulting data type of the columns operation. Otherwise there is no nested type \a Type.
+// Note that \a const and \a volatile qualifiers and reference modifiers are generally ignored.
 //
 //
 // \section columnstrait_specializations Creating custom specializations
@@ -128,14 +117,8 @@ auto evalColumnsTrait( const volatile T& )
 template< typename MT  // Type of the matrix
         , size_t N >   // Number of compile time indices
 struct ColumnsTrait
-{
- public:
-   //**********************************************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   using Type = decltype( evalColumnsTrait<N>( std::declval<MT&>() ) );
-   /*! \endcond */
-   //**********************************************************************************************
-};
+   : public decltype( evalColumnsTrait<N>( std::declval<MT&>() ) )
+{};
 //*************************************************************************************************
 
 
@@ -167,12 +150,8 @@ template< typename MT  // Type of the matrix
         , size_t N     // Number of compile time indices
         , typename >   // Restricting condition
 struct ColumnsTraitEval1
-{
- public:
-   //**********************************************************************************************
-   using Type = typename ColumnsTraitEval2<MT,N>::Type;
-   //**********************************************************************************************
-};
+   : public ColumnsTraitEval2<MT,N>
+{};
 /*! \endcond */
 //*************************************************************************************************
 
@@ -186,12 +165,7 @@ template< typename MT  // Type of the matrix
         , size_t N     // Number of compile time indices
         , typename >   // Restricting condition
 struct ColumnsTraitEval2
-{
- public:
-   //**********************************************************************************************
-   using Type = INVALID_TYPE;
-   //**********************************************************************************************
-};
+{};
 /*! \endcond */
 //*************************************************************************************************
 
