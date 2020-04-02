@@ -48,7 +48,6 @@
 #include <blaze/math/typetraits/StorageOrder.h>
 #include <blaze/math/typetraits/TransposeFlag.h>
 #include <blaze/util/EnableIf.h>
-#include <blaze/util/InvalidType.h>
 
 
 namespace blaze {
@@ -70,16 +69,7 @@ template< typename, typename = void > struct DeclZeroTraitEval;
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename T >
-auto evalDeclZeroTrait( T& )
-   -> typename DeclZeroTraitEval<T>::Type;
-
-template< typename T >
-auto evalDeclZeroTrait( const T& )
-   -> typename DeclZeroTrait<T>::Type;
-
-template< typename T >
-auto evalDeclZeroTrait( const volatile T& )
-   -> typename DeclZeroTrait<T>::Type;
+auto evalDeclZeroTrait( const volatile T& ) -> DeclZeroTraitEval<T>;
 /*! \endcond */
 //*************************************************************************************************
 
@@ -91,11 +81,10 @@ auto evalDeclZeroTrait( const volatile T& )
 // \section declzerotrait_general General
 //
 // The DeclZeroTrait class template offers the possibility to select the resulting data type
-// of a generic declzero() operation on the given type \a T. DeclZeroTrait defines the nested
-// type \a Type, which represents the resulting data type of the declzero() operation. In case
-// the given data type is not a dense or sparse vector or matrix type, the resulting data type
-// \a Type is set to \a INVALID_TYPE. Note that \a const and \a volatile qualifiers and
-// reference modifiers are generally ignored.
+// of a generic declzero() operation on the given type \a T. In case the given type \a T is a
+// fitting data type, DeclZeroTrait defines the nested type \a Type, which represents the
+// resulting data type of the declzero() operation. Otherwise there is no nested type \a Type.
+// Note that \a const and \a volatile qualifiers and reference modifiers are generally ignored.
 //
 //
 // \section declzerotrait_specializations Creating custom specializations
@@ -137,14 +126,8 @@ auto evalDeclZeroTrait( const volatile T& )
 */
 template< typename T >  // Type of the vector or matrix
 struct DeclZeroTrait
-{
- public:
-   //**********************************************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   using Type = decltype( evalDeclZeroTrait( std::declval<T&>() ) );
-   /*! \endcond */
-   //**********************************************************************************************
-};
+   : public decltype( evalDeclZeroTrait( std::declval<T&>() ) )
+{};
 //*************************************************************************************************
 
 
@@ -174,9 +157,7 @@ using DeclZeroTrait_t = typename DeclZeroTrait<T>::Type;
 template< typename T  // Type of the vector or matrix
         , typename >  // Restricting condition
 struct DeclZeroTraitEval
-{
-   using Type = INVALID_TYPE;
-};
+{};
 /*! \endcond */
 //*************************************************************************************************
 
