@@ -41,6 +41,7 @@
 //*************************************************************************************************
 
 #include <utility>
+#include <blaze/math/DefaultTag.h>
 #include <blaze/util/typetraits/RemoveCVRef.h>
 
 
@@ -148,6 +149,23 @@ struct UnaryMapTraitEval1
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+/*!\brief Specialization of the UnaryMapTraitEval1 class template for 'DefaultTag'.
+// \ingroup math_traits
+*/
+template< typename OP >  // Type of the custom operation
+struct UnaryMapTraitEval1<DefaultTag,OP,void>
+{
+ public:
+   //**********************************************************************************************
+   using Type = DefaultTag;
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Auxiliary helper struct for the MapTrait type trait.
 // \ingroup math_traits
 */
@@ -206,6 +224,23 @@ template< typename T1  // Type of the left-hand side operand
 struct BinaryMapTraitEval1
    : public BinaryMapTraitEval2<T1,T2,OP>
 {};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Specialization of the UnaryMapTraitEval1 class template for two 'DefaultTag'.
+// \ingroup math_traits
+*/
+template< typename OP >  // Type of the custom operation
+struct BinaryMapTraitEval1<DefaultTag,DefaultTag,OP,void>
+{
+ public:
+   //**********************************************************************************************
+   using Type = DefaultTag;
+   //**********************************************************************************************
+};
 /*! \endcond */
 //*************************************************************************************************
 
