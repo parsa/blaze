@@ -43,7 +43,8 @@
 #include <utility>
 #include <blaze/math/Aliases.h>
 #include <blaze/math/ReductionFlag.h>
-#include <blaze/util/InvalidType.h>
+#include <blaze/math/typetraits/IsMatrix.h>
+#include <blaze/math/typetraits/IsVector.h>
 #include <blaze/util/Types.h>
 
 
@@ -69,28 +70,10 @@ template< typename, typename, ReductionFlag, typename = void > struct PartialRed
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< ReductionFlag RF, typename T, typename OP >
-auto evalReduceTrait( T&, OP )
-   -> typename PartialReduceTraitEval1<T,OP,RF>::Type;
+auto evalReduceTrait( const volatile T&, OP ) -> PartialReduceTraitEval1<T,OP,RF>;
 
 template< typename T, typename OP >
-auto evalReduceTrait( T&, OP )
-   -> typename TotalReduceTraitEval1<T,OP>::Type;
-
-template< ReductionFlag RF, typename T, typename OP >
-auto evalReduceTrait( const T&, OP )
-   -> typename ReduceTrait<T,OP,RF>::Type;
-
-template< typename T, typename OP >
-auto evalReduceTrait( const T&, OP )
-   -> typename ReduceTrait<T,OP>::Type;
-
-template< ReductionFlag RF, typename T, typename OP >
-auto evalReduceTrait( const volatile T&, OP )
-   -> typename ReduceTrait<T,OP,RF>::Type;
-
-template< typename T, typename OP >
-auto evalReduceTrait( const volatile T&, OP )
-   -> typename ReduceTrait<T,OP>::Type;
+auto evalReduceTrait( const volatile T&, OP ) -> TotalReduceTraitEval1<T,OP>;
 /*! \endcond */
 //*************************************************************************************************
 
@@ -104,9 +87,8 @@ auto evalReduceTrait( const volatile T&, OP )
 // The ReduceTrait class template offers the possibility to select the resulting data type of
 // a generic reduction operation on the given type \a T. ReduceTrait defines the nested type
 // \a Type, which represents the resulting data type of the reduction operation. In case no
-// result type can be determined for the type \a T, the resulting data type \a Type is set to
-// \a INVALID_TYPE. Note that \c const and \c volatile qualifiers and reference modifiers are
-// generally ignored.
+// result type can be determined for the type \a T, there is no nested type \a Type. Note that
+// \c const and \c volatile qualifiers and reference modifiers are generally ignored.
 //
 //
 // \n \section reducetrait_specializations Creating custom specializations
@@ -128,13 +110,13 @@ auto evalReduceTrait( const volatile T&, OP )
 
    \code
    template< typename T, bool SO, typename OP >
-   struct ReduceTrait< DynamicMatrix<T,SO>, OP, 0UL >
+   struct ReduceTrait< DynamicMatrix<T,SO>, OP, columnwise >
    {
       using Type = DynamicVector<T,rowVector>;
    };
 
    template< typename T, bool SO, typename OP >
-   struct ReduceTrait< DynamicMatrix<T,SO>, OP, 1UL >
+   struct ReduceTrait< DynamicMatrix<T,SO>, OP, rowwise >
    {
       using Type = DynamicVector<T,columnVector>;
    };
@@ -144,14 +126,8 @@ template< typename T             // Type of the operand
         , typename OP            // Type of the reduction operation
         , ReductionFlag... RF >  // Reduction flag
 struct ReduceTrait
-{
- public:
-   //**********************************************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   using Type = decltype( evalReduceTrait<RF...>( std::declval<T&>(), std::declval<OP>() ) );
-   /*! \endcond */
-   //**********************************************************************************************
-};
+   : public decltype( evalReduceTrait<RF...>( std::declval<T&>(), std::declval<OP>() ) )
+{};
 //*************************************************************************************************
 
 
@@ -184,12 +160,8 @@ template< typename T   // Type of the operand
         , typename OP  // Type of the custom operation
         , typename >   // Restricting condition
 struct TotalReduceTraitEval1
-{
- public:
-   //**********************************************************************************************
-   using Type = typename TotalReduceTraitEval2<T,OP>::Type;
-   //**********************************************************************************************
-};
+   : public TotalReduceTraitEval2<T,OP>
+{};
 /*! \endcond */
 //*************************************************************************************************
 
@@ -203,6 +175,19 @@ template< typename T   // Type of the operand
         , typename OP  // Type of the custom operation
         , typename >   // Restricting condition
 struct TotalReduceTraitEval2
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Specialization of the TotalReduceTraitEval2 class template for vectors and matrices.
+// \ingroup math_traits
+*/
+template< typename T     // Type of the operand
+        , typename OP >  // Type of the custom operation
+struct TotalReduceTraitEval2< T, OP, EnableIf_t< IsVector_v<T> || IsMatrix_v<T> > >
 {
  public:
    //**********************************************************************************************
@@ -223,12 +208,8 @@ template< typename T        // Type of the operand
         , ReductionFlag RF  // Reduction flag
         , typename >        // Restricting condition
 struct PartialReduceTraitEval1
-{
- public:
-   //**********************************************************************************************
-   using Type = typename PartialReduceTraitEval2<T,OP,RF>::Type;
-   //**********************************************************************************************
-};
+   : public PartialReduceTraitEval2<T,OP,RF>
+{};
 /*! \endcond */
 //*************************************************************************************************
 
@@ -243,12 +224,7 @@ template< typename T        // Type of the operand
         , ReductionFlag RF  // Reduction flag
         , typename >        // Restricting condition
 struct PartialReduceTraitEval2
-{
- public:
-   //**********************************************************************************************
-   using Type = INVALID_TYPE;
-   //**********************************************************************************************
-};
+{};
 /*! \endcond */
 //*************************************************************************************************
 
