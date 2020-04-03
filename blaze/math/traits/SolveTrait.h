@@ -64,24 +64,7 @@ template< typename, typename, typename = void > struct SolveTraitEval2;
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename T1, typename T2 >
-auto evalSolveTrait( T1&, T2& )
-   -> typename SolveTraitEval1<T1,T2>::Type;
-
-template< typename T1, typename T2 >
-auto evalSolveTrait( const T1&, const T2& )
-   -> typename SolveTrait<T1,T2>::Type;
-
-template< typename T1, typename T2 >
-auto evalSolveTrait( const volatile T1&, const T2& )
-   -> typename SolveTrait<T1,T2>::Type;
-
-template< typename T1, typename T2 >
-auto evalSolveTrait( const T1&, const volatile T2& )
-   -> typename SolveTrait<T1,T2>::Type;
-
-template< typename T1, typename T2 >
-auto evalSolveTrait( const volatile T1&, const volatile T2& )
-   -> typename SolveTrait<T1,T2>::Type;
+auto evalSolveTrait( const volatile T1&, const volatile T2& ) -> SolveTraitEval1<T1,T2>;
 /*! \endcond */
 //*************************************************************************************************
 
@@ -96,8 +79,8 @@ auto evalSolveTrait( const volatile T1&, const volatile T2& )
 // solving a linear system of equations (LSE) with the two given types \a T1 and \a T2 via the
 // \a solve() operation. SolveTrait defines the nested type \a Type, which represents the
 // resulting data type of the \a solve() operation. In case \a T1 and \a T2 cannot be combined
-// in a \a solve() operation, the resulting data type \a Type is set to \a INVALID_TYPE. Note
-// that \a const and \a volatile qualifiers and reference modifiers are generally ignored.
+// in a \a solve() operation, there is no nested type \a Type. Note that \a const and \a volatile
+// qualifiers and reference modifiers are generally ignored.
 //
 //
 // \n \section solvetrait_specializations Creating custom specializations
@@ -133,14 +116,8 @@ template< typename T1  // Type of the left-hand side operand
         , typename T2  // Type of the right-hand side operand
         , typename >   // Restricting condition
 struct SolveTrait
-{
- public:
-   //**********************************************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   using Type = decltype( evalSolveTrait( std::declval<T1&>(), std::declval<T2&>() ) );
-   /*! \endcond */
-   //**********************************************************************************************
-};
+   : public decltype( evalSolveTrait( std::declval<T1&>(), std::declval<T2&>() ) )
+{};
 //*************************************************************************************************
 
 
@@ -171,12 +148,8 @@ template< typename T1  // Type of the left-hand side operand
         , typename T2  // Type of the right-hand side operand
         , typename >   // Restricting condition
 struct SolveTraitEval1
-{
- public:
-   //**********************************************************************************************
-   using Type = typename SolveTraitEval2<T1,T2>::Type;
-   //**********************************************************************************************
-};
+   : public SolveTraitEval2<T1,T2>
+{};
 /*! \endcond */
 //*************************************************************************************************
 
@@ -190,12 +163,7 @@ template< typename T1  // Type of the left-hand side operand
         , typename T2  // Type of the right-hand side operand
         , typename >   // Restricting condition
 struct SolveTraitEval2
-{
- public:
-   //**********************************************************************************************
-   using Type = INVALID_TYPE;
-   //**********************************************************************************************
-};
+{};
 /*! \endcond */
 //*************************************************************************************************
 
