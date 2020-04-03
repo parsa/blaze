@@ -41,8 +41,6 @@
 //*************************************************************************************************
 
 #include <utility>
-#include <blaze/util/InvalidType.h>
-#include <blaze/util/mpl/If.h>
 
 
 namespace blaze {
@@ -65,24 +63,7 @@ template< typename, typename, typename = void > struct KronTraitEval2;
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename T1, typename T2 >
-auto evalKronTrait( T1&, T2& )
-   -> typename KronTraitEval1<T1,T2>::Type;
-
-template< typename T1, typename T2 >
-auto evalKronTrait( const T1&, const T2& )
-   -> typename KronTrait<T1,T2>::Type;
-
-template< typename T1, typename T2 >
-auto evalKronTrait( const volatile T1&, const T2& )
-   -> typename KronTrait<T1,T2>::Type;
-
-template< typename T1, typename T2 >
-auto evalKronTrait( const T1&, const volatile T2& )
-   -> typename KronTrait<T1,T2>::Type;
-
-template< typename T1, typename T2 >
-auto evalKronTrait( const volatile T1&, const volatile T2& )
-   -> typename KronTrait<T1,T2>::Type;
+auto evalKronTrait( const volatile T1&, const volatile T2& ) -> KronTraitEval1<T1,T2>;
 /*! \endcond */
 //*************************************************************************************************
 
@@ -96,9 +77,9 @@ auto evalKronTrait( const volatile T1&, const volatile T2& )
 // The KronTrait class template offers the possibility to select the resulting data type of
 // a generic Kronecker product operation between the two given types \a T1 and \a T2. KronTrait
 // defines the nested type \a Type, which represents the resulting data type of the Kronecker
-// product. In case \a T1 and \a T2 cannot be combined in a Kronecker product, the resulting
-// data type \a Type is set to \a INVALID_TYPE. Note that \a const and \a volatile qualifiers
-// and reference modifiers are generally ignored.
+// product. In case \a T1 and \a T2 cannot be combined in a Kronecker product, there is no
+// nested type \a Type. Note that \a const and \a volatile qualifiers and reference modifiers
+// are generally ignored.
 //
 //
 // \n \section krontrait_specializations Creating custom specializations
@@ -134,14 +115,8 @@ template< typename T1  // Type of the left-hand side operand
         , typename T2  // Type of the right-hand side operand
         , typename >   // Restricting condition
 struct KronTrait
-{
- public:
-   //**********************************************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   using Type = decltype( evalKronTrait( std::declval<T1&>(), std::declval<T2&>() ) );
-   /*! \endcond */
-   //**********************************************************************************************
-};
+   : public decltype( evalKronTrait( std::declval<T1&>(), std::declval<T2&>() ) )
+{};
 //*************************************************************************************************
 
 
@@ -172,12 +147,8 @@ template< typename T1  // Type of the left-hand side operand
         , typename T2  // Type of the right-hand side operand
         , typename >   // Restricting condition
 struct KronTraitEval1
-{
- public:
-   //**********************************************************************************************
-   using Type = typename KronTraitEval2<T1,T2>::Type;
-   //**********************************************************************************************
-};
+   : public KronTraitEval2<T1,T2>
+{};
 /*! \endcond */
 //*************************************************************************************************
 
@@ -191,12 +162,7 @@ template< typename T1  // Type of the left-hand side operand
         , typename T2  // Type of the right-hand side operand
         , typename >   // Restricting condition
 struct KronTraitEval2
-{
- public:
-   //**********************************************************************************************
-   using Type = INVALID_TYPE;
-   //**********************************************************************************************
-};
+{};
 /*! \endcond */
 //*************************************************************************************************
 
