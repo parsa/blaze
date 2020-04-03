@@ -41,7 +41,6 @@
 //*************************************************************************************************
 
 #include <utility>
-#include <blaze/util/InvalidType.h>
 
 
 namespace blaze {
@@ -64,24 +63,7 @@ template< typename, typename, typename = void > struct SchurTraitEval2;
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename T1, typename T2 >
-auto evalSchurTrait( T1&, T2& )
-   -> typename SchurTraitEval1<T1,T2>::Type;
-
-template< typename T1, typename T2 >
-auto evalSchurTrait( const T1&, const T2& )
-   -> typename SchurTrait<T1,T2>::Type;
-
-template< typename T1, typename T2 >
-auto evalSchurTrait( const volatile T1&, const T2& )
-   -> typename SchurTrait<T1,T2>::Type;
-
-template< typename T1, typename T2 >
-auto evalSchurTrait( const T1&, const volatile T2& )
-   -> typename SchurTrait<T1,T2>::Type;
-
-template< typename T1, typename T2 >
-auto evalSchurTrait( const volatile T1&, const volatile T2& )
-   -> typename SchurTrait<T1,T2>::Type;
+auto evalSchurTrait( const volatile T1&, const volatile T2& ) -> SchurTraitEval1<T1,T2>;
 /*! \endcond */
 //*************************************************************************************************
 
@@ -95,9 +77,9 @@ auto evalSchurTrait( const volatile T1&, const volatile T2& )
 // The SchurTrait class template offers the possibility to select the resulting data type of
 // a generic Schur product operation between the two given types \a T1 and \a T2. SchurTrait
 // defines the nested type \a Type, which represents the resulting data type of the Schur
-// product. In case \a T1 and \a T2 cannot be combined in a Schur product, the resulting data
-// type \a Type is set to \a INVALID_TYPE. Note that \a const and \a volatile qualifiers and
-// reference modifiers are generally ignored.
+// product. In case \a T1 and \a T2 cannot be combined in a Schur product, there is no nested
+// type \a Type. Note that \a const and \a volatile qualifiers and reference modifiers are
+// generally ignored.
 //
 //
 // \n \section schurtrait_specializations Creating custom specializations
@@ -133,14 +115,8 @@ template< typename T1  // Type of the left-hand side operand
         , typename T2  // Type of the right-hand side operand
         , typename >   // Restricting condition
 struct SchurTrait
-{
- public:
-   //**********************************************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   using Type = decltype( evalSchurTrait( std::declval<T1&>(), std::declval<T2&>() ) );
-   /*! \endcond */
-   //**********************************************************************************************
-};
+   : decltype( evalSchurTrait( std::declval<T1&>(), std::declval<T2&>() ) )
+{};
 //*************************************************************************************************
 
 
@@ -171,12 +147,8 @@ template< typename T1  // Type of the left-hand side operand
         , typename T2  // Type of the right-hand side operand
         , typename >   // Restricting condition
 struct SchurTraitEval1
-{
- public:
-   //**********************************************************************************************
-   using Type = typename SchurTraitEval2<T1,T2>::Type;
-   //**********************************************************************************************
-};
+   : public SchurTraitEval2<T1,T2>
+{};
 /*! \endcond */
 //*************************************************************************************************
 
@@ -190,12 +162,7 @@ template< typename T1  // Type of the left-hand side operand
         , typename T2  // Type of the right-hand side operand
         , typename >   // Restricting condition
 struct SchurTraitEval2
-{
- public:
-   //**********************************************************************************************
-   using Type = INVALID_TYPE;
-   //**********************************************************************************************
-};
+{};
 /*! \endcond */
 //*************************************************************************************************
 
