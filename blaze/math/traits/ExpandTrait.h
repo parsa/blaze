@@ -42,7 +42,6 @@
 
 #include <utility>
 #include <blaze/math/Infinity.h>
-#include <blaze/util/InvalidType.h>
 #include <blaze/util/Types.h>
 
 
@@ -66,28 +65,10 @@ template< typename, size_t, typename = void > struct ExpandTraitEval2;
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< size_t E, typename T >
-auto evalExpandTrait( T& )
-   -> typename ExpandTraitEval1<T,E>::Type;
+auto evalExpandTrait( const volatile T& ) -> ExpandTraitEval1<T,E>;
 
 template< typename T >
-auto evalExpandTrait( T& )
-   -> typename ExpandTraitEval1<T,inf>::Type;
-
-template< size_t E, typename T >
-auto evalExpandTrait( const T& )
-   -> typename ExpandTrait<T,E>::Type;
-
-template< typename T >
-auto evalExpandTrait( const T& )
-   -> typename ExpandTrait<T>::Type;
-
-template< size_t E, typename T >
-auto evalExpandTrait( const volatile T& )
-   -> typename ExpandTrait<T,E>::Type;
-
-template< typename T >
-auto evalExpandTrait( const volatile T& )
-   -> typename ExpandTrait<T>::Type;
+auto evalExpandTrait( const volatile T& ) -> ExpandTraitEval1<T,inf>;
 /*! \endcond */
 //*************************************************************************************************
 
@@ -101,9 +82,8 @@ auto evalExpandTrait( const volatile T& )
 // The ExpandTrait class template offers the possibility to select the resulting data type when
 // expanding a dense or sparse vector or matrix. ExpandTrait defines the nested type \a Type,
 // which represents the resulting data type of the expand operation. In case the given data type
-// is not a dense or sparse vector or matrix type, the resulting data type \a Type is set to
-// \a INVALID_TYPE. Note that \a const and \a volatile qualifiers and reference modifiers are
-// generally ignored.
+// is not a dense or sparse vector or matrix type, there is no nested type \a Type. Note that
+// \a const and \a volatile qualifiers and reference modifiers are generally ignored.
 //
 //
 // \section expandtrait_specializations Creating custom specializations
@@ -142,14 +122,8 @@ auto evalExpandTrait( const volatile T& )
 template< typename T        // Type of the operand
         , size_t... CEAs >  // Compile time expansion arguments
 struct ExpandTrait
-{
- public:
-   //**********************************************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   using Type = decltype( evalExpandTrait<CEAs...>( std::declval<T&>() ) );
-   /*! \endcond */
-   //**********************************************************************************************
-};
+   : public decltype( evalExpandTrait<CEAs...>( std::declval<T&>() ) )
+{};
 //*************************************************************************************************
 
 
@@ -181,12 +155,8 @@ template< typename T   // Type of the operand
         , size_t E     // Compile time expansion
         , typename >   // Restricting condition
 struct ExpandTraitEval1
-{
- public:
-   //**********************************************************************************************
-   using Type = typename ExpandTraitEval2<T,E>::Type;
-   //**********************************************************************************************
-};
+   : public ExpandTraitEval2<T,E>
+{};
 /*! \endcond */
 //*************************************************************************************************
 
@@ -200,12 +170,7 @@ template< typename MT  // Type of the operand
         , size_t E     // Compile time expansion
         , typename >   // Restricting condition
 struct ExpandTraitEval2
-{
- public:
-   //**********************************************************************************************
-   using Type = INVALID_TYPE;
-   //**********************************************************************************************
-};
+{};
 /*! \endcond */
 //*************************************************************************************************
 
