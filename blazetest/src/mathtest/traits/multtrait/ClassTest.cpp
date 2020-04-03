@@ -133,13 +133,64 @@ void ClassTest::testScalarScalarMultiplication()
    using namespace blaze;
 
 
+   // short/...
+   {
+      // .../short
+      {
+         using T1 = short;
+         using T2 = short;
+         using RT = short;
+         static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+      }
+
+      // .../int
+      {
+         using T1 = short;
+         using T2 = int;
+         using RT = int;
+         static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+      }
+
+      // .../float
+      {
+         using T1 = short;
+         using T2 = float;
+         using RT = float;
+         static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+      }
+
+      // .../double
+      {
+         using T1 = short;
+         using T2 = double;
+         using RT = double;
+         static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+      }
+   }
+
    // int/...
    {
+      // .../short
+      {
+         using T1 = int;
+         using T2 = short;
+         using RT = int;
+         static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+      }
+
       // .../int
       {
          using T1 = int;
          using T2 = int;
          using RT = int;
+         static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+      }
+
+      // .../float
+      {
+         using T1 = int;
+         using T2 = float;
+         using RT = float;
          static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
       }
 
@@ -152,12 +203,71 @@ void ClassTest::testScalarScalarMultiplication()
       }
    }
 
+   // float/...
+   {
+      // .../short
+      {
+         using T1 = float;
+         using T2 = short;
+         using RT = float;
+         static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+      }
+
+      // .../int
+      {
+         using T1 = float;
+         using T2 = int;
+         using RT = float;
+         static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+      }
+
+      // .../float
+      {
+         using T1 = float;
+         using T2 = float;
+         using RT = float;
+         static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+      }
+
+      // .../double
+      {
+         using T1 = float;
+         using T2 = double;
+         using RT = double;
+         static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+      }
+
+      // .../complex<float>
+      {
+         using T1 = float;
+         using T2 = complex<float>;
+         using RT = complex<float>;
+         static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+      }
+   }
+
    // double/...
    {
+      // .../short
+      {
+         using T1 = double;
+         using T2 = short;
+         using RT = double;
+         static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+      }
+
       // .../int
       {
          using T1 = double;
          using T2 = int;
+         using RT = double;
+         static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+      }
+
+      // .../float
+      {
+         using T1 = double;
+         using T2 = float;
          using RT = double;
          static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
       }
