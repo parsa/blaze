@@ -41,6 +41,7 @@
 //*************************************************************************************************
 
 #include <utility>
+#include <blaze/math/DefaultTag.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/typetraits/CommonType.h>
 #include <blaze/util/typetraits/IsNumeric.h>
@@ -174,6 +175,23 @@ template< typename T1  // Type of the left-hand side operand
 struct SubTraitEval1
    : public SubTraitEval2<T1,T2>
 {};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Specialization of the SubTraitEval1 class template for two 'DefaultTag'.
+// \ingroup math_traits
+*/
+template<>
+struct SubTraitEval1<DefaultTag,DefaultTag,void>
+{
+ public:
+   //**********************************************************************************************
+   using Type = DefaultTag;
+   //**********************************************************************************************
+};
 /*! \endcond */
 //*************************************************************************************************
 
