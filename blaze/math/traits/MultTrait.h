@@ -41,6 +41,7 @@
 //*************************************************************************************************
 
 #include <utility>
+#include <blaze/math/DefaultTag.h>
 #include <blaze/math/typetraits/IsColumnVector.h>
 #include <blaze/math/typetraits/IsRowVector.h>
 #include <blaze/util/EnableIf.h>
@@ -176,6 +177,57 @@ template< typename T1  // Type of the left-hand side operand
 struct MultTraitEval1
    : public MultTraitEval2<T1,T2>
 {};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Specialization of the MultTraitEval1 class template for two 'DefaultTag'.
+// \ingroup math_traits
+*/
+template<>
+struct MultTraitEval1<DefaultTag,DefaultTag,void>
+{
+ public:
+   //**********************************************************************************************
+   using Type = DefaultTag;
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Specialization of the MultTraitEval1 class template for a 'DefaultTag' and a numeric type.
+// \ingroup math_traits
+*/
+template< typename T2 >
+struct MultTraitEval1< DefaultTag, T2, EnableIf_t< IsNumeric_v<T2> > >
+{
+ public:
+   //**********************************************************************************************
+   using Type = DefaultTag;
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Specialization of the MultTraitEval1 class template for a numeric type and a'DefaultTag'.
+// \ingroup math_traits
+*/
+template< typename T1 >
+struct MultTraitEval1< T1, DefaultTag, EnableIf_t< IsNumeric_v<T1> > >
+{
+ public:
+   //**********************************************************************************************
+   using Type = DefaultTag;
+   //**********************************************************************************************
+};
 /*! \endcond */
 //*************************************************************************************************
 
