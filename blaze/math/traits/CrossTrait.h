@@ -41,8 +41,6 @@
 //*************************************************************************************************
 
 #include <utility>
-#include <blaze/util/InvalidType.h>
-#include <blaze/util/mpl/If.h>
 
 
 namespace blaze {
@@ -65,24 +63,7 @@ template< typename, typename, typename = void > struct CrossTraitEval2;
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename T1, typename T2 >
-auto evalCrossTrait( T1&, T2& )
-   -> typename CrossTraitEval1<T1,T2>::Type;
-
-template< typename T1, typename T2 >
-auto evalCrossTrait( const T1&, const T2& )
-   -> typename CrossTrait<T1,T2>::Type;
-
-template< typename T1, typename T2 >
-auto evalCrossTrait( const volatile T1&, const T2& )
-   -> typename CrossTrait<T1,T2>::Type;
-
-template< typename T1, typename T2 >
-auto evalCrossTrait( const T1&, const volatile T2& )
-   -> typename CrossTrait<T1,T2>::Type;
-
-template< typename T1, typename T2 >
-auto evalCrossTrait( const volatile T1&, const volatile T2& )
-   -> typename CrossTrait<T1,T2>::Type;
+auto evalCrossTrait( const volatile T1&, const volatile T2& ) -> CrossTraitEval1<T1,T2>;
 /*! \endcond */
 //*************************************************************************************************
 
@@ -96,9 +77,9 @@ auto evalCrossTrait( const volatile T1&, const volatile T2& )
 // The CrossTrait class template offers the possibility to select the resulting data type of
 // a generic cross product operation between the two given types \a T1 and \a T2. CrossTrait
 // defines the nested type \a Type, which represents the resulting data type of the cross
-// product. In case \a T1 and \a T2 cannot be combined in a cross product, the resulting data
-// type \a Type is set to \a INVALID_TYPE. Note that \a const and \a volatile qualifiers and
-// reference modifiers are generally ignored.
+// product. In case \a T1 and \a T2 cannot be combined in a cross product, there is no nested
+// type \a Type. Note that \a const and \a volatile qualifiers and reference modifiers are
+// generally ignored.
 //
 //
 // \n \section crosstrait_specializations Creating custom specializations
@@ -135,14 +116,8 @@ template< typename T1  // Type of the left-hand side operand
         , typename T2  // Type of the right-hand side operand
         , typename >   // Restricting condition
 struct CrossTrait
-{
- public:
-   //**********************************************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   using Type = decltype( evalCrossTrait( std::declval<T1&>(), std::declval<T2&>() ) );
-   /*! \endcond */
-   //**********************************************************************************************
-};
+   : public decltype( evalCrossTrait( std::declval<T1&>(), std::declval<T2&>() ) )
+{};
 //*************************************************************************************************
 
 
@@ -173,12 +148,8 @@ template< typename T1  // Type of the left-hand side operand
         , typename T2  // Type of the right-hand side operand
         , typename >   // Restricting condition
 struct CrossTraitEval1
-{
- public:
-   //**********************************************************************************************
-   using Type = typename CrossTraitEval2<T1,T2>::Type;
-   //**********************************************************************************************
-};
+   : public CrossTraitEval2<T1,T2>
+{};
 /*! \endcond */
 //*************************************************************************************************
 
@@ -192,12 +163,7 @@ template< typename T1  // Type of the left-hand side operand
         , typename T2  // Type of the right-hand side operand
         , typename >   // Restricting condition
 struct CrossTraitEval2
-{
- public:
-   //**********************************************************************************************
-   using Type = INVALID_TYPE;
-   //**********************************************************************************************
-};
+{};
 /*! \endcond */
 //*************************************************************************************************
 
