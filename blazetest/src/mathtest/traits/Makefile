@@ -53,8 +53,8 @@ default: all
 all: $(BIN) addtrait bandtrait columntrait columnstrait crosstrait decldiagtrait declhermtrait \
      declidtrait decllowtrait declstrlowtrait declstrupptrait declsymtrait declunilowtrait \
      decluniupptrait declupptrait declzerotrait divtrait elementstrait expandtrait krontrait \
-     maptrait multtrait rowtrait rowstrait schurtrait solvetrait submatrixtrait subtrait \
-     subvectortrait
+     maptrait multtrait reducetrait rowtrait rowstrait schurtrait solvetrait submatrixtrait \
+     subtrait subvectortrait
 
 essential: all
 
@@ -175,6 +175,11 @@ multtrait:
 	@echo "Building the MultTrait tests..."
 	@$(MAKE) --no-print-directory -C ./multtrait $(MAKECMDGOALS)
 
+reducetrait:
+	@echo
+	@echo "Building the ReduceTrait tests..."
+	@$(MAKE) --no-print-directory -C ./reducetrait $(MAKECMDGOALS)
+
 rowtrait:
 	@echo
 	@echo "Building the RowTrait tests..."
@@ -236,6 +241,7 @@ reset:
 	@$(MAKE) --no-print-directory -C ./krontrait reset
 	@$(MAKE) --no-print-directory -C ./maptrait reset
 	@$(MAKE) --no-print-directory -C ./multtrait reset
+	@$(MAKE) --no-print-directory -C ./reducetrait reset
 	@$(MAKE) --no-print-directory -C ./rowtrait reset
 	@$(MAKE) --no-print-directory -C ./rowstrait reset
 	@$(MAKE) --no-print-directory -C ./schurtrait reset
@@ -268,6 +274,7 @@ clean:
 	@$(MAKE) --no-print-directory -C ./krontrait clean
 	@$(MAKE) --no-print-directory -C ./maptrait clean
 	@$(MAKE) --no-print-directory -C ./multtrait clean
+	@$(MAKE) --no-print-directory -C ./reducetrait clean
 	@$(MAKE) --no-print-directory -C ./rowtrait clean
 	@$(MAKE) --no-print-directory -C ./rowstrait clean
 	@$(MAKE) --no-print-directory -C ./schurtrait clean
@@ -282,5 +289,5 @@ clean:
         addtrait bandtrait columntrait columnstrait crosstrait decldiagtrait declhermtrait \
         declidtrait decllowtrait declstrlowtrait declstrupptrait declsymtrait declunilowtrait \
         decluniupptrait declupptrait declzerotrait divtrait elementstrait expandtrait krontrait \
-        maptrait multtrait rowtrait rowstrait schurtrait solvetrait submatrixtrait subtrait \
-        subvectortrait
+        maptrait multtrait reducetrait rowtrait rowstrait schurtrait solvetrait submatrixtrait \
+        subtrait subvectortrait
