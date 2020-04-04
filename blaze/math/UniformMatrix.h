@@ -61,28 +61,29 @@ namespace blaze {
 //
 // This specialization of the Rand class creates random instances of UniformMatrix.
 */
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-class Rand< UniformMatrix<Type,SO> >
+template< typename Type   // Data type of the matrix
+        , bool SO         // Storage order
+        , typename Tag >  // Type tag
+class Rand< UniformMatrix<Type,SO,Tag> >
 {
  public:
    //**Generate functions**************************************************************************
    /*!\name Generate functions */
    //@{
-   inline const UniformMatrix<Type,SO> generate( size_t m, size_t n ) const;
+   inline const UniformMatrix<Type,SO,Tag> generate( size_t m, size_t n ) const;
 
    template< typename Arg >
-   inline const UniformMatrix<Type,SO> generate( size_t m, size_t n, const Arg& min, const Arg& max ) const;
+   inline const UniformMatrix<Type,SO,Tag> generate( size_t m, size_t n, const Arg& min, const Arg& max ) const;
    //@}
    //**********************************************************************************************
 
    //**Randomize functions*************************************************************************
    /*!\name Randomize functions */
    //@{
-   inline void randomize( UniformMatrix<Type,SO>& matrix ) const;
+   inline void randomize( UniformMatrix<Type,SO,Tag>& matrix ) const;
 
    template< typename Arg >
-   inline void randomize( UniformMatrix<Type,SO>& matrix, const Arg& min, const Arg& max ) const;
+   inline void randomize( UniformMatrix<Type,SO,Tag>& matrix, const Arg& min, const Arg& max ) const;
    //@}
    //**********************************************************************************************
 };
@@ -98,12 +99,13 @@ class Rand< UniformMatrix<Type,SO> >
 // \param n The number of columns of the random matrix.
 // \return The generated random matrix.
 */
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-inline const UniformMatrix<Type,SO>
-   Rand< UniformMatrix<Type,SO> >::generate( size_t m, size_t n ) const
+template< typename Type   // Data type of the matrix
+        , bool SO         // Storage order
+        , typename Tag >  // Type tag
+inline const UniformMatrix<Type,SO,Tag>
+   Rand< UniformMatrix<Type,SO,Tag> >::generate( size_t m, size_t n ) const
 {
-   UniformMatrix<Type,SO> matrix( m, n );
+   UniformMatrix<Type,SO,Tag> matrix( m, n );
    randomize( matrix );
    return matrix;
 }
@@ -122,12 +124,13 @@ inline const UniformMatrix<Type,SO>
 // \return The generated random matrix.
 */
 template< typename Type   // Data type of the matrix
-        , bool SO >       // Storage order
+        , bool SO         // Storage order
+        , typename Tag >  // Type tag
 template< typename Arg >  // Min/max argument type
-inline const UniformMatrix<Type,SO>
-   Rand< UniformMatrix<Type,SO> >::generate( size_t m, size_t n, const Arg& min, const Arg& max ) const
+inline const UniformMatrix<Type,SO,Tag>
+   Rand< UniformMatrix<Type,SO,Tag> >::generate( size_t m, size_t n, const Arg& min, const Arg& max ) const
 {
-   UniformMatrix<Type,SO> matrix( m, n );
+   UniformMatrix<Type,SO,Tag> matrix( m, n );
    randomize( matrix, min, max );
    return matrix;
 }
@@ -142,9 +145,11 @@ inline const UniformMatrix<Type,SO>
 // \param matrix The matrix to be randomized.
 // \return void
 */
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-inline void Rand< UniformMatrix<Type,SO> >::randomize( UniformMatrix<Type,SO>& matrix ) const
+template< typename Type   // Data type of the matrix
+        , bool SO         // Storage order
+        , typename Tag >  // Type tag
+inline void
+   Rand< UniformMatrix<Type,SO,Tag> >::randomize( UniformMatrix<Type,SO,Tag>& matrix ) const
 {
    matrix = rand<Type>();
 }
@@ -162,10 +167,12 @@ inline void Rand< UniformMatrix<Type,SO> >::randomize( UniformMatrix<Type,SO>& m
 // \return void
 */
 template< typename Type   // Data type of the matrix
-        , bool SO >       // Storage order
+        , bool SO         // Storage order
+        , typename Tag >  // Type tag
 template< typename Arg >  // Min/max argument type
-inline void Rand< UniformMatrix<Type,SO> >::randomize( UniformMatrix<Type,SO>& matrix,
-                                                       const Arg& min, const Arg& max ) const
+inline void
+   Rand< UniformMatrix<Type,SO,Tag> >::randomize( UniformMatrix<Type,SO,Tag>& matrix,
+                                                  const Arg& min, const Arg& max ) const
 {
    matrix = rand<Type>( min, max );
 }
