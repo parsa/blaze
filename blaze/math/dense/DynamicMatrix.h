@@ -6895,7 +6895,7 @@ struct AddTraitEval2< T1, T2
 
    using Type = DynamicMatrix< AddTrait_t< ElementType_t<T1>, ElementType_t<T2> >
                              , SO
-                             , DefaultTag >;
+                             , AddTrait_t< TagType_t<T1>, TagType_t<T2> > >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -6940,7 +6940,7 @@ struct SubTraitEval2< T1, T2
 
    using Type = DynamicMatrix< SubTrait_t< ElementType_t<T1>, ElementType_t<T2> >
                              , SO
-                             , DefaultTag >;
+                             , SubTrait_t< TagType_t<T1>, TagType_t<T2> > >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -6980,7 +6980,7 @@ struct SchurTraitEval2< T1, T2
 
    using Type = DynamicMatrix< MultTrait_t< ElementType_t<T1>, ElementType_t<T2> >
                              , SO
-                             , DefaultTag >;
+                             , MultTrait_t< TagType_t<T1>, TagType_t<T2> > >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -7007,7 +7007,7 @@ struct MultTraitEval2< T1, T2
 {
    using Type = DynamicMatrix< MultTrait_t< ElementType_t<T1>, T2 >
                              , StorageOrder_v<T1>
-                             , DefaultTag >;
+                             , MultTrait_t< TagType_t<T1>, T2 > >;
 };
 
 template< typename T1, typename T2 >
@@ -7021,7 +7021,7 @@ struct MultTraitEval2< T1, T2
 {
    using Type = DynamicMatrix< MultTrait_t< T1, ElementType_t<T2> >
                              , StorageOrder_v<T2>
-                             , DefaultTag >;
+                             , MultTrait_t< T1, TagType_t<T2> > >;
 };
 
 template< typename T1, typename T2 >
@@ -7037,7 +7037,7 @@ struct MultTraitEval2< T1, T2
 {
    using Type = DynamicMatrix< MultTrait_t< ElementType_t<T1>, ElementType_t<T2> >
                              , false
-                             , DefaultTag >;
+                             , MultTrait_t< TagType_t<T1>, TagType_t<T2> > >;
 };
 
 template< typename T1, typename T2 >
@@ -7055,10 +7055,11 @@ struct MultTraitEval2< T1, T2
                                        ( !IsSquare_v<T2> || MaxSize_v<T1,1UL> == DefaultMaxSize_v ) ) ) > >
 {
    using MultType = MultTrait_t< ElementType_t<T1>, ElementType_t<T2> >;
+   using MultTag  = MultTrait_t< TagType_t<T1>, TagType_t<T2> >;
 
    using Type = DynamicMatrix< AddTrait_t<MultType,MultType>
                              , ( IsSparseMatrix_v<T1> ? StorageOrder_v<T2> : StorageOrder_v<T1> )
-                             , DefaultTag >;
+                             , AddTrait_t<MultTag,MultTag> >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -7089,7 +7090,7 @@ struct KronTraitEval2< T1, T2
 {
    using Type = DynamicMatrix< MultTrait_t< ElementType_t<T1>, ElementType_t<T2> >
                              , StorageOrder_v<T2>
-                             , DefaultTag >;
+                             , MultTrait_t< TagType_t<T1>, TagType_t<T2> > >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -7116,7 +7117,7 @@ struct DivTraitEval2< T1, T2
 {
    using Type = DynamicMatrix< DivTrait_t< ElementType_t<T1>, T2 >
                              , StorageOrder_v<T1>
-                             , DefaultTag >;
+                             , DivTrait_t< TagType_t<T1>, T2 > >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -7142,7 +7143,7 @@ struct UnaryMapTraitEval2< T, OP
 {
    using Type = DynamicMatrix< MapTrait_t< ElementType_t<T>, OP >
                              , StorageOrder_v<T>
-                             , DefaultTag >;
+                             , MapTrait_t< TagType_t<T>, OP > >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -7161,7 +7162,7 @@ struct BinaryMapTraitEval2< T1, T2, OP
 {
    using Type = DynamicMatrix< MapTrait_t< ElementType_t<T1>, ElementType_t<T2>, OP >
                              , false
-                             , DefaultTag >;
+                             , MapTrait_t< TagType_t<T1>, TagType_t<T2>, OP > >;
 };
 
 template< typename T1, typename T2, typename OP >
@@ -7192,7 +7193,7 @@ struct BinaryMapTraitEval2< T1, T2, OP
 
    using Type = DynamicMatrix< MapTrait_t< ElementType_t<T2>, ElementType_t<T1>, OP >
                              , SO
-                             , DefaultTag >;
+                             , MapTrait_t< TagType_t<T1>, TagType_t<T2>, OP > >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -7218,7 +7219,7 @@ struct ExpandTraitEval2< T, E
 {
    using Type = DynamicMatrix< ElementType_t<T>
                              , ( IsColumnVector_v<T> ? columnMajor : rowMajor )
-                             , DefaultTag >;
+                             , TagType_t<T> >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -7249,7 +7250,7 @@ struct SolveTraitEval2< T1, T2
 {
    using Type = DynamicMatrix< ElementType_t<T2>
                              , StorageOrder_v<T2>
-                             , DefaultTag >;
+                             , TagType_t<T2> >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -7313,7 +7314,7 @@ struct SubmatrixTraitEval2< MT, inf, inf, inf, inf
 {
    using Type = DynamicMatrix< RemoveConst_t< ElementType_t<MT> >
                              , StorageOrder_v<MT>
-                             , DefaultTag >;
+                             , TagType_t<MT> >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -7337,7 +7338,7 @@ struct RowsTraitEval2< MT, M
 {
    using Type = DynamicMatrix< RemoveConst_t< ElementType_t<MT> >
                              , false
-                             , DefaultTag >;
+                             , TagType_t<MT> >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -7361,7 +7362,7 @@ struct ColumnsTraitEval2< MT, N
 {
    using Type = DynamicMatrix< RemoveConst_t< ElementType_t<MT> >
                              , true
-                             , DefaultTag >;
+                             , TagType_t<MT> >;
 };
 /*! \endcond */
 //*************************************************************************************************
