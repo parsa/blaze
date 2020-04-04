@@ -75,11 +75,12 @@ template< typename Type                            // Data type of the matrix
         , PaddingFlag PF = defaultPaddingFlag >    // Padding flag
 class StaticMatrix;
 
-template< typename Type                         // Data type of the vector
-        , size_t N                              // Number of elements
-        , bool TF = defaultTransposeFlag        // Transpose flag
-        , AlignmentFlag = defaultAlignmentFlag  // Alignment flag
-        , PaddingFlag = defaultPaddingFlag >    // Padding flag
+template< typename Type                            // Data type of the vector
+        , size_t N                                 // Number of elements
+        , bool TF = defaultTransposeFlag           // Transpose flag
+        , AlignmentFlag AF = defaultAlignmentFlag  // Alignment flag
+        , PaddingFlag PF = defaultPaddingFlag      // Padding flag
+        , typename Tag = DefaultTag >              // Type tag
 class HybridVector;
 
 template< typename Type                            // Data type of the matrix

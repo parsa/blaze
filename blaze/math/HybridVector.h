@@ -63,29 +63,32 @@ namespace blaze {
 //
 // This specialization of the Rand class creates random instances of HybridVector.
 */
-template< typename Type  // Data type of the vector
-        , size_t N       // Number of elements
-        , bool TF >      // Transpose flag
-class Rand< HybridVector<Type,N,TF> >
+template< typename Type     // Data type of the vector
+        , size_t N          // Number of elements
+        , bool TF           // Transpose flag
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+class Rand< HybridVector<Type,N,TF,AF,PF,Tag> >
 {
  public:
    //**Generate functions**************************************************************************
    /*!\name Generate functions */
    //@{
-   inline const HybridVector<Type,N,TF> generate( size_t n ) const;
+   inline const HybridVector<Type,N,TF,AF,PF,Tag> generate( size_t n ) const;
 
    template< typename Arg >
-   inline const HybridVector<Type,N,TF> generate( size_t n, const Arg& min, const Arg& max ) const;
+   inline const HybridVector<Type,N,TF,AF,PF,Tag> generate( size_t n, const Arg& min, const Arg& max ) const;
    //@}
    //**********************************************************************************************
 
    //**Randomize functions*************************************************************************
    /*!\name Randomize functions */
    //@{
-   inline void randomize( HybridVector<Type,N,TF>& vector ) const;
+   inline void randomize( HybridVector<Type,N,TF,AF,PF,Tag>& vector ) const;
 
    template< typename Arg >
-   inline void randomize( HybridVector<Type,N,TF>& vector, const Arg& min, const Arg& max ) const;
+   inline void randomize( HybridVector<Type,N,TF,AF,PF,Tag>& vector, const Arg& min, const Arg& max ) const;
    //@}
    //**********************************************************************************************
 };
@@ -100,12 +103,16 @@ class Rand< HybridVector<Type,N,TF> >
 // \param n The size of the random vector.
 // \return The generated random vector.
 */
-template< typename Type  // Data type of the vector
-        , size_t N       // Number of elements
-        , bool TF >      // Transpose flag
-inline const HybridVector<Type,N,TF> Rand< HybridVector<Type,N,TF> >::generate( size_t n ) const
+template< typename Type     // Data type of the vector
+        , size_t N          // Number of elements
+        , bool TF           // Transpose flag
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+inline const HybridVector<Type,N,TF,AF,PF,Tag>
+   Rand< HybridVector<Type,N,TF,AF,PF,Tag> >::generate( size_t n ) const
 {
-   HybridVector<Type,N,TF> vector( n );
+   HybridVector<Type,N,TF,AF,PF,Tag> vector( n );
    randomize( vector );
    return vector;
 }
@@ -122,14 +129,17 @@ inline const HybridVector<Type,N,TF> Rand< HybridVector<Type,N,TF> >::generate( 
 // \param max The largest possible value for a vector element.
 // \return The generated random vector.
 */
-template< typename Type   // Data type of the vector
-        , size_t N        // Number of elements
-        , bool TF >       // Transpose flag
-template< typename Arg >  // Min/max argument type
-inline const HybridVector<Type,N,TF>
-   Rand< HybridVector<Type,N,TF> >::generate( size_t n, const Arg& min, const Arg& max ) const
+template< typename Type     // Data type of the vector
+        , size_t N          // Number of elements
+        , bool TF           // Transpose flag
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+template< typename Arg >    // Min/max argument type
+inline const HybridVector<Type,N,TF,AF,PF,Tag>
+   Rand< HybridVector<Type,N,TF,AF,PF,Tag> >::generate( size_t n, const Arg& min, const Arg& max ) const
 {
-   HybridVector<Type,N,TF> vector( n );
+   HybridVector<Type,N,TF,AF,PF,Tag> vector( n );
    randomize( vector, min, max );
    return vector;
 }
@@ -144,10 +154,14 @@ inline const HybridVector<Type,N,TF>
 // \param vector The vector to be randomized.
 // \return void
 */
-template< typename Type  // Data type of the vector
-        , size_t N       // Number of elements
-        , bool TF >      // Transpose flag
-inline void Rand< HybridVector<Type,N,TF> >::randomize( HybridVector<Type,N,TF>& vector ) const
+template< typename Type     // Data type of the vector
+        , size_t N          // Number of elements
+        , bool TF           // Transpose flag
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+inline void
+   Rand< HybridVector<Type,N,TF,AF,PF,Tag> >::randomize( HybridVector<Type,N,TF,AF,PF,Tag>& vector ) const
 {
    using blaze::randomize;
 
@@ -168,12 +182,16 @@ inline void Rand< HybridVector<Type,N,TF> >::randomize( HybridVector<Type,N,TF>&
 // \param max The largest possible value for a vector element.
 // \return void
 */
-template< typename Type   // Data type of the vector
-        , size_t N        // Number of elements
-        , bool TF >       // Transpose flag
-template< typename Arg >  // Min/max argument type
-inline void Rand< HybridVector<Type,N,TF> >::randomize( HybridVector<Type,N,TF>& vector,
-                                                        const Arg& min, const Arg& max ) const
+template< typename Type     // Data type of the vector
+        , size_t N          // Number of elements
+        , bool TF           // Transpose flag
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+template< typename Arg >    // Min/max argument type
+inline void
+   Rand< HybridVector<Type,N,TF,AF,PF,Tag> >::randomize( HybridVector<Type,N,TF,AF,PF,Tag>& vector,
+                                                         const Arg& min, const Arg& max ) const
 {
    using blaze::randomize;
 

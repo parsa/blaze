@@ -143,7 +143,7 @@ namespace blaze {
 // of the vector can be specified via the five template parameters:
 
    \code
-   template< typename Type, size_t N, bool TF, AlignmentFlag AF, PaddingFlag PF >
+   template< typename Type, size_t N, bool TF, AlignmentFlag AF, PaddingFlag PF, typename Tag >
    class HybridVector;
    \endcode
 
@@ -159,6 +159,7 @@ namespace blaze {
 //  - PF  : specifies whether the vector should be padded to maximize the efficiency of vectorized
 //          operations. Possible values are \a blaze::padded and \a blaze::unpadded. The default
 //          value is \a blaze::padded.
+//  - Tag : optional type parameter to tag the vector. The default type is \a blaze::DefaultTag.
 //
 // These contiguously stored elements can be directly accessed with the subscript operator. The
 // numbering of the vector elements is
@@ -207,20 +208,25 @@ template< typename Type     // Data type of the vector
         , size_t N          // Number of elements
         , bool TF           // Transpose flag
         , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF >  // Padding flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
 class HybridVector
-   : public DenseVector< HybridVector<Type,N,TF,AF,PF>, TF >
+   : public DenseVector< HybridVector<Type,N,TF,AF,PF,Tag>, TF >
 {
  public:
    //**Type definitions****************************************************************************
-   using This          = HybridVector<Type,N,TF,AF,PF>;   //!< Type of this HybridVector instance.
-   using BaseType      = DenseVector<This,TF>;            //!< Base type of this HybridVector instance.
-   using ResultType    = This;                            //!< Result type for expression template evaluations.
-   using TransposeType = HybridVector<Type,N,!TF,AF,PF>;  //!< Transpose type for expression template evaluations.
-   using ElementType   = Type;                            //!< Type of the vector elements.
-   using SIMDType      = SIMDTrait_t<ElementType>;        //!< SIMD type of the vector elements.
-   using ReturnType    = const Type&;                     //!< Return type for expression template evaluations.
-   using CompositeType = const HybridVector&;             //!< Data type for composite expression templates.
+   using This       = HybridVector<Type,N,TF,AF,PF,Tag>;  //!< Type of this HybridVector instance.
+   using BaseType   = DenseVector<This,TF>;               //!< Base type of this HybridVector instance.
+   using ResultType = This;                               //!< Result type for expression template evaluations.
+
+   //! Transpose type for expression template evaluations.
+   using TransposeType = HybridVector<Type,N,!TF,AF,PF,Tag>;
+
+   using ElementType   = Type;                      //!< Type of the vector elements.
+   using SIMDType      = SIMDTrait_t<ElementType>;  //!< SIMD type of the vector elements.
+   using ReturnType    = const Type&;               //!< Return type for expression template evaluations.
+   using TagType       = Tag;                       //!< Tag type of this HybridVector instance.
+   using CompositeType = const HybridVector&;       //!< Data type for composite expression templates.
 
    using Reference      = Type&;        //!< Reference to a non-constant vector value.
    using ConstReference = const Type&;  //!< Reference to a constant vector value.
@@ -236,7 +242,7 @@ class HybridVector
    */
    template< typename NewType >  // Data type of the other vector
    struct Rebind {
-      using Other = HybridVector<NewType,N,TF,AF,PF>;  //!< The type of the other HybridVector.
+      using Other = HybridVector<NewType,N,TF,AF,PF,Tag>;  //!< The type of the other HybridVector.
    };
    //**********************************************************************************************
 
@@ -245,7 +251,7 @@ class HybridVector
    */
    template< size_t NewN >  // Number of elements of the other vector
    struct Resize {
-      using Other = HybridVector<Type,NewN,TF,AF,PF>;  //!< The type of the other HybridVector.
+      using Other = HybridVector<Type,NewN,TF,AF,PF,Tag>;  //!< The type of the other HybridVector.
    };
    //**********************************************************************************************
 
@@ -578,8 +584,9 @@ template< typename Type     // Data type of the vector
         , size_t N          // Number of elements
         , bool TF           // Transpose flag
         , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF >  // Padding flag
-constexpr HybridVector<Type,N,TF,AF,PF>::HybridVector()
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+constexpr HybridVector<Type,N,TF,AF,PF,Tag>::HybridVector()
    : v_   ()       // The statically allocated vector elements
    , size_( 0UL )  // The current size/dimension of the vector
 {
@@ -602,8 +609,9 @@ template< typename Type     // Data type of the vector
         , size_t N          // Number of elements
         , bool TF           // Transpose flag
         , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF >  // Padding flag
-constexpr HybridVector<Type,N,TF,AF,PF>::HybridVector( size_t n )
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+constexpr HybridVector<Type,N,TF,AF,PF,Tag>::HybridVector( size_t n )
    : v_   ()     // The statically allocated vector elements
    , size_( n )  // The current size/dimension of the vector
 {
@@ -631,8 +639,9 @@ template< typename Type     // Data type of the vector
         , size_t N          // Number of elements
         , bool TF           // Transpose flag
         , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF >  // Padding flag
-inline HybridVector<Type,N,TF,AF,PF>::HybridVector( size_t n, const Type& init )
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+inline HybridVector<Type,N,TF,AF,PF,Tag>::HybridVector( size_t n, const Type& init )
    : size_( n )  // The current size/dimension of the vector
    // v_ is intentionally left uninitialized
 {
@@ -675,8 +684,9 @@ template< typename Type     // Data type of the vector
         , size_t N          // Number of elements
         , bool TF           // Transpose flag
         , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF >  // Padding flag
-constexpr HybridVector<Type,N,TF,AF,PF>::HybridVector( initializer_list<Type> list )
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+constexpr HybridVector<Type,N,TF,AF,PF,Tag>::HybridVector( initializer_list<Type> list )
    : v_   ()               // The statically allocated vector elements
    , size_( list.size() )  // The current size/dimension of the vector
 {
@@ -723,9 +733,10 @@ template< typename Type     // Data type of the vector
         , size_t N          // Number of elements
         , bool TF           // Transpose flag
         , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF >  // Padding flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
 template< typename Other >  // Data type of the initialization array
-inline HybridVector<Type,N,TF,AF,PF>::HybridVector( size_t n, const Other* array )
+inline HybridVector<Type,N,TF,AF,PF,Tag>::HybridVector( size_t n, const Other* array )
    : size_( n )  // The current size/dimension of the vector
    // v_ is intentionally left uninitialized
 {
@@ -768,10 +779,11 @@ template< typename Type     // Data type of the vector
         , size_t N          // Number of elements
         , bool TF           // Transpose flag
         , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF >  // Padding flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
 template< typename Other    // Data type of the static array
         , size_t Dim >      // Number of elements of the static array
-constexpr HybridVector<Type,N,TF,AF,PF>::HybridVector( const Other (&array)[Dim] )
+constexpr HybridVector<Type,N,TF,AF,PF,Tag>::HybridVector( const Other (&array)[Dim] )
    : v_   ( array )  // The statically allocated vector elements
    , size_( Dim )    // The current size/dimension of the vector
 {
@@ -804,10 +816,11 @@ template< typename Type     // Data type of the vector
         , size_t N          // Number of elements
         , bool TF           // Transpose flag
         , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF >  // Padding flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
 template< typename Other    // Data type of the std::array
         , size_t Dim >      // Dimension of the std::array
-constexpr HybridVector<Type,N,TF,AF,PF>::HybridVector( const std::array<Other,Dim>& array )
+constexpr HybridVector<Type,N,TF,AF,PF,Tag>::HybridVector( const std::array<Other,Dim>& array )
    : v_   ( array )  // The statically allocated vector elements
    , size_( Dim )    // The current size/dimension of the vector
 {
@@ -829,8 +842,9 @@ template< typename Type     // Data type of the vector
         , size_t N          // Number of elements
         , bool TF           // Transpose flag
         , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF >  // Padding flag
-constexpr HybridVector<Type,N,TF,AF,PF>::HybridVector( const HybridVector& v )
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+constexpr HybridVector<Type,N,TF,AF,PF,Tag>::HybridVector( const HybridVector& v )
    : BaseType()        // Initialization of the base class
    , v_   ( v.v_ )     // The statically allocated vector elements
    , size_( v.size_ )  // The current size/dimension of the vector
@@ -854,9 +868,10 @@ template< typename Type     // Data type of the vector
         , size_t N          // Number of elements
         , bool TF           // Transpose flag
         , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF >  // Padding flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
 template< typename VT >  // Type of the foreign vector
-inline HybridVector<Type,N,TF,AF,PF>::HybridVector( const Vector<VT,TF>& v )
+inline HybridVector<Type,N,TF,AF,PF,Tag>::HybridVector( const Vector<VT,TF>& v )
    : size_( (~v).size() )  // The current size/dimension of the vector
    // v_ is intentionally left uninitialized
 {
@@ -899,9 +914,10 @@ template< typename Type     // Data type of the vector
         , size_t N          // Number of elements
         , bool TF           // Transpose flag
         , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF >  // Padding flag
-constexpr typename HybridVector<Type,N,TF,AF,PF>::Reference
-   HybridVector<Type,N,TF,AF,PF>::operator[]( size_t index ) noexcept
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+constexpr typename HybridVector<Type,N,TF,AF,PF,Tag>::Reference
+   HybridVector<Type,N,TF,AF,PF,Tag>::operator[]( size_t index ) noexcept
 {
    BLAZE_USER_ASSERT( index < size_, "Invalid vector access index" );
    return v_[index];
@@ -922,9 +938,10 @@ template< typename Type     // Data type of the vector
         , size_t N          // Number of elements
         , bool TF           // Transpose flag
         , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF >  // Padding flag
-constexpr typename HybridVector<Type,N,TF,AF,PF>::ConstReference
-   HybridVector<Type,N,TF,AF,PF>::operator[]( size_t index ) const noexcept
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+constexpr typename HybridVector<Type,N,TF,AF,PF,Tag>::ConstReference
+   HybridVector<Type,N,TF,AF,PF,Tag>::operator[]( size_t index ) const noexcept
 {
    BLAZE_USER_ASSERT( index < size_, "Invalid vector access index" );
    return v_[index];
@@ -946,9 +963,10 @@ template< typename Type     // Data type of the vector
         , size_t N          // Number of elements
         , bool TF           // Transpose flag
         , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF >  // Padding flag
-inline typename HybridVector<Type,N,TF,AF,PF>::Reference
-   HybridVector<Type,N,TF,AF,PF>::at( size_t index )
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+inline typename HybridVector<Type,N,TF,AF,PF,Tag>::Reference
+   HybridVector<Type,N,TF,AF,PF,Tag>::at( size_t index )
 {
    if( index >= size_ ) {
       BLAZE_THROW_OUT_OF_RANGE( "Invalid vector access index" );
@@ -972,9 +990,10 @@ template< typename Type     // Data type of the vector
         , size_t N          // Number of elements
         , bool TF           // Transpose flag
         , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF >  // Padding flag
-inline typename HybridVector<Type,N,TF,AF,PF>::ConstReference
-   HybridVector<Type,N,TF,AF,PF>::at( size_t index ) const
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+inline typename HybridVector<Type,N,TF,AF,PF,Tag>::ConstReference
+   HybridVector<Type,N,TF,AF,PF,Tag>::at( size_t index ) const
 {
    if( index >= size_ ) {
       BLAZE_THROW_OUT_OF_RANGE( "Invalid vector access index" );
@@ -995,9 +1014,10 @@ template< typename Type     // Data type of the vector
         , size_t N          // Number of elements
         , bool TF           // Transpose flag
         , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF >  // Padding flag
-constexpr typename HybridVector<Type,N,TF,AF,PF>::Pointer
-   HybridVector<Type,N,TF,AF,PF>::data() noexcept
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+constexpr typename HybridVector<Type,N,TF,AF,PF,Tag>::Pointer
+   HybridVector<Type,N,TF,AF,PF,Tag>::data() noexcept
 {
    return v_;
 }
@@ -1015,9 +1035,10 @@ template< typename Type     // Data type of the vector
         , size_t N          // Number of elements
         , bool TF           // Transpose flag
         , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF >  // Padding flag
-constexpr typename HybridVector<Type,N,TF,AF,PF>::ConstPointer
-   HybridVector<Type,N,TF,AF,PF>::data() const noexcept
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+constexpr typename HybridVector<Type,N,TF,AF,PF,Tag>::ConstPointer
+   HybridVector<Type,N,TF,AF,PF,Tag>::data() const noexcept
 {
    return v_;
 }
@@ -1033,9 +1054,10 @@ template< typename Type     // Data type of the vector
         , size_t N          // Number of elements
         , bool TF           // Transpose flag
         , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF >  // Padding flag
-constexpr typename HybridVector<Type,N,TF,AF,PF>::Iterator
-   HybridVector<Type,N,TF,AF,PF>::begin() noexcept
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+constexpr typename HybridVector<Type,N,TF,AF,PF,Tag>::Iterator
+   HybridVector<Type,N,TF,AF,PF,Tag>::begin() noexcept
 {
    return Iterator( v_ );
 }
@@ -1051,9 +1073,10 @@ template< typename Type     // Data type of the vector
         , size_t N          // Number of elements
         , bool TF           // Transpose flag
         , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF >  // Padding flag
-constexpr typename HybridVector<Type,N,TF,AF,PF>::ConstIterator
-   HybridVector<Type,N,TF,AF,PF>::begin() const noexcept
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+constexpr typename HybridVector<Type,N,TF,AF,PF,Tag>::ConstIterator
+   HybridVector<Type,N,TF,AF,PF,Tag>::begin() const noexcept
 {
    return ConstIterator( v_ );
 }
@@ -1069,9 +1092,10 @@ template< typename Type     // Data type of the vector
         , size_t N          // Number of elements
         , bool TF           // Transpose flag
         , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF >  // Padding flag
-constexpr typename HybridVector<Type,N,TF,AF,PF>::ConstIterator
-   HybridVector<Type,N,TF,AF,PF>::cbegin() const noexcept
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+constexpr typename HybridVector<Type,N,TF,AF,PF,Tag>::ConstIterator
+   HybridVector<Type,N,TF,AF,PF,Tag>::cbegin() const noexcept
 {
    return ConstIterator( v_ );
 }
@@ -1087,9 +1111,10 @@ template< typename Type     // Data type of the vector
         , size_t N          // Number of elements
         , bool TF           // Transpose flag
         , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF >  // Padding flag
-constexpr typename HybridVector<Type,N,TF,AF,PF>::Iterator
-   HybridVector<Type,N,TF,AF,PF>::end() noexcept
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+constexpr typename HybridVector<Type,N,TF,AF,PF,Tag>::Iterator
+   HybridVector<Type,N,TF,AF,PF,Tag>::end() noexcept
 {
    BLAZE_INTERNAL_ASSERT( size_ <= N, "Invalid size detected" );
    return Iterator( v_ + size_ );
@@ -1106,9 +1131,10 @@ template< typename Type     // Data type of the vector
         , size_t N          // Number of elements
         , bool TF           // Transpose flag
         , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF >  // Padding flag
-constexpr typename HybridVector<Type,N,TF,AF,PF>::ConstIterator
-   HybridVector<Type,N,TF,AF,PF>::end() const noexcept
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+constexpr typename HybridVector<Type,N,TF,AF,PF,Tag>::ConstIterator
+   HybridVector<Type,N,TF,AF,PF,Tag>::end() const noexcept
 {
    BLAZE_INTERNAL_ASSERT( size_ <= N, "Invalid size detected" );
    return ConstIterator( v_ + size_ );
@@ -1125,9 +1151,10 @@ template< typename Type     // Data type of the vector
         , size_t N          // Number of elements
         , bool TF           // Transpose flag
         , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF >  // Padding flag
-constexpr typename HybridVector<Type,N,TF,AF,PF>::ConstIterator
-   HybridVector<Type,N,TF,AF,PF>::cend() const noexcept
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+constexpr typename HybridVector<Type,N,TF,AF,PF,Tag>::ConstIterator
+   HybridVector<Type,N,TF,AF,PF,Tag>::cend() const noexcept
 {
    BLAZE_INTERNAL_ASSERT( size_ <= N, "Invalid size detected" );
    return ConstIterator( v_ + size_ );
@@ -1153,9 +1180,10 @@ template< typename Type     // Data type of the vector
         , size_t N          // Number of elements
         , bool TF           // Transpose flag
         , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF >  // Padding flag
-constexpr HybridVector<Type,N,TF,AF,PF>&
-   HybridVector<Type,N,TF,AF,PF>::operator=( const Type& rhs )
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+constexpr HybridVector<Type,N,TF,AF,PF,Tag>&
+   HybridVector<Type,N,TF,AF,PF,Tag>::operator=( const Type& rhs )
 {
    BLAZE_INTERNAL_ASSERT( size_ <= N, "Invalid size detected" );
 
@@ -1189,9 +1217,10 @@ template< typename Type     // Data type of the vector
         , size_t N          // Number of elements
         , bool TF           // Transpose flag
         , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF >  // Padding flag
-constexpr HybridVector<Type,N,TF,AF,PF>&
-   HybridVector<Type,N,TF,AF,PF>::operator=( initializer_list<Type> list )
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+constexpr HybridVector<Type,N,TF,AF,PF,Tag>&
+   HybridVector<Type,N,TF,AF,PF,Tag>::operator=( initializer_list<Type> list )
 {
    if( list.size() > N ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to hybrid vector" );
@@ -1234,11 +1263,12 @@ template< typename Type     // Data type of the vector
         , size_t N          // Number of elements
         , bool TF           // Transpose flag
         , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF >  // Padding flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
 template< typename Other    // Data type of the static array
         , size_t Dim >      // Number of elements of the static array
-constexpr HybridVector<Type,N,TF,AF,PF>&
-   HybridVector<Type,N,TF,AF,PF>::operator=( const Other (&array)[Dim] )
+constexpr HybridVector<Type,N,TF,AF,PF,Tag>&
+   HybridVector<Type,N,TF,AF,PF,Tag>::operator=( const Other (&array)[Dim] )
 {
    BLAZE_STATIC_ASSERT( Dim <= N );
 
@@ -1275,11 +1305,12 @@ template< typename Type     // Data type of the vector
         , size_t N          // Number of elements
         , bool TF           // Transpose flag
         , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF >  // Padding flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
 template< typename Other    // Data type of the std::array
         , size_t Dim >      // Dimension of the std::array
-constexpr HybridVector<Type,N,TF,AF,PF>&
-   HybridVector<Type,N,TF,AF,PF>::operator=( const std::array<Other,Dim>& array )
+constexpr HybridVector<Type,N,TF,AF,PF,Tag>&
+   HybridVector<Type,N,TF,AF,PF,Tag>::operator=( const std::array<Other,Dim>& array )
 {
    BLAZE_STATIC_ASSERT( Dim <= N );
 
@@ -1305,9 +1336,10 @@ template< typename Type     // Data type of the vector
         , size_t N          // Number of elements
         , bool TF           // Transpose flag
         , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF >  // Padding flag
-constexpr HybridVector<Type,N,TF,AF,PF>&
-   HybridVector<Type,N,TF,AF,PF>::operator=( const HybridVector& rhs )
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+constexpr HybridVector<Type,N,TF,AF,PF,Tag>&
+   HybridVector<Type,N,TF,AF,PF,Tag>::operator=( const HybridVector& rhs )
 {
    using blaze::assign;
 
@@ -1337,10 +1369,11 @@ template< typename Type     // Data type of the vector
         , size_t N          // Number of elements
         , bool TF           // Transpose flag
         , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF >  // Padding flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
 template< typename VT >  // Type of the right-hand side vector
-inline HybridVector<Type,N,TF,AF,PF>&
-   HybridVector<Type,N,TF,AF,PF>::operator=( const Vector<VT,TF>& rhs )
+inline HybridVector<Type,N,TF,AF,PF,Tag>&
+   HybridVector<Type,N,TF,AF,PF,Tag>::operator=( const Vector<VT,TF>& rhs )
 {
    using blaze::assign;
 
@@ -1380,10 +1413,11 @@ template< typename Type     // Data type of the vector
         , size_t N          // Number of elements
         , bool TF           // Transpose flag
         , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF >  // Padding flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
 template< typename VT >     // Type of the right-hand side vector
-inline HybridVector<Type,N,TF,AF,PF>&
-   HybridVector<Type,N,TF,AF,PF>::operator+=( const Vector<VT,TF>& rhs )
+inline HybridVector<Type,N,TF,AF,PF,Tag>&
+   HybridVector<Type,N,TF,AF,PF,Tag>::operator+=( const Vector<VT,TF>& rhs )
 {
    using blaze::addAssign;
 
@@ -1420,10 +1454,11 @@ template< typename Type     // Data type of the vector
         , size_t N          // Number of elements
         , bool TF           // Transpose flag
         , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF >  // Padding flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
 template< typename VT >     // Type of the right-hand side vector
-inline HybridVector<Type,N,TF,AF,PF>&
-   HybridVector<Type,N,TF,AF,PF>::operator-=( const Vector<VT,TF>& rhs )
+inline HybridVector<Type,N,TF,AF,PF,Tag>&
+   HybridVector<Type,N,TF,AF,PF,Tag>::operator-=( const Vector<VT,TF>& rhs )
 {
    using blaze::subAssign;
 
@@ -1461,10 +1496,11 @@ template< typename Type     // Data type of the vector
         , size_t N          // Number of elements
         , bool TF           // Transpose flag
         , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF >  // Padding flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
 template< typename VT >     // Type of the right-hand side vector
-inline HybridVector<Type,N,TF,AF,PF>&
-   HybridVector<Type,N,TF,AF,PF>::operator*=( const Vector<VT,TF>& rhs )
+inline HybridVector<Type,N,TF,AF,PF,Tag>&
+   HybridVector<Type,N,TF,AF,PF,Tag>::operator*=( const Vector<VT,TF>& rhs )
 {
    using blaze::assign;
    using blaze::multAssign;
@@ -1502,10 +1538,11 @@ template< typename Type     // Data type of the vector
         , size_t N          // Number of elements
         , bool TF           // Transpose flag
         , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF >  // Padding flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
 template< typename VT >     // Type of the right-hand side vector
-inline HybridVector<Type,N,TF,AF,PF>&
-   HybridVector<Type,N,TF,AF,PF>::operator/=( const DenseVector<VT,TF>& rhs )
+inline HybridVector<Type,N,TF,AF,PF,Tag>&
+   HybridVector<Type,N,TF,AF,PF,Tag>::operator/=( const DenseVector<VT,TF>& rhs )
 {
    using blaze::assign;
    using blaze::divAssign;
@@ -1544,10 +1581,11 @@ template< typename Type     // Data type of the vector
         , size_t N          // Number of elements
         , bool TF           // Transpose flag
         , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF >  // Padding flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
 template< typename VT >     // Type of the right-hand side vector
-inline HybridVector<Type,N,TF,AF,PF>&
-   HybridVector<Type,N,TF,AF,PF>::operator%=( const Vector<VT,TF>& rhs )
+inline HybridVector<Type,N,TF,AF,PF,Tag>&
+   HybridVector<Type,N,TF,AF,PF,Tag>::operator%=( const Vector<VT,TF>& rhs )
 {
    using blaze::assign;
 
@@ -1591,8 +1629,9 @@ template< typename Type     // Data type of the vector
         , size_t N          // Number of elements
         , bool TF           // Transpose flag
         , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF >  // Padding flag
-constexpr size_t HybridVector<Type,N,TF,AF,PF>::size() const noexcept
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+constexpr size_t HybridVector<Type,N,TF,AF,PF,Tag>::size() const noexcept
 {
    return size_;
 }
@@ -1611,8 +1650,9 @@ template< typename Type     // Data type of the vector
         , size_t N          // Number of elements
         , bool TF           // Transpose flag
         , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF >  // Padding flag
-constexpr size_t HybridVector<Type,N,TF,AF,PF>::spacing() noexcept
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+constexpr size_t HybridVector<Type,N,TF,AF,PF,Tag>::spacing() noexcept
 {
    return NN;
 }
@@ -1628,8 +1668,9 @@ template< typename Type     // Data type of the vector
         , size_t N          // Number of elements
         , bool TF           // Transpose flag
         , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF >  // Padding flag
-constexpr size_t HybridVector<Type,N,TF,AF,PF>::capacity() noexcept
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+constexpr size_t HybridVector<Type,N,TF,AF,PF,Tag>::capacity() noexcept
 {
    return NN;
 }
@@ -1648,8 +1689,9 @@ template< typename Type     // Data type of the vector
         , size_t N          // Number of elements
         , bool TF           // Transpose flag
         , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF >  // Padding flag
-inline size_t HybridVector<Type,N,TF,AF,PF>::nonZeros() const
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+inline size_t HybridVector<Type,N,TF,AF,PF,Tag>::nonZeros() const
 {
    size_t nonzeros( 0 );
 
@@ -1672,8 +1714,9 @@ template< typename Type     // Data type of the vector
         , size_t N          // Number of elements
         , bool TF           // Transpose flag
         , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF >  // Padding flag
-constexpr void HybridVector<Type,N,TF,AF,PF>::reset()
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+constexpr void HybridVector<Type,N,TF,AF,PF,Tag>::reset()
 {
    using blaze::clear;
    for( size_t i=0UL; i<size_; ++i )
@@ -1693,8 +1736,9 @@ template< typename Type     // Data type of the vector
         , size_t N          // Number of elements
         , bool TF           // Transpose flag
         , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF >  // Padding flag
-constexpr void HybridVector<Type,N,TF,AF,PF>::clear()
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+constexpr void HybridVector<Type,N,TF,AF,PF,Tag>::clear()
 {
    resize( 0UL );
 }
@@ -1736,8 +1780,9 @@ template< typename Type     // Data type of the vector
         , size_t N          // Number of elements
         , bool TF           // Transpose flag
         , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF >  // Padding flag
-constexpr void HybridVector<Type,N,TF,AF,PF>::resize( size_t n, bool preserve )
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+constexpr void HybridVector<Type,N,TF,AF,PF,Tag>::resize( size_t n, bool preserve )
 {
    MAYBE_UNUSED( preserve );
 
@@ -1773,8 +1818,9 @@ template< typename Type     // Data type of the vector
         , size_t N          // Number of elements
         , bool TF           // Transpose flag
         , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF >  // Padding flag
-constexpr void HybridVector<Type,N,TF,AF,PF>::extend( size_t n, bool preserve )
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+constexpr void HybridVector<Type,N,TF,AF,PF,Tag>::extend( size_t n, bool preserve )
 {
    MAYBE_UNUSED( preserve );
    resize( size_+n );
@@ -1792,8 +1838,9 @@ template< typename Type     // Data type of the vector
         , size_t N          // Number of elements
         , bool TF           // Transpose flag
         , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF >  // Padding flag
-inline void HybridVector<Type,N,TF,AF,PF>::swap( HybridVector& v ) noexcept
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+inline void HybridVector<Type,N,TF,AF,PF,Tag>::swap( HybridVector& v ) noexcept
 {
    using std::swap;
 
@@ -1834,10 +1881,11 @@ template< typename Type     // Data type of the vector
         , size_t N          // Number of elements
         , bool TF           // Transpose flag
         , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF >  // Padding flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
 template< typename Other >  // Data type of the scalar value
-inline HybridVector<Type,N,TF,AF,PF>&
-   HybridVector<Type,N,TF,AF,PF>::scale( const Other& scalar )
+inline HybridVector<Type,N,TF,AF,PF,Tag>&
+   HybridVector<Type,N,TF,AF,PF,Tag>::scale( const Other& scalar )
 {
    for( size_t i=0; i<size_; ++i )
       v_[i] *= scalar;
@@ -1868,8 +1916,9 @@ template< typename Type     // Data type of the vector
         , size_t N          // Number of elements
         , bool TF           // Transpose flag
         , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF >  // Padding flag
-inline void* HybridVector<Type,N,TF,AF,PF>::operator new( std::size_t size )
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+inline void* HybridVector<Type,N,TF,AF,PF,Tag>::operator new( std::size_t size )
 {
    MAYBE_UNUSED( size );
 
@@ -1894,8 +1943,9 @@ template< typename Type     // Data type of the vector
         , size_t N          // Number of elements
         , bool TF           // Transpose flag
         , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF >  // Padding flag
-inline void* HybridVector<Type,N,TF,AF,PF>::operator new[]( std::size_t size )
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+inline void* HybridVector<Type,N,TF,AF,PF,Tag>::operator new[]( std::size_t size )
 {
    BLAZE_INTERNAL_ASSERT( size >= sizeof( HybridVector )       , "Invalid number of bytes detected" );
    BLAZE_INTERNAL_ASSERT( size %  sizeof( HybridVector ) == 0UL, "Invalid number of bytes detected" );
@@ -1919,8 +1969,9 @@ template< typename Type     // Data type of the vector
         , size_t N          // Number of elements
         , bool TF           // Transpose flag
         , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF >  // Padding flag
-inline void* HybridVector<Type,N,TF,AF,PF>::operator new( std::size_t size, const std::nothrow_t& )
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+inline void* HybridVector<Type,N,TF,AF,PF,Tag>::operator new( std::size_t size, const std::nothrow_t& )
 {
    MAYBE_UNUSED( size );
 
@@ -1945,8 +1996,9 @@ template< typename Type     // Data type of the vector
         , size_t N          // Number of elements
         , bool TF           // Transpose flag
         , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF >  // Padding flag
-inline void* HybridVector<Type,N,TF,AF,PF>::operator new[]( std::size_t size, const std::nothrow_t& )
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+inline void* HybridVector<Type,N,TF,AF,PF,Tag>::operator new[]( std::size_t size, const std::nothrow_t& )
 {
    BLAZE_INTERNAL_ASSERT( size >= sizeof( HybridVector )       , "Invalid number of bytes detected" );
    BLAZE_INTERNAL_ASSERT( size %  sizeof( HybridVector ) == 0UL, "Invalid number of bytes detected" );
@@ -1966,8 +2018,9 @@ template< typename Type     // Data type of the vector
         , size_t N          // Number of elements
         , bool TF           // Transpose flag
         , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF >  // Padding flag
-inline void HybridVector<Type,N,TF,AF,PF>::operator delete( void* ptr )
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+inline void HybridVector<Type,N,TF,AF,PF,Tag>::operator delete( void* ptr )
 {
    deallocate( static_cast<HybridVector*>( ptr ) );
 }
@@ -1984,8 +2037,9 @@ template< typename Type     // Data type of the vector
         , size_t N          // Number of elements
         , bool TF           // Transpose flag
         , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF >  // Padding flag
-inline void HybridVector<Type,N,TF,AF,PF>::operator delete[]( void* ptr )
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+inline void HybridVector<Type,N,TF,AF,PF,Tag>::operator delete[]( void* ptr )
 {
    deallocate( static_cast<HybridVector*>( ptr ) );
 }
@@ -2002,8 +2056,9 @@ template< typename Type     // Data type of the vector
         , size_t N          // Number of elements
         , bool TF           // Transpose flag
         , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF >  // Padding flag
-inline void HybridVector<Type,N,TF,AF,PF>::operator delete( void* ptr, const std::nothrow_t& )
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+inline void HybridVector<Type,N,TF,AF,PF,Tag>::operator delete( void* ptr, const std::nothrow_t& )
 {
    deallocate( static_cast<HybridVector*>( ptr ) );
 }
@@ -2020,8 +2075,9 @@ template< typename Type     // Data type of the vector
         , size_t N          // Number of elements
         , bool TF           // Transpose flag
         , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF >  // Padding flag
-inline void HybridVector<Type,N,TF,AF,PF>::operator delete[]( void* ptr, const std::nothrow_t& )
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+inline void HybridVector<Type,N,TF,AF,PF,Tag>::operator delete[]( void* ptr, const std::nothrow_t& )
 {
    deallocate( static_cast<HybridVector*>( ptr ) );
 }
@@ -2049,8 +2105,9 @@ template< typename Type     // Data type of the vector
         , size_t N          // Number of elements
         , bool TF           // Transpose flag
         , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF >  // Padding flag
-constexpr bool HybridVector<Type,N,TF,AF,PF>::isIntact() const noexcept
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+constexpr bool HybridVector<Type,N,TF,AF,PF,Tag>::isIntact() const noexcept
 {
    if( size_ > N )
       return false;
@@ -2089,9 +2146,10 @@ template< typename Type     // Data type of the vector
         , size_t N          // Number of elements
         , bool TF           // Transpose flag
         , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF >  // Padding flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
 template< typename Other >  // Data type of the foreign expression
-inline bool HybridVector<Type,N,TF,AF,PF>::canAlias( const Other* alias ) const noexcept
+inline bool HybridVector<Type,N,TF,AF,PF,Tag>::canAlias( const Other* alias ) const noexcept
 {
    return static_cast<const void*>( this ) == static_cast<const void*>( alias );
 }
@@ -2112,9 +2170,10 @@ template< typename Type     // Data type of the vector
         , size_t N          // Number of elements
         , bool TF           // Transpose flag
         , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF >  // Padding flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
 template< typename Other >  // Data type of the foreign expression
-inline bool HybridVector<Type,N,TF,AF,PF>::isAliased( const Other* alias ) const noexcept
+inline bool HybridVector<Type,N,TF,AF,PF,Tag>::isAliased( const Other* alias ) const noexcept
 {
    return static_cast<const void*>( this ) == static_cast<const void*>( alias );
 }
@@ -2134,8 +2193,9 @@ template< typename Type     // Data type of the vector
         , size_t N          // Number of elements
         , bool TF           // Transpose flag
         , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF >  // Padding flag
-constexpr bool HybridVector<Type,N,TF,AF,PF>::isAligned() noexcept
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+constexpr bool HybridVector<Type,N,TF,AF,PF,Tag>::isAligned() noexcept
 {
    return AF == aligned;
 }
@@ -2158,9 +2218,10 @@ template< typename Type     // Data type of the vector
         , size_t N          // Number of elements
         , bool TF           // Transpose flag
         , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF >  // Padding flag
-BLAZE_ALWAYS_INLINE typename HybridVector<Type,N,TF,AF,PF>::SIMDType
-   HybridVector<Type,N,TF,AF,PF>::load( size_t index ) const noexcept
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+BLAZE_ALWAYS_INLINE typename HybridVector<Type,N,TF,AF,PF,Tag>::SIMDType
+   HybridVector<Type,N,TF,AF,PF,Tag>::load( size_t index ) const noexcept
 {
    if( AF == aligned )
       return loada( index );
@@ -2187,9 +2248,10 @@ template< typename Type     // Data type of the vector
         , size_t N          // Number of elements
         , bool TF           // Transpose flag
         , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF >  // Padding flag
-BLAZE_ALWAYS_INLINE typename HybridVector<Type,N,TF,AF,PF>::SIMDType
-   HybridVector<Type,N,TF,AF,PF>::loada( size_t index ) const noexcept
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+BLAZE_ALWAYS_INLINE typename HybridVector<Type,N,TF,AF,PF,Tag>::SIMDType
+   HybridVector<Type,N,TF,AF,PF,Tag>::loada( size_t index ) const noexcept
 {
    using blaze::loada;
 
@@ -2222,9 +2284,10 @@ template< typename Type     // Data type of the vector
         , size_t N          // Number of elements
         , bool TF           // Transpose flag
         , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF >  // Padding flag
-BLAZE_ALWAYS_INLINE typename HybridVector<Type,N,TF,AF,PF>::SIMDType
-   HybridVector<Type,N,TF,AF,PF>::loadu( size_t index ) const noexcept
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+BLAZE_ALWAYS_INLINE typename HybridVector<Type,N,TF,AF,PF,Tag>::SIMDType
+   HybridVector<Type,N,TF,AF,PF,Tag>::loadu( size_t index ) const noexcept
 {
    using blaze::loadu;
 
@@ -2255,9 +2318,10 @@ template< typename Type     // Data type of the vector
         , size_t N          // Number of elements
         , bool TF           // Transpose flag
         , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF >  // Padding flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
 BLAZE_ALWAYS_INLINE void
-   HybridVector<Type,N,TF,AF,PF>::store( size_t index, const SIMDType& value ) noexcept
+   HybridVector<Type,N,TF,AF,PF,Tag>::store( size_t index, const SIMDType& value ) noexcept
 {
    if( AF == aligned )
       storea( index, value );
@@ -2284,9 +2348,10 @@ template< typename Type     // Data type of the vector
         , size_t N          // Number of elements
         , bool TF           // Transpose flag
         , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF >  // Padding flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
 BLAZE_ALWAYS_INLINE void
-   HybridVector<Type,N,TF,AF,PF>::storea( size_t index, const SIMDType& value ) noexcept
+   HybridVector<Type,N,TF,AF,PF,Tag>::storea( size_t index, const SIMDType& value ) noexcept
 {
    using blaze::storea;
 
@@ -2319,9 +2384,10 @@ template< typename Type     // Data type of the vector
         , size_t N          // Number of elements
         , bool TF           // Transpose flag
         , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF >  // Padding flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
 BLAZE_ALWAYS_INLINE void
-   HybridVector<Type,N,TF,AF,PF>::storeu( size_t index, const SIMDType& value ) noexcept
+   HybridVector<Type,N,TF,AF,PF,Tag>::storeu( size_t index, const SIMDType& value ) noexcept
 {
    using blaze::storeu;
 
@@ -2353,9 +2419,10 @@ template< typename Type     // Data type of the vector
         , size_t N          // Number of elements
         , bool TF           // Transpose flag
         , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF >  // Padding flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
 BLAZE_ALWAYS_INLINE void
-   HybridVector<Type,N,TF,AF,PF>::stream( size_t index, const SIMDType& value ) noexcept
+   HybridVector<Type,N,TF,AF,PF,Tag>::stream( size_t index, const SIMDType& value ) noexcept
 {
    using blaze::stream;
 
@@ -2386,9 +2453,10 @@ template< typename Type     // Data type of the vector
         , size_t N          // Number of elements
         , bool TF           // Transpose flag
         , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF >  // Padding flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
 template< typename VT >     // Type of the right-hand side dense vector
-inline auto HybridVector<Type,N,TF,AF,PF>::assign( const DenseVector<VT,TF>& rhs )
+inline auto HybridVector<Type,N,TF,AF,PF,Tag>::assign( const DenseVector<VT,TF>& rhs )
    -> DisableIf_t< VectorizedAssign_v<VT> >
 {
    BLAZE_INTERNAL_ASSERT( (~rhs).size() == size_, "Invalid vector sizes" );
@@ -2414,9 +2482,10 @@ template< typename Type     // Data type of the vector
         , size_t N          // Number of elements
         , bool TF           // Transpose flag
         , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF >  // Padding flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
 template< typename VT >     // Type of the right-hand side dense vector
-inline auto HybridVector<Type,N,TF,AF,PF>::assign( const DenseVector<VT,TF>& rhs )
+inline auto HybridVector<Type,N,TF,AF,PF,Tag>::assign( const DenseVector<VT,TF>& rhs )
    -> EnableIf_t< VectorizedAssign_v<VT> >
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
@@ -2455,9 +2524,10 @@ template< typename Type     // Data type of the vector
         , size_t N          // Number of elements
         , bool TF           // Transpose flag
         , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF >  // Padding flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
 template< typename VT >     // Type of the right-hand side sparse vector
-inline void HybridVector<Type,N,TF,AF,PF>::assign( const SparseVector<VT,TF>& rhs )
+inline void HybridVector<Type,N,TF,AF,PF,Tag>::assign( const SparseVector<VT,TF>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( (~rhs).size() == size_, "Invalid vector sizes" );
 
@@ -2482,9 +2552,10 @@ template< typename Type     // Data type of the vector
         , size_t N          // Number of elements
         , bool TF           // Transpose flag
         , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF >  // Padding flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
 template< typename VT >     // Type of the right-hand side dense vector
-inline auto HybridVector<Type,N,TF,AF,PF>::addAssign( const DenseVector<VT,TF>& rhs )
+inline auto HybridVector<Type,N,TF,AF,PF,Tag>::addAssign( const DenseVector<VT,TF>& rhs )
    -> DisableIf_t< VectorizedAddAssign_v<VT> >
 {
    BLAZE_INTERNAL_ASSERT( (~rhs).size() == size_, "Invalid vector sizes" );
@@ -2510,9 +2581,10 @@ template< typename Type     // Data type of the vector
         , size_t N          // Number of elements
         , bool TF           // Transpose flag
         , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF >  // Padding flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
 template< typename VT >     // Type of the right-hand side dense vector
-inline auto HybridVector<Type,N,TF,AF,PF>::addAssign( const DenseVector<VT,TF>& rhs )
+inline auto HybridVector<Type,N,TF,AF,PF,Tag>::addAssign( const DenseVector<VT,TF>& rhs )
    -> EnableIf_t< VectorizedAddAssign_v<VT> >
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
@@ -2551,9 +2623,10 @@ template< typename Type     // Data type of the vector
         , size_t N          // Number of elements
         , bool TF           // Transpose flag
         , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF >  // Padding flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
 template< typename VT >     // Type of the right-hand side sparse vector
-inline void HybridVector<Type,N,TF,AF,PF>::addAssign( const SparseVector<VT,TF>& rhs )
+inline void HybridVector<Type,N,TF,AF,PF,Tag>::addAssign( const SparseVector<VT,TF>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( (~rhs).size() == size_, "Invalid vector sizes" );
 
@@ -2578,9 +2651,10 @@ template< typename Type     // Data type of the vector
         , size_t N          // Number of elements
         , bool TF           // Transpose flag
         , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF >  // Padding flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
 template< typename VT >     // Type of the right-hand side dense vector
-inline auto HybridVector<Type,N,TF,AF,PF>::subAssign( const DenseVector<VT,TF>& rhs )
+inline auto HybridVector<Type,N,TF,AF,PF,Tag>::subAssign( const DenseVector<VT,TF>& rhs )
    -> DisableIf_t< VectorizedSubAssign_v<VT> >
 {
    BLAZE_INTERNAL_ASSERT( (~rhs).size() == size_, "Invalid vector sizes" );
@@ -2606,9 +2680,10 @@ template< typename Type     // Data type of the vector
         , size_t N          // Number of elements
         , bool TF           // Transpose flag
         , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF >  // Padding flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
 template< typename VT >     // Type of the right-hand side dense vector
-inline auto HybridVector<Type,N,TF,AF,PF>::subAssign( const DenseVector<VT,TF>& rhs )
+inline auto HybridVector<Type,N,TF,AF,PF,Tag>::subAssign( const DenseVector<VT,TF>& rhs )
    -> EnableIf_t< VectorizedSubAssign_v<VT> >
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
@@ -2647,9 +2722,10 @@ template< typename Type     // Data type of the vector
         , size_t N          // Number of elements
         , bool TF           // Transpose flag
         , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF >  // Padding flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
 template< typename VT >     // Type of the right-hand side sparse vector
-inline void HybridVector<Type,N,TF,AF,PF>::subAssign( const SparseVector<VT,TF>& rhs )
+inline void HybridVector<Type,N,TF,AF,PF,Tag>::subAssign( const SparseVector<VT,TF>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( (~rhs).size() == size_, "Invalid vector sizes" );
 
@@ -2674,9 +2750,10 @@ template< typename Type     // Data type of the vector
         , size_t N          // Number of elements
         , bool TF           // Transpose flag
         , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF >  // Padding flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
 template< typename VT >     // Type of the right-hand side dense vector
-inline auto HybridVector<Type,N,TF,AF,PF>::multAssign( const DenseVector<VT,TF>& rhs )
+inline auto HybridVector<Type,N,TF,AF,PF,Tag>::multAssign( const DenseVector<VT,TF>& rhs )
    -> DisableIf_t< VectorizedMultAssign_v<VT> >
 {
    BLAZE_INTERNAL_ASSERT( (~rhs).size() == size_, "Invalid vector sizes" );
@@ -2702,9 +2779,10 @@ template< typename Type     // Data type of the vector
         , size_t N          // Number of elements
         , bool TF           // Transpose flag
         , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF >  // Padding flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
 template< typename VT >     // Type of the right-hand side dense vector
-inline auto HybridVector<Type,N,TF,AF,PF>::multAssign( const DenseVector<VT,TF>& rhs )
+inline auto HybridVector<Type,N,TF,AF,PF,Tag>::multAssign( const DenseVector<VT,TF>& rhs )
    -> EnableIf_t< VectorizedMultAssign_v<VT> >
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
@@ -2743,9 +2821,10 @@ template< typename Type     // Data type of the vector
         , size_t N          // Number of elements
         , bool TF           // Transpose flag
         , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF >  // Padding flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
 template< typename VT >     // Type of the right-hand side sparse vector
-inline void HybridVector<Type,N,TF,AF,PF>::multAssign( const SparseVector<VT,TF>& rhs )
+inline void HybridVector<Type,N,TF,AF,PF,Tag>::multAssign( const SparseVector<VT,TF>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( (~rhs).size() == size_, "Invalid vector sizes" );
 
@@ -2774,9 +2853,10 @@ template< typename Type     // Data type of the vector
         , size_t N          // Number of elements
         , bool TF           // Transpose flag
         , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF >  // Padding flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
 template< typename VT >     // Type of the right-hand side dense vector
-inline auto HybridVector<Type,N,TF,AF,PF>::divAssign( const DenseVector<VT,TF>& rhs )
+inline auto HybridVector<Type,N,TF,AF,PF,Tag>::divAssign( const DenseVector<VT,TF>& rhs )
    -> DisableIf_t< VectorizedDivAssign_v<VT> >
 {
    BLAZE_INTERNAL_ASSERT( (~rhs).size() == size_, "Invalid vector sizes" );
@@ -2802,9 +2882,10 @@ template< typename Type     // Data type of the vector
         , size_t N          // Number of elements
         , bool TF           // Transpose flag
         , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF >  // Padding flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
 template< typename VT >     // Type of the right-hand side dense vector
-inline auto HybridVector<Type,N,TF,AF,PF>::divAssign( const DenseVector<VT,TF>& rhs )
+inline auto HybridVector<Type,N,TF,AF,PF,Tag>::divAssign( const DenseVector<VT,TF>& rhs )
    -> EnableIf_t< VectorizedDivAssign_v<VT> >
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
@@ -2841,20 +2922,20 @@ inline auto HybridVector<Type,N,TF,AF,PF>::divAssign( const DenseVector<VT,TF>& 
 //*************************************************************************************************
 /*!\name HybridVector operators */
 //@{
-template< typename Type, size_t N, bool TF, AlignmentFlag AF, PaddingFlag PF >
-constexpr void reset( HybridVector<Type,N,TF,AF,PF>& v );
+template< typename Type, size_t N, bool TF, AlignmentFlag AF, PaddingFlag PF, typename Tag >
+constexpr void reset( HybridVector<Type,N,TF,AF,PF,Tag>& v );
 
-template< typename Type, size_t N, bool TF, AlignmentFlag AF, PaddingFlag PF >
-constexpr void clear( HybridVector<Type,N,TF,AF,PF>& v );
+template< typename Type, size_t N, bool TF, AlignmentFlag AF, PaddingFlag PF, typename Tag >
+constexpr void clear( HybridVector<Type,N,TF,AF,PF,Tag>& v );
 
-template< RelaxationFlag RF, typename Type, size_t N, bool TF, AlignmentFlag AF, PaddingFlag PF >
-bool isDefault( const HybridVector<Type,N,TF,AF,PF>& v );
+template< RelaxationFlag RF, typename Type, size_t N, bool TF, AlignmentFlag AF, PaddingFlag PF, typename Tag >
+bool isDefault( const HybridVector<Type,N,TF,AF,PF,Tag>& v );
 
-template< typename Type, size_t N, bool TF, AlignmentFlag AF, PaddingFlag PF >
-constexpr bool isIntact( const HybridVector<Type,N,TF,AF,PF>& v );
+template< typename Type, size_t N, bool TF, AlignmentFlag AF, PaddingFlag PF, typename Tag >
+constexpr bool isIntact( const HybridVector<Type,N,TF,AF,PF,Tag>& v );
 
-template< typename Type, size_t N, bool TF, AlignmentFlag AF, PaddingFlag PF >
-void swap( HybridVector<Type,N,TF,AF,PF>& a, HybridVector<Type,N,TF,AF,PF>& b ) noexcept;
+template< typename Type, size_t N, bool TF, AlignmentFlag AF, PaddingFlag PF, typename Tag >
+void swap( HybridVector<Type,N,TF,AF,PF,Tag>& a, HybridVector<Type,N,TF,AF,PF,Tag>& b ) noexcept;
 //@}
 //*************************************************************************************************
 
@@ -2870,8 +2951,9 @@ template< typename Type     // Data type of the vector
         , size_t N          // Number of elements
         , bool TF           // Transpose flag
         , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF >  // Padding flag
-constexpr void reset( HybridVector<Type,N,TF,AF,PF>& v )
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+constexpr void reset( HybridVector<Type,N,TF,AF,PF,Tag>& v )
 {
    v.reset();
 }
@@ -2889,8 +2971,9 @@ template< typename Type     // Data type of the vector
         , size_t N          // Number of elements
         , bool TF           // Transpose flag
         , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF >  // Padding flag
-constexpr void clear( HybridVector<Type,N,TF,AF,PF>& v )
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+constexpr void clear( HybridVector<Type,N,TF,AF,PF,Tag>& v )
 {
    v.clear();
 }
@@ -2926,8 +3009,9 @@ template< RelaxationFlag RF  // Relaxation flag
         , size_t N           // Number of elements
         , bool TF            // Transpose flag
         , AlignmentFlag AF   // Alignment flag
-        , PaddingFlag PF >   // Padding flag
-inline bool isDefault( const HybridVector<Type,N,TF,AF,PF>& v )
+        , PaddingFlag PF     // Padding flag
+        , typename Tag >     // Type tag
+inline bool isDefault( const HybridVector<Type,N,TF,AF,PF,Tag>& v )
 {
    return ( v.size() == 0UL );
 }
@@ -2956,8 +3040,9 @@ template< typename Type     // Data type of the vector
         , size_t N          // Number of elements
         , bool TF           // Transpose flag
         , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF >  // Padding flag
-constexpr bool isIntact( const HybridVector<Type,N,TF,AF,PF>& v )
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+constexpr bool isIntact( const HybridVector<Type,N,TF,AF,PF,Tag>& v )
 {
    return v.isIntact();
 }
@@ -2976,8 +3061,9 @@ template< typename Type     // Data type of the vector
         , size_t N          // Number of elements
         , bool TF           // Transpose flag
         , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF >  // Padding flag
-inline void swap( HybridVector<Type,N,TF,AF,PF>& a, HybridVector<Type,N,TF,AF,PF>& b ) noexcept
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+inline void swap( HybridVector<Type,N,TF,AF,PF,Tag>& a, HybridVector<Type,N,TF,AF,PF,Tag>& b ) noexcept
 {
    a.swap( b );
 }
@@ -2994,8 +3080,8 @@ inline void swap( HybridVector<Type,N,TF,AF,PF>& a, HybridVector<Type,N,TF,AF,PF
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T, size_t N, bool TF, AlignmentFlag AF, PaddingFlag PF >
-struct MaxSize< HybridVector<T,N,TF,AF,PF>, 0UL >
+template< typename T, size_t N, bool TF, AlignmentFlag AF, PaddingFlag PF, typename Tag >
+struct MaxSize< HybridVector<T,N,TF,AF,PF,Tag>, 0UL >
    : public Ptrdiff_t<N>
 {};
 /*! \endcond */
@@ -3012,8 +3098,8 @@ struct MaxSize< HybridVector<T,N,TF,AF,PF>, 0UL >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T, size_t N, bool TF, AlignmentFlag AF, PaddingFlag PF >
-struct HasConstDataAccess< HybridVector<T,N,TF,AF,PF> >
+template< typename T, size_t N, bool TF, AlignmentFlag AF, PaddingFlag PF, typename Tag >
+struct HasConstDataAccess< HybridVector<T,N,TF,AF,PF,Tag> >
    : public TrueType
 {};
 /*! \endcond */
@@ -3030,8 +3116,8 @@ struct HasConstDataAccess< HybridVector<T,N,TF,AF,PF> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T, size_t N, bool TF, AlignmentFlag AF, PaddingFlag PF >
-struct HasMutableDataAccess< HybridVector<T,N,TF,AF,PF> >
+template< typename T, size_t N, bool TF, AlignmentFlag AF, PaddingFlag PF, typename Tag >
+struct HasMutableDataAccess< HybridVector<T,N,TF,AF,PF,Tag> >
    : public TrueType
 {};
 /*! \endcond */
@@ -3048,8 +3134,8 @@ struct HasMutableDataAccess< HybridVector<T,N,TF,AF,PF> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T, size_t N, bool TF, AlignmentFlag AF, PaddingFlag PF >
-struct IsAligned< HybridVector<T,N,TF,AF,PF> >
+template< typename T, size_t N, bool TF, AlignmentFlag AF, PaddingFlag PF, typename Tag >
+struct IsAligned< HybridVector<T,N,TF,AF,PF,Tag> >
    : public BoolConstant< AF == aligned >
 {};
 /*! \endcond */
@@ -3066,8 +3152,8 @@ struct IsAligned< HybridVector<T,N,TF,AF,PF> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T, size_t N, bool TF, AlignmentFlag AF, PaddingFlag PF >
-struct IsContiguous< HybridVector<T,N,TF,AF,PF> >
+template< typename T, size_t N, bool TF, AlignmentFlag AF, PaddingFlag PF, typename Tag >
+struct IsContiguous< HybridVector<T,N,TF,AF,PF,Tag> >
    : public TrueType
 {};
 /*! \endcond */
@@ -3084,8 +3170,8 @@ struct IsContiguous< HybridVector<T,N,TF,AF,PF> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T, size_t N, bool TF, AlignmentFlag AF, PaddingFlag PF >
-struct IsPadded< HybridVector<T,N,TF,AF,PF> >
+template< typename T, size_t N, bool TF, AlignmentFlag AF, PaddingFlag PF, typename Tag >
+struct IsPadded< HybridVector<T,N,TF,AF,PF,Tag> >
    : public BoolConstant< PF == padded >
 {};
 /*! \endcond */
@@ -3102,8 +3188,8 @@ struct IsPadded< HybridVector<T,N,TF,AF,PF> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T, size_t N, bool TF, AlignmentFlag AF, PaddingFlag PF >
-struct IsResizable< HybridVector<T,N,TF,AF,PF> >
+template< typename T, size_t N, bool TF, AlignmentFlag AF, PaddingFlag PF, typename Tag >
+struct IsResizable< HybridVector<T,N,TF,AF,PF,Tag> >
    : public TrueType
 {};
 /*! \endcond */
@@ -3129,12 +3215,12 @@ struct AddTraitEval2< T1, T2
                                   ( MaxSize_v<T1,0UL> != DefaultMaxSize_v ||
                                     MaxSize_v<T2,0UL> != DefaultMaxSize_v ) > >
 {
-   using ET1 = ElementType_t<T1>;
-   using ET2 = ElementType_t<T2>;
-
-   static constexpr size_t N = min( size_t( MaxSize_v<T1,0UL> ), size_t( MaxSize_v<T2,0UL> ) );
-
-   using Type = HybridVector< AddTrait_t<ET1,ET2>, N, TransposeFlag_v<T1> >;
+   using Type = HybridVector< AddTrait_t< ElementType_t<T1>, ElementType_t<T2> >
+                            , min( size_t( MaxSize_v<T1,0UL> ), size_t( MaxSize_v<T2,0UL> ) )
+                            , TransposeFlag_v<T1>
+                            , defaultAlignmentFlag
+                            , defaultPaddingFlag
+                            , DefaultTag >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -3159,12 +3245,12 @@ struct SubTraitEval2< T1, T2
                                   ( MaxSize_v<T1,0UL> != DefaultMaxSize_v ||
                                     MaxSize_v<T2,0UL> != DefaultMaxSize_v ) > >
 {
-   using ET1 = ElementType_t<T1>;
-   using ET2 = ElementType_t<T2>;
-
-   static constexpr size_t N = min( size_t( MaxSize_v<T1,0UL> ), size_t( MaxSize_v<T2,0UL> ) );
-
-   using Type = HybridVector< SubTrait_t<ET1,ET2>, N, TransposeFlag_v<T1> >;
+   using Type = HybridVector< SubTrait_t< ElementType_t<T1>, ElementType_t<T2> >
+                            , min( size_t( MaxSize_v<T1,0UL> ), size_t( MaxSize_v<T2,0UL> ) )
+                            , TransposeFlag_v<T1>
+                            , defaultAlignmentFlag
+                            , defaultPaddingFlag
+                            , DefaultTag >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -3187,11 +3273,12 @@ struct MultTraitEval2< T1, T2
                                    ( Size_v<T1,0UL> == DefaultSize_v ) &&
                                    ( MaxSize_v<T1,0UL> != DefaultMaxSize_v ) > >
 {
-   using ET1 = ElementType_t<T1>;
-
-   static constexpr size_t N = MaxSize_v<T1,0UL>;
-
-   using Type = HybridVector< MultTrait_t<ET1,T2>, N, TransposeFlag_v<T1> >;
+   using Type = HybridVector< MultTrait_t< ElementType_t<T1>, T2 >
+                            , MaxSize_v<T1,0UL>
+                            , TransposeFlag_v<T1>
+                            , defaultAlignmentFlag
+                            , defaultPaddingFlag
+                            , DefaultTag >;
 };
 
 template< typename T1, typename T2 >
@@ -3201,11 +3288,12 @@ struct MultTraitEval2< T1, T2
                                    ( Size_v<T2,0UL> == DefaultSize_v ) &&
                                    ( MaxSize_v<T2,0UL> != DefaultMaxSize_v ) > >
 {
-   using ET2 = ElementType_t<T2>;
-
-   static constexpr size_t N = MaxSize_v<T2,0UL>;
-
-   using Type = HybridVector< MultTrait_t<T1,ET2>, N, TransposeFlag_v<T2> >;
+   using Type = HybridVector< MultTrait_t< T1, ElementType_t<T2> >
+                            , MaxSize_v<T2,0UL>
+                            , TransposeFlag_v<T2>
+                            , defaultAlignmentFlag
+                            , defaultPaddingFlag
+                            , DefaultTag >;
 };
 
 template< typename T1, typename T2 >
@@ -3219,12 +3307,12 @@ struct MultTraitEval2< T1, T2
                                    ( MaxSize_v<T1,0UL> != DefaultMaxSize_v ||
                                      MaxSize_v<T2,0UL> != DefaultMaxSize_v ) > >
 {
-   using ET1 = ElementType_t<T1>;
-   using ET2 = ElementType_t<T2>;
-
-   static constexpr size_t N = min( size_t( MaxSize_v<T1,0UL> ), size_t( MaxSize_v<T2,0UL> ) );
-
-   using Type = HybridVector< MultTrait_t<ET1,ET2>, N, TransposeFlag_v<T1> >;
+   using Type = HybridVector< MultTrait_t< ElementType_t<T1>, ElementType_t<T2> >
+                            , min( size_t( MaxSize_v<T1,0UL> ), size_t( MaxSize_v<T2,0UL> ) )
+                            , TransposeFlag_v<T1>
+                            , defaultAlignmentFlag
+                            , defaultPaddingFlag
+                            , DefaultTag >;
 };
 
 template< typename T1, typename T2 >
@@ -3236,12 +3324,14 @@ struct MultTraitEval2< T1, T2
                                    ( MaxSize_v<T1,0UL> != DefaultMaxSize_v ||
                                      ( IsSquare_v<T1> && MaxSize_v<T2,0UL> != DefaultMaxSize_v ) ) > >
 {
-   using ET1 = ElementType_t<T1>;
-   using ET2 = ElementType_t<T2>;
+   using MultType = MultTrait_t< ElementType_t<T1>, ElementType_t<T2> >;
 
-   static constexpr size_t N = ( MaxSize_v<T1,0UL> != DefaultMaxSize_v ? MaxSize_v<T1,0UL> : MaxSize_v<T2,0UL> );
-
-   using Type = HybridVector< MultTrait_t<ET1,ET2>, N, false >;
+   using Type = HybridVector< AddTrait_t<MultType,MultType>
+                            , ( MaxSize_v<T1,0UL> != DefaultMaxSize_v ? MaxSize_v<T1,0UL> : MaxSize_v<T2,0UL> )
+                            , false
+                            , defaultAlignmentFlag
+                            , defaultPaddingFlag
+                            , DefaultTag >;
 };
 
 template< typename T1, typename T2 >
@@ -3253,12 +3343,14 @@ struct MultTraitEval2< T1, T2
                                    ( MaxSize_v<T2,1UL> != DefaultMaxSize_v ||
                                      ( IsSquare_v<T2> && MaxSize_v<T1,0UL> != DefaultMaxSize_v ) ) > >
 {
-   using ET1 = ElementType_t<T1>;
-   using ET2 = ElementType_t<T2>;
+   using MultType = MultTrait_t< ElementType_t<T1>, ElementType_t<T2> >;
 
-   static constexpr size_t N = ( MaxSize_v<T2,1UL> != DefaultMaxSize_v ? MaxSize_v<T2,1UL> : MaxSize_v<T1,0UL> );
-
-   using Type = HybridVector< MultTrait_t<ET1,ET2>, N, true >;
+   using Type = HybridVector< AddTrait_t<MultType,MultType>
+                            , ( MaxSize_v<T2,1UL> != DefaultMaxSize_v ? MaxSize_v<T2,1UL> : MaxSize_v<T1,0UL> )
+                            , true
+                            , defaultAlignmentFlag
+                            , defaultPaddingFlag
+                            , DefaultTag >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -3283,12 +3375,12 @@ struct KronTraitEval2< T1, T2
                                    ( MaxSize_v<T1,0UL> != DefaultMaxSize_v ) &&
                                    ( MaxSize_v<T2,0UL> != DefaultMaxSize_v ) > >
 {
-   using ET1 = ElementType_t<T1>;
-   using ET2 = ElementType_t<T2>;
-
-   static constexpr size_t N = MaxSize_v<T1,0UL> * MaxSize_v<T2,0UL>;
-
-   using Type = HybridVector< MultTrait_t<ET1,ET2>, N, TransposeFlag_v<T2> >;
+   using Type = HybridVector< MultTrait_t< ElementType_t<T1>, ElementType_t<T2> >
+                            , MaxSize_v<T1,0UL> * MaxSize_v<T2,0UL>
+                            , TransposeFlag_v<T2>
+                            , defaultAlignmentFlag
+                            , defaultPaddingFlag
+                            , DefaultTag >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -3311,11 +3403,12 @@ struct DivTraitEval2< T1, T2
                                   ( Size_v<T1,0UL> == DefaultSize_v ) &&
                                   ( MaxSize_v<T1,0UL> != DefaultMaxSize_v ) > >
 {
-   using ET1 = ElementType_t<T1>;
-
-   static constexpr size_t N = MaxSize_v<T1,0UL>;
-
-   using Type = HybridVector< DivTrait_t<ET1,T2>, N, TransposeFlag_v<T1> >;
+   using Type = HybridVector< DivTrait_t< ElementType_t<T1>, T2 >
+                            , MaxSize_v<T1,0UL>
+                            , TransposeFlag_v<T1>
+                            , defaultAlignmentFlag
+                            , defaultPaddingFlag
+                            , DefaultTag >;
 };
 
 template< typename T1, typename T2 >
@@ -3327,12 +3420,12 @@ struct DivTraitEval2< T1, T2
                                   ( MaxSize_v<T1,0UL> != DefaultMaxSize_v ||
                                     MaxSize_v<T2,0UL> != DefaultMaxSize_v ) > >
 {
-   using ET1 = ElementType_t<T1>;
-   using ET2 = ElementType_t<T2>;
-
-   static constexpr size_t N = min( size_t( MaxSize_v<T1,0UL> ), size_t( MaxSize_v<T2,0UL> ) );
-
-   using Type = HybridVector< DivTrait_t<ET1,ET2>, N, TransposeFlag_v<T1> >;
+   using Type = HybridVector< DivTrait_t< ElementType_t<T1>, ElementType_t<T2> >
+                            , min( size_t( MaxSize_v<T1,0UL> ), size_t( MaxSize_v<T2,0UL> ) )
+                            , TransposeFlag_v<T1>
+                            , defaultAlignmentFlag
+                            , defaultPaddingFlag
+                            , DefaultTag >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -3354,9 +3447,12 @@ struct UnaryMapTraitEval2< T, OP
                                        Size_v<T,0UL> == DefaultSize_v &&
                                        MaxSize_v<T,0UL> != DefaultMaxSize_v > >
 {
-   using ET = ElementType_t<T>;
-
-   using Type = HybridVector< MapTrait_t<ET,OP>, MaxSize_v<T,0UL>, TransposeFlag_v<T> >;
+   using Type = HybridVector< MapTrait_t< ElementType_t<T>, OP >
+                            , MaxSize_v<T,0UL>
+                            , TransposeFlag_v<T>
+                            , defaultAlignmentFlag
+                            , defaultPaddingFlag
+                            , DefaultTag >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -3373,12 +3469,12 @@ struct BinaryMapTraitEval2< T1, T2, OP
                                         ( MaxSize_v<T1,0UL> != DefaultMaxSize_v ||
                                           MaxSize_v<T2,0UL> != DefaultMaxSize_v ) > >
 {
-   using ET1 = ElementType_t<T1>;
-   using ET2 = ElementType_t<T2>;
-
-   static constexpr size_t N = min( size_t( MaxSize_v<T1,0UL> ), size_t( MaxSize_v<T2,0UL> ) );
-
-   using Type = HybridVector< MapTrait_t<ET1,ET2,OP>, N, TransposeFlag_v<T1> >;
+   using Type = HybridVector< MapTrait_t< ElementType_t<T1>, ElementType_t<T2>, OP >
+                            , min( size_t( MaxSize_v<T1,0UL> ), size_t( MaxSize_v<T2,0UL> ) )
+                            , TransposeFlag_v<T1>
+                            , defaultAlignmentFlag
+                            , defaultPaddingFlag
+                            , DefaultTag >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -3403,13 +3499,15 @@ struct PartialReduceTraitEval2< T, OP, RF
                                             MaxSize_v<T,1UL> != DefaultMaxSize_v > >
 {
    using ET = ElementType_t<T>;
-   using RT = decltype( std::declval<OP>()( std::declval<ET>(), std::declval<ET>() ) );
 
    static constexpr bool TF = ( RF == columnwise );
 
-   static constexpr size_t N = MaxSize_v< T, TF ? 1UL : 0UL >;
-
-   using Type = HybridVector<RT,N,TF>;
+   using Type = HybridVector< decltype( std::declval<OP>()( std::declval<ET>(), std::declval<ET>() ) )
+                            , MaxSize_v< T, TF ? 1UL : 0UL >
+                            , TF
+                            , defaultAlignmentFlag
+                            , defaultPaddingFlag
+                            , DefaultTag >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -3450,7 +3548,12 @@ struct SolveTraitEval2< T1, T2
                                        : MaxSize_v<T1,1UL> )
                                     : MaxSize_v<T2,0UL> ) );
 
-   using Type = HybridVector< ElementType_t<T2>, N, TransposeFlag_v<T2> >;
+   using Type = HybridVector< ElementType_t<T2>
+                            , N
+                            , TransposeFlag_v<T2>
+                            , defaultAlignmentFlag
+                            , defaultPaddingFlag
+                            , DefaultTag >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -3466,10 +3569,10 @@ struct SolveTraitEval2< T1, T2
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T1, size_t N, bool TF, AlignmentFlag AF, PaddingFlag PF, typename T2 >
-struct HighType< HybridVector<T1,N,TF,AF,PF>, HybridVector<T2,N,TF,AF,PF> >
+template< typename T1, size_t N, bool TF, AlignmentFlag AF, PaddingFlag PF, typename Tag, typename T2 >
+struct HighType< HybridVector<T1,N,TF,AF,PF,Tag>, HybridVector<T2,N,TF,AF,PF,Tag> >
 {
-   using Type = StaticVector< typename HighType<T1,T2>::Type, N, TF >;
+   using Type = StaticVector< typename HighType<T1,T2>::Type, N, TF, AF, PF, Tag >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -3485,10 +3588,10 @@ struct HighType< HybridVector<T1,N,TF,AF,PF>, HybridVector<T2,N,TF,AF,PF> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T1, size_t N, bool TF, AlignmentFlag AF, PaddingFlag PF, typename T2 >
-struct LowType< HybridVector<T1,N,TF,AF,PF>, HybridVector<T2,N,TF,AF,PF> >
+template< typename T1, size_t N, bool TF, AlignmentFlag AF, PaddingFlag PF, typename Tag, typename T2 >
+struct LowType< HybridVector<T1,N,TF,AF,PF,Tag>, HybridVector<T2,N,TF,AF,PF,Tag> >
 {
-   using Type = StaticVector< typename LowType<T1,T2>::Type, N, TF >;
+   using Type = StaticVector< typename LowType<T1,T2>::Type, N, TF, AF, PF, Tag >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -3510,9 +3613,12 @@ struct SubvectorTraitEval2< VT, inf, inf
                                         ( Size_v<VT,0UL> != DefaultSize_v ||
                                           MaxSize_v<VT,0UL> != DefaultMaxSize_v ) > >
 {
-   static constexpr size_t N = max( Size_v<VT,0UL>, MaxSize_v<VT,0UL> );
-
-   using Type = HybridVector< RemoveConst_t< ElementType_t<VT> >, N, TransposeFlag_v<VT> >;
+   using Type = HybridVector< RemoveConst_t< ElementType_t<VT> >
+                            , max( Size_v<VT,0UL>, MaxSize_v<VT,0UL> )
+                            , TransposeFlag_v<VT>
+                            , defaultAlignmentFlag
+                            , defaultPaddingFlag
+                            , DefaultTag >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -3534,9 +3640,12 @@ struct ElementsTraitEval2< VT, 0UL
                                        ( Size_v<VT,0UL> != DefaultSize_v ||
                                          MaxSize_v<VT,0UL> != DefaultMaxSize_v ) > >
 {
-   static constexpr size_t N = max( Size_v<VT,0UL>, MaxSize_v<VT,0UL> );
-
-   using Type = HybridVector< RemoveConst_t< ElementType_t<VT> >, N, TransposeFlag_v<VT> >;
+   using Type = HybridVector< RemoveConst_t< ElementType_t<VT> >
+                            , max( Size_v<VT,0UL>, MaxSize_v<VT,0UL> )
+                            , TransposeFlag_v<VT>
+                            , defaultAlignmentFlag
+                            , defaultPaddingFlag
+                            , DefaultTag >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -3558,7 +3667,12 @@ struct RowTraitEval2< MT, I
                                   Size_v<MT,1UL> == DefaultSize_v &&
                                   MaxSize_v<MT,1UL> != DefaultMaxSize_v > >
 {
-   using Type = HybridVector< RemoveConst_t< ElementType_t<MT> >, MaxSize_v<MT,1UL>, true >;
+   using Type = HybridVector< RemoveConst_t< ElementType_t<MT> >
+                            , MaxSize_v<MT,1UL>
+                            , true
+                            , defaultAlignmentFlag
+                            , defaultPaddingFlag
+                            , DefaultTag >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -3580,7 +3694,12 @@ struct ColumnTraitEval2< MT, I
                                      Size_v<MT,0UL> == DefaultSize_v &&
                                      MaxSize_v<MT,0UL> != DefaultMaxSize_v > >
 {
-   using Type = HybridVector< RemoveConst_t< ElementType_t<MT> >, MaxSize_v<MT,0UL>, false >;
+   using Type = HybridVector< RemoveConst_t< ElementType_t<MT> >
+                            , MaxSize_v<MT,0UL>
+                            , false
+                            , defaultAlignmentFlag
+                            , defaultPaddingFlag
+                            , DefaultTag >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -3608,7 +3727,12 @@ struct BandTraitEval2< MT, I
    static constexpr size_t N   = MaxSize_v<MT,1UL>;
    static constexpr size_t Min = min( M - ( I >= 0L ? 0UL : -I ), N - ( I >= 0L ? I : 0UL ) );
 
-   using Type = HybridVector< RemoveConst_t< ElementType_t<MT> >, Min, defaultTransposeFlag >;
+   using Type = HybridVector< RemoveConst_t< ElementType_t<MT> >
+                            , Min
+                            , defaultTransposeFlag
+                            , defaultAlignmentFlag
+                            , defaultPaddingFlag
+                            , DefaultTag >;
 };
 
 template< typename MT >
@@ -3617,9 +3741,12 @@ struct BandTraitEval2< MT, inf
                                    Size_v<MT,0UL> != DefaultSize_v &&
                                    Size_v<MT,1UL> != DefaultSize_v > >
 {
-   static constexpr size_t Min = min( Size_v<MT,0UL>, Size_v<MT,1UL> );
-
-   using Type = HybridVector< RemoveConst_t< ElementType_t<MT> >, Min, defaultTransposeFlag >;
+   using Type = HybridVector< RemoveConst_t< ElementType_t<MT> >
+                            , min( Size_v<MT,0UL>, Size_v<MT,1UL> )
+                            , defaultTransposeFlag
+                            , defaultAlignmentFlag
+                            , defaultPaddingFlag
+                            , DefaultTag >;
 };
 
 template< typename MT >
@@ -3630,9 +3757,12 @@ struct BandTraitEval2< MT, inf
                                    MaxSize_v<MT,0UL> != DefaultMaxSize_v &&
                                    MaxSize_v<MT,1UL> != DefaultMaxSize_v > >
 {
-   static constexpr size_t Min = min( MaxSize_v<MT,0UL>, MaxSize_v<MT,1UL> );
-
-   using Type = HybridVector< RemoveConst_t< ElementType_t<MT> >, Min, defaultTransposeFlag >;
+   using Type = HybridVector< RemoveConst_t< ElementType_t<MT> >
+                            , min( MaxSize_v<MT,0UL>, MaxSize_v<MT,1UL> )
+                            , defaultTransposeFlag
+                            , defaultAlignmentFlag
+                            , defaultPaddingFlag
+                            , DefaultTag >;
 };
 /*! \endcond */
 //*************************************************************************************************
