@@ -1472,7 +1472,7 @@ struct AddTraitEval1< T1, T2
 {
    using Type = UniformVector< AddTrait_t< ElementType_t<T1>, ElementType_t<T2> >
                              , TransposeFlag_v<T1>
-                             , DefaultTag >;
+                             , AddTrait_t< TagType_t<T1>, TagType_t<T2> > >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -1497,7 +1497,7 @@ struct SubTraitEval1< T1, T2
 {
    using Type = UniformVector< SubTrait_t< ElementType_t<T1>, ElementType_t<T2> >
                              , TransposeFlag_v<T1>
-                             , DefaultTag >;
+                             , SubTrait_t< TagType_t<T1>, TagType_t<T2> > >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -1521,7 +1521,7 @@ struct MultTraitEval1< T1, T2
 {
    using Type = UniformVector< MultTrait_t< ElementType_t<T1>, T2 >
                              , TransposeFlag_v<T1>
-                             , DefaultTag >;
+                             , MultTrait_t< TagType_t<T1>, T2 > >;
 };
 
 template< typename T1, typename T2 >
@@ -1532,7 +1532,7 @@ struct MultTraitEval1< T1, T2
 {
    using Type = UniformVector< MultTrait_t< T1, ElementType_t<T2> >
                              , TransposeFlag_v<T2>
-                             , DefaultTag >;
+                             , MultTrait_t< T1, TagType_t<T2> > >;
 };
 
 template< typename T1, typename T2 >
@@ -1544,7 +1544,7 @@ struct MultTraitEval1< T1, T2
 {
    using Type = UniformVector< MultTrait_t< ElementType_t<T1>, ElementType_t<T2> >
                              , TransposeFlag_v<T1>
-                             , DefaultTag >;
+                             , MultTrait_t< TagType_t<T1>, TagType_t<T2> > >;
 };
 
 template< typename T1, typename T2 >
@@ -1555,10 +1555,11 @@ struct MultTraitEval1< T1, T2
                                    !( IsZero_v<T1> || IsZero_v<T2> ) > >
 {
    using MultType = MultTrait_t< ElementType_t<T1>, ElementType_t<T2> >;
+   using MultTag  = MultTrait_t< TagType_t<T1>, TagType_t<T2> >;
 
    using Type = UniformVector< AddTrait_t<MultType,MultType>
                              , false
-                             , DefaultTag >;
+                             , AddTrait_t<MultTag,MultTag> >;
 };
 
 template< typename T1, typename T2 >
@@ -1569,10 +1570,11 @@ struct MultTraitEval1< T1, T2
                                    !( IsZero_v<T1> || IsZero_v<T2> ) > >
 {
    using MultType = MultTrait_t< ElementType_t<T1>, ElementType_t<T2> >;
+   using MultTag  = MultTrait_t< TagType_t<T1>, TagType_t<T2> >;
 
    using Type = UniformVector< AddTrait_t<MultType,MultType>
                              , true
-                             , DefaultTag >;
+                             , AddTrait_t<MultTag,MultTag> >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -1597,7 +1599,7 @@ struct KronTraitEval1< T1, T2
 {
    using Type = UniformVector< MultTrait_t< ElementType_t<T1>, ElementType_t<T2> >
                              , TransposeFlag_v<T2>
-                             , DefaultTag >;
+                             , MultTrait_t< TagType_t<T1>, TagType_t<T2> > >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -1621,7 +1623,7 @@ struct DivTraitEval1< T1, T2
 {
    using Type = UniformVector< DivTrait_t< ElementType_t<T1>, T2 >
                              , TransposeFlag_v<T1>
-                             , DefaultTag >;
+                             , DivTrait_t< TagType_t<T1>, T2 > >;
 };
 
 template< typename T1, typename T2 >
@@ -1633,7 +1635,7 @@ struct DivTraitEval1< T1, T2
 {
    using Type = UniformVector< DivTrait_t< ElementType_t<T1>, ElementType_t<T2> >
                              , TransposeFlag_v<T1>
-                             , DefaultTag >;
+                             , DivTrait_t< TagType_t<T1>, TagType_t<T2> > >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -1657,7 +1659,7 @@ struct UnaryMapTraitEval1< T, OP
 {
    using Type = UniformVector< MapTrait_t< ElementType_t<T>, OP >
                              , TransposeFlag_v<T>
-                             , DefaultTag >;
+                             , MapTrait_t< TagType_t<T>, OP > >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -1674,7 +1676,7 @@ struct BinaryMapTraitEval1< T1, T2, OP
 {
    using Type = UniformVector< MapTrait_t< ElementType_t<T1>, ElementType_t<T2>, OP >
                              , TransposeFlag_v<T1>
-                             , DefaultTag >;
+                             , MapTrait_t< TagType_t<T1>, TagType_t<T2>, OP > >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -1698,7 +1700,7 @@ struct PartialReduceTraitEval1< T, OP, RF
 
    using Type = UniformVector< decltype( std::declval<OP>()( std::declval<ET>(), std::declval<ET>() ) )
                              , ( RF == columnwise )
-                             , DefaultTag >;
+                             , MapTrait_t< TagType_t<T>, OP > >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -1758,7 +1760,7 @@ struct SubvectorTraitEval1< VT, I, N
 {
    using Type = UniformVector< RemoveConst_t< ElementType_t<VT> >
                              , TransposeFlag_v<VT>
-                             , DefaultTag >;
+                             , TagType_t<VT> >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -1780,7 +1782,7 @@ struct ElementsTraitEval1< VT, N
 {
    using Type = UniformVector< RemoveConst_t< ElementType_t<VT> >
                              , TransposeFlag_v<VT>
-                             , DefaultTag >;
+                             , TagType_t<VT> >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -1802,7 +1804,7 @@ struct RowTraitEval1< MT, I
 {
    using Type = UniformVector< RemoveConst_t< ElementType_t<MT> >
                              , true
-                             , DefaultTag >;
+                             , TagType_t<MT> >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -1824,7 +1826,7 @@ struct ColumnTraitEval1< MT, I
 {
    using Type = UniformVector< RemoveConst_t< ElementType_t<MT> >
                              , false
-                             , DefaultTag >;
+                             , TagType_t<MT> >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -1846,7 +1848,7 @@ struct BandTraitEval1< MT, I
 {
    using Type = UniformVector< RemoveConst_t< ElementType_t<MT> >
                              , defaultTransposeFlag
-                             , DefaultTag >;
+                             , TagType_t<MT> >;
 };
 /*! \endcond */
 //*************************************************************************************************
