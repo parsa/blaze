@@ -134,7 +134,8 @@ template< typename Type                   // Data type of the vector
         , typename Tag = DefaultTag >     // Type tag
 class InitializerVector;
 
-template< typename Type >  // Data type of the matrix
+template< typename Type                // Data type of the matrix
+        , typename Tag = DefaultTag >  // Type tag
 class InitializerMatrix;
 
 } // namespace blaze

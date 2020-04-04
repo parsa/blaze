@@ -81,12 +81,13 @@ namespace blaze {
 // via the single template parameters:
 
    \code
-   template< typename Type >
+   template< typename Type, typename Tag >
    class InitializerMatrix;
    \endcode
 
-// \a Type specifies the type of the matrix elements. InitializerMatrix can be used with any
-// non-cv-qualified, non-reference, non-pointer element type.
+//  - Type: specifies the type of the matrix elements. InitializerMatrix can be used with any
+//          non-cv-qualified, non-reference, non-pointer element type.
+//  - Tag : optional type parameter to tag the vector. The default type is \a blaze::DefaultTag.
 //
 // On construction, an InitializerMatrix is immediately bound to an initializer list:
 
@@ -172,20 +173,27 @@ namespace blaze {
    F *= A * D;   // Multiplication assignment
    \endcode
 */
-template< typename Type >  // Data type of the matrix
+template< typename Type   // Data type of the matrix
+        , typename Tag >  // Type tag
 class InitializerMatrix
-   : public DenseMatrix< InitializerMatrix<Type>, false >
+   : public DenseMatrix< InitializerMatrix<Type,Tag>, false >
 {
  public:
    //**Type definitions****************************************************************************
-   using This          = InitializerMatrix<Type>;    //!< Type of this InitializerMatrix instance.
-   using BaseType      = DenseMatrix<This,false>;    //!< Base type of this InitializerMatrix instance.
-   using ResultType    = DynamicMatrix<Type,false>;  //!< Result type for expression template evaluations.
-   using OppositeType  = DynamicMatrix<Type,true>;   //!< Result type with opposite storage order for expression template evaluations.
-   using TransposeType = DynamicMatrix<Type,true>;   //!< Transpose type for expression template evaluations.
-   using ElementType   = Type;                       //!< Type of the matrix elements.
-   using ReturnType    = const Type&;                //!< Return type for expression template evaluations.
-   using CompositeType = const This&;                //!< Data type for composite expression templates.
+   using This     = InitializerMatrix<Type,Tag>;  //!< Type of this InitializerMatrix instance.
+   using BaseType = DenseMatrix<This,false>;      //!< Base type of this InitializerMatrix instance.
+
+   //! Result type for expression template evaluations.
+   using ResultType = DynamicMatrix<Type,false>;
+
+   //! Result type with opposite storage order for expression template evaluations.
+   using OppositeType  = DynamicMatrix<Type,true>;
+
+   using TransposeType = DynamicMatrix<Type,true>;  //!< Transpose type for expression template evaluations.
+   using ElementType   = Type;                      //!< Type of the matrix elements.
+   using TagType       = Tag;                       //!< Tag type of this InitializerVector instance.
+   using ReturnType    = const Type&;               //!< Return type for expression template evaluations.
+   using CompositeType = const This&;               //!< Data type for composite expression templates.
 
    using Reference      = const Type&;  //!< Reference to a non-constant matrix value.
    using ConstReference = const Type&;  //!< Reference to a constant matrix value.
@@ -201,7 +209,7 @@ class InitializerMatrix
    */
    template< typename NewType >  // Data type of the other matrix
    struct Rebind {
-      using Other = InitializerMatrix<NewType>;  //!< The type of the other InitializerMatrix.
+      using Other = InitializerMatrix<NewType,Tag>;  //!< The type of the other InitializerMatrix.
    };
    //**********************************************************************************************
 
@@ -211,7 +219,7 @@ class InitializerMatrix
    template< size_t NewM    // Number of rows of the other matrix
            , size_t NewN >  // Number of columns of the other matrix
    struct Resize {
-      using Other = InitializerMatrix<Type>;  //!< The type of the other InitializerMatrix.
+      using Other = InitializerMatrix<Type,Tag>;  //!< The type of the other InitializerMatrix.
    };
    //**********************************************************************************************
 
@@ -334,8 +342,9 @@ class InitializerMatrix
 //
 //=================================================================================================
 
-template< typename Type >  // Data type of the matrix
-const Type InitializerMatrix<Type>::zero_{};
+template< typename Type   // Data type of the matrix
+        , typename Tag >  // Type tag
+const Type InitializerMatrix<Type,Tag>::zero_{};
 
 
 
@@ -351,8 +360,9 @@ const Type InitializerMatrix<Type>::zero_{};
 //
 // \param list The initializer list represented by the matrix.
 */
-template< typename Type >  // Data type of the matrix
-inline InitializerMatrix<Type>::InitializerMatrix( initializer_list< initializer_list<Type> > list ) noexcept
+template< typename Type   // Data type of the matrix
+        , typename Tag >  // Type tag
+inline InitializerMatrix<Type,Tag>::InitializerMatrix( initializer_list< initializer_list<Type> > list ) noexcept
    : m_   ( list.size() )               // The current number of rows of the matrix
    , n_   ( determineColumns( list ) )  // The current number of columns of the matrix
    , list_( list )                      // The initializer list represented by the matrix
@@ -367,8 +377,9 @@ inline InitializerMatrix<Type>::InitializerMatrix( initializer_list< initializer
 // \param n The number of columns of the matrix.
 // \exception std::invalid_argument Invalid initializer list dimension.
 */
-template< typename Type >  // Data type of the matrix
-inline InitializerMatrix<Type>::InitializerMatrix( initializer_list< initializer_list<Type> > list, size_t n )
+template< typename Type   // Data type of the matrix
+        , typename Tag >  // Type tag
+inline InitializerMatrix<Type,Tag>::InitializerMatrix( initializer_list< initializer_list<Type> > list, size_t n )
    : m_   ( list.size() )  // The current number of rows of the matrix
    , n_   ( n    )         // The current number of columns of the matrix
    , list_( list )         // The initializer list represented by the matrix
@@ -398,9 +409,10 @@ inline InitializerMatrix<Type>::InitializerMatrix( initializer_list< initializer
 // This function only performs an index check in case BLAZE_USER_ASSERT() is active. In contrast,
 // the at() function is guaranteed to perform a check of the given access indices.
 */
-template< typename Type >  // Data type of the matrix
-inline typename InitializerMatrix<Type>::ConstReference
-   InitializerMatrix<Type>::operator()( size_t i, size_t j ) const noexcept
+template< typename Type   // Data type of the matrix
+        , typename Tag >  // Type tag
+inline typename InitializerMatrix<Type,Tag>::ConstReference
+   InitializerMatrix<Type,Tag>::operator()( size_t i, size_t j ) const noexcept
 {
    BLAZE_USER_ASSERT( i<m_, "Invalid row access index"    );
    BLAZE_USER_ASSERT( j<n_, "Invalid column access index" );
@@ -426,9 +438,10 @@ inline typename InitializerMatrix<Type>::ConstReference
 // In contrast to the subscript operator this function always performs a check of the given
 // access indices.
 */
-template< typename Type >  // Data type of the matrix
-inline typename InitializerMatrix<Type>::ConstReference
-   InitializerMatrix<Type>::at( size_t i, size_t j ) const
+template< typename Type   // Data type of the matrix
+        , typename Tag >  // Type tag
+inline typename InitializerMatrix<Type,Tag>::ConstReference
+   InitializerMatrix<Type,Tag>::at( size_t i, size_t j ) const
 {
    if( i >= m_ ) {
       BLAZE_THROW_OUT_OF_RANGE( "Invalid row access index" );
@@ -453,9 +466,10 @@ inline typename InitializerMatrix<Type>::ConstReference
 // respectively, the total number of elements including padding is given by the \c spacing()
 // member function.
 */
-template< typename Type >  // Data type of the matrix
-inline typename InitializerMatrix<Type>::ConstPointer
-   InitializerMatrix<Type>::data() const noexcept
+template< typename Type   // Data type of the matrix
+        , typename Tag >  // Type tag
+inline typename InitializerMatrix<Type,Tag>::ConstPointer
+   InitializerMatrix<Type,Tag>::data() const noexcept
 {
    return list_.begin()->begin();
 }
@@ -470,9 +484,10 @@ inline typename InitializerMatrix<Type>::ConstPointer
 //
 // This function returns a pointer to the internal storage for the elements in row \a i.
 */
-template< typename Type >  // Data type of the matrix
-inline typename InitializerMatrix<Type>::ConstPointer
-   InitializerMatrix<Type>::data( size_t i ) const noexcept
+template< typename Type   // Data type of the matrix
+        , typename Tag >  // Type tag
+inline typename InitializerMatrix<Type,Tag>::ConstPointer
+   InitializerMatrix<Type,Tag>::data( size_t i ) const noexcept
 {
    BLAZE_USER_ASSERT( i < m_, "Invalid dense matrix row access index" );
    return list_.begin()[i].begin();
@@ -488,9 +503,10 @@ inline typename InitializerMatrix<Type>::ConstPointer
 //
 // This function returns a row iterator to the first element of row \a i.
 */
-template< typename Type >  // Data type of the matrix
-inline typename InitializerMatrix<Type>::ConstIterator
-   InitializerMatrix<Type>::begin( size_t i ) const noexcept
+template< typename Type   // Data type of the matrix
+        , typename Tag >  // Type tag
+inline typename InitializerMatrix<Type,Tag>::ConstIterator
+   InitializerMatrix<Type,Tag>::begin( size_t i ) const noexcept
 {
    BLAZE_USER_ASSERT( i < m_, "Invalid dense matrix row access index" );
    return ConstIterator( 0UL, list_.begin()[i] );
@@ -506,9 +522,10 @@ inline typename InitializerMatrix<Type>::ConstIterator
 //
 // This function returns a row iterator to the first element of row \a i
 */
-template< typename Type >  // Data type of the matrix
-inline typename InitializerMatrix<Type>::ConstIterator
-   InitializerMatrix<Type>::cbegin( size_t i ) const noexcept
+template< typename Type   // Data type of the matrix
+        , typename Tag >  // Type tag
+inline typename InitializerMatrix<Type,Tag>::ConstIterator
+   InitializerMatrix<Type,Tag>::cbegin( size_t i ) const noexcept
 {
    BLAZE_USER_ASSERT( i < m_, "Invalid dense matrix row access index" );
    return ConstIterator( 0UL, list_.begin()[i] );
@@ -524,9 +541,10 @@ inline typename InitializerMatrix<Type>::ConstIterator
 //
 // This function returns an row iterator just past the last element of row \a i.
 */
-template< typename Type >  // Data type of the matrix
-inline typename InitializerMatrix<Type>::ConstIterator
-   InitializerMatrix<Type>::end( size_t i ) const noexcept
+template< typename Type   // Data type of the matrix
+        , typename Tag >  // Type tag
+inline typename InitializerMatrix<Type,Tag>::ConstIterator
+   InitializerMatrix<Type,Tag>::end( size_t i ) const noexcept
 {
    BLAZE_USER_ASSERT( i < m_, "Invalid dense matrix row access index" );
    return ConstIterator( n_, list_.begin()[i] );
@@ -542,9 +560,10 @@ inline typename InitializerMatrix<Type>::ConstIterator
 //
 // This function returns an row iterator just past the last element of row \a i.
 */
-template< typename Type >  // Data type of the matrix
-inline typename InitializerMatrix<Type>::ConstIterator
-   InitializerMatrix<Type>::cend( size_t i ) const noexcept
+template< typename Type   // Data type of the matrix
+        , typename Tag >  // Type tag
+inline typename InitializerMatrix<Type,Tag>::ConstIterator
+   InitializerMatrix<Type,Tag>::cend( size_t i ) const noexcept
 {
    BLAZE_USER_ASSERT( i < m_, "Invalid dense matrix row access index" );
    return ConstIterator( n_, list_.begin()[i] );
@@ -565,8 +584,9 @@ inline typename InitializerMatrix<Type>::ConstIterator
 //
 // \return The number of rows of the matrix.
 */
-template< typename Type >  // Data type of the matrix
-inline size_t InitializerMatrix<Type>::rows() const noexcept
+template< typename Type   // Data type of the matrix
+        , typename Tag >  // Type tag
+inline size_t InitializerMatrix<Type,Tag>::rows() const noexcept
 {
    return m_;
 }
@@ -578,8 +598,9 @@ inline size_t InitializerMatrix<Type>::rows() const noexcept
 //
 // \return The number of columns of the matrix.
 */
-template< typename Type >  // Data type of the matrix
-inline size_t InitializerMatrix<Type>::columns() const noexcept
+template< typename Type   // Data type of the matrix
+        , typename Tag >  // Type tag
+inline size_t InitializerMatrix<Type,Tag>::columns() const noexcept
 {
    return n_;
 }
@@ -594,8 +615,9 @@ inline size_t InitializerMatrix<Type>::columns() const noexcept
 // This function returns the spacing between the beginning of two rows, i.e. the total number
 // of elements of a row.
 */
-template< typename Type >  // Data type of the matrix
-inline size_t InitializerMatrix<Type>::spacing() const noexcept
+template< typename Type   // Data type of the matrix
+        , typename Tag >  // Type tag
+inline size_t InitializerMatrix<Type,Tag>::spacing() const noexcept
 {
    return m_;
 }
@@ -607,8 +629,9 @@ inline size_t InitializerMatrix<Type>::spacing() const noexcept
 //
 // \return The capacity of the matrix.
 */
-template< typename Type >  // Data type of the matrix
-inline size_t InitializerMatrix<Type>::capacity() const noexcept
+template< typename Type   // Data type of the matrix
+        , typename Tag >  // Type tag
+inline size_t InitializerMatrix<Type,Tag>::capacity() const noexcept
 {
    return m_ * n_;
 }
@@ -623,8 +646,9 @@ inline size_t InitializerMatrix<Type>::capacity() const noexcept
 //
 // This function returns the current capacity of the specified row.
 */
-template< typename Type >  // Data type of the matrix
-inline size_t InitializerMatrix<Type>::capacity( size_t i ) const noexcept
+template< typename Type   // Data type of the matrix
+        , typename Tag >  // Type tag
+inline size_t InitializerMatrix<Type,Tag>::capacity( size_t i ) const noexcept
 {
    MAYBE_UNUSED( i );
    BLAZE_USER_ASSERT( i < rows(), "Invalid row access index" );
@@ -638,8 +662,9 @@ inline size_t InitializerMatrix<Type>::capacity( size_t i ) const noexcept
 //
 // \return The number of non-zero elements in the dense matrix.
 */
-template< typename Type >  // Data type of the matrix
-inline size_t InitializerMatrix<Type>::nonZeros() const
+template< typename Type   // Data type of the matrix
+        , typename Tag >  // Type tag
+inline size_t InitializerMatrix<Type,Tag>::nonZeros() const
 {
    size_t nonzeros( 0 );
 
@@ -663,8 +688,9 @@ inline size_t InitializerMatrix<Type>::nonZeros() const
 //
 // This function returns the current number of non-zero elements in the specified row.
 */
-template< typename Type >  // Data type of the matrix
-inline size_t InitializerMatrix<Type>::nonZeros( size_t i ) const
+template< typename Type   // Data type of the matrix
+        , typename Tag >  // Type tag
+inline size_t InitializerMatrix<Type,Tag>::nonZeros( size_t i ) const
 {
    using blaze::nonZeros;
 
@@ -681,8 +707,9 @@ inline size_t InitializerMatrix<Type>::nonZeros( size_t i ) const
 // \param m The matrix to be swapped.
 // \return void
 */
-template< typename Type >  // Data type of the matrix
-inline void InitializerMatrix<Type>::swap( InitializerMatrix& m ) noexcept
+template< typename Type   // Data type of the matrix
+        , typename Tag >  // Type tag
+inline void InitializerMatrix<Type,Tag>::swap( InitializerMatrix& m ) noexcept
 {
    using std::swap;
 
@@ -711,9 +738,10 @@ inline void InitializerMatrix<Type>::swap( InitializerMatrix& m ) noexcept
 // to the isAliased() function this function is allowed to use compile time expressions
 // to optimize the evaluation.
 */
-template< typename Type >   // Data type of the matrix
+template< typename Type     // Data type of the matrix
+        , typename Tag >    // Type tag
 template< typename Other >  // Data type of the foreign expression
-inline bool InitializerMatrix<Type>::canAlias( const Other* alias ) const noexcept
+inline bool InitializerMatrix<Type,Tag>::canAlias( const Other* alias ) const noexcept
 {
    return static_cast<const void*>( this ) == static_cast<const void*>( alias );
 }
@@ -730,9 +758,10 @@ inline bool InitializerMatrix<Type>::canAlias( const Other* alias ) const noexce
 // to the canAlias() function this function is not allowed to use compile time expressions
 // to optimize the evaluation.
 */
-template< typename Type >   // Data type of the matrix
+template< typename Type     // Data type of the matrix
+        , typename Tag >    // Type tag
 template< typename Other >  // Data type of the foreign expression
-inline bool InitializerMatrix<Type>::isAliased( const Other* alias ) const noexcept
+inline bool InitializerMatrix<Type,Tag>::isAliased( const Other* alias ) const noexcept
 {
    return static_cast<const void*>( this ) == static_cast<const void*>( alias );
 }
@@ -750,11 +779,11 @@ inline bool InitializerMatrix<Type>::isAliased( const Other* alias ) const noexc
 //*************************************************************************************************
 /*!\name InitializerMatrix operators */
 //@{
-template< typename Type >
-bool isIntact( const InitializerMatrix<Type>& m ) noexcept;
+template< typename Type, typename Tag >
+bool isIntact( const InitializerMatrix<Type,Tag>& m ) noexcept;
 
-template< typename Type >
-void swap( InitializerMatrix<Type>& a, InitializerMatrix<Type>& b ) noexcept;
+template< typename Type, typename Tag >
+void swap( InitializerMatrix<Type,Tag>& a, InitializerMatrix<Type,Tag>& b ) noexcept;
 //@}
 //*************************************************************************************************
 
@@ -776,8 +805,9 @@ void swap( InitializerMatrix<Type>& a, InitializerMatrix<Type>& b ) noexcept;
    if( isIntact( A ) ) { ... }
    \endcode
 */
-template< typename Type >
-inline bool isIntact( const InitializerMatrix<Type>& m ) noexcept
+template< typename Type   // Data type of the matrix
+        , typename Tag >  // Type tag
+inline bool isIntact( const InitializerMatrix<Type,Tag>& m ) noexcept
 {
    MAYBE_UNUSED( m );
 
@@ -794,8 +824,9 @@ inline bool isIntact( const InitializerMatrix<Type>& m ) noexcept
 // \param b The second matrix to be swapped.
 // \return void
 */
-template< typename Type >
-inline void swap( InitializerMatrix<Type>& a, InitializerMatrix<Type>& b ) noexcept
+template< typename Type   // Data type of the matrix
+        , typename Tag >  // Type tag
+inline void swap( InitializerMatrix<Type,Tag>& a, InitializerMatrix<Type,Tag>& b ) noexcept
 {
    a.swap( b );
 }
@@ -812,8 +843,8 @@ inline void swap( InitializerMatrix<Type>& a, InitializerMatrix<Type>& b ) noexc
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T >
-struct HasConstDataAccess< InitializerMatrix<T> >
+template< typename T, typename Tag >
+struct HasConstDataAccess< InitializerMatrix<T,Tag> >
    : public TrueType
 {};
 /*! \endcond */
@@ -830,8 +861,8 @@ struct HasConstDataAccess< InitializerMatrix<T> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T >
-struct IsInitializer< InitializerMatrix<T> >
+template< typename T, typename Tag >
+struct IsInitializer< InitializerMatrix<T,Tag> >
    : public TrueType
 {};
 /*! \endcond */
@@ -848,10 +879,10 @@ struct IsInitializer< InitializerMatrix<T> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T1, typename T2 >
-struct HighType< InitializerMatrix<T1>, InitializerMatrix<T2> >
+template< typename T1, typename Tag, typename T2 >
+struct HighType< InitializerMatrix<T1,Tag>, InitializerMatrix<T2,Tag> >
 {
-   using Type = InitializerMatrix< typename HighType<T1,T2>::Type >;
+   using Type = InitializerMatrix< typename HighType<T1,T2>::Type, Tag >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -867,10 +898,10 @@ struct HighType< InitializerMatrix<T1>, InitializerMatrix<T2> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T1, typename T2 >
-struct LowType< InitializerMatrix<T1>, InitializerMatrix<T2> >
+template< typename T1, typename Tag, typename T2 >
+struct LowType< InitializerMatrix<T1,Tag>, InitializerMatrix<T2,Tag> >
 {
-   using Type = InitializerMatrix< typename LowType<T1,T2>::Type >;
+   using Type = InitializerMatrix< typename LowType<T1,T2>::Type, Tag >;
 };
 /*! \endcond */
 //*************************************************************************************************
