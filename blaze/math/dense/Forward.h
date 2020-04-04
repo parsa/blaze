@@ -124,8 +124,9 @@ template< typename Type                    // Data type of the matrix
         , bool SO = defaultStorageOrder >  // Storage order
 class UniformMatrix;
 
-template< typename Type                     // Data type of the vector
-        , bool TF = defaultTransposeFlag >  // Transpose flag
+template< typename Type                   // Data type of the vector
+        , bool TF = defaultTransposeFlag  // Transpose flag
+        , typename Tag = DefaultTag >     // Type tag
 class InitializerVector;
 
 template< typename Type >  // Data type of the matrix
