@@ -2948,7 +2948,7 @@ struct AddTraitEval2< T1, T2
 {
    using Type = DynamicVector< AddTrait_t< ElementType_t<T1>, ElementType_t<T2> >
                              , TransposeFlag_v<T1>
-                             , DefaultTag >;
+                             , AddTrait_t< TagType_t<T1>, TagType_t<T2> > >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -2976,7 +2976,7 @@ struct SubTraitEval2< T1, T2
 {
    using Type = DynamicVector< SubTrait_t< ElementType_t<T1>, ElementType_t<T2> >
                              , TransposeFlag_v<T1>
-                             , DefaultTag >;
+                             , SubTrait_t< TagType_t<T1>, TagType_t<T2> > >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -3001,7 +3001,7 @@ struct MultTraitEval2< T1, T2
 {
    using Type = DynamicVector< MultTrait_t< ElementType_t<T1>, T2 >
                              , TransposeFlag_v<T1>
-                             , DefaultTag >;
+                             , MultTrait_t< TagType_t<T1>, T2 > >;
 };
 
 template< typename T1, typename T2 >
@@ -3013,7 +3013,7 @@ struct MultTraitEval2< T1, T2
 {
    using Type = DynamicVector< MultTrait_t< T1, ElementType_t<T2> >
                              , TransposeFlag_v<T2>
-                             , DefaultTag >;
+                             , MultTrait_t< T1, TagType_t<T2> > >;
 };
 
 template< typename T1, typename T2 >
@@ -3029,7 +3029,7 @@ struct MultTraitEval2< T1, T2
 {
    using Type = DynamicVector< MultTrait_t< ElementType_t<T1>, ElementType_t<T2> >
                              , TransposeFlag_v<T1>
-                             , DefaultTag >;
+                             , MultTrait_t< TagType_t<T1>, TagType_t<T2> > >;
 };
 
 template< typename T1, typename T2 >
@@ -3043,10 +3043,11 @@ struct MultTraitEval2< T1, T2
                                      ( !IsSquare_v<T1> || MaxSize_v<T2,0UL> == DefaultMaxSize_v ) ) > >
 {
    using MultType = MultTrait_t< ElementType_t<T1>, ElementType_t<T2> >;
+   using MultTag  = MultTrait_t< TagType_t<T1>, TagType_t<T2> >;
 
    using Type = DynamicVector< AddTrait_t<MultType,MultType>
                              , false
-                             , DefaultTag >;
+                             , AddTrait_t<MultTag,MultTag> >;
 };
 
 template< typename T1, typename T2 >
@@ -3060,10 +3061,11 @@ struct MultTraitEval2< T1, T2
                                      ( !IsSquare_v<T2> || MaxSize_v<T1,0UL> == DefaultMaxSize_v ) ) > >
 {
    using MultType = MultTrait_t< ElementType_t<T1>, ElementType_t<T2> >;
+   using MultTag  = MultTrait_t< TagType_t<T1>, TagType_t<T2> >;
 
    using Type = DynamicVector< AddTrait_t<MultType,MultType>
                              , true
-                             , DefaultTag >;
+                             , AddTrait_t<MultTag,MultTag> >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -3090,7 +3092,7 @@ struct KronTraitEval2< T1, T2
 {
    using Type = DynamicVector< MultTrait_t< ElementType_t<T1>, ElementType_t<T2> >
                              , TransposeFlag_v<T2>
-                             , DefaultTag >;
+                             , MultTrait_t< TagType_t<T1>, TagType_t<T2> > >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -3115,7 +3117,7 @@ struct DivTraitEval2< T1, T2
 {
    using Type = DynamicVector< DivTrait_t< ElementType_t<T1>, T2 >
                              , TransposeFlag_v<T1>
-                             , DefaultTag >;
+                             , DivTrait_t< TagType_t<T1>, T2 > >;
 };
 
 template< typename T1, typename T2 >
@@ -3129,7 +3131,7 @@ struct DivTraitEval2< T1, T2
 {
    using Type = DynamicVector< DivTrait_t< ElementType_t<T1>, ElementType_t<T2> >
                              , TransposeFlag_v<T1>
-                             , DefaultTag >;
+                             , DivTrait_t< TagType_t<T1>, TagType_t<T2> > >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -3153,7 +3155,7 @@ struct UnaryMapTraitEval2< T, OP
 {
    using Type = DynamicVector< MapTrait_t< ElementType_t<T>, OP >
                              , TransposeFlag_v<T>
-                             , DefaultTag >;
+                             , MapTrait_t< TagType_t<T>, OP > >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -3172,7 +3174,7 @@ struct BinaryMapTraitEval2< T1, T2, OP
 {
    using Type = DynamicVector< MapTrait_t< ElementType_t<T1>, ElementType_t<T2>, OP >
                              , TransposeFlag_v<T1>
-                             , DefaultTag >;
+                             , MapTrait_t< TagType_t<T1>, TagType_t<T2>, OP > >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -3200,7 +3202,7 @@ struct PartialReduceTraitEval2< T, OP, RF
 
    using Type = DynamicVector< decltype( std::declval<OP>()( std::declval<ET>(), std::declval<ET>() ) )
                              , ( RF == columnwise )
-                             , DefaultTag >;
+                             , MapTrait_t< TagType_t<T>, OP > >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -3227,7 +3229,7 @@ struct SolveTraitEval2< T1, T2
 {
    using Type = DynamicVector< ElementType_t<T2>
                              , TransposeFlag_v<T2>
-                             , DefaultTag >;
+                             , TagType_t<T2> >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -3289,7 +3291,7 @@ struct SubvectorTraitEval2< VT, inf, inf
 {
    using Type = DynamicVector< RemoveConst_t< ElementType_t<VT> >
                              , TransposeFlag_v<VT>
-                             , DefaultTag >;
+                             , TagType_t<VT> >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -3313,7 +3315,7 @@ struct ElementsTraitEval2< VT, 0UL
 {
    using Type = DynamicVector< RemoveConst_t< ElementType_t<VT> >
                              , TransposeFlag_v<VT>
-                             , DefaultTag >;
+                             , TagType_t<VT> >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -3337,7 +3339,7 @@ struct RowTraitEval2< MT, I
 {
    using Type = DynamicVector< RemoveConst_t< ElementType_t<MT> >
                              , true
-                             , DefaultTag >;
+                             , TagType_t<MT> >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -3361,7 +3363,7 @@ struct ColumnTraitEval2< MT, I
 {
    using Type = DynamicVector< RemoveConst_t< ElementType_t<MT> >
                              , false
-                             , DefaultTag >;
+                             , TagType_t<MT> >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -3387,7 +3389,7 @@ struct BandTraitEval2< MT, I
 {
    using Type = DynamicVector< RemoveConst_t< ElementType_t<MT> >
                              , defaultTransposeFlag
-                             , DefaultTag >;
+                             , TagType_t<MT> >;
 };
 /*! \endcond */
 //*************************************************************************************************
