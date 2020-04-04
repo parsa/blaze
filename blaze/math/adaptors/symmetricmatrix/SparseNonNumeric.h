@@ -127,6 +127,7 @@ class SymmetricMatrix<MT,SO,false,false>
    using OppositeType   = SymmetricMatrix<OT,!SO,false,false>;  //!< Result type with opposite storage order for expression template evaluations.
    using TransposeType  = SymmetricMatrix<TT,!SO,false,false>;  //!< Transpose type for expression template evaluations.
    using ElementType    = ET;                                   //!< Type of the matrix elements.
+   using TagType        = TagType_t<MT>;                        //!< Tag type of this SymmetricMatrix instance.
    using ReturnType     = ReturnType_t<MT>;                     //!< Return type for expression template evaluations.
    using CompositeType  = const This&;                          //!< Data type for composite expression templates.
    using Reference      = NonNumericProxy<MatrixType>;          //!< Reference to a non-constant matrix value.

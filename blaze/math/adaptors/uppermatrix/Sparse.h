@@ -114,6 +114,7 @@ class UpperMatrix<MT,SO,false>
    using OppositeType   = UpperMatrix<OT,!SO,false>;  //!< Result type with opposite storage order for expression template evaluations.
    using TransposeType  = LowerMatrix<TT,!SO,false>;  //!< Transpose type for expression template evaluations.
    using ElementType    = ET;                         //!< Type of the matrix elements.
+   using TagType        = TagType_t<MT>;              //!< Tag type of this UpperMatrix instance.
    using ReturnType     = ReturnType_t<MT>;           //!< Return type for expression template evaluations.
    using CompositeType  = const This&;                //!< Data type for composite expression templates.
    using Reference      = UpperProxy<MT>;             //!< Reference to a non-constant matrix value.

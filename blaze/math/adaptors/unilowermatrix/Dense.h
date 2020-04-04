@@ -129,6 +129,7 @@ class UniLowerMatrix<MT,SO,true>
    using TransposeType  = UniUpperMatrix<TT,!SO,true>;  //!< Transpose type for expression template evaluations.
    using ElementType    = ET;                           //!< Type of the matrix elements.
    using SIMDType       = SIMDType_t<MT>;               //!< SIMD type of the matrix elements.
+   using TagType        = TagType_t<MT>;                //!< Tag type of this UniLowerMatrix instance.
    using ReturnType     = ReturnType_t<MT>;             //!< Return type for expression template evaluations.
    using CompositeType  = const This&;                  //!< Data type for composite expression templates.
    using Reference      = UniLowerProxy<MT>;            //!< Reference to a non-constant matrix value.

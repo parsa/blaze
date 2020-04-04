@@ -118,6 +118,7 @@ class StrictlyLowerMatrix<MT,SO,false>
    using OppositeType   = StrictlyLowerMatrix<OT,!SO,false>;  //!< Result type with opposite storage order for expression template evaluations.
    using TransposeType  = StrictlyUpperMatrix<TT,!SO,false>;  //!< Transpose type for expression template evaluations.
    using ElementType    = ET;                                 //!< Type of the matrix elements.
+   using TagType        = TagType_t<MT>;                      //!< Tag type of this StrictlyLowerMatrix instance.
    using ReturnType     = ReturnType_t<MT>;                   //!< Return type for expression template evaluations.
    using CompositeType  = const This&;                        //!< Data type for composite expression templates.
    using Reference      = StrictlyLowerProxy<MT>;             //!< Reference to a non-constant matrix value.
