@@ -126,6 +126,7 @@
 #include <blaze/math/constraints/RowMajorMatrix.h>
 #include <blaze/math/constraints/Rows.h>
 #include <blaze/math/constraints/RowVector.h>
+#include <blaze/math/constraints/SameTag.h>
 #include <blaze/math/constraints/SchurExpr.h>
 #include <blaze/math/constraints/SerialExpr.h>
 #include <blaze/math/constraints/Shrinkable.h>
