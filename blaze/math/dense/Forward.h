@@ -115,6 +115,7 @@ template< typename Type                                          // Data type of
         , AlignmentFlag AF                                       // Alignment flag
         , PaddingFlag PF                                         // Padding flag
         , bool SO = defaultStorageOrder                          // Storage order
+        , typename Tag = DefaultTag                              // Type tag
         , typename RT = DynamicMatrix<RemoveConst_t<Type>,SO> >  // Result type
 class CustomMatrix;
 
