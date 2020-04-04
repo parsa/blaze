@@ -91,8 +91,9 @@ template< typename Type                            // Data type of the matrix
         , PaddingFlag PF = defaultPaddingFlag >    // Padding flag
 class HybridMatrix;
 
-template< typename Type                     // Data type of the vector
-        , bool TF = defaultTransposeFlag >  // Transpose flag
+template< typename Type                   // Data type of the vector
+        , bool TF = defaultTransposeFlag  // Transpose flag
+        , typename Tag = DefaultTag >     // Type tag
 class DynamicVector;
 
 template< typename Type                    // Data type of the matrix

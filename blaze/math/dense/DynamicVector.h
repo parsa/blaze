@@ -147,7 +147,7 @@ namespace blaze {
 // flag of the vector can be specified via the two template parameters:
 
    \code
-   template< typename Type, bool TF >
+   template< typename Type, bool TF, typename Tag >
    class DynamicVector;
    \endcode
 
@@ -155,6 +155,7 @@ namespace blaze {
 //          non-cv-qualified, non-reference, non-pointer element type.
 //  - TF  : specifies whether the vector is a row vector (\a blaze::rowVector) or a column
 //          vector (\a blaze::columnVector). The default value is \a blaze::columnVector.
+//  - Tag : optional type parameter to tag the vector. The default type is \a blaze::DefaultTag.
 //
 // These contiguously stored elements can be directly accessed with the subscript operator. The
 // numbering of the vector elements is
@@ -199,21 +200,23 @@ namespace blaze {
    A = a * trans( b );  // Outer product between two vectors
    \endcode
 */
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
+template< typename Type   // Data type of the vector
+        , bool TF         // Transpose flag
+        , typename Tag >  // Type tag
 class DynamicVector
-   : public DenseVector< DynamicVector<Type,TF>, TF >
+   : public DenseVector< DynamicVector<Type,TF,Tag>, TF >
 {
  public:
    //**Type definitions****************************************************************************
-   using This          = DynamicVector<Type,TF>;    //!< Type of this DynamicVector instance.
-   using BaseType      = DenseVector<This,TF>;      //!< Base type of this DynamicVector instance.
-   using ResultType    = This;                      //!< Result type for expression template evaluations.
-   using TransposeType = DynamicVector<Type,!TF>;   //!< Transpose type for expression template evaluations.
-   using ElementType   = Type;                      //!< Type of the vector elements.
-   using SIMDType      = SIMDTrait_t<ElementType>;  //!< SIMD type of the vector elements.
-   using ReturnType    = const Type&;               //!< Return type for expression template evaluations
-   using CompositeType = const DynamicVector&;      //!< Data type for composite expression templates.
+   using This          = DynamicVector<Type,TF,Tag>;   //!< Type of this DynamicVector instance.
+   using BaseType      = DenseVector<This,TF>;         //!< Base type of this DynamicVector instance.
+   using ResultType    = This;                         //!< Result type for expression template evaluations.
+   using TransposeType = DynamicVector<Type,!TF,Tag>;  //!< Transpose type for expression template evaluations.
+   using ElementType   = Type;                         //!< Type of the vector elements.
+   using SIMDType      = SIMDTrait_t<ElementType>;     //!< SIMD type of the vector elements.
+   using TagType       = Tag;                          //!< Tag type of this DynamicVector instance.
+   using ReturnType    = const Type&;                  //!< Return type for expression template evaluations
+   using CompositeType = const DynamicVector&;         //!< Data type for composite expression templates.
 
    using Reference      = Type&;        //!< Reference to a non-constant vector value.
    using ConstReference = const Type&;  //!< Reference to a constant vector value.
@@ -229,7 +232,7 @@ class DynamicVector
    */
    template< typename NewType >  // Data type of the other vector
    struct Rebind {
-      using Other = DynamicVector<NewType,TF>;  //!< The type of the other DynamicVector.
+      using Other = DynamicVector<NewType,TF,Tag>;  //!< The type of the other DynamicVector.
    };
    //**********************************************************************************************
 
@@ -238,7 +241,7 @@ class DynamicVector
    */
    template< size_t NewN >  // Number of elements of the other vector
    struct Resize {
-      using Other = DynamicVector<Type,TF>;  //!< The type of the other DynamicVector.
+      using Other = DynamicVector<Type,TF,Tag>;  //!< The type of the other DynamicVector.
    };
    //**********************************************************************************************
 
@@ -545,9 +548,10 @@ DynamicVector( std::array<Type,N> ) -> DynamicVector<Type>;
 //*************************************************************************************************
 /*!\brief The default constructor for DynamicVector.
 */
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-inline DynamicVector<Type,TF>::DynamicVector() noexcept
+template< typename Type   // Data type of the vector
+        , bool TF         // Transpose flag
+        , typename Tag >  // Type tag
+inline DynamicVector<Type,TF,Tag>::DynamicVector() noexcept
    : size_    ( 0UL )      // The current size/dimension of the vector
    , capacity_( 0UL )      // The maximum capacity of the vector
    , v_       ( nullptr )  // The vector elements
@@ -563,9 +567,10 @@ inline DynamicVector<Type,TF>::DynamicVector() noexcept
 // \note This constructor is only responsible to allocate the required dynamic memory. No
 // element initialization is performed!
 */
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-inline DynamicVector<Type,TF>::DynamicVector( size_t n )
+template< typename Type   // Data type of the vector
+        , bool TF         // Transpose flag
+        , typename Tag >  // Type tag
+inline DynamicVector<Type,TF,Tag>::DynamicVector( size_t n )
    : size_    ( n )                            // The current size/dimension of the vector
    , capacity_( addPadding( n ) )              // The maximum capacity of the vector
    , v_       ( allocate<Type>( capacity_ ) )  // The vector elements
@@ -588,9 +593,10 @@ inline DynamicVector<Type,TF>::DynamicVector( size_t n )
 //
 // All vector elements are initialized with the specified value.
 */
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-inline DynamicVector<Type,TF>::DynamicVector( size_t n, const Type& init )
+template< typename Type   // Data type of the vector
+        , bool TF         // Transpose flag
+        , typename Tag >  // Type tag
+inline DynamicVector<Type,TF,Tag>::DynamicVector( size_t n, const Type& init )
    : DynamicVector( n )
 {
    for( size_t i=0UL; i<size_; ++i )
@@ -616,9 +622,10 @@ inline DynamicVector<Type,TF>::DynamicVector( size_t n, const Type& init )
 // The vector is sized according to the size of the initializer list and all its elements are
 // (copy) assigned the elements of the given initializer list.
 */
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-inline DynamicVector<Type,TF>::DynamicVector( initializer_list<Type> list )
+template< typename Type   // Data type of the vector
+        , bool TF         // Transpose flag
+        , typename Tag >  // Type tag
+inline DynamicVector<Type,TF,Tag>::DynamicVector( initializer_list<Type> list )
    : DynamicVector( list.size() )
 {
    std::fill( std::copy( list.begin(), list.end(), begin() ), end(), Type() );
@@ -649,9 +656,10 @@ inline DynamicVector<Type,TF>::DynamicVector( initializer_list<Type> list )
 // \a n elements. Providing an array with less elements results in undefined behavior!
 */
 template< typename Type     // Data type of the vector
-        , bool TF >         // Transpose flag
+        , bool TF           // Transpose flag
+        , typename Tag >    // Type tag
 template< typename Other >  // Data type of the initialization array
-inline DynamicVector<Type,TF>::DynamicVector( size_t n, const Other* array )
+inline DynamicVector<Type,TF,Tag>::DynamicVector( size_t n, const Other* array )
    : DynamicVector( n )
 {
    for( size_t i=0UL; i<n; ++i )
@@ -680,10 +688,11 @@ inline DynamicVector<Type,TF>::DynamicVector( size_t n, const Other* array )
 // fourth element in the example).
 */
 template< typename Type   // Data type of the vector
-        , bool TF >       // Transpose flag
+        , bool TF         // Transpose flag
+        , typename Tag >  // Type tag
 template< typename Other  // Data type of the static array
         , size_t Dim >    // Dimension of the static array
-inline DynamicVector<Type,TF>::DynamicVector( const Other (&array)[Dim] )
+inline DynamicVector<Type,TF,Tag>::DynamicVector( const Other (&array)[Dim] )
    : DynamicVector( Dim )
 {
    for( size_t i=0UL; i<Dim; ++i )
@@ -712,10 +721,11 @@ inline DynamicVector<Type,TF>::DynamicVector( const Other (&array)[Dim] )
 // fourth element in the example).
 */
 template< typename Type   // Data type of the vector
-        , bool TF >       // Transpose flag
+        , bool TF         // Transpose flag
+        , typename Tag >  // Type tag
 template< typename Other  // Data type of the std::array
         , size_t Dim >    // Dimension of the std::array
-inline DynamicVector<Type,TF>::DynamicVector( const std::array<Other,Dim>& array )
+inline DynamicVector<Type,TF,Tag>::DynamicVector( const std::array<Other,Dim>& array )
    : DynamicVector( Dim )
 {
    for( size_t i=0UL; i<Dim; ++i )
@@ -734,9 +744,10 @@ inline DynamicVector<Type,TF>::DynamicVector( const std::array<Other,Dim>& array
 // The copy constructor is explicitly defined due to the required dynamic memory management
 // and in order to enable/facilitate NRV optimization.
 */
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-inline DynamicVector<Type,TF>::DynamicVector( const DynamicVector& v )
+template< typename Type   // Data type of the vector
+        , bool TF         // Transpose flag
+        , typename Tag >  // Type tag
+inline DynamicVector<Type,TF,Tag>::DynamicVector( const DynamicVector& v )
    : DynamicVector( v.size_ )
 {
    BLAZE_INTERNAL_ASSERT( capacity_ <= v.capacity_, "Invalid capacity estimation" );
@@ -753,9 +764,10 @@ inline DynamicVector<Type,TF>::DynamicVector( const DynamicVector& v )
 //
 // \param v The vector to be moved into this instance.
 */
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-inline DynamicVector<Type,TF>::DynamicVector( DynamicVector&& v ) noexcept
+template< typename Type   // Data type of the vector
+        , bool TF         // Transpose flag
+        , typename Tag >  // Type tag
+inline DynamicVector<Type,TF,Tag>::DynamicVector( DynamicVector&& v ) noexcept
    : size_    ( v.size_     )  // The current size/dimension of the vector
    , capacity_( v.capacity_ )  // The maximum capacity of the vector
    , v_       ( v.v_        )  // The vector elements
@@ -772,10 +784,11 @@ inline DynamicVector<Type,TF>::DynamicVector( DynamicVector&& v ) noexcept
 //
 // \param v Vector to be copied.
 */
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-template< typename VT >  // Type of the foreign vector
-inline DynamicVector<Type,TF>::DynamicVector( const Vector<VT,TF>& v )
+template< typename Type   // Data type of the vector
+        , bool TF         // Transpose flag
+        , typename Tag >  // Type tag
+template< typename VT >   // Type of the foreign vector
+inline DynamicVector<Type,TF,Tag>::DynamicVector( const Vector<VT,TF>& v )
    : DynamicVector( (~v).size() )
 {
    if( IsSparseVector_v<VT> ) {
@@ -802,9 +815,10 @@ inline DynamicVector<Type,TF>::DynamicVector( const Vector<VT,TF>& v )
 //*************************************************************************************************
 /*!\brief The destructor for DynamicVector.
 */
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-inline DynamicVector<Type,TF>::~DynamicVector()
+template< typename Type   // Data type of the vector
+        , bool TF         // Transpose flag
+        , typename Tag >  // Type tag
+inline DynamicVector<Type,TF,Tag>::~DynamicVector()
 {
    deallocate( v_ );
 }
@@ -828,10 +842,11 @@ inline DynamicVector<Type,TF>::~DynamicVector()
 // This function only performs an index check in case BLAZE_USER_ASSERT() is active. In contrast,
 // the at() function is guaranteed to perform a check of the given access index.
 */
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-inline typename DynamicVector<Type,TF>::Reference
-   DynamicVector<Type,TF>::operator[]( size_t index ) noexcept
+template< typename Type   // Data type of the vector
+        , bool TF         // Transpose flag
+        , typename Tag >  // Type tag
+inline typename DynamicVector<Type,TF,Tag>::Reference
+   DynamicVector<Type,TF,Tag>::operator[]( size_t index ) noexcept
 {
    BLAZE_USER_ASSERT( index < size_, "Invalid vector access index" );
    return v_[index];
@@ -848,10 +863,11 @@ inline typename DynamicVector<Type,TF>::Reference
 // This function only performs an index check in case BLAZE_USER_ASSERT() is active. In contrast,
 // the at() function is guaranteed to perform a check of the given access index.
 */
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-inline typename DynamicVector<Type,TF>::ConstReference
-   DynamicVector<Type,TF>::operator[]( size_t index ) const noexcept
+template< typename Type   // Data type of the vector
+        , bool TF         // Transpose flag
+        , typename Tag >  // Type tag
+inline typename DynamicVector<Type,TF,Tag>::ConstReference
+   DynamicVector<Type,TF,Tag>::operator[]( size_t index ) const noexcept
 {
    BLAZE_USER_ASSERT( index < size_, "Invalid vector access index" );
    return v_[index];
@@ -869,10 +885,11 @@ inline typename DynamicVector<Type,TF>::ConstReference
 // In contrast to the subscript operator this function always performs a check of the given
 // access index.
 */
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-inline typename DynamicVector<Type,TF>::Reference
-   DynamicVector<Type,TF>::at( size_t index )
+template< typename Type   // Data type of the vector
+        , bool TF         // Transpose flag
+        , typename Tag >  // Type tag
+inline typename DynamicVector<Type,TF,Tag>::Reference
+   DynamicVector<Type,TF,Tag>::at( size_t index )
 {
    if( index >= size_ ) {
       BLAZE_THROW_OUT_OF_RANGE( "Invalid vector access index" );
@@ -892,10 +909,11 @@ inline typename DynamicVector<Type,TF>::Reference
 // In contrast to the subscript operator this function always performs a check of the given
 // access index.
 */
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-inline typename DynamicVector<Type,TF>::ConstReference
-   DynamicVector<Type,TF>::at( size_t index ) const
+template< typename Type   // Data type of the vector
+        , bool TF         // Transpose flag
+        , typename Tag >  // Type tag
+inline typename DynamicVector<Type,TF,Tag>::ConstReference
+   DynamicVector<Type,TF,Tag>::at( size_t index ) const
 {
    if( index >= size_ ) {
       BLAZE_THROW_OUT_OF_RANGE( "Invalid vector access index" );
@@ -912,9 +930,11 @@ inline typename DynamicVector<Type,TF>::ConstReference
 //
 // This function returns a pointer to the internal storage of the dynamic vector.
 */
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-inline typename DynamicVector<Type,TF>::Pointer DynamicVector<Type,TF>::data() noexcept
+template< typename Type   // Data type of the vector
+        , bool TF         // Transpose flag
+        , typename Tag >  // Type tag
+inline typename DynamicVector<Type,TF,Tag>::Pointer
+   DynamicVector<Type,TF,Tag>::data() noexcept
 {
    return v_;
 }
@@ -928,9 +948,11 @@ inline typename DynamicVector<Type,TF>::Pointer DynamicVector<Type,TF>::data() n
 //
 // This function returns a pointer to the internal storage of the dynamic vector.
 */
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-inline typename DynamicVector<Type,TF>::ConstPointer DynamicVector<Type,TF>::data() const noexcept
+template< typename Type   // Data type of the vector
+        , bool TF         // Transpose flag
+        , typename Tag >  // Type tag
+inline typename DynamicVector<Type,TF,Tag>::ConstPointer
+   DynamicVector<Type,TF,Tag>::data() const noexcept
 {
    return v_;
 }
@@ -942,9 +964,11 @@ inline typename DynamicVector<Type,TF>::ConstPointer DynamicVector<Type,TF>::dat
 //
 // \return Iterator to the first element of the dynamic vector.
 */
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-inline typename DynamicVector<Type,TF>::Iterator DynamicVector<Type,TF>::begin() noexcept
+template< typename Type   // Data type of the vector
+        , bool TF         // Transpose flag
+        , typename Tag >  // Type tag
+inline typename DynamicVector<Type,TF,Tag>::Iterator
+   DynamicVector<Type,TF,Tag>::begin() noexcept
 {
    return Iterator( v_ );
 }
@@ -956,9 +980,11 @@ inline typename DynamicVector<Type,TF>::Iterator DynamicVector<Type,TF>::begin()
 //
 // \return Iterator to the first element of the dynamic vector.
 */
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-inline typename DynamicVector<Type,TF>::ConstIterator DynamicVector<Type,TF>::begin() const noexcept
+template< typename Type   // Data type of the vector
+        , bool TF         // Transpose flag
+        , typename Tag >  // Type tag
+inline typename DynamicVector<Type,TF,Tag>::ConstIterator
+   DynamicVector<Type,TF,Tag>::begin() const noexcept
 {
    return ConstIterator( v_ );
 }
@@ -970,9 +996,11 @@ inline typename DynamicVector<Type,TF>::ConstIterator DynamicVector<Type,TF>::be
 //
 // \return Iterator to the first element of the dynamic vector.
 */
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-inline typename DynamicVector<Type,TF>::ConstIterator DynamicVector<Type,TF>::cbegin() const noexcept
+template< typename Type   // Data type of the vector
+        , bool TF         // Transpose flag
+        , typename Tag >  // Type tag
+inline typename DynamicVector<Type,TF,Tag>::ConstIterator
+   DynamicVector<Type,TF,Tag>::cbegin() const noexcept
 {
    return ConstIterator( v_ );
 }
@@ -984,9 +1012,11 @@ inline typename DynamicVector<Type,TF>::ConstIterator DynamicVector<Type,TF>::cb
 //
 // \return Iterator just past the last element of the dynamic vector.
 */
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-inline typename DynamicVector<Type,TF>::Iterator DynamicVector<Type,TF>::end() noexcept
+template< typename Type   // Data type of the vector
+        , bool TF         // Transpose flag
+        , typename Tag >  // Type tag
+inline typename DynamicVector<Type,TF,Tag>::Iterator
+   DynamicVector<Type,TF,Tag>::end() noexcept
 {
    return Iterator( v_ + size_ );
 }
@@ -998,9 +1028,11 @@ inline typename DynamicVector<Type,TF>::Iterator DynamicVector<Type,TF>::end() n
 //
 // \return Iterator just past the last element of the dynamic vector.
 */
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-inline typename DynamicVector<Type,TF>::ConstIterator DynamicVector<Type,TF>::end() const noexcept
+template< typename Type   // Data type of the vector
+        , bool TF         // Transpose flag
+        , typename Tag >  // Type tag
+inline typename DynamicVector<Type,TF,Tag>::ConstIterator
+   DynamicVector<Type,TF,Tag>::end() const noexcept
 {
    return ConstIterator( v_ + size_ );
 }
@@ -1012,9 +1044,11 @@ inline typename DynamicVector<Type,TF>::ConstIterator DynamicVector<Type,TF>::en
 //
 // \return Iterator just past the last element of the dynamic vector.
 */
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-inline typename DynamicVector<Type,TF>::ConstIterator DynamicVector<Type,TF>::cend() const noexcept
+template< typename Type   // Data type of the vector
+        , bool TF         // Transpose flag
+        , typename Tag >  // Type tag
+inline typename DynamicVector<Type,TF,Tag>::ConstIterator
+   DynamicVector<Type,TF,Tag>::cend() const noexcept
 {
    return ConstIterator( v_ + size_ );
 }
@@ -1035,9 +1069,11 @@ inline typename DynamicVector<Type,TF>::ConstIterator DynamicVector<Type,TF>::ce
 // \param rhs Scalar value to be assigned to all vector elements.
 // \return Reference to the assigned vector.
 */
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-inline DynamicVector<Type,TF>& DynamicVector<Type,TF>::operator=( const Type& rhs )
+template< typename Type   // Data type of the vector
+        , bool TF         // Transpose flag
+        , typename Tag >  // Type tag
+inline DynamicVector<Type,TF,Tag>&
+   DynamicVector<Type,TF,Tag>::operator=( const Type& rhs )
 {
    for( size_t i=0UL; i<size_; ++i )
       v_[i] = rhs;
@@ -1062,9 +1098,11 @@ inline DynamicVector<Type,TF>& DynamicVector<Type,TF>::operator=( const Type& rh
 // The vector is resized according to the size of the initializer list and all its elements are
 // (copy) assigned the values from the given initializer list.
 */
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-inline DynamicVector<Type,TF>& DynamicVector<Type,TF>::operator=( initializer_list<Type> list )
+template< typename Type   // Data type of the vector
+        , bool TF         // Transpose flag
+        , typename Tag >  // Type tag
+inline DynamicVector<Type,TF,Tag>&
+   DynamicVector<Type,TF,Tag>::operator=( initializer_list<Type> list )
 {
    resize( list.size(), false );
    std::copy( list.begin(), list.end(), v_ );
@@ -1093,10 +1131,12 @@ inline DynamicVector<Type,TF>& DynamicVector<Type,TF>::operator=( initializer_li
 // element in the example).
 */
 template< typename Type   // Data type of the vector
-        , bool TF >       // Transpose flag
+        , bool TF         // Transpose flag
+        , typename Tag >  // Type tag
 template< typename Other  // Data type of the static array
         , size_t Dim >    // Dimension of the static array
-inline DynamicVector<Type,TF>& DynamicVector<Type,TF>::operator=( const Other (&array)[Dim] )
+inline DynamicVector<Type,TF,Tag>&
+   DynamicVector<Type,TF,Tag>::operator=( const Other (&array)[Dim] )
 {
    resize( Dim, false );
 
@@ -1127,10 +1167,12 @@ inline DynamicVector<Type,TF>& DynamicVector<Type,TF>::operator=( const Other (&
 // element in the example).
 */
 template< typename Type   // Data type of the vector
-        , bool TF >       // Transpose flag
+        , bool TF         // Transpose flag
+        , typename Tag >  // Type tag
 template< typename Other  // Data type of the std::array
         , size_t Dim >    // Dimension of the std::array
-inline DynamicVector<Type,TF>& DynamicVector<Type,TF>::operator=( const std::array<Other,Dim>& array )
+inline DynamicVector<Type,TF,Tag>&
+   DynamicVector<Type,TF,Tag>::operator=( const std::array<Other,Dim>& array )
 {
    resize( Dim, false );
 
@@ -1151,9 +1193,11 @@ inline DynamicVector<Type,TF>& DynamicVector<Type,TF>::operator=( const std::arr
 // The vector is resized according to the given N-dimensional vector and initialized as a
 // copy of this vector.
 */
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-inline DynamicVector<Type,TF>& DynamicVector<Type,TF>::operator=( const DynamicVector& rhs )
+template< typename Type   // Data type of the vector
+        , bool TF         // Transpose flag
+        , typename Tag >  // Type tag
+inline DynamicVector<Type,TF,Tag>&
+   DynamicVector<Type,TF,Tag>::operator=( const DynamicVector& rhs )
 {
    if( &rhs == this ) return *this;
 
@@ -1173,9 +1217,11 @@ inline DynamicVector<Type,TF>& DynamicVector<Type,TF>::operator=( const DynamicV
 // \param rhs The vector to be moved into this instance.
 // \return Reference to the assigned vector.
 */
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-inline DynamicVector<Type,TF>& DynamicVector<Type,TF>::operator=( DynamicVector&& rhs ) noexcept
+template< typename Type   // Data type of the vector
+        , bool TF         // Transpose flag
+        , typename Tag >  // Type tag
+inline DynamicVector<Type,TF,Tag>&
+   DynamicVector<Type,TF,Tag>::operator=( DynamicVector&& rhs ) noexcept
 {
    deallocate( v_ );
 
@@ -1200,10 +1246,12 @@ inline DynamicVector<Type,TF>& DynamicVector<Type,TF>::operator=( DynamicVector&
 //
 // The vector is resized according to the given vector and initialized as a copy of this vector.
 */
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-template< typename VT >  // Type of the right-hand side vector
-inline DynamicVector<Type,TF>& DynamicVector<Type,TF>::operator=( const Vector<VT,TF>& rhs )
+template< typename Type   // Data type of the vector
+        , bool TF         // Transpose flag
+        , typename Tag >  // Type tag
+template< typename VT >   // Type of the right-hand side vector
+inline DynamicVector<Type,TF,Tag>&
+   DynamicVector<Type,TF,Tag>::operator=( const Vector<VT,TF>& rhs )
 {
    if( (~rhs).canAlias( this ) ) {
       DynamicVector tmp( ~rhs );
@@ -1233,10 +1281,12 @@ inline DynamicVector<Type,TF>& DynamicVector<Type,TF>::operator=( const Vector<V
 // In case the current sizes of the two vectors don't match, a \a std::invalid_argument exception
 // is thrown.
 */
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-template< typename VT >  // Type of the right-hand side vector
-inline DynamicVector<Type,TF>& DynamicVector<Type,TF>::operator+=( const Vector<VT,TF>& rhs )
+template< typename Type   // Data type of the vector
+        , bool TF         // Transpose flag
+        , typename Tag >  // Type tag
+template< typename VT >   // Type of the right-hand side vector
+inline DynamicVector<Type,TF,Tag>&
+   DynamicVector<Type,TF,Tag>::operator+=( const Vector<VT,TF>& rhs )
 {
    if( (~rhs).size() != size_ ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
@@ -1268,10 +1318,12 @@ inline DynamicVector<Type,TF>& DynamicVector<Type,TF>::operator+=( const Vector<
 // In case the current sizes of the two vectors don't match, a \a std::invalid_argument exception
 // is thrown.
 */
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-template< typename VT >  // Type of the right-hand side vector
-inline DynamicVector<Type,TF>& DynamicVector<Type,TF>::operator-=( const Vector<VT,TF>& rhs )
+template< typename Type   // Data type of the vector
+        , bool TF         // Transpose flag
+        , typename Tag >  // Type tag
+template< typename VT >   // Type of the right-hand side vector
+inline DynamicVector<Type,TF,Tag>&
+   DynamicVector<Type,TF,Tag>::operator-=( const Vector<VT,TF>& rhs )
 {
    if( (~rhs).size() != size_ ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
@@ -1303,17 +1355,19 @@ inline DynamicVector<Type,TF>& DynamicVector<Type,TF>::operator-=( const Vector<
 // In case the current sizes of the two vectors don't match, a \a std::invalid_argument exception
 // is thrown.
 */
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-template< typename VT >  // Type of the right-hand side vector
-inline DynamicVector<Type,TF>& DynamicVector<Type,TF>::operator*=( const Vector<VT,TF>& rhs )
+template< typename Type   // Data type of the vector
+        , bool TF         // Transpose flag
+        , typename Tag >  // Type tag
+template< typename VT >   // Type of the right-hand side vector
+inline DynamicVector<Type,TF,Tag>&
+   DynamicVector<Type,TF,Tag>::operator*=( const Vector<VT,TF>& rhs )
 {
    if( (~rhs).size() != size_ ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
    if( IsSparseVector_v<VT> || (~rhs).canAlias( this ) ) {
-      DynamicVector<Type,TF> tmp( *this * (~rhs) );
+      DynamicVector tmp( *this * (~rhs) );
       swap( tmp );
    }
    else {
@@ -1337,17 +1391,19 @@ inline DynamicVector<Type,TF>& DynamicVector<Type,TF>::operator*=( const Vector<
 // In case the current sizes of the two vectors don't match, a \a std::invalid_argument exception
 // is thrown.
 */
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-template< typename VT >  // Type of the right-hand side vector
-inline DynamicVector<Type,TF>& DynamicVector<Type,TF>::operator/=( const DenseVector<VT,TF>& rhs )
+template< typename Type   // Data type of the vector
+        , bool TF         // Transpose flag
+        , typename Tag >  // Type tag
+template< typename VT >   // Type of the right-hand side vector
+inline DynamicVector<Type,TF,Tag>&
+   DynamicVector<Type,TF,Tag>::operator/=( const DenseVector<VT,TF>& rhs )
 {
    if( (~rhs).size() != size_ ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
    if( (~rhs).canAlias( this ) ) {
-      DynamicVector<Type,TF> tmp( *this / (~rhs) );
+      DynamicVector tmp( *this / (~rhs) );
       swap( tmp );
    }
    else {
@@ -1372,10 +1428,12 @@ inline DynamicVector<Type,TF>& DynamicVector<Type,TF>::operator/=( const DenseVe
 // In case the current size of any of the two vectors is not equal to 3, a \a std::invalid_argument
 // exception is thrown.
 */
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-template< typename VT >  // Type of the right-hand side vector
-inline DynamicVector<Type,TF>& DynamicVector<Type,TF>::operator%=( const Vector<VT,TF>& rhs )
+template< typename Type   // Data type of the vector
+        , bool TF         // Transpose flag
+        , typename Tag >  // Type tag
+template< typename VT >   // Type of the right-hand side vector
+inline DynamicVector<Type,TF,Tag>&
+   DynamicVector<Type,TF,Tag>::operator%=( const Vector<VT,TF>& rhs )
 {
    using blaze::assign;
 
@@ -1415,9 +1473,10 @@ inline DynamicVector<Type,TF>& DynamicVector<Type,TF>::operator%=( const Vector<
 //
 // \return The size of the vector.
 */
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-inline size_t DynamicVector<Type,TF>::size() const noexcept
+template< typename Type   // Data type of the vector
+        , bool TF         // Transpose flag
+        , typename Tag >  // Type tag
+inline size_t DynamicVector<Type,TF,Tag>::size() const noexcept
 {
    return size_;
 }
@@ -1432,9 +1491,10 @@ inline size_t DynamicVector<Type,TF>::size() const noexcept
 // This function returns the minimum capacity of the vector, which corresponds to the current
 // size plus padding.
 */
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-inline size_t DynamicVector<Type,TF>::spacing() const noexcept
+template< typename Type   // Data type of the vector
+        , bool TF         // Transpose flag
+        , typename Tag >  // Type tag
+inline size_t DynamicVector<Type,TF,Tag>::spacing() const noexcept
 {
    return addPadding( size_ );
 }
@@ -1446,9 +1506,10 @@ inline size_t DynamicVector<Type,TF>::spacing() const noexcept
 //
 // \return The maximum capacity of the vector.
 */
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-inline size_t DynamicVector<Type,TF>::capacity() const noexcept
+template< typename Type   // Data type of the vector
+        , bool TF         // Transpose flag
+        , typename Tag >  // Type tag
+inline size_t DynamicVector<Type,TF,Tag>::capacity() const noexcept
 {
    return capacity_;
 }
@@ -1463,9 +1524,10 @@ inline size_t DynamicVector<Type,TF>::capacity() const noexcept
 // Note that the number of non-zero elements is always less than or equal to the current size
 // of the vector.
 */
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-inline size_t DynamicVector<Type,TF>::nonZeros() const
+template< typename Type   // Data type of the vector
+        , bool TF         // Transpose flag
+        , typename Tag >  // Type tag
+inline size_t DynamicVector<Type,TF,Tag>::nonZeros() const
 {
    size_t nonzeros( 0 );
 
@@ -1484,9 +1546,10 @@ inline size_t DynamicVector<Type,TF>::nonZeros() const
 //
 // \return void
 */
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-inline void DynamicVector<Type,TF>::reset()
+template< typename Type   // Data type of the vector
+        , bool TF         // Transpose flag
+        , typename Tag >  // Type tag
+inline void DynamicVector<Type,TF,Tag>::reset()
 {
    using blaze::clear;
    for( size_t i=0UL; i<size_; ++i )
@@ -1502,9 +1565,10 @@ inline void DynamicVector<Type,TF>::reset()
 //
 // After the clear() function, the size of the vector is 0.
 */
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-inline void DynamicVector<Type,TF>::clear()
+template< typename Type   // Data type of the vector
+        , bool TF         // Transpose flag
+        , typename Tag >  // Type tag
+inline void DynamicVector<Type,TF,Tag>::clear()
 {
    resize( 0UL, false );
 }
@@ -1540,9 +1604,10 @@ inline void DynamicVector<Type,TF>::clear()
                               \end{array}\right)
                               \f]
 */
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-inline void DynamicVector<Type,TF>::resize( size_t n, bool preserve )
+template< typename Type   // Data type of the vector
+        , bool TF         // Transpose flag
+        , typename Tag >  // Type tag
+inline void DynamicVector<Type,TF,Tag>::resize( size_t n, bool preserve )
 {
    using std::swap;
 
@@ -1590,9 +1655,10 @@ inline void DynamicVector<Type,TF>::resize( size_t n, bool preserve )
 // function potentially changes all vector elements. In order to preserve the old vector values,
 // the \a preserve flag can be set to \a true. However, new vector elements are not initialized!
 */
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-inline void DynamicVector<Type,TF>::extend( size_t n, bool preserve )
+template< typename Type   // Data type of the vector
+        , bool TF         // Transpose flag
+        , typename Tag >  // Type tag
+inline void DynamicVector<Type,TF,Tag>::extend( size_t n, bool preserve )
 {
    resize( size_+n, preserve );
 }
@@ -1608,9 +1674,10 @@ inline void DynamicVector<Type,TF>::extend( size_t n, bool preserve )
 // This function increases the capacity of the vector to at least \a n elements. The current
 // values of the vector elements are preserved.
 */
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-inline void DynamicVector<Type,TF>::reserve( size_t n )
+template< typename Type   // Data type of the vector
+        , bool TF         // Transpose flag
+        , typename Tag >  // Type tag
+inline void DynamicVector<Type,TF,Tag>::reserve( size_t n )
 {
    using std::swap;
 
@@ -1647,9 +1714,10 @@ inline void DynamicVector<Type,TF>::reserve( size_t n )
 // that in case a reallocation occurs, all iterators (including end() iterators), all pointers
 // and references to elements of this vector are invalidated.
 */
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-inline void DynamicVector<Type,TF>::shrinkToFit()
+template< typename Type   // Data type of the vector
+        , bool TF         // Transpose flag
+        , typename Tag >  // Type tag
+inline void DynamicVector<Type,TF,Tag>::shrinkToFit()
 {
    if( spacing() < capacity_ ) {
       DynamicVector( *this ).swap( *this );
@@ -1664,9 +1732,10 @@ inline void DynamicVector<Type,TF>::shrinkToFit()
 // \param v The vector to be swapped.
 // \return void
 */
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-inline void DynamicVector<Type,TF>::swap( DynamicVector& v ) noexcept
+template< typename Type   // Data type of the vector
+        , bool TF         // Transpose flag
+        , typename Tag >  // Type tag
+inline void DynamicVector<Type,TF,Tag>::swap( DynamicVector& v ) noexcept
 {
    using std::swap;
 
@@ -1686,9 +1755,10 @@ inline void DynamicVector<Type,TF>::swap( DynamicVector& v ) noexcept
 // This function increments the given \a value by the necessary amount of padding based on the
 // vector's data type \a Type.
 */
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-inline size_t DynamicVector<Type,TF>::addPadding( size_t value ) const noexcept
+template< typename Type   // Data type of the vector
+        , bool TF         // Transpose flag
+        , typename Tag >  // Type tag
+inline size_t DynamicVector<Type,TF,Tag>::addPadding( size_t value ) const noexcept
 {
    if( usePadding && IsVectorizable_v<Type> )
       return nextMultiple<size_t>( value, SIMDSIZE );
@@ -1723,9 +1793,10 @@ inline size_t DynamicVector<Type,TF>::addPadding( size_t value ) const noexcept
    \endcode
 */
 template< typename Type     // Data type of the vector
-        , bool TF >         // Transpose flag
+        , bool TF           // Transpose flag
+        , typename Tag >    // Type tag
 template< typename Other >  // Data type of the scalar value
-inline DynamicVector<Type,TF>& DynamicVector<Type,TF>::scale( const Other& scalar )
+inline DynamicVector<Type,TF,Tag>& DynamicVector<Type,TF,Tag>::scale( const Other& scalar )
 {
    for( size_t i=0UL; i<size_; ++i )
       v_[i] *= scalar;
@@ -1751,9 +1822,10 @@ inline DynamicVector<Type,TF>& DynamicVector<Type,TF>::scale( const Other& scala
 // state is valid. In case the invariants are intact, the function returns \a true, else it
 // will return \a false.
 */
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-inline bool DynamicVector<Type,TF>::isIntact() const noexcept
+template< typename Type   // Data type of the vector
+        , bool TF         // Transpose flag
+        , typename Tag >  // Type tag
+inline bool DynamicVector<Type,TF,Tag>::isIntact() const noexcept
 {
    if( size_ > capacity_ )
       return false;
@@ -1789,9 +1861,10 @@ inline bool DynamicVector<Type,TF>::isIntact() const noexcept
 // to optimize the evaluation.
 */
 template< typename Type     // Data type of the vector
-        , bool TF >         // Transpose flag
+        , bool TF           // Transpose flag
+        , typename Tag >    // Type tag
 template< typename Other >  // Data type of the foreign expression
-inline bool DynamicVector<Type,TF>::canAlias( const Other* alias ) const noexcept
+inline bool DynamicVector<Type,TF,Tag>::canAlias( const Other* alias ) const noexcept
 {
    return static_cast<const void*>( this ) == static_cast<const void*>( alias );
 }
@@ -1809,9 +1882,10 @@ inline bool DynamicVector<Type,TF>::canAlias( const Other* alias ) const noexcep
 // to optimize the evaluation.
 */
 template< typename Type     // Data type of the vector
-        , bool TF >         // Transpose flag
+        , bool TF           // Transpose flag
+        , typename Tag >    // Type tag
 template< typename Other >  // Data type of the foreign expression
-inline bool DynamicVector<Type,TF>::isAliased( const Other* alias ) const noexcept
+inline bool DynamicVector<Type,TF,Tag>::isAliased( const Other* alias ) const noexcept
 {
    return static_cast<const void*>( this ) == static_cast<const void*>( alias );
 }
@@ -1827,9 +1901,10 @@ inline bool DynamicVector<Type,TF>::isAliased( const Other* alias ) const noexce
 // whether the beginning and the end of the vector are guaranteed to conform to the alignment
 // restrictions of the element type \a Type.
 */
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-inline bool DynamicVector<Type,TF>::isAligned() const noexcept
+template< typename Type   // Data type of the vector
+        , bool TF         // Transpose flag
+        , typename Tag >  // Type tag
+inline bool DynamicVector<Type,TF,Tag>::isAligned() const noexcept
 {
    return true;
 }
@@ -1846,9 +1921,10 @@ inline bool DynamicVector<Type,TF>::isAligned() const noexcept
 // function additionally provides runtime information (as for instance the current size of the
 // vector).
 */
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-inline bool DynamicVector<Type,TF>::canSMPAssign() const noexcept
+template< typename Type   // Data type of the vector
+        , bool TF         // Transpose flag
+        , typename Tag >  // Type tag
+inline bool DynamicVector<Type,TF,Tag>::canSMPAssign() const noexcept
 {
    return ( size() > SMP_DVECASSIGN_THRESHOLD );
 }
@@ -1867,10 +1943,11 @@ inline bool DynamicVector<Type,TF>::canSMPAssign() const noexcept
 // used internally for the performance optimized evaluation of expression templates. Calling
 // this function explicitly might result in erroneous results and/or in compilation errors.
 */
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-BLAZE_ALWAYS_INLINE typename DynamicVector<Type,TF>::SIMDType
-   DynamicVector<Type,TF>::load( size_t index ) const noexcept
+template< typename Type   // Data type of the vector
+        , bool TF         // Transpose flag
+        , typename Tag >  // Type tag
+BLAZE_ALWAYS_INLINE typename DynamicVector<Type,TF,Tag>::SIMDType
+   DynamicVector<Type,TF,Tag>::load( size_t index ) const noexcept
 {
    return loada( index );
 }
@@ -1890,10 +1967,11 @@ BLAZE_ALWAYS_INLINE typename DynamicVector<Type,TF>::SIMDType
 // Calling this function explicitly might result in erroneous results and/or in compilation
 // errors.
 */
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-BLAZE_ALWAYS_INLINE typename DynamicVector<Type,TF>::SIMDType
-   DynamicVector<Type,TF>::loada( size_t index ) const noexcept
+template< typename Type   // Data type of the vector
+        , bool TF         // Transpose flag
+        , typename Tag >  // Type tag
+BLAZE_ALWAYS_INLINE typename DynamicVector<Type,TF,Tag>::SIMDType
+   DynamicVector<Type,TF,Tag>::loada( size_t index ) const noexcept
 {
    using blaze::loada;
 
@@ -1922,10 +2000,11 @@ BLAZE_ALWAYS_INLINE typename DynamicVector<Type,TF>::SIMDType
 // Calling this function explicitly might result in erroneous results and/or in compilation
 // errors.
 */
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-BLAZE_ALWAYS_INLINE typename DynamicVector<Type,TF>::SIMDType
-   DynamicVector<Type,TF>::loadu( size_t index ) const noexcept
+template< typename Type   // Data type of the vector
+        , bool TF         // Transpose flag
+        , typename Tag >  // Type tag
+BLAZE_ALWAYS_INLINE typename DynamicVector<Type,TF,Tag>::SIMDType
+   DynamicVector<Type,TF,Tag>::loadu( size_t index ) const noexcept
 {
    using blaze::loadu;
 
@@ -1952,10 +2031,11 @@ BLAZE_ALWAYS_INLINE typename DynamicVector<Type,TF>::SIMDType
 // used internally for the performance optimized evaluation of expression templates. Calling
 // this function explicitly might result in erroneous results and/or in compilation errors.
 */
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
+template< typename Type   // Data type of the vector
+        , bool TF         // Transpose flag
+        , typename Tag >  // Type tag
 BLAZE_ALWAYS_INLINE void
-   DynamicVector<Type,TF>::store( size_t index, const SIMDType& value ) noexcept
+   DynamicVector<Type,TF,Tag>::store( size_t index, const SIMDType& value ) noexcept
 {
    storea( index, value );
 }
@@ -1975,10 +2055,11 @@ BLAZE_ALWAYS_INLINE void
 // is used internally for the performance optimized evaluation of expression templates. Calling
 // this function explicitly might result in erroneous results and/or in compilation errors.
 */
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
+template< typename Type   // Data type of the vector
+        , bool TF         // Transpose flag
+        , typename Tag >  // Type tag
 BLAZE_ALWAYS_INLINE void
-   DynamicVector<Type,TF>::storea( size_t index, const SIMDType& value ) noexcept
+   DynamicVector<Type,TF,Tag>::storea( size_t index, const SIMDType& value ) noexcept
 {
    using blaze::storea;
 
@@ -2007,10 +2088,11 @@ BLAZE_ALWAYS_INLINE void
 // is used internally for the performance optimized evaluation of expression templates. Calling
 // this function explicitly might result in erroneous results and/or in compilation errors.
 */
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
+template< typename Type   // Data type of the vector
+        , bool TF         // Transpose flag
+        , typename Tag >  // Type tag
 BLAZE_ALWAYS_INLINE void
-   DynamicVector<Type,TF>::storeu( size_t index, const SIMDType& value ) noexcept
+   DynamicVector<Type,TF,Tag>::storeu( size_t index, const SIMDType& value ) noexcept
 {
    using blaze::storeu;
 
@@ -2038,10 +2120,11 @@ BLAZE_ALWAYS_INLINE void
 // expression templates. Calling this function explicitly might result in erroneous results
 // and/or in compilation errors.
 */
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
+template< typename Type   // Data type of the vector
+        , bool TF         // Transpose flag
+        , typename Tag >  // Type tag
 BLAZE_ALWAYS_INLINE void
-   DynamicVector<Type,TF>::stream( size_t index, const SIMDType& value ) noexcept
+   DynamicVector<Type,TF,Tag>::stream( size_t index, const SIMDType& value ) noexcept
 {
    using blaze::stream;
 
@@ -2068,10 +2151,11 @@ BLAZE_ALWAYS_INLINE void
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-template< typename VT >  // Type of the right-hand side dense vector
-inline auto DynamicVector<Type,TF>::assign( const DenseVector<VT,TF>& rhs )
+template< typename Type   // Data type of the vector
+        , bool TF         // Transpose flag
+        , typename Tag >  // Type tag
+template< typename VT >   // Type of the right-hand side dense vector
+inline auto DynamicVector<Type,TF,Tag>::assign( const DenseVector<VT,TF>& rhs )
    -> DisableIf_t< VectorizedAssign_v<VT> >
 {
    BLAZE_INTERNAL_ASSERT( size_ == (~rhs).size(), "Invalid vector sizes" );
@@ -2100,10 +2184,11 @@ inline auto DynamicVector<Type,TF>::assign( const DenseVector<VT,TF>& rhs )
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-template< typename VT >  // Type of the right-hand side dense vector
-inline auto DynamicVector<Type,TF>::assign( const DenseVector<VT,TF>& rhs )
+template< typename Type   // Data type of the vector
+        , bool TF         // Transpose flag
+        , typename Tag >  // Type tag
+template< typename VT >   // Type of the right-hand side dense vector
+inline auto DynamicVector<Type,TF,Tag>::assign( const DenseVector<VT,TF>& rhs )
    -> EnableIf_t< VectorizedAssign_v<VT> >
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
@@ -2160,10 +2245,11 @@ inline auto DynamicVector<Type,TF>::assign( const DenseVector<VT,TF>& rhs )
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-template< typename VT >  // Type of the right-hand side sparse vector
-inline void DynamicVector<Type,TF>::assign( const SparseVector<VT,TF>& rhs )
+template< typename Type   // Data type of the vector
+        , bool TF         // Transpose flag
+        , typename Tag >  // Type tag
+template< typename VT >   // Type of the right-hand side sparse vector
+inline void DynamicVector<Type,TF,Tag>::assign( const SparseVector<VT,TF>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( size_ == (~rhs).size(), "Invalid vector sizes" );
 
@@ -2184,10 +2270,11 @@ inline void DynamicVector<Type,TF>::assign( const SparseVector<VT,TF>& rhs )
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-template< typename VT >  // Type of the right-hand side dense vector
-inline auto DynamicVector<Type,TF>::addAssign( const DenseVector<VT,TF>& rhs )
+template< typename Type   // Data type of the vector
+        , bool TF         // Transpose flag
+        , typename Tag >  // Type tag
+template< typename VT >   // Type of the right-hand side dense vector
+inline auto DynamicVector<Type,TF,Tag>::addAssign( const DenseVector<VT,TF>& rhs )
    -> DisableIf_t< VectorizedAddAssign_v<VT> >
 {
    BLAZE_INTERNAL_ASSERT( size_ == (~rhs).size(), "Invalid vector sizes" );
@@ -2216,10 +2303,11 @@ inline auto DynamicVector<Type,TF>::addAssign( const DenseVector<VT,TF>& rhs )
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-template< typename VT >  // Type of the right-hand side dense vector
-inline auto DynamicVector<Type,TF>::addAssign( const DenseVector<VT,TF>& rhs )
+template< typename Type   // Data type of the vector
+        , bool TF         // Transpose flag
+        , typename Tag >  // Type tag
+template< typename VT >   // Type of the right-hand side dense vector
+inline auto DynamicVector<Type,TF,Tag>::addAssign( const DenseVector<VT,TF>& rhs )
    -> EnableIf_t< VectorizedAddAssign_v<VT> >
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
@@ -2262,10 +2350,11 @@ inline auto DynamicVector<Type,TF>::addAssign( const DenseVector<VT,TF>& rhs )
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-template< typename VT >  // Type of the right-hand side sparse vector
-inline void DynamicVector<Type,TF>::addAssign( const SparseVector<VT,TF>& rhs )
+template< typename Type   // Data type of the vector
+        , bool TF         // Transpose flag
+        , typename Tag >  // Type tag
+template< typename VT >   // Type of the right-hand side sparse vector
+inline void DynamicVector<Type,TF,Tag>::addAssign( const SparseVector<VT,TF>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( size_ == (~rhs).size(), "Invalid vector sizes" );
 
@@ -2286,10 +2375,11 @@ inline void DynamicVector<Type,TF>::addAssign( const SparseVector<VT,TF>& rhs )
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-template< typename VT >  // Type of the right-hand side dense vector
-inline auto DynamicVector<Type,TF>::subAssign( const DenseVector<VT,TF>& rhs )
+template< typename Type   // Data type of the vector
+        , bool TF         // Transpose flag
+        , typename Tag >  // Type tag
+template< typename VT >   // Type of the right-hand side dense vector
+inline auto DynamicVector<Type,TF,Tag>::subAssign( const DenseVector<VT,TF>& rhs )
    -> DisableIf_t< VectorizedSubAssign_v<VT> >
 {
    BLAZE_INTERNAL_ASSERT( size_ == (~rhs).size(), "Invalid vector sizes" );
@@ -2318,10 +2408,11 @@ inline auto DynamicVector<Type,TF>::subAssign( const DenseVector<VT,TF>& rhs )
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-template< typename VT >  // Type of the right-hand side dense vector
-inline auto DynamicVector<Type,TF>::subAssign( const DenseVector<VT,TF>& rhs )
+template< typename Type   // Data type of the vector
+        , bool TF         // Transpose flag
+        , typename Tag >  // Type tag
+template< typename VT >   // Type of the right-hand side dense vector
+inline auto DynamicVector<Type,TF,Tag>::subAssign( const DenseVector<VT,TF>& rhs )
    -> EnableIf_t< VectorizedSubAssign_v<VT> >
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
@@ -2364,10 +2455,11 @@ inline auto DynamicVector<Type,TF>::subAssign( const DenseVector<VT,TF>& rhs )
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-template< typename VT >  // Type of the right-hand side sparse vector
-inline void DynamicVector<Type,TF>::subAssign( const SparseVector<VT,TF>& rhs )
+template< typename Type   // Data type of the vector
+        , bool TF         // Transpose flag
+        , typename Tag >  // Type tag
+template< typename VT >   // Type of the right-hand side sparse vector
+inline void DynamicVector<Type,TF,Tag>::subAssign( const SparseVector<VT,TF>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( size_ == (~rhs).size(), "Invalid vector sizes" );
 
@@ -2388,10 +2480,11 @@ inline void DynamicVector<Type,TF>::subAssign( const SparseVector<VT,TF>& rhs )
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-template< typename VT >  // Type of the right-hand side dense vector
-inline auto DynamicVector<Type,TF>::multAssign( const DenseVector<VT,TF>& rhs )
+template< typename Type   // Data type of the vector
+        , bool TF         // Transpose flag
+        , typename Tag >  // Type tag
+template< typename VT >   // Type of the right-hand side dense vector
+inline auto DynamicVector<Type,TF,Tag>::multAssign( const DenseVector<VT,TF>& rhs )
    -> DisableIf_t< VectorizedMultAssign_v<VT> >
 {
    BLAZE_INTERNAL_ASSERT( size_ == (~rhs).size(), "Invalid vector sizes" );
@@ -2420,10 +2513,11 @@ inline auto DynamicVector<Type,TF>::multAssign( const DenseVector<VT,TF>& rhs )
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-template< typename VT >  // Type of the right-hand side dense vector
-inline auto DynamicVector<Type,TF>::multAssign( const DenseVector<VT,TF>& rhs )
+template< typename Type   // Data type of the vector
+        , bool TF         // Transpose flag
+        , typename Tag >  // Type tag
+template< typename VT >   // Type of the right-hand side dense vector
+inline auto DynamicVector<Type,TF,Tag>::multAssign( const DenseVector<VT,TF>& rhs )
    -> EnableIf_t< VectorizedMultAssign_v<VT> >
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
@@ -2466,10 +2560,11 @@ inline auto DynamicVector<Type,TF>::multAssign( const DenseVector<VT,TF>& rhs )
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-template< typename VT >  // Type of the right-hand side sparse vector
-inline void DynamicVector<Type,TF>::multAssign( const SparseVector<VT,TF>& rhs )
+template< typename Type   // Data type of the vector
+        , bool TF         // Transpose flag
+        , typename Tag >  // Type tag
+template< typename VT >   // Type of the right-hand side sparse vector
+inline void DynamicVector<Type,TF,Tag>::multAssign( const SparseVector<VT,TF>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( size_ == (~rhs).size(), "Invalid vector sizes" );
 
@@ -2494,10 +2589,11 @@ inline void DynamicVector<Type,TF>::multAssign( const SparseVector<VT,TF>& rhs )
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-template< typename VT >  // Type of the right-hand side dense vector
-inline auto DynamicVector<Type,TF>::divAssign( const DenseVector<VT,TF>& rhs )
+template< typename Type   // Data type of the vector
+        , bool TF         // Transpose flag
+        , typename Tag >  // Type tag
+template< typename VT >   // Type of the right-hand side dense vector
+inline auto DynamicVector<Type,TF,Tag>::divAssign( const DenseVector<VT,TF>& rhs )
    -> DisableIf_t< VectorizedDivAssign_v<VT> >
 {
    BLAZE_INTERNAL_ASSERT( size_ == (~rhs).size(), "Invalid vector sizes" );
@@ -2526,10 +2622,11 @@ inline auto DynamicVector<Type,TF>::divAssign( const DenseVector<VT,TF>& rhs )
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-template< typename VT >  // Type of the right-hand side dense vector
-inline auto DynamicVector<Type,TF>::divAssign( const DenseVector<VT,TF>& rhs )
+template< typename Type   // Data type of the vector
+        , bool TF         // Transpose flag
+        , typename Tag >  // Type tag
+template< typename VT >   // Type of the right-hand side dense vector
+inline auto DynamicVector<Type,TF,Tag>::divAssign( const DenseVector<VT,TF>& rhs )
    -> EnableIf_t< VectorizedDivAssign_v<VT> >
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
@@ -2570,20 +2667,20 @@ inline auto DynamicVector<Type,TF>::divAssign( const DenseVector<VT,TF>& rhs )
 //*************************************************************************************************
 /*!\name DynamicVector operators */
 //@{
-template< typename Type, bool TF >
-void reset( DynamicVector<Type,TF>& v );
+template< typename Type, bool TF, typename Tag >
+void reset( DynamicVector<Type,TF,Tag>& v );
 
-template< typename Type, bool TF >
-void clear( DynamicVector<Type,TF>& v );
+template< typename Type, bool TF, typename Tag >
+void clear( DynamicVector<Type,TF,Tag>& v );
 
-template< RelaxationFlag RF, typename Type, bool TF >
-bool isDefault( const DynamicVector<Type,TF>& v );
+template< RelaxationFlag RF, typename Type, bool TF, typename Tag >
+bool isDefault( const DynamicVector<Type,TF,Tag>& v );
 
-template< typename Type, bool TF >
-bool isIntact( const DynamicVector<Type,TF>& v ) noexcept;
+template< typename Type, bool TF, typename Tag >
+bool isIntact( const DynamicVector<Type,TF,Tag>& v ) noexcept;
 
-template< typename Type, bool TF >
-void swap( DynamicVector<Type,TF>& a, DynamicVector<Type,TF>& b ) noexcept;
+template< typename Type, bool TF, typename Tag >
+void swap( DynamicVector<Type,TF,Tag>& a, DynamicVector<Type,TF,Tag>& b ) noexcept;
 //@}
 //*************************************************************************************************
 
@@ -2595,9 +2692,10 @@ void swap( DynamicVector<Type,TF>& a, DynamicVector<Type,TF>& b ) noexcept;
 // \param v The dynamic vector to be resetted.
 // \return void
 */
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-inline void reset( DynamicVector<Type,TF>& v )
+template< typename Type   // Data type of the vector
+        , bool TF         // Transpose flag
+        , typename Tag >  // Type tag
+inline void reset( DynamicVector<Type,TF,Tag>& v )
 {
    v.reset();
 }
@@ -2611,9 +2709,10 @@ inline void reset( DynamicVector<Type,TF>& v )
 // \param v The dynamic vector to be cleared.
 // \return void
 */
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-inline void clear( DynamicVector<Type,TF>& v )
+template< typename Type   // Data type of the vector
+        , bool TF         // Transpose flag
+        , typename Tag >  // Type tag
+inline void clear( DynamicVector<Type,TF,Tag>& v )
 {
    v.clear();
 }
@@ -2646,8 +2745,9 @@ inline void clear( DynamicVector<Type,TF>& v )
 */
 template< RelaxationFlag RF  // Relaxation flag
         , typename Type      // Data type of the vector
-        , bool TF >          // Transpose flag
-inline bool isDefault( const DynamicVector<Type,TF>& v )
+        , bool TF            // Transpose flag
+        , typename Tag >     // Type tag
+inline bool isDefault( const DynamicVector<Type,TF,Tag>& v )
 {
    return ( v.size() == 0UL );
 }
@@ -2672,9 +2772,10 @@ inline bool isDefault( const DynamicVector<Type,TF>& v )
    if( isIntact( a ) ) { ... }
    \endcode
 */
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-inline bool isIntact( const DynamicVector<Type,TF>& v ) noexcept
+template< typename Type   // Data type of the vector
+        , bool TF         // Transpose flag
+        , typename Tag >  // Type tag
+inline bool isIntact( const DynamicVector<Type,TF,Tag>& v ) noexcept
 {
    return v.isIntact();
 }
@@ -2689,9 +2790,10 @@ inline bool isIntact( const DynamicVector<Type,TF>& v ) noexcept
 // \param b The second vector to be swapped.
 // \return void
 */
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-inline void swap( DynamicVector<Type,TF>& a, DynamicVector<Type,TF>& b ) noexcept
+template< typename Type   // Data type of the vector
+        , bool TF         // Transpose flag
+        , typename Tag >  // Type tag
+inline void swap( DynamicVector<Type,TF,Tag>& a, DynamicVector<Type,TF,Tag>& b ) noexcept
 {
    a.swap( b );
 }
@@ -2708,8 +2810,8 @@ inline void swap( DynamicVector<Type,TF>& a, DynamicVector<Type,TF>& b ) noexcep
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T, bool TF >
-struct HasConstDataAccess< DynamicVector<T,TF> >
+template< typename T, bool TF, typename Tag >
+struct HasConstDataAccess< DynamicVector<T,TF,Tag> >
    : public TrueType
 {};
 /*! \endcond */
@@ -2726,8 +2828,8 @@ struct HasConstDataAccess< DynamicVector<T,TF> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T, bool TF >
-struct HasMutableDataAccess< DynamicVector<T,TF> >
+template< typename T, bool TF, typename Tag >
+struct HasMutableDataAccess< DynamicVector<T,TF,Tag> >
    : public TrueType
 {};
 /*! \endcond */
@@ -2744,8 +2846,8 @@ struct HasMutableDataAccess< DynamicVector<T,TF> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T, bool TF >
-struct IsAligned< DynamicVector<T,TF> >
+template< typename T, bool TF, typename Tag >
+struct IsAligned< DynamicVector<T,TF,Tag> >
    : public TrueType
 {};
 /*! \endcond */
@@ -2762,8 +2864,8 @@ struct IsAligned< DynamicVector<T,TF> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T, bool TF >
-struct IsContiguous< DynamicVector<T,TF> >
+template< typename T, bool TF, typename Tag >
+struct IsContiguous< DynamicVector<T,TF,Tag> >
    : public TrueType
 {};
 /*! \endcond */
@@ -2780,8 +2882,8 @@ struct IsContiguous< DynamicVector<T,TF> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T, bool TF >
-struct IsPadded< DynamicVector<T,TF> >
+template< typename T, bool TF, typename Tag >
+struct IsPadded< DynamicVector<T,TF,Tag> >
    : public BoolConstant<usePadding>
 {};
 /*! \endcond */
@@ -2798,8 +2900,8 @@ struct IsPadded< DynamicVector<T,TF> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T, bool TF >
-struct IsResizable< DynamicVector<T,TF> >
+template< typename T, bool TF, typename Tag >
+struct IsResizable< DynamicVector<T,TF,Tag> >
    : public TrueType
 {};
 /*! \endcond */
@@ -2816,8 +2918,8 @@ struct IsResizable< DynamicVector<T,TF> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T, bool TF >
-struct IsShrinkable< DynamicVector<T,TF> >
+template< typename T, bool TF, typename Tag >
+struct IsShrinkable< DynamicVector<T,TF,Tag> >
    : public TrueType
 {};
 /*! \endcond */
@@ -2844,10 +2946,9 @@ struct AddTraitEval2< T1, T2
                                   ( MaxSize_v<T1,0UL> == DefaultMaxSize_v ) &&
                                   ( MaxSize_v<T2,0UL> == DefaultMaxSize_v ) > >
 {
-   using ET1 = ElementType_t<T1>;
-   using ET2 = ElementType_t<T2>;
-
-   using Type = DynamicVector< AddTrait_t<ET1,ET2>, TransposeFlag_v<T1> >;
+   using Type = DynamicVector< AddTrait_t< ElementType_t<T1>, ElementType_t<T2> >
+                             , TransposeFlag_v<T1>
+                             , DefaultTag >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -2873,10 +2974,9 @@ struct SubTraitEval2< T1, T2
                                   ( MaxSize_v<T1,0UL> == DefaultMaxSize_v ) &&
                                   ( MaxSize_v<T2,0UL> == DefaultMaxSize_v ) > >
 {
-   using ET1 = ElementType_t<T1>;
-   using ET2 = ElementType_t<T2>;
-
-   using Type = DynamicVector< SubTrait_t<ET1,ET2>, TransposeFlag_v<T1> >;
+   using Type = DynamicVector< SubTrait_t< ElementType_t<T1>, ElementType_t<T2> >
+                             , TransposeFlag_v<T1>
+                             , DefaultTag >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -2899,9 +2999,9 @@ struct MultTraitEval2< T1, T2
                                    ( Size_v<T1,0UL> == DefaultSize_v ) &&
                                    ( MaxSize_v<T1,0UL> == DefaultMaxSize_v ) > >
 {
-   using ET1 = ElementType_t<T1>;
-
-   using Type = DynamicVector< MultTrait_t<ET1,T2>, TransposeFlag_v<T1> >;
+   using Type = DynamicVector< MultTrait_t< ElementType_t<T1>, T2 >
+                             , TransposeFlag_v<T1>
+                             , DefaultTag >;
 };
 
 template< typename T1, typename T2 >
@@ -2911,9 +3011,9 @@ struct MultTraitEval2< T1, T2
                                    ( Size_v<T2,0UL> == DefaultSize_v ) &&
                                    ( MaxSize_v<T2,0UL> == DefaultMaxSize_v ) > >
 {
-   using ET2 = ElementType_t<T2>;
-
-   using Type = DynamicVector< MultTrait_t<T1,ET2>, TransposeFlag_v<T2> >;
+   using Type = DynamicVector< MultTrait_t< T1, ElementType_t<T2> >
+                             , TransposeFlag_v<T2>
+                             , DefaultTag >;
 };
 
 template< typename T1, typename T2 >
@@ -2927,10 +3027,9 @@ struct MultTraitEval2< T1, T2
                                    ( MaxSize_v<T1,0UL> == DefaultMaxSize_v ) &&
                                    ( MaxSize_v<T2,0UL> == DefaultMaxSize_v ) > >
 {
-   using ET1 = ElementType_t<T1>;
-   using ET2 = ElementType_t<T2>;
-
-   using Type = DynamicVector< MultTrait_t<ET1,ET2>, TransposeFlag_v<T1> >;
+   using Type = DynamicVector< MultTrait_t< ElementType_t<T1>, ElementType_t<T2> >
+                             , TransposeFlag_v<T1>
+                             , DefaultTag >;
 };
 
 template< typename T1, typename T2 >
@@ -2943,10 +3042,11 @@ struct MultTraitEval2< T1, T2
                                    ( MaxSize_v<T1,0UL> == DefaultMaxSize_v &&
                                      ( !IsSquare_v<T1> || MaxSize_v<T2,0UL> == DefaultMaxSize_v ) ) > >
 {
-   using ET1 = ElementType_t<T1>;
-   using ET2 = ElementType_t<T2>;
+   using MultType = MultTrait_t< ElementType_t<T1>, ElementType_t<T2> >;
 
-   using Type = DynamicVector< MultTrait_t<ET1,ET2>, false >;
+   using Type = DynamicVector< AddTrait_t<MultType,MultType>
+                             , false
+                             , DefaultTag >;
 };
 
 template< typename T1, typename T2 >
@@ -2959,10 +3059,11 @@ struct MultTraitEval2< T1, T2
                                    ( MaxSize_v<T2,1UL> == DefaultMaxSize_v &&
                                      ( !IsSquare_v<T2> || MaxSize_v<T1,0UL> == DefaultMaxSize_v ) ) > >
 {
-   using ET1 = ElementType_t<T1>;
-   using ET2 = ElementType_t<T2>;
+   using MultType = MultTrait_t< ElementType_t<T1>, ElementType_t<T2> >;
 
-   using Type = DynamicVector< MultTrait_t<ET1,ET2>, true >;
+   using Type = DynamicVector< AddTrait_t<MultType,MultType>
+                             , true
+                             , DefaultTag >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -2987,10 +3088,9 @@ struct KronTraitEval2< T1, T2
                                    ( ( MaxSize_v<T1,0UL> == DefaultMaxSize_v ) ||
                                      ( MaxSize_v<T2,0UL> == DefaultMaxSize_v ) ) > >
 {
-   using ET1 = ElementType_t<T1>;
-   using ET2 = ElementType_t<T2>;
-
-   using Type = DynamicVector< MultTrait_t<ET1,ET2>, TransposeFlag_v<T2> >;
+   using Type = DynamicVector< MultTrait_t< ElementType_t<T1>, ElementType_t<T2> >
+                             , TransposeFlag_v<T2>
+                             , DefaultTag >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -3013,9 +3113,9 @@ struct DivTraitEval2< T1, T2
                                   ( Size_v<T1,0UL> == DefaultSize_v ) &&
                                   ( MaxSize_v<T1,0UL> == DefaultMaxSize_v ) > >
 {
-   using ET1 = ElementType_t<T1>;
-
-   using Type = DynamicVector< DivTrait_t<ET1,T2>, TransposeFlag_v<T1> >;
+   using Type = DynamicVector< DivTrait_t< ElementType_t<T1>, T2 >
+                             , TransposeFlag_v<T1>
+                             , DefaultTag >;
 };
 
 template< typename T1, typename T2 >
@@ -3027,10 +3127,9 @@ struct DivTraitEval2< T1, T2
                                   ( MaxSize_v<T1,0UL> == DefaultMaxSize_v ) &&
                                   ( MaxSize_v<T2,0UL> == DefaultMaxSize_v ) > >
 {
-   using ET1 = ElementType_t<T1>;
-   using ET2 = ElementType_t<T2>;
-
-   using Type = DynamicVector< DivTrait_t<ET1,ET2>, TransposeFlag_v<T1> >;
+   using Type = DynamicVector< DivTrait_t< ElementType_t<T1>, ElementType_t<T2> >
+                             , TransposeFlag_v<T1>
+                             , DefaultTag >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -3052,9 +3151,9 @@ struct UnaryMapTraitEval2< T, OP
                                        Size_v<T,0UL> == DefaultSize_v &&
                                        MaxSize_v<T,0UL> == DefaultMaxSize_v > >
 {
-   using ET = ElementType_t<T>;
-
-   using Type = DynamicVector< MapTrait_t<ET,OP>, TransposeFlag_v<T> >;
+   using Type = DynamicVector< MapTrait_t< ElementType_t<T>, OP >
+                             , TransposeFlag_v<T>
+                             , DefaultTag >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -3071,10 +3170,9 @@ struct BinaryMapTraitEval2< T1, T2, OP
                                         MaxSize_v<T1,0UL> == DefaultMaxSize_v &&
                                         MaxSize_v<T2,0UL> == DefaultMaxSize_v > >
 {
-   using ET1 = ElementType_t<T1>;
-   using ET2 = ElementType_t<T2>;
-
-   using Type = DynamicVector< MapTrait_t<ET1,ET2,OP>, TransposeFlag_v<T1> >;
+   using Type = DynamicVector< MapTrait_t< ElementType_t<T1>, ElementType_t<T2>, OP >
+                             , TransposeFlag_v<T1>
+                             , DefaultTag >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -3099,11 +3197,10 @@ struct PartialReduceTraitEval2< T, OP, RF
                                               MaxSize_v<T,1UL> == DefaultMaxSize_v ) > >
 {
    using ET = ElementType_t<T>;
-   using RT = decltype( std::declval<OP>()( std::declval<ET>(), std::declval<ET>() ) );
 
-   static constexpr bool TF = ( RF == columnwise );
-
-   using Type = DynamicVector<RT,TF>;
+   using Type = DynamicVector< decltype( std::declval<OP>()( std::declval<ET>(), std::declval<ET>() ) )
+                             , ( RF == columnwise )
+                             , DefaultTag >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -3128,7 +3225,9 @@ struct SolveTraitEval2< T1, T2
                                     ( MaxSize_v<T1,0UL> == DefaultMaxSize_v ) &&
                                     ( MaxSize_v<T2,0UL> == DefaultMaxSize_v ) > >
 {
-   using Type = DynamicVector< ElementType_t<T2>, TransposeFlag_v<T2> >;
+   using Type = DynamicVector< ElementType_t<T2>
+                             , TransposeFlag_v<T2>
+                             , DefaultTag >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -3144,10 +3243,10 @@ struct SolveTraitEval2< T1, T2
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T1, bool TF, typename T2 >
-struct HighType< DynamicVector<T1,TF>, DynamicVector<T2,TF> >
+template< typename T1, bool TF, typename Tag, typename T2 >
+struct HighType< DynamicVector<T1,TF,Tag>, DynamicVector<T2,TF,Tag> >
 {
-   using Type = DynamicVector< typename HighType<T1,T2>::Type, TF >;
+   using Type = DynamicVector< typename HighType<T1,T2>::Type, TF, Tag >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -3188,7 +3287,9 @@ struct SubvectorTraitEval2< VT, inf, inf
                                         Size_v<VT,0UL> == DefaultSize_v &&
                                         MaxSize_v<VT,0UL> == DefaultMaxSize_v > >
 {
-   using Type = DynamicVector< RemoveConst_t< ElementType_t<VT> >, TransposeFlag_v<VT> >;
+   using Type = DynamicVector< RemoveConst_t< ElementType_t<VT> >
+                             , TransposeFlag_v<VT>
+                             , DefaultTag >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -3210,7 +3311,9 @@ struct ElementsTraitEval2< VT, 0UL
                                        Size_v<VT,0UL> == DefaultSize_v &&
                                        MaxSize_v<VT,0UL> == DefaultMaxSize_v > >
 {
-   using Type = DynamicVector< RemoveConst_t< ElementType_t<VT> >, TransposeFlag_v<VT> >;
+   using Type = DynamicVector< RemoveConst_t< ElementType_t<VT> >
+                             , TransposeFlag_v<VT>
+                             , DefaultTag >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -3232,7 +3335,9 @@ struct RowTraitEval2< MT, I
                                   Size_v<MT,1UL> == DefaultSize_v &&
                                   MaxSize_v<MT,1UL> == DefaultMaxSize_v > >
 {
-   using Type = DynamicVector< RemoveConst_t< ElementType_t<MT> >, true >;
+   using Type = DynamicVector< RemoveConst_t< ElementType_t<MT> >
+                             , true
+                             , DefaultTag >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -3254,7 +3359,9 @@ struct ColumnTraitEval2< MT, I
                                      Size_v<MT,0UL> == DefaultSize_v &&
                                      MaxSize_v<MT,0UL> == DefaultMaxSize_v > >
 {
-   using Type = DynamicVector< RemoveConst_t< ElementType_t<MT> >, false >;
+   using Type = DynamicVector< RemoveConst_t< ElementType_t<MT> >
+                             , false
+                             , DefaultTag >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -3278,7 +3385,9 @@ struct BandTraitEval2< MT, I
                                    ( MaxSize_v<MT,0UL> == DefaultMaxSize_v ||
                                      MaxSize_v<MT,1UL> == DefaultMaxSize_v ) > >
 {
-   using Type = DynamicVector< RemoveConst_t< ElementType_t<MT> >, defaultTransposeFlag >;
+   using Type = DynamicVector< RemoveConst_t< ElementType_t<MT> >
+                             , defaultTransposeFlag
+                             , DefaultTag >;
 };
 /*! \endcond */
 //*************************************************************************************************
