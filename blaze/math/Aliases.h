@@ -492,6 +492,26 @@ using SIMDType_t = typename T::SIMDType;
 
 
 //*************************************************************************************************
+/*!\brief Alias declaration for nested \c TagType type definitions.
+// \ingroup aliases
+//
+// The TagType_t alias declaration provides a convenient shortcut to access the nested
+// \a TagType type definition of the given type \a T. The following code example shows
+// both ways to access the nested type definition:
+
+   \code
+   using Type1 = typename T::TagType;
+   using Type2 = TagType_t<T>;
+
+   BLAZE_CONSTRAINT_MUST_BE_STRICTLY_SAME_TYPE( Type1, Type2 );
+   \endcode
+*/
+template< typename T >
+using TagType_t = typename ResultType_t<T>::TagType;
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Alias declaration for nested \c TransposeType type definitions.
 // \ingroup aliases
 //
