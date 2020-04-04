@@ -127,7 +127,7 @@ namespace blaze {
 // parameters:
 
    \code
-   template< typename Type, bool SO >
+   template< typename Type, bool SO, typename Tag >
    class CompressedMatrix;
    \endcode
 
@@ -135,6 +135,7 @@ namespace blaze {
 //          any non-cv-qualified, non-reference, non-pointer element type.
 //  - SO  : specifies the storage order (blaze::rowMajor, blaze::columnMajor) of the matrix.
 //          The default value is blaze::rowMajor.
+//  - Tag : optional type parameter to tag the vector. The default type is \a blaze::DefaultTag.
 //
 // Inserting/accessing elements in a compressed matrix can be done by several alternative
 // functions. The following example demonstrates all options:
@@ -224,10 +225,11 @@ namespace blaze {
    F *= A * D;    // Multiplication assignment
    \endcode
 */
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
+template< typename Type   // Data type of the matrix
+        , bool SO         // Storage order
+        , typename Tag >  // Type tag
 class CompressedMatrix
-   : public SparseMatrix< CompressedMatrix<Type,SO>, SO >
+   : public SparseMatrix< CompressedMatrix<Type,SO,Tag>, SO >
 {
  private:
    //**Type definitions****************************************************************************
@@ -316,18 +318,24 @@ class CompressedMatrix
 
  public:
    //**Type definitions****************************************************************************
-   using This           = CompressedMatrix<Type,SO>;   //!< Type of this CompressedMatrix instance.
-   using BaseType       = SparseMatrix<This,SO>;       //!< Base type of this CompressedMatrix instance.
-   using ResultType     = This;                        //!< Result type for expression template evaluations.
-   using OppositeType   = CompressedMatrix<Type,!SO>;  //!< Result type with opposite storage order for expression template evaluations.
-   using TransposeType  = CompressedMatrix<Type,!SO>;  //!< Transpose type for expression template evaluations.
-   using ElementType    = Type;                        //!< Type of the compressed matrix elements.
-   using ReturnType     = const Type&;                 //!< Return type for expression template evaluations.
-   using CompositeType  = const This&;                 //!< Data type for composite expression templates.
-   using Reference      = MatrixAccessProxy<This>;     //!< Reference to a compressed matrix value.
-   using ConstReference = const Type&;                 //!< Reference to a constant compressed matrix value.
-   using Iterator       = Element*;                    //!< Iterator over non-constant elements.
-   using ConstIterator  = const Element*;              //!< Iterator over constant elements.
+   using This       = CompressedMatrix<Type,SO,Tag>;  //!< Type of this CompressedMatrix instance.
+   using BaseType   = SparseMatrix<This,SO>;          //!< Base type of this CompressedMatrix instance.
+   using ResultType = This;                           //!< Result type for expression template evaluations.
+
+   //! Result type with opposite storage order for expression template evaluations.
+   using OppositeType = CompressedMatrix<Type,!SO,Tag>;
+
+   //! Transpose type for expression template evaluations.
+   using TransposeType = CompressedMatrix<Type,!SO,Tag>;
+
+   using ElementType    = Type;                     //!< Type of the compressed matrix elements.
+   using TagType        = Tag;                      //!< Tag type of this CompressedMatrix instance.
+   using ReturnType     = const Type&;              //!< Return type for expression template evaluations.
+   using CompositeType  = const This&;              //!< Data type for composite expression templates.
+   using Reference      = MatrixAccessProxy<This>;  //!< Reference to a compressed matrix value.
+   using ConstReference = const Type&;              //!< Reference to a constant compressed matrix value.
+   using Iterator       = Element*;                 //!< Iterator over non-constant elements.
+   using ConstIterator  = const Element*;           //!< Iterator over constant elements.
    //**********************************************************************************************
 
    //**Rebind struct definition********************************************************************
@@ -335,7 +343,7 @@ class CompressedMatrix
    */
    template< typename NewType >  // Data type of the other matrix
    struct Rebind {
-      using Other = CompressedMatrix<NewType,SO>;  //!< The type of the other CompressedMatrix.
+      using Other = CompressedMatrix<NewType,SO,Tag>;  //!< The type of the other CompressedMatrix.
    };
    //**********************************************************************************************
 
@@ -345,7 +353,7 @@ class CompressedMatrix
    template< size_t NewM    // Number of rows of the other matrix
            , size_t NewN >  // Number of columns of the other matrix
    struct Resize {
-      using Other = CompressedMatrix<Type,SO>;  //!< The type of the other CompressedMatrix.
+      using Other = CompressedMatrix<Type,SO,Tag>;  //!< The type of the other CompressedMatrix.
    };
    //**********************************************************************************************
 
@@ -561,8 +569,10 @@ class CompressedMatrix
 //
 //=================================================================================================
 
-template< typename Type, bool SO >
-const Type CompressedMatrix<Type,SO>::zero_{};
+template< typename Type   // Data type of the matrix
+        , bool SO         // Storage order
+        , typename Tag >  // Type tag
+const Type CompressedMatrix<Type,SO,Tag>::zero_{};
 
 
 
@@ -576,9 +586,10 @@ const Type CompressedMatrix<Type,SO>::zero_{};
 //*************************************************************************************************
 /*!\brief The default constructor for CompressedMatrix.
 */
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-inline CompressedMatrix<Type,SO>::CompressedMatrix()
+template< typename Type   // Data type of the matrix
+        , bool SO         // Storage order
+        , typename Tag >  // Type tag
+inline CompressedMatrix<Type,SO,Tag>::CompressedMatrix()
    : m_       ( 0UL )      // The current number of rows of the compressed matrix
    , n_       ( 0UL )      // The current number of columns of the compressed matrix
    , capacity_( 0UL )      // The current capacity of the pointer array
@@ -596,9 +607,10 @@ inline CompressedMatrix<Type,SO>::CompressedMatrix()
 //
 // The matrix is initialized to the zero matrix and has no free capacity.
 */
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-inline CompressedMatrix<Type,SO>::CompressedMatrix( size_t m, size_t n )
+template< typename Type   // Data type of the matrix
+        , bool SO         // Storage order
+        , typename Tag >  // Type tag
+inline CompressedMatrix<Type,SO,Tag>::CompressedMatrix( size_t m, size_t n )
    : CompressedMatrix( m, n, Uninitialized() )
 {
    for( size_t i=1UL; i<2UL*m_+2UL; ++i )
@@ -616,9 +628,10 @@ inline CompressedMatrix<Type,SO>::CompressedMatrix( size_t m, size_t n )
 //
 // The matrix is initialized to the zero matrix.
 */
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-inline CompressedMatrix<Type,SO>::CompressedMatrix( size_t m, size_t n, size_t nonzeros )
+template< typename Type   // Data type of the matrix
+        , bool SO         // Storage order
+        , typename Tag >  // Type tag
+inline CompressedMatrix<Type,SO,Tag>::CompressedMatrix( size_t m, size_t n, size_t nonzeros )
    : CompressedMatrix( m, n, Uninitialized() )
 {
    begin_[0UL] = allocate<Element>( nonzeros );
@@ -640,9 +653,10 @@ inline CompressedMatrix<Type,SO>::CompressedMatrix( size_t m, size_t n, size_t n
 // row/column. Note that in case of a row-major matrix the given vector must have at least
 // \a m elements, in case of a column-major matrix at least \a n elements.
 */
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-CompressedMatrix<Type,SO>::CompressedMatrix( size_t m, size_t n, const std::vector<size_t>& nonzeros )
+template< typename Type   // Data type of the matrix
+        , bool SO         // Storage order
+        , typename Tag >  // Type tag
+CompressedMatrix<Type,SO,Tag>::CompressedMatrix( size_t m, size_t n, const std::vector<size_t>& nonzeros )
    : CompressedMatrix( m, n, Uninitialized() )
 {
    BLAZE_USER_ASSERT( nonzeros.size() == m, "Size of capacity vector and number of rows don't match" );
@@ -679,9 +693,10 @@ CompressedMatrix<Type,SO>::CompressedMatrix( size_t m, size_t n, const std::vect
 // initialized by the values of the given initializer list. Missing values are considered to
 // be default values.
 */
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-inline CompressedMatrix<Type,SO>::CompressedMatrix( initializer_list< initializer_list<Type> > list )
+template< typename Type   // Data type of the matrix
+        , bool SO         // Storage order
+        , typename Tag >  // Type tag
+inline CompressedMatrix<Type,SO,Tag>::CompressedMatrix( initializer_list< initializer_list<Type> > list )
    : CompressedMatrix( list.size(), determineColumns( list ), blaze::nonZeros( list ) )
 {
    size_t i( 0UL );
@@ -708,9 +723,10 @@ inline CompressedMatrix<Type,SO>::CompressedMatrix( initializer_list< initialize
 //
 // \param sm Sparse matrix to be copied.
 */
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-inline CompressedMatrix<Type,SO>::CompressedMatrix( const CompressedMatrix& sm )
+template< typename Type   // Data type of the matrix
+        , bool SO         // Storage order
+        , typename Tag >  // Type tag
+inline CompressedMatrix<Type,SO,Tag>::CompressedMatrix( const CompressedMatrix& sm )
    : CompressedMatrix( sm.m_, sm.n_, Uninitialized() )
 {
    const size_t nonzeros( sm.nonZeros() );
@@ -730,9 +746,10 @@ inline CompressedMatrix<Type,SO>::CompressedMatrix( const CompressedMatrix& sm )
 //
 // \param sm The compressed matrix to be moved into this instance.
 */
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-inline CompressedMatrix<Type,SO>::CompressedMatrix( CompressedMatrix&& sm ) noexcept
+template< typename Type   // Data type of the matrix
+        , bool SO         // Storage order
+        , typename Tag >  // Type tag
+inline CompressedMatrix<Type,SO,Tag>::CompressedMatrix( CompressedMatrix&& sm ) noexcept
    : m_       ( sm.m_ )         // The current number of rows of the compressed matrix
    , n_       ( sm.n_ )         // The current number of columns of the compressed matrix
    , capacity_( sm.capacity_ )  // The current capacity of the pointer array
@@ -753,11 +770,12 @@ inline CompressedMatrix<Type,SO>::CompressedMatrix( CompressedMatrix&& sm ) noex
 //
 // \param dm Dense matrix to be copied.
 */
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-template< typename MT    // Type of the foreign dense matrix
-        , bool SO2 >     // Storage order of the foreign dense matrix
-inline CompressedMatrix<Type,SO>::CompressedMatrix( const DenseMatrix<MT,SO2>& dm )
+template< typename Type   // Data type of the matrix
+        , bool SO         // Storage order
+        , typename Tag >  // Type tag
+template< typename MT     // Type of the foreign dense matrix
+        , bool SO2 >      // Storage order of the foreign dense matrix
+inline CompressedMatrix<Type,SO,Tag>::CompressedMatrix( const DenseMatrix<MT,SO2>& dm )
    : CompressedMatrix( (~dm).rows(), (~dm).columns() )
 {
    using blaze::assign;
@@ -772,11 +790,12 @@ inline CompressedMatrix<Type,SO>::CompressedMatrix( const DenseMatrix<MT,SO2>& d
 //
 // \param sm Sparse matrix to be copied.
 */
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-template< typename MT    // Type of the foreign compressed matrix
-        , bool SO2 >     // Storage order of the foreign compressed matrix
-inline CompressedMatrix<Type,SO>::CompressedMatrix( const SparseMatrix<MT,SO2>& sm )
+template< typename Type   // Data type of the matrix
+        , bool SO         // Storage order
+        , typename Tag >  // Type tag
+template< typename MT     // Type of the foreign compressed matrix
+        , bool SO2 >      // Storage order of the foreign compressed matrix
+inline CompressedMatrix<Type,SO,Tag>::CompressedMatrix( const SparseMatrix<MT,SO2>& sm )
    : CompressedMatrix( (~sm).rows(), (~sm).columns(), (~sm).nonZeros() )
 {
    using blaze::assign;
@@ -792,9 +811,10 @@ inline CompressedMatrix<Type,SO>::CompressedMatrix( const SparseMatrix<MT,SO2>& 
 // \param m The number of rows of the matrix.
 // \param n The number of columns of the matrix.
 */
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-inline CompressedMatrix<Type,SO>::CompressedMatrix( size_t m, size_t n, Uninitialized )
+template< typename Type   // Data type of the matrix
+        , bool SO         // Storage order
+        , typename Tag >  // Type tag
+inline CompressedMatrix<Type,SO,Tag>::CompressedMatrix( size_t m, size_t n, Uninitialized )
    : m_       ( m )                     // The current number of rows of the compressed matrix
    , n_       ( n )                     // The current number of columns of the compressed matrix
    , capacity_( m )                     // The current capacity of the pointer array
@@ -817,9 +837,10 @@ inline CompressedMatrix<Type,SO>::CompressedMatrix( size_t m, size_t n, Uninitia
 //*************************************************************************************************
 /*!\brief The destructor for CompressedMatrix.
 */
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-inline CompressedMatrix<Type,SO>::~CompressedMatrix()
+template< typename Type   // Data type of the matrix
+        , bool SO         // Storage order
+        , typename Tag >  // Type tag
+inline CompressedMatrix<Type,SO,Tag>::~CompressedMatrix()
 {
    if( begin_ != nullptr ) {
       deallocate( begin_[0UL] );
@@ -850,10 +871,11 @@ inline CompressedMatrix<Type,SO>::~CompressedMatrix()
 // case BLAZE_USER_ASSERT() is active. In contrast, the at() function is guaranteed to perform a
 // check of the given access indices.
 */
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-inline typename CompressedMatrix<Type,SO>::Reference
-   CompressedMatrix<Type,SO>::operator()( size_t i, size_t j ) noexcept
+template< typename Type   // Data type of the matrix
+        , bool SO         // Storage order
+        , typename Tag >  // Type tag
+inline typename CompressedMatrix<Type,SO,Tag>::Reference
+   CompressedMatrix<Type,SO,Tag>::operator()( size_t i, size_t j ) noexcept
 {
    BLAZE_USER_ASSERT( i < rows()   , "Invalid row access index"    );
    BLAZE_USER_ASSERT( j < columns(), "Invalid column access index" );
@@ -873,10 +895,11 @@ inline typename CompressedMatrix<Type,SO>::Reference
 // This function only performs an index check in case BLAZE_USER_ASSERT() is active. In contrast,
 // the at() function is guaranteed to perform a check of the given access indices.
 */
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-inline typename CompressedMatrix<Type,SO>::ConstReference
-   CompressedMatrix<Type,SO>::operator()( size_t i, size_t j ) const noexcept
+template< typename Type   // Data type of the matrix
+        , bool SO         // Storage order
+        , typename Tag >  // Type tag
+inline typename CompressedMatrix<Type,SO,Tag>::ConstReference
+   CompressedMatrix<Type,SO,Tag>::operator()( size_t i, size_t j ) const noexcept
 {
    BLAZE_USER_ASSERT( i < rows()   , "Invalid row access index"    );
    BLAZE_USER_ASSERT( j < columns(), "Invalid column access index" );
@@ -904,10 +927,11 @@ inline typename CompressedMatrix<Type,SO>::ConstReference
 // inserted into the compressed matrix. In contrast to the function call operator this function
 // always performs a check of the given access indices.
 */
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-inline typename CompressedMatrix<Type,SO>::Reference
-   CompressedMatrix<Type,SO>::at( size_t i, size_t j )
+template< typename Type   // Data type of the matrix
+        , bool SO         // Storage order
+        , typename Tag >  // Type tag
+inline typename CompressedMatrix<Type,SO,Tag>::Reference
+   CompressedMatrix<Type,SO,Tag>::at( size_t i, size_t j )
 {
    if( i >= m_ ) {
       BLAZE_THROW_OUT_OF_RANGE( "Invalid row access index" );
@@ -931,10 +955,11 @@ inline typename CompressedMatrix<Type,SO>::Reference
 // In contrast to the function call operator this function always performs a check of the given
 // access indices.
 */
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-inline typename CompressedMatrix<Type,SO>::ConstReference
-   CompressedMatrix<Type,SO>::at( size_t i, size_t j ) const
+template< typename Type   // Data type of the matrix
+        , bool SO         // Storage order
+        , typename Tag >  // Type tag
+inline typename CompressedMatrix<Type,SO,Tag>::ConstReference
+   CompressedMatrix<Type,SO,Tag>::at( size_t i, size_t j ) const
 {
    if( i >= m_ ) {
       BLAZE_THROW_OUT_OF_RANGE( "Invalid row access index" );
@@ -958,10 +983,11 @@ inline typename CompressedMatrix<Type,SO>::ConstReference
 // non-zero element of row \a i, in case the storage flag is set to \a columnMajor the function
 // returns an iterator to the first non-zero element of column \a i.
 */
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-inline typename CompressedMatrix<Type,SO>::Iterator
-   CompressedMatrix<Type,SO>::begin( size_t i ) noexcept
+template< typename Type   // Data type of the matrix
+        , bool SO         // Storage order
+        , typename Tag >  // Type tag
+inline typename CompressedMatrix<Type,SO,Tag>::Iterator
+   CompressedMatrix<Type,SO,Tag>::begin( size_t i ) noexcept
 {
    BLAZE_USER_ASSERT( i < m_, "Invalid compressed matrix row access index" );
    return begin_[i];
@@ -980,10 +1006,11 @@ inline typename CompressedMatrix<Type,SO>::Iterator
 // non-zero element of row \a i, in case the storage flag is set to \a columnMajor the function
 // returns an iterator to the first non-zero element of column \a i.
 */
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-inline typename CompressedMatrix<Type,SO>::ConstIterator
-   CompressedMatrix<Type,SO>::begin( size_t i ) const noexcept
+template< typename Type   // Data type of the matrix
+        , bool SO         // Storage order
+        , typename Tag >  // Type tag
+inline typename CompressedMatrix<Type,SO,Tag>::ConstIterator
+   CompressedMatrix<Type,SO,Tag>::begin( size_t i ) const noexcept
 {
    BLAZE_USER_ASSERT( i < m_, "Invalid compressed matrix row access index" );
    return begin_[i];
@@ -1002,10 +1029,11 @@ inline typename CompressedMatrix<Type,SO>::ConstIterator
 // non-zero element of row \a i, in case the storage flag is set to \a columnMajor the function
 // returns an iterator to the first non-zero element of column \a i.
 */
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-inline typename CompressedMatrix<Type,SO>::ConstIterator
-   CompressedMatrix<Type,SO>::cbegin( size_t i ) const noexcept
+template< typename Type   // Data type of the matrix
+        , bool SO         // Storage order
+        , typename Tag >  // Type tag
+inline typename CompressedMatrix<Type,SO,Tag>::ConstIterator
+   CompressedMatrix<Type,SO,Tag>::cbegin( size_t i ) const noexcept
 {
    BLAZE_USER_ASSERT( i < m_, "Invalid compressed matrix row access index" );
    return begin_[i];
@@ -1024,10 +1052,11 @@ inline typename CompressedMatrix<Type,SO>::ConstIterator
 // past the last non-zero element of row \a i, in case the storage flag is set to \a columnMajor
 // the function returns an iterator just past the last non-zero element of column \a i.
 */
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-inline typename CompressedMatrix<Type,SO>::Iterator
-   CompressedMatrix<Type,SO>::end( size_t i ) noexcept
+template< typename Type   // Data type of the matrix
+        , bool SO         // Storage order
+        , typename Tag >  // Type tag
+inline typename CompressedMatrix<Type,SO,Tag>::Iterator
+   CompressedMatrix<Type,SO,Tag>::end( size_t i ) noexcept
 {
    BLAZE_USER_ASSERT( i < m_, "Invalid compressed matrix row access index" );
    return end_[i];
@@ -1046,10 +1075,11 @@ inline typename CompressedMatrix<Type,SO>::Iterator
 // past the last non-zero element of row \a i, in case the storage flag is set to \a columnMajor
 // the function returns an iterator just past the last non-zero element of column \a i.
 */
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-inline typename CompressedMatrix<Type,SO>::ConstIterator
-   CompressedMatrix<Type,SO>::end( size_t i ) const noexcept
+template< typename Type   // Data type of the matrix
+        , bool SO         // Storage order
+        , typename Tag >  // Type tag
+inline typename CompressedMatrix<Type,SO,Tag>::ConstIterator
+   CompressedMatrix<Type,SO,Tag>::end( size_t i ) const noexcept
 {
    BLAZE_USER_ASSERT( i < m_, "Invalid compressed matrix row access index" );
    return end_[i];
@@ -1068,10 +1098,11 @@ inline typename CompressedMatrix<Type,SO>::ConstIterator
 // past the last non-zero element of row \a i, in case the storage flag is set to \a columnMajor
 // the function returns an iterator just past the last non-zero element of column \a i.
 */
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-inline typename CompressedMatrix<Type,SO>::ConstIterator
-   CompressedMatrix<Type,SO>::cend( size_t i ) const noexcept
+template< typename Type   // Data type of the matrix
+        , bool SO         // Storage order
+        , typename Tag >  // Type tag
+inline typename CompressedMatrix<Type,SO,Tag>::ConstIterator
+   CompressedMatrix<Type,SO,Tag>::cend( size_t i ) const noexcept
 {
    BLAZE_USER_ASSERT( i < m_, "Invalid compressed matrix row access index" );
    return end_[i];
@@ -1108,10 +1139,11 @@ inline typename CompressedMatrix<Type,SO>::ConstIterator
 // assigned the values from the given initializer list. Missing values are considered to
 // be default values.
 */
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-inline CompressedMatrix<Type,SO>&
-   CompressedMatrix<Type,SO>::operator=( initializer_list< initializer_list<Type> > list )
+template< typename Type   // Data type of the matrix
+        , bool SO         // Storage order
+        , typename Tag >  // Type tag
+inline CompressedMatrix<Type,SO,Tag>&
+   CompressedMatrix<Type,SO,Tag>::operator=( initializer_list< initializer_list<Type> > list )
 {
    using blaze::nonZeros;
 
@@ -1148,10 +1180,11 @@ inline CompressedMatrix<Type,SO>&
 // The compressed matrix is resized according to the given compressed matrix and initialized
 // as a copy of this matrix.
 */
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-inline CompressedMatrix<Type,SO>&
-   CompressedMatrix<Type,SO>::operator=( const CompressedMatrix& rhs )
+template< typename Type   // Data type of the matrix
+        , bool SO         // Storage order
+        , typename Tag >  // Type tag
+inline CompressedMatrix<Type,SO,Tag>&
+   CompressedMatrix<Type,SO,Tag>::operator=( const CompressedMatrix& rhs )
 {
    using std::swap;
 
@@ -1201,10 +1234,11 @@ inline CompressedMatrix<Type,SO>&
 // \param rhs The compressed matrix to be moved into this instance.
 // \return Reference to the assigned compressed matrix.
 */
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-inline CompressedMatrix<Type,SO>&
-   CompressedMatrix<Type,SO>::operator=( CompressedMatrix&& rhs ) noexcept
+template< typename Type   // Data type of the matrix
+        , bool SO         // Storage order
+        , typename Tag >  // Type tag
+inline CompressedMatrix<Type,SO,Tag>&
+   CompressedMatrix<Type,SO,Tag>::operator=( CompressedMatrix&& rhs ) noexcept
 {
    if( begin_ != nullptr ) {
       deallocate( begin_[0UL] );
@@ -1237,12 +1271,13 @@ inline CompressedMatrix<Type,SO>&
 // The matrix is resized according to the given \f$ M \times N \f$ matrix and initialized as a
 // copy of this matrix.
 */
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-template< typename MT    // Type of the right-hand side dense matrix
-        , bool SO2 >     // Storage order of the right-hand side dense matrix
-inline CompressedMatrix<Type,SO>&
-   CompressedMatrix<Type,SO>::operator=( const DenseMatrix<MT,SO2>& rhs )
+template< typename Type   // Data type of the matrix
+        , bool SO         // Storage order
+        , typename Tag >  // Type tag
+template< typename MT     // Type of the right-hand side dense matrix
+        , bool SO2 >      // Storage order of the right-hand side dense matrix
+inline CompressedMatrix<Type,SO,Tag>&
+   CompressedMatrix<Type,SO,Tag>::operator=( const DenseMatrix<MT,SO2>& rhs )
 {
    using blaze::assign;
 
@@ -1269,12 +1304,13 @@ inline CompressedMatrix<Type,SO>&
 // The matrix is resized according to the given \f$ M \times N \f$ matrix and initialized as a
 // copy of this matrix.
 */
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-template< typename MT    // Type of the right-hand side compressed matrix
-        , bool SO2 >     // Storage order of the right-hand side compressed matrix
-inline CompressedMatrix<Type,SO>&
-   CompressedMatrix<Type,SO>::operator=( const SparseMatrix<MT,SO2>& rhs )
+template< typename Type   // Data type of the matrix
+        , bool SO         // Storage order
+        , typename Tag >  // Type tag
+template< typename MT     // Type of the right-hand side compressed matrix
+        , bool SO2 >      // Storage order of the right-hand side compressed matrix
+inline CompressedMatrix<Type,SO,Tag>&
+   CompressedMatrix<Type,SO,Tag>::operator=( const SparseMatrix<MT,SO2>& rhs )
 {
    using blaze::assign;
 
@@ -1308,12 +1344,13 @@ inline CompressedMatrix<Type,SO>&
 // In case the current sizes of the two matrices don't match, a \a std::invalid_argument exception
 // is thrown.
 */
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-template< typename MT    // Type of the right-hand side matrix
-        , bool SO2 >     // Storage order of the right-hand side matrix
-inline CompressedMatrix<Type,SO>&
-   CompressedMatrix<Type,SO>::operator+=( const Matrix<MT,SO2>& rhs )
+template< typename Type   // Data type of the matrix
+        , bool SO         // Storage order
+        , typename Tag >  // Type tag
+template< typename MT     // Type of the right-hand side matrix
+        , bool SO2 >      // Storage order of the right-hand side matrix
+inline CompressedMatrix<Type,SO,Tag>&
+   CompressedMatrix<Type,SO,Tag>::operator+=( const Matrix<MT,SO2>& rhs )
 {
    using blaze::addAssign;
 
@@ -1340,11 +1377,13 @@ inline CompressedMatrix<Type,SO>&
 // In case the current sizes of the two matrices don't match, a \a std::invalid_argument exception
 // is thrown.
 */
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-template< typename MT    // Type of the right-hand side matrix
-        , bool SO2 >     // Storage order of the right-hand side matrix
-inline CompressedMatrix<Type,SO>& CompressedMatrix<Type,SO>::operator-=( const Matrix<MT,SO2>& rhs )
+template< typename Type   // Data type of the matrix
+        , bool SO         // Storage order
+        , typename Tag >  // Type tag
+template< typename MT     // Type of the right-hand side matrix
+        , bool SO2 >      // Storage order of the right-hand side matrix
+inline CompressedMatrix<Type,SO,Tag>&
+   CompressedMatrix<Type,SO,Tag>::operator-=( const Matrix<MT,SO2>& rhs )
 {
    using blaze::subAssign;
 
@@ -1372,12 +1411,13 @@ inline CompressedMatrix<Type,SO>& CompressedMatrix<Type,SO>::operator-=( const M
 // In case the current sizes of the two matrices don't match, a \a std::invalid_argument exception
 // is thrown.
 */
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-template< typename MT    // Type of the right-hand side dense matrix
-        , bool SO2 >     // Storage order of the right-hand side dense matrix
-inline CompressedMatrix<Type,SO>&
-   CompressedMatrix<Type,SO>::operator%=( const DenseMatrix<MT,SO2>& rhs )
+template< typename Type   // Data type of the matrix
+        , bool SO         // Storage order
+        , typename Tag >  // Type tag
+template< typename MT     // Type of the right-hand side dense matrix
+        , bool SO2 >      // Storage order of the right-hand side dense matrix
+inline CompressedMatrix<Type,SO,Tag>&
+   CompressedMatrix<Type,SO,Tag>::operator%=( const DenseMatrix<MT,SO2>& rhs )
 {
    using blaze::schurAssign;
 
@@ -1410,12 +1450,13 @@ inline CompressedMatrix<Type,SO>&
 // In case the current sizes of the two matrices don't match, a \a std::invalid_argument exception
 // is thrown.
 */
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-template< typename MT    // Type of the right-hand side sparse matrix
-        , bool SO2 >     // Storage order of the right-hand side sparse matrix
-inline CompressedMatrix<Type,SO>&
-   CompressedMatrix<Type,SO>::operator%=( const SparseMatrix<MT,SO2>& rhs )
+template< typename Type   // Data type of the matrix
+        , bool SO         // Storage order
+        , typename Tag >  // Type tag
+template< typename MT     // Type of the right-hand side sparse matrix
+        , bool SO2 >      // Storage order of the right-hand side sparse matrix
+inline CompressedMatrix<Type,SO,Tag>&
+   CompressedMatrix<Type,SO,Tag>::operator%=( const SparseMatrix<MT,SO2>& rhs )
 {
    if( (~rhs).rows() != m_ || (~rhs).columns() != n_ ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
@@ -1447,9 +1488,10 @@ inline CompressedMatrix<Type,SO>&
 //
 // \return The number of rows of the compressed matrix.
 */
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-inline size_t CompressedMatrix<Type,SO>::rows() const noexcept
+template< typename Type   // Data type of the matrix
+        , bool SO         // Storage order
+        , typename Tag >  // Type tag
+inline size_t CompressedMatrix<Type,SO,Tag>::rows() const noexcept
 {
    return m_;
 }
@@ -1461,9 +1503,10 @@ inline size_t CompressedMatrix<Type,SO>::rows() const noexcept
 //
 // \return The number of columns of the compressed matrix.
 */
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-inline size_t CompressedMatrix<Type,SO>::columns() const noexcept
+template< typename Type   // Data type of the matrix
+        , bool SO         // Storage order
+        , typename Tag >  // Type tag
+inline size_t CompressedMatrix<Type,SO,Tag>::columns() const noexcept
 {
    return n_;
 }
@@ -1475,9 +1518,10 @@ inline size_t CompressedMatrix<Type,SO>::columns() const noexcept
 //
 // \return The capacity of the compressed matrix.
 */
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-inline size_t CompressedMatrix<Type,SO>::capacity() const noexcept
+template< typename Type   // Data type of the matrix
+        , bool SO         // Storage order
+        , typename Tag >  // Type tag
+inline size_t CompressedMatrix<Type,SO,Tag>::capacity() const noexcept
 {
    if( begin_ != nullptr )
       return end_[m_] - begin_[0UL];
@@ -1497,9 +1541,10 @@ inline size_t CompressedMatrix<Type,SO>::capacity() const noexcept
 // in case the storage flag is set to \a columnMajor the function returns the capacity
 // of column \a i.
 */
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-inline size_t CompressedMatrix<Type,SO>::capacity( size_t i ) const noexcept
+template< typename Type   // Data type of the matrix
+        , bool SO         // Storage order
+        , typename Tag >  // Type tag
+inline size_t CompressedMatrix<Type,SO,Tag>::capacity( size_t i ) const noexcept
 {
    BLAZE_USER_ASSERT( i < rows(), "Invalid row access index" );
    return begin_[i+1UL] - begin_[i];
@@ -1512,9 +1557,10 @@ inline size_t CompressedMatrix<Type,SO>::capacity( size_t i ) const noexcept
 //
 // \return The number of non-zero elements in the compressed matrix.
 */
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-inline size_t CompressedMatrix<Type,SO>::nonZeros() const
+template< typename Type   // Data type of the matrix
+        , bool SO         // Storage order
+        , typename Tag >  // Type tag
+inline size_t CompressedMatrix<Type,SO,Tag>::nonZeros() const
 {
    size_t nonzeros( 0UL );
 
@@ -1537,9 +1583,10 @@ inline size_t CompressedMatrix<Type,SO>::nonZeros() const
 // elements in row \a i, in case the storage flag is set to \a columnMajor the function returns
 // the number of non-zero elements in column \a i.
 */
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-inline size_t CompressedMatrix<Type,SO>::nonZeros( size_t i ) const
+template< typename Type   // Data type of the matrix
+        , bool SO         // Storage order
+        , typename Tag >  // Type tag
+inline size_t CompressedMatrix<Type,SO,Tag>::nonZeros( size_t i ) const
 {
    BLAZE_USER_ASSERT( i < rows(), "Invalid row access index" );
    return end_[i] - begin_[i];
@@ -1552,9 +1599,10 @@ inline size_t CompressedMatrix<Type,SO>::nonZeros( size_t i ) const
 //
 // \return void
 */
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-inline void CompressedMatrix<Type,SO>::reset()
+template< typename Type   // Data type of the matrix
+        , bool SO         // Storage order
+        , typename Tag >  // Type tag
+inline void CompressedMatrix<Type,SO,Tag>::reset()
 {
    for( size_t i=0UL; i<m_; ++i )
       end_[i] = begin_[i];
@@ -1573,9 +1621,10 @@ inline void CompressedMatrix<Type,SO>::reset()
 // the storage order is set to \a columnMajor the function resets the values in column \a i.
 // Note that the capacity of the row/column remains unchanged.
 */
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-inline void CompressedMatrix<Type,SO>::reset( size_t i )
+template< typename Type   // Data type of the matrix
+        , bool SO         // Storage order
+        , typename Tag >  // Type tag
+inline void CompressedMatrix<Type,SO,Tag>::reset( size_t i )
 {
    BLAZE_USER_ASSERT( i < rows(), "Invalid row access index" );
    end_[i] = begin_[i];
@@ -1590,9 +1639,10 @@ inline void CompressedMatrix<Type,SO>::reset( size_t i )
 //
 // After the clear() function, the size of the compressed matrix is 0.
 */
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-inline void CompressedMatrix<Type,SO>::clear()
+template< typename Type   // Data type of the matrix
+        , bool SO         // Storage order
+        , typename Tag >  // Type tag
+inline void CompressedMatrix<Type,SO,Tag>::clear()
 {
    if( end_ != nullptr )
       end_[0UL] = end_[m_];
@@ -1617,9 +1667,10 @@ inline void CompressedMatrix<Type,SO>::clear()
 // potentially changes all matrix elements. In order to preserve the old matrix values, the
 // \a preserve flag can be set to \a true.
 */
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-void CompressedMatrix<Type,SO>::resize( size_t m, size_t n, bool preserve )
+template< typename Type   // Data type of the matrix
+        , bool SO         // Storage order
+        , typename Tag >  // Type tag
+void CompressedMatrix<Type,SO,Tag>::resize( size_t m, size_t n, bool preserve )
 {
    using std::swap;
 
@@ -1714,9 +1765,10 @@ void CompressedMatrix<Type,SO>::resize( size_t m, size_t n, bool preserve )
 // The current values of the matrix elements and the individual capacities of the matrix rows
 // are preserved.
 */
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-inline void CompressedMatrix<Type,SO>::reserve( size_t nonzeros )
+template< typename Type   // Data type of the matrix
+        , bool SO         // Storage order
+        , typename Tag >  // Type tag
+inline void CompressedMatrix<Type,SO,Tag>::reserve( size_t nonzeros )
 {
    if( nonzeros > capacity() )
       reserveElements( nonzeros );
@@ -1738,9 +1790,10 @@ inline void CompressedMatrix<Type,SO>::reserve( size_t nonzeros )
 // In case the storage order is set to \a columnMajor, the function reserves capacity for column
 // \a i and the index has to be in the range \f$[0..N-1]\f$.
 */
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-void CompressedMatrix<Type,SO>::reserve( size_t i, size_t nonzeros )
+template< typename Type   // Data type of the matrix
+        , bool SO         // Storage order
+        , typename Tag >  // Type tag
+void CompressedMatrix<Type,SO,Tag>::reserve( size_t i, size_t nonzeros )
 {
    using std::swap;
 
@@ -1810,9 +1863,10 @@ void CompressedMatrix<Type,SO>::reserve( size_t i, size_t nonzeros )
 // matrix) or columns (in case of a columnMajor matrix). Note that this function does not
 // remove the overall capacity but only reduces the capacity per row/column.
 */
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-inline void CompressedMatrix<Type,SO>::trim()
+template< typename Type   // Data type of the matrix
+        , bool SO         // Storage order
+        , typename Tag >  // Type tag
+inline void CompressedMatrix<Type,SO,Tag>::trim()
 {
    for( size_t i=0UL; i<m_; ++i )
       trim( i );
@@ -1831,9 +1885,10 @@ inline void CompressedMatrix<Type,SO>::trim()
 // or column (in case of a columnMajor matrix). The excessive capacity is assigned to the
 // subsequent row/column.
 */
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-inline void CompressedMatrix<Type,SO>::trim( size_t i )
+template< typename Type   // Data type of the matrix
+        , bool SO         // Storage order
+        , typename Tag >  // Type tag
+inline void CompressedMatrix<Type,SO,Tag>::trim( size_t i )
 {
    BLAZE_USER_ASSERT( i < rows(), "Invalid row access index" );
 
@@ -1853,9 +1908,10 @@ inline void CompressedMatrix<Type,SO>::trim( size_t i )
 // that in case a reallocation occurs, all iterators (including end() iterators), all pointers
 // and references to elements of this matrix are invalidated.
 */
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-inline void CompressedMatrix<Type,SO>::shrinkToFit()
+template< typename Type   // Data type of the matrix
+        , bool SO         // Storage order
+        , typename Tag >  // Type tag
+inline void CompressedMatrix<Type,SO,Tag>::shrinkToFit()
 {
    if( nonZeros() < capacity() ) {
       CompressedMatrix( *this ).swap( *this );
@@ -1870,9 +1926,10 @@ inline void CompressedMatrix<Type,SO>::shrinkToFit()
 // \param sm The compressed matrix to be swapped.
 // \return void
 */
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-inline void CompressedMatrix<Type,SO>::swap( CompressedMatrix& sm ) noexcept
+template< typename Type   // Data type of the matrix
+        , bool SO         // Storage order
+        , typename Tag >  // Type tag
+inline void CompressedMatrix<Type,SO,Tag>::swap( CompressedMatrix& sm ) noexcept
 {
    using std::swap;
 
@@ -1893,9 +1950,10 @@ inline void CompressedMatrix<Type,SO>::swap( CompressedMatrix& sm ) noexcept
 // This function calculates a new matrix capacity based on the current capacity of the sparse
 // matrix. Note that the new capacity is restricted to the interval \f$[7..M \cdot N]\f$.
 */
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-inline size_t CompressedMatrix<Type,SO>::extendCapacity() const noexcept
+template< typename Type   // Data type of the matrix
+        , bool SO         // Storage order
+        , typename Tag >  // Type tag
+inline size_t CompressedMatrix<Type,SO,Tag>::extendCapacity() const noexcept
 {
    size_t nonzeros( 2UL*capacity()+1UL );
    nonzeros = blaze::max( nonzeros, 7UL   );
@@ -1913,9 +1971,10 @@ inline size_t CompressedMatrix<Type,SO>::extendCapacity() const noexcept
 // \param nonzeros The number of matrix elements to be reserved.
 // \return void
 */
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-void CompressedMatrix<Type,SO>::reserveElements( size_t nonzeros )
+template< typename Type   // Data type of the matrix
+        , bool SO         // Storage order
+        , typename Tag >  // Type tag
+void CompressedMatrix<Type,SO,Tag>::reserveElements( size_t nonzeros )
 {
    using std::swap;
 
@@ -1951,10 +2010,11 @@ void CompressedMatrix<Type,SO>::reserveElements( size_t nonzeros )
 // This function performs a down-cast of the given iterator to base elements to an iterator to
 // derived elements.
 */
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-inline typename CompressedMatrix<Type,SO>::Iterator
-   CompressedMatrix<Type,SO>::castDown( IteratorBase it ) const noexcept
+template< typename Type   // Data type of the matrix
+        , bool SO         // Storage order
+        , typename Tag >  // Type tag
+inline typename CompressedMatrix<Type,SO,Tag>::Iterator
+   CompressedMatrix<Type,SO,Tag>::castDown( IteratorBase it ) const noexcept
 {
    return static_cast<Iterator>( it );
 }
@@ -1969,10 +2029,11 @@ inline typename CompressedMatrix<Type,SO>::Iterator
 // This function performs an up-cast of the given iterator to derived elements to an iterator
 // to base elements.
 */
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-inline typename CompressedMatrix<Type,SO>::IteratorBase
-   CompressedMatrix<Type,SO>::castUp( Iterator it ) const noexcept
+template< typename Type   // Data type of the matrix
+        , bool SO         // Storage order
+        , typename Tag >  // Type tag
+inline typename CompressedMatrix<Type,SO,Tag>::IteratorBase
+   CompressedMatrix<Type,SO,Tag>::castUp( Iterator it ) const noexcept
 {
    return static_cast<IteratorBase>( it );
 }
@@ -1999,10 +2060,11 @@ inline typename CompressedMatrix<Type,SO>::IteratorBase
 // matrix already contains an element with row index \a i and column index \a j its value is
 // modified, else a new element with the given \a value is inserted.
 */
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-inline typename CompressedMatrix<Type,SO>::Iterator
-   CompressedMatrix<Type,SO>::set( size_t i, size_t j, const Type& value )
+template< typename Type   // Data type of the matrix
+        , bool SO         // Storage order
+        , typename Tag >  // Type tag
+inline typename CompressedMatrix<Type,SO,Tag>::Iterator
+   CompressedMatrix<Type,SO,Tag>::set( size_t i, size_t j, const Type& value )
 {
    BLAZE_USER_ASSERT( i < rows()   , "Invalid row access index"    );
    BLAZE_USER_ASSERT( j < columns(), "Invalid column access index" );
@@ -2031,10 +2093,11 @@ inline typename CompressedMatrix<Type,SO>::Iterator
 // are not allowed. In case the compressed matrix already contains an element with row index \a i
 // and column index \a j, a \a std::invalid_argument exception is thrown.
 */
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-inline typename CompressedMatrix<Type,SO>::Iterator
-   CompressedMatrix<Type,SO>::insert( size_t i, size_t j, const Type& value )
+template< typename Type   // Data type of the matrix
+        , bool SO         // Storage order
+        , typename Tag >  // Type tag
+inline typename CompressedMatrix<Type,SO,Tag>::Iterator
+   CompressedMatrix<Type,SO,Tag>::insert( size_t i, size_t j, const Type& value )
 {
    BLAZE_USER_ASSERT( i < rows()   , "Invalid row access index"    );
    BLAZE_USER_ASSERT( j < columns(), "Invalid column access index" );
@@ -2060,10 +2123,11 @@ inline typename CompressedMatrix<Type,SO>::Iterator
 // \return Iterator to the newly inserted element.
 // \exception std::invalid_argument Invalid compressed matrix access index.
 */
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-typename CompressedMatrix<Type,SO>::Iterator
-   CompressedMatrix<Type,SO>::insert( Iterator pos, size_t i, size_t j, const Type& value )
+template< typename Type   // Data type of the matrix
+        , bool SO         // Storage order
+        , typename Tag >  // Type tag
+typename CompressedMatrix<Type,SO,Tag>::Iterator
+   CompressedMatrix<Type,SO,Tag>::insert( Iterator pos, size_t i, size_t j, const Type& value )
 {
    using std::swap;
 
@@ -2182,9 +2246,10 @@ typename CompressedMatrix<Type,SO>::Iterator
 // \note Although append() does not allocate new memory, it still invalidates all iterators
 // returned by the end() functions!
 */
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-inline void CompressedMatrix<Type,SO>::append( size_t i, size_t j, const Type& value, bool check )
+template< typename Type   // Data type of the matrix
+        , bool SO         // Storage order
+        , typename Tag >  // Type tag
+inline void CompressedMatrix<Type,SO,Tag>::append( size_t i, size_t j, const Type& value, bool check )
 {
    BLAZE_USER_ASSERT( i < m_, "Invalid row access index"    );
    BLAZE_USER_ASSERT( j < n_, "Invalid column access index" );
@@ -2214,9 +2279,10 @@ inline void CompressedMatrix<Type,SO>::append( size_t i, size_t j, const Type& v
 // \note Although finalize() does not allocate new memory, it still invalidates all iterators
 // returned by the end() functions!
 */
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-inline void CompressedMatrix<Type,SO>::finalize( size_t i )
+template< typename Type   // Data type of the matrix
+        , bool SO         // Storage order
+        , typename Tag >  // Type tag
+inline void CompressedMatrix<Type,SO,Tag>::finalize( size_t i )
 {
    BLAZE_USER_ASSERT( i < m_, "Invalid row access index" );
 
@@ -2244,9 +2310,10 @@ inline void CompressedMatrix<Type,SO>::finalize( size_t i )
 //
 // This function erases an element from the compressed matrix.
 */
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-inline void CompressedMatrix<Type,SO>::erase( size_t i, size_t j )
+template< typename Type   // Data type of the matrix
+        , bool SO         // Storage order
+        , typename Tag >  // Type tag
+inline void CompressedMatrix<Type,SO,Tag>::erase( size_t i, size_t j )
 {
    BLAZE_USER_ASSERT( i < rows()   , "Invalid row access index"    );
    BLAZE_USER_ASSERT( j < columns(), "Invalid column access index" );
@@ -2269,10 +2336,11 @@ inline void CompressedMatrix<Type,SO>::erase( size_t i, size_t j )
 // to \a rowMajor the function erases an element from row \a i, in case the storage flag is set
 // to \a columnMajor the function erases an element from column \a i.
 */
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-inline typename CompressedMatrix<Type,SO>::Iterator
-   CompressedMatrix<Type,SO>::erase( size_t i, Iterator pos )
+template< typename Type   // Data type of the matrix
+        , bool SO         // Storage order
+        , typename Tag >  // Type tag
+inline typename CompressedMatrix<Type,SO,Tag>::Iterator
+   CompressedMatrix<Type,SO,Tag>::erase( size_t i, Iterator pos )
 {
    BLAZE_USER_ASSERT( i < rows(), "Invalid row access index" );
    BLAZE_USER_ASSERT( pos >= begin_[i] && pos <= end_[i], "Invalid compressed matrix iterator" );
@@ -2297,10 +2365,11 @@ inline typename CompressedMatrix<Type,SO>::Iterator
 // is set to \a rowMajor the function erases a range of elements from row \a i, in case the storage
 // flag is set to \a columnMajor the function erases a range of elements from column \a i.
 */
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-inline typename CompressedMatrix<Type,SO>::Iterator
-   CompressedMatrix<Type,SO>::erase( size_t i, Iterator first, Iterator last )
+template< typename Type   // Data type of the matrix
+        , bool SO         // Storage order
+        , typename Tag >  // Type tag
+inline typename CompressedMatrix<Type,SO,Tag>::Iterator
+   CompressedMatrix<Type,SO,Tag>::erase( size_t i, Iterator first, Iterator last )
 {
    BLAZE_USER_ASSERT( i < rows()   , "Invalid row access index" );
    BLAZE_USER_ASSERT( first <= last, "Invalid iterator range"   );
@@ -2337,9 +2406,10 @@ inline typename CompressedMatrix<Type,SO>::Iterator
 // with the same value. The attempt to use an impure predicate leads to undefined behavior!
 */
 template< typename Type    // Data type of the matrix
-        , bool SO >        // Storage order
+        , bool SO          // Storage order
+        , typename Tag >   // Type tag
 template< typename Pred >  // Type of the unary predicate
-inline void CompressedMatrix<Type,SO>::erase( Pred predicate )
+inline void CompressedMatrix<Type,SO,Tag>::erase( Pred predicate )
 {
    for( size_t i=0UL; i<m_; ++i ) {
       end_[i] = castDown( std::remove_if( castUp( begin_[i] ), castUp( end_[i] ),
@@ -2379,9 +2449,10 @@ inline void CompressedMatrix<Type,SO>::erase( Pred predicate )
 // with the same value. The attempt to use an impure predicate leads to undefined behavior!
 */
 template< typename Type    // Data type of the matrix
-        , bool SO >        // Storage order
+        , bool SO          // Storage order
+        , typename Tag >   // Type tag
 template< typename Pred >  // Type of the unary predicate
-inline void CompressedMatrix<Type,SO>::erase( size_t i, Iterator first, Iterator last, Pred predicate )
+inline void CompressedMatrix<Type,SO,Tag>::erase( size_t i, Iterator first, Iterator last, Pred predicate )
 {
    BLAZE_USER_ASSERT( i < rows()   , "Invalid row access index" );
    BLAZE_USER_ASSERT( first <= last, "Invalid iterator range"   );
@@ -2421,10 +2492,11 @@ inline void CompressedMatrix<Type,SO>::erase( size_t i, Iterator first, Iterator
 // to invalidation due to inserting operations via the function call operator, the set()
 // function or the insert() function!
 */
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-inline typename CompressedMatrix<Type,SO>::Iterator
-   CompressedMatrix<Type,SO>::find( size_t i, size_t j )
+template< typename Type   // Data type of the matrix
+        , bool SO         // Storage order
+        , typename Tag >  // Type tag
+inline typename CompressedMatrix<Type,SO,Tag>::Iterator
+   CompressedMatrix<Type,SO,Tag>::find( size_t i, size_t j )
 {
    return const_cast<Iterator>( const_cast<const This&>( *this ).find( i, j ) );
 }
@@ -2446,10 +2518,11 @@ inline typename CompressedMatrix<Type,SO>::Iterator
 // to invalidation due to inserting operations via the function call operator, the set()
 // function or the insert() function!
 */
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-inline typename CompressedMatrix<Type,SO>::ConstIterator
-   CompressedMatrix<Type,SO>::find( size_t i, size_t j ) const
+template< typename Type   // Data type of the matrix
+        , bool SO         // Storage order
+        , typename Tag >  // Type tag
+inline typename CompressedMatrix<Type,SO,Tag>::ConstIterator
+   CompressedMatrix<Type,SO,Tag>::find( size_t i, size_t j ) const
 {
    const ConstIterator pos( lowerBound( i, j ) );
    if( pos != end_[i] && pos->index_ == j )
@@ -2474,10 +2547,11 @@ inline typename CompressedMatrix<Type,SO>::ConstIterator
 // iterator is subject to invalidation due to inserting operations via the function call operator,
 // the set() function or the insert() function!
 */
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-inline typename CompressedMatrix<Type,SO>::Iterator
-   CompressedMatrix<Type,SO>::lowerBound( size_t i, size_t j )
+template< typename Type   // Data type of the matrix
+        , bool SO         // Storage order
+        , typename Tag >  // Type tag
+inline typename CompressedMatrix<Type,SO,Tag>::Iterator
+   CompressedMatrix<Type,SO,Tag>::lowerBound( size_t i, size_t j )
 {
    return const_cast<Iterator>( const_cast<const This&>( *this ).lowerBound( i, j ) );
 }
@@ -2499,10 +2573,11 @@ inline typename CompressedMatrix<Type,SO>::Iterator
 // iterator is subject to invalidation due to inserting operations via the function call operator,
 // the set() function or the insert() function!
 */
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-inline typename CompressedMatrix<Type,SO>::ConstIterator
-   CompressedMatrix<Type,SO>::lowerBound( size_t i, size_t j ) const
+template< typename Type   // Data type of the matrix
+        , bool SO         // Storage order
+        , typename Tag >  // Type tag
+inline typename CompressedMatrix<Type,SO,Tag>::ConstIterator
+   CompressedMatrix<Type,SO,Tag>::lowerBound( size_t i, size_t j ) const
 {
    BLAZE_USER_ASSERT( i < rows(), "Invalid row access index" );
    return std::lower_bound( begin_[i], end_[i], j,
@@ -2529,10 +2604,11 @@ inline typename CompressedMatrix<Type,SO>::ConstIterator
 // iterator is subject to invalidation due to inserting operations via the function call operator,
 // the set() function or or the insert() function!
 */
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-inline typename CompressedMatrix<Type,SO>::Iterator
-   CompressedMatrix<Type,SO>::upperBound( size_t i, size_t j )
+template< typename Type   // Data type of the matrix
+        , bool SO         // Storage order
+        , typename Tag >  // Type tag
+inline typename CompressedMatrix<Type,SO,Tag>::Iterator
+   CompressedMatrix<Type,SO,Tag>::upperBound( size_t i, size_t j )
 {
    return const_cast<Iterator>( const_cast<const This&>( *this ).upperBound( i, j ) );
 }
@@ -2554,10 +2630,11 @@ inline typename CompressedMatrix<Type,SO>::Iterator
 // iterator is subject to invalidation due to inserting operations via the function call operator,
 // the set() function or the insert() function!
 */
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-inline typename CompressedMatrix<Type,SO>::ConstIterator
-   CompressedMatrix<Type,SO>::upperBound( size_t i, size_t j ) const
+template< typename Type   // Data type of the matrix
+        , bool SO         // Storage order
+        , typename Tag >  // Type tag
+inline typename CompressedMatrix<Type,SO,Tag>::ConstIterator
+   CompressedMatrix<Type,SO,Tag>::upperBound( size_t i, size_t j ) const
 {
    BLAZE_USER_ASSERT( i < rows(), "Invalid row access index" );
    return std::upper_bound( begin_[i], end_[i], j,
@@ -2582,9 +2659,10 @@ inline typename CompressedMatrix<Type,SO>::ConstIterator
 //
 // \return Reference to the transposed matrix.
 */
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-inline CompressedMatrix<Type,SO>& CompressedMatrix<Type,SO>::transpose()
+template< typename Type   // Data type of the matrix
+        , bool SO         // Storage order
+        , typename Tag >  // Type tag
+inline CompressedMatrix<Type,SO,Tag>& CompressedMatrix<Type,SO,Tag>::transpose()
 {
    CompressedMatrix tmp( trans( *this ) );
    swap( tmp );
@@ -2598,9 +2676,10 @@ inline CompressedMatrix<Type,SO>& CompressedMatrix<Type,SO>::transpose()
 //
 // \return Reference to the transposed matrix.
 */
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-inline CompressedMatrix<Type,SO>& CompressedMatrix<Type,SO>::ctranspose()
+template< typename Type   // Data type of the matrix
+        , bool SO         // Storage order
+        , typename Tag >  // Type tag
+inline CompressedMatrix<Type,SO,Tag>& CompressedMatrix<Type,SO,Tag>::ctranspose()
 {
    CompressedMatrix tmp( ctrans( *this ) );
    swap( tmp );
@@ -2627,9 +2706,10 @@ inline CompressedMatrix<Type,SO>& CompressedMatrix<Type,SO>::ctranspose()
    \endcode
 */
 template< typename Type     // Data type of the matrix
-        , bool SO >         // Storage order
+        , bool SO           // Storage order
+        , typename Tag >    // Type tag
 template< typename Other >  // Data type of the scalar value
-inline CompressedMatrix<Type,SO>& CompressedMatrix<Type,SO>::scale( const Other& scalar )
+inline CompressedMatrix<Type,SO,Tag>& CompressedMatrix<Type,SO,Tag>::scale( const Other& scalar )
 {
    for( size_t i=0UL; i<m_; ++i )
       for( auto element=begin_[i]; element!=end_[i]; ++element )
@@ -2659,9 +2739,10 @@ inline CompressedMatrix<Type,SO>& CompressedMatrix<Type,SO>::scale( const Other&
 // to optimize the evaluation.
 */
 template< typename Type     // Data type of the matrix
-        , bool SO >         // Storage order
+        , bool SO           // Storage order
+        , typename Tag >    // Type tag
 template< typename Other >  // Data type of the foreign expression
-inline bool CompressedMatrix<Type,SO>::canAlias( const Other* alias ) const noexcept
+inline bool CompressedMatrix<Type,SO,Tag>::canAlias( const Other* alias ) const noexcept
 {
    return static_cast<const void*>( this ) == static_cast<const void*>( alias );
 }
@@ -2679,9 +2760,10 @@ inline bool CompressedMatrix<Type,SO>::canAlias( const Other* alias ) const noex
 // to optimize the evaluation.
 */
 template< typename Type     // Data type of the matrix
-        , bool SO >         // Storage order
+        , bool SO           // Storage order
+        , typename Tag >    // Type tag
 template< typename Other >  // Data type of the foreign expression
-inline bool CompressedMatrix<Type,SO>::isAliased( const Other* alias ) const noexcept
+inline bool CompressedMatrix<Type,SO,Tag>::isAliased( const Other* alias ) const noexcept
 {
    return static_cast<const void*>( this ) == static_cast<const void*>( alias );
 }
@@ -2698,9 +2780,10 @@ inline bool CompressedMatrix<Type,SO>::isAliased( const Other* alias ) const noe
 // function additionally provides runtime information (as for instance the current number of
 // rows and/or columns of the matrix).
 */
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-inline bool CompressedMatrix<Type,SO>::canSMPAssign() const noexcept
+template< typename Type   // Data type of the matrix
+        , bool SO         // Storage order
+        , typename Tag >  // Type tag
+inline bool CompressedMatrix<Type,SO,Tag>::canSMPAssign() const noexcept
 {
    return false;
 }
@@ -2718,11 +2801,12 @@ inline bool CompressedMatrix<Type,SO>::canSMPAssign() const noexcept
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-template< typename MT    // Type of the right-hand side dense matrix
-        , bool SO2 >     // Storage order of the right-hand side dense matrix
-inline void CompressedMatrix<Type,SO>::assign( const DenseMatrix<MT,SO2>& rhs )
+template< typename Type   // Data type of the matrix
+        , bool SO         // Storage order
+        , typename Tag >  // Type tag
+template< typename MT     // Type of the right-hand side dense matrix
+        , bool SO2 >      // Storage order of the right-hand side dense matrix
+inline void CompressedMatrix<Type,SO,Tag>::assign( const DenseMatrix<MT,SO2>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
@@ -2780,10 +2864,11 @@ inline void CompressedMatrix<Type,SO>::assign( const DenseMatrix<MT,SO2>& rhs )
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-template< typename MT >  // Type of the right-hand side compressed matrix
-inline void CompressedMatrix<Type,SO>::assign( const SparseMatrix<MT,SO>& rhs )
+template< typename Type   // Data type of the matrix
+        , bool SO         // Storage order
+        , typename Tag >  // Type tag
+template< typename MT >   // Type of the right-hand side compressed matrix
+inline void CompressedMatrix<Type,SO,Tag>::assign( const SparseMatrix<MT,SO>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
@@ -2812,10 +2897,11 @@ inline void CompressedMatrix<Type,SO>::assign( const SparseMatrix<MT,SO>& rhs )
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-template< typename MT >  // Type of the right-hand side compressed matrix
-inline void CompressedMatrix<Type,SO>::assign( const SparseMatrix<MT,!SO>& rhs )
+template< typename Type   // Data type of the matrix
+        , bool SO         // Storage order
+        , typename Tag >  // Type tag
+template< typename MT >   // Type of the right-hand side compressed matrix
+inline void CompressedMatrix<Type,SO,Tag>::assign( const SparseMatrix<MT,!SO>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
 
@@ -2856,11 +2942,12 @@ inline void CompressedMatrix<Type,SO>::assign( const SparseMatrix<MT,!SO>& rhs )
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-template< typename MT    // Type of the right-hand side dense matrix
-        , bool SO2 >     // Storage order of the right-hand side dense matrix
-inline void CompressedMatrix<Type,SO>::addAssign( const DenseMatrix<MT,SO2>& rhs )
+template< typename Type   // Data type of the matrix
+        , bool SO         // Storage order
+        , typename Tag >  // Type tag
+template< typename MT     // Type of the right-hand side dense matrix
+        , bool SO2 >      // Storage order of the right-hand side dense matrix
+inline void CompressedMatrix<Type,SO,Tag>::addAssign( const DenseMatrix<MT,SO2>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
@@ -2882,11 +2969,12 @@ inline void CompressedMatrix<Type,SO>::addAssign( const DenseMatrix<MT,SO2>& rhs
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-template< typename MT    // Type of the right-hand side compressed matrix
-        , bool SO2 >     // Storage order of the right-hand side compressed matrix
-inline void CompressedMatrix<Type,SO>::addAssign( const SparseMatrix<MT,SO2>& rhs )
+template< typename Type   // Data type of the matrix
+        , bool SO         // Storage order
+        , typename Tag >  // Type tag
+template< typename MT     // Type of the right-hand side compressed matrix
+        , bool SO2 >      // Storage order of the right-hand side compressed matrix
+inline void CompressedMatrix<Type,SO,Tag>::addAssign( const SparseMatrix<MT,SO2>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
@@ -2908,11 +2996,12 @@ inline void CompressedMatrix<Type,SO>::addAssign( const SparseMatrix<MT,SO2>& rh
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-template< typename MT    // Type of the right-hand side dense matrix
-        , bool SO2 >     // Storage order of the right-hand side dense matrix
-inline void CompressedMatrix<Type,SO>::subAssign( const DenseMatrix<MT,SO2>& rhs )
+template< typename Type   // Data type of the matrix
+        , bool SO         // Storage order
+        , typename Tag >  // Type tag
+template< typename MT     // Type of the right-hand side dense matrix
+        , bool SO2 >      // Storage order of the right-hand side dense matrix
+inline void CompressedMatrix<Type,SO,Tag>::subAssign( const DenseMatrix<MT,SO2>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
@@ -2934,11 +3023,12 @@ inline void CompressedMatrix<Type,SO>::subAssign( const DenseMatrix<MT,SO2>& rhs
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-template< typename MT    // Type of the right-hand side compressed matrix
-        , bool SO2 >     // Storage order of the right-hand compressed matrix
-inline void CompressedMatrix<Type,SO>::subAssign( const SparseMatrix<MT,SO2>& rhs )
+template< typename Type   // Data type of the matrix
+        , bool SO         // Storage order
+        , typename Tag >  // Type tag
+template< typename MT     // Type of the right-hand side compressed matrix
+        , bool SO2 >      // Storage order of the right-hand compressed matrix
+inline void CompressedMatrix<Type,SO,Tag>::subAssign( const SparseMatrix<MT,SO2>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
@@ -2960,11 +3050,12 @@ inline void CompressedMatrix<Type,SO>::subAssign( const SparseMatrix<MT,SO2>& rh
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-template< typename MT    // Type of the right-hand side dense matrix
-        , bool SO2 >     // Storage order of the right-hand side dense matrix
-inline void CompressedMatrix<Type,SO>::schurAssign( const DenseMatrix<MT,SO2>& rhs )
+template< typename Type   // Data type of the matrix
+        , bool SO         // Storage order
+        , typename Tag >  // Type tag
+template< typename MT     // Type of the right-hand side dense matrix
+        , bool SO2 >      // Storage order of the right-hand side dense matrix
+inline void CompressedMatrix<Type,SO,Tag>::schurAssign( const DenseMatrix<MT,SO2>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
@@ -3000,9 +3091,10 @@ inline void CompressedMatrix<Type,SO>::schurAssign( const DenseMatrix<MT,SO2>& r
 // This specialization of CompressedMatrix adapts the class template to the requirements of
 // column-major matrices.
 */
-template< typename Type >  // Data type of the matrix
-class CompressedMatrix<Type,true>
-   : public SparseMatrix< CompressedMatrix<Type,true>, true >
+template< typename Type   // Data type of the matrix
+        , typename Tag >  // Type tag
+class CompressedMatrix<Type,true,Tag>
+   : public SparseMatrix< CompressedMatrix<Type,true,Tag>, true >
 {
  private:
    //**Type definitions****************************************************************************
@@ -3087,18 +3179,24 @@ class CompressedMatrix<Type,true>
 
  public:
    //**Type definitions****************************************************************************
-   using This           = CompressedMatrix<Type,true>;   //!< Type of this CompressedMatrix instance.
-   using BaseType       = SparseMatrix<This,true>;       //!< Base type of this CompressedMatrix instance.
-   using ResultType     = This;                          //!< Result type for expression template evaluations.
-   using OppositeType   = CompressedMatrix<Type,false>;  //!< Result type with opposite storage order for expression template evaluations.
-   using TransposeType  = CompressedMatrix<Type,false>;  //!< Transpose type for expression template evaluations.
-   using ElementType    = Type;                          //!< Type of the compressed matrix elements.
-   using ReturnType     = const Type&;                   //!< Return type for expression template evaluations.
-   using CompositeType  = const This&;                   //!< Data type for composite expression templates.
-   using Reference      = MatrixAccessProxy<This>;       //!< Reference to a non-constant matrix value.
-   using ConstReference = const Type&;                   //!< Reference to a constant matrix value.
-   using Iterator       = Element*;                      //!< Iterator over non-constant elements.
-   using ConstIterator  = const Element*;                //!< Iterator over constant elements.
+   using This       = CompressedMatrix<Type,true,Tag>;  //!< Type of this CompressedMatrix instance.
+   using BaseType   = SparseMatrix<This,true>;          //!< Base type of this CompressedMatrix instance.
+   using ResultType = This;                             //!< Result type for expression template evaluations.
+
+   //! Result type with opposite storage order for expression template evaluations.
+   using OppositeType = CompressedMatrix<Type,false,Tag>;
+
+   //! Transpose type for expression template evaluations.
+   using TransposeType = CompressedMatrix<Type,false,Tag>;
+
+   using ElementType    = Type;                     //!< Type of the compressed matrix elements.
+   using TagType        = Tag;                      //!< Tag type of this CompressedMatrix instance.
+   using ReturnType     = const Type&;              //!< Return type for expression template evaluations.
+   using CompositeType  = const This&;              //!< Data type for composite expression templates.
+   using Reference      = MatrixAccessProxy<This>;  //!< Reference to a non-constant matrix value.
+   using ConstReference = const Type&;              //!< Reference to a constant matrix value.
+   using Iterator       = Element*;                 //!< Iterator over non-constant elements.
+   using ConstIterator  = const Element*;           //!< Iterator over constant elements.
    //**********************************************************************************************
 
    //**Rebind struct definition********************************************************************
@@ -3106,7 +3204,7 @@ class CompressedMatrix<Type,true>
    */
    template< typename NewType >  // Data type of the other matrix
    struct Rebind {
-      using Other = CompressedMatrix<NewType,true>;  //!< The type of the other CompressedMatrix.
+      using Other = CompressedMatrix<NewType,true,Tag>;  //!< The type of the other CompressedMatrix.
    };
    //**********************************************************************************************
 
@@ -3116,7 +3214,7 @@ class CompressedMatrix<Type,true>
    template< size_t NewM    // Number of rows of the other matrix
            , size_t NewN >  // Number of columns of the other matrix
    struct Resize {
-      using Other = CompressedMatrix<Type,true>;  //!< The type of the other CompressedMatrix.
+      using Other = CompressedMatrix<Type,true,Tag>;  //!< The type of the other CompressedMatrix.
    };
    //**********************************************************************************************
 
@@ -3331,8 +3429,9 @@ class CompressedMatrix<Type,true>
 //
 //=================================================================================================
 
-template< typename Type >
-const Type CompressedMatrix<Type,true>::zero_{};
+template< typename Type   // Data type of the matrix
+        , typename Tag >  // Type tag
+const Type CompressedMatrix<Type,true,Tag>::zero_{};
 
 
 
@@ -3347,8 +3446,9 @@ const Type CompressedMatrix<Type,true>::zero_{};
 /*! \cond BLAZE_INTERNAL */
 /*!\brief The default constructor for CompressedMatrix.
 */
-template< typename Type >  // Data type of the matrix
-inline CompressedMatrix<Type,true>::CompressedMatrix()
+template< typename Type   // Data type of the matrix
+        , typename Tag >  // Type tag
+inline CompressedMatrix<Type,true,Tag>::CompressedMatrix()
    : m_       ( 0UL )      // The current number of rows of the compressed matrix
    , n_       ( 0UL )      // The current number of columns of the compressed matrix
    , capacity_( 0UL )      // The current capacity of the pointer array
@@ -3368,8 +3468,9 @@ inline CompressedMatrix<Type,true>::CompressedMatrix()
 //
 // The matrix is initialized to the zero matrix and has no free capacity.
 */
-template< typename Type >  // Data type of the matrix
-inline CompressedMatrix<Type,true>::CompressedMatrix( size_t m, size_t n )
+template< typename Type   // Data type of the matrix
+        , typename Tag >  // Type tag
+inline CompressedMatrix<Type,true,Tag>::CompressedMatrix( size_t m, size_t n )
    : CompressedMatrix( m, n, Uninitialized() )
 {
    for( size_t j=1UL; j<2UL*n_+2UL; ++j )
@@ -3389,8 +3490,9 @@ inline CompressedMatrix<Type,true>::CompressedMatrix( size_t m, size_t n )
 //
 // The matrix is initialized to the zero matrix.
 */
-template< typename Type >  // Data type of the matrix
-inline CompressedMatrix<Type,true>::CompressedMatrix( size_t m, size_t n, size_t nonzeros )
+template< typename Type   // Data type of the matrix
+        , typename Tag >  // Type tag
+inline CompressedMatrix<Type,true,Tag>::CompressedMatrix( size_t m, size_t n, size_t nonzeros )
    : CompressedMatrix( m, n, Uninitialized() )
 {
    begin_[0UL] = allocate<Element>( nonzeros );
@@ -3413,8 +3515,9 @@ inline CompressedMatrix<Type,true>::CompressedMatrix( size_t m, size_t n, size_t
 // The matrix is initialized to the zero matrix and will have the specified capacity in each
 // column. Note that the given vector must have at least \a n elements.
 */
-template< typename Type >  // Data type of the matrix
-CompressedMatrix<Type,true>::CompressedMatrix( size_t m, size_t n, const std::vector<size_t>& nonzeros )
+template< typename Type   // Data type of the matrix
+        , typename Tag >  // Type tag
+CompressedMatrix<Type,true,Tag>::CompressedMatrix( size_t m, size_t n, const std::vector<size_t>& nonzeros )
    : CompressedMatrix( m, n, Uninitialized() )
 {
    BLAZE_USER_ASSERT( nonzeros.size() == n, "Size of capacity vector and number of columns don't match" );
@@ -3453,8 +3556,9 @@ CompressedMatrix<Type,true>::CompressedMatrix( size_t m, size_t n, const std::ve
 // initialized by the values of the given initializer list. Missing values are considered to
 // be default values.
 */
-template< typename Type >  // Data type of the matrix
-inline CompressedMatrix<Type,true>::CompressedMatrix( initializer_list< initializer_list<Type> > list )
+template< typename Type   // Data type of the matrix
+        , typename Tag >  // Type tag
+inline CompressedMatrix<Type,true,Tag>::CompressedMatrix( initializer_list< initializer_list<Type> > list )
    : CompressedMatrix( list.size(), determineColumns( list ), blaze::nonZeros( list ) )
 {
    for( size_t j=0UL; j<n_; ++j )
@@ -3488,8 +3592,9 @@ inline CompressedMatrix<Type,true>::CompressedMatrix( initializer_list< initiali
 //
 // \param sm Sparse matrix to be copied.
 */
-template< typename Type >  // Data type of the matrix
-inline CompressedMatrix<Type,true>::CompressedMatrix( const CompressedMatrix& sm )
+template< typename Type   // Data type of the matrix
+        , typename Tag >  // Type tag
+inline CompressedMatrix<Type,true,Tag>::CompressedMatrix( const CompressedMatrix& sm )
    : CompressedMatrix( sm.m_, sm.n_, Uninitialized() )
 {
    const size_t nonzeros( sm.nonZeros() );
@@ -3511,8 +3616,9 @@ inline CompressedMatrix<Type,true>::CompressedMatrix( const CompressedMatrix& sm
 //
 // \param sm The compressed matrix to be moved into this instance.
 */
-template< typename Type >  // Data type of the matrix
-inline CompressedMatrix<Type,true>::CompressedMatrix( CompressedMatrix&& sm ) noexcept
+template< typename Type   // Data type of the matrix
+        , typename Tag >  // Type tag
+inline CompressedMatrix<Type,true,Tag>::CompressedMatrix( CompressedMatrix&& sm ) noexcept
    : m_       ( sm.m_ )         // The current number of rows of the compressed matrix
    , n_       ( sm.n_ )         // The current number of columns of the compressed matrix
    , capacity_( sm.capacity_ )  // The current capacity of the pointer array
@@ -3535,10 +3641,11 @@ inline CompressedMatrix<Type,true>::CompressedMatrix( CompressedMatrix&& sm ) no
 //
 // \param dm Dense matrix to be copied.
 */
-template< typename Type >  // Data type of the matrix
-template< typename MT      // Type of the foreign dense matrix
-        , bool SO >        // Storage order of the foreign dense matrix
-inline CompressedMatrix<Type,true>::CompressedMatrix( const DenseMatrix<MT,SO>& dm )
+template< typename Type   // Data type of the matrix
+        , typename Tag >  // Type tag
+template< typename MT     // Type of the foreign dense matrix
+        , bool SO >       // Storage order of the foreign dense matrix
+inline CompressedMatrix<Type,true,Tag>::CompressedMatrix( const DenseMatrix<MT,SO>& dm )
    : CompressedMatrix( (~dm).rows(), (~dm).columns() )
 {
    using blaze::assign;
@@ -3555,10 +3662,11 @@ inline CompressedMatrix<Type,true>::CompressedMatrix( const DenseMatrix<MT,SO>& 
 //
 // \param sm Sparse matrix to be copied.
 */
-template< typename Type >  // Data type of the matrix
-template< typename MT      // Type of the foreign compressed matrix
-        , bool SO >        // Storage order of the foreign compressed matrix
-inline CompressedMatrix<Type,true>::CompressedMatrix( const SparseMatrix<MT,SO>& sm )
+template< typename Type   // Data type of the matrix
+        , typename Tag >  // Type tag
+template< typename MT     // Type of the foreign compressed matrix
+        , bool SO >       // Storage order of the foreign compressed matrix
+inline CompressedMatrix<Type,true,Tag>::CompressedMatrix( const SparseMatrix<MT,SO>& sm )
    : CompressedMatrix( (~sm).rows(), (~sm).columns(), (~sm).nonZeros() )
 {
    using blaze::assign;
@@ -3576,8 +3684,9 @@ inline CompressedMatrix<Type,true>::CompressedMatrix( const SparseMatrix<MT,SO>&
 // \param m The number of rows of the matrix.
 // \param n The number of columns of the matrix.
 */
-template< typename Type >  // Data type of the matrix
-inline CompressedMatrix<Type,true>::CompressedMatrix( size_t m, size_t n, Uninitialized )
+template< typename Type   // Data type of the matrix
+        , typename Tag >  // Type tag
+inline CompressedMatrix<Type,true,Tag>::CompressedMatrix( size_t m, size_t n, Uninitialized )
    : m_       ( m )                     // The current number of rows of the compressed matrix
    , n_       ( n )                     // The current number of columns of the compressed matrix
    , capacity_( n )                     // The current capacity of the pointer array
@@ -3602,8 +3711,9 @@ inline CompressedMatrix<Type,true>::CompressedMatrix( size_t m, size_t n, Uninit
 /*! \cond BLAZE_INTERNAL */
 /*!\brief The destructor for CompressedMatrix.
 */
-template< typename Type >  // Data type of the matrix
-inline CompressedMatrix<Type,true>::~CompressedMatrix()
+template< typename Type   // Data type of the matrix
+        , typename Tag >  // Type tag
+inline CompressedMatrix<Type,true,Tag>::~CompressedMatrix()
 {
    if( begin_ != nullptr ) {
       deallocate( begin_[0UL] );
@@ -3636,9 +3746,10 @@ inline CompressedMatrix<Type,true>::~CompressedMatrix()
 // case BLAZE_USER_ASSERT() is active. In contrast, the at() function is guaranteed to perform a
 // check of the given access indices.
 */
-template< typename Type >  // Data type of the matrix
-inline typename CompressedMatrix<Type,true>::Reference
-   CompressedMatrix<Type,true>::operator()( size_t i, size_t j ) noexcept
+template< typename Type   // Data type of the matrix
+        , typename Tag >  // Type tag
+inline typename CompressedMatrix<Type,true,Tag>::Reference
+   CompressedMatrix<Type,true,Tag>::operator()( size_t i, size_t j ) noexcept
 {
    BLAZE_USER_ASSERT( i < rows()   , "Invalid row access index"    );
    BLAZE_USER_ASSERT( j < columns(), "Invalid column access index" );
@@ -3660,9 +3771,10 @@ inline typename CompressedMatrix<Type,true>::Reference
 // This function only performs an index check in case BLAZE_USER_ASSERT() is active. In contrast,
 // the at() function is guaranteed to perform a check of the given access indices.
 */
-template< typename Type >  // Data type of the matrix
-inline typename CompressedMatrix<Type,true>::ConstReference
-   CompressedMatrix<Type,true>::operator()( size_t i, size_t j ) const noexcept
+template< typename Type   // Data type of the matrix
+        , typename Tag >  // Type tag
+inline typename CompressedMatrix<Type,true,Tag>::ConstReference
+   CompressedMatrix<Type,true,Tag>::operator()( size_t i, size_t j ) const noexcept
 {
    BLAZE_USER_ASSERT( i < rows()   , "Invalid row access index"    );
    BLAZE_USER_ASSERT( j < columns(), "Invalid column access index" );
@@ -3692,9 +3804,10 @@ inline typename CompressedMatrix<Type,true>::ConstReference
 // inserted into the compressed matrix. In contrast to the subscript operator this function
 // always performs a check of the given access indices.
 */
-template< typename Type >  // Data type of the matrix
-inline typename CompressedMatrix<Type,true>::Reference
-   CompressedMatrix<Type,true>::at( size_t i, size_t j )
+template< typename Type   // Data type of the matrix
+        , typename Tag >  // Type tag
+inline typename CompressedMatrix<Type,true,Tag>::Reference
+   CompressedMatrix<Type,true,Tag>::at( size_t i, size_t j )
 {
    if( i >= m_ ) {
       BLAZE_THROW_OUT_OF_RANGE( "Invalid row access index" );
@@ -3720,9 +3833,10 @@ inline typename CompressedMatrix<Type,true>::Reference
 // In contrast to the subscript operator this function always performs a check of the given
 // access indices.
 */
-template< typename Type >  // Data type of the matrix
-inline typename CompressedMatrix<Type,true>::ConstReference
-   CompressedMatrix<Type,true>::at( size_t i, size_t j ) const
+template< typename Type   // Data type of the matrix
+        , typename Tag >  // Type tag
+inline typename CompressedMatrix<Type,true,Tag>::ConstReference
+   CompressedMatrix<Type,true,Tag>::at( size_t i, size_t j ) const
 {
    if( i >= m_ ) {
       BLAZE_THROW_OUT_OF_RANGE( "Invalid row access index" );
@@ -3743,9 +3857,10 @@ inline typename CompressedMatrix<Type,true>::ConstReference
 // \param j The column index.
 // \return Iterator to the first non-zero element of column \a j.
 */
-template< typename Type >  // Data type of the matrix
-inline typename CompressedMatrix<Type,true>::Iterator
-   CompressedMatrix<Type,true>::begin( size_t j ) noexcept
+template< typename Type   // Data type of the matrix
+        , typename Tag >  // Type tag
+inline typename CompressedMatrix<Type,true,Tag>::Iterator
+   CompressedMatrix<Type,true,Tag>::begin( size_t j ) noexcept
 {
    BLAZE_USER_ASSERT( j < n_, "Invalid compressed matrix column access index" );
    return begin_[j];
@@ -3761,9 +3876,10 @@ inline typename CompressedMatrix<Type,true>::Iterator
 // \param j The column index.
 // \return Iterator to the first non-zero element of column \a j.
 */
-template< typename Type >  // Data type of the matrix
-inline typename CompressedMatrix<Type,true>::ConstIterator
-   CompressedMatrix<Type,true>::begin( size_t j ) const noexcept
+template< typename Type   // Data type of the matrix
+        , typename Tag >  // Type tag
+inline typename CompressedMatrix<Type,true,Tag>::ConstIterator
+   CompressedMatrix<Type,true,Tag>::begin( size_t j ) const noexcept
 {
    BLAZE_USER_ASSERT( j < n_, "Invalid compressed matrix column access index" );
    return begin_[j];
@@ -3779,9 +3895,10 @@ inline typename CompressedMatrix<Type,true>::ConstIterator
 // \param j The column index.
 // \return Iterator to the first non-zero element of column \a j.
 */
-template< typename Type >  // Data type of the matrix
-inline typename CompressedMatrix<Type,true>::ConstIterator
-   CompressedMatrix<Type,true>::cbegin( size_t j ) const noexcept
+template< typename Type   // Data type of the matrix
+        , typename Tag >  // Type tag
+inline typename CompressedMatrix<Type,true,Tag>::ConstIterator
+   CompressedMatrix<Type,true,Tag>::cbegin( size_t j ) const noexcept
 {
    BLAZE_USER_ASSERT( j < n_, "Invalid compressed matrix column access index" );
    return begin_[j];
@@ -3797,9 +3914,10 @@ inline typename CompressedMatrix<Type,true>::ConstIterator
 // \param j The column index.
 // \return Iterator just past the last non-zero element of column \a j.
 */
-template< typename Type >  // Data type of the matrix
-inline typename CompressedMatrix<Type,true>::Iterator
-   CompressedMatrix<Type,true>::end( size_t j ) noexcept
+template< typename Type   // Data type of the matrix
+        , typename Tag >  // Type tag
+inline typename CompressedMatrix<Type,true,Tag>::Iterator
+   CompressedMatrix<Type,true,Tag>::end( size_t j ) noexcept
 {
    BLAZE_USER_ASSERT( j < n_, "Invalid compressed matrix column access index" );
    return end_[j];
@@ -3815,9 +3933,10 @@ inline typename CompressedMatrix<Type,true>::Iterator
 // \param j The column index.
 // \return Iterator just past the last non-zero element of column \a j.
 */
-template< typename Type >  // Data type of the matrix
-inline typename CompressedMatrix<Type,true>::ConstIterator
-   CompressedMatrix<Type,true>::end( size_t j ) const noexcept
+template< typename Type   // Data type of the matrix
+        , typename Tag >  // Type tag
+inline typename CompressedMatrix<Type,true,Tag>::ConstIterator
+   CompressedMatrix<Type,true,Tag>::end( size_t j ) const noexcept
 {
    BLAZE_USER_ASSERT( j < n_, "Invalid compressed matrix column access index" );
    return end_[j];
@@ -3833,9 +3952,10 @@ inline typename CompressedMatrix<Type,true>::ConstIterator
 // \param j The column index.
 // \return Iterator just past the last non-zero element of column \a j.
 */
-template< typename Type >  // Data type of the matrix
-inline typename CompressedMatrix<Type,true>::ConstIterator
-   CompressedMatrix<Type,true>::cend( size_t j ) const noexcept
+template< typename Type   // Data type of the matrix
+        , typename Tag >  // Type tag
+inline typename CompressedMatrix<Type,true,Tag>::ConstIterator
+   CompressedMatrix<Type,true,Tag>::cend( size_t j ) const noexcept
 {
    BLAZE_USER_ASSERT( j < n_, "Invalid compressed matrix column access index" );
    return end_[j];
@@ -3874,9 +3994,10 @@ inline typename CompressedMatrix<Type,true>::ConstIterator
 // assigned the values from the given initializer list. Missing values are considered to
 // be default values.
 */
-template< typename Type >  // Data type of the matrix
-inline CompressedMatrix<Type,true>&
-   CompressedMatrix<Type,true>::operator=( initializer_list< initializer_list<Type> > list )
+template< typename Type   // Data type of the matrix
+        , typename Tag >  // Type tag
+inline CompressedMatrix<Type,true,Tag>&
+   CompressedMatrix<Type,true,Tag>::operator=( initializer_list< initializer_list<Type> > list )
 {
    using blaze::nonZeros;
 
@@ -3920,9 +4041,10 @@ inline CompressedMatrix<Type,true>&
 // The compressed matrix is resized according to the given compressed matrix and initialized
 // as a copy of this matrix.
 */
-template< typename Type >  // Data type of the matrix
-inline CompressedMatrix<Type,true>&
-   CompressedMatrix<Type,true>::operator=( const CompressedMatrix& rhs )
+template< typename Type   // Data type of the matrix
+        , typename Tag >  // Type tag
+inline CompressedMatrix<Type,true,Tag>&
+   CompressedMatrix<Type,true,Tag>::operator=( const CompressedMatrix& rhs )
 {
    using std::swap;
 
@@ -3974,9 +4096,10 @@ inline CompressedMatrix<Type,true>&
 // \param rhs The compressed matrix to be moved into this instance.
 // \return Reference to the assigned compressed matrix.
 */
-template< typename Type >  // Data type of the matrix
-inline CompressedMatrix<Type,true>&
-   CompressedMatrix<Type,true>::operator=( CompressedMatrix&& rhs ) noexcept
+template< typename Type   // Data type of the matrix
+        , typename Tag >  // Type tag
+inline CompressedMatrix<Type,true,Tag>&
+   CompressedMatrix<Type,true,Tag>::operator=( CompressedMatrix&& rhs ) noexcept
 {
    if( begin_ != nullptr ) {
       deallocate( begin_[0UL] );
@@ -4011,11 +4134,12 @@ inline CompressedMatrix<Type,true>&
 // The matrix is resized according to the given \f$ M \times N \f$ matrix and initialized as a
 // copy of this matrix.
 */
-template< typename Type >  // Data type of the matrix
-template< typename MT      // Type of the right-hand side dense matrix
-        , bool SO >        // Storage order of the right-hand side dense matrix
-inline CompressedMatrix<Type,true>&
-   CompressedMatrix<Type,true>::operator=( const DenseMatrix<MT,SO>& rhs )
+template< typename Type   // Data type of the matrix
+        , typename Tag >  // Type tag
+template< typename MT     // Type of the right-hand side dense matrix
+        , bool SO >       // Storage order of the right-hand side dense matrix
+inline CompressedMatrix<Type,true,Tag>&
+   CompressedMatrix<Type,true,Tag>::operator=( const DenseMatrix<MT,SO>& rhs )
 {
    using blaze::assign;
 
@@ -4044,11 +4168,12 @@ inline CompressedMatrix<Type,true>&
 // The matrix is resized according to the given \f$ M \times N \f$ matrix and initialized as a
 // copy of this matrix.
 */
-template< typename Type >  // Data type of the matrix
-template< typename MT      // Type of the right-hand side compressed matrix
-        , bool SO >        // Storage order of the right-hand side compressed matrix
-inline CompressedMatrix<Type,true>&
-   CompressedMatrix<Type,true>::operator=( const SparseMatrix<MT,SO>& rhs )
+template< typename Type   // Data type of the matrix
+        , typename Tag >  // Type tag
+template< typename MT     // Type of the right-hand side compressed matrix
+        , bool SO >       // Storage order of the right-hand side compressed matrix
+inline CompressedMatrix<Type,true,Tag>&
+   CompressedMatrix<Type,true,Tag>::operator=( const SparseMatrix<MT,SO>& rhs )
 {
    using blaze::assign;
 
@@ -4084,10 +4209,12 @@ inline CompressedMatrix<Type,true>&
 // In case the current sizes of the two matrices don't match, a \a std::invalid_argument exception
 // is thrown.
 */
-template< typename Type >  // Data type of the matrix
-template< typename MT      // Type of the right-hand side matrix
-        , bool SO >        // Storage order of the right-hand side matrix
-inline CompressedMatrix<Type,true>& CompressedMatrix<Type,true>::operator+=( const Matrix<MT,SO>& rhs )
+template< typename Type   // Data type of the matrix
+        , typename Tag >  // Type tag
+template< typename MT     // Type of the right-hand side matrix
+        , bool SO >       // Storage order of the right-hand side matrix
+inline CompressedMatrix<Type,true,Tag>&
+   CompressedMatrix<Type,true,Tag>::operator+=( const Matrix<MT,SO>& rhs )
 {
    using blaze::addAssign;
 
@@ -4116,10 +4243,12 @@ inline CompressedMatrix<Type,true>& CompressedMatrix<Type,true>::operator+=( con
 // In case the current sizes of the two matrices don't match, a \a std::invalid_argument exception
 // is thrown.
 */
-template< typename Type >  // Data type of the matrix
-template< typename MT      // Type of the right-hand side matrix
-        , bool SO >        // Storage order of the right-hand side matrix
-inline CompressedMatrix<Type,true>& CompressedMatrix<Type,true>::operator-=( const Matrix<MT,SO>& rhs )
+template< typename Type   // Data type of the matrix
+        , typename Tag >  // Type tag
+template< typename MT     // Type of the right-hand side matrix
+        , bool SO >       // Storage order of the right-hand side matrix
+inline CompressedMatrix<Type,true,Tag>&
+   CompressedMatrix<Type,true,Tag>::operator-=( const Matrix<MT,SO>& rhs )
 {
    using blaze::subAssign;
 
@@ -4149,11 +4278,12 @@ inline CompressedMatrix<Type,true>& CompressedMatrix<Type,true>::operator-=( con
 // In case the current sizes of the two matrices don't match, a \a std::invalid_argument exception
 // is thrown.
 */
-template< typename Type >  // Data type of the matrix
-template< typename MT      // Type of the right-hand side dense matrix
-        , bool SO >        // Storage order of the right-hand side dense matrix
-inline CompressedMatrix<Type,true>&
-   CompressedMatrix<Type,true>::operator%=( const DenseMatrix<MT,SO>& rhs )
+template< typename Type   // Data type of the matrix
+        , typename Tag >  // Type tag
+template< typename MT     // Type of the right-hand side dense matrix
+        , bool SO >       // Storage order of the right-hand side dense matrix
+inline CompressedMatrix<Type,true,Tag>&
+   CompressedMatrix<Type,true,Tag>::operator%=( const DenseMatrix<MT,SO>& rhs )
 {
    using blaze::schurAssign;
 
@@ -4188,11 +4318,12 @@ inline CompressedMatrix<Type,true>&
 // In case the current sizes of the two matrices don't match, a \a std::invalid_argument exception
 // is thrown.
 */
-template< typename Type >  // Data type of the matrix
-template< typename MT      // Type of the right-hand side sparse matrix
-        , bool SO >        // Storage order of the right-hand side sparse matrix
-inline CompressedMatrix<Type,true>&
-   CompressedMatrix<Type,true>::operator%=( const SparseMatrix<MT,SO>& rhs )
+template< typename Type   // Data type of the matrix
+        , typename Tag >  // Type tag
+template< typename MT     // Type of the right-hand side sparse matrix
+        , bool SO >       // Storage order of the right-hand side sparse matrix
+inline CompressedMatrix<Type,true,Tag>&
+   CompressedMatrix<Type,true,Tag>::operator%=( const SparseMatrix<MT,SO>& rhs )
 {
    if( (~rhs).rows() != m_ || (~rhs).columns() != n_ ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
@@ -4226,8 +4357,9 @@ inline CompressedMatrix<Type,true>&
 //
 // \return The number of rows of the compressed matrix.
 */
-template< typename Type >  // Data type of the matrix
-inline size_t CompressedMatrix<Type,true>::rows() const noexcept
+template< typename Type   // Data type of the matrix
+        , typename Tag >  // Type tag
+inline size_t CompressedMatrix<Type,true,Tag>::rows() const noexcept
 {
    return m_;
 }
@@ -4241,8 +4373,9 @@ inline size_t CompressedMatrix<Type,true>::rows() const noexcept
 //
 // \return The number of columns of the compressed matrix.
 */
-template< typename Type >  // Data type of the matrix
-inline size_t CompressedMatrix<Type,true>::columns() const noexcept
+template< typename Type   // Data type of the matrix
+        , typename Tag >  // Type tag
+inline size_t CompressedMatrix<Type,true,Tag>::columns() const noexcept
 {
    return n_;
 }
@@ -4256,8 +4389,9 @@ inline size_t CompressedMatrix<Type,true>::columns() const noexcept
 //
 // \return The capacity of the compressed matrix.
 */
-template< typename Type >  // Data type of the matrix
-inline size_t CompressedMatrix<Type,true>::capacity() const noexcept
+template< typename Type   // Data type of the matrix
+        , typename Tag >  // Type tag
+inline size_t CompressedMatrix<Type,true,Tag>::capacity() const noexcept
 {
    if( begin_ != nullptr )
       return end_[n_] - begin_[0UL];
@@ -4274,8 +4408,9 @@ inline size_t CompressedMatrix<Type,true>::capacity() const noexcept
 // \param j The index of the column.
 // \return The current capacity of column \a j.
 */
-template< typename Type >  // Data type of the matrix
-inline size_t CompressedMatrix<Type,true>::capacity( size_t j ) const noexcept
+template< typename Type   // Data type of the matrix
+        , typename Tag >  // Type tag
+inline size_t CompressedMatrix<Type,true,Tag>::capacity( size_t j ) const noexcept
 {
    BLAZE_USER_ASSERT( j < columns(), "Invalid column access index" );
    return begin_[j+1UL] - begin_[j];
@@ -4290,8 +4425,9 @@ inline size_t CompressedMatrix<Type,true>::capacity( size_t j ) const noexcept
 //
 // \return The number of non-zero elements in the compressed matrix.
 */
-template< typename Type >  // Data type of the matrix
-inline size_t CompressedMatrix<Type,true>::nonZeros() const
+template< typename Type   // Data type of the matrix
+        , typename Tag >  // Type tag
+inline size_t CompressedMatrix<Type,true,Tag>::nonZeros() const
 {
    size_t nonzeros( 0UL );
 
@@ -4311,8 +4447,9 @@ inline size_t CompressedMatrix<Type,true>::nonZeros() const
 // \param j The index of the column.
 // \return The number of non-zero elements of column \a j.
 */
-template< typename Type >  // Data type of the matrix
-inline size_t CompressedMatrix<Type,true>::nonZeros( size_t j ) const
+template< typename Type   // Data type of the matrix
+        , typename Tag >  // Type tag
+inline size_t CompressedMatrix<Type,true,Tag>::nonZeros( size_t j ) const
 {
    BLAZE_USER_ASSERT( j < columns(), "Invalid column access index" );
    return end_[j] - begin_[j];
@@ -4327,8 +4464,9 @@ inline size_t CompressedMatrix<Type,true>::nonZeros( size_t j ) const
 //
 // \return void
 */
-template< typename Type >  // Data type of the matrix
-inline void CompressedMatrix<Type,true>::reset()
+template< typename Type   // Data type of the matrix
+        , typename Tag >  // Type tag
+inline void CompressedMatrix<Type,true,Tag>::reset()
 {
    for( size_t j=0UL; j<n_; ++j )
       end_[j] = begin_[j];
@@ -4347,8 +4485,9 @@ inline void CompressedMatrix<Type,true>::reset()
 // This function reset the values in the specified column to their default value. Note that
 // the capacity of the column remains unchanged.
 */
-template< typename Type >  // Data type of the matrix
-inline void CompressedMatrix<Type,true>::reset( size_t j )
+template< typename Type   // Data type of the matrix
+        , typename Tag >  // Type tag
+inline void CompressedMatrix<Type,true,Tag>::reset( size_t j )
 {
    BLAZE_USER_ASSERT( j < columns(), "Invalid column access index" );
    end_[j] = begin_[j];
@@ -4365,8 +4504,9 @@ inline void CompressedMatrix<Type,true>::reset( size_t j )
 //
 // After the clear() function, the size of the compressed matrix is 0.
 */
-template< typename Type >  // Data type of the matrix
-inline void CompressedMatrix<Type,true>::clear()
+template< typename Type   // Data type of the matrix
+        , typename Tag >  // Type tag
+inline void CompressedMatrix<Type,true,Tag>::clear()
 {
    if( end_ != nullptr )
       end_[0UL] = end_[n_];
@@ -4393,8 +4533,9 @@ inline void CompressedMatrix<Type,true>::clear()
 // potentially changes all matrix elements. In order to preserve the old matrix values, the
 // \a preserve flag can be set to \a true.
 */
-template< typename Type >  // Data type of the matrix
-void CompressedMatrix<Type,true>::resize( size_t m, size_t n, bool preserve )
+template< typename Type   // Data type of the matrix
+        , typename Tag >  // Type tag
+void CompressedMatrix<Type,true,Tag>::resize( size_t m, size_t n, bool preserve )
 {
    using std::swap;
 
@@ -4491,8 +4632,9 @@ void CompressedMatrix<Type,true>::resize( size_t m, size_t n, bool preserve )
 // The current values of the matrix elements and the individual capacities of the matrix rows
 // are preserved.
 */
-template< typename Type >  // Data type of the matrix
-inline void CompressedMatrix<Type,true>::reserve( size_t nonzeros )
+template< typename Type   // Data type of the matrix
+        , typename Tag >  // Type tag
+inline void CompressedMatrix<Type,true,Tag>::reserve( size_t nonzeros )
 {
    if( nonzeros > capacity() )
       reserveElements( nonzeros );
@@ -4513,8 +4655,9 @@ inline void CompressedMatrix<Type,true>::reserve( size_t nonzeros )
 // \a nonzeros elements. The current values of the compressed matrix and all other individual
 // column capacities are preserved.
 */
-template< typename Type >  // Data type of the matrix
-void CompressedMatrix<Type,true>::reserve( size_t j, size_t nonzeros )
+template< typename Type   // Data type of the matrix
+        , typename Tag >  // Type tag
+void CompressedMatrix<Type,true,Tag>::reserve( size_t j, size_t nonzeros )
 {
    using std::swap;
 
@@ -4585,8 +4728,9 @@ void CompressedMatrix<Type,true>::reserve( size_t j, size_t nonzeros )
 // It removes all excessive capacity from all columns. Note that this function does not remove
 // the overall capacity but only reduces the capacity per column.
 */
-template< typename Type >  // Data type of the matrix
-void CompressedMatrix<Type,true>::trim()
+template< typename Type   // Data type of the matrix
+        , typename Tag >  // Type tag
+void CompressedMatrix<Type,true,Tag>::trim()
 {
    for( size_t j=0UL; j<n_; ++j )
       trim( j );
@@ -4606,8 +4750,9 @@ void CompressedMatrix<Type,true>::trim()
 // removes all excessive capacity from the specified column. The excessive capacity is assigned
 // to the subsequent column.
 */
-template< typename Type >  // Data type of the matrix
-void CompressedMatrix<Type,true>::trim( size_t j )
+template< typename Type   // Data type of the matrix
+        , typename Tag >  // Type tag
+void CompressedMatrix<Type,true,Tag>::trim( size_t j )
 {
    BLAZE_USER_ASSERT( j < columns(), "Invalid column access index" );
 
@@ -4629,8 +4774,9 @@ void CompressedMatrix<Type,true>::trim( size_t j )
 // that in case a reallocation occurs, all iterators (including end() iterators), all pointers
 // and references to elements of this matrix are invalidated.
 */
-template< typename Type >  // Data type of the matrix
-inline void CompressedMatrix<Type,true>::shrinkToFit()
+template< typename Type   // Data type of the matrix
+        , typename Tag >  // Type tag
+inline void CompressedMatrix<Type,true,Tag>::shrinkToFit()
 {
    if( nonZeros() < capacity() ) {
       CompressedMatrix( *this ).swap( *this );
@@ -4647,8 +4793,9 @@ inline void CompressedMatrix<Type,true>::shrinkToFit()
 // \param sm The compressed matrix to be swapped.
 // \return void
 */
-template< typename Type >  // Data type of the matrix
-inline void CompressedMatrix<Type,true>::swap( CompressedMatrix& sm ) noexcept
+template< typename Type   // Data type of the matrix
+        , typename Tag >  // Type tag
+inline void CompressedMatrix<Type,true,Tag>::swap( CompressedMatrix& sm ) noexcept
 {
    using std::swap;
 
@@ -4671,8 +4818,9 @@ inline void CompressedMatrix<Type,true>::swap( CompressedMatrix& sm ) noexcept
 // This function calculates a new matrix capacity based on the current capacity of the sparse
 // matrix. Note that the new capacity is restricted to the interval \f$[7..M \cdot N]\f$.
 */
-template< typename Type >  // Data type of the matrix
-inline size_t CompressedMatrix<Type,true>::extendCapacity() const noexcept
+template< typename Type   // Data type of the matrix
+        , typename Tag >  // Type tag
+inline size_t CompressedMatrix<Type,true,Tag>::extendCapacity() const noexcept
 {
    size_t nonzeros( 2UL*capacity()+1UL );
    nonzeros = blaze::max( nonzeros, 7UL );
@@ -4692,8 +4840,9 @@ inline size_t CompressedMatrix<Type,true>::extendCapacity() const noexcept
 // \param nonzeros The number of matrix elements to be reserved.
 // \return void
 */
-template< typename Type >  // Data type of the matrix
-void CompressedMatrix<Type,true>::reserveElements( size_t nonzeros )
+template< typename Type   // Data type of the matrix
+        , typename Tag >  // Type tag
+void CompressedMatrix<Type,true,Tag>::reserveElements( size_t nonzeros )
 {
    using std::swap;
 
@@ -4730,9 +4879,10 @@ void CompressedMatrix<Type,true>::reserveElements( size_t nonzeros )
 // This function performs a down-cast of the given iterator to base elements to an iterator to
 // derived elements.
 */
-template< typename Type >  // Data type of the matrix
-inline typename CompressedMatrix<Type,true>::Iterator
-   CompressedMatrix<Type,true>::castDown( IteratorBase it ) const noexcept
+template< typename Type   // Data type of the matrix
+        , typename Tag >  // Type tag
+inline typename CompressedMatrix<Type,true,Tag>::Iterator
+   CompressedMatrix<Type,true,Tag>::castDown( IteratorBase it ) const noexcept
 {
    return static_cast<Iterator>( it );
 }
@@ -4747,9 +4897,10 @@ inline typename CompressedMatrix<Type,true>::Iterator
 // This function performs an up-cast of the given iterator to derived elements to an iterator
 // to base elements.
 */
-template< typename Type >  // Data type of the matrix
-inline typename CompressedMatrix<Type,true>::IteratorBase
-   CompressedMatrix<Type,true>::castUp( Iterator it ) const noexcept
+template< typename Type   // Data type of the matrix
+        , typename Tag >  // Type tag
+inline typename CompressedMatrix<Type,true,Tag>::IteratorBase
+   CompressedMatrix<Type,true,Tag>::castUp( Iterator it ) const noexcept
 {
    return static_cast<IteratorBase>( it );
 }
@@ -4777,9 +4928,10 @@ inline typename CompressedMatrix<Type,true>::IteratorBase
 // matrix already contains an element with row index \a i and column index \a j its value is
 // modified, else a new element with the given \a value is inserted.
 */
-template< typename Type >  // Data type of the matrix
-inline typename CompressedMatrix<Type,true>::Iterator
-   CompressedMatrix<Type,true>::set( size_t i, size_t j, const Type& value )
+template< typename Type   // Data type of the matrix
+        , typename Tag >  // Type tag
+inline typename CompressedMatrix<Type,true,Tag>::Iterator
+   CompressedMatrix<Type,true,Tag>::set( size_t i, size_t j, const Type& value )
 {
    BLAZE_USER_ASSERT( i < rows()   , "Invalid row access index"    );
    BLAZE_USER_ASSERT( j < columns(), "Invalid column access index" );
@@ -4810,9 +4962,10 @@ inline typename CompressedMatrix<Type,true>::Iterator
 // are not allowed. In case the compressed matrix already contains an element with row index \a i
 // and column index \a j, a \a std::invalid_argument exception is thrown.
 */
-template< typename Type >  // Data type of the matrix
-inline typename CompressedMatrix<Type,true>::Iterator
-   CompressedMatrix<Type,true>::insert( size_t i, size_t j, const Type& value )
+template< typename Type   // Data type of the matrix
+        , typename Tag >  // Type tag
+inline typename CompressedMatrix<Type,true,Tag>::Iterator
+   CompressedMatrix<Type,true,Tag>::insert( size_t i, size_t j, const Type& value )
 {
    BLAZE_USER_ASSERT( i < rows()   , "Invalid row access index"    );
    BLAZE_USER_ASSERT( j < columns(), "Invalid column access index" );
@@ -4840,9 +4993,10 @@ inline typename CompressedMatrix<Type,true>::Iterator
 // \return Iterator to the newly inserted element.
 // \exception std::invalid_argument Invalid compressed matrix access index.
 */
-template< typename Type >  // Data type of the matrix
-typename CompressedMatrix<Type,true>::Iterator
-   CompressedMatrix<Type,true>::insert( Iterator pos, size_t i, size_t j, const Type& value )
+template< typename Type   // Data type of the matrix
+        , typename Tag >  // Type tag
+typename CompressedMatrix<Type,true,Tag>::Iterator
+   CompressedMatrix<Type,true,Tag>::insert( Iterator pos, size_t i, size_t j, const Type& value )
 {
    using std::swap;
 
@@ -4962,8 +5116,9 @@ typename CompressedMatrix<Type,true>::Iterator
 // \note Although append() does not allocate new memory, it still invalidates all iterators
 // returned by the end() functions!
 */
-template< typename Type >  // Data type of the matrix
-inline void CompressedMatrix<Type,true>::append( size_t i, size_t j, const Type& value, bool check )
+template< typename Type   // Data type of the matrix
+        , typename Tag >  // Type tag
+inline void CompressedMatrix<Type,true,Tag>::append( size_t i, size_t j, const Type& value, bool check )
 {
    BLAZE_USER_ASSERT( i < m_, "Invalid row access index"    );
    BLAZE_USER_ASSERT( j < n_, "Invalid column access index" );
@@ -4995,8 +5150,9 @@ inline void CompressedMatrix<Type,true>::append( size_t i, size_t j, const Type&
 // \note Although finalize() does not allocate new memory, it still invalidates all iterators
 // returned by the end() functions!
 */
-template< typename Type >  // Data type of the matrix
-inline void CompressedMatrix<Type,true>::finalize( size_t j )
+template< typename Type   // Data type of the matrix
+        , typename Tag >  // Type tag
+inline void CompressedMatrix<Type,true,Tag>::finalize( size_t j )
 {
    BLAZE_USER_ASSERT( j < n_, "Invalid column access index" );
 
@@ -5026,8 +5182,9 @@ inline void CompressedMatrix<Type,true>::finalize( size_t j )
 //
 // This function erases an element from the compressed matrix.
 */
-template< typename Type >  // Data type of the matrix
-inline void CompressedMatrix<Type,true>::erase( size_t i, size_t j )
+template< typename Type   // Data type of the matrix
+        , typename Tag >  // Type tag
+inline void CompressedMatrix<Type,true,Tag>::erase( size_t i, size_t j )
 {
    BLAZE_USER_ASSERT( i < rows()   , "Invalid row access index"    );
    BLAZE_USER_ASSERT( j < columns(), "Invalid column access index" );
@@ -5050,9 +5207,10 @@ inline void CompressedMatrix<Type,true>::erase( size_t i, size_t j )
 //
 // This function erases an element from column \a j of the compressed matrix.
 */
-template< typename Type >  // Data type of the matrix
-inline typename CompressedMatrix<Type,true>::Iterator
-   CompressedMatrix<Type,true>::erase( size_t j, Iterator pos )
+template< typename Type   // Data type of the matrix
+        , typename Tag >  // Type tag
+inline typename CompressedMatrix<Type,true,Tag>::Iterator
+   CompressedMatrix<Type,true,Tag>::erase( size_t j, Iterator pos )
 {
    BLAZE_USER_ASSERT( j < columns()   , "Invalid column access index"    );
    BLAZE_USER_ASSERT( pos >= begin_[j] && pos <= end_[j], "Invalid compressed matrix iterator" );
@@ -5077,9 +5235,10 @@ inline typename CompressedMatrix<Type,true>::Iterator
 //
 // This function erases a range of elements from column \a j of the compressed matrix.
 */
-template< typename Type >  // Data type of the matrix
-inline typename CompressedMatrix<Type,true>::Iterator
-   CompressedMatrix<Type,true>::erase( size_t j, Iterator first, Iterator last )
+template< typename Type   // Data type of the matrix
+        , typename Tag >  // Type tag
+inline typename CompressedMatrix<Type,true,Tag>::Iterator
+   CompressedMatrix<Type,true,Tag>::erase( size_t j, Iterator first, Iterator last )
 {
    BLAZE_USER_ASSERT( j < columns(), "Invalid column access index" );
    BLAZE_USER_ASSERT( first <= last, "Invalid iterator range"   );
@@ -5117,9 +5276,10 @@ inline typename CompressedMatrix<Type,true>::Iterator
 // \note The predicate is required to be pure, i.e. to produce deterministic results for elements
 // with the same value. The attempt to use an impure predicate leads to undefined behavior!
 */
-template< typename Type >  // Data type of the matrix
+template< typename Type    // Data type of the matrix
+        , typename Tag >   // Type tag
 template< typename Pred >  // Type of the unary predicate
-inline void CompressedMatrix<Type,true>::erase( Pred predicate )
+inline void CompressedMatrix<Type,true,Tag>::erase( Pred predicate )
 {
    for( size_t j=0UL; j<n_; ++j ) {
       end_[j] = castDown( std::remove_if( castUp( begin_[j] ), castUp( end_[j] ),
@@ -5157,9 +5317,10 @@ inline void CompressedMatrix<Type,true>::erase( Pred predicate )
 // \note The predicate is required to be pure, i.e. to produce deterministic results for elements
 // with the same value. The attempt to use an impure predicate leads to undefined behavior!
 */
-template< typename Type >  // Data type of the matrix
+template< typename Type    // Data type of the matrix
+        , typename Tag >   // Type tag
 template< typename Pred >  // Type of the unary predicate
-inline void CompressedMatrix<Type,true>::erase( size_t j, Iterator first, Iterator last, Pred predicate )
+inline void CompressedMatrix<Type,true,Tag>::erase( size_t j, Iterator first, Iterator last, Pred predicate )
 {
    BLAZE_USER_ASSERT( j < columns(), "Invalid column access index" );
    BLAZE_USER_ASSERT( first <= last, "Invalid iterator range"   );
@@ -5200,9 +5361,10 @@ inline void CompressedMatrix<Type,true>::erase( size_t j, Iterator first, Iterat
 // Note that the returned compressed matrix iterator is subject to invalidation due to inserting
 // operations via the subscript operator, the set() function or the insert() function!
 */
-template< typename Type >  // Data type of the matrix
-inline typename CompressedMatrix<Type,true>::Iterator
-   CompressedMatrix<Type,true>::find( size_t i, size_t j )
+template< typename Type   // Data type of the matrix
+        , typename Tag >  // Type tag
+inline typename CompressedMatrix<Type,true,Tag>::Iterator
+   CompressedMatrix<Type,true,Tag>::find( size_t i, size_t j )
 {
    return const_cast<Iterator>( const_cast<const This&>( *this ).find( i, j ) );
 }
@@ -5225,9 +5387,10 @@ inline typename CompressedMatrix<Type,true>::Iterator
 // Note that the returned compressed matrix iterator is subject to invalidation due to inserting
 // operations via the subscript operator, the set() function or the insert() function!
 */
-template< typename Type >  // Data type of the matrix
-inline typename CompressedMatrix<Type,true>::ConstIterator
-   CompressedMatrix<Type,true>::find( size_t i, size_t j ) const
+template< typename Type   // Data type of the matrix
+        , typename Tag >  // Type tag
+inline typename CompressedMatrix<Type,true,Tag>::ConstIterator
+   CompressedMatrix<Type,true,Tag>::find( size_t i, size_t j ) const
 {
    const ConstIterator pos( lowerBound( i, j ) );
    if( pos != end_[j] && pos->index_ == i )
@@ -5252,9 +5415,10 @@ inline typename CompressedMatrix<Type,true>::ConstIterator
 // matrix iterator is subject to invalidation due to inserting operations via the function call
 // operator, the set() function or the insert() function!
 */
-template< typename Type >  // Data type of the matrix
-inline typename CompressedMatrix<Type,true>::Iterator
-   CompressedMatrix<Type,true>::lowerBound( size_t i, size_t j )
+template< typename Type   // Data type of the matrix
+        , typename Tag >  // Type tag
+inline typename CompressedMatrix<Type,true,Tag>::Iterator
+   CompressedMatrix<Type,true,Tag>::lowerBound( size_t i, size_t j )
 {
    return const_cast<Iterator>( const_cast<const This&>( *this ).lowerBound( i, j ) );
 }
@@ -5276,9 +5440,10 @@ inline typename CompressedMatrix<Type,true>::Iterator
 // matrix iterator is subject to invalidation due to inserting operations via the function call
 // operator, the set() function or the insert() function!
 */
-template< typename Type >  // Data type of the matrix
-inline typename CompressedMatrix<Type,true>::ConstIterator
-   CompressedMatrix<Type,true>::lowerBound( size_t i, size_t j ) const
+template< typename Type   // Data type of the matrix
+        , typename Tag >  // Type tag
+inline typename CompressedMatrix<Type,true,Tag>::ConstIterator
+   CompressedMatrix<Type,true,Tag>::lowerBound( size_t i, size_t j ) const
 {
    BLAZE_USER_ASSERT( j < columns(), "Invalid column access index" );
    return std::lower_bound( begin_[j], end_[j], i,
@@ -5305,9 +5470,10 @@ inline typename CompressedMatrix<Type,true>::ConstIterator
 // matrix iterator is subject to invalidation due to inserting operations via the function call
 // operator, the set() function or the insert() function!
 */
-template< typename Type >  // Data type of the matrix
-inline typename CompressedMatrix<Type,true>::Iterator
-   CompressedMatrix<Type,true>::upperBound( size_t i, size_t j )
+template< typename Type   // Data type of the matrix
+        , typename Tag >  // Type tag
+inline typename CompressedMatrix<Type,true,Tag>::Iterator
+   CompressedMatrix<Type,true,Tag>::upperBound( size_t i, size_t j )
 {
    return const_cast<Iterator>( const_cast<const This&>( *this ).upperBound( i, j ) );
 }
@@ -5329,9 +5495,10 @@ inline typename CompressedMatrix<Type,true>::Iterator
 // matrix iterator is subject to invalidation due to inserting operations via the function call
 // operator, the set() function or the insert() function!
 */
-template< typename Type >  // Data type of the matrix
-inline typename CompressedMatrix<Type,true>::ConstIterator
-   CompressedMatrix<Type,true>::upperBound( size_t i, size_t j ) const
+template< typename Type   // Data type of the matrix
+        , typename Tag >  // Type tag
+inline typename CompressedMatrix<Type,true,Tag>::ConstIterator
+   CompressedMatrix<Type,true,Tag>::upperBound( size_t i, size_t j ) const
 {
    BLAZE_USER_ASSERT( j < columns(), "Invalid column access index" );
    return std::upper_bound( begin_[j], end_[j], i,
@@ -5358,8 +5525,9 @@ inline typename CompressedMatrix<Type,true>::ConstIterator
 //
 // \return Reference to the transposed matrix.
 */
-template< typename Type >  // Data type of the matrix
-inline CompressedMatrix<Type,true>& CompressedMatrix<Type,true>::transpose()
+template< typename Type   // Data type of the matrix
+        , typename Tag >  // Type tag
+inline CompressedMatrix<Type,true,Tag>& CompressedMatrix<Type,true,Tag>::transpose()
 {
    CompressedMatrix tmp( trans( *this ) );
    swap( tmp );
@@ -5375,8 +5543,9 @@ inline CompressedMatrix<Type,true>& CompressedMatrix<Type,true>::transpose()
 //
 // \return Reference to the transposed matrix.
 */
-template< typename Type >  // Data type of the matrix
-inline CompressedMatrix<Type,true>& CompressedMatrix<Type,true>::ctranspose()
+template< typename Type   // Data type of the matrix
+        , typename Tag >  // Type tag
+inline CompressedMatrix<Type,true,Tag>& CompressedMatrix<Type,true,Tag>::ctranspose()
 {
    CompressedMatrix tmp( ctrans( *this ) );
    swap( tmp );
@@ -5404,9 +5573,10 @@ inline CompressedMatrix<Type,true>& CompressedMatrix<Type,true>::ctranspose()
    A.scale( 4 );  // Same effect as above
    \endcode
 */
-template< typename Type >   // Data type of the matrix
+template< typename Type     // Data type of the matrix
+        , typename Tag >    // Type tag
 template< typename Other >  // Data type of the scalar value
-inline CompressedMatrix<Type,true>& CompressedMatrix<Type,true>::scale( const Other& scalar )
+inline CompressedMatrix<Type,true,Tag>& CompressedMatrix<Type,true,Tag>::scale( const Other& scalar )
 {
    for( size_t j=0UL; j<n_; ++j )
       for( auto element=begin_[j]; element!=end_[j]; ++element )
@@ -5437,9 +5607,10 @@ inline CompressedMatrix<Type,true>& CompressedMatrix<Type,true>::scale( const Ot
 // to the isAliased() function this function is allowed to use compile time expressions
 // to optimize the evaluation.
 */
-template< typename Type >   // Data type of the matrix
+template< typename Type     // Data type of the matrix
+        , typename Tag >    // Type tag
 template< typename Other >  // Data type of the foreign expression
-inline bool CompressedMatrix<Type,true>::canAlias( const Other* alias ) const noexcept
+inline bool CompressedMatrix<Type,true,Tag>::canAlias( const Other* alias ) const noexcept
 {
    return static_cast<const void*>( this ) == static_cast<const void*>( alias );
 }
@@ -5458,9 +5629,10 @@ inline bool CompressedMatrix<Type,true>::canAlias( const Other* alias ) const no
 // to the canAlias() function this function is not allowed to use compile time expressions
 // to optimize the evaluation.
 */
-template< typename Type >   // Data type of the matrix
+template< typename Type     // Data type of the matrix
+        , typename Tag >    // Type tag
 template< typename Other >  // Data type of the foreign expression
-inline bool CompressedMatrix<Type,true>::isAliased( const Other* alias ) const noexcept
+inline bool CompressedMatrix<Type,true,Tag>::isAliased( const Other* alias ) const noexcept
 {
    return static_cast<const void*>( this ) == static_cast<const void*>( alias );
 }
@@ -5479,8 +5651,9 @@ inline bool CompressedMatrix<Type,true>::isAliased( const Other* alias ) const n
 // function additionally provides runtime information (as for instance the current number of
 // rows and/or columns of the matrix).
 */
-template< typename Type >  // Data type of the matrix
-inline bool CompressedMatrix<Type,true>::canSMPAssign() const noexcept
+template< typename Type   // Data type of the matrix
+        , typename Tag >  // Type tag
+inline bool CompressedMatrix<Type,true,Tag>::canSMPAssign() const noexcept
 {
    return false;
 }
@@ -5500,10 +5673,11 @@ inline bool CompressedMatrix<Type,true>::canSMPAssign() const noexcept
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename Type >  // Data type of the matrix
-template< typename MT      // Type of the right-hand side dense matrix
-        , bool SO >        // Storage order of the right-hand side dense matrix
-inline void CompressedMatrix<Type,true>::assign( const DenseMatrix<MT,SO>& rhs )
+template< typename Type   // Data type of the matrix
+        , typename Tag >  // Type tag
+template< typename MT     // Type of the right-hand side dense matrix
+        , bool SO >       // Storage order of the right-hand side dense matrix
+inline void CompressedMatrix<Type,true,Tag>::assign( const DenseMatrix<MT,SO>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
@@ -5563,9 +5737,10 @@ inline void CompressedMatrix<Type,true>::assign( const DenseMatrix<MT,SO>& rhs )
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename Type >  // Data type of the matrix
-template< typename MT >    // Type of the right-hand side compressed matrix
-inline void CompressedMatrix<Type,true>::assign( const SparseMatrix<MT,true>& rhs )
+template< typename Type   // Data type of the matrix
+        , typename Tag >  // Type tag
+template< typename MT >   // Type of the right-hand side compressed matrix
+inline void CompressedMatrix<Type,true,Tag>::assign( const SparseMatrix<MT,true>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
@@ -5596,9 +5771,10 @@ inline void CompressedMatrix<Type,true>::assign( const SparseMatrix<MT,true>& rh
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename Type >  // Data type of the matrix
-template< typename MT >    // Type of the right-hand side compressed matrix
-inline void CompressedMatrix<Type,true>::assign( const SparseMatrix<MT,false>& rhs )
+template< typename Type   // Data type of the matrix
+        , typename Tag >  // Type tag
+template< typename MT >   // Type of the right-hand side compressed matrix
+inline void CompressedMatrix<Type,true,Tag>::assign( const SparseMatrix<MT,false>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
 
@@ -5641,10 +5817,11 @@ inline void CompressedMatrix<Type,true>::assign( const SparseMatrix<MT,false>& r
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename Type >  // Data type of the matrix
-template< typename MT      // Type of the right-hand side dense matrix
-        , bool SO >        // Storage order of the right-hand side dense matrix
-inline void CompressedMatrix<Type,true>::addAssign( const DenseMatrix<MT,SO>& rhs )
+template< typename Type   // Data type of the matrix
+        , typename Tag >  // Type tag
+template< typename MT     // Type of the right-hand side dense matrix
+        , bool SO >       // Storage order of the right-hand side dense matrix
+inline void CompressedMatrix<Type,true,Tag>::addAssign( const DenseMatrix<MT,SO>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
@@ -5668,10 +5845,11 @@ inline void CompressedMatrix<Type,true>::addAssign( const DenseMatrix<MT,SO>& rh
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename Type >  // Data type of the matrix
-template< typename MT      // Type of the right-hand side compressed matrix
-        , bool SO >        // Storage order of the right-hand side compressed matrix
-inline void CompressedMatrix<Type,true>::addAssign( const SparseMatrix<MT,SO>& rhs )
+template< typename Type   // Data type of the matrix
+        , typename Tag >  // Type tag
+template< typename MT     // Type of the right-hand side compressed matrix
+        , bool SO >       // Storage order of the right-hand side compressed matrix
+inline void CompressedMatrix<Type,true,Tag>::addAssign( const SparseMatrix<MT,SO>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
@@ -5695,10 +5873,11 @@ inline void CompressedMatrix<Type,true>::addAssign( const SparseMatrix<MT,SO>& r
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename Type >  // Data type of the matrix
-template< typename MT      // Type of the right-hand side dense matrix
-        , bool SO >        // Storage order of the right-hand side dense matrix
-inline void CompressedMatrix<Type,true>::subAssign( const DenseMatrix<MT,SO>& rhs )
+template< typename Type   // Data type of the matrix
+        , typename Tag >  // Type tag
+template< typename MT     // Type of the right-hand side dense matrix
+        , bool SO >       // Storage order of the right-hand side dense matrix
+inline void CompressedMatrix<Type,true,Tag>::subAssign( const DenseMatrix<MT,SO>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
@@ -5722,10 +5901,11 @@ inline void CompressedMatrix<Type,true>::subAssign( const DenseMatrix<MT,SO>& rh
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename Type >  // Data type of the matrix
-template< typename MT      // Type of the right-hand side compressed matrix
-        , bool SO >        // Storage order of the right-hand side compressed matrix
-inline void CompressedMatrix<Type,true>::subAssign( const SparseMatrix<MT,SO>& rhs )
+template< typename Type   // Data type of the matrix
+        , typename Tag >  // Type tag
+template< typename MT     // Type of the right-hand side compressed matrix
+        , bool SO >       // Storage order of the right-hand side compressed matrix
+inline void CompressedMatrix<Type,true,Tag>::subAssign( const SparseMatrix<MT,SO>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
@@ -5749,10 +5929,11 @@ inline void CompressedMatrix<Type,true>::subAssign( const SparseMatrix<MT,SO>& r
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename Type >  // Data type of the matrix
-template< typename MT      // Type of the right-hand side dense matrix
-        , bool SO >        // Storage order of the right-hand side dense matrix
-inline void CompressedMatrix<Type,true>::schurAssign( const DenseMatrix<MT,SO>& rhs )
+template< typename Type   // Data type of the matrix
+        , typename Tag >  // Type tag
+template< typename MT     // Type of the right-hand side dense matrix
+        , bool SO >       // Storage order of the right-hand side dense matrix
+inline void CompressedMatrix<Type,true,Tag>::schurAssign( const DenseMatrix<MT,SO>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
@@ -5784,23 +5965,23 @@ inline void CompressedMatrix<Type,true>::schurAssign( const DenseMatrix<MT,SO>& 
 //*************************************************************************************************
 /*!\name CompressedMatrix operators */
 //@{
-template< typename Type, bool SO >
-void reset( CompressedMatrix<Type,SO>& m );
+template< typename Type, bool SO, typename Tag >
+void reset( CompressedMatrix<Type,SO,Tag>& m );
 
-template< typename Type, bool SO >
-void reset( CompressedMatrix<Type,SO>& m, size_t i );
+template< typename Type, bool SO, typename Tag >
+void reset( CompressedMatrix<Type,SO,Tag>& m, size_t i );
 
-template< typename Type, bool SO >
-void clear( CompressedMatrix<Type,SO>& m );
+template< typename Type, bool SO, typename Tag >
+void clear( CompressedMatrix<Type,SO,Tag>& m );
 
-template< RelaxationFlag RF, typename Type, bool SO >
-bool isDefault( const CompressedMatrix<Type,SO>& m );
+template< RelaxationFlag RF, typename Type, bool SO, typename Tag >
+bool isDefault( const CompressedMatrix<Type,SO,Tag>& m );
 
-template< typename Type, bool SO >
-bool isIntact( const CompressedMatrix<Type,SO>& m );
+template< typename Type, bool SO, typename Tag >
+bool isIntact( const CompressedMatrix<Type,SO,Tag>& m );
 
-template< typename Type, bool SO >
-void swap( CompressedMatrix<Type,SO>& a, CompressedMatrix<Type,SO>& b ) noexcept;
+template< typename Type, bool SO, typename Tag >
+void swap( CompressedMatrix<Type,SO,Tag>& a, CompressedMatrix<Type,SO,Tag>& b ) noexcept;
 //@}
 //*************************************************************************************************
 
@@ -5812,9 +5993,10 @@ void swap( CompressedMatrix<Type,SO>& a, CompressedMatrix<Type,SO>& b ) noexcept
 // \param m The matrix to be resetted.
 // \return void
 */
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-inline void reset( CompressedMatrix<Type,SO>& m )
+template< typename Type   // Data type of the matrix
+        , bool SO         // Storage order
+        , typename Tag >  // Type tag
+inline void reset( CompressedMatrix<Type,SO,Tag>& m )
 {
    m.reset();
 }
@@ -5834,9 +6016,10 @@ inline void reset( CompressedMatrix<Type,SO>& m )
 // values in row \a i, if it is a \a columnMajor matrix the function resets the values in column
 // \a i. Note that the capacity of the row/column remains unchanged.
 */
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-inline void reset( CompressedMatrix<Type,SO>& m, size_t i )
+template< typename Type   // Data type of the matrix
+        , bool SO         // Storage order
+        , typename Tag >  // Type tag
+inline void reset( CompressedMatrix<Type,SO,Tag>& m, size_t i )
 {
    m.reset( i );
 }
@@ -5850,9 +6033,10 @@ inline void reset( CompressedMatrix<Type,SO>& m, size_t i )
 // \param m The matrix to be cleared.
 // \return void
 */
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-inline void clear( CompressedMatrix<Type,SO>& m )
+template< typename Type   // Data type of the matrix
+        , bool SO         // Storage order
+        , typename Tag >  // Type tag
+inline void clear( CompressedMatrix<Type,SO,Tag>& m )
 {
    m.clear();
 }
@@ -5886,8 +6070,9 @@ inline void clear( CompressedMatrix<Type,SO>& m )
 */
 template< RelaxationFlag RF  // Relaxation flag
         , typename Type      // Data type of the matrix
-        , bool SO >          // Storage order
-inline bool isDefault( const CompressedMatrix<Type,SO>& m )
+        , bool SO            // Storage order
+        , typename Tag >     // Type tag
+inline bool isDefault( const CompressedMatrix<Type,SO,Tag>& m )
 {
    return ( m.rows() == 0UL && m.columns() == 0UL );
 }
@@ -5912,9 +6097,10 @@ inline bool isDefault( const CompressedMatrix<Type,SO>& m )
    if( isIntact( A ) ) { ... }
    \endcode
 */
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-inline bool isIntact( const CompressedMatrix<Type,SO>& m )
+template< typename Type   // Data type of the matrix
+        , bool SO         // Storage order
+        , typename Tag >  // Type tag
+inline bool isIntact( const CompressedMatrix<Type,SO,Tag>& m )
 {
    return ( m.nonZeros() <= m.capacity() );
 }
@@ -5929,9 +6115,10 @@ inline bool isIntact( const CompressedMatrix<Type,SO>& m )
 // \param b The second matrix to be swapped.
 // \return void
 */
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-inline void swap( CompressedMatrix<Type,SO>& a, CompressedMatrix<Type,SO>& b ) noexcept
+template< typename Type   // Data type of the matrix
+        , bool SO         // Storage order
+        , typename Tag >  // Type tag
+inline void swap( CompressedMatrix<Type,SO,Tag>& a, CompressedMatrix<Type,SO,Tag>& b ) noexcept
 {
    a.swap( b );
 }
@@ -5948,8 +6135,8 @@ inline void swap( CompressedMatrix<Type,SO>& a, CompressedMatrix<Type,SO>& b ) n
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T, bool SO >
-struct IsResizable< CompressedMatrix<T,SO> >
+template< typename T, bool SO, typename Tag >
+struct IsResizable< CompressedMatrix<T,SO,Tag> >
    : public TrueType
 {};
 /*! \endcond */
@@ -5966,8 +6153,8 @@ struct IsResizable< CompressedMatrix<T,SO> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T, bool SO >
-struct IsShrinkable< CompressedMatrix<T,SO> >
+template< typename T, bool SO, typename Tag >
+struct IsShrinkable< CompressedMatrix<T,SO,Tag> >
    : public TrueType
 {};
 /*! \endcond */
@@ -5988,12 +6175,9 @@ template< typename T1, typename T2 >
 struct AddTraitEval2< T1, T2
                     , EnableIf_t< IsSparseMatrix_v<T1> && IsSparseMatrix_v<T2> > >
 {
-   using ET1 = ElementType_t<T1>;
-   using ET2 = ElementType_t<T2>;
-
-   static constexpr bool SO = ( StorageOrder_v<T1> && StorageOrder_v<T2> );
-
-   using Type = CompressedMatrix< AddTrait_t<ET1,ET2>, SO >;
+   using Type = CompressedMatrix< AddTrait_t< ElementType_t<T1>, ElementType_t<T2> >
+                                , ( StorageOrder_v<T1> && StorageOrder_v<T2> )
+                                , DefaultTag >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -6013,12 +6197,9 @@ template< typename T1, typename T2 >
 struct SubTraitEval2< T1, T2
                     , EnableIf_t< IsSparseMatrix_v<T1> && IsSparseMatrix_v<T2> > >
 {
-   using ET1 = ElementType_t<T1>;
-   using ET2 = ElementType_t<T2>;
-
-   static constexpr bool SO = ( StorageOrder_v<T1> && StorageOrder_v<T2> );
-
-   using Type = CompressedMatrix< SubTrait_t<ET1,ET2>, SO >;
+   using Type = CompressedMatrix< SubTrait_t< ElementType_t<T1>, ElementType_t<T2> >
+                                , ( StorageOrder_v<T1> && StorageOrder_v<T2> )
+                                , DefaultTag >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -6041,16 +6222,15 @@ struct SchurTraitEval2< T1, T2
                                     IsMatrix_v<T2> &&
                                     ( IsSparseMatrix_v<T1> || IsSparseMatrix_v<T2> ) > >
 {
-   using ET1 = ElementType_t<T1>;
-   using ET2 = ElementType_t<T2>;
-
    static constexpr bool SO = ( IsSparseMatrix_v<T1> && IsSparseMatrix_v<T2>
                                 ? ( StorageOrder_v<T1> && StorageOrder_v<T2> )
                                 : ( IsSparseMatrix_v<T1>
                                     ? StorageOrder_v<T1>
                                     : StorageOrder_v<T2> ) );
 
-   using Type = CompressedMatrix< MultTrait_t<ET1,ET2>, SO >;
+   using Type = CompressedMatrix< MultTrait_t< ElementType_t<T1>, ElementType_t<T2> >
+                                , SO
+                                , DefaultTag >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -6070,18 +6250,18 @@ template< typename T1, typename T2 >
 struct MultTraitEval2< T1, T2
                      , EnableIf_t< IsSparseMatrix_v<T1> && IsNumeric_v<T2> > >
 {
-   using ET1 = ElementType_t<T1>;
-
-   using Type = CompressedMatrix< MultTrait_t<ET1,T2>, StorageOrder_v<T1> >;
+   using Type = CompressedMatrix< MultTrait_t< ElementType_t<T1>, T2 >
+                                , StorageOrder_v<T1>
+                                , DefaultTag >;
 };
 
 template< typename T1, typename T2 >
 struct MultTraitEval2< T1, T2
                      , EnableIf_t< IsNumeric_v<T1> && IsSparseMatrix_v<T2> > >
 {
-   using ET2 = ElementType_t<T2>;
-
-   using Type = CompressedMatrix< MultTrait_t<T1,ET2>, StorageOrder_v<T2> >;
+   using Type = CompressedMatrix< MultTrait_t< T1, ElementType_t<T2> >
+                                , StorageOrder_v<T2>
+                                , DefaultTag >;
 };
 
 template< typename T1, typename T2 >
@@ -6091,12 +6271,9 @@ struct MultTraitEval2< T1, T2
                                    IsColumnVector_v<T1> &&
                                    IsRowVector_v<T2> > >
 {
-   using ET1 = ElementType_t<T1>;
-   using ET2 = ElementType_t<T2>;
-
-   static constexpr bool SO = ( IsSparseVector_v<T2> ? rowMajor : columnMajor );
-
-   using Type = CompressedMatrix< MultTrait_t<ET1,ET2>, SO >;
+   using Type = CompressedMatrix< MultTrait_t< ElementType_t<T1>, ElementType_t<T2> >
+                                , ( IsSparseVector_v<T2> ? rowMajor : columnMajor )
+                                , DefaultTag >;
 };
 
 template< typename T1, typename T2 >
@@ -6105,10 +6282,11 @@ struct MultTraitEval2< T1, T2
                                    IsSparseMatrix_v<T2> &&
                                    !( IsIdentity_v<T1> && IsIdentity_v<T2> ) > >
 {
-   using ET1 = ElementType_t<T1>;
-   using ET2 = ElementType_t<T2>;
+   using MultType = MultTrait_t< ElementType_t<T1>, ElementType_t<T2> >;
 
-   using Type = CompressedMatrix< MultTrait_t<ET1,ET2>, StorageOrder_v<T1> >;
+   using Type = CompressedMatrix< AddTrait_t<MultType,MultType>
+                                , StorageOrder_v<T1>
+                                , DefaultTag >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -6131,12 +6309,9 @@ struct KronTraitEval2< T1, T2
                                    IsMatrix_v<T2> &&
                                    ( IsSparseMatrix_v<T1> || IsSparseMatrix_v<T2> ) > >
 {
-   using ET1 = ElementType_t<T1>;
-   using ET2 = ElementType_t<T2>;
-
-   static constexpr bool SO = ( IsDenseMatrix_v<T2> ? StorageOrder_v<T1> : StorageOrder_v<T2> );
-
-   using Type = CompressedMatrix< MultTrait_t<ET1,ET2>, SO >;
+   using Type = CompressedMatrix< MultTrait_t< ElementType_t<T1>, ElementType_t<T2> >
+                                , ( IsDenseMatrix_v<T2> ? StorageOrder_v<T1> : StorageOrder_v<T2> )
+                                , DefaultTag >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -6156,9 +6331,9 @@ template< typename T1, typename T2 >
 struct DivTraitEval2< T1, T2
                     , EnableIf_t< IsSparseMatrix_v<T1> && IsNumeric_v<T2> > >
 {
-   using ET1 = ElementType_t<T1>;
-
-   using Type = CompressedMatrix< DivTrait_t<ET1,T2>, StorageOrder_v<T1> >;
+   using Type = CompressedMatrix< DivTrait_t< ElementType_t<T1>, T2 >
+                                , StorageOrder_v<T1>
+                                , DefaultTag >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -6178,9 +6353,9 @@ template< typename T, typename OP >
 struct UnaryMapTraitEval2< T, OP
                          , EnableIf_t< IsSparseMatrix_v<T> > >
 {
-   using ET = ElementType_t<T>;
-
-   using Type = CompressedMatrix< MapTrait_t<ET,OP>, StorageOrder_v<T> >;
+   using Type = CompressedMatrix< MapTrait_t< ElementType_t<T>, OP >
+                                , StorageOrder_v<T>
+                                , DefaultTag >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -6201,9 +6376,9 @@ template< typename T  // Type to be expanded
 struct ExpandTraitEval2< T, E
                        , EnableIf_t< IsSparseVector_v<T> > >
 {
-   static constexpr bool TF = ( IsColumnVector_v<T> ? columnMajor : rowMajor );
-
-   using Type = CompressedMatrix< ElementType_t<T>, TF >;
+   using Type = CompressedMatrix< ElementType_t<T>
+                                , ( IsColumnVector_v<T> ? columnMajor : rowMajor )
+                                , DefaultTag >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -6219,10 +6394,10 @@ struct ExpandTraitEval2< T, E
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T1, bool SO, typename T2 >
-struct HighType< CompressedMatrix<T1,SO>, CompressedMatrix<T2,SO> >
+template< typename T1, bool SO, typename Tag, typename T2 >
+struct HighType< CompressedMatrix<T1,SO,Tag>, CompressedMatrix<T2,SO,Tag> >
 {
-   using Type = CompressedMatrix< typename HighType<T1,T2>::Type, SO >;
+   using Type = CompressedMatrix< typename HighType<T1,T2>::Type, SO, Tag >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -6238,10 +6413,10 @@ struct HighType< CompressedMatrix<T1,SO>, CompressedMatrix<T2,SO> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T1, bool SO, typename T2 >
-struct LowType< CompressedMatrix<T1,SO>, CompressedMatrix<T2,SO> >
+template< typename T1, bool SO, typename Tag, typename T2 >
+struct LowType< CompressedMatrix<T1,SO,Tag>, CompressedMatrix<T2,SO,Tag> >
 {
-   using Type = CompressedMatrix< typename LowType<T1,T2>::Type, SO >;
+   using Type = CompressedMatrix< typename LowType<T1,T2>::Type, SO, Tag >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -6261,7 +6436,9 @@ template< typename MT, size_t I, size_t J, size_t M, size_t N >
 struct SubmatrixTraitEval2< MT, I, J, M, N
                           , EnableIf_t< IsSparseMatrix_v<MT> > >
 {
-   using Type = CompressedMatrix< RemoveConst_t< ElementType_t<MT> >, StorageOrder_v<MT> >;
+   using Type = CompressedMatrix< RemoveConst_t< ElementType_t<MT> >
+                                , StorageOrder_v<MT>
+                                , DefaultTag >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -6281,7 +6458,9 @@ template< typename MT, size_t M >
 struct RowsTraitEval2< MT, M
                      , EnableIf_t< IsSparseMatrix_v<MT> > >
 {
-   using Type = CompressedMatrix< RemoveConst_t< ElementType_t<MT> >, false >;
+   using Type = CompressedMatrix< RemoveConst_t< ElementType_t<MT> >
+                                , false
+                                , DefaultTag >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -6301,7 +6480,9 @@ template< typename MT, size_t N >
 struct ColumnsTraitEval2< MT, N
                         , EnableIf_t< IsSparseMatrix_v<MT> > >
 {
-   using Type = CompressedMatrix< RemoveConst_t< ElementType_t<MT> >, true >;
+   using Type = CompressedMatrix< RemoveConst_t< ElementType_t<MT> >
+                                , true
+                                , DefaultTag >;
 };
 /*! \endcond */
 //*************************************************************************************************

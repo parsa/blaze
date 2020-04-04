@@ -68,41 +68,42 @@ namespace blaze {
 //
 // This specialization of the Rand class creates random instances of CompressedMatrix.
 */
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-class Rand< CompressedMatrix<Type,SO> >
+template< typename Type   // Data type of the matrix
+        , bool SO         // Storage order
+        , typename Tag >  // Tag type
+class Rand< CompressedMatrix<Type,SO,Tag> >
 {
  public:
    //**Generate functions**************************************************************************
    /*!\name Generate functions */
    //@{
-   inline const CompressedMatrix<Type,SO> generate( size_t m, size_t n ) const;
-   inline const CompressedMatrix<Type,SO> generate( size_t m, size_t n, size_t nonzeros ) const;
+   inline const CompressedMatrix<Type,SO,Tag> generate( size_t m, size_t n ) const;
+   inline const CompressedMatrix<Type,SO,Tag> generate( size_t m, size_t n, size_t nonzeros ) const;
 
    template< typename Arg >
-   inline const CompressedMatrix<Type,SO> generate( size_t m, size_t n, const Arg& min, const Arg& max ) const;
+   inline const CompressedMatrix<Type,SO,Tag> generate( size_t m, size_t n, const Arg& min, const Arg& max ) const;
 
    template< typename Arg >
-   inline const CompressedMatrix<Type,SO> generate( size_t m, size_t n, size_t nonzeros,
-                                                    const Arg& min, const Arg& max ) const;
+   inline const CompressedMatrix<Type,SO,Tag> generate( size_t m, size_t n, size_t nonzeros,
+                                                        const Arg& min, const Arg& max ) const;
    //@}
    //**********************************************************************************************
 
    //**Randomize functions*************************************************************************
    /*!\name Randomize functions */
    //@{
-   inline void randomize( CompressedMatrix<Type,SO>& matrix ) const;
-   inline void randomize( CompressedMatrix<Type,false>& matrix, size_t nonzeros ) const;
-   inline void randomize( CompressedMatrix<Type,true>& matrix, size_t nonzeros ) const;
+   inline void randomize( CompressedMatrix<Type,SO,Tag>& matrix ) const;
+   inline void randomize( CompressedMatrix<Type,false,Tag>& matrix, size_t nonzeros ) const;
+   inline void randomize( CompressedMatrix<Type,true,Tag>& matrix, size_t nonzeros ) const;
 
    template< typename Arg >
-   inline void randomize( CompressedMatrix<Type,SO>& matrix, const Arg& min, const Arg& max ) const;
+   inline void randomize( CompressedMatrix<Type,SO,Tag>& matrix, const Arg& min, const Arg& max ) const;
 
    template< typename Arg >
-   inline void randomize( CompressedMatrix<Type,false>& matrix, size_t nonzeros,
+   inline void randomize( CompressedMatrix<Type,false,Tag>& matrix, size_t nonzeros,
                           const Arg& min, const Arg& max ) const;
    template< typename Arg >
-   inline void randomize( CompressedMatrix<Type,true>& matrix, size_t nonzeros,
+   inline void randomize( CompressedMatrix<Type,true,Tag>& matrix, size_t nonzeros,
                           const Arg& min, const Arg& max ) const;
    //@}
    //**********************************************************************************************
@@ -119,12 +120,13 @@ class Rand< CompressedMatrix<Type,SO> >
 // \param n The number of columns of the random matrix.
 // \return The generated random matrix.
 */
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-inline const CompressedMatrix<Type,SO>
-   Rand< CompressedMatrix<Type,SO> >::generate( size_t m, size_t n ) const
+template< typename Type   // Data type of the matrix
+        , bool SO         // Storage order
+        , typename Tag >  // Tag type
+inline const CompressedMatrix<Type,SO,Tag>
+   Rand< CompressedMatrix<Type,SO,Tag> >::generate( size_t m, size_t n ) const
 {
-   CompressedMatrix<Type,SO> matrix( m, n );
+   CompressedMatrix<Type,SO,Tag> matrix( m, n );
    randomize( matrix );
 
    return matrix;
@@ -143,16 +145,17 @@ inline const CompressedMatrix<Type,SO>
 // \return The generated random matrix.
 // \exception std::invalid_argument Invalid number of non-zero elements.
 */
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-inline const CompressedMatrix<Type,SO>
-   Rand< CompressedMatrix<Type,SO> >::generate( size_t m, size_t n, size_t nonzeros ) const
+template< typename Type   // Data type of the matrix
+        , bool SO         // Storage order
+        , typename Tag >  // Tag type
+inline const CompressedMatrix<Type,SO,Tag>
+   Rand< CompressedMatrix<Type,SO,Tag> >::generate( size_t m, size_t n, size_t nonzeros ) const
 {
    if( nonzeros > m*n ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid number of non-zero elements" );
    }
 
-   CompressedMatrix<Type,SO> matrix( m, n );
+   CompressedMatrix<Type,SO,Tag> matrix( m, n );
    randomize( matrix, nonzeros );
 
    return matrix;
@@ -172,12 +175,13 @@ inline const CompressedMatrix<Type,SO>
 // \param max The largest possible value for a matrix element.
 */
 template< typename Type   // Data type of the matrix
-        , bool SO >       // Storage order
+        , bool SO         // Storage order
+        , typename Tag >  // Tag type
 template< typename Arg >  // Min/max argument type
-inline const CompressedMatrix<Type,SO>
-   Rand< CompressedMatrix<Type,SO> >::generate( size_t m, size_t n, const Arg& min, const Arg& max ) const
+inline const CompressedMatrix<Type,SO,Tag>
+   Rand< CompressedMatrix<Type,SO,Tag> >::generate( size_t m, size_t n, const Arg& min, const Arg& max ) const
 {
-   CompressedMatrix<Type,SO> matrix( m, n );
+   CompressedMatrix<Type,SO,Tag> matrix( m, n );
    randomize( matrix, min, max );
 
    return matrix;
@@ -199,17 +203,18 @@ inline const CompressedMatrix<Type,SO>
 // \exception std::invalid_argument Invalid number of non-zero elements.
 */
 template< typename Type   // Data type of the matrix
-        , bool SO >       // Storage order
+        , bool SO         // Storage order
+        , typename Tag >  // Tag type
 template< typename Arg >  // Min/max argument type
-inline const CompressedMatrix<Type,SO>
-   Rand< CompressedMatrix<Type,SO> >::generate( size_t m, size_t n, size_t nonzeros,
-                                                const Arg& min, const Arg& max ) const
+inline const CompressedMatrix<Type,SO,Tag>
+   Rand< CompressedMatrix<Type,SO,Tag> >::generate( size_t m, size_t n, size_t nonzeros,
+                                                    const Arg& min, const Arg& max ) const
 {
    if( nonzeros > m*n ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid number of non-zero elements" );
    }
 
-   CompressedMatrix<Type,SO> matrix( m, n );
+   CompressedMatrix<Type,SO,Tag> matrix( m, n );
    randomize( matrix, nonzeros, min, max );
 
    return matrix;
@@ -225,9 +230,10 @@ inline const CompressedMatrix<Type,SO>
 // \param matrix The matrix to be randomized.
 // \return void
 */
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-inline void Rand< CompressedMatrix<Type,SO> >::randomize( CompressedMatrix<Type,SO>& matrix ) const
+template< typename Type   // Data type of the matrix
+        , bool SO         // Storage order
+        , typename Tag >  // Tag type
+inline void Rand< CompressedMatrix<Type,SO,Tag> >::randomize( CompressedMatrix<Type,SO,Tag>& matrix ) const
 {
    const size_t m( matrix.rows()    );
    const size_t n( matrix.columns() );
@@ -251,9 +257,11 @@ inline void Rand< CompressedMatrix<Type,SO> >::randomize( CompressedMatrix<Type,
 // \return void
 // \exception std::invalid_argument Invalid number of non-zero elements.
 */
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-inline void Rand< CompressedMatrix<Type,SO> >::randomize( CompressedMatrix<Type,false>& matrix, size_t nonzeros ) const
+template< typename Type   // Data type of the matrix
+        , bool SO         // Storage order
+        , typename Tag >  // Tag type
+inline void
+   Rand< CompressedMatrix<Type,SO,Tag> >::randomize( CompressedMatrix<Type,false,Tag>& matrix, size_t nonzeros ) const
 {
    const size_t m( matrix.rows()    );
    const size_t n( matrix.columns() );
@@ -297,9 +305,11 @@ inline void Rand< CompressedMatrix<Type,SO> >::randomize( CompressedMatrix<Type,
 // \return void
 // \exception std::invalid_argument Invalid number of non-zero elements.
 */
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-inline void Rand< CompressedMatrix<Type,SO> >::randomize( CompressedMatrix<Type,true>& matrix, size_t nonzeros ) const
+template< typename Type   // Data type of the matrix
+        , bool SO         // Storage order
+        , typename Tag >  // Tag type
+inline void
+   Rand< CompressedMatrix<Type,SO,Tag> >::randomize( CompressedMatrix<Type,true,Tag>& matrix, size_t nonzeros ) const
 {
    const size_t m( matrix.rows()    );
    const size_t n( matrix.columns() );
@@ -344,10 +354,11 @@ inline void Rand< CompressedMatrix<Type,SO> >::randomize( CompressedMatrix<Type,
 // \return void
 */
 template< typename Type   // Data type of the matrix
-        , bool SO >       // Storage order
+        , bool SO         // Storage order
+        , typename Tag >  // Tag type
 template< typename Arg >  // Min/max argument type
-inline void Rand< CompressedMatrix<Type,SO> >::randomize( CompressedMatrix<Type,SO>& matrix,
-                                                          const Arg& min, const Arg& max ) const
+inline void Rand< CompressedMatrix<Type,SO,Tag> >::randomize( CompressedMatrix<Type,SO,Tag>& matrix,
+                                                              const Arg& min, const Arg& max ) const
 {
    const size_t m( matrix.rows()    );
    const size_t n( matrix.columns() );
@@ -374,10 +385,11 @@ inline void Rand< CompressedMatrix<Type,SO> >::randomize( CompressedMatrix<Type,
 // \exception std::invalid_argument Invalid number of non-zero elements.
 */
 template< typename Type   // Data type of the matrix
-        , bool SO >       // Storage order
+        , bool SO         // Storage order
+        , typename Tag >  // Tag type
 template< typename Arg >  // Min/max argument type
-inline void Rand< CompressedMatrix<Type,SO> >::randomize( CompressedMatrix<Type,false>& matrix,
-                                                          size_t nonzeros, const Arg& min, const Arg& max ) const
+inline void Rand< CompressedMatrix<Type,SO,Tag> >::randomize( CompressedMatrix<Type,false,Tag>& matrix,
+                                                              size_t nonzeros, const Arg& min, const Arg& max ) const
 {
    const size_t m( matrix.rows()    );
    const size_t n( matrix.columns() );
@@ -424,10 +436,11 @@ inline void Rand< CompressedMatrix<Type,SO> >::randomize( CompressedMatrix<Type,
 // \exception std::invalid_argument Invalid number of non-zero elements.
 */
 template< typename Type   // Data type of the matrix
-        , bool SO >       // Storage order
+        , bool SO         // Storage order
+        , typename Tag >  // Tag type
 template< typename Arg >  // Min/max argument type
-inline void Rand< CompressedMatrix<Type,SO> >::randomize( CompressedMatrix<Type,true>& matrix,
-                                                          size_t nonzeros, const Arg& min, const Arg& max ) const
+inline void Rand< CompressedMatrix<Type,SO,Tag> >::randomize( CompressedMatrix<Type,true,Tag>& matrix,
+                                                              size_t nonzeros, const Arg& min, const Arg& max ) const
 {
    const size_t m( matrix.rows()    );
    const size_t n( matrix.columns() );
