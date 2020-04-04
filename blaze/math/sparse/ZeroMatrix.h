@@ -1528,7 +1528,7 @@ struct AddTraitEval1< T1, T2
 {
    using Type = ZeroMatrix< AddTrait_t< ElementType_t<T1>, ElementType_t<T2> >
                           , ( StorageOrder_v<T1> && StorageOrder_v<T2> )
-                          , DefaultTag >;
+                          , AddTrait_t< TagType_t<T1>, TagType_t<T2> > >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -1570,7 +1570,7 @@ struct SubTraitEval1< T1, T2
 {
    using Type = ZeroMatrix< SubTrait_t< ElementType_t<T1>, ElementType_t<T2> >
                           , ( StorageOrder_v<T1> && StorageOrder_v<T2> )
-                          , DefaultTag >;
+                          , SubTrait_t< TagType_t<T1>, TagType_t<T2> > >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -1608,7 +1608,7 @@ struct SchurTraitEval1< T1, T2
 
    using Type = ZeroMatrix< MultTrait_t< ElementType_t<T1>, ElementType_t<T2> >
                           , SO
-                          , DefaultTag >;
+                          , MultTrait_t< TagType_t<T1>, TagType_t<T2> > >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -1630,7 +1630,7 @@ struct MultTraitEval1< T1, T2
 {
    using Type = ZeroMatrix< MultTrait_t< ElementType_t<T1>, T2 >
                           , StorageOrder_v<T1>
-                          , DefaultTag >;
+                          , MultTrait_t< TagType_t<T1>, T2 > >;
 };
 
 template< typename T1, typename T2 >
@@ -1639,7 +1639,7 @@ struct MultTraitEval1< T1, T2
 {
    using Type = ZeroMatrix< MultTrait_t< T1, ElementType_t<T2> >
                           , StorageOrder_v<T2>
-                          , DefaultTag >;
+                          , MultTrait_t< T1, TagType_t<T2> > >;
 };
 
 template< typename T1, typename T2 >
@@ -1650,7 +1650,7 @@ struct MultTraitEval1< T1, T2
 {
    using Type = ZeroMatrix< MultTrait_t< ElementType_t<T1>, ElementType_t<T2> >
                           , ( IsSparseVector_v<T1> && IsDenseVector_v<T2> )
-                          , DefaultTag >;
+                          , MultTrait_t< TagType_t<T1>, TagType_t<T2> > >;
 };
 
 template< typename T1, typename T2 >
@@ -1660,10 +1660,11 @@ struct MultTraitEval1< T1, T2
                                    ( IsZero_v<T1> || IsZero_v<T2> ) > >
 {
    using MultType = MultTrait_t< ElementType_t<T1>, ElementType_t<T2> >;
+   using MultTag  = MultTrait_t< TagType_t<T1>, TagType_t<T2> >;
 
    using Type = ZeroMatrix< AddTrait_t<MultType,MultType>
                           , ( IsZero_v<T1> ? StorageOrder_v<T1> : StorageOrder_v<T2> )
-                          , DefaultTag >;
+                          , AddTrait_t<MultTag,MultTag> >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -1688,7 +1689,7 @@ struct KronTraitEval1< T1, T2
 {
    using Type = ZeroMatrix< MultTrait_t< ElementType_t<T1>, ElementType_t<T2> >
                           , ( IsZero_v<T2> ? StorageOrder_v<T2> : StorageOrder_v<T1> )
-                          , DefaultTag >;
+                          , MultTrait_t< TagType_t<T1>, TagType_t<T2> > >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -1712,7 +1713,7 @@ struct DivTraitEval1< T1, T2
 {
    using Type = ZeroMatrix< DivTrait_t< ElementType_t<T1>, T2 >
                           , StorageOrder_v<T1>
-                          , DefaultTag >;
+                          , DivTrait_t< TagType_t<T1>, T2 > >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -1735,7 +1736,7 @@ struct UnaryMapTraitEval1< T, OP
 {
    using Type = ZeroMatrix< MapTrait_t< ElementType_t<T>, OP >
                           , StorageOrder_v<T>
-                          , DefaultTag >;
+                          , MapTrait_t< TagType_t<T>, OP > >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -1751,7 +1752,7 @@ struct BinaryMapTraitEval1< T1, T2, OP
 {
    using Type = ZeroMatrix< MapTrait_t< ElementType_t<T1>, ElementType_t<T2>, OP >
                           , ( StorageOrder_v<T1> && StorageOrder_v<T2> )
-                          , DefaultTag >;
+                          , MapTrait_t< TagType_t<T1>, TagType_t<T2>, OP > >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -1775,7 +1776,7 @@ struct ExpandTraitEval1< T, E
 {
    using Type = ZeroMatrix< ElementType_t<T>
                           , ( IsColumnVector_v<T> ? columnMajor : rowMajor )
-                          , DefaultTag >;
+                          , TagType_t<T> >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -1873,7 +1874,7 @@ struct SubmatrixTraitEval1< MT, I, J, M, N
 {
    using Type = ZeroMatrix< RemoveConst_t< ElementType_t<MT> >
                           , StorageOrder_v<MT>
-                          , DefaultTag >;
+                          , TagType_t<MT> >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -1895,7 +1896,7 @@ struct RowsTraitEval1< MT, M
 {
    using Type = ZeroMatrix< RemoveConst_t< ElementType_t<MT> >
                           , false
-                          , DefaultTag >;
+                          , TagType_t<MT> >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -1917,7 +1918,7 @@ struct ColumnsTraitEval1< MT, N
 {
    using Type = ZeroMatrix< RemoveConst_t< ElementType_t<MT> >
                           , true
-                          , DefaultTag >;
+                          , TagType_t<MT> >;
 };
 /*! \endcond */
 //*************************************************************************************************
