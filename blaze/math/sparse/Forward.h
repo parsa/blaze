@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <blaze/math/DefaultTag.h>
 #include <blaze/system/StorageOrder.h>
 #include <blaze/system/TransposeFlag.h>
 
@@ -52,8 +53,9 @@ namespace blaze {
 //
 //=================================================================================================
 
-template< typename Type                     // Data type of the vector
-        , bool TF = defaultTransposeFlag >  // Transpose flag
+template< typename Type                   // Data type of the vector
+        , bool TF = defaultTransposeFlag  // Transpose flag
+        , typename Tag = DefaultTag >     // Type tag
 class CompressedVector;
 
 template< typename Type                    // Data type of the matrix

@@ -65,36 +65,37 @@ namespace blaze {
 //
 // This specialization of the Rand class creates random instances of CompressedVector.
 */
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-class Rand< CompressedVector<Type,TF> >
+template< typename Type   // Data type of the vector
+        , bool TF         // Transpose flag
+        , typename Tag >  // Type tag
+class Rand< CompressedVector<Type,TF,Tag> >
 {
  public:
    //**Generate functions**************************************************************************
    /*!\name Generate functions */
    //@{
-   inline const CompressedVector<Type,TF> generate( size_t size ) const;
-   inline const CompressedVector<Type,TF> generate( size_t size, size_t nonzeros ) const;
+   inline const CompressedVector<Type,TF,Tag> generate( size_t size ) const;
+   inline const CompressedVector<Type,TF,Tag> generate( size_t size, size_t nonzeros ) const;
 
    template< typename Arg >
-   inline const CompressedVector<Type,TF> generate( size_t size, const Arg& min, const Arg& max ) const;
+   inline const CompressedVector<Type,TF,Tag> generate( size_t size, const Arg& min, const Arg& max ) const;
 
    template< typename Arg >
-   inline const CompressedVector<Type,TF> generate( size_t size, size_t nonzeros, const Arg& min, const Arg& max ) const;
+   inline const CompressedVector<Type,TF,Tag> generate( size_t size, size_t nonzeros, const Arg& min, const Arg& max ) const;
    //@}
    //**********************************************************************************************
 
    //**Randomize functions*************************************************************************
    /*!\name Randomize functions */
    //@{
-   inline void randomize( CompressedVector<Type,TF>& vector ) const;
-   inline void randomize( CompressedVector<Type,TF>& vector, size_t nonzeros ) const;
+   inline void randomize( CompressedVector<Type,TF,Tag>& vector ) const;
+   inline void randomize( CompressedVector<Type,TF,Tag>& vector, size_t nonzeros ) const;
 
    template< typename Arg >
-   inline void randomize( CompressedVector<Type,TF>& vector, const Arg& min, const Arg& max ) const;
+   inline void randomize( CompressedVector<Type,TF,Tag>& vector, const Arg& min, const Arg& max ) const;
 
    template< typename Arg >
-   inline void randomize( CompressedVector<Type,TF>& vector, size_t nonzeros, const Arg& min, const Arg& max ) const;
+   inline void randomize( CompressedVector<Type,TF,Tag>& vector, size_t nonzeros, const Arg& min, const Arg& max ) const;
    //@}
    //**********************************************************************************************
 };
@@ -109,12 +110,13 @@ class Rand< CompressedVector<Type,TF> >
 // \param size The size of the random vector.
 // \return The generated random vector.
 */
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-inline const CompressedVector<Type,TF>
-   Rand< CompressedVector<Type,TF> >::generate( size_t size ) const
+template< typename Type   // Data type of the vector
+        , bool TF         // Transpose flag
+        , typename Tag >  // Type tag
+inline const CompressedVector<Type,TF,Tag>
+   Rand< CompressedVector<Type,TF,Tag> >::generate( size_t size ) const
 {
-   CompressedVector<Type,TF> vector( size );
+   CompressedVector<Type,TF,Tag> vector( size );
    randomize( vector );
 
    return vector;
@@ -132,16 +134,17 @@ inline const CompressedVector<Type,TF>
 // \return The generated random vector.
 // \exception std::invalid_argument Invalid number of non-zero elements.
 */
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-inline const CompressedVector<Type,TF>
-   Rand< CompressedVector<Type,TF> >::generate( size_t size, size_t nonzeros ) const
+template< typename Type   // Data type of the vector
+        , bool TF         // Transpose flag
+        , typename Tag >  // Type tag
+inline const CompressedVector<Type,TF,Tag>
+   Rand< CompressedVector<Type,TF,Tag> >::generate( size_t size, size_t nonzeros ) const
 {
    if( nonzeros > size ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid number of non-zero elements" );
    }
 
-   CompressedVector<Type,TF> vector( size, nonzeros );
+   CompressedVector<Type,TF,Tag> vector( size, nonzeros );
    randomize( vector, nonzeros );
 
    return vector;
@@ -160,12 +163,13 @@ inline const CompressedVector<Type,TF>
 // \return The generated random vector.
 */
 template< typename Type   // Data type of the vector
-        , bool TF >       // Transpose flag
+        , bool TF         // Transpose flag
+        , typename Tag >  // Type tag
 template< typename Arg >  // Min/max argument type
-inline const CompressedVector<Type,TF>
-   Rand< CompressedVector<Type,TF> >::generate( size_t size, const Arg& min, const Arg& max ) const
+inline const CompressedVector<Type,TF,Tag>
+   Rand< CompressedVector<Type,TF,Tag> >::generate( size_t size, const Arg& min, const Arg& max ) const
 {
-   CompressedVector<Type,TF> vector( size );
+   CompressedVector<Type,TF,Tag> vector( size );
    randomize( vector, min, max );
 
    return vector;
@@ -186,16 +190,17 @@ inline const CompressedVector<Type,TF>
 // \exception std::invalid_argument Invalid number of non-zero elements.
 */
 template< typename Type   // Data type of the vector
-        , bool TF >       // Transpose flag
+        , bool TF         // Transpose flag
+        , typename Tag >  // Type tag
 template< typename Arg >  // Min/max argument type
-inline const CompressedVector<Type,TF>
-   Rand< CompressedVector<Type,TF> >::generate( size_t size, size_t nonzeros, const Arg& min, const Arg& max ) const
+inline const CompressedVector<Type,TF,Tag>
+   Rand< CompressedVector<Type,TF,Tag> >::generate( size_t size, size_t nonzeros, const Arg& min, const Arg& max ) const
 {
    if( nonzeros > size ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid number of non-zero elements" );
    }
 
-   CompressedVector<Type,TF> vector( size, nonzeros );
+   CompressedVector<Type,TF,Tag> vector( size, nonzeros );
    randomize( vector, nonzeros, min, max );
 
    return vector;
@@ -211,9 +216,11 @@ inline const CompressedVector<Type,TF>
 // \param vector The vector to be randomized.
 // \return void
 */
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-inline void Rand< CompressedVector<Type,TF> >::randomize( CompressedVector<Type,TF>& vector ) const
+template< typename Type   // Data type of the vector
+        , bool TF         // Transpose flag
+        , typename Tag >  // Type tag
+inline void
+   Rand< CompressedVector<Type,TF,Tag> >::randomize( CompressedVector<Type,TF,Tag>& vector ) const
 {
    const size_t size( vector.size() );
 
@@ -236,9 +243,11 @@ inline void Rand< CompressedVector<Type,TF> >::randomize( CompressedVector<Type,
 // \return void
 // \exception std::invalid_argument Invalid number of non-zero elements.
 */
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-inline void Rand< CompressedVector<Type,TF> >::randomize( CompressedVector<Type,TF>& vector, size_t nonzeros ) const
+template< typename Type   // Data type of the vector
+        , bool TF         // Transpose flag
+        , typename Tag >  // Type tag
+inline void
+   Rand< CompressedVector<Type,TF,Tag> >::randomize( CompressedVector<Type,TF,Tag>& vector, size_t nonzeros ) const
 {
    const size_t size( vector.size() );
 
@@ -271,10 +280,12 @@ inline void Rand< CompressedVector<Type,TF> >::randomize( CompressedVector<Type,
 // \return void
 */
 template< typename Type   // Data type of the vector
-        , bool TF >       // Transpose flag
+        , bool TF         // Transpose flag
+        , typename Tag >  // Type tag
 template< typename Arg >  // Min/max argument type
-inline void Rand< CompressedVector<Type,TF> >::randomize( CompressedVector<Type,TF>& vector,
-                                                          const Arg& min, const Arg& max ) const
+inline void
+   Rand< CompressedVector<Type,TF,Tag> >::randomize( CompressedVector<Type,TF,Tag>& vector,
+                                                     const Arg& min, const Arg& max ) const
 {
    const size_t size( vector.size() );
 
@@ -300,10 +311,12 @@ inline void Rand< CompressedVector<Type,TF> >::randomize( CompressedVector<Type,
 // \exception std::invalid_argument Invalid number of non-zero elements.
 */
 template< typename Type   // Data type of the vector
-        , bool TF >       // Transpose flag
+        , bool TF         // Transpose flag
+        , typename Tag >  // Type tag
 template< typename Arg >  // Min/max argument type
-inline void Rand< CompressedVector<Type,TF> >::randomize( CompressedVector<Type,TF>& vector,
-                                                          size_t nonzeros, const Arg& min, const Arg& max ) const
+inline void
+   Rand< CompressedVector<Type,TF,Tag> >::randomize( CompressedVector<Type,TF,Tag>& vector,
+                                                     size_t nonzeros, const Arg& min, const Arg& max ) const
 {
    const size_t size( vector.size() );
 
