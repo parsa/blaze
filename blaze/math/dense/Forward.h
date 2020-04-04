@@ -115,8 +115,9 @@ template< typename Type                                          // Data type of
         , typename RT = DynamicMatrix<RemoveConst_t<Type>,SO> >  // Result type
 class CustomMatrix;
 
-template< typename Type                     // Data type of the vector
-        , bool TF = defaultTransposeFlag >  // Transpose flag
+template< typename Type                   // Data type of the vector
+        , bool TF = defaultTransposeFlag  // Transpose flag
+        , typename Tag = DefaultTag >     // Type tag
 class UniformVector;
 
 template< typename Type                    // Data type of the matrix

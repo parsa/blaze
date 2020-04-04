@@ -61,28 +61,29 @@ namespace blaze {
 //
 // This specialization of the Rand class creates random instances of UniformVector.
 */
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-class Rand< UniformVector<Type,TF> >
+template< typename Type   // Data type of the vector
+        , bool TF         // Transpose flag
+        , typename Tag >  // Type tag
+class Rand< UniformVector<Type,TF,Tag> >
 {
  public:
    //**Generate functions**************************************************************************
    /*!\name Generate functions */
    //@{
-   inline const UniformVector<Type,TF> generate( size_t n ) const;
+   inline const UniformVector<Type,TF,Tag> generate( size_t n ) const;
 
    template< typename Arg >
-   inline const UniformVector<Type,TF> generate( size_t n, const Arg& min, const Arg& max ) const;
+   inline const UniformVector<Type,TF,Tag> generate( size_t n, const Arg& min, const Arg& max ) const;
    //@}
    //**********************************************************************************************
 
    //**Randomize functions*************************************************************************
    /*!\name Randomize functions */
    //@{
-   inline void randomize( UniformVector<Type,TF>& vector ) const;
+   inline void randomize( UniformVector<Type,TF,Tag>& vector ) const;
 
    template< typename Arg >
-   inline void randomize( UniformVector<Type,TF>& vector, const Arg& min, const Arg& max ) const;
+   inline void randomize( UniformVector<Type,TF,Tag>& vector, const Arg& min, const Arg& max ) const;
    //@}
    //**********************************************************************************************
 };
@@ -97,11 +98,13 @@ class Rand< UniformVector<Type,TF> >
 // \param n The size of the random vector.
 // \return The generated random vector.
 */
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-inline const UniformVector<Type,TF> Rand< UniformVector<Type,TF> >::generate( size_t n ) const
+template< typename Type   // Data type of the vector
+        , bool TF         // Transpose flag
+        , typename Tag >  // Type tag
+inline const UniformVector<Type,TF,Tag>
+   Rand< UniformVector<Type,TF,Tag> >::generate( size_t n ) const
 {
-   UniformVector<Type,TF> vector( n );
+   UniformVector<Type,TF,Tag> vector( n );
    randomize( vector );
    return vector;
 }
@@ -119,12 +122,13 @@ inline const UniformVector<Type,TF> Rand< UniformVector<Type,TF> >::generate( si
 // \return The generated random vector.
 */
 template< typename Type   // Data type of the vector
-        , bool TF >       // Transpose flag
+        , bool TF         // Transpose flag
+        , typename Tag >  // Type tag
 template< typename Arg >  // Min/max argument type
-inline const UniformVector<Type,TF>
-   Rand< UniformVector<Type,TF> >::generate( size_t n, const Arg& min, const Arg& max ) const
+inline const UniformVector<Type,TF,Tag>
+   Rand< UniformVector<Type,TF,Tag> >::generate( size_t n, const Arg& min, const Arg& max ) const
 {
-   UniformVector<Type,TF> vector( n );
+   UniformVector<Type,TF,Tag> vector( n );
    randomize( vector, min, max );
    return vector;
 }
@@ -139,9 +143,11 @@ inline const UniformVector<Type,TF>
 // \param vector The vector to be randomized.
 // \return void
 */
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-inline void Rand< UniformVector<Type,TF> >::randomize( UniformVector<Type,TF>& vector ) const
+template< typename Type   // Data type of the vector
+        , bool TF         // Transpose flag
+        , typename Tag >  // Type tag
+inline void
+   Rand< UniformVector<Type,TF,Tag> >::randomize( UniformVector<Type,TF,Tag>& vector ) const
 {
    vector = rand<Type>();
 }
@@ -159,10 +165,12 @@ inline void Rand< UniformVector<Type,TF> >::randomize( UniformVector<Type,TF>& v
 // \return void
 */
 template< typename Type   // Data type of the vector
-        , bool TF >       // Transpose flag
+        , bool TF         // Transpose flag
+        , typename Tag >  // Type tag
 template< typename Arg >  // Min/max argument type
-inline void Rand< UniformVector<Type,TF> >::randomize( UniformVector<Type,TF>& vector,
-                                                       const Arg& min, const Arg& max ) const
+inline void
+   Rand< UniformVector<Type,TF,Tag> >::randomize( UniformVector<Type,TF,Tag>& vector,
+                                                  const Arg& min, const Arg& max ) const
 {
    vector = rand<Type>( min, max );
 }

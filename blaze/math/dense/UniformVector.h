@@ -117,7 +117,7 @@ namespace blaze {
 // can be specified via the two template parameters:
 
    \code
-   template< typename Type, bool TF >
+   template< typename Type, bool TF, typename Tag >
    class UniformVector;
    \endcode
 
@@ -125,6 +125,7 @@ namespace blaze {
 //          non-cv-qualified, non-reference, non-pointer element type.
 //  - TF  : specifies whether the vector is a row vector (\a blaze::rowVector) or a column
 //          vector (\a blaze::columnVector). The default value is \a blaze::columnVector.
+//  - Tag : optional type parameter to tag the vector. The default type is \a blaze::DefaultTag.
 //
 // These uniform elements can be directly accessed with the subscript operator. The numbering
 // of the vector elements is
@@ -168,19 +169,24 @@ namespace blaze {
    A = a * trans( b );  // Outer product between two vectors
    \endcode
 */
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
+template< typename Type   // Data type of the vector
+        , bool TF         // Transpose flag
+        , typename Tag >  // Type tag
 class UniformVector
-   : public Expression< DenseVector< UniformVector<Type,TF>, TF > >
+   : public Expression< DenseVector< UniformVector<Type,TF,Tag>, TF > >
 {
  public:
    //**Type definitions****************************************************************************
-   using This          = UniformVector<Type,TF>;    //!< Type of this UniformVector instance.
-   using BaseType      = DenseVector<This,TF>;      //!< Base type of this UniformVector instance.
-   using ResultType    = This;                      //!< Result type for expression template evaluations.
-   using TransposeType = UniformVector<Type,!TF>;   //!< Transpose type for expression template evaluations.
+   using This       = UniformVector<Type,TF,Tag>;  //!< Type of this UniformVector instance.
+   using BaseType   = DenseVector<This,TF>;        //!< Base type of this UniformVector instance.
+   using ResultType = This;                        //!< Result type for expression template evaluations.
+
+   //! Transpose type for expression template evaluations.
+   using TransposeType = UniformVector<Type,!TF,Tag>;
+
    using ElementType   = Type;                      //!< Type of the vector elements.
    using SIMDType      = SIMDTrait_t<ElementType>;  //!< SIMD type of the vector elements.
+   using TagType       = Tag;                       //!< Tag type of this UniformVector instance.
    using ReturnType    = const Type&;               //!< Return type for expression template evaluations
    using CompositeType = const UniformVector&;      //!< Data type for composite expression templates.
 
@@ -198,7 +204,7 @@ class UniformVector
    */
    template< typename NewType >  // Data type of the other vector
    struct Rebind {
-      using Other = UniformVector<NewType,TF>;  //!< The type of the other UniformVector.
+      using Other = UniformVector<NewType,TF,Tag>;  //!< The type of the other UniformVector.
    };
    //**********************************************************************************************
 
@@ -207,7 +213,7 @@ class UniformVector
    */
    template< size_t NewN >  // Number of elements of the other vector
    struct Resize {
-      using Other = UniformVector<Type,TF>;  //!< The type of the other UniformVector.
+      using Other = UniformVector<Type,TF,Tag>;  //!< The type of the other UniformVector.
    };
    //**********************************************************************************************
 
@@ -359,9 +365,10 @@ class UniformVector
 //*************************************************************************************************
 /*!\brief The default constructor for UniformVector.
 */
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-constexpr UniformVector<Type,TF>::UniformVector() noexcept
+template< typename Type   // Data type of the vector
+        , bool TF         // Transpose flag
+        , typename Tag >  // Type tag
+constexpr UniformVector<Type,TF,Tag>::UniformVector() noexcept
    : size_ ( 0UL )  // The current size/dimension of the uniform vector
    , value_()       // The value of all elements of the uniform vector
 {}
@@ -373,9 +380,10 @@ constexpr UniformVector<Type,TF>::UniformVector() noexcept
 //
 // \param n The size of the vector.
 */
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-constexpr UniformVector<Type,TF>::UniformVector( size_t n )
+template< typename Type   // Data type of the vector
+        , bool TF         // Transpose flag
+        , typename Tag >  // Type tag
+constexpr UniformVector<Type,TF,Tag>::UniformVector( size_t n )
    : size_ ( n )  // The current size/dimension of the uniform vector
    , value_()     // The value of all elements of the uniform vector
 {}
@@ -390,9 +398,10 @@ constexpr UniformVector<Type,TF>::UniformVector( size_t n )
 //
 // All vector elements are initialized with the specified value.
 */
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-constexpr UniformVector<Type,TF>::UniformVector( size_t n, const Type& init )
+template< typename Type   // Data type of the vector
+        , bool TF         // Transpose flag
+        , typename Tag >  // Type tag
+constexpr UniformVector<Type,TF,Tag>::UniformVector( size_t n, const Type& init )
    : size_ ( n    )  // The current size/dimension of the uniform vector
    , value_( init )  // The value of all elements of the uniform vector
 {}
@@ -408,10 +417,11 @@ constexpr UniformVector<Type,TF>::UniformVector( size_t n, const Type& init )
 // The vector is sized according to the given \f$ N \f$-dimensional uniform vector and
 // initialized as a copy of this vector.
 */
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-template< typename VT >  // Type of the foreign vector
-inline UniformVector<Type,TF>::UniformVector( const Vector<VT,TF>& v )
+template< typename Type   // Data type of the vector
+        , bool TF         // Transpose flag
+        , typename Tag >  // Type tag
+template< typename VT >   // Type of the foreign vector
+inline UniformVector<Type,TF,Tag>::UniformVector( const Vector<VT,TF>& v )
    : size_ ( (~v).size() )  // The current size/dimension of the uniform vector
    , value_()               // The value of all elements of the uniform vector
 {
@@ -443,10 +453,11 @@ inline UniformVector<Type,TF>::UniformVector( const Vector<VT,TF>& v )
 // This function only performs an index check in case BLAZE_USER_ASSERT() is active. In contrast,
 // the at() function is guaranteed to perform a check of the given access index.
 */
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-constexpr typename UniformVector<Type,TF>::ConstReference
-   UniformVector<Type,TF>::operator[]( size_t index ) const noexcept
+template< typename Type   // Data type of the vector
+        , bool TF         // Transpose flag
+        , typename Tag >  // Type tag
+constexpr typename UniformVector<Type,TF,Tag>::ConstReference
+   UniformVector<Type,TF,Tag>::operator[]( size_t index ) const noexcept
 {
    MAYBE_UNUSED( index );
 
@@ -467,10 +478,11 @@ constexpr typename UniformVector<Type,TF>::ConstReference
 // In contrast to the subscript operator this function always performs a check of the given
 // access index.
 */
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-inline typename UniformVector<Type,TF>::ConstReference
-   UniformVector<Type,TF>::at( size_t index ) const
+template< typename Type   // Data type of the vector
+        , bool TF         // Transpose flag
+        , typename Tag >  // Type tag
+inline typename UniformVector<Type,TF,Tag>::ConstReference
+   UniformVector<Type,TF,Tag>::at( size_t index ) const
 {
    if( index >= size_ ) {
       BLAZE_THROW_OUT_OF_RANGE( "Invalid vector access index" );
@@ -489,10 +501,11 @@ inline typename UniformVector<Type,TF>::ConstReference
 // This function returns a pointer to the internal storage of the uniform vector. Note that you
 // can NOT assume that elements of the uniform vector lie adjacent to each other!
 */
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-constexpr typename UniformVector<Type,TF>::ConstPointer
-   UniformVector<Type,TF>::data() const noexcept
+template< typename Type   // Data type of the vector
+        , bool TF         // Transpose flag
+        , typename Tag >  // Type tag
+constexpr typename UniformVector<Type,TF,Tag>::ConstPointer
+   UniformVector<Type,TF,Tag>::data() const noexcept
 {
    return &value_;
 }
@@ -504,10 +517,11 @@ constexpr typename UniformVector<Type,TF>::ConstPointer
 //
 // \return Iterator to the first element of the uniform vector.
 */
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-constexpr typename UniformVector<Type,TF>::ConstIterator
-   UniformVector<Type,TF>::begin() const noexcept
+template< typename Type   // Data type of the vector
+        , bool TF         // Transpose flag
+        , typename Tag >  // Type tag
+constexpr typename UniformVector<Type,TF,Tag>::ConstIterator
+   UniformVector<Type,TF,Tag>::begin() const noexcept
 {
    return ConstIterator( &value_, 0UL );
 }
@@ -519,10 +533,11 @@ constexpr typename UniformVector<Type,TF>::ConstIterator
 //
 // \return Iterator to the first element of the uniform vector.
 */
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-constexpr typename UniformVector<Type,TF>::ConstIterator
-   UniformVector<Type,TF>::cbegin() const noexcept
+template< typename Type   // Data type of the vector
+        , bool TF         // Transpose flag
+        , typename Tag >  // Type tag
+constexpr typename UniformVector<Type,TF,Tag>::ConstIterator
+   UniformVector<Type,TF,Tag>::cbegin() const noexcept
 {
    return ConstIterator( &value_, 0UL );
 }
@@ -534,10 +549,11 @@ constexpr typename UniformVector<Type,TF>::ConstIterator
 //
 // \return Iterator just past the last element of the uniform vector.
 */
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-constexpr typename UniformVector<Type,TF>::ConstIterator
-   UniformVector<Type,TF>::end() const noexcept
+template< typename Type   // Data type of the vector
+        , bool TF         // Transpose flag
+        , typename Tag >  // Type tag
+constexpr typename UniformVector<Type,TF,Tag>::ConstIterator
+   UniformVector<Type,TF,Tag>::end() const noexcept
 {
    return ConstIterator( &value_, size_ );
 }
@@ -549,10 +565,11 @@ constexpr typename UniformVector<Type,TF>::ConstIterator
 //
 // \return Iterator just past the last element of the uniform vector.
 */
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-constexpr typename UniformVector<Type,TF>::ConstIterator
-   UniformVector<Type,TF>::cend() const noexcept
+template< typename Type   // Data type of the vector
+        , bool TF         // Transpose flag
+        , typename Tag >  // Type tag
+constexpr typename UniformVector<Type,TF,Tag>::ConstIterator
+   UniformVector<Type,TF,Tag>::cend() const noexcept
 {
    return ConstIterator( &value_, size_ );
 }
@@ -573,9 +590,11 @@ constexpr typename UniformVector<Type,TF>::ConstIterator
 // \param rhs Scalar value to be assigned to all vector elements.
 // \return Reference to the assigned vector.
 */
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-constexpr UniformVector<Type,TF>& UniformVector<Type,TF>::operator=( const Type& rhs )
+template< typename Type   // Data type of the vector
+        , bool TF         // Transpose flag
+        , typename Tag >  // Type tag
+constexpr UniformVector<Type,TF,Tag>&
+   UniformVector<Type,TF,Tag>::operator=( const Type& rhs )
 {
    value_ = rhs;
 
@@ -593,10 +612,12 @@ constexpr UniformVector<Type,TF>& UniformVector<Type,TF>::operator=( const Type&
 // The vector is resized according to the given uniform vector and initialized as a copy of this
 // vector.
 */
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-template< typename VT >  // Type of the right-hand side vector
-inline UniformVector<Type,TF>& UniformVector<Type,TF>::operator=( const Vector<VT,TF>& rhs )
+template< typename Type   // Data type of the vector
+        , bool TF         // Transpose flag
+        , typename Tag >  // Type tag
+template< typename VT >   // Type of the right-hand side vector
+inline UniformVector<Type,TF,Tag>&
+   UniformVector<Type,TF,Tag>::operator=( const Vector<VT,TF>& rhs )
 {
    if( !IsUniform_v<VT> && !isUniform( ~rhs ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment of uniform vector" );
@@ -624,10 +645,12 @@ inline UniformVector<Type,TF>& UniformVector<Type,TF>::operator=( const Vector<V
 // In case the current sizes of the two vectors don't match, a \a std::invalid_argument exception
 // is thrown.
 */
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-template< typename VT >  // Type of the right-hand side vector
-inline UniformVector<Type,TF>& UniformVector<Type,TF>::operator+=( const Vector<VT,TF>& rhs )
+template< typename Type   // Data type of the vector
+        , bool TF         // Transpose flag
+        , typename Tag >  // Type tag
+template< typename VT >   // Type of the right-hand side vector
+inline UniformVector<Type,TF,Tag>&
+   UniformVector<Type,TF,Tag>::operator+=( const Vector<VT,TF>& rhs )
 {
    if( (~rhs).size() != size_ ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
@@ -657,10 +680,12 @@ inline UniformVector<Type,TF>& UniformVector<Type,TF>::operator+=( const Vector<
 // In case the current sizes of the two vectors don't match, a \a std::invalid_argument exception
 // is thrown.
 */
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-template< typename VT >  // Type of the right-hand side vector
-inline UniformVector<Type,TF>& UniformVector<Type,TF>::operator-=( const Vector<VT,TF>& rhs )
+template< typename Type   // Data type of the vector
+        , bool TF         // Transpose flag
+        , typename Tag >  // Type tag
+template< typename VT >   // Type of the right-hand side vector
+inline UniformVector<Type,TF,Tag>&
+   UniformVector<Type,TF,Tag>::operator-=( const Vector<VT,TF>& rhs )
 {
    if( (~rhs).size() != size_ ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
@@ -691,10 +716,12 @@ inline UniformVector<Type,TF>& UniformVector<Type,TF>::operator-=( const Vector<
 // In case the current sizes of the two vectors don't match, a \a std::invalid_argument exception
 // is thrown.
 */
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-template< typename VT >  // Type of the right-hand side vector
-inline UniformVector<Type,TF>& UniformVector<Type,TF>::operator*=( const Vector<VT,TF>& rhs )
+template< typename Type   // Data type of the vector
+        , bool TF         // Transpose flag
+        , typename Tag >  // Type tag
+template< typename VT >   // Type of the right-hand side vector
+inline UniformVector<Type,TF,Tag>&
+   UniformVector<Type,TF,Tag>::operator*=( const Vector<VT,TF>& rhs )
 {
    if( (~rhs).size() != size_ ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
@@ -724,10 +751,12 @@ inline UniformVector<Type,TF>& UniformVector<Type,TF>::operator*=( const Vector<
 // In case the current sizes of the two vectors don't match, a \a std::invalid_argument exception
 // is thrown.
 */
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-template< typename VT >  // Type of the right-hand side vector
-inline UniformVector<Type,TF>& UniformVector<Type,TF>::operator/=( const DenseVector<VT,TF>& rhs )
+template< typename Type   // Data type of the vector
+        , bool TF         // Transpose flag
+        , typename Tag >  // Type tag
+template< typename VT >   // Type of the right-hand side vector
+inline UniformVector<Type,TF,Tag>&
+   UniformVector<Type,TF,Tag>::operator/=( const DenseVector<VT,TF>& rhs )
 {
    if( (~rhs).size() != size_ ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
@@ -753,10 +782,11 @@ inline UniformVector<Type,TF>& UniformVector<Type,TF>::operator/=( const DenseVe
 // \param scalar The right-hand side scalar value for the multiplication.
 // \return Reference to the vector.
 */
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-template< typename ST >  // Data type of the right-hand side scalar
-inline auto UniformVector<Type,TF>::operator*=( ST scalar )
+template< typename Type   // Data type of the vector
+        , bool TF         // Transpose flag
+        , typename Tag >  // Type tag
+template< typename ST >   // Data type of the right-hand side scalar
+inline auto UniformVector<Type,TF,Tag>::operator*=( ST scalar )
    -> EnableIf_t< IsNumeric_v<ST>, UniformVector& >
 {
    if( size() > 0UL ) {
@@ -775,10 +805,11 @@ inline auto UniformVector<Type,TF>::operator*=( ST scalar )
 // \param scalar The right-hand side scalar value for the division.
 // \return Reference to the vector.
 */
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-template< typename ST >  // Data type of the right-hand side scalar
-inline auto UniformVector<Type,TF>::operator/=( ST scalar )
+template< typename Type   // Data type of the vector
+        , bool TF         // Transpose flag
+        , typename Tag >  // Type tag
+template< typename ST >   // Data type of the right-hand side scalar
+inline auto UniformVector<Type,TF,Tag>::operator/=( ST scalar )
    -> EnableIf_t< IsNumeric_v<ST>, UniformVector& >
 {
    if( size() > 0UL ) {
@@ -803,9 +834,10 @@ inline auto UniformVector<Type,TF>::operator/=( ST scalar )
 //
 // \return The size of the vector.
 */
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-constexpr size_t UniformVector<Type,TF>::size() const noexcept
+template< typename Type   // Data type of the vector
+        , bool TF         // Transpose flag
+        , typename Tag >  // Type tag
+constexpr size_t UniformVector<Type,TF,Tag>::size() const noexcept
 {
    return size_;
 }
@@ -820,9 +852,10 @@ constexpr size_t UniformVector<Type,TF>::size() const noexcept
 // This function returns the minimum capacity of the vector, which corresponds to the current
 // size plus padding.
 */
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-constexpr size_t UniformVector<Type,TF>::spacing() const noexcept
+template< typename Type   // Data type of the vector
+        , bool TF         // Transpose flag
+        , typename Tag >  // Type tag
+constexpr size_t UniformVector<Type,TF,Tag>::spacing() const noexcept
 {
    return size_;
 }
@@ -834,9 +867,10 @@ constexpr size_t UniformVector<Type,TF>::spacing() const noexcept
 //
 // \return The maximum capacity of the vector.
 */
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-constexpr size_t UniformVector<Type,TF>::capacity() const noexcept
+template< typename Type   // Data type of the vector
+        , bool TF         // Transpose flag
+        , typename Tag >  // Type tag
+constexpr size_t UniformVector<Type,TF,Tag>::capacity() const noexcept
 {
    return size_;
 }
@@ -851,9 +885,10 @@ constexpr size_t UniformVector<Type,TF>::capacity() const noexcept
 // Note that the number of non-zero elements is always less than or equal to the current size
 // of the vector.
 */
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-inline size_t UniformVector<Type,TF>::nonZeros() const
+template< typename Type   // Data type of the vector
+        , bool TF         // Transpose flag
+        , typename Tag >  // Type tag
+inline size_t UniformVector<Type,TF,Tag>::nonZeros() const
 {
    if( size_ == 0UL || isDefault( value_ ) )
       return 0UL;
@@ -868,9 +903,10 @@ inline size_t UniformVector<Type,TF>::nonZeros() const
 //
 // \return void
 */
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-constexpr void UniformVector<Type,TF>::reset()
+template< typename Type   // Data type of the vector
+        , bool TF         // Transpose flag
+        , typename Tag >  // Type tag
+constexpr void UniformVector<Type,TF,Tag>::reset()
 {
    using blaze::clear;
 
@@ -886,9 +922,10 @@ constexpr void UniformVector<Type,TF>::reset()
 //
 // After the clear() function, the size of the vector is 0.
 */
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-constexpr void UniformVector<Type,TF>::clear()
+template< typename Type   // Data type of the vector
+        , bool TF         // Transpose flag
+        , typename Tag >  // Type tag
+constexpr void UniformVector<Type,TF,Tag>::clear()
 {
    size_ = 0UL;
 }
@@ -907,9 +944,10 @@ constexpr void UniformVector<Type,TF>::clear()
 // vector. Additionally, the resize operation potentially changes all vector elements. In order
 // to preserve the old vector values, the \a preserve flag can be set to \a true.
 */
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-constexpr void UniformVector<Type,TF>::resize( size_t n, bool preserve )
+template< typename Type   // Data type of the vector
+        , bool TF         // Transpose flag
+        , typename Tag >  // Type tag
+constexpr void UniformVector<Type,TF,Tag>::resize( size_t n, bool preserve )
 {
    MAYBE_UNUSED( preserve );
 
@@ -929,9 +967,10 @@ constexpr void UniformVector<Type,TF>::resize( size_t n, bool preserve )
 // changes all vector elements. In order to preserve the old vector values, the \a preserve flag
 // can be set to \a true.
 */
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-constexpr void UniformVector<Type,TF>::extend( size_t n, bool preserve )
+template< typename Type   // Data type of the vector
+        , bool TF         // Transpose flag
+        , typename Tag >  // Type tag
+constexpr void UniformVector<Type,TF,Tag>::extend( size_t n, bool preserve )
 {
    resize( size_+n, preserve );
 }
@@ -944,9 +983,10 @@ constexpr void UniformVector<Type,TF>::extend( size_t n, bool preserve )
 // \param v The vector to be swapped.
 // \return void
 */
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-constexpr void UniformVector<Type,TF>::swap( UniformVector& v ) noexcept
+template< typename Type   // Data type of the vector
+        , bool TF         // Transpose flag
+        , typename Tag >  // Type tag
+constexpr void UniformVector<Type,TF,Tag>::swap( UniformVector& v ) noexcept
 {
    using std::swap;
 
@@ -982,9 +1022,10 @@ constexpr void UniformVector<Type,TF>::swap( UniformVector& v ) noexcept
    \endcode
 */
 template< typename Type     // Data type of the vector
-        , bool TF >         // Transpose flag
+        , bool TF           // Transpose flag
+        , typename Tag >    // Type tag
 template< typename Other >  // Data type of the scalar value
-inline UniformVector<Type,TF>& UniformVector<Type,TF>::scale( const Other& scalar )
+inline UniformVector<Type,TF,Tag>& UniformVector<Type,TF,Tag>::scale( const Other& scalar )
 {
    if( size_ > 0UL ) {
       value_ *= scalar;
@@ -1014,9 +1055,10 @@ inline UniformVector<Type,TF>& UniformVector<Type,TF>::scale( const Other& scala
 // to optimize the evaluation.
 */
 template< typename Type     // Data type of the vector
-        , bool TF >         // Transpose flag
+        , bool TF           // Transpose flag
+        , typename Tag >    // Type tag
 template< typename Other >  // Data type of the foreign expression
-inline bool UniformVector<Type,TF>::canAlias( const Other* alias ) const noexcept
+inline bool UniformVector<Type,TF,Tag>::canAlias( const Other* alias ) const noexcept
 {
    return static_cast<const void*>( this ) == static_cast<const void*>( alias );
 }
@@ -1034,9 +1076,10 @@ inline bool UniformVector<Type,TF>::canAlias( const Other* alias ) const noexcep
 // to optimize the evaluation.
 */
 template< typename Type     // Data type of the vector
-        , bool TF >         // Transpose flag
+        , bool TF           // Transpose flag
+        , typename Tag >    // Type tag
 template< typename Other >  // Data type of the foreign expression
-inline bool UniformVector<Type,TF>::isAliased( const Other* alias ) const noexcept
+inline bool UniformVector<Type,TF,Tag>::isAliased( const Other* alias ) const noexcept
 {
    return static_cast<const void*>( this ) == static_cast<const void*>( alias );
 }
@@ -1052,9 +1095,10 @@ inline bool UniformVector<Type,TF>::isAliased( const Other* alias ) const noexce
 // whether the beginning and the end of the vector are guaranteed to conform to the alignment
 // restrictions of the element type \a Type.
 */
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-inline bool UniformVector<Type,TF>::isAligned() const noexcept
+template< typename Type   // Data type of the vector
+        , bool TF         // Transpose flag
+        , typename Tag >  // Type tag
+inline bool UniformVector<Type,TF,Tag>::isAligned() const noexcept
 {
    return true;
 }
@@ -1071,9 +1115,10 @@ inline bool UniformVector<Type,TF>::isAligned() const noexcept
 // function additionally provides runtime information (as for instance the current size of the
 // vector).
 */
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-inline bool UniformVector<Type,TF>::canSMPAssign() const noexcept
+template< typename Type   // Data type of the vector
+        , bool TF         // Transpose flag
+        , typename Tag >  // Type tag
+inline bool UniformVector<Type,TF,Tag>::canSMPAssign() const noexcept
 {
    return ( size() > SMP_DVECASSIGN_THRESHOLD );
 }
@@ -1092,10 +1137,11 @@ inline bool UniformVector<Type,TF>::canSMPAssign() const noexcept
 // used internally for the performance optimized evaluation of expression templates. Calling
 // this function explicitly might result in erroneous results and/or in compilation errors.
 */
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-BLAZE_ALWAYS_INLINE typename UniformVector<Type,TF>::SIMDType
-   UniformVector<Type,TF>::load( size_t index ) const noexcept
+template< typename Type   // Data type of the vector
+        , bool TF         // Transpose flag
+        , typename Tag >  // Type tag
+BLAZE_ALWAYS_INLINE typename UniformVector<Type,TF,Tag>::SIMDType
+   UniformVector<Type,TF,Tag>::load( size_t index ) const noexcept
 {
    return loada( index );
 }
@@ -1115,10 +1161,11 @@ BLAZE_ALWAYS_INLINE typename UniformVector<Type,TF>::SIMDType
 // Calling this function explicitly might result in erroneous results and/or in compilation
 // errors.
 */
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-BLAZE_ALWAYS_INLINE typename UniformVector<Type,TF>::SIMDType
-   UniformVector<Type,TF>::loada( size_t index ) const noexcept
+template< typename Type   // Data type of the vector
+        , bool TF         // Transpose flag
+        , typename Tag >  // Type tag
+BLAZE_ALWAYS_INLINE typename UniformVector<Type,TF,Tag>::SIMDType
+   UniformVector<Type,TF,Tag>::loada( size_t index ) const noexcept
 {
    MAYBE_UNUSED( index );
 
@@ -1146,10 +1193,11 @@ BLAZE_ALWAYS_INLINE typename UniformVector<Type,TF>::SIMDType
 // Calling this function explicitly might result in erroneous results and/or in compilation
 // errors.
 */
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-BLAZE_ALWAYS_INLINE typename UniformVector<Type,TF>::SIMDType
-   UniformVector<Type,TF>::loadu( size_t index ) const noexcept
+template< typename Type   // Data type of the vector
+        , bool TF         // Transpose flag
+        , typename Tag >  // Type tag
+BLAZE_ALWAYS_INLINE typename UniformVector<Type,TF,Tag>::SIMDType
+   UniformVector<Type,TF,Tag>::loadu( size_t index ) const noexcept
 {
    MAYBE_UNUSED( index );
 
@@ -1174,20 +1222,20 @@ BLAZE_ALWAYS_INLINE typename UniformVector<Type,TF>::SIMDType
 //*************************************************************************************************
 /*!\name UniformVector operators */
 //@{
-template< typename Type, bool TF >
-constexpr void reset( UniformVector<Type,TF>& v );
+template< typename Type, bool TF, typename Tag >
+constexpr void reset( UniformVector<Type,TF,Tag>& v );
 
-template< typename Type, bool TF >
-constexpr void clear( UniformVector<Type,TF>& v );
+template< typename Type, bool TF, typename Tag >
+constexpr void clear( UniformVector<Type,TF,Tag>& v );
 
-template< RelaxationFlag RF, typename Type, bool TF >
-constexpr bool isDefault( const UniformVector<Type,TF>& v );
+template< RelaxationFlag RF, typename Type, bool TF, typename Tag >
+constexpr bool isDefault( const UniformVector<Type,TF,Tag>& v );
 
-template< typename Type, bool TF >
-constexpr bool isIntact( const UniformVector<Type,TF>& v ) noexcept;
+template< typename Type, bool TF, typename Tag >
+constexpr bool isIntact( const UniformVector<Type,TF,Tag>& v ) noexcept;
 
-template< typename Type, bool TF >
-constexpr void swap( UniformVector<Type,TF>& a, UniformVector<Type,TF>& b ) noexcept;
+template< typename Type, bool TF, typename Tag >
+constexpr void swap( UniformVector<Type,TF,Tag>& a, UniformVector<Type,TF,Tag>& b ) noexcept;
 //@}
 //*************************************************************************************************
 
@@ -1199,9 +1247,10 @@ constexpr void swap( UniformVector<Type,TF>& a, UniformVector<Type,TF>& b ) noex
 // \param v The uniform vector to be resetted.
 // \return void
 */
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-constexpr void reset( UniformVector<Type,TF>& v )
+template< typename Type   // Data type of the vector
+        , bool TF         // Transpose flag
+        , typename Tag >  // Type tag
+constexpr void reset( UniformVector<Type,TF,Tag>& v )
 {
    v.reset();
 }
@@ -1215,9 +1264,10 @@ constexpr void reset( UniformVector<Type,TF>& v )
 // \param v The uniform vector to be cleared.
 // \return void
 */
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-constexpr void clear( UniformVector<Type,TF>& v )
+template< typename Type   // Data type of the vector
+        , bool TF         // Transpose flag
+        , typename Tag >  // Type tag
+constexpr void clear( UniformVector<Type,TF,Tag>& v )
 {
    v.clear();
 }
@@ -1250,8 +1300,9 @@ constexpr void clear( UniformVector<Type,TF>& v )
 */
 template< RelaxationFlag RF  // Relaxation flag
         , typename Type      // Data type of the vector
-        , bool TF >          // Transpose flag
-constexpr bool isDefault( const UniformVector<Type,TF>& v )
+        , bool TF            // Transpose flag
+        , typename Tag >     // Type tag
+constexpr bool isDefault( const UniformVector<Type,TF,Tag>& v )
 {
    return ( v.size() == 0UL );
 }
@@ -1276,9 +1327,10 @@ constexpr bool isDefault( const UniformVector<Type,TF>& v )
    if( isIntact( a ) ) { ... }
    \endcode
 */
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-constexpr bool isIntact( const UniformVector<Type,TF>& v ) noexcept
+template< typename Type   // Data type of the vector
+        , bool TF         // Transpose flag
+        , typename Tag >  // Type tag
+constexpr bool isIntact( const UniformVector<Type,TF,Tag>& v ) noexcept
 {
    MAYBE_UNUSED( v );
 
@@ -1295,9 +1347,10 @@ constexpr bool isIntact( const UniformVector<Type,TF>& v ) noexcept
 // \param b The second vector to be swapped.
 // \return void
 */
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-constexpr void swap( UniformVector<Type,TF>& a, UniformVector<Type,TF>& b ) noexcept
+template< typename Type   // Data type of the vector
+        , bool TF         // Transpose flag
+        , typename Tag >  // Type tag
+constexpr void swap( UniformVector<Type,TF,Tag>& a, UniformVector<Type,TF,Tag>& b ) noexcept
 {
    a.swap( b );
 }
@@ -1356,8 +1409,8 @@ constexpr decltype(auto) uniform( size_t n, T&& init )
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename Type, bool TF >
-struct IsUniform< UniformVector<Type,TF> >
+template< typename Type, bool TF, typename Tag >
+struct IsUniform< UniformVector<Type,TF,Tag> >
    : public TrueType
 {};
 /*! \endcond */
@@ -1374,8 +1427,8 @@ struct IsUniform< UniformVector<Type,TF> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename Type, bool TF >
-struct IsAligned< UniformVector<Type,TF> >
+template< typename Type, bool TF, typename Tag >
+struct IsAligned< UniformVector<Type,TF,Tag> >
    : public TrueType
 {};
 /*! \endcond */
@@ -1392,8 +1445,8 @@ struct IsAligned< UniformVector<Type,TF> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename Type, bool TF >
-struct IsResizable< UniformVector<Type,TF> >
+template< typename Type, bool TF, typename Tag >
+struct IsResizable< UniformVector<Type,TF,Tag> >
    : public TrueType
 {};
 /*! \endcond */
@@ -1417,10 +1470,9 @@ struct AddTraitEval1< T1, T2
                                   ( IsUniform_v<T1> && IsUniform_v<T2> ) &&
                                   !( IsZero_v<T1> || IsZero_v<T2> ) > >
 {
-   using ET1 = ElementType_t<T1>;
-   using ET2 = ElementType_t<T2>;
-
-   using Type = UniformVector< AddTrait_t<ET1,ET2>, TransposeFlag_v<T1> >;
+   using Type = UniformVector< AddTrait_t< ElementType_t<T1>, ElementType_t<T2> >
+                             , TransposeFlag_v<T1>
+                             , DefaultTag >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -1443,10 +1495,9 @@ struct SubTraitEval1< T1, T2
                                   ( IsUniform_v<T1> && IsUniform_v<T2> ) &&
                                   !( IsZero_v<T1> || IsZero_v<T2> ) > >
 {
-   using ET1 = ElementType_t<T1>;
-   using ET2 = ElementType_t<T2>;
-
-   using Type = UniformVector< SubTrait_t<ET1,ET2>, TransposeFlag_v<T1> >;
+   using Type = UniformVector< SubTrait_t< ElementType_t<T1>, ElementType_t<T2> >
+                             , TransposeFlag_v<T1>
+                             , DefaultTag >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -1468,9 +1519,9 @@ struct MultTraitEval1< T1, T2
                                    IsNumeric_v<T2> &&
                                    IsUniform_v<T1> && !IsZero_v<T1> > >
 {
-   using ET1 = ElementType_t<T1>;
-
-   using Type = UniformVector< MultTrait_t<ET1,T2>, TransposeFlag_v<T1> >;
+   using Type = UniformVector< MultTrait_t< ElementType_t<T1>, T2 >
+                             , TransposeFlag_v<T1>
+                             , DefaultTag >;
 };
 
 template< typename T1, typename T2 >
@@ -1479,9 +1530,9 @@ struct MultTraitEval1< T1, T2
                                    IsVector_v<T2> &&
                                    IsUniform_v<T2> && !IsZero_v<T2> > >
 {
-   using ET2 = ElementType_t<T2>;
-
-   using Type = UniformVector< MultTrait_t<T1,ET2>, TransposeFlag_v<T2> >;
+   using Type = UniformVector< MultTrait_t< T1, ElementType_t<T2> >
+                             , TransposeFlag_v<T2>
+                             , DefaultTag >;
 };
 
 template< typename T1, typename T2 >
@@ -1491,10 +1542,9 @@ struct MultTraitEval1< T1, T2
                                    ( IsUniform_v<T1> && IsUniform_v<T2> ) &&
                                    !( IsZero_v<T1> || IsZero_v<T2> ) > >
 {
-   using ET1 = ElementType_t<T1>;
-   using ET2 = ElementType_t<T2>;
-
-   using Type = UniformVector< MultTrait_t<ET1,ET2>, TransposeFlag_v<T1> >;
+   using Type = UniformVector< MultTrait_t< ElementType_t<T1>, ElementType_t<T2> >
+                             , TransposeFlag_v<T1>
+                             , DefaultTag >;
 };
 
 template< typename T1, typename T2 >
@@ -1504,10 +1554,11 @@ struct MultTraitEval1< T1, T2
                                    IsUniform_v<T1> &&
                                    !( IsZero_v<T1> || IsZero_v<T2> ) > >
 {
-   using ET1 = ElementType_t<T1>;
-   using ET2 = ElementType_t<T2>;
+   using MultType = MultTrait_t< ElementType_t<T1>, ElementType_t<T2> >;
 
-   using Type = UniformVector< MultTrait_t<ET1,ET2>, false >;
+   using Type = UniformVector< AddTrait_t<MultType,MultType>
+                             , false
+                             , DefaultTag >;
 };
 
 template< typename T1, typename T2 >
@@ -1517,10 +1568,11 @@ struct MultTraitEval1< T1, T2
                                    IsUniform_v<T2> &&
                                    !( IsZero_v<T1> || IsZero_v<T2> ) > >
 {
-   using ET1 = ElementType_t<T1>;
-   using ET2 = ElementType_t<T2>;
+   using MultType = MultTrait_t< ElementType_t<T1>, ElementType_t<T2> >;
 
-   using Type = UniformVector< MultTrait_t<ET1,ET2>, true >;
+   using Type = UniformVector< AddTrait_t<MultType,MultType>
+                             , true
+                             , DefaultTag >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -1543,10 +1595,9 @@ struct KronTraitEval1< T1, T2
                                    ( IsUniform_v<T1> && IsUniform_v<T2> ) &&
                                    !( IsZero_v<T1> || IsZero_v<T2> ) > >
 {
-   using ET1 = ElementType_t<T1>;
-   using ET2 = ElementType_t<T2>;
-
-   using Type = UniformVector< MultTrait_t<ET1,ET2>, TransposeFlag_v<T2> >;
+   using Type = UniformVector< MultTrait_t< ElementType_t<T1>, ElementType_t<T2> >
+                             , TransposeFlag_v<T2>
+                             , DefaultTag >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -1568,9 +1619,9 @@ struct DivTraitEval1< T1, T2
                                   IsNumeric_v<T2> &&
                                   IsUniform_v<T1> && !IsZero_v<T1> > >
 {
-   using ET1 = ElementType_t<T1>;
-
-   using Type = UniformVector< DivTrait_t<ET1,T2>, TransposeFlag_v<T1> >;
+   using Type = UniformVector< DivTrait_t< ElementType_t<T1>, T2 >
+                             , TransposeFlag_v<T1>
+                             , DefaultTag >;
 };
 
 template< typename T1, typename T2 >
@@ -1580,10 +1631,9 @@ struct DivTraitEval1< T1, T2
                                   ( IsUniform_v<T1> && IsUniform_v<T2> ) &&
                                   !( IsZero_v<T1> || IsZero_v<T2> ) > >
 {
-   using ET1 = ElementType_t<T1>;
-   using ET2 = ElementType_t<T2>;
-
-   using Type = UniformVector< DivTrait_t<ET1,ET2>, TransposeFlag_v<T1> >;
+   using Type = UniformVector< DivTrait_t< ElementType_t<T1>, ElementType_t<T2> >
+                             , TransposeFlag_v<T1>
+                             , DefaultTag >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -1605,9 +1655,9 @@ struct UnaryMapTraitEval1< T, OP
                                        YieldsUniform_v<OP,T> &&
                                        !YieldsZero_v<OP,T> > >
 {
-   using ET = ElementType_t<T>;
-
-   using Type = UniformVector< MapTrait_t<ET,OP>, TransposeFlag_v<T> >;
+   using Type = UniformVector< MapTrait_t< ElementType_t<T>, OP >
+                             , TransposeFlag_v<T>
+                             , DefaultTag >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -1622,10 +1672,9 @@ struct BinaryMapTraitEval1< T1, T2, OP
                                         YieldsUniform_v<OP,T1,T2> &&
                                         !YieldsZero_v<OP,T1,T2> > >
 {
-   using ET1 = ElementType_t<T1>;
-   using ET2 = ElementType_t<T2>;
-
-   using Type = UniformVector< MapTrait_t<ET1,ET2,OP>, TransposeFlag_v<T1> >;
+   using Type = UniformVector< MapTrait_t< ElementType_t<T1>, ElementType_t<T2>, OP >
+                             , TransposeFlag_v<T1>
+                             , DefaultTag >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -1646,11 +1695,10 @@ struct PartialReduceTraitEval1< T, OP, RF
                               , EnableIf_t< IsMatrix_v<T> && IsUniform_v<T> > >
 {
    using ET = ElementType_t<T>;
-   using RT = decltype( std::declval<OP>()( std::declval<ET>(), std::declval<ET>() ) );
 
-   static constexpr bool TF = ( RF == columnwise );
-
-   using Type = UniformVector<RT,TF>;
+   using Type = UniformVector< decltype( std::declval<OP>()( std::declval<ET>(), std::declval<ET>() ) )
+                             , ( RF == columnwise )
+                             , DefaultTag >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -1666,10 +1714,10 @@ struct PartialReduceTraitEval1< T, OP, RF
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T1, bool TF, typename T2 >
-struct HighType< UniformVector<T1,TF>, UniformVector<T2,TF> >
+template< typename T1, bool TF, typename Tag, typename T2 >
+struct HighType< UniformVector<T1,TF,Tag>, UniformVector<T2,TF,Tag> >
 {
-   using Type = UniformVector< typename HighType<T1,T2>::Type, TF >;
+   using Type = UniformVector< typename HighType<T1,T2>::Type, TF, Tag >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -1685,10 +1733,10 @@ struct HighType< UniformVector<T1,TF>, UniformVector<T2,TF> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T1, bool TF, typename T2 >
-struct LowType< UniformVector<T1,TF>, UniformVector<T2,TF> >
+template< typename T1, bool TF, typename Tag, typename T2 >
+struct LowType< UniformVector<T1,TF,Tag>, UniformVector<T2,TF,Tag> >
 {
-   using Type = UniformVector< typename LowType<T1,T2>::Type, TF >;
+   using Type = UniformVector< typename LowType<T1,T2>::Type, TF, Tag >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -1708,7 +1756,9 @@ template< typename VT, size_t I, size_t N >
 struct SubvectorTraitEval1< VT, I, N
                           , EnableIf_t< IsUniform_v<VT> && !IsZero_v<VT> > >
 {
-   using Type = UniformVector< RemoveConst_t< ElementType_t<VT> >, TransposeFlag_v<VT> >;
+   using Type = UniformVector< RemoveConst_t< ElementType_t<VT> >
+                             , TransposeFlag_v<VT>
+                             , DefaultTag >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -1728,7 +1778,9 @@ template< typename VT, size_t N >
 struct ElementsTraitEval1< VT, N
                          , EnableIf_t< IsUniform_v<VT> && !IsZero_v<VT> > >
 {
-   using Type = UniformVector< RemoveConst_t< ElementType_t<VT> >, TransposeFlag_v<VT> >;
+   using Type = UniformVector< RemoveConst_t< ElementType_t<VT> >
+                             , TransposeFlag_v<VT>
+                             , DefaultTag >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -1748,7 +1800,9 @@ template< typename MT, size_t I >
 struct RowTraitEval1< MT, I
                     , EnableIf_t< IsUniform_v<MT> && !IsZero_v<MT> > >
 {
-   using Type = UniformVector< RemoveConst_t< ElementType_t<MT> >, true >;
+   using Type = UniformVector< RemoveConst_t< ElementType_t<MT> >
+                             , true
+                             , DefaultTag >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -1768,7 +1822,9 @@ template< typename MT, size_t I >
 struct ColumnTraitEval1< MT, I
                        , EnableIf_t< IsUniform_v<MT> && !IsZero_v<MT> > >
 {
-   using Type = UniformVector< RemoveConst_t< ElementType_t<MT> >, false >;
+   using Type = UniformVector< RemoveConst_t< ElementType_t<MT> >
+                             , false
+                             , DefaultTag >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -1788,7 +1844,9 @@ template< typename MT, ptrdiff_t I >
 struct BandTraitEval1< MT, I
                      , EnableIf_t< IsUniform_v<MT> && !IsZero_v<MT> > >
 {
-   using Type = UniformVector< RemoveConst_t< ElementType_t<MT> >, defaultTransposeFlag >;
+   using Type = UniformVector< RemoveConst_t< ElementType_t<MT> >
+                             , defaultTransposeFlag
+                             , DefaultTag >;
 };
 /*! \endcond */
 //*************************************************************************************************
