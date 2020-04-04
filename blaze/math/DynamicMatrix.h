@@ -69,28 +69,29 @@ namespace blaze {
 //
 // This specialization of the Rand class creates random instances of DynamicMatrix.
 */
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-class Rand< DynamicMatrix<Type,SO> >
+template< typename Type   // Data type of the matrix
+        , bool SO         // Storage order
+        , typename Tag >  // Type tag
+class Rand< DynamicMatrix<Type,SO,Tag> >
 {
  public:
    //**Generate functions**************************************************************************
    /*!\name Generate functions */
    //@{
-   inline const DynamicMatrix<Type,SO> generate( size_t m, size_t n ) const;
+   inline const DynamicMatrix<Type,SO,Tag> generate( size_t m, size_t n ) const;
 
    template< typename Arg >
-   inline const DynamicMatrix<Type,SO> generate( size_t m, size_t n, const Arg& min, const Arg& max ) const;
+   inline const DynamicMatrix<Type,SO,Tag> generate( size_t m, size_t n, const Arg& min, const Arg& max ) const;
    //@}
    //**********************************************************************************************
 
    //**Randomize functions*************************************************************************
    /*!\name Randomize functions */
    //@{
-   inline void randomize( DynamicMatrix<Type,SO>& matrix ) const;
+   inline void randomize( DynamicMatrix<Type,SO,Tag>& matrix ) const;
 
    template< typename Arg >
-   inline void randomize( DynamicMatrix<Type,SO>& matrix, const Arg& min, const Arg& max ) const;
+   inline void randomize( DynamicMatrix<Type,SO,Tag>& matrix, const Arg& min, const Arg& max ) const;
    //@}
    //**********************************************************************************************
 };
@@ -106,12 +107,13 @@ class Rand< DynamicMatrix<Type,SO> >
 // \param n The number of columns of the random matrix.
 // \return The generated random matrix.
 */
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-inline const DynamicMatrix<Type,SO>
-   Rand< DynamicMatrix<Type,SO> >::generate( size_t m, size_t n ) const
+template< typename Type   // Data type of the matrix
+        , bool SO         // Storage order
+        , typename Tag >  // Type tag
+inline const DynamicMatrix<Type,SO,Tag>
+   Rand< DynamicMatrix<Type,SO,Tag> >::generate( size_t m, size_t n ) const
 {
-   DynamicMatrix<Type,SO> matrix( m, n );
+   DynamicMatrix<Type,SO,Tag> matrix( m, n );
    randomize( matrix );
    return matrix;
 }
@@ -130,12 +132,13 @@ inline const DynamicMatrix<Type,SO>
 // \return The generated random matrix.
 */
 template< typename Type   // Data type of the matrix
-        , bool SO >       // Storage order
+        , bool SO         // Storage order
+        , typename Tag >  // Type tag
 template< typename Arg >  // Min/max argument type
-inline const DynamicMatrix<Type,SO>
-   Rand< DynamicMatrix<Type,SO> >::generate( size_t m, size_t n, const Arg& min, const Arg& max ) const
+inline const DynamicMatrix<Type,SO,Tag>
+   Rand< DynamicMatrix<Type,SO,Tag> >::generate( size_t m, size_t n, const Arg& min, const Arg& max ) const
 {
-   DynamicMatrix<Type,SO> matrix( m, n );
+   DynamicMatrix<Type,SO,Tag> matrix( m, n );
    randomize( matrix, min, max );
    return matrix;
 }
@@ -150,9 +153,10 @@ inline const DynamicMatrix<Type,SO>
 // \param matrix The matrix to be randomized.
 // \return void
 */
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-inline void Rand< DynamicMatrix<Type,SO> >::randomize( DynamicMatrix<Type,SO>& matrix ) const
+template< typename Type   // Data type of the matrix
+        , bool SO         // Storage order
+        , typename Tag >  // Type tag
+inline void Rand< DynamicMatrix<Type,SO,Tag> >::randomize( DynamicMatrix<Type,SO,Tag>& matrix ) const
 {
    using blaze::randomize;
 
@@ -179,10 +183,11 @@ inline void Rand< DynamicMatrix<Type,SO> >::randomize( DynamicMatrix<Type,SO>& m
 // \return void
 */
 template< typename Type   // Data type of the matrix
-        , bool SO >       // Storage order
+        , bool SO         // Storage order
+        , typename Tag >  // Type tag
 template< typename Arg >  // Min/max argument type
-inline void Rand< DynamicMatrix<Type,SO> >::randomize( DynamicMatrix<Type,SO>& matrix,
-                                                       const Arg& min, const Arg& max ) const
+inline void Rand< DynamicMatrix<Type,SO,Tag> >::randomize( DynamicMatrix<Type,SO,Tag>& matrix,
+                                                           const Arg& min, const Arg& max ) const
 {
    using blaze::randomize;
 
@@ -215,9 +220,10 @@ inline void Rand< DynamicMatrix<Type,SO> >::randomize( DynamicMatrix<Type,SO>& m
 // \return void
 // \exception std::invalid_argument Invalid non-square matrix provided.
 */
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-void makeSymmetric( DynamicMatrix<Type,SO>& matrix )
+template< typename Type   // Data type of the matrix
+        , bool SO         // Storage order
+        , typename Tag >  // Type tag
+void makeSymmetric( DynamicMatrix<Type,SO,Tag>& matrix )
 {
    using blaze::randomize;
 
@@ -253,8 +259,9 @@ void makeSymmetric( DynamicMatrix<Type,SO>& matrix )
 */
 template< typename Type   // Data type of the matrix
         , bool SO         // Storage order
+        , typename Tag    // Type tag
         , typename Arg >  // Min/max argument type
-void makeSymmetric( DynamicMatrix<Type,SO>& matrix, const Arg& min, const Arg& max )
+void makeSymmetric( DynamicMatrix<Type,SO,Tag>& matrix, const Arg& min, const Arg& max )
 {
    using blaze::randomize;
 
@@ -286,9 +293,10 @@ void makeSymmetric( DynamicMatrix<Type,SO>& matrix, const Arg& min, const Arg& m
 // \return void
 // \exception std::invalid_argument Invalid non-square matrix provided.
 */
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-void makeHermitian( DynamicMatrix<Type,SO>& matrix )
+template< typename Type   // Data type of the matrix
+        , bool SO         // Storage order
+        , typename Tag >  // Type tag
+void makeHermitian( DynamicMatrix<Type,SO,Tag>& matrix )
 {
    using blaze::randomize;
 
@@ -328,8 +336,9 @@ void makeHermitian( DynamicMatrix<Type,SO>& matrix )
 */
 template< typename Type   // Data type of the matrix
         , bool SO         // Storage order
+        , typename Tag    // Type tag
         , typename Arg >  // Min/max argument type
-void makeHermitian( DynamicMatrix<Type,SO>& matrix, const Arg& min, const Arg& max )
+void makeHermitian( DynamicMatrix<Type,SO,Tag>& matrix, const Arg& min, const Arg& max )
 {
    using blaze::randomize;
 
@@ -365,9 +374,10 @@ void makeHermitian( DynamicMatrix<Type,SO>& matrix, const Arg& min, const Arg& m
 // \return void
 // \exception std::invalid_argument Invalid non-square matrix provided.
 */
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-void makePositiveDefinite( DynamicMatrix<Type,SO>& matrix )
+template< typename Type   // Data type of the matrix
+        , bool SO         // Storage order
+        , typename Tag >  // Type tag
+void makePositiveDefinite( DynamicMatrix<Type,SO,Tag>& matrix )
 {
    using blaze::randomize;
 

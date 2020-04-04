@@ -98,8 +98,9 @@ template< typename Type                   // Data type of the vector
         , typename Tag = DefaultTag >     // Type tag
 class DynamicVector;
 
-template< typename Type                    // Data type of the matrix
-        , bool SO = defaultStorageOrder >  // Storage order
+template< typename Type                  // Data type of the matrix
+        , bool SO = defaultStorageOrder  // Storage order
+        , typename Tag = DefaultTag >    // Type tag
 class DynamicMatrix;
 
 template< typename Type                                              // Data type of the vector
