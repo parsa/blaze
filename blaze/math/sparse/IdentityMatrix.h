@@ -1490,7 +1490,7 @@ struct SchurTraitEval1< T1, T2
 
    using Type = IdentityMatrix< MultTrait_t< ElementType_t<T1>, ElementType_t<T2> >
                               , SO
-                              , DefaultTag >;
+                              , MultTrait_t< TagType_t<T1>, TagType_t<T2> > >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -1531,10 +1531,11 @@ struct MultTraitEval1< T1, T2
                                    IsIdentity_v<T1> && IsIdentity_v<T2> > >
 {
    using MultType = MultTrait_t< ElementType_t<T1>, ElementType_t<T2> >;
+   using MultTag  = MultTrait_t< TagType_t<T1>, TagType_t<T2> >;
 
    using Type = IdentityMatrix< AddTrait_t<MultType,MultType>
                               , StorageOrder_v<T1>
-                              , DefaultTag >;
+                              , AddTrait_t<MultTag,MultTag> >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -1558,7 +1559,7 @@ struct KronTraitEval1< T1, T2
 {
    using Type = IdentityMatrix< MultTrait_t< ElementType_t<T1>, ElementType_t<T2> >
                               , StorageOrder_v<T2>
-                              , DefaultTag >;
+                              , MultTrait_t< TagType_t<T1>, TagType_t<T2> > >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -1581,7 +1582,7 @@ struct UnaryMapTraitEval1< T, OP
 {
    using Type = IdentityMatrix< MapTrait_t< ElementType_t<T>, OP >
                               , StorageOrder_v<T>
-                              , DefaultTag >;
+                              , MapTrait_t< TagType_t<T>, OP > >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -1597,7 +1598,7 @@ struct BinaryMapTraitEval1< T1, T2, OP
 {
    using Type = IdentityMatrix< MapTrait_t< ElementType_t<T1>, ElementType_t<T2>, OP >
                               , ( StorageOrder_v<T1> && StorageOrder_v<T2> )
-                              , DefaultTag >;
+                              , MapTrait_t< TagType_t<T1>, TagType_t<T2>, OP > >;
 };
 /*! \endcond */
 //*************************************************************************************************
