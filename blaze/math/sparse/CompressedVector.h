@@ -2602,7 +2602,7 @@ struct AddTraitEval2< T1, T2
 {
    using Type = CompressedVector< AddTrait_t< ElementType_t<T1>, ElementType_t<T2> >
                                 , TransposeFlag_v<T1>
-                                , DefaultTag >;
+                                , AddTrait_t< TagType_t<T1>, TagType_t<T2> > >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -2624,7 +2624,7 @@ struct SubTraitEval2< T1, T2
 {
    using Type = CompressedVector< SubTrait_t< ElementType_t<T1>, ElementType_t<T2> >
                                 , TransposeFlag_v<T1>
-                                , DefaultTag >;
+                                , SubTrait_t< TagType_t<T1>, TagType_t<T2> > >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -2646,7 +2646,7 @@ struct MultTraitEval2< T1, T2
 {
    using Type = CompressedVector< MultTrait_t< ElementType_t<T1>, T2 >
                                 , TransposeFlag_v<T1>
-                                , DefaultTag >;
+                                , MultTrait_t< TagType_t<T1>, T2 > >;
 };
 
 template< typename T1, typename T2 >
@@ -2655,7 +2655,7 @@ struct MultTraitEval2< T1, T2
 {
    using Type = CompressedVector< MultTrait_t< T1, ElementType_t<T2> >
                                 , TransposeFlag_v<T2>
-                                , DefaultTag >;
+                                , MultTrait_t< T1, TagType_t<T2> > >;
 };
 
 template< typename T1, typename T2 >
@@ -2666,7 +2666,7 @@ struct MultTraitEval2< T1, T2
 {
    using Type = CompressedVector< MultTrait_t< ElementType_t<T1>, ElementType_t<T2> >
                                 , TransposeFlag_v<T1>
-                                , DefaultTag >;
+                                , MultTrait_t< TagType_t<T1>, TagType_t<T2> > >;
 };
 
 template< typename T1, typename T2 >
@@ -2676,10 +2676,11 @@ struct MultTraitEval2< T1, T2
                                    IsColumnVector_v<T2> > >
 {
    using MultType = MultTrait_t< ElementType_t<T1>, ElementType_t<T2> >;
+   using MultTag  = MultTrait_t< TagType_t<T1>, TagType_t<T2> >;
 
    using Type = CompressedVector< AddTrait_t<MultType,MultType>
                                 , false
-                                , DefaultTag >;
+                                , AddTrait_t<MultTag,MultTag> >;
 };
 
 template< typename T1, typename T2 >
@@ -2689,10 +2690,11 @@ struct MultTraitEval2< T1, T2
                                    IsSparseMatrix_v<T2> > >
 {
    using MultType = MultTrait_t< ElementType_t<T1>, ElementType_t<T2> >;
+   using MultTag  = MultTrait_t< TagType_t<T1>, TagType_t<T2> >;
 
    using Type = CompressedVector< AddTrait_t<MultType,MultType>
                                 , true
-                                , DefaultTag >;
+                                , AddTrait_t<MultTag,MultTag> >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -2717,7 +2719,7 @@ struct KronTraitEval2< T1, T2
 {
    using Type = CompressedVector< MultTrait_t< ElementType_t<T1>, ElementType_t<T2> >
                                 , ( IsDenseVector_v<T2> ? TransposeFlag_v<T1> : TransposeFlag_v<T2> )
-                                , DefaultTag >;
+                                , MultTrait_t< TagType_t<T1>, TagType_t<T2> > >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -2739,7 +2741,7 @@ struct DivTraitEval2< T1, T2
 {
    using Type = CompressedVector< DivTrait_t< ElementType_t<T1>, T2 >
                                 , TransposeFlag_v<T1>
-                                , DefaultTag >;
+                                , DivTrait_t< TagType_t<T1>, T2 > >;
 };
 
 template< typename T1, typename T2 >
@@ -2748,7 +2750,7 @@ struct DivTraitEval2< T1, T2
 {
    using Type = CompressedVector< DivTrait_t< ElementType_t<T1>, ElementType_t<T2> >
                                 , TransposeFlag_v<T1>
-                                , DefaultTag >;
+                                , DivTrait_t< TagType_t<T1>, TagType_t<T2> > >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -2770,7 +2772,7 @@ struct UnaryMapTraitEval2< T, OP
 {
    using Type = CompressedVector< MapTrait_t< ElementType_t<T>, OP >
                                 , TransposeFlag_v<T>
-                                , DefaultTag >;
+                                , MapTrait_t< TagType_t<T>, OP > >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -2830,7 +2832,7 @@ struct SubvectorTraitEval2< VT, I, N
 {
    using Type = CompressedVector< RemoveConst_t< ElementType_t<VT> >
                                 , TransposeFlag_v<VT>
-                                , DefaultTag >;
+                                , TagType_t<VT> >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -2852,7 +2854,7 @@ struct ElementsTraitEval2< VT, N
 {
    using Type = CompressedVector< RemoveConst_t< ElementType_t<VT> >
                                 , TransposeFlag_v<VT>
-                                , DefaultTag >;
+                                , TagType_t<VT> >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -2874,7 +2876,7 @@ struct RowTraitEval2< MT, I
 {
    using Type = CompressedVector< RemoveConst_t< ElementType_t<MT> >
                                 , true
-                                , DefaultTag >;
+                                , TagType_t<MT> >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -2896,7 +2898,7 @@ struct ColumnTraitEval2< MT, I
 {
    using Type = CompressedVector< RemoveConst_t< ElementType_t<MT> >
                                 , false
-                                , DefaultTag >;
+                                , TagType_t<MT> >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -2918,7 +2920,7 @@ struct BandTraitEval2< MT, I
 {
    using Type = CompressedVector< RemoveConst_t< ElementType_t<MT> >
                                 , defaultTransposeFlag
-                                , DefaultTag >;
+                                , TagType_t<MT> >;
 };
 /*! \endcond */
 //*************************************************************************************************
