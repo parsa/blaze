@@ -108,7 +108,7 @@ namespace blaze {
 // of the vector can be specified via the two template parameters:
 
    \code
-   template< typename Type, bool TF >
+   template< typename Type, bool TF, typename Tag >
    class ZeroVector;
    \endcode
 
@@ -116,6 +116,7 @@ namespace blaze {
 //          non-cv-qualified, non-reference, non-pointer element type.
 //  - TF  : specifies whether the vector is a row vector (\a blaze::rowVector) or a column
 //          vector (\a blaze::columnVector). The default value is \a blaze::columnVector.
+//  - Tag : optional type parameter to tag the vector. The default type is \a blaze::DefaultTag.
 //
 // It is not possible to insert, erase or modify the elements of a zero vector. It is only
 // possible to read from the elements:
@@ -167,10 +168,11 @@ namespace blaze {
    e = z * 2.0;  // Scaling of a zero vector
    \endcode
 */
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
+template< typename Type   // Data type of the vector
+        , bool TF         // Transpose flag
+        , typename Tag >  // Type tag
 class ZeroVector
-   : public Expression< SparseVector< ZeroVector<Type,TF>, TF > >
+   : public Expression< SparseVector< ZeroVector<Type,TF,Tag>, TF > >
 {
  private:
    //**Type definitions****************************************************************************
@@ -179,17 +181,22 @@ class ZeroVector
 
  public:
    //**Type definitions****************************************************************************
-   using This           = ZeroVector<Type,TF>;    //!< Type of this ZeroVector instance.
-   using BaseType       = SparseVector<This,TF>;  //!< Base type of this ZeroVector instance.
-   using ResultType     = This;                   //!< Result type for expression template evaluations.
-   using TransposeType  = ZeroVector<Type,!TF>;   //!< Transpose type for expression template evaluations.
-   using ElementType    = Type;                   //!< Type of the zero vector elements.
-   using ReturnType     = const Type&;            //!< Return type for expression template evaluations.
-   using CompositeType  = const This&;            //!< Data type for composite expression templates.
-   using Reference      = const Type&;            //!< Reference to a zero vector element.
-   using ConstReference = const Type&;            //!< Reference to a constant zero vector element.
-   using Iterator       = Element*;               //!< Iterator over non-constant elements.
-   using ConstIterator  = const Element*;         //!< Iterator over constant elements.
+   using This       = ZeroVector<Type,TF,Tag>;  //!< Type of this ZeroVector instance.
+   using BaseType   = SparseVector<This,TF>;    //!< Base type of this ZeroVector instance.
+   using ResultType = This;                     //!< Result type for expression template evaluations.
+
+   //! Transpose type for expression template evaluations.
+   using TransposeType = ZeroVector<Type,!TF,Tag>;
+
+   using ElementType = Type;         //!< Type of the zero vector elements.
+   using TagType     = Tag;          //!< Tag type of this ZeroVector instance.
+   using ReturnType  = const Type&;  //!< Return type for expression template evaluations.
+
+   using CompositeType  = const This&;     //!< Data type for composite expression templates.
+   using Reference      = const Type&;     //!< Reference to a zero vector element.
+   using ConstReference = const Type&;     //!< Reference to a constant zero vector element.
+   using Iterator       = Element*;        //!< Iterator over non-constant elements.
+   using ConstIterator  = const Element*;  //!< Iterator over constant elements.
    //**********************************************************************************************
 
    //**Rebind struct definition********************************************************************
@@ -197,7 +204,7 @@ class ZeroVector
    */
    template< typename NewType >  // Data type of the other vector
    struct Rebind {
-      using Other = ZeroVector<NewType,TF>;  //!< The type of the other ZeroVector.
+      using Other = ZeroVector<NewType,TF,Tag>;  //!< The type of the other ZeroVector.
    };
    //**********************************************************************************************
 
@@ -206,7 +213,7 @@ class ZeroVector
    */
    template< size_t NewN >  // Number of elements of the other vector
    struct Resize {
-      using Other = ZeroVector<Type,TF>;  //!< The type of the other ZeroVector.
+      using Other = ZeroVector<Type,TF,Tag>;  //!< The type of the other ZeroVector.
    };
    //**********************************************************************************************
 
@@ -322,8 +329,10 @@ class ZeroVector
 //
 //=================================================================================================
 
-template< typename Type, bool TF >
-const Type ZeroVector<Type,TF>::zero_{};
+template< typename Type   // Data type of the vector
+        , bool TF         // Transpose flag
+        , typename Tag >  // Type tag
+const Type ZeroVector<Type,TF,Tag>::zero_{};
 
 
 
@@ -337,9 +346,10 @@ const Type ZeroVector<Type,TF>::zero_{};
 //*************************************************************************************************
 /*!\brief The default constructor for ZeroVector.
 */
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-constexpr ZeroVector<Type,TF>::ZeroVector() noexcept
+template< typename Type   // Data type of the vector
+        , bool TF         // Transpose flag
+        , typename Tag >  // Type tag
+constexpr ZeroVector<Type,TF,Tag>::ZeroVector() noexcept
    : size_( 0UL )  // The current size/dimension of the zero vector
 {}
 //*************************************************************************************************
@@ -350,9 +360,10 @@ constexpr ZeroVector<Type,TF>::ZeroVector() noexcept
 //
 // \param n The size of the vector.
 */
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-constexpr ZeroVector<Type,TF>::ZeroVector( size_t n ) noexcept
+template< typename Type   // Data type of the vector
+        , bool TF         // Transpose flag
+        , typename Tag >  // Type tag
+constexpr ZeroVector<Type,TF,Tag>::ZeroVector( size_t n ) noexcept
    : size_( n )  // The current size/dimension of the zero vector
 {}
 //*************************************************************************************************
@@ -367,10 +378,11 @@ constexpr ZeroVector<Type,TF>::ZeroVector( size_t n ) noexcept
 // The vector is sized according to the given N-dimensional zero vector and initialized as a
 // copy of this vector.
 */
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-template< typename VT >  // Type of the foreign zero vector
-inline ZeroVector<Type,TF>::ZeroVector( const Vector<VT,TF>& v )
+template< typename Type   // Data type of the vector
+        , bool TF         // Transpose flag
+        , typename Tag >  // Type tag
+template< typename VT >   // Type of the foreign zero vector
+inline ZeroVector<Type,TF,Tag>::ZeroVector( const Vector<VT,TF>& v )
    : size_( (~v).size() )  // The current size/dimension of the zero vector
 {
    if( !IsZero_v<VT> && !isZero( ~v ) ) {
@@ -394,10 +406,11 @@ inline ZeroVector<Type,TF>::ZeroVector( const Vector<VT,TF>& v )
 // \param index Access index. The index has to be in the range \f$[0..N-1]\f$.
 // \return Reference to the accessed value.
 */
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-constexpr typename ZeroVector<Type,TF>::ConstReference
-   ZeroVector<Type,TF>::operator[]( size_t index ) const noexcept
+template< typename Type   // Data type of the vector
+        , bool TF         // Transpose flag
+        , typename Tag >  // Type tag
+constexpr typename ZeroVector<Type,TF,Tag>::ConstReference
+   ZeroVector<Type,TF,Tag>::operator[]( size_t index ) const noexcept
 {
    MAYBE_UNUSED( index );
 
@@ -418,10 +431,11 @@ constexpr typename ZeroVector<Type,TF>::ConstReference
 // In contrast to the subscript operator this function always performs a check of the given
 // access indices.
 */
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-inline typename ZeroVector<Type,TF>::ConstReference
-   ZeroVector<Type,TF>::at( size_t index ) const
+template< typename Type   // Data type of the vector
+        , bool TF         // Transpose flag
+        , typename Tag >  // Type tag
+inline typename ZeroVector<Type,TF,Tag>::ConstReference
+   ZeroVector<Type,TF,Tag>::at( size_t index ) const
 {
    if( index >= size_ ) {
       BLAZE_THROW_OUT_OF_RANGE( "Invalid zero vector access index" );
@@ -437,10 +451,11 @@ inline typename ZeroVector<Type,TF>::ConstReference
 //
 // \return Iterator to the first non-zero element of the zero vector.
 */
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-constexpr typename ZeroVector<Type,TF>::ConstIterator
-   ZeroVector<Type,TF>::begin() const noexcept
+template< typename Type   // Data type of the vector
+        , bool TF         // Transpose flag
+        , typename Tag >  // Type tag
+constexpr typename ZeroVector<Type,TF,Tag>::ConstIterator
+   ZeroVector<Type,TF,Tag>::begin() const noexcept
 {
    return nullptr;
 }
@@ -452,10 +467,11 @@ constexpr typename ZeroVector<Type,TF>::ConstIterator
 //
 // \return Iterator to the first non-zero element of the zero vector.
 */
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-constexpr typename ZeroVector<Type,TF>::ConstIterator
-   ZeroVector<Type,TF>::cbegin() const noexcept
+template< typename Type   // Data type of the vector
+        , bool TF         // Transpose flag
+        , typename Tag >  // Type tag
+constexpr typename ZeroVector<Type,TF,Tag>::ConstIterator
+   ZeroVector<Type,TF,Tag>::cbegin() const noexcept
 {
    return nullptr;
 }
@@ -467,10 +483,11 @@ constexpr typename ZeroVector<Type,TF>::ConstIterator
 //
 // \return Iterator just past the last non-zero element of the zero vector.
 */
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-constexpr typename ZeroVector<Type,TF>::ConstIterator
-   ZeroVector<Type,TF>::end() const noexcept
+template< typename Type   // Data type of the vector
+        , bool TF         // Transpose flag
+        , typename Tag >  // Type tag
+constexpr typename ZeroVector<Type,TF,Tag>::ConstIterator
+   ZeroVector<Type,TF,Tag>::end() const noexcept
 {
    return nullptr;
 }
@@ -482,10 +499,11 @@ constexpr typename ZeroVector<Type,TF>::ConstIterator
 //
 // \return Iterator just past the last non-zero element of the zero vector.
 */
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-constexpr typename ZeroVector<Type,TF>::ConstIterator
-   ZeroVector<Type,TF>::cend() const noexcept
+template< typename Type   // Data type of the vector
+        , bool TF         // Transpose flag
+        , typename Tag >  // Type tag
+constexpr typename ZeroVector<Type,TF,Tag>::ConstIterator
+   ZeroVector<Type,TF,Tag>::cend() const noexcept
 {
    return nullptr;
 }
@@ -510,11 +528,12 @@ constexpr typename ZeroVector<Type,TF>::ConstIterator
 // The vector is resized according to the given zero vector and initialized as a copy of this
 // vector.
 */
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-template< typename VT >  // Type of the right-hand side dense vector
-inline ZeroVector<Type,TF>&
-   ZeroVector<Type,TF>::operator=( const Vector<VT,TF>& rhs )
+template< typename Type   // Data type of the vector
+        , bool TF         // Transpose flag
+        , typename Tag >  // Type tag
+template< typename VT >   // Type of the right-hand side dense vector
+inline ZeroVector<Type,TF,Tag>&
+   ZeroVector<Type,TF,Tag>::operator=( const Vector<VT,TF>& rhs )
 {
    if( !IsZero_v<VT> && !isZero( ~rhs ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment of zero vector" );
@@ -540,9 +559,10 @@ inline ZeroVector<Type,TF>&
 //
 // \return The size of the zero vector.
 */
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-constexpr size_t ZeroVector<Type,TF>::size() const noexcept
+template< typename Type   // Data type of the vector
+        , bool TF         // Transpose flag
+        , typename Tag >  // Type tag
+constexpr size_t ZeroVector<Type,TF,Tag>::size() const noexcept
 {
    return size_;
 }
@@ -554,9 +574,10 @@ constexpr size_t ZeroVector<Type,TF>::size() const noexcept
 //
 // \return The capacity of the zero vector.
 */
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-constexpr size_t ZeroVector<Type,TF>::capacity() const noexcept
+template< typename Type   // Data type of the vector
+        , bool TF         // Transpose flag
+        , typename Tag >  // Type tag
+constexpr size_t ZeroVector<Type,TF,Tag>::capacity() const noexcept
 {
    return 0UL;
 }
@@ -571,9 +592,10 @@ constexpr size_t ZeroVector<Type,TF>::capacity() const noexcept
 // Note that the number of non-zero elements is always smaller than the current size of the
 // zero vector.
 */
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-constexpr size_t ZeroVector<Type,TF>::nonZeros() const noexcept
+template< typename Type   // Data type of the vector
+        , bool TF         // Transpose flag
+        , typename Tag >  // Type tag
+constexpr size_t ZeroVector<Type,TF,Tag>::nonZeros() const noexcept
 {
    return 0UL;
 }
@@ -587,9 +609,10 @@ constexpr size_t ZeroVector<Type,TF>::nonZeros() const noexcept
 //
 // After the clear() function, the size of the zero vector is 0.
 */
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-constexpr void ZeroVector<Type,TF>::clear() noexcept
+template< typename Type   // Data type of the vector
+        , bool TF         // Transpose flag
+        , typename Tag >  // Type tag
+constexpr void ZeroVector<Type,TF,Tag>::clear() noexcept
 {
    size_ = 0UL;
 }
@@ -606,9 +629,10 @@ constexpr void ZeroVector<Type,TF>::clear() noexcept
 // may invalidate all existing views (subvectors, ...) on the vector if it is used to shrink the
 // vector.
 */
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-constexpr void ZeroVector<Type,TF>::resize( size_t n ) noexcept
+template< typename Type   // Data type of the vector
+        , bool TF         // Transpose flag
+        , typename Tag >  // Type tag
+constexpr void ZeroVector<Type,TF,Tag>::resize( size_t n ) noexcept
 {
    size_ = n;
 }
@@ -621,9 +645,10 @@ constexpr void ZeroVector<Type,TF>::resize( size_t n ) noexcept
 // \param v The zero vector to be swapped.
 // \return void
 */
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-constexpr void ZeroVector<Type,TF>::swap( ZeroVector& v ) noexcept
+template< typename Type   // Data type of the vector
+        , bool TF         // Transpose flag
+        , typename Tag >  // Type tag
+constexpr void ZeroVector<Type,TF,Tag>::swap( ZeroVector& v ) noexcept
 {
    const size_t tmp( size_ );
    size_ = v.size_;
@@ -651,10 +676,11 @@ constexpr void ZeroVector<Type,TF>::swap( ZeroVector& v ) noexcept
 // is found, the function returns an iterator to the element. Otherwise an iterator just past
 // the last non-zero element of the zero vector (the end() iterator) is returned.
 */
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-inline typename ZeroVector<Type,TF>::ConstIterator
-   ZeroVector<Type,TF>::find( size_t index ) const
+template< typename Type   // Data type of the vector
+        , bool TF         // Transpose flag
+        , typename Tag >  // Type tag
+inline typename ZeroVector<Type,TF,Tag>::ConstIterator
+   ZeroVector<Type,TF,Tag>::find( size_t index ) const
 {
    MAYBE_UNUSED( index );
 
@@ -675,10 +701,11 @@ inline typename ZeroVector<Type,TF>::ConstIterator
 // index. In combination with the upperBound() function this function can be used to create a
 // pair of iterators specifying a range of indices.
 */
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-inline typename ZeroVector<Type,TF>::ConstIterator
-   ZeroVector<Type,TF>::lowerBound( size_t index ) const
+template< typename Type   // Data type of the vector
+        , bool TF         // Transpose flag
+        , typename Tag >  // Type tag
+inline typename ZeroVector<Type,TF,Tag>::ConstIterator
+   ZeroVector<Type,TF,Tag>::lowerBound( size_t index ) const
 {
    MAYBE_UNUSED( index );
 
@@ -699,10 +726,11 @@ inline typename ZeroVector<Type,TF>::ConstIterator
 // index. In combination with the lowerBound() function this function can be used to create a
 // pair of iterators specifying a range of indices.
 */
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-inline typename ZeroVector<Type,TF>::ConstIterator
-   ZeroVector<Type,TF>::upperBound( size_t index ) const
+template< typename Type   // Data type of the vector
+        , bool TF         // Transpose flag
+        , typename Tag >  // Type tag
+inline typename ZeroVector<Type,TF,Tag>::ConstIterator
+   ZeroVector<Type,TF,Tag>::upperBound( size_t index ) const
 {
    MAYBE_UNUSED( index );
 
@@ -732,9 +760,10 @@ inline typename ZeroVector<Type,TF>::ConstIterator
 // to optimize the evaluation.
 */
 template< typename Type     // Data type of the vector
-        , bool TF >         // Transpose flag
+        , bool TF           // Transpose flag
+        , typename Tag >    // Type tag
 template< typename Other >  // Data type of the foreign expression
-inline bool ZeroVector<Type,TF>::canAlias( const Other* alias ) const noexcept
+inline bool ZeroVector<Type,TF,Tag>::canAlias( const Other* alias ) const noexcept
 {
    MAYBE_UNUSED( alias );
 
@@ -754,9 +783,10 @@ inline bool ZeroVector<Type,TF>::canAlias( const Other* alias ) const noexcept
 // to optimize the evaluation.
 */
 template< typename Type     // Data type of the vector
-        , bool TF >         // Transpose flag
+        , bool TF           // Transpose flag
+        , typename Tag >    // Type tag
 template< typename Other >  // Data type of the foreign expression
-inline bool ZeroVector<Type,TF>::isAliased( const Other* alias ) const noexcept
+inline bool ZeroVector<Type,TF,Tag>::isAliased( const Other* alias ) const noexcept
 {
    MAYBE_UNUSED( alias );
 
@@ -775,9 +805,10 @@ inline bool ZeroVector<Type,TF>::isAliased( const Other* alias ) const noexcept
 // function additionally provides runtime information (as for instance the current size of the
 // vector).
 */
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-inline bool ZeroVector<Type,TF>::canSMPAssign() const noexcept
+template< typename Type   // Data type of the vector
+        , bool TF         // Transpose flag
+        , typename Tag >  // Type tag
+inline bool ZeroVector<Type,TF,Tag>::canSMPAssign() const noexcept
 {
    return false;
 }
@@ -799,20 +830,20 @@ inline bool ZeroVector<Type,TF>::canSMPAssign() const noexcept
 //*************************************************************************************************
 /*!\name ZeroVector operators */
 //@{
-template< typename Type, bool TF >
-constexpr void reset( ZeroVector<Type,TF>& m ) noexcept;
+template< typename Type, bool TF, typename Tag >
+constexpr void reset( ZeroVector<Type,TF,Tag>& m ) noexcept;
 
-template< typename Type, bool TF >
-constexpr void clear( ZeroVector<Type,TF>& m ) noexcept;
+template< typename Type, bool TF, typename Tag >
+constexpr void clear( ZeroVector<Type,TF,Tag>& m ) noexcept;
 
-template< RelaxationFlag RF, typename Type, bool TF >
-constexpr bool isDefault( const ZeroVector<Type,TF>& m ) noexcept;
+template< RelaxationFlag RF, typename Type, bool TF, typename Tag >
+constexpr bool isDefault( const ZeroVector<Type,TF,Tag>& m ) noexcept;
 
-template< typename Type, bool TF >
-constexpr bool isIntact( const ZeroVector<Type,TF>& m ) noexcept;
+template< typename Type, bool TF, typename Tag >
+constexpr bool isIntact( const ZeroVector<Type,TF,Tag>& m ) noexcept;
 
-template< typename Type, bool TF >
-constexpr void swap( ZeroVector<Type,TF>& a, ZeroVector<Type,TF>& b ) noexcept;
+template< typename Type, bool TF, typename Tag >
+constexpr void swap( ZeroVector<Type,TF,Tag>& a, ZeroVector<Type,TF,Tag>& b ) noexcept;
 //@}
 //*************************************************************************************************
 
@@ -824,9 +855,10 @@ constexpr void swap( ZeroVector<Type,TF>& a, ZeroVector<Type,TF>& b ) noexcept;
 // \param v The zero vector to be resetted.
 // \return void
 */
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-constexpr void reset( ZeroVector<Type,TF>& v ) noexcept
+template< typename Type   // Data type of the vector
+        , bool TF         // Transpose flag
+        , typename Tag >  // Type tag
+constexpr void reset( ZeroVector<Type,TF,Tag>& v ) noexcept
 {
    MAYBE_UNUSED( v );
 }
@@ -840,9 +872,10 @@ constexpr void reset( ZeroVector<Type,TF>& v ) noexcept
 // \param v The zero vector to be cleared.
 // \return void
 */
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-constexpr void clear( ZeroVector<Type,TF>& v ) noexcept
+template< typename Type   // Data type of the vector
+        , bool TF         // Transpose flag
+        , typename Tag >  // Type tag
+constexpr void clear( ZeroVector<Type,TF,Tag>& v ) noexcept
 {
    v.clear();
 }
@@ -875,8 +908,9 @@ constexpr void clear( ZeroVector<Type,TF>& v ) noexcept
 */
 template< RelaxationFlag RF  // Relaxation flag
         , typename Type      // Data type of the vector
-        , bool TF >          // Transpose flag
-constexpr bool isDefault( const ZeroVector<Type,TF>& v ) noexcept
+        , bool TF            // Transpose flag
+        , typename Tag >     // Type tag
+constexpr bool isDefault( const ZeroVector<Type,TF,Tag>& v ) noexcept
 {
    return ( v.size() == 0UL );
 }
@@ -900,9 +934,10 @@ constexpr bool isDefault( const ZeroVector<Type,TF>& v ) noexcept
    if( isIntact( z ) ) { ... }
    \endcode
 */
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-constexpr bool isIntact( const ZeroVector<Type,TF>& v ) noexcept
+template< typename Type   // Data type of the vector
+        , bool TF         // Transpose flag
+        , typename Tag >  // Type tag
+constexpr bool isIntact( const ZeroVector<Type,TF,Tag>& v ) noexcept
 {
    MAYBE_UNUSED( v );
 
@@ -919,9 +954,10 @@ constexpr bool isIntact( const ZeroVector<Type,TF>& v ) noexcept
 // \param b The second zero vector to be swapped.
 // \return void
 */
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-constexpr void swap( ZeroVector<Type,TF>& a, ZeroVector<Type,TF>& b ) noexcept
+template< typename Type   // Data type of the vector
+        , bool TF         // Transpose flag
+        , typename Tag >  // Type tag
+constexpr void swap( ZeroVector<Type,TF,Tag>& a, ZeroVector<Type,TF,Tag>& b ) noexcept
 {
    a.swap( b );
 }
@@ -937,9 +973,10 @@ constexpr void swap( ZeroVector<Type,TF>& a, ZeroVector<Type,TF>& b ) noexcept
 // \param index The index of the element to be erased. The index has to be in the range \f$[0..N-1]\f$.
 // \return void
 */
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-inline void erase( ZeroVector<Type,TF>& v, size_t index )
+template< typename Type   // Data type of the vector
+        , bool TF         // Transpose flag
+        , typename Tag >  // Type tag
+inline void erase( ZeroVector<Type,TF,Tag>& v, size_t index )
 {
    MAYBE_UNUSED( v, index );
 }
@@ -960,8 +997,9 @@ inline void erase( ZeroVector<Type,TF>& v, size_t index )
 */
 template< typename Type        // Data type of the vector
         , bool TF              // Transpose flag
+        , typename Tag         // Type tag
         , typename Iterator >  // Type of the vector iterator
-inline Iterator erase( ZeroVector<Type,TF>& v, Iterator pos )
+inline Iterator erase( ZeroVector<Type,TF,Tag>& v, Iterator pos )
 {
    MAYBE_UNUSED( v, pos );
 
@@ -985,8 +1023,9 @@ inline Iterator erase( ZeroVector<Type,TF>& v, Iterator pos )
 */
 template< typename Type        // Data type of the vector
         , bool TF              // Transpose flag
+        , typename Tag         // Type tag
         , typename Iterator >  // Type of the vector iterator
-inline Iterator erase( ZeroVector<Type,TF>& m, Iterator first, Iterator last )
+inline Iterator erase( ZeroVector<Type,TF,Tag>& m, Iterator first, Iterator last )
 {
    MAYBE_UNUSED( m, first, last );
 
@@ -1022,8 +1061,9 @@ inline Iterator erase( ZeroVector<Type,TF>& m, Iterator first, Iterator last )
 */
 template< typename Type    // Data type of the vector
         , bool TF          // Transpose flag
+        , typename Tag     // Type tag
         , typename Pred >  // Type of the unary predicate
-inline void erase( ZeroVector<Type,TF>& v, Pred predicate )
+inline void erase( ZeroVector<Type,TF,Tag>& v, Pred predicate )
 {
    MAYBE_UNUSED( v, predicate );
 }
@@ -1059,9 +1099,10 @@ inline void erase( ZeroVector<Type,TF>& v, Pred predicate )
 */
 template< typename Type      // Data type of the vector
         , bool TF            // Transpose flag
+        , typename Tag       // Type tag
         , typename Iterator  // Type of the vector iterator
         , typename Pred >    // Type of the unary predicate
-inline void erase( ZeroVector<Type,TF>& m, Iterator first, Iterator last, Pred predicate )
+inline void erase( ZeroVector<Type,TF,Tag>& m, Iterator first, Iterator last, Pred predicate )
 {
    MAYBE_UNUSED( m, first, last, predicate );
 }
@@ -1149,8 +1190,8 @@ inline ZeroVector<ElementType_t<VT>,TF>
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename Type, bool TF >
-struct IsUniform< ZeroVector<Type,TF> >
+template< typename Type, bool TF, typename Tag >
+struct IsUniform< ZeroVector<Type,TF,Tag> >
    : public TrueType
 {};
 /*! \endcond */
@@ -1167,8 +1208,8 @@ struct IsUniform< ZeroVector<Type,TF> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename Type, bool TF >
-struct IsZero< ZeroVector<Type,TF> >
+template< typename Type, bool TF, typename Tag >
+struct IsZero< ZeroVector<Type,TF,Tag> >
    : public TrueType
 {};
 /*! \endcond */
@@ -1185,8 +1226,8 @@ struct IsZero< ZeroVector<Type,TF> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename Type, bool TF >
-struct IsResizable< ZeroVector<Type,TF> >
+template< typename Type, bool TF, typename Tag >
+struct IsResizable< ZeroVector<Type,TF,Tag> >
    : public TrueType
 {};
 /*! \endcond */
@@ -1227,10 +1268,9 @@ struct AddTraitEval1< T1, T2
                                   IsVector_v<T2> &&
                                   IsZero_v<T1> && IsZero_v<T2> > >
 {
-   using ET1 = ElementType_t<T1>;
-   using ET2 = ElementType_t<T2>;
-
-   using Type = ZeroVector< AddTrait_t<ET1,ET2>, TransposeFlag_v<T1> >;
+   using Type = ZeroVector< AddTrait_t< ElementType_t<T1>, ElementType_t<T2> >
+                          , TransposeFlag_v<T1>
+                          , DefaultTag >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -1270,10 +1310,9 @@ struct SubTraitEval1< T1, T2
                                   IsVector_v<T2> &&
                                   IsZero_v<T1> && IsZero_v<T2> > >
 {
-   using ET1 = ElementType_t<T1>;
-   using ET2 = ElementType_t<T2>;
-
-   using Type = ZeroVector< SubTrait_t<ET1,ET2>, TransposeFlag_v<T1> >;
+   using Type = ZeroVector< SubTrait_t< ElementType_t<T1>, ElementType_t<T2> >
+                          , TransposeFlag_v<T1>
+                          , DefaultTag >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -1295,9 +1334,9 @@ struct MultTraitEval1< T1, T2
                                    IsNumeric_v<T2> &&
                                    IsZero_v<T1> > >
 {
-   using ET1 = ElementType_t<T1>;
-
-   using Type = ZeroVector< MultTrait_t<ET1,T2>, TransposeFlag_v<T1> >;
+   using Type = ZeroVector< MultTrait_t< ElementType_t<T1>, T2 >
+                          , TransposeFlag_v<T1>
+                          , DefaultTag >;
 };
 
 template< typename T1, typename T2 >
@@ -1306,9 +1345,9 @@ struct MultTraitEval1< T1, T2
                                    IsVector_v<T2> &&
                                    IsZero_v<T2> > >
 {
-   using ET2 = ElementType_t<T2>;
-
-   using Type = ZeroVector< MultTrait_t<T1,ET2>, TransposeFlag_v<T2> >;
+   using Type = ZeroVector< MultTrait_t< T1, ElementType_t<T2> >
+                          , TransposeFlag_v<T2>
+                          , DefaultTag >;
 };
 
 template< typename T1, typename T2 >
@@ -1317,10 +1356,9 @@ struct MultTraitEval1< T1, T2
                                      ( IsColumnVector_v<T1> && IsColumnVector_v<T2> ) ) &&
                                    ( IsZero_v<T1> || IsZero_v<T2> ) > >
 {
-   using ET1 = ElementType_t<T1>;
-   using ET2 = ElementType_t<T2>;
-
-   using Type = ZeroVector< MultTrait_t<ET1,ET2>, TransposeFlag_v<T1> >;
+   using Type = ZeroVector< MultTrait_t< ElementType_t<T1>, ElementType_t<T2> >
+                          , TransposeFlag_v<T1>
+                          , DefaultTag >;
 };
 
 template< typename T1, typename T2 >
@@ -1329,10 +1367,11 @@ struct MultTraitEval1< T1, T2
                                    IsColumnVector_v<T2> &&
                                    ( IsZero_v<T1> || IsZero_v<T2> ) > >
 {
-   using ET1 = ElementType_t<T1>;
-   using ET2 = ElementType_t<T2>;
+   using MultType = MultTrait_t< ElementType_t<T1>, ElementType_t<T2> >;
 
-   using Type = ZeroVector< MultTrait_t<ET1,ET2>, false >;
+   using Type = ZeroVector< AddTrait_t<MultType,MultType>
+                          , false
+                          , DefaultTag >;
 };
 
 template< typename T1, typename T2 >
@@ -1341,10 +1380,11 @@ struct MultTraitEval1< T1, T2
                                    IsMatrix_v<T2> &&
                                    ( IsZero_v<T1> || IsZero_v<T2> ) > >
 {
-   using ET1 = ElementType_t<T1>;
-   using ET2 = ElementType_t<T2>;
+   using MultType = MultTrait_t< ElementType_t<T1>, ElementType_t<T2> >;
 
-   using Type = ZeroVector< MultTrait_t<ET1,ET2>, true >;
+   using Type = ZeroVector< AddTrait_t<MultType,MultType>
+                          , true
+                          , DefaultTag >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -1367,12 +1407,9 @@ struct KronTraitEval1< T1, T2
                                    ( IsZero_v<T1> ||
                                      IsZero_v<T2> ) > >
 {
-   using ET1 = ElementType_t<T1>;
-   using ET2 = ElementType_t<T2>;
-
-   static constexpr bool TF = ( IsZero_v<T2> ? TransposeFlag_v<T2> : TransposeFlag_v<T1> );
-
-   using Type = ZeroVector< MultTrait_t<ET1,ET2>, TF >;
+   using Type = ZeroVector< MultTrait_t< ElementType_t<T1>, ElementType_t<T2> >
+                          , ( IsZero_v<T2> ? TransposeFlag_v<T2> : TransposeFlag_v<T1> )
+                          , DefaultTag >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -1394,9 +1431,9 @@ struct DivTraitEval1< T1, T2
                                   IsNumeric_v<T2> &&
                                   IsZero_v<T1> > >
 {
-   using ET1 = ElementType_t<T1>;
-
-   using Type = ZeroVector< DivTrait_t<ET1,T2>, TransposeFlag_v<T1> >;
+   using Type = ZeroVector< DivTrait_t< ElementType_t<T1>, T2 >
+                          , TransposeFlag_v<T1>
+                          , DefaultTag >;
 };
 
 template< typename T1, typename T2 >
@@ -1405,10 +1442,9 @@ struct DivTraitEval1< T1, T2
                                     ( IsColumnVector_v<T1> && IsColumnVector_v<T2> ) ) &&
                                   ( IsZero_v<T1> || IsZero_v<T2> ) > >
 {
-   using ET1 = ElementType_t<T1>;
-   using ET2 = ElementType_t<T2>;
-
-   using Type = ZeroVector< DivTrait_t<ET1,ET2>, TransposeFlag_v<T1> >;
+   using Type = ZeroVector< DivTrait_t< ElementType_t<T1>, ElementType_t<T2> >
+                          , TransposeFlag_v<T1>
+                          , DefaultTag >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -1430,9 +1466,11 @@ struct CrossTraitEval1< T1, T2
                                     IsVector_v<T2> &&
                                     ( IsZero_v<T1> || IsZero_v<T2> ) > >
 {
-   using Tmp = MultTrait_t< ElementType_t<T1>, ElementType_t<T2> >;
+   using MultType = MultTrait_t< ElementType_t<T1>, ElementType_t<T2> >;
 
-   using Type = ZeroVector< SubTrait_t<Tmp,Tmp>, TransposeFlag_v<T1> >;
+   using Type = ZeroVector< SubTrait_t<MultType,MultType>
+                          , TransposeFlag_v<T1>
+                          , DefaultTag >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -1453,9 +1491,9 @@ struct UnaryMapTraitEval1< T, OP
                          , EnableIf_t< IsVector_v<T> &&
                                        YieldsZero_v<OP,T> > >
 {
-   using ET = ElementType_t<T>;
-
-   using Type = ZeroVector< MapTrait_t<ET,OP>, TransposeFlag_v<T> >;
+   using Type = ZeroVector< MapTrait_t< ElementType_t<T>, OP >
+                          , TransposeFlag_v<T>
+                          , DefaultTag >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -1469,10 +1507,9 @@ struct BinaryMapTraitEval1< T1, T2, OP
                                         IsVector_v<T2> &&
                                         YieldsZero_v<OP,T1,T2> > >
 {
-   using ET1 = ElementType_t<T1>;
-   using ET2 = ElementType_t<T2>;
-
-   using Type = ZeroVector< MapTrait_t<ET1,ET2,OP>, TransposeFlag_v<T1> >;
+   using Type = ZeroVector< MapTrait_t< ElementType_t<T1>, ElementType_t<T2>, OP >
+                          , TransposeFlag_v<T1>
+                          , DefaultTag >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -1488,10 +1525,10 @@ struct BinaryMapTraitEval1< T1, T2, OP
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T1, bool TF, typename T2 >
-struct HighType< ZeroVector<T1,TF>, ZeroVector<T2,TF> >
+template< typename T1, bool TF, typename Tag, typename T2 >
+struct HighType< ZeroVector<T1,TF,Tag>, ZeroVector<T2,TF,Tag> >
 {
-   using Type = ZeroVector< typename HighType<T1,T2>::Type, TF >;
+   using Type = ZeroVector< typename HighType<T1,T2>::Type, TF, Tag >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -1507,10 +1544,10 @@ struct HighType< ZeroVector<T1,TF>, ZeroVector<T2,TF> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T1, bool TF, typename T2 >
-struct LowType< ZeroVector<T1,TF>, ZeroVector<T2,TF> >
+template< typename T1, bool TF, typename Tag, typename T2 >
+struct LowType< ZeroVector<T1,TF,Tag>, ZeroVector<T2,TF,Tag> >
 {
-   using Type = ZeroVector< typename LowType<T1,T2>::Type, TF >;
+   using Type = ZeroVector< typename LowType<T1,T2>::Type, TF, Tag >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -1530,7 +1567,9 @@ template< typename VT, size_t I, size_t N >
 struct SubvectorTraitEval1< VT, I, N
                           , EnableIf_t< IsZero_v<VT> > >
 {
-   using Type = ZeroVector< RemoveConst_t< ElementType_t<VT> >, TransposeFlag_v<VT> >;
+   using Type = ZeroVector< RemoveConst_t< ElementType_t<VT> >
+                          , TransposeFlag_v<VT>
+                          , DefaultTag >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -1550,7 +1589,9 @@ template< typename VT, size_t N >
 struct ElementsTraitEval1< VT, N
                          , EnableIf_t< IsZero_v<VT> > >
 {
-   using Type = ZeroVector< RemoveConst_t< ElementType_t<VT> >, TransposeFlag_v<VT> >;
+   using Type = ZeroVector< RemoveConst_t< ElementType_t<VT> >
+                          , TransposeFlag_v<VT>
+                          , DefaultTag >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -1570,7 +1611,9 @@ template< typename MT, size_t I >
 struct RowTraitEval1< MT, I
                     , EnableIf_t< IsZero_v<MT> > >
 {
-   using Type = ZeroVector< RemoveConst_t< ElementType_t<MT> >, true >;
+   using Type = ZeroVector< RemoveConst_t< ElementType_t<MT> >
+                          , true
+                          , DefaultTag >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -1590,7 +1633,9 @@ template< typename MT, size_t I >
 struct ColumnTraitEval1< MT, I
                        , EnableIf_t< IsZero_v<MT> > >
 {
-   using Type = ZeroVector< RemoveConst_t< ElementType_t<MT> >, false >;
+   using Type = ZeroVector< RemoveConst_t< ElementType_t<MT> >
+                          , false
+                          , DefaultTag >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -1610,7 +1655,9 @@ template< typename MT, ptrdiff_t I >
 struct BandTraitEval1< MT, I
                      , EnableIf_t< IsZero_v<MT> > >
 {
-   using Type = ZeroVector< RemoveConst_t< ElementType_t<MT> >, defaultTransposeFlag >;
+   using Type = ZeroVector< RemoveConst_t< ElementType_t<MT> >
+                          , defaultTransposeFlag
+                          , DefaultTag >;
 };
 /*! \endcond */
 //*************************************************************************************************

@@ -62,15 +62,16 @@ namespace blaze {
 //
 // This specialization of the Rand class creates random instances of ZeroVector.
 */
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-class Rand< ZeroVector<Type,TF> >
+template< typename Type   // Data type of the vector
+        , bool TF         // Transpose flag
+        , typename Tag >  // Type tag
+class Rand< ZeroVector<Type,TF,Tag> >
 {
  public:
    //**Generate functions**************************************************************************
    /*!\name Generate functions */
    //@{
-   inline const ZeroVector<Type,TF> generate( size_t size ) const;
+   inline const ZeroVector<Type,TF,Tag> generate( size_t size ) const;
    //@}
    //**********************************************************************************************
 };
@@ -85,12 +86,13 @@ class Rand< ZeroVector<Type,TF> >
 // \param size The size of the random vector.
 // \return The generated random vector.
 */
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-inline const ZeroVector<Type,TF>
-   Rand< ZeroVector<Type,TF> >::generate( size_t size ) const
+template< typename Type   // Data type of the vector
+        , bool TF         // Transpose flag
+        , typename Tag >  // Type tag
+inline const ZeroVector<Type,TF,Tag>
+   Rand< ZeroVector<Type,TF,Tag> >::generate( size_t size ) const
 {
-   return ZeroVector<Type,TF>( size );
+   return ZeroVector<Type,TF,Tag>( size );
 }
 /*! \endcond */
 //*************************************************************************************************

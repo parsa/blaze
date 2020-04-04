@@ -66,8 +66,9 @@ template< typename Type                    // Data type of the matrix
         , bool SO = defaultStorageOrder >  // Storage order
 class IdentityMatrix;
 
-template< typename Type                     // Data type of the vector
-        , bool TF = defaultTransposeFlag >  // Transpose flag
+template< typename Type                   // Data type of the vector
+        , bool TF = defaultTransposeFlag  // Transpose flag
+        , typename Tag = DefaultTag >     // Type tag
 class ZeroVector;
 
 template< typename Type                    // Data type of the matrix
