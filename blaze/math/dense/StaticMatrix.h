@@ -7194,7 +7194,7 @@ struct AddTraitEval2< T1, T2
                             , SO
                             , defaultAlignmentFlag
                             , defaultPaddingFlag
-                            , DefaultTag >;
+                            , AddTrait_t< TagType_t<T1>, TagType_t<T2> > >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -7238,7 +7238,7 @@ struct SubTraitEval2< T1, T2
                             , SO
                             , defaultAlignmentFlag
                             , defaultPaddingFlag
-                            , DefaultTag >;
+                            , SubTrait_t< TagType_t<T1>, TagType_t<T2> > >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -7278,7 +7278,7 @@ struct SchurTraitEval2< T1, T2
                             , SO
                             , defaultAlignmentFlag
                             , defaultPaddingFlag
-                            , DefaultTag >;
+                            , MultTrait_t< TagType_t<T1>, TagType_t<T2> > >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -7307,7 +7307,7 @@ struct MultTraitEval2< T1, T2
                             , StorageOrder_v<T1>
                             , defaultAlignmentFlag
                             , defaultPaddingFlag
-                            , DefaultTag >;
+                            , MultTrait_t< TagType_t<T1>, T2 > >;
 };
 
 template< typename T1, typename T2 >
@@ -7323,7 +7323,7 @@ struct MultTraitEval2< T1, T2
                             , StorageOrder_v<T2>
                             , defaultAlignmentFlag
                             , defaultPaddingFlag
-                            , DefaultTag >;
+                            , MultTrait_t< T1, TagType_t<T2> > >;
 };
 
 template< typename T1, typename T2 >
@@ -7339,7 +7339,7 @@ struct MultTraitEval2< T1, T2
                             , false
                             , defaultAlignmentFlag
                             , defaultPaddingFlag
-                            , DefaultTag >;
+                            , MultTrait_t< TagType_t<T1>, TagType_t<T2> > >;
 };
 
 template< typename T1, typename T2 >
@@ -7352,6 +7352,7 @@ struct MultTraitEval2< T1, T2
                                      ( IsSquare_v<T2> && Size_v<T1,1UL> != DefaultSize_v ) ) > >
 {
    using MultType = MultTrait_t< ElementType_t<T1>, ElementType_t<T2> >;
+   using MultTag  = MultTrait_t< TagType_t<T1>, TagType_t<T2> >;
 
    using Type = StaticMatrix< AddTrait_t<MultType,MultType>
                             , ( Size_v<T1,0UL> != DefaultSize_v ? Size_v<T1,0UL> : Size_v<T2,0UL> )
@@ -7359,7 +7360,7 @@ struct MultTraitEval2< T1, T2
                             , ( IsSparseMatrix_v<T1> ? StorageOrder_v<T2> : StorageOrder_v<T1> )
                             , defaultAlignmentFlag
                             , defaultPaddingFlag
-                            , DefaultTag >;
+                            , AddTrait_t<MultTag,MultTag> >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -7390,7 +7391,7 @@ struct KronTraitEval2< T1, T2
                             , StorageOrder_v<T2>
                             , defaultAlignmentFlag
                             , defaultPaddingFlag
-                            , DefaultTag >;
+                            , MultTrait_t< TagType_t<T1>, TagType_t<T2> > >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -7419,7 +7420,7 @@ struct DivTraitEval2< T1, T2
                             , StorageOrder_v<T1>
                             , defaultAlignmentFlag
                             , defaultPaddingFlag
-                            , DefaultTag >;
+                            , DivTrait_t< TagType_t<T1>, T2 > >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -7447,7 +7448,7 @@ struct UnaryMapTraitEval2< T, OP
                             , StorageOrder_v<T>
                             , defaultAlignmentFlag
                             , defaultPaddingFlag
-                            , DefaultTag >;
+                            , MapTrait_t< TagType_t<T>, OP > >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -7468,7 +7469,7 @@ struct BinaryMapTraitEval2< T1, T2, OP
                             , false
                             , defaultAlignmentFlag
                             , defaultPaddingFlag
-                            , DefaultTag >;
+                            , MapTrait_t< TagType_t<T1>, TagType_t<T2>, OP > >;
 };
 
 template< typename T1, typename T2, typename OP >
@@ -7499,7 +7500,7 @@ struct BinaryMapTraitEval2< T1, T2, OP
                             , SO
                             , defaultAlignmentFlag
                             , defaultPaddingFlag
-                            , DefaultTag >;
+                            , MapTrait_t< TagType_t<T1>, TagType_t<T2>, OP > >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -7528,7 +7529,7 @@ struct ExpandTraitEval2< T, E
                             , ( IsColumnVector_v<T> ? columnMajor : rowMajor )
                             , defaultAlignmentFlag
                             , defaultPaddingFlag
-                            , DefaultTag >;
+                            , TagType_t<T> >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -7559,7 +7560,7 @@ struct SolveTraitEval2< T1, T2
                             , StorageOrder_v<T2>
                             , defaultAlignmentFlag
                             , defaultPaddingFlag
-                            , DefaultTag >;
+                            , TagType_t<T2> >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -7624,7 +7625,7 @@ struct SubmatrixTraitEval2< MT, I, J, M, N
                             , StorageOrder_v<MT>
                             , defaultAlignmentFlag
                             , defaultPaddingFlag
-                            , DefaultTag >;
+                            , TagType_t<MT> >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -7652,7 +7653,7 @@ struct RowsTraitEval2< MT, M
                             , false
                             , defaultAlignmentFlag
                             , defaultPaddingFlag
-                            , DefaultTag >;
+                            , TagType_t<MT> >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -7680,7 +7681,7 @@ struct ColumnsTraitEval2< MT, N
                             , true
                             , defaultAlignmentFlag
                             , defaultPaddingFlag
-                            , DefaultTag >;
+                            , TagType_t<MT> >;
 };
 /*! \endcond */
 //*************************************************************************************************
