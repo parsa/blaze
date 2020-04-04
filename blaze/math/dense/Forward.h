@@ -41,6 +41,7 @@
 //*************************************************************************************************
 
 #include <blaze/math/AlignmentFlag.h>
+#include <blaze/math/DefaultTag.h>
 #include <blaze/math/PaddingFlag.h>
 #include <blaze/system/Alignment.h>
 #include <blaze/system/Padding.h>
@@ -62,7 +63,8 @@ template< typename Type                            // Data type of the vector
         , size_t N                                 // Number of elements
         , bool TF = defaultTransposeFlag           // Transpose flag
         , AlignmentFlag AF = defaultAlignmentFlag  // Alignment flag
-        , PaddingFlag PF = defaultPaddingFlag >    // Padding flag
+        , PaddingFlag PF = defaultPaddingFlag      // Padding flag
+        , typename Tag = DefaultTag >              // Type tag
 class StaticVector;
 
 template< typename Type                            // Data type of the matrix

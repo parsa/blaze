@@ -150,7 +150,7 @@ namespace blaze {
 // template parameters:
 
    \code
-   template< typename Type, size_t N, bool TF, AlignmentFlag AF, PaddingFlag PF >
+   template< typename Type, size_t N, bool TF, AlignmentFlag AF, PaddingFlag PF, typename Tag >
    class StaticVector;
    \endcode
 
@@ -166,6 +166,7 @@ namespace blaze {
 //  - PF  : specifies whether the vector should be padded to maximize the efficiency of vectorized
 //          operations. Possible values are \a blaze::padded and \a blaze::unpadded. The default
 //          value is \a blaze::padded.
+//  - Tag : optional type parameter to tag the vector. The default type is \a blaze::DefaultTag.
 //
 // These contiguously stored elements can be directly accessed with the subscript operator. The
 // numbering of the vector elements is
@@ -214,20 +215,25 @@ template< typename Type     // Data type of the vector
         , size_t N          // Number of elements
         , bool TF           // Transpose flag
         , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF >  // Padding flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
 class StaticVector
-   : public DenseVector< StaticVector<Type,N,TF,AF,PF>, TF >
+   : public DenseVector< StaticVector<Type,N,TF,AF,PF,Tag>, TF >
 {
  public:
    //**Type definitions****************************************************************************
-   using This          = StaticVector<Type,N,TF,AF,PF>;   //!< Type of this StaticVector instance.
-   using BaseType      = DenseVector<This,TF>;            //!< Base type of this StaticVector instance.
-   using ResultType    = This;                            //!< Result type for expression template evaluations.
-   using TransposeType = StaticVector<Type,N,!TF,AF,PF>;  //!< Transpose type for expression template evaluations.
-   using ElementType   = Type;                            //!< Type of the vector elements.
-   using SIMDType      = SIMDTrait_t<ElementType>;        //!< SIMD type of the vector elements.
-   using ReturnType    = const Type&;                     //!< Return type for expression template evaluations.
-   using CompositeType = const StaticVector&;             //!< Data type for composite expression templates.
+   using This       = StaticVector<Type,N,TF,AF,PF,Tag>;  //!< Type of this StaticVector instance.
+   using BaseType   = DenseVector<This,TF>;               //!< Base type of this StaticVector instance.
+   using ResultType = This;                               //!< Result type for expression template evaluations.
+
+   //! Transpose type for expression template evaluations.
+   using TransposeType = StaticVector<Type,N,!TF,AF,PF,Tag>;
+
+   using ElementType   = Type;                      //!< Type of the vector elements.
+   using SIMDType      = SIMDTrait_t<ElementType>;  //!< SIMD type of the vector elements.
+   using TagType       = Tag;                       //!< Tag type of this StaticVector instance.
+   using ReturnType    = const Type&;               //!< Return type for expression template evaluations.
+   using CompositeType = const StaticVector&;       //!< Data type for composite expression templates.
 
    using Reference      = Type&;        //!< Reference to a non-constant vector value.
    using ConstReference = const Type&;  //!< Reference to a constant vector value.
@@ -243,7 +249,7 @@ class StaticVector
    */
    template< typename NewType >  // Data type of the other vector
    struct Rebind {
-      using Other = StaticVector<NewType,N,TF,AF,PF>;  //!< The type of the other StaticVector.
+      using Other = StaticVector<NewType,N,TF,AF,PF,Tag>;  //!< The type of the other StaticVector.
    };
    //**********************************************************************************************
 
@@ -252,7 +258,7 @@ class StaticVector
    */
    template< size_t NewN >  // Number of elements of the other vector
    struct Resize {
-      using Other = StaticVector<Type,NewN,TF,AF,PF>;  //!< The type of the other StaticVector.
+      using Other = StaticVector<Type,NewN,TF,AF,PF,Tag>;  //!< The type of the other StaticVector.
    };
    //**********************************************************************************************
 
@@ -290,7 +296,7 @@ class StaticVector
    constexpr StaticVector( const StaticVector& v );
 
    template< typename Other, AlignmentFlag AF2, PaddingFlag PF2 >
-   inline StaticVector( const StaticVector<Other,N,TF,AF2,PF2>& v );
+   inline StaticVector( const StaticVector<Other,N,TF,AF2,PF2,Tag>& v );
 
    template< typename VT >
    inline StaticVector( const Vector<VT,TF>& v );
@@ -337,7 +343,7 @@ class StaticVector
    constexpr StaticVector& operator=( const StaticVector& rhs );
 
    template< typename Other, AlignmentFlag AF2, PaddingFlag PF2 >
-   inline StaticVector& operator=( const StaticVector<Other,N,TF,AF2,PF2>& rhs );
+   inline StaticVector& operator=( const StaticVector<Other,N,TF,AF2,PF2,Tag>& rhs );
 
    template< typename VT > inline StaticVector& operator= ( const Vector<VT,TF>& rhs );
    template< typename VT > inline StaticVector& operator+=( const Vector<VT,TF>& rhs );
@@ -594,8 +600,9 @@ template< typename Type     // Data type of the vector
         , size_t N          // Number of elements
         , bool TF           // Transpose flag
         , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF >  // Padding flag
-inline StaticVector<Type,N,TF,AF,PF>::StaticVector()
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+inline StaticVector<Type,N,TF,AF,PF,Tag>::StaticVector()
 #if BLAZE_USE_DEFAULT_INITIALIZATION
    : v_()  // The statically allocated vector elements
 #endif
@@ -621,8 +628,9 @@ template< typename Type     // Data type of the vector
         , size_t N          // Number of elements
         , bool TF           // Transpose flag
         , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF >  // Padding flag
-inline StaticVector<Type,N,TF,AF,PF>::StaticVector( const Type& init )
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+inline StaticVector<Type,N,TF,AF,PF,Tag>::StaticVector( const Type& init )
    // v_ is intentionally left uninitialized
 {
    for( size_t i=0UL; i<N; ++i )
@@ -657,8 +665,9 @@ template< typename Type     // Data type of the vector
         , size_t N          // Number of elements
         , bool TF           // Transpose flag
         , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF >  // Padding flag
-constexpr StaticVector<Type,N,TF,AF,PF>::StaticVector( initializer_list<Type> list )
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+constexpr StaticVector<Type,N,TF,AF,PF,Tag>::StaticVector( initializer_list<Type> list )
    : v_()  // The statically allocated vector elements
 {
    if( list.size() > N ) {
@@ -703,9 +712,10 @@ template< typename Type     // Data type of the vector
         , size_t N          // Number of elements
         , bool TF           // Transpose flag
         , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF >  // Padding flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
 template< typename Other >  // Data type of the initialization array
-inline StaticVector<Type,N,TF,AF,PF>::StaticVector( size_t n, const Other* array )
+inline StaticVector<Type,N,TF,AF,PF,Tag>::StaticVector( size_t n, const Other* array )
    // v_ is intentionally left uninitialized
 {
    if( n > N ) {
@@ -747,10 +757,11 @@ template< typename Type     // Data type of the vector
         , size_t N          // Number of elements
         , bool TF           // Transpose flag
         , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF >  // Padding flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
 template< typename Other    // Data type of the static array
         , size_t Dim >      // Dimension of the static array
-constexpr StaticVector<Type,N,TF,AF,PF>::StaticVector( const Other (&array)[Dim] )
+constexpr StaticVector<Type,N,TF,AF,PF,Tag>::StaticVector( const Other (&array)[Dim] )
    : v_( array )  // The statically allocated vector elements
 {
    BLAZE_STATIC_ASSERT( Dim == N );
@@ -782,10 +793,11 @@ template< typename Type     // Data type of the vector
         , size_t N          // Number of elements
         , bool TF           // Transpose flag
         , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF >  // Padding flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
 template< typename Other    // Data type of the std::array
         , size_t Dim >      // Dimension of the std::array
-constexpr StaticVector<Type,N,TF,AF,PF>::StaticVector( const std::array<Other,Dim>& array )
+constexpr StaticVector<Type,N,TF,AF,PF,Tag>::StaticVector( const std::array<Other,Dim>& array )
    : v_( array )  // The statically allocated vector elements
 {
    BLAZE_STATIC_ASSERT( Dim == N );
@@ -806,8 +818,9 @@ template< typename Type     // Data type of the vector
         , size_t N          // Number of elements
         , bool TF           // Transpose flag
         , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF >  // Padding flag
-constexpr StaticVector<Type,N,TF,AF,PF>::StaticVector( const StaticVector& v )
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+constexpr StaticVector<Type,N,TF,AF,PF,Tag>::StaticVector( const StaticVector& v )
    : BaseType()  // Initialization of the base class
    , v_( v.v_ )  // The statically allocated vector elements
 {
@@ -825,11 +838,12 @@ template< typename Type      // Data type of the vector
         , size_t N           // Number of elements
         , bool TF            // Transpose flag
         , AlignmentFlag AF   // Alignment flag
-        , PaddingFlag PF >   // Padding flag
+        , PaddingFlag PF     // Padding flag
+        , typename Tag >     // Type tag
 template< typename Other     // Data type of the foreign vector
         , AlignmentFlag AF2  // Alignment flag of the foreign vector
         , PaddingFlag PF2 >  // Padding flag of the foreign vector
-inline StaticVector<Type,N,TF,AF,PF>::StaticVector( const StaticVector<Other,N,TF,AF2,PF2>& v )
+inline StaticVector<Type,N,TF,AF,PF,Tag>::StaticVector( const StaticVector<Other,N,TF,AF2,PF2,Tag>& v )
    // v_ is intentionally left uninitialized
 {
    for( size_t i=0UL; i<N; ++i )
@@ -857,9 +871,10 @@ template< typename Type     // Data type of the vector
         , size_t N          // Number of elements
         , bool TF           // Transpose flag
         , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF >  // Padding flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
 template< typename VT >     // Type of the foreign vector
-inline StaticVector<Type,N,TF,AF,PF>::StaticVector( const Vector<VT,TF>& v )
+inline StaticVector<Type,N,TF,AF,PF,Tag>::StaticVector( const Vector<VT,TF>& v )
    // v_ is intentionally left uninitialized
 {
    using blaze::assign;
@@ -900,9 +915,10 @@ template< typename Type     // Data type of the vector
         , size_t N          // Number of elements
         , bool TF           // Transpose flag
         , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF >  // Padding flag
-constexpr typename StaticVector<Type,N,TF,AF,PF>::Reference
-   StaticVector<Type,N,TF,AF,PF>::operator[]( size_t index ) noexcept
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+constexpr typename StaticVector<Type,N,TF,AF,PF,Tag>::Reference
+   StaticVector<Type,N,TF,AF,PF,Tag>::operator[]( size_t index ) noexcept
 {
    BLAZE_USER_ASSERT( index < N, "Invalid vector access index" );
    return v_[index];
@@ -923,9 +939,10 @@ template< typename Type     // Data type of the vector
         , size_t N          // Number of elements
         , bool TF           // Transpose flag
         , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF >  // Padding flag
-constexpr typename StaticVector<Type,N,TF,AF,PF>::ConstReference
-   StaticVector<Type,N,TF,AF,PF>::operator[]( size_t index ) const noexcept
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+constexpr typename StaticVector<Type,N,TF,AF,PF,Tag>::ConstReference
+   StaticVector<Type,N,TF,AF,PF,Tag>::operator[]( size_t index ) const noexcept
 {
    BLAZE_USER_ASSERT( index < N, "Invalid vector access index" );
    return v_[index];
@@ -947,9 +964,10 @@ template< typename Type     // Data type of the vector
         , size_t N          // Number of elements
         , bool TF           // Transpose flag
         , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF >  // Padding flag
-inline typename StaticVector<Type,N,TF,AF,PF>::Reference
-   StaticVector<Type,N,TF,AF,PF>::at( size_t index )
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+inline typename StaticVector<Type,N,TF,AF,PF,Tag>::Reference
+   StaticVector<Type,N,TF,AF,PF,Tag>::at( size_t index )
 {
    if( index >= N ) {
       BLAZE_THROW_OUT_OF_RANGE( "Invalid vector access index" );
@@ -973,9 +991,10 @@ template< typename Type     // Data type of the vector
         , size_t N          // Number of elements
         , bool TF           // Transpose flag
         , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF >  // Padding flag
-inline typename StaticVector<Type,N,TF,AF,PF>::ConstReference
-   StaticVector<Type,N,TF,AF,PF>::at( size_t index ) const
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+inline typename StaticVector<Type,N,TF,AF,PF,Tag>::ConstReference
+   StaticVector<Type,N,TF,AF,PF,Tag>::at( size_t index ) const
 {
    if( index >= N ) {
       BLAZE_THROW_OUT_OF_RANGE( "Invalid vector access index" );
@@ -996,9 +1015,10 @@ template< typename Type     // Data type of the vector
         , size_t N          // Number of elements
         , bool TF           // Transpose flag
         , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF >  // Padding flag
-constexpr typename StaticVector<Type,N,TF,AF,PF>::Pointer
-   StaticVector<Type,N,TF,AF,PF>::data() noexcept
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+constexpr typename StaticVector<Type,N,TF,AF,PF,Tag>::Pointer
+   StaticVector<Type,N,TF,AF,PF,Tag>::data() noexcept
 {
    return v_;
 }
@@ -1016,9 +1036,10 @@ template< typename Type     // Data type of the vector
         , size_t N          // Number of elements
         , bool TF           // Transpose flag
         , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF >  // Padding flag
-constexpr typename StaticVector<Type,N,TF,AF,PF>::ConstPointer
-   StaticVector<Type,N,TF,AF,PF>::data() const noexcept
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+constexpr typename StaticVector<Type,N,TF,AF,PF,Tag>::ConstPointer
+   StaticVector<Type,N,TF,AF,PF,Tag>::data() const noexcept
 {
    return v_;
 }
@@ -1034,9 +1055,10 @@ template< typename Type     // Data type of the vector
         , size_t N          // Number of elements
         , bool TF           // Transpose flag
         , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF >  // Padding flag
-constexpr typename StaticVector<Type,N,TF,AF,PF>::Iterator
-   StaticVector<Type,N,TF,AF,PF>::begin() noexcept
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+constexpr typename StaticVector<Type,N,TF,AF,PF,Tag>::Iterator
+   StaticVector<Type,N,TF,AF,PF,Tag>::begin() noexcept
 {
    return Iterator( v_ );
 }
@@ -1052,9 +1074,10 @@ template< typename Type     // Data type of the vector
         , size_t N          // Number of elements
         , bool TF           // Transpose flag
         , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF >  // Padding flag
-constexpr typename StaticVector<Type,N,TF,AF,PF>::ConstIterator
-   StaticVector<Type,N,TF,AF,PF>::begin() const noexcept
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+constexpr typename StaticVector<Type,N,TF,AF,PF,Tag>::ConstIterator
+   StaticVector<Type,N,TF,AF,PF,Tag>::begin() const noexcept
 {
    return ConstIterator( v_ );
 }
@@ -1070,9 +1093,10 @@ template< typename Type     // Data type of the vector
         , size_t N          // Number of elements
         , bool TF           // Transpose flag
         , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF >  // Padding flag
-constexpr typename StaticVector<Type,N,TF,AF,PF>::ConstIterator
-   StaticVector<Type,N,TF,AF,PF>::cbegin() const noexcept
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+constexpr typename StaticVector<Type,N,TF,AF,PF,Tag>::ConstIterator
+   StaticVector<Type,N,TF,AF,PF,Tag>::cbegin() const noexcept
 {
    return ConstIterator( v_ );
 }
@@ -1088,9 +1112,10 @@ template< typename Type     // Data type of the vector
         , size_t N          // Number of elements
         , bool TF           // Transpose flag
         , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF >  // Padding flag
-constexpr typename StaticVector<Type,N,TF,AF,PF>::Iterator
-   StaticVector<Type,N,TF,AF,PF>::end() noexcept
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+constexpr typename StaticVector<Type,N,TF,AF,PF,Tag>::Iterator
+   StaticVector<Type,N,TF,AF,PF,Tag>::end() noexcept
 {
    return Iterator( v_ + N );
 }
@@ -1106,9 +1131,10 @@ template< typename Type     // Data type of the vector
         , size_t N          // Number of elements
         , bool TF           // Transpose flag
         , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF >  // Padding flag
-constexpr typename StaticVector<Type,N,TF,AF,PF>::ConstIterator
-   StaticVector<Type,N,TF,AF,PF>::end() const noexcept
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+constexpr typename StaticVector<Type,N,TF,AF,PF,Tag>::ConstIterator
+   StaticVector<Type,N,TF,AF,PF,Tag>::end() const noexcept
 {
    return ConstIterator( v_ + N );
 }
@@ -1124,9 +1150,10 @@ template< typename Type     // Data type of the vector
         , size_t N          // Number of elements
         , bool TF           // Transpose flag
         , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF >  // Padding flag
-constexpr typename StaticVector<Type,N,TF,AF,PF>::ConstIterator
-   StaticVector<Type,N,TF,AF,PF>::cend() const noexcept
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+constexpr typename StaticVector<Type,N,TF,AF,PF,Tag>::ConstIterator
+   StaticVector<Type,N,TF,AF,PF,Tag>::cend() const noexcept
 {
    return ConstIterator( v_ + N );
 }
@@ -1151,9 +1178,10 @@ template< typename Type     // Data type of the vector
         , size_t N          // Number of elements
         , bool TF           // Transpose flag
         , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF >  // Padding flag
-constexpr StaticVector<Type,N,TF,AF,PF>&
-   StaticVector<Type,N,TF,AF,PF>::operator=( const Type& rhs )
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+constexpr StaticVector<Type,N,TF,AF,PF,Tag>&
+   StaticVector<Type,N,TF,AF,PF,Tag>::operator=( const Type& rhs )
 {
    for( size_t i=0UL; i<N; ++i )
       v_[i] = rhs;
@@ -1184,9 +1212,10 @@ template< typename Type     // Data type of the vector
         , size_t N          // Number of elements
         , bool TF           // Transpose flag
         , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF >  // Padding flag
-constexpr StaticVector<Type,N,TF,AF,PF>&
-   StaticVector<Type,N,TF,AF,PF>::operator=( initializer_list<Type> list )
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+constexpr StaticVector<Type,N,TF,AF,PF,Tag>&
+   StaticVector<Type,N,TF,AF,PF,Tag>::operator=( initializer_list<Type> list )
 {
    if( list.size() > N ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to static vector" );
@@ -1231,11 +1260,12 @@ template< typename Type     // Data type of the vector
         , size_t N          // Number of elements
         , bool TF           // Transpose flag
         , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF >  // Padding flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
 template< typename Other    // Data type of the static array
         , size_t Dim >      // Dimension of the static array
-constexpr StaticVector<Type,N,TF,AF,PF>&
-   StaticVector<Type,N,TF,AF,PF>::operator=( const Other (&array)[Dim] )
+constexpr StaticVector<Type,N,TF,AF,PF,Tag>&
+   StaticVector<Type,N,TF,AF,PF,Tag>::operator=( const Other (&array)[Dim] )
 {
    BLAZE_STATIC_ASSERT( Dim == N );
 
@@ -1270,11 +1300,12 @@ template< typename Type     // Data type of the vector
         , size_t N          // Number of elements
         , bool TF           // Transpose flag
         , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF >  // Padding flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
 template< typename Other    // Data type of the std::array
         , size_t Dim >      // Dimension of the std::array
-constexpr StaticVector<Type,N,TF,AF,PF>&
-   StaticVector<Type,N,TF,AF,PF>::operator=( const std::array<Other,Dim>& array )
+constexpr StaticVector<Type,N,TF,AF,PF,Tag>&
+   StaticVector<Type,N,TF,AF,PF,Tag>::operator=( const std::array<Other,Dim>& array )
 {
    BLAZE_STATIC_ASSERT( Dim == N );
 
@@ -1298,9 +1329,10 @@ template< typename Type     // Data type of the vector
         , size_t N          // Number of elements
         , bool TF           // Transpose flag
         , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF >  // Padding flag
-constexpr StaticVector<Type,N,TF,AF,PF>&
-   StaticVector<Type,N,TF,AF,PF>::operator=( const StaticVector& rhs )
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+constexpr StaticVector<Type,N,TF,AF,PF,Tag>&
+   StaticVector<Type,N,TF,AF,PF,Tag>::operator=( const StaticVector& rhs )
 {
    v_ = rhs.v_;
 
@@ -1321,12 +1353,13 @@ template< typename Type      // Data type of the vector
         , size_t N           // Number of elements
         , bool TF            // Transpose flag
         , AlignmentFlag AF   // Alignment flag
-        , PaddingFlag PF >   // Padding flag
+        , PaddingFlag PF     // Padding flag
+        , typename Tag >     // Type tag
 template< typename Other     // Data type of the foreign vector
         , AlignmentFlag AF2  // Alignment flag of the foreign vector
         , PaddingFlag PF2 >  // Padding flag of the foreign vector
-inline StaticVector<Type,N,TF,AF,PF>&
-   StaticVector<Type,N,TF,AF,PF>::operator=( const StaticVector<Other,N,TF,AF2,PF2>& rhs )
+inline StaticVector<Type,N,TF,AF,PF,Tag>&
+   StaticVector<Type,N,TF,AF,PF,Tag>::operator=( const StaticVector<Other,N,TF,AF2,PF2,Tag>& rhs )
 {
    using blaze::assign;
 
@@ -1353,10 +1386,11 @@ template< typename Type     // Data type of the vector
         , size_t N          // Number of elements
         , bool TF           // Transpose flag
         , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF >  // Padding flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
 template< typename VT >     // Type of the right-hand side vector
-inline StaticVector<Type,N,TF,AF,PF>&
-   StaticVector<Type,N,TF,AF,PF>::operator=( const Vector<VT,TF>& rhs )
+inline StaticVector<Type,N,TF,AF,PF,Tag>&
+   StaticVector<Type,N,TF,AF,PF,Tag>::operator=( const Vector<VT,TF>& rhs )
 {
    using blaze::assign;
 
@@ -1395,10 +1429,11 @@ template< typename Type     // Data type of the vector
         , size_t N          // Number of elements
         , bool TF           // Transpose flag
         , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF >  // Padding flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
 template< typename VT >     // Type of the right-hand side vector
-inline StaticVector<Type,N,TF,AF,PF>&
-   StaticVector<Type,N,TF,AF,PF>::operator+=( const Vector<VT,TF>& rhs )
+inline StaticVector<Type,N,TF,AF,PF,Tag>&
+   StaticVector<Type,N,TF,AF,PF,Tag>::operator+=( const Vector<VT,TF>& rhs )
 {
    using blaze::addAssign;
 
@@ -1435,10 +1470,11 @@ template< typename Type     // Data type of the vector
         , size_t N          // Number of elements
         , bool TF           // Transpose flag
         , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF >  // Padding flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
 template< typename VT >     // Type of the right-hand side vector
-inline StaticVector<Type,N,TF,AF,PF>&
-   StaticVector<Type,N,TF,AF,PF>::operator-=( const Vector<VT,TF>& rhs )
+inline StaticVector<Type,N,TF,AF,PF,Tag>&
+   StaticVector<Type,N,TF,AF,PF,Tag>::operator-=( const Vector<VT,TF>& rhs )
 {
    using blaze::subAssign;
 
@@ -1476,10 +1512,11 @@ template< typename Type     // Data type of the vector
         , size_t N          // Number of elements
         , bool TF           // Transpose flag
         , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF >  // Padding flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
 template< typename VT >     // Type of the right-hand side vector
-inline StaticVector<Type,N,TF,AF,PF>&
-   StaticVector<Type,N,TF,AF,PF>::operator*=( const Vector<VT,TF>& rhs )
+inline StaticVector<Type,N,TF,AF,PF,Tag>&
+   StaticVector<Type,N,TF,AF,PF,Tag>::operator*=( const Vector<VT,TF>& rhs )
 {
    using blaze::assign;
    using blaze::multAssign;
@@ -1517,10 +1554,11 @@ template< typename Type     // Data type of the vector
         , size_t N          // Number of elements
         , bool TF           // Transpose flag
         , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF >  // Padding flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
 template< typename VT >     // Type of the right-hand side vector
-inline StaticVector<Type,N,TF,AF,PF>&
-   StaticVector<Type,N,TF,AF,PF>::operator/=( const DenseVector<VT,TF>& rhs )
+inline StaticVector<Type,N,TF,AF,PF,Tag>&
+   StaticVector<Type,N,TF,AF,PF,Tag>::operator/=( const DenseVector<VT,TF>& rhs )
 {
    using blaze::assign;
    using blaze::divAssign;
@@ -1559,10 +1597,11 @@ template< typename Type     // Data type of the vector
         , size_t N          // Number of elements
         , bool TF           // Transpose flag
         , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF >  // Padding flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
 template< typename VT >     // Type of the right-hand side vector
-inline StaticVector<Type,N,TF,AF,PF>&
-   StaticVector<Type,N,TF,AF,PF>::operator%=( const Vector<VT,TF>& rhs )
+inline StaticVector<Type,N,TF,AF,PF,Tag>&
+   StaticVector<Type,N,TF,AF,PF,Tag>::operator%=( const Vector<VT,TF>& rhs )
 {
    using blaze::assign;
 
@@ -1606,8 +1645,9 @@ template< typename Type     // Data type of the vector
         , size_t N          // Number of elements
         , bool TF           // Transpose flag
         , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF >  // Padding flag
-constexpr size_t StaticVector<Type,N,TF,AF,PF>::size() noexcept
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+constexpr size_t StaticVector<Type,N,TF,AF,PF,Tag>::size() noexcept
 {
    return N;
 }
@@ -1626,8 +1666,9 @@ template< typename Type     // Data type of the vector
         , size_t N          // Number of elements
         , bool TF           // Transpose flag
         , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF >  // Padding flag
-constexpr size_t StaticVector<Type,N,TF,AF,PF>::spacing() noexcept
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+constexpr size_t StaticVector<Type,N,TF,AF,PF,Tag>::spacing() noexcept
 {
    return NN;
 }
@@ -1643,8 +1684,9 @@ template< typename Type     // Data type of the vector
         , size_t N          // Number of elements
         , bool TF           // Transpose flag
         , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF >  // Padding flag
-constexpr size_t StaticVector<Type,N,TF,AF,PF>::capacity() noexcept
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+constexpr size_t StaticVector<Type,N,TF,AF,PF,Tag>::capacity() noexcept
 {
    return NN;
 }
@@ -1663,8 +1705,9 @@ template< typename Type     // Data type of the vector
         , size_t N          // Number of elements
         , bool TF           // Transpose flag
         , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF >  // Padding flag
-inline size_t StaticVector<Type,N,TF,AF,PF>::nonZeros() const
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+inline size_t StaticVector<Type,N,TF,AF,PF,Tag>::nonZeros() const
 {
    size_t nonzeros( 0 );
 
@@ -1687,8 +1730,9 @@ template< typename Type     // Data type of the vector
         , size_t N          // Number of elements
         , bool TF           // Transpose flag
         , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF >  // Padding flag
-constexpr void StaticVector<Type,N,TF,AF,PF>::reset()
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+constexpr void StaticVector<Type,N,TF,AF,PF,Tag>::reset()
 {
    using blaze::clear;
    for( size_t i=0UL; i<N; ++i )
@@ -1707,8 +1751,9 @@ template< typename Type     // Data type of the vector
         , size_t N          // Number of elements
         , bool TF           // Transpose flag
         , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF >  // Padding flag
-inline void StaticVector<Type,N,TF,AF,PF>::swap( StaticVector& v ) noexcept
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+inline void StaticVector<Type,N,TF,AF,PF,Tag>::swap( StaticVector& v ) noexcept
 {
    using std::swap;
 
@@ -1747,10 +1792,11 @@ template< typename Type     // Data type of the vector
         , size_t N          // Number of elements
         , bool TF           // Transpose flag
         , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF >  // Padding flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
 template< typename Other >  // Data type of the scalar value
-inline StaticVector<Type,N,TF,AF,PF>&
-   StaticVector<Type,N,TF,AF,PF>::scale( const Other& scalar )
+inline StaticVector<Type,N,TF,AF,PF,Tag>&
+   StaticVector<Type,N,TF,AF,PF,Tag>::scale( const Other& scalar )
 {
    for( size_t i=0; i<N; ++i )
       v_[i] *= scalar;
@@ -1781,8 +1827,9 @@ template< typename Type     // Data type of the vector
         , size_t N          // Number of elements
         , bool TF           // Transpose flag
         , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF >  // Padding flag
-inline void* StaticVector<Type,N,TF,AF,PF>::operator new( std::size_t size )
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+inline void* StaticVector<Type,N,TF,AF,PF,Tag>::operator new( std::size_t size )
 {
    MAYBE_UNUSED( size );
 
@@ -1807,8 +1854,9 @@ template< typename Type     // Data type of the vector
         , size_t N          // Number of elements
         , bool TF           // Transpose flag
         , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF >  // Padding flag
-inline void* StaticVector<Type,N,TF,AF,PF>::operator new[]( std::size_t size )
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+inline void* StaticVector<Type,N,TF,AF,PF,Tag>::operator new[]( std::size_t size )
 {
    BLAZE_INTERNAL_ASSERT( size >= sizeof( StaticVector )       , "Invalid number of bytes detected" );
    BLAZE_INTERNAL_ASSERT( size %  sizeof( StaticVector ) == 0UL, "Invalid number of bytes detected" );
@@ -1832,8 +1880,9 @@ template< typename Type     // Data type of the vector
         , size_t N          // Number of elements
         , bool TF           // Transpose flag
         , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF >  // Padding flag
-inline void* StaticVector<Type,N,TF,AF,PF>::operator new( std::size_t size, const std::nothrow_t& )
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+inline void* StaticVector<Type,N,TF,AF,PF,Tag>::operator new( std::size_t size, const std::nothrow_t& )
 {
    MAYBE_UNUSED( size );
 
@@ -1858,8 +1907,9 @@ template< typename Type     // Data type of the vector
         , size_t N          // Number of elements
         , bool TF           // Transpose flag
         , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF >  // Padding flag
-inline void* StaticVector<Type,N,TF,AF,PF>::operator new[]( std::size_t size, const std::nothrow_t& )
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+inline void* StaticVector<Type,N,TF,AF,PF,Tag>::operator new[]( std::size_t size, const std::nothrow_t& )
 {
    BLAZE_INTERNAL_ASSERT( size >= sizeof( StaticVector )       , "Invalid number of bytes detected" );
    BLAZE_INTERNAL_ASSERT( size %  sizeof( StaticVector ) == 0UL, "Invalid number of bytes detected" );
@@ -1879,8 +1929,9 @@ template< typename Type     // Data type of the vector
         , size_t N          // Number of elements
         , bool TF           // Transpose flag
         , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF >  // Padding flag
-inline void StaticVector<Type,N,TF,AF,PF>::operator delete( void* ptr )
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+inline void StaticVector<Type,N,TF,AF,PF,Tag>::operator delete( void* ptr )
 {
    deallocate( static_cast<StaticVector*>( ptr ) );
 }
@@ -1897,8 +1948,9 @@ template< typename Type     // Data type of the vector
         , size_t N          // Number of elements
         , bool TF           // Transpose flag
         , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF >  // Padding flag
-inline void StaticVector<Type,N,TF,AF,PF>::operator delete[]( void* ptr )
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+inline void StaticVector<Type,N,TF,AF,PF,Tag>::operator delete[]( void* ptr )
 {
    deallocate( static_cast<StaticVector*>( ptr ) );
 }
@@ -1915,8 +1967,9 @@ template< typename Type     // Data type of the vector
         , size_t N          // Number of elements
         , bool TF           // Transpose flag
         , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF >  // Padding flag
-inline void StaticVector<Type,N,TF,AF,PF>::operator delete( void* ptr, const std::nothrow_t& )
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+inline void StaticVector<Type,N,TF,AF,PF,Tag>::operator delete( void* ptr, const std::nothrow_t& )
 {
    deallocate( static_cast<StaticVector*>( ptr ) );
 }
@@ -1933,8 +1986,9 @@ template< typename Type     // Data type of the vector
         , size_t N          // Number of elements
         , bool TF           // Transpose flag
         , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF >  // Padding flag
-inline void StaticVector<Type,N,TF,AF,PF>::operator delete[]( void* ptr, const std::nothrow_t& )
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+inline void StaticVector<Type,N,TF,AF,PF,Tag>::operator delete[]( void* ptr, const std::nothrow_t& )
 {
    deallocate( static_cast<StaticVector*>( ptr ) );
 }
@@ -1962,8 +2016,9 @@ template< typename Type     // Data type of the vector
         , size_t N          // Number of elements
         , bool TF           // Transpose flag
         , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF >  // Padding flag
-constexpr bool StaticVector<Type,N,TF,AF,PF>::isIntact() const noexcept
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+constexpr bool StaticVector<Type,N,TF,AF,PF,Tag>::isIntact() const noexcept
 {
    if( IsNumeric_v<Type> ) {
       for( size_t i=N; i<NN; ++i ) {
@@ -1999,9 +2054,10 @@ template< typename Type     // Data type of the vector
         , size_t N          // Number of elements
         , bool TF           // Transpose flag
         , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF >  // Padding flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
 template< typename Other >  // Data type of the foreign expression
-inline bool StaticVector<Type,N,TF,AF,PF>::canAlias( const Other* alias ) const noexcept
+inline bool StaticVector<Type,N,TF,AF,PF,Tag>::canAlias( const Other* alias ) const noexcept
 {
    return static_cast<const void*>( this ) == static_cast<const void*>( alias );
 }
@@ -2022,9 +2078,10 @@ template< typename Type     // Data type of the vector
         , size_t N          // Number of elements
         , bool TF           // Transpose flag
         , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF >  // Padding flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
 template< typename Other >  // Data type of the foreign expression
-inline bool StaticVector<Type,N,TF,AF,PF>::isAliased( const Other* alias ) const noexcept
+inline bool StaticVector<Type,N,TF,AF,PF,Tag>::isAliased( const Other* alias ) const noexcept
 {
    return static_cast<const void*>( this ) == static_cast<const void*>( alias );
 }
@@ -2044,8 +2101,9 @@ template< typename Type     // Data type of the vector
         , size_t N          // Number of elements
         , bool TF           // Transpose flag
         , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF >  // Padding flag
-constexpr bool StaticVector<Type,N,TF,AF,PF>::isAligned() noexcept
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+constexpr bool StaticVector<Type,N,TF,AF,PF,Tag>::isAligned() noexcept
 {
    return AF == aligned;
 }
@@ -2068,9 +2126,10 @@ template< typename Type     // Data type of the vector
         , size_t N          // Number of elements
         , bool TF           // Transpose flag
         , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF >  // Padding flag
-BLAZE_ALWAYS_INLINE typename StaticVector<Type,N,TF,AF,PF>::SIMDType
-   StaticVector<Type,N,TF,AF,PF>::load( size_t index ) const noexcept
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+BLAZE_ALWAYS_INLINE typename StaticVector<Type,N,TF,AF,PF,Tag>::SIMDType
+   StaticVector<Type,N,TF,AF,PF,Tag>::load( size_t index ) const noexcept
 {
    if( AF == aligned )
       return loada( index );
@@ -2097,9 +2156,10 @@ template< typename Type     // Data type of the vector
         , size_t N          // Number of elements
         , bool TF           // Transpose flag
         , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF >  // Padding flag
-BLAZE_ALWAYS_INLINE typename StaticVector<Type,N,TF,AF,PF>::SIMDType
-   StaticVector<Type,N,TF,AF,PF>::loada( size_t index ) const noexcept
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+BLAZE_ALWAYS_INLINE typename StaticVector<Type,N,TF,AF,PF,Tag>::SIMDType
+   StaticVector<Type,N,TF,AF,PF,Tag>::loada( size_t index ) const noexcept
 {
    using blaze::loada;
 
@@ -2132,9 +2192,10 @@ template< typename Type     // Data type of the vector
         , size_t N          // Number of elements
         , bool TF           // Transpose flag
         , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF >  // Padding flag
-BLAZE_ALWAYS_INLINE typename StaticVector<Type,N,TF,AF,PF>::SIMDType
-   StaticVector<Type,N,TF,AF,PF>::loadu( size_t index ) const noexcept
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+BLAZE_ALWAYS_INLINE typename StaticVector<Type,N,TF,AF,PF,Tag>::SIMDType
+   StaticVector<Type,N,TF,AF,PF,Tag>::loadu( size_t index ) const noexcept
 {
    using blaze::loadu;
 
@@ -2165,9 +2226,10 @@ template< typename Type     // Data type of the vector
         , size_t N          // Number of elements
         , bool TF           // Transpose flag
         , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF >  // Padding flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
 BLAZE_ALWAYS_INLINE void
-   StaticVector<Type,N,TF,AF,PF>::store( size_t index, const SIMDType& value ) noexcept
+   StaticVector<Type,N,TF,AF,PF,Tag>::store( size_t index, const SIMDType& value ) noexcept
 {
    if( AF == aligned )
       storea( index, value );
@@ -2194,9 +2256,10 @@ template< typename Type     // Data type of the vector
         , size_t N          // Number of elements
         , bool TF           // Transpose flag
         , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF >  // Padding flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
 BLAZE_ALWAYS_INLINE void
-   StaticVector<Type,N,TF,AF,PF>::storea( size_t index, const SIMDType& value ) noexcept
+   StaticVector<Type,N,TF,AF,PF,Tag>::storea( size_t index, const SIMDType& value ) noexcept
 {
    using blaze::storea;
 
@@ -2229,9 +2292,10 @@ template< typename Type     // Data type of the vector
         , size_t N          // Number of elements
         , bool TF           // Transpose flag
         , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF >  // Padding flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
 BLAZE_ALWAYS_INLINE void
-   StaticVector<Type,N,TF,AF,PF>::storeu( size_t index, const SIMDType& value ) noexcept
+   StaticVector<Type,N,TF,AF,PF,Tag>::storeu( size_t index, const SIMDType& value ) noexcept
 {
    using blaze::storeu;
 
@@ -2263,9 +2327,10 @@ template< typename Type     // Data type of the vector
         , size_t N          // Number of elements
         , bool TF           // Transpose flag
         , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF >  // Padding flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
 BLAZE_ALWAYS_INLINE void
-   StaticVector<Type,N,TF,AF,PF>::stream( size_t index, const SIMDType& value ) noexcept
+   StaticVector<Type,N,TF,AF,PF,Tag>::stream( size_t index, const SIMDType& value ) noexcept
 {
    using blaze::stream;
 
@@ -2296,9 +2361,10 @@ template< typename Type     // Data type of the vector
         , size_t N          // Number of elements
         , bool TF           // Transpose flag
         , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF >  // Padding flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
 template< typename VT >     // Type of the right-hand side dense vector
-inline auto StaticVector<Type,N,TF,AF,PF>::assign( const DenseVector<VT,TF>& rhs )
+inline auto StaticVector<Type,N,TF,AF,PF,Tag>::assign( const DenseVector<VT,TF>& rhs )
    -> DisableIf_t< VectorizedAssign_v<VT> >
 {
    BLAZE_INTERNAL_ASSERT( (~rhs).size() == N, "Invalid vector sizes" );
@@ -2324,9 +2390,10 @@ template< typename Type     // Data type of the vector
         , size_t N          // Number of elements
         , bool TF           // Transpose flag
         , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF >  // Padding flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
 template< typename VT >     // Type of the right-hand side dense vector
-inline auto StaticVector<Type,N,TF,AF,PF>::assign( const DenseVector<VT,TF>& rhs )
+inline auto StaticVector<Type,N,TF,AF,PF,Tag>::assign( const DenseVector<VT,TF>& rhs )
    -> EnableIf_t< VectorizedAssign_v<VT> >
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
@@ -2365,9 +2432,10 @@ template< typename Type     // Data type of the vector
         , size_t N          // Number of elements
         , bool TF           // Transpose flag
         , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF >  // Padding flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
 template< typename VT >     // Type of the right-hand side sparse vector
-inline void StaticVector<Type,N,TF,AF,PF>::assign( const SparseVector<VT,TF>& rhs )
+inline void StaticVector<Type,N,TF,AF,PF,Tag>::assign( const SparseVector<VT,TF>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( (~rhs).size() == N, "Invalid vector sizes" );
 
@@ -2392,9 +2460,10 @@ template< typename Type     // Data type of the vector
         , size_t N          // Number of elements
         , bool TF           // Transpose flag
         , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF >  // Padding flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
 template< typename VT >     // Type of the right-hand side dense vector
-inline auto StaticVector<Type,N,TF,AF,PF>::addAssign( const DenseVector<VT,TF>& rhs )
+inline auto StaticVector<Type,N,TF,AF,PF,Tag>::addAssign( const DenseVector<VT,TF>& rhs )
    -> DisableIf_t< VectorizedAddAssign_v<VT> >
 {
    BLAZE_INTERNAL_ASSERT( (~rhs).size() == N, "Invalid vector sizes" );
@@ -2420,9 +2489,10 @@ template< typename Type     // Data type of the vector
         , size_t N          // Number of elements
         , bool TF           // Transpose flag
         , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF >  // Padding flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
 template< typename VT >     // Type of the right-hand side dense vector
-inline auto StaticVector<Type,N,TF,AF,PF>::addAssign( const DenseVector<VT,TF>& rhs )
+inline auto StaticVector<Type,N,TF,AF,PF,Tag>::addAssign( const DenseVector<VT,TF>& rhs )
    -> EnableIf_t< VectorizedAddAssign_v<VT> >
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
@@ -2461,9 +2531,10 @@ template< typename Type     // Data type of the vector
         , size_t N          // Number of elements
         , bool TF           // Transpose flag
         , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF >  // Padding flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
 template< typename VT >     // Type of the right-hand side sparse vector
-inline void StaticVector<Type,N,TF,AF,PF>::addAssign( const SparseVector<VT,TF>& rhs )
+inline void StaticVector<Type,N,TF,AF,PF,Tag>::addAssign( const SparseVector<VT,TF>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( (~rhs).size() == N, "Invalid vector sizes" );
 
@@ -2488,9 +2559,10 @@ template< typename Type     // Data type of the vector
         , size_t N          // Number of elements
         , bool TF           // Transpose flag
         , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF >  // Padding flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
 template< typename VT >     // Type of the right-hand side dense vector
-inline auto StaticVector<Type,N,TF,AF,PF>::subAssign( const DenseVector<VT,TF>& rhs )
+inline auto StaticVector<Type,N,TF,AF,PF,Tag>::subAssign( const DenseVector<VT,TF>& rhs )
    -> DisableIf_t< VectorizedSubAssign_v<VT> >
 {
    BLAZE_INTERNAL_ASSERT( (~rhs).size() == N, "Invalid vector sizes" );
@@ -2516,9 +2588,10 @@ template< typename Type     // Data type of the vector
         , size_t N          // Number of elements
         , bool TF           // Transpose flag
         , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF >  // Padding flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
 template< typename VT >     // Type of the right-hand side dense vector
-inline auto StaticVector<Type,N,TF,AF,PF>::subAssign( const DenseVector<VT,TF>& rhs )
+inline auto StaticVector<Type,N,TF,AF,PF,Tag>::subAssign( const DenseVector<VT,TF>& rhs )
    -> EnableIf_t< VectorizedSubAssign_v<VT> >
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
@@ -2557,9 +2630,10 @@ template< typename Type     // Data type of the vector
         , size_t N          // Number of elements
         , bool TF           // Transpose flag
         , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF >  // Padding flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
 template< typename VT >     // Type of the right-hand side sparse vector
-inline void StaticVector<Type,N,TF,AF,PF>::subAssign( const SparseVector<VT,TF>& rhs )
+inline void StaticVector<Type,N,TF,AF,PF,Tag>::subAssign( const SparseVector<VT,TF>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( (~rhs).size() == N, "Invalid vector sizes" );
 
@@ -2584,9 +2658,10 @@ template< typename Type     // Data type of the vector
         , size_t N          // Number of elements
         , bool TF           // Transpose flag
         , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF >  // Padding flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
 template< typename VT >     // Type of the right-hand side dense vector
-inline auto StaticVector<Type,N,TF,AF,PF>::multAssign( const DenseVector<VT,TF>& rhs )
+inline auto StaticVector<Type,N,TF,AF,PF,Tag>::multAssign( const DenseVector<VT,TF>& rhs )
    -> DisableIf_t< VectorizedMultAssign_v<VT> >
 {
    BLAZE_INTERNAL_ASSERT( (~rhs).size() == N, "Invalid vector sizes" );
@@ -2612,9 +2687,10 @@ template< typename Type     // Data type of the vector
         , size_t N          // Number of elements
         , bool TF           // Transpose flag
         , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF >  // Padding flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
 template< typename VT >     // Type of the right-hand side dense vector
-inline auto StaticVector<Type,N,TF,AF,PF>::multAssign( const DenseVector<VT,TF>& rhs )
+inline auto StaticVector<Type,N,TF,AF,PF,Tag>::multAssign( const DenseVector<VT,TF>& rhs )
    -> EnableIf_t< VectorizedMultAssign_v<VT> >
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
@@ -2653,9 +2729,10 @@ template< typename Type     // Data type of the vector
         , size_t N          // Number of elements
         , bool TF           // Transpose flag
         , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF >  // Padding flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
 template< typename VT >     // Type of the right-hand side sparse vector
-inline void StaticVector<Type,N,TF,AF,PF>::multAssign( const SparseVector<VT,TF>& rhs )
+inline void StaticVector<Type,N,TF,AF,PF,Tag>::multAssign( const SparseVector<VT,TF>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( (~rhs).size() == N, "Invalid vector sizes" );
 
@@ -2684,9 +2761,10 @@ template< typename Type     // Data type of the vector
         , size_t N          // Number of elements
         , bool TF           // Transpose flag
         , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF >  // Padding flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
 template< typename VT >     // Type of the right-hand side dense vector
-inline auto StaticVector<Type,N,TF,AF,PF>::divAssign( const DenseVector<VT,TF>& rhs )
+inline auto StaticVector<Type,N,TF,AF,PF,Tag>::divAssign( const DenseVector<VT,TF>& rhs )
    -> DisableIf_t< VectorizedDivAssign_v<VT> >
 {
    BLAZE_INTERNAL_ASSERT( (~rhs).size() == N, "Invalid vector sizes" );
@@ -2712,9 +2790,10 @@ template< typename Type     // Data type of the vector
         , size_t N          // Number of elements
         , bool TF           // Transpose flag
         , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF >  // Padding flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
 template< typename VT >     // Type of the right-hand side dense vector
-inline auto StaticVector<Type,N,TF,AF,PF>::divAssign( const DenseVector<VT,TF>& rhs )
+inline auto StaticVector<Type,N,TF,AF,PF,Tag>::divAssign( const DenseVector<VT,TF>& rhs )
    -> EnableIf_t< VectorizedDivAssign_v<VT> >
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
@@ -2751,38 +2830,38 @@ inline auto StaticVector<Type,N,TF,AF,PF>::divAssign( const DenseVector<VT,TF>& 
 //*************************************************************************************************
 /*!\name StaticVector operators */
 //@{
-template< typename Type, size_t N, bool TF, AlignmentFlag AF, PaddingFlag PF >
-constexpr void reset( StaticVector<Type,N,TF,AF,PF>& v );
+template< typename Type, size_t N, bool TF, AlignmentFlag AF, PaddingFlag PF, typename Tag >
+constexpr void reset( StaticVector<Type,N,TF,AF,PF,Tag>& v );
 
-template< typename Type, size_t N, bool TF, AlignmentFlag AF, PaddingFlag PF >
-constexpr void clear( StaticVector<Type,N,TF,AF,PF>& v );
+template< typename Type, size_t N, bool TF, AlignmentFlag AF, PaddingFlag PF, typename Tag >
+constexpr void clear( StaticVector<Type,N,TF,AF,PF,Tag>& v );
 
-template< RelaxationFlag RF, typename Type, size_t N, bool TF, AlignmentFlag AF, PaddingFlag PF >
-bool isDefault( const StaticVector<Type,N,TF,AF,PF>& v );
+template< RelaxationFlag RF, typename Type, size_t N, bool TF, AlignmentFlag AF, PaddingFlag PF, typename Tag >
+bool isDefault( const StaticVector<Type,N,TF,AF,PF,Tag>& v );
 
-template< typename Type, size_t N, bool TF, AlignmentFlag AF, PaddingFlag PF >
-constexpr bool isIntact( const StaticVector<Type,N,TF,AF,PF>& v ) noexcept;
+template< typename Type, size_t N, bool TF, AlignmentFlag AF, PaddingFlag PF, typename Tag >
+constexpr bool isIntact( const StaticVector<Type,N,TF,AF,PF,Tag>& v ) noexcept;
 
-template< typename Type, bool TF, AlignmentFlag AF, PaddingFlag PF >
-const StaticVector<Type,2UL,TF,AF,PF> perp( const StaticVector<Type,2UL,TF,AF,PF>& v );
+template< typename Type, bool TF, AlignmentFlag AF, PaddingFlag PF, typename Tag >
+const StaticVector<Type,2UL,TF,AF,PF,Tag> perp( const StaticVector<Type,2UL,TF,AF,PF,Tag>& v );
 
-template< typename Type, bool TF, AlignmentFlag AF, PaddingFlag PF >
-const StaticVector<Type,3UL,TF,AF,PF> perp( const StaticVector<Type,3UL,TF,AF,PF>& v );
+template< typename Type, bool TF, AlignmentFlag AF, PaddingFlag PF, typename Tag >
+const StaticVector<Type,3UL,TF,AF,PF,Tag> perp( const StaticVector<Type,3UL,TF,AF,PF,Tag>& v );
 
-template< typename Type, size_t N, bool TF, AlignmentFlag AF, PaddingFlag PF >
-void swap( StaticVector<Type,N,TF,AF,PF>& a, StaticVector<Type,N,TF,AF,PF>& b ) noexcept;
+template< typename Type, size_t N, bool TF, AlignmentFlag AF, PaddingFlag PF, typename Tag >
+void swap( StaticVector<Type,N,TF,AF,PF,Tag>& a, StaticVector<Type,N,TF,AF,PF,Tag>& b ) noexcept;
 
-template< size_t I, typename Type, size_t N, bool TF, AlignmentFlag AF, PaddingFlag PF >
-constexpr Type& get( StaticVector<Type,N,TF,AF,PF>& v ) noexcept;
+template< size_t I, typename Type, size_t N, bool TF, AlignmentFlag AF, PaddingFlag PF, typename Tag >
+constexpr Type& get( StaticVector<Type,N,TF,AF,PF,Tag>& v ) noexcept;
 
-template< size_t I, typename Type, size_t N, bool TF, AlignmentFlag AF, PaddingFlag PF >
-constexpr Type&& get( StaticVector<Type,N,TF,AF,PF>&& v ) noexcept;
+template< size_t I, typename Type, size_t N, bool TF, AlignmentFlag AF, PaddingFlag PF, typename Tag >
+constexpr Type&& get( StaticVector<Type,N,TF,AF,PF,Tag>&& v ) noexcept;
 
-template< size_t I, typename Type, size_t N, bool TF, AlignmentFlag AF, PaddingFlag PF >
-constexpr const Type& get( const StaticVector<Type,N,TF,AF,PF>& v) noexcept;
+template< size_t I, typename Type, size_t N, bool TF, AlignmentFlag AF, PaddingFlag PF, typename Tag >
+constexpr const Type& get( const StaticVector<Type,N,TF,AF,PF,Tag>& v) noexcept;
 
-template< size_t I, typename Type, size_t N, bool TF, AlignmentFlag AF, PaddingFlag PF >
-constexpr const Type&& get( const StaticVector<Type,N,TF,AF,PF>&& v ) noexcept;
+template< size_t I, typename Type, size_t N, bool TF, AlignmentFlag AF, PaddingFlag PF, typename Tag >
+constexpr const Type&& get( const StaticVector<Type,N,TF,AF,PF,Tag>&& v ) noexcept;
 //@}
 //*************************************************************************************************
 
@@ -2798,8 +2877,9 @@ template< typename Type     // Data type of the vector
         , size_t N          // Number of elements
         , bool TF           // Transpose flag
         , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF >  // Padding flag
-constexpr void reset( StaticVector<Type,N,TF,AF,PF>& v )
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+constexpr void reset( StaticVector<Type,N,TF,AF,PF,Tag>& v )
 {
    v.reset();
 }
@@ -2819,8 +2899,9 @@ template< typename Type     // Data type of the vector
         , size_t N          // Number of elements
         , bool TF           // Transpose flag
         , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF >  // Padding flag
-constexpr void clear( StaticVector<Type,N,TF,AF,PF>& v )
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+constexpr void clear( StaticVector<Type,N,TF,AF,PF,Tag>& v )
 {
    v.reset();
 }
@@ -2857,8 +2938,9 @@ template< RelaxationFlag RF  // Relaxation flag
         , size_t N           // Number of elements
         , bool TF            // Transpose flag
         , AlignmentFlag AF   // Alignment flag
-        , PaddingFlag PF >   // Padding flag
-inline bool isDefault( const StaticVector<Type,N,TF,AF,PF>& v )
+        , PaddingFlag PF     // Padding flag
+        , typename Tag >     // Type tag
+inline bool isDefault( const StaticVector<Type,N,TF,AF,PF,Tag>& v )
 {
    for( size_t i=0UL; i<N; ++i )
       if( !isDefault<RF>( v[i] ) ) return false;
@@ -2889,8 +2971,9 @@ template< typename Type     // Data type of the vector
         , size_t N          // Number of elements
         , bool TF           // Transpose flag
         , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF >  // Padding flag
-constexpr bool isIntact( const StaticVector<Type,N,TF,AF,PF>& v ) noexcept
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+constexpr bool isIntact( const StaticVector<Type,N,TF,AF,PF,Tag>& v ) noexcept
 {
    return v.isIntact();
 }
@@ -2911,10 +2994,12 @@ constexpr bool isIntact( const StaticVector<Type,N,TF,AF,PF>& v ) noexcept
 template< typename Type     // Data type of the vector
         , bool TF           // Transpose flag
         , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF >  // Padding flag
-inline const StaticVector<Type,2UL,TF,AF,PF> perp( const StaticVector<Type,2UL,TF,AF,PF>& v )
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+inline const StaticVector<Type,2UL,TF,AF,PF,Tag>
+   perp( const StaticVector<Type,2UL,TF,AF,PF,Tag>& v )
 {
-   return StaticVector<Type,2UL,TF,AF,PF>( -v[1UL], v[0UL] );
+   return StaticVector<Type,2UL,TF,AF,PF,Tag>( -v[1UL], v[0UL] );
 }
 //*************************************************************************************************
 
@@ -2930,13 +3015,15 @@ inline const StaticVector<Type,2UL,TF,AF,PF> perp( const StaticVector<Type,2UL,T
 template< typename Type     // Data type of the vector
         , bool TF           // Transpose flag
         , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF >  // Padding flag
-inline const StaticVector<Type,3UL,TF,AF,PF> perp( const StaticVector<Type,3UL,TF,AF,PF>& v )
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+inline const StaticVector<Type,3UL,TF,AF,PF,Tag>
+   perp( const StaticVector<Type,3UL,TF,AF,PF,Tag>& v )
 {
    if( v[0] != Type() || v[1] != Type() )
-      return StaticVector<Type,3UL,TF,AF,PF>( v[1UL], -v[0UL], Type() );
+      return StaticVector<Type,3UL,TF,AF,PF,Tag>( v[1UL], -v[0UL], Type() );
    else
-      return StaticVector<Type,3UL,TF,AF,PF>( Type(), v[2UL], -v[1UL] );
+      return StaticVector<Type,3UL,TF,AF,PF,Tag>( Type(), v[2UL], -v[1UL] );
 }
 //*************************************************************************************************
 
@@ -2953,8 +3040,9 @@ template< typename Type     // Data type of the vector
         , size_t N          // Number of elements
         , bool TF           // Transpose flag
         , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF >  // Padding flag
-inline void swap( StaticVector<Type,N,TF,AF,PF>& a, StaticVector<Type,N,TF,AF,PF>& b ) noexcept
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+inline void swap( StaticVector<Type,N,TF,AF,PF,Tag>& a, StaticVector<Type,N,TF,AF,PF,Tag>& b ) noexcept
 {
    a.swap( b );
 }
@@ -2973,8 +3061,9 @@ template< size_t I          // Compile time access index
         , size_t N          // Number of elements
         , bool TF           // Transpose flag
         , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF >  // Padding flag
-constexpr Type& get( StaticVector<Type,N,TF,AF,PF>& v ) noexcept
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+constexpr Type& get( StaticVector<Type,N,TF,AF,PF,Tag>& v ) noexcept
 {
    BLAZE_STATIC_ASSERT_MSG( I < N, "Invalid vector access index" );
    return v[I];
@@ -2994,8 +3083,9 @@ template< size_t I          // Compile time access index
         , size_t N          // Number of elements
         , bool TF           // Transpose flag
         , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF >  // Padding flag
-constexpr Type&& get( StaticVector<Type,N,TF,AF,PF>&& v ) noexcept
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+constexpr Type&& get( StaticVector<Type,N,TF,AF,PF,Tag>&& v ) noexcept
 {
    BLAZE_STATIC_ASSERT_MSG( I < N, "Invalid vector access index" );
    return std::move( v[I] );
@@ -3015,8 +3105,9 @@ template< size_t I          // Compile time access index
         , size_t N          // Number of elements
         , bool TF           // Transpose flag
         , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF >  // Padding flag
-constexpr const Type& get( const StaticVector<Type,N,TF,AF,PF>& v) noexcept
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+constexpr const Type& get( const StaticVector<Type,N,TF,AF,PF,Tag>& v) noexcept
 {
    BLAZE_STATIC_ASSERT_MSG( I < N, "Invalid vector access index" );
    return v[I];
@@ -3036,8 +3127,9 @@ template< size_t I          // Compile time access index
         , size_t N          // Number of elements
         , bool TF           // Transpose flag
         , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF >  // Padding flag
-constexpr const Type&& get( const StaticVector<Type,N,TF,AF,PF>&& v ) noexcept
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+constexpr const Type&& get( const StaticVector<Type,N,TF,AF,PF,Tag>&& v ) noexcept
 {
    BLAZE_STATIC_ASSERT_MSG( I < N, "Invalid vector access index" );
    return std::move( v[I] );
@@ -3055,8 +3147,8 @@ constexpr const Type&& get( const StaticVector<Type,N,TF,AF,PF>&& v ) noexcept
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T, size_t N, bool TF, AlignmentFlag AF, PaddingFlag PF >
-struct Size< StaticVector<T,N,TF,AF,PF>, 0UL >
+template< typename T, size_t N, bool TF, AlignmentFlag AF, PaddingFlag PF, typename Tag >
+struct Size< StaticVector<T,N,TF,AF,PF,Tag>, 0UL >
    : public Ptrdiff_t<N>
 {};
 /*! \endcond */
@@ -3073,8 +3165,8 @@ struct Size< StaticVector<T,N,TF,AF,PF>, 0UL >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T, size_t N, bool TF, AlignmentFlag AF, PaddingFlag PF >
-struct MaxSize< StaticVector<T,N,TF,AF,PF>, 0UL >
+template< typename T, size_t N, bool TF, AlignmentFlag AF, PaddingFlag PF, typename Tag >
+struct MaxSize< StaticVector<T,N,TF,AF,PF,Tag>, 0UL >
    : public Ptrdiff_t<N>
 {};
 /*! \endcond */
@@ -3091,8 +3183,8 @@ struct MaxSize< StaticVector<T,N,TF,AF,PF>, 0UL >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T, size_t N, bool TF, AlignmentFlag AF, PaddingFlag PF >
-struct HasConstDataAccess< StaticVector<T,N,TF,AF,PF> >
+template< typename T, size_t N, bool TF, AlignmentFlag AF, PaddingFlag PF, typename Tag >
+struct HasConstDataAccess< StaticVector<T,N,TF,AF,PF,Tag> >
    : public TrueType
 {};
 /*! \endcond */
@@ -3109,8 +3201,8 @@ struct HasConstDataAccess< StaticVector<T,N,TF,AF,PF> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T, size_t N, bool TF, AlignmentFlag AF, PaddingFlag PF >
-struct HasMutableDataAccess< StaticVector<T,N,TF,AF,PF> >
+template< typename T, size_t N, bool TF, AlignmentFlag AF, PaddingFlag PF, typename Tag >
+struct HasMutableDataAccess< StaticVector<T,N,TF,AF,PF,Tag> >
    : public TrueType
 {};
 /*! \endcond */
@@ -3127,8 +3219,8 @@ struct HasMutableDataAccess< StaticVector<T,N,TF,AF,PF> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T, size_t N, bool TF, AlignmentFlag AF, PaddingFlag PF >
-struct IsStatic< StaticVector<T,N,TF,AF,PF> >
+template< typename T, size_t N, bool TF, AlignmentFlag AF, PaddingFlag PF, typename Tag >
+struct IsStatic< StaticVector<T,N,TF,AF,PF,Tag> >
    : public TrueType
 {};
 /*! \endcond */
@@ -3145,8 +3237,8 @@ struct IsStatic< StaticVector<T,N,TF,AF,PF> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T, size_t N, bool TF, AlignmentFlag AF, PaddingFlag PF >
-struct IsAligned< StaticVector<T,N,TF,AF,PF> >
+template< typename T, size_t N, bool TF, AlignmentFlag AF, PaddingFlag PF, typename Tag >
+struct IsAligned< StaticVector<T,N,TF,AF,PF,Tag> >
    : public BoolConstant< AF == aligned >
 {};
 /*! \endcond */
@@ -3163,8 +3255,8 @@ struct IsAligned< StaticVector<T,N,TF,AF,PF> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T, size_t N, bool TF, AlignmentFlag AF, PaddingFlag PF >
-struct IsContiguous< StaticVector<T,N,TF,AF,PF> >
+template< typename T, size_t N, bool TF, AlignmentFlag AF, PaddingFlag PF, typename Tag >
+struct IsContiguous< StaticVector<T,N,TF,AF,PF,Tag> >
    : public TrueType
 {};
 /*! \endcond */
@@ -3181,8 +3273,8 @@ struct IsContiguous< StaticVector<T,N,TF,AF,PF> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T, size_t N, bool TF, AlignmentFlag AF, PaddingFlag PF >
-struct IsPadded< StaticVector<T,N,TF,AF,PF> >
+template< typename T, size_t N, bool TF, AlignmentFlag AF, PaddingFlag PF, typename Tag >
+struct IsPadded< StaticVector<T,N,TF,AF,PF,Tag> >
    : public BoolConstant< PF == padded >
 {};
 /*! \endcond */
@@ -3206,12 +3298,12 @@ struct AddTraitEval2< T1, T2
                                   ( Size_v<T1,0UL> != DefaultSize_v ||
                                     Size_v<T2,0UL> != DefaultSize_v ) > >
 {
-   using ET1 = ElementType_t<T1>;
-   using ET2 = ElementType_t<T2>;
-
-   static constexpr size_t N = max( Size_v<T1,0UL>, Size_v<T2,0UL> );
-
-   using Type = StaticVector< AddTrait_t<ET1,ET2>, N, TransposeFlag_v<T1> >;
+   using Type = StaticVector< AddTrait_t< ElementType_t<T1>, ElementType_t<T2> >
+                            , max( Size_v<T1,0UL>, Size_v<T2,0UL> )
+                            , TransposeFlag_v<T1>
+                            , defaultAlignmentFlag
+                            , defaultPaddingFlag
+                            , DefaultTag >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -3234,12 +3326,12 @@ struct SubTraitEval2< T1, T2
                                   ( Size_v<T1,0UL> != DefaultSize_v ||
                                     Size_v<T2,0UL> != DefaultSize_v ) > >
 {
-   using ET1 = ElementType_t<T1>;
-   using ET2 = ElementType_t<T2>;
-
-   static constexpr size_t N = max( Size_v<T1,0UL>, Size_v<T2,0UL> );
-
-   using Type = StaticVector< SubTrait_t<ET1,ET2>, N, TransposeFlag_v<T1> >;
+   using Type = StaticVector< SubTrait_t< ElementType_t<T1>, ElementType_t<T2> >
+                            , max( Size_v<T1,0UL>, Size_v<T2,0UL> )
+                            , TransposeFlag_v<T1>
+                            , defaultAlignmentFlag
+                            , defaultPaddingFlag
+                            , DefaultTag >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -3261,11 +3353,12 @@ struct MultTraitEval2< T1, T2
                                    IsNumeric_v<T2> &&
                                    ( Size_v<T1,0UL> != DefaultSize_v ) > >
 {
-   using ET1 = ElementType_t<T1>;
-
-   static constexpr size_t N = Size_v<T1,0UL>;
-
-   using Type = StaticVector< MultTrait_t<ET1,T2>, N, TransposeFlag_v<T1> >;
+   using Type = StaticVector< MultTrait_t< ElementType_t<T1>, T2 >
+                            , Size_v<T1,0UL>
+                            , TransposeFlag_v<T1>
+                            , defaultAlignmentFlag
+                            , defaultPaddingFlag
+                            , DefaultTag >;
 };
 
 template< typename T1, typename T2 >
@@ -3274,11 +3367,12 @@ struct MultTraitEval2< T1, T2
                                    IsVector_v<T2> &&
                                    ( Size_v<T2,0UL> != DefaultSize_v ) > >
 {
-   using ET2 = ElementType_t<T2>;
-
-   static constexpr size_t N = Size_v<T2,0UL>;
-
-   using Type = StaticVector< MultTrait_t<T1,ET2>, N, TransposeFlag_v<T2> >;
+   using Type = StaticVector< MultTrait_t< T1, ElementType_t<T2> >
+                            , Size_v<T2,0UL>
+                            , TransposeFlag_v<T2>
+                            , defaultAlignmentFlag
+                            , defaultPaddingFlag
+                            , DefaultTag >;
 };
 
 template< typename T1, typename T2 >
@@ -3289,12 +3383,12 @@ struct MultTraitEval2< T1, T2
                                    IsDenseVector_v<T2> &&
                                    ( Size_v<T1,0UL> != DefaultSize_v || Size_v<T2,0UL> != DefaultSize_v ) > >
 {
-   using ET1 = ElementType_t<T1>;
-   using ET2 = ElementType_t<T2>;
-
-   static constexpr size_t N = max( Size_v<T1,0UL>, Size_v<T2,0UL> );
-
-   using Type = StaticVector< MultTrait_t<ET1,ET2>, N, TransposeFlag_v<T1> >;
+   using Type = StaticVector< MultTrait_t< ElementType_t<T1>, ElementType_t<T2> >
+                            , max( Size_v<T1,0UL>, Size_v<T2,0UL> )
+                            , TransposeFlag_v<T1>
+                            , defaultAlignmentFlag
+                            , defaultPaddingFlag
+                            , DefaultTag >;
 };
 
 template< typename T1, typename T2 >
@@ -3304,12 +3398,14 @@ struct MultTraitEval2< T1, T2
                                    ( Size_v<T1,0UL> != DefaultSize_v ||
                                      ( IsSquare_v<T1> && Size_v<T2,0UL> != DefaultSize_v ) ) > >
 {
-   using ET1 = ElementType_t<T1>;
-   using ET2 = ElementType_t<T2>;
+   using MultType = MultTrait_t< ElementType_t<T1>, ElementType_t<T2> >;
 
-   static constexpr size_t N = ( Size_v<T1,0UL> != DefaultSize_v ? Size_v<T1,0UL> : Size_v<T2,0UL> );
-
-   using Type = StaticVector< MultTrait_t<ET1,ET2>, N, false >;
+   using Type = StaticVector< AddTrait_t<MultType,MultType>
+                            , ( Size_v<T1,0UL> != DefaultSize_v ? Size_v<T1,0UL> : Size_v<T2,0UL> )
+                            , false
+                            , defaultAlignmentFlag
+                            , defaultPaddingFlag
+                            , DefaultTag >;
 };
 
 template< typename T1, typename T2 >
@@ -3319,12 +3415,14 @@ struct MultTraitEval2< T1, T2
                                    ( Size_v<T2,1UL> != DefaultSize_v ||
                                      ( IsSquare_v<T2> && Size_v<T1,0UL> != DefaultSize_v ) ) > >
 {
-   using ET1 = ElementType_t<T1>;
-   using ET2 = ElementType_t<T2>;
+   using MultType = MultTrait_t< ElementType_t<T1>, ElementType_t<T2> >;
 
-   static constexpr size_t N = ( Size_v<T2,1UL> != DefaultSize_v ? Size_v<T2,1UL> : Size_v<T1,0UL> );
-
-   using Type = StaticVector< MultTrait_t<ET1,ET2>, N, true >;
+   using Type = StaticVector< AddTrait_t<MultType,MultType>
+                            , ( Size_v<T2,1UL> != DefaultSize_v ? Size_v<T2,1UL> : Size_v<T1,0UL> )
+                            , true
+                            , defaultAlignmentFlag
+                            , defaultPaddingFlag
+                            , DefaultTag >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -3347,12 +3445,12 @@ struct KronTraitEval2< T1, T2
                                    ( Size_v<T1,0UL> != DefaultSize_v ) &&
                                    ( Size_v<T2,0UL> != DefaultSize_v ) > >
 {
-   using ET1 = ElementType_t<T1>;
-   using ET2 = ElementType_t<T2>;
-
-   static constexpr size_t N = Size_v<T1,0UL> * Size_v<T2,0UL>;
-
-   using Type = StaticVector< MultTrait_t<ET1,ET2>, N, TransposeFlag_v<T2> >;
+   using Type = StaticVector< MultTrait_t< ElementType_t<T1>, ElementType_t<T2> >
+                            , Size_v<T1,0UL> * Size_v<T2,0UL>
+                            , TransposeFlag_v<T2>
+                            , defaultAlignmentFlag
+                            , defaultPaddingFlag
+                            , DefaultTag >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -3374,11 +3472,12 @@ struct DivTraitEval2< T1, T2
                                   IsNumeric_v<T2> &&
                                   ( Size_v<T1,0UL> != DefaultSize_v ) > >
 {
-   using ET1 = ElementType_t<T1>;
-
-   static constexpr size_t N = Size_v<T1,0UL>;
-
-   using Type = StaticVector< DivTrait_t<ET1,T2>, N, TransposeFlag_v<T1> >;
+   using Type = StaticVector< DivTrait_t< ElementType_t<T1>, T2 >
+                            , Size_v<T1,0UL>
+                            , TransposeFlag_v<T1>
+                            , defaultAlignmentFlag
+                            , defaultPaddingFlag
+                            , DefaultTag >;
 };
 
 template< typename T1, typename T2 >
@@ -3388,12 +3487,12 @@ struct DivTraitEval2< T1, T2
                                   ( Size_v<T1,0UL> != DefaultSize_v ||
                                     Size_v<T2,0UL> != DefaultSize_v ) > >
 {
-   using ET1 = ElementType_t<T1>;
-   using ET2 = ElementType_t<T2>;
-
-   static constexpr size_t N = max( Size_v<T1,0UL>, Size_v<T2,0UL> );
-
-   using Type = StaticVector< DivTrait_t<ET1,ET2>, N, TransposeFlag_v<T1> >;
+   using Type = StaticVector< DivTrait_t< ElementType_t<T1>, ElementType_t<T2> >
+                            , max( Size_v<T1,0UL>, Size_v<T2,0UL> )
+                            , TransposeFlag_v<T1>
+                            , defaultAlignmentFlag
+                            , defaultPaddingFlag
+                            , DefaultTag >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -3413,9 +3512,14 @@ template< typename T1, typename T2 >
 struct CrossTraitEval2< T1, T2
                       , EnableIf_t< IsVector_v<T1> && IsVector_v<T2> > >
 {
-   using Tmp = MultTrait_t< ElementType_t<T1>, ElementType_t<T2> >;
+   using MultType = MultTrait_t< ElementType_t<T1>, ElementType_t<T2> >;
 
-   using Type = StaticVector< SubTrait_t<Tmp,Tmp>, 3UL, TransposeFlag_v<T1> >;
+   using Type = StaticVector< SubTrait_t<MultType,MultType>
+                            , 3UL
+                            , TransposeFlag_v<T1>
+                            , defaultAlignmentFlag
+                            , defaultPaddingFlag
+                            , DefaultTag >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -3436,9 +3540,12 @@ struct UnaryMapTraitEval2< T, OP
                          , EnableIf_t< IsVector_v<T> &&
                                        Size_v<T,0UL> != DefaultSize_v > >
 {
-   using ET = ElementType_t<T>;
-
-   using Type = StaticVector< MapTrait_t<ET,OP>, Size_v<T,0UL>, TransposeFlag_v<T> >;
+   using Type = StaticVector< MapTrait_t< ElementType_t<T>, OP >
+                            , Size_v<T,0UL>
+                            , TransposeFlag_v<T>
+                            , defaultAlignmentFlag
+                            , defaultPaddingFlag
+                            , DefaultTag >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -3453,12 +3560,12 @@ struct BinaryMapTraitEval2< T1, T2, OP
                                         ( Size_v<T1,0UL> != DefaultSize_v ||
                                           Size_v<T2,0UL> != DefaultSize_v ) > >
 {
-   using ET1 = ElementType_t<T1>;
-   using ET2 = ElementType_t<T2>;
-
-   static constexpr size_t N = max( Size_v<T1,0UL>, Size_v<T2,0UL> );
-
-   using Type = StaticVector< MapTrait_t<ET1,ET2,OP>, N, TransposeFlag_v<T1> >;
+   using Type = StaticVector< MapTrait_t< ElementType_t<T1>, ElementType_t<T2>, OP >
+                            , max( Size_v<T1,0UL>, Size_v<T2,0UL> )
+                            , TransposeFlag_v<T1>
+                            , defaultAlignmentFlag
+                            , defaultPaddingFlag
+                            , DefaultTag >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -3481,13 +3588,15 @@ struct PartialReduceTraitEval2< T, OP, RF
                                             Size_v<T,1UL> != DefaultSize_v > >
 {
    using ET = ElementType_t<T>;
-   using RT = decltype( std::declval<OP>()( std::declval<ET>(), std::declval<ET>() ) );
 
    static constexpr bool TF = ( RF == columnwise );
 
-   static constexpr size_t N = Size_v< T, TF ? 1UL : 0UL >;
-
-   using Type = StaticVector<RT,N,TF>;
+   using Type = StaticVector< decltype( std::declval<OP>()( std::declval<ET>(), std::declval<ET>() ) )
+                            , Size_v< T, TF ? 1UL : 0UL >
+                            , TF
+                            , defaultAlignmentFlag
+                            , defaultPaddingFlag
+                            , DefaultTag >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -3511,9 +3620,12 @@ struct SolveTraitEval2< T1, T2
                                       ( Size_v<T1,1UL> != DefaultSize_v ) ||
                                       ( Size_v<T2,0UL> != DefaultSize_v ) ) > >
 {
-   static constexpr size_t N = max( Size_v<T1,0UL>, Size_v<T1,1UL>, Size_v<T2,0UL> );
-
-   using Type = StaticVector< ElementType_t<T2>, N, TransposeFlag_v<T2> >;
+   using Type = StaticVector< ElementType_t<T2>
+                            , max( Size_v<T1,0UL>, Size_v<T1,1UL>, Size_v<T2,0UL> )
+                            , TransposeFlag_v<T2>
+                            , defaultAlignmentFlag
+                            , defaultPaddingFlag
+                            , DefaultTag >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -3529,10 +3641,10 @@ struct SolveTraitEval2< T1, T2
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T1, size_t N, bool TF, AlignmentFlag AF, PaddingFlag PF, typename T2 >
-struct HighType< StaticVector<T1,N,TF,AF,PF>, StaticVector<T2,N,TF,AF,PF> >
+template< typename T1, size_t N, bool TF, AlignmentFlag AF, PaddingFlag PF, typename Tag, typename T2 >
+struct HighType< StaticVector<T1,N,TF,AF,PF,Tag>, StaticVector<T2,N,TF,AF,PF,Tag> >
 {
-   using Type = StaticVector< typename HighType<T1,T2>::Type, N, TF, AF, PF >;
+   using Type = StaticVector< typename HighType<T1,T2>::Type, N, TF, AF, PF, Tag >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -3548,10 +3660,10 @@ struct HighType< StaticVector<T1,N,TF,AF,PF>, StaticVector<T2,N,TF,AF,PF> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T1, size_t N, bool TF, AlignmentFlag AF, PaddingFlag PF, typename T2 >
-struct LowType< StaticVector<T1,N,TF,AF,PF>, StaticVector<T2,N,TF,AF,PF> >
+template< typename T1, size_t N, bool TF, AlignmentFlag AF, PaddingFlag PF, typename Tag, typename T2 >
+struct LowType< StaticVector<T1,N,TF,AF,PF,Tag>, StaticVector<T2,N,TF,AF,PF,Tag> >
 {
-   using Type = StaticVector< typename LowType<T1,T2>::Type, N, TF, AF, PF >;
+   using Type = StaticVector< typename LowType<T1,T2>::Type, N, TF, AF, PF, Tag >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -3572,7 +3684,12 @@ struct SubvectorTraitEval2< VT, I, N
                           , EnableIf_t< I != inf && N != inf &&
                                         IsDenseVector_v<VT> > >
 {
-   using Type = StaticVector< RemoveConst_t< ElementType_t<VT> >, N, TransposeFlag_v<VT> >;
+   using Type = StaticVector< RemoveConst_t< ElementType_t<VT> >
+                            , N
+                            , TransposeFlag_v<VT>
+                            , defaultAlignmentFlag
+                            , defaultPaddingFlag
+                            , DefaultTag >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -3593,7 +3710,12 @@ struct ElementsTraitEval2< VT, N
                          , EnableIf_t< N != 0UL &&
                                        IsDenseVector_v<VT> > >
 {
-   using Type = StaticVector< RemoveConst_t< ElementType_t<VT> >, N, TransposeFlag_v<VT> >;
+   using Type = StaticVector< RemoveConst_t< ElementType_t<VT> >
+                            , N
+                            , TransposeFlag_v<VT>
+                            , defaultAlignmentFlag
+                            , defaultPaddingFlag
+                            , DefaultTag >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -3614,7 +3736,12 @@ struct RowTraitEval2< MT, I
                     , EnableIf_t< IsDenseMatrix_v<MT> &&
                                   Size_v<MT,1UL> != DefaultSize_v > >
 {
-   using Type = StaticVector< RemoveConst_t< ElementType_t<MT> >, Size_v<MT,1UL>, true >;
+   using Type = StaticVector< RemoveConst_t< ElementType_t<MT> >
+                            , Size_v<MT,1UL>
+                            , true
+                            , defaultAlignmentFlag
+                            , defaultPaddingFlag
+                            , DefaultTag >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -3635,7 +3762,12 @@ struct ColumnTraitEval2< MT, I
                        , EnableIf_t< IsDenseMatrix_v<MT> &&
                                      Size_v<MT,0UL> != DefaultSize_v > >
 {
-   using Type = StaticVector< RemoveConst_t< ElementType_t<MT> >, Size_v<MT,0UL>, false >;
+   using Type = StaticVector< RemoveConst_t< ElementType_t<MT> >
+                            , Size_v<MT,0UL>
+                            , false
+                            , defaultAlignmentFlag
+                            , defaultPaddingFlag
+                            , DefaultTag >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -3661,7 +3793,12 @@ struct BandTraitEval2< MT, I
    static constexpr size_t N   = Size_v<MT,1UL>;
    static constexpr size_t Min = min( M - ( I >= 0L ? 0UL : -I ), N - ( I >= 0L ? I : 0UL ) );
 
-   using Type = StaticVector< RemoveConst_t< ElementType_t<MT> >, Min, defaultTransposeFlag >;
+   using Type = StaticVector< RemoveConst_t< ElementType_t<MT> >
+                            , Min
+                            , defaultTransposeFlag
+                            , defaultAlignmentFlag
+                            , defaultPaddingFlag
+                            , DefaultTag >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -3681,17 +3818,30 @@ struct BandTraitEval2< MT, I
 /*! \cond BLAZE_INTERNAL */
 namespace std
 {
-   template< typename Type, size_t N, bool TF, blaze::AlignmentFlag AF, blaze::PaddingFlag PF >
-   class tuple_size< blaze::StaticVector<Type,N,TF,AF,PF> >
-      : public integral_constant< size_t, N >
-   {};
 
-   template< size_t I, typename Type, size_t N, bool TF, blaze::AlignmentFlag AF, blaze::PaddingFlag PF >
-   class tuple_element< I, blaze::StaticVector<Type,N,TF,AF,PF> >
-   {
-    public:
-      using type = Type;
-   };
+template< typename Type
+        , size_t N
+        , bool TF
+        , blaze::AlignmentFlag AF
+        , blaze::PaddingFlag PF
+        , typename Tag >
+class tuple_size< blaze::StaticVector<Type,N,TF,AF,PF,Tag> >
+   : public integral_constant< size_t, N >
+{};
+
+template< size_t I
+        , typename Type
+        , size_t N
+        , bool TF
+        , blaze::AlignmentFlag AF
+        , blaze::PaddingFlag PF
+        , typename Tag >
+class tuple_element< I, blaze::StaticVector<Type,N,TF,AF,PF,Tag> >
+{
+ public:
+   using type = Type;
+};
+
 }
 /*! \endcond */
 //*************************************************************************************************
