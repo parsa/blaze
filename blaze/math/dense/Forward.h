@@ -100,11 +100,12 @@ template< typename Type                    // Data type of the matrix
         , bool SO = defaultStorageOrder >  // Storage order
 class DynamicMatrix;
 
-template< typename Type                                          // Data type of the vector
-        , AlignmentFlag AF                                       // Alignment flag
-        , PaddingFlag PF                                         // Padding flag
-        , bool TF = defaultTransposeFlag                         // Transpose flag
-        , typename RT = DynamicVector<RemoveConst_t<Type>,TF> >  // Result type
+template< typename Type                                              // Data type of the vector
+        , AlignmentFlag AF                                           // Alignment flag
+        , PaddingFlag PF                                             // Padding flag
+        , bool TF = defaultTransposeFlag                             // Transpose flag
+        , typename Tag = DefaultTag                                  // Type tag
+        , typename RT = DynamicVector<RemoveConst_t<Type>,TF,Tag> >  // Result type
 class CustomVector;
 
 template< typename Type                                          // Data type of the matrix
