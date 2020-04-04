@@ -53,6 +53,7 @@
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/sparse/Forward.h>
 #include <blaze/math/sparse/ValueIndexPair.h>
+#include <blaze/math/traits/AddTrait.h>
 #include <blaze/math/traits/DeclDiagTrait.h>
 #include <blaze/math/traits/DeclHermTrait.h>
 #include <blaze/math/traits/DeclLowTrait.h>
@@ -119,7 +120,7 @@ namespace blaze {
 // and the storage order of the matrix can be specified via the two template parameters:
 
    \code
-   template< typename Type, bool SO >
+   template< typename Type, bool SO, typename Tag >
    class IdentityMatrix;
    \endcode
 
@@ -127,6 +128,7 @@ namespace blaze {
 //          non-cv-qualified, non-reference, non-pointer element type.
 //  - SO  : specifies the storage order (blaze::rowMajor, blaze::columnMajor) of the matrix.
 //          The default value is blaze::rowMajor.
+//  - Tag : optional type parameter to tag the vector. The default type is \a blaze::DefaultTag.
 //
 // It is not possible to insert, erase or modify the elements of an identity matrix. It is only
 // possible to read from the elements:
@@ -181,23 +183,30 @@ namespace blaze {
    F = A * 2.0;  // Scaling of an identity matrix
    \endcode
 */
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
+template< typename Type   // Data type of the matrix
+        , bool SO         // Storage order
+        , typename Tag >  // Tag type
 class IdentityMatrix
-   : public Expression< SparseMatrix< IdentityMatrix<Type,SO>, SO > >
+   : public Expression< SparseMatrix< IdentityMatrix<Type,SO,Tag>, SO > >
 {
  public:
    //**Type definitions****************************************************************************
-   using This           = IdentityMatrix<Type,SO>;   //!< Type of this IdentityMatrix instance.
-   using BaseType       = SparseMatrix<This,SO>;     //!< Base type of this IdentityMatrix instance.
-   using ResultType     = This;                      //!< Result type for expression template evaluations.
-   using OppositeType   = IdentityMatrix<Type,!SO>;  //!< Result type with opposite storage order for expression template evaluations.
-   using TransposeType  = IdentityMatrix<Type,!SO>;  //!< Transpose type for expression template evaluations.
-   using ElementType    = Type;                      //!< Type of the identity matrix elements.
-   using ReturnType     = const Type;                //!< Return type for expression template evaluations.
-   using CompositeType  = const This&;               //!< Data type for composite expression templates.
-   using Reference      = const Type;                //!< Reference to a identity matrix element.
-   using ConstReference = const Type;                //!< Reference to a constant identity matrix element.
+   using This       = IdentityMatrix<Type,SO,Tag>;  //!< Type of this IdentityMatrix instance.
+   using BaseType   = SparseMatrix<This,SO>;        //!< Base type of this IdentityMatrix instance.
+   using ResultType = This;                         //!< Result type for expression template evaluations.
+
+   //! Result type with opposite storage order for expression template evaluations.
+   using OppositeType   = IdentityMatrix<Type,!SO,Tag>;
+
+   //! Transpose type for expression template evaluations.
+   using TransposeType  = IdentityMatrix<Type,!SO,Tag>;
+
+   using ElementType    = Type;         //!< Type of the identity matrix elements.
+   using TagType        = Tag;          //!< Tag type of this IdentityMatrix instance.
+   using ReturnType     = const Type;   //!< Return type for expression template evaluations.
+   using CompositeType  = const This&;  //!< Data type for composite expression templates.
+   using Reference      = const Type;   //!< Reference to a identity matrix element.
+   using ConstReference = const Type;   //!< Reference to a constant identity matrix element.
    //**********************************************************************************************
 
    //**Rebind struct definition********************************************************************
@@ -205,7 +214,7 @@ class IdentityMatrix
    */
    template< typename NewType >  // Data type of the other matrix
    struct Rebind {
-      using Other = IdentityMatrix<NewType,SO>;  //!< The type of the other IdentityMatrix.
+      using Other = IdentityMatrix<NewType,SO,Tag>;  //!< The type of the other IdentityMatrix.
    };
    //**********************************************************************************************
 
@@ -215,7 +224,7 @@ class IdentityMatrix
    template< size_t NewM    // Number of rows of the other matrix
            , size_t NewN >  // Number of columns of the other matrix
    struct Resize {
-      using Other = IdentityMatrix<Type,SO>;  //!< The type of the other IdentityMatrix.
+      using Other = IdentityMatrix<Type,SO,Tag>;  //!< The type of the other IdentityMatrix.
    };
    //**********************************************************************************************
 
@@ -494,9 +503,10 @@ class IdentityMatrix
 //*************************************************************************************************
 /*!\brief The default constructor for IdentityMatrix.
 */
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-constexpr IdentityMatrix<Type,SO>::IdentityMatrix() noexcept
+template< typename Type   // Data type of the matrix
+        , bool SO         // Storage order
+        , typename Tag >  // Tag type
+constexpr IdentityMatrix<Type,SO,Tag>::IdentityMatrix() noexcept
    : n_( 0UL )  // The current number of rows and columns of the identity matrix
 {}
 //*************************************************************************************************
@@ -507,9 +517,10 @@ constexpr IdentityMatrix<Type,SO>::IdentityMatrix() noexcept
 //
 // \param n The number of rows and columns of the matrix.
 */
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-constexpr IdentityMatrix<Type,SO>::IdentityMatrix( size_t n ) noexcept
+template< typename Type   // Data type of the matrix
+        , bool SO         // Storage order
+        , typename Tag >  // Tag type
+constexpr IdentityMatrix<Type,SO,Tag>::IdentityMatrix( size_t n ) noexcept
    : n_( n )  // The current number of rows and columns of the identity matrix
 {}
 //*************************************************************************************************
@@ -524,11 +535,12 @@ constexpr IdentityMatrix<Type,SO>::IdentityMatrix( size_t n ) noexcept
 // The matrix is sized according to the given \f$ N \times N \f$ identity matrix and
 // initialized as a copy of this matrix.
 */
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-template< typename MT    // Type of the foreign identity matrix
-        , bool SO2 >     // Storage order of the foreign identity matrix
-inline IdentityMatrix<Type,SO>::IdentityMatrix( const Matrix<MT,SO2>& m )
+template< typename Type   // Data type of the matrix
+        , bool SO         // Storage order
+        , typename Tag >  // Tag type
+template< typename MT     // Type of the foreign identity matrix
+        , bool SO2 >      // Storage order of the foreign identity matrix
+inline IdentityMatrix<Type,SO,Tag>::IdentityMatrix( const Matrix<MT,SO2>& m )
    : n_( (~m).rows() )  // The current number of rows and columns of the identity matrix
 {
    if( !IsIdentity_v<MT> && !isIdentity( ~m ) ) {
@@ -556,10 +568,11 @@ inline IdentityMatrix<Type,SO>::IdentityMatrix( const Matrix<MT,SO2>& m )
 // This function only performs an index check in case BLAZE_USER_ASSERT() is active. In contrast,
 // the at() function is guaranteed to perform a check of the given access indices.
 */
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-constexpr typename IdentityMatrix<Type,SO>::ConstReference
-   IdentityMatrix<Type,SO>::operator()( size_t i, size_t j ) const noexcept
+template< typename Type   // Data type of the matrix
+        , bool SO         // Storage order
+        , typename Tag >  // Tag type
+constexpr typename IdentityMatrix<Type,SO,Tag>::ConstReference
+   IdentityMatrix<Type,SO,Tag>::operator()( size_t i, size_t j ) const noexcept
 {
    BLAZE_USER_ASSERT( i < rows()   , "Invalid identity matrix row access index"    );
    BLAZE_USER_ASSERT( j < columns(), "Invalid identity matrix column access index" );
@@ -583,10 +596,11 @@ constexpr typename IdentityMatrix<Type,SO>::ConstReference
 // In contrast to the subscript operator this function always performs a check of the given
 // access indices.
 */
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-inline typename IdentityMatrix<Type,SO>::ConstReference
-   IdentityMatrix<Type,SO>::at( size_t i, size_t j ) const
+template< typename Type   // Data type of the matrix
+        , bool SO         // Storage order
+        , typename Tag >  // Tag type
+inline typename IdentityMatrix<Type,SO,Tag>::ConstReference
+   IdentityMatrix<Type,SO,Tag>::at( size_t i, size_t j ) const
 {
    if( i >= n_ ) {
       BLAZE_THROW_OUT_OF_RANGE( "Invalid row access index" );
@@ -610,10 +624,11 @@ inline typename IdentityMatrix<Type,SO>::ConstReference
 // non-zero element of row \a i, in case the storage flag is set to \a columnMajor the function
 // returns an iterator to the first non-zero element of column \a i.
 */
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-constexpr typename IdentityMatrix<Type,SO>::ConstIterator
-   IdentityMatrix<Type,SO>::begin( size_t i ) const noexcept
+template< typename Type   // Data type of the matrix
+        , bool SO         // Storage order
+        , typename Tag >  // Tag type
+constexpr typename IdentityMatrix<Type,SO,Tag>::ConstIterator
+   IdentityMatrix<Type,SO,Tag>::begin( size_t i ) const noexcept
 {
    BLAZE_USER_ASSERT( i < n_, "Invalid identity matrix row/column access index" );
 
@@ -633,10 +648,11 @@ constexpr typename IdentityMatrix<Type,SO>::ConstIterator
 // non-zero element of row \a i, in case the storage flag is set to \a columnMajor the function
 // returns an iterator to the first non-zero element of column \a i.
 */
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-constexpr typename IdentityMatrix<Type,SO>::ConstIterator
-   IdentityMatrix<Type,SO>::cbegin( size_t i ) const noexcept
+template< typename Type   // Data type of the matrix
+        , bool SO         // Storage order
+        , typename Tag >  // Tag type
+constexpr typename IdentityMatrix<Type,SO,Tag>::ConstIterator
+   IdentityMatrix<Type,SO,Tag>::cbegin( size_t i ) const noexcept
 {
    BLAZE_USER_ASSERT( i < n_, "Invalid identity matrix row/column access index" );
 
@@ -656,10 +672,11 @@ constexpr typename IdentityMatrix<Type,SO>::ConstIterator
 // past the last non-zero element of row \a i, in case the storage flag is set to \a columnMajor
 // the function returns an iterator just past the last non-zero element of column \a i.
 */
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-constexpr typename IdentityMatrix<Type,SO>::ConstIterator
-   IdentityMatrix<Type,SO>::end( size_t i ) const noexcept
+template< typename Type   // Data type of the matrix
+        , bool SO         // Storage order
+        , typename Tag >  // Tag type
+constexpr typename IdentityMatrix<Type,SO,Tag>::ConstIterator
+   IdentityMatrix<Type,SO,Tag>::end( size_t i ) const noexcept
 {
    BLAZE_USER_ASSERT( i < n_, "Invalid identity matrix row/column access index" );
 
@@ -679,10 +696,11 @@ constexpr typename IdentityMatrix<Type,SO>::ConstIterator
 // past the last non-zero element of row \a i, in case the storage flag is set to \a columnMajor
 // the function returns an iterator just past the last non-zero element of column \a i.
 */
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-constexpr typename IdentityMatrix<Type,SO>::ConstIterator
-   IdentityMatrix<Type,SO>::cend( size_t i ) const noexcept
+template< typename Type   // Data type of the matrix
+        , bool SO         // Storage order
+        , typename Tag >  // Tag type
+constexpr typename IdentityMatrix<Type,SO,Tag>::ConstIterator
+   IdentityMatrix<Type,SO,Tag>::cend( size_t i ) const noexcept
 {
    BLAZE_USER_ASSERT( i < n_, "Invalid identity matrix row/column access index" );
 
@@ -709,12 +727,13 @@ constexpr typename IdentityMatrix<Type,SO>::ConstIterator
 // The matrix is resized according to the given \f$ N \times N \f$ identity matrix and
 // initialized as a copy of this matrix.
 */
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-template< typename MT    // Type of the right-hand side identity matrix
-        , bool SO2 >     // Storage order of the right-hand side identity matrix
-inline IdentityMatrix<Type,SO>&
-   IdentityMatrix<Type,SO>::operator=( const Matrix<MT,SO2>& rhs )
+template< typename Type   // Data type of the matrix
+        , bool SO         // Storage order
+        , typename Tag >  // Tag type
+template< typename MT     // Type of the right-hand side identity matrix
+        , bool SO2 >      // Storage order of the right-hand side identity matrix
+inline IdentityMatrix<Type,SO,Tag>&
+   IdentityMatrix<Type,SO,Tag>::operator=( const Matrix<MT,SO2>& rhs )
 {
    if( !IsIdentity_v<MT> && !isIdentity( ~rhs ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment of identity matrix" );
@@ -740,9 +759,10 @@ inline IdentityMatrix<Type,SO>&
 //
 // \return The number of rows of the identity matrix.
 */
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-constexpr size_t IdentityMatrix<Type,SO>::rows() const noexcept
+template< typename Type   // Data type of the matrix
+        , bool SO         // Storage order
+        , typename Tag >  // Tag type
+constexpr size_t IdentityMatrix<Type,SO,Tag>::rows() const noexcept
 {
    return n_;
 }
@@ -754,9 +774,10 @@ constexpr size_t IdentityMatrix<Type,SO>::rows() const noexcept
 //
 // \return The number of columns of the identity matrix.
 */
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-constexpr size_t IdentityMatrix<Type,SO>::columns() const noexcept
+template< typename Type   // Data type of the matrix
+        , bool SO         // Storage order
+        , typename Tag >  // Tag type
+constexpr size_t IdentityMatrix<Type,SO,Tag>::columns() const noexcept
 {
    return n_;
 }
@@ -768,9 +789,10 @@ constexpr size_t IdentityMatrix<Type,SO>::columns() const noexcept
 //
 // \return The capacity of the identity matrix.
 */
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-constexpr size_t IdentityMatrix<Type,SO>::capacity() const noexcept
+template< typename Type   // Data type of the matrix
+        , bool SO         // Storage order
+        , typename Tag >  // Tag type
+constexpr size_t IdentityMatrix<Type,SO,Tag>::capacity() const noexcept
 {
    return n_;
 }
@@ -788,9 +810,10 @@ constexpr size_t IdentityMatrix<Type,SO>::capacity() const noexcept
 // in case the storage flag is set to \a columnMajor the function returns the capacity
 // of column \a i.
 */
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-constexpr size_t IdentityMatrix<Type,SO>::capacity( size_t i ) const noexcept
+template< typename Type   // Data type of the matrix
+        , bool SO         // Storage order
+        , typename Tag >  // Tag type
+constexpr size_t IdentityMatrix<Type,SO,Tag>::capacity( size_t i ) const noexcept
 {
    MAYBE_UNUSED( i );
 
@@ -806,9 +829,10 @@ constexpr size_t IdentityMatrix<Type,SO>::capacity( size_t i ) const noexcept
 //
 // \return The number of non-zero elements in the identity matrix.
 */
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-constexpr size_t IdentityMatrix<Type,SO>::nonZeros() const noexcept
+template< typename Type   // Data type of the matrix
+        , bool SO         // Storage order
+        , typename Tag >  // Tag type
+constexpr size_t IdentityMatrix<Type,SO,Tag>::nonZeros() const noexcept
 {
    return n_;
 }
@@ -826,9 +850,10 @@ constexpr size_t IdentityMatrix<Type,SO>::nonZeros() const noexcept
 // elements in row \a i, in case the storage flag is set to \a columnMajor the function returns
 // the number of non-zero elements in column \a i.
 */
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-constexpr size_t IdentityMatrix<Type,SO>::nonZeros( size_t i ) const noexcept
+template< typename Type   // Data type of the matrix
+        , bool SO         // Storage order
+        , typename Tag >  // Tag type
+constexpr size_t IdentityMatrix<Type,SO,Tag>::nonZeros( size_t i ) const noexcept
 {
    MAYBE_UNUSED( i );
 
@@ -846,9 +871,10 @@ constexpr size_t IdentityMatrix<Type,SO>::nonZeros( size_t i ) const noexcept
 //
 // After the clear() function, the size of the identity matrix is 0.
 */
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-constexpr void IdentityMatrix<Type,SO>::clear() noexcept
+template< typename Type   // Data type of the matrix
+        , bool SO         // Storage order
+        , typename Tag >  // Tag type
+constexpr void IdentityMatrix<Type,SO,Tag>::clear() noexcept
 {
    n_ = 0UL;
 }
@@ -865,9 +891,10 @@ constexpr void IdentityMatrix<Type,SO>::clear() noexcept
 // function may invalidate all existing views (submatrices, rows, columns, ...) on the matrix if
 // it is used to shrink the matrix.
 */
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-void constexpr IdentityMatrix<Type,SO>::resize( size_t n ) noexcept
+template< typename Type   // Data type of the matrix
+        , bool SO         // Storage order
+        , typename Tag >  // Tag type
+void constexpr IdentityMatrix<Type,SO,Tag>::resize( size_t n ) noexcept
 {
    n_ = n;
 }
@@ -880,9 +907,10 @@ void constexpr IdentityMatrix<Type,SO>::resize( size_t n ) noexcept
 // \param m The identity matrix to be swapped.
 // \return void
 */
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-constexpr void IdentityMatrix<Type,SO>::swap( IdentityMatrix& m ) noexcept
+template< typename Type   // Data type of the matrix
+        , bool SO         // Storage order
+        , typename Tag >  // Tag type
+constexpr void IdentityMatrix<Type,SO,Tag>::swap( IdentityMatrix& m ) noexcept
 {
    const size_t tmp( n_ );
    n_ = m.n_;
@@ -912,10 +940,11 @@ constexpr void IdentityMatrix<Type,SO>::swap( IdentityMatrix& m ) noexcept
 // Otherwise an iterator just past the last non-zero element of row \a i or column \a j (the
 // end() iterator) is returned.
 */
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-inline typename IdentityMatrix<Type,SO>::ConstIterator
-   IdentityMatrix<Type,SO>::find( size_t i, size_t j ) const
+template< typename Type   // Data type of the matrix
+        , bool SO         // Storage order
+        , typename Tag >  // Tag type
+inline typename IdentityMatrix<Type,SO,Tag>::ConstIterator
+   IdentityMatrix<Type,SO,Tag>::find( size_t i, size_t j ) const
 {
    BLAZE_USER_ASSERT( SO  || i < rows()   , "Invalid identity matrix row access index"    );
    BLAZE_USER_ASSERT( !SO || j < columns(), "Invalid identity matrix column access index" );
@@ -941,10 +970,11 @@ inline typename IdentityMatrix<Type,SO>::ConstIterator
 // index. In combination with the upperBound() function this function can be used to create a
 // pair of iterators specifying a range of indices.
 */
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-inline typename IdentityMatrix<Type,SO>::ConstIterator
-   IdentityMatrix<Type,SO>::lowerBound( size_t i, size_t j ) const
+template< typename Type   // Data type of the matrix
+        , bool SO         // Storage order
+        , typename Tag >  // Tag type
+inline typename IdentityMatrix<Type,SO,Tag>::ConstIterator
+   IdentityMatrix<Type,SO,Tag>::lowerBound( size_t i, size_t j ) const
 {
    BLAZE_USER_ASSERT( SO  || i < rows()   , "Invalid identity matrix row access index"    );
    BLAZE_USER_ASSERT( !SO || j < columns(), "Invalid identity matrix column access index" );
@@ -970,10 +1000,11 @@ inline typename IdentityMatrix<Type,SO>::ConstIterator
 // index. In combination with the lowerBound() function this function can be used to create a
 // pair of iterators specifying a range of indices.
 */
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-inline typename IdentityMatrix<Type,SO>::ConstIterator
-   IdentityMatrix<Type,SO>::upperBound( size_t i, size_t j ) const
+template< typename Type   // Data type of the matrix
+        , bool SO         // Storage order
+        , typename Tag >  // Tag type
+inline typename IdentityMatrix<Type,SO,Tag>::ConstIterator
+   IdentityMatrix<Type,SO,Tag>::upperBound( size_t i, size_t j ) const
 {
    BLAZE_USER_ASSERT( SO  || i < rows()   , "Invalid identity matrix row access index"    );
    BLAZE_USER_ASSERT( !SO || j < columns(), "Invalid identity matrix column access index" );
@@ -999,9 +1030,10 @@ inline typename IdentityMatrix<Type,SO>::ConstIterator
 //
 // \return Reference to the transposed matrix.
 */
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-constexpr IdentityMatrix<Type,SO>& IdentityMatrix<Type,SO>::transpose() noexcept
+template< typename Type   // Data type of the matrix
+        , bool SO         // Storage order
+        , typename Tag >  // Tag type
+constexpr IdentityMatrix<Type,SO,Tag>& IdentityMatrix<Type,SO,Tag>::transpose() noexcept
 {
    return *this;
 }
@@ -1013,9 +1045,10 @@ constexpr IdentityMatrix<Type,SO>& IdentityMatrix<Type,SO>::transpose() noexcept
 //
 // \return Reference to the transposed matrix.
 */
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-constexpr IdentityMatrix<Type,SO>& IdentityMatrix<Type,SO>::ctranspose() noexcept
+template< typename Type   // Data type of the matrix
+        , bool SO         // Storage order
+        , typename Tag >  // Tag type
+constexpr IdentityMatrix<Type,SO,Tag>& IdentityMatrix<Type,SO,Tag>::ctranspose() noexcept
 {
    return *this;
 }
@@ -1041,9 +1074,10 @@ constexpr IdentityMatrix<Type,SO>& IdentityMatrix<Type,SO>::ctranspose() noexcep
 // to optimize the evaluation.
 */
 template< typename Type     // Data type of the matrix
-        , bool SO >         // Storage order
+        , bool SO           // Storage order
+        , typename Tag >    // Type tag
 template< typename Other >  // Data type of the foreign expression
-inline bool IdentityMatrix<Type,SO>::canAlias( const Other* alias ) const noexcept
+inline bool IdentityMatrix<Type,SO,Tag>::canAlias( const Other* alias ) const noexcept
 {
    MAYBE_UNUSED( alias );
 
@@ -1063,9 +1097,10 @@ inline bool IdentityMatrix<Type,SO>::canAlias( const Other* alias ) const noexce
 // to optimize the evaluation.
 */
 template< typename Type     // Data type of the matrix
-        , bool SO >         // Storage order
+        , bool SO           // Storage order
+        , typename Tag >    // Type tag
 template< typename Other >  // Data type of the foreign expression
-inline bool IdentityMatrix<Type,SO>::isAliased( const Other* alias ) const noexcept
+inline bool IdentityMatrix<Type,SO,Tag>::isAliased( const Other* alias ) const noexcept
 {
    MAYBE_UNUSED( alias );
 
@@ -1084,9 +1119,10 @@ inline bool IdentityMatrix<Type,SO>::isAliased( const Other* alias ) const noexc
 // function additionally provides runtime information (as for instance the current number of
 // rows and/or columns of the matrix).
 */
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-inline bool IdentityMatrix<Type,SO>::canSMPAssign() const noexcept
+template< typename Type   // Data type of the matrix
+        , bool SO         // Storage order
+        , typename Tag >  // Tag type
+inline bool IdentityMatrix<Type,SO,Tag>::canSMPAssign() const noexcept
 {
    return false;
 }
@@ -1108,23 +1144,23 @@ inline bool IdentityMatrix<Type,SO>::canSMPAssign() const noexcept
 //*************************************************************************************************
 /*!\name IdentityMatrix operators */
 //@{
-template< typename Type, bool SO >
-constexpr void reset( IdentityMatrix<Type,SO>& m ) noexcept;
+template< typename Type, bool SO, typename Tag >
+constexpr void reset( IdentityMatrix<Type,SO,Tag>& m ) noexcept;
 
-template< typename Type, bool SO >
-constexpr void reset( IdentityMatrix<Type,SO>& m, size_t i ) noexcept;
+template< typename Type, bool SO, typename Tag >
+constexpr void reset( IdentityMatrix<Type,SO,Tag>& m, size_t i ) noexcept;
 
-template< typename Type, bool SO >
-constexpr void clear( IdentityMatrix<Type,SO>& m ) noexcept;
+template< typename Type, bool SO, typename Tag >
+constexpr void clear( IdentityMatrix<Type,SO,Tag>& m ) noexcept;
 
-template< RelaxationFlag RF, typename Type, bool SO >
-constexpr bool isDefault( const IdentityMatrix<Type,SO>& m ) noexcept;
+template< RelaxationFlag RF, typename Type, bool SO, typename Tag >
+constexpr bool isDefault( const IdentityMatrix<Type,SO,Tag>& m ) noexcept;
 
-template< typename Type, bool SO >
-constexpr bool isIntact( const IdentityMatrix<Type,SO>& m ) noexcept;
+template< typename Type, bool SO, typename Tag >
+constexpr bool isIntact( const IdentityMatrix<Type,SO,Tag>& m ) noexcept;
 
-template< typename Type, bool SO >
-constexpr void swap( IdentityMatrix<Type,SO>& a, IdentityMatrix<Type,SO>& b ) noexcept;
+template< typename Type, bool SO, typename Tag >
+constexpr void swap( IdentityMatrix<Type,SO,Tag>& a, IdentityMatrix<Type,SO,Tag>& b ) noexcept;
 //@}
 //*************************************************************************************************
 
@@ -1136,9 +1172,10 @@ constexpr void swap( IdentityMatrix<Type,SO>& a, IdentityMatrix<Type,SO>& b ) no
 // \param m The matrix to be resetted.
 // \return void
 */
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-constexpr void reset( IdentityMatrix<Type,SO>& m ) noexcept
+template< typename Type   // Data type of the matrix
+        , bool SO         // Storage order
+        , typename Tag >  // Tag type
+constexpr void reset( IdentityMatrix<Type,SO,Tag>& m ) noexcept
 {
    MAYBE_UNUSED( m );
 }
@@ -1158,9 +1195,10 @@ constexpr void reset( IdentityMatrix<Type,SO>& m ) noexcept
 // values in row \a i, if it is a \a columnMajor matrix the function resets the values in column
 // \a i.
 */
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-constexpr void reset( IdentityMatrix<Type,SO>& m, size_t i ) noexcept
+template< typename Type   // Data type of the matrix
+        , bool SO         // Storage order
+        , typename Tag >  // Tag type
+constexpr void reset( IdentityMatrix<Type,SO,Tag>& m, size_t i ) noexcept
 {
    MAYBE_UNUSED( m, i );
 }
@@ -1174,9 +1212,10 @@ constexpr void reset( IdentityMatrix<Type,SO>& m, size_t i ) noexcept
 // \param m The matrix to be cleared.
 // \return void
 */
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-constexpr void clear( IdentityMatrix<Type,SO>& m ) noexcept
+template< typename Type   // Data type of the matrix
+        , bool SO         // Storage order
+        , typename Tag >  // Tag type
+constexpr void clear( IdentityMatrix<Type,SO,Tag>& m ) noexcept
 {
    m.clear();
 }
@@ -1210,8 +1249,9 @@ constexpr void clear( IdentityMatrix<Type,SO>& m ) noexcept
 */
 template< RelaxationFlag RF  // Relaxation flag
         , typename Type      // Data type of the matrix
-        , bool SO >          // Storage order
-constexpr bool isDefault( const IdentityMatrix<Type,SO>& m ) noexcept
+        , bool SO            // Storage order
+        , typename Tag >     // Tag type
+constexpr bool isDefault( const IdentityMatrix<Type,SO,Tag>& m ) noexcept
 {
    return ( m.rows() == 0UL );
 }
@@ -1236,9 +1276,10 @@ constexpr bool isDefault( const IdentityMatrix<Type,SO>& m ) noexcept
    if( isIntact( I ) ) { ... }
    \endcode
 */
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-constexpr bool isIntact( const IdentityMatrix<Type,SO>& m ) noexcept
+template< typename Type   // Data type of the matrix
+        , bool SO         // Storage order
+        , typename Tag >  // Tag type
+constexpr bool isIntact( const IdentityMatrix<Type,SO,Tag>& m ) noexcept
 {
    MAYBE_UNUSED( m );
 
@@ -1255,9 +1296,10 @@ constexpr bool isIntact( const IdentityMatrix<Type,SO>& m ) noexcept
 // \param b The second matrix to be swapped.
 // \return void
 */
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-constexpr void swap( IdentityMatrix<Type,SO>& a, IdentityMatrix<Type,SO>& b ) noexcept
+template< typename Type   // Data type of the matrix
+        , bool SO         // Storage order
+        , typename Tag >  // Tag type
+constexpr void swap( IdentityMatrix<Type,SO,Tag>& a, IdentityMatrix<Type,SO,Tag>& b ) noexcept
 {
    a.swap( b );
 }
@@ -1317,8 +1359,8 @@ inline IdentityMatrix<ElementType_t<MT>,SO>
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO >
-struct IsSquare< IdentityMatrix<MT,SO> >
+template< typename MT, bool SO, typename Tag >
+struct IsSquare< IdentityMatrix<MT,SO,Tag> >
    : public TrueType
 {};
 /*! \endcond */
@@ -1335,8 +1377,8 @@ struct IsSquare< IdentityMatrix<MT,SO> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO >
-struct IsSymmetric< IdentityMatrix<MT,SO> >
+template< typename MT, bool SO, typename Tag >
+struct IsSymmetric< IdentityMatrix<MT,SO,Tag> >
    : public TrueType
 {};
 /*! \endcond */
@@ -1353,8 +1395,8 @@ struct IsSymmetric< IdentityMatrix<MT,SO> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO >
-struct IsHermitian< IdentityMatrix<MT,SO> >
+template< typename MT, bool SO, typename Tag >
+struct IsHermitian< IdentityMatrix<MT,SO,Tag> >
    : public TrueType
 {};
 /*! \endcond */
@@ -1371,8 +1413,8 @@ struct IsHermitian< IdentityMatrix<MT,SO> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO >
-struct IsUniLower< IdentityMatrix<MT,SO> >
+template< typename MT, bool SO, typename Tag >
+struct IsUniLower< IdentityMatrix<MT,SO,Tag> >
    : public TrueType
 {};
 /*! \endcond */
@@ -1389,8 +1431,8 @@ struct IsUniLower< IdentityMatrix<MT,SO> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO >
-struct IsUniUpper< IdentityMatrix<MT,SO> >
+template< typename MT, bool SO, typename Tag >
+struct IsUniUpper< IdentityMatrix<MT,SO,Tag> >
    : public TrueType
 {};
 /*! \endcond */
@@ -1407,8 +1449,8 @@ struct IsUniUpper< IdentityMatrix<MT,SO> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T, bool SO >
-struct IsResizable< IdentityMatrix<T,SO> >
+template< typename T, bool SO, typename Tag >
+struct IsResizable< IdentityMatrix<T,SO,Tag> >
    : public TrueType
 {};
 /*! \endcond */
@@ -1436,9 +1478,6 @@ struct SchurTraitEval1< T1, T2
                                       ( IsUniUpper_v<T1> && IsUniLower_v<T2> ) ) &&
                                     !( IsZero_v<T1> || IsZero_v<T2> ) > >
 {
-   using ET1 = ElementType_t<T1>;
-   using ET2 = ElementType_t<T2>;
-
    static constexpr bool SO1 = StorageOrder_v<T1>;
    static constexpr bool SO2 = StorageOrder_v<T2>;
 
@@ -1449,7 +1488,9 @@ struct SchurTraitEval1< T1, T2
                                     ? SO1
                                     : SO2 ) );
 
-   using Type = IdentityMatrix< MultTrait_t<ET1,ET2>, SO >;
+   using Type = IdentityMatrix< MultTrait_t< ElementType_t<T1>, ElementType_t<T2> >
+                              , SO
+                              , DefaultTag >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -1489,10 +1530,11 @@ struct MultTraitEval1< T1, T2
                                    IsMatrix_v<T2> &&
                                    IsIdentity_v<T1> && IsIdentity_v<T2> > >
 {
-   using ET1 = ElementType_t<T1>;
-   using ET2 = ElementType_t<T2>;
+   using MultType = MultTrait_t< ElementType_t<T1>, ElementType_t<T2> >;
 
-   using Type = IdentityMatrix< MultTrait_t<ET1,ET2>, StorageOrder_v<T1> >;
+   using Type = IdentityMatrix< AddTrait_t<MultType,MultType>
+                              , StorageOrder_v<T1>
+                              , DefaultTag >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -1514,10 +1556,9 @@ struct KronTraitEval1< T1, T2
                                    IsMatrix_v<T2> &&
                                    IsIdentity_v<T1> && IsIdentity_v<T2> > >
 {
-   using ET1 = ElementType_t<T1>;
-   using ET2 = ElementType_t<T2>;
-
-   using Type = IdentityMatrix< MultTrait_t<ET1,ET2>, StorageOrder_v<T2> >;
+   using Type = IdentityMatrix< MultTrait_t< ElementType_t<T1>, ElementType_t<T2> >
+                              , StorageOrder_v<T2>
+                              , DefaultTag >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -1538,9 +1579,9 @@ struct UnaryMapTraitEval1< T, OP
                          , EnableIf_t< IsMatrix_v<T> &&
                                        YieldsIdentity_v<OP,T> > >
 {
-   using ET = ElementType_t<T>;
-
-   using Type = IdentityMatrix< MapTrait_t<ET,OP>, StorageOrder_v<T> >;
+   using Type = IdentityMatrix< MapTrait_t< ElementType_t<T>, OP >
+                              , StorageOrder_v<T>
+                              , DefaultTag >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -1554,12 +1595,9 @@ struct BinaryMapTraitEval1< T1, T2, OP
                                         IsMatrix_v<T2> &&
                                         YieldsIdentity_v<OP,T1,T2> > >
 {
-   using ET1 = ElementType_t<T1>;
-   using ET2 = ElementType_t<T2>;
-
-   static constexpr bool SO = StorageOrder_v<T1> && StorageOrder_v<T2>;
-
-   using Type = IdentityMatrix< MapTrait_t<ET1,ET2,OP>, SO >;
+   using Type = IdentityMatrix< MapTrait_t< ElementType_t<T1>, ElementType_t<T2>, OP >
+                              , ( StorageOrder_v<T1> && StorageOrder_v<T2> )
+                              , DefaultTag >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -1575,10 +1613,10 @@ struct BinaryMapTraitEval1< T1, T2, OP
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T, bool SO >
-struct DeclSymTrait< IdentityMatrix<T,SO> >
+template< typename T, bool SO, typename Tag >
+struct DeclSymTrait< IdentityMatrix<T,SO,Tag> >
 {
-   using Type = IdentityMatrix<T,SO>;
+   using Type = IdentityMatrix<T,SO,Tag>;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -1594,10 +1632,10 @@ struct DeclSymTrait< IdentityMatrix<T,SO> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T, bool SO >
-struct DeclHermTrait< IdentityMatrix<T,SO> >
+template< typename T, bool SO, typename Tag >
+struct DeclHermTrait< IdentityMatrix<T,SO,Tag> >
 {
-   using Type = IdentityMatrix<T,SO>;
+   using Type = IdentityMatrix<T,SO,Tag>;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -1613,10 +1651,10 @@ struct DeclHermTrait< IdentityMatrix<T,SO> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T, bool SO >
-struct DeclLowTrait< IdentityMatrix<T,SO> >
+template< typename T, bool SO, typename Tag >
+struct DeclLowTrait< IdentityMatrix<T,SO,Tag> >
 {
-   using Type = IdentityMatrix<T,SO>;
+   using Type = IdentityMatrix<T,SO,Tag>;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -1632,10 +1670,10 @@ struct DeclLowTrait< IdentityMatrix<T,SO> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T, bool SO >
-struct DeclUniLowTrait< IdentityMatrix<T,SO> >
+template< typename T, bool SO, typename Tag >
+struct DeclUniLowTrait< IdentityMatrix<T,SO,Tag> >
 {
-   using Type = IdentityMatrix<T,SO>;
+   using Type = IdentityMatrix<T,SO,Tag>;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -1651,8 +1689,8 @@ struct DeclUniLowTrait< IdentityMatrix<T,SO> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T, bool SO >
-struct DeclStrLowTrait< IdentityMatrix<T,SO> >
+template< typename T, bool SO, typename Tag >
+struct DeclStrLowTrait< IdentityMatrix<T,SO,Tag> >
 {
    using Type = INVALID_TYPE;
 };
@@ -1670,10 +1708,10 @@ struct DeclStrLowTrait< IdentityMatrix<T,SO> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T, bool SO >
-struct DeclUppTrait< IdentityMatrix<T,SO> >
+template< typename T, bool SO, typename Tag >
+struct DeclUppTrait< IdentityMatrix<T,SO,Tag> >
 {
-   using Type = IdentityMatrix<T,SO>;
+   using Type = IdentityMatrix<T,SO,Tag>;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -1689,10 +1727,10 @@ struct DeclUppTrait< IdentityMatrix<T,SO> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T, bool SO >
-struct DeclUniUppTrait< IdentityMatrix<T,SO> >
+template< typename T, bool SO, typename Tag >
+struct DeclUniUppTrait< IdentityMatrix<T,SO,Tag> >
 {
-   using Type = IdentityMatrix<T,SO>;
+   using Type = IdentityMatrix<T,SO,Tag>;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -1708,8 +1746,8 @@ struct DeclUniUppTrait< IdentityMatrix<T,SO> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T, bool SO >
-struct DeclStrUppTrait< IdentityMatrix<T,SO> >
+template< typename T, bool SO, typename Tag >
+struct DeclStrUppTrait< IdentityMatrix<T,SO,Tag> >
 {
    using Type = INVALID_TYPE;
 };
@@ -1727,10 +1765,10 @@ struct DeclStrUppTrait< IdentityMatrix<T,SO> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T, bool SO >
-struct DeclDiagTrait< IdentityMatrix<T,SO> >
+template< typename T, bool SO, typename Tag >
+struct DeclDiagTrait< IdentityMatrix<T,SO,Tag> >
 {
-   using Type = IdentityMatrix<T,SO>;
+   using Type = IdentityMatrix<T,SO,Tag>;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -1746,10 +1784,10 @@ struct DeclDiagTrait< IdentityMatrix<T,SO> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T1, bool SO, typename T2 >
-struct HighType< IdentityMatrix<T1,SO>, IdentityMatrix<T2,SO> >
+template< typename T1, bool SO, typename Tag, typename T2 >
+struct HighType< IdentityMatrix<T1,SO,Tag>, IdentityMatrix<T2,SO,Tag> >
 {
-   using Type = IdentityMatrix< typename HighType<T1,T2>::Type, SO >;
+   using Type = IdentityMatrix< typename HighType<T1,T2>::Type, SO, Tag >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -1765,10 +1803,10 @@ struct HighType< IdentityMatrix<T1,SO>, IdentityMatrix<T2,SO> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T1, bool SO, typename T2 >
-struct LowType< IdentityMatrix<T1,SO>, IdentityMatrix<T2,SO> >
+template< typename T1, bool SO, typename Tag, typename T2 >
+struct LowType< IdentityMatrix<T1,SO,Tag>, IdentityMatrix<T2,SO,Tag> >
 {
-   using Type = IdentityMatrix< typename LowType<T1,T2>::Type, SO >;
+   using Type = IdentityMatrix< typename LowType<T1,T2>::Type, SO, Tag >;
 };
 /*! \endcond */
 //*************************************************************************************************

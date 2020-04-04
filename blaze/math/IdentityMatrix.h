@@ -62,15 +62,16 @@ namespace blaze {
 //
 // This specialization of the Rand class creates random instances of IdentityMatrix.
 */
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-class Rand< IdentityMatrix<Type,SO> >
+template< typename Type   // Data type of the matrix
+        , bool SO         // Storage order
+        , typename Tag >  // Type tag
+class Rand< IdentityMatrix<Type,SO,Tag> >
 {
  public:
    //**Generate functions**************************************************************************
    /*!\name Generate functions */
    //@{
-   inline const IdentityMatrix<Type,SO> generate( size_t n ) const;
+   inline const IdentityMatrix<Type,SO,Tag> generate( size_t n ) const;
    //@}
    //**********************************************************************************************
 };
@@ -85,12 +86,13 @@ class Rand< IdentityMatrix<Type,SO> >
 // \param n The number of rows and columns of the random matrix.
 // \return The generated random matrix.
 */
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-inline const IdentityMatrix<Type,SO>
-   Rand< IdentityMatrix<Type,SO> >::generate( size_t n ) const
+template< typename Type   // Data type of the matrix
+        , bool SO         // Storage order
+        , typename Tag >  // Type tag
+inline const IdentityMatrix<Type,SO,Tag>
+   Rand< IdentityMatrix<Type,SO,Tag> >::generate( size_t n ) const
 {
-   return IdentityMatrix<Type,SO>( n );
+   return IdentityMatrix<Type,SO,Tag>( n );
 }
 /*! \endcond */
 //*************************************************************************************************

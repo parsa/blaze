@@ -63,8 +63,9 @@ template< typename Type                  // Data type of the matrix
         , typename Tag = DefaultTag >    // Type tag
 class CompressedMatrix;
 
-template< typename Type                    // Data type of the matrix
-        , bool SO = defaultStorageOrder >  // Storage order
+template< typename Type                  // Data type of the matrix
+        , bool SO = defaultStorageOrder  // Storage order
+        , typename Tag = DefaultTag >    // Type tag
 class IdentityMatrix;
 
 template< typename Type                   // Data type of the vector
