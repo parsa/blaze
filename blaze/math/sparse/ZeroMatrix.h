@@ -116,7 +116,7 @@ namespace blaze {
 // storage order of the matrix can be specified via the two template parameters:
 
    \code
-   template< typename Type, bool SO >
+   template< typename Type, bool SO, typename Tag >
    class ZeroMatrix;
    \endcode
 
@@ -124,6 +124,7 @@ namespace blaze {
 //          non-cv-qualified, non-reference, non-pointer element type.
 //  - SO  : specifies the storage order (blaze::rowMajor, blaze::columnMajor) of the matrix.
 //          The default value is blaze::rowMajor.
+//  - Tag : optional type parameter to tag the vector. The default type is \a blaze::DefaultTag.
 //
 // It is not possible to insert, erase or modify the elements of a zero matrix. It is only
 // possible to read from the elements:
@@ -179,10 +180,11 @@ namespace blaze {
    E = Z * 2.0;  // Scaling of a zero matrix
    \endcode
 */
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
+template< typename Type   // Data type of the matrix
+        , bool SO         // Storage order
+        , typename Tag >  // Type tag
 class ZeroMatrix
-   : public Expression< SparseMatrix< ZeroMatrix<Type,SO>, SO > >
+   : public Expression< SparseMatrix< ZeroMatrix<Type,SO,Tag>, SO > >
 {
  private:
    //**Type definitions****************************************************************************
@@ -191,18 +193,25 @@ class ZeroMatrix
 
  public:
    //**Type definitions****************************************************************************
-   using This           = ZeroMatrix<Type,SO>;    //!< Type of this ZeroMatrix instance.
-   using BaseType       = SparseMatrix<This,SO>;  //!< Base type of this ZeroMatrix instance.
-   using ResultType     = This;                   //!< Result type for expression template evaluations.
-   using OppositeType   = ZeroMatrix<Type,!SO>;   //!< Result type with opposite storage order for expression template evaluations.
-   using TransposeType  = ZeroMatrix<Type,!SO>;   //!< Transpose type for expression template evaluations.
-   using ElementType    = Type;                   //!< Type of the zero matrix elements.
-   using ReturnType     = const Type&;            //!< Return type for expression template evaluations.
-   using CompositeType  = const This&;            //!< Data type for composite expression templates.
-   using Reference      = const Type&;            //!< Reference to a zero matrix element.
-   using ConstReference = const Type&;            //!< Reference to a constant zero matrix element.
-   using Iterator       = Element*;               //!< Iterator over non-constant elements.
-   using ConstIterator  = const Element*;         //!< Iterator over constant elements.
+   using This       = ZeroMatrix<Type,SO,Tag>;  //!< Type of this ZeroMatrix instance.
+   using BaseType   = SparseMatrix<This,SO>;    //!< Base type of this ZeroMatrix instance.
+   using ResultType = This;                     //!< Result type for expression template evaluations.
+
+   //! Result type with opposite storage order for expression template evaluations.
+   using OppositeType = ZeroMatrix<Type,!SO,Tag>;
+
+   //! Transpose type for expression template evaluations.
+   using TransposeType = ZeroMatrix<Type,!SO,Tag>;
+
+   using ElementType   = Type;         //!< Type of the zero matrix elements.
+   using TagType       = Tag;          //!< Tag type of this ZeroMatrix instance.
+   using ReturnType    = const Type&;  //!< Return type for expression template evaluations.
+   using CompositeType = const This&;  //!< Data type for composite expression templates.
+
+   using Reference      = const Type&;     //!< Reference to a zero matrix element.
+   using ConstReference = const Type&;     //!< Reference to a constant zero matrix element.
+   using Iterator       = Element*;        //!< Iterator over non-constant elements.
+   using ConstIterator  = const Element*;  //!< Iterator over constant elements.
    //**********************************************************************************************
 
    //**Rebind struct definition********************************************************************
@@ -210,7 +219,7 @@ class ZeroMatrix
    */
    template< typename NewType >  // Data type of the other matrix
    struct Rebind {
-      using Other = ZeroMatrix<NewType,SO>;  //!< The type of the other ZeroMatrix.
+      using Other = ZeroMatrix<NewType,SO,Tag>;  //!< The type of the other ZeroMatrix.
    };
    //**********************************************************************************************
 
@@ -220,7 +229,7 @@ class ZeroMatrix
    template< size_t NewM    // Number of rows of the other matrix
            , size_t NewN >  // Number of columns of the other matrix
    struct Resize {
-      using Other = ZeroMatrix<Type,SO>;  //!< The type of the other ZeroMatrix.
+      using Other = ZeroMatrix<Type,SO,Tag>;  //!< The type of the other ZeroMatrix.
    };
    //**********************************************************************************************
 
@@ -349,8 +358,10 @@ class ZeroMatrix
 //
 //=================================================================================================
 
-template< typename Type, bool SO >
-const Type ZeroMatrix<Type,SO>::zero_{};
+template< typename Type   // Data type of the matrix
+        , bool SO         // Storage order
+        , typename Tag >  // Type tag
+const Type ZeroMatrix<Type,SO,Tag>::zero_{};
 
 
 
@@ -364,9 +375,10 @@ const Type ZeroMatrix<Type,SO>::zero_{};
 //*************************************************************************************************
 /*!\brief The default constructor for ZeroMatrix.
 */
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-constexpr ZeroMatrix<Type,SO>::ZeroMatrix() noexcept
+template< typename Type   // Data type of the matrix
+        , bool SO         // Storage order
+        , typename Tag >  // Type tag
+constexpr ZeroMatrix<Type,SO,Tag>::ZeroMatrix() noexcept
    : m_( 0UL )  // The current number of rows of the zero matrix
    , n_( 0UL )  // The current number of columns of the zero matrix
 {}
@@ -379,9 +391,10 @@ constexpr ZeroMatrix<Type,SO>::ZeroMatrix() noexcept
 // \param m The number of rows of the matrix.
 // \param n The number of columns of the matrix.
 */
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-constexpr ZeroMatrix<Type,SO>::ZeroMatrix( size_t m, size_t n ) noexcept
+template< typename Type   // Data type of the matrix
+        , bool SO         // Storage order
+        , typename Tag >  // Type tag
+constexpr ZeroMatrix<Type,SO,Tag>::ZeroMatrix( size_t m, size_t n ) noexcept
    : m_( m )  // The current number of rows of the zero matrix
    , n_( n )  // The current number of columns of the zero matrix
 {}
@@ -397,11 +410,12 @@ constexpr ZeroMatrix<Type,SO>::ZeroMatrix( size_t m, size_t n ) noexcept
 // The matrix is sized according to the given \f$ M \times N \f$ zero matrix and initialized
 // as a copy of this matrix.
 */
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
+template< typename Type   // Data type of the matrix
+        , bool SO         // Storage order
+        , typename Tag >  // Type tag
 template< typename MT    // Type of the foreign zero matrix
         , bool SO2 >     // Storage order of the foreign zero matrix
-inline ZeroMatrix<Type,SO>::ZeroMatrix( const Matrix<MT,SO2>& m )
+inline ZeroMatrix<Type,SO,Tag>::ZeroMatrix( const Matrix<MT,SO2>& m )
    : m_( (~m).rows()    )  // The current number of rows of the zero matrix
    , n_( (~m).columns() )  // The current number of columns of the zero matrix
 {
@@ -430,10 +444,11 @@ inline ZeroMatrix<Type,SO>::ZeroMatrix( const Matrix<MT,SO2>& m )
 // This function only performs an index check in case BLAZE_USER_ASSERT() is active. In contrast,
 // the at() function is guaranteed to perform a check of the given access indices.
 */
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-constexpr typename ZeroMatrix<Type,SO>::ConstReference
-   ZeroMatrix<Type,SO>::operator()( size_t i, size_t j ) const noexcept
+template< typename Type   // Data type of the matrix
+        , bool SO         // Storage order
+        , typename Tag >  // Type tag
+constexpr typename ZeroMatrix<Type,SO,Tag>::ConstReference
+   ZeroMatrix<Type,SO,Tag>::operator()( size_t i, size_t j ) const noexcept
 {
    MAYBE_UNUSED( i, j );
 
@@ -456,10 +471,11 @@ constexpr typename ZeroMatrix<Type,SO>::ConstReference
 // In contrast to the subscript operator this function always performs a check of the given
 // access indices.
 */
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-inline typename ZeroMatrix<Type,SO>::ConstReference
-   ZeroMatrix<Type,SO>::at( size_t i, size_t j ) const
+template< typename Type   // Data type of the matrix
+        , bool SO         // Storage order
+        , typename Tag >  // Type tag
+inline typename ZeroMatrix<Type,SO,Tag>::ConstReference
+   ZeroMatrix<Type,SO,Tag>::at( size_t i, size_t j ) const
 {
    if( i >= m_ ) {
       BLAZE_THROW_OUT_OF_RANGE( "Invalid row access index" );
@@ -484,10 +500,11 @@ inline typename ZeroMatrix<Type,SO>::ConstReference
 // non-zero element of row \a i, in case the storage flag is set to \a columnMajor the function
 // returns an iterator to the first non-zero element of column \a i.
 */
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-constexpr typename ZeroMatrix<Type,SO>::ConstIterator
-   ZeroMatrix<Type,SO>::begin( size_t i ) const noexcept
+template< typename Type   // Data type of the matrix
+        , bool SO         // Storage order
+        , typename Tag >  // Type tag
+constexpr typename ZeroMatrix<Type,SO,Tag>::ConstIterator
+   ZeroMatrix<Type,SO,Tag>::begin( size_t i ) const noexcept
 {
    MAYBE_UNUSED( i );
 
@@ -509,10 +526,11 @@ constexpr typename ZeroMatrix<Type,SO>::ConstIterator
 // non-zero element of row \a i, in case the storage flag is set to \a columnMajor the function
 // returns an iterator to the first non-zero element of column \a i.
 */
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-constexpr typename ZeroMatrix<Type,SO>::ConstIterator
-   ZeroMatrix<Type,SO>::cbegin( size_t i ) const noexcept
+template< typename Type   // Data type of the matrix
+        , bool SO         // Storage order
+        , typename Tag >  // Type tag
+constexpr typename ZeroMatrix<Type,SO,Tag>::ConstIterator
+   ZeroMatrix<Type,SO,Tag>::cbegin( size_t i ) const noexcept
 {
    MAYBE_UNUSED( i );
 
@@ -534,10 +552,11 @@ constexpr typename ZeroMatrix<Type,SO>::ConstIterator
 // past the last non-zero element of row \a i, in case the storage flag is set to \a columnMajor
 // the function returns an iterator just past the last non-zero element of column \a i.
 */
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-constexpr typename ZeroMatrix<Type,SO>::ConstIterator
-   ZeroMatrix<Type,SO>::end( size_t i ) const noexcept
+template< typename Type   // Data type of the matrix
+        , bool SO         // Storage order
+        , typename Tag >  // Type tag
+constexpr typename ZeroMatrix<Type,SO,Tag>::ConstIterator
+   ZeroMatrix<Type,SO,Tag>::end( size_t i ) const noexcept
 {
    MAYBE_UNUSED( i );
 
@@ -559,10 +578,11 @@ constexpr typename ZeroMatrix<Type,SO>::ConstIterator
 // past the last non-zero element of row \a i, in case the storage flag is set to \a columnMajor
 // the function returns an iterator just past the last non-zero element of column \a i.
 */
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-constexpr typename ZeroMatrix<Type,SO>::ConstIterator
-   ZeroMatrix<Type,SO>::cend( size_t i ) const noexcept
+template< typename Type   // Data type of the matrix
+        , bool SO         // Storage order
+        , typename Tag >  // Type tag
+constexpr typename ZeroMatrix<Type,SO,Tag>::ConstIterator
+   ZeroMatrix<Type,SO,Tag>::cend( size_t i ) const noexcept
 {
    MAYBE_UNUSED( i );
 
@@ -591,12 +611,13 @@ constexpr typename ZeroMatrix<Type,SO>::ConstIterator
 // The matrix is resized according to the given \f$ M \times N \f$ zero matrix and initialized
 // as a copy of this matrix.
 */
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
+template< typename Type   // Data type of the matrix
+        , bool SO         // Storage order
+        , typename Tag >  // Type tag
 template< typename MT    // Type of the right-hand side zero matrix
         , bool SO2 >     // Storage order of the right-hand side zero matrix
-inline ZeroMatrix<Type,SO>&
-   ZeroMatrix<Type,SO>::operator=( const Matrix<MT,SO2>& rhs )
+inline ZeroMatrix<Type,SO,Tag>&
+   ZeroMatrix<Type,SO,Tag>::operator=( const Matrix<MT,SO2>& rhs )
 {
    if( !IsZero_v<MT> && !isZero( ~rhs ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment of zero matrix" );
@@ -626,9 +647,10 @@ inline ZeroMatrix<Type,SO>&
 //
 // \return The number of rows of the zero matrix.
 */
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-constexpr size_t ZeroMatrix<Type,SO>::rows() const noexcept
+template< typename Type   // Data type of the matrix
+        , bool SO         // Storage order
+        , typename Tag >  // Type tag
+constexpr size_t ZeroMatrix<Type,SO,Tag>::rows() const noexcept
 {
    return m_;
 }
@@ -640,9 +662,10 @@ constexpr size_t ZeroMatrix<Type,SO>::rows() const noexcept
 //
 // \return The number of columns of the zero matrix.
 */
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-constexpr size_t ZeroMatrix<Type,SO>::columns() const noexcept
+template< typename Type   // Data type of the matrix
+        , bool SO         // Storage order
+        , typename Tag >  // Type tag
+constexpr size_t ZeroMatrix<Type,SO,Tag>::columns() const noexcept
 {
    return n_;
 }
@@ -654,9 +677,10 @@ constexpr size_t ZeroMatrix<Type,SO>::columns() const noexcept
 //
 // \return The capacity of the zero matrix.
 */
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-constexpr size_t ZeroMatrix<Type,SO>::capacity() const noexcept
+template< typename Type   // Data type of the matrix
+        , bool SO         // Storage order
+        , typename Tag >  // Type tag
+constexpr size_t ZeroMatrix<Type,SO,Tag>::capacity() const noexcept
 {
    return 0UL;
 }
@@ -674,9 +698,10 @@ constexpr size_t ZeroMatrix<Type,SO>::capacity() const noexcept
 // in case the storage flag is set to \a columnMajor the function returns the capacity
 // of column \a i.
 */
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-constexpr size_t ZeroMatrix<Type,SO>::capacity( size_t i ) const noexcept
+template< typename Type   // Data type of the matrix
+        , bool SO         // Storage order
+        , typename Tag >  // Type tag
+constexpr size_t ZeroMatrix<Type,SO,Tag>::capacity( size_t i ) const noexcept
 {
    MAYBE_UNUSED( i );
 
@@ -692,9 +717,10 @@ constexpr size_t ZeroMatrix<Type,SO>::capacity( size_t i ) const noexcept
 //
 // \return The number of non-zero elements in the zero matrix.
 */
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-constexpr size_t ZeroMatrix<Type,SO>::nonZeros() const noexcept
+template< typename Type   // Data type of the matrix
+        , bool SO         // Storage order
+        , typename Tag >  // Type tag
+constexpr size_t ZeroMatrix<Type,SO,Tag>::nonZeros() const noexcept
 {
    return 0UL;
 }
@@ -712,9 +738,10 @@ constexpr size_t ZeroMatrix<Type,SO>::nonZeros() const noexcept
 // elements in row \a i, in case the storage flag is set to \a columnMajor the function returns
 // the number of non-zero elements in column \a i.
 */
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-constexpr size_t ZeroMatrix<Type,SO>::nonZeros( size_t i ) const noexcept
+template< typename Type   // Data type of the matrix
+        , bool SO         // Storage order
+        , typename Tag >  // Type tag
+constexpr size_t ZeroMatrix<Type,SO,Tag>::nonZeros( size_t i ) const noexcept
 {
    MAYBE_UNUSED( i );
 
@@ -732,9 +759,10 @@ constexpr size_t ZeroMatrix<Type,SO>::nonZeros( size_t i ) const noexcept
 //
 // After the clear() function, the size of the zero matrix is 0.
 */
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-constexpr void ZeroMatrix<Type,SO>::clear() noexcept
+template< typename Type   // Data type of the matrix
+        , bool SO         // Storage order
+        , typename Tag >  // Type tag
+constexpr void ZeroMatrix<Type,SO,Tag>::clear() noexcept
 {
    m_ = 0UL;
    n_ = 0UL;
@@ -753,9 +781,10 @@ constexpr void ZeroMatrix<Type,SO>::clear() noexcept
 // function may invalidate all existing views (submatrices, rows, columns, ...) on the matrix if
 // it is used to shrink the matrix.
 */
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-void constexpr ZeroMatrix<Type,SO>::resize( size_t m, size_t n ) noexcept
+template< typename Type   // Data type of the matrix
+        , bool SO         // Storage order
+        , typename Tag >  // Type tag
+void constexpr ZeroMatrix<Type,SO,Tag>::resize( size_t m, size_t n ) noexcept
 {
    m_ = m;
    n_ = n;
@@ -769,9 +798,10 @@ void constexpr ZeroMatrix<Type,SO>::resize( size_t m, size_t n ) noexcept
 // \param m The zero matrix to be swapped.
 // \return void
 */
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-constexpr void ZeroMatrix<Type,SO>::swap( ZeroMatrix& m ) noexcept
+template< typename Type   // Data type of the matrix
+        , bool SO         // Storage order
+        , typename Tag >  // Type tag
+constexpr void ZeroMatrix<Type,SO,Tag>::swap( ZeroMatrix& m ) noexcept
 {
    const size_t tmp1( m_ );
    m_ = m.m_;
@@ -805,10 +835,11 @@ constexpr void ZeroMatrix<Type,SO>::swap( ZeroMatrix& m ) noexcept
 // Otherwise an iterator just past the last non-zero element of row \a i or column \a j (the
 // end() iterator) is returned.
 */
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-inline typename ZeroMatrix<Type,SO>::ConstIterator
-   ZeroMatrix<Type,SO>::find( size_t i, size_t j ) const
+template< typename Type   // Data type of the matrix
+        , bool SO         // Storage order
+        , typename Tag >  // Type tag
+inline typename ZeroMatrix<Type,SO,Tag>::ConstIterator
+   ZeroMatrix<Type,SO,Tag>::find( size_t i, size_t j ) const
 {
    MAYBE_UNUSED( i, j );
 
@@ -833,10 +864,11 @@ inline typename ZeroMatrix<Type,SO>::ConstIterator
 // index. In combination with the upperBound() function this function can be used to create a
 // pair of iterators specifying a range of indices.
 */
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-inline typename ZeroMatrix<Type,SO>::ConstIterator
-   ZeroMatrix<Type,SO>::lowerBound( size_t i, size_t j ) const
+template< typename Type   // Data type of the matrix
+        , bool SO         // Storage order
+        , typename Tag >  // Type tag
+inline typename ZeroMatrix<Type,SO,Tag>::ConstIterator
+   ZeroMatrix<Type,SO,Tag>::lowerBound( size_t i, size_t j ) const
 {
    MAYBE_UNUSED( i, j );
 
@@ -861,10 +893,11 @@ inline typename ZeroMatrix<Type,SO>::ConstIterator
 // index. In combination with the lowerBound() function this function can be used to create a
 // pair of iterators specifying a range of indices.
 */
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-inline typename ZeroMatrix<Type,SO>::ConstIterator
-   ZeroMatrix<Type,SO>::upperBound( size_t i, size_t j ) const
+template< typename Type   // Data type of the matrix
+        , bool SO         // Storage order
+        , typename Tag >  // Type tag
+inline typename ZeroMatrix<Type,SO,Tag>::ConstIterator
+   ZeroMatrix<Type,SO,Tag>::upperBound( size_t i, size_t j ) const
 {
    MAYBE_UNUSED( i, j );
 
@@ -889,9 +922,10 @@ inline typename ZeroMatrix<Type,SO>::ConstIterator
 //
 // \return Reference to the transposed matrix.
 */
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-constexpr ZeroMatrix<Type,SO>& ZeroMatrix<Type,SO>::transpose() noexcept
+template< typename Type   // Data type of the matrix
+        , bool SO         // Storage order
+        , typename Tag >  // Type tag
+constexpr ZeroMatrix<Type,SO,Tag>& ZeroMatrix<Type,SO,Tag>::transpose() noexcept
 {
    const size_t tmp( m_ );
    m_ = n_;
@@ -907,9 +941,10 @@ constexpr ZeroMatrix<Type,SO>& ZeroMatrix<Type,SO>::transpose() noexcept
 //
 // \return Reference to the transposed matrix.
 */
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-constexpr ZeroMatrix<Type,SO>& ZeroMatrix<Type,SO>::ctranspose() noexcept
+template< typename Type   // Data type of the matrix
+        , bool SO         // Storage order
+        , typename Tag >  // Type tag
+constexpr ZeroMatrix<Type,SO,Tag>& ZeroMatrix<Type,SO,Tag>::ctranspose() noexcept
 {
    const size_t tmp( m_ );
    m_ = n_;
@@ -939,9 +974,10 @@ constexpr ZeroMatrix<Type,SO>& ZeroMatrix<Type,SO>::ctranspose() noexcept
 // to optimize the evaluation.
 */
 template< typename Type     // Data type of the matrix
-        , bool SO >         // Storage order
+        , bool SO           // Storage order
+        , typename Tag >    // Type tag
 template< typename Other >  // Data type of the foreign expression
-inline bool ZeroMatrix<Type,SO>::canAlias( const Other* alias ) const noexcept
+inline bool ZeroMatrix<Type,SO,Tag>::canAlias( const Other* alias ) const noexcept
 {
    MAYBE_UNUSED( alias );
 
@@ -961,9 +997,10 @@ inline bool ZeroMatrix<Type,SO>::canAlias( const Other* alias ) const noexcept
 // to optimize the evaluation.
 */
 template< typename Type     // Data type of the matrix
-        , bool SO >         // Storage order
+        , bool SO           // Storage order
+        , typename Tag >    // Type tag
 template< typename Other >  // Data type of the foreign expression
-inline bool ZeroMatrix<Type,SO>::isAliased( const Other* alias ) const noexcept
+inline bool ZeroMatrix<Type,SO,Tag>::isAliased( const Other* alias ) const noexcept
 {
    MAYBE_UNUSED( alias );
 
@@ -982,9 +1019,10 @@ inline bool ZeroMatrix<Type,SO>::isAliased( const Other* alias ) const noexcept
 // function additionally provides runtime information (as for instance the current number of
 // rows and/or columns of the matrix).
 */
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-inline bool ZeroMatrix<Type,SO>::canSMPAssign() const noexcept
+template< typename Type   // Data type of the matrix
+        , bool SO         // Storage order
+        , typename Tag >  // Type tag
+inline bool ZeroMatrix<Type,SO,Tag>::canSMPAssign() const noexcept
 {
    return false;
 }
@@ -1006,23 +1044,23 @@ inline bool ZeroMatrix<Type,SO>::canSMPAssign() const noexcept
 //*************************************************************************************************
 /*!\name ZeroMatrix operators */
 //@{
-template< typename Type, bool SO >
-constexpr void reset( ZeroMatrix<Type,SO>& m ) noexcept;
+template< typename Type, bool SO, typename Tag >
+constexpr void reset( ZeroMatrix<Type,SO,Tag>& m ) noexcept;
 
-template< typename Type, bool SO >
-constexpr void reset( ZeroMatrix<Type,SO>& m, size_t i ) noexcept;
+template< typename Type, bool SO, typename Tag >
+constexpr void reset( ZeroMatrix<Type,SO,Tag>& m, size_t i ) noexcept;
 
-template< typename Type, bool SO >
-constexpr void clear( ZeroMatrix<Type,SO>& m ) noexcept;
+template< typename Type, bool SO, typename Tag >
+constexpr void clear( ZeroMatrix<Type,SO,Tag>& m ) noexcept;
 
-template< RelaxationFlag RF, typename Type, bool SO >
-constexpr bool isDefault( const ZeroMatrix<Type,SO>& m ) noexcept;
+template< RelaxationFlag RF, typename Type, bool SO, typename Tag >
+constexpr bool isDefault( const ZeroMatrix<Type,SO,Tag>& m ) noexcept;
 
-template< typename Type, bool SO >
-constexpr bool isIntact( const ZeroMatrix<Type,SO>& m ) noexcept;
+template< typename Type, bool SO, typename Tag >
+constexpr bool isIntact( const ZeroMatrix<Type,SO,Tag>& m ) noexcept;
 
-template< typename Type, bool SO >
-constexpr void swap( ZeroMatrix<Type,SO>& a, ZeroMatrix<Type,SO>& b ) noexcept;
+template< typename Type, bool SO, typename Tag >
+constexpr void swap( ZeroMatrix<Type,SO,Tag>& a, ZeroMatrix<Type,SO,Tag>& b ) noexcept;
 //@}
 //*************************************************************************************************
 
@@ -1034,9 +1072,10 @@ constexpr void swap( ZeroMatrix<Type,SO>& a, ZeroMatrix<Type,SO>& b ) noexcept;
 // \param m The zero matrix to be resetted.
 // \return void
 */
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-constexpr void reset( ZeroMatrix<Type,SO>& m ) noexcept
+template< typename Type   // Data type of the matrix
+        , bool SO         // Storage order
+        , typename Tag >  // Type tag
+constexpr void reset( ZeroMatrix<Type,SO,Tag>& m ) noexcept
 {
    MAYBE_UNUSED( m );
 }
@@ -1055,9 +1094,10 @@ constexpr void reset( ZeroMatrix<Type,SO>& m ) noexcept
 // default value. In case the given matrix is a \a rowMajor matrix the function resets the values
 // in row \a i, if it is a \a columnMajor matrix the function resets the values in column \a i.
 */
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-constexpr void reset( ZeroMatrix<Type,SO>& m, size_t i ) noexcept
+template< typename Type   // Data type of the matrix
+        , bool SO         // Storage order
+        , typename Tag >  // Type tag
+constexpr void reset( ZeroMatrix<Type,SO,Tag>& m, size_t i ) noexcept
 {
    MAYBE_UNUSED( m, i );
 }
@@ -1071,9 +1111,10 @@ constexpr void reset( ZeroMatrix<Type,SO>& m, size_t i ) noexcept
 // \param m The zero matrix to be cleared.
 // \return void
 */
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-constexpr void clear( ZeroMatrix<Type,SO>& m ) noexcept
+template< typename Type   // Data type of the matrix
+        , bool SO         // Storage order
+        , typename Tag >  // Type tag
+constexpr void clear( ZeroMatrix<Type,SO,Tag>& m ) noexcept
 {
    m.clear();
 }
@@ -1107,8 +1148,9 @@ constexpr void clear( ZeroMatrix<Type,SO>& m ) noexcept
 */
 template< RelaxationFlag RF  // Relaxation flag
         , typename Type      // Data type of the matrix
-        , bool SO >          // Storage order
-constexpr bool isDefault( const ZeroMatrix<Type,SO>& m ) noexcept
+        , bool SO            // Storage order
+        , typename Tag >     // Type tag
+constexpr bool isDefault( const ZeroMatrix<Type,SO,Tag>& m ) noexcept
 {
    return ( m.rows() == 0UL && m.columns() == 0UL );
 }
@@ -1132,9 +1174,10 @@ constexpr bool isDefault( const ZeroMatrix<Type,SO>& m ) noexcept
    if( isIntact( Z ) ) { ... }
    \endcode
 */
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-constexpr bool isIntact( const ZeroMatrix<Type,SO>& m ) noexcept
+template< typename Type   // Data type of the matrix
+        , bool SO         // Storage order
+        , typename Tag >  // Type tag
+constexpr bool isIntact( const ZeroMatrix<Type,SO,Tag>& m ) noexcept
 {
    MAYBE_UNUSED( m );
 
@@ -1151,9 +1194,10 @@ constexpr bool isIntact( const ZeroMatrix<Type,SO>& m ) noexcept
 // \param b The second matrix to be swapped.
 // \return void
 */
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-constexpr void swap( ZeroMatrix<Type,SO>& a, ZeroMatrix<Type,SO>& b ) noexcept
+template< typename Type   // Data type of the matrix
+        , bool SO         // Storage order
+        , typename Tag >  // Type tag
+constexpr void swap( ZeroMatrix<Type,SO,Tag>& a, ZeroMatrix<Type,SO,Tag>& b ) noexcept
 {
    a.swap( b );
 }
@@ -1170,9 +1214,10 @@ constexpr void swap( ZeroMatrix<Type,SO>& a, ZeroMatrix<Type,SO>& b ) noexcept
 // \param j The column index of the element to be erased. The index has to be in the range \f$[0..N-1]\f$.
 // \return void
 */
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-inline void erase( ZeroMatrix<Type,SO>& m, size_t i, size_t j )
+template< typename Type   // Data type of the matrix
+        , bool SO         // Storage order
+        , typename Tag >  // Type tag
+inline void erase( ZeroMatrix<Type,SO,Tag>& m, size_t i, size_t j )
 {
    MAYBE_UNUSED( m, i, j );
 }
@@ -1196,8 +1241,9 @@ inline void erase( ZeroMatrix<Type,SO>& m, size_t i, size_t j )
 */
 template< typename Type        // Data type of the matrix
         , bool SO              // Storage order
+        , typename Tag         // Type tag
         , typename Iterator >  // Type of the matrix iterator
-inline Iterator erase( ZeroMatrix<Type,SO>& m, size_t i, Iterator pos )
+inline Iterator erase( ZeroMatrix<Type,SO,Tag>& m, size_t i, Iterator pos )
 {
    MAYBE_UNUSED( m, i, pos );
    return Iterator();
@@ -1224,8 +1270,9 @@ inline Iterator erase( ZeroMatrix<Type,SO>& m, size_t i, Iterator pos )
 */
 template< typename Type        // Data type of the matrix
         , bool SO              // Storage order
+        , typename Tag         // Type tag
         , typename Iterator >  // Type of the matrix iterator
-inline Iterator erase( ZeroMatrix<Type,SO>& m, size_t i, Iterator first, Iterator last )
+inline Iterator erase( ZeroMatrix<Type,SO,Tag>& m, size_t i, Iterator first, Iterator last )
 {
    MAYBE_UNUSED( m, i, first, last );
    return Iterator();
@@ -1260,8 +1307,9 @@ inline Iterator erase( ZeroMatrix<Type,SO>& m, size_t i, Iterator first, Iterato
 */
 template< typename Type    // Data type of the matrix
         , bool SO          // Storage order
+        , typename Tag     // Type tag
         , typename Pred >  // Type of the unary predicate
-inline void erase( ZeroMatrix<Type,SO>& m, Pred predicate )
+inline void erase( ZeroMatrix<Type,SO,Tag>& m, Pred predicate )
 {
    MAYBE_UNUSED( m, predicate );
 }
@@ -1301,9 +1349,10 @@ inline void erase( ZeroMatrix<Type,SO>& m, Pred predicate )
 */
 template< typename Type      // Data type of the matrix
         , bool SO            // Storage order
+        , typename Tag       // Type tag
         , typename Iterator  // Type of the matrix iterator
         , typename Pred >    // Type of the unary predicate
-inline void erase( ZeroMatrix<Type,SO>& m, size_t i, Iterator first, Iterator last, Pred predicate )
+inline void erase( ZeroMatrix<Type,SO,Tag>& m, size_t i, Iterator first, Iterator last, Pred predicate )
 {
    MAYBE_UNUSED( m, i, first, last, predicate );
 }
@@ -1399,8 +1448,8 @@ inline ZeroMatrix<ElementType_t<MT>,SO>
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename Type, bool SO >
-struct IsUniform< ZeroMatrix<Type,SO> >
+template< typename Type, bool SO, typename Tag >
+struct IsUniform< ZeroMatrix<Type,SO,Tag> >
    : public TrueType
 {};
 /*! \endcond */
@@ -1417,8 +1466,8 @@ struct IsUniform< ZeroMatrix<Type,SO> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename Type, bool SO >
-struct IsZero< ZeroMatrix<Type,SO> >
+template< typename Type, bool SO, typename Tag >
+struct IsZero< ZeroMatrix<Type,SO,Tag> >
    : public TrueType
 {};
 /*! \endcond */
@@ -1435,8 +1484,8 @@ struct IsZero< ZeroMatrix<Type,SO> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename Type, bool SO >
-struct IsResizable< ZeroMatrix<Type,SO> >
+template< typename Type, bool SO, typename Tag >
+struct IsResizable< ZeroMatrix<Type,SO,Tag> >
    : public TrueType
 {};
 /*! \endcond */
@@ -1477,12 +1526,9 @@ struct AddTraitEval1< T1, T2
                                   IsMatrix_v<T2> &&
                                   IsZero_v<T1> && IsZero_v<T2> > >
 {
-   using ET1 = ElementType_t<T1>;
-   using ET2 = ElementType_t<T2>;
-
-   static constexpr bool SO = ( StorageOrder_v<T1> && StorageOrder_v<T2> );
-
-   using Type = ZeroMatrix< AddTrait_t<ET1,ET2>, SO >;
+   using Type = ZeroMatrix< AddTrait_t< ElementType_t<T1>, ElementType_t<T2> >
+                          , ( StorageOrder_v<T1> && StorageOrder_v<T2> )
+                          , DefaultTag >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -1522,12 +1568,9 @@ struct SubTraitEval1< T1, T2
                                   IsMatrix_v<T2> &&
                                   IsZero_v<T1> && IsZero_v<T2> > >
 {
-   using ET1 = ElementType_t<T1>;
-   using ET2 = ElementType_t<T2>;
-
-   static constexpr bool SO = ( StorageOrder_v<T1> && StorageOrder_v<T2> );
-
-   using Type = ZeroMatrix< SubTrait_t<ET1,ET2>, SO >;
+   using Type = ZeroMatrix< SubTrait_t< ElementType_t<T1>, ElementType_t<T2> >
+                          , ( StorageOrder_v<T1> && StorageOrder_v<T2> )
+                          , DefaultTag >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -1554,9 +1597,6 @@ struct SchurTraitEval1< T1, T2
                                       ( IsLower_v<T1> && IsStrictlyUpper_v<T2> ) ||
                                       ( IsUpper_v<T1> && IsStrictlyLower_v<T2> ) ) > >
 {
-   using ET1 = ElementType_t<T1>;
-   using ET2 = ElementType_t<T2>;
-
    static constexpr bool SO1 = StorageOrder_v<T1>;
    static constexpr bool SO2 = StorageOrder_v<T2>;
 
@@ -1566,7 +1606,9 @@ struct SchurTraitEval1< T1, T2
                                     : SO2 )
                                 : SO1 && SO2 );
 
-   using Type = ZeroMatrix< MultTrait_t<ET1,ET2>, SO >;
+   using Type = ZeroMatrix< MultTrait_t< ElementType_t<T1>, ElementType_t<T2> >
+                          , SO
+                          , DefaultTag >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -1586,14 +1628,18 @@ template< typename T1, typename T2 >
 struct MultTraitEval1< T1, T2
                      , EnableIf_t< IsMatrix_v<T1> && IsZero_v<T1> && IsNumeric_v<T2> > >
 {
-   using Type = ZeroMatrix< MultTrait_t< ElementType_t<T1>, T2 >, StorageOrder_v<T1> >;
+   using Type = ZeroMatrix< MultTrait_t< ElementType_t<T1>, T2 >
+                          , StorageOrder_v<T1>
+                          , DefaultTag >;
 };
 
 template< typename T1, typename T2 >
 struct MultTraitEval1< T1, T2
                      , EnableIf_t< IsNumeric_v<T1> && IsMatrix_v<T2> && IsZero_v<T2> > >
 {
-   using Type = ZeroMatrix< MultTrait_t< T1, ElementType_t<T2> >, StorageOrder_v<T2> >;
+   using Type = ZeroMatrix< MultTrait_t< T1, ElementType_t<T2> >
+                          , StorageOrder_v<T2>
+                          , DefaultTag >;
 };
 
 template< typename T1, typename T2 >
@@ -1602,12 +1648,9 @@ struct MultTraitEval1< T1, T2
                                    IsRowVector_v<T2> &&
                                    ( IsZero_v<T1> || IsZero_v<T2> ) > >
 {
-   using ET1 = ElementType_t<T1>;
-   using ET2 = ElementType_t<T2>;
-
-   static constexpr bool SO = IsSparseVector_v<T1> && IsDenseVector_v<T2>;
-
-   using Type = ZeroMatrix< MultTrait_t<ET1,ET2>, SO >;
+   using Type = ZeroMatrix< MultTrait_t< ElementType_t<T1>, ElementType_t<T2> >
+                          , ( IsSparseVector_v<T1> && IsDenseVector_v<T2> )
+                          , DefaultTag >;
 };
 
 template< typename T1, typename T2 >
@@ -1616,12 +1659,11 @@ struct MultTraitEval1< T1, T2
                                    IsMatrix_v<T2> &&
                                    ( IsZero_v<T1> || IsZero_v<T2> ) > >
 {
-   using ET1 = ElementType_t<T1>;
-   using ET2 = ElementType_t<T2>;
+   using MultType = MultTrait_t< ElementType_t<T1>, ElementType_t<T2> >;
 
-   static constexpr bool SO = ( IsZero_v<T1> ? StorageOrder_v<T1> : StorageOrder_v<T2> );
-
-   using Type = ZeroMatrix< MultTrait_t<ET1,ET2>, SO >;
+   using Type = ZeroMatrix< AddTrait_t<MultType,MultType>
+                          , ( IsZero_v<T1> ? StorageOrder_v<T1> : StorageOrder_v<T2> )
+                          , DefaultTag >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -1644,12 +1686,9 @@ struct KronTraitEval1< T1, T2
                                    ( IsZero_v<T1> ||
                                      IsZero_v<T2> ) > >
 {
-   using ET1 = ElementType_t<T1>;
-   using ET2 = ElementType_t<T2>;
-
-   static constexpr bool SO = ( IsZero_v<T2> ? StorageOrder_v<T2> : StorageOrder_v<T1> );
-
-   using Type = ZeroMatrix< MultTrait_t<ET1,ET2>, SO >;
+   using Type = ZeroMatrix< MultTrait_t< ElementType_t<T1>, ElementType_t<T2> >
+                          , ( IsZero_v<T2> ? StorageOrder_v<T2> : StorageOrder_v<T1> )
+                          , DefaultTag >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -1671,9 +1710,9 @@ struct DivTraitEval1< T1, T2
                                   IsNumeric_v<T2> &&
                                   IsZero_v<T1> > >
 {
-   using ET1 = ElementType_t<T1>;
-
-   using Type = ZeroMatrix< DivTrait_t<ET1,T2>, StorageOrder_v<T1> >;
+   using Type = ZeroMatrix< DivTrait_t< ElementType_t<T1>, T2 >
+                          , StorageOrder_v<T1>
+                          , DefaultTag >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -1694,9 +1733,9 @@ struct UnaryMapTraitEval1< T, OP
                          , EnableIf_t< IsMatrix_v<T> &&
                                        YieldsZero_v<OP,T> > >
 {
-   using ET = ElementType_t<T>;
-
-   using Type = ZeroMatrix< MapTrait_t<ET,OP>, StorageOrder_v<T> >;
+   using Type = ZeroMatrix< MapTrait_t< ElementType_t<T>, OP >
+                          , StorageOrder_v<T>
+                          , DefaultTag >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -1710,12 +1749,9 @@ struct BinaryMapTraitEval1< T1, T2, OP
                                         IsMatrix_v<T2> &&
                                         YieldsZero_v<OP,T1,T2> > >
 {
-   using ET1 = ElementType_t<T1>;
-   using ET2 = ElementType_t<T2>;
-
-   static constexpr bool SO = StorageOrder_v<T1> && StorageOrder_v<T2>;
-
-   using Type = ZeroMatrix< MapTrait_t<ET1,ET2,OP>, SO >;
+   using Type = ZeroMatrix< MapTrait_t< ElementType_t<T1>, ElementType_t<T2>, OP >
+                          , ( StorageOrder_v<T1> && StorageOrder_v<T2> )
+                          , DefaultTag >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -1737,9 +1773,9 @@ struct ExpandTraitEval1< T, E
                        , EnableIf_t< IsVector_v<T> &&
                                      IsZero_v<T> > >
 {
-   static constexpr bool TF = ( IsColumnVector_v<T> ? columnMajor : rowMajor );
-
-   using Type = ZeroMatrix< ElementType_t<T>, TF >;
+   using Type = ZeroMatrix< ElementType_t<T>
+                          , ( IsColumnVector_v<T> ? columnMajor : rowMajor )
+                          , DefaultTag >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -1755,10 +1791,10 @@ struct ExpandTraitEval1< T, E
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T, bool SO >
-struct DeclStrLowTrait< ZeroMatrix<T,SO> >
+template< typename T, bool SO, typename Tag >
+struct DeclStrLowTrait< ZeroMatrix<T,SO,Tag> >
 {
-   using Type = ZeroMatrix<T,SO>;
+   using Type = ZeroMatrix<T,SO,Tag>;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -1774,10 +1810,10 @@ struct DeclStrLowTrait< ZeroMatrix<T,SO> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T, bool SO >
-struct DeclStrUppTrait< ZeroMatrix<T,SO> >
+template< typename T, bool SO, typename Tag >
+struct DeclStrUppTrait< ZeroMatrix<T,SO,Tag> >
 {
-   using Type = ZeroMatrix<T,SO>;
+   using Type = ZeroMatrix<T,SO,Tag>;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -1793,10 +1829,10 @@ struct DeclStrUppTrait< ZeroMatrix<T,SO> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T1, bool SO, typename T2 >
-struct HighType< ZeroMatrix<T1,SO>, ZeroMatrix<T2,SO> >
+template< typename T1, bool SO, typename Tag, typename T2 >
+struct HighType< ZeroMatrix<T1,SO,Tag>, ZeroMatrix<T2,SO,Tag> >
 {
-   using Type = ZeroMatrix< typename HighType<T1,T2>::Type, SO >;
+   using Type = ZeroMatrix< typename HighType<T1,T2>::Type, SO, Tag >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -1812,10 +1848,10 @@ struct HighType< ZeroMatrix<T1,SO>, ZeroMatrix<T2,SO> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T1, bool SO, typename T2 >
-struct LowType< ZeroMatrix<T1,SO>, ZeroMatrix<T2,SO> >
+template< typename T1, bool SO, typename Tag, typename T2 >
+struct LowType< ZeroMatrix<T1,SO,Tag>, ZeroMatrix<T2,SO,Tag> >
 {
-   using Type = ZeroMatrix< typename LowType<T1,T2>::Type, SO >;
+   using Type = ZeroMatrix< typename LowType<T1,T2>::Type, SO, Tag >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -1835,7 +1871,9 @@ template< typename MT, size_t I, size_t J, size_t M, size_t N >
 struct SubmatrixTraitEval1< MT, I, J, M, N
                           , EnableIf_t< IsZero_v<MT> > >
 {
-   using Type = ZeroMatrix< RemoveConst_t< ElementType_t<MT> >, StorageOrder_v<MT> >;
+   using Type = ZeroMatrix< RemoveConst_t< ElementType_t<MT> >
+                          , StorageOrder_v<MT>
+                          , DefaultTag >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -1855,7 +1893,9 @@ template< typename MT, size_t M >
 struct RowsTraitEval1< MT, M
                      , EnableIf_t< IsZero_v<MT> > >
 {
-   using Type = ZeroMatrix< RemoveConst_t< ElementType_t<MT> >, false >;
+   using Type = ZeroMatrix< RemoveConst_t< ElementType_t<MT> >
+                          , false
+                          , DefaultTag >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -1875,7 +1915,9 @@ template< typename MT, size_t N >
 struct ColumnsTraitEval1< MT, N
                         , EnableIf_t< IsZero_v<MT> > >
 {
-   using Type = ZeroMatrix< RemoveConst_t< ElementType_t<MT> >, true >;
+   using Type = ZeroMatrix< RemoveConst_t< ElementType_t<MT> >
+                          , true
+                          , DefaultTag >;
 };
 /*! \endcond */
 //*************************************************************************************************

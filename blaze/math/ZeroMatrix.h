@@ -63,15 +63,16 @@ namespace blaze {
 //
 // This specialization of the Rand class creates random instances of ZeroMatrix.
 */
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-class Rand< ZeroMatrix<Type,SO> >
+template< typename Type   // Data type of the matrix
+        , bool SO         // Storage order
+        , typename Tag >  // Type tag
+class Rand< ZeroMatrix<Type,SO,Tag> >
 {
  public:
    //**Generate functions**************************************************************************
    /*!\name Generate functions */
    //@{
-   inline const ZeroMatrix<Type,SO> generate( size_t m, size_t n ) const;
+   inline const ZeroMatrix<Type,SO,Tag> generate( size_t m, size_t n ) const;
    //@}
    //**********************************************************************************************
 };
@@ -87,12 +88,13 @@ class Rand< ZeroMatrix<Type,SO> >
 // \param n The number of columns of the random matrix.
 // \return The generated random matrix.
 */
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-inline const ZeroMatrix<Type,SO>
-   Rand< ZeroMatrix<Type,SO> >::generate( size_t m, size_t n ) const
+template< typename Type   // Data type of the matrix
+        , bool SO         // Storage order
+        , typename Tag >  // Type tag
+inline const ZeroMatrix<Type,SO,Tag>
+   Rand< ZeroMatrix<Type,SO,Tag> >::generate( size_t m, size_t n ) const
 {
-   return ZeroMatrix<Type,SO>( m, n );
+   return ZeroMatrix<Type,SO,Tag>( m, n );
 }
 /*! \endcond */
 //*************************************************************************************************
