@@ -56,6 +56,7 @@
 #include <blaze/math/DynamicVector.h>
 #include <blaze/math/Epsilon.h>
 #include <blaze/math/Functors.h>
+#include <blaze/math/GroupTag.h>
 #include <blaze/math/IdentityMatrix.h>
 #include <blaze/math/Infinity.h>
 #include <blaze/math/InitializerMatrix.h>
