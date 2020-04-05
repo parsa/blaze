@@ -51,7 +51,6 @@
 #include <blaze/math/CustomMatrix.h>
 #include <blaze/math/CustomVector.h>
 #include <blaze/math/DiagonalMatrix.h>
-#include <blaze/math/DefaultTag.h>
 #include <blaze/math/DynamicMatrix.h>
 #include <blaze/math/DynamicVector.h>
 #include <blaze/math/Epsilon.h>
