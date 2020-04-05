@@ -41,7 +41,7 @@
 //*************************************************************************************************
 
 #include <utility>
-#include <blaze/math/DefaultTag.h>
+#include <blaze/math/GroupTag.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/typetraits/CommonType.h>
 #include <blaze/util/typetraits/IsNumeric.h>
@@ -181,15 +181,15 @@ struct AddTraitEval1
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Specialization of the AddTraitEval1 class template for two 'DefaultTag'.
+/*!\brief Specialization of the AddTraitEval1 class template for two 'GroupTag'.
 // \ingroup math_traits
 */
-template<>
-struct AddTraitEval1<DefaultTag,DefaultTag,void>
+template< size_t ID >
+struct AddTraitEval1<GroupTag<ID>,GroupTag<ID>,void>
 {
  public:
    //**********************************************************************************************
-   using Type = DefaultTag;
+   using Type = GroupTag<ID>;
    //**********************************************************************************************
 };
 /*! \endcond */

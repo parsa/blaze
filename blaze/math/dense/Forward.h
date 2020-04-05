@@ -41,7 +41,7 @@
 //*************************************************************************************************
 
 #include <blaze/math/AlignmentFlag.h>
-#include <blaze/math/DefaultTag.h>
+#include <blaze/math/GroupTag.h>
 #include <blaze/math/PaddingFlag.h>
 #include <blaze/system/Alignment.h>
 #include <blaze/system/Padding.h>
@@ -64,7 +64,7 @@ template< typename Type                            // Data type of the vector
         , bool TF = defaultTransposeFlag           // Transpose flag
         , AlignmentFlag AF = defaultAlignmentFlag  // Alignment flag
         , PaddingFlag PF = defaultPaddingFlag      // Padding flag
-        , typename Tag = DefaultTag >              // Type tag
+        , typename Tag = Group0 >                  // Type tag
 class StaticVector;
 
 template< typename Type                            // Data type of the matrix
@@ -73,7 +73,7 @@ template< typename Type                            // Data type of the matrix
         , bool SO = defaultStorageOrder            // Storage order
         , AlignmentFlag AF = defaultAlignmentFlag  // Alignment flag
         , PaddingFlag PF = defaultPaddingFlag      // Padding flag
-        , typename Tag = DefaultTag >              // Type tag
+        , typename Tag = Group0 >                  // Type tag
 class StaticMatrix;
 
 template< typename Type                            // Data type of the vector
@@ -81,7 +81,7 @@ template< typename Type                            // Data type of the vector
         , bool TF = defaultTransposeFlag           // Transpose flag
         , AlignmentFlag AF = defaultAlignmentFlag  // Alignment flag
         , PaddingFlag PF = defaultPaddingFlag      // Padding flag
-        , typename Tag = DefaultTag >              // Type tag
+        , typename Tag = Group0 >                  // Type tag
 class HybridVector;
 
 template< typename Type                            // Data type of the matrix
@@ -90,24 +90,24 @@ template< typename Type                            // Data type of the matrix
         , bool SO = defaultStorageOrder            // Storage order
         , AlignmentFlag AF = defaultAlignmentFlag  // Alignment flag
         , PaddingFlag PF = defaultPaddingFlag      // Padding flag
-        , typename Tag = DefaultTag >              // Type tag
+        , typename Tag = Group0 >                  // Type tag
 class HybridMatrix;
 
 template< typename Type                   // Data type of the vector
         , bool TF = defaultTransposeFlag  // Transpose flag
-        , typename Tag = DefaultTag >     // Type tag
+        , typename Tag = Group0 >         // Type tag
 class DynamicVector;
 
 template< typename Type                  // Data type of the matrix
         , bool SO = defaultStorageOrder  // Storage order
-        , typename Tag = DefaultTag >    // Type tag
+        , typename Tag = Group0 >        // Type tag
 class DynamicMatrix;
 
 template< typename Type                                              // Data type of the vector
         , AlignmentFlag AF                                           // Alignment flag
         , PaddingFlag PF                                             // Padding flag
         , bool TF = defaultTransposeFlag                             // Transpose flag
-        , typename Tag = DefaultTag                                  // Type tag
+        , typename Tag = Group0                                      // Type tag
         , typename RT = DynamicVector<RemoveConst_t<Type>,TF,Tag> >  // Result type
 class CustomVector;
 
@@ -115,27 +115,27 @@ template< typename Type                                          // Data type of
         , AlignmentFlag AF                                       // Alignment flag
         , PaddingFlag PF                                         // Padding flag
         , bool SO = defaultStorageOrder                          // Storage order
-        , typename Tag = DefaultTag                              // Type tag
+        , typename Tag = Group0                                  // Type tag
         , typename RT = DynamicMatrix<RemoveConst_t<Type>,SO> >  // Result type
 class CustomMatrix;
 
 template< typename Type                   // Data type of the vector
         , bool TF = defaultTransposeFlag  // Transpose flag
-        , typename Tag = DefaultTag >     // Type tag
+        , typename Tag = Group0 >         // Type tag
 class UniformVector;
 
 template< typename Type                  // Data type of the matrix
         , bool SO = defaultStorageOrder  // Storage order
-        , typename Tag = DefaultTag >    // Type tag
+        , typename Tag = Group0 >        // Type tag
 class UniformMatrix;
 
 template< typename Type                   // Data type of the vector
         , bool TF = defaultTransposeFlag  // Transpose flag
-        , typename Tag = DefaultTag >     // Type tag
+        , typename Tag = Group0 >         // Type tag
 class InitializerVector;
 
-template< typename Type                // Data type of the matrix
-        , typename Tag = DefaultTag >  // Type tag
+template< typename Type            // Data type of the matrix
+        , typename Tag = Group0 >  // Type tag
 class InitializerMatrix;
 
 } // namespace blaze

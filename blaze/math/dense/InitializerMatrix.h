@@ -87,7 +87,7 @@ namespace blaze {
 
 //  - Type: specifies the type of the matrix elements. InitializerMatrix can be used with any
 //          non-cv-qualified, non-reference, non-pointer element type.
-//  - Tag : optional type parameter to tag the vector. The default type is \a blaze::DefaultTag.
+//  - Tag : optional type parameter to tag the vector. The default type is \a blaze::Group0.
 //
 // On construction, an InitializerMatrix is immediately bound to an initializer list:
 

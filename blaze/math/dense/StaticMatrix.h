@@ -168,7 +168,7 @@ namespace blaze {
 //  - PF  : specifies whether every row/column of the matrix should be padded to maximize the
 //          efficiency of vectorized operations. Possible values are \a blaze::padded and
 //          \a blaze::unpadded. The default value is \a blaze::padded.
-//  - Tag : optional type parameter to tag the vector. The default type is \a blaze::DefaultTag.
+//  - Tag : optional type parameter to tag the vector. The default type is \a blaze::Group0.
 //
 // Depending on the storage order, the matrix elements are either stored in a row-wise fashion
 // or in a column-wise fashion. Given the 2x3 matrix

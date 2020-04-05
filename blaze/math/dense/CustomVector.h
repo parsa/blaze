@@ -143,7 +143,7 @@ namespace blaze {
 //          or \a blaze::unpadded).
 //  - TF  : specifies whether the vector is a row vector (\a blaze::rowVector) or a column
 //          vector (\a blaze::columnVector). The default value is \a blaze::columnVector.
-//  - Tag : optional type parameter to tag the vector. The default type is \a blaze::DefaultTag.
+//  - Tag : optional type parameter to tag the vector. The default type is \a blaze::Group0.
 //
 // The following examples give an impression of several possible types of custom vectors:
 

@@ -128,7 +128,7 @@ namespace blaze {
 //          non-cv-qualified, non-reference, non-pointer element type.
 //  - SO  : specifies the storage order (blaze::rowMajor, blaze::columnMajor) of the matrix.
 //          The default value is blaze::rowMajor.
-//  - Tag : optional type parameter to tag the vector. The default type is \a blaze::DefaultTag.
+//  - Tag : optional type parameter to tag the vector. The default type is \a blaze::Group0.
 //
 // Depending on the storage order, the matrix elements are either stored in a row-wise fashion
 // or in a column-wise fashion. Given the 2x3 matrix

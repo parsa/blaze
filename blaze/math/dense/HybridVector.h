@@ -159,7 +159,7 @@ namespace blaze {
 //  - PF  : specifies whether the vector should be padded to maximize the efficiency of vectorized
 //          operations. Possible values are \a blaze::padded and \a blaze::unpadded. The default
 //          value is \a blaze::padded.
-//  - Tag : optional type parameter to tag the vector. The default type is \a blaze::DefaultTag.
+//  - Tag : optional type parameter to tag the vector. The default type is \a blaze::Group0.
 //
 // These contiguously stored elements can be directly accessed with the subscript operator. The
 // numbering of the vector elements is

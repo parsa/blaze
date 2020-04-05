@@ -41,7 +41,7 @@
 //*************************************************************************************************
 
 #include <utility>
-#include <blaze/math/DefaultTag.h>
+#include <blaze/math/GroupTag.h>
 #include <blaze/util/typetraits/RemoveCVRef.h>
 
 
@@ -149,15 +149,15 @@ struct UnaryMapTraitEval1
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Specialization of the UnaryMapTraitEval1 class template for 'DefaultTag'.
+/*!\brief Specialization of the UnaryMapTraitEval1 class template for 'GroupTag'.
 // \ingroup math_traits
 */
-template< typename OP >  // Type of the custom operation
-struct UnaryMapTraitEval1<DefaultTag,OP,void>
+template< size_t ID, typename OP >
+struct UnaryMapTraitEval1<GroupTag<ID>,OP,void>
 {
  public:
    //**********************************************************************************************
-   using Type = DefaultTag;
+   using Type = GroupTag<ID>;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -230,15 +230,15 @@ struct BinaryMapTraitEval1
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Specialization of the UnaryMapTraitEval1 class template for two 'DefaultTag'.
+/*!\brief Specialization of the UnaryMapTraitEval1 class template for two 'GroupTag'.
 // \ingroup math_traits
 */
-template< typename OP >  // Type of the custom operation
-struct BinaryMapTraitEval1<DefaultTag,DefaultTag,OP,void>
+template< size_t ID, typename OP >
+struct BinaryMapTraitEval1<GroupTag<ID>,GroupTag<ID>,OP,void>
 {
  public:
    //**********************************************************************************************
-   using Type = DefaultTag;
+   using Type = GroupTag<ID>;
    //**********************************************************************************************
 };
 /*! \endcond */

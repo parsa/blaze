@@ -154,7 +154,7 @@ namespace blaze {
 //          or \a blaze::unpadded).
 //  - SO  : specifies the storage order (blaze::rowMajor, blaze::columnMajor) of the matrix.
 //          The default value is blaze::rowMajor.
-//  - Tag : optional type parameter to tag the vector. The default type is \a blaze::DefaultTag.
+//  - Tag : optional type parameter to tag the vector. The default type is \a blaze::Group0.
 //
 // The following examples give an impression of several possible types of custom matrices:
 

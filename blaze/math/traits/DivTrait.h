@@ -41,7 +41,7 @@
 //*************************************************************************************************
 
 #include <utility>
-#include <blaze/math/DefaultTag.h>
+#include <blaze/math/GroupTag.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/typetraits/CommonType.h>
 #include <blaze/util/typetraits/IsNumeric.h>
@@ -182,15 +182,15 @@ struct DivTraitEval1
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Specialization of the DivTraitEval1 class template for two 'DefaultTag'.
+/*!\brief Specialization of the DivTraitEval1 class template for two 'GroupTag'.
 // \ingroup math_traits
 */
-template<>
-struct DivTraitEval1<DefaultTag,DefaultTag,void>
+template< size_t ID >
+struct DivTraitEval1<GroupTag<ID>,GroupTag<ID>,void>
 {
  public:
    //**********************************************************************************************
-   using Type = DefaultTag;
+   using Type = GroupTag<ID>;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -199,15 +199,15 @@ struct DivTraitEval1<DefaultTag,DefaultTag,void>
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Specialization of the DivTraitEval1 class template for a 'DefaultTag' and a numeric type.
+/*!\brief Specialization of the DivTraitEval1 class template for a 'GroupTag' and a numeric type.
 // \ingroup math_traits
 */
-template< typename T2 >
-struct DivTraitEval1< DefaultTag, T2, EnableIf_t< IsNumeric_v<T2> > >
+template< size_t ID, typename T2 >
+struct DivTraitEval1< GroupTag<ID>, T2, EnableIf_t< IsNumeric_v<T2> > >
 {
  public:
    //**********************************************************************************************
-   using Type = DefaultTag;
+   using Type = GroupTag<ID>;
    //**********************************************************************************************
 };
 /*! \endcond */
