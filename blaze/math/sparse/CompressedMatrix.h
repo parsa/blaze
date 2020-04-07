@@ -45,6 +45,7 @@
 #include <vector>
 #include <blaze/math/Aliases.h>
 #include <blaze/math/constraints/RequiresEvaluation.h>
+#include <blaze/math/constraints/SameTag.h>
 #include <blaze/math/constraints/Symmetric.h>
 #include <blaze/math/Exception.h>
 #include <blaze/math/expressions/SparseMatrix.h>
@@ -780,6 +781,8 @@ inline CompressedMatrix<Type,SO,Tag>::CompressedMatrix( const DenseMatrix<MT,SO2
 {
    using blaze::assign;
 
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<MT> );
+
    assign( *this, ~dm );
 }
 //*************************************************************************************************
@@ -799,6 +802,8 @@ inline CompressedMatrix<Type,SO,Tag>::CompressedMatrix( const SparseMatrix<MT,SO
    : CompressedMatrix( (~sm).rows(), (~sm).columns(), (~sm).nonZeros() )
 {
    using blaze::assign;
+
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<MT> );
 
    assign( *this, ~sm );
 }
@@ -1281,6 +1286,8 @@ inline CompressedMatrix<Type,SO,Tag>&
 {
    using blaze::assign;
 
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<MT> );
+
    if( (~rhs).canAlias( this ) ) {
       CompressedMatrix tmp( ~rhs );
       swap( tmp );
@@ -1313,6 +1320,8 @@ inline CompressedMatrix<Type,SO,Tag>&
    CompressedMatrix<Type,SO,Tag>::operator=( const SparseMatrix<MT,SO2>& rhs )
 {
    using blaze::assign;
+
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<MT> );
 
    if( (~rhs).canAlias( this ) ||
        (~rhs).rows()     > capacity_ ||
@@ -1354,6 +1363,8 @@ inline CompressedMatrix<Type,SO,Tag>&
 {
    using blaze::addAssign;
 
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<MT> );
+
    if( (~rhs).rows() != m_ || (~rhs).columns() != n_ ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
@@ -1386,6 +1397,8 @@ inline CompressedMatrix<Type,SO,Tag>&
    CompressedMatrix<Type,SO,Tag>::operator-=( const Matrix<MT,SO2>& rhs )
 {
    using blaze::subAssign;
+
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<MT> );
 
    if( (~rhs).rows() != m_ || (~rhs).columns() != n_ ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
@@ -1420,6 +1433,8 @@ inline CompressedMatrix<Type,SO,Tag>&
    CompressedMatrix<Type,SO,Tag>::operator%=( const DenseMatrix<MT,SO2>& rhs )
 {
    using blaze::schurAssign;
+
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<MT> );
 
    if( (~rhs).rows() != m_ || (~rhs).columns() != n_ ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
@@ -1458,6 +1473,8 @@ template< typename MT     // Type of the right-hand side sparse matrix
 inline CompressedMatrix<Type,SO,Tag>&
    CompressedMatrix<Type,SO,Tag>::operator%=( const SparseMatrix<MT,SO2>& rhs )
 {
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<MT> );
+
    if( (~rhs).rows() != m_ || (~rhs).columns() != n_ ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
@@ -3650,6 +3667,8 @@ inline CompressedMatrix<Type,true,Tag>::CompressedMatrix( const DenseMatrix<MT,S
 {
    using blaze::assign;
 
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<MT> );
+
    assign( *this, ~dm );
 }
 /*! \endcond */
@@ -3670,6 +3689,8 @@ inline CompressedMatrix<Type,true,Tag>::CompressedMatrix( const SparseMatrix<MT,
    : CompressedMatrix( (~sm).rows(), (~sm).columns(), (~sm).nonZeros() )
 {
    using blaze::assign;
+
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<MT> );
 
    assign( *this, ~sm );
 }
@@ -4143,6 +4164,8 @@ inline CompressedMatrix<Type,true,Tag>&
 {
    using blaze::assign;
 
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<MT> );
+
    if( (~rhs).canAlias( this ) ) {
       CompressedMatrix tmp( ~rhs );
       swap( tmp );
@@ -4176,6 +4199,8 @@ inline CompressedMatrix<Type,true,Tag>&
    CompressedMatrix<Type,true,Tag>::operator=( const SparseMatrix<MT,SO>& rhs )
 {
    using blaze::assign;
+
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<MT> );
 
    if( (~rhs).canAlias( this ) ||
        (~rhs).columns()  > capacity_ ||
@@ -4218,6 +4243,8 @@ inline CompressedMatrix<Type,true,Tag>&
 {
    using blaze::addAssign;
 
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<MT> );
+
    if( (~rhs).rows() != m_ || (~rhs).columns() != n_ ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
@@ -4251,6 +4278,8 @@ inline CompressedMatrix<Type,true,Tag>&
    CompressedMatrix<Type,true,Tag>::operator-=( const Matrix<MT,SO>& rhs )
 {
    using blaze::subAssign;
+
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<MT> );
 
    if( (~rhs).rows() != m_ || (~rhs).columns() != n_ ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
@@ -4286,6 +4315,8 @@ inline CompressedMatrix<Type,true,Tag>&
    CompressedMatrix<Type,true,Tag>::operator%=( const DenseMatrix<MT,SO>& rhs )
 {
    using blaze::schurAssign;
+
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<MT> );
 
    if( (~rhs).rows() != m_ || (~rhs).columns() != n_ ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
@@ -4325,6 +4356,8 @@ template< typename MT     // Type of the right-hand side sparse matrix
 inline CompressedMatrix<Type,true,Tag>&
    CompressedMatrix<Type,true,Tag>::operator%=( const SparseMatrix<MT,SO>& rhs )
 {
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<MT> );
+
    if( (~rhs).rows() != m_ || (~rhs).columns() != n_ ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
