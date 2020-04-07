@@ -47,6 +47,7 @@
 #include <blaze/math/AlignmentFlag.h>
 #include <blaze/math/constraints/DenseVector.h>
 #include <blaze/math/constraints/RequiresEvaluation.h>
+#include <blaze/math/constraints/SameTag.h>
 #include <blaze/math/constraints/TransposeFlag.h>
 #include <blaze/math/dense/DenseIterator.h>
 #include <blaze/math/dense/Forward.h>
@@ -791,6 +792,8 @@ template< typename VT >   // Type of the foreign vector
 inline DynamicVector<Type,TF,Tag>::DynamicVector( const Vector<VT,TF>& v )
    : DynamicVector( (~v).size() )
 {
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<VT> );
+
    if( IsSparseVector_v<VT> ) {
       for( size_t i=0UL; i<size_; ++i ) {
          v_[i] = Type();
@@ -1253,6 +1256,8 @@ template< typename VT >   // Type of the right-hand side vector
 inline DynamicVector<Type,TF,Tag>&
    DynamicVector<Type,TF,Tag>::operator=( const Vector<VT,TF>& rhs )
 {
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<VT> );
+
    if( (~rhs).canAlias( this ) ) {
       DynamicVector tmp( ~rhs );
       swap( tmp );
@@ -1288,6 +1293,8 @@ template< typename VT >   // Type of the right-hand side vector
 inline DynamicVector<Type,TF,Tag>&
    DynamicVector<Type,TF,Tag>::operator+=( const Vector<VT,TF>& rhs )
 {
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<VT> );
+
    if( (~rhs).size() != size_ ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
@@ -1325,6 +1332,8 @@ template< typename VT >   // Type of the right-hand side vector
 inline DynamicVector<Type,TF,Tag>&
    DynamicVector<Type,TF,Tag>::operator-=( const Vector<VT,TF>& rhs )
 {
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<VT> );
+
    if( (~rhs).size() != size_ ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
@@ -1362,6 +1371,8 @@ template< typename VT >   // Type of the right-hand side vector
 inline DynamicVector<Type,TF,Tag>&
    DynamicVector<Type,TF,Tag>::operator*=( const Vector<VT,TF>& rhs )
 {
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<VT> );
+
    if( (~rhs).size() != size_ ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
@@ -1398,6 +1409,8 @@ template< typename VT >   // Type of the right-hand side vector
 inline DynamicVector<Type,TF,Tag>&
    DynamicVector<Type,TF,Tag>::operator/=( const DenseVector<VT,TF>& rhs )
 {
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<VT> );
+
    if( (~rhs).size() != size_ ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
@@ -1436,6 +1449,8 @@ inline DynamicVector<Type,TF,Tag>&
    DynamicVector<Type,TF,Tag>::operator%=( const Vector<VT,TF>& rhs )
 {
    using blaze::assign;
+
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<VT> );
 
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType_t<VT>, TF );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_t<VT> );
