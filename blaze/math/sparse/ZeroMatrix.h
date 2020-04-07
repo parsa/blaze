@@ -41,6 +41,7 @@
 //*************************************************************************************************
 
 #include <blaze/math/Aliases.h>
+#include <blaze/math/constraints/SameTag.h>
 #include <blaze/math/Exception.h>
 #include <blaze/math/expressions/Expression.h>
 #include <blaze/math/expressions/SparseMatrix.h>
@@ -413,12 +414,14 @@ constexpr ZeroMatrix<Type,SO,Tag>::ZeroMatrix( size_t m, size_t n ) noexcept
 template< typename Type   // Data type of the matrix
         , bool SO         // Storage order
         , typename Tag >  // Type tag
-template< typename MT    // Type of the foreign zero matrix
-        , bool SO2 >     // Storage order of the foreign zero matrix
+template< typename MT     // Type of the foreign zero matrix
+        , bool SO2 >      // Storage order of the foreign zero matrix
 inline ZeroMatrix<Type,SO,Tag>::ZeroMatrix( const Matrix<MT,SO2>& m )
    : m_( (~m).rows()    )  // The current number of rows of the zero matrix
    , n_( (~m).columns() )  // The current number of columns of the zero matrix
 {
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<MT> );
+
    if( !IsZero_v<MT> && !isZero( ~m ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid setup of zero matrix" );
    }
@@ -614,11 +617,13 @@ constexpr typename ZeroMatrix<Type,SO,Tag>::ConstIterator
 template< typename Type   // Data type of the matrix
         , bool SO         // Storage order
         , typename Tag >  // Type tag
-template< typename MT    // Type of the right-hand side zero matrix
-        , bool SO2 >     // Storage order of the right-hand side zero matrix
+template< typename MT     // Type of the right-hand side zero matrix
+        , bool SO2 >      // Storage order of the right-hand side zero matrix
 inline ZeroMatrix<Type,SO,Tag>&
    ZeroMatrix<Type,SO,Tag>::operator=( const Matrix<MT,SO2>& rhs )
 {
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<MT> );
+
    if( !IsZero_v<MT> && !isZero( ~rhs ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment of zero matrix" );
    }
