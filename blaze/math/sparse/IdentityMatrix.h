@@ -42,6 +42,7 @@
 
 #include <iterator>
 #include <blaze/math/Aliases.h>
+#include <blaze/math/constraints/SameTag.h>
 #include <blaze/math/Exception.h>
 #include <blaze/math/expressions/DenseMatrix.h>
 #include <blaze/math/expressions/DenseVector.h>
@@ -543,6 +544,8 @@ template< typename MT     // Type of the foreign identity matrix
 inline IdentityMatrix<Type,SO,Tag>::IdentityMatrix( const Matrix<MT,SO2>& m )
    : n_( (~m).rows() )  // The current number of rows and columns of the identity matrix
 {
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<MT> );
+
    if( !IsIdentity_v<MT> && !isIdentity( ~m ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid setup of identity matrix" );
    }
@@ -735,6 +738,8 @@ template< typename MT     // Type of the right-hand side identity matrix
 inline IdentityMatrix<Type,SO,Tag>&
    IdentityMatrix<Type,SO,Tag>::operator=( const Matrix<MT,SO2>& rhs )
 {
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<MT> );
+
    if( !IsIdentity_v<MT> && !isIdentity( ~rhs ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment of identity matrix" );
    }
