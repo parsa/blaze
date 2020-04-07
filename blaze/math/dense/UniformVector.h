@@ -43,6 +43,7 @@
 #include <algorithm>
 #include <blaze/math/Aliases.h>
 #include <blaze/math/AlignmentFlag.h>
+#include <blaze/math/constraints/SameTag.h>
 #include <blaze/math/dense/UniformIterator.h>
 #include <blaze/math/dense/Forward.h>
 #include <blaze/math/Exception.h>
@@ -425,6 +426,8 @@ inline UniformVector<Type,TF,Tag>::UniformVector( const Vector<VT,TF>& v )
    : size_ ( (~v).size() )  // The current size/dimension of the uniform vector
    , value_()               // The value of all elements of the uniform vector
 {
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<VT> );
+
    if( !IsUniform_v<VT> && !isUniform( ~v ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid setup of uniform vector" );
    }
@@ -619,6 +622,8 @@ template< typename VT >   // Type of the right-hand side vector
 inline UniformVector<Type,TF,Tag>&
    UniformVector<Type,TF,Tag>::operator=( const Vector<VT,TF>& rhs )
 {
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<VT> );
+
    if( !IsUniform_v<VT> && !isUniform( ~rhs ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment of uniform vector" );
    }
@@ -652,6 +657,8 @@ template< typename VT >   // Type of the right-hand side vector
 inline UniformVector<Type,TF,Tag>&
    UniformVector<Type,TF,Tag>::operator+=( const Vector<VT,TF>& rhs )
 {
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<VT> );
+
    if( (~rhs).size() != size_ ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
@@ -687,6 +694,8 @@ template< typename VT >   // Type of the right-hand side vector
 inline UniformVector<Type,TF,Tag>&
    UniformVector<Type,TF,Tag>::operator-=( const Vector<VT,TF>& rhs )
 {
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<VT> );
+
    if( (~rhs).size() != size_ ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
@@ -723,6 +732,8 @@ template< typename VT >   // Type of the right-hand side vector
 inline UniformVector<Type,TF,Tag>&
    UniformVector<Type,TF,Tag>::operator*=( const Vector<VT,TF>& rhs )
 {
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<VT> );
+
    if( (~rhs).size() != size_ ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
@@ -758,6 +769,8 @@ template< typename VT >   // Type of the right-hand side vector
 inline UniformVector<Type,TF,Tag>&
    UniformVector<Type,TF,Tag>::operator/=( const DenseVector<VT,TF>& rhs )
 {
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<VT> );
+
    if( (~rhs).size() != size_ ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
