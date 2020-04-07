@@ -45,6 +45,7 @@
 #include <blaze/math/Aliases.h>
 #include <blaze/math/AlignmentFlag.h>
 #include <blaze/math/constraints/Diagonal.h>
+#include <blaze/math/constraints/SameTag.h>
 #include <blaze/math/constraints/Symmetric.h>
 #include <blaze/math/dense/DenseIterator.h>
 #include <blaze/math/dense/Forward.h>
@@ -973,6 +974,8 @@ inline StaticMatrix<Type,M,N,SO,AF,PF,Tag>::StaticMatrix( const Matrix<MT,SO2>& 
 {
    using blaze::assign;
 
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<MT> );
+
    if( (~m).rows() != M || (~m).columns() != N ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid setup of static matrix" );
    }
@@ -1655,6 +1658,8 @@ inline StaticMatrix<Type,M,N,SO,AF,PF,Tag>&
    using CT = decltype( ctrans( *this ) );
    using IT = decltype( inv( *this ) );
 
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<MT> );
+
    if( (~rhs).rows() != M || (~rhs).columns() != N ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to static matrix" );
    }
@@ -1706,6 +1711,8 @@ inline StaticMatrix<Type,M,N,SO,AF,PF,Tag>&
 {
    using blaze::addAssign;
 
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<MT> );
+
    if( (~rhs).rows() != M || (~rhs).columns() != N ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
@@ -1749,6 +1756,8 @@ inline StaticMatrix<Type,M,N,SO,AF,PF,Tag>&
 {
    using blaze::subAssign;
 
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<MT> );
+
    if( (~rhs).rows() != M || (~rhs).columns() != N ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
@@ -1791,6 +1800,8 @@ inline StaticMatrix<Type,M,N,SO,AF,PF,Tag>&
    StaticMatrix<Type,M,N,SO,AF,PF,Tag>::operator%=( const Matrix<MT,SO2>& rhs )
 {
    using blaze::schurAssign;
+
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<MT> );
 
    if( (~rhs).rows() != M || (~rhs).columns() != N ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
@@ -4230,6 +4241,8 @@ inline StaticMatrix<Type,M,N,true,AF,PF,Tag>::StaticMatrix( const Matrix<MT,SO>&
 {
    using blaze::assign;
 
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<MT> );
+
    if( (~m).rows() != M || (~m).columns() != N ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid setup of static matrix" );
    }
@@ -4898,6 +4911,8 @@ inline StaticMatrix<Type,M,N,true,AF,PF,Tag>&
    using CT = decltype( ctrans( *this ) );
    using IT = decltype( inv( *this ) );
 
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<MT> );
+
    if( (~rhs).rows() != M || (~rhs).columns() != N ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to static matrix" );
    }
@@ -4950,6 +4965,8 @@ inline StaticMatrix<Type,M,N,true,AF,PF,Tag>&
 {
    using blaze::addAssign;
 
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<MT> );
+
    if( (~rhs).rows() != M || (~rhs).columns() != N ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
@@ -4994,6 +5011,8 @@ inline StaticMatrix<Type,M,N,true,AF,PF,Tag>&
 {
    using blaze::subAssign;
 
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<MT> );
+
    if( (~rhs).rows() != M || (~rhs).columns() != N ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
@@ -5037,6 +5056,8 @@ inline StaticMatrix<Type,M,N,true,AF,PF,Tag>&
    StaticMatrix<Type,M,N,true,AF,PF,Tag>::operator%=( const Matrix<MT,SO>& rhs )
 {
    using blaze::schurAssign;
+
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<MT> );
 
    if( (~rhs).rows() != M || (~rhs).columns() != N ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
