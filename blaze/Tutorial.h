@@ -208,6 +208,7 @@
 //                <li> \ref custom_data_types </li>
 //             </ul>
 //          </li>
+//          <li> \ref grouping_tagging </li>
 //          <li> \ref error_reporting_customization </li>
 //       </ul>
 //    </li>
@@ -14924,6 +14925,7 @@
 //
 //  - \ref configuration_files
 //  - \ref vector_and_matrix_customization
+//  - \ref grouping_tagging
 //  - \ref error_reporting_customization
 //
 // \n Previous: \ref matrix_serialization &nbsp; &nbsp; Next: \ref configuration_files
@@ -15732,7 +15734,145 @@
 // cannot achieve maximum performance!
 //
 //
-// \n Previous: \ref configuration_files &nbsp; &nbsp; Next: \ref custom_operations \n
+// \n Previous: \ref configuration_files &nbsp; &nbsp; Next: \ref grouping_tagging \n
+*/
+//*************************************************************************************************
+
+
+//**Grouping/Tagging*******************************************************************************
+/*!\page grouping_tagging Grouping/Tagging
+//
+// \tableofcontents
+//
+//
+// \n \section grouping_tagging_tagging_and_groups Tagging and Groups
+// <hr>
+//
+// Sometimes it may be desirable to separate two or more distinct groups of vectors and matrices,
+// for instance in order to allow operations only within a group and to prevent operations across
+// groups. This goal can be achieved by means of tags. All vector and matrix classes provide a
+// template parameter to specify a tag (for instance, the third template parameter for
+// blaze::DynamicVector and the sixth template parameter for blaze::StaticVector):
+
+   \code
+   template< typename Type, bool TF, typename Tag >
+   class DynamicVector;
+
+   template< typename Type, size_t N, bool TF, AlignmentFlag AF, PaddingFlag PF, typename Tag >
+   class StaticVector;
+   \endcode
+
+// By default, all vectors and matrices are associated with blaze::Group0 (i.e. the tag is set
+// to blaze::Group0). However, it is possible to explicitly associate vectors and matrices with
+// different groups:
+
+   \code
+   using blaze::DynamicVector;
+   using blaze::Group0;
+   using blaze::Group1;
+   using blaze::columnVector;
+
+   DynamicVector<int,columnVector,Group0> a0, b0;
+   DynamicVector<int,columnVector,Group1> a1, b1;
+
+   a0 + b0;  // Compiles, a0 and b0 are in the same group (Group0)
+   a1 + b1;  // Compiles, a1 and b1 are in the same group (Group1)
+   a0 + b1;  // Compilation error: a0 and b1 are not in the same group
+   \endcode
+
+// All vectors or matrices that are associated with the same group can be freely combined with any
+// other vector or matrix from the same group. The attempt to combine vectors and matrices from
+// different groups results in a compilation error.
+//
+//
+// \n \section grouping_tagging_creating_new_groups Creating New Groups
+// <hr>
+//
+// \b Blaze provides the tags for the ten predefined groups blaze::Group0 through blaze::Group9.
+// In order to create further groups, all that needs to be done is to create new instances of the
+// blaze::GroupTag class template:
+
+   \code
+   using Group10 = blaze::GroupTag<10>;
+   using Group11 = blaze::GroupTag<11>;
+   // ... further groups
+   \endcode
+
+// All groups based on the blaze::GroupTag class template will be treated as separate groups just
+// as the ten predefined groups.
+//
+//
+// \n \section grouping_tagging_custom_tags Custom Tags
+// <hr>
+//
+// Sometimes it is not enough to separate vectors and matrices into different groups, but it is
+// required to define the interaction between different groups. This situation for instance occurs
+// if a vector or matrix is associated with a physical quantity. This problem can be solved by
+// using custom tags. The following example gives an impression on how to define the physics on
+// meters (represented by the \c Meter tag) and seconds (represented by the \c Second tag):
+
+   \code
+   struct Meter {};           // Definition of the 'Meter' tag
+   struct Second {};          // Definition of the 'Second' tag
+   struct SquareMeter {};     // Definition of the 'SquareMeter' tag
+   struct MeterPerSecond {};  // Definition of the 'MeterPerSecond' tag
+   \endcode
+
+// The \c Meter and \c Second tags are not associated with the blaze::GroupTag class template. For
+// that reason, by default, it is not possible to perform any operation on an accordingly tagged
+// vector or matrix. All required operations need to be declared explicitly in order to specify
+// the resulting tag of an operation. In the following code example, this happens by declaring
+// both the addition for the \c Meter tag and the \c Second tag, the multiplication between two
+// \c Meter tags and the division between \c Meter and \c Second. Note that it is enough to
+// declare the operations, it is not necessary to define them!
+
+   \code
+   Meter          operator+( Meter , Meter  );  // Enabling addition between 'Meter'
+   Second         operator+( Second, Second );  // Enabling addition between 'Second'
+   SquareMeter    operator*( Meter , Meter  );  // Enabling multiplication between 'Meter'
+   MeterPerSecond operator/( Meter , Second );  // Enabling division between 'Meter' and 'Second'
+   \endcode
+
+// With these declarations it is now possible to add meters and seconds, but not to subtract them
+// (no subtraction operator was declared). Also, it is possible to multiply meters and to divide
+// meters and seconds:
+
+   \code
+   const DynamicVector<int,rowVector,Meter> m1{ 1, 2, 3 };
+   const DynamicVector<int,rowVector,Meter> m2{ 4, 5, 6 };
+
+   const DynamicVector<int,rowVector,Second> s1{ 1, 2, 3 };
+   const DynamicVector<int,rowVector,Second> s2{ 4, 5, 6 };
+
+   m1 + m2;  // Compiles and results in vector tagged with 'Meter'
+   s1 + s2;  // Compiles and results in vector tagged with 'Second'
+
+   m1 - m2;  // Compilation error: No subtraction defined for 'Meter'!
+   m1 + s2;  // Compilation error: No addition between 'Meter' and 'Second' defined!
+
+   m1 * m2;  // Compiles and results in vector tagged with 'SquareMeter'
+   m1 / s1;  // Compiles and results in vector tagged with 'MeterPerSecond'
+   \endcode
+
+// At this point it is possible to use the \c pow2() function for vectors and matrices tagged with
+// \c Meter since \c pow2() is based on multiplication, which has already been declared. However,
+// it is not possible to use the \c abs() function:
+
+   \code
+   pow2( m1 );  // Compiles and results in vector tagged with 'SquareMeter'
+   abs ( m1 );  // Compilation error: No 'abs()' declared for the 'Meter' tag
+   \endcode
+
+// In order to enable the \c abs() function it also needs to be explicitly declared for the
+// \c Meter tag:
+
+   \code
+   Meter abs( Meter );  // Enabling the 'abs()' function on 'Meter'
+
+   abs ( m1 );  // Compiles and results in vector tagged with 'Meter'
+   \endcode
+
+// \n Previous: \ref vector_and_matrix_customization &nbsp; &nbsp; Next: \ref error_reporting_customization \n
 */
 //*************************************************************************************************
 
@@ -15870,7 +16010,7 @@
 // override the \b Blaze default behavior.
 //
 //
-// \n Previous: \ref vector_and_matrix_customization &nbsp; &nbsp; Next: \ref blas_functions \n
+// \n Previous: \ref grouping_tagging &nbsp; &nbsp; Next: \ref blas_functions \n
 */
 //*************************************************************************************************
 
