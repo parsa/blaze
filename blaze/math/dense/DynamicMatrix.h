@@ -46,6 +46,7 @@
 #include <blaze/math/Aliases.h>
 #include <blaze/math/AlignmentFlag.h>
 #include <blaze/math/constraints/Diagonal.h>
+#include <blaze/math/constraints/SameTag.h>
 #include <blaze/math/constraints/Symmetric.h>
 #include <blaze/math/dense/DenseIterator.h>
 #include <blaze/math/dense/Forward.h>
@@ -882,6 +883,8 @@ template< typename MT     // Type of the foreign matrix
 inline DynamicMatrix<Type,SO,Tag>::DynamicMatrix( const Matrix<MT,SO2>& m )
    : DynamicMatrix( (~m).rows(), (~m).columns() )
 {
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<MT> );
+
    if( IsSparseMatrix_v<MT> ) {
       reset();
    }
@@ -1481,6 +1484,8 @@ inline DynamicMatrix<Type,SO,Tag>&
    using CT = decltype( ctrans( *this ) );
    using IT = decltype( inv( *this ) );
 
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<MT> );
+
    if( IsSame_v<MT,TT> && (~rhs).isAliased( this ) ) {
       transpose();
    }
@@ -1523,6 +1528,8 @@ template< typename MT     // Type of the right-hand side matrix
 inline DynamicMatrix<Type,SO,Tag>&
    DynamicMatrix<Type,SO,Tag>::operator+=( const Matrix<MT,SO2>& rhs )
 {
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<MT> );
+
    if( (~rhs).rows() != m_ || (~rhs).columns() != n_ ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
@@ -1560,6 +1567,8 @@ template< typename MT     // Type of the right-hand side matrix
 inline DynamicMatrix<Type,SO,Tag>&
    DynamicMatrix<Type,SO,Tag>::operator-=( const Matrix<MT,SO2>& rhs )
 {
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<MT> );
+
    if( (~rhs).rows() != m_ || (~rhs).columns() != n_ ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
@@ -1597,6 +1606,8 @@ template< typename MT     // Type of the right-hand side matrix
 inline DynamicMatrix<Type,SO,Tag>&
    DynamicMatrix<Type,SO,Tag>::operator%=( const Matrix<MT,SO2>& rhs )
 {
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<MT> );
+
    if( (~rhs).rows() != m_ || (~rhs).columns() != n_ ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
@@ -4032,6 +4043,8 @@ template< typename MT     // Type of the foreign matrix
 inline DynamicMatrix<Type,true,Tag>::DynamicMatrix( const Matrix<MT,SO>& m )
    : DynamicMatrix( (~m).rows(), (~m).columns() )
 {
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<MT> );
+
    if( IsSparseMatrix_v<MT> ) {
       reset();
    }
@@ -4628,6 +4641,8 @@ inline DynamicMatrix<Type,true,Tag>&
    using CT = decltype( ctrans( *this ) );
    using IT = decltype( inv( *this ) );
 
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<MT> );
+
    if( IsSame_v<MT,TT> && (~rhs).isAliased( this ) ) {
       transpose();
    }
@@ -4671,6 +4686,8 @@ template< typename MT     // Type of the right-hand side matrix
 inline DynamicMatrix<Type,true,Tag>&
    DynamicMatrix<Type,true,Tag>::operator+=( const Matrix<MT,SO>& rhs )
 {
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<MT> );
+
    if( (~rhs).rows() != m_ || (~rhs).columns() != n_ ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
@@ -4709,6 +4726,8 @@ template< typename MT     // Type of the right-hand side matrix
 inline DynamicMatrix<Type,true,Tag>&
    DynamicMatrix<Type,true,Tag>::operator-=( const Matrix<MT,SO>& rhs )
 {
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<MT> );
+
    if( (~rhs).rows() != m_ || (~rhs).columns() != n_ ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
@@ -4747,6 +4766,8 @@ template< typename MT     // Type of the right-hand side matrix
 inline DynamicMatrix<Type,true,Tag>&
    DynamicMatrix<Type,true,Tag>::operator%=( const Matrix<MT,SO>& rhs )
 {
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<MT> );
+
    if( (~rhs).rows() != m_ || (~rhs).columns() != n_ ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
