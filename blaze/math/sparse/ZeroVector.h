@@ -41,6 +41,7 @@
 //*************************************************************************************************
 
 #include <blaze/math/Aliases.h>
+#include <blaze/math/constraints/SameTag.h>
 #include <blaze/math/Exception.h>
 #include <blaze/math/expressions/Expression.h>
 #include <blaze/math/expressions/SparseVector.h>
@@ -385,6 +386,8 @@ template< typename VT >   // Type of the foreign zero vector
 inline ZeroVector<Type,TF,Tag>::ZeroVector( const Vector<VT,TF>& v )
    : size_( (~v).size() )  // The current size/dimension of the zero vector
 {
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<VT> );
+
    if( !IsZero_v<VT> && !isZero( ~v ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid setup of zero vector" );
    }
@@ -535,6 +538,8 @@ template< typename VT >   // Type of the right-hand side dense vector
 inline ZeroVector<Type,TF,Tag>&
    ZeroVector<Type,TF,Tag>::operator=( const Vector<VT,TF>& rhs )
 {
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<VT> );
+
    if( !IsZero_v<VT> && !isZero( ~rhs ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment of zero vector" );
    }
