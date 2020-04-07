@@ -47,6 +47,7 @@
 #include <blaze/math/AlignmentFlag.h>
 #include <blaze/math/constraints/DenseVector.h>
 #include <blaze/math/constraints/RequiresEvaluation.h>
+#include <blaze/math/constraints/SameTag.h>
 #include <blaze/math/constraints/TransposeFlag.h>
 #include <blaze/math/dense/DenseIterator.h>
 #include <blaze/math/dense/Forward.h>
@@ -879,6 +880,8 @@ inline StaticVector<Type,N,TF,AF,PF,Tag>::StaticVector( const Vector<VT,TF>& v )
 {
    using blaze::assign;
 
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<VT> );
+
    if( (~v).size() != N ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid setup of static vector" );
    }
@@ -1394,6 +1397,8 @@ inline StaticVector<Type,N,TF,AF,PF,Tag>&
 {
    using blaze::assign;
 
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<VT> );
+
    if( (~rhs).size() != N ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to static vector" );
    }
@@ -1437,6 +1442,8 @@ inline StaticVector<Type,N,TF,AF,PF,Tag>&
 {
    using blaze::addAssign;
 
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<VT> );
+
    if( (~rhs).size() != N ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
@@ -1477,6 +1484,8 @@ inline StaticVector<Type,N,TF,AF,PF,Tag>&
    StaticVector<Type,N,TF,AF,PF,Tag>::operator-=( const Vector<VT,TF>& rhs )
 {
    using blaze::subAssign;
+
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<VT> );
 
    if( (~rhs).size() != N ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
@@ -1521,6 +1530,8 @@ inline StaticVector<Type,N,TF,AF,PF,Tag>&
    using blaze::assign;
    using blaze::multAssign;
 
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<VT> );
+
    if( (~rhs).size() != N ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
@@ -1563,6 +1574,8 @@ inline StaticVector<Type,N,TF,AF,PF,Tag>&
    using blaze::assign;
    using blaze::divAssign;
 
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<VT> );
+
    if( (~rhs).size() != N ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
@@ -1604,6 +1617,8 @@ inline StaticVector<Type,N,TF,AF,PF,Tag>&
    StaticVector<Type,N,TF,AF,PF,Tag>::operator%=( const Vector<VT,TF>& rhs )
 {
    using blaze::assign;
+
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<VT> );
 
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType_t<VT>, TF );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_t<VT> );
