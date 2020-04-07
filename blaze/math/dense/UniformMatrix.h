@@ -43,6 +43,7 @@
 #include <utility>
 #include <blaze/math/Aliases.h>
 #include <blaze/math/AlignmentFlag.h>
+#include <blaze/math/constraints/SameTag.h>
 #include <blaze/math/dense/UniformIterator.h>
 #include <blaze/math/dense/Forward.h>
 #include <blaze/math/Exception.h>
@@ -734,6 +735,8 @@ inline UniformMatrix<Type,SO,Tag>&
    using TT = decltype( trans( *this ) );
    using CT = decltype( ctrans( *this ) );
 
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<MT> );
+
    if( !IsUniform_v<MT> && !isUniform( ~rhs ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment of uniform matrix" );
    }
@@ -776,6 +779,8 @@ template< typename MT     // Type of the right-hand side matrix
 inline UniformMatrix<Type,SO,Tag>&
    UniformMatrix<Type,SO,Tag>::operator+=( const Matrix<MT,SO2>& rhs )
 {
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<MT> );
+
    if( (~rhs).rows() != m_ || (~rhs).columns() != n_ ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
@@ -811,6 +816,8 @@ template< typename MT     // Type of the right-hand side matrix
 inline UniformMatrix<Type,SO,Tag>&
    UniformMatrix<Type,SO,Tag>::operator-=( const Matrix<MT,SO2>& rhs )
 {
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<MT> );
+
    if( (~rhs).rows() != m_ || (~rhs).columns() != n_ ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
@@ -846,6 +853,8 @@ template< typename MT     // Type of the right-hand side matrix
 inline UniformMatrix<Type,SO,Tag>&
    UniformMatrix<Type,SO,Tag>::operator%=( const Matrix<MT,SO2>& rhs )
 {
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<MT> );
+
    if( (~rhs).rows() != m_ || (~rhs).columns() != n_ ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
@@ -881,6 +890,8 @@ template< typename MT     // Type of the right-hand side matrix
 inline UniformMatrix<Type,SO,Tag>&
    UniformMatrix<Type,SO,Tag>::operator*=( const Matrix<MT,SO2>& rhs )
 {
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<MT> );
+
    if( (~rhs).rows() != n_ ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
