@@ -49,6 +49,7 @@
 #include <blaze/math/constraints/DenseMatrix.h>
 #include <blaze/math/constraints/Diagonal.h>
 #include <blaze/math/constraints/RowMajorMatrix.h>
+#include <blaze/math/constraints/SameTag.h>
 #include <blaze/math/constraints/Symmetric.h>
 #include <blaze/math/dense/DenseIterator.h>
 #include <blaze/math/dense/Forward.h>
@@ -137,7 +138,7 @@ namespace blaze {
 // construction. A custom matrix can therefore be considered an alias to the existing array.
 //
 // The type of the elements, the properties of the given array of elements and the storage order
-// of the matrix can be specified via the following four template parameters:
+// of the matrix can be specified via the following five template parameters:
 
    \code
    template< typename Type, AlignmentFlag AF, PaddingFlag PF, bool SO, typename Tag >
@@ -154,7 +155,8 @@ namespace blaze {
 //          or \a blaze::unpadded).
 //  - SO  : specifies the storage order (blaze::rowMajor, blaze::columnMajor) of the matrix.
 //          The default value is blaze::rowMajor.
-//  - Tag : optional type parameter to tag the vector. The default type is \a blaze::Group0.
+//  - Tag : optional type parameter to tag the matrix. The default type is \a blaze::Group0.
+//          See \ref grouping_tagging for details.
 //
 // The following examples give an impression of several possible types of custom matrices:
 
@@ -1583,6 +1585,8 @@ inline CustomMatrix<Type,AF,PF,SO,Tag,RT>&
    using CT = decltype( ctrans( *this ) );
    using IT = decltype( inv( *this ) );
 
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<MT> );
+
    if( (~rhs).rows() != m_ || (~rhs).columns() != n_ ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
@@ -1629,6 +1633,8 @@ template< typename MT    // Type of the right-hand side matrix
 inline CustomMatrix<Type,AF,PF,SO,Tag,RT>&
    CustomMatrix<Type,AF,PF,SO,Tag,RT>::operator+=( const Matrix<MT,SO2>& rhs )
 {
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<MT> );
+
    if( (~rhs).rows() != m_ || (~rhs).columns() != n_ ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
@@ -1667,6 +1673,8 @@ template< typename MT    // Type of the right-hand side matrix
 inline CustomMatrix<Type,AF,PF,SO,Tag,RT>&
    CustomMatrix<Type,AF,PF,SO,Tag,RT>::operator-=( const Matrix<MT,SO2>& rhs )
 {
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<MT> );
+
    if( (~rhs).rows() != m_ || (~rhs).columns() != n_ ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
@@ -1705,6 +1713,8 @@ template< typename MT    // Type of the right-hand side matrix
 inline CustomMatrix<Type,AF,PF,SO,Tag,RT>&
    CustomMatrix<Type,AF,PF,SO,Tag,RT>::operator%=( const Matrix<MT,SO2>& rhs )
 {
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<MT> );
+
    if( (~rhs).rows() != m_ || (~rhs).columns() != n_ ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
@@ -4617,6 +4627,8 @@ inline CustomMatrix<Type,AF,PF,true,Tag,RT>&
    using CT = decltype( ctrans( *this ) );
    using IT = decltype( inv( *this ) );
 
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<MT> );
+
    if( (~rhs).rows() != m_ || (~rhs).columns() != n_ ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
@@ -4664,6 +4676,8 @@ template< typename MT    // Type of the right-hand side matrix
 inline CustomMatrix<Type,AF,PF,true,Tag,RT>&
    CustomMatrix<Type,AF,PF,true,Tag,RT>::operator+=( const Matrix<MT,SO>& rhs )
 {
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<MT> );
+
    if( (~rhs).rows() != m_ || (~rhs).columns() != n_ ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
@@ -4703,6 +4717,8 @@ template< typename MT    // Type of the right-hand side matrix
 inline CustomMatrix<Type,AF,PF,true,Tag,RT>&
    CustomMatrix<Type,AF,PF,true,Tag,RT>::operator-=( const Matrix<MT,SO>& rhs )
 {
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<MT> );
+
    if( (~rhs).rows() != m_ || (~rhs).columns() != n_ ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
@@ -4742,6 +4758,8 @@ template< typename MT    // Type of the right-hand side matrix
 inline CustomMatrix<Type,AF,PF,true,Tag,RT>&
    CustomMatrix<Type,AF,PF,true,Tag,RT>::operator%=( const Matrix<MT,SO>& rhs )
 {
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<MT> );
+
    if( (~rhs).rows() != m_ || (~rhs).columns() != n_ ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }

@@ -141,7 +141,7 @@ namespace blaze {
 // vector it uses static stack memory instead of dynamically allocated memory and similar to the
 // dynamic vector it can be resized (within the extend of the static memory). The type of the
 // elements, the maximum number of elements, the transpose flag, the alignment, and the padding
-// of the vector can be specified via the five template parameters:
+// of the vector can be specified via the six template parameters:
 
    \code
    template< typename Type, size_t N, bool TF, AlignmentFlag AF, PaddingFlag PF, typename Tag >
@@ -161,6 +161,7 @@ namespace blaze {
 //          operations. Possible values are \a blaze::padded and \a blaze::unpadded. The default
 //          value is \a blaze::padded.
 //  - Tag : optional type parameter to tag the vector. The default type is \a blaze::Group0.
+//          See \ref grouping_tagging for details.
 //
 // These contiguously stored elements can be directly accessed with the subscript operator. The
 // numbering of the vector elements is

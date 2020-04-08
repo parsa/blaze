@@ -118,7 +118,7 @@ namespace blaze {
 //
 // The UniformMatrix class template is the representation of an arbitrary sized uniform matrix
 // with elements of arbitrary type. The type of the elements and the storage order of the matrix
-// can be specified via the two template parameters:
+// can be specified via the three template parameters:
 
    \code
    template< typename Type, bool SO, typename Tag >
@@ -129,7 +129,8 @@ namespace blaze {
 //          non-cv-qualified, non-reference, non-pointer element type.
 //  - SO  : specifies the storage order (blaze::rowMajor, blaze::columnMajor) of the matrix.
 //          The default value is blaze::rowMajor.
-//  - Tag : optional type parameter to tag the vector. The default type is \a blaze::Group0.
+//  - Tag : optional type parameter to tag the matrix. The default type is \a blaze::Group0.
+//          See \ref grouping_tagging for details.
 //
 // Depending on the storage order, the matrix elements are either stored in a row-wise fashion
 // or in a column-wise fashion. Given the 2x3 matrix

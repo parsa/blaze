@@ -79,7 +79,7 @@ namespace blaze {
 //
 // The InitializerVector class template is a dense vector representation of an (extended)
 // initializer list of arbitrary type. The type of the elements and the transpose flag of the
-// vector can be specified via the two template parameters:
+// vector can be specified via the three template parameters:
 
    \code
    template< typename Type, bool TF, typename Tag >
@@ -91,6 +91,7 @@ namespace blaze {
 //  - TF  : specifies whether the vector is a row vector (\a blaze::rowVector) or a column
 //          vector (\a blaze::columnVector). The default value is \a blaze::columnVector.
 //  - Tag : optional type parameter to tag the vector. The default type is \a blaze::Group0.
+//          See \ref grouping_tagging for details.
 //
 // On construction, an InitializerVector is immediately bound to an initializer list:
 

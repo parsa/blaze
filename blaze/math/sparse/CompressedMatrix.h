@@ -124,7 +124,7 @@ namespace blaze {
 //
 // The CompressedMatrix class template is the representation of an arbitrary sized sparse
 // matrix with \f$ M \cdot N \f$ dynamically allocated elements of arbitrary type. The type
-// of the elements and the storage order of the matrix can be specified via the two template
+// of the elements and the storage order of the matrix can be specified via the three template
 // parameters:
 
    \code
@@ -136,7 +136,8 @@ namespace blaze {
 //          any non-cv-qualified, non-reference, non-pointer element type.
 //  - SO  : specifies the storage order (blaze::rowMajor, blaze::columnMajor) of the matrix.
 //          The default value is blaze::rowMajor.
-//  - Tag : optional type parameter to tag the vector. The default type is \a blaze::Group0.
+//  - Tag : optional type parameter to tag the matrix. The default type is \a blaze::Group0.
+//          See \ref grouping_tagging for details.
 //
 // Inserting/accessing elements in a compressed matrix can be done by several alternative
 // functions. The following example demonstrates all options:

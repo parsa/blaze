@@ -118,7 +118,7 @@ namespace blaze {
 //
 // The IdentityMatrix class template is the representation of an immutable, arbitrary sized
 // identity matrix with \f$ N \cdot N \f$ elements of arbitrary type. The type of the elements
-// and the storage order of the matrix can be specified via the two template parameters:
+// and the storage order of the matrix can be specified via the three template parameters:
 
    \code
    template< typename Type, bool SO, typename Tag >
@@ -129,7 +129,8 @@ namespace blaze {
 //          non-cv-qualified, non-reference, non-pointer element type.
 //  - SO  : specifies the storage order (blaze::rowMajor, blaze::columnMajor) of the matrix.
 //          The default value is blaze::rowMajor.
-//  - Tag : optional type parameter to tag the vector. The default type is \a blaze::Group0.
+//  - Tag : optional type parameter to tag the matrix. The default type is \a blaze::Group0.
+//          See \ref grouping_tagging for details.
 //
 // It is not possible to insert, erase or modify the elements of an identity matrix. It is only
 // possible to read from the elements:

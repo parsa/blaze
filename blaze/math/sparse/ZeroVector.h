@@ -106,7 +106,7 @@ namespace blaze {
 //
 // The ZeroVector class template is the representation of an immutable, arbitrary sized zero
 // vector with N elements of arbitrary type. The type of the elements and the transpose flag
-// of the vector can be specified via the two template parameters:
+// of the vector can be specified via the three template parameters:
 
    \code
    template< typename Type, bool TF, typename Tag >
@@ -118,6 +118,7 @@ namespace blaze {
 //  - TF  : specifies whether the vector is a row vector (\a blaze::rowVector) or a column
 //          vector (\a blaze::columnVector). The default value is \a blaze::columnVector.
 //  - Tag : optional type parameter to tag the vector. The default type is \a blaze::Group0.
+//          See \ref grouping_tagging for details.
 //
 // It is not possible to insert, erase or modify the elements of a zero vector. It is only
 // possible to read from the elements:

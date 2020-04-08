@@ -126,7 +126,7 @@ namespace blaze {
 // construction. A custom vector can therefore be considered an alias to the existing array.
 //
 // The type of the elements, the properties of the given array of elements and the transpose
-// flag of the vector can be specified via the following four template parameters:
+// flag of the vector can be specified via the following five template parameters:
 
    \code
    template< typename Type, AlignmentFlag AF, PaddingFlag PF, bool TF, typename Tag >
@@ -144,6 +144,7 @@ namespace blaze {
 //  - TF  : specifies whether the vector is a row vector (\a blaze::rowVector) or a column
 //          vector (\a blaze::columnVector). The default value is \a blaze::columnVector.
 //  - Tag : optional type parameter to tag the vector. The default type is \a blaze::Group0.
+//          See \ref grouping_tagging for details.
 //
 // The following examples give an impression of several possible types of custom vectors:
 
@@ -1384,6 +1385,8 @@ template< typename VT >  // Type of the right-hand side vector
 inline CustomVector<Type,AF,PF,TF,Tag,RT>&
    CustomVector<Type,AF,PF,TF,Tag,RT>::operator=( const Vector<VT,TF>& rhs )
 {
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<VT> );
+
    if( (~rhs).size() != size_ ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
@@ -1423,6 +1426,8 @@ template< typename VT >  // Type of the right-hand side vector
 inline CustomVector<Type,AF,PF,TF,Tag,RT>&
    CustomVector<Type,AF,PF,TF,Tag,RT>::operator+=( const Vector<VT,TF>& rhs )
 {
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<VT> );
+
    if( (~rhs).size() != size_ ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
@@ -1461,6 +1466,8 @@ template< typename VT >  // Type of the right-hand side vector
 inline CustomVector<Type,AF,PF,TF,Tag,RT>&
    CustomVector<Type,AF,PF,TF,Tag,RT>::operator-=( const Vector<VT,TF>& rhs )
 {
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<VT> );
+
    if( (~rhs).size() != size_ ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
@@ -1499,6 +1506,8 @@ template< typename VT >  // Type of the right-hand side vector
 inline CustomVector<Type,AF,PF,TF,Tag,RT>&
    CustomVector<Type,AF,PF,TF,Tag,RT>::operator*=( const Vector<VT,TF>& rhs )
 {
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<VT> );
+
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( VT, TF );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_t<VT> );
 
@@ -1546,6 +1555,8 @@ template< typename VT >  // Type of the right-hand side vector
 inline CustomVector<Type,AF,PF,TF,Tag,RT>&
    CustomVector<Type,AF,PF,TF,Tag,RT>::operator/=( const DenseVector<VT,TF>& rhs )
 {
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<VT> );
+
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( VT, TF );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_t<VT> );
 
@@ -1594,6 +1605,8 @@ inline CustomVector<Type,AF,PF,TF,Tag,RT>&
    CustomVector<Type,AF,PF,TF,Tag,RT>::operator%=( const Vector<VT,TF>& rhs )
 {
    using blaze::assign;
+
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<VT> );
 
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType_t<VT>, TF );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_t<VT> );
@@ -3804,6 +3817,8 @@ template< typename VT >  // Type of the right-hand side vector
 inline CustomVector<Type,AF,padded,TF,Tag,RT>&
    CustomVector<Type,AF,padded,TF,Tag,RT>::operator=( const Vector<VT,TF>& rhs )
 {
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<VT> );
+
    if( (~rhs).size() != size_ ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
@@ -3844,6 +3859,8 @@ template< typename VT >  // Type of the right-hand side vector
 inline CustomVector<Type,AF,padded,TF,Tag,RT>&
    CustomVector<Type,AF,padded,TF,Tag,RT>::operator+=( const Vector<VT,TF>& rhs )
 {
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<VT> );
+
    if( (~rhs).size() != size_ ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
@@ -3883,6 +3900,8 @@ template< typename VT >  // Type of the right-hand side vector
 inline CustomVector<Type,AF,padded,TF,Tag,RT>&
    CustomVector<Type,AF,padded,TF,Tag,RT>::operator-=( const Vector<VT,TF>& rhs )
 {
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<VT> );
+
    if( (~rhs).size() != size_ ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
@@ -3922,6 +3941,8 @@ template< typename VT >  // Type of the right-hand side vector
 inline CustomVector<Type,AF,padded,TF,Tag,RT>&
    CustomVector<Type,AF,padded,TF,Tag,RT>::operator*=( const Vector<VT,TF>& rhs )
 {
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<VT> );
+
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( VT, TF );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_t<VT> );
 
@@ -3970,6 +3991,8 @@ template< typename VT >  // Type of the right-hand side vector
 inline CustomVector<Type,AF,padded,TF,Tag,RT>&
    CustomVector<Type,AF,padded,TF,Tag,RT>::operator/=( const DenseVector<VT,TF>& rhs )
 {
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<VT> );
+
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( VT, TF );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_t<VT> );
 
@@ -4019,6 +4042,8 @@ inline CustomVector<Type,AF,padded,TF,Tag,RT>&
    CustomVector<Type,AF,padded,TF,Tag,RT>::operator%=( const Vector<VT,TF>& rhs )
 {
    using blaze::assign;
+
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<VT> );
 
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( VT, TF );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_t<VT> );

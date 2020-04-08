@@ -121,7 +121,7 @@ namespace blaze {
 //
 // The CompressedVector class is the representation of an arbitrarily sized sparse vector,
 // which stores only non-zero elements of arbitrary type. The type of the elements and the
-// transpose flag of the vector can be specified via the two template parameters:
+// transpose flag of the vector can be specified via the three template parameters:
 
    \code
    template< typename Type, bool TF, typename Tag >
@@ -133,6 +133,7 @@ namespace blaze {
 //  - TF  : specifies whether the vector is a row vector (\a blaze::rowVector) or a column
 //          vector (\a blaze::columnVector). The default value is \a blaze::columnVector.
 //  - Tag : optional type parameter to tag the vector. The default type is \a blaze::Group0.
+//          See \ref grouping_tagging for details.
 //
 // Inserting/accessing elements in a compressed vector can be done by several alternative
 // functions. The following example demonstrates all options:

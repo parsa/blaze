@@ -149,7 +149,7 @@ namespace blaze {
 // The StaticMatrix class template is the representation of a fixed-size matrix with statically
 // allocated elements of arbitrary type. The type of the elements, the number of rows and columns,
 // the storage order of the matrix, the alignment and the padding of the matrix can be specified
-// via the six template parameters:
+// via the seven template parameters:
 
    \code
    template< typename Type, size_t M, size_t N, bool SO, AlignmentFlag AF, PaddingFlag PF, typename Tag >
@@ -169,7 +169,8 @@ namespace blaze {
 //  - PF  : specifies whether every row/column of the matrix should be padded to maximize the
 //          efficiency of vectorized operations. Possible values are \a blaze::padded and
 //          \a blaze::unpadded. The default value is \a blaze::padded.
-//  - Tag : optional type parameter to tag the vector. The default type is \a blaze::Group0.
+//  - Tag : optional type parameter to tag the matrix. The default type is \a blaze::Group0.
+//          See \ref grouping_tagging for details.
 //
 // Depending on the storage order, the matrix elements are either stored in a row-wise fashion
 // or in a column-wise fashion. Given the 2x3 matrix
