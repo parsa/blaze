@@ -44,6 +44,7 @@
 #include <blaze/math/CustomMatrix.h>
 #include <blaze/math/DynamicMatrix.h>
 #include <blaze/math/HermitianMatrix.h>
+#include <blaze/math/HybridMatrix.h>
 #include <blaze/math/IdentityMatrix.h>
 #include <blaze/math/InitializerMatrix.h>
 #include <blaze/math/LowerMatrix.h>
