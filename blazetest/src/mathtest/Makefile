@@ -45,7 +45,7 @@ all: shims simd blas lapack typetraits traits constraints functors \
      diagonalmatrix identitymatrix \
      uniformvector uniformmatrix \
      zerovector zeromatrix \
-     subvector elements submatrix row rows column columns band \
+     views \
      dvecdvecadd dvecsvecadd svecdvecadd svecsvecadd \
      dvecdvecsub dvecsvecsub svecdvecsub svecsvecsub \
      dvecdvecmult dvecsvecmult svecdvecmult svecsvecmult \
@@ -83,7 +83,7 @@ noop: shims simd blas lapack typetraits traits constraints functors \
       diagonalmatrix identitymatrix \
       uniformvector uniformmatrix \
       zerovector zeromatrix \
-      subvector elements submatrix row rows column columns band \
+      views \
       determinant lu llh qr rq ql lq inversion lse exponential eigen svd \
       vectorserializer matrixserializer
 
@@ -277,45 +277,8 @@ zeromatrix:
 	@echo "Building the ZeroMatrix tests..."
 	@$(MAKE) --no-print-directory -C ./zeromatrix $(MAKECMDGOALS)
 
-subvector:
-	@echo
-	@echo "Building the Subvector tests..."
-	@$(MAKE) --no-print-directory -C ./subvector $(MAKECMDGOALS)
-
-elements:
-	@echo
-	@echo "Building the Elements tests..."
-	@$(MAKE) --no-print-directory -C ./elements $(MAKECMDGOALS)
-
-submatrix:
-	@echo
-	@echo "Building the Submatrix tests..."
-	@$(MAKE) --no-print-directory -C ./submatrix $(MAKECMDGOALS)
-
-row:
-	@echo
-	@echo "Building the Row tests..."
-	@$(MAKE) --no-print-directory -C ./row $(MAKECMDGOALS)
-
-rows:
-	@echo
-	@echo "Building the Rows tests..."
-	@$(MAKE) --no-print-directory -C ./rows $(MAKECMDGOALS)
-
-column:
-	@echo
-	@echo "Building the Column tests..."
-	@$(MAKE) --no-print-directory -C ./column $(MAKECMDGOALS)
-
-columns:
-	@echo
-	@echo "Building the Columns tests..."
-	@$(MAKE) --no-print-directory -C ./columns $(MAKECMDGOALS)
-
-band:
-	@echo
-	@echo "Building the Band tests..."
-	@$(MAKE) --no-print-directory -C ./band $(MAKECMDGOALS)
+views:
+	@$(MAKE) --no-print-directory -C ./views $(MAKECMDGOALS)
 
 dvecdvecadd:
 	@echo
@@ -764,14 +727,7 @@ reset:
 	@$(MAKE) --no-print-directory -C ./uniformmatrix reset
 	@$(MAKE) --no-print-directory -C ./zerovector reset
 	@$(MAKE) --no-print-directory -C ./zeromatrix reset
-	@$(MAKE) --no-print-directory -C ./subvector reset
-	@$(MAKE) --no-print-directory -C ./elements reset
-	@$(MAKE) --no-print-directory -C ./submatrix reset
-	@$(MAKE) --no-print-directory -C ./row reset
-	@$(MAKE) --no-print-directory -C ./rows reset
-	@$(MAKE) --no-print-directory -C ./column reset
-	@$(MAKE) --no-print-directory -C ./columns reset
-	@$(MAKE) --no-print-directory -C ./band reset
+	@$(MAKE) --no-print-directory -C ./views reset
 	@$(MAKE) --no-print-directory -C ./dvecdvecadd reset
 	@$(MAKE) --no-print-directory -C ./dvecsvecadd reset
 	@$(MAKE) --no-print-directory -C ./svecdvecadd reset
@@ -894,14 +850,7 @@ clean:
 	@$(MAKE) --no-print-directory -C ./uniformmatrix clean
 	@$(MAKE) --no-print-directory -C ./zerovector clean
 	@$(MAKE) --no-print-directory -C ./zeromatrix clean
-	@$(MAKE) --no-print-directory -C ./subvector clean
-	@$(MAKE) --no-print-directory -C ./elements clean
-	@$(MAKE) --no-print-directory -C ./submatrix clean
-	@$(MAKE) --no-print-directory -C ./row clean
-	@$(MAKE) --no-print-directory -C ./rows clean
-	@$(MAKE) --no-print-directory -C ./column clean
-	@$(MAKE) --no-print-directory -C ./columns clean
-	@$(MAKE) --no-print-directory -C ./band clean
+	@$(MAKE) --no-print-directory -C ./views clean
 	@$(MAKE) --no-print-directory -C ./dvecdvecadd clean
 	@$(MAKE) --no-print-directory -C ./dvecsvecadd clean
 	@$(MAKE) --no-print-directory -C ./svecdvecadd clean
@@ -998,7 +947,7 @@ clean:
         diagonalmatrix identitymatrix \
         uniformvector uniformmatrix \
         zerovector zeromatrix \
-        subvector elements submatrix row rows column columns band \
+        views \
         dvecdvecadd dvecsvecadd svecdvecadd svecsvecadd \
         dvecdvecsub dvecsvecsub svecdvecsub svecsvecsub \
         dvecdvecmult dvecsvecmult svecdvecmult svecsvecmult \
