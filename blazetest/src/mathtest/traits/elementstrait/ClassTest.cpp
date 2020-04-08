@@ -108,7 +108,7 @@ void ClassTest::testElementsOperation()
    {
       {
          using VT = StaticVector<int,3UL,columnVector>;
-         using RT = HybridVector<int,3UL,columnVector>;
+         using RT = DynamicVector<int,columnVector>;
          static_assert( IsSame_v< ElementsTrait_t<VT,0UL>, RT >, "Non-matching type detected" );
 
          using Expr = RemoveCVRef_t< decltype( elements( std::declval<VT>(), { 0UL, 2UL } ) ) >;
@@ -116,7 +116,7 @@ void ClassTest::testElementsOperation()
       }
       {
          using VT = StaticVector<int,3UL,rowVector>;
-         using RT = HybridVector<int,3UL,rowVector>;
+         using RT = DynamicVector<int,rowVector>;
          static_assert( IsSame_v< ElementsTrait_t<VT,0UL>, RT >, "Non-matching type detected" );
 
          using Expr = RemoveCVRef_t< decltype( elements( std::declval<VT>(), { 0UL, 2UL } ) ) >;
@@ -144,7 +144,7 @@ void ClassTest::testElementsOperation()
    {
       {
          using VT = HybridVector<int,3UL,columnVector>;
-         using RT = HybridVector<int,3UL,columnVector>;
+         using RT = DynamicVector<int,columnVector>;
          static_assert( IsSame_v< ElementsTrait_t<VT,0UL>, RT >, "Non-matching type detected" );
 
          using Expr = RemoveCVRef_t< decltype( elements( std::declval<VT>(), { 0UL, 2UL } ) ) >;
@@ -152,7 +152,7 @@ void ClassTest::testElementsOperation()
       }
       {
          using VT = HybridVector<int,3UL,rowVector>;
-         using RT = HybridVector<int,3UL,rowVector>;
+         using RT = DynamicVector<int,rowVector>;
          static_assert( IsSame_v< ElementsTrait_t<VT,0UL>, RT >, "Non-matching type detected" );
 
          using Expr = RemoveCVRef_t< decltype( elements( std::declval<VT>(), { 0UL, 2UL } ) ) >;
