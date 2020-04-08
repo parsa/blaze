@@ -69,6 +69,7 @@
 #include <blaze/math/typetraits/HighType.h>
 #include <blaze/math/typetraits/IsAligned.h>
 #include <blaze/math/typetraits/IsColumnVector.h>
+#include <blaze/math/typetraits/IsIdentity.h>
 #include <blaze/math/typetraits/IsMatrix.h>
 #include <blaze/math/typetraits/IsResizable.h>
 #include <blaze/math/typetraits/IsRowVector.h>
@@ -1708,7 +1709,8 @@ struct BinaryMapTraitEval1< T1, T2, OP
 /*! \cond BLAZE_INTERNAL */
 template< typename T, typename OP, ReductionFlag RF >
 struct PartialReduceTraitEval1< T, OP, RF
-                              , EnableIf_t< IsMatrix_v<T> && IsUniform_v<T> > >
+                              , EnableIf_t< IsMatrix_v<T> &&
+                                            ( IsUniform_v<T> || IsIdentity_v<T> ) > >
 {
    using ET = ElementType_t<T>;
 
