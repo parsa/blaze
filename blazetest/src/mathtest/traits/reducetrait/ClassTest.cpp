@@ -725,7 +725,7 @@ void ClassTest::testRowwiseMatrixReduction()
    {
       {
          using MT = IdentityMatrix<int,rowMajor>;
-         using RT = DynamicVector<int,columnVector>;
+         using RT = UniformVector<int,columnVector>;
          static_assert( IsSame_v< ReduceTrait_t<MT,OP,rowwise>, RT >, "Non-matching type detected" );
 
          using Expr = RemoveCVRef_t< decltype( reduce<rowwise>( std::declval<MT>(), std::declval<OP>() ) ) >;
@@ -734,7 +734,7 @@ void ClassTest::testRowwiseMatrixReduction()
       }
       {
          using MT = IdentityMatrix<int,columnMajor>;
-         using RT = DynamicVector<int,columnVector>;
+         using RT = UniformVector<int,columnVector>;
          static_assert( IsSame_v< ReduceTrait_t<MT,OP,rowwise>, RT >, "Non-matching type detected" );
 
          using Expr = RemoveCVRef_t< decltype( reduce<rowwise>( std::declval<MT>(), std::declval<OP>() ) ) >;
@@ -1218,7 +1218,7 @@ void ClassTest::testColumnwiseMatrixReduction()
    {
       {
          using MT = IdentityMatrix<int,rowMajor>;
-         using RT = DynamicVector<int,rowVector>;
+         using RT = UniformVector<int,rowVector>;
          static_assert( IsSame_v< ReduceTrait_t<MT,OP,columnwise>, RT >, "Non-matching type detected" );
 
          using Expr = RemoveCVRef_t< decltype( reduce<columnwise>( std::declval<MT>(), std::declval<OP>() ) ) >;
@@ -1227,7 +1227,7 @@ void ClassTest::testColumnwiseMatrixReduction()
       }
       {
          using MT = IdentityMatrix<int,columnMajor>;
-         using RT = DynamicVector<int,rowVector>;
+         using RT = UniformVector<int,rowVector>;
          static_assert( IsSame_v< ReduceTrait_t<MT,OP,columnwise>, RT >, "Non-matching type detected" );
 
          using Expr = RemoveCVRef_t< decltype( reduce<columnwise>( std::declval<MT>(), std::declval<OP>() ) ) >;
