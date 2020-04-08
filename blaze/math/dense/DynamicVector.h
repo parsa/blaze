@@ -3325,9 +3325,7 @@ struct SubvectorTraitEval2< VT, inf, inf
 /*! \cond BLAZE_INTERNAL */
 template< typename VT >
 struct ElementsTraitEval2< VT, 0UL
-                         , EnableIf_t< IsDenseVector_v<VT> &&
-                                       Size_v<VT,0UL> == DefaultSize_v &&
-                                       MaxSize_v<VT,0UL> == DefaultMaxSize_v > >
+                         , EnableIf_t< IsDenseVector_v<VT> > >
 {
    using Type = DynamicVector< RemoveConst_t< ElementType_t<VT> >
                              , TransposeFlag_v<VT>

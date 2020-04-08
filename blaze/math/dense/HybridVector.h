@@ -61,7 +61,6 @@
 #include <blaze/math/traits/ColumnTrait.h>
 #include <blaze/math/traits/CrossTrait.h>
 #include <blaze/math/traits/DivTrait.h>
-#include <blaze/math/traits/ElementsTrait.h>
 #include <blaze/math/traits/KronTrait.h>
 #include <blaze/math/traits/MapTrait.h>
 #include <blaze/math/traits/MultTrait.h>
@@ -3630,33 +3629,6 @@ struct SubvectorTraitEval2< VT, inf, inf
                           , EnableIf_t< IsDenseVector_v<VT> &&
                                         ( Size_v<VT,0UL> != DefaultSize_v ||
                                           MaxSize_v<VT,0UL> != DefaultMaxSize_v ) > >
-{
-   using Type = HybridVector< RemoveConst_t< ElementType_t<VT> >
-                            , max( Size_v<VT,0UL>, MaxSize_v<VT,0UL> )
-                            , TransposeFlag_v<VT>
-                            , defaultAlignmentFlag
-                            , defaultPaddingFlag
-                            , TagType_t<VT> >;
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  ELEMENTSTRAIT SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename VT >
-struct ElementsTraitEval2< VT, 0UL
-                         , EnableIf_t< IsDenseVector_v<VT> &&
-                                       ( Size_v<VT,0UL> != DefaultSize_v ||
-                                         MaxSize_v<VT,0UL> != DefaultMaxSize_v ) > >
 {
    using Type = HybridVector< RemoveConst_t< ElementType_t<VT> >
                             , max( Size_v<VT,0UL>, MaxSize_v<VT,0UL> )
