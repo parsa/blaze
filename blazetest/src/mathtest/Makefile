@@ -39,13 +39,11 @@ all: shims simd blas lapack typetraits traits constraints functors \
      densevector sparsevector densematrix sparsematrix \
      staticvector hybridvector dynamicvector customvector initializervector compressedvector \
      staticmatrix hybridmatrix dynamicmatrix custommatrix initializermatrix compressedmatrix \
-     symmetricmatrix hermitianmatrix \
-     lowermatrix unilowermatrix strictlylowermatrix \
-     uppermatrix uniuppermatrix strictlyuppermatrix \
-     diagonalmatrix identitymatrix \
+     identitymatrix \
      uniformvector uniformmatrix \
      zerovector zeromatrix \
      views \
+     adaptors \
      dvecdvecadd dvecsvecadd svecdvecadd svecsvecadd \
      dvecdvecsub dvecsvecsub svecdvecsub svecsvecsub \
      dvecdvecmult dvecsvecmult svecdvecmult svecsvecmult \
@@ -77,13 +75,11 @@ noop: shims simd blas lapack typetraits traits constraints functors \
       densevector sparsevector densematrix sparsematrix \
       staticvector hybridvector dynamicvector customvector initializervector compressedvector \
       staticmatrix hybridmatrix dynamicmatrix custommatrix initializermatrix compressedmatrix \
-      symmetricmatrix hermitianmatrix \
-      lowermatrix unilowermatrix strictlylowermatrix \
-      uppermatrix uniuppermatrix strictlyuppermatrix \
-      diagonalmatrix identitymatrix \
+      identitymatrix \
       uniformvector uniformmatrix \
       zerovector zeromatrix \
       views \
+      adaptors \
       determinant lu llh qr rq ql lq inversion lse exponential eigen svd \
       vectorserializer matrixserializer
 
@@ -207,51 +203,6 @@ compressedmatrix:
 	@echo "Building the CompressedMatrix tests..."
 	@$(MAKE) --no-print-directory -C ./compressedmatrix $(MAKECMDGOALS)
 
-symmetricmatrix:
-	@echo
-	@echo "Building the SymmetricMatrix tests..."
-	@$(MAKE) --no-print-directory -C ./symmetricmatrix $(MAKECMDGOALS)
-
-hermitianmatrix:
-	@echo
-	@echo "Building the HermitianMatrix tests..."
-	@$(MAKE) --no-print-directory -C ./hermitianmatrix $(MAKECMDGOALS)
-
-lowermatrix:
-	@echo
-	@echo "Building the LowerMatrix tests..."
-	@$(MAKE) --no-print-directory -C ./lowermatrix $(MAKECMDGOALS)
-
-unilowermatrix:
-	@echo
-	@echo "Building the UniLowerMatrix tests..."
-	@$(MAKE) --no-print-directory -C ./unilowermatrix $(MAKECMDGOALS)
-
-strictlylowermatrix:
-	@echo
-	@echo "Building the StrictlyLowerMatrix tests..."
-	@$(MAKE) --no-print-directory -C ./strictlylowermatrix $(MAKECMDGOALS)
-
-uppermatrix:
-	@echo
-	@echo "Building the UpperMatrix tests..."
-	@$(MAKE) --no-print-directory -C ./uppermatrix $(MAKECMDGOALS)
-
-uniuppermatrix:
-	@echo
-	@echo "Building the UniUpperMatrix tests..."
-	@$(MAKE) --no-print-directory -C ./uniuppermatrix $(MAKECMDGOALS)
-
-strictlyuppermatrix:
-	@echo
-	@echo "Building the StrictlyUpperMatrix tests..."
-	@$(MAKE) --no-print-directory -C ./strictlyuppermatrix $(MAKECMDGOALS)
-
-diagonalmatrix:
-	@echo
-	@echo "Building the DiagonalMatrix tests..."
-	@$(MAKE) --no-print-directory -C ./diagonalmatrix $(MAKECMDGOALS)
-
 identitymatrix:
 	@echo
 	@echo "Building the IdentityMatrix tests..."
@@ -279,6 +230,9 @@ zeromatrix:
 
 views:
 	@$(MAKE) --no-print-directory -C ./views $(MAKECMDGOALS)
+
+adaptors:
+	@$(MAKE) --no-print-directory -C ./adaptors $(MAKECMDGOALS)
 
 dvecdvecadd:
 	@echo
@@ -713,21 +667,13 @@ reset:
 	@$(MAKE) --no-print-directory -C ./custommatrix reset
 	@$(MAKE) --no-print-directory -C ./initializermatrix reset
 	@$(MAKE) --no-print-directory -C ./compressedmatrix reset
-	@$(MAKE) --no-print-directory -C ./symmetricmatrix reset
-	@$(MAKE) --no-print-directory -C ./hermitianmatrix reset
-	@$(MAKE) --no-print-directory -C ./lowermatrix reset
-	@$(MAKE) --no-print-directory -C ./unilowermatrix reset
-	@$(MAKE) --no-print-directory -C ./strictlylowermatrix reset
-	@$(MAKE) --no-print-directory -C ./uppermatrix reset
-	@$(MAKE) --no-print-directory -C ./uniuppermatrix reset
-	@$(MAKE) --no-print-directory -C ./strictlyuppermatrix reset
-	@$(MAKE) --no-print-directory -C ./diagonalmatrix reset
 	@$(MAKE) --no-print-directory -C ./identitymatrix reset
 	@$(MAKE) --no-print-directory -C ./uniformvector reset
 	@$(MAKE) --no-print-directory -C ./uniformmatrix reset
 	@$(MAKE) --no-print-directory -C ./zerovector reset
 	@$(MAKE) --no-print-directory -C ./zeromatrix reset
 	@$(MAKE) --no-print-directory -C ./views reset
+	@$(MAKE) --no-print-directory -C ./adaptors reset
 	@$(MAKE) --no-print-directory -C ./dvecdvecadd reset
 	@$(MAKE) --no-print-directory -C ./dvecsvecadd reset
 	@$(MAKE) --no-print-directory -C ./svecdvecadd reset
@@ -836,21 +782,13 @@ clean:
 	@$(MAKE) --no-print-directory -C ./custommatrix clean
 	@$(MAKE) --no-print-directory -C ./initializermatrix clean
 	@$(MAKE) --no-print-directory -C ./compressedmatrix clean
-	@$(MAKE) --no-print-directory -C ./symmetricmatrix clean
-	@$(MAKE) --no-print-directory -C ./hermitianmatrix clean
-	@$(MAKE) --no-print-directory -C ./lowermatrix clean
-	@$(MAKE) --no-print-directory -C ./unilowermatrix clean
-	@$(MAKE) --no-print-directory -C ./strictlylowermatrix clean
-	@$(MAKE) --no-print-directory -C ./uppermatrix clean
-	@$(MAKE) --no-print-directory -C ./uniuppermatrix clean
-	@$(MAKE) --no-print-directory -C ./strictlyuppermatrix clean
-	@$(MAKE) --no-print-directory -C ./diagonalmatrix clean
 	@$(MAKE) --no-print-directory -C ./identitymatrix clean
 	@$(MAKE) --no-print-directory -C ./uniformvector clean
 	@$(MAKE) --no-print-directory -C ./uniformmatrix clean
 	@$(MAKE) --no-print-directory -C ./zerovector clean
 	@$(MAKE) --no-print-directory -C ./zeromatrix clean
 	@$(MAKE) --no-print-directory -C ./views clean
+	@$(MAKE) --no-print-directory -C ./adaptors clean
 	@$(MAKE) --no-print-directory -C ./dvecdvecadd clean
 	@$(MAKE) --no-print-directory -C ./dvecsvecadd clean
 	@$(MAKE) --no-print-directory -C ./svecdvecadd clean
@@ -941,13 +879,11 @@ clean:
         densevector sparsevector densematrix sparsematrix \
         staticvector hybridvector dynamicvector customvector initializervector compressedvector \
         staticmatrix hybridmatrix dynamicmatrix custommatrix initializermatrix compressedmatrix \
-        symmetricmatrix hermitianmatrix \
-        lowermatrix unilowermatrix strictlylowermatrix \
-        uppermatrix uniuppermatrix strictlyuppermatrix \
-        diagonalmatrix identitymatrix \
+        identitymatrix \
         uniformvector uniformmatrix \
         zerovector zeromatrix \
         views \
+        adaptors \
         dvecdvecadd dvecsvecadd svecdvecadd svecsvecadd \
         dvecdvecsub dvecsvecsub svecdvecsub svecsvecsub \
         dvecdvecmult dvecsvecmult svecdvecmult svecsvecmult \
