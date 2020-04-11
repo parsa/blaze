@@ -41,8 +41,6 @@ essential: all
 
 single: all
 
-noop: all
-
 
 # Internal rules
 alignedallocator:

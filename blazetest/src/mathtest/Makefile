@@ -42,9 +42,6 @@ essential: all
 
 single: all
 
-noop: shims simd blas lapack typetraits traits constraints functors \
-      vectors matrices views adaptors
-
 
 # Internal rules
 shims:
@@ -134,6 +131,6 @@ clean:
 
 
 # Setting the independent commands
-.PHONY: default all essential single noop reset clean \
+.PHONY: default all essential single reset clean \
         shims simd blas lapack typetraits traits constraints functors \
         vectors matrices views adaptors operations

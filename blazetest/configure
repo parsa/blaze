@@ -218,8 +218,6 @@ essential: mathtest utiltest
 
 single: mathtest utiltest
 
-noop: mathtest utiltest
-
 
 # Internal rules
 mathtest:
@@ -246,7 +244,7 @@ clean:
 
 
 # Setting the independent commands
-.PHONY: default all essential single noop reset clean \
+.PHONY: default all essential single reset clean \
         mathtest utiltest
 EOF
 
