@@ -36,31 +36,14 @@
 default: all
 
 all: shims simd blas lapack typetraits traits constraints functors \
-     vectors \
-     densematrix sparsematrix \
-     staticmatrix hybridmatrix dynamicmatrix custommatrix initializermatrix compressedmatrix \
-     identitymatrix \
-     uniformmatrix \
-     zeromatrix \
-     views \
-     adaptors \
-     operations \
-     matrixserializer
+     vectors matrices views adaptors operations
 
 essential: all
 
 single: all
 
 noop: shims simd blas lapack typetraits traits constraints functors \
-      vectors \
-      densematrix sparsematrix \
-      staticmatrix hybridmatrix dynamicmatrix custommatrix initializermatrix compressedmatrix \
-      identitymatrix \
-      uniformmatrix \
-      zeromatrix \
-      views \
-      adaptors \
-      matrixserializer
+      vectors matrices views adaptors
 
 
 # Internal rules
@@ -105,60 +88,8 @@ functors:
 vectors:
 	@$(MAKE) --no-print-directory -C ./vectors $(MAKECMDGOALS)
 
-densematrix:
-	@echo
-	@echo "Building the DenseMatrix operation tests..."
-	@$(MAKE) --no-print-directory -C ./densematrix $(MAKECMDGOALS)
-
-sparsematrix:
-	@echo
-	@echo "Building the SparseMatrix operation tests..."
-	@$(MAKE) --no-print-directory -C ./sparsematrix $(MAKECMDGOALS)
-
-staticmatrix:
-	@echo
-	@echo "Building the StaticMatrix tests..."
-	@$(MAKE) --no-print-directory -C ./staticmatrix $(MAKECMDGOALS)
-
-hybridmatrix:
-	@echo
-	@echo "Building the HybridMatrix tests..."
-	@$(MAKE) --no-print-directory -C ./hybridmatrix $(MAKECMDGOALS)
-
-dynamicmatrix:
-	@echo
-	@echo "Building the DynamicMatrix tests..."
-	@$(MAKE) --no-print-directory -C ./dynamicmatrix $(MAKECMDGOALS)
-
-custommatrix:
-	@echo
-	@echo "Building the CustomMatrix tests..."
-	@$(MAKE) --no-print-directory -C ./custommatrix $(MAKECMDGOALS)
-
-initializermatrix:
-	@echo
-	@echo "Building the InitializerMatrix tests..."
-	@$(MAKE) --no-print-directory -C ./initializermatrix $(MAKECMDGOALS)
-
-compressedmatrix:
-	@echo
-	@echo "Building the CompressedMatrix tests..."
-	@$(MAKE) --no-print-directory -C ./compressedmatrix $(MAKECMDGOALS)
-
-identitymatrix:
-	@echo
-	@echo "Building the IdentityMatrix tests..."
-	@$(MAKE) --no-print-directory -C ./identitymatrix $(MAKECMDGOALS)
-
-uniformmatrix:
-	@echo
-	@echo "Building the UniformMatrix tests..."
-	@$(MAKE) --no-print-directory -C ./uniformmatrix $(MAKECMDGOALS)
-
-zeromatrix:
-	@echo
-	@echo "Building the ZeroMatrix tests..."
-	@$(MAKE) --no-print-directory -C ./zeromatrix $(MAKECMDGOALS)
+matrices:
+	@$(MAKE) --no-print-directory -C ./matrices $(MAKECMDGOALS)
 
 views:
 	@$(MAKE) --no-print-directory -C ./views $(MAKECMDGOALS)
@@ -168,11 +99,6 @@ adaptors:
 
 operations:
 	@$(MAKE) --no-print-directory -C ./operations $(MAKECMDGOALS)
-
-matrixserializer:
-	@echo
-	@echo "Building the MatrixSerializer class tests..."
-	@$(MAKE) --no-print-directory -C ./matrixserializer $(MAKECMDGOALS)
 
 
 # Cleanup
@@ -186,21 +112,10 @@ reset:
 	@$(MAKE) --no-print-directory -C ./constraints reset
 	@$(MAKE) --no-print-directory -C ./functors reset
 	@$(MAKE) --no-print-directory -C ./vectors reset
-	@$(MAKE) --no-print-directory -C ./densematrix reset
-	@$(MAKE) --no-print-directory -C ./sparsematrix reset
-	@$(MAKE) --no-print-directory -C ./staticmatrix reset
-	@$(MAKE) --no-print-directory -C ./hybridmatrix reset
-	@$(MAKE) --no-print-directory -C ./dynamicmatrix reset
-	@$(MAKE) --no-print-directory -C ./custommatrix reset
-	@$(MAKE) --no-print-directory -C ./initializermatrix reset
-	@$(MAKE) --no-print-directory -C ./compressedmatrix reset
-	@$(MAKE) --no-print-directory -C ./identitymatrix reset
-	@$(MAKE) --no-print-directory -C ./uniformmatrix reset
-	@$(MAKE) --no-print-directory -C ./zeromatrix reset
+	@$(MAKE) --no-print-directory -C ./matrices reset
 	@$(MAKE) --no-print-directory -C ./views reset
 	@$(MAKE) --no-print-directory -C ./adaptors reset
 	@$(MAKE) --no-print-directory -C ./operations reset
-	@$(MAKE) --no-print-directory -C ./matrixserializer reset
 
 clean:
 	@$(MAKE) --no-print-directory -C ./shims clean
@@ -212,33 +127,13 @@ clean:
 	@$(MAKE) --no-print-directory -C ./constraints clean
 	@$(MAKE) --no-print-directory -C ./functors clean
 	@$(MAKE) --no-print-directory -C ./vectors clean
-	@$(MAKE) --no-print-directory -C ./densematrix clean
-	@$(MAKE) --no-print-directory -C ./sparsematrix clean
-	@$(MAKE) --no-print-directory -C ./staticmatrix clean
-	@$(MAKE) --no-print-directory -C ./hybridmatrix clean
-	@$(MAKE) --no-print-directory -C ./dynamicmatrix clean
-	@$(MAKE) --no-print-directory -C ./custommatrix clean
-	@$(MAKE) --no-print-directory -C ./initializermatrix clean
-	@$(MAKE) --no-print-directory -C ./compressedmatrix clean
-	@$(MAKE) --no-print-directory -C ./identitymatrix clean
-	@$(MAKE) --no-print-directory -C ./uniformmatrix clean
-	@$(MAKE) --no-print-directory -C ./zeromatrix clean
+	@$(MAKE) --no-print-directory -C ./matrices clean
 	@$(MAKE) --no-print-directory -C ./views clean
 	@$(MAKE) --no-print-directory -C ./adaptors clean
 	@$(MAKE) --no-print-directory -C ./operations clean
-	@$(MAKE) --no-print-directory -C ./matrixserializer clean
 
 
 # Setting the independent commands
 .PHONY: default all essential single noop reset clean \
         shims simd blas lapack typetraits traits constraints functors \
-        vectors \
-        densematrix sparsematrix \
-        staticmatrix hybridmatrix dynamicmatrix custommatrix initializermatrix compressedmatrix \
-        identitymatrix \
-        uniformmatrix \
-        zeromatrix \
-        views \
-        adaptors \
-        operations \
-        matrixserializer
+        vectors matrices views adaptors operations
