@@ -18249,8 +18249,8 @@
    #include <blaze/Blaze.h>
    \endcode
 
-// If \c BLAZE_DEFAULT_ALIGNMENT_FLAG is set to \c blaze::padded, by default padding is enabled
-// for \ref vector_types_static_vector, \ref vector_types_hybrid_vector, \ref matrix_types_static_matrix,
+// If \c BLAZE_DEFAULT_PADDING_FLAG is set to \c blaze::padded, by default padding is enabled for
+// \ref vector_types_static_vector, \ref vector_types_hybrid_vector, \ref matrix_types_static_matrix,
 // and \ref matrix_types_hybrid_matrix. If it is set to \c blaze::unpadded, then padding is by
 // default disabled. Note however that disabling padding can considerably reduce the performance
 // of all dense vector and matrix operations!
@@ -18429,6 +18429,144 @@
 //
 // Please note that the extend to which \b Blaze uses LAPACK kernels can change in future releases
 // of \b Blaze!
+//
+//
+// <hr>
+// \section faq_sparse_matrix_setup What is the fastest way to setup a very large sparse matrix?
+//
+// The following examples give an overview of different approaches to setup a sparse, row-major NxN
+// matrix with the following pattern, where all values on the diagonal and the two sub-diagonals
+// are filled:
+
+   \f[\left(\begin{array}{*{9}{c}}
+   1      & 1      & 0      & 0      & 0      & \cdots & 0      & 0      & 0      \\
+   1      & 1      & 1      & 0      & 0      & \cdots & 0      & 0      & 0      \\
+   0      & 1      & 1      & 1      & 0      & \cdots & 0      & 0      & 0      \\
+   0      & 0      & 1      & 1      & 1      & \cdots & 0      & 0      & 0      \\
+   0      & 0      & 0      & 1      & 1      & \cdots & 0      & 0      & 0      \\
+   \vdots & \vdots & \vdots & \vdots & \vdots & \ddots & \vdots & \vdots & \vdots \\
+   0      & 0      & 0      & 0      & 0      & \cdots & 1      & 1      & 0      \\
+   0      & 0      & 0      & 0      & 0      & \cdots & 1      & 1      & 1      \\
+   0      & 0      & 0      & 0      & 0      & \cdots & 0      & 1      & 1      \\
+   \end{array}\right)\f]
+
+// Special emphasis is given to the runtime until the matrix setup is complete. In all cases the
+// runtime is benchmarked with Clang-9.0 (compilation flags \c -O2 and \c -DNDEBUG) for \c N=200000.
+//
+//
+// <b>Approach 1: Using the function call operator</b>
+//
+// In this approach the function call operator (i.e. \c operator()) is used to insert the according
+// elements into the matrix:
+
+   \code
+   blaze::CompressedMatrix<int,rowMajor> A( N, N );
+
+   A.reserve( N*3UL-2UL );  // Optional: Reserve capacity for all elements upfront
+
+   for( size_t i=0; i<N; ++i ) {
+      const size_t jbegin( i == 0UL ? 0UL : i-1UL );
+      const size_t jend  ( i == N-1UL ? N-1UL : i+1UL );
+      for( size_t j=jbegin; j<=jend; ++j ) {
+         A(i,j) = 1;
+      }
+   }
+   \endcode
+
+// This approach is the most general and convenient, but also the slowest of all (approx. \b 64
+// seconds). With every call to \c operator(), a new element is inserted at the specified position.
+// This implies shifting all subsequent elements and adapting every subsequent row. Since all
+// non-zero elements are stored in a single array inside a \c CompressedMatrix, this approach is
+// similar to inserting elements at the front of a \c std::vector; all subsequent elements have
+// to be shifted.
+//
+//
+// <b>Approach 2: Rowwise reserve and insert</b>
+//
+// The next approach performs a rowwise reservation of capacity:
+
+   \code
+   blaze::CompressedMatrix<int,rowMajor> A( N, N );
+
+   A.reserve( N*3UL );                // Allocate the total amount of memory
+   A.reserve( 0UL, 2UL );             // Reserve a capacity of 2 for row 0
+   for( size_t i=1; i<N-1UL; ++i ) {
+      A.reserve( i, 3UL );            // Reserve a capacity of 3 for row i
+   }
+   A.reserve( N-1UL, 2UL );           // Reserve a capacity of 2 for the last row
+
+   for( size_t i=0; i<N; ++i ) {
+      const size_t jbegin( i == 0UL ? 0UL : i-1UL );
+      const size_t jend  ( i == N-1UL ? N-1UL : i+1UL );
+      for( size_t j=jbegin; j<=jend; ++j ) {
+         A.insert( i, j, 1 );
+      }
+   }
+   \endcode
+
+// The first call to reserve() performs the memory allocation for the entire matrix. The complete
+// matrix now holds the entire capacity, but each single row has a capacity of 0. Therefore the
+// subsequent calls to \c reserve() divide the existing capacity to all rows.
+//
+// Unfortunately, also this approach is rather slow. The runtime is approx. \b 30 seconds. The
+// downside of this approach is that changing the capacity of a single row causes a change in
+// all following rows. Therefore this approach is similar to the first approach.
+//
+//
+// <b>Approach 3: reserve/append/finalize</b>
+//
+// As the wiki explains, the most efficient way to fill a sparse matrix is a combination of
+// \c reserve(), \c append() and \c finalize():
+
+   \code
+   CompressedMatrix<int,rowMajor> A( N, N );
+
+   A.reserve( N*3UL );
+   for( size_t i=0; i<N; ++i ) {
+      const size_t jbegin( i == 0UL ? 0UL : i-1UL );
+      const size_t jend  ( i == N-1UL ? N-1UL : i+1UL );
+      for( size_t j=jbegin; j<=jend; ++j ) {
+         A.append( i, j, 1 );
+      }
+      A.finalize( i );
+   }
+   \endcode
+
+// The initial call to \c reserve() allocates enough memory for all non-zero elements of the
+// entire matrix. \c append() and \c finalize() are then used to insert the elements and to mark
+// the end of each single row. This is a very low-level approach and very similar to writing to
+// an array manually, which results in a mere \b 0.026 seconds. The \c append() function writes
+// the new element to the next memory location, and at the end of each row or column the
+// \c finalize() function sets the internal pointers accordingly. It is very important to note
+// that the \c finalize() function has to be explicitly called for each row, even for empty ones!
+// Else the internal data structure will be corrupt! Also note that although \c append() does not
+// allocate new memory, it still invalidates all iterators returned by the \c end() functions!
+//
+//
+// <b>Approach 4: Reservation via the constructor</b>
+//
+// In case the number of non-zero elements is known upfront, it is also possible to perform the
+// reservation via the constructor of \c CompressedMatrix. For that purpose \c CompressedMatrix
+// provides a constructor taking a \c std::vector<size_t>:
+
+   \code
+   std::vector<size_t> nonzeros( N, 3UL );  // Create a vector of N elements with value 3
+   nonzeros[  0] = 2UL;                     // We need only 2 elements in the first row ...
+   nonzeros[N-1] = 2UL;                     //  ... and last row.
+
+   CompressedMatrix<int,rowMajor> A( N, N, nonzeros );
+
+   //std::cerr << " Inserting values...\n";
+   for( size_t i=0; i<N; ++i ) {
+      const size_t jbegin( i == 0UL ? 0UL : i-1UL );
+      const size_t jend  ( i == N-1UL ? N-1UL : i+1UL );
+      for( size_t j=jbegin; j<=jend; ++j ) {
+         A.insert( i, j, 1 );
+      }
+   }
+   \endcode
+
+// The runtime for this approach is \b 0.027 seconds.
 //
 //
 // <hr>
