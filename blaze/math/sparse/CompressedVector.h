@@ -64,6 +64,7 @@
 #include <blaze/math/traits/CrossTrait.h>
 #include <blaze/math/traits/DivTrait.h>
 #include <blaze/math/traits/ElementsTrait.h>
+#include <blaze/math/traits/EvaluateTrait.h>
 #include <blaze/math/traits/KronTrait.h>
 #include <blaze/math/traits/MapTrait.h>
 #include <blaze/math/traits/MultTrait.h>
@@ -2792,7 +2793,9 @@ template< typename T, typename OP >
 struct UnaryMapTraitEval2< T, OP
                          , EnableIf_t< IsSparseVector_v<T> > >
 {
-   using Type = CompressedVector< MapTrait_t< ElementType_t<T>, OP >
+   using ElementType = decltype( std::declval<OP>()( std::declval< ElementType_t<T> >() ) );
+
+   using Type = CompressedVector< EvaluateTrait_t<ElementType>
                                 , TransposeFlag_v<T>
                                 , MapTrait_t< TagType_t<T>, OP > >;
 };

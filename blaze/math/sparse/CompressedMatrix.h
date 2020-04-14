@@ -60,6 +60,7 @@
 #include <blaze/math/traits/AddTrait.h>
 #include <blaze/math/traits/ColumnsTrait.h>
 #include <blaze/math/traits/DivTrait.h>
+#include <blaze/math/traits/EvaluateTrait.h>
 #include <blaze/math/traits/ExpandTrait.h>
 #include <blaze/math/traits/KronTrait.h>
 #include <blaze/math/traits/MapTrait.h>
@@ -6388,7 +6389,9 @@ template< typename T, typename OP >
 struct UnaryMapTraitEval2< T, OP
                          , EnableIf_t< IsSparseMatrix_v<T> > >
 {
-   using Type = CompressedMatrix< MapTrait_t< ElementType_t<T>, OP >
+   using ElementType = decltype( std::declval<OP>()( std::declval< ElementType_t<T> >() ) );
+
+   using Type = CompressedMatrix< EvaluateTrait_t<ElementType>
                                 , StorageOrder_v<T>
                                 , MapTrait_t< TagType_t<T>, OP > >;
 };

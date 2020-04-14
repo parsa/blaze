@@ -59,6 +59,7 @@
 #include <blaze/math/traits/AddTrait.h>
 #include <blaze/math/traits/ColumnsTrait.h>
 #include <blaze/math/traits/DivTrait.h>
+#include <blaze/math/traits/EvaluateTrait.h>
 #include <blaze/math/traits/ExpandTrait.h>
 #include <blaze/math/traits/KronTrait.h>
 #include <blaze/math/traits/MapTrait.h>
@@ -1965,7 +1966,9 @@ struct UnaryMapTraitEval1< T, OP
                                        YieldsUniform_v<OP,T> &&
                                        !YieldsZero_v<OP,T> > >
 {
-   using Type = UniformMatrix< MapTrait_t< ElementType_t<T>, OP >
+   using ElementType = decltype( std::declval<OP>()( std::declval< ElementType_t<T> >() ) );
+
+   using Type = UniformMatrix< EvaluateTrait_t<ElementType>
                              , StorageOrder_v<T>
                              , MapTrait_t< TagType_t<T>, OP > >;
 };
@@ -1982,7 +1985,10 @@ struct BinaryMapTraitEval1< T1, T2, OP
                                         YieldsUniform_v<OP,T1,T2> &&
                                         !YieldsZero_v<OP,T1,T2> > >
 {
-   using Type = UniformMatrix< MapTrait_t< ElementType_t<T1>, ElementType_t<T2>, OP>
+   using ElementType = decltype( std::declval<OP>()( std::declval< ElementType_t<T1> >()
+                                                   , std::declval< ElementType_t<T2> >() ) );
+
+   using Type = UniformMatrix< EvaluateTrait_t<ElementType>
                              , false
                              , MapTrait_t< TagType_t<T1>, TagType_t<T2>, OP > >;
 };
@@ -1994,6 +2000,9 @@ struct BinaryMapTraitEval1< T1, T2, OP
                                         YieldsUniform_v<OP,T1,T2> &&
                                         !YieldsZero_v<OP,T1,T2> > >
 {
+   using ElementType = decltype( std::declval<OP>()( std::declval< ElementType_t<T1> >()
+                                                   , std::declval< ElementType_t<T2> >() ) );
+
    static constexpr bool SO1 = StorageOrder_v<T1>;
    static constexpr bool SO2 = StorageOrder_v<T2>;
 
@@ -2007,7 +2016,7 @@ struct BinaryMapTraitEval1< T1, T2, OP
                                     ? SO1
                                     : SO2 ) );
 
-   using Type = UniformMatrix< MapTrait_t< ElementType_t<T1>, ElementType_t<T2>, OP >
+   using Type = UniformMatrix< EvaluateTrait_t<ElementType>
                              , SO
                              , MapTrait_t< TagType_t<T1>, TagType_t<T2>, OP > >;
 };

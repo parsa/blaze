@@ -56,6 +56,7 @@
 #include <blaze/math/traits/CrossTrait.h>
 #include <blaze/math/traits/DivTrait.h>
 #include <blaze/math/traits/ElementsTrait.h>
+#include <blaze/math/traits/EvaluateTrait.h>
 #include <blaze/math/traits/KronTrait.h>
 #include <blaze/math/traits/MapTrait.h>
 #include <blaze/math/traits/MultTrait.h>
@@ -1500,7 +1501,9 @@ struct UnaryMapTraitEval1< T, OP
                          , EnableIf_t< IsVector_v<T> &&
                                        YieldsZero_v<OP,T> > >
 {
-   using Type = ZeroVector< MapTrait_t< ElementType_t<T>, OP >
+   using ElementType = decltype( std::declval<OP>()( std::declval< ElementType_t<T> >() ) );
+
+   using Type = ZeroVector< EvaluateTrait_t<ElementType>
                           , TransposeFlag_v<T>
                           , MapTrait_t< TagType_t<T>, OP > >;
 };
@@ -1516,7 +1519,10 @@ struct BinaryMapTraitEval1< T1, T2, OP
                                         IsVector_v<T2> &&
                                         YieldsZero_v<OP,T1,T2> > >
 {
-   using Type = ZeroVector< MapTrait_t< ElementType_t<T1>, ElementType_t<T2>, OP >
+   using ElementType = decltype( std::declval<OP>()( std::declval< ElementType_t<T1> >()
+                                                   , std::declval< ElementType_t<T2> >() ) );
+
+   using Type = ZeroVector< EvaluateTrait_t<ElementType>
                           , TransposeFlag_v<T1>
                           , MapTrait_t< TagType_t<T1>, TagType_t<T2>, OP > >;
 };

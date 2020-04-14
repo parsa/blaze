@@ -71,6 +71,7 @@
 #include <blaze/math/traits/CrossTrait.h>
 #include <blaze/math/traits/DivTrait.h>
 #include <blaze/math/traits/ElementsTrait.h>
+#include <blaze/math/traits/EvaluateTrait.h>
 #include <blaze/math/traits/KronTrait.h>
 #include <blaze/math/traits/MapTrait.h>
 #include <blaze/math/traits/MultTrait.h>
@@ -3559,7 +3560,9 @@ struct UnaryMapTraitEval2< T, OP
                          , EnableIf_t< IsVector_v<T> &&
                                        Size_v<T,0UL> != DefaultSize_v > >
 {
-   using Type = StaticVector< MapTrait_t< ElementType_t<T>, OP >
+   using ElementType = decltype( std::declval<OP>()( std::declval< ElementType_t<T> >() ) );
+
+   using Type = StaticVector< EvaluateTrait_t<ElementType>
                             , Size_v<T,0UL>
                             , TransposeFlag_v<T>
                             , defaultAlignmentFlag
@@ -3579,7 +3582,10 @@ struct BinaryMapTraitEval2< T1, T2, OP
                                         ( Size_v<T1,0UL> != DefaultSize_v ||
                                           Size_v<T2,0UL> != DefaultSize_v ) > >
 {
-   using Type = StaticVector< MapTrait_t< ElementType_t<T1>, ElementType_t<T2>, OP >
+   using ElementType = decltype( std::declval<OP>()( std::declval< ElementType_t<T1> >()
+                                                   , std::declval< ElementType_t<T2> >() ) );
+
+   using Type = StaticVector< EvaluateTrait_t<ElementType>
                             , max( Size_v<T1,0UL>, Size_v<T2,0UL> )
                             , TransposeFlag_v<T1>
                             , defaultAlignmentFlag

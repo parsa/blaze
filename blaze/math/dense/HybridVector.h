@@ -61,6 +61,7 @@
 #include <blaze/math/traits/ColumnTrait.h>
 #include <blaze/math/traits/CrossTrait.h>
 #include <blaze/math/traits/DivTrait.h>
+#include <blaze/math/traits/EvaluateTrait.h>
 #include <blaze/math/traits/KronTrait.h>
 #include <blaze/math/traits/MapTrait.h>
 #include <blaze/math/traits/MultTrait.h>
@@ -3464,7 +3465,9 @@ struct UnaryMapTraitEval2< T, OP
                                        Size_v<T,0UL> == DefaultSize_v &&
                                        MaxSize_v<T,0UL> != DefaultMaxSize_v > >
 {
-   using Type = HybridVector< MapTrait_t< ElementType_t<T>, OP >
+   using ElementType = decltype( std::declval<OP>()( std::declval< ElementType_t<T> >() ) );
+
+   using Type = HybridVector< EvaluateTrait_t<ElementType>
                             , MaxSize_v<T,0UL>
                             , TransposeFlag_v<T>
                             , defaultAlignmentFlag
@@ -3486,7 +3489,10 @@ struct BinaryMapTraitEval2< T1, T2, OP
                                         ( MaxSize_v<T1,0UL> != DefaultMaxSize_v ||
                                           MaxSize_v<T2,0UL> != DefaultMaxSize_v ) > >
 {
-   using Type = HybridVector< MapTrait_t< ElementType_t<T1>, ElementType_t<T2>, OP >
+   using ElementType = decltype( std::declval<OP>()( std::declval< ElementType_t<T1> >()
+                                                   , std::declval< ElementType_t<T2> >() ) );
+
+   using Type = HybridVector< EvaluateTrait_t<ElementType>
                             , min( size_t( MaxSize_v<T1,0UL> ), size_t( MaxSize_v<T2,0UL> ) )
                             , TransposeFlag_v<T1>
                             , defaultAlignmentFlag

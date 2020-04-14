@@ -64,6 +64,7 @@
 #include <blaze/math/traits/DeclUniLowTrait.h>
 #include <blaze/math/traits/DeclUniUppTrait.h>
 #include <blaze/math/traits/DeclUppTrait.h>
+#include <blaze/math/traits/EvaluateTrait.h>
 #include <blaze/math/traits/KronTrait.h>
 #include <blaze/math/traits/MapTrait.h>
 #include <blaze/math/traits/MultTrait.h>
@@ -1586,7 +1587,9 @@ struct UnaryMapTraitEval1< T, OP
                          , EnableIf_t< IsMatrix_v<T> &&
                                        YieldsIdentity_v<OP,T> > >
 {
-   using Type = IdentityMatrix< MapTrait_t< ElementType_t<T>, OP >
+   using ElementType = decltype( std::declval<OP>()( std::declval< ElementType_t<T> >() ) );
+
+   using Type = IdentityMatrix< EvaluateTrait_t<ElementType>
                               , StorageOrder_v<T>
                               , MapTrait_t< TagType_t<T>, OP > >;
 };
@@ -1602,7 +1605,10 @@ struct BinaryMapTraitEval1< T1, T2, OP
                                         IsMatrix_v<T2> &&
                                         YieldsIdentity_v<OP,T1,T2> > >
 {
-   using Type = IdentityMatrix< MapTrait_t< ElementType_t<T1>, ElementType_t<T2>, OP >
+   using ElementType = decltype( std::declval<OP>()( std::declval< ElementType_t<T1> >()
+                                                   , std::declval< ElementType_t<T2> >() ) );
+
+   using Type = IdentityMatrix< EvaluateTrait_t<ElementType>
                               , ( StorageOrder_v<T1> && StorageOrder_v<T2> )
                               , MapTrait_t< TagType_t<T1>, TagType_t<T2>, OP > >;
 };
