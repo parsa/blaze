@@ -59,6 +59,7 @@
 #include <blaze/math/traits/DerestrictTrait.h>
 #include <blaze/math/traits/DivTrait.h>
 #include <blaze/math/traits/ElementsTrait.h>
+#include <blaze/math/traits/EvaluateTrait.h>
 #include <blaze/math/traits/ExpandTrait.h>
 #include <blaze/math/traits/KronTrait.h>
 #include <blaze/math/traits/MapTrait.h>
