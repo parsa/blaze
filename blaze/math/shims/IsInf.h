@@ -41,6 +41,8 @@
 //*************************************************************************************************
 
 #include <cmath>
+#include <blaze/util/EnableIf.h>
+#include <blaze/util/typetraits/IsArithmetic.h>
 
 
 namespace blaze {
@@ -52,10 +54,17 @@ namespace blaze {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Import of the std::isinf() function into the Blaze namespace.
+/*!\brief Determines if the given floating point number is a positive or negative infinity.
 // \ingroup math_shims
+//
+// \param a The floating point number to be checked.
+// \return \a true in case the given floating point number is infinity, \a false otherwise.
 */
-using std::isinf;
+template< typename T, EnableIf_t< IsArithmetic_v<T> >* = nullptr >
+inline bool isinf( T a ) noexcept
+{
+   return std::isinf( a );
+}
 //*************************************************************************************************
 
 } // namespace blaze
