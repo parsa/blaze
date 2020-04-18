@@ -68,32 +68,18 @@ template< typename Type   // Data type of the vector
 class Rand< ZeroVector<Type,TF,Tag> >
 {
  public:
-   //**Generate functions**************************************************************************
-   /*!\name Generate functions */
-   //@{
-   inline const ZeroVector<Type,TF,Tag> generate( size_t size ) const;
-   //@}
+   //**********************************************************************************************
+   /*!\brief Generation of a random ZeroVector.
+   //
+   // \param size The size of the random vector.
+   // \return The generated random vector.
+   */
+   inline const ZeroVector<Type,TF,Tag> generate( size_t size ) const
+   {
+      return ZeroVector<Type,TF,Tag>( size );
+   }
    //**********************************************************************************************
 };
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Generation of a random ZeroVector.
-//
-// \param size The size of the random vector.
-// \return The generated random vector.
-*/
-template< typename Type   // Data type of the vector
-        , bool TF         // Transpose flag
-        , typename Tag >  // Type tag
-inline const ZeroVector<Type,TF,Tag>
-   Rand< ZeroVector<Type,TF,Tag> >::generate( size_t size ) const
-{
-   return ZeroVector<Type,TF,Tag>( size );
-}
 /*! \endcond */
 //*************************************************************************************************
 
