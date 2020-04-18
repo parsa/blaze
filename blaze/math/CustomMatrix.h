@@ -80,82 +80,52 @@ template< typename Type     // Data type of the matrix
 class Rand< CustomMatrix<Type,AF,PF,SO,Tag,RT> >
 {
  public:
-   //**Randomize functions*************************************************************************
-   /*!\name Randomize functions */
-   //@{
-   inline void randomize( CustomMatrix<Type,AF,PF,SO,Tag,RT>& matrix ) const;
+   //*************************************************************************************************
+   /*!\brief Randomization of a CustomMatrix.
+   //
+   // \param matrix The matrix to be randomized.
+   // \return void
+   */
+   inline void randomize( CustomMatrix<Type,AF,PF,SO,Tag,RT>& matrix ) const
+   {
+      using blaze::randomize;
 
-   template< typename Arg >
-   inline void randomize( CustomMatrix<Type,AF,PF,SO,Tag,RT>& matrix, const Arg& min, const Arg& max ) const;
-   //@}
-   //**********************************************************************************************
+      const size_t m( matrix.rows()    );
+      const size_t n( matrix.columns() );
+
+      for( size_t i=0UL; i<m; ++i ) {
+         for( size_t j=0UL; j<n; ++j ) {
+            randomize( matrix(i,j) );
+         }
+      }
+   }
+   //*************************************************************************************************
+
+   //*************************************************************************************************
+   /*!\brief Randomization of a CustomMatrix.
+   //
+   // \param matrix The matrix to be randomized.
+   // \param min The smallest possible value for a matrix element.
+   // \param max The largest possible value for a matrix element.
+   // \return void
+   */
+   template< typename Arg >    // Min/max argument type
+   inline void randomize( CustomMatrix<Type,AF,PF,SO,Tag,RT>& matrix,
+                          const Arg& min, const Arg& max ) const
+   {
+      using blaze::randomize;
+
+      const size_t m( matrix.rows()    );
+      const size_t n( matrix.columns() );
+
+      for( size_t i=0UL; i<m; ++i ) {
+         for( size_t j=0UL; j<n; ++j ) {
+            randomize( matrix(i,j), min, max );
+         }
+      }
+   }
+   //*************************************************************************************************
 };
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Randomization of a CustomMatrix.
-//
-// \param matrix The matrix to be randomized.
-// \return void
-*/
-template< typename Type     // Data type of the matrix
-        , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF    // Padding flag
-        , bool SO           // Storage order
-        , typename Tag      // Type tag
-        , typename RT >     // Result type
-inline void
-   Rand< CustomMatrix<Type,AF,PF,SO,Tag,RT> >::randomize( CustomMatrix<Type,AF,PF,SO,Tag,RT>& matrix ) const
-{
-   using blaze::randomize;
-
-   const size_t m( matrix.rows()    );
-   const size_t n( matrix.columns() );
-
-   for( size_t i=0UL; i<m; ++i ) {
-      for( size_t j=0UL; j<n; ++j ) {
-         randomize( matrix(i,j) );
-      }
-   }
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Randomization of a CustomMatrix.
-//
-// \param matrix The matrix to be randomized.
-// \param min The smallest possible value for a matrix element.
-// \param max The largest possible value for a matrix element.
-// \return void
-*/
-template< typename Type     // Data type of the matrix
-        , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF    // Padding flag
-        , bool SO           // Storage order
-        , typename Tag      // Type tag
-        , typename RT >     // Result type
-template< typename Arg >    // Min/max argument type
-inline void
-   Rand< CustomMatrix<Type,AF,PF,SO,Tag,RT> >::randomize( CustomMatrix<Type,AF,PF,SO,Tag,RT>& matrix,
-                                                          const Arg& min, const Arg& max ) const
-{
-   using blaze::randomize;
-
-   const size_t m( matrix.rows()    );
-   const size_t n( matrix.columns() );
-
-   for( size_t i=0UL; i<m; ++i ) {
-      for( size_t j=0UL; j<n; ++j ) {
-         randomize( matrix(i,j), min, max );
-      }
-   }
-}
 /*! \endcond */
 //*************************************************************************************************
 
