@@ -80,146 +80,83 @@ template< typename Type     // Data type of the matrix
 class Rand< HybridMatrix<Type,M,N,SO,AF,PF,Tag> >
 {
  public:
-   //**Generate functions**************************************************************************
-   /*!\name Generate functions */
-   //@{
-   inline const HybridMatrix<Type,M,N,SO,AF,PF,Tag> generate( size_t m, size_t n ) const;
-
-   template< typename Arg >
+   //*************************************************************************************************
+   /*!\brief Generation of a random HybridMatrix.
+   //
+   // \return The generated random matrix.
+   */
    inline const HybridMatrix<Type,M,N,SO,AF,PF,Tag>
-      generate( size_t m, size_t n, const Arg& min, const Arg& max ) const;
-   //@}
-   //**********************************************************************************************
+      generate( size_t m, size_t n ) const
+   {
+      HybridMatrix<Type,M,N,SO,AF,PF,Tag> matrix( m, n );
+      randomize( matrix );
+      return matrix;
+   }
+   //*************************************************************************************************
 
-   //**Randomize functions*************************************************************************
-   /*!\name Randomize functions */
-   //@{
-   inline void randomize( HybridMatrix<Type,M,N,SO,AF,PF,Tag>& matrix ) const;
+   //*************************************************************************************************
+   /*!\brief Generation of a random HybridMatrix.
+   //
+   // \param min The smallest possible value for a matrix element.
+   // \param max The largest possible value for a matrix element.
+   // \return The generated random matrix.
+   */
+   template< typename Arg >    // Min/max argument type
+   inline const HybridMatrix<Type,M,N,SO,AF,PF,Tag>
+      generate( size_t m, size_t n, const Arg& min, const Arg& max ) const
+   {
+      HybridMatrix<Type,M,N,SO,AF,PF,Tag> matrix( m, n );
+      randomize( matrix, min, max );
+      return matrix;
+   }
+   //*************************************************************************************************
 
-   template< typename Arg >
-   inline void randomize( HybridMatrix<Type,M,N,SO,AF,PF,Tag>& matrix, const Arg& min, const Arg& max ) const;
-   //@}
-   //**********************************************************************************************
+   //*************************************************************************************************
+   /*!\brief Randomization of a HybridMatrix.
+   //
+   // \param matrix The matrix to be randomized.
+   // \return void
+   */
+   inline void randomize( HybridMatrix<Type,M,N,SO,AF,PF,Tag>& matrix ) const
+   {
+      using blaze::randomize;
+
+      const size_t m( matrix.rows()    );
+      const size_t n( matrix.columns() );
+
+      for( size_t i=0UL; i<m; ++i ) {
+         for( size_t j=0UL; j<n; ++j ) {
+            randomize( matrix(i,j) );
+         }
+      }
+   }
+   //*************************************************************************************************
+
+   //*************************************************************************************************
+   /*!\brief Randomization of a HybridMatrix.
+   //
+   // \param matrix The matrix to be randomized.
+   // \param min The smallest possible value for a matrix element.
+   // \param max The largest possible value for a matrix element.
+   // \return void
+   */
+   template< typename Arg >  // Min/max argument type
+   inline void randomize( HybridMatrix<Type,M,N,SO,AF,PF,Tag>& matrix,
+                          const Arg& min, const Arg& max ) const
+   {
+      using blaze::randomize;
+
+      const size_t m( matrix.rows()    );
+      const size_t n( matrix.columns() );
+
+      for( size_t i=0UL; i<m; ++i ) {
+         for( size_t j=0UL; j<n; ++j ) {
+            randomize( matrix(i,j), min, max );
+         }
+      }
+   }
+   //*************************************************************************************************
 };
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Generation of a random HybridMatrix.
-//
-// \return The generated random matrix.
-*/
-template< typename Type     // Data type of the matrix
-        , size_t M          // Number of rows
-        , size_t N          // Number of columns
-        , bool SO           // Storage order
-        , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF    // Padding flag
-        , typename Tag >    // Type tag
-inline const HybridMatrix<Type,M,N,SO,AF,PF,Tag>
-   Rand< HybridMatrix<Type,M,N,SO,AF,PF,Tag> >::generate( size_t m, size_t n ) const
-{
-   HybridMatrix<Type,M,N,SO,AF,PF,Tag> matrix( m, n );
-   randomize( matrix );
-   return matrix;
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Generation of a random HybridMatrix.
-//
-// \param min The smallest possible value for a matrix element.
-// \param max The largest possible value for a matrix element.
-// \return The generated random matrix.
-*/
-template< typename Type     // Data type of the matrix
-        , size_t M          // Number of rows
-        , size_t N          // Number of columns
-        , bool SO           // Storage order
-        , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF    // Padding flag
-        , typename Tag >    // Type tag
-template< typename Arg >    // Min/max argument type
-inline const HybridMatrix<Type,M,N,SO,AF,PF,Tag>
-   Rand< HybridMatrix<Type,M,N,SO,AF,PF,Tag> >::generate( size_t m, size_t n, const Arg& min, const Arg& max ) const
-{
-   HybridMatrix<Type,M,N,SO,AF,PF,Tag> matrix( m, n );
-   randomize( matrix, min, max );
-   return matrix;
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Randomization of a HybridMatrix.
-//
-// \param matrix The matrix to be randomized.
-// \return void
-*/
-template< typename Type     // Data type of the matrix
-        , size_t M          // Number of rows
-        , size_t N          // Number of columns
-        , bool SO           // Storage order
-        , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF    // Padding flag
-        , typename Tag >    // Type tag
-inline void
-   Rand< HybridMatrix<Type,M,N,SO,AF,PF,Tag> >::randomize( HybridMatrix<Type,M,N,SO,AF,PF,Tag>& matrix ) const
-{
-   using blaze::randomize;
-
-   const size_t m( matrix.rows()    );
-   const size_t n( matrix.columns() );
-
-   for( size_t i=0UL; i<m; ++i ) {
-      for( size_t j=0UL; j<n; ++j ) {
-         randomize( matrix(i,j) );
-      }
-   }
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Randomization of a HybridMatrix.
-//
-// \param matrix The matrix to be randomized.
-// \param min The smallest possible value for a matrix element.
-// \param max The largest possible value for a matrix element.
-// \return void
-*/
-template< typename Type     // Data type of the matrix
-        , size_t M          // Number of rows
-        , size_t N          // Number of columns
-        , bool SO           // Storage order
-        , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF    // Padding flag
-        , typename Tag >    // Type tag
-template< typename Arg >    // Min/max argument type
-inline void
-   Rand< HybridMatrix<Type,M,N,SO,AF,PF,Tag> >::randomize( HybridMatrix<Type,M,N,SO,AF,PF,Tag>& matrix,
-                                                           const Arg& min, const Arg& max ) const
-{
-   using blaze::randomize;
-
-   const size_t m( matrix.rows()    );
-   const size_t n( matrix.columns() );
-
-   for( size_t i=0UL; i<m; ++i ) {
-      for( size_t j=0UL; j<n; ++j ) {
-         randomize( matrix(i,j), min, max );
-      }
-   }
-}
 /*! \endcond */
 //*************************************************************************************************
 
