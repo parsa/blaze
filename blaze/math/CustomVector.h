@@ -74,74 +74,44 @@ template< typename Type     // Data type of the vector
 class Rand< CustomVector<Type,AF,PF,TF,Tag,RT> >
 {
  public:
-   //**Randomize functions*************************************************************************
-   /*!\name Randomize functions */
-   //@{
-   inline void randomize( CustomVector<Type,AF,PF,TF,Tag,RT>& vector ) const;
+   //**********************************************************************************************
+   /*!\brief Randomization of a CustomVector.
+   //
+   // \param vector The vector to be randomized.
+   // \return void
+   */
+   inline void randomize( CustomVector<Type,AF,PF,TF,Tag,RT>& vector ) const
+   {
+      using blaze::randomize;
 
-   template< typename Arg >
-   inline void randomize( CustomVector<Type,AF,PF,TF,Tag,RT>& vector, const Arg& min, const Arg& max ) const;
-   //@}
+      const size_t size( vector.size() );
+      for( size_t i=0UL; i<size; ++i ) {
+         randomize( vector[i] );
+      }
+   }
+   //**********************************************************************************************
+
+   //**********************************************************************************************
+   /*!\brief Randomization of a CustomVector.
+   //
+   // \param vector The vector to be randomized.
+   // \param min The smallest possible value for a vector element.
+   // \param max The largest possible value for a vector element.
+   // \return void
+   */
+   template< typename Arg >  // Min/max argument type
+   inline void randomize( CustomVector<Type,AF,PF,TF,Tag,RT>& vector,
+                          const Arg& min, const Arg& max ) const
+   {
+      using blaze::randomize;
+
+      const size_t size( vector.size() );
+      for( size_t i=0UL; i<size; ++i ) {
+         randomize( vector[i], min, max );
+      }
+   }
    //**********************************************************************************************
 };
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Randomization of a CustomVector.
-//
-// \param vector The vector to be randomized.
-// \return void
-*/
-template< typename Type     // Data type of the vector
-        , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF    // Padding flag
-        , bool TF           // Transpose flag
-        , typename Tag      // Type tag
-        , typename RT >     // Result type
-inline void
-   Rand< CustomVector<Type,AF,PF,TF,Tag,RT> >::randomize( CustomVector<Type,AF,PF,TF,Tag,RT>& vector ) const
-{
-   using blaze::randomize;
-
-   const size_t size( vector.size() );
-   for( size_t i=0UL; i<size; ++i ) {
-      randomize( vector[i] );
-   }
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Randomization of a CustomVector.
-//
-// \param vector The vector to be randomized.
-// \param min The smallest possible value for a vector element.
-// \param max The largest possible value for a vector element.
-// \return void
-*/
-template< typename Type     // Data type of the vector
-        , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF    // Padding flag
-        , bool TF           // Transpose flag
-        , typename Tag      // Type tag
-        , typename RT >     // Result type
-template< typename Arg >    // Min/max argument type
-inline void
-   Rand< CustomVector<Type,AF,PF,TF,Tag,RT> >::randomize( CustomVector<Type,AF,PF,TF,Tag,RT>& vector,
-                                                          const Arg& min, const Arg& max ) const
-{
-   using blaze::randomize;
-
-   const size_t size( vector.size() );
-   for( size_t i=0UL; i<size; ++i ) {
-      randomize( vector[i], min, max );
-   }
-}
 /*! \endcond */
 //*************************************************************************************************
 
