@@ -41,6 +41,8 @@
 //*************************************************************************************************
 
 #include <cmath>
+#include <blaze/util/EnableIf.h>
+#include <blaze/util/typetraits/IsArithmetic.h>
 
 
 namespace blaze {
@@ -52,10 +54,20 @@ namespace blaze {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Import of the std::isfinite() function into the Blaze namespace.
+/*!\brief Determines if the given floating point number has finite value.
 // \ingroup math_shims
+//
+// \param a The floating point number to be checked.
+// \return \a true in case the given floating point number is finite, \a false otherwise.
+//
+// This function determines if the given floating point number has finite value (i.e. it is
+// normal, subnormal or zero, but not infinite or NaN).
 */
-using std::isfinite;
+template< typename T, EnableIf_t< IsArithmetic_v<T> >* = nullptr >
+inline bool isfinite( T a ) noexcept
+{
+   return std::isfinite( a );
+}
 //*************************************************************************************************
 
 } // namespace blaze
