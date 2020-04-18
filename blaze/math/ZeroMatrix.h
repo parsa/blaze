@@ -69,33 +69,19 @@ template< typename Type   // Data type of the matrix
 class Rand< ZeroMatrix<Type,SO,Tag> >
 {
  public:
-   //**Generate functions**************************************************************************
-   /*!\name Generate functions */
-   //@{
-   inline const ZeroMatrix<Type,SO,Tag> generate( size_t m, size_t n ) const;
-   //@}
+   //**********************************************************************************************
+   /*!\brief Generation of a random ZeroMatrix.
+   //
+   // \param m The number of rows of the random matrix.
+   // \param n The number of columns of the random matrix.
+   // \return The generated random matrix.
+   */
+   inline const ZeroMatrix<Type,SO,Tag> generate( size_t m, size_t n ) const
+   {
+      return ZeroMatrix<Type,SO,Tag>( m, n );
+   }
    //**********************************************************************************************
 };
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Generation of a random ZeroMatrix.
-//
-// \param m The number of rows of the random matrix.
-// \param n The number of columns of the random matrix.
-// \return The generated random matrix.
-*/
-template< typename Type   // Data type of the matrix
-        , bool SO         // Storage order
-        , typename Tag >  // Type tag
-inline const ZeroMatrix<Type,SO,Tag>
-   Rand< ZeroMatrix<Type,SO,Tag> >::generate( size_t m, size_t n ) const
-{
-   return ZeroMatrix<Type,SO,Tag>( m, n );
-}
 /*! \endcond */
 //*************************************************************************************************
 
