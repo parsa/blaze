@@ -68,32 +68,18 @@ template< typename Type   // Data type of the matrix
 class Rand< IdentityMatrix<Type,SO,Tag> >
 {
  public:
-   //**Generate functions**************************************************************************
-   /*!\name Generate functions */
-   //@{
-   inline const IdentityMatrix<Type,SO,Tag> generate( size_t n ) const;
-   //@}
+   //**********************************************************************************************
+   /*!\brief Generation of a random IdentityMatrix.
+   //
+   // \param n The number of rows and columns of the random matrix.
+   // \return The generated random matrix.
+   */
+   inline const IdentityMatrix<Type,SO,Tag> generate( size_t n ) const
+   {
+      return IdentityMatrix<Type,SO,Tag>( n );
+   }
    //**********************************************************************************************
 };
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Generation of a random IdentityMatrix.
-//
-// \param n The number of rows and columns of the random matrix.
-// \return The generated random matrix.
-*/
-template< typename Type   // Data type of the matrix
-        , bool SO         // Storage order
-        , typename Tag >  // Type tag
-inline const IdentityMatrix<Type,SO,Tag>
-   Rand< IdentityMatrix<Type,SO,Tag> >::generate( size_t n ) const
-{
-   return IdentityMatrix<Type,SO,Tag>( n );
-}
 /*! \endcond */
 //*************************************************************************************************
 
