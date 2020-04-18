@@ -72,131 +72,71 @@ template< typename Type     // Data type of the vector
 class Rand< StaticVector<Type,N,TF,AF,PF,Tag> >
 {
  public:
-   //**Generate functions**************************************************************************
-   /*!\name Generate functions */
-   //@{
-   inline const StaticVector<Type,N,TF,AF,PF,Tag> generate() const;
-
-   template< typename Arg >
-   inline const StaticVector<Type,N,TF,AF,PF,Tag> generate( const Arg& min, const Arg& max ) const;
-   //@}
+   //**********************************************************************************************
+   /*!\brief Generation of a random StaticVector.
+   //
+   // \return The generated random vector.
+   */
+   inline const StaticVector<Type,N,TF,AF,PF,Tag> generate() const
+   {
+      StaticVector<Type,N,TF,AF,PF,Tag> vector;
+      randomize( vector );
+      return vector;
+   }
    //**********************************************************************************************
 
-   //**Randomize functions*************************************************************************
-   /*!\name Randomize functions */
-   //@{
-   inline void randomize( StaticVector<Type,N,TF,AF,PF,Tag>& vector ) const;
+   //**********************************************************************************************
+   /*!\brief Generation of a random StaticVector.
+   //
+   // \param min The smallest possible value for a vector element.
+   // \param max The largest possible value for a vector element.
+   // \return The generated random vector.
+   */
+   template< typename Arg >  // Min/max argument type
+   inline const StaticVector<Type,N,TF,AF,PF,Tag> generate( const Arg& min, const Arg& max ) const
+   {
+      StaticVector<Type,N,TF,AF,PF,Tag> vector;
+      randomize( vector, min, max );
+      return vector;
+   }
+   //**********************************************************************************************
 
-   template< typename Arg >
-   inline void randomize( StaticVector<Type,N,TF,AF,PF,Tag>& vector, const Arg& min, const Arg& max ) const;
-   //@}
+   //**********************************************************************************************
+   /*!\brief Randomization of a StaticVector.
+   //
+   // \param vector The vector to be randomized.
+   // \return void
+   */
+   inline void randomize( StaticVector<Type,N,TF,AF,PF,Tag>& vector ) const
+   {
+      using blaze::randomize;
+
+      for( size_t i=0UL; i<N; ++i ) {
+         randomize( vector[i] );
+      }
+   }
+   //**********************************************************************************************
+
+   //**********************************************************************************************
+   /*!\brief Randomization of a StaticVector.
+   //
+   // \param vector The vector to be randomized.
+   // \param min The smallest possible value for a vector element.
+   // \param max The largest possible value for a vector element.
+   // \return void
+   */
+   template< typename Arg >  // Min/max argument type
+   inline void randomize( StaticVector<Type,N,TF,AF,PF,Tag>& vector,
+                          const Arg& min, const Arg& max ) const
+   {
+      using blaze::randomize;
+
+      for( size_t i=0UL; i<N; ++i ) {
+         randomize( vector[i], min, max );
+      }
+   }
    //**********************************************************************************************
 };
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Generation of a random StaticVector.
-//
-// \return The generated random vector.
-*/
-template< typename Type     // Data type of the vector
-        , size_t N          // Number of elements
-        , bool TF           // Transpose flag
-        , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF    // Padding flag
-        , typename Tag >    // Type tag
-inline const StaticVector<Type,N,TF,AF,PF,Tag>
-   Rand< StaticVector<Type,N,TF,AF,PF,Tag> >::generate() const
-{
-   StaticVector<Type,N,TF,AF,PF,Tag> vector;
-   randomize( vector );
-   return vector;
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Generation of a random StaticVector.
-//
-// \param min The smallest possible value for a vector element.
-// \param max The largest possible value for a vector element.
-// \return The generated random vector.
-*/
-template< typename Type     // Data type of the vector
-        , size_t N          // Number of elements
-        , bool TF           // Transpose flag
-        , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF    // Padding flag
-        , typename Tag >    // Type tag
-template< typename Arg >    // Min/max argument type
-inline const StaticVector<Type,N,TF,AF,PF,Tag>
-   Rand< StaticVector<Type,N,TF,AF,PF,Tag> >::generate( const Arg& min, const Arg& max ) const
-{
-   StaticVector<Type,N,TF,AF,PF,Tag> vector;
-   randomize( vector, min, max );
-   return vector;
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Randomization of a StaticVector.
-//
-// \param vector The vector to be randomized.
-// \return void
-*/
-template< typename Type     // Data type of the vector
-        , size_t N          // Number of elements
-        , bool TF           // Transpose flag
-        , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF    // Padding flag
-        , typename Tag >    // Type tag
-inline void
-   Rand< StaticVector<Type,N,TF,AF,PF,Tag> >::randomize( StaticVector<Type,N,TF,AF,PF,Tag>& vector ) const
-{
-   using blaze::randomize;
-
-   for( size_t i=0UL; i<N; ++i ) {
-      randomize( vector[i] );
-   }
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Randomization of a StaticVector.
-//
-// \param vector The vector to be randomized.
-// \param min The smallest possible value for a vector element.
-// \param max The largest possible value for a vector element.
-// \return void
-*/
-template< typename Type     // Data type of the vector
-        , size_t N          // Number of elements
-        , bool TF           // Transpose flag
-        , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF    // Padding flag
-        , typename Tag >    // Type tag
-template< typename Arg >    // Min/max argument type
-inline void
-   Rand< StaticVector<Type,N,TF,AF,PF,Tag> >::randomize( StaticVector<Type,N,TF,AF,PF,Tag>& vector,
-                                                         const Arg& min, const Arg& max ) const
-{
-   using blaze::randomize;
-
-   for( size_t i=0UL; i<N; ++i ) {
-      randomize( vector[i], min, max );
-   }
-}
 /*! \endcond */
 //*************************************************************************************************
 
