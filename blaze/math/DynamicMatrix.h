@@ -75,131 +75,87 @@ template< typename Type   // Data type of the matrix
 class Rand< DynamicMatrix<Type,SO,Tag> >
 {
  public:
-   //**Generate functions**************************************************************************
-   /*!\name Generate functions */
-   //@{
-   inline const DynamicMatrix<Type,SO,Tag> generate( size_t m, size_t n ) const;
-
-   template< typename Arg >
-   inline const DynamicMatrix<Type,SO,Tag> generate( size_t m, size_t n, const Arg& min, const Arg& max ) const;
-   //@}
+   //**********************************************************************************************
+   /*!\brief Generation of a random DynamicMatrix.
+   //
+   // \param m The number of rows of the random matrix.
+   // \param n The number of columns of the random matrix.
+   // \return The generated random matrix.
+   */
+   inline const DynamicMatrix<Type,SO,Tag>
+      generate( size_t m, size_t n ) const
+   {
+      DynamicMatrix<Type,SO,Tag> matrix( m, n );
+      randomize( matrix );
+      return matrix;
+   }
    //**********************************************************************************************
 
-   //**Randomize functions*************************************************************************
-   /*!\name Randomize functions */
-   //@{
-   inline void randomize( DynamicMatrix<Type,SO,Tag>& matrix ) const;
+   //**********************************************************************************************
+   /*!\brief Generation of a random DynamicMatrix.
+   //
+   // \param m The number of rows of the random matrix.
+   // \param n The number of columns of the random matrix.
+   // \param min The smallest possible value for a matrix element.
+   // \param max The largest possible value for a matrix element.
+   // \return The generated random matrix.
+   */
+   template< typename Arg >  // Min/max argument type
+   inline const DynamicMatrix<Type,SO,Tag>
+      generate( size_t m, size_t n, const Arg& min, const Arg& max ) const
+   {
+      DynamicMatrix<Type,SO,Tag> matrix( m, n );
+      randomize( matrix, min, max );
+      return matrix;
+   }
+   //**********************************************************************************************
 
-   template< typename Arg >
-   inline void randomize( DynamicMatrix<Type,SO,Tag>& matrix, const Arg& min, const Arg& max ) const;
-   //@}
+   //**********************************************************************************************
+   /*!\brief Randomization of a DynamicMatrix.
+   //
+   // \param matrix The matrix to be randomized.
+   // \return void
+   */
+   inline void randomize( DynamicMatrix<Type,SO,Tag>& matrix ) const
+   {
+      using blaze::randomize;
+
+      const size_t m( matrix.rows()    );
+      const size_t n( matrix.columns() );
+
+      for( size_t i=0UL; i<m; ++i ) {
+         for( size_t j=0UL; j<n; ++j ) {
+            randomize( matrix(i,j) );
+         }
+      }
+   }
+   //**********************************************************************************************
+
+   //**********************************************************************************************
+   /*!\brief Randomization of a DynamicMatrix.
+   //
+   // \param matrix The matrix to be randomized.
+   // \param min The smallest possible value for a matrix element.
+   // \param max The largest possible value for a matrix element.
+   // \return void
+   */
+   template< typename Arg >  // Min/max argument type
+   inline void randomize( DynamicMatrix<Type,SO,Tag>& matrix,
+                          const Arg& min, const Arg& max ) const
+   {
+      using blaze::randomize;
+
+      const size_t m( matrix.rows()    );
+      const size_t n( matrix.columns() );
+
+      for( size_t i=0UL; i<m; ++i ) {
+         for( size_t j=0UL; j<n; ++j ) {
+            randomize( matrix(i,j), min, max );
+         }
+      }
+   }
    //**********************************************************************************************
 };
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Generation of a random DynamicMatrix.
-//
-// \param m The number of rows of the random matrix.
-// \param n The number of columns of the random matrix.
-// \return The generated random matrix.
-*/
-template< typename Type   // Data type of the matrix
-        , bool SO         // Storage order
-        , typename Tag >  // Type tag
-inline const DynamicMatrix<Type,SO,Tag>
-   Rand< DynamicMatrix<Type,SO,Tag> >::generate( size_t m, size_t n ) const
-{
-   DynamicMatrix<Type,SO,Tag> matrix( m, n );
-   randomize( matrix );
-   return matrix;
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Generation of a random DynamicMatrix.
-//
-// \param m The number of rows of the random matrix.
-// \param n The number of columns of the random matrix.
-// \param min The smallest possible value for a matrix element.
-// \param max The largest possible value for a matrix element.
-// \return The generated random matrix.
-*/
-template< typename Type   // Data type of the matrix
-        , bool SO         // Storage order
-        , typename Tag >  // Type tag
-template< typename Arg >  // Min/max argument type
-inline const DynamicMatrix<Type,SO,Tag>
-   Rand< DynamicMatrix<Type,SO,Tag> >::generate( size_t m, size_t n, const Arg& min, const Arg& max ) const
-{
-   DynamicMatrix<Type,SO,Tag> matrix( m, n );
-   randomize( matrix, min, max );
-   return matrix;
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Randomization of a DynamicMatrix.
-//
-// \param matrix The matrix to be randomized.
-// \return void
-*/
-template< typename Type   // Data type of the matrix
-        , bool SO         // Storage order
-        , typename Tag >  // Type tag
-inline void Rand< DynamicMatrix<Type,SO,Tag> >::randomize( DynamicMatrix<Type,SO,Tag>& matrix ) const
-{
-   using blaze::randomize;
-
-   const size_t m( matrix.rows()    );
-   const size_t n( matrix.columns() );
-
-   for( size_t i=0UL; i<m; ++i ) {
-      for( size_t j=0UL; j<n; ++j ) {
-         randomize( matrix(i,j) );
-      }
-   }
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Randomization of a DynamicMatrix.
-//
-// \param matrix The matrix to be randomized.
-// \param min The smallest possible value for a matrix element.
-// \param max The largest possible value for a matrix element.
-// \return void
-*/
-template< typename Type   // Data type of the matrix
-        , bool SO         // Storage order
-        , typename Tag >  // Type tag
-template< typename Arg >  // Min/max argument type
-inline void Rand< DynamicMatrix<Type,SO,Tag> >::randomize( DynamicMatrix<Type,SO,Tag>& matrix,
-                                                           const Arg& min, const Arg& max ) const
-{
-   using blaze::randomize;
-
-   const size_t m( matrix.rows()    );
-   const size_t n( matrix.columns() );
-
-   for( size_t i=0UL; i<m; ++i ) {
-      for( size_t j=0UL; j<n; ++j ) {
-         randomize( matrix(i,j), min, max );
-      }
-   }
-}
 /*! \endcond */
 //*************************************************************************************************
 
