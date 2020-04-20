@@ -51,8 +51,12 @@
 
 // Valid settings for the BLAZE_DEFAULT_ALIGNMENT_FLAG are blaze::aligned and blaze::unaligned.
 //
-// \note It is possible to specify the default alignment flag via command line by defining this
-// symbol manually before including any Blaze header file:
+// \note It is possible to specify the default alignment flag via command line or by defining
+// this symbol manually before including any Blaze header file:
+
+   \code
+   g++ ... -DBLAZE_DEFAULT_ALIGNMENT_FLAG=blaze::aligned ...
+   \endcode
 
    \code
    #define BLAZE_DEFAULT_ALIGNMENT_FLAG blaze::aligned

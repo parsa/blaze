@@ -43,8 +43,12 @@
 //  - Deactivated: \b 0
 //  - Activated  : \b 1
 //
-// \note It is possible to (de-)activate the restrict keyword via command line by defining this
-// symbol manually before including any Blaze header file:
+// \note It is possible to (de-)activate the restrict keyword via command line or by defining
+// this symbol manually before including any Blaze header file:
+
+   \code
+   g++ ... -DBLAZE_USE_RESTRICT=1 ...
+   \endcode
 
    \code
    #define BLAZE_USE_RESTRICT 1

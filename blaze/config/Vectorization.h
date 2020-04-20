@@ -50,8 +50,12 @@
 //  - Deactivated: \b 0
 //  - Activated  : \b 1 (default)
 //
-// \note It is possible to (de-)activate vectorization via command line by defining this
+// \note It is possible to (de-)activate vectorization via command line or by defining this
 // symbol manually before including any Blaze header file:
+
+   \code
+   g++ ... -DBLAZE_USE_VECTORIZATION=1 ...
+   \endcode
 
    \code
    #define BLAZE_USE_VECTORIZATION 1
@@ -78,8 +82,12 @@
 //  - Deactivated: \b 0 (default)
 //  - Activated  : \b 1
 //
-// \note It is possible to enable/disable Sleef vectorization via command line by defining this
-// symbol manually before including any Blaze header file:
+// \note It is possible to enable/disable Sleef vectorization via command line or by defining
+// this symbol manually before including any Blaze header file:
+
+   \code
+   g++ ... -DBLAZE_USE_SLEEF=1 ...
+   \endcode
 
    \code
    #define BLAZE_USE_SLEEF 1

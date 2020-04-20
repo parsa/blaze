@@ -52,8 +52,12 @@
 // \warning Changing the setting of the BLAS mode requires a recompilation of all code using
 // the Blaze library!
 //
-// \note It is possible to (de-)activate the BLAS mode via command line by defining this symbol
+// \note It is possible to (de-)activate the BLAS mode via command line or by defining this
 // symbol manually before including any Blaze header file:
+
+   \code
+   g++ ... -DBLAZE_BLAS_MODE=1 ...
+   \endcode
 
    \code
    #define BLAZE_BLAS_MODE 1
@@ -82,8 +86,12 @@
 // \warning Changing the setting of the BLAS mode requires a recompilation of all code using the
 // Blaze library!
 //
-// \note It is possible to (de-)activate the 64-bit BLAS mode via command line by defining this
-// symbol manually before including any Blaze header file:
+// \note It is possible to (de-)activate the 64-bit BLAS mode via command line or by defining
+// this symbol manually before including any Blaze header file:
+
+   \code
+   g++ ... -DBLAZE_BLAS_IS_64BIT=1 ...
+   \endcode
 
    \code
    #define BLAZE_BLAS_IS_64BIT 1
@@ -112,8 +120,12 @@
 // \warning Changing the setting of the BLAS mode requires a recompilation of all code using the
 // Blaze library!
 //
-// \note It is possible to (de-)activate the parallel BLAS mode via command line by defining this
-// symbol manually before including any Blaze header file:
+// \note It is possible to (de-)activate the parallel BLAS mode via command line or by defining
+// this symbol manually before including any Blaze header file:
+
+   \code
+   g++ ... -DBLAZE_BLAS_IS_PARALLEL=1 ...
+   \endcode
 
    \code
    #define BLAZE_BLAS_IS_PARALLEL 1
@@ -142,7 +154,11 @@
 // using the Blaze library!
 //
 // \note It is possible to (de-)activate the use of the BLAS matrix/vector multiplication kernels
-// via command line by defining this symbol manually before including any Blaze header file:
+// via command line or by defining this symbol manually before including any Blaze header file:
+
+   \code
+   g++ ... -DBLAZE_USE_BLAS_MATRIX_VECTOR_MULTIPLICATION=1 ...
+   \endcode
 
    \code
    #define BLAZE_USE_BLAS_MATRIX_VECTOR_MULTIPLICATION 1
@@ -171,7 +187,11 @@
 // code using the Blaze library!
 //
 // \note It is possible to (de-)activate the use of the BLAS matrix/matrix multiplication kernels
-// via command line by defining this symbol manually before including any Blaze header file:
+// via command line or by defining this symbol manually before including any Blaze header file:
+
+   \code
+   g++ ... -DBLAZE_USE_BLAS_MATRIX_MATRIX_MULTIPLICATION=1 ...
+   \endcode
 
    \code
    #define BLAZE_USE_BLAS_MATRIX_MATRIX_MULTIPLICATION 1
@@ -196,8 +216,12 @@
 // \warning Changing the name of the BLAS include file requires a recompilation of all code using
 // the Blaze library!
 //
-// \note It is possible to specify the BLAS include file via command line by defining this symbol
-// manually before including any Blaze header file:
+// \note It is possible to specify the BLAS include file via command line or by defining this
+// symbol manually before including any Blaze header file:
+
+   \code
+   g++ ... -DBLAZE_BLAS_INCLUDE_FILE="<cblas.h>" ...
+   \endcode
 
    \code
    #define BLAZE_BLAS_INCLUDE_FILE <cblas.h>

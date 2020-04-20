@@ -53,8 +53,12 @@
 // size of \f$ 2000 \times 2000 \f$). Note that in case the Blaze debug mode is active, this
 // threshold will be replaced by the blaze::DMATDVECMULT_DEBUG_THRESHOLD value.
 //
-// \note It is possible to specify this threshold via command line by defining this symbol
+// \note It is possible to specify this threshold via command line or by defining this symbol
 // manually before including any Blaze header file:
+
+   \code
+   g++ ... -DBLAZE_DMATDVECMULT_THRESHOLD=4000000 ...
+   \endcode
 
    \code
    #define BLAZE_DMATDVECMULT_THRESHOLD 4000000UL
@@ -81,8 +85,12 @@
 // size of \f$ 250 \times 250 \f$). Note that in case the Blaze debug mode is active, this
 // threshold will be replaced by the blaze::TDMATDVECMULT_DEBUG_THRESHOLD value.
 //
-// \note It is possible to specify this threshold via command line by defining this symbol
+// \note It is possible to specify this threshold via command line or by defining this symbol
 // manually before including any Blaze header file:
+
+   \code
+   g++ ... -DBLAZE_TDMATDVECMULT_THRESHOLD=62500 ...
+   \endcode
 
    \code
    #define BLAZE_TDMATDVECMULT_THRESHOLD 62500UL
@@ -109,8 +117,12 @@
 // size of \f$ 250 \times 250 \f$). Note that in case the Blaze debug mode is active, this
 // threshold will be replaced by the blaze::TDVECDMATMULT_DEBUG_THRESHOLD value.
 //
-// \note It is possible to specify this threshold via command line by defining this symbol
+// \note It is possible to specify this threshold via command line or by defining this symbol
 // manually before including any Blaze header file:
+
+   \code
+   g++ ... -DBLAZE_TDVECDMATMULT_THRESHOLD=62500 ...
+   \endcode
 
    \code
    #define BLAZE_TDVECDMATMULT_THRESHOLD 62500UL
@@ -137,8 +149,12 @@
 // size of \f$ 2000 \times 2000 \f$). Note that in case the Blaze debug mode is active, this
 // threshold will be replaced by the blaze::TDVECTDMATMULT_DEBUG_THRESHOLD value.
 //
-// \note It is possible to specify this threshold via command line by defining this symbol
+// \note It is possible to specify this threshold via command line or by defining this symbol
 // manually before including any Blaze header file:
+
+   \code
+   g++ ... -DBLAZE_TDVECTDMATMULT_THRESHOLD=4000000 ...
+   \endcode
 
    \code
    #define BLAZE_TDVECTDMATMULT_THRESHOLD 4000000UL
@@ -165,8 +181,12 @@
 // size of \f$ 70 \times 70 \f$). Note that in case the Blaze debug mode is active, this
 // threshold will be replaced by the blaze::DMATDMATMULT_DEBUG_THRESHOLD value.
 //
-// \note It is possible to specify this threshold via command line by defining this symbol
+// \note It is possible to specify this threshold via command line or by defining this symbol
 // manually before including any Blaze header file:
+
+   \code
+   g++ ... -DBLAZE_DMATDMATMULT_THRESHOLD=4900 ...
+   \endcode
 
    \code
    #define BLAZE_DMATDMATMULT_THRESHOLD 4900UL
@@ -193,8 +213,12 @@
 // size of \f$ 70 \times 70 \f$). Note that in case the Blaze debug mode is active, this
 // threshold will be replaced by the blaze::DMATTDMATMULT_DEBUG_THRESHOLD value.
 //
-// \note It is possible to specify this threshold via command line by defining this symbol
+// \note It is possible to specify this threshold via command line or by defining this symbol
 // manually before including any Blaze header file:
+
+   \code
+   g++ ... -DBLAZE_DMATTDMATMULT_THRESHOLD=4900 ...
+   \endcode
 
    \code
    #define BLAZE_DMATTDMATMULT_THRESHOLD 4900UL
@@ -221,8 +245,12 @@
 // size of \f$ 70 \times 70 \f$). Note that in case the Blaze debug mode is active, this
 // threshold will be replaced by the blaze::TDMATDMATMULT_DEBUG_THRESHOLD value.
 //
-// \note It is possible to specify this threshold via command line by defining this symbol
+// \note It is possible to specify this threshold via command line or by defining this symbol
 // manually before including any Blaze header file:
+
+   \code
+   g++ ... -DBLAZE_TDMATDMATMULT_THRESHOLD=4900 ...
+   \endcode
 
    \code
    #define BLAZE_TDMATDMATMULT_THRESHOLD 4900UL
@@ -249,8 +277,12 @@
 // size of \f$ 70 \times 70 \f$). Note that in case the Blaze debug mode is active, this
 // threshold will be replaced by the blaze::TDMATTDMATMULT_DEBUG_THRESHOLD value.
 //
-// \note It is possible to specify this threshold via command line by defining this symbol
+// \note It is possible to specify this threshold via command line or by defining this symbol
 // manually before including any Blaze header file:
+
+   \code
+   g++ ... -DBLAZE_TDMATTDMATMULT_THRESHOLD=4900 ...
+   \endcode
 
    \code
    #define BLAZE_TDMATTDMATMULT_THRESHOLD 4900UL
@@ -277,8 +309,12 @@
 // size of \f$ 50 \times 50 \f$). Note that in case the Blaze debug mode is active, this
 // threshold will be replaced by the blaze::DMATSMATMULT_DEBUG_THRESHOLD value.
 //
-// \note It is possible to specify this threshold via command line by defining this symbol
+// \note It is possible to specify this threshold via command line or by defining this symbol
 // manually before including any Blaze header file:
+
+   \code
+   g++ ... -DBLAZE_DMATSMATMULT_THRESHOLD=2500 ...
+   \endcode
 
    \code
    #define BLAZE_DMATSMATMULT_THRESHOLD 2500UL
@@ -305,8 +341,12 @@
 // size of \f$ 50 \times 50 \f$). Note that in case the Blaze debug mode is active, this
 // threshold will be replaced by the blaze::TDMATSMATMULT_DEBUG_THRESHOLD value.
 //
-// \note It is possible to specify this threshold via command line by defining this symbol
+// \note It is possible to specify this threshold via command line or by defining this symbol
 // manually before including any Blaze header file:
+
+   \code
+   g++ ... -DBLAZE_TDMATSMATMULT_THRESHOLD=2500 ...
+   \endcode
 
    \code
    #define BLAZE_TDMATSMATMULT_THRESHOLD 2500UL
@@ -333,8 +373,12 @@
 // size of \f$ 100 \times 100 \f$). Note that in case the Blaze debug mode is active, this
 // threshold will be replaced by the blaze::TSMATDMATMULT_DEBUG_THRESHOLD value.
 //
-// \note It is possible to specify this threshold via command line by defining this symbol
+// \note It is possible to specify this threshold via command line or by defining this symbol
 // manually before including any Blaze header file:
+
+   \code
+   g++ ... -DBLAZE_TSMATDMATMULT_THRESHOLD=10000 ...
+   \endcode
 
    \code
    #define BLAZE_TSMATDMATMULT_THRESHOLD 10000UL
@@ -361,8 +405,12 @@
 // size of \f$ 150 \times 150 \f$). Note that in case the Blaze debug mode is active, this
 // threshold will be replaced by the blaze::TSMATTDMATMULT_DEBUG_THRESHOLD value.
 //
-// \note It is possible to specify this threshold via command line by defining this symbol
+// \note It is possible to specify this threshold via command line or by defining this symbol
 // manually before including any Blaze header file:
+
+   \code
+   g++ ... -DBLAZE_TSMATTDMATMULT_THRESHOLD=22500 ...
+   \endcode
 
    \code
    #define BLAZE_TSMATTDMATMULT_THRESHOLD 22500UL
@@ -402,8 +450,12 @@
 // The default setting for this threshold is 38000. In case the threshold is set to 0, the
 // operation is unconditionally executed in parallel.
 //
-// \note It is possible to specify this threshold via command line by defining this symbol
+// \note It is possible to specify this threshold via command line or by defining this symbol
 // manually before including any Blaze header file:
+
+   \code
+   g++ ... -DBLAZE_SMP_DVECASSIGN_THRESHOLD=38000 ...
+   \endcode
 
    \code
    #define BLAZE_SMP_DVECASSIGN_THRESHOLD 38000UL
@@ -435,8 +487,12 @@
 // The default setting for this threshold is 51000. In case the threshold is set to 0, the
 // operation is unconditionally executed in parallel.
 //
-// \note It is possible to specify this threshold via command line by defining this symbol
+// \note It is possible to specify this threshold via command line or by defining this symbol
 // manually before including any Blaze header file:
+
+   \code
+   g++ ... -DBLAZE_SMP_DVECSCALARMULT_THRESHOLD=51000 ...
+   \endcode
 
    \code
    #define BLAZE_SMP_DVECSCALARMULT_THRESHOLD 51000UL
@@ -468,8 +524,12 @@
 // The default setting for this threshold is 38000. In case the threshold is set to 0, the
 // operation is unconditionally executed in parallel.
 //
-// \note It is possible to specify this threshold via command line by defining this symbol
+// \note It is possible to specify this threshold via command line or by defining this symbol
 // manually before including any Blaze header file:
+
+   \code
+   g++ ... -DBLAZE_SMP_DVECDVECADD_THRESHOLD=38000 ...
+   \endcode
 
    \code
    #define BLAZE_SMP_DVECDVECADD_THRESHOLD 38000UL
@@ -501,8 +561,12 @@
 // The default setting for this threshold is 38000. In case the threshold is set to 0, the
 // operation is unconditionally executed in parallel.
 //
-// \note It is possible to specify this threshold via command line by defining this symbol
+// \note It is possible to specify this threshold via command line or by defining this symbol
 // manually before including any Blaze header file:
+
+   \code
+   g++ ... -DBLAZE_SMP_DVECDVECSUB_THRESHOLD=38000 ...
+   \endcode
 
    \code
    #define BLAZE_SMP_DVECDVECSUB_THRESHOLD 38000UL
@@ -534,8 +598,12 @@
 // The default setting for this threshold is 38000. In case the threshold is set to 0, the
 // operation is unconditionally executed in parallel.
 //
-// \note It is possible to specify this threshold via command line by defining this symbol
+// \note It is possible to specify this threshold via command line or by defining this symbol
 // manually before including any Blaze header file:
+
+   \code
+   g++ ... -DBLAZE_SMP_DVECDVECMULT_THRESHOLD=38000 ...
+   \endcode
 
    \code
    #define BLAZE_SMP_DVECDVECMULT_THRESHOLD 38000UL
@@ -567,8 +635,12 @@
 // The default setting for this threshold is 38000. In case the threshold is set to 0, the
 // operation is unconditionally executed in parallel.
 //
-// \note It is possible to specify this threshold via command line by defining this symbol
+// \note It is possible to specify this threshold via command line or by defining this symbol
 // manually before including any Blaze header file:
+
+   \code
+   g++ ... -DBLAZE_SMP_DVECDVECDIV_THRESHOLD=38000 ...
+   \endcode
 
    \code
    #define BLAZE_SMP_DVECDVECDIV_THRESHOLD 38000UL
@@ -601,8 +673,12 @@
 // \f$ 290 \times 290 \f$). In case the threshold is set to 0, the operation is unconditionally
 // executed in parallel.
 //
-// \note It is possible to specify this threshold via command line by defining this symbol
+// \note It is possible to specify this threshold via command line or by defining this symbol
 // manually before including any Blaze header file:
+
+   \code
+   g++ ... -DBLAZE_SMP_DVECDVECOUTER_THRESHOLD=84100 ...
+   \endcode
 
    \code
    #define BLAZE_SMP_DVECDVECOUTER_THRESHOLD 84100UL
@@ -634,8 +710,12 @@
 // The default setting for this threshold is 330. In case the threshold is set to 0, the operation
 // is unconditionally executed in parallel.
 //
-// \note It is possible to specify this threshold via command line by defining this symbol
+// \note It is possible to specify this threshold via command line or by defining this symbol
 // manually before including any Blaze header file:
+
+   \code
+   g++ ... -DBLAZE_SMP_DMATDVECMULT_THRESHOLD=330 ...
+   \endcode
 
    \code
    #define BLAZE_SMP_DMATDVECMULT_THRESHOLD 330UL
@@ -667,8 +747,12 @@
 // The default setting for this threshold is 360. In case the threshold is set to 0, the operation
 // is unconditionally executed in parallel.
 //
-// \note It is possible to specify this threshold via command line by defining this symbol
+// \note It is possible to specify this threshold via command line or by defining this symbol
 // manually before including any Blaze header file:
+
+   \code
+   g++ ... -DBLAZE_SMP_TDMATDVECMULT_THRESHOLD=360 ...
+   \endcode
 
    \code
    #define BLAZE_SMP_TDMATDVECMULT_THRESHOLD 360UL
@@ -700,8 +784,12 @@
 // The default setting for this threshold is 370. In case the threshold is set to 0, the operation
 // is unconditionally executed in parallel.
 //
-// \note It is possible to specify this threshold via command line by defining this symbol
+// \note It is possible to specify this threshold via command line or by defining this symbol
 // manually before including any Blaze header file:
+
+   \code
+   g++ ... -DBLAZE_SMP_TDVECDMATMULT_THRESHOLD=370 ...
+   \endcode
 
    \code
    #define BLAZE_SMP_TDVECDMATMULT_THRESHOLD 370UL
@@ -733,8 +821,12 @@
 // The default setting for this threshold is 340. In case the threshold is set to 0, the operation
 // is unconditionally executed in parallel.
 //
-// \note It is possible to specify this threshold via command line by defining this symbol
+// \note It is possible to specify this threshold via command line or by defining this symbol
 // manually before including any Blaze header file:
+
+   \code
+   g++ ... -DBLAZE_SMP_TDVECTDMATMULT_THRESHOLD=340 ...
+   \endcode
 
    \code
    #define BLAZE_SMP_TDVECTDMATMULT_THRESHOLD 340UL
@@ -766,8 +858,12 @@
 // The default setting for this threshold is 480. In case the threshold is set to 0, the operation
 // is unconditionally executed in parallel.
 //
-// \note It is possible to specify this threshold via command line by defining this symbol
+// \note It is possible to specify this threshold via command line or by defining this symbol
 // manually before including any Blaze header file:
+
+   \code
+   g++ ... -DBLAZE_SMP_DMATSVECMULT_THRESHOLD=480 ...
+   \endcode
 
    \code
    #define BLAZE_SMP_DMATSVECMULT_THRESHOLD 480UL
@@ -799,8 +895,12 @@
 // The default setting for this threshold is 910. In case the threshold is set to 0, the operation
 // is unconditionally executed in parallel.
 //
-// \note It is possible to specify this threshold via command line by defining this symbol
+// \note It is possible to specify this threshold via command line or by defining this symbol
 // manually before including any Blaze header file:
+
+   \code
+   g++ ... -DBLAZE_SMP_TDMATSVECMULT_THRESHOLD=910 ...
+   \endcode
 
    \code
    #define BLAZE_SMP_TDMATSVECMULT_THRESHOLD 910UL
@@ -832,8 +932,12 @@
 // The default setting for this threshold is 910. In case the threshold is set to 0, the operation
 // is unconditionally executed in parallel.
 //
-// \note It is possible to specify this threshold via command line by defining this symbol
+// \note It is possible to specify this threshold via command line or by defining this symbol
 // manually before including any Blaze header file:
+
+   \code
+   g++ ... -DBLAZE_SMP_TSVECDMATMULT_THRESHOLD=910 ...
+   \endcode
 
    \code
    #define BLAZE_SMP_TSVECDMATMULT_THRESHOLD 910UL
@@ -865,8 +969,12 @@
 // The default setting for this threshold is 480. In case the threshold is set to 0, the operation
 // is unconditionally executed in parallel.
 //
-// \note It is possible to specify this threshold via command line by defining this symbol
+// \note It is possible to specify this threshold via command line or by defining this symbol
 // manually before including any Blaze header file:
+
+   \code
+   g++ ... -DBLAZE_SMP_TSVECTDMATMULT_THRESHOLD=480 ...
+   \endcode
 
    \code
    #define BLAZE_SMP_TSVECTDMATMULT_THRESHOLD 480UL
@@ -898,8 +1006,12 @@
 // The default setting for this threshold is 600. In case the threshold is set to 0, the operation
 // is unconditionally executed in parallel.
 //
-// \note It is possible to specify this threshold via command line by defining this symbol
+// \note It is possible to specify this threshold via command line or by defining this symbol
 // manually before including any Blaze header file:
+
+   \code
+   g++ ... -DBLAZE_SMP_SMATDVECMULT_THRESHOLD=600 ...
+   \endcode
 
    \code
    #define BLAZE_SMP_SMATDVECMULT_THRESHOLD 600UL
@@ -931,8 +1043,12 @@
 // The default setting for this threshold is 1250. In case the threshold is set to 0, the operation
 // is unconditionally executed in parallel.
 //
-// \note It is possible to specify this threshold via command line by defining this symbol
+// \note It is possible to specify this threshold via command line or by defining this symbol
 // manually before including any Blaze header file:
+
+   \code
+   g++ ... -DBLAZE_SMP_TSMATDVECMULT_THRESHOLD=1250 ...
+   \endcode
 
    \code
    #define BLAZE_SMP_TSMATDVECMULT_THRESHOLD 1250UL
@@ -964,8 +1080,12 @@
 // The default setting for this threshold is 1190. In case the threshold is set to 0, the operation
 // is unconditionally executed in parallel.
 //
-// \note It is possible to specify this threshold via command line by defining this symbol
+// \note It is possible to specify this threshold via command line or by defining this symbol
 // manually before including any Blaze header file:
+
+   \code
+   g++ ... -DBLAZE_SMP_TDVECSMATMULT_THRESHOLD=1190 ...
+   \endcode
 
    \code
    #define BLAZE_SMP_TDVECSMATMULT_THRESHOLD 1190UL
@@ -997,8 +1117,12 @@
 // The default setting for this threshold is 530. In case the threshold is set to 0, the operation
 // is unconditionally executed in parallel.
 //
-// \note It is possible to specify this threshold via command line by defining this symbol
+// \note It is possible to specify this threshold via command line or by defining this symbol
 // manually before including any Blaze header file:
+
+   \code
+   g++ ... -DBLAZE_SMP_TDVECTSMATMULT_THRESHOLD=530 ...
+   \endcode
 
    \code
    #define BLAZE_SMP_TDVECTSMATMULT_THRESHOLD 530UL
@@ -1030,8 +1154,12 @@
 // The default setting for this threshold is 260. In case the threshold is set to 0, the operation
 // is unconditionally executed in parallel.
 //
-// \note It is possible to specify this threshold via command line by defining this symbol
+// \note It is possible to specify this threshold via command line or by defining this symbol
 // manually before including any Blaze header file:
+
+   \code
+   g++ ... -DBLAZE_SMP_SMATSVECMULT_THRESHOLD=260 ...
+   \endcode
 
    \code
    #define BLAZE_SMP_SMATSVECMULT_THRESHOLD 260UL
@@ -1063,8 +1191,12 @@
 // The default setting for this threshold is 2160. In case the threshold is set to 0, the operation
 // is unconditionally executed in parallel.
 //
-// \note It is possible to specify this threshold via command line by defining this symbol
+// \note It is possible to specify this threshold via command line or by defining this symbol
 // manually before including any Blaze header file:
+
+   \code
+   g++ ... -DBLAZE_SMP_TSMATSVECMULT_THRESHOLD=2160 ...
+   \endcode
 
    \code
    #define BLAZE_SMP_TSMATSVECMULT_THRESHOLD 2160UL
@@ -1096,8 +1228,12 @@
 // The default setting for this threshold is 2160. In case the threshold is set to 0, the operation
 // is unconditionally executed in parallel.
 //
-// \note It is possible to specify this threshold via command line by defining this symbol
+// \note It is possible to specify this threshold via command line or by defining this symbol
 // manually before including any Blaze header file:
+
+   \code
+   g++ ... -DBLAZE_SMP_TSVECSMATMULT_THRESHOLD=2160 ...
+   \endcode
 
    \code
    #define BLAZE_SMP_TSVECSMATMULT_THRESHOLD 2160UL
@@ -1129,8 +1265,12 @@
 // The default setting for this threshold is 260. In case the threshold is set to 0, the operation
 // is unconditionally executed in parallel.
 //
-// \note It is possible to specify this threshold via command line by defining this symbol
+// \note It is possible to specify this threshold via command line or by defining this symbol
 // manually before including any Blaze header file:
+
+   \code
+   g++ ... -DBLAZE_SMP_TSVECTSMATMULT_THRESHOLD=260 ...
+   \endcode
 
    \code
    #define BLAZE_SMP_TSVECTSMATMULT_THRESHOLD 260UL
@@ -1163,8 +1303,12 @@
 // \f$ 220 \times 220 \f$). In case the threshold is set to 0, the operation is unconditionally
 // executed in parallel.
 //
-// \note It is possible to specify this threshold via command line by defining this symbol
+// \note It is possible to specify this threshold via command line or by defining this symbol
 // manually before including any Blaze header file:
+
+   \code
+   g++ ... -DBLAZE_SMP_DMATASSIGN_THRESHOLD=48400 ...
+   \endcode
 
    \code
    #define BLAZE_SMP_DMATASSIGN_THRESHOLD 48400UL
@@ -1197,8 +1341,12 @@
 // \f$ 220 \times 220 \f$). In case the threshold is set to 0, the operation is unconditionally
 // executed in parallel.
 //
-// \note It is possible to specify this threshold via command line by defining this symbol
+// \note It is possible to specify this threshold via command line or by defining this symbol
 // manually before including any Blaze header file:
+
+   \code
+   g++ ... -DBLAZE_SMP_DMATSCALARMULT_THRESHOLD=48400 ...
+   \endcode
 
    \code
    #define BLAZE_SMP_DMATSCALARMULT_THRESHOLD 48400UL
@@ -1232,8 +1380,12 @@
 // \f$ 190 \times 190 \f$). In case the threshold is set to 0, the operation is unconditionally
 // executed in parallel.
 //
-// \note It is possible to specify this threshold via command line by defining this symbol
+// \note It is possible to specify this threshold via command line or by defining this symbol
 // manually before including any Blaze header file:
+
+   \code
+   g++ ... -DBLAZE_SMP_DMATDMATADD_THRESHOLD=36100 ...
+   \endcode
 
    \code
    #define BLAZE_SMP_DMATDMATADD_THRESHOLD 36100UL
@@ -1268,8 +1420,12 @@
 // \f$ 175 \times 175 \f$). In case the threshold is set to 0, the operation is unconditionally
 // executed in parallel.
 //
-// \note It is possible to specify this threshold via command line by defining this symbol
+// \note It is possible to specify this threshold via command line or by defining this symbol
 // manually before including any Blaze header file:
+
+   \code
+   g++ ... -DBLAZE_SMP_DMATTDMATADD_THRESHOLD=30625 ...
+   \endcode
 
    \code
    #define BLAZE_SMP_DMATTDMATADD_THRESHOLD 30625UL
@@ -1303,8 +1459,12 @@
 // \f$ 190 \times 190 \f$). In case the threshold is set to 0, the operation is unconditionally
 // executed in parallel.
 //
-// \note It is possible to specify this threshold via command line by defining this symbol
+// \note It is possible to specify this threshold via command line or by defining this symbol
 // manually before including any Blaze header file:
+
+   \code
+   g++ ... -DBLAZE_SMP_DMATDMATSUB_THRESHOLD=36100 ...
+   \endcode
 
    \code
    #define BLAZE_SMP_DMATDMATSUB_THRESHOLD 36100UL
@@ -1339,8 +1499,12 @@
 // \f$ 175 \times 175 \f$). In case the threshold is set to 0, the operation is unconditionally
 // executed in parallel.
 //
-// \note It is possible to specify this threshold via command line by defining this symbol
+// \note It is possible to specify this threshold via command line or by defining this symbol
 // manually before including any Blaze header file:
+
+   \code
+   g++ ... -DBLAZE_SMP_DMATTDMATSUB_THRESHOLD=30625 ...
+   \endcode
 
    \code
    #define BLAZE_SMP_DMATTDMATSUB_THRESHOLD 30625UL
@@ -1374,8 +1538,12 @@
 // \f$ 190 \times 190 \f$). In case the threshold is set to 0, the operation is unconditionally
 // executed in parallel.
 //
-// \note It is possible to specify this threshold via command line by defining this symbol
+// \note It is possible to specify this threshold via command line or by defining this symbol
 // manually before including any Blaze header file:
+
+   \code
+   g++ ... -DBLAZE_SMP_DMATDMATSCHUR_THRESHOLD=36100 ...
+   \endcode
 
    \code
    #define BLAZE_SMP_DMATDMATSCHUR_THRESHOLD 36100UL
@@ -1410,8 +1578,12 @@
 // \f$ 175 \times 175 \f$). In case the threshold is set to 0, the operation is unconditionally
 // executed in parallel.
 //
-// \note It is possible to specify this threshold via command line by defining this symbol
+// \note It is possible to specify this threshold via command line or by defining this symbol
 // manually before including any Blaze header file:
+
+   \code
+   g++ ... -DBLAZE_SMP_DMATTDMATSCHUR_THRESHOLD=30625 ...
+   \endcode
 
    \code
    #define BLAZE_SMP_DMATTDMATSCHUR_THRESHOLD 30625UL
@@ -1444,8 +1616,12 @@
 // \f$ 55 \times 55 \f$). In case the threshold is set to 0, the operation is unconditionally
 // executed in parallel.
 //
-// \note It is possible to specify this threshold via command line by defining this symbol
+// \note It is possible to specify this threshold via command line or by defining this symbol
 // manually before including any Blaze header file:
+
+   \code
+   g++ ... -DBLAZE_SMP_DMATDMATMULT_THRESHOLD=3025 ...
+   \endcode
 
    \code
    #define BLAZE_SMP_DMATDMATMULT_THRESHOLD 3025UL
@@ -1478,8 +1654,12 @@
 // \f$ 55 \times 55 \f$). In case the threshold is set to 0, the operation is unconditionally
 // executed in parallel.
 //
-// \note It is possible to specify this threshold via command line by defining this symbol
+// \note It is possible to specify this threshold via command line or by defining this symbol
 // manually before including any Blaze header file:
+
+   \code
+   g++ ... -DBLAZE_SMP_DMATTDMATMULT_THRESHOLD=3025 ...
+   \endcode
 
    \code
    #define BLAZE_SMP_DMATTDMATMULT_THRESHOLD 3025UL
@@ -1512,8 +1692,12 @@
 // \f$ 55 \times 55 \f$). In case the threshold is set to 0, the operation is unconditionally
 // executed in parallel.
 //
-// \note It is possible to specify this threshold via command line by defining this symbol
+// \note It is possible to specify this threshold via command line or by defining this symbol
 // manually before including any Blaze header file:
+
+   \code
+   g++ ... -DBLAZE_SMP_TDMATDMATMULT_THRESHOLD=3025 ...
+   \endcode
 
    \code
    #define BLAZE_SMP_TDMATDMATMULT_THRESHOLD 3025UL
@@ -1546,8 +1730,12 @@
 // \f$ 55 \times 55 \f$). In case the threshold is set to 0, the operation is unconditionally
 // executed in parallel.
 //
-// \note It is possible to specify this threshold via command line by defining this symbol
+// \note It is possible to specify this threshold via command line or by defining this symbol
 // manually before including any Blaze header file:
+
+   \code
+   g++ ... -DBLAZE_SMP_TDMATTDMATMULT_THRESHOLD=3025 ...
+   \endcode
 
    \code
    #define BLAZE_SMP_TDMATTDMATMULT_THRESHOLD 3025UL
@@ -1580,8 +1768,12 @@
 // \f$ 64 \times 64 \f$). In case the threshold is set to 0, the operation is unconditionally
 // executed in parallel.
 //
-// \note It is possible to specify this threshold via command line by defining this symbol
+// \note It is possible to specify this threshold via command line or by defining this symbol
 // manually before including any Blaze header file:
+
+   \code
+   g++ ... -DBLAZE_SMP_DMATSMATMULT_THRESHOLD=4096 ...
+   \endcode
 
    \code
    #define BLAZE_SMP_DMATSMATMULT_THRESHOLD 4096UL
@@ -1614,8 +1806,12 @@
 // \f$ 68 \times 68 \f$). In case the threshold is set to 0, the operation is unconditionally
 // executed in parallel.
 //
-// \note It is possible to specify this threshold via command line by defining this symbol
+// \note It is possible to specify this threshold via command line or by defining this symbol
 // manually before including any Blaze header file:
+
+   \code
+   g++ ... -DBLAZE_SMP_DMATTSMATMULT_THRESHOLD=4624 ...
+   \endcode
 
    \code
    #define BLAZE_SMP_DMATTSMATMULT_THRESHOLD 4624UL
@@ -1648,8 +1844,12 @@
 // \f$ 90 \times 90 \f$). In case the threshold is set to 0, the operation is unconditionally
 // executed in parallel.
 //
-// \note It is possible to specify this threshold via command line by defining this symbol
+// \note It is possible to specify this threshold via command line or by defining this symbol
 // manually before including any Blaze header file:
+
+   \code
+   g++ ... -DBLAZE_SMP_TDMATSMATMULT_THRESHOLD=8100 ...
+   \endcode
 
    \code
    #define BLAZE_SMP_TDMATSMATMULT_THRESHOLD 8100UL
@@ -1682,8 +1882,12 @@
 // \f$ 90 \times 90 \f$). In case the threshold is set to 0, the operation
 // is unconditionally executed in parallel.
 //
-// \note It is possible to specify this threshold via command line by defining this symbol
+// \note It is possible to specify this threshold via command line or by defining this symbol
 // manually before including any Blaze header file:
+
+   \code
+   g++ ... -DBLAZE_SMP_TDMATTSMATMULT_THRESHOLD=8100 ...
+   \endcode
 
    \code
    #define BLAZE_SMP_TDMATTSMATMULT_THRESHOLD 8100UL
@@ -1716,8 +1920,12 @@
 // \f$ 88 \times 88 \f$). In case the threshold is set to 0, the operation
 // is unconditionally executed in parallel.
 //
-// \note It is possible to specify this threshold via command line by defining this symbol
+// \note It is possible to specify this threshold via command line or by defining this symbol
 // manually before including any Blaze header file:
+
+   \code
+   g++ ... -DBLAZE_SMP_SMATDMATMULT_THRESHOLD=7744 ...
+   \endcode
 
    \code
    #define BLAZE_SMP_SMATDMATMULT_THRESHOLD 7744UL
@@ -1750,8 +1958,12 @@
 // \f$ 72 \times 72 \f$). In case the threshold is set to 0, the operation is unconditionally
 // executed in parallel.
 //
-// \note It is possible to specify this threshold via command line by defining this symbol
+// \note It is possible to specify this threshold via command line or by defining this symbol
 // manually before including any Blaze header file:
+
+   \code
+   g++ ... -DBLAZE_SMP_SMATTDMATMULT_THRESHOLD=5184 ...
+   \endcode
 
    \code
    #define BLAZE_SMP_SMATTDMATMULT_THRESHOLD 5184UL
@@ -1784,8 +1996,12 @@
 // \f$ 66 \times 66 \f$). In case the threshold is set to 0, the operation is unconditionally
 // executed in parallel.
 //
-// \note It is possible to specify this threshold via command line by defining this symbol
+// \note It is possible to specify this threshold via command line or by defining this symbol
 // manually before including any Blaze header file:
+
+   \code
+   g++ ... -DBLAZE_SMP_TSMATDMATMULT_THRESHOLD=4356 ...
+   \endcode
 
    \code
    #define BLAZE_SMP_TSMATDMATMULT_THRESHOLD 4356UL
@@ -1818,8 +2034,12 @@
 // \f$ 66 \times 66 \f$). In case the threshold is set to 0, the operation is unconditionally
 // executed in parallel.
 //
-// \note It is possible to specify this threshold via command line by defining this symbol
+// \note It is possible to specify this threshold via command line or by defining this symbol
 // manually before including any Blaze header file:
+
+   \code
+   g++ ... -DBLAZE_SMP_TSMATTDMATMULT_THRESHOLD=4356 ...
+   \endcode
 
    \code
    #define BLAZE_SMP_TSMATTDMATMULT_THRESHOLD 4356UL
@@ -1852,8 +2072,12 @@
 // \f$ 150 \times 150 \f$). In case the threshold is set to 0, the operation is unconditionally
 // executed in parallel.
 //
-// \note It is possible to specify this threshold via command line by defining this symbol
+// \note It is possible to specify this threshold via command line or by defining this symbol
 // manually before including any Blaze header file:
+
+   \code
+   g++ ... -DBLAZE_SMP_SMATSMATMULT_THRESHOLD=22500 ...
+   \endcode
 
    \code
    #define BLAZE_SMP_SMATSMATMULT_THRESHOLD 22500UL
@@ -1886,8 +2110,12 @@
 // \f$ 140 \times 140 \f$). In case the threshold is set to 0, the operation is unconditionally
 // executed in parallel.
 //
-// \note It is possible to specify this threshold via command line by defining this symbol
+// \note It is possible to specify this threshold via command line or by defining this symbol
 // manually before including any Blaze header file:
+
+   \code
+   g++ ... -DBLAZE_SMP_SMATTSMATMULT_THRESHOLD=19600 ...
+   \endcode
 
    \code
    #define BLAZE_SMP_SMATTSMATMULT_THRESHOLD 19600UL
@@ -1920,8 +2148,12 @@
 // \f$ 140 \times 140 \f$). In case the threshold is set to 0, the operation is unconditionally
 // executed in parallel.
 //
-// \note It is possible to specify this threshold via command line by defining this symbol
+// \note It is possible to specify this threshold via command line or by defining this symbol
 // manually before including any Blaze header file:
+
+   \code
+   g++ ... -DBLAZE_SMP_TSMATSMATMULT_THRESHOLD=19600 ...
+   \endcode
 
    \code
    #define BLAZE_SMP_TSMATSMATMULT_THRESHOLD 19600UL
@@ -1954,8 +2186,12 @@
 // \f$ 150 \times 150 \f$). In case the threshold is set to 0, the operation is unconditionally
 // executed in parallel.
 //
-// \note It is possible to specify this threshold via command line by defining this symbol
+// \note It is possible to specify this threshold via command line or by defining this symbol
 // manually before including any Blaze header file:
+
+   \code
+   g++ ... -DBLAZE_SMP_TSMATTSMATMULT_THRESHOLD=22500 ...
+   \endcode
 
    \code
    #define BLAZE_SMP_TSMATTSMATMULT_THRESHOLD 22500UL
@@ -1987,8 +2223,12 @@
 // The default setting for this threshold is 180. In case the threshold is set to 0, the operation
 // is unconditionally executed in parallel.
 //
-// \note It is possible to specify this threshold via command line by defining this symbol
+// \note It is possible to specify this threshold via command line or by defining this symbol
 // manually before including any Blaze header file:
+
+   \code
+   g++ ... -DBLAZE_SMP_DMATREDUCE_THRESHOLD=180 ...
+   \endcode
 
    \code
    #define BLAZE_SMP_DMATREDUCE_THRESHOLD 180UL
@@ -2020,8 +2260,12 @@
 // The default setting for this threshold is 180. In case the threshold is set to 0, the operation
 // is unconditionally executed in parallel.
 //
-// \note It is possible to specify this threshold via command line by defining this symbol
+// \note It is possible to specify this threshold via command line or by defining this symbol
 // manually before including any Blaze header file:
+
+   \code
+   g++ ... -DBLAZE_SMP_SMATREDUCE_THRESHOLD=180 ...
+   \endcode
 
    \code
    #define BLAZE_SMP_SMATREDUCE_THRESHOLD 180UL

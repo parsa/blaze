@@ -43,8 +43,12 @@
 //
 //   http://en.cppreference.com/w/cpp/numeric/random/mersenne_twister_engine
 //
-// \note It is possible to specify the random number generator via command line by defining
+// \note It is possible to specify the random number generator via command line or by defining
 // this symbol manually before including any Blaze header file:
+
+   \code
+   g++ ... -DBLAZE_RANDOM_NUMBER_GENERATOR=std::mt19937 ...
+   \endcode
 
    \code
    #define BLAZE_RANDOM_NUMBER_GENERATOR std::mt19937

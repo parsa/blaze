@@ -51,8 +51,12 @@
 //  - Deactivated: \b 0
 //  - Activated  : \b 1
 //
-// Note that it is possible to (de-)activate the strengthened inline keyword via command line by
-// defining this symbol manually before including any Blaze header file:
+// Note that it is possible to (de-)activate the strengthened inline keyword via command line or
+// by defining this symbol manually before including any Blaze header file:
+
+   \code
+   g++ ... -DBLAZE_USE_STRONG_INLINE=1 ...
+   \endcode
 
    \code
    #define BLAZE_USE_STRONG_INLINE 1
@@ -81,8 +85,12 @@
 //  - Deactivated: \b 0
 //  - Activated  : \b 1
 //
-// Note that it is possible to (de-)activate the enforced inline keyword via command line by
+// Note that it is possible to (de-)activate the enforced inline keyword via command line or by
 // defining this symbol manually before including any Blaze header file:
+
+   \code
+   g++ ... -DBLAZE_USE_ALWAYS_INLINE=1 ...
+   \endcode
 
    \code
    #define BLAZE_USE_ALWAYS_INLINE 1

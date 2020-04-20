@@ -52,8 +52,12 @@
 // \warning Note that disabling padding can considerably reduce the performance of operations
 // with DynamicVector and DynamicMatrix.
 //
-// \note It is possible to (de-)activate padding via command line by defining this symbol manually
-// before including any Blaze header file:
+// \note It is possible to (de-)activate padding via command line or by defining this symbol
+// manually before including any Blaze header file:
+
+   \code
+   g++ ... -DBLAZE_USE_PADDING=1 ...
+   \endcode
 
    \code
    #define BLAZE_USE_PADDING 1
@@ -80,8 +84,12 @@
 //  - Disabled: \b 0
 //  - Enabled : \b 1
 //
-// \note It is possible to (de-)activate streaming via command line by defining this symbol
+// \note It is possible to (de-)activate streaming via command line or by defining this symbol
 // manually before including any Blaze header file:
+
+   \code
+   g++ ... -DBLAZE_USE_STREAMING=1 ...
+   \endcode
 
    \code
    #define BLAZE_USE_STREAMING 1
@@ -110,8 +118,12 @@
 // \warning Note that disabling the optimized kernels causes a severe performance limitiation
 // to nearly all operations!
 //
-// \note It is possible to (de-)activate the optimized kernels via command line by defining this
-// symbol manually before including any Blaze header file:
+// \note It is possible to (de-)activate the optimized kernels via command line or by defining
+// this symbol manually before including any Blaze header file:
+
+   \code
+   g++ ... -DBLAZE_USE_OPTIMIZED_KERNELS=1 ...
+   \endcode
 
    \code
    #define BLAZE_USE_OPTIMIZED_KERNELS 1
@@ -139,8 +151,12 @@
 //  - Disabled: \b 0
 //  - Enabled : \b 1
 //
-// \note It is possible to (de-)activate the default initialization via command line by defining
-// this symbol manually before including any Blaze header file:
+// \note It is possible to (de-)activate the default initialization via command line or by
+// defining this symbol manually before including any Blaze header file:
+
+   \code
+   g++ ... -DBLAZE_USE_DEFAULT_INITIALIZATION=1 ...
+   \endcode
 
    \code
    #define BLAZE_USE_DEFAULT_INITIALIZATION 1
