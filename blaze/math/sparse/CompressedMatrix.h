@@ -411,16 +411,16 @@ class CompressedMatrix
    //**Assignment operators************************************************************************
    /*!\name Assignment operators */
    //@{
-   inline CompressedMatrix& operator=( initializer_list< initializer_list<Type> > list );
-   inline CompressedMatrix& operator=( const CompressedMatrix& rhs );
-   inline CompressedMatrix& operator=( CompressedMatrix&& rhs ) noexcept;
+   inline CompressedMatrix& operator=( initializer_list< initializer_list<Type> > list ) &;
+   inline CompressedMatrix& operator=( const CompressedMatrix& rhs ) &;
+   inline CompressedMatrix& operator=( CompressedMatrix&& rhs ) & noexcept;
 
-   template< typename MT, bool SO2 > inline CompressedMatrix& operator= ( const DenseMatrix<MT,SO2>&  rhs );
-   template< typename MT, bool SO2 > inline CompressedMatrix& operator= ( const SparseMatrix<MT,SO2>& rhs );
-   template< typename MT, bool SO2 > inline CompressedMatrix& operator+=( const Matrix<MT,SO2>& rhs );
-   template< typename MT, bool SO2 > inline CompressedMatrix& operator-=( const Matrix<MT,SO2>& rhs );
-   template< typename MT, bool SO2 > inline CompressedMatrix& operator%=( const DenseMatrix<MT,SO2>&  rhs );
-   template< typename MT, bool SO2 > inline CompressedMatrix& operator%=( const SparseMatrix<MT,SO2>& rhs );
+   template< typename MT, bool SO2 > inline CompressedMatrix& operator= ( const DenseMatrix<MT,SO2>&  rhs ) &;
+   template< typename MT, bool SO2 > inline CompressedMatrix& operator= ( const SparseMatrix<MT,SO2>& rhs ) &;
+   template< typename MT, bool SO2 > inline CompressedMatrix& operator+=( const Matrix<MT,SO2>& rhs ) &;
+   template< typename MT, bool SO2 > inline CompressedMatrix& operator-=( const Matrix<MT,SO2>& rhs ) &;
+   template< typename MT, bool SO2 > inline CompressedMatrix& operator%=( const DenseMatrix<MT,SO2>&  rhs ) &;
+   template< typename MT, bool SO2 > inline CompressedMatrix& operator%=( const SparseMatrix<MT,SO2>& rhs ) &;
    //@}
    //**********************************************************************************************
 
@@ -1150,7 +1150,7 @@ template< typename Type   // Data type of the matrix
         , bool SO         // Storage order
         , typename Tag >  // Type tag
 inline CompressedMatrix<Type,SO,Tag>&
-   CompressedMatrix<Type,SO,Tag>::operator=( initializer_list< initializer_list<Type> > list )
+   CompressedMatrix<Type,SO,Tag>::operator=( initializer_list< initializer_list<Type> > list ) &
 {
    using blaze::nonZeros;
 
@@ -1191,7 +1191,7 @@ template< typename Type   // Data type of the matrix
         , bool SO         // Storage order
         , typename Tag >  // Type tag
 inline CompressedMatrix<Type,SO,Tag>&
-   CompressedMatrix<Type,SO,Tag>::operator=( const CompressedMatrix& rhs )
+   CompressedMatrix<Type,SO,Tag>::operator=( const CompressedMatrix& rhs ) &
 {
    using std::swap;
 
@@ -1245,7 +1245,7 @@ template< typename Type   // Data type of the matrix
         , bool SO         // Storage order
         , typename Tag >  // Type tag
 inline CompressedMatrix<Type,SO,Tag>&
-   CompressedMatrix<Type,SO,Tag>::operator=( CompressedMatrix&& rhs ) noexcept
+   CompressedMatrix<Type,SO,Tag>::operator=( CompressedMatrix&& rhs ) & noexcept
 {
    if( begin_ != nullptr ) {
       deallocate( begin_[0UL] );
@@ -1284,7 +1284,7 @@ template< typename Type   // Data type of the matrix
 template< typename MT     // Type of the right-hand side dense matrix
         , bool SO2 >      // Storage order of the right-hand side dense matrix
 inline CompressedMatrix<Type,SO,Tag>&
-   CompressedMatrix<Type,SO,Tag>::operator=( const DenseMatrix<MT,SO2>& rhs )
+   CompressedMatrix<Type,SO,Tag>::operator=( const DenseMatrix<MT,SO2>& rhs ) &
 {
    using blaze::assign;
 
@@ -1319,7 +1319,7 @@ template< typename Type   // Data type of the matrix
 template< typename MT     // Type of the right-hand side compressed matrix
         , bool SO2 >      // Storage order of the right-hand side compressed matrix
 inline CompressedMatrix<Type,SO,Tag>&
-   CompressedMatrix<Type,SO,Tag>::operator=( const SparseMatrix<MT,SO2>& rhs )
+   CompressedMatrix<Type,SO,Tag>::operator=( const SparseMatrix<MT,SO2>& rhs ) &
 {
    using blaze::assign;
 
@@ -1361,7 +1361,7 @@ template< typename Type   // Data type of the matrix
 template< typename MT     // Type of the right-hand side matrix
         , bool SO2 >      // Storage order of the right-hand side matrix
 inline CompressedMatrix<Type,SO,Tag>&
-   CompressedMatrix<Type,SO,Tag>::operator+=( const Matrix<MT,SO2>& rhs )
+   CompressedMatrix<Type,SO,Tag>::operator+=( const Matrix<MT,SO2>& rhs ) &
 {
    using blaze::addAssign;
 
@@ -1396,7 +1396,7 @@ template< typename Type   // Data type of the matrix
 template< typename MT     // Type of the right-hand side matrix
         , bool SO2 >      // Storage order of the right-hand side matrix
 inline CompressedMatrix<Type,SO,Tag>&
-   CompressedMatrix<Type,SO,Tag>::operator-=( const Matrix<MT,SO2>& rhs )
+   CompressedMatrix<Type,SO,Tag>::operator-=( const Matrix<MT,SO2>& rhs ) &
 {
    using blaze::subAssign;
 
@@ -1432,7 +1432,7 @@ template< typename Type   // Data type of the matrix
 template< typename MT     // Type of the right-hand side dense matrix
         , bool SO2 >      // Storage order of the right-hand side dense matrix
 inline CompressedMatrix<Type,SO,Tag>&
-   CompressedMatrix<Type,SO,Tag>::operator%=( const DenseMatrix<MT,SO2>& rhs )
+   CompressedMatrix<Type,SO,Tag>::operator%=( const DenseMatrix<MT,SO2>& rhs ) &
 {
    using blaze::schurAssign;
 
@@ -1473,7 +1473,7 @@ template< typename Type   // Data type of the matrix
 template< typename MT     // Type of the right-hand side sparse matrix
         , bool SO2 >      // Storage order of the right-hand side sparse matrix
 inline CompressedMatrix<Type,SO,Tag>&
-   CompressedMatrix<Type,SO,Tag>::operator%=( const SparseMatrix<MT,SO2>& rhs )
+   CompressedMatrix<Type,SO,Tag>::operator%=( const SparseMatrix<MT,SO2>& rhs ) &
 {
    BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<MT> );
 
@@ -3288,16 +3288,16 @@ class CompressedMatrix<Type,true,Tag>
    //**Assignment operators************************************************************************
    /*!\name Assignment operators */
    //@{
-   inline CompressedMatrix& operator=( initializer_list< initializer_list<Type> > list );
-   inline CompressedMatrix& operator=( const CompressedMatrix& rhs );
-   inline CompressedMatrix& operator=( CompressedMatrix&& rhs ) noexcept;
+   inline CompressedMatrix& operator=( initializer_list< initializer_list<Type> > list ) &;
+   inline CompressedMatrix& operator=( const CompressedMatrix& rhs ) &;
+   inline CompressedMatrix& operator=( CompressedMatrix&& rhs ) & noexcept;
 
-   template< typename MT, bool SO > inline CompressedMatrix& operator= ( const DenseMatrix<MT,SO>&  rhs );
-   template< typename MT, bool SO > inline CompressedMatrix& operator= ( const SparseMatrix<MT,SO>& rhs );
-   template< typename MT, bool SO > inline CompressedMatrix& operator+=( const Matrix<MT,SO>& rhs );
-   template< typename MT, bool SO > inline CompressedMatrix& operator-=( const Matrix<MT,SO>& rhs );
-   template< typename MT, bool SO > inline CompressedMatrix& operator%=( const DenseMatrix<MT,SO>&  rhs );
-   template< typename MT, bool SO > inline CompressedMatrix& operator%=( const SparseMatrix<MT,SO>& rhs );
+   template< typename MT, bool SO > inline CompressedMatrix& operator= ( const DenseMatrix<MT,SO>&  rhs ) &;
+   template< typename MT, bool SO > inline CompressedMatrix& operator= ( const SparseMatrix<MT,SO>& rhs ) &;
+   template< typename MT, bool SO > inline CompressedMatrix& operator+=( const Matrix<MT,SO>& rhs ) &;
+   template< typename MT, bool SO > inline CompressedMatrix& operator-=( const Matrix<MT,SO>& rhs ) &;
+   template< typename MT, bool SO > inline CompressedMatrix& operator%=( const DenseMatrix<MT,SO>&  rhs ) &;
+   template< typename MT, bool SO > inline CompressedMatrix& operator%=( const SparseMatrix<MT,SO>& rhs ) &;
    //@}
    //**********************************************************************************************
 
@@ -4020,7 +4020,7 @@ inline typename CompressedMatrix<Type,true,Tag>::ConstIterator
 template< typename Type   // Data type of the matrix
         , typename Tag >  // Type tag
 inline CompressedMatrix<Type,true,Tag>&
-   CompressedMatrix<Type,true,Tag>::operator=( initializer_list< initializer_list<Type> > list )
+   CompressedMatrix<Type,true,Tag>::operator=( initializer_list< initializer_list<Type> > list ) &
 {
    using blaze::nonZeros;
 
@@ -4067,7 +4067,7 @@ inline CompressedMatrix<Type,true,Tag>&
 template< typename Type   // Data type of the matrix
         , typename Tag >  // Type tag
 inline CompressedMatrix<Type,true,Tag>&
-   CompressedMatrix<Type,true,Tag>::operator=( const CompressedMatrix& rhs )
+   CompressedMatrix<Type,true,Tag>::operator=( const CompressedMatrix& rhs ) &
 {
    using std::swap;
 
@@ -4122,7 +4122,7 @@ inline CompressedMatrix<Type,true,Tag>&
 template< typename Type   // Data type of the matrix
         , typename Tag >  // Type tag
 inline CompressedMatrix<Type,true,Tag>&
-   CompressedMatrix<Type,true,Tag>::operator=( CompressedMatrix&& rhs ) noexcept
+   CompressedMatrix<Type,true,Tag>::operator=( CompressedMatrix&& rhs ) & noexcept
 {
    if( begin_ != nullptr ) {
       deallocate( begin_[0UL] );
@@ -4162,7 +4162,7 @@ template< typename Type   // Data type of the matrix
 template< typename MT     // Type of the right-hand side dense matrix
         , bool SO >       // Storage order of the right-hand side dense matrix
 inline CompressedMatrix<Type,true,Tag>&
-   CompressedMatrix<Type,true,Tag>::operator=( const DenseMatrix<MT,SO>& rhs )
+   CompressedMatrix<Type,true,Tag>::operator=( const DenseMatrix<MT,SO>& rhs ) &
 {
    using blaze::assign;
 
@@ -4198,7 +4198,7 @@ template< typename Type   // Data type of the matrix
 template< typename MT     // Type of the right-hand side compressed matrix
         , bool SO >       // Storage order of the right-hand side compressed matrix
 inline CompressedMatrix<Type,true,Tag>&
-   CompressedMatrix<Type,true,Tag>::operator=( const SparseMatrix<MT,SO>& rhs )
+   CompressedMatrix<Type,true,Tag>::operator=( const SparseMatrix<MT,SO>& rhs ) &
 {
    using blaze::assign;
 
@@ -4241,7 +4241,7 @@ template< typename Type   // Data type of the matrix
 template< typename MT     // Type of the right-hand side matrix
         , bool SO >       // Storage order of the right-hand side matrix
 inline CompressedMatrix<Type,true,Tag>&
-   CompressedMatrix<Type,true,Tag>::operator+=( const Matrix<MT,SO>& rhs )
+   CompressedMatrix<Type,true,Tag>::operator+=( const Matrix<MT,SO>& rhs ) &
 {
    using blaze::addAssign;
 
@@ -4277,7 +4277,7 @@ template< typename Type   // Data type of the matrix
 template< typename MT     // Type of the right-hand side matrix
         , bool SO >       // Storage order of the right-hand side matrix
 inline CompressedMatrix<Type,true,Tag>&
-   CompressedMatrix<Type,true,Tag>::operator-=( const Matrix<MT,SO>& rhs )
+   CompressedMatrix<Type,true,Tag>::operator-=( const Matrix<MT,SO>& rhs ) &
 {
    using blaze::subAssign;
 
@@ -4314,7 +4314,7 @@ template< typename Type   // Data type of the matrix
 template< typename MT     // Type of the right-hand side dense matrix
         , bool SO >       // Storage order of the right-hand side dense matrix
 inline CompressedMatrix<Type,true,Tag>&
-   CompressedMatrix<Type,true,Tag>::operator%=( const DenseMatrix<MT,SO>& rhs )
+   CompressedMatrix<Type,true,Tag>::operator%=( const DenseMatrix<MT,SO>& rhs ) &
 {
    using blaze::schurAssign;
 
@@ -4356,7 +4356,7 @@ template< typename Type   // Data type of the matrix
 template< typename MT     // Type of the right-hand side sparse matrix
         , bool SO >       // Storage order of the right-hand side sparse matrix
 inline CompressedMatrix<Type,true,Tag>&
-   CompressedMatrix<Type,true,Tag>::operator%=( const SparseMatrix<MT,SO>& rhs )
+   CompressedMatrix<Type,true,Tag>::operator%=( const SparseMatrix<MT,SO>& rhs ) &
 {
    BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<MT> );
 
