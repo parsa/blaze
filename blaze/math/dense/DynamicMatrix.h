@@ -351,22 +351,22 @@ class DynamicMatrix
    //**Assignment operators************************************************************************
    /*!\name Assignment operators */
    //@{
-   inline DynamicMatrix& operator=( const Type& rhs );
-   inline DynamicMatrix& operator=( initializer_list< initializer_list<Type> > list );
+   inline DynamicMatrix& operator=( const Type& rhs ) &;
+   inline DynamicMatrix& operator=( initializer_list< initializer_list<Type> > list ) &;
 
    template< typename Other, size_t Rows, size_t Cols >
-   inline DynamicMatrix& operator=( const Other (&array)[Rows][Cols] );
+   inline DynamicMatrix& operator=( const Other (&array)[Rows][Cols] ) &;
 
    template< typename Other, size_t Rows, size_t Cols >
-   inline DynamicMatrix& operator=( const std::array<std::array<Other,Cols>,Rows>& array );
+   inline DynamicMatrix& operator=( const std::array<std::array<Other,Cols>,Rows>& array ) &;
 
-   inline DynamicMatrix& operator=( const DynamicMatrix& rhs );
-   inline DynamicMatrix& operator=( DynamicMatrix&& rhs ) noexcept;
+   inline DynamicMatrix& operator=( const DynamicMatrix& rhs ) &;
+   inline DynamicMatrix& operator=( DynamicMatrix&& rhs ) & noexcept;
 
-   template< typename MT, bool SO2 > inline DynamicMatrix& operator= ( const Matrix<MT,SO2>& rhs );
-   template< typename MT, bool SO2 > inline DynamicMatrix& operator+=( const Matrix<MT,SO2>& rhs );
-   template< typename MT, bool SO2 > inline DynamicMatrix& operator-=( const Matrix<MT,SO2>& rhs );
-   template< typename MT, bool SO2 > inline DynamicMatrix& operator%=( const Matrix<MT,SO2>& rhs );
+   template< typename MT, bool SO2 > inline DynamicMatrix& operator= ( const Matrix<MT,SO2>& rhs ) &;
+   template< typename MT, bool SO2 > inline DynamicMatrix& operator+=( const Matrix<MT,SO2>& rhs ) &;
+   template< typename MT, bool SO2 > inline DynamicMatrix& operator-=( const Matrix<MT,SO2>& rhs ) &;
+   template< typename MT, bool SO2 > inline DynamicMatrix& operator%=( const Matrix<MT,SO2>& rhs ) &;
    //@}
    //**********************************************************************************************
 
@@ -1271,7 +1271,7 @@ template< typename Type   // Data type of the matrix
         , bool SO         // Storage order
         , typename Tag >  // Type tag
 inline DynamicMatrix<Type,SO,Tag>&
-   DynamicMatrix<Type,SO,Tag>::operator=( const Type& rhs )
+   DynamicMatrix<Type,SO,Tag>::operator=( const Type& rhs ) &
 {
    for( size_t i=0UL; i<m_; ++i )
       for( size_t j=0UL; j<n_; ++j )
@@ -1307,7 +1307,7 @@ template< typename Type   // Data type of the matrix
         , bool SO         // Storage order
         , typename Tag >  // Type tag
 inline DynamicMatrix<Type,SO,Tag>&
-   DynamicMatrix<Type,SO,Tag>::operator=( initializer_list< initializer_list<Type> > list )
+   DynamicMatrix<Type,SO,Tag>::operator=( initializer_list< initializer_list<Type> > list ) &
 {
    resize( list.size(), determineColumns( list ), false );
 
@@ -1352,7 +1352,7 @@ template< typename Other  // Data type of the static array
         , size_t Rows     // Number of rows of the static array
         , size_t Cols >   // Number of columns of the static array
 inline DynamicMatrix<Type,SO,Tag>&
-   DynamicMatrix<Type,SO,Tag>::operator=( const Other (&array)[Rows][Cols] )
+   DynamicMatrix<Type,SO,Tag>::operator=( const Other (&array)[Rows][Cols] ) &
 {
    resize( Rows, Cols, false );
 
@@ -1394,7 +1394,7 @@ template< typename Other  // Data type of the std::array
         , size_t Rows     // Number of rows of the std::array
         , size_t Cols >   // Number of columns of the std::array
 inline DynamicMatrix<Type,SO,Tag>&
-   DynamicMatrix<Type,SO,Tag>::operator=( const std::array<std::array<Other,Cols>,Rows>& array )
+   DynamicMatrix<Type,SO,Tag>::operator=( const std::array<std::array<Other,Cols>,Rows>& array ) &
 {
    resize( Rows, Cols, false );
 
@@ -1420,7 +1420,7 @@ template< typename Type   // Data type of the matrix
         , bool SO         // Storage order
         , typename Tag >  // Type tag
 inline DynamicMatrix<Type,SO,Tag>&
-   DynamicMatrix<Type,SO,Tag>::operator=( const DynamicMatrix& rhs )
+   DynamicMatrix<Type,SO,Tag>::operator=( const DynamicMatrix& rhs ) &
 {
    if( &rhs == this ) return *this;
 
@@ -1444,7 +1444,7 @@ template< typename Type   // Data type of the matrix
         , bool SO         // Storage order
         , typename Tag >  // Type tag
 inline DynamicMatrix<Type,SO,Tag>&
-   DynamicMatrix<Type,SO,Tag>::operator=( DynamicMatrix&& rhs ) noexcept
+   DynamicMatrix<Type,SO,Tag>::operator=( DynamicMatrix&& rhs ) & noexcept
 {
    deallocate( v_ );
 
@@ -1480,7 +1480,7 @@ template< typename Type   // Data type of the matrix
 template< typename MT     // Type of the right-hand side matrix
         , bool SO2 >      // Storage order of the right-hand side matrix
 inline DynamicMatrix<Type,SO,Tag>&
-   DynamicMatrix<Type,SO,Tag>::operator=( const Matrix<MT,SO2>& rhs )
+   DynamicMatrix<Type,SO,Tag>::operator=( const Matrix<MT,SO2>& rhs ) &
 {
    using TT = decltype( trans( *this ) );
    using CT = decltype( ctrans( *this ) );
@@ -1528,7 +1528,7 @@ template< typename Type   // Data type of the matrix
 template< typename MT     // Type of the right-hand side matrix
         , bool SO2 >      // Storage order of the right-hand side matrix
 inline DynamicMatrix<Type,SO,Tag>&
-   DynamicMatrix<Type,SO,Tag>::operator+=( const Matrix<MT,SO2>& rhs )
+   DynamicMatrix<Type,SO,Tag>::operator+=( const Matrix<MT,SO2>& rhs ) &
 {
    BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<MT> );
 
@@ -1567,7 +1567,7 @@ template< typename Type   // Data type of the matrix
 template< typename MT     // Type of the right-hand side matrix
         , bool SO2 >      // Storage order of the right-hand side matrix
 inline DynamicMatrix<Type,SO,Tag>&
-   DynamicMatrix<Type,SO,Tag>::operator-=( const Matrix<MT,SO2>& rhs )
+   DynamicMatrix<Type,SO,Tag>::operator-=( const Matrix<MT,SO2>& rhs ) &
 {
    BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<MT> );
 
@@ -1606,7 +1606,7 @@ template< typename Type   // Data type of the matrix
 template< typename MT     // Type of the right-hand side matrix
         , bool SO2 >      // Storage order of the right-hand side matrix
 inline DynamicMatrix<Type,SO,Tag>&
-   DynamicMatrix<Type,SO,Tag>::operator%=( const Matrix<MT,SO2>& rhs )
+   DynamicMatrix<Type,SO,Tag>::operator%=( const Matrix<MT,SO2>& rhs ) &
 {
    BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<MT> );
 
@@ -3534,22 +3534,22 @@ class DynamicMatrix<Type,true,Tag>
    //**Assignment operators************************************************************************
    /*!\name Assignment operators */
    //@{
-   inline DynamicMatrix& operator=( const Type& rhs );
-   inline DynamicMatrix& operator=( initializer_list< initializer_list<Type> > list );
+   inline DynamicMatrix& operator=( const Type& rhs ) &;
+   inline DynamicMatrix& operator=( initializer_list< initializer_list<Type> > list ) &;
 
    template< typename Other, size_t Rows, size_t Cols >
-   inline DynamicMatrix& operator=( const Other (&array)[Rows][Cols] );
+   inline DynamicMatrix& operator=( const Other (&array)[Rows][Cols] ) &;
 
    template< typename Other, size_t Rows, size_t Cols >
-   inline DynamicMatrix& operator=( const std::array<std::array<Other,Cols>,Rows>& array );
+   inline DynamicMatrix& operator=( const std::array<std::array<Other,Cols>,Rows>& array ) &;
 
-   inline DynamicMatrix& operator=( const DynamicMatrix& rhs );
-   inline DynamicMatrix& operator=( DynamicMatrix&& rhs );
+   inline DynamicMatrix& operator=( const DynamicMatrix& rhs ) &;
+   inline DynamicMatrix& operator=( DynamicMatrix&& rhs ) &;
 
-   template< typename MT, bool SO > inline DynamicMatrix& operator= ( const Matrix<MT,SO>& rhs );
-   template< typename MT, bool SO > inline DynamicMatrix& operator+=( const Matrix<MT,SO>& rhs );
-   template< typename MT, bool SO > inline DynamicMatrix& operator-=( const Matrix<MT,SO>& rhs );
-   template< typename MT, bool SO > inline DynamicMatrix& operator%=( const Matrix<MT,SO>& rhs );
+   template< typename MT, bool SO > inline DynamicMatrix& operator= ( const Matrix<MT,SO>& rhs ) &;
+   template< typename MT, bool SO > inline DynamicMatrix& operator+=( const Matrix<MT,SO>& rhs ) &;
+   template< typename MT, bool SO > inline DynamicMatrix& operator-=( const Matrix<MT,SO>& rhs ) &;
+   template< typename MT, bool SO > inline DynamicMatrix& operator%=( const Matrix<MT,SO>& rhs ) &;
    //@}
    //**********************************************************************************************
 
@@ -4415,7 +4415,7 @@ inline typename DynamicMatrix<Type,true,Tag>::ConstIterator
 template< typename Type   // Data type of the matrix
         , typename Tag >  // Type tag
 inline DynamicMatrix<Type,true,Tag>&
-   DynamicMatrix<Type,true,Tag>::operator=( const Type& rhs )
+   DynamicMatrix<Type,true,Tag>::operator=( const Type& rhs ) &
 {
    for( size_t j=0UL; j<n_; ++j )
       for( size_t i=0UL; i<m_; ++i )
@@ -4452,7 +4452,7 @@ inline DynamicMatrix<Type,true,Tag>&
 template< typename Type   // Data type of the matrix
         , typename Tag >  // Type tag
 inline DynamicMatrix<Type,true,Tag>&
-   DynamicMatrix<Type,true,Tag>::operator=( initializer_list< initializer_list<Type> > list )
+   DynamicMatrix<Type,true,Tag>::operator=( initializer_list< initializer_list<Type> > list ) &
 {
    resize( list.size(), determineColumns( list ), false );
 
@@ -4505,7 +4505,7 @@ template< typename Other  // Data type of the static array
         , size_t Rows     // Number of rows of the static array
         , size_t Cols >   // Number of columns of the static array
 inline DynamicMatrix<Type,true,Tag>&
-   DynamicMatrix<Type,true,Tag>::operator=( const Other (&array)[Rows][Cols] )
+   DynamicMatrix<Type,true,Tag>::operator=( const Other (&array)[Rows][Cols] ) &
 {
    resize( Rows, Cols, false );
 
@@ -4548,7 +4548,7 @@ template< typename Other  // Data type of the std::array
         , size_t Rows     // Number of rows of the std::array
         , size_t Cols >   // Number of columns of the std::array
 inline DynamicMatrix<Type,true,Tag>&
-   DynamicMatrix<Type,true,Tag>::operator=( const std::array<std::array<Other,Cols>,Rows>& array )
+   DynamicMatrix<Type,true,Tag>::operator=( const std::array<std::array<Other,Cols>,Rows>& array ) &
 {
    resize( Rows, Cols, false );
 
@@ -4575,7 +4575,7 @@ inline DynamicMatrix<Type,true,Tag>&
 template< typename Type   // Data type of the matrix
         , typename Tag >  // Type tag
 inline DynamicMatrix<Type,true,Tag>&
-   DynamicMatrix<Type,true,Tag>::operator=( const DynamicMatrix& rhs )
+   DynamicMatrix<Type,true,Tag>::operator=( const DynamicMatrix& rhs ) &
 {
    if( &rhs == this ) return *this;
 
@@ -4600,7 +4600,7 @@ inline DynamicMatrix<Type,true,Tag>&
 template< typename Type   // Data type of the matrix
         , typename Tag >  // Type tag
 inline DynamicMatrix<Type,true,Tag>&
-   DynamicMatrix<Type,true,Tag>::operator=( DynamicMatrix&& rhs )
+   DynamicMatrix<Type,true,Tag>::operator=( DynamicMatrix&& rhs ) &
 {
    deallocate( v_ );
 
@@ -4637,7 +4637,7 @@ template< typename Type   // Data type of the matrix
 template< typename MT      // Type of the right-hand side matrix
         , bool SO >        // Storage order of the right-hand side matrix
 inline DynamicMatrix<Type,true,Tag>&
-   DynamicMatrix<Type,true,Tag>::operator=( const Matrix<MT,SO>& rhs )
+   DynamicMatrix<Type,true,Tag>::operator=( const Matrix<MT,SO>& rhs ) &
 {
    using TT = decltype( trans( *this ) );
    using CT = decltype( ctrans( *this ) );
@@ -4686,7 +4686,7 @@ template< typename Type   // Data type of the matrix
 template< typename MT     // Type of the right-hand side matrix
         , bool SO >       // Storage order of the right-hand side matrix
 inline DynamicMatrix<Type,true,Tag>&
-   DynamicMatrix<Type,true,Tag>::operator+=( const Matrix<MT,SO>& rhs )
+   DynamicMatrix<Type,true,Tag>::operator+=( const Matrix<MT,SO>& rhs ) &
 {
    BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<MT> );
 
@@ -4726,7 +4726,7 @@ template< typename Type   // Data type of the matrix
 template< typename MT     // Type of the right-hand side matrix
         , bool SO >       // Storage order of the right-hand side matrix
 inline DynamicMatrix<Type,true,Tag>&
-   DynamicMatrix<Type,true,Tag>::operator-=( const Matrix<MT,SO>& rhs )
+   DynamicMatrix<Type,true,Tag>::operator-=( const Matrix<MT,SO>& rhs ) &
 {
    BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<MT> );
 
@@ -4766,7 +4766,7 @@ template< typename Type   // Data type of the matrix
 template< typename MT     // Type of the right-hand side matrix
         , bool SO >       // Storage order of the right-hand side matrix
 inline DynamicMatrix<Type,true,Tag>&
-   DynamicMatrix<Type,true,Tag>::operator%=( const Matrix<MT,SO>& rhs )
+   DynamicMatrix<Type,true,Tag>::operator%=( const Matrix<MT,SO>& rhs ) &
 {
    BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<MT> );
 
