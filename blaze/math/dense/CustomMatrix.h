@@ -525,22 +525,22 @@ class CustomMatrix
    //**Assignment operators************************************************************************
    /*!\name Assignment operators */
    //@{
-   inline CustomMatrix& operator=( const Type& set );
-   inline CustomMatrix& operator=( initializer_list< initializer_list<Type> > list );
+   inline CustomMatrix& operator=( const Type& set ) &;
+   inline CustomMatrix& operator=( initializer_list< initializer_list<Type> > list ) &;
 
    template< typename Other, size_t Rows, size_t Cols >
-   inline CustomMatrix& operator=( const Other (&array)[Rows][Cols] );
+   inline CustomMatrix& operator=( const Other (&array)[Rows][Cols] ) &;
 
    template< typename Other, size_t Rows, size_t Cols >
-   inline CustomMatrix& operator=( const std::array<std::array<Other,Cols>,Rows>& array );
+   inline CustomMatrix& operator=( const std::array<std::array<Other,Cols>,Rows>& array ) &;
 
-   inline CustomMatrix& operator=( const CustomMatrix& rhs );
-   inline CustomMatrix& operator=( CustomMatrix&& rhs ) noexcept;
+   inline CustomMatrix& operator=( const CustomMatrix& rhs ) &;
+   inline CustomMatrix& operator=( CustomMatrix&& rhs ) & noexcept;
 
-   template< typename MT, bool SO2 > inline CustomMatrix& operator= ( const Matrix<MT,SO2>& rhs );
-   template< typename MT, bool SO2 > inline CustomMatrix& operator+=( const Matrix<MT,SO2>& rhs );
-   template< typename MT, bool SO2 > inline CustomMatrix& operator-=( const Matrix<MT,SO2>& rhs );
-   template< typename MT, bool SO2 > inline CustomMatrix& operator%=( const Matrix<MT,SO2>& rhs );
+   template< typename MT, bool SO2 > inline CustomMatrix& operator= ( const Matrix<MT,SO2>& rhs ) &;
+   template< typename MT, bool SO2 > inline CustomMatrix& operator+=( const Matrix<MT,SO2>& rhs ) &;
+   template< typename MT, bool SO2 > inline CustomMatrix& operator-=( const Matrix<MT,SO2>& rhs ) &;
+   template< typename MT, bool SO2 > inline CustomMatrix& operator%=( const Matrix<MT,SO2>& rhs ) &;
    //@}
    //**********************************************************************************************
 
@@ -1325,7 +1325,7 @@ template< typename Type     // Data type of the matrix
         , typename Tag      // Type tag
         , typename RT >     // Result type
 inline CustomMatrix<Type,AF,PF,SO,Tag,RT>&
-   CustomMatrix<Type,AF,PF,SO,Tag,RT>::operator=( const Type& rhs )
+   CustomMatrix<Type,AF,PF,SO,Tag,RT>::operator=( const Type& rhs ) &
 {
    for( size_t i=0UL; i<m_; ++i )
       for( size_t j=0UL; j<n_; ++j )
@@ -1371,7 +1371,7 @@ template< typename Type     // Data type of the matrix
         , typename Tag      // Type tag
         , typename RT >     // Result type
 inline CustomMatrix<Type,AF,PF,SO,Tag,RT>&
-   CustomMatrix<Type,AF,PF,SO,Tag,RT>::operator=( initializer_list< initializer_list<Type> > list )
+   CustomMatrix<Type,AF,PF,SO,Tag,RT>::operator=( initializer_list< initializer_list<Type> > list ) &
 {
    if( list.size() != m_ || determineColumns( list ) > n_ ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to custom matrix" );
@@ -1429,7 +1429,7 @@ template< typename Other    // Data type of the static array
         , size_t Rows       // Number of rows of the static array
         , size_t Cols >     // Number of columns of the static array
 inline CustomMatrix<Type,AF,PF,SO,Tag,RT>&
-   CustomMatrix<Type,AF,PF,SO,Tag,RT>::operator=( const Other (&array)[Rows][Cols] )
+   CustomMatrix<Type,AF,PF,SO,Tag,RT>::operator=( const Other (&array)[Rows][Cols] ) &
 {
    if( m_ != Rows || n_ != Cols ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid array size" );
@@ -1483,7 +1483,7 @@ template< typename Other    // Data type of the static array
         , size_t Rows       // Number of rows of the static array
         , size_t Cols >     // Number of columns of the static array
 inline CustomMatrix<Type,AF,PF,SO,Tag,RT>&
-   CustomMatrix<Type,AF,PF,SO,Tag,RT>::operator=( const std::array<std::array<Other,Cols>,Rows>& array )
+   CustomMatrix<Type,AF,PF,SO,Tag,RT>::operator=( const std::array<std::array<Other,Cols>,Rows>& array ) &
 {
    if( m_ != Rows || n_ != Cols ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid array size" );
@@ -1515,7 +1515,7 @@ template< typename Type     // Data type of the matrix
         , typename Tag      // Type tag
         , typename RT >     // Result type
 inline CustomMatrix<Type,AF,PF,SO,Tag,RT>&
-   CustomMatrix<Type,AF,PF,SO,Tag,RT>::operator=( const CustomMatrix& rhs )
+   CustomMatrix<Type,AF,PF,SO,Tag,RT>::operator=( const CustomMatrix& rhs ) &
 {
    if( rhs.rows() != m_ || rhs.columns() != n_ ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
@@ -1541,7 +1541,7 @@ template< typename Type     // Data type of the matrix
         , typename Tag      // Type tag
         , typename RT >     // Result type
 inline CustomMatrix<Type,AF,PF,SO,Tag,RT>&
-   CustomMatrix<Type,AF,PF,SO,Tag,RT>::operator=( CustomMatrix&& rhs ) noexcept
+   CustomMatrix<Type,AF,PF,SO,Tag,RT>::operator=( CustomMatrix&& rhs ) & noexcept
 {
    m_  = rhs.m_;
    n_  = rhs.n_;
@@ -1579,7 +1579,7 @@ template< typename Type     // Data type of the matrix
 template< typename MT    // Type of the right-hand side matrix
         , bool SO2 >     // Storage order of the right-hand side matrix
 inline CustomMatrix<Type,AF,PF,SO,Tag,RT>&
-   CustomMatrix<Type,AF,PF,SO,Tag,RT>::operator=( const Matrix<MT,SO2>& rhs )
+   CustomMatrix<Type,AF,PF,SO,Tag,RT>::operator=( const Matrix<MT,SO2>& rhs ) &
 {
    using TT = decltype( trans( *this ) );
    using CT = decltype( ctrans( *this ) );
@@ -1631,7 +1631,7 @@ template< typename Type     // Data type of the matrix
 template< typename MT    // Type of the right-hand side matrix
         , bool SO2 >     // Storage order of the right-hand side matrix
 inline CustomMatrix<Type,AF,PF,SO,Tag,RT>&
-   CustomMatrix<Type,AF,PF,SO,Tag,RT>::operator+=( const Matrix<MT,SO2>& rhs )
+   CustomMatrix<Type,AF,PF,SO,Tag,RT>::operator+=( const Matrix<MT,SO2>& rhs ) &
 {
    BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<MT> );
 
@@ -1671,7 +1671,7 @@ template< typename Type     // Data type of the matrix
 template< typename MT    // Type of the right-hand side matrix
         , bool SO2 >     // Storage order of the right-hand side matrix
 inline CustomMatrix<Type,AF,PF,SO,Tag,RT>&
-   CustomMatrix<Type,AF,PF,SO,Tag,RT>::operator-=( const Matrix<MT,SO2>& rhs )
+   CustomMatrix<Type,AF,PF,SO,Tag,RT>::operator-=( const Matrix<MT,SO2>& rhs ) &
 {
    BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<MT> );
 
@@ -1711,7 +1711,7 @@ template< typename Type     // Data type of the matrix
 template< typename MT    // Type of the right-hand side matrix
         , bool SO2 >     // Storage order of the right-hand side matrix
 inline CustomMatrix<Type,AF,PF,SO,Tag,RT>&
-   CustomMatrix<Type,AF,PF,SO,Tag,RT>::operator%=( const Matrix<MT,SO2>& rhs )
+   CustomMatrix<Type,AF,PF,SO,Tag,RT>::operator%=( const Matrix<MT,SO2>& rhs ) &
 {
    BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<MT> );
 
@@ -3580,22 +3580,22 @@ class CustomMatrix<Type,AF,PF,true,Tag,RT>
    //**Assignment operators************************************************************************
    /*!\name Assignment operators */
    //@{
-   inline CustomMatrix& operator=( const Type& set );
-   inline CustomMatrix& operator=( initializer_list< initializer_list<Type> > list );
+   inline CustomMatrix& operator=( const Type& set ) &;
+   inline CustomMatrix& operator=( initializer_list< initializer_list<Type> > list ) &;
 
    template< typename Other, size_t Rows, size_t Cols >
-   inline CustomMatrix& operator=( const Other (&array)[Rows][Cols] );
+   inline CustomMatrix& operator=( const Other (&array)[Rows][Cols] ) &;
 
    template< typename Other, size_t Rows, size_t Cols >
-   inline CustomMatrix& operator=( const std::array<std::array<Other,Cols>,Rows>& array );
+   inline CustomMatrix& operator=( const std::array<std::array<Other,Cols>,Rows>& array ) &;
 
-   inline CustomMatrix& operator=( const CustomMatrix& rhs );
-   inline CustomMatrix& operator=( CustomMatrix&& rhs ) noexcept;
+   inline CustomMatrix& operator=( const CustomMatrix& rhs ) &;
+   inline CustomMatrix& operator=( CustomMatrix&& rhs ) & noexcept;
 
-   template< typename MT, bool SO > inline CustomMatrix& operator= ( const Matrix<MT,SO>& rhs );
-   template< typename MT, bool SO > inline CustomMatrix& operator+=( const Matrix<MT,SO>& rhs );
-   template< typename MT, bool SO > inline CustomMatrix& operator-=( const Matrix<MT,SO>& rhs );
-   template< typename MT, bool SO > inline CustomMatrix& operator%=( const Matrix<MT,SO>& rhs );
+   template< typename MT, bool SO > inline CustomMatrix& operator= ( const Matrix<MT,SO>& rhs ) &;
+   template< typename MT, bool SO > inline CustomMatrix& operator+=( const Matrix<MT,SO>& rhs ) &;
+   template< typename MT, bool SO > inline CustomMatrix& operator-=( const Matrix<MT,SO>& rhs ) &;
+   template< typename MT, bool SO > inline CustomMatrix& operator%=( const Matrix<MT,SO>& rhs ) &;
    //@}
    //**********************************************************************************************
 
@@ -4353,7 +4353,7 @@ template< typename Type     // Data type of the matrix
         , typename Tag      // Type tag
         , typename RT >     // Result type
 inline CustomMatrix<Type,AF,PF,true,Tag,RT>&
-   CustomMatrix<Type,AF,PF,true,Tag,RT>::operator=( const Type& rhs )
+   CustomMatrix<Type,AF,PF,true,Tag,RT>::operator=( const Type& rhs ) &
 {
    for( size_t j=0UL; j<n_; ++j )
       for( size_t i=0UL; i<m_; ++i )
@@ -4400,7 +4400,7 @@ template< typename Type     // Data type of the matrix
         , typename Tag      // Type tag
         , typename RT >     // Result type
 inline CustomMatrix<Type,AF,PF,true,Tag,RT>&
-   CustomMatrix<Type,AF,PF,true,Tag,RT>::operator=( initializer_list< initializer_list<Type> > list )
+   CustomMatrix<Type,AF,PF,true,Tag,RT>::operator=( initializer_list< initializer_list<Type> > list ) &
 {
    using blaze::clear;
 
@@ -4467,7 +4467,7 @@ template< typename Other    // Data type of the static array
         , size_t Rows       // Number of rows of the static array
         , size_t Cols >     // Number of columns of the static array
 inline CustomMatrix<Type,AF,PF,true,Tag,RT>&
-   CustomMatrix<Type,AF,PF,true,Tag,RT>::operator=( const Other (&array)[Rows][Cols] )
+   CustomMatrix<Type,AF,PF,true,Tag,RT>::operator=( const Other (&array)[Rows][Cols] ) &
 {
    if( m_ != Rows || n_ != Cols ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid array size" );
@@ -4522,7 +4522,7 @@ template< typename Other    // Data type of the static array
         , size_t Rows       // Number of rows of the static array
         , size_t Cols >     // Number of columns of the static array
 inline CustomMatrix<Type,AF,PF,true,Tag,RT>&
-   CustomMatrix<Type,AF,PF,true,Tag,RT>::operator=( const std::array<std::array<Other,Cols>,Rows>& array )
+   CustomMatrix<Type,AF,PF,true,Tag,RT>::operator=( const std::array<std::array<Other,Cols>,Rows>& array ) &
 {
    if( m_ != Rows || n_ != Cols ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid array size" );
@@ -4555,7 +4555,7 @@ template< typename Type     // Data type of the matrix
         , typename Tag      // Type tag
         , typename RT >     // Result type
 inline CustomMatrix<Type,AF,PF,true,Tag,RT>&
-   CustomMatrix<Type,AF,PF,true,Tag,RT>::operator=( const CustomMatrix& rhs )
+   CustomMatrix<Type,AF,PF,true,Tag,RT>::operator=( const CustomMatrix& rhs ) &
 {
    if( rhs.rows() != m_ || rhs.columns() != n_ ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
@@ -4582,7 +4582,7 @@ template< typename Type     // Data type of the matrix
         , typename Tag      // Type tag
         , typename RT >     // Result type
 inline CustomMatrix<Type,AF,PF,true,Tag,RT>&
-   CustomMatrix<Type,AF,PF,true,Tag,RT>::operator=( CustomMatrix&& rhs ) noexcept
+   CustomMatrix<Type,AF,PF,true,Tag,RT>::operator=( CustomMatrix&& rhs ) & noexcept
 {
    m_  = rhs.m_;
    mm_ = rhs.mm_;
@@ -4621,7 +4621,7 @@ template< typename Type     // Data type of the matrix
 template< typename MT    // Type of the right-hand side matrix
         , bool SO >      // Storage order of the right-hand side matrix
 inline CustomMatrix<Type,AF,PF,true,Tag,RT>&
-   CustomMatrix<Type,AF,PF,true,Tag,RT>::operator=( const Matrix<MT,SO>& rhs )
+   CustomMatrix<Type,AF,PF,true,Tag,RT>::operator=( const Matrix<MT,SO>& rhs ) &
 {
    using TT = decltype( trans( *this ) );
    using CT = decltype( ctrans( *this ) );
@@ -4674,7 +4674,7 @@ template< typename Type     // Data type of the matrix
 template< typename MT    // Type of the right-hand side matrix
         , bool SO >      // Storage order of the right-hand side matrix
 inline CustomMatrix<Type,AF,PF,true,Tag,RT>&
-   CustomMatrix<Type,AF,PF,true,Tag,RT>::operator+=( const Matrix<MT,SO>& rhs )
+   CustomMatrix<Type,AF,PF,true,Tag,RT>::operator+=( const Matrix<MT,SO>& rhs ) &
 {
    BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<MT> );
 
@@ -4715,7 +4715,7 @@ template< typename Type     // Data type of the matrix
 template< typename MT    // Type of the right-hand side matrix
         , bool SO >      // Storage order of the right-hand side matrix
 inline CustomMatrix<Type,AF,PF,true,Tag,RT>&
-   CustomMatrix<Type,AF,PF,true,Tag,RT>::operator-=( const Matrix<MT,SO>& rhs )
+   CustomMatrix<Type,AF,PF,true,Tag,RT>::operator-=( const Matrix<MT,SO>& rhs ) &
 {
    BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<MT> );
 
@@ -4756,7 +4756,7 @@ template< typename Type     // Data type of the matrix
 template< typename MT    // Type of the right-hand side matrix
         , bool SO >      // Storage order of the right-hand side matrix
 inline CustomMatrix<Type,AF,PF,true,Tag,RT>&
-   CustomMatrix<Type,AF,PF,true,Tag,RT>::operator%=( const Matrix<MT,SO>& rhs )
+   CustomMatrix<Type,AF,PF,true,Tag,RT>::operator%=( const Matrix<MT,SO>& rhs ) &
 {
    BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<MT> );
 
