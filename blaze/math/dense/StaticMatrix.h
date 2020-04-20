@@ -360,24 +360,24 @@ class StaticMatrix
    //**Assignment operators************************************************************************
    /*!\name Assignment operators */
    //@{
-   constexpr StaticMatrix& operator=( const Type& set );
-   constexpr StaticMatrix& operator=( initializer_list< initializer_list<Type> > list );
+   constexpr StaticMatrix& operator=( const Type& set ) &;
+   constexpr StaticMatrix& operator=( initializer_list< initializer_list<Type> > list ) &;
 
    template< typename Other, size_t Rows, size_t Cols >
-   inline StaticMatrix& operator=( const Other (&array)[Rows][Cols] );
+   inline StaticMatrix& operator=( const Other (&array)[Rows][Cols] ) &;
 
    template< typename Other, size_t Rows, size_t Cols >
-   inline StaticMatrix& operator=( const std::array<std::array<Other,Cols>,Rows>& array );
+   inline StaticMatrix& operator=( const std::array<std::array<Other,Cols>,Rows>& array ) &;
 
-   constexpr StaticMatrix& operator=( const StaticMatrix& rhs );
+   constexpr StaticMatrix& operator=( const StaticMatrix& rhs ) &;
 
    template< typename Other, bool SO2, AlignmentFlag AF2, PaddingFlag PF2 >
-   inline StaticMatrix& operator=( const StaticMatrix<Other,M,N,SO2,AF2,PF2,Tag>& rhs );
+   inline StaticMatrix& operator=( const StaticMatrix<Other,M,N,SO2,AF2,PF2,Tag>& rhs ) &;
 
-   template< typename MT, bool SO2 > inline StaticMatrix& operator= ( const Matrix<MT,SO2>& rhs );
-   template< typename MT, bool SO2 > inline StaticMatrix& operator+=( const Matrix<MT,SO2>& rhs );
-   template< typename MT, bool SO2 > inline StaticMatrix& operator-=( const Matrix<MT,SO2>& rhs );
-   template< typename MT, bool SO2 > inline StaticMatrix& operator%=( const Matrix<MT,SO2>& rhs );
+   template< typename MT, bool SO2 > inline StaticMatrix& operator= ( const Matrix<MT,SO2>& rhs ) &;
+   template< typename MT, bool SO2 > inline StaticMatrix& operator+=( const Matrix<MT,SO2>& rhs ) &;
+   template< typename MT, bool SO2 > inline StaticMatrix& operator-=( const Matrix<MT,SO2>& rhs ) &;
+   template< typename MT, bool SO2 > inline StaticMatrix& operator%=( const Matrix<MT,SO2>& rhs ) &;
    //@}
    //**********************************************************************************************
 
@@ -1407,7 +1407,7 @@ template< typename Type     // Data type of the matrix
         , PaddingFlag PF    // Padding flag
         , typename Tag >    // Type tag
 constexpr StaticMatrix<Type,M,N,SO,AF,PF,Tag>&
-   StaticMatrix<Type,M,N,SO,AF,PF,Tag>::operator=( const Type& set )
+   StaticMatrix<Type,M,N,SO,AF,PF,Tag>::operator=( const Type& set ) &
 {
    for( size_t i=0UL; i<M; ++i )
       for( size_t j=0UL; j<N; ++j )
@@ -1452,7 +1452,7 @@ template< typename Type     // Data type of the matrix
         , PaddingFlag PF    // Padding flag
         , typename Tag >    // Type tag
 constexpr StaticMatrix<Type,M,N,SO,AF,PF,Tag>&
-   StaticMatrix<Type,M,N,SO,AF,PF,Tag>::operator=( initializer_list< initializer_list<Type> > list )
+   StaticMatrix<Type,M,N,SO,AF,PF,Tag>::operator=( initializer_list< initializer_list<Type> > list ) &
 {
    if( list.size() != M || determineColumns( list ) > N ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to static matrix" );
@@ -1511,7 +1511,7 @@ template< typename Other    // Data type of the static array
         , size_t Rows       // Number of rows of the static array
         , size_t Cols >     // Number of columns of the static array
 inline StaticMatrix<Type,M,N,SO,AF,PF,Tag>&
-   StaticMatrix<Type,M,N,SO,AF,PF,Tag>::operator=( const Other (&array)[Rows][Cols] )
+   StaticMatrix<Type,M,N,SO,AF,PF,Tag>::operator=( const Other (&array)[Rows][Cols] ) &
 {
    BLAZE_STATIC_ASSERT( Rows == M && Cols == N );
 
@@ -1558,7 +1558,7 @@ template< typename Other    // Data type of the static array
         , size_t Rows       // Number of rows of the static array
         , size_t Cols >     // Number of columns of the static array
 inline StaticMatrix<Type,M,N,SO,AF,PF,Tag>&
-   StaticMatrix<Type,M,N,SO,AF,PF,Tag>::operator=( const std::array<std::array<Other,Cols>,Rows>& array )
+   StaticMatrix<Type,M,N,SO,AF,PF,Tag>::operator=( const std::array<std::array<Other,Cols>,Rows>& array ) &
 {
    BLAZE_STATIC_ASSERT( Rows == M && Cols == N );
 
@@ -1589,7 +1589,7 @@ template< typename Type     // Data type of the matrix
         , PaddingFlag PF    // Padding flag
         , typename Tag >    // Type tag
 constexpr StaticMatrix<Type,M,N,SO,AF,PF,Tag>&
-   StaticMatrix<Type,M,N,SO,AF,PF,Tag>::operator=( const StaticMatrix& rhs )
+   StaticMatrix<Type,M,N,SO,AF,PF,Tag>::operator=( const StaticMatrix& rhs ) &
 {
    v_ = rhs.v_;
 
@@ -1618,7 +1618,7 @@ template< typename Other     // Data type of the foreign matrix
         , AlignmentFlag AF2  // Alignment flag of the foreign matrix
         , PaddingFlag PF2 >  // Padding flag of the foreign matrix
 inline StaticMatrix<Type,M,N,SO,AF,PF,Tag>&
-   StaticMatrix<Type,M,N,SO,AF,PF,Tag>::operator=( const StaticMatrix<Other,M,N,SO2,AF2,PF2,Tag>& rhs )
+   StaticMatrix<Type,M,N,SO,AF,PF,Tag>::operator=( const StaticMatrix<Other,M,N,SO2,AF2,PF2,Tag>& rhs ) &
 {
    using blaze::assign;
 
@@ -1652,7 +1652,7 @@ template< typename Type     // Data type of the matrix
 template< typename MT       // Type of the right-hand side matrix
         , bool SO2 >        // Storage order of the right-hand side matrix
 inline StaticMatrix<Type,M,N,SO,AF,PF,Tag>&
-   StaticMatrix<Type,M,N,SO,AF,PF,Tag>::operator=( const Matrix<MT,SO2>& rhs )
+   StaticMatrix<Type,M,N,SO,AF,PF,Tag>::operator=( const Matrix<MT,SO2>& rhs ) &
 {
    using blaze::assign;
 
@@ -1709,7 +1709,7 @@ template< typename Type     // Data type of the matrix
 template< typename MT       // Type of the right-hand side matrix
         , bool SO2 >        // Storage order of the right-hand side matrix
 inline StaticMatrix<Type,M,N,SO,AF,PF,Tag>&
-   StaticMatrix<Type,M,N,SO,AF,PF,Tag>::operator+=( const Matrix<MT,SO2>& rhs )
+   StaticMatrix<Type,M,N,SO,AF,PF,Tag>::operator+=( const Matrix<MT,SO2>& rhs ) &
 {
    using blaze::addAssign;
 
@@ -1754,7 +1754,7 @@ template< typename Type     // Data type of the matrix
 template< typename MT       // Type of the right-hand side matrix
         , bool SO2 >        // Storage order of the right-hand side matrix
 inline StaticMatrix<Type,M,N,SO,AF,PF,Tag>&
-   StaticMatrix<Type,M,N,SO,AF,PF,Tag>::operator-=( const Matrix<MT,SO2>& rhs )
+   StaticMatrix<Type,M,N,SO,AF,PF,Tag>::operator-=( const Matrix<MT,SO2>& rhs ) &
 {
    using blaze::subAssign;
 
@@ -1799,7 +1799,7 @@ template< typename Type     // Data type of the matrix
 template< typename MT       // Type of the right-hand side matrix
         , bool SO2 >        // Storage order of the right-hand side matrix
 inline StaticMatrix<Type,M,N,SO,AF,PF,Tag>&
-   StaticMatrix<Type,M,N,SO,AF,PF,Tag>::operator%=( const Matrix<MT,SO2>& rhs )
+   StaticMatrix<Type,M,N,SO,AF,PF,Tag>::operator%=( const Matrix<MT,SO2>& rhs ) &
 {
    using blaze::schurAssign;
 
@@ -3660,24 +3660,24 @@ class StaticMatrix<Type,M,N,true,AF,PF,Tag>
    //**Assignment operators************************************************************************
    /*!\name Assignment operators */
    //@{
-   constexpr StaticMatrix& operator=( const Type& set );
-   constexpr StaticMatrix& operator=( initializer_list< initializer_list<Type> > list );
+   constexpr StaticMatrix& operator=( const Type& set ) &;
+   constexpr StaticMatrix& operator=( initializer_list< initializer_list<Type> > list ) &;
 
    template< typename Other, size_t Rows, size_t Cols >
-   inline StaticMatrix& operator=( const Other (&array)[Rows][Cols] );
+   inline StaticMatrix& operator=( const Other (&array)[Rows][Cols] ) &;
 
    template< typename Other, size_t Rows, size_t Cols >
-   inline StaticMatrix& operator=( const std::array<std::array<Other,Cols>,Rows>& array );
+   inline StaticMatrix& operator=( const std::array<std::array<Other,Cols>,Rows>& array ) &;
 
-   constexpr StaticMatrix& operator=( const StaticMatrix& rhs );
+   constexpr StaticMatrix& operator=( const StaticMatrix& rhs ) &;
 
    template< typename Other, bool SO2, AlignmentFlag AF2, PaddingFlag PF2 >
-   inline StaticMatrix& operator=( const StaticMatrix<Other,M,N,SO2,AF2,PF2,Tag>& rhs );
+   inline StaticMatrix& operator=( const StaticMatrix<Other,M,N,SO2,AF2,PF2,Tag>& rhs ) &;
 
-   template< typename MT, bool SO > inline StaticMatrix& operator= ( const Matrix<MT,SO>& rhs );
-   template< typename MT, bool SO > inline StaticMatrix& operator+=( const Matrix<MT,SO>& rhs );
-   template< typename MT, bool SO > inline StaticMatrix& operator-=( const Matrix<MT,SO>& rhs );
-   template< typename MT, bool SO > inline StaticMatrix& operator%=( const Matrix<MT,SO>& rhs );
+   template< typename MT, bool SO > inline StaticMatrix& operator= ( const Matrix<MT,SO>& rhs ) &;
+   template< typename MT, bool SO > inline StaticMatrix& operator+=( const Matrix<MT,SO>& rhs ) &;
+   template< typename MT, bool SO > inline StaticMatrix& operator-=( const Matrix<MT,SO>& rhs ) &;
+   template< typename MT, bool SO > inline StaticMatrix& operator%=( const Matrix<MT,SO>& rhs ) &;
    //@}
    //**********************************************************************************************
 
@@ -4657,7 +4657,7 @@ template< typename Type     // Data type of the matrix
         , PaddingFlag PF    // Padding flag
         , typename Tag >    // Type tag
 constexpr StaticMatrix<Type,M,N,true,AF,PF,Tag>&
-   StaticMatrix<Type,M,N,true,AF,PF,Tag>::operator=( const Type& set )
+   StaticMatrix<Type,M,N,true,AF,PF,Tag>::operator=( const Type& set ) &
 {
    for( size_t j=0UL; j<N; ++j )
       for( size_t i=0UL; i<M; ++i )
@@ -4702,7 +4702,7 @@ template< typename Type     // Data type of the matrix
         , PaddingFlag PF    // Padding flag
         , typename Tag >    // Type tag
 constexpr StaticMatrix<Type,M,N,true,AF,PF,Tag>&
-   StaticMatrix<Type,M,N,true,AF,PF,Tag>::operator=( initializer_list< initializer_list<Type> > list )
+   StaticMatrix<Type,M,N,true,AF,PF,Tag>::operator=( initializer_list< initializer_list<Type> > list ) &
 {
    if( list.size() != M || determineColumns( list ) > N ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to static matrix" );
@@ -4762,7 +4762,7 @@ template< typename Other    // Data type of the static array
         , size_t Rows       // Number of rows of the static array
         , size_t Cols >     // Number of columns of the static array
 inline StaticMatrix<Type,M,N,true,AF,PF,Tag>&
-   StaticMatrix<Type,M,N,true,AF,PF,Tag>::operator=( const Other (&array)[Rows][Cols] )
+   StaticMatrix<Type,M,N,true,AF,PF,Tag>::operator=( const Other (&array)[Rows][Cols] ) &
 {
    BLAZE_STATIC_ASSERT( Rows == M && Cols == N );
 
@@ -4809,7 +4809,7 @@ template< typename Other    // Data type of the static array
         , size_t Rows       // Number of rows of the static array
         , size_t Cols >     // Number of columns of the static array
 inline StaticMatrix<Type,M,N,true,AF,PF,Tag>&
-   StaticMatrix<Type,M,N,true,AF,PF,Tag>::operator=( const std::array<std::array<Other,Cols>,Rows>& array )
+   StaticMatrix<Type,M,N,true,AF,PF,Tag>::operator=( const std::array<std::array<Other,Cols>,Rows>& array ) &
 {
    BLAZE_STATIC_ASSERT( Rows == M && Cols == N );
 
@@ -4840,7 +4840,7 @@ template< typename Type     // Data type of the matrix
         , PaddingFlag PF    // Padding flag
         , typename Tag >    // Type tag
 constexpr StaticMatrix<Type,M,N,true,AF,PF,Tag>&
-   StaticMatrix<Type,M,N,true,AF,PF,Tag>::operator=( const StaticMatrix& rhs )
+   StaticMatrix<Type,M,N,true,AF,PF,Tag>::operator=( const StaticMatrix& rhs ) &
 {
    v_ = rhs.v_;
 
@@ -4870,7 +4870,7 @@ template< typename Other     // Data type of the foreign matrix
         , AlignmentFlag AF2  // Alignment flag of the foreign matrix
         , PaddingFlag PF2 >  // Padding flag of the foreign matrix
 inline StaticMatrix<Type,M,N,true,AF,PF,Tag>&
-   StaticMatrix<Type,M,N,true,AF,PF,Tag>::operator=( const StaticMatrix<Other,M,N,SO2,AF2,PF2,Tag>& rhs )
+   StaticMatrix<Type,M,N,true,AF,PF,Tag>::operator=( const StaticMatrix<Other,M,N,SO2,AF2,PF2,Tag>& rhs ) &
 {
    using blaze::assign;
 
@@ -4905,7 +4905,7 @@ template< typename Type     // Data type of the matrix
 template< typename MT       // Type of the right-hand side matrix
         , bool SO >         // Storage order of the right-hand side matrix
 inline StaticMatrix<Type,M,N,true,AF,PF,Tag>&
-   StaticMatrix<Type,M,N,true,AF,PF,Tag>::operator=( const Matrix<MT,SO>& rhs )
+   StaticMatrix<Type,M,N,true,AF,PF,Tag>::operator=( const Matrix<MT,SO>& rhs ) &
 {
    using blaze::assign;
 
@@ -4963,7 +4963,7 @@ template< typename Type     // Data type of the matrix
 template< typename MT       // Type of the right-hand side matrix
         , bool SO >         // Storage order of the right-hand side matrix
 inline StaticMatrix<Type,M,N,true,AF,PF,Tag>&
-   StaticMatrix<Type,M,N,true,AF,PF,Tag>::operator+=( const Matrix<MT,SO>& rhs )
+   StaticMatrix<Type,M,N,true,AF,PF,Tag>::operator+=( const Matrix<MT,SO>& rhs ) &
 {
    using blaze::addAssign;
 
@@ -5009,7 +5009,7 @@ template< typename Type     // Data type of the matrix
 template< typename MT       // Type of the right-hand side matrix
         , bool SO >         // Storage order of the right-hand side matrix
 inline StaticMatrix<Type,M,N,true,AF,PF,Tag>&
-   StaticMatrix<Type,M,N,true,AF,PF,Tag>::operator-=( const Matrix<MT,SO>& rhs )
+   StaticMatrix<Type,M,N,true,AF,PF,Tag>::operator-=( const Matrix<MT,SO>& rhs ) &
 {
    using blaze::subAssign;
 
@@ -5055,7 +5055,7 @@ template< typename Type     // Data type of the matrix
 template< typename MT       // Type of the right-hand side matrix
         , bool SO >         // Storage order of the right-hand side matrix
 inline StaticMatrix<Type,M,N,true,AF,PF,Tag>&
-   StaticMatrix<Type,M,N,true,AF,PF,Tag>::operator%=( const Matrix<MT,SO>& rhs )
+   StaticMatrix<Type,M,N,true,AF,PF,Tag>::operator%=( const Matrix<MT,SO>& rhs ) &
 {
    using blaze::schurAssign;
 
