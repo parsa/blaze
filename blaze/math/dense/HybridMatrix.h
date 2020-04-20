@@ -365,21 +365,21 @@ class HybridMatrix
    //**Assignment operators************************************************************************
    /*!\name Assignment operators */
    //@{
-   constexpr HybridMatrix& operator=( const Type& set );
-   constexpr HybridMatrix& operator=( initializer_list< initializer_list<Type> > list );
+   constexpr HybridMatrix& operator=( const Type& set ) &;
+   constexpr HybridMatrix& operator=( initializer_list< initializer_list<Type> > list ) &;
 
    template< typename Other, size_t Rows, size_t Cols >
-   constexpr HybridMatrix& operator=( const Other (&array)[Rows][Cols] );
+   constexpr HybridMatrix& operator=( const Other (&array)[Rows][Cols] ) &;
 
    template< typename Other, size_t Rows, size_t Cols >
-   constexpr HybridMatrix& operator=( const std::array<std::array<Other,Cols>,Rows>& array );
+   constexpr HybridMatrix& operator=( const std::array<std::array<Other,Cols>,Rows>& array ) &;
 
-   constexpr HybridMatrix& operator=( const HybridMatrix& rhs );
+   constexpr HybridMatrix& operator=( const HybridMatrix& rhs ) &;
 
-   template< typename MT, bool SO2 > inline HybridMatrix& operator= ( const Matrix<MT,SO2>& rhs );
-   template< typename MT, bool SO2 > inline HybridMatrix& operator+=( const Matrix<MT,SO2>& rhs );
-   template< typename MT, bool SO2 > inline HybridMatrix& operator-=( const Matrix<MT,SO2>& rhs );
-   template< typename MT, bool SO2 > inline HybridMatrix& operator%=( const Matrix<MT,SO2>& rhs );
+   template< typename MT, bool SO2 > inline HybridMatrix& operator= ( const Matrix<MT,SO2>& rhs ) &;
+   template< typename MT, bool SO2 > inline HybridMatrix& operator+=( const Matrix<MT,SO2>& rhs ) &;
+   template< typename MT, bool SO2 > inline HybridMatrix& operator-=( const Matrix<MT,SO2>& rhs ) &;
+   template< typename MT, bool SO2 > inline HybridMatrix& operator%=( const Matrix<MT,SO2>& rhs ) &;
    //@}
    //**********************************************************************************************
 
@@ -1468,7 +1468,7 @@ template< typename Type     // Data type of the matrix
         , PaddingFlag PF    // Padding flag
         , typename Tag >    // Type tag
 constexpr HybridMatrix<Type,M,N,SO,AF,PF,Tag>&
-   HybridMatrix<Type,M,N,SO,AF,PF,Tag>::operator=( const Type& set )
+   HybridMatrix<Type,M,N,SO,AF,PF,Tag>::operator=( const Type& set ) &
 {
    BLAZE_INTERNAL_ASSERT( m_ <= M, "Invalid number of rows detected"    );
    BLAZE_INTERNAL_ASSERT( n_ <= N, "Invalid number of columns detected" );
@@ -1515,7 +1515,7 @@ template< typename Type     // Data type of the matrix
         , PaddingFlag PF    // Padding flag
         , typename Tag >    // Type tag
 constexpr HybridMatrix<Type,M,N,SO,AF,PF,Tag>&
-   HybridMatrix<Type,M,N,SO,AF,PF,Tag>::operator=( initializer_list< initializer_list<Type> > list )
+   HybridMatrix<Type,M,N,SO,AF,PF,Tag>::operator=( initializer_list< initializer_list<Type> > list ) &
 {
    const size_t m( list.size() );
    const size_t n( determineColumns( list ) );
@@ -1581,7 +1581,7 @@ template< typename Other    // Data type of the static array
         , size_t Rows       // Number of rows of the static array
         , size_t Cols >     // Number of columns of the static array
 constexpr HybridMatrix<Type,M,N,SO,AF,PF,Tag>&
-   HybridMatrix<Type,M,N,SO,AF,PF,Tag>::operator=( const Other (&array)[Rows][Cols] )
+   HybridMatrix<Type,M,N,SO,AF,PF,Tag>::operator=( const Other (&array)[Rows][Cols] ) &
 {
    BLAZE_STATIC_ASSERT( Rows <= M );
    BLAZE_STATIC_ASSERT( Cols <= N );
@@ -1629,7 +1629,7 @@ template< typename Other    // Data type of the static array
         , size_t Rows       // Number of rows of the static array
         , size_t Cols >     // Number of columns of the static array
 constexpr HybridMatrix<Type,M,N,SO,AF,PF,Tag>&
-   HybridMatrix<Type,M,N,SO,AF,PF,Tag>::operator=( const std::array<std::array<Other,Cols>,Rows>& array )
+   HybridMatrix<Type,M,N,SO,AF,PF,Tag>::operator=( const std::array<std::array<Other,Cols>,Rows>& array ) &
 {
    BLAZE_STATIC_ASSERT( Rows <= M );
    BLAZE_STATIC_ASSERT( Cols <= N );
@@ -1661,7 +1661,7 @@ template< typename Type     // Data type of the matrix
         , PaddingFlag PF    // Padding flag
         , typename Tag >    // Type tag
 constexpr HybridMatrix<Type,M,N,SO,AF,PF,Tag>&
-   HybridMatrix<Type,M,N,SO,AF,PF,Tag>::operator=( const HybridMatrix& rhs )
+   HybridMatrix<Type,M,N,SO,AF,PF,Tag>::operator=( const HybridMatrix& rhs ) &
 {
    using blaze::assign;
 
@@ -1699,7 +1699,7 @@ template< typename Type     // Data type of the matrix
 template< typename MT       // Type of the right-hand side matrix
         , bool SO2 >        // Storage order of the right-hand side matrix
 inline HybridMatrix<Type,M,N,SO,AF,PF,Tag>&
-   HybridMatrix<Type,M,N,SO,AF,PF,Tag>::operator=( const Matrix<MT,SO2>& rhs )
+   HybridMatrix<Type,M,N,SO,AF,PF,Tag>::operator=( const Matrix<MT,SO2>& rhs ) &
 {
    using blaze::assign;
 
@@ -1758,7 +1758,7 @@ template< typename Type     // Data type of the matrix
 template< typename MT       // Type of the right-hand side matrix
         , bool SO2 >        // Storage order of the right-hand side matrix
 inline HybridMatrix<Type,M,N,SO,AF,PF,Tag>&
-   HybridMatrix<Type,M,N,SO,AF,PF,Tag>::operator+=( const Matrix<MT,SO2>& rhs )
+   HybridMatrix<Type,M,N,SO,AF,PF,Tag>::operator+=( const Matrix<MT,SO2>& rhs ) &
 {
    using blaze::addAssign;
 
@@ -1803,7 +1803,7 @@ template< typename Type     // Data type of the matrix
 template< typename MT       // Type of the right-hand side matrix
         , bool SO2 >        // Storage order of the right-hand side matrix
 inline HybridMatrix<Type,M,N,SO,AF,PF,Tag>&
-   HybridMatrix<Type,M,N,SO,AF,PF,Tag>::operator-=( const Matrix<MT,SO2>& rhs )
+   HybridMatrix<Type,M,N,SO,AF,PF,Tag>::operator-=( const Matrix<MT,SO2>& rhs ) &
 {
    using blaze::subAssign;
 
@@ -1848,7 +1848,7 @@ template< typename Type     // Data type of the matrix
 template< typename MT       // Type of the right-hand side matrix
         , bool SO2 >        // Storage order of the right-hand side matrix
 inline HybridMatrix<Type,M,N,SO,AF,PF,Tag>&
-   HybridMatrix<Type,M,N,SO,AF,PF,Tag>::operator%=( const Matrix<MT,SO2>& rhs )
+   HybridMatrix<Type,M,N,SO,AF,PF,Tag>::operator%=( const Matrix<MT,SO2>& rhs ) &
 {
    using blaze::schurAssign;
 
@@ -3792,21 +3792,21 @@ class HybridMatrix<Type,M,N,true,AF,PF,Tag>
    //**Assignment operators************************************************************************
    /*!\name Assignment operators */
    //@{
-   constexpr HybridMatrix& operator=( const Type& set );
-   constexpr HybridMatrix& operator=( initializer_list< initializer_list<Type> > list );
+   constexpr HybridMatrix& operator=( const Type& set ) &;
+   constexpr HybridMatrix& operator=( initializer_list< initializer_list<Type> > list ) &;
 
    template< typename Other, size_t Rows, size_t Cols >
-   constexpr HybridMatrix& operator=( const Other (&array)[Rows][Cols] );
+   constexpr HybridMatrix& operator=( const Other (&array)[Rows][Cols] ) &;
 
    template< typename Other, size_t Rows, size_t Cols >
-   constexpr HybridMatrix& operator=( const std::array<std::array<Other,Cols>,Rows>& array );
+   constexpr HybridMatrix& operator=( const std::array<std::array<Other,Cols>,Rows>& array ) &;
 
-   constexpr HybridMatrix& operator=( const HybridMatrix& rhs );
+   constexpr HybridMatrix& operator=( const HybridMatrix& rhs ) &;
 
-   template< typename MT, bool SO > inline HybridMatrix& operator= ( const Matrix<MT,SO>& rhs );
-   template< typename MT, bool SO > inline HybridMatrix& operator+=( const Matrix<MT,SO>& rhs );
-   template< typename MT, bool SO > inline HybridMatrix& operator-=( const Matrix<MT,SO>& rhs );
-   template< typename MT, bool SO > inline HybridMatrix& operator%=( const Matrix<MT,SO>& rhs );
+   template< typename MT, bool SO > inline HybridMatrix& operator= ( const Matrix<MT,SO>& rhs ) &;
+   template< typename MT, bool SO > inline HybridMatrix& operator+=( const Matrix<MT,SO>& rhs ) &;
+   template< typename MT, bool SO > inline HybridMatrix& operator-=( const Matrix<MT,SO>& rhs ) &;
+   template< typename MT, bool SO > inline HybridMatrix& operator%=( const Matrix<MT,SO>& rhs ) &;
    //@}
    //**********************************************************************************************
 
@@ -4848,7 +4848,7 @@ template< typename Type     // Data type of the matrix
         , PaddingFlag PF    // Padding flag
         , typename Tag >    // Type tag
 constexpr HybridMatrix<Type,M,N,true,AF,PF,Tag>&
-   HybridMatrix<Type,M,N,true,AF,PF,Tag>::operator=( const Type& set )
+   HybridMatrix<Type,M,N,true,AF,PF,Tag>::operator=( const Type& set ) &
 {
    BLAZE_INTERNAL_ASSERT( m_ <= M, "Invalid number of rows detected"    );
    BLAZE_INTERNAL_ASSERT( n_ <= N, "Invalid number of columns detected" );
@@ -4896,7 +4896,7 @@ template< typename Type     // Data type of the matrix
         , PaddingFlag PF    // Padding flag
         , typename Tag >    // Type tag
 constexpr HybridMatrix<Type,M,N,true,AF,PF,Tag>&
-   HybridMatrix<Type,M,N,true,AF,PF,Tag>::operator=( initializer_list< initializer_list<Type> > list )
+   HybridMatrix<Type,M,N,true,AF,PF,Tag>::operator=( initializer_list< initializer_list<Type> > list ) &
 {
    const size_t m( list.size() );
    const size_t n( determineColumns( list ) );
@@ -4963,7 +4963,7 @@ template< typename Other    // Data type of the static array
         , size_t Rows       // Number of rows of the static array
         , size_t Cols >     // Number of columns of the static array
 constexpr HybridMatrix<Type,M,N,true,AF,PF,Tag>&
-   HybridMatrix<Type,M,N,true,AF,PF,Tag>::operator=( const Other (&array)[Rows][Cols] )
+   HybridMatrix<Type,M,N,true,AF,PF,Tag>::operator=( const Other (&array)[Rows][Cols] ) &
 {
    BLAZE_STATIC_ASSERT( Rows <= M );
    BLAZE_STATIC_ASSERT( Cols <= N );
@@ -5012,7 +5012,7 @@ template< typename Other    // Data type of the static array
         , size_t Rows       // Number of rows of the static array
         , size_t Cols >     // Number of columns of the static array
 constexpr HybridMatrix<Type,M,N,true,AF,PF,Tag>&
-   HybridMatrix<Type,M,N,true,AF,PF,Tag>::operator=( const std::array<std::array<Other,Cols>,Rows>& array )
+   HybridMatrix<Type,M,N,true,AF,PF,Tag>::operator=( const std::array<std::array<Other,Cols>,Rows>& array ) &
 {
    BLAZE_STATIC_ASSERT( Rows <= M );
    BLAZE_STATIC_ASSERT( Cols <= N );
@@ -5045,7 +5045,7 @@ template< typename Type     // Data type of the matrix
         , PaddingFlag PF    // Padding flag
         , typename Tag >    // Type tag
 constexpr HybridMatrix<Type,M,N,true,AF,PF,Tag>&
-   HybridMatrix<Type,M,N,true,AF,PF,Tag>::operator=( const HybridMatrix& rhs )
+   HybridMatrix<Type,M,N,true,AF,PF,Tag>::operator=( const HybridMatrix& rhs ) &
 {
    using blaze::assign;
 
@@ -5084,7 +5084,7 @@ template< typename Type     // Data type of the matrix
 template< typename MT       // Type of the right-hand side matrix
         , bool SO >         // Storage order of the right-hand side matrix
 inline HybridMatrix<Type,M,N,true,AF,PF,Tag>&
-   HybridMatrix<Type,M,N,true,AF,PF,Tag>::operator=( const Matrix<MT,SO>& rhs )
+   HybridMatrix<Type,M,N,true,AF,PF,Tag>::operator=( const Matrix<MT,SO>& rhs ) &
 {
    using blaze::assign;
 
@@ -5144,7 +5144,7 @@ template< typename Type     // Data type of the matrix
 template< typename MT       // Type of the right-hand side matrix
         , bool SO >         // Storage order of the right-hand side matrix
 inline HybridMatrix<Type,M,N,true,AF,PF,Tag>&
-   HybridMatrix<Type,M,N,true,AF,PF,Tag>::operator+=( const Matrix<MT,SO>& rhs )
+   HybridMatrix<Type,M,N,true,AF,PF,Tag>::operator+=( const Matrix<MT,SO>& rhs ) &
 {
    using blaze::addAssign;
 
@@ -5190,7 +5190,7 @@ template< typename Type     // Data type of the matrix
 template< typename MT       // Type of the right-hand side matrix
         , bool SO >         // Storage order of the right-hand side matrix
 inline HybridMatrix<Type,M,N,true,AF,PF,Tag>&
-   HybridMatrix<Type,M,N,true,AF,PF,Tag>::operator-=( const Matrix<MT,SO>& rhs )
+   HybridMatrix<Type,M,N,true,AF,PF,Tag>::operator-=( const Matrix<MT,SO>& rhs ) &
 {
    using blaze::subAssign;
 
@@ -5236,7 +5236,7 @@ template< typename Type     // Data type of the matrix
 template< typename MT       // Type of the right-hand side matrix
         , bool SO >         // Storage order of the right-hand side matrix
 inline HybridMatrix<Type,M,N,true,AF,PF,Tag>&
-   HybridMatrix<Type,M,N,true,AF,PF,Tag>::operator%=( const Matrix<MT,SO>& rhs )
+   HybridMatrix<Type,M,N,true,AF,PF,Tag>::operator%=( const Matrix<MT,SO>& rhs ) &
 {
    using blaze::schurAssign;
 
