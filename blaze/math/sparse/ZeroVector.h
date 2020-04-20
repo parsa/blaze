@@ -264,10 +264,10 @@ class ZeroVector
    /*!\name Assignment operators */
    //@{
    template< typename VT >
-   inline ZeroVector& operator=( const Vector<VT,TF>& rhs );
+   inline ZeroVector& operator=( const Vector<VT,TF>& rhs ) &;
 
-   ZeroVector& operator=( const ZeroVector& ) = default;
-   ZeroVector& operator=( ZeroVector&& ) = default;
+   ZeroVector& operator=( const ZeroVector& ) & = default;
+   ZeroVector& operator=( ZeroVector&& ) & = default;
    //@}
    //**********************************************************************************************
 
@@ -538,7 +538,7 @@ template< typename Type   // Data type of the vector
         , typename Tag >  // Type tag
 template< typename VT >   // Type of the right-hand side dense vector
 inline ZeroVector<Type,TF,Tag>&
-   ZeroVector<Type,TF,Tag>::operator=( const Vector<VT,TF>& rhs )
+   ZeroVector<Type,TF,Tag>::operator=( const Vector<VT,TF>& rhs ) &
 {
    BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<VT> );
 
