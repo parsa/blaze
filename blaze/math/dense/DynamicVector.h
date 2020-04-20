@@ -314,24 +314,24 @@ class DynamicVector
    //**Assignment operators************************************************************************
    /*!\name Assignment operators */
    //@{
-   inline DynamicVector& operator=( const Type& rhs );
-   inline DynamicVector& operator=( initializer_list<Type> list );
+   inline DynamicVector& operator=( const Type& rhs ) &;
+   inline DynamicVector& operator=( initializer_list<Type> list ) &;
 
    template< typename Other, size_t Dim >
-   inline DynamicVector& operator=( const Other (&array)[Dim] );
+   inline DynamicVector& operator=( const Other (&array)[Dim] ) &;
 
    template< typename Other, size_t Dim >
-   inline DynamicVector& operator=( const std::array<Other,Dim>& array );
+   inline DynamicVector& operator=( const std::array<Other,Dim>& array ) &;
 
-   inline DynamicVector& operator=( const DynamicVector& rhs );
-   inline DynamicVector& operator=( DynamicVector&& rhs ) noexcept;
+   inline DynamicVector& operator=( const DynamicVector& rhs ) &;
+   inline DynamicVector& operator=( DynamicVector&& rhs ) & noexcept;
 
-   template< typename VT > inline DynamicVector& operator= ( const Vector<VT,TF>& rhs );
-   template< typename VT > inline DynamicVector& operator+=( const Vector<VT,TF>& rhs );
-   template< typename VT > inline DynamicVector& operator-=( const Vector<VT,TF>& rhs );
-   template< typename VT > inline DynamicVector& operator*=( const Vector<VT,TF>& rhs );
-   template< typename VT > inline DynamicVector& operator/=( const DenseVector<VT,TF>& rhs );
-   template< typename VT > inline DynamicVector& operator%=( const Vector<VT,TF>& rhs );
+   template< typename VT > inline DynamicVector& operator= ( const Vector<VT,TF>& rhs ) &;
+   template< typename VT > inline DynamicVector& operator+=( const Vector<VT,TF>& rhs ) &;
+   template< typename VT > inline DynamicVector& operator-=( const Vector<VT,TF>& rhs ) &;
+   template< typename VT > inline DynamicVector& operator*=( const Vector<VT,TF>& rhs ) &;
+   template< typename VT > inline DynamicVector& operator/=( const DenseVector<VT,TF>& rhs ) &;
+   template< typename VT > inline DynamicVector& operator%=( const Vector<VT,TF>& rhs ) &;
    //@}
    //**********************************************************************************************
 
@@ -1078,7 +1078,7 @@ template< typename Type   // Data type of the vector
         , bool TF         // Transpose flag
         , typename Tag >  // Type tag
 inline DynamicVector<Type,TF,Tag>&
-   DynamicVector<Type,TF,Tag>::operator=( const Type& rhs )
+   DynamicVector<Type,TF,Tag>::operator=( const Type& rhs ) &
 {
    for( size_t i=0UL; i<size_; ++i )
       v_[i] = rhs;
@@ -1107,7 +1107,7 @@ template< typename Type   // Data type of the vector
         , bool TF         // Transpose flag
         , typename Tag >  // Type tag
 inline DynamicVector<Type,TF,Tag>&
-   DynamicVector<Type,TF,Tag>::operator=( initializer_list<Type> list )
+   DynamicVector<Type,TF,Tag>::operator=( initializer_list<Type> list ) &
 {
    resize( list.size(), false );
    std::copy( list.begin(), list.end(), v_ );
@@ -1141,7 +1141,7 @@ template< typename Type   // Data type of the vector
 template< typename Other  // Data type of the static array
         , size_t Dim >    // Dimension of the static array
 inline DynamicVector<Type,TF,Tag>&
-   DynamicVector<Type,TF,Tag>::operator=( const Other (&array)[Dim] )
+   DynamicVector<Type,TF,Tag>::operator=( const Other (&array)[Dim] ) &
 {
    resize( Dim, false );
 
@@ -1177,7 +1177,7 @@ template< typename Type   // Data type of the vector
 template< typename Other  // Data type of the std::array
         , size_t Dim >    // Dimension of the std::array
 inline DynamicVector<Type,TF,Tag>&
-   DynamicVector<Type,TF,Tag>::operator=( const std::array<Other,Dim>& array )
+   DynamicVector<Type,TF,Tag>::operator=( const std::array<Other,Dim>& array ) &
 {
    resize( Dim, false );
 
@@ -1202,7 +1202,7 @@ template< typename Type   // Data type of the vector
         , bool TF         // Transpose flag
         , typename Tag >  // Type tag
 inline DynamicVector<Type,TF,Tag>&
-   DynamicVector<Type,TF,Tag>::operator=( const DynamicVector& rhs )
+   DynamicVector<Type,TF,Tag>::operator=( const DynamicVector& rhs ) &
 {
    if( &rhs == this ) return *this;
 
@@ -1226,7 +1226,7 @@ template< typename Type   // Data type of the vector
         , bool TF         // Transpose flag
         , typename Tag >  // Type tag
 inline DynamicVector<Type,TF,Tag>&
-   DynamicVector<Type,TF,Tag>::operator=( DynamicVector&& rhs ) noexcept
+   DynamicVector<Type,TF,Tag>::operator=( DynamicVector&& rhs ) & noexcept
 {
    deallocate( v_ );
 
@@ -1256,7 +1256,7 @@ template< typename Type   // Data type of the vector
         , typename Tag >  // Type tag
 template< typename VT >   // Type of the right-hand side vector
 inline DynamicVector<Type,TF,Tag>&
-   DynamicVector<Type,TF,Tag>::operator=( const Vector<VT,TF>& rhs )
+   DynamicVector<Type,TF,Tag>::operator=( const Vector<VT,TF>& rhs ) &
 {
    BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<VT> );
 
@@ -1293,7 +1293,7 @@ template< typename Type   // Data type of the vector
         , typename Tag >  // Type tag
 template< typename VT >   // Type of the right-hand side vector
 inline DynamicVector<Type,TF,Tag>&
-   DynamicVector<Type,TF,Tag>::operator+=( const Vector<VT,TF>& rhs )
+   DynamicVector<Type,TF,Tag>::operator+=( const Vector<VT,TF>& rhs ) &
 {
    BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<VT> );
 
@@ -1332,7 +1332,7 @@ template< typename Type   // Data type of the vector
         , typename Tag >  // Type tag
 template< typename VT >   // Type of the right-hand side vector
 inline DynamicVector<Type,TF,Tag>&
-   DynamicVector<Type,TF,Tag>::operator-=( const Vector<VT,TF>& rhs )
+   DynamicVector<Type,TF,Tag>::operator-=( const Vector<VT,TF>& rhs ) &
 {
    BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<VT> );
 
@@ -1371,7 +1371,7 @@ template< typename Type   // Data type of the vector
         , typename Tag >  // Type tag
 template< typename VT >   // Type of the right-hand side vector
 inline DynamicVector<Type,TF,Tag>&
-   DynamicVector<Type,TF,Tag>::operator*=( const Vector<VT,TF>& rhs )
+   DynamicVector<Type,TF,Tag>::operator*=( const Vector<VT,TF>& rhs ) &
 {
    BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<VT> );
 
@@ -1409,7 +1409,7 @@ template< typename Type   // Data type of the vector
         , typename Tag >  // Type tag
 template< typename VT >   // Type of the right-hand side vector
 inline DynamicVector<Type,TF,Tag>&
-   DynamicVector<Type,TF,Tag>::operator/=( const DenseVector<VT,TF>& rhs )
+   DynamicVector<Type,TF,Tag>::operator/=( const DenseVector<VT,TF>& rhs ) &
 {
    BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<VT> );
 
@@ -1448,7 +1448,7 @@ template< typename Type   // Data type of the vector
         , typename Tag >  // Type tag
 template< typename VT >   // Type of the right-hand side vector
 inline DynamicVector<Type,TF,Tag>&
-   DynamicVector<Type,TF,Tag>::operator%=( const Vector<VT,TF>& rhs )
+   DynamicVector<Type,TF,Tag>::operator%=( const Vector<VT,TF>& rhs ) &
 {
    using blaze::assign;
 
