@@ -380,18 +380,18 @@ class CompressedVector
    //**Assignment operators************************************************************************
    /*!\name Assignment operators */
    //@{
-   inline CompressedVector& operator=( initializer_list<Type> list );
-   inline CompressedVector& operator=( const CompressedVector& rhs );
-   inline CompressedVector& operator=( CompressedVector&& rhs ) noexcept;
+   inline CompressedVector& operator=( initializer_list<Type> list ) &;
+   inline CompressedVector& operator=( const CompressedVector& rhs ) &;
+   inline CompressedVector& operator=( CompressedVector&& rhs ) & noexcept;
 
-   template< typename VT > inline CompressedVector& operator= ( const DenseVector<VT,TF>& rhs );
-   template< typename VT > inline CompressedVector& operator= ( const SparseVector<VT,TF>& rhs );
-   template< typename VT > inline CompressedVector& operator+=( const Vector<VT,TF>& rhs );
-   template< typename VT > inline CompressedVector& operator-=( const Vector<VT,TF>& rhs );
-   template< typename VT > inline CompressedVector& operator*=( const DenseVector<VT,TF>& rhs );
-   template< typename VT > inline CompressedVector& operator*=( const SparseVector<VT,TF>& rhs );
-   template< typename VT > inline CompressedVector& operator/=( const DenseVector<VT,TF>& rhs );
-   template< typename VT > inline CompressedVector& operator%=( const Vector<VT,TF>& rhs );
+   template< typename VT > inline CompressedVector& operator= ( const DenseVector<VT,TF>& rhs ) &;
+   template< typename VT > inline CompressedVector& operator= ( const SparseVector<VT,TF>& rhs ) &;
+   template< typename VT > inline CompressedVector& operator+=( const Vector<VT,TF>& rhs ) &;
+   template< typename VT > inline CompressedVector& operator-=( const Vector<VT,TF>& rhs ) &;
+   template< typename VT > inline CompressedVector& operator*=( const DenseVector<VT,TF>& rhs ) &;
+   template< typename VT > inline CompressedVector& operator*=( const SparseVector<VT,TF>& rhs ) &;
+   template< typename VT > inline CompressedVector& operator/=( const DenseVector<VT,TF>& rhs ) &;
+   template< typename VT > inline CompressedVector& operator%=( const Vector<VT,TF>& rhs ) &;
    //@}
    //**********************************************************************************************
 
@@ -953,7 +953,7 @@ template< typename Type   // Data type of the vector
         , bool TF         // Transpose flag
         , typename Tag >  // Type tag
 inline CompressedVector<Type,TF,Tag>&
-   CompressedVector<Type,TF,Tag>::operator=( initializer_list<Type> list )
+   CompressedVector<Type,TF,Tag>::operator=( initializer_list<Type> list ) &
 {
    using blaze::nonZeros;
 
@@ -986,7 +986,7 @@ template< typename Type   // Data type of the vector
         , bool TF         // Transpose flag
         , typename Tag >  // Type tag
 inline CompressedVector<Type,TF,Tag>&
-   CompressedVector<Type,TF,Tag>::operator=( const CompressedVector& rhs )
+   CompressedVector<Type,TF,Tag>::operator=( const CompressedVector& rhs ) &
 {
    using std::swap;
 
@@ -1023,7 +1023,7 @@ template< typename Type   // Data type of the vector
         , bool TF         // Transpose flag
         , typename Tag >  // Type tag
 inline CompressedVector<Type,TF,Tag>&
-   CompressedVector<Type,TF,Tag>::operator=( CompressedVector&& rhs ) noexcept
+   CompressedVector<Type,TF,Tag>::operator=( CompressedVector&& rhs ) & noexcept
 {
    deallocate( begin_ );
 
@@ -1056,7 +1056,7 @@ template< typename Type   // Data type of the vector
         , typename Tag >  // Type tag
 template< typename VT >  // Type of the right-hand side dense vector
 inline CompressedVector<Type,TF,Tag>&
-   CompressedVector<Type,TF,Tag>::operator=( const DenseVector<VT,TF>& rhs )
+   CompressedVector<Type,TF,Tag>::operator=( const DenseVector<VT,TF>& rhs ) &
 {
    using blaze::assign;
 
@@ -1091,7 +1091,7 @@ template< typename Type   // Data type of the vector
         , typename Tag >  // Type tag
 template< typename VT >  // Type of the right-hand side sparse vector
 inline CompressedVector<Type,TF,Tag>&
-   CompressedVector<Type,TF,Tag>::operator=( const SparseVector<VT,TF>& rhs )
+   CompressedVector<Type,TF,Tag>::operator=( const SparseVector<VT,TF>& rhs ) &
 {
    using blaze::assign;
 
@@ -1130,7 +1130,7 @@ template< typename Type   // Data type of the vector
         , typename Tag >  // Type tag
 template< typename VT >  // Type of the right-hand side vector
 inline CompressedVector<Type,TF,Tag>&
-   CompressedVector<Type,TF,Tag>::operator+=( const Vector<VT,TF>& rhs )
+   CompressedVector<Type,TF,Tag>::operator+=( const Vector<VT,TF>& rhs ) &
 {
    using blaze::addAssign;
 
@@ -1164,7 +1164,7 @@ template< typename Type   // Data type of the vector
         , typename Tag >  // Type tag
 template< typename VT >  // Type of the right-hand side vector
 inline CompressedVector<Type,TF,Tag>&
-   CompressedVector<Type,TF,Tag>::operator-=( const Vector<VT,TF>& rhs )
+   CompressedVector<Type,TF,Tag>::operator-=( const Vector<VT,TF>& rhs ) &
 {
    using blaze::subAssign;
 
@@ -1199,7 +1199,7 @@ template< typename Type   // Data type of the vector
         , typename Tag >  // Type tag
 template< typename VT >  // Type of the right-hand side vector
 inline CompressedVector<Type,TF,Tag>&
-   CompressedVector<Type,TF,Tag>::operator*=( const DenseVector<VT,TF>& rhs )
+   CompressedVector<Type,TF,Tag>::operator*=( const DenseVector<VT,TF>& rhs ) &
 {
    using blaze::multAssign;
 
@@ -1239,7 +1239,7 @@ template< typename Type   // Data type of the vector
         , typename Tag >  // Type tag
 template< typename VT >  // Type of the right-hand side vector
 inline CompressedVector<Type,TF,Tag>&
-   CompressedVector<Type,TF,Tag>::operator*=( const SparseVector<VT,TF>& rhs )
+   CompressedVector<Type,TF,Tag>::operator*=( const SparseVector<VT,TF>& rhs ) &
 {
    BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<VT> );
 
@@ -1275,7 +1275,7 @@ template< typename Type   // Data type of the vector
         , typename Tag >  // Type tag
 template< typename VT >  // Type of the right-hand side vector
 inline CompressedVector<Type,TF,Tag>&
-   CompressedVector<Type,TF,Tag>::operator/=( const DenseVector<VT,TF>& rhs )
+   CompressedVector<Type,TF,Tag>::operator/=( const DenseVector<VT,TF>& rhs ) &
 {
    using blaze::divAssign;
 
@@ -1315,7 +1315,7 @@ template< typename Type   // Data type of the vector
         , typename Tag >  // Type tag
 template< typename VT >  // Type of the right-hand side vector
 inline CompressedVector<Type,TF,Tag>&
-   CompressedVector<Type,TF,Tag>::operator%=( const Vector<VT,TF>& rhs )
+   CompressedVector<Type,TF,Tag>::operator%=( const Vector<VT,TF>& rhs ) &
 {
    using blaze::assign;
 
