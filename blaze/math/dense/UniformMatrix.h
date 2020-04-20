@@ -292,22 +292,22 @@ class UniformMatrix
    //**Assignment operators************************************************************************
    /*!\name Assignment operators */
    //@{
-   constexpr UniformMatrix& operator=( const Type& rhs );
+   constexpr UniformMatrix& operator=( const Type& rhs ) &;
 
-   UniformMatrix& operator=( const UniformMatrix& ) = default;
-   UniformMatrix& operator=( UniformMatrix&& ) = default;
+   UniformMatrix& operator=( const UniformMatrix& ) & = default;
+   UniformMatrix& operator=( UniformMatrix&& ) & = default;
 
-   template< typename MT, bool SO2 > inline UniformMatrix& operator= ( const Matrix<MT,SO2>& rhs );
-   template< typename MT, bool SO2 > inline UniformMatrix& operator+=( const Matrix<MT,SO2>& rhs );
-   template< typename MT, bool SO2 > inline UniformMatrix& operator-=( const Matrix<MT,SO2>& rhs );
-   template< typename MT, bool SO2 > inline UniformMatrix& operator%=( const Matrix<MT,SO2>& rhs );
-   template< typename MT, bool SO2 > inline UniformMatrix& operator*=( const Matrix<MT,SO2>& rhs );
-
-   template< typename ST >
-   inline auto operator*=( ST rhs ) -> EnableIf_t< IsNumeric_v<ST>, UniformMatrix& >;
+   template< typename MT, bool SO2 > inline UniformMatrix& operator= ( const Matrix<MT,SO2>& rhs ) &;
+   template< typename MT, bool SO2 > inline UniformMatrix& operator+=( const Matrix<MT,SO2>& rhs ) &;
+   template< typename MT, bool SO2 > inline UniformMatrix& operator-=( const Matrix<MT,SO2>& rhs ) &;
+   template< typename MT, bool SO2 > inline UniformMatrix& operator%=( const Matrix<MT,SO2>& rhs ) &;
+   template< typename MT, bool SO2 > inline UniformMatrix& operator*=( const Matrix<MT,SO2>& rhs ) &;
 
    template< typename ST >
-   inline auto operator/=( ST rhs ) -> EnableIf_t< IsNumeric_v<ST>, UniformMatrix& >;
+   inline auto operator*=( ST rhs ) & -> EnableIf_t< IsNumeric_v<ST>, UniformMatrix& >;
+
+   template< typename ST >
+   inline auto operator/=( ST rhs ) & -> EnableIf_t< IsNumeric_v<ST>, UniformMatrix& >;
    //@}
    //**********************************************************************************************
 
@@ -708,7 +708,7 @@ template< typename Type   // Data type of the matrix
         , bool SO         // Storage order
         , typename Tag >  // Type tag
 constexpr UniformMatrix<Type,SO,Tag>&
-   UniformMatrix<Type,SO,Tag>::operator=( const Type& rhs )
+   UniformMatrix<Type,SO,Tag>::operator=( const Type& rhs ) &
 {
    value_ = rhs;
 
@@ -732,7 +732,7 @@ template< typename Type   // Data type of the matrix
 template< typename MT     // Type of the right-hand side matrix
         , bool SO2 >      // Storage order of the right-hand side matrix
 inline UniformMatrix<Type,SO,Tag>&
-   UniformMatrix<Type,SO,Tag>::operator=( const Matrix<MT,SO2>& rhs )
+   UniformMatrix<Type,SO,Tag>::operator=( const Matrix<MT,SO2>& rhs ) &
 {
    using TT = decltype( trans( *this ) );
    using CT = decltype( ctrans( *this ) );
@@ -779,7 +779,7 @@ template< typename Type   // Data type of the matrix
 template< typename MT     // Type of the right-hand side matrix
         , bool SO2 >      // Storage order of the right-hand side matrix
 inline UniformMatrix<Type,SO,Tag>&
-   UniformMatrix<Type,SO,Tag>::operator+=( const Matrix<MT,SO2>& rhs )
+   UniformMatrix<Type,SO,Tag>::operator+=( const Matrix<MT,SO2>& rhs ) &
 {
    BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<MT> );
 
@@ -816,7 +816,7 @@ template< typename Type   // Data type of the matrix
 template< typename MT     // Type of the right-hand side matrix
         , bool SO2 >      // Storage order of the right-hand side matrix
 inline UniformMatrix<Type,SO,Tag>&
-   UniformMatrix<Type,SO,Tag>::operator-=( const Matrix<MT,SO2>& rhs )
+   UniformMatrix<Type,SO,Tag>::operator-=( const Matrix<MT,SO2>& rhs ) &
 {
    BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<MT> );
 
@@ -853,7 +853,7 @@ template< typename Type   // Data type of the matrix
 template< typename MT     // Type of the right-hand side matrix
         , bool SO2 >      // Storage order of the right-hand side matrix
 inline UniformMatrix<Type,SO,Tag>&
-   UniformMatrix<Type,SO,Tag>::operator%=( const Matrix<MT,SO2>& rhs )
+   UniformMatrix<Type,SO,Tag>::operator%=( const Matrix<MT,SO2>& rhs ) &
 {
    BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<MT> );
 
@@ -890,7 +890,7 @@ template< typename Type   // Data type of the matrix
 template< typename MT     // Type of the right-hand side matrix
         , bool SO2 >      // Storage order of the right-hand side matrix
 inline UniformMatrix<Type,SO,Tag>&
-   UniformMatrix<Type,SO,Tag>::operator*=( const Matrix<MT,SO2>& rhs )
+   UniformMatrix<Type,SO,Tag>::operator*=( const Matrix<MT,SO2>& rhs ) &
 {
    BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<MT> );
 
@@ -924,7 +924,7 @@ template< typename Type   // Data type of the matrix
         , bool SO         // Storage order
         , typename Tag >  // Type tag
 template< typename ST >   // Data type of the right-hand side scalar
-inline auto UniformMatrix<Type,SO,Tag>::operator*=( ST scalar )
+inline auto UniformMatrix<Type,SO,Tag>::operator*=( ST scalar ) &
    -> EnableIf_t< IsNumeric_v<ST>, UniformMatrix& >
 {
    if( rows() > 0UL && columns() > 0UL ) {
@@ -947,7 +947,7 @@ template< typename Type   // Data type of the matrix
         , bool SO         // Storage order
         , typename Tag >  // Type tag
 template< typename ST >   // Data type of the right-hand side scalar
-inline auto UniformMatrix<Type,SO,Tag>::operator/=( ST scalar )
+inline auto UniformMatrix<Type,SO,Tag>::operator/=( ST scalar ) &
    -> EnableIf_t< IsNumeric_v<ST>, UniformMatrix& >
 {
    if( rows() > 0UL && columns() > 0UL ) {
