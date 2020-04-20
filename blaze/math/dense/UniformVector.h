@@ -274,22 +274,22 @@ class UniformVector
    //**Assignment operators************************************************************************
    /*!\name Assignment operators */
    //@{
-   constexpr UniformVector& operator=( const Type& rhs );
+   constexpr UniformVector& operator=( const Type& rhs ) &;
 
-   UniformVector& operator=( const UniformVector& ) = default;
-   UniformVector& operator=( UniformVector&& ) = default;
+   UniformVector& operator=( const UniformVector& ) & = default;
+   UniformVector& operator=( UniformVector&& ) & = default;
 
-   template< typename VT > inline UniformVector& operator= ( const Vector<VT,TF>& rhs );
-   template< typename VT > inline UniformVector& operator+=( const Vector<VT,TF>& rhs );
-   template< typename VT > inline UniformVector& operator-=( const Vector<VT,TF>& rhs );
-   template< typename VT > inline UniformVector& operator*=( const Vector<VT,TF>& rhs );
-   template< typename VT > inline UniformVector& operator/=( const DenseVector<VT,TF>& rhs );
-
-   template< typename ST >
-   inline auto operator*=( ST rhs ) -> EnableIf_t< IsNumeric_v<ST>, UniformVector& >;
+   template< typename VT > inline UniformVector& operator= ( const Vector<VT,TF>& rhs ) &;
+   template< typename VT > inline UniformVector& operator+=( const Vector<VT,TF>& rhs ) &;
+   template< typename VT > inline UniformVector& operator-=( const Vector<VT,TF>& rhs ) &;
+   template< typename VT > inline UniformVector& operator*=( const Vector<VT,TF>& rhs ) &;
+   template< typename VT > inline UniformVector& operator/=( const DenseVector<VT,TF>& rhs ) &;
 
    template< typename ST >
-   inline auto operator/=( ST rhs ) -> EnableIf_t< IsNumeric_v<ST>, UniformVector& >;
+   inline auto operator*=( ST rhs ) & -> EnableIf_t< IsNumeric_v<ST>, UniformVector& >;
+
+   template< typename ST >
+   inline auto operator/=( ST rhs ) & -> EnableIf_t< IsNumeric_v<ST>, UniformVector& >;
    //@}
    //**********************************************************************************************
 
@@ -600,7 +600,7 @@ template< typename Type   // Data type of the vector
         , bool TF         // Transpose flag
         , typename Tag >  // Type tag
 constexpr UniformVector<Type,TF,Tag>&
-   UniformVector<Type,TF,Tag>::operator=( const Type& rhs )
+   UniformVector<Type,TF,Tag>::operator=( const Type& rhs ) &
 {
    value_ = rhs;
 
@@ -623,7 +623,7 @@ template< typename Type   // Data type of the vector
         , typename Tag >  // Type tag
 template< typename VT >   // Type of the right-hand side vector
 inline UniformVector<Type,TF,Tag>&
-   UniformVector<Type,TF,Tag>::operator=( const Vector<VT,TF>& rhs )
+   UniformVector<Type,TF,Tag>::operator=( const Vector<VT,TF>& rhs ) &
 {
    BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<VT> );
 
@@ -658,7 +658,7 @@ template< typename Type   // Data type of the vector
         , typename Tag >  // Type tag
 template< typename VT >   // Type of the right-hand side vector
 inline UniformVector<Type,TF,Tag>&
-   UniformVector<Type,TF,Tag>::operator+=( const Vector<VT,TF>& rhs )
+   UniformVector<Type,TF,Tag>::operator+=( const Vector<VT,TF>& rhs ) &
 {
    BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<VT> );
 
@@ -695,7 +695,7 @@ template< typename Type   // Data type of the vector
         , typename Tag >  // Type tag
 template< typename VT >   // Type of the right-hand side vector
 inline UniformVector<Type,TF,Tag>&
-   UniformVector<Type,TF,Tag>::operator-=( const Vector<VT,TF>& rhs )
+   UniformVector<Type,TF,Tag>::operator-=( const Vector<VT,TF>& rhs ) &
 {
    BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<VT> );
 
@@ -733,7 +733,7 @@ template< typename Type   // Data type of the vector
         , typename Tag >  // Type tag
 template< typename VT >   // Type of the right-hand side vector
 inline UniformVector<Type,TF,Tag>&
-   UniformVector<Type,TF,Tag>::operator*=( const Vector<VT,TF>& rhs )
+   UniformVector<Type,TF,Tag>::operator*=( const Vector<VT,TF>& rhs ) &
 {
    BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<VT> );
 
@@ -770,7 +770,7 @@ template< typename Type   // Data type of the vector
         , typename Tag >  // Type tag
 template< typename VT >   // Type of the right-hand side vector
 inline UniformVector<Type,TF,Tag>&
-   UniformVector<Type,TF,Tag>::operator/=( const DenseVector<VT,TF>& rhs )
+   UniformVector<Type,TF,Tag>::operator/=( const DenseVector<VT,TF>& rhs ) &
 {
    BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<VT> );
 
@@ -802,7 +802,7 @@ template< typename Type   // Data type of the vector
         , bool TF         // Transpose flag
         , typename Tag >  // Type tag
 template< typename ST >   // Data type of the right-hand side scalar
-inline auto UniformVector<Type,TF,Tag>::operator*=( ST scalar )
+inline auto UniformVector<Type,TF,Tag>::operator*=( ST scalar ) &
    -> EnableIf_t< IsNumeric_v<ST>, UniformVector& >
 {
    if( size() > 0UL ) {
@@ -825,7 +825,7 @@ template< typename Type   // Data type of the vector
         , bool TF         // Transpose flag
         , typename Tag >  // Type tag
 template< typename ST >   // Data type of the right-hand side scalar
-inline auto UniformVector<Type,TF,Tag>::operator/=( ST scalar )
+inline auto UniformVector<Type,TF,Tag>::operator/=( ST scalar ) &
    -> EnableIf_t< IsNumeric_v<ST>, UniformVector& >
 {
    if( size() > 0UL ) {
