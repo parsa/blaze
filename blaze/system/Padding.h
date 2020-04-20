@@ -53,9 +53,25 @@ namespace blaze {
 //=================================================================================================
 
 //*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
+/*!\brief The default padding flag for all vectors and matrices of the Blaze library.
+// \ingroup system
+//
+// This value specifies the default padding flag for all vectors and matrices of the Blaze
+// library. In case no explicit padding flag is specified with the according vector type, this
+// setting is used.
+
+   \code
+   // Explicit specification of the padding flag => the vector is padded
+   StaticVector<double,3UL,columnVector,aligned,padded> a;
+
+   // No explicit specification of the padding flag => use of the default padding flag
+   StaticVector<double,3UL,columnVector,aligned> b;
+   \endcode
+
+// The default alignment is defined via the BLAZE_DEFAULT_PADDING_FLAG compilation switch (see
+// the \ref padding section). Valid settings for this value are blaze::padded and blaze::unpadded.
+*/
 constexpr PaddingFlag defaultPaddingFlag = BLAZE_DEFAULT_PADDING_FLAG;
-/*! \endcond */
 //*************************************************************************************************
 
 } // namespace blaze
