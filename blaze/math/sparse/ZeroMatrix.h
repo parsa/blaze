@@ -281,10 +281,10 @@ class ZeroMatrix
    /*!\name Assignment operators */
    //@{
    template< typename MT, bool SO2 >
-   inline ZeroMatrix& operator=( const Matrix<MT,SO2>& rhs );
+   inline ZeroMatrix& operator=( const Matrix<MT,SO2>& rhs ) &;
 
-   ZeroMatrix& operator=( const ZeroMatrix& ) = default;
-   ZeroMatrix& operator=( ZeroMatrix&& ) = default;
+   ZeroMatrix& operator=( const ZeroMatrix& ) & = default;
+   ZeroMatrix& operator=( ZeroMatrix&& ) & = default;
    //@}
    //**********************************************************************************************
 
@@ -622,7 +622,7 @@ template< typename Type   // Data type of the matrix
 template< typename MT     // Type of the right-hand side zero matrix
         , bool SO2 >      // Storage order of the right-hand side zero matrix
 inline ZeroMatrix<Type,SO,Tag>&
-   ZeroMatrix<Type,SO,Tag>::operator=( const Matrix<MT,SO2>& rhs )
+   ZeroMatrix<Type,SO,Tag>::operator=( const Matrix<MT,SO2>& rhs ) &
 {
    BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<MT> );
 
