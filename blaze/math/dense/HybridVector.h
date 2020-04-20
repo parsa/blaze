@@ -324,23 +324,23 @@ class HybridVector
    //**Assignment operators************************************************************************
    /*!\name Assignment operators */
    //@{
-   constexpr HybridVector& operator=( const Type& rhs );
-   constexpr HybridVector& operator=( initializer_list<Type> list );
+   constexpr HybridVector& operator=( const Type& rhs ) &;
+   constexpr HybridVector& operator=( initializer_list<Type> list ) &;
 
    template< typename Other, size_t Dim >
-   constexpr HybridVector& operator=( const Other (&array)[Dim] );
+   constexpr HybridVector& operator=( const Other (&array)[Dim] ) &;
 
    template< typename Other, size_t Dim >
-   constexpr HybridVector& operator=( const std::array<Other,Dim>& array );
+   constexpr HybridVector& operator=( const std::array<Other,Dim>& array ) &;
 
-   constexpr HybridVector& operator=( const HybridVector& rhs );
+   constexpr HybridVector& operator=( const HybridVector& rhs ) &;
 
-   template< typename VT > inline HybridVector& operator= ( const Vector<VT,TF>& rhs );
-   template< typename VT > inline HybridVector& operator+=( const Vector<VT,TF>& rhs );
-   template< typename VT > inline HybridVector& operator-=( const Vector<VT,TF>& rhs );
-   template< typename VT > inline HybridVector& operator*=( const Vector<VT,TF>& rhs );
-   template< typename VT > inline HybridVector& operator/=( const DenseVector<VT,TF>& rhs );
-   template< typename VT > inline HybridVector& operator%=( const Vector<VT,TF>& rhs );
+   template< typename VT > inline HybridVector& operator= ( const Vector<VT,TF>& rhs ) &;
+   template< typename VT > inline HybridVector& operator+=( const Vector<VT,TF>& rhs ) &;
+   template< typename VT > inline HybridVector& operator-=( const Vector<VT,TF>& rhs ) &;
+   template< typename VT > inline HybridVector& operator*=( const Vector<VT,TF>& rhs ) &;
+   template< typename VT > inline HybridVector& operator/=( const DenseVector<VT,TF>& rhs ) &;
+   template< typename VT > inline HybridVector& operator%=( const Vector<VT,TF>& rhs ) &;
    //@}
    //**********************************************************************************************
 
@@ -1187,7 +1187,7 @@ template< typename Type     // Data type of the vector
         , PaddingFlag PF    // Padding flag
         , typename Tag >    // Type tag
 constexpr HybridVector<Type,N,TF,AF,PF,Tag>&
-   HybridVector<Type,N,TF,AF,PF,Tag>::operator=( const Type& rhs )
+   HybridVector<Type,N,TF,AF,PF,Tag>::operator=( const Type& rhs ) &
 {
    BLAZE_INTERNAL_ASSERT( size_ <= N, "Invalid size detected" );
 
@@ -1224,7 +1224,7 @@ template< typename Type     // Data type of the vector
         , PaddingFlag PF    // Padding flag
         , typename Tag >    // Type tag
 constexpr HybridVector<Type,N,TF,AF,PF,Tag>&
-   HybridVector<Type,N,TF,AF,PF,Tag>::operator=( initializer_list<Type> list )
+   HybridVector<Type,N,TF,AF,PF,Tag>::operator=( initializer_list<Type> list ) &
 {
    if( list.size() > N ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to hybrid vector" );
@@ -1272,7 +1272,7 @@ template< typename Type     // Data type of the vector
 template< typename Other    // Data type of the static array
         , size_t Dim >      // Number of elements of the static array
 constexpr HybridVector<Type,N,TF,AF,PF,Tag>&
-   HybridVector<Type,N,TF,AF,PF,Tag>::operator=( const Other (&array)[Dim] )
+   HybridVector<Type,N,TF,AF,PF,Tag>::operator=( const Other (&array)[Dim] ) &
 {
    BLAZE_STATIC_ASSERT( Dim <= N );
 
@@ -1314,7 +1314,7 @@ template< typename Type     // Data type of the vector
 template< typename Other    // Data type of the std::array
         , size_t Dim >      // Dimension of the std::array
 constexpr HybridVector<Type,N,TF,AF,PF,Tag>&
-   HybridVector<Type,N,TF,AF,PF,Tag>::operator=( const std::array<Other,Dim>& array )
+   HybridVector<Type,N,TF,AF,PF,Tag>::operator=( const std::array<Other,Dim>& array ) &
 {
    BLAZE_STATIC_ASSERT( Dim <= N );
 
@@ -1343,7 +1343,7 @@ template< typename Type     // Data type of the vector
         , PaddingFlag PF    // Padding flag
         , typename Tag >    // Type tag
 constexpr HybridVector<Type,N,TF,AF,PF,Tag>&
-   HybridVector<Type,N,TF,AF,PF,Tag>::operator=( const HybridVector& rhs )
+   HybridVector<Type,N,TF,AF,PF,Tag>::operator=( const HybridVector& rhs ) &
 {
    using blaze::assign;
 
@@ -1377,7 +1377,7 @@ template< typename Type     // Data type of the vector
         , typename Tag >    // Type tag
 template< typename VT >  // Type of the right-hand side vector
 inline HybridVector<Type,N,TF,AF,PF,Tag>&
-   HybridVector<Type,N,TF,AF,PF,Tag>::operator=( const Vector<VT,TF>& rhs )
+   HybridVector<Type,N,TF,AF,PF,Tag>::operator=( const Vector<VT,TF>& rhs ) &
 {
    using blaze::assign;
 
@@ -1423,7 +1423,7 @@ template< typename Type     // Data type of the vector
         , typename Tag >    // Type tag
 template< typename VT >     // Type of the right-hand side vector
 inline HybridVector<Type,N,TF,AF,PF,Tag>&
-   HybridVector<Type,N,TF,AF,PF,Tag>::operator+=( const Vector<VT,TF>& rhs )
+   HybridVector<Type,N,TF,AF,PF,Tag>::operator+=( const Vector<VT,TF>& rhs ) &
 {
    using blaze::addAssign;
 
@@ -1466,7 +1466,7 @@ template< typename Type     // Data type of the vector
         , typename Tag >    // Type tag
 template< typename VT >     // Type of the right-hand side vector
 inline HybridVector<Type,N,TF,AF,PF,Tag>&
-   HybridVector<Type,N,TF,AF,PF,Tag>::operator-=( const Vector<VT,TF>& rhs )
+   HybridVector<Type,N,TF,AF,PF,Tag>::operator-=( const Vector<VT,TF>& rhs ) &
 {
    using blaze::subAssign;
 
@@ -1510,7 +1510,7 @@ template< typename Type     // Data type of the vector
         , typename Tag >    // Type tag
 template< typename VT >     // Type of the right-hand side vector
 inline HybridVector<Type,N,TF,AF,PF,Tag>&
-   HybridVector<Type,N,TF,AF,PF,Tag>::operator*=( const Vector<VT,TF>& rhs )
+   HybridVector<Type,N,TF,AF,PF,Tag>::operator*=( const Vector<VT,TF>& rhs ) &
 {
    using blaze::assign;
    using blaze::multAssign;
@@ -1554,7 +1554,7 @@ template< typename Type     // Data type of the vector
         , typename Tag >    // Type tag
 template< typename VT >     // Type of the right-hand side vector
 inline HybridVector<Type,N,TF,AF,PF,Tag>&
-   HybridVector<Type,N,TF,AF,PF,Tag>::operator/=( const DenseVector<VT,TF>& rhs )
+   HybridVector<Type,N,TF,AF,PF,Tag>::operator/=( const DenseVector<VT,TF>& rhs ) &
 {
    using blaze::assign;
    using blaze::divAssign;
@@ -1599,7 +1599,7 @@ template< typename Type     // Data type of the vector
         , typename Tag >    // Type tag
 template< typename VT >     // Type of the right-hand side vector
 inline HybridVector<Type,N,TF,AF,PF,Tag>&
-   HybridVector<Type,N,TF,AF,PF,Tag>::operator%=( const Vector<VT,TF>& rhs )
+   HybridVector<Type,N,TF,AF,PF,Tag>::operator%=( const Vector<VT,TF>& rhs ) &
 {
    using blaze::assign;
 
