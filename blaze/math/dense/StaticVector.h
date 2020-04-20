@@ -334,26 +334,26 @@ class StaticVector
    //**Assignment operators************************************************************************
    /*!\name Assignment operators */
    //@{
-   constexpr StaticVector& operator=( const Type& rhs );
-   constexpr StaticVector& operator=( initializer_list<Type> list );
+   constexpr StaticVector& operator=( const Type& rhs ) &;
+   constexpr StaticVector& operator=( initializer_list<Type> list ) &;
 
    template< typename Other, size_t Dim >
-   constexpr StaticVector& operator=( const Other (&array)[Dim] );
+   constexpr StaticVector& operator=( const Other (&array)[Dim] ) &;
 
    template< typename Other, size_t Dim >
-   constexpr StaticVector& operator=( const std::array<Other,Dim>& array );
+   constexpr StaticVector& operator=( const std::array<Other,Dim>& array ) &;
 
-   constexpr StaticVector& operator=( const StaticVector& rhs );
+   constexpr StaticVector& operator=( const StaticVector& rhs ) &;
 
    template< typename Other, AlignmentFlag AF2, PaddingFlag PF2 >
-   inline StaticVector& operator=( const StaticVector<Other,N,TF,AF2,PF2,Tag>& rhs );
+   inline StaticVector& operator=( const StaticVector<Other,N,TF,AF2,PF2,Tag>& rhs ) &;
 
-   template< typename VT > inline StaticVector& operator= ( const Vector<VT,TF>& rhs );
-   template< typename VT > inline StaticVector& operator+=( const Vector<VT,TF>& rhs );
-   template< typename VT > inline StaticVector& operator-=( const Vector<VT,TF>& rhs );
-   template< typename VT > inline StaticVector& operator*=( const Vector<VT,TF>& rhs );
-   template< typename VT > inline StaticVector& operator/=( const DenseVector<VT,TF>& rhs );
-   template< typename VT > inline StaticVector& operator%=( const Vector<VT,TF>& rhs );
+   template< typename VT > inline StaticVector& operator= ( const Vector<VT,TF>& rhs ) &;
+   template< typename VT > inline StaticVector& operator+=( const Vector<VT,TF>& rhs ) &;
+   template< typename VT > inline StaticVector& operator-=( const Vector<VT,TF>& rhs ) &;
+   template< typename VT > inline StaticVector& operator*=( const Vector<VT,TF>& rhs ) &;
+   template< typename VT > inline StaticVector& operator/=( const DenseVector<VT,TF>& rhs ) &;
+   template< typename VT > inline StaticVector& operator%=( const Vector<VT,TF>& rhs ) &;
    //@}
    //**********************************************************************************************
 
@@ -1186,7 +1186,7 @@ template< typename Type     // Data type of the vector
         , PaddingFlag PF    // Padding flag
         , typename Tag >    // Type tag
 constexpr StaticVector<Type,N,TF,AF,PF,Tag>&
-   StaticVector<Type,N,TF,AF,PF,Tag>::operator=( const Type& rhs )
+   StaticVector<Type,N,TF,AF,PF,Tag>::operator=( const Type& rhs ) &
 {
    for( size_t i=0UL; i<N; ++i )
       v_[i] = rhs;
@@ -1220,7 +1220,7 @@ template< typename Type     // Data type of the vector
         , PaddingFlag PF    // Padding flag
         , typename Tag >    // Type tag
 constexpr StaticVector<Type,N,TF,AF,PF,Tag>&
-   StaticVector<Type,N,TF,AF,PF,Tag>::operator=( initializer_list<Type> list )
+   StaticVector<Type,N,TF,AF,PF,Tag>::operator=( initializer_list<Type> list ) &
 {
    if( list.size() > N ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to static vector" );
@@ -1270,7 +1270,7 @@ template< typename Type     // Data type of the vector
 template< typename Other    // Data type of the static array
         , size_t Dim >      // Dimension of the static array
 constexpr StaticVector<Type,N,TF,AF,PF,Tag>&
-   StaticVector<Type,N,TF,AF,PF,Tag>::operator=( const Other (&array)[Dim] )
+   StaticVector<Type,N,TF,AF,PF,Tag>::operator=( const Other (&array)[Dim] ) &
 {
    BLAZE_STATIC_ASSERT( Dim == N );
 
@@ -1310,7 +1310,7 @@ template< typename Type     // Data type of the vector
 template< typename Other    // Data type of the std::array
         , size_t Dim >      // Dimension of the std::array
 constexpr StaticVector<Type,N,TF,AF,PF,Tag>&
-   StaticVector<Type,N,TF,AF,PF,Tag>::operator=( const std::array<Other,Dim>& array )
+   StaticVector<Type,N,TF,AF,PF,Tag>::operator=( const std::array<Other,Dim>& array ) &
 {
    BLAZE_STATIC_ASSERT( Dim == N );
 
@@ -1337,7 +1337,7 @@ template< typename Type     // Data type of the vector
         , PaddingFlag PF    // Padding flag
         , typename Tag >    // Type tag
 constexpr StaticVector<Type,N,TF,AF,PF,Tag>&
-   StaticVector<Type,N,TF,AF,PF,Tag>::operator=( const StaticVector& rhs )
+   StaticVector<Type,N,TF,AF,PF,Tag>::operator=( const StaticVector& rhs ) &
 {
    v_ = rhs.v_;
 
@@ -1364,7 +1364,7 @@ template< typename Other     // Data type of the foreign vector
         , AlignmentFlag AF2  // Alignment flag of the foreign vector
         , PaddingFlag PF2 >  // Padding flag of the foreign vector
 inline StaticVector<Type,N,TF,AF,PF,Tag>&
-   StaticVector<Type,N,TF,AF,PF,Tag>::operator=( const StaticVector<Other,N,TF,AF2,PF2,Tag>& rhs )
+   StaticVector<Type,N,TF,AF,PF,Tag>::operator=( const StaticVector<Other,N,TF,AF2,PF2,Tag>& rhs ) &
 {
    using blaze::assign;
 
@@ -1395,7 +1395,7 @@ template< typename Type     // Data type of the vector
         , typename Tag >    // Type tag
 template< typename VT >     // Type of the right-hand side vector
 inline StaticVector<Type,N,TF,AF,PF,Tag>&
-   StaticVector<Type,N,TF,AF,PF,Tag>::operator=( const Vector<VT,TF>& rhs )
+   StaticVector<Type,N,TF,AF,PF,Tag>::operator=( const Vector<VT,TF>& rhs ) &
 {
    using blaze::assign;
 
@@ -1440,7 +1440,7 @@ template< typename Type     // Data type of the vector
         , typename Tag >    // Type tag
 template< typename VT >     // Type of the right-hand side vector
 inline StaticVector<Type,N,TF,AF,PF,Tag>&
-   StaticVector<Type,N,TF,AF,PF,Tag>::operator+=( const Vector<VT,TF>& rhs )
+   StaticVector<Type,N,TF,AF,PF,Tag>::operator+=( const Vector<VT,TF>& rhs ) &
 {
    using blaze::addAssign;
 
@@ -1483,7 +1483,7 @@ template< typename Type     // Data type of the vector
         , typename Tag >    // Type tag
 template< typename VT >     // Type of the right-hand side vector
 inline StaticVector<Type,N,TF,AF,PF,Tag>&
-   StaticVector<Type,N,TF,AF,PF,Tag>::operator-=( const Vector<VT,TF>& rhs )
+   StaticVector<Type,N,TF,AF,PF,Tag>::operator-=( const Vector<VT,TF>& rhs ) &
 {
    using blaze::subAssign;
 
@@ -1527,7 +1527,7 @@ template< typename Type     // Data type of the vector
         , typename Tag >    // Type tag
 template< typename VT >     // Type of the right-hand side vector
 inline StaticVector<Type,N,TF,AF,PF,Tag>&
-   StaticVector<Type,N,TF,AF,PF,Tag>::operator*=( const Vector<VT,TF>& rhs )
+   StaticVector<Type,N,TF,AF,PF,Tag>::operator*=( const Vector<VT,TF>& rhs ) &
 {
    using blaze::assign;
    using blaze::multAssign;
@@ -1571,7 +1571,7 @@ template< typename Type     // Data type of the vector
         , typename Tag >    // Type tag
 template< typename VT >     // Type of the right-hand side vector
 inline StaticVector<Type,N,TF,AF,PF,Tag>&
-   StaticVector<Type,N,TF,AF,PF,Tag>::operator/=( const DenseVector<VT,TF>& rhs )
+   StaticVector<Type,N,TF,AF,PF,Tag>::operator/=( const DenseVector<VT,TF>& rhs ) &
 {
    using blaze::assign;
    using blaze::divAssign;
@@ -1616,7 +1616,7 @@ template< typename Type     // Data type of the vector
         , typename Tag >    // Type tag
 template< typename VT >     // Type of the right-hand side vector
 inline StaticVector<Type,N,TF,AF,PF,Tag>&
-   StaticVector<Type,N,TF,AF,PF,Tag>::operator%=( const Vector<VT,TF>& rhs )
+   StaticVector<Type,N,TF,AF,PF,Tag>::operator%=( const Vector<VT,TF>& rhs ) &
 {
    using blaze::assign;
 
