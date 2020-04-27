@@ -69,8 +69,12 @@ namespace blaze {
 // template parameter:
 
    \code
+   namespace blaze {
+
    template< typename MT, bool SO, bool DF, bool NF >
    class SymmetricMatrix;
+
+   } // namespace blaze
    \endcode
 
 //  - MT: specifies the type of the matrix to be adapted. SymmetricMatrix can be used with any

@@ -68,8 +68,12 @@ namespace blaze {
 // can be specified via the first template parameter:
 
    \code
+   namespace blaze {
+
    template< typename MT, bool SO, bool DF >
    class UniUpperMatrix;
+
+   } // namespace blaze
    \endcode
 
 //  - MT: specifies the type of the matrix to be adapted. UniUpperMatrix can be used with any

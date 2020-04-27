@@ -68,8 +68,12 @@ namespace blaze {
 // be specified via the first template parameter:
 
    \code
+   namespace blaze {
+
    template< typename MT, bool SO, bool DF >
    class HermitianMatrix;
+
+   } // namespace blaze
    \endcode
 
 //  - MT: specifies the type of the matrix to be adapted. HermitianMatrix can be used with any

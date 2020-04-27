@@ -68,8 +68,12 @@ namespace blaze {
 // parameter:
 
    \code
+   namespace blaze {
+
    template< typename MT, bool SO, bool DF >
    class DiagonalMatrix;
+
+   } // namespace blaze
    \endcode
 
 //  - MT: specifies the type of the matrix to be adapted. DiagonalMatrix can be used with any
