@@ -701,18 +701,32 @@
 // \subsection vector_types_static_vector StaticVector
 //
 // The blaze::StaticVector class template is the representation of a fixed size vector with
-// statically allocated elements of arbitrary type. It can be included via the header file
+// statically allocated elements of arbitrary type. It can be included via the header files
 
    \code
+   #include <blaze/Blaze.h>
+   // or
+   #include <blaze/Math.h>
+   // or
    #include <blaze/math/StaticVector.h>
    \endcode
 
-// The type of the elements, the number of elements, the transpose flag, the alignment, and the
-// padding of the vector can be specified via the five template parameters:
+// and forward declared via the header file
 
    \code
-   template< typename Type, size_t N, bool TF, AlignmentFlag AF, PaddingFlag PF >
+   #include <blaze/Forward.h>
+   \endcode
+
+// The type of the elements, the number of elements, the transpose flag, the alignment, and the
+// padding of the vector can be specified via the six template parameters:
+
+   \code
+   namespace blaze {
+
+   template< typename Type, size_t N, bool TF, AlignmentFlag AF, PaddingFlag PF, typename Tag >
    class StaticVector;
+
+   } // namespace blaze
    \endcode
 
 //  - \c Type: specifies the type of the vector elements. StaticVector can be used with any
@@ -720,13 +734,16 @@
 //  - \c N   : specifies the total number of vector elements. It is expected that StaticVector is
 //             only used for tiny and small vectors.
 //  - \c TF  : specifies whether the vector is a row vector (\c blaze::rowVector) or a column
-//             vector (\c blaze::columnVector). The default value is \c blaze::columnVector.
+//             vector (\c blaze::columnVector). The default value is \c blaze::defaultTransposeFlag.
 //  - \c AF  : specifies whether the first element of the vector is properly aligned with
 //             respect to the available instruction set (SSE, AVX, ...). Possible values are
-//             \c blaze::aligned and \c blaze::unaligned. The default value is \c blaze::aligned.
+//             \c blaze::aligned and \c blaze::unaligned. The default value is
+//             \c blaze::defaultAlignmentFlag.
 //  - \c PF  : specifies whether the vector should be padded to maximize the efficiency of
 //             vectorized operations. Possible values are \c blaze::padded and \c blaze::unpadded.
-//             The default value is \c blaze::padded.
+//             The default value is \c blaze::defaultPaddingFlag.
+//  - \c Tag : optional type parameter to tag the vector. The default type is \c blaze::Group0.
+//             See \ref grouping_tagging for details.
 //
 // The blaze::StaticVector is perfectly suited for small to medium vectors whose size is known at
 // compile time:
@@ -826,24 +843,40 @@
 // \n \subsection vector_types_dynamic_vector DynamicVector
 //
 // The blaze::DynamicVector class template is the representation of an arbitrary sized vector
-// with dynamically allocated elements of arbitrary type. It can be included via the header file
+// with dynamically allocated elements of arbitrary type. It can be included via the header files
 
    \code
+   #include <blaze/Blaze.h>
+   // or
+   #include <blaze/Math.h>
+   // or
    #include <blaze/math/DynamicVector.h>
    \endcode
 
-// The type of the elements and the transpose flag of the vector can be specified via the two
+// and forward declared via the header file
+
+   \code
+   #include <blaze/Forward.h>
+   \endcode
+
+// The type of the elements and the transpose flag of the vector can be specified via the three
 // template parameters:
 
    \code
-   template< typename Type, bool TF >
+   namespace blaze {
+
+   template< typename Type, bool TF, typename Tag >
    class DynamicVector;
+
+   } // namespace blaze
    \endcode
 
 //  - \c Type: specifies the type of the vector elements. DynamicVector can be used with any
 //             non-cv-qualified, non-reference, non-pointer element type.
 //  - \c TF  : specifies whether the vector is a row vector (\c blaze::rowVector) or a column
-//             vector (\c blaze::columnVector). The default value is \c blaze::columnVector.
+//             vector (\c blaze::columnVector). The default value is \c blaze::defaultTransposeFlag.
+//  - \c Tag : optional type parameter to tag the vector. The default type is \a blaze::Group0.
+//             See \ref grouping_tagging for details.
 //
 // The blaze::DynamicVector is the default choice for all kinds of dense vectors and the best
 // choice for medium to large vectors. Its size can be modified at runtime:
@@ -864,18 +897,32 @@
 // The blaze::HybridVector class template combines the advantages of the blaze::StaticVector and
 // the blaze::DynamicVector class templates. It represents a fixed size vector with statically
 // allocated elements, but still can be dynamically resized (within the bounds of the available
-// memory). It can be included via the header file
+// memory). It can be included via the header files
 
    \code
+   #include <blaze/Blaze.h>
+   // or
+   #include <blaze/Math.h>
+   // or
    #include <blaze/math/HybridVector.h>
    \endcode
 
-// The type of the elements, the maximum number of elements, the transpose flag, the alignment,
-// and the padding of the vector can be specified via the five template parameters:
+// and forward declared via the header file
 
    \code
-   template< typename Type, size_t N, bool TF, AlignmentFlag AF, PaddingFlag PF >
+   #include <blaze/Forward.h>
+   \endcode
+
+// The type of the elements, the maximum number of elements, the transpose flag, the alignment,
+// and the padding of the vector can be specified via the six template parameters:
+
+   \code
+   namespace blaze {
+
+   template< typename Type, size_t N, bool TF, AlignmentFlag AF, PaddingFlag PF, typename Tag >
    class HybridVector;
+
+   } // namespace blaze
    \endcode
 
 //  - \c Type: specifies the type of the vector elements. HybridVector can be used with any
@@ -883,13 +930,16 @@
 //  - \c N   : specifies the maximum number of vector elements. It is expected that HybridVector
 //             is only used for tiny and small vectors.
 //  - \c TF  : specifies whether the vector is a row vector (\c blaze::rowVector) or a column
-//             vector (\c blaze::columnVector). The default value is \c blaze::columnVector.
+//             vector (\c blaze::columnVector). The default value is \c blaze::defaultTransposeFlag.
 //  - \c AF  : specifies whether the first element of the vector is properly aligned with
 //             respect to the available instruction set (SSE, AVX, ...). Possible values are
-//             \c blaze::aligned and \c blaze::unaligned. The default value is \c blaze::aligned.
+//             \c blaze::aligned and \c blaze::unaligned. The default value is
+//             \c blaze::defaultAlignmentFlag.
 //  - \c PF  : specifies whether the vector should be padded to maximize the efficiency of
 //             vectorized operations. Possible values are \c blaze::padded and \c blaze::unpadded.
-//             The default value is \c blaze::padded.
+//             The default value is \c blaze::defaultPaddingFlag.
+//  - \c Tag : optional type parameter to tag the vector. The default type is \c blaze::Group0.
+//             See \ref grouping_tagging for details.
 //
 // The blaze::HybridVector is a suitable choice for small to medium vectors, whose size is not
 // known at compile time or not fixed at runtime, but whose maximum size is known at compile
@@ -995,28 +1045,46 @@
 // structure. Thus in contrast to all other dense vector types a custom vector does not perform
 // any kind of memory allocation by itself, but it is provided with an existing array of element
 // during construction. A custom vector can therefore be considered an alias to the existing
-// array. It can be included via the header file
+// array. It can be included via the header files
 
    \code
+   #include <blaze/Blaze.h>
+   // or
+   #include <blaze/Math.h>
+   // or
    #include <blaze/math/CustomVector.h>
    \endcode
 
-// The type of the elements, the properties of the given array of elements and the transpose
-// flag of the vector can be specified via the following four template parameters:
+// and forward declared via the header file
 
    \code
-   template< typename Type, bool AF, bool PF, bool TF >
-   class CustomVector;
+   #include <blaze/Forward.h>
    \endcode
 
-//  - Type: specifies the type of the vector elements. blaze::CustomVector can be used with
-//          any non-cv-qualified, non-reference, non-pointer element type.
-//  - AF  : specifies whether the represented, external arrays are properly aligned with
-//          respect to the available instruction set (SSE, AVX, ...) or not.
-//  - PF  : specified whether the represented, external arrays are properly padded with
-//          respect to the available instruction set (SSE, AVX, ...) or not.
-//  - TF  : specifies whether the vector is a row vector (\c blaze::rowVector) or a column
-//          vector (\c blaze::columnVector). The default value is \c blaze::columnVector.
+// The type of the elements, the properties of the given array of elements and the transpose
+// flag of the vector can be specified via the following five template parameters:
+
+   \code
+   namespace blaze {
+
+   template< typename Type, AlignmentFlag AF, PaddingFlag PF, bool TF, typename Tag >
+   class CustomVector;
+
+   } // namespace blaze
+   \endcode
+
+//  - \c Type: specifies the type of the vector elements. blaze::CustomVector can be used with
+//             any non-cv-qualified, non-reference, non-pointer element type.
+//  - \c AF  : specifies whether the represented, external arrays are properly aligned with
+//             respect to the available instruction set (SSE, AVX, ...) or not (\c blaze::aligned
+//             or \c blaze::unaligned).
+//  - \c PF  : specified whether the represented, external arrays are properly padded with
+//             respect to the available instruction set (SSE, AVX, ...) or not (\c blaze::padded
+//             or \c blaze::unpadded).
+//  - \c TF  : specifies whether the vector is a row vector (\c blaze::rowVector) or a column
+//             vector (\c blaze::columnVector). The default value is \c blaze::defaultTransposeFlag.
+//  - \c Tag : optional type parameter to tag the vector. The default type is \c blaze::Group0.
+//             See \ref grouping_tagging for details.
 //
 // The blaze::CustomVector is the right choice if any external array needs to be represented as
 // a \b Blaze dense vector data structure or if a custom memory allocation strategy needs to be
@@ -1223,24 +1291,40 @@
 // \n \subsection vector_types_uniform_vector UniformVector
 //
 // The blaze::UniformVector class template is the representation of an arbitrary sized uniform
-// vector with elements of arbitrary type. It can be included via the header file
+// vector with elements of arbitrary type. It can be included via the header files
 
    \code
+   #include <blaze/Blaze.h>
+   // or
+   #include <blaze/Math.h>
+   // or
    #include <blaze/math/UniformVector.h>
    \endcode
 
-// The type of the elements and the transpose flag of the vector can be specified via the two
+// and forward declared via the header file
+
+   \code
+   #include <blaze/Forward.h>
+   \endcode
+
+// The type of the elements and the transpose flag of the vector can be specified via the three
 // template parameters:
 
    \code
-   template< typename Type, bool TF >
+   namespace blaze {
+
+   template< typename Type, bool TF, typename Tag >
    class UniformVector;
+
+   } // namespace blaze
    \endcode
 
 //  - \c Type: specifies the type of the vector elements. UniformVector can be used with any
 //             non-cv-qualified, non-reference, non-pointer element type.
 //  - \c TF  : specifies whether the vector is a row vector (\c blaze::rowVector) or a column
-//             vector (\c blaze::columnVector). The default value is \c blaze::columnVector.
+//             vector (\c blaze::columnVector). The default value is \c blaze::defaultTransposeFlag.
+//  - \c Tag : optional type parameter to tag the vector. The default type is \c blaze::Group0.
+//             See \ref grouping_tagging for details.
 //
 // The blaze::UniformVector is the best choice for uniform vectors of any size. Its size can be
 // modified at runtime:
@@ -1263,24 +1347,40 @@
 //
 // The blaze::CompressedVector class is the representation of an arbitrarily sized sparse
 // vector, which stores only non-zero elements of arbitrary type. It can be included via the
-// header file
+// header files
 
    \code
+   #include <blaze/Blaze.h>
+   // or
+   #include <blaze/Math.h>
+   // or
    #include <blaze/math/CompressedVector.h>
    \endcode
 
-// The type of the elements and the transpose flag of the vector can be specified via the two
+// and forward declared via the header file
+
+   \code
+   #include <blaze/Forward.h>
+   \endcode
+
+// The type of the elements and the transpose flag of the vector can be specified via the three
 // template parameters:
 
    \code
-   template< typename Type, bool TF >
+   namespace blaze {
+
+   template< typename Type, bool TF, typename Tag >
    class CompressedVector;
+
+   } // namespace blaze
    \endcode
 
 //  - \c Type: specifies the type of the vector elements. CompressedVector can be used with any
 //             non-cv-qualified, non-reference, non-pointer element type.
 //  - \c TF  : specifies whether the vector is a row vector (\c blaze::rowVector) or a column
-//             vector (\c blaze::columnVector). The default value is \c blaze::columnVector.
+//             vector (\c blaze::columnVector). The default value is \c blaze::defaultTransposeFlag.
+//  - \c Tag : optional type parameter to tag the vector. The default type is \c blaze::Group0.
+//             See \ref grouping_tagging for details.
 //
 // The blaze::CompressedVector is the right choice for all kinds of sparse vectors:
 
@@ -1298,24 +1398,40 @@
 // \n \subsection vector_types_zero_vector ZeroVector
 //
 // The blaze::ZeroVector class template is the representation of an immutable, arbitrary sized
-// zero vector with elements of arbitrary type. It can be included via the header file
+// zero vector with elements of arbitrary type. It can be included via the header files
 
    \code
+   #include <blaze/Blaze.h>
+   // or
+   #include <blaze/Math.h>
+   // or
    #include <blaze/math/ZeroVector.h>
    \endcode
 
-// The type of the elements and the transpose flag of the vector can be specified via the two
+// and forward declared via the header file
+
+   \code
+   #include <blaze/Forward.h>
+   \endcode
+
+// The type of the elements and the transpose flag of the vector can be specified via the three
 // template parameters:
 
    \code
-   template< typename Type, bool TF >
+   namespace blaze {
+
+   template< typename Type, bool TF, typename Tag >
    class ZeroVector;
+
+   } // namespace blaze
    \endcode
 
 //  - \c Type: specifies the type of the vector elements. ZeroVector can be used with any
 //             non-cv-qualified, non-reference, non-pointer element type.
 //  - \c TF  : specifies whether the vector is a row vector (\c blaze::rowVector) or a column
-//             vector (\c blaze::columnVector). The default value is \c blaze::columnVector.
+//             vector (\c blaze::columnVector). The default value is \c blaze::defaultTransposeFlag.
+//  - \c Tag : optional type parameter to tag the vector. The default type is \c blaze::Group0.
+//             See \ref grouping_tagging for details.
 //
 // The blaze::ZeroVector is the perfect choice to represent a zero vector:
 
@@ -3464,18 +3580,32 @@
 // \subsection matrix_types_static_matrix StaticMatrix
 //
 // The blaze::StaticMatrix class template is the representation of a fixed size matrix with
-// statically allocated elements of arbitrary type. It can be included via the header file
+// statically allocated elements of arbitrary type. It can be included via the header files
 
    \code
+   #include <blaze/Blaze.h>
+   // or
+   #include <blaze/Math.h>
+   // or
    #include <blaze/math/StaticMatrix.h>
    \endcode
 
-// The type of the elements, the number of rows and columns, the storage order of the matrix,
-// the alignment and the padding of the matrix can be specified via the six template parameters:
+// and forward declared via the header file
 
    \code
-   template< typename Type, size_t M, size_t N, bool SO, AlignmentFlag AF, PaddingFlag PF >
+   #include <blaze/Forward.h>
+   \endcode
+
+// The type of the elements, the number of rows and columns, the storage order of the matrix,
+// the alignment and the padding of the matrix can be specified via the seven template parameters:
+
+   \code
+   namespace blaze {
+
+   template< typename Type, size_t M, size_t N, bool SO, AlignmentFlag AF, PaddingFlag PF, typename Tag >
    class StaticMatrix;
+
+   } // namespace blaze
    \endcode
 
 //  - \c Type: specifies the type of the matrix elements. StaticMatrix can be used with any
@@ -3483,14 +3613,17 @@
 //  - \c M   : specifies the total number of rows of the matrix.
 //  - \c N   : specifies the total number of columns of the matrix. Note that it is expected
 //             that StaticMatrix is only used for tiny and small matrices.
-//  - \c SO  : specifies the storage order (blaze::rowMajor, blaze::columnMajor) of the matrix.
-//             The default value is blaze::rowMajor.
+//  - \c SO  : specifies the storage order (\c blaze::rowMajor, \c blaze::columnMajor) of the
+//             matrix. The default value is \c blaze::defaultStorageOrder.
 //  - \c AF  : specifies whether the first element of every row/column is properly aligned with
 //             respect to the available instruction set (SSE, AVX, ...). Possible values are
-//             \c blaze::aligned and \c blaze::unaligned. The default value is \c blaze::aligned.
+//             \c blaze::aligned and \c blaze::unaligned. The default value is
+//             \c blaze::defaultAlignmentFlag.
 //  - \c PF  : specifies whether every row/column of the matrix should be padded to maximize the
 //             efficiency of vectorized operations. Possible values are \c blaze::padded and
-//             \c blaze::unpadded. The default value is \c blaze::padded.
+//             \c blaze::unpadded. The default value is \c blaze::defaultPaddingFlag.
+//  - \c Tag : optional type parameter to tag the matrix. The default type is \c blaze::Group0.
+//             See \ref grouping_tagging for details.
 //
 // The blaze::StaticMatrix is perfectly suited for small to medium matrices whose dimensions are
 // known at compile time:
@@ -3591,24 +3724,40 @@
 //
 // The blaze::DynamicMatrix class template is the representation of an arbitrary sized matrix
 // with \f$ M \cdot N \f$ dynamically allocated elements of arbitrary type. It can be included
-// via the header file
+// via the header files
 
    \code
+   #include <blaze/Blaze.h>
+   // or
+   #include <blaze/Math.h>
+   // or
    #include <blaze/math/DynamicMatrix.h>
    \endcode
 
-// The type of the elements and the storage order of the matrix can be specified via the two
+// and forward declared via the header file
+
+   \code
+   #include <blaze/Forward.h>
+   \endcode
+
+// The type of the elements and the storage order of the matrix can be specified via the three
 // template parameters:
 
    \code
-   template< typename Type, bool SO >
+   namespace blaze {
+
+   template< typename Type, bool SO, typename Tag >
    class DynamicMatrix;
+
+   } // namespace blaze
    \endcode
 
 //  - \c Type: specifies the type of the matrix elements. DynamicMatrix can be used with any
 //             non-cv-qualified, non-reference element type.
-//  - \c SO  : specifies the storage order (blaze::rowMajor, blaze::columnMajor) of the matrix.
-//             The default value is blaze::rowMajor.
+//  - \c SO  : specifies the storage order (\c blaze::rowMajor, \c blaze::columnMajor) of the
+//             matrix. The default value is \c blaze::defaultStorageOrder.
+//  - \c Tag : optional type parameter to tag the matrix. The default type is \c blaze::Group0.
+//             See \ref grouping_tagging for details.
 //
 // The blaze::DynamicMatrix is the default choice for all kinds of dense matrices and the best
 // choice for medium to large matrices. The number of rows and columns can be modified at runtime:
@@ -3631,19 +3780,33 @@
 // the blaze::StaticMatrix and the blaze::DynamicMatrix class templates: Similar to the static
 // matrix it uses static stack memory instead of dynamically allocated memory and similar to the
 // dynamic matrix it can be resized (within the extend of the static memory). It can be included
-// via the header file
+// via the header files
 
    \code
+   #include <blaze/Blaze.h>
+   // or
+   #include <blaze/Math.h>
+   // or
    #include <blaze/math/HybridMatrix.h>
    \endcode
 
+// and forward declared via the header file
+
+   \code
+   #include <blaze/Forward.h>
+   \endcode
+
 // The type of the elements, the maximum number of rows and columns, the storage order of the
-// matrix, the alignment and the padding of the matrix can be specified via the six template
+// matrix, the alignment and the padding of the matrix can be specified via the seven template
 // parameters:
 
    \code
-   template< typename Type, size_t M, size_t N, bool SO, AlignmentFlag AF, PaddingFlag PF >
+   namespace blaze {
+
+   template< typename Type, size_t M, size_t N, bool SO, AlignmentFlag AF, PaddingFlag PF, typename Tag >
    class HybridMatrix;
+
+   } // namespace blaze
    \endcode
 
 //  - \c Type: specifies the type of the matrix elements. HybridMatrix can be used with any
@@ -3651,14 +3814,17 @@
 //  - \c M   : specifies the maximum number of rows of the matrix.
 //  - \c N   : specifies the maximum number of columns of the matrix. Note that it is expected
 //             that HybridMatrix is only used for tiny and small matrices.
-//  - \c SO  : specifies the storage order (blaze::rowMajor, blaze::columnMajor) of the matrix.
-//             The default value is blaze::rowMajor.
+//  - \c SO  : specifies the storage order (\c blaze::rowMajor, \c blaze::columnMajor) of the
+//             matrix. The default value is \c blaze::defaultStorageOrder.
 //  - \c AF  : specifies whether the first element of every row/column is properly aligned with
 //             respect to the available instruction set (SSE, AVX, ...). Possible values are
-//             \c blaze::aligned and \c blaze::unaligned. The default value is \c blaze::aligned.
+//             \c blaze::aligned and \c blaze::unaligned. The default value is
+//             \c blaze::defaultAlignmentFlag.
 //  - \c PF  : specifies whether every row/column of the matrix should be padded to maximize the
 //             efficiency of vectorized operations. Possible values are \c blaze::padded and
-//             \c blaze::unpadded. The default value is \c blaze::padded.
+//             \c blaze::unpadded. The default value is \c blaze::defaultPaddingFlag.
+//  - \c Tag : optional type parameter to tag the matrix. The default type is \c blaze::Group0.
+//             See \ref grouping_tagging for details.
 //
 // The blaze::HybridMatrix is a suitable choice for small to medium matrices, whose dimensions
 // are not known at compile time or not fixed at runtime, but whose maximum dimensions are known
@@ -3764,28 +3930,46 @@
 // structure. Thus in contrast to all other dense matrix types a custom matrix does not perform
 // any kind of memory allocation by itself, but it is provided with an existing array of element
 // during construction. A custom matrix can therefore be considered an alias to the existing
-// array. It can be included via the header file
+// array. It can be included via the header files
 
    \code
+   #include <blaze/Blaze.h>
+   // or
+   #include <blaze/Math.h>
+   // or
    #include <blaze/math/CustomMatrix.h>
    \endcode
 
-// The type of the elements, the properties of the given array of elements and the storage order
-// of the matrix can be specified via the following four template parameters:
+// and forward declared via the header file
 
    \code
-   template< typename Type, bool AF, bool PF, bool SO >
-   class CustomMatrix;
+   #include <blaze/Forward.h>
    \endcode
 
-//  - Type: specifies the type of the matrix elements. blaze::CustomMatrix can be used with
-//          any non-cv-qualified, non-reference, non-pointer element type.
-//  - AF  : specifies whether the represented, external arrays are properly aligned with
-//          respect to the available instruction set (SSE, AVX, ...) or not.
-//  - PF  : specified whether the represented, external arrays are properly padded with
-//          respect to the available instruction set (SSE, AVX, ...) or not.
-//  - SO  : specifies the storage order (blaze::rowMajor, blaze::columnMajor) of the matrix.
-//          The default value is blaze::rowMajor.
+// The type of the elements, the properties of the given array of elements and the storage order
+// of the matrix can be specified via the following five template parameters:
+
+   \code
+   namespace blaze {
+
+   template< typename Type, AlignmentFlag AF, PaddingFlag PF, bool SO, typename Tag >
+   class CustomMatrix;
+
+   } // namespace blaze
+   \endcode
+
+//  - \c Type: specifies the type of the matrix elements. blaze::CustomMatrix can be used with
+//             any non-cv-qualified, non-reference, non-pointer element type.
+//  - \c AF  : specifies whether the represented, external arrays are properly aligned with
+//             respect to the available instruction set (SSE, AVX, ...) or not (\c blaze::aligned
+//             or \c blaze::unaligned).
+//  - \c PF  : specified whether the represented, external arrays are properly padded with
+//             respect to the available instruction set (SSE, AVX, ...) or not (\c blaze::padded
+//             or \c blaze::unpadded).
+//  - \c SO  : specifies the storage order (\c blaze::rowMajor, \c blaze::columnMajor) of the
+//             matrix. The default value is \c blaze::defaultStorageOrder.
+//  - \c Tag : optional type parameter to tag the matrix. The default type is \c blaze::Group0.
+//             See \ref grouping_tagging for details.
 //
 // The blaze::CustomMatrix is the right choice if any external array needs to be represented as
 // a \b Blaze dense matrix data structure or if a custom memory allocation strategy needs to be
@@ -3997,24 +4181,40 @@
 // \n \subsection matrix_types_uniform_matrix UniformMatrix
 //
 // The blaze::UniformMatrix class template is the representation of an arbitrary sized uniform
-// matrix with elements of arbitrary type. It can be included via the header file
+// matrix with elements of arbitrary type. It can be included via the header files
 
    \code
+   #include <blaze/Blaze.h>
+   // or
+   #include <blaze/Math.h>
+   // or
    #include <blaze/math/UniformMatrix.h>
    \endcode
 
-// The type of the elements and the storage order of the matrix can be specified via the two
+// and forward declared via the header file
+
+   \code
+   #include <blaze/Forward.h>
+   \endcode
+
+// The type of the elements and the storage order of the matrix can be specified via the three
 // template parameters:
 
    \code
-   template< typename Type, bool SO >
+   namespace blaze {
+
+   template< typename Type, bool SO, typename Tag >
    class UniformMatrix;
+
+   } // namespace blaze
    \endcode
 
 //  - \c Type: specifies the type of the matrix elements. UniformMatrix can be used with any
 //             non-cv-qualified, non-reference element type.
-//  - \c SO  : specifies the storage order (blaze::rowMajor, blaze::columnMajor) of the matrix.
-//             The default value is blaze::rowMajor.
+//  - \c SO  : specifies the storage order (\c blaze::rowMajor, \c blaze::columnMajor) of the
+//             matrix. The default value is \c blaze::defaultStorageOrder.
+//  - \c Tag : optional type parameter to tag the matrix. The default type is \c blaze::Group0.
+//             See \ref grouping_tagging for details.
 //
 // The blaze::UniformVector is the best choice for uniform matrices of any size. The number of
 // rows and columns can be modified at runtime:
@@ -4037,24 +4237,40 @@
 //
 // The blaze::CompressedMatrix class template is the representation of an arbitrary sized sparse
 // matrix with \f$ M \cdot N \f$ dynamically allocated elements of arbitrary type. It can be
-// included via the header file
+// included via the header files
 
    \code
+   #include <blaze/Blaze.h>
+   // or
+   #include <blaze/Math.h>
+   // or
    #include <blaze/math/CompressedMatrix.h>
    \endcode
 
-// The type of the elements and the storage order of the matrix can be specified via the two
+// and forward declared via the header file
+
+   \code
+   #include <blaze/Forward.h>
+   \endcode
+
+// The type of the elements and the storage order of the matrix can be specified via the three
 // template parameters:
 
    \code
-   template< typename Type, bool SO >
+   namespace blaze {
+
+   template< typename Type, bool SO, typename Tag >
    class CompressedMatrix;
+
+   } // namespace blaze
    \endcode
 
 //  - \c Type: specifies the type of the matrix elements. CompressedMatrix can be used with
 //             any non-cv-qualified, non-reference, non-pointer element type.
-//  - \c SO  : specifies the storage order (blaze::rowMajor, blaze::columnMajor) of the matrix.
-//             The default value is blaze::rowMajor.
+//  - \c SO  : specifies the storage order (\c blaze::rowMajor, \c blaze::columnMajor) of the
+//             matrix. The default value is \c blaze::defaultStorageOrder.
+//  - \c Tag : optional type parameter to tag the matrix. The default type is \c blaze::Group0.
+//             See \ref grouping_tagging for details.
 //
 // The blaze::CompressedMatrix is the right choice for all kinds of sparse matrices:
 
@@ -4073,24 +4289,40 @@
 //
 // The blaze::IdentityMatrix class template is the representation of an immutable, arbitrary
 // sized identity matrix with \f$ N \cdot N \f$ elements of arbitrary type. It can be included
-// via the header file
+// via the header files
 
    \code
+   #include <blaze/Blaze.h>
+   // or
+   #include <blaze/Math.h>
+   // or
    #include <blaze/math/IdentityMatrix.h>
    \endcode
 
-// The type of the elements and the storage order of the matrix can be specified via the two
+// and forward declared via the header file
+
+   \code
+   #include <blaze/Forward.h>
+   \endcode
+
+// The type of the elements and the storage order of the matrix can be specified via the three
 // template parameters:
 
    \code
+   namespace blaze {
+
    template< typename Type, bool SO >
    class IdentityMatrix;
+
+   } // namespace blaze
    \endcode
 
-//  - Type: specifies the type of the matrix elements. IdentityMatrix can be used with any
-//          non-cv-qualified, non-reference, non-pointer element type.
-//  - SO  : specifies the storage order (blaze::rowMajor, blaze::columnMajor) of the matrix.
-//          The default value is blaze::rowMajor.
+//  - \c Type: specifies the type of the matrix elements. IdentityMatrix can be used with any
+//             non-cv-qualified, non-reference, non-pointer element type.
+//  - \c SO  : specifies the storage order (\c blaze::rowMajor, \c blaze::columnMajor) of the
+//             matrix. The default value is \c blaze::defaultStorageOrder.
+//  - \c Tag : optional type parameter to tag the matrix. The default type is \c blaze::Group0.
+//             See \ref grouping_tagging for details.
 //
 // The blaze::IdentityMatrix is the perfect choice to represent an identity matrix:
 
@@ -4109,24 +4341,40 @@
 //
 // The blaze::ZeroMatrix class template is the representation of an immutable, arbitrary sized
 // zero matrix with \f$ M \cdot N \f$ elements of arbitrary type. It can be included via the
-// header file
+// header files
 
    \code
+   #include <blaze/Blaze.h>
+   // or
+   #include <blaze/Math.h>
+   // or
    #include <blaze/math/ZeroMatrix.h>
    \endcode
 
-// The type of the elements and the storage order of the matrix can be specified via the two
+// and forward declared via the header file
+
+   \code
+   #include <blaze/Forward.h>
+   \endcode
+
+// The type of the elements and the storage order of the matrix can be specified via the three
 // template parameters:
 
    \code
-   template< typename Type, bool SO >
+   namespace blaze {
+
+   template< typename Type, bool SO, typename Tag >
    class ZeroMatrix;
+
+   } // namespace blaze
    \endcode
 
-//  - Type: specifies the type of the matrix elements. ZeroMatrix can be used with any
-//          non-cv-qualified, non-reference, non-pointer element type.
-//  - SO  : specifies the storage order (blaze::rowMajor, blaze::columnMajor) of the matrix.
-//          The default value is blaze::rowMajor.
+//  - \c Type: specifies the type of the matrix elements. ZeroMatrix can be used with any
+//             non-cv-qualified, non-reference, non-pointer element type.
+//  - \c SO  : specifies the storage order (\c blaze::rowMajor, \c blaze::columnMajor) of the
+//             matrix. The default value is \c blaze::defaultStorageOrder.
+//  - \c Tag : optional type parameter to tag the matrix. The default type is \c blaze::Group0.
+//             See \ref grouping_tagging for details.
 //
 // The blaze::ZeroMatrix is the perfect choice to represent a zero matrix:
 
@@ -7915,17 +8163,31 @@
 // The SymmetricMatrix class template is an adapter for existing dense and sparse matrix types.
 // It inherits the properties and the interface of the given matrix type \c MT and extends it
 // by enforcing the additional invariant of symmetry (i.e. the matrix is always equal to its
-// transpose \f$ A = A^T \f$). It can be included via the header file
+// transpose \f$ A = A^T \f$). It can be included via the header files
 
    \code
+   #include <blaze/Blaze.h>
+   // or
+   #include <blaze/Math.h>
+   // or
    #include <blaze/math/SymmetricMatrix.h>
+   \endcode
+
+// and forward declared via the header file
+
+   \code
+   #include <blaze/Forward.h>
    \endcode
 
 // The type of the adapted matrix can be specified via template parameter:
 
    \code
+   namespace blaze {
+
    template< typename MT >
    class SymmetricMatrix;
+
+   } // namespace blaze
    \endcode
 
 // \c MT specifies the type of the matrix to be adapted. SymmetricMatrix can be used with any
@@ -8435,17 +8697,31 @@
 // The HermitianMatrix class template is an adapter for existing dense and sparse matrix types.
 // It inherits the properties and the interface of the given matrix type \c MT and extends it by
 // enforcing the additional invariant of Hermitian symmetry (i.e. the matrix is always equal to
-// its conjugate transpose \f$ A = \overline{A^T} \f$). It can be included via the header file
+// its conjugate transpose \f$ A = \overline{A^T} \f$). It can be included via the header files
 
    \code
+   #include <blaze/Blaze.h>
+   // or
+   #include <blaze/Math.h>
+   // or
    #include <blaze/math/HermitianMatrix.h>
+   \endcode
+
+// and forward declared via the header file
+
+   \code
+   #include <blaze/Forward.h>
    \endcode
 
 // The type of the adapted matrix can be specified via template parameter:
 
    \code
+   namespace blaze {
+
    template< typename MT >
    class HermitianMatrix;
+
+   } // namespace blaze
    \endcode
 
 // \c MT specifies the type of the matrix to be adapted. HermitianMatrix can be used with any
@@ -9032,17 +9308,31 @@
                         l_{N,0} & l_{N,1} & l_{N,2} & \cdots & l_{N,N} \\
                         \end{array}\right).\f]
 
-// It can be included via the header file
+// It can be included via the header files
 
    \code
+   #include <blaze/Blaze.h>
+   // or
+   #include <blaze/Math.h>
+   // or
    #include <blaze/math/LowerMatrix.h>
+   \endcode
+
+// and forward declared via the header file
+
+   \code
+   #include <blaze/Forward.h>
    \endcode
 
 // The type of the adapted matrix can be specified via the first template parameter:
 
    \code
+   namespace blaze {
+
    template< typename MT >
    class LowerMatrix;
+
+   } // namespace blaze
    \endcode
 
 // \c MT specifies the type of the matrix to be adapted. blaze::LowerMatrix can be used with any
@@ -9097,17 +9387,31 @@
                         l_{N,0} & l_{N,1} & l_{N,2} & \cdots & 1      \\
                         \end{array}\right).\f]
 
-// It can be included via the header file
+// It can be included via the header files
 
    \code
+   #include <blaze/Blaze.h>
+   // or
+   #include <blaze/Math.h>
+   // or
    #include <blaze/math/UniLowerMatrix.h>
+   \endcode
+
+// and forward declared via the header file
+
+   \code
+   #include <blaze/Forward.h>
    \endcode
 
 // The type of the adapted matrix can be specified via the first template parameter:
 
    \code
+   namespace blaze {
+
    template< typename MT >
    class UniLowerMatrix;
+
+   } // namespace blaze
    \endcode
 
 // \c MT specifies the type of the matrix to be adapted. blaze::UniLowerMatrix can be used with any
@@ -9156,17 +9460,31 @@
                         l_{N,0} & l_{N,1} & l_{N,2} & \cdots & 0      \\
                         \end{array}\right).\f]
 
-// It can be included via the header file
+// It can be included via the header files
 
    \code
+   #include <blaze/Blaze.h>
+   // or
+   #include <blaze/Math.h>
+   // or
    #include <blaze/math/StrictlyLowerMatrix.h>
+   \endcode
+
+// and forward declared via the header file
+
+   \code
+   #include <blaze/Forward.h>
    \endcode
 
 // The type of the adapted matrix can be specified via the first template parameter:
 
    \code
+   namespace blaze {
+
    template< typename MT >
    class StrictlyLowerMatrix;
+
+   } // namespace blaze
    \endcode
 
 // \c MT specifies the type of the matrix to be adapted. blaze::StrictlyLowerMatrix can be used
@@ -9214,17 +9532,31 @@
                         0       & 0       & 0       & \cdots & u_{N,N} \\
                         \end{array}\right).\f]
 
-// It can be included via the header file
+// It can be included via the header files
 
    \code
+   #include <blaze/Blaze.h>
+   // or
+   #include <blaze/Math.h>
+   // or
    #include <blaze/math/UpperMatrix.h>
+   \endcode
+
+// and forward declared via the header file
+
+   \code
+   #include <blaze/Forward.h>
    \endcode
 
 // The type of the adapted matrix can be specified via the first template parameter:
 
    \code
+   namespace blaze {
+
    template< typename MT >
    class UpperMatrix;
+
+   } // namespace blaze
    \endcode
 
 // \c MT specifies the type of the matrix to be adapted. blaze::UpperMatrix can be used with any
@@ -9271,17 +9603,31 @@
                         0       & 0       & 0       & \cdots & 1       \\
                         \end{array}\right).\f]
 
-// It can be included via the header file
+// It can be included via the header files
 
    \code
+   #include <blaze/Blaze.h>
+   // or
+   #include <blaze/Math.h>
+   // or
    #include <blaze/math/UniUpperMatrix.h>
+   \endcode
+
+// and forward declared via the header file
+
+   \code
+   #include <blaze/Forward.h>
    \endcode
 
 // The type of the adapted matrix can be specified via the first template parameter:
 
    \code
+   namespace blaze {
+
    template< typename MT >
    class UniUpperMatrix;
+
+   } // namespace blaze
    \endcode
 
 // \c MT specifies the type of the matrix to be adapted. blaze::UniUpperMatrix can be used with any
@@ -9330,17 +9676,31 @@
                         0       & 0       & 0       & \cdots & 0       \\
                         \end{array}\right).\f]
 
-// It can be included via the header file
+// It can be included via the header files
 
    \code
+   #include <blaze/Blaze.h>
+   // or
+   #include <blaze/Math.h>
+   // or
    #include <blaze/math/StrictlyUpperMatrix.h>
+   \endcode
+
+// and forward declared via the header file
+
+   \code
+   #include <blaze/Forward.h>
    \endcode
 
 // The type of the adapted matrix can be specified via the first template parameter:
 
    \code
+   namespace blaze {
+
    template< typename MT >
    class StrictlyUpperMatrix;
+
+   } // namespace blaze
    \endcode
 
 // \c MT specifies the type of the matrix to be adapted. blaze::StrictlyUpperMatrix can be used
@@ -9388,17 +9748,31 @@
                         0       & 0       & 0       & \cdots & l_{N,N} \\
                         \end{array}\right).\f]
 
-// It can be included via the header file
+// It can be included via the header files
 
    \code
+   #include <blaze/Blaze.h>
+   // or
+   #include <blaze/Math.h>
+   // or
    #include <blaze/math/DiagonalMatrix.h>
+   \endcode
+
+// and forward declared via the header file
+
+   \code
+   #include <blaze/Forward.h>
    \endcode
 
 // The type of the adapted matrix can be specified via the first template parameter:
 
    \code
+   namespace blaze {
+
    template< typename MT >
    class DiagonalMatrix;
+
+   } // namespace blaze
    \endcode
 
 // \c MT specifies the type of the matrix to be adapted. blaze::DiagonalMatrix can be used with any
@@ -10049,10 +10423,20 @@
 // <hr>
 //
 // A view on a dense or sparse subvector can be created very conveniently via the \c subvector()
-// function. It can be included via the header file
+// function. It can be included via the header files
 
    \code
+   #include <blaze/Blaze.h>
+   // or
+   #include <blaze/Math.h>
+   // or
    #include <blaze/math/Subvector.h>
+   \endcode
+
+// and forward declared via the header file
+
+   \code
+   #include <blaze/Forward.h>
    \endcode
 
 // The first parameter specifies the offset of the subvector within the underlying dense or sparse
@@ -10403,10 +10787,20 @@
 // \n \section views_element_selections_setup Setup of Element Selections
 //
 // An element selection can be created very conveniently via the \c elements() function. It can
-// be included via the header file
+// be included via the header files
 
    \code
+   #include <blaze/Blaze.h>
+   // or
+   #include <blaze/Math.h>
+   // or
    #include <blaze/math/Elements.h>
+   \endcode
+
+// and forward declared via the header file
+
+   \code
+   #include <blaze/Forward.h>
    \endcode
 
 // The indices of the elements to be selected can be specified either at compile time or at runtime
@@ -10718,10 +11112,20 @@
 // <hr>
 //
 // A view on a dense or sparse submatrix can be created very conveniently via the \c submatrix()
-// function. It can be included via the header file
+// function. It can be included via the header files
 
    \code
+   #include <blaze/Blaze.h>
+   // or
+   #include <blaze/Math.h>
+   // or
    #include <blaze/math/Submatrix.h>
+   \endcode
+
+// and forward declared via the header file
+
+   \code
+   #include <blaze/Forward.h>
    \endcode
 
 // The first and second parameter specify the row and column of the first element of the submatrix.
@@ -11122,10 +11526,20 @@
 // \image latex row.eps "Row view" width=250pt
 //
 // A reference to a dense or sparse row can be created very conveniently via the \c row() function.
-// It can be included via the header file
+// It can be included via the header files
 
    \code
+   #include <blaze/Blaze.h>
+   // or
+   #include <blaze/Math.h>
+   // or
    #include <blaze/math/Row.h>
+   \endcode
+
+// and forward declared via the header file
+
+   \code
+   #include <blaze/Forward.h>
    \endcode
 
 // The row index must be in the range from \f$[0..M-1]\f$, where \c M is the total number of rows
@@ -11428,10 +11842,20 @@
 // \n \section views_row_selections_setup Setup of Row Selections
 //
 // A row selection can be created very conveniently via the \c rows() function. It can be included
-// via the header file
+// via the header files
 
    \code
+   #include <blaze/Blaze.h>
+   // or
+   #include <blaze/Math.h>
+   // or
    #include <blaze/math/Rows.h>
+   \endcode
+
+// and forward declared via the header file
+
+   \code
+   #include <blaze/Forward.h>
    \endcode
 
 // The indices of the rows to be selected can be specified either at compile time or at runtime
@@ -11767,10 +12191,20 @@
 // \image latex column.eps "Column view" width=250pt
 //
 // A reference to a dense or sparse column can be created very conveniently via the \c column()
-// function. It can be included via the header file
+// function. It can be included via the header files
 
    \code
+   #include <blaze/Blaze.h>
+   // or
+   #include <blaze/Math.h>
+   // or
    #include <blaze/math/Column.h>
+   \endcode
+
+// and forward declared via the header file
+
+   \code
+   #include <blaze/Forward.h>
    \endcode
 
 // The column index must be in the range from \f$[0..N-1]\f$, where \c N is the total number of
@@ -12074,10 +12508,20 @@
 // \n \section views_column_selections_setup Setup of Column Selections
 //
 // A column selection can be created very conveniently via the \c columns() function. It can be
-// included via the header file
+// included via the header files
 
    \code
+   #include <blaze/Blaze.h>
+   // or
+   #include <blaze/Math.h>
+   // or
    #include <blaze/math/Columns.h>
+   \endcode
+
+// and forward declared via the header file
+
+   \code
+   #include <blaze/Forward.h>
    \endcode
 
 // The indices of the columns to be selected can be specified either at compile time or at runtime
@@ -12415,10 +12859,20 @@
 // \image latex band.eps "Band view" width=250pt
 //
 // A reference to a dense or sparse band can be created very conveniently via the \c band()
-// function. It can be included via the header file
+// function. It can be included via the header files
 
    \code
+   #include <blaze/Blaze.h>
+   // or
+   #include <blaze/Math.h>
+   // or
    #include <blaze/math/Band.h>
+   \endcode
+
+// and forward declared via the header file
+
+   \code
+   #include <blaze/Forward.h>
    \endcode
 
 // The band index must be in the range from \f$[min(0,1-M)..max(0,N-1)]\f$, where \c M is the
