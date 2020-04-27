@@ -61,10 +61,20 @@
 // \image latex band.eps "Band view" width=250pt
 //
 // A reference to a dense or sparse band can be created very conveniently via the \c band()
-// function. It can be included via the header file
+// function. It can be included via the header files
 
    \code
+   #include <blaze/Blaze.h>
+   // or
+   #include <blaze/Math.h>
+   // or
    #include <blaze/math/Band.h>
+   \endcode
+
+// and forward declared via the header file
+
+   \code
+   #include <blaze/Forward.h>
    \endcode
 
 // The band index must be in the range from \f$[1-M..N-1]\f$, where \c M is the total number of
@@ -301,10 +311,20 @@
 // \n \section diagonal_setup Setup of Diagonals
 //
 // A reference to a dense or sparse diagonal can be created very conveniently via the \c diagonal()
-// function. Just as bands it can be included via the header file
+// function. Just as bands it can be included via the header files
 
    \code
+   #include <blaze/Blaze.h>
+   // or
+   #include <blaze/Math.h>
+   // or
    #include <blaze/math/Band.h>
+   \endcode
+
+// and forward declared via the header file
+
+   \code
+   #include <blaze/Forward.h>
    \endcode
 
 // The \c diagonal() function expects just a single argument:

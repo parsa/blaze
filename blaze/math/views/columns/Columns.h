@@ -59,10 +59,20 @@
 // \n \section columns_setup Setup of Column Selections
 //
 // A column selection can be created very conveniently via the \c columns() function. It can be
-// included via the header file
+// included via the header files
 
    \code
+   #include <blaze/Blaze.h>
+   // or
+   #include <blaze/Math.h>
+   // or
    #include <blaze/math/Columns.h>
+   \endcode
+
+// and forward declared via the header file
+
+   \code
+   #include <blaze/Forward.h>
    \endcode
 
 // The indices of the columns to be selected can be specified either at compile time or at runtime

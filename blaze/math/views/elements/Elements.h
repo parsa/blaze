@@ -59,10 +59,20 @@
 // \n \section elements_setup Setup of Element Selections
 //
 // An element selection can be created very conveniently via the \c elements() function. It can
-// be included via the header file
+// be included via the header files
 
    \code
+   #include <blaze/Blaze.h>
+   // or
+   #include <blaze/Math.h>
+   // or
    #include <blaze/math/Elements.h>
+   \endcode
+
+// and forward declared via the header file
+
+   \code
+   #include <blaze/Forward.h>
    \endcode
 
 // The indices of the elements to be selected can be specified either at compile time or at runtime

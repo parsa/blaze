@@ -60,10 +60,20 @@
 // \image latex column.eps "Column view" width=250pt
 //
 // A reference to a dense or sparse column can be created very conveniently via the \c column()
-// function. It can be included via the header file
+// function. It can be included via the header files
 
    \code
+   #include <blaze/Blaze.h>
+   // or
+   #include <blaze/Math.h>
+   // or
    #include <blaze/math/Column.h>
+   \endcode
+
+// and forward declared via the header file
+
+   \code
+   #include <blaze/Forward.h>
    \endcode
 
 // The column index must be in the range from \f$[0..N-1]\f$, where \c N is the total number of

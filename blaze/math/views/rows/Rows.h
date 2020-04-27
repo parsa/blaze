@@ -59,10 +59,20 @@
 // \n \section rows_setup Setup of Row Selections
 //
 // A row selection can be created very conveniently via the \c rows() function. It can be included
-// via the header file
+// via the header files
 
    \code
+   #include <blaze/Blaze.h>
+   // or
+   #include <blaze/Math.h>
+   // or
    #include <blaze/math/Rows.h>
+   \endcode
+
+// and forward declared via the header file
+
+   \code
+   #include <blaze/Forward.h>
    \endcode
 
 // The indices of the rows to be selected can be specified either at compile time or at runtime

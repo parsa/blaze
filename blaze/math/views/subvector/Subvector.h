@@ -58,10 +58,20 @@
 // \n \section subvector_setup Setup of Subvectors
 //
 // A view on a dense or sparse subvector can be created very conveniently via the \c subvector()
-// function. It can be included via the header file
+// function. It can be included via the header files
 
    \code
+   #include <blaze/Blaze.h>
+   // or
+   #include <blaze/Math.h>
+   // or
    #include <blaze/math/Subvector.h>
+   \endcode
+
+// and forward declared via the header file
+
+   \code
+   #include <blaze/Forward.h>
    \endcode
 
 // The first parameter specifies the offset of the subvector within the underlying dense or sparse
