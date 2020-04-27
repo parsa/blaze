@@ -130,6 +130,7 @@
 #include <blaze/math/expressions/TSVecDMatMultExpr.h>
 #include <blaze/math/expressions/TSVecTDMatMultExpr.h>
 #include <blaze/math/Matrix.h>
+#include <blaze/math/serialization/MatrixSerializer.h>
 #include <blaze/math/smp/DenseMatrix.h>
 #include <blaze/math/smp/SparseMatrix.h>
 #include <blaze/math/views/Column.h>

@@ -41,7 +41,6 @@
 //*************************************************************************************************
 
 #include <blaze/math/serialization/MatrixSerializer.h>
-#include <blaze/math/serialization/TypeValueMapping.h>
 #include <blaze/math/serialization/VectorSerializer.h>
 
 #endif

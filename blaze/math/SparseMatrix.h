@@ -108,6 +108,7 @@
 #include <blaze/math/expressions/TSVecSMatMultExpr.h>
 #include <blaze/math/expressions/TSVecTSMatMultExpr.h>
 #include <blaze/math/Matrix.h>
+#include <blaze/math/serialization/MatrixSerializer.h>
 #include <blaze/math/smp/DenseMatrix.h>
 #include <blaze/math/smp/SparseMatrix.h>
 #include <blaze/math/sparse/SparseMatrix.h>

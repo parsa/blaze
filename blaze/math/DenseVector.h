@@ -74,6 +74,7 @@
 #include <blaze/math/expressions/SVecDVecCrossExpr.h>
 #include <blaze/math/expressions/SVecDVecSubExpr.h>
 #include <blaze/math/expressions/SVecSVecCrossExpr.h>
+#include <blaze/math/serialization/VectorSerializer.h>
 #include <blaze/math/smp/DenseVector.h>
 #include <blaze/math/smp/SparseVector.h>
 #include <blaze/math/Vector.h>
