@@ -53,9 +53,26 @@ namespace blaze {
 //=================================================================================================
 
 //*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
+/*!\brief The default storage order for all matrices of the Blaze library.
+// \ingroup system
+//
+// This value specifies the default storage order for all matrices of the Blaze library.
+// In case no explicit storage order is specified with the according matrix type, this
+// setting is used.
+
+   \code
+   // Explicit specification of the storage order => row-major matrix
+   StaticMatrix<double,3UL,3UL,rowMajor> A;
+
+   // No explicit specification of the storage order => use of the default storage order
+   StaticMatrix<double,3UL,3UL> B;
+   \endcode
+
+// The default storage order is defined via the BLAZE_DEFAULT_STORAGE_ORDER compilation switch
+// (see the \ref storage_order section). Valid settings for this value are blaze::rowMajor and
+// blaze::columnMajor.
+*/
 constexpr bool defaultStorageOrder = BLAZE_DEFAULT_STORAGE_ORDER;
-/*! \endcond */
 //*************************************************************************************************
 
 } // namespace blaze
