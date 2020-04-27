@@ -144,23 +144,27 @@ namespace blaze {
 // of the vector can be specified via the six template parameters:
 
    \code
+   namespace blaze {
+
    template< typename Type, size_t N, bool TF, AlignmentFlag AF, PaddingFlag PF, typename Tag >
    class HybridVector;
+
+   } // namespace blaze
    \endcode
 
 //  - Type: specifies the type of the vector elements. HybridVector can be used with any
 //          non-cv-qualified, non-reference, non-pointer element type.
 //  - N   : specifies the maximum number of vector elements, i.e. the maximum size of the vector.
 //          It is expected that HybridVector is only used for tiny and small vectors.
-//  - TF  : specifies whether the vector is a row vector (\a blaze::rowVector) or a column
-//          vector (\a blaze::columnVector). The default value is \a blaze::columnVector.
+//  - TF  : specifies whether the vector is a row vector (\c blaze::rowVector) or a column
+//          vector (\c blaze::columnVector). The default value is \c blaze::defaultTransposeFlag.
 //  - AF  : specifies whether the first element of the vector is properly aligned with respect to
-//          the available instruction set (SSE, AVX, ...). Possible values are \a blaze::aligned
-//          and \a blaze::unaligned. The default value is \a blaze::aligned.
+//          the available instruction set (SSE, AVX, ...). Possible values are \c blaze::aligned
+//          and \c blaze::unaligned. The default value is \c blaze::defaultAlignmentFlag.
 //  - PF  : specifies whether the vector should be padded to maximize the efficiency of vectorized
-//          operations. Possible values are \a blaze::padded and \a blaze::unpadded. The default
-//          value is \a blaze::padded.
-//  - Tag : optional type parameter to tag the vector. The default type is \a blaze::Group0.
+//          operations. Possible values are \c blaze::padded and \c blaze::unpadded. The default
+//          value is \c blaze::defaultPaddingFlag.
+//  - Tag : optional type parameter to tag the vector. The default type is \c blaze::Group0.
 //          See \ref grouping_tagging for details.
 //
 // These contiguously stored elements can be directly accessed with the subscript operator. The

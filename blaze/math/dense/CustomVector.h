@@ -129,21 +129,25 @@ namespace blaze {
 // flag of the vector can be specified via the following five template parameters:
 
    \code
+   namespace blaze {
+
    template< typename Type, AlignmentFlag AF, PaddingFlag PF, bool TF, typename Tag >
    class CustomVector;
+
+   } // namespace blaze
    \endcode
 
 //  - Type: specifies the type of the vector elements. CustomVector can be used with any
 //          non-cv-qualified, non-reference, non-pointer element type.
 //  - AF  : specifies whether the represented, external arrays are properly aligned with
-//          respect to the available instruction set (SSE, AVX, ...) or not (\a blaze::aligned
-//          or \a blaze::unaligned).
+//          respect to the available instruction set (SSE, AVX, ...) or not (\c blaze::aligned
+//          or \c blaze::unaligned).
 //  - PF  : specified whether the represented, external arrays are properly padded with
-//          respect to the available instruction set (SSE, AVX, ...) or not (\a blaze::padded
-//          or \a blaze::unpadded).
-//  - TF  : specifies whether the vector is a row vector (\a blaze::rowVector) or a column
-//          vector (\a blaze::columnVector). The default value is \a blaze::columnVector.
-//  - Tag : optional type parameter to tag the vector. The default type is \a blaze::Group0.
+//          respect to the available instruction set (SSE, AVX, ...) or not (\c blaze::padded
+//          or \c blaze::unpadded).
+//  - TF  : specifies whether the vector is a row vector (\c blaze::rowVector) or a column
+//          vector (\c blaze::columnVector). The default value is \c blaze::defaultTransposeFlag.
+//  - Tag : optional type parameter to tag the vector. The default type is \c blaze::Group0.
 //          See \ref grouping_tagging for details.
 //
 // The following examples give an impression of several possible types of custom vectors:
@@ -246,7 +250,7 @@ namespace blaze {
 
 // \n \subsection customvector_alignment Alignment
 //
-// In case the custom vector is specified as \a aligned the passed array must be guaranteed to
+// In case the custom vector is specified as \c aligned the passed array must be guaranteed to
 // be aligned according to the requirements of the used instruction set (SSE, AVX, ...). For
 // instance, if AVX is active an array of integers must be 32-bit aligned:
 
@@ -263,7 +267,7 @@ namespace blaze {
    CustomVector<int,aligned,unpadded> a( memory.get(), 5UL );
    \endcode
 
-// In case the alignment requirements are violated, a \a std::invalid_argument exception is
+// In case the alignment requirements are violated, a \c std::invalid_argument exception is
 // thrown.
 //
 // \n \subsection customvector_padding Padding
@@ -331,7 +335,7 @@ namespace blaze {
 // guarantee that the capacity is greater or equal than the size and a multiple of the SIMD vector
 // width. In case of unaligned padded vectors the number of padding elements can be greater or
 // equal the number of padding elements of an aligned padded custom vector. In case the padding
-// is insufficient with respect to the available instruction set, a \a std::invalid_argument
+// is insufficient with respect to the available instruction set, a \c std::invalid_argument
 // exception is thrown.
 //
 // Please also note that \b Blaze will zero initialize the padding elements in order to achieve

@@ -82,15 +82,19 @@ namespace blaze {
 // vector can be specified via the three template parameters:
 
    \code
+   namespace blaze {
+
    template< typename Type, bool TF, typename Tag >
    class InitializerVector;
+
+   } // namespace blaze
    \endcode
 
 //  - Type: specifies the type of the vector elements. InitializerVector can be used with any
 //          non-cv-qualified, non-reference, non-pointer element type.
-//  - TF  : specifies whether the vector is a row vector (\a blaze::rowVector) or a column
-//          vector (\a blaze::columnVector). The default value is \a blaze::columnVector.
-//  - Tag : optional type parameter to tag the vector. The default type is \a blaze::Group0.
+//  - TF  : specifies whether the vector is a row vector (\c blaze::rowVector) or a column
+//          vector (\c blaze::columnVector). The default value is \c blaze::defaultTransposeFlag.
+//  - Tag : optional type parameter to tag the vector. The default type is \c blaze::Group0.
 //          See \ref grouping_tagging for details.
 //
 // On construction, an InitializerVector is immediately bound to an initializer list:

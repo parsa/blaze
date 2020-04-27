@@ -125,14 +125,18 @@ namespace blaze {
 // transpose flag of the vector can be specified via the three template parameters:
 
    \code
+   namespace blaze {
+
    template< typename Type, bool TF, typename Tag >
    class CompressedVector;
+
+   } // namespace blaze
    \endcode
 
 //  - Type: specifies the type of the vector elements. CompressedVector can be used with any
 //          non-cv-qualified, non-reference, non-pointer element type.
 //  - TF  : specifies whether the vector is a row vector (\a blaze::rowVector) or a column
-//          vector (\a blaze::columnVector). The default value is \a blaze::columnVector.
+//          vector (\a blaze::columnVector). The default value is \a blaze::defaultTransposeFlag.
 //  - Tag : optional type parameter to tag the vector. The default type is \a blaze::Group0.
 //          See \ref grouping_tagging for details.
 //
