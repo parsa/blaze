@@ -68,7 +68,7 @@ namespace blaze {
 
 //*************************************************************************************************
 /*!\brief Row-major dense matrix/dense vector multiplication threshold.
-// \ingroup config
+// \ingroup system
 //
 // This debug value is used instead of the BLAZE_DMATDVECMULT_THRESHOLD while the Blaze debug
 // mode is active. It specifies the threshold between the application of the custom Blaze kernels
@@ -83,7 +83,7 @@ constexpr size_t DMATDVECMULT_DEBUG_THRESHOLD = 256UL;
 
 //*************************************************************************************************
 /*!\brief Column-major dense matrix/dense vector multiplication threshold.
-// \ingroup config
+// \ingroup system
 //
 // This debug value is used instead of the BLAZE_TDMATDVECMULT_THRESHOLD while the Blaze debug
 // mode is active. It specifies the threshold between the application of the custom Blaze kernels
@@ -98,7 +98,7 @@ constexpr size_t TDMATDVECMULT_DEBUG_THRESHOLD = 256UL;
 
 //*************************************************************************************************
 /*!\brief Dense Vector/row-major dense matrix multiplication threshold.
-// \ingroup config
+// \ingroup system
 //
 // This debug value is used instead of the BLAZE_TDVECDMATMULT_THRESHOLD while the Blaze debug
 // mode is active. It specifies the threshold between the application of the custom Blaze kernels
@@ -113,7 +113,7 @@ constexpr size_t TDVECDMATMULT_DEBUG_THRESHOLD = 256UL;
 
 //*************************************************************************************************
 /*!\brief Dense Vector/column-major dense matrix multiplication threshold.
-// \ingroup config
+// \ingroup system
 //
 // This debug value is used instead of the BLAZE_TDVECTDMATMULT_THRESHOLD while the Blaze debug
 // mode is active. It specifies the threshold between the application of the custom Blaze kernels
@@ -128,7 +128,7 @@ constexpr size_t TDVECTDMATMULT_DEBUG_THRESHOLD = 256UL;
 
 //*************************************************************************************************
 /*!\brief Row-major dense matrix/row-major dense matrix multiplication threshold.
-// \ingroup config
+// \ingroup system
 //
 // This debug value is used instead of the BLAZE_DMATDMATMULT_THRESHOLD while the Blaze debug
 // mode is active. It specifies the threshold between the application of the custom Blaze kernels
@@ -143,7 +143,7 @@ constexpr size_t DMATDMATMULT_DEBUG_THRESHOLD = 256UL;
 
 //*************************************************************************************************
 /*!\brief Row-major dense matrix/column-major dense matrix multiplication threshold.
-// \ingroup config
+// \ingroup system
 //
 // This debug value is used instead of the BLAZE_DMATTDMATMULT_THRESHOLD while the Blaze debug
 // mode is active. It specifies the threshold between the application of the custom Blaze kernels
@@ -158,7 +158,7 @@ constexpr size_t DMATTDMATMULT_DEBUG_THRESHOLD = 256UL;
 
 //*************************************************************************************************
 /*!\brief Column-major dense matrix/row-major dense matrix multiplication threshold.
-// \ingroup config
+// \ingroup system
 //
 // This debug value is used instead of the BLAZE_TDMATDMATMULT_THRESHOLD while the Blaze debug
 // mode is active. It specifies the threshold between the application of the custom Blaze kernels
@@ -173,7 +173,7 @@ constexpr size_t TDMATDMATMULT_DEBUG_THRESHOLD = 256UL;
 
 //*************************************************************************************************
 /*!\brief Column-major dense matrix/column-major dense matrix multiplication threshold.
-// \ingroup config
+// \ingroup system
 //
 // This debug value is used instead of the BLAZE_TDMATTDMATMULT_THRESHOLD while the Blaze debug
 // mode is active. It specifies the threshold between the application of the custom Blaze kernels
@@ -188,7 +188,7 @@ constexpr size_t TDMATTDMATMULT_DEBUG_THRESHOLD = 256UL;
 
 //*************************************************************************************************
 /*!\brief Row-major dense matrix/row-major sparse matrix multiplication threshold.
-// \ingroup config
+// \ingroup system
 //
 // This debug value is used instead of the BLAZE_DMATSMATMULT_THRESHOLD while the Blaze debug
 // mode is active. It specifies the threshold between the application of the Blaze kernels for
@@ -203,7 +203,7 @@ constexpr size_t DMATSMATMULT_DEBUG_THRESHOLD = 256UL;
 
 //*************************************************************************************************
 /*!\brief Column-major dense matrix/row-major sparse matrix multiplication threshold.
-// \ingroup config
+// \ingroup system
 //
 // This debug value is used instead of the BLAZE_DMATSMATMULT_THRESHOLD while the Blaze debug
 // mode is active. It specifies the threshold between the application of the Blaze kernels for
@@ -218,7 +218,7 @@ constexpr size_t TDMATSMATMULT_DEBUG_THRESHOLD = 256UL;
 
 //*************************************************************************************************
 /*!\brief Column-major sparse matrix/row-major dense matrix multiplication threshold.
-// \ingroup config
+// \ingroup system
 //
 // This debug value is used instead of the BLAZE_TSMATDMATMULT_THRESHOLD while the Blaze debug
 // mode is active. It specifies the threshold between the application of the Blaze kernels for
@@ -233,7 +233,7 @@ constexpr size_t TSMATDMATMULT_DEBUG_THRESHOLD = 256UL;
 
 //*************************************************************************************************
 /*!\brief Column-major sparse matrix/column-major dense matrix multiplication threshold.
-// \ingroup config
+// \ingroup system
 //
 // This debug value is used instead of the BLAZE_TSMATTDMATMULT_THRESHOLD while the Blaze debug
 // mode is active. It specifies the threshold between the application of the Blaze kernels for
@@ -274,7 +274,7 @@ constexpr size_t TSMATTDMATMULT_THRESHOLD = ( BLAZE_DEBUG_MODE ? TSMATTDMATMULT_
 
 //*************************************************************************************************
 /*!\brief SMP dense vector assignment threshold.
-// \ingroup config
+// \ingroup system
 //
 // This debug value is used instead of the BLAZE_SMP_DVECASSIGN_THRESHOLD while the Blaze
 // debug mode is active. It specifies when an assignment of a simple dense vector can be executed
@@ -288,7 +288,7 @@ constexpr size_t SMP_DVECASSIGN_DEBUG_THRESHOLD = 32UL;
 
 //*************************************************************************************************
 /*!\brief SMP dense vector/scalar multiplication/division threshold.
-// \ingroup config
+// \ingroup system
 //
 // This debug value is used instead of the BLAZE_SMP_DVECSCALARMULT_THRESHOLD while the Blaze
 // debug mode is active. It specifies when a dense vector/scalar multiplication/division can be
@@ -302,7 +302,7 @@ constexpr size_t SMP_DVECSCALARMULT_DEBUG_THRESHOLD = 32UL;
 
 //*************************************************************************************************
 /*!\brief SMP dense vector/dense vector addition threshold.
-// \ingroup config
+// \ingroup system
 //
 // This debug value is used instead of the BLAZE_SMP_DVECDVECADD_THRESHOLD while the Blaze
 // debug mode is active. It specifies when a dense vector/dense vector addition can be executed
@@ -316,7 +316,7 @@ constexpr size_t SMP_DVECDVECADD_DEBUG_THRESHOLD = 32UL;
 
 //*************************************************************************************************
 /*!\brief SMP dense vector/dense vector subtraction threshold.
-// \ingroup config
+// \ingroup system
 //
 // This debug value is used instead of the BLAZE_SMP_DVECDVECSUB_THRESHOLD while the Blaze
 // debug mode is active. It specifies when a dense vector/dense vector subtraction can be executed
@@ -330,7 +330,7 @@ constexpr size_t SMP_DVECDVECSUB_DEBUG_THRESHOLD = 32UL;
 
 //*************************************************************************************************
 /*!\brief SMP dense vector/dense vector multiplication threshold.
-// \ingroup config
+// \ingroup system
 //
 // This debug value is used instead of the BLAZE_SMP_DVECDVECMULT_THRESHOLD while the
 // Blaze debug mode is active. It specifies when a dense vector/dense vector multiplication
@@ -344,7 +344,7 @@ constexpr size_t SMP_DVECDVECMULT_DEBUG_THRESHOLD = 32UL;
 
 //*************************************************************************************************
 /*!\brief SMP dense vector/dense vector division threshold.
-// \ingroup config
+// \ingroup system
 //
 // This debug value is used instead of the BLAZE_SMP_DVECDVECDIV_THRESHOLD while the
 // Blaze debug mode is active. It specifies when a dense vector/dense vector division can be
@@ -358,7 +358,7 @@ constexpr size_t SMP_DVECDVECDIV_DEBUG_THRESHOLD = 32UL;
 
 //*************************************************************************************************
 /*!\brief SMP dense vector/dense vector outer product threshold.
-// \ingroup config
+// \ingroup system
 //
 // This debug value is used instead of the BLAZE_SMP_DVECDVECOUTER_THRESHOLD while the Blaze
 // debug mode is active. It specifies when a dense vector/dense vector outer product can be executed
@@ -372,7 +372,7 @@ constexpr size_t SMP_DVECDVECOUTER_DEBUG_THRESHOLD = 256UL;
 
 //*************************************************************************************************
 /*!\brief SMP row-major dense matrix/dense vector multiplication threshold.
-// \ingroup config
+// \ingroup system
 //
 // This debug value is used instead of the BLAZE_SMP_DMATDVECMULT_THRESHOLD while the Blaze
 // debug mode is active. It specifies when a row-major dense matrix/dense vector multiplication
@@ -386,7 +386,7 @@ constexpr size_t SMP_DMATDVECMULT_DEBUG_THRESHOLD = 16UL;
 
 //*************************************************************************************************
 /*!\brief SMP column-major dense matrix/dense vector multiplication threshold.
-// \ingroup config
+// \ingroup system
 //
 // This debug value is used instead of the BLAZE_SMP_TDMATDVECMULT_THRESHOLD while the Blaze
 // debug mode is active. It specifies when a column-major dense matrix/dense vector multiplication
@@ -400,7 +400,7 @@ constexpr size_t SMP_TDMATDVECMULT_DEBUG_THRESHOLD = 16UL;
 
 //*************************************************************************************************
 /*!\brief SMP dense vector/row-major dense matrix multiplication threshold.
-// \ingroup config
+// \ingroup system
 //
 // This debug value is used instead of the BLAZE_SMP_TDVECDMATMULT_THRESHOLD while the Blaze
 // debug mode is active. It specifies when a dense vector/row-major dense matrix multiplication
@@ -414,7 +414,7 @@ constexpr size_t SMP_TDVECDMATMULT_DEBUG_THRESHOLD = 16UL;
 
 //*************************************************************************************************
 /*!\brief SMP dense vector/column-major dense matrix multiplication threshold.
-// \ingroup config
+// \ingroup system
 //
 // This debug value is used instead of the BLAZE_SMP_TDVECTDMATMULT_THRESHOLD while the Blaze
 // debug mode is active. It specifies when a dense vector/column-major dense matrix multiplication
@@ -428,7 +428,7 @@ constexpr size_t SMP_TDVECTDMATMULT_DEBUG_THRESHOLD = 16UL;
 
 //*************************************************************************************************
 /*!\brief SMP row-major dense matrix/sparse vector multiplication threshold.
-// \ingroup config
+// \ingroup system
 //
 // This debug value is used instead of the BLAZE_SMP_DMATSVECMULT_THRESHOLD while the Blaze
 // debug mode is active. It specifies when a row-major dense matrix/sparse vector multiplication
@@ -442,7 +442,7 @@ constexpr size_t SMP_DMATSVECMULT_DEBUG_THRESHOLD = 16UL;
 
 //*************************************************************************************************
 /*!\brief SMP column-major dense matrix/sparse vector multiplication threshold.
-// \ingroup config
+// \ingroup system
 //
 // This debug value is used instead of the BLAZE_SMP_TDMATSVECMULT_THRESHOLD while the Blaze
 // debug mode is active. It specifies when a column-major dense matrix/sparse vector multiplication
@@ -456,7 +456,7 @@ constexpr size_t SMP_TDMATSVECMULT_DEBUG_THRESHOLD = 16UL;
 
 //*************************************************************************************************
 /*!\brief SMP sparse vector/row-major dense matrix multiplication threshold.
-// \ingroup config
+// \ingroup system
 //
 // This debug value is used instead of the BLAZE_SMP_TSVECDMATMULT_THRESHOLD while the Blaze
 // debug mode is active. It specifies when a sparse vector/row-major dense matrix multiplication
@@ -470,7 +470,7 @@ constexpr size_t SMP_TSVECDMATMULT_DEBUG_THRESHOLD = 16UL;
 
 //*************************************************************************************************
 /*!\brief SMP sparse vector/column-major dense matrix multiplication threshold.
-// \ingroup config
+// \ingroup system
 //
 // This debug value is used instead of the BLAZE_SMP_TSVECTDMATMULT_THRESHOLD while the Blaze
 // debug mode is active. It specifies when a sparse vector/column-major dense matrix multiplication
@@ -484,7 +484,7 @@ constexpr size_t SMP_TSVECTDMATMULT_DEBUG_THRESHOLD = 16UL;
 
 //*************************************************************************************************
 /*!\brief SMP row-major sparse matrix/dense vector multiplication threshold.
-// \ingroup config
+// \ingroup system
 //
 // This debug value is used instead of the BLAZE_SMP_SMATDVECMULT_THRESHOLD while the Blaze
 // debug mode is active. It specifies when a row-major sparse matrix/dense vector multiplication
@@ -498,7 +498,7 @@ constexpr size_t SMP_SMATDVECMULT_DEBUG_THRESHOLD = 16UL;
 
 //*************************************************************************************************
 /*!\brief SMP column-major sparse matrix/dense vector multiplication threshold.
-// \ingroup config
+// \ingroup system
 //
 // This debug value is used instead of the BLAZE_SMP_TSMATDVECMULT_THRESHOLD while the Blaze
 // debug mode is active. It specifies when a column-major sparse matrix/dense vector multiplication
@@ -512,7 +512,7 @@ constexpr size_t SMP_TSMATDVECMULT_DEBUG_THRESHOLD = 16UL;
 
 //*************************************************************************************************
 /*!\brief SMP dense vector/row-major sparse matrix multiplication threshold.
-// \ingroup config
+// \ingroup system
 //
 // This debug value is used instead of the BLAZE_SMP_TDVECSMATMULT_THRESHOLD while the Blaze
 // debug mode is active. It specifies when a dense vector/row-major sparse matrix multiplication
@@ -526,7 +526,7 @@ constexpr size_t SMP_TDVECSMATMULT_DEBUG_THRESHOLD = 16UL;
 
 //*************************************************************************************************
 /*!\brief SMP dense vector/column-major sparse matrix multiplication threshold.
-// \ingroup config
+// \ingroup system
 //
 // This debug value is used instead of the BLAZE_SMP_TDVECTSMATMULT_THRESHOLD while the Blaze
 // debug mode is active. It specifies when a dense vector/column-major sparse matrix multiplication
@@ -540,7 +540,7 @@ constexpr size_t SMP_TDVECTSMATMULT_DEBUG_THRESHOLD = 16UL;
 
 //*************************************************************************************************
 /*!\brief SMP row-major sparse matrix/sparse vector multiplication threshold.
-// \ingroup config
+// \ingroup system
 //
 // This debug value is used instead of the BLAZE_SMP_SMATSVECMULT_THRESHOLD while the Blaze
 // debug mode is active. It specifies when a row-major sparse matrix/sparse vector multiplication
@@ -554,7 +554,7 @@ constexpr size_t SMP_SMATSVECMULT_DEBUG_THRESHOLD = 16UL;
 
 //*************************************************************************************************
 /*!\brief SMP column-major sparse matrix/sparse vector multiplication threshold.
-// \ingroup config
+// \ingroup system
 //
 // This debug value is used instead of the BLAZE_SMP_TSMATSVECMULT_THRESHOLD while the Blaze
 // debug mode is active. It specifies when a column-major sparse matrix/sparse vector multiplication
@@ -568,7 +568,7 @@ constexpr size_t SMP_TSMATSVECMULT_DEBUG_THRESHOLD = 16UL;
 
 //*************************************************************************************************
 /*!\brief SMP sparse vector/row-major sparse matrix multiplication threshold.
-// \ingroup config
+// \ingroup system
 //
 // This debug value is used instead of the BLAZE_SMP_TSVECSMATMULT_THRESHOLD while the Blaze
 // debug mode is active. It specifies when a sparse vector/row-major sparse matrix multiplication
@@ -582,7 +582,7 @@ constexpr size_t SMP_TSVECSMATMULT_DEBUG_THRESHOLD = 16UL;
 
 //*************************************************************************************************
 /*!\brief SMP sparse vector/column-major sparse matrix multiplication threshold.
-// \ingroup config
+// \ingroup system
 //
 // This debug value is used instead of the BLAZE_SMP_TSVECTSMATMULT_THRESHOLD while the Blaze
 // debug mode is active. It specifies when a sparse vector/column-major sparse matrix multiplication
@@ -596,7 +596,7 @@ constexpr size_t SMP_TSVECTSMATMULT_DEBUG_THRESHOLD = 16UL;
 
 //*************************************************************************************************
 /*!\brief SMP dense matrix assignment threshold.
-// \ingroup config
+// \ingroup system
 //
 // This debug value is used instead of the BLAZE_SMP_DMATASSIGN_THRESHOLD while the Blaze
 // debug mode is active. It specifies when an assignment with a simple dense matrix can be executed
@@ -610,7 +610,7 @@ constexpr size_t SMP_DMATASSIGN_DEBUG_THRESHOLD = 256UL;
 
 //*************************************************************************************************
 /*!\brief SMP dense matrix/scalar multiplication/division threshold.
-// \ingroup config
+// \ingroup system
 //
 // This debug value is used instead of the BLAZE_SMP_DMATSCALARMULT_THRESHOLD while the Blaze
 // debug mode is active. It specifies when a dense matrix/scalar multiplication or division can be
@@ -624,7 +624,7 @@ constexpr size_t SMP_DMATSCALARMULT_DEBUG_THRESHOLD = 256UL;
 
 //*************************************************************************************************
 /*!\brief SMP row-major dense matrix/row-major dense matrix addition threshold.
-// \ingroup config
+// \ingroup system
 //
 // This debug value is used instead of the BLAZE_SMP_DMATDMATADD_THRESHOLD while the Blaze
 // debug mode is active. It specifies when a row-major dense matrix/row-major dense matrix addition
@@ -639,7 +639,7 @@ constexpr size_t SMP_DMATDMATADD_DEBUG_THRESHOLD = 256UL;
 
 //*************************************************************************************************
 /*!\brief SMP row-major dense matrix/column-major dense matrix addition threshold.
-// \ingroup config
+// \ingroup system
 //
 // This debug value is used instead of the BLAZE_SMP_DMATTDMATADD_THRESHOLD while the Blaze
 // debug mode is active. It specifies when a row-major dense matrix/column-major dense matrix
@@ -655,7 +655,7 @@ constexpr size_t SMP_DMATTDMATADD_DEBUG_THRESHOLD = 256UL;
 
 //*************************************************************************************************
 /*!\brief SMP row-major dense matrix/row-major dense matrix subtraction threshold.
-// \ingroup config
+// \ingroup system
 //
 // This debug value is used instead of the BLAZE_SMP_DMATDMATSUB_THRESHOLD while the Blaze
 // debug mode is active. It specifies when a row-major dense matrix/row-major dense matrix
@@ -670,7 +670,7 @@ constexpr size_t SMP_DMATDMATSUB_DEBUG_THRESHOLD = 256UL;
 
 //*************************************************************************************************
 /*!\brief SMP row-major dense matrix/column-major dense matrix subtraction threshold.
-// \ingroup config
+// \ingroup system
 //
 // This debug value is used instead of the BLAZE_SMP_DMATTDMATSUB_THRESHOLD while the Blaze
 // debug mode is active. It specifies when a row-major dense matrix/column-major dense matrix
@@ -686,7 +686,7 @@ constexpr size_t SMP_DMATTDMATSUB_DEBUG_THRESHOLD = 256UL;
 
 //*************************************************************************************************
 /*!\brief SMP row-major dense matrix/row-major dense matrix Schur product threshold.
-// \ingroup config
+// \ingroup system
 //
 // This debug value is used instead of the BLAZE_SMP_DMATDMATSCHUR_THRESHOLD while the
 // Blaze debug mode is active. It specifies when a row-major dense matrix/row-major dense matrix
@@ -701,7 +701,7 @@ constexpr size_t SMP_DMATDMATSCHUR_DEBUG_THRESHOLD = 256UL;
 
 //*************************************************************************************************
 /*!\brief SMP row-major dense matrix/column-major dense matrix Schur product threshold.
-// \ingroup config
+// \ingroup system
 //
 // This debug value is used instead of the BLAZE_SMP_DMATTDMATSCHUR_THRESHOLD while the
 // Blaze debug mode is active. It specifies when a row-major dense matrix/column-major dense
@@ -717,7 +717,7 @@ constexpr size_t SMP_DMATTDMATSCHUR_DEBUG_THRESHOLD = 256UL;
 
 //*************************************************************************************************
 /*!\brief SMP row-major dense matrix/row-major dense matrix multiplication threshold.
-// \ingroup config
+// \ingroup system
 //
 // This debug value is used instead of the BLAZE_SMP_DMATDMATMULT_THRESHOLD while the
 // Blaze debug mode is active. It specifies when a row-major dense matrix/row-major dense matrix
@@ -731,7 +731,7 @@ constexpr size_t SMP_DMATDMATMULT_DEBUG_THRESHOLD = 256UL;
 
 //*************************************************************************************************
 /*!\brief SMP row-major dense matrix/column-major dense matrix multiplication threshold.
-// \ingroup config
+// \ingroup system
 //
 // This debug value is used instead of the BLAZE_SMP_DMATTDMATMULT_THRESHOLD while the Blaze
 // debug mode is active. It specifies when a row-major dense matrix/column-major dense matrix
@@ -745,7 +745,7 @@ constexpr size_t SMP_DMATTDMATMULT_DEBUG_THRESHOLD = 256UL;
 
 //*************************************************************************************************
 /*!\brief SMP column-major dense matrix/row-major dense matrix multiplication threshold.
-// \ingroup config
+// \ingroup system
 //
 // This debug value is used instead of the BLAZE_SMP_TDMATDMATMULT_THRESHOLD while the Blaze
 // debug mode is active. It specifies when a column-major dense matrix/row-major dense matrix
@@ -759,7 +759,7 @@ constexpr size_t SMP_TDMATDMATMULT_DEBUG_THRESHOLD = 256UL;
 
 //*************************************************************************************************
 /*!\brief SMP column-major dense matrix/column-major dense matrix multiplication threshold.
-// \ingroup config
+// \ingroup system
 //
 // This debug value is used instead of the BLAZE_SMP_TDMATTDMATMULT_THRESHOLD while the
 // Blaze debug mode is active. It specifies when a column-major dense matrix/column-major dense
@@ -773,7 +773,7 @@ constexpr size_t SMP_TDMATTDMATMULT_DEBUG_THRESHOLD = 256UL;
 
 //*************************************************************************************************
 /*!\brief SMP row-major dense matrix/row-major sparse matrix multiplication threshold.
-// \ingroup config
+// \ingroup system
 //
 // This debug value is used instead of the BLAZE_SMP_DMATSMATMULT_THRESHOLD while the Blaze
 // debug mode is active. It specifies when a row-major dense matrix/row-major sparse matrix
@@ -787,7 +787,7 @@ constexpr size_t SMP_DMATSMATMULT_DEBUG_THRESHOLD = 256UL;
 
 //*************************************************************************************************
 /*!\brief SMP row-major dense matrix/column-major sparse matrix multiplication threshold.
-// \ingroup config
+// \ingroup system
 //
 // This debug value is used instead of the BLAZE_SMP_DMATTSMATMULT_THRESHOLD while the Blaze
 // debug mode is active. It specifies when a row-major dense matrix/column-major sparse matrix
@@ -801,7 +801,7 @@ constexpr size_t SMP_DMATTSMATMULT_DEBUG_THRESHOLD = 256UL;
 
 //*************************************************************************************************
 /*!\brief SMP column-major dense matrix/row-major sparse matrix multiplication threshold.
-// \ingroup config
+// \ingroup system
 //
 // This debug value is used instead of the BLAZE_SMP_TDMATSMATMULT_THRESHOLD while the Blaze
 // debug mode is active. It specifies when a column-major dense matrix/row-major sparse matrix
@@ -815,7 +815,7 @@ constexpr size_t SMP_TDMATSMATMULT_DEBUG_THRESHOLD = 256UL;
 
 //*************************************************************************************************
 /*!\brief SMP column-major dense matrix/column-major sparse matrix multiplication threshold.
-// \ingroup config
+// \ingroup system
 //
 // This debug value is used instead of the BLAZE_SMP_TDMATTSMATMULT_THRESHOLD while the Blaze
 // debug mode is active. It specifies when a column-major dense matrix/column-major sparse matrix
@@ -829,7 +829,7 @@ constexpr size_t SMP_TDMATTSMATMULT_DEBUG_THRESHOLD = 256UL;
 
 //*************************************************************************************************
 /*!\brief SMP row-major sparse matrix/row-major dense matrix multiplication threshold.
-// \ingroup config
+// \ingroup system
 //
 // This debug value is used instead of the BLAZE_SMP_SMATDMATMULT_THRESHOLD while the Blaze
 // debug mode is active. It specifies when a row-major sparse matrix/row-major dense matrix
@@ -843,7 +843,7 @@ constexpr size_t SMP_SMATDMATMULT_DEBUG_THRESHOLD = 256UL;
 
 //*************************************************************************************************
 /*!\brief SMP row-major sparse matrix/column-major dense matrix multiplication threshold.
-// \ingroup config
+// \ingroup system
 //
 // This debug value is used instead of the BLAZE_SMP_SMATTDMATMULT_THRESHOLD while the Blaze
 // debug mode is active. It specifies when a row-major sparse matrix/column-major dense matrix
@@ -857,7 +857,7 @@ constexpr size_t SMP_SMATTDMATMULT_DEBUG_THRESHOLD = 256UL;
 
 //*************************************************************************************************
 /*!\brief SMP column-major sparse matrix/row-major dense matrix multiplication threshold.
-// \ingroup config
+// \ingroup system
 //
 // This debug value is used instead of the BLAZE_SMP_TSMATDMATMULT_THRESHOLD while the Blaze
 // debug mode is active. It specifies when a column-major sparse matrix/row-major dense matrix
@@ -871,7 +871,7 @@ constexpr size_t SMP_TSMATDMATMULT_DEBUG_THRESHOLD = 256UL;
 
 //*************************************************************************************************
 /*!\brief SMP column-major sparse matrix/column-major dense matrix multiplication threshold.
-// \ingroup config
+// \ingroup system
 //
 // This debug value is used instead of the BLAZE_SMP_TSMATTDMATMULT_THRESHOLD while the Blaze
 // debug mode is active. It specifies when a column-major sparse matrix/column-major dense matrix
@@ -885,7 +885,7 @@ constexpr size_t SMP_TSMATTDMATMULT_DEBUG_THRESHOLD = 256UL;
 
 //*************************************************************************************************
 /*!\brief SMP row-major sparse matrix/row-major sparse matrix multiplication threshold.
-// \ingroup config
+// \ingroup system
 //
 // This debug value is used instead of the BLAZE_SMP_SMATSMATMULT_THRESHOLD while the Blaze
 // debug mode is active. It specifies when a row-major sparse matrix/row-major sparse matrix
@@ -899,7 +899,7 @@ constexpr size_t SMP_SMATSMATMULT_DEBUG_THRESHOLD = 256UL;
 
 //*************************************************************************************************
 /*!\brief SMP row-major sparse matrix/column-major sparse matrix multiplication threshold.
-// \ingroup config
+// \ingroup system
 //
 // This debug value is used instead of the BLAZE_SMP_SMATTSMATMULT_THRESHOLD while the Blaze
 // debug mode is active. It specifies when a row-major sparse matrix/column-major sparse matrix
@@ -913,7 +913,7 @@ constexpr size_t SMP_SMATTSMATMULT_DEBUG_THRESHOLD = 256UL;
 
 //*************************************************************************************************
 /*!\brief SMP column-major sparse matrix/row-major sparse matrix multiplication threshold.
-// \ingroup config
+// \ingroup system
 //
 // This debug value is used instead of the BLAZE_SMP_TSMATSMATMULT_THRESHOLD while the Blaze
 // debug mode is active. It specifies when a column-major sparse matrix/row-major sparse matrix
@@ -927,7 +927,7 @@ constexpr size_t SMP_TSMATSMATMULT_DEBUG_THRESHOLD = 256UL;
 
 //*************************************************************************************************
 /*!\brief SMP column-major sparse matrix/column-major sparse matrix multiplication threshold.
-// \ingroup config
+// \ingroup system
 //
 // This debug value is used instead of the BLAZE_SMP_TSMATTSMATMULT_THRESHOLD while the Blaze
 // debug mode is active. It specifies when a column-major sparse matrix/column-major sparse matrix
@@ -941,7 +941,7 @@ constexpr size_t SMP_TSMATTSMATMULT_DEBUG_THRESHOLD = 256UL;
 
 //*************************************************************************************************
 /*!\brief SMP dense matrix reduction threshold.
-// \ingroup config
+// \ingroup system
 //
 // This debug value is used instead of the BLAZE_SMP_DMATREDUCE_THRESHOLD while the Blaze
 // debug mode is active. It specifies when a dense matrix reduction can be executed in parallel.
@@ -955,7 +955,7 @@ constexpr size_t SMP_DMATREDUCE_DEBUG_THRESHOLD = 16UL;
 
 //*************************************************************************************************
 /*!\brief SMP sparse matrix reduction threshold.
-// \ingroup config
+// \ingroup system
 //
 // This debug value is used instead of the BLAZE_SMP_SMATREDUCE_THRESHOLD while the Blaze
 // debug mode is active. It specifies when a sparse matrix reduction can be executed in parallel.
