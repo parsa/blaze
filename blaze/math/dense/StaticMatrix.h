@@ -153,8 +153,12 @@ namespace blaze {
 // via the seven template parameters:
 
    \code
+   namespace blaze {
+
    template< typename Type, size_t M, size_t N, bool SO, AlignmentFlag AF, PaddingFlag PF, typename Tag >
    class StaticMatrix;
+
+   } // namespace blaze
    \endcode
 
 //  - Type: specifies the type of the matrix elements. StaticMatrix can be used with any
@@ -162,15 +166,16 @@ namespace blaze {
 //  - M   : specifies the total number of rows of the matrix.
 //  - N   : specifies the total number of columns of the matrix. Note that it is expected
 //          that StaticMatrix is only used for tiny and small matrices.
-//  - SO  : specifies the storage order (blaze::rowMajor, blaze::columnMajor) of the matrix.
-//          The default value is blaze::rowMajor.
+//  - SO  : specifies the storage order (\c blaze::rowMajor, \c blaze::columnMajor) of the matrix.
+//          The default value is \c blaze::defaultStorageOrder.
 //  - AF  : specifies whether the first element of every row/column is properly aligned with
 //          respect to the available instruction set (SSE, AVX, ...). Possible values are
-//          \a blaze::aligned and \a blaze::unaligned. The default value is \a blaze::aligned.
+//          \c blaze::aligned and \c blaze::unaligned. The default value is
+//          \c blaze::defaultAlignmentFlag.
 //  - PF  : specifies whether every row/column of the matrix should be padded to maximize the
-//          efficiency of vectorized operations. Possible values are \a blaze::padded and
-//          \a blaze::unpadded. The default value is \a blaze::padded.
-//  - Tag : optional type parameter to tag the matrix. The default type is \a blaze::Group0.
+//          efficiency of vectorized operations. Possible values are \c blaze::padded and
+//          \c blaze::unpadded. The default value is \c blaze::defaultPaddingFlag.
+//  - Tag : optional type parameter to tag the matrix. The default type is \c blaze::Group0.
 //          See \ref grouping_tagging for details.
 //
 // Depending on the storage order, the matrix elements are either stored in a row-wise fashion

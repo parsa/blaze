@@ -118,14 +118,18 @@ namespace blaze {
 // storage order of the matrix can be specified via the three template parameters:
 
    \code
+   namespace blaze {
+
    template< typename Type, bool SO, typename Tag >
    class ZeroMatrix;
+
+   } // namespace blaze
    \endcode
 
 //  - Type: specifies the type of the matrix elements. ZeroMatrix can be used with any
 //          non-cv-qualified, non-reference, non-pointer element type.
 //  - SO  : specifies the storage order (blaze::rowMajor, blaze::columnMajor) of the matrix.
-//          The default value is blaze::rowMajor.
+//          The default value is blaze::defaultStorageOrder.
 //  - Tag : optional type parameter to tag the matrix. The default type is \a blaze::Group0.
 //          See \ref grouping_tagging for details.
 //

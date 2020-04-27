@@ -122,15 +122,19 @@ namespace blaze {
 // can be specified via the three template parameters:
 
    \code
+   namespace blaze {
+
    template< typename Type, bool SO, typename Tag >
    class UniformMatrix;
+
+   } // namespace blaze
    \endcode
 
 //  - Type: specifies the type of the matrix elements. UniformMatrix can be used with any
 //          non-cv-qualified, non-reference, non-pointer element type.
-//  - SO  : specifies the storage order (blaze::rowMajor, blaze::columnMajor) of the matrix.
-//          The default value is blaze::rowMajor.
-//  - Tag : optional type parameter to tag the matrix. The default type is \a blaze::Group0.
+//  - SO  : specifies the storage order (\c blaze::rowMajor, \c blaze::columnMajor) of the matrix.
+//          The default value is \c blaze::defaultStorageOrder.
+//  - Tag : optional type parameter to tag the matrix. The default type is \c blaze::Group0.
 //          See \ref grouping_tagging for details.
 //
 // Depending on the storage order, the matrix elements are either stored in a row-wise fashion

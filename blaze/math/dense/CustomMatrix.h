@@ -141,21 +141,25 @@ namespace blaze {
 // of the matrix can be specified via the following five template parameters:
 
    \code
+   namespace blaze {
+
    template< typename Type, AlignmentFlag AF, PaddingFlag PF, bool SO, typename Tag >
    class CustomMatrix;
+
+   } // namespace blaze
    \endcode
 
 //  - Type: specifies the type of the matrix elements. CustomMatrix can be used with any
 //          non-cv-qualified, non-reference, non-pointer element type.
 //  - AF  : specifies whether the represented, external arrays are properly aligned with
-//          respect to the available instruction set (SSE, AVX, ...) or not (\a blaze::aligned
-//          or \a blaze::unaligned).
+//          respect to the available instruction set (SSE, AVX, ...) or not (\c blaze::aligned
+//          or \c blaze::unaligned).
 //  - PF  : specified whether the represented, external arrays are properly padded with
-//          respect to the available instruction set (SSE, AVX, ...) or not (\a blaze::padded
-//          or \a blaze::unpadded).
-//  - SO  : specifies the storage order (blaze::rowMajor, blaze::columnMajor) of the matrix.
-//          The default value is blaze::rowMajor.
-//  - Tag : optional type parameter to tag the matrix. The default type is \a blaze::Group0.
+//          respect to the available instruction set (SSE, AVX, ...) or not (\c blaze::padded
+//          or \c blaze::unpadded).
+//  - SO  : specifies the storage order (\c blaze::rowMajor, \c blaze::columnMajor) of the
+//          matrix. The default value is \c blaze::defaultStorageOrder.
+//  - Tag : optional type parameter to tag the matrix. The default type is \c blaze::Group0.
 //          See \ref grouping_tagging for details.
 //
 // The following examples give an impression of several possible types of custom matrices:
@@ -258,7 +262,7 @@ namespace blaze {
 
 // \n \subsection custommatrix_alignment Alignment
 //
-// In case the custom matrix is specified as \a aligned the passed array must adhere to some
+// In case the custom matrix is specified as \c aligned the passed array must adhere to some
 // alignment restrictions based on the alignment requirements of the used data type and the
 // used instruction set (SSE, AVX, ...). The restriction applies to the first element of each
 // row/column: In case of a row-major matrix the first element of each row must be properly
@@ -283,7 +287,7 @@ namespace blaze {
 // In the example, the row-major matrix has six columns. However, since with AVX eight integer
 // values are loaded together the matrix is padded with two additional elements. This guarantees
 // that the first element of each row is 32-bit aligned. In case the alignment requirements are
-// violated, a \a std::invalid_argument exception is thrown.
+// violated, a \c std::invalid_argument exception is thrown.
 //
 // \n \subsection custommatrix_padding Padding
 //
@@ -352,7 +356,7 @@ namespace blaze {
 // vector width. In case of an unaligned padded matrix the number of padding elements can be
 // greater or equal the number of padding elements of an aligned padded custom matrix. In case
 // the padding is insufficient with respect to the available instruction set, a
-// \a std::invalid_argument exception is thrown.
+// \c std::invalid_argument exception is thrown.
 //
 //
 // \n \section custommatrix_arithmetic_operations Arithmetic Operations

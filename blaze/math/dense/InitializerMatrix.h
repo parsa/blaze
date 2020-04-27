@@ -81,13 +81,17 @@ namespace blaze {
 // via the two template parameters:
 
    \code
+   namespace blaze {
+
    template< typename Type, typename Tag >
    class InitializerMatrix;
+
+   } // namespace blaze
    \endcode
 
 //  - Type: specifies the type of the matrix elements. InitializerMatrix can be used with any
 //          non-cv-qualified, non-reference, non-pointer element type.
-//  - Tag : optional type parameter to tag the matrix. The default type is \a blaze::Group0.
+//  - Tag : optional type parameter to tag the matrix. The default type is \c blaze::Group0.
 //          See \ref grouping_tagging for details.
 //
 // On construction, an InitializerMatrix is immediately bound to an initializer list:
