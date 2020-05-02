@@ -43,7 +43,6 @@
 #include <utility>
 #include <blaze/system/Inline.h>
 #include <blaze/util/EnableIf.h>
-#include <blaze/util/typetraits/IsBuiltin.h>
 #include <blaze/util/typetraits/IsNumeric.h>
 
 
@@ -78,7 +77,7 @@ namespace blaze {
 //       https://en.wikipedia.org/wiki/Complex_conjugate
 */
 template< typename T >
-BLAZE_ALWAYS_INLINE constexpr EnableIf_t< IsBuiltin_v<T>, T > conj( T a ) noexcept
+BLAZE_ALWAYS_INLINE constexpr EnableIf_t< IsNumeric_v<T>, T > conj( T a ) noexcept
 {
    return a;
 }
