@@ -42,8 +42,7 @@
 
 #include <blaze/system/Inline.h>
 #include <blaze/util/EnableIf.h>
-#include <blaze/util/typetraits/IsBuiltin.h>
-#include <blaze/util/typetraits/IsComplex.h>
+#include <blaze/util/typetraits/IsNumeric.h>
 
 
 namespace blaze {
@@ -67,7 +66,7 @@ namespace blaze {
 // default behavior is not changed.
 */
 template< typename T >
-BLAZE_ALWAYS_INLINE constexpr EnableIf_t< IsBuiltin_v<T> || IsComplex_v<T>, T >
+BLAZE_ALWAYS_INLINE constexpr EnableIf_t< IsNumeric_v<T>, T >
    evaluate( const T& a ) noexcept
 {
    return a;
