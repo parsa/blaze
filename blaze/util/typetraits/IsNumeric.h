@@ -42,9 +42,9 @@
 
 #include <blaze/util/Complex.h>
 #include <blaze/util/IntegralConstant.h>
+#include <blaze/util/typetraits/IsArithmetic.h>
 #include <blaze/util/typetraits/IsBoolean.h>
-#include <blaze/util/typetraits/IsBuiltin.h>
-#include <blaze/util/typetraits/IsVoid.h>
+#include <blaze/util/typetraits/IsComplex.h>
 
 
 namespace blaze {
@@ -68,7 +68,7 @@ namespace blaze {
 
    \code
    blaze::IsNumeric<int>::value                // Evaluates to 'true' (int is a numeric data type)
-   blaze::IsNumeric<const double>::Type        // Results in TrueType (float is a numeric data type)
+   blaze::IsNumeric<const double>::Type        // Results in TrueType (double is a numeric data type)
    blaze::IsNumeric<volatile complex<float> >  // Is derived from TrueType (complex<float> is a numeric data type)
    blaze::IsNumeric<void>::value               // Evaluates to 'false' (void is not a numeric data type)
    blaze::IsNumeric<bool>::Type                // Results in FalseType (bool is not a numeric data type)
@@ -77,16 +77,16 @@ namespace blaze {
 */
 template< typename T >
 struct IsNumeric
-   : public BoolConstant< IsBuiltin_v<T> && !IsBoolean_v<T> && !IsVoid_v<T> >
+   : public BoolConstant< ( IsArithmetic_v<T> && !IsBoolean_v<T> ) || IsComplex_v<T> >
 {};
 //*************************************************************************************************
 
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-//! Specialization of the IsNumeric type trait for the plain 'complex' type.
+//! Specialization of the IsNumeric type trait for 'const' qualified types.
 template< typename T >
-struct IsNumeric< complex<T> >
+struct IsNumeric< const T >
    : public IsNumeric<T>::Type
 {};
 /*! \endcond */
@@ -95,9 +95,9 @@ struct IsNumeric< complex<T> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-//! Specialization of the IsNumeric type trait for 'const complex'.
+//! Specialization of the IsNumeric type trait for 'volatile' qualified types.
 template< typename T >
-struct IsNumeric< const complex<T> >
+struct IsNumeric< volatile T >
    : public IsNumeric<T>::Type
 {};
 /*! \endcond */
@@ -106,20 +106,9 @@ struct IsNumeric< const complex<T> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-//! Specialization of the IsNumeric type trait for 'volatile complex'.
+//! Specialization of the IsNumeric type trait for 'const volatile' qualified types.
 template< typename T >
-struct IsNumeric< volatile complex<T> >
-   : public IsNumeric<T>::Type
-{};
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-//! Specialization of the IsNumeric type trait for 'const volatile complex'.
-template< typename T >
-struct IsNumeric< const volatile complex<T> >
+struct IsNumeric< const volatile T >
    : public IsNumeric<T>::Type
 {};
 /*! \endcond */
