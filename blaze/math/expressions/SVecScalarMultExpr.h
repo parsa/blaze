@@ -52,6 +52,8 @@
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/expressions/SparseVector.h>
 #include <blaze/math/expressions/VecScalarMultExpr.h>
+#include <blaze/math/shims/Invert.h>
+#include <blaze/math/shims/IsZero.h>
 #include <blaze/math/shims/Serial.h>
 #include <blaze/math/sparse/ValueIndexPair.h>
 #include <blaze/math/traits/MultTrait.h>
@@ -62,7 +64,6 @@
 #include <blaze/math/typetraits/UnderlyingBuiltin.h>
 #include <blaze/system/MacroDisable.h>
 #include <blaze/util/Assert.h>
-#include <blaze/util/constraints/FloatingPoint.h>
 #include <blaze/util/constraints/Numeric.h>
 #include <blaze/util/constraints/SameType.h>
 #include <blaze/util/EnableIf.h>
@@ -968,14 +969,10 @@ template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
 inline decltype(auto) normalize( const SparseVector<VT,TF>& vec )
 {
-   using ElementType = ElementType_t<VT>;
+   const auto len ( length( ~vec ) );
+   auto ilen( !isZero(len) ? inv(len) : len );
 
-   BLAZE_CONSTRAINT_MUST_BE_FLOATING_POINT_TYPE( ElementType );
-
-   const ElementType len ( length( ~vec ) );
-   const ElementType ilen( ( len != ElementType(0) )?( ElementType(1) / len ):( 0 ) );
-
-   using ReturnType = const SVecScalarMultExpr<VT,ElementType,TF>;
+   using ReturnType = const SVecScalarMultExpr<VT,decltype(ilen),TF>;
    return ReturnType( ~vec, ilen );
 }
 //*************************************************************************************************
