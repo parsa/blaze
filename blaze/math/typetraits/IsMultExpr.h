@@ -62,10 +62,7 @@ struct IsMultExprHelper
 {
  private:
    //**********************************************************************************************
-   static T* create();
-
-   template< typename U >
-   static TrueType test( const MultExpr<U>* );
+   static const volatile T* create();
 
    template< typename U >
    static TrueType test( const volatile MultExpr<U>* );

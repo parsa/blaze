@@ -62,10 +62,7 @@ struct IsCrossExprHelper
 {
  private:
    //**********************************************************************************************
-   static T* create();
-
-   template< typename VT >
-   static TrueType test( const CrossExpr<VT>* );
+   static const volatile T* create();
 
    template< typename VT >
    static TrueType test( const volatile CrossExpr<VT>* );

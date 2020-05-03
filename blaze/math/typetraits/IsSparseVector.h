@@ -62,10 +62,7 @@ struct IsSparseVectorHelper
 {
  private:
    //**********************************************************************************************
-   static T* create();
-
-   template< typename VT, bool TF >
-   static TrueType test( const SparseVector<VT,TF>* );
+   static const volatile T* create();
 
    template< typename VT, bool TF >
    static TrueType test( const volatile SparseVector<VT,TF>* );

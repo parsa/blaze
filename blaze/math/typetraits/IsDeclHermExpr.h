@@ -62,10 +62,7 @@ struct IsDeclHermExprHelper
 {
  private:
    //**********************************************************************************************
-   static T* create();
-
-   template< typename MT >
-   static TrueType test( const DeclHermExpr<MT>* );
+   static const volatile T* create();
 
    template< typename MT >
    static TrueType test( const volatile DeclHermExpr<MT>* );

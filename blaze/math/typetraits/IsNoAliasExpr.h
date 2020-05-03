@@ -62,10 +62,7 @@ struct IsNoAliasExprHelper
 {
  private:
    //**********************************************************************************************
-   static T* create();
-
-   template< typename U >
-   static TrueType test( const NoAliasExpr<U>* );
+   static const volatile T* create();
 
    template< typename U >
    static TrueType test( const volatile NoAliasExpr<U>* );

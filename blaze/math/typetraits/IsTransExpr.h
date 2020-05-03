@@ -62,10 +62,7 @@ struct IsTransExprHelper
 {
  private:
    //**********************************************************************************************
-   static T* create();
-
-   template< typename U >
-   static TrueType test( const TransExpr<U>* );
+   static const volatile T* create();
 
    template< typename U >
    static TrueType test( const volatile TransExpr<U>* );

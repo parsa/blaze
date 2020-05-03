@@ -62,10 +62,7 @@ struct IsDenseMatrixHelper
 {
  private:
    //**********************************************************************************************
-   static T* create();
-
-   template< typename MT, bool SO >
-   static TrueType test( const DenseMatrix<MT,SO>* );
+   static const volatile T* create();
 
    template< typename MT, bool SO >
    static TrueType test( const volatile DenseMatrix<MT,SO>* );

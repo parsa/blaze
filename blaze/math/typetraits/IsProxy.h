@@ -62,10 +62,7 @@ struct IsProxyHelper
 {
  private:
    //**********************************************************************************************
-   static T* create();
-
-   template< typename PT, typename RT >
-   static TrueType test( const Proxy<PT,RT>* );
+   static const volatile T* create();
 
    template< typename PT, typename RT >
    static TrueType test( const volatile Proxy<PT,RT>* );

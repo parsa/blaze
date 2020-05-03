@@ -62,10 +62,7 @@ struct IsDeclLowExprHelper
 {
  private:
    //**********************************************************************************************
-   static T* create();
-
-   template< typename MT >
-   static TrueType test( const DeclLowExpr<MT>* );
+   static const volatile T* create();
 
    template< typename MT >
    static TrueType test( const volatile DeclLowExpr<MT>* );

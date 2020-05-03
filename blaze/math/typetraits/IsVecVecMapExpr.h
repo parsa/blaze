@@ -62,10 +62,7 @@ struct IsVecVecMapExprHelper
 {
  private:
    //**********************************************************************************************
-   static T* create();
-
-   template< typename VT >
-   static TrueType test( const VecVecMapExpr<VT>* );
+   static const volatile T* create();
 
    template< typename VT >
    static TrueType test( const volatile VecVecMapExpr<VT>* );

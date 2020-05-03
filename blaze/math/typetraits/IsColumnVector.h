@@ -63,10 +63,7 @@ struct IsColumnVectorHelper
 {
  private:
    //**********************************************************************************************
-   static T* create();
-
-   template< typename VT >
-   static TrueType test( const Vector<VT,columnVector>* );
+   static const volatile T* create();
 
    template< typename VT >
    static TrueType test( const volatile Vector<VT,columnVector>* );

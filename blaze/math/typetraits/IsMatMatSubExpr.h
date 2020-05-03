@@ -62,10 +62,7 @@ struct IsMatMatSubExprHelper
 {
  private:
    //**********************************************************************************************
-   static T* create();
-
-   template< typename MT >
-   static TrueType test( const MatMatSubExpr<MT>* );
+   static const volatile T* create();
 
    template< typename MT >
    static TrueType test( const volatile MatMatSubExpr<MT>* );

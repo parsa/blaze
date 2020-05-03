@@ -62,10 +62,7 @@ struct IsTVecMatMultExprHelper
 {
  private:
    //**********************************************************************************************
-   static T* create();
-
-   template< typename VT >
-   static TrueType test( const TVecMatMultExpr<VT>* );
+   static const volatile T* create();
 
    template< typename VT >
    static TrueType test( const volatile TVecMatMultExpr<VT>* );

@@ -62,10 +62,7 @@ struct IsUnaryMapExprHelper
 {
  private:
    //**********************************************************************************************
-   static T* create();
-
-   template< typename U >
-   static TrueType test( const UnaryMapExpr<U>* );
+   static const volatile T* create();
 
    template< typename U >
    static TrueType test( const volatile UnaryMapExpr<U>* );

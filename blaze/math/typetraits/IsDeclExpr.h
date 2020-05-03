@@ -62,10 +62,7 @@ struct IsDeclExprHelper
 {
  private:
    //**********************************************************************************************
-   static T* create();
-
-   template< typename U >
-   static TrueType test( const DeclExpr<U>* );
+   static const volatile T* create();
 
    template< typename U >
    static TrueType test( const volatile DeclExpr<U>* );

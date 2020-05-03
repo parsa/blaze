@@ -62,10 +62,7 @@ struct IsSchurExprHelper
 {
  private:
    //**********************************************************************************************
-   static T* create();
-
-   template< typename MT >
-   static TrueType test( const SchurExpr<MT>* );
+   static const volatile T* create();
 
    template< typename MT >
    static TrueType test( const volatile SchurExpr<MT>* );

@@ -62,10 +62,7 @@ struct IsExpandExprHelper
 {
  private:
    //**********************************************************************************************
-   static T* create();
-
-   template< typename U >
-   static TrueType test( const ExpandExpr<U>* );
+   static const volatile T* create();
 
    template< typename U >
    static TrueType test( const volatile ExpandExpr<U>* );

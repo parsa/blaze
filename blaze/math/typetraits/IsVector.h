@@ -62,10 +62,7 @@ struct IsVectorHelper
 {
  private:
    //**********************************************************************************************
-   static T* create();
-
-   template< typename VT, bool TF >
-   static TrueType test( const Vector<VT,TF>* );
+   static const volatile T* create();
 
    template< typename VT, bool TF >
    static TrueType test( const volatile Vector<VT,TF>* );

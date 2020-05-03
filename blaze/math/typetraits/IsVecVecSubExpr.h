@@ -62,10 +62,7 @@ struct IsVecVecSubExprHelper
 {
  private:
    //**********************************************************************************************
-   static T* create();
-
-   template< typename VT >
-   static TrueType test( const VecVecSubExpr<VT>* );
+   static const volatile T* create();
 
    template< typename VT >
    static TrueType test( const volatile VecVecSubExpr<VT>* );

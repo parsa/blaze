@@ -62,10 +62,7 @@ struct IsMatInvExprHelper
 {
  private:
    //**********************************************************************************************
-   static T* create();
-
-   template< typename MT >
-   static TrueType test( const MatInvExpr<MT>* );
+   static const volatile T* create();
 
    template< typename MT >
    static TrueType test( const volatile MatInvExpr<MT>* );

@@ -62,10 +62,7 @@ struct IsMatReduceExprHelper
 {
  private:
    //**********************************************************************************************
-   static T* create();
-
-   template< typename U, ReductionFlag N >
-   static TrueType test( const MatReduceExpr<U,N>* );
+   static const volatile T* create();
 
    template< typename U, ReductionFlag N >
    static TrueType test( const volatile MatReduceExpr<U,N>* );

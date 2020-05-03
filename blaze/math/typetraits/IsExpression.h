@@ -62,10 +62,7 @@ struct IsExpressionHelper
 {
  private:
    //**********************************************************************************************
-   static T* create();
-
-   template< typename U >
-   static TrueType test( const Expression<U>* );
+   static const volatile T* create();
 
    template< typename U >
    static TrueType test( const volatile Expression<U>* );

@@ -62,10 +62,7 @@ struct IsVecNoAliasExprHelper
 {
  private:
    //**********************************************************************************************
-   static T* create();
-
-   template< typename VT >
-   static TrueType test( const VecNoAliasExpr<VT>* );
+   static const volatile T* create();
 
    template< typename VT >
    static TrueType test( const volatile VecNoAliasExpr<VT>* );

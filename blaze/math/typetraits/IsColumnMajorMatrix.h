@@ -63,10 +63,7 @@ struct IsColumnMajorMatrixHelper
 {
  private:
    //**********************************************************************************************
-   static T* create();
-
-   template< typename MT >
-   static TrueType test( const Matrix<MT,columnMajor>* );
+   static const volatile T* create();
 
    template< typename MT >
    static TrueType test( const volatile Matrix<MT,columnMajor>* );

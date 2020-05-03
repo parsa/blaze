@@ -62,10 +62,7 @@ struct IsVecScalarDivExprHelper
 {
  private:
    //**********************************************************************************************
-   static T* create();
-
-   template< typename VT >
-   static TrueType test( const VecScalarDivExpr<VT>* );
+   static const volatile T* create();
 
    template< typename VT >
    static TrueType test( const volatile VecScalarDivExpr<VT>* );

@@ -62,10 +62,7 @@ struct IsModificationHelper
 {
  private:
    //**********************************************************************************************
-   static T* create();
-
-   template< typename U >
-   static TrueType test( const Modification<U>* );
+   static const volatile T* create();
 
    template< typename U >
    static TrueType test( const volatile Modification<U>* );

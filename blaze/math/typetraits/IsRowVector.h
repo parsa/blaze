@@ -63,10 +63,7 @@ struct IsRowVectorHelper
 {
  private:
    //**********************************************************************************************
-   static T* create();
-
-   template< typename VT >
-   static TrueType test( const Vector<VT,rowVector>* );
+   static const volatile T* create();
 
    template< typename VT >
    static TrueType test( const volatile Vector<VT,rowVector>* );

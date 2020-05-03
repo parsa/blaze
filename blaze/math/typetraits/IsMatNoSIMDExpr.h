@@ -62,10 +62,7 @@ struct IsMatNoSIMDExprHelper
 {
  private:
    //**********************************************************************************************
-   static T* create();
-
-   template< typename MT >
-   static TrueType test( const MatNoSIMDExpr<MT>* );
+   static const volatile T* create();
 
    template< typename MT >
    static TrueType test( const volatile MatNoSIMDExpr<MT>* );

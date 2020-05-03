@@ -62,10 +62,7 @@ struct IsSparseMatrixHelper
 {
  private:
    //**********************************************************************************************
-   static T* create();
-
-   template< typename MT, bool SO >
-   static TrueType test( const SparseMatrix<MT,SO>* );
+   static const volatile T* create();
 
    template< typename MT, bool SO >
    static TrueType test( const volatile SparseMatrix<MT,SO>* );

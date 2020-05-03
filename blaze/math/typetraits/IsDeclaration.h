@@ -62,10 +62,7 @@ struct IsDeclarationHelper
 {
  private:
    //**********************************************************************************************
-   static T* create();
-
-   template< typename U >
-   static TrueType test( const Declaration<U>* );
+   static const volatile T* create();
 
    template< typename U >
    static TrueType test( const volatile Declaration<U>* );

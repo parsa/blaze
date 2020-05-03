@@ -62,10 +62,7 @@ struct IsSolveExprHelper
 {
  private:
    //**********************************************************************************************
-   static T* create();
-
-   template< typename VT >
-   static TrueType test( const SolveExpr<VT>* );
+   static const volatile T* create();
 
    template< typename MT >
    static TrueType test( const volatile SolveExpr<MT>* );

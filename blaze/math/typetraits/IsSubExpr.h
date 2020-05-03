@@ -62,10 +62,7 @@ struct IsSubExprHelper
 {
  private:
    //**********************************************************************************************
-   static T* create();
-
-   template< typename U >
-   static TrueType test( const SubExpr<U>* );
+   static const volatile T* create();
 
    template< typename U >
    static TrueType test( const volatile SubExpr<U>* );

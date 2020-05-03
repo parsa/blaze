@@ -62,10 +62,7 @@ struct IsSIMDPackHelper
 {
  private:
    //**********************************************************************************************
-   static T* create();
-
-   template< typename U >
-   static TrueType test( const SIMDPack<U>* );
+   static const volatile T* create();
 
    template< typename U >
    static TrueType test( const volatile SIMDPack<U>* );

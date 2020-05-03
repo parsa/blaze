@@ -62,10 +62,7 @@ struct IsNoSIMDExprHelper
 {
  private:
    //**********************************************************************************************
-   static T* create();
-
-   template< typename U >
-   static TrueType test( const NoSIMDExpr<U>* );
+   static const volatile T* create();
 
    template< typename U >
    static TrueType test( const volatile NoSIMDExpr<U>* );

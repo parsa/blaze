@@ -62,10 +62,7 @@ struct IsDenseVectorHelper
 {
  private:
    //**********************************************************************************************
-   static T* create();
-
-   template< typename VT, bool TF >
-   static TrueType test( const DenseVector<VT,TF>* );
+   static const volatile T* create();
 
    template< typename VT, bool TF >
    static TrueType test( const volatile DenseVector<VT,TF>* );

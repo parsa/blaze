@@ -62,10 +62,7 @@ struct IsBinaryMapExprHelper
 {
  private:
    //**********************************************************************************************
-   static T* create();
-
-   template< typename U >
-   static TrueType test( const BinaryMapExpr<U>* );
+   static const volatile T* create();
 
    template< typename U >
    static TrueType test( const volatile BinaryMapExpr<U>* );

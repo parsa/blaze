@@ -62,10 +62,7 @@ struct IsMatNoAliasExprHelper
 {
  private:
    //**********************************************************************************************
-   static T* create();
-
-   template< typename MT >
-   static TrueType test( const MatNoAliasExpr<MT>* );
+   static const volatile T* create();
 
    template< typename MT >
    static TrueType test( const volatile MatNoAliasExpr<MT>* );

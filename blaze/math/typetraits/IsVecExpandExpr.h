@@ -62,10 +62,7 @@ struct IsVecExpandExprHelper
 {
  private:
    //**********************************************************************************************
-   static T* create();
-
-   template< typename U, size_t... Es >
-   static TrueType test( const VecExpandExpr<U,Es...>* );
+   static const volatile T* create();
 
    template< typename U, size_t... Es >
    static TrueType test( const volatile VecExpandExpr<U,Es...>* );

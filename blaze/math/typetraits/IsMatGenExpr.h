@@ -62,10 +62,7 @@ struct IsMatGenExprHelper
 {
  private:
    //**********************************************************************************************
-   static T* create();
-
-   template< typename VT >
-   static TrueType test( const MatGenExpr<VT>* );
+   static const volatile T* create();
 
    template< typename VT >
    static TrueType test( const volatile MatGenExpr<VT>* );

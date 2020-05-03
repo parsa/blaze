@@ -62,10 +62,7 @@ struct IsMatrixHelper
 {
  private:
    //**********************************************************************************************
-   static T* create();
-
-   template< typename MT, bool SO >
-   static TrueType test( const Matrix<MT,SO>* );
+   static const volatile T* create();
 
    template< typename MT, bool SO >
    static TrueType test( const volatile Matrix<MT,SO>* );
