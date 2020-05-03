@@ -44,6 +44,7 @@
 #include <utility>
 #include <blaze/math/Aliases.h>
 #include <blaze/math/constraints/RequiresEvaluation.h>
+#include <blaze/math/constraints/Scalar.h>
 #include <blaze/math/constraints/SparseVector.h>
 #include <blaze/math/constraints/TransposeFlag.h>
 #include <blaze/math/constraints/Zero.h>
@@ -969,6 +970,8 @@ template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
 inline decltype(auto) normalize( const SparseVector<VT,TF>& vec )
 {
+   BLAZE_CONSTRAINT_MUST_BE_SCALAR_TYPE( ElementType_t<VT> );
+
    const auto len ( length( ~vec ) );
    auto ilen( !isZero(len) ? inv(len) : len );
 

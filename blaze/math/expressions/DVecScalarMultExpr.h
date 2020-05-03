@@ -45,6 +45,7 @@
 #include <blaze/math/Aliases.h>
 #include <blaze/math/constraints/DenseVector.h>
 #include <blaze/math/constraints/RequiresEvaluation.h>
+#include <blaze/math/constraints/Scalar.h>
 #include <blaze/math/constraints/TransposeFlag.h>
 #include <blaze/math/Exception.h>
 #include <blaze/math/expressions/Computation.h>
@@ -1149,6 +1150,8 @@ template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
 inline decltype(auto) normalize( const DenseVector<VT,TF>& vec )
 {
+   BLAZE_CONSTRAINT_MUST_BE_SCALAR_TYPE( ElementType_t<VT> );
+
    const auto len ( l2Norm( ~vec ) );
    auto ilen( !isZero(len) ? inv(len) : len );
 
