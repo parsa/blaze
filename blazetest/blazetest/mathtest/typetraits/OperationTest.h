@@ -92,6 +92,7 @@ class OperationTest
    void testIsPaddingEnabled();
    void testIsRowMajorMatrix();
    void testIsRowVector();
+   void testIsScalar();
    void testIsSIMDEnabled();
    void testIsStrictlyLower();
    void testIsStrictlyUpper();
