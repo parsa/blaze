@@ -40,9 +40,9 @@
 // Includes
 //*************************************************************************************************
 
+#include <blaze/math/typetraits/IsScalar.h>
 #include <blaze/system/Inline.h>
 #include <blaze/util/EnableIf.h>
-#include <blaze/util/typetraits/IsNumeric.h>
 
 
 namespace blaze {
@@ -66,7 +66,7 @@ namespace blaze {
 // default behavior is not changed.
 */
 template< typename T >
-BLAZE_ALWAYS_INLINE constexpr EnableIf_t< IsNumeric_v<T>, T >
+BLAZE_ALWAYS_INLINE constexpr EnableIf_t< IsScalar_v<T>, T >
    evaluate( const T& a ) noexcept
 {
    return a;

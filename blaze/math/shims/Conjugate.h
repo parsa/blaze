@@ -41,6 +41,7 @@
 //*************************************************************************************************
 
 #include <utility>
+#include <blaze/math/typetraits/IsScalar.h>
 #include <blaze/system/Inline.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/typetraits/IsNumeric.h>
@@ -76,8 +77,8 @@ namespace blaze {
 //
 //       https://en.wikipedia.org/wiki/Complex_conjugate
 */
-template< typename T >
-BLAZE_ALWAYS_INLINE constexpr EnableIf_t< IsNumeric_v<T>, T > conj( T a ) noexcept
+template< typename T, EnableIf_t< IsScalar_v<T> >* = nullptr >
+BLAZE_ALWAYS_INLINE constexpr const T& conj( const T& a ) noexcept
 {
    return a;
 }
@@ -139,8 +140,8 @@ BLAZE_ALWAYS_INLINE void conjugate( T& a ) noexcept( IsNumeric_v<T> )
 // \param b The second value/object to be swapped and conjugated.
 // \return void
 */
-template< typename T >
-BLAZE_ALWAYS_INLINE DisableIf_t< IsNumeric_v<T> > cswap_backend( T& a, T& b )
+template< typename T, DisableIf_t< IsNumeric_v<T> >* = nullptr >
+BLAZE_ALWAYS_INLINE void cswap_backend( T& a, T& b )
 {
    using std::swap;
 
@@ -161,8 +162,8 @@ BLAZE_ALWAYS_INLINE DisableIf_t< IsNumeric_v<T> > cswap_backend( T& a, T& b )
 // \param b The second value to be swapped and conjugated.
 // \return void
 */
-template< typename T >
-BLAZE_ALWAYS_INLINE EnableIf_t< IsNumeric_v<T> > cswap_backend( T& a, T& b ) noexcept
+template< typename T, EnableIf_t< IsNumeric_v<T> >* = nullptr >
+BLAZE_ALWAYS_INLINE void cswap_backend( T& a, T& b ) noexcept
 {
    const T tmp( a );
    a = conj( b );

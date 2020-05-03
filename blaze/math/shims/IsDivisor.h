@@ -41,9 +41,9 @@
 //*************************************************************************************************
 
 #include <blaze/math/shims/Equal.h>
+#include <blaze/math/typetraits/IsScalar.h>
 #include <blaze/system/Inline.h>
 #include <blaze/util/EnableIf.h>
-#include <blaze/util/typetraits/IsNumeric.h>
 
 
 namespace blaze {
@@ -75,10 +75,10 @@ namespace blaze {
    complex<double> c2( 0.0, 0.0 );  // isDivisor( c2 ) returns false
    \endcode
 */
-template< typename Type, typename = EnableIf_t< IsNumeric_v<Type> > >
+template< typename Type, EnableIf_t< IsScalar_v<Type> >* = nullptr >
 BLAZE_ALWAYS_INLINE bool isDivisor( const Type& v )
 {
-   return v != Type(0);
+   return v != Type{};
 }
 //*************************************************************************************************
 

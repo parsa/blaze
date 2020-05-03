@@ -75,8 +75,8 @@ namespace blaze {
 // types). The function returns \a true in case the given value is not a number (NaN). In all
 // other cases the function returns \a false.
 */
-template< typename T >
-BLAZE_ALWAYS_INLINE EnableIf_t< IsNumeric_v<T>, bool > isnan( T a ) noexcept
+template< typename T, EnableIf_t< IsNumeric_v<T> >* = nullptr >
+BLAZE_ALWAYS_INLINE bool isnan( T a ) noexcept
 {
    return a != a;
 }
