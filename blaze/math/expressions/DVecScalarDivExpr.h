@@ -45,6 +45,7 @@
 #include <blaze/math/Aliases.h>
 #include <blaze/math/constraints/DenseVector.h>
 #include <blaze/math/constraints/RequiresEvaluation.h>
+#include <blaze/math/constraints/Scalar.h>
 #include <blaze/math/constraints/TransposeFlag.h>
 #include <blaze/math/Exception.h>
 #include <blaze/math/expressions/Computation.h>
@@ -62,6 +63,7 @@
 #include <blaze/math/typetraits/IsInvertible.h>
 #include <blaze/math/typetraits/IsMultExpr.h>
 #include <blaze/math/typetraits/IsPadded.h>
+#include <blaze/math/typetraits/IsScalar.h>
 #include <blaze/math/typetraits/IsTemporary.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
 #include <blaze/math/typetraits/UnderlyingBuiltin.h>
@@ -73,7 +75,6 @@
 #include <blaze/system/Thresholds.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/FloatingPoint.h>
-#include <blaze/util/constraints/Numeric.h>
 #include <blaze/util/constraints/SameType.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/FunctionTrace.h>
@@ -994,7 +995,7 @@ class DVecScalarDivExpr
    /*! \cond BLAZE_INTERNAL */
    BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( VT );
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( VT, TF );
-   BLAZE_CONSTRAINT_MUST_BE_NUMERIC_TYPE( ST );
+   BLAZE_CONSTRAINT_MUST_BE_SCALAR_TYPE( ST );
    BLAZE_CONSTRAINT_MUST_NOT_BE_FLOATING_POINT_TYPE( ST );
    BLAZE_CONSTRAINT_MUST_NOT_BE_FLOATING_POINT_TYPE( ElementType );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ST, RightOperand );
@@ -1070,7 +1071,7 @@ struct DVecScalarDivExprHelper
 template< typename VT  // Type of the left-hand side dense vector
         , typename ST  // Type of the right-hand side scalar
         , bool TF      // Transpose flag
-        , EnableIf_t< IsNumeric_v<ST> >* = nullptr >
+        , EnableIf_t< IsScalar_v<ST> >* = nullptr >
 inline decltype(auto) operator/( const DenseVector<VT,TF>& vec, ST scalar )
 {
    BLAZE_FUNCTION_TRACE;
