@@ -53,6 +53,7 @@
 #include <blaze/math/shims/Pow2.h>
 #include <blaze/math/shims/Sqrt.h>
 #include <blaze/math/typetraits/IsRestricted.h>
+#include <blaze/math/typetraits/IsScalar.h>
 #include <blaze/math/typetraits/IsUniform.h>
 #include <blaze/math/typetraits/IsZero.h>
 #include <blaze/math/typetraits/UnderlyingBuiltin.h>
@@ -62,7 +63,6 @@
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsFloatingPoint.h>
-#include <blaze/util/typetraits/IsNumeric.h>
 #include <blaze/util/typetraits/RemoveReference.h>
 
 
@@ -79,51 +79,51 @@ namespace blaze {
 //@{
 template< typename T1, typename T2, bool TF >
 auto operator==( const DenseVector<T1,TF>& vec, T2 scalar )
-   -> EnableIf_t< IsNumeric_v<T2>, bool >;
+   -> EnableIf_t< IsScalar_v<T2>, bool >;
 
 template< typename T1, typename T2, bool TF >
 auto operator==( T1 scalar, const DenseVector<T2,TF>& vec )
-   -> EnableIf_t< IsNumeric_v<T1>, bool >;
+   -> EnableIf_t< IsScalar_v<T1>, bool >;
 
 template< typename T1, typename T2, bool TF >
 auto operator!=( const DenseVector<T1,TF>& vec, T2 scalar )
-   -> EnableIf_t< IsNumeric_v<T2>, bool >;
+   -> EnableIf_t< IsScalar_v<T2>, bool >;
 
 template< typename T1, typename T2, bool TF >
 auto operator!=( T1 scalar, const DenseVector<T2,TF>& vec )
-   -> EnableIf_t< IsNumeric_v<T1>, bool >;
+   -> EnableIf_t< IsScalar_v<T1>, bool >;
 
 template< typename VT, bool TF, typename ST >
 auto operator+=( DenseVector<VT,TF>& vec, ST scalar )
-   -> EnableIf_t< IsNumeric_v<ST>, VT& >;
+   -> EnableIf_t< IsScalar_v<ST>, VT& >;
 
 template< typename VT, bool TF, typename ST >
 auto operator+=( DenseVector<VT,TF>&& vec, ST scalar )
-   -> EnableIf_t< IsNumeric_v<ST>, VT& >;
+   -> EnableIf_t< IsScalar_v<ST>, VT& >;
 
 template< typename VT, bool TF, typename ST >
 auto operator-=( DenseVector<VT,TF>& vec, ST scalar )
-   -> EnableIf_t< IsNumeric_v<ST>, VT& >;
+   -> EnableIf_t< IsScalar_v<ST>, VT& >;
 
 template< typename VT, bool TF, typename ST >
 auto operator-=( DenseVector<VT,TF>&& vec, ST scalar )
-   -> EnableIf_t< IsNumeric_v<ST>, VT& >;
+   -> EnableIf_t< IsScalar_v<ST>, VT& >;
 
 template< typename VT, bool TF, typename ST >
 auto operator*=( DenseVector<VT,TF>& vec, ST scalar )
-   -> EnableIf_t< IsNumeric_v<ST>, VT& >;
+   -> EnableIf_t< IsScalar_v<ST>, VT& >;
 
 template< typename VT, bool TF, typename ST >
 auto operator*=( DenseVector<VT,TF>&& vec, ST scalar )
-   -> EnableIf_t< IsNumeric_v<ST>, VT& >;
+   -> EnableIf_t< IsScalar_v<ST>, VT& >;
 
 template< typename VT, bool TF, typename ST >
 auto operator/=( DenseVector<VT,TF>& vec, ST scalar )
-   -> EnableIf_t< IsNumeric_v<ST>, VT& >;
+   -> EnableIf_t< IsScalar_v<ST>, VT& >;
 
 template< typename VT, bool TF, typename ST >
 auto operator/=( DenseVector<VT,TF>&& vec, ST scalar )
-   -> EnableIf_t< IsNumeric_v<ST>, VT& >;
+   -> EnableIf_t< IsScalar_v<ST>, VT& >;
 
 template< typename VT, bool TF >
 VT& operator<<=( DenseVector<VT,TF>& vec, int count );
@@ -151,11 +151,11 @@ VT1& operator>>=( DenseVector<VT1,TF>&& lhs, const DenseVector<VT2,TF>& rhs );
 
 template< typename VT, bool TF, typename ST >
 auto operator&=( DenseVector<VT,TF>& vec, ST scalar )
-   -> EnableIf_t< IsNumeric_v<ST>, VT& >;
+   -> EnableIf_t< IsScalar_v<ST>, VT& >;
 
 template< typename VT, bool TF, typename ST >
 auto operator&=( DenseVector<VT,TF>&& vec, ST scalar )
-   -> EnableIf_t< IsNumeric_v<ST>, VT& >;
+   -> EnableIf_t< IsScalar_v<ST>, VT& >;
 
 template< typename VT1, typename VT2, bool TF >
 VT1& operator&=( DenseVector<VT1,TF>& lhs, const DenseVector<VT2,TF>& rhs );
@@ -165,11 +165,11 @@ VT1& operator&=( DenseVector<VT1,TF>&& lhs, const DenseVector<VT2,TF>& rhs );
 
 template< typename VT, bool TF, typename ST >
 auto operator|=( DenseVector<VT,TF>& vec, ST scalar )
-   -> EnableIf_t< IsNumeric_v<ST>, VT& >;
+   -> EnableIf_t< IsScalar_v<ST>, VT& >;
 
 template< typename VT, bool TF, typename ST >
 auto operator|=( DenseVector<VT,TF>&& vec, ST scalar )
-   -> EnableIf_t< IsNumeric_v<ST>, VT& >;
+   -> EnableIf_t< IsScalar_v<ST>, VT& >;
 
 template< typename VT1, typename VT2, bool TF >
 VT1& operator|=( DenseVector<VT1,TF>& lhs, const DenseVector<VT2,TF>& rhs );
@@ -179,11 +179,11 @@ VT1& operator|=( DenseVector<VT1,TF>&& lhs, const DenseVector<VT2,TF>& rhs );
 
 template< typename VT, bool TF, typename ST >
 auto operator^=( DenseVector<VT,TF>& vec, ST scalar )
-   -> EnableIf_t< IsNumeric_v<ST>, VT& >;
+   -> EnableIf_t< IsScalar_v<ST>, VT& >;
 
 template< typename VT, bool TF, typename ST >
 auto operator^=( DenseVector<VT,TF>&& vec, ST scalar )
-   -> EnableIf_t< IsNumeric_v<ST>, VT& >;
+   -> EnableIf_t< IsScalar_v<ST>, VT& >;
 
 template< typename VT1, typename VT2, bool TF >
 VT1& operator^=( DenseVector<VT1,TF>& lhs, const DenseVector<VT2,TF>& rhs );
@@ -210,7 +210,7 @@ template< typename T1  // Type of the left-hand side dense vector
         , typename T2  // Type of the right-hand side scalar
         , bool TF >    // Transpose flag
 inline auto operator==( const DenseVector<T1,TF>& vec, T2 scalar )
-   -> EnableIf_t< IsNumeric_v<T2>, bool >
+   -> EnableIf_t< IsScalar_v<T2>, bool >
 {
    using CT1 = CompositeType_t<T1>;
 
@@ -242,7 +242,7 @@ template< typename T1  // Type of the left-hand side scalar
         , typename T2  // Type of the right-hand side dense vector
         , bool TF >    // Transpose flag
 inline auto operator==( T1 scalar, const DenseVector<T2,TF>& vec )
-   -> EnableIf_t< IsNumeric_v<T1>, bool >
+   -> EnableIf_t< IsScalar_v<T1>, bool >
 {
    return ( vec == scalar );
 }
@@ -265,7 +265,7 @@ template< typename T1  // Type of the left-hand side dense vector
         , typename T2  // Type of the right-hand side scalar
         , bool TF >    // Transpose flag
 inline auto operator!=( const DenseVector<T1,TF>& vec, T2 scalar )
-   -> EnableIf_t< IsNumeric_v<T2>, bool >
+   -> EnableIf_t< IsScalar_v<T2>, bool >
 {
    return !( vec == scalar );
 }
@@ -288,7 +288,7 @@ template< typename T1  // Type of the left-hand side scalar
         , typename T2  // Type of the right-hand side vector
         , bool TF >    // Transpose flag
 inline auto operator!=( T1 scalar, const DenseVector<T2,TF>& vec )
-   -> EnableIf_t< IsNumeric_v<T1>, bool >
+   -> EnableIf_t< IsScalar_v<T1>, bool >
 {
    return !( vec == scalar );
 }
@@ -312,7 +312,7 @@ template< typename VT    // Type of the left-hand side dense vector
         , bool TF        // Transpose flag
         , typename ST >  // Data type of the right-hand side scalar
 inline auto operator+=( DenseVector<VT,TF>& vec, ST scalar )
-   -> EnableIf_t< IsNumeric_v<ST>, VT& >
+   -> EnableIf_t< IsScalar_v<ST>, VT& >
 {
    if( IsRestricted_v<VT> ) {
       if( !tryAdd( ~vec, 0UL, (~vec).size(), scalar ) ) {
@@ -348,7 +348,7 @@ template< typename VT    // Type of the left-hand side dense vector
         , bool TF        // Transpose flag
         , typename ST >  // Data type of the right-hand side scalar
 inline auto operator+=( DenseVector<VT,TF>&& vec, ST scalar )
-   -> EnableIf_t< IsNumeric_v<ST>, VT& >
+   -> EnableIf_t< IsScalar_v<ST>, VT& >
 {
    return operator+=( ~vec, scalar );
 }
@@ -372,7 +372,7 @@ template< typename VT    // Type of the left-hand side dense vector
         , bool TF        // Transpose flag
         , typename ST >  // Data type of the right-hand side scalar
 inline auto operator-=( DenseVector<VT,TF>& vec, ST scalar )
-   -> EnableIf_t< IsNumeric_v<ST>, VT& >
+   -> EnableIf_t< IsScalar_v<ST>, VT& >
 {
    if( IsRestricted_v<VT> ) {
       if( !trySub( ~vec, 0UL, (~vec).size(), scalar ) ) {
@@ -408,7 +408,7 @@ template< typename VT    // Type of the left-hand side dense vector
         , bool TF        // Transpose flag
         , typename ST >  // Data type of the right-hand side scalar
 inline auto operator-=( DenseVector<VT,TF>&& vec, ST scalar )
-   -> EnableIf_t< IsNumeric_v<ST>, VT& >
+   -> EnableIf_t< IsScalar_v<ST>, VT& >
 {
    return operator-=( ~vec, scalar );
 }
@@ -432,7 +432,7 @@ template< typename VT    // Type of the left-hand side dense vector
         , bool TF        // Transpose flag
         , typename ST >  // Data type of the right-hand side scalar
 inline auto operator*=( DenseVector<VT,TF>& vec, ST scalar )
-   -> EnableIf_t< IsNumeric_v<ST>, VT& >
+   -> EnableIf_t< IsScalar_v<ST>, VT& >
 {
    if( IsRestricted_v<VT> ) {
       if( !tryMult( ~vec, 0UL, (~vec).size(), scalar ) ) {
@@ -468,7 +468,7 @@ template< typename VT    // Type of the left-hand side dense vector
         , bool TF        // Transpose flag
         , typename ST >  // Data type of the right-hand side scalar
 inline auto operator*=( DenseVector<VT,TF>&& vec, ST scalar )
-   -> EnableIf_t< IsNumeric_v<ST>, VT& >
+   -> EnableIf_t< IsScalar_v<ST>, VT& >
 {
    return operator*=( ~vec, scalar );
 }
@@ -494,7 +494,7 @@ template< typename VT    // Type of the left-hand side dense vector
         , bool TF        // Transpose flag
         , typename ST >  // Data type of the right-hand side scalar
 inline auto operator/=( DenseVector<VT,TF>& vec, ST scalar )
-   -> EnableIf_t< IsNumeric_v<ST>, VT& >
+   -> EnableIf_t< IsScalar_v<ST>, VT& >
 {
    BLAZE_USER_ASSERT( isDivisor( scalar ), "Division by zero detected" );
 
@@ -534,7 +534,7 @@ template< typename VT    // Type of the left-hand side dense vector
         , bool TF        // Transpose flag
         , typename ST >  // Data type of the right-hand side scalar
 inline auto operator/=( DenseVector<VT,TF>&& vec, ST scalar )
-   -> EnableIf_t< IsNumeric_v<ST>, VT& >
+   -> EnableIf_t< IsScalar_v<ST>, VT& >
 {
    return operator/=( ~vec, scalar );
 }
@@ -778,7 +778,7 @@ template< typename VT    // Type of the left-hand side dense vector
         , bool TF        // Transpose flag
         , typename ST >  // Data type of the right-hand side scalar
 inline auto operator&=( DenseVector<VT,TF>& vec, ST scalar )
-   -> EnableIf_t< IsNumeric_v<ST>, VT& >
+   -> EnableIf_t< IsScalar_v<ST>, VT& >
 {
    if( IsRestricted_v<VT> ) {
       if( !tryBitand( ~vec, 0UL, (~vec).size(), scalar ) ) {
@@ -814,7 +814,7 @@ template< typename VT    // Type of the left-hand side dense vector
         , bool TF        // Transpose flag
         , typename ST >  // Data type of the right-hand side scalar
 inline auto operator&=( DenseVector<VT,TF>&& vec, ST scalar )
-   -> EnableIf_t< IsNumeric_v<ST>, VT& >
+   -> EnableIf_t< IsScalar_v<ST>, VT& >
 {
    return operator&=( ~vec, scalar );
 }
@@ -893,7 +893,7 @@ template< typename VT    // Type of the left-hand side dense vector
         , bool TF        // Transpose flag
         , typename ST >  // Data type of the right-hand side scalar
 inline auto operator|=( DenseVector<VT,TF>& vec, ST scalar )
-   -> EnableIf_t< IsNumeric_v<ST>, VT& >
+   -> EnableIf_t< IsScalar_v<ST>, VT& >
 {
    if( IsRestricted_v<VT> ) {
       if( !tryBitor( ~vec, 0UL, (~vec).size(), scalar ) ) {
@@ -929,7 +929,7 @@ template< typename VT    // Type of the left-hand side dense vector
         , bool TF        // Transpose flag
         , typename ST >  // Data type of the right-hand side scalar
 inline auto operator|=( DenseVector<VT,TF>&& vec, ST scalar )
-   -> EnableIf_t< IsNumeric_v<ST>, VT& >
+   -> EnableIf_t< IsScalar_v<ST>, VT& >
 {
    return operator|=( ~vec, scalar );
 }
@@ -1008,7 +1008,7 @@ template< typename VT    // Type of the left-hand side dense vector
         , bool TF        // Transpose flag
         , typename ST >  // Data type of the right-hand side scalar
 inline auto operator^=( DenseVector<VT,TF>& vec, ST scalar )
-   -> EnableIf_t< IsNumeric_v<ST>, VT& >
+   -> EnableIf_t< IsScalar_v<ST>, VT& >
 {
    if( IsRestricted_v<VT> ) {
       if( !tryBitxor( ~vec, 0UL, (~vec).size(), scalar ) ) {
@@ -1044,7 +1044,7 @@ template< typename VT    // Type of the left-hand side dense vector
         , bool TF        // Transpose flag
         , typename ST >  // Data type of the right-hand side scalar
 inline auto operator^=( DenseVector<VT,TF>&& vec, ST scalar )
-   -> EnableIf_t< IsNumeric_v<ST>, VT& >
+   -> EnableIf_t< IsScalar_v<ST>, VT& >
 {
    return operator^=( ~vec, scalar );
 }
