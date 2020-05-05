@@ -75,6 +75,7 @@
 #include <blaze/math/typetraits/IsMatrix.h>
 #include <blaze/math/typetraits/IsResizable.h>
 #include <blaze/math/typetraits/IsRowVector.h>
+#include <blaze/math/typetraits/IsScalar.h>
 #include <blaze/math/typetraits/IsSMPAssignable.h>
 #include <blaze/math/typetraits/IsSymmetric.h>
 #include <blaze/math/typetraits/IsUniform.h>
@@ -96,7 +97,6 @@
 #include <blaze/util/IntegralConstant.h>
 #include <blaze/util/MaybeUnused.h>
 #include <blaze/util/Types.h>
-#include <blaze/util/typetraits/IsNumeric.h>
 #include <blaze/util/typetraits/IsVectorizable.h>
 #include <blaze/util/typetraits/RemoveConst.h>
 #include <blaze/util/typetraits/RemoveCVRef.h>
@@ -308,10 +308,10 @@ class UniformMatrix
    template< typename MT, bool SO2 > inline UniformMatrix& operator*=( const Matrix<MT,SO2>& rhs ) &;
 
    template< typename ST >
-   inline auto operator*=( ST rhs ) & -> EnableIf_t< IsNumeric_v<ST>, UniformMatrix& >;
+   inline auto operator*=( ST rhs ) & -> EnableIf_t< IsScalar_v<ST>, UniformMatrix& >;
 
    template< typename ST >
-   inline auto operator/=( ST rhs ) & -> EnableIf_t< IsNumeric_v<ST>, UniformMatrix& >;
+   inline auto operator/=( ST rhs ) & -> EnableIf_t< IsScalar_v<ST>, UniformMatrix& >;
    //@}
    //**********************************************************************************************
 
@@ -929,7 +929,7 @@ template< typename Type   // Data type of the matrix
         , typename Tag >  // Type tag
 template< typename ST >   // Data type of the right-hand side scalar
 inline auto UniformMatrix<Type,SO,Tag>::operator*=( ST scalar ) &
-   -> EnableIf_t< IsNumeric_v<ST>, UniformMatrix& >
+   -> EnableIf_t< IsScalar_v<ST>, UniformMatrix& >
 {
    if( rows() > 0UL && columns() > 0UL ) {
       value_ *= scalar;
@@ -952,7 +952,7 @@ template< typename Type   // Data type of the matrix
         , typename Tag >  // Type tag
 template< typename ST >   // Data type of the right-hand side scalar
 inline auto UniformMatrix<Type,SO,Tag>::operator/=( ST scalar ) &
-   -> EnableIf_t< IsNumeric_v<ST>, UniformMatrix& >
+   -> EnableIf_t< IsScalar_v<ST>, UniformMatrix& >
 {
    if( rows() > 0UL && columns() > 0UL ) {
       value_ /= scalar;
@@ -1856,7 +1856,7 @@ struct MultTraitEval1< T1, T2
                      , EnableIf_t< IsMatrix_v<T1> &&
                                    IsUniform_v<T1> &&
                                    !IsZero_v<T1> &&
-                                   IsNumeric_v<T2> > >
+                                   IsScalar_v<T2> > >
 {
    using Type = UniformMatrix< MultTrait_t< ElementType_t<T1>, T2 >
                              , StorageOrder_v<T1>
@@ -1865,7 +1865,7 @@ struct MultTraitEval1< T1, T2
 
 template< typename T1, typename T2 >
 struct MultTraitEval1< T1, T2
-                     , EnableIf_t< IsNumeric_v<T1> &&
+                     , EnableIf_t< IsScalar_v<T1> &&
                                    IsMatrix_v<T2> &&
                                    IsUniform_v<T2> &&
                                    !IsZero_v<T2> > >
@@ -1943,7 +1943,7 @@ struct KronTraitEval1< T1, T2
 template< typename T1, typename T2 >
 struct DivTraitEval1< T1, T2
                     , EnableIf_t< IsMatrix_v<T1> &&
-                                  IsNumeric_v<T2> &&
+                                  IsScalar_v<T2> &&
                                   IsUniform_v<T1> && !IsZero_v<T1> > >
 {
    using Type = UniformMatrix< DivTrait_t< ElementType_t<T1>, T2 >
