@@ -103,7 +103,6 @@
 #include <blaze/util/IntegralConstant.h>
 #include <blaze/util/InvalidType.h>
 #include <blaze/util/MaybeUnused.h>
-#include <blaze/util/typetraits/IsNumeric.h>
 
 
 namespace blaze {

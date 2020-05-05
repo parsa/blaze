@@ -97,7 +97,6 @@
 #include <blaze/util/MaybeUnused.h>
 #include <blaze/util/StaticAssert.h>
 #include <blaze/util/Types.h>
-#include <blaze/util/typetraits/IsIntegral.h>
 #include <blaze/util/typetraits/IsVectorizable.h>
 #include <blaze/util/typetraits/RemoveConst.h>
 
