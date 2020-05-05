@@ -68,6 +68,7 @@
 #include <blaze/math/shims/IsZero.h>
 #include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsResizable.h>
+#include <blaze/math/typetraits/IsScalar.h>
 #include <blaze/math/typetraits/IsSquare.h>
 #include <blaze/math/typetraits/IsUpper.h>
 #include <blaze/math/typetraits/Size.h>
@@ -84,7 +85,6 @@
 #include <blaze/util/MaybeUnused.h>
 #include <blaze/util/StaticAssert.h>
 #include <blaze/util/Types.h>
-#include <blaze/util/typetraits/IsNumeric.h>
 
 
 namespace blaze {
@@ -725,10 +725,10 @@ class UpperMatrix<MT,SO,true>
    inline auto operator%=( const Matrix<MT2,SO2>& rhs ) -> UpperMatrix&;
 
    template< typename ST >
-   inline auto operator*=( ST rhs ) -> EnableIf_t< IsNumeric_v<ST>, UpperMatrix& >;
+   inline auto operator*=( ST rhs ) -> EnableIf_t< IsScalar_v<ST>, UpperMatrix& >;
 
    template< typename ST >
-   inline auto operator/=( ST rhs ) -> EnableIf_t< IsNumeric_v<ST>, UpperMatrix& >;
+   inline auto operator/=( ST rhs ) -> EnableIf_t< IsScalar_v<ST>, UpperMatrix& >;
    //@}
    //**********************************************************************************************
 
@@ -1967,7 +1967,7 @@ template< typename MT    // Type of the adapted dense matrix
         , bool SO >      // Storage order of the adapted dense matrix
 template< typename ST >  // Data type of the right-hand side scalar
 inline auto UpperMatrix<MT,SO,true>::operator*=( ST rhs )
-   -> EnableIf_t< IsNumeric_v<ST>, UpperMatrix& >
+   -> EnableIf_t< IsScalar_v<ST>, UpperMatrix& >
 {
    matrix_ *= rhs;
    return *this;
@@ -1987,7 +1987,7 @@ template< typename MT    // Type of the adapted dense matrix
         , bool SO >      // Storage order of the adapted dense matrix
 template< typename ST >  // Data type of the right-hand side scalar
 inline auto UpperMatrix<MT,SO,true>::operator/=( ST rhs )
-   -> EnableIf_t< IsNumeric_v<ST>, UpperMatrix& >
+   -> EnableIf_t< IsScalar_v<ST>, UpperMatrix& >
 {
    BLAZE_USER_ASSERT( !isZero( rhs ), "Division by zero detected" );
 
