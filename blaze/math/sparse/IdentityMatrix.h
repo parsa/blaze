@@ -43,6 +43,7 @@
 #include <iterator>
 #include <blaze/math/Aliases.h>
 #include <blaze/math/constraints/SameTag.h>
+#include <blaze/math/constraints/Scalar.h>
 #include <blaze/math/Exception.h>
 #include <blaze/math/expressions/DenseMatrix.h>
 #include <blaze/math/expressions/DenseVector.h>
@@ -88,7 +89,6 @@
 #include <blaze/math/typetraits/YieldsIdentity.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Const.h>
-#include <blaze/util/constraints/Numeric.h>
 #include <blaze/util/constraints/Pointer.h>
 #include <blaze/util/constraints/Reference.h>
 #include <blaze/util/constraints/Volatile.h>
@@ -98,7 +98,6 @@
 #include <blaze/util/InvalidType.h>
 #include <blaze/util/MaybeUnused.h>
 #include <blaze/util/Types.h>
-#include <blaze/util/typetraits/IsNumeric.h>
 #include <blaze/util/typetraits/IsSame.h>
 
 
@@ -492,7 +491,7 @@ class IdentityMatrix
    BLAZE_CONSTRAINT_MUST_NOT_BE_REFERENCE_TYPE( Type );
    BLAZE_CONSTRAINT_MUST_NOT_BE_CONST         ( Type );
    BLAZE_CONSTRAINT_MUST_NOT_BE_VOLATILE      ( Type );
-   BLAZE_CONSTRAINT_MUST_BE_NUMERIC_TYPE      ( Type );
+   BLAZE_CONSTRAINT_MUST_BE_SCALAR_TYPE       ( Type );
    /*! \endcond */
    //**********************************************************************************************
 };
