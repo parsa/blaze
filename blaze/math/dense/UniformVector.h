@@ -74,6 +74,7 @@
 #include <blaze/math/typetraits/IsMatrix.h>
 #include <blaze/math/typetraits/IsResizable.h>
 #include <blaze/math/typetraits/IsRowVector.h>
+#include <blaze/math/typetraits/IsScalar.h>
 #include <blaze/math/typetraits/IsSMPAssignable.h>
 #include <blaze/math/typetraits/IsUniform.h>
 #include <blaze/math/typetraits/IsVector.h>
@@ -94,7 +95,6 @@
 #include <blaze/util/IntegralConstant.h>
 #include <blaze/util/MaybeUnused.h>
 #include <blaze/util/Types.h>
-#include <blaze/util/typetraits/IsNumeric.h>
 #include <blaze/util/typetraits/IsVectorizable.h>
 #include <blaze/util/typetraits/RemoveConst.h>
 #include <blaze/util/typetraits/RemoveCVRef.h>
@@ -290,10 +290,10 @@ class UniformVector
    template< typename VT > inline UniformVector& operator/=( const DenseVector<VT,TF>& rhs ) &;
 
    template< typename ST >
-   inline auto operator*=( ST rhs ) & -> EnableIf_t< IsNumeric_v<ST>, UniformVector& >;
+   inline auto operator*=( ST rhs ) & -> EnableIf_t< IsScalar_v<ST>, UniformVector& >;
 
    template< typename ST >
-   inline auto operator/=( ST rhs ) & -> EnableIf_t< IsNumeric_v<ST>, UniformVector& >;
+   inline auto operator/=( ST rhs ) & -> EnableIf_t< IsScalar_v<ST>, UniformVector& >;
    //@}
    //**********************************************************************************************
 
@@ -807,7 +807,7 @@ template< typename Type   // Data type of the vector
         , typename Tag >  // Type tag
 template< typename ST >   // Data type of the right-hand side scalar
 inline auto UniformVector<Type,TF,Tag>::operator*=( ST scalar ) &
-   -> EnableIf_t< IsNumeric_v<ST>, UniformVector& >
+   -> EnableIf_t< IsScalar_v<ST>, UniformVector& >
 {
    if( size() > 0UL ) {
       value_ *= scalar;
@@ -830,7 +830,7 @@ template< typename Type   // Data type of the vector
         , typename Tag >  // Type tag
 template< typename ST >   // Data type of the right-hand side scalar
 inline auto UniformVector<Type,TF,Tag>::operator/=( ST scalar ) &
-   -> EnableIf_t< IsNumeric_v<ST>, UniformVector& >
+   -> EnableIf_t< IsScalar_v<ST>, UniformVector& >
 {
    if( size() > 0UL ) {
       value_ /= scalar;
@@ -1536,7 +1536,7 @@ struct SubTraitEval1< T1, T2
 template< typename T1, typename T2 >
 struct MultTraitEval1< T1, T2
                      , EnableIf_t< IsVector_v<T1> &&
-                                   IsNumeric_v<T2> &&
+                                   IsScalar_v<T2> &&
                                    IsUniform_v<T1> && !IsZero_v<T1> > >
 {
    using Type = UniformVector< MultTrait_t< ElementType_t<T1>, T2 >
@@ -1546,7 +1546,7 @@ struct MultTraitEval1< T1, T2
 
 template< typename T1, typename T2 >
 struct MultTraitEval1< T1, T2
-                     , EnableIf_t< IsNumeric_v<T1> &&
+                     , EnableIf_t< IsScalar_v<T1> &&
                                    IsVector_v<T2> &&
                                    IsUniform_v<T2> && !IsZero_v<T2> > >
 {
@@ -1638,7 +1638,7 @@ struct KronTraitEval1< T1, T2
 template< typename T1, typename T2 >
 struct DivTraitEval1< T1, T2
                     , EnableIf_t< IsVector_v<T1> &&
-                                  IsNumeric_v<T2> &&
+                                  IsScalar_v<T2> &&
                                   IsUniform_v<T1> && !IsZero_v<T1> > >
 {
    using Type = UniformVector< DivTrait_t< ElementType_t<T1>, T2 >
