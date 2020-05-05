@@ -73,7 +73,7 @@ namespace blaze {
 */
 template< typename MT  // Type of the adapted matrix
         , bool SO      // Storage order of the adapted matrix
-        , bool DF >    // Numeric flag
+        , bool DF >    // Density flag
 class Rand< DiagonalMatrix<MT,SO,DF> >
 {
  public:

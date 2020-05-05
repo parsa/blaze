@@ -87,6 +87,7 @@
 #include <blaze/math/typetraits/IsPadded.h>
 #include <blaze/math/typetraits/IsResizable.h>
 #include <blaze/math/typetraits/IsRestricted.h>
+#include <blaze/math/typetraits/IsScalar.h>
 #include <blaze/math/typetraits/IsShrinkable.h>
 #include <blaze/math/typetraits/IsSquare.h>
 #include <blaze/math/typetraits/IsStrictlyLower.h>
@@ -110,7 +111,6 @@
 #include <blaze/util/MaybeUnused.h>
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/typetraits/IsBuiltin.h>
-#include <blaze/util/typetraits/IsNumeric.h>
 
 
 namespace blaze {
@@ -2022,7 +2022,7 @@ struct SchurTraitEval1< T1, T2
 template< typename T1, typename T2 >
 struct MultTraitEval1< T1, T2
                      , EnableIf_t< IsMatrix_v<T1> &&
-                                   IsNumeric_v<T2> &&
+                                   IsScalar_v<T2> &&
                                    ( IsDiagonal_v<T1> && !IsUniform_v<T1> ) > >
 {
    using Type = DiagonalMatrix< typename MultTraitEval2<T1,T2>::Type >;
@@ -2030,7 +2030,7 @@ struct MultTraitEval1< T1, T2
 
 template< typename T1, typename T2 >
 struct MultTraitEval1< T1, T2
-                     , EnableIf_t< IsNumeric_v<T1> &&
+                     , EnableIf_t< IsScalar_v<T1> &&
                                    IsMatrix_v<T2> &&
                                    ( IsDiagonal_v<T2> && !IsUniform_v<T2> ) > >
 {
@@ -2087,7 +2087,7 @@ struct KronTraitEval1< T1, T2
 /*! \cond BLAZE_INTERNAL */
 template< typename T1, typename T2 >
 struct DivTraitEval1< T1, T2
-                    , EnableIf_t< IsDiagonal_v<T1> && IsNumeric_v<T2> > >
+                    , EnableIf_t< IsDiagonal_v<T1> && IsScalar_v<T2> > >
 {
    using Type = DiagonalMatrix< typename DivTraitEval2<T1,T2>::Type >;
 };

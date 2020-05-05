@@ -69,6 +69,7 @@
 #include <blaze/math/typetraits/IsDiagonal.h>
 #include <blaze/math/typetraits/IsInvertible.h>
 #include <blaze/math/typetraits/IsResizable.h>
+#include <blaze/math/typetraits/IsScalar.h>
 #include <blaze/math/typetraits/IsSquare.h>
 #include <blaze/math/typetraits/Size.h>
 #include <blaze/math/typetraits/UnderlyingBuiltin.h>
@@ -91,7 +92,6 @@
 #include <blaze/util/typetraits/IsBuiltin.h>
 #include <blaze/util/typetraits/IsComplex.h>
 #include <blaze/util/typetraits/IsFloatingPoint.h>
-#include <blaze/util/typetraits/IsNumeric.h>
 
 
 namespace blaze {
@@ -732,10 +732,10 @@ class DiagonalMatrix<MT,SO,true>
    inline auto operator%=( const Matrix<MT2,SO2>& rhs ) -> DiagonalMatrix&;
 
    template< typename ST >
-   inline auto operator*=( ST rhs ) -> EnableIf_t< IsNumeric_v<ST>, DiagonalMatrix& >;
+   inline auto operator*=( ST rhs ) -> EnableIf_t< IsScalar_v<ST>, DiagonalMatrix& >;
 
    template< typename ST >
-   inline auto operator/=( ST rhs ) -> EnableIf_t< IsNumeric_v<ST>, DiagonalMatrix& >;
+   inline auto operator/=( ST rhs ) -> EnableIf_t< IsScalar_v<ST>, DiagonalMatrix& >;
    //@}
    //**********************************************************************************************
 
@@ -1955,7 +1955,7 @@ template< typename MT    // Type of the adapted dense matrix
         , bool SO >      // Storage order of the adapted dense matrix
 template< typename ST >  // Data type of the right-hand side scalar
 inline auto DiagonalMatrix<MT,SO,true>::operator*=( ST scalar )
-   -> EnableIf_t< IsNumeric_v<ST>, DiagonalMatrix& >
+   -> EnableIf_t< IsScalar_v<ST>, DiagonalMatrix& >
 {
    diagonal( matrix_ ) *= scalar;
 
@@ -1977,7 +1977,7 @@ template< typename MT    // Type of the adapted dense matrix
         , bool SO >      // Storage order of the adapted dense matrix
 template< typename ST >  // Data type of the right-hand side scalar
 inline auto DiagonalMatrix<MT,SO,true>::operator/=( ST scalar )
-   -> EnableIf_t< IsNumeric_v<ST>, DiagonalMatrix& >
+   -> EnableIf_t< IsScalar_v<ST>, DiagonalMatrix& >
 {
    diagonal( matrix_ ) /= scalar;
 
