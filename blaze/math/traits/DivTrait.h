@@ -203,7 +203,7 @@ struct DivTraitEval1<GroupTag<ID>,GroupTag<ID>,void>
 // \ingroup math_traits
 */
 template< size_t ID, typename T2 >
-struct DivTraitEval1< GroupTag<ID>, T2, EnableIf_t< IsNumeric_v<T2> > >
+struct DivTraitEval1< GroupTag<ID>, T2 >
 {
  public:
    //**********************************************************************************************
