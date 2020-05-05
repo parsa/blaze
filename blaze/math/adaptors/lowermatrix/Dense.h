@@ -70,6 +70,7 @@
 #include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsLower.h>
 #include <blaze/math/typetraits/IsResizable.h>
+#include <blaze/math/typetraits/IsScalar.h>
 #include <blaze/math/typetraits/IsSquare.h>
 #include <blaze/math/typetraits/Size.h>
 #include <blaze/math/views/Submatrix.h>
@@ -85,7 +86,6 @@
 #include <blaze/util/MaybeUnused.h>
 #include <blaze/util/StaticAssert.h>
 #include <blaze/util/Types.h>
-#include <blaze/util/typetraits/IsNumeric.h>
 
 
 namespace blaze {
@@ -726,10 +726,10 @@ class LowerMatrix<MT,SO,true>
    inline auto operator%=( const Matrix<MT2,SO2>& rhs ) -> LowerMatrix&;
 
    template< typename ST >
-   inline auto operator*=( ST rhs ) -> EnableIf_t< IsNumeric_v<ST>, LowerMatrix& >;
+   inline auto operator*=( ST rhs ) -> EnableIf_t< IsScalar_v<ST>, LowerMatrix& >;
 
    template< typename ST >
-   inline auto operator/=( ST rhs ) -> EnableIf_t< IsNumeric_v<ST>, LowerMatrix& >;
+   inline auto operator/=( ST rhs ) -> EnableIf_t< IsScalar_v<ST>, LowerMatrix& >;
    //@}
    //**********************************************************************************************
 
@@ -1968,7 +1968,7 @@ template< typename MT    // Type of the adapted dense matrix
         , bool SO >      // Storage order of the adapted dense matrix
 template< typename ST >  // Data type of the right-hand side scalar
 inline auto LowerMatrix<MT,SO,true>::operator*=( ST rhs )
-   -> EnableIf_t< IsNumeric_v<ST>, LowerMatrix& >
+   -> EnableIf_t< IsScalar_v<ST>, LowerMatrix& >
 {
    matrix_ *= rhs;
    return *this;
@@ -1988,7 +1988,7 @@ template< typename MT    // Type of the adapted dense matrix
         , bool SO >      // Storage order of the adapted dense matrix
 template< typename ST >  // Data type of the right-hand side scalar
 inline auto LowerMatrix<MT,SO,true>::operator/=( ST rhs )
-   -> EnableIf_t< IsNumeric_v<ST>, LowerMatrix& >
+   -> EnableIf_t< IsScalar_v<ST>, LowerMatrix& >
 {
    BLAZE_USER_ASSERT( !isZero( rhs ), "Division by zero detected" );
 
