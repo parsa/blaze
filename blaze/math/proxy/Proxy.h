@@ -190,6 +190,18 @@ class Proxy
 //*************************************************************************************************
 /*!\name Proxy operators */
 //@{
+template< typename T, typename PT, typename RT >
+decltype(auto) operator+=( T& lhs, const Proxy<PT,RT>& rhs );
+
+template< typename T, typename PT, typename RT >
+decltype(auto) operator-=( T& lhs, const Proxy<PT,RT>& rhs );
+
+template< typename T, typename PT, typename RT >
+decltype(auto) operator/=( T& lhs, const Proxy<PT,RT>& rhs );
+
+template< typename T, typename PT, typename RT >
+decltype(auto) operator*=( T& lhs, const Proxy<PT,RT>& rhs );
+
 template< typename PT1, typename RT1, typename PT2, typename RT2 >
 decltype(auto) operator+( const Proxy<PT1,RT1>& lhs, const Proxy<PT2,RT2>& rhs );
 
@@ -283,6 +295,70 @@ bool operator>=( const T& lhs, const Proxy<PT,RT>& rhs );
 template< typename PT, typename RT >
 std::ostream& operator<<( std::ostream& os, const Proxy<PT,RT>& proxy );
 //@}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Addition assignment of an object of different type with a Proxy object.
+// \ingroup math
+//
+// \param lhs The left-hand side object of other type.
+// \param rhs The right-hand side Proxy object.
+// \return The result of the addition assignment.
+*/
+template< typename T, typename PT, typename RT >
+inline decltype(auto) operator+=( T& lhs, const Proxy<PT,RT>& rhs )
+{
+   return lhs += (~rhs).get();
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Subtraction assignment of an object of different type with a Proxy object.
+// \ingroup math
+//
+// \param lhs The left-hand side object of other type.
+// \param rhs The right-hand side Proxy object.
+// \return The result of the subtraction assignment.
+*/
+template< typename T, typename PT, typename RT >
+inline decltype(auto) operator-=( T& lhs, const Proxy<PT,RT>& rhs )
+{
+   return lhs -= (~rhs).get();
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Multiplication assignment of an object of different type with a Proxy object.
+// \ingroup math
+//
+// \param lhs The left-hand side object of other type.
+// \param rhs The right-hand side Proxy object.
+// \return The result of the multiplication assignment.
+*/
+template< typename T, typename PT, typename RT >
+inline decltype(auto) operator*=( T& lhs, const Proxy<PT,RT>& rhs )
+{
+   return lhs *= (~rhs).get();
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Division assignment of an object of different type with a Proxy object.
+// \ingroup math
+//
+// \param lhs The left-hand side object of other type.
+// \param rhs The right-hand side Proxy object.
+// \return The result of the division assignment.
+*/
+template< typename T, typename PT, typename RT >
+inline decltype(auto) operator/=( T& lhs, const Proxy<PT,RT>& rhs )
+{
+   return lhs /= (~rhs).get();
+}
 //*************************************************************************************************
 
 
