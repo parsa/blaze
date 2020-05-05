@@ -49,6 +49,7 @@
 #include <blaze/math/constraints/MatMatMultExpr.h>
 #include <blaze/math/constraints/RequiresEvaluation.h>
 #include <blaze/math/constraints/RowVector.h>
+#include <blaze/math/constraints/Scalar.h>
 #include <blaze/math/constraints/TVecMatMultExpr.h>
 #include <blaze/math/Exception.h>
 #include <blaze/math/expressions/Computation.h>
@@ -6083,7 +6084,7 @@ class DVecScalarMultExpr< TDVecTDMatMultExpr<VT,MT>, ST, true >
    BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE  ( VT );
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( MT );
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( MT );
-   BLAZE_CONSTRAINT_MUST_BE_NUMERIC_TYPE( ST );
+   BLAZE_CONSTRAINT_MUST_BE_SCALAR_TYPE( ST );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ST, RightOperand );
    //**********************************************************************************************
 };
