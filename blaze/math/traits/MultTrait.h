@@ -204,7 +204,7 @@ struct MultTraitEval1<GroupTag<ID>,GroupTag<ID>,void>
 // \ingroup math_traits
 */
 template< size_t ID, typename T2 >
-struct MultTraitEval1< GroupTag<ID>, T2, EnableIf_t< IsNumeric_v<T2> > >
+struct MultTraitEval1< GroupTag<ID>, T2 >
 {
  public:
    //**********************************************************************************************
@@ -221,7 +221,7 @@ struct MultTraitEval1< GroupTag<ID>, T2, EnableIf_t< IsNumeric_v<T2> > >
 // \ingroup math_traits
 */
 template< typename T1, size_t ID >
-struct MultTraitEval1< T1, GroupTag<ID>, EnableIf_t< IsNumeric_v<T1> > >
+struct MultTraitEval1< T1, GroupTag<ID> >
 {
  public:
    //**********************************************************************************************
