@@ -93,6 +93,7 @@
 #include <blaze/math/typetraits/IsPadded.h>
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
 #include <blaze/math/typetraits/IsRowVector.h>
+#include <blaze/math/typetraits/IsScalar.h>
 #include <blaze/math/typetraits/IsSIMDCombinable.h>
 #include <blaze/math/typetraits/IsSparseMatrix.h>
 #include <blaze/math/typetraits/IsSquare.h>
@@ -7325,7 +7326,7 @@ struct SchurTraitEval2< T1, T2
 template< typename T1, typename T2 >
 struct MultTraitEval2< T1, T2
                      , EnableIf_t< IsMatrix_v<T1> &&
-                                   IsNumeric_v<T2> &&
+                                   IsScalar_v<T2> &&
                                    ( Size_v<T1,0UL> != DefaultSize_v ) &&
                                    ( Size_v<T1,1UL> != DefaultSize_v ) > >
 {
@@ -7340,7 +7341,7 @@ struct MultTraitEval2< T1, T2
 
 template< typename T1, typename T2 >
 struct MultTraitEval2< T1, T2
-                     , EnableIf_t< IsNumeric_v<T1> &&
+                     , EnableIf_t< IsScalar_v<T1> &&
                                    IsMatrix_v<T2> &&
                                    ( Size_v<T2,0UL> != DefaultSize_v ) &&
                                    ( Size_v<T2,1UL> != DefaultSize_v ) > >
@@ -7438,7 +7439,7 @@ struct KronTraitEval2< T1, T2
 template< typename T1, typename T2 >
 struct DivTraitEval2< T1, T2
                     , EnableIf_t< IsMatrix_v<T1> &&
-                                  IsNumeric_v<T2> &&
+                                  IsScalar_v<T2> &&
                                   ( Size_v<T1,0UL> != DefaultSize_v ) &&
                                   ( Size_v<T1,1UL> != DefaultSize_v ) > >
 {
