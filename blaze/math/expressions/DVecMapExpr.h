@@ -65,6 +65,7 @@
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsPadded.h>
 #include <blaze/math/typetraits/IsPaddingEnabled.h>
+#include <blaze/math/typetraits/IsScalar.h>
 #include <blaze/math/typetraits/IsSIMDEnabled.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
 #include <blaze/math/typetraits/UnderlyingBuiltin.h>
@@ -78,7 +79,6 @@
 #include <blaze/util/IntegralConstant.h>
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/Types.h>
-#include <blaze/util/typetraits/IsNumeric.h>
 #include <blaze/util/typetraits/IsSame.h>
 
 
@@ -1155,7 +1155,7 @@ inline decltype(auto) forEach( const DenseVector<VT,TF>& dv, OP op )
 template< typename VT  // Type of the dense vector
         , bool TF      // Transpose flag
         , typename ST  // Type of the scalar exponent
-        , EnableIf_t< IsNumeric_v<ST> >* = nullptr >
+        , EnableIf_t< IsScalar_v<ST> >* = nullptr >
 decltype(auto) min( const DenseVector<VT,TF>& dv, ST scalar )
 {
    BLAZE_FUNCTION_TRACE;
@@ -1188,7 +1188,7 @@ decltype(auto) min( const DenseVector<VT,TF>& dv, ST scalar )
 template< typename ST  // Type of the scalar exponent
         , typename VT  // Type of the dense vector
         , bool TF      // Transpose flag
-        , EnableIf_t< IsNumeric_v<ST> >* = nullptr >
+        , EnableIf_t< IsScalar_v<ST> >* = nullptr >
 decltype(auto) min( ST scalar, const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
@@ -1224,7 +1224,7 @@ decltype(auto) min( ST scalar, const DenseVector<VT,TF>& dv )
 template< typename VT  // Type of the dense vector
         , bool TF      // Transpose flag
         , typename ST  // Type of the scalar exponent
-        , EnableIf_t< IsNumeric_v<ST> >* = nullptr >
+        , EnableIf_t< IsScalar_v<ST> >* = nullptr >
 decltype(auto) max( const DenseVector<VT,TF>& dv, ST scalar )
 {
    BLAZE_FUNCTION_TRACE;
@@ -1257,7 +1257,7 @@ decltype(auto) max( const DenseVector<VT,TF>& dv, ST scalar )
 template< typename ST  // Type of the scalar exponent
         , typename VT  // Type of the dense vector
         , bool TF      // Transpose flag
-        , EnableIf_t< IsNumeric_v<ST> >* = nullptr >
+        , EnableIf_t< IsScalar_v<ST> >* = nullptr >
 decltype(auto) max( ST scalar, const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
@@ -1761,7 +1761,7 @@ inline decltype(auto) clamp( const DenseVector<VT,TF>& dv, const DT& min, const 
 template< typename VT  // Type of the dense vector
         , bool TF      // Transpose flag
         , typename ST  // Type of the scalar exponent
-        , EnableIf_t< IsNumeric_v<ST> >* = nullptr >
+        , EnableIf_t< IsScalar_v<ST> >* = nullptr >
 inline decltype(auto) pow( const DenseVector<VT,TF>& dv, ST exp )
 {
    BLAZE_FUNCTION_TRACE;
@@ -2685,7 +2685,7 @@ inline decltype(auto) real( const DVecMapExpr<VT,Real,TF>& dv )
 template< typename VT  // Type of the left-hand side dense vector
         , bool TF      // Transpose flag of the left-hand side dense vector
         , typename ST  // Type of the right-hand side scalar
-        , EnableIf_t< IsNumeric_v<ST> >* = nullptr >
+        , EnableIf_t< IsScalar_v<ST> >* = nullptr >
 inline decltype(auto) operator+( const DenseVector<VT,TF>& vec, ST scalar )
 {
    BLAZE_FUNCTION_TRACE;
@@ -2722,7 +2722,7 @@ inline decltype(auto) operator+( const DenseVector<VT,TF>& vec, ST scalar )
 template< typename ST  // Type of the left-hand side scalar
         , typename VT  // Type of the right-hand side dense vector
         , bool TF      // Transpose flag of the right-hand side dense vector
-        , EnableIf_t< IsNumeric_v<ST> >* = nullptr >
+        , EnableIf_t< IsScalar_v<ST> >* = nullptr >
 inline decltype(auto) operator+( ST scalar, const DenseVector<VT,TF>& vec )
 {
    BLAZE_FUNCTION_TRACE;
@@ -2759,7 +2759,7 @@ inline decltype(auto) operator+( ST scalar, const DenseVector<VT,TF>& vec )
 template< typename VT  // Type of the left-hand side dense vector
         , bool TF      // Transpose flag of the left-hand side dense vector
         , typename ST  // Type of the right-hand side scalar
-        , EnableIf_t< IsNumeric_v<ST> >* = nullptr >
+        , EnableIf_t< IsScalar_v<ST> >* = nullptr >
 inline decltype(auto) operator-( const DenseVector<VT,TF>& vec, ST scalar )
 {
    BLAZE_FUNCTION_TRACE;
@@ -2796,7 +2796,7 @@ inline decltype(auto) operator-( const DenseVector<VT,TF>& vec, ST scalar )
 template< typename ST  // Type of the left-hand side scalar
         , typename VT  // Type of the right-hand side dense vector
         , bool TF      // Transpose flag of the right-hand side dense vector
-        , EnableIf_t< IsNumeric_v<ST> >* = nullptr >
+        , EnableIf_t< IsScalar_v<ST> >* = nullptr >
 inline decltype(auto) operator-( ST scalar, const DenseVector<VT,TF>& vec )
 {
    BLAZE_FUNCTION_TRACE;
@@ -2833,7 +2833,7 @@ inline decltype(auto) operator-( ST scalar, const DenseVector<VT,TF>& vec )
 template< typename ST  // Type of the left-hand side scalar
         , typename VT  // Type of the right-hand side dense vector
         , bool TF      // Transpose flag of the right-hand side dense vector
-        , EnableIf_t< IsNumeric_v<ST> >* = nullptr >
+        , EnableIf_t< IsScalar_v<ST> >* = nullptr >
 inline decltype(auto) operator/( ST scalar, const DenseVector<VT,TF>& vec )
 {
    BLAZE_FUNCTION_TRACE;
@@ -2917,7 +2917,7 @@ inline decltype(auto) operator>>( const DenseVector<VT,TF>& vec, int count )
 template< typename VT  // Type of the left-hand side dense vector
         , bool TF      // Transpose flag
         , typename ST  // Type of the right-hand side scalar
-        , EnableIf_t< IsNumeric_v<ST> >* = nullptr >
+        , EnableIf_t< IsScalar_v<ST> >* = nullptr >
 inline decltype(auto) operator&( const DenseVector<VT,TF>& vec, ST scalar )
 {
    BLAZE_FUNCTION_TRACE;
@@ -2946,7 +2946,7 @@ inline decltype(auto) operator&( const DenseVector<VT,TF>& vec, ST scalar )
 template< typename VT  // Type of the left-hand side dense vector
         , bool TF      // Transpose flag
         , typename ST  // Type of the right-hand side scalar
-        , EnableIf_t< IsNumeric_v<ST> >* = nullptr >
+        , EnableIf_t< IsScalar_v<ST> >* = nullptr >
 inline decltype(auto) operator|( const DenseVector<VT,TF>& vec, ST scalar )
 {
    BLAZE_FUNCTION_TRACE;
@@ -2975,7 +2975,7 @@ inline decltype(auto) operator|( const DenseVector<VT,TF>& vec, ST scalar )
 template< typename VT  // Type of the left-hand side dense vector
         , bool TF      // Transpose flag
         , typename ST  // Type of the right-hand side scalar
-        , EnableIf_t< IsNumeric_v<ST> >* = nullptr >
+        , EnableIf_t< IsScalar_v<ST> >* = nullptr >
 inline decltype(auto) operator^( const DenseVector<VT,TF>& vec, ST scalar )
 {
    BLAZE_FUNCTION_TRACE;
