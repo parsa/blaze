@@ -44,10 +44,10 @@
 #include <blaze/math/Aliases.h>
 #include <blaze/math/expressions/DivExpr.h>
 #include <blaze/math/typetraits/IsInvertible.h>
+#include <blaze/math/typetraits/IsScalar.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/FunctionTrace.h>
-#include <blaze/util/typetraits/IsNumeric.h>
 
 
 namespace blaze {
@@ -99,7 +99,7 @@ struct VecScalarDivExpr
 */
 template< typename VT  // Vector base type of the expression
         , typename ST  // Type of the right-hand side scalar
-        , EnableIf_t< IsNumeric_v<ST> &&
+        , EnableIf_t< IsScalar_v<ST> &&
                       ( IsInvertible_v<ST> ||
                         IsInvertible_v< RightOperand_t< VectorType_t<VT> > > ) >* = nullptr >
 inline decltype(auto) operator*( const VecScalarDivExpr<VT>& vec, ST scalar )
@@ -127,7 +127,7 @@ inline decltype(auto) operator*( const VecScalarDivExpr<VT>& vec, ST scalar )
 */
 template< typename ST  // Type of the left-hand side scalar
         , typename VT  // Vector base type of the expression
-        , EnableIf_t< IsNumeric_v<ST> &&
+        , EnableIf_t< IsScalar_v<ST> &&
                       ( IsInvertible_v<ST> ||
                         IsInvertible_v< RightOperand_t< VectorType_t<VT> > > ) >* = nullptr >
 inline decltype(auto) operator*( ST scalar, const VecScalarDivExpr<VT>& vec )
@@ -155,7 +155,7 @@ inline decltype(auto) operator*( ST scalar, const VecScalarDivExpr<VT>& vec )
 */
 template< typename VT  // Vector base type of the expression
         , typename ST  // Type of the right-hand side scalar
-        , EnableIf_t< IsNumeric_v<ST> >* = nullptr >
+        , EnableIf_t< IsScalar_v<ST> >* = nullptr >
 inline decltype(auto) operator/( const VecScalarDivExpr<VT>& vec, ST scalar )
 {
    BLAZE_FUNCTION_TRACE;
