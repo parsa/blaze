@@ -65,6 +65,7 @@
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsPadded.h>
 #include <blaze/math/typetraits/IsPaddingEnabled.h>
+#include <blaze/math/typetraits/IsScalar.h>
 #include <blaze/math/typetraits/IsSIMDEnabled.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
 #include <blaze/math/typetraits/UnderlyingBuiltin.h>
@@ -79,7 +80,6 @@
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/HasMember.h>
 #include <blaze/util/typetraits/IsBuiltin.h>
-#include <blaze/util/typetraits/IsNumeric.h>
 #include <blaze/util/typetraits/IsSame.h>
 
 
@@ -1156,7 +1156,7 @@ inline decltype(auto) forEach( const DenseMatrix<MT,SO>& dm, OP op )
 template< typename MT  // Type of the dense matrix
         , bool SO      // Storage order
         , typename ST  // Type of the scalar exponent
-        , EnableIf_t< IsNumeric_v<ST> >* = nullptr >
+        , EnableIf_t< IsScalar_v<ST> >* = nullptr >
 decltype(auto) min( const DenseMatrix<MT,SO>& dm, ST scalar )
 {
    BLAZE_FUNCTION_TRACE;
@@ -1189,7 +1189,7 @@ decltype(auto) min( const DenseMatrix<MT,SO>& dm, ST scalar )
 template< typename ST  // Type of the scalar exponent
         , typename MT  // Type of the dense matrix
         , bool SO      // Storage order
-        , EnableIf_t< IsNumeric_v<ST> >* = nullptr >
+        , EnableIf_t< IsScalar_v<ST> >* = nullptr >
 decltype(auto) min( ST scalar, const DenseMatrix<MT,SO>& dm )
 {
    BLAZE_FUNCTION_TRACE;
@@ -1222,7 +1222,7 @@ decltype(auto) min( ST scalar, const DenseMatrix<MT,SO>& dm )
 template< typename MT  // Type of the dense matrix
         , bool SO      // Storage order
         , typename ST  // Type of the scalar exponent
-        , EnableIf_t< IsNumeric_v<ST> >* = nullptr >
+        , EnableIf_t< IsScalar_v<ST> >* = nullptr >
 decltype(auto) max( const DenseMatrix<MT,SO>& dm, ST scalar )
 {
    BLAZE_FUNCTION_TRACE;
@@ -1255,7 +1255,7 @@ decltype(auto) max( const DenseMatrix<MT,SO>& dm, ST scalar )
 template< typename ST  // Type of the scalar exponent
         , typename MT  // Type of the dense matrix
         , bool SO      // Storage order
-        , EnableIf_t< IsNumeric_v<ST> >* = nullptr >
+        , EnableIf_t< IsScalar_v<ST> >* = nullptr >
 decltype(auto) max( ST scalar, const DenseMatrix<MT,SO>& dm )
 {
    BLAZE_FUNCTION_TRACE;
@@ -1759,7 +1759,7 @@ inline decltype(auto) clamp( const DenseMatrix<MT,SO>& dm, const DT& min, const 
 template< typename MT  // Type of the dense matrix
         , bool SO      // Storage order
         , typename ST  // Type of the scalar exponent
-        , EnableIf_t< IsNumeric_v<ST> >* = nullptr >
+        , EnableIf_t< IsScalar_v<ST> >* = nullptr >
 inline decltype(auto) pow( const DenseMatrix<MT,SO>& dm, ST exp )
 {
    BLAZE_FUNCTION_TRACE;
@@ -2681,7 +2681,7 @@ inline decltype(auto) real( const DMatMapExpr<MT,Real,SO>& dm )
 template< typename MT  // Type of the left-hand side dense matrix
         , bool SO      // Storage order of the left-hand side dense matrix
         , typename ST  // Type of the right-hand side scalar
-        , EnableIf_t< IsNumeric_v<ST> >* = nullptr >
+        , EnableIf_t< IsScalar_v<ST> >* = nullptr >
 inline decltype(auto) operator+( const DenseMatrix<MT,SO>& mat, ST scalar )
 {
    BLAZE_FUNCTION_TRACE;
@@ -2716,7 +2716,7 @@ inline decltype(auto) operator+( const DenseMatrix<MT,SO>& mat, ST scalar )
 template< typename ST  // Type of the left-hand side scalar
         , typename MT  // Type of the right-hand side dense matrix
         , bool SO      // Storage order of the right-hand side dense matrix
-        , EnableIf_t< IsNumeric_v<ST> >* = nullptr >
+        , EnableIf_t< IsScalar_v<ST> >* = nullptr >
 inline decltype(auto) operator+( ST scalar, const DenseMatrix<MT,SO>& mat )
 {
    BLAZE_FUNCTION_TRACE;
@@ -2752,7 +2752,7 @@ inline decltype(auto) operator+( ST scalar, const DenseMatrix<MT,SO>& mat )
 template< typename MT  // Type of the left-hand side dense matrix
         , bool SO      // Storage order of the left-hand side dense matrix
         , typename ST  // Type of the right-hand side scalar
-        , EnableIf_t< IsNumeric_v<ST> >* = nullptr >
+        , EnableIf_t< IsScalar_v<ST> >* = nullptr >
 inline decltype(auto) operator-( const DenseMatrix<MT,SO>& mat, ST scalar )
 {
    BLAZE_FUNCTION_TRACE;
@@ -2788,7 +2788,7 @@ inline decltype(auto) operator-( const DenseMatrix<MT,SO>& mat, ST scalar )
 template< typename ST  // Type of the left-hand side scalar
         , typename MT  // Type of the right-hand side dense matrix
         , bool SO      // Storage order of the right-hand side dense matrix
-        , EnableIf_t< IsNumeric_v<ST> >* = nullptr >
+        , EnableIf_t< IsScalar_v<ST> >* = nullptr >
 inline decltype(auto) operator-( ST scalar, const DenseMatrix<MT,SO>& mat )
 {
    BLAZE_FUNCTION_TRACE;
@@ -2823,7 +2823,7 @@ inline decltype(auto) operator-( ST scalar, const DenseMatrix<MT,SO>& mat )
 template< typename ST  // Type of the left-hand side scalar
         , typename MT  // Type of the right-hand side dense matrix
         , bool SO      // Storage order of the right-hand side dense matrix
-        , EnableIf_t< IsNumeric_v<ST> >* = nullptr >
+        , EnableIf_t< IsScalar_v<ST> >* = nullptr >
 inline decltype(auto) operator/( ST scalar, const DenseMatrix<MT,SO>& mat )
 {
    BLAZE_FUNCTION_TRACE;
@@ -2907,7 +2907,7 @@ inline decltype(auto) operator>>( const DenseMatrix<MT,SO>& mat, int count )
 template< typename MT  // Type of the left-hand side dense matrix
         , bool SO      // Storage order of the left-hand side dense matrix
         , typename ST  // Type of the right-hand side scalar
-        , EnableIf_t< IsNumeric_v<ST> >* = nullptr >
+        , EnableIf_t< IsScalar_v<ST> >* = nullptr >
 inline decltype(auto) operator&( const DenseMatrix<MT,SO>& mat, ST scalar )
 {
    BLAZE_FUNCTION_TRACE;
@@ -2936,7 +2936,7 @@ inline decltype(auto) operator&( const DenseMatrix<MT,SO>& mat, ST scalar )
 template< typename MT  // Type of the left-hand side dense matrix
         , bool SO      // Storage order of the left-hand side dense matrix
         , typename ST  // Type of the right-hand side scalar
-        , EnableIf_t< IsNumeric_v<ST> >* = nullptr >
+        , EnableIf_t< IsScalar_v<ST> >* = nullptr >
 inline decltype(auto) operator|( const DenseMatrix<MT,SO>& mat, ST scalar )
 {
    BLAZE_FUNCTION_TRACE;
@@ -2965,7 +2965,7 @@ inline decltype(auto) operator|( const DenseMatrix<MT,SO>& mat, ST scalar )
 template< typename MT  // Type of the left-hand side dense matrix
         , bool SO      // Storage order of the left-hand side dense matrix
         , typename ST  // Type of the right-hand side scalar
-        , EnableIf_t< IsNumeric_v<ST> >* = nullptr >
+        , EnableIf_t< IsScalar_v<ST> >* = nullptr >
 inline decltype(auto) operator^( const DenseMatrix<MT,SO>& mat, ST scalar )
 {
    BLAZE_FUNCTION_TRACE;
