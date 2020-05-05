@@ -66,6 +66,7 @@
 #include <blaze/math/typetraits/IsLower.h>
 #include <blaze/math/typetraits/IsResizable.h>
 #include <blaze/math/typetraits/IsRestricted.h>
+#include <blaze/math/typetraits/IsScalar.h>
 #include <blaze/math/typetraits/IsSquare.h>
 #include <blaze/math/typetraits/IsStrictlyLower.h>
 #include <blaze/math/typetraits/IsStrictlyUpper.h>
@@ -103,19 +104,19 @@ namespace blaze {
 //@{
 template< typename MT, bool SO, typename ST >
 auto operator*=( SparseMatrix<MT,SO>& mat, ST scalar )
-   -> EnableIf_t< IsNumeric_v<ST>, MT& >;
+   -> EnableIf_t< IsScalar_v<ST>, MT& >;
 
 template< typename MT, bool SO, typename ST >
 auto operator*=( SparseMatrix<MT,SO>&& mat, ST scalar )
-   -> EnableIf_t< IsNumeric_v<ST>, MT& >;
+   -> EnableIf_t< IsScalar_v<ST>, MT& >;
 
 template< typename MT, bool SO, typename ST >
 auto operator/=( SparseMatrix<MT,SO>& mat, ST scalar )
-   -> EnableIf_t< IsNumeric_v<ST>, MT& >;
+   -> EnableIf_t< IsScalar_v<ST>, MT& >;
 
 template< typename MT, bool SO, typename ST >
 auto operator/=( SparseMatrix<MT,SO>&& mat, ST scalar )
-   -> EnableIf_t< IsNumeric_v<ST>, MT& >;
+   -> EnableIf_t< IsScalar_v<ST>, MT& >;
 //@}
 //*************************************************************************************************
 
@@ -137,7 +138,7 @@ template< typename MT    // Type of the left-hand side sparse matrix
         , bool SO        // Storage order
         , typename ST >  // Data type of the right-hand side scalar
 inline auto operator*=( SparseMatrix<MT,SO>& mat, ST scalar )
-   -> EnableIf_t< IsNumeric_v<ST>, MT& >
+   -> EnableIf_t< IsScalar_v<ST>, MT& >
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT );
 
@@ -188,7 +189,7 @@ template< typename MT    // Type of the left-hand side sparse matrix
         , bool SO        // Storage order
         , typename ST >  // Data type of the right-hand side scalar
 inline auto operator*=( SparseMatrix<MT,SO>&& mat, ST scalar )
-   -> EnableIf_t< IsNumeric_v<ST>, MT& >
+   -> EnableIf_t< IsScalar_v<ST>, MT& >
 {
    return operator*=( ~mat, scalar );
 }
@@ -214,7 +215,7 @@ template< typename MT    // Type of the left-hand side sparse matrix
         , bool SO        // Storage order
         , typename ST >  // Data type of the right-hand side scalar
 inline auto operator/=( SparseMatrix<MT,SO>& mat, ST scalar )
-   -> EnableIf_t< IsNumeric_v<ST>, MT& >
+   -> EnableIf_t< IsScalar_v<ST>, MT& >
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT );
 
@@ -281,7 +282,7 @@ template< typename MT    // Type of the left-hand side sparse matrix
         , bool SO        // Storage order
         , typename ST >  // Data type of the right-hand side scalar
 inline auto operator/=( SparseMatrix<MT,SO>&& mat, ST scalar )
-   -> EnableIf_t< IsNumeric_v<ST>, MT& >
+   -> EnableIf_t< IsScalar_v<ST>, MT& >
 {
    return operator/=( ~mat, scalar );
 }
