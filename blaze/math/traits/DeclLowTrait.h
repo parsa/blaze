@@ -91,8 +91,8 @@ auto evalDeclLowTrait( const volatile T& ) -> DeclLowTraitEval<T>;
 // following example shows the according specialization for the SymmetricMatrix class template:
 
    \code
-   template< typename MT, bool SO, bool DF, bool NF >
-   struct DeclLowTrait< SymmetricMatrix<MT,SO,DF,NF> >
+   template< typename MT, bool SO, bool DF, bool SF >
+   struct DeclLowTrait< SymmetricMatrix<MT,SO,DF,SF> >
    {
       using Type = DiagonalMatrix<MT>;
    };

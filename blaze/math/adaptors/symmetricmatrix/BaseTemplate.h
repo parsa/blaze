@@ -41,8 +41,9 @@
 //*************************************************************************************************
 
 #include <blaze/math/typetraits/IsDenseMatrix.h>
-#include <blaze/math/typetraits/IsNumericMatrix.h>
+#include <blaze/math/typetraits/IsScalar.h>
 #include <blaze/math/typetraits/StorageOrder.h>
+#include <blaze/math/typetraits/UnderlyingElement.h>
 
 
 namespace blaze {
@@ -71,7 +72,7 @@ namespace blaze {
    \code
    namespace blaze {
 
-   template< typename MT, bool SO, bool DF, bool NF >
+   template< typename MT, bool SO, bool DF, bool SF >
    class SymmetricMatrix;
 
    } // namespace blaze
@@ -89,7 +90,7 @@ namespace blaze {
 //        parameter doesn't have to be defined explicitly, it is automatically derived from the
 //        first template parameter. Defining the parameter explicitly may result in a compilation
 //        error!
-//  - NF: determines how the elements of the matrix are handled internally. In order to provide
+//  - SF: determines how the elements of the matrix are handled internally. In order to provide
 //        maximum performance and to save memory by exploiting the symmetry of the matrix, the
 //        SymmetricMatrix class template implements several storage strategies. This template
 //        parameter must \b NOT be defined explicitly, it is automatically derived from the first
@@ -605,10 +606,10 @@ namespace blaze {
    C = A * B;  // Is not guaranteed to result in a symmetric matrix; some runtime overhead
    \endcode
 */
-template< typename MT                        // Type of the adapted matrix
-        , bool SO = StorageOrder_v<MT>       // Storage order of the adapted matrix
-        , bool DF = IsDenseMatrix_v<MT>      // Density flag
-        , bool NF = IsNumericMatrix_v<MT> >  // Numeric flag
+template< typename MT                                        // Type of the adapted matrix
+        , bool SO = StorageOrder_v<MT>                       // Storage order of the adapted matrix
+        , bool DF = IsDenseMatrix_v<MT>                      // Density flag
+        , bool SF = IsScalar_v< UnderlyingElement_t<MT> > >  // Scalar flag
 class SymmetricMatrix
 {};
 //*************************************************************************************************

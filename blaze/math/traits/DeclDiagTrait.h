@@ -92,8 +92,8 @@ auto evalDeclDiagTrait( const volatile T& ) -> DeclDiagTraitEval<T>;
 // The following example shows the according specialization for the SymmetricMatrix class template:
 
    \code
-   template< typename MT, bool SO, bool DF, bool NF >
-   struct DeclDiagTrait< SymmetricMatrix<MT,SO,DF,NF> >
+   template< typename MT, bool SO, bool DF, bool SF >
+   struct DeclDiagTrait< SymmetricMatrix<MT,SO,DF,SF> >
    {
       using Type = DiagonalMatrix<MT>;
    };

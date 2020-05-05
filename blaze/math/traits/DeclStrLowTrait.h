@@ -93,8 +93,8 @@ auto evalDeclStrLowTrait( const volatile T& ) -> DeclStrLowTraitEval<T>;
 // class template:
 
    \code
-   template< typename MT, bool SO, bool DF, bool NF >
-   struct DeclStrLowTrait< SymmetricMatrix<MT,SO,DF,NF> >
+   template< typename MT, bool SO, bool DF, bool SF >
+   struct DeclStrLowTrait< SymmetricMatrix<MT,SO,DF,SF> >
    {
       using Type = IdentityMatrix<ElementType_t<MT>,SO>;
    };

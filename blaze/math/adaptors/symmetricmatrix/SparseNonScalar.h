@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze/math/adaptors/symmetricmatrix/SparseNonNumeric.h
-//  \brief SymmetricMatrix specialization for sparse matrices with non-numeric element type
+//  \file blaze/math/adaptors/symmetricmatrix/SparseNonScalar.h
+//  \brief SymmetricMatrix specialization for sparse matrices with non-scalar element type
 //
 //  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
@@ -32,8 +32,8 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_MATH_ADAPTORS_SYMMETRICMATRIX_SPARSENONNUMERIC_H_
-#define _BLAZE_MATH_ADAPTORS_SYMMETRICMATRIX_SPARSENONNUMERIC_H_
+#ifndef _BLAZE_MATH_ADAPTORS_SYMMETRICMATRIX_SPARSENONSCALAR_H_
+#define _BLAZE_MATH_ADAPTORS_SYMMETRICMATRIX_SPARSENONSCALAR_H_
 
 
 //*************************************************************************************************
@@ -44,13 +44,14 @@
 #include <utility>
 #include <vector>
 #include <blaze/math/adaptors/symmetricmatrix/BaseTemplate.h>
-#include <blaze/math/adaptors/symmetricmatrix/NonNumericProxy.h>
+#include <blaze/math/adaptors/symmetricmatrix/NonScalarProxy.h>
 #include <blaze/math/adaptors/symmetricmatrix/SharedValue.h>
 #include <blaze/math/Aliases.h>
 #include <blaze/math/constraints/Computation.h>
 #include <blaze/math/constraints/Hermitian.h>
 #include <blaze/math/constraints/Lower.h>
 #include <blaze/math/constraints/Resizable.h>
+#include <blaze/math/constraints/Scalar.h>
 #include <blaze/math/constraints/SparseMatrix.h>
 #include <blaze/math/constraints/StorageOrder.h>
 #include <blaze/math/constraints/Symmetric.h>
@@ -70,13 +71,13 @@
 #include <blaze/math/traits/SchurTrait.h>
 #include <blaze/math/traits/SubTrait.h>
 #include <blaze/math/typetraits/IsComputation.h>
+#include <blaze/math/typetraits/IsScalar.h>
 #include <blaze/math/typetraits/IsSquare.h>
 #include <blaze/math/typetraits/IsSymmetric.h>
 #include <blaze/math/typetraits/RemoveAdaptor.h>
 #include <blaze/math/typetraits/Size.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Const.h>
-#include <blaze/util/constraints/Numeric.h>
 #include <blaze/util/constraints/Pointer.h>
 #include <blaze/util/constraints/Reference.h>
 #include <blaze/util/constraints/Volatile.h>
@@ -84,7 +85,6 @@
 #include <blaze/util/MaybeUnused.h>
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/StaticAssert.h>
-#include <blaze/util/typetraits/IsNumeric.h>
 #include <blaze/util/Types.h>
 
 
@@ -92,17 +92,17 @@ namespace blaze {
 
 //=================================================================================================
 //
-//  CLASS TEMPLATE SPECIALIZATION FOR SPARSE MATRICES WITH NON-NUMERIC ELEMENT TYPE
+//  CLASS TEMPLATE SPECIALIZATION FOR SPARSE MATRICES WITH NON-SCALAR ELEMENT TYPE
 //
 //=================================================================================================
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Specialization of SymmetricMatrix for sparse matrices with non-numeric element type.
+/*!\brief Specialization of SymmetricMatrix for sparse matrices with non-scalar element type.
 // \ingroup symmetric_matrix
 //
 // This specialization of SymmetricMatrix adapts the class template to the requirements of sparse
-// matrices with non-numeric element type.
+// matrices with non-scalar element type.
 */
 template< typename MT  // Type of the adapted sparse matrix
         , bool SO >    // Storage order of the adapted sparse matrix
@@ -130,7 +130,7 @@ class SymmetricMatrix<MT,SO,false,false>
    using TagType        = TagType_t<MT>;                        //!< Tag type of this SymmetricMatrix instance.
    using ReturnType     = ReturnType_t<MT>;                     //!< Return type for expression template evaluations.
    using CompositeType  = const This&;                          //!< Data type for composite expression templates.
-   using Reference      = NonNumericProxy<MatrixType>;          //!< Reference to a non-constant matrix value.
+   using Reference      = NonScalarProxy<MatrixType>;           //!< Reference to a non-constant matrix value.
    using ConstReference = ConstReference_t<MT>;                 //!< Reference to a constant matrix value.
    //**********************************************************************************************
 
@@ -538,10 +538,10 @@ class SymmetricMatrix<MT,SO,false,false>
    inline auto operator%=( const Matrix<MT2,!SO>& rhs ) -> SymmetricMatrix&;
 
    template< typename ST >
-   inline auto operator*=( ST rhs ) -> EnableIf_t< IsNumeric_v<ST>, SymmetricMatrix& >;
+   inline auto operator*=( ST rhs ) -> EnableIf_t< IsScalar_v<ST>, SymmetricMatrix& >;
 
    template< typename ST >
-   inline auto operator/=( ST rhs ) -> EnableIf_t< IsNumeric_v<ST>, SymmetricMatrix& >;
+   inline auto operator/=( ST rhs ) -> EnableIf_t< IsScalar_v<ST>, SymmetricMatrix& >;
    //@}
    //**********************************************************************************************
 
@@ -650,8 +650,8 @@ class SymmetricMatrix<MT,SO,false,false>
    //**********************************************************************************************
 
    //**Friend declarations*************************************************************************
-   template< RelaxationFlag RF, typename MT2, bool SO2, bool DF2, bool NF2 >
-   friend bool isDefault( const SymmetricMatrix<MT2,SO2,DF2,NF2>& m );
+   template< RelaxationFlag RF, typename MT2, bool SO2, bool DF2, bool SF2 >
+   friend bool isDefault( const SymmetricMatrix<MT2,SO2,DF2,SF2>& m );
    //**********************************************************************************************
 
    //**Compile time checks*************************************************************************
@@ -669,7 +669,7 @@ class SymmetricMatrix<MT,SO,false,false>
    BLAZE_CONSTRAINT_MUST_NOT_BE_UPPER_MATRIX_TYPE    ( MT );
    BLAZE_CONSTRAINT_MUST_BE_MATRIX_WITH_STORAGE_ORDER( OT, !SO );
    BLAZE_CONSTRAINT_MUST_BE_MATRIX_WITH_STORAGE_ORDER( TT, !SO );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_NUMERIC_TYPE         ( ElementType );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SCALAR_TYPE          ( ElementType );
    BLAZE_STATIC_ASSERT( ( Size_v<MT,0UL> == Size_v<MT,1UL> ) );
    //**********************************************************************************************
 };
@@ -1559,7 +1559,7 @@ template< typename MT    // Type of the adapted sparse matrix
         , bool SO >      // Storage order of the adapted sparse matrix
 template< typename ST >  // Data type of the right-hand side scalar
 inline auto SymmetricMatrix<MT,SO,false,false>::operator*=( ST rhs )
-   -> EnableIf_t< IsNumeric_v<ST>, SymmetricMatrix& >
+   -> EnableIf_t< IsScalar_v<ST>, SymmetricMatrix& >
 {
    for( size_t i=0UL; i<rows(); ++i ) {
       const auto last( matrix_.upperBound(i,i) );
@@ -1585,7 +1585,7 @@ template< typename MT    // Type of the adapted sparse matrix
         , bool SO >      // Storage order of the adapted sparse matrix
 template< typename ST >  // Data type of the right-hand side scalar
 inline auto SymmetricMatrix<MT,SO,false,false>::operator/=( ST rhs )
-   -> EnableIf_t< IsNumeric_v<ST>, SymmetricMatrix& >
+   -> EnableIf_t< IsScalar_v<ST>, SymmetricMatrix& >
 {
    BLAZE_USER_ASSERT( !isZero( rhs ), "Division by zero detected" );
 

@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze/math/adaptors/symmetricmatrix/NumericProxy.h
-//  \brief Header file for the NumericProxy class
+//  \file blaze/math/adaptors/symmetricmatrix/NonScalarProxy.h
+//  \brief Header file for the NonScalarProxy class
 //
 //  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
@@ -32,8 +32,8 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_MATH_ADAPTORS_SYMMETRICMATRIX_NUMERICPROXY_H_
-#define _BLAZE_MATH_ADAPTORS_SYMMETRICMATRIX_NUMERICPROXY_H_
+#ifndef _BLAZE_MATH_ADAPTORS_SYMMETRICMATRIX_NONSCALARPROXY_H_
+#define _BLAZE_MATH_ADAPTORS_SYMMETRICMATRIX_NONSCALARPROXY_H_
 
 
 //*************************************************************************************************
@@ -44,29 +44,28 @@
 #include <blaze/math/constraints/Computation.h>
 #include <blaze/math/constraints/Hermitian.h>
 #include <blaze/math/constraints/Lower.h>
-#include <blaze/math/constraints/Matrix.h>
+#include <blaze/math/constraints/Scalar.h>
+#include <blaze/math/constraints/SparseMatrix.h>
 #include <blaze/math/constraints/Symmetric.h>
 #include <blaze/math/constraints/Transformation.h>
 #include <blaze/math/constraints/Upper.h>
 #include <blaze/math/constraints/View.h>
+#include <blaze/math/InitializerList.h>
 #include <blaze/math/proxy/Proxy.h>
 #include <blaze/math/RelaxationFlag.h>
 #include <blaze/math/shims/Clear.h>
-#include <blaze/math/shims/Invert.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/shims/IsOne.h>
 #include <blaze/math/shims/IsReal.h>
 #include <blaze/math/shims/IsZero.h>
 #include <blaze/math/shims/Reset.h>
+#include <blaze/math/typetraits/IsRowMajorMatrix.h>
+#include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Const.h>
-#include <blaze/util/constraints/Numeric.h>
 #include <blaze/util/constraints/Pointer.h>
 #include <blaze/util/constraints/Reference.h>
 #include <blaze/util/constraints/Volatile.h>
-#include <blaze/util/InvalidType.h>
-#include <blaze/util/mpl/If.h>
 #include <blaze/util/Types.h>
-#include <blaze/util/typetraits/IsComplex.h>
 
 
 namespace blaze {
@@ -78,123 +77,99 @@ namespace blaze {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Access proxy for symmetric, square matrices with numeric element types.
+/*!\brief Access proxy for symmetric, square matrices with non-scalar element types.
 // \ingroup symmetric_matrix
 //
-// The NumericProxy provides controlled access to the elements of a non-const symmetric matrix
-// with numeric element type (e.g. integral values, floating point values, and complex values).
-// It guarantees that a modification of element \f$ a_{ij} \f$ of the accessed matrix is also
-// applied to element \f$ a_{ji} \f$. The following example illustrates this by means of a
-// \f$ 3 \times 3 \f$ dense symmetric matrix:
+// The NonScalarProxy provides controlled access to the elements of a non-const symmetric matrix
+// with non-scalar element type (e.g. vectors or matrices). It guarantees that a modification of
+// element \f$ a_{ij} \f$ of the accessed matrix is also applied to element \f$ a_{ji} \f$. The
+// following example illustrates this by means of a \f$ 3 \times 3 \f$ sparse symmetric matrix
+// with StaticVector elements:
 
    \code
-   // Creating a 3x3 symmetric dense matrix
-   blaze::SymmetricMatrix< blaze::DynamicMatrix<int> > A( 3UL );
+   using blaze::CompressedMatrix;
+   using blaze::StaticVector;
+   using blaze::SymmetricMatrix;
 
-   A(0,2) = -2;  //        (  0 0 -2 )
-   A(1,1) =  3;  // => A = (  0 3  5 )
-   A(1,2) =  5;  //        ( -2 5  0 )
+   using Vector = StaticVector<int,3UL>;
+
+   // Creating a 3x3 symmetric sparses matrix
+   SymmetricMatrix< CompressedMatrix< Vector > > A( 3UL );
+
+   A(0,2) = Vector( -2,  1 );  //        ( (  0 0 ) ( 0  0 ) ( -2  1 ) )
+   A(1,1) = Vector(  3,  4 );  // => A = ( (  0 0 ) ( 3  4 ) (  5 -1 ) )
+   A(1,2) = Vector(  5, -1 );  //        ( ( -2 1 ) ( 5 -1 ) (  0  0 ) )
    \endcode
 */
 template< typename MT >  // Type of the adapted matrix
-class NumericProxy
-   : public Proxy< NumericProxy<MT> >
+class NonScalarProxy
+   : public Proxy< NonScalarProxy<MT>, ValueType_t< ElementType_t<MT> > >
 {
  private:
-   //**struct BuiltinType**************************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   /*!\brief Auxiliary struct to determine the value type of the represented complex element.
-   */
-   template< typename T >
-   struct BuiltinType { using Type = INVALID_TYPE; };
-   /*! \endcond */
+   //**Enumerations********************************************************************************
+   //! Compile time flag indicating whether the given matrix type is a row-major matrix.
+   static constexpr bool rmm = IsRowMajorMatrix_v<MT>;
    //**********************************************************************************************
 
-   //**struct ComplexType**************************************************************************
+   //**Type definitions****************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   /*!\brief Auxiliary struct to determine the value type of the represented complex element.
-   */
-   template< typename T >
-   struct ComplexType { using Type = typename T::value_type; };
+   using ET = ElementType_t<MT>;  //!< Element type of the adapted matrix.
    /*! \endcond */
    //**********************************************************************************************
 
  public:
    //**Type definitions****************************************************************************
-   using RepresentedType = ElementType_t<MT>;     //!< Type of the represented matrix element.
-   using Reference       = Reference_t<MT>;       //!< Reference to the represented element.
-   using ConstReference  = ConstReference_t<MT>;  //!< Reference-to-const to the represented element.
-   using Pointer         = NumericProxy*;         //!< Pointer to the represented element.
-   using ConstPointer    = const NumericProxy*;   //!< Pointer-to-const to the represented element.
-
-   //! Value type of the represented complex element.
-   using ValueType = typename If_t< IsComplex_v<RepresentedType>
-                                  , ComplexType<RepresentedType>
-                                  , BuiltinType<RepresentedType> >::Type;
+   using RepresentedType = ValueType_t<ET>;  //!< Type of the represented matrix element.
+   using RawReference    = Reference_t<ET>;  //!< Raw reference to the represented element.
    //**********************************************************************************************
 
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   inline NumericProxy( MT& matrix, size_t row, size_t column );
+   inline NonScalarProxy( MT& sm, size_t i, size_t j );
 
-   NumericProxy( const NumericProxy& ) = default;
+   NonScalarProxy( const NonScalarProxy& ) = default;
    //@}
    //**********************************************************************************************
 
    //**Destructor**********************************************************************************
    /*!\name Destructor */
    //@{
-   ~NumericProxy() = default;
+   inline ~NonScalarProxy();
    //@}
    //**********************************************************************************************
 
-   //**Assignment operators************************************************************************
-   /*!\name Assignment operators */
+   //**Operators***********************************************************************************
+   /*!\name Operators */
    //@{
-                          inline NumericProxy& operator= ( const NumericProxy& sp );
-   template< typename T > inline NumericProxy& operator= ( const T& value );
-   template< typename T > inline NumericProxy& operator+=( const T& value );
-   template< typename T > inline NumericProxy& operator-=( const T& value );
-   template< typename T > inline NumericProxy& operator*=( const T& value );
-   template< typename T > inline NumericProxy& operator/=( const T& value );
-   template< typename T > inline NumericProxy& operator%=( const T& value );
-   //@}
-   //**********************************************************************************************
+   inline NonScalarProxy& operator= ( const NonScalarProxy& nsp );
 
-   //**Access operators****************************************************************************
-   /*!\name Access operators */
-   //@{
-   inline Pointer      operator->();
-   inline ConstPointer operator->() const;
+   template< typename T >
+   inline NonScalarProxy& operator=( initializer_list<T> list );
+
+   template< typename T >
+   inline NonScalarProxy& operator=( initializer_list< initializer_list<T> > list );
+
+   template< typename T > inline NonScalarProxy& operator= ( const T& value );
+   template< typename T > inline NonScalarProxy& operator+=( const T& value );
+   template< typename T > inline NonScalarProxy& operator-=( const T& value );
+   template< typename T > inline NonScalarProxy& operator*=( const T& value );
+   template< typename T > inline NonScalarProxy& operator/=( const T& value );
+   template< typename T > inline NonScalarProxy& operator%=( const T& value );
    //@}
    //**********************************************************************************************
 
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-   inline void reset () const;
-   inline void clear () const;
-   inline void invert() const;
-
-   inline ConstReference get() const noexcept;
+   inline RawReference get() const noexcept;
    //@}
    //**********************************************************************************************
 
    //**Conversion operator*************************************************************************
    /*!\name Conversion operator */
    //@{
-   inline operator ConstReference() const noexcept;
-   //@}
-   //**********************************************************************************************
-
-   //**Complex data access functions***************************************************************
-   /*!\name Complex data access functions */
-   //@{
-   inline ValueType real() const;
-   inline void      real( ValueType value ) const;
-   inline ValueType imag() const;
-   inline void      imag( ValueType value ) const;
+   inline operator RawReference() const noexcept;
    //@}
    //**********************************************************************************************
 
@@ -203,14 +178,21 @@ class NumericProxy
    /*!\name Member variables */
    //@{
    MT&    matrix_;  //!< Reference to the adapted matrix.
-   size_t row_;     //!< Row index of the accessed matrix element.
-   size_t column_;  //!< Column index of the accessed matrix element.
+   size_t i_;       //!< Row-index of the accessed matrix element.
+   size_t j_;       //!< Column-index of the accessed matrix element.
+   //@}
+   //**********************************************************************************************
+
+   //**Forbidden operations************************************************************************
+   /*!\name Forbidden operations */
+   //@{
+   void* operator&() const;  //!< Address operator (private & undefined)
    //@}
    //**********************************************************************************************
 
    //**Compile time checks*************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   BLAZE_CONSTRAINT_MUST_BE_MATRIX_TYPE              ( MT );
+   BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE       ( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_REFERENCE_TYPE       ( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_POINTER_TYPE         ( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_CONST                ( MT );
@@ -222,7 +204,7 @@ class NumericProxy
    BLAZE_CONSTRAINT_MUST_NOT_BE_HERMITIAN_MATRIX_TYPE( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_LOWER_MATRIX_TYPE    ( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_UPPER_MATRIX_TYPE    ( MT );
-   BLAZE_CONSTRAINT_MUST_BE_NUMERIC_TYPE             ( RepresentedType );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SCALAR_TYPE          ( RepresentedType );
    /*! \endcond */
    //**********************************************************************************************
 };
@@ -238,18 +220,58 @@ class NumericProxy
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Initialization constructor for a NumericProxy.
+/*!\brief Initialization constructor for a NonScalarProxy.
 //
 // \param matrix Reference to the adapted matrix.
-// \param row The row-index of the accessed matrix element.
-// \param column The column-index of the accessed matrix element.
+// \param i The row-index of the accessed matrix element.
+// \param j The column-index of the accessed matrix element.
 */
 template< typename MT >  // Type of the adapted matrix
-inline NumericProxy<MT>::NumericProxy( MT& matrix, size_t row, size_t column )
+inline NonScalarProxy<MT>::NonScalarProxy( MT& matrix, size_t i, size_t j )
    : matrix_( matrix )  // Reference to the adapted matrix
-   , row_   ( row    )  // Row index of the accessed matrix element
-   , column_( column )  // Column index of the accessed matrix element
-{}
+   , i_     ( i )       // Row-index of the accessed matrix element
+   , j_     ( j )       // Column-index of the accessed matrix element
+{
+   const typename MT::Iterator pos( matrix_.find( i_, j_ ) );
+   const size_t index( rmm ? i_ : j_ );
+
+   if( pos == matrix_.end(index) )
+   {
+      const ElementType_t<MT> element( ( RepresentedType() ) );
+      matrix_.insert( i_, j_, element );
+      if( i_ != j_ )
+         matrix_.insert( j_, i_, element );
+   }
+
+   BLAZE_INTERNAL_ASSERT( matrix_.find(i_,j_)->value() == matrix_.find(j_,i_)->value(), "Unbalance detected" );
+}
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  DESTRUCTORS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*!\brief The destructor for NonScalarProxy.
+*/
+template< typename MT >  // Type of the adapted matrix
+inline NonScalarProxy<MT>::~NonScalarProxy()
+{
+   const typename MT::Iterator pos( matrix_.find( i_, j_ ) );
+   const size_t index( rmm ? i_ : j_ );
+
+   if( pos != matrix_.end( index ) && isDefault( *pos->value() ) )
+   {
+      matrix_.erase( index, pos );
+      if( i_ != j_ )
+         matrix_.erase( ( rmm ? j_ : i_ ), matrix_.find( j_, i_ ) );
+   }
+}
 //*************************************************************************************************
 
 
@@ -262,16 +284,31 @@ inline NumericProxy<MT>::NumericProxy( MT& matrix, size_t row, size_t column )
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Copy assignment operator for NumericProxy.
+/*!\brief Copy assignment operator for NonScalarProxy.
 //
-// \param np Numeric proxy to be copied.
+// \param nsp Non-scalar access proxy to be copied.
+// \return Reference to the assigned access proxy.
+*/
+template< typename MT >  // Type of the adapted matrix
+inline NonScalarProxy<MT>& NonScalarProxy<MT>::operator=( const NonScalarProxy& nsp )
+{
+   get() = nsp.get();
+   return *this;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Initializer list assignment to the represented matrix element.
+//
+// \param list The list to be assigned to the matrix element.
 // \return Reference to the assigned proxy.
 */
 template< typename MT >  // Type of the adapted matrix
-inline NumericProxy<MT>& NumericProxy<MT>::operator=( const NumericProxy& np )
+template< typename T >   // Type of the right-hand side value
+inline NonScalarProxy<MT>& NonScalarProxy<MT>::operator=( initializer_list<T> list )
 {
-   matrix_(row_,column_) = np.matrix_(np.row_,np.column_);
-   matrix_(column_,row_) = np.matrix_(np.row_,np.column_);
+   get() = list;
 
    return *this;
 }
@@ -279,149 +316,114 @@ inline NumericProxy<MT>& NumericProxy<MT>::operator=( const NumericProxy& np )
 
 
 //*************************************************************************************************
-/*!\brief Assignment to the accessed matrix element.
+/*!\brief Initializer list assignment to the represented matrix element.
+//
+// \param list The list to be assigned to the matrix element.
+// \return Reference to the assigned proxy.
+*/
+template< typename MT >  // Type of the adapted matrix
+template< typename T >   // Type of the right-hand side value
+inline NonScalarProxy<MT>& NonScalarProxy<MT>::operator=( initializer_list< initializer_list<T> > list )
+{
+   get() = list;
+
+   return *this;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Assignment to the represented matrix element.
 //
 // \param value The new value of the matrix element.
-// \return Reference to the assigned proxy.
+// \return Reference to the assigned access proxy.
 */
 template< typename MT >  // Type of the adapted matrix
 template< typename T >   // Type of the right-hand side value
-inline NumericProxy<MT>& NumericProxy<MT>::operator=( const T& value )
+inline NonScalarProxy<MT>& NonScalarProxy<MT>::operator=( const T& value )
 {
-   matrix_(row_,column_) = value;
-   if( row_ != column_ )
-      matrix_(column_,row_) = value;
-
+   get() = value;
    return *this;
 }
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\brief Addition assignment to the accessed matrix element.
+/*!\brief Addition assignment to the represented matrix element.
 //
 // \param value The right-hand side value to be added to the matrix element.
-// \return Reference to the assigned proxy.
+// \return Reference to the assigned access proxy.
 */
 template< typename MT >  // Type of the adapted matrix
 template< typename T >   // Type of the right-hand side value
-inline NumericProxy<MT>& NumericProxy<MT>::operator+=( const T& value )
+inline NonScalarProxy<MT>& NonScalarProxy<MT>::operator+=( const T& value )
 {
-   matrix_(row_,column_) += value;
-   if( row_ != column_ )
-      matrix_(column_,row_) += value;
-
+   get() += value;
    return *this;
 }
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\brief Subtraction assignment to the accessed matrix element.
+/*!\brief Subtraction assignment to the represented matrix element.
 //
 // \param value The right-hand side value to be subtracted from the matrix element.
-// \return Reference to the assigned proxy.
+// \return Reference to the assigned access proxy.
 */
 template< typename MT >  // Type of the adapted matrix
 template< typename T >   // Type of the right-hand side value
-inline NumericProxy<MT>& NumericProxy<MT>::operator-=( const T& value )
+inline NonScalarProxy<MT>& NonScalarProxy<MT>::operator-=( const T& value )
 {
-   matrix_(row_,column_) -= value;
-   if( row_ != column_ )
-      matrix_(column_,row_) -= value;
-
+   get() -= value;
    return *this;
 }
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\brief Multiplication assignment to the accessed matrix element.
+/*!\brief Multiplication assignment to the represented matrix element.
 //
 // \param value The right-hand side value for the multiplication.
-// \return Reference to the assigned proxy.
+// \return Reference to the assigned access proxy.
 */
 template< typename MT >  // Type of the adapted matrix
 template< typename T >   // Type of the right-hand side value
-inline NumericProxy<MT>& NumericProxy<MT>::operator*=( const T& value )
+inline NonScalarProxy<MT>& NonScalarProxy<MT>::operator*=( const T& value )
 {
-   matrix_(row_,column_) *= value;
-   if( row_ != column_ )
-      matrix_(column_,row_) *= value;
-
+   get() *= value;
    return *this;
 }
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\brief Division assignment to the accessed matrix element.
+/*!\brief Division assignment to the represented matrix element.
 //
 // \param value The right-hand side value for the division.
-// \return Reference to the assigned proxy.
+// \return Reference to the assigned access proxy.
 */
 template< typename MT >  // Type of the adapted matrix
 template< typename T >   // Type of the right-hand side value
-inline NumericProxy<MT>& NumericProxy<MT>::operator/=( const T& value )
+inline NonScalarProxy<MT>& NonScalarProxy<MT>::operator/=( const T& value )
 {
-   matrix_(row_,column_) /= value;
-   if( row_ != column_ )
-      matrix_(column_,row_) /= value;
-
+   get() /= value;
    return *this;
 }
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\brief Modulo assignment to the accessed matrix element.
+/*!\brief Modulo assignment to the represented matrix element.
 //
 // \param value The right-hand side value for the modulo operation.
-// \return Reference to the assigned proxy.
+// \return Reference to the assigned access proxy.
 */
 template< typename MT >  // Type of the adapted matrix
 template< typename T >   // Type of the right-hand side value
-inline NumericProxy<MT>& NumericProxy<MT>::operator%=( const T& value )
+inline NonScalarProxy<MT>& NonScalarProxy<MT>::operator%=( const T& value )
 {
-   matrix_(row_,column_) %= value;
-   if( row_ != column_ )
-      matrix_(column_,row_) %= value;
-
+   get() %= value;
    return *this;
-}
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  ACCESS OPERATORS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*!\brief Direct access to the represented matrix element.
-//
-// \return Pointer to the represented matrix element.
-*/
-template< typename MT >  // Type of the adapted matrix
-inline typename NumericProxy<MT>::Pointer NumericProxy<MT>::operator->()
-{
-   return this;
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Direct access to the represented matrix element.
-//
-// \return Pointer to the represented matrix element.
-*/
-template< typename MT >  // Type of the adapted matrix
-inline typename NumericProxy<MT>::ConstPointer NumericProxy<MT>::operator->() const
-{
-   return this;
 }
 //*************************************************************************************************
 
@@ -435,69 +437,16 @@ inline typename NumericProxy<MT>::ConstPointer NumericProxy<MT>::operator->() co
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Reset the represented element to its default initial value.
-//
-// \return void
-//
-// This function resets the element represented by the proxy to its default initial value.
-*/
-template< typename MT >  // Type of the adapted matrix
-inline void NumericProxy<MT>::reset() const
-{
-   using blaze::reset;
-
-   reset( matrix_(row_,column_) );
-   if( row_ != column_ )
-      reset( matrix_(column_,row_) );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Clearing the represented element.
-//
-// \return void
-//
-// This function clears the element represented by the proxy to its default initial state.
-*/
-template< typename MT >  // Type of the adapted matrix
-inline void NumericProxy<MT>::clear() const
-{
-   using blaze::clear;
-
-   clear( matrix_(row_,column_) );
-   if( row_ != column_ )
-      clear( matrix_(column_,row_) );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief In-place inversion of the represented element
-//
-// \return void
-*/
-template< typename MT >  // Type of the adapted matrix
-inline void NumericProxy<MT>::invert() const
-{
-   using blaze::invert;
-
-   invert( matrix_(row_,column_) );
-   if( row_ != column_ )
-      matrix_(column_,row_) = matrix_(row_,column_);
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Returning the value of the accessed matrix element.
+/*!\brief Returning a reference to the accessed matrix element.
 //
 // \return Direct/raw reference to the accessed matrix element.
 */
-template< typename MT >  // Type of the adapted matrix
-inline typename NumericProxy<MT>::ConstReference NumericProxy<MT>::get() const noexcept
+template< typename MT >  // Type of the sparse matrix
+inline typename NonScalarProxy<MT>::RawReference NonScalarProxy<MT>::get() const noexcept
 {
-   return const_cast<const MT&>( matrix_ )(row_,column_);
+   const typename MT::Iterator pos( matrix_.find( i_, j_ ) );
+   BLAZE_INTERNAL_ASSERT( pos != matrix_.end( rmm ? i_ : j_ ), "Missing matrix element detected" );
+   return *pos->value();
 }
 //*************************************************************************************************
 
@@ -511,91 +460,14 @@ inline typename NumericProxy<MT>::ConstReference NumericProxy<MT>::get() const n
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Conversion to the accessed matrix element.
+/*!\brief Conversion to the represented matrix element.
 //
-// \return Direct/raw reference to the accessed matrix element.
+// \return Direct/raw reference to the represented matrix element.
 */
 template< typename MT >  // Type of the adapted matrix
-inline NumericProxy<MT>::operator ConstReference() const noexcept
+inline NonScalarProxy<MT>::operator RawReference() const noexcept
 {
    return get();
-}
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  COMPLEX DATA ACCESS FUNCTIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*!\brief Returns the real part of the represented complex number.
-//
-// \return The current real part of the represented complex number.
-//
-// In case the proxy represents a complex number, this function returns the current value of its
-// real part.
-*/
-template< typename MT >  // Type of the adapted matrix
-inline typename NumericProxy<MT>::ValueType NumericProxy<MT>::real() const
-{
-   return matrix_(row_,column_).real();
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Setting the real part of the represented complex number.
-//
-// \param value The new value for the real part.
-// \return void
-//
-// In case the proxy represents a complex number, this function sets a new value to its real part.
-*/
-template< typename MT >  // Type of the adapted matrix
-inline void NumericProxy<MT>::real( ValueType value ) const
-{
-   matrix_(row_,column_).real( value );
-   if( row_ != column_ )
-      matrix_(column_,row_).real( value );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Returns the imaginary part of the represented complex number.
-//
-// \return The current imaginary part of the represented complex number.
-//
-// In case the proxy represents a complex number, this function returns the current value of its
-// imaginary part.
-*/
-template< typename MT >  // Type of the adapted matrix
-inline typename NumericProxy<MT>::ValueType NumericProxy<MT>::imag() const
-{
-   return matrix_(row_,column_).imag();
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Setting the imaginary part of the represented complex number.
-//
-// \param value The new value for the imaginary part.
-// \return void
-//
-// In case the proxy represents a complex number, this function sets a new value to its imaginary
-// part.
-*/
-template< typename MT >  // Type of the adapted matrix
-inline void NumericProxy<MT>::imag( ValueType value ) const
-{
-   matrix_(row_,column_).imag( value );
-   if( row_ != column_ )
-      matrix_(column_,row_).imag( value );
 }
 //*************************************************************************************************
 
@@ -609,28 +481,25 @@ inline void NumericProxy<MT>::imag( ValueType value ) const
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\name NumericProxy global functions */
+/*!\name NonScalarProxy global functions */
 //@{
 template< typename MT >
-void reset( const NumericProxy<MT>& proxy );
+void reset( const NonScalarProxy<MT>& proxy );
 
 template< typename MT >
-void clear( const NumericProxy<MT>& proxy );
-
-template< typename MT >
-void invert( const NumericProxy<MT>& proxy );
+void clear( const NonScalarProxy<MT>& proxy );
 
 template< RelaxationFlag RF, typename MT >
-bool isDefault( const NumericProxy<MT>& proxy );
+bool isDefault( const NonScalarProxy<MT>& proxy );
 
 template< RelaxationFlag RF, typename MT >
-bool isReal( const NumericProxy<MT>& proxy );
+bool isReal( const NonScalarProxy<MT>& proxy );
 
 template< RelaxationFlag RF, typename MT >
-bool isZero( const NumericProxy<MT>& proxy );
+bool isZero( const NonScalarProxy<MT>& proxy );
 
 template< RelaxationFlag RF, typename MT >
-bool isOne( const NumericProxy<MT>& proxy );
+bool isOne( const NonScalarProxy<MT>& proxy );
 //@}
 //*************************************************************************************************
 
@@ -642,13 +511,17 @@ bool isOne( const NumericProxy<MT>& proxy );
 // \param proxy The given access proxy.
 // \return void
 //
-// This function resets the element represented by the numeric proxy to its default initial
-// value.
+// This function resets the element represented by the access proxy to its default initial value.
+// In case the access proxy represents a vector- or matrix-like data structure that provides a
+// reset() function, this function resets all elements of the vector/matrix to the default initial
+// values.
 */
 template< typename MT >
-inline void reset( const NumericProxy<MT>& proxy )
+inline void reset( const NonScalarProxy<MT>& proxy )
 {
-   proxy.reset();
+   using blaze::reset;
+
+   reset( proxy.get() );
 }
 //*************************************************************************************************
 
@@ -660,28 +533,16 @@ inline void reset( const NumericProxy<MT>& proxy )
 // \param proxy The given access proxy.
 // \return void
 //
-// This function clears the element represented by the numeric proxy to its default initial
-// state.
+// This function clears the element represented by the access proxy to its default initial state.
+// In case the access proxy represents a vector- or matrix-like data structure that provides a
+// clear() function, this function clears the vector/matrix to its default initial state.
 */
 template< typename MT >
-inline void clear( const NumericProxy<MT>& proxy )
+inline void clear( const NonScalarProxy<MT>& proxy )
 {
-   proxy.clear();
-}
-//*************************************************************************************************
+   using blaze::clear;
 
-
-//*************************************************************************************************
-/*!\brief In-place inversion of the represented element.
-// \ingroup symmetric_matrix
-//
-// \param proxy The given proxy instance.
-// \return void
-*/
-template< typename MT >
-inline void invert( const NumericProxy<MT>& proxy )
-{
-   proxy.invert();
+   clear( proxy.get() );
 }
 //*************************************************************************************************
 
@@ -690,14 +551,14 @@ inline void invert( const NumericProxy<MT>& proxy )
 /*!\brief Returns whether the represented element is in default state.
 // \ingroup symmetric_matrix
 //
-// \param proxy The given access proxy
+// \param proxy The given access proxy.
 // \return \a true in case the represented element is in default state, \a false otherwise.
 //
 // This function checks whether the element represented by the access proxy is in default state.
 // In case it is in default state, the function returns \a true, otherwise it returns \a false.
 */
 template< RelaxationFlag RF, typename MT >
-inline bool isDefault( const NumericProxy<MT>& proxy )
+inline bool isDefault( const NonScalarProxy<MT>& proxy )
 {
    using blaze::isDefault;
 
@@ -719,7 +580,7 @@ inline bool isDefault( const NumericProxy<MT>& proxy )
 // to 0. Otherwise it returns \a false.
 */
 template< RelaxationFlag RF, typename MT >
-inline bool isReal( const NumericProxy<MT>& proxy )
+inline bool isReal( const NonScalarProxy<MT>& proxy )
 {
    using blaze::isReal;
 
@@ -739,7 +600,7 @@ inline bool isReal( const NumericProxy<MT>& proxy )
 // value 0. In case it is 0, the function returns \a true, otherwise it returns \a false.
 */
 template< RelaxationFlag RF, typename MT >
-inline bool isZero( const NumericProxy<MT>& proxy )
+inline bool isZero( const NonScalarProxy<MT>& proxy )
 {
    using blaze::isZero;
 
@@ -759,7 +620,7 @@ inline bool isZero( const NumericProxy<MT>& proxy )
 // value 1. In case it is 1, the function returns \a true, otherwise it returns \a false.
 */
 template< RelaxationFlag RF, typename MT >
-inline bool isOne( const NumericProxy<MT>& proxy )
+inline bool isOne( const NonScalarProxy<MT>& proxy )
 {
    using blaze::isOne;
 

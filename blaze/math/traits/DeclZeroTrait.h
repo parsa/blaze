@@ -95,8 +95,8 @@ auto evalDeclZeroTrait( const volatile T& ) -> DeclZeroTraitEval<T>;
 // class template:
 
    \code
-   template< typename MT, bool SO, bool DF, bool NF >
-   struct DeclZeroTrait< SymmetricMatrix<MT,SO,DF,NF> >
+   template< typename MT, bool SO, bool DF, bool SF >
+   struct DeclZeroTrait< SymmetricMatrix<MT,SO,DF,SF> >
    {
       using Type = ZeroMatrix< ElementType_t<MT>, SO >;
    };

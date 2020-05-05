@@ -78,8 +78,8 @@ namespace blaze {
 template< typename MT  // Type of the adapted matrix
         , bool SO      // Storage order of the adapted matrix
         , bool DF      // Density flag
-        , bool NF >    // Numeric flag
-class Rand< SymmetricMatrix<MT,SO,DF,NF> >
+        , bool SF >    // Scalar flag
+class Rand< SymmetricMatrix<MT,SO,DF,SF> >
 {
  public:
    //**********************************************************************************************
@@ -87,11 +87,11 @@ class Rand< SymmetricMatrix<MT,SO,DF,NF> >
    //
    // \return The generated random matrix.
    */
-   inline const SymmetricMatrix<MT,SO,DF,NF> generate() const
+   inline const SymmetricMatrix<MT,SO,DF,SF> generate() const
    {
       BLAZE_CONSTRAINT_MUST_NOT_BE_RESIZABLE_TYPE( MT );
 
-      SymmetricMatrix<MT,SO,DF,NF> matrix;
+      SymmetricMatrix<MT,SO,DF,SF> matrix;
       randomize( matrix );
       return matrix;
    }
@@ -103,11 +103,11 @@ class Rand< SymmetricMatrix<MT,SO,DF,NF> >
    // \param n The number of rows and columns of the random matrix.
    // \return The generated random matrix.
    */
-   inline const SymmetricMatrix<MT,SO,DF,NF> generate( size_t n ) const
+   inline const SymmetricMatrix<MT,SO,DF,SF> generate( size_t n ) const
    {
       BLAZE_CONSTRAINT_MUST_BE_RESIZABLE_TYPE( MT );
 
-      SymmetricMatrix<MT,SO,DF,NF> matrix( n );
+      SymmetricMatrix<MT,SO,DF,SF> matrix( n );
       randomize( matrix );
       return matrix;
    }
@@ -121,7 +121,7 @@ class Rand< SymmetricMatrix<MT,SO,DF,NF> >
    // \return The generated random matrix.
    // \exception std::invalid_argument Invalid number of non-zero elements.
    */
-   inline const SymmetricMatrix<MT,SO,DF,NF> generate( size_t n, size_t nonzeros ) const
+   inline const SymmetricMatrix<MT,SO,DF,SF> generate( size_t n, size_t nonzeros ) const
    {
       BLAZE_CONSTRAINT_MUST_BE_RESIZABLE_TYPE    ( MT );
       BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( MT );
@@ -130,7 +130,7 @@ class Rand< SymmetricMatrix<MT,SO,DF,NF> >
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid number of non-zero elements" );
       }
 
-      SymmetricMatrix<MT,SO,DF,NF> matrix( n );
+      SymmetricMatrix<MT,SO,DF,SF> matrix( n );
       randomize( matrix, nonzeros );
 
       return matrix;
@@ -145,11 +145,11 @@ class Rand< SymmetricMatrix<MT,SO,DF,NF> >
    // \return The generated random matrix.
    */
    template< typename Arg >  // Min/max argument type
-   inline const SymmetricMatrix<MT,SO,DF,NF> generate( const Arg& min, const Arg& max ) const
+   inline const SymmetricMatrix<MT,SO,DF,SF> generate( const Arg& min, const Arg& max ) const
    {
       BLAZE_CONSTRAINT_MUST_NOT_BE_RESIZABLE_TYPE( MT );
 
-      SymmetricMatrix<MT,SO,DF,NF> matrix;
+      SymmetricMatrix<MT,SO,DF,SF> matrix;
       randomize( matrix, min, max );
       return matrix;
    }
@@ -164,11 +164,11 @@ class Rand< SymmetricMatrix<MT,SO,DF,NF> >
    // \return The generated random matrix.
    */
    template< typename Arg >  // Min/max argument type
-   inline const SymmetricMatrix<MT,SO,DF,NF> generate( size_t n, const Arg& min, const Arg& max ) const
+   inline const SymmetricMatrix<MT,SO,DF,SF> generate( size_t n, const Arg& min, const Arg& max ) const
    {
       BLAZE_CONSTRAINT_MUST_BE_RESIZABLE_TYPE( MT );
 
-      SymmetricMatrix<MT,SO,DF,NF> matrix( n );
+      SymmetricMatrix<MT,SO,DF,SF> matrix( n );
       randomize( matrix, min, max );
       return matrix;
    }
@@ -185,7 +185,7 @@ class Rand< SymmetricMatrix<MT,SO,DF,NF> >
    // \exception std::invalid_argument Invalid number of non-zero elements.
    */
    template< typename Arg >  // Min/max argument type
-   inline const SymmetricMatrix<MT,SO,DF,NF>
+   inline const SymmetricMatrix<MT,SO,DF,SF>
       generate( size_t n, size_t nonzeros, const Arg& min, const Arg& max ) const
    {
       BLAZE_CONSTRAINT_MUST_BE_RESIZABLE_TYPE    ( MT );
@@ -195,7 +195,7 @@ class Rand< SymmetricMatrix<MT,SO,DF,NF> >
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid number of non-zero elements" );
       }
 
-      SymmetricMatrix<MT,SO,DF,NF> matrix( n );
+      SymmetricMatrix<MT,SO,DF,SF> matrix( n );
       randomize( matrix, nonzeros, min, max );
 
       return matrix;
@@ -208,7 +208,7 @@ class Rand< SymmetricMatrix<MT,SO,DF,NF> >
    // \param matrix The matrix to be randomized.
    // \return void
    */
-   inline void randomize( SymmetricMatrix<MT,SO,DF,NF>& matrix ) const
+   inline void randomize( SymmetricMatrix<MT,SO,DF,SF>& matrix ) const
    {
       randomize( matrix, typename IsDenseMatrix<MT>::Type() );
    }
@@ -222,7 +222,7 @@ class Rand< SymmetricMatrix<MT,SO,DF,NF> >
    // \return void
    // \exception std::invalid_argument Invalid number of non-zero elements.
    */
-   inline void randomize( SymmetricMatrix<MT,SO,DF,NF>& matrix, size_t nonzeros ) const
+   inline void randomize( SymmetricMatrix<MT,SO,DF,SF>& matrix, size_t nonzeros ) const
    {
       BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( MT );
 
@@ -254,7 +254,7 @@ class Rand< SymmetricMatrix<MT,SO,DF,NF> >
    // \return void
    */
    template< typename Arg >  // Min/max argument type
-   inline void randomize( SymmetricMatrix<MT,SO,DF,NF>& matrix,
+   inline void randomize( SymmetricMatrix<MT,SO,DF,SF>& matrix,
                           const Arg& min, const Arg& max ) const
    {
       randomize( matrix, min, max, typename IsDenseMatrix<MT>::Type() );
@@ -272,7 +272,7 @@ class Rand< SymmetricMatrix<MT,SO,DF,NF> >
    // \exception std::invalid_argument Invalid number of non-zero elements.
    */
    template< typename Arg >  // Min/max argument type
-   inline void randomize( SymmetricMatrix<MT,SO,DF,NF>& matrix,
+   inline void randomize( SymmetricMatrix<MT,SO,DF,SF>& matrix,
                           size_t nonzeros, const Arg& min, const Arg& max ) const
    {
       BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( MT );
@@ -333,7 +333,7 @@ class Rand< SymmetricMatrix<MT,SO,DF,NF> >
    // \param matrix The matrix to be randomized.
    // \return void
    */
-   inline void randomize( SymmetricMatrix<MT,SO,DF,NF>& matrix, TrueType ) const
+   inline void randomize( SymmetricMatrix<MT,SO,DF,SF>& matrix, TrueType ) const
    {
       BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( MT );
 
@@ -355,7 +355,7 @@ class Rand< SymmetricMatrix<MT,SO,DF,NF> >
    // \param matrix The matrix to be randomized.
    // \return void
    */
-   inline void randomize( SymmetricMatrix<MT,SO,DF,NF>& matrix, FalseType ) const
+   inline void randomize( SymmetricMatrix<MT,SO,DF,SF>& matrix, FalseType ) const
    {
       BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( MT );
 
@@ -378,7 +378,7 @@ class Rand< SymmetricMatrix<MT,SO,DF,NF> >
    // \return void
    */
    template< typename Arg >  // Min/max argument type
-   inline void randomize( SymmetricMatrix<MT,SO,DF,NF>& matrix,
+   inline void randomize( SymmetricMatrix<MT,SO,DF,SF>& matrix,
                           const Arg& min, const Arg& max, TrueType ) const
    {
       BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( MT );
@@ -404,7 +404,7 @@ class Rand< SymmetricMatrix<MT,SO,DF,NF> >
    // \return void
    */
    template< typename Arg >  // Min/max argument type
-   inline void randomize( SymmetricMatrix<MT,SO,DF,NF>& matrix,
+   inline void randomize( SymmetricMatrix<MT,SO,DF,SF>& matrix,
                           const Arg& min, const Arg& max, FalseType ) const
    {
       BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( MT );
@@ -440,8 +440,8 @@ class Rand< SymmetricMatrix<MT,SO,DF,NF> >
 */
 template< typename MT  // Type of the adapted matrix
         , bool SO      // Storage order of the adapted matrix
-        , bool NF >    // Numeric flag
-void makeSymmetric( SymmetricMatrix<MT,SO,true,NF>& matrix )
+        , bool SF >    // Scalar flag
+void makeSymmetric( SymmetricMatrix<MT,SO,true,SF>& matrix )
 {
    using blaze::randomize;
 
@@ -462,9 +462,9 @@ void makeSymmetric( SymmetricMatrix<MT,SO,true,NF>& matrix )
 */
 template< typename MT     // Type of the adapted matrix
         , bool SO         // Storage order of the adapted matrix
-        , bool NF         // Numeric flag
+        , bool SF         // Scalar flag
         , typename Arg >  // Min/max argument type
-void makeSymmetric( SymmetricMatrix<MT,SO,true,NF>& matrix, const Arg& min, const Arg& max )
+void makeSymmetric( SymmetricMatrix<MT,SO,true,SF>& matrix, const Arg& min, const Arg& max )
 {
    using blaze::randomize;
 
@@ -483,8 +483,8 @@ void makeSymmetric( SymmetricMatrix<MT,SO,true,NF>& matrix, const Arg& min, cons
 */
 template< typename MT  // Type of the adapted matrix
         , bool SO      // Storage order of the adapted matrix
-        , bool NF >    // Numeric flag
-void makeHermitian( SymmetricMatrix<MT,SO,true,NF>& matrix )
+        , bool SF >    // Scalar flag
+void makeHermitian( SymmetricMatrix<MT,SO,true,SF>& matrix )
 {
    using BT = UnderlyingBuiltin_t< ElementType_t<MT> >;
 
@@ -513,9 +513,9 @@ void makeHermitian( SymmetricMatrix<MT,SO,true,NF>& matrix )
 */
 template< typename MT     // Type of the adapted matrix
         , bool SO         // Storage order of the adapted matrix
-        , bool NF         // Numeric flag
+        , bool SF         // Scalar flag
         , typename Arg >  // Min/max argument type
-void makeHermitian( SymmetricMatrix<MT,SO,true,NF>& matrix, const Arg& min, const Arg& max )
+void makeHermitian( SymmetricMatrix<MT,SO,true,SF>& matrix, const Arg& min, const Arg& max )
 {
    using BT = UnderlyingBuiltin_t< ElementType_t<MT> >;
 
@@ -542,8 +542,8 @@ void makeHermitian( SymmetricMatrix<MT,SO,true,NF>& matrix, const Arg& min, cons
 */
 template< typename MT  // Type of the adapted matrix
         , bool SO      // Storage order of the adapted matrix
-        , bool NF >    // Numeric flag
-void makePositiveDefinite( SymmetricMatrix<MT,SO,true,NF>& matrix )
+        , bool SF >    // Scalar flag
+void makePositiveDefinite( SymmetricMatrix<MT,SO,true,SF>& matrix )
 {
    using BT = UnderlyingBuiltin_t< ElementType_t<MT> >;
 
