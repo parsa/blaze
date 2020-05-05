@@ -81,7 +81,6 @@
 #include <blaze/util/MaybeUnused.h>
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/Types.h>
-#include <blaze/util/typetraits/IsNumeric.h>
 #include <blaze/util/typetraits/IsSame.h>
 #include <blaze/util/typetraits/RemoveReference.h>
 
@@ -135,14 +134,12 @@ class DVecSVecOuterExpr
    //**Evaluation strategy*************************************************************************
    //! Compilation switch for the evaluation strategy of the multiplication expression.
    /*! The \a useAssign compile time constant expression represents a compilation switch for
-       the evaluation strategy of the multiplication expression. In case either the dense
-       or the sparse vector operand is a computational expression or if any of two involved
-       element types is not a numeric data type, \a useAssign will be set to \a true and the
-       multiplication expression will be evaluated via the \a assign function family. Otherwise
-       \a useAssign will be set to \a false and the expression will be evaluated via the
-       subscript operator. */
-   static constexpr bool useAssign =
-      ( IsComputation_v<VT1> || !IsNumeric_v<ET1> || IsComputation_v<VT2> || !IsNumeric_v<ET2> );
+       the evaluation strategy of the multiplication expression. In case either the dense or
+       the sparse vector operand is a computational expression, \a useAssign will be set to
+       \a true and the multiplication expression will be evaluated via the \a assign function
+       family. Otherwise \a useAssign will be set to \a false and the expression will be
+       evaluated via the subscript operator. */
+   static constexpr bool useAssign = ( IsComputation_v<VT1> || IsComputation_v<VT2> );
 
    /*! \cond BLAZE_INTERNAL */
    //! Helper variable template for the explicit application of the SFINAE principle.
