@@ -41,9 +41,9 @@
 //*************************************************************************************************
 
 #include <blaze/math/typetraits/IsExpression.h>
+#include <blaze/math/typetraits/IsMatrix.h>
+#include <blaze/math/typetraits/IsVector.h>
 #include <blaze/util/IntegralConstant.h>
-#include <blaze/util/typetraits/IsNumeric.h>
-#include <blaze/util/typetraits/IsReference.h>
 
 
 namespace blaze {
@@ -66,7 +66,7 @@ namespace blaze {
 */
 template< typename T >
 struct IsTemporary
-   : public BoolConstant< !IsReference_v<T> && !IsNumeric_v<T> && !IsExpression_v<T> >
+   : public BoolConstant< ( IsVector_v<T> || IsMatrix_v<T> ) && !IsExpression_v<T> >
 {};
 //*************************************************************************************************
 
