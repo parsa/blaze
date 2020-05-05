@@ -65,6 +65,7 @@
 #include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsPadded.h>
+#include <blaze/math/typetraits/IsScalar.h>
 #include <blaze/math/typetraits/IsTemporary.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
 #include <blaze/math/typetraits/UnderlyingBuiltin.h>
@@ -74,7 +75,6 @@
 #include <blaze/system/MacroDisable.h>
 #include <blaze/system/Thresholds.h>
 #include <blaze/util/Assert.h>
-#include <blaze/util/constraints/Numeric.h>
 #include <blaze/util/constraints/SameType.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/FunctionTrace.h>
@@ -992,7 +992,7 @@ class DVecScalarMultExpr
    /*! \cond BLAZE_INTERNAL */
    BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( VT );
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( VT, TF );
-   BLAZE_CONSTRAINT_MUST_BE_NUMERIC_TYPE( ST );
+   BLAZE_CONSTRAINT_MUST_BE_SCALAR_TYPE( ST );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ST, RightOperand );
    /*! \endcond */
    //**********************************************************************************************
@@ -1071,7 +1071,7 @@ inline decltype(auto) operator-( const DenseVector<VT,TF>& dv )
 template< typename VT  // Type of the left-hand side dense vector
         , typename ST  // Type of the right-hand side scalar
         , bool TF      // Transpose flag
-        , EnableIf_t< IsNumeric_v<ST> >* = nullptr >
+        , EnableIf_t< IsScalar_v<ST> >* = nullptr >
 inline decltype(auto) operator*( const DenseVector<VT,TF>& vec, ST scalar )
 {
    BLAZE_FUNCTION_TRACE;
@@ -1108,7 +1108,7 @@ inline decltype(auto) operator*( const DenseVector<VT,TF>& vec, ST scalar )
 template< typename ST  // Type of the left-hand side scalar
         , typename VT  // Type of the right-hand side dense vector
         , bool TF      // Transpose flag
-        , EnableIf_t< IsNumeric_v<ST> >* = nullptr >
+        , EnableIf_t< IsScalar_v<ST> >* = nullptr >
 inline decltype(auto) operator*( ST scalar, const DenseVector<VT,TF>& vec )
 {
    BLAZE_FUNCTION_TRACE;
