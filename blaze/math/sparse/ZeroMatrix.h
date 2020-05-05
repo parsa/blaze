@@ -72,6 +72,7 @@
 #include <blaze/math/typetraits/IsMatrix.h>
 #include <blaze/math/typetraits/IsResizable.h>
 #include <blaze/math/typetraits/IsRowVector.h>
+#include <blaze/math/typetraits/IsScalar.h>
 #include <blaze/math/typetraits/IsSMPAssignable.h>
 #include <blaze/math/typetraits/IsSparseMatrix.h>
 #include <blaze/math/typetraits/IsSparseVector.h>
@@ -1637,7 +1638,7 @@ struct SchurTraitEval1< T1, T2
 /*! \cond BLAZE_INTERNAL */
 template< typename T1, typename T2 >
 struct MultTraitEval1< T1, T2
-                     , EnableIf_t< IsMatrix_v<T1> && IsZero_v<T1> && IsNumeric_v<T2> > >
+                     , EnableIf_t< IsMatrix_v<T1> && IsZero_v<T1> && IsScalar_v<T2> > >
 {
    using Type = ZeroMatrix< MultTrait_t< ElementType_t<T1>, T2 >
                           , StorageOrder_v<T1>
@@ -1646,7 +1647,7 @@ struct MultTraitEval1< T1, T2
 
 template< typename T1, typename T2 >
 struct MultTraitEval1< T1, T2
-                     , EnableIf_t< IsNumeric_v<T1> && IsMatrix_v<T2> && IsZero_v<T2> > >
+                     , EnableIf_t< IsScalar_v<T1> && IsMatrix_v<T2> && IsZero_v<T2> > >
 {
    using Type = ZeroMatrix< MultTrait_t< T1, ElementType_t<T2> >
                           , StorageOrder_v<T2>
@@ -1719,7 +1720,7 @@ struct KronTraitEval1< T1, T2
 template< typename T1, typename T2 >
 struct DivTraitEval1< T1, T2
                     , EnableIf_t< IsMatrix_v<T1> &&
-                                  IsNumeric_v<T2> &&
+                                  IsScalar_v<T2> &&
                                   IsZero_v<T1> > >
 {
    using Type = ZeroMatrix< DivTrait_t< ElementType_t<T1>, T2 >
