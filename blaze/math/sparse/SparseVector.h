@@ -57,6 +57,7 @@
 #include <blaze/math/typetraits/IsInvertible.h>
 #include <blaze/math/typetraits/IsResizable.h>
 #include <blaze/math/typetraits/IsRestricted.h>
+#include <blaze/math/typetraits/IsScalar.h>
 #include <blaze/math/typetraits/IsUniform.h>
 #include <blaze/math/typetraits/IsZero.h>
 #include <blaze/math/typetraits/UnderlyingBuiltin.h>
@@ -85,19 +86,19 @@ namespace blaze {
 //@{
 template< typename VT, bool TF, typename ST >
 auto operator*=( SparseVector<VT,TF>& vec, ST scalar )
-   -> EnableIf_t< IsNumeric_v<ST>, VT& >;
+   -> EnableIf_t< IsScalar_v<ST>, VT& >;
 
 template< typename VT, bool TF, typename ST >
 auto operator*=( SparseVector<VT,TF>&& vec, ST scalar )
-   -> EnableIf_t< IsNumeric_v<ST>, VT& >;
+   -> EnableIf_t< IsScalar_v<ST>, VT& >;
 
 template< typename VT, bool TF, typename ST >
 auto operator/=( SparseVector<VT,TF>& vec, ST scalar )
-   -> EnableIf_t< IsNumeric_v<ST>, VT& >;
+   -> EnableIf_t< IsScalar_v<ST>, VT& >;
 
 template< typename VT, bool TF, typename ST >
 auto operator/=( SparseVector<VT,TF>&& vec, ST scalar )
-   -> EnableIf_t< IsNumeric_v<ST>, VT& >;
+   -> EnableIf_t< IsScalar_v<ST>, VT& >;
 //@}
 //*************************************************************************************************
 
@@ -119,7 +120,7 @@ template< typename VT    // Type of the left-hand side sparse vector
         , bool TF        // Transpose flag
         , typename ST >  // Data type of the right-hand side scalar
 inline auto operator*=( SparseVector<VT,TF>& vec, ST scalar )
-   -> EnableIf_t< IsNumeric_v<ST>, VT& >
+   -> EnableIf_t< IsScalar_v<ST>, VT& >
 {
    if( IsRestricted_v<VT> ) {
       if( !tryMult( ~vec, 0UL, (~vec).size(), scalar ) ) {
@@ -165,7 +166,7 @@ template< typename VT    // Type of the left-hand side sparse vector
         , bool TF        // Transpose flag
         , typename ST >  // Data type of the right-hand side scalar
 inline auto operator*=( SparseVector<VT,TF>&& vec, ST scalar )
-   -> EnableIf_t< IsNumeric_v<ST>, VT& >
+   -> EnableIf_t< IsScalar_v<ST>, VT& >
 {
    return operator*=( ~vec, scalar );
 }
@@ -191,7 +192,7 @@ template< typename VT    // Type of the left-hand side sparse vector
         , bool TF        // Transpose flag
         , typename ST >  // Data type of the right-hand side scalar
 inline auto operator/=( SparseVector<VT,TF>& vec, ST scalar )
-   -> EnableIf_t< IsNumeric_v<ST>, VT& >
+   -> EnableIf_t< IsScalar_v<ST>, VT& >
 {
    BLAZE_USER_ASSERT( !isZero( scalar ), "Division by zero detected" );
 
@@ -248,7 +249,7 @@ template< typename VT    // Type of the left-hand side sparse vector
         , bool TF        // Transpose flag
         , typename ST >  // Data type of the right-hand side scalar
 inline auto operator/=( SparseVector<VT,TF>&& vec, ST scalar )
-   -> EnableIf_t< IsNumeric_v<ST>, VT& >
+   -> EnableIf_t< IsScalar_v<ST>, VT& >
 {
    return operator/=( ~vec, scalar );
 }
