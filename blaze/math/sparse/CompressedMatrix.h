@@ -77,6 +77,7 @@
 #include <blaze/math/typetraits/IsMatrix.h>
 #include <blaze/math/typetraits/IsResizable.h>
 #include <blaze/math/typetraits/IsRowVector.h>
+#include <blaze/math/typetraits/IsScalar.h>
 #include <blaze/math/typetraits/IsShrinkable.h>
 #include <blaze/math/typetraits/IsSMPAssignable.h>
 #include <blaze/math/typetraits/IsSparseMatrix.h>
@@ -104,7 +105,6 @@
 #include <blaze/util/Memory.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsFloatingPoint.h>
-#include <blaze/util/typetraits/IsNumeric.h>
 #include <blaze/util/typetraits/RemoveConst.h>
 
 
@@ -6287,7 +6287,7 @@ struct SchurTraitEval2< T1, T2
 /*! \cond BLAZE_INTERNAL */
 template< typename T1, typename T2 >
 struct MultTraitEval2< T1, T2
-                     , EnableIf_t< IsSparseMatrix_v<T1> && IsNumeric_v<T2> > >
+                     , EnableIf_t< IsSparseMatrix_v<T1> && IsScalar_v<T2> > >
 {
    using Type = CompressedMatrix< MultTrait_t< ElementType_t<T1>, T2 >
                                 , StorageOrder_v<T1>
@@ -6296,7 +6296,7 @@ struct MultTraitEval2< T1, T2
 
 template< typename T1, typename T2 >
 struct MultTraitEval2< T1, T2
-                     , EnableIf_t< IsNumeric_v<T1> && IsSparseMatrix_v<T2> > >
+                     , EnableIf_t< IsScalar_v<T1> && IsSparseMatrix_v<T2> > >
 {
    using Type = CompressedMatrix< MultTrait_t< T1, ElementType_t<T2> >
                                 , StorageOrder_v<T2>
@@ -6369,7 +6369,7 @@ struct KronTraitEval2< T1, T2
 /*! \cond BLAZE_INTERNAL */
 template< typename T1, typename T2 >
 struct DivTraitEval2< T1, T2
-                    , EnableIf_t< IsSparseMatrix_v<T1> && IsNumeric_v<T2> > >
+                    , EnableIf_t< IsSparseMatrix_v<T1> && IsScalar_v<T2> > >
 {
    using Type = CompressedMatrix< DivTrait_t< ElementType_t<T1>, T2 >
                                 , StorageOrder_v<T1>
