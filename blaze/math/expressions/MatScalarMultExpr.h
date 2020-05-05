@@ -45,10 +45,10 @@
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/expressions/MultExpr.h>
 #include <blaze/math/typetraits/IsInvertible.h>
+#include <blaze/math/typetraits/IsScalar.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/FunctionTrace.h>
-#include <blaze/util/typetraits/IsNumeric.h>
 
 
 namespace blaze {
@@ -132,7 +132,7 @@ inline decltype(auto) operator-( const MatScalarMultExpr<MT>& mat )
 */
 template< typename MT  // Matrix base type of the expression
         , typename ST  // Type of the right-hand side scalar
-        , EnableIf_t< IsNumeric_v<ST> >* = nullptr >
+        , EnableIf_t< IsScalar_v<ST> >* = nullptr >
 inline decltype(auto) operator*( const MatScalarMultExpr<MT>& mat, ST scalar )
 {
    BLAZE_FUNCTION_TRACE;
@@ -158,7 +158,7 @@ inline decltype(auto) operator*( const MatScalarMultExpr<MT>& mat, ST scalar )
 */
 template< typename ST  // Type of the left-hand side scalar
         , typename MT  // Matrix base type of the expression
-        , EnableIf_t< IsNumeric_v<ST> >* = nullptr >
+        , EnableIf_t< IsScalar_v<ST> >* = nullptr >
 inline decltype(auto) operator*( ST scalar, const MatScalarMultExpr<MT>& mat )
 {
    BLAZE_FUNCTION_TRACE;
@@ -184,7 +184,7 @@ inline decltype(auto) operator*( ST scalar, const MatScalarMultExpr<MT>& mat )
 */
 template< typename MT  // Matrix base type of the expression
         , typename ST  // Type of the right-hand side scalar
-        , EnableIf_t< IsNumeric_v<ST> &&
+        , EnableIf_t< IsScalar_v<ST> &&
                       ( IsInvertible_v<ST> ||
                         IsInvertible_v< RightOperand_t< MatrixType_t<MT> > > ) >* = nullptr >
 inline decltype(auto) operator/( const MatScalarMultExpr<MT>& mat, ST scalar )
