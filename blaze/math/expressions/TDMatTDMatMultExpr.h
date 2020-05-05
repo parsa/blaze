@@ -48,6 +48,7 @@
 #include <blaze/math/constraints/MatMatMultExpr.h>
 #include <blaze/math/constraints/RequiresEvaluation.h>
 #include <blaze/math/constraints/RowMajorMatrix.h>
+#include <blaze/math/constraints/Scalar.h>
 #include <blaze/math/constraints/StorageOrder.h>
 #include <blaze/math/constraints/Symmetric.h>
 #include <blaze/math/dense/MMM.h>
@@ -108,7 +109,6 @@
 #include <blaze/util/algorithms/Min.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/Complex.h>
-#include <blaze/util/constraints/Numeric.h>
 #include <blaze/util/constraints/SameType.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/FunctionTrace.h>
@@ -9602,7 +9602,7 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( MT1 );
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( MT2 );
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( MT2 );
-   BLAZE_CONSTRAINT_MUST_BE_NUMERIC_TYPE( ST );
+   BLAZE_CONSTRAINT_MUST_BE_SCALAR_TYPE( ST );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ST, RightOperand );
    //**********************************************************************************************
 };
