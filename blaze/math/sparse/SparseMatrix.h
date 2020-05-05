@@ -88,7 +88,6 @@
 #include <blaze/util/typetraits/IsBuiltin.h>
 #include <blaze/util/typetraits/IsComplex.h>
 #include <blaze/util/typetraits/IsFloatingPoint.h>
-#include <blaze/util/typetraits/IsNumeric.h>
 
 
 namespace blaze {
@@ -619,7 +618,7 @@ bool isHermitian( const SparseMatrix<MT,SO>& sm )
    if( IsHermitian_v<MT> )
       return true;
 
-   if( !IsNumeric_v<ET> || !isSquare( ~sm ) )
+   if( !IsScalar_v<ET> || !isSquare( ~sm ) )
       return false;
 
    if( IsBuiltin_v<ET> && IsUniform_v<MT> )

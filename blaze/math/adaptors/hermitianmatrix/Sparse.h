@@ -51,6 +51,7 @@
 #include <blaze/math/constraints/Hermitian.h>
 #include <blaze/math/constraints/Lower.h>
 #include <blaze/math/constraints/Resizable.h>
+#include <blaze/math/constraints/Scalar.h>
 #include <blaze/math/constraints/SparseMatrix.h>
 #include <blaze/math/constraints/StorageOrder.h>
 #include <blaze/math/constraints/Symmetric.h>
@@ -71,11 +72,11 @@
 #include <blaze/math/sparse/SparseMatrix.h>
 #include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsHermitian.h>
+#include <blaze/math/typetraits/IsScalar.h>
 #include <blaze/math/typetraits/IsSquare.h>
 #include <blaze/math/typetraits/Size.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Const.h>
-#include <blaze/util/constraints/Numeric.h>
 #include <blaze/util/constraints/Pointer.h>
 #include <blaze/util/constraints/Reference.h>
 #include <blaze/util/constraints/Volatile.h>
@@ -86,7 +87,6 @@
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsBuiltin.h>
 #include <blaze/util/typetraits/IsComplex.h>
-#include <blaze/util/typetraits/IsNumeric.h>
 
 
 namespace blaze {
@@ -408,10 +408,10 @@ class HermitianMatrix<MT,SO,false>
       -> EnableIf_t< IsBuiltin_v< ElementType_t<MT2> >, HermitianMatrix& >;
 
    template< typename ST >
-   inline auto operator*=( ST rhs ) -> EnableIf_t< IsNumeric_v<ST>, HermitianMatrix& >;
+   inline auto operator*=( ST rhs ) -> EnableIf_t< IsScalar_v<ST>, HermitianMatrix& >;
 
    template< typename ST >
-   inline auto operator/=( ST rhs ) -> EnableIf_t< IsNumeric_v<ST>, HermitianMatrix& >;
+   inline auto operator/=( ST rhs ) -> EnableIf_t< IsScalar_v<ST>, HermitianMatrix& >;
    //@}
    //**********************************************************************************************
 
@@ -540,7 +540,7 @@ class HermitianMatrix<MT,SO,false>
    BLAZE_CONSTRAINT_MUST_NOT_BE_UPPER_MATRIX_TYPE    ( MT );
    BLAZE_CONSTRAINT_MUST_BE_MATRIX_WITH_STORAGE_ORDER( OT, !SO );
    BLAZE_CONSTRAINT_MUST_BE_MATRIX_WITH_STORAGE_ORDER( TT, !SO );
-   BLAZE_CONSTRAINT_MUST_BE_NUMERIC_TYPE             ( ElementType );
+   BLAZE_CONSTRAINT_MUST_BE_SCALAR_TYPE              ( ElementType );
    BLAZE_STATIC_ASSERT( ( Size_v<MT,0UL> == Size_v<MT,1UL> ) );
    //**********************************************************************************************
 };
@@ -1562,7 +1562,7 @@ template< typename MT    // Type of the adapted sparse matrix
         , bool SO >      // Storage order of the adapted sparse matrix
 template< typename ST >  // Data type of the right-hand side scalar
 inline auto HermitianMatrix<MT,SO,false>::operator*=( ST rhs )
-   -> EnableIf_t< IsNumeric_v<ST>, HermitianMatrix& >
+   -> EnableIf_t< IsScalar_v<ST>, HermitianMatrix& >
 {
    matrix_ *= rhs;
    return *this;
@@ -1582,7 +1582,7 @@ template< typename MT    // Type of the adapted sparse matrix
         , bool SO >      // Storage order of the adapted sparse matrix
 template< typename ST >  // Data type of the right-hand side scalar
 inline auto HermitianMatrix<MT,SO,false>::operator/=( ST rhs )
-   -> EnableIf_t< IsNumeric_v<ST>, HermitianMatrix& >
+   -> EnableIf_t< IsScalar_v<ST>, HermitianMatrix& >
 {
    BLAZE_USER_ASSERT( !isZero( rhs ), "Division by zero detected" );
 

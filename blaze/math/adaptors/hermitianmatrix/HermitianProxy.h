@@ -45,6 +45,7 @@
 #include <blaze/math/constraints/Hermitian.h>
 #include <blaze/math/constraints/Lower.h>
 #include <blaze/math/constraints/Matrix.h>
+#include <blaze/math/constraints/Scalar.h>
 #include <blaze/math/constraints/Symmetric.h>
 #include <blaze/math/constraints/Transformation.h>
 #include <blaze/math/constraints/Upper.h>
@@ -60,13 +61,11 @@
 #include <blaze/math/shims/IsReal.h>
 #include <blaze/math/shims/IsZero.h>
 #include <blaze/math/shims/Reset.h>
+#include <blaze/math/typetraits/UnderlyingBuiltin.h>
 #include <blaze/util/constraints/Const.h>
-#include <blaze/util/constraints/Numeric.h>
 #include <blaze/util/constraints/Pointer.h>
 #include <blaze/util/constraints/Reference.h>
 #include <blaze/util/constraints/Volatile.h>
-#include <blaze/util/InvalidType.h>
-#include <blaze/util/mpl/If.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsComplex.h>
 
@@ -101,25 +100,6 @@ template< typename MT >  // Type of the adapted matrix
 class HermitianProxy
    : public Proxy< HermitianProxy<MT> >
 {
- private:
-   //**struct BuiltinType**************************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   /*!\brief Auxiliary struct to determine the value type of the represented complex element.
-   */
-   template< typename T >
-   struct BuiltinType { using Type = INVALID_TYPE; };
-   /*! \endcond */
-   //**********************************************************************************************
-
-   //**struct ComplexType**************************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   /*!\brief Auxiliary struct to determine the value type of the represented complex element.
-   */
-   template< typename T >
-   struct ComplexType { using Type = typename T::value_type; };
-   /*! \endcond */
-   //**********************************************************************************************
-
  public:
    //**Type definitions****************************************************************************
    using RepresentedType = ElementType_t<MT>;      //!< Type of the represented matrix element.
@@ -129,9 +109,10 @@ class HermitianProxy
    using ConstPointer    = const HermitianProxy*;  //!< Pointer-to-const to the represented element.
 
    //! Value type of the represented complex element.
-   using ValueType = typename If_t< IsComplex_v<RepresentedType>
-                                  , ComplexType<RepresentedType>
-                                  , BuiltinType<RepresentedType> >::Type;
+   using ValueType = UnderlyingBuiltin_t<RepresentedType>;
+
+   //! Value type of the represented complex element.
+   using value_type = ValueType;
    //**********************************************************************************************
 
    //**Constructors********************************************************************************
@@ -226,7 +207,7 @@ class HermitianProxy
    BLAZE_CONSTRAINT_MUST_NOT_BE_HERMITIAN_MATRIX_TYPE( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_LOWER_MATRIX_TYPE    ( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_UPPER_MATRIX_TYPE    ( MT );
-   BLAZE_CONSTRAINT_MUST_BE_NUMERIC_TYPE             ( RepresentedType );
+   BLAZE_CONSTRAINT_MUST_BE_SCALAR_TYPE              ( RepresentedType );
    /*! \endcond */
    //**********************************************************************************************
 };
@@ -268,7 +249,7 @@ inline HermitianProxy<MT>::HermitianProxy( MT& matrix, size_t row, size_t column
 //*************************************************************************************************
 /*!\brief Copy assignment operator for HermitianProxy.
 //
-// \param hp Numeric proxy to be copied.
+// \param hp Hermitian proxy to be copied.
 // \return Reference to the assigned proxy.
 // \exception std::invalid_argument Invalid assignment to diagonal matrix element.
 //

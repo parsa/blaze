@@ -94,7 +94,6 @@
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsBuiltin.h>
 #include <blaze/util/typetraits/IsFloatingPoint.h>
-#include <blaze/util/typetraits/IsNumeric.h>
 
 
 namespace blaze {
@@ -1540,7 +1539,7 @@ bool isHermitian( const DenseMatrix<MT,SO>& dm )
    if( IsHermitian_v<MT> )
       return true;
 
-   if( !IsNumeric_v<ET> || !isSquare( ~dm ) )
+   if( !IsScalar_v<ET> || !isSquare( ~dm ) )
       return false;
 
    if( IsBuiltin_v<ET> && IsUniform_v<MT> )

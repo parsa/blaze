@@ -44,6 +44,7 @@
 #include <blaze/math/constraints/Computation.h>
 #include <blaze/math/constraints/Hermitian.h>
 #include <blaze/math/constraints/Lower.h>
+#include <blaze/math/constraints/Scalar.h>
 #include <blaze/math/constraints/SparseMatrix.h>
 #include <blaze/math/constraints/Symmetric.h>
 #include <blaze/math/constraints/Transformation.h>
@@ -61,12 +62,11 @@
 #include <blaze/math/shims/IsZero.h>
 #include <blaze/math/shims/Reset.h>
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
+#include <blaze/math/typetraits/UnderlyingBuiltin.h>
 #include <blaze/util/constraints/Const.h>
-#include <blaze/util/constraints/Numeric.h>
 #include <blaze/util/constraints/Pointer.h>
 #include <blaze/util/constraints/Reference.h>
 #include <blaze/util/constraints/Volatile.h>
-#include <blaze/util/InvalidType.h>
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsComplex.h>
@@ -123,32 +123,12 @@ class HermitianValue
    using IteratorType = typename MT::Iterator;  //!< Type of the underlying sparse matrix iterators.
    //**********************************************************************************************
 
-   //**struct BuiltinType**************************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   /*!\brief Auxiliary struct to determine the value type of the represented complex element.
-   */
-   template< typename T >
-   struct BuiltinType { using Type = INVALID_TYPE; };
-   /*! \endcond */
-   //**********************************************************************************************
-
-   //**struct ComplexType**************************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   /*!\brief Auxiliary struct to determine the value type of the represented complex element.
-   */
-   template< typename T >
-   struct ComplexType { using Type = typename T::value_type; };
-   /*! \endcond */
-   //**********************************************************************************************
-
  public:
    //**Type definitions****************************************************************************
    using RepresentedType = ElementType_t<MT>;  //!< Type of the represented matrix element.
 
    //! Value type of the represented complex element.
-   using ValueType = typename If_t< IsComplex_v<RepresentedType>
-                                  , ComplexType<RepresentedType>
-                                  , BuiltinType<RepresentedType> >::Type;
+   using ValueType = UnderlyingBuiltin_t<RepresentedType>;
 
    using value_type = ValueType;  //!< Value type of the represented complex element.
    //**********************************************************************************************
@@ -237,7 +217,7 @@ class HermitianValue
    BLAZE_CONSTRAINT_MUST_NOT_BE_HERMITIAN_MATRIX_TYPE( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_LOWER_MATRIX_TYPE    ( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_UPPER_MATRIX_TYPE    ( MT );
-   BLAZE_CONSTRAINT_MUST_BE_NUMERIC_TYPE( RepresentedType );
+   BLAZE_CONSTRAINT_MUST_BE_SCALAR_TYPE              ( RepresentedType );
    /*! \endcond */
    //**********************************************************************************************
 };
