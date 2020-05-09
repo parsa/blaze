@@ -506,24 +506,24 @@ class CustomVector
    //**Assignment operators************************************************************************
    /*!\name Assignment operators */
    //@{
-   inline CustomVector& operator=( const Type& rhs ) &;
-   inline CustomVector& operator=( initializer_list<Type> list ) &;
+   inline CustomVector& operator=( const Type& rhs );
+   inline CustomVector& operator=( initializer_list<Type> list );
 
    template< typename Other, size_t Dim >
-   inline CustomVector& operator=( const Other (&array)[Dim] ) &;
+   inline CustomVector& operator=( const Other (&array)[Dim] );
 
    template< typename Other, size_t Dim >
-   inline CustomVector& operator=( const std::array<Other,Dim>& array ) &;
+   inline CustomVector& operator=( const std::array<Other,Dim>& array );
 
-   inline CustomVector& operator=( const CustomVector& rhs ) &;
-   inline CustomVector& operator=( CustomVector&& rhs ) & noexcept;
+   inline CustomVector& operator=( const CustomVector& rhs );
+   inline CustomVector& operator=( CustomVector&& rhs ) noexcept;
 
-   template< typename VT > inline CustomVector& operator= ( const Vector<VT,TF>& rhs ) &;
-   template< typename VT > inline CustomVector& operator+=( const Vector<VT,TF>& rhs ) &;
-   template< typename VT > inline CustomVector& operator-=( const Vector<VT,TF>& rhs ) &;
-   template< typename VT > inline CustomVector& operator*=( const Vector<VT,TF>& rhs ) &;
-   template< typename VT > inline CustomVector& operator/=( const DenseVector<VT,TF>& rhs ) &;
-   template< typename VT > inline CustomVector& operator%=( const Vector<VT,TF>& rhs ) &;
+   template< typename VT > inline CustomVector& operator= ( const Vector<VT,TF>& rhs );
+   template< typename VT > inline CustomVector& operator+=( const Vector<VT,TF>& rhs );
+   template< typename VT > inline CustomVector& operator-=( const Vector<VT,TF>& rhs );
+   template< typename VT > inline CustomVector& operator*=( const Vector<VT,TF>& rhs );
+   template< typename VT > inline CustomVector& operator/=( const DenseVector<VT,TF>& rhs );
+   template< typename VT > inline CustomVector& operator%=( const Vector<VT,TF>& rhs );
    //@}
    //**********************************************************************************************
 
@@ -1156,7 +1156,7 @@ template< typename Type     // Data type of the vector
         , typename Tag      // Type tag
         , typename RT >     // Result type
 inline CustomVector<Type,AF,PF,TF,Tag,RT>&
-   CustomVector<Type,AF,PF,TF,Tag,RT>::operator=( const Type& rhs ) &
+   CustomVector<Type,AF,PF,TF,Tag,RT>::operator=( const Type& rhs )
 {
    for( size_t i=0UL; i<size_; ++i )
       v_[i] = rhs;
@@ -1196,7 +1196,7 @@ template< typename Type     // Data type of the vector
         , typename Tag      // Type tag
         , typename RT >     // Result type
 inline CustomVector<Type,AF,PF,TF,Tag,RT>&
-   CustomVector<Type,AF,PF,TF,Tag,RT>::operator=( initializer_list<Type> list ) &
+   CustomVector<Type,AF,PF,TF,Tag,RT>::operator=( initializer_list<Type> list )
 {
    if( list.size() > size_ ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to custom vector" );
@@ -1246,7 +1246,7 @@ template< typename Type     // Data type of the vector
 template< typename Other    // Data type of the static array
         , size_t Dim >      // Dimension of the static array
 inline CustomVector<Type,AF,PF,TF,Tag,RT>&
-   CustomVector<Type,AF,PF,TF,Tag,RT>::operator=( const Other (&array)[Dim] ) &
+   CustomVector<Type,AF,PF,TF,Tag,RT>::operator=( const Other (&array)[Dim] )
 {
    if( size_ != Dim ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid array size" );
@@ -1297,7 +1297,7 @@ template< typename Type     // Data type of the vector
 template< typename Other    // Data type of the std::array
         , size_t Dim >      // Dimension of the std::array
 inline CustomVector<Type,AF,PF,TF,Tag,RT>&
-   CustomVector<Type,AF,PF,TF,Tag,RT>::operator=( const std::array<Other,Dim>& array ) &
+   CustomVector<Type,AF,PF,TF,Tag,RT>::operator=( const std::array<Other,Dim>& array )
 {
    if( size_ != Dim ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid array size" );
@@ -1328,7 +1328,7 @@ template< typename Type     // Data type of the vector
         , typename Tag      // Type tag
         , typename RT >     // Result type
 inline CustomVector<Type,AF,PF,TF,Tag,RT>&
-   CustomVector<Type,AF,PF,TF,Tag,RT>::operator=( const CustomVector& rhs ) &
+   CustomVector<Type,AF,PF,TF,Tag,RT>::operator=( const CustomVector& rhs )
 {
    if( rhs.size() != size_ ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
@@ -1354,7 +1354,7 @@ template< typename Type     // Data type of the vector
         , typename Tag      // Type tag
         , typename RT >     // Result type
 inline CustomVector<Type,AF,PF,TF,Tag,RT>&
-   CustomVector<Type,AF,PF,TF,Tag,RT>::operator=( CustomVector&& rhs ) & noexcept
+   CustomVector<Type,AF,PF,TF,Tag,RT>::operator=( CustomVector&& rhs ) noexcept
 {
    size_ = rhs.size_;
    v_    = rhs.v_;
@@ -1387,7 +1387,7 @@ template< typename Type     // Data type of the vector
         , typename RT >     // Result type
 template< typename VT >  // Type of the right-hand side vector
 inline CustomVector<Type,AF,PF,TF,Tag,RT>&
-   CustomVector<Type,AF,PF,TF,Tag,RT>::operator=( const Vector<VT,TF>& rhs ) &
+   CustomVector<Type,AF,PF,TF,Tag,RT>::operator=( const Vector<VT,TF>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<VT> );
 
@@ -1428,7 +1428,7 @@ template< typename Type     // Data type of the vector
         , typename RT >     // Result type
 template< typename VT >  // Type of the right-hand side vector
 inline CustomVector<Type,AF,PF,TF,Tag,RT>&
-   CustomVector<Type,AF,PF,TF,Tag,RT>::operator+=( const Vector<VT,TF>& rhs ) &
+   CustomVector<Type,AF,PF,TF,Tag,RT>::operator+=( const Vector<VT,TF>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<VT> );
 
@@ -1468,7 +1468,7 @@ template< typename Type     // Data type of the vector
         , typename RT >     // Result type
 template< typename VT >  // Type of the right-hand side vector
 inline CustomVector<Type,AF,PF,TF,Tag,RT>&
-   CustomVector<Type,AF,PF,TF,Tag,RT>::operator-=( const Vector<VT,TF>& rhs ) &
+   CustomVector<Type,AF,PF,TF,Tag,RT>::operator-=( const Vector<VT,TF>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<VT> );
 
@@ -1508,7 +1508,7 @@ template< typename Type     // Data type of the vector
         , typename RT >     // Result type
 template< typename VT >  // Type of the right-hand side vector
 inline CustomVector<Type,AF,PF,TF,Tag,RT>&
-   CustomVector<Type,AF,PF,TF,Tag,RT>::operator*=( const Vector<VT,TF>& rhs ) &
+   CustomVector<Type,AF,PF,TF,Tag,RT>::operator*=( const Vector<VT,TF>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<VT> );
 
@@ -1557,7 +1557,7 @@ template< typename Type     // Data type of the vector
         , typename RT >     // Result type
 template< typename VT >  // Type of the right-hand side vector
 inline CustomVector<Type,AF,PF,TF,Tag,RT>&
-   CustomVector<Type,AF,PF,TF,Tag,RT>::operator/=( const DenseVector<VT,TF>& rhs ) &
+   CustomVector<Type,AF,PF,TF,Tag,RT>::operator/=( const DenseVector<VT,TF>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<VT> );
 
@@ -1606,7 +1606,7 @@ template< typename Type     // Data type of the vector
         , typename RT >     // Result type
 template< typename VT >  // Type of the right-hand side vector
 inline CustomVector<Type,AF,PF,TF,Tag,RT>&
-   CustomVector<Type,AF,PF,TF,Tag,RT>::operator%=( const Vector<VT,TF>& rhs ) &
+   CustomVector<Type,AF,PF,TF,Tag,RT>::operator%=( const Vector<VT,TF>& rhs )
 {
    using blaze::assign;
 
@@ -2944,24 +2944,24 @@ class CustomVector<Type,AF,padded,TF,Tag,RT>
    //**Assignment operators************************************************************************
    /*!\name Assignment operators */
    //@{
-   inline CustomVector& operator=( const Type& rhs ) &;
-   inline CustomVector& operator=( initializer_list<Type> list ) &;
+   inline CustomVector& operator=( const Type& rhs );
+   inline CustomVector& operator=( initializer_list<Type> list );
 
    template< typename Other, size_t Dim >
-   inline CustomVector& operator=( const Other (&array)[Dim] ) &;
+   inline CustomVector& operator=( const Other (&array)[Dim] );
 
    template< typename Other, size_t Dim >
-   inline CustomVector& operator=( const std::array<Other,Dim>& array ) &;
+   inline CustomVector& operator=( const std::array<Other,Dim>& array );
 
-   inline CustomVector& operator=( const CustomVector& rhs ) &;
-   inline CustomVector& operator=( CustomVector&& rhs ) & noexcept;
+   inline CustomVector& operator=( const CustomVector& rhs );
+   inline CustomVector& operator=( CustomVector&& rhs ) noexcept;
 
-   template< typename VT > inline CustomVector& operator= ( const Vector<VT,TF>& rhs ) &;
-   template< typename VT > inline CustomVector& operator+=( const Vector<VT,TF>& rhs ) &;
-   template< typename VT > inline CustomVector& operator-=( const Vector<VT,TF>& rhs ) &;
-   template< typename VT > inline CustomVector& operator*=( const Vector<VT,TF>& rhs ) &;
-   template< typename VT > inline CustomVector& operator/=( const DenseVector<VT,TF>& rhs ) &;
-   template< typename VT > inline CustomVector& operator%=( const Vector<VT,TF>& rhs ) &;
+   template< typename VT > inline CustomVector& operator= ( const Vector<VT,TF>& rhs );
+   template< typename VT > inline CustomVector& operator+=( const Vector<VT,TF>& rhs );
+   template< typename VT > inline CustomVector& operator-=( const Vector<VT,TF>& rhs );
+   template< typename VT > inline CustomVector& operator*=( const Vector<VT,TF>& rhs );
+   template< typename VT > inline CustomVector& operator/=( const DenseVector<VT,TF>& rhs );
+   template< typename VT > inline CustomVector& operator%=( const Vector<VT,TF>& rhs );
    //@}
    //**********************************************************************************************
 
@@ -3580,7 +3580,7 @@ template< typename Type     // Data type of the vector
         , typename Tag      // Type tag
         , typename RT >     // Result type
 inline CustomVector<Type,AF,padded,TF,Tag,RT>&
-   CustomVector<Type,AF,padded,TF,Tag,RT>::operator=( const Type& rhs ) &
+   CustomVector<Type,AF,padded,TF,Tag,RT>::operator=( const Type& rhs )
 {
    for( size_t i=0UL; i<size_; ++i )
       v_[i] = rhs;
@@ -3621,7 +3621,7 @@ template< typename Type     // Data type of the vector
         , typename Tag      // Type tag
         , typename RT >     // Result type
 inline CustomVector<Type,AF,padded,TF,Tag,RT>&
-   CustomVector<Type,AF,padded,TF,Tag,RT>::operator=( initializer_list<Type> list ) &
+   CustomVector<Type,AF,padded,TF,Tag,RT>::operator=( initializer_list<Type> list )
 {
    if( list.size() > size_ ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to custom vector" );
@@ -3672,7 +3672,7 @@ template< typename Type     // Data type of the vector
 template< typename Other    // Data type of the static array
         , size_t Dim >      // Dimension of the static array
 inline CustomVector<Type,AF,padded,TF,Tag,RT>&
-   CustomVector<Type,AF,padded,TF,Tag,RT>::operator=( const Other (&array)[Dim] ) &
+   CustomVector<Type,AF,padded,TF,Tag,RT>::operator=( const Other (&array)[Dim] )
 {
    if( size_ != Dim ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid array size" );
@@ -3724,7 +3724,7 @@ template< typename Type     // Data type of the vector
 template< typename Other    // Data type of the std::array
         , size_t Dim >      // Dimension of the std::array
 inline CustomVector<Type,AF,padded,TF,Tag,RT>&
-   CustomVector<Type,AF,padded,TF,Tag,RT>::operator=( const std::array<Other,Dim>& array ) &
+   CustomVector<Type,AF,padded,TF,Tag,RT>::operator=( const std::array<Other,Dim>& array )
 {
    if( size_ != Dim ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid array size" );
@@ -3756,7 +3756,7 @@ template< typename Type     // Data type of the vector
         , typename Tag      // Type tag
         , typename RT >     // Result type
 inline CustomVector<Type,AF,padded,TF,Tag,RT>&
-   CustomVector<Type,AF,padded,TF,Tag,RT>::operator=( const CustomVector& rhs ) &
+   CustomVector<Type,AF,padded,TF,Tag,RT>::operator=( const CustomVector& rhs )
 {
    if( rhs.size() != size_ ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
@@ -3783,7 +3783,7 @@ template< typename Type     // Data type of the vector
         , typename Tag      // Type tag
         , typename RT >     // Result type
 inline CustomVector<Type,AF,padded,TF,Tag,RT>&
-   CustomVector<Type,AF,padded,TF,Tag,RT>::operator=( CustomVector&& rhs ) & noexcept
+   CustomVector<Type,AF,padded,TF,Tag,RT>::operator=( CustomVector&& rhs ) noexcept
 {
    size_     = rhs.size_;
    capacity_ = rhs.capacity_;
@@ -3819,7 +3819,7 @@ template< typename Type     // Data type of the vector
         , typename RT >     // Result type
 template< typename VT >  // Type of the right-hand side vector
 inline CustomVector<Type,AF,padded,TF,Tag,RT>&
-   CustomVector<Type,AF,padded,TF,Tag,RT>::operator=( const Vector<VT,TF>& rhs ) &
+   CustomVector<Type,AF,padded,TF,Tag,RT>::operator=( const Vector<VT,TF>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<VT> );
 
@@ -3861,7 +3861,7 @@ template< typename Type     // Data type of the vector
         , typename RT >     // Result type
 template< typename VT >  // Type of the right-hand side vector
 inline CustomVector<Type,AF,padded,TF,Tag,RT>&
-   CustomVector<Type,AF,padded,TF,Tag,RT>::operator+=( const Vector<VT,TF>& rhs ) &
+   CustomVector<Type,AF,padded,TF,Tag,RT>::operator+=( const Vector<VT,TF>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<VT> );
 
@@ -3902,7 +3902,7 @@ template< typename Type     // Data type of the vector
         , typename RT >     // Result type
 template< typename VT >  // Type of the right-hand side vector
 inline CustomVector<Type,AF,padded,TF,Tag,RT>&
-   CustomVector<Type,AF,padded,TF,Tag,RT>::operator-=( const Vector<VT,TF>& rhs ) &
+   CustomVector<Type,AF,padded,TF,Tag,RT>::operator-=( const Vector<VT,TF>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<VT> );
 
@@ -3943,7 +3943,7 @@ template< typename Type     // Data type of the vector
         , typename RT >     // Result type
 template< typename VT >  // Type of the right-hand side vector
 inline CustomVector<Type,AF,padded,TF,Tag,RT>&
-   CustomVector<Type,AF,padded,TF,Tag,RT>::operator*=( const Vector<VT,TF>& rhs ) &
+   CustomVector<Type,AF,padded,TF,Tag,RT>::operator*=( const Vector<VT,TF>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<VT> );
 
@@ -3993,7 +3993,7 @@ template< typename Type     // Data type of the vector
         , typename RT >     // Result type
 template< typename VT >  // Type of the right-hand side vector
 inline CustomVector<Type,AF,padded,TF,Tag,RT>&
-   CustomVector<Type,AF,padded,TF,Tag,RT>::operator/=( const DenseVector<VT,TF>& rhs ) &
+   CustomVector<Type,AF,padded,TF,Tag,RT>::operator/=( const DenseVector<VT,TF>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<VT> );
 
@@ -4043,7 +4043,7 @@ template< typename Type     // Data type of the vector
         , typename RT >     // Result type
 template< typename VT >  // Type of the right-hand side vector
 inline CustomVector<Type,AF,padded,TF,Tag,RT>&
-   CustomVector<Type,AF,padded,TF,Tag,RT>::operator%=( const Vector<VT,TF>& rhs ) &
+   CustomVector<Type,AF,padded,TF,Tag,RT>::operator%=( const Vector<VT,TF>& rhs )
 {
    using blaze::assign;
 
