@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file src/mathtest/adaptors/symmetricmatrix/ColumnNumericTest.cpp
-//  \brief Source file for the SymmetricMatrix column numeric test
+//  \file src/mathtest/adaptors/symmetricmatrix/SubmatrixNonScalarTest.cpp
+//  \brief Source file for the SymmetricMatrix submatrix non-scalar test
 //
 //  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
@@ -39,7 +39,7 @@
 
 #include <cstdlib>
 #include <iostream>
-#include <blazetest/mathtest/adaptors/symmetricmatrix/ColumnNumericTest.h>
+#include <blazetest/mathtest/adaptors/symmetricmatrix/SubmatrixNonScalarTest.h>
 
 #ifdef BLAZE_USE_HPX_THREADS
 #  include <hpx/hpx_main.hpp>
@@ -61,31 +61,16 @@ namespace symmetricmatrix {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Constructor for the SymmetricMatrix column numeric test.
+/*!\brief Constructor for the SymmetricMatrix submatrix test.
 //
 // \exception std::runtime_error Operation error detected.
 */
-ColumnNumericTest::ColumnNumericTest()
+SubmatrixNonScalarTest::SubmatrixNonScalarTest()
 {
-   testAssignment<DST>();
-   testAddAssign<DST>();
-   testSubAssign<DST>();
-   testMultAssign<DST>();
-
+   testAssignment<DST> ();
    testAssignment<DOST>();
-   testAddAssign<DOST>();
-   testSubAssign<DOST>();
-   testMultAssign<DOST>();
-
-   testAssignment<SST>();
-   testAddAssign<SST>();
-   testSubAssign<SST>();
-   testMultAssign<SST>();
-
+   testAssignment<SST> ();
    testAssignment<SOST>();
-   testAddAssign<SOST>();
-   testSubAssign<SOST>();
-   testMultAssign<SOST>();
 }
 //*************************************************************************************************
 
@@ -109,14 +94,14 @@ ColumnNumericTest::ColumnNumericTest()
 //*************************************************************************************************
 int main()
 {
-   std::cout << "   Running SymmetricMatrix column numeric test..." << std::endl;
+   std::cout << "   Running SymmetricMatrix submatrix non-scalar test..." << std::endl;
 
    try
    {
-      RUN_SYMMETRICMATRIX_COLUMNNUMERIC_TEST;
+      RUN_SYMMETRICMATRIX_SUBMATRIXNONSCALAR_TEST;
    }
    catch( std::exception& ex ) {
-      std::cerr << "\n\n ERROR DETECTED during SymmetricMatrix column numeric test:\n"
+      std::cerr << "\n\n ERROR DETECTED during SymmetricMatrix submatrix non-scalar test:\n"
                 << ex.what() << "\n";
       return EXIT_FAILURE;
    }

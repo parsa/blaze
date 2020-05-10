@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file src/mathtest/adaptors/symmetricmatrix/SubmatrixNonNumericTest.cpp
-//  \brief Source file for the SymmetricMatrix submatrix non-numeric test
+//  \file src/mathtest/adaptors/symmetricmatrix/ColumnNonScalarTest.cpp
+//  \brief Source file for the SymmetricMatrix column non-scalar test
 //
 //  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
@@ -39,7 +39,7 @@
 
 #include <cstdlib>
 #include <iostream>
-#include <blazetest/mathtest/adaptors/symmetricmatrix/SubmatrixNonNumericTest.h>
+#include <blazetest/mathtest/adaptors/symmetricmatrix/ColumnNonScalarTest.h>
 
 #ifdef BLAZE_USE_HPX_THREADS
 #  include <hpx/hpx_main.hpp>
@@ -61,11 +61,11 @@ namespace symmetricmatrix {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Constructor for the SymmetricMatrix submatrix test.
+/*!\brief Constructor for the SymmetricMatrix column non-scalar test.
 //
 // \exception std::runtime_error Operation error detected.
 */
-SubmatrixNonNumericTest::SubmatrixNonNumericTest()
+ColumnNonScalarTest::ColumnNonScalarTest()
 {
    testAssignment<DST> ();
    testAssignment<DOST>();
@@ -94,14 +94,14 @@ SubmatrixNonNumericTest::SubmatrixNonNumericTest()
 //*************************************************************************************************
 int main()
 {
-   std::cout << "   Running SymmetricMatrix submatrix non-numeric test..." << std::endl;
+   std::cout << "   Running SymmetricMatrix column non-scalar test..." << std::endl;
 
    try
    {
-      RUN_SYMMETRICMATRIX_SUBMATRIXNONNUMERIC_TEST;
+      RUN_SYMMETRICMATRIX_COLUMNNONSCALAR_TEST;
    }
    catch( std::exception& ex ) {
-      std::cerr << "\n\n ERROR DETECTED during SymmetricMatrix submatrix non-numeric test:\n"
+      std::cerr << "\n\n ERROR DETECTED during SymmetricMatrix column non-scalar test:\n"
                 << ex.what() << "\n";
       return EXIT_FAILURE;
    }

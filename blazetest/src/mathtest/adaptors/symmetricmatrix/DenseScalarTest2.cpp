@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file src/mathtest/adaptors/symmetricmatrix/DenseNumericTest2.cpp
-//  \brief Source file for the SymmetricMatrix dense numeric test (part 2)
+//  \file src/mathtest/adaptors/symmetricmatrix/DenseScalarTest2.cpp
+//  \brief Source file for the SymmetricMatrix dense scalar test (part 2)
 //
 //  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
@@ -45,7 +45,7 @@
 #include <blaze/math/Row.h>
 #include <blaze/math/Submatrix.h>
 #include <blaze/util/Complex.h>
-#include <blazetest/mathtest/adaptors/symmetricmatrix/DenseNumericTest.h>
+#include <blazetest/mathtest/adaptors/symmetricmatrix/DenseScalarTest.h>
 
 #ifdef BLAZE_USE_HPX_THREADS
 #  include <hpx/hpx_main.hpp>
@@ -67,11 +67,11 @@ namespace symmetricmatrix {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Constructor for the SymmetricMatrix dense numeric test.
+/*!\brief Constructor for the SymmetricMatrix dense scalar test.
 //
 // \exception std::runtime_error Operation error detected.
 */
-DenseNumericTest::DenseNumericTest()
+DenseScalarTest::DenseScalarTest()
 {
    testScaling();
    testFunctionCall();
@@ -111,7 +111,7 @@ DenseNumericTest::DenseNumericTest()
 // This function performs a test of all available ways to scale an instance of the SymmetricMatrix
 // specialization. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void DenseNumericTest::testScaling()
+void DenseScalarTest::testScaling()
 {
    //=====================================================================================
    // Row-major self-scaling (M*=s)
@@ -709,7 +709,7 @@ void DenseNumericTest::testScaling()
 // of the SymmetricMatrix specialization. In case an error is detected, a \a std::runtime_error
 // exception is thrown.
 */
-void DenseNumericTest::testFunctionCall()
+void DenseScalarTest::testFunctionCall()
 {
    //=====================================================================================
    // Row-major matrix tests
@@ -1066,7 +1066,7 @@ void DenseNumericTest::testFunctionCall()
 // This function performs a test of the iterator implementation of the SymmetricMatrix
 // specialization. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void DenseNumericTest::testIterator()
+void DenseScalarTest::testIterator()
 {
    //=====================================================================================
    // Row-major matrix tests
@@ -1747,7 +1747,7 @@ void DenseNumericTest::testIterator()
 // This function performs a test of the \c nonZeros() member function of the SymmetricMatrix
 // specialization. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void DenseNumericTest::testNonZeros()
+void DenseScalarTest::testNonZeros()
 {
    //=====================================================================================
    // Row-major matrix tests
@@ -1948,7 +1948,7 @@ void DenseNumericTest::testNonZeros()
 // This function performs a test of the \c reset() member function of the SymmetricMatrix
 // specialization. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void DenseNumericTest::testReset()
+void DenseScalarTest::testReset()
 {
    //=====================================================================================
    // Row-major matrix tests
@@ -2175,7 +2175,7 @@ void DenseNumericTest::testReset()
 // This function performs a test of the \c clear() member function of the SymmetricMatrix
 // specialization. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void DenseNumericTest::testClear()
+void DenseScalarTest::testClear()
 {
    //=====================================================================================
    // Row-major matrix tests
@@ -2324,7 +2324,7 @@ void DenseNumericTest::testClear()
 // This function performs a test of the \c resize() member function of the SymmetricMatrix
 // specialization. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void DenseNumericTest::testResize()
+void DenseScalarTest::testResize()
 {
    //=====================================================================================
    // Row-major matrix tests
@@ -2523,7 +2523,7 @@ void DenseNumericTest::testResize()
 // This function performs a test of the \c extend() member function of the SymmetricMatrix
 // specialization. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void DenseNumericTest::testExtend()
+void DenseScalarTest::testExtend()
 {
    //=====================================================================================
    // Row-major matrix tests
@@ -2664,7 +2664,7 @@ void DenseNumericTest::testExtend()
 // This function performs a test of the \c reserve() member function of the SymmetricMatrix
 // specialization. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void DenseNumericTest::testReserve()
+void DenseScalarTest::testReserve()
 {
    //=====================================================================================
    // Row-major matrix tests
@@ -2741,7 +2741,7 @@ void DenseNumericTest::testReserve()
 // This function performs a test of the \c shrinkToFit() member function of the SymmetricMatrix
 // specialization. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void DenseNumericTest::testShrinkToFit()
+void DenseScalarTest::testShrinkToFit()
 {
    //=====================================================================================
    // Row-major matrix tests
@@ -2922,7 +2922,7 @@ void DenseNumericTest::testShrinkToFit()
 // This function performs a test of the \c swap() function of the SymmetricMatrix specialization.
 // In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void DenseNumericTest::testSwap()
+void DenseScalarTest::testSwap()
 {
    //=====================================================================================
    // Row-major matrix tests
@@ -3044,7 +3044,7 @@ void DenseNumericTest::testSwap()
 // specialization. Additionally, it performs a test of self-transpose via the \c trans()
 // function. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void DenseNumericTest::testTranspose()
+void DenseScalarTest::testTranspose()
 {
    //=====================================================================================
    // Row-major matrix tests
@@ -3216,7 +3216,7 @@ void DenseNumericTest::testTranspose()
 // specialization. Additionally, it performs a test of self-transpose via the \c ctrans()
 // function. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void DenseNumericTest::testCTranspose()
+void DenseScalarTest::testCTranspose()
 {
    //=====================================================================================
    // Row-major matrix tests
@@ -3387,7 +3387,7 @@ void DenseNumericTest::testCTranspose()
 // This function performs a test of the \c isDefault() function with the SymmetricMatrix
 // specialization. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void DenseNumericTest::testIsDefault()
+void DenseScalarTest::testIsDefault()
 {
    //=====================================================================================
    // Row-major matrix tests
@@ -3540,7 +3540,7 @@ void DenseNumericTest::testIsDefault()
 // This function performs a test of the \c submatrix() function with the SymmetricMatrix
 // specialization. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void DenseNumericTest::testSubmatrix()
+void DenseScalarTest::testSubmatrix()
 {
    //=====================================================================================
    // Row-major matrix tests
@@ -3737,7 +3737,7 @@ void DenseNumericTest::testSubmatrix()
 // This function performs a test of the \c row() function with the SymmetricMatrix specialization.
 // In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void DenseNumericTest::testRow()
+void DenseScalarTest::testRow()
 {
    //=====================================================================================
    // Row-major matrix tests
@@ -3930,7 +3930,7 @@ void DenseNumericTest::testRow()
 // This function performs a test of the \c column() function with the SymmetricMatrix
 // specialization. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void DenseNumericTest::testColumn()
+void DenseScalarTest::testColumn()
 {
    //=====================================================================================
    // Row-major matrix tests
@@ -4133,14 +4133,14 @@ void DenseNumericTest::testColumn()
 //*************************************************************************************************
 int main()
 {
-   std::cout << "   Running SymmetricMatrix dense numeric test (part 2)..." << std::endl;
+   std::cout << "   Running SymmetricMatrix dense scalar test (part 2)..." << std::endl;
 
    try
    {
-      RUN_SYMMETRICMATRIX_DENSENUMERIC_TEST;
+      RUN_SYMMETRICMATRIX_DENSESCALAR_TEST;
    }
    catch( std::exception& ex ) {
-      std::cerr << "\n\n ERROR DETECTED during SymmetricMatrix dense numeric test (part 2):\n"
+      std::cerr << "\n\n ERROR DETECTED during SymmetricMatrix dense scalar test (part 2):\n"
                 << ex.what() << "\n";
       return EXIT_FAILURE;
    }

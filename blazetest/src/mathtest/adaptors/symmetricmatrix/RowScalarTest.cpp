@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file src/mathtest/adaptors/symmetricmatrix/SubmatrixNumericTest.cpp
-//  \brief Source file for the SymmetricMatrix submatrix numeric test
+//  \file src/mathtest/adaptors/symmetricmatrix/RowScalarTest.cpp
+//  \brief Source file for the SymmetricMatrix row scalar test
 //
 //  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
@@ -39,7 +39,7 @@
 
 #include <cstdlib>
 #include <iostream>
-#include <blazetest/mathtest/adaptors/symmetricmatrix/SubmatrixNumericTest.h>
+#include <blazetest/mathtest/adaptors/symmetricmatrix/RowScalarTest.h>
 
 #ifdef BLAZE_USE_HPX_THREADS
 #  include <hpx/hpx_main.hpp>
@@ -61,31 +61,31 @@ namespace symmetricmatrix {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Constructor for the SymmetricMatrix submatrix test.
+/*!\brief Constructor for the SymmetricMatrix row scalar test.
 //
 // \exception std::runtime_error Operation error detected.
 */
-SubmatrixNumericTest::SubmatrixNumericTest()
+RowScalarTest::RowScalarTest()
 {
    testAssignment<DST>();
    testAddAssign<DST>();
    testSubAssign<DST>();
-   testSchurAssign<DST>();
+   testMultAssign<DST>();
 
    testAssignment<DOST>();
    testAddAssign<DOST>();
    testSubAssign<DOST>();
-   testSchurAssign<DOST>();
+   testMultAssign<DOST>();
 
    testAssignment<SST>();
    testAddAssign<SST>();
    testSubAssign<SST>();
-   testSchurAssign<SST>();
+   testMultAssign<SST>();
 
    testAssignment<SOST>();
    testAddAssign<SOST>();
    testSubAssign<SOST>();
-   testSchurAssign<SOST>();
+   testMultAssign<SOST>();
 }
 //*************************************************************************************************
 
@@ -109,14 +109,14 @@ SubmatrixNumericTest::SubmatrixNumericTest()
 //*************************************************************************************************
 int main()
 {
-   std::cout << "   Running SymmetricMatrix submatrix numeric test..." << std::endl;
+   std::cout << "   Running SymmetricMatrix row scalar test..." << std::endl;
 
    try
    {
-      RUN_SYMMETRICMATRIX_SUBMATRIXNUMERIC_TEST;
+      RUN_SYMMETRICMATRIX_ROWSCALAR_TEST;
    }
    catch( std::exception& ex ) {
-      std::cerr << "\n\n ERROR DETECTED during SymmetricMatrix submatrix numeric test:\n"
+      std::cerr << "\n\n ERROR DETECTED during SymmetricMatrix row scalar test:\n"
                 << ex.what() << "\n";
       return EXIT_FAILURE;
    }

@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file src/mathtest/adaptors/symmetricmatrix/SparseNumericTest1.cpp
-//  \brief Source file for the SymmetricMatrix sparse numeric test (part 1)
+//  \file src/mathtest/adaptors/symmetricmatrix/DenseScalarTest1.cpp
+//  \brief Source file for the SymmetricMatrix dense scalar test (part 1)
 //
 //  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
@@ -39,9 +39,14 @@
 
 #include <cstdlib>
 #include <iostream>
+#include <memory>
+#include <blaze/math/CompressedMatrix.h>
+#include <blaze/math/CustomMatrix.h>
 #include <blaze/math/DynamicMatrix.h>
+#include <blaze/math/HybridMatrix.h>
 #include <blaze/math/StaticMatrix.h>
-#include <blazetest/mathtest/adaptors/symmetricmatrix/SparseNumericTest.h>
+#include <blaze/util/policies/ArrayDelete.h>
+#include <blazetest/mathtest/adaptors/symmetricmatrix/DenseScalarTest.h>
 
 #ifdef BLAZE_USE_HPX_THREADS
 #  include <hpx/hpx_main.hpp>
@@ -63,11 +68,11 @@ namespace symmetricmatrix {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Constructor for the SymmetricMatrix sparse numeric test.
+/*!\brief Constructor for the SymmetricMatrix dense scalar test.
 //
 // \exception std::runtime_error Operation error detected.
 */
-SparseNumericTest::SparseNumericTest()
+DenseScalarTest::DenseScalarTest()
 {
    testConstructors();
    testAssignment();
@@ -96,15 +101,37 @@ SparseNumericTest::SparseNumericTest()
 // This function performs a test of all constructors of the SymmetricMatrix specialization.
 // In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void SparseNumericTest::testConstructors()
+void DenseScalarTest::testConstructors()
 {
    //=====================================================================================
    // Row-major default constructor
    //=====================================================================================
 
-   // Default constructor (CompressedMatrix)
+   // Default constructor (StaticMatrix)
    {
-      test_ = "Row-major SymmetricMatrix default constructor (CompressedMatrix)";
+      test_ = "Row-major SymmetricMatrix default constructor (StaticMatrix)";
+
+      const blaze::SymmetricMatrix< blaze::StaticMatrix<int,3UL,3UL,blaze::rowMajor> > sym;
+
+      checkRows    ( sym, 3UL );
+      checkColumns ( sym, 3UL );
+      checkNonZeros( sym, 0UL );
+   }
+
+   // Default constructor (HybridMatrix)
+   {
+      test_ = "Row-major SymmetricMatrix default constructor (HybridMatrix)";
+
+      const blaze::SymmetricMatrix< blaze::HybridMatrix<int,3UL,3UL,blaze::rowMajor> > sym;
+
+      checkRows    ( sym, 0UL );
+      checkColumns ( sym, 0UL );
+      checkNonZeros( sym, 0UL );
+   }
+
+   // Default constructor (DynamicMatrix)
+   {
+      test_ = "Row-major SymmetricMatrix default constructor (DynamicMatrix)";
 
       const ST sym;
 
@@ -118,14 +145,27 @@ void SparseNumericTest::testConstructors()
    // Row-major size constructor
    //=====================================================================================
 
-   // Size constructor (CompressedMatrix)
+   // Size constructor (HybridMatrix)
    {
-      test_ = "Row-major SymmetricMatrix size constructor (CompressedMatrix)";
+      test_ = "Row-major SymmetricMatrix size constructor (HybridMatrix)";
+
+      const blaze::SymmetricMatrix< blaze::HybridMatrix<int,3UL,3UL,blaze::rowMajor> > sym( 2UL );
+
+      checkRows    ( sym, 2UL );
+      checkColumns ( sym, 2UL );
+      checkCapacity( sym, 4UL );
+      checkNonZeros( sym, 0UL );
+   }
+
+   // Size constructor (DynamicMatrix)
+   {
+      test_ = "Row-major SymmetricMatrix size constructor (DynamicMatrix)";
 
       const ST sym( 2UL );
 
       checkRows    ( sym, 2UL );
       checkColumns ( sym, 2UL );
+      checkCapacity( sym, 4UL );
       checkNonZeros( sym, 0UL );
    }
 
@@ -142,7 +182,7 @@ void SparseNumericTest::testConstructors()
 
       checkRows    ( sym, 3UL );
       checkColumns ( sym, 3UL );
-      checkCapacity( sym, 7UL );
+      checkCapacity( sym, 9UL );
       checkNonZeros( sym, 7UL );
 
       if( sym(0,0) != 1 || sym(0,1) != 2 || sym(0,2) != 3 ||
@@ -166,7 +206,7 @@ void SparseNumericTest::testConstructors()
 
       checkRows    ( sym, 3UL );
       checkColumns ( sym, 3UL );
-      checkCapacity( sym, 7UL );
+      checkCapacity( sym, 9UL );
       checkNonZeros( sym, 7UL );
 
       if( sym(0,0) != 1 || sym(0,1) != 2 || sym(0,2) != 3 ||
@@ -178,6 +218,141 @@ void SparseNumericTest::testConstructors()
              << " Details:\n"
              << "   Result:\n" << sym << "\n"
              << "   Expected result:\n( 1 2 3 )\n( 2 4 0 )\n( 3 0 6 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Row-major array initialization
+   //=====================================================================================
+
+   // Dynamic array initialization constructor
+   {
+      test_ = "Row-major SymmetricMatrix dynamic array initialization constructor";
+
+      std::unique_ptr<int[]> array( new int[9] );
+      array[0] = 1;
+      array[1] = 2;
+      array[2] = 3;
+      array[3] = 2;
+      array[4] = 4;
+      array[5] = 0;
+      array[6] = 3;
+      array[7] = 0;
+      array[8] = 6;
+      const ST sym( 3UL, array.get() );
+
+      checkRows    ( sym, 3UL );
+      checkColumns ( sym, 3UL );
+      checkCapacity( sym, 9UL );
+      checkNonZeros( sym, 7UL );
+
+      if( sym(0,0) != 1 || sym(0,1) != 2 || sym(0,2) != 3 ||
+          sym(1,0) != 2 || sym(1,1) != 4 || sym(1,2) != 0 ||
+          sym(2,0) != 3 || sym(2,1) != 0 || sym(2,2) != 6 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sym << "\n"
+             << "   Expected result:\n( 1 2 3 )\n( 2 4 0 )\n( 3 0 6 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Static array initialization constructor
+   {
+      test_ = "Row-major SymmetricMatrix static array initialization constructor";
+
+      const int array[3][3] = { { 1, 2, 3 }, { 2, 4, 0 }, { 3, 0, 6 } };
+      const ST sym( array );
+
+      checkRows    ( sym, 3UL );
+      checkColumns ( sym, 3UL );
+      checkCapacity( sym, 9UL );
+      checkNonZeros( sym, 7UL );
+
+      if( sym(0,0) != 1 || sym(0,1) != 2 || sym(0,2) != 3 ||
+          sym(1,0) != 2 || sym(1,1) != 4 || sym(1,2) != 0 ||
+          sym(2,0) != 3 || sym(2,1) != 0 || sym(2,2) != 6 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sym << "\n"
+             << "   Expected result:\n( 1 2 3 )\n( 2 4 0 )\n( 3 0 6 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Row-major custom matrix constructors
+   //=====================================================================================
+
+   // Custom matrix constructor (ElementType*, size_t)
+   {
+      test_ = "Row-major SymmetricMatrix custom matrix constructor (ElementType*, size_t)";
+
+      using blaze::unaligned;
+      using blaze::unpadded;
+      using blaze::rowMajor;
+
+      using UnalignedUnpadded = blaze::CustomMatrix<int,unaligned,unpadded,rowMajor>;
+      std::unique_ptr<int[]> memory( new int[5UL] );
+      memory[1] = 1;
+      memory[2] = 2;
+      memory[3] = 2;
+      memory[4] = 1;
+      const blaze::SymmetricMatrix<UnalignedUnpadded> sym( memory.get()+1UL, 2UL );
+
+      checkRows    ( sym, 2UL );
+      checkColumns ( sym, 2UL );
+      checkCapacity( sym, 4UL );
+      checkNonZeros( sym, 4UL );
+
+      if( sym(0,0) != 1 || sym(0,1) != 2 ||
+          sym(1,0) != 2 || sym(1,1) != 1 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sym << "\n"
+             << "   Expected result:\n( 1 2 )\n( 2 1 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Custom matrix constructor (ElementType*, size_t, size_t)
+   {
+      test_ = "Row-major SymmetricMatrix custom matrix constructor (ElementType*, size_t, size_t)";
+
+      using blaze::unaligned;
+      using blaze::unpadded;
+      using blaze::rowMajor;
+
+      using UnalignedUnpadded = blaze::CustomMatrix<int,unaligned,unpadded,rowMajor>;
+      std::unique_ptr<int[]> memory( new int[11UL] );
+      memory[1] = 1;
+      memory[2] = 2;
+      memory[6] = 2;
+      memory[7] = 1;
+      const blaze::SymmetricMatrix<UnalignedUnpadded> sym( memory.get()+1UL, 2UL, 5UL );
+
+      checkRows    ( sym, 2UL );
+      checkColumns ( sym, 2UL );
+      checkCapacity( sym, 4UL );
+      checkNonZeros( sym, 4UL );
+
+      if( sym(0,0) != 1 || sym(0,1) != 2 ||
+          sym(1,0) != 2 || sym(1,1) != 1 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sym << "\n"
+             << "   Expected result:\n( 1 2 )\n( 2 1 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -214,7 +389,7 @@ void SparseNumericTest::testConstructors()
 
       checkRows    ( sym2, 3UL );
       checkColumns ( sym2, 3UL );
-      checkCapacity( sym2, 7UL );
+      checkCapacity( sym2, 9UL );
       checkNonZeros( sym2, 7UL );
 
       if( sym2(0,0) !=  1 || sym2(0,1) != -4 || sym2(0,2) != 7 ||
@@ -262,7 +437,7 @@ void SparseNumericTest::testConstructors()
 
       checkRows    ( sym2, 3UL );
       checkColumns ( sym2, 3UL );
-      checkCapacity( sym2, 7UL );
+      checkCapacity( sym2, 9UL );
       checkNonZeros( sym2, 7UL );
 
       if( sym2(0,0) !=  1 || sym2(0,1) != -4 || sym2(0,2) != 7 ||
@@ -307,7 +482,7 @@ void SparseNumericTest::testConstructors()
 
       checkRows    ( sym, 3UL );
       checkColumns ( sym, 3UL );
-      checkCapacity( sym, 7UL );
+      checkCapacity( sym, 9UL );
       checkNonZeros( sym, 7UL );
 
       if( sym(0,0) !=  1 || sym(0,1) != -4 || sym(0,2) != 7 ||
@@ -359,7 +534,7 @@ void SparseNumericTest::testConstructors()
 
       checkRows    ( sym2, 3UL );
       checkColumns ( sym2, 3UL );
-      checkCapacity( sym2, 7UL );
+      checkCapacity( sym2, 9UL );
       checkNonZeros( sym2, 7UL );
 
       if( sym2(0,0) !=  1 || sym2(0,1) != -4 || sym2(0,2) != 7 ||
@@ -380,11 +555,33 @@ void SparseNumericTest::testConstructors()
    // Column-major default constructor
    //=====================================================================================
 
-   // Default constructor (CompressedMatrix)
+   // Default constructor (StaticMatrix)
    {
-      test_ = "Column-major SymmetricMatrix default constructor (CompressedMatrix)";
+      test_ = "Column-major SymmetricMatrix default constructor (StaticMatrix)";
 
-      const OST sym;
+      blaze::SymmetricMatrix< blaze::StaticMatrix<int,3UL,3UL,blaze::columnMajor> > sym;
+
+      checkRows    ( sym, 3UL );
+      checkColumns ( sym, 3UL );
+      checkNonZeros( sym, 0UL );
+   }
+
+   // Default constructor (HybridMatrix)
+   {
+      test_ = "Column-major SymmetricMatrix default constructor (HybridMatrix)";
+
+      blaze::SymmetricMatrix< blaze::HybridMatrix<int,3UL,3UL,blaze::columnMajor> > sym;
+
+      checkRows    ( sym, 0UL );
+      checkColumns ( sym, 0UL );
+      checkNonZeros( sym, 0UL );
+   }
+
+   // Default constructor (DynamicMatrix)
+   {
+      test_ = "Column-major SymmetricMatrix default constructor (DynamicMatrix)";
+
+      OST sym;
 
       checkRows    ( sym, 0UL );
       checkColumns ( sym, 0UL );
@@ -396,11 +593,22 @@ void SparseNumericTest::testConstructors()
    // Column-major size constructor
    //=====================================================================================
 
-   // Size constructor (CompressedMatrix)
+   // Size constructor (HybridMatrix)
    {
-      test_ = "Column-major SymmetricMatrix size constructor (CompressedMatrix)";
+      test_ = "Column-major SymmetricMatrix size constructor (HybridMatrix)";
 
-      const OST sym( 2UL );
+      blaze::SymmetricMatrix< blaze::HybridMatrix<int,3UL,3UL,blaze::columnMajor> > sym( 2UL );
+
+      checkRows    ( sym, 2UL );
+      checkColumns ( sym, 2UL );
+      checkNonZeros( sym, 0UL );
+   }
+
+   // Size constructor (DynamicMatrix)
+   {
+      test_ = "Column-major SymmetricMatrix size constructor (DynamicMatrix)";
+
+      OST sym( 2UL );
 
       checkRows    ( sym, 2UL );
       checkColumns ( sym, 2UL );
@@ -420,7 +628,7 @@ void SparseNumericTest::testConstructors()
 
       checkRows    ( sym, 3UL );
       checkColumns ( sym, 3UL );
-      checkCapacity( sym, 7UL );
+      checkCapacity( sym, 9UL );
       checkNonZeros( sym, 7UL );
 
       if( sym(0,0) != 1 || sym(0,1) != 2 || sym(0,2) != 3 ||
@@ -444,7 +652,7 @@ void SparseNumericTest::testConstructors()
 
       checkRows    ( sym, 3UL );
       checkColumns ( sym, 3UL );
-      checkCapacity( sym, 7UL );
+      checkCapacity( sym, 9UL );
       checkNonZeros( sym, 7UL );
 
       if( sym(0,0) != 1 || sym(0,1) != 2 || sym(0,2) != 3 ||
@@ -456,6 +664,141 @@ void SparseNumericTest::testConstructors()
              << " Details:\n"
              << "   Result:\n" << sym << "\n"
              << "   Expected result:\n( 1 2 3 )\n( 2 4 0 )\n( 3 0 6 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major array initialization
+   //=====================================================================================
+
+   // Dynamic array initialization constructor
+   {
+      test_ = "Column-major SymmetricMatrix dynamic array initialization constructor";
+
+      std::unique_ptr<int[]> array( new int[9] );
+      array[0] = 1;
+      array[1] = 2;
+      array[2] = 3;
+      array[3] = 2;
+      array[4] = 4;
+      array[5] = 0;
+      array[6] = 3;
+      array[7] = 0;
+      array[8] = 6;
+      const OST sym( 3UL, array.get() );
+
+      checkRows    ( sym, 3UL );
+      checkColumns ( sym, 3UL );
+      checkCapacity( sym, 9UL );
+      checkNonZeros( sym, 7UL );
+
+      if( sym(0,0) != 1 || sym(0,1) != 2 || sym(0,2) != 3 ||
+          sym(1,0) != 2 || sym(1,1) != 4 || sym(1,2) != 0 ||
+          sym(2,0) != 3 || sym(2,1) != 0 || sym(2,2) != 6 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sym << "\n"
+             << "   Expected result:\n( 1 2 3 )\n( 2 4 0 )\n( 3 0 6 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Static array initialization constructor
+   {
+      test_ = "Column-major SymmetricMatrix static array initialization constructor";
+
+      const int array[3][3] = { { 1, 2, 3 }, { 2, 4, 0 }, { 3, 0, 6 } };
+      const OST sym( array );
+
+      checkRows    ( sym, 3UL );
+      checkColumns ( sym, 3UL );
+      checkCapacity( sym, 9UL );
+      checkNonZeros( sym, 7UL );
+
+      if( sym(0,0) != 1 || sym(0,1) != 2 || sym(0,2) != 3 ||
+          sym(1,0) != 2 || sym(1,1) != 4 || sym(1,2) != 0 ||
+          sym(2,0) != 3 || sym(2,1) != 0 || sym(2,2) != 6 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sym << "\n"
+             << "   Expected result:\n( 1 2 3 )\n( 2 4 0 )\n( 3 0 6 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major custom matrix constructors
+   //=====================================================================================
+
+   // Custom matrix constructor (ElementType*, size_t)
+   {
+      test_ = "Column-major SymmetricMatrix custom matrix constructor (ElementType*, size_t)";
+
+      using blaze::unaligned;
+      using blaze::unpadded;
+      using blaze::columnMajor;
+
+      using UnalignedUnpadded = blaze::CustomMatrix<int,unaligned,unpadded,columnMajor>;
+      std::unique_ptr<int[]> memory( new int[5UL] );
+      memory[1] = 1;
+      memory[2] = 2;
+      memory[3] = 2;
+      memory[4] = 1;
+      const blaze::SymmetricMatrix<UnalignedUnpadded> sym( memory.get()+1UL, 2UL );
+
+      checkRows    ( sym, 2UL );
+      checkColumns ( sym, 2UL );
+      checkCapacity( sym, 4UL );
+      checkNonZeros( sym, 4UL );
+
+      if( sym(0,0) != 1 || sym(0,1) != 2 ||
+          sym(1,0) != 2 || sym(1,1) != 1 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sym << "\n"
+             << "   Expected result:\n( 1 2 )\n( 2 1 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Custom matrix constructor (ElementType*, size_t, size_t)
+   {
+      test_ = "Column-major SymmetricMatrix custom matrix constructor (ElementType*, size_t, size_t)";
+
+      using blaze::unaligned;
+      using blaze::unpadded;
+      using blaze::columnMajor;
+
+      using UnalignedUnpadded = blaze::CustomMatrix<int,unaligned,unpadded,columnMajor>;
+      std::unique_ptr<int[]> memory( new int[11UL] );
+      memory[1] = 1;
+      memory[2] = 2;
+      memory[6] = 2;
+      memory[7] = 1;
+      const blaze::SymmetricMatrix<UnalignedUnpadded> sym( memory.get()+1UL, 2UL, 5UL );
+
+      checkRows    ( sym, 2UL );
+      checkColumns ( sym, 2UL );
+      checkCapacity( sym, 4UL );
+      checkNonZeros( sym, 4UL );
+
+      if( sym(0,0) != 1 || sym(0,1) != 2 ||
+          sym(1,0) != 2 || sym(1,1) != 1 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sym << "\n"
+             << "   Expected result:\n( 1 2 )\n( 2 1 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -492,7 +835,7 @@ void SparseNumericTest::testConstructors()
 
       checkRows    ( sym2, 3UL );
       checkColumns ( sym2, 3UL );
-      checkCapacity( sym2, 7UL );
+      checkCapacity( sym2, 9UL );
       checkNonZeros( sym2, 7UL );
 
       if( sym2(0,0) !=  1 || sym2(0,1) != -4 || sym2(0,2) != 7 ||
@@ -540,7 +883,7 @@ void SparseNumericTest::testConstructors()
 
       checkRows    ( sym2, 3UL );
       checkColumns ( sym2, 3UL );
-      checkCapacity( sym2, 7UL );
+      checkCapacity( sym2, 9UL );
       checkNonZeros( sym2, 7UL );
 
       if( sym2(0,0) !=  1 || sym2(0,1) != -4 || sym2(0,2) != 7 ||
@@ -585,7 +928,7 @@ void SparseNumericTest::testConstructors()
 
       checkRows    ( sym, 3UL );
       checkColumns ( sym, 3UL );
-      checkCapacity( sym, 7UL );
+      checkCapacity( sym, 9UL );
       checkNonZeros( sym, 7UL );
 
       if( sym(0,0) !=  1 || sym(0,1) != -4 || sym(0,2) != 7 ||
@@ -637,7 +980,7 @@ void SparseNumericTest::testConstructors()
 
       checkRows    ( sym2, 3UL );
       checkColumns ( sym2, 3UL );
-      checkCapacity( sym2, 7UL );
+      checkCapacity( sym2, 9UL );
       checkNonZeros( sym2, 7UL );
 
       if( sym2(0,0) !=  1 || sym2(0,1) != -4 || sym2(0,2) != 7 ||
@@ -665,7 +1008,7 @@ void SparseNumericTest::testConstructors()
 // This function performs a test of all assignment operators of the SymmetricMatrix specialization.
 // In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void SparseNumericTest::testAssignment()
+void DenseScalarTest::testAssignment()
 {
    //=====================================================================================
    // Row-major list assignment
@@ -680,7 +1023,11 @@ void SparseNumericTest::testAssignment()
 
       checkRows    ( sym, 3UL );
       checkColumns ( sym, 3UL );
+      checkCapacity( sym, 9UL );
       checkNonZeros( sym, 7UL );
+      checkNonZeros( sym, 0UL, 3UL );
+      checkNonZeros( sym, 1UL, 2UL );
+      checkNonZeros( sym, 2UL, 2UL );
 
       if( sym(0,0) != 1 || sym(0,1) != 2 || sym(0,2) != 3 ||
           sym(1,0) != 2 || sym(1,1) != 4 || sym(1,2) != 0 ||
@@ -704,7 +1051,45 @@ void SparseNumericTest::testAssignment()
 
       checkRows    ( sym, 3UL );
       checkColumns ( sym, 3UL );
+      checkCapacity( sym, 9UL );
       checkNonZeros( sym, 7UL );
+      checkNonZeros( sym, 0UL, 3UL );
+      checkNonZeros( sym, 1UL, 2UL );
+      checkNonZeros( sym, 2UL, 2UL );
+
+      if( sym(0,0) != 1 || sym(0,1) != 2 || sym(0,2) != 3 ||
+          sym(1,0) != 2 || sym(1,1) != 4 || sym(1,2) != 0 ||
+          sym(2,0) != 3 || sym(2,1) != 0 || sym(2,2) != 6 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sym << "\n"
+             << "   Expected result:\n( 1 2 3 )\n( 2 4 0 )\n( 3 0 6 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Row-major array assignment
+   //=====================================================================================
+
+   // Array assignment
+   {
+      test_ = "Row-major SymmetricMatrix array assignment";
+
+      const int array[3][3] = { { 1, 2, 3 }, { 2, 4, 0 }, { 3, 0, 6 } };
+      ST sym;
+      sym = array;
+
+      checkRows    ( sym, 3UL );
+      checkColumns ( sym, 3UL );
+      checkCapacity( sym, 9UL );
+      checkNonZeros( sym, 7UL );
+      checkNonZeros( sym, 0UL, 3UL );
+      checkNonZeros( sym, 1UL, 2UL );
+      checkNonZeros( sym, 2UL, 2UL );
 
       if( sym(0,0) != 1 || sym(0,1) != 2 || sym(0,2) != 3 ||
           sym(1,0) != 2 || sym(1,1) != 4 || sym(1,2) != 0 ||
@@ -1036,7 +1421,7 @@ void SparseNumericTest::testAssignment()
 
       checkRows    ( sym, 3UL );
       checkColumns ( sym, 3UL );
-      checkNonZeros( sym, 8UL );
+      checkNonZeros( sym, 7UL );
 
       if( sym(0,0) !=  1 || sym(0,1) != -4 || sym(0,2) != 7 ||
           sym(1,0) != -4 || sym(1,1) !=  2 || sym(1,2) != 0 ||
@@ -1070,7 +1455,7 @@ void SparseNumericTest::testAssignment()
 
       checkRows    ( sym, 3UL );
       checkColumns ( sym, 3UL );
-      checkNonZeros( sym, 8UL );
+      checkNonZeros( sym, 7UL );
 
       if( sym(0,0) !=  1 || sym(0,1) != -4 || sym(0,2) != 7 ||
           sym(1,0) != -4 || sym(1,1) !=  2 || sym(1,2) != 0 ||
@@ -1116,7 +1501,7 @@ void SparseNumericTest::testAssignment()
    {
       test_ = "Row-major/column-major SymmetricMatrix sparse matrix assignment (non-symmetric)";
 
-      blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 7UL );
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 7UL );
       mat(0,0) =  1;
       mat(0,1) = -4;
       mat(0,2) =  7;
@@ -1215,7 +1600,11 @@ void SparseNumericTest::testAssignment()
 
       checkRows    ( sym, 3UL );
       checkColumns ( sym, 3UL );
+      checkCapacity( sym, 9UL );
       checkNonZeros( sym, 7UL );
+      checkNonZeros( sym, 0UL, 3UL );
+      checkNonZeros( sym, 1UL, 2UL );
+      checkNonZeros( sym, 2UL, 2UL );
 
       if( sym(0,0) != 1 || sym(0,1) != 2 || sym(0,2) != 3 ||
           sym(1,0) != 2 || sym(1,1) != 4 || sym(1,2) != 0 ||
@@ -1239,7 +1628,45 @@ void SparseNumericTest::testAssignment()
 
       checkRows    ( sym, 3UL );
       checkColumns ( sym, 3UL );
+      checkCapacity( sym, 9UL );
       checkNonZeros( sym, 7UL );
+      checkNonZeros( sym, 0UL, 3UL );
+      checkNonZeros( sym, 1UL, 2UL );
+      checkNonZeros( sym, 2UL, 2UL );
+
+      if( sym(0,0) != 1 || sym(0,1) != 2 || sym(0,2) != 3 ||
+          sym(1,0) != 2 || sym(1,1) != 4 || sym(1,2) != 0 ||
+          sym(2,0) != 3 || sym(2,1) != 0 || sym(2,2) != 6 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sym << "\n"
+             << "   Expected result:\n( 1 2 3 )\n( 2 4 0 )\n( 3 0 6 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major array assignment
+   //=====================================================================================
+
+   // Array assignment
+   {
+      test_ = "Column-major SymmetricMatrix array assignment";
+
+      const int array[3][3] = { { 1, 2, 3 }, { 2, 4, 0 }, { 3, 0, 6 } };
+      OST sym;
+      sym = array;
+
+      checkRows    ( sym, 3UL );
+      checkColumns ( sym, 3UL );
+      checkCapacity( sym, 9UL );
+      checkNonZeros( sym, 7UL );
+      checkNonZeros( sym, 0UL, 3UL );
+      checkNonZeros( sym, 1UL, 2UL );
+      checkNonZeros( sym, 2UL, 2UL );
 
       if( sym(0,0) != 1 || sym(0,1) != 2 || sym(0,2) != 3 ||
           sym(1,0) != 2 || sym(1,1) != 4 || sym(1,2) != 0 ||
@@ -1571,7 +1998,7 @@ void SparseNumericTest::testAssignment()
 
       checkRows    ( sym, 3UL );
       checkColumns ( sym, 3UL );
-      checkNonZeros( sym, 8UL );
+      checkNonZeros( sym, 7UL );
 
       if( sym(0,0) !=  1 || sym(0,1) != -4 || sym(0,2) != 7 ||
           sym(1,0) != -4 || sym(1,1) !=  2 || sym(1,2) != 0 ||
@@ -1605,7 +2032,7 @@ void SparseNumericTest::testAssignment()
 
       checkRows    ( sym, 3UL );
       checkColumns ( sym, 3UL );
-      checkNonZeros( sym, 8UL );
+      checkNonZeros( sym, 7UL );
 
       if( sym(0,0) !=  1 || sym(0,1) != -4 || sym(0,2) != 7 ||
           sym(1,0) != -4 || sym(1,1) !=  2 || sym(1,2) != 0 ||
@@ -1651,7 +2078,7 @@ void SparseNumericTest::testAssignment()
    {
       test_ = "Column-major/column-major SymmetricMatrix sparse matrix assignment (non-symmetric)";
 
-      blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 7UL );
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 7UL );
       mat(0,0) =  1;
       mat(0,1) = -4;
       mat(0,2) =  7;
@@ -1748,7 +2175,7 @@ void SparseNumericTest::testAssignment()
 // This function performs a test of the addition assignment operators of the SymmetricMatrix
 // specialization. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void SparseNumericTest::testAddAssign()
+void DenseScalarTest::testAddAssign()
 {
    //=====================================================================================
    // Row-major dense matrix addition assignment
@@ -1776,7 +2203,7 @@ void SparseNumericTest::testAddAssign()
 
       checkRows    ( sym, 3UL );
       checkColumns ( sym, 3UL );
-      checkCapacity( sym, 7UL );
+      checkCapacity( sym, 9UL );
       checkNonZeros( sym, 7UL );
       checkNonZeros( sym, 0UL, 3UL );
       checkNonZeros( sym, 1UL, 2UL );
@@ -1817,7 +2244,7 @@ void SparseNumericTest::testAddAssign()
 
       checkRows    ( sym, 3UL );
       checkColumns ( sym, 3UL );
-      checkCapacity( sym, 7UL );
+      checkCapacity( sym, 9UL );
       checkNonZeros( sym, 7UL );
       checkNonZeros( sym, 0UL, 3UL );
       checkNonZeros( sym, 1UL, 2UL );
@@ -1916,7 +2343,7 @@ void SparseNumericTest::testAddAssign()
 
       checkRows    ( sym2, 3UL );
       checkColumns ( sym2, 3UL );
-      checkCapacity( sym2, 7UL );
+      checkCapacity( sym2, 9UL );
       checkNonZeros( sym2, 7UL );
       checkNonZeros( sym2, 0UL, 3UL );
       checkNonZeros( sym2, 1UL, 2UL );
@@ -1955,7 +2382,7 @@ void SparseNumericTest::testAddAssign()
 
       checkRows    ( sym2, 3UL );
       checkColumns ( sym2, 3UL );
-      checkCapacity( sym2, 7UL );
+      checkCapacity( sym2, 9UL );
       checkNonZeros( sym2, 7UL );
       checkNonZeros( sym2, 0UL, 3UL );
       checkNonZeros( sym2, 1UL, 2UL );
@@ -2002,10 +2429,10 @@ void SparseNumericTest::testAddAssign()
 
       checkRows    ( sym, 3UL );
       checkColumns ( sym, 3UL );
-      checkCapacity( sym, 8UL );
-      checkNonZeros( sym, 8UL );
+      checkCapacity( sym, 9UL );
+      checkNonZeros( sym, 7UL );
       checkNonZeros( sym, 0UL, 3UL );
-      checkNonZeros( sym, 1UL, 3UL );
+      checkNonZeros( sym, 1UL, 2UL );
       checkNonZeros( sym, 2UL, 2UL );
 
       if( sym(0,0) !=  1 || sym(0,1) != -6 || sym(0,2) != 13 ||
@@ -2044,11 +2471,11 @@ void SparseNumericTest::testAddAssign()
 
       checkRows    ( sym, 3UL );
       checkColumns ( sym, 3UL );
-      checkCapacity( sym, 8UL );
-      checkNonZeros( sym, 8UL );
+      checkCapacity( sym, 9UL );
+      checkNonZeros( sym, 7UL );
       checkNonZeros( sym, 0UL, 3UL );
       checkNonZeros( sym, 1UL, 2UL );
-      checkNonZeros( sym, 2UL, 3UL );
+      checkNonZeros( sym, 2UL, 2UL );
 
       if( sym(0,0) !=  1 || sym(0,1) != -6 || sym(0,2) != 13 ||
           sym(1,0) != -6 || sym(1,1) !=  5 || sym(1,2) !=  0 ||
@@ -2143,7 +2570,7 @@ void SparseNumericTest::testAddAssign()
 
       checkRows    ( sym2, 3UL );
       checkColumns ( sym2, 3UL );
-      checkCapacity( sym2, 7UL );
+      checkCapacity( sym2, 9UL );
       checkNonZeros( sym2, 7UL );
       checkNonZeros( sym2, 0UL, 3UL );
       checkNonZeros( sym2, 1UL, 2UL );
@@ -2182,7 +2609,7 @@ void SparseNumericTest::testAddAssign()
 
       checkRows    ( sym2, 3UL );
       checkColumns ( sym2, 3UL );
-      checkCapacity( sym2, 7UL );
+      checkCapacity( sym2, 9UL );
       checkNonZeros( sym2, 7UL );
       checkNonZeros( sym2, 0UL, 3UL );
       checkNonZeros( sym2, 1UL, 2UL );
@@ -2228,7 +2655,7 @@ void SparseNumericTest::testAddAssign()
 
       checkRows    ( sym, 3UL );
       checkColumns ( sym, 3UL );
-      checkCapacity( sym, 7UL );
+      checkCapacity( sym, 9UL );
       checkNonZeros( sym, 7UL );
       checkNonZeros( sym, 0UL, 3UL );
       checkNonZeros( sym, 1UL, 2UL );
@@ -2269,7 +2696,7 @@ void SparseNumericTest::testAddAssign()
 
       checkRows    ( sym, 3UL );
       checkColumns ( sym, 3UL );
-      checkCapacity( sym, 7UL );
+      checkCapacity( sym, 9UL );
       checkNonZeros( sym, 7UL );
       checkNonZeros( sym, 0UL, 3UL );
       checkNonZeros( sym, 1UL, 2UL );
@@ -2368,7 +2795,7 @@ void SparseNumericTest::testAddAssign()
 
       checkRows    ( sym2, 3UL );
       checkColumns ( sym2, 3UL );
-      checkCapacity( sym2, 7UL );
+      checkCapacity( sym2, 9UL );
       checkNonZeros( sym2, 7UL );
       checkNonZeros( sym2, 0UL, 3UL );
       checkNonZeros( sym2, 1UL, 2UL );
@@ -2407,7 +2834,7 @@ void SparseNumericTest::testAddAssign()
 
       checkRows    ( sym2, 3UL );
       checkColumns ( sym2, 3UL );
-      checkCapacity( sym2, 7UL );
+      checkCapacity( sym2, 9UL );
       checkNonZeros( sym2, 7UL );
       checkNonZeros( sym2, 0UL, 3UL );
       checkNonZeros( sym2, 1UL, 2UL );
@@ -2454,10 +2881,10 @@ void SparseNumericTest::testAddAssign()
 
       checkRows    ( sym, 3UL );
       checkColumns ( sym, 3UL );
-      checkCapacity( sym, 8UL );
-      checkNonZeros( sym, 8UL );
+      checkCapacity( sym, 9UL );
+      checkNonZeros( sym, 7UL );
       checkNonZeros( sym, 0UL, 3UL );
-      checkNonZeros( sym, 1UL, 3UL );
+      checkNonZeros( sym, 1UL, 2UL );
       checkNonZeros( sym, 2UL, 2UL );
 
       if( sym(0,0) !=  1 || sym(0,1) != -6 || sym(0,2) != 13 ||
@@ -2496,11 +2923,11 @@ void SparseNumericTest::testAddAssign()
 
       checkRows    ( sym, 3UL );
       checkColumns ( sym, 3UL );
-      checkCapacity( sym, 8UL );
-      checkNonZeros( sym, 8UL );
+      checkCapacity( sym, 9UL );
+      checkNonZeros( sym, 7UL );
       checkNonZeros( sym, 0UL, 3UL );
       checkNonZeros( sym, 1UL, 2UL );
-      checkNonZeros( sym, 2UL, 3UL );
+      checkNonZeros( sym, 2UL, 2UL );
 
       if( sym(0,0) !=  1 || sym(0,1) != -6 || sym(0,2) != 13 ||
           sym(1,0) != -6 || sym(1,1) !=  5 || sym(1,2) !=  0 ||
@@ -2595,7 +3022,7 @@ void SparseNumericTest::testAddAssign()
 
       checkRows    ( sym2, 3UL );
       checkColumns ( sym2, 3UL );
-      checkCapacity( sym2, 7UL );
+      checkCapacity( sym2, 9UL );
       checkNonZeros( sym2, 7UL );
       checkNonZeros( sym2, 0UL, 3UL );
       checkNonZeros( sym2, 1UL, 2UL );
@@ -2634,7 +3061,7 @@ void SparseNumericTest::testAddAssign()
 
       checkRows    ( sym2, 3UL );
       checkColumns ( sym2, 3UL );
-      checkCapacity( sym2, 7UL );
+      checkCapacity( sym2, 9UL );
       checkNonZeros( sym2, 7UL );
       checkNonZeros( sym2, 0UL, 3UL );
       checkNonZeros( sym2, 1UL, 2UL );
@@ -2665,7 +3092,7 @@ void SparseNumericTest::testAddAssign()
 // This function performs a test of the subtraction assignment operators of the SymmetricMatrix
 // specialization. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void SparseNumericTest::testSubAssign()
+void DenseScalarTest::testSubAssign()
 {
    //=====================================================================================
    // Row-major dense matrix subtraction assignment
@@ -2693,7 +3120,7 @@ void SparseNumericTest::testSubAssign()
 
       checkRows    ( sym, 3UL );
       checkColumns ( sym, 3UL );
-      checkCapacity( sym, 7UL );
+      checkCapacity( sym, 9UL );
       checkNonZeros( sym, 7UL );
       checkNonZeros( sym, 0UL, 3UL );
       checkNonZeros( sym, 1UL, 2UL );
@@ -2734,7 +3161,7 @@ void SparseNumericTest::testSubAssign()
 
       checkRows    ( sym, 3UL );
       checkColumns ( sym, 3UL );
-      checkCapacity( sym, 7UL );
+      checkCapacity( sym, 9UL );
       checkNonZeros( sym, 7UL );
       checkNonZeros( sym, 0UL, 3UL );
       checkNonZeros( sym, 1UL, 2UL );
@@ -2833,7 +3260,7 @@ void SparseNumericTest::testSubAssign()
 
       checkRows    ( sym2, 3UL );
       checkColumns ( sym2, 3UL );
-      checkCapacity( sym2, 7UL );
+      checkCapacity( sym2, 9UL );
       checkNonZeros( sym2, 7UL );
       checkNonZeros( sym2, 0UL, 3UL );
       checkNonZeros( sym2, 1UL, 2UL );
@@ -2872,7 +3299,7 @@ void SparseNumericTest::testSubAssign()
 
       checkRows    ( sym2, 3UL );
       checkColumns ( sym2, 3UL );
-      checkCapacity( sym2, 7UL );
+      checkCapacity( sym2, 9UL );
       checkNonZeros( sym2, 7UL );
       checkNonZeros( sym2, 0UL, 3UL );
       checkNonZeros( sym2, 1UL, 2UL );
@@ -2919,10 +3346,10 @@ void SparseNumericTest::testSubAssign()
 
       checkRows    ( sym, 3UL );
       checkColumns ( sym, 3UL );
-      checkCapacity( sym, 8UL );
-      checkNonZeros( sym, 8UL );
+      checkCapacity( sym, 9UL );
+      checkNonZeros( sym, 7UL );
       checkNonZeros( sym, 0UL, 3UL );
-      checkNonZeros( sym, 1UL, 3UL );
+      checkNonZeros( sym, 1UL, 2UL );
       checkNonZeros( sym, 2UL, 2UL );
 
       if( sym(0,0) !=  1 || sym(0,1) != -2 || sym(0,2) != 1 ||
@@ -2961,11 +3388,11 @@ void SparseNumericTest::testSubAssign()
 
       checkRows    ( sym, 3UL );
       checkColumns ( sym, 3UL );
-      checkCapacity( sym, 8UL );
-      checkNonZeros( sym, 8UL );
+      checkCapacity( sym, 9UL );
+      checkNonZeros( sym, 7UL );
       checkNonZeros( sym, 0UL, 3UL );
       checkNonZeros( sym, 1UL, 2UL );
-      checkNonZeros( sym, 2UL, 3UL );
+      checkNonZeros( sym, 2UL, 2UL );
 
       if( sym(0,0) !=  1 || sym(0,1) != -2 || sym(0,2) != 1 ||
           sym(1,0) != -2 || sym(1,1) != -1 || sym(1,2) != 0 ||
@@ -3060,7 +3487,7 @@ void SparseNumericTest::testSubAssign()
 
       checkRows    ( sym2, 3UL );
       checkColumns ( sym2, 3UL );
-      checkCapacity( sym2, 7UL );
+      checkCapacity( sym2, 9UL );
       checkNonZeros( sym2, 7UL );
       checkNonZeros( sym2, 0UL, 3UL );
       checkNonZeros( sym2, 1UL, 2UL );
@@ -3099,7 +3526,7 @@ void SparseNumericTest::testSubAssign()
 
       checkRows    ( sym2, 3UL );
       checkColumns ( sym2, 3UL );
-      checkCapacity( sym2, 7UL );
+      checkCapacity( sym2, 9UL );
       checkNonZeros( sym2, 7UL );
       checkNonZeros( sym2, 0UL, 3UL );
       checkNonZeros( sym2, 1UL, 2UL );
@@ -3145,7 +3572,7 @@ void SparseNumericTest::testSubAssign()
 
       checkRows    ( sym, 3UL );
       checkColumns ( sym, 3UL );
-      checkCapacity( sym, 7UL );
+      checkCapacity( sym, 9UL );
       checkNonZeros( sym, 7UL );
       checkNonZeros( sym, 0UL, 3UL );
       checkNonZeros( sym, 1UL, 2UL );
@@ -3186,7 +3613,7 @@ void SparseNumericTest::testSubAssign()
 
       checkRows    ( sym, 3UL );
       checkColumns ( sym, 3UL );
-      checkCapacity( sym, 7UL );
+      checkCapacity( sym, 9UL );
       checkNonZeros( sym, 7UL );
       checkNonZeros( sym, 0UL, 3UL );
       checkNonZeros( sym, 1UL, 2UL );
@@ -3285,7 +3712,7 @@ void SparseNumericTest::testSubAssign()
 
       checkRows    ( sym2, 3UL );
       checkColumns ( sym2, 3UL );
-      checkCapacity( sym2, 7UL );
+      checkCapacity( sym2, 9UL );
       checkNonZeros( sym2, 7UL );
       checkNonZeros( sym2, 0UL, 3UL );
       checkNonZeros( sym2, 1UL, 2UL );
@@ -3324,7 +3751,7 @@ void SparseNumericTest::testSubAssign()
 
       checkRows    ( sym2, 3UL );
       checkColumns ( sym2, 3UL );
-      checkCapacity( sym2, 7UL );
+      checkCapacity( sym2, 9UL );
       checkNonZeros( sym2, 7UL );
       checkNonZeros( sym2, 0UL, 3UL );
       checkNonZeros( sym2, 1UL, 2UL );
@@ -3371,10 +3798,10 @@ void SparseNumericTest::testSubAssign()
 
       checkRows    ( sym, 3UL );
       checkColumns ( sym, 3UL );
-      checkCapacity( sym, 8UL );
-      checkNonZeros( sym, 8UL );
+      checkCapacity( sym, 9UL );
+      checkNonZeros( sym, 7UL );
       checkNonZeros( sym, 0UL, 3UL );
-      checkNonZeros( sym, 1UL, 3UL );
+      checkNonZeros( sym, 1UL, 2UL );
       checkNonZeros( sym, 2UL, 2UL );
 
       if( sym(0,0) !=  1 || sym(0,1) != -2 || sym(0,2) != 1 ||
@@ -3413,11 +3840,11 @@ void SparseNumericTest::testSubAssign()
 
       checkRows    ( sym, 3UL );
       checkColumns ( sym, 3UL );
-      checkCapacity( sym, 8UL );
-      checkNonZeros( sym, 8UL );
+      checkCapacity( sym, 9UL );
+      checkNonZeros( sym, 7UL );
       checkNonZeros( sym, 0UL, 3UL );
       checkNonZeros( sym, 1UL, 2UL );
-      checkNonZeros( sym, 2UL, 3UL );
+      checkNonZeros( sym, 2UL, 2UL );
 
       if( sym(0,0) !=  1 || sym(0,1) != -2 || sym(0,2) != 1 ||
           sym(1,0) != -2 || sym(1,1) != -1 || sym(1,2) != 0 ||
@@ -3512,7 +3939,7 @@ void SparseNumericTest::testSubAssign()
 
       checkRows    ( sym2, 3UL );
       checkColumns ( sym2, 3UL );
-      checkCapacity( sym2, 7UL );
+      checkCapacity( sym2, 9UL );
       checkNonZeros( sym2, 7UL );
       checkNonZeros( sym2, 0UL, 3UL );
       checkNonZeros( sym2, 1UL, 2UL );
@@ -3551,7 +3978,7 @@ void SparseNumericTest::testSubAssign()
 
       checkRows    ( sym2, 3UL );
       checkColumns ( sym2, 3UL );
-      checkCapacity( sym2, 7UL );
+      checkCapacity( sym2, 9UL );
       checkNonZeros( sym2, 7UL );
       checkNonZeros( sym2, 0UL, 3UL );
       checkNonZeros( sym2, 1UL, 2UL );
@@ -3582,7 +4009,7 @@ void SparseNumericTest::testSubAssign()
 // This function performs a test of the Schur product assignment operators of the SymmetricMatrix
 // specialization. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void SparseNumericTest::testSchurAssign()
+void DenseScalarTest::testSchurAssign()
 {
    //=====================================================================================
    // Row-major dense matrix Schur product assignment
@@ -3610,11 +4037,11 @@ void SparseNumericTest::testSchurAssign()
 
       checkRows    ( sym, 3UL );
       checkColumns ( sym, 3UL );
-      checkCapacity( sym, 7UL );
-      checkNonZeros( sym, 7UL );
-      checkNonZeros( sym, 0UL, 3UL );
+      checkCapacity( sym, 9UL );
+      checkNonZeros( sym, 5UL );
+      checkNonZeros( sym, 0UL, 2UL );
       checkNonZeros( sym, 1UL, 2UL );
-      checkNonZeros( sym, 2UL, 2UL );
+      checkNonZeros( sym, 2UL, 1UL );
 
       if( sym(0,0) !=  0 || sym(0,1) != 8 || sym(0,2) != 42 ||
           sym(1,0) !=  8 || sym(1,1) != 6 || sym(1,2) !=  0 ||
@@ -3651,11 +4078,11 @@ void SparseNumericTest::testSchurAssign()
 
       checkRows    ( sym, 3UL );
       checkColumns ( sym, 3UL );
-      checkCapacity( sym, 7UL );
-      checkNonZeros( sym, 7UL );
-      checkNonZeros( sym, 0UL, 3UL );
+      checkCapacity( sym, 9UL );
+      checkNonZeros( sym, 5UL );
+      checkNonZeros( sym, 0UL, 2UL );
       checkNonZeros( sym, 1UL, 2UL );
-      checkNonZeros( sym, 2UL, 2UL );
+      checkNonZeros( sym, 2UL, 1UL );
 
       if( sym(0,0) !=  0 || sym(0,1) != 8 || sym(0,2) != 42 ||
           sym(1,0) !=  8 || sym(1,1) != 6 || sym(1,2) !=  0 ||
@@ -3750,7 +4177,7 @@ void SparseNumericTest::testSchurAssign()
 
       checkRows    ( sym2, 3UL );
       checkColumns ( sym2, 3UL );
-      checkCapacity( sym2, 5UL );
+      checkCapacity( sym2, 9UL );
       checkNonZeros( sym2, 5UL );
       checkNonZeros( sym2, 0UL, 2UL );
       checkNonZeros( sym2, 1UL, 2UL );
@@ -3789,7 +4216,7 @@ void SparseNumericTest::testSchurAssign()
 
       checkRows    ( sym2, 3UL );
       checkColumns ( sym2, 3UL );
-      checkCapacity( sym2, 5UL );
+      checkCapacity( sym2, 9UL );
       checkNonZeros( sym2, 5UL );
       checkNonZeros( sym2, 0UL, 2UL );
       checkNonZeros( sym2, 1UL, 2UL );
@@ -3836,7 +4263,7 @@ void SparseNumericTest::testSchurAssign()
 
       checkRows    ( sym, 3UL );
       checkColumns ( sym, 3UL );
-      checkCapacity( sym, 5UL );
+      checkCapacity( sym, 9UL );
       checkNonZeros( sym, 5UL );
       checkNonZeros( sym, 0UL, 2UL );
       checkNonZeros( sym, 1UL, 2UL );
@@ -3878,7 +4305,7 @@ void SparseNumericTest::testSchurAssign()
 
       checkRows    ( sym, 3UL );
       checkColumns ( sym, 3UL );
-      checkCapacity( sym, 5UL );
+      checkCapacity( sym, 9UL );
       checkNonZeros( sym, 5UL );
       checkNonZeros( sym, 0UL, 2UL );
       checkNonZeros( sym, 1UL, 2UL );
@@ -3977,7 +4404,7 @@ void SparseNumericTest::testSchurAssign()
 
       checkRows    ( sym2, 3UL );
       checkColumns ( sym2, 3UL );
-      checkCapacity( sym2, 5UL );
+      checkCapacity( sym2, 9UL );
       checkNonZeros( sym2, 5UL );
       checkNonZeros( sym2, 0UL, 2UL );
       checkNonZeros( sym2, 1UL, 2UL );
@@ -4016,7 +4443,7 @@ void SparseNumericTest::testSchurAssign()
 
       checkRows    ( sym2, 3UL );
       checkColumns ( sym2, 3UL );
-      checkCapacity( sym2, 5UL );
+      checkCapacity( sym2, 9UL );
       checkNonZeros( sym2, 5UL );
       checkNonZeros( sym2, 0UL, 2UL );
       checkNonZeros( sym2, 1UL, 2UL );
@@ -4062,11 +4489,11 @@ void SparseNumericTest::testSchurAssign()
 
       checkRows    ( sym, 3UL );
       checkColumns ( sym, 3UL );
-      checkCapacity( sym, 7UL );
-      checkNonZeros( sym, 7UL );
-      checkNonZeros( sym, 0UL, 3UL );
+      checkCapacity( sym, 9UL );
+      checkNonZeros( sym, 5UL );
+      checkNonZeros( sym, 0UL, 2UL );
       checkNonZeros( sym, 1UL, 2UL );
-      checkNonZeros( sym, 2UL, 2UL );
+      checkNonZeros( sym, 2UL, 1UL );
 
       if( sym(0,0) !=  0 || sym(0,1) != 8 || sym(0,2) != 42 ||
           sym(1,0) !=  8 || sym(1,1) != 6 || sym(1,2) !=  0 ||
@@ -4103,11 +4530,11 @@ void SparseNumericTest::testSchurAssign()
 
       checkRows    ( sym, 3UL );
       checkColumns ( sym, 3UL );
-      checkCapacity( sym, 7UL );
-      checkNonZeros( sym, 7UL );
-      checkNonZeros( sym, 0UL, 3UL );
+      checkCapacity( sym, 9UL );
+      checkNonZeros( sym, 5UL );
+      checkNonZeros( sym, 0UL, 2UL );
       checkNonZeros( sym, 1UL, 2UL );
-      checkNonZeros( sym, 2UL, 2UL );
+      checkNonZeros( sym, 2UL, 1UL );
 
       if( sym(0,0) !=  0 || sym(0,1) != 8 || sym(0,2) != 42 ||
           sym(1,0) !=  8 || sym(1,1) != 6 || sym(1,2) !=  0 ||
@@ -4202,7 +4629,7 @@ void SparseNumericTest::testSchurAssign()
 
       checkRows    ( sym2, 3UL );
       checkColumns ( sym2, 3UL );
-      checkCapacity( sym2, 5UL );
+      checkCapacity( sym2, 9UL );
       checkNonZeros( sym2, 5UL );
       checkNonZeros( sym2, 0UL, 2UL );
       checkNonZeros( sym2, 1UL, 2UL );
@@ -4241,7 +4668,7 @@ void SparseNumericTest::testSchurAssign()
 
       checkRows    ( sym2, 3UL );
       checkColumns ( sym2, 3UL );
-      checkCapacity( sym2, 5UL );
+      checkCapacity( sym2, 9UL );
       checkNonZeros( sym2, 5UL );
       checkNonZeros( sym2, 0UL, 2UL );
       checkNonZeros( sym2, 1UL, 2UL );
@@ -4288,7 +4715,7 @@ void SparseNumericTest::testSchurAssign()
 
       checkRows    ( sym, 3UL );
       checkColumns ( sym, 3UL );
-      checkCapacity( sym, 5UL );
+      checkCapacity( sym, 9UL );
       checkNonZeros( sym, 5UL );
       checkNonZeros( sym, 0UL, 2UL );
       checkNonZeros( sym, 1UL, 2UL );
@@ -4330,7 +4757,7 @@ void SparseNumericTest::testSchurAssign()
 
       checkRows    ( sym, 3UL );
       checkColumns ( sym, 3UL );
-      checkCapacity( sym, 5UL );
+      checkCapacity( sym, 9UL );
       checkNonZeros( sym, 5UL );
       checkNonZeros( sym, 0UL, 2UL );
       checkNonZeros( sym, 1UL, 2UL );
@@ -4429,7 +4856,7 @@ void SparseNumericTest::testSchurAssign()
 
       checkRows    ( sym2, 3UL );
       checkColumns ( sym2, 3UL );
-      checkCapacity( sym2, 5UL );
+      checkCapacity( sym2, 9UL );
       checkNonZeros( sym2, 5UL );
       checkNonZeros( sym2, 0UL, 2UL );
       checkNonZeros( sym2, 1UL, 2UL );
@@ -4468,7 +4895,7 @@ void SparseNumericTest::testSchurAssign()
 
       checkRows    ( sym2, 3UL );
       checkColumns ( sym2, 3UL );
-      checkCapacity( sym2, 5UL );
+      checkCapacity( sym2, 9UL );
       checkNonZeros( sym2, 5UL );
       checkNonZeros( sym2, 0UL, 2UL );
       checkNonZeros( sym2, 1UL, 2UL );
@@ -4499,7 +4926,7 @@ void SparseNumericTest::testSchurAssign()
 // This function performs a test of the multiplication assignment operators of the SymmetricMatrix
 // specialization. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void SparseNumericTest::testMultAssign()
+void DenseScalarTest::testMultAssign()
 {
    //=====================================================================================
    // Row-major dense matrix multiplication assignment
@@ -4525,7 +4952,7 @@ void SparseNumericTest::testMultAssign()
 
       checkRows    ( sym, 3UL );
       checkColumns ( sym, 3UL );
-      checkCapacity( sym, 7UL );
+      checkCapacity( sym, 9UL );
       checkNonZeros( sym, 7UL );
       checkNonZeros( sym, 0UL, 3UL );
       checkNonZeros( sym, 1UL, 2UL );
@@ -4564,7 +4991,7 @@ void SparseNumericTest::testMultAssign()
 
       checkRows    ( sym, 3UL );
       checkColumns ( sym, 3UL );
-      checkCapacity( sym, 7UL );
+      checkCapacity( sym, 9UL );
       checkNonZeros( sym, 7UL );
       checkNonZeros( sym, 0UL, 3UL );
       checkNonZeros( sym, 1UL, 2UL );
@@ -4663,7 +5090,7 @@ void SparseNumericTest::testMultAssign()
 
       checkRows    ( sym2, 3UL );
       checkColumns ( sym2, 3UL );
-      checkCapacity( sym2, 7UL );
+      checkCapacity( sym2, 9UL );
       checkNonZeros( sym2, 7UL );
       checkNonZeros( sym2, 0UL, 3UL );
       checkNonZeros( sym2, 1UL, 2UL );
@@ -4702,7 +5129,7 @@ void SparseNumericTest::testMultAssign()
 
       checkRows    ( sym2, 3UL );
       checkColumns ( sym2, 3UL );
-      checkCapacity( sym2, 7UL );
+      checkCapacity( sym2, 9UL );
       checkNonZeros( sym2, 7UL );
       checkNonZeros( sym2, 0UL, 3UL );
       checkNonZeros( sym2, 1UL, 2UL );
@@ -4747,7 +5174,7 @@ void SparseNumericTest::testMultAssign()
 
       checkRows    ( sym, 3UL );
       checkColumns ( sym, 3UL );
-      checkCapacity( sym, 7UL );
+      checkCapacity( sym, 9UL );
       checkNonZeros( sym, 7UL );
       checkNonZeros( sym, 0UL, 3UL );
       checkNonZeros( sym, 1UL, 2UL );
@@ -4787,7 +5214,7 @@ void SparseNumericTest::testMultAssign()
 
       checkRows    ( sym, 3UL );
       checkColumns ( sym, 3UL );
-      checkCapacity( sym, 7UL );
+      checkCapacity( sym, 9UL );
       checkNonZeros( sym, 7UL );
       checkNonZeros( sym, 0UL, 3UL );
       checkNonZeros( sym, 1UL, 2UL );
@@ -4886,7 +5313,7 @@ void SparseNumericTest::testMultAssign()
 
       checkRows    ( sym2, 3UL );
       checkColumns ( sym2, 3UL );
-      checkCapacity( sym2, 7UL );
+      checkCapacity( sym2, 9UL );
       checkNonZeros( sym2, 7UL );
       checkNonZeros( sym2, 0UL, 3UL );
       checkNonZeros( sym2, 1UL, 2UL );
@@ -4925,7 +5352,7 @@ void SparseNumericTest::testMultAssign()
 
       checkRows    ( sym2, 3UL );
       checkColumns ( sym2, 3UL );
-      checkCapacity( sym2, 7UL );
+      checkCapacity( sym2, 9UL );
       checkNonZeros( sym2, 7UL );
       checkNonZeros( sym2, 0UL, 3UL );
       checkNonZeros( sym2, 1UL, 2UL );
@@ -4969,7 +5396,7 @@ void SparseNumericTest::testMultAssign()
 
       checkRows    ( sym, 3UL );
       checkColumns ( sym, 3UL );
-      checkCapacity( sym, 7UL );
+      checkCapacity( sym, 9UL );
       checkNonZeros( sym, 7UL );
       checkNonZeros( sym, 0UL, 3UL );
       checkNonZeros( sym, 1UL, 2UL );
@@ -5008,7 +5435,7 @@ void SparseNumericTest::testMultAssign()
 
       checkRows    ( sym, 3UL );
       checkColumns ( sym, 3UL );
-      checkCapacity( sym, 7UL );
+      checkCapacity( sym, 9UL );
       checkNonZeros( sym, 7UL );
       checkNonZeros( sym, 0UL, 3UL );
       checkNonZeros( sym, 1UL, 2UL );
@@ -5107,7 +5534,7 @@ void SparseNumericTest::testMultAssign()
 
       checkRows    ( sym2, 3UL );
       checkColumns ( sym2, 3UL );
-      checkCapacity( sym2, 7UL );
+      checkCapacity( sym2, 9UL );
       checkNonZeros( sym2, 7UL );
       checkNonZeros( sym2, 0UL, 3UL );
       checkNonZeros( sym2, 1UL, 2UL );
@@ -5146,7 +5573,7 @@ void SparseNumericTest::testMultAssign()
 
       checkRows    ( sym2, 3UL );
       checkColumns ( sym2, 3UL );
-      checkCapacity( sym2, 7UL );
+      checkCapacity( sym2, 9UL );
       checkNonZeros( sym2, 7UL );
       checkNonZeros( sym2, 0UL, 3UL );
       checkNonZeros( sym2, 1UL, 2UL );
@@ -5191,7 +5618,7 @@ void SparseNumericTest::testMultAssign()
 
       checkRows    ( sym, 3UL );
       checkColumns ( sym, 3UL );
-      checkCapacity( sym, 7UL );
+      checkCapacity( sym, 9UL );
       checkNonZeros( sym, 7UL );
       checkNonZeros( sym, 0UL, 3UL );
       checkNonZeros( sym, 1UL, 2UL );
@@ -5231,7 +5658,7 @@ void SparseNumericTest::testMultAssign()
 
       checkRows    ( sym, 3UL );
       checkColumns ( sym, 3UL );
-      checkCapacity( sym, 7UL );
+      checkCapacity( sym, 9UL );
       checkNonZeros( sym, 7UL );
       checkNonZeros( sym, 0UL, 3UL );
       checkNonZeros( sym, 1UL, 2UL );
@@ -5330,7 +5757,7 @@ void SparseNumericTest::testMultAssign()
 
       checkRows    ( sym2, 3UL );
       checkColumns ( sym2, 3UL );
-      checkCapacity( sym2, 7UL );
+      checkCapacity( sym2, 9UL );
       checkNonZeros( sym2, 7UL );
       checkNonZeros( sym2, 0UL, 3UL );
       checkNonZeros( sym2, 1UL, 2UL );
@@ -5369,7 +5796,7 @@ void SparseNumericTest::testMultAssign()
 
       checkRows    ( sym2, 3UL );
       checkColumns ( sym2, 3UL );
-      checkCapacity( sym2, 7UL );
+      checkCapacity( sym2, 9UL );
       checkNonZeros( sym2, 7UL );
       checkNonZeros( sym2, 0UL, 3UL );
       checkNonZeros( sym2, 1UL, 2UL );
@@ -5410,14 +5837,14 @@ void SparseNumericTest::testMultAssign()
 //*************************************************************************************************
 int main()
 {
-   std::cout << "   Running SymmetricMatrix sparse numeric test (part 1)..." << std::endl;
+   std::cout << "   Running SymmetricMatrix dense scalar test (part 1)..." << std::endl;
 
    try
    {
-      RUN_SYMMETRICMATRIX_SPARSENUMERIC_TEST;
+      RUN_SYMMETRICMATRIX_DENSESCALAR_TEST;
    }
    catch( std::exception& ex ) {
-      std::cerr << "\n\n ERROR DETECTED during SymmetricMatrix sparse numeric test (part 1):\n"
+      std::cerr << "\n\n ERROR DETECTED during SymmetricMatrix dense scalar test (part 1):\n"
                 << ex.what() << "\n";
       return EXIT_FAILURE;
    }

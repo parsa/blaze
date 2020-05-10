@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file src/mathtest/adaptors/symmetricmatrix/DenseNonNumericTest1.cpp
-//  \brief Source file for the SymmetricMatrix dense non-numeric test (part 1)
+//  \file src/mathtest/adaptors/symmetricmatrix/DenseNonScalarTest1.cpp
+//  \brief Source file for the SymmetricMatrix dense non-scalar test (part 1)
 //
 //  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
@@ -46,7 +46,7 @@
 #include <blaze/math/HybridMatrix.h>
 #include <blaze/math/StaticMatrix.h>
 #include <blaze/util/policies/ArrayDelete.h>
-#include <blazetest/mathtest/adaptors/symmetricmatrix/DenseNonNumericTest.h>
+#include <blazetest/mathtest/adaptors/symmetricmatrix/DenseNonScalarTest.h>
 
 #ifdef BLAZE_USE_HPX_THREADS
 #  include <hpx/hpx_main.hpp>
@@ -68,11 +68,11 @@ namespace symmetricmatrix {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Constructor for the SymmetricMatrix dense non-numeric test.
+/*!\brief Constructor for the SymmetricMatrix dense non-scalar test.
 //
 // \exception std::runtime_error Operation error detected.
 */
-DenseNonNumericTest::DenseNonNumericTest()
+DenseNonScalarTest::DenseNonScalarTest()
 {
    testConstructors();
    testAssignment();
@@ -101,7 +101,7 @@ DenseNonNumericTest::DenseNonNumericTest()
 // This function performs a test of all constructors of the SymmetricMatrix specialization.
 // In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void DenseNonNumericTest::testConstructors()
+void DenseNonScalarTest::testConstructors()
 {
    //=====================================================================================
    // Row-major default constructor
@@ -814,7 +814,7 @@ void DenseNonNumericTest::testConstructors()
 // This function performs a test of all assignment operators of the SymmetricMatrix specialization.
 // In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void DenseNonNumericTest::testAssignment()
+void DenseNonScalarTest::testAssignment()
 {
    //=====================================================================================
    // Row-major copy assignment
@@ -2125,7 +2125,7 @@ void DenseNonNumericTest::testAssignment()
 // This function performs a test of the addition assignment operators of the SymmetricMatrix
 // specialization. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void DenseNonNumericTest::testAddAssign()
+void DenseNonScalarTest::testAddAssign()
 {
    //=====================================================================================
    // Row-major addition assignment
@@ -2866,7 +2866,7 @@ void DenseNonNumericTest::testAddAssign()
 // This function performs a test of the subtraction assignment operators of the SymmetricMatrix
 // specialization. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void DenseNonNumericTest::testSubAssign()
+void DenseNonScalarTest::testSubAssign()
 {
    //=====================================================================================
    // Row-major subtraction assignment
@@ -3605,7 +3605,7 @@ void DenseNonNumericTest::testSubAssign()
 // This function performs a test of the Schur product assignment operators of the SymmetricMatrix
 // specialization. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void DenseNonNumericTest::testSchurAssign()
+void DenseNonScalarTest::testSchurAssign()
 {
    //=====================================================================================
    // Row-major Schur product assignment
@@ -4346,7 +4346,7 @@ void DenseNonNumericTest::testSchurAssign()
 // This function performs a test of the multiplication assignment operators of the SymmetricMatrix
 // specialization. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void DenseNonNumericTest::testMultAssign()
+void DenseNonScalarTest::testMultAssign()
 {
    //=====================================================================================
    // Row-major multiplication assignment
@@ -4851,14 +4851,14 @@ void DenseNonNumericTest::testMultAssign()
 //*************************************************************************************************
 int main()
 {
-   std::cout << "   Running SymmetricMatrix dense non-numeric test (part 1)..." << std::endl;
+   std::cout << "   Running SymmetricMatrix dense non-scalar test (part 1)..." << std::endl;
 
    try
    {
-      RUN_SYMMETRICMATRIX_DENSENONNUMERIC_TEST;
+      RUN_SYMMETRICMATRIX_DENSENONSCALAR_TEST;
    }
    catch( std::exception& ex ) {
-      std::cerr << "\n\n ERROR DETECTED during SymmetricMatrix dense non-numeric test (part 1):\n"
+      std::cerr << "\n\n ERROR DETECTED during SymmetricMatrix dense non-scalar test (part 1):\n"
                 << ex.what() << "\n";
       return EXIT_FAILURE;
    }

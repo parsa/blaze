@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blazetest/mathtest/adaptors/symmetricmatrix/SubmatrixNonNumericTest.h
-//  \brief Header file for the SymmetricMatrix submatrix non-numeric test
+//  \file blazetest/mathtest/adaptors/symmetricmatrix/SubmatrixNonScalarTest.h
+//  \brief Header file for the SymmetricMatrix submatrix non-scalar test
 //
 //  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
@@ -32,8 +32,8 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZETEST_MATHTEST_ADAPTORS_SYMMETRICMATRIX_SUBMATRIXNONNUMERICTEST_H_
-#define _BLAZETEST_MATHTEST_ADAPTORS_SYMMETRICMATRIX_SUBMATRIXNONNUMERICTEST_H_
+#ifndef _BLAZETEST_MATHTEST_ADAPTORS_SYMMETRICMATRIX_SUBMATRIXNONSCALARTEST_H_
+#define _BLAZETEST_MATHTEST_ADAPTORS_SYMMETRICMATRIX_SUBMATRIXNONSCALARTEST_H_
 
 
 //*************************************************************************************************
@@ -66,28 +66,28 @@ namespace symmetricmatrix {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Auxiliary class for assignment tests to a submatrix of a non-numeric SymmetricMatrix.
+/*!\brief Auxiliary class for assignment tests to a submatrix of a non-scalar SymmetricMatrix.
 //
-// This class performs assignment tests to a submatrix of a SymmetricMatrix with non-numeric
+// This class performs assignment tests to a submatrix of a SymmetricMatrix with non-scalar
 // element type. It performs a series of both compile time as well as runtime tests.
 */
-class SubmatrixNonNumericTest
+class SubmatrixNonScalarTest
 {
  private:
    //**Type definitions****************************************************************************
-   //! Type of a resizable, non-numeric element.
+   //! Type of a resizable, non-scalar element.
    using VT = blaze::DynamicVector<int,blaze::rowVector>;
 
-   //! Type of the dense non-numeric symmetric matrix.
+   //! Type of the dense non-scalar symmetric matrix.
    using DST = blaze::SymmetricMatrix< blaze::DynamicMatrix<VT,blaze::rowMajor> >;
 
-   //! Opposite dense non-numeric symmetric matrix type.
+   //! Opposite dense non-scalar symmetric matrix type.
    using DOST = DST::OppositeType;
 
-   //! Type of the sparse non-numeric symmetric matrix.
+   //! Type of the sparse non-scalar symmetric matrix.
    using SST = blaze::SymmetricMatrix< blaze::CompressedMatrix<VT,blaze::rowMajor> >;
 
-   //! Opposite sparse non-numeric symmetric matrix type.
+   //! Opposite sparse non-scalar symmetric matrix type.
    using SOST = SST::OppositeType;
    //**********************************************************************************************
 
@@ -95,7 +95,7 @@ class SubmatrixNonNumericTest
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit SubmatrixNonNumericTest();
+   explicit SubmatrixNonScalarTest();
    // No explicitly declared copy constructor.
    //@}
    //**********************************************************************************************
@@ -157,7 +157,7 @@ class SubmatrixNonNumericTest
 // error is detected, a \a std::runtime_error exception is thrown.
 */
 template< typename ST >  // Type of the symmetric matrix
-void SubmatrixNonNumericTest::testAssignment()
+void SubmatrixNonScalarTest::testAssignment()
 {
    //=====================================================================================
    // Dense matrix assignment
@@ -1740,7 +1740,7 @@ void SubmatrixNonNumericTest::testAssignment()
 // exception is thrown.
 */
 template< typename Type >  // Type of the matrix
-void SubmatrixNonNumericTest::checkRows( const Type& matrix, size_t expectedRows ) const
+void SubmatrixNonScalarTest::checkRows( const Type& matrix, size_t expectedRows ) const
 {
    if( matrix.rows() != expectedRows ) {
       std::ostringstream oss;
@@ -1768,7 +1768,7 @@ void SubmatrixNonNumericTest::checkRows( const Type& matrix, size_t expectedRows
 // exception is thrown.
 */
 template< typename Type >  // Type of the matrix
-void SubmatrixNonNumericTest::checkColumns( const Type& matrix, size_t expectedColumns ) const
+void SubmatrixNonScalarTest::checkColumns( const Type& matrix, size_t expectedColumns ) const
 {
    if( matrix.columns() != expectedColumns ) {
       std::ostringstream oss;
@@ -1796,7 +1796,7 @@ void SubmatrixNonNumericTest::checkColumns( const Type& matrix, size_t expectedC
 // a \a std::runtime_error exception is thrown.
 */
 template< typename Type >  // Type of the matrix
-void SubmatrixNonNumericTest::checkNonZeros( const Type& matrix, size_t expectedNonZeros ) const
+void SubmatrixNonScalarTest::checkNonZeros( const Type& matrix, size_t expectedNonZeros ) const
 {
    if( nonZeros( matrix ) != expectedNonZeros ) {
       std::ostringstream oss;
@@ -1837,7 +1837,7 @@ void SubmatrixNonNumericTest::checkNonZeros( const Type& matrix, size_t expected
 // This function is called before each test case to initialize the given symmetric matrix.
 */
 template< typename ST >
-void SubmatrixNonNumericTest::init( ST& sym )
+void SubmatrixNonScalarTest::init( ST& sym )
 {
    sym.resize( 6UL );
    sym(0,0) = vec(  1 );
@@ -1870,7 +1870,7 @@ void SubmatrixNonNumericTest::init( ST& sym )
 // This function creates a single vector of size 1. The element of the vector is initialized with
 // the given integer value.
 */
-inline SubmatrixNonNumericTest::VT SubmatrixNonNumericTest::vec( int value )
+inline SubmatrixNonScalarTest::VT SubmatrixNonScalarTest::vec( int value )
 {
    return VT( 1UL, value );
 }
@@ -1886,13 +1886,13 @@ inline SubmatrixNonNumericTest::VT SubmatrixNonNumericTest::vec( int value )
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Testing the assignment to a submatrix of a non-numeric SymmetricMatrix.
+/*!\brief Testing the assignment to a submatrix of a non-scalar SymmetricMatrix.
 //
 // \return void
 */
 void runTest()
 {
-   SubmatrixNonNumericTest();
+   SubmatrixNonScalarTest();
 }
 //*************************************************************************************************
 
@@ -1907,9 +1907,9 @@ void runTest()
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Macro for the execution of the SymmetricMatrix submatrix non-numeric test.
+/*!\brief Macro for the execution of the SymmetricMatrix submatrix non-scalar test.
 */
-#define RUN_SYMMETRICMATRIX_SUBMATRIXNONNUMERIC_TEST \
+#define RUN_SYMMETRICMATRIX_SUBMATRIXNONSCALAR_TEST \
    blazetest::mathtest::adaptors::symmetricmatrix::runTest()
 /*! \endcond */
 //*************************************************************************************************

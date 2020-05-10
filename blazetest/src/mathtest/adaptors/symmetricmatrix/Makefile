@@ -55,35 +55,35 @@ single: $(BIN)
 
 
 # Build rules
-ColumnNonNumericTest: ColumnNonNumericTest.o
+ColumnNonScalarTest: ColumnNonScalarTest.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
-ColumnNumericTest: ColumnNumericTest.o
+ColumnScalarTest: ColumnScalarTest.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
-DenseNonNumericTest1: DenseNonNumericTest1.o
+DenseNonScalarTest1: DenseNonScalarTest1.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
-DenseNonNumericTest2: DenseNonNumericTest2.o
+DenseNonScalarTest2: DenseNonScalarTest2.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
-DenseNumericTest1: DenseNumericTest1.o
+DenseScalarTest1: DenseScalarTest1.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
-DenseNumericTest2: DenseNumericTest2.o
+DenseScalarTest2: DenseScalarTest2.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 IncludeTest: IncludeTest.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
-RowNonNumericTest: RowNonNumericTest.o
+RowNonScalarTest: RowNonScalarTest.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
-RowNumericTest: RowNumericTest.o
+RowScalarTest: RowScalarTest.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
-SparseNonNumericTest1: SparseNonNumericTest1.o
+SparseNonScalarTest1: SparseNonScalarTest1.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
-SparseNonNumericTest2: SparseNonNumericTest2.o
+SparseNonScalarTest2: SparseNonScalarTest2.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
-SparseNumericTest1: SparseNumericTest1.o
+SparseScalarTest1: SparseScalarTest1.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
-SparseNumericTest2: SparseNumericTest2.o
+SparseScalarTest2: SparseScalarTest2.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
-SubmatrixNonNumericTest: SubmatrixNonNumericTest.o
+SubmatrixNonScalarTest: SubmatrixNonScalarTest.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
-SubmatrixNumericTest: SubmatrixNumericTest.o
+SubmatrixScalarTest: SubmatrixScalarTest.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 
 

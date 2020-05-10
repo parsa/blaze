@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file src/mathtest/adaptors/symmetricmatrix/RowNonNumericTest.cpp
-//  \brief Source file for the SymmetricMatrix row non-numeric test
+//  \file src/mathtest/adaptors/symmetricmatrix/ColumnScalarTest.cpp
+//  \brief Source file for the SymmetricMatrix column scalar test
 //
 //  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
@@ -39,7 +39,7 @@
 
 #include <cstdlib>
 #include <iostream>
-#include <blazetest/mathtest/adaptors/symmetricmatrix/RowNonNumericTest.h>
+#include <blazetest/mathtest/adaptors/symmetricmatrix/ColumnScalarTest.h>
 
 #ifdef BLAZE_USE_HPX_THREADS
 #  include <hpx/hpx_main.hpp>
@@ -61,16 +61,31 @@ namespace symmetricmatrix {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Constructor for the SymmetricMatrix row non-numeric test.
+/*!\brief Constructor for the SymmetricMatrix column scalar test.
 //
 // \exception std::runtime_error Operation error detected.
 */
-RowNonNumericTest::RowNonNumericTest()
+ColumnScalarTest::ColumnScalarTest()
 {
-   testAssignment<DST> ();
+   testAssignment<DST>();
+   testAddAssign<DST>();
+   testSubAssign<DST>();
+   testMultAssign<DST>();
+
    testAssignment<DOST>();
-   testAssignment<SST> ();
+   testAddAssign<DOST>();
+   testSubAssign<DOST>();
+   testMultAssign<DOST>();
+
+   testAssignment<SST>();
+   testAddAssign<SST>();
+   testSubAssign<SST>();
+   testMultAssign<SST>();
+
    testAssignment<SOST>();
+   testAddAssign<SOST>();
+   testSubAssign<SOST>();
+   testMultAssign<SOST>();
 }
 //*************************************************************************************************
 
@@ -94,14 +109,14 @@ RowNonNumericTest::RowNonNumericTest()
 //*************************************************************************************************
 int main()
 {
-   std::cout << "   Running SymmetricMatrix row non-numeric test..." << std::endl;
+   std::cout << "   Running SymmetricMatrix column scalar test..." << std::endl;
 
    try
    {
-      RUN_SYMMETRICMATRIX_ROWNONNUMERIC_TEST;
+      RUN_SYMMETRICMATRIX_COLUMNSCALAR_TEST;
    }
    catch( std::exception& ex ) {
-      std::cerr << "\n\n ERROR DETECTED during SymmetricMatrix row non-numeric test:\n"
+      std::cerr << "\n\n ERROR DETECTED during SymmetricMatrix column scalar test:\n"
                 << ex.what() << "\n";
       return EXIT_FAILURE;
    }

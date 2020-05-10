@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file src/mathtest/adaptors/symmetricmatrix/SparseNonNumericTest1.cpp
-//  \brief Source file for the SymmetricMatrix sparse non-numeric test (part 1)
+//  \file src/mathtest/adaptors/symmetricmatrix/SparseNonScalarTest1.cpp
+//  \brief Source file for the SymmetricMatrix sparse non-scalar test (part 1)
 //
 //  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
@@ -41,7 +41,7 @@
 #include <iostream>
 #include <blaze/math/DynamicMatrix.h>
 #include <blaze/math/StaticMatrix.h>
-#include <blazetest/mathtest/adaptors/symmetricmatrix/SparseNonNumericTest.h>
+#include <blazetest/mathtest/adaptors/symmetricmatrix/SparseNonScalarTest.h>
 
 #ifdef BLAZE_USE_HPX_THREADS
 #  include <hpx/hpx_main.hpp>
@@ -63,11 +63,11 @@ namespace symmetricmatrix {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Constructor for the SymmetricMatrix sparse non-numeric test.
+/*!\brief Constructor for the SymmetricMatrix sparse non-scalar test.
 //
 // \exception std::runtime_error Operation error detected.
 */
-SparseNonNumericTest::SparseNonNumericTest()
+SparseNonScalarTest::SparseNonScalarTest()
 {
    testConstructors();
    testAssignment();
@@ -96,7 +96,7 @@ SparseNonNumericTest::SparseNonNumericTest()
 // This function performs a test of all constructors of the SymmetricMatrix specialization.
 // In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void SparseNonNumericTest::testConstructors()
+void SparseNonScalarTest::testConstructors()
 {
    //=====================================================================================
    // Row-major default constructor
@@ -595,7 +595,7 @@ void SparseNonNumericTest::testConstructors()
 // This function performs a test of all assignment operators of the SymmetricMatrix specialization.
 // In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void SparseNonNumericTest::testAssignment()
+void SparseNonScalarTest::testAssignment()
 {
    //=====================================================================================
    // Row-major copy assignment
@@ -1906,7 +1906,7 @@ void SparseNonNumericTest::testAssignment()
 // This function performs a test of the addition assignment operators of the SymmetricMatrix
 // specialization. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void SparseNonNumericTest::testAddAssign()
+void SparseNonScalarTest::testAddAssign()
 {
    //=====================================================================================
    // Row-major addition assignment
@@ -2635,7 +2635,7 @@ void SparseNonNumericTest::testAddAssign()
 // This function performs a test of the subtraction assignment operators of the SymmetricMatrix
 // specialization. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void SparseNonNumericTest::testSubAssign()
+void SparseNonScalarTest::testSubAssign()
 {
    //=====================================================================================
    // Row-major subtraction assignment
@@ -3362,7 +3362,7 @@ void SparseNonNumericTest::testSubAssign()
 // This function performs a test of the Schur product assignment operators of the SymmetricMatrix
 // specialization. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void SparseNonNumericTest::testSchurAssign()
+void SparseNonScalarTest::testSchurAssign()
 {
    //=====================================================================================
    // Row-major Schur product assignment
@@ -4091,7 +4091,7 @@ void SparseNonNumericTest::testSchurAssign()
 // This function performs a test of the multiplication assignment operators of the SymmetricMatrix
 // specialization. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void SparseNonNumericTest::testMultAssign()
+void SparseNonScalarTest::testMultAssign()
 {
    //=====================================================================================
    // Row-major multiplication assignment
@@ -4588,14 +4588,14 @@ void SparseNonNumericTest::testMultAssign()
 //*************************************************************************************************
 int main()
 {
-   std::cout << "   Running SymmetricMatrix sparse non-numeric test (part 1)..." << std::endl;
+   std::cout << "   Running SymmetricMatrix sparse non-scalar test (part 1)..." << std::endl;
 
    try
    {
-      RUN_SYMMETRICMATRIX_SPARSENONNUMERIC_TEST;
+      RUN_SYMMETRICMATRIX_SPARSENONSCALAR_TEST;
    }
    catch( std::exception& ex ) {
-      std::cerr << "\n\n ERROR DETECTED during SymmetricMatrix sparse non-numeric test (part 1):\n"
+      std::cerr << "\n\n ERROR DETECTED during SymmetricMatrix sparse non-scalar test (part 1):\n"
                 << ex.what() << "\n";
       return EXIT_FAILURE;
    }

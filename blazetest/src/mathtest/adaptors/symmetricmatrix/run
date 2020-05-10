@@ -37,17 +37,17 @@ PATH_SYMMETRICMATRIX=$( dirname "${BASH_SOURCE[0]}" )
 
 echo " Running SymmetricMatrix tests..."
 
-EXE=$PATH_SYMMETRICMATRIX/DenseNumericTest1;       if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
-EXE=$PATH_SYMMETRICMATRIX/DenseNumericTest2;       if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
-EXE=$PATH_SYMMETRICMATRIX/DenseNonNumericTest1;    if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
-EXE=$PATH_SYMMETRICMATRIX/DenseNonNumericTest2;    if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
-EXE=$PATH_SYMMETRICMATRIX/SparseNumericTest1;      if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
-EXE=$PATH_SYMMETRICMATRIX/SparseNumericTest2;      if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
-EXE=$PATH_SYMMETRICMATRIX/SparseNonNumericTest1;   if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
-EXE=$PATH_SYMMETRICMATRIX/SparseNonNumericTest2;   if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
-EXE=$PATH_SYMMETRICMATRIX/SubmatrixNumericTest;    if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
-EXE=$PATH_SYMMETRICMATRIX/SubmatrixNonNumericTest; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
-EXE=$PATH_SYMMETRICMATRIX/RowNumericTest;          if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
-EXE=$PATH_SYMMETRICMATRIX/RowNonNumericTest;       if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
-EXE=$PATH_SYMMETRICMATRIX/ColumnNumericTest;       if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
-EXE=$PATH_SYMMETRICMATRIX/ColumnNonNumericTest;    if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_SYMMETRICMATRIX/DenseScalarTest1;       if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_SYMMETRICMATRIX/DenseScalarTest2;       if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_SYMMETRICMATRIX/DenseNonScalarTest1;    if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_SYMMETRICMATRIX/DenseNonScalarTest2;    if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_SYMMETRICMATRIX/SparseScalarTest1;      if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_SYMMETRICMATRIX/SparseScalarTest2;      if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_SYMMETRICMATRIX/SparseNonScalarTest1;   if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_SYMMETRICMATRIX/SparseNonScalarTest2;   if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_SYMMETRICMATRIX/SubmatrixScalarTest;    if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_SYMMETRICMATRIX/SubmatrixNonScalarTest; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_SYMMETRICMATRIX/RowScalarTest;          if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_SYMMETRICMATRIX/RowNonScalarTest;       if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_SYMMETRICMATRIX/ColumnScalarTest;       if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_SYMMETRICMATRIX/ColumnNonScalarTest;    if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi

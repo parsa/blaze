@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blazetest/mathtest/adaptors/symmetricmatrix/DenseNonNumericTest.h
-//  \brief Header file for the SymmetricMatrix dense non-numeric test
+//  \file blazetest/mathtest/adaptors/symmetricmatrix/DenseNonScalarTest.h
+//  \brief Header file for the SymmetricMatrix dense non-scalar test
 //
 //  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
@@ -32,8 +32,8 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZETEST_MATHTEST_ADAPTORS_SYMMETRICMATRIX_DENSENONNUMERICTEST_H_
-#define _BLAZETEST_MATHTEST_ADAPTORS_SYMMETRICMATRIX_DENSENONNUMERICTEST_H_
+#ifndef _BLAZETEST_MATHTEST_ADAPTORS_SYMMETRICMATRIX_DENSENONSCALARTEST_H_
+#define _BLAZETEST_MATHTEST_ADAPTORS_SYMMETRICMATRIX_DENSENONSCALARTEST_H_
 
 
 //*************************************************************************************************
@@ -70,19 +70,19 @@ namespace symmetricmatrix {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Auxiliary class for all tests of the dense non-numeric SymmetricMatrix specialization.
+/*!\brief Auxiliary class for all tests of the dense non-scalar SymmetricMatrix specialization.
 //
 // This class represents a test suite for the blaze::SymmetricMatrix class template specialization
-// for dense matrices with non-numeric element type. It performs a series of both compile time as
+// for dense matrices with non-scalar element type. It performs a series of both compile time as
 // well as runtime tests.
 */
-class DenseNonNumericTest
+class DenseNonScalarTest
 {
  public:
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit DenseNonNumericTest();
+   explicit DenseNonScalarTest();
    // No explicitly declared copy constructor.
    //@}
    //**********************************************************************************************
@@ -144,13 +144,13 @@ class DenseNonNumericTest
    //**********************************************************************************************
 
    //**Type definitions****************************************************************************
-   //! Type of a resizable, non-numeric element.
+   //! Type of a resizable, non-scalar element.
    using VT = blaze::DynamicVector<int,blaze::rowVector>;
 
-   //! Type of the non-numeric row-major symmetric matrix.
+   //! Type of the non-scalar row-major symmetric matrix.
    using ST = blaze::SymmetricMatrix< blaze::DynamicMatrix<VT,blaze::rowMajor> >;
 
-   //! Type of the non-numeric column-major symmetric matrix.
+   //! Type of the non-scalar column-major symmetric matrix.
    using OST = blaze::SymmetricMatrix< blaze::DynamicMatrix<VT,blaze::columnMajor> >;
 
    using RST  = ST::Rebind<double>::Other;   //!< Rebound row-major symmetric matrix type.
@@ -269,7 +269,7 @@ class DenseNonNumericTest
 // exception is thrown.
 */
 template< typename Type >  // Type of the matrix
-void DenseNonNumericTest::checkRows( const Type& matrix, size_t expectedRows ) const
+void DenseNonScalarTest::checkRows( const Type& matrix, size_t expectedRows ) const
 {
    if( matrix.rows() != expectedRows ) {
       std::ostringstream oss;
@@ -297,7 +297,7 @@ void DenseNonNumericTest::checkRows( const Type& matrix, size_t expectedRows ) c
 // exception is thrown.
 */
 template< typename Type >  // Type of the matrix
-void DenseNonNumericTest::checkColumns( const Type& matrix, size_t expectedColumns ) const
+void DenseNonScalarTest::checkColumns( const Type& matrix, size_t expectedColumns ) const
 {
    if( matrix.columns() != expectedColumns ) {
       std::ostringstream oss;
@@ -324,7 +324,7 @@ void DenseNonNumericTest::checkColumns( const Type& matrix, size_t expectedColum
 // than the given expected minimum capacity, a \a std::runtime_error exception is thrown.
 */
 template< typename Type >  // Type of the matrix
-void DenseNonNumericTest::checkCapacity( const Type& matrix, size_t minCapacity ) const
+void DenseNonScalarTest::checkCapacity( const Type& matrix, size_t minCapacity ) const
 {
    if( capacity( matrix ) < minCapacity ) {
       std::ostringstream oss;
@@ -352,7 +352,7 @@ void DenseNonNumericTest::checkCapacity( const Type& matrix, size_t minCapacity 
 // a \a std::runtime_error exception is thrown.
 */
 template< typename Type >  // Type of the matrix
-void DenseNonNumericTest::checkNonZeros( const Type& matrix, size_t expectedNonZeros ) const
+void DenseNonScalarTest::checkNonZeros( const Type& matrix, size_t expectedNonZeros ) const
 {
    if( nonZeros( matrix ) != expectedNonZeros ) {
       std::ostringstream oss;
@@ -391,7 +391,7 @@ void DenseNonNumericTest::checkNonZeros( const Type& matrix, size_t expectedNonZ
 // given expected number, a \a std::runtime_error exception is thrown.
 */
 template< typename Type >  // Type of the matrix
-void DenseNonNumericTest::checkNonZeros( const Type& matrix, size_t index, size_t expectedNonZeros ) const
+void DenseNonScalarTest::checkNonZeros( const Type& matrix, size_t index, size_t expectedNonZeros ) const
 {
    if( nonZeros( matrix, index ) != expectedNonZeros ) {
       std::ostringstream oss;
@@ -436,7 +436,7 @@ void DenseNonNumericTest::checkNonZeros( const Type& matrix, size_t index, size_
 // This function creates a single vector of size 1. The element of the vector is initialized with
 // the given integer value.
 */
-inline DenseNonNumericTest::VT DenseNonNumericTest::vec( int value )
+inline DenseNonScalarTest::VT DenseNonScalarTest::vec( int value )
 {
    return VT( 1UL, value );
 }
@@ -452,13 +452,13 @@ inline DenseNonNumericTest::VT DenseNonNumericTest::vec( int value )
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Testing the functionality of the dense non-numeric SymmetricMatrix specialization.
+/*!\brief Testing the functionality of the dense non-scalar SymmetricMatrix specialization.
 //
 // \return void
 */
 void runTest()
 {
-   DenseNonNumericTest();
+   DenseNonScalarTest();
 }
 //*************************************************************************************************
 
@@ -473,9 +473,9 @@ void runTest()
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Macro for the execution of the SymmetricMatrix dense non-numeric test.
+/*!\brief Macro for the execution of the SymmetricMatrix dense non-scalar test.
 */
-#define RUN_SYMMETRICMATRIX_DENSENONNUMERIC_TEST \
+#define RUN_SYMMETRICMATRIX_DENSENONSCALAR_TEST \
    blazetest::mathtest::adaptors::symmetricmatrix::runTest()
 /*! \endcond */
 //*************************************************************************************************

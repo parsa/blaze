@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blazetest/mathtest/adaptors/symmetricmatrix/ColumnNonNumericTest.h
-//  \brief Header file for the SymmetricMatrix column non-numeric test
+//  \file blazetest/mathtest/adaptors/symmetricmatrix/RowNonScalarTest.h
+//  \brief Header file for the SymmetricMatrix row non-scalar test
 //
 //  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
@@ -32,8 +32,8 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZETEST_MATHTEST_ADAPTORS_SYMMETRICMATRIX_COLUMNNONNUMERICTEST_H_
-#define _BLAZETEST_MATHTEST_ADAPTORS_SYMMETRICMATRIX_COLUMNNONNUMERICTEST_H_
+#ifndef _BLAZETEST_MATHTEST_ADAPTORS_SYMMETRICMATRIX_ROWNONSCALARTEST_H_
+#define _BLAZETEST_MATHTEST_ADAPTORS_SYMMETRICMATRIX_ROWNONSCALARTEST_H_
 
 
 //*************************************************************************************************
@@ -45,10 +45,10 @@
 #include <string>
 #include <blaze/math/CompressedMatrix.h>
 #include <blaze/math/CompressedVector.h>
-#include <blaze/math/Column.h>
 #include <blaze/math/DynamicMatrix.h>
 #include <blaze/math/DynamicVector.h>
 #include <blaze/math/SymmetricMatrix.h>
+#include <blaze/math/Row.h>
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
 #include <blazetest/system/Types.h>
 
@@ -68,28 +68,28 @@ namespace symmetricmatrix {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Auxiliary class for assignment tests to a single column of a non-numeric SymmetricMatrix.
+/*!\brief Auxiliary class for assignment tests to a single row of a non-scalar SymmetricMatrix.
 //
-// This class performs assignment tests to a single column of a SymmetricMatrix with non-numeric
+// This class performs assignment tests to a single row of a SymmetricMatrix with non-scalar
 // element type. It performs a series of both compile time as well as runtime tests.
 */
-class ColumnNonNumericTest
+class RowNonScalarTest
 {
  private:
    //**Type definitions****************************************************************************
-   //! Type of a resizable, non-numeric element.
+   //! Type of a resizable, non-scalar element.
    using VT = blaze::DynamicVector<int,blaze::rowVector>;
 
-   //! Type of the dense non-numeric symmetric matrix.
+   //! Type of the dense non-scalar symmetric matrix.
    using DST = blaze::SymmetricMatrix< blaze::DynamicMatrix<VT,blaze::rowMajor> >;
 
-   //! Opposite dense non-numeric symmetric matrix type.
+   //! Opposite dense non-scalar symmetric matrix type.
    using DOST = DST::OppositeType;
 
-   //! Type of the sparse non-numeric symmetric matrix.
+   //! Type of the sparse non-scalar symmetric matrix.
    using SST = blaze::SymmetricMatrix< blaze::CompressedMatrix<VT,blaze::rowMajor> >;
 
-   //! Opposite sparse non-numeric symmetric matrix type.
+   //! Opposite sparse non-scalar symmetric matrix type.
    using SOST = SST::OppositeType;
    //**********************************************************************************************
 
@@ -97,7 +97,7 @@ class ColumnNonNumericTest
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit ColumnNonNumericTest();
+   explicit RowNonScalarTest();
    // No explicitly declared copy constructor.
    //@}
    //**********************************************************************************************
@@ -150,16 +150,16 @@ class ColumnNonNumericTest
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Test of the assignment to columns of a SymmetricMatrix.
+/*!\brief Test of the assignment to rows of a SymmetricMatrix.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the assignment to a single column of a SymmetricMatrix. In case
-// an error is detected, a \a std::runtime_error exception is thrown.
+// This function performs a test of the assignment to a single row of a SymmetricMatrix. In case an
+// error is detected, a \a std::runtime_error exception is thrown.
 */
 template< typename ST >  // Type of the symmetric matrix
-void ColumnNonNumericTest::testAssignment()
+void RowNonScalarTest::testAssignment()
 {
    //=====================================================================================
    // Dense vector assignment
@@ -171,7 +171,7 @@ void ColumnNonNumericTest::testAssignment()
    {
       test_ = "Dense vector assignment test";
 
-      blaze::DynamicVector<VT,blaze::columnVector> tmp( 3UL );
+      blaze::DynamicVector<VT,blaze::rowVector> tmp( 3UL );
       tmp[0] = vec( 2 );
       tmp[1] = vec( 8 );
       tmp[2] = vec( 4 );
@@ -179,19 +179,19 @@ void ColumnNonNumericTest::testAssignment()
       ST sym;
       init( sym );
 
-      auto col1 = column( sym, 1UL );
-      col1 = tmp;
+      auto row1 = row( sym, 1UL );
+      row1 = tmp;
 
       checkRows    ( sym, 3UL );
       checkColumns ( sym, 3UL );
       checkNonZeros( sym, 9UL );
 
-      if( col1[0] != vec( 2 ) || col1[1] != vec( 8 ) || col1[2] != vec( 4 ) ) {
+      if( row1[0] != vec( 2 ) || row1[1] != vec( 8 ) || row1[2] != vec( 4 ) ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Row access failed\n"
+             << " Error: Assignment to row failed\n"
              << " Details:\n"
-             << "   Result:\n" << col1 << "\n"
+             << "   Result:\n" << row1 << "\n"
              << "   Expected result:\n( ( 2 ) ( 8 ) ( 4 ) )\n";
          throw std::runtime_error( oss.str() );
       }
@@ -201,7 +201,7 @@ void ColumnNonNumericTest::testAssignment()
           sym(2,0) != vec( 7 ) || sym(2,1) != vec( 4 ) || sym(2,2) != vec( 3 ) ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Row access failed\n"
+             << " Error: Assignment to row failed\n"
              << " Details:\n"
              << "   Result:\n" << sym << "\n"
              << "   Expected result:\n( ( 1 ) ( 2 ) ( 7 ) )\n"
@@ -220,9 +220,9 @@ void ColumnNonNumericTest::testAssignment()
    // ( ( -4 ) (  2 ) (    ) )  =>  ( (  2 ) (  8 ) (  4 ) )
    // ( (  7 ) (    ) (  3 ) )      ( (  7 ) (  4 ) (  3 ) )
    {
-      test_ = "Dense vector assignment test";
+      test_ = "Sparse vector assignment test";
 
-      blaze::CompressedVector<VT,blaze::columnVector> tmp( 3UL, 3UL );
+      blaze::CompressedVector<VT,blaze::rowVector> tmp( 3UL, 3UL );
       tmp[0] = vec( 2 );
       tmp[1] = vec( 8 );
       tmp[2] = vec( 4 );
@@ -230,19 +230,19 @@ void ColumnNonNumericTest::testAssignment()
       ST sym;
       init( sym );
 
-      auto col1 = column( sym, 1UL );
-      col1 = tmp;
+      auto row1 = row( sym, 1UL );
+      row1 = tmp;
 
       checkRows    ( sym, 3UL );
       checkColumns ( sym, 3UL );
       checkNonZeros( sym, 9UL );
 
-      if( col1[0] != vec( 2 ) || col1[1] != vec( 8 ) || col1[2] != vec( 4 ) ) {
+      if( row1[0] != vec( 2 ) || row1[1] != vec( 8 ) || row1[2] != vec( 4 ) ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Row access failed\n"
+             << " Error: Assignment to row failed\n"
              << " Details:\n"
-             << "   Result:\n" << col1 << "\n"
+             << "   Result:\n" << row1 << "\n"
              << "   Expected result:\n( ( 2 ) ( 8 ) ( 4 ) )\n";
          throw std::runtime_error( oss.str() );
       }
@@ -252,7 +252,7 @@ void ColumnNonNumericTest::testAssignment()
           sym(2,0) != vec( 7 ) || sym(2,1) != vec( 4 ) || sym(2,2) != vec( 3 ) ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Row access failed\n"
+             << " Error: Assignment to row failed\n"
              << " Details:\n"
              << "   Result:\n" << sym << "\n"
              << "   Expected result:\n( ( 1 ) ( 2 ) ( 7 ) )\n"
@@ -278,7 +278,7 @@ void ColumnNonNumericTest::testAssignment()
 // exception is thrown.
 */
 template< typename Type >  // Type of the matrix
-void ColumnNonNumericTest::checkRows( const Type& matrix, size_t expectedRows ) const
+void RowNonScalarTest::checkRows( const Type& matrix, size_t expectedRows ) const
 {
    if( matrix.rows() != expectedRows ) {
       std::ostringstream oss;
@@ -306,7 +306,7 @@ void ColumnNonNumericTest::checkRows( const Type& matrix, size_t expectedRows ) 
 // exception is thrown.
 */
 template< typename Type >  // Type of the matrix
-void ColumnNonNumericTest::checkColumns( const Type& matrix, size_t expectedColumns ) const
+void RowNonScalarTest::checkColumns( const Type& matrix, size_t expectedColumns ) const
 {
    if( matrix.columns() != expectedColumns ) {
       std::ostringstream oss;
@@ -334,7 +334,7 @@ void ColumnNonNumericTest::checkColumns( const Type& matrix, size_t expectedColu
 // a \a std::runtime_error exception is thrown.
 */
 template< typename Type >  // Type of the matrix
-void ColumnNonNumericTest::checkNonZeros( const Type& matrix, size_t expectedNonZeros ) const
+void RowNonScalarTest::checkNonZeros( const Type& matrix, size_t expectedNonZeros ) const
 {
    if( nonZeros( matrix ) != expectedNonZeros ) {
       std::ostringstream oss;
@@ -375,7 +375,7 @@ void ColumnNonNumericTest::checkNonZeros( const Type& matrix, size_t expectedNon
 // This function is called before each test case to initialize the given symmetric matrix.
 */
 template< typename ST >
-void ColumnNonNumericTest::init( ST& sym )
+void RowNonScalarTest::init( ST& sym )
 {
    sym.resize( 3UL );
    sym(0,0) = vec(  1 );
@@ -397,7 +397,7 @@ void ColumnNonNumericTest::init( ST& sym )
 // This function creates a single vector of size 1. The element of the vector is initialized with
 // the given integer value.
 */
-inline ColumnNonNumericTest::VT ColumnNonNumericTest::vec( int value )
+inline RowNonScalarTest::VT RowNonScalarTest::vec( int value )
 {
    return VT( 1UL, value );
 }
@@ -413,13 +413,13 @@ inline ColumnNonNumericTest::VT ColumnNonNumericTest::vec( int value )
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Testing the assignment to a single column of a non-numeric SymmetricMatrix.
+/*!\brief Testing the assignment to a single row of a non-scalar SymmetricMatrix.
 //
 // \return void
 */
 void runTest()
 {
-   ColumnNonNumericTest();
+   RowNonScalarTest();
 }
 //*************************************************************************************************
 
@@ -434,9 +434,9 @@ void runTest()
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Macro for the execution of the SymmetricMatrix column non-numeric test.
+/*!\brief Macro for the execution of the SymmetricMatrix row non-scalar test.
 */
-#define RUN_SYMMETRICMATRIX_COLUMNNONNUMERIC_TEST \
+#define RUN_SYMMETRICMATRIX_ROWNONSCALAR_TEST \
    blazetest::mathtest::adaptors::symmetricmatrix::runTest()
 /*! \endcond */
 //*************************************************************************************************

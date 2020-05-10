@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file src/mathtest/adaptors/symmetricmatrix/SparseNonNumericTest2.cpp
-//  \brief Source file for the SymmetricMatrix sparse non-numeric test (part 2)
+//  \file src/mathtest/adaptors/symmetricmatrix/SparseNonScalarTest2.cpp
+//  \brief Source file for the SymmetricMatrix sparse non-scalar test (part 2)
 //
 //  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
@@ -42,7 +42,7 @@
 #include <blaze/math/Column.h>
 #include <blaze/math/Row.h>
 #include <blaze/math/Submatrix.h>
-#include <blazetest/mathtest/adaptors/symmetricmatrix/SparseNonNumericTest.h>
+#include <blazetest/mathtest/adaptors/symmetricmatrix/SparseNonScalarTest.h>
 
 #ifdef BLAZE_USE_HPX_THREADS
 #  include <hpx/hpx_main.hpp>
@@ -64,11 +64,11 @@ namespace symmetricmatrix {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Constructor for the SymmetricMatrix sparse non-numeric test.
+/*!\brief Constructor for the SymmetricMatrix sparse non-scalar test.
 //
 // \exception std::runtime_error Operation error detected.
 */
-SparseNonNumericTest::SparseNonNumericTest()
+SparseNonScalarTest::SparseNonScalarTest()
 {
    testScaling();
    testFunctionCall();
@@ -115,7 +115,7 @@ SparseNonNumericTest::SparseNonNumericTest()
 // This function performs a test of all available ways to scale an instance of the SymmetricMatrix
 // specialization. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void SparseNonNumericTest::testScaling()
+void SparseNonScalarTest::testScaling()
 {
    //=====================================================================================
    // Row-major self-scaling (M*=s)
@@ -669,7 +669,7 @@ void SparseNonNumericTest::testScaling()
 // of the SymmetricMatrix specialization. In case an error is detected, a \a std::runtime_error
 // exception is thrown.
 */
-void SparseNonNumericTest::testFunctionCall()
+void SparseNonScalarTest::testFunctionCall()
 {
    //=====================================================================================
    // Row-major matrix tests
@@ -1054,7 +1054,7 @@ void SparseNonNumericTest::testFunctionCall()
 // This function performs a test of the iterator implementation of the SymmetricMatrix
 // specialization. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void SparseNonNumericTest::testIterator()
+void SparseNonScalarTest::testIterator()
 {
    //=====================================================================================
    // Row-major matrix tests
@@ -1557,7 +1557,7 @@ void SparseNonNumericTest::testIterator()
 // This function performs a test of the \c nonZeros() member function of the SymmetricMatrix
 // specialization. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void SparseNonNumericTest::testNonZeros()
+void SparseNonScalarTest::testNonZeros()
 {
    //=====================================================================================
    // Row-major matrix tests
@@ -1680,7 +1680,7 @@ void SparseNonNumericTest::testNonZeros()
 // This function performs a test of the \c reset() member function of the SymmetricMatrix
 // specialization. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void SparseNonNumericTest::testReset()
+void SparseNonScalarTest::testReset()
 {
    //=====================================================================================
    // Row-major matrix tests
@@ -1923,7 +1923,7 @@ void SparseNonNumericTest::testReset()
 // This function performs a test of the \c clear() member function of the SymmetricMatrix
 // specialization. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void SparseNonNumericTest::testClear()
+void SparseNonScalarTest::testClear()
 {
    //=====================================================================================
    // Row-major matrix tests
@@ -2080,7 +2080,7 @@ void SparseNonNumericTest::testClear()
 // This function performs a test of the \c resize() member function of the SymmetricMatrix
 // specialization. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void SparseNonNumericTest::testResize()
+void SparseNonScalarTest::testResize()
 {
    //=====================================================================================
    // Row-major matrix tests
@@ -2283,7 +2283,7 @@ void SparseNonNumericTest::testResize()
 // This function performs a test of the \c reserve() member function of the SymmetricMatrix
 // specialization. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void SparseNonNumericTest::testReserve()
+void SparseNonScalarTest::testReserve()
 {
    //=====================================================================================
    // Row-major matrix tests
@@ -2360,7 +2360,7 @@ void SparseNonNumericTest::testReserve()
 // This function performs a test of the \c trim() member function of the SymmetricMatrix
 // specialization. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void SparseNonNumericTest::testTrim()
+void SparseNonScalarTest::testTrim()
 {
    //=====================================================================================
    // Row-major matrix tests
@@ -2555,7 +2555,7 @@ void SparseNonNumericTest::testTrim()
 // This function performs a test of the \c shrinkToFit() member function of the SymmetricMatrix
 // specialization. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void SparseNonNumericTest::testShrinkToFit()
+void SparseNonScalarTest::testShrinkToFit()
 {
    //=====================================================================================
    // Row-major matrix tests
@@ -2758,7 +2758,7 @@ void SparseNonNumericTest::testShrinkToFit()
 // This function performs a test of the \c swap() function of the SymmetricMatrix specialization.
 // In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void SparseNonNumericTest::testSwap()
+void SparseNonScalarTest::testSwap()
 {
    //=====================================================================================
    // Row-major matrix tests
@@ -2887,7 +2887,7 @@ void SparseNonNumericTest::testSwap()
 // This function performs a test of the \c set() member function of the SymmetricMatrix
 // specialization. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void SparseNonNumericTest::testSet()
+void SparseNonScalarTest::testSet()
 {
    //=====================================================================================
    // Row-major matrix tests
@@ -3268,7 +3268,7 @@ void SparseNonNumericTest::testSet()
 // This function performs a test of the \c insert() member function of the SymmetricMatrix
 // specialization. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void SparseNonNumericTest::testInsert()
+void SparseNonScalarTest::testInsert()
 {
    //=====================================================================================
    // Row-major matrix tests
@@ -3601,7 +3601,7 @@ void SparseNonNumericTest::testInsert()
 // This function performs a test of the \c append() member function of the SymmetricMatrix
 // specialization. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void SparseNonNumericTest::testAppend()
+void SparseNonScalarTest::testAppend()
 {
    //=====================================================================================
    // Row-major matrix tests
@@ -4026,7 +4026,7 @@ void SparseNonNumericTest::testAppend()
 // This function performs a test of the \c erase() member function of the SymmetricMatrix
 // specialization. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void SparseNonNumericTest::testErase()
+void SparseNonScalarTest::testErase()
 {
    //=====================================================================================
    // Row-major index-based erase function
@@ -5579,7 +5579,7 @@ void SparseNonNumericTest::testErase()
 // This function performs a test of the \c find() member function of the SymmetricMatrix
 // specialization. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void SparseNonNumericTest::testFind()
+void SparseNonScalarTest::testFind()
 {
    //=====================================================================================
    // Row-major matrix tests
@@ -5850,7 +5850,7 @@ void SparseNonNumericTest::testFind()
 // This function performs a test of the \c lowerBound() member function of the SymmetricMatrix
 // specialization. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void SparseNonNumericTest::testLowerBound()
+void SparseNonScalarTest::testLowerBound()
 {
    //=====================================================================================
    // Row-major matrix tests
@@ -6163,7 +6163,7 @@ void SparseNonNumericTest::testLowerBound()
 // This function performs a test of the \c upperBound() member function of the SymmetricMatrix
 // specialization. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void SparseNonNumericTest::testUpperBound()
+void SparseNonScalarTest::testUpperBound()
 {
    //=====================================================================================
    // Row-major matrix tests
@@ -6453,7 +6453,7 @@ void SparseNonNumericTest::testUpperBound()
 // specialization. Additionally, it performs a test of self-transpose via the \c trans()
 // function. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void SparseNonNumericTest::testTranspose()
+void SparseNonScalarTest::testTranspose()
 {
    //=====================================================================================
    // Row-major matrix tests
@@ -6613,7 +6613,7 @@ void SparseNonNumericTest::testTranspose()
 // specialization. Additionally, it performs a test of self-transpose via the \c ctrans()
 // function. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void SparseNonNumericTest::testCTranspose()
+void SparseNonScalarTest::testCTranspose()
 {
    //=====================================================================================
    // Row-major matrix tests
@@ -6772,7 +6772,7 @@ void SparseNonNumericTest::testCTranspose()
 // This function performs a test of the \c isDefault() function with the SymmetricMatrix
 // specialization. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void SparseNonNumericTest::testIsDefault()
+void SparseNonScalarTest::testIsDefault()
 {
    //=====================================================================================
    // Row-major matrix tests
@@ -6925,7 +6925,7 @@ void SparseNonNumericTest::testIsDefault()
 // This function performs a test of the \c submatrix() function with the SymmetricMatrix
 // specialization. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void SparseNonNumericTest::testSubmatrix()
+void SparseNonScalarTest::testSubmatrix()
 {
    //=====================================================================================
    // Row-major matrix tests
@@ -7132,7 +7132,7 @@ void SparseNonNumericTest::testSubmatrix()
 // This function performs a test of the \c row() function with the SymmetricMatrix specialization.
 // In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void SparseNonNumericTest::testRow()
+void SparseNonScalarTest::testRow()
 {
    //=====================================================================================
    // Row-major matrix tests
@@ -7333,7 +7333,7 @@ void SparseNonNumericTest::testRow()
 // This function performs a test of the \c column() function with the SymmetricMatrix
 // specialization. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void SparseNonNumericTest::testColumn()
+void SparseNonScalarTest::testColumn()
 {
    //=====================================================================================
    // Row-major matrix tests
@@ -7544,14 +7544,14 @@ void SparseNonNumericTest::testColumn()
 //*************************************************************************************************
 int main()
 {
-   std::cout << "   Running SymmetricMatrix sparse non-numeric test (part 2)..." << std::endl;
+   std::cout << "   Running SymmetricMatrix sparse non-scalar test (part 2)..." << std::endl;
 
    try
    {
-      RUN_SYMMETRICMATRIX_SPARSENONNUMERIC_TEST;
+      RUN_SYMMETRICMATRIX_SPARSENONSCALAR_TEST;
    }
    catch( std::exception& ex ) {
-      std::cerr << "\n\n ERROR DETECTED during SymmetricMatrix sparse non-numeric test (part 2):\n"
+      std::cerr << "\n\n ERROR DETECTED during SymmetricMatrix sparse non-scalar test (part 2):\n"
                 << ex.what() << "\n";
       return EXIT_FAILURE;
    }

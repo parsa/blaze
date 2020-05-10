@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file src/mathtest/adaptors/symmetricmatrix/ColumnNonNumericTest.cpp
-//  \brief Source file for the SymmetricMatrix column non-numeric test
+//  \file src/mathtest/adaptors/symmetricmatrix/RowNonScalarTest.cpp
+//  \brief Source file for the SymmetricMatrix row non-scalar test
 //
 //  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
@@ -39,7 +39,7 @@
 
 #include <cstdlib>
 #include <iostream>
-#include <blazetest/mathtest/adaptors/symmetricmatrix/ColumnNonNumericTest.h>
+#include <blazetest/mathtest/adaptors/symmetricmatrix/RowNonScalarTest.h>
 
 #ifdef BLAZE_USE_HPX_THREADS
 #  include <hpx/hpx_main.hpp>
@@ -61,11 +61,11 @@ namespace symmetricmatrix {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Constructor for the SymmetricMatrix column non-numeric test.
+/*!\brief Constructor for the SymmetricMatrix row non-scalar test.
 //
 // \exception std::runtime_error Operation error detected.
 */
-ColumnNonNumericTest::ColumnNonNumericTest()
+RowNonScalarTest::RowNonScalarTest()
 {
    testAssignment<DST> ();
    testAssignment<DOST>();
@@ -94,14 +94,14 @@ ColumnNonNumericTest::ColumnNonNumericTest()
 //*************************************************************************************************
 int main()
 {
-   std::cout << "   Running SymmetricMatrix column non-numeric test..." << std::endl;
+   std::cout << "   Running SymmetricMatrix row non-scalar test..." << std::endl;
 
    try
    {
-      RUN_SYMMETRICMATRIX_COLUMNNONNUMERIC_TEST;
+      RUN_SYMMETRICMATRIX_ROWNONSCALAR_TEST;
    }
    catch( std::exception& ex ) {
-      std::cerr << "\n\n ERROR DETECTED during SymmetricMatrix column non-numeric test:\n"
+      std::cerr << "\n\n ERROR DETECTED during SymmetricMatrix row non-scalar test:\n"
                 << ex.what() << "\n";
       return EXIT_FAILURE;
    }

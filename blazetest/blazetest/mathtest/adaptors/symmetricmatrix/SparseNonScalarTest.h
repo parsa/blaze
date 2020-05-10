@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blazetest/mathtest/adaptors/symmetricmatrix/SparseNumericTest.h
-//  \brief Header file for the SymmetricMatrix sparse numeric test
+//  \file blazetest/mathtest/adaptors/symmetricmatrix/SparseNonScalarTest.h
+//  \brief Header file for the SymmetricMatrix sparse non-scalar test
 //
 //  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
@@ -32,8 +32,8 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZETEST_MATHTEST_ADAPTORS_SYMMETRICMATRIX_SPARSENUMERICTEST_H_
-#define _BLAZETEST_MATHTEST_ADAPTORS_SYMMETRICMATRIX_SPARSENUMERICTEST_H_
+#ifndef _BLAZETEST_MATHTEST_ADAPTORS_SYMMETRICMATRIX_SPARSENONSCALARTEST_H_
+#define _BLAZETEST_MATHTEST_ADAPTORS_SYMMETRICMATRIX_SPARSENONSCALARTEST_H_
 
 
 //*************************************************************************************************
@@ -49,6 +49,7 @@
 #include <blaze/math/constraints/RowMajorMatrix.h>
 #include <blaze/math/constraints/SparseMatrix.h>
 #include <blaze/math/constraints/Symmetric.h>
+#include <blaze/math/DynamicVector.h>
 #include <blaze/math/SymmetricMatrix.h>
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
 #include <blaze/util/constraints/SameType.h>
@@ -70,19 +71,19 @@ namespace symmetricmatrix {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Auxiliary class for all tests of the sparse numeric SymmetricMatrix specialization.
+/*!\brief Auxiliary class for all tests of the sparse non-scalar SymmetricMatrix specialization.
 //
 // This class represents a test suite for the blaze::SymmetricMatrix class template specialization
-// for sparse matrices with numeric element type. It performs a series of both compile time as well
-// as runtime tests.
+// for sparse matrices with non-scalar element type. It performs a series of both compile time as
+// well as runtime tests.
 */
-class SparseNumericTest
+class SparseNonScalarTest
 {
  public:
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit SparseNumericTest();
+   explicit SparseNonScalarTest();
    // No explicitly declared copy constructor.
    //@}
    //**********************************************************************************************
@@ -154,14 +155,24 @@ class SparseNumericTest
    //**********************************************************************************************
 
    //**Type definitions****************************************************************************
-   //! Type of the numeric row-major symmetric matrix.
-   using ST = blaze::SymmetricMatrix< blaze::CompressedMatrix<int,blaze::rowMajor> >;
+   //! Type of a resizable, non-scalar element.
+   using VT = blaze::DynamicVector<int,blaze::rowVector>;
 
-   //! Type of the numeric column-major symmetric matrix.
-   using OST = blaze::SymmetricMatrix< blaze::CompressedMatrix<int,blaze::columnMajor> >;
+   //! Type of the non-scalar row-major symmetric matrix.
+   using ST = blaze::SymmetricMatrix< blaze::CompressedMatrix<VT,blaze::rowMajor> >;
+
+   //! Type of the non-scalar column-major symmetric matrix.
+   using OST = blaze::SymmetricMatrix< blaze::CompressedMatrix<VT,blaze::columnMajor> >;
 
    using RST  = ST::Rebind<double>::Other;   //!< Rebound row-major symmetric matrix type.
    using ORST = OST::Rebind<double>::Other;  //!< Rebound column-major symmetric matrix type.
+   //**********************************************************************************************
+
+   //**Utility functions***************************************************************************
+   /*!\name Utility functions */
+   //@{
+   inline VT vec( int value );
+   //@}
    //**********************************************************************************************
 
    //**Compile time checks*************************************************************************
@@ -269,7 +280,7 @@ class SparseNumericTest
 // exception is thrown.
 */
 template< typename Type >  // Type of the matrix
-void SparseNumericTest::checkRows( const Type& matrix, size_t expectedRows ) const
+void SparseNonScalarTest::checkRows( const Type& matrix, size_t expectedRows ) const
 {
    if( matrix.rows() != expectedRows ) {
       std::ostringstream oss;
@@ -297,7 +308,7 @@ void SparseNumericTest::checkRows( const Type& matrix, size_t expectedRows ) con
 // exception is thrown.
 */
 template< typename Type >  // Type of the matrix
-void SparseNumericTest::checkColumns( const Type& matrix, size_t expectedColumns ) const
+void SparseNonScalarTest::checkColumns( const Type& matrix, size_t expectedColumns ) const
 {
    if( matrix.columns() != expectedColumns ) {
       std::ostringstream oss;
@@ -324,7 +335,7 @@ void SparseNumericTest::checkColumns( const Type& matrix, size_t expectedColumns
 // than the given expected minimum capacity, a \a std::runtime_error exception is thrown.
 */
 template< typename Type >  // Type of the matrix
-void SparseNumericTest::checkCapacity( const Type& matrix, size_t minCapacity ) const
+void SparseNonScalarTest::checkCapacity( const Type& matrix, size_t minCapacity ) const
 {
    if( capacity( matrix ) < minCapacity ) {
       std::ostringstream oss;
@@ -353,7 +364,7 @@ void SparseNumericTest::checkCapacity( const Type& matrix, size_t minCapacity ) 
 // exception is thrown.
 */
 template< typename Type >  // Type of the matrix
-void SparseNumericTest::checkCapacity( const Type& matrix, size_t index, size_t minCapacity ) const
+void SparseNonScalarTest::checkCapacity( const Type& matrix, size_t index, size_t minCapacity ) const
 {
    if( capacity( matrix, index ) < minCapacity ) {
       std::ostringstream oss;
@@ -382,7 +393,7 @@ void SparseNumericTest::checkCapacity( const Type& matrix, size_t index, size_t 
 // a \a std::runtime_error exception is thrown.
 */
 template< typename Type >  // Type of the matrix
-void SparseNumericTest::checkNonZeros( const Type& matrix, size_t expectedNonZeros ) const
+void SparseNonScalarTest::checkNonZeros( const Type& matrix, size_t expectedNonZeros ) const
 {
    if( nonZeros( matrix ) != expectedNonZeros ) {
       std::ostringstream oss;
@@ -421,7 +432,7 @@ void SparseNumericTest::checkNonZeros( const Type& matrix, size_t expectedNonZer
 // given expected number, a \a std::runtime_error exception is thrown.
 */
 template< typename Type >  // Type of the matrix
-void SparseNumericTest::checkNonZeros( const Type& matrix, size_t index, size_t expectedNonZeros ) const
+void SparseNonScalarTest::checkNonZeros( const Type& matrix, size_t index, size_t expectedNonZeros ) const
 {
    if( nonZeros( matrix, index ) != expectedNonZeros ) {
       std::ostringstream oss;
@@ -452,18 +463,43 @@ void SparseNumericTest::checkNonZeros( const Type& matrix, size_t index, size_t 
 
 //=================================================================================================
 //
+//  UTILITY FUNCTIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*!\brief Setup of a vector.
+//
+// \param value The value of the vector.
+// \return The created vector.
+// \exception std::runtime_error Error detected.
+//
+// This function creates a single vector of size 1. The element of the vector is initialized with
+// the given integer value.
+*/
+inline SparseNonScalarTest::VT SparseNonScalarTest::vec( int value )
+{
+   return VT( 1UL, value );
+}
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
 //  GLOBAL TEST FUNCTIONS
 //
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Testing the functionality of the sparse numeric SymmetricMatrix specialization.
+/*!\brief Testing the functionality of the sparse non-scalar SymmetricMatrix specialization.
 //
 // \return void
 */
 void runTest()
 {
-   SparseNumericTest();
+   SparseNonScalarTest();
 }
 //*************************************************************************************************
 
@@ -478,9 +514,9 @@ void runTest()
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Macro for the execution of the SymmetricMatrix sparse numeric test.
+/*!\brief Macro for the execution of the SymmetricMatrix sparse non-scalar test.
 */
-#define RUN_SYMMETRICMATRIX_SPARSENUMERIC_TEST \
+#define RUN_SYMMETRICMATRIX_SPARSENONSCALAR_TEST \
    blazetest::mathtest::adaptors::symmetricmatrix::runTest()
 /*! \endcond */
 //*************************************************************************************************

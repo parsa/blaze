@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blazetest/mathtest/adaptors/symmetricmatrix/DenseNumericTest.h
-//  \brief Header file for the SymmetricMatrix dense numeric test
+//  \file blazetest/mathtest/adaptors/symmetricmatrix/SparseScalarTest.h
+//  \brief Header file for the SymmetricMatrix sparse scalar test
 //
 //  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
@@ -32,8 +32,8 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZETEST_MATHTEST_ADAPTORS_SYMMETRICMATRIX_DENSENUMERICTEST_H_
-#define _BLAZETEST_MATHTEST_ADAPTORS_SYMMETRICMATRIX_DENSENUMERICTEST_H_
+#ifndef _BLAZETEST_MATHTEST_ADAPTORS_SYMMETRICMATRIX_SPARSESCALARTEST_H_
+#define _BLAZETEST_MATHTEST_ADAPTORS_SYMMETRICMATRIX_SPARSESCALARTEST_H_
 
 
 //*************************************************************************************************
@@ -43,12 +43,12 @@
 #include <sstream>
 #include <stdexcept>
 #include <string>
+#include <blaze/math/CompressedMatrix.h>
 #include <blaze/math/constraints/ColumnMajorMatrix.h>
-#include <blaze/math/constraints/DenseMatrix.h>
 #include <blaze/math/constraints/RequiresEvaluation.h>
 #include <blaze/math/constraints/RowMajorMatrix.h>
+#include <blaze/math/constraints/SparseMatrix.h>
 #include <blaze/math/constraints/Symmetric.h>
-#include <blaze/math/DynamicMatrix.h>
 #include <blaze/math/SymmetricMatrix.h>
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
 #include <blaze/util/constraints/SameType.h>
@@ -70,19 +70,19 @@ namespace symmetricmatrix {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Auxiliary class for all tests of the dense numeric SymmetricMatrix specialization.
+/*!\brief Auxiliary class for all tests of the sparse scalar SymmetricMatrix specialization.
 //
 // This class represents a test suite for the blaze::SymmetricMatrix class template specialization
-// for dense matrices with numeric element type. It performs a series of both compile time as well
+// for sparse matrices with scalar element type. It performs a series of both compile time as well
 // as runtime tests.
 */
-class DenseNumericTest
+class SparseScalarTest
 {
  public:
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit DenseNumericTest();
+   explicit SparseScalarTest();
    // No explicitly declared copy constructor.
    //@}
    //**********************************************************************************************
@@ -108,10 +108,17 @@ class DenseNumericTest
    void testReset       ();
    void testClear       ();
    void testResize      ();
-   void testExtend      ();
    void testReserve     ();
+   void testTrim        ();
    void testShrinkToFit ();
    void testSwap        ();
+   void testSet         ();
+   void testInsert      ();
+   void testAppend      ();
+   void testErase       ();
+   void testFind        ();
+   void testLowerBound  ();
+   void testUpperBound  ();
    void testTranspose   ();
    void testCTranspose  ();
    void testIsDefault   ();
@@ -129,6 +136,9 @@ class DenseNumericTest
    void checkCapacity( const Type& matrix, size_t minCapacity ) const;
 
    template< typename Type >
+   void checkCapacity( const Type& matrix, size_t index, size_t minCapacity ) const;
+
+   template< typename Type >
    void checkNonZeros( const Type& matrix, size_t expectedNonZeros ) const;
 
    template< typename Type >
@@ -144,11 +154,11 @@ class DenseNumericTest
    //**********************************************************************************************
 
    //**Type definitions****************************************************************************
-   //! Type of the numeric row-major symmetric matrix.
-   using ST = blaze::SymmetricMatrix< blaze::DynamicMatrix<int,blaze::rowMajor> >;
+   //! Type of the scalar row-major symmetric matrix.
+   using ST = blaze::SymmetricMatrix< blaze::CompressedMatrix<int,blaze::rowMajor> >;
 
-   //! Type of the numeric column-major symmetric matrix.
-   using OST = blaze::SymmetricMatrix< blaze::DynamicMatrix<int,blaze::columnMajor> >;
+   //! Type of the scalar column-major symmetric matrix.
+   using OST = blaze::SymmetricMatrix< blaze::CompressedMatrix<int,blaze::columnMajor> >;
 
    using RST  = ST::Rebind<double>::Other;   //!< Rebound row-major symmetric matrix type.
    using ORST = OST::Rebind<double>::Other;  //!< Rebound column-major symmetric matrix type.
@@ -156,22 +166,22 @@ class DenseNumericTest
 
    //**Compile time checks*************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( ST                  );
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( ST::ResultType      );
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( ST::OppositeType    );
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( ST::TransposeType   );
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( OST                 );
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( OST::ResultType     );
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( OST::OppositeType   );
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( OST::TransposeType  );
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( RST                 );
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( RST::ResultType     );
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( RST::OppositeType   );
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( RST::TransposeType  );
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( ORST                );
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( ORST::ResultType    );
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( ORST::OppositeType  );
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( ORST::TransposeType );
+   BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( ST                  );
+   BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( ST::ResultType      );
+   BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( ST::OppositeType    );
+   BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( ST::TransposeType   );
+   BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( OST                 );
+   BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( OST::ResultType     );
+   BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( OST::OppositeType   );
+   BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( OST::TransposeType  );
+   BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( RST                 );
+   BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( RST::ResultType     );
+   BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( RST::OppositeType   );
+   BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( RST::TransposeType  );
+   BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( ORST                );
+   BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( ORST::ResultType    );
+   BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( ORST::OppositeType  );
+   BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( ORST::TransposeType );
 
    BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE   ( ST                  );
    BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE   ( ST::ResultType      );
@@ -259,7 +269,7 @@ class DenseNumericTest
 // exception is thrown.
 */
 template< typename Type >  // Type of the matrix
-void DenseNumericTest::checkRows( const Type& matrix, size_t expectedRows ) const
+void SparseScalarTest::checkRows( const Type& matrix, size_t expectedRows ) const
 {
    if( matrix.rows() != expectedRows ) {
       std::ostringstream oss;
@@ -287,7 +297,7 @@ void DenseNumericTest::checkRows( const Type& matrix, size_t expectedRows ) cons
 // exception is thrown.
 */
 template< typename Type >  // Type of the matrix
-void DenseNumericTest::checkColumns( const Type& matrix, size_t expectedColumns ) const
+void SparseScalarTest::checkColumns( const Type& matrix, size_t expectedColumns ) const
 {
    if( matrix.columns() != expectedColumns ) {
       std::ostringstream oss;
@@ -314,7 +324,7 @@ void DenseNumericTest::checkColumns( const Type& matrix, size_t expectedColumns 
 // than the given expected minimum capacity, a \a std::runtime_error exception is thrown.
 */
 template< typename Type >  // Type of the matrix
-void DenseNumericTest::checkCapacity( const Type& matrix, size_t minCapacity ) const
+void SparseScalarTest::checkCapacity( const Type& matrix, size_t minCapacity ) const
 {
    if( capacity( matrix ) < minCapacity ) {
       std::ostringstream oss;
@@ -322,6 +332,36 @@ void DenseNumericTest::checkCapacity( const Type& matrix, size_t minCapacity ) c
           << " Error: Invalid capacity detected\n"
           << " Details:\n"
           << "   Capacity                 : " << capacity( matrix ) << "\n"
+          << "   Expected minimum capacity: " << minCapacity << "\n";
+      throw std::runtime_error( oss.str() );
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Checking the capacity of a specific row/column of the given matrix.
+//
+// \param matrix The matrix to be checked.
+// \param index The row/column to be checked.
+// \param minCapacity The expected minimum capacity of the specified row/column.
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function checks the capacity of a specific row/column of the given matrix. In case the
+// actual capacity is smaller than the given expected minimum capacity, a \a std::runtime_error
+// exception is thrown.
+*/
+template< typename Type >  // Type of the matrix
+void SparseScalarTest::checkCapacity( const Type& matrix, size_t index, size_t minCapacity ) const
+{
+   if( capacity( matrix, index ) < minCapacity ) {
+      std::ostringstream oss;
+      oss << " Test: " << test_ << "\n"
+          << " Error: Invalid capacity detected in "
+          << ( blaze::IsRowMajorMatrix<Type>::value ? "row " : "column " ) << index << "\n"
+          << " Details:\n"
+          << "   Capacity                 : " << capacity( matrix, index ) << "\n"
           << "   Expected minimum capacity: " << minCapacity << "\n";
       throw std::runtime_error( oss.str() );
    }
@@ -342,7 +382,7 @@ void DenseNumericTest::checkCapacity( const Type& matrix, size_t minCapacity ) c
 // a \a std::runtime_error exception is thrown.
 */
 template< typename Type >  // Type of the matrix
-void DenseNumericTest::checkNonZeros( const Type& matrix, size_t expectedNonZeros ) const
+void SparseScalarTest::checkNonZeros( const Type& matrix, size_t expectedNonZeros ) const
 {
    if( nonZeros( matrix ) != expectedNonZeros ) {
       std::ostringstream oss;
@@ -381,7 +421,7 @@ void DenseNumericTest::checkNonZeros( const Type& matrix, size_t expectedNonZero
 // given expected number, a \a std::runtime_error exception is thrown.
 */
 template< typename Type >  // Type of the matrix
-void DenseNumericTest::checkNonZeros( const Type& matrix, size_t index, size_t expectedNonZeros ) const
+void SparseScalarTest::checkNonZeros( const Type& matrix, size_t index, size_t expectedNonZeros ) const
 {
    if( nonZeros( matrix, index ) != expectedNonZeros ) {
       std::ostringstream oss;
@@ -417,13 +457,13 @@ void DenseNumericTest::checkNonZeros( const Type& matrix, size_t index, size_t e
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Testing the functionality of the dense numeric SymmetricMatrix specialization.
+/*!\brief Testing the functionality of the sparse scalar SymmetricMatrix specialization.
 //
 // \return void
 */
 void runTest()
 {
-   DenseNumericTest();
+   SparseScalarTest();
 }
 //*************************************************************************************************
 
@@ -438,9 +478,9 @@ void runTest()
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Macro for the execution of the SymmetricMatrix dense numeric test.
+/*!\brief Macro for the execution of the SymmetricMatrix sparse scalar test.
 */
-#define RUN_SYMMETRICMATRIX_DENSENUMERIC_TEST \
+#define RUN_SYMMETRICMATRIX_SPARSESCALAR_TEST \
    blazetest::mathtest::adaptors::symmetricmatrix::runTest()
 /*! \endcond */
 //*************************************************************************************************

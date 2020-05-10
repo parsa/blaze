@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blazetest/mathtest/adaptors/symmetricmatrix/RowNumericTest.h
-//  \brief Header file for the SymmetricMatrix row numeric test
+//  \file blazetest/mathtest/adaptors/symmetricmatrix/ColumnScalarTest.h
+//  \brief Header file for the SymmetricMatrix column scalar test
 //
 //  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
@@ -32,8 +32,8 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZETEST_MATHTEST_ADAPTORS_SYMMETRICMATRIX_ROWNUMERICTEST_H_
-#define _BLAZETEST_MATHTEST_ADAPTORS_SYMMETRICMATRIX_ROWNUMERICTEST_H_
+#ifndef _BLAZETEST_MATHTEST_ADAPTORS_SYMMETRICMATRIX_COLUMNSCALARTEST_H_
+#define _BLAZETEST_MATHTEST_ADAPTORS_SYMMETRICMATRIX_COLUMNSCALARTEST_H_
 
 
 //*************************************************************************************************
@@ -45,10 +45,10 @@
 #include <string>
 #include <blaze/math/CompressedMatrix.h>
 #include <blaze/math/CompressedVector.h>
+#include <blaze/math/Column.h>
 #include <blaze/math/DynamicMatrix.h>
 #include <blaze/math/DynamicVector.h>
 #include <blaze/math/SymmetricMatrix.h>
-#include <blaze/math/Row.h>
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
 #include <blazetest/system/Types.h>
 
@@ -68,25 +68,25 @@ namespace symmetricmatrix {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Auxiliary class for assignment tests to a single row of a numeric SymmetricMatrix.
+/*!\brief Auxiliary class for assignment tests to a single column of a scalar SymmetricMatrix.
 //
-// This class performs assignment tests to a single row of a SymmetricMatrix with numeric element
-// type. It performs a series of both compile time as well as runtime tests.
+// This class performs assignment tests to a single column of a SymmetricMatrix with scalar
+// element type. It performs a series of both compile time as well as runtime tests.
 */
-class RowNumericTest
+class ColumnScalarTest
 {
  private:
    //**Type definitions****************************************************************************
-   //! Type of the dense numeric symmetric matrix.
+   //! Type of the dense scalar symmetric matrix.
    using DST = blaze::SymmetricMatrix< blaze::DynamicMatrix<int,blaze::rowMajor> >;
 
-   //! Opposite dense numeric symmetric matrix type.
+   //! Opposite dense scalar symmetric matrix type.
    using DOST = DST::OppositeType;
 
-   //! Type of the sparse numeric symmetric matrix.
+   //! Type of the sparse scalar symmetric matrix.
    using SST = blaze::SymmetricMatrix< blaze::CompressedMatrix<int,blaze::rowMajor> >;
 
-   //! Opposite sparse numeric symmetric matrix type.
+   //! Opposite sparse scalar symmetric matrix type.
    using SOST = SST::OppositeType;
    //**********************************************************************************************
 
@@ -94,7 +94,7 @@ class RowNumericTest
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit RowNumericTest();
+   explicit ColumnScalarTest();
    // No explicitly declared copy constructor.
    //@}
    //**********************************************************************************************
@@ -149,16 +149,16 @@ class RowNumericTest
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Test of the assignment to rows of a SymmetricMatrix.
+/*!\brief Test of the assignment to columns of a SymmetricMatrix.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the assignment to a single row of a SymmetricMatrix. In case an
-// error is detected, a \a std::runtime_error exception is thrown.
+// This function performs a test of the assignment to a single column of a SymmetricMatrix. In case
+// an error is detected, a \a std::runtime_error exception is thrown.
 */
 template< typename ST >  // Type of the symmetric matrix
-void RowNumericTest::testAssignment()
+void ColumnScalarTest::testAssignment()
 {
    //=====================================================================================
    // Dense vector assignment
@@ -170,7 +170,7 @@ void RowNumericTest::testAssignment()
    {
       test_ = "Dense vector assignment test";
 
-      blaze::DynamicVector<int,blaze::rowVector> vec( 3UL );
+      blaze::DynamicVector<int,blaze::columnVector> vec( 3UL );
       vec[0] = 2;
       vec[1] = 8;
       vec[2] = 4;
@@ -178,19 +178,19 @@ void RowNumericTest::testAssignment()
       ST sym;
       init( sym );
 
-      auto row1 = row( sym, 1UL );
-      row1 = vec;
+      auto col1 = column( sym, 1UL );
+      col1 = vec;
 
       checkRows    ( sym, 3UL );
       checkColumns ( sym, 3UL );
       checkNonZeros( sym, 9UL );
 
-      if( row1[0] != 2 || row1[1] != 8 || row1[2] != 4 ) {
+      if( col1[0] != 2 || col1[1] != 8 || col1[2] != 4 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Assignment to row failed\n"
+             << " Error: Assignment to column failed\n"
              << " Details:\n"
-             << "   Result:\n" << row1 << "\n"
+             << "   Result:\n" << col1 << "\n"
              << "   Expected result:\n( 2 8 4 )\n";
          throw std::runtime_error( oss.str() );
       }
@@ -200,7 +200,7 @@ void RowNumericTest::testAssignment()
           sym(2,0) != 7 || sym(2,1) != 4 || sym(2,2) != 3 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Assignment to row failed\n"
+             << " Error: Assignment to column failed\n"
              << " Details:\n"
              << "   Result:\n" << sym << "\n"
              << "   Expected result:\n( 1 2 7 )\n( 2 8 4 )\n( 7 4 3 )\n";
@@ -217,9 +217,9 @@ void RowNumericTest::testAssignment()
    // ( -4  2  0 )  =>  ( 2  8  4 )
    // (  7  0  3 )      ( 7  4  3 )
    {
-      test_ = "Dense vector assignment test";
+      test_ = "Sparse vector assignment test";
 
-      blaze::CompressedVector<int,blaze::rowVector> vec( 3UL, 3UL );
+      blaze::CompressedVector<int,blaze::columnVector> vec( 3UL, 3UL );
       vec[0] = 2;
       vec[1] = 8;
       vec[2] = 4;
@@ -227,19 +227,19 @@ void RowNumericTest::testAssignment()
       ST sym;
       init( sym );
 
-      auto row1 = row( sym, 1UL );
-      row1 = vec;
+      auto col1 = column( sym, 1UL );
+      col1 = vec;
 
       checkRows    ( sym, 3UL );
       checkColumns ( sym, 3UL );
       checkNonZeros( sym, 9UL );
 
-      if( row1[0] != 2 || row1[1] != 8 || row1[2] != 4 ) {
+      if( col1[0] != 2 || col1[1] != 8 || col1[2] != 4 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Assignment to row failed\n"
+             << " Error: Assignment to column failed\n"
              << " Details:\n"
-             << "   Result:\n" << row1 << "\n"
+             << "   Result:\n" << col1 << "\n"
              << "   Expected result:\n( 2 8 4 )\n";
          throw std::runtime_error( oss.str() );
       }
@@ -249,7 +249,7 @@ void RowNumericTest::testAssignment()
           sym(2,0) != 7 || sym(2,1) != 4 || sym(2,2) != 3 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Assignment to row failed\n"
+             << " Error: Assignment to column failed\n"
              << " Details:\n"
              << "   Result:\n" << sym << "\n"
              << "   Expected result:\n( 1 2 7 )\n( 2 8 4 )\n( 7 4 3 )\n";
@@ -261,16 +261,16 @@ void RowNumericTest::testAssignment()
 
 
 //*************************************************************************************************
-/*!\brief Test of the addition assignment to rows of a SymmetricMatrix.
+/*!\brief Test of the addition assignment to columns of a SymmetricMatrix.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the addition assignment to a single row of a SymmetricMatrix. In
-// case an error is detected, a \a std::runtime_error exception is thrown.
+// This function performs a test of the addition assignment to a single column of a SymmetricMatrix.
+// In case an error is detected, a \a std::runtime_error exception is thrown.
 */
 template< typename ST >  // Type of the symmetric matrix
-void RowNumericTest::testAddAssign()
+void ColumnScalarTest::testAddAssign()
 {
    //=====================================================================================
    // Dense vector addition assignment
@@ -282,7 +282,7 @@ void RowNumericTest::testAddAssign()
    {
       test_ = "Dense vector addition assignment test";
 
-      blaze::DynamicVector<int,blaze::rowVector> vec( 3UL );
+      blaze::DynamicVector<int,blaze::columnVector> vec( 3UL );
       vec[0] = 6;
       vec[1] = 6;
       vec[2] = 4;
@@ -290,19 +290,19 @@ void RowNumericTest::testAddAssign()
       ST sym;
       init( sym );
 
-      auto row1 = row( sym, 1UL );
-      row1 += vec;
+      auto col1 = column( sym, 1UL );
+      col1 += vec;
 
       checkRows    ( sym, 3UL );
       checkColumns ( sym, 3UL );
       checkNonZeros( sym, 9UL );
 
-      if( row1[0] != 2 || row1[1] != 8 || row1[2] != 4 ) {
+      if( col1[0] != 2 || col1[1] != 8 || col1[2] != 4 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Assignment to row failed\n"
+             << " Error: Assignment to column failed\n"
              << " Details:\n"
-             << "   Result:\n" << row1 << "\n"
+             << "   Result:\n" << col1 << "\n"
              << "   Expected result:\n( 2 8 4 )\n";
          throw std::runtime_error( oss.str() );
       }
@@ -312,7 +312,7 @@ void RowNumericTest::testAddAssign()
           sym(2,0) != 7 || sym(2,1) != 4 || sym(2,2) != 3 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Assignment to row failed\n"
+             << " Error: Assignment to column failed\n"
              << " Details:\n"
              << "   Result:\n" << sym << "\n"
              << "   Expected result:\n( 1 2 7 )\n( 2 8 4 )\n( 7 4 3 )\n";
@@ -329,9 +329,9 @@ void RowNumericTest::testAddAssign()
    // ( -4  2  0 )  =>  ( 2  8  4 )
    // (  7  0  3 )      ( 7  4  3 )
    {
-      test_ = "Dense vector addition assignment test";
+      test_ = "Sparse vector addition assignment test";
 
-      blaze::CompressedVector<int,blaze::rowVector> vec( 3UL, 3UL );
+      blaze::CompressedVector<int,blaze::columnVector> vec( 3UL, 3UL );
       vec[0] = 6;
       vec[1] = 6;
       vec[2] = 4;
@@ -339,19 +339,19 @@ void RowNumericTest::testAddAssign()
       ST sym;
       init( sym );
 
-      auto row1 = row( sym, 1UL );
-      row1 += vec;
+      auto col1 = column( sym, 1UL );
+      col1 += vec;
 
       checkRows    ( sym, 3UL );
       checkColumns ( sym, 3UL );
       checkNonZeros( sym, 9UL );
 
-      if( row1[0] != 2 || row1[1] != 8 || row1[2] != 4 ) {
+      if( col1[0] != 2 || col1[1] != 8 || col1[2] != 4 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Assignment to row failed\n"
+             << " Error: Assignment to column failed\n"
              << " Details:\n"
-             << "   Result:\n" << row1 << "\n"
+             << "   Result:\n" << col1 << "\n"
              << "   Expected result:\n( 2 8 4 )\n";
          throw std::runtime_error( oss.str() );
       }
@@ -361,7 +361,7 @@ void RowNumericTest::testAddAssign()
           sym(2,0) != 7 || sym(2,1) != 4 || sym(2,2) != 3 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Assignment to row failed\n"
+             << " Error: Assignment to column failed\n"
              << " Details:\n"
              << "   Result:\n" << sym << "\n"
              << "   Expected result:\n( 1 2 7 )\n( 2 8 4 )\n( 7 4 3 )\n";
@@ -373,16 +373,16 @@ void RowNumericTest::testAddAssign()
 
 
 //*************************************************************************************************
-/*!\brief Test of the subtraction assignment to rows of a SymmetricMatrix.
+/*!\brief Test of the subtraction assignment to columns of a SymmetricMatrix.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the subtraction assignment to a single row of a SymmetricMatrix.
-// In case an error is detected, a \a std::runtime_error exception is thrown.
+// This function performs a test of the subtraction assignment to a single column of a
+// SymmetricMatrix. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
 template< typename ST >  // Type of the symmetric matrix
-void RowNumericTest::testSubAssign()
+void ColumnScalarTest::testSubAssign()
 {
    //=====================================================================================
    // Dense vector subtraction assignment
@@ -394,7 +394,7 @@ void RowNumericTest::testSubAssign()
    {
       test_ = "Dense vector subtraction assignment test";
 
-      blaze::DynamicVector<int,blaze::rowVector> vec( 3UL );
+      blaze::DynamicVector<int,blaze::columnVector> vec( 3UL );
       vec[0] = -6;
       vec[1] = -6;
       vec[2] = -4;
@@ -402,19 +402,19 @@ void RowNumericTest::testSubAssign()
       ST sym;
       init( sym );
 
-      auto row1 = row( sym, 1UL );
-      row1 -= vec;
+      auto col1 = column( sym, 1UL );
+      col1 -= vec;
 
       checkRows    ( sym, 3UL );
       checkColumns ( sym, 3UL );
       checkNonZeros( sym, 9UL );
 
-      if( row1[0] != 2 || row1[1] != 8 || row1[2] != 4 ) {
+      if( col1[0] != 2 || col1[1] != 8 || col1[2] != 4 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Assignment to row failed\n"
+             << " Error: Assignment to column failed\n"
              << " Details:\n"
-             << "   Result:\n" << row1 << "\n"
+             << "   Result:\n" << col1 << "\n"
              << "   Expected result:\n( 2 8 4 )\n";
          throw std::runtime_error( oss.str() );
       }
@@ -424,7 +424,7 @@ void RowNumericTest::testSubAssign()
           sym(2,0) != 7 || sym(2,1) != 4 || sym(2,2) != 3 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Assignment to row failed\n"
+             << " Error: Assignment to column failed\n"
              << " Details:\n"
              << "   Result:\n" << sym << "\n"
              << "   Expected result:\n( 1 2 7 )\n( 2 8 4 )\n( 7 4 3 )\n";
@@ -441,9 +441,9 @@ void RowNumericTest::testSubAssign()
    // ( -4  2  0 )  =>  ( 2  8  4 )
    // (  7  0  3 )      ( 7  4  3 )
    {
-      test_ = "Dense vector subtraction assignment test";
+      test_ = "Sparse vector subtraction assignment test";
 
-      blaze::CompressedVector<int,blaze::rowVector> vec( 3UL, 3UL );
+      blaze::CompressedVector<int,blaze::columnVector> vec( 3UL, 3UL );
       vec[0] = -6;
       vec[1] = -6;
       vec[2] = -4;
@@ -451,19 +451,19 @@ void RowNumericTest::testSubAssign()
       ST sym;
       init( sym );
 
-      auto row1 = row( sym, 1UL );
-      row1 -= vec;
+      auto col1 = column( sym, 1UL );
+      col1 -= vec;
 
       checkRows    ( sym, 3UL );
       checkColumns ( sym, 3UL );
       checkNonZeros( sym, 9UL );
 
-      if( row1[0] != 2 || row1[1] != 8 || row1[2] != 4 ) {
+      if( col1[0] != 2 || col1[1] != 8 || col1[2] != 4 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Assignment to row failed\n"
+             << " Error: Assignment to column failed\n"
              << " Details:\n"
-             << "   Result:\n" << row1 << "\n"
+             << "   Result:\n" << col1 << "\n"
              << "   Expected result:\n( 2 8 4 )\n";
          throw std::runtime_error( oss.str() );
       }
@@ -473,7 +473,7 @@ void RowNumericTest::testSubAssign()
           sym(2,0) != 7 || sym(2,1) != 4 || sym(2,2) != 3 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Assignment to row failed\n"
+             << " Error: Assignment to column failed\n"
              << " Details:\n"
              << "   Result:\n" << sym << "\n"
              << "   Expected result:\n( 1 2 7 )\n( 2 8 4 )\n( 7 4 3 )\n";
@@ -485,16 +485,16 @@ void RowNumericTest::testSubAssign()
 
 
 //*************************************************************************************************
-/*!\brief Test of the multiplication assignment to rows of a SymmetricMatrix.
+/*!\brief Test of the multiplication assignment to columns of a SymmetricMatrix.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the multiplication assignment to a single row of a
+// This function performs a test of the multiplication assignment to a single column of a
 // SymmetricMatrix. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
 template< typename ST >  // Type of the symmetric matrix
-void RowNumericTest::testMultAssign()
+void ColumnScalarTest::testMultAssign()
 {
    //=====================================================================================
    // Dense vector multiplication assignment
@@ -506,7 +506,7 @@ void RowNumericTest::testMultAssign()
    {
       test_ = "Dense vector multiplication assignment test";
 
-      blaze::DynamicVector<int,blaze::rowVector> vec( 3UL );
+      blaze::DynamicVector<int,blaze::columnVector> vec( 3UL );
       vec[0] = -2;
       vec[1] =  3;
       vec[2] = -4;
@@ -514,19 +514,19 @@ void RowNumericTest::testMultAssign()
       ST sym;
       init( sym );
 
-      auto row1 = row( sym, 1UL );
-      row1 *= vec;
+      auto col1 = column( sym, 1UL );
+      col1 *= vec;
 
       checkRows    ( sym, 3UL );
       checkColumns ( sym, 3UL );
       checkNonZeros( sym, 7UL );
 
-      if( row1[0] != 8 || row1[1] != 6 || row1[2] != 0 ) {
+      if( col1[0] != 8 || col1[1] != 6 || col1[2] != 0 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Assignment to row failed\n"
+             << " Error: Assignment to column failed\n"
              << " Details:\n"
-             << "   Result:\n" << row1 << "\n"
+             << "   Result:\n" << col1 << "\n"
              << "   Expected result:\n( 8 6 0 )\n";
          throw std::runtime_error( oss.str() );
       }
@@ -536,7 +536,7 @@ void RowNumericTest::testMultAssign()
           sym(2,0) != 7 || sym(2,1) != 0 || sym(2,2) != 3 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Assignment to row failed\n"
+             << " Error: Assignment to column failed\n"
              << " Details:\n"
              << "   Result:\n" << sym << "\n"
              << "   Expected result:\n( 1 8 7 )\n( 8 6 0 )\n( 7 0 3 )\n";
@@ -553,9 +553,9 @@ void RowNumericTest::testMultAssign()
    // ( -4  2  0 )  =>  ( 8  6  0 )
    // (  7  0  3 )      ( 7  0  3 )
    {
-      test_ = "Dense vector multiplication assignment test";
+      test_ = "Sparse vector multiplication assignment test";
 
-      blaze::CompressedVector<int,blaze::rowVector> vec( 3UL, 3UL );
+      blaze::CompressedVector<int,blaze::columnVector> vec( 3UL, 3UL );
       vec[0] = -2;
       vec[1] =  3;
       vec[2] = -4;
@@ -563,19 +563,19 @@ void RowNumericTest::testMultAssign()
       ST sym;
       init( sym );
 
-      auto row1 = row( sym, 1UL );
-      row1 *= vec;
+      auto col1 = column( sym, 1UL );
+      col1 *= vec;
 
       checkRows    ( sym, 3UL );
       checkColumns ( sym, 3UL );
       checkNonZeros( sym, 7UL );
 
-      if( row1[0] != 8 || row1[1] != 6 || row1[2] != 0 ) {
+      if( col1[0] != 8 || col1[1] != 6 || col1[2] != 0 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Assignment to row failed\n"
+             << " Error: Assignment to column failed\n"
              << " Details:\n"
-             << "   Result:\n" << row1 << "\n"
+             << "   Result:\n" << col1 << "\n"
              << "   Expected result:\n( 8 6 0 )\n";
          throw std::runtime_error( oss.str() );
       }
@@ -585,7 +585,7 @@ void RowNumericTest::testMultAssign()
           sym(2,0) != 7 || sym(2,1) != 0 || sym(2,2) != 3 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Assignment to row failed\n"
+             << " Error: Assignment to column failed\n"
              << " Details:\n"
              << "   Result:\n" << sym << "\n"
              << "   Expected result:\n( 1 8 7 )\n( 8 6 0 )\n( 7 0 3 )\n";
@@ -609,7 +609,7 @@ void RowNumericTest::testMultAssign()
 // exception is thrown.
 */
 template< typename Type >  // Type of the matrix
-void RowNumericTest::checkRows( const Type& matrix, size_t expectedRows ) const
+void ColumnScalarTest::checkRows( const Type& matrix, size_t expectedRows ) const
 {
    if( matrix.rows() != expectedRows ) {
       std::ostringstream oss;
@@ -637,7 +637,7 @@ void RowNumericTest::checkRows( const Type& matrix, size_t expectedRows ) const
 // exception is thrown.
 */
 template< typename Type >  // Type of the matrix
-void RowNumericTest::checkColumns( const Type& matrix, size_t expectedColumns ) const
+void ColumnScalarTest::checkColumns( const Type& matrix, size_t expectedColumns ) const
 {
    if( matrix.columns() != expectedColumns ) {
       std::ostringstream oss;
@@ -665,7 +665,7 @@ void RowNumericTest::checkColumns( const Type& matrix, size_t expectedColumns ) 
 // a \a std::runtime_error exception is thrown.
 */
 template< typename Type >  // Type of the matrix
-void RowNumericTest::checkNonZeros( const Type& matrix, size_t expectedNonZeros ) const
+void ColumnScalarTest::checkNonZeros( const Type& matrix, size_t expectedNonZeros ) const
 {
    if( nonZeros( matrix ) != expectedNonZeros ) {
       std::ostringstream oss;
@@ -706,7 +706,7 @@ void RowNumericTest::checkNonZeros( const Type& matrix, size_t expectedNonZeros 
 // This function is called before each test case to initialize the given symmetric matrix.
 */
 template< typename ST >
-void RowNumericTest::init( ST& sym )
+void ColumnScalarTest::init( ST& sym )
 {
    sym.resize( 3UL );
    sym(0,0) =  1;
@@ -727,13 +727,13 @@ void RowNumericTest::init( ST& sym )
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Testing the assignment to a single row of a numeric SymmetricMatrix.
+/*!\brief Testing the assignment to a single column of a scalar SymmetricMatrix.
 //
 // \return void
 */
 void runTest()
 {
-   RowNumericTest();
+   ColumnScalarTest();
 }
 //*************************************************************************************************
 
@@ -748,9 +748,9 @@ void runTest()
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Macro for the execution of the SymmetricMatrix row numeric test.
+/*!\brief Macro for the execution of the SymmetricMatrix column scalar test.
 */
-#define RUN_SYMMETRICMATRIX_ROWNUMERIC_TEST \
+#define RUN_SYMMETRICMATRIX_COLUMNSCALAR_TEST \
    blazetest::mathtest::adaptors::symmetricmatrix::runTest()
 /*! \endcond */
 //*************************************************************************************************
