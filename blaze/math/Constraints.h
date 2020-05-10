@@ -112,7 +112,6 @@
 #include <blaze/math/constraints/NoAliasExpr.h>
 #include <blaze/math/constraints/NoSIMDExpr.h>
 #include <blaze/math/constraints/NumericMatrix.h>
-#include <blaze/math/constraints/NumericVector.h>
 #include <blaze/math/constraints/Operation.h>
 #include <blaze/math/constraints/OpposedView.h>
 #include <blaze/math/constraints/Padded.h>

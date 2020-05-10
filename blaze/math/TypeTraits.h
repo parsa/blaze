@@ -211,7 +211,6 @@
 #include <blaze/math/typetraits/IsNoAliasExpr.h>
 #include <blaze/math/typetraits/IsNoSIMDExpr.h>
 #include <blaze/math/typetraits/IsNumericMatrix.h>
-#include <blaze/math/typetraits/IsNumericVector.h>
 #include <blaze/math/typetraits/IsOperation.h>
 #include <blaze/math/typetraits/IsOpposedView.h>
 #include <blaze/math/typetraits/IsPadded.h>
