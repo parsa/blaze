@@ -16089,92 +16089,118 @@
 // \n \section custom_data_types Custom Data Types
 // <hr>
 //
-// The \b Blaze library tries hard to make the use of custom data types as convenient, easy and
-// intuitive as possible. However, unfortunately it is not possible to meet the requirements of
-// all possible data types. Thus it might be necessary to provide \b Blaze with some additional
-// information about the data type. The following sections give an overview of the necessary steps
-// to enable the use of the hypothetical custom data type \c custom::double_t for vector and
-// matrix operations. For example:
+// \subsection custom_data_types_introduction Introduction
+//
+// The \b Blaze library is not restricted to integral, floating point and complex data types
+// (called numeric types in \b Blaze), but it supports custom data types. For instance, the
+// following example demonstrates that it is possible to use \c std::string as data type:
 
    \code
-   blaze::DynamicVector<custom::double_t> a, b, c;
-   // ... Resizing and initialization
-   c = a + b;
+   blaze::DynamicVector<std::string> a{ "Hello, ", "Blaze " , "Expression" };
+   blaze::DynamicVector<std::string> b{ "World"  , "Library", " Templates" };
+
+   const auto c( evaluate( a + b ) );
+   std::cout <<  "c =\n" << c << "\n\n";
+
+   const std::string maxString( max( c ) );
+   std::cout << "maxString = " << std::quoted(maxString) << "\n";
    \endcode
 
-// The \b Blaze library assumes that the \c custom::double_t data type provides \c operator+()
-// for additions, \c operator-() for subtractions, \c operator*() for multiplications and
-// \c operator/() for divisions. If any of these functions is missing it is necessary to implement
-// the operator to perform the according operation. For this example we assume that the custom
-// data type provides the four following functions instead of operators:
+// Output:
+
+   \code
+   c =
+   ( Hello, World )
+   ( Blaze Library )
+   ( Expression Templates )
+
+   maxString = "Hello, World"
+   \endcode
+
+// \b Blaze tries hard to make the use of custom data types as convenient, easy and intuitive as
+// possible. In order to work flawlessly with \b Blaze, custom data types are required to provide
+// a certain interface (depending on the operations that the type is used for). The following
+// sections give an overview of the necessary steps to enable the use of the hypothetical custom
+// data type \c custom::double_t for vector and matrix operations.
 
    \code
    namespace custom {
 
-   double_t add ( const double_t& a, const double_t b );
-   double_t sub ( const double_t& a, const double_t b );
-   double_t mult( const double_t& a, const double_t b );
-   double_t div ( const double_t& a, const double_t b );
+   struct double_t
+   {
+      constexpr double_t() = default;
+      constexpr double_t( double i ) : value( i ) {}
+      double value{};
+   };
 
    } // namespace custom
    \endcode
 
-// The following implementations will satisfy the requirements of the \b Blaze library:
+// \subsection custom_data_types_arithmetic_operations Arithmetic Operations
+//
+// The \b Blaze library assumes that a custom data type provides \c operator<<() for streaming,
+// \c operator+=() and \c operator+() for additions (which for instance includes additions inside
+// matrix/vector multiplications, matrix/matrix multiplications, reduction or norm operations),
+// \c operator-=() and \c operator-() for subtractions, \c operator*=() and \c operator*() for
+// multiplications and \c operator/=() and \c operator/() for divisions:
 
    \code
-   inline custom::double_t operator+( const custom::double_t& a, const custom::double_t& b )
+   namespace custom {
+
+   constexpr double_t& operator+=( double_t& lhs, double_t rhs ) noexcept { lhs.value += rhs.value; return lhs; }
+   constexpr double_t& operator-=( double_t& lhs, double_t rhs ) noexcept { lhs.value -= rhs.value; return lhs; }
+   constexpr double_t& operator*=( double_t& lhs, double_t rhs ) noexcept { lhs.value *= rhs.value; return lhs; }
+   constexpr double_t& operator/=( double_t& lhs, double_t rhs ) noexcept { lhs.value /= rhs.value; return lhs; }
+
+   constexpr double_t operator+( double_t lhs, double_t rhs ) noexcept { return double_t{ lhs.value + rhs.value }; }
+   constexpr double_t operator-( double_t lhs, double_t rhs ) noexcept { return double_t{ lhs.value - rhs.value }; }
+   constexpr double_t operator*( double_t lhs, double_t rhs ) noexcept { return double_t{ lhs.value * rhs.value }; }
+   constexpr double_t operator/( double_t lhs, double_t rhs ) noexcept { return double_t{ lhs.value / rhs.value }; }
+
+   inline std::ostream& operator<<( std::ostream& os, double_t d )
    {
-      return add( a, b );
+      return os << d.value;
    }
 
-   inline custom::double_t operator-( const custom::double_t& a, const custom::double_t& b )
-   {
-      return sub( a, b );
-   }
+   } // namespace custom
+   \endcode
 
-   inline custom::double_t operator*( const custom::double_t& a, const custom::double_t& b )
-   {
-      return mult( a, b );
-   }
+// Example:
 
-   inline custom::double_t operator/( const custom::double_t& a, const custom::double_t& b )
+   \code
+   int main()
    {
-      return div( a, b );
+      blaze::DynamicVector<custom::double_t> a{ 1.0, 2.0, 3.0, 4.0 };
+      blaze::DynamicVector<custom::double_t> b{ 0.1, 0.2, 0.3, 0.4 };
+
+      std::cout << "a + b =\n" << ( a + b ) << "\n";
+      std::cout << "a * b =\n" << ( a * b ) << "\n";
+
+      std::cout << "sum(a) = " << sum(a) << "\n"
+                << "prod(a) = " << prod(a) << "\n";
    }
    \endcode
 
-// \b Blaze will use all the information provided with these functions (for instance the return
-// type) to properly handle the operations. In the rare case that the return type cannot be
-// automatically determined from the operator it might be additionally necessary to provide a
-// specialization of the following four \b Blaze class templates:
+// Output:
 
    \code
-   namespace blaze {
+   a + b =
+   (         1.1 )
+   (         2.2 )
+   (         3.3 )
+   (         4.4 )
 
-   template<>
-   struct AddTrait<custom::double_t,custom::double_t> {
-      using Type = custom::double_t;
-   };
+   a * b =
+   (         0.1 )
+   (         0.4 )
+   (         0.9 )
+   (         1.6 )
 
-   template<>
-   struct SubTrait<custom::double_t,custom::double_t> {
-      using Type = custom::double_t;
-   };
-
-   template<>
-   struct MultTrait<custom::double_t,custom::double_t> {
-      using Type = custom::double_t;
-   };
-
-   template<>
-   struct DivTrait<custom::double_t,custom::double_t> {
-      using Type = custom::double_t;
-   };
-
-   } // namespace blaze
+   sum(a) = 10
+   prod(a) = 24
    \endcode
 
-// The same steps are necessary if several custom data types need to be combined (as for instance
+// Note that similar steps are necessary if several custom data types are combined (as for instance
 // \c custom::double_t and \c custom::float_t). Note that in this case both permutations need to
 // be taken into account:
 
@@ -16187,7 +16213,198 @@
 // Please note that only built-in data types apply for vectorization and thus custom data types
 // cannot achieve maximum performance!
 //
+// \subsection custom_data_types_relational_operations Relational Operations
 //
+// In order to compare the element type, \b Blaze expects the equality operator (i.e. \c operator==())
+// and the inequality operator (i.e. \c operator!=()). Alternatively it is possible to provide an
+// \c equal() function, which distinguishes between strict and relaxed comparison:
+
+   \code
+   namespace custom {
+
+   constexpr bool operator==( double_t lhs, double_t rhs ) noexcept { return lhs.value == rhs.value; }
+   constexpr bool operator!=( double_t lhs, double_t rhs ) noexcept { return !( lhs == rhs ); }
+
+   template< blaze::RelaxationFlag RF >
+   constexpr bool equal( double_t lhs, double_t rhs ) noexcept { return blaze::equal<RF>( lhs.value, rhs.value ); }
+
+   } // namespace custom
+   \endcode
+
+// Example:
+
+   \code
+   int main()
+   {
+      blaze::DynamicVector<custom::double_t> a{ 1.0, 2.0, 3.0, 4.0 };
+      blaze::DynamicVector<custom::double_t> b{ 0.1, 0.2, 0.3, 0.4 };
+
+      std::cout << "a == b: " << ( a == b ) << "\n"
+                << "a != b: " << ( a != b ) << "\n";
+   }
+   \endcode
+
+// Output:
+
+   \code
+   a == b: 0
+   a != b: 1
+   \endcode
+
+// \subsection custom_data_types_elementwise_operations Elementwise Operations
+//
+// For the different kinds of elementwise operations on vectors and matrices (\c abs(), \c sin(),
+// \c cos(), \c sqrt(), \c log(), \c exp(), \c min(), \c max(), ...), the custom type is required
+// to provide the according function overload. Note that the \c sqrt() operation may also be
+// required for several norm computations. Also, for any inversion operation, the type is required
+// to suport the \c inv() function:
+
+   \code
+   namespace custom {
+
+   inline    double_t abs ( double_t d ) noexcept { return double_t{ std::abs ( d.value ) }; }
+   inline    double_t sin ( double_t d ) noexcept { return double_t{ std::sin ( d.value ) }; }
+   inline    double_t cos ( double_t d ) noexcept { return double_t{ std::cos ( d.value ) }; }
+   inline    double_t sqrt( double_t d ) noexcept { return double_t{ std::sqrt( d.value ) }; }
+   inline    double_t log ( double_t d ) noexcept { return double_t{ std::log ( d.value ) }; }
+   inline    double_t exp ( double_t d ) noexcept { return double_t{ std::exp ( d.value ) }; }
+   constexpr double_t inv ( double_t d ) noexcept { return double_t{ 1.0/d.value }; }
+
+   constexpr double_t min( double_t lhs, double_t rhs ) noexcept { return double_t{ blaze::min( lhs.value, rhs.value ) }; }
+   constexpr double_t max( double_t lhs, double_t rhs ) noexcept { return double_t{ blaze::max( lhs.value, rhs.value ) }; }
+
+   } // namespace custom
+   \endcode
+
+// Example:
+
+   \code
+   int main()
+   {
+      blaze::DynamicVector<custom::double_t> a{ 1.0, 2.0, 3.0, 4.0 };
+      blaze::DynamicVector<custom::double_t> b{ 0.1, 0.2, 0.3, 0.4 };
+
+      std::cout << "abs(a) =\n" << abs(a) << "\n";
+      std::cout << "sin(a) =\n" << sin(a) << "\n";
+      std::cout << "cos(a) =\n" << cos(a) << "\n";
+      std::cout << "sqrt(a) =\n" << sqrt(a) << "\n";
+      std::cout << "log(a) =\n" << log(a) << "\n";
+      std::cout << "exp(a) =\n" << exp(a) << "\n\n";
+      std::cout << "min(a) =\n" << min(a) <<  "\n";
+      std::cout << "max(a) =\n" << max(a) << "\n\n";
+      std::cout << "min(a,b) =\n" << min(a,b) << "\n";
+      std::cout << "max(a,b) =\n" << max(a,b) << "\n";
+      std::cout << "norm(a) = " << norm(a) << "\n";
+   }
+   \endcode
+
+// Output:
+
+   \code
+   abs(a) =
+   (           1 )
+   (           2 )
+   (           3 )
+   (           4 )
+
+   sin(a) =
+   (    0.841471 )
+   (    0.909297 )
+   (     0.14112 )
+   (   -0.756802 )
+
+   cos(a) =
+   (    0.540302 )
+   (   -0.416147 )
+   (   -0.989992 )
+   (   -0.653644 )
+
+   sqrt(a) =
+   (           1 )
+   (     1.41421 )
+   (     1.73205 )
+   (           2 )
+
+   log(a) =
+   (           0 )
+   (    0.693147 )
+   (     1.09861 )
+   (     1.38629 )
+
+   exp(a) =
+   (     2.71828 )
+   (     7.38906 )
+   (     20.0855 )
+   (     54.5982 )
+
+   min(a) = 1
+   max(a) = 4
+
+   min(a,b) =
+   (         0.1 )
+   (         0.2 )
+   (         0.3 )
+   (         0.4 )
+
+   max(a,b) =
+   (           1 )
+   (           2 )
+   (           3 )
+   (           4 )
+
+   norm(a) = 5.47723
+   \endcode
+
+// \subsection custom_data_types_adaptors Adaptors
+//
+// If the custom data type is used in the context of the HermitianMatrix, UniLowerMatrix, or
+// UniUpperMatrix adaptors, it will be necessary to provide overloads of the \c isZero(),
+// \a isOne(), and \a isReal() functions:
+
+   \code
+   namespace custom {
+
+   template< blaze::RelaxationFlag RF >
+   constexpr bool isZero( double_t d ) { return blaze::isZero<RF>( d.value ); }
+
+   template< blaze::RelaxationFlag RF >
+   constexpr bool isOne ( double_t d ) { return blaze::isOne<RF> ( d.value ); }
+
+   template< blaze::RelaxationFlag RF >
+   constexpr bool isReal( double_t d ) { MAYBE_UNUSED( d ); return true; }
+
+   } // namespace custom
+   \endcode
+
+// Example:
+
+   \code
+   int main()
+   {
+      blaze::UniLowerMatrix< blaze::DynamicMatrix<custom::double_t> > L
+         { { 1.0, 0.0, 0.0 },
+           { 2.0, 1.0, 0.0 },
+           { 3.0, 4.0, 1.0 } };
+
+      blaze::UniUpperMatrix< blaze::DynamicMatrix<custom::double_t> > U
+         { { 1.0, 2.0, 3.0 },
+           { 0.0, 1.0, 4.0 },
+           { 0.0, 0.0, 1.0 } };
+
+      const auto A( evaluate( L * U ) );
+      std::cout << "A =\n" << A << "\n";
+   }
+   \endcode
+
+// Output:
+
+   \code
+   A =
+   (            1            2            3 )
+   (            2            5           10 )
+   (            3           10           26 )
+   \endcode
+
 // \n Previous: \ref configuration_files &nbsp; &nbsp; Next: \ref grouping_tagging \n
 */
 //*************************************************************************************************
