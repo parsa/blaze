@@ -230,7 +230,7 @@ class DMatExpExpr
          const BT log2norm( norm > BT(0) ? log2( norm ) : BT(0) );
 
          int exponent( 0 );
-         frexp( log2norm, &exponent );
+         frexp( ceil( log2norm ), &exponent );
          exponent = max( 0, exponent+1 );
 
          ResultType R( rhs.dm_ / pow( 2.0, double(exponent) ) );
@@ -327,7 +327,7 @@ class DMatExpExpr
          const BT log2norm( norm > BT(0) ? log2( norm ) : BT(0) );
 
          int exponent( 0 );
-         frexp( log2norm, &exponent );
+         frexp( ceil( log2norm ), &exponent );
          exponent = max( 0, exponent+1 );
 
          ResultType R( rhs.dm_ / pow( 2.0, double(exponent) ) );
@@ -397,7 +397,7 @@ class DMatExpExpr
          const BT log2norm( norm > BT(0) ? log2( norm ) : BT(0) );
 
          int exponent( 0 );
-         frexp( log2norm, &exponent );
+         frexp( ceil( log2norm ), &exponent );
          exponent = max( 0, exponent+1 );
 
          ResultType R( rhs.dm_ / pow( 2.0, double(exponent) ) );
@@ -467,7 +467,7 @@ class DMatExpExpr
          const BT log2norm( norm > BT(0) ? log2( norm ) : BT(0) );
 
          int exponent( 0 );
-         frexp( log2norm, &exponent );
+         frexp( ceil( log2norm ), &exponent );
          exponent = max( 0, exponent+1 );
 
          ResultType R( rhs.dm_ / pow( 2.0, double(exponent) ) );
