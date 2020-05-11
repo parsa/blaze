@@ -43,11 +43,10 @@
 #include <cmath>
 #include <blaze/math/Accuracy.h>
 #include <blaze/math/RelaxationFlag.h>
+#include <blaze/math/typetraits/IsScalar.h>
 #include <blaze/util/algorithms/Max.h>
 #include <blaze/util/Complex.h>
 #include <blaze/util/EnableIf.h>
-#include <blaze/util/typetraits/IsSigned.h>
-#include <blaze/util/typetraits/IsUnsigned.h>
 
 
 namespace blaze {
@@ -75,8 +74,7 @@ namespace blaze {
 template< RelaxationFlag RF  // Relaxation flag
         , typename T1        // Type of the left-hand side value/object
         , typename T2        // Type of the right-hand side value/object
-        , typename = EnableIf_t< ( IsSigned_v<T1> && IsSigned_v<T2> ) ||
-                                 ( IsUnsigned_v<T1> && IsUnsigned_v<T2> ) > >
+        , typename = EnableIf_t< IsScalar_v<T1> && IsScalar_v<T2> > >
 constexpr bool equal( const T1& a, const T2& b )
 {
    return a == b;
