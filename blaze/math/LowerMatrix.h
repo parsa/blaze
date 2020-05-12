@@ -47,6 +47,7 @@
 #include <blaze/math/adaptors/LowerMatrix.h>
 #include <blaze/math/constraints/DenseMatrix.h>
 #include <blaze/math/constraints/Resizable.h>
+#include <blaze/math/constraints/Scalar.h>
 #include <blaze/math/constraints/SparseMatrix.h>
 #include <blaze/math/DenseMatrix.h>
 #include <blaze/math/Exception.h>
@@ -589,6 +590,8 @@ void makeHermitian( LowerMatrix<MT,SO,DF>& matrix )
 {
    using Type = UnderlyingBuiltin_t< ElementType_t<MT> >;
 
+   BLAZE_CONSTRAINT_MUST_BE_SCALAR_TYPE( Type );
+
    const size_t n( matrix.rows() );
 
    reset( matrix );
@@ -619,6 +622,8 @@ template< typename MT     // Type of the adapted matrix
 void makeHermitian( LowerMatrix<MT,SO,DF>& matrix, const Arg& min, const Arg& max )
 {
    using Type = UnderlyingBuiltin_t< ElementType_t<MT> >;
+
+   BLAZE_CONSTRAINT_MUST_BE_SCALAR_TYPE( Type );
 
    const size_t n( matrix.rows() );
 

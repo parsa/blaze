@@ -47,6 +47,7 @@
 #include <blaze/math/adaptors/SymmetricMatrix.h>
 #include <blaze/math/constraints/DenseMatrix.h>
 #include <blaze/math/constraints/Resizable.h>
+#include <blaze/math/constraints/Scalar.h>
 #include <blaze/math/constraints/SparseMatrix.h>
 #include <blaze/math/DenseMatrix.h>
 #include <blaze/math/Exception.h>
@@ -488,6 +489,8 @@ void makeHermitian( SymmetricMatrix<MT,SO,true,SF>& matrix )
 {
    using BT = UnderlyingBuiltin_t< ElementType_t<MT> >;
 
+   BLAZE_CONSTRAINT_MUST_BE_SCALAR_TYPE( BT );
+
    const size_t n( matrix.rows() );
 
    for( size_t i=0UL; i<n; ++i ) {
@@ -519,6 +522,8 @@ void makeHermitian( SymmetricMatrix<MT,SO,true,SF>& matrix, const Arg& min, cons
 {
    using BT = UnderlyingBuiltin_t< ElementType_t<MT> >;
 
+   BLAZE_CONSTRAINT_MUST_BE_SCALAR_TYPE( BT );
+
    const size_t n( matrix.rows() );
 
    for( size_t i=0UL; i<n; ++i ) {
@@ -546,6 +551,8 @@ template< typename MT  // Type of the adapted matrix
 void makePositiveDefinite( SymmetricMatrix<MT,SO,true,SF>& matrix )
 {
    using BT = UnderlyingBuiltin_t< ElementType_t<MT> >;
+
+   BLAZE_CONSTRAINT_MUST_BE_SCALAR_TYPE( BT );
 
    const size_t n( matrix.rows() );
 

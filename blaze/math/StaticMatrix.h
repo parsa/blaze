@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <blaze/math/constraints/Scalar.h>
 #include <blaze/math/dense/StaticMatrix.h>
 #include <blaze/math/DenseMatrix.h>
 #include <blaze/math/HybridMatrix.h>
@@ -50,7 +51,6 @@
 #include <blaze/math/typetraits/UnderlyingBuiltin.h>
 #include <blaze/math/ZeroMatrix.h>
 #include <blaze/util/Assert.h>
-#include <blaze/util/constraints/Numeric.h>
 #include <blaze/util/Random.h>
 #include <blaze/util/StaticAssert.h>
 
@@ -255,7 +255,7 @@ void makeHermitian( StaticMatrix<Type,M,N,SO,AF,PF,Tag>& matrix )
    using blaze::randomize;
 
    BLAZE_STATIC_ASSERT( M == N );
-   BLAZE_CONSTRAINT_MUST_BE_NUMERIC_TYPE( Type );
+   BLAZE_CONSTRAINT_MUST_BE_SCALAR_TYPE( Type );
 
    using BT = UnderlyingBuiltin_t<Type>;
 
@@ -296,7 +296,7 @@ void makeHermitian( StaticMatrix<Type,M,N,SO,AF,PF,Tag>& matrix, const Arg& min,
    using blaze::randomize;
 
    BLAZE_STATIC_ASSERT( M == N );
-   BLAZE_CONSTRAINT_MUST_BE_NUMERIC_TYPE( Type );
+   BLAZE_CONSTRAINT_MUST_BE_SCALAR_TYPE( Type );
 
    using BT = UnderlyingBuiltin_t<Type>;
 
@@ -334,7 +334,7 @@ void makePositiveDefinite( StaticMatrix<Type,M,N,SO,AF,PF,Tag>& matrix )
    using blaze::randomize;
 
    BLAZE_STATIC_ASSERT( M == N );
-   BLAZE_CONSTRAINT_MUST_BE_NUMERIC_TYPE( Type );
+   BLAZE_CONSTRAINT_MUST_BE_SCALAR_TYPE( Type );
 
    randomize( matrix );
    matrix *= ctrans( matrix );

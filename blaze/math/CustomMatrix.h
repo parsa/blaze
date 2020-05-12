@@ -41,6 +41,7 @@
 //*************************************************************************************************
 
 #include <blaze/math/AlignmentFlag.h>
+#include <blaze/math/constraints/Scalar.h>
 #include <blaze/math/dense/CustomMatrix.h>
 #include <blaze/math/dense/DynamicMatrix.h>
 #include <blaze/math/DenseMatrix.h>
@@ -52,7 +53,6 @@
 #include <blaze/math/typetraits/UnderlyingBuiltin.h>
 #include <blaze/math/ZeroMatrix.h>
 #include <blaze/util/Assert.h>
-#include <blaze/util/constraints/Numeric.h>
 #include <blaze/util/Random.h>
 
 
@@ -235,7 +235,7 @@ void makeHermitian( CustomMatrix<Type,AF,PF,SO,Tag,RT>& matrix )
 {
    using blaze::randomize;
 
-   BLAZE_CONSTRAINT_MUST_BE_NUMERIC_TYPE( Type );
+   BLAZE_CONSTRAINT_MUST_BE_SCALAR_TYPE( Type );
 
    using BT = UnderlyingBuiltin_t<Type>;
 
@@ -280,7 +280,7 @@ void makeHermitian( CustomMatrix<Type,AF,PF,SO,Tag,RT>& matrix, const Arg& min, 
 {
    using blaze::randomize;
 
-   BLAZE_CONSTRAINT_MUST_BE_NUMERIC_TYPE( Type );
+   BLAZE_CONSTRAINT_MUST_BE_SCALAR_TYPE( Type );
 
    using BT = UnderlyingBuiltin_t<Type>;
 
@@ -322,7 +322,7 @@ void makePositiveDefinite( CustomMatrix<Type,AF,PF,SO,Tag,RT>& matrix )
 {
    using blaze::randomize;
 
-   BLAZE_CONSTRAINT_MUST_BE_NUMERIC_TYPE( Type );
+   BLAZE_CONSTRAINT_MUST_BE_SCALAR_TYPE( Type );
 
    if( !isSquare( ~matrix ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid non-square matrix provided" );
