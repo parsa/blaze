@@ -875,7 +875,7 @@
 //             non-cv-qualified, non-reference, non-pointer element type.
 //  - \c TF  : specifies whether the vector is a row vector (\c blaze::rowVector) or a column
 //             vector (\c blaze::columnVector). The default value is \c blaze::defaultTransposeFlag.
-//  - \c Tag : optional type parameter to tag the vector. The default type is \a blaze::Group0.
+//  - \c Tag : optional type parameter to tag the vector. The default type is \c blaze::Group0.
 //             See \ref grouping_tagging for details.
 //
 // The blaze::DynamicVector is the default choice for all kinds of dense vectors and the best
@@ -1281,7 +1281,7 @@
 // guarantee that the capacity is greater or equal than the size and a multiple of the SIMD vector
 // width. In case of unaligned padded vectors the number of padding elements can be greater or
 // equal the number of padding elements of an aligned padded custom vector. In case the padding
-// is insufficient with respect to the available instruction set, a \a std::invalid_argument
+// is insufficient with respect to the available instruction set, a \c std::invalid_argument
 // exception is thrown.
 //
 // Please also note that \b Blaze will zero initialize the padding elements in order to achieve
@@ -2953,8 +2953,8 @@
 //
 // The \c select() function performs a componentwise, conditional selection of elements. Given
 // the three dense vectors \c cond, \c a, and \c b, in case an element in the \c cond vector
-// evaluates to \a true, the according element of \a a is selected, in case the \a cond element
-// evaluates to \a false, the according element of \a b is selected. The following example
+// evaluates to \c true, the according element of \a a is selected, in case the \a cond element
+// evaluates to \c false, the according element of \a b is selected. The following example
 // demonstrates the use of the \a select() function:
 
    \code
@@ -3288,7 +3288,7 @@
    const double m = mean( v );  // Results in 4.2 (i.e. 21/5)
    \endcode
 
-// In case the size of the given vector is 0, a \a std::invalid_argument is thrown.
+// In case the size of the given vector is 0, a \c std::invalid_argument is thrown.
 //
 // \n \subsection vector_operations_var var()
 //
@@ -3303,7 +3303,7 @@
    const double v = var( v );  // Results in 5.7
    \endcode
 
-// In case the size of the given vector is smaller than 2, a \a std::invalid_argument is thrown.
+// In case the size of the given vector is smaller than 2, a \c std::invalid_argument is thrown.
 //
 // \n \subsection vector_operations_stddev stddev()
 //
@@ -3318,7 +3318,7 @@
    const double s = stddev( v );  // Results in 2.38747
    \endcode
 
-// In case the size of the given vector is smaller than 2, a \a std::invalid_argument is thrown.
+// In case the size of the given vector is smaller than 2, a \c std::invalid_argument is thrown.
 //
 //
 // \n \section vector_operations_declaration_operations Declaration Operations
@@ -4509,7 +4509,7 @@
 // the list. For fixed size matrices (such as e.g. \ref matrix_types_static_matrix) missing values
 // are initialized as default and in case the size of the top-level initializer list does not
 // match the number of rows of the matrix or the size of any nested list exceeds the number of
-// columns, a \a std::invalid_argument exception is thrown. In case of sparse matrices, only
+// columns, a \c std::invalid_argument exception is thrown. In case of sparse matrices, only
 // the non-zero elements are used to initialize the matrix.
 //
 // \n \subsection matrix_operations_copy_construction Copy Construction
@@ -4606,7 +4606,7 @@
 // the list. For fixed size matrices (such as e.g. \ref matrix_types_static_matrix) missing values
 // are reset to their default value and in case the size of the top-level initializer list does
 // not match the number of rows of the matrix or the size of any nested list exceeds the number
-// of columns, a \a std::invalid_argument exception is thrown. In case of sparse matrices, only
+// of columns, a \c std::invalid_argument exception is thrown. In case of sparse matrices, only
 // the non-zero elements are considered.
 //
 // \n \subsection matrix_operations_copy_assignment Copy Assignment
@@ -6341,8 +6341,8 @@
 //
 // The \c select() function performs a componentwise, conditional selection of elements. Given
 // the three dense matrices \c cond, \c A, and \c B, in case an element in the \c cond vector
-// evaluates to \a true, the according element of \a A is selected, in case the \a cond element
-// evaluates to \a false, the according element of \a B is selected. The following example
+// evaluates to \c true, the according element of \a A is selected, in case the \a cond element
+// evaluates to \c false, the according element of \a B is selected. The following example
 // demonstrates the use of the \a select() function:
 
    \code
@@ -6773,7 +6773,7 @@
    const double m = mean( A );  // Results in 3.3 (i.e. 33/10)
    \endcode
 
-// In case the number of rows or columns of the given matrix is 0, a \a std::invalid_argument is
+// In case the number of rows or columns of the given matrix is 0, a \c std::invalid_argument is
 // thrown.
 //
 // Alternatively it is possible to compute the row- or columnwise mean:
@@ -6794,7 +6794,7 @@
 
 // In case the rowwise mean is computed and the number of columns of the given matrix is 0 or
 // in case the columnwise mean is computed and the number of rows of the given matrix is 0, a
-// \a std::invalid_argument is thrown.
+// \c std::invalid_argument is thrown.
 //
 // \n \subsection matrix_operations_var var()
 //
@@ -6811,7 +6811,7 @@
    const double v = var( A );  // Results in 6.5
    \endcode
 
-// In case the size of the given matrix is smaller than 2, a \a std::invalid_argument is thrown.
+// In case the size of the given matrix is smaller than 2, a \c std::invalid_argument is thrown.
 //
 // Alternatively it is possible to compute the row- or columnwise variance:
 
@@ -6832,7 +6832,7 @@
 
 // In case the rowwise varoamce is computed and the number of columns of the given matrix is
 // smaller than 2 or in case the columnwise mean is computed and the number of rows of the given
-// matrix is smaller than 2, a \a std::invalid_argument is thrown.
+// matrix is smaller than 2, a \c std::invalid_argument is thrown.
 //
 // \n \subsection matrix_operations_stddev stddev()
 //
@@ -6849,7 +6849,7 @@
    const double s = stddev( A );  // Results in sqrt(6.5)
    \endcode
 
-// In case the size of the given matrix is smaller than 2, a \a std::invalid_argument is thrown.
+// In case the size of the given matrix is smaller than 2, a \c std::invalid_argument is thrown.
 //
 // Alternatively it is possible to compute the row- or columnwise standard deviation:
 
@@ -6870,7 +6870,7 @@
 
 // In case the rowwise standard deviation is computed and the number of columns of the given
 // matrix is smaller than 2 or in case the columnwise mean is computed and the number of rows of
-// the given matrix is smaller than 2, a \a std::invalid_argument is thrown.
+// the given matrix is smaller than 2, a \c std::invalid_argument is thrown.
 //
 //
 // \n \section matrix_operations_declaration_operations Declaration Operations
@@ -11462,7 +11462,7 @@
 // special restriction: The symmetry of the underlying symmetric matrix must not be broken!
 // Since the modification of element \f$ a_{ij} \f$ of a symmetric matrix also modifies the
 // element \f$ a_{ji} \f$, the matrix to be assigned must be structured such that the symmetry
-// of the symmetric matrix is preserved. Otherwise a \a std::invalid_argument exception is
+// of the symmetric matrix is preserved. Otherwise a \c std::invalid_argument exception is
 // thrown:
 
    \code
@@ -16359,7 +16359,7 @@
 //
 // If the custom data type is used in the context of the HermitianMatrix, UniLowerMatrix, or
 // UniUpperMatrix adaptors, it will be necessary to provide overloads of the \c isZero(),
-// \a isOne(), and \a isReal() functions:
+// \c isOne(), and \c isReal() functions:
 
    \code
    namespace custom {
@@ -17168,7 +17168,7 @@
 
 // where \c U is an upper triangular matrix and \c L is a lower triangular matrix. The Cholesky
 // decomposition fails if the given matrix \a A is not a positive definite matrix. In this case
-// a \a std::std::invalid_argument exception is thrown.
+// a \c std::invalid_argument exception is thrown.
 //
 //
 // \n \subsection lapack_qr_decomposition QR Decomposition
@@ -17637,7 +17637,7 @@
 //  - ... the given matrix is singular and not invertible.
 //
 // The first four functions report failure via the \c info argument, the fifth function throws a
-// \a std::invalid_argument exception in case of an error.
+// \c std::invalid_argument exception in case of an error.
 //
 //
 // \n \subsection lapack_ldlt_inversion LDLT-based Inversion
@@ -17669,7 +17669,7 @@
 //  - ... the given matrix is singular and not invertible.
 //
 // The first four functions report failure via the \c info argument, the fifth function throws a
-// \a std::invalid_argument exception in case of an error.
+// \c std::invalid_argument exception in case of an error.
 //
 //
 // \n \subsection lapack_ldlh_inversion LDLH-based Inversion
@@ -17697,7 +17697,7 @@
 //  - ... the given matrix is singular and not invertible.
 //
 // The first four functions report failure via the \c info argument, the fifth function throws a
-// \a std::invalid_argument exception in case of an error.
+// \c std::invalid_argument exception in case of an error.
 //
 //
 // \n \subsection lapack_llh_inversion Cholesky-based Inversion
@@ -17730,7 +17730,7 @@
 //  - ... the given matrix is singular and not invertible.
 //
 // The first four functions report failure via the \c info argument, the fifth function throws a
-// \a std::invalid_argument exception in case of an error.
+// \c std::invalid_argument exception in case of an error.
 //
 //
 // \n \subsection lapack_triangular_inversion Inversion of Triangular Matrices
@@ -17763,7 +17763,7 @@
 //  - ... the given matrix is singular and not invertible.
 //
 // The first four functions report failure via the \c info argument, the fifth function throws a
-// \a std::invalid_argument exception in case of an error.
+// \c std::invalid_argument exception in case of an error.
 //
 //
 // \n \section lapack_substitution Substitution
@@ -17825,7 +17825,7 @@
 //  - ... the sizes of the two given matrices do not match.
 //
 // The first four functions report failure via the \c info argument, the last two functions throw
-// a \a std::invalid_argument exception in case of an error.
+// a \c std::invalid_argument exception in case of an error.
 //
 //
 // \n \subsection lapack_ldlt_substitution LDLT-based Substitution
@@ -17864,7 +17864,7 @@
 //  - ... the sizes of the two given matrices do not match.
 //
 // The first four functions report failure via the \c info argument, the last two functions throw
-// a \a std::invalid_argument exception in case of an error.
+// a \c std::invalid_argument exception in case of an error.
 //
 //
 // \n \subsection lapack_ldlh_substitution LDLH-based Substitution
@@ -17899,7 +17899,7 @@
 //  - ... the sizes of the two given matrices do not match.
 //
 // The first two functions report failure via the \c info argument, the last two functions throw
-// a \a std::invalid_argument exception in case of an error.
+// a \c std::invalid_argument exception in case of an error.
 //
 //
 // \n \subsection lapack_llh_substitution Cholesky-based Substitution
@@ -17938,7 +17938,7 @@
 //  - ... the sizes of the two given matrices do not match.
 //
 // The first two functions report failure via the \c info argument, the last two functions throw
-// a \a std::invalid_argument exception in case of an error.
+// a \c std::invalid_argument exception in case of an error.
 //
 //
 // \n \subsection lapack_triangular_substitution Substitution for Triangular Matrices
@@ -17978,7 +17978,7 @@
 //  - ... the sizes of the two given matrices do not match.
 //
 // The first four functions report failure via the \c info argument, the last two functions throw
-// a \a std::invalid_argument exception in case of an error.
+// a \c std::invalid_argument exception in case of an error.
 //
 //
 // \n \section lapack_linear_system_solver Linear System Solver
@@ -18042,7 +18042,7 @@
 //  - ... the given system matrix is singular and not invertible.
 //
 // The first four functions report failure via the \c info argument, the fifth function throws a
-// \a std::invalid_argument exception in case of an error.
+// \c std::invalid_argument exception in case of an error.
 //
 //
 // \n \subsection lapack_ldlt_linear_system_solver LDLT-based Linear System Solver
@@ -18085,7 +18085,7 @@
 //  - ... the given system matrix is singular and not invertible.
 //
 // The first four functions report failure via the \c info argument, the fifth function throws a
-// \a std::invalid_argument exception in case of an error.
+// \c std::invalid_argument exception in case of an error.
 //
 //
 // \n \subsection lapack_ldlh_linear_system_solver LDLH-based Linear System Solver
@@ -18124,7 +18124,7 @@
 //  - ... the given system matrix is singular and not invertible.
 //
 // The first two functions report failure via the \c info argument, the fifth function throws a
-// \a std::invalid_argument exception in case of an error.
+// \c std::invalid_argument exception in case of an error.
 //
 //
 // \n \subsection lapack_llh_linear_system_solver Cholesky-based Linear System Solver
@@ -18167,7 +18167,7 @@
 //  - ... the given system matrix is singular and not invertible.
 //
 // The first four functions report failure via the \c info argument, the fifth function throws a
-// \a std::invalid_argument exception in case of an error.
+// \c std::invalid_argument exception in case of an error.
 //
 //
 // \n \subsection lapack_triangular_linear_system_solver Linear System Solver for Triangular Matrices
@@ -18204,7 +18204,7 @@
 //  - ... the given \a trans argument is neither 'N' nor 'T' nor 'C';
 //  - ... the given \a diag argument is neither 'U' nor 'N'.
 //
-// The last function throws a \a std::invalid_argument exception in case of an error. Note that
+// The last function throws a \c std::invalid_argument exception in case of an error. Note that
 // none of the functions does perform any test for singularity or near-singularity. Such tests
 // must be performed prior to calling this function!
 //
