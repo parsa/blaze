@@ -79,6 +79,7 @@
 #include <blaze/util/TypeList.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/HasMember.h>
+#include <blaze/util/typetraits/RemoveCVRef.h>
 #include <blaze/util/typetraits/RemoveReference.h>
 
 
@@ -153,16 +154,17 @@ inline decltype(auto) norm_backend( const DenseMatrix<MT,false>& dm, Abs abs, Po
 {
    using CT = CompositeType_t<MT>;
    using ET = ElementType_t<MT>;
-   using RT = decltype( evaluate( root( std::declval<ET>() ) ) );
+   using PT = RemoveCVRef_t< decltype( power( abs( std::declval<ET>() ) ) ) >;
+   using RT = RemoveCVRef_t< decltype( evaluate( root( std::declval<PT>() ) ) ) >;
 
-   if( (~dm).rows() == 0UL || (~dm).columns() == 0UL ) return RT();
+   if( (~dm).rows() == 0UL || (~dm).columns() == 0UL ) return RT{};
 
    CT tmp( ~dm );
 
    const size_t M( tmp.rows()    );
    const size_t N( tmp.columns() );
 
-   ET norm( power( abs( tmp(0UL,0UL) ) ) );
+   PT norm( power( abs( tmp(0UL,0UL) ) ) );
 
    {
       size_t j( 1UL );
@@ -224,16 +226,17 @@ inline decltype(auto) norm_backend( const DenseMatrix<MT,true>& dm, Abs abs, Pow
 {
    using CT = CompositeType_t<MT>;
    using ET = ElementType_t<MT>;
-   using RT = decltype( evaluate( root( std::declval<ET>() ) ) );
+   using PT = RemoveCVRef_t< decltype( power( abs( std::declval<ET>() ) ) ) >;
+   using RT = RemoveCVRef_t< decltype( evaluate( root( std::declval<PT>() ) ) ) >;
 
-   if( (~dm).rows() == 0UL || (~dm).columns() == 0UL ) return RT();
+   if( (~dm).rows() == 0UL || (~dm).columns() == 0UL ) return RT{};
 
    CT tmp( ~dm );
 
    const size_t M( tmp.rows()    );
    const size_t N( tmp.columns() );
 
-   ET norm( power( abs( tmp(0UL,0UL) ) ) );
+   PT norm( power( abs( tmp(0UL,0UL) ) ) );
 
    {
       size_t i( 1UL );
@@ -299,7 +302,7 @@ inline decltype(auto) norm_backend( const DenseMatrix<MT,false>& dm, Abs abs, Po
 
    static constexpr size_t SIMDSIZE = SIMDTrait<ET>::size;
 
-   if( (~dm).rows() == 0UL || (~dm).columns() == 0UL ) return RT();
+   if( (~dm).rows() == 0UL || (~dm).columns() == 0UL ) return RT{};
 
    CT tmp( ~dm );
 
@@ -371,7 +374,7 @@ inline decltype(auto) norm_backend( const DenseMatrix<MT,true>& dm, Abs abs, Pow
 
    static constexpr size_t SIMDSIZE = SIMDTrait<ET>::size;
 
-   if( (~dm).rows() == 0UL || (~dm).columns() == 0UL ) return RT();
+   if( (~dm).rows() == 0UL || (~dm).columns() == 0UL ) return RT{};
 
    CT tmp( ~dm );
 
