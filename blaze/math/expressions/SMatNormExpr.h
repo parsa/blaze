@@ -71,6 +71,7 @@
 #include <blaze/util/StaticAssert.h>
 #include <blaze/util/TypeList.h>
 #include <blaze/util/Types.h>
+#include <blaze/util/typetraits/RemoveCVRef.h>
 
 
 namespace blaze {
@@ -105,15 +106,16 @@ inline decltype(auto) norm_backend( const SparseMatrix<MT,SO>& sm, Abs abs, Powe
 {
    using CT = CompositeType_t<MT>;
    using ET = ElementType_t<MT>;
-   using RT = decltype( evaluate( root( std::declval<ET>() ) ) );
+   using PT = RemoveCVRef_t< decltype( power( abs( std::declval<ET>() ) ) ) >;
+   using RT = RemoveCVRef_t< decltype( evaluate( root( std::declval<PT>() ) ) ) >;
 
-   if( (~sm).rows() == 0UL || (~sm).columns() == 0UL ) return RT();
+   if( (~sm).rows() == 0UL || (~sm).columns() == 0UL ) return RT{};
 
    CT tmp( ~sm );
 
    const size_t N( IsRowMajorMatrix_v<MT> ? tmp.rows(): tmp.columns() );
 
-   ET norm{};
+   PT norm{};
 
    for( size_t i=0UL; i<N; ++i )
    {
