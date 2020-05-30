@@ -80,6 +80,7 @@
 #include <blaze/util/TypeList.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/HasMember.h>
+#include <blaze/util/typetraits/RemoveCVRef.h>
 #include <blaze/util/typetraits/RemoveReference.h>
 
 
@@ -155,15 +156,16 @@ inline decltype(auto) norm_backend( const DenseVector<VT,TF>& dv, Abs abs, Power
 {
    using CT = CompositeType_t<VT>;
    using ET = ElementType_t<VT>;
-   using RT = decltype( evaluate( root( std::declval<ET>() ) ) );
+   using PT = RemoveCVRef_t< decltype( power( abs( std::declval<ET>() ) ) ) >;
+   using RT = RemoveCVRef_t< decltype( evaluate( root( std::declval<PT>() ) ) ) >;
 
-   if( (~dv).size() == 0UL ) return RT();
+   if( (~dv).size() == 0UL ) return RT{};
 
    CT tmp( ~dv );
 
    const size_t N( tmp.size() );
 
-   ET norm( power( abs( tmp[0UL] ) ) );
+   PT norm( power( abs( tmp[0UL] ) ) );
    size_t i( 1UL );
 
    for( ; (i+4UL) <= N; i+=4UL ) {
@@ -211,7 +213,7 @@ inline decltype(auto) norm_backend( const DenseVector<VT,TF>& dv, Abs abs, Power
 
    static constexpr size_t SIMDSIZE = SIMDTrait<ET>::size;
 
-   if( (~dv).size() == 0UL ) return RT();
+   if( (~dv).size() == 0UL ) return RT{};
 
    CT tmp( ~dv );
 
