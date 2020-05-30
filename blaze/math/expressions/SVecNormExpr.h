@@ -67,6 +67,7 @@
 #include <blaze/util/FunctionTrace.h>
 #include <blaze/util/StaticAssert.h>
 #include <blaze/util/TypeList.h>
+#include <blaze/util/typetraits/RemoveCVRef.h>
 
 
 namespace blaze {
@@ -107,18 +108,19 @@ decltype(auto) norm_backend( const SparseVector<VT,TF>& sv, Abs abs, Power power
 {
    using CT = CompositeType_t<VT>;
    using ET = ElementType_t<VT>;
-   using RT = decltype( evaluate( root( std::declval<ET>() ) ) );
+   using PT = RemoveCVRef_t< decltype( power( abs( std::declval<ET>() ) ) ) >;
+   using RT = RemoveCVRef_t< decltype( evaluate( root( std::declval<PT>() ) ) ) >;
 
-   if( (~sv).size() == 0UL ) return RT();
+   if( (~sv).size() == 0UL ) return RT{};
 
    CT tmp( ~sv );
 
    const auto end( tmp.end() );
    auto element( tmp.begin() );
 
-   if( element == end ) return RT();
+   if( element == end ) return RT{};
 
-   ET norm( power( abs( element->value() ) ) );
+   PT norm( power( abs( element->value() ) ) );
    ++element;
 
    for( ; element!=end; ++element ) {
