@@ -53,13 +53,13 @@
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/expressions/SparseVector.h>
 #include <blaze/math/expressions/VecScalarDivExpr.h>
+#include <blaze/math/shims/Invert.h>
 #include <blaze/math/shims/Serial.h>
 #include <blaze/math/sparse/ValueIndexPair.h>
 #include <blaze/math/traits/DivTrait.h>
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsInvertible.h>
-#include <blaze/math/typetraits/IsMultExpr.h>
 #include <blaze/math/typetraits/IsScalar.h>
 #include <blaze/math/typetraits/IsTemporary.h>
 #include <blaze/math/typetraits/IsZero.h>
@@ -779,30 +779,17 @@ class SVecScalarDivExpr
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Auxiliary helper struct for the sparse vector/scalar division operator.
-// \ingroup math_traits
+// \ingroup sparse_vector
 */
-template< typename VT  // Type of the left-hand side sparse vector
-        , typename ST  // Type of the right-hand side scalar
-        , bool TF >    // Transpose flag
-struct SVecScalarDivExprHelper
-{
- private:
-   //**********************************************************************************************
-   using ScalarType = If_t< IsFloatingPoint_v< UnderlyingBuiltin_t<VT> > ||
-                            IsFloatingPoint_v< UnderlyingBuiltin_t<ST> >
-                          , If_t< IsComplex_v< UnderlyingNumeric_t<VT> > && IsBuiltin_v<ST>
-                                , DivTrait_t< UnderlyingBuiltin_t<VT>, ST >
-                                , DivTrait_t< UnderlyingNumeric_t<VT>, ST > >
-                          , ST >;
-   //**********************************************************************************************
-
- public:
-   //**********************************************************************************************
-   using Type = If_t< IsInvertible_v<ScalarType>
-                    , SVecScalarMultExpr<VT,ScalarType,TF>
-                    , SVecScalarDivExpr<VT,ScalarType,TF> >;
-   //**********************************************************************************************
-};
+template< typename VT    // Type of the left-hand side sparse vector
+        , typename ST >  // Type of the right-hand side scalar
+using SVecScalarDivExprHelper_t =
+   If_t< IsFloatingPoint_v< UnderlyingBuiltin_t<VT> > ||
+         IsFloatingPoint_v< UnderlyingBuiltin_t<ST> >
+       , If_t< IsComplex_v< UnderlyingNumeric_t<VT> > && IsBuiltin_v<ST>
+             , DivTrait_t< UnderlyingBuiltin_t<VT>, ST >
+             , DivTrait_t< UnderlyingNumeric_t<VT>, ST > >
+       , ST >;
 /*! \endcond */
 //*************************************************************************************************
 
@@ -817,27 +804,51 @@ struct SVecScalarDivExprHelper
 // \param scalar The right-hand side scalar value for the division.
 // \return The scaled result vector.
 //
-// This function implements a performance optimized treatment of the division between a sparse
-// vector and a scalar value.
+// This function implements the default treatment of the sparse vector/scalar division.
 */
 template< typename VT  // Type of the left-hand side sparse vector
         , bool TF      // Transpose flag of the left-hand side sparse vector
         , typename ST  // Type of the right-hand side scalar
-        , DisableIf_t< IsZero_v<VT> >* = nullptr >
-inline const typename SVecScalarDivExprHelper<VT,ST,TF>::Type
-   svecscalardiv( const SparseVector<VT,TF>& vec, ST scalar )
+        , EnableIf_t< !IsZero_v<VT> &&
+                      !IsInvertible_v< SVecScalarDivExprHelper_t<VT,ST> > >* = nullptr >
+inline decltype(auto) svecscalardiv( const SparseVector<VT,TF>& vec, ST scalar )
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ReturnType = typename SVecScalarDivExprHelper<VT,ST,TF>::Type;
-   using ScalarType = RightOperand_t<ReturnType>;
+   using ScalarType = SVecScalarDivExprHelper_t<VT,ST>;
+   using ReturnType = const SVecScalarDivExpr<VT,ScalarType,TF>;
 
-   if( IsMultExpr_v<ReturnType> ) {
-      return ReturnType( ~vec, ScalarType(1)/ScalarType(scalar) );
-   }
-   else {
-      return ReturnType( ~vec, scalar );
-   }
+   return ReturnType( ~vec, scalar );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Backend implementation of the division between a sparse vector and a scalar value
+//        (\f$ \vec{a}=\vec{b}/s \f$).
+// \ingroup sparse_vector
+//
+// \param vec The left-hand side sparse vector for the division.
+// \param scalar The right-hand side scalar value for the division.
+// \return The scaled result vector.
+//
+// This function implements a performance optimized treatment of the sparse vector/scalar division.
+*/
+template< typename VT  // Type of the left-hand side sparse vector
+        , bool TF      // Transpose flag of the left-hand side sparse vector
+        , typename ST  // Type of the right-hand side scalar
+        , EnableIf_t< !IsZero_v<VT> &&
+                      IsInvertible_v< SVecScalarDivExprHelper_t<VT,ST> > >* = nullptr >
+inline decltype(auto) svecscalardiv( const SparseVector<VT,TF>& vec, ST scalar )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   using ScalarType = SVecScalarDivExprHelper_t<VT,ST>;
+   using ReturnType = const SVecScalarMultExpr<VT,ScalarType,TF>;
+
+   return ReturnType( ~vec, inv(scalar) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -860,8 +871,7 @@ template< typename VT  // Type of the left-hand side sparse vector
         , bool TF      // Transpose flag of the left-hand side sparse vector
         , typename ST  // Type of the right-hand side scalar
         , EnableIf_t< IsZero_v<VT> >* = nullptr >
-inline decltype(auto)
-   svecscalardiv( const SparseVector<VT,TF>& vec, ST scalar )
+inline decltype(auto) svecscalardiv( const SparseVector<VT,TF>& vec, ST scalar )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -909,7 +919,7 @@ inline decltype(auto) operator/( const SparseVector<VT,TF>& vec, ST scalar )
 {
    BLAZE_FUNCTION_TRACE;
 
-   BLAZE_USER_ASSERT( scalar != ST(0), "Division by zero detected" );
+   BLAZE_USER_ASSERT( scalar != ST{}, "Division by zero detected" );
 
    return svecscalardiv( ~vec, scalar );
 }
