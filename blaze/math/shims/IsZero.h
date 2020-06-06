@@ -42,9 +42,9 @@
 
 #include <blaze/math/RelaxationFlag.h>
 #include <blaze/math/shims/IsDefault.h>
+#include <blaze/math/typetraits/IsScalar.h>
 #include <blaze/system/Inline.h>
 #include <blaze/util/EnableIf.h>
-#include <blaze/util/typetraits/IsNumeric.h>
 
 
 namespace blaze {
@@ -99,7 +99,7 @@ namespace blaze {
 */
 template< RelaxationFlag RF  // Relaxation flag
         , typename Type      // Type of the given value/object
-        , EnableIf_t< IsNumeric_v<Type> >* = nullptr >
+        , EnableIf_t< IsScalar_v<Type> >* = nullptr >
 BLAZE_ALWAYS_INLINE bool isZero( const Type& v ) noexcept
 {
    return isDefault<RF>( v );
