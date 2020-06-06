@@ -48,6 +48,7 @@
 #include <blaze/math/constraints/Diagonal.h>
 #include <blaze/math/constraints/Hermitian.h>
 #include <blaze/math/constraints/Identity.h>
+#include <blaze/math/constraints/Invertible.h>
 #include <blaze/math/constraints/Lower.h>
 #include <blaze/math/constraints/Matrix.h>
 #include <blaze/math/constraints/PaddingEnabled.h>
@@ -81,6 +82,7 @@
 #include <blaze/math/typetraits/IsCUDAAssignable.h>
 #include <blaze/math/typetraits/IsDiagonal.h>
 #include <blaze/math/typetraits/IsIdentity.h>
+#include <blaze/math/typetraits/IsInvertible.h>
 #include <blaze/math/typetraits/IsLower.h>
 #include <blaze/math/typetraits/IsMatrix.h>
 #include <blaze/math/typetraits/IsPaddingEnabled.h>
@@ -136,6 +138,7 @@ OperationTest::OperationTest()
    testIsDiagonal();
    testIsHermitian();
    testIsIdentity();
+   testIsInvertible();
    testIsLower();
    testIsMatrix();
    testIsPaddingEnabled();
@@ -586,6 +589,123 @@ void OperationTest::testIsIdentity()
    BLAZE_CONSTRAINT_MUST_NOT_BE_IDENTITY_MATRIX_TYPE( Type10 );
    BLAZE_CONSTRAINT_MUST_NOT_BE_IDENTITY_MATRIX_TYPE( Type11 );
    BLAZE_CONSTRAINT_MUST_NOT_BE_IDENTITY_MATRIX_TYPE( Type12 );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the mathematical 'IsInvertible' type trait.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a compile time test of the mathematical 'IsInvertible' type trait.
+// In case an error is detected, a compilation error is created.
+*/
+void OperationTest::testIsInvertible()
+{
+   using Type1  = float;
+   using Type2  = double;
+   using Type3  = long double;
+   using Type4  = blaze::complex<float>;
+   using Type5  = blaze::complex<double>;
+   using Type6  = blaze::complex<long double>;
+   using Type7  = blaze::DynamicMatrix<double>;
+   using Type8  = int;
+   using Type9  = blaze::complex<int>;
+   using Type10 = blaze::DynamicMatrix<int>;
+
+   BLAZE_CONSTRAINT_MUST_BE_INVERTIBLE_TYPE    ( Type1                  );
+   BLAZE_CONSTRAINT_MUST_BE_INVERTIBLE_TYPE    ( Type1 const            );
+   BLAZE_CONSTRAINT_MUST_BE_INVERTIBLE_TYPE    ( Type1 volatile         );
+   BLAZE_CONSTRAINT_MUST_BE_INVERTIBLE_TYPE    ( Type1 const volatile   );
+   BLAZE_CONSTRAINT_MUST_BE_INVERTIBLE_TYPE    ( Type2                  );
+   BLAZE_CONSTRAINT_MUST_BE_INVERTIBLE_TYPE    ( Type2 const            );
+   BLAZE_CONSTRAINT_MUST_BE_INVERTIBLE_TYPE    ( Type2 volatile         );
+   BLAZE_CONSTRAINT_MUST_BE_INVERTIBLE_TYPE    ( Type2 const volatile   );
+   BLAZE_CONSTRAINT_MUST_BE_INVERTIBLE_TYPE    ( Type3                  );
+   BLAZE_CONSTRAINT_MUST_BE_INVERTIBLE_TYPE    ( Type3 const            );
+   BLAZE_CONSTRAINT_MUST_BE_INVERTIBLE_TYPE    ( Type3 volatile         );
+   BLAZE_CONSTRAINT_MUST_BE_INVERTIBLE_TYPE    ( Type3 const volatile   );
+   BLAZE_CONSTRAINT_MUST_BE_INVERTIBLE_TYPE    ( Type4                  );
+   BLAZE_CONSTRAINT_MUST_BE_INVERTIBLE_TYPE    ( Type4 const            );
+   BLAZE_CONSTRAINT_MUST_BE_INVERTIBLE_TYPE    ( Type4 volatile         );
+   BLAZE_CONSTRAINT_MUST_BE_INVERTIBLE_TYPE    ( Type4 const volatile   );
+   BLAZE_CONSTRAINT_MUST_BE_INVERTIBLE_TYPE    ( Type5                  );
+   BLAZE_CONSTRAINT_MUST_BE_INVERTIBLE_TYPE    ( Type5 const            );
+   BLAZE_CONSTRAINT_MUST_BE_INVERTIBLE_TYPE    ( Type5 volatile         );
+   BLAZE_CONSTRAINT_MUST_BE_INVERTIBLE_TYPE    ( Type5 const volatile   );
+   BLAZE_CONSTRAINT_MUST_BE_INVERTIBLE_TYPE    ( Type6                  );
+   BLAZE_CONSTRAINT_MUST_BE_INVERTIBLE_TYPE    ( Type6 const            );
+   BLAZE_CONSTRAINT_MUST_BE_INVERTIBLE_TYPE    ( Type6 volatile         );
+   BLAZE_CONSTRAINT_MUST_BE_INVERTIBLE_TYPE    ( Type6 const volatile   );
+   BLAZE_CONSTRAINT_MUST_BE_INVERTIBLE_TYPE    ( Type7                  );
+   BLAZE_CONSTRAINT_MUST_BE_INVERTIBLE_TYPE    ( Type7 const            );
+   BLAZE_CONSTRAINT_MUST_BE_INVERTIBLE_TYPE    ( Type7 volatile         );
+   BLAZE_CONSTRAINT_MUST_BE_INVERTIBLE_TYPE    ( Type7 const volatile   );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_INVERTIBLE_TYPE( Type1&                 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_INVERTIBLE_TYPE( Type1*                 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_INVERTIBLE_TYPE( Type1* const           );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_INVERTIBLE_TYPE( Type1* volatile        );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_INVERTIBLE_TYPE( Type1* const volatile  );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_INVERTIBLE_TYPE( Type2&                 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_INVERTIBLE_TYPE( Type2*                 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_INVERTIBLE_TYPE( Type2* const           );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_INVERTIBLE_TYPE( Type2* volatile        );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_INVERTIBLE_TYPE( Type2* const volatile  );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_INVERTIBLE_TYPE( Type3&                 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_INVERTIBLE_TYPE( Type3*                 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_INVERTIBLE_TYPE( Type3* const           );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_INVERTIBLE_TYPE( Type3* volatile        );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_INVERTIBLE_TYPE( Type3* const volatile  );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_INVERTIBLE_TYPE( Type4&                 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_INVERTIBLE_TYPE( Type4*                 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_INVERTIBLE_TYPE( Type4* const           );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_INVERTIBLE_TYPE( Type4* volatile        );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_INVERTIBLE_TYPE( Type4* const volatile  );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_INVERTIBLE_TYPE( Type5&                 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_INVERTIBLE_TYPE( Type5*                 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_INVERTIBLE_TYPE( Type5* const           );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_INVERTIBLE_TYPE( Type5* volatile        );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_INVERTIBLE_TYPE( Type5* const volatile  );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_INVERTIBLE_TYPE( Type6&                 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_INVERTIBLE_TYPE( Type6*                 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_INVERTIBLE_TYPE( Type6* const           );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_INVERTIBLE_TYPE( Type6* volatile        );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_INVERTIBLE_TYPE( Type6* const volatile  );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_INVERTIBLE_TYPE( Type7&                 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_INVERTIBLE_TYPE( Type7*                 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_INVERTIBLE_TYPE( Type7* const           );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_INVERTIBLE_TYPE( Type7* volatile        );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_INVERTIBLE_TYPE( Type7* const volatile  );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_INVERTIBLE_TYPE( Type8                  );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_INVERTIBLE_TYPE( Type8 const            );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_INVERTIBLE_TYPE( Type8 volatile         );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_INVERTIBLE_TYPE( Type8 const volatile   );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_INVERTIBLE_TYPE( Type8&                 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_INVERTIBLE_TYPE( Type8*                 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_INVERTIBLE_TYPE( Type8* const           );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_INVERTIBLE_TYPE( Type8* volatile        );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_INVERTIBLE_TYPE( Type8* const volatile  );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_INVERTIBLE_TYPE( Type9                  );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_INVERTIBLE_TYPE( Type9 const            );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_INVERTIBLE_TYPE( Type9 volatile         );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_INVERTIBLE_TYPE( Type9 const volatile   );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_INVERTIBLE_TYPE( Type9&                 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_INVERTIBLE_TYPE( Type9*                 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_INVERTIBLE_TYPE( Type9* const           );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_INVERTIBLE_TYPE( Type9* volatile        );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_INVERTIBLE_TYPE( Type9* const volatile  );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_INVERTIBLE_TYPE( Type10                 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_INVERTIBLE_TYPE( Type10 const           );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_INVERTIBLE_TYPE( Type10 volatile        );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_INVERTIBLE_TYPE( Type10 const volatile  );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_INVERTIBLE_TYPE( Type10&                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_INVERTIBLE_TYPE( Type10*                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_INVERTIBLE_TYPE( Type10* const          );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_INVERTIBLE_TYPE( Type10* volatile       );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_INVERTIBLE_TYPE( Type10* const volatile );
+
 }
 //*************************************************************************************************
 

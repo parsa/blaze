@@ -87,6 +87,7 @@ class OperationTest
    void testIsDiagonal();
    void testIsHermitian();
    void testIsIdentity();
+   void testIsInvertible();
    void testIsLower();
    void testIsMatrix();
    void testIsPaddingEnabled();
