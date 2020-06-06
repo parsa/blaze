@@ -52,6 +52,7 @@
 #include <blaze/math/expressions/DenseMatrix.h>
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/expressions/MatScalarDivExpr.h>
+#include <blaze/math/shims/Invert.h>
 #include <blaze/math/shims/Serial.h>
 #include <blaze/math/SIMD.h>
 #include <blaze/math/traits/DivTrait.h>
@@ -61,7 +62,6 @@
 #include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsInvertible.h>
-#include <blaze/math/typetraits/IsMultExpr.h>
 #include <blaze/math/typetraits/IsPadded.h>
 #include <blaze/math/typetraits/IsScalar.h>
 #include <blaze/math/typetraits/IsTemporary.h>
@@ -1002,30 +1002,75 @@ class DMatScalarDivExpr
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Auxiliary helper struct for the dense matrix/scalar division operator.
-// \ingroup math_traits
+// \ingroup dense_matrix
+*/
+template< typename MT    // Type of the left-hand side dense matrix
+        , typename ST >  // Type of the right-hand side scalar
+using DMatScalarDivExprHelper_t =
+   If_t< IsFloatingPoint_v< UnderlyingBuiltin_t<MT> > ||
+         IsFloatingPoint_v< UnderlyingBuiltin_t<ST> >
+       , If_t< IsComplex_v< UnderlyingNumeric_t<MT> > && IsBuiltin_v<ST>
+             , DivTrait_t< UnderlyingBuiltin_t<MT>, ST >
+             , DivTrait_t< UnderlyingNumeric_t<MT>, ST > >
+       , ST >;
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Backend implementation of the division between a dense matrix and a scalar value
+//        (\f$ A=B/s \f$).
+// \ingroup dense_matrix
+//
+// \param mat The left-hand side dense matrix for the division.
+// \param scalar The right-hand side scalar value for the division.
+// \return The scaled result matrix.
+//
+// This function implements the default treatment of the dense matrix/scalar division.
 */
 template< typename MT  // Type of the left-hand side dense matrix
+        , bool SO      // Storage order of the left-hand side dense matrix
         , typename ST  // Type of the right-hand side scalar
-        , bool SO >    // Storage order
-struct DMatScalarDivExprHelper
+        , EnableIf_t< !IsInvertible_v< DMatScalarDivExprHelper_t<MT,ST> > >* = nullptr >
+inline decltype(auto) dmatscalardiv( const DenseMatrix<MT,SO>& mat, ST scalar )
 {
- private:
-   //**********************************************************************************************
-   using ScalarType = If_t< IsFloatingPoint_v< UnderlyingBuiltin_t<MT> > ||
-                            IsFloatingPoint_v< UnderlyingBuiltin_t<ST> >
-                          , If_t< IsComplex_v< UnderlyingNumeric_t<MT> > && IsBuiltin_v<ST>
-                                , DivTrait_t< UnderlyingBuiltin_t<MT>, ST >
-                                , DivTrait_t< UnderlyingNumeric_t<MT>, ST > >
-                          , ST >;
-   //**********************************************************************************************
+   BLAZE_FUNCTION_TRACE;
 
- public:
-   //**********************************************************************************************
-   using Type = If_t< IsInvertible_v<ScalarType>
-                    , DMatScalarMultExpr<MT,ScalarType,SO>
-                    , DMatScalarDivExpr<MT,ScalarType,SO> >;
-   //**********************************************************************************************
-};
+   using ScalarType = DMatScalarDivExprHelper_t<MT,ST>;
+   using ReturnType = const DMatScalarDivExpr<MT,ScalarType,SO>;
+
+   return ReturnType( ~mat, scalar );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Backend implementation of the division between a dense matrix and a scalar value
+//        (\f$ A=B/s \f$).
+// \ingroup dense_matrix
+//
+// \param mat The left-hand side dense matrix for the division.
+// \param scalar The right-hand side scalar value for the division.
+// \return The scaled result matrix.
+//
+// This function implements a performance optimized treatment of the dense matrix/scalar division.
+*/
+template< typename MT  // Type of the left-hand side dense matrix
+        , bool SO      // Storage order of the left-hand side dense matrix
+        , typename ST  // Type of the right-hand side scalar
+        , EnableIf_t< IsInvertible_v< DMatScalarDivExprHelper_t<MT,ST> > >* = nullptr >
+inline decltype(auto) dmatscalardiv( const DenseMatrix<MT,SO>& mat, ST scalar )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   using ScalarType = DMatScalarDivExprHelper_t<MT,ST>;
+   using ReturnType = const DMatScalarMultExpr<MT,ScalarType,SO>;
+
+   return ReturnType( ~mat, inv(scalar) );
+}
 /*! \endcond */
 //*************************************************************************************************
 
@@ -1060,17 +1105,9 @@ inline decltype(auto) operator/( const DenseMatrix<MT,SO>& mat, ST scalar )
 {
    BLAZE_FUNCTION_TRACE;
 
-   BLAZE_USER_ASSERT( scalar != ST(0), "Division by zero detected" );
+   BLAZE_USER_ASSERT( scalar != ST{}, "Division by zero detected" );
 
-   using ReturnType = typename DMatScalarDivExprHelper<MT,ST,SO>::Type;
-   using ScalarType = RightOperand_t<ReturnType>;
-
-   if( IsMultExpr_v<ReturnType> ) {
-      return ReturnType( ~mat, ScalarType(1)/ScalarType(scalar) );
-   }
-   else {
-      return ReturnType( ~mat, scalar );
-   }
+   return dmatscalardiv( ~mat, scalar );
 }
 //*************************************************************************************************
 
