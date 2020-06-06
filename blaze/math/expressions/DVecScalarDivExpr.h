@@ -52,6 +52,7 @@
 #include <blaze/math/expressions/DenseVector.h>
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/expressions/VecScalarDivExpr.h>
+#include <blaze/math/shims/Invert.h>
 #include <blaze/math/shims/Serial.h>
 #include <blaze/math/SIMD.h>
 #include <blaze/math/traits/DivTrait.h>
@@ -61,7 +62,6 @@
 #include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsInvertible.h>
-#include <blaze/math/typetraits/IsMultExpr.h>
 #include <blaze/math/typetraits/IsPadded.h>
 #include <blaze/math/typetraits/IsScalar.h>
 #include <blaze/math/typetraits/IsTemporary.h>
@@ -1016,30 +1016,75 @@ class DVecScalarDivExpr
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Auxiliary helper struct for the dense vector/scalar division operator.
-// \ingroup math_traits
+// \ingroup dense_vector
 */
-template< typename VT  // Type of the left-hand side dense vector
-        , typename ST  // Type of the right-hand side scalar
-        , bool TF >    // Transpose flag
-struct DVecScalarDivExprHelper
-{
- private:
-   //**********************************************************************************************
-   using ScalarType = If_t< IsFloatingPoint_v< UnderlyingBuiltin_t<VT> > ||
-                            IsFloatingPoint_v< UnderlyingBuiltin_t<ST> >
-                          , If_t< IsComplex_v< UnderlyingNumeric_t<VT> > && IsBuiltin_v<ST>
-                                , DivTrait_t< UnderlyingBuiltin_t<VT>, ST >
-                                , DivTrait_t< UnderlyingNumeric_t<VT>, ST > >
-                          , ST >;
-   //**********************************************************************************************
+template< typename VT    // Type of the left-hand side dense vector
+        , typename ST >  // Type of the right-hand side scalar
+using DVecScalarDivExprHelper_t =
+   If_t< IsFloatingPoint_v< UnderlyingBuiltin_t<VT> > ||
+         IsFloatingPoint_v< UnderlyingBuiltin_t<ST> >
+       , If_t< IsComplex_v< UnderlyingNumeric_t<VT> > && IsBuiltin_v<ST>
+             , DivTrait_t< UnderlyingBuiltin_t<VT>, ST >
+             , DivTrait_t< UnderlyingNumeric_t<VT>, ST > >
+       , ST >;
+/*! \endcond */
+//*************************************************************************************************
 
- public:
-   //**********************************************************************************************
-   using Type = If_t< IsInvertible_v<ScalarType>
-                    , DVecScalarMultExpr<VT,ScalarType,TF>
-                    , DVecScalarDivExpr<VT,ScalarType,TF> >;
-   //**********************************************************************************************
-};
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Backend implementation of the division between a dense vector and a scalar value
+//        (\f$ \vec{a}=\vec{b}/s \f$).
+// \ingroup dense_vector
+//
+// \param vec The left-hand side dense vector for the division.
+// \param scalar The right-hand side scalar value for the division.
+// \return The scaled result vector.
+//
+// This function implements the default treatment of the dense vector/scalar division.
+*/
+template< typename VT  // Type of the left-hand side sparse vector
+        , bool TF      // Transpose flag of the left-hand side sparse vector
+        , typename ST  // Type of the right-hand side scalar
+        , EnableIf_t< !IsInvertible_v< DVecScalarDivExprHelper_t<VT,ST> > >* = nullptr >
+inline decltype(auto) dvecscalardiv( const DenseVector<VT,TF>& vec, ST scalar )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   using ScalarType = DVecScalarDivExprHelper_t<VT,ST>;
+   using ReturnType = const DVecScalarDivExpr<VT,ScalarType,TF>;
+
+   return ReturnType( ~vec, scalar );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Backend implementation of the division between a dense vector and a scalar value
+//        (\f$ \vec{a}=\vec{b}/s \f$).
+// \ingroup dense_vector
+//
+// \param vec The left-hand side dense vector for the division.
+// \param scalar The right-hand side scalar value for the division.
+// \return The scaled result vector.
+//
+// This function implements a performance optimized treatment of the dense vector/scalar division.
+*/
+template< typename VT  // Type of the left-hand side sparse vector
+        , bool TF      // Transpose flag of the left-hand side sparse vector
+        , typename ST  // Type of the right-hand side scalar
+        , EnableIf_t< IsInvertible_v< DVecScalarDivExprHelper_t<VT,ST> > >* = nullptr >
+inline decltype(auto) dvecscalardiv( const DenseVector<VT,TF>& vec, ST scalar )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   using ScalarType = DVecScalarDivExprHelper_t<VT,ST>;
+   using ReturnType = const DVecScalarMultExpr<VT,ScalarType,TF>;
+
+   return ReturnType( ~vec, inv(scalar) );
+}
 /*! \endcond */
 //*************************************************************************************************
 
@@ -1076,17 +1121,9 @@ inline decltype(auto) operator/( const DenseVector<VT,TF>& vec, ST scalar )
 {
    BLAZE_FUNCTION_TRACE;
 
-   BLAZE_USER_ASSERT( scalar != ST(0), "Division by zero detected" );
+   BLAZE_USER_ASSERT( scalar != ST{}, "Division by zero detected" );
 
-   using ReturnType = typename DVecScalarDivExprHelper<VT,ST,TF>::Type;
-   using ScalarType = RightOperand_t<ReturnType>;
-
-   if( IsMultExpr_v<ReturnType> ) {
-      return ReturnType( ~vec, ScalarType(1)/ScalarType(scalar) );
-   }
-   else {
-      return ReturnType( ~vec, scalar );
-   }
+   return dvecscalardiv( ~vec, scalar );
 }
 //*************************************************************************************************
 
