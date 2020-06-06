@@ -838,30 +838,17 @@ class SMatScalarDivExpr
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Auxiliary helper struct for the sparse matrix/scalar division operator.
-// \ingroup math_traits
+// \ingroup sparse_matrix
 */
-template< typename MT  // Type of the left-hand side sparse matrix
-        , typename ST  // Type of the right-hand side scalar
-        , bool SO >    // Storage order
-struct SMatScalarDivExprHelper
-{
- private:
-   //**********************************************************************************************
-   using ScalarType = If_t< IsFloatingPoint_v< UnderlyingBuiltin_t<MT> > ||
-                            IsFloatingPoint_v< UnderlyingBuiltin_t<ST> >
-                          , If_t< IsComplex_v< UnderlyingNumeric_t<MT> > && IsBuiltin_v<ST>
-                                , DivTrait_t< UnderlyingBuiltin_t<MT>, ST >
-                                , DivTrait_t< UnderlyingNumeric_t<MT>, ST > >
-                          , ST >;
-   //**********************************************************************************************
-
- public:
-   //**********************************************************************************************
-   using Type = If_t< IsInvertible_v<ScalarType>
-                    , SMatScalarMultExpr<MT,ScalarType,SO>
-                    , SMatScalarDivExpr<MT,ScalarType,SO> >;
-   //**********************************************************************************************
-};
+template< typename MT    // Type of the left-hand side sparse matrix
+        , typename ST >  // Type of the right-hand side scalar
+using SMatScalarDivExprHelper_t =
+   If_t< IsFloatingPoint_v< UnderlyingBuiltin_t<MT> > ||
+         IsFloatingPoint_v< UnderlyingBuiltin_t<ST> >
+       , If_t< IsComplex_v< UnderlyingNumeric_t<MT> > && IsBuiltin_v<ST>
+             , DivTrait_t< UnderlyingBuiltin_t<MT>, ST >
+             , DivTrait_t< UnderlyingNumeric_t<MT>, ST > >
+       , ST >;
 /*! \endcond */
 //*************************************************************************************************
 
@@ -876,27 +863,51 @@ struct SMatScalarDivExprHelper
 // \param scalar The right-hand side scalar value for the division.
 // \return The scaled result matrix.
 //
-// This function implements a performance optimized treatment of the division between a sparse
-// matrix and a scalar value.
+// This function implements the default treatment of the sparse matrix/scalar division.
 */
 template< typename MT  // Type of the left-hand side sparse matrix
         , bool SO      // Storage order of the left-hand side sparse matrix
         , typename ST  // Type of the right-hand side scalar
-        , DisableIf_t< IsZero_v<MT> >* = nullptr >
-inline const typename SMatScalarDivExprHelper<MT,ST,SO>::Type
-   smatscalardiv( const SparseMatrix<MT,SO>& mat, ST scalar )
+        , EnableIf_t< !IsZero_v<MT> &&
+                      !IsInvertible_v< SMatScalarDivExprHelper_t<MT,ST> > >* = nullptr >
+inline decltype(auto) smatscalardiv( const SparseMatrix<MT,SO>& mat, ST scalar )
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ReturnType = typename SMatScalarDivExprHelper<MT,ST,SO>::Type;
-   using ScalarType = RightOperand_t<ReturnType>;
+   using ScalarType = SMatScalarDivExprHelper_t<MT,ST>;
+   using ReturnType = const SMatScalarDivExpr<MT,ScalarType,SO>;
 
-   if( IsMultExpr_v<ReturnType> ) {
-      return ReturnType( ~mat, ScalarType(1)/ScalarType(scalar) );
-   }
-   else {
-      return ReturnType( ~mat, scalar );
-   }
+   return ReturnType( ~mat, scalar );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Backend implementation of the division between a sparse matrix and a scalar value
+//        (\f$ A=B/s \f$).
+// \ingroup sparse_matrix
+//
+// \param mat The left-hand side sparse matrix for the division.
+// \param scalar The right-hand side scalar value for the division.
+// \return The scaled result matrix.
+//
+// This function implements a performance optimized treatment of the sparse matrix/scalar division.
+*/
+template< typename MT  // Type of the left-hand side sparse matrix
+        , bool SO      // Storage order of the left-hand side sparse matrix
+        , typename ST  // Type of the right-hand side scalar
+        , EnableIf_t< !IsZero_v<MT> &&
+                      IsInvertible_v< SMatScalarDivExprHelper_t<MT,ST> > >* = nullptr >
+inline decltype(auto) smatscalardiv( const SparseMatrix<MT,SO>& mat, ST scalar )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   using ScalarType = SMatScalarDivExprHelper_t<MT,ST>;
+   using ReturnType = const SMatScalarMultExpr<MT,ScalarType,SO>;
+
+   return ReturnType( ~mat, inv(scalar) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -967,7 +978,7 @@ inline decltype(auto) operator/( const SparseMatrix<MT,SO>& mat, ST scalar )
 {
    BLAZE_FUNCTION_TRACE;
 
-   BLAZE_USER_ASSERT( scalar != ST(0), "Division by zero detected" );
+   BLAZE_USER_ASSERT( scalar != ST{}, "Division by zero detected" );
 
    return smatscalardiv( ~mat, scalar );
 }
