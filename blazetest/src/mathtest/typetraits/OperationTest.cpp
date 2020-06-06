@@ -200,20 +200,22 @@ void OperationTest::testIsColumnMajorMatrix()
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE    ( Type1 const           );
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE    ( Type1 volatile        );
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE    ( Type1 const volatile  );
-   BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE    ( Type2                 );
-   BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE    ( Type2 const           );
-   BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE    ( Type2 volatile        );
-   BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE    ( Type2 const volatile  );
    BLAZE_CONSTRAINT_MUST_NOT_BE_COLUMN_MAJOR_MATRIX_TYPE( Type1&                );
    BLAZE_CONSTRAINT_MUST_NOT_BE_COLUMN_MAJOR_MATRIX_TYPE( Type1*                );
    BLAZE_CONSTRAINT_MUST_NOT_BE_COLUMN_MAJOR_MATRIX_TYPE( Type1* const          );
    BLAZE_CONSTRAINT_MUST_NOT_BE_COLUMN_MAJOR_MATRIX_TYPE( Type1* volatile       );
    BLAZE_CONSTRAINT_MUST_NOT_BE_COLUMN_MAJOR_MATRIX_TYPE( Type1* const volatile );
+
+   BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE    ( Type2                 );
+   BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE    ( Type2 const           );
+   BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE    ( Type2 volatile        );
+   BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE    ( Type2 const volatile  );
    BLAZE_CONSTRAINT_MUST_NOT_BE_COLUMN_MAJOR_MATRIX_TYPE( Type2&                );
    BLAZE_CONSTRAINT_MUST_NOT_BE_COLUMN_MAJOR_MATRIX_TYPE( Type2*                );
    BLAZE_CONSTRAINT_MUST_NOT_BE_COLUMN_MAJOR_MATRIX_TYPE( Type2* const          );
    BLAZE_CONSTRAINT_MUST_NOT_BE_COLUMN_MAJOR_MATRIX_TYPE( Type2* volatile       );
    BLAZE_CONSTRAINT_MUST_NOT_BE_COLUMN_MAJOR_MATRIX_TYPE( Type2* const volatile );
+
    BLAZE_CONSTRAINT_MUST_NOT_BE_COLUMN_MAJOR_MATRIX_TYPE( Type3                 );
    BLAZE_CONSTRAINT_MUST_NOT_BE_COLUMN_MAJOR_MATRIX_TYPE( Type3 const           );
    BLAZE_CONSTRAINT_MUST_NOT_BE_COLUMN_MAJOR_MATRIX_TYPE( Type3 volatile        );
@@ -223,6 +225,7 @@ void OperationTest::testIsColumnMajorMatrix()
    BLAZE_CONSTRAINT_MUST_NOT_BE_COLUMN_MAJOR_MATRIX_TYPE( Type3* const          );
    BLAZE_CONSTRAINT_MUST_NOT_BE_COLUMN_MAJOR_MATRIX_TYPE( Type3* volatile       );
    BLAZE_CONSTRAINT_MUST_NOT_BE_COLUMN_MAJOR_MATRIX_TYPE( Type3* const volatile );
+
    BLAZE_CONSTRAINT_MUST_NOT_BE_COLUMN_MAJOR_MATRIX_TYPE( Type4                 );
    BLAZE_CONSTRAINT_MUST_NOT_BE_COLUMN_MAJOR_MATRIX_TYPE( Type4 const           );
    BLAZE_CONSTRAINT_MUST_NOT_BE_COLUMN_MAJOR_MATRIX_TYPE( Type4 volatile        );
@@ -232,6 +235,7 @@ void OperationTest::testIsColumnMajorMatrix()
    BLAZE_CONSTRAINT_MUST_NOT_BE_COLUMN_MAJOR_MATRIX_TYPE( Type4* const          );
    BLAZE_CONSTRAINT_MUST_NOT_BE_COLUMN_MAJOR_MATRIX_TYPE( Type4* volatile       );
    BLAZE_CONSTRAINT_MUST_NOT_BE_COLUMN_MAJOR_MATRIX_TYPE( Type4* const volatile );
+
    BLAZE_CONSTRAINT_MUST_NOT_BE_COLUMN_MAJOR_MATRIX_TYPE( Type5                 );
    BLAZE_CONSTRAINT_MUST_NOT_BE_COLUMN_MAJOR_MATRIX_TYPE( Type5 const           );
    BLAZE_CONSTRAINT_MUST_NOT_BE_COLUMN_MAJOR_MATRIX_TYPE( Type5 volatile        );
@@ -241,6 +245,7 @@ void OperationTest::testIsColumnMajorMatrix()
    BLAZE_CONSTRAINT_MUST_NOT_BE_COLUMN_MAJOR_MATRIX_TYPE( Type5* const          );
    BLAZE_CONSTRAINT_MUST_NOT_BE_COLUMN_MAJOR_MATRIX_TYPE( Type5* volatile       );
    BLAZE_CONSTRAINT_MUST_NOT_BE_COLUMN_MAJOR_MATRIX_TYPE( Type5* const volatile );
+
    BLAZE_CONSTRAINT_MUST_NOT_BE_COLUMN_MAJOR_MATRIX_TYPE( Type6                 );
    BLAZE_CONSTRAINT_MUST_NOT_BE_COLUMN_MAJOR_MATRIX_TYPE( Type6 const           );
    BLAZE_CONSTRAINT_MUST_NOT_BE_COLUMN_MAJOR_MATRIX_TYPE( Type6 volatile        );
@@ -250,6 +255,7 @@ void OperationTest::testIsColumnMajorMatrix()
    BLAZE_CONSTRAINT_MUST_NOT_BE_COLUMN_MAJOR_MATRIX_TYPE( Type6* const          );
    BLAZE_CONSTRAINT_MUST_NOT_BE_COLUMN_MAJOR_MATRIX_TYPE( Type6* volatile       );
    BLAZE_CONSTRAINT_MUST_NOT_BE_COLUMN_MAJOR_MATRIX_TYPE( Type6* const volatile );
+
    BLAZE_CONSTRAINT_MUST_NOT_BE_COLUMN_MAJOR_MATRIX_TYPE( Type7                 );
    BLAZE_CONSTRAINT_MUST_NOT_BE_COLUMN_MAJOR_MATRIX_TYPE( Type7 const           );
    BLAZE_CONSTRAINT_MUST_NOT_BE_COLUMN_MAJOR_MATRIX_TYPE( Type7 volatile        );
@@ -259,6 +265,7 @@ void OperationTest::testIsColumnMajorMatrix()
    BLAZE_CONSTRAINT_MUST_NOT_BE_COLUMN_MAJOR_MATRIX_TYPE( Type7* const          );
    BLAZE_CONSTRAINT_MUST_NOT_BE_COLUMN_MAJOR_MATRIX_TYPE( Type7* volatile       );
    BLAZE_CONSTRAINT_MUST_NOT_BE_COLUMN_MAJOR_MATRIX_TYPE( Type7* const volatile );
+
    BLAZE_CONSTRAINT_MUST_NOT_BE_COLUMN_MAJOR_MATRIX_TYPE( Type8                 );
    BLAZE_CONSTRAINT_MUST_NOT_BE_COLUMN_MAJOR_MATRIX_TYPE( Type8 const           );
    BLAZE_CONSTRAINT_MUST_NOT_BE_COLUMN_MAJOR_MATRIX_TYPE( Type8 volatile        );
@@ -301,20 +308,22 @@ void OperationTest::testIsColumnVector()
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE    ( Type1 const           );
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE    ( Type1 volatile        );
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE    ( Type1 const volatile  );
-   BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE    ( Type2                 );
-   BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE    ( Type2 const           );
-   BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE    ( Type2 volatile        );
-   BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE    ( Type2 const volatile  );
    BLAZE_CONSTRAINT_MUST_NOT_BE_COLUMN_VECTOR_TYPE( Type1&                );
    BLAZE_CONSTRAINT_MUST_NOT_BE_COLUMN_VECTOR_TYPE( Type1*                );
    BLAZE_CONSTRAINT_MUST_NOT_BE_COLUMN_VECTOR_TYPE( Type1* const          );
    BLAZE_CONSTRAINT_MUST_NOT_BE_COLUMN_VECTOR_TYPE( Type1* volatile       );
    BLAZE_CONSTRAINT_MUST_NOT_BE_COLUMN_VECTOR_TYPE( Type1* const volatile );
+
+   BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE    ( Type2                 );
+   BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE    ( Type2 const           );
+   BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE    ( Type2 volatile        );
+   BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE    ( Type2 const volatile  );
    BLAZE_CONSTRAINT_MUST_NOT_BE_COLUMN_VECTOR_TYPE( Type2&                );
    BLAZE_CONSTRAINT_MUST_NOT_BE_COLUMN_VECTOR_TYPE( Type2*                );
    BLAZE_CONSTRAINT_MUST_NOT_BE_COLUMN_VECTOR_TYPE( Type2* const          );
    BLAZE_CONSTRAINT_MUST_NOT_BE_COLUMN_VECTOR_TYPE( Type2* volatile       );
    BLAZE_CONSTRAINT_MUST_NOT_BE_COLUMN_VECTOR_TYPE( Type2* const volatile );
+
    BLAZE_CONSTRAINT_MUST_NOT_BE_COLUMN_VECTOR_TYPE( Type3                 );
    BLAZE_CONSTRAINT_MUST_NOT_BE_COLUMN_VECTOR_TYPE( Type3 const           );
    BLAZE_CONSTRAINT_MUST_NOT_BE_COLUMN_VECTOR_TYPE( Type3 volatile        );
@@ -324,6 +333,7 @@ void OperationTest::testIsColumnVector()
    BLAZE_CONSTRAINT_MUST_NOT_BE_COLUMN_VECTOR_TYPE( Type3* const          );
    BLAZE_CONSTRAINT_MUST_NOT_BE_COLUMN_VECTOR_TYPE( Type3* volatile       );
    BLAZE_CONSTRAINT_MUST_NOT_BE_COLUMN_VECTOR_TYPE( Type3* const volatile );
+
    BLAZE_CONSTRAINT_MUST_NOT_BE_COLUMN_VECTOR_TYPE( Type4                 );
    BLAZE_CONSTRAINT_MUST_NOT_BE_COLUMN_VECTOR_TYPE( Type4 const           );
    BLAZE_CONSTRAINT_MUST_NOT_BE_COLUMN_VECTOR_TYPE( Type4 volatile        );
@@ -333,6 +343,7 @@ void OperationTest::testIsColumnVector()
    BLAZE_CONSTRAINT_MUST_NOT_BE_COLUMN_VECTOR_TYPE( Type4* const          );
    BLAZE_CONSTRAINT_MUST_NOT_BE_COLUMN_VECTOR_TYPE( Type4* volatile       );
    BLAZE_CONSTRAINT_MUST_NOT_BE_COLUMN_VECTOR_TYPE( Type4* const volatile );
+
    BLAZE_CONSTRAINT_MUST_NOT_BE_COLUMN_VECTOR_TYPE( Type5                 );
    BLAZE_CONSTRAINT_MUST_NOT_BE_COLUMN_VECTOR_TYPE( Type5 const           );
    BLAZE_CONSTRAINT_MUST_NOT_BE_COLUMN_VECTOR_TYPE( Type5 volatile        );
@@ -342,6 +353,7 @@ void OperationTest::testIsColumnVector()
    BLAZE_CONSTRAINT_MUST_NOT_BE_COLUMN_VECTOR_TYPE( Type5* const          );
    BLAZE_CONSTRAINT_MUST_NOT_BE_COLUMN_VECTOR_TYPE( Type5* volatile       );
    BLAZE_CONSTRAINT_MUST_NOT_BE_COLUMN_VECTOR_TYPE( Type5* const volatile );
+
    BLAZE_CONSTRAINT_MUST_NOT_BE_COLUMN_VECTOR_TYPE( Type6                 );
    BLAZE_CONSTRAINT_MUST_NOT_BE_COLUMN_VECTOR_TYPE( Type6 const           );
    BLAZE_CONSTRAINT_MUST_NOT_BE_COLUMN_VECTOR_TYPE( Type6 volatile        );
@@ -351,6 +363,7 @@ void OperationTest::testIsColumnVector()
    BLAZE_CONSTRAINT_MUST_NOT_BE_COLUMN_VECTOR_TYPE( Type6* const          );
    BLAZE_CONSTRAINT_MUST_NOT_BE_COLUMN_VECTOR_TYPE( Type6* volatile       );
    BLAZE_CONSTRAINT_MUST_NOT_BE_COLUMN_VECTOR_TYPE( Type6* const volatile );
+
    BLAZE_CONSTRAINT_MUST_NOT_BE_COLUMN_VECTOR_TYPE( Type7                 );
    BLAZE_CONSTRAINT_MUST_NOT_BE_COLUMN_VECTOR_TYPE( Type7 const           );
    BLAZE_CONSTRAINT_MUST_NOT_BE_COLUMN_VECTOR_TYPE( Type7 volatile        );
@@ -360,6 +373,7 @@ void OperationTest::testIsColumnVector()
    BLAZE_CONSTRAINT_MUST_NOT_BE_COLUMN_VECTOR_TYPE( Type7* const          );
    BLAZE_CONSTRAINT_MUST_NOT_BE_COLUMN_VECTOR_TYPE( Type7* volatile       );
    BLAZE_CONSTRAINT_MUST_NOT_BE_COLUMN_VECTOR_TYPE( Type7* const volatile );
+
    BLAZE_CONSTRAINT_MUST_NOT_BE_COLUMN_VECTOR_TYPE( Type8                 );
    BLAZE_CONSTRAINT_MUST_NOT_BE_COLUMN_VECTOR_TYPE( Type8 const           );
    BLAZE_CONSTRAINT_MUST_NOT_BE_COLUMN_VECTOR_TYPE( Type8 volatile        );
@@ -440,32 +454,63 @@ void OperationTest::testIsDiagonal()
    using blaze::LowerMatrix;
    using blaze::UpperMatrix;
    using blaze::DiagonalMatrix;
+   using blaze::IdentityMatrix;
 
-   using Type1  = SymmetricMatrix< DynamicMatrix<int> >;
-   using Type2  = const SymmetricMatrix< DynamicMatrix<int> >;
-   using Type3  = volatile SymmetricMatrix< DynamicMatrix<int> >;
-   using Type4  = LowerMatrix< DynamicMatrix<int> >;
-   using Type5  = const LowerMatrix< DynamicMatrix<int> >;
-   using Type6  = volatile LowerMatrix< DynamicMatrix<int> >;
-   using Type7  = UpperMatrix< DynamicMatrix<int> >;
-   using Type8  = const UpperMatrix< DynamicMatrix<int> >;
-   using Type9  = volatile UpperMatrix< DynamicMatrix<int> >;
-   using Type10 = DiagonalMatrix< DynamicMatrix<int> >;
-   using Type11 = const DiagonalMatrix< DynamicMatrix<int> >;
-   using Type12 = volatile DiagonalMatrix< DynamicMatrix<int> >;
+   using Type1 = SymmetricMatrix< DynamicMatrix<int> >;
+   using Type2 = LowerMatrix< DynamicMatrix<int> >;
+   using Type3 = UpperMatrix< DynamicMatrix<int> >;
+   using Type4 = DiagonalMatrix< DynamicMatrix<int> >;
+   using Type5 = IdentityMatrix<int>;
 
-   BLAZE_CONSTRAINT_MUST_NOT_BE_DIAGONAL_MATRIX_TYPE( Type1  );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_DIAGONAL_MATRIX_TYPE( Type2  );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_DIAGONAL_MATRIX_TYPE( Type3  );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_DIAGONAL_MATRIX_TYPE( Type4  );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_DIAGONAL_MATRIX_TYPE( Type5  );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_DIAGONAL_MATRIX_TYPE( Type6  );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_DIAGONAL_MATRIX_TYPE( Type7  );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_DIAGONAL_MATRIX_TYPE( Type8  );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_DIAGONAL_MATRIX_TYPE( Type9  );
-   BLAZE_CONSTRAINT_MUST_BE_DIAGONAL_MATRIX_TYPE    ( Type10 );
-   BLAZE_CONSTRAINT_MUST_BE_DIAGONAL_MATRIX_TYPE    ( Type11 );
-   BLAZE_CONSTRAINT_MUST_BE_DIAGONAL_MATRIX_TYPE    ( Type12 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_DIAGONAL_MATRIX_TYPE( Type1                 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_DIAGONAL_MATRIX_TYPE( Type1 const           );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_DIAGONAL_MATRIX_TYPE( Type1 volatile        );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_DIAGONAL_MATRIX_TYPE( Type1 const volatile  );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_DIAGONAL_MATRIX_TYPE( Type1&                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_DIAGONAL_MATRIX_TYPE( Type1*                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_DIAGONAL_MATRIX_TYPE( Type1* const          );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_DIAGONAL_MATRIX_TYPE( Type1* volatile       );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_DIAGONAL_MATRIX_TYPE( Type1* const volatile );
+
+   BLAZE_CONSTRAINT_MUST_NOT_BE_DIAGONAL_MATRIX_TYPE( Type2                 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_DIAGONAL_MATRIX_TYPE( Type2 const           );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_DIAGONAL_MATRIX_TYPE( Type2 volatile        );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_DIAGONAL_MATRIX_TYPE( Type2 const volatile  );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_DIAGONAL_MATRIX_TYPE( Type2&                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_DIAGONAL_MATRIX_TYPE( Type2*                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_DIAGONAL_MATRIX_TYPE( Type2* const          );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_DIAGONAL_MATRIX_TYPE( Type2* volatile       );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_DIAGONAL_MATRIX_TYPE( Type2* const volatile );
+
+   BLAZE_CONSTRAINT_MUST_NOT_BE_DIAGONAL_MATRIX_TYPE( Type3                 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_DIAGONAL_MATRIX_TYPE( Type3 const           );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_DIAGONAL_MATRIX_TYPE( Type3 volatile        );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_DIAGONAL_MATRIX_TYPE( Type3 const volatile  );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_DIAGONAL_MATRIX_TYPE( Type3&                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_DIAGONAL_MATRIX_TYPE( Type3*                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_DIAGONAL_MATRIX_TYPE( Type3* const          );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_DIAGONAL_MATRIX_TYPE( Type3* volatile       );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_DIAGONAL_MATRIX_TYPE( Type3* const volatile );
+
+   BLAZE_CONSTRAINT_MUST_BE_DIAGONAL_MATRIX_TYPE    ( Type4                 );
+   BLAZE_CONSTRAINT_MUST_BE_DIAGONAL_MATRIX_TYPE    ( Type4 const           );
+   BLAZE_CONSTRAINT_MUST_BE_DIAGONAL_MATRIX_TYPE    ( Type4 volatile        );
+   BLAZE_CONSTRAINT_MUST_BE_DIAGONAL_MATRIX_TYPE    ( Type4 const volatile  );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_DIAGONAL_MATRIX_TYPE( Type4&                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_DIAGONAL_MATRIX_TYPE( Type4*                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_DIAGONAL_MATRIX_TYPE( Type4* const          );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_DIAGONAL_MATRIX_TYPE( Type4* volatile       );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_DIAGONAL_MATRIX_TYPE( Type4* const volatile );
+
+   BLAZE_CONSTRAINT_MUST_BE_DIAGONAL_MATRIX_TYPE    ( Type5                 );
+   BLAZE_CONSTRAINT_MUST_BE_DIAGONAL_MATRIX_TYPE    ( Type5 const           );
+   BLAZE_CONSTRAINT_MUST_BE_DIAGONAL_MATRIX_TYPE    ( Type5 volatile        );
+   BLAZE_CONSTRAINT_MUST_BE_DIAGONAL_MATRIX_TYPE    ( Type5 const volatile  );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_DIAGONAL_MATRIX_TYPE( Type5&                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_DIAGONAL_MATRIX_TYPE( Type5*                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_DIAGONAL_MATRIX_TYPE( Type5* const          );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_DIAGONAL_MATRIX_TYPE( Type5* volatile       );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_DIAGONAL_MATRIX_TYPE( Type5* const volatile );
 }
 //*************************************************************************************************
 
@@ -488,61 +533,105 @@ void OperationTest::testIsHermitian()
    using blaze::DiagonalMatrix;
    using blaze::IdentityMatrix;
 
-   using Type1  = DynamicMatrix<int>;
-   using Type2  = const DynamicMatrix<int>;
-   using Type3  = volatile DynamicMatrix<int>;
-   using Type4  = SymmetricMatrix< DynamicMatrix<int> >;
-   using Type5  = const SymmetricMatrix< DynamicMatrix<int> >;
-   using Type6  = volatile SymmetricMatrix< DynamicMatrix<int> >;
-   using Type7  = SymmetricMatrix< DynamicMatrix< complex<int> > >;
-   using Type8  = const SymmetricMatrix< DynamicMatrix< complex<int> > >;
-   using Type9  = volatile SymmetricMatrix< DynamicMatrix< complex<int> > >;
-   using Type10 = HermitianMatrix< DynamicMatrix<int> >;
-   using Type11 = const HermitianMatrix< DynamicMatrix<int> >;
-   using Type12 = volatile HermitianMatrix< DynamicMatrix<int> >;
-   using Type13 = HermitianMatrix< DynamicMatrix< complex<int> > >;
-   using Type14 = const HermitianMatrix< DynamicMatrix< complex<int> > >;
-   using Type15 = volatile HermitianMatrix< DynamicMatrix< complex<int> > >;
-   using Type16 = DiagonalMatrix< DynamicMatrix<int> >;
-   using Type17 = const DiagonalMatrix< DynamicMatrix<int> >;
-   using Type18 = volatile DiagonalMatrix< DynamicMatrix<int> >;
-   using Type19 = DiagonalMatrix< DynamicMatrix< complex<int> > >;
-   using Type20 = const DiagonalMatrix< DynamicMatrix< complex<int> > >;
-   using Type21 = volatile DiagonalMatrix< DynamicMatrix< complex<int> > >;
-   using Type22 = IdentityMatrix<int>;
-   using Type23 = const IdentityMatrix<int>;
-   using Type24 = volatile IdentityMatrix<int>;
-   using Type25 = IdentityMatrix< complex<int> >;
-   using Type26 = const IdentityMatrix< complex<int> >;
-   using Type27 = volatile IdentityMatrix< complex<int> >;
+   using Type1 = DynamicMatrix<int>;
+   using Type2 = SymmetricMatrix< DynamicMatrix<int> >;
+   using Type3 = SymmetricMatrix< DynamicMatrix< complex<int> > >;
+   using Type4 = HermitianMatrix< DynamicMatrix<int> >;
+   using Type5 = HermitianMatrix< DynamicMatrix< complex<int> > >;
+   using Type6 = DiagonalMatrix< DynamicMatrix<int> >;
+   using Type7 = DiagonalMatrix< DynamicMatrix< complex<int> > >;
+   using Type8 = IdentityMatrix<int>;
+   using Type9 = IdentityMatrix< complex<int> >;
 
-   BLAZE_CONSTRAINT_MUST_NOT_BE_HERMITIAN_MATRIX_TYPE( Type1  );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_HERMITIAN_MATRIX_TYPE( Type2  );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_HERMITIAN_MATRIX_TYPE( Type3  );
-   BLAZE_CONSTRAINT_MUST_BE_HERMITIAN_MATRIX_TYPE    ( Type4  );
-   BLAZE_CONSTRAINT_MUST_BE_HERMITIAN_MATRIX_TYPE    ( Type5  );
-   BLAZE_CONSTRAINT_MUST_BE_HERMITIAN_MATRIX_TYPE    ( Type6  );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_HERMITIAN_MATRIX_TYPE( Type7  );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_HERMITIAN_MATRIX_TYPE( Type8  );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_HERMITIAN_MATRIX_TYPE( Type9  );
-   BLAZE_CONSTRAINT_MUST_BE_HERMITIAN_MATRIX_TYPE    ( Type10 );
-   BLAZE_CONSTRAINT_MUST_BE_HERMITIAN_MATRIX_TYPE    ( Type11 );
-   BLAZE_CONSTRAINT_MUST_BE_HERMITIAN_MATRIX_TYPE    ( Type12 );
-   BLAZE_CONSTRAINT_MUST_BE_HERMITIAN_MATRIX_TYPE    ( Type13 );
-   BLAZE_CONSTRAINT_MUST_BE_HERMITIAN_MATRIX_TYPE    ( Type14 );
-   BLAZE_CONSTRAINT_MUST_BE_HERMITIAN_MATRIX_TYPE    ( Type15 );
-   BLAZE_CONSTRAINT_MUST_BE_HERMITIAN_MATRIX_TYPE    ( Type16 );
-   BLAZE_CONSTRAINT_MUST_BE_HERMITIAN_MATRIX_TYPE    ( Type17 );
-   BLAZE_CONSTRAINT_MUST_BE_HERMITIAN_MATRIX_TYPE    ( Type18 );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_HERMITIAN_MATRIX_TYPE( Type19 );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_HERMITIAN_MATRIX_TYPE( Type20 );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_HERMITIAN_MATRIX_TYPE( Type21 );
-   BLAZE_CONSTRAINT_MUST_BE_HERMITIAN_MATRIX_TYPE    ( Type22 );
-   BLAZE_CONSTRAINT_MUST_BE_HERMITIAN_MATRIX_TYPE    ( Type23 );
-   BLAZE_CONSTRAINT_MUST_BE_HERMITIAN_MATRIX_TYPE    ( Type24 );
-   BLAZE_CONSTRAINT_MUST_BE_HERMITIAN_MATRIX_TYPE    ( Type25 );
-   BLAZE_CONSTRAINT_MUST_BE_HERMITIAN_MATRIX_TYPE    ( Type26 );
-   BLAZE_CONSTRAINT_MUST_BE_HERMITIAN_MATRIX_TYPE    ( Type27 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_HERMITIAN_MATRIX_TYPE( Type1                 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_HERMITIAN_MATRIX_TYPE( Type1 const           );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_HERMITIAN_MATRIX_TYPE( Type1 volatile        );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_HERMITIAN_MATRIX_TYPE( Type1 const volatile  );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_HERMITIAN_MATRIX_TYPE( Type1&                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_HERMITIAN_MATRIX_TYPE( Type1*                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_HERMITIAN_MATRIX_TYPE( Type1* const          );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_HERMITIAN_MATRIX_TYPE( Type1* volatile       );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_HERMITIAN_MATRIX_TYPE( Type1* const volatile );
+
+   BLAZE_CONSTRAINT_MUST_BE_HERMITIAN_MATRIX_TYPE    ( Type2                 );
+   BLAZE_CONSTRAINT_MUST_BE_HERMITIAN_MATRIX_TYPE    ( Type2 const           );
+   BLAZE_CONSTRAINT_MUST_BE_HERMITIAN_MATRIX_TYPE    ( Type2 volatile        );
+   BLAZE_CONSTRAINT_MUST_BE_HERMITIAN_MATRIX_TYPE    ( Type2 const volatile  );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_HERMITIAN_MATRIX_TYPE( Type2&                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_HERMITIAN_MATRIX_TYPE( Type2*                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_HERMITIAN_MATRIX_TYPE( Type2* const          );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_HERMITIAN_MATRIX_TYPE( Type2* volatile       );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_HERMITIAN_MATRIX_TYPE( Type2* const volatile );
+
+   BLAZE_CONSTRAINT_MUST_NOT_BE_HERMITIAN_MATRIX_TYPE( Type3                 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_HERMITIAN_MATRIX_TYPE( Type3 const           );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_HERMITIAN_MATRIX_TYPE( Type3 volatile        );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_HERMITIAN_MATRIX_TYPE( Type3 const volatile  );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_HERMITIAN_MATRIX_TYPE( Type3&                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_HERMITIAN_MATRIX_TYPE( Type3*                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_HERMITIAN_MATRIX_TYPE( Type3* const          );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_HERMITIAN_MATRIX_TYPE( Type3* volatile       );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_HERMITIAN_MATRIX_TYPE( Type3* const volatile );
+
+   BLAZE_CONSTRAINT_MUST_BE_HERMITIAN_MATRIX_TYPE    ( Type4                 );
+   BLAZE_CONSTRAINT_MUST_BE_HERMITIAN_MATRIX_TYPE    ( Type4 const           );
+   BLAZE_CONSTRAINT_MUST_BE_HERMITIAN_MATRIX_TYPE    ( Type4 volatile        );
+   BLAZE_CONSTRAINT_MUST_BE_HERMITIAN_MATRIX_TYPE    ( Type4 const volatile  );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_HERMITIAN_MATRIX_TYPE( Type4&                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_HERMITIAN_MATRIX_TYPE( Type4*                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_HERMITIAN_MATRIX_TYPE( Type4* const          );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_HERMITIAN_MATRIX_TYPE( Type4* volatile       );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_HERMITIAN_MATRIX_TYPE( Type4* const volatile );
+
+   BLAZE_CONSTRAINT_MUST_BE_HERMITIAN_MATRIX_TYPE    ( Type5                 );
+   BLAZE_CONSTRAINT_MUST_BE_HERMITIAN_MATRIX_TYPE    ( Type5 const           );
+   BLAZE_CONSTRAINT_MUST_BE_HERMITIAN_MATRIX_TYPE    ( Type5 volatile        );
+   BLAZE_CONSTRAINT_MUST_BE_HERMITIAN_MATRIX_TYPE    ( Type5 const volatile  );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_HERMITIAN_MATRIX_TYPE( Type5&                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_HERMITIAN_MATRIX_TYPE( Type5*                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_HERMITIAN_MATRIX_TYPE( Type5* const          );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_HERMITIAN_MATRIX_TYPE( Type5* volatile       );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_HERMITIAN_MATRIX_TYPE( Type5* const volatile );
+
+   BLAZE_CONSTRAINT_MUST_BE_HERMITIAN_MATRIX_TYPE    ( Type6                 );
+   BLAZE_CONSTRAINT_MUST_BE_HERMITIAN_MATRIX_TYPE    ( Type6 const           );
+   BLAZE_CONSTRAINT_MUST_BE_HERMITIAN_MATRIX_TYPE    ( Type6 volatile        );
+   BLAZE_CONSTRAINT_MUST_BE_HERMITIAN_MATRIX_TYPE    ( Type6 const volatile  );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_HERMITIAN_MATRIX_TYPE( Type6&                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_HERMITIAN_MATRIX_TYPE( Type6*                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_HERMITIAN_MATRIX_TYPE( Type6* const          );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_HERMITIAN_MATRIX_TYPE( Type6* volatile       );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_HERMITIAN_MATRIX_TYPE( Type6* const volatile );
+
+   BLAZE_CONSTRAINT_MUST_NOT_BE_HERMITIAN_MATRIX_TYPE( Type7                 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_HERMITIAN_MATRIX_TYPE( Type7 const           );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_HERMITIAN_MATRIX_TYPE( Type7 volatile        );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_HERMITIAN_MATRIX_TYPE( Type7 const volatile  );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_HERMITIAN_MATRIX_TYPE( Type7&                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_HERMITIAN_MATRIX_TYPE( Type7*                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_HERMITIAN_MATRIX_TYPE( Type7* const          );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_HERMITIAN_MATRIX_TYPE( Type7* volatile       );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_HERMITIAN_MATRIX_TYPE( Type7* const volatile );
+
+   BLAZE_CONSTRAINT_MUST_BE_HERMITIAN_MATRIX_TYPE    ( Type8                 );
+   BLAZE_CONSTRAINT_MUST_BE_HERMITIAN_MATRIX_TYPE    ( Type8 const           );
+   BLAZE_CONSTRAINT_MUST_BE_HERMITIAN_MATRIX_TYPE    ( Type8 volatile        );
+   BLAZE_CONSTRAINT_MUST_BE_HERMITIAN_MATRIX_TYPE    ( Type8 const volatile  );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_HERMITIAN_MATRIX_TYPE( Type8&                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_HERMITIAN_MATRIX_TYPE( Type8*                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_HERMITIAN_MATRIX_TYPE( Type8* const          );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_HERMITIAN_MATRIX_TYPE( Type8* volatile       );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_HERMITIAN_MATRIX_TYPE( Type8* const volatile );
+
+   BLAZE_CONSTRAINT_MUST_BE_HERMITIAN_MATRIX_TYPE    ( Type9                 );
+   BLAZE_CONSTRAINT_MUST_BE_HERMITIAN_MATRIX_TYPE    ( Type9 const           );
+   BLAZE_CONSTRAINT_MUST_BE_HERMITIAN_MATRIX_TYPE    ( Type9 volatile        );
+   BLAZE_CONSTRAINT_MUST_BE_HERMITIAN_MATRIX_TYPE    ( Type9 const volatile  );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_HERMITIAN_MATRIX_TYPE( Type9&                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_HERMITIAN_MATRIX_TYPE( Type9*                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_HERMITIAN_MATRIX_TYPE( Type9* const          );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_HERMITIAN_MATRIX_TYPE( Type9* volatile       );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_HERMITIAN_MATRIX_TYPE( Type9* const volatile );
 }
 //*************************************************************************************************
 
@@ -563,32 +652,63 @@ void OperationTest::testIsIdentity()
    using blaze::LowerMatrix;
    using blaze::UpperMatrix;
    using blaze::DiagonalMatrix;
+   using blaze::IdentityMatrix;
 
-   using Type1  = SymmetricMatrix< DynamicMatrix<int> >;
-   using Type2  = const SymmetricMatrix< DynamicMatrix<int> >;
-   using Type3  = volatile SymmetricMatrix< DynamicMatrix<int> >;
-   using Type4  = LowerMatrix< DynamicMatrix<int> >;
-   using Type5  = const LowerMatrix< DynamicMatrix<int> >;
-   using Type6  = volatile LowerMatrix< DynamicMatrix<int> >;
-   using Type7  = UpperMatrix< DynamicMatrix<int> >;
-   using Type8  = const UpperMatrix< DynamicMatrix<int> >;
-   using Type9  = volatile UpperMatrix< DynamicMatrix<int> >;
-   using Type10 = DiagonalMatrix< DynamicMatrix<int> >;
-   using Type11 = const DiagonalMatrix< DynamicMatrix<int> >;
-   using Type12 = volatile DiagonalMatrix< DynamicMatrix<int> >;
+   using Type1 = SymmetricMatrix< DynamicMatrix<int> >;
+   using Type2 = LowerMatrix< DynamicMatrix<int> >;
+   using Type3 = UpperMatrix< DynamicMatrix<int> >;
+   using Type4 = DiagonalMatrix< DynamicMatrix<int> >;
+   using Type5 = IdentityMatrix<int>;
 
-   BLAZE_CONSTRAINT_MUST_NOT_BE_IDENTITY_MATRIX_TYPE( Type1  );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_IDENTITY_MATRIX_TYPE( Type2  );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_IDENTITY_MATRIX_TYPE( Type3  );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_IDENTITY_MATRIX_TYPE( Type4  );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_IDENTITY_MATRIX_TYPE( Type5  );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_IDENTITY_MATRIX_TYPE( Type6  );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_IDENTITY_MATRIX_TYPE( Type7  );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_IDENTITY_MATRIX_TYPE( Type8  );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_IDENTITY_MATRIX_TYPE( Type9  );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_IDENTITY_MATRIX_TYPE( Type10 );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_IDENTITY_MATRIX_TYPE( Type11 );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_IDENTITY_MATRIX_TYPE( Type12 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_IDENTITY_MATRIX_TYPE( Type1                 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_IDENTITY_MATRIX_TYPE( Type1 const           );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_IDENTITY_MATRIX_TYPE( Type1 volatile        );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_IDENTITY_MATRIX_TYPE( Type1 const volatile  );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_IDENTITY_MATRIX_TYPE( Type1&                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_IDENTITY_MATRIX_TYPE( Type1*                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_IDENTITY_MATRIX_TYPE( Type1* const          );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_IDENTITY_MATRIX_TYPE( Type1* volatile       );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_IDENTITY_MATRIX_TYPE( Type1* const volatile );
+
+   BLAZE_CONSTRAINT_MUST_NOT_BE_IDENTITY_MATRIX_TYPE( Type2                 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_IDENTITY_MATRIX_TYPE( Type2 const           );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_IDENTITY_MATRIX_TYPE( Type2 volatile        );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_IDENTITY_MATRIX_TYPE( Type2 const volatile  );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_IDENTITY_MATRIX_TYPE( Type2&                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_IDENTITY_MATRIX_TYPE( Type2*                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_IDENTITY_MATRIX_TYPE( Type2* const          );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_IDENTITY_MATRIX_TYPE( Type2* volatile       );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_IDENTITY_MATRIX_TYPE( Type2* const volatile );
+
+   BLAZE_CONSTRAINT_MUST_NOT_BE_IDENTITY_MATRIX_TYPE( Type3                 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_IDENTITY_MATRIX_TYPE( Type3 const           );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_IDENTITY_MATRIX_TYPE( Type3 volatile        );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_IDENTITY_MATRIX_TYPE( Type3 const volatile  );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_IDENTITY_MATRIX_TYPE( Type3&                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_IDENTITY_MATRIX_TYPE( Type3*                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_IDENTITY_MATRIX_TYPE( Type3* const          );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_IDENTITY_MATRIX_TYPE( Type3* volatile       );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_IDENTITY_MATRIX_TYPE( Type3* const volatile );
+
+   BLAZE_CONSTRAINT_MUST_NOT_BE_IDENTITY_MATRIX_TYPE( Type4                 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_IDENTITY_MATRIX_TYPE( Type4 const           );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_IDENTITY_MATRIX_TYPE( Type4 volatile        );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_IDENTITY_MATRIX_TYPE( Type4 const volatile  );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_IDENTITY_MATRIX_TYPE( Type4&                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_IDENTITY_MATRIX_TYPE( Type4*                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_IDENTITY_MATRIX_TYPE( Type4* const          );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_IDENTITY_MATRIX_TYPE( Type4* volatile       );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_IDENTITY_MATRIX_TYPE( Type4* const volatile );
+
+   BLAZE_CONSTRAINT_MUST_BE_IDENTITY_MATRIX_TYPE    ( Type5                 );
+   BLAZE_CONSTRAINT_MUST_BE_IDENTITY_MATRIX_TYPE    ( Type5 const           );
+   BLAZE_CONSTRAINT_MUST_BE_IDENTITY_MATRIX_TYPE    ( Type5 volatile        );
+   BLAZE_CONSTRAINT_MUST_BE_IDENTITY_MATRIX_TYPE    ( Type5 const volatile  );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_IDENTITY_MATRIX_TYPE( Type5&                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_IDENTITY_MATRIX_TYPE( Type5*                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_IDENTITY_MATRIX_TYPE( Type5* const          );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_IDENTITY_MATRIX_TYPE( Type5* volatile       );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_IDENTITY_MATRIX_TYPE( Type5* const volatile );
 }
 //*************************************************************************************************
 
@@ -619,65 +739,72 @@ void OperationTest::testIsInvertible()
    BLAZE_CONSTRAINT_MUST_BE_INVERTIBLE_TYPE    ( Type1 const            );
    BLAZE_CONSTRAINT_MUST_BE_INVERTIBLE_TYPE    ( Type1 volatile         );
    BLAZE_CONSTRAINT_MUST_BE_INVERTIBLE_TYPE    ( Type1 const volatile   );
-   BLAZE_CONSTRAINT_MUST_BE_INVERTIBLE_TYPE    ( Type2                  );
-   BLAZE_CONSTRAINT_MUST_BE_INVERTIBLE_TYPE    ( Type2 const            );
-   BLAZE_CONSTRAINT_MUST_BE_INVERTIBLE_TYPE    ( Type2 volatile         );
-   BLAZE_CONSTRAINT_MUST_BE_INVERTIBLE_TYPE    ( Type2 const volatile   );
-   BLAZE_CONSTRAINT_MUST_BE_INVERTIBLE_TYPE    ( Type3                  );
-   BLAZE_CONSTRAINT_MUST_BE_INVERTIBLE_TYPE    ( Type3 const            );
-   BLAZE_CONSTRAINT_MUST_BE_INVERTIBLE_TYPE    ( Type3 volatile         );
-   BLAZE_CONSTRAINT_MUST_BE_INVERTIBLE_TYPE    ( Type3 const volatile   );
-   BLAZE_CONSTRAINT_MUST_BE_INVERTIBLE_TYPE    ( Type4                  );
-   BLAZE_CONSTRAINT_MUST_BE_INVERTIBLE_TYPE    ( Type4 const            );
-   BLAZE_CONSTRAINT_MUST_BE_INVERTIBLE_TYPE    ( Type4 volatile         );
-   BLAZE_CONSTRAINT_MUST_BE_INVERTIBLE_TYPE    ( Type4 const volatile   );
-   BLAZE_CONSTRAINT_MUST_BE_INVERTIBLE_TYPE    ( Type5                  );
-   BLAZE_CONSTRAINT_MUST_BE_INVERTIBLE_TYPE    ( Type5 const            );
-   BLAZE_CONSTRAINT_MUST_BE_INVERTIBLE_TYPE    ( Type5 volatile         );
-   BLAZE_CONSTRAINT_MUST_BE_INVERTIBLE_TYPE    ( Type5 const volatile   );
-   BLAZE_CONSTRAINT_MUST_BE_INVERTIBLE_TYPE    ( Type6                  );
-   BLAZE_CONSTRAINT_MUST_BE_INVERTIBLE_TYPE    ( Type6 const            );
-   BLAZE_CONSTRAINT_MUST_BE_INVERTIBLE_TYPE    ( Type6 volatile         );
-   BLAZE_CONSTRAINT_MUST_BE_INVERTIBLE_TYPE    ( Type6 const volatile   );
-   BLAZE_CONSTRAINT_MUST_BE_INVERTIBLE_TYPE    ( Type7                  );
-   BLAZE_CONSTRAINT_MUST_BE_INVERTIBLE_TYPE    ( Type7 const            );
-   BLAZE_CONSTRAINT_MUST_BE_INVERTIBLE_TYPE    ( Type7 volatile         );
-   BLAZE_CONSTRAINT_MUST_BE_INVERTIBLE_TYPE    ( Type7 const volatile   );
    BLAZE_CONSTRAINT_MUST_NOT_BE_INVERTIBLE_TYPE( Type1&                 );
    BLAZE_CONSTRAINT_MUST_NOT_BE_INVERTIBLE_TYPE( Type1*                 );
    BLAZE_CONSTRAINT_MUST_NOT_BE_INVERTIBLE_TYPE( Type1* const           );
    BLAZE_CONSTRAINT_MUST_NOT_BE_INVERTIBLE_TYPE( Type1* volatile        );
    BLAZE_CONSTRAINT_MUST_NOT_BE_INVERTIBLE_TYPE( Type1* const volatile  );
+
+   BLAZE_CONSTRAINT_MUST_BE_INVERTIBLE_TYPE    ( Type2                  );
+   BLAZE_CONSTRAINT_MUST_BE_INVERTIBLE_TYPE    ( Type2 const            );
+   BLAZE_CONSTRAINT_MUST_BE_INVERTIBLE_TYPE    ( Type2 volatile         );
+   BLAZE_CONSTRAINT_MUST_BE_INVERTIBLE_TYPE    ( Type2 const volatile   );
    BLAZE_CONSTRAINT_MUST_NOT_BE_INVERTIBLE_TYPE( Type2&                 );
    BLAZE_CONSTRAINT_MUST_NOT_BE_INVERTIBLE_TYPE( Type2*                 );
    BLAZE_CONSTRAINT_MUST_NOT_BE_INVERTIBLE_TYPE( Type2* const           );
    BLAZE_CONSTRAINT_MUST_NOT_BE_INVERTIBLE_TYPE( Type2* volatile        );
    BLAZE_CONSTRAINT_MUST_NOT_BE_INVERTIBLE_TYPE( Type2* const volatile  );
+
+   BLAZE_CONSTRAINT_MUST_BE_INVERTIBLE_TYPE    ( Type3                  );
+   BLAZE_CONSTRAINT_MUST_BE_INVERTIBLE_TYPE    ( Type3 const            );
+   BLAZE_CONSTRAINT_MUST_BE_INVERTIBLE_TYPE    ( Type3 volatile         );
+   BLAZE_CONSTRAINT_MUST_BE_INVERTIBLE_TYPE    ( Type3 const volatile   );
    BLAZE_CONSTRAINT_MUST_NOT_BE_INVERTIBLE_TYPE( Type3&                 );
    BLAZE_CONSTRAINT_MUST_NOT_BE_INVERTIBLE_TYPE( Type3*                 );
    BLAZE_CONSTRAINT_MUST_NOT_BE_INVERTIBLE_TYPE( Type3* const           );
    BLAZE_CONSTRAINT_MUST_NOT_BE_INVERTIBLE_TYPE( Type3* volatile        );
    BLAZE_CONSTRAINT_MUST_NOT_BE_INVERTIBLE_TYPE( Type3* const volatile  );
+
+   BLAZE_CONSTRAINT_MUST_BE_INVERTIBLE_TYPE    ( Type4                  );
+   BLAZE_CONSTRAINT_MUST_BE_INVERTIBLE_TYPE    ( Type4 const            );
+   BLAZE_CONSTRAINT_MUST_BE_INVERTIBLE_TYPE    ( Type4 volatile         );
+   BLAZE_CONSTRAINT_MUST_BE_INVERTIBLE_TYPE    ( Type4 const volatile   );
    BLAZE_CONSTRAINT_MUST_NOT_BE_INVERTIBLE_TYPE( Type4&                 );
    BLAZE_CONSTRAINT_MUST_NOT_BE_INVERTIBLE_TYPE( Type4*                 );
    BLAZE_CONSTRAINT_MUST_NOT_BE_INVERTIBLE_TYPE( Type4* const           );
    BLAZE_CONSTRAINT_MUST_NOT_BE_INVERTIBLE_TYPE( Type4* volatile        );
    BLAZE_CONSTRAINT_MUST_NOT_BE_INVERTIBLE_TYPE( Type4* const volatile  );
+
+   BLAZE_CONSTRAINT_MUST_BE_INVERTIBLE_TYPE    ( Type5                  );
+   BLAZE_CONSTRAINT_MUST_BE_INVERTIBLE_TYPE    ( Type5 const            );
+   BLAZE_CONSTRAINT_MUST_BE_INVERTIBLE_TYPE    ( Type5 volatile         );
+   BLAZE_CONSTRAINT_MUST_BE_INVERTIBLE_TYPE    ( Type5 const volatile   );
    BLAZE_CONSTRAINT_MUST_NOT_BE_INVERTIBLE_TYPE( Type5&                 );
    BLAZE_CONSTRAINT_MUST_NOT_BE_INVERTIBLE_TYPE( Type5*                 );
    BLAZE_CONSTRAINT_MUST_NOT_BE_INVERTIBLE_TYPE( Type5* const           );
    BLAZE_CONSTRAINT_MUST_NOT_BE_INVERTIBLE_TYPE( Type5* volatile        );
    BLAZE_CONSTRAINT_MUST_NOT_BE_INVERTIBLE_TYPE( Type5* const volatile  );
+
+   BLAZE_CONSTRAINT_MUST_BE_INVERTIBLE_TYPE    ( Type6                  );
+   BLAZE_CONSTRAINT_MUST_BE_INVERTIBLE_TYPE    ( Type6 const            );
+   BLAZE_CONSTRAINT_MUST_BE_INVERTIBLE_TYPE    ( Type6 volatile         );
+   BLAZE_CONSTRAINT_MUST_BE_INVERTIBLE_TYPE    ( Type6 const volatile   );
    BLAZE_CONSTRAINT_MUST_NOT_BE_INVERTIBLE_TYPE( Type6&                 );
    BLAZE_CONSTRAINT_MUST_NOT_BE_INVERTIBLE_TYPE( Type6*                 );
    BLAZE_CONSTRAINT_MUST_NOT_BE_INVERTIBLE_TYPE( Type6* const           );
    BLAZE_CONSTRAINT_MUST_NOT_BE_INVERTIBLE_TYPE( Type6* volatile        );
    BLAZE_CONSTRAINT_MUST_NOT_BE_INVERTIBLE_TYPE( Type6* const volatile  );
+
+   BLAZE_CONSTRAINT_MUST_BE_INVERTIBLE_TYPE    ( Type7                  );
+   BLAZE_CONSTRAINT_MUST_BE_INVERTIBLE_TYPE    ( Type7 const            );
+   BLAZE_CONSTRAINT_MUST_BE_INVERTIBLE_TYPE    ( Type7 volatile         );
+   BLAZE_CONSTRAINT_MUST_BE_INVERTIBLE_TYPE    ( Type7 const volatile   );
    BLAZE_CONSTRAINT_MUST_NOT_BE_INVERTIBLE_TYPE( Type7&                 );
    BLAZE_CONSTRAINT_MUST_NOT_BE_INVERTIBLE_TYPE( Type7*                 );
    BLAZE_CONSTRAINT_MUST_NOT_BE_INVERTIBLE_TYPE( Type7* const           );
    BLAZE_CONSTRAINT_MUST_NOT_BE_INVERTIBLE_TYPE( Type7* volatile        );
    BLAZE_CONSTRAINT_MUST_NOT_BE_INVERTIBLE_TYPE( Type7* const volatile  );
+
    BLAZE_CONSTRAINT_MUST_NOT_BE_INVERTIBLE_TYPE( Type8                  );
    BLAZE_CONSTRAINT_MUST_NOT_BE_INVERTIBLE_TYPE( Type8 const            );
    BLAZE_CONSTRAINT_MUST_NOT_BE_INVERTIBLE_TYPE( Type8 volatile         );
@@ -687,6 +814,7 @@ void OperationTest::testIsInvertible()
    BLAZE_CONSTRAINT_MUST_NOT_BE_INVERTIBLE_TYPE( Type8* const           );
    BLAZE_CONSTRAINT_MUST_NOT_BE_INVERTIBLE_TYPE( Type8* volatile        );
    BLAZE_CONSTRAINT_MUST_NOT_BE_INVERTIBLE_TYPE( Type8* const volatile  );
+
    BLAZE_CONSTRAINT_MUST_NOT_BE_INVERTIBLE_TYPE( Type9                  );
    BLAZE_CONSTRAINT_MUST_NOT_BE_INVERTIBLE_TYPE( Type9 const            );
    BLAZE_CONSTRAINT_MUST_NOT_BE_INVERTIBLE_TYPE( Type9 volatile         );
@@ -696,6 +824,7 @@ void OperationTest::testIsInvertible()
    BLAZE_CONSTRAINT_MUST_NOT_BE_INVERTIBLE_TYPE( Type9* const           );
    BLAZE_CONSTRAINT_MUST_NOT_BE_INVERTIBLE_TYPE( Type9* volatile        );
    BLAZE_CONSTRAINT_MUST_NOT_BE_INVERTIBLE_TYPE( Type9* const volatile  );
+
    BLAZE_CONSTRAINT_MUST_NOT_BE_INVERTIBLE_TYPE( Type10                 );
    BLAZE_CONSTRAINT_MUST_NOT_BE_INVERTIBLE_TYPE( Type10 const           );
    BLAZE_CONSTRAINT_MUST_NOT_BE_INVERTIBLE_TYPE( Type10 volatile        );
@@ -728,50 +857,96 @@ void OperationTest::testIsLower()
    using blaze::StrictlyLowerMatrix;
    using blaze::UpperMatrix;
    using blaze::DiagonalMatrix;
+   using blaze::IdentityMatrix;
 
    using Type1  = DynamicMatrix<int>;
-   using Type2  = const DynamicMatrix<int>;
-   using Type3  = volatile DynamicMatrix<int>;
-   using Type4  = SymmetricMatrix< DynamicMatrix<int> >;
-   using Type5  = const SymmetricMatrix< DynamicMatrix<int> >;
-   using Type6  = volatile SymmetricMatrix< DynamicMatrix<int> >;
-   using Type7  = LowerMatrix< DynamicMatrix<int> >;
-   using Type8  = const LowerMatrix< DynamicMatrix<int> >;
-   using Type9  = volatile LowerMatrix< DynamicMatrix<int> >;
-   using Type10 = UniLowerMatrix< DynamicMatrix<int> >;
-   using Type11 = const UniLowerMatrix< DynamicMatrix<int> >;
-   using Type12 = volatile UniLowerMatrix< DynamicMatrix<int> >;
-   using Type13 = StrictlyLowerMatrix< DynamicMatrix<int> >;
-   using Type14 = const StrictlyLowerMatrix< DynamicMatrix<int> >;
-   using Type15 = volatile StrictlyLowerMatrix< DynamicMatrix<int> >;
-   using Type16 = UpperMatrix< DynamicMatrix<int> >;
-   using Type17 = const UpperMatrix< DynamicMatrix<int> >;
-   using Type18 = volatile UpperMatrix< DynamicMatrix<int> >;
-   using Type19 = DiagonalMatrix< DynamicMatrix<int> >;
-   using Type20 = const DiagonalMatrix< DynamicMatrix<int> >;
-   using Type21 = volatile DiagonalMatrix< DynamicMatrix<int> >;
+   using Type2  = SymmetricMatrix< DynamicMatrix<int> >;
+   using Type3  = LowerMatrix< DynamicMatrix<int> >;
+   using Type4  = UniLowerMatrix< DynamicMatrix<int> >;
+   using Type5  = StrictlyLowerMatrix< DynamicMatrix<int> >;
+   using Type6  = UpperMatrix< DynamicMatrix<int> >;
+   using Type7  = DiagonalMatrix< DynamicMatrix<int> >;
+   using Type8  = IdentityMatrix<int>;
 
-   BLAZE_CONSTRAINT_MUST_NOT_BE_LOWER_MATRIX_TYPE( Type1  );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_LOWER_MATRIX_TYPE( Type2  );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_LOWER_MATRIX_TYPE( Type3  );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_LOWER_MATRIX_TYPE( Type4  );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_LOWER_MATRIX_TYPE( Type5  );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_LOWER_MATRIX_TYPE( Type6  );
-   BLAZE_CONSTRAINT_MUST_BE_LOWER_MATRIX_TYPE    ( Type7  );
-   BLAZE_CONSTRAINT_MUST_BE_LOWER_MATRIX_TYPE    ( Type8  );
-   BLAZE_CONSTRAINT_MUST_BE_LOWER_MATRIX_TYPE    ( Type9  );
-   BLAZE_CONSTRAINT_MUST_BE_LOWER_MATRIX_TYPE    ( Type10 );
-   BLAZE_CONSTRAINT_MUST_BE_LOWER_MATRIX_TYPE    ( Type11 );
-   BLAZE_CONSTRAINT_MUST_BE_LOWER_MATRIX_TYPE    ( Type12 );
-   BLAZE_CONSTRAINT_MUST_BE_LOWER_MATRIX_TYPE    ( Type13 );
-   BLAZE_CONSTRAINT_MUST_BE_LOWER_MATRIX_TYPE    ( Type14 );
-   BLAZE_CONSTRAINT_MUST_BE_LOWER_MATRIX_TYPE    ( Type15 );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_LOWER_MATRIX_TYPE( Type16 );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_LOWER_MATRIX_TYPE( Type17 );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_LOWER_MATRIX_TYPE( Type18 );
-   BLAZE_CONSTRAINT_MUST_BE_LOWER_MATRIX_TYPE    ( Type19 );
-   BLAZE_CONSTRAINT_MUST_BE_LOWER_MATRIX_TYPE    ( Type20 );
-   BLAZE_CONSTRAINT_MUST_BE_LOWER_MATRIX_TYPE    ( Type21 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_LOWER_MATRIX_TYPE( Type1                 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_LOWER_MATRIX_TYPE( Type1 const           );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_LOWER_MATRIX_TYPE( Type1 volatile        );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_LOWER_MATRIX_TYPE( Type1 const volatile  );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_LOWER_MATRIX_TYPE( Type1&                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_LOWER_MATRIX_TYPE( Type1*                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_LOWER_MATRIX_TYPE( Type1* const          );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_LOWER_MATRIX_TYPE( Type1* volatile       );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_LOWER_MATRIX_TYPE( Type1* const volatile );
+
+   BLAZE_CONSTRAINT_MUST_NOT_BE_LOWER_MATRIX_TYPE( Type2                 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_LOWER_MATRIX_TYPE( Type2 const           );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_LOWER_MATRIX_TYPE( Type2 volatile        );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_LOWER_MATRIX_TYPE( Type2 const volatile  );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_LOWER_MATRIX_TYPE( Type2&                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_LOWER_MATRIX_TYPE( Type2*                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_LOWER_MATRIX_TYPE( Type2* const          );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_LOWER_MATRIX_TYPE( Type2* volatile       );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_LOWER_MATRIX_TYPE( Type2* const volatile );
+
+   BLAZE_CONSTRAINT_MUST_BE_LOWER_MATRIX_TYPE    ( Type3                 );
+   BLAZE_CONSTRAINT_MUST_BE_LOWER_MATRIX_TYPE    ( Type3 const           );
+   BLAZE_CONSTRAINT_MUST_BE_LOWER_MATRIX_TYPE    ( Type3 volatile        );
+   BLAZE_CONSTRAINT_MUST_BE_LOWER_MATRIX_TYPE    ( Type3 const volatile  );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_LOWER_MATRIX_TYPE( Type3&                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_LOWER_MATRIX_TYPE( Type3*                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_LOWER_MATRIX_TYPE( Type3* const          );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_LOWER_MATRIX_TYPE( Type3* volatile       );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_LOWER_MATRIX_TYPE( Type3* const volatile );
+
+   BLAZE_CONSTRAINT_MUST_BE_LOWER_MATRIX_TYPE    ( Type4                 );
+   BLAZE_CONSTRAINT_MUST_BE_LOWER_MATRIX_TYPE    ( Type4 const           );
+   BLAZE_CONSTRAINT_MUST_BE_LOWER_MATRIX_TYPE    ( Type4 volatile        );
+   BLAZE_CONSTRAINT_MUST_BE_LOWER_MATRIX_TYPE    ( Type4 const volatile  );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_LOWER_MATRIX_TYPE( Type4&                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_LOWER_MATRIX_TYPE( Type4*                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_LOWER_MATRIX_TYPE( Type4* const          );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_LOWER_MATRIX_TYPE( Type4* volatile       );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_LOWER_MATRIX_TYPE( Type4* const volatile );
+
+   BLAZE_CONSTRAINT_MUST_BE_LOWER_MATRIX_TYPE    ( Type5                 );
+   BLAZE_CONSTRAINT_MUST_BE_LOWER_MATRIX_TYPE    ( Type5 const           );
+   BLAZE_CONSTRAINT_MUST_BE_LOWER_MATRIX_TYPE    ( Type5 volatile        );
+   BLAZE_CONSTRAINT_MUST_BE_LOWER_MATRIX_TYPE    ( Type5 const volatile  );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_LOWER_MATRIX_TYPE( Type5&                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_LOWER_MATRIX_TYPE( Type5*                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_LOWER_MATRIX_TYPE( Type5* const          );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_LOWER_MATRIX_TYPE( Type5* volatile       );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_LOWER_MATRIX_TYPE( Type5* const volatile );
+
+   BLAZE_CONSTRAINT_MUST_NOT_BE_LOWER_MATRIX_TYPE( Type6                 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_LOWER_MATRIX_TYPE( Type6 const           );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_LOWER_MATRIX_TYPE( Type6 volatile        );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_LOWER_MATRIX_TYPE( Type6 const volatile  );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_LOWER_MATRIX_TYPE( Type6&                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_LOWER_MATRIX_TYPE( Type6*                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_LOWER_MATRIX_TYPE( Type6* const          );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_LOWER_MATRIX_TYPE( Type6* volatile       );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_LOWER_MATRIX_TYPE( Type6* const volatile );
+
+   BLAZE_CONSTRAINT_MUST_BE_LOWER_MATRIX_TYPE    ( Type7                 );
+   BLAZE_CONSTRAINT_MUST_BE_LOWER_MATRIX_TYPE    ( Type7 const           );
+   BLAZE_CONSTRAINT_MUST_BE_LOWER_MATRIX_TYPE    ( Type7 volatile        );
+   BLAZE_CONSTRAINT_MUST_BE_LOWER_MATRIX_TYPE    ( Type7 const volatile  );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_LOWER_MATRIX_TYPE( Type7&                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_LOWER_MATRIX_TYPE( Type7*                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_LOWER_MATRIX_TYPE( Type7* const          );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_LOWER_MATRIX_TYPE( Type7* volatile       );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_LOWER_MATRIX_TYPE( Type7* const volatile );
+
+   BLAZE_CONSTRAINT_MUST_BE_LOWER_MATRIX_TYPE    ( Type8                 );
+   BLAZE_CONSTRAINT_MUST_BE_LOWER_MATRIX_TYPE    ( Type8 const           );
+   BLAZE_CONSTRAINT_MUST_BE_LOWER_MATRIX_TYPE    ( Type8 volatile        );
+   BLAZE_CONSTRAINT_MUST_BE_LOWER_MATRIX_TYPE    ( Type8 const volatile  );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_LOWER_MATRIX_TYPE( Type8&                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_LOWER_MATRIX_TYPE( Type8*                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_LOWER_MATRIX_TYPE( Type8* const          );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_LOWER_MATRIX_TYPE( Type8* volatile       );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_LOWER_MATRIX_TYPE( Type8* const volatile );
 }
 //*************************************************************************************************
 
@@ -803,20 +978,22 @@ void OperationTest::testIsMatrix()
    BLAZE_CONSTRAINT_MUST_BE_MATRIX_TYPE    ( Type1 const           );
    BLAZE_CONSTRAINT_MUST_BE_MATRIX_TYPE    ( Type1 volatile        );
    BLAZE_CONSTRAINT_MUST_BE_MATRIX_TYPE    ( Type1 const volatile  );
-   BLAZE_CONSTRAINT_MUST_BE_MATRIX_TYPE    ( Type2                 );
-   BLAZE_CONSTRAINT_MUST_BE_MATRIX_TYPE    ( Type2 const           );
-   BLAZE_CONSTRAINT_MUST_BE_MATRIX_TYPE    ( Type2 volatile        );
-   BLAZE_CONSTRAINT_MUST_BE_MATRIX_TYPE    ( Type2 const volatile  );
    BLAZE_CONSTRAINT_MUST_NOT_BE_MATRIX_TYPE( Type1&                );
    BLAZE_CONSTRAINT_MUST_NOT_BE_MATRIX_TYPE( Type1*                );
    BLAZE_CONSTRAINT_MUST_NOT_BE_MATRIX_TYPE( Type1* const          );
    BLAZE_CONSTRAINT_MUST_NOT_BE_MATRIX_TYPE( Type1* volatile       );
    BLAZE_CONSTRAINT_MUST_NOT_BE_MATRIX_TYPE( Type1* const volatile );
+
+   BLAZE_CONSTRAINT_MUST_BE_MATRIX_TYPE    ( Type2                 );
+   BLAZE_CONSTRAINT_MUST_BE_MATRIX_TYPE    ( Type2 const           );
+   BLAZE_CONSTRAINT_MUST_BE_MATRIX_TYPE    ( Type2 volatile        );
+   BLAZE_CONSTRAINT_MUST_BE_MATRIX_TYPE    ( Type2 const volatile  );
    BLAZE_CONSTRAINT_MUST_NOT_BE_MATRIX_TYPE( Type2&                );
    BLAZE_CONSTRAINT_MUST_NOT_BE_MATRIX_TYPE( Type2*                );
    BLAZE_CONSTRAINT_MUST_NOT_BE_MATRIX_TYPE( Type2* const          );
    BLAZE_CONSTRAINT_MUST_NOT_BE_MATRIX_TYPE( Type2* volatile       );
    BLAZE_CONSTRAINT_MUST_NOT_BE_MATRIX_TYPE( Type2* const volatile );
+
    BLAZE_CONSTRAINT_MUST_NOT_BE_MATRIX_TYPE( Type3                 );
    BLAZE_CONSTRAINT_MUST_NOT_BE_MATRIX_TYPE( Type3 const           );
    BLAZE_CONSTRAINT_MUST_NOT_BE_MATRIX_TYPE( Type3 volatile        );
@@ -826,6 +1003,7 @@ void OperationTest::testIsMatrix()
    BLAZE_CONSTRAINT_MUST_NOT_BE_MATRIX_TYPE( Type3* const          );
    BLAZE_CONSTRAINT_MUST_NOT_BE_MATRIX_TYPE( Type3* volatile       );
    BLAZE_CONSTRAINT_MUST_NOT_BE_MATRIX_TYPE( Type3* const volatile );
+
    BLAZE_CONSTRAINT_MUST_NOT_BE_MATRIX_TYPE( Type4                 );
    BLAZE_CONSTRAINT_MUST_NOT_BE_MATRIX_TYPE( Type4 const           );
    BLAZE_CONSTRAINT_MUST_NOT_BE_MATRIX_TYPE( Type4 volatile        );
@@ -835,6 +1013,7 @@ void OperationTest::testIsMatrix()
    BLAZE_CONSTRAINT_MUST_NOT_BE_MATRIX_TYPE( Type4* const          );
    BLAZE_CONSTRAINT_MUST_NOT_BE_MATRIX_TYPE( Type4* volatile       );
    BLAZE_CONSTRAINT_MUST_NOT_BE_MATRIX_TYPE( Type4* const volatile );
+
    BLAZE_CONSTRAINT_MUST_NOT_BE_MATRIX_TYPE( Type5                 );
    BLAZE_CONSTRAINT_MUST_NOT_BE_MATRIX_TYPE( Type5 const           );
    BLAZE_CONSTRAINT_MUST_NOT_BE_MATRIX_TYPE( Type5 volatile        );
@@ -844,6 +1023,7 @@ void OperationTest::testIsMatrix()
    BLAZE_CONSTRAINT_MUST_NOT_BE_MATRIX_TYPE( Type5* const          );
    BLAZE_CONSTRAINT_MUST_NOT_BE_MATRIX_TYPE( Type5* volatile       );
    BLAZE_CONSTRAINT_MUST_NOT_BE_MATRIX_TYPE( Type5* const volatile );
+
    BLAZE_CONSTRAINT_MUST_NOT_BE_MATRIX_TYPE( Type6                 );
    BLAZE_CONSTRAINT_MUST_NOT_BE_MATRIX_TYPE( Type6 const           );
    BLAZE_CONSTRAINT_MUST_NOT_BE_MATRIX_TYPE( Type6 volatile        );
@@ -904,20 +1084,22 @@ void OperationTest::testIsRowMajorMatrix()
    BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE    ( Type1 const           );
    BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE    ( Type1 volatile        );
    BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE    ( Type1 const volatile  );
-   BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE    ( Type2                 );
-   BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE    ( Type2 const           );
-   BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE    ( Type2 volatile        );
-   BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE    ( Type2 const volatile  );
    BLAZE_CONSTRAINT_MUST_NOT_BE_ROW_MAJOR_MATRIX_TYPE( Type1&                );
    BLAZE_CONSTRAINT_MUST_NOT_BE_ROW_MAJOR_MATRIX_TYPE( Type1*                );
    BLAZE_CONSTRAINT_MUST_NOT_BE_ROW_MAJOR_MATRIX_TYPE( Type1* const          );
    BLAZE_CONSTRAINT_MUST_NOT_BE_ROW_MAJOR_MATRIX_TYPE( Type1* volatile       );
    BLAZE_CONSTRAINT_MUST_NOT_BE_ROW_MAJOR_MATRIX_TYPE( Type1* const volatile );
+
+   BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE    ( Type2                 );
+   BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE    ( Type2 const           );
+   BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE    ( Type2 volatile        );
+   BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE    ( Type2 const volatile  );
    BLAZE_CONSTRAINT_MUST_NOT_BE_ROW_MAJOR_MATRIX_TYPE( Type2&                );
    BLAZE_CONSTRAINT_MUST_NOT_BE_ROW_MAJOR_MATRIX_TYPE( Type2*                );
    BLAZE_CONSTRAINT_MUST_NOT_BE_ROW_MAJOR_MATRIX_TYPE( Type2* const          );
    BLAZE_CONSTRAINT_MUST_NOT_BE_ROW_MAJOR_MATRIX_TYPE( Type2* volatile       );
    BLAZE_CONSTRAINT_MUST_NOT_BE_ROW_MAJOR_MATRIX_TYPE( Type2* const volatile );
+
    BLAZE_CONSTRAINT_MUST_NOT_BE_ROW_MAJOR_MATRIX_TYPE( Type3                 );
    BLAZE_CONSTRAINT_MUST_NOT_BE_ROW_MAJOR_MATRIX_TYPE( Type3 const           );
    BLAZE_CONSTRAINT_MUST_NOT_BE_ROW_MAJOR_MATRIX_TYPE( Type3 volatile        );
@@ -927,6 +1109,7 @@ void OperationTest::testIsRowMajorMatrix()
    BLAZE_CONSTRAINT_MUST_NOT_BE_ROW_MAJOR_MATRIX_TYPE( Type3* const          );
    BLAZE_CONSTRAINT_MUST_NOT_BE_ROW_MAJOR_MATRIX_TYPE( Type3* volatile       );
    BLAZE_CONSTRAINT_MUST_NOT_BE_ROW_MAJOR_MATRIX_TYPE( Type3* const volatile );
+
    BLAZE_CONSTRAINT_MUST_NOT_BE_ROW_MAJOR_MATRIX_TYPE( Type4                 );
    BLAZE_CONSTRAINT_MUST_NOT_BE_ROW_MAJOR_MATRIX_TYPE( Type4 const           );
    BLAZE_CONSTRAINT_MUST_NOT_BE_ROW_MAJOR_MATRIX_TYPE( Type4 volatile        );
@@ -936,6 +1119,7 @@ void OperationTest::testIsRowMajorMatrix()
    BLAZE_CONSTRAINT_MUST_NOT_BE_ROW_MAJOR_MATRIX_TYPE( Type4* const          );
    BLAZE_CONSTRAINT_MUST_NOT_BE_ROW_MAJOR_MATRIX_TYPE( Type4* volatile       );
    BLAZE_CONSTRAINT_MUST_NOT_BE_ROW_MAJOR_MATRIX_TYPE( Type4* const volatile );
+
    BLAZE_CONSTRAINT_MUST_NOT_BE_ROW_MAJOR_MATRIX_TYPE( Type5                 );
    BLAZE_CONSTRAINT_MUST_NOT_BE_ROW_MAJOR_MATRIX_TYPE( Type5 const           );
    BLAZE_CONSTRAINT_MUST_NOT_BE_ROW_MAJOR_MATRIX_TYPE( Type5 volatile        );
@@ -945,6 +1129,7 @@ void OperationTest::testIsRowMajorMatrix()
    BLAZE_CONSTRAINT_MUST_NOT_BE_ROW_MAJOR_MATRIX_TYPE( Type5* const          );
    BLAZE_CONSTRAINT_MUST_NOT_BE_ROW_MAJOR_MATRIX_TYPE( Type5* volatile       );
    BLAZE_CONSTRAINT_MUST_NOT_BE_ROW_MAJOR_MATRIX_TYPE( Type5* const volatile );
+
    BLAZE_CONSTRAINT_MUST_NOT_BE_ROW_MAJOR_MATRIX_TYPE( Type6                 );
    BLAZE_CONSTRAINT_MUST_NOT_BE_ROW_MAJOR_MATRIX_TYPE( Type6 const           );
    BLAZE_CONSTRAINT_MUST_NOT_BE_ROW_MAJOR_MATRIX_TYPE( Type6 volatile        );
@@ -954,6 +1139,7 @@ void OperationTest::testIsRowMajorMatrix()
    BLAZE_CONSTRAINT_MUST_NOT_BE_ROW_MAJOR_MATRIX_TYPE( Type6* const          );
    BLAZE_CONSTRAINT_MUST_NOT_BE_ROW_MAJOR_MATRIX_TYPE( Type6* volatile       );
    BLAZE_CONSTRAINT_MUST_NOT_BE_ROW_MAJOR_MATRIX_TYPE( Type6* const volatile );
+
    BLAZE_CONSTRAINT_MUST_NOT_BE_ROW_MAJOR_MATRIX_TYPE( Type7                 );
    BLAZE_CONSTRAINT_MUST_NOT_BE_ROW_MAJOR_MATRIX_TYPE( Type7 const           );
    BLAZE_CONSTRAINT_MUST_NOT_BE_ROW_MAJOR_MATRIX_TYPE( Type7 volatile        );
@@ -963,6 +1149,7 @@ void OperationTest::testIsRowMajorMatrix()
    BLAZE_CONSTRAINT_MUST_NOT_BE_ROW_MAJOR_MATRIX_TYPE( Type7* const          );
    BLAZE_CONSTRAINT_MUST_NOT_BE_ROW_MAJOR_MATRIX_TYPE( Type7* volatile       );
    BLAZE_CONSTRAINT_MUST_NOT_BE_ROW_MAJOR_MATRIX_TYPE( Type7* const volatile );
+
    BLAZE_CONSTRAINT_MUST_NOT_BE_ROW_MAJOR_MATRIX_TYPE( Type8                 );
    BLAZE_CONSTRAINT_MUST_NOT_BE_ROW_MAJOR_MATRIX_TYPE( Type8 const           );
    BLAZE_CONSTRAINT_MUST_NOT_BE_ROW_MAJOR_MATRIX_TYPE( Type8 volatile        );
@@ -1005,20 +1192,22 @@ void OperationTest::testIsRowVector()
    BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( Type1 const           );
    BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( Type1 volatile        );
    BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( Type1 const volatile  );
-   BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( Type2                 );
-   BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( Type2 const           );
-   BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( Type2 volatile        );
-   BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( Type2 const volatile  );
    BLAZE_CONSTRAINT_MUST_NOT_BE_ROW_VECTOR_TYPE( Type1&                );
    BLAZE_CONSTRAINT_MUST_NOT_BE_ROW_VECTOR_TYPE( Type1*                );
    BLAZE_CONSTRAINT_MUST_NOT_BE_ROW_VECTOR_TYPE( Type1* const          );
    BLAZE_CONSTRAINT_MUST_NOT_BE_ROW_VECTOR_TYPE( Type1* volatile       );
    BLAZE_CONSTRAINT_MUST_NOT_BE_ROW_VECTOR_TYPE( Type1* const volatile );
+
+   BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( Type2                 );
+   BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( Type2 const           );
+   BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( Type2 volatile        );
+   BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( Type2 const volatile  );
    BLAZE_CONSTRAINT_MUST_NOT_BE_ROW_VECTOR_TYPE( Type2&                );
    BLAZE_CONSTRAINT_MUST_NOT_BE_ROW_VECTOR_TYPE( Type2*                );
    BLAZE_CONSTRAINT_MUST_NOT_BE_ROW_VECTOR_TYPE( Type2* const          );
    BLAZE_CONSTRAINT_MUST_NOT_BE_ROW_VECTOR_TYPE( Type2* volatile       );
    BLAZE_CONSTRAINT_MUST_NOT_BE_ROW_VECTOR_TYPE( Type2* const volatile );
+
    BLAZE_CONSTRAINT_MUST_NOT_BE_ROW_VECTOR_TYPE( Type3                 );
    BLAZE_CONSTRAINT_MUST_NOT_BE_ROW_VECTOR_TYPE( Type3 const           );
    BLAZE_CONSTRAINT_MUST_NOT_BE_ROW_VECTOR_TYPE( Type3 volatile        );
@@ -1028,6 +1217,7 @@ void OperationTest::testIsRowVector()
    BLAZE_CONSTRAINT_MUST_NOT_BE_ROW_VECTOR_TYPE( Type3* const          );
    BLAZE_CONSTRAINT_MUST_NOT_BE_ROW_VECTOR_TYPE( Type3* volatile       );
    BLAZE_CONSTRAINT_MUST_NOT_BE_ROW_VECTOR_TYPE( Type3* const volatile );
+
    BLAZE_CONSTRAINT_MUST_NOT_BE_ROW_VECTOR_TYPE( Type4                 );
    BLAZE_CONSTRAINT_MUST_NOT_BE_ROW_VECTOR_TYPE( Type4 const           );
    BLAZE_CONSTRAINT_MUST_NOT_BE_ROW_VECTOR_TYPE( Type4 volatile        );
@@ -1037,6 +1227,7 @@ void OperationTest::testIsRowVector()
    BLAZE_CONSTRAINT_MUST_NOT_BE_ROW_VECTOR_TYPE( Type4* const          );
    BLAZE_CONSTRAINT_MUST_NOT_BE_ROW_VECTOR_TYPE( Type4* volatile       );
    BLAZE_CONSTRAINT_MUST_NOT_BE_ROW_VECTOR_TYPE( Type4* const volatile );
+
    BLAZE_CONSTRAINT_MUST_NOT_BE_ROW_VECTOR_TYPE( Type5                 );
    BLAZE_CONSTRAINT_MUST_NOT_BE_ROW_VECTOR_TYPE( Type5 const           );
    BLAZE_CONSTRAINT_MUST_NOT_BE_ROW_VECTOR_TYPE( Type5 volatile        );
@@ -1046,6 +1237,7 @@ void OperationTest::testIsRowVector()
    BLAZE_CONSTRAINT_MUST_NOT_BE_ROW_VECTOR_TYPE( Type5* const          );
    BLAZE_CONSTRAINT_MUST_NOT_BE_ROW_VECTOR_TYPE( Type5* volatile       );
    BLAZE_CONSTRAINT_MUST_NOT_BE_ROW_VECTOR_TYPE( Type5* const volatile );
+
    BLAZE_CONSTRAINT_MUST_NOT_BE_ROW_VECTOR_TYPE( Type6                 );
    BLAZE_CONSTRAINT_MUST_NOT_BE_ROW_VECTOR_TYPE( Type6 const           );
    BLAZE_CONSTRAINT_MUST_NOT_BE_ROW_VECTOR_TYPE( Type6 volatile        );
@@ -1055,6 +1247,7 @@ void OperationTest::testIsRowVector()
    BLAZE_CONSTRAINT_MUST_NOT_BE_ROW_VECTOR_TYPE( Type6* const          );
    BLAZE_CONSTRAINT_MUST_NOT_BE_ROW_VECTOR_TYPE( Type6* volatile       );
    BLAZE_CONSTRAINT_MUST_NOT_BE_ROW_VECTOR_TYPE( Type6* const volatile );
+
    BLAZE_CONSTRAINT_MUST_NOT_BE_ROW_VECTOR_TYPE( Type7                 );
    BLAZE_CONSTRAINT_MUST_NOT_BE_ROW_VECTOR_TYPE( Type7 const           );
    BLAZE_CONSTRAINT_MUST_NOT_BE_ROW_VECTOR_TYPE( Type7 volatile        );
@@ -1064,6 +1257,7 @@ void OperationTest::testIsRowVector()
    BLAZE_CONSTRAINT_MUST_NOT_BE_ROW_VECTOR_TYPE( Type7* const          );
    BLAZE_CONSTRAINT_MUST_NOT_BE_ROW_VECTOR_TYPE( Type7* volatile       );
    BLAZE_CONSTRAINT_MUST_NOT_BE_ROW_VECTOR_TYPE( Type7* const volatile );
+
    BLAZE_CONSTRAINT_MUST_NOT_BE_ROW_VECTOR_TYPE( Type8                 );
    BLAZE_CONSTRAINT_MUST_NOT_BE_ROW_VECTOR_TYPE( Type8 const           );
    BLAZE_CONSTRAINT_MUST_NOT_BE_ROW_VECTOR_TYPE( Type8 volatile        );
@@ -1104,20 +1298,22 @@ void OperationTest::testIsScalar()
    BLAZE_CONSTRAINT_MUST_BE_SCALAR_TYPE    ( Type1 const           );
    BLAZE_CONSTRAINT_MUST_BE_SCALAR_TYPE    ( Type1 volatile        );
    BLAZE_CONSTRAINT_MUST_BE_SCALAR_TYPE    ( Type1 const volatile  );
-   BLAZE_CONSTRAINT_MUST_BE_SCALAR_TYPE    ( Type2                 );
-   BLAZE_CONSTRAINT_MUST_BE_SCALAR_TYPE    ( Type2 const           );
-   BLAZE_CONSTRAINT_MUST_BE_SCALAR_TYPE    ( Type2 volatile        );
-   BLAZE_CONSTRAINT_MUST_BE_SCALAR_TYPE    ( Type2 const volatile  );
    BLAZE_CONSTRAINT_MUST_NOT_BE_SCALAR_TYPE( Type1&                );
    BLAZE_CONSTRAINT_MUST_NOT_BE_SCALAR_TYPE( Type1*                );
    BLAZE_CONSTRAINT_MUST_NOT_BE_SCALAR_TYPE( Type1* const          );
    BLAZE_CONSTRAINT_MUST_NOT_BE_SCALAR_TYPE( Type1* volatile       );
    BLAZE_CONSTRAINT_MUST_NOT_BE_SCALAR_TYPE( Type1* const volatile );
+
+   BLAZE_CONSTRAINT_MUST_BE_SCALAR_TYPE    ( Type2                 );
+   BLAZE_CONSTRAINT_MUST_BE_SCALAR_TYPE    ( Type2 const           );
+   BLAZE_CONSTRAINT_MUST_BE_SCALAR_TYPE    ( Type2 volatile        );
+   BLAZE_CONSTRAINT_MUST_BE_SCALAR_TYPE    ( Type2 const volatile  );
    BLAZE_CONSTRAINT_MUST_NOT_BE_SCALAR_TYPE( Type2&                );
    BLAZE_CONSTRAINT_MUST_NOT_BE_SCALAR_TYPE( Type2*                );
    BLAZE_CONSTRAINT_MUST_NOT_BE_SCALAR_TYPE( Type2* const          );
    BLAZE_CONSTRAINT_MUST_NOT_BE_SCALAR_TYPE( Type2* volatile       );
    BLAZE_CONSTRAINT_MUST_NOT_BE_SCALAR_TYPE( Type2* const volatile );
+
    BLAZE_CONSTRAINT_MUST_NOT_BE_SCALAR_TYPE( Type3                 );
    BLAZE_CONSTRAINT_MUST_NOT_BE_SCALAR_TYPE( Type3 const           );
    BLAZE_CONSTRAINT_MUST_NOT_BE_SCALAR_TYPE( Type3 volatile        );
@@ -1127,6 +1323,7 @@ void OperationTest::testIsScalar()
    BLAZE_CONSTRAINT_MUST_NOT_BE_SCALAR_TYPE( Type3* const          );
    BLAZE_CONSTRAINT_MUST_NOT_BE_SCALAR_TYPE( Type3* volatile       );
    BLAZE_CONSTRAINT_MUST_NOT_BE_SCALAR_TYPE( Type3* const volatile );
+
    BLAZE_CONSTRAINT_MUST_NOT_BE_SCALAR_TYPE( Type4                 );
    BLAZE_CONSTRAINT_MUST_NOT_BE_SCALAR_TYPE( Type4 const           );
    BLAZE_CONSTRAINT_MUST_NOT_BE_SCALAR_TYPE( Type4 volatile        );
@@ -1136,6 +1333,7 @@ void OperationTest::testIsScalar()
    BLAZE_CONSTRAINT_MUST_NOT_BE_SCALAR_TYPE( Type4* const          );
    BLAZE_CONSTRAINT_MUST_NOT_BE_SCALAR_TYPE( Type4* volatile       );
    BLAZE_CONSTRAINT_MUST_NOT_BE_SCALAR_TYPE( Type4* const volatile );
+
    BLAZE_CONSTRAINT_MUST_NOT_BE_SCALAR_TYPE( Type5                 );
    BLAZE_CONSTRAINT_MUST_NOT_BE_SCALAR_TYPE( Type5 const           );
    BLAZE_CONSTRAINT_MUST_NOT_BE_SCALAR_TYPE( Type5 volatile        );
@@ -1145,6 +1343,7 @@ void OperationTest::testIsScalar()
    BLAZE_CONSTRAINT_MUST_NOT_BE_SCALAR_TYPE( Type5* const          );
    BLAZE_CONSTRAINT_MUST_NOT_BE_SCALAR_TYPE( Type5* volatile       );
    BLAZE_CONSTRAINT_MUST_NOT_BE_SCALAR_TYPE( Type5* const volatile );
+
    BLAZE_CONSTRAINT_MUST_NOT_BE_SCALAR_TYPE( Type6                 );
    BLAZE_CONSTRAINT_MUST_NOT_BE_SCALAR_TYPE( Type6 const           );
    BLAZE_CONSTRAINT_MUST_NOT_BE_SCALAR_TYPE( Type6 volatile        );
@@ -1193,37 +1392,61 @@ void OperationTest::testIsStrictlyLower()
    using blaze::StrictlyUpperMatrix;
    using blaze::DiagonalMatrix;
 
-   using Type1  = DynamicMatrix<int>;
-   using Type2  = const DynamicMatrix<int>;
-   using Type3  = volatile DynamicMatrix<int>;
-   using Type4  = LowerMatrix< DynamicMatrix<int> >;
-   using Type5  = const LowerMatrix< DynamicMatrix<int> >;
-   using Type6  = volatile LowerMatrix< DynamicMatrix<int> >;
-   using Type7  = StrictlyLowerMatrix< DynamicMatrix<int> >;
-   using Type8  = const StrictlyLowerMatrix< DynamicMatrix<int> >;
-   using Type9  = volatile StrictlyLowerMatrix< DynamicMatrix<int> >;
-   using Type10 = StrictlyUpperMatrix< DynamicMatrix<int> >;
-   using Type11 = const StrictlyUpperMatrix< DynamicMatrix<int> >;
-   using Type12 = volatile StrictlyUpperMatrix< DynamicMatrix<int> >;
-   using Type13 = DiagonalMatrix< DynamicMatrix<int> >;
-   using Type14 = const DiagonalMatrix< DynamicMatrix<int> >;
-   using Type15 = volatile DiagonalMatrix< DynamicMatrix<int> >;
+   using Type1 = DynamicMatrix<int>;
+   using Type2 = LowerMatrix< DynamicMatrix<int> >;
+   using Type3 = StrictlyLowerMatrix< DynamicMatrix<int> >;
+   using Type4 = StrictlyUpperMatrix< DynamicMatrix<int> >;
+   using Type5 = DiagonalMatrix< DynamicMatrix<int> >;
 
-   BLAZE_CONSTRAINT_MUST_NOT_BE_STRICTLY_LOWER_MATRIX_TYPE( Type1  );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_STRICTLY_LOWER_MATRIX_TYPE( Type2  );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_STRICTLY_LOWER_MATRIX_TYPE( Type3  );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_STRICTLY_LOWER_MATRIX_TYPE( Type4  );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_STRICTLY_LOWER_MATRIX_TYPE( Type5  );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_STRICTLY_LOWER_MATRIX_TYPE( Type6  );
-   BLAZE_CONSTRAINT_MUST_BE_STRICTLY_LOWER_MATRIX_TYPE    ( Type7  );
-   BLAZE_CONSTRAINT_MUST_BE_STRICTLY_LOWER_MATRIX_TYPE    ( Type8  );
-   BLAZE_CONSTRAINT_MUST_BE_STRICTLY_LOWER_MATRIX_TYPE    ( Type9  );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_STRICTLY_LOWER_MATRIX_TYPE( Type10 );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_STRICTLY_LOWER_MATRIX_TYPE( Type11 );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_STRICTLY_LOWER_MATRIX_TYPE( Type12 );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_STRICTLY_LOWER_MATRIX_TYPE( Type13 );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_STRICTLY_LOWER_MATRIX_TYPE( Type14 );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_STRICTLY_LOWER_MATRIX_TYPE( Type15 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_STRICTLY_LOWER_MATRIX_TYPE( Type1                 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_STRICTLY_LOWER_MATRIX_TYPE( Type1 const           );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_STRICTLY_LOWER_MATRIX_TYPE( Type1 volatile        );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_STRICTLY_LOWER_MATRIX_TYPE( Type1 const volatile  );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_STRICTLY_LOWER_MATRIX_TYPE( Type1&                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_STRICTLY_LOWER_MATRIX_TYPE( Type1*                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_STRICTLY_LOWER_MATRIX_TYPE( Type1* const          );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_STRICTLY_LOWER_MATRIX_TYPE( Type1* volatile       );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_STRICTLY_LOWER_MATRIX_TYPE( Type1* const volatile );
+
+   BLAZE_CONSTRAINT_MUST_NOT_BE_STRICTLY_LOWER_MATRIX_TYPE( Type2                 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_STRICTLY_LOWER_MATRIX_TYPE( Type2 const           );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_STRICTLY_LOWER_MATRIX_TYPE( Type2 volatile        );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_STRICTLY_LOWER_MATRIX_TYPE( Type2 const volatile  );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_STRICTLY_LOWER_MATRIX_TYPE( Type2&                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_STRICTLY_LOWER_MATRIX_TYPE( Type2*                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_STRICTLY_LOWER_MATRIX_TYPE( Type2* const          );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_STRICTLY_LOWER_MATRIX_TYPE( Type2* volatile       );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_STRICTLY_LOWER_MATRIX_TYPE( Type2* const volatile );
+
+   BLAZE_CONSTRAINT_MUST_BE_STRICTLY_LOWER_MATRIX_TYPE    ( Type3                 );
+   BLAZE_CONSTRAINT_MUST_BE_STRICTLY_LOWER_MATRIX_TYPE    ( Type3 const           );
+   BLAZE_CONSTRAINT_MUST_BE_STRICTLY_LOWER_MATRIX_TYPE    ( Type3 volatile        );
+   BLAZE_CONSTRAINT_MUST_BE_STRICTLY_LOWER_MATRIX_TYPE    ( Type3 const volatile  );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_STRICTLY_LOWER_MATRIX_TYPE( Type3&                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_STRICTLY_LOWER_MATRIX_TYPE( Type3*                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_STRICTLY_LOWER_MATRIX_TYPE( Type3* const          );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_STRICTLY_LOWER_MATRIX_TYPE( Type3* volatile       );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_STRICTLY_LOWER_MATRIX_TYPE( Type3* const volatile );
+
+   BLAZE_CONSTRAINT_MUST_NOT_BE_STRICTLY_LOWER_MATRIX_TYPE( Type4                 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_STRICTLY_LOWER_MATRIX_TYPE( Type4 const           );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_STRICTLY_LOWER_MATRIX_TYPE( Type4 volatile        );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_STRICTLY_LOWER_MATRIX_TYPE( Type4 const volatile  );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_STRICTLY_LOWER_MATRIX_TYPE( Type4&                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_STRICTLY_LOWER_MATRIX_TYPE( Type4*                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_STRICTLY_LOWER_MATRIX_TYPE( Type4* const          );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_STRICTLY_LOWER_MATRIX_TYPE( Type4* volatile       );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_STRICTLY_LOWER_MATRIX_TYPE( Type4* const volatile );
+
+   BLAZE_CONSTRAINT_MUST_NOT_BE_STRICTLY_LOWER_MATRIX_TYPE( Type5                 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_STRICTLY_LOWER_MATRIX_TYPE( Type5 const           );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_STRICTLY_LOWER_MATRIX_TYPE( Type5 volatile        );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_STRICTLY_LOWER_MATRIX_TYPE( Type5 const volatile  );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_STRICTLY_LOWER_MATRIX_TYPE( Type5&                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_STRICTLY_LOWER_MATRIX_TYPE( Type5*                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_STRICTLY_LOWER_MATRIX_TYPE( Type5* const          );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_STRICTLY_LOWER_MATRIX_TYPE( Type5* volatile       );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_STRICTLY_LOWER_MATRIX_TYPE( Type5* const volatile );
 }
 //*************************************************************************************************
 
@@ -1245,37 +1468,61 @@ void OperationTest::testIsStrictlyUpper()
    using blaze::StrictlyUpperMatrix;
    using blaze::DiagonalMatrix;
 
-   using Type1  = DynamicMatrix<int>;
-   using Type2  = const DynamicMatrix<int>;
-   using Type3  = volatile DynamicMatrix<int>;
-   using Type4  = StrictlyLowerMatrix< DynamicMatrix<int> >;
-   using Type5  = const StrictlyLowerMatrix< DynamicMatrix<int> >;
-   using Type6  = volatile StrictlyLowerMatrix< DynamicMatrix<int> >;
-   using Type7  = UpperMatrix< DynamicMatrix<int> >;
-   using Type8  = const UpperMatrix< DynamicMatrix<int> >;
-   using Type9  = volatile UpperMatrix< DynamicMatrix<int> >;
-   using Type10 = StrictlyUpperMatrix< DynamicMatrix<int> >;
-   using Type11 = const StrictlyUpperMatrix< DynamicMatrix<int> >;
-   using Type12 = volatile StrictlyUpperMatrix< DynamicMatrix<int> >;
-   using Type13 = DiagonalMatrix< DynamicMatrix<int> >;
-   using Type14 = const DiagonalMatrix< DynamicMatrix<int> >;
-   using Type15 = volatile DiagonalMatrix< DynamicMatrix<int> >;
+   using Type1 = DynamicMatrix<int>;
+   using Type2 = StrictlyLowerMatrix< DynamicMatrix<int> >;
+   using Type3 = UpperMatrix< DynamicMatrix<int> >;
+   using Type4 = StrictlyUpperMatrix< DynamicMatrix<int> >;
+   using Type5 = DiagonalMatrix< DynamicMatrix<int> >;
 
-   BLAZE_CONSTRAINT_MUST_NOT_BE_STRICTLY_UPPER_MATRIX_TYPE( Type1  );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_STRICTLY_UPPER_MATRIX_TYPE( Type2  );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_STRICTLY_UPPER_MATRIX_TYPE( Type3  );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_STRICTLY_UPPER_MATRIX_TYPE( Type4  );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_STRICTLY_UPPER_MATRIX_TYPE( Type5  );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_STRICTLY_UPPER_MATRIX_TYPE( Type6  );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_STRICTLY_UPPER_MATRIX_TYPE( Type7  );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_STRICTLY_UPPER_MATRIX_TYPE( Type8  );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_STRICTLY_UPPER_MATRIX_TYPE( Type9  );
-   BLAZE_CONSTRAINT_MUST_BE_STRICTLY_UPPER_MATRIX_TYPE    ( Type10 );
-   BLAZE_CONSTRAINT_MUST_BE_STRICTLY_UPPER_MATRIX_TYPE    ( Type11 );
-   BLAZE_CONSTRAINT_MUST_BE_STRICTLY_UPPER_MATRIX_TYPE    ( Type12 );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_STRICTLY_UPPER_MATRIX_TYPE( Type13 );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_STRICTLY_UPPER_MATRIX_TYPE( Type14 );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_STRICTLY_UPPER_MATRIX_TYPE( Type15 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_STRICTLY_UPPER_MATRIX_TYPE( Type1                 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_STRICTLY_UPPER_MATRIX_TYPE( Type1 const           );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_STRICTLY_UPPER_MATRIX_TYPE( Type1 volatile        );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_STRICTLY_UPPER_MATRIX_TYPE( Type1 const volatile  );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_STRICTLY_UPPER_MATRIX_TYPE( Type1&                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_STRICTLY_UPPER_MATRIX_TYPE( Type1*                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_STRICTLY_UPPER_MATRIX_TYPE( Type1* const          );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_STRICTLY_UPPER_MATRIX_TYPE( Type1* volatile       );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_STRICTLY_UPPER_MATRIX_TYPE( Type1* const volatile );
+
+   BLAZE_CONSTRAINT_MUST_NOT_BE_STRICTLY_UPPER_MATRIX_TYPE( Type2                 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_STRICTLY_UPPER_MATRIX_TYPE( Type2 const           );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_STRICTLY_UPPER_MATRIX_TYPE( Type2 volatile        );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_STRICTLY_UPPER_MATRIX_TYPE( Type2 const volatile  );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_STRICTLY_UPPER_MATRIX_TYPE( Type2&                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_STRICTLY_UPPER_MATRIX_TYPE( Type2*                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_STRICTLY_UPPER_MATRIX_TYPE( Type2* const          );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_STRICTLY_UPPER_MATRIX_TYPE( Type2* volatile       );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_STRICTLY_UPPER_MATRIX_TYPE( Type2* const volatile );
+
+   BLAZE_CONSTRAINT_MUST_NOT_BE_STRICTLY_UPPER_MATRIX_TYPE( Type3                 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_STRICTLY_UPPER_MATRIX_TYPE( Type3 const           );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_STRICTLY_UPPER_MATRIX_TYPE( Type3 volatile        );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_STRICTLY_UPPER_MATRIX_TYPE( Type3 const volatile  );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_STRICTLY_UPPER_MATRIX_TYPE( Type3&                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_STRICTLY_UPPER_MATRIX_TYPE( Type3*                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_STRICTLY_UPPER_MATRIX_TYPE( Type3* const          );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_STRICTLY_UPPER_MATRIX_TYPE( Type3* volatile       );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_STRICTLY_UPPER_MATRIX_TYPE( Type3* const volatile );
+
+   BLAZE_CONSTRAINT_MUST_BE_STRICTLY_UPPER_MATRIX_TYPE    ( Type4                 );
+   BLAZE_CONSTRAINT_MUST_BE_STRICTLY_UPPER_MATRIX_TYPE    ( Type4 const           );
+   BLAZE_CONSTRAINT_MUST_BE_STRICTLY_UPPER_MATRIX_TYPE    ( Type4 volatile        );
+   BLAZE_CONSTRAINT_MUST_BE_STRICTLY_UPPER_MATRIX_TYPE    ( Type4 const volatile  );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_STRICTLY_UPPER_MATRIX_TYPE( Type4&                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_STRICTLY_UPPER_MATRIX_TYPE( Type4*                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_STRICTLY_UPPER_MATRIX_TYPE( Type4* const          );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_STRICTLY_UPPER_MATRIX_TYPE( Type4* volatile       );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_STRICTLY_UPPER_MATRIX_TYPE( Type4* const volatile );
+
+   BLAZE_CONSTRAINT_MUST_NOT_BE_STRICTLY_UPPER_MATRIX_TYPE( Type5                 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_STRICTLY_UPPER_MATRIX_TYPE( Type5 const           );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_STRICTLY_UPPER_MATRIX_TYPE( Type5 volatile        );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_STRICTLY_UPPER_MATRIX_TYPE( Type5 const volatile  );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_STRICTLY_UPPER_MATRIX_TYPE( Type5&                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_STRICTLY_UPPER_MATRIX_TYPE( Type5*                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_STRICTLY_UPPER_MATRIX_TYPE( Type5* const          );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_STRICTLY_UPPER_MATRIX_TYPE( Type5* volatile       );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_STRICTLY_UPPER_MATRIX_TYPE( Type1* const volatile );
 }
 //*************************************************************************************************
 
@@ -1298,43 +1545,72 @@ void OperationTest::testIsSymmetric()
    using blaze::DiagonalMatrix;
    using blaze::IdentityMatrix;
 
-   using Type1  = DynamicMatrix<int>;
-   using Type2  = const DynamicMatrix<int>;
-   using Type3  = volatile DynamicMatrix<int>;
-   using Type4  = SymmetricMatrix< DynamicMatrix<int> >;
-   using Type5  = const SymmetricMatrix< DynamicMatrix<int> >;
-   using Type6  = volatile SymmetricMatrix< DynamicMatrix<int> >;
-   using Type7  = HermitianMatrix< DynamicMatrix<int> >;
-   using Type8  = const HermitianMatrix< DynamicMatrix<int> >;
-   using Type9  = volatile HermitianMatrix< DynamicMatrix<int> >;
-   using Type10 = HermitianMatrix< DynamicMatrix< complex<int> > >;
-   using Type11 = const HermitianMatrix< DynamicMatrix< complex<int> > >;
-   using Type12 = volatile HermitianMatrix< DynamicMatrix< complex<int> > >;
-   using Type13 = DiagonalMatrix< DynamicMatrix<int> >;
-   using Type14 = const DiagonalMatrix< DynamicMatrix<int> >;
-   using Type15 = volatile DiagonalMatrix< DynamicMatrix<int> >;
-   using Type16 = IdentityMatrix<int>;
-   using Type17 = const IdentityMatrix<int>;
-   using Type18 = volatile IdentityMatrix<int>;
+   using Type1 = DynamicMatrix<int>;
+   using Type2 = SymmetricMatrix< DynamicMatrix<int> >;
+   using Type3 = HermitianMatrix< DynamicMatrix<int> >;
+   using Type4 = HermitianMatrix< DynamicMatrix< complex<int> > >;
+   using Type5 = DiagonalMatrix< DynamicMatrix<int> >;
+   using Type6 = IdentityMatrix<int>;
 
-   BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( Type1  );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( Type2  );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( Type3  );
-   BLAZE_CONSTRAINT_MUST_BE_SYMMETRIC_MATRIX_TYPE    ( Type4  );
-   BLAZE_CONSTRAINT_MUST_BE_SYMMETRIC_MATRIX_TYPE    ( Type5  );
-   BLAZE_CONSTRAINT_MUST_BE_SYMMETRIC_MATRIX_TYPE    ( Type6  );
-   BLAZE_CONSTRAINT_MUST_BE_SYMMETRIC_MATRIX_TYPE    ( Type7  );
-   BLAZE_CONSTRAINT_MUST_BE_SYMMETRIC_MATRIX_TYPE    ( Type8  );
-   BLAZE_CONSTRAINT_MUST_BE_SYMMETRIC_MATRIX_TYPE    ( Type9  );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( Type10 );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( Type11 );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( Type12 );
-   BLAZE_CONSTRAINT_MUST_BE_SYMMETRIC_MATRIX_TYPE    ( Type13 );
-   BLAZE_CONSTRAINT_MUST_BE_SYMMETRIC_MATRIX_TYPE    ( Type14 );
-   BLAZE_CONSTRAINT_MUST_BE_SYMMETRIC_MATRIX_TYPE    ( Type15 );
-   BLAZE_CONSTRAINT_MUST_BE_SYMMETRIC_MATRIX_TYPE    ( Type16 );
-   BLAZE_CONSTRAINT_MUST_BE_SYMMETRIC_MATRIX_TYPE    ( Type17 );
-   BLAZE_CONSTRAINT_MUST_BE_SYMMETRIC_MATRIX_TYPE    ( Type18 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( Type1                 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( Type1 const           );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( Type1 volatile        );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( Type1 const volatile  );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( Type1&                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( Type1*                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( Type1* const          );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( Type1* volatile       );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( Type1* const volatile );
+
+   BLAZE_CONSTRAINT_MUST_BE_SYMMETRIC_MATRIX_TYPE    ( Type2                 );
+   BLAZE_CONSTRAINT_MUST_BE_SYMMETRIC_MATRIX_TYPE    ( Type2 const           );
+   BLAZE_CONSTRAINT_MUST_BE_SYMMETRIC_MATRIX_TYPE    ( Type2 volatile        );
+   BLAZE_CONSTRAINT_MUST_BE_SYMMETRIC_MATRIX_TYPE    ( Type2 const volatile  );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( Type2&                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( Type2*                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( Type2* const          );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( Type2* volatile       );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( Type2* const volatile );
+
+   BLAZE_CONSTRAINT_MUST_BE_SYMMETRIC_MATRIX_TYPE    ( Type3                 );
+   BLAZE_CONSTRAINT_MUST_BE_SYMMETRIC_MATRIX_TYPE    ( Type3 const           );
+   BLAZE_CONSTRAINT_MUST_BE_SYMMETRIC_MATRIX_TYPE    ( Type3 volatile        );
+   BLAZE_CONSTRAINT_MUST_BE_SYMMETRIC_MATRIX_TYPE    ( Type3 const volatile  );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( Type3&                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( Type3*                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( Type3* const          );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( Type3* volatile       );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( Type3* const volatile );
+
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( Type4                 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( Type4 const           );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( Type4 volatile        );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( Type4 const volatile  );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( Type4&                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( Type4*                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( Type4* const          );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( Type4* volatile       );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( Type4* const volatile );
+
+   BLAZE_CONSTRAINT_MUST_BE_SYMMETRIC_MATRIX_TYPE    ( Type5                 );
+   BLAZE_CONSTRAINT_MUST_BE_SYMMETRIC_MATRIX_TYPE    ( Type5 const           );
+   BLAZE_CONSTRAINT_MUST_BE_SYMMETRIC_MATRIX_TYPE    ( Type5 volatile        );
+   BLAZE_CONSTRAINT_MUST_BE_SYMMETRIC_MATRIX_TYPE    ( Type5 const volatile  );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( Type5&                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( Type5*                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( Type5* const          );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( Type5* volatile       );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( Type5* const volatile );
+
+   BLAZE_CONSTRAINT_MUST_BE_SYMMETRIC_MATRIX_TYPE    ( Type6                 );
+   BLAZE_CONSTRAINT_MUST_BE_SYMMETRIC_MATRIX_TYPE    ( Type6 const           );
+   BLAZE_CONSTRAINT_MUST_BE_SYMMETRIC_MATRIX_TYPE    ( Type6 volatile        );
+   BLAZE_CONSTRAINT_MUST_BE_SYMMETRIC_MATRIX_TYPE    ( Type6 const volatile  );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( Type6&                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( Type6*                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( Type6* const          );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( Type6* volatile       );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( Type6* const volatile );
 }
 //*************************************************************************************************
 
@@ -1350,22 +1626,55 @@ void OperationTest::testIsSymmetric()
 */
 void OperationTest::testIsUniform()
 {
+   using blaze::DynamicVector;
    using blaze::DynamicMatrix;
-   using blaze::SymmetricMatrix;
+   using blaze::UniformVector;
+   using blaze::UniformMatrix;
 
-   using Type1 = DynamicMatrix<int>;
-   using Type2 = const DynamicMatrix<int>;
-   using Type3 = volatile DynamicMatrix<int>;
-   using Type4 = SymmetricMatrix< DynamicMatrix<int> >;
-   using Type5 = const SymmetricMatrix< DynamicMatrix<int> >;
-   using Type6 = volatile SymmetricMatrix< DynamicMatrix<int> >;
+   using Type1 = DynamicVector<int>;
+   using Type2 = DynamicMatrix<int>;
+   using Type3 = UniformVector<int>;
+   using Type4 = UniformMatrix<int>;
 
-   BLAZE_CONSTRAINT_MUST_NOT_BE_UNILOWER_MATRIX_TYPE( Type1 );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_UNILOWER_MATRIX_TYPE( Type2 );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_UNILOWER_MATRIX_TYPE( Type3 );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_UNILOWER_MATRIX_TYPE( Type4 );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_UNILOWER_MATRIX_TYPE( Type5 );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_UNILOWER_MATRIX_TYPE( Type6 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNIFORM_TYPE( Type1                 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNIFORM_TYPE( Type1 const           );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNIFORM_TYPE( Type1 volatile        );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNIFORM_TYPE( Type1 const volatile  );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNIFORM_TYPE( Type1&                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNIFORM_TYPE( Type1*                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNIFORM_TYPE( Type1* const          );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNIFORM_TYPE( Type1* volatile       );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNIFORM_TYPE( Type1* const volatile );
+
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNIFORM_TYPE( Type2                 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNIFORM_TYPE( Type2 const           );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNIFORM_TYPE( Type2 volatile        );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNIFORM_TYPE( Type2 const volatile  );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNIFORM_TYPE( Type2&                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNIFORM_TYPE( Type2*                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNIFORM_TYPE( Type2* const          );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNIFORM_TYPE( Type2* volatile       );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNIFORM_TYPE( Type2* const volatile );
+
+   BLAZE_CONSTRAINT_MUST_BE_UNIFORM_TYPE    ( Type3                 );
+   BLAZE_CONSTRAINT_MUST_BE_UNIFORM_TYPE    ( Type3 const           );
+   BLAZE_CONSTRAINT_MUST_BE_UNIFORM_TYPE    ( Type3 volatile        );
+   BLAZE_CONSTRAINT_MUST_BE_UNIFORM_TYPE    ( Type3 const volatile  );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNIFORM_TYPE( Type3&                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNIFORM_TYPE( Type3*                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNIFORM_TYPE( Type3* const          );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNIFORM_TYPE( Type3* volatile       );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNIFORM_TYPE( Type3* const volatile );
+
+   BLAZE_CONSTRAINT_MUST_BE_UNIFORM_TYPE    ( Type4                 );
+   BLAZE_CONSTRAINT_MUST_BE_UNIFORM_TYPE    ( Type4 const           );
+   BLAZE_CONSTRAINT_MUST_BE_UNIFORM_TYPE    ( Type4 volatile        );
+   BLAZE_CONSTRAINT_MUST_BE_UNIFORM_TYPE    ( Type4 const volatile  );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNIFORM_TYPE( Type4&                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNIFORM_TYPE( Type4*                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNIFORM_TYPE( Type4* const          );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNIFORM_TYPE( Type4* volatile       );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNIFORM_TYPE( Type4* const volatile );
 }
 //*************************************************************************************************
 
@@ -1388,43 +1697,72 @@ void OperationTest::testIsUniLower()
    using blaze::DiagonalMatrix;
    using blaze::IdentityMatrix;
 
-   using Type1  = DynamicMatrix<int>;
-   using Type2  = const DynamicMatrix<int>;
-   using Type3  = volatile DynamicMatrix<int>;
-   using Type4  = LowerMatrix< DynamicMatrix<int> >;
-   using Type5  = const LowerMatrix< DynamicMatrix<int> >;
-   using Type6  = volatile LowerMatrix< DynamicMatrix<int> >;
-   using Type7  = UniLowerMatrix< DynamicMatrix<int> >;
-   using Type8  = const UniLowerMatrix< DynamicMatrix<int> >;
-   using Type9  = volatile UniLowerMatrix< DynamicMatrix<int> >;
-   using Type10 = UniUpperMatrix< DynamicMatrix<int> >;
-   using Type11 = const UniUpperMatrix< DynamicMatrix<int> >;
-   using Type12 = volatile UniUpperMatrix< DynamicMatrix<int> >;
-   using Type13 = DiagonalMatrix< DynamicMatrix<int> >;
-   using Type14 = const DiagonalMatrix< DynamicMatrix<int> >;
-   using Type15 = volatile DiagonalMatrix< DynamicMatrix<int> >;
-   using Type16 = IdentityMatrix<int>;
-   using Type17 = const IdentityMatrix<int>;
-   using Type18 = volatile IdentityMatrix<int>;
+   using Type1 = DynamicMatrix<int>;
+   using Type2 = LowerMatrix< DynamicMatrix<int> >;
+   using Type3 = UniLowerMatrix< DynamicMatrix<int> >;
+   using Type4 = UniUpperMatrix< DynamicMatrix<int> >;
+   using Type5 = DiagonalMatrix< DynamicMatrix<int> >;
+   using Type6 = IdentityMatrix<int>;
 
-   BLAZE_CONSTRAINT_MUST_NOT_BE_UNILOWER_MATRIX_TYPE( Type1  );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_UNILOWER_MATRIX_TYPE( Type2  );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_UNILOWER_MATRIX_TYPE( Type3  );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_UNILOWER_MATRIX_TYPE( Type4  );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_UNILOWER_MATRIX_TYPE( Type5  );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_UNILOWER_MATRIX_TYPE( Type6  );
-   BLAZE_CONSTRAINT_MUST_BE_UNILOWER_MATRIX_TYPE    ( Type7  );
-   BLAZE_CONSTRAINT_MUST_BE_UNILOWER_MATRIX_TYPE    ( Type8  );
-   BLAZE_CONSTRAINT_MUST_BE_UNILOWER_MATRIX_TYPE    ( Type9  );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_UNILOWER_MATRIX_TYPE( Type10 );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_UNILOWER_MATRIX_TYPE( Type11 );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_UNILOWER_MATRIX_TYPE( Type12 );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_UNILOWER_MATRIX_TYPE( Type13 );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_UNILOWER_MATRIX_TYPE( Type14 );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_UNILOWER_MATRIX_TYPE( Type15 );
-   BLAZE_CONSTRAINT_MUST_BE_UNILOWER_MATRIX_TYPE    ( Type16 );
-   BLAZE_CONSTRAINT_MUST_BE_UNILOWER_MATRIX_TYPE    ( Type17 );
-   BLAZE_CONSTRAINT_MUST_BE_UNILOWER_MATRIX_TYPE    ( Type18 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNILOWER_MATRIX_TYPE( Type1                 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNILOWER_MATRIX_TYPE( Type1 const           );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNILOWER_MATRIX_TYPE( Type1 volatile        );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNILOWER_MATRIX_TYPE( Type1 const volatile  );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNILOWER_MATRIX_TYPE( Type1&                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNILOWER_MATRIX_TYPE( Type1*                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNILOWER_MATRIX_TYPE( Type1* const          );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNILOWER_MATRIX_TYPE( Type1* volatile       );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNILOWER_MATRIX_TYPE( Type1* const volatile );
+
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNILOWER_MATRIX_TYPE( Type2                 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNILOWER_MATRIX_TYPE( Type2 const           );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNILOWER_MATRIX_TYPE( Type2 volatile        );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNILOWER_MATRIX_TYPE( Type2 const volatile  );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNILOWER_MATRIX_TYPE( Type2&                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNILOWER_MATRIX_TYPE( Type2*                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNILOWER_MATRIX_TYPE( Type2* const          );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNILOWER_MATRIX_TYPE( Type2* volatile       );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNILOWER_MATRIX_TYPE( Type2* const volatile );
+
+   BLAZE_CONSTRAINT_MUST_BE_UNILOWER_MATRIX_TYPE    ( Type3                 );
+   BLAZE_CONSTRAINT_MUST_BE_UNILOWER_MATRIX_TYPE    ( Type3 const           );
+   BLAZE_CONSTRAINT_MUST_BE_UNILOWER_MATRIX_TYPE    ( Type3 volatile        );
+   BLAZE_CONSTRAINT_MUST_BE_UNILOWER_MATRIX_TYPE    ( Type3 const volatile  );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNILOWER_MATRIX_TYPE( Type3&                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNILOWER_MATRIX_TYPE( Type3*                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNILOWER_MATRIX_TYPE( Type3* const          );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNILOWER_MATRIX_TYPE( Type3* volatile       );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNILOWER_MATRIX_TYPE( Type3* const volatile );
+
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNILOWER_MATRIX_TYPE( Type4                 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNILOWER_MATRIX_TYPE( Type4 const           );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNILOWER_MATRIX_TYPE( Type4 volatile        );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNILOWER_MATRIX_TYPE( Type4 const volatile  );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNILOWER_MATRIX_TYPE( Type4&                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNILOWER_MATRIX_TYPE( Type4*                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNILOWER_MATRIX_TYPE( Type4* const          );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNILOWER_MATRIX_TYPE( Type4* volatile       );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNILOWER_MATRIX_TYPE( Type4* const volatile );
+
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNILOWER_MATRIX_TYPE( Type5                 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNILOWER_MATRIX_TYPE( Type5 const           );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNILOWER_MATRIX_TYPE( Type5 volatile        );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNILOWER_MATRIX_TYPE( Type5 const volatile  );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNILOWER_MATRIX_TYPE( Type5&                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNILOWER_MATRIX_TYPE( Type5*                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNILOWER_MATRIX_TYPE( Type5* const          );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNILOWER_MATRIX_TYPE( Type5* volatile       );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNILOWER_MATRIX_TYPE( Type5* const volatile );
+
+   BLAZE_CONSTRAINT_MUST_BE_UNILOWER_MATRIX_TYPE    ( Type6                 );
+   BLAZE_CONSTRAINT_MUST_BE_UNILOWER_MATRIX_TYPE    ( Type6 const           );
+   BLAZE_CONSTRAINT_MUST_BE_UNILOWER_MATRIX_TYPE    ( Type6 volatile        );
+   BLAZE_CONSTRAINT_MUST_BE_UNILOWER_MATRIX_TYPE    ( Type6 const volatile  );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNILOWER_MATRIX_TYPE( Type6&                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNILOWER_MATRIX_TYPE( Type6*                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNILOWER_MATRIX_TYPE( Type6* const          );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNILOWER_MATRIX_TYPE( Type6* volatile       );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNILOWER_MATRIX_TYPE( Type6* const volatile );
 }
 //*************************************************************************************************
 
@@ -1447,43 +1785,72 @@ void OperationTest::testIsUniUpper()
    using blaze::DiagonalMatrix;
    using blaze::IdentityMatrix;
 
-   using Type1  = DynamicMatrix<int>;
-   using Type2  = const DynamicMatrix<int>;
-   using Type3  = volatile DynamicMatrix<int>;
-   using Type4  = UniLowerMatrix< DynamicMatrix<int> >;
-   using Type5  = const UniLowerMatrix< DynamicMatrix<int> >;
-   using Type6  = volatile UniLowerMatrix< DynamicMatrix<int> >;
-   using Type7  = UpperMatrix< DynamicMatrix<int> >;
-   using Type8  = const UpperMatrix< DynamicMatrix<int> >;
-   using Type9  = volatile UpperMatrix< DynamicMatrix<int> >;
-   using Type10 = UniUpperMatrix< DynamicMatrix<int> >;
-   using Type11 = const UniUpperMatrix< DynamicMatrix<int> >;
-   using Type12 = volatile UniUpperMatrix< DynamicMatrix<int> >;
-   using Type13 = DiagonalMatrix< DynamicMatrix<int> >;
-   using Type14 = const DiagonalMatrix< DynamicMatrix<int> >;
-   using Type15 = volatile DiagonalMatrix< DynamicMatrix<int> >;
-   using Type16 = IdentityMatrix<int>;
-   using Type17 = const IdentityMatrix<int>;
-   using Type18 = volatile IdentityMatrix<int>;
+   using Type1 = DynamicMatrix<int>;
+   using Type2 = UniLowerMatrix< DynamicMatrix<int> >;
+   using Type3 = UpperMatrix< DynamicMatrix<int> >;
+   using Type4 = UniUpperMatrix< DynamicMatrix<int> >;
+   using Type5 = DiagonalMatrix< DynamicMatrix<int> >;
+   using Type6 = IdentityMatrix<int>;
 
-   BLAZE_CONSTRAINT_MUST_NOT_BE_UNIUPPER_MATRIX_TYPE( Type1  );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_UNIUPPER_MATRIX_TYPE( Type2  );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_UNIUPPER_MATRIX_TYPE( Type3  );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_UNIUPPER_MATRIX_TYPE( Type4  );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_UNIUPPER_MATRIX_TYPE( Type5  );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_UNIUPPER_MATRIX_TYPE( Type6  );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_UNIUPPER_MATRIX_TYPE( Type7  );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_UNIUPPER_MATRIX_TYPE( Type8  );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_UNIUPPER_MATRIX_TYPE( Type9  );
-   BLAZE_CONSTRAINT_MUST_BE_UNIUPPER_MATRIX_TYPE    ( Type10 );
-   BLAZE_CONSTRAINT_MUST_BE_UNIUPPER_MATRIX_TYPE    ( Type11 );
-   BLAZE_CONSTRAINT_MUST_BE_UNIUPPER_MATRIX_TYPE    ( Type12 );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_UNIUPPER_MATRIX_TYPE( Type13 );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_UNIUPPER_MATRIX_TYPE( Type14 );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_UNIUPPER_MATRIX_TYPE( Type15 );
-   BLAZE_CONSTRAINT_MUST_BE_UNIUPPER_MATRIX_TYPE    ( Type16 );
-   BLAZE_CONSTRAINT_MUST_BE_UNIUPPER_MATRIX_TYPE    ( Type17 );
-   BLAZE_CONSTRAINT_MUST_BE_UNIUPPER_MATRIX_TYPE    ( Type18 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNIUPPER_MATRIX_TYPE( Type1                 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNIUPPER_MATRIX_TYPE( Type1 const           );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNIUPPER_MATRIX_TYPE( Type1 volatile        );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNIUPPER_MATRIX_TYPE( Type1 const volatile  );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNIUPPER_MATRIX_TYPE( Type1&                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNIUPPER_MATRIX_TYPE( Type1*                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNIUPPER_MATRIX_TYPE( Type1* const          );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNIUPPER_MATRIX_TYPE( Type1* volatile       );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNIUPPER_MATRIX_TYPE( Type1* const volatile );
+
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNIUPPER_MATRIX_TYPE( Type2                 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNIUPPER_MATRIX_TYPE( Type2 const           );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNIUPPER_MATRIX_TYPE( Type2 volatile        );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNIUPPER_MATRIX_TYPE( Type2 const volatile  );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNIUPPER_MATRIX_TYPE( Type2&                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNIUPPER_MATRIX_TYPE( Type2*                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNIUPPER_MATRIX_TYPE( Type2* const          );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNIUPPER_MATRIX_TYPE( Type2* volatile       );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNIUPPER_MATRIX_TYPE( Type2* const volatile );
+
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNIUPPER_MATRIX_TYPE( Type3                 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNIUPPER_MATRIX_TYPE( Type3 const           );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNIUPPER_MATRIX_TYPE( Type3 volatile        );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNIUPPER_MATRIX_TYPE( Type3 const volatile  );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNIUPPER_MATRIX_TYPE( Type3&                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNIUPPER_MATRIX_TYPE( Type3*                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNIUPPER_MATRIX_TYPE( Type3* const          );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNIUPPER_MATRIX_TYPE( Type3* volatile       );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNIUPPER_MATRIX_TYPE( Type3* const volatile );
+
+   BLAZE_CONSTRAINT_MUST_BE_UNIUPPER_MATRIX_TYPE    ( Type4                 );
+   BLAZE_CONSTRAINT_MUST_BE_UNIUPPER_MATRIX_TYPE    ( Type4 const           );
+   BLAZE_CONSTRAINT_MUST_BE_UNIUPPER_MATRIX_TYPE    ( Type4 volatile        );
+   BLAZE_CONSTRAINT_MUST_BE_UNIUPPER_MATRIX_TYPE    ( Type4 const volatile  );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNIUPPER_MATRIX_TYPE( Type4&                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNIUPPER_MATRIX_TYPE( Type4*                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNIUPPER_MATRIX_TYPE( Type4* const          );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNIUPPER_MATRIX_TYPE( Type4* volatile       );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNIUPPER_MATRIX_TYPE( Type4* const volatile );
+
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNIUPPER_MATRIX_TYPE( Type5                 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNIUPPER_MATRIX_TYPE( Type5 const           );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNIUPPER_MATRIX_TYPE( Type5 volatile        );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNIUPPER_MATRIX_TYPE( Type5 const volatile  );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNIUPPER_MATRIX_TYPE( Type5&                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNIUPPER_MATRIX_TYPE( Type5*                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNIUPPER_MATRIX_TYPE( Type5* const          );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNIUPPER_MATRIX_TYPE( Type5* volatile       );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNIUPPER_MATRIX_TYPE( Type5* const volatile );
+
+   BLAZE_CONSTRAINT_MUST_BE_UNIUPPER_MATRIX_TYPE    ( Type6                 );
+   BLAZE_CONSTRAINT_MUST_BE_UNIUPPER_MATRIX_TYPE    ( Type6 const           );
+   BLAZE_CONSTRAINT_MUST_BE_UNIUPPER_MATRIX_TYPE    ( Type6 volatile        );
+   BLAZE_CONSTRAINT_MUST_BE_UNIUPPER_MATRIX_TYPE    ( Type6 const volatile  );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNIUPPER_MATRIX_TYPE( Type6&                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNIUPPER_MATRIX_TYPE( Type6*                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNIUPPER_MATRIX_TYPE( Type6* const          );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNIUPPER_MATRIX_TYPE( Type6* volatile       );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNIUPPER_MATRIX_TYPE( Type6* const volatile );
 }
 //*************************************************************************************************
 
@@ -1507,49 +1874,83 @@ void OperationTest::testIsUpper()
    using blaze::UpperMatrix;
    using blaze::DiagonalMatrix;
 
-   using Type1  = DynamicMatrix<int>;
-   using Type2  = const DynamicMatrix<int>;
-   using Type3  = volatile DynamicMatrix<int>;
-   using Type4  = SymmetricMatrix< DynamicMatrix<int> >;
-   using Type5  = const SymmetricMatrix< DynamicMatrix<int> >;
-   using Type6  = volatile SymmetricMatrix< DynamicMatrix<int> >;
-   using Type7  = LowerMatrix< DynamicMatrix<int> >;
-   using Type8  = const LowerMatrix< DynamicMatrix<int> >;
-   using Type9  = volatile LowerMatrix< DynamicMatrix<int> >;
-   using Type10 = UpperMatrix< DynamicMatrix<int> >;
-   using Type11 = const UpperMatrix< DynamicMatrix<int> >;
-   using Type12 = volatile UpperMatrix< DynamicMatrix<int> >;
-   using Type13 = UniUpperMatrix< DynamicMatrix<int> >;
-   using Type14 = const UniUpperMatrix< DynamicMatrix<int> >;
-   using Type15 = volatile UniUpperMatrix< DynamicMatrix<int> >;
-   using Type16 = StrictlyUpperMatrix< DynamicMatrix<int> >;
-   using Type17 = const StrictlyUpperMatrix< DynamicMatrix<int> >;
-   using Type18 = volatile StrictlyUpperMatrix< DynamicMatrix<int> >;
-   using Type19 = DiagonalMatrix< DynamicMatrix<int> >;
-   using Type20 = const DiagonalMatrix< DynamicMatrix<int> >;
-   using Type21 = volatile DiagonalMatrix< DynamicMatrix<int> >;
+   using Type1 = DynamicMatrix<int>;
+   using Type2 = SymmetricMatrix< DynamicMatrix<int> >;
+   using Type3 = LowerMatrix< DynamicMatrix<int> >;
+   using Type4 = UpperMatrix< DynamicMatrix<int> >;
+   using Type5 = UniUpperMatrix< DynamicMatrix<int> >;
+   using Type6 = StrictlyUpperMatrix< DynamicMatrix<int> >;
+   using Type7 = DiagonalMatrix< DynamicMatrix<int> >;
 
-   BLAZE_CONSTRAINT_MUST_NOT_BE_UPPER_MATRIX_TYPE( Type1  );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_UPPER_MATRIX_TYPE( Type2  );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_UPPER_MATRIX_TYPE( Type3  );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_UPPER_MATRIX_TYPE( Type4  );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_UPPER_MATRIX_TYPE( Type5  );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_UPPER_MATRIX_TYPE( Type6  );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_UPPER_MATRIX_TYPE( Type7  );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_UPPER_MATRIX_TYPE( Type8  );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_UPPER_MATRIX_TYPE( Type9  );
-   BLAZE_CONSTRAINT_MUST_BE_UPPER_MATRIX_TYPE    ( Type10 );
-   BLAZE_CONSTRAINT_MUST_BE_UPPER_MATRIX_TYPE    ( Type11 );
-   BLAZE_CONSTRAINT_MUST_BE_UPPER_MATRIX_TYPE    ( Type12 );
-   BLAZE_CONSTRAINT_MUST_BE_UPPER_MATRIX_TYPE    ( Type13 );
-   BLAZE_CONSTRAINT_MUST_BE_UPPER_MATRIX_TYPE    ( Type14 );
-   BLAZE_CONSTRAINT_MUST_BE_UPPER_MATRIX_TYPE    ( Type15 );
-   BLAZE_CONSTRAINT_MUST_BE_UPPER_MATRIX_TYPE    ( Type16 );
-   BLAZE_CONSTRAINT_MUST_BE_UPPER_MATRIX_TYPE    ( Type17 );
-   BLAZE_CONSTRAINT_MUST_BE_UPPER_MATRIX_TYPE    ( Type18 );
-   BLAZE_CONSTRAINT_MUST_BE_UPPER_MATRIX_TYPE    ( Type19 );
-   BLAZE_CONSTRAINT_MUST_BE_UPPER_MATRIX_TYPE    ( Type20 );
-   BLAZE_CONSTRAINT_MUST_BE_UPPER_MATRIX_TYPE    ( Type21 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UPPER_MATRIX_TYPE( Type1                 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UPPER_MATRIX_TYPE( Type1 const           );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UPPER_MATRIX_TYPE( Type1 volatile        );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UPPER_MATRIX_TYPE( Type1 const volatile  );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UPPER_MATRIX_TYPE( Type1&                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UPPER_MATRIX_TYPE( Type1*                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UPPER_MATRIX_TYPE( Type1* const          );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UPPER_MATRIX_TYPE( Type1* volatile       );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UPPER_MATRIX_TYPE( Type1* const volatile );
+
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UPPER_MATRIX_TYPE( Type2                 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UPPER_MATRIX_TYPE( Type2 const           );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UPPER_MATRIX_TYPE( Type2 volatile        );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UPPER_MATRIX_TYPE( Type2 const volatile  );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UPPER_MATRIX_TYPE( Type2&                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UPPER_MATRIX_TYPE( Type2*                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UPPER_MATRIX_TYPE( Type2* const          );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UPPER_MATRIX_TYPE( Type2* volatile       );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UPPER_MATRIX_TYPE( Type2* const volatile );
+
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UPPER_MATRIX_TYPE( Type3                 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UPPER_MATRIX_TYPE( Type3 const           );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UPPER_MATRIX_TYPE( Type3 volatile        );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UPPER_MATRIX_TYPE( Type3 const volatile  );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UPPER_MATRIX_TYPE( Type3&                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UPPER_MATRIX_TYPE( Type3*                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UPPER_MATRIX_TYPE( Type3* const          );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UPPER_MATRIX_TYPE( Type3* volatile       );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UPPER_MATRIX_TYPE( Type3* const volatile );
+
+   BLAZE_CONSTRAINT_MUST_BE_UPPER_MATRIX_TYPE    ( Type4                 );
+   BLAZE_CONSTRAINT_MUST_BE_UPPER_MATRIX_TYPE    ( Type4 const           );
+   BLAZE_CONSTRAINT_MUST_BE_UPPER_MATRIX_TYPE    ( Type4 volatile        );
+   BLAZE_CONSTRAINT_MUST_BE_UPPER_MATRIX_TYPE    ( Type4 const volatile  );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UPPER_MATRIX_TYPE( Type4&                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UPPER_MATRIX_TYPE( Type4*                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UPPER_MATRIX_TYPE( Type4* const          );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UPPER_MATRIX_TYPE( Type4* volatile       );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UPPER_MATRIX_TYPE( Type4* const volatile );
+
+   BLAZE_CONSTRAINT_MUST_BE_UPPER_MATRIX_TYPE    ( Type5                 );
+   BLAZE_CONSTRAINT_MUST_BE_UPPER_MATRIX_TYPE    ( Type5 const           );
+   BLAZE_CONSTRAINT_MUST_BE_UPPER_MATRIX_TYPE    ( Type5 volatile        );
+   BLAZE_CONSTRAINT_MUST_BE_UPPER_MATRIX_TYPE    ( Type5 const volatile  );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UPPER_MATRIX_TYPE( Type5&                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UPPER_MATRIX_TYPE( Type5*                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UPPER_MATRIX_TYPE( Type5* const          );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UPPER_MATRIX_TYPE( Type5* volatile       );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UPPER_MATRIX_TYPE( Type5* const volatile );
+
+   BLAZE_CONSTRAINT_MUST_BE_UPPER_MATRIX_TYPE    ( Type6                 );
+   BLAZE_CONSTRAINT_MUST_BE_UPPER_MATRIX_TYPE    ( Type6 const           );
+   BLAZE_CONSTRAINT_MUST_BE_UPPER_MATRIX_TYPE    ( Type6 volatile        );
+   BLAZE_CONSTRAINT_MUST_BE_UPPER_MATRIX_TYPE    ( Type6 const volatile  );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UPPER_MATRIX_TYPE( Type6&                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UPPER_MATRIX_TYPE( Type6*                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UPPER_MATRIX_TYPE( Type6* const          );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UPPER_MATRIX_TYPE( Type6* volatile       );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UPPER_MATRIX_TYPE( Type6* const volatile );
+
+   BLAZE_CONSTRAINT_MUST_BE_UPPER_MATRIX_TYPE    ( Type7                 );
+   BLAZE_CONSTRAINT_MUST_BE_UPPER_MATRIX_TYPE    ( Type7 const           );
+   BLAZE_CONSTRAINT_MUST_BE_UPPER_MATRIX_TYPE    ( Type7 volatile        );
+   BLAZE_CONSTRAINT_MUST_BE_UPPER_MATRIX_TYPE    ( Type7 const volatile  );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UPPER_MATRIX_TYPE( Type7&                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UPPER_MATRIX_TYPE( Type7*                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UPPER_MATRIX_TYPE( Type7* const          );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UPPER_MATRIX_TYPE( Type7* volatile       );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UPPER_MATRIX_TYPE( Type7* const volatile );
 }
 //*************************************************************************************************
 
@@ -1581,20 +1982,22 @@ void OperationTest::testIsVector()
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_TYPE    ( Type1 const           );
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_TYPE    ( Type1 volatile        );
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_TYPE    ( Type1 const volatile  );
-   BLAZE_CONSTRAINT_MUST_BE_VECTOR_TYPE    ( Type2                 );
-   BLAZE_CONSTRAINT_MUST_BE_VECTOR_TYPE    ( Type2 const           );
-   BLAZE_CONSTRAINT_MUST_BE_VECTOR_TYPE    ( Type2 volatile        );
-   BLAZE_CONSTRAINT_MUST_BE_VECTOR_TYPE    ( Type2 const volatile  );
    BLAZE_CONSTRAINT_MUST_NOT_BE_VECTOR_TYPE( Type1&                );
    BLAZE_CONSTRAINT_MUST_NOT_BE_VECTOR_TYPE( Type1*                );
    BLAZE_CONSTRAINT_MUST_NOT_BE_VECTOR_TYPE( Type1* const          );
    BLAZE_CONSTRAINT_MUST_NOT_BE_VECTOR_TYPE( Type1* volatile       );
    BLAZE_CONSTRAINT_MUST_NOT_BE_VECTOR_TYPE( Type1* const volatile );
+
+   BLAZE_CONSTRAINT_MUST_BE_VECTOR_TYPE    ( Type2                 );
+   BLAZE_CONSTRAINT_MUST_BE_VECTOR_TYPE    ( Type2 const           );
+   BLAZE_CONSTRAINT_MUST_BE_VECTOR_TYPE    ( Type2 volatile        );
+   BLAZE_CONSTRAINT_MUST_BE_VECTOR_TYPE    ( Type2 const volatile  );
    BLAZE_CONSTRAINT_MUST_NOT_BE_VECTOR_TYPE( Type2&                );
    BLAZE_CONSTRAINT_MUST_NOT_BE_VECTOR_TYPE( Type2*                );
    BLAZE_CONSTRAINT_MUST_NOT_BE_VECTOR_TYPE( Type2* const          );
    BLAZE_CONSTRAINT_MUST_NOT_BE_VECTOR_TYPE( Type2* volatile       );
    BLAZE_CONSTRAINT_MUST_NOT_BE_VECTOR_TYPE( Type2* const volatile );
+
    BLAZE_CONSTRAINT_MUST_NOT_BE_VECTOR_TYPE( Type3                 );
    BLAZE_CONSTRAINT_MUST_NOT_BE_VECTOR_TYPE( Type3 const           );
    BLAZE_CONSTRAINT_MUST_NOT_BE_VECTOR_TYPE( Type3 volatile        );
@@ -1604,6 +2007,7 @@ void OperationTest::testIsVector()
    BLAZE_CONSTRAINT_MUST_NOT_BE_VECTOR_TYPE( Type3* const          );
    BLAZE_CONSTRAINT_MUST_NOT_BE_VECTOR_TYPE( Type3* volatile       );
    BLAZE_CONSTRAINT_MUST_NOT_BE_VECTOR_TYPE( Type3* const volatile );
+
    BLAZE_CONSTRAINT_MUST_NOT_BE_VECTOR_TYPE( Type4                 );
    BLAZE_CONSTRAINT_MUST_NOT_BE_VECTOR_TYPE( Type4 const           );
    BLAZE_CONSTRAINT_MUST_NOT_BE_VECTOR_TYPE( Type4 volatile        );
@@ -1613,6 +2017,7 @@ void OperationTest::testIsVector()
    BLAZE_CONSTRAINT_MUST_NOT_BE_VECTOR_TYPE( Type4* const          );
    BLAZE_CONSTRAINT_MUST_NOT_BE_VECTOR_TYPE( Type4* volatile       );
    BLAZE_CONSTRAINT_MUST_NOT_BE_VECTOR_TYPE( Type4* const volatile );
+
    BLAZE_CONSTRAINT_MUST_NOT_BE_VECTOR_TYPE( Type5                 );
    BLAZE_CONSTRAINT_MUST_NOT_BE_VECTOR_TYPE( Type5 const           );
    BLAZE_CONSTRAINT_MUST_NOT_BE_VECTOR_TYPE( Type5 volatile        );
@@ -1622,6 +2027,7 @@ void OperationTest::testIsVector()
    BLAZE_CONSTRAINT_MUST_NOT_BE_VECTOR_TYPE( Type5* const          );
    BLAZE_CONSTRAINT_MUST_NOT_BE_VECTOR_TYPE( Type5* volatile       );
    BLAZE_CONSTRAINT_MUST_NOT_BE_VECTOR_TYPE( Type5* const volatile );
+
    BLAZE_CONSTRAINT_MUST_NOT_BE_VECTOR_TYPE( Type6                 );
    BLAZE_CONSTRAINT_MUST_NOT_BE_VECTOR_TYPE( Type6 const           );
    BLAZE_CONSTRAINT_MUST_NOT_BE_VECTOR_TYPE( Type6 volatile        );
@@ -1646,19 +2052,55 @@ void OperationTest::testIsVector()
 */
 void OperationTest::testIsZero()
 {
-   using Type1 = blaze::ZeroMatrix<int>;
-   using Type2 = const blaze::ZeroMatrix<float>;
-   using Type3 = volatile blaze::ZeroMatrix<double>;
-   using Type4 = blaze::DynamicMatrix<int>;
-   using Type5 = const blaze::DiagonalMatrix< blaze::StaticMatrix<float,3UL,3UL> >;
-   using Type6 = volatile blaze::CompressedMatrix<int>;
+   using blaze::DynamicVector;
+   using blaze::DynamicMatrix;
+   using blaze::ZeroVector;
+   using blaze::ZeroMatrix;
 
-   BLAZE_CONSTRAINT_MUST_BE_ZERO_TYPE    ( Type1 );
-   BLAZE_CONSTRAINT_MUST_BE_ZERO_TYPE    ( Type2 );
-   BLAZE_CONSTRAINT_MUST_BE_ZERO_TYPE    ( Type3 );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_ZERO_TYPE( Type4 );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_ZERO_TYPE( Type5 );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_ZERO_TYPE( Type6 );
+   using Type1 = blaze::DynamicVector<int>;
+   using Type2 = blaze::DynamicMatrix<int>;
+   using Type3 = blaze::ZeroVector<int>;
+   using Type4 = blaze::ZeroMatrix<int>;
+
+   BLAZE_CONSTRAINT_MUST_NOT_BE_ZERO_TYPE( Type1                 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_ZERO_TYPE( Type1 const           );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_ZERO_TYPE( Type1 volatile        );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_ZERO_TYPE( Type1 const volatile  );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_ZERO_TYPE( Type1&                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_ZERO_TYPE( Type1*                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_ZERO_TYPE( Type1* const          );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_ZERO_TYPE( Type1* volatile       );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_ZERO_TYPE( Type1* const volatile );
+
+   BLAZE_CONSTRAINT_MUST_NOT_BE_ZERO_TYPE( Type2                 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_ZERO_TYPE( Type2 const           );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_ZERO_TYPE( Type2 volatile        );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_ZERO_TYPE( Type2 const volatile  );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_ZERO_TYPE( Type2&                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_ZERO_TYPE( Type2*                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_ZERO_TYPE( Type2* const          );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_ZERO_TYPE( Type2* volatile       );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_ZERO_TYPE( Type2* const volatile );
+
+   BLAZE_CONSTRAINT_MUST_BE_ZERO_TYPE    ( Type3                 );
+   BLAZE_CONSTRAINT_MUST_BE_ZERO_TYPE    ( Type3 const           );
+   BLAZE_CONSTRAINT_MUST_BE_ZERO_TYPE    ( Type3 volatile        );
+   BLAZE_CONSTRAINT_MUST_BE_ZERO_TYPE    ( Type3 const volatile  );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_ZERO_TYPE( Type3&                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_ZERO_TYPE( Type3*                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_ZERO_TYPE( Type3* const          );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_ZERO_TYPE( Type3* volatile       );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_ZERO_TYPE( Type3* const volatile );
+
+   BLAZE_CONSTRAINT_MUST_BE_ZERO_TYPE    ( Type4                 );
+   BLAZE_CONSTRAINT_MUST_BE_ZERO_TYPE    ( Type4 const           );
+   BLAZE_CONSTRAINT_MUST_BE_ZERO_TYPE    ( Type4 volatile        );
+   BLAZE_CONSTRAINT_MUST_BE_ZERO_TYPE    ( Type4 const volatile  );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_ZERO_TYPE( Type4&                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_ZERO_TYPE( Type4*                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_ZERO_TYPE( Type4* const          );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_ZERO_TYPE( Type4* volatile       );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_ZERO_TYPE( Type4* const volatile );
 }
 //*************************************************************************************************
 
