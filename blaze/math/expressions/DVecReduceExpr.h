@@ -263,42 +263,59 @@ inline auto dvecreduce( const DenseVector<VT,TF>& dv, Add /*op*/ )
    constexpr bool remainder( !IsPadded_v< RemoveReference_t<CT> > );
    constexpr size_t SIMDSIZE = SIMDTrait<ET>::size;
 
+   const size_t ipos( remainder ? prevMultiple( N, SIMDSIZE ) : N );
+   BLAZE_INTERNAL_ASSERT( ipos <= N, "Invalid end calculation" );
+
+   size_t i( 0UL );
    ET redux{};
 
-   if( !remainder || N >= SIMDSIZE )
+   if( SIMDSIZE*3UL < ipos )
    {
-      const size_t ipos( remainder ? prevMultiple( N, SIMDSIZE ) : N );
-      BLAZE_INTERNAL_ASSERT( ipos <= N, "Invalid end calculation" );
+      SIMDTrait_t<ET> xmm1{}, xmm2{}, xmm3{}, xmm4{};
 
-      SIMDTrait_t<ET> xmm1( tmp.load(0UL) );
+      for( ; (i+SIMDSIZE*3UL) < ipos; i+=SIMDSIZE*4UL ) {
+         xmm1 += tmp.load(i             );
+         xmm2 += tmp.load(i+SIMDSIZE    );
+         xmm3 += tmp.load(i+SIMDSIZE*2UL);
+         xmm4 += tmp.load(i+SIMDSIZE*3UL);
+      }
+      for( ; (i+SIMDSIZE) < ipos; i+=SIMDSIZE*2UL ) {
+         xmm1 += tmp.load(i         );
+         xmm2 += tmp.load(i+SIMDSIZE);
+      }
+      for( ; i<ipos; i+=SIMDSIZE ) {
+         xmm1 += tmp.load(i);
+      }
 
-      if( remainder ? N >= SIMDSIZE*2UL : N > SIMDSIZE )
-      {
-         SIMDTrait_t<ET> xmm2( tmp.load(SIMDSIZE) );
-         size_t i( SIMDSIZE*2UL );
+      redux = sum( xmm1 + xmm2 + xmm3 + xmm4 );
+   }
+   else if( SIMDSIZE < ipos )
+   {
+      SIMDTrait_t<ET> xmm1{}, xmm2{};
 
-         for( ; (i+SIMDSIZE) < ipos; i+=SIMDSIZE*2UL ) {
-            xmm1 += tmp.load(i         );
-            xmm2 += tmp.load(i+SIMDSIZE);
-         }
-         for( ; i<ipos; i+=SIMDSIZE ) {
-            xmm1 += tmp.load(i);
-         }
+      for( ; (i+SIMDSIZE) < ipos; i+=SIMDSIZE*2UL ) {
+         xmm1 += tmp.load(i         );
+         xmm2 += tmp.load(i+SIMDSIZE);
+      }
+      for( ; i<ipos; i+=SIMDSIZE ) {
+         xmm1 += tmp.load(i);
+      }
 
-         xmm1 += xmm2;
+      redux = sum( xmm1 + xmm2 );
+   }
+   else
+   {
+      SIMDTrait_t<ET> xmm1{};
+
+      for( ; i<ipos; i+=SIMDSIZE ) {
+         xmm1 += tmp.load(i);
       }
 
       redux = sum( xmm1 );
-
-      for( size_t i=ipos; remainder && i<N; ++i ) {
-         redux += tmp[i];
-      }
    }
-   else {
-      redux = tmp[0UL];
-      for( size_t i=1UL; i<N; ++i ) {
-         redux += tmp[i];
-      }
+
+   for( ; remainder && i<N; ++i ) {
+      redux += tmp[i];
    }
 
    return redux;
