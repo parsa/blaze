@@ -921,18 +921,18 @@ inline decltype(auto) elements( const DVecGenExpr<VT,OP,TF>& expr, T* indices, s
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a selection of elements on a subvector.
-// \ingroup subvector
+/*!\brief Creating a view on a selection of elements on a dense vector generator expression.
+// \ingroup dense_vector
 //
 // \param expr The given dense vector generator expression.
 // \param p Callable producing the indices.
 // \param n The total number of indices.
 // \param args The optional element arguments.
-// \return View on the specified selection of elements on the subvector.
+// \return View on the specified selection of elements on the dense vector generator expression.
 // \exception std::invalid_argument Invalid elements specification.
 //
 // This function returns an expression representing the specified selection of elements on the
-// given subvector.
+// given dense vector generator expression.
 */
 template< typename VT         // Type of the dense vector
         , typename OP         // Type of the custom unary operation
