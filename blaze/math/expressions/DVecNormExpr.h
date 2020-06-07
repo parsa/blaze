@@ -224,24 +224,53 @@ inline decltype(auto) norm_backend( const DenseVector<VT,TF>& dv, Abs abs, Power
    const size_t ipos( remainder ? prevMultiple( N, SIMDSIZE ) : N );
    BLAZE_INTERNAL_ASSERT( ipos <= N, "Invalid end calculation" );
 
-   SIMDTrait_t<ET> xmm1, xmm2, xmm3, xmm4;
    size_t i( 0UL );
+   ET norm{};
 
-   for( ; (i+SIMDSIZE*3UL) < ipos; i+=SIMDSIZE*4UL ) {
-      xmm1 += power( abs( tmp.load(i             ) ) );
-      xmm2 += power( abs( tmp.load(i+SIMDSIZE    ) ) );
-      xmm3 += power( abs( tmp.load(i+SIMDSIZE*2UL) ) );
-      xmm4 += power( abs( tmp.load(i+SIMDSIZE*3UL) ) );
-   }
-   for( ; (i+SIMDSIZE) < ipos; i+=SIMDSIZE*2UL ) {
-      xmm1 += power( abs( tmp.load(i         ) ) );
-      xmm2 += power( abs( tmp.load(i+SIMDSIZE) ) );
-   }
-   for( ; i<ipos; i+=SIMDSIZE ) {
-      xmm1 += power( abs( tmp.load(i) ) );
-   }
+   if( SIMDSIZE*3UL < ipos )
+   {
+      SIMDTrait_t<ET> xmm1{}, xmm2{}, xmm3{}, xmm4{};
 
-   ET norm( sum( xmm1 + xmm2 + xmm3 + xmm4 ) );
+      for( ; (i+SIMDSIZE*3UL) < ipos; i+=SIMDSIZE*4UL ) {
+         xmm1 += power( abs( tmp.load(i             ) ) );
+         xmm2 += power( abs( tmp.load(i+SIMDSIZE    ) ) );
+         xmm3 += power( abs( tmp.load(i+SIMDSIZE*2UL) ) );
+         xmm4 += power( abs( tmp.load(i+SIMDSIZE*3UL) ) );
+      }
+      for( ; (i+SIMDSIZE) < ipos; i+=SIMDSIZE*2UL ) {
+         xmm1 += power( abs( tmp.load(i         ) ) );
+         xmm2 += power( abs( tmp.load(i+SIMDSIZE) ) );
+      }
+      for( ; i<ipos; i+=SIMDSIZE ) {
+         xmm1 += power( abs( tmp.load(i) ) );
+      }
+
+      norm = sum( xmm1 + xmm2 + xmm3 + xmm4 );
+   }
+   else if( SIMDSIZE < ipos )
+   {
+      SIMDTrait_t<ET> xmm1{}, xmm2{};
+
+      for( ; (i+SIMDSIZE) < ipos; i+=SIMDSIZE*2UL ) {
+         xmm1 += power( abs( tmp.load(i         ) ) );
+         xmm2 += power( abs( tmp.load(i+SIMDSIZE) ) );
+      }
+      for( ; i<ipos; i+=SIMDSIZE ) {
+         xmm1 += power( abs( tmp.load(i) ) );
+      }
+
+      norm = sum( xmm1 + xmm2 );
+   }
+   else
+   {
+      SIMDTrait_t<ET> xmm1{};
+
+      for( ; i<ipos; i+=SIMDSIZE ) {
+         xmm1 += power( abs( tmp.load(i) ) );
+      }
+
+      norm = sum( xmm1 );
+   }
 
    for( ; remainder && i<N; ++i ) {
       norm += power( abs( tmp[i] ) );
