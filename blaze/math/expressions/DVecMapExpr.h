@@ -69,7 +69,7 @@
 #include <blaze/math/typetraits/IsSIMDEnabled.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
 #include <blaze/math/typetraits/UnderlyingBuiltin.h>
-#include <blaze/math/typetraits/UnderlyingNumeric.h>
+#include <blaze/math/typetraits/UnderlyingScalar.h>
 #include <blaze/system/HostDevice.h>
 #include <blaze/system/Inline.h>
 #include <blaze/system/MacroDisable.h>
@@ -592,7 +592,7 @@ class DVecMapExpr
    template< typename VT2 >  // Type of the target dense vector
    friend inline auto assign( DenseVector<VT2,TF>& lhs, const DVecMapExpr& rhs )
       -> EnableIf_t< UseAssign_v<VT2> &&
-                     IsSame_v< UnderlyingNumeric_t<VT>, UnderlyingNumeric_t<VT2> > >
+                     IsSame_v< UnderlyingScalar_t<VT>, UnderlyingScalar_t<VT2> > >
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -622,7 +622,7 @@ class DVecMapExpr
    template< typename VT2 >  // Type of the target dense vector
    friend inline auto assign( DenseVector<VT2,TF>& lhs, const DVecMapExpr& rhs )
       -> EnableIf_t< UseAssign_v<VT2> &&
-                     !IsSame_v< UnderlyingNumeric_t<VT>, UnderlyingNumeric_t<VT2> > >
+                     !IsSame_v< UnderlyingScalar_t<VT>, UnderlyingScalar_t<VT2> > >
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -832,7 +832,7 @@ class DVecMapExpr
    template< typename VT2 >  // Type of the target dense vector
    friend inline auto smpAssign( DenseVector<VT2,TF>& lhs, const DVecMapExpr& rhs )
       -> EnableIf_t< UseSMPAssign_v<VT2> &&
-                     IsSame_v< UnderlyingNumeric_t<VT>, UnderlyingNumeric_t<VT2> > >
+                     IsSame_v< UnderlyingScalar_t<VT>, UnderlyingScalar_t<VT2> > >
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -862,7 +862,7 @@ class DVecMapExpr
    template< typename VT2 >  // Type of the target dense vector
    friend inline auto smpAssign( DenseVector<VT2,TF>& lhs, const DVecMapExpr& rhs )
       -> EnableIf_t< UseSMPAssign_v<VT2> &&
-                     !IsSame_v< UnderlyingNumeric_t<VT>, UnderlyingNumeric_t<VT2> > >
+                     !IsSame_v< UnderlyingScalar_t<VT>, UnderlyingScalar_t<VT2> > >
    {
       BLAZE_FUNCTION_TRACE;
 

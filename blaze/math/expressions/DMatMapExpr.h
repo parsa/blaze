@@ -69,7 +69,7 @@
 #include <blaze/math/typetraits/IsSIMDEnabled.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
 #include <blaze/math/typetraits/UnderlyingBuiltin.h>
-#include <blaze/math/typetraits/UnderlyingNumeric.h>
+#include <blaze/math/typetraits/UnderlyingScalar.h>
 #include <blaze/system/HostDevice.h>
 #include <blaze/system/Inline.h>
 #include <blaze/util/Assert.h>
@@ -616,7 +616,7 @@ class DMatMapExpr
            , bool SO2 >    // Storage order or the target dense matrix
    friend inline auto assign( DenseMatrix<MT2,SO2>& lhs, const DMatMapExpr& rhs )
       -> EnableIf_t< UseAssign_v<MT2> &&
-                     IsSame_v< UnderlyingNumeric_t<MT>, UnderlyingNumeric_t<MT2> > >
+                     IsSame_v< UnderlyingScalar_t<MT>, UnderlyingScalar_t<MT2> > >
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -648,7 +648,7 @@ class DMatMapExpr
            , bool SO2 >    // Storage order or the target dense matrix
    friend inline auto assign( DenseMatrix<MT2,SO2>& lhs, const DMatMapExpr& rhs )
       -> EnableIf_t< UseAssign_v<MT2> &&
-                     !IsSame_v< UnderlyingNumeric_t<MT>, UnderlyingNumeric_t<MT2> > >
+                     !IsSame_v< UnderlyingScalar_t<MT>, UnderlyingScalar_t<MT2> > >
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -845,7 +845,7 @@ class DMatMapExpr
            , bool SO2 >    // Storage order or the target dense matrix
    friend inline auto smpAssign( DenseMatrix<MT2,SO2>& lhs, const DMatMapExpr& rhs )
       -> EnableIf_t< UseSMPAssign_v<MT2> &&
-                     IsSame_v< UnderlyingNumeric_t<MT>, UnderlyingNumeric_t<MT2> > >
+                     IsSame_v< UnderlyingScalar_t<MT>, UnderlyingScalar_t<MT2> > >
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -877,7 +877,7 @@ class DMatMapExpr
            , bool SO2 >    // Storage order or the target dense matrix
    friend inline auto smpAssign( DenseMatrix<MT2,SO2>& lhs, const DMatMapExpr& rhs )
       -> EnableIf_t< UseSMPAssign_v<MT2> &&
-                     !IsSame_v< UnderlyingNumeric_t<MT>, UnderlyingNumeric_t<MT2> > >
+                     !IsSame_v< UnderlyingScalar_t<MT>, UnderlyingScalar_t<MT2> > >
    {
       BLAZE_FUNCTION_TRACE;
 

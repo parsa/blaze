@@ -66,7 +66,7 @@
 #include <blaze/math/typetraits/RequiresEvaluation.h>
 #include <blaze/math/typetraits/UnderlyingBuiltin.h>
 #include <blaze/math/typetraits/UnderlyingElement.h>
-#include <blaze/math/typetraits/UnderlyingNumeric.h>
+#include <blaze/math/typetraits/UnderlyingScalar.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/FloatingPoint.h>
 #include <blaze/util/constraints/SameType.h>
@@ -845,9 +845,9 @@ template< typename MT    // Type of the left-hand side sparse matrix
 using SMatScalarDivExprHelper_t =
    If_t< IsFloatingPoint_v< UnderlyingBuiltin_t<MT> > ||
          IsFloatingPoint_v< UnderlyingBuiltin_t<ST> >
-       , If_t< IsComplex_v< UnderlyingNumeric_t<MT> > && IsBuiltin_v<ST>
+       , If_t< IsComplex_v< UnderlyingScalar_t<MT> > && IsBuiltin_v<ST>
              , DivTrait_t< UnderlyingBuiltin_t<MT>, ST >
-             , DivTrait_t< UnderlyingNumeric_t<MT>, ST > >
+             , DivTrait_t< UnderlyingScalar_t<MT>, ST > >
        , ST >;
 /*! \endcond */
 //*************************************************************************************************

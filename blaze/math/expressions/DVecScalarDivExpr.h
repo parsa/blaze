@@ -68,7 +68,7 @@
 #include <blaze/math/typetraits/RequiresEvaluation.h>
 #include <blaze/math/typetraits/UnderlyingBuiltin.h>
 #include <blaze/math/typetraits/UnderlyingElement.h>
-#include <blaze/math/typetraits/UnderlyingNumeric.h>
+#include <blaze/math/typetraits/UnderlyingScalar.h>
 #include <blaze/system/HostDevice.h>
 #include <blaze/system/Inline.h>
 #include <blaze/system/MacroDisable.h>
@@ -1023,9 +1023,9 @@ template< typename VT    // Type of the left-hand side dense vector
 using DVecScalarDivExprHelper_t =
    If_t< IsFloatingPoint_v< UnderlyingBuiltin_t<VT> > ||
          IsFloatingPoint_v< UnderlyingBuiltin_t<ST> >
-       , If_t< IsComplex_v< UnderlyingNumeric_t<VT> > && IsBuiltin_v<ST>
+       , If_t< IsComplex_v< UnderlyingScalar_t<VT> > && IsBuiltin_v<ST>
              , DivTrait_t< UnderlyingBuiltin_t<VT>, ST >
-             , DivTrait_t< UnderlyingNumeric_t<VT>, ST > >
+             , DivTrait_t< UnderlyingScalar_t<VT>, ST > >
        , ST >;
 /*! \endcond */
 //*************************************************************************************************

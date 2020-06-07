@@ -73,7 +73,6 @@
 #include <blaze/math/typetraits/IsSquare.h>
 #include <blaze/math/typetraits/Size.h>
 #include <blaze/math/typetraits/UnderlyingBuiltin.h>
-#include <blaze/math/typetraits/UnderlyingNumeric.h>
 #include <blaze/math/views/Band.h>
 #include <blaze/math/views/Submatrix.h>
 #include <blaze/system/Inline.h>

@@ -95,7 +95,7 @@
 #include <blaze/math/typetraits/RemoveAdaptor.h>
 #include <blaze/math/typetraits/Size.h>
 #include <blaze/math/typetraits/StorageOrder.h>
-#include <blaze/math/typetraits/UnderlyingNumeric.h>
+#include <blaze/math/typetraits/UnderlyingScalar.h>
 #include <blaze/math/typetraits/YieldsHermitian.h>
 #include <blaze/math/typetraits/YieldsIdentity.h>
 #include <blaze/math/typetraits/YieldsSymmetric.h>
@@ -1559,8 +1559,8 @@ struct AddTraitEval1< T1, T2
                                   ( ( IsHermitian_v<T1> && !IsSymmetric_v<T1> &&
                                       IsHermitian_v<T2> && !IsSymmetric_v<T2> ) ||
                                     ( IsHermitian_v<T1> && !IsSymmetric_v<T1> &&
-                                      IsSymmetric_v<T2> && !IsComplex_v< UnderlyingNumeric_t<T2> > ) ||
-                                    ( IsSymmetric_v<T1> && !IsComplex_v< UnderlyingNumeric_t<T1> > &&
+                                      IsSymmetric_v<T2> && !IsComplex_v< UnderlyingScalar_t<T2> > ) ||
+                                    ( IsSymmetric_v<T1> && !IsComplex_v< UnderlyingScalar_t<T1> > &&
                                       IsHermitian_v<T2> && !IsSymmetric_v<T2> ) ) &&
                                   !( IsUniform_v<T1> && IsUniform_v<T2> ) &&
                                   !( IsZero_v<T1> || IsZero_v<T2> ) > >
@@ -1588,8 +1588,8 @@ struct SubTraitEval1< T1, T2
                                   ( ( IsHermitian_v<T1> && !IsSymmetric_v<T1> &&
                                       IsHermitian_v<T2> && !IsSymmetric_v<T2> ) ||
                                     ( IsHermitian_v<T1> && !IsSymmetric_v<T1> &&
-                                      IsSymmetric_v<T2> && !IsComplex_v< UnderlyingNumeric_t<T2> > ) ||
-                                    ( IsSymmetric_v<T1> && !IsComplex_v< UnderlyingNumeric_t<T1> > &&
+                                      IsSymmetric_v<T2> && !IsComplex_v< UnderlyingScalar_t<T2> > ) ||
+                                    ( IsSymmetric_v<T1> && !IsComplex_v< UnderlyingScalar_t<T1> > &&
                                       IsHermitian_v<T2> && !IsSymmetric_v<T2> ) ) &&
                                   !( IsZero_v<T1> || IsZero_v<T2> ) > >
 {

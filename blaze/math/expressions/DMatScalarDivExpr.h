@@ -68,7 +68,7 @@
 #include <blaze/math/typetraits/RequiresEvaluation.h>
 #include <blaze/math/typetraits/UnderlyingBuiltin.h>
 #include <blaze/math/typetraits/UnderlyingElement.h>
-#include <blaze/math/typetraits/UnderlyingNumeric.h>
+#include <blaze/math/typetraits/UnderlyingScalar.h>
 #include <blaze/system/HostDevice.h>
 #include <blaze/system/Inline.h>
 #include <blaze/system/Thresholds.h>
@@ -1009,9 +1009,9 @@ template< typename MT    // Type of the left-hand side dense matrix
 using DMatScalarDivExprHelper_t =
    If_t< IsFloatingPoint_v< UnderlyingBuiltin_t<MT> > ||
          IsFloatingPoint_v< UnderlyingBuiltin_t<ST> >
-       , If_t< IsComplex_v< UnderlyingNumeric_t<MT> > && IsBuiltin_v<ST>
+       , If_t< IsComplex_v< UnderlyingScalar_t<MT> > && IsBuiltin_v<ST>
              , DivTrait_t< UnderlyingBuiltin_t<MT>, ST >
-             , DivTrait_t< UnderlyingNumeric_t<MT>, ST > >
+             , DivTrait_t< UnderlyingScalar_t<MT>, ST > >
        , ST >;
 /*! \endcond */
 //*************************************************************************************************

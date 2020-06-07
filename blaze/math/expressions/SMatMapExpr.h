@@ -60,7 +60,7 @@
 #include <blaze/math/typetraits/IsScalar.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
 #include <blaze/math/typetraits/UnderlyingBuiltin.h>
-#include <blaze/math/typetraits/UnderlyingNumeric.h>
+#include <blaze/math/typetraits/UnderlyingScalar.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/FunctionTrace.h>
@@ -548,7 +548,7 @@ class SMatMapExpr
    template< typename MT2 >  // Type of the target sparse matrix
    friend inline auto assign( SparseMatrix<MT2,false>& lhs, const SMatMapExpr& rhs )
       -> EnableIf_t< UseAssign_v<MT2> &&
-                     IsSame_v< UnderlyingNumeric_t<MT>, UnderlyingNumeric_t<MT2> > >
+                     IsSame_v< UnderlyingScalar_t<MT>, UnderlyingScalar_t<MT2> > >
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -587,7 +587,7 @@ class SMatMapExpr
    template< typename MT2 >  // Type of the target sparse matrix
    friend inline auto assign( SparseMatrix<MT2,true>& lhs, const SMatMapExpr& rhs )
       -> EnableIf_t< UseAssign_v<MT2> &&
-                     IsSame_v< UnderlyingNumeric_t<MT>, UnderlyingNumeric_t<MT2> > >
+                     IsSame_v< UnderlyingScalar_t<MT>, UnderlyingScalar_t<MT2> > >
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -627,7 +627,7 @@ class SMatMapExpr
            , bool SO2 >    // Storage order of the target sparse matrix
    friend inline auto assign( SparseMatrix<MT2,SO2>& lhs, const SMatMapExpr& rhs )
       -> EnableIf_t< UseAssign_v<MT2> &&
-                     !IsSame_v< UnderlyingNumeric_t<MT>, UnderlyingNumeric_t<MT2> > >
+                     !IsSame_v< UnderlyingScalar_t<MT>, UnderlyingScalar_t<MT2> > >
    {
       BLAZE_FUNCTION_TRACE;
 

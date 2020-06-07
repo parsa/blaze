@@ -60,7 +60,7 @@
 #include <blaze/math/typetraits/IsScalar.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
 #include <blaze/math/typetraits/UnderlyingBuiltin.h>
-#include <blaze/math/typetraits/UnderlyingNumeric.h>
+#include <blaze/math/typetraits/UnderlyingScalar.h>
 #include <blaze/system/MacroDisable.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/EnableIf.h>
@@ -512,7 +512,7 @@ class SVecMapExpr
    template< typename VT2 >  // Type of the target sparse vector
    friend inline auto assign( SparseVector<VT2,TF>& lhs, const SVecMapExpr& rhs )
       -> EnableIf_t< UseAssign_v<VT2> &&
-                     IsSame_v< UnderlyingNumeric_t<VT>, UnderlyingNumeric_t<VT2> > >
+                     IsSame_v< UnderlyingScalar_t<VT>, UnderlyingScalar_t<VT2> > >
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -546,7 +546,7 @@ class SVecMapExpr
    template< typename VT2 >  // Type of the target sparse vector
    friend inline auto assign( SparseVector<VT2,TF>& lhs, const SVecMapExpr& rhs )
       -> EnableIf_t< UseAssign_v<VT2> &&
-                     !IsSame_v< UnderlyingNumeric_t<VT>, UnderlyingNumeric_t<VT2> > >
+                     !IsSame_v< UnderlyingScalar_t<VT>, UnderlyingScalar_t<VT2> > >
    {
       BLAZE_FUNCTION_TRACE;
 
