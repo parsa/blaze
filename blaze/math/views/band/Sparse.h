@@ -2224,12 +2224,12 @@ class Band<MT,TF,false,true,CBAs...>
 
    //! Type for the assignment of the left-hand side matrix operand.
    using LT = If_t< IsSparseMatrix_v<LeftOperand> && IsColumnMajorMatrix_v<LeftOperand>
-                  , ResultType_t<LeftOperand>
+                  , OppositeType_t<LeftOperand>
                   , CompositeType_t<LeftOperand> >;
 
    //! Type for the assignment of the right-hand side matrix operand.
    using RT = If_t< IsSparseMatrix_v<RightOperand> && IsRowMajorMatrix_v<RightOperand>
-                  , ResultType_t<RightOperand>
+                  , OppositeType_t<RightOperand>
                   , CompositeType_t<RightOperand> >;
    //**********************************************************************************************
 
