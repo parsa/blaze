@@ -311,35 +311,85 @@ inline decltype(auto) norm_backend( const DenseMatrix<MT,false>& dm, Abs abs, Po
 
    constexpr bool remainder( !IsPadded_v< RemoveReference_t<CT> > );
 
-   const size_t jpos( remainder ? prevMultiple( N, SIMDSIZE ) : N );
-   BLAZE_INTERNAL_ASSERT( jpos <= N, "Invalid end calculation" );
-
-   SIMDTrait_t<ET> xmm1, xmm2, xmm3, xmm4;
    ET norm{};
 
-   for( size_t i=0UL; i<M; ++i )
+   if( !remainder || N >= SIMDSIZE )
    {
-      size_t j( 0UL );
+      const size_t jpos( remainder ? prevMultiple( N, SIMDSIZE ) : N );
+      BLAZE_INTERNAL_ASSERT( jpos <= N, "Invalid end calculation" );
 
-      for( ; (j+SIMDSIZE*3UL) < jpos; j+=SIMDSIZE*4UL ) {
-         xmm1 += power( abs( tmp.load(i,j             ) ) );
-         xmm2 += power( abs( tmp.load(i,j+SIMDSIZE    ) ) );
-         xmm3 += power( abs( tmp.load(i,j+SIMDSIZE*2UL) ) );
-         xmm4 += power( abs( tmp.load(i,j+SIMDSIZE*3UL) ) );
+      SIMDTrait_t<ET> xmm1{};
+      size_t i( 0UL );
+
+      for( ; (i+4UL) <= M; i+=4UL )
+      {
+         xmm1 += power( abs( tmp.load(i,0UL) ) );
+         SIMDTrait_t<ET> xmm2( power( abs( tmp.load(i+1UL,0UL) ) ) );
+         SIMDTrait_t<ET> xmm3( power( abs( tmp.load(i+2UL,0UL) ) ) );
+         SIMDTrait_t<ET> xmm4( power( abs( tmp.load(i+3UL,0UL) ) ) );
+         size_t j( SIMDSIZE );
+
+         for( ; j<jpos; j+=SIMDSIZE ) {
+            xmm1 += power( abs( tmp.load(i    ,j) ) );
+            xmm2 += power( abs( tmp.load(i+1UL,j) ) );
+            xmm3 += power( abs( tmp.load(i+2UL,j) ) );
+            xmm4 += power( abs( tmp.load(i+3UL,j) ) );
+         }
+         for( ; remainder && j<N; ++j ) {
+            norm += power( abs( tmp(i    ,j) ) );
+            norm += power( abs( tmp(i+1UL,j) ) );
+            norm += power( abs( tmp(i+2UL,j) ) );
+            norm += power( abs( tmp(i+3UL,j) ) );
+         }
+
+         xmm1 += xmm2;
+         xmm3 += xmm4;
+         xmm1 += xmm3;
       }
-      for( ; (j+SIMDSIZE) < jpos; j+=SIMDSIZE*2UL ) {
-         xmm1 += power( abs( tmp.load(i,j         ) ) );
-         xmm2 += power( abs( tmp.load(i,j+SIMDSIZE) ) );
+
+      if( i+2UL <= M )
+      {
+         xmm1 += power( abs( tmp.load(i,0UL) ) );
+         SIMDTrait_t<ET> xmm2( power( abs( tmp.load(i+1UL,0UL) ) ) );
+         size_t j( SIMDSIZE );
+
+         for( ; j<jpos; j+=SIMDSIZE ) {
+            xmm1 += power( abs( tmp.load(i    ,j) ) );
+            xmm2 += power( abs( tmp.load(i+1UL,j) ) );
+         }
+         for( ; remainder && j<N; ++j ) {
+            norm += power( abs( tmp(i    ,j) ) );
+            norm += power( abs( tmp(i+1UL,j) ) );
+         }
+
+         xmm1 += xmm2;
+
+         i += 2UL;
       }
-      for( ; j<jpos; j+=SIMDSIZE ) {
-         xmm1 += power( abs( tmp.load(i,j) ) );
+
+      if( i < M )
+      {
+         xmm1 += power( abs( tmp.load(i,0UL) ) );
+         size_t j( SIMDSIZE );
+
+         for( ; j<jpos; j+=SIMDSIZE ) {
+            xmm1 += power( abs( tmp.load(i,j) ) );
+         }
+         for( ; remainder && j<N; ++j ) {
+            norm += power( abs( tmp(i,j) ) );
+         }
       }
-      for( ; remainder && j<N; ++j ) {
-         norm += power( abs( tmp(i,j) ) );
+
+      norm += sum( xmm1 );
+   }
+   else
+   {
+      for( size_t i=0UL; i<M; ++i ) {
+         for( size_t j=0UL; j<N; ++j ) {
+            norm += power( abs( tmp(i,j) ) );
+         }
       }
    }
-
-   norm += sum( xmm1 + xmm2 + xmm3 + xmm4 );
 
    return evaluate( root( norm ) );
 }
@@ -383,35 +433,85 @@ inline decltype(auto) norm_backend( const DenseMatrix<MT,true>& dm, Abs abs, Pow
 
    constexpr bool remainder( !IsPadded_v< RemoveReference_t<CT> > );
 
-   const size_t ipos( remainder ? prevMultiple( M, SIMDSIZE ) :M );
-   BLAZE_INTERNAL_ASSERT( ipos <= M, "Invalid end calculation" );
-
-   SIMDTrait_t<ET> xmm1, xmm2, xmm3, xmm4;
    ET norm{};
 
-   for( size_t j=0UL; j<N; ++j )
+   if( !remainder || N >= SIMDSIZE )
    {
-      size_t i( 0UL );
+      const size_t ipos( remainder ? prevMultiple( M, SIMDSIZE ) :M );
+      BLAZE_INTERNAL_ASSERT( ipos <= M, "Invalid end calculation" );
 
-      for( ; (i+SIMDSIZE*3UL) < ipos; i+=SIMDSIZE*4UL ) {
-         xmm1 += power( abs( tmp.load(i             ,j) ) );
-         xmm2 += power( abs( tmp.load(i+SIMDSIZE    ,j) ) );
-         xmm3 += power( abs( tmp.load(i+SIMDSIZE*2UL,j) ) );
-         xmm4 += power( abs( tmp.load(i+SIMDSIZE*3UL,j) ) );
+      SIMDTrait_t<ET> xmm1{};
+      size_t j( 0UL );
+
+      for( ; (j+4UL) <= N; j+=4UL )
+      {
+         xmm1 += power( abs( tmp.load(0UL,j) ) );
+         SIMDTrait_t<ET> xmm2( power( abs( tmp.load(0UL,j+1UL) ) ) );
+         SIMDTrait_t<ET> xmm3( power( abs( tmp.load(0UL,j+2UL) ) ) );
+         SIMDTrait_t<ET> xmm4( power( abs( tmp.load(0UL,j+3UL) ) ) );
+         size_t i( SIMDSIZE );
+
+         for( ; i<ipos; i+=SIMDSIZE ) {
+            xmm1 += power( abs( tmp.load(i,j    ) ) );
+            xmm2 += power( abs( tmp.load(i,j+1UL) ) );
+            xmm3 += power( abs( tmp.load(i,j+2UL) ) );
+            xmm4 += power( abs( tmp.load(i,j+3UL) ) );
+         }
+         for( ; remainder && i<M; ++i ) {
+            norm += power( abs( tmp(i,j    ) ) );
+            norm += power( abs( tmp(i,j+1UL) ) );
+            norm += power( abs( tmp(i,j+2UL) ) );
+            norm += power( abs( tmp(i,j+3UL) ) );
+         }
+
+         xmm1 += xmm2;
+         xmm3 += xmm4;
+         xmm1 += xmm3;
       }
-      for( ; (i+SIMDSIZE) < ipos; i+=SIMDSIZE*2UL ) {
-         xmm1 += power( abs( tmp.load(i         ,j) ) );
-         xmm2 += power( abs( tmp.load(i+SIMDSIZE,j) ) );
+
+      if( j+2UL <= N )
+      {
+         xmm1 += power( abs( tmp.load(0UL,j) ) );
+         SIMDTrait_t<ET> xmm2( power( abs( tmp.load(0UL,j+1UL) ) ) );
+         size_t i( SIMDSIZE );
+
+         for( ; i<ipos; i+=SIMDSIZE ) {
+            xmm1 += power( abs( tmp.load(i,j    ) ) );
+            xmm2 += power( abs( tmp.load(i,j+1UL) ) );
+         }
+         for( ; remainder && i<M; ++i ) {
+            norm += power( abs( tmp(i,j    ) ) );
+            norm += power( abs( tmp(i,j+1UL) ) );
+         }
+
+         xmm1 += xmm2;
+
+         j += 2UL;
       }
-      for( ; i<ipos; i+=SIMDSIZE ) {
-         xmm1 += power( abs( tmp.load(i,j) ) );
+
+      if( j < N )
+      {
+         xmm1 += power( abs( tmp.load(0UL,j) ) );
+         size_t i( SIMDSIZE );
+
+         for( ; i<ipos; i+=SIMDSIZE ) {
+            xmm1 += power( abs( tmp.load(i,j) ) );
+         }
+         for( ; remainder && i<M; ++i ) {
+            norm += power( abs( tmp(i,j) ) );
+         }
       }
-      for( ; remainder && i<M; ++i ) {
-         norm += power( abs( tmp(i,j) ) );
+
+      norm += sum( xmm1 );
+   }
+   else
+   {
+      for( size_t j=0UL; j<N; ++j ) {
+         for( size_t i=0UL; i<M; ++i ) {
+            norm += power( abs( tmp(i,j) ) );
+         }
       }
    }
-
-   norm += sum( xmm1 + xmm2 + xmm3 + xmm4 );
 
    return evaluate( root( norm ) );
 }
