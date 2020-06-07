@@ -151,9 +151,9 @@ using ExpandTrait_t = typename ExpandTrait<T,CEAs...>::Type;
 /*!\brief First auxiliary helper struct for the ExpandTrait type trait.
 // \ingroup math_traits
 */
-template< typename T   // Type of the operand
-        , size_t E     // Compile time expansion
-        , typename >   // Restricting condition
+template< typename T  // Type of the operand
+        , size_t E    // Compile time expansion
+        , typename >  // Restricting condition
 struct ExpandTraitEval1
    : public ExpandTraitEval2<T,E>
 {};
@@ -166,9 +166,9 @@ struct ExpandTraitEval1
 /*!\brief Second auxiliary helper struct for the ExpandTrait type trait.
 // \ingroup math_traits
 */
-template< typename MT  // Type of the operand
-        , size_t E     // Compile time expansion
-        , typename >   // Restricting condition
+template< typename T  // Type of the operand
+        , size_t E    // Compile time expansion
+        , typename >  // Restricting condition
 struct ExpandTraitEval2
 {};
 /*! \endcond */

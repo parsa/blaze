@@ -52,7 +52,7 @@ namespace blaze {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Auxiliary class template for the data members of expressions expression classes.
+/*!\brief Auxiliary class template for the data members of expansion expression classes.
 // \ingroup math
 //
 // The auxiliary ExpandExprData class template represents an abstraction of the data members of
@@ -69,7 +69,7 @@ class ExpandExprData
 
 //=================================================================================================
 //
-//  CLASS TEMPLATE SPECIALIZATION FOR ZERO COMPILE TIME EXPANSIONS ARGUMENTS
+//  CLASS TEMPLATE SPECIALIZATION FOR ZERO COMPILE TIME EXPANSION ARGUMENTS
 //
 //=================================================================================================
 
