@@ -706,6 +706,8 @@ class DVecExpandExpr
 // This function returns an expression representing the expansion of the given dense vector:
 
    \code
+   using blaze::columnVector;
+   using blaze::rowVector;
    using blaze::rowMajor;
    using blaze::columnMajor;
 
@@ -756,6 +758,8 @@ inline decltype(auto) expand( const DenseVector<VT,TF>& dv, size_t expansion )
 // This function returns an expression representing the expansion of the given dense vector:
 
    \code
+   using blaze::columnVector;
+   using blaze::rowVector;
    using blaze::rowMajor;
    using blaze::columnMajor;
 

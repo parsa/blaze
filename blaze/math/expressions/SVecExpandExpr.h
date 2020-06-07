@@ -725,6 +725,8 @@ class SVecExpandExpr
 // This function returns an expression representing the expansion of the given sparse vector:
 
    \code
+   using blaze::columnVector;
+   using blaze::rowVector;
    using blaze::rowMajor;
    using blaze::columnMajor;
 
@@ -775,6 +777,8 @@ inline decltype(auto) expand( const SparseVector<VT,TF>& sv, size_t expansion )
 // This function returns an expression representing the expansion of the given sparse vector:
 
    \code
+   using blaze::columnVector;
+   using blaze::rowVector;
    using blaze::rowMajor;
    using blaze::columnMajor;
 
