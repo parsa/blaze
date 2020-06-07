@@ -63,14 +63,14 @@ int main()
 {
    std::cout << "   Running 'UCaHDb'..." << std::endl;
 
-   using blazetest::mathtest::NumericA;
-   using blazetest::mathtest::NumericB;
+   using blazetest::mathtest::ScalarA;
+   using blazetest::mathtest::ScalarB;
 
    try
    {
       // Matrix type definitions
-      using UCa = blaze::UpperMatrix< blaze::CompressedMatrix<NumericA> >;
-      using HDb = blaze::HermitianMatrix< blaze::DynamicMatrix<NumericB> >;
+      using UCa = blaze::UpperMatrix< blaze::CompressedMatrix<ScalarA> >;
+      using HDb = blaze::HermitianMatrix< blaze::DynamicMatrix<ScalarB> >;
 
       // Creator type definitions
       using CUCa = blazetest::Creator<UCa>;

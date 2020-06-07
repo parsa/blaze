@@ -62,13 +62,13 @@ int main()
 {
    std::cout << "   Running 'DCbHCb'..." << std::endl;
 
-   using blazetest::mathtest::NumericB;
+   using blazetest::mathtest::ScalarB;
 
    try
    {
       // Matrix type definitions
-      using DCb = blaze::DiagonalMatrix< blaze::CompressedMatrix<NumericB> >;
-      using HCb = blaze::HermitianMatrix< blaze::CompressedMatrix<NumericB> >;
+      using DCb = blaze::DiagonalMatrix< blaze::CompressedMatrix<ScalarB> >;
+      using HCb = blaze::HermitianMatrix< blaze::CompressedMatrix<ScalarB> >;
 
       // Creator type definitions
       using CDCb = blazetest::Creator<DCb>;

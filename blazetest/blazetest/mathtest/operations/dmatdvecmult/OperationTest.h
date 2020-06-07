@@ -67,7 +67,7 @@
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
 #include <blaze/math/typetraits/IsUniform.h>
 #include <blaze/math/typetraits/UnderlyingBuiltin.h>
-#include <blaze/math/typetraits/UnderlyingNumeric.h>
+#include <blaze/math/typetraits/UnderlyingScalar.h>
 #include <blaze/math/Views.h>
 #include <blaze/util/constraints/Numeric.h>
 #include <blaze/util/constraints/SameType.h>
@@ -311,7 +311,7 @@ OperationTest<MT,VT>::OperationTest( const Creator<MT>& creator1, const Creator<
 {
    using namespace blaze;
 
-   using Scalar = UnderlyingNumeric_t<DET>;
+   using Scalar = UnderlyingScalar_t<DET>;
 
    testInitialStatus();
    testAssignment();

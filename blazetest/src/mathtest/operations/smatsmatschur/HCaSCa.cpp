@@ -62,13 +62,13 @@ int main()
 {
    std::cout << "   Running 'HCaSCa'..." << std::endl;
 
-   using blazetest::mathtest::NumericA;
+   using blazetest::mathtest::ScalarA;
 
    try
    {
       // Matrix type definitions
-      using HCa = blaze::HermitianMatrix< blaze::CompressedMatrix<NumericA> >;
-      using SCa = blaze::SymmetricMatrix< blaze::CompressedMatrix<NumericA> >;
+      using HCa = blaze::HermitianMatrix< blaze::CompressedMatrix<ScalarA> >;
+      using SCa = blaze::SymmetricMatrix< blaze::CompressedMatrix<ScalarA> >;
 
       // Creator type definitions
       using CHCa = blazetest::Creator<HCa>;

@@ -62,14 +62,14 @@ int main()
 {
    std::cout << "   Running 'MZbHDa'..." << std::endl;
 
-   using blazetest::mathtest::NumericA;
-   using blazetest::mathtest::NumericB;
+   using blazetest::mathtest::ScalarA;
+   using blazetest::mathtest::ScalarB;
 
    try
    {
       // Matrix type definitions
-      using MZb = blaze::ZeroMatrix<NumericB>;
-      using HDa = blaze::HermitianMatrix< blaze::DynamicMatrix<NumericA> >;
+      using MZb = blaze::ZeroMatrix<ScalarB>;
+      using HDa = blaze::HermitianMatrix< blaze::DynamicMatrix<ScalarA> >;
 
       // Creator type definitions
       using CMZb = blazetest::Creator<MZb>;

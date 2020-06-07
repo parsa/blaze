@@ -103,7 +103,7 @@
 #include <blaze/math/typetraits/RemoveAdaptor.h>
 #include <blaze/math/typetraits/UnderlyingBuiltin.h>
 #include <blaze/math/typetraits/UnderlyingElement.h>
-#include <blaze/math/typetraits/UnderlyingNumeric.h>
+#include <blaze/math/typetraits/UnderlyingScalar.h>
 #include <blaze/math/UniLowerMatrix.h>
 #include <blaze/math/UniUpperMatrix.h>
 #include <blaze/math/UpperMatrix.h>
@@ -158,7 +158,7 @@ OperationTest::OperationTest()
    testRemoveAdaptor();
    testUnderlyingBuiltin();
    testUnderlyingElement();
-   testUnderlyingNumeric();
+   testUnderlyingScalar();
 }
 //*************************************************************************************************
 
@@ -2266,36 +2266,36 @@ void OperationTest::testUnderlyingElement()
 
 
 //*************************************************************************************************
-/*!\brief Test of the mathematical 'UnderlyingNumeric' type trait.
+/*!\brief Test of the mathematical 'UnderlyingScalar' type trait.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a compile time test of the mathematical 'UnderlyingNumeric' type trait.
+// This function performs a compile time test of the mathematical 'UnderlyingScalar' type trait.
 // In case an error is detected, a compilation error is created.
 */
-void OperationTest::testUnderlyingNumeric()
+void OperationTest::testUnderlyingScalar()
 {
    using blaze::complex;
    using blaze::StaticVector;
    using blaze::DynamicVector;
    using blaze::CompressedVector;
-   using blaze::UnderlyingNumeric;
+   using blaze::UnderlyingScalar;
 
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingNumeric<A>::Type, A );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingNumeric<B>::Type, int );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingNumeric<C>::Type, complex<float> );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingNumeric<D>::Type, double );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingScalar<A>::Type, A );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingScalar<B>::Type, int );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingScalar<C>::Type, complex<float> );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingScalar<D>::Type, double );
 
    using Type1 = double;                                    // Built-in data type
    using Type2 = complex<float>;                            // Complex data type
    using Type3 = StaticVector<int,3UL>;                     // Vector with built-in element type
    using Type4 = CompressedVector< DynamicVector<float> >;  // Vector with vector element type
 
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingNumeric<Type1>::Type, double );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingNumeric<Type2>::Type, complex<float> );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingNumeric<Type3>::Type, int );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingNumeric<Type4>::Type, float );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingScalar<Type1>::Type, double );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingScalar<Type2>::Type, complex<float> );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingScalar<Type3>::Type, int );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingScalar<Type4>::Type, float );
 }
 //*************************************************************************************************
 

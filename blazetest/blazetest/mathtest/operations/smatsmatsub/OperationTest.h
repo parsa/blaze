@@ -65,7 +65,7 @@
 #include <blaze/math/typetraits/IsSymmetric.h>
 #include <blaze/math/typetraits/IsTriangular.h>
 #include <blaze/math/typetraits/UnderlyingBuiltin.h>
-#include <blaze/math/typetraits/UnderlyingNumeric.h>
+#include <blaze/math/typetraits/UnderlyingScalar.h>
 #include <blaze/math/Views.h>
 #include <blaze/util/algorithms/Min.h>
 #include <blaze/util/constraints/Numeric.h>
@@ -385,7 +385,7 @@ OperationTest<MT1,MT2>::OperationTest( const Creator<MT1>& creator1, const Creat
 {
    using namespace blaze;
 
-   using Scalar = UnderlyingNumeric_t<SET>;
+   using Scalar = UnderlyingScalar_t<SET>;
 
    testInitialStatus();
    testAssignment();

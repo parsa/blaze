@@ -70,7 +70,7 @@
 #include <blaze/math/typetraits/IsUniform.h>
 #include <blaze/math/typetraits/IsUpper.h>
 #include <blaze/math/typetraits/UnderlyingBuiltin.h>
-#include <blaze/math/typetraits/UnderlyingNumeric.h>
+#include <blaze/math/typetraits/UnderlyingScalar.h>
 #include <blaze/math/Views.h>
 #include <blaze/util/algorithms/Min.h>
 #include <blaze/util/constraints/Numeric.h>
@@ -388,7 +388,7 @@ OperationTest<MT1,MT2>::OperationTest( const Creator<MT1>& creator1, const Creat
 {
    using namespace blaze;
 
-   using Scalar = blaze::UnderlyingNumeric_t<DET>;
+   using Scalar = blaze::UnderlyingScalar_t<DET>;
 
    if( lhs_.rows() != rhs_.rows() || lhs_.columns() != rhs_.columns() ) {
       throw std::runtime_error( "Non-matching operands detected" );

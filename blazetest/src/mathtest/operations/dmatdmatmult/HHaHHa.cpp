@@ -61,12 +61,12 @@ int main()
 {
    std::cout << "   Running 'HHaHHa'..." << std::endl;
 
-   using blazetest::mathtest::NumericA;
+   using blazetest::mathtest::ScalarA;
 
    try
    {
       // Matrix type definitions
-      using HHa = blaze::HermitianMatrix< blaze::HybridMatrix<NumericA,64UL,64UL> >;
+      using HHa = blaze::HermitianMatrix< blaze::HybridMatrix<ScalarA,64UL,64UL> >;
 
       // Creator type definitions
       using CHHa = blazetest::Creator<HHa>;

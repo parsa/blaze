@@ -62,14 +62,14 @@ int main()
 {
    std::cout << "   Running 'LDbHDa'..." << std::endl;
 
-   using blazetest::mathtest::NumericA;
-   using blazetest::mathtest::NumericB;
+   using blazetest::mathtest::ScalarA;
+   using blazetest::mathtest::ScalarB;
 
    try
    {
       // Matrix type definitions
-      using LDb = blaze::LowerMatrix< blaze::DynamicMatrix<NumericB> >;
-      using HDa = blaze::HermitianMatrix< blaze::DynamicMatrix<NumericA> >;
+      using LDb = blaze::LowerMatrix< blaze::DynamicMatrix<ScalarB> >;
+      using HDa = blaze::HermitianMatrix< blaze::DynamicMatrix<ScalarA> >;
 
       // Creator type definitions
       using CLDb = blazetest::Creator<LDb>;

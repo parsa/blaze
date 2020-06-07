@@ -64,7 +64,7 @@
 #include <blaze/math/traits/ExpandTrait.h>
 #include <blaze/math/typetraits/IsRowVector.h>
 #include <blaze/math/typetraits/UnderlyingBuiltin.h>
-#include <blaze/math/typetraits/UnderlyingNumeric.h>
+#include <blaze/math/typetraits/UnderlyingScalar.h>
 #include <blaze/math/Views.h>
 #include <blaze/util/constraints/SameType.h>
 #include <blaze/util/Random.h>
@@ -332,7 +332,7 @@ OperationTest<VT,E>::OperationTest( const Creator<VT>& creator )
    , test_()               // Label of the currently performed test
    , error_()              // Description of the current error type
 {
-   using Scalar = blaze::UnderlyingNumeric_t<DET>;
+   using Scalar = blaze::UnderlyingScalar_t<DET>;
 
    testInitialStatus();
    testAssignment();

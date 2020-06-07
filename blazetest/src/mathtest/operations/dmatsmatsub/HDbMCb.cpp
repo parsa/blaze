@@ -62,13 +62,13 @@ int main()
 {
    std::cout << "   Running 'HDbMCb'..." << std::endl;
 
-   using blazetest::mathtest::NumericB;
+   using blazetest::mathtest::ScalarB;
 
    try
    {
       // Matrix type definitions
-      using HDb = blaze::HermitianMatrix< blaze::DynamicMatrix<NumericB> >;
-      using MCb = blaze::CompressedMatrix<NumericB>;
+      using HDb = blaze::HermitianMatrix< blaze::DynamicMatrix<ScalarB> >;
+      using MCb = blaze::CompressedMatrix<ScalarB>;
 
       // Creator type definitions
       using CHDb = blazetest::Creator<HDb>;

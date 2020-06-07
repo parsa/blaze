@@ -57,7 +57,7 @@
 #include <blaze/math/traits/ReduceTrait.h>
 #include <blaze/math/typetraits/IsUniform.h>
 #include <blaze/math/typetraits/UnderlyingBuiltin.h>
-#include <blaze/math/typetraits/UnderlyingNumeric.h>
+#include <blaze/math/typetraits/UnderlyingScalar.h>
 #include <blaze/math/Views.h>
 #include <blaze/util/constraints/SameType.h>
 #include <blaze/util/IntegralConstant.h>
@@ -273,7 +273,7 @@ OperationTest<MT>::OperationTest( const Creator<MT>& creator, OP op )
 {
    using namespace blaze;
 
-   using Scalar = UnderlyingNumeric_t<DET>;
+   using Scalar = UnderlyingScalar_t<DET>;
 
    testInitialStatus();
    testAssignment();

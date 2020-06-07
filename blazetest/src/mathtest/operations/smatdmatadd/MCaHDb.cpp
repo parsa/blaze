@@ -62,14 +62,14 @@ int main()
 {
    std::cout << "   Running 'MCaHDb'..." << std::endl;
 
-   using blazetest::mathtest::NumericA;
-   using blazetest::mathtest::NumericB;
+   using blazetest::mathtest::ScalarA;
+   using blazetest::mathtest::ScalarB;
 
    try
    {
       // Matrix type definitions
-      using MCa = blaze::CompressedMatrix<NumericA>;
-      using HDb = blaze::HermitianMatrix< blaze::DynamicMatrix<NumericB> >;
+      using MCa = blaze::CompressedMatrix<ScalarA>;
+      using HDb = blaze::HermitianMatrix< blaze::DynamicMatrix<ScalarB> >;
 
       // Creator type definitions
       using CMCa = blazetest::Creator<MCa>;
