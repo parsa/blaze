@@ -63,6 +63,7 @@
 #include <blaze/math/typetraits/UnderlyingBuiltin.h>
 #include <blaze/math/typetraits/UnderlyingScalar.h>
 #include <blaze/math/Views.h>
+#include <blaze/util/constraints/DerivedFrom.h>
 #include <blaze/util/constraints/Numeric.h>
 #include <blaze/util/constraints/SameType.h>
 #include <blaze/util/IntegralConstant.h>
@@ -251,6 +252,9 @@ class OperationTest
 
    BLAZE_CONSTRAINT_VECTORS_MUST_HAVE_SAME_TRANSPOSE_FLAG     ( TVecTVecMinExprType, blaze::ResultType_t<TVecTVecMinExprType>    );
    BLAZE_CONSTRAINT_VECTORS_MUST_HAVE_DIFFERENT_TRANSPOSE_FLAG( TVecTVecMinExprType, blaze::TransposeType_t<TVecTVecMinExprType> );
+
+   BLAZE_CONSTRAINT_MUST_BE_DERIVED_FROM( VecVecMinExprType  , blaze::BaseType_t<VecVecMinExprType  > );
+   BLAZE_CONSTRAINT_MUST_BE_DERIVED_FROM( TVecTVecMinExprType, blaze::BaseType_t<TVecTVecMinExprType> );
    /*! \endcond */
    //**********************************************************************************************
 };

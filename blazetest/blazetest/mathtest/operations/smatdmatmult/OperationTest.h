@@ -68,6 +68,7 @@
 #include <blaze/math/typetraits/UnderlyingScalar.h>
 #include <blaze/math/Views.h>
 #include <blaze/util/algorithms/Min.h>
+#include <blaze/util/constraints/DerivedFrom.h>
 #include <blaze/util/constraints/Numeric.h>
 #include <blaze/util/constraints/SameType.h>
 #include <blaze/util/IntegralConstant.h>
@@ -349,6 +350,11 @@ class OperationTest
    BLAZE_CONSTRAINT_MATRICES_MUST_HAVE_SAME_STORAGE_ORDER     ( TMatTMatMultExprType, blaze::ResultType_t<TMatTMatMultExprType>    );
    BLAZE_CONSTRAINT_MATRICES_MUST_HAVE_DIFFERENT_STORAGE_ORDER( TMatTMatMultExprType, blaze::OppositeType_t<TMatTMatMultExprType>  );
    BLAZE_CONSTRAINT_MATRICES_MUST_HAVE_DIFFERENT_STORAGE_ORDER( TMatTMatMultExprType, blaze::TransposeType_t<TMatTMatMultExprType> );
+
+   BLAZE_CONSTRAINT_MUST_BE_DERIVED_FROM( MatMatMultExprType  , blaze::BaseType_t<MatMatMultExprType  > );
+   BLAZE_CONSTRAINT_MUST_BE_DERIVED_FROM( MatTMatMultExprType , blaze::BaseType_t<MatTMatMultExprType > );
+   BLAZE_CONSTRAINT_MUST_BE_DERIVED_FROM( TMatMatMultExprType , blaze::BaseType_t<TMatMatMultExprType > );
+   BLAZE_CONSTRAINT_MUST_BE_DERIVED_FROM( TMatTMatMultExprType, blaze::BaseType_t<TMatTMatMultExprType> );
    /*! \endcond */
    //**********************************************************************************************
 };

@@ -59,6 +59,7 @@
 #include <blaze/math/typetraits/UnderlyingBuiltin.h>
 #include <blaze/math/typetraits/UnderlyingScalar.h>
 #include <blaze/math/Views.h>
+#include <blaze/util/constraints/DerivedFrom.h>
 #include <blaze/util/constraints/SameType.h>
 #include <blaze/util/IntegralConstant.h>
 #include <blaze/util/mpl/Not.h>
@@ -235,6 +236,9 @@ class OperationTest
 
    BLAZE_CONSTRAINT_VECTORS_MUST_HAVE_SAME_TRANSPOSE_FLAG     ( TMatReduceExprType, blaze::ResultType_t<TMatReduceExprType>    );
    BLAZE_CONSTRAINT_VECTORS_MUST_HAVE_DIFFERENT_TRANSPOSE_FLAG( TMatReduceExprType, blaze::TransposeType_t<TMatReduceExprType> );
+
+   BLAZE_CONSTRAINT_MUST_BE_DERIVED_FROM( MatReduceExprType , blaze::BaseType_t<MatReduceExprType > );
+   BLAZE_CONSTRAINT_MUST_BE_DERIVED_FROM( TMatReduceExprType, blaze::BaseType_t<TMatReduceExprType> );
    /*! \endcond */
    //**********************************************************************************************
 };

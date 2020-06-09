@@ -66,6 +66,7 @@
 #include <blaze/math/typetraits/UnderlyingBuiltin.h>
 #include <blaze/math/typetraits/UnderlyingScalar.h>
 #include <blaze/math/Views.h>
+#include <blaze/util/constraints/DerivedFrom.h>
 #include <blaze/util/constraints/SameType.h>
 #include <blaze/util/Random.h>
 #include <blaze/util/typetraits/RemoveCVRef.h>
@@ -292,6 +293,11 @@ class OperationTest
    BLAZE_CONSTRAINT_MATRICES_MUST_HAVE_DIFFERENT_STORAGE_ORDER( TVecExpandExprType1, blaze::TransposeType_t<TVecExpandExprType1> );
    BLAZE_CONSTRAINT_MATRICES_MUST_HAVE_SAME_STORAGE_ORDER     ( TVecExpandExprType2, blaze::ResultType_t<TVecExpandExprType2>    );
    BLAZE_CONSTRAINT_MATRICES_MUST_HAVE_DIFFERENT_STORAGE_ORDER( TVecExpandExprType2, blaze::TransposeType_t<TVecExpandExprType2> );
+
+   BLAZE_CONSTRAINT_MUST_BE_DERIVED_FROM( VecExpandExprType1 , blaze::BaseType_t<VecExpandExprType1 > );
+   BLAZE_CONSTRAINT_MUST_BE_DERIVED_FROM( VecExpandExprType2 , blaze::BaseType_t<VecExpandExprType2 > );
+   BLAZE_CONSTRAINT_MUST_BE_DERIVED_FROM( TVecExpandExprType1, blaze::BaseType_t<TVecExpandExprType1> );
+   BLAZE_CONSTRAINT_MUST_BE_DERIVED_FROM( TVecExpandExprType2, blaze::BaseType_t<TVecExpandExprType2> );
    /*! \endcond */
    //**********************************************************************************************
 };

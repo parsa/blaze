@@ -69,6 +69,7 @@
 #include <blaze/math/typetraits/UnderlyingBuiltin.h>
 #include <blaze/math/typetraits/UnderlyingScalar.h>
 #include <blaze/math/Views.h>
+#include <blaze/util/constraints/DerivedFrom.h>
 #include <blaze/util/constraints/Numeric.h>
 #include <blaze/util/constraints/SameType.h>
 #include <blaze/util/IntegralConstant.h>
@@ -80,7 +81,6 @@
 #include <blazetest/mathtest/IsEqual.h>
 #include <blazetest/mathtest/RandomMaximum.h>
 #include <blazetest/mathtest/RandomMinimum.h>
-
 
 
 namespace blazetest {
@@ -272,6 +272,9 @@ class OperationTest
 
    BLAZE_CONSTRAINT_VECTORS_MUST_HAVE_SAME_TRANSPOSE_FLAG     ( TVecTMatMultExprType, blaze::ResultType_t<TVecTMatMultExprType>    );
    BLAZE_CONSTRAINT_VECTORS_MUST_HAVE_DIFFERENT_TRANSPOSE_FLAG( TVecTMatMultExprType, blaze::TransposeType_t<TVecTMatMultExprType> );
+
+   BLAZE_CONSTRAINT_MUST_BE_DERIVED_FROM( TVecMatMultExprType , blaze::BaseType_t<TVecMatMultExprType > );
+   BLAZE_CONSTRAINT_MUST_BE_DERIVED_FROM( TVecTMatMultExprType, blaze::BaseType_t<TVecTMatMultExprType> );
    /*! \endcond */
    //**********************************************************************************************
 };

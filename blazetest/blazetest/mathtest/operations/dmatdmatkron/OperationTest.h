@@ -70,6 +70,7 @@
 #include <blaze/math/typetraits/UnderlyingBuiltin.h>
 #include <blaze/math/typetraits/UnderlyingScalar.h>
 #include <blaze/math/Views.h>
+#include <blaze/util/constraints/DerivedFrom.h>
 #include <blaze/util/constraints/Numeric.h>
 #include <blaze/util/constraints/SameType.h>
 #include <blaze/util/IntegralConstant.h>
@@ -349,6 +350,11 @@ class OperationTest
    BLAZE_CONSTRAINT_MATRICES_MUST_HAVE_SAME_STORAGE_ORDER     ( TMatTMatKronExprType, blaze::ResultType_t<TMatTMatKronExprType>    );
    BLAZE_CONSTRAINT_MATRICES_MUST_HAVE_DIFFERENT_STORAGE_ORDER( TMatTMatKronExprType, blaze::OppositeType_t<TMatTMatKronExprType>  );
    BLAZE_CONSTRAINT_MATRICES_MUST_HAVE_DIFFERENT_STORAGE_ORDER( TMatTMatKronExprType, blaze::TransposeType_t<TMatTMatKronExprType> );
+
+   BLAZE_CONSTRAINT_MUST_BE_DERIVED_FROM( MatMatKronExprType  , blaze::BaseType_t<MatMatKronExprType  > );
+   BLAZE_CONSTRAINT_MUST_BE_DERIVED_FROM( MatTMatKronExprType , blaze::BaseType_t<MatTMatKronExprType > );
+   BLAZE_CONSTRAINT_MUST_BE_DERIVED_FROM( TMatMatKronExprType , blaze::BaseType_t<TMatMatKronExprType > );
+   BLAZE_CONSTRAINT_MUST_BE_DERIVED_FROM( TMatTMatKronExprType, blaze::BaseType_t<TMatTMatKronExprType> );
    /*! \endcond */
    //**********************************************************************************************
 };

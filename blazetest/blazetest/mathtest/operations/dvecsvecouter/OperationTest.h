@@ -68,6 +68,7 @@
 #include <blaze/math/typetraits/UnderlyingBuiltin.h>
 #include <blaze/math/typetraits/UnderlyingScalar.h>
 #include <blaze/math/Views.h>
+#include <blaze/util/constraints/DerivedFrom.h>
 #include <blaze/util/constraints/Numeric.h>
 #include <blaze/util/constraints/SameType.h>
 #include <blaze/util/IntegralConstant.h>
@@ -290,6 +291,8 @@ class OperationTest
    BLAZE_CONSTRAINT_MATRICES_MUST_HAVE_SAME_STORAGE_ORDER     ( OuterExprType, blaze::ResultType_t<OuterExprType>    );
    BLAZE_CONSTRAINT_MATRICES_MUST_HAVE_DIFFERENT_STORAGE_ORDER( OuterExprType, blaze::OppositeType_t<OuterExprType>  );
    BLAZE_CONSTRAINT_MATRICES_MUST_HAVE_DIFFERENT_STORAGE_ORDER( OuterExprType, blaze::TransposeType_t<OuterExprType> );
+
+   BLAZE_CONSTRAINT_MUST_BE_DERIVED_FROM( OuterExprType, blaze::BaseType_t<OuterExprType> );
    /*! \endcond */
    //**********************************************************************************************
 };
