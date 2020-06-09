@@ -50,6 +50,7 @@
 #include <blaze/math/Aliases.h>
 #include <blaze/math/CompressedVector.h>
 #include <blaze/math/constraints/DenseVector.h>
+#include <blaze/math/constraints/Scalar.h>
 #include <blaze/math/constraints/SparseVector.h>
 #include <blaze/math/constraints/TransposeFlag.h>
 #include <blaze/math/DynamicVector.h>
@@ -62,7 +63,6 @@
 #include <blaze/math/typetraits/UnderlyingScalar.h>
 #include <blaze/math/Views.h>
 #include <blaze/util/constraints/DerivedFrom.h>
-#include <blaze/util/constraints/Numeric.h>
 #include <blaze/util/constraints/SameType.h>
 #include <blaze/util/Random.h>
 #include <blaze/util/typetraits/RemoveCVRef.h>
@@ -1484,7 +1484,7 @@ template< typename VT1    // Type of the left-hand side sparse vector
 template< typename T >    // Type of the scalar
 void OperationTest<VT1,VT2>::testScaledOperation( T scalar )
 {
-   BLAZE_CONSTRAINT_MUST_BE_NUMERIC_TYPE( T );
+   BLAZE_CONSTRAINT_MUST_BE_SCALAR_TYPE( T );
 
    if( scalar == T(0) )
       throw std::invalid_argument( "Invalid scalar parameter" );

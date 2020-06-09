@@ -55,6 +55,7 @@
 #include <blaze/math/constraints/RequiresEvaluation.h>
 #include <blaze/math/constraints/RowMajorMatrix.h>
 #include <blaze/math/constraints/RowVector.h>
+#include <blaze/math/constraints/Scalar.h>
 #include <blaze/math/constraints/SparseMatrix.h>
 #include <blaze/math/constraints/SparseVector.h>
 #include <blaze/math/constraints/StorageOrder.h>
@@ -2076,7 +2077,7 @@ template< typename VT  // Type of the sparse vector
 template< typename T >    // Type of the scalar
 void OperationTest<VT,E>::testScaledOperation( T scalar )
 {
-   BLAZE_CONSTRAINT_MUST_BE_NUMERIC_TYPE( T );
+   BLAZE_CONSTRAINT_MUST_BE_SCALAR_TYPE( T );
 
    if( scalar == T(0) )
       throw std::invalid_argument( "Invalid scalar parameter" );

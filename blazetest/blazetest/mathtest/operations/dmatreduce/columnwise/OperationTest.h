@@ -51,6 +51,7 @@
 #include <blaze/math/CompressedMatrix.h>
 #include <blaze/math/CompressedVector.h>
 #include <blaze/math/constraints/DenseMatrix.h>
+#include <blaze/math/constraints/Scalar.h>
 #include <blaze/math/constraints/SparseMatrix.h>
 #include <blaze/math/constraints/TransposeFlag.h>
 #include <blaze/math/functors/Add.h>
@@ -1218,7 +1219,7 @@ template< typename OP    // Type of the reduction operation
         , typename T >   // Type of the scalar
 void OperationTest<MT>::testScaledOperation( OP op, T scalar )
 {
-   BLAZE_CONSTRAINT_MUST_BE_NUMERIC_TYPE( T );
+   BLAZE_CONSTRAINT_MUST_BE_SCALAR_TYPE( T );
 
    if( scalar == T(0) )
       throw std::invalid_argument( "Invalid scalar parameter" );

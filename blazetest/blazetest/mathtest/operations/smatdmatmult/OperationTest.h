@@ -52,6 +52,7 @@
 #include <blaze/math/constraints/ColumnMajorMatrix.h>
 #include <blaze/math/constraints/DenseMatrix.h>
 #include <blaze/math/constraints/RowMajorMatrix.h>
+#include <blaze/math/constraints/Scalar.h>
 #include <blaze/math/constraints/SparseMatrix.h>
 #include <blaze/math/constraints/StorageOrder.h>
 #include <blaze/math/DynamicMatrix.h>
@@ -69,7 +70,6 @@
 #include <blaze/math/Views.h>
 #include <blaze/util/algorithms/Min.h>
 #include <blaze/util/constraints/DerivedFrom.h>
-#include <blaze/util/constraints/Numeric.h>
 #include <blaze/util/constraints/SameType.h>
 #include <blaze/util/IntegralConstant.h>
 #include <blaze/util/mpl/If.h>
@@ -2489,7 +2489,7 @@ template< typename MT1    // Type of the left-hand side sparse matrix
 template< typename T >    // Type of the scalar
 void OperationTest<MT1,MT2>::testScaledOperation( T scalar )
 {
-   BLAZE_CONSTRAINT_MUST_BE_NUMERIC_TYPE( T );
+   BLAZE_CONSTRAINT_MUST_BE_SCALAR_TYPE( T );
 
    if( scalar == T(0) )
       throw std::invalid_argument( "Invalid scalar parameter" );
