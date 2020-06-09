@@ -159,11 +159,15 @@ class DVecScalarMultExpr
 
  public:
    //**Type definitions****************************************************************************
-   using This          = DVecScalarMultExpr<VT,ST,TF>;  //!< Type of this DVecScalarMultExpr instance.
-   using BaseType      = DenseVector<This,TF>;          //!< Base type of this DVecScalarMultExpr instance.
-   using ResultType    = MultTrait_t<RT,ST>;            //!< Result type for expression template evaluations.
-   using TransposeType = TransposeType_t<ResultType>;   //!< Transpose type for expression template evaluations.
-   using ElementType   = ElementType_t<ResultType>;     //!< Resulting element type.
+   //! Type of this DVecScalarMultExpr instance.
+   using This = DVecScalarMultExpr<VT,ST,TF>;
+
+   //! Base type of this DVecScalarMultExpr instance.
+   using BaseType = VecScalarMultExpr< DenseVector<This,TF> >;
+
+   using ResultType    = MultTrait_t<RT,ST>;           //!< Result type for expression template evaluations.
+   using TransposeType = TransposeType_t<ResultType>;  //!< Transpose type for expression template evaluations.
+   using ElementType   = ElementType_t<ResultType>;    //!< Resulting element type.
 
    //! Return type for expression template evaluations.
    using ReturnType = const If_t< returnExpr, ExprReturnType, ElementType >;

@@ -123,8 +123,12 @@ class SMatVarExpr<MT,columnwise>
 
  public:
    //**Type definitions****************************************************************************
-   using This          = SMatVarExpr<MT,columnwise>;           //!< Type of this SMatVarExpr instance.
-   using BaseType      = DenseVector<This,true>;               //!< Base type of this SMatVarExpr instance.
+   //! Type of this SMatVarExpr instance.
+   using This = SMatVarExpr<MT,columnwise>;
+
+   //! Base type of this SMatVarExpr instance.
+   using BaseType = MatReduceExpr< DenseVector<This,true>, columnwise >;
+
    using ResultType    = ReduceTrait_t<RT,InvAdd,columnwise>;  //!< Result type for expression template evaluations.
    using TransposeType = TransposeType_t<ResultType>;          //!< Transpose type for expression template evaluations.
    using ElementType   = ElementType_t<ResultType>;            //!< Resulting element type.
@@ -592,8 +596,12 @@ class SMatVarExpr<MT,rowwise>
 
  public:
    //**Type definitions****************************************************************************
-   using This          = SMatVarExpr<MT,rowwise>;           //!< Type of this SMatVarExpr instance.
-   using BaseType      = DenseVector<This,false>;           //!< Base type of this SMatVarExpr instance.
+   //! Type of this SMatVarExpr instance.
+   using This = SMatVarExpr<MT,rowwise>;
+
+   //! Base type of this SMatVarExpr instance.
+   using BaseType = MatReduceExpr< DenseVector<This,false>, rowwise >;
+
    using ResultType    = ReduceTrait_t<RT,InvAdd,rowwise>;  //!< Result type for expression template evaluations.
    using TransposeType = TransposeType_t<ResultType>;       //!< Transpose type for expression template evaluations.
    using ElementType   = ElementType_t<ResultType>;         //!< Resulting element type.

@@ -197,15 +197,17 @@ class IdentityMatrix
 {
  public:
    //**Type definitions****************************************************************************
-   using This       = IdentityMatrix<Type,SO,Tag>;  //!< Type of this IdentityMatrix instance.
-   using BaseType   = SparseMatrix<This,SO>;        //!< Base type of this IdentityMatrix instance.
-   using ResultType = This;                         //!< Result type for expression template evaluations.
+   using This     = IdentityMatrix<Type,SO,Tag>;          //!< Type of this IdentityMatrix instance.
+   using BaseType = Expression< SparseMatrix<This,SO> >;  //!< Base type of this IdentityMatrix instance.
+
+   //!< Result type for expression template evaluations.
+   using ResultType = This;
 
    //! Result type with opposite storage order for expression template evaluations.
-   using OppositeType   = IdentityMatrix<Type,!SO,Tag>;
+   using OppositeType = IdentityMatrix<Type,!SO,Tag>;
 
    //! Transpose type for expression template evaluations.
-   using TransposeType  = IdentityMatrix<Type,!SO,Tag>;
+   using TransposeType = IdentityMatrix<Type,!SO,Tag>;
 
    using ElementType    = Type;         //!< Type of the identity matrix elements.
    using TagType        = Tag;          //!< Tag type of this IdentityMatrix instance.

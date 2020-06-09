@@ -128,7 +128,9 @@ class Column<MT,true,false,SF,CCAs...>
    //! Type of this Column instance.
    using This = Column<MT,true,false,SF,CCAs...>;
 
-   using BaseType      = SparseVector<This,false>;     //!< Base type of this Column instance.
+   //! Base type of this Column instance.
+   using BaseType = View< SparseVector<This,false> >;
+
    using ViewedType    = MT;                           //!< The type viewed by this Column instance.
    using ResultType    = ColumnTrait_t<MT,CCAs...>;    //!< Result type for expression template evaluations.
    using TransposeType = TransposeType_t<ResultType>;  //!< Transpose type for expression template evaluations.
@@ -2106,7 +2108,9 @@ class Column<MT,false,false,false,CCAs...>
    //! Type of this Column instance.
    using This = Column<MT,false,false,false,CCAs...>;
 
-   using BaseType      = SparseVector<This,false>;     //!< Base type of this Column instance.
+   //! Base type of this Column instance.
+   using BaseType = View< SparseVector<This,false> >;
+
    using ViewedType    = MT;                           //!< The type viewed by this Column instance.
    using ResultType    = ColumnTrait_t<MT,CCAs...>;    //!< Result type for expression template evaluations.
    using TransposeType = TransposeType_t<ResultType>;  //!< Transpose type for expression template evaluations.
@@ -4099,7 +4103,9 @@ class Column<MT,false,false,true,CCAs...>
    //! Type of this Column instance.
    using This = Column<MT,false,false,true,CCAs...>;
 
-   using BaseType      = SparseVector<This,false>;     //!< Base type of this Column instance.
+   //! Base type of this Column instance.
+   using BaseType = View< SparseVector<This,false> >;
+
    using ViewedType    = MT;                           //!< The type viewed by this Column instance.
    using ResultType    = ColumnTrait_t<MT,CCAs...>;    //!< Result type for expression template evaluations.
    using TransposeType = TransposeType_t<ResultType>;  //!< Transpose type for expression template evaluations.

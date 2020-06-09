@@ -150,14 +150,18 @@ class DMatReduceExpr<MT,OP,columnwise>
 
  public:
    //**Type definitions****************************************************************************
-   using This          = DMatReduceExpr<MT,OP,columnwise>;  //!< Type of this DMatReduceExpr instance.
-   using BaseType      = DenseVector<This,true>;            //!< Base type of this DMatReduceExpr instance.
-   using ResultType    = ReduceTrait_t<RT,OP,columnwise>;   //!< Result type for expression template evaluations.
-   using TransposeType = TransposeType_t<ResultType>;       //!< Transpose type for expression template evaluations.
-   using ElementType   = ElementType_t<ResultType>;         //!< Resulting element type.
-   using SIMDType      = SIMDTrait_t<ElementType>;          //!< Resulting SIMD element type.
-   using ReturnType    = const ElementType;                 //!< Return type for expression template evaluations.
-   using CompositeType = const ResultType;                  //!< Data type for composite expression templates.
+   //! Type of this DMatReduceExpr instance.
+   using This = DMatReduceExpr<MT,OP,columnwise>;
+
+   //! Base type of this DMatReduceExpr instance.
+   using BaseType = MatReduceExpr< DenseVector<This,true>, columnwise >;
+
+   using ResultType    = ReduceTrait_t<RT,OP,columnwise>;  //!< Result type for expression template evaluations.
+   using TransposeType = TransposeType_t<ResultType>;      //!< Transpose type for expression template evaluations.
+   using ElementType   = ElementType_t<ResultType>;        //!< Resulting element type.
+   using SIMDType      = SIMDTrait_t<ElementType>;         //!< Resulting SIMD element type.
+   using ReturnType    = const ElementType;                //!< Return type for expression template evaluations.
+   using CompositeType = const ResultType;                 //!< Data type for composite expression templates.
 
    //! Composite type of the left-hand side dense matrix expression.
    using Operand = If_t< IsExpression_v<MT>, const MT, const MT& >;
@@ -804,13 +808,17 @@ class DMatReduceExpr<MT,OP,rowwise>
 
  public:
    //**Type definitions****************************************************************************
-   using This          = DMatReduceExpr<MT,OP,rowwise>;  //!< Type of this DMatReduceExpr instance.
-   using BaseType      = DenseVector<This,false>;        //!< Base type of this DMatReduceExpr instance.
-   using ResultType    = ReduceTrait_t<RT,OP,rowwise>;   //!< Result type for expression template evaluations.
-   using TransposeType = TransposeType_t<ResultType>;    //!< Transpose type for expression template evaluations.
-   using ElementType   = ElementType_t<ResultType>;      //!< Resulting element type.
-   using SIMDType      = SIMDTrait_t<ElementType>;       //!< Resulting SIMD element type.
-   using ReturnType    = const ElementType;              //!< Return type for expression template evaluations.
+   //! Type of this DMatReduceExpr instance.
+   using This = DMatReduceExpr<MT,OP,rowwise>;
+
+   //! Base type of this DMatReduceExpr instance.
+   using BaseType = MatReduceExpr< DenseVector<This,false>, rowwise >;
+
+   using ResultType    = ReduceTrait_t<RT,OP,rowwise>;  //!< Result type for expression template evaluations.
+   using TransposeType = TransposeType_t<ResultType>;   //!< Transpose type for expression template evaluations.
+   using ElementType   = ElementType_t<ResultType>;     //!< Resulting element type.
+   using SIMDType      = SIMDTrait_t<ElementType>;      //!< Resulting SIMD element type.
+   using ReturnType    = const ElementType;             //!< Return type for expression template evaluations.
 
    //! Data type for composite expression templates.
    using CompositeType = If_t< useAssign, const ResultType, const DMatReduceExpr& >;

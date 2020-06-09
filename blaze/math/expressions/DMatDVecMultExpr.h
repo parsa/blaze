@@ -200,8 +200,12 @@ class DMatDVecMultExpr
 
  public:
    //**Type definitions****************************************************************************
-   using This          = DMatDVecMultExpr<MT,VT>;      //!< Type of this DMatDVecMultExpr instance.
-   using BaseType      = DenseVector<This,false>;      //!< Base type of this DMatDVecMultExpr instance.
+   //! Type of this DMatDVecMultExpr instance.
+   using This = DMatDVecMultExpr<MT,VT>;
+
+   //! Base type of this DMatDVecMultExpr instance.
+   using BaseType = MatVecMultExpr< DenseVector<This,false> >;
+
    using ResultType    = MultTrait_t<MRT,VRT>;         //!< Result type for expression template evaluations.
    using TransposeType = TransposeType_t<ResultType>;  //!< Transpose type for expression template evaluations.
    using ElementType   = ElementType_t<ResultType>;    //!< Resulting element type.
@@ -3187,14 +3191,18 @@ class DVecScalarMultExpr< DMatDVecMultExpr<MT,VT>, ST, false >
 
  public:
    //**Type definitions****************************************************************************
-   using This          = DVecScalarMultExpr<MVM,ST,false>;  //!< Type of this DVecScalarMultExpr instance.
-   using BaseType      = DenseVector<This,false>;           //!< Base type of this DVecScalarMultExpr instance.
-   using ResultType    = MultTrait_t<RES,ST>;               //!< Result type for expression template evaluations.
-   using TransposeType = TransposeType_t<ResultType>;       //!< Transpose type for expression template evaluations.
-   using ElementType   = ElementType_t<ResultType>;         //!< Resulting element type.
-   using SIMDType      = SIMDTrait_t<ElementType>;          //!< Resulting SIMD element type.
-   using ReturnType    = const ElementType;                 //!< Return type for expression template evaluations.
-   using CompositeType = const ResultType;                  //!< Data type for composite expression templates.
+   //! Type of this DVecScalarMultExpr instance.
+   using This = DVecScalarMultExpr<MVM,ST,false>;
+
+   //! Base type of this DVecScalarMultExpr instance.
+   using BaseType = VecScalarMultExpr< DenseVector<This,false> >;
+
+   using ResultType    = MultTrait_t<RES,ST>;          //!< Result type for expression template evaluations.
+   using TransposeType = TransposeType_t<ResultType>;  //!< Transpose type for expression template evaluations.
+   using ElementType   = ElementType_t<ResultType>;    //!< Resulting element type.
+   using SIMDType      = SIMDTrait_t<ElementType>;     //!< Resulting SIMD element type.
+   using ReturnType    = const ElementType;            //!< Return type for expression template evaluations.
+   using CompositeType = const ResultType;             //!< Data type for composite expression templates.
 
    //! Composite type of the left-hand side dense vector expression.
    using LeftOperand = const DMatDVecMultExpr<MT,VT>;

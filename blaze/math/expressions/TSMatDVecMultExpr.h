@@ -136,8 +136,12 @@ class TSMatDVecMultExpr
 
  public:
    //**Type definitions****************************************************************************
-   using This          = TSMatDVecMultExpr<MT,VT>;     //!< Type of this TSMatDVecMultExpr instance.
-   using BaseType      = DenseVector<This,false>;      //!< Base type of this TSMatDVecMultExpr instance.
+   //! Type of this TSMatDVecMultExpr instance.
+   using This = TSMatDVecMultExpr<MT,VT>;
+
+   //! Base type of this TSMatDVecMultExpr instance.
+   using BaseType = MatVecMultExpr< DenseVector<This,false> >;
+
    using ResultType    = MultTrait_t<MRT,VRT>;         //!< Result type for expression template evaluations.
    using TransposeType = TransposeType_t<ResultType>;  //!< Transpose type for expression template evaluations.
    using ElementType   = ElementType_t<ResultType>;    //!< Resulting element type.

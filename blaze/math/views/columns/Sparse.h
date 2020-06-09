@@ -128,7 +128,9 @@ class Columns<MT,true,false,SF,CCAs...>
    //! Type of this Columns instance.
    using This = Columns<MT,true,false,SF,CCAs...>;
 
-   using BaseType      = SparseMatrix<This,true>;      //!< Base type of this Columns instance.
+   //! Base type of this Columns instance.
+   using BaseType = View< SparseMatrix<This,true> >;
+
    using ViewedType    = MT;                           //!< The type viewed by this Columns instance.
    using ResultType    = ColumnsTrait_t<MT,N>;         //!< Result type for expression template evaluations.
    using OppositeType  = OppositeType_t<ResultType>;   //!< Result type with opposite storage order for expression template evaluations.
@@ -2262,7 +2264,9 @@ class Columns<MT,false,false,false,CCAs...>
    //! Type of this Columns instance.
    using This = Columns<MT,false,false,false,CCAs...>;
 
-   using BaseType      = SparseMatrix<This,true>;      //!< Base type of this Columns instance.
+   //! Base type of this Columns instance.
+   using BaseType = View< SparseMatrix<This,true> >;
+
    using ViewedType    = MT;                           //!< The type viewed by this Columns instance.
    using ResultType    = ColumnsTrait_t<MT,N>;         //!< Result type for expression template evaluations.
    using OppositeType  = OppositeType_t<ResultType>;   //!< Result type with opposite storage order for expression template evaluations.
@@ -4697,7 +4701,9 @@ class Columns<MT,false,false,true,CCAs...>
    //! Type of this Columns instance.
    using This = Columns<MT,false,false,true,CCAs...>;
 
-   using BaseType      = SparseMatrix<This,true>;      //!< Base type of this Columns instance.
+   //! Base type of this Columns instance.
+   using BaseType = View< SparseMatrix<This,true> >;
+
    using ViewedType    = MT;                           //!< The type viewed by this Columns instance.
    using ResultType    = ColumnsTrait_t<MT,N>;         //!< Result type for expression template evaluations.
    using OppositeType  = OppositeType_t<ResultType>;   //!< Result type with opposite storage order for expression template evaluations.

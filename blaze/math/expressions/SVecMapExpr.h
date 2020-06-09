@@ -132,8 +132,12 @@ class SVecMapExpr
 
  public:
    //**Type definitions****************************************************************************
-   using This          = SVecMapExpr<VT,OP,TF>;        //!< Type of this SVecMapExpr instance.
-   using BaseType      = SparseVector<This,TF>;        //!< Base type of this SVecMapExpr instance.
+   //! Type of this SVecMapExpr instance.
+   using This = SVecMapExpr<VT,OP,TF>;
+
+   //! Base type of this SVecMapExpr instance.
+   using BaseType = VecMapExpr< SparseVector<This,TF> >;
+
    using ResultType    = MapTrait_t<RT,OP>;            //!< Result type for expression template evaluations.
    using TransposeType = TransposeType_t<ResultType>;  //!< Transpose type for expression template evaluations.
    using ElementType   = ElementType_t<ResultType>;    //!< Resulting element type.

@@ -96,8 +96,12 @@ class DMatEigenExpr
 
  public:
    //**Type definitions****************************************************************************
-   using This          = DMatEigenExpr<MT,SO>;         //!< Type of this DMatEigenExpr instance.
-   using BaseType      = DenseMatrix<This,SO>;         //!< Base type of this DMatEigenExpr instance.
+   //! Type of this DMatEigenExpr instance.
+   using This = DMatEigenExpr<MT,SO>;
+
+   //! Base type of this DMatEigenExpr instance.
+   using BaseType = EigenExpr< DenseVector<This,false> >;
+
    using ResultType    = Rebind_t<VT,ET>;              //!< Result type for expression template evaluations.
    using TransposeType = TransposeType_t<ResultType>;  //!< Transpose type for expression template evaluations.
    using ElementType   = ElementType_t<ResultType>;    //!< Resulting element type.

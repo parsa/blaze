@@ -185,9 +185,11 @@ class UniformVector
 {
  public:
    //**Type definitions****************************************************************************
-   using This       = UniformVector<Type,TF,Tag>;  //!< Type of this UniformVector instance.
-   using BaseType   = DenseVector<This,TF>;        //!< Base type of this UniformVector instance.
-   using ResultType = This;                        //!< Result type for expression template evaluations.
+   using This     = UniformVector<Type,TF,Tag>;          //!< Type of this UniformVector instance.
+   using BaseType = Expression< DenseVector<This,TF> >;  //!< Base type of this UniformVector instance.
+
+   //! Result type for expression template evaluations.
+   using ResultType = This;
 
    //! Transpose type for expression template evaluations.
    using TransposeType = UniformVector<Type,!TF,Tag>;

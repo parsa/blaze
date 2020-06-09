@@ -129,8 +129,12 @@ class SVecSVecAddExpr
 
  public:
    //**Type definitions****************************************************************************
-   using This          = SVecSVecAddExpr<VT1,VT2,TF>;  //!< Type of this SVecSVecAddExpr instance.
-   using BaseType      = SparseVector<This,TF>;        //!< Base type of this SVecSVecAddExpr instance.
+   //! Type of this SVecSVecAddExpr instance.
+   using This = SVecSVecAddExpr<VT1,VT2,TF>;
+
+   //! Base type of this SVecSVecAddExpr instance.
+   using BaseType = VecVecAddExpr< SparseVector<This,TF> >;
+
    using ResultType    = AddTrait_t<RT1,RT2>;          //!< Result type for expression template evaluations.
    using TransposeType = TransposeType_t<ResultType>;  //!< Transpose type for expression template evaluations.
    using ElementType   = ElementType_t<ResultType>;    //!< Resulting element type.

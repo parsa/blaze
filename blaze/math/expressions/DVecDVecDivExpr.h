@@ -155,8 +155,12 @@ class DVecDVecDivExpr
 
  public:
    //**Type definitions****************************************************************************
-   using This          = DVecDVecDivExpr<VT1,VT2,TF>;  //!< Type of this DVecDVecDivExpr instance.
-   using BaseType      = DenseVector<This,TF>;         //!< Base type of this DVecDVecDivExpr instance.
+   //! Type of this DVecDVecDivExpr instance.
+   using This = DVecDVecDivExpr<VT1,VT2,TF>;
+
+   //! Base type of this DVecDVecDivExpr instance.
+   using BaseType = VecVecDivExpr< DenseVector<This,TF> >;
+
    using ResultType    = DivTrait_t<RT1,RT2>;          //!< Result type for expression template evaluations.
    using TransposeType = TransposeType_t<ResultType>;  //!< Transpose type for expression template evaluations.
    using ElementType   = ElementType_t<ResultType>;    //!< Resulting element type.

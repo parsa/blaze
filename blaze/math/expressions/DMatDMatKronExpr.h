@@ -117,12 +117,16 @@ class DMatDMatKronExpr
 
  public:
    //**Type definitions****************************************************************************
-   using This          = DMatDMatKronExpr<MT1,MT2,SO>;  //!< Type of this DMatDMatKronExpr instance.
-   using BaseType      = DenseMatrix<This,SO>;          //!< Base type of this DMatDMatKronExpr instance.
-   using ResultType    = KronTrait_t<RT1,RT2>;          //!< Result type for expression template evaluations.
-   using OppositeType  = OppositeType_t<ResultType>;    //!< Result type with opposite storage order for expression template evaluations.
-   using TransposeType = TransposeType_t<ResultType>;   //!< Transpose type for expression template evaluations.
-   using ElementType   = ElementType_t<ResultType>;     //!< Resulting element type.
+   //! Type of this DMatDMatKronExpr instance.
+   using This = DMatDMatKronExpr<MT1,MT2,SO>;
+
+   //! Base type of this DMatDMatKronExpr instance.
+   using BaseType = MatMatKronExpr< DenseMatrix<This,SO> >;
+
+   using ResultType    = KronTrait_t<RT1,RT2>;         //!< Result type for expression template evaluations.
+   using OppositeType  = OppositeType_t<ResultType>;   //!< Result type with opposite storage order for expression template evaluations.
+   using TransposeType = TransposeType_t<ResultType>;  //!< Transpose type for expression template evaluations.
+   using ElementType   = ElementType_t<ResultType>;    //!< Resulting element type.
 
    //! Return type for expression template evaluations.
    using ReturnType = const If_t< returnExpr, ExprReturnType, ElementType >;

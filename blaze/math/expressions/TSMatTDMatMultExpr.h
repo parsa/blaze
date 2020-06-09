@@ -229,7 +229,7 @@ class TSMatTDMatMultExpr
    using This = TSMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>;
 
    //! Base type of this TSMatTDMatMultExpr instance.
-   using BaseType = DenseMatrix<This,true>;
+   using BaseType = MatMatMultExpr< DenseMatrix<This,true> >;
 
    //! Result type for expression template evaluations.
    using ResultType = typename If_t< HERM

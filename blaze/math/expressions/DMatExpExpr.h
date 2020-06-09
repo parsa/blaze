@@ -98,13 +98,17 @@ class DMatExpExpr
 
  public:
    //**Type definitions****************************************************************************
-   using This          = DMatExpExpr<MT,SO>;    //!< Type of this DMatExpExpr instance.
-   using BaseType      = DenseMatrix<This,SO>;  //!< Base type of this DMatExpExpr instance.
-   using ResultType    = RemoveAdaptor_t<RT>;   //!< Result type for expression template evaluations.
-   using OppositeType  = OppositeType_t<MT>;    //!< Result type with opposite storage order for expression template evaluations.
-   using TransposeType = TransposeType_t<MT>;   //!< Transpose type for expression template evaluations.
-   using ElementType   = ElementType_t<MT>;     //!< Resulting element type.
-   using ReturnType    = ReturnType_t<MT>;      //!< Return type for expression template evaluations.
+   //! Type of this DMatExpExpr instance.
+   using This = DMatExpExpr<MT,SO>;
+
+   //! Base type of this DMatExpExpr instance.
+   using BaseType = MatExpExpr< DenseMatrix<This,SO> >;
+
+   using ResultType    = RemoveAdaptor_t<RT>;  //!< Result type for expression template evaluations.
+   using OppositeType  = OppositeType_t<MT>;   //!< Result type with opposite storage order for expression template evaluations.
+   using TransposeType = TransposeType_t<MT>;  //!< Transpose type for expression template evaluations.
+   using ElementType   = ElementType_t<MT>;    //!< Resulting element type.
+   using ReturnType    = ReturnType_t<MT>;     //!< Return type for expression template evaluations.
 
    //! Data type for composite expression templates.
    using CompositeType = const ResultType;

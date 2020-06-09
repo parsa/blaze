@@ -127,7 +127,9 @@ class Submatrix<MT,AF,false,false,CSAs...>
    //! Type of this Submatrix instance.
    using This = Submatrix<MT,AF,false,false,CSAs...>;
 
-   using BaseType      = SparseMatrix<This,false>;      //!< Base type of this Submatrix instance.
+   //! Base type of this Submatrix instance.
+   using BaseType = View< SparseMatrix<This,false> >;
+
    using ViewedType    = MT;                            //!< The type viewed by this Submatrix instance.
    using ResultType    = SubmatrixTrait_t<MT,CSAs...>;  //!< Result type for expression template evaluations.
    using OppositeType  = OppositeType_t<ResultType>;    //!< Result type with opposite storage order for expression template evaluations.
@@ -2548,7 +2550,9 @@ class Submatrix<MT,AF,true,false,CSAs...>
    //! Type of this Submatrix instance.
    using This = Submatrix<MT,AF,true,false,CSAs...>;
 
-   using BaseType      = SparseMatrix<This,true>;       //!< Base type of this Submatrix instance.
+   //! Base type of this Submatrix instance.
+   using BaseType = View< SparseMatrix<This,true> >;
+
    using ViewedType    = MT;                            //!< The type viewed by this Submatrix instance.
    using ResultType    = SubmatrixTrait_t<MT,CSAs...>;  //!< Result type for expression template evaluations.
    using OppositeType  = OppositeType_t<ResultType>;    //!< Result type with opposite storage order for expression template evaluations.

@@ -89,13 +89,17 @@ class DMatDMatSolveExpr
 
  public:
    //**Type definitions****************************************************************************
-   using This          = DMatDMatSolveExpr<MT1,MT2,SO>;  //!< Type of this DMatDMatSolveExpr instance.
-   using BaseType      = DenseMatrix<This,SO>;           //!< Base type of this DMatDMatSolveExpr instance.
-   using ResultType    = SolveTrait_t<RT1,RT2>;          //!< Result type for expression template evaluations.
-   using OppositeType  = OppositeType_t<ResultType>;     //!< Result type with opposite storage order for expression template evaluations.
-   using TransposeType = TransposeType_t<ResultType>;    //!< Transpose type for expression template evaluations.
-   using ElementType   = ElementType_t<ResultType>;      //!< Resulting element type.
-   using ReturnType    = ReturnType_t<ResultType>;       //!< Return type for expression template evaluations.
+   //! Type of this DMatDMatSolveExpr instance.
+   using This = DMatDMatSolveExpr<MT1,MT2,SO>;
+
+   //! Base type of this DMatDMatSolveExpr instance.
+   using BaseType = MatMatSolveExpr< DenseMatrix<This,SO> >;
+
+   using ResultType    = SolveTrait_t<RT1,RT2>;        //!< Result type for expression template evaluations.
+   using OppositeType  = OppositeType_t<ResultType>;   //!< Result type with opposite storage order for expression template evaluations.
+   using TransposeType = TransposeType_t<ResultType>;  //!< Transpose type for expression template evaluations.
+   using ElementType   = ElementType_t<ResultType>;    //!< Resulting element type.
+   using ReturnType    = ReturnType_t<ResultType>;     //!< Return type for expression template evaluations.
 
    //! Data type for composite expression templates.
    using CompositeType = const ResultType;

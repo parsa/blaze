@@ -48,6 +48,7 @@
 #include <blaze/math/expressions/VecEvalExpr.h>
 #include <blaze/math/expressions/VecMapExpr.h>
 #include <blaze/math/expressions/VecNoAliasExpr.h>
+#include <blaze/math/expressions/VecRepeatExpr.h>
 #include <blaze/math/expressions/VecScalarMultExpr.h>
 #include <blaze/math/expressions/VecScalarDivExpr.h>
 #include <blaze/math/expressions/VecSerialExpr.h>
@@ -475,6 +476,49 @@ inline decltype(auto) nosimd( const MatReduceExpr<VT,RF>& vector )
    BLAZE_FUNCTION_TRACE;
 
    return reduce<RF>( nosimd( (~vector).operand() ), (~vector).operation() );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Disable the SIMD evaluation of the given vector repeat operation.
+// ingroup math
+//
+// \param vector The constant vector repeat operation.
+// \return The SIMD-disabled repeat operation.
+//
+// This function returns an expression representing the SIMD-disabled vector repeat operation.
+*/
+template< typename VT  // Vector base type of the expression
+        , size_t R0 >  // Compile time repetitions
+inline decltype(auto) nosimd( const VecRepeatExpr<VT,R0>& vector )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return repeat<R0>( nosimd( (~vector).operand() ) );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Disable the SIMD evaluation of the given vector repeat operation.
+// ingroup math
+//
+// \param vector The constant vector repeat operation.
+// \return The SIMD-disabled repeat operation.
+//
+// This function returns an expression representing the SIMD-disabled vector repeat operation.
+*/
+template< typename VT >  // Vector base type of the expression
+inline decltype(auto) nosimd( const VecRepeatExpr<VT>& vector )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return repeat( nosimd( (~vector).operand() ), (~vector).template repetitions<0UL>() );
 }
 /*! \endcond */
 //*************************************************************************************************

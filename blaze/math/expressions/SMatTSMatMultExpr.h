@@ -126,7 +126,7 @@ class SMatTSMatMultExpr
    using This = SMatTSMatMultExpr<MT1,MT2>;
 
    //! Base type of this SMatTSMatMultExpr instance.
-   using BaseType = SparseMatrix< This, IsIdentity_v<MT1> >;
+   using BaseType = MatMatMultExpr< SparseMatrix< This, IsIdentity_v<MT1> > >;
 
    using ResultType    = MultTrait_t<RT1,RT2>;         //!< Result type for expression template evaluations.
    using OppositeType  = OppositeType_t<ResultType>;   //!< Result type with opposite storage order for expression template evaluations.

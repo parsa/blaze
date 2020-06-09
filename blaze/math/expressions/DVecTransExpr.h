@@ -129,12 +129,16 @@ class DVecTransExpr
 
  public:
    //**Type definitions****************************************************************************
-   using This          = DVecTransExpr<VT,TF>;  //!< Type of this DVecTransExpr instance.
-   using BaseType      = DenseVector<This,TF>;  //!< Base type of this DVecTransExpr instance.
-   using ResultType    = TransposeType_t<VT>;   //!< Result type for expression template evaluations.
-   using TransposeType = ResultType_t<VT>;      //!< Transpose type for expression template evaluations.
-   using ElementType   = ElementType_t<VT>;     //!< Resulting element type.
-   using ReturnType    = ReturnType_t<VT>;      //!< Return type for expression template evaluations.
+   //! Type of this DVecTransExpr instance.
+   using This = DVecTransExpr<VT,TF>;
+
+   //! Base type of this DVecTransExpr instance.
+   using BaseType = VecTransExpr< DenseVector<This,TF> >;
+
+   using ResultType    = TransposeType_t<VT>;  //!< Result type for expression template evaluations.
+   using TransposeType = ResultType_t<VT>;     //!< Transpose type for expression template evaluations.
+   using ElementType   = ElementType_t<VT>;    //!< Resulting element type.
+   using ReturnType    = ReturnType_t<VT>;     //!< Return type for expression template evaluations.
 
    //! Data type for composite expression templates.
    using CompositeType = If_t< useAssign, const ResultType, const DVecTransExpr& >;

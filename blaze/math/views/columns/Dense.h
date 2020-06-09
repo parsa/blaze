@@ -145,7 +145,9 @@ class Columns<MT,true,true,SF,CCAs...>
    //! Type of this Columns instance.
    using This = Columns<MT,true,true,SF,CCAs...>;
 
-   using BaseType      = DenseMatrix<This,true>;       //!< Base type of this Columns instance.
+   //! Base type of this Columns instance.
+   using BaseType = View< DenseMatrix<This,true> >;
+
    using ViewedType    = MT;                           //!< The type viewed by this Columns instance.
    using ResultType    = ColumnsTrait_t<MT,N>;         //!< Result type for expression template evaluations.
    using OppositeType  = OppositeType_t<ResultType>;   //!< Result type with opposite storage order for expression template evaluations.
@@ -3136,7 +3138,9 @@ class Columns<MT,false,true,false,CCAs...>
    //! Type of this Columns instance.
    using This = Columns<MT,false,true,false,CCAs...>;
 
-   using BaseType      = DenseMatrix<This,true>;       //!< Base type of this Columns instance.
+   //! Base type of this Columns instance.
+   using BaseType = View< DenseMatrix<This,true> >;
+
    using ViewedType    = MT;                           //!< The type viewed by this Columns instance.
    using ResultType    = ColumnsTrait_t<MT,N>;         //!< Result type for expression template evaluations.
    using OppositeType  = OppositeType_t<ResultType>;   //!< Result type with opposite storage order for expression template evaluations.
@@ -5879,7 +5883,9 @@ class Columns<MT,false,true,true,CCAs...>
    //! Type of this Columns instance.
    using This = Columns<MT,false,true,true,CCAs...>;
 
-   using BaseType      = DenseMatrix<This,true>;       //!< Base type of this Columns instance.
+   //! Base type of this Columns instance.
+   using BaseType = View< DenseMatrix<This,true> >;
+
    using ViewedType    = MT;                           //!< The type viewed by this Columns instance.
    using ResultType    = ColumnsTrait_t<MT,N>;         //!< Result type for expression template evaluations.
    using OppositeType  = OppositeType_t<ResultType>;   //!< Result type with opposite storage order for expression template evaluations.

@@ -188,9 +188,11 @@ class ZeroVector
 
  public:
    //**Type definitions****************************************************************************
-   using This       = ZeroVector<Type,TF,Tag>;  //!< Type of this ZeroVector instance.
-   using BaseType   = SparseVector<This,TF>;    //!< Base type of this ZeroVector instance.
-   using ResultType = This;                     //!< Result type for expression template evaluations.
+   using This     = ZeroVector<Type,TF,Tag>;              //!< Type of this ZeroVector instance.
+   using BaseType = Expression< SparseVector<This,TF> >;  //!< Base type of this ZeroVector instance.
+
+   //! Result type for expression template evaluations.
+   using ResultType = This;
 
    //! Transpose type for expression template evaluations.
    using TransposeType = ZeroVector<Type,!TF,Tag>;

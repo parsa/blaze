@@ -197,12 +197,14 @@ class UniformMatrix
 {
  public:
    //**Type definitions****************************************************************************
-   using This       = UniformMatrix<Type,SO,Tag>;  //!< Type of this UniformMatrix instance.
-   using BaseType   = DenseMatrix<This,SO>;        //!< Base type of this UniformMatrix instance.
-   using ResultType = This;                        //!< Result type for expression template evaluations.
+   using This     = UniformMatrix<Type,SO,Tag>;          //!< Type of this UniformMatrix instance.
+   using BaseType = Expression< DenseMatrix<This,SO> >;  //!< Base type of this UniformMatrix instance.
+
+   //! Result type for expression template evaluations.
+   using ResultType = This;
 
    //! Result type with opposite storage order for expression template evaluations.
-   using OppositeType  = UniformMatrix<Type,!SO,Tag>;
+   using OppositeType = UniformMatrix<Type,!SO,Tag>;
 
    //! Transpose type for expression template evaluations.
    using TransposeType = UniformMatrix<Type,!SO,Tag>;

@@ -127,7 +127,7 @@ class Subvector<VT,unaligned,TF,true,CSAs...>
    //! Type of this Subvector instance.
    using This = Subvector<VT,unaligned,TF,true,CSAs...>;
 
-   using BaseType      = DenseVector<This,TF>;          //!< Base type of this Subvector instance.
+   using BaseType      = View< DenseVector<This,TF> >;  //!< Base type of this Subvector instance.
    using ViewedType    = VT;                            //!< The type viewed by this Subvector instance.
    using ResultType    = SubvectorTrait_t<VT,CSAs...>;  //!< Result type for expression template evaluations.
    using TransposeType = TransposeType_t<ResultType>;   //!< Transpose type for expression template evaluations.
@@ -2678,7 +2678,7 @@ class Subvector<VT,aligned,TF,true,CSAs...>
    //! Type of this Subvector instance.
    using This = Subvector<VT,aligned,TF,true,CSAs...>;
 
-   using BaseType      = DenseVector<This,TF>;          //!< Base type of this Subvector instance.
+   using BaseType      = View< DenseVector<This,TF> >;  //!< Base type of this Subvector instance.
    using ViewedType    = VT;                            //!< The type viewed by this Subvector instance.
    using ResultType    = SubvectorTrait_t<VT,CSAs...>;  //!< Result type for expression template evaluations.
    using TransposeType = TransposeType_t<ResultType>;   //!< Transpose type for expression template evaluations.
@@ -4797,7 +4797,7 @@ class Subvector< DVecDVecCrossExpr<VT1,VT2,TF>, unaligned, TF, true, CSAs... >
    //! Type of this Subvector instance.
    using This = Subvector<CPE,unaligned,TF,true,CSAs...>;
 
-   using BaseType      = DenseVector<This,TF>;          //!< Base type of this Subvector instance.
+   using BaseType      = View< DenseVector<This,TF> >;  //!< Base type of this Subvector instance.
    using ViewedType    = CPE;                           //!< The type viewed by this Subvector instance.
    using ResultType    = SubvectorTrait_t<RT,CSAs...>;  //!< Result type for expression template evaluations.
    using TransposeType = TransposeType_t<ResultType>;   //!< Transpose type for expression template evaluations.
@@ -4955,7 +4955,7 @@ class Subvector< DVecSVecCrossExpr<VT1,VT2,TF>, unaligned, TF, true, CSAs... >
    //! Type of this Subvector instance.
    using This = Subvector<CPE,unaligned,TF,true,CSAs...>;
 
-   using BaseType      = DenseVector<This,TF>;          //!< Base type of this Subvector instance.
+   using BaseType      = View< DenseVector<This,TF> >;  //!< Base type of this Subvector instance.
    using ViewedType    = CPE;                           //!< The type viewed by this Subvector instance.
    using ResultType    = SubvectorTrait_t<RT,CSAs...>;  //!< Result type for expression template evaluations.
    using TransposeType = TransposeType_t<ResultType>;   //!< Transpose type for expression template evaluations.
@@ -5113,7 +5113,7 @@ class Subvector< SVecDVecCrossExpr<VT1,VT2,TF>, unaligned, TF, true, CSAs... >
    //! Type of this Subvector instance.
    using This = Subvector<CPE,unaligned,TF,true,CSAs...>;
 
-   using BaseType      = DenseVector<This,TF>;          //!< Base type of this Subvector instance.
+   using BaseType      = View< DenseVector<This,TF> >;  //!< Base type of this Subvector instance.
    using ViewedType    = CPE;                           //!< The type viewed by this Subvector instance.
    using ResultType    = SubvectorTrait_t<RT,CSAs...>;  //!< Result type for expression template evaluations.
    using TransposeType = TransposeType_t<ResultType>;   //!< Transpose type for expression template evaluations.
@@ -5271,7 +5271,7 @@ class Subvector< SVecSVecCrossExpr<VT1,VT2,TF>, unaligned, TF, true, CSAs... >
    //! Type of this Subvector instance.
    using This = Subvector<CPE,unaligned,TF,true,CSAs...>;
 
-   using BaseType      = DenseVector<This,TF>;          //!< Base type of this Subvector instance.
+   using BaseType      = View< DenseVector<This,TF> >;  //!< Base type of this Subvector instance.
    using ViewedType    = CPE;                           //!< The type viewed by this Subvector instance.
    using ResultType    = SubvectorTrait_t<RT,CSAs...>;  //!< Result type for expression template evaluations.
    using TransposeType = TransposeType_t<ResultType>;   //!< Transpose type for expression template evaluations.

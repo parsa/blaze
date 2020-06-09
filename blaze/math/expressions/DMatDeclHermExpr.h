@@ -133,8 +133,12 @@ class DMatDeclHermExpr
 
  public:
    //**Type definitions****************************************************************************
-   using This          = DMatDeclHermExpr<MT,SO>;      //!< Type of this DMatDeclHermExpr instance.
-   using BaseType      = DenseMatrix<This,SO>;         //!< Base type of this DMatDeclHermExpr instance.
+   //! Type of this DMatDeclHermExpr instance.
+   using This = DMatDeclHermExpr<MT,SO>;
+
+   //! Base type of this DMatDeclHermExpr instance.
+   using BaseType = DeclHermExpr< DenseMatrix<This,SO> >;
+
    using ResultType    = DeclHermTrait_t<RT>;          //!< Result type for expression template evaluations.
    using OppositeType  = OppositeType_t<ResultType>;   //!< Result type with opposite storage order for expression template evaluations.
    using TransposeType = TransposeType_t<ResultType>;  //!< Transpose type for expression template evaluations.

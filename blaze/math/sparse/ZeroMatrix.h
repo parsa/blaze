@@ -201,9 +201,11 @@ class ZeroMatrix
 
  public:
    //**Type definitions****************************************************************************
-   using This       = ZeroMatrix<Type,SO,Tag>;  //!< Type of this ZeroMatrix instance.
-   using BaseType   = SparseMatrix<This,SO>;    //!< Base type of this ZeroMatrix instance.
-   using ResultType = This;                     //!< Result type for expression template evaluations.
+   using This     = ZeroMatrix<Type,SO,Tag>;              //!< Type of this ZeroMatrix instance.
+   using BaseType = Expression< SparseMatrix<This,SO> >;  //!< Base type of this ZeroMatrix instance.
+
+   //! Result type for expression template evaluations.
+   using ResultType = This;
 
    //! Result type with opposite storage order for expression template evaluations.
    using OppositeType = ZeroMatrix<Type,!SO,Tag>;

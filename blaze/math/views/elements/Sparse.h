@@ -118,7 +118,9 @@ class Elements<VT,TF,false,CEAs...>
    //! Type of this Elements instance.
    using This = Elements<VT,TF,false,CEAs...>;
 
-   using BaseType      = SparseVector<This,TF>;        //!< Base type of this Elements instance.
+   //! Base type of this Elements instance.
+   using BaseType = View< SparseVector<This,TF> >;
+
    using ViewedType    = VT;                           //!< The type viewed by this Elements instance.
    using ResultType    = ElementsTrait_t<VT,N>;        //!< Result type for expression template evaluations.
    using TransposeType = TransposeType_t<ResultType>;  //!< Transpose type for expression template evaluations.

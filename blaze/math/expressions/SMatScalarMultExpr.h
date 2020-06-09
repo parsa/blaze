@@ -148,12 +148,16 @@ class SMatScalarMultExpr
 
  public:
    //**Type definitions****************************************************************************
-   using This          = SMatScalarMultExpr<MT,ST,SO>;  //!< Type of this SMatScalarMultExpr instance.
-   using BaseType      = SparseMatrix<This,SO>;         //!< Base type of this SMatScalarMultExpr instance.
-   using ResultType    = MultTrait_t<RT,ST>;            //!< Result type for expression template evaluations.
-   using OppositeType  = OppositeType_t<ResultType>;    //!< Result type with opposite storage order for expression template evaluations.
-   using TransposeType = TransposeType_t<ResultType>;   //!< Transpose type for expression template evaluations.
-   using ElementType   = ElementType_t<ResultType>;     //!< Resulting element type.
+   //! Type of this SMatScalarMultExpr instance.
+   using This = SMatScalarMultExpr<MT,ST,SO>;
+
+   //! Base type of this SMatScalarMultExpr instance.
+   using BaseType = MatScalarMultExpr< SparseMatrix<This,SO> >;
+
+   using ResultType    = MultTrait_t<RT,ST>;           //!< Result type for expression template evaluations.
+   using OppositeType  = OppositeType_t<ResultType>;   //!< Result type with opposite storage order for expression template evaluations.
+   using TransposeType = TransposeType_t<ResultType>;  //!< Transpose type for expression template evaluations.
+   using ElementType   = ElementType_t<ResultType>;    //!< Resulting element type.
 
    //! Return type for expression template evaluations.
    using ReturnType = const If_t< returnExpr, ExprReturnType, ElementType >;

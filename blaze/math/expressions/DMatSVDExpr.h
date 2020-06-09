@@ -98,8 +98,12 @@ class DMatSVDExpr
 
  public:
    //**Type definitions****************************************************************************
-   using This          = DMatSVDExpr<MT,SO>;           //!< Type of this DMatSVDExpr instance.
-   using BaseType      = DenseMatrix<This,SO>;         //!< Base type of this DMatSVDExpr instance.
+   //! Type of this DMatSVDExpr instance.
+   using This = DMatSVDExpr<MT,SO>;
+
+   //! Base type of this DMatSVDExpr instance.
+   using BaseType = SVDExpr< DenseMatrix<This,SO> >;
+
    using ResultType    = Rebind_t<VT,ET>;              //!< Result type for expression template evaluations.
    using TransposeType = TransposeType_t<ResultType>;  //!< Transpose type for expression template evaluations.
    using ElementType   = ElementType_t<ResultType>;    //!< Resulting element type.

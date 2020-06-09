@@ -152,7 +152,9 @@ class Submatrix<MT,unaligned,false,true,CSAs...>
    //! Type of this Submatrix instance.
    using This = Submatrix<MT,unaligned,false,true,CSAs...>;
 
-   using BaseType      = DenseMatrix<This,false>;       //!< Base type of this Submatrix instance.
+   //! Base type of this Submatrix instance.
+   using BaseType = View< DenseMatrix<This,false> >;
+
    using ViewedType    = MT;                            //!< The type viewed by this Submatrix instance.
    using ResultType    = SubmatrixTrait_t<MT,CSAs...>;  //!< Result type for expression template evaluations.
    using OppositeType  = OppositeType_t<ResultType>;    //!< Result type with opposite storage order for expression template evaluations.
@@ -3424,7 +3426,9 @@ class Submatrix<MT,unaligned,true,true,CSAs...>
    //! Type of this Submatrix instance.
    using This = Submatrix<MT,unaligned,true,true,CSAs...>;
 
-   using BaseType      = DenseMatrix<This,true>;        //!< Base type of this Submatrix instance.
+   //! Base type of this Submatrix instance.
+   using BaseType = View< DenseMatrix<This,true> >;
+
    using ViewedType    = MT;                            //!< The type viewed by this Submatrix instance.
    using ResultType    = SubmatrixTrait_t<MT,CSAs...>;  //!< Result type for expression template evaluations.
    using OppositeType  = OppositeType_t<ResultType>;    //!< Result type with opposite storage order for expression template evaluations.
@@ -6655,7 +6659,9 @@ class Submatrix<MT,aligned,false,true,CSAs...>
    //! Type of this Submatrix instance.
    using This = Submatrix<MT,aligned,false,true,CSAs...>;
 
-   using BaseType      = DenseMatrix<This,false>;       //!< Base type of this Submatrix instance.
+   //! Base type of this Submatrix instance.
+   using BaseType = View< DenseMatrix<This,false> >;
+
    using ViewedType    = MT;                            //!< The type viewed by this Submatrix instance.
    using ResultType    = SubmatrixTrait_t<MT,CSAs...>;  //!< Result type for expression template evaluations.
    using OppositeType  = OppositeType_t<ResultType>;    //!< Result type with opposite storage order for expression template evaluations.
@@ -9510,7 +9516,9 @@ class Submatrix<MT,aligned,true,true,CSAs...>
    //! Type of this Submatrix instance.
    using This = Submatrix<MT,aligned,true,true,CSAs...>;
 
-   using BaseType      = DenseMatrix<This,true>;        //!< Base type of this Submatrix instance.
+   //! Base type of this Submatrix instance.
+   using BaseType = View< DenseMatrix<This,true> >;
+
    using ViewedType    = MT;                            //!< The type viewed by this Submatrix instance.
    using ResultType    = SubmatrixTrait_t<MT,CSAs...>;  //!< Result type for expression template evaluations.
    using OppositeType  = OppositeType_t<ResultType>;    //!< Result type with opposite storage order for expression template evaluations.

@@ -115,13 +115,13 @@ class Subvector<VT,AF,TF,false,CSAs...>
    //! Type of this Subvector instance.
    using This = Subvector<VT,AF,TF,false,CSAs...>;
 
-   using BaseType      = SparseVector<This,TF>;         //!< Base type of this Subvector instance.
-   using ViewedType    = VT;                            //!< The type viewed by this Subvector instance.
-   using ResultType    = SubvectorTrait_t<VT,CSAs...>;  //!< Result type for expression template evaluations.
-   using TransposeType = TransposeType_t<ResultType>;   //!< Transpose type for expression template evaluations.
-   using ElementType   = ElementType_t<VT>;             //!< Type of the subvector elements.
-   using ReturnType    = ReturnType_t<VT>;              //!< Return type for expression template evaluations
-   using CompositeType = const Subvector&;              //!< Data type for composite expression templates.
+   using BaseType      = View< SparseVector<This,TF> >;  //!< Base type of this Subvector instance.
+   using ViewedType    = VT;                             //!< The type viewed by this Subvector instance.
+   using ResultType    = SubvectorTrait_t<VT,CSAs...>;   //!< Result type for expression template evaluations.
+   using TransposeType = TransposeType_t<ResultType>;    //!< Transpose type for expression template evaluations.
+   using ElementType   = ElementType_t<VT>;              //!< Type of the subvector elements.
+   using ReturnType    = ReturnType_t<VT>;               //!< Return type for expression template evaluations
+   using CompositeType = const Subvector&;               //!< Data type for composite expression templates.
 
    //! Reference to a constant subvector value.
    using ConstReference = ConstReference_t<VT>;

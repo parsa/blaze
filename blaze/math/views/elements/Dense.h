@@ -114,7 +114,9 @@ class Elements<VT,TF,true,CEAs...>
    //! Type of this Elements instance.
    using This = Elements<VT,TF,true,CEAs...>;
 
-   using BaseType      = DenseVector<This,TF>;         //!< Base type of this Elements instance.
+   //! Base type of this Elements instance.
+   using BaseType = View< DenseVector<This,TF> >;
+
    using ViewedType    = VT;                           //!< The type viewed by this Elements instance.
    using ResultType    = ElementsTrait_t<VT,N>;        //!< Result type for expression template evaluations.
    using TransposeType = TransposeType_t<ResultType>;  //!< Transpose type for expression template evaluations.
@@ -1963,7 +1965,9 @@ class Elements< const DVecDVecCrossExpr<VT1,VT2,TF>, TF, true, CEAs... >
    //! Type of this Elements instance.
    using This = Elements<const CPE,TF,true,CEAs...>;
 
-   using BaseType      = DenseVector<This,TF>;         //!< Base type of this Elements instance.
+   //! Base type of this Elements instance.
+   using BaseType = View< DenseVector<This,TF> >;
+
    using ViewedType    = CPE;                          //!< The type viewed by this Elements instance.
    using ResultType    = ElementsTrait_t<RT,N>;        //!< Result type for expression template evaluations.
    using TransposeType = TransposeType_t<ResultType>;  //!< Transpose type for expression template evaluations.
@@ -2125,7 +2129,9 @@ class Elements< const DVecSVecCrossExpr<VT1,VT2,TF>, TF, true, CEAs... >
    //! Type of this Elements instance.
    using This = Elements<const CPE,TF,true,CEAs...>;
 
-   using BaseType      = DenseVector<This,TF>;         //!< Base type of this Elements instance.
+   //! Base type of this Elements instance.
+   using BaseType = View< DenseVector<This,TF> >;
+
    using ViewedType    = CPE;                          //!< The type viewed by this Elements instance.
    using ResultType    = ElementsTrait_t<RT,N>;        //!< Result type for expression template evaluations.
    using TransposeType = TransposeType_t<ResultType>;  //!< Transpose type for expression template evaluations.
@@ -2287,7 +2293,9 @@ class Elements< const SVecDVecCrossExpr<VT1,VT2,TF>, TF, true, CEAs... >
    //! Type of this Elements instance.
    using This = Elements<const CPE,TF,true,CEAs...>;
 
-   using BaseType      = DenseVector<This,TF>;         //!< Base type of this Elements instance.
+   //! Base type of this Elements instance.
+   using BaseType = View< DenseVector<This,TF> >;
+
    using ViewedType    = CPE;                          //!< The type viewed by this Elements instance.
    using ResultType    = ElementsTrait_t<RT,N>;        //!< Result type for expression template evaluations.
    using TransposeType = TransposeType_t<ResultType>;  //!< Transpose type for expression template evaluations.
@@ -2449,7 +2457,9 @@ class Elements< const SVecSVecCrossExpr<VT1,VT2,TF>, TF, true, CEAs... >
    //! Type of this Elements instance.
    using This = Elements<const CPE,TF,true,CEAs...>;
 
-   using BaseType      = DenseVector<This,TF>;         //!< Base type of this Elements instance.
+   //! Base type of this Elements instance.
+   using BaseType = View< DenseVector<This,TF> >;
+
    using ViewedType    = CPE;                          //!< The type viewed by this Elements instance.
    using ResultType    = ElementsTrait_t<RT,N>;        //!< Result type for expression template evaluations.
    using TransposeType = TransposeType_t<ResultType>;  //!< Transpose type for expression template evaluations.

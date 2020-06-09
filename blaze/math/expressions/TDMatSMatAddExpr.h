@@ -126,8 +126,12 @@ class TDMatSMatAddExpr
 
  public:
    //**Type definitions****************************************************************************
-   using This          = TDMatSMatAddExpr<MT1,MT2>;    //!< Type of this TDMatSMatAddExpr instance.
-   using BaseType      = DenseMatrix<This,true>;       //!< Base type of this TDMatSMatAddExpr instance.
+   //! Type of this TDMatSMatAddExpr instance.
+   using This = TDMatSMatAddExpr<MT1,MT2>;
+
+   //! Base type of this TDMatSMatAddExpr instance.
+   using BaseType = MatMatAddExpr< DenseMatrix<This,true> >;
+
    using ResultType    = AddTrait_t<RT1,RT2>;          //!< Result type for expression template evaluations.
    using OppositeType  = OppositeType_t<ResultType>;   //!< Result type with opposite storage order for expression template evaluations.
    using TransposeType = TransposeType_t<ResultType>;  //!< Transpose type for expression template evaluations.

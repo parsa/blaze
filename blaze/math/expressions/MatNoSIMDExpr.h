@@ -57,6 +57,7 @@
 #include <blaze/math/expressions/MatMatMultExpr.h>
 #include <blaze/math/expressions/MatMatSubExpr.h>
 #include <blaze/math/expressions/MatNoAliasExpr.h>
+#include <blaze/math/expressions/MatRepeatExpr.h>
 #include <blaze/math/expressions/MatScalarDivExpr.h>
 #include <blaze/math/expressions/MatScalarMultExpr.h>
 #include <blaze/math/expressions/MatSerialExpr.h>
@@ -668,6 +669,52 @@ inline decltype(auto) nosimd( const VecExpandExpr<MT>& matrix )
    BLAZE_FUNCTION_TRACE;
 
    return expand( nosimd( (~matrix).operand() ), (~matrix).expansion() );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Disable the SIMD evaluation of the given matrix repeat operation.
+// ingroup math
+//
+// \param matrix The constant matrix repeat operation.
+// \return The SIMD-disabled repeat operation.
+//
+// This function returns an expression representing the SIMD-disabled matrix repeat operation.
+*/
+template< typename MT  // Matrix base type of the expression
+        , size_t R0    // Compile time row-wise repetitions
+        , size_t R1 >  // Compile time column-wise repetitions
+inline decltype(auto) nosimd( const MatRepeatExpr<MT,R0,R1>& matrix )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return repeat<R0,R1>( nosimd( (~matrix).operand() ) );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Disable the SIMD evaluation of the given matrix repeat operation.
+// ingroup math
+//
+// \param matrix The constant matrix repeat operation.
+// \return The SIMD-disabled repeat operation.
+//
+// This function returns an expression representing the SIMD-disabled matrix repeat operation.
+*/
+template< typename MT >  // Matrix base type of the expression
+inline decltype(auto) nosimd( const MatRepeatExpr<MT>& matrix )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return repeat( nosimd( (~matrix).operand() )
+                , (~matrix).template repetitions<0UL>()
+                , (~matrix).template repetitions<1UL>() );
 }
 /*! \endcond */
 //*************************************************************************************************

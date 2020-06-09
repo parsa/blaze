@@ -112,12 +112,16 @@ class SMatSMatKronExpr
 
  public:
    //**Type definitions****************************************************************************
-   using This          = SMatSMatKronExpr<MT1,MT2>;     //!< Type of this SMatSMatKronExpr instance.
-   using BaseType      = SparseMatrix<This,false>;      //!< Base type of this SMatSMatKronExpr instance.
-   using ResultType    = KronTrait_t<RT1,RT2>;          //!< Result type for expression template evaluations.
-   using OppositeType  = OppositeType_t<ResultType>;    //!< Result type with opposite storage order for expression template evaluations.
-   using TransposeType = TransposeType_t<ResultType>;   //!< Transpose type for expression template evaluations.
-   using ElementType   = ElementType_t<ResultType>;     //!< Resulting element type.
+   //! Type of this SMatSMatKronExpr instance.
+   using This = SMatSMatKronExpr<MT1,MT2>;
+
+   //! Base type of this SMatSMatKronExpr instance.
+   using BaseType = MatMatKronExpr< SparseMatrix<This,false> >;
+
+   using ResultType    = KronTrait_t<RT1,RT2>;         //!< Result type for expression template evaluations.
+   using OppositeType  = OppositeType_t<ResultType>;   //!< Result type with opposite storage order for expression template evaluations.
+   using TransposeType = TransposeType_t<ResultType>;  //!< Transpose type for expression template evaluations.
+   using ElementType   = ElementType_t<ResultType>;    //!< Resulting element type.
 
    //! Return type for expression template evaluations.
    using ReturnType = const If_t< returnExpr, ExprReturnType, ElementType >;

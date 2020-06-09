@@ -224,7 +224,7 @@ class DMatSMatMultExpr
    using This = DMatSMatMultExpr<MT1,MT2,SF,HF,LF,UF>;
 
    //! Base type of this DMatSMatMultExpr instance.
-   using BaseType = DenseMatrix<This,false>;
+   using BaseType = MatMatMultExpr< DenseMatrix<This,false> >;
 
    //! Result type for expression template evaluations.
    using ResultType = typename If_t< HERM

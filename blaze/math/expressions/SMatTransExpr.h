@@ -123,8 +123,12 @@ class SMatTransExpr
 
  public:
    //**Type definitions****************************************************************************
-   using This          = SMatTransExpr<MT,SO>;        //!< Type of this SMatTransExpr instance.
-   using BaseType      = SparseMatrix<This,SO>;       //!< Base type of this SMatTransExpr instance.
+   //! Type of this SMatTransExpr instance.
+   using This = SMatTransExpr<MT,SO>;
+
+   //! Base type of this SMatTransExpr instance.
+   using BaseType = MatTransExpr< SparseMatrix<This,SO> >;
+
    using ResultType    = TransposeType_t<MT>;         //!< Result type for expression template evaluations.
    using OppositeType  = OppositeType_t<ResultType>;  //!< Result type with opposite storage order for expression template evaluations.
    using TransposeType = ResultType_t<MT>;            //!< Transpose type for expression template evaluations.

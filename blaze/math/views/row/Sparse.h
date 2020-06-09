@@ -128,7 +128,9 @@ class Row<MT,true,false,SF,CRAs...>
    //! Type of this Row instance.
    using This = Row<MT,true,false,SF,CRAs...>;
 
-   using BaseType      = SparseVector<This,true>;      //!< Base type of this Row instance.
+   //! Base type of this Row instance.
+   using BaseType = View< SparseVector<This,true> >;
+
    using ViewedType    = MT;                           //!< The type viewed by this Row instance.
    using ResultType    = RowTrait_t<MT,CRAs...>;       //!< Result type for expression template evaluations.
    using TransposeType = TransposeType_t<ResultType>;  //!< Transpose type for expression template evaluations.
@@ -2106,7 +2108,9 @@ class Row<MT,false,false,false,CRAs...>
    //! Type of this Row instance.
    using This = Row<MT,false,false,false,CRAs...>;
 
-   using BaseType      = SparseVector<This,true>;      //!< Base type of this Row instance.
+   //! Base type of this Row instance.
+   using BaseType = View< SparseVector<This,true> >;
+
    using ViewedType    = MT;                           //!< The type viewed by this Row instance.
    using ResultType    = RowTrait_t<MT,CRAs...>;       //!< Result type for expression template evaluations.
    using TransposeType = TransposeType_t<ResultType>;  //!< Transpose type for expression template evaluations.
@@ -4093,7 +4097,9 @@ class Row<MT,false,false,true,CRAs...>
    //! Type of this Row instance.
    using This = Row<MT,false,false,true,CRAs...>;
 
-   using BaseType      = SparseVector<This,true>;      //!< Base type of this Row instance.
+   //! Base type of this Row instance.
+   using BaseType = View< SparseVector<This,true> >;
+
    using ViewedType    = MT;                           //!< The type viewed by this Row instance.
    using ResultType    = RowTrait_t<MT,CRAs...>;       //!< Result type for expression template evaluations.
    using TransposeType = TransposeType_t<ResultType>;  //!< Transpose type for expression template evaluations.

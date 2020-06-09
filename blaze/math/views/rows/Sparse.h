@@ -128,7 +128,9 @@ class Rows<MT,true,false,SF,CRAs...>
    //! Type of this Rows instance.
    using This = Rows<MT,true,false,SF,CRAs...>;
 
-   using BaseType      = SparseMatrix<This,false>;     //!< Base type of this Rows instance.
+   //! Base type of this Rows instance.
+   using BaseType = View< SparseMatrix<This,false> >;
+
    using ViewedType    = MT;                           //!< The type viewed by this Rows instance.
    using ResultType    = RowsTrait_t<MT,N>;            //!< Result type for expression template evaluations.
    using OppositeType  = OppositeType_t<ResultType>;   //!< Result type with opposite storage order for expression template evaluations.
@@ -2270,7 +2272,9 @@ class Rows<MT,false,false,false,CRAs...>
    //! Type of this Rows instance.
    using This = Rows<MT,false,false,false,CRAs...>;
 
-   using BaseType      = SparseMatrix<This,false>;     //!< Base type of this Rows instance.
+   //! Base type of this Rows instance.
+   using BaseType = View< SparseMatrix<This,false> >;
+
    using ViewedType    = MT;                           //!< The type viewed by this Rows instance.
    using ResultType    = RowsTrait_t<MT,N>;            //!< Result type for expression template evaluations.
    using OppositeType  = OppositeType_t<ResultType>;   //!< Result type with opposite storage order for expression template evaluations.
@@ -4705,7 +4709,9 @@ class Rows<MT,false,false,true,CRAs...>
    //! Type of this Rows instance.
    using This = Rows<MT,false,false,true,CRAs...>;
 
-   using BaseType      = SparseMatrix<This,false>;     //!< Base type of this Rows instance.
+   //! Base type of this Rows instance.
+   using BaseType = View< SparseMatrix<This,false> >;
+
    using ViewedType    = MT;                           //!< The type viewed by this Rows instance.
    using ResultType    = RowsTrait_t<MT,N>;            //!< Result type for expression template evaluations.
    using OppositeType  = OppositeType_t<ResultType>;   //!< Result type with opposite storage order for expression template evaluations.

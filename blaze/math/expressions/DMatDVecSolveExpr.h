@@ -91,8 +91,12 @@ class DMatDVecSolveExpr
 
  public:
    //**Type definitions****************************************************************************
-   using This          = DMatDVecSolveExpr<MT,VT,TF>;  //!< Type of this DMatDVecSolveExpr instance.
-   using BaseType      = DenseVector<This,TF>;         //!< Base type of this DMatDVecSolveExpr instance.
+   //! Type of this DMatDVecSolveExpr instance.
+   using This = DMatDVecSolveExpr<MT,VT,TF>;
+
+   //! Base type of this DMatDVecSolveExpr instance.
+   using BaseType = MatVecSolveExpr< DenseVector<This,TF> >;
+
    using ResultType    = SolveTrait_t<MRT,VRT>;        //!< Result type for expression template evaluations.
    using TransposeType = TransposeType_t<ResultType>;  //!< Transpose type for expression template evaluations.
    using ElementType   = ElementType_t<ResultType>;    //!< Resulting element type.

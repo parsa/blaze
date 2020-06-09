@@ -134,8 +134,8 @@ struct SIMDf32FmsubExpr
    : public SIMDf32< SIMDf32FmsubExpr<T1,T2,T3> >
 {
    //**Type definitions****************************************************************************
-   using This     = SIMDf32MultExpr<T1,T2>;  //!< Type of this SIMDf32FMsubExpr instance.
-   using BaseType = SIMDf32<This>;           //!< Base type of this SIMDf32FMsubExpr instance.
+   using This     = SIMDf32FmsubExpr<T1,T2,T3>;  //!< Type of this SIMDf32FMsubExpr instance.
+   using BaseType = SIMDf32<This>;               //!< Base type of this SIMDf32FMsubExpr instance.
    //**********************************************************************************************
 
    //**Constructor*********************************************************************************
@@ -848,8 +848,8 @@ struct SIMDf64FmsubExpr
    : public SIMDf64< SIMDf64FmsubExpr<T1,T2,T3> >
 {
    //**Type definitions****************************************************************************
-   using This     = SIMDf64MultExpr<T1,T2>;  //!< Type of this SIMDf64FMsubExpr instance.
-   using BaseType = SIMDf64<This>;           //!< Base type of this SIMDf64FMsubExpr instance.
+   using This     = SIMDf64FmsubExpr<T1,T2,T3>;  //!< Type of this SIMDf64FMsubExpr instance.
+   using BaseType = SIMDf64<This>;               //!< Base type of this SIMDf64FMsubExpr instance.
    //**********************************************************************************************
 
    //**Constructor*********************************************************************************

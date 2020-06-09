@@ -138,12 +138,16 @@ class DMatTDMatMapExpr
 
  public:
    //**Type definitions****************************************************************************
-   using This          = DMatTDMatMapExpr<MT1,MT2,OP>;  //!< Type of this DMatTDMatMapExpr instance.
-   using BaseType      = DenseMatrix<This,false>;       //!< Base type of this DMatTDMatMapExpr instance.
-   using ResultType    = MapTrait_t<RT1,RT2,OP>;        //!< Result type for expression template evaluations.
-   using OppositeType  = OppositeType_t<ResultType>;    //!< Result type with opposite storage order for expression template evaluations.
-   using TransposeType = TransposeType_t<ResultType>;   //!< Transpose type for expression template evaluations.
-   using ElementType   = ElementType_t<ResultType>;     //!< Resulting element type.
+   //! Type of this DMatTDMatMapExpr instance.
+   using This = DMatTDMatMapExpr<MT1,MT2,OP>;
+
+   //! Base type of this DMatTDMatMapExpr instance.
+   using BaseType = MatMatMapExpr< DenseMatrix<This,false> >;
+
+   using ResultType    = MapTrait_t<RT1,RT2,OP>;       //!< Result type for expression template evaluations.
+   using OppositeType  = OppositeType_t<ResultType>;   //!< Result type with opposite storage order for expression template evaluations.
+   using TransposeType = TransposeType_t<ResultType>;  //!< Transpose type for expression template evaluations.
+   using ElementType   = ElementType_t<ResultType>;    //!< Resulting element type.
 
    //! Return type for expression template evaluations.
    using ReturnType = decltype( std::declval<OP>()( std::declval<RN1>(), std::declval<RN2>() ) );

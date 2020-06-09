@@ -91,11 +91,15 @@ class DMatGenExpr
 {
  public:
    //**Type definitions****************************************************************************
-   using This          = DMatGenExpr<MT,OP,SO>;  //!< Type of this DMatGenExpr instance.
-   using BaseType      = DenseMatrix<This,SO>;   //!< Base type of this DMatGenExpr instance.
-   using ResultType    = RemoveCVRef_t<MT>;      //!< Result type for expression template evaluations.
-   using TransposeType = TransposeType_t<MT>;    //!< Transpose type for expression template evaluations.
-   using ElementType   = ElementType_t<MT>;      //!< Resulting element type.
+   //! Type of this DMatGenExpr instance.
+   using This = DMatGenExpr<MT,OP,SO>;
+
+   //! Base type of this DMatGenExpr instance.
+   using BaseType = MatGenExpr< DenseMatrix<This,SO> >;
+
+   using ResultType    = RemoveCVRef_t<MT>;    //!< Result type for expression template evaluations.
+   using TransposeType = TransposeType_t<MT>;  //!< Transpose type for expression template evaluations.
+   using ElementType   = ElementType_t<MT>;    //!< Resulting element type.
 
    //! Return type for expression template evaluations.
    using ReturnType = decltype( std::declval<OP>()( std::declval<size_t>(), std::declval<size_t>() ) );

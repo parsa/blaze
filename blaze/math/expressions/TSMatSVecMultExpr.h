@@ -133,8 +133,12 @@ class TSMatSVecMultExpr
 
  public:
    //**Type definitions****************************************************************************
-   using This          = TSMatSVecMultExpr<MT,VT>;     //!< Type of this TSMatSVecMultExpr instance.
-   using BaseType      = SparseVector<This,false>;     //!< Base type of this TSMatSVecMultExpr instance.
+   //! Type of this TSMatSVecMultExpr instance.
+   using This = TSMatSVecMultExpr<MT,VT>;
+
+   //! Base type of this TSMatSVecMultExpr instance.
+   using BaseType = MatVecMultExpr< SparseVector<This,false> >;
+
    using ResultType    = MultTrait_t<MRT,VRT>;         //!< Result type for expression template evaluations.
    using TransposeType = TransposeType_t<ResultType>;  //!< Transpose type for expression template evaluations.
    using ElementType   = ElementType_t<ResultType>;    //!< Resulting element type.

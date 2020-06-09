@@ -95,11 +95,15 @@ class DVecGenExpr
 {
  public:
    //**Type definitions****************************************************************************
-   using This          = DVecGenExpr<VT,OP,TF>;  //!< Type of this DVecGenExpr instance.
-   using BaseType      = DenseVector<This,TF>;   //!< Base type of this DVecGenExpr instance.
-   using ResultType    = RemoveCVRef_t<VT>;      //!< Result type for expression template evaluations.
-   using TransposeType = TransposeType_t<VT>;    //!< Transpose type for expression template evaluations.
-   using ElementType   = ElementType_t<VT>;      //!< Resulting element type.
+   //! Type of this DVecGenExpr instance.
+   using This = DVecGenExpr<VT,OP,TF>;
+
+   //! Base type of this DVecGenExpr instance.
+   using BaseType = VecGenExpr< DenseVector<This,TF> >;
+
+   using ResultType    = RemoveCVRef_t<VT>;    //!< Result type for expression template evaluations.
+   using TransposeType = TransposeType_t<VT>;  //!< Transpose type for expression template evaluations.
+   using ElementType   = ElementType_t<VT>;    //!< Resulting element type.
 
    //! Return type for expression template evaluations.
    using ReturnType = decltype( std::declval<OP>()( std::declval<size_t>() ) );

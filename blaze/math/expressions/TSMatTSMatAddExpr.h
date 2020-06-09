@@ -143,8 +143,12 @@ class TSMatTSMatAddExpr
 
  public:
    //**Type definitions****************************************************************************
-   using This          = TSMatTSMatAddExpr<MT1,MT2>;   //!< Type of this TSMatTSMatAddExpr instance.
-   using BaseType      = SparseMatrix<This,true>;      //!< Base type of this TSMatTSMatAddExpr instance.
+   //! Type of this TSMatTSMatAddExpr instance.
+   using This = TSMatTSMatAddExpr<MT1,MT2>;
+
+   //! Base type of this TSMatTSMatAddExpr instance.
+   using BaseType = MatMatAddExpr< SparseMatrix<This,true> >;
+
    using ResultType    = AddTrait_t<RT1,RT2>;          //!< Result type for expression template evaluations.
    using OppositeType  = OppositeType_t<ResultType>;   //!< Result type with opposite storage order for expression template evaluations.
    using TransposeType = TransposeType_t<ResultType>;  //!< Transpose type for expression template evaluations.

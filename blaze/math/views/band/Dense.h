@@ -128,7 +128,9 @@ class Band<MT,TF,true,false,CBAs...>
    //! Type of this Band instance.
    using This = Band<MT,TF,true,false,CBAs...>;
 
-   using BaseType      = DenseVector<This,TF>;         //!< Base type of this Band instance.
+   //! Base type of this Band instance.
+   using BaseType = View< DenseVector<This,TF> >;
+
    using ViewedType    = MT;                           //!< The type viewed by this Band instance.
    using ResultType    = BandTrait_t<RT,CBAs...>;      //!< Result type for expression template evaluations.
    using TransposeType = TransposeType_t<ResultType>;  //!< Transpose type for expression template evaluations.
@@ -2122,7 +2124,7 @@ class Band<MT,TF,true,true,CBAs...>
    using This = Band<MT,TF,true,true,CBAs...>;
 
    //! Base type of this Band instance.
-   using BaseType = DenseVector<This,TF>;
+   using BaseType = View< DenseVector<This,TF> >;
 
    //! The type viewed by this Band instance.
    using ViewedType = MT;

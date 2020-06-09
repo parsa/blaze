@@ -125,8 +125,12 @@ class TSMatDMatSubExpr
 
  public:
    //**Type definitions****************************************************************************
-   using This          = TSMatDMatSubExpr<MT1,MT2>;    //!< Type of this TSMatDMatSubExpr instance.
-   using BaseType      = DenseMatrix<This,false>;      //!< Base type of this TSMatDMatSubExpr instance.
+   //! Type of this TSMatDMatSubExpr instance.
+   using This = TSMatDMatSubExpr<MT1,MT2>;
+
+   //! Base type of this TSMatDMatSubExpr instance.
+   using BaseType = MatMatSubExpr< DenseMatrix<This,false> >;
+
    using ResultType    = SubTrait_t<RT1,RT2>;          //!< Result type for expression template evaluations.
    using OppositeType  = OppositeType_t<ResultType>;   //!< Result type with opposite storage order for expression template evaluations.
    using TransposeType = TransposeType_t<ResultType>;  //!< Transpose type for expression template evaluations.

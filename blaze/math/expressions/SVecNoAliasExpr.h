@@ -122,12 +122,16 @@ class SVecNoAliasExpr
 
  public:
    //**Type definitions****************************************************************************
-   using This          = SVecNoAliasExpr<VT,TF>;  //!< Type of this SVecNoAliasExpr instance.
-   using BaseType      = SparseVector<This,TF>;   //!< Base type of this SVecNoAliasExpr instance.
-   using ResultType    = ResultType_t<VT>;        //!< Result type for expression template evaluations.
-   using TransposeType = TransposeType_t<VT>;     //!< Transpose type for expression template evaluations.
-   using ElementType   = ElementType_t<VT>;       //!< Resulting element type.
-   using ReturnType    = ReturnType_t<VT>;        //!< Return type for expression template evaluations.
+   //! Type of this SVecNoAliasExpr instance.
+   using This = SVecNoAliasExpr<VT,TF>;
+
+   //! Base type of this SVecNoAliasExpr instance.
+   using BaseType = VecNoAliasExpr< SparseVector<This,TF> >;
+
+   using ResultType    = ResultType_t<VT>;     //!< Result type for expression template evaluations.
+   using TransposeType = TransposeType_t<VT>;  //!< Transpose type for expression template evaluations.
+   using ElementType   = ElementType_t<VT>;    //!< Resulting element type.
+   using ReturnType    = ReturnType_t<VT>;     //!< Return type for expression template evaluations.
 
    //! Data type for composite expression templates.
    using CompositeType = If_t< useAssign, const ResultType, const SVecNoAliasExpr& >;

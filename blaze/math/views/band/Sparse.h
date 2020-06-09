@@ -124,7 +124,9 @@ class Band<MT,TF,false,false,CBAs...>
    //! Type of this Band instance.
    using This = Band<MT,TF,false,false,CBAs...>;
 
-   using BaseType      = SparseVector<This,TF>;        //!< Base type of this Band instance.
+   //! Base type of this Band instance.
+   using BaseType = View< SparseVector<This,TF> >;
+
    using ViewedType    = MT;                           //!< The type viewed by this Band instance.
    using ResultType    = BandTrait_t<RT,CBAs...>;      //!< Result type for expression template evaluations.
    using TransposeType = TransposeType_t<ResultType>;  //!< Transpose type for expression template evaluations.
@@ -2209,7 +2211,7 @@ class Band<MT,TF,false,true,CBAs...>
    using This = Band<MT,TF,false,true,CBAs...>;
 
    //! Base type of this Band instance.
-   using BaseType = SparseVector<This,TF>;
+   using BaseType = View< SparseVector<This,TF> >;
 
    //! The type viewed by this Band instance.
    using ViewedType = MT;

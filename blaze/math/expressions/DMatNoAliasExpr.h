@@ -124,13 +124,17 @@ class DMatNoAliasExpr
 
  public:
    //**Type definitions****************************************************************************
-   using This          = DMatNoAliasExpr<MT,SO>;  //!< Type of this DMatNoAliasExpr instance.
-   using BaseType      = DenseMatrix<This,SO>;    //!< Base type of this DMatNoAliasExpr instance.
-   using ResultType    = ResultType_t<MT>;        //!< Result type for expression template evaluations.
-   using OppositeType  = OppositeType_t<MT>;      //!< Result type with opposite storage order for expression template evaluations.
-   using TransposeType = TransposeType_t<MT>;     //!< Transpose type for expression template evaluations.
-   using ElementType   = ElementType_t<MT>;       //!< Resulting element type.
-   using ReturnType    = ReturnType_t<MT>;        //!< Return type for expression template evaluations.
+   //! Type of this DMatNoAliasExpr instance.
+   using This = DMatNoAliasExpr<MT,SO>;
+
+   //! Base type of this DMatNoAliasExpr instance.
+   using BaseType = MatNoAliasExpr< DenseMatrix<This,SO> >;
+
+   using ResultType    = ResultType_t<MT>;     //!< Result type for expression template evaluations.
+   using OppositeType  = OppositeType_t<MT>;   //!< Result type with opposite storage order for expression template evaluations.
+   using TransposeType = TransposeType_t<MT>;  //!< Transpose type for expression template evaluations.
+   using ElementType   = ElementType_t<MT>;    //!< Resulting element type.
+   using ReturnType    = ReturnType_t<MT>;     //!< Return type for expression template evaluations.
 
    //! Data type for composite expression templates.
    using CompositeType = If_t< useAssign, const ResultType, const DMatNoAliasExpr& >;

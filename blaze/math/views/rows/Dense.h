@@ -145,7 +145,9 @@ class Rows<MT,true,true,SF,CRAs...>
    //! Type of this Rows instance.
    using This = Rows<MT,true,true,SF,CRAs...>;
 
-   using BaseType      = DenseMatrix<This,false>;      //!< Base type of this Rows instance.
+   //! Base type of this Rows instance.
+   using BaseType = View< DenseMatrix<This,false> >;
+
    using ViewedType    = MT;                           //!< The type viewed by this Rows instance.
    using ResultType    = RowsTrait_t<MT,N>;            //!< Result type for expression template evaluations.
    using OppositeType  = OppositeType_t<ResultType>;   //!< Result type with opposite storage order for expression template evaluations.
@@ -3133,7 +3135,9 @@ class Rows<MT,false,true,false,CRAs...>
    //! Type of this Rows instance.
    using This = Rows<MT,false,true,false,CRAs...>;
 
-   using BaseType      = DenseMatrix<This,false>;      //!< Base type of this Rows instance.
+   //! Base type of this Rows instance.
+   using BaseType = View< DenseMatrix<This,false> >;
+
    using ViewedType    = MT;                           //!< The type viewed by this Rows instance.
    using ResultType    = RowsTrait_t<MT,N>;            //!< Result type for expression template evaluations.
    using OppositeType  = OppositeType_t<ResultType>;   //!< Result type with opposite storage order for expression template evaluations.
@@ -5870,7 +5874,9 @@ class Rows<MT,false,true,true,CRAs...>
    //! Type of this Rows instance.
    using This = Rows<MT,false,true,true,CRAs...>;
 
-   using BaseType      = DenseMatrix<This,false>;      //!< Base type of this Rows instance.
+   //! Base type of this Rows instance.
+   using BaseType = View< DenseMatrix<This,false> >;
+
    using ViewedType    = MT;                           //!< The type viewed by this Rows instance.
    using ResultType    = RowsTrait_t<MT,N>;            //!< Result type for expression template evaluations.
    using OppositeType  = OppositeType_t<ResultType>;   //!< Result type with opposite storage order for expression template evaluations.

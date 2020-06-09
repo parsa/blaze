@@ -129,8 +129,12 @@ class DMatTransExpr
 
  public:
    //**Type definitions****************************************************************************
-   using This          = DMatTransExpr<MT,SO>;        //!< Type of this DMatTransExpr instance.
-   using BaseType      = DenseMatrix<This,SO>;        //!< Base type of this DMatTransExpr instance.
+   //! Type of this DMatTransExpr instance.
+   using This = DMatTransExpr<MT,SO>;
+
+   //! Base type of this DMatTransExpr instance.
+   using BaseType = MatTransExpr< DenseMatrix<This,SO> >;
+
    using ResultType    = TransposeType_t<MT>;         //!< Result type for expression template evaluations.
    using OppositeType  = OppositeType_t<ResultType>;  //!< Result type with opposite storage order for expression template evaluations.
    using TransposeType = ResultType_t<MT>;            //!< Transpose type for expression template evaluations.

@@ -133,8 +133,12 @@ class DVecExpandExpr
 
  public:
    //**Type definitions****************************************************************************
-   using This          = DVecExpandExpr<VT,TF,CEAs...>;  //!< Type of this DVecExpandExpr instance.
-   using BaseType      = DenseMatrix<This,!TF>;          //!< Base type of this DVecExpandExpr instance.
+   //! Type of this DVecExpandExpr instance.
+   using This = DVecExpandExpr<VT,TF,CEAs...>;
+
+   //! Base type of this DVecExpandExpr instance.
+   using BaseType = VecExpandExpr< DenseMatrix<This,!TF>, CEAs... >;
+
    using ResultType    = ExpandTrait_t<VT,CEAs...>;      //!< Result type for expression template evaluations.
    using OppositeType  = OppositeType_t<ResultType>;     //!< Result type with opposite storage order for expression template evaluations.
    using TransposeType = TransposeType_t<ResultType>;    //!< Transpose type for expression template evaluations.

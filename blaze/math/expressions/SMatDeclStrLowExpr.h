@@ -130,8 +130,12 @@ class SMatDeclStrLowExpr
 
  public:
    //**Type definitions****************************************************************************
-   using This          = SMatDeclStrLowExpr<MT,SO>;    //!< Type of this SMatDeclStrLowExpr instance.
-   using BaseType      = SparseMatrix<This,SO>;        //!< Base type of this SMatDeclStrLowExpr instance.
+   //! Type of this SMatDeclStrLowExpr instance.
+   using This = SMatDeclStrLowExpr<MT,SO>;
+
+   //! Base type of this SMatDeclStrLowExpr instance.
+   using BaseType = DeclStrLowExpr< SparseMatrix<This,SO> >;
+
    using ResultType    = DeclStrLowTrait_t<RT>;        //!< Result type for expression template evaluations.
    using OppositeType  = OppositeType_t<ResultType>;   //!< Result type with opposite storage order for expression template evaluations.
    using TransposeType = TransposeType_t<ResultType>;  //!< Transpose type for expression template evaluations.

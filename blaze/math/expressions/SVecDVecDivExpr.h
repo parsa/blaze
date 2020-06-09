@@ -138,8 +138,12 @@ class SVecDVecDivExpr
 
  public:
    //**Type definitions****************************************************************************
-   using This          = SVecDVecDivExpr<VT1,VT2,TF>;  //!< Type of this SVecDVecDivExpr instance.
-   using BaseType      = SparseVector<This,TF>;        //!< Base type of this SVecDVecDivExpr instance.
+   //! Type of this SVecDVecDivExpr instance.
+   using This = SVecDVecDivExpr<VT1,VT2,TF>;
+
+   //! Base type of this SVecDVecDivExpr instance.
+   using BaseType = VecVecDivExpr< SparseVector<This,TF> >;
+
    using ResultType    = DivTrait_t<RT1,RT2>;          //!< Result type for expression template evaluations.
    using TransposeType = TransposeType_t<ResultType>;  //!< Transpose type for expression template evaluations.
    using ElementType   = ElementType_t<ResultType>;    //!< Resulting element type.

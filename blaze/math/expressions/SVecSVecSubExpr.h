@@ -129,8 +129,12 @@ class SVecSVecSubExpr
 
  public:
    //**Type definitions****************************************************************************
-   using This          = SVecSVecSubExpr<VT1,VT2,TF>;  //!< Type of this SVecSVecSubExpr instance.
-   using BaseType      = SparseVector<This,TF>;        //!< Base type of this SVecSVecSubExpr instance.
+   //! Type of this SVecSVecSubExpr instance.
+   using This = SVecSVecSubExpr<VT1,VT2,TF>;
+
+   //! Base type of this SVecSVecSubExpr instance.
+   using BaseType = VecVecSubExpr< SparseVector<This,TF> >;
+
    using ResultType    = SubTrait_t<RT1,RT2>;          //!< Result type for expression template evaluations.
    using TransposeType = TransposeType_t<ResultType>;  //!< Transpose type for expression template evaluations.
    using ElementType   = ElementType_t<ResultType>;    //!< Resulting element type.
