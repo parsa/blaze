@@ -68,6 +68,7 @@
 #include <blaze/math/traits/KronTrait.h>
 #include <blaze/math/traits/MapTrait.h>
 #include <blaze/math/traits/MultTrait.h>
+#include <blaze/math/traits/RepeatTrait.h>
 #include <blaze/math/traits/RowTrait.h>
 #include <blaze/math/traits/SubTrait.h>
 #include <blaze/math/traits/SubvectorTrait.h>
@@ -2802,6 +2803,28 @@ struct UnaryMapTraitEval2< T, OP
    using Type = CompressedVector< EvaluateTrait_t<ElementType>
                                 , TransposeFlag_v<T>
                                 , MapTrait_t< TagType_t<T>, OP > >;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  REPEATTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename T, size_t R0 >
+struct RepeatTraitEval2< T, R0, inf, inf
+                       , EnableIf_t< IsSparseVector_v<T> > >
+{
+   using Type = CompressedVector< ElementType_t<T>
+                                , TransposeFlag_v<T>
+                                , TagType_t<T> >;
 };
 /*! \endcond */
 //*************************************************************************************************
