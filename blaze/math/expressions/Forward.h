@@ -280,6 +280,7 @@ template< typename > struct VecGenExpr;
 template< typename > struct VecMapExpr;
 template< typename > struct VecNoAliasExpr;
 template< typename > struct VecNoSIMDExpr;
+template< typename, size_t... > struct VecRepeatExpr;
 template< typename > struct VecScalarDivExpr;
 template< typename > struct VecScalarMultExpr;
 template< typename > struct VecSerialExpr;
