@@ -216,6 +216,7 @@
 #include <blaze/math/typetraits/IsPaddingEnabled.h>
 #include <blaze/math/typetraits/IsProxy.h>
 #include <blaze/math/typetraits/IsReduceExpr.h>
+#include <blaze/math/typetraits/IsRepeatExpr.h>
 #include <blaze/math/typetraits/IsResizable.h>
 #include <blaze/math/typetraits/IsRestricted.h>
 #include <blaze/math/typetraits/IsRow.h>
