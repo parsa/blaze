@@ -56,7 +56,7 @@ all: dvecdvecadd dvecsvecadd svecdvecadd svecsvecadd \
      dmatdmatkron dmatsmatkron smatdmatkron smatsmatkron \
      dmatdmatmin dmatdmatmax \
      dmatreduce smatreduce \
-     dmatrepeat \
+     dmatrepeat smatrepeat \
      determinant lu llh qr rq ql lq inversion lse exponential eigen svd
 
 essential: all
@@ -416,6 +416,11 @@ dmatrepeat:
 	@echo "Building the dense matrix repeat tests..."
 	@$(MAKE) --no-print-directory -C ./dmatrepeat $(MAKECMDGOALS)
 
+smatrepeat:
+	@echo
+	@echo "Building the sparse matrix repeat tests..."
+	@$(MAKE) --no-print-directory -C ./smatrepeat $(MAKECMDGOALS)
+
 determinant:
 	@echo
 	@echo "Building the matrix determinant tests..."
@@ -550,6 +555,7 @@ reset:
 	@$(MAKE) --no-print-directory -C ./dmatreduce reset
 	@$(MAKE) --no-print-directory -C ./smatreduce reset
 	@$(MAKE) --no-print-directory -C ./dmatrepeat reset
+	@$(MAKE) --no-print-directory -C ./smatrepeat reset
 	@$(MAKE) --no-print-directory -C ./determinant reset
 	@$(MAKE) --no-print-directory -C ./lu reset
 	@$(MAKE) --no-print-directory -C ./llh reset
@@ -635,6 +641,7 @@ clean:
 	@$(MAKE) --no-print-directory -C ./dmatreduce clean
 	@$(MAKE) --no-print-directory -C ./smatreduce clean
 	@$(MAKE) --no-print-directory -C ./dmatrepeat clean
+	@$(MAKE) --no-print-directory -C ./smatrepeat clean
 	@$(MAKE) --no-print-directory -C ./determinant clean
 	@$(MAKE) --no-print-directory -C ./lu clean
 	@$(MAKE) --no-print-directory -C ./llh clean
@@ -672,5 +679,5 @@ clean:
         dmatdmatkron dmatsmatkron smatdmatkron smatsmatkron \
         dmatdmatmin dmatdmatmax \
         dmatreduce smatreduce \
-        dmatrepeat \
+        dmatrepeat smatrepeat \
         determinant lu llh qr rq ql lq inversion lse exponential eigen svd
