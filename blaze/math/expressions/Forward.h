@@ -198,6 +198,7 @@ template< typename, bool > class SMatEvalExpr;
 template< typename, typename, bool > class SMatMapExpr;
 template< typename, bool > class SMatNoAliasExpr;
 template< typename, typename, ReductionFlag > class SMatReduceExpr;
+template< typename, bool, size_t... > class SMatRepeatExpr;
 template< typename, typename, bool > class SMatScalarDivExpr;
 template< typename, typename, bool > class SMatScalarMultExpr;
 template< typename, bool > class SMatSerialExpr;
@@ -814,6 +815,12 @@ decltype(auto) repeat( const DenseMatrix<MT,SO>&, size_t, size_t );
 
 template< size_t R0, size_t R1, typename MT, bool SO >
 decltype(auto) repeat( const DenseMatrix<MT,SO>& );
+
+template< typename MT, bool SO >
+decltype(auto) repeat( const SparseMatrix<MT,SO>&, size_t, size_t );
+
+template< size_t R0, size_t R1, typename MT, bool SO >
+decltype(auto) repeat( const SparseMatrix<MT,SO>& );
 
 
 template< typename VT, bool TF >
