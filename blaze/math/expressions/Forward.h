@@ -163,6 +163,7 @@ template< typename > struct MatMatSubExpr;
 template< typename > struct MatNoAliasExpr;
 template< typename > struct MatNoSIMDExpr;
 template< typename, ReductionFlag > struct MatReduceExpr;
+template< typename, size_t... > struct MatRepeatExpr;
 template< typename, bool > class Matrix;
 template< typename > struct MatScalarDivExpr;
 template< typename > struct MatScalarMultExpr;
