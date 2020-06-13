@@ -58,6 +58,7 @@
 #include <blaze/math/expressions/SVecNormExpr.h>
 #include <blaze/math/expressions/SVecNoSIMDExpr.h>
 #include <blaze/math/expressions/SVecReduceExpr.h>
+#include <blaze/math/expressions/SVecRepeatExpr.h>
 #include <blaze/math/expressions/SVecScalarDivExpr.h>
 #include <blaze/math/expressions/SVecScalarMultExpr.h>
 #include <blaze/math/expressions/SVecSerialExpr.h>
