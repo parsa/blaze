@@ -52,6 +52,7 @@
 #include <blaze/math/expressions/MatMatSubExpr.h>
 #include <blaze/math/expressions/MatNoAliasExpr.h>
 #include <blaze/math/expressions/MatNoSIMDExpr.h>
+#include <blaze/math/expressions/MatRepeatExpr.h>
 #include <blaze/math/expressions/Matrix.h>
 #include <blaze/math/expressions/MatScalarDivExpr.h>
 #include <blaze/math/expressions/MatScalarMultExpr.h>
@@ -893,7 +894,7 @@ inline decltype(auto) column( const MatTransExpr<MT>& matrix, RCAs... args )
 // \ingroup column
 //
 // \param matrix The constant vector expansion operation.
-// \param args The runtime column arguments
+// \param args The runtime column arguments.
 // \return void
 //
 // This function returns an expression representing the specified column of the given column-major
@@ -908,9 +909,7 @@ inline decltype(auto) column( const VecExpandExpr<MT,CEAs...>& matrix, RCAs... a
 {
    BLAZE_FUNCTION_TRACE;
 
-   MAYBE_UNUSED( args... );
-
-   return subvector( (~matrix).operand(), 0UL, (~matrix).rows() );
+   return subvector( (~matrix).operand(), 0UL, (~matrix).rows(), args... );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -922,7 +921,7 @@ inline decltype(auto) column( const VecExpandExpr<MT,CEAs...>& matrix, RCAs... a
 // \ingroup column
 //
 // \param matrix The constant vector expansion operation.
-// \param args The runtime column arguments
+// \param args The runtime column arguments.
 // \return void
 //
 // This function returns an expression representing the specified column of the given row-major
@@ -942,6 +941,44 @@ inline decltype(auto) column( const VecExpandExpr<MT,CEAs...>& matrix, RCAs... a
    const ColumnData<CCAs...> cd( args... );
 
    return UniformVector<ET,columnVector>( (~matrix).rows(), (~matrix).operand()[cd.column()] );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific column of the given matrix repeat operation.
+// \ingroup column
+//
+// \param matrix The constant matrix repeat operation.
+// \param args The runtime column arguments.
+// \return void
+// \exception std::invalid_argument Invalid column access index.
+//
+// This function returns an expression representing the specified column of the given column-major
+// matrix repeat operation.
+*/
+template< size_t... CCAs      // Compile time column arguments
+        , typename MT         // Matrix base type of the expression
+        , size_t... CRAs      // Compile time repeater arguments
+        , typename... RCAs >  // Runtime column arguments
+inline decltype(auto) column( const MatRepeatExpr<MT,CRAs...>& matrix, RCAs... args )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   const ColumnData<CCAs...> cd( args... );
+
+   if( !Contains_v< TypeList<RCAs...>, Unchecked > ) {
+      if( (~matrix).columns() <= cd.column() ) {
+         BLAZE_THROW_INVALID_ARGUMENT( "Invalid column access index" );
+      }
+   }
+
+   return repeat( column( (~matrix).operand()
+                        , cd.column() % (~matrix).operand().columns()
+                        , unchecked )
+                , (~matrix).template repetitions<0UL>() );
 }
 /*! \endcond */
 //*************************************************************************************************
