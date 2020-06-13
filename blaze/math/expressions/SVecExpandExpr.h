@@ -45,10 +45,11 @@
 #include <blaze/math/constraints/RequiresEvaluation.h>
 #include <blaze/math/constraints/TransposeFlag.h>
 #include <blaze/math/Exception.h>
-#include <blaze/math/expressions/SparseMatrix.h>
-#include <blaze/math/expressions/SparseVector.h>
+#include <blaze/math/expressions/Computation.h>
 #include <blaze/math/expressions/ExpandExprData.h>
 #include <blaze/math/expressions/Forward.h>
+#include <blaze/math/expressions/SparseMatrix.h>
+#include <blaze/math/expressions/SparseVector.h>
 #include <blaze/math/expressions/Transformation.h>
 #include <blaze/math/expressions/VecExpandExpr.h>
 #include <blaze/math/shims/Serial.h>
@@ -87,7 +88,7 @@ template< typename VT       // Type of the dense vector
         , size_t... CEAs >  // Compile time expansion arguments
 class SVecExpandExpr
    : public VecExpandExpr< SparseMatrix< SVecExpandExpr<VT,TF,CEAs...>, !TF >, CEAs... >
-   , private Transformation
+   , private If_t< IsComputation_v<VT>, Computation, Transformation >
    , private ExpandExprData<CEAs...>
 {
  private:

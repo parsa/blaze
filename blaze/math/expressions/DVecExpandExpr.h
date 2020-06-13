@@ -44,6 +44,7 @@
 #include <blaze/math/constraints/DenseVector.h>
 #include <blaze/math/constraints/TransposeFlag.h>
 #include <blaze/math/Exception.h>
+#include <blaze/math/expressions/Computation.h>
 #include <blaze/math/expressions/DenseMatrix.h>
 #include <blaze/math/expressions/DenseVector.h>
 #include <blaze/math/expressions/ExpandExprData.h>
@@ -89,7 +90,7 @@ template< typename VT       // Type of the dense vector
         , size_t... CEAs >  // Compile time expansion arguments
 class DVecExpandExpr
    : public VecExpandExpr< DenseMatrix< DVecExpandExpr<VT,TF,CEAs...>, !TF >, CEAs... >
-   , private Transformation
+   , private If_t< IsComputation_v<VT>, Computation, Transformation >
    , private ExpandExprData<CEAs...>
 {
  private:
