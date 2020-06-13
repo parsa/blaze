@@ -60,6 +60,7 @@
 #include <blaze/math/traits/KronTrait.h>
 #include <blaze/math/traits/MapTrait.h>
 #include <blaze/math/traits/MultTrait.h>
+#include <blaze/math/traits/RepeatTrait.h>
 #include <blaze/math/traits/RowTrait.h>
 #include <blaze/math/traits/SubTrait.h>
 #include <blaze/math/traits/SubvectorTrait.h>
@@ -1531,6 +1532,29 @@ struct BinaryMapTraitEval1< T1, T2, OP
    using Type = ZeroVector< EvaluateTrait_t<ElementType>
                           , TransposeFlag_v<T1>
                           , MapTrait_t< TagType_t<T1>, TagType_t<T2>, OP > >;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  REPEATTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename T, size_t R0 >
+struct RepeatTraitEval1< T, R0, inf, inf
+                       , EnableIf_t< IsVector_v<T> &&
+                                     IsZero_v<T> > >
+{
+   using Type = ZeroVector< ElementType_t<T>
+                          , TransposeFlag_v<T>
+                          , TagType_t<T> >;
 };
 /*! \endcond */
 //*************************************************************************************************
