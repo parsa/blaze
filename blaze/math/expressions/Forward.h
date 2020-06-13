@@ -174,6 +174,7 @@ template< typename > struct MultExpr;
 template< typename > struct NoAliasExpr;
 template< typename > struct NoSIMDExpr;
 template< typename > struct ReduceExpr;
+template< typename > struct RepeatExpr;
 template< typename > struct SchurExpr;
 template< typename > struct SerialExpr;
 template< typename, bool > class SMatDeclDiagExpr;
