@@ -63,6 +63,7 @@
 #include <blaze/math/traits/KronTrait.h>
 #include <blaze/math/traits/MapTrait.h>
 #include <blaze/math/traits/MultTrait.h>
+#include <blaze/math/traits/RepeatTrait.h>
 #include <blaze/math/traits/RowTrait.h>
 #include <blaze/math/traits/ReduceTrait.h>
 #include <blaze/math/traits/SubTrait.h>
@@ -1729,6 +1730,29 @@ struct PartialReduceTraitEval1< T, OP, RF
    using Type = UniformVector< decltype( std::declval<OP>()( std::declval<ET>(), std::declval<ET>() ) )
                              , ( RF == columnwise )
                              , MapTrait_t< TagType_t<T>, OP > >;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  REPEATTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename T, size_t R0 >
+struct RepeatTraitEval1< T, R0, inf, inf
+                       , EnableIf_t< IsVector_v<T> &&
+                                     IsUniform_v<T> && !IsZero_v<T> > >
+{
+   using Type = UniformVector< ElementType_t<T>
+                             , TransposeFlag_v<T>
+                             , TagType_t<T> >;
 };
 /*! \endcond */
 //*************************************************************************************************
