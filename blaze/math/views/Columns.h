@@ -58,8 +58,9 @@
 #include <blaze/math/expressions/MatMatSubExpr.h>
 #include <blaze/math/expressions/MatNoAliasExpr.h>
 #include <blaze/math/expressions/MatNoSIMDExpr.h>
-#include <blaze/math/expressions/Matrix.h>
 #include <blaze/math/expressions/MatReduceExpr.h>
+#include <blaze/math/expressions/MatRepeatExpr.h>
+#include <blaze/math/expressions/Matrix.h>
 #include <blaze/math/expressions/MatScalarDivExpr.h>
 #include <blaze/math/expressions/MatScalarMultExpr.h>
 #include <blaze/math/expressions/MatSerialExpr.h>
@@ -1445,6 +1446,147 @@ inline decltype(auto) columns( const VecExpandExpr<MT,CEAs...>& matrix, RCAs... 
    BLAZE_FUNCTION_TRACE;
 
    return expand<CEAs...>( elements<CCAs...>( (~matrix).operand(), args... ), (~matrix).expansion() );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a selection of columns on the given matrix repeat operation.
+// \ingroup columns
+//
+// \param matrix The constant matrix repeat operation.
+// \param args Optional arguments.
+// \return View on the specified selection of columns on the matrix repeat operation.
+// \exception std::invalid_argument Invalid column access index.
+//
+// This function returns an expression representing the specified selection of columns on the
+// given matrix repeat operation.
+*/
+template< size_t I            // First column index
+        , size_t... Is        // Remaining column indices
+        , typename MT         // Matrix base type of the expression
+        , size_t... CRAs      // Compile time repeater arguments
+        , typename... RCAs >  // Optional column arguments
+inline decltype(auto) columns( const MatRepeatExpr<MT,CRAs...>& matrix, RCAs... args )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   MAYBE_UNUSED( args... );
+
+   constexpr bool isChecked( !Contains_v< TypeList<RCAs...>, Unchecked > );
+
+   if( isChecked ) {
+      static constexpr size_t indices[] = { I, Is... };
+      for( size_t i=0UL; i<sizeof...(Is)+1UL; ++i ) {
+         if( (~matrix).columns() <= indices[i] ) {
+            BLAZE_THROW_INVALID_ARGUMENT( "Invalid column access index" );
+         }
+      }
+   }
+
+   auto lambda = [columns=(~matrix).operand().columns()]( size_t i ) {
+      constexpr size_t indices[] = { I, Is... };
+      return indices[i] % columns;
+   };
+
+   return repeat( columns( (~matrix).operand(), std::move(lambda), sizeof...(Is)+1UL, unchecked )
+                , (~matrix).template repetitions<0UL>(), 1UL );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a selection of columns on the given matrix repeat operation.
+// \ingroup columns
+//
+// \param matrix The constant matrix repeat operation.
+// \param indices Pointer to the first index of the selected columns.
+// \param n The total number of indices.
+// \param args Optional arguments.
+// \return View on the specified selection of columns on the matrix repeat operation.
+// \exception std::invalid_argument Invalid column access index.
+//
+// This function returns an expression representing the specified selection of columns on the
+// given matrix repeat operation.
+*/
+template< typename MT         // Matrix base type of the expression
+        , size_t... CRAs      // Compile time repeater arguments
+        , typename T          // Type of the column indices
+        , typename... RCAs >  // Optional column arguments
+inline decltype(auto) columns( const MatRepeatExpr<MT,CRAs...>& matrix, T* indices, size_t n, RCAs... args )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   MAYBE_UNUSED( args... );
+
+   constexpr bool isChecked( !Contains_v< TypeList<RCAs...>, Unchecked > );
+
+   if( isChecked ) {
+      for( size_t i=0UL; i<n; ++i ) {
+         if( (~matrix).columns() <= size_t( indices[i] ) ) {
+            BLAZE_THROW_INVALID_ARGUMENT( "Invalid column access index" );
+         }
+      }
+   }
+
+   SmallArray<size_t,128UL> newIndices( indices, indices+n );
+
+   for( size_t& index : newIndices ) {
+      index = index % (~matrix).operand().columns();
+   }
+
+   return repeat( columns( (~matrix).operand(), newIndices, unchecked )
+                , (~matrix).template repetitions<0UL>(), 1UL );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a selection of columns on the given matrix repeat operation.
+// \ingroup columns
+//
+// \param matrix The constant matrix repeat operation.
+// \param p Callable producing the indices.
+// \param n The total number of indices.
+// \param args Optional arguments.
+// \return View on the specified selection of columns on the matrix repeat operation.
+// \exception std::invalid_argument Invalid column access index.
+//
+// This function returns an expression representing the specified selection of columns on the
+// given matrix repeat operation.
+*/
+template< typename MT         // Matrix base type of the expression
+        , size_t... CRAs      // Compile time repeater arguments
+        , typename P          // Type of the index producer
+        , typename... RCAs >  // Optional column arguments
+inline decltype(auto) columns( const MatRepeatExpr<MT,CRAs...>& matrix, P p, size_t n, RCAs... args )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   MAYBE_UNUSED( args... );
+
+   constexpr bool isChecked( !Contains_v< TypeList<RCAs...>, Unchecked > );
+
+   if( isChecked ) {
+      for( size_t i=0UL; i<n; ++i ) {
+         if( (~matrix).columns() <= size_t( p(i) ) ) {
+            BLAZE_THROW_INVALID_ARGUMENT( "Invalid column access index" );
+         }
+      }
+   }
+
+   auto lambda = [columns=(~matrix).operand().columns(),p]( size_t i ) {
+      return p(i) % columns;
+   };
+
+   return repeat( columns( (~matrix).operand(), std::move(lambda), n, unchecked )
+                , (~matrix).template repetitions<0UL>(), 1UL );
 }
 /*! \endcond */
 //*************************************************************************************************
