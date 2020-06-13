@@ -52,6 +52,7 @@
 #include <blaze/math/expressions/MatMatSubExpr.h>
 #include <blaze/math/expressions/MatNoAliasExpr.h>
 #include <blaze/math/expressions/MatNoSIMDExpr.h>
+#include <blaze/math/expressions/MatRepeatExpr.h>
 #include <blaze/math/expressions/Matrix.h>
 #include <blaze/math/expressions/MatScalarDivExpr.h>
 #include <blaze/math/expressions/MatScalarMultExpr.h>
@@ -439,7 +440,7 @@ inline decltype(auto) row( const SchurExpr<MT>& matrix, RRAs... args )
 // \ingroup row
 //
 // \param matrix The constant matrix/matrix multiplication.
-// \param args The runtime row arguments
+// \param args The runtime row arguments.
 // \return View on the specified row of the multiplication.
 //
 // This function returns an expression representing the specified row of the given matrix/matrix
@@ -568,7 +569,7 @@ inline decltype(auto) row( const VecTVecMultExpr<MT>& matrix, size_t index, RRAs
 // \ingroup row
 //
 // \param matrix The constant matrix/scalar multiplication.
-// \param args The runtime row arguments
+// \param args The runtime row arguments.
 // \return View on the specified row of the multiplication.
 //
 // This function returns an expression representing the specified row of the given matrix/scalar
@@ -593,7 +594,7 @@ inline decltype(auto) row( const MatScalarMultExpr<MT>& matrix, RRAs... args )
 // \ingroup row
 //
 // \param matrix The constant matrix/scalar division.
-// \param args The runtime row arguments
+// \param args The runtime row arguments.
 // \return View on the specified row of the division.
 //
 // This function returns an expression representing the specified row of the given matrix/scalar
@@ -618,7 +619,7 @@ inline decltype(auto) row( const MatScalarDivExpr<MT>& matrix, RRAs... args )
 // \ingroup row
 //
 // \param matrix The constant unary matrix map operation.
-// \param args The runtime row arguments
+// \param args The runtime row arguments.
 // \return View on the specified row of the unary map operation.
 //
 // This function returns an expression representing the specified row of the given unary matrix
@@ -643,7 +644,7 @@ inline decltype(auto) row( const MatMapExpr<MT>& matrix, RRAs... args )
 // \ingroup row
 //
 // \param matrix The constant binary matrix map operation.
-// \param args The runtime row arguments
+// \param args The runtime row arguments.
 // \return View on the specified row of the binary map operation.
 //
 // This function returns an expression representing the specified row of the given binary matrix
@@ -740,7 +741,7 @@ inline decltype(auto) row( const VecTVecMapExpr<MT>& matrix, size_t index, RRAs.
 // \ingroup row
 //
 // \param matrix The constant matrix evaluation operation.
-// \param args The runtime row arguments
+// \param args The runtime row arguments.
 // \return View on the specified row of the evaluation operation.
 //
 // This function returns an expression representing the specified row of the given matrix
@@ -765,7 +766,7 @@ inline decltype(auto) row( const MatEvalExpr<MT>& matrix, RRAs... args )
 // \ingroup row
 //
 // \param matrix The constant matrix serialization operation.
-// \param args The runtime row arguments
+// \param args The runtime row arguments.
 // \return View on the specified row of the serialization operation.
 //
 // This function returns an expression representing the specified row of the given matrix
@@ -790,7 +791,7 @@ inline decltype(auto) row( const MatSerialExpr<MT>& matrix, RRAs... args )
 // \ingroup row
 //
 // \param matrix The constant matrix no-alias operation.
-// \param args The runtime row arguments
+// \param args The runtime row arguments.
 // \return View on the specified row of the no-alias operation.
 //
 // This function returns an expression representing the specified row of the given matrix
@@ -815,7 +816,7 @@ inline decltype(auto) row( const MatNoAliasExpr<MT>& matrix, RRAs... args )
 // \ingroup row
 //
 // \param matrix The constant matrix no-SIMD operation.
-// \param args The runtime row arguments
+// \param args The runtime row arguments.
 // \return View on the specified row of the no-SIMD operation.
 //
 // This function returns an expression representing the specified row of the given matrix
@@ -840,7 +841,7 @@ inline decltype(auto) row( const MatNoSIMDExpr<MT>& matrix, RRAs... args )
 // \ingroup row
 //
 // \param matrix The constant matrix declaration operation.
-// \param args The runtime row arguments
+// \param args The runtime row arguments.
 // \return View on the specified row of the declaration operation.
 //
 // This function returns an expression representing the specified row of the given matrix
@@ -865,7 +866,7 @@ inline decltype(auto) row( const DeclExpr<MT>& matrix, RRAs... args )
 // \ingroup row
 //
 // \param matrix The constant matrix transpose operation.
-// \param args The runtime row arguments
+// \param args The runtime row arguments.
 // \return View on the specified row of the transpose operation.
 //
 // This function returns an expression representing the specified row of the given matrix
@@ -890,24 +891,22 @@ inline decltype(auto) row( const MatTransExpr<MT>& matrix, RRAs... args )
 // \ingroup row
 //
 // \param matrix The constant vector expansion operation.
-// \param args The runtime row arguments
+// \param args The runtime row arguments.
 // \return void
 //
 // This function returns an expression representing the specified row of the given row-major
 // vector expansion operation.
 */
-template< size_t... CRAs      // Compile time row arguments
-        , typename MT         // Matrix base type of the expression
-        , size_t... CEAs      // Compile time expansion arguments
-        , typename... RRAs    // Runtime row arguments
+template< size_t... CRAs    // Compile time row arguments
+        , typename MT       // Matrix base type of the expression
+        , size_t... CEAs    // Compile time expansion arguments
+        , typename... RRAs  // Runtime row arguments
         , EnableIf_t< IsRowMajorMatrix_v<MT> >* = nullptr >
 inline decltype(auto) row( const VecExpandExpr<MT,CEAs...>& matrix, RRAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   MAYBE_UNUSED( args... );
-
-   return subvector( (~matrix).operand(), 0UL, (~matrix).columns() );
+   return subvector( (~matrix).operand(), 0UL, (~matrix).columns(), args... );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -919,16 +918,16 @@ inline decltype(auto) row( const VecExpandExpr<MT,CEAs...>& matrix, RRAs... args
 // \ingroup row
 //
 // \param matrix The constant vector expansion operation.
-// \param args The runtime row arguments
+// \param args The runtime row arguments.
 // \return void
 //
 // This function returns an expression representing the specified row of the given column-major
 // vector expansion operation.
 */
-template< size_t... CRAs      // Compile time row arguments
-        , typename MT         // Matrix base type of the expression
-        , size_t... CEAs      // Compile time expansion arguments
-        , typename... RRAs    // Runtime row arguments
+template< size_t... CRAs    // Compile time row arguments
+        , typename MT       // Matrix base type of the expression
+        , size_t... CEAs    // Compile time expansion arguments
+        , typename... RRAs  // Runtime row arguments
         , EnableIf_t< !IsRowMajorMatrix_v<MT> >* = nullptr >
 inline decltype(auto) row( const VecExpandExpr<MT,CEAs...>& matrix, RRAs... args )
 {
@@ -939,6 +938,44 @@ inline decltype(auto) row( const VecExpandExpr<MT,CEAs...>& matrix, RRAs... args
    const RowData<CRAs...> rd( args... );
 
    return UniformVector<ET,rowVector>( (~matrix).columns(), (~matrix).operand()[rd.row()] );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific row of the given matrix repeat operation.
+// \ingroup row
+//
+// \param matrix The constant matrix repeat operation.
+// \param args The runtime row arguments.
+// \return void
+// \exception std::invalid_argument Invalid row access index.
+//
+// This function returns an expression representing the specified row of the given row-major
+// matrix repeat operation.
+*/
+template< size_t... CRAs1     // Compile time row arguments
+        , typename MT         // Matrix base type of the expression
+        , size_t... CRAs2     // Compile time repeater arguments
+        , typename... RRAs >  // Runtime row arguments
+inline decltype(auto) row( const MatRepeatExpr<MT,CRAs2...>& matrix, RRAs... args )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   const RowData<CRAs1...> rd( args... );
+
+   if( !Contains_v< TypeList<RRAs...>, Unchecked > ) {
+      if( (~matrix).rows() <= rd.row() ) {
+         BLAZE_THROW_INVALID_ARGUMENT( "Invalid row access index" );
+      }
+   }
+
+   return repeat( row( (~matrix).operand()
+                     , rd.row() % (~matrix).operand().rows()
+                     , unchecked )
+                , (~matrix).template repetitions<1UL>() );
 }
 /*! \endcond */
 //*************************************************************************************************
