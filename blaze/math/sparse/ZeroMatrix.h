@@ -60,6 +60,7 @@
 #include <blaze/math/traits/KronTrait.h>
 #include <blaze/math/traits/MapTrait.h>
 #include <blaze/math/traits/MultTrait.h>
+#include <blaze/math/traits/RepeatTrait.h>
 #include <blaze/math/traits/RowsTrait.h>
 #include <blaze/math/traits/SchurTrait.h>
 #include <blaze/math/traits/SubmatrixTrait.h>
@@ -1795,6 +1796,29 @@ struct ExpandTraitEval1< T, E
 {
    using Type = ZeroMatrix< ElementType_t<T>
                           , ( IsColumnVector_v<T> ? columnMajor : rowMajor )
+                          , TagType_t<T> >;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  REPEATTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename T, size_t R0, size_t R1 >
+struct RepeatTraitEval1< T, R0, R1, inf
+                       , EnableIf_t< IsMatrix_v<T> &&
+                                     IsZero_v<T> > >
+{
+   using Type = ZeroMatrix< ElementType_t<T>
+                          , StorageOrder_v<T>
                           , TagType_t<T> >;
 };
 /*! \endcond */
