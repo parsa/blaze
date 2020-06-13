@@ -63,8 +63,8 @@ namespace blaze {
 // is set to the according result type. Otherwise, \a Type is set to the unqualified and
 // unmodified \a T.
 */
-template< typename T         // TODO
-        , typename = void >  // TODO
+template< typename T         // Type of the operand
+        , typename = void >  // Restricting condition
 struct EvaluateTrait
 {
  public:
@@ -82,7 +82,7 @@ struct EvaluateTrait
 /*!\brief Specialization of EvaluateTrait for vector and matrix types.
 // \ingroup math_traits
 */
-template< typename T >  // TODO
+template< typename T >  // Type of the operand
 struct EvaluateTrait< T, EnableIf_t< IsVector_v<T> || IsMatrix_v<T> > >
 {
    //**********************************************************************************************
