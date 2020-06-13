@@ -943,6 +943,33 @@ inline decltype(auto) band( const VecExpandExpr<MT,CEAs...>& matrix, RBAs... arg
 //*************************************************************************************************
 
 
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific band of the given matrix repeat operation.
+// \ingroup band
+//
+// \param matrix The constant matrix repeat operation.
+// \param args The runtime band arguments.
+// \return View on the specified band of the repeat operation.
+//
+// This function returns an expression representing the specified band of the given matrix
+// repeat operation.
+*/
+template< ptrdiff_t... CBAs   // Compile time band arguments
+        , typename MT         // Type of the matrix
+        , size_t... CRAs      // Compile time repeater arguments
+        , typename... RBAs >  // Runtime band arguments
+inline decltype(auto) band( const MatRepeatExpr<MT,CRAs...>& matrix, RBAs... args )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   using ReturnType = Band_< MatrixType_t<MT>, CBAs... >;
+   return ReturnType( ~matrix, args... );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
 
 
 //=================================================================================================
