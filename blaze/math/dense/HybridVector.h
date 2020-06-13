@@ -66,6 +66,7 @@
 #include <blaze/math/traits/MapTrait.h>
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/traits/ReduceTrait.h>
+#include <blaze/math/traits/RepeatTrait.h>
 #include <blaze/math/traits/RowTrait.h>
 #include <blaze/math/traits/SolveTrait.h>
 #include <blaze/math/traits/SubTrait.h>
@@ -3536,6 +3537,34 @@ struct PartialReduceTraitEval2< T, OP, RF
                             , defaultAlignmentFlag
                             , defaultPaddingFlag
                             , MapTrait_t< TagType_t<T>, OP > >;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  REPEATTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename T, size_t R0 >
+struct RepeatTraitEval2< T, R0, inf, inf
+                       , EnableIf_t< IsDenseVector_v<T> &&
+                                     ( R0 != inf ) &&
+                                     ( Size_v<T,0UL> == DefaultSize_v ) &&
+                                     ( MaxSize_v<T,0UL> != DefaultMaxSize_v ) > >
+{
+   using Type = HybridVector< ElementType_t<T>
+                            , R0*MaxSize_v<T,0UL>
+                            , TransposeFlag_v<T>
+                            , defaultAlignmentFlag
+                            , defaultPaddingFlag
+                            , TagType_t<T> >;
 };
 /*! \endcond */
 //*************************************************************************************************
