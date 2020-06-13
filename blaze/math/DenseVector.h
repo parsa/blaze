@@ -60,6 +60,7 @@
 #include <blaze/math/expressions/DVecNormExpr.h>
 #include <blaze/math/expressions/DVecNoSIMDExpr.h>
 #include <blaze/math/expressions/DVecReduceExpr.h>
+#include <blaze/math/expressions/DVecRepeatExpr.h>
 #include <blaze/math/expressions/DVecScalarDivExpr.h>
 #include <blaze/math/expressions/DVecScalarMultExpr.h>
 #include <blaze/math/expressions/DVecSerialExpr.h>

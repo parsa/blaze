@@ -132,6 +132,7 @@ template< typename, typename, bool > class DVecGenExpr;
 template< typename, typename, bool > class DVecMapExpr;
 template< typename, bool > class DVecNoAliasExpr;
 template< typename, bool > class DVecNoSIMDExpr;
+template< typename, bool, size_t... > class DVecRepeatExpr;
 template< typename, typename, bool > class DVecScalarDivExpr;
 template< typename, typename, bool > class DVecScalarMultExpr;
 template< typename, bool > class DVecSerialExpr;
@@ -792,6 +793,13 @@ decltype(auto) expand( const SparseVector<VT,TF>&, size_t );
 
 template< size_t E, typename VT, bool TF >
 decltype(auto) expand( const SparseVector<VT,TF>& );
+
+
+template< typename VT, bool TF >
+decltype(auto) repeat( const DenseVector<VT,TF>&, size_t );
+
+template< size_t R0, typename VT, bool TF >
+decltype(auto) repeat( const DenseVector<VT,TF>& );
 
 
 template< typename VT, bool TF >
