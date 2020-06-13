@@ -68,6 +68,7 @@
 #include <blaze/math/traits/KronTrait.h>
 #include <blaze/math/traits/MapTrait.h>
 #include <blaze/math/traits/MultTrait.h>
+#include <blaze/math/traits/RepeatTrait.h>
 #include <blaze/math/traits/SchurTrait.h>
 #include <blaze/math/traits/SubmatrixTrait.h>
 #include <blaze/math/traits/SubTrait.h>
@@ -994,6 +995,27 @@ struct BinaryMapTraitEval1< T1, T2, OP
                                         !YieldsIdentity_v<OP,T1,T2> > >
 {
    using Type = SymmetricMatrix< typename BinaryMapTraitEval2<T1,T2,OP>::Type >;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  REPEATTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename T, size_t R0, size_t R1 >
+struct RepeatTraitEval1< T, R0, R1, inf
+                       , EnableIf_t< R0 != inf && R1 != inf && R0 == R1 &&
+                                     IsSymmetric_v<T> > >
+{
+   using Type = SymmetricMatrix< typename RepeatTraitEval2<T,R0,R1,inf>::Type >;
 };
 /*! \endcond */
 //*************************************************************************************************
