@@ -49,6 +49,7 @@
 #include <blaze/math/expressions/VecMapExpr.h>
 #include <blaze/math/expressions/VecNoAliasExpr.h>
 #include <blaze/math/expressions/VecNoSIMDExpr.h>
+#include <blaze/math/expressions/VecRepeatExpr.h>
 #include <blaze/math/expressions/VecScalarDivExpr.h>
 #include <blaze/math/expressions/VecScalarMultExpr.h>
 #include <blaze/math/expressions/VecSerialExpr.h>
@@ -1240,6 +1241,91 @@ inline decltype(auto) subvector( const VecTransExpr<VT>& vector, RSAs... args )
    BLAZE_FUNCTION_TRACE;
 
    return trans( subvector<AF,CSAs...>( (~vector).operand(), args... ) );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific subvector of the given vector repeat operation.
+// \ingroup subvector
+//
+// \param vector The vector repeat operation containing the subvector.
+// \param args The optional subvector arguments.
+// \return View on the specified subvector of the vector repeat operation.
+// \exception std::invalid_argument Invalid subvector specification.
+//
+// This function returns an expression representing the specified subvector of the given vector
+// repeat operation.
+*/
+template< AlignmentFlag AF    // Alignment flag
+        , size_t I            // Index of the first subvector element
+        , size_t N            // Size of the subvector
+        , typename VT         // Vector base type of the expression
+        , size_t... CRAs      // Compile time repeater arguments
+        , typename... RSAs >  // Optional subvector arguments
+inline decltype(auto) subvector( const VecRepeatExpr<VT,CRAs...>& vector, RSAs... args )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   constexpr bool isChecked( !Contains_v< TypeList<RSAs...>, Unchecked > );
+
+   if( isChecked ) {
+      if( I + N > (~vector).size() ) {
+         BLAZE_THROW_INVALID_ARGUMENT( "Invalid subvector specification" );
+      }
+   }
+   else {
+      BLAZE_USER_ASSERT( I + N <= (~vector).size(), "Invalid subvector specification" );
+   }
+
+   const size_t n = (~vector).operand().size();
+
+   return elements( (~vector).operand(), [n]( size_t i ) { return (i+I)%n; }, N, args... );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific subvector of the given vector repeat operation.
+// \ingroup subvector
+//
+// \param vector The vector repeat operation containing the subvector.
+// \param index The index of the first element of the subvector.
+// \param size The size of the subvector.
+// \param args The optional subvector arguments.
+// \return View on the specified subvector of the vector repeat operation.
+// \exception std::invalid_argument Invalid subvector specification.
+//
+// This function returns an expression representing the specified subvector of the given vector
+// repeat operation.
+*/
+template< AlignmentFlag AF    // Alignment flag
+        , typename VT         // Vector base type of the expression
+        , size_t... CRAs      // Compile time repeater arguments
+        , typename... RSAs >  // Optional subvector arguments
+inline decltype(auto)
+   subvector( const VecRepeatExpr<VT,CRAs...>& vector, size_t index, size_t size, RSAs... args )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   constexpr bool isChecked( !Contains_v< TypeList<RSAs...>, Unchecked > );
+
+   if( isChecked ) {
+      if( index + size > (~vector).size() ) {
+         BLAZE_THROW_INVALID_ARGUMENT( "Invalid subvector specification" );
+      }
+   }
+   else {
+      BLAZE_USER_ASSERT( index + size <= (~vector).size(), "Invalid subvector specification" );
+   }
+
+   const size_t n = (~vector).operand().size();
+
+   return elements( (~vector).operand(), [index,n]( size_t i ) { return (i+index)%n; }, size, args... );
 }
 /*! \endcond */
 //*************************************************************************************************
