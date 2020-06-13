@@ -52,6 +52,7 @@
 #include <blaze/math/expressions/VecMapExpr.h>
 #include <blaze/math/expressions/VecNoAliasExpr.h>
 #include <blaze/math/expressions/VecNoSIMDExpr.h>
+#include <blaze/math/expressions/VecRepeatExpr.h>
 #include <blaze/math/expressions/VecScalarDivExpr.h>
 #include <blaze/math/expressions/VecScalarMultExpr.h>
 #include <blaze/math/expressions/VecSerialExpr.h>
@@ -1233,6 +1234,140 @@ inline decltype(auto) elements( const VecTransExpr<VT>& vector, REAs... args )
    BLAZE_FUNCTION_TRACE;
 
    return trans( elements<CEAs...>( (~vector).operand(), args... ) );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a selection of elements on a vector repeat operation.
+// \ingroup elements
+//
+// \param vector The given vector repeat operation.
+// \param args The optional element arguments.
+// \return View on the specified selection of elements on the vector repeat operation.
+// \exception std::invalid_argument Invalid elements specification.
+//
+// This function returns an expression representing the specified selection of elements on the
+// given vector repeat operation.
+*/
+template< size_t I            // First element index
+        , size_t... Is        // Remaining element indices
+        , typename VT         // Vector base type of the expression
+        , size_t... CRAs      // Compile time repeater arguments
+        , typename... REAs >  // Optional element arguments
+inline decltype(auto) elements( const VecRepeatExpr<VT,CRAs...>& vector, REAs... args )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   constexpr bool isChecked( !Contains_v< TypeList<REAs...>, Unchecked > );
+
+   if( isChecked ) {
+      static constexpr size_t indices[] = { I, Is... };
+      for( size_t i=0UL; i<sizeof...(Is)+1UL; ++i ) {
+         if( (~vector).size() <= indices[i] ) {
+            BLAZE_THROW_INVALID_ARGUMENT( "Invalid element access index" );
+         }
+      }
+   }
+
+   auto lambda = [size=(~vector).operand().size()]( size_t i ) {
+      static constexpr size_t indices[] = { I, Is... };
+      return indices[i] % size;
+   };
+
+   return elements( (~vector).operand(), std::move(lambda), sizeof...(Is)+1UL, args... );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a selection of elements on a vector repeat operation.
+// \ingroup elements
+//
+// \param vector The given vector repeat operation.
+// \param indices The container of element indices.
+// \param n The total number of indices.
+// \param args The optional element arguments.
+// \return View on the specified selection of elements on the vector repeat operation.
+// \exception std::invalid_argument Invalid elements specification.
+//
+// This function returns an expression representing the specified selection of elements on the
+// given vector repeat operation.
+*/
+template< typename VT         // Vector base type of the expression
+        , size_t... CRAs      // Compile time repeater arguments
+        , typename T          // Type of the element indices
+        , typename... REAs >  // Optional element arguments
+inline decltype(auto)
+   elements( const VecRepeatExpr<VT,CRAs...>& vector, T* indices, size_t n, REAs... args )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   constexpr bool isChecked( !Contains_v< TypeList<REAs...>, Unchecked > );
+
+   if( isChecked ) {
+      for( size_t i=0UL; i<n; ++i ) {
+         if( (~vector).size() <= size_t( indices[i] ) ) {
+            BLAZE_THROW_INVALID_ARGUMENT( "Invalid element access index" );
+         }
+      }
+   }
+
+   SmallArray<size_t,128UL> newIndices( indices, indices+n );
+
+   for( size_t& index : newIndices ) {
+      index = index % (~vector).operand().size();
+   }
+
+   return elements( (~vector).operand(), newIndices, args... );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a selection of elements on a vector repeat operation.
+// \ingroup elements
+//
+// \param vector The given vector repeat operation.
+// \param p Callable producing the indices.
+// \param n The total number of indices.
+// \param args The optional element arguments.
+// \return View on the specified selection of elements on the vector repeat operation.
+// \exception std::invalid_argument Invalid elements specification.
+//
+// This function returns an expression representing the specified selection of elements on the
+// given vector repeat operation.
+*/
+template< typename VT         // Vector base type of the expression
+        , size_t... CRAs      // Compile time repeater arguments
+        , typename P          // Type of the index producer
+        , typename... REAs >  // Optional element arguments
+inline decltype(auto)
+   elements( const VecRepeatExpr<VT,CRAs...>& vector, P p, size_t n, REAs... args )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   constexpr bool isChecked( !Contains_v< TypeList<REAs...>, Unchecked > );
+
+   if( isChecked ) {
+      for( size_t i=0UL; i<n; ++i ) {
+         if( (~vector).size() <= size_t( p(i) ) ) {
+            BLAZE_THROW_INVALID_ARGUMENT( "Invalid element access index" );
+         }
+      }
+   }
+
+   auto lambda = [size=(~vector).operand().size(),p]( size_t i ) {
+      return p(i) % size;
+   };
+
+   return elements( (~vector).operand(), std::move(lambda), n, args... );
 }
 /*! \endcond */
 //*************************************************************************************************
