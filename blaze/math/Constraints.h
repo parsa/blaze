@@ -99,6 +99,7 @@
 #include <blaze/math/constraints/MatNoAliasExpr.h>
 #include <blaze/math/constraints/MatNoSIMDExpr.h>
 #include <blaze/math/constraints/MatReduceExpr.h>
+#include <blaze/math/constraints/MatRepeatExpr.h>
 #include <blaze/math/constraints/Matrix.h>
 #include <blaze/math/constraints/MatScalarDivExpr.h>
 #include <blaze/math/constraints/MatScalarMultExpr.h>
