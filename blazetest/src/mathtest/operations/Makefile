@@ -46,7 +46,7 @@ all: dvecdvecadd dvecsvecadd svecdvecadd svecsvecadd \
      dvecdvecmin dvecdvecmax \
      dvecreduce svecreduce \
      dvecexpand svecexpand \
-     dvecrepeat \
+     dvecrepeat svecrepeat \
      dmatdvecmult dmatsvecmult smatdvecmult smatsvecmult \
      tdvecdmatmult tsvecdmatmult tdvecsmatmult tsvecsmatmult \
      dmatdmatadd dmatsmatadd smatdmatadd smatsmatadd \
@@ -248,6 +248,11 @@ dvecrepeat:
 	@echo
 	@echo "Building the dense vector repeat tests..."
 	@$(MAKE) --no-print-directory -C ./dvecexpand $(MAKECMDGOALS)
+
+svecrepeat:
+	@echo
+	@echo "Building the sparse vector repeat tests..."
+	@$(MAKE) --no-print-directory -C ./svecexpand $(MAKECMDGOALS)
 
 dmatdvecmult:
 	@echo
@@ -505,6 +510,7 @@ reset:
 	@$(MAKE) --no-print-directory -C ./dvecexpand reset
 	@$(MAKE) --no-print-directory -C ./svecexpand reset
 	@$(MAKE) --no-print-directory -C ./dvecrepeat reset
+	@$(MAKE) --no-print-directory -C ./svecrepeat reset
 	@$(MAKE) --no-print-directory -C ./dmatdvecmult reset
 	@$(MAKE) --no-print-directory -C ./dmatsvecmult reset
 	@$(MAKE) --no-print-directory -C ./smatdvecmult reset
@@ -588,6 +594,7 @@ clean:
 	@$(MAKE) --no-print-directory -C ./dvecexpand clean
 	@$(MAKE) --no-print-directory -C ./svecexpand clean
 	@$(MAKE) --no-print-directory -C ./dvecrepeat clean
+	@$(MAKE) --no-print-directory -C ./svecrepeat clean
 	@$(MAKE) --no-print-directory -C ./dmatdvecmult clean
 	@$(MAKE) --no-print-directory -C ./dmatsvecmult clean
 	@$(MAKE) --no-print-directory -C ./smatdvecmult clean
@@ -647,7 +654,7 @@ clean:
         dvecdvecmin dvecdvecmax \
         dvecreduce svecreduce \
         dvecexpand svecexpand \
-        dvecrepeat \
+        dvecrepeat svecrepeat \
         dmatdvecmult dmatsvecmult smatdvecmult smatsvecmult \
         tdvecdmatmult tsvecdmatmult tdvecsmatmult tsvecsmatmult \
         dmatdmatadd dmatsmatadd smatdmatadd smatsmatadd \
