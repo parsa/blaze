@@ -56,6 +56,7 @@
 #include <blaze/math/expressions/MatNoSIMDExpr.h>
 #include <blaze/math/expressions/Matrix.h>
 #include <blaze/math/expressions/MatReduceExpr.h>
+#include <blaze/math/expressions/MatRepeatExpr.h>
 #include <blaze/math/expressions/MatScalarDivExpr.h>
 #include <blaze/math/expressions/MatScalarMultExpr.h>
 #include <blaze/math/expressions/MatSerialExpr.h>
@@ -1558,6 +1559,102 @@ inline decltype(auto)
    const size_t expansion( TF ? m : n );
 
    return expand( subvector( (~matrix).operand(), index, size, args... ), expansion );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific submatrix of the given matrix repeat operation.
+// \ingroup submatrix
+//
+// \param matrix The constant vector repeat operation.
+// \param args Optional submatrix arguments.
+// \return View on the specified submatrix of the repeat operation.
+// \exception std::invalid_argument Invalid submatrix specification.
+//
+// This function returns an expression representing the specified submatrix of the given vector
+// repeat operation.
+*/
+template< AlignmentFlag AF    // Alignment flag
+        , size_t I            // Index of the first row
+        , size_t J            // Index of the first column
+        , size_t M            // Number of rows
+        , size_t N            // Number of columns
+        , typename MT         // Matrix base type of the expression
+        , size_t... CRAs      // Compile time repeater arguments
+        , typename... RSAs >  // Optional submatrix arguments
+inline decltype(auto) submatrix( const MatRepeatExpr<MT,CRAs...>& matrix, RSAs... args )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   constexpr bool isChecked( !Contains_v< TypeList<RSAs...>, Unchecked > );
+
+   if( isChecked ) {
+      if( ( I + M > (~matrix).rows() ) || ( J + N > (~matrix).columns() ) ) {
+         BLAZE_THROW_INVALID_ARGUMENT( "Invalid submatrix specification" );
+      }
+   }
+   else {
+      BLAZE_USER_ASSERT( I + M <= (~matrix).rows()   , "Invalid submatrix specification" );
+      BLAZE_USER_ASSERT( J + N <= (~matrix).columns(), "Invalid submatrix specification" );
+   }
+
+   const size_t M2 = (~matrix).operand().rows();
+   const size_t N2 = (~matrix).operand().columns();
+
+   return columns( rows( (~matrix).operand(), [M2]( size_t i ){ return (i+I)%M2; }, M, args... )
+                 , [N2]( size_t i ){ return (i+J)%N2; }, N, args... );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific submatrix of the given vector repeat operation.
+// \ingroup submatrix
+//
+// \param matrix The constant vector repeat operation.
+// \param row The index of the first row of the submatrix.
+// \param column The index of the first column of the submatrix.
+// \param m The number of rows of the submatrix.
+// \param n The number of columns of the submatrix.
+// \param args Optional submatrix arguments.
+// \return View on the specified submatrix of the repeat operation.
+// \exception std::invalid_argument Invalid submatrix specification.
+//
+// This function returns an expression representing the specified submatrix of the given vector
+// repeat operation.
+*/
+template< AlignmentFlag AF    // Alignment flag
+        , typename MT         // Matrix base type of the expression
+        , size_t... CRAs      // Compile time repeater arguments
+        , typename... RSAs >  // Optional submatrix arguments
+inline decltype(auto)
+   submatrix( const MatRepeatExpr<MT,CRAs...>& matrix,
+              size_t row, size_t column, size_t m, size_t n, RSAs... args )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   constexpr bool isChecked( !Contains_v< TypeList<RSAs...>, Unchecked > );
+
+   if( isChecked ) {
+      if( ( row + m > (~matrix).rows() ) || ( column + n > (~matrix).columns() ) ) {
+         BLAZE_THROW_INVALID_ARGUMENT( "Invalid submatrix specification" );
+      }
+   }
+   else {
+      BLAZE_USER_ASSERT( row    + m <= (~matrix).rows()   , "Invalid submatrix specification" );
+      BLAZE_USER_ASSERT( column + n <= (~matrix).columns(), "Invalid submatrix specification" );
+   }
+
+   const size_t M = (~matrix).operand().rows();
+   const size_t N = (~matrix).operand().columns();
+
+   return columns( rows( (~matrix).operand(), [row,M]( size_t i ){ return (i+row)%M; }, m, args... )
+                 , [column,N]( size_t i ){ return (i+column)%N; }, n, args... );
 }
 /*! \endcond */
 //*************************************************************************************************
