@@ -1557,6 +1557,7 @@ inline decltype(auto) elements( VT&& e, P p, size_t n, REAs... args )
 // \param e The selection of elements containing the subvector.
 // \param args The optional subvector arguments.
 // \return View on the specified subvector of the element selection.
+// \exception std::invalid_argument Invalid subvector specification.
 //
 // This function returns an expression representing the specified subvector of the given element
 // selection.
@@ -1571,7 +1572,12 @@ inline decltype(auto) subvector( VT&& e, RSAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return elements( std::forward<VT>( e ), make_shifted_index_sequence<I,N>(), args... );
+   try {
+      return elements( std::forward<VT>( e ), make_shifted_index_sequence<I,N>(), args... );
+   }
+   catch( ... ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid subvector specification" );
+   }
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1587,6 +1593,7 @@ inline decltype(auto) subvector( VT&& e, RSAs... args )
 // \param size The size of the subvector.
 // \param args The optional subvector arguments.
 // \return View on the specified subvector of the element selection.
+// \exception std::invalid_argument Invalid subvector specification.
 //
 // This function returns an expression representing the specified subvector of the given element
 // selection.
@@ -1602,7 +1609,12 @@ inline decltype(auto) subvector( VT&& e, size_t index, size_t size, RSAs... args
    SmallArray<size_t,128UL> indices( size );
    std::iota( indices.begin(), indices.end(), index );
 
-   return elements( std::forward<VT>( e ), indices.data(), indices.size(), args... );
+   try {
+      return elements( std::forward<VT>( e ), indices.data(), indices.size(), args... );
+   }
+   catch( ... ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid subvector specification" );
+   }
 }
 /*! \endcond */
 //*************************************************************************************************

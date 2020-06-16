@@ -73,7 +73,6 @@
 #include <blaze/util/Assert.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/mpl/If.h>
-#include <blaze/util/TypeList.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsConst.h>
 #include <blaze/util/typetraits/IsIntegral.h>
@@ -601,7 +600,7 @@ inline Subvector<VT,AF,TF,false,CSAs...>::Subvector( VT& vector, RSAs... args )
    : DataType( args... )  // Base class initialization
    , vector_ ( vector  )  // The vector containing the subvector
 {
-   if( !Contains_v< TypeList<RSAs...>, Unchecked > ) {
+   if( isChecked( args... ) ) {
       if( offset() + size() > vector.size() ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid subvector specification" );
       }

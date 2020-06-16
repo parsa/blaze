@@ -829,6 +829,7 @@ inline decltype(auto) subvector( Vector<VT,TF>&& vector, size_t index, size_t si
 // \param vector The constant vector/vector addition.
 // \param args The runtime subvector arguments.
 // \return View on the specified subvector of the addition.
+// \exception std::invalid_argument Invalid subvector specification.
 //
 // This function returns an expression representing the specified subvector of the given
 // vector/vector addition.
@@ -856,6 +857,7 @@ inline decltype(auto) subvector( const VecVecAddExpr<VT>& vector, RSAs... args )
 // \param vector The constant vector/vector subtraction.
 // \param args The runtime subvector arguments.
 // \return View on the specified subvector of the subtraction.
+// \exception std::invalid_argument Invalid subvector specification.
 //
 // This function returns an expression representing the specified subvector of the given
 // vector/vector subtraction.
@@ -883,6 +885,7 @@ inline decltype(auto) subvector( const VecVecSubExpr<VT>& vector, RSAs... args )
 // \param vector The constant vector/vector multiplication.
 // \param args The runtime subvector arguments.
 // \return View on the specified subvector of the multiplication.
+// \exception std::invalid_argument Invalid subvector specification.
 //
 // This function returns an expression representing the specified subvector of the given
 // vector/vector multiplication.
@@ -910,6 +913,7 @@ inline decltype(auto) subvector( const VecVecMultExpr<VT>& vector, RSAs... args 
 // \param vector The constant vector/vector Kronecker product.
 // \param args Optional subvector arguments.
 // \return View on the specified subvector of the Kronecker product.
+// \exception std::invalid_argument Invalid subvector specification.
 //
 // This function returns an expression representing the specified subvector of the given
 // vector/vector Kronecker product.
@@ -923,7 +927,12 @@ inline decltype(auto) subvector( const VecVecKronExpr<VT>& vector, RSAs... args 
 {
    BLAZE_FUNCTION_TRACE;
 
-   return elements( ~vector, make_shifted_index_sequence<I,N>(), args... );
+   try {
+      return elements( ~vector, make_shifted_index_sequence<I,N>(), args... );
+   }
+   catch( ... ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid subvector specification" );
+   }
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -939,6 +948,7 @@ inline decltype(auto) subvector( const VecVecKronExpr<VT>& vector, RSAs... args 
 // \param size The size of the subvector.
 // \param args Optional subvector arguments.
 // \return View on the specified subvector of the Kronecker product.
+// \exception std::invalid_argument Invalid subvector specification.
 //
 // This function returns an expression representing the specified subvector of the given
 // vector/vector Kronecker product.
@@ -950,7 +960,12 @@ inline decltype(auto) subvector( const VecVecKronExpr<VT>& vector, size_t index,
 {
    BLAZE_FUNCTION_TRACE;
 
-   return elements( ~vector, [index]( size_t i ){ return i+index; }, size, args... );
+   try {
+      return elements( ~vector, [index]( size_t i ){ return i+index; }, size, args... );
+   }
+   catch( ... ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid subvector specification" );
+   }
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -964,6 +979,7 @@ inline decltype(auto) subvector( const VecVecKronExpr<VT>& vector, size_t index,
 // \param vector The constant vector/vector division.
 // \param args The runtime subvector arguments.
 // \return View on the specified subvector of the division.
+// \exception std::invalid_argument Invalid subvector specification.
 //
 // This function returns an expression representing the specified subvector of the given
 // vector/vector division.
@@ -991,6 +1007,7 @@ inline decltype(auto) subvector( const VecVecDivExpr<VT>& vector, RSAs... args )
 // \param vector The constant vector/vector cross product.
 // \param args The runtime subvector arguments.
 // \return View on the specified subvector of the cross product.
+// \exception std::invalid_argument Invalid subvector specification.
 //
 // This function returns an expression representing the specified subvector of the given
 // vector/vector cross product.
@@ -1018,6 +1035,7 @@ inline decltype(auto) subvector( const CrossExpr<VT>& vector, RSAs... args )
 // \param vector The constant vector/scalar multiplication.
 // \param args The runtime subvector arguments.
 // \return View on the specified subvector of the multiplication.
+// \exception std::invalid_argument Invalid subvector specification.
 //
 // This function returns an expression representing the specified subvector of the given
 // vector/scalar multiplication.
@@ -1044,6 +1062,7 @@ inline decltype(auto) subvector( const VecScalarMultExpr<VT>& vector, RSAs... ar
 // \param vector The constant vector/scalar division.
 // \param args The runtime subvector arguments.
 // \return View on the specified subvector of the division.
+// \exception std::invalid_argument Invalid subvector specification.
 //
 // This function returns an expression representing the specified subvector of the given
 // vector/scalar division.
@@ -1070,6 +1089,7 @@ inline decltype(auto) subvector( const VecScalarDivExpr<VT>& vector, RSAs... arg
 // \param vector The constant unary vector map operation.
 // \param args The runtime subvector arguments.
 // \return View on the specified subvector of the unary map operation.
+// \exception std::invalid_argument Invalid subvector specification.
 //
 // This function returns an expression representing the specified subvector of the given unary
 // vector map operation.
@@ -1096,6 +1116,7 @@ inline decltype(auto) subvector( const VecMapExpr<VT>& vector, RSAs... args )
 // \param vector The constant binary vector map operation.
 // \param args The runtime subvector arguments.
 // \return View on the specified subvector of the binary map operation.
+// \exception std::invalid_argument Invalid subvector specification.
 //
 // This function returns an expression representing the specified subvector of the given binary
 // vector map operation.
@@ -1124,6 +1145,7 @@ inline decltype(auto) subvector( const VecVecMapExpr<VT>& vector, RSAs... args )
 // \param vector The constant vector evaluation operation.
 // \param args The runtime subvector arguments.
 // \return View on the specified subvector of the evaluation operation.
+// \exception std::invalid_argument Invalid subvector specification.
 //
 // This function returns an expression representing the specified subvector of the given vector
 // evaluation operation.
@@ -1150,6 +1172,7 @@ inline decltype(auto) subvector( const VecEvalExpr<VT>& vector, RSAs... args )
 // \param vector The constant vector serialization operation.
 // \param args The runtime subvector arguments.
 // \return View on the specified subvector of the serialization operation.
+// \exception std::invalid_argument Invalid subvector specification.
 //
 // This function returns an expression representing the specified subvector of the given vector
 // serialization operation.
@@ -1176,6 +1199,7 @@ inline decltype(auto) subvector( const VecSerialExpr<VT>& vector, RSAs... args )
 // \param vector The constant vector no-alias operation.
 // \param args The runtime subvector arguments.
 // \return View on the specified subvector of the no-alias operation.
+// \exception std::invalid_argument Invalid subvector specification.
 //
 // This function returns an expression representing the specified subvector of the given vector
 // no-alias operation.
@@ -1202,6 +1226,7 @@ inline decltype(auto) subvector( const VecNoAliasExpr<VT>& vector, RSAs... args 
 // \param vector The constant vector no-SIMD operation.
 // \param args The runtime subvector arguments.
 // \return View on the specified subvector of the no-SIMD operation.
+// \exception std::invalid_argument Invalid subvector specification.
 //
 // This function returns an expression representing the specified subvector of the given vector
 // no-SIMD operation.
@@ -1228,6 +1253,7 @@ inline decltype(auto) subvector( const VecNoSIMDExpr<VT>& vector, RSAs... args )
 // \param vector The constant vector transpose operation.
 // \param args The runtime subvector arguments.
 // \return View on the specified subvector of the transpose operation.
+// \exception std::invalid_argument Invalid subvector specification.
 //
 // This function returns an expression representing the specified subvector of the given vector
 // transpose operation.
@@ -1269,9 +1295,7 @@ inline decltype(auto) subvector( const VecRepeatExpr<VT,CRAs...>& vector, RSAs..
 {
    BLAZE_FUNCTION_TRACE;
 
-   constexpr bool isChecked( !Contains_v< TypeList<RSAs...>, Unchecked > );
-
-   if( isChecked ) {
+   if( isChecked( args... ) ) {
       if( I + N > (~vector).size() ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid subvector specification" );
       }
@@ -1282,7 +1306,7 @@ inline decltype(auto) subvector( const VecRepeatExpr<VT,CRAs...>& vector, RSAs..
 
    const size_t n = (~vector).operand().size();
 
-   return elements( (~vector).operand(), [n]( size_t i ) { return (i+I)%n; }, N, args... );
+   return elements( (~vector).operand(), [n]( size_t i ) { return (i+I)%n; }, N, unchecked );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1312,9 +1336,7 @@ inline decltype(auto)
 {
    BLAZE_FUNCTION_TRACE;
 
-   constexpr bool isChecked( !Contains_v< TypeList<RSAs...>, Unchecked > );
-
-   if( isChecked ) {
+   if( isChecked( args... ) ) {
       if( index + size > (~vector).size() ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid subvector specification" );
       }
@@ -1325,7 +1347,7 @@ inline decltype(auto)
 
    const size_t n = (~vector).operand().size();
 
-   return elements( (~vector).operand(), [index,n]( size_t i ) { return (i+index)%n; }, size, args... );
+   return elements( (~vector).operand(), [index,n]( size_t i ) { return (i+index)%n; }, size, unchecked );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1395,9 +1417,7 @@ inline decltype(auto) subvector( VT&& sv, RSAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   constexpr bool isChecked( !Contains_v< TypeList<RSAs...>, Unchecked > );
-
-   if( isChecked ) {
+   if( isChecked( args... ) ) {
       if( I + N > sv.size() ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid subvector specification" );
       }
@@ -1435,9 +1455,7 @@ inline decltype(auto)
 {
    BLAZE_FUNCTION_TRACE;
 
-   constexpr bool isChecked( !Contains_v< TypeList<RSAs...>, Unchecked > );
-
-   if( isChecked ) {
+   if( isChecked( args... ) ) {
       if( index + size > sv.size() ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid subvector specification" );
       }

@@ -1806,6 +1806,7 @@ inline decltype(auto) submatrix( MT&& sm, size_t row, size_t column, size_t m, s
 // \param vector The constant matrix/vector multiplication.
 // \param args The runtime subvector arguments.
 // \return View on the specified subvector of the multiplication.
+// \exception std::invalid_argument Invalid subvector specification.
 //
 // This function returns an expression representing the specified subvector of the given
 // matrix/vector multiplication.
@@ -1836,7 +1837,15 @@ inline decltype(auto) subvector( const MatVecMultExpr<VT>& vector, RSAs... args 
                    :( ( IsUpper_v<MT> )?( left.columns() - column )
                                        :( left.columns() ) ) );
 
-   return submatrix<AF>( left, sd.offset(), column, sd.size(), n ) * subvector<AF>( right, column, n );
+   constexpr auto check( getCheck( args... ) );
+
+   try {
+      return submatrix<AF>( left, sd.offset(), column, sd.size(), n, check ) *
+             subvector<AF>( right, column, n, check );
+   }
+   catch( ... ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid subvector specification" );
+   }
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1850,6 +1859,7 @@ inline decltype(auto) subvector( const MatVecMultExpr<VT>& vector, RSAs... args 
 // \param vector The constant vector/matrix multiplication.
 // \param args The runtime subvector arguments.
 // \return View on the specified subvector of the multiplication.
+// \exception std::invalid_argument Invalid subvector specification.
 //
 // This function returns an expression representing the specified subvector of the given
 // vector/matrix multiplication.
@@ -1880,7 +1890,15 @@ inline decltype(auto) subvector( const TVecMatMultExpr<VT>& vector, RSAs... args
                    :( ( IsLower_v<MT> )?( right.rows() - row )
                                        :( right.rows() ) ) );
 
-   return subvector<AF>( left, row, m ) * submatrix<AF>( right, row, sd.offset(), m, sd.size() );
+   constexpr auto check( getCheck( args... ) );
+
+   try {
+      return subvector<AF>( left, row, m, check ) *
+             submatrix<AF>( right, row, sd.offset(), m, sd.size(), check );
+   }
+   catch( ... ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid subvector specification" );
+   }
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1894,6 +1912,7 @@ inline decltype(auto) subvector( const TVecMatMultExpr<VT>& vector, RSAs... args
 // \param vector The constant column-wise matrix reduction operation.
 // \param args The runtime subvector arguments.
 // \return View on the specified subvector of the reduction operation.
+// \exception std::invalid_argument Invalid subvector specification.
 //
 // This function returns an expression representing the specified subvector of the given
 // column-wise matrix reduction operation.
@@ -1908,9 +1927,15 @@ inline decltype(auto) subvector( const MatReduceExpr<VT,columnwise>& vector, RSA
 
    const SubvectorData<CSAs...> sd( args... );
    const size_t M( (~vector).operand().rows() );
+   constexpr auto check( getCheck( args... ) );
 
-   decltype(auto) sm( submatrix<AF>( (~vector).operand(), 0UL, sd.offset(), M, sd.size() ) );
-   return reduce<columnwise>( sm, (~vector).operation() );
+   try {
+      decltype(auto) sm( submatrix<AF>( (~vector).operand(), 0UL, sd.offset(), M, sd.size(), check ) );
+      return reduce<columnwise>( sm, (~vector).operation() );
+   }
+   catch( ... ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid subvector specification" );
+   }
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1924,6 +1949,7 @@ inline decltype(auto) subvector( const MatReduceExpr<VT,columnwise>& vector, RSA
 // \param vector The constant row-wise matrix reduction operation.
 // \param args The runtime subvector arguments.
 // \return View on the specified subvector of the reduction operation.
+// \exception std::invalid_argument Invalid subvector specification.
 //
 // This function returns an expression representing the specified subvector of the given row-wise
 // matrix reduction operation.
@@ -1938,9 +1964,15 @@ inline decltype(auto) subvector( const MatReduceExpr<VT,rowwise>& vector, RSAs..
 
    const SubvectorData<CSAs...> sd( args... );
    const size_t N( (~vector).operand().columns() );
+   constexpr auto check( getCheck( args... ) );
 
-   decltype(auto) sm( submatrix<AF>( (~vector).operand(), sd.offset(), 0UL, sd.size(), N ) );
-   return reduce<rowwise>( sm, (~vector).operation() );
+   try {
+      decltype(auto) sm( submatrix<AF>( (~vector).operand(), sd.offset(), 0UL, sd.size(), N, check ) );
+      return reduce<rowwise>( sm, (~vector).operation() );
+   }
+   catch( ... ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid subvector specification" );
+   }
 }
 /*! \endcond */
 //*************************************************************************************************

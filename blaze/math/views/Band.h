@@ -986,6 +986,7 @@ inline decltype(auto) band( const MatRepeatExpr<MT,CRAs...>& matrix, RBAs... arg
 // \param b The band containing the subvector.
 // \param args The optional subvector arguments.
 // \return View on the specified subvector of the band.
+// \exception std::invalid_argument Invalid subvector specification.
 //
 // This function returns an expression representing the specified subvector of the given band.
 */
@@ -1005,7 +1006,14 @@ inline decltype(auto) subvector( VT&& b, RSAs... args )
    constexpr size_t row   ( ( I2 >= 0L ? 0UL : -I2 ) + I );
    constexpr size_t column( ( I2 >= 0L ?  I2 : 0UL ) + I );
 
-   return diagonal( submatrix<AF,row,column,N,N>( b.operand(), args... ), unchecked );
+   constexpr auto check( getCheck( args... ) );
+
+   try {
+      return diagonal( submatrix<AF,row,column,N,N>( b.operand(), check ), check );
+   }
+   catch( ... ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid subvector specification" );
+   }
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1019,6 +1027,7 @@ inline decltype(auto) subvector( VT&& b, RSAs... args )
 // \param b The band containing the subvector.
 // \param args The optional subvector arguments.
 // \return View on the specified subvector of the band.
+// \exception std::invalid_argument Invalid subvector specification.
 //
 // This function returns an expression representing the specified subvector of the given band.
 */
@@ -1037,7 +1046,14 @@ inline decltype(auto) subvector( VT&& b, RSAs... args )
    const size_t row   ( b.row() + sd.offset() );
    const size_t column( b.column() + sd.offset() );
 
-   return diagonal( submatrix<AF>( b.operand(), row, column, sd.size(), sd.size(), args... ), unchecked );
+   constexpr auto check( getCheck( args... ) );
+
+   try {
+      return diagonal( submatrix<AF>( b.operand(), row, column, sd.size(), sd.size(), check ), check );
+   }
+   catch( ... ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid subvector specification" );
+   }
 }
 /*! \endcond */
 //*************************************************************************************************

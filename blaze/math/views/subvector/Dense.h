@@ -88,7 +88,6 @@
 #include <blaze/util/constraints/Vectorizable.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/mpl/If.h>
-#include <blaze/util/TypeList.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsConst.h>
 
@@ -829,7 +828,7 @@ inline Subvector<VT,unaligned,TF,true,CSAs...>::Subvector( VT& vector, RSAs... a
    , isAligned_( simdEnabled && IsContiguous_v<VT> &&
                  vector.data() != nullptr && checkAlignment( data() ) )
 {
-   if( !Contains_v< TypeList<RSAs...>, Unchecked > ) {
+   if( isChecked( args... ) ) {
       if( offset() + size() > vector.size() ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid subvector specification" );
       }
@@ -2959,7 +2958,7 @@ inline Subvector<VT,aligned,TF,true,CSAs...>::Subvector( VT& vector, RSAs... arg
    : DataType( args... )  // Base class initialization
    , vector_ ( vector  )  // The vector containing the subvector
 {
-   if( !Contains_v< TypeList<RSAs...>, Unchecked > )
+   if( isChecked( args... ) )
    {
       if( offset() + size() > vector.size() ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid subvector specification" );
@@ -4829,7 +4828,7 @@ class Subvector< DVecDVecCrossExpr<VT1,VT2,TF>, unaligned, TF, true, CSAs... >
       : DataType( args... )  // Base class initialization
       , vector_ ( vector  )  // The dense vector/dense vector cross product expression
    {
-      if( Contains_v< TypeList<RSAs...>, Unchecked > ) {
+      if( isChecked( args... ) ) {
          if( offset() + size() > vector.size() ) {
             BLAZE_THROW_INVALID_ARGUMENT( "Invalid subvector specification" );
          }
@@ -4987,7 +4986,7 @@ class Subvector< DVecSVecCrossExpr<VT1,VT2,TF>, unaligned, TF, true, CSAs... >
       : DataType( args... )  // Base class initialization
       , vector_ ( vector  )  // The dense vector/sparse vector cross product expression
    {
-      if( Contains_v< TypeList<RSAs...>, Unchecked > ) {
+      if( isChecked( args... ) ) {
          if( offset() + size() > vector.size() ) {
             BLAZE_THROW_INVALID_ARGUMENT( "Invalid subvector specification" );
          }
@@ -5145,7 +5144,7 @@ class Subvector< SVecDVecCrossExpr<VT1,VT2,TF>, unaligned, TF, true, CSAs... >
       : DataType( args... )  // Base class initialization
       , vector_ ( vector  )  // The sparse vector/dense vector cross product expression
    {
-      if( Contains_v< TypeList<RSAs...>, Unchecked > ) {
+      if( isChecked( args... ) ) {
          if( offset() + size() > vector.size() ) {
             BLAZE_THROW_INVALID_ARGUMENT( "Invalid subvector specification" );
          }
@@ -5303,7 +5302,7 @@ class Subvector< SVecSVecCrossExpr<VT1,VT2,TF>, unaligned, TF, true, CSAs... >
       : DataType( args... )  // Base class initialization
       , vector_ ( vector  )  // The sparse vector/sparse vector cross product expression
    {
-      if( Contains_v< TypeList<RSAs...>, Unchecked > ) {
+      if( isChecked( args... ) ) {
          if( offset() + size() > vector.size() ) {
             BLAZE_THROW_INVALID_ARGUMENT( "Invalid subvector specification" );
          }
