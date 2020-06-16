@@ -41,6 +41,7 @@
 //*************************************************************************************************
 
 #include <algorithm>
+#include <cstring>
 #include <sstream>
 #include <stdexcept>
 #include <string>
@@ -55,7 +56,6 @@
 #include <blaze/math/constraints/DenseVector.h>
 #include <blaze/math/constraints/RowMajorMatrix.h>
 #include <blaze/math/constraints/RowVector.h>
-#include <blaze/math/constraints/Scalar.h>
 #include <blaze/math/constraints/SparseMatrix.h>
 #include <blaze/math/constraints/SparseVector.h>
 #include <blaze/math/constraints/TransposeFlag.h>
@@ -70,7 +70,7 @@
 #include <blaze/math/typetraits/UnderlyingBuiltin.h>
 #include <blaze/math/typetraits/UnderlyingScalar.h>
 #include <blaze/math/Views.h>
-#include <blaze/util/constraints/DerivedFrom.h>
+#include <blaze/util/constraints/Numeric.h>
 #include <blaze/util/constraints/SameType.h>
 #include <blaze/util/IntegralConstant.h>
 #include <blaze/util/mpl/Not.h>
@@ -81,6 +81,7 @@
 #include <blazetest/mathtest/IsEqual.h>
 #include <blazetest/mathtest/RandomMaximum.h>
 #include <blazetest/mathtest/RandomMinimum.h>
+
 
 
 namespace blazetest {
@@ -272,9 +273,6 @@ class OperationTest
 
    BLAZE_CONSTRAINT_VECTORS_MUST_HAVE_SAME_TRANSPOSE_FLAG     ( TVecTMatMultExprType, blaze::ResultType_t<TVecTMatMultExprType>    );
    BLAZE_CONSTRAINT_VECTORS_MUST_HAVE_DIFFERENT_TRANSPOSE_FLAG( TVecTMatMultExprType, blaze::TransposeType_t<TVecTMatMultExprType> );
-
-   BLAZE_CONSTRAINT_MUST_BE_DERIVED_FROM( TVecMatMultExprType , blaze::BaseType_t<TVecMatMultExprType > );
-   BLAZE_CONSTRAINT_MUST_BE_DERIVED_FROM( TVecTMatMultExprType, blaze::BaseType_t<TVecTMatMultExprType> );
    /*! \endcond */
    //**********************************************************************************************
 };
@@ -1609,7 +1607,7 @@ template< typename VT    // Type of the left-hand side dense vector
 template< typename T >   // Type of the scalar
 void OperationTest<VT,MT>::testScaledOperation( T scalar )
 {
-   BLAZE_CONSTRAINT_MUST_BE_SCALAR_TYPE( T );
+   BLAZE_CONSTRAINT_MUST_BE_NUMERIC_TYPE( T );
 
    if( scalar == T(0) )
       throw std::invalid_argument( "Invalid scalar parameter" );
@@ -4076,6 +4074,67 @@ void OperationTest<VT,MT>::testSubvectorOperation( blaze::TrueType )
             }
 
             checkResults<TMT>();
+         }
+      }
+
+
+      //=====================================================================================
+      // Failure cases
+      //=====================================================================================
+
+      try {
+         auto sv = subvector( lhs_ * rhs_, 1UL, rhs_.columns() );
+
+         std::ostringstream oss;
+         oss << " Test: Subvector construction\n"
+             << " Error: Setup of out-of-bounds subvector succeeded\n"
+             << " Details:\n"
+             << "   Random seed = " << blaze::getSeed() << "\n"
+             << "   Left-hand side dense vector type:\n"
+             << "     " << typeid( VT ).name() << "\n"
+             << "   Right-hand side sparse matrix type:\n"
+             << "     " << typeid( MT ).name() << "\n"
+             << "   Result:\n" << sv << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ex )
+      {
+         if( std::strcmp( ex.what(), "Invalid subvector specification" ) != 0 ) {
+            std::ostringstream oss;
+            oss << " Test: Subvector construction\n"
+                << " Error: Wrong error message\n"
+                << " Details:\n"
+                << "   Error message: \"" << ex.what() << "\"\n"
+                << "   Expected error message: \"Invalid subvector specification\"\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      try {
+         auto sv = subvector( lhs_ * rhs_, rhs_.columns(), 1UL );
+
+         std::ostringstream oss;
+         oss << " Test: Subvector construction\n"
+             << " Error: Setup of out-of-bounds subvector succeeded\n"
+             << " Details:\n"
+             << "   Random seed = " << blaze::getSeed() << "\n"
+             << "   Left-hand side dense vector type:\n"
+             << "     " << typeid( VT ).name() << "\n"
+             << "   Right-hand side sparse matrix type:\n"
+             << "     " << typeid( MT ).name() << "\n"
+             << "   Result:\n" << sv << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ex )
+      {
+         if( std::strcmp( ex.what(), "Invalid subvector specification" ) != 0 ) {
+            std::ostringstream oss;
+            oss << " Test: Subvector construction\n"
+                << " Error: Wrong error message\n"
+                << " Details:\n"
+                << "   Error message: \"" << ex.what() << "\"\n"
+                << "   Expected error message: \"Invalid subvector specification\"\n";
+            throw std::runtime_error( oss.str() );
          }
       }
    }

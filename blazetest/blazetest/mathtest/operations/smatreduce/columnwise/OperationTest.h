@@ -41,6 +41,7 @@
 //*************************************************************************************************
 
 #include <algorithm>
+#include <cstring>
 #include <sstream>
 #include <stdexcept>
 #include <string>
@@ -3502,6 +3503,63 @@ void OperationTest<MT>::testSubvectorOperation( OP op, blaze::TrueType )
          }
 
          checkResults<TMT>();
+      }
+
+
+      //=====================================================================================
+      // Failure cases
+      //=====================================================================================
+
+      try {
+         auto sv = subvector( reduce<columnwise>( mat_, op ), 1UL, mat_.columns() );
+
+         std::ostringstream oss;
+         oss << " Test: Subvector construction\n"
+             << " Error: Setup of out-of-bounds subvector succeeded\n"
+             << " Details:\n"
+             << "   Random seed = " << blaze::getSeed() << "\n"
+             << "   Sparse matrix type:\n"
+             << "     " << typeid( MT ).name() << "\n"
+             << "   Result:\n" << sv << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ex )
+      {
+         if( std::strcmp( ex.what(), "Invalid subvector specification" ) != 0 ) {
+            std::ostringstream oss;
+            oss << " Test: Subvector construction\n"
+                << " Error: Wrong error message\n"
+                << " Details:\n"
+                << "   Error message: \"" << ex.what() << "\"\n"
+                << "   Expected error message: \"Invalid subvector specification\"\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      try {
+         auto sv = subvector( reduce<columnwise>( mat_, op ), mat_.columns(), 1UL );
+
+         std::ostringstream oss;
+         oss << " Test: Subvector construction\n"
+             << " Error: Setup of out-of-bounds subvector succeeded\n"
+             << " Details:\n"
+             << "   Random seed = " << blaze::getSeed() << "\n"
+             << "   Sparse matrix type:\n"
+             << "     " << typeid( MT ).name() << "\n"
+             << "   Result:\n" << sv << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ex )
+      {
+         if( std::strcmp( ex.what(), "Invalid subvector specification" ) != 0 ) {
+            std::ostringstream oss;
+            oss << " Test: Subvector construction\n"
+                << " Error: Wrong error message\n"
+                << " Details:\n"
+                << "   Error message: \"" << ex.what() << "\"\n"
+                << "   Expected error message: \"Invalid subvector specification\"\n";
+            throw std::runtime_error( oss.str() );
+         }
       }
    }
 #endif

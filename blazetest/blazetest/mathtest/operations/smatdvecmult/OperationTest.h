@@ -41,6 +41,7 @@
 //*************************************************************************************************
 
 #include <algorithm>
+#include <cstring>
 #include <sstream>
 #include <stdexcept>
 #include <string>
@@ -4076,6 +4077,67 @@ void OperationTest<MT,VT>::testSubvectorOperation( blaze::TrueType )
             }
 
             checkResults<TMT>();
+         }
+      }
+
+
+      //=====================================================================================
+      // Failure cases
+      //=====================================================================================
+
+      try {
+         auto sv = subvector( lhs_ * rhs_, 1UL, lhs_.rows() );
+
+         std::ostringstream oss;
+         oss << " Test: Subvector construction\n"
+             << " Error: Setup of out-of-bounds subvector succeeded\n"
+             << " Details:\n"
+             << "   Random seed = " << blaze::getSeed() << "\n"
+             << "   Left-hand side sparse matrix type:\n"
+             << "     " << typeid( MT ).name() << "\n"
+             << "   Right-hand side dense vector type:\n"
+             << "     " << typeid( VT ).name() << "\n"
+             << "   Result:\n" << sv << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ex )
+      {
+         if( std::strcmp( ex.what(), "Invalid subvector specification" ) != 0 ) {
+            std::ostringstream oss;
+            oss << " Test: Subvector construction\n"
+                << " Error: Wrong error message\n"
+                << " Details:\n"
+                << "   Error message: \"" << ex.what() << "\"\n"
+                << "   Expected error message: \"Invalid subvector specification\"\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      try {
+         auto sv = subvector( lhs_ * rhs_, lhs_.rows(), 1UL );
+
+         std::ostringstream oss;
+         oss << " Test: Subvector construction\n"
+             << " Error: Setup of out-of-bounds subvector succeeded\n"
+             << " Details:\n"
+             << "   Random seed = " << blaze::getSeed() << "\n"
+             << "   Left-hand side sparse matrix type:\n"
+             << "     " << typeid( MT ).name() << "\n"
+             << "   Right-hand side dense vector type:\n"
+             << "     " << typeid( VT ).name() << "\n"
+             << "   Result:\n" << sv << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ex )
+      {
+         if( std::strcmp( ex.what(), "Invalid subvector specification" ) != 0 ) {
+            std::ostringstream oss;
+            oss << " Test: Subvector construction\n"
+                << " Error: Wrong error message\n"
+                << " Details:\n"
+                << "   Error message: \"" << ex.what() << "\"\n"
+                << "   Expected error message: \"Invalid subvector specification\"\n";
+            throw std::runtime_error( oss.str() );
          }
       }
    }
