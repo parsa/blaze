@@ -4560,6 +4560,95 @@ void OperationTest<VT1,VT2>::testElementsOperation()
 
          checkTransposeResults<TVT1,TVT2>();
       }
+
+
+      //=====================================================================================
+      // Failure cases
+      //=====================================================================================
+
+      try {
+         auto e = elements( lhs_ % rhs_, blaze::index_sequence<3>() );
+
+         std::ostringstream oss;
+         oss << " Test: Elements construction (index_sequence)\n"
+             << " Error: Setup of out-of-bounds element selection succeeded\n"
+             << " Details:\n"
+             << "   Random seed = " << blaze::getSeed() << "\n"
+             << "   Left-hand side sparse vector type:\n"
+             << "     " << typeid( VT1 ).name() << "\n"
+             << "   Right-hand side sparse vector type:\n"
+             << "     " << typeid( VT2 ).name() << "\n"
+             << "   Result:\n" << e << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ex )
+      {
+         if( std::strcmp( ex.what(), "Invalid element access index" ) != 0 ) {
+            std::ostringstream oss;
+            oss << " Test: Elements construction (index_sequence)\n"
+                << " Error: Wrong error message\n"
+                << " Details:\n"
+                << "   Error message: \"" << ex.what() << "\"\n"
+                << "   Expected error message: \"Invalid element access index\"\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      try {
+         auto e = elements( lhs_ % rhs_, { lhs_.size() } );
+
+         std::ostringstream oss;
+         oss << " Test: Elements construction (initializer_list)\n"
+             << " Error: Setup of out-of-bounds element selection succeeded\n"
+             << " Details:\n"
+             << "   Random seed = " << blaze::getSeed() << "\n"
+             << "   Left-hand side sparse vector type:\n"
+             << "     " << typeid( VT1 ).name() << "\n"
+             << "   Right-hand side sparse vector type:\n"
+             << "     " << typeid( VT2 ).name() << "\n"
+             << "   Result:\n" << e << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ex )
+      {
+         if( std::strcmp( ex.what(), "Invalid element access index" ) != 0 ) {
+            std::ostringstream oss;
+            oss << " Test: Elements construction (initializer_list)\n"
+                << " Error: Wrong error message\n"
+                << " Details:\n"
+                << "   Error message: \"" << ex.what() << "\"\n"
+                << "   Expected error message: \"Invalid element access index\"\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      try {
+         auto e = elements( lhs_ % rhs_, [index=lhs_.size()]( size_t ){ return index; }, 1UL );
+
+         std::ostringstream oss;
+         oss << " Test: Elements construction (lambda)\n"
+             << " Error: Setup of out-of-bounds element selection succeeded\n"
+             << " Details:\n"
+             << "   Random seed = " << blaze::getSeed() << "\n"
+             << "   Left-hand side sparse vector type:\n"
+             << "     " << typeid( VT1 ).name() << "\n"
+             << "   Right-hand side sparse vector type:\n"
+             << "     " << typeid( VT2 ).name() << "\n"
+             << "   Result:\n" << e << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ex )
+      {
+         if( std::strcmp( ex.what(), "Invalid element access index" ) != 0 ) {
+            std::ostringstream oss;
+            oss << " Test: Elements construction (lambda)\n"
+                << " Error: Wrong error message\n"
+                << " Details:\n"
+                << "   Error message: \"" << ex.what() << "\"\n"
+                << "   Expected error message: \"Invalid element access index\"\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
    }
 #endif
 }

@@ -6070,10 +6070,21 @@ void OperationTest<VT,R0>::testElementsOperation( blaze::TrueType )
              << "   Result:\n" << e << "\n";
          throw std::runtime_error( oss.str() );
       }
-      catch( std::invalid_argument& ) {}
+      catch( std::invalid_argument& ex )
+      {
+         if( std::strcmp( ex.what(), "Invalid element access index" ) != 0 ) {
+            std::ostringstream oss;
+            oss << " Test: Elements construction (index_sequence)\n"
+                << " Error: Wrong error message\n"
+                << " Details:\n"
+                << "   Error message: \"" << ex.what() << "\"\n"
+                << "   Expected error message: \"Invalid element access index\"\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
 
       try {
-         auto e =  elements( repeat( vec_, R0 ), { vec_.size()*R0 } );
+         auto e = elements( repeat( vec_, R0 ), { vec_.size()*R0 } );
 
          std::ostringstream oss;
          oss << " Test: Elements construction (initializer_list)\n"
@@ -6085,10 +6096,21 @@ void OperationTest<VT,R0>::testElementsOperation( blaze::TrueType )
              << "   Result:\n" << e << "\n";
          throw std::runtime_error( oss.str() );
       }
-      catch( std::invalid_argument& ) {}
+      catch( std::invalid_argument& ex )
+      {
+         if( std::strcmp( ex.what(), "Invalid element access index" ) != 0 ) {
+            std::ostringstream oss;
+            oss << " Test: Elements construction (initializer_list)\n"
+                << " Error: Wrong error message\n"
+                << " Details:\n"
+                << "   Error message: \"" << ex.what() << "\"\n"
+                << "   Expected error message: \"Invalid element access index\"\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
 
       try {
-         auto e =  elements( repeat( vec_, R0 ), [index=vec_.size()*R0]( size_t ){ return index; }, 1UL );
+         auto e = elements( repeat( vec_, R0 ), [index=vec_.size()*R0]( size_t ){ return index; }, 1UL );
 
          std::ostringstream oss;
          oss << " Test: Elements construction (lambda)\n"
@@ -6100,7 +6122,18 @@ void OperationTest<VT,R0>::testElementsOperation( blaze::TrueType )
              << "   Result:\n" << e << "\n";
          throw std::runtime_error( oss.str() );
       }
-      catch( std::invalid_argument& ) {}
+      catch( std::invalid_argument& ex )
+      {
+         if( std::strcmp( ex.what(), "Invalid element access index" ) != 0 ) {
+            std::ostringstream oss;
+            oss << " Test: Elements construction (lambda)\n"
+                << " Error: Wrong error message\n"
+                << " Details:\n"
+                << "   Error message: \"" << ex.what() << "\"\n"
+                << "   Expected error message: \"Invalid element access index\"\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
    }
 #endif
 }
