@@ -84,7 +84,6 @@
 #include <blaze/util/IntegralConstant.h>
 #include <blaze/util/SmallArray.h>
 #include <blaze/util/StaticAssert.h>
-#include <blaze/util/TypeList.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/RemoveReference.h>
 
@@ -1517,7 +1516,7 @@ inline decltype(auto) elements( VT&& sv, REAs... args )
 // \param sv The given subvector.
 // \param args The optional element arguments.
 // \return View on the specified selection of elements on the subvector.
-// \exception std::invalid_argument Invalid elements specification.
+// \exception std::invalid_argument Invalid element access index.
 //
 // This function returns an expression representing the specified selection of elements on the
 // given subvector.
@@ -1532,13 +1531,11 @@ inline decltype(auto) elements( VT&& sv, REAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   constexpr bool isChecked( !Contains_v< TypeList<REAs...>, Unchecked > );
-
-   if( isChecked ) {
+   if( isChecked( args... ) ) {
       static constexpr size_t indices[] = { I, Is... };
       for( size_t i=0UL; i<sizeof...(Is)+1UL; ++i ) {
          if( sv.size() <= indices[i] ) {
-            BLAZE_THROW_INVALID_ARGUMENT( "Invalid elements specification" );
+            BLAZE_THROW_INVALID_ARGUMENT( "Invalid element access index" );
          }
       }
    }
@@ -1559,7 +1556,7 @@ inline decltype(auto) elements( VT&& sv, REAs... args )
 // \param n The total number of indices.
 // \param args The optional element arguments.
 // \return View on the specified selection of elements on the subvector.
-// \exception std::invalid_argument Invalid elements specification.
+// \exception std::invalid_argument Invalid element access index.
 //
 // This function returns an expression representing the specified selection of elements on the
 // given subvector.
@@ -1572,12 +1569,10 @@ inline decltype(auto) elements( VT&& sv, T* indices, size_t n, REAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   constexpr bool isChecked( !Contains_v< TypeList<REAs...>, Unchecked > );
-
-   if( isChecked ) {
+   if( isChecked( args... ) ) {
       for( size_t i=0UL; i<n; ++i ) {
          if( sv.size() <= size_t( indices[i] ) ) {
-            BLAZE_THROW_INVALID_ARGUMENT( "Invalid elements specification" );
+            BLAZE_THROW_INVALID_ARGUMENT( "Invalid element access index" );
          }
       }
    }
@@ -1602,7 +1597,7 @@ inline decltype(auto) elements( VT&& sv, T* indices, size_t n, REAs... args )
 // \param n The total number of indices.
 // \param args The optional element arguments.
 // \return View on the specified selection of elements on the subvector.
-// \exception std::invalid_argument Invalid elements specification.
+// \exception std::invalid_argument Invalid element access index.
 //
 // This function returns an expression representing the specified selection of elements on the
 // given subvector.
@@ -1615,12 +1610,10 @@ inline decltype(auto) elements( VT&& sv, P p, size_t n, REAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   constexpr bool isChecked( !Contains_v< TypeList<REAs...>, Unchecked > );
-
-   if( isChecked ) {
+   if( isChecked( args... ) ) {
       for( size_t i=0UL; i<n; ++i ) {
          if( sv.size() <= size_t( p(i) ) ) {
-            BLAZE_THROW_INVALID_ARGUMENT( "Invalid elements specification" );
+            BLAZE_THROW_INVALID_ARGUMENT( "Invalid element access index" );
          }
       }
    }

@@ -1767,6 +1767,7 @@ inline decltype(auto) rows( MT&& r, P p, size_t n, RRAs... args )
 // \param vector The constant matrix/vector multiplication.
 // \param args The runtime element arguments.
 // \return View on the specified elements of the multiplication.
+// \exception std::invalid_argument Invalid element access index.
 //
 // This function returns an expression representing the specified elements of the given
 // matrix/vector multiplication.
@@ -1778,7 +1779,12 @@ inline decltype(auto) elements( const MatVecMultExpr<VT>& vector, REAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return rows<CEAs...>( (~vector).leftOperand(), args... ) * (~vector).rightOperand();
+   try {
+      return rows<CEAs...>( (~vector).leftOperand(), args... ) * (~vector).rightOperand();
+   }
+   catch( ... ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid element access index" );
+   }
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1793,6 +1799,7 @@ inline decltype(auto) elements( const MatVecMultExpr<VT>& vector, REAs... args )
 // \param vector The constant row-wise matrix reduction operation.
 // \param args The runtime element arguments.
 // \return View on the specified elements of the multiplication.
+// \exception std::invalid_argument Invalid element access index.
 //
 // This function returns an expression representing the specified elements of the given
 // row-wise matrix reduction operation.
@@ -1804,7 +1811,12 @@ inline decltype(auto) elements( const MatReduceExpr<VT,rowwise>& vector, REAs...
 {
    BLAZE_FUNCTION_TRACE;
 
-   return reduce<rowwise>( rows<CEAs...>( (~vector).operand(), args... ), (~vector).operation() );
+   try {
+      return reduce<rowwise>( rows<CEAs...>( (~vector).operand(), args... ), (~vector).operation() );
+   }
+   catch( ... ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid element access index" );
+   }
 }
 /*! \endcond */
 //*************************************************************************************************

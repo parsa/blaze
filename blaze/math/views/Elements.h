@@ -87,7 +87,6 @@
 #include <blaze/util/MaybeUnused.h>
 #include <blaze/util/SmallArray.h>
 #include <blaze/util/StaticAssert.h>
-#include <blaze/util/TypeList.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsPointer.h>
 #include <blaze/util/typetraits/RemoveReference.h>
@@ -793,6 +792,7 @@ inline decltype(auto) elements( VT&& vector, const std::pair<T1,T2>& pair, REAs.
 // \param vector The constant vector/vector addition.
 // \param args The runtime element arguments.
 // \return View on the specified selection of elements on the addition.
+// \exception std::invalid_argument Invalid element access index.
 //
 // This function returns an expression representing the specified selection of elements on the
 // given vector/vector addition.
@@ -819,6 +819,7 @@ inline decltype(auto) elements( const VecVecAddExpr<VT>& vector, REAs... args )
 // \param vector The constant vector/vector subtraction.
 // \param args The runtime element arguments.
 // \return View on the specified selection of elements on the subtraction.
+// \exception std::invalid_argument Invalid element access index.
 //
 // This function returns an expression representing the specified selection of elements on the
 // given vector/vector subtraction.
@@ -845,6 +846,7 @@ inline decltype(auto) elements( const VecVecSubExpr<VT>& vector, REAs... args )
 // \param vector The constant vector/vector multiplication.
 // \param args The runtime element arguments.
 // \return View on the specified selection of elements on the multiplication.
+// \exception std::invalid_argument Invalid element access index.
 //
 // This function returns an expression representing the specified selection of elements on the
 // given vector/vector multiplication.
@@ -871,6 +873,7 @@ inline decltype(auto) elements( const VecVecMultExpr<VT>& vector, REAs... args )
 // \param vector The constant vector/vector Kronecker product.
 // \param args Optional arguments.
 // \return View on the specified selection of elements on the Kronecker product.
+// \exception std::invalid_argument Invalid element access index.
 //
 // This function returns an expression representing the specified selection of elements on the
 // given vector/vector Kronecker product.
@@ -915,6 +918,7 @@ inline decltype(auto) elements( const VecVecKronExpr<VT>& vector, REAs... args )
 // \param n The total number of indices.
 // \param args Optional arguments.
 // \return View on the specified selection of elements on the Kronecker product.
+// \exception std::invalid_argument Invalid element access index.
 //
 // This function returns an expression representing the specified selection of elements on the
 // given vector/vector Kronecker product.
@@ -961,6 +965,7 @@ inline decltype(auto) elements( const VecVecKronExpr<VT>& vector, T* indices, si
 // \param n The total number of indices.
 // \param args Optional arguments.
 // \return View on the specified selection of elements on the Kronecker product.
+// \exception std::invalid_argument Invalid element access index.
 //
 // This function returns an expression representing the specified selection of elements on the
 // given vector/vector Kronecker product.
@@ -994,6 +999,7 @@ inline decltype(auto) elements( const VecVecKronExpr<VT>& vector, P p, size_t n,
 // \param vector The constant vector/vector division.
 // \param args The runtime element arguments.
 // \return View on the specified selection of elements on the division.
+// \exception std::invalid_argument Invalid element access index.
 //
 // This function returns an expression representing the specified selection of elements on the
 // given vector/vector division.
@@ -1020,6 +1026,7 @@ inline decltype(auto) elements( const VecVecDivExpr<VT>& vector, REAs... args )
 // \param vector The constant vector/scalar multiplication.
 // \param args The runtime element arguments.
 // \return View on the specified selection of elements on the multiplication.
+// \exception std::invalid_argument Invalid element access index.
 //
 // This function returns an expression representing the specified selection of elements on the
 // given vector/scalar multiplication.
@@ -1045,6 +1052,7 @@ inline decltype(auto) elements( const VecScalarMultExpr<VT>& vector, REAs... arg
 // \param vector The constant vector/scalar division.
 // \param args The runtime element arguments.
 // \return View on the specified selection of elements on the division.
+// \exception std::invalid_argument Invalid element access index.
 //
 // This function returns an expression representing the specified selection of elements on the
 // given vector/scalar division.
@@ -1070,6 +1078,7 @@ inline decltype(auto) elements( const VecScalarDivExpr<VT>& vector, REAs... args
 // \param vector The constant unary vector map operation.
 // \param args The runtime element arguments.
 // \return View on the specified selection of elements on the unary map operation.
+// \exception std::invalid_argument Invalid element access index.
 //
 // This function returns an expression representing the specified selection of elements on the
 // given unary vector map operation.
@@ -1095,6 +1104,7 @@ inline decltype(auto) elements( const VecMapExpr<VT>& vector, REAs... args )
 // \param vector The constant binary vector map operation.
 // \param args The runtime element arguments.
 // \return View on the specified selection of elements on the binary map operation.
+// \exception std::invalid_argument Invalid element access index.
 //
 // This function returns an expression representing the specified selection of elements on the
 // given binary vector map operation.
@@ -1122,6 +1132,7 @@ inline decltype(auto) elements( const VecVecMapExpr<VT>& vector, REAs... args )
 // \param vector The constant vector evaluation operation.
 // \param args The runtime element arguments.
 // \return View on the specified selection of elements on the evaluation operation.
+// \exception std::invalid_argument Invalid element access index.
 //
 // This function returns an expression representing the specified selection of elements on the
 // given vector evaluation operation.
@@ -1147,6 +1158,7 @@ inline decltype(auto) elements( const VecEvalExpr<VT>& vector, REAs... args )
 // \param vector The constant vector serialization operation.
 // \param args The runtime element arguments.
 // \return View on the specified selection of elements on the serialization operation.
+// \exception std::invalid_argument Invalid element access index.
 //
 // This function returns an expression representing the specified selection of elements on the
 // given vector serialization operation.
@@ -1172,6 +1184,7 @@ inline decltype(auto) elements( const VecSerialExpr<VT>& vector, REAs... args )
 // \param vector The constant vector no-alias operation.
 // \param args The runtime element arguments.
 // \return View on the specified selection of elements on the no-alias operation.
+// \exception std::invalid_argument Invalid element access index.
 //
 // This function returns an expression representing the specified selection of elements on the
 // given vector no-alias operation.
@@ -1197,6 +1210,7 @@ inline decltype(auto) elements( const VecNoAliasExpr<VT>& vector, REAs... args )
 // \param vector The constant vector no-SIMD operation.
 // \param args The runtime element arguments.
 // \return View on the specified selection of elements on the no-SIMD operation.
+// \exception std::invalid_argument Invalid element access index.
 //
 // This function returns an expression representing the specified selection of elements on the
 // given vector no-SIMD operation.
@@ -1222,6 +1236,7 @@ inline decltype(auto) elements( const VecNoSIMDExpr<VT>& vector, REAs... args )
 // \param vector The constant vector transpose operation.
 // \param args The runtime element arguments.
 // \return View on the specified selection of elements on the transpose operation.
+// \exception std::invalid_argument Invalid element access index.
 //
 // This function returns an expression representing the specified selection of elements on the
 // given vector transpose operation.
@@ -1247,7 +1262,7 @@ inline decltype(auto) elements( const VecTransExpr<VT>& vector, REAs... args )
 // \param vector The given vector repeat operation.
 // \param args The optional element arguments.
 // \return View on the specified selection of elements on the vector repeat operation.
-// \exception std::invalid_argument Invalid elements specification.
+// \exception std::invalid_argument Invalid element access index.
 //
 // This function returns an expression representing the specified selection of elements on the
 // given vector repeat operation.
@@ -1261,9 +1276,7 @@ inline decltype(auto) elements( const VecRepeatExpr<VT,CRAs...>& vector, REAs...
 {
    BLAZE_FUNCTION_TRACE;
 
-   constexpr bool isChecked( !Contains_v< TypeList<REAs...>, Unchecked > );
-
-   if( isChecked ) {
+   if( isChecked( args... ) ) {
       static constexpr size_t indices[] = { I, Is... };
       for( size_t i=0UL; i<sizeof...(Is)+1UL; ++i ) {
          if( (~vector).size() <= indices[i] ) {
@@ -1277,7 +1290,7 @@ inline decltype(auto) elements( const VecRepeatExpr<VT,CRAs...>& vector, REAs...
       return indices[i] % size;
    };
 
-   return elements( (~vector).operand(), std::move(lambda), sizeof...(Is)+1UL, args... );
+   return elements( (~vector).operand(), std::move(lambda), sizeof...(Is)+1UL, unchecked );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1293,7 +1306,7 @@ inline decltype(auto) elements( const VecRepeatExpr<VT,CRAs...>& vector, REAs...
 // \param n The total number of indices.
 // \param args The optional element arguments.
 // \return View on the specified selection of elements on the vector repeat operation.
-// \exception std::invalid_argument Invalid elements specification.
+// \exception std::invalid_argument Invalid element access index.
 //
 // This function returns an expression representing the specified selection of elements on the
 // given vector repeat operation.
@@ -1307,9 +1320,7 @@ inline decltype(auto)
 {
    BLAZE_FUNCTION_TRACE;
 
-   constexpr bool isChecked( !Contains_v< TypeList<REAs...>, Unchecked > );
-
-   if( isChecked ) {
+   if( isChecked( args... ) ) {
       for( size_t i=0UL; i<n; ++i ) {
          if( (~vector).size() <= size_t( indices[i] ) ) {
             BLAZE_THROW_INVALID_ARGUMENT( "Invalid element access index" );
@@ -1323,7 +1334,7 @@ inline decltype(auto)
       index = index % (~vector).operand().size();
    }
 
-   return elements( (~vector).operand(), newIndices, args... );
+   return elements( (~vector).operand(), newIndices, unchecked );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1339,7 +1350,7 @@ inline decltype(auto)
 // \param n The total number of indices.
 // \param args The optional element arguments.
 // \return View on the specified selection of elements on the vector repeat operation.
-// \exception std::invalid_argument Invalid elements specification.
+// \exception std::invalid_argument Invalid element access index.
 //
 // This function returns an expression representing the specified selection of elements on the
 // given vector repeat operation.
@@ -1353,9 +1364,7 @@ inline decltype(auto)
 {
    BLAZE_FUNCTION_TRACE;
 
-   constexpr bool isChecked( !Contains_v< TypeList<REAs...>, Unchecked > );
-
-   if( isChecked ) {
+   if( isChecked( args... ) ) {
       for( size_t i=0UL; i<n; ++i ) {
          if( (~vector).size() <= size_t( p(i) ) ) {
             BLAZE_THROW_INVALID_ARGUMENT( "Invalid element access index" );
@@ -1367,7 +1376,7 @@ inline decltype(auto)
       return p(i) % size;
    };
 
-   return elements( (~vector).operand(), std::move(lambda), n, args... );
+   return elements( (~vector).operand(), std::move(lambda), n, unchecked );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1432,9 +1441,7 @@ inline decltype(auto) elements( VT&& e, REAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   constexpr bool isChecked( !Contains_v< TypeList<REAs...>, Unchecked > );
-
-   if( isChecked ) {
+   if( isChecked( args... ) ) {
       static constexpr size_t indices[] = { I, Is... };
       for( size_t i=0UL; i<sizeof...(Is)+1UL; ++i ) {
          if( e.size() <= indices[i] ) {
@@ -1443,7 +1450,7 @@ inline decltype(auto) elements( VT&& e, REAs... args )
       }
    }
 
-   return elements( e.operand(), { e.idx(I), e.idx(Is)... }, args... );
+   return elements( e.operand(), { e.idx(I), e.idx(Is)... }, unchecked );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1472,9 +1479,7 @@ inline decltype(auto) elements( VT&& e, T* indices, size_t n, REAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   constexpr bool isChecked( !Contains_v< TypeList<REAs...>, Unchecked > );
-
-   if( isChecked ) {
+   if( isChecked( args... ) ) {
       for( size_t i=0UL; i<n; ++i ) {
          if( e.size() <= size_t( indices[i] ) ) {
             BLAZE_THROW_INVALID_ARGUMENT( "Invalid element access index" );
@@ -1489,7 +1494,7 @@ inline decltype(auto) elements( VT&& e, T* indices, size_t n, REAs... args )
       newIndices.pushBack( e.idx( indices[i] ) );
    }
 
-   return elements( e.operand(), newIndices.data(), newIndices.size(), args... );
+   return elements( e.operand(), newIndices.data(), newIndices.size(), unchecked );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1518,9 +1523,7 @@ inline decltype(auto) elements( VT&& e, P p, size_t n, REAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   constexpr bool isChecked( !Contains_v< TypeList<REAs...>, Unchecked > );
-
-   if( isChecked ) {
+   if( isChecked( args... ) ) {
       for( size_t i=0UL; i<n; ++i ) {
          if( e.size() <= size_t( p(i) ) ) {
             BLAZE_THROW_INVALID_ARGUMENT( "Invalid element access index" );
@@ -1535,7 +1538,7 @@ inline decltype(auto) elements( VT&& e, P p, size_t n, REAs... args )
       newIndices.pushBack( e.idx( p(i) ) );
    }
 
-   return elements( e.operand(), newIndices.data(), newIndices.size(), args... );
+   return elements( e.operand(), newIndices.data(), newIndices.size(), unchecked );
 }
 /*! \endcond */
 //*************************************************************************************************

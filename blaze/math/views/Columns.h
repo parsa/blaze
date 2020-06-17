@@ -1776,6 +1776,7 @@ inline decltype(auto) columns( MT&& c, P p, size_t n, RCAs... args )
 // \param vector The constant vector/matrix multiplication.
 // \param args The runtime element arguments.
 // \return View on the specified elements of the multiplication.
+// \exception std::invalid_argument Invalid element access index.
 //
 // This function returns an expression representing the specified elements of the given
 // vector/matrix multiplication.
@@ -1787,7 +1788,12 @@ inline decltype(auto) elements( const TVecMatMultExpr<VT>& vector, REAs... args 
 {
    BLAZE_FUNCTION_TRACE;
 
-   return (~vector).leftOperand() * columns<CEAs...>( (~vector).rightOperand(), args... );
+   try {
+      return (~vector).leftOperand() * columns<CEAs...>( (~vector).rightOperand(), args... );
+   }
+   catch( ... ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid element access index" );
+   }
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1802,6 +1808,7 @@ inline decltype(auto) elements( const TVecMatMultExpr<VT>& vector, REAs... args 
 // \param vector The constant column-wise matrix reduction operation.
 // \param args The runtime element arguments.
 // \return View on the specified elements of the multiplication.
+// \exception std::invalid_argument Invalid element access index.
 //
 // This function returns an expression representing the specified elements of the given
 // column-wise matrix reduction operation.
@@ -1813,7 +1820,12 @@ inline decltype(auto) elements( const MatReduceExpr<VT,columnwise>& vector, REAs
 {
    BLAZE_FUNCTION_TRACE;
 
-   return reduce<columnwise>( columns<CEAs...>( (~vector).operand(), args... ), (~vector).operation() );
+   try {
+      return reduce<columnwise>( columns<CEAs...>( (~vector).operand(), args... ), (~vector).operation() );
+   }
+   catch( ... ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid element access index" );
+   }
 }
 /*! \endcond */
 //*************************************************************************************************

@@ -74,7 +74,6 @@
 #include <blaze/util/Assert.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/mpl/If.h>
-#include <blaze/util/TypeList.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsConst.h>
 #include <blaze/util/typetraits/IsIntegral.h>
@@ -619,7 +618,7 @@ inline Elements<VT,TF,false,CEAs...>::Elements( VT& vector, REAs... args )
    : DataType( args... )  // Base class initialization
    , vector_ ( vector  )  // The vector containing the elements
 {
-   if( !Contains_v< TypeList<REAs...>, Unchecked > ) {
+   if( isChecked( args... ) ) {
       for( size_t i=0UL; i<size(); ++i ) {
          if( vector_.size() <= idx(i) ) {
             BLAZE_THROW_INVALID_ARGUMENT( "Invalid element access index" );
