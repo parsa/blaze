@@ -236,6 +236,7 @@ class OperationTest
    //@{
    template< typename LT, typename RT > void checkResults();
    template< typename LT, typename RT > void checkTransposeResults();
+   void checkExceptionMessage( const std::exception& ex, const std::string& message );
    //@}
    //**********************************************************************************************
 
@@ -8408,6 +8409,339 @@ void OperationTest<MT1,MT2>::testSubmatrixOperation( blaze::TrueType )
 
          checkResults<OMT1,OMT2>();
       }
+
+
+      //=====================================================================================
+      // Failure cases
+      //=====================================================================================
+
+      // Out-of-bounds submatrix construction (invalid number of rows)
+      {
+         test_  = "Out-of-bounds submatrix construction (invalid number of rows)";
+         error_ = "Setup of out-of-bounds submatrix succeeded";
+
+         try {
+            auto sm = submatrix( lhs_ + rhs_, 1UL, 0UL, lhs_.rows(), lhs_.columns() );
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: " << error_ << "\n"
+                << " Details:\n"
+                << "   Random seed = " << blaze::getSeed() << "\n"
+                << "   Left-hand side dense matrix type:\n"
+                << "     " << typeid( MT1 ).name() << "\n"
+                << "   Right-hand side sparse matrix type:\n"
+                << "     " << typeid( MT2 ).name() << "\n"
+                << "   Result:\n" << sm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ex ) {
+            checkExceptionMessage( ex, "Invalid submatrix specification" );
+         }
+
+         try {
+            auto sm = submatrix( lhs_ + orhs_, 1UL, 0UL, lhs_.rows(), lhs_.columns() );
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: " << error_ << "\n"
+                << " Details:\n"
+                << "   Random seed = " << blaze::getSeed() << "\n"
+                << "   Left-hand side dense matrix type:\n"
+                << "     " << typeid( MT1 ).name() << "\n"
+                << "   Right-hand side sparse matrix type:\n"
+                << "     " << typeid( OMT2 ).name() << "\n"
+                << "   Result:\n" << sm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ex ) {
+            checkExceptionMessage( ex, "Invalid submatrix specification" );
+         }
+
+         try {
+            auto sm = submatrix( olhs_ + rhs_, 1UL, 0UL, olhs_.rows(), olhs_.columns() );
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: " << error_ << "\n"
+                << " Details:\n"
+                << "   Random seed = " << blaze::getSeed() << "\n"
+                << "   Left-hand side dense matrix type:\n"
+                << "     " << typeid( OMT1 ).name() << "\n"
+                << "   Right-hand side sparse matrix type:\n"
+                << "     " << typeid( MT2 ).name() << "\n"
+                << "   Result:\n" << sm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ex ) {
+            checkExceptionMessage( ex, "Invalid submatrix specification" );
+         }
+
+         try {
+            auto sm = submatrix( olhs_ + orhs_, 1UL, 0UL, olhs_.rows(), olhs_.columns() );
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: " << error_ << "\n"
+                << " Details:\n"
+                << "   Random seed = " << blaze::getSeed() << "\n"
+                << "   Left-hand side dense matrix type:\n"
+                << "     " << typeid( OMT1 ).name() << "\n"
+                << "   Right-hand side sparse matrix type:\n"
+                << "     " << typeid( OMT2 ).name() << "\n"
+                << "   Result:\n" << sm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ex ) {
+            checkExceptionMessage( ex, "Invalid submatrix specification" );
+         }
+      }
+
+      // Out-of-bounds access (invalid number of columns)
+      {
+         test_  = "Out-of-bounds submatrix construction (invalid number of columns)";
+         error_ = "Setup of out-of-bounds submatrix succeeded";
+
+         try {
+            auto sm = submatrix( lhs_ + rhs_, 0UL, 1UL, lhs_.rows(), lhs_.columns() );
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: " << error_ << "\n"
+                << " Details:\n"
+                << "   Random seed = " << blaze::getSeed() << "\n"
+                << "   Left-hand side dense matrix type:\n"
+                << "     " << typeid( MT1 ).name() << "\n"
+                << "   Right-hand side sparse matrix type:\n"
+                << "     " << typeid( MT2 ).name() << "\n"
+                << "   Result:\n" << sm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ex ) {
+            checkExceptionMessage( ex, "Invalid submatrix specification" );
+         }
+
+         try {
+            auto sm = submatrix( lhs_ + orhs_, 0UL, 1UL, lhs_.rows(), lhs_.columns() );
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: " << error_ << "\n"
+                << " Details:\n"
+                << "   Random seed = " << blaze::getSeed() << "\n"
+                << "   Left-hand side dense matrix type:\n"
+                << "     " << typeid( MT1 ).name() << "\n"
+                << "   Right-hand side sparse matrix type:\n"
+                << "     " << typeid( OMT2 ).name() << "\n"
+                << "   Result:\n" << sm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ex ) {
+            checkExceptionMessage( ex, "Invalid submatrix specification" );
+         }
+
+         try {
+            auto sm = submatrix( olhs_ + rhs_, 0UL, 1UL, olhs_.rows(), olhs_.columns() );
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: " << error_ << "\n"
+                << " Details:\n"
+                << "   Random seed = " << blaze::getSeed() << "\n"
+                << "   Left-hand side dense matrix type:\n"
+                << "     " << typeid( OMT1 ).name() << "\n"
+                << "   Right-hand side sparse matrix type:\n"
+                << "     " << typeid( MT2 ).name() << "\n"
+                << "   Result:\n" << sm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ex ) {
+            checkExceptionMessage( ex, "Invalid submatrix specification" );
+         }
+
+         try {
+            auto sm = submatrix( olhs_ + orhs_, 0UL, 1UL, olhs_.rows(), olhs_.columns() );
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: " << error_ << "\n"
+                << " Details:\n"
+                << "   Random seed = " << blaze::getSeed() << "\n"
+                << "   Left-hand side dense matrix type:\n"
+                << "     " << typeid( OMT1 ).name() << "\n"
+                << "   Right-hand side sparse matrix type:\n"
+                << "     " << typeid( OMT2 ).name() << "\n"
+                << "   Result:\n" << sm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ex ) {
+            checkExceptionMessage( ex, "Invalid submatrix specification" );
+         }
+      }
+
+      // Out-of-bounds access (invalid row index)
+      {
+         test_  = "Out-of-bounds submatrix construction (invalid row index)";
+         error_ = "Setup of out-of-bounds submatrix succeeded";
+
+         try {
+            auto sm = submatrix( lhs_ + rhs_, lhs_.rows(), 0UL, 1UL, lhs_.columns() );
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: " << error_ << "\n"
+                << " Details:\n"
+                << "   Random seed = " << blaze::getSeed() << "\n"
+                << "   Left-hand side dense matrix type:\n"
+                << "     " << typeid( MT1 ).name() << "\n"
+                << "   Right-hand side sparse matrix type:\n"
+                << "     " << typeid( MT2 ).name() << "\n"
+                << "   Result:\n" << sm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ex ) {
+            checkExceptionMessage( ex, "Invalid submatrix specification" );
+         }
+
+         try {
+            auto sm = submatrix( lhs_ + orhs_, lhs_.rows(), 0UL, 1UL, lhs_.columns() );
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: " << error_ << "\n"
+                << " Details:\n"
+                << "   Random seed = " << blaze::getSeed() << "\n"
+                << "   Left-hand side dense matrix type:\n"
+                << "     " << typeid( MT1 ).name() << "\n"
+                << "   Right-hand side sparse matrix type:\n"
+                << "     " << typeid( OMT2 ).name() << "\n"
+                << "   Result:\n" << sm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ex ) {
+            checkExceptionMessage( ex, "Invalid submatrix specification" );
+         }
+
+         try {
+            auto sm = submatrix( olhs_ + rhs_, olhs_.rows(), 0UL, 1UL, olhs_.columns() );
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: " << error_ << "\n"
+                << " Details:\n"
+                << "   Random seed = " << blaze::getSeed() << "\n"
+                << "   Left-hand side dense matrix type:\n"
+                << "     " << typeid( OMT1 ).name() << "\n"
+                << "   Right-hand side sparse matrix type:\n"
+                << "     " << typeid( MT2 ).name() << "\n"
+                << "   Result:\n" << sm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ex ) {
+            checkExceptionMessage( ex, "Invalid submatrix specification" );
+         }
+
+         try {
+            auto sm = submatrix( olhs_ + orhs_, olhs_.rows(), 0UL, 1UL, olhs_.columns() );
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: " << error_ << "\n"
+                << " Details:\n"
+                << "   Random seed = " << blaze::getSeed() << "\n"
+                << "   Left-hand side dense matrix type:\n"
+                << "     " << typeid( OMT1 ).name() << "\n"
+                << "   Right-hand side sparse matrix type:\n"
+                << "     " << typeid( OMT2 ).name() << "\n"
+                << "   Result:\n" << sm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ex ) {
+            checkExceptionMessage( ex, "Invalid submatrix specification" );
+         }
+      }
+
+      // Out-of-bounds access (invalid column index)
+      {
+         test_  = "Out-of-bounds submatrix construction (invalid column index)";
+         error_ = "Setup of out-of-bounds submatrix succeeded";
+
+         try {
+            auto sm = submatrix( lhs_ + rhs_, 0UL, lhs_.columns(), lhs_.rows(), 1UL );
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: " << error_ << "\n"
+                << " Details:\n"
+                << "   Random seed = " << blaze::getSeed() << "\n"
+                << "   Left-hand side dense matrix type:\n"
+                << "     " << typeid( MT1 ).name() << "\n"
+                << "   Right-hand side sparse matrix type:\n"
+                << "     " << typeid( MT2 ).name() << "\n"
+                << "   Result:\n" << sm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ex ) {
+            checkExceptionMessage( ex, "Invalid submatrix specification" );
+         }
+
+         try {
+            auto sm = submatrix( lhs_ + orhs_, 0UL, lhs_.columns(), lhs_.rows(), 1UL );
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: " << error_ << "\n"
+                << " Details:\n"
+                << "   Random seed = " << blaze::getSeed() << "\n"
+                << "   Left-hand side dense matrix type:\n"
+                << "     " << typeid( MT1 ).name() << "\n"
+                << "   Right-hand side sparse matrix type:\n"
+                << "     " << typeid( OMT2 ).name() << "\n"
+                << "   Result:\n" << sm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ex ) {
+            checkExceptionMessage( ex, "Invalid submatrix specification" );
+         }
+
+         try {
+            auto sm = submatrix( olhs_ + rhs_, 0UL, olhs_.columns(), olhs_.rows(), 1UL );
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: " << error_ << "\n"
+                << " Details:\n"
+                << "   Random seed = " << blaze::getSeed() << "\n"
+                << "   Left-hand side dense matrix type:\n"
+                << "     " << typeid( OMT1 ).name() << "\n"
+                << "   Right-hand side sparse matrix type:\n"
+                << "     " << typeid( MT2 ).name() << "\n"
+                << "   Result:\n" << sm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ex ) {
+            checkExceptionMessage( ex, "Invalid submatrix specification" );
+         }
+
+         try {
+            auto sm = submatrix( olhs_ + orhs_, 0UL, olhs_.columns(), olhs_.rows(), 1UL );
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: " << error_ << "\n"
+                << " Details:\n"
+                << "   Random seed = " << blaze::getSeed() << "\n"
+                << "   Left-hand side dense matrix type:\n"
+                << "     " << typeid( OMT1 ).name() << "\n"
+                << "   Right-hand side sparse matrix type:\n"
+                << "     " << typeid( OMT2 ).name() << "\n"
+                << "   Result:\n" << sm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ex ) {
+            checkExceptionMessage( ex, "Invalid submatrix specification" );
+         }
+      }
    }
 #endif
 }
@@ -12257,6 +12591,35 @@ void OperationTest<MT1,MT2>::checkTransposeResults()
           << "   Transpose result:\n" << tsres_ << "\n"
           << "   Transpose result with opposite storage order:\n" << tosres_ << "\n"
           << "   Expected result:\n" << refres_ << "\n";
+      throw std::runtime_error( oss.str() );
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Checking and comparing the error message of the given exception.
+//
+// \param ex The exception to be checked.
+// \param message The expected error message.
+// \return void
+// \exception std::runtime_error Wrong error message.
+//
+// This function is called to check the error message of the given exception. In case the error
+// message does not correspond to the expected message, a \a std::runtime_error  exception is
+// thrown.
+*/
+template< typename MT1    // Type of the left-hand side dense matrix
+        , typename MT2 >  // Type of the right-hand side sparse matrix
+void OperationTest<MT1,MT2>::checkExceptionMessage( const std::exception& ex, const std::string& message )
+{
+   if( ex.what() != message ) {
+      std::ostringstream oss;
+      oss << " Test: Submatrix construction\n"
+          << " Error: Wrong error message\n"
+          << " Details:\n"
+          << "   Error message: \"" << ex.what() << "\"\n"
+          << "   Expected error message: \"Invalid submatrix specification\"\n";
       throw std::runtime_error( oss.str() );
    }
 }

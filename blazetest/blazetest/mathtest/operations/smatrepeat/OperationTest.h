@@ -204,6 +204,7 @@ class OperationTest
    //@{
    template< typename T > void checkResults();
    template< typename T > void checkTransposeResults();
+   void checkExceptionMessage( const std::exception& ex, const std::string& message );
    //@}
    //**********************************************************************************************
 
@@ -4473,10 +4474,10 @@ void OperationTest<MT,R0,R1>::testSubmatrixOperation()
 
          try {
             initResults();
-            for( size_t row=0UL, m=0UL; row<mat_.rows(); row+=m ) {
-               m = blaze::rand<size_t>( 1UL, mat_.rows() - row );
-               for( size_t column=0UL, n=0UL; column<mat_.columns(); column+=n ) {
-                  n = blaze::rand<size_t>( 1UL, mat_.columns() - column );
+            for( size_t row=0UL, m=0UL; row<mat_.rows()*R0; row+=m ) {
+               m = blaze::rand<size_t>( 1UL, mat_.rows()*R0 - row );
+               for( size_t column=0UL, n=0UL; column<mat_.columns()*R1; column+=n ) {
+                  n = blaze::rand<size_t>( 1UL, mat_.columns()*R1 - column );
                   submatrix( dres_  , row, column, m, n ) = submatrix( repeat( mat_   , R0, R1 ), row, column, m, n );
                   submatrix( odres_ , row, column, m, n ) = submatrix( repeat( mat_   , R0, R1 ), row, column, m, n );
                   submatrix( sres_  , row, column, m, n ) = submatrix( repeat( mat_   , R0, R1 ), row, column, m, n );
@@ -4492,10 +4493,11 @@ void OperationTest<MT,R0,R1>::testSubmatrixOperation()
          checkResults<MT>();
 
          try {
-            initResults();for( size_t row=0UL, m=0UL; row<mat_.rows(); row+=m ) {
-               m = blaze::rand<size_t>( 1UL, mat_.rows() - row );
-               for( size_t column=0UL, n=0UL; column<mat_.columns(); column+=n ) {
-                  n = blaze::rand<size_t>( 1UL, mat_.columns() - column );
+            initResults();
+            for( size_t row=0UL, m=0UL; row<mat_.rows()*R0; row+=m ) {
+               m = blaze::rand<size_t>( 1UL, mat_.rows()*R0 - row );
+               for( size_t column=0UL, n=0UL; column<mat_.columns()*R1; column+=n ) {
+                  n = blaze::rand<size_t>( 1UL, mat_.columns()*R1 - column );
                   submatrix( dres_  , row, column, m, n ) = submatrix( repeat( omat_  , R0, R1 ), row, column, m, n );
                   submatrix( odres_ , row, column, m, n ) = submatrix( repeat( omat_  , R0, R1 ), row, column, m, n );
                   submatrix( sres_  , row, column, m, n ) = submatrix( repeat( omat_  , R0, R1 ), row, column, m, n );
@@ -4518,10 +4520,10 @@ void OperationTest<MT,R0,R1>::testSubmatrixOperation()
 
          try {
             initResults();
-            for( size_t row=0UL, m=0UL; row<mat_.rows(); row+=m ) {
-               m = blaze::rand<size_t>( 1UL, mat_.rows() - row );
-               for( size_t column=0UL, n=0UL; column<mat_.columns(); column+=n ) {
-                  n = blaze::rand<size_t>( 1UL, mat_.columns() - column );
+            for( size_t row=0UL, m=0UL; row<mat_.rows()*R0; row+=m ) {
+               m = blaze::rand<size_t>( 1UL, mat_.rows()*R0 - row );
+               for( size_t column=0UL, n=0UL; column<mat_.columns()*R1; column+=n ) {
+                  n = blaze::rand<size_t>( 1UL, mat_.columns()*R1 - column );
                   submatrix( dres_  , row, column, m, n ) = submatrix( repeat<R0,R1>( mat_    ), row, column, m, n );
                   submatrix( odres_ , row, column, m, n ) = submatrix( repeat<R0,R1>( mat_    ), row, column, m, n );
                   submatrix( sres_  , row, column, m, n ) = submatrix( repeat<R0,R1>( mat_    ), row, column, m, n );
@@ -4537,10 +4539,11 @@ void OperationTest<MT,R0,R1>::testSubmatrixOperation()
          checkResults<MT>();
 
          try {
-            initResults();for( size_t row=0UL, m=0UL; row<mat_.rows(); row+=m ) {
-               m = blaze::rand<size_t>( 1UL, mat_.rows() - row );
-               for( size_t column=0UL, n=0UL; column<mat_.columns(); column+=n ) {
-                  n = blaze::rand<size_t>( 1UL, mat_.columns() - column );
+            initResults();
+            for( size_t row=0UL, m=0UL; row<mat_.rows()*R0; row+=m ) {
+               m = blaze::rand<size_t>( 1UL, mat_.rows()*R0 - row );
+               for( size_t column=0UL, n=0UL; column<mat_.columns()*R1; column+=n ) {
+                  n = blaze::rand<size_t>( 1UL, mat_.columns()*R1 - column );
                   submatrix( dres_  , row, column, m, n ) = submatrix( repeat<R0,R1>( omat_   ), row, column, m, n );
                   submatrix( odres_ , row, column, m, n ) = submatrix( repeat<R0,R1>( omat_   ), row, column, m, n );
                   submatrix( sres_  , row, column, m, n ) = submatrix( repeat<R0,R1>( omat_   ), row, column, m, n );
@@ -4563,10 +4566,10 @@ void OperationTest<MT,R0,R1>::testSubmatrixOperation()
 
          try {
             initResults();
-            for( size_t row=0UL, m=0UL; row<mat_.rows(); row+=m ) {
-               m = blaze::rand<size_t>( 1UL, mat_.rows() - row );
-               for( size_t column=0UL, n=0UL; column<mat_.columns(); column+=n ) {
-                  n = blaze::rand<size_t>( 1UL, mat_.columns() - column );
+            for( size_t row=0UL, m=0UL; row<mat_.rows()*R0; row+=m ) {
+               m = blaze::rand<size_t>( 1UL, mat_.rows()*R0 - row );
+               for( size_t column=0UL, n=0UL; column<mat_.columns()*R1; column+=n ) {
+                  n = blaze::rand<size_t>( 1UL, mat_.columns()*R1 - column );
                   submatrix( dres_  , row, column, m, n ) = submatrix( repeat( eval( mat_ )   , R0, R1 ), row, column, m, n );
                   submatrix( odres_ , row, column, m, n ) = submatrix( repeat( eval( mat_ )   , R0, R1 ), row, column, m, n );
                   submatrix( sres_  , row, column, m, n ) = submatrix( repeat( eval( mat_ )   , R0, R1 ), row, column, m, n );
@@ -4582,10 +4585,11 @@ void OperationTest<MT,R0,R1>::testSubmatrixOperation()
          checkResults<MT>();
 
          try {
-            initResults();for( size_t row=0UL, m=0UL; row<mat_.rows(); row+=m ) {
-               m = blaze::rand<size_t>( 1UL, mat_.rows() - row );
-               for( size_t column=0UL, n=0UL; column<mat_.columns(); column+=n ) {
-                  n = blaze::rand<size_t>( 1UL, mat_.columns() - column );
+            initResults();
+            for( size_t row=0UL, m=0UL; row<mat_.rows()*R0; row+=m ) {
+               m = blaze::rand<size_t>( 1UL, mat_.rows()*R0 - row );
+               for( size_t column=0UL, n=0UL; column<mat_.columns()*R1; column+=n ) {
+                  n = blaze::rand<size_t>( 1UL, mat_.columns()*R1 - column );
                   submatrix( dres_  , row, column, m, n ) = submatrix( repeat( eval( omat_ )  , R0, R1 ), row, column, m, n );
                   submatrix( odres_ , row, column, m, n ) = submatrix( repeat( eval( omat_ )  , R0, R1 ), row, column, m, n );
                   submatrix( sres_  , row, column, m, n ) = submatrix( repeat( eval( omat_ )  , R0, R1 ), row, column, m, n );
@@ -4608,10 +4612,10 @@ void OperationTest<MT,R0,R1>::testSubmatrixOperation()
 
          try {
             initResults();
-            for( size_t row=0UL, m=0UL; row<mat_.rows(); row+=m ) {
-               m = blaze::rand<size_t>( 1UL, mat_.rows() - row );
-               for( size_t column=0UL, n=0UL; column<mat_.columns(); column+=n ) {
-                  n = blaze::rand<size_t>( 1UL, mat_.columns() - column );
+            for( size_t row=0UL, m=0UL; row<mat_.rows()*R0; row+=m ) {
+               m = blaze::rand<size_t>( 1UL, mat_.rows()*R0 - row );
+               for( size_t column=0UL, n=0UL; column<mat_.columns()*R1; column+=n ) {
+                  n = blaze::rand<size_t>( 1UL, mat_.columns()*R1 - column );
                   submatrix( dres_  , row, column, m, n ) = submatrix( repeat<R0,R1>( eval( mat_ )    ), row, column, m, n );
                   submatrix( odres_ , row, column, m, n ) = submatrix( repeat<R0,R1>( eval( mat_ )    ), row, column, m, n );
                   submatrix( sres_  , row, column, m, n ) = submatrix( repeat<R0,R1>( eval( mat_ )    ), row, column, m, n );
@@ -4627,10 +4631,11 @@ void OperationTest<MT,R0,R1>::testSubmatrixOperation()
          checkResults<MT>();
 
          try {
-            initResults();for( size_t row=0UL, m=0UL; row<mat_.rows(); row+=m ) {
-               m = blaze::rand<size_t>( 1UL, mat_.rows() - row );
-               for( size_t column=0UL, n=0UL; column<mat_.columns(); column+=n ) {
-                  n = blaze::rand<size_t>( 1UL, mat_.columns() - column );
+            initResults();
+            for( size_t row=0UL, m=0UL; row<mat_.rows()*R0; row+=m ) {
+               m = blaze::rand<size_t>( 1UL, mat_.rows()*R0 - row );
+               for( size_t column=0UL, n=0UL; column<mat_.columns()*R1; column+=n ) {
+                  n = blaze::rand<size_t>( 1UL, mat_.columns()*R1 - column );
                   submatrix( dres_  , row, column, m, n ) = submatrix( repeat<R0,R1>( eval( omat_ )   ), row, column, m, n );
                   submatrix( odres_ , row, column, m, n ) = submatrix( repeat<R0,R1>( eval( omat_ )   ), row, column, m, n );
                   submatrix( sres_  , row, column, m, n ) = submatrix( repeat<R0,R1>( eval( omat_ )   ), row, column, m, n );
@@ -4658,10 +4663,10 @@ void OperationTest<MT,R0,R1>::testSubmatrixOperation()
 
          try {
             initResults();
-            for( size_t row=0UL, m=0UL; row<mat_.rows(); row+=m ) {
-               m = blaze::rand<size_t>( 1UL, mat_.rows() - row );
-               for( size_t column=0UL, n=0UL; column<mat_.columns(); column+=n ) {
-                  n = blaze::rand<size_t>( 1UL, mat_.columns() - column );
+            for( size_t row=0UL, m=0UL; row<mat_.rows()*R0; row+=m ) {
+               m = blaze::rand<size_t>( 1UL, mat_.rows()*R0 - row );
+               for( size_t column=0UL, n=0UL; column<mat_.columns()*R1; column+=n ) {
+                  n = blaze::rand<size_t>( 1UL, mat_.columns()*R1 - column );
                   submatrix( dres_  , row, column, m, n ) += submatrix( repeat( mat_   , R0, R1 ), row, column, m, n );
                   submatrix( odres_ , row, column, m, n ) += submatrix( repeat( mat_   , R0, R1 ), row, column, m, n );
                   submatrix( sres_  , row, column, m, n ) += submatrix( repeat( mat_   , R0, R1 ), row, column, m, n );
@@ -4677,10 +4682,11 @@ void OperationTest<MT,R0,R1>::testSubmatrixOperation()
          checkResults<MT>();
 
          try {
-            initResults();for( size_t row=0UL, m=0UL; row<mat_.rows(); row+=m ) {
-               m = blaze::rand<size_t>( 1UL, mat_.rows() - row );
-               for( size_t column=0UL, n=0UL; column<mat_.columns(); column+=n ) {
-                  n = blaze::rand<size_t>( 1UL, mat_.columns() - column );
+            initResults();
+            for( size_t row=0UL, m=0UL; row<mat_.rows()*R0; row+=m ) {
+               m = blaze::rand<size_t>( 1UL, mat_.rows()*R0 - row );
+               for( size_t column=0UL, n=0UL; column<mat_.columns()*R1; column+=n ) {
+                  n = blaze::rand<size_t>( 1UL, mat_.columns()*R1 - column );
                   submatrix( dres_  , row, column, m, n ) += submatrix( repeat( omat_  , R0, R1 ), row, column, m, n );
                   submatrix( odres_ , row, column, m, n ) += submatrix( repeat( omat_  , R0, R1 ), row, column, m, n );
                   submatrix( sres_  , row, column, m, n ) += submatrix( repeat( omat_  , R0, R1 ), row, column, m, n );
@@ -4703,10 +4709,10 @@ void OperationTest<MT,R0,R1>::testSubmatrixOperation()
 
          try {
             initResults();
-            for( size_t row=0UL, m=0UL; row<mat_.rows(); row+=m ) {
-               m = blaze::rand<size_t>( 1UL, mat_.rows() - row );
-               for( size_t column=0UL, n=0UL; column<mat_.columns(); column+=n ) {
-                  n = blaze::rand<size_t>( 1UL, mat_.columns() - column );
+            for( size_t row=0UL, m=0UL; row<mat_.rows()*R0; row+=m ) {
+               m = blaze::rand<size_t>( 1UL, mat_.rows()*R0 - row );
+               for( size_t column=0UL, n=0UL; column<mat_.columns()*R1; column+=n ) {
+                  n = blaze::rand<size_t>( 1UL, mat_.columns()*R1 - column );
                   submatrix( dres_  , row, column, m, n ) += submatrix( repeat<R0,R1>( mat_    ), row, column, m, n );
                   submatrix( odres_ , row, column, m, n ) += submatrix( repeat<R0,R1>( mat_    ), row, column, m, n );
                   submatrix( sres_  , row, column, m, n ) += submatrix( repeat<R0,R1>( mat_    ), row, column, m, n );
@@ -4722,10 +4728,11 @@ void OperationTest<MT,R0,R1>::testSubmatrixOperation()
          checkResults<MT>();
 
          try {
-            initResults();for( size_t row=0UL, m=0UL; row<mat_.rows(); row+=m ) {
-               m = blaze::rand<size_t>( 1UL, mat_.rows() - row );
-               for( size_t column=0UL, n=0UL; column<mat_.columns(); column+=n ) {
-                  n = blaze::rand<size_t>( 1UL, mat_.columns() - column );
+            initResults();
+            for( size_t row=0UL, m=0UL; row<mat_.rows()*R0; row+=m ) {
+               m = blaze::rand<size_t>( 1UL, mat_.rows()*R0 - row );
+               for( size_t column=0UL, n=0UL; column<mat_.columns()*R1; column+=n ) {
+                  n = blaze::rand<size_t>( 1UL, mat_.columns()*R1 - column );
                   submatrix( dres_  , row, column, m, n ) += submatrix( repeat<R0,R1>( omat_   ), row, column, m, n );
                   submatrix( odres_ , row, column, m, n ) += submatrix( repeat<R0,R1>( omat_   ), row, column, m, n );
                   submatrix( sres_  , row, column, m, n ) += submatrix( repeat<R0,R1>( omat_   ), row, column, m, n );
@@ -4748,10 +4755,10 @@ void OperationTest<MT,R0,R1>::testSubmatrixOperation()
 
          try {
             initResults();
-            for( size_t row=0UL, m=0UL; row<mat_.rows(); row+=m ) {
-               m = blaze::rand<size_t>( 1UL, mat_.rows() - row );
-               for( size_t column=0UL, n=0UL; column<mat_.columns(); column+=n ) {
-                  n = blaze::rand<size_t>( 1UL, mat_.columns() - column );
+            for( size_t row=0UL, m=0UL; row<mat_.rows()*R0; row+=m ) {
+               m = blaze::rand<size_t>( 1UL, mat_.rows()*R0 - row );
+               for( size_t column=0UL, n=0UL; column<mat_.columns()*R1; column+=n ) {
+                  n = blaze::rand<size_t>( 1UL, mat_.columns()*R1 - column );
                   submatrix( dres_  , row, column, m, n ) += submatrix( repeat( eval( mat_ )   , R0, R1 ), row, column, m, n );
                   submatrix( odres_ , row, column, m, n ) += submatrix( repeat( eval( mat_ )   , R0, R1 ), row, column, m, n );
                   submatrix( sres_  , row, column, m, n ) += submatrix( repeat( eval( mat_ )   , R0, R1 ), row, column, m, n );
@@ -4767,10 +4774,11 @@ void OperationTest<MT,R0,R1>::testSubmatrixOperation()
          checkResults<MT>();
 
          try {
-            initResults();for( size_t row=0UL, m=0UL; row<mat_.rows(); row+=m ) {
-               m = blaze::rand<size_t>( 1UL, mat_.rows() - row );
-               for( size_t column=0UL, n=0UL; column<mat_.columns(); column+=n ) {
-                  n = blaze::rand<size_t>( 1UL, mat_.columns() - column );
+            initResults();
+            for( size_t row=0UL, m=0UL; row<mat_.rows()*R0; row+=m ) {
+               m = blaze::rand<size_t>( 1UL, mat_.rows()*R0 - row );
+               for( size_t column=0UL, n=0UL; column<mat_.columns()*R1; column+=n ) {
+                  n = blaze::rand<size_t>( 1UL, mat_.columns()*R1 - column );
                   submatrix( dres_  , row, column, m, n ) += submatrix( repeat( eval( omat_ )  , R0, R1 ), row, column, m, n );
                   submatrix( odres_ , row, column, m, n ) += submatrix( repeat( eval( omat_ )  , R0, R1 ), row, column, m, n );
                   submatrix( sres_  , row, column, m, n ) += submatrix( repeat( eval( omat_ )  , R0, R1 ), row, column, m, n );
@@ -4793,10 +4801,10 @@ void OperationTest<MT,R0,R1>::testSubmatrixOperation()
 
          try {
             initResults();
-            for( size_t row=0UL, m=0UL; row<mat_.rows(); row+=m ) {
-               m = blaze::rand<size_t>( 1UL, mat_.rows() - row );
-               for( size_t column=0UL, n=0UL; column<mat_.columns(); column+=n ) {
-                  n = blaze::rand<size_t>( 1UL, mat_.columns() - column );
+            for( size_t row=0UL, m=0UL; row<mat_.rows()*R0; row+=m ) {
+               m = blaze::rand<size_t>( 1UL, mat_.rows()*R0 - row );
+               for( size_t column=0UL, n=0UL; column<mat_.columns()*R1; column+=n ) {
+                  n = blaze::rand<size_t>( 1UL, mat_.columns()*R1 - column );
                   submatrix( dres_  , row, column, m, n ) += submatrix( repeat<R0,R1>( eval( mat_ )    ), row, column, m, n );
                   submatrix( odres_ , row, column, m, n ) += submatrix( repeat<R0,R1>( eval( mat_ )    ), row, column, m, n );
                   submatrix( sres_  , row, column, m, n ) += submatrix( repeat<R0,R1>( eval( mat_ )    ), row, column, m, n );
@@ -4812,10 +4820,11 @@ void OperationTest<MT,R0,R1>::testSubmatrixOperation()
          checkResults<MT>();
 
          try {
-            initResults();for( size_t row=0UL, m=0UL; row<mat_.rows(); row+=m ) {
-               m = blaze::rand<size_t>( 1UL, mat_.rows() - row );
-               for( size_t column=0UL, n=0UL; column<mat_.columns(); column+=n ) {
-                  n = blaze::rand<size_t>( 1UL, mat_.columns() - column );
+            initResults();
+            for( size_t row=0UL, m=0UL; row<mat_.rows()*R0; row+=m ) {
+               m = blaze::rand<size_t>( 1UL, mat_.rows()*R0 - row );
+               for( size_t column=0UL, n=0UL; column<mat_.columns()*R1; column+=n ) {
+                  n = blaze::rand<size_t>( 1UL, mat_.columns()*R1 - column );
                   submatrix( dres_  , row, column, m, n ) += submatrix( repeat<R0,R1>( eval( omat_ )   ), row, column, m, n );
                   submatrix( odres_ , row, column, m, n ) += submatrix( repeat<R0,R1>( eval( omat_ )   ), row, column, m, n );
                   submatrix( sres_  , row, column, m, n ) += submatrix( repeat<R0,R1>( eval( omat_ )   ), row, column, m, n );
@@ -4843,10 +4852,10 @@ void OperationTest<MT,R0,R1>::testSubmatrixOperation()
 
          try {
             initResults();
-            for( size_t row=0UL, m=0UL; row<mat_.rows(); row+=m ) {
-               m = blaze::rand<size_t>( 1UL, mat_.rows() - row );
-               for( size_t column=0UL, n=0UL; column<mat_.columns(); column+=n ) {
-                  n = blaze::rand<size_t>( 1UL, mat_.columns() - column );
+            for( size_t row=0UL, m=0UL; row<mat_.rows()*R0; row+=m ) {
+               m = blaze::rand<size_t>( 1UL, mat_.rows()*R0 - row );
+               for( size_t column=0UL, n=0UL; column<mat_.columns()*R1; column+=n ) {
+                  n = blaze::rand<size_t>( 1UL, mat_.columns()*R1 - column );
                   submatrix( dres_  , row, column, m, n ) -= submatrix( repeat( mat_   , R0, R1 ), row, column, m, n );
                   submatrix( odres_ , row, column, m, n ) -= submatrix( repeat( mat_   , R0, R1 ), row, column, m, n );
                   submatrix( sres_  , row, column, m, n ) -= submatrix( repeat( mat_   , R0, R1 ), row, column, m, n );
@@ -4862,10 +4871,11 @@ void OperationTest<MT,R0,R1>::testSubmatrixOperation()
          checkResults<MT>();
 
          try {
-            initResults();for( size_t row=0UL, m=0UL; row<mat_.rows(); row+=m ) {
-               m = blaze::rand<size_t>( 1UL, mat_.rows() - row );
-               for( size_t column=0UL, n=0UL; column<mat_.columns(); column+=n ) {
-                  n = blaze::rand<size_t>( 1UL, mat_.columns() - column );
+            initResults();
+            for( size_t row=0UL, m=0UL; row<mat_.rows()*R0; row+=m ) {
+               m = blaze::rand<size_t>( 1UL, mat_.rows()*R0 - row );
+               for( size_t column=0UL, n=0UL; column<mat_.columns()*R1; column+=n ) {
+                  n = blaze::rand<size_t>( 1UL, mat_.columns()*R1 - column );
                   submatrix( dres_  , row, column, m, n ) -= submatrix( repeat( omat_  , R0, R1 ), row, column, m, n );
                   submatrix( odres_ , row, column, m, n ) -= submatrix( repeat( omat_  , R0, R1 ), row, column, m, n );
                   submatrix( sres_  , row, column, m, n ) -= submatrix( repeat( omat_  , R0, R1 ), row, column, m, n );
@@ -4888,10 +4898,10 @@ void OperationTest<MT,R0,R1>::testSubmatrixOperation()
 
          try {
             initResults();
-            for( size_t row=0UL, m=0UL; row<mat_.rows(); row+=m ) {
-               m = blaze::rand<size_t>( 1UL, mat_.rows() - row );
-               for( size_t column=0UL, n=0UL; column<mat_.columns(); column+=n ) {
-                  n = blaze::rand<size_t>( 1UL, mat_.columns() - column );
+            for( size_t row=0UL, m=0UL; row<mat_.rows()*R0; row+=m ) {
+               m = blaze::rand<size_t>( 1UL, mat_.rows()*R0 - row );
+               for( size_t column=0UL, n=0UL; column<mat_.columns()*R1; column+=n ) {
+                  n = blaze::rand<size_t>( 1UL, mat_.columns()*R1 - column );
                   submatrix( dres_  , row, column, m, n ) -= submatrix( repeat<R0,R1>( mat_    ), row, column, m, n );
                   submatrix( odres_ , row, column, m, n ) -= submatrix( repeat<R0,R1>( mat_    ), row, column, m, n );
                   submatrix( sres_  , row, column, m, n ) -= submatrix( repeat<R0,R1>( mat_    ), row, column, m, n );
@@ -4907,10 +4917,11 @@ void OperationTest<MT,R0,R1>::testSubmatrixOperation()
          checkResults<MT>();
 
          try {
-            initResults();for( size_t row=0UL, m=0UL; row<mat_.rows(); row+=m ) {
-               m = blaze::rand<size_t>( 1UL, mat_.rows() - row );
-               for( size_t column=0UL, n=0UL; column<mat_.columns(); column+=n ) {
-                  n = blaze::rand<size_t>( 1UL, mat_.columns() - column );
+            initResults();
+            for( size_t row=0UL, m=0UL; row<mat_.rows()*R0; row+=m ) {
+               m = blaze::rand<size_t>( 1UL, mat_.rows()*R0 - row );
+               for( size_t column=0UL, n=0UL; column<mat_.columns()*R1; column+=n ) {
+                  n = blaze::rand<size_t>( 1UL, mat_.columns()*R1 - column );
                   submatrix( dres_  , row, column, m, n ) -= submatrix( repeat<R0,R1>( omat_   ), row, column, m, n );
                   submatrix( odres_ , row, column, m, n ) -= submatrix( repeat<R0,R1>( omat_   ), row, column, m, n );
                   submatrix( sres_  , row, column, m, n ) -= submatrix( repeat<R0,R1>( omat_   ), row, column, m, n );
@@ -4933,10 +4944,10 @@ void OperationTest<MT,R0,R1>::testSubmatrixOperation()
 
          try {
             initResults();
-            for( size_t row=0UL, m=0UL; row<mat_.rows(); row+=m ) {
-               m = blaze::rand<size_t>( 1UL, mat_.rows() - row );
-               for( size_t column=0UL, n=0UL; column<mat_.columns(); column+=n ) {
-                  n = blaze::rand<size_t>( 1UL, mat_.columns() - column );
+            for( size_t row=0UL, m=0UL; row<mat_.rows()*R0; row+=m ) {
+               m = blaze::rand<size_t>( 1UL, mat_.rows()*R0 - row );
+               for( size_t column=0UL, n=0UL; column<mat_.columns()*R1; column+=n ) {
+                  n = blaze::rand<size_t>( 1UL, mat_.columns()*R1 - column );
                   submatrix( dres_  , row, column, m, n ) -= submatrix( repeat( eval( mat_ )   , R0, R1 ), row, column, m, n );
                   submatrix( odres_ , row, column, m, n ) -= submatrix( repeat( eval( mat_ )   , R0, R1 ), row, column, m, n );
                   submatrix( sres_  , row, column, m, n ) -= submatrix( repeat( eval( mat_ )   , R0, R1 ), row, column, m, n );
@@ -4952,10 +4963,11 @@ void OperationTest<MT,R0,R1>::testSubmatrixOperation()
          checkResults<MT>();
 
          try {
-            initResults();for( size_t row=0UL, m=0UL; row<mat_.rows(); row+=m ) {
-               m = blaze::rand<size_t>( 1UL, mat_.rows() - row );
-               for( size_t column=0UL, n=0UL; column<mat_.columns(); column+=n ) {
-                  n = blaze::rand<size_t>( 1UL, mat_.columns() - column );
+            initResults();
+            for( size_t row=0UL, m=0UL; row<mat_.rows()*R0; row+=m ) {
+               m = blaze::rand<size_t>( 1UL, mat_.rows()*R0 - row );
+               for( size_t column=0UL, n=0UL; column<mat_.columns()*R1; column+=n ) {
+                  n = blaze::rand<size_t>( 1UL, mat_.columns()*R1 - column );
                   submatrix( dres_  , row, column, m, n ) -= submatrix( repeat( eval( omat_ )  , R0, R1 ), row, column, m, n );
                   submatrix( odres_ , row, column, m, n ) -= submatrix( repeat( eval( omat_ )  , R0, R1 ), row, column, m, n );
                   submatrix( sres_  , row, column, m, n ) -= submatrix( repeat( eval( omat_ )  , R0, R1 ), row, column, m, n );
@@ -4978,10 +4990,10 @@ void OperationTest<MT,R0,R1>::testSubmatrixOperation()
 
          try {
             initResults();
-            for( size_t row=0UL, m=0UL; row<mat_.rows(); row+=m ) {
-               m = blaze::rand<size_t>( 1UL, mat_.rows() - row );
-               for( size_t column=0UL, n=0UL; column<mat_.columns(); column+=n ) {
-                  n = blaze::rand<size_t>( 1UL, mat_.columns() - column );
+            for( size_t row=0UL, m=0UL; row<mat_.rows()*R0; row+=m ) {
+               m = blaze::rand<size_t>( 1UL, mat_.rows()*R0 - row );
+               for( size_t column=0UL, n=0UL; column<mat_.columns()*R1; column+=n ) {
+                  n = blaze::rand<size_t>( 1UL, mat_.columns()*R1 - column );
                   submatrix( dres_  , row, column, m, n ) -= submatrix( repeat<R0,R1>( eval( mat_ )    ), row, column, m, n );
                   submatrix( odres_ , row, column, m, n ) -= submatrix( repeat<R0,R1>( eval( mat_ )    ), row, column, m, n );
                   submatrix( sres_  , row, column, m, n ) -= submatrix( repeat<R0,R1>( eval( mat_ )    ), row, column, m, n );
@@ -4997,10 +5009,11 @@ void OperationTest<MT,R0,R1>::testSubmatrixOperation()
          checkResults<MT>();
 
          try {
-            initResults();for( size_t row=0UL, m=0UL; row<mat_.rows(); row+=m ) {
-               m = blaze::rand<size_t>( 1UL, mat_.rows() - row );
-               for( size_t column=0UL, n=0UL; column<mat_.columns(); column+=n ) {
-                  n = blaze::rand<size_t>( 1UL, mat_.columns() - column );
+            initResults();
+            for( size_t row=0UL, m=0UL; row<mat_.rows()*R0; row+=m ) {
+               m = blaze::rand<size_t>( 1UL, mat_.rows()*R0 - row );
+               for( size_t column=0UL, n=0UL; column<mat_.columns()*R1; column+=n ) {
+                  n = blaze::rand<size_t>( 1UL, mat_.columns()*R1 - column );
                   submatrix( dres_  , row, column, m, n ) -= submatrix( repeat<R0,R1>( eval( omat_ )   ), row, column, m, n );
                   submatrix( odres_ , row, column, m, n ) -= submatrix( repeat<R0,R1>( eval( omat_ )   ), row, column, m, n );
                   submatrix( sres_  , row, column, m, n ) -= submatrix( repeat<R0,R1>( eval( omat_ )   ), row, column, m, n );
@@ -5028,10 +5041,10 @@ void OperationTest<MT,R0,R1>::testSubmatrixOperation()
 
          try {
             initResults();
-            for( size_t row=0UL, m=0UL; row<mat_.rows(); row+=m ) {
-               m = blaze::rand<size_t>( 1UL, mat_.rows() - row );
-               for( size_t column=0UL, n=0UL; column<mat_.columns(); column+=n ) {
-                  n = blaze::rand<size_t>( 1UL, mat_.columns() - column );
+            for( size_t row=0UL, m=0UL; row<mat_.rows()*R0; row+=m ) {
+               m = blaze::rand<size_t>( 1UL, mat_.rows()*R0 - row );
+               for( size_t column=0UL, n=0UL; column<mat_.columns()*R1; column+=n ) {
+                  n = blaze::rand<size_t>( 1UL, mat_.columns()*R1 - column );
                   submatrix( dres_  , row, column, m, n ) %= submatrix( repeat( mat_   , R0, R1 ), row, column, m, n );
                   submatrix( odres_ , row, column, m, n ) %= submatrix( repeat( mat_   , R0, R1 ), row, column, m, n );
                   submatrix( sres_  , row, column, m, n ) %= submatrix( repeat( mat_   , R0, R1 ), row, column, m, n );
@@ -5047,10 +5060,11 @@ void OperationTest<MT,R0,R1>::testSubmatrixOperation()
          checkResults<MT>();
 
          try {
-            initResults();for( size_t row=0UL, m=0UL; row<mat_.rows(); row+=m ) {
-               m = blaze::rand<size_t>( 1UL, mat_.rows() - row );
-               for( size_t column=0UL, n=0UL; column<mat_.columns(); column+=n ) {
-                  n = blaze::rand<size_t>( 1UL, mat_.columns() - column );
+            initResults();
+            for( size_t row=0UL, m=0UL; row<mat_.rows()*R0; row+=m ) {
+               m = blaze::rand<size_t>( 1UL, mat_.rows()*R0 - row );
+               for( size_t column=0UL, n=0UL; column<mat_.columns()*R1; column+=n ) {
+                  n = blaze::rand<size_t>( 1UL, mat_.columns()*R1 - column );
                   submatrix( dres_  , row, column, m, n ) %= submatrix( repeat( omat_  , R0, R1 ), row, column, m, n );
                   submatrix( odres_ , row, column, m, n ) %= submatrix( repeat( omat_  , R0, R1 ), row, column, m, n );
                   submatrix( sres_  , row, column, m, n ) %= submatrix( repeat( omat_  , R0, R1 ), row, column, m, n );
@@ -5073,10 +5087,10 @@ void OperationTest<MT,R0,R1>::testSubmatrixOperation()
 
          try {
             initResults();
-            for( size_t row=0UL, m=0UL; row<mat_.rows(); row+=m ) {
-               m = blaze::rand<size_t>( 1UL, mat_.rows() - row );
-               for( size_t column=0UL, n=0UL; column<mat_.columns(); column+=n ) {
-                  n = blaze::rand<size_t>( 1UL, mat_.columns() - column );
+            for( size_t row=0UL, m=0UL; row<mat_.rows()*R0; row+=m ) {
+               m = blaze::rand<size_t>( 1UL, mat_.rows()*R0 - row );
+               for( size_t column=0UL, n=0UL; column<mat_.columns()*R1; column+=n ) {
+                  n = blaze::rand<size_t>( 1UL, mat_.columns()*R1 - column );
                   submatrix( dres_  , row, column, m, n ) %= submatrix( repeat<R0,R1>( mat_    ), row, column, m, n );
                   submatrix( odres_ , row, column, m, n ) %= submatrix( repeat<R0,R1>( mat_    ), row, column, m, n );
                   submatrix( sres_  , row, column, m, n ) %= submatrix( repeat<R0,R1>( mat_    ), row, column, m, n );
@@ -5092,10 +5106,11 @@ void OperationTest<MT,R0,R1>::testSubmatrixOperation()
          checkResults<MT>();
 
          try {
-            initResults();for( size_t row=0UL, m=0UL; row<mat_.rows(); row+=m ) {
-               m = blaze::rand<size_t>( 1UL, mat_.rows() - row );
-               for( size_t column=0UL, n=0UL; column<mat_.columns(); column+=n ) {
-                  n = blaze::rand<size_t>( 1UL, mat_.columns() - column );
+            initResults();
+            for( size_t row=0UL, m=0UL; row<mat_.rows()*R0; row+=m ) {
+               m = blaze::rand<size_t>( 1UL, mat_.rows()*R0 - row );
+               for( size_t column=0UL, n=0UL; column<mat_.columns()*R1; column+=n ) {
+                  n = blaze::rand<size_t>( 1UL, mat_.columns()*R1 - column );
                   submatrix( dres_  , row, column, m, n ) %= submatrix( repeat<R0,R1>( omat_   ), row, column, m, n );
                   submatrix( odres_ , row, column, m, n ) %= submatrix( repeat<R0,R1>( omat_   ), row, column, m, n );
                   submatrix( sres_  , row, column, m, n ) %= submatrix( repeat<R0,R1>( omat_   ), row, column, m, n );
@@ -5118,10 +5133,10 @@ void OperationTest<MT,R0,R1>::testSubmatrixOperation()
 
          try {
             initResults();
-            for( size_t row=0UL, m=0UL; row<mat_.rows(); row+=m ) {
-               m = blaze::rand<size_t>( 1UL, mat_.rows() - row );
-               for( size_t column=0UL, n=0UL; column<mat_.columns(); column+=n ) {
-                  n = blaze::rand<size_t>( 1UL, mat_.columns() - column );
+            for( size_t row=0UL, m=0UL; row<mat_.rows()*R0; row+=m ) {
+               m = blaze::rand<size_t>( 1UL, mat_.rows()*R0 - row );
+               for( size_t column=0UL, n=0UL; column<mat_.columns()*R1; column+=n ) {
+                  n = blaze::rand<size_t>( 1UL, mat_.columns()*R1 - column );
                   submatrix( dres_  , row, column, m, n ) %= submatrix( repeat( eval( mat_ )   , R0, R1 ), row, column, m, n );
                   submatrix( odres_ , row, column, m, n ) %= submatrix( repeat( eval( mat_ )   , R0, R1 ), row, column, m, n );
                   submatrix( sres_  , row, column, m, n ) %= submatrix( repeat( eval( mat_ )   , R0, R1 ), row, column, m, n );
@@ -5137,10 +5152,11 @@ void OperationTest<MT,R0,R1>::testSubmatrixOperation()
          checkResults<MT>();
 
          try {
-            initResults();for( size_t row=0UL, m=0UL; row<mat_.rows(); row+=m ) {
-               m = blaze::rand<size_t>( 1UL, mat_.rows() - row );
-               for( size_t column=0UL, n=0UL; column<mat_.columns(); column+=n ) {
-                  n = blaze::rand<size_t>( 1UL, mat_.columns() - column );
+            initResults();
+            for( size_t row=0UL, m=0UL; row<mat_.rows()*R0; row+=m ) {
+               m = blaze::rand<size_t>( 1UL, mat_.rows()*R0 - row );
+               for( size_t column=0UL, n=0UL; column<mat_.columns()*R1; column+=n ) {
+                  n = blaze::rand<size_t>( 1UL, mat_.columns()*R1 - column );
                   submatrix( dres_  , row, column, m, n ) %= submatrix( repeat( eval( omat_ )  , R0, R1 ), row, column, m, n );
                   submatrix( odres_ , row, column, m, n ) %= submatrix( repeat( eval( omat_ )  , R0, R1 ), row, column, m, n );
                   submatrix( sres_  , row, column, m, n ) %= submatrix( repeat( eval( omat_ )  , R0, R1 ), row, column, m, n );
@@ -5163,10 +5179,10 @@ void OperationTest<MT,R0,R1>::testSubmatrixOperation()
 
          try {
             initResults();
-            for( size_t row=0UL, m=0UL; row<mat_.rows(); row+=m ) {
-               m = blaze::rand<size_t>( 1UL, mat_.rows() - row );
-               for( size_t column=0UL, n=0UL; column<mat_.columns(); column+=n ) {
-                  n = blaze::rand<size_t>( 1UL, mat_.columns() - column );
+            for( size_t row=0UL, m=0UL; row<mat_.rows()*R0; row+=m ) {
+               m = blaze::rand<size_t>( 1UL, mat_.rows()*R0 - row );
+               for( size_t column=0UL, n=0UL; column<mat_.columns()*R1; column+=n ) {
+                  n = blaze::rand<size_t>( 1UL, mat_.columns()*R1 - column );
                   submatrix( dres_  , row, column, m, n ) %= submatrix( repeat<R0,R1>( eval( mat_ )    ), row, column, m, n );
                   submatrix( odres_ , row, column, m, n ) %= submatrix( repeat<R0,R1>( eval( mat_ )    ), row, column, m, n );
                   submatrix( sres_  , row, column, m, n ) %= submatrix( repeat<R0,R1>( eval( mat_ )    ), row, column, m, n );
@@ -5182,10 +5198,11 @@ void OperationTest<MT,R0,R1>::testSubmatrixOperation()
          checkResults<MT>();
 
          try {
-            initResults();for( size_t row=0UL, m=0UL; row<mat_.rows(); row+=m ) {
-               m = blaze::rand<size_t>( 1UL, mat_.rows() - row );
-               for( size_t column=0UL, n=0UL; column<mat_.columns(); column+=n ) {
-                  n = blaze::rand<size_t>( 1UL, mat_.columns() - column );
+            initResults();
+            for( size_t row=0UL, m=0UL; row<mat_.rows()*R0; row+=m ) {
+               m = blaze::rand<size_t>( 1UL, mat_.rows()*R0 - row );
+               for( size_t column=0UL, n=0UL; column<mat_.columns()*R1; column+=n ) {
+                  n = blaze::rand<size_t>( 1UL, mat_.columns()*R1 - column );
                   submatrix( dres_  , row, column, m, n ) %= submatrix( repeat<R0,R1>( eval( omat_ )   ), row, column, m, n );
                   submatrix( odres_ , row, column, m, n ) %= submatrix( repeat<R0,R1>( eval( omat_ )   ), row, column, m, n );
                   submatrix( sres_  , row, column, m, n ) %= submatrix( repeat<R0,R1>( eval( omat_ )   ), row, column, m, n );
@@ -5199,6 +5216,307 @@ void OperationTest<MT,R0,R1>::testSubmatrixOperation()
          }
 
          checkResults<OMT>();
+      }
+
+
+      //=====================================================================================
+      // Failure cases
+      //=====================================================================================
+
+      // Out-of-bounds submatrix construction (invalid number of rows)
+      {
+         test_  = "Out-of-bounds submatrix construction (invalid number of rows)";
+         error_ = "Setup of out-of-bounds submatrix succeeded";
+
+         try {
+            auto sm = submatrix( repeat( mat_, R0, R1 ), 1UL, 0UL, mat_.rows()*R0, mat_.columns()*R1 );
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: " << error_ << "\n"
+                << " Details:\n"
+                << "   Random seed = " << blaze::getSeed() << "\n"
+                << "   Dense matrix type:\n"
+                << "     " << typeid( MT ).name() << "\n"
+                << "   Result:\n" << sm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ex ) {
+            checkExceptionMessage( ex, "Invalid submatrix specification" );
+         }
+
+         try {
+            auto sm = submatrix( repeat<R0,R1>( mat_ ), 1UL, 0UL, mat_.rows()*R0, mat_.columns()*R1 );
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: " << error_ << "\n"
+                << " Details:\n"
+                << "   Random seed = " << blaze::getSeed() << "\n"
+                << "   Dense matrix type:\n"
+                << "     " << typeid( MT ).name() << "\n"
+                << "   Result:\n" << sm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ex ) {
+            checkExceptionMessage( ex, "Invalid submatrix specification" );
+         }
+
+         try {
+            auto sm = submatrix( repeat( omat_, R0, R1 ), 1UL, 0UL, omat_.rows()*R0, omat_.columns()*R1 );
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: " << error_ << "\n"
+                << " Details:\n"
+                << "   Random seed = " << blaze::getSeed() << "\n"
+                << "   Dense matrix type:\n"
+                << "     " << typeid( OMT ).name() << "\n"
+                << "   Result:\n" << sm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ex ) {
+            checkExceptionMessage( ex, "Invalid submatrix specification" );
+         }
+
+         try {
+            auto sm = submatrix( repeat<R0,R1>( omat_ ), 1UL, 0UL, omat_.rows()*R0, omat_.columns()*R1 );
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: " << error_ << "\n"
+                << " Details:\n"
+                << "   Random seed = " << blaze::getSeed() << "\n"
+                << "   Dense matrix type:\n"
+                << "     " << typeid( OMT ).name() << "\n"
+                << "   Result:\n" << sm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ex ) {
+            checkExceptionMessage( ex, "Invalid submatrix specification" );
+         }
+      }
+
+      // Out-of-bounds access (invalid number of columns)
+      {
+         test_  = "Out-of-bounds submatrix construction (invalid number of columns)";
+         error_ = "Setup of out-of-bounds submatrix succeeded";
+
+         try {
+            auto sm = submatrix( repeat( mat_, R0, R1 ), 0UL, 1UL, mat_.rows()*R0, mat_.columns()*R1 );
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: " << error_ << "\n"
+                << " Details:\n"
+                << "   Random seed = " << blaze::getSeed() << "\n"
+                << "   Dense matrix type:\n"
+                << "     " << typeid( MT ).name() << "\n"
+                << "   Result:\n" << sm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ex ) {
+            checkExceptionMessage( ex, "Invalid submatrix specification" );
+         }
+
+         try {
+            auto sm = submatrix( repeat<R0,R1>( mat_ ), 0UL, 1UL, mat_.rows()*R0, mat_.columns()*R1 );
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: " << error_ << "\n"
+                << " Details:\n"
+                << "   Random seed = " << blaze::getSeed() << "\n"
+                << "   Dense matrix type:\n"
+                << "     " << typeid( MT ).name() << "\n"
+                << "   Result:\n" << sm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ex ) {
+            checkExceptionMessage( ex, "Invalid submatrix specification" );
+         }
+
+         try {
+            auto sm = submatrix( repeat( omat_, R0, R1 ), 0UL, 1UL, omat_.rows()*R0, omat_.columns()*R1 );
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: " << error_ << "\n"
+                << " Details:\n"
+                << "   Random seed = " << blaze::getSeed() << "\n"
+                << "   Dense matrix type:\n"
+                << "     " << typeid( OMT ).name() << "\n"
+                << "   Result:\n" << sm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ex ) {
+            checkExceptionMessage( ex, "Invalid submatrix specification" );
+         }
+
+         try {
+            auto sm = submatrix( repeat<R0,R1>( omat_ ), 0UL, 1UL, omat_.rows()*R0, omat_.columns()*R1 );
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: " << error_ << "\n"
+                << " Details:\n"
+                << "   Random seed = " << blaze::getSeed() << "\n"
+                << "   Dense matrix type:\n"
+                << "     " << typeid( OMT ).name() << "\n"
+                << "   Result:\n" << sm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ex ) {
+            checkExceptionMessage( ex, "Invalid submatrix specification" );
+         }
+      }
+
+      // Out-of-bounds access (invalid row index)
+      {
+         test_  = "Out-of-bounds submatrix construction (invalid row index)";
+         error_ = "Setup of out-of-bounds submatrix succeeded";
+
+         try {
+            auto sm = submatrix( repeat( mat_, R0, R1 ), mat_.rows()*R0, 0UL, 1UL, mat_.columns()*R1 );
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: " << error_ << "\n"
+                << " Details:\n"
+                << "   Random seed = " << blaze::getSeed() << "\n"
+                << "   Dense matrix type:\n"
+                << "     " << typeid( MT ).name() << "\n"
+                << "   Result:\n" << sm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ex ) {
+            checkExceptionMessage( ex, "Invalid submatrix specification" );
+         }
+
+         try {
+            auto sm = submatrix( repeat<R0,R1>( mat_ ), mat_.rows()*R0, 0UL, 1UL, mat_.columns()*R1 );
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: " << error_ << "\n"
+                << " Details:\n"
+                << "   Random seed = " << blaze::getSeed() << "\n"
+                << "   Dense matrix type:\n"
+                << "     " << typeid( MT ).name() << "\n"
+                << "   Result:\n" << sm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ex ) {
+            checkExceptionMessage( ex, "Invalid submatrix specification" );
+         }
+
+         try {
+            auto sm = submatrix( repeat( omat_, R0, R1 ), omat_.rows()*R0, 0UL, 1UL, omat_.columns()*R1 );
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: " << error_ << "\n"
+                << " Details:\n"
+                << "   Random seed = " << blaze::getSeed() << "\n"
+                << "   Dense matrix type:\n"
+                << "     " << typeid( OMT ).name() << "\n"
+                << "   Result:\n" << sm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ex ) {
+            checkExceptionMessage( ex, "Invalid submatrix specification" );
+         }
+
+         try {
+            auto sm = submatrix( repeat<R0,R1>( omat_ ), omat_.rows()*R0, 0UL, 1UL, omat_.columns()*R1 );
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: " << error_ << "\n"
+                << " Details:\n"
+                << "   Random seed = " << blaze::getSeed() << "\n"
+                << "   Dense matrix type:\n"
+                << "     " << typeid( OMT ).name() << "\n"
+                << "   Result:\n" << sm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ex ) {
+            checkExceptionMessage( ex, "Invalid submatrix specification" );
+         }
+      }
+
+      // Out-of-bounds access (invalid column index)
+      {
+         test_  = "Out-of-bounds submatrix construction (invalid column index)";
+         error_ = "Setup of out-of-bounds submatrix succeeded";
+
+         try {
+            auto sm = submatrix( repeat( mat_, R0, R1 ), 0UL, mat_.columns()*R1, mat_.rows()*R0, 1UL );
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: " << error_ << "\n"
+                << " Details:\n"
+                << "   Random seed = " << blaze::getSeed() << "\n"
+                << "   Dense matrix type:\n"
+                << "     " << typeid( MT ).name() << "\n"
+                << "   Result:\n" << sm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ex ) {
+            checkExceptionMessage( ex, "Invalid submatrix specification" );
+         }
+
+         try {
+            auto sm = submatrix( repeat<R0,R1>( mat_ ), 0UL, mat_.columns()*R1, mat_.rows()*R0, 1UL );
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: " << error_ << "\n"
+                << " Details:\n"
+                << "   Random seed = " << blaze::getSeed() << "\n"
+                << "   Dense matrix type:\n"
+                << "     " << typeid( MT ).name() << "\n"
+                << "   Result:\n" << sm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ex ) {
+            checkExceptionMessage( ex, "Invalid submatrix specification" );
+         }
+
+         try {
+            auto sm = submatrix( repeat( omat_, R0, R1 ), 0UL, omat_.columns()*R1, omat_.rows()*R0, 1UL );
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: " << error_ << "\n"
+                << " Details:\n"
+                << "   Random seed = " << blaze::getSeed() << "\n"
+                << "   Dense matrix type:\n"
+                << "     " << typeid( OMT ).name() << "\n"
+                << "   Result:\n" << sm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ex ) {
+            checkExceptionMessage( ex, "Invalid submatrix specification" );
+         }
+
+         try {
+            auto sm = submatrix( repeat<R0,R1>( omat_ ), 0UL, omat_.columns()*R1, omat_.rows()*R0, 1UL );
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: " << error_ << "\n"
+                << " Details:\n"
+                << "   Random seed = " << blaze::getSeed() << "\n"
+                << "   Dense matrix type:\n"
+                << "     " << typeid( OMT ).name() << "\n"
+                << "   Result:\n" << sm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ex ) {
+            checkExceptionMessage( ex, "Invalid submatrix specification" );
+         }
       }
    }
 #endif
@@ -9285,6 +9603,36 @@ void OperationTest<MT,R0,R1>::checkTransposeResults()
           << "   Transpose result:\n" << tsres_ << "\n"
           << "   Transpose result with opposite storage order:\n" << tosres_ << "\n"
           << "   Expected result:\n" << refres_ << "\n";
+      throw std::runtime_error( oss.str() );
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Checking and comparing the error message of the given exception.
+//
+// \param ex The exception to be checked.
+// \param message The expected error message.
+// \return void
+// \exception std::runtime_error Wrong error message.
+//
+// This function is called to check the error message of the given exception. In case the error
+// message does not correspond to the expected message, a \a std::runtime_error  exception is
+// thrown.
+*/
+template< typename MT   // Type of the sparse matrix
+        , size_t R0     // Compile time row-wise repetitions
+        , size_t R1 >   // Compile time column-wise repetitions
+void OperationTest<MT,R0,R1>::checkExceptionMessage( const std::exception& ex, const std::string& message )
+{
+   if( ex.what() != message ) {
+      std::ostringstream oss;
+      oss << " Test: Submatrix construction\n"
+          << " Error: Wrong error message\n"
+          << " Details:\n"
+          << "   Error message: \"" << ex.what() << "\"\n"
+          << "   Expected error message: \"Invalid submatrix specification\"\n";
       throw std::runtime_error( oss.str() );
    }
 }

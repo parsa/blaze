@@ -202,6 +202,7 @@ class OperationTest
    //@{
    template< typename T > void checkResults();
    template< typename T > void checkTransposeResults();
+   void checkExceptionMessage( const std::exception& ex, const std::string& message );
    //@}
    //**********************************************************************************************
 
@@ -5952,6 +5953,307 @@ void OperationTest<VT,E>::testSubmatrixOperation( blaze::TrueType )
 
          checkTransposeResults<TVT>();
       }
+
+
+      //=====================================================================================
+      // Failure cases
+      //=====================================================================================
+
+      // Out-of-bounds submatrix construction (invalid number of rows)
+      {
+         test_  = "Out-of-bounds submatrix construction (invalid number of rows)";
+         error_ = "Setup of out-of-bounds submatrix succeeded";
+
+         try {
+            auto sm = submatrix( expand( vec_, E ), 1UL, 0UL, vec_.size(), E );
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: " << error_ << "\n"
+                << " Details:\n"
+                << "   Random seed = " << blaze::getSeed() << "\n"
+                << "   Dense vector type:\n"
+                << "     " << typeid( VT ).name() << "\n"
+                << "   Result:\n" << sm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ex ) {
+            checkExceptionMessage( ex, "Invalid submatrix specification" );
+         }
+
+         try {
+            auto sm = submatrix( expand<E>( vec_ ), 1UL, 0UL, vec_.size(), E );
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: " << error_ << "\n"
+                << " Details:\n"
+                << "   Random seed = " << blaze::getSeed() << "\n"
+                << "   Dense vector type:\n"
+                << "     " << typeid( VT ).name() << "\n"
+                << "   Result:\n" << sm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ex ) {
+            checkExceptionMessage( ex, "Invalid submatrix specification" );
+         }
+
+         try {
+            auto sm = submatrix( expand( tvec_, E ), 1UL, 0UL, E, tvec_.size() );
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: " << error_ << "\n"
+                << " Details:\n"
+                << "   Random seed = " << blaze::getSeed() << "\n"
+                << "   Dense vector type:\n"
+                << "     " << typeid( TVT ).name() << "\n"
+                << "   Result:\n" << sm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ex ) {
+            checkExceptionMessage( ex, "Invalid submatrix specification" );
+         }
+
+         try {
+            auto sm = submatrix( expand<E>( tvec_ ), 1UL, 0UL, E, tvec_.size() );
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: " << error_ << "\n"
+                << " Details:\n"
+                << "   Random seed = " << blaze::getSeed() << "\n"
+                << "   Dense vector type:\n"
+                << "     " << typeid( TVT ).name() << "\n"
+                << "   Result:\n" << sm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ex ) {
+            checkExceptionMessage( ex, "Invalid submatrix specification" );
+         }
+      }
+
+      // Out-of-bounds access (invalid number of columns)
+      {
+         test_  = "Out-of-bounds submatrix construction (invalid number of columns)";
+         error_ = "Setup of out-of-bounds submatrix succeeded";
+
+         try {
+            auto sm = submatrix( expand( vec_, E ), 0UL, 1UL, vec_.size(), E );
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: " << error_ << "\n"
+                << " Details:\n"
+                << "   Random seed = " << blaze::getSeed() << "\n"
+                << "   Dense vector type:\n"
+                << "     " << typeid( VT ).name() << "\n"
+                << "   Result:\n" << sm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ex ) {
+            checkExceptionMessage( ex, "Invalid submatrix specification" );
+         }
+
+         try {
+            auto sm = submatrix( expand<E>( vec_ ), 0UL, 1UL, vec_.size(), E );
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: " << error_ << "\n"
+                << " Details:\n"
+                << "   Random seed = " << blaze::getSeed() << "\n"
+                << "   Dense vector type:\n"
+                << "     " << typeid( VT ).name() << "\n"
+                << "   Result:\n" << sm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ex ) {
+            checkExceptionMessage( ex, "Invalid submatrix specification" );
+         }
+
+         try {
+            auto sm = submatrix( expand( tvec_, E ), 0UL, 1UL, E, tvec_.size() );
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: " << error_ << "\n"
+                << " Details:\n"
+                << "   Random seed = " << blaze::getSeed() << "\n"
+                << "   Dense vector type:\n"
+                << "     " << typeid( TVT ).name() << "\n"
+                << "   Result:\n" << sm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ex ) {
+            checkExceptionMessage( ex, "Invalid submatrix specification" );
+         }
+
+         try {
+            auto sm = submatrix( expand<E>( tvec_ ), 0UL, 1UL, E, tvec_.size() );
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: " << error_ << "\n"
+                << " Details:\n"
+                << "   Random seed = " << blaze::getSeed() << "\n"
+                << "   Dense vector type:\n"
+                << "     " << typeid( TVT ).name() << "\n"
+                << "   Result:\n" << sm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ex ) {
+            checkExceptionMessage( ex, "Invalid submatrix specification" );
+         }
+      }
+
+      // Out-of-bounds access (invalid row index)
+      {
+         test_  = "Out-of-bounds submatrix construction (invalid row index)";
+         error_ = "Setup of out-of-bounds submatrix succeeded";
+
+         try {
+            auto sm = submatrix( expand( vec_, E ), vec_.size(), 0UL, 1UL, E );
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: " << error_ << "\n"
+                << " Details:\n"
+                << "   Random seed = " << blaze::getSeed() << "\n"
+                << "   Dense vector type:\n"
+                << "     " << typeid( VT ).name() << "\n"
+                << "   Result:\n" << sm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ex ) {
+            checkExceptionMessage( ex, "Invalid submatrix specification" );
+         }
+
+         try {
+            auto sm = submatrix( expand<E>( vec_ ), vec_.size(), 0UL, 1UL, E );
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: " << error_ << "\n"
+                << " Details:\n"
+                << "   Random seed = " << blaze::getSeed() << "\n"
+                << "   Dense vector type:\n"
+                << "     " << typeid( VT ).name() << "\n"
+                << "   Result:\n" << sm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ex ) {
+            checkExceptionMessage( ex, "Invalid submatrix specification" );
+         }
+
+         try {
+            auto sm = submatrix( expand( tvec_, E ), E, 0UL, 1UL, tvec_.size() );
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: " << error_ << "\n"
+                << " Details:\n"
+                << "   Random seed = " << blaze::getSeed() << "\n"
+                << "   Dense vector type:\n"
+                << "     " << typeid( TVT ).name() << "\n"
+                << "   Result:\n" << sm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ex ) {
+            checkExceptionMessage( ex, "Invalid submatrix specification" );
+         }
+
+         try {
+            auto sm = submatrix( expand<E>( tvec_ ), E, 0UL, 1UL, tvec_.size() );
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: " << error_ << "\n"
+                << " Details:\n"
+                << "   Random seed = " << blaze::getSeed() << "\n"
+                << "   Dense vector type:\n"
+                << "     " << typeid( TVT ).name() << "\n"
+                << "   Result:\n" << sm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ex ) {
+            checkExceptionMessage( ex, "Invalid submatrix specification" );
+         }
+      }
+
+      // Out-of-bounds access (invalid column index)
+      {
+         test_  = "Out-of-bounds submatrix construction (invalid column index)";
+         error_ = "Setup of out-of-bounds submatrix succeeded";
+
+         try {
+            auto sm = submatrix( expand( vec_, E ), 0UL, E, vec_.size(), 1UL );
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: " << error_ << "\n"
+                << " Details:\n"
+                << "   Random seed = " << blaze::getSeed() << "\n"
+                << "   Dense vector type:\n"
+                << "     " << typeid( VT ).name() << "\n"
+                << "   Result:\n" << sm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ex ) {
+            checkExceptionMessage( ex, "Invalid submatrix specification" );
+         }
+
+         try {
+            auto sm = submatrix( expand<E>( vec_ ), 0UL, E, vec_.size(), 1UL );
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: " << error_ << "\n"
+                << " Details:\n"
+                << "   Random seed = " << blaze::getSeed() << "\n"
+                << "   Dense vector type:\n"
+                << "     " << typeid( VT ).name() << "\n"
+                << "   Result:\n" << sm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ex ) {
+            checkExceptionMessage( ex, "Invalid submatrix specification" );
+         }
+
+         try {
+            auto sm = submatrix( expand( tvec_, E ), 0UL, tvec_.size(), E, 1UL );
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: " << error_ << "\n"
+                << " Details:\n"
+                << "   Random seed = " << blaze::getSeed() << "\n"
+                << "   Dense vector type:\n"
+                << "     " << typeid( TVT ).name() << "\n"
+                << "   Result:\n" << sm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ex ) {
+            checkExceptionMessage( ex, "Invalid submatrix specification" );
+         }
+
+         try {
+            auto sm = submatrix( expand<E>( tvec_ ), 0UL, tvec_.size(), E, 1UL );
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: " << error_ << "\n"
+                << " Details:\n"
+                << "   Random seed = " << blaze::getSeed() << "\n"
+                << "   Dense vector type:\n"
+                << "     " << typeid( TVT ).name() << "\n"
+                << "   Result:\n" << sm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ex ) {
+            checkExceptionMessage( ex, "Invalid submatrix specification" );
+         }
+      }
    }
 #endif
 }
@@ -10104,6 +10406,36 @@ void OperationTest<VT,E>::checkTransposeResults()
    }
 }
 //*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Checking and comparing the error message of the given exception.
+//
+// \param ex The exception to be checked.
+// \param message The expected error message.
+// \return void
+// \exception std::runtime_error Wrong error message.
+//
+// This function is called to check the error message of the given exception. In case the error
+// message does not correspond to the expected message, a \a std::runtime_error  exception is
+// thrown.
+*/
+template< typename VT   // Type of the dense vector
+        , size_t E >    // Compile time expansion
+void OperationTest<VT,E>::checkExceptionMessage( const std::exception& ex, const std::string& message )
+{
+   if( ex.what() != message ) {
+      std::ostringstream oss;
+      oss << " Test: Submatrix construction\n"
+          << " Error: Wrong error message\n"
+          << " Details:\n"
+          << "   Error message: \"" << ex.what() << "\"\n"
+          << "   Expected error message: \"Invalid submatrix specification\"\n";
+      throw std::runtime_error( oss.str() );
+   }
+}
+//*************************************************************************************************
+
 
 
 
