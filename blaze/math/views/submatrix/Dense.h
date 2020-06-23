@@ -106,7 +106,6 @@
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/MaybeUnused.h>
 #include <blaze/util/mpl/If.h>
-#include <blaze/util/TypeList.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsConst.h>
 #include <blaze/util/typetraits/IsReference.h>
@@ -890,7 +889,7 @@ inline Submatrix<MT,unaligned,false,true,CSAs...>::Submatrix( MT& matrix, RSAs..
                  matrix.data() != nullptr && checkAlignment( data() ) &&
                  ( rows() < 2UL || ( matrix.spacing() % SIMDSIZE ) == 0UL ) )
 {
-   if( !Contains_v< TypeList<RSAs...>, Unchecked > ) {
+   if( isChecked( args... ) ) {
       if( ( row() + rows() > matrix_.rows() ) || ( column() + columns() > matrix_.columns() ) ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid submatrix specification" );
       }
@@ -4166,7 +4165,7 @@ inline Submatrix<MT,unaligned,true,true,CSAs...>::Submatrix( MT& matrix, RSAs...
                  matrix.data() != nullptr && checkAlignment( data() ) &&
                  ( columns() < 2UL || ( matrix.spacing() % SIMDSIZE ) == 0UL ) )
 {
-   if( !Contains_v< TypeList<RSAs...>, Unchecked > ) {
+   if( isChecked( args... ) ) {
       if( ( row() + rows() > matrix_.rows() ) || ( column() + columns() > matrix_.columns() ) ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid submatrix specification" );
       }
@@ -6977,7 +6976,7 @@ inline Submatrix<MT,aligned,false,true,CSAs...>::Submatrix( MT& matrix, RSAs... 
    : DataType( args... )  // Base class initialization
    , matrix_ ( matrix  )  // The matrix containing the submatrix
 {
-   if( !Contains_v< TypeList<RSAs...>, Unchecked > )
+   if( isChecked( args... ) )
    {
       if( ( row() + rows() > matrix_.rows() ) || ( column() + columns() > matrix_.columns() ) ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid submatrix specification" );
@@ -9834,7 +9833,7 @@ inline Submatrix<MT,aligned,true,true,CSAs...>::Submatrix( MT& matrix, RSAs... a
    : DataType( args... )  // Base class initialization
    , matrix_ ( matrix  )  // The matrix containing the submatrix
 {
-   if( !Contains_v< TypeList<RSAs...>, Unchecked > )
+   if( isChecked( args... ) )
    {
       if( ( row() + rows() > matrix_.rows() ) || ( column() + columns() > matrix_.columns() ) ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid submatrix specification" );

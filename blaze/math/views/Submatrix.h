@@ -879,6 +879,7 @@ inline decltype(auto)
 // \param matrix The constant matrix/matrix addition.
 // \param args The runtime submatrix arguments
 // \return View on the specified submatrix of the addition.
+// \exception std::invalid_argument Invalid submatrix specification.
 //
 // This function returns an expression representing the specified submatrix of the given
 // matrix/matrix addition.
@@ -906,6 +907,7 @@ inline decltype(auto) submatrix( const MatMatAddExpr<MT>& matrix, RSAs... args )
 // \param matrix The constant matrix/matrix subtraction.
 // \param args The runtime submatrix arguments
 // \return View on the specified submatrix of the subtraction.
+// \exception std::invalid_argument Invalid submatrix specification.
 //
 // This function returns an expression representing the specified submatrix of the given
 // matrix/matrix subtraction.
@@ -933,6 +935,7 @@ inline decltype(auto) submatrix( const MatMatSubExpr<MT>& matrix, RSAs... args )
 // \param matrix The constant Schur product.
 // \param args The runtime submatrix arguments
 // \return View on the specified submatrix of the Schur product.
+// \exception std::invalid_argument Invalid submatrix specification.
 //
 // This function returns an expression representing the specified submatrix of the given Schur
 // product.
@@ -960,6 +963,7 @@ inline decltype(auto) submatrix( const SchurExpr<MT>& matrix, RSAs... args )
 // \param matrix The constant matrix/matrix multiplication.
 // \param args The runtime submatrix arguments.
 // \return View on the specified submatrix of the multiplication.
+// \exception std::invalid_argument Invalid submatrix specification.
 //
 // This function returns an expression representing the specified submatrix of the given
 // matrix/matrix multiplication.
@@ -1018,6 +1022,7 @@ inline decltype(auto) submatrix( const MatMatMultExpr<MT>& matrix, RSAs... args 
 // \param matrix The constant Kronecker product.
 // \param args Optional submatrix arguments.
 // \return View on the specified submatrix of the Kronecker product.
+// \exception std::invalid_argument Invalid submatrix specification.
 //
 // This function returns an expression representing the specified submatrix of the given
 // Kronecker product.
@@ -1033,8 +1038,13 @@ inline decltype(auto) submatrix( const MatMatKronExpr<MT>& matrix, RSAs... args 
 {
    BLAZE_FUNCTION_TRACE;
 
-   return columns( rows( ~matrix, make_shifted_index_sequence<I,M>(), args... )
-                 , make_shifted_index_sequence<J,N>(), args... );
+   try {
+      return columns( rows( ~matrix, make_shifted_index_sequence<I,M>(), args... )
+                    , make_shifted_index_sequence<J,N>(), args... );
+   }
+   catch( ... ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid submatrix specification" );
+   }
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1052,6 +1062,7 @@ inline decltype(auto) submatrix( const MatMatKronExpr<MT>& matrix, RSAs... args 
 // \param n The number of columns of the submatrix.
 // \param args Optional submatrix arguments.
 // \return View on the specified submatrix of the Kronecker product.
+// \exception std::invalid_argument Invalid submatrix specification.
 //
 // This function returns an expression representing the specified submatrix of the given
 // Kronecker product.
@@ -1064,8 +1075,13 @@ inline decltype(auto)
 {
    BLAZE_FUNCTION_TRACE;
 
-   return columns( rows( ~matrix, [row]( size_t i ){ return i+row; }, m, args... )
-                 , [column]( size_t i ){ return i+column; }, n, args... );
+   try {
+      return columns( rows( ~matrix, [row]( size_t i ){ return i+row; }, m, args... )
+                    , [column]( size_t i ){ return i+column; }, n, args... );
+   }
+   catch( ... ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid submatrix specification" );
+   }
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1078,6 +1094,7 @@ inline decltype(auto)
 //
 // \param matrix The constant outer product.
 // \return View on the specified submatrix of the outer product.
+// \exception std::invalid_argument Invalid submatrix specification.
 //
 // This function returns an expression representing the specified submatrix of the given
 // outer product.
@@ -1093,8 +1110,13 @@ inline decltype(auto) submatrix( const VecTVecMultExpr<MT>& matrix, RSAs... args
 {
    BLAZE_FUNCTION_TRACE;
 
-   return subvector<AF,I,M>( (~matrix).leftOperand(), args... ) *
-          subvector<AF,J,N>( (~matrix).rightOperand(), args... );
+   try {
+      return subvector<AF,I,M>( (~matrix).leftOperand(), args... ) *
+             subvector<AF,J,N>( (~matrix).rightOperand(), args... );
+   }
+   catch( ... ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid submatrix specification" );
+   }
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1111,6 +1133,7 @@ inline decltype(auto) submatrix( const VecTVecMultExpr<MT>& matrix, RSAs... args
 // \param m The number of rows of the submatrix.
 // \param n The number of columns of the submatrix.
 // \return View on the specified submatrix of the outer product.
+// \exception std::invalid_argument Invalid submatrix specification.
 //
 // This function returns an expression representing the specified submatrix of the given
 // outer product.
@@ -1123,8 +1146,13 @@ inline decltype(auto)
 {
    BLAZE_FUNCTION_TRACE;
 
-   return subvector<AF>( (~matrix).leftOperand(), row, m, args... ) *
-          subvector<AF>( (~matrix).rightOperand(), column, n, args... );
+   try {
+      return subvector<AF>( (~matrix).leftOperand(), row, m, args... ) *
+             subvector<AF>( (~matrix).rightOperand(), column, n, args... );
+   }
+   catch( ... ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid submatrix specification" );
+   }
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1138,6 +1166,7 @@ inline decltype(auto)
 // \param matrix The constant matrix/scalar multiplication.
 // \param args The runtime submatrix arguments.
 // \return View on the specified submatrix of the multiplication.
+// \exception std::invalid_argument Invalid submatrix specification.
 //
 // This function returns an expression representing the specified submatrix of the given
 // matrix/scalar multiplication.
@@ -1164,6 +1193,7 @@ inline decltype(auto) submatrix( const MatScalarMultExpr<MT>& matrix, RSAs... ar
 // \param matrix The constant matrix/scalar division.
 // \param args The runtime submatrix arguments.
 // \return View on the specified submatrix of the division.
+// \exception std::invalid_argument Invalid submatrix specification.
 //
 // This function returns an expression representing the specified submatrix of the given
 // matrix/scalar division.
@@ -1190,6 +1220,7 @@ inline decltype(auto) submatrix( const MatScalarDivExpr<MT>& matrix, RSAs... arg
 // \param matrix The constant unary matrix map operation.
 // \param args The runtime submatrix arguments.
 // \return View on the specified submatrix of the unary map operation.
+// \exception std::invalid_argument Invalid submatrix specification.
 //
 // This function returns an expression representing the specified submatrix of the given unary
 // matrix map operation.
@@ -1216,6 +1247,7 @@ inline decltype(auto) submatrix( const MatMapExpr<MT>& matrix, RSAs... args )
 // \param matrix The constant binary matrix map operation.
 // \param args The runtime submatrix arguments.
 // \return View on the specified submatrix of the binary map operation.
+// \exception std::invalid_argument Invalid submatrix specification.
 //
 // This function returns an expression representing the specified submatrix of the given binary
 // matrix map operation.
@@ -1243,6 +1275,7 @@ inline decltype(auto) submatrix( const MatMatMapExpr<MT>& matrix, RSAs... args )
 //
 // \param matrix The constant outer map operation.
 // \return View on the specified submatrix of the outer map operation.
+// \exception std::invalid_argument Invalid submatrix specification.
 //
 // This function returns an expression representing the specified submatrix of the given
 // outer map operation.
@@ -1258,9 +1291,14 @@ inline decltype(auto) submatrix( const VecTVecMapExpr<MT>& matrix, RSAs... args 
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( subvector<AF,I,M>( (~matrix).leftOperand(), args... ),
-               subvector<AF,J,N>( (~matrix).rightOperand(), args... ),
-               (~matrix).operation() );
+   try {
+      return map( subvector<AF,I,M>( (~matrix).leftOperand(), args... ),
+                  subvector<AF,J,N>( (~matrix).rightOperand(), args... ),
+                  (~matrix).operation() );
+   }
+   catch( ... ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid submatrix specification" );
+   }
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1277,6 +1315,7 @@ inline decltype(auto) submatrix( const VecTVecMapExpr<MT>& matrix, RSAs... args 
 // \param m The number of rows of the submatrix.
 // \param n The number of columns of the submatrix.
 // \return View on the specified submatrix of the outer map operation.
+// \exception std::invalid_argument Invalid submatrix specification.
 //
 // This function returns an expression representing the specified submatrix of the given
 // outer map operation.
@@ -1289,9 +1328,14 @@ inline decltype(auto)
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( subvector<AF>( (~matrix).leftOperand(), row, m, args... ),
-               subvector<AF>( (~matrix).rightOperand(), column, n, args... ),
-               (~matrix).operation() );
+   try {
+      return map( subvector<AF>( (~matrix).leftOperand(), row, m, args... ),
+                  subvector<AF>( (~matrix).rightOperand(), column, n, args... ),
+                  (~matrix).operation() );
+   }
+   catch( ... ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid submatrix specification" );
+   }
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1305,6 +1349,7 @@ inline decltype(auto)
 // \param matrix The constant matrix evaluation operation.
 // \param args The runtime submatrix arguments.
 // \return View on the specified submatrix of the evaluation operation.
+// \exception std::invalid_argument Invalid submatrix specification.
 //
 // This function returns an expression representing the specified submatrix of the given matrix
 // evaluation operation.
@@ -1331,6 +1376,7 @@ inline decltype(auto) submatrix( const MatEvalExpr<MT>& matrix, RSAs... args )
 // \param matrix The constant matrix serialization operation.
 // \param args The runtime submatrix arguments.
 // \return View on the specified submatrix of the serialization operation.
+// \exception std::invalid_argument Invalid submatrix specification.
 //
 // This function returns an expression representing the specified submatrix of the given matrix
 // serialization operation.
@@ -1357,6 +1403,7 @@ inline decltype(auto) submatrix( const MatSerialExpr<MT>& matrix, RSAs... args )
 // \param matrix The constant matrix no-alias operation.
 // \param args The runtime submatrix arguments.
 // \return View on the specified submatrix of the no-alias operation.
+// \exception std::invalid_argument Invalid submatrix specification.
 //
 // This function returns an expression representing the specified submatrix of the given matrix
 // no-alias operation.
@@ -1383,6 +1430,7 @@ inline decltype(auto) submatrix( const MatNoAliasExpr<MT>& matrix, RSAs... args 
 // \param matrix The constant matrix no-SIMD operation.
 // \param args The runtime submatrix arguments.
 // \return View on the specified submatrix of the no-SIMD operation.
+// \exception std::invalid_argument Invalid submatrix specification.
 //
 // This function returns an expression representing the specified submatrix of the given matrix
 // no-SIMD operation.
@@ -1409,6 +1457,7 @@ inline decltype(auto) submatrix( const MatNoSIMDExpr<MT>& matrix, RSAs... args )
 // \param matrix The constant matrix declaration operation.
 // \param args The runtime submatrix arguments.
 // \return View on the specified submatrix of the declaration operation.
+// \exception std::invalid_argument Invalid submatrix specification.
 //
 // This function returns an expression representing the specified submatrix of the given matrix
 // declaration operation.
@@ -1435,6 +1484,7 @@ inline decltype(auto) submatrix( const DeclExpr<MT>& matrix, RSAs... args )
 // \param matrix The constant matrix transpose operation.
 // \param args Optional submatrix arguments.
 // \return View on the specified submatrix of the transpose operation.
+// \exception std::invalid_argument Invalid submatrix specification.
 //
 // This function returns an expression representing the specified submatrix of the given matrix
 // transpose operation.
@@ -1468,6 +1518,7 @@ inline decltype(auto) submatrix( const MatTransExpr<MT>& matrix, RSAs... args )
 // \param n The number of columns of the submatrix.
 // \param args Optional submatrix arguments.
 // \return View on the specified submatrix of the transpose operation.
+// \exception std::invalid_argument Invalid submatrix specification.
 //
 // This function returns an expression representing the specified submatrix of the given matrix
 // transpose operation.
@@ -1494,6 +1545,7 @@ inline decltype(auto)
 // \param matrix The constant vector expansion operation.
 // \param args Optional submatrix arguments.
 // \return View on the specified submatrix of the expansion operation.
+// \exception std::invalid_argument Invalid submatrix specification.
 //
 // This function returns an expression representing the specified submatrix of the given vector
 // expansion operation.
@@ -1510,6 +1562,16 @@ inline decltype(auto) submatrix( const VecExpandExpr<MT,CEAs...>& matrix, RSAs..
 {
    BLAZE_FUNCTION_TRACE;
 
+   if( isChecked( args... ) ) {
+      if( ( I + M > (~matrix).rows() ) || ( J + N > (~matrix).columns() ) ) {
+         BLAZE_THROW_INVALID_ARGUMENT( "Invalid submatrix specification" );
+      }
+   }
+   else {
+      BLAZE_USER_ASSERT( I + M <= (~matrix).rows()   , "Invalid submatrix specification" );
+      BLAZE_USER_ASSERT( J + N <= (~matrix).columns(), "Invalid submatrix specification" );
+   }
+
    using VT = VectorType_t< RemoveReference_t< decltype( (~matrix).operand() ) > >;
 
    constexpr bool TF( TransposeFlag_v<VT> );
@@ -1518,7 +1580,7 @@ inline decltype(auto) submatrix( const VecExpandExpr<MT,CEAs...>& matrix, RSAs..
    constexpr size_t size     ( TF ? N : M );
    constexpr size_t expansion( TF ? M : N );
 
-   return expand<expansion>( subvector<index,size>( (~matrix).operand(), args... ) );
+   return expand<expansion>( subvector<index,size>( (~matrix).operand(), unchecked ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1536,6 +1598,7 @@ inline decltype(auto) submatrix( const VecExpandExpr<MT,CEAs...>& matrix, RSAs..
 // \param n The number of columns of the submatrix.
 // \param args Optional submatrix arguments.
 // \return View on the specified submatrix of the expansion operation.
+// \exception std::invalid_argument Invalid submatrix specification.
 //
 // This function returns an expression representing the specified submatrix of the given vector
 // expansion operation.
@@ -1550,6 +1613,16 @@ inline decltype(auto)
 {
    BLAZE_FUNCTION_TRACE;
 
+   if( isChecked( args... ) ) {
+      if( ( row + m > (~matrix).rows() ) || ( column + n > (~matrix).columns() ) ) {
+         BLAZE_THROW_INVALID_ARGUMENT( "Invalid submatrix specification" );
+      }
+   }
+   else {
+      BLAZE_USER_ASSERT( row    + m <= (~matrix).rows()   , "Invalid submatrix specification" );
+      BLAZE_USER_ASSERT( column + n <= (~matrix).columns(), "Invalid submatrix specification" );
+   }
+
    using VT = VectorType_t< RemoveReference_t< decltype( (~matrix).operand() ) > >;
 
    constexpr bool TF( TransposeFlag_v<VT> );
@@ -1558,7 +1631,7 @@ inline decltype(auto)
    const size_t size     ( TF ? n : m );
    const size_t expansion( TF ? m : n );
 
-   return expand( subvector( (~matrix).operand(), index, size, args... ), expansion );
+   return expand( subvector( (~matrix).operand(), index, size, unchecked ), expansion );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1589,9 +1662,7 @@ inline decltype(auto) submatrix( const MatRepeatExpr<MT,CRAs...>& matrix, RSAs..
 {
    BLAZE_FUNCTION_TRACE;
 
-   constexpr bool isChecked( !Contains_v< TypeList<RSAs...>, Unchecked > );
-
-   if( isChecked ) {
+   if( isChecked( args... ) ) {
       if( ( I + M > (~matrix).rows() ) || ( J + N > (~matrix).columns() ) ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid submatrix specification" );
       }
@@ -1605,7 +1676,7 @@ inline decltype(auto) submatrix( const MatRepeatExpr<MT,CRAs...>& matrix, RSAs..
    const size_t N2 = (~matrix).operand().columns();
 
    return columns( rows( (~matrix).operand(), [M2]( size_t i ){ return (i+I)%M2; }, M, args... )
-                 , [N2]( size_t i ){ return (i+J)%N2; }, N, args... );
+                 , [N2]( size_t i ){ return (i+J)%N2; }, N, unchecked );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1638,9 +1709,7 @@ inline decltype(auto)
 {
    BLAZE_FUNCTION_TRACE;
 
-   constexpr bool isChecked( !Contains_v< TypeList<RSAs...>, Unchecked > );
-
-   if( isChecked ) {
+   if( isChecked( args... ) ) {
       if( ( row + m > (~matrix).rows() ) || ( column + n > (~matrix).columns() ) ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid submatrix specification" );
       }
@@ -1654,7 +1723,7 @@ inline decltype(auto)
    const size_t N = (~matrix).operand().columns();
 
    return columns( rows( (~matrix).operand(), [row,M]( size_t i ){ return (i+row)%M; }, m, args... )
-                 , [column,N]( size_t i ){ return (i+column)%N; }, n, args... );
+                 , [column,N]( size_t i ){ return (i+column)%N; }, n, unchecked );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1730,9 +1799,7 @@ inline decltype(auto) submatrix( MT&& sm, RSAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   constexpr bool isChecked( !Contains_v< TypeList<RSAs...>, Unchecked > );
-
-   if( isChecked ) {
+   if( isChecked( args... ) ) {
       if( ( I + M > sm.rows() ) || ( J + N > sm.columns() ) ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid submatrix specification" );
       }
@@ -1742,7 +1809,7 @@ inline decltype(auto) submatrix( MT&& sm, RSAs... args )
       BLAZE_USER_ASSERT( J + N <= sm.columns(), "Invalid submatrix specification" );
    }
 
-   return submatrix<AF>( sm.operand(), sm.row() + I, sm.column() + J, M, N, args... );
+   return submatrix<AF>( sm.operand(), sm.row() + I, sm.column() + J, M, N, unchecked );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1772,9 +1839,7 @@ inline decltype(auto) submatrix( MT&& sm, size_t row, size_t column, size_t m, s
 {
    BLAZE_FUNCTION_TRACE;
 
-   constexpr bool isChecked( !Contains_v< TypeList<RSAs...>, Unchecked > );
-
-   if( isChecked ) {
+   if( isChecked( args... ) ) {
       if( ( row + m > sm.rows() ) || ( column + n > sm.columns() ) ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid submatrix specification" );
       }
@@ -1784,7 +1849,7 @@ inline decltype(auto) submatrix( MT&& sm, size_t row, size_t column, size_t m, s
       BLAZE_USER_ASSERT( column + n <= sm.columns(), "Invalid submatrix specification" );
    }
 
-   return submatrix<AF>( sm.operand(), sm.row() + row, sm.column() + column, m, n, args... );
+   return submatrix<AF>( sm.operand(), sm.row() + row, sm.column() + column, m, n, unchecked );
 }
 /*! \endcond */
 //*************************************************************************************************
