@@ -3935,6 +3935,36 @@ void OperationTest<VT1,VT2>::testRowOperation()
 
          checkResults();
       }
+
+
+      //=====================================================================================
+      // Failure cases
+      //=====================================================================================
+
+      // Out-of-bounds access (invalid row index)
+      {
+         test_  = "Out-of-bounds row construction (invalid row index)";
+         error_ = "Setup of out-of-bounds row succeeded";
+
+         try {
+            auto r = row( lhs_ * rhs_, lhs_.size() );
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: " << error_ << "\n"
+                << " Details:\n"
+                << "   Random seed = " << blaze::getSeed() << "\n"
+                << "   Left-hand side sparse vector type:\n"
+                << "     " << typeid( VT1 ).name() << "\n"
+                << "   Right-hand side dense vector type:\n"
+                << "     " << typeid( TVT2 ).name() << "\n"
+                << "   Result:\n" << r << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ex ) {
+            checkExceptionMessage( ex, "Invalid row access index" );
+         }
+      }
    }
 #endif
 }

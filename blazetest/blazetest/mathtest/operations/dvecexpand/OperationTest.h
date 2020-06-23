@@ -6925,6 +6925,85 @@ void OperationTest<VT,E>::testRowOperation( blaze::TrueType )
 
          checkTransposeResults<TVT>();
       }
+
+
+      //=====================================================================================
+      // Failure cases
+      //=====================================================================================
+
+      // Out-of-bounds access (invalid row index)
+      {
+         test_  = "Out-of-bounds row construction (invalid row index)";
+         error_ = "Setup of out-of-bounds row succeeded";
+
+         try {
+            auto r = row( expand( vec_, E ), vec_.size() );
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: " << error_ << "\n"
+                << " Details:\n"
+                << "   Random seed = " << blaze::getSeed() << "\n"
+                << "   Dense vector type:\n"
+                << "     " << typeid( VT ).name() << "\n"
+                << "   Result:\n" << r << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ex ) {
+            checkExceptionMessage( ex, "Invalid row access index" );
+         }
+
+         try {
+            auto r = row( expand<E>( vec_ ), vec_.size() );
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: " << error_ << "\n"
+                << " Details:\n"
+                << "   Random seed = " << blaze::getSeed() << "\n"
+                << "   Dense vector type:\n"
+                << "     " << typeid( VT ).name() << "\n"
+                << "   Result:\n" << r << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ex ) {
+            checkExceptionMessage( ex, "Invalid row access index" );
+         }
+
+         try {
+            auto r = row( expand( tvec_, E ), E );
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: " << error_ << "\n"
+                << " Details:\n"
+                << "   Random seed = " << blaze::getSeed() << "\n"
+                << "   Dense vector type:\n"
+                << "     " << typeid( TVT ).name() << "\n"
+                << "   Result:\n" << r << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ex ) {
+            checkExceptionMessage( ex, "Invalid row access index" );
+         }
+
+         try {
+            auto r = row( expand<E>( tvec_ ), E );
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: " << error_ << "\n"
+                << " Details:\n"
+                << "   Random seed = " << blaze::getSeed() << "\n"
+                << "   Dense vector type:\n"
+                << "     " << typeid( TVT ).name() << "\n"
+                << "   Result:\n" << r << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ex ) {
+            checkExceptionMessage( ex, "Invalid row access index" );
+         }
+      }
    }
 #endif
 }
