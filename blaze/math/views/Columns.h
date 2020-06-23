@@ -1847,6 +1847,7 @@ inline decltype(auto) elements( const MatReduceExpr<VT,columnwise>& vector, REAs
 // \param columns The selection of columns containing the row.
 // \param args The runtime row arguments.
 // \return View on the specified row of the column selection.
+// \exception std::invalid_argument Invalid row access index.
 //
 // This function returns an expression representing the specified row of the given column selection.
 */

@@ -2110,9 +2110,7 @@ inline decltype(auto) row( MT&& sm, size_t index, RRAs... args )
    constexpr size_t M( RemoveReference_t<MT>::rows() );
    constexpr size_t N( RemoveReference_t<MT>::columns() );
 
-   constexpr bool isChecked( !Contains_v< TypeList<RRAs...>, Unchecked > );
-
-   if( isChecked ) {
+   if( isChecked( args... ) ) {
       if( ( index >= M ) ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid row access index" );
       }
@@ -2150,9 +2148,7 @@ inline decltype(auto) row( MT&& sm, RRAs... args )
 
    const RowData<CRAs...> rd( args... );
 
-   constexpr bool isChecked( !Contains_v< TypeList<RRAs...>, Unchecked > );
-
-   if( isChecked ) {
+   if( isChecked( args... ) ) {
       if( ( rd.row() >= sm.rows() ) ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid row access index" );
       }

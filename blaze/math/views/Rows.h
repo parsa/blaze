@@ -1879,15 +1879,13 @@ inline decltype(auto) row( MT&& rows, RRAs... args )
 
    const RowData<CRAs...> rd( args... );
 
-   constexpr bool isChecked( !Contains_v< TypeList<RRAs...>, Unchecked > );
-
-   if( isChecked ) {
+   if( isChecked( args... ) ) {
       if( rows.rows() <= rd.row() ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid row access index" );
       }
    }
 
-   return row( rows.operand(), rows.idx( rd.row() ), args... );
+   return row( rows.operand(), rows.idx( rd.row() ), unchecked );
 }
 /*! \endcond */
 //*************************************************************************************************

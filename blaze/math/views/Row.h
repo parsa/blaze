@@ -84,8 +84,6 @@
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/FunctionTrace.h>
 #include <blaze/util/IntegralConstant.h>
-#include <blaze/util/MaybeUnused.h>
-#include <blaze/util/TypeList.h>
 #include <blaze/util/Types.h>
 
 
@@ -365,6 +363,7 @@ inline decltype(auto) row( Matrix<MT,SO>&& matrix, size_t index, RRAs... args )
 // \param matrix The constant matrix/matrix addition.
 // \param args The runtime row arguments.
 // \return View on the specified row of the addition.
+// \exception std::invalid_argument Invalid row access index.
 //
 // This function returns an expression representing the specified row of the given matrix/matrix
 // addition.
@@ -391,6 +390,7 @@ inline decltype(auto) row( const MatMatAddExpr<MT>& matrix, RRAs... args )
 // \param matrix The constant matrix/matrix subtraction.
 // \param args The runtime row arguments.
 // \return View on the specified row of the subtraction.
+// \exception std::invalid_argument Invalid row access index.
 //
 // This function returns an expression representing the specified row of the given matrix/matrix
 // subtraction.
@@ -417,6 +417,7 @@ inline decltype(auto) row( const MatMatSubExpr<MT>& matrix, RRAs... args )
 // \param matrix The constant Schur product.
 // \param args The runtime row arguments.
 // \return View on the specified row of the Schur product.
+// \exception std::invalid_argument Invalid row access index.
 //
 // This function returns an expression representing the specified row of the given Schur product.
 */
@@ -442,6 +443,7 @@ inline decltype(auto) row( const SchurExpr<MT>& matrix, RRAs... args )
 // \param matrix The constant matrix/matrix multiplication.
 // \param args The runtime row arguments.
 // \return View on the specified row of the multiplication.
+// \exception std::invalid_argument Invalid row access index.
 //
 // This function returns an expression representing the specified row of the given matrix/matrix
 // multiplication.
@@ -467,6 +469,7 @@ inline decltype(auto) row( const MatMatMultExpr<MT>& matrix, RRAs... args )
 // \param matrix The constant Kronecker product.
 // \param args The runtime row arguments.
 // \return View on the specified row of the Kronecker product.
+// \exception std::invalid_argument Invalid row access index.
 //
 // This function returns an expression representing the specified row of the given Kronecker
 // product.
@@ -478,11 +481,9 @@ inline decltype(auto) row( const MatMatKronExpr<MT>& matrix, RRAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   MAYBE_UNUSED( args... );
-
    const RowData<CRAs...> rd( args... );
 
-   if( !Contains_v< TypeList<RRAs...>, Unchecked > ) {
+   if( isChecked( args... ) ) {
       if( (~matrix).rows() <= rd.row() ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid row access index" );
       }
@@ -490,8 +491,8 @@ inline decltype(auto) row( const MatMatKronExpr<MT>& matrix, RRAs... args )
 
    const size_t rows( (~matrix).rightOperand().rows() );
 
-   return kron( row( (~matrix).leftOperand(), rd.row()/rows ),
-                row( (~matrix).rightOperand(), rd.row()%rows ) );
+   return kron( row( (~matrix).leftOperand(), rd.row()/rows, unchecked ),
+                row( (~matrix).rightOperand(), rd.row()%rows, unchecked ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -516,9 +517,7 @@ inline decltype(auto) row( const VecTVecMultExpr<MT>& matrix, RRAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   MAYBE_UNUSED( args... );
-
-   if( !Contains_v< TypeList<RRAs...>, Unchecked > ) {
+   if( isChecked( args... ) ) {
       if( (~matrix).rows() <= I ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid row access index" );
       }
@@ -549,9 +548,7 @@ inline decltype(auto) row( const VecTVecMultExpr<MT>& matrix, size_t index, RRAs
 {
    BLAZE_FUNCTION_TRACE;
 
-   MAYBE_UNUSED( args... );
-
-   if( !Contains_v< TypeList<RRAs...>, Unchecked > ) {
+   if( isChecked( args... ) ) {
       if( (~matrix).rows() <= index ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid row access index" );
       }
@@ -571,6 +568,7 @@ inline decltype(auto) row( const VecTVecMultExpr<MT>& matrix, size_t index, RRAs
 // \param matrix The constant matrix/scalar multiplication.
 // \param args The runtime row arguments.
 // \return View on the specified row of the multiplication.
+// \exception std::invalid_argument Invalid row access index.
 //
 // This function returns an expression representing the specified row of the given matrix/scalar
 // multiplication.
@@ -596,6 +594,7 @@ inline decltype(auto) row( const MatScalarMultExpr<MT>& matrix, RRAs... args )
 // \param matrix The constant matrix/scalar division.
 // \param args The runtime row arguments.
 // \return View on the specified row of the division.
+// \exception std::invalid_argument Invalid row access index.
 //
 // This function returns an expression representing the specified row of the given matrix/scalar
 // division.
@@ -621,6 +620,7 @@ inline decltype(auto) row( const MatScalarDivExpr<MT>& matrix, RRAs... args )
 // \param matrix The constant unary matrix map operation.
 // \param args The runtime row arguments.
 // \return View on the specified row of the unary map operation.
+// \exception std::invalid_argument Invalid row access index.
 //
 // This function returns an expression representing the specified row of the given unary matrix
 // map operation.
@@ -646,6 +646,7 @@ inline decltype(auto) row( const MatMapExpr<MT>& matrix, RRAs... args )
 // \param matrix The constant binary matrix map operation.
 // \param args The runtime row arguments.
 // \return View on the specified row of the binary map operation.
+// \exception std::invalid_argument Invalid row access index.
 //
 // This function returns an expression representing the specified row of the given binary matrix
 // map operation.
@@ -685,9 +686,7 @@ inline decltype(auto) row( const VecTVecMapExpr<MT>& matrix, RRAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   MAYBE_UNUSED( args... );
-
-   if( !Contains_v< TypeList<RRAs...>, Unchecked > ) {
+   if( isChecked( args... ) ) {
       if( (~matrix).rows() <= I ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid row access index" );
       }
@@ -720,9 +719,7 @@ inline decltype(auto) row( const VecTVecMapExpr<MT>& matrix, size_t index, RRAs.
 {
    BLAZE_FUNCTION_TRACE;
 
-   MAYBE_UNUSED( args... );
-
-   if( !Contains_v< TypeList<RRAs...>, Unchecked > ) {
+   if( isChecked( args... ) ) {
       if( (~matrix).rows() <= index ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid row access index" );
       }
@@ -743,6 +740,7 @@ inline decltype(auto) row( const VecTVecMapExpr<MT>& matrix, size_t index, RRAs.
 // \param matrix The constant matrix evaluation operation.
 // \param args The runtime row arguments.
 // \return View on the specified row of the evaluation operation.
+// \exception std::invalid_argument Invalid row access index.
 //
 // This function returns an expression representing the specified row of the given matrix
 // evaluation operation.
@@ -768,6 +766,7 @@ inline decltype(auto) row( const MatEvalExpr<MT>& matrix, RRAs... args )
 // \param matrix The constant matrix serialization operation.
 // \param args The runtime row arguments.
 // \return View on the specified row of the serialization operation.
+// \exception std::invalid_argument Invalid row access index.
 //
 // This function returns an expression representing the specified row of the given matrix
 // serialization operation.
@@ -793,6 +792,7 @@ inline decltype(auto) row( const MatSerialExpr<MT>& matrix, RRAs... args )
 // \param matrix The constant matrix no-alias operation.
 // \param args The runtime row arguments.
 // \return View on the specified row of the no-alias operation.
+// \exception std::invalid_argument Invalid row access index.
 //
 // This function returns an expression representing the specified row of the given matrix
 // no-alias operation.
@@ -818,6 +818,7 @@ inline decltype(auto) row( const MatNoAliasExpr<MT>& matrix, RRAs... args )
 // \param matrix The constant matrix no-SIMD operation.
 // \param args The runtime row arguments.
 // \return View on the specified row of the no-SIMD operation.
+// \exception std::invalid_argument Invalid row access index.
 //
 // This function returns an expression representing the specified row of the given matrix
 // no-SIMD operation.
@@ -843,6 +844,7 @@ inline decltype(auto) row( const MatNoSIMDExpr<MT>& matrix, RRAs... args )
 // \param matrix The constant matrix declaration operation.
 // \param args The runtime row arguments.
 // \return View on the specified row of the declaration operation.
+// \exception std::invalid_argument Invalid row access index.
 //
 // This function returns an expression representing the specified row of the given matrix
 // declaration operation.
@@ -868,6 +870,7 @@ inline decltype(auto) row( const DeclExpr<MT>& matrix, RRAs... args )
 // \param matrix The constant matrix transpose operation.
 // \param args The runtime row arguments.
 // \return View on the specified row of the transpose operation.
+// \exception std::invalid_argument Invalid row access index.
 //
 // This function returns an expression representing the specified row of the given matrix
 // transpose operation.
@@ -879,7 +882,14 @@ inline decltype(auto) row( const MatTransExpr<MT>& matrix, RRAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return trans( column<CRAs...>( (~matrix).operand(), args... ) );
+   if( isChecked( args... ) ) {
+      const RowData<CRAs...> rd( args... );
+      if( (~matrix).rows() <= rd.row() ) {
+         BLAZE_THROW_INVALID_ARGUMENT( "Invalid row access index" );
+      }
+   }
+
+   return trans( column<CRAs...>( (~matrix).operand(), unchecked ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -892,7 +902,8 @@ inline decltype(auto) row( const MatTransExpr<MT>& matrix, RRAs... args )
 //
 // \param matrix The constant vector expansion operation.
 // \param args The runtime row arguments.
-// \return void
+// \return View on the specified row of the expansion operation.
+// \exception std::invalid_argument Invalid row access index.
 //
 // This function returns an expression representing the specified row of the given row-major
 // vector expansion operation.
@@ -906,7 +917,14 @@ inline decltype(auto) row( const VecExpandExpr<MT,CEAs...>& matrix, RRAs... args
 {
    BLAZE_FUNCTION_TRACE;
 
-   return subvector( (~matrix).operand(), 0UL, (~matrix).columns(), args... );
+   if( isChecked( args... ) ) {
+      const RowData<CRAs...> rd( args... );
+      if( (~matrix).rows() <= rd.row() ) {
+         BLAZE_THROW_INVALID_ARGUMENT( "Invalid row access index" );
+      }
+   }
+
+   return subvector( (~matrix).operand(), 0UL, (~matrix).columns(), unchecked );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -919,7 +937,8 @@ inline decltype(auto) row( const VecExpandExpr<MT,CEAs...>& matrix, RRAs... args
 //
 // \param matrix The constant vector expansion operation.
 // \param args The runtime row arguments.
-// \return void
+// \return View on the specified row of the expansion operation.
+// \exception std::invalid_argument Invalid row access index.
 //
 // This function returns an expression representing the specified row of the given column-major
 // vector expansion operation.
@@ -933,9 +952,15 @@ inline decltype(auto) row( const VecExpandExpr<MT,CEAs...>& matrix, RRAs... args
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ET = ElementType_t< MatrixType_t<MT> >;
-
    const RowData<CRAs...> rd( args... );
+
+   if( isChecked( args... ) ) {
+      if( (~matrix).rows() <= rd.row() ) {
+         BLAZE_THROW_INVALID_ARGUMENT( "Invalid row access index" );
+      }
+   }
+
+   using ET = ElementType_t< MatrixType_t<MT> >;
 
    return UniformVector<ET,rowVector>( (~matrix).columns(), (~matrix).operand()[rd.row()] );
 }
@@ -950,7 +975,7 @@ inline decltype(auto) row( const VecExpandExpr<MT,CEAs...>& matrix, RRAs... args
 //
 // \param matrix The constant matrix repeat operation.
 // \param args The runtime row arguments.
-// \return void
+// \return View on the specified row of the repeat operation.
 // \exception std::invalid_argument Invalid row access index.
 //
 // This function returns an expression representing the specified row of the given row-major
@@ -966,7 +991,7 @@ inline decltype(auto) row( const MatRepeatExpr<MT,CRAs2...>& matrix, RRAs... arg
 
    const RowData<CRAs1...> rd( args... );
 
-   if( !Contains_v< TypeList<RRAs...>, Unchecked > ) {
+   if( isChecked( args... ) ) {
       if( (~matrix).rows() <= rd.row() ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid row access index" );
       }
