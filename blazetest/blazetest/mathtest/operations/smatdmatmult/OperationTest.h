@@ -11186,6 +11186,175 @@ void OperationTest<MT1,MT2>::testRowsOperation( blaze::TrueType )
 
          checkResults<OMT1,OMT2>();
       }
+
+
+      //=====================================================================================
+      // Failure cases
+      //=====================================================================================
+
+      // Out-of-bounds access (invalid row index; initializer_list)
+      {
+         test_  = "Out-of-bounds row selection construction (invalid row index; initializer_list)";
+         error_ = "Setup of out-of-bounds row selection succeeded";
+
+         try {
+            auto r = rows( lhs_ * rhs_, { lhs_.rows() } );
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: " << error_ << "\n"
+                << " Details:\n"
+                << "   Random seed = " << blaze::getSeed() << "\n"
+                << "   Left-hand side sparse matrix type:\n"
+                << "     " << typeid( MT1 ).name() << "\n"
+                << "   Right-hand side dense matrix type:\n"
+                << "     " << typeid( MT2 ).name() << "\n"
+                << "   Result:\n" << r << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ex ) {
+            checkExceptionMessage( ex, "Invalid row access index" );
+         }
+
+         try {
+            auto r = rows( lhs_ * orhs_, { lhs_.rows() } );
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: " << error_ << "\n"
+                << " Details:\n"
+                << "   Random seed = " << blaze::getSeed() << "\n"
+                << "   Left-hand side sparse matrix type:\n"
+                << "     " << typeid( MT1 ).name() << "\n"
+                << "   Right-hand side dense matrix type:\n"
+                << "     " << typeid( OMT2 ).name() << "\n"
+                << "   Result:\n" << r << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ex ) {
+            checkExceptionMessage( ex, "Invalid row access index" );
+         }
+
+         try {
+            auto r = rows( olhs_ * rhs_, { olhs_.rows() } );
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: " << error_ << "\n"
+                << " Details:\n"
+                << "   Random seed = " << blaze::getSeed() << "\n"
+                << "   Left-hand side sparse matrix type:\n"
+                << "     " << typeid( OMT1 ).name() << "\n"
+                << "   Right-hand side dense matrix type:\n"
+                << "     " << typeid( MT2 ).name() << "\n"
+                << "   Result:\n" << r << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ex ) {
+            checkExceptionMessage( ex, "Invalid row access index" );
+         }
+
+         try {
+            auto r = rows( olhs_ * orhs_, { olhs_.rows() } );
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: " << error_ << "\n"
+                << " Details:\n"
+                << "   Random seed = " << blaze::getSeed() << "\n"
+                << "   Left-hand side sparse matrix type:\n"
+                << "     " << typeid( OMT1 ).name() << "\n"
+                << "   Right-hand side dense matrix type:\n"
+                << "     " << typeid( OMT2 ).name() << "\n"
+                << "   Result:\n" << r << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ex ) {
+            checkExceptionMessage( ex, "Invalid row access index" );
+         }
+      }
+
+      // Out-of-bounds access (invalid row index; lambda)
+      {
+         test_  = "Out-of-bounds row selection construction (invalid row index; lambda)";
+         error_ = "Setup of out-of-bounds row selection succeeded";
+
+         try {
+            auto r = rows( lhs_ * rhs_, [index=lhs_.rows()]( size_t ){ return index; }, 1UL );
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: " << error_ << "\n"
+                << " Details:\n"
+                << "   Random seed = " << blaze::getSeed() << "\n"
+                << "   Left-hand side sparse matrix type:\n"
+                << "     " << typeid( MT1 ).name() << "\n"
+                << "   Right-hand side dense matrix type:\n"
+                << "     " << typeid( MT2 ).name() << "\n"
+                << "   Result:\n" << r << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ex ) {
+            checkExceptionMessage( ex, "Invalid row access index" );
+         }
+
+         try {
+            auto r = rows( lhs_ * orhs_, [index=lhs_.rows()]( size_t ){ return index; }, 1UL );
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: " << error_ << "\n"
+                << " Details:\n"
+                << "   Random seed = " << blaze::getSeed() << "\n"
+                << "   Left-hand side sparse matrix type:\n"
+                << "     " << typeid( MT1 ).name() << "\n"
+                << "   Right-hand side dense matrix type:\n"
+                << "     " << typeid( OMT2 ).name() << "\n"
+                << "   Result:\n" << r << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ex ) {
+            checkExceptionMessage( ex, "Invalid row access index" );
+         }
+
+         try {
+            auto r = rows( olhs_ * rhs_, [index=olhs_.rows()]( size_t ){ return index; }, 1UL );
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: " << error_ << "\n"
+                << " Details:\n"
+                << "   Random seed = " << blaze::getSeed() << "\n"
+                << "   Left-hand side sparse matrix type:\n"
+                << "     " << typeid( OMT1 ).name() << "\n"
+                << "   Right-hand side dense matrix type:\n"
+                << "     " << typeid( MT2 ).name() << "\n"
+                << "   Result:\n" << r << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ex ) {
+            checkExceptionMessage( ex, "Invalid row access index" );
+         }
+
+         try {
+            auto r = rows( olhs_ * orhs_, [index=olhs_.rows()]( size_t ){ return index; }, 1UL );
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: " << error_ << "\n"
+                << " Details:\n"
+                << "   Random seed = " << blaze::getSeed() << "\n"
+                << "   Left-hand side sparse matrix type:\n"
+                << "     " << typeid( OMT1 ).name() << "\n"
+                << "   Right-hand side dense matrix type:\n"
+                << "     " << typeid( OMT2 ).name() << "\n"
+                << "   Result:\n" << r << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ex ) {
+            checkExceptionMessage( ex, "Invalid row access index" );
+         }
+      }
    }
 #endif
 }

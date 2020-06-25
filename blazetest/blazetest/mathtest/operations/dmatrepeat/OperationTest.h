@@ -7028,6 +7028,159 @@ void OperationTest<MT,R0,R1>::testRowsOperation( blaze::TrueType )
 
          checkResults<OMT>();
       }
+
+
+      //=====================================================================================
+      // Failure cases
+      //=====================================================================================
+
+      // Out-of-bounds access (invalid row index; initializer_list)
+      {
+         test_  = "Out-of-bounds row selection construction (invalid row index; initializer_list)";
+         error_ = "Setup of out-of-bounds row selection succeeded";
+
+         try {
+            auto r = rows( repeat( mat_, R0, R1 ), { mat_.rows()*R0 } );
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: " << error_ << "\n"
+                << " Details:\n"
+                << "   Random seed = " << blaze::getSeed() << "\n"
+                << "   Dense matrix type:\n"
+                << "     " << typeid( MT ).name() << "\n"
+                << "   Result:\n" << r << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ex ) {
+            checkExceptionMessage( ex, "Invalid row access index" );
+         }
+
+         try {
+            auto r = rows( repeat<R0,R1>( mat_ ), { mat_.rows()*R0 } );
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: " << error_ << "\n"
+                << " Details:\n"
+                << "   Random seed = " << blaze::getSeed() << "\n"
+                << "   Dense matrix type:\n"
+                << "     " << typeid( MT ).name() << "\n"
+                << "   Result:\n" << r << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ex ) {
+            checkExceptionMessage( ex, "Invalid row access index" );
+         }
+
+         try {
+            auto r = rows( repeat( omat_, R0, R1 ), { omat_.rows()*R0 } );
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: " << error_ << "\n"
+                << " Details:\n"
+                << "   Random seed = " << blaze::getSeed() << "\n"
+                << "   Dense matrix type:\n"
+                << "     " << typeid( OMT ).name() << "\n"
+                << "   Result:\n" << r << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ex ) {
+            checkExceptionMessage( ex, "Invalid row access index" );
+         }
+
+         try {
+            auto r = rows( repeat<R0,R1>( omat_ ), { omat_.rows()*R0 } );
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: " << error_ << "\n"
+                << " Details:\n"
+                << "   Random seed = " << blaze::getSeed() << "\n"
+                << "   Dense matrix type:\n"
+                << "     " << typeid( OMT ).name() << "\n"
+                << "   Result:\n" << r << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ex ) {
+            checkExceptionMessage( ex, "Invalid row access index" );
+         }
+      }
+
+      // Out-of-bounds access (invalid row index; lambda)
+      {
+         test_  = "Out-of-bounds row selection construction (invalid row index; lambda)";
+         error_ = "Setup of out-of-bounds row selection succeeded";
+
+         try {
+            auto r = rows( repeat( mat_, R0, R1 ), [index=mat_.rows()*R0]( size_t ){ return index; }, 1UL );
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: " << error_ << "\n"
+                << " Details:\n"
+                << "   Random seed = " << blaze::getSeed() << "\n"
+                << "   Dense matrix type:\n"
+                << "     " << typeid( MT ).name() << "\n"
+                << "   Result:\n" << r << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ex ) {
+            checkExceptionMessage( ex, "Invalid row access index" );
+         }
+
+         try {
+            auto r = rows( repeat<R0,R1>( mat_ ), [index=mat_.rows()*R0]( size_t ){ return index; }, 1UL );
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: " << error_ << "\n"
+                << " Details:\n"
+                << "   Random seed = " << blaze::getSeed() << "\n"
+                << "   Dense matrix type:\n"
+                << "     " << typeid( MT ).name() << "\n"
+                << "   Result:\n" << r << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ex ) {
+            checkExceptionMessage( ex, "Invalid row access index" );
+         }
+
+         try {
+            auto r = rows( repeat( omat_, R0, R1 ), [index=omat_.rows()*R0]( size_t ){ return index; }, 1UL );
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: " << error_ << "\n"
+                << " Details:\n"
+                << "   Random seed = " << blaze::getSeed() << "\n"
+                << "   Dense matrix type:\n"
+                << "     " << typeid( OMT ).name() << "\n"
+                << "   Result:\n" << r << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ex ) {
+            checkExceptionMessage( ex, "Invalid row access index" );
+         }
+
+         try {
+            auto r = rows( repeat<R0,R1>( omat_ ), [index=omat_.rows()*R0]( size_t ){ return index; }, 1UL );
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: " << error_ << "\n"
+                << " Details:\n"
+                << "   Random seed = " << blaze::getSeed() << "\n"
+                << "   Dense matrix type:\n"
+                << "     " << typeid( OMT ).name() << "\n"
+                << "   Result:\n" << r << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ex ) {
+            checkExceptionMessage( ex, "Invalid row access index" );
+         }
+      }
    }
 #endif
 }

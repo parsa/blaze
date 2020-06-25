@@ -7675,6 +7675,159 @@ void OperationTest<VT,E>::testRowsOperation()
 
          checkTransposeResults<TVT>();
       }
+
+
+      //=====================================================================================
+      // Failure cases
+      //=====================================================================================
+
+      // Out-of-bounds access (invalid row index; initializer_list)
+      {
+         test_  = "Out-of-bounds row selection construction (invalid row index; initializer_list)";
+         error_ = "Setup of out-of-bounds row selection succeeded";
+
+         try {
+            auto r = rows( expand( vec_, E ), { vec_.size() } );
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: " << error_ << "\n"
+                << " Details:\n"
+                << "   Random seed = " << blaze::getSeed() << "\n"
+                << "   Sparse vector type:\n"
+                << "     " << typeid( VT ).name() << "\n"
+                << "   Result:\n" << r << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ex ) {
+            checkExceptionMessage( ex, "Invalid row access index" );
+         }
+
+         try {
+            auto r = rows( expand<E>( vec_ ), { vec_.size() } );
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: " << error_ << "\n"
+                << " Details:\n"
+                << "   Random seed = " << blaze::getSeed() << "\n"
+                << "   Sparse vector type:\n"
+                << "     " << typeid( VT ).name() << "\n"
+                << "   Result:\n" << r << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ex ) {
+            checkExceptionMessage( ex, "Invalid row access index" );
+         }
+
+         try {
+            auto r = rows( expand( tvec_, E ), { E } );
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: " << error_ << "\n"
+                << " Details:\n"
+                << "   Random seed = " << blaze::getSeed() << "\n"
+                << "   Sparse vector type:\n"
+                << "     " << typeid( TVT ).name() << "\n"
+                << "   Result:\n" << r << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ex ) {
+            checkExceptionMessage( ex, "Invalid row access index" );
+         }
+
+         try {
+            auto r = rows( expand<E>( tvec_ ), { E } );
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: " << error_ << "\n"
+                << " Details:\n"
+                << "   Random seed = " << blaze::getSeed() << "\n"
+                << "   Sparse vector type:\n"
+                << "     " << typeid( TVT ).name() << "\n"
+                << "   Result:\n" << r << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ex ) {
+            checkExceptionMessage( ex, "Invalid row access index" );
+         }
+      }
+
+      // Out-of-bounds access (invalid row index; lambda)
+      {
+         test_  = "Out-of-bounds row selection construction (invalid row index; lambda)";
+         error_ = "Setup of out-of-bounds row selection succeeded";
+
+         try {
+            auto r = rows( expand( vec_, E ), [index=vec_.size()]( size_t ){ return index; }, 1UL );
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: " << error_ << "\n"
+                << " Details:\n"
+                << "   Random seed = " << blaze::getSeed() << "\n"
+                << "   Sparse vector type:\n"
+                << "     " << typeid( VT ).name() << "\n"
+                << "   Result:\n" << r << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ex ) {
+            checkExceptionMessage( ex, "Invalid row access index" );
+         }
+
+         try {
+            auto r = rows( expand<E>( vec_ ), [index=vec_.size()]( size_t ){ return index; }, 1UL );
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: " << error_ << "\n"
+                << " Details:\n"
+                << "   Random seed = " << blaze::getSeed() << "\n"
+                << "   Sparse vector type:\n"
+                << "     " << typeid( VT ).name() << "\n"
+                << "   Result:\n" << r << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ex ) {
+            checkExceptionMessage( ex, "Invalid row access index" );
+         }
+
+         try {
+            auto r = rows( expand( tvec_, E ), [index=E]( size_t ){ return index; }, 1UL );
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: " << error_ << "\n"
+                << " Details:\n"
+                << "   Random seed = " << blaze::getSeed() << "\n"
+                << "   Sparse vector type:\n"
+                << "     " << typeid( TVT ).name() << "\n"
+                << "   Result:\n" << r << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ex ) {
+            checkExceptionMessage( ex, "Invalid row access index" );
+         }
+
+         try {
+            auto r = rows( expand<E>( tvec_ ), [index=E]( size_t ){ return index; }, 1UL );
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: " << error_ << "\n"
+                << " Details:\n"
+                << "   Random seed = " << blaze::getSeed() << "\n"
+                << "   Sparse vector type:\n"
+                << "     " << typeid( TVT ).name() << "\n"
+                << "   Result:\n" << r << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ex ) {
+            checkExceptionMessage( ex, "Invalid row access index" );
+         }
+      }
    }
 #endif
 }
