@@ -102,9 +102,9 @@
 #include <blaze/util/FunctionTrace.h>
 #include <blaze/util/IntegerSequence.h>
 #include <blaze/util/IntegralConstant.h>
+#include <blaze/util/MaybeUnused.h>
 #include <blaze/util/SmallArray.h>
 #include <blaze/util/StaticAssert.h>
-#include <blaze/util/TypeList.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/RemoveReference.h>
 
@@ -2071,6 +2071,8 @@ inline decltype(auto) row( MT&& sm, RRAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
+   MAYBE_UNUSED( args... );
+
    constexpr size_t I2( RemoveReference_t<MT>::row() );
    constexpr size_t J ( RemoveReference_t<MT>::column() );
    constexpr size_t M ( RemoveReference_t<MT>::rows() );
@@ -2350,6 +2352,8 @@ inline decltype(auto) column( MT&& sm, RCAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
+   MAYBE_UNUSED( args... );
+
    constexpr size_t I2( RemoveReference_t<MT>::row() );
    constexpr size_t J ( RemoveReference_t<MT>::column() );
    constexpr size_t M ( RemoveReference_t<MT>::rows() );
@@ -2507,9 +2511,7 @@ inline decltype(auto) columns( MT&& sm, RCAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   constexpr bool isChecked( !Contains_v< TypeList<RCAs...>, Unchecked > );
-
-   if( isChecked ) {
+   if( isChecked( args... ) ) {
       static constexpr size_t indices[] = { I, Is... };
       for( size_t j=0UL; j<sizeof...(Is)+1UL; ++j ) {
          if( sm.columns() <= indices[j] ) {
@@ -2518,7 +2520,7 @@ inline decltype(auto) columns( MT&& sm, RCAs... args )
       }
    }
 
-   return submatrix( columns( sm.operand(), { I+sm.column(), Is+sm.column()... }, args... ),
+   return submatrix( columns( sm.operand(), { I+sm.column(), Is+sm.column()... }, unchecked ),
                      sm.row(), 0UL, sm.rows(), sizeof...(Is)+1UL, unchecked );
 }
 /*! \endcond */
@@ -2547,9 +2549,7 @@ inline decltype(auto) columns( MT&& sm, T* indices, size_t n, RCAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   constexpr bool isChecked( !Contains_v< TypeList<RCAs...>, Unchecked > );
-
-   if( isChecked ) {
+   if( isChecked( args... ) ) {
       for( size_t j=0UL; j<n; ++j ) {
          if( sm.columns() <= size_t( indices[j] ) ) {
             BLAZE_THROW_INVALID_ARGUMENT( "Invalid column specification" );
@@ -2561,7 +2561,7 @@ inline decltype(auto) columns( MT&& sm, T* indices, size_t n, RCAs... args )
    std::for_each( newIndices.begin(), newIndices.end(),
                   [column=sm.column()]( size_t& index ){ index += column; } );
 
-   return submatrix( columns( sm.operand(), newIndices.data(), n, args... ),
+   return submatrix( columns( sm.operand(), newIndices.data(), n, unchecked ),
                      sm.row(), 0UL, sm.rows(), n, unchecked );
 }
 /*! \endcond */
@@ -2590,9 +2590,7 @@ inline decltype(auto) columns( MT&& sm, P p, size_t n, RCAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   constexpr bool isChecked( !Contains_v< TypeList<RCAs...>, Unchecked > );
-
-   if( isChecked ) {
+   if( isChecked( args... ) ) {
       for( size_t j=0UL; j<n; ++j ) {
          if( sm.columns() <= size_t( p(j) ) ) {
             BLAZE_THROW_INVALID_ARGUMENT( "Invalid column specification" );
@@ -2600,7 +2598,7 @@ inline decltype(auto) columns( MT&& sm, P p, size_t n, RCAs... args )
       }
    }
 
-   return submatrix( columns( sm.operand(), [p,offset=sm.column()]( size_t i ){ return p(i)+offset; }, n, args... ),
+   return submatrix( columns( sm.operand(), [p,offset=sm.column()]( size_t i ){ return p(i)+offset; }, n, unchecked ),
                      sm.row(), 0UL, sm.rows(), n, unchecked );
 }
 /*! \endcond */

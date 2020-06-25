@@ -94,7 +94,6 @@
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/MaybeUnused.h>
 #include <blaze/util/mpl/If.h>
-#include <blaze/util/TypeList.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsConst.h>
 #include <blaze/util/typetraits/IsReference.h>
@@ -460,7 +459,7 @@ inline Columns<MT,true,true,SF,CCAs...>::Columns( MT& matrix, RCAs... args )
    : DataType( args... )  // Base class initialization
    , matrix_ ( matrix  )  // The matrix containing the columns
 {
-   if( !Contains_v< TypeList<RCAs...>, Unchecked > ) {
+   if( isChecked( args... ) ) {
       for( size_t j=0UL; j<columns(); ++j ) {
          if( matrix_.columns() <= idx(j) ) {
             BLAZE_THROW_INVALID_ARGUMENT( "Invalid column access index" );
@@ -3709,7 +3708,7 @@ inline Columns<MT,false,true,false,CCAs...>::Columns( MT& matrix, RCAs... args )
    : DataType( args... )  // Base class initialization
    , matrix_ ( matrix  )  // The matrix containing the columns
 {
-   if( !Contains_v< TypeList<RCAs...>, Unchecked > ) {
+   if( isChecked( args... ) ) {
       for( size_t j=0UL; j<columns(); ++j ) {
          if( matrix_.columns() <= idx(j) ) {
             BLAZE_THROW_INVALID_ARGUMENT( "Invalid column access index" );
@@ -6073,7 +6072,7 @@ inline Columns<MT,false,true,true,CCAs...>::Columns( MT& matrix, RCAs... args )
    : DataType( args... )  // Base class initialization
    , matrix_ ( matrix  )  // The matrix containing the columns
 {
-   if( !Contains_v< TypeList<RCAs...>, Unchecked > ) {
+   if( isChecked( args... ) ) {
       for( size_t j=0UL; j<columns(); ++j ) {
          if( matrix_.columns() <= idx(j) ) {
             BLAZE_THROW_INVALID_ARGUMENT( "Invalid column access index" );
