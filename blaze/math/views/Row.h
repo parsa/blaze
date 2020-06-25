@@ -882,14 +882,12 @@ inline decltype(auto) row( const MatTransExpr<MT>& matrix, RRAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   if( isChecked( args... ) ) {
-      const RowData<CRAs...> rd( args... );
-      if( (~matrix).rows() <= rd.row() ) {
-         BLAZE_THROW_INVALID_ARGUMENT( "Invalid row access index" );
-      }
+   try {
+      return trans( column<CRAs...>( (~matrix).operand(), args... ) );
    }
-
-   return trans( column<CRAs...>( (~matrix).operand(), unchecked ) );
+   catch( ... ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid row access index" );
+   }
 }
 /*! \endcond */
 //*************************************************************************************************

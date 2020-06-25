@@ -2078,7 +2078,7 @@ inline decltype(auto) row( MT&& sm, RRAs... args )
 
    BLAZE_STATIC_ASSERT_MSG( I < M, "Invalid row access index" );
 
-   return subvector<J,N>( row<I+I2>( sm.operand(), args... ), unchecked );
+   return subvector<J,N>( row<I+I2>( sm.operand(), unchecked ), unchecked );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -2119,7 +2119,7 @@ inline decltype(auto) row( MT&& sm, size_t index, RRAs... args )
       BLAZE_USER_ASSERT( index < M, "Invalid row access index" );
    }
 
-   return subvector<J,N>( row( sm.operand(), I+index, args... ), unchecked );
+   return subvector<J,N>( row( sm.operand(), I+index, unchecked ), unchecked );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -2159,7 +2159,7 @@ inline decltype(auto) row( MT&& sm, RRAs... args )
 
    const size_t index( rd.row() + sm.row() );
 
-   return subvector( row( sm.operand(), index, args... ), sm.column(), sm.columns(), unchecked );
+   return subvector( row( sm.operand(), index, unchecked ), sm.column(), sm.columns(), unchecked );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -2228,9 +2228,7 @@ inline decltype(auto) rows( MT&& sm, RRAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   constexpr bool isChecked( !Contains_v< TypeList<RRAs...>, Unchecked > );
-
-   if( isChecked ) {
+   if( isChecked( args... ) ) {
       static constexpr size_t indices[] = { I, Is... };
       for( size_t i=0UL; i<sizeof...(Is)+1UL; ++i ) {
          if( sm.rows() <= indices[i] ) {
@@ -2239,7 +2237,7 @@ inline decltype(auto) rows( MT&& sm, RRAs... args )
       }
    }
 
-   return submatrix( rows( sm.operand(), { I+sm.row(), Is+sm.row()... }, args... ),
+   return submatrix( rows( sm.operand(), { I+sm.row(), Is+sm.row()... }, unchecked ),
                      0UL, sm.column(), sizeof...(Is)+1UL, sm.columns(), unchecked );
 }
 /*! \endcond */
@@ -2268,12 +2266,10 @@ inline decltype(auto) rows( MT&& sm, T* indices, size_t n, RRAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   constexpr bool isChecked( !Contains_v< TypeList<RRAs...>, Unchecked > );
-
-   if( isChecked ) {
+   if( isChecked( args... ) ) {
       for( size_t i=0UL; i<n; ++i ) {
          if( sm.rows() <= size_t( indices[i] ) ) {
-            BLAZE_THROW_INVALID_ARGUMENT( "Invalid row specification" );
+            BLAZE_THROW_INVALID_ARGUMENT( "Invalid row access index" );
          }
       }
    }
@@ -2282,7 +2278,7 @@ inline decltype(auto) rows( MT&& sm, T* indices, size_t n, RRAs... args )
    std::for_each( newIndices.begin(), newIndices.end(),
                   [row=sm.row()]( size_t& index ){ index += row; } );
 
-   return submatrix( rows( sm.operand(), newIndices.data(), n, args... ),
+   return submatrix( rows( sm.operand(), newIndices.data(), n, unchecked ),
                      0UL, sm.column(), n, sm.columns(), unchecked );
 }
 /*! \endcond */
@@ -2311,17 +2307,15 @@ inline decltype(auto) rows( MT&& sm, P p, size_t n, RRAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   constexpr bool isChecked( !Contains_v< TypeList<RRAs...>, Unchecked > );
-
-   if( isChecked ) {
+   if( isChecked( args... ) ) {
       for( size_t i=0UL; i<n; ++i ) {
          if( sm.rows() <= size_t( p(i) ) ) {
-            BLAZE_THROW_INVALID_ARGUMENT( "Invalid row specification" );
+            BLAZE_THROW_INVALID_ARGUMENT( "Invalid row access index" );
          }
       }
    }
 
-   return submatrix( rows( sm.operand(), [p,offset=sm.row()]( size_t i ){ return p(i)+offset; }, n, args... ),
+   return submatrix( rows( sm.operand(), [p,offset=sm.row()]( size_t i ){ return p(i)+offset; }, n, unchecked ),
                      0UL, sm.column(), n, sm.columns(), unchecked );
 }
 /*! \endcond */

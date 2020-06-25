@@ -84,7 +84,6 @@
 #include <blaze/util/constraints/Reference.h>
 #include <blaze/util/MaybeUnused.h>
 #include <blaze/util/mpl/If.h>
-#include <blaze/util/TypeList.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsConst.h>
 #include <blaze/util/typetraits/IsReference.h>
@@ -354,7 +353,7 @@ inline Rows<MT,true,false,SF,CRAs...>::Rows( MT& matrix, RRAs... args )
    : DataType( args... )  // Base class initialization
    , matrix_ ( matrix  )  // The matrix containing the rows
 {
-   if( !Contains_v< TypeList<RRAs...>, Unchecked > ) {
+   if( isChecked( args... ) ) {
       for( size_t i=0UL; i<rows(); ++i ) {
          if( matrix_.rows() <= idx(i) ) {
             BLAZE_THROW_INVALID_ARGUMENT( "Invalid row access index" );
@@ -2801,7 +2800,7 @@ inline Rows<MT,false,false,false,CRAs...>::Rows( MT& matrix, RRAs... args )
    : DataType( args... )  // Base class initialization
    , matrix_ ( matrix  )  // The matrix containing the rows
 {
-   if( !Contains_v< TypeList<RRAs...>, Unchecked > ) {
+   if( isChecked( args... ) ) {
       for( size_t i=0UL; i<rows(); ++i ) {
          if( matrix_.rows() <= idx(i) ) {
             BLAZE_THROW_INVALID_ARGUMENT( "Invalid row access index" );
@@ -4905,7 +4904,7 @@ inline Rows<MT,false,false,true,CRAs...>::Rows( MT& matrix, RRAs... args )
    : DataType( args... )  // Base class initialization
    , matrix_ ( matrix  )  // The matrix containing the rows
 {
-   if( !Contains_v< TypeList<RRAs...>, Unchecked > ) {
+   if( isChecked( args... ) ) {
       for( size_t i=0UL; i<rows(); ++i ) {
          if( matrix_.rows() <= idx(i) ) {
             BLAZE_THROW_INVALID_ARGUMENT( "Invalid row access index" );
