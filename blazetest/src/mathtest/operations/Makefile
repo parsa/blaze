@@ -248,12 +248,12 @@ svecexpand:
 dvecrepeat:
 	@echo
 	@echo "Building the dense vector repeat tests..."
-	@$(MAKE) --no-print-directory -C ./dvecexpand $(MAKECMDGOALS)
+	@$(MAKE) --no-print-directory -C ./dvecrepeat $(MAKECMDGOALS)
 
 svecrepeat:
 	@echo
 	@echo "Building the sparse vector repeat tests..."
-	@$(MAKE) --no-print-directory -C ./svecexpand $(MAKECMDGOALS)
+	@$(MAKE) --no-print-directory -C ./svecrepeat $(MAKECMDGOALS)
 
 dmatdvecmult:
 	@echo
