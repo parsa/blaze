@@ -9260,6 +9260,159 @@ void OperationTest<VT,E>::testColumnsOperation()
 
          checkTransposeResults<TVT>();
       }
+
+
+      //=====================================================================================
+      // Failure cases
+      //=====================================================================================
+
+      // Out-of-bounds access (invalid column index; initializer_list)
+      {
+         test_  = "Out-of-bounds column selection construction (invalid column index; initializer_list)";
+         error_ = "Setup of out-of-bounds column selection succeeded";
+
+         try {
+            auto c = columns( expand( vec_, E ), { E } );
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: " << error_ << "\n"
+                << " Details:\n"
+                << "   Random seed = " << blaze::getSeed() << "\n"
+                << "   Sparse vector type:\n"
+                << "     " << typeid( VT ).name() << "\n"
+                << "   Result:\n" << c << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ex ) {
+            checkExceptionMessage( ex, "Invalid column access index" );
+         }
+
+         try {
+            auto c = columns( expand<E>( vec_ ), { E } );
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: " << error_ << "\n"
+                << " Details:\n"
+                << "   Random seed = " << blaze::getSeed() << "\n"
+                << "   Sparse vector type:\n"
+                << "     " << typeid( VT ).name() << "\n"
+                << "   Result:\n" << c << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ex ) {
+            checkExceptionMessage( ex, "Invalid column access index" );
+         }
+
+         try {
+            auto c = columns( expand( tvec_, E ), { tvec_.size() } );
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: " << error_ << "\n"
+                << " Details:\n"
+                << "   Random seed = " << blaze::getSeed() << "\n"
+                << "   Sparse vector type:\n"
+                << "     " << typeid( TVT ).name() << "\n"
+                << "   Result:\n" << c << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ex ) {
+            checkExceptionMessage( ex, "Invalid column access index" );
+         }
+
+         try {
+            auto c = columns( expand<E>( tvec_ ), { tvec_.size() } );
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: " << error_ << "\n"
+                << " Details:\n"
+                << "   Random seed = " << blaze::getSeed() << "\n"
+                << "   Sparse vector type:\n"
+                << "     " << typeid( TVT ).name() << "\n"
+                << "   Result:\n" << c << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ex ) {
+            checkExceptionMessage( ex, "Invalid column access index" );
+         }
+      }
+
+      // Out-of-bounds access (invalid column index; lambda)
+      {
+         test_  = "Out-of-bounds column selection construction (invalid column index; lambda)";
+         error_ = "Setup of out-of-bounds column selection succeeded";
+
+         try {
+            auto c = columns( expand( vec_, E ), [index=E]( size_t ){ return index; }, 1UL );
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: " << error_ << "\n"
+                << " Details:\n"
+                << "   Random seed = " << blaze::getSeed() << "\n"
+                << "   Sparse vector type:\n"
+                << "     " << typeid( VT ).name() << "\n"
+                << "   Result:\n" << c << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ex ) {
+            checkExceptionMessage( ex, "Invalid column access index" );
+         }
+
+         try {
+            auto c = columns( expand<E>( vec_ ), [index=E]( size_t ){ return index; }, 1UL );
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: " << error_ << "\n"
+                << " Details:\n"
+                << "   Random seed = " << blaze::getSeed() << "\n"
+                << "   Sparse vector type:\n"
+                << "     " << typeid( VT ).name() << "\n"
+                << "   Result:\n" << c << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ex ) {
+            checkExceptionMessage( ex, "Invalid column access index" );
+         }
+
+         try {
+            auto c = columns( expand( tvec_, E ), [index=tvec_.size()]( size_t ){ return index; }, 1UL );
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: " << error_ << "\n"
+                << " Details:\n"
+                << "   Random seed = " << blaze::getSeed() << "\n"
+                << "   Sparse vector type:\n"
+                << "     " << typeid( TVT ).name() << "\n"
+                << "   Result:\n" << c << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ex ) {
+            checkExceptionMessage( ex, "Invalid column access index" );
+         }
+
+         try {
+            auto c = columns( expand<E>( tvec_ ), [index=tvec_.size()]( size_t ){ return index; }, 1UL );
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: " << error_ << "\n"
+                << " Details:\n"
+                << "   Random seed = " << blaze::getSeed() << "\n"
+                << "   Sparse vector type:\n"
+                << "     " << typeid( TVT ).name() << "\n"
+                << "   Result:\n" << c << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ex ) {
+            checkExceptionMessage( ex, "Invalid column access index" );
+         }
+      }
    }
 #endif
 }
@@ -10636,11 +10789,11 @@ void OperationTest<VT,E>::checkExceptionMessage( const std::exception& ex, const
 {
    if( ex.what() != message ) {
       std::ostringstream oss;
-      oss << " Test: Submatrix construction\n"
+      oss << " Test: " << test_ << "\n"
           << " Error: Wrong error message\n"
           << " Details:\n"
           << "   Error message: \"" << ex.what() << "\"\n"
-          << "   Expected error message: \"Invalid submatrix specification\"\n";
+          << "   Expected error message: \"" << message << "\"\n";
       throw std::runtime_error( oss.str() );
    }
 }

@@ -11639,6 +11639,175 @@ void OperationTest<MT1,MT2>::testColumnsOperation( blaze::TrueType )
 
          checkResults<OMT1,OMT2>();
       }
+
+
+      //=====================================================================================
+      // Failure cases
+      //=====================================================================================
+
+      // Out-of-bounds access (invalid column index; initializer_list)
+      {
+         test_  = "Out-of-bounds column selection construction (invalid column index; initializer_list)";
+         error_ = "Setup of out-of-bounds column selection succeeded";
+
+         try {
+            auto c = columns( lhs_ + rhs_, { lhs_.columns() } );
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: " << error_ << "\n"
+                << " Details:\n"
+                << "   Random seed = " << blaze::getSeed() << "\n"
+                << "   Left-hand side dense matrix type:\n"
+                << "     " << typeid( MT1 ).name() << "\n"
+                << "   Right-hand side sparse matrix type:\n"
+                << "     " << typeid( MT2 ).name() << "\n"
+                << "   Result:\n" << c << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ex ) {
+            checkExceptionMessage( ex, "Invalid column access index" );
+         }
+
+         try {
+            auto c = columns( lhs_ + orhs_, { lhs_.columns() } );
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: " << error_ << "\n"
+                << " Details:\n"
+                << "   Random seed = " << blaze::getSeed() << "\n"
+                << "   Left-hand side dense matrix type:\n"
+                << "     " << typeid( MT1 ).name() << "\n"
+                << "   Right-hand side sparse matrix type:\n"
+                << "     " << typeid( OMT2 ).name() << "\n"
+                << "   Result:\n" << c << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ex ) {
+            checkExceptionMessage( ex, "Invalid column access index" );
+         }
+
+         try {
+            auto c = columns( olhs_ + rhs_, { olhs_.columns() } );
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: " << error_ << "\n"
+                << " Details:\n"
+                << "   Random seed = " << blaze::getSeed() << "\n"
+                << "   Left-hand side dense matrix type:\n"
+                << "     " << typeid( OMT1 ).name() << "\n"
+                << "   Right-hand side sparse matrix type:\n"
+                << "     " << typeid( MT2 ).name() << "\n"
+                << "   Result:\n" << c << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ex ) {
+            checkExceptionMessage( ex, "Invalid column access index" );
+         }
+
+         try {
+            auto c = columns( olhs_ + orhs_, { olhs_.columns() } );
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: " << error_ << "\n"
+                << " Details:\n"
+                << "   Random seed = " << blaze::getSeed() << "\n"
+                << "   Left-hand side dense matrix type:\n"
+                << "     " << typeid( OMT1 ).name() << "\n"
+                << "   Right-hand side sparse matrix type:\n"
+                << "     " << typeid( OMT2 ).name() << "\n"
+                << "   Result:\n" << c << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ex ) {
+            checkExceptionMessage( ex, "Invalid column access index" );
+         }
+      }
+
+      // Out-of-bounds access (invalid column index; lambda)
+      {
+         test_  = "Out-of-bounds column selection construction (invalid column index; lambda)";
+         error_ = "Setup of out-of-bounds column selection succeeded";
+
+         try {
+            auto c = columns( lhs_ + rhs_, [index=lhs_.columns()]( size_t ){ return index; }, 1UL );
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: " << error_ << "\n"
+                << " Details:\n"
+                << "   Random seed = " << blaze::getSeed() << "\n"
+                << "   Left-hand side dense matrix type:\n"
+                << "     " << typeid( MT1 ).name() << "\n"
+                << "   Right-hand side sparse matrix type:\n"
+                << "     " << typeid( MT2 ).name() << "\n"
+                << "   Result:\n" << c << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ex ) {
+            checkExceptionMessage( ex, "Invalid column access index" );
+         }
+
+         try {
+            auto c = columns( lhs_ + orhs_, [index=lhs_.columns()]( size_t ){ return index; }, 1UL );
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: " << error_ << "\n"
+                << " Details:\n"
+                << "   Random seed = " << blaze::getSeed() << "\n"
+                << "   Left-hand side dense matrix type:\n"
+                << "     " << typeid( MT1 ).name() << "\n"
+                << "   Right-hand side sparse matrix type:\n"
+                << "     " << typeid( OMT2 ).name() << "\n"
+                << "   Result:\n" << c << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ex ) {
+            checkExceptionMessage( ex, "Invalid column access index" );
+         }
+
+         try {
+            auto c = columns( olhs_ + rhs_, [index=olhs_.columns()]( size_t ){ return index; }, 1UL );
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: " << error_ << "\n"
+                << " Details:\n"
+                << "   Random seed = " << blaze::getSeed() << "\n"
+                << "   Left-hand side dense matrix type:\n"
+                << "     " << typeid( OMT1 ).name() << "\n"
+                << "   Right-hand side sparse matrix type:\n"
+                << "     " << typeid( MT2 ).name() << "\n"
+                << "   Result:\n" << c << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ex ) {
+            checkExceptionMessage( ex, "Invalid column access index" );
+         }
+
+         try {
+            auto c = columns( olhs_ + orhs_, [index=olhs_.columns()]( size_t ){ return index; }, 1UL );
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: " << error_ << "\n"
+                << " Details:\n"
+                << "   Random seed = " << blaze::getSeed() << "\n"
+                << "   Left-hand side dense matrix type:\n"
+                << "     " << typeid( OMT1 ).name() << "\n"
+                << "   Right-hand side sparse matrix type:\n"
+                << "     " << typeid( OMT2 ).name() << "\n"
+                << "   Result:\n" << c << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ex ) {
+            checkExceptionMessage( ex, "Invalid column access index" );
+         }
+      }
    }
 #endif
 }
@@ -12958,11 +13127,11 @@ void OperationTest<MT1,MT2>::checkExceptionMessage( const std::exception& ex, co
 {
    if( ex.what() != message ) {
       std::ostringstream oss;
-      oss << " Test: Submatrix construction\n"
+      oss << " Test: " << test_ << "\n"
           << " Error: Wrong error message\n"
           << " Details:\n"
           << "   Error message: \"" << ex.what() << "\"\n"
-          << "   Expected error message: \"Invalid submatrix specification\"\n";
+          << "   Expected error message: \"" << message << "\"\n";
       throw std::runtime_error( oss.str() );
    }
 }
