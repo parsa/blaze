@@ -2357,7 +2357,7 @@ inline decltype(auto) column( MT&& sm, RCAs... args )
 
    BLAZE_STATIC_ASSERT_MSG( I < N, "Invalid column access index" );
 
-   return subvector<I2,M>( column<I+J>( sm.operand(), args... ), unchecked );
+   return subvector<I2,M>( column<I+J>( sm.operand(), unchecked ), unchecked );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -2389,9 +2389,7 @@ inline decltype(auto) column( MT&& sm, size_t index, RCAs... args )
    constexpr size_t M( RemoveReference_t<MT>::rows() );
    constexpr size_t N( RemoveReference_t<MT>::columns() );
 
-   constexpr bool isChecked( !Contains_v< TypeList<RCAs...>, Unchecked > );
-
-   if( isChecked ) {
+   if( isChecked( args... ) ) {
       if( ( index >= N ) ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid column access index" );
       }
@@ -2400,7 +2398,7 @@ inline decltype(auto) column( MT&& sm, size_t index, RCAs... args )
       BLAZE_USER_ASSERT( index < N, "Invalid column access index" );
    }
 
-   return subvector<I,M>( column( sm.operand(), J+index, args... ), unchecked );
+   return subvector<I,M>( column( sm.operand(), J+index, unchecked ), unchecked );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -2429,9 +2427,7 @@ inline decltype(auto) column( MT&& sm, RCAs... args )
 
    const ColumnData<CCAs...> cd( args... );
 
-   constexpr bool isChecked( !Contains_v< TypeList<RCAs...>, Unchecked > );
-
-   if( isChecked ) {
+   if( isChecked( args... ) ) {
       if( ( cd.column() >= sm.columns() ) ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid column access index" );
       }
@@ -2442,7 +2438,7 @@ inline decltype(auto) column( MT&& sm, RCAs... args )
 
    const size_t index( cd.column() + sm.column() );
 
-   return subvector( column( sm.operand(), index, args... ), sm.row(), sm.rows(), unchecked );
+   return subvector( column( sm.operand(), index, unchecked ), sm.row(), sm.rows(), unchecked );
 }
 /*! \endcond */
 //*************************************************************************************************

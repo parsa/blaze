@@ -96,7 +96,6 @@
 #include <blaze/util/constraints/Vectorizable.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/mpl/If.h>
-#include <blaze/util/TypeList.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsConst.h>
 #include <blaze/util/typetraits/IsReference.h>
@@ -421,7 +420,7 @@ inline Column<MT,true,true,SF,CCAs...>::Column( MT& matrix, RCAs... args )
    : DataType( args... )  // Base class initialization
    , matrix_ ( matrix  )  // The matrix containing the column
 {
-   if( !Contains_v< TypeList<RCAs...>, Unchecked > ) {
+   if( isChecked( args... ) ) {
       if( matrix_.columns() <= column() ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid column access index" );
       }
@@ -2798,7 +2797,7 @@ inline Column<MT,false,true,false,CCAs...>::Column( MT& matrix, RCAs... args )
    : DataType( args... )  // Base class initialization
    , matrix_ ( matrix  )  // The matrix containing the column
 {
-   if( !Contains_v< TypeList<RCAs...>, Unchecked > ) {
+   if( isChecked( args... ) ) {
       if( matrix_.columns() <= column() ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid column access index" );
       }
@@ -4463,7 +4462,7 @@ inline Column<MT,false,true,true,CCAs...>::Column( MT& matrix, RCAs... args )
    : DataType( args... )  // Base class initialization
    , matrix_ ( matrix  )  // The matrix containing the column
 {
-   if( !Contains_v< TypeList<RCAs...>, Unchecked > ) {
+   if( isChecked( args... ) ) {
       if( matrix_.columns() <= column() ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid column access index" );
       }

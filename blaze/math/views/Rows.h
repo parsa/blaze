@@ -1981,6 +1981,7 @@ inline decltype(auto) row( MT&& rows, RRAs... args )
 // \param rows The selection of rows containing the column.
 // \param args The runtime column arguments.
 // \return View on the specified column of the row selection.
+// \exception std::invalid_argument Invalid column access index.
 //
 // This function returns an expression representing the specified column of the given row selection.
 */

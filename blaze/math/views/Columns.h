@@ -1924,9 +1924,7 @@ inline decltype(auto) column( MT&& columns, RCAs... args )
 
    const ColumnData<CCAs...> cd( args... );
 
-   constexpr bool isChecked( !Contains_v< TypeList<RCAs...>, Unchecked > );
-
-   if( isChecked ) {
+   if( isChecked( args... ) ) {
       if( columns.columns() <= cd.column() ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid column access index" );
       }

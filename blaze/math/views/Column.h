@@ -84,8 +84,6 @@
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/FunctionTrace.h>
 #include <blaze/util/IntegralConstant.h>
-#include <blaze/util/MaybeUnused.h>
-#include <blaze/util/TypeList.h>
 #include <blaze/util/Types.h>
 
 
@@ -365,6 +363,7 @@ inline decltype(auto) column( Matrix<MT,SO>&& matrix, size_t index, RCAs... args
 // \param matrix The constant matrix/matrix addition.
 // \param args The runtime column arguments.
 // \return View on the specified column of the addition.
+// \exception std::invalid_argument Invalid column access index.
 //
 // This function returns an expression representing the specified column of the given matrix/matrix
 // addition.
@@ -391,6 +390,7 @@ inline decltype(auto) column( const MatMatAddExpr<MT>& matrix, RCAs... args )
 // \param matrix The constant matrix/matrix subtraction.
 // \param args The runtime column arguments.
 // \return View on the specified column of the subtraction.
+// \exception std::invalid_argument Invalid column access index.
 //
 // This function returns an expression representing the specified column of the given matrix/matrix
 // subtraction.
@@ -417,6 +417,7 @@ inline decltype(auto) column( const MatMatSubExpr<MT>& matrix, RCAs... args )
 // \param matrix The constant Schur product.
 // \param args The runtime column arguments.
 // \return View on the specified column of the Schur product.
+// \exception std::invalid_argument Invalid column access index.
 //
 // This function returns an expression representing the specified column of the given Schur
 // product.
@@ -443,6 +444,7 @@ inline decltype(auto) column( const SchurExpr<MT>& matrix, RCAs... args )
 // \param matrix The constant matrix/matrix multiplication.
 // \param args The runtime column arguments.
 // \return View on the specified column of the multiplication.
+// \exception std::invalid_argument Invalid column access index.
 //
 // This function returns an expression representing the specified column of the given matrix/matrix
 // multiplication.
@@ -468,6 +470,7 @@ inline decltype(auto) column( const MatMatMultExpr<MT>& matrix, RCAs... args )
 // \param matrix The constant Kronecker product.
 // \param args The runtime column arguments.
 // \return View on the specified column of the Kronecker product.
+// \exception std::invalid_argument Invalid column access index.
 //
 // This function returns an expression representing the specified column of the given Kronecker
 // product.
@@ -479,11 +482,9 @@ inline decltype(auto) column( const MatMatKronExpr<MT>& matrix, RCAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   MAYBE_UNUSED( args... );
-
    const ColumnData<CCAs...> cd( args... );
 
-   if( !Contains_v< TypeList<RCAs...>, Unchecked > ) {
+   if( isChecked( args... ) ) {
       if( (~matrix).columns() <= cd.column() ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid column access index" );
       }
@@ -491,8 +492,8 @@ inline decltype(auto) column( const MatMatKronExpr<MT>& matrix, RCAs... args )
 
    const size_t columns( (~matrix).rightOperand().columns() );
 
-   return kron( column( (~matrix).leftOperand(), cd.column()/columns ),
-                column( (~matrix).rightOperand(), cd.column()%columns ) );
+   return kron( column( (~matrix).leftOperand(), cd.column()/columns, unchecked ),
+                column( (~matrix).rightOperand(), cd.column()%columns, unchecked ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -518,9 +519,7 @@ inline decltype(auto) column( const VecTVecMultExpr<MT>& matrix, RCAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   MAYBE_UNUSED( args... );
-
-   if( !Contains_v< TypeList<RCAs...>, Unchecked > ) {
+   if( isChecked( args... ) ) {
       if( (~matrix).columns() <= I ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid column access index" );
       }
@@ -552,9 +551,7 @@ inline decltype(auto) column( const VecTVecMultExpr<MT>& matrix, size_t index, R
 {
    BLAZE_FUNCTION_TRACE;
 
-   MAYBE_UNUSED( args... );
-
-   if( !Contains_v< TypeList<RCAs...>, Unchecked > ) {
+   if( isChecked( args... ) ) {
       if( (~matrix).columns() <= index ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid column access index" );
       }
@@ -574,6 +571,7 @@ inline decltype(auto) column( const VecTVecMultExpr<MT>& matrix, size_t index, R
 // \param matrix The constant matrix/scalar multiplication.
 // \param args The runtime column arguments.
 // \return View on the specified column of the multiplication.
+// \exception std::invalid_argument Invalid column access index.
 //
 // This function returns an expression representing the specified column of the given matrix/scalar
 // multiplication.
@@ -599,6 +597,7 @@ inline decltype(auto) column( const MatScalarMultExpr<MT>& matrix, RCAs... args 
 // \param matrix The constant matrix/scalar division.
 // \param args The runtime column arguments.
 // \return View on the specified column of the division.
+// \exception std::invalid_argument Invalid column access index.
 //
 // This function returns an expression representing the specified column of the given matrix/scalar
 // division.
@@ -624,6 +623,7 @@ inline decltype(auto) column( const MatScalarDivExpr<MT>& matrix, RCAs... args )
 // \param matrix The constant unary matrix map operation.
 // \param args The runtime column arguments.
 // \return View on the specified column of the unary map operation.
+// \exception std::invalid_argument Invalid column access index.
 //
 // This function returns an expression representing the specified column of the given unary
 // matrix map operation.
@@ -649,6 +649,7 @@ inline decltype(auto) column( const MatMapExpr<MT>& matrix, RCAs... args )
 // \param matrix The constant binary matrix map operation.
 // \param args The runtime column arguments.
 // \return View on the specified column of the binary map operation.
+// \exception std::invalid_argument Invalid column access index.
 //
 // This function returns an expression representing the specified column of the given binary
 // matrix map operation.
@@ -677,6 +678,7 @@ inline decltype(auto) column( const MatMatMapExpr<MT>& matrix, RCAs... args )
 // \param args Optional column arguments.
 // \return View on the specified column of the outer map operation.
 // \exception std::invalid_argument Invalid column access index.
+// \exception std::invalid_argument Invalid column access index.
 //
 // This function returns an expression representing the specified column of the given outer
 // map operation.
@@ -688,9 +690,7 @@ inline decltype(auto) column( const VecTVecMapExpr<MT>& matrix, RCAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   MAYBE_UNUSED( args... );
-
-   if( !Contains_v< TypeList<RCAs...>, Unchecked > ) {
+   if( isChecked( args... ) ) {
       if( (~matrix).columns() <= I ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid column access index" );
       }
@@ -723,9 +723,7 @@ inline decltype(auto) column( const VecTVecMapExpr<MT>& matrix, size_t index, RC
 {
    BLAZE_FUNCTION_TRACE;
 
-   MAYBE_UNUSED( args... );
-
-   if( !Contains_v< TypeList<RCAs...>, Unchecked > ) {
+   if( isChecked( args... ) ) {
       if( (~matrix).columns() <= index ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid column access index" );
       }
@@ -746,6 +744,7 @@ inline decltype(auto) column( const VecTVecMapExpr<MT>& matrix, size_t index, RC
 // \param matrix The constant matrix evaluation operation.
 // \param args The runtime column arguments.
 // \return View on the specified column of the evaluation operation.
+// \exception std::invalid_argument Invalid column access index.
 //
 // This function returns an expression representing the specified column of the given matrix
 // evaluation operation.
@@ -771,6 +770,7 @@ inline decltype(auto) column( const MatEvalExpr<MT>& matrix, RCAs... args )
 // \param matrix The constant matrix serialization operation.
 // \param args The runtime column arguments.
 // \return View on the specified column of the serialization operation.
+// \exception std::invalid_argument Invalid column access index.
 //
 // This function returns an expression representing the specified column of the given matrix
 // serialization operation.
@@ -796,6 +796,7 @@ inline decltype(auto) column( const MatSerialExpr<MT>& matrix, RCAs... args )
 // \param matrix The constant matrix no-alias operation.
 // \param args The runtime column arguments.
 // \return View on the specified column of the no-alias operation.
+// \exception std::invalid_argument Invalid column access index.
 //
 // This function returns an expression representing the specified column of the given matrix
 // no-alias operation.
@@ -821,6 +822,7 @@ inline decltype(auto) column( const MatNoAliasExpr<MT>& matrix, RCAs... args )
 // \param matrix The constant matrix no-SIMD operation.
 // \param args The runtime column arguments.
 // \return View on the specified column of the no-SIMD operation.
+// \exception std::invalid_argument Invalid column access index.
 //
 // This function returns an expression representing the specified column of the given matrix
 // no-SIMD operation.
@@ -846,6 +848,7 @@ inline decltype(auto) column( const MatNoSIMDExpr<MT>& matrix, RCAs... args )
 // \param matrix The constant matrix declaration operation.
 // \param args The runtime column arguments.
 // \return View on the specified column of the declaration operation.
+// \exception std::invalid_argument Invalid column access index.
 //
 // This function returns an expression representing the specified column of the given matrix
 // declaration operation.
@@ -871,6 +874,7 @@ inline decltype(auto) column( const DeclExpr<MT>& matrix, RCAs... args )
 // \param matrix The constant matrix transpose operation.
 // \param args The runtime column arguments.
 // \return View on the specified column of the transpose operation.
+// \exception std::invalid_argument Invalid column access index.
 //
 // This function returns an expression representing the specified column of the given matrix
 // transpose operation.
@@ -882,7 +886,12 @@ inline decltype(auto) column( const MatTransExpr<MT>& matrix, RCAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return trans( row<CCAs...>( (~matrix).operand(), args... ) );
+   try {
+      return trans( row<CCAs...>( (~matrix).operand(), args... ) );
+   }
+   catch( ... ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid column access index" );
+   }
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -895,7 +904,8 @@ inline decltype(auto) column( const MatTransExpr<MT>& matrix, RCAs... args )
 //
 // \param matrix The constant vector expansion operation.
 // \param args The runtime column arguments.
-// \return void
+// \return View on the specified column of the expansion operation.
+// \exception std::invalid_argument Invalid column access index.
 //
 // This function returns an expression representing the specified column of the given column-major
 // vector expansion operation.
@@ -909,7 +919,14 @@ inline decltype(auto) column( const VecExpandExpr<MT,CEAs...>& matrix, RCAs... a
 {
    BLAZE_FUNCTION_TRACE;
 
-   return subvector( (~matrix).operand(), 0UL, (~matrix).rows(), args... );
+   if( isChecked( args... ) ) {
+      const ColumnData<CCAs...> cd( args... );
+      if( (~matrix).columns() <= cd.column() ) {
+         BLAZE_THROW_INVALID_ARGUMENT( "Invalid column access index" );
+      }
+   }
+
+   return subvector( (~matrix).operand(), 0UL, (~matrix).rows(), unchecked );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -922,7 +939,8 @@ inline decltype(auto) column( const VecExpandExpr<MT,CEAs...>& matrix, RCAs... a
 //
 // \param matrix The constant vector expansion operation.
 // \param args The runtime column arguments.
-// \return void
+// \return View on the specified column of the expansion operation.
+// \exception std::invalid_argument Invalid column access index.
 //
 // This function returns an expression representing the specified column of the given row-major
 // vector expansion operation.
@@ -936,9 +954,15 @@ inline decltype(auto) column( const VecExpandExpr<MT,CEAs...>& matrix, RCAs... a
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ET = ElementType_t< MatrixType_t<MT> >;
-
    const ColumnData<CCAs...> cd( args... );
+
+   if( isChecked( args... ) ) {
+      if( (~matrix).columns() <= cd.column() ) {
+         BLAZE_THROW_INVALID_ARGUMENT( "Invalid column access index" );
+      }
+   }
+
+   using ET = ElementType_t< MatrixType_t<MT> >;
 
    return UniformVector<ET,columnVector>( (~matrix).rows(), (~matrix).operand()[cd.column()] );
 }
@@ -953,7 +977,7 @@ inline decltype(auto) column( const VecExpandExpr<MT,CEAs...>& matrix, RCAs... a
 //
 // \param matrix The constant matrix repeat operation.
 // \param args The runtime column arguments.
-// \return void
+// \return View on the specified column of the repeat operation.
 // \exception std::invalid_argument Invalid column access index.
 //
 // This function returns an expression representing the specified column of the given column-major
@@ -969,7 +993,7 @@ inline decltype(auto) column( const MatRepeatExpr<MT,CRAs...>& matrix, RCAs... a
 
    const ColumnData<CCAs...> cd( args... );
 
-   if( !Contains_v< TypeList<RCAs...>, Unchecked > ) {
+   if( isChecked( args... ) ) {
       if( (~matrix).columns() <= cd.column() ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid column access index" );
       }
