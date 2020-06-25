@@ -88,7 +88,6 @@
 #include <blaze/util/constraints/Pointer.h>
 #include <blaze/util/constraints/Reference.h>
 #include <blaze/util/mpl/If.h>
-#include <blaze/util/TypeList.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsConst.h>
 #include <blaze/util/typetraits/IsReference.h>
@@ -688,7 +687,7 @@ inline Band<MT,TF,true,false,CBAs...>::Band( MT& matrix, RBAs... args )
    : DataType( args... )  // Base class initialization
    , matrix_ ( matrix  )  // The matrix containing the band
 {
-   if( !Contains_v< TypeList<RBAs...>, Unchecked > ) {
+   if( isChecked( args... ) ) {
       if( ( band() > 0L && column() >= matrix.columns() ) ||
           ( band() < 0L && row() >= matrix.rows() ) ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid band access index" );
@@ -2176,7 +2175,7 @@ class Band<MT,TF,true,true,CBAs...>
       : DataType( args... )  // Base class initialization
       , matrix_ ( mmm )      // The matrix multiplication containing the band
    {
-      if( !Contains_v< TypeList<RBAs...>, Unchecked > ) {
+      if( isChecked( args... ) ) {
          if( ( band() > 0L && column() >= mmm.columns() ) ||
              ( band() < 0L && row() >= mmm.rows() ) ) {
             BLAZE_THROW_INVALID_ARGUMENT( "Invalid band access index" );
@@ -2569,7 +2568,7 @@ class Band< DMatRepeatExpr<MT,SO,CRAs...>, TF, true, false, CBAs... >
       : DataType( args... )  // Base class initialization
       , matrix_ ( re )       // The matrix repeater expression containing the band
    {
-      if( !Contains_v< TypeList<RBAs...>, Unchecked > ) {
+      if( isChecked( args... ) ) {
          if( ( band() > 0L && column() >= re.columns() ) ||
              ( band() < 0L && row() >= re.rows() ) ) {
             BLAZE_THROW_INVALID_ARGUMENT( "Invalid band access index" );

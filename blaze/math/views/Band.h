@@ -461,6 +461,7 @@ inline decltype(auto) diagonal( Matrix<MT,SO>&& matrix, RDAs... args )
 // \param matrix The constant matrix/matrix addition.
 // \param args The runtime band arguments.
 // \return View on the specified band of the addition.
+// \exception std::invalid_argument Invalid band access index.
 //
 // This function returns an expression representing the specified band of the given matrix/matrix
 // addition.
@@ -487,6 +488,7 @@ inline decltype(auto) band( const MatMatAddExpr<MT>& matrix, RBAs... args )
 // \param matrix The constant matrix/matrix subtraction.
 // \param args The runtime band arguments.
 // \return View on the specified band of the subtraction.
+// \exception std::invalid_argument Invalid band access index.
 //
 // This function returns an expression representing the specified band of the given matrix/matrix
 // subtraction.
@@ -513,6 +515,7 @@ inline decltype(auto) band( const MatMatSubExpr<MT>& matrix, RBAs... args )
 // \param matrix The constant Schur product.
 // \param args The runtime band arguments.
 // \return View on the specified band of the Schur product.
+// \exception std::invalid_argument Invalid band access index.
 //
 // This function returns an expression representing the specified band of the given Schur product.
 */
@@ -538,6 +541,7 @@ inline decltype(auto) band( const SchurExpr<MT>& matrix, RBAs... args )
 // \param matrix The constant Kronecker product.
 // \param args The runtime band arguments.
 // \return View on the specified band of the Kronecker product.
+// \exception std::invalid_argument Invalid band access index.
 //
 // This function returns an expression representing the specified band of the given Kronecker
 // product.
@@ -551,11 +555,18 @@ inline decltype(auto) band( const MatMatKronExpr<MT>& matrix, RBAs... args )
 
    const BandData<CBAs...> bd( args... );
 
+   if( isChecked( args... ) ) {
+      if( ( bd.band() > 0L && bd.column() >= (~matrix).columns() ) ||
+          ( bd.band() < 0L && bd.row() >= (~matrix).rows() ) ) {
+         BLAZE_THROW_INVALID_ARGUMENT( "Invalid band access index" );
+      }
+   }
+
    const size_t row   ( bd.band() <  0L ? -bd.band() : 0UL );
    const size_t column( bd.band() >= 0L ?  bd.band() : 0UL );
    const size_t n     ( min( (~matrix).rows() - row, (~matrix).columns() - column ) );
 
-   return diagonal( submatrix( ~matrix, row, column, n, n, args... ) );
+   return diagonal( submatrix( ~matrix, row, column, n, n, unchecked ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -569,6 +580,7 @@ inline decltype(auto) band( const MatMatKronExpr<MT>& matrix, RBAs... args )
 // \param matrix The constant Kronecker product.
 // \param args The runtime band arguments.
 // \return View on the specified band of the Kronecker product.
+// \exception std::invalid_argument Invalid band access index.
 //
 // This function returns an expression representing the specified band of the given outer product.
 */
@@ -581,6 +593,13 @@ inline decltype(auto) band( const VecTVecMultExpr<MT>& matrix, RBAs... args )
 
    const BandData<CBAs...> bd( args... );
 
+   if( isChecked( args... ) ) {
+      if( ( bd.band() > 0L && bd.column() >= (~matrix).columns() ) ||
+          ( bd.band() < 0L && bd.row() >= (~matrix).rows() ) ) {
+         BLAZE_THROW_INVALID_ARGUMENT( "Invalid band access index" );
+      }
+   }
+
    decltype(auto) leftOperand ( (~matrix).leftOperand()  );
    decltype(auto) rightOperand( (~matrix).rightOperand() );
 
@@ -588,8 +607,8 @@ inline decltype(auto) band( const VecTVecMultExpr<MT>& matrix, RBAs... args )
    const size_t column( bd.band() >= 0L ?  bd.band() : 0UL );
    const size_t size  ( min( leftOperand.size() - row, rightOperand.size() - column ) );
 
-   return transTo<defaultTransposeFlag>( subvector( leftOperand , row   , size ) ) *
-          transTo<defaultTransposeFlag>( subvector( rightOperand, column, size ) );
+   return transTo<defaultTransposeFlag>( subvector( leftOperand , row   , size, unchecked ) ) *
+          transTo<defaultTransposeFlag>( subvector( rightOperand, column, size, unchecked ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -603,6 +622,7 @@ inline decltype(auto) band( const VecTVecMultExpr<MT>& matrix, RBAs... args )
 // \param matrix The constant matrix/scalar multiplication.
 // \param args The runtime band arguments.
 // \return View on the specified band of the multiplication.
+// \exception std::invalid_argument Invalid band access index.
 //
 // This function returns an expression representing the specified band of the given matrix/scalar
 // multiplication.
@@ -628,6 +648,7 @@ inline decltype(auto) band( const MatScalarMultExpr<MT>& matrix, RBAs... args )
 // \param matrix The constant matrix/scalar division.
 // \param args The runtime band arguments.
 // \return View on the specified band of the division.
+// \exception std::invalid_argument Invalid band access index.
 //
 // This function returns an expression representing the specified band of the given matrix/scalar
 // division.
@@ -653,6 +674,7 @@ inline decltype(auto) band( const MatScalarDivExpr<MT>& matrix, RBAs... args )
 // \param matrix The constant unary matrix map operation.
 // \param args The runtime band arguments.
 // \return View on the specified band of the unary map operation.
+// \exception std::invalid_argument Invalid band access index.
 //
 // This function returns an expression representing the specified band of the given unary matrix
 // map operation.
@@ -678,6 +700,7 @@ inline decltype(auto) band( const MatMapExpr<MT>& matrix, RBAs... args )
 // \param matrix The constant binary matrix map operation.
 // \param args The runtime band arguments.
 // \return View on the specified band of the binary map operation.
+// \exception std::invalid_argument Invalid band access index.
 //
 // This function returns an expression representing the specified band of the given binary matrix
 // map operation.
@@ -702,9 +725,10 @@ inline decltype(auto) band( const MatMatMapExpr<MT>& matrix, RBAs... args )
 /*!\brief Creating a view on a specific band of the given outer map operation.
 // \ingroup band
 //
-// \param matrix The constant Kronecker map operation.
+// \param matrix The constant outer map operation.
 // \param args The runtime band arguments.
-// \return View on the specified band of the Kronecker map operation.
+// \return View on the specified band of the outer map operation.
+// \exception std::invalid_argument Invalid band access index.
 //
 // This function returns an expression representing the specified band of the given outer map
 // operation.
@@ -718,6 +742,13 @@ inline decltype(auto) band( const VecTVecMapExpr<MT>& matrix, RBAs... args )
 
    const BandData<CBAs...> bd( args... );
 
+   if( isChecked( args... ) ) {
+      if( ( bd.band() > 0L && bd.column() >= (~matrix).columns() ) ||
+          ( bd.band() < 0L && bd.row() >= (~matrix).rows() ) ) {
+         BLAZE_THROW_INVALID_ARGUMENT( "Invalid band access index" );
+      }
+   }
+
    decltype(auto) leftOperand ( (~matrix).leftOperand()  );
    decltype(auto) rightOperand( (~matrix).rightOperand() );
 
@@ -725,8 +756,8 @@ inline decltype(auto) band( const VecTVecMapExpr<MT>& matrix, RBAs... args )
    const size_t column( bd.band() >= 0L ?  bd.band() : 0UL );
    const size_t size  ( min( leftOperand.size() - row, rightOperand.size() - column ) );
 
-   return map( transTo<defaultTransposeFlag>( subvector( leftOperand , row   , size ) ),
-               transTo<defaultTransposeFlag>( subvector( rightOperand, column, size ) ),
+   return map( transTo<defaultTransposeFlag>( subvector( leftOperand , row   , size, unchecked ) ),
+               transTo<defaultTransposeFlag>( subvector( rightOperand, column, size, unchecked ) ),
                (~matrix).operation() );
 }
 /*! \endcond */
@@ -741,6 +772,7 @@ inline decltype(auto) band( const VecTVecMapExpr<MT>& matrix, RBAs... args )
 // \param matrix The constant matrix evaluation operation.
 // \param args The runtime band arguments.
 // \return View on the specified band of the evaluation operation.
+// \exception std::invalid_argument Invalid band access index.
 //
 // This function returns an expression representing the specified band of the given matrix
 // evaluation operation.
@@ -766,6 +798,7 @@ inline decltype(auto) band( const MatEvalExpr<MT>& matrix, RBAs... args )
 // \param matrix The constant matrix serialization operation.
 // \param args The runtime band arguments.
 // \return View on the specified band of the serialization operation.
+// \exception std::invalid_argument Invalid band access index.
 //
 // This function returns an expression representing the specified band of the given matrix
 // serialization operation.
@@ -791,6 +824,7 @@ inline decltype(auto) band( const MatSerialExpr<MT>& matrix, RBAs... args )
 // \param matrix The constant matrix no-alias operation.
 // \param args The runtime band arguments.
 // \return View on the specified band of the no-alias operation.
+// \exception std::invalid_argument Invalid band access index.
 //
 // This function returns an expression representing the specified band of the given matrix
 // no-alias operation.
@@ -816,6 +850,7 @@ inline decltype(auto) band( const MatNoAliasExpr<MT>& matrix, RBAs... args )
 // \param matrix The constant matrix no-SIMD operation.
 // \param args The runtime band arguments.
 // \return View on the specified band of the no-SIMD operation.
+// \exception std::invalid_argument Invalid band access index.
 //
 // This function returns an expression representing the specified band of the given matrix
 // no-SIMD operation.
@@ -841,6 +876,7 @@ inline decltype(auto) band( const MatNoSIMDExpr<MT>& matrix, RBAs... args )
 // \param matrix The constant matrix declaration operation.
 // \param args The runtime band arguments.
 // \return View on the specified band of the declaration operation.
+// \exception std::invalid_argument Invalid band access index.
 //
 // This function returns an expression representing the specified band of the given matrix
 // declaration operation.
@@ -866,6 +902,7 @@ inline decltype(auto) band( const DeclExpr<MT>& matrix, RBAs... args )
 // \param matrix The constant matrix transpose operation.
 // \param args The runtime band arguments.
 // \return View on the specified band of the transpose operation.
+// \exception std::invalid_argument Invalid band access index.
 //
 // This function returns an expression representing the specified band of the given matrix
 // transpose operation.
@@ -892,6 +929,7 @@ inline decltype(auto) band( const MatTransExpr<MT>& matrix, RBAs... args )
 // \param index The band index.
 // \param args Optional band arguments.
 // \return View on the specified band of the transpose operation.
+// \exception std::invalid_argument Invalid band access index.
 //
 // This function returns an expression representing the specified band of the given matrix
 // transpose operation.
@@ -916,6 +954,7 @@ inline decltype(auto) band( const MatTransExpr<MT>& matrix, ptrdiff_t index, RBA
 // \param matrix The constant vector expansion operation.
 // \param args The runtime band arguments.
 // \return View on the specified band of the expansion operation.
+// \exception std::invalid_argument Invalid band access index.
 //
 // This function returns an expression representing the specified band of the given vector
 // expansion operation.
@@ -928,16 +967,23 @@ inline decltype(auto) band( const VecExpandExpr<MT,CEAs...>& matrix, RBAs... arg
 {
    BLAZE_FUNCTION_TRACE;
 
+   const BandData<CBAs...> bd( args... );
+
+   if( isChecked( args... ) ) {
+      if( ( bd.band() > 0L && bd.column() >= (~matrix).columns() ) ||
+          ( bd.band() < 0L && bd.row() >= (~matrix).rows() ) ) {
+         BLAZE_THROW_INVALID_ARGUMENT( "Invalid band access index" );
+      }
+   }
+
    using VT = VectorType_t< RemoveReference_t< decltype( (~matrix).operand() ) > >;
 
    constexpr bool TF( TransposeFlag_v<VT> );
 
-   const BandData<CBAs...> bd( args... );
-
    const size_t index( TF ? bd.column() : bd.row() );
    const size_t size ( min( (~matrix).rows() - bd.row(), (~matrix).columns() - bd.column() ) );
 
-   return subvector( transTo<defaultTransposeFlag>( (~matrix).operand() ), index, size, args... );
+   return subvector( transTo<defaultTransposeFlag>( (~matrix).operand() ), index, size, unchecked );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -951,6 +997,7 @@ inline decltype(auto) band( const VecExpandExpr<MT,CEAs...>& matrix, RBAs... arg
 // \param matrix The constant matrix repeat operation.
 // \param args The runtime band arguments.
 // \return View on the specified band of the repeat operation.
+// \exception std::invalid_argument Invalid band access index.
 //
 // This function returns an expression representing the specified band of the given matrix
 // repeat operation.
