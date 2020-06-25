@@ -39,6 +39,7 @@
 
 #include <cstdlib>
 #include <iostream>
+#include <vector>
 #include <blaze/math/CompressedMatrix.h>
 #include <blaze/math/CompressedVector.h>
 #include <blaze/math/constraints/ColumnMajorMatrix.h>
@@ -2284,18 +2285,20 @@ void OperationTest::testUnderlyingScalar()
 
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingScalar<A>::Type, A );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingScalar<B>::Type, int );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingScalar<C>::Type, complex<float> );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingScalar<C>::Type, C );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingScalar<D>::Type, double );
 
    using Type1 = double;                                    // Built-in data type
    using Type2 = complex<float>;                            // Complex data type
-   using Type3 = StaticVector<int,3UL>;                     // Vector with built-in element type
-   using Type4 = CompressedVector< DynamicVector<float> >;  // Vector with vector element type
+   using Type3 = std::vector<double>;                       // Container type
+   using Type4 = StaticVector<int,3UL>;                     // Vector with built-in element type
+   using Type5 = CompressedVector< DynamicVector<float> >;  // Vector with vector element type
 
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingScalar<Type1>::Type, double );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingScalar<Type2>::Type, complex<float> );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingScalar<Type3>::Type, int );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingScalar<Type4>::Type, float );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingScalar<Type3>::Type, std::vector<double> );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingScalar<Type4>::Type, int );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingScalar<Type5>::Type, float );
 }
 //*************************************************************************************************
 
