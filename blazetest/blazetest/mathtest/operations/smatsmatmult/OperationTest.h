@@ -12836,7 +12836,7 @@ void OperationTest<MT1,MT2>::testBandOperation()
 #if BLAZETEST_MATHTEST_TEST_BAND_OPERATION
    if( BLAZETEST_MATHTEST_TEST_BAND_OPERATION > 1 )
    {
-      if( lhs_.rows() == 0UL || lhs_.columns() == 0UL )
+      if( lhs_.rows() == 0UL || rhs_.columns() == 0UL )
          return;
 
 
@@ -13421,6 +13421,175 @@ void OperationTest<MT1,MT2>::testBandOperation()
          }
 
          checkResults<OMT1,OMT2>();
+      }
+
+
+      //=====================================================================================
+      // Failure cases
+      //=====================================================================================
+
+      // Out-of-bounds access (invalid lower band index)
+      {
+         test_  = "Out-of-bounds band construction (invalid lower band index)";
+         error_ = "Setup of out-of-bounds band succeeded";
+
+         try {
+            auto b = band( lhs_ * rhs_, -lhs_.rows() );
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: " << error_ << "\n"
+                << " Details:\n"
+                << "   Random seed = " << blaze::getSeed() << "\n"
+                << "   Left-hand side sparse matrix type:\n"
+                << "     " << typeid( MT1 ).name() << "\n"
+                << "   Right-hand side sparse matrix type:\n"
+                << "     " << typeid( MT2 ).name() << "\n"
+                << "   Result:\n" << b << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ex ) {
+            checkExceptionMessage( ex, "Invalid band access index" );
+         }
+
+         try {
+            auto b = band( lhs_ * orhs_, -lhs_.rows() );
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: " << error_ << "\n"
+                << " Details:\n"
+                << "   Random seed = " << blaze::getSeed() << "\n"
+                << "   Left-hand side sparse matrix type:\n"
+                << "     " << typeid( MT1 ).name() << "\n"
+                << "   Right-hand side sparse matrix type:\n"
+                << "     " << typeid( OMT2 ).name() << "\n"
+                << "   Result:\n" << b << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ex ) {
+            checkExceptionMessage( ex, "Invalid band access index" );
+         }
+
+         try {
+            auto b = band( olhs_ * rhs_, -olhs_.rows() );
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: " << error_ << "\n"
+                << " Details:\n"
+                << "   Random seed = " << blaze::getSeed() << "\n"
+                << "   Left-hand side sparse matrix type:\n"
+                << "     " << typeid( OMT1 ).name() << "\n"
+                << "   Right-hand side sparse matrix type:\n"
+                << "     " << typeid( MT2 ).name() << "\n"
+                << "   Result:\n" << b << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ex ) {
+            checkExceptionMessage( ex, "Invalid band access index" );
+         }
+
+         try {
+            auto b = band( olhs_ * orhs_, -olhs_.rows() );
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: " << error_ << "\n"
+                << " Details:\n"
+                << "   Random seed = " << blaze::getSeed() << "\n"
+                << "   Left-hand side sparse matrix type:\n"
+                << "     " << typeid( OMT1 ).name() << "\n"
+                << "   Right-hand side sparse matrix type:\n"
+                << "     " << typeid( OMT2 ).name() << "\n"
+                << "   Result:\n" << b << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ex ) {
+            checkExceptionMessage( ex, "Invalid band access index" );
+         }
+      }
+
+      // Out-of-bounds access (invalid upper band index)
+      {
+         test_  = "Out-of-bounds band construction (invalid upper band index)";
+         error_ = "Setup of out-of-bounds band succeeded";
+
+         try {
+            auto b = band( lhs_ * rhs_, rhs_.columns() );
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: " << error_ << "\n"
+                << " Details:\n"
+                << "   Random seed = " << blaze::getSeed() << "\n"
+                << "   Left-hand side sparse matrix type:\n"
+                << "     " << typeid( MT1 ).name() << "\n"
+                << "   Right-hand side sparse matrix type:\n"
+                << "     " << typeid( MT2 ).name() << "\n"
+                << "   Result:\n" << b << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ex ) {
+            checkExceptionMessage( ex, "Invalid band access index" );
+         }
+
+         try {
+            auto b = band( lhs_ * orhs_, orhs_.columns() );
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: " << error_ << "\n"
+                << " Details:\n"
+                << "   Random seed = " << blaze::getSeed() << "\n"
+                << "   Left-hand side sparse matrix type:\n"
+                << "     " << typeid( MT1 ).name() << "\n"
+                << "   Right-hand side sparse matrix type:\n"
+                << "     " << typeid( OMT2 ).name() << "\n"
+                << "   Result:\n" << b << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ex ) {
+            checkExceptionMessage( ex, "Invalid band access index" );
+         }
+
+         try {
+            auto b = band( olhs_ * rhs_, rhs_.columns() );
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: " << error_ << "\n"
+                << " Details:\n"
+                << "   Random seed = " << blaze::getSeed() << "\n"
+                << "   Left-hand side sparse matrix type:\n"
+                << "     " << typeid( OMT1 ).name() << "\n"
+                << "   Right-hand side sparse matrix type:\n"
+                << "     " << typeid( MT2 ).name() << "\n"
+                << "   Result:\n" << b << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ex ) {
+            checkExceptionMessage( ex, "Invalid band access index" );
+         }
+
+         try {
+            auto b = band( olhs_ * orhs_, orhs_.columns() );
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: " << error_ << "\n"
+                << " Details:\n"
+                << "   Random seed = " << blaze::getSeed() << "\n"
+                << "   Left-hand side sparse matrix type:\n"
+                << "     " << typeid( OMT1 ).name() << "\n"
+                << "   Right-hand side sparse matrix type:\n"
+                << "     " << typeid( OMT2 ).name() << "\n"
+                << "   Result:\n" << b << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ex ) {
+            checkExceptionMessage( ex, "Invalid band access index" );
+         }
       }
    }
 #endif

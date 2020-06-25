@@ -9467,6 +9467,159 @@ void OperationTest<MT,R0,R1>::testBandOperation( blaze::TrueType )
 
          checkResults<OMT>();
       }
+
+
+      //=====================================================================================
+      // Failure cases
+      //=====================================================================================
+
+      // Out-of-bounds access (invalid lower band index)
+      {
+         test_  = "Out-of-bounds band construction (invalid lower band index)";
+         error_ = "Setup of out-of-bounds band succeeded";
+
+         try {
+            auto b = band( repeat( mat_, R0, R1 ), -mat_.rows()*R0 );
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: " << error_ << "\n"
+                << " Details:\n"
+                << "   Random seed = " << blaze::getSeed() << "\n"
+                << "   Dense matrix type:\n"
+                << "     " << typeid( MT ).name() << "\n"
+                << "   Result:\n" << b << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ex ) {
+            checkExceptionMessage( ex, "Invalid band access index" );
+         }
+
+         try {
+            auto b = band( repeat<R0,R1>( mat_ ), -mat_.rows()*R0 );
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: " << error_ << "\n"
+                << " Details:\n"
+                << "   Random seed = " << blaze::getSeed() << "\n"
+                << "   Dense matrix type:\n"
+                << "     " << typeid( MT ).name() << "\n"
+                << "   Result:\n" << b << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ex ) {
+            checkExceptionMessage( ex, "Invalid band access index" );
+         }
+
+         try {
+            auto b = band( repeat( omat_, R0, R1 ), -omat_.rows()*R0 );
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: " << error_ << "\n"
+                << " Details:\n"
+                << "   Random seed = " << blaze::getSeed() << "\n"
+                << "   Dense matrix type:\n"
+                << "     " << typeid( OMT ).name() << "\n"
+                << "   Result:\n" << b << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ex ) {
+            checkExceptionMessage( ex, "Invalid band access index" );
+         }
+
+         try {
+            auto b = band( repeat<R0,R1>( omat_ ), -omat_.rows()*R0 );
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: " << error_ << "\n"
+                << " Details:\n"
+                << "   Random seed = " << blaze::getSeed() << "\n"
+                << "   Dense matrix type:\n"
+                << "     " << typeid( OMT ).name() << "\n"
+                << "   Result:\n" << b << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ex ) {
+            checkExceptionMessage( ex, "Invalid band access index" );
+         }
+      }
+
+      // Out-of-bounds access (invalid upper band index)
+      {
+         test_  = "Out-of-bounds band construction (invalid upper band index)";
+         error_ = "Setup of out-of-bounds band succeeded";
+
+         try {
+            auto b = band( repeat( mat_, R0, R1 ), mat_.columns()*R1 );
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: " << error_ << "\n"
+                << " Details:\n"
+                << "   Random seed = " << blaze::getSeed() << "\n"
+                << "   Dense matrix type:\n"
+                << "     " << typeid( MT ).name() << "\n"
+                << "   Result:\n" << b << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ex ) {
+            checkExceptionMessage( ex, "Invalid band access index" );
+         }
+
+         try {
+            auto b = band( repeat<R0,R1>( mat_ ), mat_.columns()*R1 );
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: " << error_ << "\n"
+                << " Details:\n"
+                << "   Random seed = " << blaze::getSeed() << "\n"
+                << "   Dense matrix type:\n"
+                << "     " << typeid( MT ).name() << "\n"
+                << "   Result:\n" << b << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ex ) {
+            checkExceptionMessage( ex, "Invalid band access index" );
+         }
+
+         try {
+            auto b = band( repeat( omat_, R0, R1 ), omat_.columns()*R1 );
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: " << error_ << "\n"
+                << " Details:\n"
+                << "   Random seed = " << blaze::getSeed() << "\n"
+                << "   Dense matrix type:\n"
+                << "     " << typeid( OMT ).name() << "\n"
+                << "   Result:\n" << b << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ex ) {
+            checkExceptionMessage( ex, "Invalid band access index" );
+         }
+
+         try {
+            auto b = band( repeat<R0,R1>( omat_ ), omat_.columns()*R1 );
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: " << error_ << "\n"
+                << " Details:\n"
+                << "   Random seed = " << blaze::getSeed() << "\n"
+                << "   Dense matrix type:\n"
+                << "     " << typeid( OMT ).name() << "\n"
+                << "   Result:\n" << b << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ex ) {
+            checkExceptionMessage( ex, "Invalid band access index" );
+         }
+      }
    }
 #endif
 }

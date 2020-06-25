@@ -10155,6 +10155,159 @@ void OperationTest<VT,E>::testBandOperation( blaze::TrueType )
 
          checkTransposeResults<TVT>();
       }
+
+
+      //=====================================================================================
+      // Failure cases
+      //=====================================================================================
+
+      // Out-of-bounds access (invalid lower band index)
+      {
+         test_  = "Out-of-bounds band construction (invalid lower band index)";
+         error_ = "Setup of out-of-bounds band succeeded";
+
+         try {
+            auto b = band( expand( vec_, E ), -vec_.size() );
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: " << error_ << "\n"
+                << " Details:\n"
+                << "   Random seed = " << blaze::getSeed() << "\n"
+                << "   Dense vector type:\n"
+                << "     " << typeid( VT ).name() << "\n"
+                << "   Result:\n" << b << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ex ) {
+            checkExceptionMessage( ex, "Invalid band access index" );
+         }
+
+         try {
+            auto b = band( expand<E>( vec_ ), -vec_.size() );
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: " << error_ << "\n"
+                << " Details:\n"
+                << "   Random seed = " << blaze::getSeed() << "\n"
+                << "   Dense vector type:\n"
+                << "     " << typeid( VT ).name() << "\n"
+                << "   Result:\n" << b << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ex ) {
+            checkExceptionMessage( ex, "Invalid band access index" );
+         }
+
+         try {
+            auto b = band( expand( tvec_, E ), -E );
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: " << error_ << "\n"
+                << " Details:\n"
+                << "   Random seed = " << blaze::getSeed() << "\n"
+                << "   Dense vector type:\n"
+                << "     " << typeid( TVT ).name() << "\n"
+                << "   Result:\n" << b << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ex ) {
+            checkExceptionMessage( ex, "Invalid band access index" );
+         }
+
+         try {
+            auto b = band( expand<E>( tvec_ ), -E );
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: " << error_ << "\n"
+                << " Details:\n"
+                << "   Random seed = " << blaze::getSeed() << "\n"
+                << "   Dense vector type:\n"
+                << "     " << typeid( TVT ).name() << "\n"
+                << "   Result:\n" << b << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ex ) {
+            checkExceptionMessage( ex, "Invalid band access index" );
+         }
+      }
+
+      // Out-of-bounds access (invalid upper band index)
+      {
+         test_  = "Out-of-bounds band construction (invalid upper band index)";
+         error_ = "Setup of out-of-bounds band succeeded";
+
+         try {
+            auto b = band( expand( vec_, E ), E );
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: " << error_ << "\n"
+                << " Details:\n"
+                << "   Random seed = " << blaze::getSeed() << "\n"
+                << "   Dense vector type:\n"
+                << "     " << typeid( VT ).name() << "\n"
+                << "   Result:\n" << b << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ex ) {
+            checkExceptionMessage( ex, "Invalid band access index" );
+         }
+
+         try {
+            auto b = band( expand<E>( vec_ ), E );
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: " << error_ << "\n"
+                << " Details:\n"
+                << "   Random seed = " << blaze::getSeed() << "\n"
+                << "   Dense vector type:\n"
+                << "     " << typeid( VT ).name() << "\n"
+                << "   Result:\n" << b << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ex ) {
+            checkExceptionMessage( ex, "Invalid band access index" );
+         }
+
+         try {
+            auto b = band( expand( tvec_, E ), tvec_.size() );
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: " << error_ << "\n"
+                << " Details:\n"
+                << "   Random seed = " << blaze::getSeed() << "\n"
+                << "   Dense vector type:\n"
+                << "     " << typeid( TVT ).name() << "\n"
+                << "   Result:\n" << b << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ex ) {
+            checkExceptionMessage( ex, "Invalid band access index" );
+         }
+
+         try {
+            auto b = band( expand<E>( tvec_ ), tvec_.size() );
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: " << error_ << "\n"
+                << " Details:\n"
+                << "   Random seed = " << blaze::getSeed() << "\n"
+                << "   Dense vector type:\n"
+                << "     " << typeid( TVT ).name() << "\n"
+                << "   Result:\n" << b << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ex ) {
+            checkExceptionMessage( ex, "Invalid band access index" );
+         }
+      }
    }
 #endif
 }

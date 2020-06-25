@@ -5012,6 +5012,61 @@ void OperationTest<VT1,VT2>::testBandOperation()
 
          checkResults();
       }
+
+
+      //=====================================================================================
+      // Failure cases
+      //=====================================================================================
+
+      // Out-of-bounds access (invalid lower band index)
+      {
+         test_  = "Out-of-bounds band construction (invalid lower band index)";
+         error_ = "Setup of out-of-bounds band succeeded";
+
+         try {
+            auto b = band( lhs_ * rhs_, -( lhs_.size() == 0UL ? 1UL : lhs_.size() ) );
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: " << error_ << "\n"
+                << " Details:\n"
+                << "   Random seed = " << blaze::getSeed() << "\n"
+                << "   Left-hand side sparse vector type:\n"
+                << "     " << typeid( VT1 ).name() << "\n"
+                << "   Right-hand side sparse vector type:\n"
+                << "     " << typeid( TVT2 ).name() << "\n"
+                << "   Result:\n" << b << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ex ) {
+            checkExceptionMessage( ex, "Invalid band access index" );
+         }
+      }
+
+      // Out-of-bounds access (invalid upper band index)
+      {
+         test_  = "Out-of-bounds band construction (invalid upper band index)";
+         error_ = "Setup of out-of-bounds band succeeded";
+
+         try {
+            auto b = band( lhs_ * rhs_, ( rhs_.size() == 0UL ? 1UL : rhs_.size() ) );
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: " << error_ << "\n"
+                << " Details:\n"
+                << "   Random seed = " << blaze::getSeed() << "\n"
+                << "   Left-hand side sparse vector type:\n"
+                << "     " << typeid( VT1 ).name() << "\n"
+                << "   Right-hand side sparse vector type:\n"
+                << "     " << typeid( TVT2 ).name() << "\n"
+                << "   Result:\n" << b << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ex ) {
+            checkExceptionMessage( ex, "Invalid band access index" );
+         }
+      }
    }
 #endif
 }
