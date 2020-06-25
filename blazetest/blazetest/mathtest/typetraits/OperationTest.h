@@ -108,6 +108,7 @@ class OperationTest
    void testRemoveAdaptor();
    void testUnderlyingBuiltin();
    void testUnderlyingElement();
+   void testUnderlyingNumeric();
    void testUnderlyingScalar();
    //@}
    //**********************************************************************************************
