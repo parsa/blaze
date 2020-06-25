@@ -289,6 +289,7 @@
 #include <blaze/math/typetraits/TransposeFlag.h>
 #include <blaze/math/typetraits/UnderlyingBuiltin.h>
 #include <blaze/math/typetraits/UnderlyingElement.h>
+#include <blaze/math/typetraits/UnderlyingNumeric.h>
 #include <blaze/math/typetraits/UnderlyingScalar.h>
 #include <blaze/math/typetraits/YieldsDiagonal.h>
 #include <blaze/math/typetraits/YieldsHermitian.h>
