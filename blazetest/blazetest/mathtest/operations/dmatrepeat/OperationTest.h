@@ -7852,6 +7852,85 @@ void OperationTest<MT,R0,R1>::testColumnOperation( blaze::TrueType )
 
          checkResults<OMT>();
       }
+
+
+      //=====================================================================================
+      // Failure cases
+      //=====================================================================================
+
+      // Out-of-bounds access (invalid column index)
+      {
+         test_  = "Out-of-bounds column construction (invalid column index)";
+         error_ = "Setup of out-of-bounds column succeeded";
+
+         try {
+            auto c = column( repeat( mat_, R0, R1 ), mat_.columns()*R1 );
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: " << error_ << "\n"
+                << " Details:\n"
+                << "   Random seed = " << blaze::getSeed() << "\n"
+                << "   Dense matrix type:\n"
+                << "     " << typeid( MT ).name() << "\n"
+                << "   Result:\n" << c << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ex ) {
+            checkExceptionMessage( ex, "Invalid column access index" );
+         }
+
+         try {
+            auto c = column( repeat<R0,R1>( mat_ ), mat_.columns()*R1 );
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: " << error_ << "\n"
+                << " Details:\n"
+                << "   Random seed = " << blaze::getSeed() << "\n"
+                << "   Dense matrix type:\n"
+                << "     " << typeid( MT ).name() << "\n"
+                << "   Result:\n" << c << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ex ) {
+            checkExceptionMessage( ex, "Invalid column access index" );
+         }
+
+         try {
+            auto c = column( repeat( omat_, R0, R1 ), omat_.columns()*R1 );
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: " << error_ << "\n"
+                << " Details:\n"
+                << "   Random seed = " << blaze::getSeed() << "\n"
+                << "   Dense matrix type:\n"
+                << "     " << typeid( OMT ).name() << "\n"
+                << "   Result:\n" << c << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ex ) {
+            checkExceptionMessage( ex, "Invalid column access index" );
+         }
+
+         try {
+            auto c = column( repeat<R0,R1>( omat_ ), omat_.columns()*R1 );
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: " << error_ << "\n"
+                << " Details:\n"
+                << "   Random seed = " << blaze::getSeed() << "\n"
+                << "   Dense matrix type:\n"
+                << "     " << typeid( OMT ).name() << "\n"
+                << "   Result:\n" << c << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ex ) {
+            checkExceptionMessage( ex, "Invalid column access index" );
+         }
+      }
    }
 #endif
 }
