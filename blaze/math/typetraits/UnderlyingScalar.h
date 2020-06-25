@@ -40,7 +40,6 @@
 // Includes
 //*************************************************************************************************
 
-#include <blaze/util/Complex.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/typetraits/IsSame.h>
 #include <blaze/util/typetraits/RemoveCV.h>
@@ -56,8 +55,7 @@ namespace blaze {
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename, typename = void > struct UnderlyingScalarHelper1;
-template< typename, typename = void > struct UnderlyingScalarHelper2;
+template< typename, typename = void > struct UnderlyingScalarHelper;
 /*! \endcond */
 //*************************************************************************************************
 
@@ -67,8 +65,8 @@ template< typename, typename = void > struct UnderlyingScalarHelper2;
 // \ingroup math_type_traits
 //
 // This type trait evaluates the underlying scalar (i.e. non-vector and non-matrix) element type
-// at the heart of the given data type \a T. For this purpose either a nested \a ElementType or
-// a nested \a value_type will be used. Examples:
+// at the heart of the given data type \a T. For this purpose either a nested \a ElementType will
+// be used. Examples:
 
    \code
    using Type1 = double;                                    // Built-in data type
@@ -79,14 +77,14 @@ template< typename, typename = void > struct UnderlyingScalarHelper2;
 
    blaze::UnderlyingScalar< Type1 >::Type  // corresponds to double
    blaze::UnderlyingScalar< Type2 >::Type  // corresponds to complex<float>
-   blaze::UnderlyingScalar< Type3 >::Type  // corresponds to short
+   blaze::UnderlyingScalar< Type3 >::Type  // corresponds to std::vector<short>
    blaze::UnderlyingScalar< Type4 >::Type  // corresponds to int
    blaze::UnderlyingScalar< Type5 >::Type  // corresponds to float
    \endcode
 
 // Note that it is possible to add support for other data types that have an underlying scalar
-// element type but do neither provide a nested \a ElementType nor \a value_type type by
-// specializing the UnderlyingScalar class template.
+// element type but do not provide a nested \a ElementType type by specializing the UnderlyingScalar
+// class template.
 */
 template< typename T >
 struct UnderlyingScalar
@@ -94,7 +92,7 @@ struct UnderlyingScalar
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   using Type = typename UnderlyingScalarHelper1< RemoveCV_t<T> >::Type;
+   using Type = typename UnderlyingScalarHelper< RemoveCV_t<T> >::Type;
    /*! \endcond */
    //**********************************************************************************************
 };
@@ -125,41 +123,15 @@ using UnderlyingScalar_t = typename UnderlyingScalar<T>::Type;
 // \ingroup math_type_traits
 */
 template< typename T, typename >
-struct UnderlyingScalarHelper1
-{
-   using Type = typename UnderlyingScalarHelper2<T>::Type;
-};
-
-template< typename T >
-struct UnderlyingScalarHelper1< complex<T>, void >
-{
-   using Type = complex<T>;
-};
-
-template< typename T >
-struct UnderlyingScalarHelper1< T, EnableIf_t< !IsSame_v< T, typename T::ElementType > > >
-{
-   using Type = typename UnderlyingScalarHelper1< typename T::ElementType >::Type;
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Second auxiliary helper struct for the UnderlyingScalar type trait.
-// \ingroup math_type_traits
-*/
-template< typename T, typename >
-struct UnderlyingScalarHelper2
+struct UnderlyingScalarHelper
 {
    using Type = T;
 };
 
 template< typename T >
-struct UnderlyingScalarHelper2< T, EnableIf_t< !IsSame_v< T, typename T::value_type > > >
+struct UnderlyingScalarHelper< T, EnableIf_t< !IsSame_v< T, typename T::ElementType > > >
 {
-   using Type = typename UnderlyingScalarHelper1< typename T::value_type >::Type;
+   using Type = typename UnderlyingScalarHelper< typename T::ElementType >::Type;
 };
 /*! \endcond */
 //*************************************************************************************************
