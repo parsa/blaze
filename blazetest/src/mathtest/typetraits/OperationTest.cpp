@@ -2214,20 +2214,101 @@ void OperationTest::testUnderlyingBuiltin()
    using blaze::CompressedVector;
    using blaze::UnderlyingBuiltin;
 
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingBuiltin<A>::Type, A );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingBuiltin<B>::Type, int );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingBuiltin<C>::Type, float );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingBuiltin<D>::Type, double );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingBuiltin<A                >::Type, A );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingBuiltin<A const          >::Type, A );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingBuiltin<A volatile       >::Type, A );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingBuiltin<A const volatile >::Type, A );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingBuiltin<A&               >::Type, A& );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingBuiltin<A*               >::Type, A* );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingBuiltin<A* const         >::Type, A* );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingBuiltin<A* volatile      >::Type, A* );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingBuiltin<A* const volatile>::Type, A* );
+
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingBuiltin<B                >::Type, int );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingBuiltin<B const          >::Type, int );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingBuiltin<B volatile       >::Type, int );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingBuiltin<B const volatile >::Type, int );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingBuiltin<B&               >::Type, B& );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingBuiltin<B*               >::Type, B* );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingBuiltin<B* const         >::Type, B* );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingBuiltin<B* volatile      >::Type, B* );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingBuiltin<B* const volatile>::Type, B* );
+
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingBuiltin<C                >::Type, float );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingBuiltin<C const          >::Type, float );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingBuiltin<C volatile       >::Type, float );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingBuiltin<C const volatile >::Type, float );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingBuiltin<C&               >::Type, C& );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingBuiltin<C*               >::Type, C* );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingBuiltin<C* const         >::Type, C* );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingBuiltin<C* volatile      >::Type, C* );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingBuiltin<C* const volatile>::Type, C* );
+
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingBuiltin<D                >::Type, double );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingBuiltin<D const          >::Type, double );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingBuiltin<D volatile       >::Type, double );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingBuiltin<D const volatile >::Type, double );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingBuiltin<D&               >::Type, D& );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingBuiltin<D*               >::Type, D* );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingBuiltin<D* const         >::Type, D* );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingBuiltin<D* volatile      >::Type, D* );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingBuiltin<D* const volatile>::Type, D* );
 
    using Type1 = double;                                    // Built-in data type
    using Type2 = complex<float>;                            // Complex data type
-   using Type3 = StaticVector<int,3UL>;                     // Vector with built-in element type
-   using Type4 = CompressedVector< DynamicVector<float> >;  // Vector with vector element type
+   using Type3 = std::vector<double>;                       // Container type
+   using Type4 = StaticVector<int,3UL>;                     // Vector with built-in element type
+   using Type5 = CompressedVector< DynamicVector<float> >;  // Vector with vector element type
 
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingBuiltin<Type1>::Type, double );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingBuiltin<Type2>::Type, float );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingBuiltin<Type3>::Type, int );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingBuiltin<Type4>::Type, float );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingBuiltin<Type1                >::Type, double );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingBuiltin<Type1 const          >::Type, double );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingBuiltin<Type1 volatile       >::Type, double );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingBuiltin<Type1 const volatile >::Type, double );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingBuiltin<Type1&               >::Type, Type1& );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingBuiltin<Type1*               >::Type, Type1* );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingBuiltin<Type1* const         >::Type, Type1* );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingBuiltin<Type1* volatile      >::Type, Type1* );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingBuiltin<Type1* const volatile>::Type, Type1* );
+
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingBuiltin<Type2                >::Type, float );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingBuiltin<Type2 const          >::Type, float );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingBuiltin<Type2 volatile       >::Type, float );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingBuiltin<Type2 const volatile >::Type, float );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingBuiltin<Type2&               >::Type, Type2& );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingBuiltin<Type2*               >::Type, Type2* );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingBuiltin<Type2* const         >::Type, Type2* );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingBuiltin<Type2* volatile      >::Type, Type2* );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingBuiltin<Type2* const volatile>::Type, Type2* );
+
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingBuiltin<Type3                >::Type, double );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingBuiltin<Type3 const          >::Type, double );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingBuiltin<Type3 volatile       >::Type, double );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingBuiltin<Type3 const volatile >::Type, double );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingBuiltin<Type3&               >::Type, Type3& );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingBuiltin<Type3*               >::Type, Type3* );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingBuiltin<Type3* const         >::Type, Type3* );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingBuiltin<Type3* volatile      >::Type, Type3* );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingBuiltin<Type3* const volatile>::Type, Type3* );
+
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingBuiltin<Type4                >::Type, int );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingBuiltin<Type4 const          >::Type, int );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingBuiltin<Type4 volatile       >::Type, int );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingBuiltin<Type4 const volatile >::Type, int );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingBuiltin<Type4&               >::Type, Type4& );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingBuiltin<Type4*               >::Type, Type4* );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingBuiltin<Type4* const         >::Type, Type4* );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingBuiltin<Type4* volatile      >::Type, Type4* );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingBuiltin<Type4* const volatile>::Type, Type4* );
+
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingBuiltin<Type5                >::Type, float );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingBuiltin<Type5 const          >::Type, float );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingBuiltin<Type5 volatile       >::Type, float );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingBuiltin<Type5 const volatile >::Type, float );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingBuiltin<Type5&               >::Type, Type5& );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingBuiltin<Type5*               >::Type, Type5* );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingBuiltin<Type5* const         >::Type, Type5* );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingBuiltin<Type5* volatile      >::Type, Type5* );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingBuiltin<Type5* const volatile>::Type, Type5* );
 }
 //*************************************************************************************************
 
@@ -2249,20 +2330,101 @@ void OperationTest::testUnderlyingElement()
    using blaze::CompressedVector;
    using blaze::UnderlyingElement;
 
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingElement<A>::Type, A );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingElement<B>::Type, int );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingElement<C>::Type, complex<float> );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingElement<D>::Type, double );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingElement<A                >::Type, A );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingElement<A const          >::Type, A );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingElement<A volatile       >::Type, A );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingElement<A const volatile >::Type, A );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingElement<A&               >::Type, A& );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingElement<A*               >::Type, A* );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingElement<A* const         >::Type, A* );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingElement<A* volatile      >::Type, A* );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingElement<A* const volatile>::Type, A* );
+
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingElement<B                >::Type, int );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingElement<B const          >::Type, int );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingElement<B volatile       >::Type, int );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingElement<B const volatile >::Type, int );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingElement<B&               >::Type, B& );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingElement<B*               >::Type, B* );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingElement<B* const         >::Type, B* );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingElement<B* volatile      >::Type, B* );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingElement<B* const volatile>::Type, B* );
+
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingElement<C                >::Type, complex<float> );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingElement<C const          >::Type, complex<float> );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingElement<C volatile       >::Type, complex<float> );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingElement<C const volatile >::Type, complex<float> );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingElement<C&               >::Type, C& );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingElement<C*               >::Type, C* );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingElement<C* const         >::Type, C* );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingElement<C* volatile      >::Type, C* );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingElement<C* const volatile>::Type, C* );
+
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingElement<D                >::Type, double );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingElement<D const          >::Type, double );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingElement<D volatile       >::Type, double );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingElement<D const volatile >::Type, double );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingElement<D&               >::Type, D& );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingElement<D*               >::Type, D* );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingElement<D* const         >::Type, D* );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingElement<D* volatile      >::Type, D* );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingElement<D* const volatile>::Type, D* );
 
    using Type1 = double;                                    // Built-in data type
    using Type2 = complex<float>;                            // Complex data type
-   using Type3 = StaticVector<int,3UL>;                     // Vector with built-in element type
-   using Type4 = CompressedVector< DynamicVector<float> >;  // Vector with vector element type
+   using Type3 = std::vector<double>;                       // Container type
+   using Type4 = StaticVector<int,3UL>;                     // Vector with built-in element type
+   using Type5 = CompressedVector< DynamicVector<float> >;  // Vector with vector element type
 
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingElement<Type1>::Type, double );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingElement<Type2>::Type, float );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingElement<Type3>::Type, int );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingElement<Type4>::Type, DynamicVector<float> );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingElement<Type1                >::Type, double );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingElement<Type1 const          >::Type, double );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingElement<Type1 volatile       >::Type, double );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingElement<Type1 const volatile >::Type, double );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingElement<Type1&               >::Type, Type1& );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingElement<Type1*               >::Type, Type1* );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingElement<Type1* const         >::Type, Type1* );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingElement<Type1* volatile      >::Type, Type1* );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingElement<Type1* const volatile>::Type, Type1* );
+
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingElement<Type2                >::Type, float );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingElement<Type2 const          >::Type, float );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingElement<Type2 volatile       >::Type, float );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingElement<Type2 const volatile >::Type, float );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingElement<Type2&               >::Type, Type2& );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingElement<Type2*               >::Type, Type2* );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingElement<Type2* const         >::Type, Type2* );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingElement<Type2* volatile      >::Type, Type2* );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingElement<Type2* const volatile>::Type, Type2* );
+
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingElement<Type3                >::Type, double );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingElement<Type3 const          >::Type, double );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingElement<Type3 volatile       >::Type, double );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingElement<Type3 const volatile >::Type, double );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingElement<Type3&               >::Type, Type3& );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingElement<Type3*               >::Type, Type3* );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingElement<Type3* const         >::Type, Type3* );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingElement<Type3* volatile      >::Type, Type3* );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingElement<Type3* const volatile>::Type, Type3* );
+
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingElement<Type4                >::Type, int );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingElement<Type4 const          >::Type, int );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingElement<Type4 volatile       >::Type, int );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingElement<Type4 const volatile >::Type, int );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingElement<Type4&               >::Type, Type4& );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingElement<Type4*               >::Type, Type4* );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingElement<Type4* const         >::Type, Type4* );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingElement<Type4* volatile      >::Type, Type4* );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingElement<Type4* const volatile>::Type, Type4* );
+
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingElement<Type5                >::Type, DynamicVector<float> );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingElement<Type5 const          >::Type, DynamicVector<float> );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingElement<Type5 volatile       >::Type, DynamicVector<float> );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingElement<Type5 const volatile >::Type, DynamicVector<float> );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingElement<Type5&               >::Type, Type5& );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingElement<Type5*               >::Type, Type5* );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingElement<Type5* const         >::Type, Type5* );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingElement<Type5* volatile      >::Type, Type5* );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingElement<Type5* const volatile>::Type, Type5* );
 }
 //*************************************************************************************************
 
@@ -2284,10 +2446,45 @@ void OperationTest::testUnderlyingNumeric()
    using blaze::CompressedVector;
    using blaze::UnderlyingNumeric;
 
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingNumeric<A>::Type, A );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingNumeric<B>::Type, int );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingNumeric<C>::Type, complex<float> );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingNumeric<D>::Type, double );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingNumeric<A                >::Type, A );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingNumeric<A const          >::Type, A );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingNumeric<A volatile       >::Type, A );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingNumeric<A const volatile >::Type, A );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingNumeric<A&               >::Type, A& );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingNumeric<A*               >::Type, A* );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingNumeric<A* const         >::Type, A* );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingNumeric<A* volatile      >::Type, A* );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingNumeric<A* const volatile>::Type, A* );
+
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingNumeric<B                >::Type, int );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingNumeric<B const          >::Type, int );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingNumeric<B volatile       >::Type, int );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingNumeric<B const volatile >::Type, int );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingNumeric<B&               >::Type, B& );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingNumeric<B*               >::Type, B* );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingNumeric<B* const         >::Type, B* );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingNumeric<B* volatile      >::Type, B* );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingNumeric<B* const volatile>::Type, B* );
+
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingNumeric<C                >::Type, complex<float> );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingNumeric<C const          >::Type, complex<float> );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingNumeric<C volatile       >::Type, complex<float> );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingNumeric<C const volatile >::Type, complex<float> );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingNumeric<C&               >::Type, C& );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingNumeric<C*               >::Type, C* );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingNumeric<C* const         >::Type, C* );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingNumeric<C* volatile      >::Type, C* );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingNumeric<C* const volatile>::Type, C* );
+
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingNumeric<D                >::Type, double );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingNumeric<D const          >::Type, double );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingNumeric<D volatile       >::Type, double );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingNumeric<D const volatile >::Type, double );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingNumeric<D&               >::Type, D& );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingNumeric<D*               >::Type, D* );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingNumeric<D* const         >::Type, D* );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingNumeric<D* volatile      >::Type, D* );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingNumeric<D* const volatile>::Type, D* );
 
    using Type1 = double;                                    // Built-in data type
    using Type2 = complex<float>;                            // Complex data type
@@ -2295,11 +2492,55 @@ void OperationTest::testUnderlyingNumeric()
    using Type4 = StaticVector<int,3UL>;                     // Vector with built-in element type
    using Type5 = CompressedVector< DynamicVector<float> >;  // Vector with vector element type
 
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingNumeric<Type1>::Type, double );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingNumeric<Type2>::Type, complex<float> );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingNumeric<Type3>::Type, double );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingNumeric<Type4>::Type, int );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingNumeric<Type5>::Type, float );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingNumeric<Type1                >::Type, double );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingNumeric<Type1 const          >::Type, double );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingNumeric<Type1 volatile       >::Type, double );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingNumeric<Type1 const volatile >::Type, double );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingNumeric<Type1&               >::Type, Type1& );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingNumeric<Type1*               >::Type, Type1* );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingNumeric<Type1* const         >::Type, Type1* );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingNumeric<Type1* volatile      >::Type, Type1* );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingNumeric<Type1* const volatile>::Type, Type1* );
+
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingNumeric<Type2                >::Type, complex<float> );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingNumeric<Type2 const          >::Type, complex<float> );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingNumeric<Type2 volatile       >::Type, complex<float> );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingNumeric<Type2 const volatile >::Type, complex<float> );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingNumeric<Type2&               >::Type, Type2& );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingNumeric<Type2*               >::Type, Type2* );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingNumeric<Type2* const         >::Type, Type2* );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingNumeric<Type2* volatile      >::Type, Type2* );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingNumeric<Type2* const volatile>::Type, Type2* );
+
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingNumeric<Type3                >::Type, double );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingNumeric<Type3 const          >::Type, double );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingNumeric<Type3 volatile       >::Type, double );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingNumeric<Type3 const volatile >::Type, double );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingNumeric<Type3&               >::Type, Type3& );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingNumeric<Type3*               >::Type, Type3* );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingNumeric<Type3* const         >::Type, Type3* );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingNumeric<Type3* volatile      >::Type, Type3* );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingNumeric<Type3* const volatile>::Type, Type3* );
+
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingNumeric<Type4                >::Type, int );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingNumeric<Type4 const          >::Type, int );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingNumeric<Type4 volatile       >::Type, int );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingNumeric<Type4 const volatile >::Type, int );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingNumeric<Type4&               >::Type, Type4& );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingNumeric<Type4*               >::Type, Type4* );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingNumeric<Type4* const         >::Type, Type4* );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingNumeric<Type4* volatile      >::Type, Type4* );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingNumeric<Type4* const volatile>::Type, Type4* );
+
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingNumeric<Type5                >::Type, float );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingNumeric<Type5 const          >::Type, float );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingNumeric<Type5 volatile       >::Type, float );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingNumeric<Type5 const volatile >::Type, float );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingNumeric<Type5&               >::Type, Type5& );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingNumeric<Type5*               >::Type, Type5* );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingNumeric<Type5* const         >::Type, Type5* );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingNumeric<Type5* volatile      >::Type, Type5* );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingNumeric<Type5* const volatile>::Type, Type5* );
 }
 //*************************************************************************************************
 
@@ -2321,10 +2562,45 @@ void OperationTest::testUnderlyingScalar()
    using blaze::CompressedVector;
    using blaze::UnderlyingScalar;
 
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingScalar<A>::Type, A );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingScalar<B>::Type, int );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingScalar<C>::Type, C );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingScalar<D>::Type, double );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingScalar<A                >::Type, A );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingScalar<A const          >::Type, A );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingScalar<A volatile       >::Type, A );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingScalar<A const volatile >::Type, A );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingScalar<A&               >::Type, A& );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingScalar<A*               >::Type, A* );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingScalar<A* const         >::Type, A* );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingScalar<A* volatile      >::Type, A* );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingScalar<A* const volatile>::Type, A* );
+
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingScalar<B                >::Type, int );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingScalar<B const          >::Type, int );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingScalar<B volatile       >::Type, int );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingScalar<B const volatile >::Type, int );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingScalar<B&               >::Type, B& );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingScalar<B*               >::Type, B* );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingScalar<B* const         >::Type, B* );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingScalar<B* volatile      >::Type, B* );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingScalar<B* const volatile>::Type, B* );
+
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingScalar<C                >::Type, C );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingScalar<C const          >::Type, C );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingScalar<C volatile       >::Type, C );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingScalar<C const volatile >::Type, C );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingScalar<C&               >::Type, C& );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingScalar<C*               >::Type, C* );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingScalar<C* const         >::Type, C* );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingScalar<C* volatile      >::Type, C* );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingScalar<C* const volatile>::Type, C* );
+
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingScalar<D                >::Type, double );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingScalar<D const          >::Type, double );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingScalar<D volatile       >::Type, double );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingScalar<D const volatile >::Type, double );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingScalar<D&               >::Type, D& );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingScalar<D*               >::Type, D* );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingScalar<D* const         >::Type, D* );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingScalar<D* volatile      >::Type, D* );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingScalar<D* const volatile>::Type, D* );
 
    using Type1 = double;                                    // Built-in data type
    using Type2 = complex<float>;                            // Complex data type
@@ -2332,11 +2608,55 @@ void OperationTest::testUnderlyingScalar()
    using Type4 = StaticVector<int,3UL>;                     // Vector with built-in element type
    using Type5 = CompressedVector< DynamicVector<float> >;  // Vector with vector element type
 
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingScalar<Type1>::Type, double );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingScalar<Type2>::Type, complex<float> );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingScalar<Type3>::Type, Type3 );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingScalar<Type4>::Type, int );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingScalar<Type5>::Type, float );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingScalar<Type1                >::Type, double );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingScalar<Type1 const          >::Type, double );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingScalar<Type1 volatile       >::Type, double );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingScalar<Type1 const volatile >::Type, double );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingScalar<Type1&               >::Type, Type1& );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingScalar<Type1*               >::Type, Type1* );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingScalar<Type1* const         >::Type, Type1* );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingScalar<Type1* volatile      >::Type, Type1* );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingScalar<Type1* const volatile>::Type, Type1* );
+
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingScalar<Type2                >::Type, complex<float> );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingScalar<Type2 const          >::Type, complex<float> );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingScalar<Type2 volatile       >::Type, complex<float> );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingScalar<Type2 const volatile >::Type, complex<float> );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingScalar<Type2&               >::Type, Type2& );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingScalar<Type2*               >::Type, Type2* );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingScalar<Type2* const         >::Type, Type2* );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingScalar<Type2* volatile      >::Type, Type2* );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingScalar<Type2* const volatile>::Type, Type2* );
+
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingScalar<Type3                >::Type, Type3 );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingScalar<Type3 const          >::Type, Type3 );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingScalar<Type3 volatile       >::Type, Type3 );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingScalar<Type3 const volatile >::Type, Type3 );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingScalar<Type3&               >::Type, Type3& );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingScalar<Type3*               >::Type, Type3* );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingScalar<Type3* const         >::Type, Type3* );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingScalar<Type3* volatile      >::Type, Type3* );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingScalar<Type3* const volatile>::Type, Type3* );
+
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingScalar<Type4                >::Type, int );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingScalar<Type4 const          >::Type, int );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingScalar<Type4 volatile       >::Type, int );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingScalar<Type4 const volatile >::Type, int );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingScalar<Type4&               >::Type, Type4& );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingScalar<Type4*               >::Type, Type4* );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingScalar<Type4* const         >::Type, Type4* );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingScalar<Type4* volatile      >::Type, Type4* );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingScalar<Type4* const volatile>::Type, Type4* );
+
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingScalar<Type5                >::Type, float );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingScalar<Type5 const          >::Type, float );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingScalar<Type5 volatile       >::Type, float );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingScalar<Type5 const volatile >::Type, float );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingScalar<Type5&               >::Type, Type5& );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingScalar<Type5*               >::Type, Type5* );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingScalar<Type5* const         >::Type, Type5* );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingScalar<Type5* volatile      >::Type, Type5* );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingScalar<Type5* const volatile>::Type, Type5* );
 }
 //*************************************************************************************************
 
