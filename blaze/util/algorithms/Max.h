@@ -40,10 +40,12 @@
 // Includes
 //*************************************************************************************************
 
-#include <blaze/system/Inline.h>
 #include <blaze/util/EnableIf.h>
+#include <blaze/util/IntegralConstant.h>
+#include <blaze/util/typetraits/DisableMax.h>
 #include <blaze/util/typetraits/IsSigned.h>
 #include <blaze/util/typetraits/IsUnsigned.h>
+#include <blaze/util/typetraits/RemoveReference.h>
 
 
 namespace blaze {
@@ -55,23 +57,31 @@ namespace blaze {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Maximum function for two values of builtin data type.
+/*!\brief Maximum function for two values/objects.
 // \ingroup algorithms
 //
-// \param a The first value.
-// \param b The second value.
-// \return The maximum of the two values.
+// \param a The first value/object.
+// \param b The second value/object.
+// \return The maximum of the two values/objects.
 //
-// This function returns the maximum of the two given data values. The return type of the function
-// is determined by the data types of the given arguments.
+// This function determines the maximum of the two given values/objects by means of a less-than
+// comparison. In case both values are equal, \a a is returned.
+//
+// The return type of the function is determined by the data types of the given arguments. In case
+// two lvalues are given the function returns an lvalue reference. In case two rvalues are given
+// it returns an rvalue reference. Else it returns by value.
 */
 template< typename T1, typename T2
-        , typename = EnableIf_t< ( IsSigned_v<T1> && IsSigned_v<T2> ) ||
-                                 ( IsUnsigned_v<T1> && IsUnsigned_v<T2> ) > >
-BLAZE_ALWAYS_INLINE constexpr auto
-   max( const T1& a, const T2& b ) noexcept
+        , typename = EnableIf_t< !DisableMax_v< RemoveReference_t<T1> > &&
+                                 !DisableMax_v< RemoveReference_t<T2> > &&
+                                 !( IsSigned_v< RemoveReference_t<T1> > && IsUnsigned_v< RemoveReference_t<T2> > ) &&
+                                 !( IsUnsigned_v< RemoveReference_t<T1> > && IsSigned_v< RemoveReference_t<T2> > ) > >
+inline constexpr decltype(auto)
+   max( T1&& a, T2&& b ) noexcept
 {
-   return ( a < b )?( b ):( a );
+   using std::forward;
+
+   return ( a < b ) ? forward<T2>( b ) : forward<T1>( a );
 }
 //*************************************************************************************************
 
@@ -85,16 +95,20 @@ BLAZE_ALWAYS_INLINE constexpr auto
 // \param c The third value/object.
 // \return The maximum of the given values/objects.
 //
-// This function returns the maximum of the given data values/objects. The return type of the
-// function is determined by the data types of the given arguments.
+// This function returns the maximum of the given data values/objects.
+//
+// The return type of the function is determined by the data types of the given arguments. In
+// case three lvalues are given the function returns an lvalue reference. In case three rvalues
+// are given it returns an rvalue reference. Else it returns by value.
 */
 template< typename T1, typename T2, typename T3 >
-BLAZE_ALWAYS_INLINE constexpr decltype(auto)
-   max( const T1& a, const T2& b, const T3& c ) noexcept
+inline constexpr decltype(auto)
+   max( T1&& a, T2&& b, T3&& c ) noexcept
 {
+   using std::forward;
    using blaze::max;
 
-   return max( max( a, b ), c );
+   return max( max( forward<T1>( a ), forward<T2>( b ) ), forward<T3>( c ) );
 }
 //*************************************************************************************************
 
@@ -109,16 +123,20 @@ BLAZE_ALWAYS_INLINE constexpr decltype(auto)
 // \param args The pack of additional values/objects.
 // \return The maximum of the given values/objects.
 //
-// This function returns the maximum of the given data values/objects. The return type of the
-// function is determined by the data types of the given arguments.
+// This function returns the maximum of the given data values/objects.
+//
+// The return type of the function is determined by the data types of the given arguments. In
+// case only lvalues are given the function returns an lvalue reference. In case only rvalues
+// are given it returns an rvalue reference. Else it returns by value.
 */
 template< typename T1, typename T2, typename T3, typename... Ts >
-BLAZE_ALWAYS_INLINE constexpr decltype(auto)
-   max( const T1& a, const T2& b, const T3& c, const Ts&... args ) noexcept
+inline constexpr decltype(auto)
+   max( T1&& a, T2&& b, T3&& c, Ts&&... args ) noexcept
 {
+   using std::forward;
    using blaze::max;
 
-   return max( max( max( a, b ), c ), args... );
+   return max( max( max( forward<T1>( a ), forward<T2>( b ) ), forward<T3>( c ) ), forward<Ts>( args )... );
 }
 //*************************************************************************************************
 
