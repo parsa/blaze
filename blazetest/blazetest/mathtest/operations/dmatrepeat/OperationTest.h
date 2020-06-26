@@ -616,6 +616,7 @@ template< typename MT  // Type of the dense matrix
 void OperationTest<MT,R0,R1>::testEvaluation()
 {
    using blaze::IsRowMajorMatrix;
+   using blaze::repeat;
 
 
    //=====================================================================================
@@ -821,6 +822,7 @@ template< typename MT  // Type of the dense matrix
 void OperationTest<MT,R0,R1>::testElementAccess()
 {
    using blaze::equal;
+   using blaze::repeat;
 
 
    //=====================================================================================
