@@ -184,7 +184,7 @@ class RepeatExprData<Dim>
    /*!\name Constructors */
    //@{
    template< typename... Reps >
-   inline RepeatExprData( Reps... repetitions ) noexcept;
+   inline RepeatExprData( Reps... reps ) noexcept;
 
    RepeatExprData( const RepeatExprData& ) = default;
    //@}
@@ -228,12 +228,12 @@ class RepeatExprData<Dim>
 /*! \cond BLAZE_INTERNAL */
 /*!\brief The constructor for RepeatExprData.
 //
-// \param repetition The number of repetitions of the repeater expression.
+// \param reps The number of repetitions of the repeater expression.
 */
 template< size_t Dim >        // Number of dimensions
 template< typename... Reps >  // Runtime repetitions
-inline RepeatExprData<Dim>::RepeatExprData( Reps... repetitions ) noexcept
-   : repetitions_{ repetitions... }  // The number of repetitions of the repeater expression
+inline RepeatExprData<Dim>::RepeatExprData( Reps... reps ) noexcept
+   : repetitions_{ reps... }  // The number of repetitions of the repeater expression
 {
    BLAZE_STATIC_ASSERT( sizeof...( Reps ) == Dim );
 }
