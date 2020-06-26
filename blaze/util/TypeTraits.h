@@ -52,6 +52,7 @@
 #include <blaze/util/typetraits/Any.h>
 #include <blaze/util/typetraits/CommonType.h>
 #include <blaze/util/typetraits/Decay.h>
+#include <blaze/util/typetraits/DisableMin.h>
 #include <blaze/util/typetraits/Extent.h>
 #include <blaze/util/typetraits/GetMemberType.h>
 #include <blaze/util/typetraits/HasMember.h>
