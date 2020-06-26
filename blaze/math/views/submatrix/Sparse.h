@@ -1087,11 +1087,11 @@ inline Submatrix<MT,AF,false,false,CSAs...>&
    if( IsReference_v<Right> && right.canAlias( this ) ) {
       const ResultType_t<MT2> tmp( right );
       left.reset();
-      assign( left, tmp );
+      assign( left, transIf< IsSymmetric_v<This> >( tmp ) );
    }
    else {
       left.reset();
-      assign( left, right );
+      assign( left, transIf< IsSymmetric_v<This> >( right ) );
    }
 
    BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
@@ -1147,7 +1147,7 @@ inline Submatrix<MT,AF,false,false,CSAs...>&
    decltype(auto) left( derestrict( *this ) );
 
    left.reset();
-   assign( left, tmp );
+   assign( left, transIf< IsSymmetric_v<This> >( tmp ) );
 
    BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
 
@@ -1202,7 +1202,7 @@ inline Submatrix<MT,AF,false,false,CSAs...>&
    decltype(auto) left( derestrict( *this ) );
 
    left.reset();
-   assign( left, tmp );
+   assign( left, transIf< IsSymmetric_v<This> >( tmp ) );
 
    BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
 
@@ -1257,7 +1257,7 @@ inline Submatrix<MT,AF,false,false,CSAs...>&
    decltype(auto) left( derestrict( *this ) );
 
    left.reset();
-   assign( left, tmp );
+   assign( left, transIf< IsSymmetric_v<This> >( tmp ) );
 
    BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
 
@@ -3480,11 +3480,11 @@ inline Submatrix<MT,AF,true,false,CSAs...>&
    if( IsReference_v<Right> && right.canAlias( this ) ) {
       const ResultType_t<MT2> tmp( right );
       left.reset();
-      assign( left, tmp );
+      assign( left, transIf< IsSymmetric_v<This> >( tmp ) );
    }
    else {
       left.reset();
-      assign( left, right );
+      assign( left, transIf< IsSymmetric_v<This> >( right ) );
    }
 
    BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
@@ -3540,7 +3540,7 @@ inline Submatrix<MT,AF,true,false,CSAs...>&
    decltype(auto) left( derestrict( *this ) );
 
    left.reset();
-   assign( left, tmp );
+   assign( left, transIf< IsSymmetric_v<This> >( tmp ) );
 
    BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
 
@@ -3595,7 +3595,7 @@ inline Submatrix<MT,AF,true,false,CSAs...>&
    decltype(auto) left( derestrict( *this ) );
 
    left.reset();
-   assign( left, tmp );
+   assign( left, transIf< IsSymmetric_v<This> >( tmp ) );
 
    BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
 
@@ -3650,7 +3650,7 @@ inline Submatrix<MT,AF,true,false,CSAs...>&
    decltype(auto) left( derestrict( *this ) );
 
    left.reset();
-   assign( left, tmp );
+   assign( left, transIf< IsSymmetric_v<This> >( tmp ) );
 
    BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
 

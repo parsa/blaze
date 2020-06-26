@@ -1436,12 +1436,12 @@ inline Submatrix<MT,unaligned,false,true,CSAs...>&
       const ResultType_t<MT2> tmp( right );
       if( IsSparseMatrix_v<MT2> )
          reset();
-      smpAssign( left, tmp );
+      smpAssign( left, transIf< IsSymmetric_v<This> >( tmp ) );
    }
    else {
       if( IsSparseMatrix_v<MT2> )
          reset();
-      smpAssign( left, right );
+      smpAssign( left, transIf< IsSymmetric_v<This> >( right ) );
    }
 
    BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
@@ -1494,10 +1494,10 @@ inline auto Submatrix<MT,unaligned,false,true,CSAs...>::operator+=( const Matrix
 
    if( ( ( IsSymmetric_v<MT> || IsHermitian_v<MT> ) && hasOverlap() ) || (~rhs).canAlias( this ) ) {
       const AddType tmp( *this + (~rhs) );
-      smpAssign( left, tmp );
+      smpAssign( left, transIf< IsSymmetric_v<This> >( tmp ) );
    }
    else {
-      smpAddAssign( left, ~rhs );
+      smpAddAssign( left, transIf< IsSymmetric_v<This> >( ~rhs ) );
    }
 
    BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
@@ -1550,7 +1550,7 @@ inline auto Submatrix<MT,unaligned,false,true,CSAs...>::operator+=( const Matrix
 
    decltype(auto) left( derestrict( *this ) );
 
-   smpAssign( left, tmp );
+   smpAssign( left, transIf< IsSymmetric_v<This> >( tmp ) );
 
    BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
 
@@ -1602,10 +1602,10 @@ inline auto Submatrix<MT,unaligned,false,true,CSAs...>::operator-=( const Matrix
 
    if( ( ( IsSymmetric_v<MT> || IsHermitian_v<MT> ) && hasOverlap() ) || (~rhs).canAlias( this ) ) {
       const SubType tmp( *this - (~rhs ) );
-      smpAssign( left, tmp );
+      smpAssign( left, transIf< IsSymmetric_v<This> >( tmp ) );
    }
    else {
-      smpSubAssign( left, ~rhs );
+      smpSubAssign( left, transIf< IsSymmetric_v<This> >( ~rhs ) );
    }
 
    BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
@@ -1658,7 +1658,7 @@ inline auto Submatrix<MT,unaligned,false,true,CSAs...>::operator-=( const Matrix
 
    decltype(auto) left( derestrict( *this ) );
 
-   smpAssign( left, tmp );
+   smpAssign( left, transIf< IsSymmetric_v<This> >( tmp ) );
 
    BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
 
@@ -1711,10 +1711,10 @@ inline auto Submatrix<MT,unaligned,false,true,CSAs...>::operator%=( const Matrix
       const SchurType tmp( *this % (~rhs) );
       if( IsSparseMatrix_v<SchurType> )
          reset();
-      smpAssign( left, tmp );
+      smpAssign( left, transIf< IsSymmetric_v<This> >( tmp ) );
    }
    else {
-      smpSchurAssign( left, ~rhs );
+      smpSchurAssign( left, transIf< IsSymmetric_v<This> >( ~rhs ) );
    }
 
    BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
@@ -1770,7 +1770,7 @@ inline auto Submatrix<MT,unaligned,false,true,CSAs...>::operator%=( const Matrix
       reset();
    }
 
-   smpAssign( left, tmp );
+   smpAssign( left, transIf< IsSymmetric_v<This> >( tmp ) );
 
    BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
 
@@ -4691,12 +4691,12 @@ inline Submatrix<MT,unaligned,true,true,CSAs...>&
       const ResultType_t<MT2> tmp( right );
       if( IsSparseMatrix_v<MT2> )
          reset();
-      smpAssign( left, tmp );
+      smpAssign( left, transIf< IsSymmetric_v<This> >( tmp ) );
    }
    else {
       if( IsSparseMatrix_v<MT2> )
          reset();
-      smpAssign( left, right );
+      smpAssign( left, transIf< IsSymmetric_v<This> >( right ) );
    }
 
    BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
@@ -4749,10 +4749,10 @@ inline auto Submatrix<MT,unaligned,true,true,CSAs...>::operator+=( const Matrix<
 
    if( ( ( IsSymmetric_v<MT> || IsHermitian_v<MT> ) && hasOverlap() ) || (~rhs).canAlias( this ) ) {
       const AddType tmp( *this + (~rhs) );
-      smpAssign( left, tmp );
+      smpAssign( left, transIf< IsSymmetric_v<This> >( tmp ) );
    }
    else {
-      smpAddAssign( left, ~rhs );
+      smpAddAssign( left, transIf< IsSymmetric_v<This> >( ~rhs ) );
    }
 
    BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
@@ -4805,7 +4805,7 @@ inline auto Submatrix<MT,unaligned,true,true,CSAs...>::operator+=( const Matrix<
 
    decltype(auto) left( derestrict( *this ) );
 
-   smpAssign( left, tmp );
+   smpAssign( left, transIf< IsSymmetric_v<This> >( tmp ) );
 
    BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
 
@@ -4857,10 +4857,10 @@ inline auto Submatrix<MT,unaligned,true,true,CSAs...>::operator-=( const Matrix<
 
    if( ( ( IsSymmetric_v<MT> || IsHermitian_v<MT> ) && hasOverlap() ) || (~rhs).canAlias( this ) ) {
       const SubType tmp( *this - (~rhs ) );
-      smpAssign( left, tmp );
+      smpAssign( left, transIf< IsSymmetric_v<This> >( tmp ) );
    }
    else {
-      smpSubAssign( left, ~rhs );
+      smpSubAssign( left, transIf< IsSymmetric_v<This> >( ~rhs ) );
    }
 
    BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
@@ -4913,7 +4913,7 @@ inline auto Submatrix<MT,unaligned,true,true,CSAs...>::operator-=( const Matrix<
 
    decltype(auto) left( derestrict( *this ) );
 
-   smpAssign( left, tmp );
+   smpAssign( left, transIf< IsSymmetric_v<This> >( tmp ) );
 
    BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
 
@@ -4966,10 +4966,10 @@ inline auto Submatrix<MT,unaligned,true,true,CSAs...>::operator%=( const Matrix<
       const SchurType tmp( *this % (~rhs) );
       if( IsSparseMatrix_v<SchurType> )
          reset();
-      smpAssign( left, tmp );
+      smpAssign( left, transIf< IsSymmetric_v<This> >( tmp ) );
    }
    else {
-      smpSchurAssign( left, ~rhs );
+      smpSchurAssign( left, transIf< IsSymmetric_v<This> >( ~rhs ) );
    }
 
    BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
@@ -5025,7 +5025,7 @@ inline auto Submatrix<MT,unaligned,true,true,CSAs...>::operator%=( const Matrix<
       reset();
    }
 
-   smpAssign( left, tmp );
+   smpAssign( left, transIf< IsSymmetric_v<This> >( tmp ) );
 
    BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
 
@@ -7534,12 +7534,12 @@ inline Submatrix<MT,aligned,false,true,CSAs...>&
       const ResultType_t<MT2> tmp( right );
       if( IsSparseMatrix_v<MT2> )
          reset();
-      smpAssign( left, tmp );
+      smpAssign( left, transIf< IsSymmetric_v<This> >( tmp ) );
    }
    else {
       if( IsSparseMatrix_v<MT2> )
          reset();
-      smpAssign( left, right );
+      smpAssign( left, transIf< IsSymmetric_v<This> >( right ) );
    }
 
    BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
@@ -7592,10 +7592,10 @@ inline auto Submatrix<MT,aligned,false,true,CSAs...>::operator+=( const Matrix<M
 
    if( ( ( IsSymmetric_v<MT> || IsHermitian_v<MT> ) && hasOverlap() ) || (~rhs).canAlias( this ) ) {
       const AddType tmp( *this + (~rhs) );
-      smpAssign( left, tmp );
+      smpAssign( left, transIf< IsSymmetric_v<This> >( tmp ) );
    }
    else {
-      smpAddAssign( left, ~rhs );
+      smpAddAssign( left, transIf< IsSymmetric_v<This> >( ~rhs ) );
    }
 
    BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
@@ -7648,7 +7648,7 @@ inline auto Submatrix<MT,aligned,false,true,CSAs...>::operator+=( const Matrix<M
 
    decltype(auto) left( derestrict( *this ) );
 
-   smpAssign( left, tmp );
+   smpAssign( left, transIf< IsSymmetric_v<This> >( tmp ) );
 
    BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
 
@@ -7700,10 +7700,10 @@ inline auto Submatrix<MT,aligned,false,true,CSAs...>::operator-=( const Matrix<M
 
    if( ( ( IsSymmetric_v<MT> || IsHermitian_v<MT> ) && hasOverlap() ) || (~rhs).canAlias( this ) ) {
       const SubType tmp( *this - (~rhs ) );
-      smpAssign( left, tmp );
+      smpAssign( left, transIf< IsSymmetric_v<This> >( tmp ) );
    }
    else {
-      smpSubAssign( left, ~rhs );
+      smpSubAssign( left, transIf< IsSymmetric_v<This> >( ~rhs ) );
    }
 
    BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
@@ -7756,7 +7756,7 @@ inline auto Submatrix<MT,aligned,false,true,CSAs...>::operator-=( const Matrix<M
 
    decltype(auto) left( derestrict( *this ) );
 
-   smpAssign( left, tmp );
+   smpAssign( left, transIf< IsSymmetric_v<This> >( tmp ) );
 
    BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
 
@@ -7809,10 +7809,10 @@ inline auto Submatrix<MT,aligned,false,true,CSAs...>::operator%=( const Matrix<M
       const SchurType tmp( *this % (~rhs) );
       if( IsSparseMatrix_v<SchurType> )
          reset();
-      smpAssign( left, tmp );
+      smpAssign( left, transIf< IsSymmetric_v<This> >( tmp ) );
    }
    else {
-      smpSchurAssign( left, ~rhs );
+      smpSchurAssign( left, transIf< IsSymmetric_v<This> >( ~rhs ) );
    }
 
    BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
@@ -7868,7 +7868,7 @@ inline auto Submatrix<MT,aligned,false,true,CSAs...>::operator%=( const Matrix<M
       reset();
    }
 
-   smpAssign( left, tmp );
+   smpAssign( left, transIf< IsSymmetric_v<This> >( tmp ) );
 
    BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
 
@@ -10369,12 +10369,12 @@ inline Submatrix<MT,aligned,true,true,CSAs...>&
       const ResultType_t<MT2> tmp( right );
       if( IsSparseMatrix_v<MT2> )
          reset();
-      smpAssign( left, tmp );
+      smpAssign( left, transIf< IsSymmetric_v<This> >( tmp ) );
    }
    else {
       if( IsSparseMatrix_v<MT2> )
          reset();
-      smpAssign( left, right );
+      smpAssign( left, transIf< IsSymmetric_v<This> >( right ) );
    }
 
    BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
@@ -10427,10 +10427,10 @@ inline auto Submatrix<MT,aligned,true,true,CSAs...>::operator+=( const Matrix<MT
 
    if( ( ( IsSymmetric_v<MT> || IsHermitian_v<MT> ) && hasOverlap() ) || (~rhs).canAlias( this ) ) {
       const AddType tmp( *this + (~rhs) );
-      smpAssign( left, tmp );
+      smpAssign( left, transIf< IsSymmetric_v<This> >( tmp ) );
    }
    else {
-      smpAddAssign( left, ~rhs );
+      smpAddAssign( left, transIf< IsSymmetric_v<This> >( ~rhs ) );
    }
 
    BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
@@ -10483,7 +10483,7 @@ inline auto Submatrix<MT,aligned,true,true,CSAs...>::operator+=( const Matrix<MT
 
    decltype(auto) left( derestrict( *this ) );
 
-   smpAssign( left, tmp );
+   smpAssign( left, transIf< IsSymmetric_v<This> >( tmp ) );
 
    BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
 
@@ -10535,10 +10535,10 @@ inline auto Submatrix<MT,aligned,true,true,CSAs...>::operator-=( const Matrix<MT
 
    if( ( ( IsSymmetric_v<MT> || IsHermitian_v<MT> ) && hasOverlap() ) || (~rhs).canAlias( this ) ) {
       const SubType tmp( *this - (~rhs ) );
-      smpAssign( left, tmp );
+      smpAssign( left, transIf< IsSymmetric_v<This> >( tmp ) );
    }
    else {
-      smpSubAssign( left, ~rhs );
+      smpSubAssign( left, transIf< IsSymmetric_v<This> >( ~rhs ) );
    }
 
    BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
@@ -10591,7 +10591,7 @@ inline auto Submatrix<MT,aligned,true,true,CSAs...>::operator-=( const Matrix<MT
 
    decltype(auto) left( derestrict( *this ) );
 
-   smpAssign( left, tmp );
+   smpAssign( left, transIf< IsSymmetric_v<This> >( tmp ) );
 
    BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
 
@@ -10644,10 +10644,10 @@ inline auto Submatrix<MT,aligned,true,true,CSAs...>::operator%=( const Matrix<MT
       const SchurType tmp( *this % (~rhs) );
       if( IsSparseMatrix_v<SchurType> )
          reset();
-      smpAssign( left, tmp );
+      smpAssign( left, transIf< IsSymmetric_v<This> >( tmp ) );
    }
    else {
-      smpSchurAssign( left, ~rhs );
+      smpSchurAssign( left, transIf< IsSymmetric_v<This> >( ~rhs ) );
    }
 
    BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
@@ -10703,7 +10703,7 @@ inline auto Submatrix<MT,aligned,true,true,CSAs...>::operator%=( const Matrix<MT
       reset();
    }
 
-   smpAssign( left, tmp );
+   smpAssign( left, transIf< IsSymmetric_v<This> >( tmp ) );
 
    BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
 
