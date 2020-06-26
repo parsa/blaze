@@ -105,6 +105,8 @@
 #include <blaze/util/algorithms/Min.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/mpl/If.h>
+#include <blaze/util/typetraits/DisableMax.h>
+#include <blaze/util/typetraits/DisableMin.h>
 #include <blaze/util/typetraits/IsComplex.h>
 
 
@@ -2481,6 +2483,42 @@ inline bool equal( const T& lhs, const Proxy<PT,RT>& rhs )
 {
    return equal<RF>( lhs, (~rhs).get() );
 }
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  DISABLEMIN SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename T >
+struct DisableMin< T, EnableIf_t< IsProxy_v<T> > >
+   : public TrueType
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  DISABLEMAX SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename T >
+struct DisableMax< T, EnableIf_t< IsProxy_v<T> > >
+   : public TrueType
+{};
+/*! \endcond */
 //*************************************************************************************************
 
 } // namespace blaze
