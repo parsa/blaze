@@ -68,7 +68,6 @@
 #include <blaze/math/typetraits/IsScalar.h>
 #include <blaze/math/typetraits/IsSIMDEnabled.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
-#include <blaze/math/typetraits/UnderlyingBuiltin.h>
 #include <blaze/math/typetraits/UnderlyingScalar.h>
 #include <blaze/system/HostDevice.h>
 #include <blaze/system/Inline.h>
@@ -80,6 +79,7 @@
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/HasMember.h>
 #include <blaze/util/typetraits/IsBuiltin.h>
+#include <blaze/util/typetraits/IsNumeric.h>
 #include <blaze/util/typetraits/IsSame.h>
 
 
@@ -1165,7 +1165,8 @@ decltype(auto) min( const DenseMatrix<MT,SO>& dm, ST scalar )
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ScalarType = MultTrait_t< UnderlyingBuiltin_t<MT>, ST >;
+   using ET = ElementType_t<MT>;
+   using ScalarType = If_t< IsNumeric_v<ET> && IsNumeric_v<ST>, MapTrait_t<ET,ST,Min>, ST >;
    return map( ~dm, bind2nd( Min(), ScalarType( scalar ) ) );
 }
 //*************************************************************************************************
@@ -1198,7 +1199,8 @@ decltype(auto) min( ST scalar, const DenseMatrix<MT,SO>& dm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ScalarType = MultTrait_t< UnderlyingBuiltin_t<MT>, ST >;
+   using ET = ElementType_t<MT>;
+   using ScalarType = If_t< IsNumeric_v<ST> && IsNumeric_v<ET>, MapTrait_t<ST,ET,Min>, ST >;
    return map( ~dm, bind1st( Min(), ScalarType( scalar ) ) );
 }
 //*************************************************************************************************
@@ -1231,7 +1233,8 @@ decltype(auto) max( const DenseMatrix<MT,SO>& dm, ST scalar )
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ScalarType = MultTrait_t< UnderlyingBuiltin_t<MT>, ST >;
+   using ET = ElementType_t<MT>;
+   using ScalarType = If_t< IsNumeric_v<ET> && IsNumeric_v<ST>, MapTrait_t<ET,ST,Max>, ST >;
    return map( ~dm, bind2nd( Max(), ScalarType( scalar ) ) );
 }
 //*************************************************************************************************
@@ -1264,7 +1267,8 @@ decltype(auto) max( ST scalar, const DenseMatrix<MT,SO>& dm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ScalarType = MultTrait_t< UnderlyingBuiltin_t<MT>, ST >;
+   using ET = ElementType_t<MT>;
+   using ScalarType = If_t< IsNumeric_v<ST> && IsNumeric_v<ET>, MapTrait_t<ST,ET,Max>, ST >;
    return map( ~dm, bind1st( Max(), ScalarType( scalar ) ) );
 }
 //*************************************************************************************************
@@ -1768,7 +1772,8 @@ inline decltype(auto) pow( const DenseMatrix<MT,SO>& dm, ST exp )
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ScalarType = MultTrait_t< UnderlyingBuiltin_t<MT>, ST >;
+   using ET = ElementType_t<MT>;
+   using ScalarType = If_t< IsNumeric_v<ET> && IsNumeric_v<ST>, MultTrait_t<ET,ST>, ST >;
    return map( ~dm, blaze::bind2nd( Pow(), ScalarType( exp ) ) );
 }
 //*************************************************************************************************
@@ -2690,7 +2695,8 @@ inline decltype(auto) operator+( const DenseMatrix<MT,SO>& mat, ST scalar )
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ScalarType = AddTrait_t< UnderlyingBuiltin_t<MT>, ST >;
+   using ET = ElementType_t<MT>;
+   using ScalarType = If_t< IsNumeric_v<ET> && IsNumeric_v<ST>, AddTrait_t<ET,ST>, ST >;
    return map( ~mat, blaze::bind2nd( Add{}, ScalarType( scalar ) ) );
 }
 //*************************************************************************************************
@@ -2725,7 +2731,8 @@ inline decltype(auto) operator+( ST scalar, const DenseMatrix<MT,SO>& mat )
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ScalarType = AddTrait_t< ST, UnderlyingBuiltin_t<MT> >;
+   using ET = ElementType_t<MT>;
+   using ScalarType = If_t< IsNumeric_v<ST> && IsNumeric_v<ET>, AddTrait_t<ST,ET>, ST >;
    return map( ~mat, blaze::bind1st( Add{}, ScalarType( scalar ) ) );
 }
 //*************************************************************************************************
@@ -2761,7 +2768,8 @@ inline decltype(auto) operator-( const DenseMatrix<MT,SO>& mat, ST scalar )
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ScalarType = SubTrait_t< UnderlyingBuiltin_t<MT>, ST >;
+   using ET = ElementType_t<MT>;
+   using ScalarType = If_t< IsNumeric_v<ET> && IsNumeric_v<ST>, SubTrait_t<ET,ST>, ST >;
    return map( ~mat, blaze::bind2nd( Sub{}, ScalarType( scalar ) ) );
 }
 //*************************************************************************************************
@@ -2797,7 +2805,8 @@ inline decltype(auto) operator-( ST scalar, const DenseMatrix<MT,SO>& mat )
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ScalarType = SubTrait_t< ST, UnderlyingBuiltin_t<MT> >;
+   using ET = ElementType_t<MT>;
+   using ScalarType = If_t< IsNumeric_v<ST> && IsNumeric_v<ET>, SubTrait_t<ST,ET>, ST >;
    return map( ~mat, blaze::bind1st( Sub{}, ScalarType( scalar ) ) );
 }
 //*************************************************************************************************
@@ -2832,7 +2841,8 @@ inline decltype(auto) operator/( ST scalar, const DenseMatrix<MT,SO>& mat )
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ScalarType = DivTrait_t< ST, UnderlyingBuiltin_t<MT> >;
+   using ET = ElementType_t<MT>;
+   using ScalarType = If_t< IsNumeric_v<ST> && IsNumeric_v<ET>, DivTrait_t<ST,ET>, ST >;
    return map( ~mat, blaze::bind1st( Div{}, ScalarType( scalar ) ) );
 }
 //*************************************************************************************************
