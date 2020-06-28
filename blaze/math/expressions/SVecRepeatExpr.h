@@ -119,7 +119,7 @@ class SVecRepeatExpr
    // \param repetitions The number of repetitions.
    */
    template< typename... RRAs >  // Runtime repeater arguments
-   inline SVecRepeatExpr( const VT& sv, RRAs... args ) noexcept
+   explicit inline SVecRepeatExpr( const VT& sv, RRAs... args ) noexcept
       : DataType( args... )  // Base class initialization
       , sv_     ( sv )       // Sparse vector of the repeater expression
    {}

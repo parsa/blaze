@@ -123,7 +123,7 @@ class DVecRepeatExpr
    // \param repetitions The number of repetitions.
    */
    template< typename... RRAs >  // Runtime repeater arguments
-   inline DVecRepeatExpr( const VT& dv, RRAs... args ) noexcept
+   explicit inline DVecRepeatExpr( const VT& dv, RRAs... args ) noexcept
       : DataType( args... )  // Base class initialization
       , dv_     ( dv )       // Dense vector of the repeater expression
    {}

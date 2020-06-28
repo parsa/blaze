@@ -122,7 +122,7 @@ class SMatRepeatExpr
    // \param repetitions The number of repetitions.
    */
    template< typename... RRAs >  // Runtime repeater arguments
-   inline SMatRepeatExpr( const MT& sm, RRAs... args ) noexcept
+   explicit inline SMatRepeatExpr( const MT& sm, RRAs... args ) noexcept
       : DataType( args... )  // Base class initialization
       , sm_     ( sm )       // Sparse matrix of the repeater expression
    {}

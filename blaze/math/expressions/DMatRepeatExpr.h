@@ -124,7 +124,7 @@ class DMatRepeatExpr
    // \param repetitions The number of repetitions.
    */
    template< typename... RRAs >  // Runtime repeater arguments
-   inline DMatRepeatExpr( const MT& dm, RRAs... args ) noexcept
+   explicit inline DMatRepeatExpr( const MT& dm, RRAs... args ) noexcept
       : DataType( args... )  // Base class initialization
       , dm_     ( dm )       // Dense matrix of the repeater expression
    {}
