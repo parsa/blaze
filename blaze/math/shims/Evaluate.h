@@ -40,8 +40,8 @@
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/typetraits/IsScalar.h>
-#include <blaze/system/Inline.h>
+#include <blaze/math/typetraits/HasCompositeType.h>
+#include <blaze/math/typetraits/IsProxy.h>
 #include <blaze/util/EnableIf.h>
 
 
@@ -65,9 +65,9 @@ namespace blaze {
 // types that don't require an evaluation, as for instance built-in or complex data types, the
 // default behavior is not changed.
 */
-template< typename T >
-BLAZE_ALWAYS_INLINE constexpr EnableIf_t< IsScalar_v<T>, T >
-   evaluate( const T& a ) noexcept
+template< typename T
+        , EnableIf_t< !HasCompositeType_v<T> && !IsProxy_v<T> >*  = nullptr >
+constexpr T evaluate( const T& a ) noexcept
 {
    return a;
 }
