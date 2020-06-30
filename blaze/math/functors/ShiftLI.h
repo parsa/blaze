@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <utility>
 #include <blaze/math/constraints/SIMDPack.h>
 #include <blaze/math/simd/ShiftLI.h>
 #include <blaze/math/typetraits/HasSIMDShiftLI.h>
@@ -93,9 +94,9 @@ struct ShiftLI
    // \return The result of the uniform left-shift operation for the given objects/values.
    */
    template< typename T >
-   BLAZE_ALWAYS_INLINE BLAZE_DEVICE_CALLABLE decltype(auto) operator()( const T& a ) const
+   BLAZE_ALWAYS_INLINE BLAZE_DEVICE_CALLABLE decltype(auto) operator()( T&& a ) const
    {
-      return a << count_;
+      return std::forward<T>( a ) << count_;
    }
    //**********************************************************************************************
 

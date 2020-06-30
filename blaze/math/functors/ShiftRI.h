@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <utility>
 #include <blaze/math/constraints/SIMDPack.h>
 #include <blaze/math/simd/ShiftRI.h>
 #include <blaze/math/typetraits/HasSIMDShiftRI.h>
@@ -92,9 +93,9 @@ struct ShiftRI
    // \return The result of the uniform right-shift operation for the given objects/values.
    */
    template< typename T >
-   BLAZE_ALWAYS_INLINE decltype(auto) operator()( const T& a ) const
+   BLAZE_ALWAYS_INLINE decltype(auto) operator()( T&& a ) const
    {
-      return a >> count_;
+      return std::forward<T>( a ) >> count_;
    }
    //**********************************************************************************************
 

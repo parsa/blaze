@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <utility>
 #include <blaze/math/constraints/SIMDPack.h>
 #include <blaze/math/shims/Atanh.h>
 #include <blaze/math/simd/Atanh.h>
@@ -85,9 +86,9 @@ struct Atanh
    // \return The result of the atanh() function for the given object/value.
    */
    template< typename T >
-   BLAZE_ALWAYS_INLINE BLAZE_DEVICE_CALLABLE decltype(auto) operator()( const T& a ) const
+   BLAZE_ALWAYS_INLINE BLAZE_DEVICE_CALLABLE decltype(auto) operator()( T&& a ) const
    {
-      return atanh( a );
+      return atanh( std::forward<T>( a ) );
    }
    //**********************************************************************************************
 

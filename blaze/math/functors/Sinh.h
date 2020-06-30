@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <utility>
 #include <blaze/math/constraints/SIMDPack.h>
 #include <blaze/math/shims/Sinh.h>
 #include <blaze/math/simd/Sinh.h>
@@ -85,9 +86,9 @@ struct Sinh
    // \return The result of the sinh() function for the given object/value.
    */
    template< typename T >
-   BLAZE_ALWAYS_INLINE BLAZE_DEVICE_CALLABLE decltype(auto) operator()( const T& a ) const
+   BLAZE_ALWAYS_INLINE BLAZE_DEVICE_CALLABLE decltype(auto) operator()( T&& a ) const
    {
-      return sinh( a );
+      return sinh( std::forward<T>( a ) );
    }
    //**********************************************************************************************
 

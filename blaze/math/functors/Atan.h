@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <utility>
 #include <blaze/math/constraints/SIMDPack.h>
 #include <blaze/math/shims/Atan.h>
 #include <blaze/math/simd/Atan.h>
@@ -85,9 +86,9 @@ struct Atan
    // \return The result of the atan() function for the given object/value.
    */
    template< typename T >
-   BLAZE_ALWAYS_INLINE BLAZE_DEVICE_CALLABLE decltype(auto) operator()( const T& a ) const
+   BLAZE_ALWAYS_INLINE BLAZE_DEVICE_CALLABLE decltype(auto) operator()( T&& a ) const
    {
-      return atan( a );
+      return atan( std::forward<T>( a ) );
    }
    //**********************************************************************************************
 

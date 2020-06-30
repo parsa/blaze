@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <utility>
 #include <blaze/math/constraints/SIMDPack.h>
 #include <blaze/math/shims/Sin.h>
 #include <blaze/math/simd/Sin.h>
@@ -85,9 +86,9 @@ struct Sin
    // \return The result of the sin() function for the given object/value.
    */
    template< typename T >
-   BLAZE_ALWAYS_INLINE BLAZE_DEVICE_CALLABLE decltype(auto) operator()( const T& a ) const
+   BLAZE_ALWAYS_INLINE BLAZE_DEVICE_CALLABLE decltype(auto) operator()( T&& a ) const
    {
-      return sin( a );
+      return sin( std::forward<T>( a ) );
    }
    //**********************************************************************************************
 

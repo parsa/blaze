@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <utility>
 #include <blaze/math/constraints/SIMDPack.h>
 #include <blaze/math/shims/Exp10.h>
 #include <blaze/math/simd/Exp10.h>
@@ -73,9 +74,9 @@ struct Exp10
    // \return The result of the exp10() function for the given object/value.
    */
    template< typename T >
-   BLAZE_ALWAYS_INLINE BLAZE_DEVICE_CALLABLE decltype(auto) operator()( const T& a ) const
+   BLAZE_ALWAYS_INLINE BLAZE_DEVICE_CALLABLE decltype(auto) operator()( T&& a ) const
    {
-      return exp10( a );
+      return exp10( std::forward<T>( a ) );
    }
    //**********************************************************************************************
 

@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <utility>
 #include <blaze/math/constraints/SIMDPack.h>
 #include <blaze/math/shims/Erfc.h>
 #include <blaze/math/simd/Erfc.h>
@@ -73,9 +74,9 @@ struct Erfc
    // \return The result of the erfc() function for the given object/value.
    */
    template< typename T >
-   BLAZE_ALWAYS_INLINE BLAZE_DEVICE_CALLABLE decltype(auto) operator()( const T& a ) const
+   BLAZE_ALWAYS_INLINE BLAZE_DEVICE_CALLABLE decltype(auto) operator()( T&& a ) const
    {
-      return erfc( a );
+      return erfc( std::forward<T>( a ) );
    }
    //**********************************************************************************************
 

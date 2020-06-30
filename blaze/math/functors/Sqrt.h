@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <utility>
 #include <blaze/math/constraints/SIMDPack.h>
 #include <blaze/math/shims/Sqrt.h>
 #include <blaze/math/simd/Sqrt.h>
@@ -89,9 +90,9 @@ struct Sqrt
    // \return The result of the sqrt() function for the given object/value.
    */
    template< typename T >
-   BLAZE_ALWAYS_INLINE BLAZE_DEVICE_CALLABLE decltype(auto) operator()( const T& a ) const
+   BLAZE_ALWAYS_INLINE BLAZE_DEVICE_CALLABLE decltype(auto) operator()( T&& a ) const
    {
-      return sqrt( a );
+      return sqrt( std::forward<T>( a ) );
    }
    //**********************************************************************************************
 

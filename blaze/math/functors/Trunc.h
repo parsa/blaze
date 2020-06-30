@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <utility>
 #include <blaze/math/constraints/SIMDPack.h>
 #include <blaze/math/shims/Trunc.h>
 #include <blaze/math/simd/Trunc.h>
@@ -87,9 +88,9 @@ struct Trunc
    // \return The result of the trunc() function for the given object/value.
    */
    template< typename T >
-   BLAZE_ALWAYS_INLINE BLAZE_DEVICE_CALLABLE decltype(auto) operator()( const T& a ) const
+   BLAZE_ALWAYS_INLINE BLAZE_DEVICE_CALLABLE decltype(auto) operator()( T&& a ) const
    {
-      return trunc( a );
+      return trunc( std::forward<T>( a ) );
    }
    //**********************************************************************************************
 

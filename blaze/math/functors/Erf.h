@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <utility>
 #include <blaze/math/constraints/SIMDPack.h>
 #include <blaze/math/shims/Erf.h>
 #include <blaze/math/simd/Erf.h>
@@ -83,9 +84,9 @@ struct Erf
    // \return The result of the erf() function for the given object/value.
    */
    template< typename T >
-   BLAZE_ALWAYS_INLINE BLAZE_DEVICE_CALLABLE decltype(auto) operator()( const T& a ) const
+   BLAZE_ALWAYS_INLINE BLAZE_DEVICE_CALLABLE decltype(auto) operator()( T&& a ) const
    {
-      return erf( a );
+      return erf( std::forward<T>( a ) );
    }
    //**********************************************************************************************
 

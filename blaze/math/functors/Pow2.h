@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <utility>
 #include <blaze/math/constraints/SIMDPack.h>
 #include <blaze/math/shims/Pow2.h>
 #include <blaze/math/typetraits/HasSIMDMult.h>
@@ -84,9 +85,9 @@ struct Pow2
    // \return The result of the pow2() function for the given object/value.
    */
    template< typename T >
-   BLAZE_ALWAYS_INLINE BLAZE_DEVICE_CALLABLE constexpr decltype(auto) operator()( const T& a ) const
+   BLAZE_ALWAYS_INLINE BLAZE_DEVICE_CALLABLE constexpr decltype(auto) operator()( T&& a ) const
    {
-      return pow2( a );
+      return pow2( std::forward<T>( a ) );
    }
    //**********************************************************************************************
 

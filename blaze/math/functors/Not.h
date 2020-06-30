@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <utility>
 #include <blaze/system/Inline.h>
 
 
@@ -64,9 +65,9 @@ struct Not
    // \return The result of the logical NOT operator for the given object/value.
    */
    template< typename T >
-   BLAZE_ALWAYS_INLINE decltype(auto) operator()( const T& a ) const
+   BLAZE_ALWAYS_INLINE decltype(auto) operator()( T&& a ) const
    {
-      return !a;
+      return !std::forward<T>( a );
    }
    //**********************************************************************************************
 };

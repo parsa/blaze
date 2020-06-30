@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <utility>
 #include <blaze/math/constraints/SIMDPack.h>
 #include <blaze/math/shims/Log1p.h>
 #include <blaze/math/simd/Log1p.h>
@@ -75,9 +76,9 @@ struct Log1p
    // \return The result of the log1p() function for the given object/value.
    */
    template< typename T >
-   BLAZE_ALWAYS_INLINE BLAZE_DEVICE_CALLABLE decltype(auto) operator()( const T& a ) const
+   BLAZE_ALWAYS_INLINE BLAZE_DEVICE_CALLABLE decltype(auto) operator()( T&& a ) const
    {
-      return log1p( a );
+      return log1p( std::forward<T>( a ) );
    }
    //**********************************************************************************************
 

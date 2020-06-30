@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <utility>
 #include <blaze/math/constraints/SIMDPack.h>
 #include <blaze/math/shims/Clamp.h>
 #include <blaze/math/simd/Max.h>
@@ -75,9 +76,9 @@ struct Clamp
    */
    template< typename T1, typename T2, typename T3 >
    BLAZE_ALWAYS_INLINE BLAZE_DEVICE_CALLABLE decltype(auto)
-      operator()( const T1& v, const T2& lo, const T3& hi ) const
+      operator()( T1&& v, T2&& lo, T3&& hi ) const
    {
-      return clamp( v, lo, hi );
+      return clamp( std::forward<T1>( v ), std::forward<T2>( lo ), std::forward<T3>( hi ) );
    }
    //**********************************************************************************************
 

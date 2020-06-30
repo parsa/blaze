@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <utility>
 #include <blaze/system/HostDevice.h>
 #include <blaze/system/Inline.h>
 #include <blaze/util/StaticAssert.h>
@@ -67,10 +68,10 @@ struct LpNorm
    // \return The Lp norm of the given object/value.
    */
    template< typename T >
-   BLAZE_ALWAYS_INLINE BLAZE_DEVICE_CALLABLE decltype(auto) operator()( const T& a ) const
+   BLAZE_ALWAYS_INLINE BLAZE_DEVICE_CALLABLE decltype(auto) operator()( T&& a ) const
    {
       BLAZE_STATIC_ASSERT_MSG( sizeof...( P ) == 1UL, "Missing norm parameter detected" );
-      return lpNorm( a, P... );
+      return lpNorm( std::forward<T>( a ), P... );
    }
    //**********************************************************************************************
 
@@ -82,10 +83,10 @@ struct LpNorm
    // \return The Lp norm of the given object/value.
    */
    template< typename T, typename ST >
-   BLAZE_ALWAYS_INLINE BLAZE_DEVICE_CALLABLE decltype(auto) operator()( const T& a, ST p ) const
+   BLAZE_ALWAYS_INLINE BLAZE_DEVICE_CALLABLE decltype(auto) operator()( T&& a, ST p ) const
    {
       BLAZE_STATIC_ASSERT_MSG( sizeof...( P ) == 0UL, "Over-specified norm parameter detected" );
-      return lpNorm( a, p );
+      return lpNorm( std::forward<T>( a ), p );
    }
    //**********************************************************************************************
 };

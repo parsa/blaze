@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <utility>
 #include <blaze/math/constraints/SIMDPack.h>
 #include <blaze/math/shims/Abs.h>
 #include <blaze/math/simd/Abs.h>
@@ -89,9 +90,9 @@ struct Abs
    // \return The result of the abs() function for the given object/value.
    */
    template< typename T >
-   BLAZE_ALWAYS_INLINE BLAZE_DEVICE_CALLABLE decltype(auto) operator()( const T& a ) const
+   BLAZE_ALWAYS_INLINE BLAZE_DEVICE_CALLABLE decltype(auto) operator()( T&& a ) const
    {
-      return abs( a );
+      return abs( std::forward<T>( a ) );
    }
    //**********************************************************************************************
 

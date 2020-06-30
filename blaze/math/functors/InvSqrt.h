@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <utility>
 #include <blaze/math/constraints/SIMDPack.h>
 #include <blaze/math/shims/InvSqrt.h>
 #include <blaze/math/simd/InvSqrt.h>
@@ -75,9 +76,9 @@ struct InvSqrt
    // \return The result of the invsqrt() function for the given object/value.
    */
    template< typename T >
-   BLAZE_ALWAYS_INLINE BLAZE_DEVICE_CALLABLE decltype(auto) operator()( const T& a ) const
+   BLAZE_ALWAYS_INLINE BLAZE_DEVICE_CALLABLE decltype(auto) operator()( T&& a ) const
    {
-      return invsqrt( a );
+      return invsqrt( std::forward<T>( a ) );
    }
    //**********************************************************************************************
 

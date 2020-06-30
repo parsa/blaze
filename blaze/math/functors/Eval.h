@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <utility>
 #include <blaze/math/shims/Eval.h>
 #include <blaze/system/HostDevice.h>
 #include <blaze/system/Inline.h>
@@ -66,9 +67,9 @@ struct Eval
    // \return The result of the eval() function for the given object/value.
    */
    template< typename T >
-   BLAZE_ALWAYS_INLINE BLAZE_DEVICE_CALLABLE decltype(auto) operator()( const T& a ) const
+   BLAZE_ALWAYS_INLINE BLAZE_DEVICE_CALLABLE decltype(auto) operator()( T&& a ) const
    {
-      return eval( a );
+      return eval( std::forward<T>( a ) );
    }
    //**********************************************************************************************
 };

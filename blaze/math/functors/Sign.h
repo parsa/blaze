@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <utility>
 #include <blaze/math/constraints/SIMDPack.h>
 #include <blaze/math/shims/Sign.h>
 #include <blaze/math/simd/Sign.h>
@@ -87,9 +88,9 @@ struct Sign
    // \return The result of the sign() function for the given object/value.
    */
    template< typename T >
-   BLAZE_ALWAYS_INLINE BLAZE_DEVICE_CALLABLE decltype(auto) operator()( T a ) const
+   BLAZE_ALWAYS_INLINE BLAZE_DEVICE_CALLABLE decltype(auto) operator()( T&& a ) const
    {
-      return sign( a );
+      return sign( std::forward<T>( a ) );
    }
    //**********************************************************************************************
 

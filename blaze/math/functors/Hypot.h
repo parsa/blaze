@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <utility>
 #include <blaze/math/constraints/SIMDPack.h>
 #include <blaze/math/shims/Hypot.h>
 #include <blaze/math/simd/Hypot.h>
@@ -85,9 +86,9 @@ struct Hypot
    // \return The result of the hypot() function for the given objects/values.
    */
    template< typename T1, typename T2 >
-   BLAZE_ALWAYS_INLINE BLAZE_DEVICE_CALLABLE decltype(auto) operator()( const T1& a, const T2& b ) const
+   BLAZE_ALWAYS_INLINE BLAZE_DEVICE_CALLABLE decltype(auto) operator()( T1&& a, T2&& b ) const
    {
-      return hypot( a, b );
+      return hypot( std::forward<T1>( a ), std::forward<T2>( b ) );
    }
    //**********************************************************************************************
 

@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <utility>
 #include <blaze/system/HostDevice.h>
 #include <blaze/system/Inline.h>
 
@@ -65,9 +66,9 @@ struct L4Norm
    // \return The L4 norm of the given object/value.
    */
    template< typename T >
-   BLAZE_ALWAYS_INLINE BLAZE_DEVICE_CALLABLE decltype(auto) operator()( const T& a ) const
+   BLAZE_ALWAYS_INLINE BLAZE_DEVICE_CALLABLE decltype(auto) operator()( T&& a ) const
    {
-      return l4Norm( a );
+      return l4Norm( std::forward<T>( a ) );
    }
    //**********************************************************************************************
 };

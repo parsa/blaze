@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <utility>
 #include <blaze/math/constraints/SIMDPack.h>
 #include <blaze/math/shims/Tanh.h>
 #include <blaze/math/simd/Tanh.h>
@@ -85,9 +86,9 @@ struct Tanh
    // \return The result of the tanh() function for the given object/value.
    */
    template< typename T >
-   BLAZE_ALWAYS_INLINE BLAZE_DEVICE_CALLABLE decltype(auto) operator()( const T& a ) const
+   BLAZE_ALWAYS_INLINE BLAZE_DEVICE_CALLABLE decltype(auto) operator()( T&& a ) const
    {
-      return tanh( a );
+      return tanh( std::forward<T>( a ) );
    }
    //**********************************************************************************************
 

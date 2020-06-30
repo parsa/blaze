@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <utility>
 #include <blaze/math/constraints/SIMDPack.h>
 #include <blaze/math/shims/Qdrt.h>
 #include <blaze/math/typetraits/HasSIMDSqrt.h>
@@ -88,9 +89,9 @@ struct Qdrt
    // \return The result of the qdrt() function for the given object/value.
    */
    template< typename T >
-   BLAZE_ALWAYS_INLINE BLAZE_DEVICE_CALLABLE decltype(auto) operator()( const T& a ) const
+   BLAZE_ALWAYS_INLINE BLAZE_DEVICE_CALLABLE decltype(auto) operator()( T&& a ) const
    {
-      return qdrt( a );
+      return qdrt( std::forward<T>( a ) );
    }
    //**********************************************************************************************
 

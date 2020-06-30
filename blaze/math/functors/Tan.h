@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <utility>
 #include <blaze/math/constraints/SIMDPack.h>
 #include <blaze/math/shims/Tan.h>
 #include <blaze/math/simd/Tan.h>
@@ -85,9 +86,9 @@ struct Tan
    // \return The result of the tan() function for the given object/value.
    */
    template< typename T >
-   BLAZE_ALWAYS_INLINE BLAZE_DEVICE_CALLABLE decltype(auto) operator()( const T& a ) const
+   BLAZE_ALWAYS_INLINE BLAZE_DEVICE_CALLABLE decltype(auto) operator()( T&& a ) const
    {
-      return tan( a );
+      return tan( std::forward<T>( a ) );
    }
    //**********************************************************************************************
 

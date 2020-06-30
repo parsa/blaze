@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <utility>
 #include <blaze/math/shims/Invert.h>
 #include <blaze/system/Inline.h>
 
@@ -66,9 +67,9 @@ struct InvAdd
    // \return The result of the inverted addition operator for the given objects/values.
    */
    template< typename T1, typename T2 >
-   BLAZE_ALWAYS_INLINE decltype(auto) operator()( const T1& a, const T2& b ) const
+   BLAZE_ALWAYS_INLINE decltype(auto) operator()( T1&& a, T2&& b ) const
    {
-      return inv( a + b );
+      return inv( std::forward<T1>( a ) + std::forward<T2>( b ) );
    }
    //**********************************************************************************************
 };
