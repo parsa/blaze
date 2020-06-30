@@ -66,6 +66,7 @@
 #include <blaze/math/shims/Cosh.h>
 #include <blaze/math/shims/Erf.h>
 #include <blaze/math/shims/Erfc.h>
+#include <blaze/math/shims/Evaluate.h>
 #include <blaze/math/shims/Exp.h>
 #include <blaze/math/shims/Exp2.h>
 #include <blaze/math/shims/Exp10.h>
@@ -1024,6 +1025,15 @@ decltype(auto) max( const Proxy<PT,RT>& lhs, const T& rhs );
 template< typename T, typename PT, typename RT, typename = DisableIf_t< IsProxy_v<T> > >
 decltype(auto) max( const T& lhs, const Proxy<PT,RT>& rhs );
 
+template< typename PT1, typename RT1, typename PT2, typename RT2 >
+decltype(auto) minmax( const Proxy<PT1,RT1>& lhs, const Proxy<PT2,RT2>& rhs );
+
+template< typename PT, typename RT, typename T, typename = DisableIf_t< IsProxy_v<T> > >
+decltype(auto) minmax( const Proxy<PT,RT>& lhs, const T& rhs );
+
+template< typename T, typename PT, typename RT, typename = DisableIf_t< IsProxy_v<T> > >
+decltype(auto) minmax( const T& lhs, const Proxy<PT,RT>& rhs );
+
 template< typename PT, typename RT >
 void transpose( const Proxy<PT,RT>& proxy );
 
@@ -1062,6 +1072,9 @@ bool equal( const Proxy<PT,RT>& lhs, const T& rhs );
 
 template< RelaxationFlag RF, typename T, typename PT, typename RT, typename = DisableIf_t< IsProxy_v<T> > >
 bool equal( const T& lhs, const Proxy<PT,RT>& rhs );
+
+template< typename PT, typename RT >
+decltype(auto) evaluate( const Proxy<PT,RT>& proxy );
 //@}
 //*************************************************************************************************
 
@@ -2169,6 +2182,60 @@ inline decltype(auto) max( const T& lhs, const Proxy<PT,RT>& rhs )
 
 
 //*************************************************************************************************
+/*!\brief Minmax of two Proxy objects.
+// \ingroup math
+//
+// \param lhs The left-hand side Proxy object.
+// \param rhs The right-hand side Proxy object.
+// \return The result of the minmax operation.
+*/
+template< typename PT1, typename RT1, typename PT2, typename RT2 >
+inline decltype(auto) minmax( const Proxy<PT1,RT1>& lhs, const Proxy<PT2,RT2>& rhs )
+{
+   using blaze::minmax;
+
+   return minmax( (~lhs).get(), (~rhs).get() );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Minmax of a Proxy object and an object of different type.
+// \ingroup math
+//
+// \param lhs The left-hand side Proxy object.
+// \param rhs The right-hand side object of other type.
+// \return The result of the minmax operation.
+*/
+template< typename PT, typename RT, typename T, typename >
+inline decltype(auto) minmax( const Proxy<PT,RT>& lhs, const T& rhs )
+{
+   using blaze::minmax;
+
+   return minmax( (~lhs).get(), rhs );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Minmax of an object of different type and a Proxy object.
+// \ingroup math
+//
+// \param lhs The left-hand side object of other type.
+// \param rhs The right-hand side Proxy object.
+// \return The result of the minmax operation.
+*/
+template< typename T, typename PT, typename RT, typename >
+inline decltype(auto) minmax( const T& lhs, const Proxy<PT,RT>& rhs )
+{
+   using blaze::minmax;
+
+   return minmax( lhs, (~rhs).get() );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief In-place transpose of the represented matrix element.
 // \ingroup math
 //
@@ -2482,6 +2549,27 @@ template< RelaxationFlag RF, typename T, typename PT, typename RT, typename >
 inline bool equal( const T& lhs, const Proxy<PT,RT>& rhs )
 {
    return equal<RF>( lhs, (~rhs).get() );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns whether the represented element is finite.
+// \ingroup math
+//
+// \param proxy The given proxy instance.
+// \return \a true in case the represented element is finite, \a false otherwise.
+//
+// This function checks whether the element represented by the proxy is finite (i.e.
+// normal, subnormal or zero elements, but not infinite or NaN). In case it is finite,
+// the function returns \a true, otherwise it returns \a false.
+*/
+template< typename PT, typename RT >
+inline decltype(auto) evaluate( const Proxy<PT,RT>& proxy )
+{
+   using blaze::evaluate;
+
+   return evaluate( (~proxy).get() );
 }
 //*************************************************************************************************
 
