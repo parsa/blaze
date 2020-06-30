@@ -41,72 +41,54 @@
 //*************************************************************************************************
 
 #include <utility>
-#include <blaze/system/Inline.h>
 #include <blaze/util/EnableIf.h>
+#include <blaze/util/mpl/If.h>
 #include <blaze/util/typetraits/CommonType.h>
+#include <blaze/util/typetraits/HasLessThan.h>
+#include <blaze/util/typetraits/IsReference.h>
+#include <blaze/util/typetraits/IsSame.h>
 #include <blaze/util/typetraits/IsSigned.h>
 #include <blaze/util/typetraits/IsUnsigned.h>
+#include <blaze/util/typetraits/RemoveCVRef.h>
 
 
 namespace blaze {
 
 //=================================================================================================
 //
-//  MAX ALGORITHMS
+//  MINMAX ALGORITHMS
 //
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Minmax function for two values of builtin data type.
-// \ingroup algorithms
-//
-// \param a The first value.
-// \param b The second value.
-// \return A pair of the maximum and maximum of the two values.
-//
-// This function returns the a pair containing the minimum and maximum of the two given data
-// values. The return type of the function is a pair of the common type of the given arguments.
-*/
-template< typename T1, typename T2
-        , typename = EnableIf_t< ( IsSigned_v<T1> && IsSigned_v<T2> ) ||
-                                 ( IsUnsigned_v<T1> && IsUnsigned_v<T2> ) > >
-BLAZE_ALWAYS_INLINE constexpr auto
-   minmax( T1&& a, T2&& b ) noexcept
-{
-   using T = CommonType_t<T1,T2>;
-
-   if( a < b )
-      return std::pair<T,T>( std::forward<T1>( a ), std::forward<T2>( b ) );
-   else
-      return std::pair<T,T>( std::forward<T1>( b ), std::forward<T2>( a ) );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Minmax function for at least three values/objects.
+/*!\brief Minmax function for two values/objects.
 // \ingroup algorithms
 //
 // \param a The first value/object.
 // \param b The second value/object.
-// \param args The pack of additional values/objects.
-// \return A pair of the maximum and maximum of the given values.
+// \return A pair of the minimum and maximum of the two values/objects.
 //
-// This function returns a pair containing the minimum and maximum of the given data values/objects.
-// The return type of the function is a pair of the common type of the given arguments.
+// This function determines the minimum and maximium of the two given values/objects by means of
+// a less-than comparison. The return type of the function is determined by the data types of the
+// given arguments.
 */
-template< typename T1, typename T2, typename... Ts >
-BLAZE_ALWAYS_INLINE constexpr decltype(auto)
-   minmax( T1&& a, T2&& b, Ts&&... args ) noexcept
+template< typename T1, typename T2
+        , typename R1 = RemoveCVRef_t<T1>
+        , typename R2 = RemoveCVRef_t<T2>
+        , EnableIf_t< HasLessThan_v<R2,R1> &&
+                      !( IsSigned_v<T1> && IsUnsigned_v<T2> ) &&
+                      !( IsUnsigned_v<T1> && IsSigned_v<T2> ) >* = nullptr >
+constexpr decltype(auto) minmax( T1&& a, T2&& b )
 {
-   using blaze::minmax;
+   using RT =
+      If_t< IsReference_v<T1> && IsReference_v<T2> && IsSame_v<R1,R2>
+          , const R1&
+          , CommonType_t<R1,R2> >;
 
-   using T = std::common_type_t<T1,T2,Ts...>;
-
-   auto tmp( minmax( std::forward<T2>( b ), std::forward<Ts>( args )... ) );
-
-   return std::pair<T,T>( ( a < tmp.first ? std::forward<T1>( a ) : std::move( tmp.first ) )
-                        , ( tmp.second < a ? std::forward<T2>( a ) : std::move( tmp.second ) ) );
+   if( b < a )
+      return std::pair<RT,RT>( std::forward<T2>( b ), std::forward<T1>( a ) );
+   else
+      return std::pair<RT,RT>( std::forward<T1>( a ), std::forward<T2>( b ) );
 }
 //*************************************************************************************************
 
