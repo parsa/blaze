@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <utility>
 #include <blaze/math/expressions/SVDExpr.h>
 #include <blaze/util/IntegralConstant.h>
 
@@ -54,27 +55,13 @@ namespace blaze {
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Auxiliary helper struct for the IsSVDExpr type trait.
+/*!\brief Auxiliary helper functions for the IsSVDExpr type trait.
 // \ingroup math_type_traits
 */
-template< typename T >
-struct IsSVDExprHelper
-{
- private:
-   //**********************************************************************************************
-   static const volatile T* create();
+template< typename MT >
+TrueType isSVDExpr_backend( const volatile SVDExpr<MT>* );
 
-   template< typename MT >
-   static TrueType test( const volatile SVDExpr<MT>* );
-
-   static FalseType test( ... );
-   //**********************************************************************************************
-
- public:
-   //**********************************************************************************************
-   using Type = decltype( test( create() ) );
-   //**********************************************************************************************
-};
+FalseType isSVDExpr_backend( ... );
 /*! \endcond */
 //*************************************************************************************************
 
@@ -92,7 +79,7 @@ struct IsSVDExprHelper
 */
 template< typename T >
 struct IsSVDExpr
-   : public IsSVDExprHelper<T>::Type
+   : public decltype( isSVDExpr_backend( std::declval<T*>() ) )
 {};
 //*************************************************************************************************
 

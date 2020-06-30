@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <utility>
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/TransposeFlag.h>
 #include <blaze/util/IntegralConstant.h>
@@ -55,27 +56,13 @@ namespace blaze {
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Auxiliary helper struct for the IsColumnVector type trait.
+/*!\brief Auxiliary helper functions for the IsColumnVector type trait.
 // \ingroup math_type_traits
 */
-template< typename T >
-struct IsColumnVectorHelper
-{
- private:
-   //**********************************************************************************************
-   static const volatile T* create();
+template< typename VT >
+TrueType isColumnVector_backend( const volatile Vector<VT,columnVector>* );
 
-   template< typename VT >
-   static TrueType test( const volatile Vector<VT,columnVector>* );
-
-   static FalseType test( ... );
-   //**********************************************************************************************
-
- public:
-   //**********************************************************************************************
-   using Type = decltype( test( create() ) );
-   //**********************************************************************************************
-};
+FalseType isColumnVector_backend( ... );
 /*! \endcond */
 //*************************************************************************************************
 
@@ -104,7 +91,7 @@ struct IsColumnVectorHelper
 */
 template< typename T >
 struct IsColumnVector
-   : public IsColumnVectorHelper<T>::Type
+   : public decltype( isColumnVector_backend( std::declval<T*>() ) )
 {};
 //*************************************************************************************************
 

@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <utility>
 #include <blaze/math/expressions/DeclStrLowExpr.h>
 #include <blaze/util/IntegralConstant.h>
 
@@ -54,27 +55,13 @@ namespace blaze {
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Auxiliary helper struct for the IsDeclStrLowExpr type trait.
+/*!\brief Auxiliary helper functions for the IsDeclStrLowExpr type trait.
 // \ingroup math_type_traits
 */
-template< typename T >
-struct IsDeclStrLowExprHelper
-{
- private:
-   //**********************************************************************************************
-   static const volatile T* create();
+template< typename MT >
+TrueType isDeclStrLowExpr_backend( const volatile DeclStrLowExpr<MT>* );
 
-   template< typename MT >
-   static TrueType test( const volatile DeclStrLowExpr<MT>* );
-
-   static FalseType test( ... );
-   //**********************************************************************************************
-
- public:
-   //**********************************************************************************************
-   using Type = decltype( test( create() ) );
-   //**********************************************************************************************
-};
+FalseType isDeclStrLowExpr_backend( ... );
 /*! \endcond */
 //*************************************************************************************************
 
@@ -92,7 +79,7 @@ struct IsDeclStrLowExprHelper
 */
 template< typename T >
 struct IsDeclStrLowExpr
-   : public IsDeclStrLowExprHelper<T>::Type
+   : public decltype( isDeclStrLowExpr_backend( std::declval<T*>() ) )
 {};
 //*************************************************************************************************
 

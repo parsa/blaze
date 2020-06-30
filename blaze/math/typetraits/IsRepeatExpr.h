@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <utility>
 #include <blaze/math/expressions/RepeatExpr.h>
 #include <blaze/util/IntegralConstant.h>
 
@@ -54,27 +55,13 @@ namespace blaze {
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Auxiliary helper struct for the IsRepeatExpr type trait.
+/*!\brief Auxiliary helper functions for the IsRepeatExpr type trait.
 // \ingroup math_type_traits
 */
-template< typename T >
-struct IsRepeatExprHelper
-{
- private:
-   //**********************************************************************************************
-   static const volatile T* create();
+template< typename U >
+TrueType isRepeatExpr_backend( const volatile RepeatExpr<U>* );
 
-   template< typename U >
-   static TrueType test( const volatile RepeatExpr<U>* );
-
-   static FalseType test( ... );
-   //**********************************************************************************************
-
- public:
-   //**********************************************************************************************
-   using Type = decltype( test( create() ) );
-   //**********************************************************************************************
-};
+FalseType isRepeatExpr_backend( ... );
 /*! \endcond */
 //*************************************************************************************************
 
@@ -92,7 +79,7 @@ struct IsRepeatExprHelper
 */
 template< typename T >
 struct IsRepeatExpr
-   : public IsRepeatExprHelper<T>::Type
+   : public decltype( isRepeatExpr_backend( std::declval<T*>() ) )
 {};
 //*************************************************************************************************
 

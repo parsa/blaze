@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <utility>
 #include <blaze/math/simd/SIMDPack.h>
 #include <blaze/util/IntegralConstant.h>
 
@@ -54,27 +55,13 @@ namespace blaze {
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Auxiliary helper struct for the IsSIMDPack type trait.
+/*!\brief Auxiliary helper functions for the IsSIMDPack type trait.
 // \ingroup math_type_traits
 */
-template< typename T >
-struct IsSIMDPackHelper
-{
- private:
-   //**********************************************************************************************
-   static const volatile T* create();
+template< typename U >
+TrueType isSIMDPack_backend( const volatile SIMDPack<U>* );
 
-   template< typename U >
-   static TrueType test( const volatile SIMDPack<U>* );
-
-   static FalseType test( ... );
-   //**********************************************************************************************
-
- public:
-   //**********************************************************************************************
-   using Type = decltype( test( create() ) );
-   //**********************************************************************************************
-};
+FalseType isSIMDPack_backend( ... );
 /*! \endcond */
 //*************************************************************************************************
 
@@ -135,7 +122,7 @@ struct IsSIMDPackHelper
 */
 template< typename T >
 struct IsSIMDPack
-   : public IsSIMDPackHelper<T>::Type
+   : public decltype( isSIMDPack_backend( std::declval<T*>() ) )
 {};
 //*************************************************************************************************
 

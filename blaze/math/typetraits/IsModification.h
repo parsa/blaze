@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <utility>
 #include <blaze/math/expressions/Modification.h>
 #include <blaze/util/IntegralConstant.h>
 
@@ -54,27 +55,13 @@ namespace blaze {
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Auxiliary helper struct for the IsModification type trait.
+/*!\brief Auxiliary helper functions for the IsModification type trait.
 // \ingroup math_type_traits
 */
-template< typename T >
-struct IsModificationHelper
-{
- private:
-   //**********************************************************************************************
-   static const volatile T* create();
+template< typename U >
+TrueType isModification( const volatile Modification<U>* );
 
-   template< typename U >
-   static TrueType test( const volatile Modification<U>* );
-
-   static FalseType test( ... );
-   //**********************************************************************************************
-
- public:
-   //**********************************************************************************************
-   using Type = decltype( test( create() ) );
-   //**********************************************************************************************
-};
+FalseType isModification( ... );
 /*! \endcond */
 //*************************************************************************************************
 
@@ -92,7 +79,7 @@ struct IsModificationHelper
 */
 template< typename T >
 struct IsModification
-   : public IsModificationHelper<T>::Type
+   : public decltype( isModification( std::declval<T*>() ) )
 {};
 //*************************************************************************************************
 

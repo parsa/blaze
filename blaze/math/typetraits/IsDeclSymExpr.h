@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <utility>
 #include <blaze/math/expressions/DeclSymExpr.h>
 #include <blaze/util/IntegralConstant.h>
 
@@ -54,27 +55,13 @@ namespace blaze {
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Auxiliary helper struct for the IsDeclSymExpr type trait.
+/*!\brief Auxiliary helper functions for the IsDeclSymExpr type trait.
 // \ingroup math_type_traits
 */
-template< typename T >
-struct IsDeclSymExprHelper
-{
- private:
-   //**********************************************************************************************
-   static const volatile T* create();
+template< typename MT >
+TrueType isDeclSymExpr_backend( const volatile DeclSymExpr<MT>* );
 
-   template< typename MT >
-   static TrueType test( const volatile DeclSymExpr<MT>* );
-
-   static FalseType test( ... );
-   //**********************************************************************************************
-
- public:
-   //**********************************************************************************************
-   using Type = decltype( test( create() ) );
-   //**********************************************************************************************
-};
+FalseType isDeclSymExpr_backend( ... );
 /*! \endcond */
 //*************************************************************************************************
 
@@ -92,7 +79,7 @@ struct IsDeclSymExprHelper
 */
 template< typename T >
 struct IsDeclSymExpr
-   : public IsDeclSymExprHelper<T>::Type
+   : public decltype( isDeclSymExpr_backend( std::declval<T*>() ) )
 {};
 //*************************************************************************************************
 

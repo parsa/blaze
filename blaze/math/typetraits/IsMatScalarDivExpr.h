@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <utility>
 #include <blaze/math/expressions/MatScalarDivExpr.h>
 #include <blaze/util/IntegralConstant.h>
 
@@ -54,27 +55,13 @@ namespace blaze {
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Auxiliary helper struct for the IsMatScalarDivExpr type trait.
+/*!\brief Auxiliary helper functions for the IsMatScalarDivExpr type trait.
 // \ingroup math_type_traits
 */
-template< typename T >
-struct IsMatScalarDivExprHelper
-{
- private:
-   //**********************************************************************************************
-   static const volatile T* create();
+template< typename MT >
+TrueType isMatScalarDivExpr_backend( const volatile MatScalarDivExpr<MT>* );
 
-   template< typename MT >
-   static TrueType test( const volatile MatScalarDivExpr<MT>* );
-
-   static FalseType test( ... );
-   //**********************************************************************************************
-
- public:
-   //**********************************************************************************************
-   using Type = decltype( test( create() ) );
-   //**********************************************************************************************
-};
+FalseType isMatScalarDivExpr_backend( ... );
 /*! \endcond */
 //*************************************************************************************************
 
@@ -94,7 +81,7 @@ struct IsMatScalarDivExprHelper
 */
 template< typename T >
 struct IsMatScalarDivExpr
-   : public IsMatScalarDivExprHelper<T>::Type
+   : public decltype( isMatScalarDivExpr_backend( std::declval<T*>() ) )
 {};
 //*************************************************************************************************
 

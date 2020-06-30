@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <utility>
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/TransposeFlag.h>
 #include <blaze/util/IntegralConstant.h>
@@ -55,27 +56,13 @@ namespace blaze {
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Auxiliary helper struct for the IsRowVector type trait.
+/*!\brief Auxiliary helper functions for the IsRowVector type trait.
 // \ingroup math_type_traits
 */
-template< typename T >
-struct IsRowVectorHelper
-{
- private:
-   //**********************************************************************************************
-   static const volatile T* create();
+template< typename VT >
+TrueType isRowVector_backend( const volatile Vector<VT,rowVector>* );
 
-   template< typename VT >
-   static TrueType test( const volatile Vector<VT,rowVector>* );
-
-   static FalseType test( ... );
-   //**********************************************************************************************
-
- public:
-   //**********************************************************************************************
-   using Type = decltype( test( create() ) );
-   //**********************************************************************************************
-};
+FalseType isRowVector_backend( ... );
 /*! \endcond */
 //*************************************************************************************************
 
@@ -104,7 +91,7 @@ struct IsRowVectorHelper
 */
 template< typename T >
 struct IsRowVector
-   : public IsRowVectorHelper<T>::Type
+   : public decltype( isRowVector_backend( std::declval<T*>() ) )
 {};
 //*************************************************************************************************
 

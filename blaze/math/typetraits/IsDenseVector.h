@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <utility>
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/util/IntegralConstant.h>
 
@@ -54,27 +55,13 @@ namespace blaze {
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Auxiliary helper struct for the IsDenseVector type trait.
+/*!\brief Auxiliary helper functions for the IsDenseVector type trait.
 // \ingroup math_type_traits
 */
-template< typename T >
-struct IsDenseVectorHelper
-{
- private:
-   //**********************************************************************************************
-   static const volatile T* create();
+template< typename VT, bool TF >
+TrueType isDenseVector_backend( const volatile DenseVector<VT,TF>* );
 
-   template< typename VT, bool TF >
-   static TrueType test( const volatile DenseVector<VT,TF>* );
-
-   static FalseType test( ... );
-   //**********************************************************************************************
-
- public:
-   //**********************************************************************************************
-   using Type = decltype( test( create() ) );
-   //**********************************************************************************************
-};
+FalseType isDenseVector_backend( ... );
 /*! \endcond */
 //*************************************************************************************************
 
@@ -100,7 +87,7 @@ struct IsDenseVectorHelper
 */
 template< typename T >
 struct IsDenseVector
-   : public IsDenseVectorHelper<T>::Type
+   : public decltype( isDenseVector_backend( std::declval<T*>() ) )
 {};
 //*************************************************************************************************
 

@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <utility>
 #include <blaze/math/expressions/MatScalarMultExpr.h>
 #include <blaze/util/IntegralConstant.h>
 
@@ -54,27 +55,13 @@ namespace blaze {
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Auxiliary helper struct for the IsMatScalarMultExpr type trait.
+/*!\brief Auxiliary helper functions for the IsMatScalarMultExpr type trait.
 // \ingroup math_type_traits
 */
-template< typename T >
-struct IsMatScalarMultExprHelper
-{
- private:
-   //**********************************************************************************************
-   static const volatile T* create();
+template< typename MT >
+TrueType isMatScalarMultExpr_backend( const volatile MatScalarMultExpr<MT>* );
 
-   template< typename MT >
-   static TrueType test( const volatile MatScalarMultExpr<MT>* );
-
-   static FalseType test( ... );
-   //**********************************************************************************************
-
- public:
-   //**********************************************************************************************
-   using Type = decltype( test( create() ) );
-   //**********************************************************************************************
-};
+FalseType isMatScalarMultExpr_backend( ... );
 /*! \endcond */
 //*************************************************************************************************
 
@@ -95,7 +82,7 @@ struct IsMatScalarMultExprHelper
 */
 template< typename T >
 struct IsMatScalarMultExpr
-   : public IsMatScalarMultExprHelper<T>::Type
+   : public decltype( isMatScalarMultExpr_backend( std::declval<T*>() ) )
 {};
 //*************************************************************************************************
 

@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <utility>
 #include <blaze/math/expressions/MatNoSIMDExpr.h>
 #include <blaze/util/IntegralConstant.h>
 
@@ -54,27 +55,13 @@ namespace blaze {
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Auxiliary helper struct for the IsMatNoSIMDExpr type trait.
+/*!\brief Auxiliary helper functions for the IsMatNoSIMDExpr type trait.
 // \ingroup math_type_traits
 */
-template< typename T >
-struct IsMatNoSIMDExprHelper
-{
- private:
-   //**********************************************************************************************
-   static const volatile T* create();
+template< typename MT >
+TrueType isMatNoSIMDExpr_backend( const volatile MatNoSIMDExpr<MT>* );
 
-   template< typename MT >
-   static TrueType test( const volatile MatNoSIMDExpr<MT>* );
-
-   static FalseType test( ... );
-   //**********************************************************************************************
-
- public:
-   //**********************************************************************************************
-   using Type = decltype( test( create() ) );
-   //**********************************************************************************************
-};
+FalseType isMatNoSIMDExpr_backend( ... );
 /*! \endcond */
 //*************************************************************************************************
 
@@ -93,7 +80,7 @@ struct IsMatNoSIMDExprHelper
 */
 template< typename T >
 struct IsMatNoSIMDExpr
-   : public IsMatNoSIMDExprHelper<T>::Type
+   : public decltype( isMatNoSIMDExpr_backend( std::declval<T*>() ) )
 {};
 //*************************************************************************************************
 

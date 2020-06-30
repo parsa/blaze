@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <utility>
 #include <blaze/math/expressions/UnaryMapExpr.h>
 #include <blaze/util/IntegralConstant.h>
 
@@ -54,27 +55,13 @@ namespace blaze {
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Auxiliary helper struct for the IsUnaryMapExpr type trait.
+/*!\brief Auxiliary helper functions for the IsUnaryMapExpr type trait.
 // \ingroup math_type_traits
 */
-template< typename T >
-struct IsUnaryMapExprHelper
-{
- private:
-   //**********************************************************************************************
-   static const volatile T* create();
+template< typename U >
+TrueType isUnaryMapExpr_backend( const volatile UnaryMapExpr<U>* );
 
-   template< typename U >
-   static TrueType test( const volatile UnaryMapExpr<U>* );
-
-   static FalseType test( ... );
-   //**********************************************************************************************
-
- public:
-   //**********************************************************************************************
-   using Type = decltype( test( create() ) );
-   //**********************************************************************************************
-};
+FalseType isUnaryMapExpr_backend( ... );
 /*! \endcond */
 //*************************************************************************************************
 
@@ -92,7 +79,7 @@ struct IsUnaryMapExprHelper
 */
 template< typename T >
 struct IsUnaryMapExpr
-   : public IsUnaryMapExprHelper<T>::Type
+   : public decltype( isUnaryMapExpr_backend( std::declval<T*>() ) )
 {};
 //*************************************************************************************************
 

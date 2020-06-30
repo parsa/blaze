@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <utility>
 #include <blaze/math/expressions/DeclUniUppExpr.h>
 #include <blaze/util/IntegralConstant.h>
 
@@ -54,27 +55,13 @@ namespace blaze {
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Auxiliary helper struct for the IsDeclUniUppExpr type trait.
+/*!\brief Auxiliary helper functions for the IsDeclUniUppExpr type trait.
 // \ingroup math_type_traits
 */
-template< typename T >
-struct IsDeclUniUppExprHelper
-{
- private:
-   //**********************************************************************************************
-   static const volatile T* create();
+template< typename MT >
+TrueType isDeclUniUppExpr_backend( const volatile DeclUniUppExpr<MT>* );
 
-   template< typename MT >
-   static TrueType test( const volatile DeclUniUppExpr<MT>* );
-
-   static FalseType test( ... );
-   //**********************************************************************************************
-
- public:
-   //**********************************************************************************************
-   using Type = decltype( test( create() ) );
-   //**********************************************************************************************
-};
+FalseType isDeclUniUppExpr_backend( ... );
 /*! \endcond */
 //*************************************************************************************************
 
@@ -92,7 +79,7 @@ struct IsDeclUniUppExprHelper
 */
 template< typename T >
 struct IsDeclUniUppExpr
-   : public IsDeclUniUppExprHelper<T>::Type
+   : public decltype( isDeclUniUppExpr_backend( std::declval<T*>() ) )
 {};
 //*************************************************************************************************
 

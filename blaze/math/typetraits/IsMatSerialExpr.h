@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <utility>
 #include <blaze/math/expressions/MatSerialExpr.h>
 #include <blaze/util/IntegralConstant.h>
 
@@ -54,27 +55,13 @@ namespace blaze {
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Auxiliary helper struct for the IsMatSerialExpr type trait.
+/*!\brief Auxiliary helper functions for the IsMatSerialExpr type trait.
 // \ingroup math_type_traits
 */
-template< typename T >
-struct IsMatSerialExprHelper
-{
- private:
-   //**********************************************************************************************
-   static const volatile T* create();
+template< typename MT >
+TrueType isMatSerialExpr_backend( const volatile MatSerialExpr<MT>* );
 
-   template< typename MT >
-   static TrueType test( const volatile MatSerialExpr<MT>* );
-
-   static FalseType test( ... );
-   //**********************************************************************************************
-
- public:
-   //**********************************************************************************************
-   using Type = decltype( test( create() ) );
-   //**********************************************************************************************
-};
+FalseType isMatSerialExpr_backend( ... );
 /*! \endcond */
 //*************************************************************************************************
 
@@ -93,7 +80,7 @@ struct IsMatSerialExprHelper
 */
 template< typename T >
 struct IsMatSerialExpr
-   : public IsMatSerialExprHelper<T>::Type
+   : public decltype( isMatSerialExpr_backend( std::declval<T*>() ) )
 {};
 //*************************************************************************************************
 

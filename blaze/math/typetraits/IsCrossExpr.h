@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <utility>
 #include <blaze/math/expressions/CrossExpr.h>
 #include <blaze/util/IntegralConstant.h>
 
@@ -54,27 +55,13 @@ namespace blaze {
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Auxiliary helper struct for the IsCrossExpr type trait.
+/*!\brief Auxiliary helper functions for the IsCrossExpr type trait.
 // \ingroup math_type_traits
 */
-template< typename T >
-struct IsCrossExprHelper
-{
- private:
-   //**********************************************************************************************
-   static const volatile T* create();
+template< typename VT >
+TrueType isCrossExpr_backend( const volatile CrossExpr<VT>* );
 
-   template< typename VT >
-   static TrueType test( const volatile CrossExpr<VT>* );
-
-   static FalseType test( ... );
-   //**********************************************************************************************
-
- public:
-   //**********************************************************************************************
-   using Type = decltype( test( create() ) );
-   //**********************************************************************************************
-};
+FalseType isCrossExpr_backend( ... );
 /*! \endcond */
 //*************************************************************************************************
 
@@ -93,7 +80,7 @@ struct IsCrossExprHelper
 */
 template< typename T >
 struct IsCrossExpr
-   : public IsCrossExprHelper<T>::Type
+   : public decltype( isCrossExpr_backend( std::declval<T*>() ) )
 {};
 //*************************************************************************************************
 

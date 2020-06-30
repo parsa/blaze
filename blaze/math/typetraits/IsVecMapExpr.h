@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <utility>
 #include <blaze/math/expressions/VecMapExpr.h>
 #include <blaze/util/IntegralConstant.h>
 
@@ -54,27 +55,13 @@ namespace blaze {
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Auxiliary helper struct for the IsVecMapExpr type trait.
+/*!\brief Auxiliary helper functions for the IsVecMapExpr type trait.
 // \ingroup math_type_traits
 */
-template< typename T >
-struct IsVecMapExprHelper
-{
- private:
-   //**********************************************************************************************
-   static const volatile T* create();
+template< typename VT >
+TrueType isVecMapExpr_backend( const volatile VecMapExpr<VT>* );
 
-   template< typename VT >
-   static TrueType test( const volatile VecMapExpr<VT>* );
-
-   static FalseType test( ... );
-   //**********************************************************************************************
-
- public:
-   //**********************************************************************************************
-   using Type = decltype( test( create() ) );
-   //**********************************************************************************************
-};
+FalseType isVecMapExpr_backend( ... );
 /*! \endcond */
 //*************************************************************************************************
 
@@ -93,7 +80,7 @@ struct IsVecMapExprHelper
 */
 template< typename T >
 struct IsVecMapExpr
-   : public IsVecMapExprHelper<T>::Type
+   : public decltype( isVecMapExpr_backend( std::declval<T*>() ) )
 {};
 //*************************************************************************************************
 

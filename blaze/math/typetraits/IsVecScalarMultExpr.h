@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <utility>
 #include <blaze/math/expressions/VecScalarMultExpr.h>
 #include <blaze/util/IntegralConstant.h>
 
@@ -54,27 +55,13 @@ namespace blaze {
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Auxiliary helper struct for the IsVecScalarMultExpr type trait.
+/*!\brief Auxiliary helper functions for the IsVecScalarMultExpr type trait.
 // \ingroup math_type_traits
 */
-template< typename T >
-struct IsVecScalarMultExprHelper
-{
- private:
-   //**********************************************************************************************
-   static const volatile T* create();
+template< typename VT >
+TrueType isVecScalarMultExpr_backend( const volatile VecScalarMultExpr<VT>* );
 
-   template< typename VT >
-   static TrueType test( const volatile VecScalarMultExpr<VT>* );
-
-   static FalseType test( ... );
-   //**********************************************************************************************
-
- public:
-   //**********************************************************************************************
-   using Type = decltype( test( create() ) );
-   //**********************************************************************************************
-};
+FalseType isVecScalarMultExpr_backend( ... );
 /*! \endcond */
 //*************************************************************************************************
 
@@ -95,7 +82,7 @@ struct IsVecScalarMultExprHelper
 */
 template< typename T >
 struct IsVecScalarMultExpr
-   : public IsVecScalarMultExprHelper<T>::Type
+   : public decltype( isVecScalarMultExpr_backend( std::declval<T*>() ) )
 {};
 //*************************************************************************************************
 

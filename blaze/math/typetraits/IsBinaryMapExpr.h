@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <utility>
 #include <blaze/math/expressions/BinaryMapExpr.h>
 #include <blaze/util/IntegralConstant.h>
 
@@ -54,27 +55,13 @@ namespace blaze {
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Auxiliary helper struct for the IsBinaryMapExpr type trait.
+/*!\brief Auxiliary helper functions for the IsBinaryMapExpr type trait.
 // \ingroup math_type_traits
 */
-template< typename T >
-struct IsBinaryMapExprHelper
-{
- private:
-   //**********************************************************************************************
-   static const volatile T* create();
+template< typename U >
+TrueType isBinaryMapExpr_backend( const volatile BinaryMapExpr<U>* );
 
-   template< typename U >
-   static TrueType test( const volatile BinaryMapExpr<U>* );
-
-   static FalseType test( ... );
-   //**********************************************************************************************
-
- public:
-   //**********************************************************************************************
-   using Type = decltype( test( create() ) );
-   //**********************************************************************************************
-};
+FalseType isBinaryMapExpr_backend( ... );
 /*! \endcond */
 //*************************************************************************************************
 
@@ -92,7 +79,7 @@ struct IsBinaryMapExprHelper
 */
 template< typename T >
 struct IsBinaryMapExpr
-   : public IsBinaryMapExprHelper<T>::Type
+   : public decltype( isBinaryMapExpr_backend( std::declval<T*>() ) )
 {};
 //*************************************************************************************************
 

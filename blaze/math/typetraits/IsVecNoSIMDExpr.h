@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <utility>
 #include <blaze/math/expressions/VecNoSIMDExpr.h>
 #include <blaze/util/IntegralConstant.h>
 
@@ -54,27 +55,13 @@ namespace blaze {
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Auxiliary helper struct for the IsVecNoSIMDExpr type trait.
+/*!\brief Auxiliary helper functions for the IsVecNoSIMDExpr type trait.
 // \ingroup math_type_traits
 */
-template< typename T >
-struct IsVecNoSIMDExprHelper
-{
- private:
-   //**********************************************************************************************
-   static const volatile T* create();
+template< typename VT >
+TrueType isVecNoSIMDExpr_backend( const volatile VecNoSIMDExpr<VT>* );
 
-   template< typename VT >
-   static TrueType test( const volatile VecNoSIMDExpr<VT>* );
-
-   static FalseType test( ... );
-   //**********************************************************************************************
-
- public:
-   //**********************************************************************************************
-   using Type = decltype( test( create() ) );
-   //**********************************************************************************************
-};
+FalseType isVecNoSIMDExpr_backend( ... );
 /*! \endcond */
 //*************************************************************************************************
 
@@ -93,7 +80,7 @@ struct IsVecNoSIMDExprHelper
 */
 template< typename T >
 struct IsVecNoSIMDExpr
-   : public IsVecNoSIMDExprHelper<T>::Type
+   : public decltype( isVecNoSIMDExpr_backend( std::declval<T*>() ) )
 {};
 //*************************************************************************************************
 

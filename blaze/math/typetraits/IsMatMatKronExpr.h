@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <utility>
 #include <blaze/math/expressions/MatMatKronExpr.h>
 #include <blaze/util/IntegralConstant.h>
 
@@ -54,27 +55,13 @@ namespace blaze {
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Auxiliary helper struct for the IsMatMatKronExpr type trait.
+/*!\brief Auxiliary helper functions for the IsMatMatKronExpr type trait.
 // \ingroup math_type_traits
 */
-template< typename T >
-struct IsMatMatKronExprHelper
-{
- private:
-   //**********************************************************************************************
-   static const volatile T* create();
+template< typename MT >
+TrueType isMatMatKronExpr_backend( const volatile MatMatKronExpr<MT>* );
 
-   template< typename MT >
-   static TrueType test( const volatile MatMatKronExpr<MT>* );
-
-   static FalseType test( ... );
-   //**********************************************************************************************
-
- public:
-   //**********************************************************************************************
-   using Type = decltype( test( create() ) );
-   //**********************************************************************************************
-};
+FalseType isMatMatKronExpr_backend( ... );
 /*! \endcond */
 //*************************************************************************************************
 
@@ -94,7 +81,7 @@ struct IsMatMatKronExprHelper
 */
 template< typename T >
 struct IsMatMatKronExpr
-   : public IsMatMatKronExprHelper<T>::Type
+   : public decltype( isMatMatKronExpr_backend( std::declval<T*>() ) )
 {};
 //*************************************************************************************************
 

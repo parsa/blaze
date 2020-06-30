@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <utility>
 #include <blaze/math/expressions/Declaration.h>
 #include <blaze/util/IntegralConstant.h>
 
@@ -54,27 +55,13 @@ namespace blaze {
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Auxiliary helper struct for the IsDeclaration type trait.
+/*!\brief Auxiliary helper functions for the IsDeclaration type trait.
 // \ingroup math_type_traits
 */
-template< typename T >
-struct IsDeclarationHelper
-{
- private:
-   //**********************************************************************************************
-   static const volatile T* create();
+template< typename U >
+TrueType isDeclaration_backend( const volatile Declaration<U>* );
 
-   template< typename U >
-   static TrueType test( const volatile Declaration<U>* );
-
-   static FalseType test( ... );
-   //**********************************************************************************************
-
- public:
-   //**********************************************************************************************
-   using Type = decltype( test( create() ) );
-   //**********************************************************************************************
-};
+FalseType isDeclaration_backend( ... );
 /*! \endcond */
 //*************************************************************************************************
 
@@ -92,7 +79,7 @@ struct IsDeclarationHelper
 */
 template< typename T >
 struct IsDeclaration
-   : public IsDeclarationHelper<T>::Type
+   : public decltype( isDeclaration_backend( std::declval<T*>() ) )
 {};
 //*************************************************************************************************
 

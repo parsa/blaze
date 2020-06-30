@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <utility>
 #include <blaze/math/expressions/ReduceExpr.h>
 #include <blaze/util/IntegralConstant.h>
 
@@ -54,27 +55,13 @@ namespace blaze {
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Auxiliary helper struct for the IsReduceExpr type trait.
+/*!\brief Auxiliary helper functions for the IsReduceExpr type trait.
 // \ingroup math_type_traits
 */
-template< typename T >
-struct IsReduceExprHelper
-{
- private:
-   //**********************************************************************************************
-   static const volatile T* create();
+template< typename U >
+TrueType isReduceExpr_backend( const volatile ReduceExpr<U>* );
 
-   template< typename U >
-   static TrueType test( const volatile ReduceExpr<U>* );
-
-   static FalseType test( ... );
-   //**********************************************************************************************
-
- public:
-   //**********************************************************************************************
-   using Type = decltype( test( create() ) );
-   //**********************************************************************************************
-};
+FalseType isReduceExpr_backend( ... );
 /*! \endcond */
 //*************************************************************************************************
 
@@ -92,7 +79,7 @@ struct IsReduceExprHelper
 */
 template< typename T >
 struct IsReduceExpr
-   : public IsReduceExprHelper<T>::Type
+   : public decltype( isReduceExpr_backend( std::declval<T*>() ) )
 {};
 //*************************************************************************************************
 

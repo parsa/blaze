@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <utility>
 #include <blaze/math/expressions/NoAliasExpr.h>
 #include <blaze/util/IntegralConstant.h>
 
@@ -54,27 +55,13 @@ namespace blaze {
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Auxiliary helper struct for the IsNoAliasExpr type trait.
+/*!\brief Auxiliary helper functions for the IsNoAliasExpr type trait.
 // \ingroup math_type_traits
 */
-template< typename T >
-struct IsNoAliasExprHelper
-{
- private:
-   //**********************************************************************************************
-   static const volatile T* create();
+template< typename U >
+TrueType isNoAliasExpr_backend( const volatile NoAliasExpr<U>* );
 
-   template< typename U >
-   static TrueType test( const volatile NoAliasExpr<U>* );
-
-   static FalseType test( ... );
-   //**********************************************************************************************
-
- public:
-   //**********************************************************************************************
-   using Type = decltype( test( create() ) );
-   //**********************************************************************************************
-};
+FalseType isNoAliasExpr_backend( ... );
 /*! \endcond */
 //*************************************************************************************************
 
@@ -92,7 +79,7 @@ struct IsNoAliasExprHelper
 */
 template< typename T >
 struct IsNoAliasExpr
-   : public IsNoAliasExprHelper<T>::Type
+   : public decltype( isNoAliasExpr_backend( std::declval<T*>() ) )
 {};
 //*************************************************************************************************
 

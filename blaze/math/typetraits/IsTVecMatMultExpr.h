@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <utility>
 #include <blaze/math/expressions/TVecMatMultExpr.h>
 #include <blaze/util/IntegralConstant.h>
 
@@ -54,27 +55,13 @@ namespace blaze {
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Auxiliary helper struct for the IsTVecMatMultExpr type trait.
+/*!\brief Auxiliary helper functions for the IsTVecMatMultExpr type trait.
 // \ingroup math_type_traits
 */
-template< typename T >
-struct IsTVecMatMultExprHelper
-{
- private:
-   //**********************************************************************************************
-   static const volatile T* create();
+template< typename VT >
+TrueType isTVecMatMultExpr_backend( const volatile TVecMatMultExpr<VT>* );
 
-   template< typename VT >
-   static TrueType test( const volatile TVecMatMultExpr<VT>* );
-
-   static FalseType test( ... );
-   //**********************************************************************************************
-
- public:
-   //**********************************************************************************************
-   using Type = decltype( test( create() ) );
-   //**********************************************************************************************
-};
+FalseType isTVecMatMultExpr_backend( ... );
 /*! \endcond */
 //*************************************************************************************************
 
@@ -95,7 +82,7 @@ struct IsTVecMatMultExprHelper
 */
 template< typename T >
 struct IsTVecMatMultExpr
-   : public IsTVecMatMultExprHelper<T>::Type
+   : public decltype( isTVecMatMultExpr_backend( std::declval<T*>() ) )
 {};
 //*************************************************************************************************
 

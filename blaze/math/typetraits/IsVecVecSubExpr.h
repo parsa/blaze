@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <utility>
 #include <blaze/math/expressions/VecVecSubExpr.h>
 #include <blaze/util/IntegralConstant.h>
 
@@ -54,27 +55,13 @@ namespace blaze {
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Auxiliary helper struct for the IsVecVecSubExpr type trait.
+/*!\brief Auxiliary helper functions for the IsVecVecSubExpr type trait.
 // \ingroup math_type_traits
 */
-template< typename T >
-struct IsVecVecSubExprHelper
-{
- private:
-   //**********************************************************************************************
-   static const volatile T* create();
+template< typename VT >
+TrueType isVecVecSubExpr_backend( const volatile VecVecSubExpr<VT>* );
 
-   template< typename VT >
-   static TrueType test( const volatile VecVecSubExpr<VT>* );
-
-   static FalseType test( ... );
-   //**********************************************************************************************
-
- public:
-   //**********************************************************************************************
-   using Type = decltype( test( create() ) );
-   //**********************************************************************************************
-};
+FalseType isVecVecSubExpr_backend( ... );
 /*! \endcond */
 //*************************************************************************************************
 
@@ -94,7 +81,7 @@ struct IsVecVecSubExprHelper
 */
 template< typename T >
 struct IsVecVecSubExpr
-   : public IsVecVecSubExprHelper<T>::Type
+   : public decltype( isVecVecSubExpr_backend( std::declval<T*>() ) )
 {};
 //*************************************************************************************************
 

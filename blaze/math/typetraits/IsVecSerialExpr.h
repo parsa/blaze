@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <utility>
 #include <blaze/math/expressions/VecSerialExpr.h>
 #include <blaze/util/IntegralConstant.h>
 
@@ -54,27 +55,13 @@ namespace blaze {
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Auxiliary helper struct for the IsVecSerialExpr type trait.
+/*!\brief Auxiliary helper functions for the IsVecSerialExpr type trait.
 // \ingroup math_type_traits
 */
-template< typename T >
-struct IsVecSerialExprHelper
-{
- private:
-   //**********************************************************************************************
-   static const volatile T* create();
+template< typename VT >
+TrueType isVecSerialExpr_backend( const volatile VecSerialExpr<VT>* );
 
-   template< typename VT >
-   static TrueType test( const volatile VecSerialExpr<VT>* );
-
-   static FalseType test( ... );
-   //**********************************************************************************************
-
- public:
-   //**********************************************************************************************
-   using Type = decltype( test( create() ) );
-   //**********************************************************************************************
-};
+FalseType isVecSerialExpr_backend( ... );
 /*! \endcond */
 //*************************************************************************************************
 
@@ -93,7 +80,7 @@ struct IsVecSerialExprHelper
 */
 template< typename T >
 struct IsVecSerialExpr
-   : public IsVecSerialExprHelper<T>::Type
+   : public decltype( isVecSerialExpr_backend( std::declval<T*>() ) )
 {};
 //*************************************************************************************************
 

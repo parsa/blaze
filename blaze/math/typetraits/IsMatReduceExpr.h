@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <utility>
 #include <blaze/math/expressions/MatReduceExpr.h>
 #include <blaze/util/IntegralConstant.h>
 
@@ -54,27 +55,13 @@ namespace blaze {
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Auxiliary helper struct for the IsMatReduceExpr type trait.
+/*!\brief Auxiliary helper functions for the IsMatReduceExpr type trait.
 // \ingroup math_type_traits
 */
-template< typename T >
-struct IsMatReduceExprHelper
-{
- private:
-   //**********************************************************************************************
-   static const volatile T* create();
+template< typename U, ReductionFlag N >
+TrueType isMatReduceExpr_backend( const volatile MatReduceExpr<U,N>* );
 
-   template< typename U, ReductionFlag N >
-   static TrueType test( const volatile MatReduceExpr<U,N>* );
-
-   static FalseType test( ... );
-   //**********************************************************************************************
-
- public:
-   //**********************************************************************************************
-   using Type = decltype( test( create() ) );
-   //**********************************************************************************************
-};
+FalseType isMatReduceExpr_backend( ... );
 /*! \endcond */
 //*************************************************************************************************
 
@@ -93,7 +80,7 @@ struct IsMatReduceExprHelper
 */
 template< typename T >
 struct IsMatReduceExpr
-   : public IsMatReduceExprHelper<T>::Type
+   : public decltype( isMatReduceExpr_backend( std::declval<T*>() ) )
 {};
 //*************************************************************************************************
 

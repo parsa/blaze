@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <utility>
 #include <blaze/math/expressions/AddExpr.h>
 #include <blaze/util/IntegralConstant.h>
 
@@ -54,27 +55,13 @@ namespace blaze {
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Auxiliary helper struct for the IsAddExpr type trait.
+/*!\brief Auxiliary helper functions for the IsAddExpr type trait.
 // \ingroup math_type_traits
 */
-template< typename T >
-struct IsAddExprHelper
-{
- private:
-   //**********************************************************************************************
-   static const volatile T* create();
+template< typename U >
+TrueType isAddExpr_backend( const volatile AddExpr<U>* );
 
-   template< typename U >
-   static TrueType test( const volatile AddExpr<U>* );
-
-   static FalseType test( ... );
-   //**********************************************************************************************
-
- public:
-   //**********************************************************************************************
-   using Type = decltype( test( create() ) );
-   //**********************************************************************************************
-};
+FalseType isAddExpr_backend( ... );
 /*! \endcond */
 //*************************************************************************************************
 
@@ -93,7 +80,7 @@ struct IsAddExprHelper
 */
 template< typename T >
 struct IsAddExpr
-   : public IsAddExprHelper<T>::Type
+   : public decltype( isAddExpr_backend( std::declval<T*>() ) )
 {};
 //*************************************************************************************************
 

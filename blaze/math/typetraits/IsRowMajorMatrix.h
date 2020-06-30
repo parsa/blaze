@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <utility>
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/StorageOrder.h>
 #include <blaze/util/IntegralConstant.h>
@@ -55,27 +56,13 @@ namespace blaze {
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Auxiliary helper struct for the IsRowMajorMatrix type trait.
+/*!\brief Auxiliary helper functions for the IsRowMajorMatrix type trait.
 // \ingroup math_type_traits
 */
-template< typename T >
-struct IsRowMajorMatrixHelper
-{
- private:
-   //**********************************************************************************************
-   static const volatile T* create();
+template< typename MT >
+TrueType isRowMajorMatrix_backend( const volatile Matrix<MT,rowMajor>* );
 
-   template< typename MT >
-   static TrueType test( const volatile Matrix<MT,rowMajor>* );
-
-   static FalseType test( ... );
-   //**********************************************************************************************
-
- public:
-   //**********************************************************************************************
-   using Type = decltype( test( create() ) );
-   //**********************************************************************************************
-};
+FalseType isRowMajorMatrix_backend( ... );
 /*! \endcond */
 //*************************************************************************************************
 
@@ -107,7 +94,7 @@ struct IsRowMajorMatrixHelper
 */
 template< typename T >
 struct IsRowMajorMatrix
-   : public IsRowMajorMatrixHelper<T>::Type
+   : public decltype( isRowMajorMatrix_backend( std::declval<T*>() ) )
 {};
 //*************************************************************************************************
 

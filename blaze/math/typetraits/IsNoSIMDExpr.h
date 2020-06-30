@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <utility>
 #include <blaze/math/expressions/NoSIMDExpr.h>
 #include <blaze/util/IntegralConstant.h>
 
@@ -54,27 +55,13 @@ namespace blaze {
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Auxiliary helper struct for the IsNoSIMDExpr type trait.
+/*!\brief Auxiliary helper functions for the IsNoSIMDExpr type trait.
 // \ingroup math_type_traits
 */
-template< typename T >
-struct IsNoSIMDExprHelper
-{
- private:
-   //**********************************************************************************************
-   static const volatile T* create();
+template< typename U >
+TrueType isNoSIMDExpr_backend( const volatile NoSIMDExpr<U>* );
 
-   template< typename U >
-   static TrueType test( const volatile NoSIMDExpr<U>* );
-
-   static FalseType test( ... );
-   //**********************************************************************************************
-
- public:
-   //**********************************************************************************************
-   using Type = decltype( test( create() ) );
-   //**********************************************************************************************
-};
+FalseType isNoSIMDExpr_backend( ... );
 /*! \endcond */
 //*************************************************************************************************
 
@@ -92,7 +79,7 @@ struct IsNoSIMDExprHelper
 */
 template< typename T >
 struct IsNoSIMDExpr
-   : public IsNoSIMDExprHelper<T>::Type
+   : public decltype( isNoSIMDExpr_backend( std::declval<T*>() ) )
 {};
 //*************************************************************************************************
 

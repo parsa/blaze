@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <utility>
 #include <blaze/math/expressions/Expression.h>
 #include <blaze/util/IntegralConstant.h>
 
@@ -54,27 +55,13 @@ namespace blaze {
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Auxiliary helper struct for the IsExpression type trait.
+/*!\brief Auxiliary helper functions for the IsExpression type trait.
 // \ingroup math_type_traits
 */
-template< typename T >
-struct IsExpressionHelper
-{
- private:
-   //**********************************************************************************************
-   static const volatile T* create();
+template< typename U >
+TrueType isExpression_backend( const volatile Expression<U>* );
 
-   template< typename U >
-   static TrueType test( const volatile Expression<U>* );
-
-   static FalseType test( ... );
-   //**********************************************************************************************
-
- public:
-   //**********************************************************************************************
-   using Type = decltype( test( create() ) );
-   //**********************************************************************************************
-};
+FalseType isExpression_backend( ... );
 /*! \endcond */
 //*************************************************************************************************
 
@@ -92,7 +79,7 @@ struct IsExpressionHelper
 */
 template< typename T >
 struct IsExpression
-   : public IsExpressionHelper<T>::Type
+   : public decltype( isExpression_backend( std::declval<T*>() ) )
 {};
 //*************************************************************************************************
 

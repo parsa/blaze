@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <utility>
 #include <blaze/math/expressions/VecNoAliasExpr.h>
 #include <blaze/util/IntegralConstant.h>
 
@@ -54,27 +55,13 @@ namespace blaze {
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Auxiliary helper struct for the IsVecNoAliasExpr type trait.
+/*!\brief Auxiliary helper functions for the IsVecNoAliasExpr type trait.
 // \ingroup math_type_traits
 */
-template< typename T >
-struct IsVecNoAliasExprHelper
-{
- private:
-   //**********************************************************************************************
-   static const volatile T* create();
+template< typename VT >
+TrueType isVecNoAliasExpr_backend( const volatile VecNoAliasExpr<VT>* );
 
-   template< typename VT >
-   static TrueType test( const volatile VecNoAliasExpr<VT>* );
-
-   static FalseType test( ... );
-   //**********************************************************************************************
-
- public:
-   //**********************************************************************************************
-   using Type = decltype( test( create() ) );
-   //**********************************************************************************************
-};
+FalseType isVecNoAliasExpr_backend( ... );
 /*! \endcond */
 //*************************************************************************************************
 
@@ -93,7 +80,7 @@ struct IsVecNoAliasExprHelper
 */
 template< typename T >
 struct IsVecNoAliasExpr
-   : public IsVecNoAliasExprHelper<T>::Type
+   : public decltype( isVecNoAliasExpr_backend( std::declval<T*>() ) )
 {};
 //*************************************************************************************************
 

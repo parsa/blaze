@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <utility>
 #include <blaze/math/expressions/MatInvExpr.h>
 #include <blaze/util/IntegralConstant.h>
 
@@ -54,27 +55,13 @@ namespace blaze {
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Auxiliary helper struct for the IsMatInvExpr type trait.
+/*!\brief Auxiliary helper functions for the IsMatInvExpr type trait.
 // \ingroup math_type_traits
 */
-template< typename T >
-struct IsMatInvExprHelper
-{
- private:
-   //**********************************************************************************************
-   static const volatile T* create();
+template< typename MT >
+TrueType isMatInvExpr_backend( const volatile MatInvExpr<MT>* );
 
-   template< typename MT >
-   static TrueType test( const volatile MatInvExpr<MT>* );
-
-   static FalseType test( ... );
-   //**********************************************************************************************
-
- public:
-   //**********************************************************************************************
-   using Type = decltype( test( create() ) );
-   //**********************************************************************************************
-};
+FalseType isMatInvExpr_backend( ... );
 /*! \endcond */
 //*************************************************************************************************
 
@@ -93,7 +80,7 @@ struct IsMatInvExprHelper
 */
 template< typename T >
 struct IsMatInvExpr
-   : public IsMatInvExprHelper<T>::Type
+   : public decltype( isMatInvExpr_backend( std::declval<T*>() ) )
 {};
 //*************************************************************************************************
 

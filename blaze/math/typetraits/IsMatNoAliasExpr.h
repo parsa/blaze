@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <utility>
 #include <blaze/math/expressions/MatNoAliasExpr.h>
 #include <blaze/util/IntegralConstant.h>
 
@@ -54,27 +55,13 @@ namespace blaze {
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Auxiliary helper struct for the IsMatNoAliasExpr type trait.
+/*!\brief Auxiliary helper functions for the IsMatNoAliasExpr type trait.
 // \ingroup math_type_traits
 */
-template< typename T >
-struct IsMatNoAliasExprHelper
-{
- private:
-   //**********************************************************************************************
-   static const volatile T* create();
+template< typename MT >
+TrueType isMatNoAliasExpr_backend( const volatile MatNoAliasExpr<MT>* );
 
-   template< typename MT >
-   static TrueType test( const volatile MatNoAliasExpr<MT>* );
-
-   static FalseType test( ... );
-   //**********************************************************************************************
-
- public:
-   //**********************************************************************************************
-   using Type = decltype( test( create() ) );
-   //**********************************************************************************************
-};
+FalseType isMatNoAliasExpr_backend( ... );
 /*! \endcond */
 //*************************************************************************************************
 
@@ -93,7 +80,7 @@ struct IsMatNoAliasExprHelper
 */
 template< typename T >
 struct IsMatNoAliasExpr
-   : public IsMatNoAliasExprHelper<T>::Type
+   : public decltype( isMatNoAliasExpr_backend( std::declval<T*>() ) )
 {};
 //*************************************************************************************************
 

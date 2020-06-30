@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <utility>
 #include <blaze/math/expressions/KronExpr.h>
 #include <blaze/util/IntegralConstant.h>
 
@@ -54,27 +55,13 @@ namespace blaze {
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Auxiliary helper struct for the IsKronExpr type trait.
+/*!\brief Auxiliary helper functions for the IsKronExpr type trait.
 // \ingroup math_type_traits
 */
-template< typename T >
-struct IsKronExprHelper
-{
- private:
-   //**********************************************************************************************
-   static const volatile T* create();
+template< typename MT >
+TrueType isKronExpr_backend( const volatile KronExpr<MT>* );
 
-   template< typename MT >
-   static TrueType test( const volatile KronExpr<MT>* );
-
-   static FalseType test( ... );
-   //**********************************************************************************************
-
- public:
-   //**********************************************************************************************
-   using Type = decltype( test( create() ) );
-   //**********************************************************************************************
-};
+FalseType isKronExpr_backend( ... );
 /*! \endcond */
 //*************************************************************************************************
 
@@ -93,7 +80,7 @@ struct IsKronExprHelper
 */
 template< typename T >
 struct IsKronExpr
-   : public IsKronExprHelper<T>::Type
+   : public decltype( isKronExpr_backend( std::declval<T*>() ) )
 {};
 //*************************************************************************************************
 

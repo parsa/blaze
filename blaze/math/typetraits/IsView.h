@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <utility>
 #include <blaze/math/expressions/View.h>
 #include <blaze/util/IntegralConstant.h>
 
@@ -54,27 +55,13 @@ namespace blaze {
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Auxiliary helper struct for the IsView type trait.
+/*!\brief Auxiliary helper functions for the IsView type trait.
 // \ingroup math_type_traits
 */
-template< typename T >
-struct IsViewHelper
-{
- private:
-   //**********************************************************************************************
-   static const volatile T* create();
+template< typename U >
+TrueType isView_backend( const volatile View<U>* );
 
-   template< typename U >
-   static TrueType test( const volatile View<U>* );
-
-   static FalseType test( ... );
-   //**********************************************************************************************
-
- public:
-   //**********************************************************************************************
-   using Type = decltype( test( create() ) );
-   //**********************************************************************************************
-};
+FalseType isView_backend( ... );
 /*! \endcond */
 //*************************************************************************************************
 
@@ -112,7 +99,7 @@ struct IsViewHelper
 */
 template< typename T >
 struct IsView
-   : public IsViewHelper<T>::Type
+   : public decltype( isView_backend( std::declval<T*>() ) )
 {};
 //*************************************************************************************************
 
