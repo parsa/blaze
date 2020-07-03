@@ -92,6 +92,7 @@ class OperationTest
    void testDecay();
    void testExtent();
    void testGetMember();
+   void testHasLessThan();
    void testHasMember();
    void testHasSize();
    void testHaveSameSize();

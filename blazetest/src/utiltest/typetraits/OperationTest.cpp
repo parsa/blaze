@@ -81,6 +81,7 @@ OperationTest::OperationTest()
    testDecay();
    testExtent();
    testGetMember();
+   testHasLessThan();
    testHasMember();
    testHasSize();
    testHaveSameSize();
@@ -388,6 +389,36 @@ void OperationTest::testExtent()
    BLAZE_STATIC_ASSERT( ( Extent< int[][2], 1 >::value == 2U ) );
    BLAZE_STATIC_ASSERT( ( Extent< int*, 0 >::value == 0U ) );
    BLAZE_STATIC_ASSERT( ( Extent< std::vector<int>, 0 >::value == 0U ) );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c HasLessThan type trait.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a compile time test of the \c HasLessThan type trait. In case an error
+// is detected, a compilation error is created.
+*/
+void OperationTest::testHasLessThan()
+{
+   using blaze::HasLessThan;
+
+   using T1 = HasLessThan< int, int >;
+   using T2 = HasLessThan< const std::string, std::string >;
+   using T3 = HasLessThan< volatile int*, int* >;
+   using T4 = HasLessThan< int, blaze::complex<float> >;
+   using T5 = HasLessThan< std::string, int >;
+   using T6 = HasLessThan< int*, std::string* >;
+
+   BLAZE_STATIC_ASSERT( T1::value == true );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( T2::Type, blaze::TrueType );
+   BLAZE_CONSTRAINT_MUST_BE_DERIVED_FROM( T3, blaze::TrueType );
+   BLAZE_STATIC_ASSERT( T4::value == false );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( T5::Type, blaze::FalseType );
+   BLAZE_CONSTRAINT_MUST_BE_DERIVED_FROM( T6, blaze::FalseType );
 }
 //*************************************************************************************************
 
