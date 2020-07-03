@@ -62,6 +62,7 @@
 #include <blaze/util/constraints/Enum.h>
 #include <blaze/util/constraints/Float.h>
 #include <blaze/util/constraints/FloatingPoint.h>
+#include <blaze/util/constraints/GreaterThan.h>
 #include <blaze/util/constraints/Integer.h>
 #include <blaze/util/constraints/Integral.h>
 #include <blaze/util/constraints/LessThan.h>
