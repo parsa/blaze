@@ -56,6 +56,7 @@
 #include <blaze/util/typetraits/DisableMin.h>
 #include <blaze/util/typetraits/Extent.h>
 #include <blaze/util/typetraits/GetMemberType.h>
+#include <blaze/util/typetraits/HasLessThan.h>
 #include <blaze/util/typetraits/HasMember.h>
 #include <blaze/util/typetraits/HasSize.h>
 #include <blaze/util/typetraits/HaveSameSize.h>
