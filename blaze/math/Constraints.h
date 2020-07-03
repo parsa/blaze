@@ -122,6 +122,7 @@
 #include <blaze/math/constraints/RequiresEvaluation.h>
 #include <blaze/math/constraints/Resizable.h>
 #include <blaze/math/constraints/Restricted.h>
+#include <blaze/math/constraints/ResultType.h>
 #include <blaze/math/constraints/Row.h>
 #include <blaze/math/constraints/RowMajorMatrix.h>
 #include <blaze/math/constraints/Rows.h>

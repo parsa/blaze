@@ -81,6 +81,7 @@
 #include <blaze/math/typetraits/HasMutableDataAccess.h>
 #include <blaze/math/typetraits/HasPow.h>
 #include <blaze/math/typetraits/HasReal.h>
+#include <blaze/math/typetraits/HasResultType.h>
 #include <blaze/math/typetraits/HasRound.h>
 #include <blaze/math/typetraits/HasSign.h>
 #include <blaze/math/typetraits/HasSIMDAbs.h>
