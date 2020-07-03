@@ -80,6 +80,7 @@ class OperationTest
    //**Test functions******************************************************************************
    /*!\name Test functions */
    //@{
+   void testHasCompositeType();
    void testHasResultType();
    void testIsColumnMajorMatrix();
    void testIsColumnVector();

@@ -45,6 +45,7 @@
 #include <blaze/math/constraints/ColumnMajorMatrix.h>
 #include <blaze/math/constraints/ColumnVector.h>
 #include <blaze/math/constraints/Commutative.h>
+#include <blaze/math/constraints/CompositeType.h>
 #include <blaze/math/constraints/CUDAAssignable.h>
 #include <blaze/math/constraints/Diagonal.h>
 #include <blaze/math/constraints/Hermitian.h>
@@ -78,6 +79,7 @@
 #include <blaze/math/StrictlyLowerMatrix.h>
 #include <blaze/math/StrictlyUpperMatrix.h>
 #include <blaze/math/SymmetricMatrix.h>
+#include <blaze/math/typetraits/HasCompositeType.h>
 #include <blaze/math/typetraits/HasResultType.h>
 #include <blaze/math/typetraits/IsColumnMajorMatrix.h>
 #include <blaze/math/typetraits/IsColumnVector.h>
@@ -135,6 +137,7 @@ namespace typetraits {
 */
 OperationTest::OperationTest()
 {
+   testHasCompositeType();
    testHasResultType();
    testIsColumnMajorMatrix();
    testIsColumnVector();
@@ -175,6 +178,87 @@ OperationTest::OperationTest()
 //  TEST TYPE TRAITS
 //
 //=================================================================================================
+
+//*************************************************************************************************
+/*!\brief Test of the mathematical 'HasCompositeType' type trait.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a compile time test of the mathematical 'HasCompositeType' type trait.
+// In case an error is detected, a compilation error is created.
+*/
+void OperationTest::testHasCompositeType()
+{
+   using Type1 = int;
+   using Type2 = blaze::complex<float>;
+   using Type3 = blaze::DynamicVector<int>;
+   using Type4 = blaze::CompressedVector<int>;
+   using Type5 = blaze::DynamicMatrix<int>;
+   using Type6 = blaze::CompressedMatrix<int>;
+
+   BLAZE_CONSTRAINT_MUST_NOT_HAVE_COMPOSITE_TYPE( Type1                 );
+   BLAZE_CONSTRAINT_MUST_NOT_HAVE_COMPOSITE_TYPE( Type1 const           );
+   BLAZE_CONSTRAINT_MUST_NOT_HAVE_COMPOSITE_TYPE( Type1 volatile        );
+   BLAZE_CONSTRAINT_MUST_NOT_HAVE_COMPOSITE_TYPE( Type1 const volatile  );
+   BLAZE_CONSTRAINT_MUST_NOT_HAVE_COMPOSITE_TYPE( Type1&                );
+   BLAZE_CONSTRAINT_MUST_NOT_HAVE_COMPOSITE_TYPE( Type1*                );
+   BLAZE_CONSTRAINT_MUST_NOT_HAVE_COMPOSITE_TYPE( Type1* const          );
+   BLAZE_CONSTRAINT_MUST_NOT_HAVE_COMPOSITE_TYPE( Type1* volatile       );
+   BLAZE_CONSTRAINT_MUST_NOT_HAVE_COMPOSITE_TYPE( Type1* const volatile );
+
+   BLAZE_CONSTRAINT_MUST_NOT_HAVE_COMPOSITE_TYPE( Type2                 );
+   BLAZE_CONSTRAINT_MUST_NOT_HAVE_COMPOSITE_TYPE( Type2 const           );
+   BLAZE_CONSTRAINT_MUST_NOT_HAVE_COMPOSITE_TYPE( Type2 volatile        );
+   BLAZE_CONSTRAINT_MUST_NOT_HAVE_COMPOSITE_TYPE( Type2 const volatile  );
+   BLAZE_CONSTRAINT_MUST_NOT_HAVE_COMPOSITE_TYPE( Type2&                );
+   BLAZE_CONSTRAINT_MUST_NOT_HAVE_COMPOSITE_TYPE( Type2*                );
+   BLAZE_CONSTRAINT_MUST_NOT_HAVE_COMPOSITE_TYPE( Type2* const          );
+   BLAZE_CONSTRAINT_MUST_NOT_HAVE_COMPOSITE_TYPE( Type2* volatile       );
+   BLAZE_CONSTRAINT_MUST_NOT_HAVE_COMPOSITE_TYPE( Type2* const volatile );
+
+   BLAZE_CONSTRAINT_MUST_HAVE_COMPOSITE_TYPE    ( Type3                 );
+   BLAZE_CONSTRAINT_MUST_HAVE_COMPOSITE_TYPE    ( Type3 const           );
+   BLAZE_CONSTRAINT_MUST_HAVE_COMPOSITE_TYPE    ( Type3 volatile        );
+   BLAZE_CONSTRAINT_MUST_HAVE_COMPOSITE_TYPE    ( Type3 const volatile  );
+   BLAZE_CONSTRAINT_MUST_NOT_HAVE_COMPOSITE_TYPE( Type3&                );
+   BLAZE_CONSTRAINT_MUST_NOT_HAVE_COMPOSITE_TYPE( Type3*                );
+   BLAZE_CONSTRAINT_MUST_NOT_HAVE_COMPOSITE_TYPE( Type3* const          );
+   BLAZE_CONSTRAINT_MUST_NOT_HAVE_COMPOSITE_TYPE( Type3* volatile       );
+   BLAZE_CONSTRAINT_MUST_NOT_HAVE_COMPOSITE_TYPE( Type3* const volatile );
+
+   BLAZE_CONSTRAINT_MUST_HAVE_COMPOSITE_TYPE    ( Type4                 );
+   BLAZE_CONSTRAINT_MUST_HAVE_COMPOSITE_TYPE    ( Type4 const           );
+   BLAZE_CONSTRAINT_MUST_HAVE_COMPOSITE_TYPE    ( Type4 volatile        );
+   BLAZE_CONSTRAINT_MUST_HAVE_COMPOSITE_TYPE    ( Type4 const volatile  );
+   BLAZE_CONSTRAINT_MUST_NOT_HAVE_COMPOSITE_TYPE( Type4&                );
+   BLAZE_CONSTRAINT_MUST_NOT_HAVE_COMPOSITE_TYPE( Type4*                );
+   BLAZE_CONSTRAINT_MUST_NOT_HAVE_COMPOSITE_TYPE( Type4* const          );
+   BLAZE_CONSTRAINT_MUST_NOT_HAVE_COMPOSITE_TYPE( Type4* volatile       );
+   BLAZE_CONSTRAINT_MUST_NOT_HAVE_COMPOSITE_TYPE( Type4* const volatile );
+
+   BLAZE_CONSTRAINT_MUST_HAVE_COMPOSITE_TYPE    ( Type5                 );
+   BLAZE_CONSTRAINT_MUST_HAVE_COMPOSITE_TYPE    ( Type5 const           );
+   BLAZE_CONSTRAINT_MUST_HAVE_COMPOSITE_TYPE    ( Type5 volatile        );
+   BLAZE_CONSTRAINT_MUST_HAVE_COMPOSITE_TYPE    ( Type5 const volatile  );
+   BLAZE_CONSTRAINT_MUST_NOT_HAVE_COMPOSITE_TYPE( Type5&                );
+   BLAZE_CONSTRAINT_MUST_NOT_HAVE_COMPOSITE_TYPE( Type5*                );
+   BLAZE_CONSTRAINT_MUST_NOT_HAVE_COMPOSITE_TYPE( Type5* const          );
+   BLAZE_CONSTRAINT_MUST_NOT_HAVE_COMPOSITE_TYPE( Type5* volatile       );
+   BLAZE_CONSTRAINT_MUST_NOT_HAVE_COMPOSITE_TYPE( Type5* const volatile );
+
+   BLAZE_CONSTRAINT_MUST_HAVE_COMPOSITE_TYPE    ( Type6                 );
+   BLAZE_CONSTRAINT_MUST_HAVE_COMPOSITE_TYPE    ( Type6 const           );
+   BLAZE_CONSTRAINT_MUST_HAVE_COMPOSITE_TYPE    ( Type6 volatile        );
+   BLAZE_CONSTRAINT_MUST_HAVE_COMPOSITE_TYPE    ( Type6 const volatile  );
+   BLAZE_CONSTRAINT_MUST_NOT_HAVE_COMPOSITE_TYPE( Type6&                );
+   BLAZE_CONSTRAINT_MUST_NOT_HAVE_COMPOSITE_TYPE( Type6*                );
+   BLAZE_CONSTRAINT_MUST_NOT_HAVE_COMPOSITE_TYPE( Type6* const          );
+   BLAZE_CONSTRAINT_MUST_NOT_HAVE_COMPOSITE_TYPE( Type6* volatile       );
+   BLAZE_CONSTRAINT_MUST_NOT_HAVE_COMPOSITE_TYPE( Type6* const volatile );
+}
+//*************************************************************************************************
+
 
 //*************************************************************************************************
 /*!\brief Test of the mathematical 'HasResultType' type trait.
