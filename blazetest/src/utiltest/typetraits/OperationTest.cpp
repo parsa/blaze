@@ -394,6 +394,36 @@ void OperationTest::testExtent()
 
 
 //*************************************************************************************************
+/*!\brief Test of the \c HasGreaterThan type trait.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a compile time test of the \c HasGreaterThan type trait. In case an
+// error is detected, a compilation error is created.
+*/
+void OperationTest::testHasGreaterThan()
+{
+   using blaze::HasGreaterThan;
+
+   using T1 = HasGreaterThan< int, int >;
+   using T2 = HasGreaterThan< const std::string, std::string >;
+   using T3 = HasGreaterThan< volatile int*, int* >;
+   using T4 = HasGreaterThan< int, blaze::complex<float> >;
+   using T5 = HasGreaterThan< std::string, int >;
+   using T6 = HasGreaterThan< int*, std::string* >;
+
+   BLAZE_STATIC_ASSERT( T1::value == true );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( T2::Type, blaze::TrueType );
+   BLAZE_CONSTRAINT_MUST_BE_DERIVED_FROM( T3, blaze::TrueType );
+   BLAZE_STATIC_ASSERT( T4::value == false );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( T5::Type, blaze::FalseType );
+   BLAZE_CONSTRAINT_MUST_BE_DERIVED_FROM( T6, blaze::FalseType );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Test of the \c HasLessThan type trait.
 //
 // \return void
