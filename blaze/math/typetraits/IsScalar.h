@@ -40,10 +40,9 @@
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/typetraits/IsMatrix.h>
+#include <blaze/math/typetraits/HasCompositeType.h>
 #include <blaze/math/typetraits/IsProxy.h>
 #include <blaze/math/typetraits/IsSIMDPack.h>
-#include <blaze/math/typetraits/IsVector.h>
 #include <blaze/util/IntegralConstant.h>
 #include <blaze/util/typetraits/IsPointer.h>
 #include <blaze/util/typetraits/IsReference.h>
@@ -62,9 +61,9 @@ namespace blaze {
 // \ingroup math_type_traits
 //
 // This type trait tests whether or not the given template parameter is scalar type (i.e. neither
-// a vector type, nor a matrix, reference or pointer type). In case the type is a scalar type,
-// the \a value member constant is set to \a true, the nested type definition \a Type is
-// \a TrueType, and the class derives from \a TrueType. Otherwise \a value is set to \a false,
+// a vector, nor a matrix, proxy, SIMD pack, reference or pointer type). In case the type is a
+// scalar type, the \a value member constant is set to \a true, the nested type definition \a Type
+// is \a TrueType, and the class derives from \a TrueType. Otherwise \a value is set to \a false,
 // \a Type is \a FalseType, and the class derives from \a FalseType.
 
    \code
@@ -79,8 +78,7 @@ namespace blaze {
 
 template< typename T >
 struct IsScalar
-   : public BoolConstant< !IsVector_v<T> &&
-                          !IsMatrix_v<T> &&
+   : public BoolConstant< !HasCompositeType_v<T> &&
                           !IsProxy_v<T> &&
                           !IsSIMDPack_v<T> &&
                           !IsReference_v<T> &&
