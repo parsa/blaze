@@ -84,8 +84,6 @@
 #include <blaze/util/IntegralConstant.h>
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/Types.h>
-#include <blaze/util/typetraits/DisableMax.h>
-#include <blaze/util/typetraits/DisableMin.h>
 #include <blaze/util/typetraits/HasMember.h>
 
 
@@ -1889,42 +1887,6 @@ struct IsAligned< DMatDMatMapExpr<MT1,MT2,OP,SO> >
 template< typename MT1, typename MT2, typename OP, bool SO >
 struct IsPadded< DMatDMatMapExpr<MT1,MT2,OP,SO> >
    : public BoolConstant< IsPadded_v<MT1> && IsPadded_v<MT2> && IsPaddingEnabled_v<OP> >
-{};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  DISABLEMIN SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename T >
-struct DisableMin< T, EnableIf_t< IsMatrix_v<T> > >
-   : public TrueType
-{};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  DISABLEMAX SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename T >
-struct DisableMax< T, EnableIf_t< IsMatrix_v<T> > >
-   : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************

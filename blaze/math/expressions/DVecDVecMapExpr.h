@@ -85,8 +85,6 @@
 #include <blaze/util/IntegralConstant.h>
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/Types.h>
-#include <blaze/util/typetraits/DisableMax.h>
-#include <blaze/util/typetraits/DisableMin.h>
 
 
 namespace blaze {
@@ -1832,42 +1830,6 @@ struct IsAligned< DVecDVecMapExpr<VT1,VT2,OP,TF> >
 template< typename VT1, typename VT2, typename OP, bool TF >
 struct IsPadded< DVecDVecMapExpr<VT1,VT2,OP,TF> >
    : public BoolConstant< IsPadded_v<VT1> && IsPadded_v<VT2> && IsPaddingEnabled_v<OP> >
-{};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  DISABLEMIN SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename T >
-struct DisableMin< T, EnableIf_t< IsVector_v<T> > >
-   : public TrueType
-{};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  DISABLEMAX SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename T >
-struct DisableMax< T, EnableIf_t< IsVector_v<T> > >
-   : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************

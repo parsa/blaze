@@ -45,7 +45,6 @@
 #include <blaze/system/Inline.h>
 #include <blaze/system/Vectorization.h>
 #include <blaze/util/IntegralConstant.h>
-#include <blaze/util/typetraits/DisableMax.h>
 
 
 namespace blaze {
@@ -323,24 +322,6 @@ BLAZE_ALWAYS_INLINE const SIMDdouble
 #else
 = delete;
 #endif
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  DISABLEMAX SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename T >
-struct DisableMax< T, EnableIf_t< IsSIMDPack_v<T> > >
-   : public TrueType
-{};
-/*! \endcond */
 //*************************************************************************************************
 
 } // namespace blaze
