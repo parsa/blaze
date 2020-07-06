@@ -68,7 +68,6 @@
 #include <blaze/math/typetraits/RequiresEvaluation.h>
 #include <blaze/math/typetraits/UnderlyingBuiltin.h>
 #include <blaze/math/typetraits/UnderlyingElement.h>
-#include <blaze/math/typetraits/UnderlyingScalar.h>
 #include <blaze/system/HostDevice.h>
 #include <blaze/system/Inline.h>
 #include <blaze/system/Thresholds.h>
@@ -80,7 +79,6 @@
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsBuiltin.h>
-#include <blaze/util/typetraits/IsComplex.h>
 #include <blaze/util/typetraits/IsFloatingPoint.h>
 #include <blaze/util/typetraits/IsNumeric.h>
 
@@ -1013,9 +1011,9 @@ template< typename MT    // Type of the left-hand side dense matrix
 using DMatScalarDivExprHelper_t =
    If_t< IsFloatingPoint_v< UnderlyingBuiltin_t<MT> > ||
          IsFloatingPoint_v< UnderlyingBuiltin_t<ST> >
-       , If_t< IsComplex_v< UnderlyingScalar_t<MT> > && IsBuiltin_v<ST>
+       , If_t< IsBuiltin_v<ST>
              , DivTrait_t< UnderlyingBuiltin_t<MT>, ST >
-             , DivTrait_t< UnderlyingScalar_t<MT>, ST > >
+             , decltype( inv( std::declval<ST>() ) ) >
        , ST >;
 /*! \endcond */
 //*************************************************************************************************

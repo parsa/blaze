@@ -65,7 +65,6 @@
 #include <blaze/math/typetraits/IsZero.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
 #include <blaze/math/typetraits/UnderlyingBuiltin.h>
-#include <blaze/math/typetraits/UnderlyingScalar.h>
 #include <blaze/system/MacroDisable.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/FloatingPoint.h>
@@ -76,7 +75,6 @@
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsBuiltin.h>
-#include <blaze/util/typetraits/IsComplex.h>
 #include <blaze/util/typetraits/IsFloatingPoint.h>
 #include <blaze/util/typetraits/RemoveReference.h>
 
@@ -790,9 +788,9 @@ template< typename VT    // Type of the left-hand side sparse vector
 using SVecScalarDivExprHelper_t =
    If_t< IsFloatingPoint_v< UnderlyingBuiltin_t<VT> > ||
          IsFloatingPoint_v< UnderlyingBuiltin_t<ST> >
-       , If_t< IsComplex_v< UnderlyingScalar_t<VT> > && IsBuiltin_v<ST>
+       , If_t< IsBuiltin_v<ST>
              , DivTrait_t< UnderlyingBuiltin_t<VT>, ST >
-             , DivTrait_t< UnderlyingScalar_t<VT>, ST > >
+             , decltype( inv( std::declval<ST>() ) ) >
        , ST >;
 /*! \endcond */
 //*************************************************************************************************
