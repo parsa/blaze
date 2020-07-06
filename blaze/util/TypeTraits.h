@@ -108,8 +108,10 @@
 #include <blaze/util/typetraits/RemoveCV.h>
 #include <blaze/util/typetraits/RemoveCVRef.h>
 #include <blaze/util/typetraits/RemoveExtent.h>
+#include <blaze/util/typetraits/RemoveLValueReference.h>
 #include <blaze/util/typetraits/RemovePointer.h>
 #include <blaze/util/typetraits/RemoveReference.h>
+#include <blaze/util/typetraits/RemoveRValueReference.h>
 #include <blaze/util/typetraits/RemoveVolatile.h>
 #include <blaze/util/typetraits/Void.h>
 
