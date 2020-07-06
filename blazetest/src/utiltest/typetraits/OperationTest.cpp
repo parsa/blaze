@@ -81,6 +81,7 @@ OperationTest::OperationTest()
    testDecay();
    testExtent();
    testGetMember();
+   testHasGreaterThan();
    testHasLessThan();
    testHasMember();
    testHasSize();
@@ -112,6 +113,7 @@ OperationTest::OperationTest()
    testIsPod();
    testIsPointer();
    testIsReference();
+   testIsRValueReference();
    testIsSame();
    testIsStrictlySame();
    testIsShort();
@@ -124,12 +126,15 @@ OperationTest::OperationTest()
    testIsVolatile();
    testMakeSigned();
    testMakeUnsigned();
+   testRank();
    testRemoveAllExtents();
    testRemoveConst();
    testRemoveCV();
    testRemoveExtent();
+   testRemoveLValueReference();
    testRemovePointer();
    testRemoveReference();
+   testRemoveRValueReference();
    testRemoveVolatile();
 }
 //*************************************************************************************************
@@ -1699,6 +1704,29 @@ void OperationTest::testRemoveExtent()
 
 
 //*************************************************************************************************
+/*!\brief Test of the \c RemoveLValueReference type trait.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a compile time test of the \c RemoveLValueReference type trait. In
+// case an error is detected, a compilation error is created.
+*/
+void OperationTest::testRemoveLValueReference()
+{
+   using blaze::RemoveLValueReference;
+
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( RemoveLValueReference<int>::Type, int );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( RemoveLValueReference<const int&>::Type, const int );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( RemoveLValueReference<volatile int&&>::Type, volatile int&& );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( RemoveLValueReference<int*>::Type, int* );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( RemoveLValueReference<int*&>::Type, int* );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( RemoveLValueReference<int*&&>::Type, int*&& );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Test of the \c RemovePointer type trait.
 //
 // \return void
@@ -1738,6 +1766,29 @@ void OperationTest::testRemoveReference()
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( RemoveReference<volatile int&&>::Type, volatile int );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( RemoveReference<int*>::Type, int* );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( RemoveReference<int*&>::Type, int* );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c RemoveRValueReference type trait.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a compile time test of the \c RemoveRValueReference type trait. In
+// case an error is detected, a compilation error is created.
+*/
+void OperationTest::testRemoveRValueReference()
+{
+   using blaze::RemoveRValueReference;
+
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( RemoveRValueReference<int>::Type, int );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( RemoveRValueReference<const int&>::Type, const int& );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( RemoveRValueReference<volatile int&&>::Type, volatile int );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( RemoveRValueReference<int*>::Type, int* );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( RemoveRValueReference<int*&>::Type, int*& );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( RemoveRValueReference<int*&&>::Type, int* );
 }
 //*************************************************************************************************
 

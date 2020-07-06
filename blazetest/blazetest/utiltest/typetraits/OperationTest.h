@@ -142,8 +142,10 @@ class OperationTest
    void testRemoveConst();
    void testRemoveCV();
    void testRemoveExtent();
+   void testRemoveLValueReference();
    void testRemovePointer();
    void testRemoveReference();
+   void testRemoveRValueReference();
    void testRemoveVolatile();
    //@}
    //**********************************************************************************************
