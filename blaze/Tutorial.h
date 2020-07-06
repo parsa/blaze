@@ -3272,6 +3272,41 @@
    expand<3>( b );  // Compile time parameter
    \endcode
 
+// \n \section vector_operations_vector_repetition Vector Repetition
+// <hr>
+//
+// Via the \c repeat() function it is possible to repeat a dense or sparse vector multiple times
+// to represent a larger vector. Repeating a column vector results in a column vector, repeating
+// a row vector results in a row vector. As demonstrated by the following examples, \c repeat()
+// can be used with both runtime and compile time parameters:
+
+   \code
+   using blaze::columnVector;
+   using blaze::rowVector;
+
+   blaze::DynamicVector<int,columnVector> a1{ 1, 0, -2 };
+   blaze::CompressedVector<int,rowVector> b1{ 0, -1, 7 };
+
+   blaze::DynamicVector<int,columnVector> a2;
+   blaze::CompressedVector<int,rowVector> b2;
+
+   // ... Resizing and initialization
+
+   // Repeating the dense column vector ( 1  0 -2 ) three times results in
+   //
+   //   ( 1  0 -2  1  0 -2  1  0 -2 )
+   //
+   a2 = repeat( a1, 3UL );
+   a2 = repeat<3UL>( a1 );
+
+   // Repeating the sparse row vector ( 0 -1  7 ) three times results in
+   //
+   //   ( 0 -1  7  0 -1  7  0 -1  7 )
+   //
+   b2 = repeat( b1, 3UL );
+   b2 = repeat<3UL>( b1 );
+   \endcode
+
 // \n \section vector_operations_statistic_operations Statistic Operations
 // <hr>
 //
@@ -6754,6 +6789,49 @@
    //
    A = uniform( 3UL, 5UL, scalar );
    A = uniform<columnMajor>( 3UL, 5UL, scalar );
+   \endcode
+
+// \n \section matrix_operations_matrix_repetition Matrix Repetition
+// <hr>
+//
+// Via the \c repeat() function it is possible to repeat a dense or sparse matrix multiple times
+// to represent a larger matrix. Repeating a row-major matrix results in a row-major matrix,
+// repeating a column-major matrix results in a column-major matrix. As demonstrated by the
+// following examples, \c repeat() can be used with both runtime and compile time parameters:
+
+   \code
+   using blaze::rowMajor;
+   using blaze::columnMajor;
+
+   blaze::DynamicMatrix<int,rowMajor> A1{ { 1, 0, -2 }, { 0, 5, 0 } };
+   blaze::CompressedMatrix<int,columnMajor> B1{ { 0, -1 }, { 0, 4 }, { 7, 0 } };
+
+   blaze::DynamicMatrix<int,rowMajor> A2;
+   blaze::CompressedMatrix<int,columnMajor> B2;
+
+   // ... Resizing and initialization
+
+   // Repeating the 2x3 dense row-major matrix 'A1' 2x rowwise and 3x columnwise results in
+   //
+   //    (  1  0 -2  1  0 -2  1  0 -2 )
+   //    (  0  5  0  0  5  0  0  5  0 )
+   //    (  1  0 -2  1  0 -2  1  0 -2 )
+   //    (  0  5  0  0  5  0  0  5  0 )
+   //
+   A2 = repeat( A1, 2UL, 3UL );
+   A2 = repeat<2UL,3UL>( A1 );
+
+   // Repeating the 3x2 sparse column-major matrix 'B1' 2x rowwise and 3x columnwise results in
+   //
+   //    (  0 -1  0 -1  0 -1 )
+   //    (  0  4  0  4  0  4 )
+   //    (  7  0  7  0  7  0 )
+   //    (  0 -1  0 -1  0 -1 )
+   //    (  0  4  0  4  0  4 )
+   //    (  7  0  7  0  7  0 )
+   //
+   B2 = repeat( B1, 2UL, 3UL );
+   B2 = repeat<2UL,3UL>( B1 );
    \endcode
 
 // \n \section matrix_operations_statistic_operations Statistic Operations
