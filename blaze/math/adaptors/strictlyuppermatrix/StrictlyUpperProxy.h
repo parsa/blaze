@@ -64,7 +64,7 @@
 #include <blaze/util/constraints/Reference.h>
 #include <blaze/util/constraints/Volatile.h>
 #include <blaze/util/typetraits/AddConst.h>
-#include <blaze/util/typetraits/AddReference.h>
+#include <blaze/util/typetraits/AddLValueReference.h>
 #include <blaze/util/Types.h>
 
 
@@ -110,9 +110,9 @@ class StrictlyUpperProxy
 
  public:
    //**Type definitions****************************************************************************
-   using RepresentedType = ElementType_t<MT>;              //!< Type of the represented matrix element.
-   using RawReference    = AddReference_t<ReferenceType>;  //!< Reference-to-non-const to the represented element.
-   using ConstReference  = const RepresentedType&;         //!< Reference-to-const to the represented element.
+   using RepresentedType = ElementType_t<MT>;                    //!< Type of the represented matrix element.
+   using RawReference    = AddLValueReference_t<ReferenceType>;  //!< Reference-to-non-const to the represented element.
+   using ConstReference  = const RepresentedType&;               //!< Reference-to-const to the represented element.
    //**********************************************************************************************
 
    //**Constructors********************************************************************************
