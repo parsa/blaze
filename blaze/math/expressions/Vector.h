@@ -48,6 +48,7 @@
 #include <blaze/util/Assert.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/FunctionTrace.h>
+#include <blaze/util/IntegralConstant.h>
 #include <blaze/util/MaybeUnused.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsSame.h>
@@ -167,7 +168,10 @@ template< typename VT, bool TF >
 void shrinkToFit( Vector<VT,TF>& vector );
 
 template< typename VT, bool TF >
-const typename VT::ResultType evaluate( const Vector<VT,TF>& vector );
+typename VT::ResultType evaluate( const Vector<VT,TF>& vector );
+
+template< bool B, typename VT, bool TF >
+decltype(auto) evaluateIf( const Vector<VT,TF>& vector );
 
 template< typename VT, bool TF >
 constexpr bool isEmpty( const Vector<VT,TF>& vector ) noexcept;
@@ -526,10 +530,72 @@ BLAZE_ALWAYS_INLINE void shrinkToFit( Vector<VT,TF>& vector )
 */
 template< typename VT  // Type of the vector
         , bool TF >    // Transpose flag of the vector
-inline const typename VT::ResultType evaluate( const Vector<VT,TF>& vector )
+inline typename VT::ResultType evaluate( const Vector<VT,TF>& vector )
 {
-   const typename VT::ResultType tmp( ~vector );
+   typename VT::ResultType tmp( ~vector );
    return tmp;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Conditional evaluation the given vector expression.
+// \ingroup vector
+//
+// \param vector The vector to be evaluated.
+// \return The result of the evaluated vector expression.
+//
+// This function does not evaluate the given vector expression and returns a reference to the
+// vector expression.
+*/
+template< typename VT  // Type of the vector
+        , bool TF >    // Transpose flag of the vector
+inline decltype(auto) evaluateIf( FalseType, const Vector<VT,TF>& vector )
+{
+   return ~vector;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Conditional evaluation the given vector expression.
+// \ingroup vector
+//
+// \param vector The vector to be evaluated.
+// \return The result of the evaluated vector expression.
+//
+// This function evaluates the given vector expression by means of the evaluate() function.
+*/
+template< typename VT  // Type of the vector
+        , bool TF >    // Transpose flag of the vector
+inline decltype(auto) evaluateIf( TrueType, const Vector<VT,TF>& vector )
+{
+   return evaluate( ~vector );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Conditional evaluation of the given vector expression.
+// \ingroup vector
+//
+// \param vector The vector to be evaluated.
+// \return The result of the evaluated vector expression.
+//
+// In case the given compile time condition evaluates to \a true, this function evaluates the
+// the given vector expression by means of the evaluate() function. Otherwise the function returns
+// a reference to the given vector expression.
+*/
+template< bool B       // Compile time condition
+        , typename VT  // Type of the vector
+        , bool TF >    // Transpose flag of the vector
+inline decltype(auto) evaluateIf( const Vector<VT,TF>& vector )
+{
+   return evaluateIf( BoolConstant<B>{}, ~vector );
 }
 //*************************************************************************************************
 

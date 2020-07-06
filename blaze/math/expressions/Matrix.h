@@ -353,7 +353,10 @@ template< typename MT, bool SO >
 void ctranspose( Matrix<MT,SO>& matrix );
 
 template< typename MT, bool SO >
-const typename MT::ResultType evaluate( const Matrix<MT,SO>& matrix );
+typename MT::ResultType evaluate( const Matrix<MT,SO>& matrix );
+
+template< bool B, typename MT, bool SO >
+typename MT::ResultType evaluateIf( const Matrix<MT,SO>& matrix );
 
 template< typename MT, bool SO >
 constexpr bool isEmpty( const Matrix<MT,SO>& matrix ) noexcept;
@@ -922,10 +925,72 @@ BLAZE_ALWAYS_INLINE void ctranspose( Matrix<MT,SO>& matrix )
 */
 template< typename MT  // Type of the matrix
         , bool SO >    // Storage order of the matrix
-inline const typename MT::ResultType evaluate( const Matrix<MT,SO>& matrix )
+inline typename MT::ResultType evaluate( const Matrix<MT,SO>& matrix )
 {
-   const typename MT::ResultType tmp( ~matrix );
+   typename MT::ResultType tmp( ~matrix );
    return tmp;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Conditional evaluation the given matrix expression.
+// \ingroup matrix
+//
+// \param matrix The matrix to be evaluated.
+// \return The result of the evaluated matrix expression.
+//
+// This function does not evaluate the given matrix expression and returns a reference to the
+// matrix expression.
+*/
+template< typename MT  // Type of the matrix
+        , bool SO >    // Storage order of the matrix
+inline decltype(auto) evaluateIf( FalseType, const Matrix<MT,SO>& matrix )
+{
+   return ~matrix;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Conditional evaluation the given matrix expression.
+// \ingroup matrix
+//
+// \param matrix The matrix to be evaluated.
+// \return The result of the evaluated matrix expression.
+//
+// This function evaluates the given matrix expression by means of the evaluate() function.
+*/
+template< typename MT  // Type of the matrix
+        , bool SO >    // Storage order of the matrix
+inline decltype(auto) evaluateIf( TrueType, const Matrix<MT,SO>& matrix )
+{
+   return evaluate( ~matrix );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Conditional evaluation of the given matrix expression.
+// \ingroup matrix
+//
+// \param matrix The matrix to be evaluated.
+// \return The result of the evaluated matrix expression.
+//
+// In case the given compile time condition evaluates to \a true, this function evaluates the
+// the given matrix expression by means of the evaluate() function. Otherwise the function returns
+// a reference to the given matrix expression.
+*/
+template< bool B       // Compile time condition
+        , typename MT  // Type of the matrix
+        , bool SO >    // Storage order of the matrix
+inline decltype(auto) evaluateIf( const Matrix<MT,SO>& matrix )
+{
+   return evaluateIf( BoolConstant<B>{}, ~matrix );
 }
 //*************************************************************************************************
 
