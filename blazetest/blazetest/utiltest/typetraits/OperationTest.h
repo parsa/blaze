@@ -85,7 +85,6 @@ class OperationTest
    void testAddCV();
    void testAddLValueReference();
    void testAddPointer();
-   void testAddReference();
    void testAddRValueReference();
    void testAddVolatile();
    void testAll();

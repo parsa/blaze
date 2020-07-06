@@ -74,7 +74,6 @@ OperationTest::OperationTest()
    testAddCV();
    testAddLValueReference();
    testAddPointer();
-   testAddReference();
    testAddRValueReference();
    testAddVolatile();
    testAll();
@@ -234,27 +233,6 @@ void OperationTest::testAddPointer()
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( AddPointer<int const>::Type, int const* );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( AddPointer<int*>::Type, int** );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( AddPointer<int*&>::Type, int** );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Test of the \c AddReference type trait.
-//
-// \return void
-// \exception std::runtime_error Error detected.
-//
-// This function performs a compile time test of the \c AddReference type trait. In case an error
-// is detected, a compilation error is created.
-*/
-void OperationTest::testAddReference()
-{
-   using blaze::AddReference;
-
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( AddReference<int>::Type, int& );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( AddReference<int const&>::Type, int const& );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( AddReference<int*>::Type, int*& );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( AddReference<int*&>::Type, int*& );
 }
 //*************************************************************************************************
 
