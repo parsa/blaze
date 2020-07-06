@@ -43,13 +43,12 @@
 #include <utility>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/mpl/If.h>
-#include <blaze/util/typetraits/CommonType.h>
 #include <blaze/util/typetraits/HasLessThan.h>
-#include <blaze/util/typetraits/IsReference.h>
-#include <blaze/util/typetraits/IsSame.h>
 #include <blaze/util/typetraits/IsSigned.h>
 #include <blaze/util/typetraits/IsUnsigned.h>
+#include <blaze/util/typetraits/RemoveConst.h>
 #include <blaze/util/typetraits/RemoveCVRef.h>
+#include <blaze/util/typetraits/RemoveRValueReference.h>
 
 
 namespace blaze {
@@ -79,12 +78,10 @@ template< typename T1, typename T2
                       !( IsUnsigned_v<R1> && IsSigned_v<R2> ) >* = nullptr >
 constexpr decltype(auto) min( T1&& a, T2&& b )
 {
-   using RT =
-      If_t< IsReference_v<T1> && IsReference_v<T2> && IsSame_v<R1,R2>
-          , const R1&
-          , CommonType_t<R1,R2> >;
+   using Result = decltype( b < a ? std::forward<T2>( b ) : std::forward<T1>( a ) );
+   using Return = RemoveConst_t< RemoveRValueReference_t< Result > >;
 
-   return static_cast<RT>( b < a ? std::forward<T2>( b ) : std::forward<T1>( a ) );
+   return static_cast<Return>( b < a ? std::forward<T2>( b ) : std::forward<T1>( a ) );
 }
 //*************************************************************************************************
 
