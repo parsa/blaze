@@ -110,7 +110,8 @@ class VectorAccessProxy
    /*!\name Constructors */
    //@{
    explicit inline VectorAccessProxy( VT& sv, size_t i );
-            inline VectorAccessProxy( const VectorAccessProxy& vap );
+
+   VectorAccessProxy( const VectorAccessProxy& ) = default;
    //@}
    //**********************************************************************************************
 
@@ -202,22 +203,7 @@ inline VectorAccessProxy<VT>::VectorAccessProxy( VT& sv, size_t i )
 {
    const Iterator_t<VT> element( sv_.find( i_ ) );
    if( element == sv_.end() )
-      sv_.insert( i_, RepresentedType() );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief The copy constructor for VectorAccessProxy.
-//
-// \param vap Sparse vector access proxy to be copied.
-*/
-template< typename VT >  // Type of the sparse vector
-inline VectorAccessProxy<VT>::VectorAccessProxy( const VectorAccessProxy& vap )
-   : sv_( vap.sv_ )  // Reference to the accessed sparse vector
-   , i_ ( vap.i_  )  // Index of the accessed sparse vector element
-{
-   BLAZE_INTERNAL_ASSERT( sv_.find( i_ ) != sv_.end(), "Missing vector element detected" );
+      sv_.insert( i_, RepresentedType{} );
 }
 //*************************************************************************************************
 
@@ -260,7 +246,10 @@ inline VectorAccessProxy<VT>::~VectorAccessProxy()
 template< typename VT >  // Type of the sparse vector
 inline const VectorAccessProxy<VT>& VectorAccessProxy<VT>::operator=( const VectorAccessProxy& vap ) const
 {
-   get() = vap.get();
+   const Iterator_t<VT> element( vap.sv_.find( vap.i_ ) );
+   const auto& source( element != vap.sv_.end() ? element->value() : RepresentedType{} );
+
+   get() = source;
    return *this;
 }
 //*************************************************************************************************
@@ -416,7 +405,9 @@ inline const VectorAccessProxy<VT>& VectorAccessProxy<VT>::operator%=( const T& 
 template< typename VT >  // Type of the sparse vector
 inline typename VectorAccessProxy<VT>::RawReference VectorAccessProxy<VT>::get() const noexcept
 {
-   const Iterator_t<VT> element( sv_.find( i_ ) );
+   Iterator_t<VT> element( sv_.find( i_ ) );
+   if( element == sv_.end() )
+      element = sv_.insert( i_, RepresentedType{} );
    BLAZE_INTERNAL_ASSERT( element != sv_.end(), "Missing vector element detected" );
    return element->value();
 }
