@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze/math/Forward.h
-//  \brief Header file for all forward declarations of the math module
+//  \file blaze/util/Forward.h
+//  \brief Header file for all forward declarations of the utility module
 //
 //  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
@@ -32,8 +32,8 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_MATH_FORWARD_H_
-#define _BLAZE_MATH_FORWARD_H_
+#ifndef _BLAZE_UTIL_FORWARD_H_
+#define _BLAZE_UTIL_FORWARD_H_
 
 
 namespace blaze {
