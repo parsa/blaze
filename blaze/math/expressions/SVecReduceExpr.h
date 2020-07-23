@@ -96,11 +96,11 @@ inline decltype(auto) reduce( const SparseVector<VT,TF>& sv, OP op )
    using CT = CompositeType_t<VT>;
    using ET = ElementType_t<VT>;
 
-   if( (~sv).size() == 0UL ) return ET{};
+   if( (*sv).size() == 0UL ) return ET{};
 
-   CT tmp( ~sv );
+   CT tmp( *sv );
 
-   BLAZE_INTERNAL_ASSERT( tmp.size() == (~sv).size(), "Invalid vector size" );
+   BLAZE_INTERNAL_ASSERT( tmp.size() == (*sv).size(), "Invalid vector size" );
 
    const auto end( tmp.end() );
    auto element( tmp.begin() );
@@ -143,7 +143,7 @@ inline decltype(auto) sum( const SparseVector<VT,TF>& sv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return reduce( ~sv, Add() );
+   return reduce( *sv, Add() );
 }
 //*************************************************************************************************
 
@@ -171,7 +171,7 @@ inline decltype(auto) prod( const SparseVector<VT,TF>& sv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return reduce( ~sv, Mult() );
+   return reduce( *sv, Mult() );
 }
 //*************************************************************************************************
 
@@ -203,7 +203,7 @@ inline decltype(auto) min( const SparseVector<VT,TF>& sv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return reduce( ~sv, Min() );
+   return reduce( *sv, Min() );
 }
 //*************************************************************************************************
 
@@ -235,7 +235,7 @@ inline decltype(auto) max( const SparseVector<VT,TF>& sv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return reduce( ~sv, Max() );
+   return reduce( *sv, Max() );
 }
 //*************************************************************************************************
 
@@ -261,10 +261,10 @@ template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
 inline size_t argmin( const SparseVector<VT,TF>& sv )
 {
-   if( (~sv).size() < 2UL )
+   if( (*sv).size() < 2UL )
       return 0UL;
 
-   CompositeType_t<VT> a( ~sv );  // Evaluation of the sparse vector operand
+   CompositeType_t<VT> a( *sv );  // Evaluation of the sparse vector operand
 
    if( a.nonZeros() == 0UL )
       return 0UL;
@@ -310,10 +310,10 @@ template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
 inline size_t argmax( const SparseVector<VT,TF>& sv )
 {
-   if( (~sv).size() < 2UL )
+   if( (*sv).size() < 2UL )
       return 0UL;
 
-   CompositeType_t<VT> a( ~sv );  // Evaluation of the sparse vector operand
+   CompositeType_t<VT> a( *sv );  // Evaluation of the sparse vector operand
 
    if( a.nonZeros() == 0UL )
       return 0UL;

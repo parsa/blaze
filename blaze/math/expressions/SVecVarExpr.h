@@ -75,17 +75,17 @@ decltype(auto) var_backend( const SparseVector<VT,TF>& sv, FalseType )
 {
    using BT = UnderlyingBuiltin_t<VT>;
 
-   const size_t n ( size( ~sv ) );
-   const size_t nz( nonZeros( ~sv ) );
+   const size_t n ( size( *sv ) );
+   const size_t nz( nonZeros( *sv ) );
 
    BLAZE_INTERNAL_ASSERT( n > 1UL, "Invalid vector size detected" );
    BLAZE_INTERNAL_ASSERT( n >= nz, "Invalid number of non-zero elements detected" );
 
-   const auto meanValue( mean( ~sv ) );
+   const auto meanValue( mean( *sv ) );
    auto variance( ( n - nz ) * pow2( meanValue ) );
 
-   const auto end( (~sv).end() );
-   for( auto element=(~sv).begin(); element!=end; ++element ) {
+   const auto end( (*sv).end() );
+   for( auto element=(*sv).begin(); element!=end; ++element ) {
       variance += pow2( element->value() - meanValue );
    }
 
@@ -109,7 +109,7 @@ decltype(auto) var_backend( const SparseVector<VT,TF>& sv, TrueType )
 {
    MAYBE_UNUSED( sv );
 
-   BLAZE_INTERNAL_ASSERT( size( ~sv ) > 1UL, "Invalid vector size detected" );
+   BLAZE_INTERNAL_ASSERT( size( *sv ) > 1UL, "Invalid vector size detected" );
 
    return ElementType_t<VT>();
 }
@@ -145,11 +145,11 @@ decltype(auto) var( const SparseVector<VT,TF>& sv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   if( (~sv).size() < 2UL ) {
+   if( (*sv).size() < 2UL ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid input vector" );
    }
 
-   return var_backend( ~sv, IsZero<VT>() );
+   return var_backend( *sv, IsZero<VT>() );
 }
 //*************************************************************************************************
 

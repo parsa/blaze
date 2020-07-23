@@ -304,16 +304,16 @@ class SVecSVecOuterExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
       LT x( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side sparse vector operand
       RT y( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side sparse vector operand
 
       BLAZE_INTERNAL_ASSERT( x.size() == rhs.lhs_.size() , "Invalid vector size" );
       BLAZE_INTERNAL_ASSERT( y.size() == rhs.rhs_.size() , "Invalid vector size" );
-      BLAZE_INTERNAL_ASSERT( x.size() == (~lhs).rows()   , "Invalid vector size" );
-      BLAZE_INTERNAL_ASSERT( y.size() == (~lhs).columns(), "Invalid vector size" );
+      BLAZE_INTERNAL_ASSERT( x.size() == (*lhs).rows()   , "Invalid vector size" );
+      BLAZE_INTERNAL_ASSERT( y.size() == (*lhs).columns(), "Invalid vector size" );
 
       const auto lend( x.end() );
       const auto rend( y.end() );
@@ -321,7 +321,7 @@ class SVecSVecOuterExpr
       for( auto lelem=x.begin(); lelem!=lend; ++lelem ) {
          if( !isDefault( lelem->value() ) ) {
             for( auto relem=y.begin(); relem!=rend; ++relem ) {
-               (~lhs)(lelem->index(),relem->index()) = lelem->value() * relem->value();
+               (*lhs)(lelem->index(),relem->index()) = lelem->value() * relem->value();
             }
          }
       }
@@ -349,16 +349,16 @@ class SVecSVecOuterExpr
 
       BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
       LT x( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side sparse vector operand
       RT y( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side sparse vector operand
 
       BLAZE_INTERNAL_ASSERT( x.size() == rhs.lhs_.size() , "Invalid vector size" );
       BLAZE_INTERNAL_ASSERT( y.size() == rhs.rhs_.size() , "Invalid vector size" );
-      BLAZE_INTERNAL_ASSERT( x.size() == (~lhs).rows()   , "Invalid vector size" );
-      BLAZE_INTERNAL_ASSERT( y.size() == (~lhs).columns(), "Invalid vector size" );
+      BLAZE_INTERNAL_ASSERT( x.size() == (*lhs).rows()   , "Invalid vector size" );
+      BLAZE_INTERNAL_ASSERT( y.size() == (*lhs).columns(), "Invalid vector size" );
 
       const auto lend( x.end() );
       const auto rend( y.end() );
@@ -366,7 +366,7 @@ class SVecSVecOuterExpr
       for( auto relem=y.begin(); relem!=rend; ++relem ) {
          if( !isDefault( relem->value() ) ) {
             for( auto lelem=x.begin(); lelem!=lend; ++lelem ) {
-               (~lhs)(lelem->index(),relem->index()) = lelem->value() * relem->value();
+               (*lhs)(lelem->index(),relem->index()) = lelem->value() * relem->value();
             }
          }
       }
@@ -391,20 +391,20 @@ class SVecSVecOuterExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()     == rhs.rows()    , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns()  == rhs.columns() , "Invalid number of columns" );
-      BLAZE_INTERNAL_ASSERT( (~lhs).capacity() >= rhs.nonZeros(), "Insufficient capacity"     );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()     == rhs.rows()    , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns()  == rhs.columns() , "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).capacity() >= rhs.nonZeros(), "Insufficient capacity"     );
 
       LT x( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side sparse vector operand
       RT y( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side sparse vector operand
 
       BLAZE_INTERNAL_ASSERT( x.size() == rhs.lhs_.size() , "Invalid vector size" );
       BLAZE_INTERNAL_ASSERT( y.size() == rhs.rhs_.size() , "Invalid vector size" );
-      BLAZE_INTERNAL_ASSERT( x.size() == (~lhs).rows()   , "Invalid vector size" );
-      BLAZE_INTERNAL_ASSERT( y.size() == (~lhs).columns(), "Invalid vector size" );
+      BLAZE_INTERNAL_ASSERT( x.size() == (*lhs).rows()   , "Invalid vector size" );
+      BLAZE_INTERNAL_ASSERT( y.size() == (*lhs).columns(), "Invalid vector size" );
 
       // Final memory allocation (based on the evaluated operands)
-      (~lhs).reserve( x.nonZeros() * y.nonZeros() );
+      (*lhs).reserve( x.nonZeros() * y.nonZeros() );
 
       // Performing the outer product
       const auto lend( x.end() );
@@ -414,17 +414,17 @@ class SVecSVecOuterExpr
       for( auto lelem=x.begin(); lelem!=lend; ++lelem ) {
          if( !isDefault( lelem->value() ) ) {
             for( ; index < lelem->index(); ++index ) {
-               (~lhs).finalize( index );
+               (*lhs).finalize( index );
             }
             for( auto relem=y.begin(); relem!=rend; ++relem ) {
-               (~lhs).append( lelem->index(), relem->index(), lelem->value() * relem->value() );
+               (*lhs).append( lelem->index(), relem->index(), lelem->value() * relem->value() );
             }
-            (~lhs).finalize( index++ );
+            (*lhs).finalize( index++ );
          }
       }
 
       for( ; index < x.size(); ++index ) {
-         (~lhs).finalize( index );
+         (*lhs).finalize( index );
       }
    }
    /*! \endcond */
@@ -450,17 +450,17 @@ class SVecSVecOuterExpr
 
       BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()     == rhs.rows()    , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns()  == rhs.columns() , "Invalid number of columns" );
-      BLAZE_INTERNAL_ASSERT( (~lhs).capacity() >= rhs.nonZeros(), "Insufficient capacity"     );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()     == rhs.rows()    , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns()  == rhs.columns() , "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).capacity() >= rhs.nonZeros(), "Insufficient capacity"     );
 
       LT x( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side sparse vector operand
       RT y( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side sparse vector operand
 
       BLAZE_INTERNAL_ASSERT( x.size() == rhs.lhs_.size() , "Invalid vector size" );
       BLAZE_INTERNAL_ASSERT( y.size() == rhs.rhs_.size() , "Invalid vector size" );
-      BLAZE_INTERNAL_ASSERT( x.size() == (~lhs).rows()   , "Invalid vector size" );
-      BLAZE_INTERNAL_ASSERT( y.size() == (~lhs).columns(), "Invalid vector size" );
+      BLAZE_INTERNAL_ASSERT( x.size() == (*lhs).rows()   , "Invalid vector size" );
+      BLAZE_INTERNAL_ASSERT( y.size() == (*lhs).columns(), "Invalid vector size" );
 
       const auto lend( x.end() );
       const auto rend( y.end() );
@@ -469,17 +469,17 @@ class SVecSVecOuterExpr
       for( auto relem=y.begin(); relem!=rend; ++relem ) {
          if( !isDefault( relem->value() ) ) {
             for( ; index < relem->index(); ++index ) {
-               (~lhs).finalize( index );
+               (*lhs).finalize( index );
             }
             for( auto lelem=x.begin(); lelem!=lend; ++lelem ) {
-               (~lhs).append( lelem->index(), relem->index(), lelem->value() * relem->value() );
+               (*lhs).append( lelem->index(), relem->index(), lelem->value() * relem->value() );
             }
-            (~lhs).finalize( index++ );
+            (*lhs).finalize( index++ );
          }
       }
 
       for( ; index < y.size(); ++index ) {
-         (~lhs).finalize( index );
+         (*lhs).finalize( index );
       }
    }
    /*! \endcond */
@@ -503,16 +503,16 @@ class SVecSVecOuterExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
       LT x( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side sparse vector operand
       RT y( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side sparse vector operand
 
       BLAZE_INTERNAL_ASSERT( x.size() == rhs.lhs_.size() , "Invalid vector size" );
       BLAZE_INTERNAL_ASSERT( y.size() == rhs.rhs_.size() , "Invalid vector size" );
-      BLAZE_INTERNAL_ASSERT( x.size() == (~lhs).rows()   , "Invalid vector size" );
-      BLAZE_INTERNAL_ASSERT( y.size() == (~lhs).columns(), "Invalid vector size" );
+      BLAZE_INTERNAL_ASSERT( x.size() == (*lhs).rows()   , "Invalid vector size" );
+      BLAZE_INTERNAL_ASSERT( y.size() == (*lhs).columns(), "Invalid vector size" );
 
       const auto lend( x.end() );
       const auto rend( y.end() );
@@ -520,7 +520,7 @@ class SVecSVecOuterExpr
       for( auto lelem=x.begin(); lelem!=lend; ++lelem ) {
          if( !isDefault( lelem->value() ) ) {
             for( auto relem=y.begin(); relem!=rend; ++relem ) {
-               (~lhs)(lelem->index(),relem->index()) += lelem->value() * relem->value();
+               (*lhs)(lelem->index(),relem->index()) += lelem->value() * relem->value();
             }
          }
       }
@@ -548,16 +548,16 @@ class SVecSVecOuterExpr
 
       BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
       LT x( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side sparse vector operand
       RT y( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side sparse vector operand
 
       BLAZE_INTERNAL_ASSERT( x.size() == rhs.lhs_.size() , "Invalid vector size" );
       BLAZE_INTERNAL_ASSERT( y.size() == rhs.rhs_.size() , "Invalid vector size" );
-      BLAZE_INTERNAL_ASSERT( x.size() == (~lhs).rows()   , "Invalid vector size" );
-      BLAZE_INTERNAL_ASSERT( y.size() == (~lhs).columns(), "Invalid vector size" );
+      BLAZE_INTERNAL_ASSERT( x.size() == (*lhs).rows()   , "Invalid vector size" );
+      BLAZE_INTERNAL_ASSERT( y.size() == (*lhs).columns(), "Invalid vector size" );
 
       const auto lend( x.end() );
       const auto rend( y.end() );
@@ -565,7 +565,7 @@ class SVecSVecOuterExpr
       for( auto relem=y.begin(); relem!=rend; ++relem ) {
          if( !isDefault( relem->value() ) ) {
             for( auto lelem=x.begin(); lelem!=lend; ++lelem ) {
-               (~lhs)(lelem->index(),relem->index()) += lelem->value() * relem->value();
+               (*lhs)(lelem->index(),relem->index()) += lelem->value() * relem->value();
             }
          }
       }
@@ -595,16 +595,16 @@ class SVecSVecOuterExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
       LT x( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side sparse vector operand
       RT y( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side sparse vector operand
 
       BLAZE_INTERNAL_ASSERT( x.size() == rhs.lhs_.size() , "Invalid vector size" );
       BLAZE_INTERNAL_ASSERT( y.size() == rhs.rhs_.size() , "Invalid vector size" );
-      BLAZE_INTERNAL_ASSERT( x.size() == (~lhs).rows()   , "Invalid vector size" );
-      BLAZE_INTERNAL_ASSERT( y.size() == (~lhs).columns(), "Invalid vector size" );
+      BLAZE_INTERNAL_ASSERT( x.size() == (*lhs).rows()   , "Invalid vector size" );
+      BLAZE_INTERNAL_ASSERT( y.size() == (*lhs).columns(), "Invalid vector size" );
 
       const auto lend( x.end() );
       const auto rend( y.end() );
@@ -612,7 +612,7 @@ class SVecSVecOuterExpr
       for( auto lelem=x.begin(); lelem!=lend; ++lelem ) {
          if( !isDefault( lelem->value() ) ) {
             for( auto relem=y.begin(); relem!=rend; ++relem ) {
-               (~lhs)(lelem->index(),relem->index()) -= lelem->value() * relem->value();
+               (*lhs)(lelem->index(),relem->index()) -= lelem->value() * relem->value();
             }
          }
       }
@@ -640,16 +640,16 @@ class SVecSVecOuterExpr
 
       BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
       LT x( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side sparse vector operand
       RT y( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side sparse vector operand
 
       BLAZE_INTERNAL_ASSERT( x.size() == rhs.lhs_.size() , "Invalid vector size" );
       BLAZE_INTERNAL_ASSERT( y.size() == rhs.rhs_.size() , "Invalid vector size" );
-      BLAZE_INTERNAL_ASSERT( x.size() == (~lhs).rows()   , "Invalid vector size" );
-      BLAZE_INTERNAL_ASSERT( y.size() == (~lhs).columns(), "Invalid vector size" );
+      BLAZE_INTERNAL_ASSERT( x.size() == (*lhs).rows()   , "Invalid vector size" );
+      BLAZE_INTERNAL_ASSERT( y.size() == (*lhs).columns(), "Invalid vector size" );
 
       const auto lend( x.end() );
       const auto rend( y.end() );
@@ -657,7 +657,7 @@ class SVecSVecOuterExpr
       for( auto relem=y.begin(); relem!=rend; ++relem ) {
          if( !isDefault( relem->value() ) ) {
             for( auto lelem=x.begin(); lelem!=lend; ++lelem ) {
-               (~lhs)(lelem->index(),relem->index()) -= lelem->value() * relem->value();
+               (*lhs)(lelem->index(),relem->index()) -= lelem->value() * relem->value();
             }
          }
       }
@@ -687,16 +687,16 @@ class SVecSVecOuterExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
       LT x( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side sparse vector operand
       RT y( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side sparse vector operand
 
       BLAZE_INTERNAL_ASSERT( x.size() == rhs.lhs_.size() , "Invalid vector size" );
       BLAZE_INTERNAL_ASSERT( y.size() == rhs.rhs_.size() , "Invalid vector size" );
-      BLAZE_INTERNAL_ASSERT( x.size() == (~lhs).rows()   , "Invalid vector size" );
-      BLAZE_INTERNAL_ASSERT( y.size() == (~lhs).columns(), "Invalid vector size" );
+      BLAZE_INTERNAL_ASSERT( x.size() == (*lhs).rows()   , "Invalid vector size" );
+      BLAZE_INTERNAL_ASSERT( y.size() == (*lhs).columns(), "Invalid vector size" );
 
       const auto lend( x.end() );
       const auto rend( y.end() );
@@ -709,19 +709,19 @@ class SVecSVecOuterExpr
 
          for( ; i<lelem->index(); ++i ) {
             for( size_t j=0UL; j<y.size(); ++j )
-               reset( (~lhs)(i,j) );
+               reset( (*lhs)(i,j) );
          }
 
          size_t j( 0UL );
 
          for( auto relem=y.begin(); relem!=rend; ++relem, ++j ) {
             for( ; j<relem->index(); ++j )
-               reset( (~lhs)(i,j) );
-            (~lhs)(lelem->index(),relem->index()) *= lelem->value() * relem->value();
+               reset( (*lhs)(i,j) );
+            (*lhs)(lelem->index(),relem->index()) *= lelem->value() * relem->value();
          }
 
          for( ; j<y.size(); ++j ) {
-            reset( (~lhs)(i,j) );
+            reset( (*lhs)(i,j) );
          }
 
          ++i;
@@ -729,7 +729,7 @@ class SVecSVecOuterExpr
 
       for( ; i<x.size(); ++i ) {
          for( size_t j=0UL; j<y.size(); ++j )
-            reset( (~lhs)(i,j) );
+            reset( (*lhs)(i,j) );
       }
    }
    /*! \endcond */
@@ -755,16 +755,16 @@ class SVecSVecOuterExpr
 
       BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
       LT x( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side sparse vector operand
       RT y( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side sparse vector operand
 
       BLAZE_INTERNAL_ASSERT( x.size() == rhs.lhs_.size() , "Invalid vector size" );
       BLAZE_INTERNAL_ASSERT( y.size() == rhs.rhs_.size() , "Invalid vector size" );
-      BLAZE_INTERNAL_ASSERT( x.size() == (~lhs).rows()   , "Invalid vector size" );
-      BLAZE_INTERNAL_ASSERT( y.size() == (~lhs).columns(), "Invalid vector size" );
+      BLAZE_INTERNAL_ASSERT( x.size() == (*lhs).rows()   , "Invalid vector size" );
+      BLAZE_INTERNAL_ASSERT( y.size() == (*lhs).columns(), "Invalid vector size" );
 
       const auto lend( x.end() );
       const auto rend( y.end() );
@@ -777,19 +777,19 @@ class SVecSVecOuterExpr
 
          for( ; j<relem->index(); ++j ) {
             for( size_t i=0UL; i<x.size(); ++i )
-               reset( (~lhs)(i,j) );
+               reset( (*lhs)(i,j) );
          }
 
          size_t i( 0UL );
 
          for( auto lelem=x.begin(); lelem!=lend; ++lelem, ++i ) {
             for( ; i<lelem->index(); ++i )
-               reset( (~lhs)(i,j) );
-            (~lhs)(lelem->index(),relem->index()) *= lelem->value() * relem->value();
+               reset( (*lhs)(i,j) );
+            (*lhs)(lelem->index(),relem->index()) *= lelem->value() * relem->value();
          }
 
          for( ; i<x.size(); ++i ) {
-            reset( (~lhs)(i,j) );
+            reset( (*lhs)(i,j) );
          }
 
          ++j;
@@ -797,7 +797,7 @@ class SVecSVecOuterExpr
 
       for( ; j<y.size(); ++j ) {
          for( size_t i=0UL; i<x.size(); ++i )
-            reset( (~lhs)(i,j) );
+            reset( (*lhs)(i,j) );
       }
    }
    /*! \endcond */
@@ -859,7 +859,7 @@ inline const SVecSVecOuterExpr<VT1,VT2>
 {
    BLAZE_FUNCTION_TRACE;
 
-   return SVecSVecOuterExpr<VT1,VT2>( ~lhs, ~rhs );
+   return SVecSVecOuterExpr<VT1,VT2>( *lhs, *rhs );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -891,7 +891,7 @@ inline decltype(auto)
    BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( ReturnType );
    BLAZE_CONSTRAINT_MUST_BE_ZERO_TYPE( ReturnType );
 
-   return ReturnType( (~lhs).size(), (~rhs).size() );
+   return ReturnType( (*lhs).size(), (*rhs).size() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -931,7 +931,7 @@ inline decltype(auto)
 {
    BLAZE_FUNCTION_TRACE;
 
-   return svecsvecouter( ~lhs, ~rhs );
+   return svecsvecouter( *lhs, *rhs );
 }
 //*************************************************************************************************
 

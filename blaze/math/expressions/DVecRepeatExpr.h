@@ -246,7 +246,7 @@ class DVecRepeatExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       CompositeType_t<VT> x( serial( rhs.dv_ ) );  // Evaluation of the dense vector operand
 
@@ -254,7 +254,7 @@ class DVecRepeatExpr
       const size_t size( x.size() );
 
       for( size_t rep=0UL; rep<reps; ++rep ) {
-         subvector( ~lhs, rep*size, size, unchecked ) = serial( x );
+         subvector( *lhs, rep*size, size, unchecked ) = serial( x );
       }
    }
    /*! \endcond */
@@ -277,19 +277,19 @@ class DVecRepeatExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       CompositeType_t<VT> x( serial( rhs.dv_ ) );  // Evaluation of the dense vector operand
 
       const size_t reps( rhs.template repetitions<0UL>() );
       const size_t size( x.size() );
 
-      (~lhs).reset();
-      (~lhs).reserve( reps*size );
+      (*lhs).reset();
+      (*lhs).reserve( reps*size );
 
       for( size_t rep=0UL; rep<reps; ++rep ) {
          for( size_t i=0UL; i<size; ++i ) {
-            (~lhs).append( rep*size+i, x[i], true );
+            (*lhs).append( rep*size+i, x[i], true );
          }
       }
    }
@@ -313,7 +313,7 @@ class DVecRepeatExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       CompositeType_t<VT> x( serial( rhs.dv_ ) );  // Evaluation of the dense vector operand
 
@@ -321,7 +321,7 @@ class DVecRepeatExpr
       const size_t size( x.size() );
 
       for( size_t rep=0UL; rep<reps; ++rep ) {
-         subvector( ~lhs, rep*size, size, unchecked ) += serial( x );
+         subvector( *lhs, rep*size, size, unchecked ) += serial( x );
       }
    }
    /*! \endcond */
@@ -348,7 +348,7 @@ class DVecRepeatExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       CompositeType_t<VT> x( serial( rhs.dv_ ) );  // Evaluation of the dense vector operand
 
@@ -356,7 +356,7 @@ class DVecRepeatExpr
       const size_t size( x.size() );
 
       for( size_t rep=0UL; rep<reps; ++rep ) {
-         subvector( ~lhs, rep*size, size, unchecked ) -= serial( x );
+         subvector( *lhs, rep*size, size, unchecked ) -= serial( x );
       }
    }
    /*! \endcond */
@@ -383,7 +383,7 @@ class DVecRepeatExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       CompositeType_t<VT> x( serial( rhs.dv_ ) );  // Evaluation of the dense vector operand
 
@@ -391,7 +391,7 @@ class DVecRepeatExpr
       const size_t size( x.size() );
 
       for( size_t rep=0UL; rep<reps; ++rep ) {
-         subvector( ~lhs, rep*size, size, unchecked ) *= serial( x );
+         subvector( *lhs, rep*size, size, unchecked ) *= serial( x );
       }
    }
    /*! \endcond */
@@ -418,7 +418,7 @@ class DVecRepeatExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       CompositeType_t<VT> x( serial( rhs.dv_ ) );  // Evaluation of the dense vector operand
 
@@ -426,7 +426,7 @@ class DVecRepeatExpr
       const size_t size( x.size() );
 
       for( size_t rep=0UL; rep<reps; ++rep ) {
-         subvector( ~lhs, rep*size, size, unchecked ) /= serial( x );
+         subvector( *lhs, rep*size, size, unchecked ) /= serial( x );
       }
    }
    /*! \endcond */
@@ -487,7 +487,7 @@ inline decltype(auto) repeat( const DenseVector<VT,TF>& dv, size_t repetitions )
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = const DVecRepeatExpr<VT,TF>;
-   return ReturnType( ~dv, repetitions );
+   return ReturnType( *dv, repetitions );
 }
 //*************************************************************************************************
 
@@ -525,7 +525,7 @@ inline decltype(auto) repeat( const DenseVector<VT,TF>& dv )
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = const DVecRepeatExpr<VT,TF,R0>;
-   return ReturnType( ~dv );
+   return ReturnType( *dv );
 }
 //*************************************************************************************************
 
@@ -552,7 +552,7 @@ inline decltype(auto) repeat( const DenseVector<VT,TF>& dv, size_t repetitions )
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = const DVecRepeatExpr<VT,TF,R0>;
-   return ReturnType( ~dv );
+   return ReturnType( *dv );
 }
 /*! \endcond */
 //*************************************************************************************************

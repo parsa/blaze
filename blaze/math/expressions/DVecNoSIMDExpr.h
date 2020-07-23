@@ -304,9 +304,9 @@ class DVecNoSIMDExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      assign( ~lhs, rhs.dv_ );
+      assign( *lhs, rhs.dv_ );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -331,9 +331,9 @@ class DVecNoSIMDExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      assign( ~lhs, rhs.dv_ );
+      assign( *lhs, rhs.dv_ );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -358,9 +358,9 @@ class DVecNoSIMDExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      addAssign( ~lhs, rhs.dv_ );
+      addAssign( *lhs, rhs.dv_ );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -389,9 +389,9 @@ class DVecNoSIMDExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      subAssign( ~lhs, rhs.dv_ );
+      subAssign( *lhs, rhs.dv_ );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -420,9 +420,9 @@ class DVecNoSIMDExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      multAssign( ~lhs, rhs.dv_ );
+      multAssign( *lhs, rhs.dv_ );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -451,9 +451,9 @@ class DVecNoSIMDExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      divAssign( ~lhs, rhs.dv_ );
+      divAssign( *lhs, rhs.dv_ );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -482,9 +482,9 @@ class DVecNoSIMDExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      smpAssign( ~lhs, rhs.dv_ );
+      smpAssign( *lhs, rhs.dv_ );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -509,9 +509,9 @@ class DVecNoSIMDExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      smpAssign( ~lhs, rhs.dv_ );
+      smpAssign( *lhs, rhs.dv_ );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -536,9 +536,9 @@ class DVecNoSIMDExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      smpAddAssign( ~lhs, rhs.dv_ );
+      smpAddAssign( *lhs, rhs.dv_ );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -567,9 +567,9 @@ class DVecNoSIMDExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      smpSubAssign( ~lhs, rhs.dv_ );
+      smpSubAssign( *lhs, rhs.dv_ );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -598,9 +598,9 @@ class DVecNoSIMDExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      smpMultAssign( ~lhs, rhs.dv_ );
+      smpMultAssign( *lhs, rhs.dv_ );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -629,9 +629,9 @@ class DVecNoSIMDExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      smpDivAssign( ~lhs, rhs.dv_ );
+      smpDivAssign( *lhs, rhs.dv_ );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -682,7 +682,7 @@ inline decltype(auto) nosimd( const DenseVector<VT,TF>& dv )
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = const DVecNoSIMDExpr<VT,TF>;
-   return ReturnType( ~dv );
+   return ReturnType( *dv );
 }
 //*************************************************************************************************
 

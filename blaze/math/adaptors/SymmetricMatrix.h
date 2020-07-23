@@ -369,13 +369,13 @@ inline bool tryAssign( const SymmetricMatrix<MT1,SO1,DF,SF>& lhs,
 
    BLAZE_INTERNAL_ASSERT( row <= lhs.rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( (~rhs).rows() <= lhs.rows() - row, "Invalid number of rows" );
-   BLAZE_INTERNAL_ASSERT( (~rhs).columns() <= lhs.columns() - column, "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( (*rhs).rows() <= lhs.rows() - row, "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( (*rhs).columns() <= lhs.columns() - column, "Invalid number of columns" );
 
    MAYBE_UNUSED( lhs );
 
-   const size_t M( (~rhs).rows()    );
-   const size_t N( (~rhs).columns() );
+   const size_t M( (*rhs).rows()    );
+   const size_t N( (*rhs).columns() );
 
    if( ( row + M <= column ) || ( column + N <= row ) )
       return true;
@@ -389,7 +389,7 @@ inline bool tryAssign( const SymmetricMatrix<MT1,SO1,DF,SF>& lhs,
    const size_t subrow( lower ? 0UL : column - row );
    const size_t subcol( lower ? row - column : 0UL );
 
-   return isSymmetric( submatrix( ~rhs, subrow, subcol, size, size ) );
+   return isSymmetric( submatrix( *rhs, subrow, subcol, size, size ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -420,7 +420,7 @@ template< typename MT1  // Type of the adapted matrix
 inline bool tryAddAssign( const SymmetricMatrix<MT1,SO1,DF,SF>& lhs,
                           const Matrix<MT2,SO2>& rhs, size_t row, size_t column )
 {
-   return tryAssign( lhs, ~rhs, row, column );
+   return tryAssign( lhs, *rhs, row, column );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -452,7 +452,7 @@ template< typename MT1  // Type of the adapted matrix
 inline bool trySubAssign( const SymmetricMatrix<MT1,SO1,DF,SF>& lhs,
                           const Matrix<MT2,SO2>& rhs, size_t row, size_t column )
 {
-   return tryAssign( lhs, ~rhs, row, column );
+   return tryAssign( lhs, *rhs, row, column );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -484,7 +484,7 @@ template< typename MT1  // Type of the adapted matrix
 inline bool trySchurAssign( const SymmetricMatrix<MT1,SO1,DF,SF>& lhs,
                             const Matrix<MT2,SO2>& rhs, size_t row, size_t column )
 {
-   return tryAssign( lhs, ~rhs, row, column );
+   return tryAssign( lhs, *rhs, row, column );
 }
 /*! \endcond */
 //*************************************************************************************************

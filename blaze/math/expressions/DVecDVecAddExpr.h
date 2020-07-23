@@ -620,21 +620,21 @@ class DVecDVecAddExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      if( !IsComputation_v<VT1> && isSame( ~lhs, rhs.lhs_ ) ) {
-         addAssign( ~lhs, rhs.rhs_ );
+      if( !IsComputation_v<VT1> && isSame( *lhs, rhs.lhs_ ) ) {
+         addAssign( *lhs, rhs.rhs_ );
       }
-      else if( !IsComputation_v<VT2> && isSame( ~lhs, rhs.rhs_ ) ) {
-         addAssign( ~lhs, rhs.lhs_ );
+      else if( !IsComputation_v<VT2> && isSame( *lhs, rhs.rhs_ ) ) {
+         addAssign( *lhs, rhs.lhs_ );
       }
       else if( !RequiresEvaluation_v<VT2> ) {
-         assign   ( ~lhs, rhs.rhs_ );
-         addAssign( ~lhs, rhs.lhs_ );
+         assign   ( *lhs, rhs.rhs_ );
+         addAssign( *lhs, rhs.lhs_ );
       }
       else {
-         assign   ( ~lhs, rhs.lhs_ );
-         addAssign( ~lhs, rhs.rhs_ );
+         assign   ( *lhs, rhs.lhs_ );
+         addAssign( *lhs, rhs.rhs_ );
       }
    }
    /*! \endcond */
@@ -664,10 +664,10 @@ class DVecDVecAddExpr
       BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType, TF );
       BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       const ResultType tmp( serial( rhs ) );
-      assign( ~lhs, tmp );
+      assign( *lhs, tmp );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -692,15 +692,15 @@ class DVecDVecAddExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       if( !RequiresEvaluation_v<VT2> ) {
-         addAssign( ~lhs, rhs.rhs_ );
-         addAssign( ~lhs, rhs.lhs_ );
+         addAssign( *lhs, rhs.rhs_ );
+         addAssign( *lhs, rhs.lhs_ );
       }
       else {
-         addAssign( ~lhs, rhs.lhs_ );
-         addAssign( ~lhs, rhs.rhs_ );
+         addAssign( *lhs, rhs.lhs_ );
+         addAssign( *lhs, rhs.rhs_ );
       }
    }
    /*! \endcond */
@@ -730,15 +730,15 @@ class DVecDVecAddExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       if( !RequiresEvaluation_v<VT2> ) {
-         subAssign( ~lhs, rhs.rhs_ );
-         subAssign( ~lhs, rhs.lhs_ );
+         subAssign( *lhs, rhs.rhs_ );
+         subAssign( *lhs, rhs.lhs_ );
       }
       else {
-         subAssign( ~lhs, rhs.lhs_ );
-         subAssign( ~lhs, rhs.rhs_ );
+         subAssign( *lhs, rhs.lhs_ );
+         subAssign( *lhs, rhs.rhs_ );
       }
    }
    /*! \endcond */
@@ -772,10 +772,10 @@ class DVecDVecAddExpr
       BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType, TF );
       BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       const ResultType tmp( serial( rhs ) );
-      multAssign( ~lhs, tmp );
+      multAssign( *lhs, tmp );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -808,10 +808,10 @@ class DVecDVecAddExpr
       BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType, TF );
       BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       const ResultType tmp( serial( rhs ) );
-      divAssign( ~lhs, tmp );
+      divAssign( *lhs, tmp );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -840,21 +840,21 @@ class DVecDVecAddExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      if( !IsComputation_v<VT1> && isSame( ~lhs, rhs.lhs_ ) ) {
-         smpAddAssign( ~lhs, rhs.rhs_ );
+      if( !IsComputation_v<VT1> && isSame( *lhs, rhs.lhs_ ) ) {
+         smpAddAssign( *lhs, rhs.rhs_ );
       }
-      else if( !IsComputation_v<VT2> && isSame( ~lhs, rhs.rhs_ ) ) {
-         smpAddAssign( ~lhs, rhs.lhs_ );
+      else if( !IsComputation_v<VT2> && isSame( *lhs, rhs.rhs_ ) ) {
+         smpAddAssign( *lhs, rhs.lhs_ );
       }
       else if( !RequiresEvaluation_v<VT2> ) {
-         smpAssign   ( ~lhs, rhs.rhs_ );
-         smpAddAssign( ~lhs, rhs.lhs_ );
+         smpAssign   ( *lhs, rhs.rhs_ );
+         smpAddAssign( *lhs, rhs.lhs_ );
       }
       else {
-         smpAssign   ( ~lhs, rhs.lhs_ );
-         smpAddAssign( ~lhs, rhs.rhs_ );
+         smpAssign   ( *lhs, rhs.lhs_ );
+         smpAddAssign( *lhs, rhs.rhs_ );
       }
    }
    /*! \endcond */
@@ -884,10 +884,10 @@ class DVecDVecAddExpr
       BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType, TF );
       BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       const ResultType tmp( rhs );
-      smpAssign( ~lhs, tmp );
+      smpAssign( *lhs, tmp );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -912,15 +912,15 @@ class DVecDVecAddExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       if( !RequiresEvaluation_v<VT2> ) {
-         smpAddAssign( ~lhs, rhs.rhs_ );
-         smpAddAssign( ~lhs, rhs.lhs_ );
+         smpAddAssign( *lhs, rhs.rhs_ );
+         smpAddAssign( *lhs, rhs.lhs_ );
       }
       else {
-         smpAddAssign( ~lhs, rhs.lhs_ );
-         smpAddAssign( ~lhs, rhs.rhs_ );
+         smpAddAssign( *lhs, rhs.lhs_ );
+         smpAddAssign( *lhs, rhs.rhs_ );
       }
    }
    /*! \endcond */
@@ -950,15 +950,15 @@ class DVecDVecAddExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       if( !RequiresEvaluation_v<VT2> ) {
-         smpSubAssign( ~lhs, rhs.rhs_ );
-         smpSubAssign( ~lhs, rhs.lhs_ );
+         smpSubAssign( *lhs, rhs.rhs_ );
+         smpSubAssign( *lhs, rhs.lhs_ );
       }
       else {
-         smpSubAssign( ~lhs, rhs.lhs_ );
-         smpSubAssign( ~lhs, rhs.rhs_ );
+         smpSubAssign( *lhs, rhs.lhs_ );
+         smpSubAssign( *lhs, rhs.rhs_ );
       }
    }
    /*! \endcond */
@@ -992,10 +992,10 @@ class DVecDVecAddExpr
       BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType, TF );
       BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       const ResultType tmp( rhs );
-      smpMultAssign( ~lhs, tmp );
+      smpMultAssign( *lhs, tmp );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -1028,10 +1028,10 @@ class DVecDVecAddExpr
       BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType, TF );
       BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       const ResultType tmp( rhs );
-      smpDivAssign( ~lhs, tmp );
+      smpDivAssign( *lhs, tmp );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -1093,12 +1093,12 @@ inline decltype(auto)
 {
    BLAZE_FUNCTION_TRACE;
 
-   if( (~lhs).size() != (~rhs).size() ) {
+   if( (*lhs).size() != (*rhs).size() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
    using ReturnType = const DVecDVecAddExpr<VT1,VT2,TF>;
-   return ReturnType( ~lhs, ~rhs );
+   return ReturnType( *lhs, *rhs );
 }
 //*************************************************************************************************
 

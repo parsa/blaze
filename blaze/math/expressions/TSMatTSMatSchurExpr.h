@@ -324,8 +324,8 @@ class TSMatTSMatSchurExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
       CT1 A( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side sparse matrix operand
       CT2 B( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side sparse matrix operand
@@ -334,10 +334,10 @@ class TSMatTSMatSchurExpr
       BLAZE_INTERNAL_ASSERT( A.columns() == rhs.lhs_.columns(), "Invalid number of columns" );
       BLAZE_INTERNAL_ASSERT( B.rows()    == rhs.rhs_.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( B.columns() == rhs.rhs_.columns(), "Invalid number of columns" );
-      BLAZE_INTERNAL_ASSERT( A.rows()    == (~lhs).rows()     , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( A.columns() == (~lhs).columns()  , "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( A.rows()    == (*lhs).rows()     , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( A.columns() == (*lhs).columns()  , "Invalid number of columns" );
 
-      for( size_t j=0UL; j<(~lhs).columns(); ++j )
+      for( size_t j=0UL; j<(*lhs).columns(); ++j )
       {
          const auto lend( A.end(j) );
          const auto rend( B.end(j) );
@@ -349,7 +349,7 @@ class TSMatTSMatSchurExpr
             while( r!=rend && r->index() < l->index() ) ++r;
             if( r==rend ) break;
             if( l->index() == r->index() ) {
-               (~lhs)(l->index(),j) = l->value() * r->value();
+               (*lhs)(l->index(),j) = l->value() * r->value();
                ++r;
             }
          }
@@ -379,8 +379,8 @@ class TSMatTSMatSchurExpr
 
       BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
       CT1 A( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side sparse matrix operand
       CT2 B( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side sparse matrix operand
@@ -389,8 +389,8 @@ class TSMatTSMatSchurExpr
       BLAZE_INTERNAL_ASSERT( A.columns() == rhs.lhs_.columns(), "Invalid number of columns" );
       BLAZE_INTERNAL_ASSERT( B.rows()    == rhs.rhs_.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( B.columns() == rhs.rhs_.columns(), "Invalid number of columns" );
-      BLAZE_INTERNAL_ASSERT( A.rows()    == (~lhs).rows()     , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( A.columns() == (~lhs).columns()  , "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( A.rows()    == (*lhs).rows()     , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( A.columns() == (*lhs).columns()  , "Invalid number of columns" );
 
       const size_t m( rhs.rows()    );
       const size_t n( rhs.columns() );
@@ -417,7 +417,7 @@ class TSMatTSMatSchurExpr
 
       // Resizing the left-hand side sparse matrix
       for( size_t i=0UL; i<m; ++i ) {
-         (~lhs).reserve( i, nonzeros[i] );
+         (*lhs).reserve( i, nonzeros[i] );
       }
 
       // Performing the Schur product
@@ -433,7 +433,7 @@ class TSMatTSMatSchurExpr
             while( r!=rend && r->index() < l->index() ) ++r;
             if( r==rend ) break;
             if( l->index() == r->index() ) {
-               (~lhs).append( l->index(), j, l->value() * r->value() );
+               (*lhs).append( l->index(), j, l->value() * r->value() );
                ++r;
             }
          }
@@ -460,8 +460,8 @@ class TSMatTSMatSchurExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
       CT1 A( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side sparse matrix operand
       CT2 B( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side sparse matrix operand
@@ -470,14 +470,14 @@ class TSMatTSMatSchurExpr
       BLAZE_INTERNAL_ASSERT( A.columns() == rhs.lhs_.columns(), "Invalid number of columns" );
       BLAZE_INTERNAL_ASSERT( B.rows()    == rhs.rhs_.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( B.columns() == rhs.rhs_.columns(), "Invalid number of columns" );
-      BLAZE_INTERNAL_ASSERT( A.rows()    == (~lhs).rows()     , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( A.columns() == (~lhs).columns()  , "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( A.rows()    == (*lhs).rows()     , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( A.columns() == (*lhs).columns()  , "Invalid number of columns" );
 
       // Final memory allocation (based on the evaluated operands)
-      (~lhs).reserve( min( A.nonZeros(), B.nonZeros() ) );
+      (*lhs).reserve( min( A.nonZeros(), B.nonZeros() ) );
 
       // Performing the Schur product
-      for( size_t j=0UL; j<(~lhs).columns(); ++j )
+      for( size_t j=0UL; j<(*lhs).columns(); ++j )
       {
          const auto lend( A.end(j) );
          const auto rend( B.end(j) );
@@ -489,12 +489,12 @@ class TSMatTSMatSchurExpr
             while( r!=rend && r->index() < l->index() ) ++r;
             if( r==rend ) break;
             if( l->index() == r->index() ) {
-               (~lhs).append( l->index(), j, l->value() * r->value() );
+               (*lhs).append( l->index(), j, l->value() * r->value() );
                ++r;
             }
          }
 
-         (~lhs).finalize( j );
+         (*lhs).finalize( j );
       }
    }
    /*! \endcond */
@@ -521,10 +521,10 @@ class TSMatTSMatSchurExpr
 
       BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      assign( ~lhs, trans( rhs.lhs_ ) % trans( rhs.rhs_ ) );
+      assign( *lhs, trans( rhs.lhs_ ) % trans( rhs.rhs_ ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -549,8 +549,8 @@ class TSMatTSMatSchurExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
       CT1 A( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side sparse matrix operand
       CT2 B( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side sparse matrix operand
@@ -559,10 +559,10 @@ class TSMatTSMatSchurExpr
       BLAZE_INTERNAL_ASSERT( A.columns() == rhs.lhs_.columns(), "Invalid number of columns" );
       BLAZE_INTERNAL_ASSERT( B.rows()    == rhs.rhs_.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( B.columns() == rhs.rhs_.columns(), "Invalid number of columns" );
-      BLAZE_INTERNAL_ASSERT( A.rows()    == (~lhs).rows()     , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( A.columns() == (~lhs).columns()  , "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( A.rows()    == (*lhs).rows()     , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( A.columns() == (*lhs).columns()  , "Invalid number of columns" );
 
-      for( size_t j=0UL; j<(~lhs).columns(); ++j )
+      for( size_t j=0UL; j<(*lhs).columns(); ++j )
       {
          const auto lend( A.end(j) );
          const auto rend( B.end(j) );
@@ -574,7 +574,7 @@ class TSMatTSMatSchurExpr
             while( r!=rend && r->index() < l->index() ) ++r;
             if( r==rend ) break;
             if( l->index() == r->index() ) {
-               (~lhs)(l->index(),j) += l->value() * r->value();
+               (*lhs)(l->index(),j) += l->value() * r->value();
                ++r;
             }
          }
@@ -604,10 +604,10 @@ class TSMatTSMatSchurExpr
 
       BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      addAssign( ~lhs, trans( rhs.lhs_ ) % trans( rhs.rhs_ ) );
+      addAssign( *lhs, trans( rhs.lhs_ ) % trans( rhs.rhs_ ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -636,8 +636,8 @@ class TSMatTSMatSchurExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
       CT1 A( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side sparse matrix operand
       CT2 B( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side sparse matrix operand
@@ -646,10 +646,10 @@ class TSMatTSMatSchurExpr
       BLAZE_INTERNAL_ASSERT( A.columns() == rhs.lhs_.columns(), "Invalid number of columns" );
       BLAZE_INTERNAL_ASSERT( B.rows()    == rhs.rhs_.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( B.columns() == rhs.rhs_.columns(), "Invalid number of columns" );
-      BLAZE_INTERNAL_ASSERT( A.rows()    == (~lhs).rows()     , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( A.columns() == (~lhs).columns()  , "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( A.rows()    == (*lhs).rows()     , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( A.columns() == (*lhs).columns()  , "Invalid number of columns" );
 
-      for( size_t j=0UL; j<(~lhs).columns(); ++j )
+      for( size_t j=0UL; j<(*lhs).columns(); ++j )
       {
          const auto lend( A.end(j) );
          const auto rend( B.end(j) );
@@ -661,7 +661,7 @@ class TSMatTSMatSchurExpr
             while( r!=rend && r->index() < l->index() ) ++r;
             if( r==rend ) break;
             if( l->index() == r->index() ) {
-               (~lhs)(l->index(),j) -= l->value() * r->value();
+               (*lhs)(l->index(),j) -= l->value() * r->value();
                ++r;
             }
          }
@@ -691,10 +691,10 @@ class TSMatTSMatSchurExpr
 
       BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      subAssign( ~lhs, trans( rhs.lhs_ ) % trans( rhs.rhs_ ) );
+      subAssign( *lhs, trans( rhs.lhs_ ) % trans( rhs.rhs_ ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -723,8 +723,8 @@ class TSMatTSMatSchurExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
       CT1 A( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side sparse matrix operand
       CT2 B( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side sparse matrix operand
@@ -733,10 +733,10 @@ class TSMatTSMatSchurExpr
       BLAZE_INTERNAL_ASSERT( A.columns() == rhs.lhs_.columns(), "Invalid number of columns" );
       BLAZE_INTERNAL_ASSERT( B.rows()    == rhs.rhs_.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( B.columns() == rhs.rhs_.columns(), "Invalid number of columns" );
-      BLAZE_INTERNAL_ASSERT( A.rows()    == (~lhs).rows()     , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( A.columns() == (~lhs).columns()  , "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( A.rows()    == (*lhs).rows()     , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( A.columns() == (*lhs).columns()  , "Invalid number of columns" );
 
-      for( size_t j=0UL; j<(~lhs).columns(); ++j )
+      for( size_t j=0UL; j<(*lhs).columns(); ++j )
       {
          const auto lend( A.end(j) );
          const auto rend( B.end(j) );
@@ -751,15 +751,15 @@ class TSMatTSMatSchurExpr
             if( r==rend ) break;
             if( l->index() == r->index() ) {
                for( ; i<l->index(); ++i )
-                  reset( (~lhs)(i,j) );
-               (~lhs)(l->index(),j) *= l->value() * r->value();
+                  reset( (*lhs)(i,j) );
+               (*lhs)(l->index(),j) *= l->value() * r->value();
                ++r;
                ++i;
             }
          }
 
-         for( ; i<(~lhs).rows(); ++i )
-            reset( (~lhs)(i,j) );
+         for( ; i<(*lhs).rows(); ++i )
+            reset( (*lhs)(i,j) );
       }
    }
    /*! \endcond */
@@ -786,10 +786,10 @@ class TSMatTSMatSchurExpr
 
       BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      schurAssign( ~lhs, trans( rhs.lhs_ ) % trans( rhs.rhs_ ) );
+      schurAssign( *lhs, trans( rhs.lhs_ ) % trans( rhs.rhs_ ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -849,11 +849,11 @@ class TSMatTSMatSchurExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      smpSchurAssign( ~lhs, rhs.lhs_ );
-      smpSchurAssign( ~lhs, rhs.rhs_ );
+      smpSchurAssign( *lhs, rhs.lhs_ );
+      smpSchurAssign( *lhs, rhs.rhs_ );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -919,10 +919,10 @@ inline const TSMatTSMatSchurExpr<MT1,MT2>
 {
    BLAZE_FUNCTION_TRACE;
 
-   BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( (*lhs).columns() == (*rhs).columns(), "Invalid number of columns" );
 
-   return TSMatTSMatSchurExpr<MT1,MT2>( ~lhs, ~rhs );
+   return TSMatTSMatSchurExpr<MT1,MT2>( *lhs, *rhs );
 }
 //*************************************************************************************************
 
@@ -951,15 +951,15 @@ inline decltype(auto)
 
    MAYBE_UNUSED( rhs );
 
-   BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( (*lhs).columns() == (*rhs).columns(), "Invalid number of columns" );
 
    using ReturnType = const SchurTrait_t< ResultType_t<MT1>, ResultType_t<MT2> >;
 
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( ReturnType );
    BLAZE_CONSTRAINT_MUST_BE_IDENTITY_MATRIX_TYPE( ReturnType );
 
-   return ReturnType( (~lhs).rows() );
+   return ReturnType( (*lhs).rows() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -992,15 +992,15 @@ inline decltype(auto)
 
    MAYBE_UNUSED( rhs );
 
-   BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( (*lhs).columns() == (*rhs).columns(), "Invalid number of columns" );
 
    using ReturnType = const SchurTrait_t< ResultType_t<MT1>, ResultType_t<MT2> >;
 
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( ReturnType );
    BLAZE_CONSTRAINT_MUST_BE_ZERO_TYPE( ReturnType );
 
-   return ReturnType( (~lhs).rows(), (~lhs).columns() );
+   return ReturnType( (*lhs).rows(), (*lhs).columns() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1039,11 +1039,11 @@ inline decltype(auto)
 {
    BLAZE_FUNCTION_TRACE;
 
-   if( (~lhs).rows() != (~rhs).rows() || (~lhs).columns() != (~rhs).columns() ) {
+   if( (*lhs).rows() != (*rhs).rows() || (*lhs).columns() != (*rhs).columns() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
-   return tsmattsmatschur( ~lhs, ~rhs );
+   return tsmattsmatschur( *lhs, *rhs );
 }
 //*************************************************************************************************
 

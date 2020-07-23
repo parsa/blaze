@@ -70,15 +70,15 @@ BLAZE_ALWAYS_INLINE const SIMDfloat log1p( const SIMDf32<T>& a ) noexcept
 #if BLAZE_SLEEF_MODE
 #  if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
 {
-   return Sleef_log1pf16_u10( (~a).eval().value );
+   return Sleef_log1pf16_u10( (*a).eval().value );
 }
 #  elif BLAZE_AVX_MODE
 {
-   return Sleef_log1pf8_u10( (~a).eval().value );
+   return Sleef_log1pf8_u10( (*a).eval().value );
 }
 #  elif BLAZE_SSE_MODE
 {
-   return Sleef_log1pf4_u10( (~a).eval().value );
+   return Sleef_log1pf4_u10( (*a).eval().value );
 }
 #  endif
 #else
@@ -109,15 +109,15 @@ BLAZE_ALWAYS_INLINE const SIMDdouble log1p( const SIMDf64<T>& a ) noexcept
 #if BLAZE_SLEEF_MODE
 #  if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
 {
-   return Sleef_log1pd8_u10( (~a).eval().value );
+   return Sleef_log1pd8_u10( (*a).eval().value );
 }
 #  elif BLAZE_AVX_MODE
 {
-   return Sleef_log1pd4_u10( (~a).eval().value );
+   return Sleef_log1pd4_u10( (*a).eval().value );
 }
 #  elif BLAZE_SSE_MODE
 {
-   return Sleef_log1pd2_u10( (~a).eval().value );
+   return Sleef_log1pd2_u10( (*a).eval().value );
 }
 #  endif
 #else

@@ -70,29 +70,29 @@ BLAZE_ALWAYS_INLINE const SIMDfloat atan( const SIMDf32<T>& a ) noexcept
 #if BLAZE_SVML_MODE
 #  if ( BLAZE_AVX512F_MODE  || BLAZE_MIC_MODE )
 {
-   return _mm512_atan_ps( (~a).eval().value );
+   return _mm512_atan_ps( (*a).eval().value );
 }
 #  elif BLAZE_AVX_MODE
 {
-   return _mm256_atan_ps( (~a).eval().value );
+   return _mm256_atan_ps( (*a).eval().value );
 }
 #  elif BLAZE_SSE_MODE
 {
-   return _mm_atan_ps( (~a).eval().value );
+   return _mm_atan_ps( (*a).eval().value );
 }
 #  endif
 #elif BLAZE_SLEEF_MODE
 #  if ( BLAZE_AVX512F_MODE  || BLAZE_MIC_MODE )
 {
-   return Sleef_atanf16_u10( (~a).eval().value );
+   return Sleef_atanf16_u10( (*a).eval().value );
 }
 #  elif BLAZE_AVX_MODE
 {
-   return Sleef_atanf8_u10( (~a).eval().value );
+   return Sleef_atanf8_u10( (*a).eval().value );
 }
 #  elif BLAZE_SSE_MODE
 {
-   return Sleef_atanf4_u10( (~a).eval().value );
+   return Sleef_atanf4_u10( (*a).eval().value );
 }
 #  endif
 #else
@@ -123,29 +123,29 @@ BLAZE_ALWAYS_INLINE const SIMDdouble atan( const SIMDf64<T>& a ) noexcept
 #if BLAZE_SVML_MODE
 #  if ( BLAZE_AVX512F_MODE  || BLAZE_MIC_MODE )
 {
-   return _mm512_atan_pd( (~a).eval().value );
+   return _mm512_atan_pd( (*a).eval().value );
 }
 #  elif BLAZE_AVX_MODE
 {
-   return _mm256_atan_pd( (~a).eval().value );
+   return _mm256_atan_pd( (*a).eval().value );
 }
 #  elif BLAZE_SSE_MODE
 {
-   return _mm_atan_pd( (~a).eval().value );
+   return _mm_atan_pd( (*a).eval().value );
 }
 #  endif
 #elif BLAZE_SLEEF_MODE
 #  if ( BLAZE_AVX512F_MODE  || BLAZE_MIC_MODE )
 {
-   return Sleef_atand8_u10( (~a).eval().value );
+   return Sleef_atand8_u10( (*a).eval().value );
 }
 #  elif BLAZE_AVX_MODE
 {
-   return Sleef_atand4_u10( (~a).eval().value );
+   return Sleef_atand4_u10( (*a).eval().value );
 }
 #  elif BLAZE_SSE_MODE
 {
-   return Sleef_atand2_u10( (~a).eval().value );
+   return Sleef_atand2_u10( (*a).eval().value );
 }
 #  endif
 #else

@@ -880,14 +880,14 @@ template< typename Type     // Data type of the vector
         , typename Tag >    // Type tag
 template< typename VT >  // Type of the foreign vector
 inline HybridVector<Type,N,TF,AF,PF,Tag>::HybridVector( const Vector<VT,TF>& v )
-   : size_( (~v).size() )  // The current size/dimension of the vector
+   : size_( (*v).size() )  // The current size/dimension of the vector
    // v_ is intentionally left uninitialized
 {
    using blaze::assign;
 
    BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<VT> );
 
-   if( (~v).size() > N ) {
+   if( (*v).size() > N ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid setup of hybrid vector" );
    }
 
@@ -896,7 +896,7 @@ inline HybridVector<Type,N,TF,AF,PF,Tag>::HybridVector( const Vector<VT,TF>& v )
       v_[i] = Type();
    }
 
-   assign( *this, ~v );
+   assign( *this, *v );
 
    BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
 }
@@ -1356,7 +1356,7 @@ constexpr HybridVector<Type,N,TF,AF,PF,Tag>&
    BLAZE_INTERNAL_ASSERT( size_ <= N, "Invalid size detected" );
 
    resize( rhs.size() );
-   assign( *this, ~rhs );
+   assign( *this, *rhs );
 
    BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
 
@@ -1389,19 +1389,19 @@ inline HybridVector<Type,N,TF,AF,PF,Tag>&
 
    BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<VT> );
 
-   if( (~rhs).size() > N ) {
+   if( (*rhs).size() > N ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to hybrid vector" );
    }
 
-   if( (~rhs).canAlias( this ) ) {
-      HybridVector tmp( ~rhs );
+   if( (*rhs).canAlias( this ) ) {
+      HybridVector tmp( *rhs );
       swap( tmp );
    }
    else {
-      resize( (~rhs).size(), false );
+      resize( (*rhs).size(), false );
       if( IsSparseVector_v<VT> )
          reset();
-      assign( *this, ~rhs );
+      assign( *this, *rhs );
    }
 
    BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
@@ -1435,16 +1435,16 @@ inline HybridVector<Type,N,TF,AF,PF,Tag>&
 
    BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<VT> );
 
-   if( (~rhs).size() != size_ ) {
+   if( (*rhs).size() != size_ ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   if( (~rhs).canAlias( this ) ) {
-      const ResultType_t<VT> tmp( ~rhs );
+   if( (*rhs).canAlias( this ) ) {
+      const ResultType_t<VT> tmp( *rhs );
       addAssign( *this, tmp );
    }
    else {
-      addAssign( *this, ~rhs );
+      addAssign( *this, *rhs );
    }
 
    BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
@@ -1478,16 +1478,16 @@ inline HybridVector<Type,N,TF,AF,PF,Tag>&
 
    BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<VT> );
 
-   if( (~rhs).size() != size_ ) {
+   if( (*rhs).size() != size_ ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   if( (~rhs).canAlias( this ) ) {
-      const ResultType_t<VT> tmp( ~rhs );
+   if( (*rhs).canAlias( this ) ) {
+      const ResultType_t<VT> tmp( *rhs );
       subAssign( *this, tmp );
    }
    else {
-      subAssign( *this, ~rhs );
+      subAssign( *this, *rhs );
    }
 
    BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
@@ -1523,16 +1523,16 @@ inline HybridVector<Type,N,TF,AF,PF,Tag>&
 
    BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<VT> );
 
-   if( (~rhs).size() != size_ ) {
+   if( (*rhs).size() != size_ ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   if( IsSparseVector_v<VT> || (~rhs).canAlias( this ) ) {
-      const HybridVector tmp( *this * (~rhs) );
+   if( IsSparseVector_v<VT> || (*rhs).canAlias( this ) ) {
+      const HybridVector tmp( *this * (*rhs) );
       assign( *this, tmp );
    }
    else {
-      multAssign( *this, ~rhs );
+      multAssign( *this, *rhs );
    }
 
    BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
@@ -1567,16 +1567,16 @@ inline HybridVector<Type,N,TF,AF,PF,Tag>&
 
    BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<VT> );
 
-   if( (~rhs).size() != size_ ) {
+   if( (*rhs).size() != size_ ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   if( (~rhs).canAlias( this ) ) {
-      const HybridVector tmp( *this / (~rhs) );
+   if( (*rhs).canAlias( this ) ) {
+      const HybridVector tmp( *this / (*rhs) );
       assign( *this, tmp );
    }
    else {
-      divAssign( *this, ~rhs );
+      divAssign( *this, *rhs );
    }
 
    BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
@@ -1620,11 +1620,11 @@ inline HybridVector<Type,N,TF,AF,PF,Tag>&
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( CrossType, TF );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( CrossType );
 
-   if( size_ != 3UL || (~rhs).size() != 3UL ) {
+   if( size_ != 3UL || (*rhs).size() != 3UL ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid vector size for cross product" );
    }
 
-   const CrossType tmp( *this % (~rhs) );
+   const CrossType tmp( *this % (*rhs) );
    assign( *this, tmp );
 
    BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
@@ -2481,10 +2481,10 @@ template< typename VT >     // Type of the right-hand side dense vector
 inline auto HybridVector<Type,N,TF,AF,PF,Tag>::assign( const DenseVector<VT,TF>& rhs )
    -> DisableIf_t< VectorizedAssign_v<VT> >
 {
-   BLAZE_INTERNAL_ASSERT( (~rhs).size() == size_, "Invalid vector sizes" );
+   BLAZE_INTERNAL_ASSERT( (*rhs).size() == size_, "Invalid vector sizes" );
 
    for( size_t i=0UL; i<size_; ++i )
-      v_[i] = (~rhs)[i];
+      v_[i] = (*rhs)[i];
 }
 //*************************************************************************************************
 
@@ -2512,7 +2512,7 @@ inline auto HybridVector<Type,N,TF,AF,PF,Tag>::assign( const DenseVector<VT,TF>&
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
-   BLAZE_INTERNAL_ASSERT( (~rhs).size() == size_, "Invalid vector sizes" );
+   BLAZE_INTERNAL_ASSERT( (*rhs).size() == size_, "Invalid vector sizes" );
 
    constexpr bool remainder( PF == unpadded || !IsPadded_v<VT> );
 
@@ -2522,10 +2522,10 @@ inline auto HybridVector<Type,N,TF,AF,PF,Tag>::assign( const DenseVector<VT,TF>&
    size_t i( 0UL );
 
    for( ; i<ipos; i+=SIMDSIZE ) {
-      store( i, (~rhs).load(i) );
+      store( i, (*rhs).load(i) );
    }
    for( ; remainder && i<size_; ++i ) {
-      v_[i] = (~rhs)[i];
+      v_[i] = (*rhs)[i];
    }
 }
 //*************************************************************************************************
@@ -2551,9 +2551,9 @@ template< typename Type     // Data type of the vector
 template< typename VT >     // Type of the right-hand side sparse vector
 inline void HybridVector<Type,N,TF,AF,PF,Tag>::assign( const SparseVector<VT,TF>& rhs )
 {
-   BLAZE_INTERNAL_ASSERT( (~rhs).size() == size_, "Invalid vector sizes" );
+   BLAZE_INTERNAL_ASSERT( (*rhs).size() == size_, "Invalid vector sizes" );
 
-   for( auto element=(~rhs).begin(); element!=(~rhs).end(); ++element )
+   for( auto element=(*rhs).begin(); element!=(*rhs).end(); ++element )
       v_[element->index()] = element->value();
 }
 //*************************************************************************************************
@@ -2580,10 +2580,10 @@ template< typename VT >     // Type of the right-hand side dense vector
 inline auto HybridVector<Type,N,TF,AF,PF,Tag>::addAssign( const DenseVector<VT,TF>& rhs )
    -> DisableIf_t< VectorizedAddAssign_v<VT> >
 {
-   BLAZE_INTERNAL_ASSERT( (~rhs).size() == size_, "Invalid vector sizes" );
+   BLAZE_INTERNAL_ASSERT( (*rhs).size() == size_, "Invalid vector sizes" );
 
    for( size_t i=0UL; i<size_; ++i )
-      v_[i] += (~rhs)[i];
+      v_[i] += (*rhs)[i];
 }
 //*************************************************************************************************
 
@@ -2611,7 +2611,7 @@ inline auto HybridVector<Type,N,TF,AF,PF,Tag>::addAssign( const DenseVector<VT,T
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
-   BLAZE_INTERNAL_ASSERT( (~rhs).size() == size_, "Invalid vector sizes" );
+   BLAZE_INTERNAL_ASSERT( (*rhs).size() == size_, "Invalid vector sizes" );
 
    constexpr bool remainder( PF == unpadded || !IsPadded_v<VT> );
 
@@ -2621,10 +2621,10 @@ inline auto HybridVector<Type,N,TF,AF,PF,Tag>::addAssign( const DenseVector<VT,T
    size_t i( 0UL );
 
    for( ; i<ipos; i+=SIMDSIZE ) {
-      store( i, load(i) + (~rhs).load(i) );
+      store( i, load(i) + (*rhs).load(i) );
    }
    for( ; remainder && i<size_; ++i ) {
-      v_[i] += (~rhs)[i];
+      v_[i] += (*rhs)[i];
    }
 }
 //*************************************************************************************************
@@ -2650,9 +2650,9 @@ template< typename Type     // Data type of the vector
 template< typename VT >     // Type of the right-hand side sparse vector
 inline void HybridVector<Type,N,TF,AF,PF,Tag>::addAssign( const SparseVector<VT,TF>& rhs )
 {
-   BLAZE_INTERNAL_ASSERT( (~rhs).size() == size_, "Invalid vector sizes" );
+   BLAZE_INTERNAL_ASSERT( (*rhs).size() == size_, "Invalid vector sizes" );
 
-   for( auto element=(~rhs).begin(); element!=(~rhs).end(); ++element )
+   for( auto element=(*rhs).begin(); element!=(*rhs).end(); ++element )
       v_[element->index()] += element->value();
 }
 //*************************************************************************************************
@@ -2679,10 +2679,10 @@ template< typename VT >     // Type of the right-hand side dense vector
 inline auto HybridVector<Type,N,TF,AF,PF,Tag>::subAssign( const DenseVector<VT,TF>& rhs )
    -> DisableIf_t< VectorizedSubAssign_v<VT> >
 {
-   BLAZE_INTERNAL_ASSERT( (~rhs).size() == size_, "Invalid vector sizes" );
+   BLAZE_INTERNAL_ASSERT( (*rhs).size() == size_, "Invalid vector sizes" );
 
    for( size_t i=0UL; i<size_; ++i )
-      v_[i] -= (~rhs)[i];
+      v_[i] -= (*rhs)[i];
 }
 //*************************************************************************************************
 
@@ -2710,7 +2710,7 @@ inline auto HybridVector<Type,N,TF,AF,PF,Tag>::subAssign( const DenseVector<VT,T
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
-   BLAZE_INTERNAL_ASSERT( (~rhs).size() == size_, "Invalid vector sizes" );
+   BLAZE_INTERNAL_ASSERT( (*rhs).size() == size_, "Invalid vector sizes" );
 
    constexpr bool remainder( PF == unpadded || !IsPadded_v<VT> );
 
@@ -2720,10 +2720,10 @@ inline auto HybridVector<Type,N,TF,AF,PF,Tag>::subAssign( const DenseVector<VT,T
    size_t i( 0UL );
 
    for( ; i<ipos; i+=SIMDSIZE ) {
-      store( i, load(i) - (~rhs).load(i) );
+      store( i, load(i) - (*rhs).load(i) );
    }
    for( ; remainder && i<size_; ++i ) {
-      v_[i] -= (~rhs)[i];
+      v_[i] -= (*rhs)[i];
    }
 }
 //*************************************************************************************************
@@ -2749,9 +2749,9 @@ template< typename Type     // Data type of the vector
 template< typename VT >     // Type of the right-hand side sparse vector
 inline void HybridVector<Type,N,TF,AF,PF,Tag>::subAssign( const SparseVector<VT,TF>& rhs )
 {
-   BLAZE_INTERNAL_ASSERT( (~rhs).size() == size_, "Invalid vector sizes" );
+   BLAZE_INTERNAL_ASSERT( (*rhs).size() == size_, "Invalid vector sizes" );
 
-   for( auto element=(~rhs).begin(); element!=(~rhs).end(); ++element )
+   for( auto element=(*rhs).begin(); element!=(*rhs).end(); ++element )
       v_[element->index()] -= element->value();
 }
 //*************************************************************************************************
@@ -2778,10 +2778,10 @@ template< typename VT >     // Type of the right-hand side dense vector
 inline auto HybridVector<Type,N,TF,AF,PF,Tag>::multAssign( const DenseVector<VT,TF>& rhs )
    -> DisableIf_t< VectorizedMultAssign_v<VT> >
 {
-   BLAZE_INTERNAL_ASSERT( (~rhs).size() == size_, "Invalid vector sizes" );
+   BLAZE_INTERNAL_ASSERT( (*rhs).size() == size_, "Invalid vector sizes" );
 
    for( size_t i=0UL; i<size_; ++i )
-      v_[i] *= (~rhs)[i];
+      v_[i] *= (*rhs)[i];
 }
 //*************************************************************************************************
 
@@ -2809,7 +2809,7 @@ inline auto HybridVector<Type,N,TF,AF,PF,Tag>::multAssign( const DenseVector<VT,
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
-   BLAZE_INTERNAL_ASSERT( (~rhs).size() == size_, "Invalid vector sizes" );
+   BLAZE_INTERNAL_ASSERT( (*rhs).size() == size_, "Invalid vector sizes" );
 
    constexpr bool remainder( PF == unpadded || !IsPadded_v<VT> );
 
@@ -2819,10 +2819,10 @@ inline auto HybridVector<Type,N,TF,AF,PF,Tag>::multAssign( const DenseVector<VT,
    size_t i( 0UL );
 
    for( ; i<ipos; i+=SIMDSIZE ) {
-      store( i, load(i) * (~rhs).load(i) );
+      store( i, load(i) * (*rhs).load(i) );
    }
    for( ; remainder && i<size_; ++i ) {
-      v_[i] *= (~rhs)[i];
+      v_[i] *= (*rhs)[i];
    }
 }
 //*************************************************************************************************
@@ -2848,13 +2848,13 @@ template< typename Type     // Data type of the vector
 template< typename VT >     // Type of the right-hand side sparse vector
 inline void HybridVector<Type,N,TF,AF,PF,Tag>::multAssign( const SparseVector<VT,TF>& rhs )
 {
-   BLAZE_INTERNAL_ASSERT( (~rhs).size() == size_, "Invalid vector sizes" );
+   BLAZE_INTERNAL_ASSERT( (*rhs).size() == size_, "Invalid vector sizes" );
 
    const HybridVector tmp( serial( *this ) );
 
    reset();
 
-   for( auto element=(~rhs).begin(); element!=(~rhs).end(); ++element )
+   for( auto element=(*rhs).begin(); element!=(*rhs).end(); ++element )
       v_[element->index()] = tmp[element->index()] * element->value();
 }
 //*************************************************************************************************
@@ -2881,10 +2881,10 @@ template< typename VT >     // Type of the right-hand side dense vector
 inline auto HybridVector<Type,N,TF,AF,PF,Tag>::divAssign( const DenseVector<VT,TF>& rhs )
    -> DisableIf_t< VectorizedDivAssign_v<VT> >
 {
-   BLAZE_INTERNAL_ASSERT( (~rhs).size() == size_, "Invalid vector sizes" );
+   BLAZE_INTERNAL_ASSERT( (*rhs).size() == size_, "Invalid vector sizes" );
 
    for( size_t i=0UL; i<size_; ++i )
-      v_[i] /= (~rhs)[i];
+      v_[i] /= (*rhs)[i];
 }
 //*************************************************************************************************
 
@@ -2912,7 +2912,7 @@ inline auto HybridVector<Type,N,TF,AF,PF,Tag>::divAssign( const DenseVector<VT,T
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
-   BLAZE_INTERNAL_ASSERT( (~rhs).size() == size_, "Invalid vector sizes" );
+   BLAZE_INTERNAL_ASSERT( (*rhs).size() == size_, "Invalid vector sizes" );
 
    const size_t ipos( prevMultiple( size_, SIMDSIZE ) );
    BLAZE_INTERNAL_ASSERT( ipos <= size_, "Invalid end calculation" );
@@ -2920,10 +2920,10 @@ inline auto HybridVector<Type,N,TF,AF,PF,Tag>::divAssign( const DenseVector<VT,T
    size_t i( 0UL );
 
    for( ; i<ipos; i+=SIMDSIZE ) {
-      store( i, load(i) / (~rhs).load(i) );
+      store( i, load(i) / (*rhs).load(i) );
    }
    for( ; i<size_; ++i ) {
-      v_[i] /= (~rhs)[i];
+      v_[i] /= (*rhs)[i];
    }
 }
 //*************************************************************************************************

@@ -145,7 +145,7 @@ inline decltype(auto) elements( Vector<VT,TF>& vector, REAs... args )
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = Elements_< VT, index_sequence<I,Is...> >;
-   return ReturnType( ~vector, args... );
+   return ReturnType( *vector, args... );
 }
 //*************************************************************************************************
 
@@ -195,7 +195,7 @@ inline decltype(auto) elements( const Vector<VT,TF>& vector, REAs... args )
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = const Elements_< const VT, index_sequence<I,Is...> >;
-   return ReturnType( ~vector, args... );
+   return ReturnType( *vector, args... );
 }
 //*************************************************************************************************
 
@@ -224,7 +224,7 @@ inline decltype(auto) elements( Vector<VT,TF>&& vector, REAs... args )
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = Elements_< VT, index_sequence<I,Is...> >;
-   return ReturnType( ~vector, args... );
+   return ReturnType( *vector, args... );
 }
 //*************************************************************************************************
 
@@ -277,7 +277,7 @@ inline decltype(auto) elements( Vector<VT,TF>& vector, T* indices, size_t n, REA
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = Elements_<VT>;
-   return ReturnType( ~vector, indices, n, args... );
+   return ReturnType( *vector, indices, n, args... );
 }
 //*************************************************************************************************
 
@@ -330,7 +330,7 @@ inline decltype(auto) elements( const Vector<VT,TF>& vector, T* indices, size_t 
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = const Elements_<const VT>;
-   return ReturnType( ~vector, indices, n, args... );
+   return ReturnType( *vector, indices, n, args... );
 }
 //*************************************************************************************************
 
@@ -360,7 +360,7 @@ inline decltype(auto) elements( Vector<VT,TF>&& vector, T* indices, size_t n, RE
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = Elements_<VT>;
-   return ReturnType( ~vector, indices, n, args... );
+   return ReturnType( *vector, indices, n, args... );
 }
 //*************************************************************************************************
 
@@ -411,7 +411,7 @@ inline decltype(auto) elements( Vector<VT,TF>& vector, P p, size_t n, REAs... ar
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = Elements_<VT,P>;
-   return ReturnType( ~vector, p, n, args... );
+   return ReturnType( *vector, p, n, args... );
 }
 //*************************************************************************************************
 
@@ -464,7 +464,7 @@ inline decltype(auto) elements( const Vector<VT,TF>& vector, P p, size_t n, REAs
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = const Elements_<const VT,P>;
-   return ReturnType( ~vector, p, n, args... );
+   return ReturnType( *vector, p, n, args... );
 }
 //*************************************************************************************************
 
@@ -494,7 +494,7 @@ inline decltype(auto) elements( Vector<VT,TF>&& vector, P p, size_t n, REAs... a
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = Elements_<VT,P>;
-   return ReturnType( ~vector, p, n, args... );
+   return ReturnType( *vector, p, n, args... );
 }
 //*************************************************************************************************
 
@@ -804,8 +804,8 @@ inline decltype(auto) elements( const VecVecAddExpr<VT>& vector, REAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return elements<CEAs...>( (~vector).leftOperand(), args... ) +
-          elements<CEAs...>( (~vector).rightOperand(), args... );
+   return elements<CEAs...>( (*vector).leftOperand(), args... ) +
+          elements<CEAs...>( (*vector).rightOperand(), args... );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -831,8 +831,8 @@ inline decltype(auto) elements( const VecVecSubExpr<VT>& vector, REAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return elements<CEAs...>( (~vector).leftOperand(), args... ) -
-          elements<CEAs...>( (~vector).rightOperand(), args... );
+   return elements<CEAs...>( (*vector).leftOperand(), args... ) -
+          elements<CEAs...>( (*vector).rightOperand(), args... );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -858,8 +858,8 @@ inline decltype(auto) elements( const VecVecMultExpr<VT>& vector, REAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return elements<CEAs...>( (~vector).leftOperand(), args... ) *
-          elements<CEAs...>( (~vector).rightOperand(), args... );
+   return elements<CEAs...>( (*vector).leftOperand(), args... ) *
+          elements<CEAs...>( (*vector).rightOperand(), args... );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -886,8 +886,8 @@ inline decltype(auto) elements( const VecVecKronExpr<VT>& vector, REAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   decltype(auto) lhs( (~vector).leftOperand()  );
-   decltype(auto) rhs( (~vector).rightOperand() );
+   decltype(auto) lhs( (*vector).leftOperand()  );
+   decltype(auto) rhs( (*vector).rightOperand() );
 
    const size_t N( rhs.size() );
 
@@ -930,8 +930,8 @@ inline decltype(auto) elements( const VecVecKronExpr<VT>& vector, T* indices, si
 {
    BLAZE_FUNCTION_TRACE;
 
-   decltype(auto) lhs( (~vector).leftOperand()  );
-   decltype(auto) rhs( (~vector).rightOperand() );
+   decltype(auto) lhs( (*vector).leftOperand()  );
+   decltype(auto) rhs( (*vector).rightOperand() );
 
    const size_t N( rhs.size() );
 
@@ -977,8 +977,8 @@ inline decltype(auto) elements( const VecVecKronExpr<VT>& vector, P p, size_t n,
 {
    BLAZE_FUNCTION_TRACE;
 
-   decltype(auto) lhs( (~vector).leftOperand()  );
-   decltype(auto) rhs( (~vector).rightOperand() );
+   decltype(auto) lhs( (*vector).leftOperand()  );
+   decltype(auto) rhs( (*vector).rightOperand() );
 
    const size_t N( rhs.size() );
 
@@ -1011,8 +1011,8 @@ inline decltype(auto) elements( const VecVecDivExpr<VT>& vector, REAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return elements<CEAs...>( (~vector).leftOperand(), args... ) /
-          elements<CEAs...>( (~vector).rightOperand(), args... );
+   return elements<CEAs...>( (*vector).leftOperand(), args... ) /
+          elements<CEAs...>( (*vector).rightOperand(), args... );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1038,7 +1038,7 @@ inline decltype(auto) elements( const VecScalarMultExpr<VT>& vector, REAs... arg
 {
    BLAZE_FUNCTION_TRACE;
 
-   return elements<CEAs...>( (~vector).leftOperand(), args... ) * (~vector).rightOperand();
+   return elements<CEAs...>( (*vector).leftOperand(), args... ) * (*vector).rightOperand();
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1064,7 +1064,7 @@ inline decltype(auto) elements( const VecScalarDivExpr<VT>& vector, REAs... args
 {
    BLAZE_FUNCTION_TRACE;
 
-   return elements<CEAs...>( (~vector).leftOperand(), args... ) / (~vector).rightOperand();
+   return elements<CEAs...>( (*vector).leftOperand(), args... ) / (*vector).rightOperand();
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1090,7 +1090,7 @@ inline decltype(auto) elements( const VecMapExpr<VT>& vector, REAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( elements<CEAs...>( (~vector).operand(), args... ), (~vector).operation() );
+   return map( elements<CEAs...>( (*vector).operand(), args... ), (*vector).operation() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1116,9 +1116,9 @@ inline decltype(auto) elements( const VecVecMapExpr<VT>& vector, REAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( elements<CEAs...>( (~vector).leftOperand(), args... ),
-               elements<CEAs...>( (~vector).rightOperand(), args... ),
-               (~vector).operation() );
+   return map( elements<CEAs...>( (*vector).leftOperand(), args... ),
+               elements<CEAs...>( (*vector).rightOperand(), args... ),
+               (*vector).operation() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1144,7 +1144,7 @@ inline decltype(auto) elements( const VecEvalExpr<VT>& vector, REAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return eval( elements<CEAs...>( (~vector).operand(), args... ) );
+   return eval( elements<CEAs...>( (*vector).operand(), args... ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1170,7 +1170,7 @@ inline decltype(auto) elements( const VecSerialExpr<VT>& vector, REAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return serial( elements<CEAs...>( (~vector).operand(), args... ) );
+   return serial( elements<CEAs...>( (*vector).operand(), args... ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1196,7 +1196,7 @@ inline decltype(auto) elements( const VecNoAliasExpr<VT>& vector, REAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return noalias( elements<CEAs...>( (~vector).operand(), args... ) );
+   return noalias( elements<CEAs...>( (*vector).operand(), args... ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1222,7 +1222,7 @@ inline decltype(auto) elements( const VecNoSIMDExpr<VT>& vector, REAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return nosimd( elements<CEAs...>( (~vector).operand(), args... ) );
+   return nosimd( elements<CEAs...>( (*vector).operand(), args... ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1248,7 +1248,7 @@ inline decltype(auto) elements( const VecTransExpr<VT>& vector, REAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return trans( elements<CEAs...>( (~vector).operand(), args... ) );
+   return trans( elements<CEAs...>( (*vector).operand(), args... ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1279,18 +1279,18 @@ inline decltype(auto) elements( const VecRepeatExpr<VT,CRAs...>& vector, REAs...
    if( isChecked( args... ) ) {
       static constexpr size_t indices[] = { I, Is... };
       for( size_t i=0UL; i<sizeof...(Is)+1UL; ++i ) {
-         if( (~vector).size() <= indices[i] ) {
+         if( (*vector).size() <= indices[i] ) {
             BLAZE_THROW_INVALID_ARGUMENT( "Invalid element access index" );
          }
       }
    }
 
-   auto lambda = [size=(~vector).operand().size()]( size_t i ) {
+   auto lambda = [size=(*vector).operand().size()]( size_t i ) {
       static constexpr size_t indices[] = { I, Is... };
       return indices[i] % size;
    };
 
-   return elements( (~vector).operand(), std::move(lambda), sizeof...(Is)+1UL, unchecked );
+   return elements( (*vector).operand(), std::move(lambda), sizeof...(Is)+1UL, unchecked );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1322,7 +1322,7 @@ inline decltype(auto)
 
    if( isChecked( args... ) ) {
       for( size_t i=0UL; i<n; ++i ) {
-         if( (~vector).size() <= size_t( indices[i] ) ) {
+         if( (*vector).size() <= size_t( indices[i] ) ) {
             BLAZE_THROW_INVALID_ARGUMENT( "Invalid element access index" );
          }
       }
@@ -1331,10 +1331,10 @@ inline decltype(auto)
    SmallArray<size_t,128UL> newIndices( indices, indices+n );
 
    for( size_t& index : newIndices ) {
-      index = index % (~vector).operand().size();
+      index = index % (*vector).operand().size();
    }
 
-   return elements( (~vector).operand(), newIndices, unchecked );
+   return elements( (*vector).operand(), newIndices, unchecked );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1366,17 +1366,17 @@ inline decltype(auto)
 
    if( isChecked( args... ) ) {
       for( size_t i=0UL; i<n; ++i ) {
-         if( (~vector).size() <= size_t( p(i) ) ) {
+         if( (*vector).size() <= size_t( p(i) ) ) {
             BLAZE_THROW_INVALID_ARGUMENT( "Invalid element access index" );
          }
       }
    }
 
-   auto lambda = [size=(~vector).operand().size(),p]( size_t i ) {
+   auto lambda = [size=(*vector).operand().size(),p]( size_t i ) {
       return p(i) % size;
    };
 
-   return elements( (~vector).operand(), std::move(lambda), n, unchecked );
+   return elements( (*vector).operand(), std::move(lambda), n, unchecked );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1787,7 +1787,7 @@ inline bool isDefault( const Elements<VT,TF,false,CEAs...>& e )
 {
    using blaze::isDefault;
 
-   for( const auto& element : ~e )
+   for( const auto& element : *e )
       if( !isDefault<RF>( element.value() ) ) return false;
    return true;
 }
@@ -1845,7 +1845,7 @@ template< typename VT         // Type of the vector
         , typename... CEAs >  // Compile time element arguments
 inline bool isSame( const Elements<VT,TF,DF,CEAs...>& a, const Vector<VT,TF>& b ) noexcept
 {
-   if( !isSame( a.operand(), ~b ) || ( a.size() != (~b).size() ) )
+   if( !isSame( a.operand(), *b ) || ( a.size() != (*b).size() ) )
       return false;
 
    for( size_t i=0UL; i<a.size(); ++i ) {
@@ -2043,8 +2043,8 @@ template< typename VT       // Type of the vector
 BLAZE_ALWAYS_INLINE bool
    trySet( const Elements<VT,TF,DF,CEAs...>& e, size_t index, size_t size, const ET& value )
 {
-   BLAZE_INTERNAL_ASSERT( index <= (~e).size(), "Invalid vector access index" );
-   BLAZE_INTERNAL_ASSERT( index + size <= (~e).size(), "Invalid range size" );
+   BLAZE_INTERNAL_ASSERT( index <= (*e).size(), "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( index + size <= (*e).size(), "Invalid range size" );
 
    const size_t iend( index + size );
 
@@ -2113,8 +2113,8 @@ template< typename VT       // Type of the vector
 BLAZE_ALWAYS_INLINE bool
    tryAdd( const Elements<VT,TF,DF,CEAs...>& e, size_t index, size_t size, const ET& value )
 {
-   BLAZE_INTERNAL_ASSERT( index <= (~e).size(), "Invalid vector access index" );
-   BLAZE_INTERNAL_ASSERT( index + size <= (~e).size(), "Invalid range size" );
+   BLAZE_INTERNAL_ASSERT( index <= (*e).size(), "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( index + size <= (*e).size(), "Invalid range size" );
 
    const size_t iend( index + size );
 
@@ -2184,8 +2184,8 @@ template< typename VT       // Type of the vector
 BLAZE_ALWAYS_INLINE bool
    trySub( const Elements<VT,TF,DF,CEAs...>& e, size_t index, size_t size, const ET& value )
 {
-   BLAZE_INTERNAL_ASSERT( index <= (~e).size(), "Invalid vector access index" );
-   BLAZE_INTERNAL_ASSERT( index + size <= (~e).size(), "Invalid range size" );
+   BLAZE_INTERNAL_ASSERT( index <= (*e).size(), "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( index + size <= (*e).size(), "Invalid range size" );
 
    const size_t iend( index + size );
 
@@ -2254,8 +2254,8 @@ template< typename VT       // Type of the vector
 BLAZE_ALWAYS_INLINE bool
    tryMult( const Elements<VT,TF,DF,CEAs...>& e, size_t index, size_t size, const ET& value )
 {
-   BLAZE_INTERNAL_ASSERT( index <= (~e).size(), "Invalid vector access index" );
-   BLAZE_INTERNAL_ASSERT( index + size <= (~e).size(), "Invalid range size" );
+   BLAZE_INTERNAL_ASSERT( index <= (*e).size(), "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( index + size <= (*e).size(), "Invalid range size" );
 
    const size_t iend( index + size );
 
@@ -2324,8 +2324,8 @@ template< typename VT       // Type of the vector
 BLAZE_ALWAYS_INLINE bool
    tryDiv( const Elements<VT,TF,DF,CEAs...>& e, size_t index, size_t size, const ET& value )
 {
-   BLAZE_INTERNAL_ASSERT( index <= (~e).size(), "Invalid vector access index" );
-   BLAZE_INTERNAL_ASSERT( index + size <= (~e).size(), "Invalid range size" );
+   BLAZE_INTERNAL_ASSERT( index <= (*e).size(), "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( index + size <= (*e).size(), "Invalid range size" );
 
    const size_t iend( index + size );
 
@@ -2392,8 +2392,8 @@ template< typename VT         // Type of the vector
 BLAZE_ALWAYS_INLINE bool
    tryShift( const Elements<VT,TF,DF,CEAs...>& e, size_t index, size_t size, int count )
 {
-   BLAZE_INTERNAL_ASSERT( index <= (~e).size(), "Invalid vector access index" );
-   BLAZE_INTERNAL_ASSERT( index + size <= (~e).size(), "Invalid range size" );
+   BLAZE_INTERNAL_ASSERT( index <= (*e).size(), "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( index + size <= (*e).size(), "Invalid range size" );
 
    const size_t iend( index + size );
 
@@ -2464,8 +2464,8 @@ template< typename VT       // Type of the vector
 BLAZE_ALWAYS_INLINE bool
    tryBitand( const Elements<VT,TF,DF,CEAs...>& e, size_t index, size_t size, const ET& value )
 {
-   BLAZE_INTERNAL_ASSERT( index <= (~e).size(), "Invalid vector access index" );
-   BLAZE_INTERNAL_ASSERT( index + size <= (~e).size(), "Invalid range size" );
+   BLAZE_INTERNAL_ASSERT( index <= (*e).size(), "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( index + size <= (*e).size(), "Invalid range size" );
 
    const size_t iend( index + size );
 
@@ -2536,8 +2536,8 @@ template< typename VT       // Type of the vector
 BLAZE_ALWAYS_INLINE bool
    tryBitor( const Elements<VT,TF,DF,CEAs...>& e, size_t index, size_t size, const ET& value )
 {
-   BLAZE_INTERNAL_ASSERT( index <= (~e).size(), "Invalid vector access index" );
-   BLAZE_INTERNAL_ASSERT( index + size <= (~e).size(), "Invalid range size" );
+   BLAZE_INTERNAL_ASSERT( index <= (*e).size(), "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( index + size <= (*e).size(), "Invalid range size" );
 
    const size_t iend( index + size );
 
@@ -2608,8 +2608,8 @@ template< typename VT       // Type of the vector
 BLAZE_ALWAYS_INLINE bool
    tryBitxor( const Elements<VT,TF,DF,CEAs...>& e, size_t index, size_t size, const ET& value )
 {
-   BLAZE_INTERNAL_ASSERT( index <= (~e).size(), "Invalid vector access index" );
-   BLAZE_INTERNAL_ASSERT( index + size <= (~e).size(), "Invalid range size" );
+   BLAZE_INTERNAL_ASSERT( index <= (*e).size(), "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( index + size <= (*e).size(), "Invalid range size" );
 
    const size_t iend( index + size );
 
@@ -2648,10 +2648,10 @@ inline bool tryAssign( const Elements<VT1,TF,DF,CEAs...>& lhs,
                        const Vector<VT2,TF>& rhs, size_t index )
 {
    BLAZE_INTERNAL_ASSERT( index <= lhs.size(), "Invalid vector access index" );
-   BLAZE_INTERNAL_ASSERT( index + (~rhs).size() <= lhs.size(), "Invalid vector size" );
+   BLAZE_INTERNAL_ASSERT( index + (*rhs).size() <= lhs.size(), "Invalid vector size" );
 
-   for( size_t i=0UL; i<(~rhs).size(); ++i ) {
-      if( !trySet( lhs.operand(), lhs.idx(i+index), (~rhs)[i] ) )
+   for( size_t i=0UL; i<(*rhs).size(); ++i ) {
+      if( !trySet( lhs.operand(), lhs.idx(i+index), (*rhs)[i] ) )
          return false;
    }
 
@@ -2686,10 +2686,10 @@ inline bool tryAddAssign( const Elements<VT1,TF,DF,CEAs...>& lhs,
                           const Vector<VT2,TF>& rhs, size_t index )
 {
    BLAZE_INTERNAL_ASSERT( index <= lhs.size(), "Invalid vector access index" );
-   BLAZE_INTERNAL_ASSERT( index + (~rhs).size() <= lhs.size(), "Invalid vector size" );
+   BLAZE_INTERNAL_ASSERT( index + (*rhs).size() <= lhs.size(), "Invalid vector size" );
 
-   for( size_t i=0UL; i<(~rhs).size(); ++i ) {
-      if( !tryAdd( lhs.operand(), lhs.idx(i+index), (~rhs)[i] ) )
+   for( size_t i=0UL; i<(*rhs).size(); ++i ) {
+      if( !tryAdd( lhs.operand(), lhs.idx(i+index), (*rhs)[i] ) )
          return false;
    }
 
@@ -2724,10 +2724,10 @@ inline bool trySubAssign( const Elements<VT1,TF,DF,CEAs...>& lhs,
                           const Vector<VT2,TF>& rhs, size_t index )
 {
    BLAZE_INTERNAL_ASSERT( index <= lhs.size(), "Invalid vector access index" );
-   BLAZE_INTERNAL_ASSERT( index + (~rhs).size() <= lhs.size(), "Invalid vector size" );
+   BLAZE_INTERNAL_ASSERT( index + (*rhs).size() <= lhs.size(), "Invalid vector size" );
 
-   for( size_t i=0UL; i<(~rhs).size(); ++i ) {
-      if( !trySub( lhs.operand(), lhs.idx(i+index), (~rhs)[i] ) )
+   for( size_t i=0UL; i<(*rhs).size(); ++i ) {
+      if( !trySub( lhs.operand(), lhs.idx(i+index), (*rhs)[i] ) )
          return false;
    }
 
@@ -2762,10 +2762,10 @@ inline bool tryMultAssign( const Elements<VT1,TF,DF,CEAs...>& lhs,
                            const Vector<VT2,TF>& rhs, size_t index )
 {
    BLAZE_INTERNAL_ASSERT( index <= lhs.size(), "Invalid vector access index" );
-   BLAZE_INTERNAL_ASSERT( index + (~rhs).size() <= lhs.size(), "Invalid vector size" );
+   BLAZE_INTERNAL_ASSERT( index + (*rhs).size() <= lhs.size(), "Invalid vector size" );
 
-   for( size_t i=0UL; i<(~rhs).size(); ++i ) {
-      if( !tryMult( lhs.operand(), lhs.idx(i+index), (~rhs)[i] ) )
+   for( size_t i=0UL; i<(*rhs).size(); ++i ) {
+      if( !tryMult( lhs.operand(), lhs.idx(i+index), (*rhs)[i] ) )
          return false;
    }
 
@@ -2800,10 +2800,10 @@ inline bool tryDivAssign( const Elements<VT1,TF,DF,CEAs...>& lhs,
                           const Vector<VT2,TF>& rhs, size_t index )
 {
    BLAZE_INTERNAL_ASSERT( index <= lhs.size(), "Invalid vector access index" );
-   BLAZE_INTERNAL_ASSERT( index + (~rhs).size() <= lhs.size(), "Invalid vector size" );
+   BLAZE_INTERNAL_ASSERT( index + (*rhs).size() <= lhs.size(), "Invalid vector size" );
 
-   for( size_t i=0UL; i<(~rhs).size(); ++i ) {
-      if( !tryDiv( lhs.operand(), lhs.idx(i+index), (~rhs)[i] ) )
+   for( size_t i=0UL; i<(*rhs).size(); ++i ) {
+      if( !tryDiv( lhs.operand(), lhs.idx(i+index), (*rhs)[i] ) )
          return false;
    }
 
@@ -2838,10 +2838,10 @@ inline bool tryShiftAssign( const Elements<VT1,TF,DF,CEAs...>& lhs,
                             const Vector<VT2,TF>& rhs, size_t index )
 {
    BLAZE_INTERNAL_ASSERT( index <= lhs.size(), "Invalid vector access index" );
-   BLAZE_INTERNAL_ASSERT( index + (~rhs).size() <= lhs.size(), "Invalid vector size" );
+   BLAZE_INTERNAL_ASSERT( index + (*rhs).size() <= lhs.size(), "Invalid vector size" );
 
-   for( size_t i=0UL; i<(~rhs).size(); ++i ) {
-      if( !tryShift( lhs.operand(), lhs.idx(i+index), (~rhs)[i] ) )
+   for( size_t i=0UL; i<(*rhs).size(); ++i ) {
+      if( !tryShift( lhs.operand(), lhs.idx(i+index), (*rhs)[i] ) )
          return false;
    }
 
@@ -2876,10 +2876,10 @@ inline bool tryBitandAssign( const Elements<VT1,TF,DF,CEAs...>& lhs,
                              const Vector<VT2,TF>& rhs, size_t index )
 {
    BLAZE_INTERNAL_ASSERT( index <= lhs.size(), "Invalid vector access index" );
-   BLAZE_INTERNAL_ASSERT( index + (~rhs).size() <= lhs.size(), "Invalid vector size" );
+   BLAZE_INTERNAL_ASSERT( index + (*rhs).size() <= lhs.size(), "Invalid vector size" );
 
-   for( size_t i=0UL; i<(~rhs).size(); ++i ) {
-      if( !tryBitand( lhs.operand(), lhs.idx(i+index), (~rhs)[i] ) )
+   for( size_t i=0UL; i<(*rhs).size(); ++i ) {
+      if( !tryBitand( lhs.operand(), lhs.idx(i+index), (*rhs)[i] ) )
          return false;
    }
 
@@ -2914,10 +2914,10 @@ inline bool tryBitorAssign( const Elements<VT1,TF,DF,CEAs...>& lhs,
                             const Vector<VT2,TF>& rhs, size_t index )
 {
    BLAZE_INTERNAL_ASSERT( index <= lhs.size(), "Invalid vector access index" );
-   BLAZE_INTERNAL_ASSERT( index + (~rhs).size() <= lhs.size(), "Invalid vector size" );
+   BLAZE_INTERNAL_ASSERT( index + (*rhs).size() <= lhs.size(), "Invalid vector size" );
 
-   for( size_t i=0UL; i<(~rhs).size(); ++i ) {
-      if( !tryBitor( lhs.operand(), lhs.idx(i+index), (~rhs)[i] ) )
+   for( size_t i=0UL; i<(*rhs).size(); ++i ) {
+      if( !tryBitor( lhs.operand(), lhs.idx(i+index), (*rhs)[i] ) )
          return false;
    }
 
@@ -2952,10 +2952,10 @@ inline bool tryBitxorAssign( const Elements<VT1,TF,DF,CEAs...>& lhs,
                              const Vector<VT2,TF>& rhs, size_t index )
 {
    BLAZE_INTERNAL_ASSERT( index <= lhs.size(), "Invalid vector access index" );
-   BLAZE_INTERNAL_ASSERT( index + (~rhs).size() <= lhs.size(), "Invalid vector size" );
+   BLAZE_INTERNAL_ASSERT( index + (*rhs).size() <= lhs.size(), "Invalid vector size" );
 
-   for( size_t i=0UL; i<(~rhs).size(); ++i ) {
-      if( !tryBitxor( lhs.operand(), lhs.idx(i+index), (~rhs)[i] ) )
+   for( size_t i=0UL; i<(*rhs).size(); ++i ) {
+      if( !tryBitxor( lhs.operand(), lhs.idx(i+index), (*rhs)[i] ) )
          return false;
    }
 

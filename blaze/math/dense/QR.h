@@ -192,12 +192,12 @@ void qr( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& Q, DenseMatrix<MT3
 
    using ET1 = ElementType_t<MT1>;
 
-   const size_t m( (~A).rows() );
-   const size_t n( (~A).columns() );
+   const size_t m( (*A).rows() );
+   const size_t n( (*A).columns() );
    const size_t mindim( min( m, n ) );
 
-   if( ( !IsResizable_v<MT2> && ( (~Q).rows() != m || (~Q).columns() != mindim ) ) ||
-       ( !IsResizable_v<MT3> && ( (~R).rows() != mindim || (~R).columns() != n ) ) ) {
+   if( ( !IsResizable_v<MT2> && ( (*Q).rows() != m || (*Q).columns() != mindim ) ) ||
+       ( !IsResizable_v<MT3> && ( (*R).rows() != mindim || (*R).columns() != n ) ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Dimensions of fixed size matrix do not match" );
    }
 
@@ -206,14 +206,14 @@ void qr( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& Q, DenseMatrix<MT3
    }
 
    const std::unique_ptr<ET1[]> tau( new ET1[mindim] );
-   decltype(auto) r( derestrict( ~R ) );
+   decltype(auto) r( derestrict( *R ) );
 
    if( m < n )
    {
       r = A;
       geqrf( r, tau.get() );
-      (~Q) = submatrix( r, 0UL, 0UL, m, m );
-      qr_backend( ~Q, tau.get() );
+      (*Q) = submatrix( r, 0UL, 0UL, m, m );
+      qr_backend( *Q, tau.get() );
 
       for( size_t i=1UL; i<m; ++i ) {
          for( size_t j=0UL; j<i; ++j ) {
@@ -223,19 +223,19 @@ void qr( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& Q, DenseMatrix<MT3
    }
    else
    {
-      (~Q) = A;
-      geqrf( ~Q, tau.get() );
+      (*Q) = A;
+      geqrf( *Q, tau.get() );
 
-      resize( ~R, n, n, false );
+      resize( *R, n, n, false );
       reset( r );
 
       for( size_t i=0UL; i<n; ++i ) {
          for( size_t j=i; j<n; ++j ) {
-            r(i,j) = (~Q)(i,j);
+            r(i,j) = (*Q)(i,j);
          }
       }
 
-      qr_backend( ~Q, tau.get() );
+      qr_backend( *Q, tau.get() );
    }
 }
 //*************************************************************************************************

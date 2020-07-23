@@ -159,9 +159,9 @@ inline decltype(auto) norm_backend( const DenseVector<VT,TF>& dv, Abs abs, Power
    using PT = RemoveCVRef_t< decltype( power( abs( std::declval<ET>() ) ) ) >;
    using RT = RemoveCVRef_t< decltype( evaluate( root( std::declval<PT>() ) ) ) >;
 
-   if( (~dv).size() == 0UL ) return RT{};
+   if( (*dv).size() == 0UL ) return RT{};
 
-   CT tmp( ~dv );
+   CT tmp( *dv );
 
    const size_t N( tmp.size() );
 
@@ -213,9 +213,9 @@ inline decltype(auto) norm_backend( const DenseVector<VT,TF>& dv, Abs abs, Power
 
    static constexpr size_t SIMDSIZE = SIMDTrait<ET>::size;
 
-   if( (~dv).size() == 0UL ) return RT{};
+   if( (*dv).size() == 0UL ) return RT{};
 
-   CT tmp( ~dv );
+   CT tmp( *dv );
 
    const size_t N( tmp.size() );
 
@@ -310,7 +310,7 @@ template< typename VT      // Type of the dense vector
         , typename Root >  // Type of the root operation
 inline decltype(auto) norm_backend( const DenseVector<VT,TF>& dv, Abs abs, Power power, Root root )
 {
-   return norm_backend( ~dv, abs, power, root, Bool_t< DVecNormHelper<VT,Abs,Power>::value >() );
+   return norm_backend( *dv, abs, power, root, Bool_t< DVecNormHelper<VT,Abs,Power>::value >() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -337,7 +337,7 @@ inline decltype(auto) norm( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return norm_backend( ~dv, SqrAbs(), Noop(), Sqrt() );
+   return norm_backend( *dv, SqrAbs(), Noop(), Sqrt() );
 }
 //*************************************************************************************************
 
@@ -363,7 +363,7 @@ inline decltype(auto) sqrNorm( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return norm_backend( ~dv, SqrAbs(), Noop(), Noop() );
+   return norm_backend( *dv, SqrAbs(), Noop(), Noop() );
 }
 //*************************************************************************************************
 
@@ -389,7 +389,7 @@ inline decltype(auto) l1Norm( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return norm_backend( ~dv, Abs(), Noop(), Noop() );
+   return norm_backend( *dv, Abs(), Noop(), Noop() );
 }
 //*************************************************************************************************
 
@@ -415,7 +415,7 @@ inline decltype(auto) l2Norm( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return norm_backend( ~dv, SqrAbs(), Noop(), Sqrt() );
+   return norm_backend( *dv, SqrAbs(), Noop(), Sqrt() );
 }
 //*************************************************************************************************
 
@@ -441,7 +441,7 @@ inline decltype(auto) l3Norm( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return norm_backend( ~dv, Abs(), Pow3(), Cbrt() );
+   return norm_backend( *dv, Abs(), Pow3(), Cbrt() );
 }
 //*************************************************************************************************
 
@@ -467,7 +467,7 @@ inline decltype(auto) l4Norm( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return norm_backend( ~dv, SqrAbs(), Pow2(), Qdrt() );
+   return norm_backend( *dv, SqrAbs(), Pow2(), Qdrt() );
 }
 //*************************************************************************************************
 
@@ -503,7 +503,7 @@ inline decltype(auto) lpNorm( const DenseVector<VT,TF>& dv, ST p )
 
    using ScalarType = MultTrait_t< UnderlyingBuiltin_t<VT>, decltype( inv( p ) ) >;
    using UnaryPow = Bind2nd<Pow,ScalarType>;
-   return norm_backend( ~dv, Abs(), UnaryPow( Pow(), p ), UnaryPow( Pow(), inv( p ) ) );
+   return norm_backend( *dv, Abs(), UnaryPow( Pow(), p ), UnaryPow( Pow(), inv( p ) ) );
 }
 //*************************************************************************************************
 
@@ -537,7 +537,7 @@ inline decltype(auto) lpNorm( const DenseVector<VT,TF>& dv )
    using Norms = TypeList< L1Norm, L2Norm, L3Norm, L4Norm, LpNorm<P> >;
    using Norm  = typename TypeAt< Norms, min( P-1UL, 4UL ) >::Type;
 
-   return Norm()( ~dv );
+   return Norm()( *dv );
 }
 //*************************************************************************************************
 
@@ -563,7 +563,7 @@ inline decltype(auto) linfNorm( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return max( abs( ~dv ) );
+   return max( abs( *dv ) );
 }
 //*************************************************************************************************
 
@@ -589,7 +589,7 @@ inline decltype(auto) maxNorm( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return linfNorm( ~dv );
+   return linfNorm( *dv );
 }
 //*************************************************************************************************
 
@@ -608,7 +608,7 @@ template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
 inline decltype(auto) sqrLength( const DenseVector<VT,TF>& dv )
 {
-   return sqrNorm( ~dv );
+   return sqrNorm( *dv );
 }
 //*************************************************************************************************
 
@@ -627,7 +627,7 @@ template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
 inline decltype(auto) length( const DenseVector<VT,TF>& dv )
 {
-   return norm( ~dv );
+   return norm( *dv );
 }
 //*************************************************************************************************
 

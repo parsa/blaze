@@ -133,7 +133,7 @@ class DMatExpExpr
    explicit inline DMatExpExpr( const MT& dm ) noexcept
       : dm_( dm )  // Dense matrix of the exponential expression
    {
-      BLAZE_INTERNAL_ASSERT( isSquare( ~dm ), "Non-square matrix detected" );
+      BLAZE_INTERNAL_ASSERT( isSquare( *dm ), "Non-square matrix detected" );
    }
    //**********************************************************************************************
 
@@ -214,16 +214,16 @@ class DMatExpExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
       const size_t N( rhs.rows() );
 
       if( IsDiagonal_v<MT> || N < 2UL )
       {
-         assign( ~lhs, rhs.dm_ );
+         assign( *lhs, rhs.dm_ );
          for( size_t i=0UL; i<N; ++i ) {
-            (~lhs)(i,i) = exp( (~lhs)(i,i) );
+            (*lhs)(i,i) = exp( (*lhs)(i,i) );
          }
       }
       else
@@ -256,7 +256,7 @@ class DMatExpExpr
             B *= B;
          }
 
-         assign( ~lhs, B );
+         assign( *lhs, B );
       }
    }
    /*! \endcond */
@@ -284,11 +284,11 @@ class DMatExpExpr
       BLAZE_CONSTRAINT_MUST_BE_MATRIX_WITH_STORAGE_ORDER( ResultType, SO );
       BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
       const ResultType tmp( serial( rhs ) );
-      assign( ~lhs, tmp );
+      assign( *lhs, tmp );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -311,8 +311,8 @@ class DMatExpExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
       const size_t N( rhs.rows() );
 
@@ -320,7 +320,7 @@ class DMatExpExpr
       {
          CompositeType_t<MT> tmp( rhs.dm_ );
          for( size_t i=0UL; i<N; ++i ) {
-            (~lhs)(i,i) += exp( tmp(i,i) );
+            (*lhs)(i,i) += exp( tmp(i,i) );
          }
       }
       else
@@ -353,7 +353,7 @@ class DMatExpExpr
             B *= B;
          }
 
-         addAssign( ~lhs, B );
+         addAssign( *lhs, B );
       }
    }
    /*! \endcond */
@@ -381,8 +381,8 @@ class DMatExpExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
       const size_t N( rhs.rows() );
 
@@ -390,7 +390,7 @@ class DMatExpExpr
       {
          CompositeType_t<MT> tmp( rhs.dm_ );
          for( size_t i=0UL; i<N; ++i ) {
-            (~lhs)(i,i) -= exp( tmp(i,i) );
+            (*lhs)(i,i) -= exp( tmp(i,i) );
          }
       }
       else
@@ -423,7 +423,7 @@ class DMatExpExpr
             B *= B;
          }
 
-         subAssign( ~lhs, B );
+         subAssign( *lhs, B );
       }
    }
    /*! \endcond */
@@ -451,8 +451,8 @@ class DMatExpExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
       const size_t N( rhs.rows() );
 
@@ -460,7 +460,7 @@ class DMatExpExpr
       {
          CompositeType_t<MT> tmp( rhs.dm_ );
          for( size_t i=0UL; i<N; ++i ) {
-            (~lhs)(i,i) *= exp( tmp(i,i) );
+            (*lhs)(i,i) *= exp( tmp(i,i) );
          }
       }
       else
@@ -493,7 +493,7 @@ class DMatExpExpr
             B *= B;
          }
 
-         schurAssign( ~lhs, B );
+         schurAssign( *lhs, B );
       }
    }
    /*! \endcond */
@@ -571,12 +571,12 @@ inline decltype(auto) matexp( const DenseMatrix<MT,SO>& dm )
 
    BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<MT> );
 
-   if( !isSquare( ~dm ) ) {
+   if( !isSquare( *dm ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid non-square matrix provided" );
    }
 
    using ReturnType = const DMatExpExpr<MT,SO>;
-   return ReturnType( ~dm );
+   return ReturnType( *dm );
 }
 //*************************************************************************************************
 
@@ -612,7 +612,7 @@ inline decltype(auto) det( const DMatExpExpr<MT,SO>& dm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return det( evaluate( ~dm ) );
+   return det( evaluate( *dm ) );
 }
 /*! \endcond */
 //*************************************************************************************************

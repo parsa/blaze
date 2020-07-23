@@ -70,15 +70,15 @@ BLAZE_ALWAYS_INLINE const SIMDfloat lgamma( const SIMDf32<T>& a ) noexcept
 #if BLAZE_SLEEF_MODE
 #  if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
 {
-   return Sleef_lgammaf16_u10( (~a).eval().value );
+   return Sleef_lgammaf16_u10( (*a).eval().value );
 }
 #  elif BLAZE_AVX_MODE
 {
-   return Sleef_lgammaf8_u10( (~a).eval().value );
+   return Sleef_lgammaf8_u10( (*a).eval().value );
 }
 #  elif BLAZE_SSE_MODE
 {
-   return Sleef_lgammaf4_u10( (~a).eval().value );
+   return Sleef_lgammaf4_u10( (*a).eval().value );
 }
 #  endif
 #else
@@ -109,15 +109,15 @@ BLAZE_ALWAYS_INLINE const SIMDdouble lgamma( const SIMDf64<T>& a ) noexcept
 #if BLAZE_SLEEF_MODE
 #  if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
 {
-   return Sleef_lgammad8_u10( (~a).eval().value );
+   return Sleef_lgammad8_u10( (*a).eval().value );
 }
 #  elif BLAZE_AVX_MODE
 {
-   return Sleef_lgammad4_u10( (~a).eval().value );
+   return Sleef_lgammad4_u10( (*a).eval().value );
 }
 #  elif BLAZE_SSE_MODE
 {
-   return Sleef_lgammad2_u10( (~a).eval().value );
+   return Sleef_lgammad2_u10( (*a).eval().value );
 }
 #  endif
 #else

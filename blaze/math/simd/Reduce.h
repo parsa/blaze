@@ -70,7 +70,7 @@ inline decltype(auto) reduce( const SIMDPack<T>& a, OP op )
    using ValueType = typename T::ValueType;
 
    alignas( AlignmentOf_v<ValueType> ) ValueType array[T::size];
-   storea( array, ~a );
+   storea( array, *a );
 
    ValueType redux( array[0UL] );
    for( size_t k=1UL; k<T::size; ++k ) {
@@ -93,7 +93,7 @@ inline decltype(auto) reduce( const SIMDPack<T>& a, OP op )
 template< typename T >
 inline decltype(auto) reduce( const SIMDPack<T>& a, const Add& /*op*/ )
 {
-   return sum( ~a );
+   return sum( *a );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -110,7 +110,7 @@ inline decltype(auto) reduce( const SIMDPack<T>& a, const Add& /*op*/ )
 template< typename T >
 inline decltype(auto) reduce( const SIMDPack<T>& a, const Mult& /*op*/ )
 {
-   return prod( ~a );
+   return prod( *a );
 }
 /*! \endcond */
 //*************************************************************************************************

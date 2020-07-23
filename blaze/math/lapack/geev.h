@@ -113,8 +113,8 @@ template< typename MT  // Type of the matrix A
 inline auto geev_backend( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& w )
    -> DisableIf_t< IsComplex_v< ElementType_t<MT> > >
 {
-   BLAZE_INTERNAL_ASSERT( isSquare( ~A ), "Invalid non-square matrix detected" );
-   BLAZE_INTERNAL_ASSERT( (~w).size() == (~A).rows(), "Invalid vector dimension detected" );
+   BLAZE_INTERNAL_ASSERT( isSquare( *A ), "Invalid non-square matrix detected" );
+   BLAZE_INTERNAL_ASSERT( (*w).size() == (*A).rows(), "Invalid vector dimension detected" );
 
    using CT = ElementType_t<VT>;
    using BT = ElementType_t<MT>;
@@ -122,8 +122,8 @@ inline auto geev_backend( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& w )
    BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( CT );
    BLAZE_CONSTRAINT_MUST_BE_BUILTIN_TYPE( BT );
 
-   blas_int_t n   ( numeric_cast<blas_int_t>( (~A).rows() ) );
-   blas_int_t lda ( numeric_cast<blas_int_t>( (~A).spacing() ) );
+   blas_int_t n   ( numeric_cast<blas_int_t>( (*A).rows() ) );
+   blas_int_t lda ( numeric_cast<blas_int_t>( (*A).spacing() ) );
    blas_int_t info( 0 );
 
    blas_int_t lwork( 3*n + 2 );
@@ -131,7 +131,7 @@ inline auto geev_backend( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& w )
    const std::unique_ptr<BT[]> wi  ( new BT[n] );
    const std::unique_ptr<BT[]> work( new BT[lwork] );
 
-   geev( 'N', 'N', n, (~A).data(), lda, wr.get(), wi.get(),
+   geev( 'N', 'N', n, (*A).data(), lda, wr.get(), wi.get(),
          nullptr, 1, nullptr, 1, work.get(), lwork, &info );
 
    BLAZE_INTERNAL_ASSERT( info >= 0, "Invalid argument for eigenvalue computation" );
@@ -140,8 +140,8 @@ inline auto geev_backend( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& w )
       BLAZE_THROW_LAPACK_ERROR( "Eigenvalue computation failed" );
    }
 
-   for( size_t i=0UL; i<(~A).rows(); ++i ) {
-      (~w)[i] = CT( wr[i], wi[i] );
+   for( size_t i=0UL; i<(*A).rows(); ++i ) {
+      (*w)[i] = CT( wr[i], wi[i] );
    }
 }
 /*! \endcond */
@@ -172,8 +172,8 @@ template< typename MT  // Type of the matrix A
 inline auto geev_backend( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& w )
    -> EnableIf_t< IsComplex_v< ElementType_t<MT> > >
 {
-   BLAZE_INTERNAL_ASSERT( isSquare( ~A ), "Invalid non-square matrix detected" );
-   BLAZE_INTERNAL_ASSERT( (~w).size() == (~A).rows(), "Invalid vector dimension detected" );
+   BLAZE_INTERNAL_ASSERT( isSquare( *A ), "Invalid non-square matrix detected" );
+   BLAZE_INTERNAL_ASSERT( (*w).size() == (*A).rows(), "Invalid vector dimension detected" );
 
    using CT = ElementType_t<MT>;
    using BT = UnderlyingElement_t<CT>;
@@ -181,15 +181,15 @@ inline auto geev_backend( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& w )
    BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( CT );
    BLAZE_CONSTRAINT_MUST_BE_BUILTIN_TYPE( BT );
 
-   blas_int_t n   ( numeric_cast<blas_int_t>( (~A).rows() ) );
-   blas_int_t lda ( numeric_cast<blas_int_t>( (~A).spacing() ) );
+   blas_int_t n   ( numeric_cast<blas_int_t>( (*A).rows() ) );
+   blas_int_t lda ( numeric_cast<blas_int_t>( (*A).spacing() ) );
    blas_int_t info( 0 );
 
    blas_int_t lwork( 2*n + 2 );
    const std::unique_ptr<CT[]> work ( new CT[lwork] );
    const std::unique_ptr<BT[]> rwork( new BT[2*n] );
 
-   geev( 'N', 'N', n, (~A).data(), lda, (~w).data(),
+   geev( 'N', 'N', n, (*A).data(), lda, (*w).data(),
          nullptr, 1, nullptr, 1, work.get(), lwork, rwork.get(), &info );
 
    BLAZE_INTERNAL_ASSERT( info >= 0, "Invalid argument for eigenvalue computation" );
@@ -275,19 +275,19 @@ inline void geev( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& w )
    BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<VT> );
    BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( ElementType_t<VT> );
 
-   const size_t N( (~A).rows() );
+   const size_t N( (*A).rows() );
 
-   if( !isSquare( ~A ) ) {
+   if( !isSquare( *A ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid non-square matrix provided" );
    }
 
-   resize( ~w, N, false );
+   resize( *w, N, false );
 
    if( N == 0UL ) {
       return;
    }
 
-   geev_backend( ~A, ~w );
+   geev_backend( *A, *w );
 }
 //*************************************************************************************************
 
@@ -319,10 +319,10 @@ template< typename MT1  // Type of the matrix A
 inline auto geev_backend( DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& VL, DenseVector<VT,TF>& w )
    -> DisableIf_t< IsComplex_v< ElementType_t<MT1> > >
 {
-   BLAZE_INTERNAL_ASSERT( isSquare( ~A ) , "Invalid non-square matrix detected" );
-   BLAZE_INTERNAL_ASSERT( isSquare( ~VL ), "Invalid non-square matrix detected" );
-   BLAZE_INTERNAL_ASSERT( (~VL).rows() == (~A).rows(), "Invalid matrix dimension detected" );
-   BLAZE_INTERNAL_ASSERT( (~w).size()  == (~A).rows(), "Invalid vector dimension detected" );
+   BLAZE_INTERNAL_ASSERT( isSquare( *A ) , "Invalid non-square matrix detected" );
+   BLAZE_INTERNAL_ASSERT( isSquare( *VL ), "Invalid non-square matrix detected" );
+   BLAZE_INTERNAL_ASSERT( (*VL).rows() == (*A).rows(), "Invalid matrix dimension detected" );
+   BLAZE_INTERNAL_ASSERT( (*w).size()  == (*A).rows(), "Invalid vector dimension detected" );
 
    using CT = ElementType_t<VT>;
    using BT = ElementType_t<MT1>;
@@ -330,8 +330,8 @@ inline auto geev_backend( DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& VL, Den
    BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( CT );
    BLAZE_CONSTRAINT_MUST_BE_BUILTIN_TYPE( BT );
 
-   blas_int_t n   ( numeric_cast<blas_int_t>( (~A).rows() ) );
-   blas_int_t lda ( numeric_cast<blas_int_t>( (~A).spacing() ) );
+   blas_int_t n   ( numeric_cast<blas_int_t>( (*A).rows() ) );
+   blas_int_t lda ( numeric_cast<blas_int_t>( (*A).spacing() ) );
    blas_int_t info( 0 );
 
    blas_int_t lwork( 4*n + 2 );
@@ -340,7 +340,7 @@ inline auto geev_backend( DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& VL, Den
    const std::unique_ptr<BT[]> wi  ( new BT[n] );
    const std::unique_ptr<BT[]> work( new BT[lwork] );
 
-   geev( ( SO1 ? 'V' : 'N' ), ( SO1 ? 'N' : 'V' ), n, (~A).data(), lda, wr.get(), wi.get(),
+   geev( ( SO1 ? 'V' : 'N' ), ( SO1 ? 'N' : 'V' ), n, (*A).data(), lda, wr.get(), wi.get(),
          ( SO1 ? vl.get() : nullptr ), ( SO1 ? n : 1 ),
          ( SO1 ? nullptr : vl.get() ), ( SO1 ? 1 : n ),
          work.get(), lwork, &info );
@@ -351,14 +351,14 @@ inline auto geev_backend( DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& VL, Den
       BLAZE_THROW_LAPACK_ERROR( "Eigenvalue computation failed" );
    }
 
-   const size_t N( (~A).rows() );
+   const size_t N( (*A).rows() );
 
    for( size_t j=0UL; j<N; ++j ) {
-      (~w)[j] = CT( wr[j], wi[j] );
+      (*w)[j] = CT( wr[j], wi[j] );
    }
 
    for( size_t j=0UL; j<N; ++j ) {
-      if( j+1UL < N && equal( (~w)[j], conj( (~w)[j+1UL] ) ) ) {
+      if( j+1UL < N && equal( (*w)[j], conj( (*w)[j+1UL] ) ) ) {
          for( size_t i=0UL; i<N; ++i )
          {
             const size_t j1( SO1 ? j : j+1UL );
@@ -367,15 +367,15 @@ inline auto geev_backend( DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& VL, Den
             const BT vl1( vl[i+j*N] );
             const BT vl2( vl[i+(j+1UL)*N] );
 
-            ( SO2 ? (~VL)(i,j1) : (~VL)(j1,i) ) = CT( vl1, ( SO2 ?  vl2 : -vl2 ) );
-            ( SO2 ? (~VL)(i,j2) : (~VL)(j2,i) ) = CT( vl1, ( SO2 ? -vl2 :  vl2 ) );
+            ( SO2 ? (*VL)(i,j1) : (*VL)(j1,i) ) = CT( vl1, ( SO2 ?  vl2 : -vl2 ) );
+            ( SO2 ? (*VL)(i,j2) : (*VL)(j2,i) ) = CT( vl1, ( SO2 ? -vl2 :  vl2 ) );
          }
 
          ++j;
       }
       else {
          for( size_t i=0UL; i<N; ++i ) {
-            ( SO2 ? (~VL)(i,j) : (~VL)(j,i) ) = CT( vl[i+j*N] );
+            ( SO2 ? (*VL)(i,j) : (*VL)(j,i) ) = CT( vl[i+j*N] );
          }
       }
    }
@@ -411,10 +411,10 @@ template< typename MT1  // Type of the matrix A
 inline auto geev_backend( DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& VL, DenseVector<VT,TF>& w )
    -> EnableIf_t< IsComplex_v< ElementType_t<MT1> > >
 {
-   BLAZE_INTERNAL_ASSERT( isSquare( ~A ) , "Invalid non-square matrix detected" );
-   BLAZE_INTERNAL_ASSERT( isSquare( ~VL ), "Invalid non-square matrix detected" );
-   BLAZE_INTERNAL_ASSERT( (~VL).rows() == (~A).rows(), "Invalid matrix dimension detected" );
-   BLAZE_INTERNAL_ASSERT( (~w).size()  == (~A).rows(), "Invalid vector dimension detected" );
+   BLAZE_INTERNAL_ASSERT( isSquare( *A ) , "Invalid non-square matrix detected" );
+   BLAZE_INTERNAL_ASSERT( isSquare( *VL ), "Invalid non-square matrix detected" );
+   BLAZE_INTERNAL_ASSERT( (*VL).rows() == (*A).rows(), "Invalid matrix dimension detected" );
+   BLAZE_INTERNAL_ASSERT( (*w).size()  == (*A).rows(), "Invalid vector dimension detected" );
 
    using CT = ElementType_t<MT1>;
    using BT = UnderlyingElement_t<CT>;
@@ -422,18 +422,18 @@ inline auto geev_backend( DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& VL, Den
    BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( CT );
    BLAZE_CONSTRAINT_MUST_BE_BUILTIN_TYPE( BT );
 
-   blas_int_t n   ( numeric_cast<blas_int_t>( (~A).rows() ) );
-   blas_int_t lda ( numeric_cast<blas_int_t>( (~A).spacing() ) );
-   blas_int_t ldvl( numeric_cast<blas_int_t>( (~VL).spacing() ) );
+   blas_int_t n   ( numeric_cast<blas_int_t>( (*A).rows() ) );
+   blas_int_t lda ( numeric_cast<blas_int_t>( (*A).spacing() ) );
+   blas_int_t ldvl( numeric_cast<blas_int_t>( (*VL).spacing() ) );
    blas_int_t info( 0 );
 
    blas_int_t lwork( 2*n + 2 );
    const std::unique_ptr<CT[]> work ( new CT[lwork] );
    const std::unique_ptr<BT[]> rwork( new BT[2*n] );
 
-   geev( ( SO1 ? 'V' : 'N' ), ( SO1 ? 'N' : 'V' ), n, (~A).data(), lda, (~w).data(),
-         ( SO1 ? (~VL).data() : nullptr ), ( SO1 ? ldvl : 1 ),
-         ( SO1 ? nullptr : (~VL).data() ), ( SO1 ? 1 : ldvl ),
+   geev( ( SO1 ? 'V' : 'N' ), ( SO1 ? 'N' : 'V' ), n, (*A).data(), lda, (*w).data(),
+         ( SO1 ? (*VL).data() : nullptr ), ( SO1 ? ldvl : 1 ),
+         ( SO1 ? nullptr : (*VL).data() ), ( SO1 ? 1 : ldvl ),
          work.get(), lwork, rwork.get(), &info );
 
    BLAZE_INTERNAL_ASSERT( info >= 0, "Invalid argument for eigenvalue computation" );
@@ -542,20 +542,20 @@ inline void geev( DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& VL, DenseVector
    BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<VT> );
    BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( ElementType_t<VT> );
 
-   const size_t N( (~A).rows() );
+   const size_t N( (*A).rows() );
 
-   if( !isSquare( ~A ) ) {
+   if( !isSquare( *A ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid non-square matrix provided" );
    }
 
-   resize( ~w, N, false );
-   resize( ~VL, N, N, false );
+   resize( *w, N, false );
+   resize( *VL, N, N, false );
 
    if( N == 0UL ) {
       return;
    }
 
-   geev_backend( ~A, ~VL, ~w );
+   geev_backend( *A, *VL, *w );
 }
 //*************************************************************************************************
 
@@ -587,10 +587,10 @@ template< typename MT1  // Type of the matrix A
 inline auto geev_backend( DenseMatrix<MT1,SO1>& A, DenseVector<VT,TF>& w, DenseMatrix<MT2,SO2>& VR )
    -> DisableIf_t< IsComplex_v< ElementType_t<MT1> > >
 {
-   BLAZE_INTERNAL_ASSERT( isSquare( ~A ) , "Invalid non-square matrix detected" );
-   BLAZE_INTERNAL_ASSERT( isSquare( ~VR ), "Invalid non-square matrix detected" );
-   BLAZE_INTERNAL_ASSERT( (~VR).rows() == (~A).rows(), "Invalid matrix dimension detected" );
-   BLAZE_INTERNAL_ASSERT( (~w).size()  == (~A).rows(), "Invalid vector dimension detected" );
+   BLAZE_INTERNAL_ASSERT( isSquare( *A ) , "Invalid non-square matrix detected" );
+   BLAZE_INTERNAL_ASSERT( isSquare( *VR ), "Invalid non-square matrix detected" );
+   BLAZE_INTERNAL_ASSERT( (*VR).rows() == (*A).rows(), "Invalid matrix dimension detected" );
+   BLAZE_INTERNAL_ASSERT( (*w).size()  == (*A).rows(), "Invalid vector dimension detected" );
 
    using CT = ElementType_t<VT>;
    using BT = ElementType_t<MT1>;
@@ -598,8 +598,8 @@ inline auto geev_backend( DenseMatrix<MT1,SO1>& A, DenseVector<VT,TF>& w, DenseM
    BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( CT );
    BLAZE_CONSTRAINT_MUST_BE_BUILTIN_TYPE( BT );
 
-   blas_int_t n   ( numeric_cast<blas_int_t>( (~A).rows() ) );
-   blas_int_t lda ( numeric_cast<blas_int_t>( (~A).spacing() ) );
+   blas_int_t n   ( numeric_cast<blas_int_t>( (*A).rows() ) );
+   blas_int_t lda ( numeric_cast<blas_int_t>( (*A).spacing() ) );
    blas_int_t info( 0 );
 
    blas_int_t lwork( 4*n + 2 );
@@ -608,7 +608,7 @@ inline auto geev_backend( DenseMatrix<MT1,SO1>& A, DenseVector<VT,TF>& w, DenseM
    const std::unique_ptr<BT[]> wi  ( new BT[n] );
    const std::unique_ptr<BT[]> work( new BT[lwork] );
 
-   geev( ( SO1 ? 'N' : 'V' ), ( SO1 ? 'V' : 'N' ), n, (~A).data(), lda, wr.get(), wi.get(),
+   geev( ( SO1 ? 'N' : 'V' ), ( SO1 ? 'V' : 'N' ), n, (*A).data(), lda, wr.get(), wi.get(),
          ( SO1 ? nullptr : vr.get() ), ( SO1 ? 1 : n ),
          ( SO1 ? vr.get() : nullptr ), ( SO1 ? n : 1 ),
          work.get(), lwork, &info );
@@ -619,14 +619,14 @@ inline auto geev_backend( DenseMatrix<MT1,SO1>& A, DenseVector<VT,TF>& w, DenseM
       BLAZE_THROW_LAPACK_ERROR( "Eigenvalue computation failed" );
    }
 
-   const size_t N( (~A).rows() );
+   const size_t N( (*A).rows() );
 
    for( size_t j=0UL; j<N; ++j ) {
-      (~w)[j] = CT( wr[j], wi[j] );
+      (*w)[j] = CT( wr[j], wi[j] );
    }
 
    for( size_t j=0UL; j<N; ++j ) {
-      if( j+1UL < N && equal( (~w)[j], conj( (~w)[j+1UL] ) ) ) {
+      if( j+1UL < N && equal( (*w)[j], conj( (*w)[j+1UL] ) ) ) {
          for( size_t i=0UL; i<N; ++i )
          {
             const size_t j1( SO1 ? j : j+1UL );
@@ -635,15 +635,15 @@ inline auto geev_backend( DenseMatrix<MT1,SO1>& A, DenseVector<VT,TF>& w, DenseM
             const BT vr1( vr[i+j*N] );
             const BT vr2( vr[i+(j+1UL)*N] );
 
-            ( SO2 ? (~VR)(i,j1) : (~VR)(j1,i) ) = CT( vr1, ( SO2 ?  vr2 : -vr2 ) );
-            ( SO2 ? (~VR)(i,j2) : (~VR)(j2,i) ) = CT( vr1, ( SO2 ? -vr2 :  vr2 ) );
+            ( SO2 ? (*VR)(i,j1) : (*VR)(j1,i) ) = CT( vr1, ( SO2 ?  vr2 : -vr2 ) );
+            ( SO2 ? (*VR)(i,j2) : (*VR)(j2,i) ) = CT( vr1, ( SO2 ? -vr2 :  vr2 ) );
          }
 
          ++j;
       }
       else {
          for( size_t i=0UL; i<N; ++i ) {
-            ( SO2 ? (~VR)(i,j) : (~VR)(j,i) ) = CT( vr[i+j*N] );
+            ( SO2 ? (*VR)(i,j) : (*VR)(j,i) ) = CT( vr[i+j*N] );
          }
       }
    }
@@ -679,10 +679,10 @@ template< typename MT1  // Type of the matrix A
 inline auto geev_backend( DenseMatrix<MT1,SO1>& A, DenseVector<VT,TF>& w, DenseMatrix<MT2,SO2>& VR )
    -> EnableIf_t< IsComplex_v< ElementType_t<MT1> > >
 {
-   BLAZE_INTERNAL_ASSERT( isSquare( ~A ) , "Invalid non-square matrix detected" );
-   BLAZE_INTERNAL_ASSERT( isSquare( ~VR ), "Invalid non-square matrix detected" );
-   BLAZE_INTERNAL_ASSERT( (~VR).rows() == (~A).rows(), "Invalid matrix dimension detected" );
-   BLAZE_INTERNAL_ASSERT( (~w).size()  == (~A).rows(), "Invalid vector dimension detected" );
+   BLAZE_INTERNAL_ASSERT( isSquare( *A ) , "Invalid non-square matrix detected" );
+   BLAZE_INTERNAL_ASSERT( isSquare( *VR ), "Invalid non-square matrix detected" );
+   BLAZE_INTERNAL_ASSERT( (*VR).rows() == (*A).rows(), "Invalid matrix dimension detected" );
+   BLAZE_INTERNAL_ASSERT( (*w).size()  == (*A).rows(), "Invalid vector dimension detected" );
 
    using CT = ElementType_t<MT1>;
    using BT = UnderlyingElement_t<CT>;
@@ -690,18 +690,18 @@ inline auto geev_backend( DenseMatrix<MT1,SO1>& A, DenseVector<VT,TF>& w, DenseM
    BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( CT );
    BLAZE_CONSTRAINT_MUST_BE_BUILTIN_TYPE( BT );
 
-   blas_int_t n   ( numeric_cast<blas_int_t>( (~A).rows() ) );
-   blas_int_t lda ( numeric_cast<blas_int_t>( (~A).spacing() ) );
-   blas_int_t ldvr( numeric_cast<blas_int_t>( (~VR).spacing() ) );
+   blas_int_t n   ( numeric_cast<blas_int_t>( (*A).rows() ) );
+   blas_int_t lda ( numeric_cast<blas_int_t>( (*A).spacing() ) );
+   blas_int_t ldvr( numeric_cast<blas_int_t>( (*VR).spacing() ) );
    blas_int_t info( 0 );
 
    blas_int_t lwork( 2*n + 2 );
    const std::unique_ptr<CT[]> work ( new CT[lwork] );
    const std::unique_ptr<BT[]> rwork( new BT[2*n] );
 
-   geev( ( SO1 ? 'N' : 'V' ), ( SO1 ? 'V' : 'N' ), n, (~A).data(), lda, (~w).data(),
-         ( SO1 ? nullptr : (~VR).data() ), ( SO1 ? 1 : ldvr ),
-         ( SO1 ? (~VR).data() : nullptr ), ( SO1 ? ldvr : 1 ),
+   geev( ( SO1 ? 'N' : 'V' ), ( SO1 ? 'V' : 'N' ), n, (*A).data(), lda, (*w).data(),
+         ( SO1 ? nullptr : (*VR).data() ), ( SO1 ? 1 : ldvr ),
+         ( SO1 ? (*VR).data() : nullptr ), ( SO1 ? ldvr : 1 ),
          work.get(), lwork, rwork.get(), &info );
 
    BLAZE_INTERNAL_ASSERT( info >= 0, "Invalid argument for eigenvalue computation" );
@@ -807,20 +807,20 @@ inline void geev( DenseMatrix<MT1,SO1>& A, DenseVector<VT,TF>& w, DenseMatrix<MT
    BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<MT2> );
    BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( ElementType_t<MT2> );
 
-   const size_t N( (~A).rows() );
+   const size_t N( (*A).rows() );
 
-   if( !isSquare( ~A ) ) {
+   if( !isSquare( *A ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid non-square matrix provided" );
    }
 
-   resize( ~w, N, false );
-   resize( ~VR, N, N, false );
+   resize( *w, N, false );
+   resize( *VR, N, N, false );
 
    if( N == 0UL ) {
       return;
    }
 
-   geev_backend( ~A, ~w, ~VR );
+   geev_backend( *A, *w, *VR );
 }
 //*************************************************************************************************
 
@@ -856,12 +856,12 @@ inline auto geev_backend( DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& VL,
                           DenseVector<VT,TF>& w, DenseMatrix<MT3,SO3>& VR )
    -> DisableIf_t< IsComplex_v< ElementType_t<MT1> > >
 {
-   BLAZE_INTERNAL_ASSERT( isSquare( ~A ) , "Invalid non-square matrix detected" );
-   BLAZE_INTERNAL_ASSERT( isSquare( ~VL ), "Invalid non-square matrix detected" );
-   BLAZE_INTERNAL_ASSERT( isSquare( ~VR ), "Invalid non-square matrix detected" );
-   BLAZE_INTERNAL_ASSERT( (~VL).rows() == (~A).rows(), "Invalid matrix dimension detected" );
-   BLAZE_INTERNAL_ASSERT( (~VR).rows() == (~A).rows(), "Invalid matrix dimension detected" );
-   BLAZE_INTERNAL_ASSERT( (~w).size()  == (~A).rows(), "Invalid vector dimension detected" );
+   BLAZE_INTERNAL_ASSERT( isSquare( *A ) , "Invalid non-square matrix detected" );
+   BLAZE_INTERNAL_ASSERT( isSquare( *VL ), "Invalid non-square matrix detected" );
+   BLAZE_INTERNAL_ASSERT( isSquare( *VR ), "Invalid non-square matrix detected" );
+   BLAZE_INTERNAL_ASSERT( (*VL).rows() == (*A).rows(), "Invalid matrix dimension detected" );
+   BLAZE_INTERNAL_ASSERT( (*VR).rows() == (*A).rows(), "Invalid matrix dimension detected" );
+   BLAZE_INTERNAL_ASSERT( (*w).size()  == (*A).rows(), "Invalid vector dimension detected" );
 
    using CT = ElementType_t<VT>;
    using BT = ElementType_t<MT1>;
@@ -869,8 +869,8 @@ inline auto geev_backend( DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& VL,
    BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( CT );
    BLAZE_CONSTRAINT_MUST_BE_BUILTIN_TYPE( BT );
 
-   blas_int_t n   ( numeric_cast<blas_int_t>( (~A).rows() ) );
-   blas_int_t lda ( numeric_cast<blas_int_t>( (~A).spacing() ) );
+   blas_int_t n   ( numeric_cast<blas_int_t>( (*A).rows() ) );
+   blas_int_t lda ( numeric_cast<blas_int_t>( (*A).spacing() ) );
    blas_int_t info( 0 );
 
    blas_int_t lwork( 4*n + 2 );
@@ -880,7 +880,7 @@ inline auto geev_backend( DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& VL,
    const std::unique_ptr<BT[]> wi  ( new BT[n] );
    const std::unique_ptr<BT[]> work( new BT[lwork] );
 
-   geev( 'V', 'V', n, (~A).data(), lda, wr.get(), wi.get(),
+   geev( 'V', 'V', n, (*A).data(), lda, wr.get(), wi.get(),
          ( SO1 ? vl.get() : vr.get() ), n, ( SO1 ? vr.get() : vl.get() ), n,
          work.get(), lwork, &info );
 
@@ -890,14 +890,14 @@ inline auto geev_backend( DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& VL,
       BLAZE_THROW_LAPACK_ERROR( "Eigenvalue computation failed" );
    }
 
-   const size_t N( (~A).rows() );
+   const size_t N( (*A).rows() );
 
    for( size_t j=0UL; j<N; ++j ) {
-      (~w)[j] = CT( wr[j], wi[j] );
+      (*w)[j] = CT( wr[j], wi[j] );
    }
 
    for( size_t j=0UL; j<N; ++j ) {
-      if( j+1UL < N && equal( (~w)[j], conj( (~w)[j+1UL] ) ) ) {
+      if( j+1UL < N && equal( (*w)[j], conj( (*w)[j+1UL] ) ) ) {
          for( size_t i=0UL; i<N; ++i )
          {
             const size_t j1( SO1 ? j : j+1UL );
@@ -908,18 +908,18 @@ inline auto geev_backend( DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& VL,
             const BT vr1( vr[i+j*N] );
             const BT vr2( vr[i+(j+1UL)*N] );
 
-            ( SO2 ? (~VL)(i,j1) : (~VL)(j1,i) ) = CT( vl1, ( SO2 ?  vl2 : -vl2 ) );
-            ( SO2 ? (~VL)(i,j2) : (~VL)(j2,i) ) = CT( vl1, ( SO2 ? -vl2 :  vl2 ) );
-            ( SO3 ? (~VR)(i,j1) : (~VR)(j1,i) ) = CT( vr1, ( SO3 ?  vr2 : -vr2 ) );
-            ( SO3 ? (~VR)(i,j2) : (~VR)(j2,i) ) = CT( vr1, ( SO3 ? -vr2 :  vr2 ) );
+            ( SO2 ? (*VL)(i,j1) : (*VL)(j1,i) ) = CT( vl1, ( SO2 ?  vl2 : -vl2 ) );
+            ( SO2 ? (*VL)(i,j2) : (*VL)(j2,i) ) = CT( vl1, ( SO2 ? -vl2 :  vl2 ) );
+            ( SO3 ? (*VR)(i,j1) : (*VR)(j1,i) ) = CT( vr1, ( SO3 ?  vr2 : -vr2 ) );
+            ( SO3 ? (*VR)(i,j2) : (*VR)(j2,i) ) = CT( vr1, ( SO3 ? -vr2 :  vr2 ) );
          }
 
          ++j;
       }
       else {
          for( size_t i=0UL; i<N; ++i ) {
-            ( SO2 ? (~VL)(i,j) : (~VL)(j,i) ) = CT( vl[i+j*N] );
-            ( SO3 ? (~VR)(i,j) : (~VR)(j,i) ) = CT( vr[i+j*N] );
+            ( SO2 ? (*VL)(i,j) : (*VL)(j,i) ) = CT( vl[i+j*N] );
+            ( SO3 ? (*VR)(i,j) : (*VR)(j,i) ) = CT( vr[i+j*N] );
          }
       }
    }
@@ -959,12 +959,12 @@ inline auto geev_backend( DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& VL,
                           DenseVector<VT,TF>& w, DenseMatrix<MT3,SO3>& VR )
    -> EnableIf_t< IsComplex_v< ElementType_t<MT1> > >
 {
-   BLAZE_INTERNAL_ASSERT( isSquare( ~A ) , "Invalid non-square matrix detected" );
-   BLAZE_INTERNAL_ASSERT( isSquare( ~VL ), "Invalid non-square matrix detected" );
-   BLAZE_INTERNAL_ASSERT( isSquare( ~VR ), "Invalid non-square matrix detected" );
-   BLAZE_INTERNAL_ASSERT( (~VL).rows() == (~A).rows(), "Invalid matrix dimension detected" );
-   BLAZE_INTERNAL_ASSERT( (~VR).rows() == (~A).rows(), "Invalid matrix dimension detected" );
-   BLAZE_INTERNAL_ASSERT( (~w).size()  == (~A).rows(), "Invalid vector dimension detected" );
+   BLAZE_INTERNAL_ASSERT( isSquare( *A ) , "Invalid non-square matrix detected" );
+   BLAZE_INTERNAL_ASSERT( isSquare( *VL ), "Invalid non-square matrix detected" );
+   BLAZE_INTERNAL_ASSERT( isSquare( *VR ), "Invalid non-square matrix detected" );
+   BLAZE_INTERNAL_ASSERT( (*VL).rows() == (*A).rows(), "Invalid matrix dimension detected" );
+   BLAZE_INTERNAL_ASSERT( (*VR).rows() == (*A).rows(), "Invalid matrix dimension detected" );
+   BLAZE_INTERNAL_ASSERT( (*w).size()  == (*A).rows(), "Invalid vector dimension detected" );
 
    using CT = ElementType_t<MT1>;
    using BT = UnderlyingElement_t<CT>;
@@ -972,19 +972,19 @@ inline auto geev_backend( DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& VL,
    BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( CT );
    BLAZE_CONSTRAINT_MUST_BE_BUILTIN_TYPE( BT );
 
-   blas_int_t n   ( numeric_cast<blas_int_t>( (~A).rows() ) );
-   blas_int_t lda ( numeric_cast<blas_int_t>( (~A).spacing() ) );
-   blas_int_t ldvl( numeric_cast<blas_int_t>( (~VL).spacing() ) );
-   blas_int_t ldvr( numeric_cast<blas_int_t>( (~VR).spacing() ) );
+   blas_int_t n   ( numeric_cast<blas_int_t>( (*A).rows() ) );
+   blas_int_t lda ( numeric_cast<blas_int_t>( (*A).spacing() ) );
+   blas_int_t ldvl( numeric_cast<blas_int_t>( (*VL).spacing() ) );
+   blas_int_t ldvr( numeric_cast<blas_int_t>( (*VR).spacing() ) );
    blas_int_t info( 0 );
 
    blas_int_t lwork( 2*n + 2 );
    const std::unique_ptr<CT[]> work ( new CT[lwork] );
    const std::unique_ptr<BT[]> rwork( new BT[2*n] );
 
-   geev( 'V', 'V', n, (~A).data(), lda, (~w).data(),
-         ( SO1 ? (~VL).data() : (~VR).data() ), ( SO1 ? ldvl : ldvr ),
-         ( SO1 ? (~VR).data() : (~VL).data() ), ( SO1 ? ldvr : ldvl ),
+   geev( 'V', 'V', n, (*A).data(), lda, (*w).data(),
+         ( SO1 ? (*VL).data() : (*VR).data() ), ( SO1 ? ldvl : ldvr ),
+         ( SO1 ? (*VR).data() : (*VL).data() ), ( SO1 ? ldvr : ldvl ),
          work.get(), lwork, rwork.get(), &info );
 
    BLAZE_INTERNAL_ASSERT( info >= 0, "Invalid argument for eigenvalue computation" );
@@ -1108,21 +1108,21 @@ inline void geev( DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& VL,
    BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<MT3> );
    BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( ElementType_t<MT3> );
 
-   const size_t N( (~A).rows() );
+   const size_t N( (*A).rows() );
 
-   if( !isSquare( ~A ) ) {
+   if( !isSquare( *A ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid non-square matrix provided" );
    }
 
-   resize( ~w, N, false );
-   resize( ~VL, N, N, false );
-   resize( ~VR, N, N, false );
+   resize( *w, N, false );
+   resize( *VL, N, N, false );
+   resize( *VR, N, N, false );
 
    if( N == 0UL ) {
       return;
    }
 
-   geev_backend( ~A, ~VL, ~w, ~VR );
+   geev_backend( *A, *VL, *w, *VR );
 }
 //*************************************************************************************************
 

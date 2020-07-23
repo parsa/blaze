@@ -394,12 +394,12 @@ class SVecExpandExpr
 
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      const RT tmp( serial( ~rhs.sv_ ) );
+      const RT tmp( serial( *rhs.sv_ ) );
 
-      assign( ~lhs, expand<CEAs...>( tmp, rhs.expansion() ) );
+      assign( *lhs, expand<CEAs...>( tmp, rhs.expansion() ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -427,12 +427,12 @@ class SVecExpandExpr
 
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      const RT tmp( serial( ~rhs.sv_ ) );
+      const RT tmp( serial( *rhs.sv_ ) );
 
-      addAssign( ~lhs, expand<CEAs...>( tmp, rhs.expansion() ) );
+      addAssign( *lhs, expand<CEAs...>( tmp, rhs.expansion() ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -460,12 +460,12 @@ class SVecExpandExpr
 
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      const RT tmp( serial( ~rhs.sv_ ) );
+      const RT tmp( serial( *rhs.sv_ ) );
 
-      subAssign( ~lhs, expand<CEAs...>( tmp, rhs.expansion() ) );
+      subAssign( *lhs, expand<CEAs...>( tmp, rhs.expansion() ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -493,12 +493,12 @@ class SVecExpandExpr
 
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      const RT tmp( serial( ~rhs.sv_ ) );
+      const RT tmp( serial( *rhs.sv_ ) );
 
-      schurAssign( ~lhs, expand<CEAs...>( tmp, rhs.expansion() ) );
+      schurAssign( *lhs, expand<CEAs...>( tmp, rhs.expansion() ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -526,12 +526,12 @@ class SVecExpandExpr
 
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      const RT tmp( serial( ~rhs.sv_ ) );
+      const RT tmp( serial( *rhs.sv_ ) );
 
-      multAssign( ~lhs, expand<CEAs...>( tmp, rhs.expansion() ) );
+      multAssign( *lhs, expand<CEAs...>( tmp, rhs.expansion() ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -559,12 +559,12 @@ class SVecExpandExpr
 
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      const RT tmp( ~rhs.sv_ );
+      const RT tmp( *rhs.sv_ );
 
-      smpAssign( ~lhs, expand<CEAs...>( tmp, rhs.expansion() ) );
+      smpAssign( *lhs, expand<CEAs...>( tmp, rhs.expansion() ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -592,12 +592,12 @@ class SVecExpandExpr
 
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      const RT tmp( ~rhs.sv_ );
+      const RT tmp( *rhs.sv_ );
 
-      smpAddAssign( ~lhs, expand<CEAs...>( tmp, rhs.expansion() ) );
+      smpAddAssign( *lhs, expand<CEAs...>( tmp, rhs.expansion() ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -625,12 +625,12 @@ class SVecExpandExpr
 
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      const RT tmp( ~rhs.sv_ );
+      const RT tmp( *rhs.sv_ );
 
-      smpSubAssign( ~lhs, expand<CEAs...>( tmp, rhs.expansion() ) );
+      smpSubAssign( *lhs, expand<CEAs...>( tmp, rhs.expansion() ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -658,12 +658,12 @@ class SVecExpandExpr
 
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      const RT tmp( ~rhs.sv_ );
+      const RT tmp( *rhs.sv_ );
 
-      smpSchurAssign( ~lhs, expand<CEAs...>( tmp, rhs.expansion() ) );
+      smpSchurAssign( *lhs, expand<CEAs...>( tmp, rhs.expansion() ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -691,12 +691,12 @@ class SVecExpandExpr
 
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      const RT tmp( ~rhs.sv_ );
+      const RT tmp( *rhs.sv_ );
 
-      smpMultAssign( ~lhs, expand<CEAs...>( tmp, rhs.expansion() ) );
+      smpMultAssign( *lhs, expand<CEAs...>( tmp, rhs.expansion() ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -767,7 +767,7 @@ inline decltype(auto) expand( const SparseVector<VT,TF>& sv, size_t expansion )
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = const SVecExpandExpr<VT,TF>;
-   return ReturnType( ~sv, expansion );
+   return ReturnType( *sv, expansion );
 }
 //*************************************************************************************************
 
@@ -820,7 +820,7 @@ inline decltype(auto) expand( const SparseVector<VT,TF>& sv )
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = const SVecExpandExpr<VT,TF,E>;
-   return ReturnType( ~sv );
+   return ReturnType( *sv );
 }
 //*************************************************************************************************
 
@@ -847,7 +847,7 @@ inline decltype(auto) expand( const SparseVector<VT,TF>& sv, size_t expansion )
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = const SVecExpandExpr<VT,TF,E>;
-   return ReturnType( ~sv );
+   return ReturnType( *sv );
 }
 /*! \endcond */
 //*************************************************************************************************

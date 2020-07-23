@@ -139,7 +139,7 @@ inline decltype(auto) column( Matrix<MT,SO>& matrix, RCAs... args )
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = Column_<MT,I>;
-   return ReturnType( ~matrix, args... );
+   return ReturnType( *matrix, args... );
 }
 //*************************************************************************************************
 
@@ -188,7 +188,7 @@ inline decltype(auto) column( const Matrix<MT,SO>& matrix, RCAs... args )
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = const Column_<const MT,I>;
-   return ReturnType( ~matrix, args... );
+   return ReturnType( *matrix, args... );
 }
 //*************************************************************************************************
 
@@ -216,7 +216,7 @@ inline decltype(auto) column( Matrix<MT,SO>&& matrix, RCAs... args )
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = Column_<MT,I>;
-   return ReturnType( ~matrix, args... );
+   return ReturnType( *matrix, args... );
 }
 //*************************************************************************************************
 
@@ -265,7 +265,7 @@ inline decltype(auto) column( Matrix<MT,SO>& matrix, size_t index, RCAs... args 
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = Column_<MT>;
-   return ReturnType( ~matrix, index, args... );
+   return ReturnType( *matrix, index, args... );
 }
 //*************************************************************************************************
 
@@ -314,7 +314,7 @@ inline decltype(auto) column( const Matrix<MT,SO>& matrix, size_t index, RCAs...
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = const Column_<const MT>;
-   return ReturnType( ~matrix, index, args... );
+   return ReturnType( *matrix, index, args... );
 }
 //*************************************************************************************************
 
@@ -342,7 +342,7 @@ inline decltype(auto) column( Matrix<MT,SO>&& matrix, size_t index, RCAs... args
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = Column_<MT>;
-   return ReturnType( ~matrix, index, args... );
+   return ReturnType( *matrix, index, args... );
 }
 //*************************************************************************************************
 
@@ -375,8 +375,8 @@ inline decltype(auto) column( const MatMatAddExpr<MT>& matrix, RCAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return column<CCAs...>( (~matrix).leftOperand(), args... ) +
-          column<CCAs...>( (~matrix).rightOperand(), args... );
+   return column<CCAs...>( (*matrix).leftOperand(), args... ) +
+          column<CCAs...>( (*matrix).rightOperand(), args... );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -402,8 +402,8 @@ inline decltype(auto) column( const MatMatSubExpr<MT>& matrix, RCAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return column<CCAs...>( (~matrix).leftOperand(), args... ) -
-          column<CCAs...>( (~matrix).rightOperand(), args... );
+   return column<CCAs...>( (*matrix).leftOperand(), args... ) -
+          column<CCAs...>( (*matrix).rightOperand(), args... );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -429,8 +429,8 @@ inline decltype(auto) column( const SchurExpr<MT>& matrix, RCAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return column<CCAs...>( (~matrix).leftOperand(), args... ) *
-          column<CCAs...>( (~matrix).rightOperand(), args... );
+   return column<CCAs...>( (*matrix).leftOperand(), args... ) *
+          column<CCAs...>( (*matrix).rightOperand(), args... );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -456,7 +456,7 @@ inline decltype(auto) column( const MatMatMultExpr<MT>& matrix, RCAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return (~matrix).leftOperand() * column<CCAs...>( (~matrix).rightOperand(), args... );
+   return (*matrix).leftOperand() * column<CCAs...>( (*matrix).rightOperand(), args... );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -485,15 +485,15 @@ inline decltype(auto) column( const MatMatKronExpr<MT>& matrix, RCAs... args )
    const ColumnData<CCAs...> cd( args... );
 
    if( isChecked( args... ) ) {
-      if( (~matrix).columns() <= cd.column() ) {
+      if( (*matrix).columns() <= cd.column() ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid column access index" );
       }
    }
 
-   const size_t columns( (~matrix).rightOperand().columns() );
+   const size_t columns( (*matrix).rightOperand().columns() );
 
-   return kron( column( (~matrix).leftOperand(), cd.column()/columns, unchecked ),
-                column( (~matrix).rightOperand(), cd.column()%columns, unchecked ) );
+   return kron( column( (*matrix).leftOperand(), cd.column()/columns, unchecked ),
+                column( (*matrix).rightOperand(), cd.column()%columns, unchecked ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -520,12 +520,12 @@ inline decltype(auto) column( const VecTVecMultExpr<MT>& matrix, RCAs... args )
    BLAZE_FUNCTION_TRACE;
 
    if( isChecked( args... ) ) {
-      if( (~matrix).columns() <= I ) {
+      if( (*matrix).columns() <= I ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid column access index" );
       }
    }
 
-   return (~matrix).leftOperand() * (~matrix).rightOperand()[I];
+   return (*matrix).leftOperand() * (*matrix).rightOperand()[I];
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -552,12 +552,12 @@ inline decltype(auto) column( const VecTVecMultExpr<MT>& matrix, size_t index, R
    BLAZE_FUNCTION_TRACE;
 
    if( isChecked( args... ) ) {
-      if( (~matrix).columns() <= index ) {
+      if( (*matrix).columns() <= index ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid column access index" );
       }
    }
 
-   return (~matrix).leftOperand() * (~matrix).rightOperand()[index];
+   return (*matrix).leftOperand() * (*matrix).rightOperand()[index];
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -583,7 +583,7 @@ inline decltype(auto) column( const MatScalarMultExpr<MT>& matrix, RCAs... args 
 {
    BLAZE_FUNCTION_TRACE;
 
-   return column<CCAs...>( (~matrix).leftOperand(), args... ) * (~matrix).rightOperand();
+   return column<CCAs...>( (*matrix).leftOperand(), args... ) * (*matrix).rightOperand();
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -609,7 +609,7 @@ inline decltype(auto) column( const MatScalarDivExpr<MT>& matrix, RCAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return column<CCAs...>( (~matrix).leftOperand(), args... ) / (~matrix).rightOperand();
+   return column<CCAs...>( (*matrix).leftOperand(), args... ) / (*matrix).rightOperand();
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -635,7 +635,7 @@ inline decltype(auto) column( const MatMapExpr<MT>& matrix, RCAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( column<CCAs...>( (~matrix).operand(), args... ), (~matrix).operation() );
+   return map( column<CCAs...>( (*matrix).operand(), args... ), (*matrix).operation() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -661,9 +661,9 @@ inline decltype(auto) column( const MatMatMapExpr<MT>& matrix, RCAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( column<CCAs...>( (~matrix).leftOperand(), args... ),
-               column<CCAs...>( (~matrix).rightOperand(), args... ),
-               (~matrix).operation() );
+   return map( column<CCAs...>( (*matrix).leftOperand(), args... ),
+               column<CCAs...>( (*matrix).rightOperand(), args... ),
+               (*matrix).operation() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -691,13 +691,13 @@ inline decltype(auto) column( const VecTVecMapExpr<MT>& matrix, RCAs... args )
    BLAZE_FUNCTION_TRACE;
 
    if( isChecked( args... ) ) {
-      if( (~matrix).columns() <= I ) {
+      if( (*matrix).columns() <= I ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid column access index" );
       }
    }
 
-   return map( (~matrix).leftOperand(),
-               blaze::bind2nd( (~matrix).operation(), (~matrix).rightOperand()[I] ) );
+   return map( (*matrix).leftOperand(),
+               blaze::bind2nd( (*matrix).operation(), (*matrix).rightOperand()[I] ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -724,13 +724,13 @@ inline decltype(auto) column( const VecTVecMapExpr<MT>& matrix, size_t index, RC
    BLAZE_FUNCTION_TRACE;
 
    if( isChecked( args... ) ) {
-      if( (~matrix).columns() <= index ) {
+      if( (*matrix).columns() <= index ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid column access index" );
       }
    }
 
-   return map( (~matrix).leftOperand(),
-               blaze::bind2nd( (~matrix).operation(), (~matrix).rightOperand()[index] ) );
+   return map( (*matrix).leftOperand(),
+               blaze::bind2nd( (*matrix).operation(), (*matrix).rightOperand()[index] ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -756,7 +756,7 @@ inline decltype(auto) column( const MatEvalExpr<MT>& matrix, RCAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return eval( column<CCAs...>( (~matrix).operand(), args... ) );
+   return eval( column<CCAs...>( (*matrix).operand(), args... ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -782,7 +782,7 @@ inline decltype(auto) column( const MatSerialExpr<MT>& matrix, RCAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return serial( column<CCAs...>( (~matrix).operand(), args... ) );
+   return serial( column<CCAs...>( (*matrix).operand(), args... ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -808,7 +808,7 @@ inline decltype(auto) column( const MatNoAliasExpr<MT>& matrix, RCAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return noalias( column<CCAs...>( (~matrix).operand(), args... ) );
+   return noalias( column<CCAs...>( (*matrix).operand(), args... ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -834,7 +834,7 @@ inline decltype(auto) column( const MatNoSIMDExpr<MT>& matrix, RCAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return nosimd( column<CCAs...>( (~matrix).operand(), args... ) );
+   return nosimd( column<CCAs...>( (*matrix).operand(), args... ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -860,7 +860,7 @@ inline decltype(auto) column( const DeclExpr<MT>& matrix, RCAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return column<CCAs...>( (~matrix).operand(), args... );
+   return column<CCAs...>( (*matrix).operand(), args... );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -887,7 +887,7 @@ inline decltype(auto) column( const MatTransExpr<MT>& matrix, RCAs... args )
    BLAZE_FUNCTION_TRACE;
 
    try {
-      return trans( row<CCAs...>( (~matrix).operand(), args... ) );
+      return trans( row<CCAs...>( (*matrix).operand(), args... ) );
    }
    catch( ... ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid column access index" );
@@ -921,12 +921,12 @@ inline decltype(auto) column( const VecExpandExpr<MT,CEAs...>& matrix, RCAs... a
 
    if( isChecked( args... ) ) {
       const ColumnData<CCAs...> cd( args... );
-      if( (~matrix).columns() <= cd.column() ) {
+      if( (*matrix).columns() <= cd.column() ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid column access index" );
       }
    }
 
-   return subvector( (~matrix).operand(), 0UL, (~matrix).rows(), unchecked );
+   return subvector( (*matrix).operand(), 0UL, (*matrix).rows(), unchecked );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -957,14 +957,14 @@ inline decltype(auto) column( const VecExpandExpr<MT,CEAs...>& matrix, RCAs... a
    const ColumnData<CCAs...> cd( args... );
 
    if( isChecked( args... ) ) {
-      if( (~matrix).columns() <= cd.column() ) {
+      if( (*matrix).columns() <= cd.column() ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid column access index" );
       }
    }
 
    using ET = ElementType_t< MatrixType_t<MT> >;
 
-   return UniformVector<ET,columnVector>( (~matrix).rows(), (~matrix).operand()[cd.column()] );
+   return UniformVector<ET,columnVector>( (*matrix).rows(), (*matrix).operand()[cd.column()] );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -994,15 +994,15 @@ inline decltype(auto) column( const MatRepeatExpr<MT,CRAs...>& matrix, RCAs... a
    const ColumnData<CCAs...> cd( args... );
 
    if( isChecked( args... ) ) {
-      if( (~matrix).columns() <= cd.column() ) {
+      if( (*matrix).columns() <= cd.column() ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid column access index" );
       }
    }
 
-   return repeat( column( (~matrix).operand()
-                        , cd.column() % (~matrix).operand().columns()
+   return repeat( column( (*matrix).operand()
+                        , cd.column() % (*matrix).operand().columns()
                         , unchecked )
-                , (~matrix).template repetitions<0UL>() );
+                , (*matrix).template repetitions<0UL>() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1308,8 +1308,8 @@ template< typename MT     // Type of the matrix
 BLAZE_ALWAYS_INLINE bool
    trySet( const Column<MT,SO,DF,SF,CCAs...>& column, size_t index, size_t size, const ET& value )
 {
-   BLAZE_INTERNAL_ASSERT( index <= (~column).size(), "Invalid vector access index" );
-   BLAZE_INTERNAL_ASSERT( index + size <= (~column).size(), "Invalid range size" );
+   BLAZE_INTERNAL_ASSERT( index <= (*column).size(), "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( index + size <= (*column).size(), "Invalid range size" );
 
    return trySet( column.operand(), index, column.column(), size, 1UL, value );
 }
@@ -1373,8 +1373,8 @@ template< typename MT     // Type of the matrix
 BLAZE_ALWAYS_INLINE bool
    tryAdd( const Column<MT,SO,DF,SF,CCAs...>& column, size_t index, size_t size, const ET& value )
 {
-   BLAZE_INTERNAL_ASSERT( index <= (~column).size(), "Invalid vector access index" );
-   BLAZE_INTERNAL_ASSERT( index + size <= (~column).size(), "Invalid range size" );
+   BLAZE_INTERNAL_ASSERT( index <= (*column).size(), "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( index + size <= (*column).size(), "Invalid range size" );
 
    return tryAdd( column.operand(), index, column.column(), size, 1UL, value );
 }
@@ -1438,8 +1438,8 @@ template< typename MT     // Type of the matrix
 BLAZE_ALWAYS_INLINE bool
    trySub( const Column<MT,SO,DF,SF,CCAs...>& column, size_t index, size_t size, const ET& value )
 {
-   BLAZE_INTERNAL_ASSERT( index <= (~column).size(), "Invalid vector access index" );
-   BLAZE_INTERNAL_ASSERT( index + size <= (~column).size(), "Invalid range size" );
+   BLAZE_INTERNAL_ASSERT( index <= (*column).size(), "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( index + size <= (*column).size(), "Invalid range size" );
 
    return trySub( column.operand(), index, column.column(), size, 1UL, value );
 }
@@ -1503,8 +1503,8 @@ template< typename MT     // Type of the matrix
 BLAZE_ALWAYS_INLINE bool
    tryMult( const Column<MT,SO,DF,SF,CCAs...>& column, size_t index, size_t size, const ET& value )
 {
-   BLAZE_INTERNAL_ASSERT( index <= (~column).size(), "Invalid vector access index" );
-   BLAZE_INTERNAL_ASSERT( index + size <= (~column).size(), "Invalid range size" );
+   BLAZE_INTERNAL_ASSERT( index <= (*column).size(), "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( index + size <= (*column).size(), "Invalid range size" );
 
    return tryMult( column.operand(), index, column.column(), size, 1UL, value );
 }
@@ -1568,8 +1568,8 @@ template< typename MT     // Type of the matrix
 BLAZE_ALWAYS_INLINE bool
    tryDiv( const Column<MT,SO,DF,SF,CCAs...>& column, size_t index, size_t size, const ET& value )
 {
-   BLAZE_INTERNAL_ASSERT( index <= (~column).size(), "Invalid vector access index" );
-   BLAZE_INTERNAL_ASSERT( index + size <= (~column).size(), "Invalid range size" );
+   BLAZE_INTERNAL_ASSERT( index <= (*column).size(), "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( index + size <= (*column).size(), "Invalid range size" );
 
    return tryDiv( column.operand(), index, column.column(), size, 1UL, value );
 }
@@ -1631,8 +1631,8 @@ template< typename MT       // Type of the matrix
 BLAZE_ALWAYS_INLINE bool
    tryShift( const Column<MT,SO,DF,SF,CCAs...>& column, size_t index, size_t size, int count )
 {
-   BLAZE_INTERNAL_ASSERT( index <= (~column).size(), "Invalid vector access index" );
-   BLAZE_INTERNAL_ASSERT( index + size <= (~column).size(), "Invalid range size" );
+   BLAZE_INTERNAL_ASSERT( index <= (*column).size(), "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( index + size <= (*column).size(), "Invalid range size" );
 
    return tryShift( column.operand(), index, column.column(), size, 1UL, count );
 }
@@ -1696,8 +1696,8 @@ template< typename MT     // Type of the matrix
 BLAZE_ALWAYS_INLINE bool
    tryBitand( const Column<MT,SO,DF,SF,CCAs...>& column, size_t index, size_t size, const ET& value )
 {
-   BLAZE_INTERNAL_ASSERT( index <= (~column).size(), "Invalid vector access index" );
-   BLAZE_INTERNAL_ASSERT( index + size <= (~column).size(), "Invalid range size" );
+   BLAZE_INTERNAL_ASSERT( index <= (*column).size(), "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( index + size <= (*column).size(), "Invalid range size" );
 
    return tryBitand( column.operand(), index, column.column(), size, 1UL, value );
 }
@@ -1761,8 +1761,8 @@ template< typename MT     // Type of the matrix
 BLAZE_ALWAYS_INLINE bool
    tryBitor( const Column<MT,SO,DF,SF,CCAs...>& column, size_t index, size_t size, const ET& value )
 {
-   BLAZE_INTERNAL_ASSERT( index <= (~column).size(), "Invalid vector access index" );
-   BLAZE_INTERNAL_ASSERT( index + size <= (~column).size(), "Invalid range size" );
+   BLAZE_INTERNAL_ASSERT( index <= (*column).size(), "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( index + size <= (*column).size(), "Invalid range size" );
 
    return tryBitor( column.operand(), index, column.column(), size, 1UL, value );
 }
@@ -1826,8 +1826,8 @@ template< typename MT     // Type of the matrix
 BLAZE_ALWAYS_INLINE bool
    tryBitxor( const Column<MT,SO,DF,SF,CCAs...>& column, size_t index, size_t size, const ET& value )
 {
-   BLAZE_INTERNAL_ASSERT( index <= (~column).size(), "Invalid vector access index" );
-   BLAZE_INTERNAL_ASSERT( index + size <= (~column).size(), "Invalid range size" );
+   BLAZE_INTERNAL_ASSERT( index <= (*column).size(), "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( index + size <= (*column).size(), "Invalid range size" );
 
    return tryBitxor( column.operand(), index, column.column(), size, 1UL, value );
 }
@@ -1860,9 +1860,9 @@ inline bool tryAssign( const Column<MT,SO,DF,SF,CCAs...>& lhs,
                        const Vector<VT,false>& rhs, size_t index )
 {
    BLAZE_INTERNAL_ASSERT( index <= lhs.size(), "Invalid vector access index" );
-   BLAZE_INTERNAL_ASSERT( index + (~rhs).size() <= lhs.size(), "Invalid vector size" );
+   BLAZE_INTERNAL_ASSERT( index + (*rhs).size() <= lhs.size(), "Invalid vector size" );
 
-   return tryAssign( lhs.operand(), ~rhs, index, lhs.column() );
+   return tryAssign( lhs.operand(), *rhs, index, lhs.column() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1893,9 +1893,9 @@ inline bool tryAddAssign( const Column<MT,SO,SF,SF,CCAs...>& lhs,
                           const Vector<VT,false>& rhs, size_t index )
 {
    BLAZE_INTERNAL_ASSERT( index <= lhs.size(), "Invalid vector access index" );
-   BLAZE_INTERNAL_ASSERT( index + (~rhs).size() <= lhs.size(), "Invalid vector size" );
+   BLAZE_INTERNAL_ASSERT( index + (*rhs).size() <= lhs.size(), "Invalid vector size" );
 
-   return tryAddAssign( lhs.operand(), ~rhs, index, lhs.column() );
+   return tryAddAssign( lhs.operand(), *rhs, index, lhs.column() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1926,9 +1926,9 @@ inline bool trySubAssign( const Column<MT,SO,DF,SF,CCAs...>& lhs,
                           const Vector<VT,false>& rhs, size_t index )
 {
    BLAZE_INTERNAL_ASSERT( index <= lhs.size(), "Invalid vector access index" );
-   BLAZE_INTERNAL_ASSERT( index + (~rhs).size() <= lhs.size(), "Invalid vector size" );
+   BLAZE_INTERNAL_ASSERT( index + (*rhs).size() <= lhs.size(), "Invalid vector size" );
 
-   return trySubAssign( lhs.operand(), ~rhs, index, lhs.column() );
+   return trySubAssign( lhs.operand(), *rhs, index, lhs.column() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1959,9 +1959,9 @@ inline bool tryMultAssign( const Column<MT,SO,DF,SF,CCAs...>& lhs,
                            const Vector<VT,false>& rhs, size_t index )
 {
    BLAZE_INTERNAL_ASSERT( index <= lhs.size(), "Invalid vector access index" );
-   BLAZE_INTERNAL_ASSERT( index + (~rhs).size() <= lhs.size(), "Invalid vector size" );
+   BLAZE_INTERNAL_ASSERT( index + (*rhs).size() <= lhs.size(), "Invalid vector size" );
 
-   return tryMultAssign( lhs.operand(), ~rhs, index, lhs.column() );
+   return tryMultAssign( lhs.operand(), *rhs, index, lhs.column() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1992,9 +1992,9 @@ inline bool tryDivAssign( const Column<MT,SO,DF,SF,CCAs...>& lhs,
                           const Vector<VT,false>& rhs, size_t index )
 {
    BLAZE_INTERNAL_ASSERT( index <= lhs.size(), "Invalid vector access index" );
-   BLAZE_INTERNAL_ASSERT( index + (~rhs).size() <= lhs.size(), "Invalid vector size" );
+   BLAZE_INTERNAL_ASSERT( index + (*rhs).size() <= lhs.size(), "Invalid vector size" );
 
-   return tryDivAssign( lhs.operand(), ~rhs, index, lhs.column() );
+   return tryDivAssign( lhs.operand(), *rhs, index, lhs.column() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -2025,9 +2025,9 @@ inline bool tryShiftAssign( const Column<MT,SO,SF,SF,CCAs...>& lhs,
                             const Vector<VT,false>& rhs, size_t index )
 {
    BLAZE_INTERNAL_ASSERT( index <= lhs.size(), "Invalid vector access index" );
-   BLAZE_INTERNAL_ASSERT( index + (~rhs).size() <= lhs.size(), "Invalid vector size" );
+   BLAZE_INTERNAL_ASSERT( index + (*rhs).size() <= lhs.size(), "Invalid vector size" );
 
-   return tryShiftAssign( lhs.operand(), ~rhs, index, lhs.column() );
+   return tryShiftAssign( lhs.operand(), *rhs, index, lhs.column() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -2058,9 +2058,9 @@ inline bool tryBitandAssign( const Column<MT,SO,SF,SF,CCAs...>& lhs,
                              const Vector<VT,false>& rhs, size_t index )
 {
    BLAZE_INTERNAL_ASSERT( index <= lhs.size(), "Invalid vector access index" );
-   BLAZE_INTERNAL_ASSERT( index + (~rhs).size() <= lhs.size(), "Invalid vector size" );
+   BLAZE_INTERNAL_ASSERT( index + (*rhs).size() <= lhs.size(), "Invalid vector size" );
 
-   return tryBitandAssign( lhs.operand(), ~rhs, index, lhs.column() );
+   return tryBitandAssign( lhs.operand(), *rhs, index, lhs.column() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -2091,9 +2091,9 @@ inline bool tryBitorAssign( const Column<MT,SO,SF,SF,CCAs...>& lhs,
                             const Vector<VT,false>& rhs, size_t index )
 {
    BLAZE_INTERNAL_ASSERT( index <= lhs.size(), "Invalid vector access index" );
-   BLAZE_INTERNAL_ASSERT( index + (~rhs).size() <= lhs.size(), "Invalid vector size" );
+   BLAZE_INTERNAL_ASSERT( index + (*rhs).size() <= lhs.size(), "Invalid vector size" );
 
-   return tryBitorAssign( lhs.operand(), ~rhs, index, lhs.column() );
+   return tryBitorAssign( lhs.operand(), *rhs, index, lhs.column() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -2124,9 +2124,9 @@ inline bool tryBitxorAssign( const Column<MT,SO,SF,SF,CCAs...>& lhs,
                              const Vector<VT,false>& rhs, size_t index )
 {
    BLAZE_INTERNAL_ASSERT( index <= lhs.size(), "Invalid vector access index" );
-   BLAZE_INTERNAL_ASSERT( index + (~rhs).size() <= lhs.size(), "Invalid vector size" );
+   BLAZE_INTERNAL_ASSERT( index + (*rhs).size() <= lhs.size(), "Invalid vector size" );
 
-   return tryBitxorAssign( lhs.operand(), ~rhs, index, lhs.column() );
+   return tryBitxorAssign( lhs.operand(), *rhs, index, lhs.column() );
 }
 /*! \endcond */
 //*************************************************************************************************

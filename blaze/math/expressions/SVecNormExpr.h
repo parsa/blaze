@@ -111,9 +111,9 @@ decltype(auto) norm_backend( const SparseVector<VT,TF>& sv, Abs abs, Power power
    using PT = RemoveCVRef_t< decltype( power( abs( std::declval<ET>() ) ) ) >;
    using RT = RemoveCVRef_t< decltype( evaluate( root( std::declval<PT>() ) ) ) >;
 
-   if( (~sv).size() == 0UL ) return RT{};
+   if( (*sv).size() == 0UL ) return RT{};
 
-   CT tmp( ~sv );
+   CT tmp( *sv );
 
    const auto end( tmp.end() );
    auto element( tmp.begin() );
@@ -154,7 +154,7 @@ decltype(auto) norm( const SparseVector<VT,TF>& sv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return norm_backend( ~sv, SqrAbs(), Noop(), Sqrt() );
+   return norm_backend( *sv, SqrAbs(), Noop(), Sqrt() );
 }
 //*************************************************************************************************
 
@@ -180,7 +180,7 @@ decltype(auto) sqrNorm( const SparseVector<VT,TF>& sv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return norm_backend( ~sv, SqrAbs(), Noop(), Noop() );
+   return norm_backend( *sv, SqrAbs(), Noop(), Noop() );
 }
 //*************************************************************************************************
 
@@ -206,7 +206,7 @@ decltype(auto) l1Norm( const SparseVector<VT,TF>& sv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return norm_backend( ~sv, Abs(), Noop(), Noop() );
+   return norm_backend( *sv, Abs(), Noop(), Noop() );
 }
 //*************************************************************************************************
 
@@ -232,7 +232,7 @@ decltype(auto) l2Norm( const SparseVector<VT,TF>& sv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return norm_backend( ~sv, SqrAbs(), Noop(), Sqrt() );
+   return norm_backend( *sv, SqrAbs(), Noop(), Sqrt() );
 }
 //*************************************************************************************************
 
@@ -258,7 +258,7 @@ decltype(auto) l3Norm( const SparseVector<VT,TF>& sv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return norm_backend( ~sv, Abs(), Pow3(), Cbrt() );
+   return norm_backend( *sv, Abs(), Pow3(), Cbrt() );
 }
 //*************************************************************************************************
 
@@ -284,7 +284,7 @@ decltype(auto) l4Norm( const SparseVector<VT,TF>& sv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return norm_backend( ~sv, SqrAbs(), Pow2(), Qdrt() );
+   return norm_backend( *sv, SqrAbs(), Pow2(), Qdrt() );
 }
 //*************************************************************************************************
 
@@ -320,7 +320,7 @@ decltype(auto) lpNorm( const SparseVector<VT,TF>& sv, ST p )
 
    using ScalarType = MultTrait_t< UnderlyingBuiltin_t<VT>, decltype( inv( p ) ) >;
    using UnaryPow = Bind2nd<Pow,ScalarType>;
-   return norm_backend( ~sv, Abs(), UnaryPow( Pow(), p ), UnaryPow( Pow(), inv( p ) ) );
+   return norm_backend( *sv, Abs(), UnaryPow( Pow(), p ), UnaryPow( Pow(), inv( p ) ) );
 }
 //*************************************************************************************************
 
@@ -354,7 +354,7 @@ inline decltype(auto) lpNorm( const SparseVector<VT,TF>& sv )
    using Norms = TypeList< L1Norm, L2Norm, L3Norm, L4Norm, LpNorm<P> >;
    using Norm  = typename TypeAt< Norms, min( P-1UL, 4UL ) >::Type;
 
-   return Norm()( ~sv );
+   return Norm()( *sv );
 }
 //*************************************************************************************************
 
@@ -380,7 +380,7 @@ decltype(auto) linfNorm( const SparseVector<VT,TF>& sv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return max( abs( ~sv ) );
+   return max( abs( *sv ) );
 }
 //*************************************************************************************************
 
@@ -406,7 +406,7 @@ decltype(auto) maxNorm( const SparseVector<VT,TF>& sv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return linfNorm( ~sv );
+   return linfNorm( *sv );
 }
 //*************************************************************************************************
 
@@ -425,7 +425,7 @@ template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
 inline decltype(auto) sqrLength( const SparseVector<VT,TF>& sv )
 {
-   return sqrNorm( ~sv );
+   return sqrNorm( *sv );
 }
 //*************************************************************************************************
 
@@ -444,7 +444,7 @@ template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
 inline decltype(auto) length( const SparseVector<VT,TF>& sv )
 {
-   return norm( ~sv );
+   return norm( *sv );
 }
 //*************************************************************************************************
 

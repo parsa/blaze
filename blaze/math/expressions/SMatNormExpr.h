@@ -109,9 +109,9 @@ inline decltype(auto) norm_backend( const SparseMatrix<MT,SO>& sm, Abs abs, Powe
    using PT = RemoveCVRef_t< decltype( power( abs( std::declval<ET>() ) ) ) >;
    using RT = RemoveCVRef_t< decltype( evaluate( root( std::declval<PT>() ) ) ) >;
 
-   if( (~sm).rows() == 0UL || (~sm).columns() == 0UL ) return RT{};
+   if( (*sm).rows() == 0UL || (*sm).columns() == 0UL ) return RT{};
 
-   CT tmp( ~sm );
+   CT tmp( *sm );
 
    const size_t N( IsRowMajorMatrix_v<MT> ? tmp.rows(): tmp.columns() );
 
@@ -155,7 +155,7 @@ decltype(auto) norm( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return norm_backend( ~sm, SqrAbs(), Noop(), Sqrt() );
+   return norm_backend( *sm, SqrAbs(), Noop(), Sqrt() );
 }
 //*************************************************************************************************
 
@@ -181,7 +181,7 @@ decltype(auto) sqrNorm( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return norm_backend( ~sm, SqrAbs(), Noop(), Noop() );
+   return norm_backend( *sm, SqrAbs(), Noop(), Noop() );
 }
 //*************************************************************************************************
 
@@ -207,7 +207,7 @@ decltype(auto) l1Norm( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return norm_backend( ~sm, Abs(), Noop(), Noop() );
+   return norm_backend( *sm, Abs(), Noop(), Noop() );
 }
 //*************************************************************************************************
 
@@ -233,7 +233,7 @@ decltype(auto) l2Norm( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return norm_backend( ~sm, SqrAbs(), Noop(), Sqrt() );
+   return norm_backend( *sm, SqrAbs(), Noop(), Sqrt() );
 }
 //*************************************************************************************************
 
@@ -259,7 +259,7 @@ decltype(auto) l3Norm( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return norm_backend( ~sm, Abs(), Pow3(), Cbrt() );
+   return norm_backend( *sm, Abs(), Pow3(), Cbrt() );
 }
 //*************************************************************************************************
 
@@ -285,7 +285,7 @@ decltype(auto) l4Norm( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return norm_backend( ~sm, SqrAbs(), Pow2(), Qdrt() );
+   return norm_backend( *sm, SqrAbs(), Pow2(), Qdrt() );
 }
 //*************************************************************************************************
 
@@ -321,7 +321,7 @@ decltype(auto) lpNorm( const SparseMatrix<MT,SO>& sm, ST p )
 
    using ScalarType = MultTrait_t< UnderlyingBuiltin_t<MT>, decltype( inv( p ) ) >;
    using UnaryPow = Bind2nd<Pow,ScalarType>;
-   return norm_backend( ~sm, Abs(), UnaryPow( Pow(), p ), UnaryPow( Pow(), inv( p ) ) );
+   return norm_backend( *sm, Abs(), UnaryPow( Pow(), p ), UnaryPow( Pow(), inv( p ) ) );
 }
 //*************************************************************************************************
 
@@ -355,7 +355,7 @@ inline decltype(auto) lpNorm( const SparseMatrix<MT,SO>& sm )
    using Norms = TypeList< L1Norm, L2Norm, L3Norm, L4Norm, LpNorm<P> >;
    using Norm  = typename TypeAt< Norms, min( P-1UL, 4UL ) >::Type;
 
-   return Norm()( ~sm );
+   return Norm()( *sm );
 }
 //*************************************************************************************************
 
@@ -381,7 +381,7 @@ decltype(auto) linfNorm( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return max( abs( ~sm ) );
+   return max( abs( *sm ) );
 }
 //*************************************************************************************************
 
@@ -407,7 +407,7 @@ decltype(auto) maxNorm( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return linfNorm( ~sm );
+   return linfNorm( *sm );
 }
 //*************************************************************************************************
 

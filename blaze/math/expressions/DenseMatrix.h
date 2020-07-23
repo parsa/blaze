@@ -158,7 +158,7 @@ template< typename MT  // Type of the matrix
 BLAZE_ALWAYS_INLINE auto data_backend( DenseMatrix<MT,SO>& dm ) noexcept
    -> EnableIf_t< HasMutableDataAccess_v<MT>, typename MT::ElementType* >
 {
-   return (~dm).data();
+   return (*dm).data();
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -181,7 +181,7 @@ template< typename MT  // Type of the matrix
         , bool SO >    // Storage order of the matrix
 BLAZE_ALWAYS_INLINE typename MT::ElementType* data( DenseMatrix<MT,SO>& dm ) noexcept
 {
-   return data_backend( ~dm );
+   return data_backend( *dm );
 }
 //*************************************************************************************************
 
@@ -225,7 +225,7 @@ template< typename MT  // Type of the matrix
 BLAZE_ALWAYS_INLINE auto data_backend( const DenseMatrix<MT,SO>& dm ) noexcept
    -> EnableIf_t< HasConstDataAccess_v<MT>, const typename MT::ElementType* >
 {
-   return (~dm).data();
+   return (*dm).data();
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -248,7 +248,7 @@ template< typename MT  // Type of the matrix
         , bool SO >    // Storage order of the matrix
 BLAZE_ALWAYS_INLINE const typename MT::ElementType* data( const DenseMatrix<MT,SO>& dm ) noexcept
 {
-   return data_backend( ~dm );
+   return data_backend( *dm );
 }
 //*************************************************************************************************
 
@@ -264,7 +264,7 @@ template< typename MT  // Type of the matrix
         , bool SO >    // Storage order of the matrix
 BLAZE_ALWAYS_INLINE size_t spacing( const DenseMatrix<MT,SO>& dm ) noexcept
 {
-   return (~dm).spacing();
+   return (*dm).spacing();
 }
 //*************************************************************************************************
 
@@ -286,13 +286,13 @@ inline auto resetLower_backend( DenseMatrix<MT,false>& dm )
 {
    using blaze::reset;
 
-   const size_t m( (~dm).rows()    );
-   const size_t n( (~dm).columns() );
+   const size_t m( (*dm).rows()    );
+   const size_t n( (*dm).columns() );
 
    for( size_t i=1UL; i<m; ++i ) {
       const size_t jend( min( i, n ) );
       for( size_t j=0UL; j<jend; ++j ) {
-         reset( (~dm)(i,j) );
+         reset( (*dm)(i,j) );
       }
    }
 }
@@ -317,13 +317,13 @@ inline auto resetLower_backend( DenseMatrix<MT,true>& dm )
 {
    using blaze::reset;
 
-   const size_t m   ( (~dm).rows()    );
-   const size_t n   ( (~dm).columns() );
+   const size_t m   ( (*dm).rows()    );
+   const size_t n   ( (*dm).columns() );
    const size_t jend( min( m, n ) );
 
    for( size_t j=0UL; j<jend; ++j ) {
       for( size_t i=j+1UL; i<m; ++i ) {
-         reset( (~dm)(i,j) );
+         reset( (*dm)(i,j) );
       }
    }
 }
@@ -348,7 +348,7 @@ inline auto resetLower_backend( DenseMatrix<MT,SO>& dm )
 {
    using blaze::reset;
 
-   reset( ~dm );
+   reset( *dm );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -389,7 +389,7 @@ template< typename MT  // Type of the matrix
         , bool SO >    // Storage order of the matrix
 inline void resetLower( DenseMatrix<MT,SO>& dm )
 {
-   resetLower_backend( ~dm );
+   resetLower_backend( *dm );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -412,13 +412,13 @@ inline auto resetUpper_backend( DenseMatrix<MT,false>& dm )
 {
    using blaze::reset;
 
-   const size_t m   ( (~dm).rows()    );
-   const size_t n   ( (~dm).columns() );
+   const size_t m   ( (*dm).rows()    );
+   const size_t n   ( (*dm).columns() );
    const size_t iend( min( m, n ) );
 
    for( size_t i=0UL; i<iend; ++i ) {
       for( size_t j=i+1UL; j<n; ++j ) {
-         reset( (~dm)(i,j) );
+         reset( (*dm)(i,j) );
       }
    }
 }
@@ -443,13 +443,13 @@ inline auto resetUpper_backend( DenseMatrix<MT,true>& dm )
 {
    using blaze::reset;
 
-   const size_t m( (~dm).rows()    );
-   const size_t n( (~dm).columns() );
+   const size_t m( (*dm).rows()    );
+   const size_t n( (*dm).columns() );
 
    for( size_t j=1UL; j<n; ++j ) {
       const size_t iend( min( j, m ) );
       for( size_t i=0UL; i<iend; ++i ) {
-         reset( (~dm)(i,j) );
+         reset( (*dm)(i,j) );
       }
    }
 }
@@ -474,7 +474,7 @@ inline auto resetUpper_backend( DenseMatrix<MT,SO>& dm )
 {
    using blaze::reset;
 
-   reset( ~dm );
+   reset( *dm );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -515,7 +515,7 @@ template< typename MT  // Type of the matrix
         , bool SO >    // Storage order of the matrix
 inline void resetUpper( DenseMatrix<MT,SO>& dm )
 {
-   resetUpper_backend( ~dm );
+   resetUpper_backend( *dm );
 }
 /*! \endcond */
 //*************************************************************************************************

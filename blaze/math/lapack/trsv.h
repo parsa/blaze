@@ -179,11 +179,11 @@ inline void trsv( const DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& b, char uplo,
    BLAZE_CONSTRAINT_MUST_BE_CONTIGUOUS_TYPE( VT );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT>, ElementType_t<VT> );
 
-   if( !isSquare( ~A ) ) {
+   if( !isSquare( *A ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid non-square matrix provided" );
    }
 
-   if( (~b).size() != (~A).rows() ) {
+   if( (*b).size() != (*A).rows() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid right-hand side vector provided" );
    }
 
@@ -199,8 +199,8 @@ inline void trsv( const DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& b, char uplo,
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid diag argument provided" );
    }
 
-   blas_int_t n   ( numeric_cast<blas_int_t>( (~A).rows() ) );
-   blas_int_t lda ( numeric_cast<blas_int_t>( (~A).spacing() ) );
+   blas_int_t n   ( numeric_cast<blas_int_t>( (*A).rows() ) );
+   blas_int_t lda ( numeric_cast<blas_int_t>( (*A).spacing() ) );
    blas_int_t incX( 1 );
 
    if( n == 0 ) {
@@ -211,7 +211,7 @@ inline void trsv( const DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& b, char uplo,
       ( uplo == 'L' )?( uplo = 'U' ):( uplo = 'L' );
    }
 
-   trsv( uplo, trans, diag, n, (~A).data(), lda, (~b).data(), incX );
+   trsv( uplo, trans, diag, n, (*A).data(), lda, (*b).data(), incX );
 }
 //*************************************************************************************************
 

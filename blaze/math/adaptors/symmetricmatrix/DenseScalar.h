@@ -1254,7 +1254,7 @@ template< typename MT     // Type of the adapted dense matrix
         , bool SO >       // Storage order of the adapted dense matrix
 template< typename MT2 >  // Type of the foreign matrix
 inline SymmetricMatrix<MT,SO,true,true>::SymmetricMatrix( const Matrix<MT2,SO>& m )
-   : matrix_( ~m )  // The adapted dense matrix
+   : matrix_( *m )  // The adapted dense matrix
 {
    if( !IsSymmetric_v<MT2> && !isSymmetric( matrix_ ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid setup of symmetric matrix" );
@@ -1281,7 +1281,7 @@ template< typename MT     // Type of the adapted dense matrix
         , bool SO >       // Storage order of the adapted dense matrix
 template< typename MT2 >  // Type of the foreign matrix
 inline SymmetricMatrix<MT,SO,true,true>::SymmetricMatrix( const Matrix<MT2,!SO>& m )
-   : matrix_( trans( ~m ) )  // The adapted dense matrix
+   : matrix_( trans( *m ) )  // The adapted dense matrix
 {
    if( !IsSymmetric_v<MT2> && !isSymmetric( matrix_ ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid setup of symmetric matrix" );
@@ -1788,11 +1788,11 @@ template< typename MT2 >  // Type of the right-hand side matrix
 inline auto SymmetricMatrix<MT,SO,true,true>::operator=( const Matrix<MT2,SO>& rhs )
    -> DisableIf_t< IsComputation_v<MT2>, SymmetricMatrix& >
 {
-   if( !IsSymmetric_v<MT2> && !isSymmetric( ~rhs ) ) {
+   if( !IsSymmetric_v<MT2> && !isSymmetric( *rhs ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to symmetric matrix" );
    }
 
-   matrix_ = ~rhs;
+   matrix_ = *rhs;
 
    BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square symmetric matrix detected" );
    BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );
@@ -1822,15 +1822,15 @@ template< typename MT2 >  // Type of the right-hand side matrix
 inline auto SymmetricMatrix<MT,SO,true,true>::operator=( const Matrix<MT2,SO>& rhs )
    -> EnableIf_t< IsComputation_v<MT2>, SymmetricMatrix& >
 {
-   if( !IsSquare_v<MT2> && !isSquare( ~rhs ) ) {
+   if( !IsSquare_v<MT2> && !isSquare( *rhs ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to symmetric matrix" );
    }
 
    if( IsSymmetric_v<MT2> ) {
-      matrix_ = ~rhs;
+      matrix_ = *rhs;
    }
    else {
-      MT tmp( ~rhs );
+      MT tmp( *rhs );
 
       if( !isSymmetric( tmp ) ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to symmetric matrix" );
@@ -1867,7 +1867,7 @@ template< typename MT2 >  // Type of the right-hand side matrix
 inline auto SymmetricMatrix<MT,SO,true,true>::operator=( const Matrix<MT2,!SO>& rhs )
    -> SymmetricMatrix&
 {
-   return this->operator=( trans( ~rhs ) );
+   return this->operator=( trans( *rhs ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1892,11 +1892,11 @@ template< typename MT2 >  // Type of the right-hand side matrix
 inline auto SymmetricMatrix<MT,SO,true,true>::operator+=( const Matrix<MT2,SO>& rhs )
    -> DisableIf_t< IsComputation_v<MT2>, SymmetricMatrix& >
 {
-   if( !IsSymmetric_v<MT2> && !isSymmetric( ~rhs ) ) {
+   if( !IsSymmetric_v<MT2> && !isSymmetric( *rhs ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to symmetric matrix" );
    }
 
-   matrix_ += ~rhs;
+   matrix_ += *rhs;
 
    BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square symmetric matrix detected" );
    BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );
@@ -1926,15 +1926,15 @@ template< typename MT2 >  // Type of the right-hand side matrix
 inline auto SymmetricMatrix<MT,SO,true,true>::operator+=( const Matrix<MT2,SO>& rhs )
    -> EnableIf_t< IsComputation_v<MT2>, SymmetricMatrix& >
 {
-   if( !IsSquare_v<MT2> && !isSquare( ~rhs ) ) {
+   if( !IsSquare_v<MT2> && !isSquare( *rhs ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to symmetric matrix" );
    }
 
    if( IsSymmetric_v<MT2> ) {
-      matrix_ += ~rhs;
+      matrix_ += *rhs;
    }
    else {
-      const ResultType_t<MT2> tmp( ~rhs );
+      const ResultType_t<MT2> tmp( *rhs );
 
       if( !isSymmetric( tmp ) ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to symmetric matrix" );
@@ -1972,7 +1972,7 @@ template< typename MT2 >  // Type of the right-hand side matrix
 inline auto SymmetricMatrix<MT,SO,true,true>::operator+=( const Matrix<MT2,!SO>& rhs )
    -> SymmetricMatrix&
 {
-   return this->operator+=( trans( ~rhs ) );
+   return this->operator+=( trans( *rhs ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1997,11 +1997,11 @@ template< typename MT2 >  // Type of the right-hand side matrix
 inline auto SymmetricMatrix<MT,SO,true,true>::operator-=( const Matrix<MT2,SO>& rhs )
    -> DisableIf_t< IsComputation_v<MT2>, SymmetricMatrix& >
 {
-   if( !IsSymmetric_v<MT2> && !isSymmetric( ~rhs ) ) {
+   if( !IsSymmetric_v<MT2> && !isSymmetric( *rhs ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to symmetric matrix" );
    }
 
-   matrix_ -= ~rhs;
+   matrix_ -= *rhs;
 
    BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square symmetric matrix detected" );
    BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );
@@ -2031,15 +2031,15 @@ template< typename MT2 >  // Type of the right-hand side matrix
 inline auto SymmetricMatrix<MT,SO,true,true>::operator-=( const Matrix<MT2,SO>& rhs )
    -> EnableIf_t< IsComputation_v<MT2>, SymmetricMatrix& >
 {
-   if( !IsSquare_v<MT2> && !isSquare( ~rhs ) ) {
+   if( !IsSquare_v<MT2> && !isSquare( *rhs ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to symmetric matrix" );
    }
 
    if( IsSymmetric_v<MT2> ) {
-      matrix_ -= ~rhs;
+      matrix_ -= *rhs;
    }
    else {
-      const ResultType_t<MT2> tmp( ~rhs );
+      const ResultType_t<MT2> tmp( *rhs );
 
       if( !isSymmetric( tmp ) ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to symmetric matrix" );
@@ -2077,7 +2077,7 @@ template< typename MT2 >  // Type of the right-hand side matrix
 inline auto SymmetricMatrix<MT,SO,true,true>::operator-=( const Matrix<MT2,!SO>& rhs )
    -> SymmetricMatrix&
 {
-   return this->operator-=( trans( ~rhs ) );
+   return this->operator-=( trans( *rhs ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -2103,11 +2103,11 @@ template< typename MT2 >  // Type of the right-hand side matrix
 inline auto SymmetricMatrix<MT,SO,true,true>::operator%=( const Matrix<MT2,SO>& rhs )
    -> DisableIf_t< IsComputation_v<MT2>, SymmetricMatrix& >
 {
-   if( !IsSymmetric_v<MT2> && !isSymmetric( ~rhs ) ) {
+   if( !IsSymmetric_v<MT2> && !isSymmetric( *rhs ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to symmetric matrix" );
    }
 
-   matrix_ %= ~rhs;
+   matrix_ %= *rhs;
 
    BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square symmetric matrix detected" );
    BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );
@@ -2138,15 +2138,15 @@ template< typename MT2 >  // Type of the right-hand side matrix
 inline auto SymmetricMatrix<MT,SO,true,true>::operator%=( const Matrix<MT2,SO>& rhs )
    -> EnableIf_t< IsComputation_v<MT2>, SymmetricMatrix& >
 {
-   if( !IsSquare_v<MT2> && !isSquare( ~rhs ) ) {
+   if( !IsSquare_v<MT2> && !isSquare( *rhs ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to symmetric matrix" );
    }
 
    if( IsSymmetric_v<MT2> ) {
-      matrix_ %= ~rhs;
+      matrix_ %= *rhs;
    }
    else {
-      const ResultType_t<MT2> tmp( ~rhs );
+      const ResultType_t<MT2> tmp( *rhs );
 
       if( !isSymmetric( tmp ) ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to symmetric matrix" );
@@ -2184,7 +2184,7 @@ template< typename MT2 >  // Type of the right-hand side matrix
 inline auto SymmetricMatrix<MT,SO,true,true>::operator%=( const Matrix<MT2,!SO>& rhs )
    -> SymmetricMatrix&
 {
-   return this->operator%=( trans( ~rhs ) );
+   return this->operator%=( trans( *rhs ) );
 }
 /*! \endcond */
 //*************************************************************************************************

@@ -123,7 +123,7 @@ inline void potrf( DenseMatrix<MT,SO>& A, char uplo )
    BLAZE_CONSTRAINT_MUST_BE_CONTIGUOUS_TYPE( MT );
    BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<MT> );
 
-   if( !isSquare( ~A ) ) {
+   if( !isSquare( *A ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid non-square matrix provided" );
    }
 
@@ -131,8 +131,8 @@ inline void potrf( DenseMatrix<MT,SO>& A, char uplo )
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid uplo argument provided" );
    }
 
-   blas_int_t n   ( numeric_cast<blas_int_t>( (~A).rows()    ) );
-   blas_int_t lda ( numeric_cast<blas_int_t>( (~A).spacing() ) );
+   blas_int_t n   ( numeric_cast<blas_int_t>( (*A).rows()    ) );
+   blas_int_t lda ( numeric_cast<blas_int_t>( (*A).spacing() ) );
    blas_int_t info( 0 );
 
    if( n == 0 ) {
@@ -143,7 +143,7 @@ inline void potrf( DenseMatrix<MT,SO>& A, char uplo )
       ( uplo == 'L' )?( uplo = 'U' ):( uplo = 'L' );
    }
 
-   potrf( uplo, n, (~A).data(), lda, &info );
+   potrf( uplo, n, (*A).data(), lda, &info );
 
    BLAZE_INTERNAL_ASSERT( info >= 0, "Invalid argument for Cholesky decomposition" );
 

@@ -284,27 +284,27 @@ class SVecSVecAddExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       CT1 x( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side sparse vector operand
       CT2 y( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side sparse vector operand
 
       BLAZE_INTERNAL_ASSERT( x.size() == rhs.lhs_.size(), "Invalid vector size" );
       BLAZE_INTERNAL_ASSERT( y.size() == rhs.rhs_.size(), "Invalid vector size" );
-      BLAZE_INTERNAL_ASSERT( x.size() == (~lhs).size()  , "Invalid vector size" );
+      BLAZE_INTERNAL_ASSERT( x.size() == (*lhs).size()  , "Invalid vector size" );
 
       const auto lend( x.end() );
       const auto rend( y.end() );
 
       for( auto l=x.begin(); l!=lend; ++l ) {
-         (~lhs)[l->index()] = l->value();
+         (*lhs)[l->index()] = l->value();
       }
 
       for( auto r=y.begin(); r!=rend; ++r ) {
-         if( isDefault( (~lhs)[r->index()] ) )
-            (~lhs)[r->index()] = r->value();
+         if( isDefault( (*lhs)[r->index()] ) )
+            (*lhs)[r->index()] = r->value();
          else
-            (~lhs)[r->index()] += r->value();
+            (*lhs)[r->index()] += r->value();
       }
    }
    /*! \endcond */
@@ -329,24 +329,24 @@ class SVecSVecAddExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       CT1 x( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side sparse vector operand
       CT2 y( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side sparse vector operand
 
       BLAZE_INTERNAL_ASSERT( x.size() == rhs.lhs_.size(), "Invalid vector size" );
       BLAZE_INTERNAL_ASSERT( y.size() == rhs.rhs_.size(), "Invalid vector size" );
-      BLAZE_INTERNAL_ASSERT( x.size() == (~lhs).size()  , "Invalid vector size" );
+      BLAZE_INTERNAL_ASSERT( x.size() == (*lhs).size()  , "Invalid vector size" );
 
       const auto lend( x.end() );
       const auto rend( y.end() );
 
       for( auto l=x.begin(); l!=lend; ++l ) {
-         (~lhs)[l->index()] = l->value();
+         (*lhs)[l->index()] = l->value();
       }
 
       for( auto r=y.begin(); r!=rend; ++r ) {
-         (~lhs)[r->index()] += r->value();
+         (*lhs)[r->index()] += r->value();
       }
    }
    /*! \endcond */
@@ -369,17 +369,17 @@ class SVecSVecAddExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       CT1 x( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side sparse vector operand
       CT2 y( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side sparse vector operand
 
       BLAZE_INTERNAL_ASSERT( x.size() == rhs.lhs_.size(), "Invalid vector size" );
       BLAZE_INTERNAL_ASSERT( y.size() == rhs.rhs_.size(), "Invalid vector size" );
-      BLAZE_INTERNAL_ASSERT( x.size() == (~lhs).size()  , "Invalid vector size" );
+      BLAZE_INTERNAL_ASSERT( x.size() == (*lhs).size()  , "Invalid vector size" );
 
       // Final memory allocation (based on the evaluated operands)
-      (~lhs).reserve( min( x.size(), x.nonZeros() + y.nonZeros() ) );
+      (*lhs).reserve( min( x.size(), x.nonZeros() + y.nonZeros() ) );
 
       // Performing the vector addition
       const auto lend( x.end() );
@@ -391,27 +391,27 @@ class SVecSVecAddExpr
       while( l != lend && r != rend )
       {
          if( l->index() < r->index() ) {
-            (~lhs).append( l->index(), l->value() );
+            (*lhs).append( l->index(), l->value() );
             ++l;
          }
          else if( l->index() > r->index() ) {
-            (~lhs).append( r->index(), r->value() );
+            (*lhs).append( r->index(), r->value() );
             ++r;
          }
          else {
-            (~lhs).append( l->index(), l->value() + r->value() );
+            (*lhs).append( l->index(), l->value() + r->value() );
             ++l;
             ++r;
          }
       }
 
       while( l != lend ) {
-         (~lhs).append( l->index(), l->value() );
+         (*lhs).append( l->index(), l->value() );
          ++l;
       }
 
       while( r != rend ) {
-         (~lhs).append( r->index(), r->value() );
+         (*lhs).append( r->index(), r->value() );
          ++r;
       }
    }
@@ -435,10 +435,10 @@ class SVecSVecAddExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      addAssign( ~lhs, rhs.lhs_ );
-      addAssign( ~lhs, rhs.rhs_ );
+      addAssign( *lhs, rhs.lhs_ );
+      addAssign( *lhs, rhs.rhs_ );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -464,10 +464,10 @@ class SVecSVecAddExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      subAssign( ~lhs, rhs.lhs_ );
-      subAssign( ~lhs, rhs.rhs_ );
+      subAssign( *lhs, rhs.lhs_ );
+      subAssign( *lhs, rhs.rhs_ );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -497,10 +497,10 @@ class SVecSVecAddExpr
       BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType, TF );
       BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       const ResultType tmp( serial( rhs ) );
-      multAssign( ~lhs, tmp );
+      multAssign( *lhs, tmp );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -537,10 +537,10 @@ class SVecSVecAddExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      smpAddAssign( ~lhs, rhs.lhs_ );
-      smpAddAssign( ~lhs, rhs.rhs_ );
+      smpAddAssign( *lhs, rhs.lhs_ );
+      smpAddAssign( *lhs, rhs.rhs_ );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -569,10 +569,10 @@ class SVecSVecAddExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      smpSubAssign( ~lhs, rhs.lhs_ );
-      smpSubAssign( ~lhs, rhs.rhs_ );
+      smpSubAssign( *lhs, rhs.lhs_ );
+      smpSubAssign( *lhs, rhs.rhs_ );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -606,10 +606,10 @@ class SVecSVecAddExpr
       BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType, TF );
       BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       const ResultType tmp( rhs );
-      smpMultAssign( ~lhs, tmp );
+      smpMultAssign( *lhs, tmp );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -662,9 +662,9 @@ inline const SVecSVecAddExpr<VT1,VT2,TF>
 {
    BLAZE_FUNCTION_TRACE;
 
-   BLAZE_INTERNAL_ASSERT( (~lhs).size() == (~rhs).size(), "Invalid vector sizes" );
+   BLAZE_INTERNAL_ASSERT( (*lhs).size() == (*rhs).size(), "Invalid vector sizes" );
 
-   return SVecSVecAddExpr<VT1,VT2,TF>( ~lhs, ~rhs );
+   return SVecSVecAddExpr<VT1,VT2,TF>( *lhs, *rhs );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -695,9 +695,9 @@ inline const VT1&
 
    MAYBE_UNUSED( rhs );
 
-   BLAZE_INTERNAL_ASSERT( (~lhs).size() == (~rhs).size(), "Invalid vector sizes" );
+   BLAZE_INTERNAL_ASSERT( (*lhs).size() == (*rhs).size(), "Invalid vector sizes" );
 
-   return (~lhs);
+   return (*lhs);
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -728,9 +728,9 @@ inline const VT2&
 
    MAYBE_UNUSED( lhs );
 
-   BLAZE_INTERNAL_ASSERT( (~lhs).size() == (~rhs).size(), "Invalid vector sizes" );
+   BLAZE_INTERNAL_ASSERT( (*lhs).size() == (*rhs).size(), "Invalid vector sizes" );
 
-   return (~rhs);
+   return (*rhs);
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -759,14 +759,14 @@ inline decltype(auto)
 
    MAYBE_UNUSED( rhs );
 
-   BLAZE_INTERNAL_ASSERT( (~lhs).size() == (~rhs).size(), "Invalid vector sizes" );
+   BLAZE_INTERNAL_ASSERT( (*lhs).size() == (*rhs).size(), "Invalid vector sizes" );
 
    using ReturnType = const AddTrait_t< ResultType_t<VT1>, ResultType_t<VT2> >;
 
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ReturnType, TF );
    BLAZE_CONSTRAINT_MUST_BE_ZERO_TYPE( ReturnType );
 
-   return ReturnType( (~lhs).size() );
+   return ReturnType( (*lhs).size() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -804,11 +804,11 @@ inline decltype(auto)
 {
    BLAZE_FUNCTION_TRACE;
 
-   if( (~lhs).size() != (~rhs).size() ) {
+   if( (*lhs).size() != (*rhs).size() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   return svecsvecadd( ~lhs, ~rhs );
+   return svecsvecadd( *lhs, *rhs );
 }
 //*************************************************************************************************
 

@@ -94,7 +94,7 @@ inline decltype(auto) eval( const MatEvalExpr<MT>& matrix )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return ~matrix;
+   return *matrix;
 }
 /*! \endcond */
 //*************************************************************************************************

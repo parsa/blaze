@@ -362,8 +362,8 @@ template< typename MT    // Type of the adapted matrix
         , typename ET >  // Type of the element
 inline bool trySet( const StrictlyUpperMatrix<MT,SO,DF>& mat, size_t i, size_t j, const ET& value )
 {
-   BLAZE_INTERNAL_ASSERT( i < (~mat).rows(), "Invalid row access index" );
-   BLAZE_INTERNAL_ASSERT( j < (~mat).columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( i < (*mat).rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( j < (*mat).columns(), "Invalid column access index" );
 
    MAYBE_UNUSED( mat );
 
@@ -398,10 +398,10 @@ template< typename MT    // Type of the adapted matrix
 BLAZE_ALWAYS_INLINE bool
    trySet( const StrictlyUpperMatrix<MT,SO,DF>& mat, size_t row, size_t column, size_t m, size_t n, const ET& value )
 {
-   BLAZE_INTERNAL_ASSERT( row <= (~mat).rows(), "Invalid row access index" );
-   BLAZE_INTERNAL_ASSERT( column <= (~mat).columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( row + m <= (~mat).rows(), "Invalid number of rows" );
-   BLAZE_INTERNAL_ASSERT( column + n <= (~mat).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( row <= (*mat).rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( column <= (*mat).columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( row + m <= (*mat).rows(), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( column + n <= (*mat).columns(), "Invalid number of columns" );
 
    MAYBE_UNUSED( mat );
 
@@ -682,14 +682,14 @@ inline bool tryAssign( const StrictlyUpperMatrix<MT,SO,DF>& lhs,
 
    BLAZE_INTERNAL_ASSERT( row <= lhs.rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( row + (~rhs).size() <= lhs.rows(), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( row + (*rhs).size() <= lhs.rows(), "Invalid number of rows" );
 
    MAYBE_UNUSED( lhs );
 
    const size_t ibegin( ( column <= row )?( 0UL ):( column - row ) );
 
-   for( size_t i=ibegin; i<(~rhs).size(); ++i ) {
-      if( !isDefault( (~rhs)[i] ) )
+   for( size_t i=ibegin; i<(*rhs).size(); ++i ) {
+      if( !isDefault( (*rhs)[i] ) )
          return false;
    }
 
@@ -727,17 +727,17 @@ inline bool tryAssign( const StrictlyUpperMatrix<MT,SO,DF>& lhs,
 
    BLAZE_INTERNAL_ASSERT( row <= lhs.rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( column + (~rhs).size() <= lhs.columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( column + (*rhs).size() <= lhs.columns(), "Invalid number of columns" );
 
    MAYBE_UNUSED( lhs );
 
    if( row < column )
       return true;
 
-   const size_t iend( min( row - column + 1UL, (~rhs).size() ) );
+   const size_t iend( min( row - column + 1UL, (*rhs).size() ) );
 
    for( size_t i=0UL; i<iend; ++i ) {
-      if( !isDefault( (~rhs)[i] ) )
+      if( !isDefault( (*rhs)[i] ) )
          return false;
    }
 
@@ -777,14 +777,14 @@ inline bool tryAssign( const StrictlyUpperMatrix<MT,SO,DF>& lhs, const DenseVect
 
    BLAZE_INTERNAL_ASSERT( row <= lhs.rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( row + (~rhs).size() <= lhs.rows(), "Invalid number of rows" );
-   BLAZE_INTERNAL_ASSERT( column + (~rhs).size() <= lhs.columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( row + (*rhs).size() <= lhs.rows(), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( column + (*rhs).size() <= lhs.columns(), "Invalid number of columns" );
 
    MAYBE_UNUSED( lhs, row, column );
 
    if( band <= 0L ) {
-      for( size_t i=0UL; i<(~rhs).size(); ++i ) {
-         if( !isDefault( (~rhs)[i] ) )
+      for( size_t i=0UL; i<(*rhs).size(); ++i ) {
+         if( !isDefault( (*rhs)[i] ) )
             return false;
       }
    }
@@ -823,12 +823,12 @@ inline bool tryAssign( const StrictlyUpperMatrix<MT,SO,DF>& lhs,
 
    BLAZE_INTERNAL_ASSERT( row <= lhs.rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( row + (~rhs).size() <= lhs.rows(), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( row + (*rhs).size() <= lhs.rows(), "Invalid number of rows" );
 
    MAYBE_UNUSED( lhs );
 
-   const auto last( (~rhs).end() );
-   auto element( (~rhs).lowerBound( ( column <= row )?( 0UL ):( column - row ) ) );
+   const auto last( (*rhs).end() );
+   auto element( (*rhs).lowerBound( ( column <= row )?( 0UL ):( column - row ) ) );
 
    for( ; element!=last; ++element ) {
       if( !isDefault( element->value() ) )
@@ -869,16 +869,16 @@ inline bool tryAssign( const StrictlyUpperMatrix<MT,SO,DF>& lhs,
 
    BLAZE_INTERNAL_ASSERT( row <= lhs.rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( column + (~rhs).size() <= lhs.columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( column + (*rhs).size() <= lhs.columns(), "Invalid number of columns" );
 
    MAYBE_UNUSED( lhs );
 
    if( row < column )
       return true;
 
-   const auto last( (~rhs).lowerBound( row - column + 1UL ) );
+   const auto last( (*rhs).lowerBound( row - column + 1UL ) );
 
-   for( auto element=(~rhs).begin(); element!=last; ++element ) {
+   for( auto element=(*rhs).begin(); element!=last; ++element ) {
       if( !isDefault( element->value() ) )
          return false;
    }
@@ -919,13 +919,13 @@ inline bool tryAssign( const StrictlyUpperMatrix<MT,SO,DF>& lhs, const SparseVec
 
    BLAZE_INTERNAL_ASSERT( row <= lhs.rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( row + (~rhs).size() <= lhs.rows(), "Invalid number of rows" );
-   BLAZE_INTERNAL_ASSERT( column + (~rhs).size() <= lhs.columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( row + (*rhs).size() <= lhs.rows(), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( column + (*rhs).size() <= lhs.columns(), "Invalid number of columns" );
 
    MAYBE_UNUSED( lhs, row, column );
 
    if( band <= 0L ) {
-      for( const auto& element : ~rhs ) {
+      for( const auto& element : *rhs ) {
          if( !isDefault( element.value() ) )
             return false;
       }
@@ -965,13 +965,13 @@ inline bool tryAssign( const StrictlyUpperMatrix<MT1,SO,DF>& lhs,
 
    BLAZE_INTERNAL_ASSERT( row <= lhs.rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( row + (~rhs).rows() <= lhs.rows(), "Invalid number of rows" );
-   BLAZE_INTERNAL_ASSERT( column + (~rhs).columns() <= lhs.columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( row + (*rhs).rows() <= lhs.rows(), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( column + (*rhs).columns() <= lhs.columns(), "Invalid number of columns" );
 
    MAYBE_UNUSED( lhs );
 
-   const size_t M( (~rhs).rows()    );
-   const size_t N( (~rhs).columns() );
+   const size_t M( (*rhs).rows()    );
+   const size_t N( (*rhs).columns() );
 
    if( column >= row + M )
       return true;
@@ -983,7 +983,7 @@ inline bool tryAssign( const StrictlyUpperMatrix<MT1,SO,DF>& lhs,
       const size_t jend( min( row + i - column + 1UL, N ) );
 
       for( size_t j=0UL; j<jend; ++j ) {
-         if( !isDefault( (~rhs)(i,j) ) )
+         if( !isDefault( (*rhs)(i,j) ) )
             return false;
       }
    }
@@ -1022,13 +1022,13 @@ inline bool tryAssign( const StrictlyUpperMatrix<MT1,SO,DF>& lhs,
 
    BLAZE_INTERNAL_ASSERT( row <= lhs.rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( row + (~rhs).rows() <= lhs.rows(), "Invalid number of rows" );
-   BLAZE_INTERNAL_ASSERT( column + (~rhs).columns() <= lhs.columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( row + (*rhs).rows() <= lhs.rows(), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( column + (*rhs).columns() <= lhs.columns(), "Invalid number of columns" );
 
    MAYBE_UNUSED( lhs );
 
-   const size_t M( (~rhs).rows()    );
-   const size_t N( (~rhs).columns() );
+   const size_t M( (*rhs).rows()    );
+   const size_t N( (*rhs).columns() );
 
    if( column >= row + M )
       return true;
@@ -1041,7 +1041,7 @@ inline bool tryAssign( const StrictlyUpperMatrix<MT1,SO,DF>& lhs,
       const size_t ibegin( ( containsDiagonal )?( column + j - row ):( 0UL ) );
 
       for( size_t i=ibegin; i<M; ++i ) {
-         if( !isDefault( (~rhs)(i,j) ) )
+         if( !isDefault( (*rhs)(i,j) ) )
             return false;
       }
    }
@@ -1080,13 +1080,13 @@ inline bool tryAssign( const StrictlyUpperMatrix<MT1,SO,DF>& lhs,
 
    BLAZE_INTERNAL_ASSERT( row <= lhs.rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( row + (~rhs).rows() <= lhs.rows(), "Invalid number of rows" );
-   BLAZE_INTERNAL_ASSERT( column + (~rhs).columns() <= lhs.columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( row + (*rhs).rows() <= lhs.rows(), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( column + (*rhs).columns() <= lhs.columns(), "Invalid number of columns" );
 
    MAYBE_UNUSED( lhs );
 
-   const size_t M( (~rhs).rows()    );
-   const size_t N( (~rhs).columns() );
+   const size_t M( (*rhs).rows()    );
+   const size_t N( (*rhs).columns() );
 
    if( column >= row + M )
       return true;
@@ -1096,9 +1096,9 @@ inline bool tryAssign( const StrictlyUpperMatrix<MT1,SO,DF>& lhs,
    for( size_t i=ibegin; i<M; ++i )
    {
       const size_t index( row + i - column + 1UL );
-      const auto last( (~rhs).lowerBound( i, min( index, N ) ) );
+      const auto last( (*rhs).lowerBound( i, min( index, N ) ) );
 
-      for( auto element=(~rhs).begin(i); element!=last; ++element ) {
+      for( auto element=(*rhs).begin(i); element!=last; ++element ) {
          if( !isDefault( element->value() ) )
             return false;
       }
@@ -1138,13 +1138,13 @@ inline bool tryAssign( const StrictlyUpperMatrix<MT1,SO,DF>& lhs,
 
    BLAZE_INTERNAL_ASSERT( row <= lhs.rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( row + (~rhs).rows() <= lhs.rows(), "Invalid number of rows" );
-   BLAZE_INTERNAL_ASSERT( column + (~rhs).columns() <= lhs.columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( row + (*rhs).rows() <= lhs.rows(), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( column + (*rhs).columns() <= lhs.columns(), "Invalid number of columns" );
 
    MAYBE_UNUSED( lhs );
 
-   const size_t M( (~rhs).rows()    );
-   const size_t N( (~rhs).columns() );
+   const size_t M( (*rhs).rows()    );
+   const size_t N( (*rhs).columns() );
 
    if( column >= row + M )
       return true;
@@ -1156,8 +1156,8 @@ inline bool tryAssign( const StrictlyUpperMatrix<MT1,SO,DF>& lhs,
       const bool containsDiagonal( column + j >= row );
       const size_t index( ( containsDiagonal )?( column + j - row ):( 0UL ) );
 
-      const auto last( (~rhs).end(j) );
-      auto element( (~rhs).lowerBound( index, j ) );
+      const auto last( (*rhs).end(j) );
+      auto element( (*rhs).lowerBound( index, j ) );
 
       for( ; element!=last; ++element ) {
          if( !isDefault( element->value() ) )
@@ -1196,7 +1196,7 @@ template< typename MT  // Type of the adapted matrix
 inline bool tryAddAssign( const StrictlyUpperMatrix<MT,SO,DF>& lhs,
                           const Vector<VT,TF>& rhs, size_t row, size_t column )
 {
-   return tryAssign( lhs, ~rhs, row, column );
+   return tryAssign( lhs, *rhs, row, column );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1228,7 +1228,7 @@ template< typename MT  // Type of the adapted matrix
 inline bool tryAddAssign( const StrictlyUpperMatrix<MT,SO,DF>& lhs, const Vector<VT,TF>& rhs,
                           ptrdiff_t band, size_t row, size_t column )
 {
-   return tryAssign( lhs, ~rhs, band, row, column );
+   return tryAssign( lhs, *rhs, band, row, column );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1259,7 +1259,7 @@ template< typename MT1  // Type of the adapted matrix
 inline bool tryAddAssign( const StrictlyUpperMatrix<MT1,SO1,DF>& lhs,
                           const Matrix<MT2,SO2>& rhs, size_t row, size_t column )
 {
-   return tryAssign( lhs, ~rhs, row, column );
+   return tryAssign( lhs, *rhs, row, column );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1290,7 +1290,7 @@ template< typename MT  // Type of the adapted matrix
 inline bool trySubAssign( const StrictlyUpperMatrix<MT,SO,DF>& lhs,
                           const Vector<VT,TF>& rhs, size_t row, size_t column )
 {
-   return tryAssign( lhs, ~rhs, row, column );
+   return tryAssign( lhs, *rhs, row, column );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1322,7 +1322,7 @@ template< typename MT  // Type of the adapted matrix
 inline bool trySubAssign( const StrictlyUpperMatrix<MT,SO,DF>& lhs, const Vector<VT,TF>& rhs,
                           ptrdiff_t band, size_t row, size_t column )
 {
-   return tryAssign( lhs, ~rhs, band, row, column );
+   return tryAssign( lhs, *rhs, band, row, column );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1353,7 +1353,7 @@ template< typename MT1  // Type of the adapted matrix
 inline bool trySubAssign( const StrictlyUpperMatrix<MT1,SO1,DF>& lhs,
                           const Matrix<MT2,SO2>& rhs, size_t row, size_t column )
 {
-   return tryAssign( lhs, ~rhs, row, column );
+   return tryAssign( lhs, *rhs, row, column );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1384,7 +1384,7 @@ template< typename MT  // Type of the adapted matrix
 inline bool tryBitorAssign( const StrictlyUpperMatrix<MT,SO,DF>& lhs,
                             const Vector<VT,TF>& rhs, size_t row, size_t column )
 {
-   return tryAssign( lhs, ~rhs, row, column );
+   return tryAssign( lhs, *rhs, row, column );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1415,7 +1415,7 @@ template< typename MT  // Type of the adapted matrix
 inline bool tryBitorAssign( const StrictlyUpperMatrix<MT,SO,DF>& lhs, const Vector<VT,TF>& rhs,
                             ptrdiff_t band, size_t row, size_t column )
 {
-   return tryAssign( lhs, ~rhs, band, row, column );
+   return tryAssign( lhs, *rhs, band, row, column );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1446,7 +1446,7 @@ template< typename MT1  // Type of the adapted matrix
 inline bool tryBitorAssign( const StrictlyUpperMatrix<MT1,SO1,DF>& lhs,
                             const Matrix<MT2,SO2>& rhs, size_t row, size_t column )
 {
-   return tryAssign( lhs, ~rhs, row, column );
+   return tryAssign( lhs, *rhs, row, column );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1477,7 +1477,7 @@ template< typename MT  // Type of the adapted matrix
 inline bool tryBitxorAssign( const StrictlyUpperMatrix<MT,SO,DF>& lhs,
                              const Vector<VT,TF>& rhs, size_t row, size_t column )
 {
-   return tryAssign( lhs, ~rhs, row, column );
+   return tryAssign( lhs, *rhs, row, column );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1508,7 +1508,7 @@ template< typename MT  // Type of the adapted matrix
 inline bool tryBitxorAssign( const StrictlyUpperMatrix<MT,SO,DF>& lhs, const Vector<VT,TF>& rhs,
                              ptrdiff_t band, size_t row, size_t column )
 {
-   return tryAssign( lhs, ~rhs, band, row, column );
+   return tryAssign( lhs, *rhs, band, row, column );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1539,7 +1539,7 @@ template< typename MT1  // Type of the adapted matrix
 inline bool tryBitxorAssign( const StrictlyUpperMatrix<MT1,SO1,DF>& lhs,
                              const Matrix<MT2,SO2>& rhs, size_t row, size_t column )
 {
-   return tryAssign( lhs, ~rhs, row, column );
+   return tryAssign( lhs, *rhs, row, column );
 }
 /*! \endcond */
 //*************************************************************************************************

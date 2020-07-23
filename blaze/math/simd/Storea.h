@@ -80,13 +80,13 @@ BLAZE_ALWAYS_INLINE EnableIf_t< IsIntegral_v<T1> && HasSize_v<T1,1UL> >
    BLAZE_INTERNAL_ASSERT( checkAlignment( address ), "Invalid alignment detected" );
 
 #if BLAZE_AVX512BW_MODE
-   _mm512_store_si512( address, (~value).value );
+   _mm512_store_si512( address, (*value).value );
 #elif BLAZE_AVX2_MODE
-   _mm256_store_si256( reinterpret_cast<__m256i*>( address ), (~value).value );
+   _mm256_store_si256( reinterpret_cast<__m256i*>( address ), (*value).value );
 #elif BLAZE_SSE2_MODE
-   _mm_store_si128( reinterpret_cast<__m128i*>( address ), (~value).value );
+   _mm_store_si128( reinterpret_cast<__m128i*>( address ), (*value).value );
 #else
-   *address = (~value).value;
+   *address = (*value).value;
 #endif
 }
 //*************************************************************************************************
@@ -113,13 +113,13 @@ BLAZE_ALWAYS_INLINE EnableIf_t< IsIntegral_v<T1> && HasSize_v<T1,1UL> >
    BLAZE_INTERNAL_ASSERT( checkAlignment( address ), "Invalid alignment detected" );
 
 #if BLAZE_AVX512BW_MODE
-   _mm512_store_si512( address, (~value).value );
+   _mm512_store_si512( address, (*value).value );
 #elif BLAZE_AVX2_MODE
-   _mm256_store_si256( reinterpret_cast<__m256i*>( address ), (~value).value );
+   _mm256_store_si256( reinterpret_cast<__m256i*>( address ), (*value).value );
 #elif BLAZE_SSE2_MODE
-   _mm_store_si128( reinterpret_cast<__m128i*>( address ), (~value).value );
+   _mm_store_si128( reinterpret_cast<__m128i*>( address ), (*value).value );
 #else
-   *address = (~value).value;
+   *address = (*value).value;
 #endif
 }
 //*************************************************************************************************
@@ -153,13 +153,13 @@ BLAZE_ALWAYS_INLINE EnableIf_t< IsIntegral_v<T1> && HasSize_v<T1,2UL> >
    BLAZE_INTERNAL_ASSERT( checkAlignment( address ), "Invalid alignment detected" );
 
 #if BLAZE_AVX512BW_MODE
-   _mm512_store_si512( address, (~value).value );
+   _mm512_store_si512( address, (*value).value );
 #elif BLAZE_AVX2_MODE
-   _mm256_store_si256( reinterpret_cast<__m256i*>( address ), (~value).value );
+   _mm256_store_si256( reinterpret_cast<__m256i*>( address ), (*value).value );
 #elif BLAZE_SSE2_MODE
-   _mm_store_si128( reinterpret_cast<__m128i*>( address ), (~value).value );
+   _mm_store_si128( reinterpret_cast<__m128i*>( address ), (*value).value );
 #else
-   *address = (~value).value;
+   *address = (*value).value;
 #endif
 }
 //*************************************************************************************************
@@ -186,13 +186,13 @@ BLAZE_ALWAYS_INLINE EnableIf_t< IsIntegral_v<T1> && HasSize_v<T1,2UL> >
    BLAZE_INTERNAL_ASSERT( checkAlignment( address ), "Invalid alignment detected" );
 
 #if BLAZE_AVX512BW_MODE
-   _mm512_store_si512( address, (~value).value );
+   _mm512_store_si512( address, (*value).value );
 #elif BLAZE_AVX2_MODE
-   _mm256_store_si256( reinterpret_cast<__m256i*>( address ), (~value).value );
+   _mm256_store_si256( reinterpret_cast<__m256i*>( address ), (*value).value );
 #elif BLAZE_SSE2_MODE
-   _mm_store_si128( reinterpret_cast<__m128i*>( address ), (~value).value );
+   _mm_store_si128( reinterpret_cast<__m128i*>( address ), (*value).value );
 #else
-   *address = (~value).value;
+   *address = (*value).value;
 #endif
 }
 //*************************************************************************************************
@@ -226,13 +226,13 @@ BLAZE_ALWAYS_INLINE EnableIf_t< IsIntegral_v<T1> && HasSize_v<T1,4UL> >
    BLAZE_INTERNAL_ASSERT( checkAlignment( address ), "Invalid alignment detected" );
 
 #if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
-   _mm512_store_epi32( address, (~value).value );
+   _mm512_store_epi32( address, (*value).value );
 #elif BLAZE_AVX2_MODE
-   _mm256_store_si256( reinterpret_cast<__m256i*>( address ), (~value).value );
+   _mm256_store_si256( reinterpret_cast<__m256i*>( address ), (*value).value );
 #elif BLAZE_SSE2_MODE
-   _mm_store_si128( reinterpret_cast<__m128i*>( address ), (~value).value );
+   _mm_store_si128( reinterpret_cast<__m128i*>( address ), (*value).value );
 #else
-   *address = (~value).value;
+   *address = (*value).value;
 #endif
 }
 //*************************************************************************************************
@@ -259,13 +259,13 @@ BLAZE_ALWAYS_INLINE EnableIf_t< IsIntegral_v<T1> && HasSize_v<T1,4UL> >
    BLAZE_INTERNAL_ASSERT( checkAlignment( address ), "Invalid alignment detected" );
 
 #if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
-   _mm512_store_epi32( address, (~value).value );
+   _mm512_store_epi32( address, (*value).value );
 #elif BLAZE_AVX2_MODE
-   _mm256_store_si256( reinterpret_cast<__m256i*>( address ), (~value).value );
+   _mm256_store_si256( reinterpret_cast<__m256i*>( address ), (*value).value );
 #elif BLAZE_SSE2_MODE
-   _mm_store_si128( reinterpret_cast<__m128i*>( address ), (~value).value );
+   _mm_store_si128( reinterpret_cast<__m128i*>( address ), (*value).value );
 #else
-   *address = (~value).value;
+   *address = (*value).value;
 #endif
 }
 //*************************************************************************************************
@@ -299,13 +299,13 @@ BLAZE_ALWAYS_INLINE EnableIf_t< IsIntegral_v<T1> && HasSize_v<T1,8UL> >
    BLAZE_INTERNAL_ASSERT( checkAlignment( address ), "Invalid alignment detected" );
 
 #if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
-   _mm512_store_epi64( address, (~value).value );
+   _mm512_store_epi64( address, (*value).value );
 #elif BLAZE_AVX2_MODE
-   _mm256_store_si256( reinterpret_cast<__m256i*>( address ), (~value).value );
+   _mm256_store_si256( reinterpret_cast<__m256i*>( address ), (*value).value );
 #elif BLAZE_SSE2_MODE
-   _mm_store_si128( reinterpret_cast<__m128i*>( address ), (~value).value );
+   _mm_store_si128( reinterpret_cast<__m128i*>( address ), (*value).value );
 #else
-   *address = (~value).value;
+   *address = (*value).value;
 #endif
 }
 //*************************************************************************************************
@@ -332,13 +332,13 @@ BLAZE_ALWAYS_INLINE EnableIf_t< IsIntegral_v<T1> && HasSize_v<T1,8UL> >
    BLAZE_INTERNAL_ASSERT( checkAlignment( address ), "Invalid alignment detected" );
 
 #if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
-   _mm512_store_epi64( address, (~value).value );
+   _mm512_store_epi64( address, (*value).value );
 #elif BLAZE_AVX2_MODE
-   _mm256_store_si256( reinterpret_cast<__m256i*>( address ), (~value).value );
+   _mm256_store_si256( reinterpret_cast<__m256i*>( address ), (*value).value );
 #elif BLAZE_SSE2_MODE
-   _mm_store_si128( reinterpret_cast<__m128i*>( address ), (~value).value );
+   _mm_store_si128( reinterpret_cast<__m128i*>( address ), (*value).value );
 #else
-   *address = (~value).value;
+   *address = (*value).value;
 #endif
 }
 //*************************************************************************************************
@@ -370,13 +370,13 @@ BLAZE_ALWAYS_INLINE void storea( float* address, const SIMDf32<T>& value ) noexc
    BLAZE_INTERNAL_ASSERT( checkAlignment( address ), "Invalid alignment detected" );
 
 #if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
-   _mm512_store_ps( address, (~value).eval().value );
+   _mm512_store_ps( address, (*value).eval().value );
 #elif BLAZE_AVX_MODE
-   _mm256_store_ps( address, (~value).eval().value );
+   _mm256_store_ps( address, (*value).eval().value );
 #elif BLAZE_SSE_MODE
-   _mm_store_ps( address, (~value).eval().value );
+   _mm_store_ps( address, (*value).eval().value );
 #else
-   *address = (~value).eval().value;
+   *address = (*value).eval().value;
 #endif
 }
 //*************************************************************************************************
@@ -438,13 +438,13 @@ BLAZE_ALWAYS_INLINE void storea( double* address, const SIMDf64<T>& value ) noex
    BLAZE_INTERNAL_ASSERT( checkAlignment( address ), "Invalid alignment detected" );
 
 #if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
-   _mm512_store_pd( address, (~value).eval().value );
+   _mm512_store_pd( address, (*value).eval().value );
 #elif BLAZE_AVX_MODE
-   _mm256_store_pd( address, (~value).eval().value );
+   _mm256_store_pd( address, (*value).eval().value );
 #elif BLAZE_SSE2_MODE
-   _mm_store_pd( address, (~value).eval().value );
+   _mm_store_pd( address, (*value).eval().value );
 #else
-   *address = (~value).eval().value;
+   *address = (*value).eval().value;
 #endif
 }
 //*************************************************************************************************

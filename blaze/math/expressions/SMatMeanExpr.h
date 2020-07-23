@@ -77,9 +77,9 @@ inline decltype(auto) mean_backend( const SparseMatrix<MT,SO>& sm, FalseType )
 {
    using BT = UnderlyingBuiltin_t<MT>;
 
-   BLAZE_INTERNAL_ASSERT( size( ~sm ) > 0UL, "Invalid matrix size detected" );
+   BLAZE_INTERNAL_ASSERT( size( *sm ) > 0UL, "Invalid matrix size detected" );
 
-   return sum( ~sm ) * inv( BT( size( ~sm ) ) );
+   return sum( *sm ) * inv( BT( size( *sm ) ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -99,7 +99,7 @@ inline decltype(auto) mean_backend( const SparseMatrix<MT,SO>& sm, TrueType )
 {
    MAYBE_UNUSED( sm );
 
-   BLAZE_INTERNAL_ASSERT( size( ~sm ) > 0UL, "Invalid matrix size detected" );
+   BLAZE_INTERNAL_ASSERT( size( *sm ) > 0UL, "Invalid matrix size detected" );
 
    return ElementType_t<MT>();
 }
@@ -139,11 +139,11 @@ inline decltype(auto) mean( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   if( size( ~sm ) == 0UL ) {
+   if( size( *sm ) == 0UL ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid input matrix" );
    }
 
-   return mean_backend( ~sm, IsZero<MT>() );
+   return mean_backend( *sm, IsZero<MT>() );
 }
 //*************************************************************************************************
 
@@ -164,11 +164,11 @@ decltype(auto) mean_backend( const SparseMatrix<MT,SO>& sm, FalseType )
 {
    using BT = UnderlyingBuiltin_t<MT>;
 
-   const size_t n( RF == rowwise ? columns( ~sm ) : rows( ~sm ) );
+   const size_t n( RF == rowwise ? columns( *sm ) : rows( *sm ) );
 
    BLAZE_INTERNAL_ASSERT( n > 0UL, "Invalid matrix size detected" );
 
-   return sum<RF>( ~sm ) * inv( BT( n ) );
+   return sum<RF>( *sm ) * inv( BT( n ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -188,7 +188,7 @@ template< ReductionFlag RF  // Reduction flag
         , bool SO >         // Storage order
 decltype(auto) mean_backend( const SparseMatrix<MT,SO>& sm, TrueType )
 {
-   const size_t n( RF == rowwise ? rows( ~sm ) : columns( ~sm ) );
+   const size_t n( RF == rowwise ? rows( *sm ) : columns( *sm ) );
 
    BLAZE_INTERNAL_ASSERT( n > 0UL, "Invalid matrix size detected" );
 
@@ -245,13 +245,13 @@ decltype(auto) mean( const SparseMatrix<MT,SO>& sm )
 
    BLAZE_STATIC_ASSERT_MSG( RF < 2UL, "Invalid reduction flag" );
 
-   const size_t n( RF == rowwise ? columns( ~sm ) : rows( ~sm ) );
+   const size_t n( RF == rowwise ? columns( *sm ) : rows( *sm ) );
 
    if( n == 0UL ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid input matrix" );
    }
 
-   return mean_backend<RF>( ~sm, IsZero<MT>() );
+   return mean_backend<RF>( *sm, IsZero<MT>() );
 }
 //*************************************************************************************************
 

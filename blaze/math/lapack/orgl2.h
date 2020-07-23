@@ -126,10 +126,10 @@ inline void orgl2( DenseMatrix<MT,SO>& A, const ElementType_t<MT>* tau )
 
    using ET = ElementType_t<MT>;
 
-   blas_int_t m   ( numeric_cast<blas_int_t>( SO ? (~A).rows() : (~A).columns() ) );
-   blas_int_t n   ( numeric_cast<blas_int_t>( SO ? (~A).columns() : (~A).rows() ) );
+   blas_int_t m   ( numeric_cast<blas_int_t>( SO ? (*A).rows() : (*A).columns() ) );
+   blas_int_t n   ( numeric_cast<blas_int_t>( SO ? (*A).columns() : (*A).rows() ) );
    blas_int_t k   ( min( m, n ) );
-   blas_int_t lda ( numeric_cast<blas_int_t>( (~A).spacing() ) );
+   blas_int_t lda ( numeric_cast<blas_int_t>( (*A).spacing() ) );
    blas_int_t info( 0 );
 
    if( k == 0 ) {
@@ -139,10 +139,10 @@ inline void orgl2( DenseMatrix<MT,SO>& A, const ElementType_t<MT>* tau )
    const std::unique_ptr<ET[]> work( new ET[m] );
 
    if( SO ) {
-      orgl2( k, n, k, (~A).data(), lda, tau, work.get(), &info );
+      orgl2( k, n, k, (*A).data(), lda, tau, work.get(), &info );
    }
    else {
-      org2r( m, k, k, (~A).data(), lda, tau, work.get(), &info );
+      org2r( m, k, k, (*A).data(), lda, tau, work.get(), &info );
    }
 
    BLAZE_INTERNAL_ASSERT( info == 0, "Invalid argument for Q reconstruction" );

@@ -106,7 +106,7 @@ inline decltype(auto) operator*( const MatScalarDivExpr<MT>& mat, ST scalar )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return (~mat).leftOperand() * ( scalar / (~mat).rightOperand() );
+   return (*mat).leftOperand() * ( scalar / (*mat).rightOperand() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -134,7 +134,7 @@ inline decltype(auto) operator*( ST scalar, const MatScalarDivExpr<MT>& mat )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return (~mat).leftOperand() * ( scalar / (~mat).rightOperand() );
+   return (*mat).leftOperand() * ( scalar / (*mat).rightOperand() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -162,7 +162,7 @@ inline decltype(auto) operator/( const MatScalarDivExpr<MT>& mat, ST scalar )
 
    BLAZE_USER_ASSERT( scalar != ST(0), "Division by zero detected" );
 
-   return (~mat).leftOperand() / ( (~mat).rightOperand() * scalar );
+   return (*mat).leftOperand() / ( (*mat).rightOperand() * scalar );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -193,7 +193,7 @@ inline decltype(auto) trans( const MatScalarDivExpr<MT>& matrix )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return trans( (~matrix).leftOperand() ) / (~matrix).rightOperand();
+   return trans( (*matrix).leftOperand() ) / (*matrix).rightOperand();
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -216,7 +216,7 @@ inline decltype(auto) conj( const MatScalarDivExpr<MT>& matrix )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return conj( (~matrix).leftOperand() ) / (~matrix).rightOperand();
+   return conj( (*matrix).leftOperand() ) / (*matrix).rightOperand();
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -241,11 +241,11 @@ inline decltype(auto) declsym( const MatScalarDivExpr<MT>& matrix )
 {
    BLAZE_FUNCTION_TRACE;
 
-   if( !isSquare( ~matrix ) ) {
+   if( !isSquare( *matrix ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid symmetric matrix specification" );
    }
 
-   return declsym( (~matrix).leftOperand() ) / (~matrix).rightOperand();
+   return declsym( (*matrix).leftOperand() ) / (*matrix).rightOperand();
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -270,11 +270,11 @@ inline decltype(auto) declherm( const MatScalarDivExpr<MT>& matrix )
 {
    BLAZE_FUNCTION_TRACE;
 
-   if( !isSquare( ~matrix ) ) {
+   if( !isSquare( *matrix ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid Hermitian matrix specification" );
    }
 
-   return declherm( (~matrix).leftOperand() ) / (~matrix).rightOperand();
+   return declherm( (*matrix).leftOperand() ) / (*matrix).rightOperand();
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -299,11 +299,11 @@ inline decltype(auto) decllow( const MatScalarDivExpr<MT>& matrix )
 {
    BLAZE_FUNCTION_TRACE;
 
-   if( !isSquare( ~matrix ) ) {
+   if( !isSquare( *matrix ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid lower matrix specification" );
    }
 
-   return decllow( (~matrix).leftOperand() ) / (~matrix).rightOperand();
+   return decllow( (*matrix).leftOperand() ) / (*matrix).rightOperand();
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -328,11 +328,11 @@ inline decltype(auto) declunilow( const MatScalarDivExpr<MT>& matrix )
 {
    BLAZE_FUNCTION_TRACE;
 
-   if( !isSquare( ~matrix ) ) {
+   if( !isSquare( *matrix ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid unilower matrix specification" );
    }
 
-   return declunilow( (~matrix).leftOperand() ) / (~matrix).rightOperand();
+   return declunilow( (*matrix).leftOperand() ) / (*matrix).rightOperand();
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -357,11 +357,11 @@ inline decltype(auto) declstrlow( const MatScalarDivExpr<MT>& matrix )
 {
    BLAZE_FUNCTION_TRACE;
 
-   if( !isSquare( ~matrix ) ) {
+   if( !isSquare( *matrix ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid strictly lower matrix specification" );
    }
 
-   return declstrlow( (~matrix).leftOperand() ) / (~matrix).rightOperand();
+   return declstrlow( (*matrix).leftOperand() ) / (*matrix).rightOperand();
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -386,11 +386,11 @@ inline decltype(auto) declupp( const MatScalarDivExpr<MT>& matrix )
 {
    BLAZE_FUNCTION_TRACE;
 
-   if( !isSquare( ~matrix ) ) {
+   if( !isSquare( *matrix ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid upper matrix specification" );
    }
 
-   return declupp( (~matrix).leftOperand() ) / (~matrix).rightOperand();
+   return declupp( (*matrix).leftOperand() ) / (*matrix).rightOperand();
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -415,11 +415,11 @@ inline decltype(auto) decluniupp( const MatScalarDivExpr<MT>& matrix )
 {
    BLAZE_FUNCTION_TRACE;
 
-   if( !isSquare( ~matrix ) ) {
+   if( !isSquare( *matrix ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid uniupper matrix specification" );
    }
 
-   return decluniupp( (~matrix).leftOperand() ) / (~matrix).rightOperand();
+   return decluniupp( (*matrix).leftOperand() ) / (*matrix).rightOperand();
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -444,11 +444,11 @@ inline decltype(auto) declstrupp( const MatScalarDivExpr<MT>& matrix )
 {
    BLAZE_FUNCTION_TRACE;
 
-   if( !isSquare( ~matrix ) ) {
+   if( !isSquare( *matrix ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid strictly upper matrix specification" );
    }
 
-   return declstrupp( (~matrix).leftOperand() ) / (~matrix).rightOperand();
+   return declstrupp( (*matrix).leftOperand() ) / (*matrix).rightOperand();
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -473,11 +473,11 @@ inline decltype(auto) decldiag( const MatScalarDivExpr<MT>& matrix )
 {
    BLAZE_FUNCTION_TRACE;
 
-   if( !isSquare( ~matrix ) ) {
+   if( !isSquare( *matrix ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid diagonal matrix specification" );
    }
 
-   return decldiag( (~matrix).leftOperand() ) / (~matrix).rightOperand();
+   return decldiag( (*matrix).leftOperand() ) / (*matrix).rightOperand();
 }
 /*! \endcond */
 //*************************************************************************************************

@@ -106,7 +106,7 @@ inline decltype(auto) operator*( const VecScalarDivExpr<VT>& vec, ST scalar )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return (~vec).leftOperand() * ( scalar / (~vec).rightOperand() );
+   return (*vec).leftOperand() * ( scalar / (*vec).rightOperand() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -134,7 +134,7 @@ inline decltype(auto) operator*( ST scalar, const VecScalarDivExpr<VT>& vec )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return (~vec).leftOperand() * ( scalar / (~vec).rightOperand() );
+   return (*vec).leftOperand() * ( scalar / (*vec).rightOperand() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -162,7 +162,7 @@ inline decltype(auto) operator/( const VecScalarDivExpr<VT>& vec, ST scalar )
 
    BLAZE_USER_ASSERT( scalar != ST(0), "Division by zero detected" );
 
-   return (~vec).leftOperand() / ( (~vec).rightOperand() * scalar );
+   return (*vec).leftOperand() / ( (*vec).rightOperand() * scalar );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -193,7 +193,7 @@ inline decltype(auto) trans( const VecScalarDivExpr<VT>& vector )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return trans( (~vector).leftOperand() ) / (~vector).rightOperand();
+   return trans( (*vector).leftOperand() ) / (*vector).rightOperand();
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -216,7 +216,7 @@ inline decltype(auto) conj( const VecScalarDivExpr<VT>& vector )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return conj( (~vector).leftOperand() ) / (~vector).rightOperand();
+   return conj( (*vector).leftOperand() ) / (*vector).rightOperand();
 }
 /*! \endcond */
 //*************************************************************************************************

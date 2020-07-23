@@ -102,7 +102,7 @@ inline decltype(auto) operator-( const VecScalarMultExpr<VT>& vec )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return (~vec).leftOperand() * ( -(~vec).rightOperand() );
+   return (*vec).leftOperand() * ( -(*vec).rightOperand() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -136,7 +136,7 @@ inline decltype(auto) operator*( const VecScalarMultExpr<VT>& vec, ST scalar )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return (~vec).leftOperand() * ( (~vec).rightOperand() * scalar );
+   return (*vec).leftOperand() * ( (*vec).rightOperand() * scalar );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -162,7 +162,7 @@ inline decltype(auto) operator*( ST scalar, const VecScalarMultExpr<VT>& vec )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return (~vec).leftOperand() * ( scalar * (~vec).rightOperand() );
+   return (*vec).leftOperand() * ( scalar * (*vec).rightOperand() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -192,7 +192,7 @@ inline decltype(auto) operator/( const VecScalarMultExpr<VT>& vec, ST scalar )
 
    BLAZE_USER_ASSERT( scalar != ST(0), "Division by zero detected" );
 
-   return (~vec).leftOperand() * ( (~vec).rightOperand() / scalar );
+   return (*vec).leftOperand() * ( (*vec).rightOperand() / scalar );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -220,7 +220,7 @@ inline decltype(auto)
 {
    BLAZE_FUNCTION_TRACE;
 
-   return ( (~lhs).leftOperand() * (~rhs) ) * (~lhs).rightOperand();
+   return ( (*lhs).leftOperand() * (*rhs) ) * (*lhs).rightOperand();
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -248,7 +248,7 @@ inline decltype(auto)
 {
    BLAZE_FUNCTION_TRACE;
 
-   return ( (~lhs) * (~rhs).leftOperand() ) * (~rhs).rightOperand();
+   return ( (*lhs) * (*rhs).leftOperand() ) * (*rhs).rightOperand();
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -276,7 +276,7 @@ inline decltype(auto)
 {
    BLAZE_FUNCTION_TRACE;
 
-   return ( (~lhs).leftOperand() * (~rhs) ) * (~lhs).rightOperand();
+   return ( (*lhs).leftOperand() * (*rhs) ) * (*lhs).rightOperand();
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -304,7 +304,7 @@ inline decltype(auto)
 {
    BLAZE_FUNCTION_TRACE;
 
-   return ( (~lhs) * (~rhs).leftOperand() ) * (~rhs).rightOperand();
+   return ( (*lhs) * (*rhs).leftOperand() ) * (*rhs).rightOperand();
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -331,7 +331,7 @@ inline decltype(auto)
 {
    BLAZE_FUNCTION_TRACE;
 
-   return ( (~lhs).leftOperand() * (~rhs).leftOperand() ) * ( (~lhs).rightOperand() * (~rhs).rightOperand() );
+   return ( (*lhs).leftOperand() * (*rhs).leftOperand() ) * ( (*lhs).rightOperand() * (*rhs).rightOperand() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -359,7 +359,7 @@ inline decltype(auto)
 {
    BLAZE_FUNCTION_TRACE;
 
-   return ( (~mat) * (~vec).leftOperand() ) * (~vec).rightOperand();
+   return ( (*mat) * (*vec).leftOperand() ) * (*vec).rightOperand();
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -387,7 +387,7 @@ inline decltype(auto)
 {
    BLAZE_FUNCTION_TRACE;
 
-   return ( (~vec).leftOperand() * (~mat) ) * (~vec).rightOperand();
+   return ( (*vec).leftOperand() * (*mat) ) * (*vec).rightOperand();
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -415,7 +415,7 @@ inline decltype(auto)
 {
    BLAZE_FUNCTION_TRACE;
 
-   return ( (~mat) * (~vec).leftOperand() ) * (~vec).rightOperand();
+   return ( (*mat) * (*vec).leftOperand() ) * (*vec).rightOperand();
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -443,7 +443,7 @@ inline decltype(auto)
 {
    BLAZE_FUNCTION_TRACE;
 
-   return ( (~vec).leftOperand() * (~mat) ) * (~vec).rightOperand();
+   return ( (*vec).leftOperand() * (*mat) ) * (*vec).rightOperand();
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -474,7 +474,7 @@ inline decltype(auto) trans( const VecScalarMultExpr<VT>& vector )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return trans( (~vector).leftOperand() ) * (~vector).rightOperand();
+   return trans( (*vector).leftOperand() ) * (*vector).rightOperand();
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -497,7 +497,7 @@ inline decltype(auto) conj( const VecScalarMultExpr<VT>& vector )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return conj( (~vector).leftOperand() ) * (~vector).rightOperand();
+   return conj( (*vector).leftOperand() ) * (*vector).rightOperand();
 }
 /*! \endcond */
 //*************************************************************************************************

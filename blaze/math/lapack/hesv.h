@@ -154,11 +154,11 @@ inline void hesv( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& b, char uplo, blas_
 
    using ET = ElementType_t<MT>;
 
-   if( !isSquare( ~A ) ) {
+   if( !isSquare( *A ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid non-square matrix provided" );
    }
 
-   if( (~b).size() != (~A).rows() ) {
+   if( (*b).size() != (*A).rows() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid right-hand side vector provided" );
    }
 
@@ -166,10 +166,10 @@ inline void hesv( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& b, char uplo, blas_
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid uplo argument provided" );
    }
 
-   blas_int_t n   ( numeric_cast<blas_int_t>( (~A).rows() ) );
+   blas_int_t n   ( numeric_cast<blas_int_t>( (*A).rows() ) );
    blas_int_t nrhs( 1 );
-   blas_int_t lda ( numeric_cast<blas_int_t>( (~A).spacing() ) );
-   blas_int_t ldb ( numeric_cast<blas_int_t>( (~b).size() ) );
+   blas_int_t lda ( numeric_cast<blas_int_t>( (*A).spacing() ) );
+   blas_int_t ldb ( numeric_cast<blas_int_t>( (*b).size() ) );
    blas_int_t info( 0 );
 
    if( n == 0 ) {
@@ -183,7 +183,7 @@ inline void hesv( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& b, char uplo, blas_
    blas_int_t lwork( n*lda );
    const std::unique_ptr<ET[]> work( new ET[lwork] );
 
-   hesv( uplo, n, nrhs, (~A).data(), lda, ipiv, (~b).data(), ldb, work.get(), lwork, &info );
+   hesv( uplo, n, nrhs, (*A).data(), lda, ipiv, (*b).data(), ldb, work.get(), lwork, &info );
 
    BLAZE_INTERNAL_ASSERT( info >= 0, "Invalid function argument" );
 
@@ -278,7 +278,7 @@ inline void hesv( DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B,
 
    using ET = ElementType_t<MT1>;
 
-   if( !isSquare( ~A ) ) {
+   if( !isSquare( *A ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid non-square matrix provided" );
    }
 
@@ -286,11 +286,11 @@ inline void hesv( DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B,
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid uplo argument provided" );
    }
 
-   blas_int_t n   ( numeric_cast<blas_int_t>( (~A).rows() ) );
-   blas_int_t mrhs( numeric_cast<blas_int_t>( SO2 ? (~B).rows() : (~B).columns() ) );
-   blas_int_t nrhs( numeric_cast<blas_int_t>( SO2 ? (~B).columns() : (~B).rows() ) );
-   blas_int_t lda ( numeric_cast<blas_int_t>( (~A).spacing() ) );
-   blas_int_t ldb ( numeric_cast<blas_int_t>( (~B).spacing() ) );
+   blas_int_t n   ( numeric_cast<blas_int_t>( (*A).rows() ) );
+   blas_int_t mrhs( numeric_cast<blas_int_t>( SO2 ? (*B).rows() : (*B).columns() ) );
+   blas_int_t nrhs( numeric_cast<blas_int_t>( SO2 ? (*B).columns() : (*B).rows() ) );
+   blas_int_t lda ( numeric_cast<blas_int_t>( (*A).spacing() ) );
+   blas_int_t ldb ( numeric_cast<blas_int_t>( (*B).spacing() ) );
    blas_int_t info( 0 );
 
    if( n != mrhs ) {
@@ -308,7 +308,7 @@ inline void hesv( DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B,
    blas_int_t lwork( n*lda );
    const std::unique_ptr<ET[]> work( new ET[lwork] );
 
-   hesv( uplo, n, nrhs, (~A).data(), lda, ipiv, (~B).data(), ldb, work.get(), lwork, &info );
+   hesv( uplo, n, nrhs, (*A).data(), lda, ipiv, (*B).data(), ldb, work.get(), lwork, &info );
 
    BLAZE_INTERNAL_ASSERT( info >= 0, "Invalid function argument" );
 

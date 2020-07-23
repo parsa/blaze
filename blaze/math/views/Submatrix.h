@@ -182,7 +182,7 @@ inline decltype(auto) submatrix( Matrix<MT,SO>& matrix, RSAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return submatrix<unaligned,I,J,M,N>( ~matrix, args... );
+   return submatrix<unaligned,I,J,M,N>( *matrix, args... );
 }
 //*************************************************************************************************
 
@@ -251,7 +251,7 @@ inline decltype(auto) submatrix( const Matrix<MT,SO>& matrix, RSAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return submatrix<unaligned,I,J,M,N>( ~matrix, args... );
+   return submatrix<unaligned,I,J,M,N>( *matrix, args... );
 }
 //*************************************************************************************************
 
@@ -282,7 +282,7 @@ inline decltype(auto) submatrix( Matrix<MT,SO>&& matrix, RSAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return submatrix<unaligned,I,J,M,N>( std::move( ~matrix ), args... );
+   return submatrix<unaligned,I,J,M,N>( std::move( *matrix ), args... );
 }
 //*************************************************************************************************
 
@@ -366,7 +366,7 @@ inline decltype(auto) submatrix( Matrix<MT,SO>& matrix, RSAs... args )
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = Submatrix_<MT,AF,I,J,M,N>;
-   return ReturnType( ~matrix, args... );
+   return ReturnType( *matrix, args... );
 }
 //*************************************************************************************************
 
@@ -448,7 +448,7 @@ inline decltype(auto) submatrix( const Matrix<MT,SO>& matrix, RSAs... args )
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = const Submatrix_<const MT,AF,I,J,M,N>;
-   return ReturnType( ~matrix, args... );
+   return ReturnType( *matrix, args... );
 }
 //*************************************************************************************************
 
@@ -482,7 +482,7 @@ inline decltype(auto) submatrix( Matrix<MT,SO>&& matrix, RSAs... args )
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = Submatrix_<MT,AF,I,J,M,N>;
-   return ReturnType( ~matrix, args... );
+   return ReturnType( *matrix, args... );
 }
 //*************************************************************************************************
 
@@ -553,7 +553,7 @@ inline decltype(auto)
 {
    BLAZE_FUNCTION_TRACE;
 
-   return submatrix<unaligned>( ~matrix, row, column, m, n, args... );
+   return submatrix<unaligned>( *matrix, row, column, m, n, args... );
 }
 //*************************************************************************************************
 
@@ -623,7 +623,7 @@ inline decltype(auto)
 {
    BLAZE_FUNCTION_TRACE;
 
-   return submatrix<unaligned>( ~matrix, row, column, m, n, args... );
+   return submatrix<unaligned>( *matrix, row, column, m, n, args... );
 }
 //*************************************************************************************************
 
@@ -655,7 +655,7 @@ inline decltype(auto)
 {
    BLAZE_FUNCTION_TRACE;
 
-   return submatrix<unaligned>( std::move( ~matrix ), row, column, m, n, args... );
+   return submatrix<unaligned>( std::move( *matrix ), row, column, m, n, args... );
 }
 //*************************************************************************************************
 
@@ -740,7 +740,7 @@ inline decltype(auto)
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = Submatrix_<MT,AF>;
-   return ReturnType( ~matrix, row, column, m, n, args... );
+   return ReturnType( *matrix, row, column, m, n, args... );
 }
 //*************************************************************************************************
 
@@ -823,7 +823,7 @@ inline decltype(auto)
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = const Submatrix_<const MT,AF>;
-   return ReturnType( ~matrix, row, column, m, n, args... );
+   return ReturnType( *matrix, row, column, m, n, args... );
 }
 //*************************************************************************************************
 
@@ -858,7 +858,7 @@ inline decltype(auto)
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = Submatrix_<MT,AF>;
-   return ReturnType( ~matrix, row, column, m, n, args... );
+   return ReturnType( *matrix, row, column, m, n, args... );
 }
 //*************************************************************************************************
 
@@ -892,8 +892,8 @@ inline decltype(auto) submatrix( const MatMatAddExpr<MT>& matrix, RSAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return submatrix<AF,CSAs...>( (~matrix).leftOperand(), args... ) +
-          submatrix<AF,CSAs...>( (~matrix).rightOperand(), args... );
+   return submatrix<AF,CSAs...>( (*matrix).leftOperand(), args... ) +
+          submatrix<AF,CSAs...>( (*matrix).rightOperand(), args... );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -920,8 +920,8 @@ inline decltype(auto) submatrix( const MatMatSubExpr<MT>& matrix, RSAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return submatrix<AF,CSAs...>( (~matrix).leftOperand(), args... ) -
-          submatrix<AF,CSAs...>( (~matrix).rightOperand(), args... );
+   return submatrix<AF,CSAs...>( (*matrix).leftOperand(), args... ) -
+          submatrix<AF,CSAs...>( (*matrix).rightOperand(), args... );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -948,8 +948,8 @@ inline decltype(auto) submatrix( const SchurExpr<MT>& matrix, RSAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return submatrix<AF,CSAs...>( (~matrix).leftOperand(), args... ) %
-          submatrix<AF,CSAs...>( (~matrix).rightOperand(), args... );
+   return submatrix<AF,CSAs...>( (*matrix).leftOperand(), args... ) %
+          submatrix<AF,CSAs...>( (*matrix).rightOperand(), args... );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -981,8 +981,8 @@ inline decltype(auto) submatrix( const MatMatMultExpr<MT>& matrix, RSAs... args 
 
    const SubmatrixData<CSAs...> sd( args... );
 
-   decltype(auto) left ( (~matrix).leftOperand()  );
-   decltype(auto) right( (~matrix).rightOperand() );
+   decltype(auto) left ( (*matrix).leftOperand()  );
+   decltype(auto) right( (*matrix).rightOperand() );
 
    const size_t begin( max( ( IsUpper_v<MT1> )
                             ?( ( !AF && IsStrictlyUpper_v<MT1> )
@@ -1039,7 +1039,7 @@ inline decltype(auto) submatrix( const MatMatKronExpr<MT>& matrix, RSAs... args 
    BLAZE_FUNCTION_TRACE;
 
    try {
-      return columns( rows( ~matrix, make_shifted_index_sequence<I,M>(), args... )
+      return columns( rows( *matrix, make_shifted_index_sequence<I,M>(), args... )
                     , make_shifted_index_sequence<J,N>(), args... );
    }
    catch( ... ) {
@@ -1076,7 +1076,7 @@ inline decltype(auto)
    BLAZE_FUNCTION_TRACE;
 
    try {
-      return columns( rows( ~matrix, [row]( size_t i ){ return i+row; }, m, args... )
+      return columns( rows( *matrix, [row]( size_t i ){ return i+row; }, m, args... )
                     , [column]( size_t i ){ return i+column; }, n, args... );
    }
    catch( ... ) {
@@ -1111,8 +1111,8 @@ inline decltype(auto) submatrix( const VecTVecMultExpr<MT>& matrix, RSAs... args
    BLAZE_FUNCTION_TRACE;
 
    try {
-      return subvector<AF,I,M>( (~matrix).leftOperand(), args... ) *
-             subvector<AF,J,N>( (~matrix).rightOperand(), args... );
+      return subvector<AF,I,M>( (*matrix).leftOperand(), args... ) *
+             subvector<AF,J,N>( (*matrix).rightOperand(), args... );
    }
    catch( ... ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid submatrix specification" );
@@ -1147,8 +1147,8 @@ inline decltype(auto)
    BLAZE_FUNCTION_TRACE;
 
    try {
-      return subvector<AF>( (~matrix).leftOperand(), row, m, args... ) *
-             subvector<AF>( (~matrix).rightOperand(), column, n, args... );
+      return subvector<AF>( (*matrix).leftOperand(), row, m, args... ) *
+             subvector<AF>( (*matrix).rightOperand(), column, n, args... );
    }
    catch( ... ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid submatrix specification" );
@@ -1179,7 +1179,7 @@ inline decltype(auto) submatrix( const MatScalarMultExpr<MT>& matrix, RSAs... ar
 {
    BLAZE_FUNCTION_TRACE;
 
-   return submatrix<AF,CSAs...>( (~matrix).leftOperand(), args... ) * (~matrix).rightOperand();
+   return submatrix<AF,CSAs...>( (*matrix).leftOperand(), args... ) * (*matrix).rightOperand();
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1206,7 +1206,7 @@ inline decltype(auto) submatrix( const MatScalarDivExpr<MT>& matrix, RSAs... arg
 {
    BLAZE_FUNCTION_TRACE;
 
-   return submatrix<AF,CSAs...>( (~matrix).leftOperand(), args... ) / (~matrix).rightOperand();
+   return submatrix<AF,CSAs...>( (*matrix).leftOperand(), args... ) / (*matrix).rightOperand();
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1233,7 +1233,7 @@ inline decltype(auto) submatrix( const MatMapExpr<MT>& matrix, RSAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( submatrix<AF,CSAs...>( (~matrix).operand(), args... ), (~matrix).operation() );
+   return map( submatrix<AF,CSAs...>( (*matrix).operand(), args... ), (*matrix).operation() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1260,9 +1260,9 @@ inline decltype(auto) submatrix( const MatMatMapExpr<MT>& matrix, RSAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( submatrix<AF,CSAs...>( (~matrix).leftOperand(), args... ),
-               submatrix<AF,CSAs...>( (~matrix).rightOperand(), args... ),
-               (~matrix).operation() );
+   return map( submatrix<AF,CSAs...>( (*matrix).leftOperand(), args... ),
+               submatrix<AF,CSAs...>( (*matrix).rightOperand(), args... ),
+               (*matrix).operation() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1292,9 +1292,9 @@ inline decltype(auto) submatrix( const VecTVecMapExpr<MT>& matrix, RSAs... args 
    BLAZE_FUNCTION_TRACE;
 
    try {
-      return map( subvector<AF,I,M>( (~matrix).leftOperand(), args... ),
-                  subvector<AF,J,N>( (~matrix).rightOperand(), args... ),
-                  (~matrix).operation() );
+      return map( subvector<AF,I,M>( (*matrix).leftOperand(), args... ),
+                  subvector<AF,J,N>( (*matrix).rightOperand(), args... ),
+                  (*matrix).operation() );
    }
    catch( ... ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid submatrix specification" );
@@ -1329,9 +1329,9 @@ inline decltype(auto)
    BLAZE_FUNCTION_TRACE;
 
    try {
-      return map( subvector<AF>( (~matrix).leftOperand(), row, m, args... ),
-                  subvector<AF>( (~matrix).rightOperand(), column, n, args... ),
-                  (~matrix).operation() );
+      return map( subvector<AF>( (*matrix).leftOperand(), row, m, args... ),
+                  subvector<AF>( (*matrix).rightOperand(), column, n, args... ),
+                  (*matrix).operation() );
    }
    catch( ... ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid submatrix specification" );
@@ -1362,7 +1362,7 @@ inline decltype(auto) submatrix( const MatEvalExpr<MT>& matrix, RSAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return eval( submatrix<AF,CSAs...>( (~matrix).operand(), args... ) );
+   return eval( submatrix<AF,CSAs...>( (*matrix).operand(), args... ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1389,7 +1389,7 @@ inline decltype(auto) submatrix( const MatSerialExpr<MT>& matrix, RSAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return serial( submatrix<AF,CSAs...>( (~matrix).operand(), args... ) );
+   return serial( submatrix<AF,CSAs...>( (*matrix).operand(), args... ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1416,7 +1416,7 @@ inline decltype(auto) submatrix( const MatNoAliasExpr<MT>& matrix, RSAs... args 
 {
    BLAZE_FUNCTION_TRACE;
 
-   return noalias( submatrix<AF,CSAs...>( (~matrix).operand(), args... ) );
+   return noalias( submatrix<AF,CSAs...>( (*matrix).operand(), args... ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1443,7 +1443,7 @@ inline decltype(auto) submatrix( const MatNoSIMDExpr<MT>& matrix, RSAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return nosimd( submatrix<AF,CSAs...>( (~matrix).operand(), args... ) );
+   return nosimd( submatrix<AF,CSAs...>( (*matrix).operand(), args... ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1470,7 +1470,7 @@ inline decltype(auto) submatrix( const DeclExpr<MT>& matrix, RSAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return submatrix<AF,CSAs...>( (~matrix).operand(), args... );
+   return submatrix<AF,CSAs...>( (*matrix).operand(), args... );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1500,7 +1500,7 @@ inline decltype(auto) submatrix( const MatTransExpr<MT>& matrix, RSAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return trans( submatrix<AF,J,I,N,M>( (~matrix).operand(), args... ) );
+   return trans( submatrix<AF,J,I,N,M>( (*matrix).operand(), args... ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1531,7 +1531,7 @@ inline decltype(auto)
 {
    BLAZE_FUNCTION_TRACE;
 
-   return trans( submatrix<AF>( (~matrix).operand(), column, row, n, m, args... ) );
+   return trans( submatrix<AF>( (*matrix).operand(), column, row, n, m, args... ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1563,16 +1563,16 @@ inline decltype(auto) submatrix( const VecExpandExpr<MT,CEAs...>& matrix, RSAs..
    BLAZE_FUNCTION_TRACE;
 
    if( isChecked( args... ) ) {
-      if( ( I + M > (~matrix).rows() ) || ( J + N > (~matrix).columns() ) ) {
+      if( ( I + M > (*matrix).rows() ) || ( J + N > (*matrix).columns() ) ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid submatrix specification" );
       }
    }
    else {
-      BLAZE_USER_ASSERT( I + M <= (~matrix).rows()   , "Invalid submatrix specification" );
-      BLAZE_USER_ASSERT( J + N <= (~matrix).columns(), "Invalid submatrix specification" );
+      BLAZE_USER_ASSERT( I + M <= (*matrix).rows()   , "Invalid submatrix specification" );
+      BLAZE_USER_ASSERT( J + N <= (*matrix).columns(), "Invalid submatrix specification" );
    }
 
-   using VT = VectorType_t< RemoveReference_t< decltype( (~matrix).operand() ) > >;
+   using VT = VectorType_t< RemoveReference_t< decltype( (*matrix).operand() ) > >;
 
    constexpr bool TF( TransposeFlag_v<VT> );
 
@@ -1580,7 +1580,7 @@ inline decltype(auto) submatrix( const VecExpandExpr<MT,CEAs...>& matrix, RSAs..
    constexpr size_t size     ( TF ? N : M );
    constexpr size_t expansion( TF ? M : N );
 
-   return expand<expansion>( subvector<index,size>( (~matrix).operand(), unchecked ) );
+   return expand<expansion>( subvector<index,size>( (*matrix).operand(), unchecked ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1614,16 +1614,16 @@ inline decltype(auto)
    BLAZE_FUNCTION_TRACE;
 
    if( isChecked( args... ) ) {
-      if( ( row + m > (~matrix).rows() ) || ( column + n > (~matrix).columns() ) ) {
+      if( ( row + m > (*matrix).rows() ) || ( column + n > (*matrix).columns() ) ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid submatrix specification" );
       }
    }
    else {
-      BLAZE_USER_ASSERT( row    + m <= (~matrix).rows()   , "Invalid submatrix specification" );
-      BLAZE_USER_ASSERT( column + n <= (~matrix).columns(), "Invalid submatrix specification" );
+      BLAZE_USER_ASSERT( row    + m <= (*matrix).rows()   , "Invalid submatrix specification" );
+      BLAZE_USER_ASSERT( column + n <= (*matrix).columns(), "Invalid submatrix specification" );
    }
 
-   using VT = VectorType_t< RemoveReference_t< decltype( (~matrix).operand() ) > >;
+   using VT = VectorType_t< RemoveReference_t< decltype( (*matrix).operand() ) > >;
 
    constexpr bool TF( TransposeFlag_v<VT> );
 
@@ -1631,7 +1631,7 @@ inline decltype(auto)
    const size_t size     ( TF ? n : m );
    const size_t expansion( TF ? m : n );
 
-   return expand( subvector( (~matrix).operand(), index, size, unchecked ), expansion );
+   return expand( subvector( (*matrix).operand(), index, size, unchecked ), expansion );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1663,19 +1663,19 @@ inline decltype(auto) submatrix( const MatRepeatExpr<MT,CRAs...>& matrix, RSAs..
    BLAZE_FUNCTION_TRACE;
 
    if( isChecked( args... ) ) {
-      if( ( I + M > (~matrix).rows() ) || ( J + N > (~matrix).columns() ) ) {
+      if( ( I + M > (*matrix).rows() ) || ( J + N > (*matrix).columns() ) ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid submatrix specification" );
       }
    }
    else {
-      BLAZE_USER_ASSERT( I + M <= (~matrix).rows()   , "Invalid submatrix specification" );
-      BLAZE_USER_ASSERT( J + N <= (~matrix).columns(), "Invalid submatrix specification" );
+      BLAZE_USER_ASSERT( I + M <= (*matrix).rows()   , "Invalid submatrix specification" );
+      BLAZE_USER_ASSERT( J + N <= (*matrix).columns(), "Invalid submatrix specification" );
    }
 
-   const size_t M2 = (~matrix).operand().rows();
-   const size_t N2 = (~matrix).operand().columns();
+   const size_t M2 = (*matrix).operand().rows();
+   const size_t N2 = (*matrix).operand().columns();
 
-   return columns( rows( (~matrix).operand(), [M2]( size_t i ){ return (i+I)%M2; }, M, args... )
+   return columns( rows( (*matrix).operand(), [M2]( size_t i ){ return (i+I)%M2; }, M, args... )
                  , [N2]( size_t i ){ return (i+J)%N2; }, N, unchecked );
 }
 /*! \endcond */
@@ -1710,19 +1710,19 @@ inline decltype(auto)
    BLAZE_FUNCTION_TRACE;
 
    if( isChecked( args... ) ) {
-      if( ( row + m > (~matrix).rows() ) || ( column + n > (~matrix).columns() ) ) {
+      if( ( row + m > (*matrix).rows() ) || ( column + n > (*matrix).columns() ) ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid submatrix specification" );
       }
    }
    else {
-      BLAZE_USER_ASSERT( row    + m <= (~matrix).rows()   , "Invalid submatrix specification" );
-      BLAZE_USER_ASSERT( column + n <= (~matrix).columns(), "Invalid submatrix specification" );
+      BLAZE_USER_ASSERT( row    + m <= (*matrix).rows()   , "Invalid submatrix specification" );
+      BLAZE_USER_ASSERT( column + n <= (*matrix).columns(), "Invalid submatrix specification" );
    }
 
-   const size_t M = (~matrix).operand().rows();
-   const size_t N = (~matrix).operand().columns();
+   const size_t M = (*matrix).operand().rows();
+   const size_t N = (*matrix).operand().columns();
 
-   return columns( rows( (~matrix).operand(), [row,M]( size_t i ){ return (i+row)%M; }, m, args... )
+   return columns( rows( (*matrix).operand(), [row,M]( size_t i ){ return (i+row)%M; }, m, args... )
                  , [column,N]( size_t i ){ return (i+column)%N; }, n, unchecked );
 }
 /*! \endcond */
@@ -1888,8 +1888,8 @@ inline decltype(auto) subvector( const MatVecMultExpr<VT>& vector, RSAs... args 
 
    const SubvectorData<CSAs...> sd( args... );
 
-   decltype(auto) left ( (~vector).leftOperand()  );
-   decltype(auto) right( (~vector).rightOperand() );
+   decltype(auto) left ( (*vector).leftOperand()  );
+   decltype(auto) right( (*vector).rightOperand() );
 
    const size_t column( ( IsUpper_v<MT> )
                         ?( ( !AF && IsStrictlyUpper_v<MT> )?( sd.offset() + 1UL ):( sd.offset() ) )
@@ -1941,8 +1941,8 @@ inline decltype(auto) subvector( const TVecMatMultExpr<VT>& vector, RSAs... args
 
    const SubvectorData<CSAs...> sd( args... );
 
-   decltype(auto) left ( (~vector).leftOperand()  );
-   decltype(auto) right( (~vector).rightOperand() );
+   decltype(auto) left ( (*vector).leftOperand()  );
+   decltype(auto) right( (*vector).rightOperand() );
 
    const size_t row( ( IsLower_v<MT> )
                      ?( ( !AF && IsStrictlyLower_v<MT> )?( sd.offset() + 1UL ):( sd.offset() ) )
@@ -1991,12 +1991,12 @@ inline decltype(auto) subvector( const MatReduceExpr<VT,columnwise>& vector, RSA
    BLAZE_FUNCTION_TRACE;
 
    const SubvectorData<CSAs...> sd( args... );
-   const size_t M( (~vector).operand().rows() );
+   const size_t M( (*vector).operand().rows() );
    constexpr auto check( getCheck( args... ) );
 
    try {
-      decltype(auto) sm( submatrix<AF>( (~vector).operand(), 0UL, sd.offset(), M, sd.size(), check ) );
-      return reduce<columnwise>( sm, (~vector).operation() );
+      decltype(auto) sm( submatrix<AF>( (*vector).operand(), 0UL, sd.offset(), M, sd.size(), check ) );
+      return reduce<columnwise>( sm, (*vector).operation() );
    }
    catch( ... ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid subvector specification" );
@@ -2028,12 +2028,12 @@ inline decltype(auto) subvector( const MatReduceExpr<VT,rowwise>& vector, RSAs..
    BLAZE_FUNCTION_TRACE;
 
    const SubvectorData<CSAs...> sd( args... );
-   const size_t N( (~vector).operand().columns() );
+   const size_t N( (*vector).operand().columns() );
    constexpr auto check( getCheck( args... ) );
 
    try {
-      decltype(auto) sm( submatrix<AF>( (~vector).operand(), sd.offset(), 0UL, sd.size(), N, check ) );
-      return reduce<rowwise>( sm, (~vector).operation() );
+      decltype(auto) sm( submatrix<AF>( (*vector).operand(), sd.offset(), 0UL, sd.size(), N, check ) );
+      return reduce<rowwise>( sm, (*vector).operation() );
    }
    catch( ... ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid subvector specification" );
@@ -2764,15 +2764,15 @@ inline bool isDefault( const Submatrix<MT,AF,SO,true,CSAs...>& sm )
    using blaze::isDefault;
 
    if( SO == rowMajor ) {
-      for( size_t i=0UL; i<(~sm).rows(); ++i )
-         for( size_t j=0UL; j<(~sm).columns(); ++j )
-            if( !isDefault<RF>( (~sm)(i,j) ) )
+      for( size_t i=0UL; i<(*sm).rows(); ++i )
+         for( size_t j=0UL; j<(*sm).columns(); ++j )
+            if( !isDefault<RF>( (*sm)(i,j) ) )
                return false;
    }
    else {
-      for( size_t j=0UL; j<(~sm).columns(); ++j )
-         for( size_t i=0UL; i<(~sm).rows(); ++i )
-            if( !isDefault<RF>( (~sm)(i,j) ) )
+      for( size_t j=0UL; j<(*sm).columns(); ++j )
+         for( size_t i=0UL; i<(*sm).rows(); ++i )
+            if( !isDefault<RF>( (*sm)(i,j) ) )
                return false;
    }
 
@@ -3244,9 +3244,9 @@ template< typename MT       // Type of the matrix
         , size_t... CSAs >  // Compile time submatrix arguments
 inline bool isSame( const Submatrix<MT,AF,SO,DF,CSAs...>& a, const Matrix<MT,SO>& b ) noexcept
 {
-   return ( isSame( a.operand(), ~b ) &&
-            ( a.rows() == (~b).rows() ) &&
-            ( a.columns() == (~b).columns() ) );
+   return ( isSame( a.operand(), *b ) &&
+            ( a.rows() == (*b).rows() ) &&
+            ( a.columns() == (*b).columns() ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -3272,9 +3272,9 @@ template< typename MT       // Type of the matrix
         , size_t... CSAs >  // Compile time submatrix arguments
 inline bool isSame( const Matrix<MT,SO>& a, const Submatrix<MT,AF,SO,DF,CSAs...>& b ) noexcept
 {
-   return ( isSame( ~a, b.operand() ) &&
-            ( (~a).rows() == b.rows() ) &&
-            ( (~a).columns() == b.columns() ) );
+   return ( isSame( *a, b.operand() ) &&
+            ( (*a).rows() == b.rows() ) &&
+            ( (*a).columns() == b.columns() ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -3434,10 +3434,10 @@ template< typename MT       // Type of the matrix
 BLAZE_ALWAYS_INLINE bool
    trySet( const Submatrix<MT,AF,SO,DF,CSAs...>& sm, size_t row, size_t column, size_t m, size_t n, const ET& value )
 {
-   BLAZE_INTERNAL_ASSERT( row <= (~sm).rows(), "Invalid row access index" );
-   BLAZE_INTERNAL_ASSERT( column <= (~sm).columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( row + m <= (~sm).rows(), "Invalid number of rows" );
-   BLAZE_INTERNAL_ASSERT( column + n <= (~sm).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( row <= (*sm).rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( column <= (*sm).columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( row + m <= (*sm).rows(), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( column + n <= (*sm).columns(), "Invalid number of columns" );
 
    return trySet( sm.operand(), sm.row()+row, sm.column()+column, m, n, value );
 }
@@ -3505,10 +3505,10 @@ template< typename MT       // Type of the matrix
 BLAZE_ALWAYS_INLINE bool
    tryAdd( const Submatrix<MT,AF,SO,DF,CSAs...>& sm, size_t row, size_t column, size_t m, size_t n, const ET& value )
 {
-   BLAZE_INTERNAL_ASSERT( row <= (~sm).rows(), "Invalid row access index" );
-   BLAZE_INTERNAL_ASSERT( column <= (~sm).columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( row + m <= (~sm).rows(), "Invalid number of rows" );
-   BLAZE_INTERNAL_ASSERT( column + n <= (~sm).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( row <= (*sm).rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( column <= (*sm).columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( row + m <= (*sm).rows(), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( column + n <= (*sm).columns(), "Invalid number of columns" );
 
    return tryAdd( sm.operand(), sm.row()+row, sm.column()+column, m, n, value );
 }
@@ -3576,10 +3576,10 @@ template< typename MT       // Type of the matrix
 BLAZE_ALWAYS_INLINE bool
    trySub( const Submatrix<MT,AF,SO,DF,CSAs...>& sm, size_t row, size_t column, size_t m, size_t n, const ET& value )
 {
-   BLAZE_INTERNAL_ASSERT( row <= (~sm).rows(), "Invalid row access index" );
-   BLAZE_INTERNAL_ASSERT( column <= (~sm).columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( row + m <= (~sm).rows(), "Invalid number of rows" );
-   BLAZE_INTERNAL_ASSERT( column + n <= (~sm).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( row <= (*sm).rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( column <= (*sm).columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( row + m <= (*sm).rows(), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( column + n <= (*sm).columns(), "Invalid number of columns" );
 
    return trySub( sm.operand(), sm.row()+row, sm.column()+column, m, n, value );
 }
@@ -3647,10 +3647,10 @@ template< typename MT       // Type of the matrix
 BLAZE_ALWAYS_INLINE bool
    tryMult( const Submatrix<MT,AF,SO,DF,CSAs...>& sm, size_t row, size_t column, size_t m, size_t n, const ET& value )
 {
-   BLAZE_INTERNAL_ASSERT( row <= (~sm).rows(), "Invalid row access index" );
-   BLAZE_INTERNAL_ASSERT( column <= (~sm).columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( row + m <= (~sm).rows(), "Invalid number of rows" );
-   BLAZE_INTERNAL_ASSERT( column + n <= (~sm).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( row <= (*sm).rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( column <= (*sm).columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( row + m <= (*sm).rows(), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( column + n <= (*sm).columns(), "Invalid number of columns" );
 
    return tryMult( sm.operand(), sm.row()+row, sm.column()+column, m, n, value );
 }
@@ -3718,10 +3718,10 @@ template< typename MT       // Type of the matrix
 BLAZE_ALWAYS_INLINE bool
    tryDiv( const Submatrix<MT,AF,SO,DF,CSAs...>& sm, size_t row, size_t column, size_t m, size_t n, const ET& value )
 {
-   BLAZE_INTERNAL_ASSERT( row <= (~sm).rows(), "Invalid row access index" );
-   BLAZE_INTERNAL_ASSERT( column <= (~sm).columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( row + m <= (~sm).rows(), "Invalid number of rows" );
-   BLAZE_INTERNAL_ASSERT( column + n <= (~sm).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( row <= (*sm).rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( column <= (*sm).columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( row + m <= (*sm).rows(), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( column + n <= (*sm).columns(), "Invalid number of columns" );
 
    return tryDiv( sm.operand(), sm.row()+row, sm.column()+column, m, n, value );
 }
@@ -3787,10 +3787,10 @@ template< typename MT       // Type of the matrix
 BLAZE_ALWAYS_INLINE bool
    tryShift( const Submatrix<MT,AF,SO,DF,CSAs...>& sm, size_t row, size_t column, size_t m, size_t n, int count )
 {
-   BLAZE_INTERNAL_ASSERT( row <= (~sm).rows(), "Invalid row access index" );
-   BLAZE_INTERNAL_ASSERT( column <= (~sm).columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( row + m <= (~sm).rows(), "Invalid number of rows" );
-   BLAZE_INTERNAL_ASSERT( column + n <= (~sm).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( row <= (*sm).rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( column <= (*sm).columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( row + m <= (*sm).rows(), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( column + n <= (*sm).columns(), "Invalid number of columns" );
 
    return tryShift( sm.operand(), sm.row()+row, sm.column()+column, m, n, count );
 }
@@ -3858,10 +3858,10 @@ template< typename MT       // Type of the matrix
 BLAZE_ALWAYS_INLINE bool
    tryBitand( const Submatrix<MT,AF,SO,DF,CSAs...>& sm, size_t row, size_t column, size_t m, size_t n, const ET& value )
 {
-   BLAZE_INTERNAL_ASSERT( row <= (~sm).rows(), "Invalid row access index" );
-   BLAZE_INTERNAL_ASSERT( column <= (~sm).columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( row + m <= (~sm).rows(), "Invalid number of rows" );
-   BLAZE_INTERNAL_ASSERT( column + n <= (~sm).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( row <= (*sm).rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( column <= (*sm).columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( row + m <= (*sm).rows(), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( column + n <= (*sm).columns(), "Invalid number of columns" );
 
    return tryBitand( sm.operand(), sm.row()+row, sm.column()+column, m, n, value );
 }
@@ -3929,10 +3929,10 @@ template< typename MT       // Type of the matrix
 BLAZE_ALWAYS_INLINE bool
    tryBitor( const Submatrix<MT,AF,SO,DF,CSAs...>& sm, size_t row, size_t column, size_t m, size_t n, const ET& value )
 {
-   BLAZE_INTERNAL_ASSERT( row <= (~sm).rows(), "Invalid row access index" );
-   BLAZE_INTERNAL_ASSERT( column <= (~sm).columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( row + m <= (~sm).rows(), "Invalid number of rows" );
-   BLAZE_INTERNAL_ASSERT( column + n <= (~sm).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( row <= (*sm).rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( column <= (*sm).columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( row + m <= (*sm).rows(), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( column + n <= (*sm).columns(), "Invalid number of columns" );
 
    return tryBitor( sm.operand(), sm.row()+row, sm.column()+column, m, n, value );
 }
@@ -4000,10 +4000,10 @@ template< typename MT       // Type of the matrix
 BLAZE_ALWAYS_INLINE bool
    tryBitxor( const Submatrix<MT,AF,SO,DF,CSAs...>& sm, size_t row, size_t column, size_t m, size_t n, const ET& value )
 {
-   BLAZE_INTERNAL_ASSERT( row <= (~sm).rows(), "Invalid row access index" );
-   BLAZE_INTERNAL_ASSERT( column <= (~sm).columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( row + m <= (~sm).rows(), "Invalid number of rows" );
-   BLAZE_INTERNAL_ASSERT( column + n <= (~sm).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( row <= (*sm).rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( column <= (*sm).columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( row + m <= (*sm).rows(), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( column + n <= (*sm).columns(), "Invalid number of columns" );
 
    return tryBitxor( sm.operand(), sm.row()+row, sm.column()+column, m, n, value );
 }
@@ -4039,10 +4039,10 @@ inline bool tryAssign( const Submatrix<MT,AF,SO,DF,CSAs...>& lhs,
 {
    BLAZE_INTERNAL_ASSERT( row <= lhs.rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( TF || ( row + (~rhs).size() <= lhs.rows() ), "Invalid number of rows" );
-   BLAZE_INTERNAL_ASSERT( !TF || ( column + (~rhs).size() <= lhs.columns() ), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( TF || ( row + (*rhs).size() <= lhs.rows() ), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( !TF || ( column + (*rhs).size() <= lhs.columns() ), "Invalid number of columns" );
 
-   return tryAssign( lhs.operand(), ~rhs, lhs.row() + row, lhs.column() + column );
+   return tryAssign( lhs.operand(), *rhs, lhs.row() + row, lhs.column() + column );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -4077,10 +4077,10 @@ inline bool tryAssign( const Submatrix<MT,AF,SO,DF,CSAs...>& lhs,
 {
    BLAZE_INTERNAL_ASSERT( row <= lhs.rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( row + (~rhs).size() <= lhs.rows(), "Invalid number of rows" );
-   BLAZE_INTERNAL_ASSERT( column + (~rhs).size() <= lhs.columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( row + (*rhs).size() <= lhs.rows(), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( column + (*rhs).size() <= lhs.columns(), "Invalid number of columns" );
 
-   return tryAssign( lhs.operand(), ~rhs, band + ptrdiff_t( lhs.column() - lhs.row() ),
+   return tryAssign( lhs.operand(), *rhs, band + ptrdiff_t( lhs.column() - lhs.row() ),
                      lhs.row() + row, lhs.column() + column );
 }
 /*! \endcond */
@@ -4115,10 +4115,10 @@ inline bool tryAssign( const Submatrix<MT1,AF,SO1,DF,CSAs...>& lhs,
 {
    BLAZE_INTERNAL_ASSERT( row <= lhs.rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( row + (~rhs).rows() <= lhs.rows(), "Invalid number of rows" );
-   BLAZE_INTERNAL_ASSERT( column + (~rhs).columns() <= lhs.columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( row + (*rhs).rows() <= lhs.rows(), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( column + (*rhs).columns() <= lhs.columns(), "Invalid number of columns" );
 
-   return tryAssign( lhs.operand(), ~rhs, lhs.row() + row, lhs.column() + column );
+   return tryAssign( lhs.operand(), *rhs, lhs.row() + row, lhs.column() + column );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -4152,10 +4152,10 @@ inline bool tryAddAssign( const Submatrix<MT,AF,SO,DF,CSAs...>& lhs,
 {
    BLAZE_INTERNAL_ASSERT( row <= lhs.rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( TF || ( row + (~rhs).size() <= lhs.rows() ), "Invalid number of rows" );
-   BLAZE_INTERNAL_ASSERT( !TF || ( column + (~rhs).size() <= lhs.columns() ), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( TF || ( row + (*rhs).size() <= lhs.rows() ), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( !TF || ( column + (*rhs).size() <= lhs.columns() ), "Invalid number of columns" );
 
-   return tryAddAssign( lhs.operand(), ~rhs, lhs.row() + row, lhs.column() + column );
+   return tryAddAssign( lhs.operand(), *rhs, lhs.row() + row, lhs.column() + column );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -4191,10 +4191,10 @@ inline bool tryAddAssign( const Submatrix<MT,AF,SO,DF,CSAs...>& lhs,
 {
    BLAZE_INTERNAL_ASSERT( row <= lhs.rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( row + (~rhs).size() <= lhs.rows(), "Invalid number of rows" );
-   BLAZE_INTERNAL_ASSERT( column + (~rhs).size() <= lhs.columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( row + (*rhs).size() <= lhs.rows(), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( column + (*rhs).size() <= lhs.columns(), "Invalid number of columns" );
 
-   return tryAddAssign( lhs.operand(), ~rhs, band + ptrdiff_t( lhs.column() - lhs.row() ),
+   return tryAddAssign( lhs.operand(), *rhs, band + ptrdiff_t( lhs.column() - lhs.row() ),
                         lhs.row() + row, lhs.column() + column );
 }
 /*! \endcond */
@@ -4229,10 +4229,10 @@ inline bool tryAddAssign( const Submatrix<MT1,AF,SO1,DF,CSAs...>& lhs,
 {
    BLAZE_INTERNAL_ASSERT( row <= lhs.rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( row + (~rhs).rows() <= lhs.rows(), "Invalid number of rows" );
-   BLAZE_INTERNAL_ASSERT( column + (~rhs).columns() <= lhs.columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( row + (*rhs).rows() <= lhs.rows(), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( column + (*rhs).columns() <= lhs.columns(), "Invalid number of columns" );
 
-   return tryAddAssign( lhs.operand(), ~rhs, lhs.row() + row, lhs.column() + column );
+   return tryAddAssign( lhs.operand(), *rhs, lhs.row() + row, lhs.column() + column );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -4266,10 +4266,10 @@ inline bool trySubAssign( const Submatrix<MT,AF,SO,DF,CSAs...>& lhs,
 {
    BLAZE_INTERNAL_ASSERT( row <= lhs.rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( TF || ( row + (~rhs).size() <= lhs.rows() ), "Invalid number of rows" );
-   BLAZE_INTERNAL_ASSERT( !TF || ( column + (~rhs).size() <= lhs.columns() ), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( TF || ( row + (*rhs).size() <= lhs.rows() ), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( !TF || ( column + (*rhs).size() <= lhs.columns() ), "Invalid number of columns" );
 
-   return trySubAssign( lhs.operand(), ~rhs, lhs.row() + row, lhs.column() + column );
+   return trySubAssign( lhs.operand(), *rhs, lhs.row() + row, lhs.column() + column );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -4305,10 +4305,10 @@ inline bool trySubAssign( const Submatrix<MT,AF,SO,DF,CSAs...>& lhs,
 {
    BLAZE_INTERNAL_ASSERT( row <= lhs.rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( row + (~rhs).size() <= lhs.rows(), "Invalid number of rows" );
-   BLAZE_INTERNAL_ASSERT( column + (~rhs).size() <= lhs.columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( row + (*rhs).size() <= lhs.rows(), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( column + (*rhs).size() <= lhs.columns(), "Invalid number of columns" );
 
-   return trySubAssign( lhs.operand(), ~rhs, band + ptrdiff_t( lhs.column() - lhs.row() ),
+   return trySubAssign( lhs.operand(), *rhs, band + ptrdiff_t( lhs.column() - lhs.row() ),
                         lhs.row() + row, lhs.column() + column );
 }
 /*! \endcond */
@@ -4343,10 +4343,10 @@ inline bool trySubAssign( const Submatrix<MT1,AF,SO1,DF,CSAs...>& lhs,
 {
    BLAZE_INTERNAL_ASSERT( row <= lhs.rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( row + (~rhs).rows() <= lhs.rows(), "Invalid number of rows" );
-   BLAZE_INTERNAL_ASSERT( column + (~rhs).columns() <= lhs.columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( row + (*rhs).rows() <= lhs.rows(), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( column + (*rhs).columns() <= lhs.columns(), "Invalid number of columns" );
 
-   return trySubAssign( lhs.operand(), ~rhs, lhs.row() + row, lhs.column() + column );
+   return trySubAssign( lhs.operand(), *rhs, lhs.row() + row, lhs.column() + column );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -4380,10 +4380,10 @@ inline bool tryMultAssign( const Submatrix<MT,AF,SO,DF,CSAs...>& lhs,
 {
    BLAZE_INTERNAL_ASSERT( row <= lhs.rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( TF || ( row + (~rhs).size() <= lhs.rows() ), "Invalid number of rows" );
-   BLAZE_INTERNAL_ASSERT( !TF || ( column + (~rhs).size() <= lhs.columns() ), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( TF || ( row + (*rhs).size() <= lhs.rows() ), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( !TF || ( column + (*rhs).size() <= lhs.columns() ), "Invalid number of columns" );
 
-   return tryMultAssign( lhs.operand(), ~rhs, lhs.row() + row, lhs.column() + column );
+   return tryMultAssign( lhs.operand(), *rhs, lhs.row() + row, lhs.column() + column );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -4419,10 +4419,10 @@ inline bool tryMultAssign( const Submatrix<MT,AF,SO,DF,CSAs...>& lhs,
 {
    BLAZE_INTERNAL_ASSERT( row <= lhs.rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( row + (~rhs).size() <= lhs.rows(), "Invalid number of rows" );
-   BLAZE_INTERNAL_ASSERT( column + (~rhs).size() <= lhs.columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( row + (*rhs).size() <= lhs.rows(), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( column + (*rhs).size() <= lhs.columns(), "Invalid number of columns" );
 
-   return tryMultAssign( lhs.operand(), ~rhs, band + ptrdiff_t( lhs.column() - lhs.row() ),
+   return tryMultAssign( lhs.operand(), *rhs, band + ptrdiff_t( lhs.column() - lhs.row() ),
                          lhs.row() + row, lhs.column() + column );
 }
 /*! \endcond */
@@ -4457,10 +4457,10 @@ inline bool trySchurAssign( const Submatrix<MT1,AF,SO1,DF,CSAs...>& lhs,
 {
    BLAZE_INTERNAL_ASSERT( row <= lhs.rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( row + (~rhs).rows() <= lhs.rows(), "Invalid number of rows" );
-   BLAZE_INTERNAL_ASSERT( column + (~rhs).columns() <= lhs.columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( row + (*rhs).rows() <= lhs.rows(), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( column + (*rhs).columns() <= lhs.columns(), "Invalid number of columns" );
 
-   return trySchurAssign( lhs.operand(), ~rhs, lhs.row() + row, lhs.column() + column );
+   return trySchurAssign( lhs.operand(), *rhs, lhs.row() + row, lhs.column() + column );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -4494,10 +4494,10 @@ inline bool tryDivAssign( const Submatrix<MT,AF,SO,DF,CSAs...>& lhs,
 {
    BLAZE_INTERNAL_ASSERT( row <= lhs.rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( TF || ( row + (~rhs).size() <= lhs.rows() ), "Invalid number of rows" );
-   BLAZE_INTERNAL_ASSERT( !TF || ( column + (~rhs).size() <= lhs.columns() ), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( TF || ( row + (*rhs).size() <= lhs.rows() ), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( !TF || ( column + (*rhs).size() <= lhs.columns() ), "Invalid number of columns" );
 
-   return tryDivAssign( lhs.operand(), ~rhs, lhs.row() + row, lhs.column() + column );
+   return tryDivAssign( lhs.operand(), *rhs, lhs.row() + row, lhs.column() + column );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -4533,10 +4533,10 @@ inline bool tryDivAssign( const Submatrix<MT,AF,SO,DF,CSAs...>& lhs,
 {
    BLAZE_INTERNAL_ASSERT( row <= lhs.rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( row + (~rhs).size() <= lhs.rows(), "Invalid number of rows" );
-   BLAZE_INTERNAL_ASSERT( column + (~rhs).size() <= lhs.columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( row + (*rhs).size() <= lhs.rows(), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( column + (*rhs).size() <= lhs.columns(), "Invalid number of columns" );
 
-   return tryDivAssign( lhs.operand(), ~rhs, band + ptrdiff_t( lhs.column() - lhs.row() ),
+   return tryDivAssign( lhs.operand(), *rhs, band + ptrdiff_t( lhs.column() - lhs.row() ),
                         lhs.row() + row, lhs.column() + column );
 }
 /*! \endcond */
@@ -4571,10 +4571,10 @@ inline bool tryShiftAssign( const Submatrix<MT,AF,SO,DF,CSAs...>& lhs,
 {
    BLAZE_INTERNAL_ASSERT( row <= lhs.rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( TF || ( row + (~rhs).size() <= lhs.rows() ), "Invalid number of rows" );
-   BLAZE_INTERNAL_ASSERT( !TF || ( column + (~rhs).size() <= lhs.columns() ), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( TF || ( row + (*rhs).size() <= lhs.rows() ), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( !TF || ( column + (*rhs).size() <= lhs.columns() ), "Invalid number of columns" );
 
-   return tryShiftAssign( lhs.operand(), ~rhs, lhs.row() + row, lhs.column() + column );
+   return tryShiftAssign( lhs.operand(), *rhs, lhs.row() + row, lhs.column() + column );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -4610,10 +4610,10 @@ inline bool tryShiftAssign( const Submatrix<MT,AF,SO,DF,CSAs...>& lhs,
 {
    BLAZE_INTERNAL_ASSERT( row <= lhs.rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( row + (~rhs).size() <= lhs.rows(), "Invalid number of rows" );
-   BLAZE_INTERNAL_ASSERT( column + (~rhs).size() <= lhs.columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( row + (*rhs).size() <= lhs.rows(), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( column + (*rhs).size() <= lhs.columns(), "Invalid number of columns" );
 
-   return tryShiftAssign( lhs.operand(), ~rhs, band + ptrdiff_t( lhs.column() - lhs.row() ),
+   return tryShiftAssign( lhs.operand(), *rhs, band + ptrdiff_t( lhs.column() - lhs.row() ),
                           lhs.row() + row, lhs.column() + column );
 }
 /*! \endcond */
@@ -4648,10 +4648,10 @@ inline bool tryShiftAssign( const Submatrix<MT1,AF,SO1,DF,CSAs...>& lhs,
 {
    BLAZE_INTERNAL_ASSERT( row <= lhs.rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( row + (~rhs).rows() <= lhs.rows(), "Invalid number of rows" );
-   BLAZE_INTERNAL_ASSERT( column + (~rhs).columns() <= lhs.columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( row + (*rhs).rows() <= lhs.rows(), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( column + (*rhs).columns() <= lhs.columns(), "Invalid number of columns" );
 
-   return tryShiftAssign( lhs.operand(), ~rhs, lhs.row() + row, lhs.column() + column );
+   return tryShiftAssign( lhs.operand(), *rhs, lhs.row() + row, lhs.column() + column );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -4685,10 +4685,10 @@ inline bool tryBitandAssign( const Submatrix<MT,AF,SO,DF,CSAs...>& lhs,
 {
    BLAZE_INTERNAL_ASSERT( row <= lhs.rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( TF || ( row + (~rhs).size() <= lhs.rows() ), "Invalid number of rows" );
-   BLAZE_INTERNAL_ASSERT( !TF || ( column + (~rhs).size() <= lhs.columns() ), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( TF || ( row + (*rhs).size() <= lhs.rows() ), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( !TF || ( column + (*rhs).size() <= lhs.columns() ), "Invalid number of columns" );
 
-   return tryBitandAssign( lhs.operand(), ~rhs, lhs.row() + row, lhs.column() + column );
+   return tryBitandAssign( lhs.operand(), *rhs, lhs.row() + row, lhs.column() + column );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -4724,10 +4724,10 @@ inline bool tryBitandAssign( const Submatrix<MT,AF,SO,DF,CSAs...>& lhs,
 {
    BLAZE_INTERNAL_ASSERT( row <= lhs.rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( row + (~rhs).size() <= lhs.rows(), "Invalid number of rows" );
-   BLAZE_INTERNAL_ASSERT( column + (~rhs).size() <= lhs.columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( row + (*rhs).size() <= lhs.rows(), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( column + (*rhs).size() <= lhs.columns(), "Invalid number of columns" );
 
-   return tryBitandAssign( lhs.operand(), ~rhs, band + ptrdiff_t( lhs.column() - lhs.row() ),
+   return tryBitandAssign( lhs.operand(), *rhs, band + ptrdiff_t( lhs.column() - lhs.row() ),
                            lhs.row() + row, lhs.column() + column );
 }
 /*! \endcond */
@@ -4762,10 +4762,10 @@ inline bool tryBitandAssign( const Submatrix<MT1,AF,SO1,DF,CSAs...>& lhs,
 {
    BLAZE_INTERNAL_ASSERT( row <= lhs.rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( row + (~rhs).rows() <= lhs.rows(), "Invalid number of rows" );
-   BLAZE_INTERNAL_ASSERT( column + (~rhs).columns() <= lhs.columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( row + (*rhs).rows() <= lhs.rows(), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( column + (*rhs).columns() <= lhs.columns(), "Invalid number of columns" );
 
-   return tryBitandAssign( lhs.operand(), ~rhs, lhs.row() + row, lhs.column() + column );
+   return tryBitandAssign( lhs.operand(), *rhs, lhs.row() + row, lhs.column() + column );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -4799,10 +4799,10 @@ inline bool tryBitorAssign( const Submatrix<MT,AF,SO,DF,CSAs...>& lhs,
 {
    BLAZE_INTERNAL_ASSERT( row <= lhs.rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( TF || ( row + (~rhs).size() <= lhs.rows() ), "Invalid number of rows" );
-   BLAZE_INTERNAL_ASSERT( !TF || ( column + (~rhs).size() <= lhs.columns() ), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( TF || ( row + (*rhs).size() <= lhs.rows() ), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( !TF || ( column + (*rhs).size() <= lhs.columns() ), "Invalid number of columns" );
 
-   return tryBitorAssign( lhs.operand(), ~rhs, lhs.row() + row, lhs.column() + column );
+   return tryBitorAssign( lhs.operand(), *rhs, lhs.row() + row, lhs.column() + column );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -4838,10 +4838,10 @@ inline bool tryBitorAssign( const Submatrix<MT,AF,SO,DF,CSAs...>& lhs,
 {
    BLAZE_INTERNAL_ASSERT( row <= lhs.rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( row + (~rhs).size() <= lhs.rows(), "Invalid number of rows" );
-   BLAZE_INTERNAL_ASSERT( column + (~rhs).size() <= lhs.columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( row + (*rhs).size() <= lhs.rows(), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( column + (*rhs).size() <= lhs.columns(), "Invalid number of columns" );
 
-   return tryBitorAssign( lhs.operand(), ~rhs, band + ptrdiff_t( lhs.column() - lhs.row() ),
+   return tryBitorAssign( lhs.operand(), *rhs, band + ptrdiff_t( lhs.column() - lhs.row() ),
                           lhs.row() + row, lhs.column() + column );
 }
 /*! \endcond */
@@ -4876,10 +4876,10 @@ inline bool tryBitorAssign( const Submatrix<MT1,AF,SO1,DF,CSAs...>& lhs,
 {
    BLAZE_INTERNAL_ASSERT( row <= lhs.rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( row + (~rhs).rows() <= lhs.rows(), "Invalid number of rows" );
-   BLAZE_INTERNAL_ASSERT( column + (~rhs).columns() <= lhs.columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( row + (*rhs).rows() <= lhs.rows(), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( column + (*rhs).columns() <= lhs.columns(), "Invalid number of columns" );
 
-   return tryBitorAssign( lhs.operand(), ~rhs, lhs.row() + row, lhs.column() + column );
+   return tryBitorAssign( lhs.operand(), *rhs, lhs.row() + row, lhs.column() + column );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -4913,10 +4913,10 @@ inline bool tryBitxorAssign( const Submatrix<MT,AF,SO,DF,CSAs...>& lhs,
 {
    BLAZE_INTERNAL_ASSERT( row <= lhs.rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( TF || ( row + (~rhs).size() <= lhs.rows() ), "Invalid number of rows" );
-   BLAZE_INTERNAL_ASSERT( !TF || ( column + (~rhs).size() <= lhs.columns() ), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( TF || ( row + (*rhs).size() <= lhs.rows() ), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( !TF || ( column + (*rhs).size() <= lhs.columns() ), "Invalid number of columns" );
 
-   return tryBitxorAssign( lhs.operand(), ~rhs, lhs.row() + row, lhs.column() + column );
+   return tryBitxorAssign( lhs.operand(), *rhs, lhs.row() + row, lhs.column() + column );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -4952,10 +4952,10 @@ inline bool tryBitxorAssign( const Submatrix<MT,AF,SO,DF,CSAs...>& lhs,
 {
    BLAZE_INTERNAL_ASSERT( row <= lhs.rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( row + (~rhs).size() <= lhs.rows(), "Invalid number of rows" );
-   BLAZE_INTERNAL_ASSERT( column + (~rhs).size() <= lhs.columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( row + (*rhs).size() <= lhs.rows(), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( column + (*rhs).size() <= lhs.columns(), "Invalid number of columns" );
 
-   return tryBitxorAssign( lhs.operand(), ~rhs, band + ptrdiff_t( lhs.column() - lhs.row() ),
+   return tryBitxorAssign( lhs.operand(), *rhs, band + ptrdiff_t( lhs.column() - lhs.row() ),
                            lhs.row() + row, lhs.column() + column );
 }
 /*! \endcond */
@@ -4990,10 +4990,10 @@ inline bool tryBitxorAssign( const Submatrix<MT1,AF,SO1,DF,CSAs...>& lhs,
 {
    BLAZE_INTERNAL_ASSERT( row <= lhs.rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( row + (~rhs).rows() <= lhs.rows(), "Invalid number of rows" );
-   BLAZE_INTERNAL_ASSERT( column + (~rhs).columns() <= lhs.columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( row + (*rhs).rows() <= lhs.rows(), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( column + (*rhs).columns() <= lhs.columns(), "Invalid number of columns" );
 
-   return tryBitxorAssign( lhs.operand(), ~rhs, lhs.row() + row, lhs.column() + column );
+   return tryBitxorAssign( lhs.operand(), *rhs, lhs.row() + row, lhs.column() + column );
 }
 /*! \endcond */
 //*************************************************************************************************

@@ -92,7 +92,7 @@ struct MatSerialExpr
 template< typename MT >  // Matrix base type of the expression
 inline decltype(auto) serial( const MatSerialExpr<MT>& matrix )
 {
-   return ~matrix;
+   return *matrix;
 }
 /*! \endcond */
 //*************************************************************************************************

@@ -269,7 +269,7 @@ class SVecDVecKronExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       if( rhs.size() == 0UL ) {
          return;
@@ -283,7 +283,7 @@ class SVecDVecKronExpr
 
       for( auto xelem=x.begin(); xelem!=xend; ++xelem ) {
          for( size_t j=0UL; j<N; ++j ) {
-            (~lhs)[xelem->index()*N+j] = xelem->value() * y[j];
+            (*lhs)[xelem->index()*N+j] = xelem->value() * y[j];
          }
       }
    }
@@ -307,7 +307,7 @@ class SVecDVecKronExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       if( rhs.size() == 0UL ) {
          return;
@@ -321,7 +321,7 @@ class SVecDVecKronExpr
 
       for( auto xelem=x.begin(); xelem!=xend; ++xelem ) {
          for( size_t j=0UL; j<N; ++j ) {
-            (~lhs).append( xelem->index()*N+j, xelem->value() * y[j], true );
+            (*lhs).append( xelem->index()*N+j, xelem->value() * y[j], true );
          }
       }
    }
@@ -345,7 +345,7 @@ class SVecDVecKronExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       if( rhs.size() == 0UL ) {
          return;
@@ -359,7 +359,7 @@ class SVecDVecKronExpr
 
       for( auto xelem=x.begin(); xelem!=xend; ++xelem ) {
          for( size_t j=0UL; j<N; ++j ) {
-            (~lhs)[xelem->index()*N+j] += xelem->value() * y[j];
+            (*lhs)[xelem->index()*N+j] += xelem->value() * y[j];
          }
       }
    }
@@ -388,7 +388,7 @@ class SVecDVecKronExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       if( rhs.size() == 0UL ) {
          return;
@@ -402,7 +402,7 @@ class SVecDVecKronExpr
 
       for( auto xelem=x.begin(); xelem!=xend; ++xelem ) {
          for( size_t j=0UL; j<N; ++j ) {
-            (~lhs)[xelem->index()*N+j] -= xelem->value() * y[j];
+            (*lhs)[xelem->index()*N+j] -= xelem->value() * y[j];
          }
       }
    }
@@ -431,7 +431,7 @@ class SVecDVecKronExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       if( rhs.size() == 0UL ) {
          return;
@@ -448,17 +448,17 @@ class SVecDVecKronExpr
       {
          for( ; i<xelem->index(); ++i ) {
             for( size_t j=0UL; j<N; ++j )
-               reset( (~lhs)[i*N+j] );
+               reset( (*lhs)[i*N+j] );
          }
 
          for( size_t j=0UL; j<N; ++j ) {
-            (~lhs)[xelem->index()*N+j] *= xelem->value() * y[j];
+            (*lhs)[xelem->index()*N+j] *= xelem->value() * y[j];
          }
       }
 
       for( ; i<x.size(); ++i ) {
          for( size_t j=0UL; j<N; ++j )
-            reset( (~lhs)[i*N+j] );
+            reset( (*lhs)[i*N+j] );
       }
    }
    /*! \endcond */
@@ -512,7 +512,7 @@ inline const SVecDVecKronExpr<VT1,VT2,TF>
 {
    BLAZE_FUNCTION_TRACE;
 
-   return SVecDVecKronExpr<VT1,VT2,TF>( ~lhs, ~rhs );
+   return SVecDVecKronExpr<VT1,VT2,TF>( *lhs, *rhs );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -545,7 +545,7 @@ inline decltype(auto)
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ReturnType, TF );
    BLAZE_CONSTRAINT_MUST_BE_ZERO_TYPE( ReturnType );
 
-   return ReturnType( (~lhs).size()*(~rhs).size() );
+   return ReturnType( (*lhs).size()*(*rhs).size() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -581,7 +581,7 @@ inline decltype(auto)
 {
    BLAZE_FUNCTION_TRACE;
 
-   return svecdveckron( ~lhs, ~rhs );
+   return svecdveckron( *lhs, *rhs );
 }
 //*************************************************************************************************
 

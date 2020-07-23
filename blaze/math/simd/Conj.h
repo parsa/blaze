@@ -232,7 +232,7 @@ BLAZE_ALWAYS_INLINE const SIMDcint64 conj( const SIMDcint64& a ) noexcept
 template< typename T >  // Type of the operand
 BLAZE_ALWAYS_INLINE const T conj( const SIMDf32<T>& a ) noexcept
 {
-   return (~a);
+   return (*a);
 }
 //*************************************************************************************************
 
@@ -283,7 +283,7 @@ BLAZE_ALWAYS_INLINE const SIMDcfloat conj( const SIMDcfloat& a ) noexcept
 template< typename T >  // Type of the operand
 BLAZE_ALWAYS_INLINE const T conj( const SIMDf64<T>& a ) noexcept
 {
-   return (~a);
+   return (*a);
 }
 //*************************************************************************************************
 

@@ -101,7 +101,7 @@ inline decltype(auto)
 {
    BLAZE_FUNCTION_TRACE;
 
-   return (~mat).leftOperand() * ( (~mat).rightOperand() * vec );
+   return (*mat).leftOperand() * ( (*mat).rightOperand() * vec );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -128,7 +128,7 @@ inline decltype(auto)
 {
    BLAZE_FUNCTION_TRACE;
 
-   return (~mat).leftOperand() * ( (~mat).rightOperand() * vec );
+   return (*mat).leftOperand() * ( (*mat).rightOperand() * vec );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -155,7 +155,7 @@ inline decltype(auto)
 {
    BLAZE_FUNCTION_TRACE;
 
-   return ( vec * (~mat).leftOperand() ) * (~mat).rightOperand();
+   return ( vec * (*mat).leftOperand() ) * (*mat).rightOperand();
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -182,7 +182,7 @@ inline decltype(auto)
 {
    BLAZE_FUNCTION_TRACE;
 
-   return ( vec * (~mat).leftOperand() ) * (~mat).rightOperand();
+   return ( vec * (*mat).leftOperand() ) * (*mat).rightOperand();
 }
 /*! \endcond */
 //*************************************************************************************************

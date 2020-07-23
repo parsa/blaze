@@ -640,7 +640,7 @@ class DVecDVecMapExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       LT x( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side dense vector operand
       RT y( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side dense vector operand
@@ -648,7 +648,7 @@ class DVecDVecMapExpr
       BLAZE_INTERNAL_ASSERT( x.size() == rhs.lhs_.size() , "Invalid vector size" );
       BLAZE_INTERNAL_ASSERT( y.size() == rhs.rhs_.size() , "Invalid vector size" );
 
-      assign( ~lhs, map( x, y, rhs.op_ ) );
+      assign( *lhs, map( x, y, rhs.op_ ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -677,10 +677,10 @@ class DVecDVecMapExpr
       BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType, TF );
       BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       const ResultType tmp( serial( rhs ) );
-      assign( ~lhs, tmp );
+      assign( *lhs, tmp );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -705,7 +705,7 @@ class DVecDVecMapExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       LT x( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side dense vector operand
       RT y( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side dense vector operand
@@ -713,7 +713,7 @@ class DVecDVecMapExpr
       BLAZE_INTERNAL_ASSERT( x.size() == rhs.lhs_.size() , "Invalid vector size" );
       BLAZE_INTERNAL_ASSERT( y.size() == rhs.rhs_.size() , "Invalid vector size" );
 
-      addAssign( ~lhs, map( x, y, rhs.op_ ) );
+      addAssign( *lhs, map( x, y, rhs.op_ ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -742,7 +742,7 @@ class DVecDVecMapExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       LT x( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side dense vector operand
       RT y( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side dense vector operand
@@ -750,7 +750,7 @@ class DVecDVecMapExpr
       BLAZE_INTERNAL_ASSERT( x.size() == rhs.lhs_.size() , "Invalid vector size" );
       BLAZE_INTERNAL_ASSERT( y.size() == rhs.rhs_.size() , "Invalid vector size" );
 
-      subAssign( ~lhs, map( x, y, rhs.op_ ) );
+      subAssign( *lhs, map( x, y, rhs.op_ ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -779,7 +779,7 @@ class DVecDVecMapExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       LT x( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side dense vector operand
       RT y( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side dense vector operand
@@ -787,7 +787,7 @@ class DVecDVecMapExpr
       BLAZE_INTERNAL_ASSERT( x.size() == rhs.lhs_.size() , "Invalid vector size" );
       BLAZE_INTERNAL_ASSERT( y.size() == rhs.rhs_.size() , "Invalid vector size" );
 
-      multAssign( ~lhs, map( x, y, rhs.op_ ) );
+      multAssign( *lhs, map( x, y, rhs.op_ ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -816,7 +816,7 @@ class DVecDVecMapExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       LT x( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side dense vector operand
       RT y( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side dense vector operand
@@ -824,7 +824,7 @@ class DVecDVecMapExpr
       BLAZE_INTERNAL_ASSERT( x.size() == rhs.lhs_.size() , "Invalid vector size" );
       BLAZE_INTERNAL_ASSERT( y.size() == rhs.rhs_.size() , "Invalid vector size" );
 
-      divAssign( ~lhs, map( x, y, rhs.op_ ) );
+      divAssign( *lhs, map( x, y, rhs.op_ ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -853,7 +853,7 @@ class DVecDVecMapExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       LT x( rhs.lhs_ );  // Evaluation of the left-hand side dense vector operand
       RT y( rhs.rhs_ );  // Evaluation of the right-hand side dense vector operand
@@ -861,7 +861,7 @@ class DVecDVecMapExpr
       BLAZE_INTERNAL_ASSERT( x.size() == rhs.lhs_.size() , "Invalid vector size" );
       BLAZE_INTERNAL_ASSERT( y.size() == rhs.rhs_.size() , "Invalid vector size" );
 
-      smpAssign( ~lhs, map( x, y, rhs.op_ ) );
+      smpAssign( *lhs, map( x, y, rhs.op_ ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -890,10 +890,10 @@ class DVecDVecMapExpr
       BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType, TF );
       BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       const ResultType tmp( rhs );
-      smpAssign( ~lhs, tmp );
+      smpAssign( *lhs, tmp );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -919,7 +919,7 @@ class DVecDVecMapExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       LT x( rhs.lhs_ );  // Evaluation of the left-hand side dense vector operand
       RT y( rhs.rhs_ );  // Evaluation of the right-hand side dense vector operand
@@ -927,7 +927,7 @@ class DVecDVecMapExpr
       BLAZE_INTERNAL_ASSERT( x.size() == rhs.lhs_.size() , "Invalid vector size" );
       BLAZE_INTERNAL_ASSERT( y.size() == rhs.rhs_.size() , "Invalid vector size" );
 
-      smpAddAssign( ~lhs, map( x, y, rhs.op_ ) );
+      smpAddAssign( *lhs, map( x, y, rhs.op_ ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -957,7 +957,7 @@ class DVecDVecMapExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       LT x( rhs.lhs_ );  // Evaluation of the left-hand side dense vector operand
       RT y( rhs.rhs_ );  // Evaluation of the right-hand side dense vector operand
@@ -965,7 +965,7 @@ class DVecDVecMapExpr
       BLAZE_INTERNAL_ASSERT( x.size() == rhs.lhs_.size() , "Invalid vector size" );
       BLAZE_INTERNAL_ASSERT( y.size() == rhs.rhs_.size() , "Invalid vector size" );
 
-      smpSubAssign( ~lhs, map( x, y, rhs.op_ ) );
+      smpSubAssign( *lhs, map( x, y, rhs.op_ ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -995,7 +995,7 @@ class DVecDVecMapExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       LT x( rhs.lhs_ );  // Evaluation of the left-hand side dense vector operand
       RT y( rhs.rhs_ );  // Evaluation of the right-hand side dense vector operand
@@ -1003,7 +1003,7 @@ class DVecDVecMapExpr
       BLAZE_INTERNAL_ASSERT( x.size() == rhs.lhs_.size() , "Invalid vector size" );
       BLAZE_INTERNAL_ASSERT( y.size() == rhs.rhs_.size() , "Invalid vector size" );
 
-      smpMultAssign( ~lhs, map( x, y, rhs.op_ ) );
+      smpMultAssign( *lhs, map( x, y, rhs.op_ ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -1033,7 +1033,7 @@ class DVecDVecMapExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       LT x( rhs.lhs_ );  // Evaluation of the left-hand side dense vector operand
       RT y( rhs.rhs_ );  // Evaluation of the right-hand side dense vector operand
@@ -1041,7 +1041,7 @@ class DVecDVecMapExpr
       BLAZE_INTERNAL_ASSERT( x.size() == rhs.lhs_.size() , "Invalid vector size" );
       BLAZE_INTERNAL_ASSERT( y.size() == rhs.rhs_.size() , "Invalid vector size" );
 
-      smpDivAssign( ~lhs, map( x, y, rhs.op_ ) );
+      smpDivAssign( *lhs, map( x, y, rhs.op_ ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -1103,12 +1103,12 @@ inline decltype(auto)
 {
    BLAZE_FUNCTION_TRACE;
 
-   if( (~lhs).size() != (~rhs).size() ) {
+   if( (*lhs).size() != (*rhs).size() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
    using ReturnType = const DVecDVecMapExpr<VT1,VT2,OP,TF>;
-   return ReturnType( ~lhs, ~rhs, std::move(op) );
+   return ReturnType( *lhs, *rhs, std::move(op) );
 }
 //*************************************************************************************************
 
@@ -1143,7 +1143,7 @@ inline decltype(auto)
    BLAZE_FUNCTION_TRACE;
 
    const MakePair mp{};
-   return map( map( map( ~dv1, ~dv2, mp ), ~dv3, mp ), join( std::move(op) ) );
+   return map( map( map( *dv1, *dv2, mp ), *dv3, mp ), join( std::move(op) ) );
 }
 //*************************************************************************************************
 
@@ -1180,7 +1180,7 @@ inline decltype(auto)
    BLAZE_FUNCTION_TRACE;
 
    const MakePair mp{};
-   return map( map( map( map( ~dv1, ~dv2, mp ), ~dv3, mp ), ~dv4, mp ), join( std::move(op) ) );
+   return map( map( map( map( *dv1, *dv2, mp ), *dv3, mp ), *dv4, mp ), join( std::move(op) ) );
 }
 //*************************************************************************************************
 
@@ -1220,7 +1220,7 @@ inline decltype(auto)
    BLAZE_FUNCTION_TRACE;
 
    const MakePair mp{};
-   return map( map( map( map( map( ~dv1, ~dv2, mp ), ~dv3, mp ), ~dv4, mp ), ~dv5, mp ), join( std::move(op) ) );
+   return map( map( map( map( map( *dv1, *dv2, mp ), *dv3, mp ), *dv4, mp ), *dv5, mp ), join( std::move(op) ) );
 }
 //*************************************************************************************************
 
@@ -1262,7 +1262,7 @@ inline decltype(auto)
    BLAZE_FUNCTION_TRACE;
 
    const MakePair mp{};
-   return map( map( map( map( map( map( ~dv1, ~dv2, mp ), ~dv3, mp ), ~dv4, mp ), ~dv5, mp ), ~dv6, mp ), join( std::move(op) ) );
+   return map( map( map( map( map( map( *dv1, *dv2, mp ), *dv3, mp ), *dv4, mp ), *dv5, mp ), *dv6, mp ), join( std::move(op) ) );
 }
 //*************************************************************************************************
 
@@ -1297,7 +1297,7 @@ inline decltype(auto)
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( ~lhs, ~rhs, Min() );
+   return map( *lhs, *rhs, Min() );
 }
 //*************************************************************************************************
 
@@ -1332,7 +1332,7 @@ inline decltype(auto)
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( ~lhs, ~rhs, Max() );
+   return map( *lhs, *rhs, Max() );
 }
 //*************************************************************************************************
 
@@ -1367,7 +1367,7 @@ inline decltype(auto)
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( ~lhs, ~rhs, Hypot() );
+   return map( *lhs, *rhs, Hypot() );
 }
 //*************************************************************************************************
 
@@ -1402,7 +1402,7 @@ inline decltype(auto)
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( ~lhs, ~rhs, Pow() );
+   return map( *lhs, *rhs, Pow() );
 }
 //*************************************************************************************************
 
@@ -1437,7 +1437,7 @@ inline decltype(auto)
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( ~lhs, ~rhs, Atan2() );
+   return map( *lhs, *rhs, Atan2() );
 }
 //*************************************************************************************************
 
@@ -1522,7 +1522,7 @@ inline decltype(auto)
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( ~lhs, ~rhs, ShiftLV() );
+   return map( *lhs, *rhs, ShiftLV() );
 }
 //*************************************************************************************************
 
@@ -1555,7 +1555,7 @@ inline decltype(auto)
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( ~lhs, ~rhs, ShiftRV() );
+   return map( *lhs, *rhs, ShiftRV() );
 }
 //*************************************************************************************************
 
@@ -1588,7 +1588,7 @@ inline decltype(auto)
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( ~lhs, ~rhs, Bitand() );
+   return map( *lhs, *rhs, Bitand() );
 }
 //*************************************************************************************************
 
@@ -1621,7 +1621,7 @@ inline decltype(auto)
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( ~lhs, ~rhs, Bitor() );
+   return map( *lhs, *rhs, Bitor() );
 }
 //*************************************************************************************************
 
@@ -1654,7 +1654,7 @@ inline decltype(auto)
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( ~lhs, ~rhs, Bitxor() );
+   return map( *lhs, *rhs, Bitxor() );
 }
 //*************************************************************************************************
 
@@ -1690,7 +1690,7 @@ inline decltype(auto)
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( lhs.leftOperand(), lhs.rightOperand() + (~rhs), lhs.operation() );
+   return map( lhs.leftOperand(), lhs.rightOperand() + (*rhs), lhs.operation() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1719,7 +1719,7 @@ inline decltype(auto)
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( lhs.leftOperand(), lhs.rightOperand() + (~rhs), lhs.operation() );
+   return map( lhs.leftOperand(), lhs.rightOperand() + (*rhs), lhs.operation() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1761,7 +1761,7 @@ inline decltype(auto)
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( ~lhs, ~rhs, And{} );
+   return map( *lhs, *rhs, And{} );
 }
 //*************************************************************************************************
 
@@ -1794,7 +1794,7 @@ inline decltype(auto)
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( ~lhs, ~rhs, Or{} );
+   return map( *lhs, *rhs, Or{} );
 }
 //*************************************************************************************************
 

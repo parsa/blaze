@@ -298,10 +298,10 @@ class TSVecTSMatMultExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       // Resetting the left-hand side target dense vector
-      reset( ~lhs );
+      reset( *lhs );
 
       // Evaluation of the left-hand side sparse vector operand
       LT x( serial( rhs.vec_ ) );
@@ -314,10 +314,10 @@ class TSVecTSMatMultExpr
       BLAZE_INTERNAL_ASSERT( x.size()    == rhs.vec_.size()   , "Invalid vector size"       );
       BLAZE_INTERNAL_ASSERT( A.rows()    == rhs.mat_.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( A.columns() == rhs.mat_.columns(), "Invalid number of columns" );
-      BLAZE_INTERNAL_ASSERT( A.columns() == (~lhs).size()     , "Invalid vector size"       );
+      BLAZE_INTERNAL_ASSERT( A.columns() == (*lhs).size()     , "Invalid vector size"       );
 
       // Performing the sparse vector-sparse matrix multiplication
-      TSVecTSMatMultExpr::selectAssignKernel( ~lhs, x, A );
+      TSVecTSMatMultExpr::selectAssignKernel( *lhs, x, A );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -412,7 +412,7 @@ class TSVecTSMatMultExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       // Evaluation of the left-hand side sparse vector operand
       LT x( serial( rhs.vec_ ) );
@@ -425,7 +425,7 @@ class TSVecTSMatMultExpr
       BLAZE_INTERNAL_ASSERT( x.size()    == rhs.vec_.size()   , "Invalid vector size"       );
       BLAZE_INTERNAL_ASSERT( A.rows()    == rhs.mat_.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( A.columns() == rhs.mat_.columns(), "Invalid number of columns" );
-      BLAZE_INTERNAL_ASSERT( A.columns() == (~lhs).size()     , "Invalid vector size"       );
+      BLAZE_INTERNAL_ASSERT( A.columns() == (*lhs).size()     , "Invalid vector size"       );
 
       // Performing the sparse vector-sparse matrix multiplication
       ElementType accu;
@@ -481,7 +481,7 @@ class TSVecTSMatMultExpr
          }
 
          if( !isDefault( accu ) )
-            (~lhs).insert( j, accu );
+            (*lhs).insert( j, accu );
       }
    }
    /*! \endcond */
@@ -505,7 +505,7 @@ class TSVecTSMatMultExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       // Evaluation of the left-hand side sparse vector operand
       LT x( serial( rhs.vec_ ) );
@@ -518,10 +518,10 @@ class TSVecTSMatMultExpr
       BLAZE_INTERNAL_ASSERT( x.size()    == rhs.vec_.size()   , "Invalid vector size"       );
       BLAZE_INTERNAL_ASSERT( A.rows()    == rhs.mat_.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( A.columns() == rhs.mat_.columns(), "Invalid number of columns" );
-      BLAZE_INTERNAL_ASSERT( A.columns() == (~lhs).size()     , "Invalid vector size"       );
+      BLAZE_INTERNAL_ASSERT( A.columns() == (*lhs).size()     , "Invalid vector size"       );
 
       // Performing the sparse matrix-sparse vector multiplication
-      TSVecTSMatMultExpr::selectAddAssignKernel( ~lhs, x, A );
+      TSVecTSMatMultExpr::selectAddAssignKernel( *lhs, x, A );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -600,7 +600,7 @@ class TSVecTSMatMultExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       // Evaluation of the left-hand side sparse vector operand
       LT x( serial( rhs.vec_ ) );
@@ -613,10 +613,10 @@ class TSVecTSMatMultExpr
       BLAZE_INTERNAL_ASSERT( x.size()    == rhs.vec_.size()   , "Invalid vector size"       );
       BLAZE_INTERNAL_ASSERT( A.rows()    == rhs.mat_.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( A.columns() == rhs.mat_.columns(), "Invalid number of columns" );
-      BLAZE_INTERNAL_ASSERT( A.columns() == (~lhs).size()     , "Invalid vector size"       );
+      BLAZE_INTERNAL_ASSERT( A.columns() == (*lhs).size()     , "Invalid vector size"       );
 
       // Performing the sparse matrix-sparse vector multiplication
-      TSVecTSMatMultExpr::selectSubAssignKernel( ~lhs, x, A );
+      TSVecTSMatMultExpr::selectSubAssignKernel( *lhs, x, A );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -699,10 +699,10 @@ class TSVecTSMatMultExpr
       BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE( ResultType );
       BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       const ResultType tmp( serial( rhs ) );
-      multAssign( ~lhs, tmp );
+      multAssign( *lhs, tmp );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -732,10 +732,10 @@ class TSVecTSMatMultExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       // Resetting the left-hand side target dense vector
-      reset( ~lhs );
+      reset( *lhs );
 
       // Evaluation of the left-hand side sparse vector operand
       LT x( rhs.vec_ );
@@ -748,10 +748,10 @@ class TSVecTSMatMultExpr
       BLAZE_INTERNAL_ASSERT( x.size()    == rhs.vec_.size()   , "Invalid vector size"       );
       BLAZE_INTERNAL_ASSERT( A.rows()    == rhs.mat_.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( A.columns() == rhs.mat_.columns(), "Invalid number of columns" );
-      BLAZE_INTERNAL_ASSERT( A.columns() == (~lhs).size()     , "Invalid vector size"       );
+      BLAZE_INTERNAL_ASSERT( A.columns() == (*lhs).size()     , "Invalid vector size"       );
 
       // Performing the sparse vector-sparse matrix multiplication
-      smpAssign( ~lhs, x * A );
+      smpAssign( *lhs, x * A );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -781,7 +781,7 @@ class TSVecTSMatMultExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       // Evaluation of the left-hand side sparse vector operand
       LT x( rhs.vec_ );
@@ -794,10 +794,10 @@ class TSVecTSMatMultExpr
       BLAZE_INTERNAL_ASSERT( x.size()    == rhs.vec_.size()   , "Invalid vector size"       );
       BLAZE_INTERNAL_ASSERT( A.rows()    == rhs.mat_.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( A.columns() == rhs.mat_.columns(), "Invalid number of columns" );
-      BLAZE_INTERNAL_ASSERT( A.columns() == (~lhs).size()     , "Invalid vector size"       );
+      BLAZE_INTERNAL_ASSERT( A.columns() == (*lhs).size()     , "Invalid vector size"       );
 
       // Performing the sparse matrix-sparse vector multiplication
-      smpAddAssign( ~lhs, x * A );
+      smpAddAssign( *lhs, x * A );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -827,7 +827,7 @@ class TSVecTSMatMultExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       // Evaluation of the left-hand side sparse vector operand
       LT x( rhs.vec_ );
@@ -840,10 +840,10 @@ class TSVecTSMatMultExpr
       BLAZE_INTERNAL_ASSERT( x.size()    == rhs.vec_.size()   , "Invalid vector size"       );
       BLAZE_INTERNAL_ASSERT( A.rows()    == rhs.mat_.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( A.columns() == rhs.mat_.columns(), "Invalid number of columns" );
-      BLAZE_INTERNAL_ASSERT( A.columns() == (~lhs).size()     , "Invalid vector size"       );
+      BLAZE_INTERNAL_ASSERT( A.columns() == (*lhs).size()     , "Invalid vector size"       );
 
       // Performing the sparse matrix-sparse vector multiplication
-      smpSubAssign( ~lhs, x * A );
+      smpSubAssign( *lhs, x * A );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -877,10 +877,10 @@ class TSVecTSMatMultExpr
       BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE( ResultType );
       BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       const ResultType tmp( rhs );
-      smpMultAssign( ~lhs, tmp );
+      smpMultAssign( *lhs, tmp );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -934,9 +934,9 @@ inline const TSVecTSMatMultExpr<VT,MT>
 {
    BLAZE_FUNCTION_TRACE;
 
-   BLAZE_INTERNAL_ASSERT( (~vec).size() == (~mat).rows(), "Invalid vector and matrix sizes" );
+   BLAZE_INTERNAL_ASSERT( (*vec).size() == (*mat).rows(), "Invalid vector and matrix sizes" );
 
-   return TSVecTSMatMultExpr<VT,MT>( ~vec, ~mat );
+   return TSVecTSMatMultExpr<VT,MT>( *vec, *mat );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -967,9 +967,9 @@ inline decltype(auto)
 {
    BLAZE_FUNCTION_TRACE;
 
-   BLAZE_INTERNAL_ASSERT( (~vec).size() == (~mat).rows(), "Invalid vector and matrix sizes" );
+   BLAZE_INTERNAL_ASSERT( (*vec).size() == (*mat).rows(), "Invalid vector and matrix sizes" );
 
-   return (~vec) * trans( ~mat );
+   return (*vec) * trans( *mat );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1001,9 +1001,9 @@ inline const VT&
 
    MAYBE_UNUSED( mat );
 
-   BLAZE_INTERNAL_ASSERT( (~vec).size() == (~mat).rows(), "Invalid vector and matrix sizes" );
+   BLAZE_INTERNAL_ASSERT( (*vec).size() == (*mat).rows(), "Invalid vector and matrix sizes" );
 
-   return (~vec);
+   return (*vec);
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1033,14 +1033,14 @@ inline decltype(auto)
 
    MAYBE_UNUSED( vec );
 
-   BLAZE_INTERNAL_ASSERT( (~vec).size() == (~mat).rows(), "Invalid vector and matrix sizes" );
+   BLAZE_INTERNAL_ASSERT( (*vec).size() == (*mat).rows(), "Invalid vector and matrix sizes" );
 
    using ReturnType = const MultTrait_t< ResultType_t<VT>, ResultType_t<MT> >;
 
    BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE( ReturnType );
    BLAZE_CONSTRAINT_MUST_BE_ZERO_TYPE( ReturnType );
 
-   return ReturnType( (~mat).columns() );
+   return ReturnType( (*mat).columns() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1086,11 +1086,11 @@ inline decltype(auto)
 
    BLAZE_CONSTRAINT_MUST_NOT_BE_MATMATMULTEXPR_TYPE( MT );
 
-   if( (~vec).size() != (~mat).rows() ) {
+   if( (*vec).size() != (*mat).rows() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Vector and matrix sizes do not match" );
    }
 
-   return tsvectsmatmult( ~vec, ~mat );
+   return tsvectsmatmult( *vec, *mat );
 }
 //*************************************************************************************************
 

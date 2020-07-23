@@ -433,17 +433,17 @@ template< typename Type   // Data type of the vector
         , typename Tag >  // Type tag
 template< typename VT >   // Type of the foreign vector
 inline UniformVector<Type,TF,Tag>::UniformVector( const Vector<VT,TF>& v )
-   : size_ ( (~v).size() )  // The current size/dimension of the uniform vector
+   : size_ ( (*v).size() )  // The current size/dimension of the uniform vector
    , value_()               // The value of all elements of the uniform vector
 {
    BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<VT> );
 
-   if( !IsUniform_v<VT> && !isUniform( ~v ) ) {
+   if( !IsUniform_v<VT> && !isUniform( *v ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid setup of uniform vector" );
    }
 
    if( size_ > 0UL ) {
-      value_ = (~v)[0UL];
+      value_ = (*v)[0UL];
    }
 }
 //*************************************************************************************************
@@ -634,14 +634,14 @@ inline UniformVector<Type,TF,Tag>&
 {
    BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<VT> );
 
-   if( !IsUniform_v<VT> && !isUniform( ~rhs ) ) {
+   if( !IsUniform_v<VT> && !isUniform( *rhs ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment of uniform vector" );
    }
 
-   size_ = (~rhs).size();
+   size_ = (*rhs).size();
 
-   if( (~rhs).size() > 0UL ) {
-      value_ = (~rhs)[0UL];
+   if( (*rhs).size() > 0UL ) {
+      value_ = (*rhs)[0UL];
    }
 
    return *this;
@@ -669,16 +669,16 @@ inline UniformVector<Type,TF,Tag>&
 {
    BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<VT> );
 
-   if( (~rhs).size() != size_ ) {
+   if( (*rhs).size() != size_ ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   if( !IsUniform_v<VT> && !isUniform( ~rhs ) ) {
+   if( !IsUniform_v<VT> && !isUniform( *rhs ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid addition assignment to uniform vector" );
    }
 
-   if( (~rhs).size() > 0UL ) {
-      value_ += (~rhs)[0UL];
+   if( (*rhs).size() > 0UL ) {
+      value_ += (*rhs)[0UL];
    }
 
    return *this;
@@ -706,16 +706,16 @@ inline UniformVector<Type,TF,Tag>&
 {
    BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<VT> );
 
-   if( (~rhs).size() != size_ ) {
+   if( (*rhs).size() != size_ ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   if( !IsUniform_v<VT> && !isUniform( ~rhs ) ) {
+   if( !IsUniform_v<VT> && !isUniform( *rhs ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid subtraction assignment to uniform vector" );
    }
 
-   if( (~rhs).size() > 0UL ) {
-      value_ -= (~rhs)[0UL];
+   if( (*rhs).size() > 0UL ) {
+      value_ -= (*rhs)[0UL];
    }
 
    return *this;
@@ -744,16 +744,16 @@ inline UniformVector<Type,TF,Tag>&
 {
    BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<VT> );
 
-   if( (~rhs).size() != size_ ) {
+   if( (*rhs).size() != size_ ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   if( !IsUniform_v<VT> && !isUniform( ~rhs ) ) {
+   if( !IsUniform_v<VT> && !isUniform( *rhs ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid multiplication assignment to uniform vector" );
    }
 
-   if( (~rhs).size() > 0UL ) {
-      value_ *= (~rhs)[0UL];
+   if( (*rhs).size() > 0UL ) {
+      value_ *= (*rhs)[0UL];
    }
 
    return *this;
@@ -781,16 +781,16 @@ inline UniformVector<Type,TF,Tag>&
 {
    BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<VT> );
 
-   if( (~rhs).size() != size_ ) {
+   if( (*rhs).size() != size_ ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   if( !IsUniform_v<VT> && !isUniform( ~rhs ) ) {
+   if( !IsUniform_v<VT> && !isUniform( *rhs ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid division assignment to uniform vector" );
    }
 
-   if( (~rhs).size() > 0UL ) {
-      value_ /= (~rhs)[0UL];
+   if( (*rhs).size() > 0UL ) {
+      value_ /= (*rhs)[0UL];
    }
 
    return *this;

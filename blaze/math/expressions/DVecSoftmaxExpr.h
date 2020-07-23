@@ -66,8 +66,8 @@ template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
 auto softmax( const DenseVector<VT,TF>& dv )
 {
-   auto tmp( evaluate( exp( ~dv ) ) );
-   const auto scalar( sum( ~tmp ) );
+   auto tmp( evaluate( exp( *dv ) ) );
+   const auto scalar( sum( *tmp ) );
    tmp /= scalar;
    return tmp;
 }

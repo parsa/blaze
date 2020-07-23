@@ -869,11 +869,11 @@ inline SymmetricMatrix<MT,SO,true,false>::SymmetricMatrix( const Matrix<MT2,SO>&
    using Tmp = If_t< IsComputation_v<MT2>, RT, const MT2& >;
 
    if( IsSymmetric_v<MT2> ) {
-      resize( matrix_, (~m).rows(), (~m).columns() );
-      assign( ~m );
+      resize( matrix_, (*m).rows(), (*m).columns() );
+      assign( *m );
    }
    else {
-      Tmp tmp( ~m );
+      Tmp tmp( *m );
 
       if( !isSymmetric( tmp ) ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid setup of symmetric matrix" );
@@ -912,11 +912,11 @@ inline SymmetricMatrix<MT,SO,true,false>::SymmetricMatrix( const Matrix<MT2,!SO>
    using Tmp = If_t< IsComputation_v<MT2>, RT, const MT2& >;
 
    if( IsSymmetric_v<MT2> ) {
-      resize( matrix_, (~m).rows(), (~m).columns() );
-      assign( trans( ~m ) );
+      resize( matrix_, (*m).rows(), (*m).columns() );
+      assign( trans( *m ) );
    }
    else {
-      Tmp tmp( ~m );
+      Tmp tmp( *m );
 
       if( !isSymmetric( tmp ) ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid setup of symmetric matrix" );
@@ -1358,19 +1358,19 @@ inline auto SymmetricMatrix<MT,SO,true,false>::operator=( const Matrix<MT2,SO>& 
 {
    using blaze::resize;
 
-   if( !IsSymmetric_v<MT2> && !isSymmetric( ~rhs ) ) {
+   if( !IsSymmetric_v<MT2> && !isSymmetric( *rhs ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to symmetric matrix" );
    }
 
-   if( (~rhs).isAliased( this ) ) {
-      SymmetricMatrix tmp( ~rhs );
+   if( (*rhs).isAliased( this ) ) {
+      SymmetricMatrix tmp( *rhs );
       swap( tmp );
    }
    else {
-      resize( matrix_, (~rhs).rows(), (~rhs).columns() );
+      resize( matrix_, (*rhs).rows(), (*rhs).columns() );
       if( IsSparseMatrix_v<MT2> )
          reset();
-      assign( ~rhs );
+      assign( *rhs );
    }
 
    BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square symmetric matrix detected" );
@@ -1406,11 +1406,11 @@ inline auto SymmetricMatrix<MT,SO,true,false>::operator=( const Matrix<MT2,SO>& 
 
    using Tmp = If_t< IsSymmetric_v<MT2>, CompositeType_t<MT2>, ResultType_t<MT2> >;
 
-   if( !IsSquare_v<MT2> && !isSquare( ~rhs ) ) {
+   if( !IsSquare_v<MT2> && !isSquare( *rhs ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to symmetric matrix" );
    }
 
-   Tmp tmp( ~rhs );
+   Tmp tmp( *rhs );
 
    if( !IsSymmetric_v<Tmp> && !isSymmetric( tmp ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to symmetric matrix" );
@@ -1452,7 +1452,7 @@ template< typename MT2 >  // Type of the right-hand side matrix
 inline auto SymmetricMatrix<MT,SO,true,false>::operator=( const Matrix<MT2,!SO>& rhs )
    -> SymmetricMatrix&
 {
-   return this->operator=( trans( ~rhs ) );
+   return this->operator=( trans( *rhs ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1477,11 +1477,11 @@ template< typename MT2 >  // Type of the right-hand side matrix
 inline auto SymmetricMatrix<MT,SO,true,false>::operator+=( const Matrix<MT2,SO>& rhs )
    -> DisableIf_t< IsComputation_v<MT2>, SymmetricMatrix& >
 {
-   if( !IsSymmetric_v<MT2> && !isSymmetric( ~rhs ) ) {
+   if( !IsSymmetric_v<MT2> && !isSymmetric( *rhs ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to symmetric matrix" );
    }
 
-   addAssign( ~rhs );
+   addAssign( *rhs );
 
    BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square symmetric matrix detected" );
    BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );
@@ -1513,11 +1513,11 @@ inline auto SymmetricMatrix<MT,SO,true,false>::operator+=( const Matrix<MT2,SO>&
 {
    using Tmp = If_t< IsSymmetric_v<MT2>, CompositeType_t<MT2>, ResultType_t<MT2> >;
 
-   if( !IsSquare_v<MT2> && !isSquare( ~rhs ) ) {
+   if( !IsSquare_v<MT2> && !isSquare( *rhs ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to symmetric matrix" );
    }
 
-   Tmp tmp( ~rhs );
+   Tmp tmp( *rhs );
 
    if( !IsSymmetric_v<Tmp> && !isSymmetric( tmp ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to symmetric matrix" );
@@ -1556,7 +1556,7 @@ template< typename MT2 >  // Type of the right-hand side matrix
 inline auto SymmetricMatrix<MT,SO,true,false>::operator+=( const Matrix<MT2,!SO>& rhs )
    -> SymmetricMatrix&
 {
-   return this->operator+=( trans( ~rhs ) );
+   return this->operator+=( trans( *rhs ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1581,11 +1581,11 @@ template< typename MT2 >  // Type of the right-hand side matrix
 inline auto SymmetricMatrix<MT,SO,true,false>::operator-=( const Matrix<MT2,SO>& rhs )
    -> DisableIf_t< IsComputation_v<MT2>, SymmetricMatrix& >
 {
-   if( !IsSymmetric_v<MT2> && !isSymmetric( ~rhs ) ) {
+   if( !IsSymmetric_v<MT2> && !isSymmetric( *rhs ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to symmetric matrix" );
    }
 
-   subAssign( ~rhs );
+   subAssign( *rhs );
 
    BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square symmetric matrix detected" );
    BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );
@@ -1617,11 +1617,11 @@ inline auto SymmetricMatrix<MT,SO,true,false>::operator-=( const Matrix<MT2,SO>&
 {
    using Tmp = If_t< IsSymmetric_v<MT2>, CompositeType_t<MT2>, ResultType_t<MT2> >;
 
-   if( !IsSquare_v<MT2> && !isSquare( ~rhs ) ) {
+   if( !IsSquare_v<MT2> && !isSquare( *rhs ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to symmetric matrix" );
    }
 
-   Tmp tmp( ~rhs );
+   Tmp tmp( *rhs );
 
    if( !IsSymmetric_v<Tmp> && !isSymmetric( tmp ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to symmetric matrix" );
@@ -1660,7 +1660,7 @@ template< typename MT2 >  // Type of the right-hand side matrix
 inline auto SymmetricMatrix<MT,SO,true,false>::operator-=( const Matrix<MT2,!SO>& rhs )
    -> SymmetricMatrix&
 {
-   return this->operator-=( trans( ~rhs ) );
+   return this->operator-=( trans( *rhs ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1686,11 +1686,11 @@ template< typename MT2 >  // Type of the right-hand side matrix
 inline auto SymmetricMatrix<MT,SO,true,false>::operator%=( const Matrix<MT2,SO>& rhs )
    -> DisableIf_t< IsComputation_v<MT2>, SymmetricMatrix& >
 {
-   if( !IsSymmetric_v<MT2> && !isSymmetric( ~rhs ) ) {
+   if( !IsSymmetric_v<MT2> && !isSymmetric( *rhs ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to symmetric matrix" );
    }
 
-   schurAssign( ~rhs );
+   schurAssign( *rhs );
 
    BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square symmetric matrix detected" );
    BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );
@@ -1723,11 +1723,11 @@ inline auto SymmetricMatrix<MT,SO,true,false>::operator%=( const Matrix<MT2,SO>&
 {
    using Tmp = If_t< IsSymmetric_v<MT2>, CompositeType_t<MT2>, ResultType_t<MT2> >;
 
-   if( !IsSquare_v<MT2> && !isSquare( ~rhs ) ) {
+   if( !IsSquare_v<MT2> && !isSquare( *rhs ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to symmetric matrix" );
    }
 
-   Tmp tmp( ~rhs );
+   Tmp tmp( *rhs );
 
    if( !IsSymmetric_v<Tmp> && !isSymmetric( tmp ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to symmetric matrix" );
@@ -1766,7 +1766,7 @@ template< typename MT2 >  // Type of the right-hand side matrix
 inline auto SymmetricMatrix<MT,SO,true,false>::operator%=( const Matrix<MT2,!SO>& rhs )
    -> SymmetricMatrix&
 {
-   return this->operator%=( trans( ~rhs ) );
+   return this->operator%=( trans( *rhs ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -2486,18 +2486,18 @@ template< typename MT     // Type of the adapted dense matrix
 template< typename MT2 >  // Type of the right-hand side dense matrix
 inline void SymmetricMatrix<MT,SO,true,false>::assign( DenseMatrix<MT2,SO>& rhs )
 {
-   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( columns() == (*rhs).columns(), "Invalid number of columns" );
 
    if( SO ) {
       for( size_t j=0UL; j<columns(); ++j )
          for( size_t i=0UL; i<=j; ++i )
-            matrix_(i,j) = std::move( (~rhs)(i,j) );
+            matrix_(i,j) = std::move( (*rhs)(i,j) );
    }
    else {
       for( size_t i=0UL; i<rows(); ++i )
          for( size_t j=0UL; j<=i; ++j )
-            matrix_(i,j) = std::move( (~rhs)(i,j) );
+            matrix_(i,j) = std::move( (*rhs)(i,j) );
    }
 }
 /*! \endcond */
@@ -2521,18 +2521,18 @@ template< typename MT     // Type of the adapted dense matrix
 template< typename MT2 >  // Type of the right-hand side dense matrix
 inline void SymmetricMatrix<MT,SO,true,false>::assign( const DenseMatrix<MT2,SO>& rhs )
 {
-   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( columns() == (*rhs).columns(), "Invalid number of columns" );
 
    if( SO ) {
       for( size_t j=0UL; j<columns(); ++j )
          for( size_t i=0UL; i<=j; ++i )
-            matrix_(i,j) = (~rhs)(i,j);
+            matrix_(i,j) = (*rhs)(i,j);
    }
    else {
       for( size_t i=0UL; i<rows(); ++i )
          for( size_t j=0UL; j<=i; ++j )
-            matrix_(i,j) = (~rhs)(i,j);
+            matrix_(i,j) = (*rhs)(i,j);
    }
 }
 /*! \endcond */
@@ -2556,20 +2556,20 @@ template< typename MT     // Type of the adapted dense matrix
 template< typename MT2 >  // Type of the right-hand side sparse matrix
 inline void SymmetricMatrix<MT,SO,true,false>::assign( const SparseMatrix<MT2,SO>& rhs )
 {
-   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( columns() == (*rhs).columns(), "Invalid number of columns" );
 
    if( SO ) {
       for( size_t j=0UL; j<columns(); ++j ) {
-         const auto last( (~rhs).upperBound(j,j) );
-         for( auto element=(~rhs).begin(j); element!=last; ++element )
+         const auto last( (*rhs).upperBound(j,j) );
+         for( auto element=(*rhs).begin(j); element!=last; ++element )
             matrix_(element->index(),j) = element->value();
       }
    }
    else {
       for( size_t i=0UL; i<rows(); ++i ) {
-         const auto last( (~rhs).upperBound(i,i) );
-         for( auto element=(~rhs).begin(i); element!=last; ++element )
+         const auto last( (*rhs).upperBound(i,i) );
+         for( auto element=(*rhs).begin(i); element!=last; ++element )
             matrix_(i,element->index()) = element->value();
       }
    }
@@ -2595,18 +2595,18 @@ template< typename MT     // Type of the adapted dense matrix
 template< typename MT2 >  // Type of the right-hand side dense matrix
 inline void SymmetricMatrix<MT,SO,true,false>::addAssign( const DenseMatrix<MT2,SO>& rhs )
 {
-   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( columns() == (*rhs).columns(), "Invalid number of columns" );
 
    if( SO ) {
       for( size_t j=0UL; j<columns(); ++j )
          for( size_t i=0UL; i<=j; ++i )
-            matrix_(i,j) += (~rhs)(i,j);
+            matrix_(i,j) += (*rhs)(i,j);
    }
    else {
       for( size_t i=0UL; i<rows(); ++i )
          for( size_t j=0UL; j<=i; ++j )
-            matrix_(i,j) += (~rhs)(i,j);
+            matrix_(i,j) += (*rhs)(i,j);
    }
 }
 /*! \endcond */
@@ -2630,20 +2630,20 @@ template< typename MT     // Type of the adapted dense matrix
 template< typename MT2 >  // Type of the right-hand side sparse matrix
 inline void SymmetricMatrix<MT,SO,true,false>::addAssign( const SparseMatrix<MT2,SO>& rhs )
 {
-   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( columns() == (*rhs).columns(), "Invalid number of columns" );
 
    if( SO ) {
       for( size_t j=0UL; j<columns(); ++j ) {
-         const auto last( (~rhs).upperBound(j,j) );
-         for( auto element=(~rhs).begin(j); element!=last; ++element )
+         const auto last( (*rhs).upperBound(j,j) );
+         for( auto element=(*rhs).begin(j); element!=last; ++element )
             matrix_(element->index(),j) += element->value();
       }
    }
    else {
       for( size_t i=0UL; i<rows(); ++i ) {
-         const auto last( (~rhs).upperBound(i,i) );
-         for( auto element=(~rhs).begin(i); element!=last; ++element )
+         const auto last( (*rhs).upperBound(i,i) );
+         for( auto element=(*rhs).begin(i); element!=last; ++element )
             matrix_(i,element->index()) += element->value();
       }
    }
@@ -2669,18 +2669,18 @@ template< typename MT     // Type of the adapted dense matrix
 template< typename MT2 >  // Type of the right-hand side dense matrix
 inline void SymmetricMatrix<MT,SO,true,false>::subAssign( const DenseMatrix<MT2,SO>& rhs )
 {
-   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( columns() == (*rhs).columns(), "Invalid number of columns" );
 
    if( SO ) {
       for( size_t j=0UL; j<columns(); ++j )
          for( size_t i=0UL; i<=j; ++i )
-            matrix_(i,j) -= (~rhs)(i,j);
+            matrix_(i,j) -= (*rhs)(i,j);
    }
    else {
       for( size_t i=0UL; i<rows(); ++i )
          for( size_t j=0UL; j<=i; ++j )
-            matrix_(i,j) -= (~rhs)(i,j);
+            matrix_(i,j) -= (*rhs)(i,j);
    }
 }
 /*! \endcond */
@@ -2704,20 +2704,20 @@ template< typename MT     // Type of the adapted dense matrix
 template< typename MT2 >  // Type of the right-hand side sparse matrix
 inline void SymmetricMatrix<MT,SO,true,false>::subAssign( const SparseMatrix<MT2,SO>& rhs )
 {
-   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( columns() == (*rhs).columns(), "Invalid number of columns" );
 
    if( SO ) {
       for( size_t j=0UL; j<columns(); ++j ) {
-         const auto last( (~rhs).upperBound(j,j) );
-         for( auto element=(~rhs).begin(j); element!=last; ++element )
+         const auto last( (*rhs).upperBound(j,j) );
+         for( auto element=(*rhs).begin(j); element!=last; ++element )
             matrix_(element->index(),j) -= element->value();
       }
    }
    else {
       for( size_t i=0UL; i<rows(); ++i ) {
-         const auto last( (~rhs).upperBound(i,i) );
-         for( auto element=(~rhs).begin(i); element!=last; ++element )
+         const auto last( (*rhs).upperBound(i,i) );
+         for( auto element=(*rhs).begin(i); element!=last; ++element )
             matrix_(i,element->index()) -= element->value();
       }
    }
@@ -2743,18 +2743,18 @@ template< typename MT     // Type of the adapted dense matrix
 template< typename MT2 >  // Type of the right-hand side dense matrix
 inline void SymmetricMatrix<MT,SO,true,false>::schurAssign( const DenseMatrix<MT2,SO>& rhs )
 {
-   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( columns() == (*rhs).columns(), "Invalid number of columns" );
 
    if( SO ) {
       for( size_t j=0UL; j<columns(); ++j )
          for( size_t i=0UL; i<=j; ++i )
-            matrix_(i,j) *= (~rhs)(i,j);
+            matrix_(i,j) *= (*rhs)(i,j);
    }
    else {
       for( size_t i=0UL; i<rows(); ++i )
          for( size_t j=0UL; j<=i; ++j )
-            matrix_(i,j) *= (~rhs)(i,j);
+            matrix_(i,j) *= (*rhs)(i,j);
    }
 }
 /*! \endcond */
@@ -2778,16 +2778,16 @@ template< typename MT     // Type of the adapted dense matrix
 template< typename MT2 >  // Type of the right-hand side sparse matrix
 inline void SymmetricMatrix<MT,SO,true,false>::schurAssign( const SparseMatrix<MT2,SO>& rhs )
 {
-   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( columns() == (*rhs).columns(), "Invalid number of columns" );
 
    if( SO ) {
       for( size_t j=0UL; j<columns(); ++j )
       {
          size_t i( 0UL );
 
-         const auto last( (~rhs).upperBound(j,j) );
-         for( auto element=(~rhs).begin(j); element!=last; ++element ) {
+         const auto last( (*rhs).upperBound(j,j) );
+         for( auto element=(*rhs).begin(j); element!=last; ++element ) {
             for( ; i<element->index(); ++i )
                reset( matrix_(i,j) );
             matrix_(i,j) *= element->value();
@@ -2804,8 +2804,8 @@ inline void SymmetricMatrix<MT,SO,true,false>::schurAssign( const SparseMatrix<M
       {
          size_t j( 0UL );
 
-         const auto last( (~rhs).upperBound(i,i) );
-         for( auto element=(~rhs).begin(i); element!=last; ++element ) {
+         const auto last( (*rhs).upperBound(i,i) );
+         for( auto element=(*rhs).begin(i); element!=last; ++element ) {
             for( ; j<element->index(); ++j )
                reset( matrix_(i,j) );
             matrix_(i,j) *= element->value();

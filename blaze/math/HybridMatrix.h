@@ -188,7 +188,7 @@ void makeSymmetric( HybridMatrix<Type,M,N,SO,AF,PF,Tag>& matrix )
 {
    using blaze::randomize;
 
-   if( !isSquare( ~matrix ) ) {
+   if( !isSquare( *matrix ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid non-square matrix provided" );
    }
 
@@ -230,7 +230,7 @@ void makeSymmetric( HybridMatrix<Type,M,N,SO,AF,PF,Tag>& matrix, const Arg& min,
 {
    using blaze::randomize;
 
-   if( !isSquare( ~matrix ) ) {
+   if( !isSquare( *matrix ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid non-square matrix provided" );
    }
 
@@ -273,7 +273,7 @@ void makeHermitian( HybridMatrix<Type,M,N,SO,AF,PF,Tag>& matrix )
 
    using BT = UnderlyingBuiltin_t<Type>;
 
-   if( !isSquare( ~matrix ) ) {
+   if( !isSquare( *matrix ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid non-square matrix provided" );
    }
 
@@ -319,7 +319,7 @@ void makeHermitian( HybridMatrix<Type,M,N,SO,AF,PF,Tag>& matrix, const Arg& min,
 
    using BT = UnderlyingBuiltin_t<Type>;
 
-   if( !isSquare( ~matrix ) ) {
+   if( !isSquare( *matrix ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid non-square matrix provided" );
    }
 
@@ -360,7 +360,7 @@ void makePositiveDefinite( HybridMatrix<Type,M,N,SO,AF,PF,Tag>& matrix )
 
    BLAZE_CONSTRAINT_MUST_BE_SCALAR_TYPE( Type );
 
-   if( !isSquare( ~matrix ) ) {
+   if( !isSquare( *matrix ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid non-square matrix provided" );
    }
 

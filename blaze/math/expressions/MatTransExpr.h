@@ -103,7 +103,7 @@ inline decltype(auto) trans( const MatTransExpr<MT>& matrix )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return (~matrix).operand();
+   return (*matrix).operand();
 }
 /*! \endcond */
 //*************************************************************************************************

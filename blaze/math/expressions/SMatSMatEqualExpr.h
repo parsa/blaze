@@ -78,12 +78,12 @@ inline bool equal( const SparseMatrix<MT1,false>& lhs, const SparseMatrix<MT2,fa
    using CT2 = CompositeType_t<MT2>;
 
    // Early exit in case the matrix sizes don't match
-   if( (~lhs).rows() != (~rhs).rows() || (~lhs).columns() != (~rhs).columns() )
+   if( (*lhs).rows() != (*rhs).rows() || (*lhs).columns() != (*rhs).columns() )
       return false;
 
    // Evaluation of the two sparse matrix operands
-   CT1 A( ~lhs );
-   CT2 B( ~rhs );
+   CT1 A( *lhs );
+   CT2 B( *rhs );
 
    // In order to compare the two matrices, the data values of the lower-order data
    // type are converted to the higher-order data type within the equal function.
@@ -157,12 +157,12 @@ inline bool equal( const SparseMatrix<MT1,true>& lhs, const SparseMatrix<MT2,tru
    using CT2 = CompositeType_t<MT2>;
 
    // Early exit in case the matrix sizes don't match
-   if( (~lhs).rows() != (~rhs).rows() || (~lhs).columns() != (~rhs).columns() )
+   if( (*lhs).rows() != (*rhs).rows() || (*lhs).columns() != (*rhs).columns() )
       return false;
 
    // Evaluation of the two sparse matrix operands
-   CT1 A( ~lhs );
-   CT2 B( ~rhs );
+   CT1 A( *lhs );
+   CT2 B( *rhs );
 
    // In order to compare the two matrices, the data values of the lower-order data
    // type are converted to the higher-order data type within the equal function.
@@ -233,8 +233,8 @@ template< RelaxationFlag RF  // Relaxation flag
         , bool SO >          // Storage order
 inline bool equal( const SparseMatrix<MT1,SO>& lhs, const SparseMatrix<MT2,!SO>& rhs )
 {
-   const OppositeType_t<MT2> tmp( ~rhs );
-   return equal<RF>( ~lhs, tmp );
+   const OppositeType_t<MT2> tmp( *rhs );
+   return equal<RF>( *lhs, tmp );
 }
 /*! \endcond */
 //*************************************************************************************************

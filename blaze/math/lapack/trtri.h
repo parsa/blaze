@@ -121,7 +121,7 @@ inline void trtri( DenseMatrix<MT,SO>& A, char uplo, char diag )
    BLAZE_CONSTRAINT_MUST_BE_CONTIGUOUS_TYPE( MT );
    BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<MT> );
 
-   if( !isSquare( ~A ) ) {
+   if( !isSquare( *A ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid non-square matrix provided" );
    }
 
@@ -133,8 +133,8 @@ inline void trtri( DenseMatrix<MT,SO>& A, char uplo, char diag )
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid diag argument provided" );
    }
 
-   blas_int_t n   ( numeric_cast<blas_int_t>( (~A).columns() ) );
-   blas_int_t lda ( numeric_cast<blas_int_t>( (~A).spacing() ) );
+   blas_int_t n   ( numeric_cast<blas_int_t>( (*A).columns() ) );
+   blas_int_t lda ( numeric_cast<blas_int_t>( (*A).spacing() ) );
    blas_int_t info( 0 );
 
    if( n == 0 ) {
@@ -145,7 +145,7 @@ inline void trtri( DenseMatrix<MT,SO>& A, char uplo, char diag )
       ( uplo == 'L' )?( uplo = 'U' ):( uplo = 'L' );
    }
 
-   trtri( uplo, diag, n, (~A).data(), lda, &info );
+   trtri( uplo, diag, n, (*A).data(), lda, &info );
 
    BLAZE_INTERNAL_ASSERT( info >= 0, "Invalid argument for matrix inversion" );
 

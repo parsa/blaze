@@ -81,8 +81,8 @@ template< typename MT  // Type of the matrix
         , bool SO >    // Storage order of the matrix
 ThreadMapping createThreadMapping( size_t threads, const Matrix<MT,SO>& A )
 {
-   const size_t M( (~A).rows()    );
-   const size_t N( (~A).columns() );
+   const size_t M( (*A).rows()    );
+   const size_t N( (*A).columns() );
 
    if( M > N || ( M == N && !SO ) )
    {

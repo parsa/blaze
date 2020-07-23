@@ -533,7 +533,7 @@ template< typename MT   // Type of the adapted sparse matrix
 template< typename MT2  // Type of the foreign matrix
         , bool SO2 >    // Storage order of the foreign matrix
 inline DiagonalMatrix<MT,SO,false>::DiagonalMatrix( const Matrix<MT2,SO2>& m )
-   : matrix_( ~m )  // The adapted sparse matrix
+   : matrix_( *m )  // The adapted sparse matrix
 {
    if( !IsDiagonal_v<MT2> && !isDiagonal( matrix_ ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid setup of diagonal matrix" );
@@ -947,11 +947,11 @@ template< typename MT2  // Type of the right-hand side matrix
 inline auto DiagonalMatrix<MT,SO,false>::operator=( const Matrix<MT2,SO2>& rhs )
    -> DisableIf_t< IsComputation_v<MT2>, DiagonalMatrix& >
 {
-   if( !IsDiagonal_v<MT2> && !isDiagonal( ~rhs ) ) {
+   if( !IsDiagonal_v<MT2> && !isDiagonal( *rhs ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to diagonal matrix" );
    }
 
-   matrix_ = decldiag( ~rhs );
+   matrix_ = decldiag( *rhs );
 
    if( !IsDiagonal_v<MT2> )
       resetNonDiagonal();
@@ -985,15 +985,15 @@ template< typename MT2  // Type of the right-hand side matrix
 inline auto DiagonalMatrix<MT,SO,false>::operator=( const Matrix<MT2,SO2>& rhs )
    -> EnableIf_t< IsComputation_v<MT2>, DiagonalMatrix& >
 {
-   if( !IsSquare_v<MT2> && !isSquare( ~rhs ) ) {
+   if( !IsSquare_v<MT2> && !isSquare( *rhs ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to diagonal matrix" );
    }
 
    if( IsDiagonal_v<MT2> ) {
-      matrix_ = ~rhs;
+      matrix_ = *rhs;
    }
    else {
-      MT tmp( ~rhs );
+      MT tmp( *rhs );
 
       if( !isDiagonal( tmp ) ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to diagonal matrix" );
@@ -1034,11 +1034,11 @@ template< typename MT2  // Type of the right-hand side matrix
 inline auto DiagonalMatrix<MT,SO,false>::operator+=( const Matrix<MT2,SO2>& rhs )
    -> DisableIf_t< IsComputation_v<MT2>, DiagonalMatrix& >
 {
-   if( !IsDiagonal_v<MT2> && !isDiagonal( ~rhs ) ) {
+   if( !IsDiagonal_v<MT2> && !isDiagonal( *rhs ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to diagonal matrix" );
    }
 
-   matrix_ += decldiag( ~rhs );
+   matrix_ += decldiag( *rhs );
 
    if( !IsDiagonal_v<MT2> )
       resetNonDiagonal();
@@ -1072,15 +1072,15 @@ template< typename MT2  // Type of the right-hand side matrix
 inline auto DiagonalMatrix<MT,SO,false>::operator+=( const Matrix<MT2,SO2>& rhs )
    -> EnableIf_t< IsComputation_v<MT2>, DiagonalMatrix& >
 {
-   if( !IsSquare_v<MT2> && !isSquare( ~rhs ) ) {
+   if( !IsSquare_v<MT2> && !isSquare( *rhs ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to diagonal matrix" );
    }
 
    if( IsDiagonal_v<MT2> ) {
-      matrix_ += ~rhs;
+      matrix_ += *rhs;
    }
    else {
-      const ResultType_t<MT2> tmp( ~rhs );
+      const ResultType_t<MT2> tmp( *rhs );
 
       if( !isDiagonal( tmp ) ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to diagonal matrix" );
@@ -1121,11 +1121,11 @@ template< typename MT2  // Type of the right-hand side matrix
 inline auto DiagonalMatrix<MT,SO,false>::operator-=( const Matrix<MT2,SO2>& rhs )
    -> DisableIf_t< IsComputation_v<MT2>, DiagonalMatrix& >
 {
-   if( !IsDiagonal_v<MT2> && !isDiagonal( ~rhs ) ) {
+   if( !IsDiagonal_v<MT2> && !isDiagonal( *rhs ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to diagonal matrix" );
    }
 
-   matrix_ -= decldiag( ~rhs );
+   matrix_ -= decldiag( *rhs );
 
    if( !IsDiagonal_v<MT2> )
       resetNonDiagonal();
@@ -1159,15 +1159,15 @@ template< typename MT2  // Type of the right-hand side matrix
 inline auto DiagonalMatrix<MT,SO,false>::operator-=( const Matrix<MT2,SO2>& rhs )
    -> EnableIf_t< IsComputation_v<MT2>, DiagonalMatrix& >
 {
-   if( !IsSquare_v<MT2> && !isSquare( ~rhs ) ) {
+   if( !IsSquare_v<MT2> && !isSquare( *rhs ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to diagonal matrix" );
    }
 
    if( IsDiagonal_v<MT2> ) {
-      matrix_ -= ~rhs;
+      matrix_ -= *rhs;
    }
    else {
-      const ResultType_t<MT2> tmp( ~rhs );
+      const ResultType_t<MT2> tmp( *rhs );
 
       if( !isDiagonal( tmp ) ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to diagonal matrix" );
@@ -1206,11 +1206,11 @@ template< typename MT2  // Type of the right-hand side matrix
 inline auto DiagonalMatrix<MT,SO,false>::operator%=( const Matrix<MT2,SO2>& rhs )
    -> DiagonalMatrix&
 {
-   if( !IsSquare_v<MT2> && !isSquare( ~rhs ) ) {
+   if( !IsSquare_v<MT2> && !isSquare( *rhs ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to diagonal matrix" );
    }
 
-   matrix_ %= ~rhs;
+   matrix_ %= *rhs;
 
    if( !IsDiagonal_v<MT2> )
       resetNonDiagonal();

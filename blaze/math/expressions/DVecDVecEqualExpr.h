@@ -125,11 +125,11 @@ inline auto equal( const DenseVector<VT1,TF1>& lhs, const DenseVector<VT2,TF2>& 
    using CT2 = CompositeType_t<VT2>;
 
    // Early exit in case the vector sizes don't match
-   if( (~lhs).size() != (~rhs).size() ) return false;
+   if( (*lhs).size() != (*rhs).size() ) return false;
 
    // Evaluation of the two dense vector operands
-   CT1 a( ~lhs );
-   CT2 b( ~rhs );
+   CT1 a( *lhs );
+   CT2 b( *rhs );
 
    // In order to compare the two vectors, the data values of the lower-order data
    // type are converted to the higher-order data type within the equal function.
@@ -168,11 +168,11 @@ inline auto equal( const DenseVector<VT1,TF1>& lhs, const DenseVector<VT2,TF2>& 
    using XT2 = RemoveReference_t<CT2>;
 
    // Early exit in case the vector sizes don't match
-   if( (~lhs).size() != (~rhs).size() ) return false;
+   if( (*lhs).size() != (*rhs).size() ) return false;
 
    // Evaluation of the two dense vector operands
-   CT1 a( ~lhs );
-   CT2 b( ~rhs );
+   CT1 a( *lhs );
+   CT2 b( *rhs );
 
    constexpr size_t SIMDSIZE = SIMDTrait< ElementType_t<VT1> >::size;
    constexpr bool remainder( !IsPadded_v<XT1> || !IsPadded_v<XT2> );

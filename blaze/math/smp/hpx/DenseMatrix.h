@@ -107,19 +107,19 @@ void hpxAssign( DenseMatrix<MT1,SO1>& lhs, const DenseMatrix<MT2,SO2>& rhs, OP o
    constexpr bool simdEnabled( MT1::simdEnabled && MT2::simdEnabled && IsSIMDCombinable_v<ET1,ET2> );
    constexpr size_t SIMDSIZE( SIMDTrait< ElementType_t<MT1> >::size );
 
-   const bool lhsAligned( (~lhs).isAligned() );
-   const bool rhsAligned( (~rhs).isAligned() );
+   const bool lhsAligned( (*lhs).isAligned() );
+   const bool rhsAligned( (*rhs).isAligned() );
 
    const size_t threads    ( getNumThreads() );
-   const ThreadMapping threadmap( createThreadMapping( threads, ~rhs ) );
+   const ThreadMapping threadmap( createThreadMapping( threads, *rhs ) );
 
-   const size_t addon1     ( ( ( (~rhs).rows() % threadmap.first ) != 0UL )? 1UL : 0UL );
-   const size_t equalShare1( (~rhs).rows() / threadmap.first + addon1 );
+   const size_t addon1     ( ( ( (*rhs).rows() % threadmap.first ) != 0UL )? 1UL : 0UL );
+   const size_t equalShare1( (*rhs).rows() / threadmap.first + addon1 );
    const size_t rest1      ( equalShare1 & ( SIMDSIZE - 1UL ) );
    const size_t rowsPerThread( ( simdEnabled && rest1 )?( equalShare1 - rest1 + SIMDSIZE ):( equalShare1 ) );
 
-   const size_t addon2     ( ( ( (~rhs).columns() % threadmap.second ) != 0UL )? 1UL : 0UL );
-   const size_t equalShare2( (~rhs).columns() / threadmap.second + addon2 );
+   const size_t addon2     ( ( ( (*rhs).columns() % threadmap.second ) != 0UL )? 1UL : 0UL );
+   const size_t equalShare2( (*rhs).columns() / threadmap.second + addon2 );
    const size_t rest2      ( equalShare2 & ( SIMDSIZE - 1UL ) );
    const size_t colsPerThread( ( simdEnabled && rest2 )?( equalShare2 - rest2 + SIMDSIZE ):( equalShare2 ) );
 
@@ -128,30 +128,30 @@ void hpxAssign( DenseMatrix<MT1,SO1>& lhs, const DenseMatrix<MT2,SO2>& rhs, OP o
       const size_t row   ( ( i / threadmap.second ) * rowsPerThread );
       const size_t column( ( i % threadmap.second ) * colsPerThread );
 
-      if( row >= (~rhs).rows() || column >= (~rhs).columns() )
+      if( row >= (*rhs).rows() || column >= (*rhs).columns() )
          return;
 
-      const size_t m( min( rowsPerThread, (~rhs).rows()    - row    ) );
-      const size_t n( min( colsPerThread, (~rhs).columns() - column ) );
+      const size_t m( min( rowsPerThread, (*rhs).rows()    - row    ) );
+      const size_t n( min( colsPerThread, (*rhs).columns() - column ) );
 
       if( simdEnabled && lhsAligned && rhsAligned ) {
-         auto       target( submatrix<aligned>( ~lhs, row, column, m, n ) );
-         const auto source( submatrix<aligned>( ~rhs, row, column, m, n ) );
+         auto       target( submatrix<aligned>( *lhs, row, column, m, n ) );
+         const auto source( submatrix<aligned>( *rhs, row, column, m, n ) );
          op( target, source );
       }
       else if( simdEnabled && lhsAligned ) {
-         auto       target( submatrix<aligned>( ~lhs, row, column, m, n ) );
-         const auto source( submatrix<unaligned>( ~rhs, row, column, m, n ) );
+         auto       target( submatrix<aligned>( *lhs, row, column, m, n ) );
+         const auto source( submatrix<unaligned>( *rhs, row, column, m, n ) );
          op( target, source );
       }
       else if( simdEnabled && rhsAligned ) {
-         auto       target( submatrix<unaligned>( ~lhs, row, column, m, n ) );
-         const auto source( submatrix<aligned>( ~rhs, row, column, m, n ) );
+         auto       target( submatrix<unaligned>( *lhs, row, column, m, n ) );
+         const auto source( submatrix<aligned>( *rhs, row, column, m, n ) );
          op( target, source );
       }
       else {
-         auto       target( submatrix<unaligned>( ~lhs, row, column, m, n ) );
-         const auto source( submatrix<unaligned>( ~rhs, row, column, m, n ) );
+         auto       target( submatrix<unaligned>( *lhs, row, column, m, n ) );
+         const auto source( submatrix<unaligned>( *rhs, row, column, m, n ) );
          op( target, source );
       }
    } );
@@ -190,27 +190,27 @@ void hpxAssign( DenseMatrix<MT1,SO1>& lhs, const SparseMatrix<MT2,SO2>& rhs, OP 
    BLAZE_FUNCTION_TRACE;
 
    const size_t threads      ( getNumThreads() );
-   const ThreadMapping threadmap( createThreadMapping( threads, ~rhs ) );
+   const ThreadMapping threadmap( createThreadMapping( threads, *rhs ) );
 
-   const size_t addon1       ( ( ( (~rhs).rows() % threadmap.first ) != 0UL )? 1UL : 0UL );
-   const size_t rowsPerThread( (~rhs).rows() / threadmap.first + addon1 );
+   const size_t addon1       ( ( ( (*rhs).rows() % threadmap.first ) != 0UL )? 1UL : 0UL );
+   const size_t rowsPerThread( (*rhs).rows() / threadmap.first + addon1 );
 
-   const size_t addon2       ( ( ( (~rhs).columns() % threadmap.second ) != 0UL )? 1UL : 0UL );
-   const size_t colsPerThread( (~rhs).columns() / threadmap.second + addon2 );
+   const size_t addon2       ( ( ( (*rhs).columns() % threadmap.second ) != 0UL )? 1UL : 0UL );
+   const size_t colsPerThread( (*rhs).columns() / threadmap.second + addon2 );
 
    for_loop( par, size_t(0), threads, [&](int i)
    {
       const size_t row   ( ( i / threadmap.second ) * rowsPerThread );
       const size_t column( ( i % threadmap.second ) * colsPerThread );
 
-      if( row >= (~rhs).rows() || column >= (~rhs).columns() )
+      if( row >= (*rhs).rows() || column >= (*rhs).columns() )
          return;
 
-      const size_t m( min( rowsPerThread, (~lhs).rows()    - row    ) );
-      const size_t n( min( colsPerThread, (~lhs).columns() - column ) );
+      const size_t m( min( rowsPerThread, (*lhs).rows()    - row    ) );
+      const size_t n( min( colsPerThread, (*lhs).columns() - column ) );
 
-      auto       target( submatrix<unaligned>( ~lhs, row, column, m, n ) );
-      const auto source( submatrix<unaligned>( ~rhs, row, column, m, n ) );
+      auto       target( submatrix<unaligned>( *lhs, row, column, m, n ) );
+      const auto source( submatrix<unaligned>( *rhs, row, column, m, n ) );
       op( target, source );
    } );
 }
@@ -253,10 +253,10 @@ inline auto smpAssign( Matrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 
-   BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( (*lhs).columns() == (*rhs).columns(), "Invalid number of columns" );
 
-   assign( ~lhs, ~rhs );
+   assign( *lhs, *rhs );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -292,14 +292,14 @@ inline auto smpAssign( Matrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs )
    BLAZE_CONSTRAINT_MUST_NOT_BE_SMP_ASSIGNABLE( ElementType_t<MT1> );
    BLAZE_CONSTRAINT_MUST_NOT_BE_SMP_ASSIGNABLE( ElementType_t<MT2> );
 
-   BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( (*lhs).columns() == (*rhs).columns(), "Invalid number of columns" );
 
-   if( isSerialSectionActive() || !(~rhs).canSMPAssign() ) {
-      assign( ~lhs, ~rhs );
+   if( isSerialSectionActive() || !(*rhs).canSMPAssign() ) {
+      assign( *lhs, *rhs );
    }
    else {
-      hpxAssign( ~lhs, ~rhs, []( auto& a, const auto& b ){ assign( a, b ); } );
+      hpxAssign( *lhs, *rhs, []( auto& a, const auto& b ){ assign( a, b ); } );
    }
 }
 /*! \endcond */
@@ -341,10 +341,10 @@ inline auto smpAddAssign( Matrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 
-   BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( (*lhs).columns() == (*rhs).columns(), "Invalid number of columns" );
 
-   addAssign( ~lhs, ~rhs );
+   addAssign( *lhs, *rhs );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -380,14 +380,14 @@ inline auto smpAddAssign( Matrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs )
    BLAZE_CONSTRAINT_MUST_NOT_BE_SMP_ASSIGNABLE( ElementType_t<MT1> );
    BLAZE_CONSTRAINT_MUST_NOT_BE_SMP_ASSIGNABLE( ElementType_t<MT2> );
 
-   BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( (*lhs).columns() == (*rhs).columns(), "Invalid number of columns" );
 
-   if( isSerialSectionActive() || !(~rhs).canSMPAssign() ) {
-      addAssign( ~lhs, ~rhs );
+   if( isSerialSectionActive() || !(*rhs).canSMPAssign() ) {
+      addAssign( *lhs, *rhs );
    }
    else {
-      hpxAssign( ~lhs, ~rhs, []( auto& a, const auto& b ){ addAssign( a, b ); } );
+      hpxAssign( *lhs, *rhs, []( auto& a, const auto& b ){ addAssign( a, b ); } );
    }
 }
 /*! \endcond */
@@ -429,10 +429,10 @@ inline auto smpSubAssign( Matrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 
-   BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( (*lhs).columns() == (*rhs).columns(), "Invalid number of columns" );
 
-   subAssign( ~lhs, ~rhs );
+   subAssign( *lhs, *rhs );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -468,14 +468,14 @@ inline auto smpSubAssign( Matrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs )
    BLAZE_CONSTRAINT_MUST_NOT_BE_SMP_ASSIGNABLE( ElementType_t<MT1> );
    BLAZE_CONSTRAINT_MUST_NOT_BE_SMP_ASSIGNABLE( ElementType_t<MT2> );
 
-   BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( (*lhs).columns() == (*rhs).columns(), "Invalid number of columns" );
 
-   if( isSerialSectionActive() || !(~rhs).canSMPAssign() ) {
-      subAssign( ~lhs, ~rhs );
+   if( isSerialSectionActive() || !(*rhs).canSMPAssign() ) {
+      subAssign( *lhs, *rhs );
    }
    else {
-      hpxAssign( ~lhs, ~rhs, []( auto& a, const auto& b ){ subAssign( a, b ); } );
+      hpxAssign( *lhs, *rhs, []( auto& a, const auto& b ){ subAssign( a, b ); } );
    }
 }
 /*! \endcond */
@@ -517,10 +517,10 @@ inline auto smpSchurAssign( Matrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 
-   BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( (*lhs).columns() == (*rhs).columns(), "Invalid number of columns" );
 
-   schurAssign( ~lhs, ~rhs );
+   schurAssign( *lhs, *rhs );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -556,14 +556,14 @@ inline auto smpSchurAssign( Matrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs )
    BLAZE_CONSTRAINT_MUST_NOT_BE_SMP_ASSIGNABLE( ElementType_t<MT1> );
    BLAZE_CONSTRAINT_MUST_NOT_BE_SMP_ASSIGNABLE( ElementType_t<MT2> );
 
-   BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( (*lhs).columns() == (*rhs).columns(), "Invalid number of columns" );
 
-   if( isSerialSectionActive() || !(~rhs).canSMPAssign() ) {
-      schurAssign( ~lhs, ~rhs );
+   if( isSerialSectionActive() || !(*rhs).canSMPAssign() ) {
+      schurAssign( *lhs, *rhs );
    }
    else {
-      hpxAssign( ~lhs, ~rhs, []( auto& a, const auto& b ){ schurAssign( a, b ); } );
+      hpxAssign( *lhs, *rhs, []( auto& a, const auto& b ){ schurAssign( a, b ); } );
    }
 }
 /*! \endcond */
@@ -603,10 +603,10 @@ inline auto smpMultAssign( Matrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 
-   BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( (*lhs).columns() == (*rhs).columns(), "Invalid number of columns" );
 
-   multAssign( ~lhs, ~rhs );
+   multAssign( *lhs, *rhs );
 }
 /*! \endcond */
 //*************************************************************************************************

@@ -135,11 +135,11 @@ inline auto gges_backend( DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B,
                           Select select )
    -> DisableIf_t< IsComplex_v< ElementType_t<MT1> > >
 {
-   BLAZE_INTERNAL_ASSERT( isSquare( ~A ), "Invalid non-square matrix detected" );
-   BLAZE_INTERNAL_ASSERT( isSquare( ~B ), "Invalid non-square matrix detected" );
-   BLAZE_INTERNAL_ASSERT( (~B).rows() == (~A).rows(), "Invalid matrix dimension detected" );
-   BLAZE_INTERNAL_ASSERT( (~alpha).size() == (~A).rows(), "Invalid vector dimension detected" );
-   BLAZE_INTERNAL_ASSERT( (~beta).size() == (~A).rows(), "Invalid vector dimension detected" );
+   BLAZE_INTERNAL_ASSERT( isSquare( *A ), "Invalid non-square matrix detected" );
+   BLAZE_INTERNAL_ASSERT( isSquare( *B ), "Invalid non-square matrix detected" );
+   BLAZE_INTERNAL_ASSERT( (*B).rows() == (*A).rows(), "Invalid matrix dimension detected" );
+   BLAZE_INTERNAL_ASSERT( (*alpha).size() == (*A).rows(), "Invalid vector dimension detected" );
+   BLAZE_INTERNAL_ASSERT( (*beta).size() == (*A).rows(), "Invalid vector dimension detected" );
 
    using CT = ElementType_t<VT1>;
    using BT = ElementType_t<MT1>;
@@ -147,9 +147,9 @@ inline auto gges_backend( DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B,
    BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( CT );
    BLAZE_CONSTRAINT_MUST_BE_BUILTIN_TYPE( BT );
 
-   const blas_int_t n  ( numeric_cast<blas_int_t>( (~A).rows() ) );
-   const blas_int_t lda( numeric_cast<blas_int_t>( (~A).spacing() ) );
-   const blas_int_t ldb( numeric_cast<blas_int_t>( (~B).spacing() ) );
+   const blas_int_t n  ( numeric_cast<blas_int_t>( (*A).rows() ) );
+   const blas_int_t lda( numeric_cast<blas_int_t>( (*A).spacing() ) );
+   const blas_int_t ldb( numeric_cast<blas_int_t>( (*B).spacing() ) );
    blas_int_t info( 0 );
    blas_int_t sdim( 0 );
 
@@ -159,8 +159,8 @@ inline auto gges_backend( DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B,
    const std::unique_ptr<BT[]> work( new BT[max(1,lwork)] );
    const std::unique_ptr<blas_int_t[]> bwork( select ? new blas_int_t[n] : nullptr );
 
-   gges( 'N', 'N', ( select ? 'S' : 'N' ), select, n, (~A).data(), lda, (~B).data(), ldb, &sdim,
-         alphar.get(), alphai.get(), (~beta).data(), nullptr, 1, nullptr, 1,
+   gges( 'N', 'N', ( select ? 'S' : 'N' ), select, n, (*A).data(), lda, (*B).data(), ldb, &sdim,
+         alphar.get(), alphai.get(), (*beta).data(), nullptr, 1, nullptr, 1,
          work.get(), lwork, bwork.get(), &info );
 
    BLAZE_INTERNAL_ASSERT( info >= 0, "Invalid argument for generalized eigenvalue decomposition" );
@@ -169,8 +169,8 @@ inline auto gges_backend( DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B,
       BLAZE_THROW_LAPACK_ERROR( "Generalized eigenvalue decomposition failed" );
    }
 
-   for( size_t i=0UL; i<(~A).rows(); ++i ) {
-      (~alpha)[i] = CT( alphar[i], alphai[i] );
+   for( size_t i=0UL; i<(*A).rows(); ++i ) {
+      (*alpha)[i] = CT( alphar[i], alphai[i] );
    }
 }
 /*! \endcond */
@@ -211,11 +211,11 @@ inline auto gges_backend( DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B,
                           Select select )
    -> EnableIf_t< IsComplex_v< ElementType_t<MT1> > >
 {
-   BLAZE_INTERNAL_ASSERT( isSquare( ~A ), "Invalid non-square matrix detected" );
-   BLAZE_INTERNAL_ASSERT( isSquare( ~B ), "Invalid non-square matrix detected" );
-   BLAZE_INTERNAL_ASSERT( (~B).rows() == (~A).rows(), "Invalid matrix dimension detected" );
-   BLAZE_INTERNAL_ASSERT( (~alpha).size() == (~A).rows(), "Invalid vector dimension detected" );
-   BLAZE_INTERNAL_ASSERT( (~beta).size() == (~A).rows(), "Invalid vector dimension detected" );
+   BLAZE_INTERNAL_ASSERT( isSquare( *A ), "Invalid non-square matrix detected" );
+   BLAZE_INTERNAL_ASSERT( isSquare( *B ), "Invalid non-square matrix detected" );
+   BLAZE_INTERNAL_ASSERT( (*B).rows() == (*A).rows(), "Invalid matrix dimension detected" );
+   BLAZE_INTERNAL_ASSERT( (*alpha).size() == (*A).rows(), "Invalid vector dimension detected" );
+   BLAZE_INTERNAL_ASSERT( (*beta).size() == (*A).rows(), "Invalid vector dimension detected" );
 
    using CT = ElementType_t<VT1>;
    using BT = typename CT::value_type;
@@ -223,9 +223,9 @@ inline auto gges_backend( DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B,
    BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( CT );
    BLAZE_CONSTRAINT_MUST_BE_BUILTIN_TYPE( BT );
 
-   const blas_int_t n  ( numeric_cast<blas_int_t>( (~A).rows() ) );
-   const blas_int_t lda( numeric_cast<blas_int_t>( (~A).spacing() ) );
-   const blas_int_t ldb( numeric_cast<blas_int_t>( (~B).spacing() ) );
+   const blas_int_t n  ( numeric_cast<blas_int_t>( (*A).rows() ) );
+   const blas_int_t lda( numeric_cast<blas_int_t>( (*A).spacing() ) );
+   const blas_int_t ldb( numeric_cast<blas_int_t>( (*B).spacing() ) );
    blas_int_t info( 0 );
    blas_int_t sdim( 0 );
 
@@ -234,8 +234,8 @@ inline auto gges_backend( DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B,
    const std::unique_ptr<BT[]> rwork( new BT[8*n] );
    const std::unique_ptr<blas_int_t[]> bwork( select ? new blas_int_t[n] : nullptr );
 
-   gges( 'N', 'N', ( select ? 'S' : 'N' ), select, n, (~A).data(), lda, (~B).data(), ldb, &sdim,
-         (~alpha).data(), (~beta).data(), nullptr, 1, nullptr, 1,
+   gges( 'N', 'N', ( select ? 'S' : 'N' ), select, n, (*A).data(), lda, (*B).data(), ldb, &sdim,
+         (*alpha).data(), (*beta).data(), nullptr, 1, nullptr, 1,
          work.get(), lwork, rwork.get(), bwork.get(), &info );
 
    BLAZE_INTERNAL_ASSERT( info >= 0, "Invalid argument for generalized eigenvalue decomposition" );
@@ -349,21 +349,21 @@ inline void gges( DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B,
    BLAZE_CONSTRAINT_MUST_BE_CONTIGUOUS_TYPE( VT2 );
    BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<VT2> );
 
-   const size_t N( (~A).rows() );
+   const size_t N( (*A).rows() );
 
-   if( !isSquare( ~A ) ) {
+   if( !isSquare( *A ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid non-square matrix provided" );
    }
 
-   resize( ~B, N, N, false );
-   resize( ~alpha, N, false );
-   resize( ~beta, N, false );
+   resize( *B, N, N, false );
+   resize( *alpha, N, false );
+   resize( *beta, N, false );
 
    if( N == 0UL ) {
       return;
    }
 
-   gges_backend( ~A, ~B, ~alpha, ~beta, nullptr );
+   gges_backend( *A, *B, *alpha, *beta, nullptr );
 }
 //*************************************************************************************************
 
@@ -484,21 +484,21 @@ inline void gges( DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B,
    BLAZE_CONSTRAINT_MUST_BE_CONTIGUOUS_TYPE( VT2 );
    BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<VT2> );
 
-   const size_t N( (~A).rows() );
+   const size_t N( (*A).rows() );
 
-   if( !isSquare( ~A ) ) {
+   if( !isSquare( *A ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid non-square matrix provided" );
    }
 
-   resize( ~B, N, N, false );
-   resize( ~alpha, N, false );
-   resize( ~beta, N, false );
+   resize( *B, N, N, false );
+   resize( *alpha, N, false );
+   resize( *beta, N, false );
 
    if( N == 0UL ) {
       return;
    }
 
-   gges_backend( ~A, ~B, ~alpha, ~beta, select );
+   gges_backend( *A, *B, *alpha, *beta, select );
 }
 //*************************************************************************************************
 
@@ -544,15 +544,15 @@ inline auto gges_backend( DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B,
                           Select select )
    -> DisableIf_t< IsComplex_v< ElementType_t<MT1> > >
 {
-   BLAZE_INTERNAL_ASSERT( isSquare( ~A ), "Invalid non-square matrix detected" );
-   BLAZE_INTERNAL_ASSERT( isSquare( ~B ), "Invalid non-square matrix detected" );
-   BLAZE_INTERNAL_ASSERT( isSquare( ~VSL ), "Invalid non-square matrix detected" );
-   BLAZE_INTERNAL_ASSERT( isSquare( ~VSR ), "Invalid non-square matrix detected" );
-   BLAZE_INTERNAL_ASSERT( (~B).rows() == (~A).rows(), "Invalid matrix dimension detected" );
-   BLAZE_INTERNAL_ASSERT( (~VSL).rows() == (~A).rows(), "Invalid matrix dimension detected" );
-   BLAZE_INTERNAL_ASSERT( (~VSR).rows() == (~A).rows(), "Invalid matrix dimension detected" );
-   BLAZE_INTERNAL_ASSERT( (~alpha).size() == (~A).rows(), "Invalid vector dimension detected" );
-   BLAZE_INTERNAL_ASSERT( (~beta).size() == (~A).rows(), "Invalid vector dimension detected" );
+   BLAZE_INTERNAL_ASSERT( isSquare( *A ), "Invalid non-square matrix detected" );
+   BLAZE_INTERNAL_ASSERT( isSquare( *B ), "Invalid non-square matrix detected" );
+   BLAZE_INTERNAL_ASSERT( isSquare( *VSL ), "Invalid non-square matrix detected" );
+   BLAZE_INTERNAL_ASSERT( isSquare( *VSR ), "Invalid non-square matrix detected" );
+   BLAZE_INTERNAL_ASSERT( (*B).rows() == (*A).rows(), "Invalid matrix dimension detected" );
+   BLAZE_INTERNAL_ASSERT( (*VSL).rows() == (*A).rows(), "Invalid matrix dimension detected" );
+   BLAZE_INTERNAL_ASSERT( (*VSR).rows() == (*A).rows(), "Invalid matrix dimension detected" );
+   BLAZE_INTERNAL_ASSERT( (*alpha).size() == (*A).rows(), "Invalid vector dimension detected" );
+   BLAZE_INTERNAL_ASSERT( (*beta).size() == (*A).rows(), "Invalid vector dimension detected" );
 
    using CT = ElementType_t<VT1>;
    using BT = ElementType_t<MT1>;
@@ -560,11 +560,11 @@ inline auto gges_backend( DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B,
    BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( CT );
    BLAZE_CONSTRAINT_MUST_BE_BUILTIN_TYPE( BT );
 
-   const blas_int_t n    ( numeric_cast<blas_int_t>( (~A).rows() ) );
-   const blas_int_t lda  ( numeric_cast<blas_int_t>( (~A).spacing() ) );
-   const blas_int_t ldb  ( numeric_cast<blas_int_t>( (~B).spacing() ) );
-   const blas_int_t ldvsl( numeric_cast<blas_int_t>( (~VSL).spacing() ) );
-   const blas_int_t ldvsr( numeric_cast<blas_int_t>( (~VSR).spacing() ) );
+   const blas_int_t n    ( numeric_cast<blas_int_t>( (*A).rows() ) );
+   const blas_int_t lda  ( numeric_cast<blas_int_t>( (*A).spacing() ) );
+   const blas_int_t ldb  ( numeric_cast<blas_int_t>( (*B).spacing() ) );
+   const blas_int_t ldvsl( numeric_cast<blas_int_t>( (*VSL).spacing() ) );
+   const blas_int_t ldvsr( numeric_cast<blas_int_t>( (*VSR).spacing() ) );
    blas_int_t info( 0 );
    blas_int_t sdim( 0 );
 
@@ -574,8 +574,8 @@ inline auto gges_backend( DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B,
    const std::unique_ptr<BT[]> work( new BT[max(1, lwork)] );
    const std::unique_ptr<blas_int_t[]> bwork( select ? new blas_int_t[n] : nullptr );
 
-   gges( 'V', 'V', ( select ? 'S' : 'N' ), select, n, (~A).data(), lda, (~B).data(), ldb, &sdim,
-         alphar.get(), alphai.get(), (~beta).data(), (~VSL).data(), ldvsl, (~VSR).data(), ldvsr,
+   gges( 'V', 'V', ( select ? 'S' : 'N' ), select, n, (*A).data(), lda, (*B).data(), ldb, &sdim,
+         alphar.get(), alphai.get(), (*beta).data(), (*VSL).data(), ldvsl, (*VSR).data(), ldvsr,
          work.get(), lwork, bwork.get(), &info );
 
    BLAZE_INTERNAL_ASSERT( info >= 0, "Invalid argument for generalized eigenvalue decomposition" );
@@ -584,8 +584,8 @@ inline auto gges_backend( DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B,
       BLAZE_THROW_LAPACK_ERROR( "Generalized eigenvalue decomposition failed" );
    }
 
-   for( size_t i=0UL; i<(~A).rows(); ++i ) {
-      (~alpha)[i] = CT( alphar[i], alphai[i] );
+   for( size_t i=0UL; i<(*A).rows(); ++i ) {
+      (*alpha)[i] = CT( alphar[i], alphai[i] );
    }
 }
 /*! \endcond */
@@ -633,15 +633,15 @@ inline auto gges_backend( DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B,
                           Select select )
    -> EnableIf_t< IsComplex_v< ElementType_t<MT1> > >
 {
-   BLAZE_INTERNAL_ASSERT( isSquare( ~A ), "Invalid non-square matrix detected" );
-   BLAZE_INTERNAL_ASSERT( isSquare( ~B ), "Invalid non-square matrix detected" );
-   BLAZE_INTERNAL_ASSERT( isSquare( ~VSL ), "Invalid non-square matrix detected" );
-   BLAZE_INTERNAL_ASSERT( isSquare( ~VSR ), "Invalid non-square matrix detected" );
-   BLAZE_INTERNAL_ASSERT( (~B).rows() == (~A).rows(), "Invalid matrix dimension detected" );
-   BLAZE_INTERNAL_ASSERT( (~VSL).rows() == (~A).rows(), "Invalid matrix dimension detected" );
-   BLAZE_INTERNAL_ASSERT( (~VSR).rows() == (~A).rows(), "Invalid matrix dimension detected" );
-   BLAZE_INTERNAL_ASSERT( (~alpha).size() == (~A).rows(), "Invalid vector dimension detected" );
-   BLAZE_INTERNAL_ASSERT( (~beta).size() == (~A).rows(), "Invalid vector dimension detected" );
+   BLAZE_INTERNAL_ASSERT( isSquare( *A ), "Invalid non-square matrix detected" );
+   BLAZE_INTERNAL_ASSERT( isSquare( *B ), "Invalid non-square matrix detected" );
+   BLAZE_INTERNAL_ASSERT( isSquare( *VSL ), "Invalid non-square matrix detected" );
+   BLAZE_INTERNAL_ASSERT( isSquare( *VSR ), "Invalid non-square matrix detected" );
+   BLAZE_INTERNAL_ASSERT( (*B).rows() == (*A).rows(), "Invalid matrix dimension detected" );
+   BLAZE_INTERNAL_ASSERT( (*VSL).rows() == (*A).rows(), "Invalid matrix dimension detected" );
+   BLAZE_INTERNAL_ASSERT( (*VSR).rows() == (*A).rows(), "Invalid matrix dimension detected" );
+   BLAZE_INTERNAL_ASSERT( (*alpha).size() == (*A).rows(), "Invalid vector dimension detected" );
+   BLAZE_INTERNAL_ASSERT( (*beta).size() == (*A).rows(), "Invalid vector dimension detected" );
 
    using CT = ElementType_t<VT1>;
    using BT = typename CT::value_type;
@@ -649,11 +649,11 @@ inline auto gges_backend( DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B,
    BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( CT );
    BLAZE_CONSTRAINT_MUST_BE_BUILTIN_TYPE( BT );
 
-   const blas_int_t n    ( numeric_cast<blas_int_t>( (~A).rows() ) );
-   const blas_int_t lda  ( numeric_cast<blas_int_t>( (~A).spacing() ) );
-   const blas_int_t ldb  ( numeric_cast<blas_int_t>( (~B).spacing() ) );
-   const blas_int_t ldvsl( numeric_cast<blas_int_t>( (~VSL).spacing() ) );
-   const blas_int_t ldvsr( numeric_cast<blas_int_t>( (~VSR).spacing() ) );
+   const blas_int_t n    ( numeric_cast<blas_int_t>( (*A).rows() ) );
+   const blas_int_t lda  ( numeric_cast<blas_int_t>( (*A).spacing() ) );
+   const blas_int_t ldb  ( numeric_cast<blas_int_t>( (*B).spacing() ) );
+   const blas_int_t ldvsl( numeric_cast<blas_int_t>( (*VSL).spacing() ) );
+   const blas_int_t ldvsr( numeric_cast<blas_int_t>( (*VSR).spacing() ) );
    blas_int_t info( 0 );
    blas_int_t sdim( 0 );
 
@@ -662,8 +662,8 @@ inline auto gges_backend( DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B,
    const std::unique_ptr<BT[]> rwork( new BT[8*n] );
    const std::unique_ptr<blas_int_t[]> bwork( select ? new blas_int_t[n] : nullptr );
 
-   gges( 'V', 'V', ( select ? 'S' : 'N' ), select, n, (~A).data(), lda, (~B).data(), ldb, &sdim,
-         (~alpha).data(), (~beta).data(), (~VSL).data(), ldvsl, (~VSR).data(), ldvsr,
+   gges( 'V', 'V', ( select ? 'S' : 'N' ), select, n, (*A).data(), lda, (*B).data(), ldb, &sdim,
+         (*alpha).data(), (*beta).data(), (*VSL).data(), ldvsl, (*VSR).data(), ldvsr,
          work.get(), lwork, rwork.get(), bwork.get(), &info );
 
    BLAZE_INTERNAL_ASSERT( info >= 0, "Invalid argument for generalized eigenvalue decomposition" );
@@ -809,26 +809,26 @@ inline void gges( DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B,
    BLAZE_CONSTRAINT_MUST_BE_CONTIGUOUS_TYPE( MT4 );
    BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<MT4> );
 
-   const size_t N( (~A).rows() );
+   const size_t N( (*A).rows() );
 
-   if( !isSquare( ~A ) ) {
+   if( !isSquare( *A ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid non-square matrix provided" );
    }
 
-   if( (~A).rows() != (~B).rows() || (~A).columns() != (~B).columns() ) {
+   if( (*A).rows() != (*B).rows() || (*A).columns() != (*B).columns() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
-   resize( ~VSL, N, N, false );
-   resize( ~alpha, N, false );
-   resize( ~beta, N, false );
-   resize( ~VSR, N, N, false );
+   resize( *VSL, N, N, false );
+   resize( *alpha, N, false );
+   resize( *beta, N, false );
+   resize( *VSR, N, N, false );
 
    if( N == 0UL ) {
       return;
    }
 
-   gges_backend( ~A, ~B, ~VSL, ~alpha, ~beta, ~VSR, nullptr );
+   gges_backend( *A, *B, *VSL, *alpha, *beta, *VSR, nullptr );
 }
 //*************************************************************************************************
 
@@ -982,23 +982,23 @@ inline void gges( DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B,
    BLAZE_CONSTRAINT_MUST_BE_CONTIGUOUS_TYPE( MT4 );
    BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<MT4> );
 
-   const size_t N( (~A).rows() );
+   const size_t N( (*A).rows() );
 
-   if( !isSquare( ~A ) ) {
+   if( !isSquare( *A ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid non-square matrix provided" );
    }
 
-   resize( ~B, N, N, false );
-   resize( ~VSL, N, N, false );
-   resize( ~alpha, N, false );
-   resize( ~beta, N, false );
-   resize( ~VSR, N, N, false );
+   resize( *B, N, N, false );
+   resize( *VSL, N, N, false );
+   resize( *alpha, N, false );
+   resize( *beta, N, false );
+   resize( *VSR, N, N, false );
 
    if( N == 0UL ) {
       return;
    }
 
-   gges_backend( ~A, ~B, ~VSL, ~alpha, ~beta, ~VSR, select );
+   gges_backend( *A, *B, *VSL, *alpha, *beta, *VSR, select );
 }
 //*************************************************************************************************
 

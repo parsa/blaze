@@ -142,20 +142,20 @@ inline auto operator*=( SparseMatrix<MT,SO>& mat, ST scalar )
    BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT );
 
    if( IsRestricted_v<MT> ) {
-      if( !tryMult( ~mat, 0UL, 0UL, (~mat).rows(), (~mat).columns(), scalar ) ) {
+      if( !tryMult( *mat, 0UL, 0UL, (*mat).rows(), (*mat).columns(), scalar ) ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid scaling of restricted matrix" );
       }
    }
 
    if( !IsResizable_v< ElementType_t<MT> > && isZero( scalar ) )
    {
-      reset( ~mat );
+      reset( *mat );
    }
    else
    {
-      decltype(auto) left( derestrict( ~mat ) );
+      decltype(auto) left( derestrict( *mat ) );
 
-      const size_t iend( SO == rowMajor ? (~mat).rows() : (~mat).columns() );
+      const size_t iend( SO == rowMajor ? (*mat).rows() : (*mat).columns() );
       for( size_t i=0UL; i<iend; ++i ) {
          const auto last( left.end(i) );
          for( auto element=left.begin(i); element!=last; ++element ) {
@@ -164,9 +164,9 @@ inline auto operator*=( SparseMatrix<MT,SO>& mat, ST scalar )
       }
    }
 
-   BLAZE_INTERNAL_ASSERT( isIntact( ~mat ), "Invariant violation detected" );
+   BLAZE_INTERNAL_ASSERT( isIntact( *mat ), "Invariant violation detected" );
 
-   return ~mat;
+   return *mat;
 }
 //*************************************************************************************************
 
@@ -190,7 +190,7 @@ template< typename MT    // Type of the left-hand side sparse matrix
 inline auto operator*=( SparseMatrix<MT,SO>&& mat, ST scalar )
    -> EnableIf_t< IsScalar_v<ST>, MT& >
 {
-   return operator*=( ~mat, scalar );
+   return operator*=( *mat, scalar );
 }
 //*************************************************************************************************
 
@@ -221,7 +221,7 @@ inline auto operator/=( SparseMatrix<MT,SO>& mat, ST scalar )
    BLAZE_USER_ASSERT( !isZero( scalar ), "Division by zero detected" );
 
    if( IsRestricted_v<MT> ) {
-      if( !tryDiv( ~mat, 0UL, 0UL, (~mat).rows(), (~mat).columns(), scalar ) ) {
+      if( !tryDiv( *mat, 0UL, 0UL, (*mat).rows(), (*mat).columns(), scalar ) ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid scaling of restricted matrix" );
       }
    }
@@ -233,11 +233,11 @@ inline auto operator/=( SparseMatrix<MT,SO>& mat, ST scalar )
                                 , DivTrait_t< UnderlyingScalar_t<MT>, ST > >
                           , ST >;
 
-   decltype(auto) left( derestrict( ~mat ) );
+   decltype(auto) left( derestrict( *mat ) );
 
    if( IsInvertible_v<ScalarType> ) {
       const ScalarType tmp( ScalarType(1)/static_cast<ScalarType>( scalar ) );
-      const size_t iend( SO == rowMajor ? (~mat).rows() : (~mat).columns() );
+      const size_t iend( SO == rowMajor ? (*mat).rows() : (*mat).columns() );
       for( size_t i=0UL; i<iend; ++i ) {
          const auto last( left.end(i) );
          for( auto element=left.begin(i); element!=last; ++element ) {
@@ -246,7 +246,7 @@ inline auto operator/=( SparseMatrix<MT,SO>& mat, ST scalar )
       }
    }
    else {
-      const size_t iend( SO == rowMajor ? (~mat).rows() : (~mat).columns() );
+      const size_t iend( SO == rowMajor ? (*mat).rows() : (*mat).columns() );
       for( size_t i=0UL; i<iend; ++i ) {
          const auto last( left.end(i) );
          for( auto element=left.begin(i); element!=last; ++element ) {
@@ -255,9 +255,9 @@ inline auto operator/=( SparseMatrix<MT,SO>& mat, ST scalar )
       }
    }
 
-   BLAZE_INTERNAL_ASSERT( isIntact( ~mat ), "Invariant violation detected" );
+   BLAZE_INTERNAL_ASSERT( isIntact( *mat ), "Invariant violation detected" );
 
-   return ~mat;
+   return *mat;
 }
 //*************************************************************************************************
 
@@ -283,7 +283,7 @@ template< typename MT    // Type of the left-hand side sparse matrix
 inline auto operator/=( SparseMatrix<MT,SO>&& mat, ST scalar )
    -> EnableIf_t< IsScalar_v<ST>, MT& >
 {
-   return operator/=( ~mat, scalar );
+   return operator/=( *mat, scalar );
 }
 //*************************************************************************************************
 
@@ -371,7 +371,7 @@ bool isnan( const SparseMatrix<MT,SO>& sm )
    if( !IsFloatingPoint_v< UnderlyingBuiltin_t<MT> > )
       return false;
 
-   CompositeType_t<MT> A( ~sm );  // Evaluation of the sparse matrix operand
+   CompositeType_t<MT> A( *sm );  // Evaluation of the sparse matrix operand
 
    if( SO == rowMajor ) {
       for( size_t i=0UL; i<A.rows(); ++i ) {
@@ -415,7 +415,7 @@ bool isinf( const SparseMatrix<MT,SO>& sm )
    if( !IsFloatingPoint_v< UnderlyingBuiltin_t<MT> > )
       return false;
 
-   CompositeType_t<MT> A( ~sm );  // Evaluation of the sparse matrix operand
+   CompositeType_t<MT> A( *sm );  // Evaluation of the sparse matrix operand
 
    if( SO == rowMajor ) {
       for( size_t i=0UL; i<A.rows(); ++i ) {
@@ -459,7 +459,7 @@ bool isfinite( const SparseMatrix<MT,SO>& sm )
    if( !IsFloatingPoint_v< UnderlyingBuiltin_t<MT> > )
       return true;
 
-   CompositeType_t<MT> A( ~sm );  // Evaluation of the sparse matrix operand
+   CompositeType_t<MT> A( *sm );  // Evaluation of the sparse matrix operand
 
    if( SO == rowMajor ) {
       for( size_t i=0UL; i<A.rows(); ++i ) {
@@ -525,13 +525,13 @@ bool isSymmetric( const SparseMatrix<MT,SO>& sm )
    if( IsSymmetric_v<MT> )
       return true;
 
-   if( !isSquare( ~sm ) )
+   if( !isSquare( *sm ) )
       return false;
 
-   if( IsUniform_v<MT> || (~sm).rows() < 2UL )
+   if( IsUniform_v<MT> || (*sm).rows() < 2UL )
       return true;
 
-   Tmp A( ~sm );  // Evaluation of the sparse matrix operand
+   Tmp A( *sm );  // Evaluation of the sparse matrix operand
 
    if( SO == rowMajor ) {
       for( size_t i=0UL; i<A.rows(); ++i ) {
@@ -618,13 +618,13 @@ bool isHermitian( const SparseMatrix<MT,SO>& sm )
    if( IsHermitian_v<MT> )
       return true;
 
-   if( !IsScalar_v<ET> || !isSquare( ~sm ) )
+   if( !IsScalar_v<ET> || !isSquare( *sm ) )
       return false;
 
    if( IsBuiltin_v<ET> && IsUniform_v<MT> )
       return true;
 
-   Tmp A( ~sm );  // Evaluation of the sparse matrix operand
+   Tmp A( *sm );  // Evaluation of the sparse matrix operand
 
    if( SO == rowMajor ) {
       for( size_t i=0UL; i<A.rows(); ++i ) {
@@ -683,14 +683,14 @@ bool isUniform_backend( const SparseMatrix<MT,false>& sm, TrueType )
    BLAZE_CONSTRAINT_MUST_BE_TRIANGULAR_MATRIX_TYPE( MT );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT );
 
-   BLAZE_INTERNAL_ASSERT( (~sm).rows()    != 0UL, "Invalid number of rows detected"    );
-   BLAZE_INTERNAL_ASSERT( (~sm).columns() != 0UL, "Invalid number of columns detected" );
+   BLAZE_INTERNAL_ASSERT( (*sm).rows()    != 0UL, "Invalid number of rows detected"    );
+   BLAZE_INTERNAL_ASSERT( (*sm).columns() != 0UL, "Invalid number of columns detected" );
 
    const size_t ibegin( ( IsStrictlyLower_v<MT> )?( 1UL ):( 0UL ) );
-   const size_t iend  ( ( IsStrictlyUpper_v<MT> )?( (~sm).rows()-1UL ):( (~sm).rows() ) );
+   const size_t iend  ( ( IsStrictlyUpper_v<MT> )?( (*sm).rows()-1UL ):( (*sm).rows() ) );
 
    for( size_t i=ibegin; i<iend; ++i ) {
-      for( auto element=(~sm).begin(i); element!=(~sm).end(i); ++element ) {
+      for( auto element=(*sm).begin(i); element!=(*sm).end(i); ++element ) {
          if( !isDefault<RF>( element->value() ) )
             return false;
       }
@@ -717,14 +717,14 @@ bool isUniform_backend( const SparseMatrix<MT,true>& sm, TrueType )
    BLAZE_CONSTRAINT_MUST_BE_TRIANGULAR_MATRIX_TYPE( MT );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT );
 
-   BLAZE_INTERNAL_ASSERT( (~sm).rows()    != 0UL, "Invalid number of rows detected"    );
-   BLAZE_INTERNAL_ASSERT( (~sm).columns() != 0UL, "Invalid number of columns detected" );
+   BLAZE_INTERNAL_ASSERT( (*sm).rows()    != 0UL, "Invalid number of rows detected"    );
+   BLAZE_INTERNAL_ASSERT( (*sm).columns() != 0UL, "Invalid number of columns detected" );
 
    const size_t jbegin( ( IsStrictlyUpper_v<MT> )?( 1UL ):( 0UL ) );
-   const size_t jend  ( ( IsStrictlyLower_v<MT> )?( (~sm).columns()-1UL ):( (~sm).columns() ) );
+   const size_t jend  ( ( IsStrictlyLower_v<MT> )?( (*sm).columns()-1UL ):( (*sm).columns() ) );
 
    for( size_t j=jbegin; j<jend; ++j ) {
-      for( auto element=(~sm).begin(j); element!=(~sm).end(j); ++element ) {
+      for( auto element=(*sm).begin(j); element!=(*sm).end(j); ++element ) {
          if( !isDefault<RF>( element->value() ) )
             return false;
       }
@@ -751,15 +751,15 @@ bool isUniform_backend( const SparseMatrix<MT,false>& sm, FalseType )
    BLAZE_CONSTRAINT_MUST_NOT_BE_TRIANGULAR_MATRIX_TYPE( MT );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT );
 
-   BLAZE_INTERNAL_ASSERT( (~sm).rows()    != 0UL, "Invalid number of rows detected"    );
-   BLAZE_INTERNAL_ASSERT( (~sm).columns() != 0UL, "Invalid number of columns detected" );
+   BLAZE_INTERNAL_ASSERT( (*sm).rows()    != 0UL, "Invalid number of rows detected"    );
+   BLAZE_INTERNAL_ASSERT( (*sm).columns() != 0UL, "Invalid number of columns detected" );
 
-   const size_t maxElements( (~sm).rows() * (~sm).columns() );
+   const size_t maxElements( (*sm).rows() * (*sm).columns() );
 
-   if( (~sm).nonZeros() != maxElements )
+   if( (*sm).nonZeros() != maxElements )
    {
-      for( size_t i=0UL; i<(~sm).rows(); ++i ) {
-         for( auto element=(~sm).begin(i); element!=(~sm).end(i); ++element ) {
+      for( size_t i=0UL; i<(*sm).rows(); ++i ) {
+         for( auto element=(*sm).begin(i); element!=(*sm).end(i); ++element ) {
             if( !isDefault<RF>( element->value() ) )
                return false;
          }
@@ -767,12 +767,12 @@ bool isUniform_backend( const SparseMatrix<MT,false>& sm, FalseType )
    }
    else
    {
-      BLAZE_INTERNAL_ASSERT( (~sm).find(0UL,0UL) != (~sm).end(0UL), "Missing element detected" );
+      BLAZE_INTERNAL_ASSERT( (*sm).find(0UL,0UL) != (*sm).end(0UL), "Missing element detected" );
 
-      const auto& cmp( (~sm)(0UL,0UL) );
+      const auto& cmp( (*sm)(0UL,0UL) );
 
-      for( size_t i=0UL; i<(~sm).rows(); ++i ) {
-         for( auto element=(~sm).begin(i); element!=(~sm).end(i); ++element ) {
+      for( size_t i=0UL; i<(*sm).rows(); ++i ) {
+         for( auto element=(*sm).begin(i); element!=(*sm).end(i); ++element ) {
             if( !equal<RF>( element->value(), cmp ) )
                return false;
          }
@@ -800,15 +800,15 @@ bool isUniform_backend( const SparseMatrix<MT,true>& sm, FalseType )
    BLAZE_CONSTRAINT_MUST_NOT_BE_TRIANGULAR_MATRIX_TYPE( MT );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT );
 
-   BLAZE_INTERNAL_ASSERT( (~sm).rows()    != 0UL, "Invalid number of rows detected"    );
-   BLAZE_INTERNAL_ASSERT( (~sm).columns() != 0UL, "Invalid number of columns detected" );
+   BLAZE_INTERNAL_ASSERT( (*sm).rows()    != 0UL, "Invalid number of rows detected"    );
+   BLAZE_INTERNAL_ASSERT( (*sm).columns() != 0UL, "Invalid number of columns detected" );
 
-   const size_t maxElements( (~sm).rows() * (~sm).columns() );
+   const size_t maxElements( (*sm).rows() * (*sm).columns() );
 
-   if( (~sm).nonZeros() != maxElements )
+   if( (*sm).nonZeros() != maxElements )
    {
-      for( size_t j=0UL; j<(~sm).columns(); ++j ) {
-         for( auto element=(~sm).begin(j); element!=(~sm).end(j); ++element ) {
+      for( size_t j=0UL; j<(*sm).columns(); ++j ) {
+         for( auto element=(*sm).begin(j); element!=(*sm).end(j); ++element ) {
             if( !isDefault<RF>( element->value() ) )
                return false;
          }
@@ -816,12 +816,12 @@ bool isUniform_backend( const SparseMatrix<MT,true>& sm, FalseType )
    }
    else
    {
-      BLAZE_INTERNAL_ASSERT( (~sm).find(0UL,0UL) != (~sm).end(0UL), "Missing element detected" );
+      BLAZE_INTERNAL_ASSERT( (*sm).find(0UL,0UL) != (*sm).end(0UL), "Missing element detected" );
 
-      const auto& cmp( (~sm)(0UL,0UL) );
+      const auto& cmp( (*sm)(0UL,0UL) );
 
-      for( size_t j=0UL; j<(~sm).columns(); ++j ) {
-         for( auto element=(~sm).begin(j); element!=(~sm).end(j); ++element ) {
+      for( size_t j=0UL; j<(*sm).columns(); ++j ) {
+         for( auto element=(*sm).begin(j); element!=(*sm).end(j); ++element ) {
             if( !equal<RF>( element->value(), cmp ) )
                return false;
          }
@@ -873,14 +873,14 @@ template< RelaxationFlag RF  // Relaxation flag
 bool isUniform( const SparseMatrix<MT,SO>& sm )
 {
    if( IsUniform_v<MT> ||
-       (~sm).rows() == 0UL || (~sm).columns() == 0UL ||
-       ( (~sm).rows() == 1UL && (~sm).columns() == 1UL ) )
+       (*sm).rows() == 0UL || (*sm).columns() == 0UL ||
+       ( (*sm).rows() == 1UL && (*sm).columns() == 1UL ) )
       return true;
 
    if( IsUniTriangular_v<MT> )
       return false;
 
-   CompositeType_t<MT> A( ~sm );  // Evaluation of the sparse matrix operand
+   CompositeType_t<MT> A( *sm );  // Evaluation of the sparse matrix operand
 
    return isUniform_backend<RF>( A, typename IsTriangular<MT>::Type() );
 }
@@ -925,8 +925,8 @@ template< RelaxationFlag RF  // Relaxation flag
         , bool SO >          // Storage order
 bool isZero( const SparseMatrix<MT,SO>& sm )
 {
-   const size_t M( (~sm).rows()    );
-   const size_t N( (~sm).columns() );
+   const size_t M( (*sm).rows()    );
+   const size_t N( (*sm).columns() );
 
    if( IsZero_v<MT> || M == 0UL || N == 0UL )
       return true;
@@ -934,7 +934,7 @@ bool isZero( const SparseMatrix<MT,SO>& sm )
    if( IsUniTriangular_v<MT> )
       return false;
 
-   CompositeType_t<MT> A( ~sm );  // Evaluation of the sparse matrix operand
+   CompositeType_t<MT> A( *sm );  // Evaluation of the sparse matrix operand
 
    const size_t iend( SO == rowMajor ? A.rows() : A.columns() );
 
@@ -1007,13 +1007,13 @@ bool isLower( const SparseMatrix<MT,SO>& sm )
    if( IsLower_v<MT> )
       return true;
 
-   if( !isSquare( ~sm ) )
+   if( !isSquare( *sm ) )
       return false;
 
-   if( IsZero_v<MT> || (~sm).rows() < 2UL )
+   if( IsZero_v<MT> || (*sm).rows() < 2UL )
       return true;
 
-   Tmp A( ~sm );  // Evaluation of the sparse matrix operand
+   Tmp A( *sm );  // Evaluation of the sparse matrix operand
 
    if( SO == rowMajor ) {
       for( size_t i=0UL; i<A.rows()-1UL; ++i ) {
@@ -1097,10 +1097,10 @@ bool isUniLower( const SparseMatrix<MT,SO>& sm )
    if( IsUniLower_v<MT> )
       return true;
 
-   if( !isSquare( ~sm ) )
+   if( !isSquare( *sm ) )
       return false;
 
-   Tmp A( ~sm );  // Evaluation of the sparse matrix operand
+   Tmp A( *sm );  // Evaluation of the sparse matrix operand
 
    if( SO == rowMajor ) {
       for( size_t i=0UL; i<A.rows(); ++i )
@@ -1203,16 +1203,16 @@ bool isStrictlyLower( const SparseMatrix<MT,SO>& sm )
    if( IsStrictlyLower_v<MT> )
       return true;
 
-   if( !isSquare( ~sm ) )
+   if( !isSquare( *sm ) )
       return false;
 
-   if( IsZero_v<MT> || (~sm).rows() < 2UL )
+   if( IsZero_v<MT> || (*sm).rows() < 2UL )
       return true;
 
    if( IsUniLower_v<MT> || IsUniUpper_v<MT> )
       return false;
 
-   Tmp A( ~sm );  // Evaluation of the sparse matrix operand
+   Tmp A( *sm );  // Evaluation of the sparse matrix operand
 
    if( SO == rowMajor ) {
       for( size_t i=0UL; i<A.rows(); ++i ) {
@@ -1297,13 +1297,13 @@ bool isUpper( const SparseMatrix<MT,SO>& sm )
    if( IsUpper_v<MT> )
       return true;
 
-   if( !isSquare( ~sm ) )
+   if( !isSquare( *sm ) )
       return false;
 
-   if( IsZero_v<MT> || (~sm).rows() < 2UL )
+   if( IsZero_v<MT> || (*sm).rows() < 2UL )
       return true;
 
-   Tmp A( ~sm );  // Evaluation of the sparse matrix operand
+   Tmp A( *sm );  // Evaluation of the sparse matrix operand
 
    if( SO == rowMajor ) {
       for( size_t i=1UL; i<A.rows(); ++i ) {
@@ -1387,10 +1387,10 @@ bool isUniUpper( const SparseMatrix<MT,SO>& sm )
    if( IsUniUpper_v<MT> )
       return true;
 
-   if( !isSquare( ~sm ) )
+   if( !isSquare( *sm ) )
       return false;
 
-   Tmp A( ~sm );  // Evaluation of the sparse matrix operand
+   Tmp A( *sm );  // Evaluation of the sparse matrix operand
 
    if( SO == rowMajor ) {
       for( size_t i=0UL; i<A.rows(); ++i )
@@ -1493,16 +1493,16 @@ bool isStrictlyUpper( const SparseMatrix<MT,SO>& sm )
    if( IsStrictlyUpper_v<MT> )
       return true;
 
-   if( !isSquare( ~sm ) )
+   if( !isSquare( *sm ) )
       return false;
 
-   if( IsZero_v<MT> || (~sm).rows() < 2UL )
+   if( IsZero_v<MT> || (*sm).rows() < 2UL )
       return true;
 
    if( IsUniLower_v<MT> || IsUniUpper_v<MT> )
       return false;
 
-   Tmp A( ~sm );  // Evaluation of the sparse matrix operand
+   Tmp A( *sm );  // Evaluation of the sparse matrix operand
 
    if( SO == rowMajor ) {
       for( size_t i=0UL; i<A.rows(); ++i ) {
@@ -1587,13 +1587,13 @@ bool isDiagonal( const SparseMatrix<MT,SO>& sm )
    if( IsDiagonal_v<MT> )
       return true;
 
-   if( !isSquare( ~sm ) )
+   if( !isSquare( *sm ) )
       return false;
 
-   if( IsZero_v<MT> || (~sm).rows() < 2UL )
+   if( IsZero_v<MT> || (*sm).rows() < 2UL )
       return true;
 
-   Tmp A( ~sm );  // Evaluation of the sparse matrix operand
+   Tmp A( *sm );  // Evaluation of the sparse matrix operand
 
    if( SO == rowMajor ) {
       for( size_t i=0UL; i<A.rows(); ++i ) {
@@ -1671,10 +1671,10 @@ bool isIdentity( const SparseMatrix<MT,SO>& sm )
    if( IsIdentity_v<MT> )
       return true;
 
-   if( !isSquare( ~sm ) )
+   if( !isSquare( *sm ) )
       return false;
 
-   Tmp A( ~sm );  // Evaluation of the sparse matrix operand
+   Tmp A( *sm );  // Evaluation of the sparse matrix operand
 
    if( SO == rowMajor ) {
       for( size_t i=0UL; i<A.rows(); ++i )
@@ -1744,9 +1744,9 @@ template< typename MT         // Type of the sparse matrix
         , bool SO             // Storage order
         , typename... Args >  // Type of the erase arguments
 auto erase( SparseMatrix<MT,SO>& sm, Args&&... args )
-   -> decltype( (~sm).erase( std::forward<Args>( args )... ) )
+   -> decltype( (*sm).erase( std::forward<Args>( args )... ) )
 {
-   return (~sm).erase( std::forward<Args>( args )... );
+   return (*sm).erase( std::forward<Args>( args )... );
 }
 /*! \endcond */
 //*************************************************************************************************

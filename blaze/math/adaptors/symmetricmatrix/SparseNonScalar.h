@@ -829,7 +829,7 @@ inline SymmetricMatrix<MT,SO,false,false>::SymmetricMatrix( const Matrix<MT2,SO>
    using RT  = RemoveAdaptor_t< ResultType_t<MT2> >;
    using Tmp = If_t< IsComputation_v<MT2>, RT, const MT2& >;
 
-   Tmp tmp( ~m );
+   Tmp tmp( *m );
 
    if( !IsSymmetric_v<MT2> && !isSymmetric( tmp ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid setup of symmetric matrix" );
@@ -866,7 +866,7 @@ inline SymmetricMatrix<MT,SO,false,false>::SymmetricMatrix( const Matrix<MT2,!SO
    using RT  = RemoveAdaptor_t< ResultType_t<MT2> >;
    using Tmp = If_t< IsComputation_v<MT2>, RT, const MT2& >;
 
-   Tmp tmp( ~m );
+   Tmp tmp( *m );
 
    if( !IsSymmetric_v<MT2> && !isSymmetric( tmp ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid setup of symmetric matrix" );
@@ -1237,18 +1237,18 @@ inline auto SymmetricMatrix<MT,SO,false,false>::operator=( const Matrix<MT2,SO>&
 {
    using blaze::resize;
 
-   if( !IsSymmetric_v<MT2> && !isSymmetric( ~rhs ) ) {
+   if( !IsSymmetric_v<MT2> && !isSymmetric( *rhs ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to symmetric matrix" );
    }
 
-   if( (~rhs).canAlias( this ) ) {
-      SymmetricMatrix tmp( ~rhs );
+   if( (*rhs).canAlias( this ) ) {
+      SymmetricMatrix tmp( *rhs );
       swap( tmp );
    }
    else {
-      resize( matrix_, (~rhs).rows(), (~rhs).columns() );
+      resize( matrix_, (*rhs).rows(), (*rhs).columns() );
       reset();
-      assign( ~rhs );
+      assign( *rhs );
    }
 
    BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square symmetric matrix detected" );
@@ -1282,11 +1282,11 @@ inline auto SymmetricMatrix<MT,SO,false,false>::operator=( const Matrix<MT2,SO>&
 {
    using blaze::resize;
 
-   if( !IsSquare_v<MT2> && !isSquare( ~rhs ) ) {
+   if( !IsSquare_v<MT2> && !isSquare( *rhs ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to symmetric matrix" );
    }
 
-   const ResultType_t<MT2> tmp( ~rhs );
+   const ResultType_t<MT2> tmp( *rhs );
 
    if( !IsSymmetric_v<MT2> && !isSymmetric( tmp ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to symmetric matrix" );
@@ -1325,7 +1325,7 @@ template< typename MT2 >  // Type of the right-hand side matrix
 inline auto SymmetricMatrix<MT,SO,false,false>::operator=( const Matrix<MT2,!SO>& rhs )
    -> SymmetricMatrix&
 {
-   return this->operator=( trans( ~rhs ) );
+   return this->operator=( trans( *rhs ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1354,11 +1354,11 @@ inline auto SymmetricMatrix<MT,SO,false,false>::operator+=( const Matrix<MT2,SO>
 
    using Tmp = AddTrait_t< MT, ResultType_t<MT2> >;
 
-   if( !IsSquare_v<MT2> && !isSquare( ~rhs ) ) {
+   if( !IsSquare_v<MT2> && !isSquare( *rhs ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to symmetric matrix" );
    }
 
-   Tmp tmp( (*this) + ~rhs );
+   Tmp tmp( (*this) + *rhs );
 
    if( !IsSymmetric_v<Tmp> && !isSymmetric( tmp ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to symmetric matrix" );
@@ -1397,7 +1397,7 @@ template< typename MT2 >  // Type of the right-hand side matrix
 inline auto SymmetricMatrix<MT,SO,false,false>::operator+=( const Matrix<MT2,!SO>& rhs )
    -> SymmetricMatrix&
 {
-   return this->operator+=( trans( ~rhs ) );
+   return this->operator+=( trans( *rhs ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1426,11 +1426,11 @@ inline auto SymmetricMatrix<MT,SO,false,false>::operator-=( const Matrix<MT2,SO>
 
    using Tmp = SubTrait_t< MT, ResultType_t<MT2> >;
 
-   if( !IsSquare_v<MT2> && !isSquare( ~rhs ) ) {
+   if( !IsSquare_v<MT2> && !isSquare( *rhs ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to symmetric matrix" );
    }
 
-   Tmp tmp( (*this) - ~rhs );
+   Tmp tmp( (*this) - *rhs );
 
    if( !IsSymmetric_v<Tmp> && !isSymmetric( tmp ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to symmetric matrix" );
@@ -1469,7 +1469,7 @@ template< typename MT2 >  // Type of the right-hand side matrix
 inline auto SymmetricMatrix<MT,SO,false,false>::operator-=( const Matrix<MT2,!SO>& rhs )
    -> SymmetricMatrix&
 {
-   return this->operator-=( trans( ~rhs ) );
+   return this->operator-=( trans( *rhs ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1498,11 +1498,11 @@ inline auto SymmetricMatrix<MT,SO,false,false>::operator%=( const Matrix<MT2,SO>
 
    using Tmp = SchurTrait_t< MT, ResultType_t<MT2> >;
 
-   if( !IsSquare_v<MT2> && !isSquare( ~rhs ) ) {
+   if( !IsSquare_v<MT2> && !isSquare( *rhs ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to symmetric matrix" );
    }
 
-   Tmp tmp( (*this) % ~rhs );
+   Tmp tmp( (*this) % *rhs );
 
    if( !IsSymmetric_v<Tmp> && !isSymmetric( tmp ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to symmetric matrix" );
@@ -1541,7 +1541,7 @@ template< typename MT2 >  // Type of the right-hand side matrix
 inline auto SymmetricMatrix<MT,SO,false,false>::operator%=( const Matrix<MT2,!SO>& rhs )
    -> SymmetricMatrix&
 {
-   return this->operator%=( trans( ~rhs ) );
+   return this->operator%=( trans( *rhs ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -2714,14 +2714,14 @@ void SymmetricMatrix<MT,SO,false,false>::assign( DenseMatrix<MT2,SO>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( MT2 );
 
-   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( columns() == (*rhs).columns(), "Invalid number of columns" );
 
    std::vector<size_t> nonzeros( rows(), 0UL );
    size_t sum( 0UL );
 
    for( size_t i=0UL; i<rows(); ++i ) {
-      nonzeros[i] = (~rhs).nonZeros(i);
+      nonzeros[i] = (*rhs).nonZeros(i);
       sum += nonzeros[i];
    }
 
@@ -2732,9 +2732,9 @@ void SymmetricMatrix<MT,SO,false,false>::assign( DenseMatrix<MT2,SO>& rhs )
 
    for( size_t i=0UL; i<rows(); ++i ) {
       for( size_t j=i; j<columns(); ++j ) {
-         if( !isDefault( (~rhs)(i,j) ) ) {
+         if( !isDefault( (*rhs)(i,j) ) ) {
             SharedValue<ET> shared;
-            *shared = std::move( (~rhs)(i,j) );
+            *shared = std::move( (*rhs)(i,j) );
             matrix_.append( i, j, shared, false );
             if( i != j )
                matrix_.append( j, i, shared, false );
@@ -2765,14 +2765,14 @@ void SymmetricMatrix<MT,SO,false,false>::assign( const DenseMatrix<MT2,SO>& rhs 
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( MT2 );
 
-   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( columns() == (*rhs).columns(), "Invalid number of columns" );
 
    std::vector<size_t> nonzeros( rows(), 0UL );
    size_t sum( 0UL );
 
    for( size_t i=0UL; i<rows(); ++i ) {
-      nonzeros[i] = (~rhs).nonZeros(i);
+      nonzeros[i] = (*rhs).nonZeros(i);
       sum += nonzeros[i];
    }
 
@@ -2783,8 +2783,8 @@ void SymmetricMatrix<MT,SO,false,false>::assign( const DenseMatrix<MT2,SO>& rhs 
 
    for( size_t i=0UL; i<rows(); ++i ) {
       for( size_t j=i; j<columns(); ++j ) {
-         if( !isDefault( (~rhs)(i,j) ) ) {
-            const SharedValue<ET> shared( (~rhs)(i,j) );
+         if( !isDefault( (*rhs)(i,j) ) ) {
+            const SharedValue<ET> shared( (*rhs)(i,j) );
             matrix_.append( i, j, shared, false );
             if( i != j )
                matrix_.append( j, i, shared, false );
@@ -2815,14 +2815,14 @@ void SymmetricMatrix<MT,SO,false,false>::assign( SparseMatrix<MT2,SO>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( MT2 );
 
-   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( columns() == (*rhs).columns(), "Invalid number of columns" );
 
    std::vector<size_t> nonzeros( rows(), 0UL );
    size_t sum( 0UL );
 
    for( size_t i=0UL; i<rows(); ++i ) {
-      nonzeros[i] = (~rhs).nonZeros(i);
+      nonzeros[i] = (*rhs).nonZeros(i);
       sum += nonzeros[i];
    }
 
@@ -2832,7 +2832,7 @@ void SymmetricMatrix<MT,SO,false,false>::assign( SparseMatrix<MT2,SO>& rhs )
    }
 
    for( size_t i=0UL; i<rows(); ++i ) {
-      for( auto it=(~rhs).lowerBound(i,i); it!=(~rhs).end(i); ++it ) {
+      for( auto it=(*rhs).lowerBound(i,i); it!=(*rhs).end(i); ++it ) {
          if( !isDefault( it->value() ) ) {
             SharedValue<ET> shared;
             *shared = std::move( it->value() );
@@ -2866,14 +2866,14 @@ void SymmetricMatrix<MT,SO,false,false>::assign( const SparseMatrix<MT2,SO>& rhs
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( MT2 );
 
-   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( columns() == (*rhs).columns(), "Invalid number of columns" );
 
    std::vector<size_t> nonzeros( rows(), 0UL );
    size_t sum( 0UL );
 
    for( size_t i=0UL; i<rows(); ++i ) {
-      nonzeros[i] = (~rhs).nonZeros(i);
+      nonzeros[i] = (*rhs).nonZeros(i);
       sum += nonzeros[i];
    }
 
@@ -2883,7 +2883,7 @@ void SymmetricMatrix<MT,SO,false,false>::assign( const SparseMatrix<MT2,SO>& rhs
    }
 
    for( size_t i=0UL; i<rows(); ++i ) {
-      for( auto it=(~rhs).lowerBound(i,i); it!=(~rhs).end(i); ++it ) {
+      for( auto it=(*rhs).lowerBound(i,i); it!=(*rhs).end(i); ++it ) {
          if( !isDefault( it->value() ) ) {
             const SharedValue<ET> shared( it->value() );
             matrix_.append( i, it->index(), shared, false );

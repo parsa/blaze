@@ -135,7 +135,7 @@ template< typename VT  // Type of the vector
         , bool TF >    // Transpose flag
 inline bool isUniform( const Vector<VT,TF>& v )
 {
-   return isUniform<relaxed>( ~v );
+   return isUniform<relaxed>( *v );
 }
 //*************************************************************************************************
 
@@ -153,7 +153,7 @@ template< typename T1    // Type of the left-hand side vector
         , typename T2 >  // Type of the right-hand side vector
 inline decltype(auto) inner( const Vector<T1,false>& lhs, const Vector<T2,false>& rhs )
 {
-   return trans(~lhs) * (~rhs);
+   return trans(*lhs) * (*rhs);
 }
 //*************************************************************************************************
 
@@ -171,7 +171,7 @@ template< typename T1    // Type of the left-hand side vector
         , typename T2 >  // Type of the right-hand side vector
 inline decltype(auto) inner( const Vector<T1,false>& lhs, const Vector<T2,true>& rhs )
 {
-   return trans(~lhs) * trans(~rhs);
+   return trans(*lhs) * trans(*rhs);
 }
 //*************************************************************************************************
 
@@ -189,7 +189,7 @@ template< typename T1    // Type of the left-hand side vector
         , typename T2 >  // Type of the right-hand side vector
 inline decltype(auto) inner( const Vector<T1,true>& lhs, const Vector<T2,false>& rhs )
 {
-   return (~lhs) * (~rhs);
+   return (*lhs) * (*rhs);
 }
 //*************************************************************************************************
 
@@ -207,7 +207,7 @@ template< typename T1    // Type of the left-hand side vector
         , typename T2 >  // Type of the right-hand side vector
 inline decltype(auto) inner( const Vector<T1,true>& lhs, const Vector<T2,true>& rhs )
 {
-   return (~lhs) * trans(~rhs);
+   return (*lhs) * trans(*rhs);
 }
 //*************************************************************************************************
 
@@ -227,7 +227,7 @@ template< typename T1  // Type of the left-hand side vector
         , bool TF2 >   // Transpose flag of the right-hand side vector
 inline decltype(auto) dot( const Vector<T1,TF1>& lhs, const Vector<T2,TF2>& rhs )
 {
-   return inner( ~lhs, ~rhs );
+   return inner( *lhs, *rhs );
 }
 //*************************************************************************************************
 
@@ -247,7 +247,7 @@ template< typename T1  // Type of the left-hand side vector
         , bool TF2 >   // Transpose flag of the right-hand side vector
 inline decltype(auto) operator,( const Vector<T1,TF1>& lhs, const Vector<T2,TF2>& rhs )
 {
-   return inner( ~lhs, ~rhs );
+   return inner( *lhs, *rhs );
 }
 //*************************************************************************************************
 
@@ -265,7 +265,7 @@ template< typename T1    // Type of the left-hand side vector
         , typename T2 >  // Type of the right-hand side vector
 inline decltype(auto) outer( const Vector<T1,false>& lhs, const Vector<T2,false>& rhs )
 {
-   return (~lhs) * trans(~rhs);
+   return (*lhs) * trans(*rhs);
 }
 //*************************************************************************************************
 
@@ -283,7 +283,7 @@ template< typename T1    // Type of the left-hand side vector
         , typename T2 >  // Type of the right-hand side vector
 inline decltype(auto) outer( const Vector<T1,false>& lhs, const Vector<T2,true>& rhs )
 {
-   return (~lhs) * (~rhs);
+   return (*lhs) * (*rhs);
 }
 //*************************************************************************************************
 
@@ -301,7 +301,7 @@ template< typename T1    // Type of the left-hand side vector
         , typename T2 >  // Type of the right-hand side vector
 inline decltype(auto) outer( const Vector<T1,true>& lhs, const Vector<T2,false>& rhs )
 {
-   return trans(~lhs) * trans(~rhs);
+   return trans(*lhs) * trans(*rhs);
 }
 //*************************************************************************************************
 
@@ -319,7 +319,7 @@ template< typename T1    // Type of the left-hand side vector
         , typename T2 >  // Type of the right-hand side vector
 inline decltype(auto) outer( const Vector<T1,true>& lhs, const Vector<T2,true>& rhs )
 {
-   return trans(~lhs) * (~rhs);
+   return trans(*lhs) * (*rhs);
 }
 //*************************************************************************************************
 
@@ -344,7 +344,7 @@ inline decltype(auto) outer( const Vector<T1,true>& lhs, const Vector<T2,true>& 
 template< typename VT >  // Type of the vector
 inline decltype(auto) reverse( VT&& v )
 {
-   return elements( ~v, [max=(~v).size()-1UL]( size_t i ){ return max - i; }, (~v).size() );
+   return elements( *v, [max=(*v).size()-1UL]( size_t i ){ return max - i; }, (*v).size() );
 }
 //*************************************************************************************************
 
@@ -378,7 +378,7 @@ template< typename VT  // Type of the vector
         , bool TF >    // Transpose flag
 inline std::ostream& operator<<( std::ostream& os, const Vector<VT,TF>& v )
 {
-   CompositeType_t<VT> tmp( ~v );
+   CompositeType_t<VT> tmp( *v );
 
    if( tmp.size() == 0UL ) {
       os << "( )\n";

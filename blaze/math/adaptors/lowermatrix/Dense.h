@@ -1700,11 +1700,11 @@ template< typename MT2  // Type of the right-hand side matrix
 inline auto LowerMatrix<MT,SO,true>::operator=( const Matrix<MT2,SO2>& rhs )
    -> DisableIf_t< IsComputation_v<MT2>, LowerMatrix& >
 {
-   if( !IsLower_v<MT2> && !isLower( ~rhs ) ) {
+   if( !IsLower_v<MT2> && !isLower( *rhs ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to lower matrix" );
    }
 
-   matrix_ = decllow( ~rhs );
+   matrix_ = decllow( *rhs );
 
    BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square lower matrix detected" );
    BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );
@@ -1735,15 +1735,15 @@ template< typename MT2  // Type of the right-hand side matrix
 inline auto LowerMatrix<MT,SO,true>::operator=( const Matrix<MT2,SO2>& rhs )
    -> EnableIf_t< IsComputation_v<MT2>, LowerMatrix& >
 {
-   if( !IsSquare_v<MT2> && !isSquare( ~rhs ) ) {
+   if( !IsSquare_v<MT2> && !isSquare( *rhs ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to lower matrix" );
    }
 
    if( IsLower_v<MT2> ) {
-      matrix_ = ~rhs;
+      matrix_ = *rhs;
    }
    else {
-      MT tmp( ~rhs );
+      MT tmp( *rhs );
 
       if( !isLower( tmp ) ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to lower matrix" );
@@ -1781,11 +1781,11 @@ template< typename MT2  // Type of the right-hand side matrix
 inline auto LowerMatrix<MT,SO,true>::operator+=( const Matrix<MT2,SO2>& rhs )
    -> DisableIf_t< IsComputation_v<MT2>, LowerMatrix& >
 {
-   if( !IsLower_v<MT2> && !isLower( ~rhs ) ) {
+   if( !IsLower_v<MT2> && !isLower( *rhs ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to lower matrix" );
    }
 
-   matrix_ += decllow( ~rhs );
+   matrix_ += decllow( *rhs );
 
    BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square lower matrix detected" );
    BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );
@@ -1816,15 +1816,15 @@ template< typename MT2  // Type of the right-hand side matrix
 inline auto LowerMatrix<MT,SO,true>::operator+=( const Matrix<MT2,SO2>& rhs )
    -> EnableIf_t< IsComputation_v<MT2>, LowerMatrix& >
 {
-   if( !IsSquare_v<MT2> && !isSquare( ~rhs ) ) {
+   if( !IsSquare_v<MT2> && !isSquare( *rhs ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to lower matrix" );
    }
 
    if( IsLower_v<MT2> ) {
-      matrix_ += ~rhs;
+      matrix_ += *rhs;
    }
    else {
-      const ResultType_t<MT2> tmp( ~rhs );
+      const ResultType_t<MT2> tmp( *rhs );
 
       if( !isLower( tmp ) ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to lower matrix" );
@@ -1862,11 +1862,11 @@ template< typename MT2  // Type of the right-hand side matrix
 inline auto LowerMatrix<MT,SO,true>::operator-=( const Matrix<MT2,SO2>& rhs )
    -> DisableIf_t< IsComputation_v<MT2>, LowerMatrix& >
 {
-   if( !IsLower_v<MT2> && !isLower( ~rhs ) ) {
+   if( !IsLower_v<MT2> && !isLower( *rhs ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to lower matrix" );
    }
 
-   matrix_ -= decllow( ~rhs );
+   matrix_ -= decllow( *rhs );
 
    BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square lower matrix detected" );
    BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );
@@ -1897,15 +1897,15 @@ template< typename MT2  // Type of the right-hand side matrix
 inline auto LowerMatrix<MT,SO,true>::operator-=( const Matrix<MT2,SO2>& rhs )
    -> EnableIf_t< IsComputation_v<MT2>, LowerMatrix& >
 {
-   if( !IsSquare_v<MT2> && !isSquare( ~rhs ) ) {
+   if( !IsSquare_v<MT2> && !isSquare( *rhs ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to lower matrix" );
    }
 
    if( IsLower_v<MT2> ) {
-      matrix_ -= ~rhs;
+      matrix_ -= *rhs;
    }
    else {
-      const ResultType_t<MT2> tmp( ~rhs );
+      const ResultType_t<MT2> tmp( *rhs );
 
       if( !isLower( tmp ) ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to lower matrix" );
@@ -1941,11 +1941,11 @@ template< typename MT2  // Type of the right-hand side matrix
 inline auto LowerMatrix<MT,SO,true>::operator%=( const Matrix<MT2,SO2>& rhs )
    -> LowerMatrix&
 {
-   if( !IsSquare_v<MT2> && !isSquare( ~rhs ) ) {
+   if( !IsSquare_v<MT2> && !isSquare( *rhs ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to lower matrix" );
    }
 
-   matrix_ %= ~rhs;
+   matrix_ %= *rhs;
 
    BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square lower matrix detected" );
    BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );
@@ -2732,7 +2732,7 @@ template< typename MT2  // Type of the foreign matrix
         , typename T >  // Type of the third argument
 inline const MT LowerMatrix<MT,SO,true>::construct( const Matrix<MT2,SO2>& m, T )
 {
-   const MT tmp( ~m );
+   const MT tmp( *m );
 
    if( !IsLower_v<MT2> && !isLower( tmp ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid setup of lower matrix" );

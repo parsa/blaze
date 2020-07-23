@@ -303,8 +303,8 @@ class DMatSMatKronExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
       if( rhs.rows() == 0UL || rhs.columns() == 0UL ) {
          return;
@@ -339,7 +339,7 @@ class DMatSMatKronExpr
                      const auto bbegin( B.begin(l) );
                      const auto bend  ( B.end(l) );
                      for( auto belem=bbegin; belem!=bend; ++belem ) {
-                        (~lhs)(i*M+belem->index(),j*N+l) = A(i,j) * belem->value();
+                        (*lhs)(i*M+belem->index(),j*N+l) = A(i,j) * belem->value();
                      }
                   }
                }
@@ -364,7 +364,7 @@ class DMatSMatKronExpr
                      const auto bbegin( B.begin(k) );
                      const auto bend  ( B.end(k) );
                      for( auto belem=bbegin; belem!=bend; ++belem ) {
-                        (~lhs)(i*M+k,j*N+belem->index()) = A(i,j) * belem->value();
+                        (*lhs)(i*M+k,j*N+belem->index()) = A(i,j) * belem->value();
                      }
                   }
                }
@@ -393,8 +393,8 @@ class DMatSMatKronExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
       if( rhs.rows() == 0UL || rhs.columns() == 0UL ) {
          return;
@@ -425,7 +425,7 @@ class DMatSMatKronExpr
          // Resizing the left-hand side sparse matrix
          for( size_t i=0UL; i<A.rows(); ++i ) {
             for( size_t j=0UL; j<M; ++j ) {
-               (~lhs).reserve( i*M+j, A.columns()*nonzeros[j] );
+               (*lhs).reserve( i*M+j, A.columns()*nonzeros[j] );
             }
          }
 
@@ -445,7 +445,7 @@ class DMatSMatKronExpr
                   if( !isDefault<strict>( A(i,j) ) ) {
                      const auto end( B.end(l) );
                      for( auto belem=B.begin(l); belem!=end; ++belem ) {
-                        (~lhs).append( i*M+belem->index(), j*N+l, A(i,j) * belem->value(), true );
+                        (*lhs).append( i*M+belem->index(), j*N+l, A(i,j) * belem->value(), true );
                      }
                   }
                }
@@ -469,10 +469,10 @@ class DMatSMatKronExpr
                   if( !isDefault<strict>( A(i,j) ) ) {
                      const auto bend( B.end(k) );
                      for( auto belem=B.begin(k); belem!=bend; ++belem )
-                        (~lhs).append( i*M+k, j*N+belem->index(), A(i,j) * belem->value(), true );
+                        (*lhs).append( i*M+k, j*N+belem->index(), A(i,j) * belem->value(), true );
                   }
                }
-               (~lhs).finalize( i*M+k );
+               (*lhs).finalize( i*M+k );
             }
          }
       }
@@ -498,8 +498,8 @@ class DMatSMatKronExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
       if( rhs.rows() == 0UL || rhs.columns() == 0UL ) {
          return;
@@ -533,10 +533,10 @@ class DMatSMatKronExpr
                   if( !isDefault<strict>( A(i,j) ) ) {
                      const auto end( B.end(l) );
                      for( auto belem=B.begin(l); belem!=end; ++belem )
-                        (~lhs).append( i*M+belem->index(), j*N+l, A(i,j) * belem->value(), true );
+                        (*lhs).append( i*M+belem->index(), j*N+l, A(i,j) * belem->value(), true );
                   }
                }
-               (~lhs).finalize( j*N+l );
+               (*lhs).finalize( j*N+l );
             }
          }
       }
@@ -554,7 +554,7 @@ class DMatSMatKronExpr
          // Resizing the left-hand side sparse matrix
          for( size_t i=0UL; i<A.columns(); ++i ) {
             for( size_t j=0UL; j<N; ++j ) {
-               (~lhs).reserve( i*N+j, A.rows()*nonzeros[j] );
+               (*lhs).reserve( i*N+j, A.rows()*nonzeros[j] );
             }
          }
 
@@ -574,7 +574,7 @@ class DMatSMatKronExpr
                   if( !isDefault<strict>( A(i,j) ) ) {
                      const auto end( B.end(k) );
                      for( auto belem=B.begin(k); belem!=end; ++belem ) {
-                        (~lhs).append( i*M+k, j*N+belem->index(), A(i,j) * belem->value(), true );
+                        (*lhs).append( i*M+k, j*N+belem->index(), A(i,j) * belem->value(), true );
                      }
                   }
                }
@@ -603,8 +603,8 @@ class DMatSMatKronExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
       if( rhs.rows() == 0UL || rhs.columns() == 0UL ) {
          return;
@@ -639,7 +639,7 @@ class DMatSMatKronExpr
                      const auto bbegin( B.begin(l) );
                      const auto bend  ( B.end(l) );
                      for( auto belem=bbegin; belem!=bend; ++belem )
-                        (~lhs)(i*M+belem->index(),j*N+l) += A(i,j) * belem->value();
+                        (*lhs)(i*M+belem->index(),j*N+l) += A(i,j) * belem->value();
                   }
                }
             }
@@ -663,7 +663,7 @@ class DMatSMatKronExpr
                      const auto bbegin( B.begin(k) );
                      const auto bend  ( B.end(k) );
                      for( auto belem=bbegin; belem!=bend; ++belem )
-                        (~lhs)(i*M+k,j*N+belem->index()) += A(i,j) * belem->value();
+                        (*lhs)(i*M+k,j*N+belem->index()) += A(i,j) * belem->value();
                   }
                }
             }
@@ -696,8 +696,8 @@ class DMatSMatKronExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
       if( rhs.rows() == 0UL || rhs.columns() == 0UL ) {
          return;
@@ -732,7 +732,7 @@ class DMatSMatKronExpr
                      const auto bbegin( B.begin(l) );
                      const auto bend  ( B.end(l) );
                      for( auto belem=bbegin; belem!=bend; ++belem )
-                        (~lhs)(i*M+belem->index(),j*N+l) -= A(i,j) * belem->value();
+                        (*lhs)(i*M+belem->index(),j*N+l) -= A(i,j) * belem->value();
                   }
                }
             }
@@ -756,7 +756,7 @@ class DMatSMatKronExpr
                      const auto bbegin( B.begin(k) );
                      const auto bend  ( B.end(k) );
                      for( auto belem=bbegin; belem!=bend; ++belem )
-                        (~lhs)(i*M+k,j*N+belem->index()) -= A(i,j) * belem->value();
+                        (*lhs)(i*M+k,j*N+belem->index()) -= A(i,j) * belem->value();
                   }
                }
             }
@@ -789,8 +789,8 @@ class DMatSMatKronExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
       if( rhs.rows() == 0UL || rhs.columns() == 0UL ) {
          return;
@@ -822,13 +822,13 @@ class DMatSMatKronExpr
                   if( !isDefault<strict>( A(i,j) ) ) {
                      for( auto belem=bbegin; belem!=bend; ++belem, ++k ) {
                         for( ; k<belem->index(); ++k )
-                           reset( (~lhs)(i*M+k,j*N+l) );
-                        (~lhs)(i*M+k,j*N+l) *= A(i,j) * belem->value();
+                           reset( (*lhs)(i*M+k,j*N+l) );
+                        (*lhs)(i*M+k,j*N+l) *= A(i,j) * belem->value();
                      }
                   }
 
                   for( ; k<M; ++k ) {
-                     reset( (~lhs)(i*M+k,j*N+l) );
+                     reset( (*lhs)(i*M+k,j*N+l) );
                   }
                }
             }
@@ -849,13 +849,13 @@ class DMatSMatKronExpr
                   if( !isDefault<strict>( A(i,j) ) ) {
                      for( auto belem=bbegin; belem!=bend; ++belem, ++l ) {
                         for( ; l<belem->index(); ++l )
-                           reset( (~lhs)(i*M+k,j*N+l) );
-                        (~lhs)(i*M+k,j*N+l) *= A(i,j) * belem->value();
+                           reset( (*lhs)(i*M+k,j*N+l) );
+                        (*lhs)(i*M+k,j*N+l) *= A(i,j) * belem->value();
                      }
                   }
 
                   for( ; l<N; ++l ) {
-                     reset( (~lhs)(i*M+k,j*N+l) );
+                     reset( (*lhs)(i*M+k,j*N+l) );
                   }
                }
             }
@@ -921,7 +921,7 @@ inline const DMatSMatKronExpr<MT1,MT2,SO2>
 {
    BLAZE_FUNCTION_TRACE;
 
-   return DMatSMatKronExpr<MT1,MT2,SO2>( ~lhs, ~rhs );
+   return DMatSMatKronExpr<MT1,MT2,SO2>( *lhs, *rhs );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -955,7 +955,7 @@ inline decltype(auto)
    BLAZE_CONSTRAINT_MUST_BE_MATRIX_WITH_STORAGE_ORDER( ReturnType, SO2 );
    BLAZE_CONSTRAINT_MUST_BE_ZERO_TYPE( ReturnType );
 
-   return ReturnType( (~lhs).rows()*(~rhs).rows(), (~lhs).columns()*(~rhs).columns() );
+   return ReturnType( (*lhs).rows()*(*rhs).rows(), (*lhs).columns()*(*rhs).columns() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -992,7 +992,7 @@ inline decltype(auto)
 {
    BLAZE_FUNCTION_TRACE;
 
-   return dmatsmatkron( ~lhs, ~rhs );
+   return dmatsmatkron( *lhs, *rhs );
 }
 //*************************************************************************************************
 

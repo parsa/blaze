@@ -74,9 +74,9 @@ inline decltype(auto) mean_backend( const SparseVector<VT,TF>& sv, FalseType )
 {
    using BT = UnderlyingBuiltin_t<VT>;
 
-   BLAZE_INTERNAL_ASSERT( size( ~sv ) > 0UL, "Invalid vector size detected" );
+   BLAZE_INTERNAL_ASSERT( size( *sv ) > 0UL, "Invalid vector size detected" );
 
-   return sum( ~sv ) * inv( BT( size( ~sv ) ) );
+   return sum( *sv ) * inv( BT( size( *sv ) ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -96,7 +96,7 @@ inline decltype(auto) mean_backend( const SparseVector<VT,TF>& sv, TrueType )
 {
    MAYBE_UNUSED( sv );
 
-   BLAZE_INTERNAL_ASSERT( size( ~sv ) > 0UL, "Invalid vector size detected" );
+   BLAZE_INTERNAL_ASSERT( size( *sv ) > 0UL, "Invalid vector size detected" );
 
    return ElementType_t<VT>();
 }
@@ -133,11 +133,11 @@ inline decltype(auto) mean( const SparseVector<VT,TF>& sv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   if( size( ~sv ) == 0UL ) {
+   if( size( *sv ) == 0UL ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid input vector" );
    }
 
-   return mean_backend( ~sv, IsZero<VT>() );
+   return mean_backend( *sv, IsZero<VT>() );
 }
 //*************************************************************************************************
 

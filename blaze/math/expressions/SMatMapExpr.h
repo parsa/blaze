@@ -525,11 +525,11 @@ class SMatMapExpr
       BLAZE_CONSTRAINT_MUST_BE_MATRIX_WITH_STORAGE_ORDER( RT, SO );
       BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( RT );
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
       const RT tmp( serial( rhs.sm_ ) );
-      assign( ~lhs, map( tmp, rhs.op_ ) );
+      assign( *lhs, map( tmp, rhs.op_ ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -556,16 +556,16 @@ class SMatMapExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      assign( ~lhs, rhs.sm_ );
+      assign( *lhs, rhs.sm_ );
 
       const size_t m( rhs.rows() );
 
       for( size_t i=0UL; i<m; ++i ) {
-         const auto end( (~lhs).end(i) );
-         for( auto element=(~lhs).begin(i); element!=end; ++element ) {
+         const auto end( (*lhs).end(i) );
+         for( auto element=(*lhs).begin(i); element!=end; ++element ) {
             element->value() = rhs.op_( element->value() );
          }
       }
@@ -595,16 +595,16 @@ class SMatMapExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      assign( ~lhs, rhs.sm_ );
+      assign( *lhs, rhs.sm_ );
 
       const size_t n( rhs.columns() );
 
       for( size_t j=0UL; j<n; ++j ) {
-         const auto end( (~lhs).end(j) );
-         for( auto element=(~lhs).begin(j); element!=end; ++element ) {
+         const auto end( (*lhs).end(j) );
+         for( auto element=(*lhs).begin(j); element!=end; ++element ) {
             element->value() = rhs.op_( element->value() );
          }
       }
@@ -639,12 +639,12 @@ class SMatMapExpr
       BLAZE_CONSTRAINT_MUST_BE_MATRIX_WITH_STORAGE_ORDER( RT, SO );
       BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( RT );
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
       const RT tmp( serial( rhs.sm_ ) );
-      (~lhs).reserve( tmp.nonZeros() );
-      assign( ~lhs, map( tmp, rhs.op_ ) );
+      (*lhs).reserve( tmp.nonZeros() );
+      assign( *lhs, map( tmp, rhs.op_ ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -674,11 +674,11 @@ class SMatMapExpr
       BLAZE_CONSTRAINT_MUST_BE_MATRIX_WITH_STORAGE_ORDER( RT, SO );
       BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( RT );
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
       const RT tmp( serial( rhs.sm_ ) );
-      addAssign( ~lhs, map( tmp, rhs.op_ ) );
+      addAssign( *lhs, map( tmp, rhs.op_ ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -712,11 +712,11 @@ class SMatMapExpr
       BLAZE_CONSTRAINT_MUST_BE_MATRIX_WITH_STORAGE_ORDER( RT, SO );
       BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( RT );
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
       const RT tmp( serial( rhs.sm_ ) );
-      subAssign( ~lhs, map( tmp, rhs.op_ ) );
+      subAssign( *lhs, map( tmp, rhs.op_ ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -750,11 +750,11 @@ class SMatMapExpr
       BLAZE_CONSTRAINT_MUST_BE_MATRIX_WITH_STORAGE_ORDER( RT, SO );
       BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( RT );
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
       const RT tmp( serial( rhs.sm_ ) );
-      schurAssign( ~lhs, map( tmp, rhs.op_ ) );
+      schurAssign( *lhs, map( tmp, rhs.op_ ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -796,11 +796,11 @@ class SMatMapExpr
       BLAZE_CONSTRAINT_MUST_BE_MATRIX_WITH_STORAGE_ORDER( RT, SO );
       BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( RT );
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
       const RT tmp( rhs.sm_ );
-      smpAssign( ~lhs, map( tmp, rhs.op_ ) );
+      smpAssign( *lhs, map( tmp, rhs.op_ ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -834,11 +834,11 @@ class SMatMapExpr
       BLAZE_CONSTRAINT_MUST_BE_MATRIX_WITH_STORAGE_ORDER( RT, SO );
       BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( RT );
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
       const RT tmp( rhs.sm_ );
-      smpAddAssign( ~lhs, map( tmp, rhs.op_ ) );
+      smpAddAssign( *lhs, map( tmp, rhs.op_ ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -872,11 +872,11 @@ class SMatMapExpr
       BLAZE_CONSTRAINT_MUST_BE_MATRIX_WITH_STORAGE_ORDER( RT, SO );
       BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( RT );
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
       const RT tmp( rhs.sm_ );
-      smpSubAssign( ~lhs, map( tmp, rhs.op_ ) );
+      smpSubAssign( *lhs, map( tmp, rhs.op_ ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -910,11 +910,11 @@ class SMatMapExpr
       BLAZE_CONSTRAINT_MUST_BE_MATRIX_WITH_STORAGE_ORDER( RT, SO );
       BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( RT );
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
       const RT tmp( rhs.sm_ );
-      smpSchurAssign( ~lhs, map( tmp, rhs.op_ ) );
+      smpSchurAssign( *lhs, map( tmp, rhs.op_ ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -975,7 +975,7 @@ inline decltype(auto) map( const SparseMatrix<MT,SO>& sm, OP op )
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = const SMatMapExpr<MT,OP,SO>;
-   return ReturnType( ~sm, std::move(op) );
+   return ReturnType( *sm, std::move(op) );
 }
 //*************************************************************************************************
 
@@ -1005,7 +1005,7 @@ inline decltype(auto) forEach( const SparseMatrix<MT,SO>& sm, OP op )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( ~sm, std::move(op) );
+   return map( *sm, std::move(op) );
 }
 //*************************************************************************************************
 
@@ -1033,7 +1033,7 @@ inline decltype(auto) abs( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( ~sm, Abs() );
+   return map( *sm, Abs() );
 }
 //*************************************************************************************************
 
@@ -1061,7 +1061,7 @@ inline decltype(auto) sign( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( ~sm, Sign() );
+   return map( *sm, Sign() );
 }
 //*************************************************************************************************
 
@@ -1089,7 +1089,7 @@ inline decltype(auto) floor( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( ~sm, Floor() );
+   return map( *sm, Floor() );
 }
 //*************************************************************************************************
 
@@ -1117,7 +1117,7 @@ inline decltype(auto) ceil( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( ~sm, Ceil() );
+   return map( *sm, Ceil() );
 }
 //*************************************************************************************************
 
@@ -1145,7 +1145,7 @@ inline decltype(auto) trunc( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( ~sm, Trunc() );
+   return map( *sm, Trunc() );
 }
 //*************************************************************************************************
 
@@ -1173,7 +1173,7 @@ inline decltype(auto) round( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( ~sm, Round() );
+   return map( *sm, Round() );
 }
 //*************************************************************************************************
 
@@ -1201,7 +1201,7 @@ inline decltype(auto) conj( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( ~sm, Conj() );
+   return map( *sm, Conj() );
 }
 //*************************************************************************************************
 
@@ -1238,7 +1238,7 @@ inline decltype(auto) ctrans( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return trans( conj( ~sm ) );
+   return trans( conj( *sm ) );
 }
 //*************************************************************************************************
 
@@ -1266,7 +1266,7 @@ inline decltype(auto) real( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( ~sm, Real() );
+   return map( *sm, Real() );
 }
 //*************************************************************************************************
 
@@ -1294,7 +1294,7 @@ inline decltype(auto) imag( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( ~sm, Imag() );
+   return map( *sm, Imag() );
 }
 //*************************************************************************************************
 
@@ -1322,7 +1322,7 @@ inline decltype(auto) arg( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( ~sm, Arg() );
+   return map( *sm, Arg() );
 }
 //*************************************************************************************************
 
@@ -1353,7 +1353,7 @@ inline decltype(auto) sqrt( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( ~sm, Sqrt() );
+   return map( *sm, Sqrt() );
 }
 //*************************************************************************************************
 
@@ -1384,7 +1384,7 @@ inline decltype(auto) invsqrt( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( ~sm, InvSqrt() );
+   return map( *sm, InvSqrt() );
 }
 //*************************************************************************************************
 
@@ -1415,7 +1415,7 @@ inline decltype(auto) cbrt( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( ~sm, Cbrt() );
+   return map( *sm, Cbrt() );
 }
 //*************************************************************************************************
 
@@ -1446,7 +1446,7 @@ inline decltype(auto) invcbrt( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( ~sm, InvCbrt() );
+   return map( *sm, InvCbrt() );
 }
 //*************************************************************************************************
 
@@ -1477,7 +1477,7 @@ inline decltype(auto) clamp( const SparseMatrix<MT,SO>& sm, const DT& min, const
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( ~sm, bind2nd( bind3rd( Clamp(), max ), min ) );
+   return map( *sm, bind2nd( bind3rd( Clamp(), max ), min ) );
 }
 //*************************************************************************************************
 
@@ -1509,7 +1509,7 @@ inline decltype(auto) pow( const SparseMatrix<MT,SO>& sm, ST exp )
    BLAZE_FUNCTION_TRACE;
 
    using ScalarType = MultTrait_t< UnderlyingBuiltin_t<MT>, ST >;
-   return map( ~sm, blaze::bind2nd( Pow(), ScalarType( exp ) ) );
+   return map( *sm, blaze::bind2nd( Pow(), ScalarType( exp ) ) );
 }
 //*************************************************************************************************
 
@@ -1537,7 +1537,7 @@ inline decltype(auto) exp( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( ~sm, Exp() );
+   return map( *sm, Exp() );
 }
 //*************************************************************************************************
 
@@ -1565,7 +1565,7 @@ inline decltype(auto) exp2( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( ~sm, Exp2() );
+   return map( *sm, Exp2() );
 }
 //*************************************************************************************************
 
@@ -1593,7 +1593,7 @@ inline decltype(auto) exp10( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( ~sm, Exp10() );
+   return map( *sm, Exp10() );
 }
 //*************************************************************************************************
 
@@ -1624,7 +1624,7 @@ inline decltype(auto) log( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( ~sm, Log() );
+   return map( *sm, Log() );
 }
 //*************************************************************************************************
 
@@ -1655,7 +1655,7 @@ inline decltype(auto) log2( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( ~sm, Log2() );
+   return map( *sm, Log2() );
 }
 //*************************************************************************************************
 
@@ -1686,7 +1686,7 @@ inline decltype(auto) log10( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( ~sm, Log10() );
+   return map( *sm, Log10() );
 }
 //*************************************************************************************************
 
@@ -1719,7 +1719,7 @@ inline decltype(auto) log1p( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( ~sm, Log1p() );
+   return map( *sm, Log1p() );
 }
 //*************************************************************************************************
 
@@ -1752,7 +1752,7 @@ inline decltype(auto) lgamma( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( ~sm, LGamma() );
+   return map( *sm, LGamma() );
 }
 //*************************************************************************************************
 
@@ -1780,7 +1780,7 @@ inline decltype(auto) sin( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( ~sm, Sin() );
+   return map( *sm, Sin() );
 }
 //*************************************************************************************************
 
@@ -1811,7 +1811,7 @@ inline decltype(auto) asin( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( ~sm, Asin() );
+   return map( *sm, Asin() );
 }
 //*************************************************************************************************
 
@@ -1839,7 +1839,7 @@ inline decltype(auto) sinh( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( ~sm, Sinh() );
+   return map( *sm, Sinh() );
 }
 //*************************************************************************************************
 
@@ -1867,7 +1867,7 @@ inline decltype(auto) asinh( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( ~sm, Asinh() );
+   return map( *sm, Asinh() );
 }
 //*************************************************************************************************
 
@@ -1895,7 +1895,7 @@ inline decltype(auto) cos( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( ~sm, Cos() );
+   return map( *sm, Cos() );
 }
 //*************************************************************************************************
 
@@ -1926,7 +1926,7 @@ inline decltype(auto) acos( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( ~sm, Acos() );
+   return map( *sm, Acos() );
 }
 //*************************************************************************************************
 
@@ -1954,7 +1954,7 @@ inline decltype(auto) cosh( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( ~sm, Cosh() );
+   return map( *sm, Cosh() );
 }
 //*************************************************************************************************
 
@@ -1985,7 +1985,7 @@ inline decltype(auto) acosh( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( ~sm, Acosh() );
+   return map( *sm, Acosh() );
 }
 //*************************************************************************************************
 
@@ -2013,7 +2013,7 @@ inline decltype(auto) tan( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( ~sm, Tan() );
+   return map( *sm, Tan() );
 }
 //*************************************************************************************************
 
@@ -2041,7 +2041,7 @@ inline decltype(auto) atan( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( ~sm, Atan() );
+   return map( *sm, Atan() );
 }
 //*************************************************************************************************
 
@@ -2072,7 +2072,7 @@ inline decltype(auto) tanh( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( ~sm, Tanh() );
+   return map( *sm, Tanh() );
 }
 //*************************************************************************************************
 
@@ -2103,7 +2103,7 @@ inline decltype(auto) atanh( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( ~sm, Atanh() );
+   return map( *sm, Atanh() );
 }
 //*************************************************************************************************
 
@@ -2131,7 +2131,7 @@ inline decltype(auto) erf( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( ~sm, Erf() );
+   return map( *sm, Erf() );
 }
 //*************************************************************************************************
 
@@ -2160,7 +2160,7 @@ inline decltype(auto) erfc( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( ~sm, Erfc() );
+   return map( *sm, Erfc() );
 }
 //*************************************************************************************************
 

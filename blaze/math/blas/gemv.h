@@ -121,12 +121,12 @@ inline void gemv( DenseVector<VT1,false>& y, const DenseMatrix<MT1,SO>& A,
    BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<MT1> );
    BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<VT2> );
 
-   const blas_int_t m  ( numeric_cast<blas_int_t>( (~A).rows() )    );
-   const blas_int_t n  ( numeric_cast<blas_int_t>( (~A).columns() ) );
-   const blas_int_t lda( numeric_cast<blas_int_t>( (~A).spacing() ) );
+   const blas_int_t m  ( numeric_cast<blas_int_t>( (*A).rows() )    );
+   const blas_int_t n  ( numeric_cast<blas_int_t>( (*A).columns() ) );
+   const blas_int_t lda( numeric_cast<blas_int_t>( (*A).spacing() ) );
 
    gemv( ( SO )?( CblasColMajor ):( CblasRowMajor ), CblasNoTrans, m, n, alpha,
-         (~A).data(), lda, (~x).data(), 1, beta, (~y).data(), 1 );
+         (*A).data(), lda, (*x).data(), 1, beta, (*y).data(), 1 );
 }
 #endif
 //*************************************************************************************************
@@ -174,12 +174,12 @@ inline void gemv( DenseVector<VT1,true>& y, const DenseVector<VT2,true>& x,
    BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<MT1> );
    BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<VT2> );
 
-   const blas_int_t m  ( numeric_cast<blas_int_t>( (~A).rows() )    );
-   const blas_int_t n  ( numeric_cast<blas_int_t>( (~A).columns() ) );
-   const blas_int_t lda( numeric_cast<blas_int_t>( (~A).spacing() ) );
+   const blas_int_t m  ( numeric_cast<blas_int_t>( (*A).rows() )    );
+   const blas_int_t n  ( numeric_cast<blas_int_t>( (*A).columns() ) );
+   const blas_int_t lda( numeric_cast<blas_int_t>( (*A).spacing() ) );
 
    gemv( ( SO )?( CblasColMajor ):( CblasRowMajor ), CblasTrans, m, n, alpha,
-         (~A).data(), lda, (~x).data(), 1, beta, (~y).data(), 1 );
+         (*A).data(), lda, (*x).data(), 1, beta, (*y).data(), 1 );
 }
 #endif
 //*************************************************************************************************

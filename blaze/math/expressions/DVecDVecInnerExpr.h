@@ -132,12 +132,12 @@ inline auto dvecdvecinner( const DenseVector<VT1,true>& lhs, const DenseVector<V
    using ET2      = ElementType_t<VT2>;
    using MultType = MultTrait_t<ET1,ET2>;
 
-   BLAZE_INTERNAL_ASSERT( (~lhs).size() == (~rhs).size(), "Invalid vector sizes" );
+   BLAZE_INTERNAL_ASSERT( (*lhs).size() == (*rhs).size(), "Invalid vector sizes" );
 
-   if( (~lhs).size() == 0UL ) return MultType();
+   if( (*lhs).size() == 0UL ) return MultType();
 
-   CT1 left ( ~lhs );
-   CT2 right( ~rhs );
+   CT1 left ( *lhs );
+   CT2 right( *rhs );
 
    MultType sp( left[0UL] * right[0UL] );
    size_t i( 1UL );
@@ -190,12 +190,12 @@ inline auto dvecdvecinner( const DenseVector<VT1,true>& lhs, const DenseVector<V
    using ET2      = ElementType_t<VT2>;
    using MultType = MultTrait_t<ET1,ET2>;
 
-   BLAZE_INTERNAL_ASSERT( (~lhs).size() == (~rhs).size(), "Invalid vector sizes" );
+   BLAZE_INTERNAL_ASSERT( (*lhs).size() == (*rhs).size(), "Invalid vector sizes" );
 
-   if( (~lhs).size() == 0UL ) return MultType();
+   if( (*lhs).size() == 0UL ) return MultType();
 
-   CT1 left ( ~lhs );
-   CT2 right( ~rhs );
+   CT1 left ( *lhs );
+   CT2 right( *rhs );
 
    constexpr size_t SIMDSIZE = SIMDTrait<MultType>::size;
    constexpr bool remainder( !IsPadded_v<XT1> || !IsPadded_v<XT2> );
@@ -267,11 +267,11 @@ inline decltype(auto)
 {
    BLAZE_FUNCTION_TRACE;
 
-   if( (~lhs).size() != (~rhs).size() ) {
+   if( (*lhs).size() != (*rhs).size() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   return dvecdvecinner( ~lhs, ~rhs );
+   return dvecdvecinner( *lhs, *rhs );
 }
 //*************************************************************************************************
 

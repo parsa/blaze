@@ -332,9 +332,9 @@ class DVecTransExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      DVecTransposer<VT2,!TF> tmp( ~lhs );
+      DVecTransposer<VT2,!TF> tmp( *lhs );
       assign( tmp, rhs.dv_ );
    }
    /*! \endcond */
@@ -360,9 +360,9 @@ class DVecTransExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      SVecTransposer<VT2,!TF> tmp( ~lhs );
+      SVecTransposer<VT2,!TF> tmp( *lhs );
       assign( tmp, rhs.dv_ );
    }
    /*! \endcond */
@@ -388,9 +388,9 @@ class DVecTransExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      DVecTransposer<VT2,!TF> tmp( ~lhs );
+      DVecTransposer<VT2,!TF> tmp( *lhs );
       addAssign( tmp, rhs.dv_ );
    }
    /*! \endcond */
@@ -420,9 +420,9 @@ class DVecTransExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      DVecTransposer<VT2,!TF> tmp( ~lhs );
+      DVecTransposer<VT2,!TF> tmp( *lhs );
       subAssign( tmp, rhs.dv_ );
    }
    /*! \endcond */
@@ -452,9 +452,9 @@ class DVecTransExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      DVecTransposer<VT2,!TF> tmp( ~lhs );
+      DVecTransposer<VT2,!TF> tmp( *lhs );
       multAssign( tmp, rhs.dv_ );
    }
    /*! \endcond */
@@ -484,9 +484,9 @@ class DVecTransExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      DVecTransposer<VT2,!TF> tmp( ~lhs );
+      DVecTransposer<VT2,!TF> tmp( *lhs );
       divAssign( tmp, rhs.dv_ );
    }
    /*! \endcond */
@@ -516,9 +516,9 @@ class DVecTransExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      DVecTransposer<VT2,!TF> tmp( ~lhs );
+      DVecTransposer<VT2,!TF> tmp( *lhs );
       smpAssign( tmp, rhs.dv_ );
    }
    /*! \endcond */
@@ -544,9 +544,9 @@ class DVecTransExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      SVecTransposer<VT2,!TF> tmp( ~lhs );
+      SVecTransposer<VT2,!TF> tmp( *lhs );
       smpAssign( tmp, rhs.dv_ );
    }
    /*! \endcond */
@@ -572,9 +572,9 @@ class DVecTransExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      DVecTransposer<VT2,!TF> tmp( ~lhs );
+      DVecTransposer<VT2,!TF> tmp( *lhs );
       smpAddAssign( tmp, rhs.dv_ );
    }
    /*! \endcond */
@@ -604,9 +604,9 @@ class DVecTransExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      DVecTransposer<VT2,!TF> tmp( ~lhs );
+      DVecTransposer<VT2,!TF> tmp( *lhs );
       smpSubAssign( tmp, rhs.dv_ );
    }
    /*! \endcond */
@@ -636,9 +636,9 @@ class DVecTransExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      DVecTransposer<VT2,!TF> tmp( ~lhs );
+      DVecTransposer<VT2,!TF> tmp( *lhs );
       smpMultAssign( tmp, rhs.dv_ );
    }
    /*! \endcond */
@@ -668,9 +668,9 @@ class DVecTransExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      DVecTransposer<VT2,!TF> tmp( ~lhs );
+      DVecTransposer<VT2,!TF> tmp( *lhs );
       smpDivAssign( tmp, rhs.dv_ );
    }
    /*! \endcond */
@@ -724,7 +724,7 @@ inline decltype(auto) trans( const DenseVector<VT,TF>& dv )
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = const DVecTransExpr<VT,!TF>;
-   return ReturnType( ~dv );
+   return ReturnType( *dv );
 }
 //*************************************************************************************************
 
@@ -741,7 +741,7 @@ template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
 inline decltype(auto) transTo_backend( const DenseVector<VT,TF>& dv, FalseType )
 {
-   return trans( ~dv );
+   return trans( *dv );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -759,7 +759,7 @@ template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
 inline const VT& transTo_backend( const DenseVector<VT,TF>& dv, TrueType )
 {
-   return ~dv;
+   return *dv;
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -782,7 +782,7 @@ template< bool TTF     // Target transpose flag
         , bool TF >    // Current transpose flag of the dense vector
 inline decltype(auto) transTo( const DenseVector<VT,TF>& dv )
 {
-   return transTo_backend( ~dv, BoolConstant<TTF == TF>() );
+   return transTo_backend( *dv, BoolConstant<TTF == TF>() );
 }
 //*************************************************************************************************
 

@@ -888,7 +888,7 @@ template< typename Type   // Data type of the matrix
 template< typename MT     // Type of the foreign matrix
         , bool SO2 >      // Storage order of the foreign matrix
 inline DynamicMatrix<Type,SO,Tag>::DynamicMatrix( const Matrix<MT,SO2>& m )
-   : DynamicMatrix( (~m).rows(), (~m).columns() )
+   : DynamicMatrix( (*m).rows(), (*m).columns() )
 {
    BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<MT> );
 
@@ -896,7 +896,7 @@ inline DynamicMatrix<Type,SO,Tag>::DynamicMatrix( const Matrix<MT,SO2>& m )
       reset();
    }
 
-   smpAssign( *this, ~m );
+   smpAssign( *this, *m );
 
    BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
 }
@@ -1430,7 +1430,7 @@ inline DynamicMatrix<Type,SO,Tag>&
    if( &rhs == this ) return *this;
 
    resize( rhs.m_, rhs.n_, false );
-   smpAssign( *this, ~rhs );
+   smpAssign( *this, *rhs );
 
    BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
 
@@ -1493,21 +1493,21 @@ inline DynamicMatrix<Type,SO,Tag>&
 
    BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<MT> );
 
-   if( IsSame_v<MT,TT> && (~rhs).isAliased( this ) ) {
+   if( IsSame_v<MT,TT> && (*rhs).isAliased( this ) ) {
       transpose();
    }
-   else if( IsSame_v<MT,CT> && (~rhs).isAliased( this ) ) {
+   else if( IsSame_v<MT,CT> && (*rhs).isAliased( this ) ) {
       ctranspose();
    }
-   else if( !IsSame_v<MT,IT> && (~rhs).canAlias( this ) ) {
-      DynamicMatrix tmp( ~rhs );
+   else if( !IsSame_v<MT,IT> && (*rhs).canAlias( this ) ) {
+      DynamicMatrix tmp( *rhs );
       swap( tmp );
    }
    else {
-      resize( (~rhs).rows(), (~rhs).columns(), false );
+      resize( (*rhs).rows(), (*rhs).columns(), false );
       if( IsSparseMatrix_v<MT> )
          reset();
-      smpAssign( *this, ~rhs );
+      smpAssign( *this, *rhs );
    }
 
    BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
@@ -1537,16 +1537,16 @@ inline DynamicMatrix<Type,SO,Tag>&
 {
    BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<MT> );
 
-   if( (~rhs).rows() != m_ || (~rhs).columns() != n_ ) {
+   if( (*rhs).rows() != m_ || (*rhs).columns() != n_ ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
-   if( (~rhs).canAlias( this ) ) {
-      const ResultType_t<MT> tmp( ~rhs );
+   if( (*rhs).canAlias( this ) ) {
+      const ResultType_t<MT> tmp( *rhs );
       smpAddAssign( *this, tmp );
    }
    else {
-      smpAddAssign( *this, ~rhs );
+      smpAddAssign( *this, *rhs );
    }
 
    BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
@@ -1576,16 +1576,16 @@ inline DynamicMatrix<Type,SO,Tag>&
 {
    BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<MT> );
 
-   if( (~rhs).rows() != m_ || (~rhs).columns() != n_ ) {
+   if( (*rhs).rows() != m_ || (*rhs).columns() != n_ ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
-   if( (~rhs).canAlias( this ) ) {
-      const ResultType_t<MT> tmp( ~rhs );
+   if( (*rhs).canAlias( this ) ) {
+      const ResultType_t<MT> tmp( *rhs );
       smpSubAssign( *this, tmp );
    }
    else {
-      smpSubAssign( *this, ~rhs );
+      smpSubAssign( *this, *rhs );
    }
 
    BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
@@ -1615,16 +1615,16 @@ inline DynamicMatrix<Type,SO,Tag>&
 {
    BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<MT> );
 
-   if( (~rhs).rows() != m_ || (~rhs).columns() != n_ ) {
+   if( (*rhs).rows() != m_ || (*rhs).columns() != n_ ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
-   if( (~rhs).canAlias( this ) ) {
-      const ResultType_t<MT> tmp( ~rhs );
+   if( (*rhs).canAlias( this ) ) {
+      const ResultType_t<MT> tmp( *rhs );
       smpSchurAssign( *this, tmp );
    }
    else {
-      smpSchurAssign( *this, ~rhs );
+      smpSchurAssign( *this, *rhs );
    }
 
    BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
@@ -2557,19 +2557,19 @@ template< typename MT >   // Type of the right-hand side dense matrix
 inline auto DynamicMatrix<Type,SO,Tag>::assign( const DenseMatrix<MT,SO>& rhs )
    -> DisableIf_t< VectorizedAssign_v<MT> >
 {
-   BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( m_ == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( n_ == (*rhs).columns(), "Invalid number of columns" );
 
    const size_t jpos( prevMultiple( n_, 2UL ) );
    BLAZE_INTERNAL_ASSERT( jpos <= n_, "Invalid end calculation" );
 
    for( size_t i=0UL; i<m_; ++i ) {
       for( size_t j=0UL; j<jpos; j+=2UL ) {
-         v_[i*nn_+j    ] = (~rhs)(i,j    );
-         v_[i*nn_+j+1UL] = (~rhs)(i,j+1UL);
+         v_[i*nn_+j    ] = (*rhs)(i,j    );
+         v_[i*nn_+j+1UL] = (*rhs)(i,j+1UL);
       }
       if( jpos < n_ ) {
-         v_[i*nn_+jpos] = (~rhs)(i,jpos);
+         v_[i*nn_+jpos] = (*rhs)(i,jpos);
       }
    }
 }
@@ -2596,8 +2596,8 @@ inline auto DynamicMatrix<Type,SO,Tag>::assign( const DenseMatrix<MT,SO>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
-   BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( m_ == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( n_ == (*rhs).columns(), "Invalid number of columns" );
 
    constexpr bool remainder( !usePadding || !IsPadded_v<MT> );
 
@@ -2606,13 +2606,13 @@ inline auto DynamicMatrix<Type,SO,Tag>::assign( const DenseMatrix<MT,SO>& rhs )
 
    if( usePadding && useStreaming &&
        ( m_*n_ > ( cacheSize / ( sizeof(Type) * 3UL ) ) ) &&
-       !(~rhs).isAliased( this ) )
+       !(*rhs).isAliased( this ) )
    {
       for( size_t i=0UL; i<m_; ++i )
       {
          size_t j( 0UL );
          Iterator left( begin(i) );
-         ConstIterator_t<MT> right( (~rhs).begin(i) );
+         ConstIterator_t<MT> right( (*rhs).begin(i) );
 
          for( ; j<jpos; j+=SIMDSIZE, left+=SIMDSIZE, right+=SIMDSIZE ) {
             left.stream( right.load() );
@@ -2628,7 +2628,7 @@ inline auto DynamicMatrix<Type,SO,Tag>::assign( const DenseMatrix<MT,SO>& rhs )
       {
          size_t j( 0UL );
          Iterator left( begin(i) );
-         ConstIterator_t<MT> right( (~rhs).begin(i) );
+         ConstIterator_t<MT> right( (*rhs).begin(i) );
 
          for( ; (j+SIMDSIZE*3UL) < jpos; j+=SIMDSIZE*4UL ) {
             left.store( right.load() ); left += SIMDSIZE; right += SIMDSIZE;
@@ -2667,8 +2667,8 @@ inline void DynamicMatrix<Type,SO,Tag>::assign( const DenseMatrix<MT,!SO>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
 
-   BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( m_ == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( n_ == (*rhs).columns(), "Invalid number of columns" );
 
    constexpr size_t block( BLOCK_SIZE );
 
@@ -2678,7 +2678,7 @@ inline void DynamicMatrix<Type,SO,Tag>::assign( const DenseMatrix<MT,!SO>& rhs )
          const size_t jend( min( n_, jj+block ) );
          for( size_t i=ii; i<iend; ++i ) {
             for( size_t j=jj; j<jend; ++j ) {
-               v_[i*nn_+j] = (~rhs)(i,j);
+               v_[i*nn_+j] = (*rhs)(i,j);
             }
          }
       }
@@ -2704,11 +2704,11 @@ template< typename Type   // Data type of the matrix
 template< typename MT >   // Type of the right-hand side sparse matrix
 inline void DynamicMatrix<Type,SO,Tag>::assign( const SparseMatrix<MT,SO>& rhs )
 {
-   BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( m_ == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( n_ == (*rhs).columns(), "Invalid number of columns" );
 
    for( size_t i=0UL; i<m_; ++i )
-      for( auto element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
+      for( auto element=(*rhs).begin(i); element!=(*rhs).end(i); ++element )
          v_[i*nn_+element->index()] = element->value();
 }
 //*************************************************************************************************
@@ -2733,11 +2733,11 @@ inline void DynamicMatrix<Type,SO,Tag>::assign( const SparseMatrix<MT,!SO>& rhs 
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
 
-   BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( m_ == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( n_ == (*rhs).columns(), "Invalid number of columns" );
 
    for( size_t j=0UL; j<n_; ++j )
-      for( auto element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
+      for( auto element=(*rhs).begin(j); element!=(*rhs).end(j); ++element )
          v_[element->index()*nn_+j] = element->value();
 }
 //*************************************************************************************************
@@ -2761,14 +2761,14 @@ template< typename MT >   // Type of the right-hand side dense matrix
 inline auto DynamicMatrix<Type,SO,Tag>::addAssign( const DenseMatrix<MT,SO>& rhs )
    -> DisableIf_t< VectorizedAddAssign_v<MT> >
 {
-   BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( m_ == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( n_ == (*rhs).columns(), "Invalid number of columns" );
 
    for( size_t i=0UL; i<m_; ++i )
    {
       if( IsDiagonal_v<MT> )
       {
-         v_[i*nn_+i] += (~rhs)(i,i);
+         v_[i*nn_+i] += (*rhs)(i,i);
       }
       else
       {
@@ -2783,11 +2783,11 @@ inline auto DynamicMatrix<Type,SO,Tag>::addAssign( const DenseMatrix<MT,SO>& rhs
          size_t j( jbegin );
 
          for( ; (j+2UL) <= jend; j+=2UL ) {
-            v_[i*nn_+j    ] += (~rhs)(i,j    );
-            v_[i*nn_+j+1UL] += (~rhs)(i,j+1UL);
+            v_[i*nn_+j    ] += (*rhs)(i,j    );
+            v_[i*nn_+j+1UL] += (*rhs)(i,j+1UL);
          }
          if( j < jend ) {
-            v_[i*nn_+j] += (~rhs)(i,j);
+            v_[i*nn_+j] += (*rhs)(i,j);
          }
       }
    }
@@ -2816,8 +2816,8 @@ inline auto DynamicMatrix<Type,SO,Tag>::addAssign( const DenseMatrix<MT,SO>& rhs
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
    BLAZE_CONSTRAINT_MUST_NOT_BE_DIAGONAL_MATRIX_TYPE( MT );
 
-   BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( m_ == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( n_ == (*rhs).columns(), "Invalid number of columns" );
 
    constexpr bool remainder( !usePadding || !IsPadded_v<MT> );
 
@@ -2836,7 +2836,7 @@ inline auto DynamicMatrix<Type,SO,Tag>::addAssign( const DenseMatrix<MT,SO>& rhs
 
       size_t j( jbegin );
       Iterator left( begin(i) + jbegin );
-      ConstIterator_t<MT> right( (~rhs).begin(i) + jbegin );
+      ConstIterator_t<MT> right( (*rhs).begin(i) + jbegin );
 
       for( ; (j+SIMDSIZE*3UL) < jpos; j+=SIMDSIZE*4UL ) {
          left.store( left.load() + right.load() ); left += SIMDSIZE; right += SIMDSIZE;
@@ -2874,8 +2874,8 @@ inline void DynamicMatrix<Type,SO,Tag>::addAssign( const DenseMatrix<MT,!SO>& rh
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
 
-   BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( m_ == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( n_ == (*rhs).columns(), "Invalid number of columns" );
 
    constexpr size_t block( BLOCK_SIZE );
 
@@ -2897,7 +2897,7 @@ inline void DynamicMatrix<Type,SO,Tag>::addAssign( const DenseMatrix<MT,!SO>& rh
             BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
             for( size_t j=jbegin; j<jend; ++j ) {
-               v_[i*nn_+j] += (~rhs)(i,j);
+               v_[i*nn_+j] += (*rhs)(i,j);
             }
          }
       }
@@ -2923,11 +2923,11 @@ template< typename Type   // Data type of the matrix
 template< typename MT >   // Type of the right-hand side sparse matrix
 inline void DynamicMatrix<Type,SO,Tag>::addAssign( const SparseMatrix<MT,SO>& rhs )
 {
-   BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( m_ == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( n_ == (*rhs).columns(), "Invalid number of columns" );
 
    for( size_t i=0UL; i<m_; ++i )
-      for( auto element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
+      for( auto element=(*rhs).begin(i); element!=(*rhs).end(i); ++element )
          v_[i*nn_+element->index()] += element->value();
 }
 //*************************************************************************************************
@@ -2952,11 +2952,11 @@ inline void DynamicMatrix<Type,SO,Tag>::addAssign( const SparseMatrix<MT,!SO>& r
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
 
-   BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( m_ == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( n_ == (*rhs).columns(), "Invalid number of columns" );
 
    for( size_t j=0UL; j<n_; ++j )
-      for( auto element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
+      for( auto element=(*rhs).begin(j); element!=(*rhs).end(j); ++element )
          v_[element->index()*nn_+j] += element->value();
 }
 //*************************************************************************************************
@@ -2980,14 +2980,14 @@ template< typename MT >   // Type of the right-hand side dense matrix
 inline auto DynamicMatrix<Type,SO,Tag>::subAssign( const DenseMatrix<MT,SO>& rhs )
    -> DisableIf_t< VectorizedSubAssign_v<MT> >
 {
-   BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( m_ == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( n_ == (*rhs).columns(), "Invalid number of columns" );
 
    for( size_t i=0UL; i<m_; ++i )
    {
       if( IsDiagonal_v<MT> )
       {
-         v_[i*nn_+i] -= (~rhs)(i,i);
+         v_[i*nn_+i] -= (*rhs)(i,i);
       }
       else
       {
@@ -3002,11 +3002,11 @@ inline auto DynamicMatrix<Type,SO,Tag>::subAssign( const DenseMatrix<MT,SO>& rhs
          size_t j( jbegin );
 
          for( ; (j+2UL) <= jend; j+=2UL ) {
-            v_[i*nn_+j    ] -= (~rhs)(i,j    );
-            v_[i*nn_+j+1UL] -= (~rhs)(i,j+1UL);
+            v_[i*nn_+j    ] -= (*rhs)(i,j    );
+            v_[i*nn_+j+1UL] -= (*rhs)(i,j+1UL);
          }
          if( j < jend ) {
-            v_[i*nn_+j] -= (~rhs)(i,j);
+            v_[i*nn_+j] -= (*rhs)(i,j);
          }
       }
    }
@@ -3035,8 +3035,8 @@ inline auto DynamicMatrix<Type,SO,Tag>::subAssign( const DenseMatrix<MT,SO>& rhs
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
    BLAZE_CONSTRAINT_MUST_NOT_BE_DIAGONAL_MATRIX_TYPE( MT );
 
-   BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( m_ == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( n_ == (*rhs).columns(), "Invalid number of columns" );
 
    constexpr bool remainder( !usePadding || !IsPadded_v<MT> );
 
@@ -3055,7 +3055,7 @@ inline auto DynamicMatrix<Type,SO,Tag>::subAssign( const DenseMatrix<MT,SO>& rhs
 
       size_t j( jbegin );
       Iterator left( begin(i) + jbegin );
-      ConstIterator_t<MT> right( (~rhs).begin(i) + jbegin );
+      ConstIterator_t<MT> right( (*rhs).begin(i) + jbegin );
 
       for( ; (j+SIMDSIZE*3UL) < jpos; j+=SIMDSIZE*4UL ) {
          left.store( left.load() - right.load() ); left += SIMDSIZE; right += SIMDSIZE;
@@ -3093,8 +3093,8 @@ inline void DynamicMatrix<Type,SO,Tag>::subAssign( const DenseMatrix<MT,!SO>& rh
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
 
-   BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( m_ == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( n_ == (*rhs).columns(), "Invalid number of columns" );
 
    constexpr size_t block( BLOCK_SIZE );
 
@@ -3116,7 +3116,7 @@ inline void DynamicMatrix<Type,SO,Tag>::subAssign( const DenseMatrix<MT,!SO>& rh
             BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
             for( size_t j=jbegin; j<jend; ++j ) {
-               v_[i*nn_+j] -= (~rhs)(i,j);
+               v_[i*nn_+j] -= (*rhs)(i,j);
             }
          }
       }
@@ -3142,11 +3142,11 @@ template< typename Type   // Data type of the matrix
 template< typename MT >   // Type of the right-hand side sparse matrix
 inline void DynamicMatrix<Type,SO,Tag>::subAssign( const SparseMatrix<MT,SO>& rhs )
 {
-   BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( m_ == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( n_ == (*rhs).columns(), "Invalid number of columns" );
 
    for( size_t i=0UL; i<m_; ++i )
-      for( auto element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
+      for( auto element=(*rhs).begin(i); element!=(*rhs).end(i); ++element )
          v_[i*nn_+element->index()] -= element->value();
 }
 //*************************************************************************************************
@@ -3171,11 +3171,11 @@ inline void DynamicMatrix<Type,SO,Tag>::subAssign( const SparseMatrix<MT,!SO>& r
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
 
-   BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( m_ == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( n_ == (*rhs).columns(), "Invalid number of columns" );
 
    for( size_t j=0UL; j<n_; ++j )
-      for( auto element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
+      for( auto element=(*rhs).begin(j); element!=(*rhs).end(j); ++element )
          v_[element->index()*nn_+j] -= element->value();
 }
 //*************************************************************************************************
@@ -3199,19 +3199,19 @@ template< typename MT >   // Type of the right-hand side dense matrix
 inline auto DynamicMatrix<Type,SO,Tag>::schurAssign( const DenseMatrix<MT,SO>& rhs )
    -> DisableIf_t< VectorizedSchurAssign_v<MT> >
 {
-   BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( m_ == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( n_ == (*rhs).columns(), "Invalid number of columns" );
 
    const size_t jpos( prevMultiple( n_, 2UL ) );
    BLAZE_INTERNAL_ASSERT( jpos <= n_, "Invalid end calculation" );
 
    for( size_t i=0UL; i<m_; ++i ) {
       for( size_t j=0UL; j<jpos; j+=2UL ) {
-         v_[i*nn_+j    ] *= (~rhs)(i,j    );
-         v_[i*nn_+j+1UL] *= (~rhs)(i,j+1UL);
+         v_[i*nn_+j    ] *= (*rhs)(i,j    );
+         v_[i*nn_+j+1UL] *= (*rhs)(i,j+1UL);
       }
       if( jpos < n_ ) {
-         v_[i*nn_+jpos] *= (~rhs)(i,jpos);
+         v_[i*nn_+jpos] *= (*rhs)(i,jpos);
       }
    }
 }
@@ -3238,8 +3238,8 @@ inline auto DynamicMatrix<Type,SO,Tag>::schurAssign( const DenseMatrix<MT,SO>& r
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
-   BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( m_ == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( n_ == (*rhs).columns(), "Invalid number of columns" );
 
    constexpr bool remainder( !usePadding || !IsPadded_v<MT> );
 
@@ -3250,7 +3250,7 @@ inline auto DynamicMatrix<Type,SO,Tag>::schurAssign( const DenseMatrix<MT,SO>& r
 
       size_t j( 0UL );
       Iterator left( begin(i) );
-      ConstIterator_t<MT> right( (~rhs).begin(i) );
+      ConstIterator_t<MT> right( (*rhs).begin(i) );
 
       for( ; (j+SIMDSIZE*3UL) < jpos; j+=SIMDSIZE*4UL ) {
          left.store( left.load() * right.load() ); left += SIMDSIZE; right += SIMDSIZE;
@@ -3288,8 +3288,8 @@ inline void DynamicMatrix<Type,SO,Tag>::schurAssign( const DenseMatrix<MT,!SO>& 
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
 
-   BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( m_ == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( n_ == (*rhs).columns(), "Invalid number of columns" );
 
    constexpr size_t block( BLOCK_SIZE );
 
@@ -3299,7 +3299,7 @@ inline void DynamicMatrix<Type,SO,Tag>::schurAssign( const DenseMatrix<MT,!SO>& 
          const size_t jend( min( n_, jj+block ) );
          for( size_t i=ii; i<iend; ++i ) {
             for( size_t j=jj; j<jend; ++j ) {
-               v_[i*nn_+j] *= (~rhs)(i,j);
+               v_[i*nn_+j] *= (*rhs)(i,j);
             }
          }
       }
@@ -3327,14 +3327,14 @@ inline void DynamicMatrix<Type,SO,Tag>::schurAssign( const SparseMatrix<MT,SO>& 
 {
    using blaze::reset;
 
-   BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( m_ == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( n_ == (*rhs).columns(), "Invalid number of columns" );
 
    for( size_t i=0UL; i<m_; ++i )
    {
       size_t j( 0UL );
 
-      for( auto element=(~rhs).begin(i); element!=(~rhs).end(i); ++element ) {
+      for( auto element=(*rhs).begin(i); element!=(*rhs).end(i); ++element ) {
          for( ; j<element->index(); ++j )
             reset( v_[i*nn_+j] );
          v_[i*nn_+j] *= element->value();
@@ -3370,14 +3370,14 @@ inline void DynamicMatrix<Type,SO,Tag>::schurAssign( const SparseMatrix<MT,!SO>&
 
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
 
-   BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( m_ == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( n_ == (*rhs).columns(), "Invalid number of columns" );
 
    for( size_t j=0UL; j<n_; ++j )
    {
       size_t i( 0UL );
 
-      for( auto element=(~rhs).begin(j); element!=(~rhs).end(j); ++element ) {
+      for( auto element=(*rhs).begin(j); element!=(*rhs).end(j); ++element ) {
          for( ; i<element->index(); ++i )
             reset( v_[i*nn_+j] );
          v_[i*nn_+j] *= element->value();
@@ -4048,7 +4048,7 @@ template< typename Type   // Data type of the matrix
 template< typename MT     // Type of the foreign matrix
         , bool SO >       // Storage order of the foreign matrix
 inline DynamicMatrix<Type,true,Tag>::DynamicMatrix( const Matrix<MT,SO>& m )
-   : DynamicMatrix( (~m).rows(), (~m).columns() )
+   : DynamicMatrix( (*m).rows(), (*m).columns() )
 {
    BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<MT> );
 
@@ -4056,7 +4056,7 @@ inline DynamicMatrix<Type,true,Tag>::DynamicMatrix( const Matrix<MT,SO>& m )
       reset();
    }
 
-   smpAssign( *this, ~m );
+   smpAssign( *this, *m );
 
    BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
 }
@@ -4585,7 +4585,7 @@ inline DynamicMatrix<Type,true,Tag>&
    if( &rhs == this ) return *this;
 
    resize( rhs.m_, rhs.n_, false );
-   smpAssign( *this, ~rhs );
+   smpAssign( *this, *rhs );
 
    BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
 
@@ -4650,21 +4650,21 @@ inline DynamicMatrix<Type,true,Tag>&
 
    BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<MT> );
 
-   if( IsSame_v<MT,TT> && (~rhs).isAliased( this ) ) {
+   if( IsSame_v<MT,TT> && (*rhs).isAliased( this ) ) {
       transpose();
    }
-   else if( IsSame_v<MT,CT> && (~rhs).isAliased( this ) ) {
+   else if( IsSame_v<MT,CT> && (*rhs).isAliased( this ) ) {
       ctranspose();
    }
-   else if( !IsSame_v<MT,IT> && (~rhs).canAlias( this ) ) {
-      DynamicMatrix tmp( ~rhs );
+   else if( !IsSame_v<MT,IT> && (*rhs).canAlias( this ) ) {
+      DynamicMatrix tmp( *rhs );
       swap( tmp );
    }
    else {
-      resize( (~rhs).rows(), (~rhs).columns(), false );
+      resize( (*rhs).rows(), (*rhs).columns(), false );
       if( IsSparseMatrix_v<MT> )
          reset();
-      smpAssign( *this, ~rhs );
+      smpAssign( *this, *rhs );
    }
 
    BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
@@ -4695,16 +4695,16 @@ inline DynamicMatrix<Type,true,Tag>&
 {
    BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<MT> );
 
-   if( (~rhs).rows() != m_ || (~rhs).columns() != n_ ) {
+   if( (*rhs).rows() != m_ || (*rhs).columns() != n_ ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
-   if( (~rhs).canAlias( this ) ) {
-      const ResultType_t<MT> tmp( ~rhs );
+   if( (*rhs).canAlias( this ) ) {
+      const ResultType_t<MT> tmp( *rhs );
       smpAddAssign( *this, tmp );
    }
    else {
-      smpAddAssign( *this, ~rhs );
+      smpAddAssign( *this, *rhs );
    }
 
    BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
@@ -4735,16 +4735,16 @@ inline DynamicMatrix<Type,true,Tag>&
 {
    BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<MT> );
 
-   if( (~rhs).rows() != m_ || (~rhs).columns() != n_ ) {
+   if( (*rhs).rows() != m_ || (*rhs).columns() != n_ ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
-   if( (~rhs).canAlias( this ) ) {
-      const ResultType_t<MT> tmp( ~rhs );
+   if( (*rhs).canAlias( this ) ) {
+      const ResultType_t<MT> tmp( *rhs );
       smpSubAssign( *this, tmp );
    }
    else {
-      smpSubAssign( *this, ~rhs );
+      smpSubAssign( *this, *rhs );
    }
 
    BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
@@ -4775,16 +4775,16 @@ inline DynamicMatrix<Type,true,Tag>&
 {
    BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<MT> );
 
-   if( (~rhs).rows() != m_ || (~rhs).columns() != n_ ) {
+   if( (*rhs).rows() != m_ || (*rhs).columns() != n_ ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
-   if( (~rhs).canAlias( this ) ) {
-      const ResultType_t<MT> tmp( ~rhs );
+   if( (*rhs).canAlias( this ) ) {
+      const ResultType_t<MT> tmp( *rhs );
       smpSchurAssign( *this, tmp );
    }
    else {
-      smpSchurAssign( *this, ~rhs );
+      smpSchurAssign( *this, *rhs );
    }
 
    BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
@@ -5728,19 +5728,19 @@ template< typename MT >   // Type of the right-hand side dense matrix
 inline auto DynamicMatrix<Type,true,Tag>::assign( const DenseMatrix<MT,true>& rhs )
    -> DisableIf_t< VectorizedAssign_v<MT> >
 {
-   BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( m_ == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( n_ == (*rhs).columns(), "Invalid number of columns" );
 
    const size_t ipos( prevMultiple( m_, 2UL ) );
    BLAZE_INTERNAL_ASSERT( ipos <= m_, "Invalid end calculation" );
 
    for( size_t j=0UL; j<n_; ++j ) {
       for( size_t i=0UL; i<ipos; i+=2UL ) {
-         v_[i    +j*mm_] = (~rhs)(i    ,j);
-         v_[i+1UL+j*mm_] = (~rhs)(i+1UL,j);
+         v_[i    +j*mm_] = (*rhs)(i    ,j);
+         v_[i+1UL+j*mm_] = (*rhs)(i+1UL,j);
       }
       if( ipos < m_ ) {
-         v_[ipos+j*mm_] = (~rhs)(ipos,j);
+         v_[ipos+j*mm_] = (*rhs)(ipos,j);
       }
    }
 }
@@ -5768,8 +5768,8 @@ inline auto DynamicMatrix<Type,true,Tag>::assign( const DenseMatrix<MT,true>& rh
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
-   BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( m_ == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( n_ == (*rhs).columns(), "Invalid number of columns" );
 
    constexpr bool remainder( !usePadding || !IsPadded_v<MT> );
 
@@ -5778,13 +5778,13 @@ inline auto DynamicMatrix<Type,true,Tag>::assign( const DenseMatrix<MT,true>& rh
 
    if( usePadding && useStreaming &&
        ( m_*n_ > ( cacheSize / ( sizeof(Type) * 3UL ) ) ) &&
-       !(~rhs).isAliased( this ) )
+       !(*rhs).isAliased( this ) )
    {
       for( size_t j=0UL; j<n_; ++j )
       {
          size_t i( 0UL );
          Iterator left( begin(j) );
-         ConstIterator_t<MT> right( (~rhs).begin(j) );
+         ConstIterator_t<MT> right( (*rhs).begin(j) );
 
          for( ; i<ipos; i+=SIMDSIZE ) {
             left.stream( right.load() ); left += SIMDSIZE; right += SIMDSIZE;
@@ -5800,7 +5800,7 @@ inline auto DynamicMatrix<Type,true,Tag>::assign( const DenseMatrix<MT,true>& rh
       {
          size_t i( 0UL );
          Iterator left( begin(j) );
-         ConstIterator_t<MT> right( (~rhs).begin(j) );
+         ConstIterator_t<MT> right( (*rhs).begin(j) );
 
          for( ; (i+SIMDSIZE*3UL) < ipos; i+=SIMDSIZE*4UL ) {
             left.store( right.load() ); left += SIMDSIZE; right += SIMDSIZE;
@@ -5840,8 +5840,8 @@ inline void DynamicMatrix<Type,true,Tag>::assign( const DenseMatrix<MT,false>& r
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
 
-   BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( m_ == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( n_ == (*rhs).columns(), "Invalid number of columns" );
 
    constexpr size_t block( BLOCK_SIZE );
 
@@ -5851,7 +5851,7 @@ inline void DynamicMatrix<Type,true,Tag>::assign( const DenseMatrix<MT,false>& r
          const size_t iend( min( m_, ii+block ) );
          for( size_t j=jj; j<jend; ++j ) {
             for( size_t i=ii; i<iend; ++i ) {
-               v_[i+j*mm_] = (~rhs)(i,j);
+               v_[i+j*mm_] = (*rhs)(i,j);
             }
          }
       }
@@ -5878,11 +5878,11 @@ template< typename Type   // Data type of the matrix
 template< typename MT >   // Type of the right-hand side sparse matrix
 inline void DynamicMatrix<Type,true,Tag>::assign( const SparseMatrix<MT,true>& rhs )
 {
-   BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( m_ == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( n_ == (*rhs).columns(), "Invalid number of columns" );
 
-   for( size_t j=0UL; j<(~rhs).columns(); ++j )
-      for( auto element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
+   for( size_t j=0UL; j<(*rhs).columns(); ++j )
+      for( auto element=(*rhs).begin(j); element!=(*rhs).end(j); ++element )
          v_[element->index()+j*mm_] = element->value();
 }
 /*! \endcond */
@@ -5908,11 +5908,11 @@ inline void DynamicMatrix<Type,true,Tag>::assign( const SparseMatrix<MT,false>& 
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
 
-   BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( m_ == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( n_ == (*rhs).columns(), "Invalid number of columns" );
 
-   for( size_t i=0UL; i<(~rhs).rows(); ++i )
-      for( auto element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
+   for( size_t i=0UL; i<(*rhs).rows(); ++i )
+      for( auto element=(*rhs).begin(i); element!=(*rhs).end(i); ++element )
          v_[i+element->index()*mm_] = element->value();
 }
 /*! \endcond */
@@ -5937,14 +5937,14 @@ template< typename MT >   // Type of the right-hand side dense matrix
 inline auto DynamicMatrix<Type,true,Tag>::addAssign( const DenseMatrix<MT,true>& rhs )
    -> DisableIf_t< VectorizedAddAssign_v<MT> >
 {
-   BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( m_ == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( n_ == (*rhs).columns(), "Invalid number of columns" );
 
    for( size_t j=0UL; j<n_; ++j )
    {
       if( IsDiagonal_v<MT> )
       {
-         v_[j+j*mm_] += (~rhs)(j,j);
+         v_[j+j*mm_] += (*rhs)(j,j);
       }
       else
       {
@@ -5959,11 +5959,11 @@ inline auto DynamicMatrix<Type,true,Tag>::addAssign( const DenseMatrix<MT,true>&
          size_t i( ibegin );
 
          for( ; (i+2UL) <= iend; i+=2UL ) {
-            v_[i    +j*mm_] += (~rhs)(i    ,j);
-            v_[i+1UL+j*mm_] += (~rhs)(i+1UL,j);
+            v_[i    +j*mm_] += (*rhs)(i    ,j);
+            v_[i+1UL+j*mm_] += (*rhs)(i+1UL,j);
          }
          if( i < iend ) {
-            v_[i+j*mm_] += (~rhs)(i,j);
+            v_[i+j*mm_] += (*rhs)(i,j);
          }
       }
    }
@@ -5993,8 +5993,8 @@ inline auto DynamicMatrix<Type,true,Tag>::addAssign( const DenseMatrix<MT,true>&
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
    BLAZE_CONSTRAINT_MUST_NOT_BE_DIAGONAL_MATRIX_TYPE( MT );
 
-   BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( m_ == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( n_ == (*rhs).columns(), "Invalid number of columns" );
 
    constexpr bool remainder( !usePadding || !IsPadded_v<MT> );
 
@@ -6013,7 +6013,7 @@ inline auto DynamicMatrix<Type,true,Tag>::addAssign( const DenseMatrix<MT,true>&
 
       size_t i( ibegin );
       Iterator left( begin(j) + ibegin );
-      ConstIterator_t<MT> right( (~rhs).begin(j) + ibegin );
+      ConstIterator_t<MT> right( (*rhs).begin(j) + ibegin );
 
       for( ; (i+SIMDSIZE*3UL) < ipos; i+=SIMDSIZE*4UL ) {
          left.store( left.load() + right.load() ); left += SIMDSIZE; right += SIMDSIZE;
@@ -6052,8 +6052,8 @@ inline void DynamicMatrix<Type,true,Tag>::addAssign( const DenseMatrix<MT,false>
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
 
-   BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( m_ == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( n_ == (*rhs).columns(), "Invalid number of columns" );
 
    constexpr size_t block( BLOCK_SIZE );
 
@@ -6075,7 +6075,7 @@ inline void DynamicMatrix<Type,true,Tag>::addAssign( const DenseMatrix<MT,false>
             BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
 
             for( size_t i=ibegin; i<iend; ++i ) {
-               v_[i+j*mm_] += (~rhs)(i,j);
+               v_[i+j*mm_] += (*rhs)(i,j);
             }
          }
       }
@@ -6102,11 +6102,11 @@ template< typename Type   // Data type of the matrix
 template< typename MT >   // Type of the right-hand side sparse matrix
 inline void DynamicMatrix<Type,true,Tag>::addAssign( const SparseMatrix<MT,true>& rhs )
 {
-   BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( m_ == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( n_ == (*rhs).columns(), "Invalid number of columns" );
 
-   for( size_t j=0UL; j<(~rhs).columns(); ++j )
-      for( auto element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
+   for( size_t j=0UL; j<(*rhs).columns(); ++j )
+      for( auto element=(*rhs).begin(j); element!=(*rhs).end(j); ++element )
          v_[element->index()+j*mm_] += element->value();
 }
 /*! \endcond */
@@ -6132,11 +6132,11 @@ inline void DynamicMatrix<Type,true,Tag>::addAssign( const SparseMatrix<MT,false
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
 
-   BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( m_ == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( n_ == (*rhs).columns(), "Invalid number of columns" );
 
-   for( size_t i=0UL; i<(~rhs).rows(); ++i )
-      for( auto element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
+   for( size_t i=0UL; i<(*rhs).rows(); ++i )
+      for( auto element=(*rhs).begin(i); element!=(*rhs).end(i); ++element )
          v_[i+element->index()*mm_] += element->value();
 }
 /*! \endcond */
@@ -6161,14 +6161,14 @@ template< typename MT >   // Type of the right-hand side dense matrix
 inline auto DynamicMatrix<Type,true,Tag>::subAssign( const DenseMatrix<MT,true>& rhs )
    -> DisableIf_t< VectorizedSubAssign_v<MT> >
 {
-   BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( m_ == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( n_ == (*rhs).columns(), "Invalid number of columns" );
 
    for( size_t j=0UL; j<n_; ++j )
    {
       if( IsDiagonal_v<MT> )
       {
-         v_[j+j*mm_] -= (~rhs)(j,j);
+         v_[j+j*mm_] -= (*rhs)(j,j);
       }
       else
       {
@@ -6183,11 +6183,11 @@ inline auto DynamicMatrix<Type,true,Tag>::subAssign( const DenseMatrix<MT,true>&
          size_t i( ibegin );
 
          for( ; (i+2UL) <= iend; i+=2UL ) {
-            v_[i  +j*mm_] -= (~rhs)(i  ,j);
-            v_[i+1+j*mm_] -= (~rhs)(i+1,j);
+            v_[i  +j*mm_] -= (*rhs)(i  ,j);
+            v_[i+1+j*mm_] -= (*rhs)(i+1,j);
          }
          if( i < iend ) {
-            v_[i+j*mm_] -= (~rhs)(i,j);
+            v_[i+j*mm_] -= (*rhs)(i,j);
          }
       }
    }
@@ -6217,8 +6217,8 @@ inline auto DynamicMatrix<Type,true,Tag>::subAssign( const DenseMatrix<MT,true>&
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
    BLAZE_CONSTRAINT_MUST_NOT_BE_DIAGONAL_MATRIX_TYPE( MT );
 
-   BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( m_ == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( n_ == (*rhs).columns(), "Invalid number of columns" );
 
    constexpr bool remainder( !usePadding || !IsPadded_v<MT> );
 
@@ -6237,7 +6237,7 @@ inline auto DynamicMatrix<Type,true,Tag>::subAssign( const DenseMatrix<MT,true>&
 
       size_t i( ibegin );
       Iterator left( begin(j) + ibegin );
-      ConstIterator_t<MT> right( (~rhs).begin(j) + ibegin );
+      ConstIterator_t<MT> right( (*rhs).begin(j) + ibegin );
 
       for( ; (i+SIMDSIZE*3UL) < ipos; i+=SIMDSIZE*4UL ) {
          left.store( left.load() - right.load() ); left += SIMDSIZE; right += SIMDSIZE;
@@ -6276,8 +6276,8 @@ inline void DynamicMatrix<Type,true,Tag>::subAssign( const DenseMatrix<MT,false>
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
 
-   BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( m_ == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( n_ == (*rhs).columns(), "Invalid number of columns" );
 
    constexpr size_t block( BLOCK_SIZE );
 
@@ -6299,7 +6299,7 @@ inline void DynamicMatrix<Type,true,Tag>::subAssign( const DenseMatrix<MT,false>
             BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
 
             for( size_t i=ibegin; i<iend; ++i ) {
-               v_[i+j*mm_] -= (~rhs)(i,j);
+               v_[i+j*mm_] -= (*rhs)(i,j);
             }
          }
       }
@@ -6326,11 +6326,11 @@ template< typename Type   // Data type of the matrix
 template< typename MT >   // Type of the right-hand side sparse matrix
 inline void DynamicMatrix<Type,true,Tag>::subAssign( const SparseMatrix<MT,true>& rhs )
 {
-   BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( m_ == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( n_ == (*rhs).columns(), "Invalid number of columns" );
 
-   for( size_t j=0UL; j<(~rhs).columns(); ++j )
-      for( auto element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
+   for( size_t j=0UL; j<(*rhs).columns(); ++j )
+      for( auto element=(*rhs).begin(j); element!=(*rhs).end(j); ++element )
          v_[element->index()+j*mm_] -= element->value();
 }
 /*! \endcond */
@@ -6356,11 +6356,11 @@ inline void DynamicMatrix<Type,true,Tag>::subAssign( const SparseMatrix<MT,false
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
 
-   BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( m_ == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( n_ == (*rhs).columns(), "Invalid number of columns" );
 
-   for( size_t i=0UL; i<(~rhs).rows(); ++i )
-      for( auto element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
+   for( size_t i=0UL; i<(*rhs).rows(); ++i )
+      for( auto element=(*rhs).begin(i); element!=(*rhs).end(i); ++element )
          v_[i+element->index()*mm_] -= element->value();
 }
 /*! \endcond */
@@ -6385,19 +6385,19 @@ template< typename MT >   // Type of the right-hand side dense matrix
 inline auto DynamicMatrix<Type,true,Tag>::schurAssign( const DenseMatrix<MT,true>& rhs )
    -> DisableIf_t< VectorizedSchurAssign_v<MT> >
 {
-   BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( m_ == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( n_ == (*rhs).columns(), "Invalid number of columns" );
 
    const size_t ipos( prevMultiple( m_, 2UL ) );
    BLAZE_INTERNAL_ASSERT( ipos <= m_, "Invalid end calculation" );
 
    for( size_t j=0UL; j<n_; ++j ) {
       for( size_t i=0UL; (i+2UL) <= ipos; i+=2UL ) {
-         v_[i  +j*mm_] *= (~rhs)(i  ,j);
-         v_[i+1+j*mm_] *= (~rhs)(i+1,j);
+         v_[i  +j*mm_] *= (*rhs)(i  ,j);
+         v_[i+1+j*mm_] *= (*rhs)(i+1,j);
       }
       if( ipos < m_ ) {
-         v_[ipos+j*mm_] *= (~rhs)(ipos,j);
+         v_[ipos+j*mm_] *= (*rhs)(ipos,j);
       }
    }
 }
@@ -6425,8 +6425,8 @@ inline auto DynamicMatrix<Type,true,Tag>::schurAssign( const DenseMatrix<MT,true
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
-   BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( m_ == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( n_ == (*rhs).columns(), "Invalid number of columns" );
 
    constexpr bool remainder( !usePadding || !IsPadded_v<MT> );
 
@@ -6437,7 +6437,7 @@ inline auto DynamicMatrix<Type,true,Tag>::schurAssign( const DenseMatrix<MT,true
 
       size_t i( 0UL );
       Iterator left( begin(j) );
-      ConstIterator_t<MT> right( (~rhs).begin(j) );
+      ConstIterator_t<MT> right( (*rhs).begin(j) );
 
       for( ; (i+SIMDSIZE*3UL) < ipos; i+=SIMDSIZE*4UL ) {
          left.store( left.load() * right.load() ); left += SIMDSIZE; right += SIMDSIZE;
@@ -6476,8 +6476,8 @@ inline void DynamicMatrix<Type,true,Tag>::schurAssign( const DenseMatrix<MT,fals
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
 
-   BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( m_ == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( n_ == (*rhs).columns(), "Invalid number of columns" );
 
    constexpr size_t block( BLOCK_SIZE );
 
@@ -6487,7 +6487,7 @@ inline void DynamicMatrix<Type,true,Tag>::schurAssign( const DenseMatrix<MT,fals
          const size_t iend( min( m_, ii+block ) );
          for( size_t j=jj; j<jend; ++j ) {
             for( size_t i=ii; i<iend; ++i ) {
-               v_[i+j*mm_] *= (~rhs)(i,j);
+               v_[i+j*mm_] *= (*rhs)(i,j);
             }
          }
       }
@@ -6516,14 +6516,14 @@ inline void DynamicMatrix<Type,true,Tag>::schurAssign( const SparseMatrix<MT,tru
 {
    using blaze::reset;
 
-   BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( m_ == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( n_ == (*rhs).columns(), "Invalid number of columns" );
 
    for( size_t j=0UL; j<n_; ++j )
    {
       size_t i( 0UL );
 
-      for( auto element=(~rhs).begin(j); element!=(~rhs).end(j); ++element ) {
+      for( auto element=(*rhs).begin(j); element!=(*rhs).end(j); ++element ) {
          for( ; i<element->index(); ++i )
             reset( v_[i+j*mm_] );
          v_[i+j*mm_] *= element->value();
@@ -6560,14 +6560,14 @@ inline void DynamicMatrix<Type,true,Tag>::schurAssign( const SparseMatrix<MT,fal
 
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
 
-   BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( m_ == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( n_ == (*rhs).columns(), "Invalid number of columns" );
 
    for( size_t i=0UL; i<m_; ++i )
    {
       size_t j( 0UL );
 
-      for( auto element=(~rhs).begin(i); element!=(~rhs).end(i); ++element ) {
+      for( auto element=(*rhs).begin(i); element!=(*rhs).end(i); ++element ) {
          for( ; j<element->index(); ++j )
             reset( v_[i+j*mm_] );
          v_[i+j*mm_] *= element->value();

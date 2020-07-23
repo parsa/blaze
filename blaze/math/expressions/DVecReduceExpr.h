@@ -125,12 +125,12 @@ inline auto dvecreduce( const DenseVector<VT,TF>& dv, OP op )
    using CT = CompositeType_t<VT>;
    using ET = ElementType_t<VT>;
 
-   const size_t N( (~dv).size() );
+   const size_t N( (*dv).size() );
 
    if( N == 0UL ) return ET{};
-   if( N == 1UL ) return (~dv)[0UL];
+   if( N == 1UL ) return (*dv)[0UL];
 
-   CT tmp( ~dv );
+   CT tmp( *dv );
 
    BLAZE_INTERNAL_ASSERT( tmp.size() == N, "Invalid vector size" );
 
@@ -178,11 +178,11 @@ inline auto dvecreduce( const DenseVector<VT,TF>& dv, OP op )
    using CT = CompositeType_t<VT>;
    using ET = ElementType_t<VT>;
 
-   const size_t N( (~dv).size() );
+   const size_t N( (*dv).size() );
 
    if( N == 0UL ) return ET{};
 
-   CT tmp( ~dv );
+   CT tmp( *dv );
 
    BLAZE_INTERNAL_ASSERT( tmp.size() == N, "Invalid vector size" );
 
@@ -252,11 +252,11 @@ inline auto dvecreduce( const DenseVector<VT,TF>& dv, Add /*op*/ )
    using CT = CompositeType_t<VT>;
    using ET = ElementType_t<VT>;
 
-   const size_t N( (~dv).size() );
+   const size_t N( (*dv).size() );
 
    if( N == 0UL ) return ET{};
 
-   CT tmp( ~dv );
+   CT tmp( *dv );
 
    BLAZE_INTERNAL_ASSERT( tmp.size() == N, "Invalid vector size" );
 
@@ -340,7 +340,7 @@ template< typename VT  // Type of the dense vector
 inline auto dvecreduce( const DenseVector<VT,TF>& dv, Min /*op*/ )
    -> EnableIf_t< IsUniform_v<VT>, ElementType_t<VT> >
 {
-   return (~dv)[0UL];
+   return (*dv)[0UL];
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -362,7 +362,7 @@ template< typename VT  // Type of the dense vector
 inline auto dvecreduce( const DenseVector<VT,TF>& dv, Max /*op*/ )
    -> EnableIf_t< IsUniform_v<VT>, ElementType_t<VT> >
 {
-   return (~dv)[0UL];
+   return (*dv)[0UL];
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -404,7 +404,7 @@ inline decltype(auto) reduce( const DenseVector<VT,TF>& dv, OP op )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return dvecreduce( ~dv, std::move(op) );
+   return dvecreduce( *dv, std::move(op) );
 }
 //*************************************************************************************************
 
@@ -432,7 +432,7 @@ inline decltype(auto) sum( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return reduce( ~dv, Add() );
+   return reduce( *dv, Add() );
 }
 //*************************************************************************************************
 
@@ -459,7 +459,7 @@ inline decltype(auto) prod( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return reduce( ~dv, Mult() );
+   return reduce( *dv, Mult() );
 }
 //*************************************************************************************************
 
@@ -487,7 +487,7 @@ inline decltype(auto) min( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return reduce( ~dv, Min() );
+   return reduce( *dv, Min() );
 }
 //*************************************************************************************************
 
@@ -515,7 +515,7 @@ inline decltype(auto) max( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return reduce( ~dv, Max() );
+   return reduce( *dv, Max() );
 }
 //*************************************************************************************************
 
@@ -540,10 +540,10 @@ template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
 inline size_t argmin( const DenseVector<VT,TF>& dv )
 {
-   if( (~dv).size() < 2UL )
+   if( (*dv).size() < 2UL )
       return 0UL;
 
-   CompositeType_t<VT> a( ~dv );  // Evaluation of the dense vector operand
+   CompositeType_t<VT> a( *dv );  // Evaluation of the dense vector operand
 
    const size_t size( a.size() );
    size_t index( 0UL );
@@ -582,10 +582,10 @@ template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
 inline size_t argmax( const DenseVector<VT,TF>& dv )
 {
-   if( (~dv).size() < 2UL )
+   if( (*dv).size() < 2UL )
       return 0UL;
 
-   CompositeType_t<VT> a( ~dv );  // Evaluation of the dense vector operand
+   CompositeType_t<VT> a( *dv );  // Evaluation of the dense vector operand
 
    const size_t size( a.size() );
    size_t index( 0UL );

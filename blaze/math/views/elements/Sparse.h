@@ -994,12 +994,12 @@ inline Elements<VT,TF,false,CEAs...>&
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType_t<VT2>, TF );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_t<VT2> );
 
-   if( size() != (~rhs).size() ) {
+   if( size() != (*rhs).size() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
    using Right = If_t< IsRestricted_v<VT>, CompositeType_t<VT2>, const VT2& >;
-   Right right( ~rhs );
+   Right right( *rhs );
 
    if( IsRestricted_v<VT> ) {
       for( size_t i=0UL; i<size(); ++i ) {
@@ -1051,12 +1051,12 @@ inline Elements<VT,TF,false,CEAs...>&
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType_t<VT2>, TF );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_t<VT2> );
 
-   if( size() != (~rhs).size() ) {
+   if( size() != (*rhs).size() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
    using Right = If_t< IsRestricted_v<VT>, CompositeType_t<VT2>, const VT2& >;
-   Right right( ~rhs );
+   Right right( *rhs );
 
    if( IsRestricted_v<VT> ) {
       for( size_t i=0UL; i<size(); ++i ) {
@@ -1108,12 +1108,12 @@ inline Elements<VT,TF,false,CEAs...>&
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType_t<VT2>, TF );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_t<VT2> );
 
-   if( size() != (~rhs).size() ) {
+   if( size() != (*rhs).size() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
    using Right = If_t< IsRestricted_v<VT>, CompositeType_t<VT2>, const VT2& >;
-   Right right( ~rhs );
+   Right right( *rhs );
 
    if( IsRestricted_v<VT> ) {
       for( size_t i=0UL; i<size(); ++i ) {
@@ -1172,11 +1172,11 @@ inline Elements<VT,TF,false,CEAs...>&
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( MultType, TF );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MultType );
 
-   if( size() != (~rhs).size() ) {
+   if( size() != (*rhs).size() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   const MultType tmp( *this * (~rhs) );
+   const MultType tmp( *this * (*rhs) );
 
    if( IsRestricted_v<VT> ) {
       for( size_t i=0UL; i<size(); ++i ) {
@@ -1230,11 +1230,11 @@ inline Elements<VT,TF,false,CEAs...>&
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( DivType, TF );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( DivType );
 
-   if( size() != (~rhs).size() ) {
+   if( size() != (*rhs).size() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   const DivType tmp( *this / (~rhs) );
+   const DivType tmp( *this / (*rhs) );
 
    if( IsRestricted_v<VT> ) {
       for( size_t i=0UL; i<size(); ++i ) {
@@ -1287,11 +1287,11 @@ inline Elements<VT,TF,false,CEAs...>&
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( CrossType, TF );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( CrossType );
 
-   if( size() != 3UL || (~rhs).size() != 3UL ) {
+   if( size() != 3UL || (*rhs).size() != 3UL ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid vector size for cross product" );
    }
 
-   const CrossType tmp( *this % (~rhs) );
+   const CrossType tmp( *this % (*rhs) );
 
    if( IsRestricted_v<VT> ) {
       for( size_t i=0UL; i<size(); ++i ) {
@@ -1987,14 +1987,14 @@ template< typename VT         // Type of the sparse vector
 template< typename VT2 >    // Type of the right-hand side dense vector
 inline void Elements<VT,TF,false,CEAs...>::assign( const DenseVector<VT2,TF>& rhs )
 {
-   BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
+   BLAZE_INTERNAL_ASSERT( size() == (*rhs).size(), "Invalid vector sizes" );
 
    using RT = If_t< IsComputation_v<VT2>, ElementType_t<VT>, const ElementType_t<VT2>& >;
 
-   reserve( (~rhs).size() );
+   reserve( (*rhs).size() );
 
    for( size_t i=0UL; i<size(); ++i ) {
-      RT value( (~rhs)[i] );
+      RT value( (*rhs)[i] );
       if( !isDefault<strict>( value ) )
          vector_.set( idx(i), std::move( value ) );
       else vector_.erase( idx(i) );
@@ -2022,13 +2022,13 @@ template< typename VT         // Type of the sparse vector
 template< typename VT2 >    // Type of the right-hand side sparse vector
 inline void Elements<VT,TF,false,CEAs...>::assign( const SparseVector<VT2,TF>& rhs )
 {
-   BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
+   BLAZE_INTERNAL_ASSERT( size() == (*rhs).size(), "Invalid vector sizes" );
 
    using RT = If_t< IsComputation_v<VT2>, ElementType_t<VT>, const ElementType_t<VT2>& >;
 
    size_t i( 0UL );
 
-   for( ConstIterator_t<VT2> element=(~rhs).begin(); element!=(~rhs).end(); ++element ) {
+   for( ConstIterator_t<VT2> element=(*rhs).begin(); element!=(*rhs).end(); ++element ) {
       for( ; i<element->index(); ++i )
          vector_.erase( idx(i) );
       RT value( element->value() );
@@ -2068,9 +2068,9 @@ inline void Elements<VT,TF,false,CEAs...>::addAssign( const Vector<VT2,TF>& rhs 
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( AddType, TF );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( AddType );
 
-   BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
+   BLAZE_INTERNAL_ASSERT( size() == (*rhs).size(), "Invalid vector sizes" );
 
-   const AddType tmp( serial( *this + (~rhs) ) );
+   const AddType tmp( serial( *this + (*rhs) ) );
    assign( tmp );
 }
 /*! \endcond */
@@ -2100,9 +2100,9 @@ inline void Elements<VT,TF,false,CEAs...>::subAssign( const Vector<VT2,TF>& rhs 
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( SubType, TF );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SubType );
 
-   BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
+   BLAZE_INTERNAL_ASSERT( size() == (*rhs).size(), "Invalid vector sizes" );
 
-   const SubType tmp( serial( *this - (~rhs) ) );
+   const SubType tmp( serial( *this - (*rhs) ) );
    assign( tmp );
 }
 /*! \endcond */

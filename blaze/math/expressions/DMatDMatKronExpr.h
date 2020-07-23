@@ -302,8 +302,8 @@ class DMatDMatKronExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
       if( rhs.rows() == 0UL || rhs.columns() == 0UL ) {
          return;
@@ -322,12 +322,12 @@ class DMatDMatKronExpr
                if( !isDefault<strict>( A(i,j) ) ) {
                   for( size_t l=0UL; l<N; ++l )
                      for( size_t k=0UL; k<M; ++k )
-                        (~lhs)(i*M+k,j*N+l) = A(i,j) * B(k,l);
+                        (*lhs)(i*M+k,j*N+l) = A(i,j) * B(k,l);
                }
                else {
                   for( size_t l=0UL; l<N; ++l )
                      for( size_t k=0UL; k<M; ++k )
-                        reset( (~lhs)(i*M+k,j*N+l) );
+                        reset( (*lhs)(i*M+k,j*N+l) );
                }
             }
          }
@@ -339,11 +339,11 @@ class DMatDMatKronExpr
                for( size_t j=0UL; j<A.columns(); ++j ) {
                   if( !isDefault<strict>( A(i,j) ) ) {
                      for( size_t l=0UL; l<N; ++l )
-                        (~lhs)(i*M+k,j*N+l) = A(i,j) * B(k,l);
+                        (*lhs)(i*M+k,j*N+l) = A(i,j) * B(k,l);
                   }
                   else {
                      for( size_t l=0UL; l<N; ++l )
-                        reset( (~lhs)(i*M+k,j*N+l) );
+                        reset( (*lhs)(i*M+k,j*N+l) );
                   }
                }
             }
@@ -371,8 +371,8 @@ class DMatDMatKronExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
       if( rhs.rows() == 0UL || rhs.columns() == 0UL ) {
          return;
@@ -391,11 +391,11 @@ class DMatDMatKronExpr
                for( size_t i=0UL; i<A.rows(); ++i ) {
                   if( !isDefault<strict>( A(i,j) ) ) {
                      for( size_t k=0UL; k<M; ++k )
-                        (~lhs)(i*M+k,j*N+l) = A(i,j) * B(k,l);
+                        (*lhs)(i*M+k,j*N+l) = A(i,j) * B(k,l);
                   }
                   else {
                      for( size_t k=0UL; k<M; ++k )
-                        reset( (~lhs)(i*M+k,j*N+l) );
+                        reset( (*lhs)(i*M+k,j*N+l) );
                   }
                }
             }
@@ -408,12 +408,12 @@ class DMatDMatKronExpr
                if( !isDefault<strict>( A(i,j) ) ) {
                   for( size_t k=0UL; k<M; ++k )
                      for( size_t l=0UL; l<N; ++l )
-                        (~lhs)(i*M+k,j*N+l) = A(i,j) * B(k,l);
+                        (*lhs)(i*M+k,j*N+l) = A(i,j) * B(k,l);
                }
                else {
                   for( size_t k=0UL; k<M; ++k )
                      for( size_t l=0UL; l<N; ++l )
-                        reset( (~lhs)(i*M+k,j*N+l) );
+                        reset( (*lhs)(i*M+k,j*N+l) );
                }
             }
          }
@@ -449,11 +449,11 @@ class DMatDMatKronExpr
       BLAZE_CONSTRAINT_MATRICES_MUST_HAVE_SAME_STORAGE_ORDER( MT, TmpType );
       BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( TmpType );
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
       const TmpType tmp( serial( rhs ) );
-      assign( ~lhs, tmp );
+      assign( *lhs, tmp );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -476,8 +476,8 @@ class DMatDMatKronExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
       if( rhs.rows() == 0UL || rhs.columns() == 0UL ) {
          return;
@@ -505,7 +505,7 @@ class DMatDMatKronExpr
                      BLAZE_INTERNAL_ASSERT( kbegin <= kend, "Invalid loop indices detected" );
 
                      for( size_t k=kbegin; k<kend; ++k )
-                        (~lhs)(i*M+k,j*N+l) += A(i,j) * B(k,l);
+                        (*lhs)(i*M+k,j*N+l) += A(i,j) * B(k,l);
                   }
       }
       else
@@ -524,7 +524,7 @@ class DMatDMatKronExpr
                for( size_t j=0UL; j<A.columns(); ++j )
                   if( !isDefault<strict>( A(i,j) ) )
                      for( size_t l=lbegin; l<lend; ++l )
-                        (~lhs)(i*M+k,j*N+l) += A(i,j) * B(k,l);
+                        (*lhs)(i*M+k,j*N+l) += A(i,j) * B(k,l);
             }
       }
    }
@@ -549,8 +549,8 @@ class DMatDMatKronExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
       if( rhs.rows() == 0UL || rhs.columns() == 0UL ) {
          return;
@@ -578,7 +578,7 @@ class DMatDMatKronExpr
                for( size_t i=0UL; i<A.rows(); ++i )
                   if( !isDefault<strict>( A(i,j) ) )
                      for( size_t k=kbegin; k<kend; ++k )
-                        (~lhs)(i*M+k,j*N+l) += A(i,j) * B(k,l);
+                        (*lhs)(i*M+k,j*N+l) += A(i,j) * B(k,l);
             }
       }
       else
@@ -597,7 +597,7 @@ class DMatDMatKronExpr
                      BLAZE_INTERNAL_ASSERT( lbegin <= lend, "Invalid loop indices detected" );
 
                      for( size_t l=lbegin; l<lend; ++l )
-                        (~lhs)(i*M+k,j*N+l) += A(i,j) * B(k,l);
+                        (*lhs)(i*M+k,j*N+l) += A(i,j) * B(k,l);
                   }
       }
    }
@@ -626,8 +626,8 @@ class DMatDMatKronExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
       if( rhs.rows() == 0UL || rhs.columns() == 0UL ) {
          return;
@@ -655,7 +655,7 @@ class DMatDMatKronExpr
                      BLAZE_INTERNAL_ASSERT( kbegin <= kend, "Invalid loop indices detected" );
 
                      for( size_t k=kbegin; k<kend; ++k )
-                        (~lhs)(i*M+k,j*N+l) -= A(i,j) * B(k,l);
+                        (*lhs)(i*M+k,j*N+l) -= A(i,j) * B(k,l);
                   }
       }
       else
@@ -674,7 +674,7 @@ class DMatDMatKronExpr
                for( size_t j=0UL; j<A.columns(); ++j )
                   if( !isDefault<strict>( A(i,j) ) )
                      for( size_t l=lbegin; l<lend; ++l )
-                        (~lhs)(i*M+k,j*N+l) -= A(i,j) * B(k,l);
+                        (*lhs)(i*M+k,j*N+l) -= A(i,j) * B(k,l);
             }
       }
    }
@@ -699,8 +699,8 @@ class DMatDMatKronExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
       if( rhs.rows() == 0UL || rhs.columns() == 0UL ) {
          return;
@@ -728,7 +728,7 @@ class DMatDMatKronExpr
                for( size_t i=0UL; i<A.rows(); ++i )
                   if( !isDefault<strict>( A(i,j) ) )
                      for( size_t k=kbegin; k<kend; ++k )
-                        (~lhs)(i*M+k,j*N+l) -= A(i,j) * B(k,l);
+                        (*lhs)(i*M+k,j*N+l) -= A(i,j) * B(k,l);
             }
       }
       else
@@ -747,7 +747,7 @@ class DMatDMatKronExpr
                      BLAZE_INTERNAL_ASSERT( lbegin <= lend, "Invalid loop indices detected" );
 
                      for( size_t l=lbegin; l<lend; ++l )
-                        (~lhs)(i*M+k,j*N+l) -= A(i,j) * B(k,l);
+                        (*lhs)(i*M+k,j*N+l) -= A(i,j) * B(k,l);
                   }
       }
    }
@@ -776,8 +776,8 @@ class DMatDMatKronExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
       if( rhs.rows() == 0UL || rhs.columns() == 0UL ) {
          return;
@@ -796,12 +796,12 @@ class DMatDMatKronExpr
                if( !isDefault<strict>( A(i,j) ) ) {
                   for( size_t l=0UL; l<N; ++l )
                      for( size_t k=0UL; k<M; ++k )
-                        (~lhs)(i*M+k,j*N+l) *= A(i,j) * B(k,l);
+                        (*lhs)(i*M+k,j*N+l) *= A(i,j) * B(k,l);
                }
                else {
                   for( size_t l=0UL; l<N; ++l )
                      for( size_t k=0UL; k<M; ++k )
-                        reset( (~lhs)(i*M+k,j*N+l) );
+                        reset( (*lhs)(i*M+k,j*N+l) );
                }
             }
          }
@@ -813,11 +813,11 @@ class DMatDMatKronExpr
                for( size_t j=0UL; j<A.columns(); ++j ) {
                   if( !isDefault<strict>( A(i,j) ) ) {
                      for( size_t l=0UL; l<N; ++l )
-                        (~lhs)(i*M+k,j*N+l) *= A(i,j) * B(k,l);
+                        (*lhs)(i*M+k,j*N+l) *= A(i,j) * B(k,l);
                   }
                   else {
                      for( size_t l=0UL; l<N; ++l )
-                        reset( (~lhs)(i*M+k,j*N+l) );
+                        reset( (*lhs)(i*M+k,j*N+l) );
                   }
                }
             }
@@ -845,8 +845,8 @@ class DMatDMatKronExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
       if( rhs.rows() == 0UL || rhs.columns() == 0UL ) {
          return;
@@ -865,11 +865,11 @@ class DMatDMatKronExpr
                for( size_t i=0UL; i<A.rows(); ++i ) {
                   if( !isDefault<strict>( A(i,j) ) ) {
                      for( size_t k=0UL; k<M; ++k )
-                        (~lhs)(i*M+k,j*N+l) *= A(i,j) * B(k,l);
+                        (*lhs)(i*M+k,j*N+l) *= A(i,j) * B(k,l);
                   }
                   else {
                      for( size_t k=0UL; k<M; ++k )
-                        reset( (~lhs)(i*M+k,j*N+l) );
+                        reset( (*lhs)(i*M+k,j*N+l) );
                   }
                }
             }
@@ -882,12 +882,12 @@ class DMatDMatKronExpr
                if( !isDefault<strict>( A(i,j) ) ) {
                   for( size_t k=0UL; k<M; ++k )
                      for( size_t l=0UL; l<N; ++l )
-                        (~lhs)(i*M+k,j*N+l) *= A(i,j) * B(k,l);
+                        (*lhs)(i*M+k,j*N+l) *= A(i,j) * B(k,l);
                }
                else {
                   for( size_t k=0UL; k<M; ++k )
                      for( size_t l=0UL; l<N; ++l )
-                        reset( (~lhs)(i*M+k,j*N+l) );
+                        reset( (*lhs)(i*M+k,j*N+l) );
                }
             }
          }
@@ -959,7 +959,7 @@ inline decltype(auto)
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = const DMatDMatKronExpr<MT1,MT2,SO2>;
-   return ReturnType( ~lhs, ~rhs );
+   return ReturnType( *lhs, *rhs );
 }
 //*************************************************************************************************
 

@@ -379,7 +379,7 @@ class SVecTransposer
    {
       BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( VT2, TF );
 
-      sv_.assign( trans( ~rhs ) );
+      sv_.assign( trans( *rhs ) );
    }
    //**********************************************************************************************
 

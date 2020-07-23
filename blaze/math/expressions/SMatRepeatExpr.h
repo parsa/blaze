@@ -277,8 +277,8 @@ class SMatRepeatExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
       CompositeType_t<MT> A( serial( rhs.sm_ ) );  // Evaluation of the sparse matrix operand
 
@@ -289,7 +289,7 @@ class SMatRepeatExpr
 
       for( size_t rep0=0UL; rep0<reps0; ++rep0 ) {
          for( size_t rep1=0UL; rep1<reps1; ++rep1 ) {
-            submatrix( ~lhs, rep0*M, rep1*N, M, N, unchecked ) = serial( A );
+            submatrix( *lhs, rep0*M, rep1*N, M, N, unchecked ) = serial( A );
          }
       }
    }
@@ -323,8 +323,8 @@ class SMatRepeatExpr
       BLAZE_CONSTRAINT_MATRICES_MUST_HAVE_SAME_STORAGE_ORDER( MT2, RemoveReference_t<TmpType> );
       BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( RemoveReference_t<TmpType> );
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
       TmpType A( serial( rhs.sm_ ) );  // Evaluation of the sparse matrix operand
 
@@ -333,7 +333,7 @@ class SMatRepeatExpr
       const size_t M( A.rows() );
       const size_t N( A.columns() );
 
-      (~lhs).reserve( reps0*reps1*M*N );
+      (*lhs).reserve( reps0*reps1*M*N );
 
       if( SO2 == rowMajor )
       {
@@ -341,10 +341,10 @@ class SMatRepeatExpr
             for( size_t i=0UL; i<M; ++i ) {
                for( size_t rep1=0UL; rep1<reps1; ++rep1 ) {
                   for( auto element=A.begin(i); element!=A.end(i); ++element ) {
-                     (~lhs).append( rep0*M+i, rep1*N+element->index(), element->value(), true );
+                     (*lhs).append( rep0*M+i, rep1*N+element->index(), element->value(), true );
                   }
                }
-               (~lhs).finalize( rep0*M+i );
+               (*lhs).finalize( rep0*M+i );
             }
          }
       }
@@ -354,10 +354,10 @@ class SMatRepeatExpr
             for( size_t j=0UL; j<N; ++j ) {
                for( size_t rep0=0UL; rep0<reps0; ++rep0 ) {
                   for( auto element=A.begin(j); element!=A.end(j); ++element ) {
-                     (~lhs).append( rep0*M+element->index(), rep1*N+j, element->value(), true );
+                     (*lhs).append( rep0*M+element->index(), rep1*N+j, element->value(), true );
                   }
                }
-               (~lhs).finalize( rep1*N+j );
+               (*lhs).finalize( rep1*N+j );
             }
          }
       }
@@ -383,8 +383,8 @@ class SMatRepeatExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
       CompositeType_t<MT> A( serial( rhs.sm_ ) );  // Evaluation of the sparse matrix operand
 
@@ -395,7 +395,7 @@ class SMatRepeatExpr
 
       for( size_t rep0=0UL; rep0<reps0; ++rep0 ) {
          for( size_t rep1=0UL; rep1<reps1; ++rep1 ) {
-            submatrix( ~lhs, rep0*M, rep1*N, M, N, unchecked ) += serial( A );
+            submatrix( *lhs, rep0*M, rep1*N, M, N, unchecked ) += serial( A );
          }
       }
    }
@@ -424,8 +424,8 @@ class SMatRepeatExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
       CompositeType_t<MT> A( serial( rhs.sm_ ) );  // Evaluation of the sparse matrix operand
 
@@ -436,7 +436,7 @@ class SMatRepeatExpr
 
       for( size_t rep0=0UL; rep0<reps0; ++rep0 ) {
          for( size_t rep1=0UL; rep1<reps1; ++rep1 ) {
-            submatrix( ~lhs, rep0*M, rep1*N, M, N, unchecked ) -= serial( A );
+            submatrix( *lhs, rep0*M, rep1*N, M, N, unchecked ) -= serial( A );
          }
       }
    }
@@ -465,8 +465,8 @@ class SMatRepeatExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
       CompositeType_t<MT> A( serial( rhs.sm_ ) );  // Evaluation of the sparse matrix operand
 
@@ -477,7 +477,7 @@ class SMatRepeatExpr
 
       for( size_t rep0=0UL; rep0<reps0; ++rep0 ) {
          for( size_t rep1=0UL; rep1<reps1; ++rep1 ) {
-            submatrix( ~lhs, rep0*M, rep1*N, M, N, unchecked ) %= serial( A );
+            submatrix( *lhs, rep0*M, rep1*N, M, N, unchecked ) %= serial( A );
          }
       }
    }
@@ -565,7 +565,7 @@ inline decltype(auto) repeat( const SparseMatrix<MT,SO>& sm, size_t m, size_t n 
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = const SMatRepeatExpr<MT,SO>;
-   return ReturnType( ~sm, m, n );
+   return ReturnType( *sm, m, n );
 }
 //*************************************************************************************************
 
@@ -621,7 +621,7 @@ inline decltype(auto) repeat( const SparseMatrix<MT,SO>& sm )
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = const SMatRepeatExpr<MT,SO,R0,R1>;
-   return ReturnType( ~sm );
+   return ReturnType( *sm );
 }
 //*************************************************************************************************
 
@@ -650,7 +650,7 @@ inline decltype(auto) repeat( const SparseMatrix<MT,SO>& sm, size_t m, size_t n 
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = const SMatRepeatExpr<MT,SO,R0,R1>;
-   return ReturnType( ~sm );
+   return ReturnType( *sm );
 }
 /*! \endcond */
 //*************************************************************************************************

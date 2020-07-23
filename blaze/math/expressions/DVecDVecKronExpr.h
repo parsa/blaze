@@ -282,7 +282,7 @@ class DVecDVecKronExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       if( rhs.size() == 0UL ) {
          return;
@@ -296,11 +296,11 @@ class DVecDVecKronExpr
       for( size_t i=0UL; i<x.size(); ++i ) {
          if( !isDefault<strict>( x[i] ) ) {
             for( size_t j=0UL; j<N; ++j )
-               (~lhs)[i*N+j] = x[i] * y[j];
+               (*lhs)[i*N+j] = x[i] * y[j];
          }
          else {
             for( size_t j=0UL; j<N; ++j )
-               reset( (~lhs)[i*N+j] );
+               reset( (*lhs)[i*N+j] );
          }
       }
    }
@@ -328,10 +328,10 @@ class DVecDVecKronExpr
       BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType, TF );
       BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       const ResultType tmp( serial( rhs ) );
-      assign( ~lhs, tmp );
+      assign( *lhs, tmp );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -353,7 +353,7 @@ class DVecDVecKronExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       if( rhs.size() == 0UL ) {
          return;
@@ -367,7 +367,7 @@ class DVecDVecKronExpr
       for( size_t i=0UL; i<x.size(); ++i ) {
          if( !isDefault<strict>( x[i] ) ) {
             for( size_t j=0UL; j<N; ++j )
-               (~lhs)[i*N+j] += x[i] * y[j];
+               (*lhs)[i*N+j] += x[i] * y[j];
          }
       }
    }
@@ -396,7 +396,7 @@ class DVecDVecKronExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       if( rhs.size() == 0UL ) {
          return;
@@ -410,7 +410,7 @@ class DVecDVecKronExpr
       for( size_t i=0UL; i<x.size(); ++i ) {
          if( !isDefault<strict>( x[i] ) ) {
             for( size_t j=0UL; j<N; ++j )
-               (~lhs)[i*N+j] -= x[i] * y[j];
+               (*lhs)[i*N+j] -= x[i] * y[j];
          }
       }
    }
@@ -439,7 +439,7 @@ class DVecDVecKronExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       if( rhs.size() == 0UL ) {
          return;
@@ -453,11 +453,11 @@ class DVecDVecKronExpr
       for( size_t i=0UL; i<x.size(); ++i ) {
          if( !isDefault<strict>( x[i] ) ) {
             for( size_t j=0UL; j<N; ++j )
-               (~lhs)[i*N+j] *= x[i] * y[j];
+               (*lhs)[i*N+j] *= x[i] * y[j];
          }
          else {
             for( size_t j=0UL; j<N; ++j )
-               reset( (~lhs)[i*N+j] );
+               reset( (*lhs)[i*N+j] );
          }
       }
    }
@@ -485,7 +485,7 @@ class DVecDVecKronExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       if( rhs.size() == 0UL ) {
          return;
@@ -499,7 +499,7 @@ class DVecDVecKronExpr
       for( size_t i=0UL; i<x.size(); ++i ) {
          if( !isDefault<strict>( x[i] ) ) {
             for( size_t j=0UL; j<N; ++j )
-               (~lhs)[i*N+j] /= x[i] * y[j];
+               (*lhs)[i*N+j] /= x[i] * y[j];
          }
       }
    }
@@ -561,7 +561,7 @@ inline decltype(auto)
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = const DVecDVecKronExpr<VT1,VT2,TF>;
-   return ReturnType( ~lhs, ~rhs );
+   return ReturnType( *lhs, *rhs );
 }
 //*************************************************************************************************
 

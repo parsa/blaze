@@ -357,8 +357,8 @@ template< typename MT    // Type of the adapted matrix
         , typename ET >  // Type of the element
 inline bool trySet( const HermitianMatrix<MT,SO,DF>& mat, size_t i, size_t j, const ET& value )
 {
-   BLAZE_INTERNAL_ASSERT( i < (~mat).rows(), "Invalid row access index" );
-   BLAZE_INTERNAL_ASSERT( j < (~mat).columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( i < (*mat).rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( j < (*mat).columns(), "Invalid column access index" );
 
    MAYBE_UNUSED( mat );
 
@@ -393,10 +393,10 @@ template< typename MT    // Type of the adapted matrix
 BLAZE_ALWAYS_INLINE bool
    trySet( const HermitianMatrix<MT,SO,DF>& mat, size_t row, size_t column, size_t m, size_t n, const ET& value )
 {
-   BLAZE_INTERNAL_ASSERT( row <= (~mat).rows(), "Invalid row access index" );
-   BLAZE_INTERNAL_ASSERT( column <= (~mat).columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( row + m <= (~mat).rows(), "Invalid number of rows" );
-   BLAZE_INTERNAL_ASSERT( column + n <= (~mat).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( row <= (*mat).rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( column <= (*mat).columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( row + m <= (*mat).rows(), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( column + n <= (*mat).columns(), "Invalid number of columns" );
 
    MAYBE_UNUSED( mat );
 
@@ -673,7 +673,7 @@ inline bool tryAssign( const HermitianMatrix<MT,SO,DF>& lhs,
 
    BLAZE_INTERNAL_ASSERT( row <= lhs.rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( row + (~rhs).size() <= lhs.rows(), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( row + (*rhs).size() <= lhs.rows(), "Invalid number of rows" );
 
    MAYBE_UNUSED( lhs );
 
@@ -681,8 +681,8 @@ inline bool tryAssign( const HermitianMatrix<MT,SO,DF>& lhs,
 
    return ( IsBuiltin_v<ET> ||
             column < row ||
-            (~rhs).size() <= column - row ||
-            isReal( (~rhs)[column-row] ) );
+            (*rhs).size() <= column - row ||
+            isReal( (*rhs)[column-row] ) );
 
    return true;
 }
@@ -717,7 +717,7 @@ inline bool tryAssign( const HermitianMatrix<MT,SO,DF>& lhs,
 
    BLAZE_INTERNAL_ASSERT( row <= lhs.rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( column + (~rhs).size() <= lhs.columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( column + (*rhs).size() <= lhs.columns(), "Invalid number of columns" );
 
    MAYBE_UNUSED( lhs );
 
@@ -725,8 +725,8 @@ inline bool tryAssign( const HermitianMatrix<MT,SO,DF>& lhs,
 
    return ( IsBuiltin_v<ET> ||
             row < column ||
-            (~rhs).size() <= row - column ||
-            isReal( (~rhs)[row-column] ) );
+            (*rhs).size() <= row - column ||
+            isReal( (*rhs)[row-column] ) );
 
    return true;
 }
@@ -764,14 +764,14 @@ inline bool tryAssign( const HermitianMatrix<MT,SO,DF>& lhs, const DenseVector<V
 
    BLAZE_INTERNAL_ASSERT( row <= lhs.rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( row + (~rhs).size() <= lhs.rows(), "Invalid number of rows" );
-   BLAZE_INTERNAL_ASSERT( column + (~rhs).size() <= lhs.columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( row + (*rhs).size() <= lhs.rows(), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( column + (*rhs).size() <= lhs.columns(), "Invalid number of columns" );
 
    MAYBE_UNUSED( lhs, row, column );
 
    if( band == 0L ) {
-      for( size_t i=0UL; i<(~rhs).size(); ++i ) {
-         if( !isReal( (~rhs)[i] ) )
+      for( size_t i=0UL; i<(*rhs).size(); ++i ) {
+         if( !isReal( (*rhs)[i] ) )
             return false;
       }
    }
@@ -812,13 +812,13 @@ inline bool tryAssign( const HermitianMatrix<MT,SO,DF>& lhs, const SparseVector<
 
    BLAZE_INTERNAL_ASSERT( row <= lhs.rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( row + (~rhs).size() <= lhs.rows(), "Invalid number of rows" );
-   BLAZE_INTERNAL_ASSERT( column + (~rhs).size() <= lhs.columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( row + (*rhs).size() <= lhs.rows(), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( column + (*rhs).size() <= lhs.columns(), "Invalid number of columns" );
 
    MAYBE_UNUSED( lhs, row, column );
 
    if( band == 0L ) {
-      for( const auto& element : ~rhs ) {
+      for( const auto& element : *rhs ) {
          if( !isReal( element.value() ) )
             return false;
       }
@@ -858,13 +858,13 @@ inline bool tryAssign( const HermitianMatrix<MT1,SO1,DF>& lhs,
 
    BLAZE_INTERNAL_ASSERT( row <= lhs.rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( row + (~rhs).rows() <= lhs.rows(), "Invalid number of rows" );
-   BLAZE_INTERNAL_ASSERT( column + (~rhs).columns() <= lhs.columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( row + (*rhs).rows() <= lhs.rows(), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( column + (*rhs).columns() <= lhs.columns(), "Invalid number of columns" );
 
    MAYBE_UNUSED( lhs );
 
-   const size_t M( (~rhs).rows()    );
-   const size_t N( (~rhs).columns() );
+   const size_t M( (*rhs).rows()    );
+   const size_t N( (*rhs).columns() );
 
    if( ( row + M <= column ) || ( column + N <= row ) )
       return true;
@@ -878,7 +878,7 @@ inline bool tryAssign( const HermitianMatrix<MT1,SO1,DF>& lhs,
    const size_t subrow( lower ? 0UL : column - row );
    const size_t subcol( lower ? row - column : 0UL );
 
-   return isHermitian( submatrix( ~rhs, subrow, subcol, size, size ) );
+   return isHermitian( submatrix( *rhs, subrow, subcol, size, size ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -908,7 +908,7 @@ template< typename MT  // Type of the adapted matrix
 inline bool tryAddAssign( const HermitianMatrix<MT,SO,DF>& lhs,
                           const Vector<VT,TF>& rhs, size_t row, size_t column )
 {
-   return tryAssign( lhs, ~rhs, row, column );
+   return tryAssign( lhs, *rhs, row, column );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -940,7 +940,7 @@ template< typename MT  // Type of the adapted matrix
 inline bool tryAddAssign( const HermitianMatrix<MT,SO,DF>& lhs, const Vector<VT,TF>& rhs,
                           ptrdiff_t band, size_t row, size_t column )
 {
-   return tryAssign( lhs, ~rhs, band, row, column );
+   return tryAssign( lhs, *rhs, band, row, column );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -970,7 +970,7 @@ template< typename MT1  // Type of the adapted matrix
 inline bool tryAddAssign( const HermitianMatrix<MT1,SO1,DF>& lhs,
                           const Matrix<MT2,SO2>& rhs, size_t row, size_t column )
 {
-   return tryAssign( lhs, ~rhs, row, column );
+   return tryAssign( lhs, *rhs, row, column );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1001,7 +1001,7 @@ template< typename MT  // Type of the adapted matrix
 inline bool trySubAssign( const HermitianMatrix<MT,SO,DF>& lhs,
                           const Vector<VT,TF>& rhs, size_t row, size_t column )
 {
-   return tryAssign( lhs, ~rhs, row, column );
+   return tryAssign( lhs, *rhs, row, column );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1033,7 +1033,7 @@ template< typename MT  // Type of the adapted matrix
 inline bool trySubAssign( const HermitianMatrix<MT,SO,DF>& lhs, const Vector<VT,TF>& rhs,
                           ptrdiff_t band, size_t row, size_t column )
 {
-   return tryAssign( lhs, ~rhs, band, row, column );
+   return tryAssign( lhs, *rhs, band, row, column );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1064,7 +1064,7 @@ template< typename MT1  // Type of the adapted matrix
 inline bool trySubAssign( const HermitianMatrix<MT1,SO1,DF>& lhs,
                           const Matrix<MT2,SO2>& rhs, size_t row, size_t column )
 {
-   return tryAssign( lhs, ~rhs, row, column );
+   return tryAssign( lhs, *rhs, row, column );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1095,7 +1095,7 @@ template< typename MT  // Type of the adapted matrix
 inline bool tryMultAssign( const HermitianMatrix<MT,SO,DF>& lhs,
                            const Vector<VT,TF>& rhs, size_t row, size_t column )
 {
-   return tryAssign( lhs, ~rhs, row, column );
+   return tryAssign( lhs, *rhs, row, column );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1127,7 +1127,7 @@ template< typename MT  // Type of the adapted matrix
 inline bool tryMultAssign( const HermitianMatrix<MT,SO,DF>& lhs, const Vector<VT,TF>& rhs,
                            ptrdiff_t band, size_t row, size_t column )
 {
-   return tryAssign( lhs, ~rhs, band, row, column );
+   return tryAssign( lhs, *rhs, band, row, column );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1158,7 +1158,7 @@ template< typename MT1  // Type of the adapted matrix
 inline bool trySchurAssign( const HermitianMatrix<MT1,SO1,DF>& lhs,
                             const Matrix<MT2,SO2>& rhs, size_t row, size_t column )
 {
-   return tryAssign( lhs, ~rhs, row, column );
+   return tryAssign( lhs, *rhs, row, column );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1188,7 +1188,7 @@ template< typename MT  // Type of the adapted matrix
 inline bool tryDivAssign( const HermitianMatrix<MT,SO,DF>& lhs,
                           const Vector<VT,TF>& rhs, size_t row, size_t column )
 {
-   return tryAssign( lhs, ~rhs, row, column );
+   return tryAssign( lhs, *rhs, row, column );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1220,7 +1220,7 @@ template< typename MT  // Type of the adapted matrix
 inline bool tryDivAssign( const HermitianMatrix<MT,SO,DF>& lhs, const Vector<VT,TF>& rhs,
                           ptrdiff_t band, size_t row, size_t column )
 {
-   return tryAssign( lhs, ~rhs, band, row, column );
+   return tryAssign( lhs, *rhs, band, row, column );
 }
 /*! \endcond */
 //*************************************************************************************************

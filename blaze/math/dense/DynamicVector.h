@@ -760,7 +760,7 @@ inline DynamicVector<Type,TF,Tag>::DynamicVector( const DynamicVector& v )
 {
    BLAZE_INTERNAL_ASSERT( capacity_ <= v.capacity_, "Invalid capacity estimation" );
 
-   smpAssign( *this, ~v );
+   smpAssign( *this, *v );
 
    BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
 }
@@ -797,7 +797,7 @@ template< typename Type   // Data type of the vector
         , typename Tag >  // Type tag
 template< typename VT >   // Type of the foreign vector
 inline DynamicVector<Type,TF,Tag>::DynamicVector( const Vector<VT,TF>& v )
-   : DynamicVector( (~v).size() )
+   : DynamicVector( (*v).size() )
 {
    BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<VT> );
 
@@ -807,7 +807,7 @@ inline DynamicVector<Type,TF,Tag>::DynamicVector( const Vector<VT,TF>& v )
       }
    }
 
-   smpAssign( *this, ~v );
+   smpAssign( *this, *v );
 
    BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
 }
@@ -1212,7 +1212,7 @@ inline DynamicVector<Type,TF,Tag>&
    if( &rhs == this ) return *this;
 
    resize( rhs.size_, false );
-   smpAssign( *this, ~rhs );
+   smpAssign( *this, *rhs );
 
    BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
 
@@ -1265,15 +1265,15 @@ inline DynamicVector<Type,TF,Tag>&
 {
    BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<VT> );
 
-   if( (~rhs).canAlias( this ) ) {
-      DynamicVector tmp( ~rhs );
+   if( (*rhs).canAlias( this ) ) {
+      DynamicVector tmp( *rhs );
       swap( tmp );
    }
    else {
-      resize( (~rhs).size(), false );
+      resize( (*rhs).size(), false );
       if( IsSparseVector_v<VT> )
          reset();
-      smpAssign( *this, ~rhs );
+      smpAssign( *this, *rhs );
    }
 
    BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
@@ -1302,16 +1302,16 @@ inline DynamicVector<Type,TF,Tag>&
 {
    BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<VT> );
 
-   if( (~rhs).size() != size_ ) {
+   if( (*rhs).size() != size_ ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   if( (~rhs).canAlias( this ) ) {
-      const ResultType_t<VT> tmp( ~rhs );
+   if( (*rhs).canAlias( this ) ) {
+      const ResultType_t<VT> tmp( *rhs );
       smpAddAssign( *this, tmp );
    }
    else {
-      smpAddAssign( *this, ~rhs );
+      smpAddAssign( *this, *rhs );
    }
 
    BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
@@ -1341,16 +1341,16 @@ inline DynamicVector<Type,TF,Tag>&
 {
    BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<VT> );
 
-   if( (~rhs).size() != size_ ) {
+   if( (*rhs).size() != size_ ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   if( (~rhs).canAlias( this ) ) {
-      const ResultType_t<VT> tmp( ~rhs );
+   if( (*rhs).canAlias( this ) ) {
+      const ResultType_t<VT> tmp( *rhs );
       smpSubAssign( *this, tmp );
    }
    else {
-      smpSubAssign( *this, ~rhs );
+      smpSubAssign( *this, *rhs );
    }
 
    BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
@@ -1380,16 +1380,16 @@ inline DynamicVector<Type,TF,Tag>&
 {
    BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<VT> );
 
-   if( (~rhs).size() != size_ ) {
+   if( (*rhs).size() != size_ ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   if( IsSparseVector_v<VT> || (~rhs).canAlias( this ) ) {
-      DynamicVector tmp( *this * (~rhs) );
+   if( IsSparseVector_v<VT> || (*rhs).canAlias( this ) ) {
+      DynamicVector tmp( *this * (*rhs) );
       swap( tmp );
    }
    else {
-      smpMultAssign( *this, ~rhs );
+      smpMultAssign( *this, *rhs );
    }
 
    BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
@@ -1418,16 +1418,16 @@ inline DynamicVector<Type,TF,Tag>&
 {
    BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<VT> );
 
-   if( (~rhs).size() != size_ ) {
+   if( (*rhs).size() != size_ ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   if( (~rhs).canAlias( this ) ) {
-      DynamicVector tmp( *this / (~rhs) );
+   if( (*rhs).canAlias( this ) ) {
+      DynamicVector tmp( *this / (*rhs) );
       swap( tmp );
    }
    else {
-      smpDivAssign( *this, ~rhs );
+      smpDivAssign( *this, *rhs );
    }
 
    BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
@@ -1468,11 +1468,11 @@ inline DynamicVector<Type,TF,Tag>&
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( CrossType, TF );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( CrossType );
 
-   if( size_ != 3UL || (~rhs).size() != 3UL ) {
+   if( size_ != 3UL || (*rhs).size() != 3UL ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid vector size for cross product" );
    }
 
-   const CrossType tmp( *this % (~rhs) );
+   const CrossType tmp( *this % (*rhs) );
    assign( *this, tmp );
 
    BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
@@ -2180,17 +2180,17 @@ template< typename VT >   // Type of the right-hand side dense vector
 inline auto DynamicVector<Type,TF,Tag>::assign( const DenseVector<VT,TF>& rhs )
    -> DisableIf_t< VectorizedAssign_v<VT> >
 {
-   BLAZE_INTERNAL_ASSERT( size_ == (~rhs).size(), "Invalid vector sizes" );
+   BLAZE_INTERNAL_ASSERT( size_ == (*rhs).size(), "Invalid vector sizes" );
 
    const size_t ipos( prevMultiple( size_, 2UL ) );
    BLAZE_INTERNAL_ASSERT( ipos <= size_, "Invalid end calculation" );
 
    for( size_t i=0UL; i<ipos; i+=2UL ) {
-      v_[i    ] = (~rhs)[i    ];
-      v_[i+1UL] = (~rhs)[i+1UL];
+      v_[i    ] = (*rhs)[i    ];
+      v_[i+1UL] = (*rhs)[i+1UL];
    }
-   if( ipos < (~rhs).size() )
-      v_[ipos] = (~rhs)[ipos];
+   if( ipos < (*rhs).size() )
+      v_[ipos] = (*rhs)[ipos];
 }
 //*************************************************************************************************
 
@@ -2215,7 +2215,7 @@ inline auto DynamicVector<Type,TF,Tag>::assign( const DenseVector<VT,TF>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
-   BLAZE_INTERNAL_ASSERT( size_ == (~rhs).size(), "Invalid vector sizes" );
+   BLAZE_INTERNAL_ASSERT( size_ == (*rhs).size(), "Invalid vector sizes" );
 
    constexpr bool remainder( !usePadding || !IsPadded_v<VT> );
 
@@ -2224,11 +2224,11 @@ inline auto DynamicVector<Type,TF,Tag>::assign( const DenseVector<VT,TF>& rhs )
 
    size_t i=0UL;
    Iterator left( begin() );
-   ConstIterator_t<VT> right( (~rhs).begin() );
+   ConstIterator_t<VT> right( (*rhs).begin() );
 
    if( useStreaming &&
        ( size_ > ( cacheSize/( sizeof(Type) * 3UL ) ) ) &&
-       !(~rhs).isAliased( this ) )
+       !(*rhs).isAliased( this ) )
    {
       for( ; i<ipos; i+=SIMDSIZE ) {
          left.stream( right.load() ); left += SIMDSIZE; right += SIMDSIZE;
@@ -2273,9 +2273,9 @@ template< typename Type   // Data type of the vector
 template< typename VT >   // Type of the right-hand side sparse vector
 inline void DynamicVector<Type,TF,Tag>::assign( const SparseVector<VT,TF>& rhs )
 {
-   BLAZE_INTERNAL_ASSERT( size_ == (~rhs).size(), "Invalid vector sizes" );
+   BLAZE_INTERNAL_ASSERT( size_ == (*rhs).size(), "Invalid vector sizes" );
 
-   for( auto element=(~rhs).begin(); element!=(~rhs).end(); ++element )
+   for( auto element=(*rhs).begin(); element!=(*rhs).end(); ++element )
       v_[element->index()] = element->value();
 }
 //*************************************************************************************************
@@ -2299,17 +2299,17 @@ template< typename VT >   // Type of the right-hand side dense vector
 inline auto DynamicVector<Type,TF,Tag>::addAssign( const DenseVector<VT,TF>& rhs )
    -> DisableIf_t< VectorizedAddAssign_v<VT> >
 {
-   BLAZE_INTERNAL_ASSERT( size_ == (~rhs).size(), "Invalid vector sizes" );
+   BLAZE_INTERNAL_ASSERT( size_ == (*rhs).size(), "Invalid vector sizes" );
 
    const size_t ipos( prevMultiple( size_, 2UL ) );
    BLAZE_INTERNAL_ASSERT( ipos <= size_, "Invalid end calculation" );
 
    for( size_t i=0UL; i<ipos; i+=2UL ) {
-      v_[i    ] += (~rhs)[i    ];
-      v_[i+1UL] += (~rhs)[i+1UL];
+      v_[i    ] += (*rhs)[i    ];
+      v_[i+1UL] += (*rhs)[i+1UL];
    }
-   if( ipos < (~rhs).size() )
-      v_[ipos] += (~rhs)[ipos];
+   if( ipos < (*rhs).size() )
+      v_[ipos] += (*rhs)[ipos];
 }
 //*************************************************************************************************
 
@@ -2334,7 +2334,7 @@ inline auto DynamicVector<Type,TF,Tag>::addAssign( const DenseVector<VT,TF>& rhs
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
-   BLAZE_INTERNAL_ASSERT( size_ == (~rhs).size(), "Invalid vector sizes" );
+   BLAZE_INTERNAL_ASSERT( size_ == (*rhs).size(), "Invalid vector sizes" );
 
    constexpr bool remainder( !usePadding || !IsPadded_v<VT> );
 
@@ -2343,7 +2343,7 @@ inline auto DynamicVector<Type,TF,Tag>::addAssign( const DenseVector<VT,TF>& rhs
 
    size_t i( 0UL );
    Iterator left( begin() );
-   ConstIterator_t<VT> right( (~rhs).begin() );
+   ConstIterator_t<VT> right( (*rhs).begin() );
 
    for( ; (i+SIMDSIZE*3UL) < ipos; i+=SIMDSIZE*4UL ) {
       left.store( left.load() + right.load() ); left += SIMDSIZE; right += SIMDSIZE;
@@ -2378,9 +2378,9 @@ template< typename Type   // Data type of the vector
 template< typename VT >   // Type of the right-hand side sparse vector
 inline void DynamicVector<Type,TF,Tag>::addAssign( const SparseVector<VT,TF>& rhs )
 {
-   BLAZE_INTERNAL_ASSERT( size_ == (~rhs).size(), "Invalid vector sizes" );
+   BLAZE_INTERNAL_ASSERT( size_ == (*rhs).size(), "Invalid vector sizes" );
 
-   for( auto element=(~rhs).begin(); element!=(~rhs).end(); ++element )
+   for( auto element=(*rhs).begin(); element!=(*rhs).end(); ++element )
       v_[element->index()] += element->value();
 }
 //*************************************************************************************************
@@ -2404,17 +2404,17 @@ template< typename VT >   // Type of the right-hand side dense vector
 inline auto DynamicVector<Type,TF,Tag>::subAssign( const DenseVector<VT,TF>& rhs )
    -> DisableIf_t< VectorizedSubAssign_v<VT> >
 {
-   BLAZE_INTERNAL_ASSERT( size_ == (~rhs).size(), "Invalid vector sizes" );
+   BLAZE_INTERNAL_ASSERT( size_ == (*rhs).size(), "Invalid vector sizes" );
 
    const size_t ipos( prevMultiple( size_, 2UL ) );
    BLAZE_INTERNAL_ASSERT( ipos <= size_, "Invalid end calculation" );
 
    for( size_t i=0UL; i<ipos; i+=2UL ) {
-      v_[i    ] -= (~rhs)[i    ];
-      v_[i+1UL] -= (~rhs)[i+1UL];
+      v_[i    ] -= (*rhs)[i    ];
+      v_[i+1UL] -= (*rhs)[i+1UL];
    }
-   if( ipos < (~rhs).size() )
-      v_[ipos] -= (~rhs)[ipos];
+   if( ipos < (*rhs).size() )
+      v_[ipos] -= (*rhs)[ipos];
 }
 //*************************************************************************************************
 
@@ -2439,7 +2439,7 @@ inline auto DynamicVector<Type,TF,Tag>::subAssign( const DenseVector<VT,TF>& rhs
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
-   BLAZE_INTERNAL_ASSERT( size_ == (~rhs).size(), "Invalid vector sizes" );
+   BLAZE_INTERNAL_ASSERT( size_ == (*rhs).size(), "Invalid vector sizes" );
 
    constexpr bool remainder( !usePadding || !IsPadded_v<VT> );
 
@@ -2448,7 +2448,7 @@ inline auto DynamicVector<Type,TF,Tag>::subAssign( const DenseVector<VT,TF>& rhs
 
    size_t i( 0UL );
    Iterator left( begin() );
-   ConstIterator_t<VT> right( (~rhs).begin() );
+   ConstIterator_t<VT> right( (*rhs).begin() );
 
    for( ; (i+SIMDSIZE*3UL) < ipos; i+=SIMDSIZE*4UL ) {
       left.store( left.load() - right.load() ); left += SIMDSIZE; right += SIMDSIZE;
@@ -2483,9 +2483,9 @@ template< typename Type   // Data type of the vector
 template< typename VT >   // Type of the right-hand side sparse vector
 inline void DynamicVector<Type,TF,Tag>::subAssign( const SparseVector<VT,TF>& rhs )
 {
-   BLAZE_INTERNAL_ASSERT( size_ == (~rhs).size(), "Invalid vector sizes" );
+   BLAZE_INTERNAL_ASSERT( size_ == (*rhs).size(), "Invalid vector sizes" );
 
-   for( auto element=(~rhs).begin(); element!=(~rhs).end(); ++element )
+   for( auto element=(*rhs).begin(); element!=(*rhs).end(); ++element )
       v_[element->index()] -= element->value();
 }
 //*************************************************************************************************
@@ -2509,17 +2509,17 @@ template< typename VT >   // Type of the right-hand side dense vector
 inline auto DynamicVector<Type,TF,Tag>::multAssign( const DenseVector<VT,TF>& rhs )
    -> DisableIf_t< VectorizedMultAssign_v<VT> >
 {
-   BLAZE_INTERNAL_ASSERT( size_ == (~rhs).size(), "Invalid vector sizes" );
+   BLAZE_INTERNAL_ASSERT( size_ == (*rhs).size(), "Invalid vector sizes" );
 
    const size_t ipos( prevMultiple( size_, 2UL ) );
    BLAZE_INTERNAL_ASSERT( ipos <= size_, "Invalid end calculation" );
 
    for( size_t i=0UL; i<ipos; i+=2UL ) {
-      v_[i    ] *= (~rhs)[i    ];
-      v_[i+1UL] *= (~rhs)[i+1UL];
+      v_[i    ] *= (*rhs)[i    ];
+      v_[i+1UL] *= (*rhs)[i+1UL];
    }
-   if( ipos < (~rhs).size() )
-      v_[ipos] *= (~rhs)[ipos];
+   if( ipos < (*rhs).size() )
+      v_[ipos] *= (*rhs)[ipos];
 }
 //*************************************************************************************************
 
@@ -2544,7 +2544,7 @@ inline auto DynamicVector<Type,TF,Tag>::multAssign( const DenseVector<VT,TF>& rh
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
-   BLAZE_INTERNAL_ASSERT( size_ == (~rhs).size(), "Invalid vector sizes" );
+   BLAZE_INTERNAL_ASSERT( size_ == (*rhs).size(), "Invalid vector sizes" );
 
    constexpr bool remainder( !usePadding || !IsPadded_v<VT> );
 
@@ -2553,7 +2553,7 @@ inline auto DynamicVector<Type,TF,Tag>::multAssign( const DenseVector<VT,TF>& rh
 
    size_t i( 0UL );
    Iterator left( begin() );
-   ConstIterator_t<VT> right( (~rhs).begin() );
+   ConstIterator_t<VT> right( (*rhs).begin() );
 
    for( ; (i+SIMDSIZE*3UL) < ipos; i+=SIMDSIZE*4UL ) {
       left.store( left.load() * right.load() ); left += SIMDSIZE; right += SIMDSIZE;
@@ -2588,13 +2588,13 @@ template< typename Type   // Data type of the vector
 template< typename VT >   // Type of the right-hand side sparse vector
 inline void DynamicVector<Type,TF,Tag>::multAssign( const SparseVector<VT,TF>& rhs )
 {
-   BLAZE_INTERNAL_ASSERT( size_ == (~rhs).size(), "Invalid vector sizes" );
+   BLAZE_INTERNAL_ASSERT( size_ == (*rhs).size(), "Invalid vector sizes" );
 
    const DynamicVector tmp( serial( *this ) );
 
    reset();
 
-   for( auto element=(~rhs).begin(); element!=(~rhs).end(); ++element )
+   for( auto element=(*rhs).begin(); element!=(*rhs).end(); ++element )
       v_[element->index()] = tmp[element->index()] * element->value();
 }
 //*************************************************************************************************
@@ -2618,17 +2618,17 @@ template< typename VT >   // Type of the right-hand side dense vector
 inline auto DynamicVector<Type,TF,Tag>::divAssign( const DenseVector<VT,TF>& rhs )
    -> DisableIf_t< VectorizedDivAssign_v<VT> >
 {
-   BLAZE_INTERNAL_ASSERT( size_ == (~rhs).size(), "Invalid vector sizes" );
+   BLAZE_INTERNAL_ASSERT( size_ == (*rhs).size(), "Invalid vector sizes" );
 
    const size_t ipos( prevMultiple( size_, 2UL ) );
    BLAZE_INTERNAL_ASSERT( ipos <= size_, "Invalid end calculation" );
 
    for( size_t i=0UL; i<ipos; i+=2UL ) {
-      v_[i    ] /= (~rhs)[i    ];
-      v_[i+1UL] /= (~rhs)[i+1UL];
+      v_[i    ] /= (*rhs)[i    ];
+      v_[i+1UL] /= (*rhs)[i+1UL];
    }
-   if( ipos < (~rhs).size() )
-      v_[ipos] /= (~rhs)[ipos];
+   if( ipos < (*rhs).size() )
+      v_[ipos] /= (*rhs)[ipos];
 }
 //*************************************************************************************************
 
@@ -2653,14 +2653,14 @@ inline auto DynamicVector<Type,TF,Tag>::divAssign( const DenseVector<VT,TF>& rhs
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
-   BLAZE_INTERNAL_ASSERT( size_ == (~rhs).size(), "Invalid vector sizes" );
+   BLAZE_INTERNAL_ASSERT( size_ == (*rhs).size(), "Invalid vector sizes" );
 
    const size_t ipos( prevMultiple( size_, SIMDSIZE ) );
    BLAZE_INTERNAL_ASSERT( ipos <= size_, "Invalid end calculation" );
 
    size_t i( 0UL );
    Iterator left( begin() );
-   ConstIterator_t<VT> right( (~rhs).begin() );
+   ConstIterator_t<VT> right( (*rhs).begin() );
 
    for( ; (i+SIMDSIZE*3UL) < ipos; i+=SIMDSIZE*4UL ) {
       left.store( left.load() / right.load() ); left += SIMDSIZE; right += SIMDSIZE;

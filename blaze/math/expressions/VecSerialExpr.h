@@ -94,7 +94,7 @@ inline decltype(auto) serial( const VecSerialExpr<VT>& vector )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return ~vector;
+   return *vector;
 }
 /*! \endcond */
 //*************************************************************************************************

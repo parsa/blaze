@@ -70,29 +70,29 @@ BLAZE_ALWAYS_INLINE const SIMDfloat cosh( const SIMDf32<T>& a ) noexcept
 #if BLAZE_SVML_MODE
 #  if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
 {
-   return _mm512_cosh_ps( (~a).eval().value );
+   return _mm512_cosh_ps( (*a).eval().value );
 }
 #  elif BLAZE_AVX_MODE
 {
-   return _mm256_cosh_ps( (~a).eval().value );
+   return _mm256_cosh_ps( (*a).eval().value );
 }
 #  elif BLAZE_SSE_MODE
 {
-   return _mm_cosh_ps( (~a).eval().value );
+   return _mm_cosh_ps( (*a).eval().value );
 }
 #  endif
 #elif BLAZE_SLEEF_MODE
 #  if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
 {
-   return Sleef_coshf16_u10( (~a).eval().value );
+   return Sleef_coshf16_u10( (*a).eval().value );
 }
 #  elif BLAZE_AVX_MODE
 {
-   return Sleef_coshf8_u10( (~a).eval().value );
+   return Sleef_coshf8_u10( (*a).eval().value );
 }
 #  elif BLAZE_SSE_MODE
 {
-   return Sleef_coshf4_u10( (~a).eval().value );
+   return Sleef_coshf4_u10( (*a).eval().value );
 }
 #  endif
 #else
@@ -123,29 +123,29 @@ BLAZE_ALWAYS_INLINE const SIMDdouble cosh( const SIMDf64<T>& a ) noexcept
 #if BLAZE_SVML_MODE
 #  if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
 {
-   return _mm512_cosh_pd( (~a).eval().value );
+   return _mm512_cosh_pd( (*a).eval().value );
 }
 #  elif BLAZE_AVX_MODE
 {
-   return _mm256_cosh_pd( (~a).eval().value );
+   return _mm256_cosh_pd( (*a).eval().value );
 }
 #  elif BLAZE_SSE_MODE
 {
-   return _mm_cosh_pd( (~a).eval().value );
+   return _mm_cosh_pd( (*a).eval().value );
 }
 #  endif
 #elif BLAZE_SLEEF_MODE
 #  if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
 {
-   return Sleef_coshd8_u10( (~a).eval().value );
+   return Sleef_coshd8_u10( (*a).eval().value );
 }
 #  elif BLAZE_AVX_MODE
 {
-   return Sleef_coshd4_u10( (~a).eval().value );
+   return Sleef_coshd4_u10( (*a).eval().value );
 }
 #  elif BLAZE_SSE_MODE
 {
-   return Sleef_coshd2_u10( (~a).eval().value );
+   return Sleef_coshd2_u10( (*a).eval().value );
 }
 #  endif
 #else

@@ -102,7 +102,7 @@ inline decltype(auto)
 {
    BLAZE_FUNCTION_TRACE;
 
-   return solve( (~mat).operand(), ~vec );
+   return solve( (*mat).operand(), *vec );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -129,7 +129,7 @@ inline decltype(auto)
 {
    BLAZE_FUNCTION_TRACE;
 
-   return solve( trans( (~mat).operand() ), ~vec );
+   return solve( trans( (*mat).operand() ), *vec );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -158,7 +158,7 @@ inline decltype(auto)
 {
    BLAZE_FUNCTION_TRACE;
 
-   return solve( (~lhs).operand(), ~rhs );
+   return solve( (*lhs).operand(), *rhs );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -187,7 +187,7 @@ inline decltype(auto)
 {
    BLAZE_FUNCTION_TRACE;
 
-   return trans( solve( trans( (~rhs).operand() ), trans( ~lhs ) ) );
+   return trans( solve( trans( (*rhs).operand() ), trans( *lhs ) ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -246,7 +246,7 @@ inline decltype(auto) det( const MatInvExpr<MT>& matrix )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return inv( det( (~matrix).operand() ) );
+   return inv( det( (*matrix).operand() ) );
 }
 /*! \endcond */
 //*************************************************************************************************

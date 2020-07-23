@@ -1702,11 +1702,11 @@ inline auto StrictlyLowerMatrix<MT,SO,true>::operator=( const Matrix<MT2,SO2>& r
    -> DisableIf_t< IsComputation_v<MT2>, StrictlyLowerMatrix& >
 {
    if( IsUniTriangular_v<MT2> ||
-       ( !IsStrictlyLower_v<MT2> && !isStrictlyLower( ~rhs ) ) ) {
+       ( !IsStrictlyLower_v<MT2> && !isStrictlyLower( *rhs ) ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to strictly lower matrix" );
    }
 
-   matrix_ = decllow( ~rhs );
+   matrix_ = decllow( *rhs );
 
    BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square strictly lower matrix detected" );
    BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );
@@ -1737,15 +1737,15 @@ template< typename MT2  // Type of the right-hand side matrix
 inline auto StrictlyLowerMatrix<MT,SO,true>::operator=( const Matrix<MT2,SO2>& rhs )
    -> EnableIf_t< IsComputation_v<MT2>, StrictlyLowerMatrix& >
 {
-   if( IsUniTriangular_v<MT2> || ( !IsSquare_v<MT2> && !isSquare( ~rhs ) ) ) {
+   if( IsUniTriangular_v<MT2> || ( !IsSquare_v<MT2> && !isSquare( *rhs ) ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to strictly lower matrix" );
    }
 
    if( IsStrictlyLower_v<MT2> ) {
-      matrix_ = ~rhs;
+      matrix_ = *rhs;
    }
    else {
-      MT tmp( ~rhs );
+      MT tmp( *rhs );
 
       if( !isStrictlyLower( tmp ) ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to strictly lower matrix" );
@@ -1784,11 +1784,11 @@ inline auto StrictlyLowerMatrix<MT,SO,true>::operator+=( const Matrix<MT2,SO2>& 
    -> DisableIf_t< IsComputation_v<MT2>, StrictlyLowerMatrix& >
 {
    if( IsUniTriangular_v<MT2> ||
-      ( !IsStrictlyLower_v<MT2> && !isStrictlyLower( ~rhs ) ) ) {
+      ( !IsStrictlyLower_v<MT2> && !isStrictlyLower( *rhs ) ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to strictly lower matrix" );
    }
 
-   matrix_ += decllow( ~rhs );
+   matrix_ += decllow( *rhs );
 
    BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square strictly lower matrix detected" );
    BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );
@@ -1819,15 +1819,15 @@ template< typename MT2  // Type of the right-hand side matrix
 inline auto StrictlyLowerMatrix<MT,SO,true>::operator+=( const Matrix<MT2,SO2>& rhs )
    -> EnableIf_t< IsComputation_v<MT2>, StrictlyLowerMatrix& >
 {
-   if( IsUniTriangular_v<MT2> || ( !IsSquare_v<MT2> && !isSquare( ~rhs ) ) ) {
+   if( IsUniTriangular_v<MT2> || ( !IsSquare_v<MT2> && !isSquare( *rhs ) ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to strictly lower matrix" );
    }
 
    if( IsStrictlyLower_v<MT2> ) {
-      matrix_ += ~rhs;
+      matrix_ += *rhs;
    }
    else {
-      const ResultType_t<MT2> tmp( ~rhs );
+      const ResultType_t<MT2> tmp( *rhs );
 
       if( !isStrictlyLower( tmp ) ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to strictly lower matrix" );
@@ -1866,11 +1866,11 @@ inline auto StrictlyLowerMatrix<MT,SO,true>::operator-=( const Matrix<MT2,SO2>& 
    -> DisableIf_t< IsComputation_v<MT2>, StrictlyLowerMatrix& >
 {
    if( IsUniTriangular_v<MT2> ||
-      ( !IsStrictlyLower_v<MT2> && !isStrictlyLower( ~rhs ) ) ) {
+      ( !IsStrictlyLower_v<MT2> && !isStrictlyLower( *rhs ) ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to strictly lower matrix" );
    }
 
-   matrix_ -= decllow( ~rhs );
+   matrix_ -= decllow( *rhs );
 
    BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square strictly lower matrix detected" );
    BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );
@@ -1901,15 +1901,15 @@ template< typename MT2  // Type of the right-hand side matrix
 inline auto StrictlyLowerMatrix<MT,SO,true>::operator-=( const Matrix<MT2,SO2>& rhs )
    -> EnableIf_t< IsComputation_v<MT2>, StrictlyLowerMatrix& >
 {
-   if( IsUniTriangular_v<MT2> || ( !IsSquare_v<MT2> && !isSquare( ~rhs ) ) ) {
+   if( IsUniTriangular_v<MT2> || ( !IsSquare_v<MT2> && !isSquare( *rhs ) ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to strictly lower matrix" );
    }
 
    if( IsStrictlyLower_v<MT2> ) {
-      matrix_ -= ~rhs;
+      matrix_ -= *rhs;
    }
    else {
-      const ResultType_t<MT2> tmp( ~rhs );
+      const ResultType_t<MT2> tmp( *rhs );
 
       if( !isStrictlyLower( tmp ) ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to strictly lower matrix" );
@@ -1945,11 +1945,11 @@ template< typename MT2  // Type of the right-hand side matrix
 inline auto StrictlyLowerMatrix<MT,SO,true>::operator%=( const Matrix<MT2,SO2>& rhs )
    -> StrictlyLowerMatrix&
 {
-   if( !IsSquare_v<MT2> && !isSquare( ~rhs ) ) {
+   if( !IsSquare_v<MT2> && !isSquare( *rhs ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to strictly lower matrix" );
    }
 
-   matrix_ %= ~rhs;
+   matrix_ %= *rhs;
 
    BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square strictly lower matrix detected" );
    BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );
@@ -2740,7 +2740,7 @@ template< typename MT2  // Type of the foreign matrix
         , typename T >  // Type of the third argument
 inline const MT StrictlyLowerMatrix<MT,SO,true>::construct( const Matrix<MT2,SO2>& m, T )
 {
-   const MT tmp( ~m );
+   const MT tmp( *m );
 
    if( IsUniTriangular_v<MT2> ||
        ( !IsStrictlyLower_v<MT2> && !isStrictlyLower( tmp ) ) ) {

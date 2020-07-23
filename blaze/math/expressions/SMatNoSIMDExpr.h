@@ -75,7 +75,7 @@ inline decltype(auto) nosimd( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return ~sm;
+   return *sm;
 }
 //*************************************************************************************************
 

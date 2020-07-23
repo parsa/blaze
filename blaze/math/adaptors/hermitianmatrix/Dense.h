@@ -1800,11 +1800,11 @@ template< typename MT2  // Type of the right-hand side matrix
 inline auto HermitianMatrix<MT,SO,true>::operator=( const Matrix<MT2,SO2>& rhs )
    -> DisableIf_t< IsComputation_v<MT2>, HermitianMatrix& >
 {
-   if( !IsHermitian_v<MT2> && !isHermitian( ~rhs ) ) {
+   if( !IsHermitian_v<MT2> && !isHermitian( *rhs ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to Hermitian matrix" );
    }
 
-   matrix_ = ~rhs;
+   matrix_ = *rhs;
 
    BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square Hermitian matrix detected" );
    BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );
@@ -1835,15 +1835,15 @@ template< typename MT2  // Type of the right-hand side matrix
 inline auto HermitianMatrix<MT,SO,true>::operator=( const Matrix<MT2,SO2>& rhs )
    -> EnableIf_t< IsComputation_v<MT2>, HermitianMatrix& >
 {
-   if( !IsSquare_v<MT2> && !isSquare( ~rhs ) ) {
+   if( !IsSquare_v<MT2> && !isSquare( *rhs ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to Hermitian matrix" );
    }
 
    if( IsHermitian_v<MT2> ) {
-      matrix_ = ~rhs;
+      matrix_ = *rhs;
    }
    else {
-      MT tmp( ~rhs );
+      MT tmp( *rhs );
 
       if( !isHermitian( tmp ) ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to Hermitian matrix" );
@@ -1880,7 +1880,7 @@ template< typename MT2 >  // Type of the right-hand side matrix
 inline auto HermitianMatrix<MT,SO,true>::operator=( const Matrix<MT2,!SO>& rhs )
    -> EnableIf_t< IsBuiltin_v< ElementType_t<MT2> >, HermitianMatrix& >
 {
-   return this->operator=( trans( ~rhs ) );
+   return this->operator=( trans( *rhs ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1906,11 +1906,11 @@ template< typename MT2  // Type of the right-hand side matrix
 inline auto HermitianMatrix<MT,SO,true>::operator+=( const Matrix<MT2,SO2>& rhs )
    -> DisableIf_t< IsComputation_v<MT2>, HermitianMatrix& >
 {
-   if( !IsHermitian_v<MT2> && !isHermitian( ~rhs ) ) {
+   if( !IsHermitian_v<MT2> && !isHermitian( *rhs ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to Hermitian matrix" );
    }
 
-   matrix_ += ~rhs;
+   matrix_ += *rhs;
 
    BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square Hermitian matrix detected" );
    BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );
@@ -1941,15 +1941,15 @@ template< typename MT2  // Type of the right-hand side matrix
 inline auto HermitianMatrix<MT,SO,true>::operator+=( const Matrix<MT2,SO2>& rhs )
    -> EnableIf_t< IsComputation_v<MT2>, HermitianMatrix& >
 {
-   if( !IsSquare_v<MT2> && !isSquare( ~rhs ) ) {
+   if( !IsSquare_v<MT2> && !isSquare( *rhs ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to Hermitian matrix" );
    }
 
    if( IsHermitian_v<MT2> ) {
-      matrix_ += ~rhs;
+      matrix_ += *rhs;
    }
    else {
-      const ResultType_t<MT2> tmp( ~rhs );
+      const ResultType_t<MT2> tmp( *rhs );
 
       if( !isHermitian( tmp ) ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to Hermitian matrix" );
@@ -1987,7 +1987,7 @@ template< typename MT2 >  // Type of the right-hand side matrix
 inline auto HermitianMatrix<MT,SO,true>::operator+=( const Matrix<MT2,!SO>& rhs )
    -> EnableIf_t< IsBuiltin_v< ElementType_t<MT2> >, HermitianMatrix& >
 {
-   return this->operator+=( trans( ~rhs ) );
+   return this->operator+=( trans( *rhs ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -2013,11 +2013,11 @@ template< typename MT2  // Type of the right-hand side matrix
 inline auto HermitianMatrix<MT,SO,true>::operator-=( const Matrix<MT2,SO2>& rhs )
    -> DisableIf_t< IsComputation_v<MT2>, HermitianMatrix& >
 {
-   if( !IsHermitian_v<MT2> && !isHermitian( ~rhs ) ) {
+   if( !IsHermitian_v<MT2> && !isHermitian( *rhs ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to Hermitian matrix" );
    }
 
-   matrix_ -= ~rhs;
+   matrix_ -= *rhs;
 
    BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square Hermitian matrix detected" );
    BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );
@@ -2048,15 +2048,15 @@ template< typename MT2  // Type of the right-hand side matrix
 inline auto HermitianMatrix<MT,SO,true>::operator-=( const Matrix<MT2,SO2>& rhs )
    -> EnableIf_t< IsComputation_v<MT2>, HermitianMatrix& >
 {
-   if( !IsSquare_v<MT2> && !isSquare( ~rhs ) ) {
+   if( !IsSquare_v<MT2> && !isSquare( *rhs ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to Hermitian matrix" );
    }
 
    if( IsHermitian_v<MT2> ) {
-      matrix_ -= ~rhs;
+      matrix_ -= *rhs;
    }
    else {
-      const ResultType_t<MT2> tmp( ~rhs );
+      const ResultType_t<MT2> tmp( *rhs );
 
       if( !isHermitian( tmp ) ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to Hermitian matrix" );
@@ -2094,7 +2094,7 @@ template< typename MT2 >  // Type of the right-hand side matrix
 inline auto HermitianMatrix<MT,SO,true>::operator-=( const Matrix<MT2,!SO>& rhs )
    -> EnableIf_t< IsBuiltin_v< ElementType_t<MT2> >, HermitianMatrix& >
 {
-   return this->operator-=( trans( ~rhs ) );
+   return this->operator-=( trans( *rhs ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -2121,11 +2121,11 @@ template< typename MT2  // Type of the right-hand side matrix
 inline auto HermitianMatrix<MT,SO,true>::operator%=( const Matrix<MT2,SO2>& rhs )
    -> DisableIf_t< IsComputation_v<MT2>, HermitianMatrix& >
 {
-   if( !IsHermitian_v<MT2> && !isHermitian( ~rhs ) ) {
+   if( !IsHermitian_v<MT2> && !isHermitian( *rhs ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to Hermitian matrix" );
    }
 
-   matrix_ %= ~rhs;
+   matrix_ %= *rhs;
 
    BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square Hermitian matrix detected" );
    BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );
@@ -2157,15 +2157,15 @@ template< typename MT2  // Type of the right-hand side matrix
 inline auto HermitianMatrix<MT,SO,true>::operator%=( const Matrix<MT2,SO2>& rhs )
    -> EnableIf_t< IsComputation_v<MT2>, HermitianMatrix& >
 {
-   if( !IsSquare_v<MT2> && !isSquare( ~rhs ) ) {
+   if( !IsSquare_v<MT2> && !isSquare( *rhs ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to Hermitian matrix" );
    }
 
    if( IsHermitian_v<MT2> ) {
-      matrix_ %= ~rhs;
+      matrix_ %= *rhs;
    }
    else {
-      const ResultType_t<MT2> tmp( ~rhs );
+      const ResultType_t<MT2> tmp( *rhs );
 
       if( !isHermitian( tmp ) ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to Hermitian matrix" );
@@ -2203,7 +2203,7 @@ template< typename MT2 >  // Type of the right-hand side matrix
 inline auto HermitianMatrix<MT,SO,true>::operator%=( const Matrix<MT2,!SO>& rhs )
    -> EnableIf_t< IsBuiltin_v< ElementType_t<MT2> >, HermitianMatrix& >
 {
-   return this->operator%=( trans( ~rhs ) );
+   return this->operator%=( trans( *rhs ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -3070,7 +3070,7 @@ template< typename MT2  // Type of the foreign matrix
         , typename T >  // Type of the third argument
 inline decltype(auto) HermitianMatrix<MT,SO,true>::construct( const Matrix<MT2,SO2>& m, T )
 {
-   return ~m;
+   return *m;
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -3083,7 +3083,7 @@ template< typename MT     // Type of the adapted dense matrix
 template< typename MT2 >  // Type of the foreign matrix
 inline decltype(auto) HermitianMatrix<MT,SO,true>::construct( const Matrix<MT2,!SO>& m, TrueType )
 {
-   return trans( ~m );
+   return trans( *m );
 }
 /*! \endcond */
 //*************************************************************************************************

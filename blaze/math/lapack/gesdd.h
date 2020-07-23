@@ -111,13 +111,13 @@ template< typename MT  // Type of the matrix A
 inline auto gesdd_backend( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& s )
    -> DisableIf_t< IsComplex_v< ElementType_t<MT> > >
 {
-   BLAZE_INTERNAL_ASSERT( (~s).size() == min( (~A).rows(), (~A).columns() ), "Invalid vector dimension detected" );
+   BLAZE_INTERNAL_ASSERT( (*s).size() == min( (*A).rows(), (*A).columns() ), "Invalid vector dimension detected" );
 
    using ET = ElementType_t<MT>;
 
-   blas_int_t m   ( numeric_cast<blas_int_t>( SO ? (~A).rows() : (~A).columns() ) );
-   blas_int_t n   ( numeric_cast<blas_int_t>( SO ? (~A).columns() : (~A).rows() ) );
-   blas_int_t lda ( numeric_cast<blas_int_t>( (~A).spacing() ) );
+   blas_int_t m   ( numeric_cast<blas_int_t>( SO ? (*A).rows() : (*A).columns() ) );
+   blas_int_t n   ( numeric_cast<blas_int_t>( SO ? (*A).columns() : (*A).rows() ) );
+   blas_int_t lda ( numeric_cast<blas_int_t>( (*A).spacing() ) );
    blas_int_t info( 0 );
 
    const blas_int_t minimum( min( m, n ) );
@@ -127,7 +127,7 @@ inline auto gesdd_backend( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& s )
    const std::unique_ptr<ET[]> work( new ET[lwork] );
    const std::unique_ptr<blas_int_t[]> iwork( new blas_int_t[8*minimum] );
 
-   gesdd( 'N', m, n, (~A).data(), lda, (~s).data(),
+   gesdd( 'N', m, n, (*A).data(), lda, (*s).data(),
           nullptr, 1, nullptr, 1, work.get(), lwork, iwork.get(), &info );
 
    BLAZE_INTERNAL_ASSERT( info >= 0, "Invalid argument for singular value decomposition" );
@@ -164,14 +164,14 @@ template< typename MT  // Type of the matrix A
 inline auto gesdd_backend( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& s )
    -> EnableIf_t< IsComplex_v< ElementType_t<MT> > >
 {
-   BLAZE_INTERNAL_ASSERT( (~s).size() == min( (~A).rows(), (~A).columns() ), "Invalid vector dimension detected" );
+   BLAZE_INTERNAL_ASSERT( (*s).size() == min( (*A).rows(), (*A).columns() ), "Invalid vector dimension detected" );
 
    using CT = ElementType_t<MT>;
    using BT = UnderlyingElement_t<CT>;
 
-   blas_int_t m   ( numeric_cast<blas_int_t>( SO ? (~A).rows() : (~A).columns() ) );
-   blas_int_t n   ( numeric_cast<blas_int_t>( SO ? (~A).columns() : (~A).rows() ) );
-   blas_int_t lda ( numeric_cast<blas_int_t>( (~A).spacing() ) );
+   blas_int_t m   ( numeric_cast<blas_int_t>( SO ? (*A).rows() : (*A).columns() ) );
+   blas_int_t n   ( numeric_cast<blas_int_t>( SO ? (*A).columns() : (*A).rows() ) );
+   blas_int_t lda ( numeric_cast<blas_int_t>( (*A).spacing() ) );
    blas_int_t info( 0 );
 
    const blas_int_t minimum( min( m, n ) );
@@ -182,7 +182,7 @@ inline auto gesdd_backend( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& s )
    const std::unique_ptr<BT[]> rwork( new BT[7*minimum] );
    const std::unique_ptr<blas_int_t[]> iwork( new blas_int_t[8*minimum] );
 
-   gesdd( 'N', m, n, (~A).data(), lda, (~s).data(),
+   gesdd( 'N', m, n, (*A).data(), lda, (*s).data(),
           nullptr, 1, nullptr, 1, work.get(), lwork, rwork.get(), iwork.get(), &info );
 
    BLAZE_INTERNAL_ASSERT( info >= 0, "Invalid argument for singular value decomposition" );
@@ -274,11 +274,11 @@ inline void gesdd( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& s )
    BLAZE_CONSTRAINT_MUST_BE_CONTIGUOUS_TYPE( VT );
    BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<VT> );
 
-   const size_t M( (~A).rows() );
-   const size_t N( (~A).columns() );
+   const size_t M( (*A).rows() );
+   const size_t N( (*A).columns() );
    const size_t mindim( min( M, N ) );
 
-   resize( ~s, mindim, false );
+   resize( *s, mindim, false );
 
    if( M == 0UL || N == 0 ) {
       return;
@@ -318,16 +318,16 @@ inline auto gesdd_backend( DenseMatrix<MT1,SO>& A, DenseMatrix<MT2,SO>& U,
    -> DisableIf_t< IsComplex_v< ElementType_t<MT1> > >
 {
    BLAZE_INTERNAL_ASSERT( jobz == 'O' || jobz == 'N', "Invalid jobz flag detected" );
-   BLAZE_INTERNAL_ASSERT( jobz == 'N' || isSquare( ~U ), "Invalid matrix dimensions detected" );
-   BLAZE_INTERNAL_ASSERT( jobz == 'N' || (~U).rows() == (~A).rows(), "Invalid matrix dimensions detected" );
-   BLAZE_INTERNAL_ASSERT( (~s).size() == min( (~A).rows(), (~A).columns() ), "Invalid vector dimension detected" );
+   BLAZE_INTERNAL_ASSERT( jobz == 'N' || isSquare( *U ), "Invalid matrix dimensions detected" );
+   BLAZE_INTERNAL_ASSERT( jobz == 'N' || (*U).rows() == (*A).rows(), "Invalid matrix dimensions detected" );
+   BLAZE_INTERNAL_ASSERT( (*s).size() == min( (*A).rows(), (*A).columns() ), "Invalid vector dimension detected" );
 
    using ET = ElementType_t<MT1>;
 
-   blas_int_t m   ( numeric_cast<blas_int_t>( SO ? (~A).rows() : (~A).columns() ) );
-   blas_int_t n   ( numeric_cast<blas_int_t>( SO ? (~A).columns() : (~A).rows() ) );
-   blas_int_t lda ( numeric_cast<blas_int_t>( (~A).spacing() ) );
-   blas_int_t ldu ( numeric_cast<blas_int_t>( (~U).spacing() ) );
+   blas_int_t m   ( numeric_cast<blas_int_t>( SO ? (*A).rows() : (*A).columns() ) );
+   blas_int_t n   ( numeric_cast<blas_int_t>( SO ? (*A).columns() : (*A).rows() ) );
+   blas_int_t lda ( numeric_cast<blas_int_t>( (*A).spacing() ) );
+   blas_int_t ldu ( numeric_cast<blas_int_t>( (*U).spacing() ) );
    blas_int_t info( 0 );
 
    const blas_int_t minimum( min( m, n ) );
@@ -339,9 +339,9 @@ inline auto gesdd_backend( DenseMatrix<MT1,SO>& A, DenseMatrix<MT2,SO>& U,
    const std::unique_ptr<ET[]> work( new ET[lwork] );
    const std::unique_ptr<blas_int_t[]> iwork( new blas_int_t[8*minimum] );
 
-   gesdd( jobz, m, n, (~A).data(), lda, (~s).data(),
-          ( SO ? (~U).data() : nullptr ), ( SO ? ldu : 1 ),
-          ( SO ? nullptr : (~U).data() ), ( SO ? 1 : ldu ),
+   gesdd( jobz, m, n, (*A).data(), lda, (*s).data(),
+          ( SO ? (*U).data() : nullptr ), ( SO ? ldu : 1 ),
+          ( SO ? nullptr : (*U).data() ), ( SO ? 1 : ldu ),
           work.get(), lwork, iwork.get(), &info );
 
    BLAZE_INTERNAL_ASSERT( info >= 0, "Invalid argument for singular value decomposition" );
@@ -383,17 +383,17 @@ inline auto gesdd_backend( DenseMatrix<MT1,SO>& A, DenseMatrix<MT2,SO>& U,
    -> EnableIf_t< IsComplex_v< ElementType_t<MT1> > >
 {
    BLAZE_INTERNAL_ASSERT( jobz == 'O' || jobz == 'N', "Invalid jobz flag detected" );
-   BLAZE_INTERNAL_ASSERT( jobz == 'N' || isSquare( ~U ), "Invalid matrix dimensions detected" );
-   BLAZE_INTERNAL_ASSERT( jobz == 'N' || (~U).rows() == (~A).rows(), "Invalid matrix dimensions detected" );
-   BLAZE_INTERNAL_ASSERT( (~s).size() == min( (~A).rows(), (~A).columns() ), "Invalid vector dimension detected" );
+   BLAZE_INTERNAL_ASSERT( jobz == 'N' || isSquare( *U ), "Invalid matrix dimensions detected" );
+   BLAZE_INTERNAL_ASSERT( jobz == 'N' || (*U).rows() == (*A).rows(), "Invalid matrix dimensions detected" );
+   BLAZE_INTERNAL_ASSERT( (*s).size() == min( (*A).rows(), (*A).columns() ), "Invalid vector dimension detected" );
 
    using CT = ElementType_t<MT1>;
    using BT = UnderlyingElement_t<CT>;
 
-   blas_int_t m   ( numeric_cast<blas_int_t>( SO ? (~A).rows() : (~A).columns() ) );
-   blas_int_t n   ( numeric_cast<blas_int_t>( SO ? (~A).columns() : (~A).rows() ) );
-   blas_int_t lda ( numeric_cast<blas_int_t>( (~A).spacing() ) );
-   blas_int_t ldu ( numeric_cast<blas_int_t>( (~U).spacing() ) );
+   blas_int_t m   ( numeric_cast<blas_int_t>( SO ? (*A).rows() : (*A).columns() ) );
+   blas_int_t n   ( numeric_cast<blas_int_t>( SO ? (*A).columns() : (*A).rows() ) );
+   blas_int_t lda ( numeric_cast<blas_int_t>( (*A).spacing() ) );
+   blas_int_t ldu ( numeric_cast<blas_int_t>( (*U).spacing() ) );
    blas_int_t info( 0 );
 
    const blas_int_t minimum( min( m, n ) );
@@ -410,9 +410,9 @@ inline auto gesdd_backend( DenseMatrix<MT1,SO>& A, DenseMatrix<MT2,SO>& U,
    const std::unique_ptr<BT[]> rwork( new BT[lrwork] );
    const std::unique_ptr<blas_int_t[]> iwork( new blas_int_t[8*minimum] );
 
-   gesdd( jobz, m, n, (~A).data(), lda, (~s).data(),
-          ( SO ? (~U).data() : nullptr ), ( SO ? ldu : 1 ),
-          ( SO ? nullptr : (~U).data() ), ( SO ? 1 : ldu ),
+   gesdd( jobz, m, n, (*A).data(), lda, (*s).data(),
+          ( SO ? (*U).data() : nullptr ), ( SO ? ldu : 1 ),
+          ( SO ? nullptr : (*U).data() ), ( SO ? 1 : ldu ),
           work.get(), lwork, rwork.get(), iwork.get(), &info );
 
    BLAZE_INTERNAL_ASSERT( info >= 0, "Invalid argument for singular value decomposition" );
@@ -539,8 +539,8 @@ inline void gesdd( DenseMatrix<MT1,SO>& A, DenseMatrix<MT2,SO>& U,
    BLAZE_CONSTRAINT_MUST_BE_CONTIGUOUS_TYPE( VT );
    BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<VT> );
 
-   const size_t M( (~A).rows() );
-   const size_t N( (~A).columns() );
+   const size_t M( (*A).rows() );
+   const size_t N( (*A).columns() );
    const size_t mindim( min( M, N ) );
 
    if( jobz != 'O' && jobz != 'N' ) {
@@ -551,17 +551,17 @@ inline void gesdd( DenseMatrix<MT1,SO>& A, DenseMatrix<MT2,SO>& U,
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid input matrix provided" );
    }
 
-   resize( ~s, mindim, false );
+   resize( *s, mindim, false );
 
    if( jobz == 'O' ) {
-      resize( ~U, M, M, false );
+      resize( *U, M, M, false );
    }
 
-   if( (~A).rows() == 0UL || (~A).columns() == 0UL ) {
+   if( (*A).rows() == 0UL || (*A).columns() == 0UL ) {
       return;
    }
 
-   gesdd_backend( ~A, ~U, ~s, jobz );
+   gesdd_backend( *A, *U, *s, jobz );
 }
 //*************************************************************************************************
 
@@ -595,16 +595,16 @@ inline auto gesdd_backend( DenseMatrix<MT1,SO>& A, DenseVector<VT,TF>& s,
    -> DisableIf_t< IsComplex_v< ElementType_t<MT1> > >
 {
    BLAZE_INTERNAL_ASSERT( jobz == 'O' || jobz == 'N', "Invalid jobz flag detected" );
-   BLAZE_INTERNAL_ASSERT( jobz == 'N' || isSquare( ~V ), "Invalid matrix dimensions detected" );
-   BLAZE_INTERNAL_ASSERT( jobz == 'N' || (~V).rows() == (~A).columns(), "Invalid matrix dimensions detected" );
-   BLAZE_INTERNAL_ASSERT( (~s).size() == min( (~A).rows(), (~A).columns() ), "Invalid vector dimension detected" );
+   BLAZE_INTERNAL_ASSERT( jobz == 'N' || isSquare( *V ), "Invalid matrix dimensions detected" );
+   BLAZE_INTERNAL_ASSERT( jobz == 'N' || (*V).rows() == (*A).columns(), "Invalid matrix dimensions detected" );
+   BLAZE_INTERNAL_ASSERT( (*s).size() == min( (*A).rows(), (*A).columns() ), "Invalid vector dimension detected" );
 
    using ET = ElementType_t<MT1>;
 
-   blas_int_t m   ( numeric_cast<blas_int_t>( SO ? (~A).rows() : (~A).columns() ) );
-   blas_int_t n   ( numeric_cast<blas_int_t>( SO ? (~A).columns() : (~A).rows() ) );
-   blas_int_t lda ( numeric_cast<blas_int_t>( (~A).spacing() ) );
-   blas_int_t ldv ( numeric_cast<blas_int_t>( (~V).spacing() ) );
+   blas_int_t m   ( numeric_cast<blas_int_t>( SO ? (*A).rows() : (*A).columns() ) );
+   blas_int_t n   ( numeric_cast<blas_int_t>( SO ? (*A).columns() : (*A).rows() ) );
+   blas_int_t lda ( numeric_cast<blas_int_t>( (*A).spacing() ) );
+   blas_int_t ldv ( numeric_cast<blas_int_t>( (*V).spacing() ) );
    blas_int_t info( 0 );
 
    const blas_int_t minimum( min( m, n ) );
@@ -616,9 +616,9 @@ inline auto gesdd_backend( DenseMatrix<MT1,SO>& A, DenseVector<VT,TF>& s,
    const std::unique_ptr<ET[]> work( new ET[lwork] );
    const std::unique_ptr<blas_int_t[]> iwork( new blas_int_t[8*minimum] );
 
-   gesdd( jobz, m, n, (~A).data(), lda, (~s).data(),
-          ( SO ? nullptr : (~V).data() ), ( SO ? 1 : ldv ),
-          ( SO ? (~V).data() : nullptr ), ( SO ? ldv : 1 ),
+   gesdd( jobz, m, n, (*A).data(), lda, (*s).data(),
+          ( SO ? nullptr : (*V).data() ), ( SO ? 1 : ldv ),
+          ( SO ? (*V).data() : nullptr ), ( SO ? ldv : 1 ),
           work.get(), lwork, iwork.get(), &info );
 
    BLAZE_INTERNAL_ASSERT( info >= 0, "Invalid argument for singular value decomposition" );
@@ -660,17 +660,17 @@ inline auto gesdd_backend( DenseMatrix<MT1,SO>& A, DenseVector<VT,TF>& s,
    -> EnableIf_t< IsComplex_v< ElementType_t<MT1> > >
 {
    BLAZE_INTERNAL_ASSERT( jobz == 'O' || jobz == 'N', "Invalid jobz flag detected" );
-   BLAZE_INTERNAL_ASSERT( jobz == 'N' || isSquare( ~V ), "Invalid matrix dimensions detected" );
-   BLAZE_INTERNAL_ASSERT( jobz == 'N' || (~V).rows() == (~A).columns(), "Invalid matrix dimensions detected" );
-   BLAZE_INTERNAL_ASSERT( (~s).size() == min( (~A).rows(), (~A).columns() ), "Invalid vector dimension detected" );
+   BLAZE_INTERNAL_ASSERT( jobz == 'N' || isSquare( *V ), "Invalid matrix dimensions detected" );
+   BLAZE_INTERNAL_ASSERT( jobz == 'N' || (*V).rows() == (*A).columns(), "Invalid matrix dimensions detected" );
+   BLAZE_INTERNAL_ASSERT( (*s).size() == min( (*A).rows(), (*A).columns() ), "Invalid vector dimension detected" );
 
    using CT = ElementType_t<MT1>;
    using BT = UnderlyingElement_t<CT>;
 
-   blas_int_t m   ( numeric_cast<blas_int_t>( SO ? (~A).rows() : (~A).columns() ) );
-   blas_int_t n   ( numeric_cast<blas_int_t>( SO ? (~A).columns() : (~A).rows() ) );
-   blas_int_t lda ( numeric_cast<blas_int_t>( (~A).spacing() ) );
-   blas_int_t ldv ( numeric_cast<blas_int_t>( (~V).spacing() ) );
+   blas_int_t m   ( numeric_cast<blas_int_t>( SO ? (*A).rows() : (*A).columns() ) );
+   blas_int_t n   ( numeric_cast<blas_int_t>( SO ? (*A).columns() : (*A).rows() ) );
+   blas_int_t lda ( numeric_cast<blas_int_t>( (*A).spacing() ) );
+   blas_int_t ldv ( numeric_cast<blas_int_t>( (*V).spacing() ) );
    blas_int_t info( 0 );
 
    const blas_int_t minimum( min( m, n ) );
@@ -687,9 +687,9 @@ inline auto gesdd_backend( DenseMatrix<MT1,SO>& A, DenseVector<VT,TF>& s,
    const std::unique_ptr<BT[]> rwork( new BT[lrwork] );
    const std::unique_ptr<blas_int_t[]> iwork( new blas_int_t[8*minimum] );
 
-   gesdd( jobz, m, n, (~A).data(), lda, (~s).data(),
-          ( SO ? nullptr : (~V).data() ), ( SO ? 1 : ldv ),
-          ( SO ? (~V).data() : nullptr ), ( SO ? ldv : 1 ),
+   gesdd( jobz, m, n, (*A).data(), lda, (*s).data(),
+          ( SO ? nullptr : (*V).data() ), ( SO ? 1 : ldv ),
+          ( SO ? (*V).data() : nullptr ), ( SO ? ldv : 1 ),
           work.get(), lwork, rwork.get(), iwork.get(), &info );
 
    BLAZE_INTERNAL_ASSERT( info >= 0, "Invalid argument for singular value decomposition" );
@@ -807,8 +807,8 @@ inline void gesdd( DenseMatrix<MT1,SO>& A, DenseVector<VT,TF>& s,
    BLAZE_CONSTRAINT_MUST_BE_CONTIGUOUS_TYPE( VT );
    BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<VT> );
 
-   const size_t M( (~A).rows() );
-   const size_t N( (~A).columns() );
+   const size_t M( (*A).rows() );
+   const size_t N( (*A).columns() );
    const size_t mindim( min( M, N ) );
 
    if( jobz != 'O' && jobz != 'N' ) {
@@ -819,17 +819,17 @@ inline void gesdd( DenseMatrix<MT1,SO>& A, DenseVector<VT,TF>& s,
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid input matrix provided" );
    }
 
-   resize( ~s, mindim, false );
+   resize( *s, mindim, false );
 
    if( jobz == 'O' ) {
-      resize( ~V, N, N, false );
+      resize( *V, N, N, false );
    }
 
-   if( (~A).rows() == 0UL || (~A).columns() == 0UL ) {
+   if( (*A).rows() == 0UL || (*A).columns() == 0UL ) {
       return;
    }
 
-   gesdd_backend( ~A, ~s, ~V, jobz );
+   gesdd_backend( *A, *s, *V, jobz );
 }
 //*************************************************************************************************
 
@@ -865,21 +865,21 @@ inline auto gesdd_backend( DenseMatrix<MT1,SO>& A, DenseMatrix<MT2,SO>& U,
    -> DisableIf_t< IsComplex_v< ElementType_t<MT1> > >
 {
    BLAZE_INTERNAL_ASSERT( jobz == 'A' || jobz == 'S' || jobz == 'N', "Invalid jobz flag detected" );
-   BLAZE_INTERNAL_ASSERT( jobz == 'N' || (~U).rows() == (~A).rows(), "Invalid matrix dimension detected" );
-   BLAZE_INTERNAL_ASSERT( jobz != 'A' || isSquare( ~U ), "Invalid non-square matrix detected" );
-   BLAZE_INTERNAL_ASSERT( jobz != 'S' || (~U).columns() == min( (~A).rows(), (~A).columns() ), "Invalid matrix dimension detected" );
-   BLAZE_INTERNAL_ASSERT( jobz == 'N' || (~V).columns() == (~A).columns(), "Invalid matrix dimension detected" );
-   BLAZE_INTERNAL_ASSERT( jobz != 'A' || isSquare( ~V ), "Invalid non-square matrix detected" );
-   BLAZE_INTERNAL_ASSERT( jobz != 'S' || (~V).rows() == min( (~A).rows(), (~A).columns() ), "Invalid matrix dimension detected" );
-   BLAZE_INTERNAL_ASSERT( (~s).size() == min( (~A).rows(), (~A).columns() ), "Invalid vector dimension detected" );
+   BLAZE_INTERNAL_ASSERT( jobz == 'N' || (*U).rows() == (*A).rows(), "Invalid matrix dimension detected" );
+   BLAZE_INTERNAL_ASSERT( jobz != 'A' || isSquare( *U ), "Invalid non-square matrix detected" );
+   BLAZE_INTERNAL_ASSERT( jobz != 'S' || (*U).columns() == min( (*A).rows(), (*A).columns() ), "Invalid matrix dimension detected" );
+   BLAZE_INTERNAL_ASSERT( jobz == 'N' || (*V).columns() == (*A).columns(), "Invalid matrix dimension detected" );
+   BLAZE_INTERNAL_ASSERT( jobz != 'A' || isSquare( *V ), "Invalid non-square matrix detected" );
+   BLAZE_INTERNAL_ASSERT( jobz != 'S' || (*V).rows() == min( (*A).rows(), (*A).columns() ), "Invalid matrix dimension detected" );
+   BLAZE_INTERNAL_ASSERT( (*s).size() == min( (*A).rows(), (*A).columns() ), "Invalid vector dimension detected" );
 
    using ET = ElementType_t<MT1>;
 
-   blas_int_t m   ( numeric_cast<blas_int_t>( SO ? (~A).rows() : (~A).columns() ) );
-   blas_int_t n   ( numeric_cast<blas_int_t>( SO ? (~A).columns() : (~A).rows() ) );
-   blas_int_t lda ( numeric_cast<blas_int_t>( (~A).spacing() ) );
-   blas_int_t ldu ( numeric_cast<blas_int_t>( (~U).spacing() ) );
-   blas_int_t ldv ( numeric_cast<blas_int_t>( (~V).spacing() ) );
+   blas_int_t m   ( numeric_cast<blas_int_t>( SO ? (*A).rows() : (*A).columns() ) );
+   blas_int_t n   ( numeric_cast<blas_int_t>( SO ? (*A).columns() : (*A).rows() ) );
+   blas_int_t lda ( numeric_cast<blas_int_t>( (*A).spacing() ) );
+   blas_int_t ldu ( numeric_cast<blas_int_t>( (*U).spacing() ) );
+   blas_int_t ldv ( numeric_cast<blas_int_t>( (*V).spacing() ) );
    blas_int_t info( 0 );
 
    const blas_int_t minimum( min( m, n ) );
@@ -889,9 +889,9 @@ inline auto gesdd_backend( DenseMatrix<MT1,SO>& A, DenseMatrix<MT2,SO>& U,
    const std::unique_ptr<ET[]> work( new ET[lwork] );
    const std::unique_ptr<blas_int_t[]> iwork( new blas_int_t[8*minimum] );
 
-   gesdd( jobz, m, n, (~A).data(), lda, (~s).data(),
-          ( SO ? (~U).data() : (~V).data() ), ( SO ? ldu : ldv ),
-          ( SO ? (~V).data() : (~U).data() ), ( SO ? ldv : ldu ),
+   gesdd( jobz, m, n, (*A).data(), lda, (*s).data(),
+          ( SO ? (*U).data() : (*V).data() ), ( SO ? ldu : ldv ),
+          ( SO ? (*V).data() : (*U).data() ), ( SO ? ldv : ldu ),
           work.get(), lwork, iwork.get(), &info );
 
    BLAZE_INTERNAL_ASSERT( info >= 0, "Invalid argument for singular value decomposition" );
@@ -935,22 +935,22 @@ inline auto gesdd_backend( DenseMatrix<MT1,SO>& A, DenseMatrix<MT2,SO>& U,
    -> EnableIf_t< IsComplex_v< ElementType_t<MT1> > >
 {
    BLAZE_INTERNAL_ASSERT( jobz == 'A' || jobz == 'S' || jobz == 'N', "Invalid jobz flag detected" );
-   BLAZE_INTERNAL_ASSERT( jobz == 'N' || (~U).rows() == (~A).rows(), "Invalid matrix dimension detected" );
-   BLAZE_INTERNAL_ASSERT( jobz != 'A' || isSquare( ~U ), "Invalid non-square matrix detected" );
-   BLAZE_INTERNAL_ASSERT( jobz != 'S' || (~U).columns() == min( (~A).rows(), (~A).columns() ), "Invalid matrix dimension detected" );
-   BLAZE_INTERNAL_ASSERT( jobz == 'N' || (~V).columns() == (~A).columns(), "Invalid matrix dimension detected" );
-   BLAZE_INTERNAL_ASSERT( jobz != 'A' || isSquare( ~V ), "Invalid non-square matrix detected" );
-   BLAZE_INTERNAL_ASSERT( jobz != 'S' || (~V).rows() == min( (~A).rows(), (~A).columns() ), "Invalid matrix dimension detected" );
-   BLAZE_INTERNAL_ASSERT( (~s).size() == min( (~A).rows(), (~A).columns() ), "Invalid vector dimension detected" );
+   BLAZE_INTERNAL_ASSERT( jobz == 'N' || (*U).rows() == (*A).rows(), "Invalid matrix dimension detected" );
+   BLAZE_INTERNAL_ASSERT( jobz != 'A' || isSquare( *U ), "Invalid non-square matrix detected" );
+   BLAZE_INTERNAL_ASSERT( jobz != 'S' || (*U).columns() == min( (*A).rows(), (*A).columns() ), "Invalid matrix dimension detected" );
+   BLAZE_INTERNAL_ASSERT( jobz == 'N' || (*V).columns() == (*A).columns(), "Invalid matrix dimension detected" );
+   BLAZE_INTERNAL_ASSERT( jobz != 'A' || isSquare( *V ), "Invalid non-square matrix detected" );
+   BLAZE_INTERNAL_ASSERT( jobz != 'S' || (*V).rows() == min( (*A).rows(), (*A).columns() ), "Invalid matrix dimension detected" );
+   BLAZE_INTERNAL_ASSERT( (*s).size() == min( (*A).rows(), (*A).columns() ), "Invalid vector dimension detected" );
 
    using CT = ElementType_t<MT1>;
    using BT = UnderlyingElement_t<CT>;
 
-   blas_int_t m   ( numeric_cast<blas_int_t>( SO ? (~A).rows() : (~A).columns() ) );
-   blas_int_t n   ( numeric_cast<blas_int_t>( SO ? (~A).columns() : (~A).rows() ) );
-   blas_int_t lda ( numeric_cast<blas_int_t>( (~A).spacing() ) );
-   blas_int_t ldu ( numeric_cast<blas_int_t>( (~U).spacing() ) );
-   blas_int_t ldv ( numeric_cast<blas_int_t>( (~V).spacing() ) );
+   blas_int_t m   ( numeric_cast<blas_int_t>( SO ? (*A).rows() : (*A).columns() ) );
+   blas_int_t n   ( numeric_cast<blas_int_t>( SO ? (*A).columns() : (*A).rows() ) );
+   blas_int_t lda ( numeric_cast<blas_int_t>( (*A).spacing() ) );
+   blas_int_t ldu ( numeric_cast<blas_int_t>( (*U).spacing() ) );
+   blas_int_t ldv ( numeric_cast<blas_int_t>( (*V).spacing() ) );
    blas_int_t info( 0 );
 
    const blas_int_t minimum( min( m, n ) );
@@ -963,9 +963,9 @@ inline auto gesdd_backend( DenseMatrix<MT1,SO>& A, DenseMatrix<MT2,SO>& U,
    const std::unique_ptr<BT[]> rwork( new BT[lrwork] );
    const std::unique_ptr<blas_int_t[]> iwork( new blas_int_t[8*minimum] );
 
-   gesdd( jobz, m, n, (~A).data(), lda, (~s).data(),
-          ( SO ? (~U).data() : (~V).data() ), ( SO ? ldu : ldv ),
-          ( SO ? (~V).data() : (~U).data() ), ( SO ? ldv : ldu ),
+   gesdd( jobz, m, n, (*A).data(), lda, (*s).data(),
+          ( SO ? (*U).data() : (*V).data() ), ( SO ? ldu : ldv ),
+          ( SO ? (*V).data() : (*U).data() ), ( SO ? ldv : ldu ),
           work.get(), lwork, rwork.get(), iwork.get(), &info );
 
    BLAZE_INTERNAL_ASSERT( info >= 0, "Invalid argument for singular value decomposition" );
@@ -1112,26 +1112,26 @@ inline void gesdd( DenseMatrix<MT1,SO>& A, DenseMatrix<MT2,SO>& U,
    BLAZE_CONSTRAINT_MUST_BE_CONTIGUOUS_TYPE( MT3 );
    BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<MT3> );
 
-   const size_t M( (~A).rows() );
-   const size_t N( (~A).columns() );
+   const size_t M( (*A).rows() );
+   const size_t N( (*A).columns() );
    const size_t mindim( min( M, N ) );
 
    if( jobz != 'A' && jobz != 'S' && jobz != 'N' ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid jobz argument provided" );
    }
 
-   resize( ~s, mindim, false );
+   resize( *s, mindim, false );
 
    if( jobz != 'N' ) {
-      resize( ~U, M, ( jobz == 'A' ? M : mindim ), false );
-      resize( ~V, ( jobz == 'A' ? N : mindim ), N, false );
+      resize( *U, M, ( jobz == 'A' ? M : mindim ), false );
+      resize( *V, ( jobz == 'A' ? N : mindim ), N, false );
    }
 
-   if( (~A).rows() == 0UL || (~A).columns() == 0UL ) {
+   if( (*A).rows() == 0UL || (*A).columns() == 0UL ) {
       return;
    }
 
-   gesdd_backend( ~A, ~U, ~s, ~V, jobz );
+   gesdd_backend( *A, *U, *s, *V, jobz );
 }
 //*************************************************************************************************
 

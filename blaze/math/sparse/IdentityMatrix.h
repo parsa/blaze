@@ -549,11 +549,11 @@ template< typename Type   // Data type of the matrix
 template< typename MT     // Type of the foreign identity matrix
         , bool SO2 >      // Storage order of the foreign identity matrix
 inline IdentityMatrix<Type,SO,Tag>::IdentityMatrix( const Matrix<MT,SO2>& m )
-   : n_( (~m).rows() )  // The current number of rows and columns of the identity matrix
+   : n_( (*m).rows() )  // The current number of rows and columns of the identity matrix
 {
    BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<MT> );
 
-   if( !IsIdentity_v<MT> && !isIdentity( ~m ) ) {
+   if( !IsIdentity_v<MT> && !isIdentity( *m ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid setup of identity matrix" );
    }
 }
@@ -747,11 +747,11 @@ inline IdentityMatrix<Type,SO,Tag>&
 {
    BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<MT> );
 
-   if( !IsIdentity_v<MT> && !isIdentity( ~rhs ) ) {
+   if( !IsIdentity_v<MT> && !isIdentity( *rhs ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment of identity matrix" );
    }
 
-   n_ = (~rhs).rows();
+   n_ = (*rhs).rows();
 
    return *this;
 }
@@ -1352,11 +1352,11 @@ inline IdentityMatrix<ElementType_t<MT>,SO>
 {
    BLAZE_FUNCTION_TRACE;
 
-   if( !isSquare( ~m ) ) {
+   if( !isSquare( *m ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid identity matrix specification" );
    }
 
-   return IdentityMatrix<ElementType_t<MT>,SO>( (~m).rows() );
+   return IdentityMatrix<ElementType_t<MT>,SO>( (*m).rows() );
 }
 //*************************************************************************************************
 

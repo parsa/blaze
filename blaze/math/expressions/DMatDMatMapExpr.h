@@ -665,8 +665,8 @@ class DMatDMatMapExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
       LT A( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side dense matrix operand
       RT B( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side dense matrix operand
@@ -675,12 +675,12 @@ class DMatDMatMapExpr
       BLAZE_INTERNAL_ASSERT( A.columns() == rhs.lhs_.columns(), "Invalid number of columns" );
       BLAZE_INTERNAL_ASSERT( B.rows()    == rhs.rhs_.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( B.columns() == rhs.rhs_.columns(), "Invalid number of columns" );
-      BLAZE_INTERNAL_ASSERT( A.rows()    == (~lhs).rows()     , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( A.columns() == (~lhs).columns()  , "Invalid number of columns" );
-      BLAZE_INTERNAL_ASSERT( B.rows()    == (~lhs).rows()     , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( B.columns() == (~lhs).columns()  , "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( A.rows()    == (*lhs).rows()     , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( A.columns() == (*lhs).columns()  , "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( B.rows()    == (*lhs).rows()     , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( B.columns() == (*lhs).columns()  , "Invalid number of columns" );
 
-      assign( ~lhs, map( A, B, rhs.op_ ) );
+      assign( *lhs, map( A, B, rhs.op_ ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -715,11 +715,11 @@ class DMatDMatMapExpr
       BLAZE_CONSTRAINT_MATRICES_MUST_HAVE_SAME_STORAGE_ORDER( MT, TmpType );
       BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( TmpType );
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
       const TmpType tmp( serial( rhs ) );
-      assign( ~lhs, tmp );
+      assign( *lhs, tmp );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -745,8 +745,8 @@ class DMatDMatMapExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
       LT A( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side dense matrix operand
       RT B( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side dense matrix operand
@@ -755,12 +755,12 @@ class DMatDMatMapExpr
       BLAZE_INTERNAL_ASSERT( A.columns() == rhs.lhs_.columns(), "Invalid number of columns" );
       BLAZE_INTERNAL_ASSERT( B.rows()    == rhs.rhs_.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( B.columns() == rhs.rhs_.columns(), "Invalid number of columns" );
-      BLAZE_INTERNAL_ASSERT( A.rows()    == (~lhs).rows()     , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( A.columns() == (~lhs).columns()  , "Invalid number of columns" );
-      BLAZE_INTERNAL_ASSERT( B.rows()    == (~lhs).rows()     , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( B.columns() == (~lhs).columns()  , "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( A.rows()    == (*lhs).rows()     , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( A.columns() == (*lhs).columns()  , "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( B.rows()    == (*lhs).rows()     , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( B.columns() == (*lhs).columns()  , "Invalid number of columns" );
 
-      addAssign( ~lhs, map( A, B, rhs.op_ ) );
+      addAssign( *lhs, map( A, B, rhs.op_ ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -790,8 +790,8 @@ class DMatDMatMapExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
       LT A( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side dense matrix operand
       RT B( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side dense matrix operand
@@ -800,12 +800,12 @@ class DMatDMatMapExpr
       BLAZE_INTERNAL_ASSERT( A.columns() == rhs.lhs_.columns(), "Invalid number of columns" );
       BLAZE_INTERNAL_ASSERT( B.rows()    == rhs.rhs_.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( B.columns() == rhs.rhs_.columns(), "Invalid number of columns" );
-      BLAZE_INTERNAL_ASSERT( A.rows()    == (~lhs).rows()     , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( A.columns() == (~lhs).columns()  , "Invalid number of columns" );
-      BLAZE_INTERNAL_ASSERT( B.rows()    == (~lhs).rows()     , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( B.columns() == (~lhs).columns()  , "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( A.rows()    == (*lhs).rows()     , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( A.columns() == (*lhs).columns()  , "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( B.rows()    == (*lhs).rows()     , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( B.columns() == (*lhs).columns()  , "Invalid number of columns" );
 
-      subAssign( ~lhs, map( A, B, rhs.op_ ) );
+      subAssign( *lhs, map( A, B, rhs.op_ ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -835,8 +835,8 @@ class DMatDMatMapExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
       LT A( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side dense matrix operand
       RT B( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side dense matrix operand
@@ -845,12 +845,12 @@ class DMatDMatMapExpr
       BLAZE_INTERNAL_ASSERT( A.columns() == rhs.lhs_.columns(), "Invalid number of columns" );
       BLAZE_INTERNAL_ASSERT( B.rows()    == rhs.rhs_.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( B.columns() == rhs.rhs_.columns(), "Invalid number of columns" );
-      BLAZE_INTERNAL_ASSERT( A.rows()    == (~lhs).rows()     , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( A.columns() == (~lhs).columns()  , "Invalid number of columns" );
-      BLAZE_INTERNAL_ASSERT( B.rows()    == (~lhs).rows()     , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( B.columns() == (~lhs).columns()  , "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( A.rows()    == (*lhs).rows()     , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( A.columns() == (*lhs).columns()  , "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( B.rows()    == (*lhs).rows()     , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( B.columns() == (*lhs).columns()  , "Invalid number of columns" );
 
-      schurAssign( ~lhs, map( A, B, rhs.op_ ) );
+      schurAssign( *lhs, map( A, B, rhs.op_ ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -888,8 +888,8 @@ class DMatDMatMapExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
       LT A( rhs.lhs_ );  // Evaluation of the left-hand side dense matrix operand
       RT B( rhs.rhs_ );  // Evaluation of the right-hand side dense matrix operand
@@ -898,12 +898,12 @@ class DMatDMatMapExpr
       BLAZE_INTERNAL_ASSERT( A.columns() == rhs.lhs_.columns(), "Invalid number of columns" );
       BLAZE_INTERNAL_ASSERT( B.rows()    == rhs.rhs_.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( B.columns() == rhs.rhs_.columns(), "Invalid number of columns" );
-      BLAZE_INTERNAL_ASSERT( A.rows()    == (~lhs).rows()     , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( A.columns() == (~lhs).columns()  , "Invalid number of columns" );
-      BLAZE_INTERNAL_ASSERT( B.rows()    == (~lhs).rows()     , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( B.columns() == (~lhs).columns()  , "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( A.rows()    == (*lhs).rows()     , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( A.columns() == (*lhs).columns()  , "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( B.rows()    == (*lhs).rows()     , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( B.columns() == (*lhs).columns()  , "Invalid number of columns" );
 
-      smpAssign( ~lhs, map( A, B, rhs.op_ ) );
+      smpAssign( *lhs, map( A, B, rhs.op_ ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -938,11 +938,11 @@ class DMatDMatMapExpr
       BLAZE_CONSTRAINT_MATRICES_MUST_HAVE_SAME_STORAGE_ORDER( MT, TmpType );
       BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( TmpType );
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
       const TmpType tmp( rhs );
-      smpAssign( ~lhs, tmp );
+      smpAssign( *lhs, tmp );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -969,8 +969,8 @@ class DMatDMatMapExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
       LT A( rhs.lhs_ );  // Evaluation of the left-hand side dense matrix operand
       RT B( rhs.rhs_ );  // Evaluation of the right-hand side dense matrix operand
@@ -979,12 +979,12 @@ class DMatDMatMapExpr
       BLAZE_INTERNAL_ASSERT( A.columns() == rhs.lhs_.columns(), "Invalid number of columns" );
       BLAZE_INTERNAL_ASSERT( B.rows()    == rhs.rhs_.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( B.columns() == rhs.rhs_.columns(), "Invalid number of columns" );
-      BLAZE_INTERNAL_ASSERT( A.rows()    == (~lhs).rows()     , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( A.columns() == (~lhs).columns()  , "Invalid number of columns" );
-      BLAZE_INTERNAL_ASSERT( B.rows()    == (~lhs).rows()     , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( B.columns() == (~lhs).columns()  , "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( A.rows()    == (*lhs).rows()     , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( A.columns() == (*lhs).columns()  , "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( B.rows()    == (*lhs).rows()     , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( B.columns() == (*lhs).columns()  , "Invalid number of columns" );
 
-      smpAddAssign( ~lhs, map( A, B, rhs.op_ ) );
+      smpAddAssign( *lhs, map( A, B, rhs.op_ ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -1015,8 +1015,8 @@ class DMatDMatMapExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
       LT A( rhs.lhs_ );  // Evaluation of the left-hand side dense matrix operand
       RT B( rhs.rhs_ );  // Evaluation of the right-hand side dense matrix operand
@@ -1025,12 +1025,12 @@ class DMatDMatMapExpr
       BLAZE_INTERNAL_ASSERT( A.columns() == rhs.lhs_.columns(), "Invalid number of columns" );
       BLAZE_INTERNAL_ASSERT( B.rows()    == rhs.rhs_.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( B.columns() == rhs.rhs_.columns(), "Invalid number of columns" );
-      BLAZE_INTERNAL_ASSERT( A.rows()    == (~lhs).rows()     , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( A.columns() == (~lhs).columns()  , "Invalid number of columns" );
-      BLAZE_INTERNAL_ASSERT( B.rows()    == (~lhs).rows()     , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( B.columns() == (~lhs).columns()  , "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( A.rows()    == (*lhs).rows()     , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( A.columns() == (*lhs).columns()  , "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( B.rows()    == (*lhs).rows()     , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( B.columns() == (*lhs).columns()  , "Invalid number of columns" );
 
-      smpSubAssign( ~lhs, map( A, B, rhs.op_ ) );
+      smpSubAssign( *lhs, map( A, B, rhs.op_ ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -1061,8 +1061,8 @@ class DMatDMatMapExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
       LT A( rhs.lhs_ );  // Evaluation of the left-hand side dense matrix operand
       RT B( rhs.rhs_ );  // Evaluation of the right-hand side dense matrix operand
@@ -1071,12 +1071,12 @@ class DMatDMatMapExpr
       BLAZE_INTERNAL_ASSERT( A.columns() == rhs.lhs_.columns(), "Invalid number of columns" );
       BLAZE_INTERNAL_ASSERT( B.rows()    == rhs.rhs_.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( B.columns() == rhs.rhs_.columns(), "Invalid number of columns" );
-      BLAZE_INTERNAL_ASSERT( A.rows()    == (~lhs).rows()     , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( A.columns() == (~lhs).columns()  , "Invalid number of columns" );
-      BLAZE_INTERNAL_ASSERT( B.rows()    == (~lhs).rows()     , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( B.columns() == (~lhs).columns()  , "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( A.rows()    == (*lhs).rows()     , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( A.columns() == (*lhs).columns()  , "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( B.rows()    == (*lhs).rows()     , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( B.columns() == (*lhs).columns()  , "Invalid number of columns" );
 
-      smpSchurAssign( ~lhs, map( A, B, rhs.op_ ) );
+      smpSchurAssign( *lhs, map( A, B, rhs.op_ ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -1145,12 +1145,12 @@ inline decltype(auto)
 {
    BLAZE_FUNCTION_TRACE;
 
-   if( (~lhs).rows() != (~rhs).rows() || (~lhs).columns() != (~rhs).columns() ) {
+   if( (*lhs).rows() != (*rhs).rows() || (*lhs).columns() != (*rhs).columns() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
    using ReturnType = const DMatDMatMapExpr<MT1,MT2,OP,SO>;
-   return ReturnType( ~lhs, ~rhs, std::move(op) );
+   return ReturnType( *lhs, *rhs, std::move(op) );
 }
 //*************************************************************************************************
 
@@ -1185,7 +1185,7 @@ inline decltype(auto)
    BLAZE_FUNCTION_TRACE;
 
    const MakePair mp{};
-   return map( map( map( ~dm1, ~dm2, mp ), ~dm3, mp ), join( std::move(op) ) );
+   return map( map( map( *dm1, *dm2, mp ), *dm3, mp ), join( std::move(op) ) );
 }
 //*************************************************************************************************
 
@@ -1222,7 +1222,7 @@ inline decltype(auto)
    BLAZE_FUNCTION_TRACE;
 
    const MakePair mp{};
-   return map( map( map( map( ~dm1, ~dm2, mp ), ~dm3, mp ), ~dm4, mp ), join( std::move(op) ) );
+   return map( map( map( map( *dm1, *dm2, mp ), *dm3, mp ), *dm4, mp ), join( std::move(op) ) );
 }
 //*************************************************************************************************
 
@@ -1262,7 +1262,7 @@ inline decltype(auto)
    BLAZE_FUNCTION_TRACE;
 
    const MakePair mp{};
-   return map( map( map( map( map( ~dm1, ~dm2, mp ), ~dm3, mp ), ~dm4, mp ), ~dm5, mp ), join( std::move(op) ) );
+   return map( map( map( map( map( *dm1, *dm2, mp ), *dm3, mp ), *dm4, mp ), *dm5, mp ), join( std::move(op) ) );
 }
 //*************************************************************************************************
 
@@ -1304,7 +1304,7 @@ inline decltype(auto)
    BLAZE_FUNCTION_TRACE;
 
    const MakePair mp{};
-   return map( map( map( map( map( map( ~dm1, ~dm2, mp ), ~dm3, mp ), ~dm4, mp ), ~dm5, mp ), ~dm6, mp ), join( std::move(op) ) );
+   return map( map( map( map( map( map( *dm1, *dm2, mp ), *dm3, mp ), *dm4, mp ), *dm5, mp ), *dm6, mp ), join( std::move(op) ) );
 }
 //*************************************************************************************************
 
@@ -1340,7 +1340,7 @@ inline decltype(auto)
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( ~lhs, ~rhs, Min() );
+   return map( *lhs, *rhs, Min() );
 }
 //*************************************************************************************************
 
@@ -1376,7 +1376,7 @@ inline decltype(auto)
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( ~lhs, ~rhs, Max() );
+   return map( *lhs, *rhs, Max() );
 }
 //*************************************************************************************************
 
@@ -1413,7 +1413,7 @@ inline decltype(auto)
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( ~lhs, ~rhs, Hypot() );
+   return map( *lhs, *rhs, Hypot() );
 }
 //*************************************************************************************************
 
@@ -1449,7 +1449,7 @@ inline decltype(auto)
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( ~lhs, ~rhs, Pow() );
+   return map( *lhs, *rhs, Pow() );
 }
 //*************************************************************************************************
 
@@ -1485,7 +1485,7 @@ inline decltype(auto)
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( ~lhs, ~rhs, Atan2() );
+   return map( *lhs, *rhs, Atan2() );
 }
 //*************************************************************************************************
 
@@ -1571,7 +1571,7 @@ inline decltype(auto)
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( ~lhs, ~rhs, ShiftLV() );
+   return map( *lhs, *rhs, ShiftLV() );
 }
 //*************************************************************************************************
 
@@ -1605,7 +1605,7 @@ inline decltype(auto)
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( ~lhs, ~rhs, ShiftRV() );
+   return map( *lhs, *rhs, ShiftRV() );
 }
 //*************************************************************************************************
 
@@ -1639,7 +1639,7 @@ inline decltype(auto)
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( ~lhs, ~rhs, Bitand() );
+   return map( *lhs, *rhs, Bitand() );
 }
 //*************************************************************************************************
 
@@ -1673,7 +1673,7 @@ inline decltype(auto)
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( ~lhs, ~rhs, Bitor() );
+   return map( *lhs, *rhs, Bitor() );
 }
 //*************************************************************************************************
 
@@ -1707,7 +1707,7 @@ inline decltype(auto)
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( ~lhs, ~rhs, Bitxor() );
+   return map( *lhs, *rhs, Bitxor() );
 }
 //*************************************************************************************************
 
@@ -1744,7 +1744,7 @@ inline decltype(auto)
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( lhs.leftOperand(), lhs.rightOperand() + (~rhs), lhs.operation() );
+   return map( lhs.leftOperand(), lhs.rightOperand() + (*rhs), lhs.operation() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1774,7 +1774,7 @@ inline decltype(auto)
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( lhs.leftOperand(), lhs.rightOperand() + (~rhs), lhs.operation() );
+   return map( lhs.leftOperand(), lhs.rightOperand() + (*rhs), lhs.operation() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1817,7 +1817,7 @@ inline decltype(auto)
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( ~lhs, ~rhs, And{} );
+   return map( *lhs, *rhs, And{} );
 }
 //*************************************************************************************************
 
@@ -1851,7 +1851,7 @@ inline decltype(auto)
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( ~lhs, ~rhs, Or{} );
+   return map( *lhs, *rhs, Or{} );
 }
 //*************************************************************************************************
 

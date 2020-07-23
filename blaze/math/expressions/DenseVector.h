@@ -150,7 +150,7 @@ template< typename VT  // Type of the vector
 BLAZE_ALWAYS_INLINE auto data_backend( DenseVector<VT,TF>& dv ) noexcept
    -> EnableIf_t< HasMutableDataAccess_v<VT>, typename VT::ElementType* >
 {
-   return (~dv).data();
+   return (*dv).data();
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -173,7 +173,7 @@ template< typename VT  // Type of the vector
         , bool TF >    // Transpose flag of the vector
 BLAZE_ALWAYS_INLINE typename VT::ElementType* data( DenseVector<VT,TF>& dv ) noexcept
 {
-   return data_backend( ~dv );
+   return data_backend( *dv );
 }
 //*************************************************************************************************
 
@@ -217,7 +217,7 @@ template< typename VT  // Type of the vector
 BLAZE_ALWAYS_INLINE auto data_backend( const DenseVector<VT,TF>& dv ) noexcept
    -> EnableIf_t< HasConstDataAccess_v<VT>, const typename VT::ElementType* >
 {
-   return (~dv).data();
+   return (*dv).data();
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -240,7 +240,7 @@ template< typename VT  // Type of the vector
         , bool TF >    // Transpose flag of the vector
 BLAZE_ALWAYS_INLINE const typename VT::ElementType* data( const DenseVector<VT,TF>& dv ) noexcept
 {
-   return data_backend( ~dv );
+   return data_backend( *dv );
 }
 //*************************************************************************************************
 

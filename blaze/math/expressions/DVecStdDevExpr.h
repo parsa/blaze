@@ -82,7 +82,7 @@ decltype(auto) stddev( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return sqrt( var( ~dv ) );
+   return sqrt( var( *dv ) );
 }
 //*************************************************************************************************
 

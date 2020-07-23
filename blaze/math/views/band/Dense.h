@@ -1140,12 +1140,12 @@ inline Band<MT,TF,true,false,CBAs...>&
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType_t<VT>, TF );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_t<VT> );
 
-   if( size() != (~rhs).size() ) {
+   if( size() != (*rhs).size() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
    using Right = If_t< IsRestricted_v<MT>, CompositeType_t<VT>, const VT& >;
-   Right right( ~rhs );
+   Right right( *rhs );
 
    if( !tryAssign( matrix_, right, band(), row(), column() ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
@@ -1195,12 +1195,12 @@ inline Band<MT,TF,true,false,CBAs...>&
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType_t<VT>, TF );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_t<VT> );
 
-   if( size() != (~rhs).size() ) {
+   if( size() != (*rhs).size() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
    using Right = If_t< IsRestricted_v<MT>, CompositeType_t<VT>, const VT& >;
-   Right right( ~rhs );
+   Right right( *rhs );
 
    if( !tryAddAssign( matrix_, right, band(), row(), column() ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
@@ -1248,12 +1248,12 @@ inline Band<MT,TF,true,false,CBAs...>&
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType_t<VT>, TF );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_t<VT> );
 
-   if( size() != (~rhs).size() ) {
+   if( size() != (*rhs).size() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
    using Right = If_t< IsRestricted_v<MT>, CompositeType_t<VT>, const VT& >;
-   Right right( ~rhs );
+   Right right( *rhs );
 
    if( !trySubAssign( matrix_, right, band(), row(), column() ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
@@ -1303,12 +1303,12 @@ inline Band<MT,TF,true,false,CBAs...>&
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_t<VT> );
 
-   if( size() != (~rhs).size() ) {
+   if( size() != (*rhs).size() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
    using Right = If_t< IsRestricted_v<MT>, CompositeType_t<VT>, const VT& >;
-   Right right( ~rhs );
+   Right right( *rhs );
 
    if( !tryMultAssign( matrix_, right, band(), row(), column() ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
@@ -1354,12 +1354,12 @@ inline Band<MT,TF,true,false,CBAs...>&
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType_t<VT>, TF );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_t<VT> );
 
-   if( size() != (~rhs).size() ) {
+   if( size() != (*rhs).size() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
    using Right = If_t< IsRestricted_v<MT>, CompositeType_t<VT>, const VT& >;
-   Right right( ~rhs );
+   Right right( *rhs );
 
    if( !tryDivAssign( matrix_, right, band(), row(), column() ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
@@ -1414,11 +1414,11 @@ inline Band<MT,TF,true,false,CBAs...>&
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( CrossType, TF );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( CrossType );
 
-   if( size() != 3UL || (~rhs).size() != 3UL ) {
+   if( size() != 3UL || (*rhs).size() != 3UL ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid vector size for cross product" );
    }
 
-   const CrossType right( *this % (~rhs) );
+   const CrossType right( *this % (*rhs) );
 
    if( !tryAssign( matrix_, right, band(), row(), column() ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
@@ -1798,17 +1798,17 @@ template< typename MT          // Type of the dense matrix
 template< typename VT >        // Type of the right-hand side dense vector
 inline void Band<MT,TF,true,false,CBAs...>::assign( const DenseVector<VT,TF>& rhs )
 {
-   BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
+   BLAZE_INTERNAL_ASSERT( size() == (*rhs).size(), "Invalid vector sizes" );
 
-   const size_t ipos( prevMultiple( (~rhs).size(), 2UL ) );
-   BLAZE_INTERNAL_ASSERT( ipos <= (~rhs).size(), "Invalid end calculation" );
+   const size_t ipos( prevMultiple( (*rhs).size(), 2UL ) );
+   BLAZE_INTERNAL_ASSERT( ipos <= (*rhs).size(), "Invalid end calculation" );
 
    for( size_t i=0UL; i<ipos; i+=2UL ) {
-      matrix_(row()+i    ,column()+i    ) = (~rhs)[i    ];
-      matrix_(row()+i+1UL,column()+i+1UL) = (~rhs)[i+1UL];
+      matrix_(row()+i    ,column()+i    ) = (*rhs)[i    ];
+      matrix_(row()+i+1UL,column()+i+1UL) = (*rhs)[i+1UL];
    }
-   if( ipos < (~rhs).size() ) {
-      matrix_(row()+ipos,column()+ipos) = (~rhs)[ipos];
+   if( ipos < (*rhs).size() ) {
+      matrix_(row()+ipos,column()+ipos) = (*rhs)[ipos];
    }
 }
 /*! \endcond */
@@ -1833,9 +1833,9 @@ template< typename MT          // Type of the dense matrix
 template< typename VT >        // Type of the right-hand side sparse vector
 inline void Band<MT,TF,true,false,CBAs...>::assign( const SparseVector<VT,TF>& rhs )
 {
-   BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
+   BLAZE_INTERNAL_ASSERT( size() == (*rhs).size(), "Invalid vector sizes" );
 
-   for( ConstIterator_t<VT> element=(~rhs).begin(); element!=(~rhs).end(); ++element ) {
+   for( ConstIterator_t<VT> element=(*rhs).begin(); element!=(*rhs).end(); ++element ) {
       const size_t index( element->index() );
       matrix_(row()+index,column()+index) = element->value();
    }
@@ -1862,17 +1862,17 @@ template< typename MT          // Type of the dense matrix
 template< typename VT >        // Type of the right-hand side dense vector
 inline void Band<MT,TF,true,false,CBAs...>::addAssign( const DenseVector<VT,TF>& rhs )
 {
-   BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
+   BLAZE_INTERNAL_ASSERT( size() == (*rhs).size(), "Invalid vector sizes" );
 
-   const size_t ipos( prevMultiple( (~rhs).size(), 2UL ) );
-   BLAZE_INTERNAL_ASSERT( ipos <= (~rhs).size(), "Invalid end calculation" );
+   const size_t ipos( prevMultiple( (*rhs).size(), 2UL ) );
+   BLAZE_INTERNAL_ASSERT( ipos <= (*rhs).size(), "Invalid end calculation" );
 
    for( size_t i=0UL; i<ipos; i+=2UL ) {
-      matrix_(row()+i    ,column()+i    ) += (~rhs)[i    ];
-      matrix_(row()+i+1UL,column()+i+1UL) += (~rhs)[i+1UL];
+      matrix_(row()+i    ,column()+i    ) += (*rhs)[i    ];
+      matrix_(row()+i+1UL,column()+i+1UL) += (*rhs)[i+1UL];
    }
-   if( ipos < (~rhs).size() ) {
-      matrix_(row()+ipos,column()+ipos) += (~rhs)[ipos];
+   if( ipos < (*rhs).size() ) {
+      matrix_(row()+ipos,column()+ipos) += (*rhs)[ipos];
    }
 }
 /*! \endcond */
@@ -1897,9 +1897,9 @@ template< typename MT          // Type of the dense matrix
 template< typename VT >        // Type of the right-hand side sparse vector
 inline void Band<MT,TF,true,false,CBAs...>::addAssign( const SparseVector<VT,TF>& rhs )
 {
-   BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
+   BLAZE_INTERNAL_ASSERT( size() == (*rhs).size(), "Invalid vector sizes" );
 
-   for( ConstIterator_t<VT> element=(~rhs).begin(); element!=(~rhs).end(); ++element ) {
+   for( ConstIterator_t<VT> element=(*rhs).begin(); element!=(*rhs).end(); ++element ) {
       const size_t index( element->index() );
       matrix_(row()+index,column()+index) += element->value();
    }
@@ -1926,17 +1926,17 @@ template< typename MT          // Type of the dense matrix
 template< typename VT >        // Type of the right-hand side dense vector
 inline void Band<MT,TF,true,false,CBAs...>::subAssign( const DenseVector<VT,TF>& rhs )
 {
-   BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
+   BLAZE_INTERNAL_ASSERT( size() == (*rhs).size(), "Invalid vector sizes" );
 
-   const size_t ipos( prevMultiple( (~rhs).size(), 2UL ) );
-   BLAZE_INTERNAL_ASSERT( ipos <= (~rhs).size(), "Invalid end calculation" );
+   const size_t ipos( prevMultiple( (*rhs).size(), 2UL ) );
+   BLAZE_INTERNAL_ASSERT( ipos <= (*rhs).size(), "Invalid end calculation" );
 
    for( size_t i=0UL; i<ipos; i+=2UL ) {
-      matrix_(row()+i    ,column()+i    ) -= (~rhs)[i    ];
-      matrix_(row()+i+1UL,column()+i+1UL) -= (~rhs)[i+1UL];
+      matrix_(row()+i    ,column()+i    ) -= (*rhs)[i    ];
+      matrix_(row()+i+1UL,column()+i+1UL) -= (*rhs)[i+1UL];
    }
-   if( ipos < (~rhs).size() ) {
-      matrix_(row()+ipos,column()+ipos) -= (~rhs)[ipos];
+   if( ipos < (*rhs).size() ) {
+      matrix_(row()+ipos,column()+ipos) -= (*rhs)[ipos];
    }
 }
 /*! \endcond */
@@ -1961,9 +1961,9 @@ template< typename MT          // Type of the dense matrix
 template< typename VT >        // Type of the right-hand side sparse vector
 inline void Band<MT,TF,true,false,CBAs...>::subAssign( const SparseVector<VT,TF>& rhs )
 {
-   BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
+   BLAZE_INTERNAL_ASSERT( size() == (*rhs).size(), "Invalid vector sizes" );
 
-   for( ConstIterator_t<VT> element=(~rhs).begin(); element!=(~rhs).end(); ++element ) {
+   for( ConstIterator_t<VT> element=(*rhs).begin(); element!=(*rhs).end(); ++element ) {
       const size_t index( element->index() );
       matrix_(row()+index,column()+index) -= element->value();
    }
@@ -1990,17 +1990,17 @@ template< typename MT          // Type of the dense matrix
 template< typename VT >        // Type of the right-hand side dense vector
 inline void Band<MT,TF,true,false,CBAs...>::multAssign( const DenseVector<VT,TF>& rhs )
 {
-   BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
+   BLAZE_INTERNAL_ASSERT( size() == (*rhs).size(), "Invalid vector sizes" );
 
-   const size_t ipos( prevMultiple( (~rhs).size(), 2UL ) );
-   BLAZE_INTERNAL_ASSERT( ipos <= (~rhs).size(), "Invalid end calculation" );
+   const size_t ipos( prevMultiple( (*rhs).size(), 2UL ) );
+   BLAZE_INTERNAL_ASSERT( ipos <= (*rhs).size(), "Invalid end calculation" );
 
    for( size_t i=0UL; i<ipos; i+=2UL ) {
-      matrix_(row()+i    ,column()+i    ) *= (~rhs)[i    ];
-      matrix_(row()+i+1UL,column()+i+1UL) *= (~rhs)[i+1UL];
+      matrix_(row()+i    ,column()+i    ) *= (*rhs)[i    ];
+      matrix_(row()+i+1UL,column()+i+1UL) *= (*rhs)[i+1UL];
    }
-   if( ipos < (~rhs).size() ) {
-      matrix_(row()+ipos,column()+ipos) *= (~rhs)[ipos];
+   if( ipos < (*rhs).size() ) {
+      matrix_(row()+ipos,column()+ipos) *= (*rhs)[ipos];
    }
 }
 /*! \endcond */
@@ -2027,11 +2027,11 @@ inline void Band<MT,TF,true,false,CBAs...>::multAssign( const SparseVector<VT,TF
 {
    using blaze::reset;
 
-   BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
+   BLAZE_INTERNAL_ASSERT( size() == (*rhs).size(), "Invalid vector sizes" );
 
    size_t i( 0UL );
 
-   for( ConstIterator_t<VT> element=(~rhs).begin(); element!=(~rhs).end(); ++element ) {
+   for( ConstIterator_t<VT> element=(*rhs).begin(); element!=(*rhs).end(); ++element ) {
       const size_t index( element->index() );
       for( ; i<index; ++i )
          reset( matrix_(row()+i,column()+i) );
@@ -2065,17 +2065,17 @@ template< typename MT          // Type of the dense matrix
 template< typename VT >        // Type of the right-hand side dense vector
 inline void Band<MT,TF,true,false,CBAs...>::divAssign( const DenseVector<VT,TF>& rhs )
 {
-   BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
+   BLAZE_INTERNAL_ASSERT( size() == (*rhs).size(), "Invalid vector sizes" );
 
-   const size_t ipos( prevMultiple( (~rhs).size(), 2UL ) );
-   BLAZE_INTERNAL_ASSERT( ipos <= (~rhs).size(), "Invalid end calculation" );
+   const size_t ipos( prevMultiple( (*rhs).size(), 2UL ) );
+   BLAZE_INTERNAL_ASSERT( ipos <= (*rhs).size(), "Invalid end calculation" );
 
    for( size_t i=0UL; i<ipos; i+=2UL ) {
-      matrix_(row()+i    ,column()+i    ) /= (~rhs)[i    ];
-      matrix_(row()+i+1UL,column()+i+1UL) /= (~rhs)[i+1UL];
+      matrix_(row()+i    ,column()+i    ) /= (*rhs)[i    ];
+      matrix_(row()+i+1UL,column()+i+1UL) /= (*rhs)[i+1UL];
    }
-   if( ipos < (~rhs).size() ) {
-      matrix_(row()+ipos,column()+ipos) /= (~rhs)[ipos];
+   if( ipos < (*rhs).size() ) {
+      matrix_(row()+ipos,column()+ipos) /= (*rhs)[ipos];
    }
 }
 /*! \endcond */
@@ -2299,14 +2299,14 @@ class Band<MT,TF,true,true,CBAs...>
 
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       LT A( serial( rhs.operand().leftOperand()  ) );
       RT B( serial( rhs.operand().rightOperand() ) );
 
       const size_t n( rhs.size() );
       for( size_t i=0UL; i<n; ++i ) {
-         (~lhs)[i] = row( A, rhs.row()+i, unchecked ) * column( B, rhs.column()+i, unchecked );
+         (*lhs)[i] = row( A, rhs.row()+i, unchecked ) * column( B, rhs.column()+i, unchecked );
       }
    }
    //**********************************************************************************************
@@ -2331,10 +2331,10 @@ class Band<MT,TF,true,true,CBAs...>
       BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType, TF );
       BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       const ResultType tmp( serial( rhs ) );
-      assign( ~lhs, tmp );
+      assign( *lhs, tmp );
    }
    //**********************************************************************************************
 
@@ -2357,14 +2357,14 @@ class Band<MT,TF,true,true,CBAs...>
 
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       LT A( serial( rhs.operand().leftOperand()  ) );
       RT B( serial( rhs.operand().rightOperand() ) );
 
       const size_t n( rhs.size() );
       for( size_t i=0UL; i<n; ++i ) {
-         (~lhs)[i] += row( A, rhs.row()+i, unchecked ) * column( B, rhs.column()+i, unchecked );
+         (*lhs)[i] += row( A, rhs.row()+i, unchecked ) * column( B, rhs.column()+i, unchecked );
       }
    }
    //**********************************************************************************************
@@ -2392,14 +2392,14 @@ class Band<MT,TF,true,true,CBAs...>
 
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       LT A( serial( rhs.operand().leftOperand()  ) );
       RT B( serial( rhs.operand().rightOperand() ) );
 
       const size_t n( rhs.size() );
       for( size_t i=0UL; i<n; ++i ) {
-         (~lhs)[i] -= row( A, rhs.row()+i, unchecked ) * column( B, rhs.column()+i, unchecked );
+         (*lhs)[i] -= row( A, rhs.row()+i, unchecked ) * column( B, rhs.column()+i, unchecked );
       }
    }
    //**********************************************************************************************
@@ -2428,14 +2428,14 @@ class Band<MT,TF,true,true,CBAs...>
 
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       LT A( serial( rhs.operand().leftOperand()  ) );
       RT B( serial( rhs.operand().rightOperand() ) );
 
       const size_t n( rhs.size() );
       for( size_t i=0UL; i<n; ++i ) {
-         (~lhs)[i] *= row( A, rhs.row()+i, unchecked ) * column( B, rhs.column()+i, unchecked );
+         (*lhs)[i] *= row( A, rhs.row()+i, unchecked ) * column( B, rhs.column()+i, unchecked );
       }
    }
    //**********************************************************************************************
@@ -2463,14 +2463,14 @@ class Band<MT,TF,true,true,CBAs...>
 
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       LT A( serial( rhs.operand().leftOperand()  ) );
       RT B( serial( rhs.operand().rightOperand() ) );
 
       const size_t n( rhs.size() );
       for( size_t i=0UL; i<n; ++i ) {
-         (~lhs)[i] /= row( A, rhs.row()+i, unchecked ) * column( B, rhs.column()+i, unchecked );
+         (*lhs)[i] /= row( A, rhs.row()+i, unchecked ) * column( B, rhs.column()+i, unchecked );
       }
    }
    //**********************************************************************************************

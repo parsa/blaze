@@ -122,7 +122,7 @@ inline void sytri( DenseMatrix<MT,SO>& A, char uplo, const blas_int_t* ipiv )
 
    using ET = ElementType_t<MT>;
 
-   if( !isSquare( ~A ) ) {
+   if( !isSquare( *A ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid non-square matrix provided" );
    }
 
@@ -130,8 +130,8 @@ inline void sytri( DenseMatrix<MT,SO>& A, char uplo, const blas_int_t* ipiv )
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid uplo argument provided" );
    }
 
-   blas_int_t n   ( numeric_cast<blas_int_t>( (~A).columns() ) );
-   blas_int_t lda ( numeric_cast<blas_int_t>( (~A).spacing() ) );
+   blas_int_t n   ( numeric_cast<blas_int_t>( (*A).columns() ) );
+   blas_int_t lda ( numeric_cast<blas_int_t>( (*A).spacing() ) );
    blas_int_t info( 0 );
 
    if( n == 0 ) {
@@ -144,7 +144,7 @@ inline void sytri( DenseMatrix<MT,SO>& A, char uplo, const blas_int_t* ipiv )
 
    const std::unique_ptr<ET[]> work( new ET[n] );
 
-   sytri( uplo, n, (~A).data(), lda, ipiv, work.get(), &info );
+   sytri( uplo, n, (*A).data(), lda, ipiv, work.get(), &info );
 
    BLAZE_INTERNAL_ASSERT( info >= 0, "Invalid argument for matrix inversion" );
 

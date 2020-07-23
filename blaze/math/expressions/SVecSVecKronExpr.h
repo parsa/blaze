@@ -265,7 +265,7 @@ class SVecSVecKronExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       if( rhs.size() == 0UL ) {
          return;
@@ -280,7 +280,7 @@ class SVecSVecKronExpr
 
       for( auto xelem=x.begin(); xelem!=xend; ++xelem ) {
          for( auto yelem=y.begin(); yelem!=yend; ++yelem ) {
-            (~lhs)[xelem->index()*N+yelem->index()] = xelem->value() * yelem->value();
+            (*lhs)[xelem->index()*N+yelem->index()] = xelem->value() * yelem->value();
          }
       }
    }
@@ -304,7 +304,7 @@ class SVecSVecKronExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       if( rhs.size() == 0UL ) {
          return;
@@ -319,7 +319,7 @@ class SVecSVecKronExpr
 
       for( auto xelem=x.begin(); xelem!=xend; ++xelem ) {
          for( auto yelem=y.begin(); yelem!=yend; ++yelem ) {
-            (~lhs).append( xelem->index()*N+yelem->index(), xelem->value() * yelem->value(), true );
+            (*lhs).append( xelem->index()*N+yelem->index(), xelem->value() * yelem->value(), true );
          }
       }
    }
@@ -344,7 +344,7 @@ class SVecSVecKronExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       if( rhs.size() == 0UL ) {
          return;
@@ -359,7 +359,7 @@ class SVecSVecKronExpr
 
       for( auto xelem=x.begin(); xelem!=xend; ++xelem ) {
          for( auto yelem=y.begin(); yelem!=yend; ++yelem ) {
-            (~lhs)[xelem->index()*N+yelem->index()] += xelem->value() * yelem->value();
+            (*lhs)[xelem->index()*N+yelem->index()] += xelem->value() * yelem->value();
          }
       }
    }
@@ -388,7 +388,7 @@ class SVecSVecKronExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       if( rhs.size() == 0UL ) {
          return;
@@ -403,7 +403,7 @@ class SVecSVecKronExpr
 
       for( auto xelem=x.begin(); xelem!=xend; ++xelem ) {
          for( auto yelem=y.begin(); yelem!=yend; ++yelem ) {
-            (~lhs)[xelem->index()*N+yelem->index()] -= xelem->value() * yelem->value();
+            (*lhs)[xelem->index()*N+yelem->index()] -= xelem->value() * yelem->value();
          }
       }
    }
@@ -432,7 +432,7 @@ class SVecSVecKronExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       if( rhs.size() == 0UL ) {
          return;
@@ -450,13 +450,13 @@ class SVecSVecKronExpr
          for( auto yelem=y.begin(); yelem!=yend; ++yelem, ++i ) {
             const size_t index( xelem->index()*N+yelem->index() );
             for( ; i<index; ++i )
-               reset( (~lhs)[i] );
-            (~lhs)[index] *= xelem->value() * yelem->value();
+               reset( (*lhs)[i] );
+            (*lhs)[index] *= xelem->value() * yelem->value();
          }
       }
 
-      for( ; i<(~lhs).size(); ++i ) {
-         reset( (~lhs)[i] );
+      for( ; i<(*lhs).size(); ++i ) {
+         reset( (*lhs)[i] );
       }
    }
    /*! \endcond */
@@ -511,7 +511,7 @@ inline const SVecSVecKronExpr<VT1,VT2,TF>
 {
    BLAZE_FUNCTION_TRACE;
 
-   return SVecSVecKronExpr<VT1,VT2,TF>( ~lhs, ~rhs );
+   return SVecSVecKronExpr<VT1,VT2,TF>( *lhs, *rhs );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -544,7 +544,7 @@ inline decltype(auto)
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ReturnType, TF );
    BLAZE_CONSTRAINT_MUST_BE_ZERO_TYPE( ReturnType );
 
-   return ReturnType( (~lhs).size()*(~rhs).size() );
+   return ReturnType( (*lhs).size()*(*rhs).size() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -579,7 +579,7 @@ inline decltype(auto)
 {
    BLAZE_FUNCTION_TRACE;
 
-   return svecsveckron( ~lhs, ~rhs );
+   return svecsveckron( *lhs, *rhs );
 }
 //*************************************************************************************************
 

@@ -467,7 +467,7 @@ class DVecTransposer
    {
       BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( VT2, TF );
 
-      dv_.assign( trans( ~rhs ) );
+      dv_.assign( trans( *rhs ) );
    }
    //**********************************************************************************************
 
@@ -487,7 +487,7 @@ class DVecTransposer
    {
       BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( VT2, TF );
 
-      dv_.addAssign( trans( ~rhs ) );
+      dv_.addAssign( trans( *rhs ) );
    }
    //**********************************************************************************************
 
@@ -507,7 +507,7 @@ class DVecTransposer
    {
       BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( VT2, TF );
 
-      dv_.subAssign( trans( ~rhs ) );
+      dv_.subAssign( trans( *rhs ) );
    }
    //**********************************************************************************************
 
@@ -527,7 +527,7 @@ class DVecTransposer
    {
       BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( VT2, TF );
 
-      dv_.multAssign( trans( ~rhs ) );
+      dv_.multAssign( trans( *rhs ) );
    }
    //**********************************************************************************************
 
@@ -547,7 +547,7 @@ class DVecTransposer
    {
       BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( VT2, TF );
 
-      dv_.divAssign( trans( ~rhs ) );
+      dv_.divAssign( trans( *rhs ) );
    }
    //**********************************************************************************************
 

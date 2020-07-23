@@ -143,7 +143,7 @@ typename MT::ConstIterator upperBound( const SparseMatrix<MT,SO>& sm, size_t i, 
 template< typename MT, bool SO >
 typename MT::Iterator find( SparseMatrix<MT,SO>& sm, size_t i, size_t j )
 {
-   return (~sm).find( i, j );
+   return (*sm).find( i, j );
 }
 //*************************************************************************************************
 
@@ -168,7 +168,7 @@ typename MT::Iterator find( SparseMatrix<MT,SO>& sm, size_t i, size_t j )
 template< typename MT, bool SO >
 typename MT::ConstIterator find( const SparseMatrix<MT,SO>& sm, size_t i, size_t j )
 {
-   return (~sm).find( i, j );
+   return (*sm).find( i, j );
 }
 //*************************************************************************************************
 
@@ -193,7 +193,7 @@ typename MT::ConstIterator find( const SparseMatrix<MT,SO>& sm, size_t i, size_t
 template< typename MT, bool SO >
 typename MT::Iterator lowerBound( SparseMatrix<MT,SO>& sm, size_t i, size_t j )
 {
-   return (~sm).lowerBound( i, j );
+   return (*sm).lowerBound( i, j );
 }
 //*************************************************************************************************
 
@@ -218,7 +218,7 @@ typename MT::Iterator lowerBound( SparseMatrix<MT,SO>& sm, size_t i, size_t j )
 template< typename MT, bool SO >
 typename MT::ConstIterator lowerBound( const SparseMatrix<MT,SO>& sm, size_t i, size_t j )
 {
-   return (~sm).lowerBound( i, j );
+   return (*sm).lowerBound( i, j );
 }
 //*************************************************************************************************
 
@@ -243,7 +243,7 @@ typename MT::ConstIterator lowerBound( const SparseMatrix<MT,SO>& sm, size_t i, 
 template< typename MT, bool SO >
 typename MT::Iterator upperBound( SparseMatrix<MT,SO>& sm, size_t i, size_t j )
 {
-   return (~sm).upperBound( i, j );
+   return (*sm).upperBound( i, j );
 }
 //*************************************************************************************************
 
@@ -268,7 +268,7 @@ typename MT::Iterator upperBound( SparseMatrix<MT,SO>& sm, size_t i, size_t j )
 template< typename MT, bool SO >
 typename MT::ConstIterator upperBound( const SparseMatrix<MT,SO>& sm, size_t i, size_t j )
 {
-   return (~sm).upperBound( i, j );
+   return (*sm).upperBound( i, j );
 }
 //*************************************************************************************************
 
@@ -287,10 +287,10 @@ typename MT::ConstIterator upperBound( const SparseMatrix<MT,SO>& sm, size_t i, 
 template< typename MT >  // Type of the matrix
 inline auto resetLower_backend( SparseMatrix<MT,false>& dm ) -> DisableIf_t< IsUpper_v<MT> >
 {
-   const size_t m( (~dm).rows() );
+   const size_t m( (*dm).rows() );
 
    for( size_t i=1UL; i<m; ++i ) {
-      (~dm).erase( i, (~dm).begin( i ), (~dm).lowerBound( i, i ) );
+      (*dm).erase( i, (*dm).begin( i ), (*dm).lowerBound( i, i ) );
    }
 }
 /*! \endcond */
@@ -311,12 +311,12 @@ inline auto resetLower_backend( SparseMatrix<MT,false>& dm ) -> DisableIf_t< IsU
 template< typename MT >  // Type of the matrix
 inline auto resetLower_backend( SparseMatrix<MT,true>& dm ) -> DisableIf_t< IsUpper_v<MT> >
 {
-   const size_t m   ( (~dm).rows()    );
-   const size_t n   ( (~dm).columns() );
+   const size_t m   ( (*dm).rows()    );
+   const size_t n   ( (*dm).columns() );
    const size_t jend( min( m, n ) );
 
    for( size_t j=0UL; j<jend; ++j ) {
-      (~dm).erase( j, (~dm).lowerBound( j+1UL, j ), (~dm).end( j ) );
+      (*dm).erase( j, (*dm).lowerBound( j+1UL, j ), (*dm).end( j ) );
    }
 }
 /*! \endcond */
@@ -357,7 +357,7 @@ template< typename MT  // Type of the matrix
         , bool SO >    // Storage order of the matrix
 inline void resetLower( SparseMatrix<MT,SO>& dm )
 {
-   resetLower_backend( ~dm );
+   resetLower_backend( *dm );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -377,12 +377,12 @@ inline void resetLower( SparseMatrix<MT,SO>& dm )
 template< typename MT >  // Type of the matrix
 inline auto resetUpper_backend( SparseMatrix<MT,false>& dm ) -> DisableIf_t< IsLower_v<MT> >
 {
-   const size_t m   ( (~dm).rows()    );
-   const size_t n   ( (~dm).columns() );
+   const size_t m   ( (*dm).rows()    );
+   const size_t n   ( (*dm).columns() );
    const size_t iend( min( m, n ) );
 
    for( size_t i=0UL; i<iend; ++i ) {
-      (~dm).erase( i, (~dm).lowerBound( i, i+1UL ), (~dm).end( i ) );
+      (*dm).erase( i, (*dm).lowerBound( i, i+1UL ), (*dm).end( i ) );
    }
 }
 /*! \endcond */
@@ -403,10 +403,10 @@ inline auto resetUpper_backend( SparseMatrix<MT,false>& dm ) -> DisableIf_t< IsL
 template< typename MT >  // Type of the matrix
 inline auto resetUpper_backend( SparseMatrix<MT,true>& dm ) -> DisableIf_t< IsLower_v<MT> >
 {
-   const size_t n( (~dm).columns() );
+   const size_t n( (*dm).columns() );
 
    for( size_t j=1UL; j<n; ++j ) {
-      (~dm).erase( j, (~dm).begin( j ), (~dm).lowerBound( j, j ) );
+      (*dm).erase( j, (*dm).begin( j ), (*dm).lowerBound( j, j ) );
    }
 }
 /*! \endcond */
@@ -447,7 +447,7 @@ template< typename MT  // Type of the matrix
         , bool SO >    // Storage order of the matrix
 inline void resetUpper( SparseMatrix<MT,SO>& dm )
 {
-   resetUpper_backend( ~dm );
+   resetUpper_backend( *dm );
 }
 /*! \endcond */
 //*************************************************************************************************

@@ -103,7 +103,7 @@ inline decltype(auto) trans( const VecTransExpr<VT>& vector )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return (~vector).operand();
+   return (*vector).operand();
 }
 /*! \endcond */
 //*************************************************************************************************

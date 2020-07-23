@@ -91,7 +91,7 @@ struct MatNoAliasExpr
 template< typename MT >  // Matrix base type of the expression
 inline decltype(auto) noalias( const MatNoAliasExpr<MT>& matrix )
 {
-   return ~matrix;
+   return *matrix;
 }
 /*! \endcond */
 //*************************************************************************************************

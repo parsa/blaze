@@ -242,7 +242,7 @@ class SVecRepeatExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       CompositeType_t<VT> x( serial( rhs.sv_ ) );  // Evaluation of the sparse vector operand
 
@@ -250,7 +250,7 @@ class SVecRepeatExpr
       const size_t size( x.size() );
 
       for( size_t rep=0UL; rep<reps; ++rep ) {
-         subvector( ~lhs, rep*size, size, unchecked ) = serial( x );
+         subvector( *lhs, rep*size, size, unchecked ) = serial( x );
       }
    }
    /*! \endcond */
@@ -273,18 +273,18 @@ class SVecRepeatExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       CompositeType_t<VT> x( serial( rhs.sv_ ) );  // Evaluation of the sparse vector operand
 
       const size_t reps( rhs.template repetitions<0UL>() );
       const size_t size( x.size() );
 
-      (~lhs).reserve( reps*size );
+      (*lhs).reserve( reps*size );
 
       for( size_t rep=0UL; rep<reps; ++rep ) {
          for( auto element=x.begin(); element!=x.end(); ++element ) {
-            (~lhs).append( rep*size+element->index(), element->value(), true );
+            (*lhs).append( rep*size+element->index(), element->value(), true );
          }
       }
    }
@@ -308,7 +308,7 @@ class SVecRepeatExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       CompositeType_t<VT> x( serial( rhs.sv_ ) );  // Evaluation of the sparse vector operand
 
@@ -316,7 +316,7 @@ class SVecRepeatExpr
       const size_t size( x.size() );
 
       for( size_t rep=0UL; rep<reps; ++rep ) {
-         subvector( ~lhs, rep*size, size, unchecked ) += serial( x );
+         subvector( *lhs, rep*size, size, unchecked ) += serial( x );
       }
    }
    /*! \endcond */
@@ -343,7 +343,7 @@ class SVecRepeatExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       CompositeType_t<VT> x( serial( rhs.sv_ ) );  // Evaluation of the sparse vector operand
 
@@ -351,7 +351,7 @@ class SVecRepeatExpr
       const size_t size( x.size() );
 
       for( size_t rep=0UL; rep<reps; ++rep ) {
-         subvector( ~lhs, rep*size, size, unchecked ) -= serial( x );
+         subvector( *lhs, rep*size, size, unchecked ) -= serial( x );
       }
    }
    /*! \endcond */
@@ -378,7 +378,7 @@ class SVecRepeatExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       CompositeType_t<VT> x( serial( rhs.sv_ ) );  // Evaluation of the sparse vector operand
 
@@ -386,7 +386,7 @@ class SVecRepeatExpr
       const size_t size( x.size() );
 
       for( size_t rep=0UL; rep<reps; ++rep ) {
-         subvector( ~lhs, rep*size, size, unchecked ) *= serial( x );
+         subvector( *lhs, rep*size, size, unchecked ) *= serial( x );
       }
    }
    /*! \endcond */
@@ -447,7 +447,7 @@ inline decltype(auto) repeat( const SparseVector<VT,TF>& sv, size_t repetitions 
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = const SVecRepeatExpr<VT,TF>;
-   return ReturnType( ~sv, repetitions );
+   return ReturnType( *sv, repetitions );
 }
 //*************************************************************************************************
 
@@ -485,7 +485,7 @@ inline decltype(auto) repeat( const SparseVector<VT,TF>& sv )
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = const SVecRepeatExpr<VT,TF,R>;
-   return ReturnType( ~sv );
+   return ReturnType( *sv );
 }
 //*************************************************************************************************
 
@@ -512,7 +512,7 @@ inline decltype(auto) repeat( const SparseVector<VT,TF>& sv, size_t repetitions 
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = const SVecRepeatExpr<VT,TF,R0>;
-   return ReturnType( ~sv );
+   return ReturnType( *sv );
 }
 /*! \endcond */
 //*************************************************************************************************

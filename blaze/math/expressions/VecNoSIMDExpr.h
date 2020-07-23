@@ -112,7 +112,7 @@ inline decltype(auto) nosimd( const VecVecAddExpr<VT>& vector )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return nosimd( (~vector).leftOperand() ) + nosimd( (~vector).rightOperand() );
+   return nosimd( (*vector).leftOperand() ) + nosimd( (*vector).rightOperand() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -133,7 +133,7 @@ inline decltype(auto) nosimd( const VecVecSubExpr<VT>& vector )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return nosimd( (~vector).leftOperand() ) - nosimd( (~vector).rightOperand() );
+   return nosimd( (*vector).leftOperand() ) - nosimd( (*vector).rightOperand() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -154,7 +154,7 @@ inline decltype(auto) nosimd( const VecVecMultExpr<VT>& vector )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return nosimd( (~vector).leftOperand() ) * nosimd( (~vector).rightOperand() );
+   return nosimd( (*vector).leftOperand() ) * nosimd( (*vector).rightOperand() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -176,7 +176,7 @@ inline decltype(auto) nosimd( const VecVecKronExpr<VT>& vector )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return kron( nosimd( (~vector).leftOperand() ), nosimd( (~vector).rightOperand() ) );
+   return kron( nosimd( (*vector).leftOperand() ), nosimd( (*vector).rightOperand() ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -197,7 +197,7 @@ inline decltype(auto) nosimd( const VecVecDivExpr<VT>& vector )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return nosimd( (~vector).leftOperand() ) / nosimd( (~vector).rightOperand() );
+   return nosimd( (*vector).leftOperand() ) / nosimd( (*vector).rightOperand() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -218,7 +218,7 @@ inline decltype(auto) nosimd( const CrossExpr<VT>& vector )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return nosimd( (~vector).leftOperand() ) % nosimd( (~vector).rightOperand() );
+   return nosimd( (*vector).leftOperand() ) % nosimd( (*vector).rightOperand() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -239,7 +239,7 @@ inline decltype(auto) nosimd( const VecScalarMultExpr<VT>& vector )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return nosimd( (~vector).leftOperand() ) * (~vector).rightOperand();
+   return nosimd( (*vector).leftOperand() ) * (*vector).rightOperand();
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -260,7 +260,7 @@ inline decltype(auto) nosimd( const VecScalarDivExpr<VT>& vector )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return nosimd( (~vector).leftOperand() ) / (~vector).rightOperand();
+   return nosimd( (*vector).leftOperand() ) / (*vector).rightOperand();
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -281,7 +281,7 @@ inline decltype(auto) nosimd( const VecMapExpr<VT>& vector )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( nosimd( (~vector).operand() ), (~vector).operation() );
+   return map( nosimd( (*vector).operand() ), (*vector).operation() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -302,8 +302,8 @@ inline decltype(auto) nosimd( const VecVecMapExpr<VT>& vector )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( nosimd( (~vector).leftOperand() ), nosimd( (~vector).rightOperand() ),
-               (~vector).operation() );
+   return map( nosimd( (*vector).leftOperand() ), nosimd( (*vector).rightOperand() ),
+               (*vector).operation() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -324,7 +324,7 @@ inline decltype(auto) nosimd( const VecEvalExpr<VT>& vector )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return eval( nosimd( (~vector).operand() ) );
+   return eval( nosimd( (*vector).operand() ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -346,7 +346,7 @@ inline decltype(auto) nosimd( const VecSerialExpr<VT>& vector )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return serial( nosimd( (~vector).operand() ) );
+   return serial( nosimd( (*vector).operand() ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -367,7 +367,7 @@ inline decltype(auto) nosimd( const VecNoAliasExpr<VT>& vector )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return noalias( nosimd( (~vector).operand() ) );
+   return noalias( nosimd( (*vector).operand() ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -386,7 +386,7 @@ inline decltype(auto) nosimd( const VecNoAliasExpr<VT>& vector )
 template< typename VT >  // Vector base type of the expression
 inline decltype(auto) nosimd( const VecNoSIMDExpr<VT>& vector )
 {
-   return ~vector;
+   return *vector;
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -408,7 +408,7 @@ inline decltype(auto) nosimd( const VecTransExpr<VT>& vector )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return trans( nosimd( (~vector).operand() ) );
+   return trans( nosimd( (*vector).operand() ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -430,7 +430,7 @@ inline decltype(auto) nosimd( const MatVecMultExpr<VT>& vector )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return nosimd( (~vector).leftOperand() ) * nosimd( (~vector).rightOperand() );
+   return nosimd( (*vector).leftOperand() ) * nosimd( (*vector).rightOperand() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -452,7 +452,7 @@ inline decltype(auto) nosimd( const TVecMatMultExpr<VT>& vector )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return nosimd( (~vector).leftOperand() ) * nosimd( (~vector).rightOperand() );
+   return nosimd( (*vector).leftOperand() ) * nosimd( (*vector).rightOperand() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -475,7 +475,7 @@ inline decltype(auto) nosimd( const MatReduceExpr<VT,RF>& vector )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return reduce<RF>( nosimd( (~vector).operand() ), (~vector).operation() );
+   return reduce<RF>( nosimd( (*vector).operand() ), (*vector).operation() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -497,7 +497,7 @@ inline decltype(auto) nosimd( const VecRepeatExpr<VT,R0>& vector )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return repeat<R0>( nosimd( (~vector).operand() ) );
+   return repeat<R0>( nosimd( (*vector).operand() ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -518,7 +518,7 @@ inline decltype(auto) nosimd( const VecRepeatExpr<VT>& vector )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return repeat( nosimd( (~vector).operand() ), (~vector).template repetitions<0UL>() );
+   return repeat( nosimd( (*vector).operand() ), (*vector).template repetitions<0UL>() );
 }
 /*! \endcond */
 //*************************************************************************************************

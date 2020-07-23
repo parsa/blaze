@@ -98,9 +98,9 @@ void axpy( DenseVector<VT1,TF1>& y, const DenseVector<VT2,TF2>& x, ST alpha )
    BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<VT1> );
    BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<VT2> );
 
-   const blas_int_t n( numeric_cast<blas_int_t>( (~x).size() ) );
+   const blas_int_t n( numeric_cast<blas_int_t>( (*x).size() ) );
 
-   axpy( n, alpha, (~x).data(), 1, (~y).data(), 1 );
+   axpy( n, alpha, (*x).data(), 1, (*y).data(), 1 );
 }
 //*************************************************************************************************
 

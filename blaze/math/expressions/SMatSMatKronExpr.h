@@ -295,8 +295,8 @@ class SMatSMatKronExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
       if( rhs.rows() == 0UL || rhs.columns() == 0UL ) {
          return;
@@ -317,7 +317,7 @@ class SMatSMatKronExpr
          for( size_t k=0UL; k<M; ++k )
             for( auto aelem=A.begin(i); aelem!=A.end(i); ++aelem )
                for( auto belem=B.begin(k); belem!=B.end(k); ++belem )
-                  (~lhs)(i*M+k,aelem->index()*N+belem->index()) = aelem->value() * belem->value();
+                  (*lhs)(i*M+k,aelem->index()*N+belem->index()) = aelem->value() * belem->value();
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -340,8 +340,8 @@ class SMatSMatKronExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
       if( rhs.rows() == 0UL || rhs.columns() == 0UL ) {
          return;
@@ -362,8 +362,8 @@ class SMatSMatKronExpr
          for( size_t k=0UL; k<M; ++k ) {
             for( auto aelem=A.begin(i); aelem!=A.end(i); ++aelem )
                for( auto belem=B.begin(k); belem!=B.end(k); ++belem )
-                  (~lhs).append( i*M+k, aelem->index()*N+belem->index(), aelem->value() * belem->value(), true );
-            (~lhs).finalize( i*M+k );
+                  (*lhs).append( i*M+k, aelem->index()*N+belem->index(), aelem->value() * belem->value(), true );
+            (*lhs).finalize( i*M+k );
          }
       }
    }
@@ -388,8 +388,8 @@ class SMatSMatKronExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
       if( rhs.rows() == 0UL || rhs.columns() == 0UL ) {
          return;
@@ -427,7 +427,7 @@ class SMatSMatKronExpr
       // Resizing the left-hand side sparse matrix
       for( size_t i=0UL; i<A.columns(); ++i ) {
          for( size_t j=0UL; j<N; ++j ) {
-            (~lhs).reserve( i*N+j, lnonzeros[i]*rnonzeros[j] );
+            (*lhs).reserve( i*N+j, lnonzeros[i]*rnonzeros[j] );
          }
       }
 
@@ -436,7 +436,7 @@ class SMatSMatKronExpr
          for( size_t k=0UL; k<M; ++k )
             for( auto aelem=A.begin(i); aelem!=A.end(i); ++aelem )
                for( auto belem=B.begin(k); belem!=B.end(k); ++belem )
-                  (~lhs).append( i*M+k, aelem->index()*N+belem->index(), aelem->value() * belem->value(), true );
+                  (*lhs).append( i*M+k, aelem->index()*N+belem->index(), aelem->value() * belem->value(), true );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -460,8 +460,8 @@ class SMatSMatKronExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
       if( rhs.rows() == 0UL || rhs.columns() == 0UL ) {
          return;
@@ -482,7 +482,7 @@ class SMatSMatKronExpr
          for( size_t k=0UL; k<M; ++k )
             for( auto aelem=A.begin(i); aelem!=A.end(i); ++aelem )
                for( auto belem=B.begin(k); belem!=B.end(k); ++belem )
-                  (~lhs)(i*M+k,aelem->index()*N+belem->index()) += aelem->value() * belem->value();
+                  (*lhs)(i*M+k,aelem->index()*N+belem->index()) += aelem->value() * belem->value();
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -510,8 +510,8 @@ class SMatSMatKronExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
       if( rhs.rows() == 0UL || rhs.columns() == 0UL ) {
          return;
@@ -532,7 +532,7 @@ class SMatSMatKronExpr
          for( size_t k=0UL; k<M; ++k )
             for( auto aelem=A.begin(i); aelem!=A.end(i); ++aelem )
                for( auto belem=B.begin(k); belem!=B.end(k); ++belem )
-                  (~lhs)(i*M+k,aelem->index()*N+belem->index()) -= aelem->value() * belem->value();
+                  (*lhs)(i*M+k,aelem->index()*N+belem->index()) -= aelem->value() * belem->value();
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -560,8 +560,8 @@ class SMatSMatKronExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
       if( rhs.rows() == 0UL || rhs.columns() == 0UL ) {
          return;
@@ -587,13 +587,13 @@ class SMatSMatKronExpr
                for( auto belem=B.begin(k); belem!=B.end(k); ++belem, ++j ) {
                   const size_t index( aelem->index()*N+belem->index() );
                   for( ; j<index; ++j )
-                     reset( (~lhs)(i*M+k,j) );
-                  (~lhs)(i*M+k,j) *= aelem->value() * belem->value();
+                     reset( (*lhs)(i*M+k,j) );
+                  (*lhs)(i*M+k,j) *= aelem->value() * belem->value();
                }
             }
 
-            for( ; j<(~lhs).columns(); ++j )
-               reset( (~lhs)(i*M+k,j) );
+            for( ; j<(*lhs).columns(); ++j )
+               reset( (*lhs)(i*M+k,j) );
          }
       }
    }
@@ -657,7 +657,7 @@ inline const SMatSMatKronExpr<MT1,MT2>
 {
    BLAZE_FUNCTION_TRACE;
 
-   return SMatSMatKronExpr<MT1,MT2>( ~lhs, ~rhs );
+   return SMatSMatKronExpr<MT1,MT2>( *lhs, *rhs );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -689,7 +689,7 @@ inline decltype(auto)
    BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( ReturnType );
    BLAZE_CONSTRAINT_MUST_BE_IDENTITY_MATRIX_TYPE( ReturnType );
 
-   return ReturnType( (~lhs).rows()*(~rhs).rows() );
+   return ReturnType( (*lhs).rows()*(*rhs).rows() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -721,7 +721,7 @@ inline decltype(auto)
    BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( ReturnType );
    BLAZE_CONSTRAINT_MUST_BE_ZERO_TYPE( ReturnType );
 
-   return ReturnType( (~lhs).rows()*(~rhs).rows(), (~lhs).columns()*(~rhs).columns() );
+   return ReturnType( (*lhs).rows()*(*rhs).rows(), (*lhs).columns()*(*rhs).columns() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -757,7 +757,7 @@ inline decltype(auto)
 {
    BLAZE_FUNCTION_TRACE;
 
-   return smatsmatkron( ~lhs, ~rhs );
+   return smatsmatkron( *lhs, *rhs );
 }
 //*************************************************************************************************
 

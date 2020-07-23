@@ -239,9 +239,9 @@ class DVecSerialExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      assign( ~lhs, rhs.dv_ );
+      assign( *lhs, rhs.dv_ );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -263,9 +263,9 @@ class DVecSerialExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      assign( ~lhs, rhs.dv_ );
+      assign( *lhs, rhs.dv_ );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -287,9 +287,9 @@ class DVecSerialExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      addAssign( ~lhs, rhs.dv_ );
+      addAssign( *lhs, rhs.dv_ );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -311,9 +311,9 @@ class DVecSerialExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      addAssign( ~lhs, rhs.dv_ );
+      addAssign( *lhs, rhs.dv_ );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -336,9 +336,9 @@ class DVecSerialExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      subAssign( ~lhs, rhs.dv_ );
+      subAssign( *lhs, rhs.dv_ );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -361,9 +361,9 @@ class DVecSerialExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      subAssign( ~lhs, rhs.dv_ );
+      subAssign( *lhs, rhs.dv_ );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -386,9 +386,9 @@ class DVecSerialExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      multAssign( ~lhs, rhs.dv_ );
+      multAssign( *lhs, rhs.dv_ );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -411,9 +411,9 @@ class DVecSerialExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      multAssign( ~lhs, rhs.dv_ );
+      multAssign( *lhs, rhs.dv_ );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -435,9 +435,9 @@ class DVecSerialExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      divAssign( ~lhs, rhs.dv_ );
+      divAssign( *lhs, rhs.dv_ );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -459,9 +459,9 @@ class DVecSerialExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      divAssign( ~lhs, rhs.dv_ );
+      divAssign( *lhs, rhs.dv_ );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -483,9 +483,9 @@ class DVecSerialExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      assign( ~lhs, rhs.dv_ );
+      assign( *lhs, rhs.dv_ );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -507,9 +507,9 @@ class DVecSerialExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      assign( ~lhs, rhs.dv_ );
+      assign( *lhs, rhs.dv_ );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -532,9 +532,9 @@ class DVecSerialExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      addAssign( ~lhs, rhs.dv_ );
+      addAssign( *lhs, rhs.dv_ );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -557,9 +557,9 @@ class DVecSerialExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      addAssign( ~lhs, rhs.dv_ );
+      addAssign( *lhs, rhs.dv_ );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -582,9 +582,9 @@ class DVecSerialExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      subAssign( ~lhs, rhs.dv_ );
+      subAssign( *lhs, rhs.dv_ );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -607,9 +607,9 @@ class DVecSerialExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      subAssign( ~lhs, rhs.dv_ );
+      subAssign( *lhs, rhs.dv_ );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -632,9 +632,9 @@ class DVecSerialExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      multAssign( ~lhs, rhs.dv_ );
+      multAssign( *lhs, rhs.dv_ );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -657,9 +657,9 @@ class DVecSerialExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      multAssign( ~lhs, rhs.dv_ );
+      multAssign( *lhs, rhs.dv_ );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -682,9 +682,9 @@ class DVecSerialExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      divAssign( ~lhs, rhs.dv_ );
+      divAssign( *lhs, rhs.dv_ );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -707,9 +707,9 @@ class DVecSerialExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      divAssign( ~lhs, rhs.dv_ );
+      divAssign( *lhs, rhs.dv_ );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -756,7 +756,7 @@ inline decltype(auto) serial( const DenseVector<VT,TF>& dv )
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = const DVecSerialExpr<VT,TF>;
-   return ReturnType( ~dv );
+   return ReturnType( *dv );
 }
 //*************************************************************************************************
 

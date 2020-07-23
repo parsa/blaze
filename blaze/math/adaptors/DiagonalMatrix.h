@@ -371,21 +371,21 @@ inline void lu( const DiagonalMatrix<MT1,SO1,true>& A, DenseMatrix<MT2,SO1>& L,
    using ET3 = ElementType_t<MT3>;
    using ET4 = ElementType_t<MT4>;
 
-   const size_t n( (~A).rows() );
+   const size_t n( (*A).rows() );
 
-   decltype(auto) U2( derestrict( ~U ) );
+   decltype(auto) U2( derestrict( *U ) );
 
-   (~L) = A;
+   (*L) = A;
 
-   resize( ~U, n, n );
+   resize( *U, n, n );
    reset( U2 );
 
-   resize( ~P, n, n );
-   reset( ~P );
+   resize( *P, n, n );
+   reset( *P );
 
    for( size_t i=0UL; i<n; ++i ) {
       U2(i,i)   = ET3(1);
-      (~P)(i,i) = ET4(1);
+      (*P)(i,i) = ET4(1);
    }
 }
 /*! \endcond */
@@ -414,8 +414,8 @@ template< typename MT    // Type of the adapted matrix
         , typename ET >  // Type of the element
 inline bool trySet( const DiagonalMatrix<MT,SO,DF>& mat, size_t i, size_t j, const ET& value )
 {
-   BLAZE_INTERNAL_ASSERT( i < (~mat).rows(), "Invalid row access index" );
-   BLAZE_INTERNAL_ASSERT( j < (~mat).columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( i < (*mat).rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( j < (*mat).columns(), "Invalid column access index" );
 
    MAYBE_UNUSED( mat );
 
@@ -450,10 +450,10 @@ template< typename MT    // Type of the adapted matrix
 BLAZE_ALWAYS_INLINE bool
    trySet( const DiagonalMatrix<MT,SO,DF>& mat, size_t row, size_t column, size_t m, size_t n, const ET& value )
 {
-   BLAZE_INTERNAL_ASSERT( row <= (~mat).rows(), "Invalid row access index" );
-   BLAZE_INTERNAL_ASSERT( column <= (~mat).columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( row + m <= (~mat).rows(), "Invalid number of rows" );
-   BLAZE_INTERNAL_ASSERT( column + n <= (~mat).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( row <= (*mat).rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( column <= (*mat).columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( row + m <= (*mat).rows(), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( column + n <= (*mat).columns(), "Invalid number of columns" );
 
    MAYBE_UNUSED( mat );
 
@@ -729,19 +729,19 @@ inline bool tryAssign( const DiagonalMatrix<MT,SO,DF>& lhs,
 
    BLAZE_INTERNAL_ASSERT( row <= lhs.rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( row + (~rhs).size() <= lhs.rows(), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( row + (*rhs).size() <= lhs.rows(), "Invalid number of rows" );
 
    MAYBE_UNUSED( lhs );
 
    const size_t index( ( column <= row )?( 0UL ):( column - row ) );
 
    for( size_t i=0UL; i<index; ++i ) {
-      if( !isDefault( (~rhs)[i] ) )
+      if( !isDefault( (*rhs)[i] ) )
          return false;
    }
 
-   for( size_t i=index+1UL; i<(~rhs).size(); ++i ) {
-      if( !isDefault( (~rhs)[i] ) )
+   for( size_t i=index+1UL; i<(*rhs).size(); ++i ) {
+      if( !isDefault( (*rhs)[i] ) )
          return false;
    }
 
@@ -778,19 +778,19 @@ inline bool tryAssign( const DiagonalMatrix<MT,SO,DF>& lhs,
 
    BLAZE_INTERNAL_ASSERT( row <= lhs.rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( column + (~rhs).size() <= lhs.columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( column + (*rhs).size() <= lhs.columns(), "Invalid number of columns" );
 
    MAYBE_UNUSED( lhs );
 
    const size_t index( ( row <= column )?( 0UL ):( row - column ) );
 
    for( size_t i=0UL; i<index; ++i ) {
-      if( !isDefault( (~rhs)[i] ) )
+      if( !isDefault( (*rhs)[i] ) )
          return false;
    }
 
-   for( size_t i=index+1UL; i<(~rhs).size(); ++i ) {
-      if( !isDefault( (~rhs)[i] ) )
+   for( size_t i=index+1UL; i<(*rhs).size(); ++i ) {
+      if( !isDefault( (*rhs)[i] ) )
          return false;
    }
 
@@ -830,13 +830,13 @@ inline bool tryAssign( const DiagonalMatrix<MT,SO,DF>& lhs, const DenseVector<VT
 
    BLAZE_INTERNAL_ASSERT( row <= lhs.rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( column + (~rhs).size() <= lhs.columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( column + (*rhs).size() <= lhs.columns(), "Invalid number of columns" );
 
    MAYBE_UNUSED( lhs, row, column );
 
    if( band != 0L ) {
-      for( size_t i=0UL; i<(~rhs).size(); ++i ) {
-         if( !isDefault( (~rhs)[i] ) )
+      for( size_t i=0UL; i<(*rhs).size(); ++i ) {
+         if( !isDefault( (*rhs)[i] ) )
             return false;
       }
    }
@@ -874,13 +874,13 @@ inline bool tryAssign( const DiagonalMatrix<MT,SO,DF>& lhs,
 
    BLAZE_INTERNAL_ASSERT( row <= lhs.rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( row + (~rhs).size() <= lhs.rows(), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( row + (*rhs).size() <= lhs.rows(), "Invalid number of rows" );
 
    MAYBE_UNUSED( lhs );
 
    const size_t index( column - row );
 
-   for( auto element=(~rhs).begin(); element!=(~rhs).end(); ++element ) {
+   for( auto element=(*rhs).begin(); element!=(*rhs).end(); ++element ) {
       if( element->index() != index && !isDefault( element->value() ) )
          return false;
    }
@@ -918,13 +918,13 @@ inline bool tryAssign( const DiagonalMatrix<MT,SO,DF>& lhs,
 
    BLAZE_INTERNAL_ASSERT( row <= lhs.rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( column + (~rhs).size() <= lhs.columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( column + (*rhs).size() <= lhs.columns(), "Invalid number of columns" );
 
    MAYBE_UNUSED( lhs );
 
    const size_t index( row - column );
 
-   for( auto element=(~rhs).begin(); element!=(~rhs).end(); ++element ) {
+   for( auto element=(*rhs).begin(); element!=(*rhs).end(); ++element ) {
       if( element->index() != index && !isDefault( element->value() ) )
          return false;
    }
@@ -965,12 +965,12 @@ inline bool tryAssign( const DiagonalMatrix<MT,SO,DF>& lhs, const SparseVector<V
 
    BLAZE_INTERNAL_ASSERT( row <= lhs.rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( column + (~rhs).size() <= lhs.columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( column + (*rhs).size() <= lhs.columns(), "Invalid number of columns" );
 
    MAYBE_UNUSED( lhs, row, column );
 
    if( band != 0L ) {
-      for( const auto& element : ~rhs ) {
+      for( const auto& element : *rhs ) {
          if( !isDefault( element.value() ) )
             return false;
       }
@@ -1009,17 +1009,17 @@ inline bool tryAssign( const DiagonalMatrix<MT1,SO,DF>& lhs,
 
    BLAZE_INTERNAL_ASSERT( row <= lhs.rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( row + (~rhs).rows() <= lhs.rows(), "Invalid number of rows" );
-   BLAZE_INTERNAL_ASSERT( column + (~rhs).columns() <= lhs.columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( row + (*rhs).rows() <= lhs.rows(), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( column + (*rhs).columns() <= lhs.columns(), "Invalid number of columns" );
 
    MAYBE_UNUSED( lhs );
 
-   const size_t M( (~rhs).rows()    );
-   const size_t N( (~rhs).columns() );
+   const size_t M( (*rhs).rows()    );
+   const size_t N( (*rhs).columns() );
 
    for( size_t i=0UL; i<M; ++i ) {
       for( size_t j=0UL; j<N; ++j ) {
-         if( ( row + i != column + j ) && !isDefault( (~rhs)(i,j) ) )
+         if( ( row + i != column + j ) && !isDefault( (*rhs)(i,j) ) )
             return false;
       }
    }
@@ -1057,17 +1057,17 @@ inline bool tryAssign( const DiagonalMatrix<MT1,SO,DF>& lhs,
 
    BLAZE_INTERNAL_ASSERT( row <= lhs.rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( row + (~rhs).rows() <= lhs.rows(), "Invalid number of rows" );
-   BLAZE_INTERNAL_ASSERT( column + (~rhs).columns() <= lhs.columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( row + (*rhs).rows() <= lhs.rows(), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( column + (*rhs).columns() <= lhs.columns(), "Invalid number of columns" );
 
    MAYBE_UNUSED( lhs );
 
-   const size_t M( (~rhs).rows()    );
-   const size_t N( (~rhs).columns() );
+   const size_t M( (*rhs).rows()    );
+   const size_t N( (*rhs).columns() );
 
    for( size_t j=0UL; j<N; ++j ) {
       for( size_t i=0UL; i<M; ++i ) {
-         if( ( column + j != row + i ) && !isDefault( (~rhs)(i,j) ) )
+         if( ( column + j != row + i ) && !isDefault( (*rhs)(i,j) ) )
             return false;
       }
    }
@@ -1105,15 +1105,15 @@ inline bool tryAssign( const DiagonalMatrix<MT1,SO,DF>& lhs,
 
    BLAZE_INTERNAL_ASSERT( row <= lhs.rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( row + (~rhs).rows() <= lhs.rows(), "Invalid number of rows" );
-   BLAZE_INTERNAL_ASSERT( column + (~rhs).columns() <= lhs.columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( row + (*rhs).rows() <= lhs.rows(), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( column + (*rhs).columns() <= lhs.columns(), "Invalid number of columns" );
 
    MAYBE_UNUSED( lhs );
 
-   const size_t M( (~rhs).rows() );
+   const size_t M( (*rhs).rows() );
 
    for( size_t i=0UL; i<M; ++i ) {
-      for( auto element=(~rhs).begin(i); element!=(~rhs).end(i); ++element ) {
+      for( auto element=(*rhs).begin(i); element!=(*rhs).end(i); ++element ) {
          if( ( row + i != column + element->index() ) && !isDefault( element->value() ) )
             return false;
       }
@@ -1152,15 +1152,15 @@ inline bool tryAssign( const DiagonalMatrix<MT1,SO,DF>& lhs,
 
    BLAZE_INTERNAL_ASSERT( row <= lhs.rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( row + (~rhs).rows() <= lhs.rows(), "Invalid number of rows" );
-   BLAZE_INTERNAL_ASSERT( column + (~rhs).columns() <= lhs.columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( row + (*rhs).rows() <= lhs.rows(), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( column + (*rhs).columns() <= lhs.columns(), "Invalid number of columns" );
 
    MAYBE_UNUSED( lhs );
 
-   const size_t N( (~rhs).columns() );
+   const size_t N( (*rhs).columns() );
 
    for( size_t j=0UL; j<N; ++j ) {
-      for( auto element=(~rhs).begin(j); element!=(~rhs).end(j); ++element ) {
+      for( auto element=(*rhs).begin(j); element!=(*rhs).end(j); ++element ) {
          if( ( column + j != row + element->index() ) && !isDefault( element->value() ) )
             return false;
       }
@@ -1196,7 +1196,7 @@ template< typename MT  // Type of the adapted matrix
 inline bool tryAddAssign( const DiagonalMatrix<MT,SO,DF>& lhs,
                           const Vector<VT,TF>& rhs, size_t row, size_t column )
 {
-   return tryAssign( lhs, ~rhs, row, column );
+   return tryAssign( lhs, *rhs, row, column );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1228,7 +1228,7 @@ template< typename MT  // Type of the adapted matrix
 inline bool tryAddAssign( const DiagonalMatrix<MT,SO,DF>& lhs, const Vector<VT,TF>& rhs,
                           ptrdiff_t band, size_t row, size_t column )
 {
-   return tryAssign( lhs, ~rhs, band, row, column );
+   return tryAssign( lhs, *rhs, band, row, column );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1258,7 +1258,7 @@ template< typename MT1  // Type of the adapted matrix
 inline bool tryAddAssign( const DiagonalMatrix<MT1,SO1,DF>& lhs,
                           const Matrix<MT2,SO2>& rhs, size_t row, size_t column )
 {
-   return tryAssign( lhs, ~rhs, row, column );
+   return tryAssign( lhs, *rhs, row, column );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1289,7 +1289,7 @@ template< typename MT  // Type of the adapted matrix
 inline bool trySubAssign( const DiagonalMatrix<MT,SO,DF>& lhs,
                           const Vector<VT,TF>& rhs, size_t row, size_t column )
 {
-   return tryAssign( lhs, ~rhs, row, column );
+   return tryAssign( lhs, *rhs, row, column );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1321,7 +1321,7 @@ template< typename MT  // Type of the adapted matrix
 inline bool trySubAssign( const DiagonalMatrix<MT,SO,DF>& lhs, const Vector<VT,TF>& rhs,
                           ptrdiff_t band, size_t row, size_t column )
 {
-   return tryAssign( lhs, ~rhs, band, row, column );
+   return tryAssign( lhs, *rhs, band, row, column );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1352,7 +1352,7 @@ template< typename MT1  // Type of the adapted matrix
 inline bool trySubAssign( const DiagonalMatrix<MT1,SO1,DF>& lhs,
                           const Matrix<MT2,SO2>& rhs, size_t row, size_t column )
 {
-   return tryAssign( lhs, ~rhs, row, column );
+   return tryAssign( lhs, *rhs, row, column );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1383,7 +1383,7 @@ template< typename MT  // Type of the adapted matrix
 inline bool tryBitorAssign( const DiagonalMatrix<MT,SO,DF>& lhs,
                             const Vector<VT,TF>& rhs, size_t row, size_t column )
 {
-   return tryAssign( lhs, ~rhs, row, column );
+   return tryAssign( lhs, *rhs, row, column );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1414,7 +1414,7 @@ template< typename MT  // Type of the adapted matrix
 inline bool tryBitorAssign( const DiagonalMatrix<MT,SO,DF>& lhs, const Vector<VT,TF>& rhs,
                             ptrdiff_t band, size_t row, size_t column )
 {
-   return tryAssign( lhs, ~rhs, band, row, column );
+   return tryAssign( lhs, *rhs, band, row, column );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1444,7 +1444,7 @@ template< typename MT1  // Type of the adapted matrix
 inline bool tryBitorAssign( const DiagonalMatrix<MT1,SO1,DF>& lhs,
                             const Matrix<MT2,SO2>& rhs, size_t row, size_t column )
 {
-   return tryAssign( lhs, ~rhs, row, column );
+   return tryAssign( lhs, *rhs, row, column );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1475,7 +1475,7 @@ template< typename MT  // Type of the adapted matrix
 inline bool tryBitxorAssign( const DiagonalMatrix<MT,SO,DF>& lhs,
                              const Vector<VT,TF>& rhs, size_t row, size_t column )
 {
-   return tryAssign( lhs, ~rhs, row, column );
+   return tryAssign( lhs, *rhs, row, column );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1506,7 +1506,7 @@ template< typename MT  // Type of the adapted matrix
 inline bool tryBitxorAssign( const DiagonalMatrix<MT,SO,DF>& lhs, const Vector<VT,TF>& rhs,
                              ptrdiff_t band, size_t row, size_t column )
 {
-   return tryAssign( lhs, ~rhs, band, row, column );
+   return tryAssign( lhs, *rhs, band, row, column );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1537,7 +1537,7 @@ template< typename MT1  // Type of the adapted matrix
 inline bool tryBitxorAssign( const DiagonalMatrix<MT1,SO1,DF>& lhs,
                              const Matrix<MT2,SO2>& rhs, size_t row, size_t column )
 {
-   return tryAssign( lhs, ~rhs, row, column );
+   return tryAssign( lhs, *rhs, row, column );
 }
 /*! \endcond */
 //*************************************************************************************************

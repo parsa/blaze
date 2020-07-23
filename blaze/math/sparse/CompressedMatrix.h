@@ -784,13 +784,13 @@ template< typename Type   // Data type of the matrix
 template< typename MT     // Type of the foreign dense matrix
         , bool SO2 >      // Storage order of the foreign dense matrix
 inline CompressedMatrix<Type,SO,Tag>::CompressedMatrix( const DenseMatrix<MT,SO2>& dm )
-   : CompressedMatrix( (~dm).rows(), (~dm).columns() )
+   : CompressedMatrix( (*dm).rows(), (*dm).columns() )
 {
    using blaze::assign;
 
    BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<MT> );
 
-   assign( *this, ~dm );
+   assign( *this, *dm );
 }
 //*************************************************************************************************
 
@@ -806,13 +806,13 @@ template< typename Type   // Data type of the matrix
 template< typename MT     // Type of the foreign compressed matrix
         , bool SO2 >      // Storage order of the foreign compressed matrix
 inline CompressedMatrix<Type,SO,Tag>::CompressedMatrix( const SparseMatrix<MT,SO2>& sm )
-   : CompressedMatrix( (~sm).rows(), (~sm).columns(), (~sm).nonZeros() )
+   : CompressedMatrix( (*sm).rows(), (*sm).columns(), (*sm).nonZeros() )
 {
    using blaze::assign;
 
    BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<MT> );
 
-   assign( *this, ~sm );
+   assign( *this, *sm );
 }
 //*************************************************************************************************
 
@@ -1295,13 +1295,13 @@ inline CompressedMatrix<Type,SO,Tag>&
 
    BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<MT> );
 
-   if( (~rhs).canAlias( this ) ) {
-      CompressedMatrix tmp( ~rhs );
+   if( (*rhs).canAlias( this ) ) {
+      CompressedMatrix tmp( *rhs );
       swap( tmp );
    }
    else {
-      resize( (~rhs).rows(), (~rhs).columns(), false );
-      assign( *this, ~rhs );
+      resize( (*rhs).rows(), (*rhs).columns(), false );
+      assign( *this, *rhs );
    }
 
    return *this;
@@ -1330,18 +1330,18 @@ inline CompressedMatrix<Type,SO,Tag>&
 
    BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<MT> );
 
-   if( (~rhs).canAlias( this ) ||
-       (~rhs).rows()     > capacity_ ||
-       (~rhs).nonZeros() > capacity() ) {
-      CompressedMatrix tmp( ~rhs );
+   if( (*rhs).canAlias( this ) ||
+       (*rhs).rows()     > capacity_ ||
+       (*rhs).nonZeros() > capacity() ) {
+      CompressedMatrix tmp( *rhs );
       swap( tmp );
    }
    else {
-      resize( (~rhs).rows(), (~rhs).columns(), false );
+      resize( (*rhs).rows(), (*rhs).columns(), false );
       reset();
 
       if( !IsZero_v<MT> ) {
-         assign( *this, ~rhs );
+         assign( *this, *rhs );
       }
    }
 
@@ -1372,12 +1372,12 @@ inline CompressedMatrix<Type,SO,Tag>&
 
    BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<MT> );
 
-   if( (~rhs).rows() != m_ || (~rhs).columns() != n_ ) {
+   if( (*rhs).rows() != m_ || (*rhs).columns() != n_ ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
    if( !IsZero_v<MT> ) {
-      addAssign( *this, ~rhs );
+      addAssign( *this, *rhs );
    }
 
    return *this;
@@ -1407,12 +1407,12 @@ inline CompressedMatrix<Type,SO,Tag>&
 
    BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<MT> );
 
-   if( (~rhs).rows() != m_ || (~rhs).columns() != n_ ) {
+   if( (*rhs).rows() != m_ || (*rhs).columns() != n_ ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
    if( !IsZero_v<MT> ) {
-      subAssign( *this, ~rhs );
+      subAssign( *this, *rhs );
    }
 
    return *this;
@@ -1443,16 +1443,16 @@ inline CompressedMatrix<Type,SO,Tag>&
 
    BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<MT> );
 
-   if( (~rhs).rows() != m_ || (~rhs).columns() != n_ ) {
+   if( (*rhs).rows() != m_ || (*rhs).columns() != n_ ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
-   if( (~rhs).canAlias( this ) ) {
-      CompressedMatrix tmp( *this % (~rhs) );
+   if( (*rhs).canAlias( this ) ) {
+      CompressedMatrix tmp( *this % (*rhs) );
       swap( tmp );
    }
    else {
-      CompositeType_t<MT> tmp( ~rhs );
+      CompositeType_t<MT> tmp( *rhs );
       schurAssign( *this, tmp );
    }
 
@@ -1482,12 +1482,12 @@ inline CompressedMatrix<Type,SO,Tag>&
 {
    BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<MT> );
 
-   if( (~rhs).rows() != m_ || (~rhs).columns() != n_ ) {
+   if( (*rhs).rows() != m_ || (*rhs).columns() != n_ ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
    if( !IsZero_v<MT> ) {
-      CompressedMatrix tmp( *this % (~rhs) );
+      CompressedMatrix tmp( *this % (*rhs) );
       swap( tmp );
    }
    else {
@@ -2832,8 +2832,8 @@ template< typename MT     // Type of the right-hand side dense matrix
         , bool SO2 >      // Storage order of the right-hand side dense matrix
 inline void CompressedMatrix<Type,SO,Tag>::assign( const DenseMatrix<MT,SO2>& rhs )
 {
-   BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( m_ == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( n_ == (*rhs).columns(), "Invalid number of columns" );
 
    if( m_ == 0UL || n_ == 0UL )
       return;
@@ -2862,7 +2862,7 @@ inline void CompressedMatrix<Type,SO,Tag>::assign( const DenseMatrix<MT,SO2>& rh
                begin_[k] = end_[k] = end_[m_];
          }
 
-         end_[i]->value_ = (~rhs)(i,j);
+         end_[i]->value_ = (*rhs)(i,j);
 
          if( !isDefault<strict>( end_[i]->value_ ) ) {
             end_[i]->index_ = j;
@@ -2894,16 +2894,16 @@ template< typename Type   // Data type of the matrix
 template< typename MT >   // Type of the right-hand side compressed matrix
 inline void CompressedMatrix<Type,SO,Tag>::assign( const SparseMatrix<MT,SO>& rhs )
 {
-   BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( m_ == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( n_ == (*rhs).columns(), "Invalid number of columns" );
    BLAZE_INTERNAL_ASSERT( nonZeros() == 0UL, "Invalid non-zero elements detected" );
-   BLAZE_INTERNAL_ASSERT( capacity() >= (~rhs).nonZeros(), "Invalid capacity detected" );
+   BLAZE_INTERNAL_ASSERT( capacity() >= (*rhs).nonZeros(), "Invalid capacity detected" );
 
    if( m_ == 0UL || begin_[0] == nullptr )
       return;
 
    for( size_t i=0UL; i<m_; ++i ) {
-      end_[i] = castDown( std::copy( (~rhs).begin(i), (~rhs).end(i), castUp( begin_[i] ) ) );
+      end_[i] = castDown( std::copy( (*rhs).begin(i), (*rhs).end(i), castUp( begin_[i] ) ) );
       begin_[i+1UL] = end_[i];
    }
 }
@@ -2929,15 +2929,15 @@ inline void CompressedMatrix<Type,SO,Tag>::assign( const SparseMatrix<MT,!SO>& r
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
 
-   BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( m_ == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( n_ == (*rhs).columns(), "Invalid number of columns" );
    BLAZE_INTERNAL_ASSERT( nonZeros() == 0UL, "Invalid non-zero elements detected" );
-   BLAZE_INTERNAL_ASSERT( capacity() >= (~rhs).nonZeros(), "Invalid capacity detected" );
+   BLAZE_INTERNAL_ASSERT( capacity() >= (*rhs).nonZeros(), "Invalid capacity detected" );
 
    // Counting the number of elements per row
    std::vector<size_t> rowLengths( m_, 0UL );
    for( size_t j=0UL; j<n_; ++j ) {
-      for( auto element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
+      for( auto element=(*rhs).begin(j); element!=(*rhs).end(j); ++element )
          ++rowLengths[element->index()];
    }
 
@@ -2948,7 +2948,7 @@ inline void CompressedMatrix<Type,SO,Tag>::assign( const SparseMatrix<MT,!SO>& r
 
    // Appending the elements to the rows of the compressed matrix
    for( size_t j=0UL; j<n_; ++j ) {
-      for( auto element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
+      for( auto element=(*rhs).begin(j); element!=(*rhs).end(j); ++element )
          append( element->index(), j, element->value() );
    }
 }
@@ -2973,10 +2973,10 @@ template< typename MT     // Type of the right-hand side dense matrix
         , bool SO2 >      // Storage order of the right-hand side dense matrix
 inline void CompressedMatrix<Type,SO,Tag>::addAssign( const DenseMatrix<MT,SO2>& rhs )
 {
-   BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( m_ == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( n_ == (*rhs).columns(), "Invalid number of columns" );
 
-   CompressedMatrix tmp( serial( *this + (~rhs) ) );
+   CompressedMatrix tmp( serial( *this + (*rhs) ) );
    swap( tmp );
 }
 //*************************************************************************************************
@@ -3000,10 +3000,10 @@ template< typename MT     // Type of the right-hand side compressed matrix
         , bool SO2 >      // Storage order of the right-hand side compressed matrix
 inline void CompressedMatrix<Type,SO,Tag>::addAssign( const SparseMatrix<MT,SO2>& rhs )
 {
-   BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( m_ == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( n_ == (*rhs).columns(), "Invalid number of columns" );
 
-   CompressedMatrix tmp( serial( *this + (~rhs) ) );
+   CompressedMatrix tmp( serial( *this + (*rhs) ) );
    swap( tmp );
 }
 //*************************************************************************************************
@@ -3027,10 +3027,10 @@ template< typename MT     // Type of the right-hand side dense matrix
         , bool SO2 >      // Storage order of the right-hand side dense matrix
 inline void CompressedMatrix<Type,SO,Tag>::subAssign( const DenseMatrix<MT,SO2>& rhs )
 {
-   BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( m_ == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( n_ == (*rhs).columns(), "Invalid number of columns" );
 
-   CompressedMatrix tmp( serial( *this - (~rhs) ) );
+   CompressedMatrix tmp( serial( *this - (*rhs) ) );
    swap( tmp );
 }
 //*************************************************************************************************
@@ -3054,10 +3054,10 @@ template< typename MT     // Type of the right-hand side compressed matrix
         , bool SO2 >      // Storage order of the right-hand compressed matrix
 inline void CompressedMatrix<Type,SO,Tag>::subAssign( const SparseMatrix<MT,SO2>& rhs )
 {
-   BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( m_ == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( n_ == (*rhs).columns(), "Invalid number of columns" );
 
-   CompressedMatrix tmp( serial( *this - (~rhs) ) );
+   CompressedMatrix tmp( serial( *this - (*rhs) ) );
    swap( tmp );
 }
 //*************************************************************************************************
@@ -3081,15 +3081,15 @@ template< typename MT     // Type of the right-hand side dense matrix
         , bool SO2 >      // Storage order of the right-hand side dense matrix
 inline void CompressedMatrix<Type,SO,Tag>::schurAssign( const DenseMatrix<MT,SO2>& rhs )
 {
-   BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( m_ == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( n_ == (*rhs).columns(), "Invalid number of columns" );
 
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT );
 
    for( size_t i=0UL; i<m_; ++i ) {
       const Iterator last( end(i) );
       for( auto element=begin(i); element!=last; ++element )
-         element->value_ *= (~rhs)(i,element->index_);
+         element->value_ *= (*rhs)(i,element->index_);
    }
 }
 //*************************************************************************************************
@@ -3670,13 +3670,13 @@ template< typename Type   // Data type of the matrix
 template< typename MT     // Type of the foreign dense matrix
         , bool SO >       // Storage order of the foreign dense matrix
 inline CompressedMatrix<Type,true,Tag>::CompressedMatrix( const DenseMatrix<MT,SO>& dm )
-   : CompressedMatrix( (~dm).rows(), (~dm).columns() )
+   : CompressedMatrix( (*dm).rows(), (*dm).columns() )
 {
    using blaze::assign;
 
    BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<MT> );
 
-   assign( *this, ~dm );
+   assign( *this, *dm );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -3693,13 +3693,13 @@ template< typename Type   // Data type of the matrix
 template< typename MT     // Type of the foreign compressed matrix
         , bool SO >       // Storage order of the foreign compressed matrix
 inline CompressedMatrix<Type,true,Tag>::CompressedMatrix( const SparseMatrix<MT,SO>& sm )
-   : CompressedMatrix( (~sm).rows(), (~sm).columns(), (~sm).nonZeros() )
+   : CompressedMatrix( (*sm).rows(), (*sm).columns(), (*sm).nonZeros() )
 {
    using blaze::assign;
 
    BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<MT> );
 
-   assign( *this, ~sm );
+   assign( *this, *sm );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -4173,13 +4173,13 @@ inline CompressedMatrix<Type,true,Tag>&
 
    BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<MT> );
 
-   if( (~rhs).canAlias( this ) ) {
-      CompressedMatrix tmp( ~rhs );
+   if( (*rhs).canAlias( this ) ) {
+      CompressedMatrix tmp( *rhs );
       swap( tmp );
    }
    else {
-      resize( (~rhs).rows(), (~rhs).columns(), false );
-      assign( *this, ~rhs );
+      resize( (*rhs).rows(), (*rhs).columns(), false );
+      assign( *this, *rhs );
    }
 
    return *this;
@@ -4209,18 +4209,18 @@ inline CompressedMatrix<Type,true,Tag>&
 
    BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<MT> );
 
-   if( (~rhs).canAlias( this ) ||
-       (~rhs).columns()  > capacity_ ||
-       (~rhs).nonZeros() > capacity() ) {
-      CompressedMatrix tmp( ~rhs );
+   if( (*rhs).canAlias( this ) ||
+       (*rhs).columns()  > capacity_ ||
+       (*rhs).nonZeros() > capacity() ) {
+      CompressedMatrix tmp( *rhs );
       swap( tmp );
    }
    else {
-      resize( (~rhs).rows(), (~rhs).columns(), false );
+      resize( (*rhs).rows(), (*rhs).columns(), false );
       reset();
 
       if( !IsZero_v<MT> ) {
-         assign( *this, ~rhs );
+         assign( *this, *rhs );
       }
    }
 
@@ -4252,12 +4252,12 @@ inline CompressedMatrix<Type,true,Tag>&
 
    BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<MT> );
 
-   if( (~rhs).rows() != m_ || (~rhs).columns() != n_ ) {
+   if( (*rhs).rows() != m_ || (*rhs).columns() != n_ ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
    if( !IsZero_v<MT> ) {
-      addAssign( *this, ~rhs );
+      addAssign( *this, *rhs );
    }
 
    return *this;
@@ -4288,12 +4288,12 @@ inline CompressedMatrix<Type,true,Tag>&
 
    BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<MT> );
 
-   if( (~rhs).rows() != m_ || (~rhs).columns() != n_ ) {
+   if( (*rhs).rows() != m_ || (*rhs).columns() != n_ ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
    if( !IsZero_v<MT> ) {
-      subAssign( *this, ~rhs );
+      subAssign( *this, *rhs );
    }
 
    return *this;
@@ -4325,16 +4325,16 @@ inline CompressedMatrix<Type,true,Tag>&
 
    BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<MT> );
 
-   if( (~rhs).rows() != m_ || (~rhs).columns() != n_ ) {
+   if( (*rhs).rows() != m_ || (*rhs).columns() != n_ ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
-   if( (~rhs).canAlias( this ) ) {
-      CompressedMatrix tmp( *this % (~rhs) );
+   if( (*rhs).canAlias( this ) ) {
+      CompressedMatrix tmp( *this % (*rhs) );
       swap( tmp );
    }
    else {
-      CompositeType_t<MT> tmp( ~rhs );
+      CompositeType_t<MT> tmp( *rhs );
       schurAssign( *this, tmp );
    }
 
@@ -4365,12 +4365,12 @@ inline CompressedMatrix<Type,true,Tag>&
 {
    BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<MT> );
 
-   if( (~rhs).rows() != m_ || (~rhs).columns() != n_ ) {
+   if( (*rhs).rows() != m_ || (*rhs).columns() != n_ ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
    if( !IsZero_v<MT> ) {
-      CompressedMatrix tmp( *this % (~rhs) );
+      CompressedMatrix tmp( *this % (*rhs) );
       swap( tmp );
    }
    else {
@@ -5719,8 +5719,8 @@ template< typename MT     // Type of the right-hand side dense matrix
         , bool SO >       // Storage order of the right-hand side dense matrix
 inline void CompressedMatrix<Type,true,Tag>::assign( const DenseMatrix<MT,SO>& rhs )
 {
-   BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( m_ == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( n_ == (*rhs).columns(), "Invalid number of columns" );
 
    if( m_ == 0UL || n_ == 0UL )
       return;
@@ -5749,7 +5749,7 @@ inline void CompressedMatrix<Type,true,Tag>::assign( const DenseMatrix<MT,SO>& r
                begin_[k] = end_[k] = end_[n_];
          }
 
-         end_[j]->value_ = (~rhs)(i,j);
+         end_[j]->value_ = (*rhs)(i,j);
 
          if( !isDefault<strict>( end_[j]->value_ ) ) {
             end_[j]->index_ = i;
@@ -5782,16 +5782,16 @@ template< typename Type   // Data type of the matrix
 template< typename MT >   // Type of the right-hand side compressed matrix
 inline void CompressedMatrix<Type,true,Tag>::assign( const SparseMatrix<MT,true>& rhs )
 {
-   BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( m_ == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( n_ == (*rhs).columns(), "Invalid number of columns" );
    BLAZE_INTERNAL_ASSERT( nonZeros() == 0UL, "Invalid non-zero elements detected" );
-   BLAZE_INTERNAL_ASSERT( capacity() >= (~rhs).nonZeros(), "Invalid capacity detected" );
+   BLAZE_INTERNAL_ASSERT( capacity() >= (*rhs).nonZeros(), "Invalid capacity detected" );
 
    if( n_ == 0UL || begin_[0] == nullptr )
       return;
 
    for( size_t j=0UL; j<n_; ++j ) {
-      end_[j] = castDown( std::copy( (~rhs).begin(j), (~rhs).end(j), castUp( begin_[j] ) ) );
+      end_[j] = castDown( std::copy( (*rhs).begin(j), (*rhs).end(j), castUp( begin_[j] ) ) );
       begin_[j+1UL] = end_[j];
    }
 }
@@ -5818,15 +5818,15 @@ inline void CompressedMatrix<Type,true,Tag>::assign( const SparseMatrix<MT,false
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
 
-   BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( m_ == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( n_ == (*rhs).columns(), "Invalid number of columns" );
    BLAZE_INTERNAL_ASSERT( nonZeros() == 0UL, "Invalid non-zero elements detected" );
-   BLAZE_INTERNAL_ASSERT( capacity() >= (~rhs).nonZeros(), "Invalid capacity detected" );
+   BLAZE_INTERNAL_ASSERT( capacity() >= (*rhs).nonZeros(), "Invalid capacity detected" );
 
    // Counting the number of elements per column
    std::vector<size_t> columnLengths( n_, 0UL );
    for( size_t i=0UL; i<m_; ++i ) {
-      for( auto element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
+      for( auto element=(*rhs).begin(i); element!=(*rhs).end(i); ++element )
          ++columnLengths[element->index()];
    }
 
@@ -5837,7 +5837,7 @@ inline void CompressedMatrix<Type,true,Tag>::assign( const SparseMatrix<MT,false
 
    // Appending the elements to the columns of the compressed matrix
    for( size_t i=0UL; i<m_; ++i ) {
-      for( auto element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
+      for( auto element=(*rhs).begin(i); element!=(*rhs).end(i); ++element )
          append( i, element->index(), element->value() );
    }
 }
@@ -5863,10 +5863,10 @@ template< typename MT     // Type of the right-hand side dense matrix
         , bool SO >       // Storage order of the right-hand side dense matrix
 inline void CompressedMatrix<Type,true,Tag>::addAssign( const DenseMatrix<MT,SO>& rhs )
 {
-   BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( m_ == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( n_ == (*rhs).columns(), "Invalid number of columns" );
 
-   CompressedMatrix tmp( serial( *this + (~rhs) ) );
+   CompressedMatrix tmp( serial( *this + (*rhs) ) );
    swap( tmp );
 }
 /*! \endcond */
@@ -5891,10 +5891,10 @@ template< typename MT     // Type of the right-hand side compressed matrix
         , bool SO >       // Storage order of the right-hand side compressed matrix
 inline void CompressedMatrix<Type,true,Tag>::addAssign( const SparseMatrix<MT,SO>& rhs )
 {
-   BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( m_ == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( n_ == (*rhs).columns(), "Invalid number of columns" );
 
-   CompressedMatrix tmp( serial( *this + (~rhs) ) );
+   CompressedMatrix tmp( serial( *this + (*rhs) ) );
    swap( tmp );
 }
 /*! \endcond */
@@ -5919,10 +5919,10 @@ template< typename MT     // Type of the right-hand side dense matrix
         , bool SO >       // Storage order of the right-hand side dense matrix
 inline void CompressedMatrix<Type,true,Tag>::subAssign( const DenseMatrix<MT,SO>& rhs )
 {
-   BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( m_ == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( n_ == (*rhs).columns(), "Invalid number of columns" );
 
-   CompressedMatrix tmp( serial( *this - (~rhs) ) );
+   CompressedMatrix tmp( serial( *this - (*rhs) ) );
    swap( tmp );
 }
 /*! \endcond */
@@ -5947,10 +5947,10 @@ template< typename MT     // Type of the right-hand side compressed matrix
         , bool SO >       // Storage order of the right-hand side compressed matrix
 inline void CompressedMatrix<Type,true,Tag>::subAssign( const SparseMatrix<MT,SO>& rhs )
 {
-   BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( m_ == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( n_ == (*rhs).columns(), "Invalid number of columns" );
 
-   CompressedMatrix tmp( serial( *this - (~rhs) ) );
+   CompressedMatrix tmp( serial( *this - (*rhs) ) );
    swap( tmp );
 }
 /*! \endcond */
@@ -5975,15 +5975,15 @@ template< typename MT     // Type of the right-hand side dense matrix
         , bool SO >       // Storage order of the right-hand side dense matrix
 inline void CompressedMatrix<Type,true,Tag>::schurAssign( const DenseMatrix<MT,SO>& rhs )
 {
-   BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( m_ == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( n_ == (*rhs).columns(), "Invalid number of columns" );
 
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT );
 
    for( size_t j=0UL; j<n_; ++j ) {
       const Iterator last( end(j) );
       for( auto element=begin(j); element!=last; ++element )
-         element->value_ *= (~rhs)(element->index_,j);
+         element->value_ *= (*rhs)(element->index_,j);
    }
 }
 /*! \endcond */

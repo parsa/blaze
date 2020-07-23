@@ -393,11 +393,11 @@ template< typename Type   // Data type of the vector
         , typename Tag >  // Type tag
 template< typename VT >   // Type of the foreign zero vector
 inline ZeroVector<Type,TF,Tag>::ZeroVector( const Vector<VT,TF>& v )
-   : size_( (~v).size() )  // The current size/dimension of the zero vector
+   : size_( (*v).size() )  // The current size/dimension of the zero vector
 {
    BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<VT> );
 
-   if( !IsZero_v<VT> && !isZero( ~v ) ) {
+   if( !IsZero_v<VT> && !isZero( *v ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid setup of zero vector" );
    }
 }
@@ -549,11 +549,11 @@ inline ZeroVector<Type,TF,Tag>&
 {
    BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<VT> );
 
-   if( !IsZero_v<VT> && !isZero( ~rhs ) ) {
+   if( !IsZero_v<VT> && !isZero( *rhs ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment of zero vector" );
    }
 
-   size_ = (~rhs).size();
+   size_ = (*rhs).size();
 
    return *this;
 }
@@ -1189,7 +1189,7 @@ inline ZeroVector<ElementType_t<VT>,TF>
 {
    BLAZE_FUNCTION_TRACE;
 
-   return ZeroVector<ElementType_t<VT>,TF>( (~v).size() );
+   return ZeroVector<ElementType_t<VT>,TF>( (*v).size() );
 }
 //*************************************************************************************************
 

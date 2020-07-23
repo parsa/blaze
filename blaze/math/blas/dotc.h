@@ -101,9 +101,9 @@ ElementType_t<VT1> dotc( const DenseVector<VT1,TF1>& x, const DenseVector<VT2,TF
    BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<VT1> );
    BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<VT2> );
 
-   const blas_int_t n( numeric_cast<blas_int_t>( (~x).size() ) );
+   const blas_int_t n( numeric_cast<blas_int_t>( (*x).size() ) );
 
-   return dotc( n, (~x).data(), 1, (~y).data(), 1 );
+   return dotc( n, (*x).data(), 1, (*y).data(), 1 );
 }
 //*************************************************************************************************
 

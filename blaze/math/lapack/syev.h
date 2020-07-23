@@ -153,7 +153,7 @@ inline void syev( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& w, char jobz, char 
 
    using ET = ElementType_t<MT>;
 
-   if( !isSquare( ~A ) ) {
+   if( !isSquare( *A ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid non-square matrix provided" );
    }
 
@@ -165,10 +165,10 @@ inline void syev( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& w, char jobz, char 
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid uplo argument provided" );
    }
 
-   resize( ~w, (~A).rows(), false );
+   resize( *w, (*A).rows(), false );
 
-   blas_int_t n   ( numeric_cast<blas_int_t>( (~A).rows()    ) );
-   blas_int_t lda ( numeric_cast<blas_int_t>( (~A).spacing() ) );
+   blas_int_t n   ( numeric_cast<blas_int_t>( (*A).rows()    ) );
+   blas_int_t lda ( numeric_cast<blas_int_t>( (*A).spacing() ) );
    blas_int_t info( 0 );
 
    if( n == 0 ) {
@@ -182,7 +182,7 @@ inline void syev( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& w, char jobz, char 
       ( uplo == 'L' )?( uplo = 'U' ):( uplo = 'L' );
    }
 
-   syev( jobz, uplo, n, (~A).data(), lda, (~w).data(), work.get(), lwork, &info );
+   syev( jobz, uplo, n, (*A).data(), lda, (*w).data(), work.get(), lwork, &info );
 
    BLAZE_INTERNAL_ASSERT( info >= 0, "Invalid argument for eigenvalue computation" );
 

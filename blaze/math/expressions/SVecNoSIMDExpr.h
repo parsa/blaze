@@ -75,7 +75,7 @@ inline decltype(auto) nosimd( const SparseVector<VT,TF>& sv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return ~sv;
+   return *sv;
 }
 //*************************************************************************************************
 

@@ -78,11 +78,11 @@ inline decltype(auto) var_backend( const DenseMatrix<MT,SO>& dm, FalseType )
 {
    using BT = UnderlyingBuiltin_t<MT>;
 
-   BLAZE_INTERNAL_ASSERT( size( ~dm ) > 1UL, "Invalid matrix size detected" );
+   BLAZE_INTERNAL_ASSERT( size( *dm ) > 1UL, "Invalid matrix size detected" );
 
-   const auto m( uniform<SO>( rows( ~dm ), columns( ~dm ), mean( ~dm ) ) );
+   const auto m( uniform<SO>( rows( *dm ), columns( *dm ), mean( *dm ) ) );
 
-   return sum( map( (~dm) - m, Pow2() ) ) * inv( BT( size( ~dm )-1UL ) );
+   return sum( map( (*dm) - m, Pow2() ) ) * inv( BT( size( *dm )-1UL ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -102,7 +102,7 @@ inline decltype(auto) var_backend( const DenseMatrix<MT,SO>& dm, TrueType )
 {
    MAYBE_UNUSED( dm );
 
-   BLAZE_INTERNAL_ASSERT( size( ~dm ) > 1UL, "Invalid matrix size detected" );
+   BLAZE_INTERNAL_ASSERT( size( *dm ) > 1UL, "Invalid matrix size detected" );
 
    return ElementType_t<MT>();
 }
@@ -139,11 +139,11 @@ inline decltype(auto) var( const DenseMatrix<MT,SO>& dm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   if( size( ~dm ) < 2UL ) {
+   if( size( *dm ) < 2UL ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid input matrix" );
    }
 
-   return var_backend( ~dm, IsUniform<MT>() );
+   return var_backend( *dm, IsUniform<MT>() );
 }
 //*************************************************************************************************
 
@@ -163,13 +163,13 @@ decltype(auto) var_backend( const DenseMatrix<MT,SO>& dm, FalseType )
 {
    using BT = UnderlyingBuiltin_t<MT>;
 
-   const size_t n( RF == rowwise ? columns( ~dm ) : rows( ~dm ) );
+   const size_t n( RF == rowwise ? columns( *dm ) : rows( *dm ) );
 
    BLAZE_INTERNAL_ASSERT( n > 1UL, "Invalid matrix size detected" );
 
-   const auto m( expand( mean<RF>( ~dm ), n ) );
+   const auto m( expand( mean<RF>( *dm ), n ) );
 
-   return sum<RF>( map( (~dm) - m, Pow2() ) ) * inv( BT( n-1UL ) );
+   return sum<RF>( map( (*dm) - m, Pow2() ) ) * inv( BT( n-1UL ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -188,7 +188,7 @@ template< ReductionFlag RF  // Reduction flag
         , bool SO >         // Storage order
 decltype(auto) var_backend( const DenseMatrix<MT,SO>& dm, TrueType )
 {
-   const size_t n( RF == rowwise ? rows( ~dm ) : columns( ~dm ) );
+   const size_t n( RF == rowwise ? rows( *dm ) : columns( *dm ) );
 
    BLAZE_INTERNAL_ASSERT( n > 0UL, "Invalid matrix size detected" );
 
@@ -244,13 +244,13 @@ inline decltype(auto) var( const DenseMatrix<MT,SO>& dm )
 
    BLAZE_STATIC_ASSERT_MSG( RF < 2UL, "Invalid reduction flag" );
 
-   const size_t n( RF == rowwise ? columns( ~dm ) : rows( ~dm ) );
+   const size_t n( RF == rowwise ? columns( *dm ) : rows( *dm ) );
 
    if( n < 2UL ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid input matrix" );
    }
 
-   return var_backend<RF>( ~dm, IsUniform<MT>() );
+   return var_backend<RF>( *dm, IsUniform<MT>() );
 }
 //*************************************************************************************************
 

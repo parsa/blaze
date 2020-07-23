@@ -76,9 +76,9 @@ inline decltype(auto) mean_backend( const DenseMatrix<MT,SO>& dm, FalseType )
 {
    using BT = UnderlyingBuiltin_t<MT>;
 
-   BLAZE_INTERNAL_ASSERT( size( ~dm ) > 0UL, "Invalid matrix size detected" );
+   BLAZE_INTERNAL_ASSERT( size( *dm ) > 0UL, "Invalid matrix size detected" );
 
-   return sum( ~dm ) * inv( BT( size( ~dm ) ) );
+   return sum( *dm ) * inv( BT( size( *dm ) ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -96,9 +96,9 @@ template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order
 inline decltype(auto) mean_backend( const DenseMatrix<MT,SO>& dm, TrueType )
 {
-   BLAZE_INTERNAL_ASSERT( size( ~dm ) > 0UL, "Invalid matrix size detected" );
+   BLAZE_INTERNAL_ASSERT( size( *dm ) > 0UL, "Invalid matrix size detected" );
 
-   return (~dm)(0UL,0UL);
+   return (*dm)(0UL,0UL);
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -135,11 +135,11 @@ inline decltype(auto) mean( const DenseMatrix<MT,SO>& dm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   if( size( ~dm ) == 0UL ) {
+   if( size( *dm ) == 0UL ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid input matrix" );
    }
 
-   return mean_backend( ~dm, IsUniform<MT>() );
+   return mean_backend( *dm, IsUniform<MT>() );
 }
 //*************************************************************************************************
 
@@ -159,11 +159,11 @@ decltype(auto) mean_backend( const DenseMatrix<MT,SO>& dm, FalseType )
 {
    using BT = UnderlyingBuiltin_t<MT>;
 
-   const size_t n( RF == rowwise ? columns( ~dm ) : rows( ~dm ) );
+   const size_t n( RF == rowwise ? columns( *dm ) : rows( *dm ) );
 
    BLAZE_INTERNAL_ASSERT( n > 0UL, "Invalid matrix size detected" );
 
-   return sum<RF>( ~dm ) * inv( BT( n ) );
+   return sum<RF>( *dm ) * inv( BT( n ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -182,13 +182,13 @@ template< ReductionFlag RF  // Reduction flag
         , bool SO >         // Storage order
 decltype(auto) mean_backend( const DenseMatrix<MT,SO>& dm, TrueType )
 {
-   const size_t n( RF == rowwise ? rows( ~dm ) : columns( ~dm ) );
+   const size_t n( RF == rowwise ? rows( *dm ) : columns( *dm ) );
 
    BLAZE_INTERNAL_ASSERT( n > 0UL, "Invalid matrix size detected" );
 
    constexpr bool TF( ( RF == rowwise ? columnVector : rowVector ) );
 
-   return uniform<TF>( n, (~dm)(0UL,0UL) );
+   return uniform<TF>( n, (*dm)(0UL,0UL) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -238,13 +238,13 @@ decltype(auto) mean( const DenseMatrix<MT,SO>& dm )
 
    BLAZE_STATIC_ASSERT_MSG( RF < 2UL, "Invalid reduction flag" );
 
-   const size_t n( RF == rowwise ? columns( ~dm ) : rows( ~dm ) );
+   const size_t n( RF == rowwise ? columns( *dm ) : rows( *dm ) );
 
    if( n == 0UL ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid input matrix" );
    }
 
-   return mean_backend<RF>( ~dm, IsUniform<MT>() );
+   return mean_backend<RF>( *dm, IsUniform<MT>() );
 }
 //*************************************************************************************************
 

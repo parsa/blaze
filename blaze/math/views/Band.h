@@ -142,7 +142,7 @@ inline decltype(auto) band( Matrix<MT,SO>& matrix, RBAs... args )
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = Band_<MT,I>;
-   return ReturnType( ~matrix, args... );
+   return ReturnType( *matrix, args... );
 }
 //*************************************************************************************************
 
@@ -191,7 +191,7 @@ inline decltype(auto) band( const Matrix<MT,SO>& matrix, RBAs... args )
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = const Band_<const MT,I>;
-   return ReturnType( ~matrix, args... );
+   return ReturnType( *matrix, args... );
 }
 //*************************************************************************************************
 
@@ -219,7 +219,7 @@ inline decltype(auto) band( Matrix<MT,SO>&& matrix, RBAs... args )
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = Band_<MT,I>;
-   return ReturnType( ~matrix, args... );
+   return ReturnType( *matrix, args... );
 }
 //*************************************************************************************************
 
@@ -268,7 +268,7 @@ inline decltype(auto) band( Matrix<MT,SO>& matrix, ptrdiff_t index, RBAs... args
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = Band_<MT>;
-   return ReturnType( ~matrix, index, args... );
+   return ReturnType( *matrix, index, args... );
 }
 //*************************************************************************************************
 
@@ -317,7 +317,7 @@ inline decltype(auto) band( const Matrix<MT,SO>& matrix, ptrdiff_t index, RBAs..
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = const Band_<const MT>;
-   return ReturnType( ~matrix, index, args... );
+   return ReturnType( *matrix, index, args... );
 }
 //*************************************************************************************************
 
@@ -345,7 +345,7 @@ inline decltype(auto) band( Matrix<MT,SO>&& matrix, ptrdiff_t index, RBAs... arg
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = Band_<MT>;
-   return ReturnType( ~matrix, index, args... );
+   return ReturnType( *matrix, index, args... );
 }
 //*************************************************************************************************
 
@@ -381,7 +381,7 @@ inline decltype(auto) diagonal( Matrix<MT,SO>& matrix, RDAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return band<0L>( ~matrix, unchecked, args... );
+   return band<0L>( *matrix, unchecked, args... );
 }
 //*************************************************************************************************
 
@@ -416,7 +416,7 @@ inline decltype(auto) diagonal( const Matrix<MT,SO>& matrix, RDAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return band<0L>( ~matrix, unchecked, args... );
+   return band<0L>( *matrix, unchecked, args... );
 }
 //*************************************************************************************************
 
@@ -440,7 +440,7 @@ inline decltype(auto) diagonal( Matrix<MT,SO>&& matrix, RDAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return band<0L>( ~matrix, unchecked, args... );
+   return band<0L>( *matrix, unchecked, args... );
 }
 //*************************************************************************************************
 
@@ -473,8 +473,8 @@ inline decltype(auto) band( const MatMatAddExpr<MT>& matrix, RBAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return band<CBAs...>( (~matrix).leftOperand(), args... ) +
-          band<CBAs...>( (~matrix).rightOperand(), args... );
+   return band<CBAs...>( (*matrix).leftOperand(), args... ) +
+          band<CBAs...>( (*matrix).rightOperand(), args... );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -500,8 +500,8 @@ inline decltype(auto) band( const MatMatSubExpr<MT>& matrix, RBAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return band<CBAs...>( (~matrix).leftOperand(), args... ) -
-          band<CBAs...>( (~matrix).rightOperand(), args... );
+   return band<CBAs...>( (*matrix).leftOperand(), args... ) -
+          band<CBAs...>( (*matrix).rightOperand(), args... );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -526,8 +526,8 @@ inline decltype(auto) band( const SchurExpr<MT>& matrix, RBAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return band<CBAs...>( (~matrix).leftOperand(), args... ) *
-          band<CBAs...>( (~matrix).rightOperand(), args... );
+   return band<CBAs...>( (*matrix).leftOperand(), args... ) *
+          band<CBAs...>( (*matrix).rightOperand(), args... );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -556,17 +556,17 @@ inline decltype(auto) band( const MatMatKronExpr<MT>& matrix, RBAs... args )
    const BandData<CBAs...> bd( args... );
 
    if( isChecked( args... ) ) {
-      if( ( bd.band() > 0L && bd.column() >= (~matrix).columns() ) ||
-          ( bd.band() < 0L && bd.row() >= (~matrix).rows() ) ) {
+      if( ( bd.band() > 0L && bd.column() >= (*matrix).columns() ) ||
+          ( bd.band() < 0L && bd.row() >= (*matrix).rows() ) ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid band access index" );
       }
    }
 
    const size_t row   ( bd.band() <  0L ? -bd.band() : 0UL );
    const size_t column( bd.band() >= 0L ?  bd.band() : 0UL );
-   const size_t n     ( min( (~matrix).rows() - row, (~matrix).columns() - column ) );
+   const size_t n     ( min( (*matrix).rows() - row, (*matrix).columns() - column ) );
 
-   return diagonal( submatrix( ~matrix, row, column, n, n, unchecked ) );
+   return diagonal( submatrix( *matrix, row, column, n, n, unchecked ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -594,14 +594,14 @@ inline decltype(auto) band( const VecTVecMultExpr<MT>& matrix, RBAs... args )
    const BandData<CBAs...> bd( args... );
 
    if( isChecked( args... ) ) {
-      if( ( bd.band() > 0L && bd.column() >= (~matrix).columns() ) ||
-          ( bd.band() < 0L && bd.row() >= (~matrix).rows() ) ) {
+      if( ( bd.band() > 0L && bd.column() >= (*matrix).columns() ) ||
+          ( bd.band() < 0L && bd.row() >= (*matrix).rows() ) ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid band access index" );
       }
    }
 
-   decltype(auto) leftOperand ( (~matrix).leftOperand()  );
-   decltype(auto) rightOperand( (~matrix).rightOperand() );
+   decltype(auto) leftOperand ( (*matrix).leftOperand()  );
+   decltype(auto) rightOperand( (*matrix).rightOperand() );
 
    const size_t row   ( bd.band() <  0L ? -bd.band() : 0UL );
    const size_t column( bd.band() >= 0L ?  bd.band() : 0UL );
@@ -634,7 +634,7 @@ inline decltype(auto) band( const MatScalarMultExpr<MT>& matrix, RBAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return band<CBAs...>( (~matrix).leftOperand(), args... ) * (~matrix).rightOperand();
+   return band<CBAs...>( (*matrix).leftOperand(), args... ) * (*matrix).rightOperand();
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -660,7 +660,7 @@ inline decltype(auto) band( const MatScalarDivExpr<MT>& matrix, RBAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return band<CBAs...>( (~matrix).leftOperand(), args... ) / (~matrix).rightOperand();
+   return band<CBAs...>( (*matrix).leftOperand(), args... ) / (*matrix).rightOperand();
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -686,7 +686,7 @@ inline decltype(auto) band( const MatMapExpr<MT>& matrix, RBAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( band<CBAs...>( (~matrix).operand(), args... ), (~matrix).operation() );
+   return map( band<CBAs...>( (*matrix).operand(), args... ), (*matrix).operation() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -712,9 +712,9 @@ inline decltype(auto) band( const MatMatMapExpr<MT>& matrix, RBAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( band<CBAs...>( (~matrix).leftOperand(), args... ),
-               band<CBAs...>( (~matrix).rightOperand(), args... ),
-               (~matrix).operation() );
+   return map( band<CBAs...>( (*matrix).leftOperand(), args... ),
+               band<CBAs...>( (*matrix).rightOperand(), args... ),
+               (*matrix).operation() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -743,14 +743,14 @@ inline decltype(auto) band( const VecTVecMapExpr<MT>& matrix, RBAs... args )
    const BandData<CBAs...> bd( args... );
 
    if( isChecked( args... ) ) {
-      if( ( bd.band() > 0L && bd.column() >= (~matrix).columns() ) ||
-          ( bd.band() < 0L && bd.row() >= (~matrix).rows() ) ) {
+      if( ( bd.band() > 0L && bd.column() >= (*matrix).columns() ) ||
+          ( bd.band() < 0L && bd.row() >= (*matrix).rows() ) ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid band access index" );
       }
    }
 
-   decltype(auto) leftOperand ( (~matrix).leftOperand()  );
-   decltype(auto) rightOperand( (~matrix).rightOperand() );
+   decltype(auto) leftOperand ( (*matrix).leftOperand()  );
+   decltype(auto) rightOperand( (*matrix).rightOperand() );
 
    const size_t row   ( bd.band() <  0L ? -bd.band() : 0UL );
    const size_t column( bd.band() >= 0L ?  bd.band() : 0UL );
@@ -758,7 +758,7 @@ inline decltype(auto) band( const VecTVecMapExpr<MT>& matrix, RBAs... args )
 
    return map( transTo<defaultTransposeFlag>( subvector( leftOperand , row   , size, unchecked ) ),
                transTo<defaultTransposeFlag>( subvector( rightOperand, column, size, unchecked ) ),
-               (~matrix).operation() );
+               (*matrix).operation() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -784,7 +784,7 @@ inline decltype(auto) band( const MatEvalExpr<MT>& matrix, RBAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return eval( band<CBAs...>( (~matrix).operand(), args... ) );
+   return eval( band<CBAs...>( (*matrix).operand(), args... ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -810,7 +810,7 @@ inline decltype(auto) band( const MatSerialExpr<MT>& matrix, RBAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return serial( band<CBAs...>( (~matrix).operand(), args... ) );
+   return serial( band<CBAs...>( (*matrix).operand(), args... ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -836,7 +836,7 @@ inline decltype(auto) band( const MatNoAliasExpr<MT>& matrix, RBAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return noalias( band<CBAs...>( (~matrix).operand(), args... ) );
+   return noalias( band<CBAs...>( (*matrix).operand(), args... ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -862,7 +862,7 @@ inline decltype(auto) band( const MatNoSIMDExpr<MT>& matrix, RBAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return nosimd( band<CBAs...>( (~matrix).operand(), args... ) );
+   return nosimd( band<CBAs...>( (*matrix).operand(), args... ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -888,7 +888,7 @@ inline decltype(auto) band( const DeclExpr<MT>& matrix, RBAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return band<CBAs...>( (~matrix).operand(), args... );
+   return band<CBAs...>( (*matrix).operand(), args... );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -914,7 +914,7 @@ inline decltype(auto) band( const MatTransExpr<MT>& matrix, RBAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return band<-I>( (~matrix).operand(), args... );
+   return band<-I>( (*matrix).operand(), args... );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -940,7 +940,7 @@ inline decltype(auto) band( const MatTransExpr<MT>& matrix, ptrdiff_t index, RBA
 {
    BLAZE_FUNCTION_TRACE;
 
-   return band( (~matrix).operand(), -index, args... );
+   return band( (*matrix).operand(), -index, args... );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -970,20 +970,20 @@ inline decltype(auto) band( const VecExpandExpr<MT,CEAs...>& matrix, RBAs... arg
    const BandData<CBAs...> bd( args... );
 
    if( isChecked( args... ) ) {
-      if( ( bd.band() > 0L && bd.column() >= (~matrix).columns() ) ||
-          ( bd.band() < 0L && bd.row() >= (~matrix).rows() ) ) {
+      if( ( bd.band() > 0L && bd.column() >= (*matrix).columns() ) ||
+          ( bd.band() < 0L && bd.row() >= (*matrix).rows() ) ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid band access index" );
       }
    }
 
-   using VT = VectorType_t< RemoveReference_t< decltype( (~matrix).operand() ) > >;
+   using VT = VectorType_t< RemoveReference_t< decltype( (*matrix).operand() ) > >;
 
    constexpr bool TF( TransposeFlag_v<VT> );
 
    const size_t index( TF ? bd.column() : bd.row() );
-   const size_t size ( min( (~matrix).rows() - bd.row(), (~matrix).columns() - bd.column() ) );
+   const size_t size ( min( (*matrix).rows() - bd.row(), (*matrix).columns() - bd.column() ) );
 
-   return subvector( transTo<defaultTransposeFlag>( (~matrix).operand() ), index, size, unchecked );
+   return subvector( transTo<defaultTransposeFlag>( (*matrix).operand() ), index, size, unchecked );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1011,7 +1011,7 @@ inline decltype(auto) band( const MatRepeatExpr<MT,CRAs...>& matrix, RBAs... arg
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = Band_< MatrixType_t<MT>, CBAs... >;
-   return ReturnType( ~matrix, args... );
+   return ReturnType( *matrix, args... );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1537,8 +1537,8 @@ template< typename MT        // Type of the matrix
 BLAZE_ALWAYS_INLINE bool
    trySet( const Band<MT,TF,DF,MF,CBAs...>& band, size_t index, size_t size, const ET& value )
 {
-   BLAZE_INTERNAL_ASSERT( index <= (~band).size(), "Invalid vector access index" );
-   BLAZE_INTERNAL_ASSERT( index + size <= (~band).size(), "Invalid range size" );
+   BLAZE_INTERNAL_ASSERT( index <= (*band).size(), "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( index + size <= (*band).size(), "Invalid range size" );
 
    const size_t iend( index + size );
 
@@ -1609,8 +1609,8 @@ template< typename MT        // Type of the matrix
 BLAZE_ALWAYS_INLINE bool
    tryAdd( const Band<MT,TF,DF,MF,CBAs...>& band, size_t index, size_t size, const ET& value )
 {
-   BLAZE_INTERNAL_ASSERT( index <= (~band).size(), "Invalid vector access index" );
-   BLAZE_INTERNAL_ASSERT( index + size <= (~band).size(), "Invalid range size" );
+   BLAZE_INTERNAL_ASSERT( index <= (*band).size(), "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( index + size <= (*band).size(), "Invalid range size" );
 
    const size_t iend( index + size );
 
@@ -1681,8 +1681,8 @@ template< typename MT        // Type of the matrix
 BLAZE_ALWAYS_INLINE bool
    trySub( const Band<MT,TF,DF,MF,CBAs...>& band, size_t index, size_t size, const ET& value )
 {
-   BLAZE_INTERNAL_ASSERT( index <= (~band).size(), "Invalid vector access index" );
-   BLAZE_INTERNAL_ASSERT( index + size <= (~band).size(), "Invalid range size" );
+   BLAZE_INTERNAL_ASSERT( index <= (*band).size(), "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( index + size <= (*band).size(), "Invalid range size" );
 
    const size_t iend( index + size );
 
@@ -1753,8 +1753,8 @@ template< typename MT        // Type of the matrix
 BLAZE_ALWAYS_INLINE bool
    tryMult( const Band<MT,TF,DF,MF,CBAs...>& band, size_t index, size_t size, const ET& value )
 {
-   BLAZE_INTERNAL_ASSERT( index <= (~band).size(), "Invalid vector access index" );
-   BLAZE_INTERNAL_ASSERT( index + size <= (~band).size(), "Invalid range size" );
+   BLAZE_INTERNAL_ASSERT( index <= (*band).size(), "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( index + size <= (*band).size(), "Invalid range size" );
 
    const size_t iend( index + size );
 
@@ -1825,8 +1825,8 @@ template< typename MT        // Type of the matrix
 BLAZE_ALWAYS_INLINE bool
    tryDiv( const Band<MT,TF,DF,MF,CBAs...>& band, size_t index, size_t size, const ET& value )
 {
-   BLAZE_INTERNAL_ASSERT( index <= (~band).size(), "Invalid vector access index" );
-   BLAZE_INTERNAL_ASSERT( index + size <= (~band).size(), "Invalid range size" );
+   BLAZE_INTERNAL_ASSERT( index <= (*band).size(), "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( index + size <= (*band).size(), "Invalid range size" );
 
    const size_t iend( index + size );
 
@@ -1895,8 +1895,8 @@ template< typename MT          // Type of the matrix
 BLAZE_ALWAYS_INLINE bool
    tryShift( const Band<MT,TF,DF,MF,CBAs...>& band, size_t index, size_t size, int count )
 {
-   BLAZE_INTERNAL_ASSERT( index <= (~band).size(), "Invalid vector access index" );
-   BLAZE_INTERNAL_ASSERT( index + size <= (~band).size(), "Invalid range size" );
+   BLAZE_INTERNAL_ASSERT( index <= (*band).size(), "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( index + size <= (*band).size(), "Invalid range size" );
 
    const size_t iend( index + size );
 
@@ -1967,8 +1967,8 @@ template< typename MT        // Type of the matrix
 BLAZE_ALWAYS_INLINE bool
    tryBitand( const Band<MT,TF,DF,MF,CBAs...>& band, size_t index, size_t size, const ET& value )
 {
-   BLAZE_INTERNAL_ASSERT( index <= (~band).size(), "Invalid vector access index" );
-   BLAZE_INTERNAL_ASSERT( index + size <= (~band).size(), "Invalid range size" );
+   BLAZE_INTERNAL_ASSERT( index <= (*band).size(), "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( index + size <= (*band).size(), "Invalid range size" );
 
    const size_t iend( index + size );
 
@@ -2039,8 +2039,8 @@ template< typename MT        // Type of the matrix
 BLAZE_ALWAYS_INLINE bool
    tryBitor( const Band<MT,TF,DF,MF,CBAs...>& band, size_t index, size_t size, const ET& value )
 {
-   BLAZE_INTERNAL_ASSERT( index <= (~band).size(), "Invalid vector access index" );
-   BLAZE_INTERNAL_ASSERT( index + size <= (~band).size(), "Invalid range size" );
+   BLAZE_INTERNAL_ASSERT( index <= (*band).size(), "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( index + size <= (*band).size(), "Invalid range size" );
 
    const size_t iend( index + size );
 
@@ -2111,8 +2111,8 @@ template< typename MT        // Type of the matrix
 BLAZE_ALWAYS_INLINE bool
    tryBitxor( const Band<MT,TF,DF,MF,CBAs...>& band, size_t index, size_t size, const ET& value )
 {
-   BLAZE_INTERNAL_ASSERT( index <= (~band).size(), "Invalid vector access index" );
-   BLAZE_INTERNAL_ASSERT( index + size <= (~band).size(), "Invalid range size" );
+   BLAZE_INTERNAL_ASSERT( index <= (*band).size(), "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( index + size <= (*band).size(), "Invalid range size" );
 
    const size_t iend( index + size );
 
@@ -2152,9 +2152,9 @@ inline bool tryAssign( const Band<MT,TF,DF,MF,CBAs...>& lhs,
                        const Vector<VT,TF>& rhs, size_t index )
 {
    BLAZE_INTERNAL_ASSERT( index <= lhs.size(), "Invalid vector access index" );
-   BLAZE_INTERNAL_ASSERT( index + (~rhs).size() <= lhs.size(), "Invalid vector size" );
+   BLAZE_INTERNAL_ASSERT( index + (*rhs).size() <= lhs.size(), "Invalid vector size" );
 
-   return tryAssign( lhs.operand(), ~rhs, lhs.band(), lhs.row()+index, lhs.column()+index );
+   return tryAssign( lhs.operand(), *rhs, lhs.band(), lhs.row()+index, lhs.column()+index );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -2185,9 +2185,9 @@ inline bool tryAddAssign( const Band<MT,TF,DF,MF,CBAs...>& lhs,
                           const Vector<VT,TF>& rhs, size_t index )
 {
    BLAZE_INTERNAL_ASSERT( index <= lhs.size(), "Invalid vector access index" );
-   BLAZE_INTERNAL_ASSERT( index + (~rhs).size() <= lhs.size(), "Invalid vector size" );
+   BLAZE_INTERNAL_ASSERT( index + (*rhs).size() <= lhs.size(), "Invalid vector size" );
 
-   return tryAddAssign( lhs.operand(), ~rhs, lhs.band(), lhs.row()+index, lhs.column()+index );
+   return tryAddAssign( lhs.operand(), *rhs, lhs.band(), lhs.row()+index, lhs.column()+index );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -2218,9 +2218,9 @@ inline bool trySubAssign( const Band<MT,TF,DF,MF,CBAs...>& lhs,
                           const Vector<VT,TF>& rhs, size_t index )
 {
    BLAZE_INTERNAL_ASSERT( index <= lhs.size(), "Invalid vector access index" );
-   BLAZE_INTERNAL_ASSERT( index + (~rhs).size() <= lhs.size(), "Invalid vector size" );
+   BLAZE_INTERNAL_ASSERT( index + (*rhs).size() <= lhs.size(), "Invalid vector size" );
 
-   return trySubAssign( lhs.operand(), ~rhs, lhs.band(), lhs.row()+index, lhs.column()+index );
+   return trySubAssign( lhs.operand(), *rhs, lhs.band(), lhs.row()+index, lhs.column()+index );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -2251,9 +2251,9 @@ inline bool tryMultAssign( const Band<MT,TF,DF,MF,CBAs...>& lhs,
                            const Vector<VT,TF>& rhs, size_t index )
 {
    BLAZE_INTERNAL_ASSERT( index <= lhs.size(), "Invalid vector access index" );
-   BLAZE_INTERNAL_ASSERT( index + (~rhs).size() <= lhs.size(), "Invalid vector size" );
+   BLAZE_INTERNAL_ASSERT( index + (*rhs).size() <= lhs.size(), "Invalid vector size" );
 
-   return tryMultAssign( lhs.operand(), ~rhs, lhs.band(), lhs.row()+index, lhs.column()+index );
+   return tryMultAssign( lhs.operand(), *rhs, lhs.band(), lhs.row()+index, lhs.column()+index );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -2284,9 +2284,9 @@ inline bool tryDivAssign( const Band<MT,TF,DF,MF,CBAs...>& lhs,
                           const Vector<VT,TF>& rhs, size_t index )
 {
    BLAZE_INTERNAL_ASSERT( index <= lhs.size(), "Invalid vector access index" );
-   BLAZE_INTERNAL_ASSERT( index + (~rhs).size() <= lhs.size(), "Invalid vector size" );
+   BLAZE_INTERNAL_ASSERT( index + (*rhs).size() <= lhs.size(), "Invalid vector size" );
 
-   return tryDivAssign( lhs.operand(), ~rhs, lhs.band(), lhs.row()+index, lhs.column()+index );
+   return tryDivAssign( lhs.operand(), *rhs, lhs.band(), lhs.row()+index, lhs.column()+index );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -2317,9 +2317,9 @@ inline bool tryShiftAssign( const Band<MT,TF,DF,MF,CBAs...>& lhs,
                             const Vector<VT,TF>& rhs, size_t index )
 {
    BLAZE_INTERNAL_ASSERT( index <= lhs.size(), "Invalid vector access index" );
-   BLAZE_INTERNAL_ASSERT( index + (~rhs).size() <= lhs.size(), "Invalid vector size" );
+   BLAZE_INTERNAL_ASSERT( index + (*rhs).size() <= lhs.size(), "Invalid vector size" );
 
-   return tryShiftAssign( lhs.operand(), ~rhs, lhs.band(), lhs.row()+index, lhs.column()+index );
+   return tryShiftAssign( lhs.operand(), *rhs, lhs.band(), lhs.row()+index, lhs.column()+index );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -2350,9 +2350,9 @@ inline bool tryBitandAssign( const Band<MT,TF,DF,MF,CBAs...>& lhs,
                              const Vector<VT,TF>& rhs, size_t index )
 {
    BLAZE_INTERNAL_ASSERT( index <= lhs.size(), "Invalid vector access index" );
-   BLAZE_INTERNAL_ASSERT( index + (~rhs).size() <= lhs.size(), "Invalid vector size" );
+   BLAZE_INTERNAL_ASSERT( index + (*rhs).size() <= lhs.size(), "Invalid vector size" );
 
-   return tryBitandAssign( lhs.operand(), ~rhs, lhs.band(), lhs.row()+index, lhs.column()+index );
+   return tryBitandAssign( lhs.operand(), *rhs, lhs.band(), lhs.row()+index, lhs.column()+index );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -2383,9 +2383,9 @@ inline bool tryBitorAssign( const Band<MT,TF,DF,MF,CBAs...>& lhs,
                             const Vector<VT,TF>& rhs, size_t index )
 {
    BLAZE_INTERNAL_ASSERT( index <= lhs.size(), "Invalid vector access index" );
-   BLAZE_INTERNAL_ASSERT( index + (~rhs).size() <= lhs.size(), "Invalid vector size" );
+   BLAZE_INTERNAL_ASSERT( index + (*rhs).size() <= lhs.size(), "Invalid vector size" );
 
-   return tryBitorAssign( lhs.operand(), ~rhs, lhs.band(), lhs.row()+index, lhs.column()+index );
+   return tryBitorAssign( lhs.operand(), *rhs, lhs.band(), lhs.row()+index, lhs.column()+index );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -2416,9 +2416,9 @@ inline bool tryBitxorAssign( const Band<MT,TF,DF,MF,CBAs...>& lhs,
                              const Vector<VT,TF>& rhs, size_t index )
 {
    BLAZE_INTERNAL_ASSERT( index <= lhs.size(), "Invalid vector access index" );
-   BLAZE_INTERNAL_ASSERT( index + (~rhs).size() <= lhs.size(), "Invalid vector size" );
+   BLAZE_INTERNAL_ASSERT( index + (*rhs).size() <= lhs.size(), "Invalid vector size" );
 
-   return tryBitxorAssign( lhs.operand(), ~rhs, lhs.band(), lhs.row()+index, lhs.column()+index );
+   return tryBitxorAssign( lhs.operand(), *rhs, lhs.band(), lhs.row()+index, lhs.column()+index );
 }
 /*! \endcond */
 //*************************************************************************************************

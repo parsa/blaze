@@ -135,32 +135,32 @@ void llh( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& L )
    BLAZE_CONSTRAINT_MUST_NOT_BE_UPPER_MATRIX_TYPE( MT2 );
    BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<MT2> );
 
-   if( !isSquare( ~A ) ) {
+   if( !isSquare( *A ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid non-square matrix provided" );
    }
 
-   const size_t n( (~A).rows() );
+   const size_t n( (*A).rows() );
 
-   if( ( !IsResizable_v<MT2> && ( (~L).rows() != n || (~L).columns() != n ) ) ) {
+   if( ( !IsResizable_v<MT2> && ( (*L).rows() != n || (*L).columns() != n ) ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Dimensions of fixed size matrix do not match" );
    }
 
-   decltype(auto) l( derestrict( ~L ) );
+   decltype(auto) l( derestrict( *L ) );
 
-   resize( ~L, n, n, false );
+   resize( *L, n, n, false );
    reset( l );
 
    if( IsRowMajorMatrix_v<MT2> ) {
       for( size_t i=0UL; i<n; ++i ) {
          for( size_t j=0UL; j<=i; ++j ) {
-            l(i,j) = (~A)(i,j);
+            l(i,j) = (*A)(i,j);
          }
       }
    }
    else {
       for( size_t j=0UL; j<n; ++j ) {
          for( size_t i=j; i<n; ++i ) {
-            l(i,j) = (~A)(i,j);
+            l(i,j) = (*A)(i,j);
          }
       }
    }

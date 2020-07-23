@@ -83,11 +83,11 @@ inline bool equal( const DenseVector<VT1,TF1>& lhs, const SparseVector<VT2,TF2>&
    using CT2 = CompositeType_t<VT2>;
 
    // Early exit in case the vector sizes don't match
-   if( (~lhs).size() != (~rhs).size() ) return false;
+   if( (*lhs).size() != (*rhs).size() ) return false;
 
    // Evaluation of the dense vector and sparse vector operand
-   CT1 a( ~lhs );
-   CT2 b( ~rhs );
+   CT1 a( *lhs );
+   CT2 b( *rhs );
 
    // In order to compare the two vectors, the data values of the lower-order data
    // type are converted to the higher-order data type within the equal function.

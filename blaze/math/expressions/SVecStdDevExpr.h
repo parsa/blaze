@@ -83,7 +83,7 @@ decltype(auto) stddev( const SparseVector<VT,TF>& sv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return sqrt( var( ~sv ) );
+   return sqrt( var( *sv ) );
 }
 //*************************************************************************************************
 

@@ -1030,15 +1030,15 @@ template< typename Type     // Data type of the matrix
 template< typename MT       // Type of the foreign matrix
         , bool SO2 >        // Storage order of the foreign matrix
 inline HybridMatrix<Type,M,N,SO,AF,PF,Tag>::HybridMatrix( const Matrix<MT,SO2>& m )
-   : m_( (~m).rows() )     // The current number of rows of the matrix
-   , n_( (~m).columns() )  // The current number of columns of the matrix
+   : m_( (*m).rows() )     // The current number of rows of the matrix
+   , n_( (*m).columns() )  // The current number of columns of the matrix
    // v_ is intentionally left uninitialized
 {
    using blaze::assign;
 
    BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<MT> );
 
-   if( (~m).rows() > M || (~m).columns() > N ) {
+   if( (*m).rows() > M || (*m).columns() > N ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid setup of hybrid matrix" );
    }
 
@@ -1056,7 +1056,7 @@ inline HybridMatrix<Type,M,N,SO,AF,PF,Tag>::HybridMatrix( const Matrix<MT,SO2>& 
             v_[i*NN+j] = Type();
    }
 
-   assign( *this, ~m );
+   assign( *this, *m );
 
    BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
 }
@@ -1676,7 +1676,7 @@ constexpr HybridMatrix<Type,M,N,SO,AF,PF,Tag>&
    BLAZE_INTERNAL_ASSERT( n_ <= N, "Invalid number of columns detected" );
 
    resize( rhs.rows(), rhs.columns() );
-   assign( *this, ~rhs );
+   assign( *this, *rhs );
 
    BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
 
@@ -1716,26 +1716,26 @@ inline HybridMatrix<Type,M,N,SO,AF,PF,Tag>&
 
    BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<MT> );
 
-   if( (~rhs).rows() > M || (~rhs).columns() > N ) {
+   if( (*rhs).rows() > M || (*rhs).columns() > N ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to hybrid matrix" );
    }
 
-   if( IsSame_v<MT,TT> && (~rhs).isAliased( this ) ) {
+   if( IsSame_v<MT,TT> && (*rhs).isAliased( this ) ) {
       transpose();
    }
-   else if( IsSame_v<MT,CT> && (~rhs).isAliased( this ) ) {
+   else if( IsSame_v<MT,CT> && (*rhs).isAliased( this ) ) {
       ctranspose();
    }
-   else if( !IsSame_v<MT,IT> && (~rhs).canAlias( this ) ) {
-      HybridMatrix tmp( ~rhs );
+   else if( !IsSame_v<MT,IT> && (*rhs).canAlias( this ) ) {
+      HybridMatrix tmp( *rhs );
       resize( tmp.rows(), tmp.columns() );
       assign( *this, tmp );
    }
    else {
-      resize( (~rhs).rows(), (~rhs).columns() );
+      resize( (*rhs).rows(), (*rhs).columns() );
       if( IsSparseMatrix_v<MT> )
          reset();
-      assign( *this, ~rhs );
+      assign( *this, *rhs );
    }
 
    BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
@@ -1771,16 +1771,16 @@ inline HybridMatrix<Type,M,N,SO,AF,PF,Tag>&
 
    BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<MT> );
 
-   if( (~rhs).rows() != m_ || (~rhs).columns() != n_ ) {
+   if( (*rhs).rows() != m_ || (*rhs).columns() != n_ ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
-   if( (~rhs).canAlias( this ) ) {
-      const ResultType_t<MT> tmp( ~rhs );
+   if( (*rhs).canAlias( this ) ) {
+      const ResultType_t<MT> tmp( *rhs );
       addAssign( *this, tmp );
    }
    else {
-      addAssign( *this, ~rhs );
+      addAssign( *this, *rhs );
    }
 
    BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
@@ -1816,16 +1816,16 @@ inline HybridMatrix<Type,M,N,SO,AF,PF,Tag>&
 
    BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<MT> );
 
-   if( (~rhs).rows() != m_ || (~rhs).columns() != n_ ) {
+   if( (*rhs).rows() != m_ || (*rhs).columns() != n_ ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
-   if( (~rhs).canAlias( this ) ) {
-      const ResultType_t<MT> tmp( ~rhs );
+   if( (*rhs).canAlias( this ) ) {
+      const ResultType_t<MT> tmp( *rhs );
       subAssign( *this, tmp );
    }
    else {
-      subAssign( *this, ~rhs );
+      subAssign( *this, *rhs );
    }
 
    BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
@@ -1861,16 +1861,16 @@ inline HybridMatrix<Type,M,N,SO,AF,PF,Tag>&
 
    BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<MT> );
 
-   if( (~rhs).rows() != m_ || (~rhs).columns() != n_ ) {
+   if( (*rhs).rows() != m_ || (*rhs).columns() != n_ ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
-   if( (~rhs).canAlias( this ) ) {
-      const ResultType_t<MT> tmp( ~rhs );
+   if( (*rhs).canAlias( this ) ) {
+      const ResultType_t<MT> tmp( *rhs );
       schurAssign( *this, tmp );
    }
    else {
-      schurAssign( *this, ~rhs );
+      schurAssign( *this, *rhs );
    }
 
    BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
@@ -3046,11 +3046,11 @@ template< typename MT       // Type of the right-hand side dense matrix
 inline auto HybridMatrix<Type,M,N,SO,AF,PF,Tag>::assign( const DenseMatrix<MT,SO2>& rhs )
    -> DisableIf_t< VectorizedAssign_v<MT> >
 {
-   BLAZE_INTERNAL_ASSERT( (~rhs).rows() == m_ && (~rhs).columns() == n_, "Invalid matrix size" );
+   BLAZE_INTERNAL_ASSERT( (*rhs).rows() == m_ && (*rhs).columns() == n_, "Invalid matrix size" );
 
    for( size_t i=0UL; i<m_; ++i ) {
       for( size_t j=0UL; j<n_; ++j ) {
-         v_[i*NN+j] = (~rhs)(i,j);
+         v_[i*NN+j] = (*rhs)(i,j);
       }
    }
 }
@@ -3082,7 +3082,7 @@ inline auto HybridMatrix<Type,M,N,SO,AF,PF,Tag>::assign( const DenseMatrix<MT,SO
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
-   BLAZE_INTERNAL_ASSERT( (~rhs).rows() == m_ && (~rhs).columns() == n_, "Invalid matrix size" );
+   BLAZE_INTERNAL_ASSERT( (*rhs).rows() == m_ && (*rhs).columns() == n_, "Invalid matrix size" );
 
    constexpr bool remainder( PF == unpadded || !IsPadded_v<MT> );
 
@@ -3094,10 +3094,10 @@ inline auto HybridMatrix<Type,M,N,SO,AF,PF,Tag>::assign( const DenseMatrix<MT,SO
       size_t j( 0UL );
 
       for( ; j<jpos; j+=SIMDSIZE ) {
-         store( i, j, (~rhs).load(i,j) );
+         store( i, j, (*rhs).load(i,j) );
       }
       for( ; remainder && j<n_; ++j ) {
-         v_[i*NN+j] = (~rhs)(i,j);
+         v_[i*NN+j] = (*rhs)(i,j);
       }
    }
 }
@@ -3125,10 +3125,10 @@ template< typename Type     // Data type of the matrix
 template< typename MT >     // Type of the right-hand side sparse matrix
 inline void HybridMatrix<Type,M,N,SO,AF,PF,Tag>::assign( const SparseMatrix<MT,SO>& rhs )
 {
-   BLAZE_INTERNAL_ASSERT( (~rhs).rows() == m_ && (~rhs).columns() == n_, "Invalid matrix size" );
+   BLAZE_INTERNAL_ASSERT( (*rhs).rows() == m_ && (*rhs).columns() == n_, "Invalid matrix size" );
 
    for( size_t i=0UL; i<m_; ++i )
-      for( auto element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
+      for( auto element=(*rhs).begin(i); element!=(*rhs).end(i); ++element )
          v_[i*NN+element->index()] = element->value();
 }
 //*************************************************************************************************
@@ -3157,10 +3157,10 @@ inline void HybridMatrix<Type,M,N,SO,AF,PF,Tag>::assign( const SparseMatrix<MT,!
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
 
-   BLAZE_INTERNAL_ASSERT( (~rhs).rows() == m_ && (~rhs).columns() == n_, "Invalid matrix size" );
+   BLAZE_INTERNAL_ASSERT( (*rhs).rows() == m_ && (*rhs).columns() == n_, "Invalid matrix size" );
 
    for( size_t j=0UL; j<n_; ++j )
-      for( auto element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
+      for( auto element=(*rhs).begin(j); element!=(*rhs).end(j); ++element )
          v_[element->index()*NN+j] = element->value();
 }
 //*************************************************************************************************
@@ -3189,13 +3189,13 @@ template< typename MT       // Type of the right-hand side dense matrix
 inline auto HybridMatrix<Type,M,N,SO,AF,PF,Tag>::addAssign( const DenseMatrix<MT,SO2>& rhs )
    -> DisableIf_t< VectorizedAddAssign_v<MT> >
 {
-   BLAZE_INTERNAL_ASSERT( (~rhs).rows() == m_ && (~rhs).columns() == n_, "Invalid matrix size" );
+   BLAZE_INTERNAL_ASSERT( (*rhs).rows() == m_ && (*rhs).columns() == n_, "Invalid matrix size" );
 
    for( size_t i=0UL; i<m_; ++i )
    {
       if( IsDiagonal_v<MT> )
       {
-         v_[i*NN+i] += (~rhs)(i,i);
+         v_[i*NN+i] += (*rhs)(i,i);
       }
       else
       {
@@ -3208,7 +3208,7 @@ inline auto HybridMatrix<Type,M,N,SO,AF,PF,Tag>::addAssign( const DenseMatrix<MT
          BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
          for( size_t j=jbegin; j<jend; ++j ) {
-            v_[i*NN+j] += (~rhs)(i,j);
+            v_[i*NN+j] += (*rhs)(i,j);
          }
       }
    }
@@ -3242,7 +3242,7 @@ inline auto HybridMatrix<Type,M,N,SO,AF,PF,Tag>::addAssign( const DenseMatrix<MT
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
    BLAZE_CONSTRAINT_MUST_NOT_BE_DIAGONAL_MATRIX_TYPE( MT );
 
-   BLAZE_INTERNAL_ASSERT( (~rhs).rows() == m_ && (~rhs).columns() == n_, "Invalid matrix size" );
+   BLAZE_INTERNAL_ASSERT( (*rhs).rows() == m_ && (*rhs).columns() == n_, "Invalid matrix size" );
 
    constexpr bool remainder( PF == unpadded || !IsPadded_v<MT> );
 
@@ -3262,10 +3262,10 @@ inline auto HybridMatrix<Type,M,N,SO,AF,PF,Tag>::addAssign( const DenseMatrix<MT
       size_t j( jbegin );
 
       for( ; j<jpos; j+=SIMDSIZE ) {
-         store( i, j, load(i,j) + (~rhs).load(i,j) );
+         store( i, j, load(i,j) + (*rhs).load(i,j) );
       }
       for( ; remainder && j<jend; ++j ) {
-         v_[i*NN+j] += (~rhs)(i,j);
+         v_[i*NN+j] += (*rhs)(i,j);
       }
    }
 }
@@ -3293,10 +3293,10 @@ template< typename Type     // Data type of the matrix
 template< typename MT >     // Type of the right-hand side sparse matrix
 inline void HybridMatrix<Type,M,N,SO,AF,PF,Tag>::addAssign( const SparseMatrix<MT,SO>& rhs )
 {
-   BLAZE_INTERNAL_ASSERT( (~rhs).rows() == m_ && (~rhs).columns() == n_, "Invalid matrix size" );
+   BLAZE_INTERNAL_ASSERT( (*rhs).rows() == m_ && (*rhs).columns() == n_, "Invalid matrix size" );
 
    for( size_t i=0UL; i<m_; ++i )
-      for( auto element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
+      for( auto element=(*rhs).begin(i); element!=(*rhs).end(i); ++element )
          v_[i*NN+element->index()] += element->value();
 }
 //*************************************************************************************************
@@ -3325,10 +3325,10 @@ inline void HybridMatrix<Type,M,N,SO,AF,PF,Tag>::addAssign( const SparseMatrix<M
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
 
-   BLAZE_INTERNAL_ASSERT( (~rhs).rows() == m_ && (~rhs).columns() == n_, "Invalid matrix size" );
+   BLAZE_INTERNAL_ASSERT( (*rhs).rows() == m_ && (*rhs).columns() == n_, "Invalid matrix size" );
 
    for( size_t j=0UL; j<n_; ++j )
-      for( auto element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
+      for( auto element=(*rhs).begin(j); element!=(*rhs).end(j); ++element )
          v_[element->index()*NN+j] += element->value();
 }
 //*************************************************************************************************
@@ -3357,13 +3357,13 @@ template< typename MT       // Type of the right-hand side dense matrix
 inline auto HybridMatrix<Type,M,N,SO,AF,PF,Tag>::subAssign( const DenseMatrix<MT,SO2>& rhs )
    -> DisableIf_t< VectorizedSubAssign_v<MT> >
 {
-   BLAZE_INTERNAL_ASSERT( (~rhs).rows() == m_ && (~rhs).columns() == n_, "Invalid matrix size" );
+   BLAZE_INTERNAL_ASSERT( (*rhs).rows() == m_ && (*rhs).columns() == n_, "Invalid matrix size" );
 
    for( size_t i=0UL; i<m_; ++i )
    {
       if( IsDiagonal_v<MT> )
       {
-         v_[i*NN+i] -= (~rhs)(i,i);
+         v_[i*NN+i] -= (*rhs)(i,i);
       }
       else
       {
@@ -3376,7 +3376,7 @@ inline auto HybridMatrix<Type,M,N,SO,AF,PF,Tag>::subAssign( const DenseMatrix<MT
          BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
          for( size_t j=jbegin; j<jend; ++j ) {
-            v_[i*NN+j] -= (~rhs)(i,j);
+            v_[i*NN+j] -= (*rhs)(i,j);
          }
       }
    }
@@ -3410,7 +3410,7 @@ inline auto HybridMatrix<Type,M,N,SO,AF,PF,Tag>::subAssign( const DenseMatrix<MT
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
    BLAZE_CONSTRAINT_MUST_NOT_BE_DIAGONAL_MATRIX_TYPE( MT );
 
-   BLAZE_INTERNAL_ASSERT( (~rhs).rows() == m_ && (~rhs).columns() == n_, "Invalid matrix size" );
+   BLAZE_INTERNAL_ASSERT( (*rhs).rows() == m_ && (*rhs).columns() == n_, "Invalid matrix size" );
 
    constexpr bool remainder( PF == unpadded || !IsPadded_v<MT> );
 
@@ -3430,10 +3430,10 @@ inline auto HybridMatrix<Type,M,N,SO,AF,PF,Tag>::subAssign( const DenseMatrix<MT
       size_t j( jbegin );
 
       for( ; j<jpos; j+=SIMDSIZE ) {
-         store( i, j, load(i,j) - (~rhs).load(i,j) );
+         store( i, j, load(i,j) - (*rhs).load(i,j) );
       }
       for( ; remainder && j<jend; ++j ) {
-         v_[i*NN+j] -= (~rhs)(i,j);
+         v_[i*NN+j] -= (*rhs)(i,j);
       }
    }
 }
@@ -3461,10 +3461,10 @@ template< typename Type     // Data type of the matrix
 template< typename MT >     // Type of the right-hand side sparse matrix
 inline void HybridMatrix<Type,M,N,SO,AF,PF,Tag>::subAssign( const SparseMatrix<MT,SO>& rhs )
 {
-   BLAZE_INTERNAL_ASSERT( (~rhs).rows() == m_ && (~rhs).columns() == n_, "Invalid matrix size" );
+   BLAZE_INTERNAL_ASSERT( (*rhs).rows() == m_ && (*rhs).columns() == n_, "Invalid matrix size" );
 
    for( size_t i=0UL; i<m_; ++i )
-      for( auto element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
+      for( auto element=(*rhs).begin(i); element!=(*rhs).end(i); ++element )
          v_[i*NN+element->index()] -= element->value();
 }
 //*************************************************************************************************
@@ -3493,10 +3493,10 @@ inline void HybridMatrix<Type,M,N,SO,AF,PF,Tag>::subAssign( const SparseMatrix<M
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
 
-   BLAZE_INTERNAL_ASSERT( (~rhs).rows() == m_ && (~rhs).columns() == n_, "Invalid matrix size" );
+   BLAZE_INTERNAL_ASSERT( (*rhs).rows() == m_ && (*rhs).columns() == n_, "Invalid matrix size" );
 
    for( size_t j=0UL; j<n_; ++j )
-      for( auto element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
+      for( auto element=(*rhs).begin(j); element!=(*rhs).end(j); ++element )
          v_[element->index()*NN+j] -= element->value();
 }
 //*************************************************************************************************
@@ -3525,11 +3525,11 @@ template< typename MT       // Type of the right-hand side dense matrix
 inline auto HybridMatrix<Type,M,N,SO,AF,PF,Tag>::schurAssign( const DenseMatrix<MT,SO2>& rhs )
    -> DisableIf_t< VectorizedSchurAssign_v<MT> >
 {
-   BLAZE_INTERNAL_ASSERT( (~rhs).rows() == m_ && (~rhs).columns() == n_, "Invalid matrix size" );
+   BLAZE_INTERNAL_ASSERT( (*rhs).rows() == m_ && (*rhs).columns() == n_, "Invalid matrix size" );
 
    for( size_t i=0UL; i<m_; ++i ) {
       for( size_t j=0UL; j<n_; ++j ) {
-         v_[i*NN+j] *= (~rhs)(i,j);
+         v_[i*NN+j] *= (*rhs)(i,j);
       }
    }
 }
@@ -3561,7 +3561,7 @@ inline auto HybridMatrix<Type,M,N,SO,AF,PF,Tag>::schurAssign( const DenseMatrix<
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
-   BLAZE_INTERNAL_ASSERT( (~rhs).rows() == m_ && (~rhs).columns() == n_, "Invalid matrix size" );
+   BLAZE_INTERNAL_ASSERT( (*rhs).rows() == m_ && (*rhs).columns() == n_, "Invalid matrix size" );
 
    constexpr bool remainder( PF == unpadded || !IsPadded_v<MT> );
 
@@ -3573,10 +3573,10 @@ inline auto HybridMatrix<Type,M,N,SO,AF,PF,Tag>::schurAssign( const DenseMatrix<
       size_t j( 0UL );
 
       for( ; j<jpos; j+=SIMDSIZE ) {
-         store( i, j, load(i,j) * (~rhs).load(i,j) );
+         store( i, j, load(i,j) * (*rhs).load(i,j) );
       }
       for( ; remainder && j<n_; ++j ) {
-         v_[i*NN+j] *= (~rhs)(i,j);
+         v_[i*NN+j] *= (*rhs)(i,j);
       }
    }
 }
@@ -3604,14 +3604,14 @@ template< typename Type     // Data type of the matrix
 template< typename MT >     // Type of the right-hand side sparse matrix
 inline void HybridMatrix<Type,M,N,SO,AF,PF,Tag>::schurAssign( const SparseMatrix<MT,SO>& rhs )
 {
-   BLAZE_INTERNAL_ASSERT( (~rhs).rows() == m_ && (~rhs).columns() == n_, "Invalid matrix size" );
+   BLAZE_INTERNAL_ASSERT( (*rhs).rows() == m_ && (*rhs).columns() == n_, "Invalid matrix size" );
 
    const HybridMatrix tmp( serial( *this ) );
 
    reset();
 
    for( size_t i=0UL; i<m_; ++i )
-      for( auto element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
+      for( auto element=(*rhs).begin(i); element!=(*rhs).end(i); ++element )
          v_[i*NN+element->index()] = tmp.v_[i*NN+element->index()] * element->value();
 }
 //*************************************************************************************************
@@ -3640,14 +3640,14 @@ inline void HybridMatrix<Type,M,N,SO,AF,PF,Tag>::schurAssign( const SparseMatrix
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
 
-   BLAZE_INTERNAL_ASSERT( (~rhs).rows() == m_ && (~rhs).columns() == n_, "Invalid matrix size" );
+   BLAZE_INTERNAL_ASSERT( (*rhs).rows() == m_ && (*rhs).columns() == n_, "Invalid matrix size" );
 
    const HybridMatrix tmp( serial( *this ) );
 
    reset();
 
    for( size_t j=0UL; j<n_; ++j )
-      for( auto element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
+      for( auto element=(*rhs).begin(j); element!=(*rhs).end(j); ++element )
          v_[element->index()*NN+j] = tmp.v_[element->index()*NN+j] * element->value();
 }
 //*************************************************************************************************
@@ -4427,15 +4427,15 @@ template< typename Type     // Data type of the matrix
 template< typename MT       // Type of the foreign matrix
         , bool SO2 >        // Storage order of the foreign matrix
 inline HybridMatrix<Type,M,N,true,AF,PF,Tag>::HybridMatrix( const Matrix<MT,SO2>& m )
-   : m_( (~m).rows() )     // The current number of rows of the matrix
-   , n_( (~m).columns() )  // The current number of columns of the matrix
+   : m_( (*m).rows() )     // The current number of rows of the matrix
+   , n_( (*m).columns() )  // The current number of columns of the matrix
    // v_ is intentionally left uninitialized
 {
    using blaze::assign;
 
    BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<MT> );
 
-   if( (~m).rows() > M || (~m).columns() > N ) {
+   if( (*m).rows() > M || (*m).columns() > N ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid setup of hybrid matrix" );
    }
 
@@ -4453,7 +4453,7 @@ inline HybridMatrix<Type,M,N,true,AF,PF,Tag>::HybridMatrix( const Matrix<MT,SO2>
             v_[i+j*MM] = Type();
    }
 
-   assign( *this, ~m );
+   assign( *this, *m );
 
    BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
 }
@@ -5060,7 +5060,7 @@ constexpr HybridMatrix<Type,M,N,true,AF,PF,Tag>&
    BLAZE_INTERNAL_ASSERT( n_ <= N, "Invalid number of columns detected" );
 
    resize( rhs.rows(), rhs.columns() );
-   assign( *this, ~rhs );
+   assign( *this, *rhs );
 
    BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
 
@@ -5101,26 +5101,26 @@ inline HybridMatrix<Type,M,N,true,AF,PF,Tag>&
 
    BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<MT> );
 
-   if( (~rhs).rows() > M || (~rhs).columns() > N ) {
+   if( (*rhs).rows() > M || (*rhs).columns() > N ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to hybrid matrix" );
    }
 
-   if( IsSame_v<MT,TT> && (~rhs).isAliased( this ) ) {
+   if( IsSame_v<MT,TT> && (*rhs).isAliased( this ) ) {
       transpose();
    }
-   else if( IsSame_v<MT,CT> && (~rhs).isAliased( this ) ) {
+   else if( IsSame_v<MT,CT> && (*rhs).isAliased( this ) ) {
       ctranspose();
    }
-   else if( !IsSame_v<MT,IT> && (~rhs).canAlias( this ) ) {
-      HybridMatrix tmp( ~rhs );
+   else if( !IsSame_v<MT,IT> && (*rhs).canAlias( this ) ) {
+      HybridMatrix tmp( *rhs );
       resize( tmp.rows(), tmp.columns() );
       assign( *this, tmp );
    }
    else {
-      resize( (~rhs).rows(), (~rhs).columns() );
+      resize( (*rhs).rows(), (*rhs).columns() );
       if( IsSparseMatrix_v<MT> )
          reset();
-      assign( *this, ~rhs );
+      assign( *this, *rhs );
    }
 
    BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
@@ -5157,16 +5157,16 @@ inline HybridMatrix<Type,M,N,true,AF,PF,Tag>&
 
    BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<MT> );
 
-   if( (~rhs).rows() != m_ || (~rhs).columns() != n_ ) {
+   if( (*rhs).rows() != m_ || (*rhs).columns() != n_ ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
-   if( (~rhs).canAlias( this ) ) {
-      const ResultType_t<MT> tmp( ~rhs );
+   if( (*rhs).canAlias( this ) ) {
+      const ResultType_t<MT> tmp( *rhs );
       addAssign( *this, tmp );
    }
    else {
-      addAssign( *this, ~rhs );
+      addAssign( *this, *rhs );
    }
 
    BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
@@ -5203,16 +5203,16 @@ inline HybridMatrix<Type,M,N,true,AF,PF,Tag>&
 
    BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<MT> );
 
-   if( (~rhs).rows() != m_ || (~rhs).columns() != n_ ) {
+   if( (*rhs).rows() != m_ || (*rhs).columns() != n_ ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
-   if( (~rhs).canAlias( this ) ) {
-      const ResultType_t<MT> tmp( ~rhs );
+   if( (*rhs).canAlias( this ) ) {
+      const ResultType_t<MT> tmp( *rhs );
       subAssign( *this, tmp );
    }
    else {
-      subAssign( *this, ~rhs );
+      subAssign( *this, *rhs );
    }
 
    BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
@@ -5249,16 +5249,16 @@ inline HybridMatrix<Type,M,N,true,AF,PF,Tag>&
 
    BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<MT> );
 
-   if( (~rhs).rows() != m_ || (~rhs).columns() != n_ ) {
+   if( (*rhs).rows() != m_ || (*rhs).columns() != n_ ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
-   if( (~rhs).canAlias( this ) ) {
-      const ResultType_t<MT> tmp( ~rhs );
+   if( (*rhs).canAlias( this ) ) {
+      const ResultType_t<MT> tmp( *rhs );
       schurAssign( *this, tmp );
    }
    else {
-      schurAssign( *this, ~rhs );
+      schurAssign( *this, *rhs );
    }
 
    BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
@@ -6451,11 +6451,11 @@ template< typename MT       // Type of the right-hand side dense matrix
 inline auto HybridMatrix<Type,M,N,true,AF,PF,Tag>::assign( const DenseMatrix<MT,SO>& rhs )
    -> DisableIf_t< VectorizedAssign_v<MT> >
 {
-   BLAZE_INTERNAL_ASSERT( (~rhs).rows() == m_ && (~rhs).columns() == n_, "Invalid matrix size" );
+   BLAZE_INTERNAL_ASSERT( (*rhs).rows() == m_ && (*rhs).columns() == n_, "Invalid matrix size" );
 
    for( size_t j=0UL; j<n_; ++j ) {
       for( size_t i=0UL; i<m_; ++i ) {
-         v_[i+j*MM] = (~rhs)(i,j);
+         v_[i+j*MM] = (*rhs)(i,j);
       }
    }
 }
@@ -6488,7 +6488,7 @@ inline auto HybridMatrix<Type,M,N,true,AF,PF,Tag>::assign( const DenseMatrix<MT,
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
-   BLAZE_INTERNAL_ASSERT( (~rhs).rows() == m_ && (~rhs).columns() == n_, "Invalid matrix size" );
+   BLAZE_INTERNAL_ASSERT( (*rhs).rows() == m_ && (*rhs).columns() == n_, "Invalid matrix size" );
 
    constexpr bool remainder( PF == unpadded || !IsPadded_v<MT> );
 
@@ -6500,10 +6500,10 @@ inline auto HybridMatrix<Type,M,N,true,AF,PF,Tag>::assign( const DenseMatrix<MT,
       size_t i( 0UL );
 
       for( ; i<ipos; i+=SIMDSIZE ) {
-         store( i, j, (~rhs).load(i,j) );
+         store( i, j, (*rhs).load(i,j) );
       }
       for( ; remainder && i<m_; ++i ) {
-         v_[i+j*MM] = (~rhs)(i,j);
+         v_[i+j*MM] = (*rhs)(i,j);
       }
    }
 }
@@ -6532,10 +6532,10 @@ template< typename Type     // Data type of the matrix
 template< typename MT >     // Type of the right-hand side sparse matrix
 inline void HybridMatrix<Type,M,N,true,AF,PF,Tag>::assign( const SparseMatrix<MT,true>& rhs )
 {
-   BLAZE_INTERNAL_ASSERT( (~rhs).rows() == m_ && (~rhs).columns() == n_, "Invalid matrix size" );
+   BLAZE_INTERNAL_ASSERT( (*rhs).rows() == m_ && (*rhs).columns() == n_, "Invalid matrix size" );
 
    for( size_t j=0UL; j<n_; ++j )
-      for( auto element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
+      for( auto element=(*rhs).begin(j); element!=(*rhs).end(j); ++element )
          v_[element->index()+j*MM] = element->value();
 }
 /*! \endcond */
@@ -6565,10 +6565,10 @@ inline void HybridMatrix<Type,M,N,true,AF,PF,Tag>::assign( const SparseMatrix<MT
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
 
-   BLAZE_INTERNAL_ASSERT( (~rhs).rows() == m_ && (~rhs).columns() == n_, "Invalid matrix size" );
+   BLAZE_INTERNAL_ASSERT( (*rhs).rows() == m_ && (*rhs).columns() == n_, "Invalid matrix size" );
 
    for( size_t i=0UL; i<m_; ++i )
-      for( auto element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
+      for( auto element=(*rhs).begin(i); element!=(*rhs).end(i); ++element )
          v_[i+element->index()*MM] = element->value();
 }
 /*! \endcond */
@@ -6598,13 +6598,13 @@ template< typename MT       // Type of the right-hand side dense matrix
 inline auto HybridMatrix<Type,M,N,true,AF,PF,Tag>::addAssign( const DenseMatrix<MT,SO>& rhs )
    -> DisableIf_t< VectorizedAddAssign_v<MT> >
 {
-   BLAZE_INTERNAL_ASSERT( (~rhs).rows() == m_ && (~rhs).columns() == n_, "Invalid matrix size" );
+   BLAZE_INTERNAL_ASSERT( (*rhs).rows() == m_ && (*rhs).columns() == n_, "Invalid matrix size" );
 
    for( size_t j=0UL; j<n_; ++j )
    {
       if( IsDiagonal_v<MT> )
       {
-         v_[j+j*MM] += (~rhs)(j,j);
+         v_[j+j*MM] += (*rhs)(j,j);
       }
       else
       {
@@ -6617,7 +6617,7 @@ inline auto HybridMatrix<Type,M,N,true,AF,PF,Tag>::addAssign( const DenseMatrix<
          BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
 
          for( size_t i=ibegin; i<iend; ++i ) {
-            v_[i+j*MM] += (~rhs)(i,j);
+            v_[i+j*MM] += (*rhs)(i,j);
          }
       }
    }
@@ -6652,7 +6652,7 @@ inline auto HybridMatrix<Type,M,N,true,AF,PF,Tag>::addAssign( const DenseMatrix<
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
    BLAZE_CONSTRAINT_MUST_NOT_BE_DIAGONAL_MATRIX_TYPE( MT );
 
-   BLAZE_INTERNAL_ASSERT( (~rhs).rows() == m_ && (~rhs).columns() == n_, "Invalid matrix size" );
+   BLAZE_INTERNAL_ASSERT( (*rhs).rows() == m_ && (*rhs).columns() == n_, "Invalid matrix size" );
 
    constexpr bool remainder( PF == unpadded || !IsPadded_v<MT> );
 
@@ -6672,10 +6672,10 @@ inline auto HybridMatrix<Type,M,N,true,AF,PF,Tag>::addAssign( const DenseMatrix<
       size_t i( ibegin );
 
       for( ; i<ipos; i+=SIMDSIZE ) {
-         store( i, j, load(i,j) + (~rhs).load(i,j) );
+         store( i, j, load(i,j) + (*rhs).load(i,j) );
       }
       for( ; remainder && i<iend; ++i ) {
-         v_[i+j*MM] += (~rhs)(i,j);
+         v_[i+j*MM] += (*rhs)(i,j);
       }
    }
 }
@@ -6704,10 +6704,10 @@ template< typename Type     // Data type of the matrix
 template< typename MT >     // Type of the right-hand side sparse matrix
 inline void HybridMatrix<Type,M,N,true,AF,PF,Tag>::addAssign( const SparseMatrix<MT,true>& rhs )
 {
-   BLAZE_INTERNAL_ASSERT( (~rhs).rows() == m_ && (~rhs).columns() == n_, "Invalid matrix size" );
+   BLAZE_INTERNAL_ASSERT( (*rhs).rows() == m_ && (*rhs).columns() == n_, "Invalid matrix size" );
 
    for( size_t j=0UL; j<n_; ++j )
-      for( auto element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
+      for( auto element=(*rhs).begin(j); element!=(*rhs).end(j); ++element )
          v_[element->index()+j*MM] += element->value();
 }
 /*! \endcond */
@@ -6737,10 +6737,10 @@ inline void HybridMatrix<Type,M,N,true,AF,PF,Tag>::addAssign( const SparseMatrix
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
 
-   BLAZE_INTERNAL_ASSERT( (~rhs).rows() == m_ && (~rhs).columns() == n_, "Invalid matrix size" );
+   BLAZE_INTERNAL_ASSERT( (*rhs).rows() == m_ && (*rhs).columns() == n_, "Invalid matrix size" );
 
    for( size_t i=0UL; i<m_; ++i )
-      for( auto element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
+      for( auto element=(*rhs).begin(i); element!=(*rhs).end(i); ++element )
          v_[i+element->index()*MM] += element->value();
 }
 /*! \endcond */
@@ -6770,13 +6770,13 @@ template< typename MT       // Type of the right-hand side dense matrix
 inline auto HybridMatrix<Type,M,N,true,AF,PF,Tag>::subAssign( const DenseMatrix<MT,SO>& rhs )
    -> DisableIf_t< VectorizedSubAssign_v<MT> >
 {
-   BLAZE_INTERNAL_ASSERT( (~rhs).rows() == m_ && (~rhs).columns() == n_, "Invalid matrix size" );
+   BLAZE_INTERNAL_ASSERT( (*rhs).rows() == m_ && (*rhs).columns() == n_, "Invalid matrix size" );
 
    for( size_t j=0UL; j<n_; ++j )
    {
       if( IsDiagonal_v<MT> )
       {
-         v_[j+j*MM] -= (~rhs)(j,j);
+         v_[j+j*MM] -= (*rhs)(j,j);
       }
       else
       {
@@ -6789,7 +6789,7 @@ inline auto HybridMatrix<Type,M,N,true,AF,PF,Tag>::subAssign( const DenseMatrix<
          BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
 
          for( size_t i=ibegin; i<iend; ++i ) {
-            v_[i+j*MM] -= (~rhs)(i,j);
+            v_[i+j*MM] -= (*rhs)(i,j);
          }
       }
    }
@@ -6824,7 +6824,7 @@ inline auto HybridMatrix<Type,M,N,true,AF,PF,Tag>::subAssign( const DenseMatrix<
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
    BLAZE_CONSTRAINT_MUST_NOT_BE_DIAGONAL_MATRIX_TYPE( MT );
 
-   BLAZE_INTERNAL_ASSERT( (~rhs).rows() == m_ && (~rhs).columns() == n_, "Invalid matrix size" );
+   BLAZE_INTERNAL_ASSERT( (*rhs).rows() == m_ && (*rhs).columns() == n_, "Invalid matrix size" );
 
    constexpr bool remainder( PF == unpadded || !IsPadded_v<MT> );
 
@@ -6844,10 +6844,10 @@ inline auto HybridMatrix<Type,M,N,true,AF,PF,Tag>::subAssign( const DenseMatrix<
       size_t i( ibegin );
 
       for( ; i<ipos; i+=SIMDSIZE ) {
-         store( i, j, load(i,j) - (~rhs).load(i,j) );
+         store( i, j, load(i,j) - (*rhs).load(i,j) );
       }
       for( ; remainder && i<iend; ++i ) {
-         v_[i+j*MM] -= (~rhs)(i,j);
+         v_[i+j*MM] -= (*rhs)(i,j);
       }
    }
 }
@@ -6876,10 +6876,10 @@ template< typename Type     // Data type of the matrix
 template< typename MT >     // Type of the right-hand side sparse matrix
 inline void HybridMatrix<Type,M,N,true,AF,PF,Tag>::subAssign( const SparseMatrix<MT,true>& rhs )
 {
-   BLAZE_INTERNAL_ASSERT( (~rhs).rows() == m_ && (~rhs).columns() == n_, "Invalid matrix size" );
+   BLAZE_INTERNAL_ASSERT( (*rhs).rows() == m_ && (*rhs).columns() == n_, "Invalid matrix size" );
 
    for( size_t j=0UL; j<n_; ++j )
-      for( auto element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
+      for( auto element=(*rhs).begin(j); element!=(*rhs).end(j); ++element )
          v_[element->index()+j*MM] -= element->value();
 }
 /*! \endcond */
@@ -6909,10 +6909,10 @@ inline void HybridMatrix<Type,M,N,true,AF,PF,Tag>::subAssign( const SparseMatrix
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
 
-   BLAZE_INTERNAL_ASSERT( (~rhs).rows() == m_ && (~rhs).columns() == n_, "Invalid matrix size" );
+   BLAZE_INTERNAL_ASSERT( (*rhs).rows() == m_ && (*rhs).columns() == n_, "Invalid matrix size" );
 
    for( size_t i=0UL; i<m_; ++i )
-      for( auto element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
+      for( auto element=(*rhs).begin(i); element!=(*rhs).end(i); ++element )
          v_[i+element->index()*MM] -= element->value();
 }
 /*! \endcond */
@@ -6942,11 +6942,11 @@ template< typename MT       // Type of the right-hand side dense matrix
 inline auto HybridMatrix<Type,M,N,true,AF,PF,Tag>::schurAssign( const DenseMatrix<MT,SO>& rhs )
    -> DisableIf_t< VectorizedSchurAssign_v<MT> >
 {
-   BLAZE_INTERNAL_ASSERT( (~rhs).rows() == m_ && (~rhs).columns() == n_, "Invalid matrix size" );
+   BLAZE_INTERNAL_ASSERT( (*rhs).rows() == m_ && (*rhs).columns() == n_, "Invalid matrix size" );
 
    for( size_t j=0UL; j<n_; ++j ) {
       for( size_t i=0UL; i<m_; ++i ) {
-         v_[i+j*MM] *= (~rhs)(i,j);
+         v_[i+j*MM] *= (*rhs)(i,j);
       }
    }
 }
@@ -6979,7 +6979,7 @@ inline auto HybridMatrix<Type,M,N,true,AF,PF,Tag>::schurAssign( const DenseMatri
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
-   BLAZE_INTERNAL_ASSERT( (~rhs).rows() == m_ && (~rhs).columns() == n_, "Invalid matrix size" );
+   BLAZE_INTERNAL_ASSERT( (*rhs).rows() == m_ && (*rhs).columns() == n_, "Invalid matrix size" );
 
    constexpr bool remainder( PF == unpadded || !IsPadded_v<MT> );
 
@@ -6991,10 +6991,10 @@ inline auto HybridMatrix<Type,M,N,true,AF,PF,Tag>::schurAssign( const DenseMatri
       size_t i( 0UL );
 
       for( ; i<ipos; i+=SIMDSIZE ) {
-         store( i, j, load(i,j) * (~rhs).load(i,j) );
+         store( i, j, load(i,j) * (*rhs).load(i,j) );
       }
       for( ; remainder && i<m_; ++i ) {
-         v_[i+j*MM] *= (~rhs)(i,j);
+         v_[i+j*MM] *= (*rhs)(i,j);
       }
    }
 }
@@ -7023,14 +7023,14 @@ template< typename Type     // Data type of the matrix
 template< typename MT >     // Type of the right-hand side sparse matrix
 inline void HybridMatrix<Type,M,N,true,AF,PF,Tag>::schurAssign( const SparseMatrix<MT,true>& rhs )
 {
-   BLAZE_INTERNAL_ASSERT( (~rhs).rows() == m_ && (~rhs).columns() == n_, "Invalid matrix size" );
+   BLAZE_INTERNAL_ASSERT( (*rhs).rows() == m_ && (*rhs).columns() == n_, "Invalid matrix size" );
 
    const HybridMatrix tmp( serial( *this ) );
 
    reset();
 
    for( size_t j=0UL; j<n_; ++j )
-      for( auto element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
+      for( auto element=(*rhs).begin(j); element!=(*rhs).end(j); ++element )
          v_[element->index()+j*MM] = tmp.v_[element->index()+j*MM] * element->value();
 }
 /*! \endcond */
@@ -7060,14 +7060,14 @@ inline void HybridMatrix<Type,M,N,true,AF,PF,Tag>::schurAssign( const SparseMatr
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
 
-   BLAZE_INTERNAL_ASSERT( (~rhs).rows() == m_ && (~rhs).columns() == n_, "Invalid matrix size" );
+   BLAZE_INTERNAL_ASSERT( (*rhs).rows() == m_ && (*rhs).columns() == n_, "Invalid matrix size" );
 
    const HybridMatrix tmp( serial( *this ) );
 
    reset();
 
    for( size_t i=0UL; i<m_; ++i )
-      for( auto element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
+      for( auto element=(*rhs).begin(i); element!=(*rhs).end(i); ++element )
          v_[i+element->index()*MM] = tmp.v_[i+element->index()*MM] * element->value();
 }
 /*! \endcond */

@@ -985,7 +985,7 @@ inline StaticMatrix<Type,M,N,SO,AF,PF,Tag>::StaticMatrix( const Matrix<MT,SO2>& 
 
    BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<MT> );
 
-   if( (~m).rows() != M || (~m).columns() != N ) {
+   if( (*m).rows() != M || (*m).columns() != N ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid setup of static matrix" );
    }
 
@@ -995,7 +995,7 @@ inline StaticMatrix<Type,M,N,SO,AF,PF,Tag>::StaticMatrix( const Matrix<MT,SO2>& 
       }
    }
 
-   assign( *this, ~m );
+   assign( *this, *m );
 
    BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
 }
@@ -1629,7 +1629,7 @@ inline StaticMatrix<Type,M,N,SO,AF,PF,Tag>&
 {
    using blaze::assign;
 
-   assign( *this, ~rhs );
+   assign( *this, *rhs );
 
    BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
 
@@ -1669,24 +1669,24 @@ inline StaticMatrix<Type,M,N,SO,AF,PF,Tag>&
 
    BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<MT> );
 
-   if( (~rhs).rows() != M || (~rhs).columns() != N ) {
+   if( (*rhs).rows() != M || (*rhs).columns() != N ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to static matrix" );
    }
 
-   if( IsSame_v<MT,TT> && (~rhs).isAliased( this ) ) {
+   if( IsSame_v<MT,TT> && (*rhs).isAliased( this ) ) {
       transpose( typename IsSquare<This>::Type() );
    }
-   else if( IsSame_v<MT,CT> && (~rhs).isAliased( this ) ) {
+   else if( IsSame_v<MT,CT> && (*rhs).isAliased( this ) ) {
       ctranspose( typename IsSquare<This>::Type() );
    }
-   else if( !IsSame_v<MT,IT> && (~rhs).canAlias( this ) ) {
-      StaticMatrix tmp( ~rhs );
+   else if( !IsSame_v<MT,IT> && (*rhs).canAlias( this ) ) {
+      StaticMatrix tmp( *rhs );
       assign( *this, tmp );
    }
    else {
       if( IsSparseMatrix_v<MT> )
          reset();
-      assign( *this, ~rhs );
+      assign( *this, *rhs );
    }
 
    BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
@@ -1722,16 +1722,16 @@ inline StaticMatrix<Type,M,N,SO,AF,PF,Tag>&
 
    BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<MT> );
 
-   if( (~rhs).rows() != M || (~rhs).columns() != N ) {
+   if( (*rhs).rows() != M || (*rhs).columns() != N ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
-   if( (~rhs).canAlias( this ) ) {
-      const ResultType_t<MT> tmp( ~rhs );
+   if( (*rhs).canAlias( this ) ) {
+      const ResultType_t<MT> tmp( *rhs );
       addAssign( *this, tmp );
    }
    else {
-      addAssign( *this, ~rhs );
+      addAssign( *this, *rhs );
    }
 
    BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
@@ -1767,16 +1767,16 @@ inline StaticMatrix<Type,M,N,SO,AF,PF,Tag>&
 
    BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<MT> );
 
-   if( (~rhs).rows() != M || (~rhs).columns() != N ) {
+   if( (*rhs).rows() != M || (*rhs).columns() != N ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
-   if( (~rhs).canAlias( this ) ) {
-      const ResultType_t<MT> tmp( ~rhs );
+   if( (*rhs).canAlias( this ) ) {
+      const ResultType_t<MT> tmp( *rhs );
       subAssign( *this, tmp );
    }
    else {
-      subAssign( *this, ~rhs );
+      subAssign( *this, *rhs );
    }
 
    BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
@@ -1812,16 +1812,16 @@ inline StaticMatrix<Type,M,N,SO,AF,PF,Tag>&
 
    BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<MT> );
 
-   if( (~rhs).rows() != M || (~rhs).columns() != N ) {
+   if( (*rhs).rows() != M || (*rhs).columns() != N ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
-   if( (~rhs).canAlias( this ) ) {
-      const ResultType_t<MT> tmp( ~rhs );
+   if( (*rhs).canAlias( this ) ) {
+      const ResultType_t<MT> tmp( *rhs );
       schurAssign( *this, tmp );
    }
    else {
-      schurAssign( *this, ~rhs );
+      schurAssign( *this, *rhs );
    }
 
    BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
@@ -2912,11 +2912,11 @@ template< typename MT       // Type of the right-hand side dense matrix
 inline auto StaticMatrix<Type,M,N,SO,AF,PF,Tag>::assign( const DenseMatrix<MT,SO2>& rhs )
    -> DisableIf_t< VectorizedAssign_v<MT> >
 {
-   BLAZE_INTERNAL_ASSERT( (~rhs).rows() == M && (~rhs).columns() == N, "Invalid matrix size" );
+   BLAZE_INTERNAL_ASSERT( (*rhs).rows() == M && (*rhs).columns() == N, "Invalid matrix size" );
 
    for( size_t i=0UL; i<M; ++i ) {
       for( size_t j=0UL; j<N; ++j ) {
-         v_[i*NN+j] = (~rhs)(i,j);
+         v_[i*NN+j] = (*rhs)(i,j);
       }
    }
 }
@@ -2948,7 +2948,7 @@ inline auto StaticMatrix<Type,M,N,SO,AF,PF,Tag>::assign( const DenseMatrix<MT,SO
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
-   BLAZE_INTERNAL_ASSERT( (~rhs).rows() == M && (~rhs).columns() == N, "Invalid matrix size" );
+   BLAZE_INTERNAL_ASSERT( (*rhs).rows() == M && (*rhs).columns() == N, "Invalid matrix size" );
 
    constexpr bool remainder( PF == unpadded || !IsPadded_v<MT> );
 
@@ -2960,10 +2960,10 @@ inline auto StaticMatrix<Type,M,N,SO,AF,PF,Tag>::assign( const DenseMatrix<MT,SO
       size_t j( 0UL );
 
       for( ; j<jpos; j+=SIMDSIZE ) {
-         store( i, j, (~rhs).load(i,j) );
+         store( i, j, (*rhs).load(i,j) );
       }
       for( ; remainder && j<N; ++j ) {
-         v_[i*NN+j] = (~rhs)(i,j);
+         v_[i*NN+j] = (*rhs)(i,j);
       }
    }
 }
@@ -2991,10 +2991,10 @@ template< typename Type     // Data type of the matrix
 template< typename MT >     // Type of the right-hand side sparse matrix
 inline void StaticMatrix<Type,M,N,SO,AF,PF,Tag>::assign( const SparseMatrix<MT,SO>& rhs )
 {
-   BLAZE_INTERNAL_ASSERT( (~rhs).rows() == M && (~rhs).columns() == N, "Invalid matrix size" );
+   BLAZE_INTERNAL_ASSERT( (*rhs).rows() == M && (*rhs).columns() == N, "Invalid matrix size" );
 
    for( size_t i=0UL; i<M; ++i )
-      for( auto element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
+      for( auto element=(*rhs).begin(i); element!=(*rhs).end(i); ++element )
          v_[i*NN+element->index()] = element->value();
 }
 //*************************************************************************************************
@@ -3023,10 +3023,10 @@ inline void StaticMatrix<Type,M,N,SO,AF,PF,Tag>::assign( const SparseMatrix<MT,!
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
 
-   BLAZE_INTERNAL_ASSERT( (~rhs).rows() == M && (~rhs).columns() == N, "Invalid matrix size" );
+   BLAZE_INTERNAL_ASSERT( (*rhs).rows() == M && (*rhs).columns() == N, "Invalid matrix size" );
 
    for( size_t j=0UL; j<N; ++j )
-      for( auto element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
+      for( auto element=(*rhs).begin(j); element!=(*rhs).end(j); ++element )
          v_[element->index()*NN+j] = element->value();
 }
 //*************************************************************************************************
@@ -3055,13 +3055,13 @@ template< typename MT       // Type of the right-hand side dense matrix
 inline auto StaticMatrix<Type,M,N,SO,AF,PF,Tag>::addAssign( const DenseMatrix<MT,SO2>& rhs )
    -> DisableIf_t< VectorizedAddAssign_v<MT> >
 {
-   BLAZE_INTERNAL_ASSERT( (~rhs).rows() == M && (~rhs).columns() == N, "Invalid matrix size" );
+   BLAZE_INTERNAL_ASSERT( (*rhs).rows() == M && (*rhs).columns() == N, "Invalid matrix size" );
 
    for( size_t i=0UL; i<M; ++i )
    {
       if( IsDiagonal_v<MT> )
       {
-         v_[i*NN+i] += (~rhs)(i,i);
+         v_[i*NN+i] += (*rhs)(i,i);
       }
       else
       {
@@ -3074,7 +3074,7 @@ inline auto StaticMatrix<Type,M,N,SO,AF,PF,Tag>::addAssign( const DenseMatrix<MT
          BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
          for( size_t j=jbegin; j<jend; ++j ) {
-            v_[i*NN+j] += (~rhs)(i,j);
+            v_[i*NN+j] += (*rhs)(i,j);
          }
       }
    }
@@ -3108,7 +3108,7 @@ inline auto StaticMatrix<Type,M,N,SO,AF,PF,Tag>::addAssign( const DenseMatrix<MT
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
    BLAZE_CONSTRAINT_MUST_NOT_BE_DIAGONAL_MATRIX_TYPE( MT );
 
-   BLAZE_INTERNAL_ASSERT( (~rhs).rows() == M && (~rhs).columns() == N, "Invalid matrix size" );
+   BLAZE_INTERNAL_ASSERT( (*rhs).rows() == M && (*rhs).columns() == N, "Invalid matrix size" );
 
    constexpr bool remainder( PF == unpadded || !IsPadded_v<MT> );
 
@@ -3128,10 +3128,10 @@ inline auto StaticMatrix<Type,M,N,SO,AF,PF,Tag>::addAssign( const DenseMatrix<MT
       size_t j( jbegin );
 
       for( ; j<jpos; j+=SIMDSIZE ) {
-         store( i, j, load(i,j) + (~rhs).load(i,j) );
+         store( i, j, load(i,j) + (*rhs).load(i,j) );
       }
       for( ; remainder && j<jend; ++j ) {
-         v_[i*NN+j] += (~rhs)(i,j);
+         v_[i*NN+j] += (*rhs)(i,j);
       }
    }
 }
@@ -3159,10 +3159,10 @@ template< typename Type     // Data type of the matrix
 template< typename MT >     // Type of the right-hand side sparse matrix
 inline void StaticMatrix<Type,M,N,SO,AF,PF,Tag>::addAssign( const SparseMatrix<MT,SO>& rhs )
 {
-   BLAZE_INTERNAL_ASSERT( (~rhs).rows() == M && (~rhs).columns() == N, "Invalid matrix size" );
+   BLAZE_INTERNAL_ASSERT( (*rhs).rows() == M && (*rhs).columns() == N, "Invalid matrix size" );
 
    for( size_t i=0UL; i<M; ++i )
-      for( auto element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
+      for( auto element=(*rhs).begin(i); element!=(*rhs).end(i); ++element )
          v_[i*NN+element->index()] += element->value();
 }
 //*************************************************************************************************
@@ -3191,10 +3191,10 @@ inline void StaticMatrix<Type,M,N,SO,AF,PF,Tag>::addAssign( const SparseMatrix<M
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
 
-   BLAZE_INTERNAL_ASSERT( (~rhs).rows() == M && (~rhs).columns() == N, "Invalid matrix size" );
+   BLAZE_INTERNAL_ASSERT( (*rhs).rows() == M && (*rhs).columns() == N, "Invalid matrix size" );
 
    for( size_t j=0UL; j<N; ++j )
-      for( auto element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
+      for( auto element=(*rhs).begin(j); element!=(*rhs).end(j); ++element )
          v_[element->index()*NN+j] += element->value();
 }
 //*************************************************************************************************
@@ -3223,13 +3223,13 @@ template< typename MT       // Type of the right-hand side dense matrix
 inline auto StaticMatrix<Type,M,N,SO,AF,PF,Tag>::subAssign( const DenseMatrix<MT,SO2>& rhs )
    -> DisableIf_t< VectorizedSubAssign_v<MT> >
 {
-   BLAZE_INTERNAL_ASSERT( (~rhs).rows() == M && (~rhs).columns() == N, "Invalid matrix size" );
+   BLAZE_INTERNAL_ASSERT( (*rhs).rows() == M && (*rhs).columns() == N, "Invalid matrix size" );
 
    for( size_t i=0UL; i<M; ++i )
    {
       if( IsDiagonal_v<MT> )
       {
-         v_[i*NN+i] -= (~rhs)(i,i);
+         v_[i*NN+i] -= (*rhs)(i,i);
       }
       else
       {
@@ -3242,7 +3242,7 @@ inline auto StaticMatrix<Type,M,N,SO,AF,PF,Tag>::subAssign( const DenseMatrix<MT
          BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
          for( size_t j=jbegin; j<jend; ++j ) {
-            v_[i*NN+j] -= (~rhs)(i,j);
+            v_[i*NN+j] -= (*rhs)(i,j);
          }
       }
    }
@@ -3276,7 +3276,7 @@ inline auto StaticMatrix<Type,M,N,SO,AF,PF,Tag>::subAssign( const DenseMatrix<MT
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
    BLAZE_CONSTRAINT_MUST_NOT_BE_DIAGONAL_MATRIX_TYPE( MT );
 
-   BLAZE_INTERNAL_ASSERT( (~rhs).rows() == M && (~rhs).columns() == N, "Invalid matrix size" );
+   BLAZE_INTERNAL_ASSERT( (*rhs).rows() == M && (*rhs).columns() == N, "Invalid matrix size" );
 
    constexpr bool remainder( PF == unpadded || !IsPadded_v<MT> );
 
@@ -3296,10 +3296,10 @@ inline auto StaticMatrix<Type,M,N,SO,AF,PF,Tag>::subAssign( const DenseMatrix<MT
       size_t j( jbegin );
 
       for( ; j<jpos; j+=SIMDSIZE ) {
-         store( i, j, load(i,j) - (~rhs).load(i,j) );
+         store( i, j, load(i,j) - (*rhs).load(i,j) );
       }
       for( ; remainder && j<jend; ++j ) {
-         v_[i*NN+j] -= (~rhs)(i,j);
+         v_[i*NN+j] -= (*rhs)(i,j);
       }
    }
 }
@@ -3327,10 +3327,10 @@ template< typename Type     // Data type of the matrix
 template< typename MT >     // Type of the right-hand side sparse matrix
 inline void StaticMatrix<Type,M,N,SO,AF,PF,Tag>::subAssign( const SparseMatrix<MT,SO>& rhs )
 {
-   BLAZE_INTERNAL_ASSERT( (~rhs).rows() == M && (~rhs).columns() == N, "Invalid matrix size" );
+   BLAZE_INTERNAL_ASSERT( (*rhs).rows() == M && (*rhs).columns() == N, "Invalid matrix size" );
 
    for( size_t i=0UL; i<M; ++i )
-      for( auto element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
+      for( auto element=(*rhs).begin(i); element!=(*rhs).end(i); ++element )
          v_[i*NN+element->index()] -= element->value();
 }
 //*************************************************************************************************
@@ -3359,10 +3359,10 @@ inline void StaticMatrix<Type,M,N,SO,AF,PF,Tag>::subAssign( const SparseMatrix<M
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
 
-   BLAZE_INTERNAL_ASSERT( (~rhs).rows() == M && (~rhs).columns() == N, "Invalid matrix size" );
+   BLAZE_INTERNAL_ASSERT( (*rhs).rows() == M && (*rhs).columns() == N, "Invalid matrix size" );
 
    for( size_t j=0UL; j<N; ++j )
-      for( auto element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
+      for( auto element=(*rhs).begin(j); element!=(*rhs).end(j); ++element )
          v_[element->index()*NN+j] -= element->value();
 }
 //*************************************************************************************************
@@ -3391,11 +3391,11 @@ template< typename MT       // Type of the right-hand side dense matrix
 inline auto StaticMatrix<Type,M,N,SO,AF,PF,Tag>::schurAssign( const DenseMatrix<MT,SO2>& rhs )
    -> DisableIf_t< VectorizedSchurAssign_v<MT> >
 {
-   BLAZE_INTERNAL_ASSERT( (~rhs).rows() == M && (~rhs).columns() == N, "Invalid matrix size" );
+   BLAZE_INTERNAL_ASSERT( (*rhs).rows() == M && (*rhs).columns() == N, "Invalid matrix size" );
 
    for( size_t i=0UL; i<M; ++i ) {
       for( size_t j=0UL; j<N; ++j ) {
-         v_[i*NN+j] *= (~rhs)(i,j);
+         v_[i*NN+j] *= (*rhs)(i,j);
       }
    }
 }
@@ -3427,7 +3427,7 @@ inline auto StaticMatrix<Type,M,N,SO,AF,PF,Tag>::schurAssign( const DenseMatrix<
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
-   BLAZE_INTERNAL_ASSERT( (~rhs).rows() == M && (~rhs).columns() == N, "Invalid matrix size" );
+   BLAZE_INTERNAL_ASSERT( (*rhs).rows() == M && (*rhs).columns() == N, "Invalid matrix size" );
 
    constexpr bool remainder( PF == unpadded || !IsPadded_v<MT> );
 
@@ -3439,10 +3439,10 @@ inline auto StaticMatrix<Type,M,N,SO,AF,PF,Tag>::schurAssign( const DenseMatrix<
       size_t j( 0UL );
 
       for( ; j<jpos; j+=SIMDSIZE ) {
-         store( i, j, load(i,j) * (~rhs).load(i,j) );
+         store( i, j, load(i,j) * (*rhs).load(i,j) );
       }
       for( ; remainder && j<N; ++j ) {
-         v_[i*NN+j] *= (~rhs)(i,j);
+         v_[i*NN+j] *= (*rhs)(i,j);
       }
    }
 }
@@ -3470,14 +3470,14 @@ template< typename Type     // Data type of the matrix
 template< typename MT >     // Type of the right-hand side sparse matrix
 inline void StaticMatrix<Type,M,N,SO,AF,PF,Tag>::schurAssign( const SparseMatrix<MT,SO>& rhs )
 {
-   BLAZE_INTERNAL_ASSERT( (~rhs).rows() == M && (~rhs).columns() == N, "Invalid matrix size" );
+   BLAZE_INTERNAL_ASSERT( (*rhs).rows() == M && (*rhs).columns() == N, "Invalid matrix size" );
 
    const StaticMatrix tmp( serial( *this ) );
 
    reset();
 
    for( size_t i=0UL; i<M; ++i )
-      for( auto element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
+      for( auto element=(*rhs).begin(i); element!=(*rhs).end(i); ++element )
          v_[i*NN+element->index()] = tmp.v_[i*NN+element->index()] * element->value();
 }
 //*************************************************************************************************
@@ -3506,14 +3506,14 @@ inline void StaticMatrix<Type,M,N,SO,AF,PF,Tag>::schurAssign( const SparseMatrix
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
 
-   BLAZE_INTERNAL_ASSERT( (~rhs).rows() == M && (~rhs).columns() == N, "Invalid matrix size" );
+   BLAZE_INTERNAL_ASSERT( (*rhs).rows() == M && (*rhs).columns() == N, "Invalid matrix size" );
 
    const StaticMatrix tmp( serial( *this ) );
 
    reset();
 
    for( size_t j=0UL; j<N; ++j )
-      for( auto element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
+      for( auto element=(*rhs).begin(j); element!=(*rhs).end(j); ++element )
          v_[element->index()*NN+j] = tmp.v_[element->index()*NN+j] * element->value();
 }
 //*************************************************************************************************
@@ -4252,7 +4252,7 @@ inline StaticMatrix<Type,M,N,true,AF,PF,Tag>::StaticMatrix( const Matrix<MT,SO>&
 
    BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<MT> );
 
-   if( (~m).rows() != M || (~m).columns() != N ) {
+   if( (*m).rows() != M || (*m).columns() != N ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid setup of static matrix" );
    }
 
@@ -4262,7 +4262,7 @@ inline StaticMatrix<Type,M,N,true,AF,PF,Tag>::StaticMatrix( const Matrix<MT,SO>&
       }
    }
 
-   assign( *this, ~m );
+   assign( *this, *m );
 
    BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
 }
@@ -4881,7 +4881,7 @@ inline StaticMatrix<Type,M,N,true,AF,PF,Tag>&
 {
    using blaze::assign;
 
-   assign( *this, ~rhs );
+   assign( *this, *rhs );
 
    BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
 
@@ -4922,24 +4922,24 @@ inline StaticMatrix<Type,M,N,true,AF,PF,Tag>&
 
    BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<MT> );
 
-   if( (~rhs).rows() != M || (~rhs).columns() != N ) {
+   if( (*rhs).rows() != M || (*rhs).columns() != N ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to static matrix" );
    }
 
-   if( IsSame_v<MT,TT> && (~rhs).isAliased( this ) ) {
+   if( IsSame_v<MT,TT> && (*rhs).isAliased( this ) ) {
       transpose( typename IsSquare<This>::Type() );
    }
-   else if( IsSame_v<MT,CT> && (~rhs).isAliased( this ) ) {
+   else if( IsSame_v<MT,CT> && (*rhs).isAliased( this ) ) {
       ctranspose( typename IsSquare<This>::Type() );
    }
-   else if( !IsSame_v<MT,IT> && (~rhs).canAlias( this ) ) {
-      StaticMatrix tmp( ~rhs );
+   else if( !IsSame_v<MT,IT> && (*rhs).canAlias( this ) ) {
+      StaticMatrix tmp( *rhs );
       assign( *this, tmp );
    }
    else {
       if( IsSparseMatrix_v<MT> )
          reset();
-      assign( *this, ~rhs );
+      assign( *this, *rhs );
    }
 
    BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
@@ -4976,16 +4976,16 @@ inline StaticMatrix<Type,M,N,true,AF,PF,Tag>&
 
    BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<MT> );
 
-   if( (~rhs).rows() != M || (~rhs).columns() != N ) {
+   if( (*rhs).rows() != M || (*rhs).columns() != N ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
-   if( (~rhs).canAlias( this ) ) {
-      const ResultType_t<MT> tmp( ~rhs );
+   if( (*rhs).canAlias( this ) ) {
+      const ResultType_t<MT> tmp( *rhs );
       addAssign( *this, tmp );
    }
    else {
-      addAssign( *this, ~rhs );
+      addAssign( *this, *rhs );
    }
 
    BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
@@ -5022,16 +5022,16 @@ inline StaticMatrix<Type,M,N,true,AF,PF,Tag>&
 
    BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<MT> );
 
-   if( (~rhs).rows() != M || (~rhs).columns() != N ) {
+   if( (*rhs).rows() != M || (*rhs).columns() != N ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
-   if( (~rhs).canAlias( this ) ) {
-      const ResultType_t<MT> tmp( ~rhs );
+   if( (*rhs).canAlias( this ) ) {
+      const ResultType_t<MT> tmp( *rhs );
       subAssign( *this, tmp );
    }
    else {
-      subAssign( *this, ~rhs );
+      subAssign( *this, *rhs );
    }
 
    BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
@@ -5068,16 +5068,16 @@ inline StaticMatrix<Type,M,N,true,AF,PF,Tag>&
 
    BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<MT> );
 
-   if( (~rhs).rows() != M || (~rhs).columns() != N ) {
+   if( (*rhs).rows() != M || (*rhs).columns() != N ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
-   if( (~rhs).canAlias( this ) ) {
-      const ResultType_t<MT> tmp( ~rhs );
+   if( (*rhs).canAlias( this ) ) {
+      const ResultType_t<MT> tmp( *rhs );
       schurAssign( *this, tmp );
    }
    else {
-      schurAssign( *this, ~rhs );
+      schurAssign( *this, *rhs );
    }
 
    BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
@@ -6180,11 +6180,11 @@ template< typename MT       // Type of the right-hand side dense matrix
 inline auto StaticMatrix<Type,M,N,true,AF,PF,Tag>::assign( const DenseMatrix<MT,SO>& rhs )
    -> DisableIf_t< VectorizedAssign_v<MT> >
 {
-   BLAZE_INTERNAL_ASSERT( (~rhs).rows() == M && (~rhs).columns() == N, "Invalid matrix size" );
+   BLAZE_INTERNAL_ASSERT( (*rhs).rows() == M && (*rhs).columns() == N, "Invalid matrix size" );
 
    for( size_t j=0UL; j<N; ++j ) {
       for( size_t i=0UL; i<M; ++i ) {
-         v_[i+j*MM] = (~rhs)(i,j);
+         v_[i+j*MM] = (*rhs)(i,j);
       }
    }
 }
@@ -6217,7 +6217,7 @@ inline auto StaticMatrix<Type,M,N,true,AF,PF,Tag>::assign( const DenseMatrix<MT,
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
-   BLAZE_INTERNAL_ASSERT( (~rhs).rows() == M && (~rhs).columns() == N, "Invalid matrix size" );
+   BLAZE_INTERNAL_ASSERT( (*rhs).rows() == M && (*rhs).columns() == N, "Invalid matrix size" );
 
    constexpr bool remainder( PF == unpadded || !IsPadded_v<MT> );
 
@@ -6229,10 +6229,10 @@ inline auto StaticMatrix<Type,M,N,true,AF,PF,Tag>::assign( const DenseMatrix<MT,
       size_t i( 0UL );
 
       for( ; i<ipos; i+=SIMDSIZE ) {
-         store( i, j, (~rhs).load(i,j) );
+         store( i, j, (*rhs).load(i,j) );
       }
       for( ; remainder && i<M; ++i ) {
-         v_[i+j*MM] = (~rhs)(i,j);
+         v_[i+j*MM] = (*rhs)(i,j);
       }
    }
 }
@@ -6261,10 +6261,10 @@ template< typename Type     // Data type of the matrix
 template< typename MT >     // Type of the right-hand side sparse matrix
 inline void StaticMatrix<Type,M,N,true,AF,PF,Tag>::assign( const SparseMatrix<MT,true>& rhs )
 {
-   BLAZE_INTERNAL_ASSERT( (~rhs).rows() == M && (~rhs).columns() == N, "Invalid matrix size" );
+   BLAZE_INTERNAL_ASSERT( (*rhs).rows() == M && (*rhs).columns() == N, "Invalid matrix size" );
 
    for( size_t j=0UL; j<N; ++j )
-      for( auto element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
+      for( auto element=(*rhs).begin(j); element!=(*rhs).end(j); ++element )
          v_[element->index()+j*MM] = element->value();
 }
 /*! \endcond */
@@ -6294,10 +6294,10 @@ inline void StaticMatrix<Type,M,N,true,AF,PF,Tag>::assign( const SparseMatrix<MT
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
 
-   BLAZE_INTERNAL_ASSERT( (~rhs).rows() == M && (~rhs).columns() == N, "Invalid matrix size" );
+   BLAZE_INTERNAL_ASSERT( (*rhs).rows() == M && (*rhs).columns() == N, "Invalid matrix size" );
 
    for( size_t i=0UL; i<M; ++i )
-      for( auto element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
+      for( auto element=(*rhs).begin(i); element!=(*rhs).end(i); ++element )
          v_[i+element->index()*MM] = element->value();
 }
 /*! \endcond */
@@ -6327,13 +6327,13 @@ template< typename MT       // Type of the right-hand side dense matrix
 inline auto StaticMatrix<Type,M,N,true,AF,PF,Tag>::addAssign( const DenseMatrix<MT,SO>& rhs )
    -> DisableIf_t< VectorizedAddAssign_v<MT> >
 {
-   BLAZE_INTERNAL_ASSERT( (~rhs).rows() == M && (~rhs).columns() == N, "Invalid matrix size" );
+   BLAZE_INTERNAL_ASSERT( (*rhs).rows() == M && (*rhs).columns() == N, "Invalid matrix size" );
 
    for( size_t j=0UL; j<N; ++j )
    {
       if( IsDiagonal_v<MT> )
       {
-         v_[j+j*MM] += (~rhs)(j,j);
+         v_[j+j*MM] += (*rhs)(j,j);
       }
       else
       {
@@ -6346,7 +6346,7 @@ inline auto StaticMatrix<Type,M,N,true,AF,PF,Tag>::addAssign( const DenseMatrix<
          BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
 
          for( size_t i=ibegin; i<iend; ++i ) {
-            v_[i+j*MM] += (~rhs)(i,j);
+            v_[i+j*MM] += (*rhs)(i,j);
          }
       }
    }
@@ -6381,7 +6381,7 @@ inline auto StaticMatrix<Type,M,N,true,AF,PF,Tag>::addAssign( const DenseMatrix<
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
    BLAZE_CONSTRAINT_MUST_NOT_BE_DIAGONAL_MATRIX_TYPE( MT );
 
-   BLAZE_INTERNAL_ASSERT( (~rhs).rows() == M && (~rhs).columns() == N, "Invalid matrix size" );
+   BLAZE_INTERNAL_ASSERT( (*rhs).rows() == M && (*rhs).columns() == N, "Invalid matrix size" );
 
    constexpr bool remainder( PF == unpadded || !IsPadded_v<MT> );
 
@@ -6401,10 +6401,10 @@ inline auto StaticMatrix<Type,M,N,true,AF,PF,Tag>::addAssign( const DenseMatrix<
       size_t i( ibegin );
 
       for( ; i<ipos; i+=SIMDSIZE ) {
-         store( i, j, load(i,j) + (~rhs).load(i,j) );
+         store( i, j, load(i,j) + (*rhs).load(i,j) );
       }
       for( ; remainder && i<iend; ++i ) {
-         v_[i+j*MM] += (~rhs)(i,j);
+         v_[i+j*MM] += (*rhs)(i,j);
       }
    }
 }
@@ -6433,10 +6433,10 @@ template< typename Type     // Data type of the matrix
 template< typename MT >     // Type of the right-hand side sparse matrix
 inline void StaticMatrix<Type,M,N,true,AF,PF,Tag>::addAssign( const SparseMatrix<MT,true>& rhs )
 {
-   BLAZE_INTERNAL_ASSERT( (~rhs).rows() == M && (~rhs).columns() == N, "Invalid matrix size" );
+   BLAZE_INTERNAL_ASSERT( (*rhs).rows() == M && (*rhs).columns() == N, "Invalid matrix size" );
 
    for( size_t j=0UL; j<N; ++j )
-      for( auto element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
+      for( auto element=(*rhs).begin(j); element!=(*rhs).end(j); ++element )
          v_[element->index()+j*MM] += element->value();
 }
 /*! \endcond */
@@ -6466,10 +6466,10 @@ inline void StaticMatrix<Type,M,N,true,AF,PF,Tag>::addAssign( const SparseMatrix
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
 
-   BLAZE_INTERNAL_ASSERT( (~rhs).rows() == M && (~rhs).columns() == N, "Invalid matrix size" );
+   BLAZE_INTERNAL_ASSERT( (*rhs).rows() == M && (*rhs).columns() == N, "Invalid matrix size" );
 
    for( size_t i=0UL; i<M; ++i )
-      for( auto element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
+      for( auto element=(*rhs).begin(i); element!=(*rhs).end(i); ++element )
          v_[i+element->index()*MM] += element->value();
 }
 /*! \endcond */
@@ -6499,13 +6499,13 @@ template< typename MT       // Type of the right-hand side dense matrix
 inline auto StaticMatrix<Type,M,N,true,AF,PF,Tag>::subAssign( const DenseMatrix<MT,SO>& rhs )
    -> DisableIf_t< VectorizedSubAssign_v<MT> >
 {
-   BLAZE_INTERNAL_ASSERT( (~rhs).rows() == M && (~rhs).columns() == N, "Invalid matrix size" );
+   BLAZE_INTERNAL_ASSERT( (*rhs).rows() == M && (*rhs).columns() == N, "Invalid matrix size" );
 
    for( size_t j=0UL; j<N; ++j )
    {
       if( IsDiagonal_v<MT> )
       {
-         v_[j+j*MM] -= (~rhs)(j,j);
+         v_[j+j*MM] -= (*rhs)(j,j);
       }
       else
       {
@@ -6518,7 +6518,7 @@ inline auto StaticMatrix<Type,M,N,true,AF,PF,Tag>::subAssign( const DenseMatrix<
          BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
 
          for( size_t i=ibegin; i<iend; ++i ) {
-            v_[i+j*MM] -= (~rhs)(i,j);
+            v_[i+j*MM] -= (*rhs)(i,j);
          }
       }
    }
@@ -6553,7 +6553,7 @@ inline auto StaticMatrix<Type,M,N,true,AF,PF,Tag>::subAssign( const DenseMatrix<
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
    BLAZE_CONSTRAINT_MUST_NOT_BE_DIAGONAL_MATRIX_TYPE( MT );
 
-   BLAZE_INTERNAL_ASSERT( (~rhs).rows() == M && (~rhs).columns() == N, "Invalid matrix size" );
+   BLAZE_INTERNAL_ASSERT( (*rhs).rows() == M && (*rhs).columns() == N, "Invalid matrix size" );
 
    constexpr bool remainder( PF == unpadded || !IsPadded_v<MT> );
 
@@ -6573,10 +6573,10 @@ inline auto StaticMatrix<Type,M,N,true,AF,PF,Tag>::subAssign( const DenseMatrix<
       size_t i( ibegin );
 
       for( ; i<ipos; i+=SIMDSIZE ) {
-         store( i, j, load(i,j) - (~rhs).load(i,j) );
+         store( i, j, load(i,j) - (*rhs).load(i,j) );
       }
       for( ; remainder && i<iend; ++i ) {
-         v_[i+j*MM] -= (~rhs)(i,j);
+         v_[i+j*MM] -= (*rhs)(i,j);
       }
    }
 }
@@ -6605,10 +6605,10 @@ template< typename Type     // Data type of the matrix
 template< typename MT >     // Type of the right-hand side sparse matrix
 inline void StaticMatrix<Type,M,N,true,AF,PF,Tag>::subAssign( const SparseMatrix<MT,true>& rhs )
 {
-   BLAZE_INTERNAL_ASSERT( (~rhs).rows() == M && (~rhs).columns() == N, "Invalid matrix size" );
+   BLAZE_INTERNAL_ASSERT( (*rhs).rows() == M && (*rhs).columns() == N, "Invalid matrix size" );
 
    for( size_t j=0UL; j<N; ++j )
-      for( auto element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
+      for( auto element=(*rhs).begin(j); element!=(*rhs).end(j); ++element )
          v_[element->index()+j*MM] -= element->value();
 }
 /*! \endcond */
@@ -6638,10 +6638,10 @@ inline void StaticMatrix<Type,M,N,true,AF,PF,Tag>::subAssign( const SparseMatrix
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
 
-   BLAZE_INTERNAL_ASSERT( (~rhs).rows() == M && (~rhs).columns() == N, "Invalid matrix size" );
+   BLAZE_INTERNAL_ASSERT( (*rhs).rows() == M && (*rhs).columns() == N, "Invalid matrix size" );
 
    for( size_t i=0UL; i<M; ++i )
-      for( auto element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
+      for( auto element=(*rhs).begin(i); element!=(*rhs).end(i); ++element )
          v_[i+element->index()*MM] -= element->value();
 }
 /*! \endcond */
@@ -6671,11 +6671,11 @@ template< typename MT       // Type of the right-hand side dense matrix
 inline auto StaticMatrix<Type,M,N,true,AF,PF,Tag>::schurAssign( const DenseMatrix<MT,SO>& rhs )
    -> DisableIf_t< VectorizedSchurAssign_v<MT> >
 {
-   BLAZE_INTERNAL_ASSERT( (~rhs).rows() == M && (~rhs).columns() == N, "Invalid matrix size" );
+   BLAZE_INTERNAL_ASSERT( (*rhs).rows() == M && (*rhs).columns() == N, "Invalid matrix size" );
 
    for( size_t j=0UL; j<N; ++j ) {
       for( size_t i=0UL; i<M; ++i ) {
-         v_[i+j*MM] *= (~rhs)(i,j);
+         v_[i+j*MM] *= (*rhs)(i,j);
       }
    }
 }
@@ -6708,7 +6708,7 @@ inline auto StaticMatrix<Type,M,N,true,AF,PF,Tag>::schurAssign( const DenseMatri
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
-   BLAZE_INTERNAL_ASSERT( (~rhs).rows() == M && (~rhs).columns() == N, "Invalid matrix size" );
+   BLAZE_INTERNAL_ASSERT( (*rhs).rows() == M && (*rhs).columns() == N, "Invalid matrix size" );
 
    constexpr bool remainder( PF == unpadded || !IsPadded_v<MT> );
 
@@ -6720,10 +6720,10 @@ inline auto StaticMatrix<Type,M,N,true,AF,PF,Tag>::schurAssign( const DenseMatri
       size_t i( 0UL );
 
       for( ; i<ipos; i+=SIMDSIZE ) {
-         store( i, j, load(i,j) * (~rhs).load(i,j) );
+         store( i, j, load(i,j) * (*rhs).load(i,j) );
       }
       for( ; remainder && i<M; ++i ) {
-         v_[i+j*MM] *= (~rhs)(i,j);
+         v_[i+j*MM] *= (*rhs)(i,j);
       }
    }
 }
@@ -6752,14 +6752,14 @@ template< typename Type     // Data type of the matrix
 template< typename MT >     // Type of the right-hand side sparse matrix
 inline void StaticMatrix<Type,M,N,true,AF,PF,Tag>::schurAssign( const SparseMatrix<MT,true>& rhs )
 {
-   BLAZE_INTERNAL_ASSERT( (~rhs).rows() == M && (~rhs).columns() == N, "Invalid matrix size" );
+   BLAZE_INTERNAL_ASSERT( (*rhs).rows() == M && (*rhs).columns() == N, "Invalid matrix size" );
 
    const StaticMatrix tmp( serial( *this ) );
 
    reset();
 
    for( size_t j=0UL; j<N; ++j )
-      for( auto element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
+      for( auto element=(*rhs).begin(j); element!=(*rhs).end(j); ++element )
          v_[element->index()+j*MM] = tmp.v_[element->index()+j*MM] * element->value();
 }
 /*! \endcond */
@@ -6789,14 +6789,14 @@ inline void StaticMatrix<Type,M,N,true,AF,PF,Tag>::schurAssign( const SparseMatr
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
 
-   BLAZE_INTERNAL_ASSERT( (~rhs).rows() == M && (~rhs).columns() == N, "Invalid matrix size" );
+   BLAZE_INTERNAL_ASSERT( (*rhs).rows() == M && (*rhs).columns() == N, "Invalid matrix size" );
 
    const StaticMatrix tmp( serial( *this ) );
 
    reset();
 
    for( size_t i=0UL; i<M; ++i )
-      for( auto element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
+      for( auto element=(*rhs).begin(i); element!=(*rhs).end(i); ++element )
          v_[i+element->index()*MM] = tmp.v_[i+element->index()*MM] * element->value();
 }
 /*! \endcond */

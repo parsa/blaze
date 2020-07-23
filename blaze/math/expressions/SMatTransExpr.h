@@ -365,10 +365,10 @@ class SMatTransExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      DMatTransposer<MT2,!SO2> tmp( ~lhs );
+      DMatTransposer<MT2,!SO2> tmp( *lhs );
       assign( tmp, rhs.sm_ );
    }
    /*! \endcond */
@@ -395,10 +395,10 @@ class SMatTransExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      SMatTransposer<MT2,!SO2> tmp( ~lhs );
+      SMatTransposer<MT2,!SO2> tmp( *lhs );
       assign( tmp, rhs.sm_ );
    }
    /*! \endcond */
@@ -425,10 +425,10 @@ class SMatTransExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      DMatTransposer<MT2,!SO2> tmp( ~lhs );
+      DMatTransposer<MT2,!SO2> tmp( *lhs );
       addAssign( tmp, rhs.sm_ );
    }
    /*! \endcond */
@@ -459,10 +459,10 @@ class SMatTransExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      DMatTransposer<MT2,!SO2> tmp( ~lhs );
+      DMatTransposer<MT2,!SO2> tmp( *lhs );
       subAssign( tmp, rhs.sm_ );
    }
    /*! \endcond */
@@ -493,10 +493,10 @@ class SMatTransExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      DMatTransposer<MT2,!SO2> tmp( ~lhs );
+      DMatTransposer<MT2,!SO2> tmp( *lhs );
       schurAssign( tmp, rhs.sm_ );
    }
    /*! \endcond */
@@ -535,10 +535,10 @@ class SMatTransExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      DMatTransposer<MT2,!SO2> tmp( ~lhs );
+      DMatTransposer<MT2,!SO2> tmp( *lhs );
       smpAssign( tmp, rhs.sm_ );
    }
    /*! \endcond */
@@ -565,10 +565,10 @@ class SMatTransExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      SMatTransposer<MT2,!SO2> tmp( ~lhs );
+      SMatTransposer<MT2,!SO2> tmp( *lhs );
       smpAssign( tmp, rhs.sm_ );
    }
    /*! \endcond */
@@ -595,10 +595,10 @@ class SMatTransExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      DMatTransposer<MT2,!SO2> tmp( ~lhs );
+      DMatTransposer<MT2,!SO2> tmp( *lhs );
       smpAddAssign( tmp, rhs.sm_ );
    }
    /*! \endcond */
@@ -630,10 +630,10 @@ class SMatTransExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      DMatTransposer<MT2,!SO2> tmp( ~lhs );
+      DMatTransposer<MT2,!SO2> tmp( *lhs );
       smpSubAssign( tmp, rhs.sm_ );
    }
    /*! \endcond */
@@ -665,10 +665,10 @@ class SMatTransExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      DMatTransposer<MT2,!SO2> tmp( ~lhs );
+      DMatTransposer<MT2,!SO2> tmp( *lhs );
       smpSchurAssign( tmp, rhs.sm_ );
    }
    /*! \endcond */
@@ -730,7 +730,7 @@ inline decltype(auto) trans( const SparseMatrix<MT,SO>& sm )
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = const SMatTransExpr<MT,!SO>;
-   return ReturnType( ~sm );
+   return ReturnType( *sm );
 }
 //*************************************************************************************************
 
@@ -750,7 +750,7 @@ template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
 inline decltype(auto) transIf( FalseType, const SparseMatrix<MT,SO>& sm )
 {
-   return ~sm;
+   return *sm;
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -771,7 +771,7 @@ template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
 inline decltype(auto) transIf( TrueType, const SparseMatrix<MT,SO>& sm )
 {
-   return trans( ~sm );
+   return trans( *sm );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -793,7 +793,7 @@ template< bool B       // Compile time condition
         , bool SO >    // Storage order
 inline decltype(auto) transIf( const SparseMatrix<MT,SO>& sm )
 {
-   return transIf( BoolConstant<B>(), ~sm );
+   return transIf( BoolConstant<B>(), *sm );
 }
 //*************************************************************************************************
 

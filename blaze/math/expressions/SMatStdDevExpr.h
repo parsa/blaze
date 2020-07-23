@@ -85,7 +85,7 @@ inline decltype(auto) stddev( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return sqrt( var( ~sm ) );
+   return sqrt( var( *sm ) );
 }
 //*************************************************************************************************
 
@@ -134,7 +134,7 @@ inline decltype(auto) stddev( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return sqrt( var<RF>( ~sm ) );
+   return sqrt( var<RF>( *sm ) );
 }
 //*************************************************************************************************
 

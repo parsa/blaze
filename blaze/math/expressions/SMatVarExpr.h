@@ -264,10 +264,10 @@ class SMatVarExpr<MT,columnwise>
       BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( OT );
       BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( OT );
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       const OT tmp( serial( rhs.sm_ ) );
-      assign( ~lhs, var<columnwise>( tmp ) );
+      assign( *lhs, var<columnwise>( tmp ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -294,10 +294,10 @@ class SMatVarExpr<MT,columnwise>
       BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE( ResultType );
       BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       const ResultType tmp( serial( rhs ) );
-      assign( ~lhs, tmp );
+      assign( *lhs, tmp );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -324,10 +324,10 @@ class SMatVarExpr<MT,columnwise>
       BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( OT );
       BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( OT );
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       const OT tmp( serial( rhs.sm_ ) );
-      addAssign( ~lhs, var<columnwise>( tmp ) );
+      addAssign( *lhs, var<columnwise>( tmp ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -354,10 +354,10 @@ class SMatVarExpr<MT,columnwise>
       BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE( ResultType );
       BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       const ResultType tmp( serial( rhs ) );
-      addAssign( ~lhs, tmp );
+      addAssign( *lhs, tmp );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -384,10 +384,10 @@ class SMatVarExpr<MT,columnwise>
       BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( OT );
       BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( OT );
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       const OT tmp( serial( rhs.sm_ ) );
-      subAssign( ~lhs, var<columnwise>( tmp ) );
+      subAssign( *lhs, var<columnwise>( tmp ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -414,10 +414,10 @@ class SMatVarExpr<MT,columnwise>
       BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE( ResultType );
       BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       const ResultType tmp( serial( rhs ) );
-      subAssign( ~lhs, tmp );
+      subAssign( *lhs, tmp );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -444,10 +444,10 @@ class SMatVarExpr<MT,columnwise>
       BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( OT );
       BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( OT );
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       const OT tmp( serial( rhs.sm_ ) );
-      multAssign( ~lhs, var<columnwise>( tmp ) );
+      multAssign( *lhs, var<columnwise>( tmp ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -474,10 +474,10 @@ class SMatVarExpr<MT,columnwise>
       BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE( ResultType );
       BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       const ResultType tmp( serial( rhs ) );
-      multAssign( ~lhs, tmp );
+      multAssign( *lhs, tmp );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -504,10 +504,10 @@ class SMatVarExpr<MT,columnwise>
       BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( OT );
       BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( OT );
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       const OT tmp( serial( rhs.sm_ ) );
-      divAssign( ~lhs, var<columnwise>( tmp ) );
+      divAssign( *lhs, var<columnwise>( tmp ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -534,10 +534,10 @@ class SMatVarExpr<MT,columnwise>
       BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE( ResultType );
       BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       const ResultType tmp( serial( rhs ) );
-      divAssign( ~lhs, tmp );
+      divAssign( *lhs, tmp );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -988,10 +988,10 @@ class SMatVarExpr<MT,rowwise>
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       const RT tmp( serial( rhs.sm_ ) );  // Evaluation of the sparse matrix operand
-      assign( ~lhs, var<rowwise>( tmp ) );
+      assign( *lhs, var<rowwise>( tmp ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -1016,10 +1016,10 @@ class SMatVarExpr<MT,rowwise>
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       const RT tmp( serial( rhs.sm_ ) );  // Evaluation of the sparse matrix operand
-      addAssign( ~lhs, var<rowwise>( tmp ) );
+      addAssign( *lhs, var<rowwise>( tmp ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -1045,10 +1045,10 @@ class SMatVarExpr<MT,rowwise>
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       const RT tmp( serial( rhs.sm_ ) );  // Evaluation of the sparse matrix operand
-      subAssign( ~lhs, var<rowwise>( tmp ) );
+      subAssign( *lhs, var<rowwise>( tmp ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -1074,10 +1074,10 @@ class SMatVarExpr<MT,rowwise>
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       const RT tmp( serial( rhs.sm_ ) );  // Evaluation of the sparse matrix operand
-      multAssign( ~lhs, var<rowwise>( tmp ) );
+      multAssign( *lhs, var<rowwise>( tmp ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -1102,10 +1102,10 @@ class SMatVarExpr<MT,rowwise>
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       const RT tmp( serial( rhs.sm_ ) );  // Evaluation of the sparse matrix operand
-      divAssign( ~lhs, var<rowwise>( tmp ) );
+      divAssign( *lhs, var<rowwise>( tmp ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -1142,19 +1142,19 @@ inline decltype(auto) var_backend( const SparseMatrix<MT,SO>& sm, FalseType )
 {
    using BT = UnderlyingBuiltin_t<MT>;
 
-   const size_t n ( size( ~sm ) );
-   const size_t nz( nonZeros( ~sm ) );
+   const size_t n ( size( *sm ) );
+   const size_t nz( nonZeros( *sm ) );
 
    BLAZE_INTERNAL_ASSERT( n > 1UL, "Invalid matrix size detected" );
    BLAZE_INTERNAL_ASSERT( n >= nz, "Invalid number of non-zero elements detected" );
 
-   const auto meanValue( mean( ~sm ) );
+   const auto meanValue( mean( *sm ) );
    auto variance( ( n - nz ) * pow2( meanValue ) );
 
-   const size_t iend( SO ? (~sm).columns() : (~sm).rows() );
+   const size_t iend( SO ? (*sm).columns() : (*sm).rows() );
    for( size_t i=0UL; i<iend; ++i ) {
-      const auto end( (~sm).end(i) );
-      for( auto element=(~sm).begin(i); element!=end; ++element ) {
+      const auto end( (*sm).end(i) );
+      for( auto element=(*sm).begin(i); element!=end; ++element ) {
          variance += pow2( element->value() - meanValue );
       }
    }
@@ -1179,7 +1179,7 @@ inline decltype(auto) var_backend( const SparseMatrix<MT,SO>& sm, TrueType )
 {
    MAYBE_UNUSED( sm );
 
-   BLAZE_INTERNAL_ASSERT( size( ~sm ) > 1UL, "Invalid matrix size detected" );
+   BLAZE_INTERNAL_ASSERT( size( *sm ) > 1UL, "Invalid matrix size detected" );
 
    return ElementType_t<MT>();
 }
@@ -1217,11 +1217,11 @@ inline decltype(auto) var( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   if( size( ~sm ) < 2UL ) {
+   if( size( *sm ) < 2UL ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid input matrix" );
    }
 
-   return var_backend( ~sm, IsZero<MT>() );
+   return var_backend( *sm, IsZero<MT>() );
 }
 //*************************************************************************************************
 
@@ -1239,7 +1239,7 @@ template< ReductionFlag RF  // Reduction flag
 inline const SMatVarExpr<MT,RF> var_backend( const SparseMatrix<MT,false>& sm )
 {
    using ReturnType = const SMatVarExpr<MT,RF>;
-   return ReturnType( ~sm );
+   return ReturnType( *sm );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1258,7 +1258,7 @@ template< ReductionFlag RF  // Reduction flag
 inline decltype(auto) var_backend( const SparseMatrix<MT,true>& sm )
 {
    constexpr ReductionFlag RF2( RF == rowwise ? columnwise : rowwise );
-   return trans( var<RF2>( trans( ~sm ) ) );
+   return trans( var<RF2>( trans( *sm ) ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1309,7 +1309,7 @@ inline decltype(auto) var( const SparseMatrix<MT,SO>& sm )
 
    BLAZE_STATIC_ASSERT_MSG( RF < 2UL, "Invalid reduction flag" );
 
-   return var_backend<RF>( ~sm );
+   return var_backend<RF>( *sm );
 }
 //*************************************************************************************************
 

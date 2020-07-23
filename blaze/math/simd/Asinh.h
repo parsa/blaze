@@ -70,29 +70,29 @@ BLAZE_ALWAYS_INLINE const SIMDfloat asinh( const SIMDf32<T>& a ) noexcept
 #if BLAZE_SVML_MODE
 #  if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
 {
-   return _mm512_asinh_ps( (~a).eval().value );
+   return _mm512_asinh_ps( (*a).eval().value );
 }
 #  elif BLAZE_AVX_MODE
 {
-   return _mm256_asinh_ps( (~a).eval().value );
+   return _mm256_asinh_ps( (*a).eval().value );
 }
 #  elif BLAZE_SSE_MODE
 {
-   return _mm_asinh_ps( (~a).eval().value );
+   return _mm_asinh_ps( (*a).eval().value );
 }
 #  endif
 #elif BLAZE_SLEEF_MODE
 #  if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
 {
-   return Sleef_asinhf16_u10( (~a).eval().value );
+   return Sleef_asinhf16_u10( (*a).eval().value );
 }
 #  elif BLAZE_AVX_MODE
 {
-   return Sleef_asinhf8_u10( (~a).eval().value );
+   return Sleef_asinhf8_u10( (*a).eval().value );
 }
 #  elif BLAZE_SSE_MODE
 {
-   return Sleef_asinhf4_u10( (~a).eval().value );
+   return Sleef_asinhf4_u10( (*a).eval().value );
 }
 #  endif
 #else
@@ -123,29 +123,29 @@ BLAZE_ALWAYS_INLINE const SIMDdouble asinh( const SIMDf64<T>& a ) noexcept
 #if BLAZE_SVML_MODE
 #  if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
 {
-   return _mm512_asinh_pd( (~a).eval().value );
+   return _mm512_asinh_pd( (*a).eval().value );
 }
 #  elif BLAZE_AVX_MODE
 {
-   return _mm256_asinh_pd( (~a).eval().value );
+   return _mm256_asinh_pd( (*a).eval().value );
 }
 #  elif BLAZE_SSE_MODE
 {
-   return _mm_asinh_pd( (~a).eval().value );
+   return _mm_asinh_pd( (*a).eval().value );
 }
 #  endif
 #elif BLAZE_SLEEF_MODE
 #  if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
 {
-   return Sleef_asinhd8_u10( (~a).eval().value );
+   return Sleef_asinhd8_u10( (*a).eval().value );
 }
 #  elif BLAZE_AVX_MODE
 {
-   return Sleef_asinhd4_u10( (~a).eval().value );
+   return Sleef_asinhd4_u10( (*a).eval().value );
 }
 #  elif BLAZE_SSE_MODE
 {
-   return Sleef_asinhd2_u10( (~a).eval().value );
+   return Sleef_asinhd2_u10( (*a).eval().value );
 }
 #  endif
 #else

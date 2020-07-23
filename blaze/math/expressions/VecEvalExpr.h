@@ -94,7 +94,7 @@ inline decltype(auto) eval( const VecEvalExpr<VT>& vector )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return ~vector;
+   return *vector;
 }
 /*! \endcond */
 //*************************************************************************************************

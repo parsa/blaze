@@ -159,7 +159,7 @@ inline decltype(auto) subvector( Vector<VT,TF>& vector, RSAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return subvector<unaligned,I,N>( ~vector, args... );
+   return subvector<unaligned,I,N>( *vector, args... );
 }
 //*************************************************************************************************
 
@@ -227,7 +227,7 @@ inline decltype(auto) subvector( const Vector<VT,TF>& vector, RSAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return subvector<unaligned,I,N>( ~vector, args... );
+   return subvector<unaligned,I,N>( *vector, args... );
 }
 //*************************************************************************************************
 
@@ -255,7 +255,7 @@ inline decltype(auto) subvector( Vector<VT,TF>&& vector, RSAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return subvector<unaligned,I,N>( std::move( ~vector ), args... );
+   return subvector<unaligned,I,N>( std::move( *vector ), args... );
 }
 //*************************************************************************************************
 
@@ -337,7 +337,7 @@ inline decltype(auto) subvector( Vector<VT,TF>& vector, RSAs... args )
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = Subvector_<VT,AF,I,N>;
-   return ReturnType( ~vector, args... );
+   return ReturnType( *vector, args... );
 }
 //*************************************************************************************************
 
@@ -417,7 +417,7 @@ inline decltype(auto) subvector( const Vector<VT,TF>& vector, RSAs... args )
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = const Subvector_<const VT,AF,I,N>;
-   return ReturnType( ~vector, args... );
+   return ReturnType( *vector, args... );
 }
 //*************************************************************************************************
 
@@ -449,7 +449,7 @@ inline decltype(auto) subvector( Vector<VT,TF>&& vector, RSAs... args )
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = Subvector_<VT,AF,I,N>;
-   return ReturnType( ~vector, args... );
+   return ReturnType( *vector, args... );
 }
 //*************************************************************************************************
 
@@ -517,7 +517,7 @@ inline decltype(auto) subvector( Vector<VT,TF>& vector, size_t index, size_t siz
 {
    BLAZE_FUNCTION_TRACE;
 
-   return subvector<unaligned>( ~vector, index, size, args... );
+   return subvector<unaligned>( *vector, index, size, args... );
 }
 //*************************************************************************************************
 
@@ -585,7 +585,7 @@ inline decltype(auto) subvector( const Vector<VT,TF>& vector, size_t index, size
 {
    BLAZE_FUNCTION_TRACE;
 
-   return subvector<unaligned>( ~vector, index, size, args... );
+   return subvector<unaligned>( *vector, index, size, args... );
 }
 //*************************************************************************************************
 
@@ -613,7 +613,7 @@ inline decltype(auto) subvector( Vector<VT,TF>&& vector, size_t index, size_t si
 {
    BLAZE_FUNCTION_TRACE;
 
-   return subvector<unaligned>( std::move( ~vector ), index, size, args... );
+   return subvector<unaligned>( std::move( *vector ), index, size, args... );
 }
 //*************************************************************************************************
 
@@ -695,7 +695,7 @@ inline decltype(auto) subvector( Vector<VT,TF>& vector, size_t index, size_t siz
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = Subvector_<VT,AF>;
-   return ReturnType( ~vector, index, size, args... );
+   return ReturnType( *vector, index, size, args... );
 }
 //*************************************************************************************************
 
@@ -775,7 +775,7 @@ inline decltype(auto) subvector( const Vector<VT,TF>& vector, size_t index, size
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = const Subvector_<const VT,AF>;
-   return ReturnType( ~vector, index, size, args... );
+   return ReturnType( *vector, index, size, args... );
 }
 //*************************************************************************************************
 
@@ -807,7 +807,7 @@ inline decltype(auto) subvector( Vector<VT,TF>&& vector, size_t index, size_t si
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = Subvector_<VT,AF>;
-   return ReturnType( ~vector, index, size, args... );
+   return ReturnType( *vector, index, size, args... );
 }
 //*************************************************************************************************
 
@@ -841,8 +841,8 @@ inline decltype(auto) subvector( const VecVecAddExpr<VT>& vector, RSAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return subvector<AF,CSAs...>( (~vector).leftOperand(), args... ) +
-          subvector<AF,CSAs...>( (~vector).rightOperand(), args... );
+   return subvector<AF,CSAs...>( (*vector).leftOperand(), args... ) +
+          subvector<AF,CSAs...>( (*vector).rightOperand(), args... );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -869,8 +869,8 @@ inline decltype(auto) subvector( const VecVecSubExpr<VT>& vector, RSAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return subvector<AF,CSAs...>( (~vector).leftOperand(), args... ) -
-          subvector<AF,CSAs...>( (~vector).rightOperand(), args... );
+   return subvector<AF,CSAs...>( (*vector).leftOperand(), args... ) -
+          subvector<AF,CSAs...>( (*vector).rightOperand(), args... );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -897,8 +897,8 @@ inline decltype(auto) subvector( const VecVecMultExpr<VT>& vector, RSAs... args 
 {
    BLAZE_FUNCTION_TRACE;
 
-   return subvector<AF,CSAs...>( (~vector).leftOperand(), args... ) *
-          subvector<AF,CSAs...>( (~vector).rightOperand(), args... );
+   return subvector<AF,CSAs...>( (*vector).leftOperand(), args... ) *
+          subvector<AF,CSAs...>( (*vector).rightOperand(), args... );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -927,7 +927,7 @@ inline decltype(auto) subvector( const VecVecKronExpr<VT>& vector, RSAs... args 
    BLAZE_FUNCTION_TRACE;
 
    try {
-      return elements( ~vector, make_shifted_index_sequence<I,N>(), args... );
+      return elements( *vector, make_shifted_index_sequence<I,N>(), args... );
    }
    catch( ... ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid subvector specification" );
@@ -960,7 +960,7 @@ inline decltype(auto) subvector( const VecVecKronExpr<VT>& vector, size_t index,
    BLAZE_FUNCTION_TRACE;
 
    try {
-      return elements( ~vector, [index]( size_t i ){ return i+index; }, size, args... );
+      return elements( *vector, [index]( size_t i ){ return i+index; }, size, args... );
    }
    catch( ... ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid subvector specification" );
@@ -991,8 +991,8 @@ inline decltype(auto) subvector( const VecVecDivExpr<VT>& vector, RSAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return subvector<AF,CSAs...>( (~vector).leftOperand(), args... ) /
-          subvector<AF,CSAs...>( (~vector).rightOperand(), args... );
+   return subvector<AF,CSAs...>( (*vector).leftOperand(), args... ) /
+          subvector<AF,CSAs...>( (*vector).rightOperand(), args... );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1020,7 +1020,7 @@ inline decltype(auto) subvector( const CrossExpr<VT>& vector, RSAs... args )
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = Subvector_< VectorType_t<VT>, unaligned, CSAs... >;
-   return ReturnType( ~vector, args... );
+   return ReturnType( *vector, args... );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1047,7 +1047,7 @@ inline decltype(auto) subvector( const VecScalarMultExpr<VT>& vector, RSAs... ar
 {
    BLAZE_FUNCTION_TRACE;
 
-   return subvector<AF,CSAs...>( (~vector).leftOperand(), args... ) * (~vector).rightOperand();
+   return subvector<AF,CSAs...>( (*vector).leftOperand(), args... ) * (*vector).rightOperand();
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1074,7 +1074,7 @@ inline decltype(auto) subvector( const VecScalarDivExpr<VT>& vector, RSAs... arg
 {
    BLAZE_FUNCTION_TRACE;
 
-   return subvector<AF,CSAs...>( (~vector).leftOperand(), args... ) / (~vector).rightOperand();
+   return subvector<AF,CSAs...>( (*vector).leftOperand(), args... ) / (*vector).rightOperand();
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1101,7 +1101,7 @@ inline decltype(auto) subvector( const VecMapExpr<VT>& vector, RSAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( subvector<AF,CSAs...>( (~vector).operand(), args... ), (~vector).operation() );
+   return map( subvector<AF,CSAs...>( (*vector).operand(), args... ), (*vector).operation() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1128,9 +1128,9 @@ inline decltype(auto) subvector( const VecVecMapExpr<VT>& vector, RSAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( subvector<AF,CSAs...>( (~vector).leftOperand(), args... ),
-               subvector<AF,CSAs...>( (~vector).rightOperand(), args... ),
-               (~vector).operation() );
+   return map( subvector<AF,CSAs...>( (*vector).leftOperand(), args... ),
+               subvector<AF,CSAs...>( (*vector).rightOperand(), args... ),
+               (*vector).operation() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1157,7 +1157,7 @@ inline decltype(auto) subvector( const VecEvalExpr<VT>& vector, RSAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return eval( subvector<AF,CSAs...>( (~vector).operand(), args... ) );
+   return eval( subvector<AF,CSAs...>( (*vector).operand(), args... ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1184,7 +1184,7 @@ inline decltype(auto) subvector( const VecSerialExpr<VT>& vector, RSAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return serial( subvector<AF,CSAs...>( (~vector).operand(), args... ) );
+   return serial( subvector<AF,CSAs...>( (*vector).operand(), args... ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1211,7 +1211,7 @@ inline decltype(auto) subvector( const VecNoAliasExpr<VT>& vector, RSAs... args 
 {
    BLAZE_FUNCTION_TRACE;
 
-   return noalias( subvector<AF,CSAs...>( (~vector).operand(), args... ) );
+   return noalias( subvector<AF,CSAs...>( (*vector).operand(), args... ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1238,7 +1238,7 @@ inline decltype(auto) subvector( const VecNoSIMDExpr<VT>& vector, RSAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return nosimd( subvector<AF,CSAs...>( (~vector).operand(), args... ) );
+   return nosimd( subvector<AF,CSAs...>( (*vector).operand(), args... ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1265,7 +1265,7 @@ inline decltype(auto) subvector( const VecTransExpr<VT>& vector, RSAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return trans( subvector<AF,CSAs...>( (~vector).operand(), args... ) );
+   return trans( subvector<AF,CSAs...>( (*vector).operand(), args... ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1295,17 +1295,17 @@ inline decltype(auto) subvector( const VecRepeatExpr<VT,CRAs...>& vector, RSAs..
    BLAZE_FUNCTION_TRACE;
 
    if( isChecked( args... ) ) {
-      if( I + N > (~vector).size() ) {
+      if( I + N > (*vector).size() ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid subvector specification" );
       }
    }
    else {
-      BLAZE_USER_ASSERT( I + N <= (~vector).size(), "Invalid subvector specification" );
+      BLAZE_USER_ASSERT( I + N <= (*vector).size(), "Invalid subvector specification" );
    }
 
-   const size_t n = (~vector).operand().size();
+   const size_t n = (*vector).operand().size();
 
-   return elements( (~vector).operand(), [n]( size_t i ) { return (i+I)%n; }, N, unchecked );
+   return elements( (*vector).operand(), [n]( size_t i ) { return (i+I)%n; }, N, unchecked );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1336,17 +1336,17 @@ inline decltype(auto)
    BLAZE_FUNCTION_TRACE;
 
    if( isChecked( args... ) ) {
-      if( index + size > (~vector).size() ) {
+      if( index + size > (*vector).size() ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid subvector specification" );
       }
    }
    else {
-      BLAZE_USER_ASSERT( index + size <= (~vector).size(), "Invalid subvector specification" );
+      BLAZE_USER_ASSERT( index + size <= (*vector).size(), "Invalid subvector specification" );
    }
 
-   const size_t n = (~vector).operand().size();
+   const size_t n = (*vector).operand().size();
 
-   return elements( (~vector).operand(), [index,n]( size_t i ) { return (i+index)%n; }, size, unchecked );
+   return elements( (*vector).operand(), [index,n]( size_t i ) { return (i+index)%n; }, size, unchecked );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1796,7 +1796,7 @@ inline bool isDefault( const Subvector<VT,AF,TF,false,CSAs...>& sv )
 {
    using blaze::isDefault;
 
-   for( const auto& element : ~sv )
+   for( const auto& element : *sv )
       if( !isDefault<RF>( element.value() ) ) return false;
    return true;
 }
@@ -1856,7 +1856,7 @@ template< typename VT       // Type of the vector
         , size_t... CSAs >  // Compile time subvector arguments
 inline bool isSame( const Subvector<VT,AF,TF,DF,CSAs...>& a, const Vector<VT,TF>& b ) noexcept
 {
-   return ( isSame( a.operand(), ~b ) && ( a.size() == (~b).size() ) );
+   return ( isSame( a.operand(), *b ) && ( a.size() == (*b).size() ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1978,8 +1978,8 @@ template< typename VT       // Type of the vector
 BLAZE_ALWAYS_INLINE bool
    trySet( const Subvector<VT,AF,TF,DF,CSAs...>& sv, size_t index, size_t size, const ET& value )
 {
-   BLAZE_INTERNAL_ASSERT( index <= (~sv).size(), "Invalid vector access index" );
-   BLAZE_INTERNAL_ASSERT( index + size <= (~sv).size(), "Invalid range size" );
+   BLAZE_INTERNAL_ASSERT( index <= (*sv).size(), "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( index + size <= (*sv).size(), "Invalid range size" );
 
    return trySet( sv.operand(), sv.offset()+index, size, value );
 }
@@ -2043,8 +2043,8 @@ template< typename VT       // Type of the vector
 BLAZE_ALWAYS_INLINE bool
    tryAdd( const Subvector<VT,AF,TF,DF,CSAs...>& sv, size_t index, size_t size, const ET& value )
 {
-   BLAZE_INTERNAL_ASSERT( index <= (~sv).size(), "Invalid vector access index" );
-   BLAZE_INTERNAL_ASSERT( index + size <= (~sv).size(), "Invalid range size" );
+   BLAZE_INTERNAL_ASSERT( index <= (*sv).size(), "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( index + size <= (*sv).size(), "Invalid range size" );
 
    return tryAdd( sv.operand(), sv.offset()+index, size, value );
 }
@@ -2108,8 +2108,8 @@ template< typename VT       // Type of the vector
 BLAZE_ALWAYS_INLINE bool
    trySub( const Subvector<VT,AF,TF,DF,CSAs...>& sv, size_t index, size_t size, const ET& value )
 {
-   BLAZE_INTERNAL_ASSERT( index <= (~sv).size(), "Invalid vector access index" );
-   BLAZE_INTERNAL_ASSERT( index + size <= (~sv).size(), "Invalid range size" );
+   BLAZE_INTERNAL_ASSERT( index <= (*sv).size(), "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( index + size <= (*sv).size(), "Invalid range size" );
 
    return trySub( sv.operand(), sv.offset()+index, size, value );
 }
@@ -2173,8 +2173,8 @@ template< typename VT       // Type of the vector
 BLAZE_ALWAYS_INLINE bool
    tryMult( const Subvector<VT,AF,TF,DF,CSAs...>& sv, size_t index, size_t size, const ET& value )
 {
-   BLAZE_INTERNAL_ASSERT( index <= (~sv).size(), "Invalid vector access index" );
-   BLAZE_INTERNAL_ASSERT( index + size <= (~sv).size(), "Invalid range size" );
+   BLAZE_INTERNAL_ASSERT( index <= (*sv).size(), "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( index + size <= (*sv).size(), "Invalid range size" );
 
    return tryMult( sv.operand(), sv.offset()+index, size, value );
 }
@@ -2238,8 +2238,8 @@ template< typename VT       // Type of the vector
 BLAZE_ALWAYS_INLINE bool
    tryDiv( const Subvector<VT,AF,TF,DF,CSAs...>& sv, size_t index, size_t size, const ET& value )
 {
-   BLAZE_INTERNAL_ASSERT( index <= (~sv).size(), "Invalid vector access index" );
-   BLAZE_INTERNAL_ASSERT( index + size <= (~sv).size(), "Invalid range size" );
+   BLAZE_INTERNAL_ASSERT( index <= (*sv).size(), "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( index + size <= (*sv).size(), "Invalid range size" );
 
    return tryDiv( sv.operand(), sv.offset()+index, size, value );
 }
@@ -2301,8 +2301,8 @@ template< typename VT       // Type of the vector
 BLAZE_ALWAYS_INLINE bool
    tryShift( const Subvector<VT,AF,TF,DF,CSAs...>& sv, size_t index, size_t size, int count )
 {
-   BLAZE_INTERNAL_ASSERT( index <= (~sv).size(), "Invalid vector access index" );
-   BLAZE_INTERNAL_ASSERT( index + size <= (~sv).size(), "Invalid range size" );
+   BLAZE_INTERNAL_ASSERT( index <= (*sv).size(), "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( index + size <= (*sv).size(), "Invalid range size" );
 
    return tryShift( sv.operand(), sv.offset()+index, size, count );
 }
@@ -2366,8 +2366,8 @@ template< typename VT       // Type of the vector
 BLAZE_ALWAYS_INLINE bool
    tryBitand( const Subvector<VT,AF,TF,DF,CSAs...>& sv, size_t index, size_t size, const ET& value )
 {
-   BLAZE_INTERNAL_ASSERT( index <= (~sv).size(), "Invalid vector access index" );
-   BLAZE_INTERNAL_ASSERT( index + size <= (~sv).size(), "Invalid range size" );
+   BLAZE_INTERNAL_ASSERT( index <= (*sv).size(), "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( index + size <= (*sv).size(), "Invalid range size" );
 
    return tryBitand( sv.operand(), sv.offset()+index, size, value );
 }
@@ -2431,8 +2431,8 @@ template< typename VT       // Type of the vector
 BLAZE_ALWAYS_INLINE bool
    tryBitor( const Subvector<VT,AF,TF,DF,CSAs...>& sv, size_t index, size_t size, const ET& value )
 {
-   BLAZE_INTERNAL_ASSERT( index <= (~sv).size(), "Invalid vector access index" );
-   BLAZE_INTERNAL_ASSERT( index + size <= (~sv).size(), "Invalid range size" );
+   BLAZE_INTERNAL_ASSERT( index <= (*sv).size(), "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( index + size <= (*sv).size(), "Invalid range size" );
 
    return tryBitor( sv.operand(), sv.offset()+index, size, value );
 }
@@ -2496,8 +2496,8 @@ template< typename VT       // Type of the vector
 BLAZE_ALWAYS_INLINE bool
    tryBitxor( const Subvector<VT,AF,TF,DF,CSAs...>& sv, size_t index, size_t size, const ET& value )
 {
-   BLAZE_INTERNAL_ASSERT( index <= (~sv).size(), "Invalid vector access index" );
-   BLAZE_INTERNAL_ASSERT( index + size <= (~sv).size(), "Invalid range size" );
+   BLAZE_INTERNAL_ASSERT( index <= (*sv).size(), "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( index + size <= (*sv).size(), "Invalid range size" );
 
    return tryBitxor( sv.operand(), sv.offset()+index, size, value );
 }
@@ -2530,9 +2530,9 @@ inline bool tryAssign( const Subvector<VT1,AF,TF,DF,CSAs...>& lhs,
                        const Vector<VT2,TF>& rhs, size_t index )
 {
    BLAZE_INTERNAL_ASSERT( index <= lhs.size(), "Invalid vector access index" );
-   BLAZE_INTERNAL_ASSERT( index + (~rhs).size() <= lhs.size(), "Invalid vector size" );
+   BLAZE_INTERNAL_ASSERT( index + (*rhs).size() <= lhs.size(), "Invalid vector size" );
 
-   return tryAssign( lhs.operand(), ~rhs, lhs.offset() + index );
+   return tryAssign( lhs.operand(), *rhs, lhs.offset() + index );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -2563,9 +2563,9 @@ inline bool tryAddAssign( const Subvector<VT1,AF,TF,DF,CSAs...>& lhs,
                           const Vector<VT2,TF>& rhs, size_t index )
 {
    BLAZE_INTERNAL_ASSERT( index <= lhs.size(), "Invalid vector access index" );
-   BLAZE_INTERNAL_ASSERT( index + (~rhs).size() <= lhs.size(), "Invalid vector size" );
+   BLAZE_INTERNAL_ASSERT( index + (*rhs).size() <= lhs.size(), "Invalid vector size" );
 
-   return tryAddAssign( lhs.operand(), ~rhs, lhs.offset() + index );
+   return tryAddAssign( lhs.operand(), *rhs, lhs.offset() + index );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -2596,9 +2596,9 @@ inline bool trySubAssign( const Subvector<VT1,AF,TF,DF,CSAs...>& lhs,
                           const Vector<VT2,TF>& rhs, size_t index )
 {
    BLAZE_INTERNAL_ASSERT( index <= lhs.size(), "Invalid vector access index" );
-   BLAZE_INTERNAL_ASSERT( index + (~rhs).size() <= lhs.size(), "Invalid vector size" );
+   BLAZE_INTERNAL_ASSERT( index + (*rhs).size() <= lhs.size(), "Invalid vector size" );
 
-   return trySubAssign( lhs.operand(), ~rhs, lhs.offset() + index );
+   return trySubAssign( lhs.operand(), *rhs, lhs.offset() + index );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -2629,9 +2629,9 @@ inline bool tryMultAssign( const Subvector<VT1,AF,TF,DF,CSAs...>& lhs,
                            const Vector<VT2,TF>& rhs, size_t index )
 {
    BLAZE_INTERNAL_ASSERT( index <= lhs.size(), "Invalid vector access index" );
-   BLAZE_INTERNAL_ASSERT( index + (~rhs).size() <= lhs.size(), "Invalid vector size" );
+   BLAZE_INTERNAL_ASSERT( index + (*rhs).size() <= lhs.size(), "Invalid vector size" );
 
-   return tryMultAssign( lhs.operand(), ~rhs, lhs.offset() + index );
+   return tryMultAssign( lhs.operand(), *rhs, lhs.offset() + index );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -2662,9 +2662,9 @@ inline bool tryDivAssign( const Subvector<VT1,AF,TF,DF,CSAs...>& lhs,
                           const Vector<VT2,TF>& rhs, size_t index )
 {
    BLAZE_INTERNAL_ASSERT( index <= lhs.size(), "Invalid vector access index" );
-   BLAZE_INTERNAL_ASSERT( index + (~rhs).size() <= lhs.size(), "Invalid vector size" );
+   BLAZE_INTERNAL_ASSERT( index + (*rhs).size() <= lhs.size(), "Invalid vector size" );
 
-   return tryDivAssign( lhs.operand(), ~rhs, lhs.offset() + index );
+   return tryDivAssign( lhs.operand(), *rhs, lhs.offset() + index );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -2695,9 +2695,9 @@ inline bool tryShiftAssign( const Subvector<VT1,AF,TF,DF,CSAs...>& lhs,
                             const Vector<VT2,TF>& rhs, size_t index )
 {
    BLAZE_INTERNAL_ASSERT( index <= lhs.size(), "Invalid vector access index" );
-   BLAZE_INTERNAL_ASSERT( index + (~rhs).size() <= lhs.size(), "Invalid vector size" );
+   BLAZE_INTERNAL_ASSERT( index + (*rhs).size() <= lhs.size(), "Invalid vector size" );
 
-   return tryShiftAssign( lhs.operand(), ~rhs, lhs.offset() + index );
+   return tryShiftAssign( lhs.operand(), *rhs, lhs.offset() + index );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -2728,9 +2728,9 @@ inline bool tryBitandAssign( const Subvector<VT1,AF,TF,DF,CSAs...>& lhs,
                              const Vector<VT2,TF>& rhs, size_t index )
 {
    BLAZE_INTERNAL_ASSERT( index <= lhs.size(), "Invalid vector access index" );
-   BLAZE_INTERNAL_ASSERT( index + (~rhs).size() <= lhs.size(), "Invalid vector size" );
+   BLAZE_INTERNAL_ASSERT( index + (*rhs).size() <= lhs.size(), "Invalid vector size" );
 
-   return tryBitandAssign( lhs.operand(), ~rhs, lhs.offset() + index );
+   return tryBitandAssign( lhs.operand(), *rhs, lhs.offset() + index );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -2761,9 +2761,9 @@ inline bool tryBitorAssign( const Subvector<VT1,AF,TF,DF,CSAs...>& lhs,
                             const Vector<VT2,TF>& rhs, size_t index )
 {
    BLAZE_INTERNAL_ASSERT( index <= lhs.size(), "Invalid vector access index" );
-   BLAZE_INTERNAL_ASSERT( index + (~rhs).size() <= lhs.size(), "Invalid vector size" );
+   BLAZE_INTERNAL_ASSERT( index + (*rhs).size() <= lhs.size(), "Invalid vector size" );
 
-   return tryBitorAssign( lhs.operand(), ~rhs, lhs.offset() + index );
+   return tryBitorAssign( lhs.operand(), *rhs, lhs.offset() + index );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -2794,9 +2794,9 @@ inline bool tryBitxorAssign( const Subvector<VT1,AF,TF,DF,CSAs...>& lhs,
                              const Vector<VT2,TF>& rhs, size_t index )
 {
    BLAZE_INTERNAL_ASSERT( index <= lhs.size(), "Invalid vector access index" );
-   BLAZE_INTERNAL_ASSERT( index + (~rhs).size() <= lhs.size(), "Invalid vector size" );
+   BLAZE_INTERNAL_ASSERT( index + (*rhs).size() <= lhs.size(), "Invalid vector size" );
 
-   return tryBitxorAssign( lhs.operand(), ~rhs, lhs.offset() + index );
+   return tryBitxorAssign( lhs.operand(), *rhs, lhs.offset() + index );
 }
 /*! \endcond */
 //*************************************************************************************************

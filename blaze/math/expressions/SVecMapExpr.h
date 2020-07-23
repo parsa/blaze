@@ -490,10 +490,10 @@ class SVecMapExpr
       BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( RT, TF );
       BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( RT );
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       const RT tmp( serial( rhs.sv_ ) );
-      assign( ~lhs, map( tmp, rhs.op_ ) );
+      assign( *lhs, map( tmp, rhs.op_ ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -520,12 +520,12 @@ class SVecMapExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      assign( ~lhs, rhs.sv_ );
+      assign( *lhs, rhs.sv_ );
 
-      const auto end( (~lhs).end() );
-      for( auto element=(~lhs).begin(); element!=end; ++element ) {
+      const auto end( (*lhs).end() );
+      for( auto element=(*lhs).begin(); element!=end; ++element ) {
          element->value() = rhs.op_( element->value() );
       }
    }
@@ -558,11 +558,11 @@ class SVecMapExpr
       BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( RT, TF );
       BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( RT );
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       const RT tmp( serial( rhs.sv_ ) );
-      (~lhs).reserve( tmp.nonZeros() );
-      assign( ~lhs, map( tmp, rhs.op_ ) );
+      (*lhs).reserve( tmp.nonZeros() );
+      assign( *lhs, map( tmp, rhs.op_ ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -591,10 +591,10 @@ class SVecMapExpr
       BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( RT, TF );
       BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( RT );
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       const RT tmp( serial( rhs.sv_ ) );
-      addAssign( ~lhs, map( tmp, rhs.op_ ) );
+      addAssign( *lhs, map( tmp, rhs.op_ ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -627,10 +627,10 @@ class SVecMapExpr
       BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( RT, TF );
       BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( RT );
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       const RT tmp( serial( rhs.sv_ ) );
-      subAssign( ~lhs, map( tmp, rhs.op_ ) );
+      subAssign( *lhs, map( tmp, rhs.op_ ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -663,10 +663,10 @@ class SVecMapExpr
       BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( RT, TF );
       BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( RT );
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       const RT tmp( serial( rhs.sv_ ) );
-      multAssign( ~lhs, map( tmp, rhs.op_ ) );
+      multAssign( *lhs, map( tmp, rhs.op_ ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -699,10 +699,10 @@ class SVecMapExpr
       BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( RT, TF );
       BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( RT );
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       const RT tmp( rhs.sv_ );
-      smpAssign( ~lhs, map( tmp, rhs.op_ ) );
+      smpAssign( *lhs, map( tmp, rhs.op_ ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -735,10 +735,10 @@ class SVecMapExpr
       BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( RT, TF );
       BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( RT );
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       const RT tmp( rhs.sv_ );
-      smpAddAssign( ~lhs, map( tmp, rhs.op_ ) );
+      smpAddAssign( *lhs, map( tmp, rhs.op_ ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -771,10 +771,10 @@ class SVecMapExpr
       BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( RT, TF );
       BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( RT );
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       const RT tmp( rhs.sv_ );
-      smpSubAssign( ~lhs, map( tmp, rhs.op_ ) );
+      smpSubAssign( *lhs, map( tmp, rhs.op_ ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -807,10 +807,10 @@ class SVecMapExpr
       BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( RT, TF );
       BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( RT );
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       const RT tmp( rhs.sv_ );
-      smpMultAssign( ~lhs, map( tmp, rhs.op_ ) );
+      smpMultAssign( *lhs, map( tmp, rhs.op_ ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -863,7 +863,7 @@ inline decltype(auto) map( const SparseVector<VT,TF>& sv, OP op )
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = const SVecMapExpr<VT,OP,TF>;
-   return ReturnType( ~sv, std::move(op) );
+   return ReturnType( *sv, std::move(op) );
 }
 //*************************************************************************************************
 
@@ -893,7 +893,7 @@ inline decltype(auto) forEach( const SparseVector<VT,TF>& sv, OP op )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( ~sv, std::move(op) );
+   return map( *sv, std::move(op) );
 }
 //*************************************************************************************************
 
@@ -921,7 +921,7 @@ inline decltype(auto) abs( const SparseVector<VT,TF>& sv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( ~sv, Abs() );
+   return map( *sv, Abs() );
 }
 //*************************************************************************************************
 
@@ -949,7 +949,7 @@ inline decltype(auto) sign( const SparseVector<VT,TF>& sv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( ~sv, Sign() );
+   return map( *sv, Sign() );
 }
 //*************************************************************************************************
 
@@ -977,7 +977,7 @@ inline decltype(auto) floor( const SparseVector<VT,TF>& sv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( ~sv, Floor() );
+   return map( *sv, Floor() );
 }
 //*************************************************************************************************
 
@@ -1005,7 +1005,7 @@ inline decltype(auto) ceil( const SparseVector<VT,TF>& sv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( ~sv, Ceil() );
+   return map( *sv, Ceil() );
 }
 //*************************************************************************************************
 
@@ -1033,7 +1033,7 @@ inline decltype(auto) trunc( const SparseVector<VT,TF>& sv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( ~sv, Trunc() );
+   return map( *sv, Trunc() );
 }
 //*************************************************************************************************
 
@@ -1061,7 +1061,7 @@ inline decltype(auto) round( const SparseVector<VT,TF>& sv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( ~sv, Round() );
+   return map( *sv, Round() );
 }
 //*************************************************************************************************
 
@@ -1089,7 +1089,7 @@ inline decltype(auto) conj( const SparseVector<VT,TF>& sv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( ~sv, Conj() );
+   return map( *sv, Conj() );
 }
 //*************************************************************************************************
 
@@ -1126,7 +1126,7 @@ inline decltype(auto) ctrans( const SparseVector<VT,TF>& sv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return trans( conj( ~sv ) );
+   return trans( conj( *sv ) );
 }
 //*************************************************************************************************
 
@@ -1154,7 +1154,7 @@ inline decltype(auto) real( const SparseVector<VT,TF>& sv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( ~sv, Real() );
+   return map( *sv, Real() );
 }
 //*************************************************************************************************
 
@@ -1182,7 +1182,7 @@ inline decltype(auto) imag( const SparseVector<VT,TF>& sv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( ~sv, Imag() );
+   return map( *sv, Imag() );
 }
 //*************************************************************************************************
 
@@ -1210,7 +1210,7 @@ inline decltype(auto) arg( const SparseVector<VT,TF>& sv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( ~sv, Arg() );
+   return map( *sv, Arg() );
 }
 //*************************************************************************************************
 
@@ -1241,7 +1241,7 @@ inline decltype(auto) sqrt( const SparseVector<VT,TF>& sv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( ~sv, Sqrt() );
+   return map( *sv, Sqrt() );
 }
 //*************************************************************************************************
 
@@ -1272,7 +1272,7 @@ inline decltype(auto) invsqrt( const SparseVector<VT,TF>& sv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( ~sv, InvSqrt() );
+   return map( *sv, InvSqrt() );
 }
 //*************************************************************************************************
 
@@ -1303,7 +1303,7 @@ inline decltype(auto) cbrt( const SparseVector<VT,TF>& sv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( ~sv, Cbrt() );
+   return map( *sv, Cbrt() );
 }
 //*************************************************************************************************
 
@@ -1334,7 +1334,7 @@ inline decltype(auto) invcbrt( const SparseVector<VT,TF>& sv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( ~sv, InvCbrt() );
+   return map( *sv, InvCbrt() );
 }
 //*************************************************************************************************
 
@@ -1365,7 +1365,7 @@ inline decltype(auto) clamp( const SparseVector<VT,TF>& sv, const DT& min, const
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( ~sv, bind2nd( bind3rd( Clamp(), max ), min ) );
+   return map( *sv, bind2nd( bind3rd( Clamp(), max ), min ) );
 }
 //*************************************************************************************************
 
@@ -1397,7 +1397,7 @@ inline decltype(auto) pow( const SparseVector<VT,TF>& sv, ST exp )
    BLAZE_FUNCTION_TRACE;
 
    using ScalarType = MultTrait_t< UnderlyingBuiltin_t<VT>, ST >;
-   return map( ~sv, blaze::bind2nd( Pow(), ScalarType( exp ) ) );
+   return map( *sv, blaze::bind2nd( Pow(), ScalarType( exp ) ) );
 }
 //*************************************************************************************************
 
@@ -1425,7 +1425,7 @@ inline decltype(auto) exp( const SparseVector<VT,TF>& sv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( ~sv, Exp() );
+   return map( *sv, Exp() );
 }
 //*************************************************************************************************
 
@@ -1453,7 +1453,7 @@ inline decltype(auto) exp2( const SparseVector<VT,TF>& sv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( ~sv, Exp2() );
+   return map( *sv, Exp2() );
 }
 //*************************************************************************************************
 
@@ -1481,7 +1481,7 @@ inline decltype(auto) exp10( const SparseVector<VT,TF>& sv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( ~sv, Exp10() );
+   return map( *sv, Exp10() );
 }
 //*************************************************************************************************
 
@@ -1512,7 +1512,7 @@ inline decltype(auto) log( const SparseVector<VT,TF>& sv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( ~sv, Log() );
+   return map( *sv, Log() );
 }
 //*************************************************************************************************
 
@@ -1543,7 +1543,7 @@ inline decltype(auto) log2( const SparseVector<VT,TF>& sv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( ~sv, Log2() );
+   return map( *sv, Log2() );
 }
 //*************************************************************************************************
 
@@ -1574,7 +1574,7 @@ inline decltype(auto) log10( const SparseVector<VT,TF>& sv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( ~sv, Log10() );
+   return map( *sv, Log10() );
 }
 //*************************************************************************************************
 
@@ -1607,7 +1607,7 @@ inline decltype(auto) log1p( const SparseVector<VT,TF>& sv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( ~sv, Log1p() );
+   return map( *sv, Log1p() );
 }
 //*************************************************************************************************
 
@@ -1640,7 +1640,7 @@ inline decltype(auto) lgamma( const SparseVector<VT,TF>& sv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( ~sv, LGamma() );
+   return map( *sv, LGamma() );
 }
 //*************************************************************************************************
 
@@ -1668,7 +1668,7 @@ inline decltype(auto) sin( const SparseVector<VT,TF>& sv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( ~sv, Sin() );
+   return map( *sv, Sin() );
 }
 //*************************************************************************************************
 
@@ -1699,7 +1699,7 @@ inline decltype(auto) asin( const SparseVector<VT,TF>& sv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( ~sv, Asin() );
+   return map( *sv, Asin() );
 }
 //*************************************************************************************************
 
@@ -1727,7 +1727,7 @@ inline decltype(auto) sinh( const SparseVector<VT,TF>& sv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( ~sv, Sinh() );
+   return map( *sv, Sinh() );
 }
 //*************************************************************************************************
 
@@ -1755,7 +1755,7 @@ inline decltype(auto) asinh( const SparseVector<VT,TF>& sv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( ~sv, Asinh() );
+   return map( *sv, Asinh() );
 }
 //*************************************************************************************************
 
@@ -1783,7 +1783,7 @@ inline decltype(auto) cos( const SparseVector<VT,TF>& sv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( ~sv, Cos() );
+   return map( *sv, Cos() );
 }
 //*************************************************************************************************
 
@@ -1814,7 +1814,7 @@ inline decltype(auto) acos( const SparseVector<VT,TF>& sv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( ~sv, Acos() );
+   return map( *sv, Acos() );
 }
 //*************************************************************************************************
 
@@ -1842,7 +1842,7 @@ inline decltype(auto) cosh( const SparseVector<VT,TF>& sv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( ~sv, Cosh() );
+   return map( *sv, Cosh() );
 }
 //*************************************************************************************************
 
@@ -1873,7 +1873,7 @@ inline decltype(auto) acosh( const SparseVector<VT,TF>& sv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( ~sv, Acosh() );
+   return map( *sv, Acosh() );
 }
 //*************************************************************************************************
 
@@ -1901,7 +1901,7 @@ inline decltype(auto) tan( const SparseVector<VT,TF>& sv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( ~sv, Tan() );
+   return map( *sv, Tan() );
 }
 //*************************************************************************************************
 
@@ -1929,7 +1929,7 @@ inline decltype(auto) atan( const SparseVector<VT,TF>& sv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( ~sv, Atan() );
+   return map( *sv, Atan() );
 }
 //*************************************************************************************************
 
@@ -1960,7 +1960,7 @@ inline decltype(auto) tanh( const SparseVector<VT,TF>& sv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( ~sv, Tanh() );
+   return map( *sv, Tanh() );
 }
 //*************************************************************************************************
 
@@ -1991,7 +1991,7 @@ inline decltype(auto) atanh( const SparseVector<VT,TF>& sv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( ~sv, Atanh() );
+   return map( *sv, Atanh() );
 }
 //*************************************************************************************************
 
@@ -2019,7 +2019,7 @@ inline decltype(auto) erf( const SparseVector<VT,TF>& sv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( ~sv, Erf() );
+   return map( *sv, Erf() );
 }
 //*************************************************************************************************
 
@@ -2047,7 +2047,7 @@ inline decltype(auto) erfc( const SparseVector<VT,TF>& sv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( ~sv, Erfc() );
+   return map( *sv, Erfc() );
 }
 //*************************************************************************************************
 

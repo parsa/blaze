@@ -517,15 +517,15 @@ BLAZE_ALWAYS_INLINE const SIMDfloat
    operator/( const SIMDf32<T1>& a, const SIMDf32<T2>& b ) noexcept
 #if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
 {
-   return _mm512_div_ps( (~a).eval().value, (~b).eval().value );
+   return _mm512_div_ps( (*a).eval().value, (*b).eval().value );
 }
 #elif BLAZE_AVX_MODE
 {
-   return _mm256_div_ps( (~a).eval().value, (~b).eval().value );
+   return _mm256_div_ps( (*a).eval().value, (*b).eval().value );
 }
 #elif BLAZE_SSE_MODE
 {
-   return _mm_div_ps( (~a).eval().value, (~b).eval().value );
+   return _mm_div_ps( (*a).eval().value, (*b).eval().value );
 }
 #else
 = delete;
@@ -587,15 +587,15 @@ BLAZE_ALWAYS_INLINE const SIMDdouble
    operator/( const SIMDf64<T1>& a, const SIMDf64<T2>& b ) noexcept
 #if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
 {
-   return _mm512_div_pd( (~a).eval().value, (~b).eval().value );
+   return _mm512_div_pd( (*a).eval().value, (*b).eval().value );
 }
 #elif BLAZE_AVX_MODE
 {
-   return _mm256_div_pd( (~a).eval().value, (~b).eval().value );
+   return _mm256_div_pd( (*a).eval().value, (*b).eval().value );
 }
 #elif BLAZE_SSE2_MODE
 {
-   return _mm_div_pd( (~a).eval().value, (~b).eval().value );
+   return _mm_div_pd( (*a).eval().value, (*b).eval().value );
 }
 #else
 = delete;

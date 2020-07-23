@@ -86,8 +86,11 @@ class ComplexProxy
    //**Conversion operators************************************************************************
    /*!\name Conversion operators */
    //@{
-   BLAZE_ALWAYS_INLINE PT&       operator~();
-   BLAZE_ALWAYS_INLINE const PT& operator~() const;
+   /*[[deprecated]]*/ BLAZE_ALWAYS_INLINE PT&       operator~()       noexcept;
+   /*[[deprecated]]*/ BLAZE_ALWAYS_INLINE const PT& operator~() const noexcept;
+
+   BLAZE_ALWAYS_INLINE PT&       operator*()       noexcept;
+   BLAZE_ALWAYS_INLINE const PT& operator*() const noexcept;
    //@}
    //**********************************************************************************************
 
@@ -133,7 +136,7 @@ template< typename PT    // Type of the proxy
         , typename CT >  // Type of the complex number
 inline typename ComplexProxy<PT,CT>::ValueType ComplexProxy<PT,CT>::real() const
 {
-   return (~*this).get().real();
+   return (**this).get().real();
 }
 //*************************************************************************************************
 
@@ -150,11 +153,11 @@ template< typename PT    // Type of the proxy
         , typename CT >  // Type of the complex number
 inline void ComplexProxy<PT,CT>::real( ValueType value ) const
 {
-   if( (~*this).isRestricted() ) {
+   if( (**this).isRestricted() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid access to restricted element" );
    }
 
-   (~*this).get().real( value );
+   (**this).get().real( value );
 }
 //*************************************************************************************************
 
@@ -170,7 +173,7 @@ template< typename PT    // Type of the proxy
         , typename CT >  // Type of the complex number
 inline typename ComplexProxy<PT,CT>::ValueType ComplexProxy<PT,CT>::imag() const
 {
-   return (~*this).get().imag();
+   return (**this).get().imag();
 }
 //*************************************************************************************************
 
@@ -187,11 +190,11 @@ template< typename PT    // Type of the proxy
         , typename CT >  // Type of the complex number
 inline void ComplexProxy<PT,CT>::imag( ValueType value ) const
 {
-   if( (~*this).isRestricted() ) {
+   if( (**this).isRestricted() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid access to restricted element" );
    }
 
-   (~*this).get().imag( value );
+   (**this).get().imag( value );
 }
 //*************************************************************************************************
 
@@ -207,15 +210,16 @@ inline void ComplexProxy<PT,CT>::imag( ValueType value ) const
 //*************************************************************************************************
 /*!\brief Conversion operator for non-constant proxies.
 //
-// \return Reference to the actual type of the proxy.
+// \return Mutable reference to the actual type of the proxy.
 //
-// This function provides a type-safe downcast to the actual type of the proxy.
+// This operator performs the CRTP-based type-safe downcast to the actual type \a PT of the
+// proxy. It will return a mutable reference to the actual type \a PT.
 */
 template< typename PT    // Type of the proxy
         , typename CT >  // Type of the complex number
-BLAZE_ALWAYS_INLINE PT& ComplexProxy<PT,CT>::operator~()
+/*[[deprecated]]*/ BLAZE_ALWAYS_INLINE PT& ComplexProxy<PT,CT>::operator~() noexcept
 {
-   return *static_cast<PT*>( this );
+   return static_cast<PT&>( *this );
 }
 //*************************************************************************************************
 
@@ -223,15 +227,106 @@ BLAZE_ALWAYS_INLINE PT& ComplexProxy<PT,CT>::operator~()
 //*************************************************************************************************
 /*!\brief Conversion operator for constant proxies.
 //
-// \return Reference to the actual type of the proxy.
+// \return Constant reference to the actual type of the proxy.
 //
-// This function provides a type-safe downcast to the actual type of the proxy.
+// This operator performs the CRTP-based type-safe downcast to the actual type \a PT of the
+// proxy. It will return a constant reference to the actual type \a PT.
 */
 template< typename PT    // Type of the proxy
         , typename CT >  // Type of the complex number
-BLAZE_ALWAYS_INLINE const PT& ComplexProxy<PT,CT>::operator~() const
+/*[[deprecated]]*/ BLAZE_ALWAYS_INLINE const PT& ComplexProxy<PT,CT>::operator~() const noexcept
 {
-   return *static_cast<const PT*>( this );
+   return static_cast<const PT&>( *this );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Conversion operator for non-constant proxies.
+//
+// \return Mutable reference to the actual type of the proxy.
+//
+// This operator performs the CRTP-based type-safe downcast to the actual type \a PT of the
+// proxy. It will return a mutable reference to the actual type \a PT.
+*/
+template< typename PT    // Type of the proxy
+        , typename CT >  // Type of the complex number
+BLAZE_ALWAYS_INLINE PT& ComplexProxy<PT,CT>::operator*() noexcept
+{
+   return static_cast<PT&>( *this );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Conversion operator for constant proxies.
+//
+// \return Constant reference to the actual type of the proxy.
+//
+// This operator performs the CRTP-based type-safe downcast to the actual type \a PT of the
+// proxy. It will return a constant reference to the actual type \a PT.
+*/
+template< typename PT    // Type of the proxy
+        , typename CT >  // Type of the complex number
+BLAZE_ALWAYS_INLINE const PT& ComplexProxy<PT,CT>::operator*() const noexcept
+{
+   return static_cast<const PT&>( *this );
+}
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  GLOBAL FUNCTIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*!\name ComplexProxy global functions */
+//@{
+template< typename PT, typename CT >
+PT& crtp_cast( ComplexProxy<PT,CT>& proxy );
+
+template< typename PT, typename CT >
+const PT& crtp_cast( const ComplexProxy<PT,CT>& proxy );
+//@}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief CRTP-based conversion operation for non-constant proxies.
+//
+// \param proxy The proxy to be downcast.
+// \return Mutable reference of the actual type of the proxy.
+//
+// This operator performs the CRTP-based type-safe downcast to the actual type \a PT of the
+// proxy. It will return a mutable reference to the actual type \a PT.
+*/
+template< typename PT    // Type of the proxy
+        , typename CT >  // Type of the complex number
+BLAZE_ALWAYS_INLINE PT& crtp_cast( ComplexProxy<PT,CT>& proxy )
+{
+   return *proxy;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief CRTP-based conversion operation for constant proxies.
+//
+// \param proxy The proxy to be downcast.
+// \return Const reference of the actual type of the proxy.
+//
+// This operator performs the CRTP-based type-safe downcast to the actual type \a PT of the
+// proxy. It will return a constant reference to the actual type \a PT.
+*/
+template< typename PT    // Type of the proxy
+        , typename CT >  // Type of the complex number
+BLAZE_ALWAYS_INLINE const PT& crtp_cast( const ComplexProxy<PT,CT>& proxy )
+{
+   return *proxy;
 }
 //*************************************************************************************************
 

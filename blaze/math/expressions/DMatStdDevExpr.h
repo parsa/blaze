@@ -84,7 +84,7 @@ inline decltype(auto) stddev( const DenseMatrix<MT,SO>& dm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return sqrt( var( ~dm ) );
+   return sqrt( var( *dm ) );
 }
 //*************************************************************************************************
 
@@ -132,7 +132,7 @@ inline decltype(auto) stddev( const DenseMatrix<MT,SO>& dm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return sqrt( var<RF>( ~dm ) );
+   return sqrt( var<RF>( *dm ) );
 }
 //*************************************************************************************************
 

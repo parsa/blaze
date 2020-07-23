@@ -66,15 +66,15 @@ template< typename T >  // Type of the operand
 BLAZE_ALWAYS_INLINE const SIMDfloat invcbrt( const SIMDf32<T>& a ) noexcept
 #if BLAZE_SVML_MODE && BLAZE_AVX512F_MODE
 {
-	return _mm512_recip_ps( _mm512_cbrt_ps( (~a).eval().value ) );
+	return _mm512_recip_ps( _mm512_cbrt_ps( (*a).eval().value ) );
 }
 #elif BLAZE_SVML_MODE && BLAZE_AVX_MODE
 {
-   return _mm256_invcbrt_ps( (~a).eval().value );
+   return _mm256_invcbrt_ps( (*a).eval().value );
 }
 #elif BLAZE_SVML_MODE && BLAZE_SSE_MODE
 {
-   return _mm_invcbrt_ps( (~a).eval().value );
+   return _mm_invcbrt_ps( (*a).eval().value );
 }
 #else
 = delete;
@@ -103,15 +103,15 @@ template< typename T >  // Type of the operand
 BLAZE_ALWAYS_INLINE const SIMDdouble invcbrt( const SIMDf64<T>& a ) noexcept
 #if BLAZE_SVML_MODE && BLAZE_AVX512F_MODE
 {
-	return _mm512_recip_pd( _mm512_cbrt_pd( (~a).eval().value ) );
+	return _mm512_recip_pd( _mm512_cbrt_pd( (*a).eval().value ) );
 }
 #elif BLAZE_SVML_MODE && BLAZE_AVX_MODE
 {
-   return _mm256_invcbrt_pd( (~a).eval().value );
+   return _mm256_invcbrt_pd( (*a).eval().value );
 }
 #elif BLAZE_SVML_MODE && BLAZE_SSE_MODE
 {
-   return _mm_invcbrt_pd( (~a).eval().value );
+   return _mm_invcbrt_pd( (*a).eval().value );
 }
 #else
 = delete;

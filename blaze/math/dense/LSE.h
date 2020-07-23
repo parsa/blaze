@@ -120,15 +120,15 @@ void solve0x0( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& X, const Den
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT1>, ElementType_t<MT2> );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT1>, ElementType_t<MT3> );
 
-   BLAZE_INTERNAL_ASSERT( (~A).rows()    == 0UL, "Invalid number of rows detected"    );
-   BLAZE_INTERNAL_ASSERT( (~A).columns() == 0UL, "Invalid number of columns detected" );
-   BLAZE_INTERNAL_ASSERT( (~B).rows()    == 0UL, "Invalid number of rows detected"    );
+   BLAZE_INTERNAL_ASSERT( (*A).rows()    == 0UL, "Invalid number of rows detected"    );
+   BLAZE_INTERNAL_ASSERT( (*A).columns() == 0UL, "Invalid number of columns detected" );
+   BLAZE_INTERNAL_ASSERT( (*B).rows()    == 0UL, "Invalid number of rows detected"    );
 
    MAYBE_UNUSED( A );
 
-   resize( ~X, 0UL, (~B).columns() );
+   resize( *X, 0UL, (*B).columns() );
 
-   BLAZE_INTERNAL_ASSERT( isIntact( ~X ), "Broken invariant detected" );
+   BLAZE_INTERNAL_ASSERT( isIntact( *X ), "Broken invariant detected" );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -181,22 +181,22 @@ void solve1x1( const DenseMatrix<MT,SO>& A, DenseVector<VT1,TF1>& x, const Dense
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT>, ElementType_t<VT1> );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT>, ElementType_t<VT2> );
 
-   BLAZE_INTERNAL_ASSERT( (~A).rows()    == 1UL, "Invalid number of rows detected"    );
-   BLAZE_INTERNAL_ASSERT( (~A).columns() == 1UL, "Invalid number of columns detected" );
-   BLAZE_INTERNAL_ASSERT( (~b).size()    == 1UL, "Invalid vector size detected"       );
+   BLAZE_INTERNAL_ASSERT( (*A).rows()    == 1UL, "Invalid number of rows detected"    );
+   BLAZE_INTERNAL_ASSERT( (*A).columns() == 1UL, "Invalid number of columns detected" );
+   BLAZE_INTERNAL_ASSERT( (*b).size()    == 1UL, "Invalid vector size detected"       );
 
-   CompositeType_t<MT> Atmp( ~A );
+   CompositeType_t<MT> Atmp( *A );
 
-   resize( ~x, 1UL );
-   smpAssign( ~x, ~b );
+   resize( *x, 1UL );
+   smpAssign( *x, *b );
 
    if( !isDivisor( Atmp(0,0) ) ) {
       BLAZE_THROW_DIVISION_BY_ZERO( "Solving LSE with singular system matrix failed" );
    }
 
-   (~x)[0] /= Atmp(0,0);
+   (*x)[0] /= Atmp(0,0);
 
-   BLAZE_INTERNAL_ASSERT( isIntact( ~x ), "Broken invariant detected" );
+   BLAZE_INTERNAL_ASSERT( isIntact( *x ), "Broken invariant detected" );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -241,26 +241,26 @@ void solve1x1( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& X, const Den
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT1>, ElementType_t<MT2> );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT1>, ElementType_t<MT3> );
 
-   BLAZE_INTERNAL_ASSERT( (~A).rows()    == 1UL, "Invalid number of rows detected"    );
-   BLAZE_INTERNAL_ASSERT( (~A).columns() == 1UL, "Invalid number of columns detected" );
-   BLAZE_INTERNAL_ASSERT( (~B).rows()    == 1UL, "Invalid number of rows detected"    );
+   BLAZE_INTERNAL_ASSERT( (*A).rows()    == 1UL, "Invalid number of rows detected"    );
+   BLAZE_INTERNAL_ASSERT( (*A).columns() == 1UL, "Invalid number of columns detected" );
+   BLAZE_INTERNAL_ASSERT( (*B).rows()    == 1UL, "Invalid number of rows detected"    );
 
-   CompositeType_t<MT1> Atmp( ~A );
+   CompositeType_t<MT1> Atmp( *A );
 
    if( !isDivisor( Atmp(0,0) ) ) {
       BLAZE_THROW_DIVISION_BY_ZERO( "Solving LSE with singular system matrix failed" );
    }
 
-   resize( ~X, 1UL, (~B).columns() );
-   smpAssign( ~X, ~B );
+   resize( *X, 1UL, (*B).columns() );
+   smpAssign( *X, *B );
 
    const ElementType_t<MT1> invD( inv( Atmp(0,0) ) );
 
-   for( size_t j=0UL; j<(~B).columns(); ++j ) {
-      (~X)(0,j) *= invD;
+   for( size_t j=0UL; j<(*B).columns(); ++j ) {
+      (*X)(0,j) *= invD;
    }
 
-   BLAZE_INTERNAL_ASSERT( isIntact( ~X ), "Broken invariant detected" );
+   BLAZE_INTERNAL_ASSERT( isIntact( *X ), "Broken invariant detected" );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -314,15 +314,15 @@ void solve2x2( const DenseMatrix<MT,SO>& A, DenseVector<VT1,TF1>& x, const Dense
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT>, ElementType_t<VT1> );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT>, ElementType_t<VT2> );
 
-   BLAZE_INTERNAL_ASSERT( (~A).rows()    == 2UL, "Invalid number of rows detected"    );
-   BLAZE_INTERNAL_ASSERT( (~A).columns() == 2UL, "Invalid number of columns detected" );
-   BLAZE_INTERNAL_ASSERT( (~b).size()    == 2UL, "Invalid vector size detected"       );
+   BLAZE_INTERNAL_ASSERT( (*A).rows()    == 2UL, "Invalid number of rows detected"    );
+   BLAZE_INTERNAL_ASSERT( (*A).columns() == 2UL, "Invalid number of columns detected" );
+   BLAZE_INTERNAL_ASSERT( (*b).size()    == 2UL, "Invalid vector size detected"       );
 
    using ET = ElementType_t<MT>;
 
-   CompositeType_t<MT> A_( ~A );
-   VT1& x_( ~x );
-   const VT2& b_( ~b );
+   CompositeType_t<MT> A_( *A );
+   VT1& x_( *x );
+   const VT2& b_( *b );
 
    resize( x_, b_.size() );
 
@@ -381,15 +381,15 @@ void solve2x2( const DenseMatrix<MT,SO>& A, DenseVector<VT1,TF1>& x, const Dense
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT>, ElementType_t<VT1> );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT>, ElementType_t<VT2> );
 
-   BLAZE_INTERNAL_ASSERT( (~A).rows()    == 2UL, "Invalid number of rows detected"    );
-   BLAZE_INTERNAL_ASSERT( (~A).columns() == 2UL, "Invalid number of columns detected" );
-   BLAZE_INTERNAL_ASSERT( (~b).size()    == 2UL, "Invalid vector size detected"       );
+   BLAZE_INTERNAL_ASSERT( (*A).rows()    == 2UL, "Invalid number of rows detected"    );
+   BLAZE_INTERNAL_ASSERT( (*A).columns() == 2UL, "Invalid number of columns detected" );
+   BLAZE_INTERNAL_ASSERT( (*b).size()    == 2UL, "Invalid vector size detected"       );
 
    using ET = ElementType_t<MT>;
 
-   CompositeType_t<MT> A_( ~A );
-   VT1& x_( ~x );
-   const VT2& b_( ~b );
+   CompositeType_t<MT> A_( *A );
+   VT1& x_( *x );
+   const VT2& b_( *b );
 
    resize( x_, b_.size() );
 
@@ -449,13 +449,13 @@ void solve2x2( const DenseMatrix<MT,SO>& A, DenseVector<VT1,TF1>& x, const Dense
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT>, ElementType_t<VT1> );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT>, ElementType_t<VT2> );
 
-   BLAZE_INTERNAL_ASSERT( (~A).rows()    == 2UL, "Invalid number of rows detected"    );
-   BLAZE_INTERNAL_ASSERT( (~A).columns() == 2UL, "Invalid number of columns detected" );
-   BLAZE_INTERNAL_ASSERT( (~b).size()    == 2UL, "Invalid vector size detected"       );
+   BLAZE_INTERNAL_ASSERT( (*A).rows()    == 2UL, "Invalid number of rows detected"    );
+   BLAZE_INTERNAL_ASSERT( (*A).columns() == 2UL, "Invalid number of columns detected" );
+   BLAZE_INTERNAL_ASSERT( (*b).size()    == 2UL, "Invalid vector size detected"       );
 
-   CompositeType_t<MT> A_( ~A );
-   VT1& x_( ~x );
-   const VT2& b_( ~b );
+   CompositeType_t<MT> A_( *A );
+   VT1& x_( *x );
+   const VT2& b_( *b );
 
    if( !isDivisor( A_(0,0)*A_(1,1) ) ) {
       BLAZE_THROW_DIVISION_BY_ZERO( "Solving LSE with singular system matrix failed" );
@@ -511,13 +511,13 @@ void solve2x2( const DenseMatrix<MT,SO>& A, DenseVector<VT1,TF1>& x, const Dense
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT>, ElementType_t<VT1> );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT>, ElementType_t<VT2> );
 
-   BLAZE_INTERNAL_ASSERT( (~A).rows()    == 2UL, "Invalid number of rows detected"    );
-   BLAZE_INTERNAL_ASSERT( (~A).columns() == 2UL, "Invalid number of columns detected" );
-   BLAZE_INTERNAL_ASSERT( (~b).size()    == 2UL, "Invalid vector size detected"       );
+   BLAZE_INTERNAL_ASSERT( (*A).rows()    == 2UL, "Invalid number of rows detected"    );
+   BLAZE_INTERNAL_ASSERT( (*A).columns() == 2UL, "Invalid number of columns detected" );
+   BLAZE_INTERNAL_ASSERT( (*b).size()    == 2UL, "Invalid vector size detected"       );
 
-   CompositeType_t<MT> A_( ~A );
-   VT1& x_( ~x );
-   const VT2& b_( ~b );
+   CompositeType_t<MT> A_( *A );
+   VT1& x_( *x );
+   const VT2& b_( *b );
 
    resize( x_, b_.size() );
 
@@ -569,13 +569,13 @@ void solve2x2( const DenseMatrix<MT,SO>& A, DenseVector<VT1,TF1>& x, const Dense
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT>, ElementType_t<VT1> );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT>, ElementType_t<VT2> );
 
-   BLAZE_INTERNAL_ASSERT( (~A).rows()    == 2UL, "Invalid number of rows detected"    );
-   BLAZE_INTERNAL_ASSERT( (~A).columns() == 2UL, "Invalid number of columns detected" );
-   BLAZE_INTERNAL_ASSERT( (~b).size()    == 2UL, "Invalid vector size detected"       );
+   BLAZE_INTERNAL_ASSERT( (*A).rows()    == 2UL, "Invalid number of rows detected"    );
+   BLAZE_INTERNAL_ASSERT( (*A).columns() == 2UL, "Invalid number of columns detected" );
+   BLAZE_INTERNAL_ASSERT( (*b).size()    == 2UL, "Invalid vector size detected"       );
 
-   CompositeType_t<MT> A_( ~A );
-   VT1& x_( ~x );
-   const VT2& b_( ~b );
+   CompositeType_t<MT> A_( *A );
+   VT1& x_( *x );
+   const VT2& b_( *b );
 
    if( !isDivisor( A_(0,0)*A_(1,1) ) ) {
       BLAZE_THROW_DIVISION_BY_ZERO( "Solving LSE with singular system matrix failed" );
@@ -631,13 +631,13 @@ void solve2x2( const DenseMatrix<MT,SO>& A, DenseVector<VT1,TF1>& x, const Dense
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT>, ElementType_t<VT1> );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT>, ElementType_t<VT2> );
 
-   BLAZE_INTERNAL_ASSERT( (~A).rows()    == 2UL, "Invalid number of rows detected"    );
-   BLAZE_INTERNAL_ASSERT( (~A).columns() == 2UL, "Invalid number of columns detected" );
-   BLAZE_INTERNAL_ASSERT( (~b).size()    == 2UL, "Invalid vector size detected"       );
+   BLAZE_INTERNAL_ASSERT( (*A).rows()    == 2UL, "Invalid number of rows detected"    );
+   BLAZE_INTERNAL_ASSERT( (*A).columns() == 2UL, "Invalid number of columns detected" );
+   BLAZE_INTERNAL_ASSERT( (*b).size()    == 2UL, "Invalid vector size detected"       );
 
-   CompositeType_t<MT> A_( ~A );
-   VT1& x_( ~x );
-   const VT2& b_( ~b );
+   CompositeType_t<MT> A_( *A );
+   VT1& x_( *x );
+   const VT2& b_( *b );
 
    resize( x_, b_.size() );
 
@@ -688,13 +688,13 @@ void solve2x2( const DenseMatrix<MT,SO>& A, DenseVector<VT1,TF1>& x, const Dense
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT>, ElementType_t<VT1> );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT>, ElementType_t<VT2> );
 
-   BLAZE_INTERNAL_ASSERT( (~A).rows()    == 2UL, "Invalid number of rows detected"    );
-   BLAZE_INTERNAL_ASSERT( (~A).columns() == 2UL, "Invalid number of columns detected" );
-   BLAZE_INTERNAL_ASSERT( (~b).size()    == 2UL, "Invalid vector size detected"       );
+   BLAZE_INTERNAL_ASSERT( (*A).rows()    == 2UL, "Invalid number of rows detected"    );
+   BLAZE_INTERNAL_ASSERT( (*A).columns() == 2UL, "Invalid number of columns detected" );
+   BLAZE_INTERNAL_ASSERT( (*b).size()    == 2UL, "Invalid vector size detected"       );
 
-   CompositeType_t<MT> A_( ~A );
-   VT1& x_( ~x );
-   const VT2& b_( ~b );
+   CompositeType_t<MT> A_( *A );
+   VT1& x_( *x );
+   const VT2& b_( *b );
 
    if( !isDivisor( A_(0,0)*A_(1,1) ) ) {
       BLAZE_THROW_DIVISION_BY_ZERO( "Solving LSE with singular system matrix failed" );
@@ -749,13 +749,13 @@ void solve2x2( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& X, const Den
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT1>, ElementType_t<MT2> );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT1>, ElementType_t<MT3> );
 
-   BLAZE_INTERNAL_ASSERT( (~A).rows()    == 2UL, "Invalid number of rows detected"    );
-   BLAZE_INTERNAL_ASSERT( (~A).columns() == 2UL, "Invalid number of columns detected" );
-   BLAZE_INTERNAL_ASSERT( (~B).rows()    == 2UL, "Invalid number of rows detected"    );
+   BLAZE_INTERNAL_ASSERT( (*A).rows()    == 2UL, "Invalid number of rows detected"    );
+   BLAZE_INTERNAL_ASSERT( (*A).columns() == 2UL, "Invalid number of columns detected" );
+   BLAZE_INTERNAL_ASSERT( (*B).rows()    == 2UL, "Invalid number of rows detected"    );
 
-   resize( ~X, (~B).rows(), (~B).columns() );
-   const ResultType_t<MT1> invA( inv( ~A ) );
-   smpAssign( ~X, invA * (~B) );
+   resize( *X, (*B).rows(), (*B).columns() );
+   const ResultType_t<MT1> invA( inv( *A ) );
+   smpAssign( *X, invA * (*B) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -802,15 +802,15 @@ void solve2x2( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& X, const Den
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT1>, ElementType_t<MT2> );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT1>, ElementType_t<MT3> );
 
-   BLAZE_INTERNAL_ASSERT( (~A).rows()    == 2UL, "Invalid number of rows detected"    );
-   BLAZE_INTERNAL_ASSERT( (~A).columns() == 2UL, "Invalid number of columns detected" );
-   BLAZE_INTERNAL_ASSERT( (~B).rows()    == 2UL, "Invalid number of rows detected"    );
+   BLAZE_INTERNAL_ASSERT( (*A).rows()    == 2UL, "Invalid number of rows detected"    );
+   BLAZE_INTERNAL_ASSERT( (*A).columns() == 2UL, "Invalid number of columns detected" );
+   BLAZE_INTERNAL_ASSERT( (*B).rows()    == 2UL, "Invalid number of rows detected"    );
 
    using ET = ElementType_t<MT1>;
 
-   CompositeType_t<MT1> A_( ~A );
-   MT2& X_( ~X );
-   const MT3& B_( ~B );
+   CompositeType_t<MT1> A_( *A );
+   MT2& X_( *X );
+   const MT3& B_( *B );
 
    if( !isDivisor( A_(0,0)*A_(1,1) ) ) {
       BLAZE_THROW_DIVISION_BY_ZERO( "Solving LSE with singular system matrix failed" );
@@ -874,13 +874,13 @@ void solve2x2( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& X, const Den
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT1>, ElementType_t<MT2> );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT1>, ElementType_t<MT3> );
 
-   BLAZE_INTERNAL_ASSERT( (~A).rows()    == 2UL, "Invalid number of rows detected"    );
-   BLAZE_INTERNAL_ASSERT( (~A).columns() == 2UL, "Invalid number of columns detected" );
-   BLAZE_INTERNAL_ASSERT( (~B).rows()    == 2UL, "Invalid number of rows detected"    );
+   BLAZE_INTERNAL_ASSERT( (*A).rows()    == 2UL, "Invalid number of rows detected"    );
+   BLAZE_INTERNAL_ASSERT( (*A).columns() == 2UL, "Invalid number of columns detected" );
+   BLAZE_INTERNAL_ASSERT( (*B).rows()    == 2UL, "Invalid number of rows detected"    );
 
-   CompositeType_t<MT1> A_( ~A );
-   MT2& X_( ~X );
-   const MT3& B_( ~B );
+   CompositeType_t<MT1> A_( *A );
+   MT2& X_( *X );
+   const MT3& B_( *B );
 
    const size_t M( B_.rows()    );
    const size_t N( B_.columns() );
@@ -937,15 +937,15 @@ void solve2x2( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& X, const Den
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT1>, ElementType_t<MT2> );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT1>, ElementType_t<MT3> );
 
-   BLAZE_INTERNAL_ASSERT( (~A).rows()    == 2UL, "Invalid number of rows detected"    );
-   BLAZE_INTERNAL_ASSERT( (~A).columns() == 2UL, "Invalid number of columns detected" );
-   BLAZE_INTERNAL_ASSERT( (~B).rows()    == 2UL, "Invalid number of rows detected"    );
+   BLAZE_INTERNAL_ASSERT( (*A).rows()    == 2UL, "Invalid number of rows detected"    );
+   BLAZE_INTERNAL_ASSERT( (*A).columns() == 2UL, "Invalid number of columns detected" );
+   BLAZE_INTERNAL_ASSERT( (*B).rows()    == 2UL, "Invalid number of rows detected"    );
 
    using ET = ElementType_t<MT1>;
 
-   CompositeType_t<MT1> A_( ~A );
-   MT2& X_( ~X );
-   const MT3& B_( ~B );
+   CompositeType_t<MT1> A_( *A );
+   MT2& X_( *X );
+   const MT3& B_( *B );
 
    if( !isDivisor( A_(0,0)*A_(1,1) ) ) {
       BLAZE_THROW_DIVISION_BY_ZERO( "Solving LSE with singular system matrix failed" );
@@ -1009,13 +1009,13 @@ void solve2x2( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& X, const Den
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT1>, ElementType_t<MT2> );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT1>, ElementType_t<MT3> );
 
-   BLAZE_INTERNAL_ASSERT( (~A).rows()    == 2UL, "Invalid number of rows detected"    );
-   BLAZE_INTERNAL_ASSERT( (~A).columns() == 2UL, "Invalid number of columns detected" );
-   BLAZE_INTERNAL_ASSERT( (~B).rows()    == 2UL, "Invalid number of rows detected"    );
+   BLAZE_INTERNAL_ASSERT( (*A).rows()    == 2UL, "Invalid number of rows detected"    );
+   BLAZE_INTERNAL_ASSERT( (*A).columns() == 2UL, "Invalid number of columns detected" );
+   BLAZE_INTERNAL_ASSERT( (*B).rows()    == 2UL, "Invalid number of rows detected"    );
 
-   CompositeType_t<MT1> A_( ~A );
-   MT2& X_( ~X );
-   const MT3& B_( ~B );
+   CompositeType_t<MT1> A_( *A );
+   MT2& X_( *X );
+   const MT3& B_( *B );
 
    const size_t M( B_.rows()    );
    const size_t N( B_.columns() );
@@ -1071,15 +1071,15 @@ void solve2x2( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& X, const Den
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT1>, ElementType_t<MT2> );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT1>, ElementType_t<MT3> );
 
-   BLAZE_INTERNAL_ASSERT( (~A).rows()    == 2UL, "Invalid number of rows detected"    );
-   BLAZE_INTERNAL_ASSERT( (~A).columns() == 2UL, "Invalid number of columns detected" );
-   BLAZE_INTERNAL_ASSERT( (~B).rows()    == 2UL, "Invalid number of rows detected"    );
+   BLAZE_INTERNAL_ASSERT( (*A).rows()    == 2UL, "Invalid number of rows detected"    );
+   BLAZE_INTERNAL_ASSERT( (*A).columns() == 2UL, "Invalid number of columns detected" );
+   BLAZE_INTERNAL_ASSERT( (*B).rows()    == 2UL, "Invalid number of rows detected"    );
 
    using ET = ElementType_t<MT1>;
 
-   CompositeType_t<MT1> A_( ~A );
-   MT2& X_( ~X );
-   const MT3& B_( ~B );
+   CompositeType_t<MT1> A_( *A );
+   MT2& X_( *X );
+   const MT3& B_( *B );
 
    if( !isDivisor( A_(0,0)*A_(1,1) ) ) {
       BLAZE_THROW_DIVISION_BY_ZERO( "Solving LSE with singular system matrix failed" );
@@ -1150,15 +1150,15 @@ void solve3x3( const DenseMatrix<MT,SO>& A, DenseVector<VT1,TF1>& x, const Dense
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT>, ElementType_t<VT1> );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT>, ElementType_t<VT2> );
 
-   BLAZE_INTERNAL_ASSERT( (~A).rows()    == 3UL, "Invalid number of rows detected"    );
-   BLAZE_INTERNAL_ASSERT( (~A).columns() == 3UL, "Invalid number of columns detected" );
-   BLAZE_INTERNAL_ASSERT( (~b).size()    == 3UL, "Invalid vector size detected"       );
+   BLAZE_INTERNAL_ASSERT( (*A).rows()    == 3UL, "Invalid number of rows detected"    );
+   BLAZE_INTERNAL_ASSERT( (*A).columns() == 3UL, "Invalid number of columns detected" );
+   BLAZE_INTERNAL_ASSERT( (*b).size()    == 3UL, "Invalid vector size detected"       );
 
    using ET = ElementType_t<MT>;
 
-   CompositeType_t<MT> A_( ~A );
-   VT1& x_( ~x );
-   const VT2& b_( ~b );
+   CompositeType_t<MT> A_( *A );
+   VT1& x_( *x );
+   const VT2& b_( *b );
 
    resize( x_, b_.size() );
 
@@ -1226,15 +1226,15 @@ void solve3x3( const DenseMatrix<MT,SO>& A, DenseVector<VT1,TF1>& x, const Dense
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT>, ElementType_t<VT1> );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT>, ElementType_t<VT2> );
 
-   BLAZE_INTERNAL_ASSERT( (~A).rows()    == 3UL, "Invalid number of rows detected"    );
-   BLAZE_INTERNAL_ASSERT( (~A).columns() == 3UL, "Invalid number of columns detected" );
-   BLAZE_INTERNAL_ASSERT( (~b).size()    == 3UL, "Invalid vector size detected"       );
+   BLAZE_INTERNAL_ASSERT( (*A).rows()    == 3UL, "Invalid number of rows detected"    );
+   BLAZE_INTERNAL_ASSERT( (*A).columns() == 3UL, "Invalid number of columns detected" );
+   BLAZE_INTERNAL_ASSERT( (*b).size()    == 3UL, "Invalid vector size detected"       );
 
    using ET = ElementType_t<MT>;
 
-   CompositeType_t<MT> A_( ~A );
-   VT1& x_( ~x );
-   const VT2& b_( ~b );
+   CompositeType_t<MT> A_( *A );
+   VT1& x_( *x );
+   const VT2& b_( *b );
 
    resize( x_, b_.size() );
 
@@ -1303,13 +1303,13 @@ void solve3x3( const DenseMatrix<MT,SO>& A, DenseVector<VT1,TF1>& x, const Dense
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT>, ElementType_t<VT1> );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT>, ElementType_t<VT2> );
 
-   BLAZE_INTERNAL_ASSERT( (~A).rows()    == 3UL, "Invalid number of rows detected"    );
-   BLAZE_INTERNAL_ASSERT( (~A).columns() == 3UL, "Invalid number of columns detected" );
-   BLAZE_INTERNAL_ASSERT( (~b).size()    == 3UL, "Invalid vector size detected"       );
+   BLAZE_INTERNAL_ASSERT( (*A).rows()    == 3UL, "Invalid number of rows detected"    );
+   BLAZE_INTERNAL_ASSERT( (*A).columns() == 3UL, "Invalid number of columns detected" );
+   BLAZE_INTERNAL_ASSERT( (*b).size()    == 3UL, "Invalid vector size detected"       );
 
-   CompositeType_t<MT> A_( ~A );
-   VT1& x_( ~x );
-   const VT2& b_( ~b );
+   CompositeType_t<MT> A_( *A );
+   VT1& x_( *x );
+   const VT2& b_( *b );
 
    if( !isDivisor( A_(0,0)*A_(1,1)*A_(2,2) ) ) {
       BLAZE_THROW_DIVISION_BY_ZERO( "Solving LSE with singular system matrix failed" );
@@ -1366,13 +1366,13 @@ void solve3x3( const DenseMatrix<MT,SO>& A, DenseVector<VT1,TF1>& x, const Dense
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT>, ElementType_t<VT1> );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT>, ElementType_t<VT2> );
 
-   BLAZE_INTERNAL_ASSERT( (~A).rows()    == 3UL, "Invalid number of rows detected"    );
-   BLAZE_INTERNAL_ASSERT( (~A).columns() == 3UL, "Invalid number of columns detected" );
-   BLAZE_INTERNAL_ASSERT( (~b).size()    == 3UL, "Invalid vector size detected"       );
+   BLAZE_INTERNAL_ASSERT( (*A).rows()    == 3UL, "Invalid number of rows detected"    );
+   BLAZE_INTERNAL_ASSERT( (*A).columns() == 3UL, "Invalid number of columns detected" );
+   BLAZE_INTERNAL_ASSERT( (*b).size()    == 3UL, "Invalid vector size detected"       );
 
-   CompositeType_t<MT> A_( ~A );
-   VT1& x_( ~x );
-   const VT2& b_( ~b );
+   CompositeType_t<MT> A_( *A );
+   VT1& x_( *x );
+   const VT2& b_( *b );
 
    resize( x_, b_.size() );
 
@@ -1425,13 +1425,13 @@ void solve3x3( const DenseMatrix<MT,SO>& A, DenseVector<VT1,TF1>& x, const Dense
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT>, ElementType_t<VT1> );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT>, ElementType_t<VT2> );
 
-   BLAZE_INTERNAL_ASSERT( (~A).rows()    == 3UL, "Invalid number of rows detected"    );
-   BLAZE_INTERNAL_ASSERT( (~A).columns() == 3UL, "Invalid number of columns detected" );
-   BLAZE_INTERNAL_ASSERT( (~b).size()    == 3UL, "Invalid vector size detected"       );
+   BLAZE_INTERNAL_ASSERT( (*A).rows()    == 3UL, "Invalid number of rows detected"    );
+   BLAZE_INTERNAL_ASSERT( (*A).columns() == 3UL, "Invalid number of columns detected" );
+   BLAZE_INTERNAL_ASSERT( (*b).size()    == 3UL, "Invalid vector size detected"       );
 
-   CompositeType_t<MT> A_( ~A );
-   VT1& x_( ~x );
-   const VT2& b_( ~b );
+   CompositeType_t<MT> A_( *A );
+   VT1& x_( *x );
+   const VT2& b_( *b );
 
    if( !isDivisor( A_(0,0)*A_(1,1)*A_(2,2) ) ) {
       BLAZE_THROW_DIVISION_BY_ZERO( "Solving LSE with singular system matrix failed" );
@@ -1488,13 +1488,13 @@ void solve3x3( const DenseMatrix<MT,SO>& A, DenseVector<VT1,TF1>& x, const Dense
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT>, ElementType_t<VT1> );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT>, ElementType_t<VT2> );
 
-   BLAZE_INTERNAL_ASSERT( (~A).rows()    == 3UL, "Invalid number of rows detected"    );
-   BLAZE_INTERNAL_ASSERT( (~A).columns() == 3UL, "Invalid number of columns detected" );
-   BLAZE_INTERNAL_ASSERT( (~b).size()    == 3UL, "Invalid vector size detected"       );
+   BLAZE_INTERNAL_ASSERT( (*A).rows()    == 3UL, "Invalid number of rows detected"    );
+   BLAZE_INTERNAL_ASSERT( (*A).columns() == 3UL, "Invalid number of columns detected" );
+   BLAZE_INTERNAL_ASSERT( (*b).size()    == 3UL, "Invalid vector size detected"       );
 
-   CompositeType_t<MT> A_( ~A );
-   VT1& x_( ~x );
-   const VT2& b_( ~b );
+   CompositeType_t<MT> A_( *A );
+   VT1& x_( *x );
+   const VT2& b_( *b );
 
    resize( x_, b_.size() );
 
@@ -1546,13 +1546,13 @@ void solve3x3( const DenseMatrix<MT,SO>& A, DenseVector<VT1,TF1>& x, const Dense
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT>, ElementType_t<VT1> );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT>, ElementType_t<VT2> );
 
-   BLAZE_INTERNAL_ASSERT( (~A).rows()    == 3UL, "Invalid number of rows detected"    );
-   BLAZE_INTERNAL_ASSERT( (~A).columns() == 3UL, "Invalid number of columns detected" );
-   BLAZE_INTERNAL_ASSERT( (~b).size()    == 3UL, "Invalid vector size detected"       );
+   BLAZE_INTERNAL_ASSERT( (*A).rows()    == 3UL, "Invalid number of rows detected"    );
+   BLAZE_INTERNAL_ASSERT( (*A).columns() == 3UL, "Invalid number of columns detected" );
+   BLAZE_INTERNAL_ASSERT( (*b).size()    == 3UL, "Invalid vector size detected"       );
 
-   CompositeType_t<MT> A_( ~A );
-   VT1& x_( ~x );
-   const VT2& b_( ~b );
+   CompositeType_t<MT> A_( *A );
+   VT1& x_( *x );
+   const VT2& b_( *b );
 
    if( !isDivisor( A_(0,0)*A_(1,1)*A_(2,2) ) ) {
       BLAZE_THROW_DIVISION_BY_ZERO( "Solving LSE with singular system matrix failed" );
@@ -1608,13 +1608,13 @@ void solve3x3( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& X, const Den
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT1>, ElementType_t<MT2> );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT1>, ElementType_t<MT3> );
 
-   BLAZE_INTERNAL_ASSERT( (~A).rows()    == 3UL, "Invalid number of rows detected"    );
-   BLAZE_INTERNAL_ASSERT( (~A).columns() == 3UL, "Invalid number of columns detected" );
-   BLAZE_INTERNAL_ASSERT( (~B).rows()    == 3UL, "Invalid number of rows detected"    );
+   BLAZE_INTERNAL_ASSERT( (*A).rows()    == 3UL, "Invalid number of rows detected"    );
+   BLAZE_INTERNAL_ASSERT( (*A).columns() == 3UL, "Invalid number of columns detected" );
+   BLAZE_INTERNAL_ASSERT( (*B).rows()    == 3UL, "Invalid number of rows detected"    );
 
-   resize( ~X, (~B).rows(), (~B).columns() );
-   const ResultType_t<MT1> invA( inv( ~A ) );
-   smpAssign( ~X, invA * (~B) );
+   resize( *X, (*B).rows(), (*B).columns() );
+   const ResultType_t<MT1> invA( inv( *A ) );
+   smpAssign( *X, invA * (*B) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1661,15 +1661,15 @@ void solve3x3( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& X, const Den
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT1>, ElementType_t<MT2> );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT1>, ElementType_t<MT3> );
 
-   BLAZE_INTERNAL_ASSERT( (~A).rows()    == 3UL, "Invalid number of rows detected"    );
-   BLAZE_INTERNAL_ASSERT( (~A).columns() == 3UL, "Invalid number of columns detected" );
-   BLAZE_INTERNAL_ASSERT( (~B).rows()    == 3UL, "Invalid number of rows detected"    );
+   BLAZE_INTERNAL_ASSERT( (*A).rows()    == 3UL, "Invalid number of rows detected"    );
+   BLAZE_INTERNAL_ASSERT( (*A).columns() == 3UL, "Invalid number of columns detected" );
+   BLAZE_INTERNAL_ASSERT( (*B).rows()    == 3UL, "Invalid number of rows detected"    );
 
    using ET = ElementType_t<MT1>;
 
-   CompositeType_t<MT1> A_( ~A );
-   MT2& X_( ~X );
-   const MT3& B_( ~B );
+   CompositeType_t<MT1> A_( *A );
+   MT2& X_( *X );
+   const MT3& B_( *B );
 
    if( !isDivisor( A_(0,0)*A_(1,1)*A_(2,2) ) ) {
       BLAZE_THROW_DIVISION_BY_ZERO( "Solving LSE with singular system matrix failed" );
@@ -1735,13 +1735,13 @@ void solve3x3( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& X, const Den
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT1>, ElementType_t<MT2> );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT1>, ElementType_t<MT3> );
 
-   BLAZE_INTERNAL_ASSERT( (~A).rows()    == 3UL, "Invalid number of rows detected"    );
-   BLAZE_INTERNAL_ASSERT( (~A).columns() == 3UL, "Invalid number of columns detected" );
-   BLAZE_INTERNAL_ASSERT( (~B).rows()    == 3UL, "Invalid number of rows detected"    );
+   BLAZE_INTERNAL_ASSERT( (*A).rows()    == 3UL, "Invalid number of rows detected"    );
+   BLAZE_INTERNAL_ASSERT( (*A).columns() == 3UL, "Invalid number of columns detected" );
+   BLAZE_INTERNAL_ASSERT( (*B).rows()    == 3UL, "Invalid number of rows detected"    );
 
-   CompositeType_t<MT1> A_( ~A );
-   MT2& X_( ~X );
-   const MT3& B_( ~B );
+   CompositeType_t<MT1> A_( *A );
+   MT2& X_( *X );
+   const MT3& B_( *B );
 
    const size_t M( B_.rows()    );
    const size_t N( B_.columns() );
@@ -1799,15 +1799,15 @@ void solve3x3( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& X, const Den
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT1>, ElementType_t<MT2> );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT1>, ElementType_t<MT3> );
 
-   BLAZE_INTERNAL_ASSERT( (~A).rows()    == 3UL, "Invalid number of rows detected"    );
-   BLAZE_INTERNAL_ASSERT( (~A).columns() == 3UL, "Invalid number of columns detected" );
-   BLAZE_INTERNAL_ASSERT( (~B).rows()    == 3UL, "Invalid number of rows detected"    );
+   BLAZE_INTERNAL_ASSERT( (*A).rows()    == 3UL, "Invalid number of rows detected"    );
+   BLAZE_INTERNAL_ASSERT( (*A).columns() == 3UL, "Invalid number of columns detected" );
+   BLAZE_INTERNAL_ASSERT( (*B).rows()    == 3UL, "Invalid number of rows detected"    );
 
    using ET = ElementType_t<MT1>;
 
-   CompositeType_t<MT1> A_( ~A );
-   MT2& X_( ~X );
-   const MT3& B_( ~B );
+   CompositeType_t<MT1> A_( *A );
+   MT2& X_( *X );
+   const MT3& B_( *B );
 
    if( !isDivisor( A_(0,0)*A_(1,1)*A_(2,2) ) ) {
       BLAZE_THROW_DIVISION_BY_ZERO( "Solving LSE with singular system matrix failed" );
@@ -1873,13 +1873,13 @@ void solve3x3( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& X, const Den
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT1>, ElementType_t<MT2> );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT1>, ElementType_t<MT3> );
 
-   BLAZE_INTERNAL_ASSERT( (~A).rows()    == 3UL, "Invalid number of rows detected"    );
-   BLAZE_INTERNAL_ASSERT( (~A).columns() == 3UL, "Invalid number of columns detected" );
-   BLAZE_INTERNAL_ASSERT( (~B).rows()    == 3UL, "Invalid number of rows detected"    );
+   BLAZE_INTERNAL_ASSERT( (*A).rows()    == 3UL, "Invalid number of rows detected"    );
+   BLAZE_INTERNAL_ASSERT( (*A).columns() == 3UL, "Invalid number of columns detected" );
+   BLAZE_INTERNAL_ASSERT( (*B).rows()    == 3UL, "Invalid number of rows detected"    );
 
-   CompositeType_t<MT1> A_( ~A );
-   MT2& X_( ~X );
-   const MT3& B_( ~B );
+   CompositeType_t<MT1> A_( *A );
+   MT2& X_( *X );
+   const MT3& B_( *B );
 
    const size_t M( B_.rows()    );
    const size_t N( B_.columns() );
@@ -1936,15 +1936,15 @@ void solve3x3( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& X, const Den
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT1>, ElementType_t<MT2> );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT1>, ElementType_t<MT3> );
 
-   BLAZE_INTERNAL_ASSERT( (~A).rows()    == 3UL, "Invalid number of rows detected"    );
-   BLAZE_INTERNAL_ASSERT( (~A).columns() == 3UL, "Invalid number of columns detected" );
-   BLAZE_INTERNAL_ASSERT( (~B).rows()    == 3UL, "Invalid number of rows detected"    );
+   BLAZE_INTERNAL_ASSERT( (*A).rows()    == 3UL, "Invalid number of rows detected"    );
+   BLAZE_INTERNAL_ASSERT( (*A).columns() == 3UL, "Invalid number of columns detected" );
+   BLAZE_INTERNAL_ASSERT( (*B).rows()    == 3UL, "Invalid number of rows detected"    );
 
    using ET = ElementType_t<MT1>;
 
-   CompositeType_t<MT1> A_( ~A );
-   MT2& X_( ~X );
-   const MT3& B_( ~B );
+   CompositeType_t<MT1> A_( *A );
+   MT2& X_( *X );
+   const MT3& B_( *B );
 
    if( !isDivisor( A_(0,0)*A_(1,1)*A_(2,2) ) ) {
       BLAZE_THROW_DIVISION_BY_ZERO( "Solving LSE with singular system matrix failed" );
@@ -2017,15 +2017,15 @@ void solve4x4( const DenseMatrix<MT,SO>& A, DenseVector<VT1,TF1>& x, const Dense
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT>, ElementType_t<VT1> );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT>, ElementType_t<VT2> );
 
-   BLAZE_INTERNAL_ASSERT( (~A).rows()    == 4UL, "Invalid number of rows detected"    );
-   BLAZE_INTERNAL_ASSERT( (~A).columns() == 4UL, "Invalid number of columns detected" );
-   BLAZE_INTERNAL_ASSERT( (~b).size()    == 4UL, "Invalid vector size detected"       );
+   BLAZE_INTERNAL_ASSERT( (*A).rows()    == 4UL, "Invalid number of rows detected"    );
+   BLAZE_INTERNAL_ASSERT( (*A).columns() == 4UL, "Invalid number of columns detected" );
+   BLAZE_INTERNAL_ASSERT( (*b).size()    == 4UL, "Invalid vector size detected"       );
 
    using ET = ElementType_t<MT>;
 
-   CompositeType_t<MT> A_( ~A );
-   VT1& x_( ~x );
-   const VT2& b_( ~b );
+   CompositeType_t<MT> A_( *A );
+   VT1& x_( *x );
+   const VT2& b_( *b );
 
    resize( x_, b_.size() );
 
@@ -2117,15 +2117,15 @@ void solve4x4( const DenseMatrix<MT,SO>& A, DenseVector<VT1,TF1>& x, const Dense
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT>, ElementType_t<VT1> );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT>, ElementType_t<VT2> );
 
-   BLAZE_INTERNAL_ASSERT( (~A).rows()    == 4UL, "Invalid number of rows detected"    );
-   BLAZE_INTERNAL_ASSERT( (~A).columns() == 4UL, "Invalid number of columns detected" );
-   BLAZE_INTERNAL_ASSERT( (~b).size()    == 4UL, "Invalid vector size detected"       );
+   BLAZE_INTERNAL_ASSERT( (*A).rows()    == 4UL, "Invalid number of rows detected"    );
+   BLAZE_INTERNAL_ASSERT( (*A).columns() == 4UL, "Invalid number of columns detected" );
+   BLAZE_INTERNAL_ASSERT( (*b).size()    == 4UL, "Invalid vector size detected"       );
 
    using ET = ElementType_t<MT>;
 
-   CompositeType_t<MT> A_( ~A );
-   VT1& x_( ~x );
-   const VT2& b_( ~b );
+   CompositeType_t<MT> A_( *A );
+   VT1& x_( *x );
+   const VT2& b_( *b );
 
    resize( x_, b_.size() );
 
@@ -2218,13 +2218,13 @@ void solve4x4( const DenseMatrix<MT,SO>& A, DenseVector<VT1,TF1>& x, const Dense
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT>, ElementType_t<VT1> );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT>, ElementType_t<VT2> );
 
-   BLAZE_INTERNAL_ASSERT( (~A).rows()    == 4UL, "Invalid number of rows detected"    );
-   BLAZE_INTERNAL_ASSERT( (~A).columns() == 4UL, "Invalid number of columns detected" );
-   BLAZE_INTERNAL_ASSERT( (~b).size()    == 4UL, "Invalid vector size detected"       );
+   BLAZE_INTERNAL_ASSERT( (*A).rows()    == 4UL, "Invalid number of rows detected"    );
+   BLAZE_INTERNAL_ASSERT( (*A).columns() == 4UL, "Invalid number of columns detected" );
+   BLAZE_INTERNAL_ASSERT( (*b).size()    == 4UL, "Invalid vector size detected"       );
 
-   CompositeType_t<MT> A_( ~A );
-   VT1& x_( ~x );
-   const VT2& b_( ~b );
+   CompositeType_t<MT> A_( *A );
+   VT1& x_( *x );
+   const VT2& b_( *b );
 
    if( !isDivisor( A_(0,0)*A_(1,1)*A_(2,2)*A_(3,3) ) ) {
       BLAZE_THROW_DIVISION_BY_ZERO( "Solving LSE with singular system matrix failed" );
@@ -2282,13 +2282,13 @@ void solve4x4( const DenseMatrix<MT,SO>& A, DenseVector<VT1,TF1>& x, const Dense
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT>, ElementType_t<VT1> );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT>, ElementType_t<VT2> );
 
-   BLAZE_INTERNAL_ASSERT( (~A).rows()    == 4UL, "Invalid number of rows detected"    );
-   BLAZE_INTERNAL_ASSERT( (~A).columns() == 4UL, "Invalid number of columns detected" );
-   BLAZE_INTERNAL_ASSERT( (~b).size()    == 4UL, "Invalid vector size detected"       );
+   BLAZE_INTERNAL_ASSERT( (*A).rows()    == 4UL, "Invalid number of rows detected"    );
+   BLAZE_INTERNAL_ASSERT( (*A).columns() == 4UL, "Invalid number of columns detected" );
+   BLAZE_INTERNAL_ASSERT( (*b).size()    == 4UL, "Invalid vector size detected"       );
 
-   CompositeType_t<MT> A_( ~A );
-   VT1& x_( ~x );
-   const VT2& b_( ~b );
+   CompositeType_t<MT> A_( *A );
+   VT1& x_( *x );
+   const VT2& b_( *b );
 
    resize( x_, b_.size() );
 
@@ -2342,13 +2342,13 @@ void solve4x4( const DenseMatrix<MT,SO>& A, DenseVector<VT1,TF1>& x, const Dense
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT>, ElementType_t<VT1> );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT>, ElementType_t<VT2> );
 
-   BLAZE_INTERNAL_ASSERT( (~A).rows()    == 4UL, "Invalid number of rows detected"    );
-   BLAZE_INTERNAL_ASSERT( (~A).columns() == 4UL, "Invalid number of columns detected" );
-   BLAZE_INTERNAL_ASSERT( (~b).size()    == 4UL, "Invalid vector size detected"       );
+   BLAZE_INTERNAL_ASSERT( (*A).rows()    == 4UL, "Invalid number of rows detected"    );
+   BLAZE_INTERNAL_ASSERT( (*A).columns() == 4UL, "Invalid number of columns detected" );
+   BLAZE_INTERNAL_ASSERT( (*b).size()    == 4UL, "Invalid vector size detected"       );
 
-   CompositeType_t<MT> A_( ~A );
-   VT1& x_( ~x );
-   const VT2& b_( ~b );
+   CompositeType_t<MT> A_( *A );
+   VT1& x_( *x );
+   const VT2& b_( *b );
 
    if( !isDivisor( A_(0,0)*A_(1,1)*A_(2,2)*A_(3,3) ) ) {
       BLAZE_THROW_DIVISION_BY_ZERO( "Solving LSE with singular system matrix failed" );
@@ -2406,13 +2406,13 @@ void solve4x4( const DenseMatrix<MT,SO>& A, DenseVector<VT1,TF1>& x, const Dense
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT>, ElementType_t<VT1> );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT>, ElementType_t<VT2> );
 
-   BLAZE_INTERNAL_ASSERT( (~A).rows()    == 4UL, "Invalid number of rows detected"    );
-   BLAZE_INTERNAL_ASSERT( (~A).columns() == 4UL, "Invalid number of columns detected" );
-   BLAZE_INTERNAL_ASSERT( (~b).size()    == 4UL, "Invalid vector size detected"       );
+   BLAZE_INTERNAL_ASSERT( (*A).rows()    == 4UL, "Invalid number of rows detected"    );
+   BLAZE_INTERNAL_ASSERT( (*A).columns() == 4UL, "Invalid number of columns detected" );
+   BLAZE_INTERNAL_ASSERT( (*b).size()    == 4UL, "Invalid vector size detected"       );
 
-   CompositeType_t<MT> A_( ~A );
-   VT1& x_( ~x );
-   const VT2& b_( ~b );
+   CompositeType_t<MT> A_( *A );
+   VT1& x_( *x );
+   const VT2& b_( *b );
 
    resize( x_, b_.size() );
 
@@ -2465,13 +2465,13 @@ void solve4x4( const DenseMatrix<MT,SO>& A, DenseVector<VT1,TF1>& x, const Dense
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT>, ElementType_t<VT1> );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT>, ElementType_t<VT2> );
 
-   BLAZE_INTERNAL_ASSERT( (~A).rows()    == 4UL, "Invalid number of rows detected"    );
-   BLAZE_INTERNAL_ASSERT( (~A).columns() == 4UL, "Invalid number of columns detected" );
-   BLAZE_INTERNAL_ASSERT( (~b).size()    == 4UL, "Invalid vector size detected"       );
+   BLAZE_INTERNAL_ASSERT( (*A).rows()    == 4UL, "Invalid number of rows detected"    );
+   BLAZE_INTERNAL_ASSERT( (*A).columns() == 4UL, "Invalid number of columns detected" );
+   BLAZE_INTERNAL_ASSERT( (*b).size()    == 4UL, "Invalid vector size detected"       );
 
-   CompositeType_t<MT> A_( ~A );
-   VT1& x_( ~x );
-   const VT2& b_( ~b );
+   CompositeType_t<MT> A_( *A );
+   VT1& x_( *x );
+   const VT2& b_( *b );
 
    if( !isDivisor( A_(0,0)*A_(1,1)*A_(2,2)*A_(3,3) ) ) {
       BLAZE_THROW_DIVISION_BY_ZERO( "Solving LSE with singular system matrix failed" );
@@ -2528,13 +2528,13 @@ void solve4x4( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& X, const Den
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT1>, ElementType_t<MT2> );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT1>, ElementType_t<MT3> );
 
-   BLAZE_INTERNAL_ASSERT( (~A).rows()    == 4UL, "Invalid number of rows detected"    );
-   BLAZE_INTERNAL_ASSERT( (~A).columns() == 4UL, "Invalid number of columns detected" );
-   BLAZE_INTERNAL_ASSERT( (~B).rows()    == 4UL, "Invalid number of rows detected"    );
+   BLAZE_INTERNAL_ASSERT( (*A).rows()    == 4UL, "Invalid number of rows detected"    );
+   BLAZE_INTERNAL_ASSERT( (*A).columns() == 4UL, "Invalid number of columns detected" );
+   BLAZE_INTERNAL_ASSERT( (*B).rows()    == 4UL, "Invalid number of rows detected"    );
 
-   resize( ~X, (~B).rows(), (~B).columns() );
-   const ResultType_t<MT1> invA( inv( ~A ) );
-   smpAssign( ~X, invA * (~B) );
+   resize( *X, (*B).rows(), (*B).columns() );
+   const ResultType_t<MT1> invA( inv( *A ) );
+   smpAssign( *X, invA * (*B) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -2581,15 +2581,15 @@ void solve4x4( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& X, const Den
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT1>, ElementType_t<MT2> );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT1>, ElementType_t<MT3> );
 
-   BLAZE_INTERNAL_ASSERT( (~A).rows()    == 4UL, "Invalid number of rows detected"    );
-   BLAZE_INTERNAL_ASSERT( (~A).columns() == 4UL, "Invalid number of columns detected" );
-   BLAZE_INTERNAL_ASSERT( (~B).rows()    == 4UL, "Invalid number of rows detected"    );
+   BLAZE_INTERNAL_ASSERT( (*A).rows()    == 4UL, "Invalid number of rows detected"    );
+   BLAZE_INTERNAL_ASSERT( (*A).columns() == 4UL, "Invalid number of columns detected" );
+   BLAZE_INTERNAL_ASSERT( (*B).rows()    == 4UL, "Invalid number of rows detected"    );
 
    using ET = ElementType_t<MT1>;
 
-   CompositeType_t<MT1> A_( ~A );
-   MT2& X_( ~X );
-   const MT3& B_( ~B );
+   CompositeType_t<MT1> A_( *A );
+   MT2& X_( *X );
+   const MT3& B_( *B );
 
    if( !isDivisor( A_(0,0)*A_(1,1)*A_(2,2)*A_(3,3) ) ) {
       BLAZE_THROW_DIVISION_BY_ZERO( "Solving LSE with singular system matrix failed" );
@@ -2657,13 +2657,13 @@ void solve4x4( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& X, const Den
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT1>, ElementType_t<MT2> );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT1>, ElementType_t<MT3> );
 
-   BLAZE_INTERNAL_ASSERT( (~A).rows()    == 4UL, "Invalid number of rows detected"    );
-   BLAZE_INTERNAL_ASSERT( (~A).columns() == 4UL, "Invalid number of columns detected" );
-   BLAZE_INTERNAL_ASSERT( (~B).rows()    == 4UL, "Invalid number of rows detected"    );
+   BLAZE_INTERNAL_ASSERT( (*A).rows()    == 4UL, "Invalid number of rows detected"    );
+   BLAZE_INTERNAL_ASSERT( (*A).columns() == 4UL, "Invalid number of columns detected" );
+   BLAZE_INTERNAL_ASSERT( (*B).rows()    == 4UL, "Invalid number of rows detected"    );
 
-   CompositeType_t<MT1> A_( ~A );
-   MT2& X_( ~X );
-   const MT3& B_( ~B );
+   CompositeType_t<MT1> A_( *A );
+   MT2& X_( *X );
+   const MT3& B_( *B );
 
    const size_t M( B_.rows()    );
    const size_t N( B_.columns() );
@@ -2722,15 +2722,15 @@ void solve4x4( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& X, const Den
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT1>, ElementType_t<MT2> );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT1>, ElementType_t<MT3> );
 
-   BLAZE_INTERNAL_ASSERT( (~A).rows()    == 4UL, "Invalid number of rows detected"    );
-   BLAZE_INTERNAL_ASSERT( (~A).columns() == 4UL, "Invalid number of columns detected" );
-   BLAZE_INTERNAL_ASSERT( (~B).rows()    == 4UL, "Invalid number of rows detected"    );
+   BLAZE_INTERNAL_ASSERT( (*A).rows()    == 4UL, "Invalid number of rows detected"    );
+   BLAZE_INTERNAL_ASSERT( (*A).columns() == 4UL, "Invalid number of columns detected" );
+   BLAZE_INTERNAL_ASSERT( (*B).rows()    == 4UL, "Invalid number of rows detected"    );
 
    using ET = ElementType_t<MT1>;
 
-   CompositeType_t<MT1> A_( ~A );
-   MT2& X_( ~X );
-   const MT3& B_( ~B );
+   CompositeType_t<MT1> A_( *A );
+   MT2& X_( *X );
+   const MT3& B_( *B );
 
    if( !isDivisor( A_(0,0)*A_(1,1)*A_(2,2)*A_(3,3) ) ) {
       BLAZE_THROW_DIVISION_BY_ZERO( "Solving LSE with singular system matrix failed" );
@@ -2798,13 +2798,13 @@ void solve4x4( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& X, const Den
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT1>, ElementType_t<MT2> );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT1>, ElementType_t<MT3> );
 
-   BLAZE_INTERNAL_ASSERT( (~A).rows()    == 4UL, "Invalid number of rows detected"    );
-   BLAZE_INTERNAL_ASSERT( (~A).columns() == 4UL, "Invalid number of columns detected" );
-   BLAZE_INTERNAL_ASSERT( (~B).rows()    == 4UL, "Invalid number of rows detected"    );
+   BLAZE_INTERNAL_ASSERT( (*A).rows()    == 4UL, "Invalid number of rows detected"    );
+   BLAZE_INTERNAL_ASSERT( (*A).columns() == 4UL, "Invalid number of columns detected" );
+   BLAZE_INTERNAL_ASSERT( (*B).rows()    == 4UL, "Invalid number of rows detected"    );
 
-   CompositeType_t<MT1> A_( ~A );
-   MT2& X_( ~X );
-   const MT3& B_( ~B );
+   CompositeType_t<MT1> A_( *A );
+   MT2& X_( *X );
+   const MT3& B_( *B );
 
    const size_t M( B_.rows()    );
    const size_t N( B_.columns() );
@@ -2862,15 +2862,15 @@ void solve4x4( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& X, const Den
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT1>, ElementType_t<MT2> );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT1>, ElementType_t<MT3> );
 
-   BLAZE_INTERNAL_ASSERT( (~A).rows()    == 4UL, "Invalid number of rows detected"    );
-   BLAZE_INTERNAL_ASSERT( (~A).columns() == 4UL, "Invalid number of columns detected" );
-   BLAZE_INTERNAL_ASSERT( (~B).rows()    == 4UL, "Invalid number of rows detected"    );
+   BLAZE_INTERNAL_ASSERT( (*A).rows()    == 4UL, "Invalid number of rows detected"    );
+   BLAZE_INTERNAL_ASSERT( (*A).columns() == 4UL, "Invalid number of columns detected" );
+   BLAZE_INTERNAL_ASSERT( (*B).rows()    == 4UL, "Invalid number of rows detected"    );
 
    using ET = ElementType_t<MT1>;
 
-   CompositeType_t<MT1> A_( ~A );
-   MT2& X_( ~X );
-   const MT3& B_( ~B );
+   CompositeType_t<MT1> A_( *A );
+   MT2& X_( *X );
+   const MT3& B_( *B );
 
    if( !isDivisor( A_(0,0)*A_(1,1)*A_(2,2)*A_(3,3) ) ) {
       BLAZE_THROW_DIVISION_BY_ZERO( "Solving LSE with singular system matrix failed" );
@@ -2945,15 +2945,15 @@ void solve5x5( const DenseMatrix<MT,SO>& A, DenseVector<VT1,TF1>& x, const Dense
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT>, ElementType_t<VT1> );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT>, ElementType_t<VT2> );
 
-   BLAZE_INTERNAL_ASSERT( (~A).rows()    == 5UL, "Invalid number of rows detected"    );
-   BLAZE_INTERNAL_ASSERT( (~A).columns() == 5UL, "Invalid number of columns detected" );
-   BLAZE_INTERNAL_ASSERT( (~b).size()    == 5UL, "Invalid vector size detected"       );
+   BLAZE_INTERNAL_ASSERT( (*A).rows()    == 5UL, "Invalid number of rows detected"    );
+   BLAZE_INTERNAL_ASSERT( (*A).columns() == 5UL, "Invalid number of columns detected" );
+   BLAZE_INTERNAL_ASSERT( (*b).size()    == 5UL, "Invalid vector size detected"       );
 
    using ET = ElementType_t<MT>;
 
-   CompositeType_t<MT> A_( ~A );
-   VT1& x_( ~x );
-   const VT2& b_( ~b );
+   CompositeType_t<MT> A_( *A );
+   VT1& x_( *x );
+   const VT2& b_( *b );
 
    resize( x_, b_.size() );
 
@@ -3094,15 +3094,15 @@ void solve5x5( const DenseMatrix<MT,SO>& A, DenseVector<VT1,TF1>& x, const Dense
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT>, ElementType_t<VT1> );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT>, ElementType_t<VT2> );
 
-   BLAZE_INTERNAL_ASSERT( (~A).rows()    == 5UL, "Invalid number of rows detected"    );
-   BLAZE_INTERNAL_ASSERT( (~A).columns() == 5UL, "Invalid number of columns detected" );
-   BLAZE_INTERNAL_ASSERT( (~b).size()    == 5UL, "Invalid vector size detected"       );
+   BLAZE_INTERNAL_ASSERT( (*A).rows()    == 5UL, "Invalid number of rows detected"    );
+   BLAZE_INTERNAL_ASSERT( (*A).columns() == 5UL, "Invalid number of columns detected" );
+   BLAZE_INTERNAL_ASSERT( (*b).size()    == 5UL, "Invalid vector size detected"       );
 
    using ET = ElementType_t<MT>;
 
-   CompositeType_t<MT> A_( ~A );
-   VT1& x_( ~x );
-   const VT2& b_( ~b );
+   CompositeType_t<MT> A_( *A );
+   VT1& x_( *x );
+   const VT2& b_( *b );
 
    resize( x_, b_.size() );
 
@@ -3244,13 +3244,13 @@ void solve5x5( const DenseMatrix<MT,SO>& A, DenseVector<VT1,TF1>& x, const Dense
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT>, ElementType_t<VT1> );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT>, ElementType_t<VT2> );
 
-   BLAZE_INTERNAL_ASSERT( (~A).rows()    == 5UL, "Invalid number of rows detected"    );
-   BLAZE_INTERNAL_ASSERT( (~A).columns() == 5UL, "Invalid number of columns detected" );
-   BLAZE_INTERNAL_ASSERT( (~b).size()    == 5UL, "Invalid vector size detected"       );
+   BLAZE_INTERNAL_ASSERT( (*A).rows()    == 5UL, "Invalid number of rows detected"    );
+   BLAZE_INTERNAL_ASSERT( (*A).columns() == 5UL, "Invalid number of columns detected" );
+   BLAZE_INTERNAL_ASSERT( (*b).size()    == 5UL, "Invalid vector size detected"       );
 
-   CompositeType_t<MT> A_( ~A );
-   VT1& x_( ~x );
-   const VT2& b_( ~b );
+   CompositeType_t<MT> A_( *A );
+   VT1& x_( *x );
+   const VT2& b_( *b );
 
    if( !isDivisor( A_(0,0)*A_(1,1)*A_(2,2)*A_(3,3)*A_(4,4) ) ) {
       BLAZE_THROW_DIVISION_BY_ZERO( "Solving LSE with singular system matrix failed" );
@@ -3309,13 +3309,13 @@ void solve5x5( const DenseMatrix<MT,SO>& A, DenseVector<VT1,TF1>& x, const Dense
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT>, ElementType_t<VT1> );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT>, ElementType_t<VT2> );
 
-   BLAZE_INTERNAL_ASSERT( (~A).rows()    == 5UL, "Invalid number of rows detected"    );
-   BLAZE_INTERNAL_ASSERT( (~A).columns() == 5UL, "Invalid number of columns detected" );
-   BLAZE_INTERNAL_ASSERT( (~b).size()    == 5UL, "Invalid vector size detected"       );
+   BLAZE_INTERNAL_ASSERT( (*A).rows()    == 5UL, "Invalid number of rows detected"    );
+   BLAZE_INTERNAL_ASSERT( (*A).columns() == 5UL, "Invalid number of columns detected" );
+   BLAZE_INTERNAL_ASSERT( (*b).size()    == 5UL, "Invalid vector size detected"       );
 
-   CompositeType_t<MT> A_( ~A );
-   VT1& x_( ~x );
-   const VT2& b_( ~b );
+   CompositeType_t<MT> A_( *A );
+   VT1& x_( *x );
+   const VT2& b_( *b );
 
    resize( x_, b_.size() );
 
@@ -3370,13 +3370,13 @@ void solve5x5( const DenseMatrix<MT,SO>& A, DenseVector<VT1,TF1>& x, const Dense
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT>, ElementType_t<VT1> );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT>, ElementType_t<VT2> );
 
-   BLAZE_INTERNAL_ASSERT( (~A).rows()    == 5UL, "Invalid number of rows detected"    );
-   BLAZE_INTERNAL_ASSERT( (~A).columns() == 5UL, "Invalid number of columns detected" );
-   BLAZE_INTERNAL_ASSERT( (~b).size()    == 5UL, "Invalid vector size detected"       );
+   BLAZE_INTERNAL_ASSERT( (*A).rows()    == 5UL, "Invalid number of rows detected"    );
+   BLAZE_INTERNAL_ASSERT( (*A).columns() == 5UL, "Invalid number of columns detected" );
+   BLAZE_INTERNAL_ASSERT( (*b).size()    == 5UL, "Invalid vector size detected"       );
 
-   CompositeType_t<MT> A_( ~A );
-   VT1& x_( ~x );
-   const VT2& b_( ~b );
+   CompositeType_t<MT> A_( *A );
+   VT1& x_( *x );
+   const VT2& b_( *b );
 
    if( !isDivisor( A_(0,0)*A_(1,1)*A_(2,2)*A_(3,3)*A_(4,4) ) ) {
       BLAZE_THROW_DIVISION_BY_ZERO( "Solving LSE with singular system matrix failed" );
@@ -3435,13 +3435,13 @@ void solve5x5( const DenseMatrix<MT,SO>& A, DenseVector<VT1,TF1>& x, const Dense
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT>, ElementType_t<VT1> );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT>, ElementType_t<VT2> );
 
-   BLAZE_INTERNAL_ASSERT( (~A).rows()    == 5UL, "Invalid number of rows detected"    );
-   BLAZE_INTERNAL_ASSERT( (~A).columns() == 5UL, "Invalid number of columns detected" );
-   BLAZE_INTERNAL_ASSERT( (~b).size()    == 5UL, "Invalid vector size detected"       );
+   BLAZE_INTERNAL_ASSERT( (*A).rows()    == 5UL, "Invalid number of rows detected"    );
+   BLAZE_INTERNAL_ASSERT( (*A).columns() == 5UL, "Invalid number of columns detected" );
+   BLAZE_INTERNAL_ASSERT( (*b).size()    == 5UL, "Invalid vector size detected"       );
 
-   CompositeType_t<MT> A_( ~A );
-   VT1& x_( ~x );
-   const VT2& b_( ~b );
+   CompositeType_t<MT> A_( *A );
+   VT1& x_( *x );
+   const VT2& b_( *b );
 
    resize( x_, b_.size() );
 
@@ -3495,13 +3495,13 @@ void solve5x5( const DenseMatrix<MT,SO>& A, DenseVector<VT1,TF1>& x, const Dense
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT>, ElementType_t<VT1> );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT>, ElementType_t<VT2> );
 
-   BLAZE_INTERNAL_ASSERT( (~A).rows()    == 5UL, "Invalid number of rows detected"    );
-   BLAZE_INTERNAL_ASSERT( (~A).columns() == 5UL, "Invalid number of columns detected" );
-   BLAZE_INTERNAL_ASSERT( (~b).size()    == 5UL, "Invalid vector size detected"       );
+   BLAZE_INTERNAL_ASSERT( (*A).rows()    == 5UL, "Invalid number of rows detected"    );
+   BLAZE_INTERNAL_ASSERT( (*A).columns() == 5UL, "Invalid number of columns detected" );
+   BLAZE_INTERNAL_ASSERT( (*b).size()    == 5UL, "Invalid vector size detected"       );
 
-   CompositeType_t<MT> A_( ~A );
-   VT1& x_( ~x );
-   const VT2& b_( ~b );
+   CompositeType_t<MT> A_( *A );
+   VT1& x_( *x );
+   const VT2& b_( *b );
 
    if( !isDivisor( A_(0,0)*A_(1,1)*A_(2,2)*A_(3,3)*A_(4,4) ) ) {
       BLAZE_THROW_DIVISION_BY_ZERO( "Solving LSE with singular system matrix failed" );
@@ -3559,13 +3559,13 @@ void solve5x5( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& X, const Den
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT1>, ElementType_t<MT2> );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT1>, ElementType_t<MT3> );
 
-   BLAZE_INTERNAL_ASSERT( (~A).rows()    == 5UL, "Invalid number of rows detected"    );
-   BLAZE_INTERNAL_ASSERT( (~A).columns() == 5UL, "Invalid number of columns detected" );
-   BLAZE_INTERNAL_ASSERT( (~B).rows()    == 5UL, "Invalid number of rows detected"    );
+   BLAZE_INTERNAL_ASSERT( (*A).rows()    == 5UL, "Invalid number of rows detected"    );
+   BLAZE_INTERNAL_ASSERT( (*A).columns() == 5UL, "Invalid number of columns detected" );
+   BLAZE_INTERNAL_ASSERT( (*B).rows()    == 5UL, "Invalid number of rows detected"    );
 
-   resize( ~X, (~B).rows(), (~B).columns() );
-   const ResultType_t<MT1> invA( inv( ~A ) );
-   smpAssign( ~X, invA * (~B) );
+   resize( *X, (*B).rows(), (*B).columns() );
+   const ResultType_t<MT1> invA( inv( *A ) );
+   smpAssign( *X, invA * (*B) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -3612,15 +3612,15 @@ void solve5x5( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& X, const Den
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT1>, ElementType_t<MT2> );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT1>, ElementType_t<MT3> );
 
-   BLAZE_INTERNAL_ASSERT( (~A).rows()    == 5UL, "Invalid number of rows detected"    );
-   BLAZE_INTERNAL_ASSERT( (~A).columns() == 5UL, "Invalid number of columns detected" );
-   BLAZE_INTERNAL_ASSERT( (~B).rows()    == 5UL, "Invalid number of rows detected"    );
+   BLAZE_INTERNAL_ASSERT( (*A).rows()    == 5UL, "Invalid number of rows detected"    );
+   BLAZE_INTERNAL_ASSERT( (*A).columns() == 5UL, "Invalid number of columns detected" );
+   BLAZE_INTERNAL_ASSERT( (*B).rows()    == 5UL, "Invalid number of rows detected"    );
 
    using ET = ElementType_t<MT1>;
 
-   CompositeType_t<MT1> A_( ~A );
-   MT2& X_( ~X );
-   const MT3& B_( ~B );
+   CompositeType_t<MT1> A_( *A );
+   MT2& X_( *X );
+   const MT3& B_( *B );
 
    if( !isDivisor( A_(0,0)*A_(1,1)*A_(2,2)*A_(3,3)*A_(4,4) ) ) {
       BLAZE_THROW_DIVISION_BY_ZERO( "Solving LSE with singular system matrix failed" );
@@ -3690,13 +3690,13 @@ void solve5x5( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& X, const Den
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT1>, ElementType_t<MT2> );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT1>, ElementType_t<MT3> );
 
-   BLAZE_INTERNAL_ASSERT( (~A).rows()    == 5UL, "Invalid number of rows detected"    );
-   BLAZE_INTERNAL_ASSERT( (~A).columns() == 5UL, "Invalid number of columns detected" );
-   BLAZE_INTERNAL_ASSERT( (~B).rows()    == 5UL, "Invalid number of rows detected"    );
+   BLAZE_INTERNAL_ASSERT( (*A).rows()    == 5UL, "Invalid number of rows detected"    );
+   BLAZE_INTERNAL_ASSERT( (*A).columns() == 5UL, "Invalid number of columns detected" );
+   BLAZE_INTERNAL_ASSERT( (*B).rows()    == 5UL, "Invalid number of rows detected"    );
 
-   CompositeType_t<MT1> A_( ~A );
-   MT2& X_( ~X );
-   const MT3& B_( ~B );
+   CompositeType_t<MT1> A_( *A );
+   MT2& X_( *X );
+   const MT3& B_( *B );
 
    const size_t M( B_.rows()    );
    const size_t N( B_.columns() );
@@ -3756,15 +3756,15 @@ void solve5x5( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& X, const Den
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT1>, ElementType_t<MT2> );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT1>, ElementType_t<MT3> );
 
-   BLAZE_INTERNAL_ASSERT( (~A).rows()    == 5UL, "Invalid number of rows detected"    );
-   BLAZE_INTERNAL_ASSERT( (~A).columns() == 5UL, "Invalid number of columns detected" );
-   BLAZE_INTERNAL_ASSERT( (~B).rows()    == 5UL, "Invalid number of rows detected"    );
+   BLAZE_INTERNAL_ASSERT( (*A).rows()    == 5UL, "Invalid number of rows detected"    );
+   BLAZE_INTERNAL_ASSERT( (*A).columns() == 5UL, "Invalid number of columns detected" );
+   BLAZE_INTERNAL_ASSERT( (*B).rows()    == 5UL, "Invalid number of rows detected"    );
 
    using ET = ElementType_t<MT1>;
 
-   CompositeType_t<MT1> A_( ~A );
-   MT2& X_( ~X );
-   const MT3& B_( ~B );
+   CompositeType_t<MT1> A_( *A );
+   MT2& X_( *X );
+   const MT3& B_( *B );
 
    if( !isDivisor( A_(0,0)*A_(1,1)*A_(2,2)*A_(3,3)*A_(4,4) ) ) {
       BLAZE_THROW_DIVISION_BY_ZERO( "Solving LSE with singular system matrix failed" );
@@ -3834,13 +3834,13 @@ void solve5x5( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& X, const Den
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT1>, ElementType_t<MT2> );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT1>, ElementType_t<MT3> );
 
-   BLAZE_INTERNAL_ASSERT( (~A).rows()    == 5UL, "Invalid number of rows detected"    );
-   BLAZE_INTERNAL_ASSERT( (~A).columns() == 5UL, "Invalid number of columns detected" );
-   BLAZE_INTERNAL_ASSERT( (~B).rows()    == 5UL, "Invalid number of rows detected"    );
+   BLAZE_INTERNAL_ASSERT( (*A).rows()    == 5UL, "Invalid number of rows detected"    );
+   BLAZE_INTERNAL_ASSERT( (*A).columns() == 5UL, "Invalid number of columns detected" );
+   BLAZE_INTERNAL_ASSERT( (*B).rows()    == 5UL, "Invalid number of rows detected"    );
 
-   CompositeType_t<MT1> A_( ~A );
-   MT2& X_( ~X );
-   const MT3& B_( ~B );
+   CompositeType_t<MT1> A_( *A );
+   MT2& X_( *X );
+   const MT3& B_( *B );
 
    const size_t M( B_.rows()    );
    const size_t N( B_.columns() );
@@ -3899,15 +3899,15 @@ void solve5x5( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& X, const Den
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT1>, ElementType_t<MT2> );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT1>, ElementType_t<MT3> );
 
-   BLAZE_INTERNAL_ASSERT( (~A).rows()    == 5UL, "Invalid number of rows detected"    );
-   BLAZE_INTERNAL_ASSERT( (~A).columns() == 5UL, "Invalid number of columns detected" );
-   BLAZE_INTERNAL_ASSERT( (~B).rows()    == 5UL, "Invalid number of rows detected"    );
+   BLAZE_INTERNAL_ASSERT( (*A).rows()    == 5UL, "Invalid number of rows detected"    );
+   BLAZE_INTERNAL_ASSERT( (*A).columns() == 5UL, "Invalid number of columns detected" );
+   BLAZE_INTERNAL_ASSERT( (*B).rows()    == 5UL, "Invalid number of rows detected"    );
 
    using ET = ElementType_t<MT1>;
 
-   CompositeType_t<MT1> A_( ~A );
-   MT2& X_( ~X );
-   const MT3& B_( ~B );
+   CompositeType_t<MT1> A_( *A );
+   MT2& X_( *X );
+   const MT3& B_( *B );
 
    if( !isDivisor( A_(0,0)*A_(1,1)*A_(2,2)*A_(3,3)*A_(4,4) ) ) {
       BLAZE_THROW_DIVISION_BY_ZERO( "Solving LSE with singular system matrix failed" );
@@ -3984,15 +3984,15 @@ void solve6x6( const DenseMatrix<MT,SO>& A, DenseVector<VT1,TF1>& x, const Dense
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT>, ElementType_t<VT1> );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT>, ElementType_t<VT2> );
 
-   BLAZE_INTERNAL_ASSERT( (~A).rows()    == 6UL, "Invalid number of rows detected"    );
-   BLAZE_INTERNAL_ASSERT( (~A).columns() == 6UL, "Invalid number of columns detected" );
-   BLAZE_INTERNAL_ASSERT( (~b).size()    == 6UL, "Invalid vector size detected"       );
+   BLAZE_INTERNAL_ASSERT( (*A).rows()    == 6UL, "Invalid number of rows detected"    );
+   BLAZE_INTERNAL_ASSERT( (*A).columns() == 6UL, "Invalid number of columns detected" );
+   BLAZE_INTERNAL_ASSERT( (*b).size()    == 6UL, "Invalid vector size detected"       );
 
    using ET = ElementType_t<MT>;
 
-   CompositeType_t<MT> A_( ~A );
-   VT1& x_( ~x );
-   const VT2& b_( ~b );
+   CompositeType_t<MT> A_( *A );
+   VT1& x_( *x );
+   const VT2& b_( *b );
 
    resize( x_, b_.size() );
 
@@ -4234,15 +4234,15 @@ void solve6x6( const DenseMatrix<MT,SO>& A, DenseVector<VT1,TF1>& x, const Dense
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT>, ElementType_t<VT1> );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT>, ElementType_t<VT2> );
 
-   BLAZE_INTERNAL_ASSERT( (~A).rows()    == 6UL, "Invalid number of rows detected"    );
-   BLAZE_INTERNAL_ASSERT( (~A).columns() == 6UL, "Invalid number of columns detected" );
-   BLAZE_INTERNAL_ASSERT( (~b).size()    == 6UL, "Invalid vector size detected"       );
+   BLAZE_INTERNAL_ASSERT( (*A).rows()    == 6UL, "Invalid number of rows detected"    );
+   BLAZE_INTERNAL_ASSERT( (*A).columns() == 6UL, "Invalid number of columns detected" );
+   BLAZE_INTERNAL_ASSERT( (*b).size()    == 6UL, "Invalid vector size detected"       );
 
    using ET = ElementType_t<MT>;
 
-   CompositeType_t<MT> A_( ~A );
-   VT1& x_( ~x );
-   const VT2& b_( ~b );
+   CompositeType_t<MT> A_( *A );
+   VT1& x_( *x );
+   const VT2& b_( *b );
 
    resize( x_, b_.size() );
 
@@ -4485,13 +4485,13 @@ void solve6x6( const DenseMatrix<MT,SO>& A, DenseVector<VT1,TF1>& x, const Dense
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT>, ElementType_t<VT1> );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT>, ElementType_t<VT2> );
 
-   BLAZE_INTERNAL_ASSERT( (~A).rows()    == 6UL, "Invalid number of rows detected"    );
-   BLAZE_INTERNAL_ASSERT( (~A).columns() == 6UL, "Invalid number of columns detected" );
-   BLAZE_INTERNAL_ASSERT( (~b).size()    == 6UL, "Invalid vector size detected"       );
+   BLAZE_INTERNAL_ASSERT( (*A).rows()    == 6UL, "Invalid number of rows detected"    );
+   BLAZE_INTERNAL_ASSERT( (*A).columns() == 6UL, "Invalid number of columns detected" );
+   BLAZE_INTERNAL_ASSERT( (*b).size()    == 6UL, "Invalid vector size detected"       );
 
-   CompositeType_t<MT> A_( ~A );
-   VT1& x_( ~x );
-   const VT2& b_( ~b );
+   CompositeType_t<MT> A_( *A );
+   VT1& x_( *x );
+   const VT2& b_( *b );
 
    if( !isDivisor( A_(0,0)*A_(1,1)*A_(2,2)*A_(3,3)*A_(4,4)*A_(5,5) ) ) {
       BLAZE_THROW_DIVISION_BY_ZERO( "Solving LSE with singular system matrix failed" );
@@ -4551,13 +4551,13 @@ void solve6x6( const DenseMatrix<MT,SO>& A, DenseVector<VT1,TF1>& x, const Dense
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT>, ElementType_t<VT1> );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT>, ElementType_t<VT2> );
 
-   BLAZE_INTERNAL_ASSERT( (~A).rows()    == 6UL, "Invalid number of rows detected"    );
-   BLAZE_INTERNAL_ASSERT( (~A).columns() == 6UL, "Invalid number of columns detected" );
-   BLAZE_INTERNAL_ASSERT( (~b).size()    == 6UL, "Invalid vector size detected"       );
+   BLAZE_INTERNAL_ASSERT( (*A).rows()    == 6UL, "Invalid number of rows detected"    );
+   BLAZE_INTERNAL_ASSERT( (*A).columns() == 6UL, "Invalid number of columns detected" );
+   BLAZE_INTERNAL_ASSERT( (*b).size()    == 6UL, "Invalid vector size detected"       );
 
-   CompositeType_t<MT> A_( ~A );
-   VT1& x_( ~x );
-   const VT2& b_( ~b );
+   CompositeType_t<MT> A_( *A );
+   VT1& x_( *x );
+   const VT2& b_( *b );
 
    resize( x_, b_.size() );
 
@@ -4613,13 +4613,13 @@ void solve6x6( const DenseMatrix<MT,SO>& A, DenseVector<VT1,TF1>& x, const Dense
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT>, ElementType_t<VT1> );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT>, ElementType_t<VT2> );
 
-   BLAZE_INTERNAL_ASSERT( (~A).rows()    == 6UL, "Invalid number of rows detected"    );
-   BLAZE_INTERNAL_ASSERT( (~A).columns() == 6UL, "Invalid number of columns detected" );
-   BLAZE_INTERNAL_ASSERT( (~b).size()    == 6UL, "Invalid vector size detected"       );
+   BLAZE_INTERNAL_ASSERT( (*A).rows()    == 6UL, "Invalid number of rows detected"    );
+   BLAZE_INTERNAL_ASSERT( (*A).columns() == 6UL, "Invalid number of columns detected" );
+   BLAZE_INTERNAL_ASSERT( (*b).size()    == 6UL, "Invalid vector size detected"       );
 
-   CompositeType_t<MT> A_( ~A );
-   VT1& x_( ~x );
-   const VT2& b_( ~b );
+   CompositeType_t<MT> A_( *A );
+   VT1& x_( *x );
+   const VT2& b_( *b );
 
    if( !isDivisor( A_(0,0)*A_(1,1)*A_(2,2)*A_(3,3)*A_(4,4)*A_(5,5) ) ) {
       BLAZE_THROW_DIVISION_BY_ZERO( "Solving LSE with singular system matrix failed" );
@@ -4679,13 +4679,13 @@ void solve6x6( const DenseMatrix<MT,SO>& A, DenseVector<VT1,TF1>& x, const Dense
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT>, ElementType_t<VT1> );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT>, ElementType_t<VT2> );
 
-   BLAZE_INTERNAL_ASSERT( (~A).rows()    == 6UL, "Invalid number of rows detected"    );
-   BLAZE_INTERNAL_ASSERT( (~A).columns() == 6UL, "Invalid number of columns detected" );
-   BLAZE_INTERNAL_ASSERT( (~b).size()    == 6UL, "Invalid vector size detected"       );
+   BLAZE_INTERNAL_ASSERT( (*A).rows()    == 6UL, "Invalid number of rows detected"    );
+   BLAZE_INTERNAL_ASSERT( (*A).columns() == 6UL, "Invalid number of columns detected" );
+   BLAZE_INTERNAL_ASSERT( (*b).size()    == 6UL, "Invalid vector size detected"       );
 
-   CompositeType_t<MT> A_( ~A );
-   VT1& x_( ~x );
-   const VT2& b_( ~b );
+   CompositeType_t<MT> A_( *A );
+   VT1& x_( *x );
+   const VT2& b_( *b );
 
    resize( x_, b_.size() );
 
@@ -4740,13 +4740,13 @@ void solve6x6( const DenseMatrix<MT,SO>& A, DenseVector<VT1,TF1>& x, const Dense
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT>, ElementType_t<VT1> );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT>, ElementType_t<VT2> );
 
-   BLAZE_INTERNAL_ASSERT( (~A).rows()    == 6UL, "Invalid number of rows detected"    );
-   BLAZE_INTERNAL_ASSERT( (~A).columns() == 6UL, "Invalid number of columns detected" );
-   BLAZE_INTERNAL_ASSERT( (~b).size()    == 6UL, "Invalid vector size detected"       );
+   BLAZE_INTERNAL_ASSERT( (*A).rows()    == 6UL, "Invalid number of rows detected"    );
+   BLAZE_INTERNAL_ASSERT( (*A).columns() == 6UL, "Invalid number of columns detected" );
+   BLAZE_INTERNAL_ASSERT( (*b).size()    == 6UL, "Invalid vector size detected"       );
 
-   CompositeType_t<MT> A_( ~A );
-   VT1& x_( ~x );
-   const VT2& b_( ~b );
+   CompositeType_t<MT> A_( *A );
+   VT1& x_( *x );
+   const VT2& b_( *b );
 
    if( !isDivisor( A_(0,0)*A_(1,1)*A_(2,2)*A_(3,3)*A_(4,4)*A_(5,5) ) ) {
       BLAZE_THROW_DIVISION_BY_ZERO( "Solving LSE with singular system matrix failed" );
@@ -4805,13 +4805,13 @@ void solve6x6( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& X, const Den
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT1>, ElementType_t<MT2> );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT1>, ElementType_t<MT3> );
 
-   BLAZE_INTERNAL_ASSERT( (~A).rows()    == 6UL, "Invalid number of rows detected"    );
-   BLAZE_INTERNAL_ASSERT( (~A).columns() == 6UL, "Invalid number of columns detected" );
-   BLAZE_INTERNAL_ASSERT( (~B).rows()    == 6UL, "Invalid number of rows detected"    );
+   BLAZE_INTERNAL_ASSERT( (*A).rows()    == 6UL, "Invalid number of rows detected"    );
+   BLAZE_INTERNAL_ASSERT( (*A).columns() == 6UL, "Invalid number of columns detected" );
+   BLAZE_INTERNAL_ASSERT( (*B).rows()    == 6UL, "Invalid number of rows detected"    );
 
-   resize( ~X, (~B).rows(), (~B).columns() );
-   const ResultType_t<MT1> invA( inv( ~A ) );
-   smpAssign( ~X, invA * (~B) );
+   resize( *X, (*B).rows(), (*B).columns() );
+   const ResultType_t<MT1> invA( inv( *A ) );
+   smpAssign( *X, invA * (*B) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -4858,15 +4858,15 @@ void solve6x6( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& X, const Den
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT1>, ElementType_t<MT2> );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT1>, ElementType_t<MT3> );
 
-   BLAZE_INTERNAL_ASSERT( (~A).rows()    == 6UL, "Invalid number of rows detected"    );
-   BLAZE_INTERNAL_ASSERT( (~A).columns() == 6UL, "Invalid number of columns detected" );
-   BLAZE_INTERNAL_ASSERT( (~B).rows()    == 6UL, "Invalid number of rows detected"    );
+   BLAZE_INTERNAL_ASSERT( (*A).rows()    == 6UL, "Invalid number of rows detected"    );
+   BLAZE_INTERNAL_ASSERT( (*A).columns() == 6UL, "Invalid number of columns detected" );
+   BLAZE_INTERNAL_ASSERT( (*B).rows()    == 6UL, "Invalid number of rows detected"    );
 
    using ET = ElementType_t<MT1>;
 
-   CompositeType_t<MT1> A_( ~A );
-   MT2& X_( ~X );
-   const MT3& B_( ~B );
+   CompositeType_t<MT1> A_( *A );
+   MT2& X_( *X );
+   const MT3& B_( *B );
 
    if( !isDivisor( A_(0,0)*A_(1,1)*A_(2,2)*A_(3,3)*A_(4,4)*A_(5,5) ) ) {
       BLAZE_THROW_DIVISION_BY_ZERO( "Solving LSE with singular system matrix failed" );
@@ -4938,13 +4938,13 @@ void solve6x6( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& X, const Den
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT1>, ElementType_t<MT2> );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT1>, ElementType_t<MT3> );
 
-   BLAZE_INTERNAL_ASSERT( (~A).rows()    == 6UL, "Invalid number of rows detected"    );
-   BLAZE_INTERNAL_ASSERT( (~A).columns() == 6UL, "Invalid number of columns detected" );
-   BLAZE_INTERNAL_ASSERT( (~B).rows()    == 6UL, "Invalid number of rows detected"    );
+   BLAZE_INTERNAL_ASSERT( (*A).rows()    == 6UL, "Invalid number of rows detected"    );
+   BLAZE_INTERNAL_ASSERT( (*A).columns() == 6UL, "Invalid number of columns detected" );
+   BLAZE_INTERNAL_ASSERT( (*B).rows()    == 6UL, "Invalid number of rows detected"    );
 
-   CompositeType_t<MT1> A_( ~A );
-   MT2& X_( ~X );
-   const MT3& B_( ~B );
+   CompositeType_t<MT1> A_( *A );
+   MT2& X_( *X );
+   const MT3& B_( *B );
 
    const size_t M( B_.rows()    );
    const size_t N( B_.columns() );
@@ -5005,15 +5005,15 @@ void solve6x6( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& X, const Den
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT1>, ElementType_t<MT2> );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT1>, ElementType_t<MT3> );
 
-   BLAZE_INTERNAL_ASSERT( (~A).rows()    == 6UL, "Invalid number of rows detected"    );
-   BLAZE_INTERNAL_ASSERT( (~A).columns() == 6UL, "Invalid number of columns detected" );
-   BLAZE_INTERNAL_ASSERT( (~B).rows()    == 6UL, "Invalid number of rows detected"    );
+   BLAZE_INTERNAL_ASSERT( (*A).rows()    == 6UL, "Invalid number of rows detected"    );
+   BLAZE_INTERNAL_ASSERT( (*A).columns() == 6UL, "Invalid number of columns detected" );
+   BLAZE_INTERNAL_ASSERT( (*B).rows()    == 6UL, "Invalid number of rows detected"    );
 
    using ET = ElementType_t<MT1>;
 
-   CompositeType_t<MT1> A_( ~A );
-   MT2& X_( ~X );
-   const MT3& B_( ~B );
+   CompositeType_t<MT1> A_( *A );
+   MT2& X_( *X );
+   const MT3& B_( *B );
 
    if( !isDivisor( A_(0,0)*A_(1,1)*A_(2,2)*A_(3,3)*A_(4,4)*A_(5,5) ) ) {
       BLAZE_THROW_DIVISION_BY_ZERO( "Solving LSE with singular system matrix failed" );
@@ -5085,13 +5085,13 @@ void solve6x6( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& X, const Den
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT1>, ElementType_t<MT2> );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT1>, ElementType_t<MT3> );
 
-   BLAZE_INTERNAL_ASSERT( (~A).rows()    == 6UL, "Invalid number of rows detected"    );
-   BLAZE_INTERNAL_ASSERT( (~A).columns() == 6UL, "Invalid number of columns detected" );
-   BLAZE_INTERNAL_ASSERT( (~B).rows()    == 6UL, "Invalid number of rows detected"    );
+   BLAZE_INTERNAL_ASSERT( (*A).rows()    == 6UL, "Invalid number of rows detected"    );
+   BLAZE_INTERNAL_ASSERT( (*A).columns() == 6UL, "Invalid number of columns detected" );
+   BLAZE_INTERNAL_ASSERT( (*B).rows()    == 6UL, "Invalid number of rows detected"    );
 
-   CompositeType_t<MT1> A_( ~A );
-   MT2& X_( ~X );
-   const MT3& B_( ~B );
+   CompositeType_t<MT1> A_( *A );
+   MT2& X_( *X );
+   const MT3& B_( *B );
 
    const size_t M( B_.rows()    );
    const size_t N( B_.columns() );
@@ -5151,15 +5151,15 @@ void solve6x6( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& X, const Den
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT1>, ElementType_t<MT2> );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT1>, ElementType_t<MT3> );
 
-   BLAZE_INTERNAL_ASSERT( (~A).rows()    == 6UL, "Invalid number of rows detected"    );
-   BLAZE_INTERNAL_ASSERT( (~A).columns() == 6UL, "Invalid number of columns detected" );
-   BLAZE_INTERNAL_ASSERT( (~B).rows()    == 6UL, "Invalid number of rows detected"    );
+   BLAZE_INTERNAL_ASSERT( (*A).rows()    == 6UL, "Invalid number of rows detected"    );
+   BLAZE_INTERNAL_ASSERT( (*A).columns() == 6UL, "Invalid number of columns detected" );
+   BLAZE_INTERNAL_ASSERT( (*B).rows()    == 6UL, "Invalid number of rows detected"    );
 
    using ET = ElementType_t<MT1>;
 
-   CompositeType_t<MT1> A_( ~A );
-   MT2& X_( ~X );
-   const MT3& B_( ~B );
+   CompositeType_t<MT1> A_( *A );
+   MT2& X_( *X );
+   const MT3& B_( *B );
 
    if( !isDivisor( A_(0,0)*A_(1,1)*A_(2,2)*A_(3,3)*A_(4,4)*A_(5,5) ) ) {
       BLAZE_THROW_DIVISION_BY_ZERO( "Solving LSE with singular system matrix failed" );
@@ -5238,22 +5238,22 @@ void solveNxN( const DenseMatrix<MT,SO>& A, DenseVector<VT1,TF1>& x, const Dense
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT>, ElementType_t<VT1> );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT>, ElementType_t<VT2> );
 
-   BLAZE_INTERNAL_ASSERT( isSquare( ~A ), "Non-square matrix detected" );
-   BLAZE_INTERNAL_ASSERT( (~A).rows() == (~b).size(), "Invalid matrix and vector sizes" );
+   BLAZE_INTERNAL_ASSERT( isSquare( *A ), "Non-square matrix detected" );
+   BLAZE_INTERNAL_ASSERT( (*A).rows() == (*b).size(), "Invalid matrix and vector sizes" );
 
    using RT = ResultType_t<MT>;
    using OT = OppositeType_t<MT>;
 
-   const size_t N( (~b).size() );
+   const size_t N( (*b).size() );
 
    RemoveAdaptor_t< If_t<SO,RT,OT> > Atmp( A );
 
-   resize( ~x, N );
-   smpAssign( ~x, ~b );
+   resize( *x, N );
+   smpAssign( *x, *b );
 
    const std::unique_ptr<blas_int_t[]> ipiv( new blas_int_t[N] );
 
-   gesv( Atmp, ~x, ipiv.get() );
+   gesv( Atmp, *x, ipiv.get() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -5299,22 +5299,22 @@ void solveNxN( const DenseMatrix<MT,SO>& A, DenseVector<VT1,TF1>& x, const Dense
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT>, ElementType_t<VT1> );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT>, ElementType_t<VT2> );
 
-   BLAZE_INTERNAL_ASSERT( isSquare( ~A ), "Non-square matrix detected" );
-   BLAZE_INTERNAL_ASSERT( (~A).rows() == (~b).size(), "Invalid matrix and vector sizes" );
+   BLAZE_INTERNAL_ASSERT( isSquare( *A ), "Non-square matrix detected" );
+   BLAZE_INTERNAL_ASSERT( (*A).rows() == (*b).size(), "Invalid matrix and vector sizes" );
 
    using RT = ResultType_t<MT>;
    using OT = OppositeType_t<MT>;
 
-   const size_t N( (~b).size() );
+   const size_t N( (*b).size() );
 
    RemoveAdaptor_t< If_t<SO,RT,OT> > Atmp( A );
 
-   resize( ~x, N );
-   smpAssign( ~x, ~b );
+   resize( *x, N );
+   smpAssign( *x, *b );
 
    const std::unique_ptr<blas_int_t[]> ipiv( new blas_int_t[N] );
 
-   sysv( Atmp, ~x, 'L', ipiv.get() );
+   sysv( Atmp, *x, 'L', ipiv.get() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -5360,22 +5360,22 @@ void solveNxN( const DenseMatrix<MT,SO>& A, DenseVector<VT1,TF1>& x, const Dense
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT>, ElementType_t<VT1> );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT>, ElementType_t<VT2> );
 
-   BLAZE_INTERNAL_ASSERT( isSquare( ~A ), "Non-square matrix detected" );
-   BLAZE_INTERNAL_ASSERT( (~A).rows() == (~b).size(), "Invalid matrix and vector sizes" );
+   BLAZE_INTERNAL_ASSERT( isSquare( *A ), "Non-square matrix detected" );
+   BLAZE_INTERNAL_ASSERT( (*A).rows() == (*b).size(), "Invalid matrix and vector sizes" );
 
    using RT = ResultType_t<MT>;
    using OT = OppositeType_t<MT>;
 
-   const size_t N( (~b).size() );
+   const size_t N( (*b).size() );
 
    RemoveAdaptor_t< If_t<SO,RT,OT> > Atmp( A );
 
-   resize( ~x, N );
-   smpAssign( ~x, ~b );
+   resize( *x, N );
+   smpAssign( *x, *b );
 
    const std::unique_ptr<blas_int_t[]> ipiv( new blas_int_t[N] );
 
-   hesv( Atmp, ~x, 'L', ipiv.get() );
+   hesv( Atmp, *x, 'L', ipiv.get() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -5422,18 +5422,18 @@ void solveNxN( const DenseMatrix<MT,SO>& A, DenseVector<VT1,TF1>& x, const Dense
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT>, ElementType_t<VT1> );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT>, ElementType_t<VT2> );
 
-   BLAZE_INTERNAL_ASSERT( isSquare( ~A ), "Non-square matrix detected" );
-   BLAZE_INTERNAL_ASSERT( (~A).rows() == (~b).size(), "Invalid matrix and vector sizes" );
+   BLAZE_INTERNAL_ASSERT( isSquare( *A ), "Non-square matrix detected" );
+   BLAZE_INTERNAL_ASSERT( (*A).rows() == (*b).size(), "Invalid matrix and vector sizes" );
 
-   CompositeType_t<MT> A_( ~A );
-   VT1& x_( ~x );
-   const VT2& b_( ~b );
+   CompositeType_t<MT> A_( *A );
+   VT1& x_( *x );
+   const VT2& b_( *b );
 
    if( !isDivisor( trace( A_ ) ) ) {
       BLAZE_THROW_DIVISION_BY_ZERO( "Solving LSE with singular system matrix failed" );
    }
 
-   const size_t N( (~b).size() );
+   const size_t N( (*b).size() );
 
    resize( x_, N );
 
@@ -5489,18 +5489,18 @@ void solveNxN( const DenseMatrix<MT,SO>& A, DenseVector<VT1,TF1>& x, const Dense
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT>, ElementType_t<VT1> );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT>, ElementType_t<VT2> );
 
-   BLAZE_INTERNAL_ASSERT( isSquare( ~A ), "Non-square matrix detected" );
-   BLAZE_INTERNAL_ASSERT( (~A).rows() == (~b).size(), "Invalid matrix and vector sizes" );
+   BLAZE_INTERNAL_ASSERT( isSquare( *A ), "Non-square matrix detected" );
+   BLAZE_INTERNAL_ASSERT( (*A).rows() == (*b).size(), "Invalid matrix and vector sizes" );
 
-   CompositeType_t<MT> A_( ~A );
-   VT1& x_( ~x );
-   const VT2& b_( ~b );
+   CompositeType_t<MT> A_( *A );
+   VT1& x_( *x );
+   const VT2& b_( *b );
 
    if( !isDivisor( trace( A_ ) ) ) {
       BLAZE_THROW_DIVISION_BY_ZERO( "Solving LSE with singular system matrix failed" );
    }
 
-   const size_t N( (~b).size() );
+   const size_t N( (*b).size() );
 
    resize( x_, N );
 
@@ -5555,18 +5555,18 @@ void solveNxN( const DenseMatrix<MT,SO>& A, DenseVector<VT1,TF1>& x, const Dense
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT>, ElementType_t<VT1> );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT>, ElementType_t<VT2> );
 
-   BLAZE_INTERNAL_ASSERT( isSquare( ~A ), "Non-square matrix detected" );
-   BLAZE_INTERNAL_ASSERT( (~A).rows() == (~b).size(), "Invalid matrix and vector sizes" );
+   BLAZE_INTERNAL_ASSERT( isSquare( *A ), "Non-square matrix detected" );
+   BLAZE_INTERNAL_ASSERT( (*A).rows() == (*b).size(), "Invalid matrix and vector sizes" );
 
-   CompositeType_t<MT> A_( ~A );
-   VT1& x_( ~x );
-   const VT2& b_( ~b );
+   CompositeType_t<MT> A_( *A );
+   VT1& x_( *x );
+   const VT2& b_( *b );
 
    if( !isDivisor( trace( A_ ) ) ) {
       BLAZE_THROW_DIVISION_BY_ZERO( "Solving LSE with singular system matrix failed" );
    }
 
-   const size_t N( (~b).size() );
+   const size_t N( (*b).size() );
 
    resize( x_, N );
 
@@ -5622,18 +5622,18 @@ void solveNxN( const DenseMatrix<MT,SO>& A, DenseVector<VT1,TF1>& x, const Dense
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT>, ElementType_t<VT1> );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT>, ElementType_t<VT2> );
 
-   BLAZE_INTERNAL_ASSERT( isSquare( ~A ), "Non-square matrix detected" );
-   BLAZE_INTERNAL_ASSERT( (~A).rows() == (~b).size(), "Invalid matrix and vector sizes" );
+   BLAZE_INTERNAL_ASSERT( isSquare( *A ), "Non-square matrix detected" );
+   BLAZE_INTERNAL_ASSERT( (*A).rows() == (*b).size(), "Invalid matrix and vector sizes" );
 
-   CompositeType_t<MT> A_( ~A );
-   VT1& x_( ~x );
-   const VT2& b_( ~b );
+   CompositeType_t<MT> A_( *A );
+   VT1& x_( *x );
+   const VT2& b_( *b );
 
    if( !isDivisor( trace( A_ ) ) ) {
       BLAZE_THROW_DIVISION_BY_ZERO( "Solving LSE with singular system matrix failed" );
    }
 
-   const size_t N( (~b).size() );
+   const size_t N( (*b).size() );
 
    resize( x_, N );
 
@@ -5687,14 +5687,14 @@ void solveNxN( const DenseMatrix<MT,SO>& A, DenseVector<VT1,TF1>& x, const Dense
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT>, ElementType_t<VT1> );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT>, ElementType_t<VT2> );
 
-   BLAZE_INTERNAL_ASSERT( isSquare( ~A ), "Non-square matrix detected" );
-   BLAZE_INTERNAL_ASSERT( (~A).rows() == (~b).size(), "Invalid matrix and vector sizes" );
+   BLAZE_INTERNAL_ASSERT( isSquare( *A ), "Non-square matrix detected" );
+   BLAZE_INTERNAL_ASSERT( (*A).rows() == (*b).size(), "Invalid matrix and vector sizes" );
 
-   const size_t N( (~b).size() );
+   const size_t N( (*b).size() );
 
-   CompositeType_t<MT> A_( ~A );
-   VT1& x_( ~x );
-   const VT2& b_( ~b );
+   CompositeType_t<MT> A_( *A );
+   VT1& x_( *x );
+   const VT2& b_( *b );
 
    if( !isDivisor( trace( A_ ) ) ) {
       BLAZE_THROW_DIVISION_BY_ZERO( "Solving LSE with singular system matrix failed" );
@@ -5750,10 +5750,10 @@ void solveNxN( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& X, const Den
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT1>, ElementType_t<MT2> );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT1>, ElementType_t<MT3> );
 
-   BLAZE_INTERNAL_ASSERT( isSquare( ~A ), "Non-square matrix detected" );
-   BLAZE_INTERNAL_ASSERT( (~A).rows() == (~B).rows(), "Invalid matrix and vector sizes" );
-   BLAZE_INTERNAL_ASSERT( IsResizable_v<MT2> || (~B).rows() == (~X).rows(), "Invalid number of rows detected" );
-   BLAZE_INTERNAL_ASSERT( IsResizable_v<MT2> || (~B).columns() == (~X).columns(), "Invalid number of columns detected" );
+   BLAZE_INTERNAL_ASSERT( isSquare( *A ), "Non-square matrix detected" );
+   BLAZE_INTERNAL_ASSERT( (*A).rows() == (*B).rows(), "Invalid matrix and vector sizes" );
+   BLAZE_INTERNAL_ASSERT( IsResizable_v<MT2> || (*B).rows() == (*X).rows(), "Invalid number of rows detected" );
+   BLAZE_INTERNAL_ASSERT( IsResizable_v<MT2> || (*B).columns() == (*X).columns(), "Invalid number of columns detected" );
 
    using MT4 = RemoveAdaptor_t< If_t< SO1, ResultType_t<MT1>, OppositeType_t<MT1> > >;
    using MT5 = RemoveAdaptor_t< If_t< SO3, ResultType_t<MT3>, OppositeType_t<MT3> > >;
@@ -5761,7 +5761,7 @@ void solveNxN( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& X, const Den
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( MT4 );
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( MT5 );
 
-   const size_t N( (~A).rows() );
+   const size_t N( (*A).rows() );
 
    MT4 Atmp( A );
    MT5 Xtmp( B );
@@ -5770,8 +5770,8 @@ void solveNxN( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& X, const Den
 
    gesv( Atmp, Xtmp, ipiv.get() );
 
-   resize( ~X, Xtmp.rows(), Xtmp.columns() );
-   smpAssign( ~X, Xtmp );
+   resize( *X, Xtmp.rows(), Xtmp.columns() );
+   smpAssign( *X, Xtmp );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -5817,10 +5817,10 @@ void solveNxN( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& X, const Den
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT1>, ElementType_t<MT2> );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT1>, ElementType_t<MT3> );
 
-   BLAZE_INTERNAL_ASSERT( isSquare( ~A ), "Non-square matrix detected" );
-   BLAZE_INTERNAL_ASSERT( (~A).rows() == (~B).rows(), "Invalid matrix and vector sizes" );
-   BLAZE_INTERNAL_ASSERT( IsResizable_v<MT2> || (~B).rows() == (~X).rows(), "Invalid number of rows detected" );
-   BLAZE_INTERNAL_ASSERT( IsResizable_v<MT2> || (~B).columns() == (~X).columns(), "Invalid number of columns detected" );
+   BLAZE_INTERNAL_ASSERT( isSquare( *A ), "Non-square matrix detected" );
+   BLAZE_INTERNAL_ASSERT( (*A).rows() == (*B).rows(), "Invalid matrix and vector sizes" );
+   BLAZE_INTERNAL_ASSERT( IsResizable_v<MT2> || (*B).rows() == (*X).rows(), "Invalid number of rows detected" );
+   BLAZE_INTERNAL_ASSERT( IsResizable_v<MT2> || (*B).columns() == (*X).columns(), "Invalid number of columns detected" );
 
    using MT4 = RemoveAdaptor_t< If_t< SO1, ResultType_t<MT1>, OppositeType_t<MT1> > >;
    using MT5 = RemoveAdaptor_t< If_t< SO3, ResultType_t<MT3>, OppositeType_t<MT3> > >;
@@ -5828,7 +5828,7 @@ void solveNxN( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& X, const Den
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( MT4 );
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( MT5 );
 
-   const size_t N( (~A).rows() );
+   const size_t N( (*A).rows() );
 
    MT4 Atmp( A );
    MT5 Xtmp( B );
@@ -5837,8 +5837,8 @@ void solveNxN( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& X, const Den
 
    sysv( Atmp, Xtmp, 'L', ipiv.get() );
 
-   resize( ~X, Xtmp.rows(), Xtmp.columns() );
-   smpAssign( ~X, Xtmp );
+   resize( *X, Xtmp.rows(), Xtmp.columns() );
+   smpAssign( *X, Xtmp );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -5884,10 +5884,10 @@ void solveNxN( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& X, const Den
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT1>, ElementType_t<MT2> );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT1>, ElementType_t<MT3> );
 
-   BLAZE_INTERNAL_ASSERT( isSquare( ~A ), "Non-square matrix detected" );
-   BLAZE_INTERNAL_ASSERT( (~A).rows() == (~B).rows(), "Invalid matrix and vector sizes" );
-   BLAZE_INTERNAL_ASSERT( IsResizable_v<MT2> || (~B).rows() == (~X).rows(), "Invalid number of rows detected" );
-   BLAZE_INTERNAL_ASSERT( IsResizable_v<MT2> || (~B).columns() == (~X).columns(), "Invalid number of columns detected" );
+   BLAZE_INTERNAL_ASSERT( isSquare( *A ), "Non-square matrix detected" );
+   BLAZE_INTERNAL_ASSERT( (*A).rows() == (*B).rows(), "Invalid matrix and vector sizes" );
+   BLAZE_INTERNAL_ASSERT( IsResizable_v<MT2> || (*B).rows() == (*X).rows(), "Invalid number of rows detected" );
+   BLAZE_INTERNAL_ASSERT( IsResizable_v<MT2> || (*B).columns() == (*X).columns(), "Invalid number of columns detected" );
 
    using MT4 = RemoveAdaptor_t< If_t< SO1, ResultType_t<MT1>, OppositeType_t<MT1> > >;
    using MT5 = RemoveAdaptor_t< If_t< SO3, ResultType_t<MT3>, OppositeType_t<MT3> > >;
@@ -5895,7 +5895,7 @@ void solveNxN( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& X, const Den
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( MT4 );
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( MT5 );
 
-   const size_t N( (~A).rows() );
+   const size_t N( (*A).rows() );
 
    MT4 Atmp( A );
    MT5 Xtmp( B );
@@ -5904,8 +5904,8 @@ void solveNxN( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& X, const Den
 
    hesv( Atmp, Xtmp, 'L', ipiv.get() );
 
-   resize( ~X, Xtmp.rows(), Xtmp.columns() );
-   smpAssign( ~X, Xtmp );
+   resize( *X, Xtmp.rows(), Xtmp.columns() );
+   smpAssign( *X, Xtmp );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -5952,16 +5952,16 @@ void solveNxN( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& X, const Den
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT1>, ElementType_t<MT2> );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT1>, ElementType_t<MT3> );
 
-   BLAZE_INTERNAL_ASSERT( isSquare( ~A ), "Non-square matrix detected" );
-   BLAZE_INTERNAL_ASSERT( (~A).rows() == (~B).rows(), "Invalid matrix and vector sizes" );
-   BLAZE_INTERNAL_ASSERT( IsResizable_v<MT2> || (~B).rows() == (~X).rows(), "Invalid number of rows detected" );
-   BLAZE_INTERNAL_ASSERT( IsResizable_v<MT2> || (~B).columns() == (~X).columns(), "Invalid number of columns detected" );
+   BLAZE_INTERNAL_ASSERT( isSquare( *A ), "Non-square matrix detected" );
+   BLAZE_INTERNAL_ASSERT( (*A).rows() == (*B).rows(), "Invalid matrix and vector sizes" );
+   BLAZE_INTERNAL_ASSERT( IsResizable_v<MT2> || (*B).rows() == (*X).rows(), "Invalid number of rows detected" );
+   BLAZE_INTERNAL_ASSERT( IsResizable_v<MT2> || (*B).columns() == (*X).columns(), "Invalid number of columns detected" );
 
    using ET = ElementType_t<MT1>;
 
-   CompositeType_t<MT1> A_( ~A );
-   MT2& X_( ~X );
-   const MT3& B_( ~B );
+   CompositeType_t<MT1> A_( *A );
+   MT2& X_( *X );
+   const MT3& B_( *B );
 
    if( !isDivisor( trace( A_ ) ) ) {
       BLAZE_THROW_DIVISION_BY_ZERO( "Solving LSE with singular system matrix failed" );
@@ -6027,14 +6027,14 @@ void solveNxN( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& X, const Den
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT1>, ElementType_t<MT2> );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT1>, ElementType_t<MT3> );
 
-   BLAZE_INTERNAL_ASSERT( isSquare( ~A ), "Non-square matrix detected" );
-   BLAZE_INTERNAL_ASSERT( (~A).rows() == (~B).rows(), "Invalid matrix and vector sizes" );
-   BLAZE_INTERNAL_ASSERT( IsResizable_v<MT2> || (~B).rows() == (~X).rows(), "Invalid number of rows detected" );
-   BLAZE_INTERNAL_ASSERT( IsResizable_v<MT2> || (~B).columns() == (~X).columns(), "Invalid number of columns detected" );
+   BLAZE_INTERNAL_ASSERT( isSquare( *A ), "Non-square matrix detected" );
+   BLAZE_INTERNAL_ASSERT( (*A).rows() == (*B).rows(), "Invalid matrix and vector sizes" );
+   BLAZE_INTERNAL_ASSERT( IsResizable_v<MT2> || (*B).rows() == (*X).rows(), "Invalid number of rows detected" );
+   BLAZE_INTERNAL_ASSERT( IsResizable_v<MT2> || (*B).columns() == (*X).columns(), "Invalid number of columns detected" );
 
-   CompositeType_t<MT1> A_( ~A );
-   MT2& X_( ~X );
-   const MT3& B_( ~B );
+   CompositeType_t<MT1> A_( *A );
+   MT2& X_( *X );
+   const MT3& B_( *B );
 
    const size_t M( B_.rows()    );
    const size_t N( B_.columns() );
@@ -6094,16 +6094,16 @@ void solveNxN( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& X, const Den
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT1>, ElementType_t<MT2> );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT1>, ElementType_t<MT3> );
 
-   BLAZE_INTERNAL_ASSERT( isSquare( ~A ), "Non-square matrix detected" );
-   BLAZE_INTERNAL_ASSERT( (~A).rows() == (~B).rows(), "Invalid matrix and vector sizes" );
-   BLAZE_INTERNAL_ASSERT( IsResizable_v<MT2> || (~B).rows() == (~X).rows(), "Invalid number of rows detected" );
-   BLAZE_INTERNAL_ASSERT( IsResizable_v<MT2> || (~B).columns() == (~X).columns(), "Invalid number of columns detected" );
+   BLAZE_INTERNAL_ASSERT( isSquare( *A ), "Non-square matrix detected" );
+   BLAZE_INTERNAL_ASSERT( (*A).rows() == (*B).rows(), "Invalid matrix and vector sizes" );
+   BLAZE_INTERNAL_ASSERT( IsResizable_v<MT2> || (*B).rows() == (*X).rows(), "Invalid number of rows detected" );
+   BLAZE_INTERNAL_ASSERT( IsResizable_v<MT2> || (*B).columns() == (*X).columns(), "Invalid number of columns detected" );
 
    using ET = ElementType_t<MT1>;
 
-   CompositeType_t<MT1> A_( ~A );
-   MT2& X_( ~X );
-   const MT3& B_( ~B );
+   CompositeType_t<MT1> A_( *A );
+   MT2& X_( *X );
+   const MT3& B_( *B );
 
    if( !isDivisor( trace( A_ ) ) ) {
       BLAZE_THROW_DIVISION_BY_ZERO( "Solving LSE with singular system matrix failed" );
@@ -6169,14 +6169,14 @@ void solveNxN( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& X, const Den
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT1>, ElementType_t<MT2> );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT1>, ElementType_t<MT3> );
 
-   BLAZE_INTERNAL_ASSERT( isSquare( ~A ), "Non-square matrix detected" );
-   BLAZE_INTERNAL_ASSERT( (~A).rows() == (~B).rows(), "Invalid matrix and vector sizes" );
-   BLAZE_INTERNAL_ASSERT( IsResizable_v<MT2> || (~B).rows() == (~X).rows(), "Invalid number of rows detected" );
-   BLAZE_INTERNAL_ASSERT( IsResizable_v<MT2> || (~B).columns() == (~X).columns(), "Invalid number of columns detected" );
+   BLAZE_INTERNAL_ASSERT( isSquare( *A ), "Non-square matrix detected" );
+   BLAZE_INTERNAL_ASSERT( (*A).rows() == (*B).rows(), "Invalid matrix and vector sizes" );
+   BLAZE_INTERNAL_ASSERT( IsResizable_v<MT2> || (*B).rows() == (*X).rows(), "Invalid number of rows detected" );
+   BLAZE_INTERNAL_ASSERT( IsResizable_v<MT2> || (*B).columns() == (*X).columns(), "Invalid number of columns detected" );
 
-   CompositeType_t<MT1> A_( ~A );
-   MT2& X_( ~X );
-   const MT3& B_( ~B );
+   CompositeType_t<MT1> A_( *A );
+   MT2& X_( *X );
+   const MT3& B_( *B );
 
    const size_t M( B_.rows()    );
    const size_t N( B_.columns() );
@@ -6235,16 +6235,16 @@ void solveNxN( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& X, const Den
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT1>, ElementType_t<MT2> );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT1>, ElementType_t<MT3> );
 
-   BLAZE_INTERNAL_ASSERT( isSquare( ~A ), "Non-square matrix detected" );
-   BLAZE_INTERNAL_ASSERT( (~A).rows() == (~B).rows(), "Invalid matrix and vector sizes" );
-   BLAZE_INTERNAL_ASSERT( IsResizable_v<MT2> || (~B).rows() == (~X).rows(), "Invalid number of rows detected" );
-   BLAZE_INTERNAL_ASSERT( IsResizable_v<MT2> || (~B).columns() == (~X).columns(), "Invalid number of columns detected" );
+   BLAZE_INTERNAL_ASSERT( isSquare( *A ), "Non-square matrix detected" );
+   BLAZE_INTERNAL_ASSERT( (*A).rows() == (*B).rows(), "Invalid matrix and vector sizes" );
+   BLAZE_INTERNAL_ASSERT( IsResizable_v<MT2> || (*B).rows() == (*X).rows(), "Invalid number of rows detected" );
+   BLAZE_INTERNAL_ASSERT( IsResizable_v<MT2> || (*B).columns() == (*X).columns(), "Invalid number of columns detected" );
 
    using ET = ElementType_t<MT1>;
 
-   CompositeType_t<MT1> A_( ~A );
-   MT2& X_( ~X );
-   const MT3& B_( ~B );
+   CompositeType_t<MT1> A_( *A );
+   MT2& X_( *X );
+   const MT3& B_( *B );
 
    if( !isDivisor( trace( A_ ) ) ) {
       BLAZE_THROW_DIVISION_BY_ZERO( "Solving LSE with singular system matrix failed" );
@@ -6360,25 +6360,25 @@ void solve( const DenseMatrix<MT,SO>& A, DenseVector<VT1,TF1>& x, const DenseVec
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT>, ElementType_t<VT1> );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT>, ElementType_t<VT2> );
 
-   if( !isSquare( ~A ) ) {
+   if( !isSquare( *A ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid non-square system matrix provided" );
    }
-   else if( (~A).rows() != (~b).size() ) {
+   else if( (*A).rows() != (*b).size() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid right-hand side vector provided" );
    }
 
-   switch( (~A).rows() ) {
+   switch( (*A).rows() ) {
       case 0UL:                         break;
-      case 1UL: solve1x1( ~A, ~x, ~b ); break;
-      case 2UL: solve2x2( ~A, ~x, ~b ); break;
-      case 3UL: solve3x3( ~A, ~x, ~b ); break;
-      case 4UL: solve4x4( ~A, ~x, ~b ); break;
-      case 5UL: solve5x5( ~A, ~x, ~b ); break;
-      case 6UL: solve6x6( ~A, ~x, ~b ); break;
-      default : solveNxN( ~A, ~x, ~b ); break;
+      case 1UL: solve1x1( *A, *x, *b ); break;
+      case 2UL: solve2x2( *A, *x, *b ); break;
+      case 3UL: solve3x3( *A, *x, *b ); break;
+      case 4UL: solve4x4( *A, *x, *b ); break;
+      case 5UL: solve5x5( *A, *x, *b ); break;
+      case 6UL: solve6x6( *A, *x, *b ); break;
+      default : solveNxN( *A, *x, *b ); break;
    }
 
-   BLAZE_INTERNAL_ASSERT( isIntact( ~x ), "Broken invariant detected" );
+   BLAZE_INTERNAL_ASSERT( isIntact( *x ), "Broken invariant detected" );
 }
 //*************************************************************************************************
 
@@ -6469,25 +6469,25 @@ void solve( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& X, const DenseM
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT1>, ElementType_t<MT2> );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT1>, ElementType_t<MT3> );
 
-   if( !isSquare( ~A ) ) {
+   if( !isSquare( *A ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid non-square system matrix provided" );
    }
-   else if( (~A).rows() != (~B).rows() ) {
+   else if( (*A).rows() != (*B).rows() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid right-hand side matrix provided" );
    }
 
-   switch( (~A).rows() ) {
-      case 0UL: solve0x0( ~A, ~X, ~B ); break;
-      case 1UL: solve1x1( ~A, ~X, ~B ); break;
-      case 2UL: solve2x2( ~A, ~X, ~B ); break;
-      case 3UL: solve3x3( ~A, ~X, ~B ); break;
-      case 4UL: solve4x4( ~A, ~X, ~B ); break;
-      case 5UL: solve5x5( ~A, ~X, ~B ); break;
-      case 6UL: solve6x6( ~A, ~X, ~B ); break;
-      default : solveNxN( ~A, ~X, ~B ); break;
+   switch( (*A).rows() ) {
+      case 0UL: solve0x0( *A, *X, *B ); break;
+      case 1UL: solve1x1( *A, *X, *B ); break;
+      case 2UL: solve2x2( *A, *X, *B ); break;
+      case 3UL: solve3x3( *A, *X, *B ); break;
+      case 4UL: solve4x4( *A, *X, *B ); break;
+      case 5UL: solve5x5( *A, *X, *B ); break;
+      case 6UL: solve6x6( *A, *X, *B ); break;
+      default : solveNxN( *A, *X, *B ); break;
    }
 
-   BLAZE_INTERNAL_ASSERT( isIntact( ~X ), "Broken invariant detected" );
+   BLAZE_INTERNAL_ASSERT( isIntact( *X ), "Broken invariant detected" );
 }
 //*************************************************************************************************
 

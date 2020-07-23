@@ -68,7 +68,7 @@ BLAZE_ALWAYS_INLINE const SIMDint16
    operator<<( const SIMDint16& a, const SIMDi16<T>& b ) noexcept
 #if BLAZE_AVX512BW_MODE
 {
-   return _mm512_sllv_epi16( a.value, (~b).value );
+   return _mm512_sllv_epi16( a.value, (*b).value );
 }
 #else
 = delete;
@@ -91,7 +91,7 @@ BLAZE_ALWAYS_INLINE const SIMDuint16
    operator<<( const SIMDuint16& a, const SIMDi16<T>& b ) noexcept
 #if BLAZE_AVX512BW_MODE
 {
-   return _mm512_sllv_epi16( a.value, (~b).value );
+   return _mm512_sllv_epi16( a.value, (*b).value );
 }
 #else
 = delete;
@@ -122,11 +122,11 @@ BLAZE_ALWAYS_INLINE const SIMDint32
    operator<<( const SIMDint32& a, const SIMDi32<T>& b ) noexcept
 #if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
 {
-   return _mm512_sllv_epi32( a.value, (~b).value );
+   return _mm512_sllv_epi32( a.value, (*b).value );
 }
 #elif BLAZE_AVX2_MODE
 {
-   return _mm256_sllv_epi32( a.value, (~b).value );
+   return _mm256_sllv_epi32( a.value, (*b).value );
 }
 #else
 = delete;
@@ -149,11 +149,11 @@ BLAZE_ALWAYS_INLINE const SIMDuint32
    operator<<( const SIMDuint32& a, const SIMDi32<T>& b ) noexcept
 #if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
 {
-   return _mm512_sllv_epi32( a.value, (~b).value );
+   return _mm512_sllv_epi32( a.value, (*b).value );
 }
 #elif BLAZE_AVX2_MODE
 {
-   return _mm256_sllv_epi32( a.value, (~b).value );
+   return _mm256_sllv_epi32( a.value, (*b).value );
 }
 #else
 = delete;
@@ -184,11 +184,11 @@ BLAZE_ALWAYS_INLINE const SIMDint64
    operator<<( const SIMDint64& a, const SIMDi64<T>& b ) noexcept
 #if BLAZE_AVX512F_MODE
 {
-   return _mm512_sllv_epi64( a.value, (~b).value );
+   return _mm512_sllv_epi64( a.value, (*b).value );
 }
 #elif BLAZE_AVX2_MODE
 {
-   return _mm256_sllv_epi64( a.value, (~b).value );
+   return _mm256_sllv_epi64( a.value, (*b).value );
 }
 #else
 = delete;
@@ -211,11 +211,11 @@ BLAZE_ALWAYS_INLINE const SIMDuint64
    operator<<( const SIMDuint64& a, const SIMDi64<T>& b ) noexcept
 #if BLAZE_AVX512F_MODE
 {
-   return _mm512_sllv_epi64( a.value, (~b).value );
+   return _mm512_sllv_epi64( a.value, (*b).value );
 }
 #elif BLAZE_AVX2_MODE
 {
-   return _mm256_sllv_epi64( a.value, (~b).value );
+   return _mm256_sllv_epi64( a.value, (*b).value );
 }
 #else
 = delete;

@@ -464,16 +464,16 @@ template< typename Type   // Data type of the matrix
 template< typename MT     // Type of the foreign matrix
         , bool SO2 >      // Storage order of the foreign matrix
 inline UniformMatrix<Type,SO,Tag>::UniformMatrix( const Matrix<MT,SO2>& m )
-   : m_    ( (~m).rows()    )  // The current number of rows of the matrix
-   , n_    ( (~m).columns() )  // The current number of columns of the matrix
+   : m_    ( (*m).rows()    )  // The current number of rows of the matrix
+   , n_    ( (*m).columns() )  // The current number of columns of the matrix
    , value_()                  // The value of all elements of the uniform vector
 {
-   if( !IsUniform_v<MT> && !isUniform( ~m ) ) {
+   if( !IsUniform_v<MT> && !isUniform( *m ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid setup of uniform matrix" );
    }
 
    if( m_ > 0UL && n_ > 0UL ) {
-      value_ = (~m)(0UL,0UL);
+      value_ = (*m)(0UL,0UL);
    }
 }
 //*************************************************************************************************
@@ -746,22 +746,22 @@ inline UniformMatrix<Type,SO,Tag>&
 
    BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<MT> );
 
-   if( !IsUniform_v<MT> && !isUniform( ~rhs ) ) {
+   if( !IsUniform_v<MT> && !isUniform( *rhs ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment of uniform matrix" );
    }
 
-   if( IsSame_v<MT,TT> && (~rhs).isAliased( this ) ) {
+   if( IsSame_v<MT,TT> && (*rhs).isAliased( this ) ) {
       transpose();
    }
-   else if( IsSame_v<MT,CT> && (~rhs).isAliased( this ) ) {
+   else if( IsSame_v<MT,CT> && (*rhs).isAliased( this ) ) {
       ctranspose();
    }
    else {
-      m_ = (~rhs).rows();
-      n_ = (~rhs).columns();
+      m_ = (*rhs).rows();
+      n_ = (*rhs).columns();
 
-      if( (~rhs).rows() > 0UL && (~rhs).columns() > 0UL ) {
-         value_ = (~rhs)(0UL,0UL);
+      if( (*rhs).rows() > 0UL && (*rhs).columns() > 0UL ) {
+         value_ = (*rhs)(0UL,0UL);
       }
    }
 
@@ -790,16 +790,16 @@ inline UniformMatrix<Type,SO,Tag>&
 {
    BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<MT> );
 
-   if( (~rhs).rows() != m_ || (~rhs).columns() != n_ ) {
+   if( (*rhs).rows() != m_ || (*rhs).columns() != n_ ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
-   if( !IsUniform_v<MT> && !isUniform( ~rhs ) ) {
+   if( !IsUniform_v<MT> && !isUniform( *rhs ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid addition assignment to uniform matrix" );
    }
 
    if( m_ > 0UL && n_ > 0UL ) {
-      value_ += (~rhs)(0UL,0UL);
+      value_ += (*rhs)(0UL,0UL);
    }
 
    return *this;
@@ -827,16 +827,16 @@ inline UniformMatrix<Type,SO,Tag>&
 {
    BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<MT> );
 
-   if( (~rhs).rows() != m_ || (~rhs).columns() != n_ ) {
+   if( (*rhs).rows() != m_ || (*rhs).columns() != n_ ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
-   if( !IsUniform_v<MT> && !isUniform( ~rhs ) ) {
+   if( !IsUniform_v<MT> && !isUniform( *rhs ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid subtraction assignment to uniform matrix" );
    }
 
    if( m_ > 0UL && n_ > 0UL ) {
-      value_ -= (~rhs)(0UL,0UL);
+      value_ -= (*rhs)(0UL,0UL);
    }
 
    return *this;
@@ -864,16 +864,16 @@ inline UniformMatrix<Type,SO,Tag>&
 {
    BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<MT> );
 
-   if( (~rhs).rows() != m_ || (~rhs).columns() != n_ ) {
+   if( (*rhs).rows() != m_ || (*rhs).columns() != n_ ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
-   if( !IsUniform_v<MT> && !isUniform( ~rhs ) ) {
+   if( !IsUniform_v<MT> && !isUniform( *rhs ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid Schur product assignment to uniform matrix" );
    }
 
    if( m_ > 0UL && n_ > 0UL ) {
-      value_ *= (~rhs)(0UL,0UL);
+      value_ *= (*rhs)(0UL,0UL);
    }
 
    return *this;
@@ -901,18 +901,18 @@ inline UniformMatrix<Type,SO,Tag>&
 {
    BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<MT> );
 
-   if( (~rhs).rows() != n_ ) {
+   if( (*rhs).rows() != n_ ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
-   if( !IsUniform_v<MT> && !isUniform( ~rhs ) ) {
+   if( !IsUniform_v<MT> && !isUniform( *rhs ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid multiplication assignment to uniform matrix" );
    }
 
-   n_ = (~rhs).columns();
+   n_ = (*rhs).columns();
 
    if( m_ > 0UL && n_ > 0UL ) {
-      value_ = ( value_ * (~rhs)(0UL,0UL) ) * Type( (~rhs).rows() );
+      value_ = ( value_ * (*rhs)(0UL,0UL) ) * Type( (*rhs).rows() );
    }
 
    return *this;

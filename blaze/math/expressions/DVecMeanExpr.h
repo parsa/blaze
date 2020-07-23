@@ -73,9 +73,9 @@ inline decltype(auto) mean_backend( const DenseVector<VT,TF>& dv, FalseType )
 {
    using BT = UnderlyingBuiltin_t<VT>;
 
-   BLAZE_INTERNAL_ASSERT( size( ~dv ) > 0UL, "Invalid vector size detected" );
+   BLAZE_INTERNAL_ASSERT( size( *dv ) > 0UL, "Invalid vector size detected" );
 
-   return sum( ~dv ) * inv( BT( size( ~dv ) ) );
+   return sum( *dv ) * inv( BT( size( *dv ) ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -93,9 +93,9 @@ template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
 inline decltype(auto) mean_backend( const DenseVector<VT,TF>& dv, TrueType )
 {
-   BLAZE_INTERNAL_ASSERT( size( ~dv ) > 0UL, "Invalid vector size detected" );
+   BLAZE_INTERNAL_ASSERT( size( *dv ) > 0UL, "Invalid vector size detected" );
 
-   return (~dv)[0];
+   return (*dv)[0];
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -129,11 +129,11 @@ inline decltype(auto) mean( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   if( size( ~dv ) == 0UL ) {
+   if( size( *dv ) == 0UL ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid input vector" );
    }
 
-   return mean_backend( ~dv, IsUniform<VT>() );
+   return mean_backend( *dv, IsUniform<VT>() );
 }
 //*************************************************************************************************
 

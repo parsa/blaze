@@ -76,13 +76,13 @@ decltype(auto) var_backend( const DenseVector<VT,TF>& dv, FalseType )
 {
    using BT = UnderlyingBuiltin_t<VT>;
 
-   const size_t n( size( ~dv ) );
+   const size_t n( size( *dv ) );
 
    BLAZE_INTERNAL_ASSERT( n > 1UL, "Invalid vector size detected" );
 
-   const auto m( uniform<TF>( n, mean( ~dv ) ) );
+   const auto m( uniform<TF>( n, mean( *dv ) ) );
 
-   return sum( map( (~dv) - m, Pow2() ) ) * inv( BT( n-1UL ) );
+   return sum( map( (*dv) - m, Pow2() ) ) * inv( BT( n-1UL ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -102,7 +102,7 @@ decltype(auto) var_backend( const DenseVector<VT,TF>& dv, TrueType )
 {
    MAYBE_UNUSED( dv );
 
-   BLAZE_INTERNAL_ASSERT( size( ~dv ) > 1UL, "Invalid vector size detected" );
+   BLAZE_INTERNAL_ASSERT( size( *dv ) > 1UL, "Invalid vector size detected" );
 
    return ElementType_t<VT>();
 }
@@ -137,13 +137,13 @@ decltype(auto) var( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   const size_t n( size( ~dv ) );
+   const size_t n( size( *dv ) );
 
    if( n < 2UL ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid input vector" );
    }
 
-   return var_backend( ~dv, IsUniform<VT>() );
+   return var_backend( *dv, IsUniform<VT>() );
 }
 //*************************************************************************************************
 

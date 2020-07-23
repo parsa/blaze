@@ -89,24 +89,15 @@ class Matrix
    static constexpr bool storageOrder = SO;  //!< Storage order of the matrix.
    //**********************************************************************************************
 
-   //**Non-const conversion operator***************************************************************
-   /*!\brief Conversion operator for non-constant matrices.
-   //
-   // \return Reference of the actual type of the matrix.
-   */
-   BLAZE_ALWAYS_INLINE constexpr MatrixType& operator~() noexcept {
-      return *static_cast<MatrixType*>( this );
-   }
-   //**********************************************************************************************
+   //**Conversion operators************************************************************************
+   /*!\name Conversion operators */
+   //@{
+   /*[[deprecated]]*/ BLAZE_ALWAYS_INLINE constexpr MT&       operator~()       noexcept;
+   /*[[deprecated]]*/ BLAZE_ALWAYS_INLINE constexpr const MT& operator~() const noexcept;
 
-   //**Const conversion operator*******************************************************************
-   /*!\brief Conversion operator for constant matrices.
-   //
-   // \return Constant reference of the actual type of the matrix.
-   */
-   BLAZE_ALWAYS_INLINE constexpr const MatrixType& operator~() const noexcept {
-      return *static_cast<const MatrixType*>( this );
-   }
+   constexpr MT&       operator*()       noexcept;
+   constexpr const MT& operator*() const noexcept;
+   //@}
    //**********************************************************************************************
 
  protected:
@@ -122,6 +113,84 @@ class Matrix
    //@}
    //**********************************************************************************************
 };
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  CONVERSION OPERATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*!\brief CRTP-based conversion operation for non-constant matrices.
+//
+// \param matrix The matrix to be downcast.
+// \return Mutable reference of the actual type of the matrix.
+//
+// This operator performs the CRTP-based type-safe downcast to the actual type \a MT of the
+// matrix. It will return a mutable reference to the actual type \a MT.
+*/
+template< typename MT  // Type of the matrix
+        , bool SO >    // Storage order
+/*[[deprecated]]*/ BLAZE_ALWAYS_INLINE constexpr MT& Matrix<MT,SO>::operator~() noexcept
+{
+   return static_cast<MT&>( *this );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief CRTP-based conversion operation for constant matrices.
+//
+// \param matrix The matrix to be downcast.
+// \return Constant reference of the actual type of the matrix.
+//
+// This operator performs the CRTP-based type-safe downcast to the actual type \a MT of the
+// matrix. It will return a constant reference to the actual type \a MT.
+*/
+template< typename MT  // Type of the matrix
+        , bool SO >    // Storage order
+/*[[deprecated]]*/ BLAZE_ALWAYS_INLINE constexpr const MT& Matrix<MT,SO>::operator~() const noexcept
+{
+   return static_cast<const MT&>( *this );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief CRTP-based conversion operation for non-constant matrices.
+//
+// \return Mutable reference of the actual type of the matrix.
+//
+// This operator performs the CRTP-based type-safe downcast to the actual type \a MT of the
+// matrix. It will return a mutable reference to the actual type \a MT.
+*/
+template< typename MT  // Type of the matrix
+        , bool SO >    // Storage order
+BLAZE_ALWAYS_INLINE constexpr MT& Matrix<MT,SO>::operator*() noexcept
+{
+   return static_cast<MT&>( *this );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief CRTP-based conversion operation for constant matrices.
+//
+// \return Constant reference of the actual type of the matrix.
+//
+// This operator performs the CRTP-based type-safe downcast to the actual type \a MT of the
+// matrix. It will return a constant reference to the actual type \a MT.
+*/
+template< typename MT  // Type of the matrix
+        , bool SO >    // Storage order
+BLAZE_ALWAYS_INLINE constexpr const MT& Matrix<MT,SO>::operator*() const noexcept
+{
+   return static_cast<const MT&>( *this );
+}
 //*************************************************************************************************
 
 
@@ -152,9 +221,9 @@ template< typename VT  // Type of the left-hand side column vector
         , bool SO >    // Storage order of the right-hand side matrix
 inline VT& operator*=( Vector<VT,false>& lhs, const Matrix<MT,SO>& rhs )
 {
-   ResultType_t<VT> tmp( (~rhs) * (~lhs) );
-   (~lhs) = std::move( tmp );
-   return (~lhs);
+   ResultType_t<VT> tmp( (*rhs) * (*lhs) );
+   (*lhs) = std::move( tmp );
+   return (*lhs);
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -179,7 +248,7 @@ template< typename VT  // Type of the left-hand side column vector
         , bool SO >    // Storage order of the right-hand side matrix
 inline VT& operator*=( Vector<VT,false>&& lhs, const Matrix<MT,SO>& rhs )
 {
-   return (~lhs) *= (~rhs);
+   return (*lhs) *= (*rhs);
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -204,9 +273,9 @@ template< typename VT  // Type of the left-hand side row vector
         , bool SO >    // Storage order of the right-hand side matrix
 inline VT& operator*=( Vector<VT,true>& lhs, const Matrix<MT,SO>& rhs )
 {
-   ResultType_t<VT> tmp( (~lhs) * (~rhs) );
-   (~lhs) = std::move( tmp );
-   return (~lhs);
+   ResultType_t<VT> tmp( (*lhs) * (*rhs) );
+   (*lhs) = std::move( tmp );
+   return (*lhs);
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -231,7 +300,7 @@ template< typename VT  // Type of the left-hand side row vector
         , bool SO >    // Storage order of the right-hand side matrix
 inline VT& operator*=( Vector<VT,true>&& lhs, const Matrix<MT,SO>& rhs )
 {
-   return (~lhs) *= (~rhs);
+   return (*lhs) *= (*rhs);
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -256,9 +325,9 @@ template< typename MT1  // Type of the left-hand side matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
 inline MT1& operator*=( Matrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs )
 {
-   ResultType_t<MT1> tmp( (~lhs) * (~rhs) );
-   (~lhs) = std::move( tmp );
-   return (~lhs);
+   ResultType_t<MT1> tmp( (*lhs) * (*rhs) );
+   (*lhs) = std::move( tmp );
+   return (*lhs);
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -284,7 +353,7 @@ template< typename MT1  // Type of the left-hand side matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
 inline MT1& operator*=( Matrix<MT1,SO1>&& lhs, const Matrix<MT2,SO2>& rhs )
 {
-   return (~lhs) *= (~rhs);
+   return (*lhs) *= (*rhs);
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -301,6 +370,12 @@ inline MT1& operator*=( Matrix<MT1,SO1>&& lhs, const Matrix<MT2,SO2>& rhs )
 //*************************************************************************************************
 /*!\name Matrix global functions */
 //@{
+template< typename MT, bool SO >
+MT& crtp_cast( Matrix<MT,SO>& matrix );
+
+template< typename MT, bool SO >
+const MT& crtp_cast( const Matrix<MT,SO>& matrix );
+
 template< typename MT, bool SO >
 typename MT::Iterator begin( Matrix<MT,SO>& matrix, size_t i );
 
@@ -371,6 +446,40 @@ bool isSame( const Matrix<MT1,SO1>& a, const Matrix<MT2,SO2>& b ) noexcept;
 
 
 //*************************************************************************************************
+/*!\brief CRTP-based conversion operation for non-constant matricesx.
+//
+// \return Mutable reference of the actual type of the matrix.
+//
+// This operator performs the CRTP-based type-safe downcast to the actual type \a MT of the
+// matrix. It will return a mutable reference to the actual type \a MT.
+*/
+template< typename MT  // Type of the matrix
+        , bool SO >    // Storage order of the matrix
+BLAZE_ALWAYS_INLINE MT& crtp_cast( Matrix<MT,SO>& matrix )
+{
+   return *matrix;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief CRTP-based conversion operation for constant matrices.
+//
+// \return Const reference of the actual type of the matrix.
+//
+// This operator performs the CRTP-based type-safe downcast to the actual type \a MT of the
+// matrix. It will return a constant reference to the actual type \a MT.
+*/
+template< typename MT  // Type of the matrix
+        , bool SO >    // Storage order of the matrix
+BLAZE_ALWAYS_INLINE const MT& crtp_cast( const Matrix<MT,SO>& matrix )
+{
+   return *matrix;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Returns an iterator to the first element of row/column \a i.
 // \ingroup matrix
 //
@@ -387,7 +496,7 @@ template< typename MT  // Type of the matrix
         , bool SO >    // Storage order of the matrix
 BLAZE_ALWAYS_INLINE typename MT::Iterator begin( Matrix<MT,SO>& matrix, size_t i )
 {
-   return (~matrix).begin(i);
+   return (*matrix).begin(i);
 }
 //*************************************************************************************************
 
@@ -409,7 +518,7 @@ template< typename MT  // Type of the matrix
         , bool SO >    // Storage order of the matrix
 BLAZE_ALWAYS_INLINE typename MT::ConstIterator begin( const Matrix<MT,SO>& matrix, size_t i )
 {
-   return (~matrix).begin(i);
+   return (*matrix).begin(i);
 }
 //*************************************************************************************************
 
@@ -431,7 +540,7 @@ template< typename MT  // Type of the matrix
         , bool SO >    // Storage order of the matrix
 BLAZE_ALWAYS_INLINE typename MT::ConstIterator cbegin( const Matrix<MT,SO>& matrix, size_t i )
 {
-   return (~matrix).cbegin(i);
+   return (*matrix).cbegin(i);
 }
 //*************************************************************************************************
 
@@ -453,7 +562,7 @@ template< typename MT  // Type of the matrix
         , bool SO >    // Storage order of the matrix
 BLAZE_ALWAYS_INLINE typename MT::Iterator end( Matrix<MT,SO>& matrix, size_t i )
 {
-   return (~matrix).end(i);
+   return (*matrix).end(i);
 }
 //*************************************************************************************************
 
@@ -475,7 +584,7 @@ template< typename MT  // Type of the matrix
         , bool SO >    // Storage order of the matrix
 BLAZE_ALWAYS_INLINE typename MT::ConstIterator end( const Matrix<MT,SO>& matrix, size_t i )
 {
-   return (~matrix).end(i);
+   return (*matrix).end(i);
 }
 //*************************************************************************************************
 
@@ -497,7 +606,7 @@ template< typename MT  // Type of the matrix
         , bool SO >    // Storage order of the matrix
 BLAZE_ALWAYS_INLINE typename MT::ConstIterator cend( const Matrix<MT,SO>& matrix, size_t i )
 {
-   return (~matrix).cend(i);
+   return (*matrix).cend(i);
 }
 //*************************************************************************************************
 
@@ -513,7 +622,7 @@ template< typename MT  // Type of the matrix
         , bool SO >    // Storage order of the matrix
 BLAZE_ALWAYS_INLINE constexpr size_t rows( const Matrix<MT,SO>& matrix ) noexcept
 {
-   return (~matrix).rows();
+   return (*matrix).rows();
 }
 //*************************************************************************************************
 
@@ -529,7 +638,7 @@ template< typename MT  // Type of the matrix
         , bool SO >    // Storage order of the matrix
 BLAZE_ALWAYS_INLINE constexpr size_t columns( const Matrix<MT,SO>& matrix ) noexcept
 {
-   return (~matrix).columns();
+   return (*matrix).columns();
 }
 //*************************************************************************************************
 
@@ -545,7 +654,7 @@ template< typename MT  // Type of the matrix
         , bool SO >    // Storage order of the matrix
 BLAZE_ALWAYS_INLINE constexpr size_t size( const Matrix<MT,SO>& matrix ) noexcept
 {
-   return (~matrix).rows() * (~matrix).columns();
+   return (*matrix).rows() * (*matrix).columns();
 }
 //*************************************************************************************************
 
@@ -561,7 +670,7 @@ template< typename MT  // Type of the matrix
         , bool SO >    // Storage order of the matrix
 BLAZE_ALWAYS_INLINE size_t capacity( const Matrix<MT,SO>& matrix ) noexcept
 {
-   return (~matrix).capacity();
+   return (*matrix).capacity();
 }
 //*************************************************************************************************
 
@@ -583,7 +692,7 @@ template< typename MT  // Type of the matrix
         , bool SO >    // Storage order of the matrix
 BLAZE_ALWAYS_INLINE size_t capacity( const Matrix<MT,SO>& matrix, size_t i ) noexcept
 {
-   return (~matrix).capacity( i );
+   return (*matrix).capacity( i );
 }
 //*************************************************************************************************
 
@@ -599,7 +708,7 @@ template< typename MT  // Type of the matrix
         , bool SO >    // Storage order of the matrix
 BLAZE_ALWAYS_INLINE size_t nonZeros( const Matrix<MT,SO>& matrix )
 {
-   return (~matrix).nonZeros();
+   return (*matrix).nonZeros();
 }
 //*************************************************************************************************
 
@@ -621,7 +730,7 @@ template< typename MT  // Type of the matrix
         , bool SO >    // Storage order of the matrix
 BLAZE_ALWAYS_INLINE size_t nonZeros( const Matrix<MT,SO>& matrix, size_t i )
 {
-   return (~matrix).nonZeros( i );
+   return (*matrix).nonZeros( i );
 }
 //*************************************************************************************************
 
@@ -650,7 +759,7 @@ BLAZE_ALWAYS_INLINE auto resize_backend( Matrix<MT,SO>& matrix, size_t m, size_t
 {
    MAYBE_UNUSED( preserve );
 
-   if( (~matrix).rows() != m || (~matrix).columns() != n ) {
+   if( (*matrix).rows() != m || (*matrix).columns() != n ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix cannot be resized" );
    }
 }
@@ -676,7 +785,7 @@ template< typename MT  // Type of the matrix
 BLAZE_ALWAYS_INLINE auto resize_backend( Matrix<MT,SO>& matrix, size_t m, size_t n, bool preserve )
    -> EnableIf_t< IsResizable_v<MT> && !IsSquare_v<MT> >
 {
-   (~matrix).resize( m, n, preserve );
+   (*matrix).resize( m, n, preserve );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -705,7 +814,7 @@ BLAZE_ALWAYS_INLINE auto resize_backend( Matrix<MT,SO>& matrix, size_t m, size_t
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid resize arguments for square matrix" );
    }
 
-   (~matrix).resize( m, preserve );
+   (*matrix).resize( m, preserve );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -790,7 +899,7 @@ template< typename MT  // Type of the matrix
 BLAZE_ALWAYS_INLINE auto shrinkToFit_backend( Matrix<MT,SO>& matrix )
    -> EnableIf_t< IsShrinkable_v<MT> >
 {
-   (~matrix).shrinkToFit();
+   (*matrix).shrinkToFit();
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -840,7 +949,7 @@ template< typename MT  // Type of the matrix
         , bool SO >    // Storage order of the matrix
 BLAZE_ALWAYS_INLINE void transpose( Matrix<MT,SO>& matrix )
 {
-   (~matrix).transpose();
+   (*matrix).transpose();
 }
 //*************************************************************************************************
 
@@ -866,7 +975,7 @@ template< typename MT  // Type of the matrix
         , bool SO >    // Storage order of the matrix
 BLAZE_ALWAYS_INLINE void ctranspose( Matrix<MT,SO>& matrix )
 {
-   (~matrix).ctranspose();
+   (*matrix).ctranspose();
 }
 //*************************************************************************************************
 
@@ -927,7 +1036,7 @@ template< typename MT  // Type of the matrix
         , bool SO >    // Storage order of the matrix
 inline typename MT::ResultType evaluate( const Matrix<MT,SO>& matrix )
 {
-   typename MT::ResultType tmp( ~matrix );
+   typename MT::ResultType tmp( *matrix );
    return tmp;
 }
 //*************************************************************************************************
@@ -948,7 +1057,7 @@ template< typename MT  // Type of the matrix
         , bool SO >    // Storage order of the matrix
 inline decltype(auto) evaluateIf( FalseType, const Matrix<MT,SO>& matrix )
 {
-   return ~matrix;
+   return *matrix;
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -968,7 +1077,7 @@ template< typename MT  // Type of the matrix
         , bool SO >    // Storage order of the matrix
 inline decltype(auto) evaluateIf( TrueType, const Matrix<MT,SO>& matrix )
 {
-   return evaluate( ~matrix );
+   return evaluate( *matrix );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -990,7 +1099,7 @@ template< bool B       // Compile time condition
         , bool SO >    // Storage order of the matrix
 inline decltype(auto) evaluateIf( const Matrix<MT,SO>& matrix )
 {
-   return evaluateIf( BoolConstant<B>{}, ~matrix );
+   return evaluateIf( BoolConstant<B>{}, *matrix );
 }
 //*************************************************************************************************
 
@@ -1009,7 +1118,7 @@ template< typename MT  // Type of the matrix
         , bool SO >    // Storage order of the matrix
 BLAZE_ALWAYS_INLINE constexpr bool isEmpty( const Matrix<MT,SO>& matrix ) noexcept
 {
-   return size( ~matrix ) == 0UL;
+   return size( *matrix ) == 0UL;
 }
 //*************************************************************************************************
 
@@ -1028,7 +1137,7 @@ template< typename MT  // Type of the matrix
         , bool SO >    // Storage order
 BLAZE_ALWAYS_INLINE bool isSquare( const Matrix<MT,SO>& matrix ) noexcept
 {
-   return ( IsSquare_v<MT> || (~matrix).rows() == (~matrix).columns() );
+   return ( IsSquare_v<MT> || (*matrix).rows() == (*matrix).columns() );
 }
 //*************************************************************************************************
 
@@ -1091,7 +1200,7 @@ BLAZE_ALWAYS_INLINE void assign_backend( Matrix<MT1,SO>& lhs, const Matrix<MT2,S
 {
    BLAZE_FUNCTION_TRACE;
 
-   (~lhs).assign( ~rhs );
+   (*lhs).assign( *rhs );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1116,7 +1225,7 @@ BLAZE_ALWAYS_INLINE auto assign_backend( Matrix<MT1,SO>& lhs, const Matrix<MT2,!
 
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT1 );
 
-   (~lhs).assign( ~rhs );
+   (*lhs).assign( *rhs );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1140,9 +1249,9 @@ BLAZE_ALWAYS_INLINE auto assign_backend( Matrix<MT1,SO>& lhs, const Matrix<MT2,!
 {
    BLAZE_FUNCTION_TRACE;
 
-   BLAZE_INTERNAL_ASSERT( isSquare( ~rhs ), "Non-square symmetric matrix detected" );
+   BLAZE_INTERNAL_ASSERT( isSquare( *rhs ), "Non-square symmetric matrix detected" );
 
-   (~lhs).assign( trans( ~rhs ) );
+   (*lhs).assign( trans( *rhs ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1171,10 +1280,10 @@ BLAZE_ALWAYS_INLINE void assign( Matrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rh
 {
    BLAZE_FUNCTION_TRACE;
 
-   BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( (*lhs).columns() == (*rhs).columns(), "Invalid number of columns" );
 
-   assign_backend( ~lhs, ~rhs );
+   assign_backend( *lhs, *rhs );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1197,7 +1306,7 @@ BLAZE_ALWAYS_INLINE void addAssign_backend( Matrix<MT1,SO>& lhs, const Matrix<MT
 {
    BLAZE_FUNCTION_TRACE;
 
-   (~lhs).addAssign( ~rhs );
+   (*lhs).addAssign( *rhs );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1223,7 +1332,7 @@ BLAZE_ALWAYS_INLINE auto addAssign_backend( Matrix<MT1,SO>& lhs, const Matrix<MT
 
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT1 );
 
-   (~lhs).addAssign( ~rhs );
+   (*lhs).addAssign( *rhs );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1247,9 +1356,9 @@ BLAZE_ALWAYS_INLINE auto addAssign_backend( Matrix<MT1,SO>& lhs, const Matrix<MT
 {
    BLAZE_FUNCTION_TRACE;
 
-   BLAZE_INTERNAL_ASSERT( isSquare( ~rhs ), "Non-square symmetric matrix detected" );
+   BLAZE_INTERNAL_ASSERT( isSquare( *rhs ), "Non-square symmetric matrix detected" );
 
-   (~lhs).addAssign( trans( ~rhs ) );
+   (*lhs).addAssign( trans( *rhs ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1278,10 +1387,10 @@ BLAZE_ALWAYS_INLINE void addAssign( Matrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>&
 {
    BLAZE_FUNCTION_TRACE;
 
-   BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( (*lhs).columns() == (*rhs).columns(), "Invalid number of columns" );
 
-   addAssign_backend( ~lhs, ~rhs );
+   addAssign_backend( *lhs, *rhs );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1304,7 +1413,7 @@ BLAZE_ALWAYS_INLINE void subAssign_backend( Matrix<MT1,SO>& lhs, const Matrix<MT
 {
    BLAZE_FUNCTION_TRACE;
 
-   (~lhs).subAssign( ~rhs );
+   (*lhs).subAssign( *rhs );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1330,7 +1439,7 @@ BLAZE_ALWAYS_INLINE auto subAssign_backend( Matrix<MT1,SO>& lhs, const Matrix<MT
 
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT1 );
 
-   (~lhs).subAssign( ~rhs );
+   (*lhs).subAssign( *rhs );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1354,9 +1463,9 @@ BLAZE_ALWAYS_INLINE auto subAssign_backend( Matrix<MT1,SO>& lhs, const Matrix<MT
 {
    BLAZE_FUNCTION_TRACE;
 
-   BLAZE_INTERNAL_ASSERT( isSquare( ~rhs ), "Non-square symmetric matrix detected" );
+   BLAZE_INTERNAL_ASSERT( isSquare( *rhs ), "Non-square symmetric matrix detected" );
 
-   (~lhs).subAssign( trans( ~rhs ) );
+   (*lhs).subAssign( trans( *rhs ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1385,10 +1494,10 @@ BLAZE_ALWAYS_INLINE void subAssign( Matrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>&
 {
    BLAZE_FUNCTION_TRACE;
 
-   BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( (*lhs).columns() == (*rhs).columns(), "Invalid number of columns" );
 
-   subAssign_backend( ~lhs, ~rhs );
+   subAssign_backend( *lhs, *rhs );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1411,7 +1520,7 @@ BLAZE_ALWAYS_INLINE void schurAssign_backend( Matrix<MT1,SO>& lhs, const Matrix<
 {
    BLAZE_FUNCTION_TRACE;
 
-   (~lhs).schurAssign( ~rhs );
+   (*lhs).schurAssign( *rhs );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1437,7 +1546,7 @@ BLAZE_ALWAYS_INLINE auto schurAssign_backend( Matrix<MT1,SO>& lhs, const Matrix<
 
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT1 );
 
-   (~lhs).schurAssign( ~rhs );
+   (*lhs).schurAssign( *rhs );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1461,9 +1570,9 @@ BLAZE_ALWAYS_INLINE auto schurAssign_backend( Matrix<MT1,SO>& lhs, const Matrix<
 {
    BLAZE_FUNCTION_TRACE;
 
-   BLAZE_INTERNAL_ASSERT( isSquare( ~rhs ), "Non-square symmetric matrix detected" );
+   BLAZE_INTERNAL_ASSERT( isSquare( *rhs ), "Non-square symmetric matrix detected" );
 
-   (~lhs).schurAssign( trans( ~rhs ) );
+   (*lhs).schurAssign( trans( *rhs ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1492,10 +1601,10 @@ BLAZE_ALWAYS_INLINE void schurAssign( Matrix<MT1,SO1>& lhs, const Matrix<MT2,SO2
 {
    BLAZE_FUNCTION_TRACE;
 
-   BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( (*lhs).columns() == (*rhs).columns(), "Invalid number of columns" );
 
-   schurAssign_backend( ~lhs, ~rhs );
+   schurAssign_backend( *lhs, *rhs );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1524,9 +1633,9 @@ BLAZE_ALWAYS_INLINE void multAssign( Matrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>
 {
    BLAZE_FUNCTION_TRACE;
 
-   BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).rows(), "Invalid matrix sizes" );
+   BLAZE_INTERNAL_ASSERT( (*lhs).columns() == (*rhs).rows(), "Invalid matrix sizes" );
 
-   (~lhs).multAssign( ~rhs );
+   (*lhs).multAssign( *rhs );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1553,8 +1662,8 @@ template< typename MT    // Type of the matrix
         , typename ET >  // Type of the element
 BLAZE_ALWAYS_INLINE bool trySet( const Matrix<MT,SO>& mat, size_t i, size_t j, const ET& value )
 {
-   BLAZE_INTERNAL_ASSERT( i < (~mat).rows(), "Invalid row access index" );
-   BLAZE_INTERNAL_ASSERT( j < (~mat).columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( i < (*mat).rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( j < (*mat).columns(), "Invalid column access index" );
 
    MAYBE_UNUSED( mat, i, j, value );
 
@@ -1588,10 +1697,10 @@ template< typename MT    // Type of the matrix
 BLAZE_ALWAYS_INLINE bool
    trySet( const Matrix<MT,SO>& mat, size_t row, size_t column, size_t m, size_t n, const ET& value )
 {
-   BLAZE_INTERNAL_ASSERT( row <= (~mat).rows(), "Invalid row access index" );
-   BLAZE_INTERNAL_ASSERT( column <= (~mat).columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( row + m <= (~mat).rows(), "Invalid number of rows" );
-   BLAZE_INTERNAL_ASSERT( column + n <= (~mat).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( row <= (*mat).rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( column <= (*mat).columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( row + m <= (*mat).rows(), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( column + n <= (*mat).columns(), "Invalid number of columns" );
 
    MAYBE_UNUSED( mat, row, column, m, n, value );
 
@@ -1622,8 +1731,8 @@ template< typename MT    // Type of the matrix
         , typename ET >  // Type of the element
 BLAZE_ALWAYS_INLINE bool tryAdd( const Matrix<MT,SO>& mat, size_t i, size_t j, const ET& value )
 {
-   BLAZE_INTERNAL_ASSERT( i < (~mat).rows(), "Invalid row access index" );
-   BLAZE_INTERNAL_ASSERT( j < (~mat).columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( i < (*mat).rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( j < (*mat).columns(), "Invalid column access index" );
 
    MAYBE_UNUSED( mat, i, j, value );
 
@@ -1657,10 +1766,10 @@ template< typename MT    // Type of the matrix
 BLAZE_ALWAYS_INLINE bool
    tryAdd( const Matrix<MT,SO>& mat, size_t row, size_t column, size_t m, size_t n, const ET& value )
 {
-   BLAZE_INTERNAL_ASSERT( row <= (~mat).rows(), "Invalid row access index" );
-   BLAZE_INTERNAL_ASSERT( column <= (~mat).columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( row + m <= (~mat).rows(), "Invalid number of rows" );
-   BLAZE_INTERNAL_ASSERT( column + n <= (~mat).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( row <= (*mat).rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( column <= (*mat).columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( row + m <= (*mat).rows(), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( column + n <= (*mat).columns(), "Invalid number of columns" );
 
    MAYBE_UNUSED( mat, row, column, m, n, value );
 
@@ -1691,8 +1800,8 @@ template< typename MT    // Type of the matrix
         , typename ET >  // Type of the element
 BLAZE_ALWAYS_INLINE bool trySub( const Matrix<MT,SO>& mat, size_t i, size_t j, const ET& value )
 {
-   BLAZE_INTERNAL_ASSERT( i < (~mat).rows(), "Invalid row access index" );
-   BLAZE_INTERNAL_ASSERT( j < (~mat).columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( i < (*mat).rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( j < (*mat).columns(), "Invalid column access index" );
 
    MAYBE_UNUSED( mat, i, j, value );
 
@@ -1726,10 +1835,10 @@ template< typename MT    // Type of the matrix
 BLAZE_ALWAYS_INLINE bool
    trySub( const Matrix<MT,SO>& mat, size_t row, size_t column, size_t m, size_t n, const ET& value )
 {
-   BLAZE_INTERNAL_ASSERT( row <= (~mat).rows(), "Invalid row access index" );
-   BLAZE_INTERNAL_ASSERT( column <= (~mat).columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( row + m <= (~mat).rows(), "Invalid number of rows" );
-   BLAZE_INTERNAL_ASSERT( column + n <= (~mat).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( row <= (*mat).rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( column <= (*mat).columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( row + m <= (*mat).rows(), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( column + n <= (*mat).columns(), "Invalid number of columns" );
 
    MAYBE_UNUSED( mat, row, column, m, n, value );
 
@@ -1760,8 +1869,8 @@ template< typename MT    // Type of the matrix
         , typename ET >  // Type of the element
 BLAZE_ALWAYS_INLINE bool tryMult( const Matrix<MT,SO>& mat, size_t i, size_t j, const ET& value )
 {
-   BLAZE_INTERNAL_ASSERT( i < (~mat).rows(), "Invalid row access index" );
-   BLAZE_INTERNAL_ASSERT( j < (~mat).columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( i < (*mat).rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( j < (*mat).columns(), "Invalid column access index" );
 
    MAYBE_UNUSED( mat, i, j, value );
 
@@ -1795,10 +1904,10 @@ template< typename MT    // Type of the matrix
 BLAZE_ALWAYS_INLINE bool
    tryMult( const Matrix<MT,SO>& mat, size_t row, size_t column, size_t m, size_t n, const ET& value )
 {
-   BLAZE_INTERNAL_ASSERT( row <= (~mat).rows(), "Invalid row access index" );
-   BLAZE_INTERNAL_ASSERT( column <= (~mat).columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( row + m <= (~mat).rows(), "Invalid number of rows" );
-   BLAZE_INTERNAL_ASSERT( column + n <= (~mat).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( row <= (*mat).rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( column <= (*mat).columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( row + m <= (*mat).rows(), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( column + n <= (*mat).columns(), "Invalid number of columns" );
 
    MAYBE_UNUSED( mat, row, column, m, n, value );
 
@@ -1829,8 +1938,8 @@ template< typename MT    // Type of the matrix
         , typename ET >  // Type of the element
 BLAZE_ALWAYS_INLINE bool tryDiv( const Matrix<MT,SO>& mat, size_t i, size_t j, const ET& value )
 {
-   BLAZE_INTERNAL_ASSERT( i < (~mat).rows(), "Invalid row access index" );
-   BLAZE_INTERNAL_ASSERT( j < (~mat).columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( i < (*mat).rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( j < (*mat).columns(), "Invalid column access index" );
 
    MAYBE_UNUSED( mat, i, j, value );
 
@@ -1864,10 +1973,10 @@ template< typename MT    // Type of the matrix
 BLAZE_ALWAYS_INLINE bool
    tryDiv( const Matrix<MT,SO>& mat, size_t row, size_t column, size_t m, size_t n, const ET& value )
 {
-   BLAZE_INTERNAL_ASSERT( row <= (~mat).rows(), "Invalid row access index" );
-   BLAZE_INTERNAL_ASSERT( column <= (~mat).columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( row + m <= (~mat).rows(), "Invalid number of rows" );
-   BLAZE_INTERNAL_ASSERT( column + n <= (~mat).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( row <= (*mat).rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( column <= (*mat).columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( row + m <= (*mat).rows(), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( column + n <= (*mat).columns(), "Invalid number of columns" );
 
    MAYBE_UNUSED( mat, row, column, m, n, value );
 
@@ -1897,8 +2006,8 @@ template< typename MT  // Type of the matrix
         , bool SO >    // Storage order
 BLAZE_ALWAYS_INLINE bool tryShift( const Matrix<MT,SO>& mat, size_t i, size_t j, int count )
 {
-   BLAZE_INTERNAL_ASSERT( i < (~mat).rows(), "Invalid row access index" );
-   BLAZE_INTERNAL_ASSERT( j < (~mat).columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( i < (*mat).rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( j < (*mat).columns(), "Invalid column access index" );
 
    MAYBE_UNUSED( mat, i, j, count );
 
@@ -1931,10 +2040,10 @@ template< typename MT  // Type of the matrix
 BLAZE_ALWAYS_INLINE bool
    tryShift( const Matrix<MT,SO>& mat, size_t row, size_t column, size_t m, size_t n, int count )
 {
-   BLAZE_INTERNAL_ASSERT( row <= (~mat).rows(), "Invalid row access index" );
-   BLAZE_INTERNAL_ASSERT( column <= (~mat).columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( row + m <= (~mat).rows(), "Invalid number of rows" );
-   BLAZE_INTERNAL_ASSERT( column + n <= (~mat).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( row <= (*mat).rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( column <= (*mat).columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( row + m <= (*mat).rows(), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( column + n <= (*mat).columns(), "Invalid number of columns" );
 
    MAYBE_UNUSED( mat, row, column, m, n, count );
 
@@ -1965,8 +2074,8 @@ template< typename MT    // Type of the matrix
         , typename ET >  // Type of the element
 BLAZE_ALWAYS_INLINE bool tryBitand( const Matrix<MT,SO>& mat, size_t i, size_t j, const ET& value )
 {
-   BLAZE_INTERNAL_ASSERT( i < (~mat).rows(), "Invalid row access index" );
-   BLAZE_INTERNAL_ASSERT( j < (~mat).columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( i < (*mat).rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( j < (*mat).columns(), "Invalid column access index" );
 
    MAYBE_UNUSED( mat, i, j, value );
 
@@ -2000,10 +2109,10 @@ template< typename MT    // Type of the matrix
 BLAZE_ALWAYS_INLINE bool
    tryBitand( const Matrix<MT,SO>& mat, size_t row, size_t column, size_t m, size_t n, const ET& value )
 {
-   BLAZE_INTERNAL_ASSERT( row <= (~mat).rows(), "Invalid row access index" );
-   BLAZE_INTERNAL_ASSERT( column <= (~mat).columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( row + m <= (~mat).rows(), "Invalid number of rows" );
-   BLAZE_INTERNAL_ASSERT( column + n <= (~mat).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( row <= (*mat).rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( column <= (*mat).columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( row + m <= (*mat).rows(), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( column + n <= (*mat).columns(), "Invalid number of columns" );
 
    MAYBE_UNUSED( mat, row, column, m, n, value );
 
@@ -2034,8 +2143,8 @@ template< typename MT    // Type of the matrix
         , typename ET >  // Type of the element
 BLAZE_ALWAYS_INLINE bool tryBitor( const Matrix<MT,SO>& mat, size_t i, size_t j, const ET& value )
 {
-   BLAZE_INTERNAL_ASSERT( i < (~mat).rows(), "Invalid row access index" );
-   BLAZE_INTERNAL_ASSERT( j < (~mat).columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( i < (*mat).rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( j < (*mat).columns(), "Invalid column access index" );
 
    MAYBE_UNUSED( mat, i, j, value );
 
@@ -2069,10 +2178,10 @@ template< typename MT    // Type of the matrix
 BLAZE_ALWAYS_INLINE bool
    tryBitor( const Matrix<MT,SO>& mat, size_t row, size_t column, size_t m, size_t n, const ET& value )
 {
-   BLAZE_INTERNAL_ASSERT( row <= (~mat).rows(), "Invalid row access index" );
-   BLAZE_INTERNAL_ASSERT( column <= (~mat).columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( row + m <= (~mat).rows(), "Invalid number of rows" );
-   BLAZE_INTERNAL_ASSERT( column + n <= (~mat).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( row <= (*mat).rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( column <= (*mat).columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( row + m <= (*mat).rows(), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( column + n <= (*mat).columns(), "Invalid number of columns" );
 
    MAYBE_UNUSED( mat, row, column, m, n, value );
 
@@ -2103,8 +2212,8 @@ template< typename MT    // Type of the matrix
         , typename ET >  // Type of the element
 BLAZE_ALWAYS_INLINE bool tryBitxor( const Matrix<MT,SO>& mat, size_t i, size_t j, const ET& value )
 {
-   BLAZE_INTERNAL_ASSERT( i < (~mat).rows(), "Invalid row access index" );
-   BLAZE_INTERNAL_ASSERT( j < (~mat).columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( i < (*mat).rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( j < (*mat).columns(), "Invalid column access index" );
 
    MAYBE_UNUSED( mat, i, j, value );
 
@@ -2138,10 +2247,10 @@ template< typename MT    // Type of the matrix
 BLAZE_ALWAYS_INLINE bool
    tryBitxor( const Matrix<MT,SO>& mat, size_t row, size_t column, size_t m, size_t n, const ET& value )
 {
-   BLAZE_INTERNAL_ASSERT( row <= (~mat).rows(), "Invalid row access index" );
-   BLAZE_INTERNAL_ASSERT( column <= (~mat).columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( row + m <= (~mat).rows(), "Invalid number of rows" );
-   BLAZE_INTERNAL_ASSERT( column + n <= (~mat).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( row <= (*mat).rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( column <= (*mat).columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( row + m <= (*mat).rows(), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( column + n <= (*mat).columns(), "Invalid number of columns" );
 
    MAYBE_UNUSED( mat, row, column, m, n, value );
 
@@ -2174,10 +2283,10 @@ template< typename MT  // Type of the left-hand side matrix
 BLAZE_ALWAYS_INLINE bool tryAssign( const Matrix<MT,SO>& lhs, const Vector<VT,TF>& rhs,
                                     size_t row, size_t column )
 {
-   BLAZE_INTERNAL_ASSERT( row <= (~lhs).rows(), "Invalid row access index" );
-   BLAZE_INTERNAL_ASSERT( column <= (~lhs).columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( TF || ( row + (~rhs).size() <= (~lhs).rows() ), "Invalid number of rows" );
-   BLAZE_INTERNAL_ASSERT( !TF || ( column + (~rhs).size() <= (~lhs).columns() ), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( row <= (*lhs).rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( column <= (*lhs).columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( TF || ( row + (*rhs).size() <= (*lhs).rows() ), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( !TF || ( column + (*rhs).size() <= (*lhs).columns() ), "Invalid number of columns" );
 
    MAYBE_UNUSED( lhs, rhs, row, column );
 
@@ -2211,10 +2320,10 @@ template< typename MT  // Type of the left-hand side matrix
 BLAZE_ALWAYS_INLINE bool tryAssign( const Matrix<MT,SO>& lhs, const Vector<VT,TF>& rhs,
                                     ptrdiff_t band, size_t row, size_t column )
 {
-   BLAZE_INTERNAL_ASSERT( row <= (~lhs).rows(), "Invalid row access index" );
-   BLAZE_INTERNAL_ASSERT( column <= (~lhs).columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( row + (~rhs).size() <= (~lhs).rows(), "Invalid number of rows" );
-   BLAZE_INTERNAL_ASSERT( column + (~rhs).size() <= (~lhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( row <= (*lhs).rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( column <= (*lhs).columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( row + (*rhs).size() <= (*lhs).rows(), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( column + (*rhs).size() <= (*lhs).columns(), "Invalid number of columns" );
 
    MAYBE_UNUSED( lhs, rhs, band, row, column );
 
@@ -2247,10 +2356,10 @@ template< typename MT1  // Type of the left-hand side matrix
 BLAZE_ALWAYS_INLINE bool tryAssign( const Matrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs,
                                     size_t row, size_t column )
 {
-   BLAZE_INTERNAL_ASSERT( row <= (~lhs).rows(), "Invalid row access index" );
-   BLAZE_INTERNAL_ASSERT( column <= (~lhs).columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( row + (~rhs).rows() <= (~lhs).rows(), "Invalid number of rows" );
-   BLAZE_INTERNAL_ASSERT( column + (~rhs).columns() <= (~lhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( row <= (*lhs).rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( column <= (*lhs).columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( row + (*rhs).rows() <= (*lhs).rows(), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( column + (*rhs).columns() <= (*lhs).columns(), "Invalid number of columns" );
 
    MAYBE_UNUSED( lhs, rhs, row, column );
 
@@ -2283,10 +2392,10 @@ template< typename MT  // Type of the left-hand side matrix
 BLAZE_ALWAYS_INLINE bool tryAddAssign( const Matrix<MT,SO>& lhs, const Vector<VT,TF>& rhs,
                                        size_t row, size_t column )
 {
-   BLAZE_INTERNAL_ASSERT( row <= (~lhs).rows(), "Invalid row access index" );
-   BLAZE_INTERNAL_ASSERT( column <= (~lhs).columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( TF || ( row + (~rhs).size() <= (~lhs).rows() ), "Invalid number of rows" );
-   BLAZE_INTERNAL_ASSERT( !TF || ( column + (~rhs).size() <= (~lhs).columns() ), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( row <= (*lhs).rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( column <= (*lhs).columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( TF || ( row + (*rhs).size() <= (*lhs).rows() ), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( !TF || ( column + (*rhs).size() <= (*lhs).columns() ), "Invalid number of columns" );
 
    MAYBE_UNUSED( lhs, rhs, row, column );
 
@@ -2320,10 +2429,10 @@ template< typename MT  // Type of the left-hand side matrix
 BLAZE_ALWAYS_INLINE bool tryAddAssign( const Matrix<MT,SO>& lhs, const Vector<VT,TF>& rhs,
                                        ptrdiff_t band, size_t row, size_t column )
 {
-   BLAZE_INTERNAL_ASSERT( row <= (~lhs).rows(), "Invalid row access index" );
-   BLAZE_INTERNAL_ASSERT( column <= (~lhs).columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( row + (~rhs).size() <= (~lhs).rows(), "Invalid number of rows" );
-   BLAZE_INTERNAL_ASSERT( column + (~rhs).size() <= (~lhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( row <= (*lhs).rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( column <= (*lhs).columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( row + (*rhs).size() <= (*lhs).rows(), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( column + (*rhs).size() <= (*lhs).columns(), "Invalid number of columns" );
 
    MAYBE_UNUSED( lhs, rhs, band, row, column );
 
@@ -2356,10 +2465,10 @@ template< typename MT1  // Type of the left-hand side matrix
 BLAZE_ALWAYS_INLINE bool tryAddAssign( const Matrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs,
                                        size_t row, size_t column )
 {
-   BLAZE_INTERNAL_ASSERT( row <= (~lhs).rows(), "Invalid row access index" );
-   BLAZE_INTERNAL_ASSERT( column <= (~lhs).columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( row + (~rhs).rows() <= (~lhs).rows(), "Invalid number of rows" );
-   BLAZE_INTERNAL_ASSERT( column + (~rhs).columns() <= (~lhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( row <= (*lhs).rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( column <= (*lhs).columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( row + (*rhs).rows() <= (*lhs).rows(), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( column + (*rhs).columns() <= (*lhs).columns(), "Invalid number of columns" );
 
    MAYBE_UNUSED( lhs, rhs, row, column );
 
@@ -2392,10 +2501,10 @@ template< typename MT  // Type of the left-hand side matrix
 BLAZE_ALWAYS_INLINE bool trySubAssign( const Matrix<MT,SO>& lhs, const Vector<VT,TF>& rhs,
                                        size_t row, size_t column )
 {
-   BLAZE_INTERNAL_ASSERT( row <= (~lhs).rows(), "Invalid row access index" );
-   BLAZE_INTERNAL_ASSERT( column <= (~lhs).columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( TF || ( row + (~rhs).size() <= (~lhs).rows() ), "Invalid number of rows" );
-   BLAZE_INTERNAL_ASSERT( !TF || ( column + (~rhs).size() <= (~lhs).columns() ), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( row <= (*lhs).rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( column <= (*lhs).columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( TF || ( row + (*rhs).size() <= (*lhs).rows() ), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( !TF || ( column + (*rhs).size() <= (*lhs).columns() ), "Invalid number of columns" );
 
    MAYBE_UNUSED( lhs, rhs, row, column );
 
@@ -2430,10 +2539,10 @@ template< typename MT  // Type of the left-hand side matrix
 BLAZE_ALWAYS_INLINE bool trySubAssign( const Matrix<MT,SO>& lhs, const Vector<VT,TF>& rhs,
                                        ptrdiff_t band, size_t row, size_t column )
 {
-   BLAZE_INTERNAL_ASSERT( row <= (~lhs).rows(), "Invalid row access index" );
-   BLAZE_INTERNAL_ASSERT( column <= (~lhs).columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( row + (~rhs).size() <= (~lhs).rows(), "Invalid number of rows" );
-   BLAZE_INTERNAL_ASSERT( column + (~rhs).size() <= (~lhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( row <= (*lhs).rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( column <= (*lhs).columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( row + (*rhs).size() <= (*lhs).rows(), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( column + (*rhs).size() <= (*lhs).columns(), "Invalid number of columns" );
 
    MAYBE_UNUSED( lhs, rhs, band, row, column );
 
@@ -2466,10 +2575,10 @@ template< typename MT1  // Type of the left-hand side matrix
 BLAZE_ALWAYS_INLINE bool trySubAssign( const Matrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs,
                                        size_t row, size_t column )
 {
-   BLAZE_INTERNAL_ASSERT( row <= (~lhs).rows(), "Invalid row access index" );
-   BLAZE_INTERNAL_ASSERT( column <= (~lhs).columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( row + (~rhs).rows() <= (~lhs).rows(), "Invalid number of rows" );
-   BLAZE_INTERNAL_ASSERT( column + (~rhs).columns() <= (~lhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( row <= (*lhs).rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( column <= (*lhs).columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( row + (*rhs).rows() <= (*lhs).rows(), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( column + (*rhs).columns() <= (*lhs).columns(), "Invalid number of columns" );
 
    MAYBE_UNUSED( lhs, rhs, row, column );
 
@@ -2502,10 +2611,10 @@ template< typename MT  // Type of the left-hand side matrix
 BLAZE_ALWAYS_INLINE bool tryMultAssign( const Matrix<MT,SO>& lhs, const Vector<VT,TF>& rhs,
                                         size_t row, size_t column )
 {
-   BLAZE_INTERNAL_ASSERT( row <= (~lhs).rows(), "Invalid row access index" );
-   BLAZE_INTERNAL_ASSERT( column <= (~lhs).columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( TF || ( row + (~rhs).size() <= (~lhs).rows() ), "Invalid number of rows" );
-   BLAZE_INTERNAL_ASSERT( !TF || ( column + (~rhs).size() <= (~lhs).columns() ), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( row <= (*lhs).rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( column <= (*lhs).columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( TF || ( row + (*rhs).size() <= (*lhs).rows() ), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( !TF || ( column + (*rhs).size() <= (*lhs).columns() ), "Invalid number of columns" );
 
    MAYBE_UNUSED( lhs, rhs, row, column );
 
@@ -2540,10 +2649,10 @@ template< typename MT  // Type of the left-hand side matrix
 BLAZE_ALWAYS_INLINE bool tryMultAssign( const Matrix<MT,SO>& lhs, const Vector<VT,TF>& rhs,
                                         ptrdiff_t band, size_t row, size_t column )
 {
-   BLAZE_INTERNAL_ASSERT( row <= (~lhs).rows(), "Invalid row access index" );
-   BLAZE_INTERNAL_ASSERT( column <= (~lhs).columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( row + (~rhs).size() <= (~lhs).rows(), "Invalid number of rows" );
-   BLAZE_INTERNAL_ASSERT( column + (~rhs).size() <= (~lhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( row <= (*lhs).rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( column <= (*lhs).columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( row + (*rhs).size() <= (*lhs).rows(), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( column + (*rhs).size() <= (*lhs).columns(), "Invalid number of columns" );
 
    MAYBE_UNUSED( lhs, rhs, band, row, column );
 
@@ -2576,10 +2685,10 @@ template< typename MT1  // Type of the left-hand side matrix
 BLAZE_ALWAYS_INLINE bool trySchurAssign( const Matrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs,
                                          size_t row, size_t column )
 {
-   BLAZE_INTERNAL_ASSERT( row <= (~lhs).rows(), "Invalid row access index" );
-   BLAZE_INTERNAL_ASSERT( column <= (~lhs).columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( row + (~rhs).rows() <= (~lhs).rows(), "Invalid number of rows" );
-   BLAZE_INTERNAL_ASSERT( column + (~rhs).columns() <= (~lhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( row <= (*lhs).rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( column <= (*lhs).columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( row + (*rhs).rows() <= (*lhs).rows(), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( column + (*rhs).columns() <= (*lhs).columns(), "Invalid number of columns" );
 
    MAYBE_UNUSED( lhs, rhs, row, column );
 
@@ -2612,10 +2721,10 @@ template< typename MT  // Type of the left-hand side matrix
 BLAZE_ALWAYS_INLINE bool tryDivAssign( const Matrix<MT,SO>& lhs, const Vector<VT,TF>& rhs,
                                        size_t row, size_t column )
 {
-   BLAZE_INTERNAL_ASSERT( row <= (~lhs).rows(), "Invalid row access index" );
-   BLAZE_INTERNAL_ASSERT( column <= (~lhs).columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( TF || ( row + (~rhs).size() <= (~lhs).rows() ), "Invalid number of rows" );
-   BLAZE_INTERNAL_ASSERT( !TF || ( column + (~rhs).size() <= (~lhs).columns() ), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( row <= (*lhs).rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( column <= (*lhs).columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( TF || ( row + (*rhs).size() <= (*lhs).rows() ), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( !TF || ( column + (*rhs).size() <= (*lhs).columns() ), "Invalid number of columns" );
 
    MAYBE_UNUSED( lhs, rhs, row, column );
 
@@ -2650,10 +2759,10 @@ template< typename MT  // Type of the left-hand side matrix
 BLAZE_ALWAYS_INLINE bool tryDivAssign( const Matrix<MT,SO>& lhs, const Vector<VT,TF>& rhs,
                                        ptrdiff_t band, size_t row, size_t column )
 {
-   BLAZE_INTERNAL_ASSERT( row <= (~lhs).rows(), "Invalid row access index" );
-   BLAZE_INTERNAL_ASSERT( column <= (~lhs).columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( row + (~rhs).size() <= (~lhs).rows(), "Invalid number of rows" );
-   BLAZE_INTERNAL_ASSERT( column + (~rhs).size() <= (~lhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( row <= (*lhs).rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( column <= (*lhs).columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( row + (*rhs).size() <= (*lhs).rows(), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( column + (*rhs).size() <= (*lhs).columns(), "Invalid number of columns" );
 
    MAYBE_UNUSED( lhs, rhs, band, row, column );
 
@@ -2686,10 +2795,10 @@ template< typename MT  // Type of the left-hand side matrix
 BLAZE_ALWAYS_INLINE bool tryShiftAssign( const Matrix<MT,SO>& lhs, const Vector<VT,TF>& rhs,
                                          size_t row, size_t column )
 {
-   BLAZE_INTERNAL_ASSERT( row <= (~lhs).rows(), "Invalid row access index" );
-   BLAZE_INTERNAL_ASSERT( column <= (~lhs).columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( TF || ( row + (~rhs).size() <= (~lhs).rows() ), "Invalid number of rows" );
-   BLAZE_INTERNAL_ASSERT( !TF || ( column + (~rhs).size() <= (~lhs).columns() ), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( row <= (*lhs).rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( column <= (*lhs).columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( TF || ( row + (*rhs).size() <= (*lhs).rows() ), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( !TF || ( column + (*rhs).size() <= (*lhs).columns() ), "Invalid number of columns" );
 
    MAYBE_UNUSED( lhs, rhs, row, column );
 
@@ -2723,10 +2832,10 @@ template< typename MT  // Type of the left-hand side matrix
 BLAZE_ALWAYS_INLINE bool tryShiftAssign( const Matrix<MT,SO>& lhs, const Vector<VT,TF>& rhs,
                                          ptrdiff_t band, size_t row, size_t column )
 {
-   BLAZE_INTERNAL_ASSERT( row <= (~lhs).rows(), "Invalid row access index" );
-   BLAZE_INTERNAL_ASSERT( column <= (~lhs).columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( row + (~rhs).size() <= (~lhs).rows(), "Invalid number of rows" );
-   BLAZE_INTERNAL_ASSERT( column + (~rhs).size() <= (~lhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( row <= (*lhs).rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( column <= (*lhs).columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( row + (*rhs).size() <= (*lhs).rows(), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( column + (*rhs).size() <= (*lhs).columns(), "Invalid number of columns" );
 
    MAYBE_UNUSED( lhs, rhs, band, row, column );
 
@@ -2759,10 +2868,10 @@ template< typename MT1  // Type of the left-hand side matrix
 BLAZE_ALWAYS_INLINE bool tryShiftAssign( const Matrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs,
                                          size_t row, size_t column )
 {
-   BLAZE_INTERNAL_ASSERT( row <= (~lhs).rows(), "Invalid row access index" );
-   BLAZE_INTERNAL_ASSERT( column <= (~lhs).columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( row + (~rhs).rows() <= (~lhs).rows(), "Invalid number of rows" );
-   BLAZE_INTERNAL_ASSERT( column + (~rhs).columns() <= (~lhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( row <= (*lhs).rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( column <= (*lhs).columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( row + (*rhs).rows() <= (*lhs).rows(), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( column + (*rhs).columns() <= (*lhs).columns(), "Invalid number of columns" );
 
    MAYBE_UNUSED( lhs, rhs, row, column );
 
@@ -2795,10 +2904,10 @@ template< typename MT  // Type of the left-hand side matrix
 BLAZE_ALWAYS_INLINE bool tryBitandAssign( const Matrix<MT,SO>& lhs, const Vector<VT,TF>& rhs,
                                           size_t row, size_t column )
 {
-   BLAZE_INTERNAL_ASSERT( row <= (~lhs).rows(), "Invalid row access index" );
-   BLAZE_INTERNAL_ASSERT( column <= (~lhs).columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( TF || ( row + (~rhs).size() <= (~lhs).rows() ), "Invalid number of rows" );
-   BLAZE_INTERNAL_ASSERT( !TF || ( column + (~rhs).size() <= (~lhs).columns() ), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( row <= (*lhs).rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( column <= (*lhs).columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( TF || ( row + (*rhs).size() <= (*lhs).rows() ), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( !TF || ( column + (*rhs).size() <= (*lhs).columns() ), "Invalid number of columns" );
 
    MAYBE_UNUSED( lhs, rhs, row, column );
 
@@ -2833,10 +2942,10 @@ template< typename MT  // Type of the left-hand side matrix
 BLAZE_ALWAYS_INLINE bool tryBitandAssign( const Matrix<MT,SO>& lhs, const Vector<VT,TF>& rhs,
                                           ptrdiff_t band, size_t row, size_t column )
 {
-   BLAZE_INTERNAL_ASSERT( row <= (~lhs).rows(), "Invalid row access index" );
-   BLAZE_INTERNAL_ASSERT( column <= (~lhs).columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( row + (~rhs).size() <= (~lhs).rows(), "Invalid number of rows" );
-   BLAZE_INTERNAL_ASSERT( column + (~rhs).size() <= (~lhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( row <= (*lhs).rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( column <= (*lhs).columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( row + (*rhs).size() <= (*lhs).rows(), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( column + (*rhs).size() <= (*lhs).columns(), "Invalid number of columns" );
 
    MAYBE_UNUSED( lhs, rhs, band, row, column );
 
@@ -2869,10 +2978,10 @@ template< typename MT1  // Type of the left-hand side matrix
 BLAZE_ALWAYS_INLINE bool tryBitandAssign( const Matrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs,
                                           size_t row, size_t column )
 {
-   BLAZE_INTERNAL_ASSERT( row <= (~lhs).rows(), "Invalid row access index" );
-   BLAZE_INTERNAL_ASSERT( column <= (~lhs).columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( row + (~rhs).rows() <= (~lhs).rows(), "Invalid number of rows" );
-   BLAZE_INTERNAL_ASSERT( column + (~rhs).columns() <= (~lhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( row <= (*lhs).rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( column <= (*lhs).columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( row + (*rhs).rows() <= (*lhs).rows(), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( column + (*rhs).columns() <= (*lhs).columns(), "Invalid number of columns" );
 
    MAYBE_UNUSED( lhs, rhs, row, column );
 
@@ -2905,10 +3014,10 @@ template< typename MT  // Type of the left-hand side matrix
 BLAZE_ALWAYS_INLINE bool tryBitorAssign( const Matrix<MT,SO>& lhs, const Vector<VT,TF>& rhs,
                                          size_t row, size_t column )
 {
-   BLAZE_INTERNAL_ASSERT( row <= (~lhs).rows(), "Invalid row access index" );
-   BLAZE_INTERNAL_ASSERT( column <= (~lhs).columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( TF || ( row + (~rhs).size() <= (~lhs).rows() ), "Invalid number of rows" );
-   BLAZE_INTERNAL_ASSERT( !TF || ( column + (~rhs).size() <= (~lhs).columns() ), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( row <= (*lhs).rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( column <= (*lhs).columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( TF || ( row + (*rhs).size() <= (*lhs).rows() ), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( !TF || ( column + (*rhs).size() <= (*lhs).columns() ), "Invalid number of columns" );
 
    MAYBE_UNUSED( lhs, rhs, row, column );
 
@@ -2943,10 +3052,10 @@ template< typename MT  // Type of the left-hand side matrix
 BLAZE_ALWAYS_INLINE bool tryBitorAssign( const Matrix<MT,SO>& lhs, const Vector<VT,TF>& rhs,
                                          ptrdiff_t band, size_t row, size_t column )
 {
-   BLAZE_INTERNAL_ASSERT( row <= (~lhs).rows(), "Invalid row access index" );
-   BLAZE_INTERNAL_ASSERT( column <= (~lhs).columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( row + (~rhs).size() <= (~lhs).rows(), "Invalid number of rows" );
-   BLAZE_INTERNAL_ASSERT( column + (~rhs).size() <= (~lhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( row <= (*lhs).rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( column <= (*lhs).columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( row + (*rhs).size() <= (*lhs).rows(), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( column + (*rhs).size() <= (*lhs).columns(), "Invalid number of columns" );
 
    MAYBE_UNUSED( lhs, rhs, band, row, column );
 
@@ -2979,10 +3088,10 @@ template< typename MT1  // Type of the left-hand side matrix
 BLAZE_ALWAYS_INLINE bool tryBitorAssign( const Matrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs,
                                          size_t row, size_t column )
 {
-   BLAZE_INTERNAL_ASSERT( row <= (~lhs).rows(), "Invalid row access index" );
-   BLAZE_INTERNAL_ASSERT( column <= (~lhs).columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( row + (~rhs).rows() <= (~lhs).rows(), "Invalid number of rows" );
-   BLAZE_INTERNAL_ASSERT( column + (~rhs).columns() <= (~lhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( row <= (*lhs).rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( column <= (*lhs).columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( row + (*rhs).rows() <= (*lhs).rows(), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( column + (*rhs).columns() <= (*lhs).columns(), "Invalid number of columns" );
 
    MAYBE_UNUSED( lhs, rhs, row, column );
 
@@ -3015,10 +3124,10 @@ template< typename MT  // Type of the left-hand side matrix
 BLAZE_ALWAYS_INLINE bool tryBitxorAssign( const Matrix<MT,SO>& lhs, const Vector<VT,TF>& rhs,
                                           size_t row, size_t column )
 {
-   BLAZE_INTERNAL_ASSERT( row <= (~lhs).rows(), "Invalid row access index" );
-   BLAZE_INTERNAL_ASSERT( column <= (~lhs).columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( TF || ( row + (~rhs).size() <= (~lhs).rows() ), "Invalid number of rows" );
-   BLAZE_INTERNAL_ASSERT( !TF || ( column + (~rhs).size() <= (~lhs).columns() ), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( row <= (*lhs).rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( column <= (*lhs).columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( TF || ( row + (*rhs).size() <= (*lhs).rows() ), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( !TF || ( column + (*rhs).size() <= (*lhs).columns() ), "Invalid number of columns" );
 
    MAYBE_UNUSED( lhs, rhs, row, column );
 
@@ -3053,10 +3162,10 @@ template< typename MT  // Type of the left-hand side matrix
 BLAZE_ALWAYS_INLINE bool tryBitxorAssign( const Matrix<MT,SO>& lhs, const Vector<VT,TF>& rhs,
                                           ptrdiff_t band, size_t row, size_t column )
 {
-   BLAZE_INTERNAL_ASSERT( row <= (~lhs).rows(), "Invalid row access index" );
-   BLAZE_INTERNAL_ASSERT( column <= (~lhs).columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( row + (~rhs).size() <= (~lhs).rows(), "Invalid number of rows" );
-   BLAZE_INTERNAL_ASSERT( column + (~rhs).size() <= (~lhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( row <= (*lhs).rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( column <= (*lhs).columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( row + (*rhs).size() <= (*lhs).rows(), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( column + (*rhs).size() <= (*lhs).columns(), "Invalid number of columns" );
 
    MAYBE_UNUSED( lhs, rhs, band, row, column );
 
@@ -3089,10 +3198,10 @@ template< typename MT1  // Type of the left-hand side matrix
 BLAZE_ALWAYS_INLINE bool tryBitxorAssign( const Matrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs,
                                          size_t row, size_t column )
 {
-   BLAZE_INTERNAL_ASSERT( row <= (~lhs).rows(), "Invalid row access index" );
-   BLAZE_INTERNAL_ASSERT( column <= (~lhs).columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( row + (~rhs).rows() <= (~lhs).rows(), "Invalid number of rows" );
-   BLAZE_INTERNAL_ASSERT( column + (~rhs).columns() <= (~lhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( row <= (*lhs).rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( column <= (*lhs).columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( row + (*rhs).rows() <= (*lhs).rows(), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( column + (*rhs).columns() <= (*lhs).columns(), "Invalid number of columns" );
 
    MAYBE_UNUSED( lhs, rhs, row, column );
 
@@ -3121,7 +3230,7 @@ template< typename MT  // Type of the matrix
         , bool SO >    // Storage order
 BLAZE_ALWAYS_INLINE MT& derestrict( Matrix<MT,SO>& matrix )
 {
-   return ~matrix;
+   return *matrix;
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -3145,7 +3254,7 @@ template< typename MT  // Type of the matrix
         , bool SO >    // Storage order
 BLAZE_ALWAYS_INLINE MT& unview( Matrix<MT,SO>& matrix )
 {
-   return ~matrix;
+   return *matrix;
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -3169,7 +3278,7 @@ template< typename MT  // Type of the matrix
         , bool SO >    // Storage order
 BLAZE_ALWAYS_INLINE const MT& unview( const Matrix<MT,SO>& matrix )
 {
-   return ~matrix;
+   return *matrix;
 }
 /*! \endcond */
 //*************************************************************************************************

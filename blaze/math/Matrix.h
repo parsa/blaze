@@ -141,7 +141,7 @@ template< typename MT  // Type of the matrix
         , bool SO >    // Storage order
 inline bool isSymmetric( const Matrix<MT,SO>& m )
 {
-   return isSymmetric<relaxed>( ~m );
+   return isSymmetric<relaxed>( *m );
 }
 //*************************************************************************************************
 
@@ -185,7 +185,7 @@ template< typename MT  // Type of the matrix
         , bool SO >    // Storage order
 inline bool isHermitian( const Matrix<MT,SO>& m )
 {
-   return isHermitian<relaxed>( ~m );
+   return isHermitian<relaxed>( *m );
 }
 //*************************************************************************************************
 
@@ -227,7 +227,7 @@ template< typename MT  // Type of the matrix
         , bool SO >    // Storage order
 inline bool isUniform( const Matrix<MT,SO>& m )
 {
-   return isUniform<relaxed>( ~m );
+   return isUniform<relaxed>( *m );
 }
 //*************************************************************************************************
 
@@ -279,7 +279,7 @@ template< typename MT  // Type of the matrix
         , bool SO >    // Storage order
 inline bool isLower( const Matrix<MT,SO>& m )
 {
-   return isLower<relaxed>( ~m );
+   return isLower<relaxed>( *m );
 }
 //*************************************************************************************************
 
@@ -330,7 +330,7 @@ template< typename MT  // Type of the matrix
         , bool SO >    // Storage order
 inline bool isUniLower( const Matrix<MT,SO>& m )
 {
-   return isUniLower<relaxed>( ~m );
+   return isUniLower<relaxed>( *m );
 }
 //*************************************************************************************************
 
@@ -382,7 +382,7 @@ template< typename MT  // Type of the matrix
         , bool SO >    // Storage order
 inline bool isStrictlyLower( const Matrix<MT,SO>& m )
 {
-   return isStrictlyLower<relaxed>( ~m );
+   return isStrictlyLower<relaxed>( *m );
 }
 //*************************************************************************************************
 
@@ -434,7 +434,7 @@ template< typename MT  // Type of the matrix
         , bool SO >    // Storage order
 inline bool isUpper( const Matrix<MT,SO>& m )
 {
-   return isUpper<relaxed>( ~m );
+   return isUpper<relaxed>( *m );
 }
 //*************************************************************************************************
 
@@ -485,7 +485,7 @@ template< typename MT  // Type of the matrix
         , bool SO >    // Storage order
 inline bool isUniUpper( const Matrix<MT,SO>& m )
 {
-   return isUniUpper<relaxed>( ~m );
+   return isUniUpper<relaxed>( *m );
 }
 //*************************************************************************************************
 
@@ -537,7 +537,7 @@ template< typename MT  // Type of the matrix
         , bool SO >    // Storage order
 inline bool isStrictlyUpper( const Matrix<MT,SO>& m )
 {
-   return isStrictlyUpper<relaxed>( ~m );
+   return isStrictlyUpper<relaxed>( *m );
 }
 //*************************************************************************************************
 
@@ -590,7 +590,7 @@ template< typename MT  // Type of the matrix
         , bool SO >    // Storage order
 inline bool isDiagonal( const Matrix<MT,SO>& m )
 {
-   return isDiagonal<relaxed>( ~m );
+   return isDiagonal<relaxed>( *m );
 }
 //*************************************************************************************************
 
@@ -642,7 +642,7 @@ template< typename MT  // Type of the matrix
         , bool SO >    // Storage order
 inline bool isIdentity( const Matrix<MT,SO>& m )
 {
-   return isIdentity<relaxed>( ~m );
+   return isIdentity<relaxed>( *m );
 }
 //*************************************************************************************************
 
@@ -667,11 +667,11 @@ template< typename MT  // Type of the matrix
         , bool SO >    // Storage order
 inline auto trace( const Matrix<MT,SO>& m )
 {
-   if( !isSquare( ~m ) ) {
+   if( !isSquare( *m ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid input matrix for trace computation" );
    }
 
-   return sum( diagonal( ~m ) );
+   return sum( diagonal( *m ) );
 }
 //*************************************************************************************************
 
@@ -787,7 +787,7 @@ template< typename MT  // Type of the matrix
         , bool SO >    // Storage order
 inline std::ostream& operator<<( std::ostream& os, const Matrix<MT,SO>& m )
 {
-   CompositeType_t<MT> tmp( ~m );
+   CompositeType_t<MT> tmp( *m );
 
    for( size_t i=0UL; i<tmp.rows(); ++i ) {
       os << "( ";

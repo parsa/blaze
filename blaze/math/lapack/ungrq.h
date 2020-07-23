@@ -129,10 +129,10 @@ inline void ungrq( DenseMatrix<MT,SO>& A, const ElementType_t<MT>* tau )
 
    using ET = ElementType_t<MT>;
 
-   blas_int_t n   ( numeric_cast<blas_int_t>( SO ? (~A).columns() : (~A).rows() ) );
-   blas_int_t m   ( numeric_cast<blas_int_t>( SO ? (~A).rows() : (~A).columns() ) );
+   blas_int_t n   ( numeric_cast<blas_int_t>( SO ? (*A).columns() : (*A).rows() ) );
+   blas_int_t m   ( numeric_cast<blas_int_t>( SO ? (*A).rows() : (*A).columns() ) );
    blas_int_t k   ( min( m, n ) );
-   blas_int_t lda ( numeric_cast<blas_int_t>( (~A).spacing() ) );
+   blas_int_t lda ( numeric_cast<blas_int_t>( (*A).spacing() ) );
    blas_int_t info( 0 );
 
    if( k == 0 ) {
@@ -144,11 +144,11 @@ inline void ungrq( DenseMatrix<MT,SO>& A, const ElementType_t<MT>* tau )
 
    if( SO ) {
       const size_t offset( ( m > n )?( m - n ):( 0UL ) );
-      ungrq( k, n, k, (~A).data()+offset, lda, tau, work.get(), lwork, &info );
+      ungrq( k, n, k, (*A).data()+offset, lda, tau, work.get(), lwork, &info );
    }
    else {
       const size_t offset( ( m < n )?( n - m ):( 0UL ) );
-      ungql( m, k, k, (~A).data(offset), lda, tau, work.get(), lwork, &info );
+      ungql( m, k, k, (*A).data(offset), lda, tau, work.get(), lwork, &info );
    }
 
    BLAZE_INTERNAL_ASSERT( info == 0, "Invalid argument for Q reconstruction" );

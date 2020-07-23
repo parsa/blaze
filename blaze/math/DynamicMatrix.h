@@ -183,7 +183,7 @@ void makeSymmetric( DynamicMatrix<Type,SO,Tag>& matrix )
 {
    using blaze::randomize;
 
-   if( !isSquare( ~matrix ) ) {
+   if( !isSquare( *matrix ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid non-square matrix provided" );
    }
 
@@ -221,7 +221,7 @@ void makeSymmetric( DynamicMatrix<Type,SO,Tag>& matrix, const Arg& min, const Ar
 {
    using blaze::randomize;
 
-   if( !isSquare( ~matrix ) ) {
+   if( !isSquare( *matrix ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid non-square matrix provided" );
    }
 
@@ -260,7 +260,7 @@ void makeHermitian( DynamicMatrix<Type,SO,Tag>& matrix )
 
    using BT = UnderlyingBuiltin_t<Type>;
 
-   if( !isSquare( ~matrix ) ) {
+   if( !isSquare( *matrix ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid non-square matrix provided" );
    }
 
@@ -302,7 +302,7 @@ void makeHermitian( DynamicMatrix<Type,SO,Tag>& matrix, const Arg& min, const Ar
 
    using BT = UnderlyingBuiltin_t<Type>;
 
-   if( !isSquare( ~matrix ) ) {
+   if( !isSquare( *matrix ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid non-square matrix provided" );
    }
 
@@ -339,7 +339,7 @@ void makePositiveDefinite( DynamicMatrix<Type,SO,Tag>& matrix )
 
    BLAZE_CONSTRAINT_MUST_BE_SCALAR_TYPE( Type );
 
-   if( !isSquare( ~matrix ) ) {
+   if( !isSquare( *matrix ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid non-square matrix provided" );
    }
 

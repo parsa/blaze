@@ -91,7 +91,7 @@ struct VecNoAliasExpr
 template< typename VT >  // Vector base type of the expression
 inline decltype(auto) noalias( const VecNoAliasExpr<VT>& vector )
 {
-   return ~vector;
+   return *vector;
 }
 /*! \endcond */
 //*************************************************************************************************

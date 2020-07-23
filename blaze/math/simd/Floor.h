@@ -70,19 +70,19 @@ template< typename T >  // Type of the operand
 BLAZE_ALWAYS_INLINE const SIMDfloat floor( const SIMDf32<T>& a ) noexcept
 #if BLAZE_SVML_MODE && ( BLAZE_AVX512F_MODE || BLAZE_MIC_MODE )
 {
-   return _mm512_floor_ps( (~a).eval().value );
+   return _mm512_floor_ps( (*a).eval().value );
 }
 #elif BLAZE_SLEEF_MODE && ( BLAZE_AVX512F_MODE || BLAZE_MIC_MODE )
 {
-   return Sleef_floorf16( (~a).eval().value );
+   return Sleef_floorf16( (*a).eval().value );
 }
 #elif BLAZE_AVX_MODE
 {
-   return _mm256_floor_ps((~a).eval().value);
+   return _mm256_floor_ps((*a).eval().value);
 }
 #elif BLAZE_SSE4_MODE
 {
-    return _mm_floor_ps((~a).eval().value);
+    return _mm_floor_ps((*a).eval().value);
 }
 #else
 = delete;
@@ -112,19 +112,19 @@ template< typename T >  // Type of the operand
 BLAZE_ALWAYS_INLINE const SIMDdouble floor( const SIMDf64<T>& a ) noexcept
 #if BLAZE_SVML_MODE && ( BLAZE_AVX512F_MODE || BLAZE_MIC_MODE )
 {
-   return _mm512_floor_pd( (~a).eval().value );
+   return _mm512_floor_pd( (*a).eval().value );
 }
 #elif BLAZE_SLEEF_MODE && ( BLAZE_AVX512F_MODE || BLAZE_MIC_MODE )
 {
-   return Sleef_floord8( (~a).eval().value );
+   return Sleef_floord8( (*a).eval().value );
 }
 #elif BLAZE_AVX_MODE
 {
-   return _mm256_floor_pd((~a).eval().value);
+   return _mm256_floor_pd((*a).eval().value);
 }
 #elif BLAZE_SSE4_MODE
 {
-    return _mm_floor_pd((~a).eval().value);
+    return _mm_floor_pd((*a).eval().value);
 }
 #else
 = delete;

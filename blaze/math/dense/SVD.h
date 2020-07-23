@@ -149,13 +149,13 @@ inline void svd( const DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& s )
    BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( ATmp );
    BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<ATmp> );
 
-   ATmp Atmp( ~A );
-   STmp stmp( ~s );
+   ATmp Atmp( *A );
+   STmp stmp( *s );
 
    gesdd( Atmp, stmp );
 
    if( !IsContiguous_v<VT> ) {
-      (~s) = stmp;
+      (*s) = stmp;
    }
 }
 //*************************************************************************************************
@@ -254,23 +254,23 @@ inline void svd( const DenseMatrix<MT1,SO>& A, DenseMatrix<MT2,SO>& U,
    BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( ATmp );
    BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<ATmp> );
 
-   ATmp Atmp( ~A );
-   UTmp Utmp( ~U );
-   STmp stmp( ~s );
-   VTmp Vtmp( ~V );
+   ATmp Atmp( *A );
+   UTmp Utmp( *U );
+   STmp stmp( *s );
+   VTmp Vtmp( *V );
 
    gesdd( Atmp, Utmp, stmp, Vtmp, 'S' );
 
    if( !IsContiguous_v<MT2> ) {
-      (~U) = Utmp;
+      (*U) = Utmp;
    }
 
    if( !IsContiguous_v<VT> ) {
-      (~s) = stmp;
+      (*s) = stmp;
    }
 
    if( !IsContiguous_v<MT3> ) {
-      (~V) = Vtmp;
+      (*V) = Vtmp;
    }
 }
 //*************************************************************************************************
@@ -362,13 +362,13 @@ inline size_t svd( const DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& s, ST low, S
    BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( ATmp );
    BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<ATmp> );
 
-   ATmp Atmp( ~A );
-   STmp stmp( ~s );
+   ATmp Atmp( *A );
+   STmp stmp( *s );
 
    const auto num = gesvdx( Atmp, stmp, low, upp );
 
    if( !IsContiguous_v<VT> ) {
-      (~s) = stmp;
+      (*s) = stmp;
    }
 
    return num;
@@ -493,23 +493,23 @@ inline size_t svd( const DenseMatrix<MT1,SO>& A, DenseMatrix<MT2,SO>& U,
    BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( ATmp );
    BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<ATmp> );
 
-   ATmp Atmp( ~A );
-   UTmp Utmp( ~U );
-   STmp stmp( ~s );
-   VTmp Vtmp( ~V );
+   ATmp Atmp( *A );
+   UTmp Utmp( *U );
+   STmp stmp( *s );
+   VTmp Vtmp( *V );
 
    const auto num = gesvdx( Atmp, Utmp, stmp, Vtmp, low, upp );
 
    if( !IsContiguous_v<MT2> ) {
-      (~U) = Utmp;
+      (*U) = Utmp;
    }
 
    if( !IsContiguous_v<VT> ) {
-      (~s) = stmp;
+      (*s) = stmp;
    }
 
    if( !IsContiguous_v<MT3> ) {
-      (~V) = Vtmp;
+      (*V) = Vtmp;
    }
 
    return num;

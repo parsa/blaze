@@ -265,8 +265,8 @@ class DMatRepeatExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
       CompositeType_t<MT> A( serial( rhs.dm_ ) );  // Evaluation of the dense matrix operand
 
@@ -277,7 +277,7 @@ class DMatRepeatExpr
 
       for( size_t rep0=0UL; rep0<reps0; ++rep0 ) {
          for( size_t rep1=0UL; rep1<reps1; ++rep1 ) {
-            submatrix( ~lhs, rep0*M, rep1*N, M, N, unchecked ) = serial( A );
+            submatrix( *lhs, rep0*M, rep1*N, M, N, unchecked ) = serial( A );
          }
       }
    }
@@ -302,8 +302,8 @@ class DMatRepeatExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
       CompositeType_t<MT> A( serial( rhs.dm_ ) );  // Evaluation of the dense matrix operand
 
@@ -312,8 +312,8 @@ class DMatRepeatExpr
       const size_t M( A.rows() );
       const size_t N( A.columns() );
 
-      (~lhs).reset();
-      (~lhs).reserve( reps0*reps1*M*N );
+      (*lhs).reset();
+      (*lhs).reserve( reps0*reps1*M*N );
 
       if( SO2 == rowMajor )
       {
@@ -321,10 +321,10 @@ class DMatRepeatExpr
             for( size_t i=0UL; i<M; ++i ) {
                for( size_t rep1=0UL; rep1<reps1; ++rep1 ) {
                   for( size_t j=0UL; j<N; ++j ) {
-                     (~lhs).append( rep0*M+i, rep1*N+j, A(i,j), true );
+                     (*lhs).append( rep0*M+i, rep1*N+j, A(i,j), true );
                   }
                }
-               (~lhs).finalize( rep0*M+i );
+               (*lhs).finalize( rep0*M+i );
             }
          }
       }
@@ -334,10 +334,10 @@ class DMatRepeatExpr
             for( size_t j=0UL; j<N; ++j ) {
                for( size_t rep0=0UL; rep0<reps0; ++rep0 ) {
                   for( size_t i=0UL; i<M; ++i ) {
-                     (~lhs).append( rep0*M+i, rep1*N+j, A(i,j), true );
+                     (*lhs).append( rep0*M+i, rep1*N+j, A(i,j), true );
                   }
                }
-               (~lhs).finalize( rep1*N+j );
+               (*lhs).finalize( rep1*N+j );
             }
          }
       }
@@ -363,8 +363,8 @@ class DMatRepeatExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
       CompositeType_t<MT> A( serial( rhs.dm_ ) );  // Evaluation of the dense matrix operand
 
@@ -375,7 +375,7 @@ class DMatRepeatExpr
 
       for( size_t rep0=0UL; rep0<reps0; ++rep0 ) {
          for( size_t rep1=0UL; rep1<reps1; ++rep1 ) {
-            submatrix( ~lhs, rep0*M, rep1*N, M, N, unchecked ) += serial( A );
+            submatrix( *lhs, rep0*M, rep1*N, M, N, unchecked ) += serial( A );
          }
       }
    }
@@ -404,8 +404,8 @@ class DMatRepeatExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
       CompositeType_t<MT> A( serial( rhs.dm_ ) );  // Evaluation of the dense matrix operand
 
@@ -416,7 +416,7 @@ class DMatRepeatExpr
 
       for( size_t rep0=0UL; rep0<reps0; ++rep0 ) {
          for( size_t rep1=0UL; rep1<reps1; ++rep1 ) {
-            submatrix( ~lhs, rep0*M, rep1*N, M, N, unchecked ) -= serial( A );
+            submatrix( *lhs, rep0*M, rep1*N, M, N, unchecked ) -= serial( A );
          }
       }
    }
@@ -445,8 +445,8 @@ class DMatRepeatExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
       CompositeType_t<MT> A( serial( rhs.dm_ ) );  // Evaluation of the dense matrix operand
 
@@ -457,7 +457,7 @@ class DMatRepeatExpr
 
       for( size_t rep0=0UL; rep0<reps0; ++rep0 ) {
          for( size_t rep1=0UL; rep1<reps1; ++rep1 ) {
-            submatrix( ~lhs, rep0*M, rep1*N, M, N, unchecked ) %= serial( A );
+            submatrix( *lhs, rep0*M, rep1*N, M, N, unchecked ) %= serial( A );
          }
       }
    }
@@ -545,7 +545,7 @@ inline decltype(auto) repeat( const DenseMatrix<MT,SO>& dm, size_t m, size_t n )
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = const DMatRepeatExpr<MT,SO>;
-   return ReturnType( ~dm, m, n );
+   return ReturnType( *dm, m, n );
 }
 //*************************************************************************************************
 
@@ -601,7 +601,7 @@ inline decltype(auto) repeat( const DenseMatrix<MT,SO>& dm )
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = const DMatRepeatExpr<MT,SO,R0,R1>;
-   return ReturnType( ~dm );
+   return ReturnType( *dm );
 }
 //*************************************************************************************************
 
@@ -630,7 +630,7 @@ inline decltype(auto) repeat( const DenseMatrix<MT,SO>& dm, size_t m, size_t n )
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = const DMatRepeatExpr<MT,SO,R0,R1>;
-   return ReturnType( ~dm );
+   return ReturnType( *dm );
 }
 /*! \endcond */
 //*************************************************************************************************

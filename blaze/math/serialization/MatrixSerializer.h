@@ -364,8 +364,8 @@ void MatrixSerializer::serialize( Archive& archive, const Matrix<MT,SO>& mat )
       BLAZE_THROW_RUNTIME_ERROR( "Faulty archive detected" );
    }
 
-   serializeHeader( archive, ~mat );
-   serializeMatrix( archive, ~mat );
+   serializeHeader( archive, *mat );
+   serializeMatrix( archive, *mat );
 }
 //*************************************************************************************************
 
@@ -413,16 +413,16 @@ template< typename Archive  // Type of the archive
 void MatrixSerializer::serializeMatrix( Archive& archive, const DenseMatrix<MT,SO>& mat )
 {
    if( IsRowMajorMatrix_v<MT> ) {
-      for( size_t i=0UL; i<(~mat).rows(); ++i ) {
-         for( size_t j=0UL; j<(~mat).columns(); ++j ) {
-            archive << (~mat)(i,j);
+      for( size_t i=0UL; i<(*mat).rows(); ++i ) {
+         for( size_t j=0UL; j<(*mat).columns(); ++j ) {
+            archive << (*mat)(i,j);
          }
       }
    }
    else {
-      for( size_t j=0UL; j<(~mat).columns(); ++j ) {
-         for( size_t i=0UL; i<(~mat).rows(); ++i ) {
-            archive << (~mat)(i,j);
+      for( size_t j=0UL; j<(*mat).columns(); ++j ) {
+         for( size_t i=0UL; i<(*mat).rows(); ++i ) {
+            archive << (*mat)(i,j);
          }
       }
    }
@@ -448,17 +448,17 @@ template< typename Archive  // Type of the archive
 void MatrixSerializer::serializeMatrix( Archive& archive, const SparseMatrix<MT,SO>& mat )
 {
    if( IsRowMajorMatrix_v<MT> ) {
-      for( size_t i=0UL; i<(~mat).rows(); ++i ) {
-         archive << uint64_t( (~mat).nonZeros( i ) );
-         for( auto element=(~mat).begin(i); element!=(~mat).end(i); ++element ) {
+      for( size_t i=0UL; i<(*mat).rows(); ++i ) {
+         archive << uint64_t( (*mat).nonZeros( i ) );
+         for( auto element=(*mat).begin(i); element!=(*mat).end(i); ++element ) {
             archive << element->index() << element->value();
          }
       }
    }
    else {
-      for( size_t j=0UL; j<(~mat).columns(); ++j ) {
-         archive << uint64_t( (~mat).nonZeros( j ) );
-         for( auto element=(~mat).begin(j); element!=(~mat).end(j); ++element ) {
+      for( size_t j=0UL; j<(*mat).columns(); ++j ) {
+         archive << uint64_t( (*mat).nonZeros( j ) );
+         for( auto element=(*mat).begin(j); element!=(*mat).end(j); ++element ) {
             archive << element->index() << element->value();
          }
       }
@@ -496,9 +496,9 @@ void MatrixSerializer::deserialize( Archive& archive, Matrix<MT,SO>& mat )
       BLAZE_THROW_INVALID_ARGUMENT( "Faulty archive detected" );
    }
 
-   deserializeHeader( archive, ~mat );
-   prepareMatrix( ~mat );
-   deserializeMatrix( archive, ~mat );
+   deserializeHeader( archive, *mat );
+   prepareMatrix( *mat );
+   deserializeMatrix( archive, *mat );
 }
 //*************************************************************************************************
 
@@ -552,7 +552,7 @@ template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order
 DisableIf_t< IsResizable_v<MT> > MatrixSerializer::prepareMatrix( DenseMatrix<MT,SO>& mat )
 {
-   reset( ~mat );
+   reset( *mat );
 }
 //*************************************************************************************************
 
@@ -567,8 +567,8 @@ template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
 DisableIf_t< IsResizable_v<MT> > MatrixSerializer::prepareMatrix( SparseMatrix<MT,SO>& mat )
 {
-   (~mat).reserve( number_ );
-   reset( ~mat );
+   (*mat).reserve( number_ );
+   reset( *mat );
 }
 //*************************************************************************************************
 
@@ -605,16 +605,16 @@ template< typename Archive  // Type of the archive
 void MatrixSerializer::deserializeMatrix( Archive& archive, MT& mat )
 {
    if( type_ == 1U ) {
-      deserializeDenseRowMatrix( archive, ~mat );
+      deserializeDenseRowMatrix( archive, *mat );
    }
    else if( type_ == 5UL ) {
-      deserializeDenseColumnMatrix( archive, ~mat );
+      deserializeDenseColumnMatrix( archive, *mat );
    }
    else if( type_ == 3UL ) {
-      deserializeSparseRowMatrix( archive, ~mat );
+      deserializeSparseRowMatrix( archive, *mat );
    }
    else if( type_ == 7UL ) {
-      deserializeSparseColumnMatrix( archive, ~mat );
+      deserializeSparseColumnMatrix( archive, *mat );
    }
    else {
       BLAZE_INTERNAL_ASSERT( false, "Undefined type flag" );
@@ -643,7 +643,7 @@ EnableIf_t< MT::simdEnabled >
    if( columns_ == 0UL ) return;
 
    for( size_t i=0UL; i<rows_; ++i ) {
-      archive.read( &(~mat)(i,0), columns_ );
+      archive.read( &(*mat)(i,0), columns_ );
    }
 
    if( !archive ) {
@@ -677,7 +677,7 @@ void MatrixSerializer::deserializeDenseRowMatrix( Archive& archive, DenseMatrix<
    for( size_t i=0UL; i<rows_; ++i ) {
       size_t j( 0UL );
       while( ( j != columns_ ) && ( archive >> value ) ) {
-         (~mat)(i,j) = value;
+         (*mat)(i,j) = value;
          ++j;
       }
    }
@@ -709,7 +709,7 @@ EnableIf_t< IsNumeric_v< ElementType_t<MT> > >
 {
    DynamicMatrix< ElementType_t<MT>, rowMajor > tmp( rows_, columns_ );
    deserializeDenseRowMatrix( archive, tmp );
-   (~mat) = tmp;
+   (*mat) = tmp;
 
    if( !archive ) {
       BLAZE_THROW_RUNTIME_ERROR( "Sparse matrix could not be deserialized" );
@@ -744,13 +744,13 @@ DisableIf_t< IsNumeric_v< ElementType_t<MT> > >
    const size_t dim2( ( SO != rowMajor )?( rows_ ):( columns_ ) );
 
    for( size_t i=0UL; i<dim1; ++i ) {
-      (~mat).reserve( i, dim2 );
+      (*mat).reserve( i, dim2 );
    }
 
    for( size_t i=0UL; i<rows_; ++i ) {
       size_t j( 0UL );
       while( ( j != columns_ ) && ( archive >> value ) ) {
-         (~mat).append( i, j, value, false );
+         (*mat).append( i, j, value, false );
          ++j;
       }
    }
@@ -782,7 +782,7 @@ EnableIf_t< MT::simdEnabled >
    if( rows_ == 0UL ) return;
 
    for( size_t j=0UL; j<columns_; ++j ) {
-      archive.read( &(~mat)(0,j), rows_ );
+      archive.read( &(*mat)(0,j), rows_ );
    }
 
    if( !archive ) {
@@ -816,7 +816,7 @@ void MatrixSerializer::deserializeDenseColumnMatrix( Archive& archive, DenseMatr
    for( size_t j=0UL; j<columns_; ++j ) {
       size_t i( 0UL );
       while( ( i != rows_ ) && ( archive >> value ) ) {
-         (~mat)(i,j) = value;
+         (*mat)(i,j) = value;
          ++i;
       }
    }
@@ -848,7 +848,7 @@ EnableIf_t< IsNumeric_v< ElementType_t<MT> > >
 {
    DynamicMatrix< ElementType_t<MT>, columnMajor > tmp( rows_, columns_ );
    deserializeDenseColumnMatrix( archive, tmp );
-   (~mat) = tmp;
+   (*mat) = tmp;
 
    if( !archive ) {
       BLAZE_THROW_RUNTIME_ERROR( "Sparse matrix could not be deserialized" );
@@ -883,13 +883,13 @@ DisableIf_t< IsNumeric_v< ElementType_t<MT> > >
    const size_t dim2( ( SO != rowMajor )?( rows_ ):( columns_ ) );
 
    for( size_t i=0UL; i<dim1; ++i ) {
-      (~mat).reserve( i, dim2 );
+      (*mat).reserve( i, dim2 );
    }
 
    for( size_t j=0UL; j<columns_; ++j ) {
       size_t i( 0UL );
       while( ( i != rows_ ) && ( archive >> value ) ) {
-         (~mat).append( i, j, value, false );
+         (*mat).append( i, j, value, false );
          ++i;
       }
    }
@@ -928,7 +928,7 @@ void MatrixSerializer::deserializeSparseRowMatrix( Archive& archive, DenseMatrix
       archive >> number;
       size_t j( 0UL );
       while( ( j != number ) && ( archive >> index >> value ) ) {
-         (~mat)(i,index) = value;
+         (*mat)(i,index) = value;
          ++j;
       }
    }
@@ -968,11 +968,11 @@ void MatrixSerializer::deserializeSparseRowMatrix( Archive& archive, SparseMatri
 
       size_t j( 0UL );
       while( ( j != number ) && ( archive >> index >> value ) ) {
-         (~mat).append( i, index, value, false );
+         (*mat).append( i, index, value, false );
          ++j;
       }
 
-      (~mat).finalize( i );
+      (*mat).finalize( i );
    }
 
    if( !archive ) {
@@ -1000,7 +1000,7 @@ void MatrixSerializer::deserializeSparseRowMatrix( Archive& archive, SparseMatri
 {
    CompressedMatrix< ElementType_t<MT>, rowMajor > tmp( rows_, columns_, number_ );
    deserializeSparseRowMatrix( archive, tmp );
-   (~mat) = tmp;
+   (*mat) = tmp;
 
    if( !archive ) {
       BLAZE_THROW_RUNTIME_ERROR( "Sparse matrix could not be deserialized" );
@@ -1036,7 +1036,7 @@ void MatrixSerializer::deserializeSparseColumnMatrix( Archive& archive, DenseMat
       archive >> number;
       size_t i( 0UL );
       while( ( i != number ) && ( archive >> index >> value ) ) {
-         (~mat)(index,j) = value;
+         (*mat)(index,j) = value;
          ++i;
       }
    }
@@ -1066,7 +1066,7 @@ void MatrixSerializer::deserializeSparseColumnMatrix( Archive& archive, SparseMa
 {
    CompressedMatrix< ElementType_t<MT>, columnMajor > tmp( rows_, columns_, number_ );
    deserializeSparseColumnMatrix( archive, tmp );
-   (~mat) = tmp;
+   (*mat) = tmp;
 
    if( !archive ) {
       BLAZE_THROW_RUNTIME_ERROR( "Sparse matrix could not be deserialized" );
@@ -1103,11 +1103,11 @@ void MatrixSerializer::deserializeSparseColumnMatrix( Archive& archive, SparseMa
 
       size_t i( 0UL );
       while( ( i != number ) && ( archive >> index >> value ) ) {
-         (~mat).append( index, j, value, false );
+         (*mat).append( index, j, value, false );
          ++i;
       }
 
-      (~mat).finalize( j );
+      (*mat).finalize( j );
    }
 
    if( !archive ) {
@@ -1255,7 +1255,7 @@ template< typename Archive  // Type of the archive
         , bool SO >         // Storage order
 void serialize( Archive& archive, const Matrix<MT,SO>& mat )
 {
-   MatrixSerializer().serialize( archive, ~mat );
+   MatrixSerializer().serialize( archive, *mat );
 }
 //*************************************************************************************************
 
@@ -1277,7 +1277,7 @@ template< typename Archive  // Type of the archive
         , bool SO >         // Storage order
 void deserialize( Archive& archive, Matrix<MT,SO>& mat )
 {
-   MatrixSerializer().deserialize( archive, ~mat );
+   MatrixSerializer().deserialize( archive, *mat );
 }
 //*************************************************************************************************
 

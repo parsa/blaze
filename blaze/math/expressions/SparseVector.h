@@ -138,7 +138,7 @@ template< typename VT  // Type of the vector
 BLAZE_ALWAYS_INLINE typename VT::Iterator
    find( SparseVector<VT,TF>& sv, size_t index )
 {
-   return (~sv).find( index );
+   return (*sv).find( index );
 }
 //*************************************************************************************************
 
@@ -163,7 +163,7 @@ template< typename VT  // Type of the vector
 BLAZE_ALWAYS_INLINE typename VT::ConstIterator
    find( const SparseVector<VT,TF>& sv, size_t index )
 {
-   return (~sv).find( index );
+   return (*sv).find( index );
 }
 //*************************************************************************************************
 
@@ -187,7 +187,7 @@ template< typename VT  // Type of the vector
 BLAZE_ALWAYS_INLINE typename VT::Iterator
    lowerBound( SparseVector<VT,TF>& sv, size_t index )
 {
-   return (~sv).lowerBound( index );
+   return (*sv).lowerBound( index );
 }
 //*************************************************************************************************
 
@@ -211,7 +211,7 @@ template< typename VT  // Type of the vector
 BLAZE_ALWAYS_INLINE typename VT::ConstIterator
    lowerBound( const SparseVector<VT,TF>& sv, size_t index )
 {
-   return (~sv).lowerBound( index );
+   return (*sv).lowerBound( index );
 }
 //*************************************************************************************************
 
@@ -235,7 +235,7 @@ template< typename VT  // Type of the vector
 BLAZE_ALWAYS_INLINE typename VT::Iterator
    upperBound( SparseVector<VT,TF>& sv, size_t index )
 {
-   return (~sv).upperBound( index );
+   return (*sv).upperBound( index );
 }
 //*************************************************************************************************
 
@@ -259,7 +259,7 @@ template< typename VT  // Type of the vector
 BLAZE_ALWAYS_INLINE typename VT::ConstIterator
    upperBound( const SparseVector<VT,TF>& sv, size_t index )
 {
-   return (~sv).upperBound( index );
+   return (*sv).upperBound( index );
 }
 //*************************************************************************************************
 

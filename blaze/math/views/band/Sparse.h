@@ -1021,11 +1021,11 @@ inline Band<MT,TF,false,false,CBAs...>&
 {
    using blaze::assign;
 
-   if( size() != (~rhs).size() ) {
+   if( size() != (*rhs).size() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   const CompositeType_t<VT> tmp( ~rhs );
+   const CompositeType_t<VT> tmp( *rhs );
 
    if( !tryAssign( matrix_, tmp, band(), row(), column() ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
@@ -1077,11 +1077,11 @@ inline Band<MT,TF,false,false,CBAs...>&
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( AddType, TF );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( AddType );
 
-   if( size() != (~rhs).size() ) {
+   if( size() != (*rhs).size() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   const AddType tmp( *this + (~rhs) );
+   const AddType tmp( *this + (*rhs) );
 
    if( !tryAssign( matrix_, tmp, band(), row(), column() ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
@@ -1133,11 +1133,11 @@ inline Band<MT,TF,false,false,CBAs...>&
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( SubType, TF );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SubType );
 
-   if( size() != (~rhs).size() ) {
+   if( size() != (*rhs).size() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   const SubType tmp( *this - (~rhs) );
+   const SubType tmp( *this - (*rhs) );
 
    if( !tryAssign( matrix_, tmp, band(), row(), column() ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
@@ -1188,11 +1188,11 @@ inline Band<MT,TF,false,false,CBAs...>&
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( MultType, TF );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MultType );
 
-   if( size() != (~rhs).size() ) {
+   if( size() != (*rhs).size() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   const MultType tmp( *this * (~rhs) );
+   const MultType tmp( *this * (*rhs) );
 
    if( !tryAssign( matrix_, tmp, band(), row(), column() ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
@@ -1244,11 +1244,11 @@ inline Band<MT,TF,false,false,CBAs...>&
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( DivType, TF );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( DivType );
 
-   if( size() != (~rhs).size() ) {
+   if( size() != (*rhs).size() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   const DivType tmp( *this / (~rhs) );
+   const DivType tmp( *this / (*rhs) );
 
    if( !tryAssign( matrix_, tmp, band(), row(), column() ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
@@ -1297,11 +1297,11 @@ inline Band<MT,TF,false,false,CBAs...>&
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( CrossType, TF );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( CrossType );
 
-   if( size() != 3UL || (~rhs).size() != 3UL ) {
+   if( size() != 3UL || (*rhs).size() != 3UL ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid vector size for cross product" );
    }
 
-   const CrossType tmp( *this % (~rhs) );
+   const CrossType tmp( *this % (*rhs) );
 
    if( !tryAssign( matrix_, tmp, band(), row(), column() ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
@@ -2059,10 +2059,10 @@ template< typename MT          // Type of the sparse matrix
 template< typename VT >        // Type of the right-hand side dense vector
 inline void Band<MT,TF,false,false,CBAs...>::assign( const DenseVector<VT,TF>& rhs )
 {
-   BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
+   BLAZE_INTERNAL_ASSERT( size() == (*rhs).size(), "Invalid vector sizes" );
 
-   for( size_t i=0UL; i<(~rhs).size(); ++i ) {
-      matrix_(row()+i,column()+i) = (~rhs)[i];
+   for( size_t i=0UL; i<(*rhs).size(); ++i ) {
+      matrix_(row()+i,column()+i) = (*rhs)[i];
    }
 }
 /*! \endcond */
@@ -2087,11 +2087,11 @@ template< typename MT          // Type of the sparse matrix
 template< typename VT >        // Type of the right-hand side sparse vector
 inline void Band<MT,TF,false,false,CBAs...>::assign( const SparseVector<VT,TF>& rhs )
 {
-   BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
+   BLAZE_INTERNAL_ASSERT( size() == (*rhs).size(), "Invalid vector sizes" );
 
    size_t i( 0UL );
 
-   for( ConstIterator_t<VT> element=(~rhs).begin(); element!=(~rhs).end(); ++element ) {
+   for( ConstIterator_t<VT> element=(*rhs).begin(); element!=(*rhs).end(); ++element ) {
       for( ; i<element->index(); ++i )
          matrix_.erase( row()+i, column()+i );
       matrix_(row()+i,column()+i) = element->value();
@@ -2128,9 +2128,9 @@ inline void Band<MT,TF,false,false,CBAs...>::addAssign( const Vector<VT,TF>& rhs
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( AddType, TF );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( AddType );
 
-   BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
+   BLAZE_INTERNAL_ASSERT( size() == (*rhs).size(), "Invalid vector sizes" );
 
-   const AddType tmp( serial( *this + (~rhs) ) );
+   const AddType tmp( serial( *this + (*rhs) ) );
    assign( tmp );
 }
 /*! \endcond */
@@ -2160,9 +2160,9 @@ inline void Band<MT,TF,false,false,CBAs...>::subAssign( const Vector<VT,TF>& rhs
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( SubType, TF );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SubType );
 
-   BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
+   BLAZE_INTERNAL_ASSERT( size() == (*rhs).size(), "Invalid vector sizes" );
 
-   const SubType tmp( serial( *this - (~rhs) ) );
+   const SubType tmp( serial( *this - (*rhs) ) );
    assign( tmp );
 }
 /*! \endcond */
@@ -2379,14 +2379,14 @@ class Band<MT,TF,false,true,CBAs...>
 
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       LT A( serial( rhs.operand().leftOperand()  ) );
       RT B( serial( rhs.operand().rightOperand() ) );
 
       const size_t n( rhs.size() );
       for( size_t i=0UL; i<n; ++i ) {
-         (~lhs)[i] = row( A, rhs.row()+i, unchecked ) * column( B, rhs.column()+i, unchecked );
+         (*lhs)[i] = row( A, rhs.row()+i, unchecked ) * column( B, rhs.column()+i, unchecked );
       }
    }
    //**********************************************************************************************
@@ -2410,7 +2410,7 @@ class Band<MT,TF,false,true,CBAs...>
 
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       LT A( serial( rhs.operand().leftOperand()  ) );
       RT B( serial( rhs.operand().rightOperand() ) );
@@ -2422,10 +2422,10 @@ class Band<MT,TF,false,true,CBAs...>
       for( size_t i=0UL; i<n; ++i ) {
          tmp = row( A, rhs.row()+i, unchecked ) * column( B, rhs.column()+i, unchecked );
          if( !isDefault<strict>( tmp ) ) {
-            if( (~lhs).capacity() <= nonzeros ) {
-               (~lhs).reserve( min( max( 2UL*(~lhs).capacity(), 7UL ), (~lhs).size() ) );
+            if( (*lhs).capacity() <= nonzeros ) {
+               (*lhs).reserve( min( max( 2UL*(*lhs).capacity(), 7UL ), (*lhs).size() ) );
             }
-            (~lhs).append( i, tmp, false );
+            (*lhs).append( i, tmp, false );
             ++nonzeros;
          }
       }
@@ -2451,14 +2451,14 @@ class Band<MT,TF,false,true,CBAs...>
 
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       LT A( serial( rhs.operand().leftOperand()  ) );
       RT B( serial( rhs.operand().rightOperand() ) );
 
       const size_t n( rhs.size() );
       for( size_t i=0UL; i<n; ++i ) {
-         (~lhs)[i] += row( A, rhs.row()+i, unchecked ) * column( B, rhs.column()+i, unchecked );
+         (*lhs)[i] += row( A, rhs.row()+i, unchecked ) * column( B, rhs.column()+i, unchecked );
       }
    }
    //**********************************************************************************************
@@ -2486,14 +2486,14 @@ class Band<MT,TF,false,true,CBAs...>
 
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       LT A( serial( rhs.operand().leftOperand()  ) );
       RT B( serial( rhs.operand().rightOperand() ) );
 
       const size_t n( rhs.size() );
       for( size_t i=0UL; i<n; ++i ) {
-         (~lhs)[i] -= row( A, rhs.row()+i, unchecked ) * column( B, rhs.column()+i, unchecked );
+         (*lhs)[i] -= row( A, rhs.row()+i, unchecked ) * column( B, rhs.column()+i, unchecked );
       }
    }
    //**********************************************************************************************
@@ -2522,14 +2522,14 @@ class Band<MT,TF,false,true,CBAs...>
 
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       LT A( serial( rhs.operand().leftOperand()  ) );
       RT B( serial( rhs.operand().rightOperand() ) );
 
       const size_t n( rhs.size() );
       for( size_t i=0UL; i<n; ++i ) {
-         (~lhs)[i] *= row( A, rhs.row()+i, unchecked ) * column( B, rhs.column()+i, unchecked );
+         (*lhs)[i] *= row( A, rhs.row()+i, unchecked ) * column( B, rhs.column()+i, unchecked );
       }
    }
    //**********************************************************************************************
@@ -2745,11 +2745,11 @@ class Band< SMatRepeatExpr<MT,SO,CRAs...>, TF, false, false, CBAs... >
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       const size_t n( rhs.size() );
       for( size_t i=0UL; i<n; ++i ) {
-         (~lhs)[i] = rhs[i];
+         (*lhs)[i] = rhs[i];
       }
    }
    //**********************************************************************************************
@@ -2770,7 +2770,7 @@ class Band< SMatRepeatExpr<MT,SO,CRAs...>, TF, false, false, CBAs... >
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       const size_t n( rhs.size() );
       ElementType_t<VT> tmp{};
@@ -2779,10 +2779,10 @@ class Band< SMatRepeatExpr<MT,SO,CRAs...>, TF, false, false, CBAs... >
       for( size_t i=0UL; i<n; ++i ) {
          tmp = rhs[i];
          if( !isDefault<strict>( tmp ) ) {
-            if( (~lhs).capacity() <= nonzeros ) {
-               (~lhs).reserve( min( max( 2UL*(~lhs).capacity(), 7UL ), (~lhs).size() ) );
+            if( (*lhs).capacity() <= nonzeros ) {
+               (*lhs).reserve( min( max( 2UL*(*lhs).capacity(), 7UL ), (*lhs).size() ) );
             }
-            (~lhs).append( i, tmp, false );
+            (*lhs).append( i, tmp, false );
             ++nonzeros;
          }
       }
@@ -2806,11 +2806,11 @@ class Band< SMatRepeatExpr<MT,SO,CRAs...>, TF, false, false, CBAs... >
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       const size_t n( rhs.size() );
       for( size_t i=0UL; i<n; ++i ) {
-         (~lhs)[i] += rhs[i];
+         (*lhs)[i] += rhs[i];
       }
    }
    //**********************************************************************************************
@@ -2836,11 +2836,11 @@ class Band< SMatRepeatExpr<MT,SO,CRAs...>, TF, false, false, CBAs... >
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       const size_t n( rhs.size() );
       for( size_t i=0UL; i<n; ++i ) {
-         (~lhs)[i] -= rhs[i];
+         (*lhs)[i] -= rhs[i];
       }
    }
    //**********************************************************************************************
@@ -2866,11 +2866,11 @@ class Band< SMatRepeatExpr<MT,SO,CRAs...>, TF, false, false, CBAs... >
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       const size_t n( rhs.size() );
       for( size_t i=0UL; i<n; ++i ) {
-         (~lhs)[i] *= rhs[i];
+         (*lhs)[i] *= rhs[i];
       }
    }
    //**********************************************************************************************

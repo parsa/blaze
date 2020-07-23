@@ -72,15 +72,15 @@ template< RelaxationFlag RF  // Relaxation flag
 BLAZE_ALWAYS_INLINE bool equal( const SIMDi8<T>& a, const SIMDi8<T>& b ) noexcept
 #if BLAZE_AVX512BW_MODE
 {
-   return _mm512_cmpeq_epi8_mask( (~a).value, (~b).value ) == 0xffffffffffffffff;
+   return _mm512_cmpeq_epi8_mask( (*a).value, (*b).value ) == 0xffffffffffffffff;
 }
 #elif BLAZE_AVX2_MODE
 {
-   return _mm256_movemask_epi8( _mm256_cmpeq_epi8( (~a).value, (~b).value ) ) == int(0xffffffff);
+   return _mm256_movemask_epi8( _mm256_cmpeq_epi8( (*a).value, (*b).value ) ) == int(0xffffffff);
 }
 #elif BLAZE_SSE2_MODE
 {
-   return _mm_movemask_epi8( _mm_cmpeq_epi8( (~a).value, (~b).value ) ) == int(0xffff);
+   return _mm_movemask_epi8( _mm_cmpeq_epi8( (*a).value, (*b).value ) ) == int(0xffff);
 }
 #else
 = delete;
@@ -105,15 +105,15 @@ template< RelaxationFlag RF  // Relaxation flag
 BLAZE_ALWAYS_INLINE bool equal( const SIMDci8<T>& a, const SIMDci8<T>& b ) noexcept
 #if BLAZE_AVX512BW_MODE
 {
-   return _mm512_cmpeq_epi8_mask( (~a).value, (~b).value ) == 0xffffffffffffffff;
+   return _mm512_cmpeq_epi8_mask( (*a).value, (*b).value ) == 0xffffffffffffffff;
 }
 #elif BLAZE_AVX2_MODE
 {
-   return _mm256_movemask_epi8( _mm256_cmpeq_epi8( (~a).value, (~b).value ) ) == int(0xffffffff);
+   return _mm256_movemask_epi8( _mm256_cmpeq_epi8( (*a).value, (*b).value ) ) == int(0xffffffff);
 }
 #elif BLAZE_SSE2_MODE
 {
-   return _mm_movemask_epi8( _mm_cmpeq_epi8( (~a).value, (~b).value ) ) == int(0xffff);
+   return _mm_movemask_epi8( _mm_cmpeq_epi8( (*a).value, (*b).value ) ) == int(0xffff);
 }
 #else
 = delete;
@@ -134,7 +134,7 @@ BLAZE_ALWAYS_INLINE bool equal( const SIMDci8<T>& a, const SIMDci8<T>& b ) noexc
 template< typename T >  // Type of both operands
 BLAZE_ALWAYS_INLINE bool operator==( const SIMDi8<T>& a, const SIMDi8<T>& b ) noexcept
 {
-   return equal<strict>( ~a, ~b );
+   return equal<strict>( *a, *b );
 }
 //*************************************************************************************************
 
@@ -152,7 +152,7 @@ BLAZE_ALWAYS_INLINE bool operator==( const SIMDi8<T>& a, const SIMDi8<T>& b ) no
 template< typename T >  // Type of both operands
 BLAZE_ALWAYS_INLINE bool operator==( const SIMDci8<T>& a, const SIMDci8<T>& b ) noexcept
 {
-   return equal<strict>( ~a, ~b );
+   return equal<strict>( *a, *b );
 }
 //*************************************************************************************************
 
@@ -181,15 +181,15 @@ template< RelaxationFlag RF  // Relaxation flag
 BLAZE_ALWAYS_INLINE bool equal( const SIMDi16<T>& a, const SIMDi16<T>& b ) noexcept
 #if BLAZE_AVX512BW_MODE
 {
-   return _mm512_cmpeq_epi16_mask( (~a).value, (~b).value ) == 0xffffffff;
+   return _mm512_cmpeq_epi16_mask( (*a).value, (*b).value ) == 0xffffffff;
 }
 #elif BLAZE_AVX2_MODE
 {
-   return _mm256_movemask_epi8( _mm256_cmpeq_epi16( (~a).value, (~b).value ) ) == int(0xffffffff);
+   return _mm256_movemask_epi8( _mm256_cmpeq_epi16( (*a).value, (*b).value ) ) == int(0xffffffff);
 }
 #elif BLAZE_SSE2_MODE
 {
-   return _mm_movemask_epi8( _mm_cmpeq_epi16( (~a).value, (~b).value ) ) == int(0xffff);
+   return _mm_movemask_epi8( _mm_cmpeq_epi16( (*a).value, (*b).value ) ) == int(0xffff);
 }
 #else
 = delete;
@@ -214,15 +214,15 @@ template< RelaxationFlag RF  // Relaxation flag
 BLAZE_ALWAYS_INLINE bool equal( const SIMDci16<T>& a, const SIMDci16<T>& b ) noexcept
 #if BLAZE_AVX512BW_MODE
 {
-   return _mm512_cmpeq_epi16_mask( (~a).value, (~b).value ) == 0xffffffff;
+   return _mm512_cmpeq_epi16_mask( (*a).value, (*b).value ) == 0xffffffff;
 }
 #elif BLAZE_AVX2_MODE
 {
-   return _mm256_movemask_epi8( _mm256_cmpeq_epi16( (~a).value, (~b).value ) ) == int(0xffffffff);
+   return _mm256_movemask_epi8( _mm256_cmpeq_epi16( (*a).value, (*b).value ) ) == int(0xffffffff);
 }
 #elif BLAZE_SSE2_MODE
 {
-   return _mm_movemask_epi8( _mm_cmpeq_epi16( (~a).value, (~b).value ) ) == int(0xffff);
+   return _mm_movemask_epi8( _mm_cmpeq_epi16( (*a).value, (*b).value ) ) == int(0xffff);
 }
 #else
 = delete;
@@ -244,7 +244,7 @@ BLAZE_ALWAYS_INLINE bool equal( const SIMDci16<T>& a, const SIMDci16<T>& b ) noe
 template< typename T >  // Type of both operands
 BLAZE_ALWAYS_INLINE bool operator==( const SIMDi16<T>& a, const SIMDi16<T>& b ) noexcept
 {
-   return equal<strict>( ~a, ~b );
+   return equal<strict>( *a, *b );
 }
 //*************************************************************************************************
 
@@ -262,7 +262,7 @@ BLAZE_ALWAYS_INLINE bool operator==( const SIMDi16<T>& a, const SIMDi16<T>& b ) 
 template< typename T >  // Type of both operands
 BLAZE_ALWAYS_INLINE bool operator==( const SIMDci16<T>& a, const SIMDci16<T>& b ) noexcept
 {
-   return equal<strict>( ~a, ~b );
+   return equal<strict>( *a, *b );
 }
 //*************************************************************************************************
 
@@ -291,15 +291,15 @@ template< RelaxationFlag RF  // Relaxation flag
 BLAZE_ALWAYS_INLINE bool equal( const SIMDi32<T>& a, const SIMDi32<T>& b ) noexcept
 #if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
 {
-   return _mm512_cmpeq_epi32_mask( (~a).value, (~b).value ) == 0xffff;
+   return _mm512_cmpeq_epi32_mask( (*a).value, (*b).value ) == 0xffff;
 }
 #elif BLAZE_AVX2_MODE
 {
-   return _mm256_movemask_epi8( _mm256_cmpeq_epi32( (~a).value, (~b).value ) ) == int(0xffffffff);
+   return _mm256_movemask_epi8( _mm256_cmpeq_epi32( (*a).value, (*b).value ) ) == int(0xffffffff);
 }
 #elif BLAZE_SSE2_MODE
 {
-   return _mm_movemask_epi8( _mm_cmpeq_epi32( (~a).value, (~b).value ) ) == int(0xffff);
+   return _mm_movemask_epi8( _mm_cmpeq_epi32( (*a).value, (*b).value ) ) == int(0xffff);
 }
 #else
 = delete;
@@ -324,15 +324,15 @@ template< RelaxationFlag RF  // Relaxation flag
 BLAZE_ALWAYS_INLINE bool equal( const SIMDci32<T>& a, const SIMDci32<T>& b ) noexcept
 #if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
 {
-   return _mm512_cmpeq_epi32_mask( (~a).value, (~b).value ) == 0xffff;
+   return _mm512_cmpeq_epi32_mask( (*a).value, (*b).value ) == 0xffff;
 }
 #elif BLAZE_AVX2_MODE
 {
-   return _mm256_movemask_epi8( _mm256_cmpeq_epi32( (~a).value, (~b).value ) ) == int(0xffffffff);
+   return _mm256_movemask_epi8( _mm256_cmpeq_epi32( (*a).value, (*b).value ) ) == int(0xffffffff);
 }
 #elif BLAZE_SSE2_MODE
 {
-   return _mm_movemask_epi8( _mm_cmpeq_epi32( (~a).value, (~b).value ) ) == int(0xffff);
+   return _mm_movemask_epi8( _mm_cmpeq_epi32( (*a).value, (*b).value ) ) == int(0xffff);
 }
 #else
 = delete;
@@ -354,7 +354,7 @@ BLAZE_ALWAYS_INLINE bool equal( const SIMDci32<T>& a, const SIMDci32<T>& b ) noe
 template< typename T >  // Type of both operands
 BLAZE_ALWAYS_INLINE bool operator==( const SIMDi32<T>& a, const SIMDi32<T>& b ) noexcept
 {
-   return equal<strict>( ~a, ~b );
+   return equal<strict>( *a, *b );
 }
 //*************************************************************************************************
 
@@ -372,7 +372,7 @@ BLAZE_ALWAYS_INLINE bool operator==( const SIMDi32<T>& a, const SIMDi32<T>& b ) 
 template< typename T >  // Type of both operands
 BLAZE_ALWAYS_INLINE bool operator==( const SIMDci32<T>& a, const SIMDci32<T>& b ) noexcept
 {
-   return equal<strict>( ~a, ~b );
+   return equal<strict>( *a, *b );
 }
 //*************************************************************************************************
 
@@ -402,15 +402,15 @@ template< RelaxationFlag RF  // Relaxation flag
 BLAZE_ALWAYS_INLINE bool equal( const SIMDi64<T>& a, const SIMDi64<T>& b ) noexcept
 #if BLAZE_AVX512F_MODE
 {
-   return _mm512_cmpeq_epi64_mask( (~a).value, (~b).value ) == 0xff;
+   return _mm512_cmpeq_epi64_mask( (*a).value, (*b).value ) == 0xff;
 }
 #elif BLAZE_AVX2_MODE
 {
-   return _mm256_movemask_epi8( _mm256_cmpeq_epi64( (~a).value, (~b).value ) ) == int(0xffffffff);
+   return _mm256_movemask_epi8( _mm256_cmpeq_epi64( (*a).value, (*b).value ) ) == int(0xffffffff);
 }
 #elif BLAZE_SSE4_MODE
 {
-   return _mm_movemask_epi8( _mm_cmpeq_epi64( (~a).value, (~b).value ) ) == int(0xffff);
+   return _mm_movemask_epi8( _mm_cmpeq_epi64( (*a).value, (*b).value ) ) == int(0xffff);
 }
 #else
 = delete;
@@ -435,15 +435,15 @@ template< RelaxationFlag RF  // Relaxation flag
 BLAZE_ALWAYS_INLINE bool equal( const SIMDci64<T>& a, const SIMDci64<T>& b ) noexcept
 #if BLAZE_AVX512F_MODE
 {
-   return _mm512_cmpeq_epi64_mask( (~a).value, (~b).value ) == 0xff;
+   return _mm512_cmpeq_epi64_mask( (*a).value, (*b).value ) == 0xff;
 }
 #elif BLAZE_AVX2_MODE
 {
-   return _mm256_movemask_epi8( _mm256_cmpeq_epi64( (~a).value, (~b).value ) ) == int(0xffffffff);
+   return _mm256_movemask_epi8( _mm256_cmpeq_epi64( (*a).value, (*b).value ) ) == int(0xffffffff);
 }
 #elif BLAZE_SSE4_MODE
 {
-   return _mm_movemask_epi8( _mm_cmpeq_epi64( (~a).value, (~b).value ) ) == int(0xffff);
+   return _mm_movemask_epi8( _mm_cmpeq_epi64( (*a).value, (*b).value ) ) == int(0xffff);
 }
 #else
 = delete;
@@ -465,7 +465,7 @@ BLAZE_ALWAYS_INLINE bool equal( const SIMDci64<T>& a, const SIMDci64<T>& b ) noe
 template< typename T >  // Type of both operands
 BLAZE_ALWAYS_INLINE bool operator==( const SIMDi64<T>& a, const SIMDi64<T>& b ) noexcept
 {
-   return equal<strict>( ~a, ~b );
+   return equal<strict>( *a, *b );
 }
 //*************************************************************************************************
 
@@ -483,7 +483,7 @@ BLAZE_ALWAYS_INLINE bool operator==( const SIMDi64<T>& a, const SIMDi64<T>& b ) 
 template< typename T >  // Type of both operands
 BLAZE_ALWAYS_INLINE bool operator==( const SIMDci64<T>& a, const SIMDci64<T>& b ) noexcept
 {
-   return equal<strict>( ~a, ~b );
+   return equal<strict>( *a, *b );
 }
 //*************************************************************************************************
 
@@ -649,15 +649,15 @@ BLAZE_ALWAYS_INLINE bool operator==( const SIMDf32<T1>& a, const SIMDf32<T2>& b 
 = delete;
 #elif BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
 {
-   return _mm512_cmpeq_ps_mask( (~a).eval().value, (~b).eval().value ) == 0xffff;
+   return _mm512_cmpeq_ps_mask( (*a).eval().value, (*b).eval().value ) == 0xffff;
 }
 #elif BLAZE_AVX_MODE
 {
-   return _mm256_movemask_ps( _mm256_cmp_ps( (~a).eval().value, (~b).eval().value, _CMP_EQ_OQ ) ) == 0xff;
+   return _mm256_movemask_ps( _mm256_cmp_ps( (*a).eval().value, (*b).eval().value, _CMP_EQ_OQ ) ) == 0xff;
 }
 #elif BLAZE_SSE_MODE
 {
-   return _mm_movemask_ps( _mm_cmpeq_ps( (~a).eval().value, (~b).eval().value ) ) == 0xf;
+   return _mm_movemask_ps( _mm_cmpeq_ps( (*a).eval().value, (*b).eval().value ) ) == 0xf;
 }
 #else
 = delete;
@@ -859,15 +859,15 @@ BLAZE_ALWAYS_INLINE bool operator==( const SIMDf64<T1>& a, const SIMDf64<T2>& b 
 = delete;
 #elif BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
 {
-   return _mm512_cmpeq_pd_mask( (~a).eval().value, (~b).eval().value ) == 0xff;
+   return _mm512_cmpeq_pd_mask( (*a).eval().value, (*b).eval().value ) == 0xff;
 }
 #elif BLAZE_AVX_MODE
 {
-   return _mm256_movemask_pd( _mm256_cmp_pd( (~a).eval().value, (~b).eval().value, _CMP_EQ_OQ ) ) == 0xf;
+   return _mm256_movemask_pd( _mm256_cmp_pd( (*a).eval().value, (*b).eval().value, _CMP_EQ_OQ ) ) == 0xf;
 }
 #elif BLAZE_SSE2_MODE
 {
-   return _mm_movemask_pd( _mm_cmpeq_pd( (~a).eval().value, (~b).eval().value ) ) == 0x3;
+   return _mm_movemask_pd( _mm_cmpeq_pd( (*a).eval().value, (*b).eval().value ) ) == 0x3;
 }
 #else
 = delete;
@@ -925,7 +925,7 @@ BLAZE_ALWAYS_INLINE bool operator==( const SIMDcdouble& a, const SIMDcdouble& b 
 template< typename T >  // Type of both operands
 BLAZE_ALWAYS_INLINE bool operator!=( const SIMDPack<T>& a, const SIMDPack<T>& b ) noexcept
 {
-   return !( (~a) == (~b) );
+   return !( (*a) == (*b) );
 }
 //*************************************************************************************************
 

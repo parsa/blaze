@@ -81,12 +81,12 @@ inline bool equal( const DenseMatrix<MT1,SO>& lhs, const SparseMatrix<MT2,false>
    using CT2 = CompositeType_t<MT2>;
 
    // Early exit in case the matrix sizes don't match
-   if( (~lhs).rows() != (~rhs).rows() || (~lhs).columns() != (~rhs).columns() )
+   if( (*lhs).rows() != (*rhs).rows() || (*lhs).columns() != (*rhs).columns() )
       return false;
 
    // Evaluation of the dense matrix and sparse matrix operand
-   CT1 A( ~lhs );
-   CT2 B( ~rhs );
+   CT1 A( *lhs );
+   CT2 B( *rhs );
 
    // In order to compare the two matrices, the data values of the lower-order data
    // type are converted to the higher-order data type within the equal function.
@@ -135,12 +135,12 @@ inline bool equal( const DenseMatrix<MT1,SO>& lhs, const SparseMatrix<MT2,true>&
    using CT2 = CompositeType_t<MT2>;
 
    // Early exit in case the matrix sizes don't match
-   if( (~lhs).rows() != (~rhs).rows() || (~lhs).columns() != (~rhs).columns() )
+   if( (*lhs).rows() != (*rhs).rows() || (*lhs).columns() != (*rhs).columns() )
       return false;
 
    // Evaluation of the dense matrix and sparse matrix operand
-   CT1 A( ~lhs );
-   CT2 B( ~rhs );
+   CT1 A( *lhs );
+   CT2 B( *rhs );
 
    // In order to compare the two matrices, the data values of the lower-order data
    // type are converted to the higher-order data type within the equal function.

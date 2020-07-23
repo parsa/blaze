@@ -110,15 +110,15 @@ inline decltype(auto)
    BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE   ( VT1 );
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE( VT2 );
 
-   if( (~lhs).size() != (~rhs).size() ) {
+   if( (*lhs).size() != (*rhs).size() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   CT1 left ( ~lhs );  // Evaluation of the left-hand side sparse vector operand
-   CT2 right( ~rhs );  // Evaluation of the right-hand side sparse vector operand
+   CT1 left ( *lhs );  // Evaluation of the left-hand side sparse vector operand
+   CT2 right( *rhs );  // Evaluation of the right-hand side sparse vector operand
 
-   BLAZE_INTERNAL_ASSERT( left.size()  == (~lhs).size(), "Invalid vector size" );
-   BLAZE_INTERNAL_ASSERT( right.size() == (~rhs).size(), "Invalid vector size" );
+   BLAZE_INTERNAL_ASSERT( left.size()  == (*lhs).size(), "Invalid vector size" );
+   BLAZE_INTERNAL_ASSERT( right.size() == (*rhs).size(), "Invalid vector size" );
 
    MultType sp{};
 

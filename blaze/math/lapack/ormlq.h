@@ -161,7 +161,7 @@ inline void ormlq( DenseMatrix<MT1,SO1>& C, const DenseMatrix<MT2,SO2>& A,
 
    using ET = ElementType_t<MT1>;
 
-   if( (~A).rows() > (~A).columns() ) {
+   if( (*A).rows() > (*A).columns() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid size of Q matrix" );
    }
 
@@ -173,11 +173,11 @@ inline void ormlq( DenseMatrix<MT1,SO1>& C, const DenseMatrix<MT2,SO2>& A,
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid trans argument provided" );
    }
 
-   blas_int_t m   ( numeric_cast<blas_int_t>( SO1 ? (~C).rows() : (~C).columns() ) );
-   blas_int_t n   ( numeric_cast<blas_int_t>( SO1 ? (~C).columns() : (~C).rows() ) );
-   blas_int_t k   ( numeric_cast<blas_int_t>( min( (~A).rows(), (~A).columns() ) ) );
-   blas_int_t lda ( numeric_cast<blas_int_t>( (~A).spacing() ) );
-   blas_int_t ldc ( numeric_cast<blas_int_t>( (~C).spacing() ) );
+   blas_int_t m   ( numeric_cast<blas_int_t>( SO1 ? (*C).rows() : (*C).columns() ) );
+   blas_int_t n   ( numeric_cast<blas_int_t>( SO1 ? (*C).columns() : (*C).rows() ) );
+   blas_int_t k   ( numeric_cast<blas_int_t>( min( (*A).rows(), (*A).columns() ) ) );
+   blas_int_t lda ( numeric_cast<blas_int_t>( (*A).spacing() ) );
+   blas_int_t ldc ( numeric_cast<blas_int_t>( (*C).spacing() ) );
    blas_int_t info( 0 );
 
    if( m == 0 || n == 0 || k == 0 ) {
@@ -196,10 +196,10 @@ inline void ormlq( DenseMatrix<MT1,SO1>& C, const DenseMatrix<MT2,SO2>& A,
    const std::unique_ptr<ET[]> work( new ET[lwork] );
 
    if( SO2 ) {
-      ormlq( side, trans, m, n, k, (~A).data(), lda, tau, (~C).data(), ldc, work.get(), lwork, &info );
+      ormlq( side, trans, m, n, k, (*A).data(), lda, tau, (*C).data(), ldc, work.get(), lwork, &info );
    }
    else {
-      ormqr( side, trans, m, n, k, (~A).data(), lda, tau, (~C).data(), ldc, work.get(), lwork, &info );
+      ormqr( side, trans, m, n, k, (*A).data(), lda, tau, (*C).data(), ldc, work.get(), lwork, &info );
    }
 
    BLAZE_INTERNAL_ASSERT( info == 0, "Invalid argument for Q multiplication" );

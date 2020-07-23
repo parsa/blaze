@@ -183,11 +183,11 @@ inline void getrs( const DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& b, char tran
    BLAZE_CONSTRAINT_MUST_BE_CONTIGUOUS_TYPE( VT );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT>, ElementType_t<VT> );
 
-   if( !isSquare( ~A ) ) {
+   if( !isSquare( *A ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid non-square matrix provided" );
    }
 
-   if( (~b).size() != (~A).rows() ) {
+   if( (*b).size() != (*A).rows() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid right-hand side vector provided" );
    }
 
@@ -195,17 +195,17 @@ inline void getrs( const DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& b, char tran
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid trans argument provided" );
    }
 
-   blas_int_t n   ( numeric_cast<blas_int_t>( (~A).rows() ) );
+   blas_int_t n   ( numeric_cast<blas_int_t>( (*A).rows() ) );
    blas_int_t nrhs( 1 );
-   blas_int_t lda ( numeric_cast<blas_int_t>( (~A).spacing() ) );
-   blas_int_t ldb ( numeric_cast<blas_int_t>( (~b).size() ) );
+   blas_int_t lda ( numeric_cast<blas_int_t>( (*A).spacing() ) );
+   blas_int_t ldb ( numeric_cast<blas_int_t>( (*b).size() ) );
    blas_int_t info( 0 );
 
    if( n == 0 ) {
       return;
    }
 
-   getrs( trans, n, nrhs, (~A).data(), lda, ipiv, (~b).data(), ldb, &info );
+   getrs( trans, n, nrhs, (*A).data(), lda, ipiv, (*b).data(), ldb, &info );
 
    BLAZE_INTERNAL_ASSERT( info == 0, "Invalid function argument" );
 }
@@ -322,7 +322,7 @@ inline void getrs( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B,
    BLAZE_CONSTRAINT_MUST_BE_CONTIGUOUS_TYPE( MT2 );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT1>, ElementType_t<MT2> );
 
-   if( !isSquare( ~A ) ) {
+   if( !isSquare( *A ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid non-square matrix provided" );
    }
 
@@ -330,11 +330,11 @@ inline void getrs( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B,
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid trans argument provided" );
    }
 
-   blas_int_t n   ( numeric_cast<blas_int_t>( (~A).rows()    ) );
-   blas_int_t mrhs( numeric_cast<blas_int_t>( SO2 ? (~B).rows() : (~B).columns() ) );
-   blas_int_t nrhs( numeric_cast<blas_int_t>( SO2 ? (~B).columns() : (~B).rows() ) );
-   blas_int_t lda ( numeric_cast<blas_int_t>( (~A).spacing() ) );
-   blas_int_t ldb ( numeric_cast<blas_int_t>( (~B).spacing() ) );
+   blas_int_t n   ( numeric_cast<blas_int_t>( (*A).rows()    ) );
+   blas_int_t mrhs( numeric_cast<blas_int_t>( SO2 ? (*B).rows() : (*B).columns() ) );
+   blas_int_t nrhs( numeric_cast<blas_int_t>( SO2 ? (*B).columns() : (*B).rows() ) );
+   blas_int_t lda ( numeric_cast<blas_int_t>( (*A).spacing() ) );
+   blas_int_t ldb ( numeric_cast<blas_int_t>( (*B).spacing() ) );
    blas_int_t info( 0 );
 
    if( n != mrhs ) {
@@ -345,7 +345,7 @@ inline void getrs( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B,
       return;
    }
 
-   getrs( trans, n, nrhs, (~A).data(), lda, ipiv, (~B).data(), ldb, &info );
+   getrs( trans, n, nrhs, (*A).data(), lda, ipiv, (*B).data(), ldb, &info );
 
    BLAZE_INTERNAL_ASSERT( info == 0, "Invalid function argument" );
 }

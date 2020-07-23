@@ -276,15 +276,15 @@ class DVecDVecCrossExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == 3UL, "Invalid vector size" );
-      BLAZE_INTERNAL_ASSERT( (~rhs).size() == 3UL, "Invalid vector size" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == 3UL, "Invalid vector size" );
+      BLAZE_INTERNAL_ASSERT( (*rhs).size() == 3UL, "Invalid vector size" );
 
       LT x( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side dense vector operand
       RT y( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side dense vector operand
 
-      (~lhs)[0] = x[1UL]*y[2UL] - x[2UL]*y[1UL];
-      (~lhs)[1] = x[2UL]*y[0UL] - x[0UL]*y[2UL];
-      (~lhs)[2] = x[0UL]*y[1UL] - x[1UL]*y[0UL];
+      (*lhs)[0] = x[1UL]*y[2UL] - x[2UL]*y[1UL];
+      (*lhs)[1] = x[2UL]*y[0UL] - x[0UL]*y[2UL];
+      (*lhs)[2] = x[0UL]*y[1UL] - x[1UL]*y[0UL];
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -310,11 +310,11 @@ class DVecDVecCrossExpr
       BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType, TF );
       BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == 3UL, "Invalid vector size" );
-      BLAZE_INTERNAL_ASSERT( (~rhs).size() == 3UL, "Invalid vector size" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == 3UL, "Invalid vector size" );
+      BLAZE_INTERNAL_ASSERT( (*rhs).size() == 3UL, "Invalid vector size" );
 
       const ResultType tmp( serial( rhs ) );
-      assign( ~lhs, tmp );
+      assign( *lhs, tmp );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -336,15 +336,15 @@ class DVecDVecCrossExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == 3UL, "Invalid vector size" );
-      BLAZE_INTERNAL_ASSERT( (~rhs).size() == 3UL, "Invalid vector size" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == 3UL, "Invalid vector size" );
+      BLAZE_INTERNAL_ASSERT( (*rhs).size() == 3UL, "Invalid vector size" );
 
       LT x( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side dense vector operand
       RT y( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side dense vector operand
 
-      (~lhs)[0] += x[1UL]*y[2UL] - x[2UL]*y[1UL];
-      (~lhs)[1] += x[2UL]*y[0UL] - x[0UL]*y[2UL];
-      (~lhs)[2] += x[0UL]*y[1UL] - x[1UL]*y[0UL];
+      (*lhs)[0] += x[1UL]*y[2UL] - x[2UL]*y[1UL];
+      (*lhs)[1] += x[2UL]*y[0UL] - x[0UL]*y[2UL];
+      (*lhs)[2] += x[0UL]*y[1UL] - x[1UL]*y[0UL];
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -370,15 +370,15 @@ class DVecDVecCrossExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == 3UL, "Invalid vector size" );
-      BLAZE_INTERNAL_ASSERT( (~rhs).size() == 3UL, "Invalid vector size" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == 3UL, "Invalid vector size" );
+      BLAZE_INTERNAL_ASSERT( (*rhs).size() == 3UL, "Invalid vector size" );
 
       LT x( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side dense vector operand
       RT y( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side dense vector operand
 
-      (~lhs)[0] -= x[1UL]*y[2UL] - x[2UL]*y[1UL];
-      (~lhs)[1] -= x[2UL]*y[0UL] - x[0UL]*y[2UL];
-      (~lhs)[2] -= x[0UL]*y[1UL] - x[1UL]*y[0UL];
+      (*lhs)[0] -= x[1UL]*y[2UL] - x[2UL]*y[1UL];
+      (*lhs)[1] -= x[2UL]*y[0UL] - x[0UL]*y[2UL];
+      (*lhs)[2] -= x[0UL]*y[1UL] - x[1UL]*y[0UL];
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -404,15 +404,15 @@ class DVecDVecCrossExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == 3UL, "Invalid vector size" );
-      BLAZE_INTERNAL_ASSERT( (~rhs).size() == 3UL, "Invalid vector size" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == 3UL, "Invalid vector size" );
+      BLAZE_INTERNAL_ASSERT( (*rhs).size() == 3UL, "Invalid vector size" );
 
       LT x( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side dense vector operand
       RT y( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side dense vector operand
 
-      (~lhs)[0] *= x[1UL]*y[2UL] - x[2UL]*y[1UL];
-      (~lhs)[1] *= x[2UL]*y[0UL] - x[0UL]*y[2UL];
-      (~lhs)[2] *= x[0UL]*y[1UL] - x[1UL]*y[0UL];
+      (*lhs)[0] *= x[1UL]*y[2UL] - x[2UL]*y[1UL];
+      (*lhs)[1] *= x[2UL]*y[0UL] - x[0UL]*y[2UL];
+      (*lhs)[2] *= x[0UL]*y[1UL] - x[1UL]*y[0UL];
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -438,15 +438,15 @@ class DVecDVecCrossExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == 3UL, "Invalid vector size" );
-      BLAZE_INTERNAL_ASSERT( (~rhs).size() == 3UL, "Invalid vector size" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == 3UL, "Invalid vector size" );
+      BLAZE_INTERNAL_ASSERT( (*rhs).size() == 3UL, "Invalid vector size" );
 
       LT x( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side dense vector operand
       RT y( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side dense vector operand
 
-      (~lhs)[0] /= x[1UL]*y[2UL] - x[2UL]*y[1UL];
-      (~lhs)[1] /= x[2UL]*y[0UL] - x[0UL]*y[2UL];
-      (~lhs)[2] /= x[0UL]*y[1UL] - x[1UL]*y[0UL];
+      (*lhs)[0] /= x[1UL]*y[2UL] - x[2UL]*y[1UL];
+      (*lhs)[1] /= x[2UL]*y[0UL] - x[0UL]*y[2UL];
+      (*lhs)[2] /= x[0UL]*y[1UL] - x[1UL]*y[0UL];
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -508,12 +508,12 @@ inline decltype(auto)
 {
    BLAZE_FUNCTION_TRACE;
 
-   if( (~lhs).size() != 3UL || (~rhs).size() != 3UL ) {
+   if( (*lhs).size() != 3UL || (*rhs).size() != 3UL ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid vector size for cross product" );
    }
 
    using ReturnType = const DVecDVecCrossExpr<VT1,VT2,TF>;
-   return ReturnType( ~lhs, ~rhs );
+   return ReturnType( *lhs, *rhs );
 }
 //*************************************************************************************************
 

@@ -122,13 +122,13 @@ inline void trsm( const DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& b,
    BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<MT> );
    BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<VT> );
 
-   BLAZE_INTERNAL_ASSERT( (~A).rows() == (~A).columns(), "Non-square triangular matrix detected" );
+   BLAZE_INTERNAL_ASSERT( (*A).rows() == (*A).columns(), "Non-square triangular matrix detected" );
    BLAZE_INTERNAL_ASSERT( side == CblasLeft  || side == CblasRight, "Invalid side argument detected" );
    BLAZE_INTERNAL_ASSERT( uplo == CblasLower || uplo == CblasUpper, "Invalid uplo argument detected" );
 
-   const blas_int_t m  ( ( side == CblasLeft  )?( numeric_cast<blas_int_t>( (~b).size() ) ):( 1 ) );
-   const blas_int_t n  ( ( side == CblasRight )?( numeric_cast<blas_int_t>( (~b).size() ) ):( 1 ) );
-   const blas_int_t lda( numeric_cast<blas_int_t>( (~A).spacing() ) );
+   const blas_int_t m  ( ( side == CblasLeft  )?( numeric_cast<blas_int_t>( (*b).size() ) ):( 1 ) );
+   const blas_int_t n  ( ( side == CblasRight )?( numeric_cast<blas_int_t>( (*b).size() ) ):( 1 ) );
+   const blas_int_t lda( numeric_cast<blas_int_t>( (*A).spacing() ) );
    const blas_int_t ldb( ( IsRowMajorMatrix_v<MT> )?( n ):( m ) );
 
    trsm( ( IsRowMajorMatrix_v<MT> )?( CblasRowMajor ):( CblasColMajor ),
@@ -136,7 +136,7 @@ inline void trsm( const DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& b,
          uplo,
          CblasNoTrans,
          CblasNonUnit,
-         m, n, alpha, (~A).data(), lda, (~b).data(), ldb );
+         m, n, alpha, (*A).data(), lda, (*b).data(), ldb );
 }
 #endif
 //*************************************************************************************************
@@ -183,21 +183,21 @@ inline void trsm( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B,
    BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<MT1> );
    BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<MT2> );
 
-   BLAZE_INTERNAL_ASSERT( (~A).rows() == (~A).columns(), "Non-square triangular matrix detected" );
+   BLAZE_INTERNAL_ASSERT( (*A).rows() == (*A).columns(), "Non-square triangular matrix detected" );
    BLAZE_INTERNAL_ASSERT( side == CblasLeft  || side == CblasRight, "Invalid side argument detected" );
    BLAZE_INTERNAL_ASSERT( uplo == CblasLower || uplo == CblasUpper, "Invalid uplo argument detected" );
 
-   const blas_int_t m  ( numeric_cast<blas_int_t>( (~B).rows() )    );
-   const blas_int_t n  ( numeric_cast<blas_int_t>( (~B).columns() ) );
-   const blas_int_t lda( numeric_cast<blas_int_t>( (~A).spacing() ) );
-   const blas_int_t ldb( numeric_cast<blas_int_t>( (~B).spacing() ) );
+   const blas_int_t m  ( numeric_cast<blas_int_t>( (*B).rows() )    );
+   const blas_int_t n  ( numeric_cast<blas_int_t>( (*B).columns() ) );
+   const blas_int_t lda( numeric_cast<blas_int_t>( (*A).spacing() ) );
+   const blas_int_t ldb( numeric_cast<blas_int_t>( (*B).spacing() ) );
 
    trsm( ( IsRowMajorMatrix_v<MT2> )?( CblasRowMajor ):( CblasColMajor ),
          side,
          ( SO1 == SO2 )?( uplo ):( ( uplo == CblasLower )?( CblasUpper ):( CblasLower ) ),
          ( SO1 == SO2 )?( CblasNoTrans ):( CblasTrans ),
          CblasNonUnit,
-         m, n, alpha, (~A).data(), lda, (~B).data(), ldb );
+         m, n, alpha, (*A).data(), lda, (*B).data(), ldb );
 }
 #endif
 //*************************************************************************************************

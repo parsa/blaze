@@ -310,7 +310,7 @@ std::ostream& operator<<( std::ostream& os, const Proxy<PT,RT>& proxy );
 template< typename T, typename PT, typename RT >
 inline decltype(auto) operator+=( T& lhs, const Proxy<PT,RT>& rhs )
 {
-   return lhs += (~rhs).get();
+   return lhs += (*rhs).get();
 }
 //*************************************************************************************************
 
@@ -326,7 +326,7 @@ inline decltype(auto) operator+=( T& lhs, const Proxy<PT,RT>& rhs )
 template< typename T, typename PT, typename RT >
 inline decltype(auto) operator-=( T& lhs, const Proxy<PT,RT>& rhs )
 {
-   return lhs -= (~rhs).get();
+   return lhs -= (*rhs).get();
 }
 //*************************************************************************************************
 
@@ -342,7 +342,7 @@ inline decltype(auto) operator-=( T& lhs, const Proxy<PT,RT>& rhs )
 template< typename T, typename PT, typename RT >
 inline decltype(auto) operator*=( T& lhs, const Proxy<PT,RT>& rhs )
 {
-   return lhs *= (~rhs).get();
+   return lhs *= (*rhs).get();
 }
 //*************************************************************************************************
 
@@ -358,7 +358,7 @@ inline decltype(auto) operator*=( T& lhs, const Proxy<PT,RT>& rhs )
 template< typename T, typename PT, typename RT >
 inline decltype(auto) operator/=( T& lhs, const Proxy<PT,RT>& rhs )
 {
-   return lhs /= (~rhs).get();
+   return lhs /= (*rhs).get();
 }
 //*************************************************************************************************
 
@@ -374,7 +374,7 @@ inline decltype(auto) operator/=( T& lhs, const Proxy<PT,RT>& rhs )
 template< typename PT1, typename RT1, typename PT2, typename RT2 >
 inline decltype(auto) operator+( const Proxy<PT1,RT1>& lhs, const Proxy<PT2,RT2>& rhs )
 {
-   return (~lhs).get() + (~rhs).get();
+   return (*lhs).get() + (*rhs).get();
 }
 //*************************************************************************************************
 
@@ -390,7 +390,7 @@ inline decltype(auto) operator+( const Proxy<PT1,RT1>& lhs, const Proxy<PT2,RT2>
 template< typename PT, typename RT, typename T, typename >
 inline decltype(auto) operator+( const Proxy<PT,RT>& lhs, const T& rhs )
 {
-   return (~lhs).get() + rhs;
+   return (*lhs).get() + rhs;
 }
 //*************************************************************************************************
 
@@ -406,7 +406,7 @@ inline decltype(auto) operator+( const Proxy<PT,RT>& lhs, const T& rhs )
 template< typename T, typename PT, typename RT, typename >
 inline decltype(auto) operator+( const T& lhs, const Proxy<PT,RT>& rhs )
 {
-   return lhs + (~rhs).get();
+   return lhs + (*rhs).get();
 }
 //*************************************************************************************************
 
@@ -422,7 +422,7 @@ inline decltype(auto) operator+( const T& lhs, const Proxy<PT,RT>& rhs )
 template< typename PT1, typename RT1, typename PT2, typename RT2 >
 inline decltype(auto) operator-( const Proxy<PT1,RT1>& lhs, const Proxy<PT2,RT2>& rhs )
 {
-   return (~lhs).get() - (~rhs).get();
+   return (*lhs).get() - (*rhs).get();
 }
 //*************************************************************************************************
 
@@ -438,7 +438,7 @@ inline decltype(auto) operator-( const Proxy<PT1,RT1>& lhs, const Proxy<PT2,RT2>
 template< typename PT, typename RT, typename T, typename >
 inline decltype(auto) operator-( const Proxy<PT,RT>& lhs, const T& rhs )
 {
-   return (~lhs).get() - rhs;
+   return (*lhs).get() - rhs;
 }
 //*************************************************************************************************
 
@@ -454,7 +454,7 @@ inline decltype(auto) operator-( const Proxy<PT,RT>& lhs, const T& rhs )
 template< typename T, typename PT, typename RT, typename >
 inline decltype(auto) operator-( const T& lhs, const Proxy<PT,RT>& rhs )
 {
-   return lhs - (~rhs).get();
+   return lhs - (*rhs).get();
 }
 //*************************************************************************************************
 
@@ -470,7 +470,7 @@ inline decltype(auto) operator-( const T& lhs, const Proxy<PT,RT>& rhs )
 template< typename PT1, typename RT1, typename PT2, typename RT2 >
 inline decltype(auto) operator*( const Proxy<PT1,RT1>& lhs, const Proxy<PT2,RT2>& rhs )
 {
-   return (~lhs).get() * (~rhs).get();
+   return (*lhs).get() * (*rhs).get();
 }
 //*************************************************************************************************
 
@@ -486,7 +486,7 @@ inline decltype(auto) operator*( const Proxy<PT1,RT1>& lhs, const Proxy<PT2,RT2>
 template< typename PT, typename RT, typename T, typename >
 inline decltype(auto) operator*( const Proxy<PT,RT>& lhs, const T& rhs )
 {
-   return (~lhs).get() * rhs;
+   return (*lhs).get() * rhs;
 }
 //*************************************************************************************************
 
@@ -502,7 +502,7 @@ inline decltype(auto) operator*( const Proxy<PT,RT>& lhs, const T& rhs )
 template< typename T, typename PT, typename RT, typename >
 inline decltype(auto) operator*( const T& lhs, const Proxy<PT,RT>& rhs )
 {
-   return lhs * (~rhs).get();
+   return lhs * (*rhs).get();
 }
 //*************************************************************************************************
 
@@ -518,7 +518,7 @@ inline decltype(auto) operator*( const T& lhs, const Proxy<PT,RT>& rhs )
 template< typename PT1, typename RT1, typename PT2, typename RT2 >
 inline decltype(auto) operator/( const Proxy<PT1,RT1>& lhs, const Proxy<PT2,RT2>& rhs )
 {
-   return (~lhs).get() / (~rhs).get();
+   return (*lhs).get() / (*rhs).get();
 }
 //*************************************************************************************************
 
@@ -534,7 +534,7 @@ inline decltype(auto) operator/( const Proxy<PT1,RT1>& lhs, const Proxy<PT2,RT2>
 template< typename PT, typename RT, typename T, typename >
 inline decltype(auto) operator/( const Proxy<PT,RT>& lhs, const T& rhs )
 {
-   return (~lhs).get() / rhs;
+   return (*lhs).get() / rhs;
 }
 //*************************************************************************************************
 
@@ -550,7 +550,7 @@ inline decltype(auto) operator/( const Proxy<PT,RT>& lhs, const T& rhs )
 template< typename T, typename PT, typename RT, typename >
 inline decltype(auto) operator/( const T& lhs, const Proxy<PT,RT>& rhs )
 {
-   return lhs / (~rhs).get();
+   return lhs / (*rhs).get();
 }
 //*************************************************************************************************
 
@@ -566,7 +566,7 @@ inline decltype(auto) operator/( const T& lhs, const Proxy<PT,RT>& rhs )
 template< typename PT1, typename RT1, typename PT2, typename RT2 >
 inline bool operator==( const Proxy<PT1,RT1>& lhs, const Proxy<PT2,RT2>& rhs )
 {
-   return ( (~lhs).get() == (~rhs).get() );
+   return ( (*lhs).get() == (*rhs).get() );
 }
 //*************************************************************************************************
 
@@ -582,7 +582,7 @@ inline bool operator==( const Proxy<PT1,RT1>& lhs, const Proxy<PT2,RT2>& rhs )
 template< typename PT, typename RT, typename T, typename >
 inline bool operator==( const Proxy<PT,RT>& lhs, const T& rhs )
 {
-   return ( (~lhs).get() == rhs );
+   return ( (*lhs).get() == rhs );
 }
 //*************************************************************************************************
 
@@ -598,7 +598,7 @@ inline bool operator==( const Proxy<PT,RT>& lhs, const T& rhs )
 template< typename T, typename PT, typename RT, typename >
 inline bool operator==( const T& lhs, const Proxy<PT,RT>& rhs )
 {
-   return ( lhs == (~rhs).get() );
+   return ( lhs == (*rhs).get() );
 }
 //*************************************************************************************************
 
@@ -614,7 +614,7 @@ inline bool operator==( const T& lhs, const Proxy<PT,RT>& rhs )
 template< typename PT1, typename RT1, typename PT2, typename RT2 >
 inline bool operator!=( const Proxy<PT1,RT1>& lhs, const Proxy<PT2,RT2>& rhs )
 {
-   return ( (~lhs).get() != (~rhs).get() );
+   return ( (*lhs).get() != (*rhs).get() );
 }
 //*************************************************************************************************
 
@@ -630,7 +630,7 @@ inline bool operator!=( const Proxy<PT1,RT1>& lhs, const Proxy<PT2,RT2>& rhs )
 template< typename PT, typename RT, typename T, typename >
 inline bool operator!=( const Proxy<PT,RT>& lhs, const T& rhs )
 {
-   return ( (~lhs).get() != rhs );
+   return ( (*lhs).get() != rhs );
 }
 //*************************************************************************************************
 
@@ -646,7 +646,7 @@ inline bool operator!=( const Proxy<PT,RT>& lhs, const T& rhs )
 template< typename T, typename PT, typename RT, typename >
 inline bool operator!=( const T& lhs, const Proxy<PT,RT>& rhs )
 {
-   return ( lhs != (~rhs).get() );
+   return ( lhs != (*rhs).get() );
 }
 //*************************************************************************************************
 
@@ -662,7 +662,7 @@ inline bool operator!=( const T& lhs, const Proxy<PT,RT>& rhs )
 template< typename PT1, typename RT1, typename PT2, typename RT2 >
 inline bool operator<( const Proxy<PT1,RT1>& lhs, const Proxy<PT2,RT2>& rhs )
 {
-   return ( (~lhs).get() < (~rhs).get() );
+   return ( (*lhs).get() < (*rhs).get() );
 }
 //*************************************************************************************************
 
@@ -678,7 +678,7 @@ inline bool operator<( const Proxy<PT1,RT1>& lhs, const Proxy<PT2,RT2>& rhs )
 template< typename PT, typename RT, typename T, typename >
 inline bool operator<( const Proxy<PT,RT>& lhs, const T& rhs )
 {
-   return ( (~lhs).get() < rhs );
+   return ( (*lhs).get() < rhs );
 }
 //*************************************************************************************************
 
@@ -710,7 +710,7 @@ inline bool operator<( const T& lhs, const Proxy<PT,RT>& rhs )
 template< typename PT1, typename RT1, typename PT2, typename RT2 >
 inline bool operator>( const Proxy<PT1,RT1>& lhs, const Proxy<PT2,RT2>& rhs )
 {
-   return ( (~lhs).get() > (~rhs).get() );
+   return ( (*lhs).get() > (*rhs).get() );
 }
 //*************************************************************************************************
 
@@ -726,7 +726,7 @@ inline bool operator>( const Proxy<PT1,RT1>& lhs, const Proxy<PT2,RT2>& rhs )
 template< typename PT, typename RT, typename T, typename >
 inline bool operator>( const Proxy<PT,RT>& lhs, const T& rhs )
 {
-   return ( (~lhs).get() > rhs );
+   return ( (*lhs).get() > rhs );
 }
 //*************************************************************************************************
 
@@ -742,7 +742,7 @@ inline bool operator>( const Proxy<PT,RT>& lhs, const T& rhs )
 template< typename T, typename PT, typename RT, typename >
 inline bool operator>( const T& lhs, const Proxy<PT,RT>& rhs )
 {
-   return ( lhs > (~rhs).get() );
+   return ( lhs > (*rhs).get() );
 }
 //*************************************************************************************************
 
@@ -758,7 +758,7 @@ inline bool operator>( const T& lhs, const Proxy<PT,RT>& rhs )
 template< typename PT1, typename RT1, typename PT2, typename RT2 >
 inline bool operator<=( const Proxy<PT1,RT1>& lhs, const Proxy<PT2,RT2>& rhs )
 {
-   return ( (~lhs).get() <= (~rhs).get() );
+   return ( (*lhs).get() <= (*rhs).get() );
 }
 //*************************************************************************************************
 
@@ -774,7 +774,7 @@ inline bool operator<=( const Proxy<PT1,RT1>& lhs, const Proxy<PT2,RT2>& rhs )
 template< typename PT, typename RT, typename T, typename >
 inline bool operator<=( const Proxy<PT,RT>& lhs, const T& rhs )
 {
-   return ( (~lhs).get() <= rhs );
+   return ( (*lhs).get() <= rhs );
 }
 //*************************************************************************************************
 
@@ -790,7 +790,7 @@ inline bool operator<=( const Proxy<PT,RT>& lhs, const T& rhs )
 template< typename T, typename PT, typename RT, typename >
 inline bool operator<=( const T& lhs, const Proxy<PT,RT>& rhs )
 {
-   return ( lhs <= (~rhs).get() );
+   return ( lhs <= (*rhs).get() );
 }
 //*************************************************************************************************
 
@@ -806,7 +806,7 @@ inline bool operator<=( const T& lhs, const Proxy<PT,RT>& rhs )
 template< typename PT1, typename RT1, typename PT2, typename RT2 >
 inline bool operator>=( const Proxy<PT1,RT1>& lhs, const Proxy<PT2,RT2>& rhs )
 {
-   return ( (~lhs).get() >= (~rhs).get() );
+   return ( (*lhs).get() >= (*rhs).get() );
 }
 //*************************************************************************************************
 
@@ -822,7 +822,7 @@ inline bool operator>=( const Proxy<PT1,RT1>& lhs, const Proxy<PT2,RT2>& rhs )
 template< typename PT, typename RT, typename T, typename >
 inline bool operator>=( const Proxy<PT,RT>& lhs, const T& rhs )
 {
-   return ( (~lhs).get() >= rhs );
+   return ( (*lhs).get() >= rhs );
 }
 //*************************************************************************************************
 
@@ -838,7 +838,7 @@ inline bool operator>=( const Proxy<PT,RT>& lhs, const T& rhs )
 template< typename T, typename PT, typename RT, typename >
 inline bool operator>=( const T& lhs, const Proxy<PT,RT>& rhs )
 {
-   return ( lhs >= (~rhs).get() );
+   return ( lhs >= (*rhs).get() );
 }
 //*************************************************************************************************
 
@@ -854,7 +854,7 @@ inline bool operator>=( const T& lhs, const Proxy<PT,RT>& rhs )
 template< typename PT, typename RT >
 inline std::ostream& operator<<( std::ostream& os, const Proxy<PT,RT>& proxy )
 {
-   return os << (~proxy).get();
+   return os << (*proxy).get();
 }
 //*************************************************************************************************
 
@@ -1066,7 +1066,7 @@ inline decltype(auto) abs( const Proxy<PT,RT>& proxy )
 {
    using blaze::abs;
 
-   return abs( (~proxy).get() );
+   return abs( (*proxy).get() );
 }
 //*************************************************************************************************
 
@@ -1087,7 +1087,7 @@ inline decltype(auto) sign( const Proxy<PT,RT>& proxy )
 {
    using blaze::sign;
 
-   return sign( (~proxy).get() );
+   return sign( (*proxy).get() );
 }
 //*************************************************************************************************
 
@@ -1108,7 +1108,7 @@ inline decltype(auto) floor( const Proxy<PT,RT>& proxy )
 {
    using blaze::floor;
 
-   return floor( (~proxy).get() );
+   return floor( (*proxy).get() );
 }
 //*************************************************************************************************
 
@@ -1129,7 +1129,7 @@ inline decltype(auto) ceil( const Proxy<PT,RT>& proxy )
 {
    using blaze::ceil;
 
-   return ceil( (~proxy).get() );
+   return ceil( (*proxy).get() );
 }
 //*************************************************************************************************
 
@@ -1150,7 +1150,7 @@ inline decltype(auto) trunc( const Proxy<PT,RT>& proxy )
 {
    using blaze::trunc;
 
-   return trunc( (~proxy).get() );
+   return trunc( (*proxy).get() );
 }
 //*************************************************************************************************
 
@@ -1171,7 +1171,7 @@ inline decltype(auto) round( const Proxy<PT,RT>& proxy )
 {
    using blaze::round;
 
-   return round( (~proxy).get() );
+   return round( (*proxy).get() );
 }
 //*************************************************************************************************
 
@@ -1192,7 +1192,7 @@ inline decltype(auto) conj( const Proxy<PT,RT>& proxy )
 {
    using blaze::conj;
 
-   return conj( (~proxy).get() );
+   return conj( (*proxy).get() );
 }
 //*************************************************************************************************
 
@@ -1212,7 +1212,7 @@ inline decltype(auto) trans( const Proxy<PT,RT>& proxy )
 {
    using blaze::trans;
 
-   return trans( (~proxy).get() );
+   return trans( (*proxy).get() );
 }
 //*************************************************************************************************
 
@@ -1232,7 +1232,7 @@ inline decltype(auto) ctrans( const Proxy<PT,RT>& proxy )
 {
    using blaze::ctrans;
 
-   return ctrans( (~proxy).get() );
+   return ctrans( (*proxy).get() );
 }
 //*************************************************************************************************
 
@@ -1253,7 +1253,7 @@ inline decltype(auto) real( const Proxy<PT,RT>& proxy )
 {
    using blaze::real;
 
-   return real( (~proxy).get() );
+   return real( (*proxy).get() );
 }
 //*************************************************************************************************
 
@@ -1274,7 +1274,7 @@ inline decltype(auto) imag( const Proxy<PT,RT>& proxy )
 {
    using blaze::imag;
 
-   return imag( (~proxy).get() );
+   return imag( (*proxy).get() );
 }
 //*************************************************************************************************
 
@@ -1295,7 +1295,7 @@ inline decltype(auto) sqrt( const Proxy<PT,RT>& proxy )
 {
    using blaze::sqrt;
 
-   return sqrt( (~proxy).get() );
+   return sqrt( (*proxy).get() );
 }
 //*************************************************************************************************
 
@@ -1316,7 +1316,7 @@ inline decltype(auto) invsqrt( const Proxy<PT,RT>& proxy )
 {
    using blaze::invsqrt;
 
-   return invsqrt( (~proxy).get() );
+   return invsqrt( (*proxy).get() );
 }
 //*************************************************************************************************
 
@@ -1337,7 +1337,7 @@ inline decltype(auto) cbrt( const Proxy<PT,RT>& proxy )
 {
    using blaze::cbrt;
 
-   return cbrt( (~proxy).get() );
+   return cbrt( (*proxy).get() );
 }
 //*************************************************************************************************
 
@@ -1358,7 +1358,7 @@ inline decltype(auto) invcbrt( const Proxy<PT,RT>& proxy )
 {
    using blaze::invcbrt;
 
-   return invcbrt( (~proxy).get() );
+   return invcbrt( (*proxy).get() );
 }
 //*************************************************************************************************
 
@@ -1380,7 +1380,7 @@ inline decltype(auto) hypot( const Proxy<PT1,RT1>& lhs, const Proxy<PT2,RT2>& rh
 {
    using blaze::hypot;
 
-   return hypot( (~lhs).get(), (~rhs).get() );
+   return hypot( (*lhs).get(), (*rhs).get() );
 }
 //*************************************************************************************************
 
@@ -1403,7 +1403,7 @@ inline decltype(auto) hypot( const Proxy<PT,RT>& lhs, const T& rhs )
 {
    using blaze::hypot;
 
-   return hypot( (~lhs).get(), rhs );
+   return hypot( (*lhs).get(), rhs );
 }
 //*************************************************************************************************
 
@@ -1426,7 +1426,7 @@ inline decltype(auto) hypot( const T& lhs, const Proxy<PT,RT>& rhs )
 {
    using blaze::hypot;
 
-   return hypot( lhs, (~rhs).get() );
+   return hypot( lhs, (*rhs).get() );
 }
 //*************************************************************************************************
 
@@ -1448,7 +1448,7 @@ inline decltype(auto) pow( const Proxy<PT,RT>& proxy, const ET& exp )
 {
    using blaze::pow;
 
-   return pow( (~proxy).get(), exp );
+   return pow( (*proxy).get(), exp );
 }
 //*************************************************************************************************
 
@@ -1469,7 +1469,7 @@ inline decltype(auto) pow2( const Proxy<PT,RT>& proxy )
 {
    using blaze::pow2;
 
-   return pow2( (~proxy).get() );
+   return pow2( (*proxy).get() );
 }
 //*************************************************************************************************
 
@@ -1490,7 +1490,7 @@ inline decltype(auto) pow3( const Proxy<PT,RT>& proxy )
 {
    using blaze::pow3;
 
-   return pow3( (~proxy).get() );
+   return pow3( (*proxy).get() );
 }
 //*************************************************************************************************
 
@@ -1511,7 +1511,7 @@ inline decltype(auto) pow4( const Proxy<PT,RT>& proxy )
 {
    using blaze::pow4;
 
-   return pow4( (~proxy).get() );
+   return pow4( (*proxy).get() );
 }
 //*************************************************************************************************
 
@@ -1532,7 +1532,7 @@ inline decltype(auto) exp( const Proxy<PT,RT>& proxy )
 {
    using blaze::exp;
 
-   return exp( (~proxy).get() );
+   return exp( (*proxy).get() );
 }
 //*************************************************************************************************
 
@@ -1553,7 +1553,7 @@ inline decltype(auto) exp2( const Proxy<PT,RT>& proxy )
 {
    using blaze::exp2;
 
-   return exp2( (~proxy).get() );
+   return exp2( (*proxy).get() );
 }
 //*************************************************************************************************
 
@@ -1574,7 +1574,7 @@ inline decltype(auto) exp10( const Proxy<PT,RT>& proxy )
 {
    using blaze::exp10;
 
-   return exp10( (~proxy).get() );
+   return exp10( (*proxy).get() );
 }
 //*************************************************************************************************
 
@@ -1595,7 +1595,7 @@ inline decltype(auto) log( const Proxy<PT,RT>& proxy )
 {
    using blaze::log;
 
-   return log( (~proxy).get() );
+   return log( (*proxy).get() );
 }
 //*************************************************************************************************
 
@@ -1616,7 +1616,7 @@ inline decltype(auto) log2( const Proxy<PT,RT>& proxy )
 {
    using blaze::log2;
 
-   return log2( (~proxy).get() );
+   return log2( (*proxy).get() );
 }
 //*************************************************************************************************
 
@@ -1637,7 +1637,7 @@ inline decltype(auto) log10( const Proxy<PT,RT>& proxy )
 {
    using blaze::log10;
 
-   return log10( (~proxy).get() );
+   return log10( (*proxy).get() );
 }
 //*************************************************************************************************
 
@@ -1658,7 +1658,7 @@ inline decltype(auto) log1p( const Proxy<PT,RT>& proxy )
 {
    using blaze::log1p;
 
-   return log1p( (~proxy).get() );
+   return log1p( (*proxy).get() );
 }
 //*************************************************************************************************
 
@@ -1681,7 +1681,7 @@ inline decltype(auto) lgamma( const Proxy<PT,RT>& proxy )
 {
    using blaze::lgamma;
 
-   return lgamma( (~proxy).get() );
+   return lgamma( (*proxy).get() );
 }
 //*************************************************************************************************
 
@@ -1702,7 +1702,7 @@ inline decltype(auto) sin( const Proxy<PT,RT>& proxy )
 {
    using blaze::sin;
 
-   return sin( (~proxy).get() );
+   return sin( (*proxy).get() );
 }
 //*************************************************************************************************
 
@@ -1723,7 +1723,7 @@ inline decltype(auto) asin( const Proxy<PT,RT>& proxy )
 {
    using blaze::asin;
 
-   return asin( (~proxy).get() );
+   return asin( (*proxy).get() );
 }
 //*************************************************************************************************
 
@@ -1744,7 +1744,7 @@ inline decltype(auto) sinh( const Proxy<PT,RT>& proxy )
 {
    using blaze::sinh;
 
-   return sinh( (~proxy).get() );
+   return sinh( (*proxy).get() );
 }
 //*************************************************************************************************
 
@@ -1765,7 +1765,7 @@ inline decltype(auto) asinh( const Proxy<PT,RT>& proxy )
 {
    using blaze::asinh;
 
-   return asinh( (~proxy).get() );
+   return asinh( (*proxy).get() );
 }
 //*************************************************************************************************
 
@@ -1786,7 +1786,7 @@ inline decltype(auto) cos( const Proxy<PT,RT>& proxy )
 {
    using blaze::cos;
 
-   return cos( (~proxy).get() );
+   return cos( (*proxy).get() );
 }
 //*************************************************************************************************
 
@@ -1807,7 +1807,7 @@ inline decltype(auto) acos( const Proxy<PT,RT>& proxy )
 {
    using blaze::acos;
 
-   return acos( (~proxy).get() );
+   return acos( (*proxy).get() );
 }
 //*************************************************************************************************
 
@@ -1828,7 +1828,7 @@ inline decltype(auto) cosh( const Proxy<PT,RT>& proxy )
 {
    using blaze::cosh;
 
-   return cosh( (~proxy).get() );
+   return cosh( (*proxy).get() );
 }
 //*************************************************************************************************
 
@@ -1849,7 +1849,7 @@ inline decltype(auto) acosh( const Proxy<PT,RT>& proxy )
 {
    using blaze::acosh;
 
-   return acosh( (~proxy).get() );
+   return acosh( (*proxy).get() );
 }
 //*************************************************************************************************
 
@@ -1870,7 +1870,7 @@ inline decltype(auto) tan( const Proxy<PT,RT>& proxy )
 {
    using blaze::tan;
 
-   return tan( (~proxy).get() );
+   return tan( (*proxy).get() );
 }
 //*************************************************************************************************
 
@@ -1891,7 +1891,7 @@ inline decltype(auto) atan( const Proxy<PT,RT>& proxy )
 {
    using blaze::atan;
 
-   return atan( (~proxy).get() );
+   return atan( (*proxy).get() );
 }
 //*************************************************************************************************
 
@@ -1912,7 +1912,7 @@ inline decltype(auto) tanh( const Proxy<PT,RT>& proxy )
 {
    using blaze::tanh;
 
-   return tanh( (~proxy).get() );
+   return tanh( (*proxy).get() );
 }
 //*************************************************************************************************
 
@@ -1933,7 +1933,7 @@ inline decltype(auto) atanh( const Proxy<PT,RT>& proxy )
 {
    using blaze::atanh;
 
-   return atanh( (~proxy).get() );
+   return atanh( (*proxy).get() );
 }
 //*************************************************************************************************
 
@@ -1954,7 +1954,7 @@ inline decltype(auto) atanh( const Proxy<PT,RT>& proxy )
 template< typename PT1, typename RT1, typename PT2, typename RT2 >
 inline decltype(auto) atan2( const Proxy<PT1,RT1>& lhs, const Proxy<PT2,RT2>& rhs )
 {
-   return atan2( (~lhs).get(), (~rhs).get() );
+   return atan2( (*lhs).get(), (*rhs).get() );
 }
 //*************************************************************************************************
 
@@ -1975,7 +1975,7 @@ inline decltype(auto) atan2( const Proxy<PT1,RT1>& lhs, const Proxy<PT2,RT2>& rh
 template< typename PT, typename RT, typename T, typename >
 inline decltype(auto) atan2( const Proxy<PT,RT>& lhs, const T& rhs )
 {
-   return atan2( (~lhs).get(), rhs );
+   return atan2( (*lhs).get(), rhs );
 }
 //*************************************************************************************************
 
@@ -1996,7 +1996,7 @@ inline decltype(auto) atan2( const Proxy<PT,RT>& lhs, const T& rhs )
 template< typename T, typename PT, typename RT, typename >
 inline decltype(auto) atan2( const T& lhs, const Proxy<PT,RT>& rhs )
 {
-   return atan2( lhs, (~rhs).get() );
+   return atan2( lhs, (*rhs).get() );
 }
 //*************************************************************************************************
 
@@ -2017,7 +2017,7 @@ inline decltype(auto) erf( const Proxy<PT,RT>& proxy )
 {
    using blaze::erf;
 
-   return erf( (~proxy).get() );
+   return erf( (*proxy).get() );
 }
 //*************************************************************************************************
 
@@ -2039,7 +2039,7 @@ inline decltype(auto) erfc( const Proxy<PT,RT>& proxy )
 {
    using blaze::erfc;
 
-   return erfc( (~proxy).get() );
+   return erfc( (*proxy).get() );
 }
 //*************************************************************************************************
 
@@ -2064,11 +2064,11 @@ inline decltype(auto) erfc( const Proxy<PT,RT>& proxy )
 template< typename PT, typename RT >
 inline void transpose( const Proxy<PT,RT>& proxy )
 {
-   if( (~proxy).isRestricted() ) {
+   if( (*proxy).isRestricted() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid access to restricted element" );
    }
 
-   transpose( (~proxy).get() );
+   transpose( (*proxy).get() );
 }
 //*************************************************************************************************
 
@@ -2093,11 +2093,11 @@ inline void transpose( const Proxy<PT,RT>& proxy )
 template< typename PT, typename RT >
 inline void ctranspose( const Proxy<PT,RT>& proxy )
 {
-   if( (~proxy).isRestricted() ) {
+   if( (*proxy).isRestricted() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid access to restricted element" );
    }
 
-   ctranspose( (~proxy).get() );
+   ctranspose( (*proxy).get() );
 }
 //*************************************************************************************************
 
@@ -2133,11 +2133,11 @@ inline void ctranspose( const Proxy<PT,RT>& proxy )
 template< typename PT, typename RT >
 inline void invert( const Proxy<PT,RT>& proxy )
 {
-   if( (~proxy).isRestricted() ) {
+   if( (*proxy).isRestricted() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid access to restricted element" );
    }
 
-   invert( (~proxy).get() );
+   invert( (*proxy).get() );
 }
 //*************************************************************************************************
 
@@ -2182,11 +2182,11 @@ inline void invert( const Proxy<PT,RT>& proxy )
 template< InversionFlag IF, typename PT, typename RT >
 inline void invert( const Proxy<PT,RT>& proxy )
 {
-   if( (~proxy).isRestricted() ) {
+   if( (*proxy).isRestricted() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid access to restricted element" );
    }
 
-   invert<IF>( (~proxy).get() );
+   invert<IF>( (*proxy).get() );
 }
 //*************************************************************************************************
 
@@ -2208,7 +2208,7 @@ inline bool isReal( const Proxy<PT,RT>& proxy )
 {
    using blaze::isReal;
 
-   return isReal<RF>( (~proxy).get() );
+   return isReal<RF>( (*proxy).get() );
 }
 //*************************************************************************************************
 
@@ -2228,7 +2228,7 @@ inline bool isZero( const Proxy<PT,RT>& proxy )
 {
    using blaze::isZero;
 
-   return isZero<RF>( (~proxy).get() );
+   return isZero<RF>( (*proxy).get() );
 }
 //*************************************************************************************************
 
@@ -2248,7 +2248,7 @@ inline bool isOne( const Proxy<PT,RT>& proxy )
 {
    using blaze::isOne;
 
-   return isOne<RF>( (~proxy).get() );
+   return isOne<RF>( (*proxy).get() );
 }
 //*************************************************************************************************
 
@@ -2268,7 +2268,7 @@ inline bool isnan( const Proxy<PT,RT>& proxy )
 {
    using blaze::isnan;
 
-   return isnan( (~proxy).get() );
+   return isnan( (*proxy).get() );
 }
 //*************************************************************************************************
 
@@ -2288,7 +2288,7 @@ inline bool isinf( const Proxy<PT,RT>& proxy )
 {
    using blaze::isinf;
 
-   return isinf( (~proxy).get() );
+   return isinf( (*proxy).get() );
 }
 //*************************************************************************************************
 
@@ -2309,7 +2309,7 @@ inline bool isfinite( const Proxy<PT,RT>& proxy )
 {
    using blaze::isfinite;
 
-   return isfinite( (~proxy).get() );
+   return isfinite( (*proxy).get() );
 }
 //*************************************************************************************************
 
@@ -2325,7 +2325,7 @@ inline bool isfinite( const Proxy<PT,RT>& proxy )
 template< RelaxationFlag RF, typename PT1, typename RT1, typename PT2, typename RT2 >
 inline bool equal( const Proxy<PT1,RT1>& lhs, const Proxy<PT2,RT2>& rhs )
 {
-   return equal<RF>( (~lhs).get(), (~rhs).get() );
+   return equal<RF>( (*lhs).get(), (*rhs).get() );
 }
 //*************************************************************************************************
 
@@ -2341,7 +2341,7 @@ inline bool equal( const Proxy<PT1,RT1>& lhs, const Proxy<PT2,RT2>& rhs )
 template< RelaxationFlag RF, typename PT, typename RT, typename T, typename >
 inline bool equal( const Proxy<PT,RT>& lhs, const T& rhs )
 {
-   return equal<RF>( (~lhs).get(), rhs );
+   return equal<RF>( (*lhs).get(), rhs );
 }
 //*************************************************************************************************
 
@@ -2357,7 +2357,7 @@ inline bool equal( const Proxy<PT,RT>& lhs, const T& rhs )
 template< RelaxationFlag RF, typename T, typename PT, typename RT, typename >
 inline bool equal( const T& lhs, const Proxy<PT,RT>& rhs )
 {
-   return equal<RF>( lhs, (~rhs).get() );
+   return equal<RF>( lhs, (*rhs).get() );
 }
 //*************************************************************************************************
 
@@ -2378,7 +2378,7 @@ inline decltype(auto) evaluate( const Proxy<PT,RT>& proxy )
 {
    using blaze::evaluate;
 
-   return evaluate( (~proxy).get() );
+   return evaluate( (*proxy).get() );
 }
 //*************************************************************************************************
 

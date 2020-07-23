@@ -123,18 +123,18 @@ inline auto operator*=( SparseVector<VT,TF>& vec, ST scalar )
    -> EnableIf_t< IsScalar_v<ST>, VT& >
 {
    if( IsRestricted_v<VT> ) {
-      if( !tryMult( ~vec, 0UL, (~vec).size(), scalar ) ) {
+      if( !tryMult( *vec, 0UL, (*vec).size(), scalar ) ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid scaling of restricted vector" );
       }
    }
 
    if( !IsResizable_v< ElementType_t<VT> > && isZero( scalar ) )
    {
-      reset( ~vec );
+      reset( *vec );
    }
    else
    {
-      decltype(auto) left( derestrict( ~vec ) );
+      decltype(auto) left( derestrict( *vec ) );
 
       const auto last( left.end() );
       for( auto element=left.begin(); element!=last; ++element ) {
@@ -142,9 +142,9 @@ inline auto operator*=( SparseVector<VT,TF>& vec, ST scalar )
       }
    }
 
-   BLAZE_INTERNAL_ASSERT( isIntact( ~vec ), "Invariant violation detected" );
+   BLAZE_INTERNAL_ASSERT( isIntact( *vec ), "Invariant violation detected" );
 
-   return ~vec;
+   return *vec;
 }
 //*************************************************************************************************
 
@@ -168,7 +168,7 @@ template< typename VT    // Type of the left-hand side sparse vector
 inline auto operator*=( SparseVector<VT,TF>&& vec, ST scalar )
    -> EnableIf_t< IsScalar_v<ST>, VT& >
 {
-   return operator*=( ~vec, scalar );
+   return operator*=( *vec, scalar );
 }
 //*************************************************************************************************
 
@@ -197,7 +197,7 @@ inline auto operator/=( SparseVector<VT,TF>& vec, ST scalar )
    BLAZE_USER_ASSERT( !isZero( scalar ), "Division by zero detected" );
 
    if( IsRestricted_v<VT> ) {
-      if( !tryDiv( ~vec, 0UL, (~vec).size(), scalar ) ) {
+      if( !tryDiv( *vec, 0UL, (*vec).size(), scalar ) ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid scaling of restricted vector" );
       }
    }
@@ -209,7 +209,7 @@ inline auto operator/=( SparseVector<VT,TF>& vec, ST scalar )
                                 , DivTrait_t< UnderlyingScalar_t<VT>, ST > >
                           , ST >;
 
-   decltype(auto) left( derestrict( ~vec ) );
+   decltype(auto) left( derestrict( *vec ) );
 
    if( IsInvertible_v<ScalarType> ) {
       const ScalarType tmp( ScalarType(1)/static_cast<ScalarType>( scalar ) );
@@ -223,9 +223,9 @@ inline auto operator/=( SparseVector<VT,TF>& vec, ST scalar )
       }
    }
 
-   BLAZE_INTERNAL_ASSERT( isIntact( ~vec ), "Invariant violation detected" );
+   BLAZE_INTERNAL_ASSERT( isIntact( *vec ), "Invariant violation detected" );
 
-   return ~vec;
+   return *vec;
 }
 //*************************************************************************************************
 
@@ -251,7 +251,7 @@ template< typename VT    // Type of the left-hand side sparse vector
 inline auto operator/=( SparseVector<VT,TF>&& vec, ST scalar )
    -> EnableIf_t< IsScalar_v<ST>, VT& >
 {
-   return operator/=( ~vec, scalar );
+   return operator/=( *vec, scalar );
 }
 //*************************************************************************************************
 
@@ -311,7 +311,7 @@ inline bool isnan( const SparseVector<VT,TF>& sv )
 
    using CT = CompositeType_t<VT>;
 
-   CT a( ~sv );  // Evaluation of the sparse vector operand
+   CT a( *sv );  // Evaluation of the sparse vector operand
 
    const auto end( a.end() );
    for( auto element=a.begin(); element!=end; ++element ) {
@@ -348,7 +348,7 @@ inline bool isinf( const SparseVector<VT,TF>& sv )
 
    using CT = CompositeType_t<VT>;
 
-   CT a( ~sv );  // Evaluation of the sparse vector operand
+   CT a( *sv );  // Evaluation of the sparse vector operand
 
    const auto end( a.end() );
    for( auto element=a.begin(); element!=end; ++element ) {
@@ -385,7 +385,7 @@ inline bool isfinite( const SparseVector<VT,TF>& sv )
 
    using CT = CompositeType_t<VT>;
 
-   CT a( ~sv );  // Evaluation of the sparse vector operand
+   CT a( *sv );  // Evaluation of the sparse vector operand
 
    const auto end( a.end() );
    for( auto element=a.begin(); element!=end; ++element ) {
@@ -436,10 +436,10 @@ bool isUniform( const SparseVector<VT,TF>& sv )
 {
    using CT = CompositeType_t<VT>;
 
-   if( IsUniform_v<VT> || (~sv).size() < 2UL )
+   if( IsUniform_v<VT> || (*sv).size() < 2UL )
       return true;
 
-   CT a( ~sv );  // Evaluation of the sparse vector operand
+   CT a( *sv );  // Evaluation of the sparse vector operand
 
    if( a.nonZeros() != a.size() )
    {
@@ -506,10 +506,10 @@ template< RelaxationFlag RF  // Relaxation flag
         , bool TF >          // Transpose flag
 bool isZero( const SparseVector<VT,TF>& sv )
 {
-   if( IsZero_v<VT> || (~sv).nonZeros() == 0UL )
+   if( IsZero_v<VT> || (*sv).nonZeros() == 0UL )
       return true;
 
-   CompositeType_t<VT> a( ~sv );  // Evaluation of the sparse vector operand
+   CompositeType_t<VT> a( *sv );  // Evaluation of the sparse vector operand
 
    const auto end( a.end() );
    for( auto element=a.begin(); element!=end; ++element ) {
@@ -540,9 +540,9 @@ template< typename VT         // Type of the sparse vector
         , bool TF             // Transpose flag
         , typename... Args >  // Type of the erase arguments
 auto erase( SparseVector<VT,TF>& sv, Args&&... args )
-   -> decltype( (~sv).erase( std::forward<Args>( args )... ) )
+   -> decltype( (*sv).erase( std::forward<Args>( args )... ) )
 {
-   return (~sv).erase( std::forward<Args>( args )... );
+   return (*sv).erase( std::forward<Args>( args )... );
 }
 /*! \endcond */
 //*************************************************************************************************

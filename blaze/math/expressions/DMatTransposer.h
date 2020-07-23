@@ -552,7 +552,7 @@ class DMatTransposer
            , bool SO2 >    // Storage order of the right-hand side matrix
    inline void assign( const Matrix<MT2,SO2>& rhs )
    {
-      dm_.assign( trans( ~rhs ) );
+      dm_.assign( trans( *rhs ) );
    }
    //**********************************************************************************************
 
@@ -571,7 +571,7 @@ class DMatTransposer
            , bool SO2 >    // Storage order of the right-hand side matrix
    inline void addAssign( const Matrix<MT2,SO2>& rhs )
    {
-      dm_.addAssign( trans( ~rhs ) );
+      dm_.addAssign( trans( *rhs ) );
    }
    //**********************************************************************************************
 
@@ -590,7 +590,7 @@ class DMatTransposer
            , bool SO2 >    // Storage order of the right-hand side matrix
    inline void subAssign( const Matrix<MT2,SO2>& rhs )
    {
-      dm_.subAssign( trans( ~rhs ) );
+      dm_.subAssign( trans( *rhs ) );
    }
    //**********************************************************************************************
 
@@ -609,7 +609,7 @@ class DMatTransposer
            , bool SO2 >    // Storage order of the right-hand side matrix
    inline void schurAssign( const Matrix<MT2,SO2>& rhs )
    {
-      dm_.schurAssign( trans( ~rhs ) );
+      dm_.schurAssign( trans( *rhs ) );
    }
    //**********************************************************************************************
 

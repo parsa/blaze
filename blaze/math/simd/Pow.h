@@ -71,29 +71,29 @@ BLAZE_ALWAYS_INLINE const SIMDfloat pow( const SIMDf32<T>& a, const SIMDf32<T>& 
 #if BLAZE_SVML_MODE
 #  if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
 {
-   return _mm512_pow_ps( (~a).eval().value, (~b).eval().value );
+   return _mm512_pow_ps( (*a).eval().value, (*b).eval().value );
 }
 #  elif BLAZE_AVX_MODE
 {
-   return _mm256_pow_ps( (~a).eval().value, (~b).eval().value );
+   return _mm256_pow_ps( (*a).eval().value, (*b).eval().value );
 }
 #  elif BLAZE_SSE_MODE
 {
-   return _mm_pow_ps( (~a).eval().value, (~b).eval().value );
+   return _mm_pow_ps( (*a).eval().value, (*b).eval().value );
 }
 #  endif
 #elif BLAZE_SLEEF_MODE
 #  if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
 {
-   return Sleef_powf16_u10( (~a).eval().value, (~b).eval().value );
+   return Sleef_powf16_u10( (*a).eval().value, (*b).eval().value );
 }
 #  elif BLAZE_AVX_MODE
 {
-   return Sleef_powf8_u10( (~a).eval().value, (~b).eval().value );
+   return Sleef_powf8_u10( (*a).eval().value, (*b).eval().value );
 }
 #  elif BLAZE_SSE_MODE
 {
-   return Sleef_powf4_u10( (~a).eval().value, (~b).eval().value );
+   return Sleef_powf4_u10( (*a).eval().value, (*b).eval().value );
 }
 #  endif
 #else
@@ -125,29 +125,29 @@ BLAZE_ALWAYS_INLINE const SIMDdouble pow( const SIMDf64<T>& a, const SIMDf64<T>&
 #if BLAZE_SVML_MODE
 #  if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
 {
-   return _mm512_pow_pd( (~a).eval().value, (~b).eval().value );
+   return _mm512_pow_pd( (*a).eval().value, (*b).eval().value );
 }
 #  elif BLAZE_AVX_MODE
 {
-   return _mm256_pow_pd( (~a).eval().value, (~b).eval().value );
+   return _mm256_pow_pd( (*a).eval().value, (*b).eval().value );
 }
 #  elif BLAZE_SSE_MODE
 {
-   return _mm_pow_pd( (~a).eval().value, (~b).eval().value );
+   return _mm_pow_pd( (*a).eval().value, (*b).eval().value );
 }
 #  endif
 #elif BLAZE_SLEEF_MODE
 #  if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
 {
-   return Sleef_powd8_u10( (~a).eval().value, (~b).eval().value );
+   return Sleef_powd8_u10( (*a).eval().value, (*b).eval().value );
 }
 #  elif BLAZE_AVX_MODE
 {
-   return Sleef_powd4_u10( (~a).eval().value, (~b).eval().value );
+   return Sleef_powd4_u10( (*a).eval().value, (*b).eval().value );
 }
 #  elif BLAZE_SSE_MODE
 {
-   return Sleef_powd2_u10( (~a).eval().value, (~b).eval().value );
+   return Sleef_powd2_u10( (*a).eval().value, (*b).eval().value );
 }
 #  endif
 #else

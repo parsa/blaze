@@ -192,12 +192,12 @@ void lq( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& L, DenseMatrix<MT3
 
    using ET1 = ElementType_t<MT1>;
 
-   const size_t m( (~A).rows() );
-   const size_t n( (~A).columns() );
+   const size_t m( (*A).rows() );
+   const size_t n( (*A).columns() );
    const size_t mindim( min( m, n ) );
 
-   if( ( !IsResizable_v<MT2> && ( (~L).rows() != m || (~L).columns() != mindim ) ) ||
-       ( !IsResizable_v<MT3> && ( (~Q).rows() != mindim || (~Q).columns() != n ) ) ) {
+   if( ( !IsResizable_v<MT2> && ( (*L).rows() != m || (*L).columns() != mindim ) ) ||
+       ( !IsResizable_v<MT3> && ( (*Q).rows() != mindim || (*Q).columns() != n ) ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Dimensions of fixed size matrix do not match" );
    }
 
@@ -206,30 +206,30 @@ void lq( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& L, DenseMatrix<MT3
    }
 
    const std::unique_ptr<ET1[]> tau( new ET1[mindim] );
-   decltype(auto) l( derestrict( ~L ) );
+   decltype(auto) l( derestrict( *L ) );
 
    if( m < n )
    {
-      (~Q) = A;
-      gelqf( ~Q, tau.get() );
+      (*Q) = A;
+      gelqf( *Q, tau.get() );
 
-      resize( ~L, m, m, false );
+      resize( *L, m, m, false );
       reset( l );
 
       for( size_t i=0UL; i<m; ++i ) {
          for( size_t j=0UL; j<min(i+1UL,n); ++j ) {
-            l(i,j) = (~Q)(i,j);
+            l(i,j) = (*Q)(i,j);
          }
       }
 
-      lq_backend( ~Q, tau.get() );
+      lq_backend( *Q, tau.get() );
    }
    else
    {
       l = A;
       gelqf( l, tau.get() );
-      (~Q) = submatrix( l, 0UL, 0UL, n, n );
-      lq_backend( ~Q, tau.get() );
+      (*Q) = submatrix( l, 0UL, 0UL, n, n );
+      lq_backend( *Q, tau.get() );
 
       for( size_t i=0UL; i<m; ++i ) {
          for( size_t j=i+1UL; j<n; ++j ) {

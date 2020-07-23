@@ -139,7 +139,7 @@ inline decltype(auto) row( Matrix<MT,SO>& matrix, RRAs... args )
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = Row_<MT,I>;
-   return ReturnType( ~matrix, args... );
+   return ReturnType( *matrix, args... );
 }
 //*************************************************************************************************
 
@@ -188,7 +188,7 @@ inline decltype(auto) row( const Matrix<MT,SO>& matrix, RRAs... args )
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = const Row_<const MT,I>;
-   return ReturnType( ~matrix, args... );
+   return ReturnType( *matrix, args... );
 }
 //*************************************************************************************************
 
@@ -216,7 +216,7 @@ inline decltype(auto) row( Matrix<MT,SO>&& matrix, RRAs... args )
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = Row_<MT,I>;
-   return ReturnType( ~matrix, args... );
+   return ReturnType( *matrix, args... );
 }
 //*************************************************************************************************
 
@@ -265,7 +265,7 @@ inline decltype(auto) row( Matrix<MT,SO>& matrix, size_t index, RRAs... args )
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = Row_<MT>;
-   return ReturnType( ~matrix, index, args... );
+   return ReturnType( *matrix, index, args... );
 }
 //*************************************************************************************************
 
@@ -314,7 +314,7 @@ inline decltype(auto) row( const Matrix<MT,SO>& matrix, size_t index, RRAs... ar
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = const Row_<const MT>;
-   return ReturnType( ~matrix, index, args... );
+   return ReturnType( *matrix, index, args... );
 }
 //*************************************************************************************************
 
@@ -342,7 +342,7 @@ inline decltype(auto) row( Matrix<MT,SO>&& matrix, size_t index, RRAs... args )
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = Row_<MT>;
-   return ReturnType( ~matrix, index, args... );
+   return ReturnType( *matrix, index, args... );
 }
 //*************************************************************************************************
 
@@ -375,8 +375,8 @@ inline decltype(auto) row( const MatMatAddExpr<MT>& matrix, RRAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return row<CRAs...>( (~matrix).leftOperand(), args... ) +
-          row<CRAs...>( (~matrix).rightOperand(), args... );
+   return row<CRAs...>( (*matrix).leftOperand(), args... ) +
+          row<CRAs...>( (*matrix).rightOperand(), args... );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -402,8 +402,8 @@ inline decltype(auto) row( const MatMatSubExpr<MT>& matrix, RRAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return row<CRAs...>( (~matrix).leftOperand(), args... ) -
-          row<CRAs...>( (~matrix).rightOperand(), args... );
+   return row<CRAs...>( (*matrix).leftOperand(), args... ) -
+          row<CRAs...>( (*matrix).rightOperand(), args... );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -428,8 +428,8 @@ inline decltype(auto) row( const SchurExpr<MT>& matrix, RRAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return row<CRAs...>( (~matrix).leftOperand(), args... ) *
-          row<CRAs...>( (~matrix).rightOperand(), args... );
+   return row<CRAs...>( (*matrix).leftOperand(), args... ) *
+          row<CRAs...>( (*matrix).rightOperand(), args... );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -455,7 +455,7 @@ inline decltype(auto) row( const MatMatMultExpr<MT>& matrix, RRAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return row<CRAs...>( (~matrix).leftOperand(), args... ) * (~matrix).rightOperand();
+   return row<CRAs...>( (*matrix).leftOperand(), args... ) * (*matrix).rightOperand();
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -484,15 +484,15 @@ inline decltype(auto) row( const MatMatKronExpr<MT>& matrix, RRAs... args )
    const RowData<CRAs...> rd( args... );
 
    if( isChecked( args... ) ) {
-      if( (~matrix).rows() <= rd.row() ) {
+      if( (*matrix).rows() <= rd.row() ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid row access index" );
       }
    }
 
-   const size_t rows( (~matrix).rightOperand().rows() );
+   const size_t rows( (*matrix).rightOperand().rows() );
 
-   return kron( row( (~matrix).leftOperand(), rd.row()/rows, unchecked ),
-                row( (~matrix).rightOperand(), rd.row()%rows, unchecked ) );
+   return kron( row( (*matrix).leftOperand(), rd.row()/rows, unchecked ),
+                row( (*matrix).rightOperand(), rd.row()%rows, unchecked ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -518,12 +518,12 @@ inline decltype(auto) row( const VecTVecMultExpr<MT>& matrix, RRAs... args )
    BLAZE_FUNCTION_TRACE;
 
    if( isChecked( args... ) ) {
-      if( (~matrix).rows() <= I ) {
+      if( (*matrix).rows() <= I ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid row access index" );
       }
    }
 
-   return (~matrix).leftOperand()[I] * (~matrix).rightOperand();
+   return (*matrix).leftOperand()[I] * (*matrix).rightOperand();
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -549,12 +549,12 @@ inline decltype(auto) row( const VecTVecMultExpr<MT>& matrix, size_t index, RRAs
    BLAZE_FUNCTION_TRACE;
 
    if( isChecked( args... ) ) {
-      if( (~matrix).rows() <= index ) {
+      if( (*matrix).rows() <= index ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid row access index" );
       }
    }
 
-   return (~matrix).leftOperand()[index] * (~matrix).rightOperand();
+   return (*matrix).leftOperand()[index] * (*matrix).rightOperand();
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -580,7 +580,7 @@ inline decltype(auto) row( const MatScalarMultExpr<MT>& matrix, RRAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return row<CRAs...>( (~matrix).leftOperand(), args... ) * (~matrix).rightOperand();
+   return row<CRAs...>( (*matrix).leftOperand(), args... ) * (*matrix).rightOperand();
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -606,7 +606,7 @@ inline decltype(auto) row( const MatScalarDivExpr<MT>& matrix, RRAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return row<CRAs...>( (~matrix).leftOperand(), args... ) / (~matrix).rightOperand();
+   return row<CRAs...>( (*matrix).leftOperand(), args... ) / (*matrix).rightOperand();
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -632,7 +632,7 @@ inline decltype(auto) row( const MatMapExpr<MT>& matrix, RRAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( row<CRAs...>( (~matrix).operand(), args... ), (~matrix).operation() );
+   return map( row<CRAs...>( (*matrix).operand(), args... ), (*matrix).operation() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -658,9 +658,9 @@ inline decltype(auto) row( const MatMatMapExpr<MT>& matrix, RRAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( row<CRAs...>( (~matrix).leftOperand(), args... ),
-               row<CRAs...>( (~matrix).rightOperand(), args... ),
-               (~matrix).operation() );
+   return map( row<CRAs...>( (*matrix).leftOperand(), args... ),
+               row<CRAs...>( (*matrix).rightOperand(), args... ),
+               (*matrix).operation() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -687,13 +687,13 @@ inline decltype(auto) row( const VecTVecMapExpr<MT>& matrix, RRAs... args )
    BLAZE_FUNCTION_TRACE;
 
    if( isChecked( args... ) ) {
-      if( (~matrix).rows() <= I ) {
+      if( (*matrix).rows() <= I ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid row access index" );
       }
    }
 
-   return map( (~matrix).rightOperand(),
-               blaze::bind2nd( (~matrix).operation(), (~matrix).leftOperand()[I] ) );
+   return map( (*matrix).rightOperand(),
+               blaze::bind2nd( (*matrix).operation(), (*matrix).leftOperand()[I] ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -720,13 +720,13 @@ inline decltype(auto) row( const VecTVecMapExpr<MT>& matrix, size_t index, RRAs.
    BLAZE_FUNCTION_TRACE;
 
    if( isChecked( args... ) ) {
-      if( (~matrix).rows() <= index ) {
+      if( (*matrix).rows() <= index ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid row access index" );
       }
    }
 
-   return map( (~matrix).rightOperand(),
-               blaze::bind2nd( (~matrix).operation(), (~matrix).leftOperand()[index] ) );
+   return map( (*matrix).rightOperand(),
+               blaze::bind2nd( (*matrix).operation(), (*matrix).leftOperand()[index] ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -752,7 +752,7 @@ inline decltype(auto) row( const MatEvalExpr<MT>& matrix, RRAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return eval( row<CRAs...>( (~matrix).operand(), args... ) );
+   return eval( row<CRAs...>( (*matrix).operand(), args... ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -778,7 +778,7 @@ inline decltype(auto) row( const MatSerialExpr<MT>& matrix, RRAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return serial( row<CRAs...>( (~matrix).operand(), args... ) );
+   return serial( row<CRAs...>( (*matrix).operand(), args... ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -804,7 +804,7 @@ inline decltype(auto) row( const MatNoAliasExpr<MT>& matrix, RRAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return noalias( row<CRAs...>( (~matrix).operand(), args... ) );
+   return noalias( row<CRAs...>( (*matrix).operand(), args... ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -830,7 +830,7 @@ inline decltype(auto) row( const MatNoSIMDExpr<MT>& matrix, RRAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return nosimd( row<CRAs...>( (~matrix).operand(), args... ) );
+   return nosimd( row<CRAs...>( (*matrix).operand(), args... ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -856,7 +856,7 @@ inline decltype(auto) row( const DeclExpr<MT>& matrix, RRAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return row<CRAs...>( (~matrix).operand(), args... );
+   return row<CRAs...>( (*matrix).operand(), args... );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -883,7 +883,7 @@ inline decltype(auto) row( const MatTransExpr<MT>& matrix, RRAs... args )
    BLAZE_FUNCTION_TRACE;
 
    try {
-      return trans( column<CRAs...>( (~matrix).operand(), args... ) );
+      return trans( column<CRAs...>( (*matrix).operand(), args... ) );
    }
    catch( ... ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid row access index" );
@@ -917,12 +917,12 @@ inline decltype(auto) row( const VecExpandExpr<MT,CEAs...>& matrix, RRAs... args
 
    if( isChecked( args... ) ) {
       const RowData<CRAs...> rd( args... );
-      if( (~matrix).rows() <= rd.row() ) {
+      if( (*matrix).rows() <= rd.row() ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid row access index" );
       }
    }
 
-   return subvector( (~matrix).operand(), 0UL, (~matrix).columns(), unchecked );
+   return subvector( (*matrix).operand(), 0UL, (*matrix).columns(), unchecked );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -953,14 +953,14 @@ inline decltype(auto) row( const VecExpandExpr<MT,CEAs...>& matrix, RRAs... args
    const RowData<CRAs...> rd( args... );
 
    if( isChecked( args... ) ) {
-      if( (~matrix).rows() <= rd.row() ) {
+      if( (*matrix).rows() <= rd.row() ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid row access index" );
       }
    }
 
    using ET = ElementType_t< MatrixType_t<MT> >;
 
-   return UniformVector<ET,rowVector>( (~matrix).columns(), (~matrix).operand()[rd.row()] );
+   return UniformVector<ET,rowVector>( (*matrix).columns(), (*matrix).operand()[rd.row()] );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -990,15 +990,15 @@ inline decltype(auto) row( const MatRepeatExpr<MT,CRAs2...>& matrix, RRAs... arg
    const RowData<CRAs1...> rd( args... );
 
    if( isChecked( args... ) ) {
-      if( (~matrix).rows() <= rd.row() ) {
+      if( (*matrix).rows() <= rd.row() ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid row access index" );
       }
    }
 
-   return repeat( row( (~matrix).operand()
-                     , rd.row() % (~matrix).operand().rows()
+   return repeat( row( (*matrix).operand()
+                     , rd.row() % (*matrix).operand().rows()
                      , unchecked )
-                , (~matrix).template repetitions<1UL>() );
+                , (*matrix).template repetitions<1UL>() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1304,8 +1304,8 @@ template< typename MT     // Type of the matrix
 BLAZE_ALWAYS_INLINE bool
    trySet( const Row<MT,SO,DF,SF,CRAs...>& row, size_t index, size_t size, const ET& value )
 {
-   BLAZE_INTERNAL_ASSERT( index <= (~row).size(), "Invalid vector access index" );
-   BLAZE_INTERNAL_ASSERT( index + size <= (~row).size(), "Invalid range size" );
+   BLAZE_INTERNAL_ASSERT( index <= (*row).size(), "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( index + size <= (*row).size(), "Invalid range size" );
 
    return trySet( row.operand(), row.row(), index, 1UL, size, value );
 }
@@ -1369,8 +1369,8 @@ template< typename MT     // Type of the matrix
 BLAZE_ALWAYS_INLINE bool
    tryAdd( const Row<MT,SO,DF,SF,CRAs...>& row, size_t index, size_t size, const ET& value )
 {
-   BLAZE_INTERNAL_ASSERT( index <= (~row).size(), "Invalid vector access index" );
-   BLAZE_INTERNAL_ASSERT( index + size <= (~row).size(), "Invalid range size" );
+   BLAZE_INTERNAL_ASSERT( index <= (*row).size(), "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( index + size <= (*row).size(), "Invalid range size" );
 
    return tryAdd( row.operand(), row.row(), index, 1UL, size, value );
 }
@@ -1434,8 +1434,8 @@ template< typename MT     // Type of the matrix
 BLAZE_ALWAYS_INLINE bool
    trySub( const Row<MT,SO,DF,SF,CRAs...>& row, size_t index, size_t size, const ET& value )
 {
-   BLAZE_INTERNAL_ASSERT( index <= (~row).size(), "Invalid vector access index" );
-   BLAZE_INTERNAL_ASSERT( index + size <= (~row).size(), "Invalid range size" );
+   BLAZE_INTERNAL_ASSERT( index <= (*row).size(), "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( index + size <= (*row).size(), "Invalid range size" );
 
    return trySub( row.operand(), row.row(), index, 1UL, size, value );
 }
@@ -1499,8 +1499,8 @@ template< typename MT     // Type of the matrix
 BLAZE_ALWAYS_INLINE bool
    tryMult( const Row<MT,SO,DF,SF,CRAs...>& row, size_t index, size_t size, const ET& value )
 {
-   BLAZE_INTERNAL_ASSERT( index <= (~row).size(), "Invalid vector access index" );
-   BLAZE_INTERNAL_ASSERT( index + size <= (~row).size(), "Invalid range size" );
+   BLAZE_INTERNAL_ASSERT( index <= (*row).size(), "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( index + size <= (*row).size(), "Invalid range size" );
 
    return tryMult( row.operand(), row.row(), index, 1UL, size, value );
 }
@@ -1564,8 +1564,8 @@ template< typename MT     // Type of the matrix
 BLAZE_ALWAYS_INLINE bool
    tryDiv( const Row<MT,SO,DF,SF,CRAs...>& row, size_t index, size_t size, const ET& value )
 {
-   BLAZE_INTERNAL_ASSERT( index <= (~row).size(), "Invalid vector access index" );
-   BLAZE_INTERNAL_ASSERT( index + size <= (~row).size(), "Invalid range size" );
+   BLAZE_INTERNAL_ASSERT( index <= (*row).size(), "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( index + size <= (*row).size(), "Invalid range size" );
 
    return tryDiv( row.operand(), row.row(), index, 1UL, size, value );
 }
@@ -1627,8 +1627,8 @@ template< typename MT       // Type of the matrix
 BLAZE_ALWAYS_INLINE bool
    tryShift( const Row<MT,SO,DF,SF,CRAs...>& row, size_t index, size_t size, int count )
 {
-   BLAZE_INTERNAL_ASSERT( index <= (~row).size(), "Invalid vector access index" );
-   BLAZE_INTERNAL_ASSERT( index + size <= (~row).size(), "Invalid range size" );
+   BLAZE_INTERNAL_ASSERT( index <= (*row).size(), "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( index + size <= (*row).size(), "Invalid range size" );
 
    return tryShift( row.operand(), row.row(), index, 1UL, size, count );
 }
@@ -1692,8 +1692,8 @@ template< typename MT     // Type of the matrix
 BLAZE_ALWAYS_INLINE bool
    tryBitand( const Row<MT,SO,DF,SF,CRAs...>& row, size_t index, size_t size, const ET& value )
 {
-   BLAZE_INTERNAL_ASSERT( index <= (~row).size(), "Invalid vector access index" );
-   BLAZE_INTERNAL_ASSERT( index + size <= (~row).size(), "Invalid range size" );
+   BLAZE_INTERNAL_ASSERT( index <= (*row).size(), "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( index + size <= (*row).size(), "Invalid range size" );
 
    return tryBitand( row.operand(), row.row(), index, 1UL, size, value );
 }
@@ -1757,8 +1757,8 @@ template< typename MT     // Type of the matrix
 BLAZE_ALWAYS_INLINE bool
    tryBitor( const Row<MT,SO,DF,SF,CRAs...>& row, size_t index, size_t size, const ET& value )
 {
-   BLAZE_INTERNAL_ASSERT( index <= (~row).size(), "Invalid vector access index" );
-   BLAZE_INTERNAL_ASSERT( index + size <= (~row).size(), "Invalid range size" );
+   BLAZE_INTERNAL_ASSERT( index <= (*row).size(), "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( index + size <= (*row).size(), "Invalid range size" );
 
    return tryBitor( row.operand(), row.row(), index, 1UL, size, value );
 }
@@ -1822,8 +1822,8 @@ template< typename MT     // Type of the matrix
 BLAZE_ALWAYS_INLINE bool
    tryBitxor( const Row<MT,SO,DF,SF,CRAs...>& row, size_t index, size_t size, const ET& value )
 {
-   BLAZE_INTERNAL_ASSERT( index <= (~row).size(), "Invalid vector access index" );
-   BLAZE_INTERNAL_ASSERT( index + size <= (~row).size(), "Invalid range size" );
+   BLAZE_INTERNAL_ASSERT( index <= (*row).size(), "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( index + size <= (*row).size(), "Invalid range size" );
 
    return tryBitxor( row.operand(), row.row(), index, 1UL, size, value );
 }
@@ -1856,9 +1856,9 @@ inline bool tryAssign( const Row<MT,SO,DF,SF,CRAs...>& lhs,
                        const Vector<VT,true>& rhs, size_t index )
 {
    BLAZE_INTERNAL_ASSERT( index <= lhs.size(), "Invalid vector access index" );
-   BLAZE_INTERNAL_ASSERT( index + (~rhs).size() <= lhs.size(), "Invalid vector size" );
+   BLAZE_INTERNAL_ASSERT( index + (*rhs).size() <= lhs.size(), "Invalid vector size" );
 
-   return tryAssign( lhs.operand(), ~rhs, lhs.row(), index );
+   return tryAssign( lhs.operand(), *rhs, lhs.row(), index );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1889,9 +1889,9 @@ inline bool tryAddAssign( const Row<MT,SO,DF,SF,CRAs...>& lhs,
                           const Vector<VT,true>& rhs, size_t index )
 {
    BLAZE_INTERNAL_ASSERT( index <= lhs.size(), "Invalid vector access index" );
-   BLAZE_INTERNAL_ASSERT( index + (~rhs).size() <= lhs.size(), "Invalid vector size" );
+   BLAZE_INTERNAL_ASSERT( index + (*rhs).size() <= lhs.size(), "Invalid vector size" );
 
-   return tryAddAssign( lhs.operand(), ~rhs, lhs.row(), index );
+   return tryAddAssign( lhs.operand(), *rhs, lhs.row(), index );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1922,9 +1922,9 @@ inline bool trySubAssign( const Row<MT,SO,DF,SF,CRAs...>& lhs,
                           const Vector<VT,true>& rhs, size_t index )
 {
    BLAZE_INTERNAL_ASSERT( index <= lhs.size(), "Invalid vector access index" );
-   BLAZE_INTERNAL_ASSERT( index + (~rhs).size() <= lhs.size(), "Invalid vector size" );
+   BLAZE_INTERNAL_ASSERT( index + (*rhs).size() <= lhs.size(), "Invalid vector size" );
 
-   return trySubAssign( lhs.operand(), ~rhs, lhs.row(), index );
+   return trySubAssign( lhs.operand(), *rhs, lhs.row(), index );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1955,9 +1955,9 @@ inline bool tryMultAssign( const Row<MT,SO,DF,SF,CRAs...>& lhs,
                            const Vector<VT,true>& rhs, size_t index )
 {
    BLAZE_INTERNAL_ASSERT( index <= lhs.size(), "Invalid vector access index" );
-   BLAZE_INTERNAL_ASSERT( index + (~rhs).size() <= lhs.size(), "Invalid vector size" );
+   BLAZE_INTERNAL_ASSERT( index + (*rhs).size() <= lhs.size(), "Invalid vector size" );
 
-   return tryMultAssign( lhs.operand(), ~rhs, lhs.row(), index );
+   return tryMultAssign( lhs.operand(), *rhs, lhs.row(), index );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1988,9 +1988,9 @@ inline bool tryDivAssign( const Row<MT,SO,DF,SF,CRAs...>& lhs,
                           const Vector<VT,true>& rhs, size_t index )
 {
    BLAZE_INTERNAL_ASSERT( index <= lhs.size(), "Invalid vector access index" );
-   BLAZE_INTERNAL_ASSERT( index + (~rhs).size() <= lhs.size(), "Invalid vector size" );
+   BLAZE_INTERNAL_ASSERT( index + (*rhs).size() <= lhs.size(), "Invalid vector size" );
 
-   return tryDivAssign( lhs.operand(), ~rhs, lhs.row(), index );
+   return tryDivAssign( lhs.operand(), *rhs, lhs.row(), index );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -2021,9 +2021,9 @@ inline bool tryShiftAssign( const Row<MT,SO,DF,SF,CRAs...>& lhs,
                             const Vector<VT,true>& rhs, size_t index )
 {
    BLAZE_INTERNAL_ASSERT( index <= lhs.size(), "Invalid vector access index" );
-   BLAZE_INTERNAL_ASSERT( index + (~rhs).size() <= lhs.size(), "Invalid vector size" );
+   BLAZE_INTERNAL_ASSERT( index + (*rhs).size() <= lhs.size(), "Invalid vector size" );
 
-   return tryShiftAssign( lhs.operand(), ~rhs, lhs.row(), index );
+   return tryShiftAssign( lhs.operand(), *rhs, lhs.row(), index );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -2054,9 +2054,9 @@ inline bool tryBitandAssign( const Row<MT,SO,DF,SF,CRAs...>& lhs,
                              const Vector<VT,true>& rhs, size_t index )
 {
    BLAZE_INTERNAL_ASSERT( index <= lhs.size(), "Invalid vector access index" );
-   BLAZE_INTERNAL_ASSERT( index + (~rhs).size() <= lhs.size(), "Invalid vector size" );
+   BLAZE_INTERNAL_ASSERT( index + (*rhs).size() <= lhs.size(), "Invalid vector size" );
 
-   return tryBitandAssign( lhs.operand(), ~rhs, lhs.row(), index );
+   return tryBitandAssign( lhs.operand(), *rhs, lhs.row(), index );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -2087,9 +2087,9 @@ inline bool tryBitorAssign( const Row<MT,SO,DF,SF,CRAs...>& lhs,
                             const Vector<VT,true>& rhs, size_t index )
 {
    BLAZE_INTERNAL_ASSERT( index <= lhs.size(), "Invalid vector access index" );
-   BLAZE_INTERNAL_ASSERT( index + (~rhs).size() <= lhs.size(), "Invalid vector size" );
+   BLAZE_INTERNAL_ASSERT( index + (*rhs).size() <= lhs.size(), "Invalid vector size" );
 
-   return tryBitorAssign( lhs.operand(), ~rhs, lhs.row(), index );
+   return tryBitorAssign( lhs.operand(), *rhs, lhs.row(), index );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -2120,9 +2120,9 @@ inline bool tryBitxorAssign( const Row<MT,SO,DF,SF,CRAs...>& lhs,
                              const Vector<VT,true>& rhs, size_t index )
 {
    BLAZE_INTERNAL_ASSERT( index <= lhs.size(), "Invalid vector access index" );
-   BLAZE_INTERNAL_ASSERT( index + (~rhs).size() <= lhs.size(), "Invalid vector size" );
+   BLAZE_INTERNAL_ASSERT( index + (*rhs).size() <= lhs.size(), "Invalid vector size" );
 
-   return tryBitxorAssign( lhs.operand(), ~rhs, lhs.row(), index );
+   return tryBitxorAssign( lhs.operand(), *rhs, lhs.row(), index );
 }
 /*! \endcond */
 //*************************************************************************************************

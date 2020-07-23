@@ -470,7 +470,7 @@ class SMatTransposer
            , bool SO2 >    // Storage order of the right-hand side matrix
    inline void assign( const Matrix<MT2,SO2>& rhs )
    {
-      sm_.assign( trans( ~rhs ) );
+      sm_.assign( trans( *rhs ) );
    }
    //**********************************************************************************************
 

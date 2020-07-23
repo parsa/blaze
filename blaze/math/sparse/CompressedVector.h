@@ -675,13 +675,13 @@ template< typename Type   // Data type of the vector
         , typename Tag >  // Type tag
 template< typename VT >  // Type of the foreign dense vector
 inline CompressedVector<Type,TF,Tag>::CompressedVector( const DenseVector<VT,TF>& dv )
-   : CompressedVector( (~dv).size() )
+   : CompressedVector( (*dv).size() )
 {
    using blaze::assign;
 
    BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<VT> );
 
-   assign( *this, ~dv );
+   assign( *this, *dv );
 }
 //*************************************************************************************************
 
@@ -696,13 +696,13 @@ template< typename Type   // Data type of the vector
         , typename Tag >  // Type tag
 template< typename VT >  // Type of the foreign sparse vector
 inline CompressedVector<Type,TF,Tag>::CompressedVector( const SparseVector<VT,TF>& sv )
-   : CompressedVector( (~sv).size(), (~sv).nonZeros() )
+   : CompressedVector( (*sv).size(), (*sv).nonZeros() )
 {
    using blaze::assign;
 
    BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<VT> );
 
-   assign( *this, ~sv );
+   assign( *this, *sv );
 }
 //*************************************************************************************************
 
@@ -1067,14 +1067,14 @@ inline CompressedVector<Type,TF,Tag>&
 
    BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<VT> );
 
-   if( (~rhs).canAlias( this ) ) {
-      CompressedVector tmp( ~rhs );
+   if( (*rhs).canAlias( this ) ) {
+      CompressedVector tmp( *rhs );
       swap( tmp );
    }
    else {
-      size_ = (~rhs).size();
+      size_ = (*rhs).size();
       end_  = begin_;
-      assign( *this, ~rhs );
+      assign( *this, *rhs );
    }
 
    return *this;
@@ -1102,16 +1102,16 @@ inline CompressedVector<Type,TF,Tag>&
 
    BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<VT> );
 
-   if( (~rhs).canAlias( this ) || (~rhs).nonZeros() > capacity_ ) {
-      CompressedVector tmp( ~rhs );
+   if( (*rhs).canAlias( this ) || (*rhs).nonZeros() > capacity_ ) {
+      CompressedVector tmp( *rhs );
       swap( tmp );
    }
    else {
-      size_ = (~rhs).size();
+      size_ = (*rhs).size();
       end_  = begin_;
 
       if( !IsZero_v<VT> ) {
-         assign( *this, ~rhs );
+         assign( *this, *rhs );
       }
    }
 
@@ -1141,12 +1141,12 @@ inline CompressedVector<Type,TF,Tag>&
 
    BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<VT> );
 
-   if( (~rhs).size() != size_ ) {
+   if( (*rhs).size() != size_ ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
    if( !IsZero_v<VT> ) {
-      addAssign( *this, ~rhs );
+      addAssign( *this, *rhs );
    }
 
    return *this;
@@ -1175,12 +1175,12 @@ inline CompressedVector<Type,TF,Tag>&
 
    BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<VT> );
 
-   if( (~rhs).size() != size_ ) {
+   if( (*rhs).size() != size_ ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
    if( !IsZero_v<VT> ) {
-      subAssign( *this, ~rhs );
+      subAssign( *this, *rhs );
    }
 
    return *this;
@@ -1210,16 +1210,16 @@ inline CompressedVector<Type,TF,Tag>&
 
    BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<VT> );
 
-   if( (~rhs).size() != size_ ) {
+   if( (*rhs).size() != size_ ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   if( (~rhs).canAlias( this ) ) {
-      CompressedVector tmp( *this * (~rhs) );
+   if( (*rhs).canAlias( this ) ) {
+      CompressedVector tmp( *this * (*rhs) );
       swap( tmp );
    }
    else {
-      CompositeType_t<VT> tmp( ~rhs );
+      CompositeType_t<VT> tmp( *rhs );
       multAssign( *this, tmp );
    }
 
@@ -1248,12 +1248,12 @@ inline CompressedVector<Type,TF,Tag>&
 {
    BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<VT> );
 
-   if( (~rhs).size() != size_ ) {
+   if( (*rhs).size() != size_ ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
    if( !IsZero_v<VT> ) {
-      CompressedVector tmp( *this * (~rhs) );
+      CompressedVector tmp( *this * (*rhs) );
       swap( tmp );
    }
    else {
@@ -1286,16 +1286,16 @@ inline CompressedVector<Type,TF,Tag>&
 
    BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<VT> );
 
-   if( (~rhs).size() != size_ ) {
+   if( (*rhs).size() != size_ ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   if( (~rhs).canAlias( this ) ) {
-      CompressedVector tmp( *this / (~rhs) );
+   if( (*rhs).canAlias( this ) ) {
+      CompressedVector tmp( *this / (*rhs) );
       swap( tmp );
    }
    else {
-      CompositeType_t<VT> tmp( ~rhs );
+      CompositeType_t<VT> tmp( *rhs );
       divAssign( *this, tmp );
    }
 
@@ -1335,12 +1335,12 @@ inline CompressedVector<Type,TF,Tag>&
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( CrossType, TF );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( CrossType );
 
-   if( size_ != 3UL || (~rhs).size() != 3UL ) {
+   if( size_ != 3UL || (*rhs).size() != 3UL ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid vector size for cross product" );
    }
 
    if( !IsZero_v<VT> ) {
-      const CrossType tmp( *this % (~rhs) );
+      const CrossType tmp( *this % (*rhs) );
       reset();
       assign( *this, tmp );
    }
@@ -2210,7 +2210,7 @@ template< typename Type   // Data type of the vector
 template< typename VT >  // Type of the right-hand side dense vector
 inline void CompressedVector<Type,TF,Tag>::assign( const DenseVector<VT,TF>& rhs )
 {
-   BLAZE_INTERNAL_ASSERT( size_ == (~rhs).size(), "Invalid vector sizes" );
+   BLAZE_INTERNAL_ASSERT( size_ == (*rhs).size(), "Invalid vector sizes" );
    BLAZE_INTERNAL_ASSERT( nonZeros() == 0UL, "Invalid non-zero elements detected" );
 
    size_t nonzeros( 0UL );
@@ -2220,7 +2220,7 @@ inline void CompressedVector<Type,TF,Tag>::assign( const DenseVector<VT,TF>& rhs
       if( nonzeros == capacity_ )
          reserve( extendCapacity() );
 
-      end_->value_ = (~rhs)[i];
+      end_->value_ = (*rhs)[i];
 
       if( !isDefault<strict>( end_->value_ ) ) {
          end_->index_ = i;
@@ -2249,16 +2249,16 @@ template< typename Type   // Data type of the vector
 template< typename VT >  // Type of the right-hand side sparse vector
 inline void CompressedVector<Type,TF,Tag>::assign( const SparseVector<VT,TF>& rhs )
 {
-   BLAZE_INTERNAL_ASSERT( size_ == (~rhs).size(), "Invalid vector sizes" );
+   BLAZE_INTERNAL_ASSERT( size_ == (*rhs).size(), "Invalid vector sizes" );
    BLAZE_INTERNAL_ASSERT( nonZeros() == 0UL, "Invalid non-zero elements detected" );
 
    // Using the following formulation instead of a std::copy function call of the form
    //
-   //          end_ = std::copy( (~rhs).begin(), (~rhs).end(), begin_ );
+   //          end_ = std::copy( (*rhs).begin(), (*rhs).end(), begin_ );
    //
    // results in much less requirements on the ConstIterator type provided from the right-hand
    // sparse vector type
-   for( auto element=(~rhs).begin(); element!=(~rhs).end(); ++element )
+   for( auto element=(*rhs).begin(); element!=(*rhs).end(); ++element )
       append( element->index(), element->value() );
 }
 //*************************************************************************************************
@@ -2287,9 +2287,9 @@ inline void CompressedVector<Type,TF,Tag>::addAssign( const DenseVector<VT,TF>& 
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( AddType, TF );
    BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( CompositeType_t<AddType> );
 
-   BLAZE_INTERNAL_ASSERT( size_ == (~rhs).size(), "Invalid vector sizes" );
+   BLAZE_INTERNAL_ASSERT( size_ == (*rhs).size(), "Invalid vector sizes" );
 
-   const AddType tmp( serial( *this + (~rhs) ) );
+   const AddType tmp( serial( *this + (*rhs) ) );
    reset();
    assign( tmp );
 }
@@ -2313,9 +2313,9 @@ template< typename Type   // Data type of the vector
 template< typename VT >  // Type of the right-hand side sparse vector
 inline void CompressedVector<Type,TF,Tag>::addAssign( const SparseVector<VT,TF>& rhs )
 {
-   BLAZE_INTERNAL_ASSERT( size_ == (~rhs).size(), "Invalid vector sizes" );
+   BLAZE_INTERNAL_ASSERT( size_ == (*rhs).size(), "Invalid vector sizes" );
 
-   CompressedVector tmp( serial( *this + (~rhs) ) );
+   CompressedVector tmp( serial( *this + (*rhs) ) );
    swap( tmp );
 }
 //*************************************************************************************************
@@ -2344,9 +2344,9 @@ inline void CompressedVector<Type,TF,Tag>::subAssign( const DenseVector<VT,TF>& 
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( SubType, TF );
    BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( CompositeType_t<SubType> );
 
-   BLAZE_INTERNAL_ASSERT( size_ == (~rhs).size(), "Invalid vector sizes" );
+   BLAZE_INTERNAL_ASSERT( size_ == (*rhs).size(), "Invalid vector sizes" );
 
-   const SubType tmp( serial( *this - (~rhs) ) );
+   const SubType tmp( serial( *this - (*rhs) ) );
    reset();
    assign( tmp );
 }
@@ -2370,9 +2370,9 @@ template< typename Type   // Data type of the vector
 template< typename VT >  // Type of the right-hand side sparse vector
 inline void CompressedVector<Type,TF,Tag>::subAssign( const SparseVector<VT,TF>& rhs )
 {
-   BLAZE_INTERNAL_ASSERT( size_ == (~rhs).size(), "Invalid vector sizes" );
+   BLAZE_INTERNAL_ASSERT( size_ == (*rhs).size(), "Invalid vector sizes" );
 
-   CompressedVector tmp( serial( *this - (~rhs) ) );
+   CompressedVector tmp( serial( *this - (*rhs) ) );
    swap( tmp );
 }
 //*************************************************************************************************
@@ -2395,12 +2395,12 @@ template< typename Type   // Data type of the vector
 template< typename VT >  // Type of the right-hand side dense vector
 inline void CompressedVector<Type,TF,Tag>::multAssign( const DenseVector<VT,TF>& rhs )
 {
-   BLAZE_INTERNAL_ASSERT( size_ == (~rhs).size(), "Invalid vector sizes" );
+   BLAZE_INTERNAL_ASSERT( size_ == (*rhs).size(), "Invalid vector sizes" );
 
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( VT );
 
    for( auto element=begin_; element!=end_; ++element ) {
-      element->value_ *= (~rhs)[element->index_];
+      element->value_ *= (*rhs)[element->index_];
    }
 }
 //*************************************************************************************************
@@ -2423,12 +2423,12 @@ template< typename Type   // Data type of the vector
 template< typename VT >  // Type of the right-hand side dense vector
 inline void CompressedVector<Type,TF,Tag>::divAssign( const DenseVector<VT,TF>& rhs )
 {
-   BLAZE_INTERNAL_ASSERT( size_ == (~rhs).size(), "Invalid vector sizes" );
+   BLAZE_INTERNAL_ASSERT( size_ == (*rhs).size(), "Invalid vector sizes" );
 
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( VT );
 
    for( auto element=begin_; element!=end_; ++element ) {
-      element->value_ /= (~rhs)[element->index_];
+      element->value_ /= (*rhs)[element->index_];
    }
 }
 //*************************************************************************************************

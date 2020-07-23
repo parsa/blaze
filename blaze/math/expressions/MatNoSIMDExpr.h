@@ -119,7 +119,7 @@ inline decltype(auto) nosimd( const MatMatAddExpr<MT>& matrix )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return nosimd( (~matrix).leftOperand() ) + nosimd( (~matrix).rightOperand() );
+   return nosimd( (*matrix).leftOperand() ) + nosimd( (*matrix).rightOperand() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -140,7 +140,7 @@ inline decltype(auto) nosimd( const MatMatSubExpr<MT>& matrix )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return nosimd( (~matrix).leftOperand() ) - nosimd( (~matrix).rightOperand() );
+   return nosimd( (*matrix).leftOperand() ) - nosimd( (*matrix).rightOperand() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -161,7 +161,7 @@ inline decltype(auto) nosimd( const SchurExpr<MT>& matrix )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return nosimd( (~matrix).leftOperand() ) % nosimd( (~matrix).rightOperand() );
+   return nosimd( (*matrix).leftOperand() ) % nosimd( (*matrix).rightOperand() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -182,7 +182,7 @@ inline decltype(auto) nosimd( const MatMatMultExpr<MT>& matrix )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return nosimd( (~matrix).leftOperand() ) * nosimd( (~matrix).rightOperand() );
+   return nosimd( (*matrix).leftOperand() ) * nosimd( (*matrix).rightOperand() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -204,7 +204,7 @@ inline decltype(auto) nosimd( const MatMatKronExpr<MT>& matrix )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return kron( nosimd( (~matrix).leftOperand() ), nosimd( (~matrix).rightOperand() ) );
+   return kron( nosimd( (*matrix).leftOperand() ), nosimd( (*matrix).rightOperand() ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -225,7 +225,7 @@ inline decltype(auto) nosimd( const VecTVecMultExpr<MT>& matrix )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return nosimd( (~matrix).leftOperand() ) * nosimd( (~matrix).rightOperand() );
+   return nosimd( (*matrix).leftOperand() ) * nosimd( (*matrix).rightOperand() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -246,7 +246,7 @@ inline decltype(auto) nosimd( const MatScalarMultExpr<MT>& matrix )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return nosimd( (~matrix).leftOperand() ) * (~matrix).rightOperand();
+   return nosimd( (*matrix).leftOperand() ) * (*matrix).rightOperand();
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -267,7 +267,7 @@ inline decltype(auto) nosimd( const MatScalarDivExpr<MT>& matrix )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return nosimd( (~matrix).leftOperand() ) / (~matrix).rightOperand();
+   return nosimd( (*matrix).leftOperand() ) / (*matrix).rightOperand();
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -288,7 +288,7 @@ inline decltype(auto) nosimd( const MatMapExpr<MT>& matrix )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( nosimd( (~matrix).operand() ), (~matrix).operation() );
+   return map( nosimd( (*matrix).operand() ), (*matrix).operation() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -309,8 +309,8 @@ inline decltype(auto) nosimd( const MatMatMapExpr<MT>& matrix )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( nosimd( (~matrix).leftOperand() ), nosimd( (~matrix).rightOperand() ),
-               (~matrix).operation() );
+   return map( nosimd( (*matrix).leftOperand() ), nosimd( (*matrix).rightOperand() ),
+               (*matrix).operation() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -331,8 +331,8 @@ inline decltype(auto) nosimd( const VecTVecMapExpr<MT>& matrix )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( nosimd( (~matrix).leftOperand() ), nosimd( (~matrix).rightOperand() ),
-               (~matrix).operation() );
+   return map( nosimd( (*matrix).leftOperand() ), nosimd( (*matrix).rightOperand() ),
+               (*matrix).operation() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -353,7 +353,7 @@ inline decltype(auto) nosimd( const MatEvalExpr<MT>& matrix )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return eval( nosimd( (~matrix).operand() ) );
+   return eval( nosimd( (*matrix).operand() ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -375,7 +375,7 @@ inline decltype(auto) nosimd( const MatSerialExpr<MT>& matrix )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return serial( nosimd( (~matrix).operand() ) );
+   return serial( nosimd( (*matrix).operand() ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -396,7 +396,7 @@ inline decltype(auto) nosimd( const MatNoAliasExpr<MT>& matrix )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return noalias( nosimd( (~matrix).operand() ) );
+   return noalias( nosimd( (*matrix).operand() ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -415,7 +415,7 @@ inline decltype(auto) nosimd( const MatNoAliasExpr<MT>& matrix )
 template< typename MT >  // Matrix base type of the expression
 inline decltype(auto) nosimd( const MatNoSIMDExpr<MT>& matrix )
 {
-   return ~matrix;
+   return *matrix;
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -436,7 +436,7 @@ inline decltype(auto) nosimd( const DeclSymExpr<MT>& matrix )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return declsym( nosimd( (~matrix).operand() ) );
+   return declsym( nosimd( (*matrix).operand() ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -457,7 +457,7 @@ inline decltype(auto) nosimd( const DeclHermExpr<MT>& matrix )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return declherm( nosimd( (~matrix).operand() ) );
+   return declherm( nosimd( (*matrix).operand() ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -478,7 +478,7 @@ inline decltype(auto) nosimd( const DeclLowExpr<MT>& matrix )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return decllow( nosimd( (~matrix).operand() ) );
+   return decllow( nosimd( (*matrix).operand() ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -499,7 +499,7 @@ inline decltype(auto) nosimd( const DeclUniLowExpr<MT>& matrix )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return declunilow( nosimd( (~matrix).operand() ) );
+   return declunilow( nosimd( (*matrix).operand() ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -520,7 +520,7 @@ inline decltype(auto) nosimd( const DeclStrLowExpr<MT>& matrix )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return declstrlow( nosimd( (~matrix).operand() ) );
+   return declstrlow( nosimd( (*matrix).operand() ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -541,7 +541,7 @@ inline decltype(auto) nosimd( const DeclUppExpr<MT>& matrix )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return declupp( nosimd( (~matrix).operand() ) );
+   return declupp( nosimd( (*matrix).operand() ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -562,7 +562,7 @@ inline decltype(auto) nosimd( const DeclUniUppExpr<MT>& matrix )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return decluniupp( nosimd( (~matrix).operand() ) );
+   return decluniupp( nosimd( (*matrix).operand() ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -583,7 +583,7 @@ inline decltype(auto) nosimd( const DeclStrUppExpr<MT>& matrix )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return declstrupp( nosimd( (~matrix).operand() ) );
+   return declstrupp( nosimd( (*matrix).operand() ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -604,7 +604,7 @@ inline decltype(auto) nosimd( const DeclDiagExpr<MT>& matrix )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return decldiag( nosimd( (~matrix).operand() ) );
+   return decldiag( nosimd( (*matrix).operand() ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -625,7 +625,7 @@ inline decltype(auto) nosimd( const MatTransExpr<MT>& matrix )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return trans( nosimd( (~matrix).operand() ) );
+   return trans( nosimd( (*matrix).operand() ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -647,7 +647,7 @@ inline decltype(auto) nosimd( const VecExpandExpr<MT,E>& matrix )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return expand<E>( nosimd( (~matrix).operand() ) );
+   return expand<E>( nosimd( (*matrix).operand() ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -668,7 +668,7 @@ inline decltype(auto) nosimd( const VecExpandExpr<MT>& matrix )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return expand( nosimd( (~matrix).operand() ), (~matrix).expansion() );
+   return expand( nosimd( (*matrix).operand() ), (*matrix).expansion() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -691,7 +691,7 @@ inline decltype(auto) nosimd( const MatRepeatExpr<MT,R0,R1>& matrix )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return repeat<R0,R1>( nosimd( (~matrix).operand() ) );
+   return repeat<R0,R1>( nosimd( (*matrix).operand() ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -712,9 +712,9 @@ inline decltype(auto) nosimd( const MatRepeatExpr<MT>& matrix )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return repeat( nosimd( (~matrix).operand() )
-                , (~matrix).template repetitions<0UL>()
-                , (~matrix).template repetitions<1UL>() );
+   return repeat( nosimd( (*matrix).operand() )
+                , (*matrix).template repetitions<0UL>()
+                , (*matrix).template repetitions<1UL>() );
 }
 /*! \endcond */
 //*************************************************************************************************

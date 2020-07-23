@@ -117,17 +117,17 @@ inline void gemm( DenseMatrix<MT1,SO1>& C, const DenseMatrix<MT2,SO2>& A,
    BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<MT2> );
    BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<MT3> );
 
-   const blas_int_t m  ( numeric_cast<blas_int_t>( (~A).rows() )    );
-   const blas_int_t n  ( numeric_cast<blas_int_t>( (~B).columns() ) );
-   const blas_int_t k  ( numeric_cast<blas_int_t>( (~A).columns() ) );
-   const blas_int_t lda( numeric_cast<blas_int_t>( (~A).spacing() ) );
-   const blas_int_t ldb( numeric_cast<blas_int_t>( (~B).spacing() ) );
-   const blas_int_t ldc( numeric_cast<blas_int_t>( (~C).spacing() ) );
+   const blas_int_t m  ( numeric_cast<blas_int_t>( (*A).rows() )    );
+   const blas_int_t n  ( numeric_cast<blas_int_t>( (*B).columns() ) );
+   const blas_int_t k  ( numeric_cast<blas_int_t>( (*A).columns() ) );
+   const blas_int_t lda( numeric_cast<blas_int_t>( (*A).spacing() ) );
+   const blas_int_t ldb( numeric_cast<blas_int_t>( (*B).spacing() ) );
+   const blas_int_t ldc( numeric_cast<blas_int_t>( (*C).spacing() ) );
 
    gemm( ( IsRowMajorMatrix_v<MT1> )?( CblasRowMajor ):( CblasColMajor ),
          ( SO1 == SO2 )?( CblasNoTrans ):( CblasTrans ),
          ( SO1 == SO3 )?( CblasNoTrans ):( CblasTrans ),
-         m, n, k, alpha, (~A).data(), lda, (~B).data(), ldb, beta, (~C).data(), ldc );
+         m, n, k, alpha, (*A).data(), lda, (*B).data(), ldb, beta, (*C).data(), ldc );
 }
 #endif
 //*************************************************************************************************

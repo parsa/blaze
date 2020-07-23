@@ -215,7 +215,7 @@ inline auto operator==( const DenseVector<T1,TF>& vec, T2 scalar )
    using CT1 = CompositeType_t<T1>;
 
    // Evaluation of the dense vector operand
-   CT1 a( ~vec );
+   CT1 a( *vec );
 
    // In order to compare the vector and the scalar value, the data values of the lower-order
    // data type are converted to the higher-order data type within the equal function.
@@ -315,18 +315,18 @@ inline auto operator+=( DenseVector<VT,TF>& vec, ST scalar )
    -> EnableIf_t< IsScalar_v<ST>, VT& >
 {
    if( IsRestricted_v<VT> ) {
-      if( !tryAdd( ~vec, 0UL, (~vec).size(), scalar ) ) {
+      if( !tryAdd( *vec, 0UL, (*vec).size(), scalar ) ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid addition to restricted vector" );
       }
    }
 
-   decltype(auto) left( derestrict( ~vec ) );
+   decltype(auto) left( derestrict( *vec ) );
 
    smpAssign( left, left + scalar );
 
-   BLAZE_INTERNAL_ASSERT( isIntact( ~vec ), "Invariant violation detected" );
+   BLAZE_INTERNAL_ASSERT( isIntact( *vec ), "Invariant violation detected" );
 
-   return ~vec;
+   return *vec;
 }
 //*************************************************************************************************
 
@@ -350,7 +350,7 @@ template< typename VT    // Type of the left-hand side dense vector
 inline auto operator+=( DenseVector<VT,TF>&& vec, ST scalar )
    -> EnableIf_t< IsScalar_v<ST>, VT& >
 {
-   return operator+=( ~vec, scalar );
+   return operator+=( *vec, scalar );
 }
 //*************************************************************************************************
 
@@ -375,18 +375,18 @@ inline auto operator-=( DenseVector<VT,TF>& vec, ST scalar )
    -> EnableIf_t< IsScalar_v<ST>, VT& >
 {
    if( IsRestricted_v<VT> ) {
-      if( !trySub( ~vec, 0UL, (~vec).size(), scalar ) ) {
+      if( !trySub( *vec, 0UL, (*vec).size(), scalar ) ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid subtraction from restricted vector" );
       }
    }
 
-   decltype(auto) left( derestrict( ~vec ) );
+   decltype(auto) left( derestrict( *vec ) );
 
    smpAssign( left, left - scalar );
 
-   BLAZE_INTERNAL_ASSERT( isIntact( ~vec ), "Invariant violation detected" );
+   BLAZE_INTERNAL_ASSERT( isIntact( *vec ), "Invariant violation detected" );
 
-   return ~vec;
+   return *vec;
 }
 //*************************************************************************************************
 
@@ -410,7 +410,7 @@ template< typename VT    // Type of the left-hand side dense vector
 inline auto operator-=( DenseVector<VT,TF>&& vec, ST scalar )
    -> EnableIf_t< IsScalar_v<ST>, VT& >
 {
-   return operator-=( ~vec, scalar );
+   return operator-=( *vec, scalar );
 }
 //*************************************************************************************************
 
@@ -435,18 +435,18 @@ inline auto operator*=( DenseVector<VT,TF>& vec, ST scalar )
    -> EnableIf_t< IsScalar_v<ST>, VT& >
 {
    if( IsRestricted_v<VT> ) {
-      if( !tryMult( ~vec, 0UL, (~vec).size(), scalar ) ) {
+      if( !tryMult( *vec, 0UL, (*vec).size(), scalar ) ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid scaling of restricted vector" );
       }
    }
 
-   decltype(auto) left( derestrict( ~vec ) );
+   decltype(auto) left( derestrict( *vec ) );
 
    smpAssign( left, left * scalar );
 
-   BLAZE_INTERNAL_ASSERT( isIntact( ~vec ), "Invariant violation detected" );
+   BLAZE_INTERNAL_ASSERT( isIntact( *vec ), "Invariant violation detected" );
 
-   return ~vec;
+   return *vec;
 }
 //*************************************************************************************************
 
@@ -470,7 +470,7 @@ template< typename VT    // Type of the left-hand side dense vector
 inline auto operator*=( DenseVector<VT,TF>&& vec, ST scalar )
    -> EnableIf_t< IsScalar_v<ST>, VT& >
 {
-   return operator*=( ~vec, scalar );
+   return operator*=( *vec, scalar );
 }
 //*************************************************************************************************
 
@@ -499,18 +499,18 @@ inline auto operator/=( DenseVector<VT,TF>& vec, ST scalar )
    BLAZE_USER_ASSERT( isDivisor( scalar ), "Division by zero detected" );
 
    if( IsRestricted_v<VT> ) {
-      if( !tryDiv( ~vec, 0UL, (~vec).size(), scalar ) ) {
+      if( !tryDiv( *vec, 0UL, (*vec).size(), scalar ) ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid scaling of restricted vector" );
       }
    }
 
-   decltype(auto) left( derestrict( ~vec ) );
+   decltype(auto) left( derestrict( *vec ) );
 
    smpAssign( left, left / scalar );
 
-   BLAZE_INTERNAL_ASSERT( isIntact( ~vec ), "Invariant violation detected" );
+   BLAZE_INTERNAL_ASSERT( isIntact( *vec ), "Invariant violation detected" );
 
-   return ~vec;
+   return *vec;
 }
 //*************************************************************************************************
 
@@ -536,7 +536,7 @@ template< typename VT    // Type of the left-hand side dense vector
 inline auto operator/=( DenseVector<VT,TF>&& vec, ST scalar )
    -> EnableIf_t< IsScalar_v<ST>, VT& >
 {
-   return operator/=( ~vec, scalar );
+   return operator/=( *vec, scalar );
 }
 //*************************************************************************************************
 
@@ -558,18 +558,18 @@ template< typename VT  // Type of the dense vector
 inline VT& operator<<=( DenseVector<VT,TF>& vec, int count )
 {
    if( IsRestricted_v<VT> ) {
-      if( !tryShift( ~vec, 0UL, (~vec).size(), count ) ) {
+      if( !tryShift( *vec, 0UL, (*vec).size(), count ) ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid left-shift of restricted vector" );
       }
    }
 
-   decltype(auto) left( derestrict( ~vec ) );
+   decltype(auto) left( derestrict( *vec ) );
 
    smpAssign( left, left << count );
 
-   BLAZE_INTERNAL_ASSERT( isIntact( ~vec ), "Invariant violation detected" );
+   BLAZE_INTERNAL_ASSERT( isIntact( *vec ), "Invariant violation detected" );
 
-   return ~vec;
+   return *vec;
 }
 //*************************************************************************************************
 
@@ -590,7 +590,7 @@ template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
 inline VT& operator<<=( DenseVector<VT,TF>&& vec, int count )
 {
-   return operator<<=( ~vec, count );
+   return operator<<=( *vec, count );
 }
 //*************************************************************************************************
 
@@ -613,18 +613,18 @@ template< typename VT1  // Type of the left-hand side dense vector
 inline VT1& operator<<=( DenseVector<VT1,TF>& lhs, const DenseVector<VT2,TF>& rhs )
 {
    if( IsRestricted_v<VT1> ) {
-      if( !tryShiftAssign( ~lhs, ~rhs, 0UL ) ) {
+      if( !tryShiftAssign( *lhs, *rhs, 0UL ) ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid left-shift of restricted vector" );
       }
    }
 
-   decltype(auto) left( derestrict( ~lhs ) );
+   decltype(auto) left( derestrict( *lhs ) );
 
-   smpAssign( left, left << (~rhs) );
+   smpAssign( left, left << (*rhs) );
 
-   BLAZE_INTERNAL_ASSERT( isIntact( ~lhs ), "Invariant violation detected" );
+   BLAZE_INTERNAL_ASSERT( isIntact( *lhs ), "Invariant violation detected" );
 
-   return ~lhs;
+   return *lhs;
 }
 //*************************************************************************************************
 
@@ -647,7 +647,7 @@ template< typename VT1  // Type of the left-hand side dense vector
         , bool TF >     // Transpose flag
 inline VT1& operator<<=( DenseVector<VT1,TF>&& lhs, const DenseVector<VT2,TF>& rhs )
 {
-   return operator<<=( ~lhs, ~rhs );
+   return operator<<=( *lhs, *rhs );
 }
 //*************************************************************************************************
 
@@ -669,18 +669,18 @@ template< typename VT  // Type of the dense vector
 inline VT& operator>>=( DenseVector<VT,TF>& vec, int count )
 {
    if( IsRestricted_v<VT> ) {
-      if( !tryShift( ~vec, 0UL, (~vec).size(), count ) ) {
+      if( !tryShift( *vec, 0UL, (*vec).size(), count ) ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid right-shift of restricted vector" );
       }
    }
 
-   decltype(auto) left( derestrict( ~vec ) );
+   decltype(auto) left( derestrict( *vec ) );
 
    smpAssign( left, left >> count );
 
-   BLAZE_INTERNAL_ASSERT( isIntact( ~vec ), "Invariant violation detected" );
+   BLAZE_INTERNAL_ASSERT( isIntact( *vec ), "Invariant violation detected" );
 
-   return ~vec;
+   return *vec;
 }
 //*************************************************************************************************
 
@@ -701,7 +701,7 @@ template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
 inline VT& operator>>=( DenseVector<VT,TF>&& vec, int count )
 {
-   return operator>>=( ~vec, count );
+   return operator>>=( *vec, count );
 }
 //*************************************************************************************************
 
@@ -724,18 +724,18 @@ template< typename VT1  // Type of the left-hand side dense vector
 inline VT1& operator>>=( DenseVector<VT1,TF>& lhs, const DenseVector<VT2,TF>& rhs )
 {
    if( IsRestricted_v<VT1> ) {
-      if( !tryShiftAssign( ~lhs, ~rhs, 0UL ) ) {
+      if( !tryShiftAssign( *lhs, *rhs, 0UL ) ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid right-shift of restricted vector" );
       }
    }
 
-   decltype(auto) left( derestrict( ~lhs ) );
+   decltype(auto) left( derestrict( *lhs ) );
 
-   smpAssign( left, left >> (~rhs) );
+   smpAssign( left, left >> (*rhs) );
 
-   BLAZE_INTERNAL_ASSERT( isIntact( ~lhs ), "Invariant violation detected" );
+   BLAZE_INTERNAL_ASSERT( isIntact( *lhs ), "Invariant violation detected" );
 
-   return ~lhs;
+   return *lhs;
 }
 //*************************************************************************************************
 
@@ -757,7 +757,7 @@ template< typename VT1  // Type of the left-hand side dense vector
         , bool TF >     // Transpose flag
 inline VT1& operator>>=( DenseVector<VT1,TF>&& lhs, const DenseVector<VT2,TF>& rhs )
 {
-   return operator>>=( ~lhs, ~rhs );
+   return operator>>=( *lhs, *rhs );
 }
 //*************************************************************************************************
 
@@ -781,18 +781,18 @@ inline auto operator&=( DenseVector<VT,TF>& vec, ST scalar )
    -> EnableIf_t< IsScalar_v<ST>, VT& >
 {
    if( IsRestricted_v<VT> ) {
-      if( !tryBitand( ~vec, 0UL, (~vec).size(), scalar ) ) {
+      if( !tryBitand( *vec, 0UL, (*vec).size(), scalar ) ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid bitwise AND of restricted vector" );
       }
    }
 
-   decltype(auto) left( derestrict( ~vec ) );
+   decltype(auto) left( derestrict( *vec ) );
 
    smpAssign( left, left & scalar );
 
-   BLAZE_INTERNAL_ASSERT( isIntact( ~vec ), "Invariant violation detected" );
+   BLAZE_INTERNAL_ASSERT( isIntact( *vec ), "Invariant violation detected" );
 
-   return ~vec;
+   return *vec;
 }
 //*************************************************************************************************
 
@@ -816,7 +816,7 @@ template< typename VT    // Type of the left-hand side dense vector
 inline auto operator&=( DenseVector<VT,TF>&& vec, ST scalar )
    -> EnableIf_t< IsScalar_v<ST>, VT& >
 {
-   return operator&=( ~vec, scalar );
+   return operator&=( *vec, scalar );
 }
 //*************************************************************************************************
 
@@ -839,18 +839,18 @@ template< typename VT1  // Type of the left-hand side dense vector
 inline VT1& operator&=( DenseVector<VT1,TF>& lhs, const DenseVector<VT2,TF>& rhs )
 {
    if( IsRestricted_v<VT1> ) {
-      if( !tryBitandAssign( ~lhs, ~rhs, 0UL ) ) {
+      if( !tryBitandAssign( *lhs, *rhs, 0UL ) ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid bitwise AND of restricted vector" );
       }
    }
 
-   decltype(auto) left( derestrict( ~lhs ) );
+   decltype(auto) left( derestrict( *lhs ) );
 
-   smpAssign( left, left & (~rhs) );
+   smpAssign( left, left & (*rhs) );
 
-   BLAZE_INTERNAL_ASSERT( isIntact( ~lhs ), "Invariant violation detected" );
+   BLAZE_INTERNAL_ASSERT( isIntact( *lhs ), "Invariant violation detected" );
 
-   return ~lhs;
+   return *lhs;
 }
 //*************************************************************************************************
 
@@ -872,7 +872,7 @@ template< typename VT1  // Type of the left-hand side dense vector
         , bool TF >     // Transpose flag
 inline VT1& operator&=( DenseVector<VT1,TF>&& lhs, const DenseVector<VT2,TF>& rhs )
 {
-   return operator&=( ~lhs, ~rhs );
+   return operator&=( *lhs, *rhs );
 }
 //*************************************************************************************************
 
@@ -896,18 +896,18 @@ inline auto operator|=( DenseVector<VT,TF>& vec, ST scalar )
    -> EnableIf_t< IsScalar_v<ST>, VT& >
 {
    if( IsRestricted_v<VT> ) {
-      if( !tryBitor( ~vec, 0UL, (~vec).size(), scalar ) ) {
+      if( !tryBitor( *vec, 0UL, (*vec).size(), scalar ) ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid bitwise OR of restricted vector" );
       }
    }
 
-   decltype(auto) left( derestrict( ~vec ) );
+   decltype(auto) left( derestrict( *vec ) );
 
    smpAssign( left, left | scalar );
 
-   BLAZE_INTERNAL_ASSERT( isIntact( ~vec ), "Invariant violation detected" );
+   BLAZE_INTERNAL_ASSERT( isIntact( *vec ), "Invariant violation detected" );
 
-   return ~vec;
+   return *vec;
 }
 //*************************************************************************************************
 
@@ -931,7 +931,7 @@ template< typename VT    // Type of the left-hand side dense vector
 inline auto operator|=( DenseVector<VT,TF>&& vec, ST scalar )
    -> EnableIf_t< IsScalar_v<ST>, VT& >
 {
-   return operator|=( ~vec, scalar );
+   return operator|=( *vec, scalar );
 }
 //*************************************************************************************************
 
@@ -954,18 +954,18 @@ template< typename VT1  // Type of the left-hand side dense vector
 inline VT1& operator|=( DenseVector<VT1,TF>& lhs, const DenseVector<VT2,TF>& rhs )
 {
    if( IsRestricted_v<VT1> ) {
-      if( !tryBitorAssign( ~lhs, ~rhs, 0UL ) ) {
+      if( !tryBitorAssign( *lhs, *rhs, 0UL ) ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid bitwise OR of restricted vector" );
       }
    }
 
-   decltype(auto) left( derestrict( ~lhs ) );
+   decltype(auto) left( derestrict( *lhs ) );
 
-   smpAssign( left, left | (~rhs) );
+   smpAssign( left, left | (*rhs) );
 
-   BLAZE_INTERNAL_ASSERT( isIntact( ~lhs ), "Invariant violation detected" );
+   BLAZE_INTERNAL_ASSERT( isIntact( *lhs ), "Invariant violation detected" );
 
-   return ~lhs;
+   return *lhs;
 }
 //*************************************************************************************************
 
@@ -987,7 +987,7 @@ template< typename VT1  // Type of the left-hand side dense vector
         , bool TF >     // Transpose flag
 inline VT1& operator|=( DenseVector<VT1,TF>&& lhs, const DenseVector<VT2,TF>& rhs )
 {
-   return operator|=( ~lhs, ~rhs );
+   return operator|=( *lhs, *rhs );
 }
 //*************************************************************************************************
 
@@ -1011,18 +1011,18 @@ inline auto operator^=( DenseVector<VT,TF>& vec, ST scalar )
    -> EnableIf_t< IsScalar_v<ST>, VT& >
 {
    if( IsRestricted_v<VT> ) {
-      if( !tryBitxor( ~vec, 0UL, (~vec).size(), scalar ) ) {
+      if( !tryBitxor( *vec, 0UL, (*vec).size(), scalar ) ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid bitwise XOR of restricted vector" );
       }
    }
 
-   decltype(auto) left( derestrict( ~vec ) );
+   decltype(auto) left( derestrict( *vec ) );
 
    smpAssign( left, left ^ scalar );
 
-   BLAZE_INTERNAL_ASSERT( isIntact( ~vec ), "Invariant violation detected" );
+   BLAZE_INTERNAL_ASSERT( isIntact( *vec ), "Invariant violation detected" );
 
-   return ~vec;
+   return *vec;
 }
 //*************************************************************************************************
 
@@ -1046,7 +1046,7 @@ template< typename VT    // Type of the left-hand side dense vector
 inline auto operator^=( DenseVector<VT,TF>&& vec, ST scalar )
    -> EnableIf_t< IsScalar_v<ST>, VT& >
 {
-   return operator^=( ~vec, scalar );
+   return operator^=( *vec, scalar );
 }
 //*************************************************************************************************
 
@@ -1069,18 +1069,18 @@ template< typename VT1  // Type of the left-hand side dense vector
 inline VT1& operator^=( DenseVector<VT1,TF>& lhs, const DenseVector<VT2,TF>& rhs )
 {
    if( IsRestricted_v<VT1> ) {
-      if( !tryBitxorAssign( ~lhs, ~rhs, 0UL ) ) {
+      if( !tryBitxorAssign( *lhs, *rhs, 0UL ) ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid bitwise XOR of restricted vector" );
       }
    }
 
-   decltype(auto) left( derestrict( ~lhs ) );
+   decltype(auto) left( derestrict( *lhs ) );
 
-   smpAssign( left, left ^ (~rhs) );
+   smpAssign( left, left ^ (*rhs) );
 
-   BLAZE_INTERNAL_ASSERT( isIntact( ~lhs ), "Invariant violation detected" );
+   BLAZE_INTERNAL_ASSERT( isIntact( *lhs ), "Invariant violation detected" );
 
-   return ~lhs;
+   return *lhs;
 }
 //*************************************************************************************************
 
@@ -1102,7 +1102,7 @@ template< typename VT1  // Type of the left-hand side dense vector
         , bool TF >     // Transpose flag
 inline VT1& operator^=( DenseVector<VT1,TF>&& lhs, const DenseVector<VT2,TF>& rhs )
 {
-   return operator^=( ~lhs, ~rhs );
+   return operator^=( *lhs, *rhs );
 }
 //*************************************************************************************************
 
@@ -1163,7 +1163,7 @@ bool isnan( const DenseVector<VT,TF>& dv )
    if( !IsFloatingPoint_v< UnderlyingBuiltin_t<VT> > )
       return false;
 
-   CompositeType_t<VT> a( ~dv );  // Evaluation of the dense vector operand
+   CompositeType_t<VT> a( *dv );  // Evaluation of the dense vector operand
 
    for( size_t i=0UL; i<a.size(); ++i ) {
       if( isnan( a[i] ) ) return true;
@@ -1196,7 +1196,7 @@ bool isinf( const DenseVector<VT,TF>& dv )
    if( !IsFloatingPoint_v< UnderlyingBuiltin_t<VT> > )
       return false;
 
-   CompositeType_t<VT> a( ~dv );  // Evaluation of the dense vector operand
+   CompositeType_t<VT> a( *dv );  // Evaluation of the dense vector operand
 
    for( size_t i=0UL; i<a.size(); ++i ) {
       if( isinf( a[i] ) ) return true;
@@ -1230,7 +1230,7 @@ bool isfinite( const DenseVector<VT,TF>& dv )
    if( !IsFloatingPoint_v< UnderlyingBuiltin_t<VT> > )
       return true;
 
-   CompositeType_t<VT> a( ~dv );  // Evaluation of the dense vector operand
+   CompositeType_t<VT> a( *dv );  // Evaluation of the dense vector operand
 
    for( size_t i=0UL; i<a.size(); ++i ) {
       if( !isfinite( a[i] ) ) return false;
@@ -1260,7 +1260,7 @@ template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
 bool isDivisor( const DenseVector<VT,TF>& dv )
 {
-   CompositeType_t<VT> a( ~dv );  // Evaluation of the dense vector operand
+   CompositeType_t<VT> a( *dv );  // Evaluation of the dense vector operand
 
    for( size_t i=0UL; i<a.size(); ++i ) {
       if( !isDivisor( a[i] ) ) return false;
@@ -1308,10 +1308,10 @@ template< RelaxationFlag RF  // Relaxation flag
         , bool TF >          // Transpose flag
 bool isUniform( const DenseVector<VT,TF>& dv )
 {
-   if( IsUniform_v<VT> || (~dv).size() < 2UL )
+   if( IsUniform_v<VT> || (*dv).size() < 2UL )
       return true;
 
-   CompositeType_t<VT> a( ~dv );  // Evaluation of the dense vector operand
+   CompositeType_t<VT> a( *dv );  // Evaluation of the dense vector operand
 
    const auto& cmp( a[0UL] );
 
@@ -1363,10 +1363,10 @@ template< RelaxationFlag RF  // Relaxation flag
         , bool TF >          // Transpose flag
 bool isZero( const DenseVector<VT,TF>& dv )
 {
-   if( IsZero_v<VT> || (~dv).size() == 0UL )
+   if( IsZero_v<VT> || (*dv).size() == 0UL )
       return true;
 
-   CompositeType_t<VT> a( ~dv );  // Evaluation of the dense vector operand
+   CompositeType_t<VT> a( *dv );  // Evaluation of the dense vector operand
 
    for( size_t i=0UL; i<a.size(); ++i ) {
       if( !isZero<RF>( a[i] ) )

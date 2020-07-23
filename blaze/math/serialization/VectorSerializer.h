@@ -329,8 +329,8 @@ void VectorSerializer::serialize( Archive& archive, const Vector<VT,TF>& vec )
       BLAZE_THROW_RUNTIME_ERROR( "Faulty archive detected" );
    }
 
-   serializeHeader( archive, ~vec );
-   serializeVector( archive, ~vec );
+   serializeHeader( archive, *vec );
+   serializeVector( archive, *vec );
 }
 //*************************************************************************************************
 
@@ -377,7 +377,7 @@ template< typename Archive  // Type of the archive
 void VectorSerializer::serializeVector( Archive& archive, const DenseVector<VT,TF>& vec )
 {
    size_t i( 0UL );
-   while( ( i < (~vec).size() ) && ( archive << (~vec)[i] ) ) {
+   while( ( i < (*vec).size() ) && ( archive << (*vec)[i] ) ) {
       ++i;
    }
 
@@ -403,8 +403,8 @@ void VectorSerializer::serializeVector( Archive& archive, const SparseVector<VT,
 {
    using ConstIterator = ConstIterator_t<VT>;
 
-   ConstIterator element( (~vec).begin() );
-   while( ( element != (~vec).end() ) &&
+   ConstIterator element( (*vec).begin() );
+   while( ( element != (*vec).end() ) &&
           ( archive << element->index() << element->value() ) ) {
       ++element;
    }
@@ -441,9 +441,9 @@ void VectorSerializer::deserialize( Archive& archive, Vector<VT,TF>& vec )
       BLAZE_THROW_INVALID_ARGUMENT( "Faulty archive detected" );
    }
 
-   deserializeHeader( archive, ~vec );
-   prepareVector( ~vec );
-   deserializeVector( archive, ~vec );
+   deserializeHeader( archive, *vec );
+   prepareVector( *vec );
+   deserializeVector( archive, *vec );
 }
 //*************************************************************************************************
 
@@ -502,7 +502,7 @@ template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
 DisableIf_t< IsResizable_v<VT> > VectorSerializer::prepareVector( DenseVector<VT,TF>& vec )
 {
-   reset( ~vec );
+   reset( *vec );
 }
 //*************************************************************************************************
 
@@ -517,8 +517,8 @@ template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
 DisableIf_t< IsResizable_v<VT> > VectorSerializer::prepareVector( SparseVector<VT,TF>& vec )
 {
-   (~vec).reserve( number_ );
-   reset( ~vec );
+   (*vec).reserve( number_ );
+   reset( *vec );
 }
 //*************************************************************************************************
 
@@ -591,7 +591,7 @@ DisableIf_t< VT::simdEnabled >
    ET value{};
 
    while( ( i != size_ ) && ( archive >> value ) ) {
-      (~vec)[i] = value;
+      (*vec)[i] = value;
       ++i;
    }
 
@@ -621,7 +621,7 @@ EnableIf_t< VT::simdEnabled >
    VectorSerializer::deserializeDenseVector( Archive& archive, DenseVector<VT,TF>& vec )
 {
    if( size_ == 0UL ) return;
-   archive.read( &(~vec)[0], size_ );
+   archive.read( &(*vec)[0], size_ );
 
    if( !archive ) {
       BLAZE_THROW_RUNTIME_ERROR( "Dense vector could not be deserialized" );
@@ -653,7 +653,7 @@ void VectorSerializer::deserializeDenseVector( Archive& archive, SparseVector<VT
    ET value{};
 
    while( ( i != size_ ) && ( archive >> value ) ) {
-      (~vec)[i] = value;
+      (*vec)[i] = value;
       ++i;
    }
 
@@ -688,7 +688,7 @@ void VectorSerializer::deserializeSparseVector( Archive& archive, DenseVector<VT
    ET     value{};
 
    while( ( i != number_ ) && ( archive >> index >> value ) ) {
-      (~vec)[index] = value;
+      (*vec)[index] = value;
       ++i;
    }
 
@@ -723,7 +723,7 @@ void VectorSerializer::deserializeSparseVector( Archive& archive, SparseVector<V
    ET     value{};
 
    while( ( i != number_ ) && ( archive >> index >> value ) ) {
-      (~vec).append( index, value, false );
+      (*vec).append( index, value, false );
       ++i;
    }
 
@@ -845,7 +845,7 @@ template< typename Archive  // Type of the archive
         , bool TF >         // Transpose flag
 void serialize( Archive& archive, const Vector<VT,TF>& vec )
 {
-   VectorSerializer().serialize( archive, ~vec );
+   VectorSerializer().serialize( archive, *vec );
 }
 //*************************************************************************************************
 
@@ -867,7 +867,7 @@ template< typename Archive  // Type of the archive
         , bool TF >         // Transpose flag
 void deserialize( Archive& archive, Vector<VT,TF>& vec )
 {
-   VectorSerializer().deserialize( archive, ~vec );
+   VectorSerializer().deserialize( archive, *vec );
 }
 //*************************************************************************************************
 

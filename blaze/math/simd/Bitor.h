@@ -68,15 +68,15 @@ BLAZE_ALWAYS_INLINE const T
    operator|( const SIMDi8<T>& a, const SIMDi8<T>& b ) noexcept
 #if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
 {
-   return _mm512_or_si512( (~a).value, (~b).value );
+   return _mm512_or_si512( (*a).value, (*b).value );
 }
 #elif BLAZE_AVX2_MODE
 {
-   return _mm256_or_si256( (~a).value, (~b).value );
+   return _mm256_or_si256( (*a).value, (*b).value );
 }
 #elif BLAZE_SSE2_MODE
 {
-   return _mm_or_si128( (~a).value, (~b).value );
+   return _mm_or_si128( (*a).value, (*b).value );
 }
 #else
 = delete;
@@ -100,15 +100,15 @@ BLAZE_ALWAYS_INLINE const SIMDuint8
    operator|( const SIMDi8<T1>& a, const SIMDi8<T2>& b ) noexcept
 #if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
 {
-   return _mm512_or_si512( (~a).value, (~b).value );
+   return _mm512_or_si512( (*a).value, (*b).value );
 }
 #elif BLAZE_AVX2_MODE
 {
-   return _mm256_or_si256( (~a).value, (~b).value );
+   return _mm256_or_si256( (*a).value, (*b).value );
 }
 #elif BLAZE_SSE2_MODE
 {
-   return _mm_or_si128( (~a).value, (~b).value );
+   return _mm_or_si128( (*a).value, (*b).value );
 }
 #else
 = delete;
@@ -131,15 +131,15 @@ BLAZE_ALWAYS_INLINE const T
    operator|( const SIMDci8<T>& a, const SIMDci8<T>& b ) noexcept
 #if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
 {
-   return _mm512_or_si512( (~a).value, (~b).value );
+   return _mm512_or_si512( (*a).value, (*b).value );
 }
 #elif BLAZE_AVX2_MODE
 {
-   return _mm256_or_si256( (~a).value, (~b).value );
+   return _mm256_or_si256( (*a).value, (*b).value );
 }
 #elif BLAZE_SSE2_MODE
 {
-   return _mm_or_si128( (~a).value, (~b).value );
+   return _mm_or_si128( (*a).value, (*b).value );
 }
 #else
 = delete;
@@ -170,15 +170,15 @@ BLAZE_ALWAYS_INLINE const T
    operator|( const SIMDi16<T>& a, const SIMDi16<T>& b ) noexcept
 #if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
 {
-   return _mm512_or_si512( (~a).value, (~b).value );
+   return _mm512_or_si512( (*a).value, (*b).value );
 }
 #elif BLAZE_AVX2_MODE
 {
-   return _mm256_or_si256( (~a).value, (~b).value );
+   return _mm256_or_si256( (*a).value, (*b).value );
 }
 #elif BLAZE_SSE2_MODE
 {
-   return _mm_or_si128( (~a).value, (~b).value );
+   return _mm_or_si128( (*a).value, (*b).value );
 }
 #else
 = delete;
@@ -202,15 +202,15 @@ BLAZE_ALWAYS_INLINE const SIMDuint16
    operator|( const SIMDi16<T1>& a, const SIMDi16<T2>& b ) noexcept
 #if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
 {
-   return _mm512_or_si512( (~a).value, (~b).value );
+   return _mm512_or_si512( (*a).value, (*b).value );
 }
 #elif BLAZE_AVX2_MODE
 {
-   return _mm256_or_si256( (~a).value, (~b).value );
+   return _mm256_or_si256( (*a).value, (*b).value );
 }
 #elif BLAZE_SSE2_MODE
 {
-   return _mm_or_si128( (~a).value, (~b).value );
+   return _mm_or_si128( (*a).value, (*b).value );
 }
 #else
 = delete;
@@ -233,15 +233,15 @@ BLAZE_ALWAYS_INLINE const T
    operator|( const SIMDci16<T>& a, const SIMDci16<T>& b ) noexcept
 #if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
 {
-   return _mm512_or_si512( (~a).value, (~b).value );
+   return _mm512_or_si512( (*a).value, (*b).value );
 }
 #elif BLAZE_AVX2_MODE
 {
-   return _mm256_or_si256( (~a).value, (~b).value );
+   return _mm256_or_si256( (*a).value, (*b).value );
 }
 #elif BLAZE_SSE2_MODE
 {
-   return _mm_or_si128( (~a).value, (~b).value );
+   return _mm_or_si128( (*a).value, (*b).value );
 }
 #else
 = delete;
@@ -272,15 +272,15 @@ BLAZE_ALWAYS_INLINE const T
    operator|( const SIMDi32<T>& a, const SIMDi32<T>& b ) noexcept
 #if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
 {
-   return _mm512_or_si512( (~a).value, (~b).value );
+   return _mm512_or_si512( (*a).value, (*b).value );
 }
 #elif BLAZE_AVX2_MODE
 {
-   return _mm256_or_si256( (~a).value, (~b).value );
+   return _mm256_or_si256( (*a).value, (*b).value );
 }
 #elif BLAZE_SSE2_MODE
 {
-   return _mm_or_si128( (~a).value, (~b).value );
+   return _mm_or_si128( (*a).value, (*b).value );
 }
 #else
 = delete;
@@ -304,15 +304,15 @@ BLAZE_ALWAYS_INLINE const SIMDuint32
    operator|( const SIMDi32<T1>& a, const SIMDi32<T2>& b ) noexcept
 #if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
 {
-   return _mm512_or_si512( (~a).value, (~b).value );
+   return _mm512_or_si512( (*a).value, (*b).value );
 }
 #elif BLAZE_AVX2_MODE
 {
-   return _mm256_or_si256( (~a).value, (~b).value );
+   return _mm256_or_si256( (*a).value, (*b).value );
 }
 #elif BLAZE_SSE2_MODE
 {
-   return _mm_or_si128( (~a).value, (~b).value );
+   return _mm_or_si128( (*a).value, (*b).value );
 }
 #else
 = delete;
@@ -335,15 +335,15 @@ BLAZE_ALWAYS_INLINE const T
    operator|( const SIMDci32<T>& a, const SIMDci32<T>& b ) noexcept
 #if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
 {
-   return _mm512_or_si512( (~a).value, (~b).value );
+   return _mm512_or_si512( (*a).value, (*b).value );
 }
 #elif BLAZE_AVX2_MODE
 {
-   return _mm256_or_si256( (~a).value, (~b).value );
+   return _mm256_or_si256( (*a).value, (*b).value );
 }
 #elif BLAZE_SSE2_MODE
 {
-   return _mm_or_si128( (~a).value, (~b).value );
+   return _mm_or_si128( (*a).value, (*b).value );
 }
 #else
 = delete;
@@ -374,15 +374,15 @@ BLAZE_ALWAYS_INLINE const T
    operator|( const SIMDi64<T>& a, const SIMDi64<T>& b ) noexcept
 #if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
 {
-   return _mm512_or_si512( (~a).value, (~b).value );
+   return _mm512_or_si512( (*a).value, (*b).value );
 }
 #elif BLAZE_AVX2_MODE
 {
-   return _mm256_or_si256( (~a).value, (~b).value );
+   return _mm256_or_si256( (*a).value, (*b).value );
 }
 #elif BLAZE_SSE2_MODE
 {
-   return _mm_or_si128( (~a).value, (~b).value );
+   return _mm_or_si128( (*a).value, (*b).value );
 }
 #else
 = delete;
@@ -406,15 +406,15 @@ BLAZE_ALWAYS_INLINE const SIMDuint64
    operator|( const SIMDi64<T1>& a, const SIMDi64<T2>& b ) noexcept
 #if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
 {
-   return _mm512_or_si512( (~a).value, (~b).value );
+   return _mm512_or_si512( (*a).value, (*b).value );
 }
 #elif BLAZE_AVX2_MODE
 {
-   return _mm256_or_si256( (~a).value, (~b).value );
+   return _mm256_or_si256( (*a).value, (*b).value );
 }
 #elif BLAZE_SSE2_MODE
 {
-   return _mm_or_si128( (~a).value, (~b).value );
+   return _mm_or_si128( (*a).value, (*b).value );
 }
 #else
 = delete;
@@ -437,15 +437,15 @@ BLAZE_ALWAYS_INLINE const T
    operator|( const SIMDci64<T>& a, const SIMDci64<T>& b ) noexcept
 #if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
 {
-   return _mm512_or_si512( (~a).value, (~b).value );
+   return _mm512_or_si512( (*a).value, (*b).value );
 }
 #elif BLAZE_AVX2_MODE
 {
-   return _mm256_or_si256( (~a).value, (~b).value );
+   return _mm256_or_si256( (*a).value, (*b).value );
 }
 #elif BLAZE_SSE2_MODE
 {
-   return _mm_or_si128( (~a).value, (~b).value );
+   return _mm_or_si128( (*a).value, (*b).value );
 }
 #else
 = delete;

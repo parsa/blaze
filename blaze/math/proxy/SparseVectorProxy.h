@@ -206,11 +206,11 @@ template< typename PT    // Type of the proxy
 inline typename SparseVectorProxy<PT,VT>::Reference
    SparseVectorProxy<PT,VT>::operator[]( size_t index ) const
 {
-   if( (~*this).isRestricted() ) {
+   if( (**this).isRestricted() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid access to restricted element" );
    }
 
-   return (~*this).get()[index];
+   return (**this).get()[index];
 }
 //*************************************************************************************************
 
@@ -233,11 +233,11 @@ template< typename PT    // Type of the proxy
 inline typename SparseVectorProxy<PT,VT>::Reference
    SparseVectorProxy<PT,VT>::at( size_t index ) const
 {
-   if( (~*this).isRestricted() ) {
+   if( (**this).isRestricted() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid access to restricted element" );
    }
 
-   return (~*this).get().at( index );
+   return (**this).get().at( index );
 }
 //*************************************************************************************************
 
@@ -251,7 +251,7 @@ template< typename PT    // Type of the proxy
         , typename VT >  // Type of the sparse vector
 inline typename SparseVectorProxy<PT,VT>::Iterator SparseVectorProxy<PT,VT>::begin() const
 {
-   return (~*this).get().begin();
+   return (**this).get().begin();
 }
 //*************************************************************************************************
 
@@ -265,7 +265,7 @@ template< typename PT    // Type of the proxy
         , typename VT >  // Type of the sparse vector
 inline typename SparseVectorProxy<PT,VT>::ConstIterator SparseVectorProxy<PT,VT>::cbegin() const
 {
-   return (~*this).get().cbegin();
+   return (**this).get().cbegin();
 }
 //*************************************************************************************************
 
@@ -279,7 +279,7 @@ template< typename PT    // Type of the proxy
         , typename VT >  // Type of the sparse vector
 inline typename SparseVectorProxy<PT,VT>::Iterator SparseVectorProxy<PT,VT>::end() const
 {
-   return (~*this).get().end();
+   return (**this).get().end();
 }
 //*************************************************************************************************
 
@@ -293,7 +293,7 @@ template< typename PT    // Type of the proxy
         , typename VT >  // Type of the sparse vector
 inline typename SparseVectorProxy<PT,VT>::ConstIterator SparseVectorProxy<PT,VT>::cend() const
 {
-   return (~*this).get().cend();
+   return (**this).get().cend();
 }
 //*************************************************************************************************
 
@@ -315,7 +315,7 @@ template< typename PT    // Type of the proxy
         , typename VT >  // Type of the sparse vector
 inline size_t SparseVectorProxy<PT,VT>::size() const
 {
-   return (~*this).get().size();
+   return (**this).get().size();
 }
 //*************************************************************************************************
 
@@ -329,7 +329,7 @@ template< typename PT    // Type of the proxy
         , typename VT >  // Type of the sparse vector
 inline size_t SparseVectorProxy<PT,VT>::capacity() const
 {
-   return (~*this).get().capacity();
+   return (**this).get().capacity();
 }
 //*************************************************************************************************
 
@@ -346,7 +346,7 @@ template< typename PT    // Type of the proxy
         , typename VT >  // Type of the sparse vector
 inline size_t SparseVectorProxy<PT,VT>::nonZeros() const
 {
-   return (~*this).get().nonZeros();
+   return (**this).get().nonZeros();
 }
 //*************************************************************************************************
 
@@ -364,7 +364,7 @@ inline void SparseVectorProxy<PT,VT>::reset() const
 {
    using blaze::reset;
 
-   reset( (~*this).get() );
+   reset( (**this).get() );
 }
 //*************************************************************************************************
 
@@ -382,7 +382,7 @@ inline void SparseVectorProxy<PT,VT>::clear() const
 {
    using blaze::clear;
 
-   clear( (~*this).get() );
+   clear( (**this).get() );
 }
 //*************************************************************************************************
 
@@ -405,11 +405,11 @@ template< typename PT    // Type of the proxy
 inline typename SparseVectorProxy<PT,VT>::Iterator
    SparseVectorProxy<PT,VT>::set( size_t index, const ElementType& value ) const
 {
-   if( (~*this).isRestricted() ) {
+   if( (**this).isRestricted() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid access to restricted element" );
    }
 
-   return (~*this).get().set( index, value );
+   return (**this).get().set( index, value );
 }
 //*************************************************************************************************
 
@@ -432,11 +432,11 @@ template< typename PT    // Type of the proxy
 inline typename SparseVectorProxy<PT,VT>::Iterator
    SparseVectorProxy<PT,VT>::insert( size_t index, const ElementType& value ) const
 {
-   if( (~*this).isRestricted() ) {
+   if( (**this).isRestricted() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid access to restricted element" );
    }
 
-   return (~*this).get().insert( index, value );
+   return (**this).get().insert( index, value );
 }
 //*************************************************************************************************
 
@@ -470,11 +470,11 @@ template< typename PT    // Type of the proxy
         , typename VT >  // Type of the sparse vector
 inline void SparseVectorProxy<PT,VT>::append( size_t index, const ElementType& value, bool check ) const
 {
-   if( (~*this).isRestricted() ) {
+   if( (**this).isRestricted() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid access to restricted element" );
    }
 
-   (~*this).get().append( index, value, check );
+   (**this).get().append( index, value, check );
 }
 //*************************************************************************************************
 
@@ -498,11 +498,11 @@ template< typename PT    // Type of the proxy
         , typename VT >  // Type of the sparse vector
 inline void SparseVectorProxy<PT,VT>::resize( size_t n, bool preserve ) const
 {
-   if( (~*this).isRestricted() ) {
+   if( (**this).isRestricted() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid access to restricted element" );
    }
 
-   (~*this).get().resize( n, preserve );
+   (**this).get().resize( n, preserve );
 }
 //*************************************************************************************************
 
@@ -521,11 +521,11 @@ template< typename PT    // Type of the proxy
         , typename VT >  // Type of the sparse vector
 inline void SparseVectorProxy<PT,VT>::reserve( size_t n ) const
 {
-   if( (~*this).isRestricted() ) {
+   if( (**this).isRestricted() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid access to restricted element" );
    }
 
-   (~*this).get().reserve( n );
+   (**this).get().reserve( n );
 }
 //*************************************************************************************************
 
@@ -546,11 +546,11 @@ template< typename PT       // Type of the proxy
 template< typename Other >  // Data type of the scalar value
 inline void SparseVectorProxy<PT,VT>::scale( const Other& scalar ) const
 {
-   if( (~*this).isRestricted() ) {
+   if( (**this).isRestricted() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid access to restricted element" );
    }
 
-   (~*this).get().scale( scalar );
+   (**this).get().scale( scalar );
 }
 //*************************************************************************************************
 
@@ -576,11 +576,11 @@ template< typename PT    // Type of the proxy
         , typename VT >  // Type of the sparse vector
 inline void SparseVectorProxy<PT,VT>::erase( size_t index ) const
 {
-   if( (~*this).isRestricted() ) {
+   if( (**this).isRestricted() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid access to restricted element" );
    }
 
-   (~*this).get().erase( index );
+   (**this).get().erase( index );
 }
 //*************************************************************************************************
 
@@ -598,11 +598,11 @@ template< typename PT    // Type of the proxy
         , typename VT >  // Type of the sparse vector
 inline typename SparseVectorProxy<PT,VT>::Iterator SparseVectorProxy<PT,VT>::erase( Iterator pos ) const
 {
-   if( (~*this).isRestricted() ) {
+   if( (**this).isRestricted() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid access to restricted element" );
    }
 
-   return (~*this).get().erase( pos );
+   return (**this).get().erase( pos );
 }
 //*************************************************************************************************
 
@@ -622,11 +622,11 @@ template< typename PT    // Type of the proxy
 inline typename SparseVectorProxy<PT,VT>::Iterator
    SparseVectorProxy<PT,VT>::erase( Iterator first, Iterator last ) const
 {
-   if( (~*this).isRestricted() ) {
+   if( (**this).isRestricted() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid access to restricted element" );
    }
 
-   return (~*this).get().erase( first, last );
+   return (**this).get().erase( first, last );
 }
 //*************************************************************************************************
 
@@ -650,11 +650,11 @@ template< typename Pred  // Type of the unary predicate
         , typename >     // Type restriction on the unary predicate
 inline void SparseVectorProxy<PT,VT>::erase( Pred predicate )
 {
-   if( (~*this).isRestricted() ) {
+   if( (**this).isRestricted() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid access to restricted element" );
    }
 
-   (~*this).get().erase( predicate );
+   (**this).get().erase( predicate );
 }
 //*************************************************************************************************
 
@@ -679,11 +679,11 @@ template< typename PT      // Type of the proxy
 template< typename Pred >  // Type of the unary predicate
 inline void SparseVectorProxy<PT,VT>::erase( Iterator first, Iterator last, Pred predicate )
 {
-   if( (~*this).isRestricted() ) {
+   if( (**this).isRestricted() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid access to restricted element" );
    }
 
-   (~*this).get().erase( first, last, predicate );
+   (**this).get().erase( first, last, predicate );
 }
 //*************************************************************************************************
 
@@ -714,7 +714,7 @@ template< typename PT    // Type of the proxy
 inline typename SparseVectorProxy<PT,VT>::Iterator
    SparseVectorProxy<PT,VT>::find( size_t index ) const
 {
-   return (~*this).get().find( index );
+   return (**this).get().find( index );
 }
 //*************************************************************************************************
 
@@ -736,7 +736,7 @@ template< typename PT    // Type of the proxy
 inline typename SparseVectorProxy<PT,VT>::Iterator
    SparseVectorProxy<PT,VT>::lowerBound( size_t index ) const
 {
-   return (~*this).get().lowerBound( index );
+   return (**this).get().lowerBound( index );
 }
 //*************************************************************************************************
 
@@ -758,7 +758,7 @@ template< typename PT    // Type of the proxy
 inline typename SparseVectorProxy<PT,VT>::Iterator
    SparseVectorProxy<PT,VT>::upperBound( size_t index ) const
 {
-   return (~*this).get().upperBound( index );
+   return (**this).get().upperBound( index );
 }
 //*************************************************************************************************
 

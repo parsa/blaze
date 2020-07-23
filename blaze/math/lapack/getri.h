@@ -118,12 +118,12 @@ inline void getri( DenseMatrix<MT,SO>& A, const blas_int_t* ipiv )
 
    using ET = ElementType_t<MT>;
 
-   if( !isSquare( ~A ) ) {
+   if( !isSquare( *A ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid non-square matrix provided" );
    }
 
-   blas_int_t n   ( numeric_cast<blas_int_t>( (~A).columns() ) );
-   blas_int_t lda ( numeric_cast<blas_int_t>( (~A).spacing() ) );
+   blas_int_t n   ( numeric_cast<blas_int_t>( (*A).columns() ) );
+   blas_int_t lda ( numeric_cast<blas_int_t>( (*A).spacing() ) );
    blas_int_t info( 0 );
 
    if( n == 0 ) {
@@ -133,7 +133,7 @@ inline void getri( DenseMatrix<MT,SO>& A, const blas_int_t* ipiv )
    blas_int_t lwork( n*lda );
    const std::unique_ptr<ET[]> work( new ET[lwork] );
 
-   getri( n, (~A).data(), lda, ipiv, work.get(), lwork, &info );
+   getri( n, (*A).data(), lda, ipiv, work.get(), lwork, &info );
 
    BLAZE_INTERNAL_ASSERT( info >= 0, "Invalid argument for matrix inversion" );
 

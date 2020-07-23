@@ -427,12 +427,12 @@ template< typename Type   // Data type of the matrix
 template< typename MT     // Type of the foreign zero matrix
         , bool SO2 >      // Storage order of the foreign zero matrix
 inline ZeroMatrix<Type,SO,Tag>::ZeroMatrix( const Matrix<MT,SO2>& m )
-   : m_( (~m).rows()    )  // The current number of rows of the zero matrix
-   , n_( (~m).columns() )  // The current number of columns of the zero matrix
+   : m_( (*m).rows()    )  // The current number of rows of the zero matrix
+   , n_( (*m).columns() )  // The current number of columns of the zero matrix
 {
    BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<MT> );
 
-   if( !IsZero_v<MT> && !isZero( ~m ) ) {
+   if( !IsZero_v<MT> && !isZero( *m ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid setup of zero matrix" );
    }
 }
@@ -634,12 +634,12 @@ inline ZeroMatrix<Type,SO,Tag>&
 {
    BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<MT> );
 
-   if( !IsZero_v<MT> && !isZero( ~rhs ) ) {
+   if( !IsZero_v<MT> && !isZero( *rhs ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment of zero matrix" );
    }
 
-   const size_t m( (~rhs).rows() );
-   const size_t n( (~rhs).columns() );
+   const size_t m( (*rhs).rows() );
+   const size_t n( (*rhs).columns() );
 
    m_ = m;
    n_ = n;
@@ -1448,7 +1448,7 @@ inline ZeroMatrix<ElementType_t<MT>,SO>
 {
    BLAZE_FUNCTION_TRACE;
 
-   return ZeroMatrix<ElementType_t<MT>,SO>( (~m).rows(), (~m).columns() );
+   return ZeroMatrix<ElementType_t<MT>,SO>( (*m).rows(), (*m).columns() );
 }
 //*************************************************************************************************
 

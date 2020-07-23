@@ -112,14 +112,14 @@ inline void trmv( DenseVector<VT,false>& x, const DenseMatrix<MT,SO>& A, CBLAS_U
    BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<VT> );
    BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<MT> );
 
-   BLAZE_INTERNAL_ASSERT( (~A).rows() == (~A).columns(), "Non-square triangular matrix detected" );
+   BLAZE_INTERNAL_ASSERT( (*A).rows() == (*A).columns(), "Non-square triangular matrix detected" );
    BLAZE_INTERNAL_ASSERT( uplo == CblasLower || uplo == CblasUpper, "Invalid uplo argument detected" );
 
-   const blas_int_t n  ( numeric_cast<blas_int_t>( (~A).rows() )    );
-   const blas_int_t lda( numeric_cast<blas_int_t>( (~A).spacing() ) );
+   const blas_int_t n  ( numeric_cast<blas_int_t>( (*A).rows() )    );
+   const blas_int_t lda( numeric_cast<blas_int_t>( (*A).spacing() ) );
 
    trmv( ( IsRowMajorMatrix_v<MT> )?( CblasRowMajor ):( CblasColMajor ),
-         uplo, CblasNoTrans, CblasNonUnit, n, (~A).data(), lda, (~x).data(), 1 );
+         uplo, CblasNoTrans, CblasNonUnit, n, (*A).data(), lda, (*x).data(), 1 );
 }
 #endif
 //*************************************************************************************************
@@ -159,14 +159,14 @@ inline void trmv( DenseVector<VT,true>& x, const DenseMatrix<MT,SO>& A, CBLAS_UP
    BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<VT> );
    BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<MT> );
 
-   BLAZE_INTERNAL_ASSERT( (~A).rows() == (~A).columns(), "Non-square triangular matrix detected" );
+   BLAZE_INTERNAL_ASSERT( (*A).rows() == (*A).columns(), "Non-square triangular matrix detected" );
    BLAZE_INTERNAL_ASSERT( uplo == CblasLower || uplo == CblasUpper, "Invalid uplo argument detected" );
 
-   const blas_int_t n  ( numeric_cast<blas_int_t>( (~A).rows() )    );
-   const blas_int_t lda( numeric_cast<blas_int_t>( (~A).spacing() ) );
+   const blas_int_t n  ( numeric_cast<blas_int_t>( (*A).rows() )    );
+   const blas_int_t lda( numeric_cast<blas_int_t>( (*A).spacing() ) );
 
    trmv( ( IsRowMajorMatrix_v<MT> )?( CblasRowMajor ):( CblasColMajor ),
-         uplo, CblasTrans, CblasNonUnit, n, (~A).data(), lda, (~x).data(), 1 );
+         uplo, CblasTrans, CblasNonUnit, n, (*A).data(), lda, (*x).data(), 1 );
 }
 #endif
 //*************************************************************************************************

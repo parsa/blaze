@@ -600,10 +600,10 @@ class DVecMapExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      assign( ~lhs, rhs.dv_ );
-      assign( ~lhs, map( ~lhs, rhs.op_ ) );
+      assign( *lhs, rhs.dv_ );
+      assign( *lhs, map( *lhs, rhs.op_ ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -634,10 +634,10 @@ class DVecMapExpr
       BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( RT, TF );
       BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( RT );
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       const RT tmp( serial( rhs.dv_ ) );
-      assign( ~lhs, map( tmp, rhs.op_ ) );
+      assign( *lhs, map( tmp, rhs.op_ ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -666,10 +666,10 @@ class DVecMapExpr
       BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( RT, TF );
       BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( RT );
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       const RT tmp( serial( rhs.dv_ ) );
-      assign( ~lhs, map( tmp, rhs.op_ ) );
+      assign( *lhs, map( tmp, rhs.op_ ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -698,10 +698,10 @@ class DVecMapExpr
       BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( RT, TF );
       BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( RT );
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       const RT tmp( serial( rhs.dv_ ) );
-      addAssign( ~lhs, map( tmp, rhs.op_ ) );
+      addAssign( *lhs, map( tmp, rhs.op_ ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -734,10 +734,10 @@ class DVecMapExpr
       BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( RT, TF );
       BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( RT );
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       const RT tmp( serial( rhs.dv_ ) );
-      subAssign( ~lhs, map( tmp, rhs.op_ ) );
+      subAssign( *lhs, map( tmp, rhs.op_ ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -770,10 +770,10 @@ class DVecMapExpr
       BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( RT, TF );
       BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( RT );
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       const RT tmp( serial( rhs.dv_ ) );
-      multAssign( ~lhs, map( tmp, rhs.op_ ) );
+      multAssign( *lhs, map( tmp, rhs.op_ ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -806,10 +806,10 @@ class DVecMapExpr
       BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( RT, TF );
       BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( RT );
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       const RT tmp( serial( rhs.dv_ ) );
-      divAssign( ~lhs, map( tmp, rhs.op_ ) );
+      divAssign( *lhs, map( tmp, rhs.op_ ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -840,10 +840,10 @@ class DVecMapExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      smpAssign( ~lhs, rhs.dv_ );
-      smpAssign( ~lhs, map( ~lhs, rhs.op_ ) );
+      smpAssign( *lhs, rhs.dv_ );
+      smpAssign( *lhs, map( *lhs, rhs.op_ ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -874,10 +874,10 @@ class DVecMapExpr
       BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( RT, TF );
       BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( RT );
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       const RT tmp( rhs.dv_ );
-      smpAssign( ~lhs, map( tmp, rhs.op_ ) );
+      smpAssign( *lhs, map( tmp, rhs.op_ ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -906,10 +906,10 @@ class DVecMapExpr
       BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( RT, TF );
       BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( RT );
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       const RT tmp( rhs.dv_ );
-      smpAssign( ~lhs, map( tmp, rhs.op_ ) );
+      smpAssign( *lhs, map( tmp, rhs.op_ ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -938,10 +938,10 @@ class DVecMapExpr
       BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( RT, TF );
       BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( RT );
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       const RT tmp( rhs.dv_ );
-      smpAddAssign( ~lhs, map( tmp, rhs.op_ ) );
+      smpAddAssign( *lhs, map( tmp, rhs.op_ ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -974,10 +974,10 @@ class DVecMapExpr
       BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( RT, TF );
       BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( RT );
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       const RT tmp( rhs.dv_ );
-      smpSubAssign( ~lhs, map( tmp, rhs.op_ ) );
+      smpSubAssign( *lhs, map( tmp, rhs.op_ ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -1010,10 +1010,10 @@ class DVecMapExpr
       BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( RT, TF );
       BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( RT );
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       const RT tmp( rhs.dv_ );
-      smpMultAssign( ~lhs, map( tmp, rhs.op_ ) );
+      smpMultAssign( *lhs, map( tmp, rhs.op_ ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -1046,10 +1046,10 @@ class DVecMapExpr
       BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( RT, TF );
       BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( RT );
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       const RT tmp( rhs.dv_ );
-      smpDivAssign( ~lhs, map( tmp, rhs.op_ ) );
+      smpDivAssign( *lhs, map( tmp, rhs.op_ ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -1102,7 +1102,7 @@ inline decltype(auto) map( const DenseVector<VT,TF>& dv, OP op )
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = const DVecMapExpr<VT,OP,TF>;
-   return ReturnType( ~dv, std::move(op) );
+   return ReturnType( *dv, std::move(op) );
 }
 //*************************************************************************************************
 
@@ -1132,7 +1132,7 @@ inline decltype(auto) forEach( const DenseVector<VT,TF>& dv, OP op )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( ~dv, std::move(op) );
+   return map( *dv, std::move(op) );
 }
 //*************************************************************************************************
 
@@ -1166,7 +1166,7 @@ decltype(auto) min( const DenseVector<VT,TF>& dv, ST scalar )
 
    using ET = ElementType_t<VT>;
    using ScalarType = If_t< IsNumeric_v<ET> && IsNumeric_v<ST>, MapTrait_t<ET,ST,Min>, ST >;
-   return map( ~dv, bind2nd( Min(), ScalarType( scalar ) ) );
+   return map( *dv, bind2nd( Min(), ScalarType( scalar ) ) );
 }
 //*************************************************************************************************
 
@@ -1200,7 +1200,7 @@ decltype(auto) min( ST scalar, const DenseVector<VT,TF>& dv )
 
    using ET = ElementType_t<VT>;
    using ScalarType = If_t< IsNumeric_v<ST> && IsNumeric_v<ET>, MapTrait_t<ST,ET,Min>, ST >;
-   return map( ~dv, bind1st( Min(), ScalarType( scalar ) ) );
+   return map( *dv, bind1st( Min(), ScalarType( scalar ) ) );
 }
 //*************************************************************************************************
 
@@ -1237,7 +1237,7 @@ decltype(auto) max( const DenseVector<VT,TF>& dv, ST scalar )
 
    using ET = ElementType_t<VT>;
    using ScalarType = If_t< IsNumeric_v<ET> && IsNumeric_v<ST>, MapTrait_t<ET,ST,Max>, ST >;
-   return map( ~dv, bind2nd( Max(), ScalarType( scalar ) ) );
+   return map( *dv, bind2nd( Max(), ScalarType( scalar ) ) );
 }
 //*************************************************************************************************
 
@@ -1271,7 +1271,7 @@ decltype(auto) max( ST scalar, const DenseVector<VT,TF>& dv )
 
    using ET = ElementType_t<VT>;
    using ScalarType = If_t< IsNumeric_v<ST> && IsNumeric_v<ET>, MapTrait_t<ST,ET,Max>, ST >;
-   return map( ~dv, bind1st( Max(), ScalarType( scalar ) ) );
+   return map( *dv, bind1st( Max(), ScalarType( scalar ) ) );
 }
 //*************************************************************************************************
 
@@ -1299,7 +1299,7 @@ inline decltype(auto) abs( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( ~dv, Abs() );
+   return map( *dv, Abs() );
 }
 //*************************************************************************************************
 
@@ -1327,7 +1327,7 @@ inline decltype(auto) sign( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( ~dv, Sign() );
+   return map( *dv, Sign() );
 }
 //*************************************************************************************************
 
@@ -1355,7 +1355,7 @@ inline decltype(auto) floor( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( ~dv, Floor() );
+   return map( *dv, Floor() );
 }
 //*************************************************************************************************
 
@@ -1383,7 +1383,7 @@ inline decltype(auto) ceil( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( ~dv, Ceil() );
+   return map( *dv, Ceil() );
 }
 //*************************************************************************************************
 
@@ -1411,7 +1411,7 @@ inline decltype(auto) trunc( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( ~dv, Trunc() );
+   return map( *dv, Trunc() );
 }
 //*************************************************************************************************
 
@@ -1439,7 +1439,7 @@ inline decltype(auto) round( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( ~dv, Round() );
+   return map( *dv, Round() );
 }
 //*************************************************************************************************
 
@@ -1467,7 +1467,7 @@ inline decltype(auto) conj( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( ~dv, Conj() );
+   return map( *dv, Conj() );
 }
 //*************************************************************************************************
 
@@ -1504,7 +1504,7 @@ inline decltype(auto) ctrans( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return trans( conj( ~dv ) );
+   return trans( conj( *dv ) );
 }
 //*************************************************************************************************
 
@@ -1532,7 +1532,7 @@ inline decltype(auto) real( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( ~dv, Real() );
+   return map( *dv, Real() );
 }
 //*************************************************************************************************
 
@@ -1560,7 +1560,7 @@ inline decltype(auto) imag( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( ~dv, Imag() );
+   return map( *dv, Imag() );
 }
 //*************************************************************************************************
 
@@ -1588,7 +1588,7 @@ inline decltype(auto) arg( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( ~dv, Arg() );
+   return map( *dv, Arg() );
 }
 //*************************************************************************************************
 
@@ -1619,7 +1619,7 @@ inline decltype(auto) sqrt( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( ~dv, Sqrt() );
+   return map( *dv, Sqrt() );
 }
 //*************************************************************************************************
 
@@ -1650,7 +1650,7 @@ inline decltype(auto) invsqrt( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( ~dv, InvSqrt() );
+   return map( *dv, InvSqrt() );
 }
 //*************************************************************************************************
 
@@ -1681,7 +1681,7 @@ inline decltype(auto) cbrt( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( ~dv, Cbrt() );
+   return map( *dv, Cbrt() );
 }
 //*************************************************************************************************
 
@@ -1712,7 +1712,7 @@ inline decltype(auto) invcbrt( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( ~dv, InvCbrt() );
+   return map( *dv, InvCbrt() );
 }
 //*************************************************************************************************
 
@@ -1743,7 +1743,7 @@ inline decltype(auto) clamp( const DenseVector<VT,TF>& dv, const DT& min, const 
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( ~dv, bind2nd( bind3rd( Clamp(), max ), min ) );
+   return map( *dv, bind2nd( bind3rd( Clamp(), max ), min ) );
 }
 //*************************************************************************************************
 
@@ -1776,7 +1776,7 @@ inline decltype(auto) pow( const DenseVector<VT,TF>& dv, ST exp )
 
    using ET = ElementType_t<VT>;
    using ScalarType = If_t< IsNumeric_v<ET> && IsNumeric_v<ST>, MultTrait_t<ET,ST>, ST >;
-   return map( ~dv, blaze::bind2nd( Pow(), ScalarType( exp ) ) );
+   return map( *dv, blaze::bind2nd( Pow(), ScalarType( exp ) ) );
 }
 //*************************************************************************************************
 
@@ -1804,7 +1804,7 @@ inline decltype(auto) exp( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( ~dv, Exp() );
+   return map( *dv, Exp() );
 }
 //*************************************************************************************************
 
@@ -1832,7 +1832,7 @@ inline decltype(auto) exp2( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( ~dv, Exp2() );
+   return map( *dv, Exp2() );
 }
 //*************************************************************************************************
 
@@ -1860,7 +1860,7 @@ inline decltype(auto) exp10( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( ~dv, Exp10() );
+   return map( *dv, Exp10() );
 }
 //*************************************************************************************************
 
@@ -1891,7 +1891,7 @@ inline decltype(auto) log( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( ~dv, Log() );
+   return map( *dv, Log() );
 }
 //*************************************************************************************************
 
@@ -1922,7 +1922,7 @@ inline decltype(auto) log2( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( ~dv, Log2() );
+   return map( *dv, Log2() );
 }
 //*************************************************************************************************
 
@@ -1953,7 +1953,7 @@ inline decltype(auto) log10( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( ~dv, Log10() );
+   return map( *dv, Log10() );
 }
 //*************************************************************************************************
 
@@ -1986,7 +1986,7 @@ inline decltype(auto) log1p( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( ~dv, Log1p() );
+   return map( *dv, Log1p() );
 }
 //*************************************************************************************************
 
@@ -2019,7 +2019,7 @@ inline decltype(auto) lgamma( const DenseVector<VT,SO>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( ~dv, LGamma() );
+   return map( *dv, LGamma() );
 }
 //*************************************************************************************************
 
@@ -2047,7 +2047,7 @@ inline decltype(auto) sin( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( ~dv, Sin() );
+   return map( *dv, Sin() );
 }
 //*************************************************************************************************
 
@@ -2078,7 +2078,7 @@ inline decltype(auto) asin( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( ~dv, Asin() );
+   return map( *dv, Asin() );
 }
 //*************************************************************************************************
 
@@ -2106,7 +2106,7 @@ inline decltype(auto) sinh( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( ~dv, Sinh() );
+   return map( *dv, Sinh() );
 }
 //*************************************************************************************************
 
@@ -2134,7 +2134,7 @@ inline decltype(auto) asinh( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( ~dv, Asinh() );
+   return map( *dv, Asinh() );
 }
 //*************************************************************************************************
 
@@ -2162,7 +2162,7 @@ inline decltype(auto) cos( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( ~dv, Cos() );
+   return map( *dv, Cos() );
 }
 //*************************************************************************************************
 
@@ -2193,7 +2193,7 @@ inline decltype(auto) acos( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( ~dv, Acos() );
+   return map( *dv, Acos() );
 }
 //*************************************************************************************************
 
@@ -2221,7 +2221,7 @@ inline decltype(auto) cosh( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( ~dv, Cosh() );
+   return map( *dv, Cosh() );
 }
 //*************************************************************************************************
 
@@ -2252,7 +2252,7 @@ inline decltype(auto) acosh( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( ~dv, Acosh() );
+   return map( *dv, Acosh() );
 }
 //*************************************************************************************************
 
@@ -2280,7 +2280,7 @@ inline decltype(auto) tan( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( ~dv, Tan() );
+   return map( *dv, Tan() );
 }
 //*************************************************************************************************
 
@@ -2308,7 +2308,7 @@ inline decltype(auto) atan( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( ~dv, Atan() );
+   return map( *dv, Atan() );
 }
 //*************************************************************************************************
 
@@ -2339,7 +2339,7 @@ inline decltype(auto) tanh( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( ~dv, Tanh() );
+   return map( *dv, Tanh() );
 }
 //*************************************************************************************************
 
@@ -2370,7 +2370,7 @@ inline decltype(auto) atanh( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( ~dv, Atanh() );
+   return map( *dv, Atanh() );
 }
 //*************************************************************************************************
 
@@ -2398,7 +2398,7 @@ inline decltype(auto) erf( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( ~dv, Erf() );
+   return map( *dv, Erf() );
 }
 //*************************************************************************************************
 
@@ -2426,7 +2426,7 @@ inline decltype(auto) erfc( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( ~dv, Erfc() );
+   return map( *dv, Erfc() );
 }
 //*************************************************************************************************
 
@@ -2701,7 +2701,7 @@ inline decltype(auto) operator+( const DenseVector<VT,TF>& vec, ST scalar )
 
    using ET = ElementType_t<VT>;
    using ScalarType = If_t< IsNumeric_v<ET> && IsNumeric_v<ST>, AddTrait_t<ET,ST>, ST >;
-   return map( ~vec, blaze::bind2nd( Add{}, ScalarType( scalar ) ) );
+   return map( *vec, blaze::bind2nd( Add{}, ScalarType( scalar ) ) );
 }
 //*************************************************************************************************
 
@@ -2739,7 +2739,7 @@ inline decltype(auto) operator+( ST scalar, const DenseVector<VT,TF>& vec )
 
    using ET = ElementType_t<VT>;
    using ScalarType = If_t< IsNumeric_v<ST> && IsNumeric_v<ET>, AddTrait_t<ST,ET>, ST >;
-   return map( ~vec, blaze::bind1st( Add{}, ScalarType( scalar ) ) );
+   return map( *vec, blaze::bind1st( Add{}, ScalarType( scalar ) ) );
 }
 //*************************************************************************************************
 
@@ -2777,7 +2777,7 @@ inline decltype(auto) operator-( const DenseVector<VT,TF>& vec, ST scalar )
 
    using ET = ElementType_t<VT>;
    using ScalarType = If_t< IsNumeric_v<ET> && IsNumeric_v<ST>, SubTrait_t<ET,ST>, ST >;
-   return map( ~vec, blaze::bind2nd( Sub{}, ScalarType( scalar ) ) );
+   return map( *vec, blaze::bind2nd( Sub{}, ScalarType( scalar ) ) );
 }
 //*************************************************************************************************
 
@@ -2815,7 +2815,7 @@ inline decltype(auto) operator-( ST scalar, const DenseVector<VT,TF>& vec )
 
    using ET = ElementType_t<VT>;
    using ScalarType = If_t< IsNumeric_v<ST> && IsNumeric_v<ET>, SubTrait_t<ST,ET>, ST >;
-   return map( ~vec, blaze::bind1st( Sub{}, ScalarType( scalar ) ) );
+   return map( *vec, blaze::bind1st( Sub{}, ScalarType( scalar ) ) );
 }
 //*************************************************************************************************
 
@@ -2853,7 +2853,7 @@ inline decltype(auto) operator/( ST scalar, const DenseVector<VT,TF>& vec )
 
    using ET = ElementType_t<VT>;
    using ScalarType = If_t< IsNumeric_v<ST> && IsNumeric_v<ET>, DivTrait_t<ST,ET>, ST >;
-   return map( ~vec, blaze::bind1st( Div{}, ScalarType( scalar ) ) );
+   return map( *vec, blaze::bind1st( Div{}, ScalarType( scalar ) ) );
 }
 //*************************************************************************************************
 
@@ -2880,7 +2880,7 @@ inline decltype(auto) operator<<( const DenseVector<VT,TF>& vec, int count )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( ~vec, ShiftLI( count ) );
+   return map( *vec, ShiftLI( count ) );
 }
 //*************************************************************************************************
 
@@ -2907,7 +2907,7 @@ inline decltype(auto) operator>>( const DenseVector<VT,TF>& vec, int count )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( ~vec, ShiftRI( count ) );
+   return map( *vec, ShiftRI( count ) );
 }
 //*************************************************************************************************
 
@@ -2936,7 +2936,7 @@ inline decltype(auto) operator&( const DenseVector<VT,TF>& vec, ST scalar )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( ~vec, blaze::bind2nd( Bitand{}, scalar ) );
+   return map( *vec, blaze::bind2nd( Bitand{}, scalar ) );
 }
 //*************************************************************************************************
 
@@ -2965,7 +2965,7 @@ inline decltype(auto) operator|( const DenseVector<VT,TF>& vec, ST scalar )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( ~vec, blaze::bind2nd( Bitor{}, scalar ) );
+   return map( *vec, blaze::bind2nd( Bitor{}, scalar ) );
 }
 //*************************************************************************************************
 
@@ -2994,7 +2994,7 @@ inline decltype(auto) operator^( const DenseVector<VT,TF>& vec, ST scalar )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( ~vec, blaze::bind2nd( Bitxor{}, scalar ) );
+   return map( *vec, blaze::bind2nd( Bitxor{}, scalar ) );
 }
 //*************************************************************************************************
 
@@ -3028,7 +3028,7 @@ inline decltype(auto) operator!( const DenseVector<VT,TF>& vec )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( ~vec, Not{} );
+   return map( *vec, Not{} );
 }
 //*************************************************************************************************
 
