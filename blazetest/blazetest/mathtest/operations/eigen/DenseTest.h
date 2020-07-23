@@ -150,17 +150,17 @@ template< typename VT    // Type of the eigenvector v
 void DenseTest::checkEigenvector( const blaze::DenseVector<VT,false>& v,
                                   const blaze::DenseMatrix<MT,SO>& A, ST w )
 {
-   if( (~A) * (~v) != w * (~v) ) {
+   if( A * v != w * v ) {
       std::ostringstream oss;
       oss << " Test: " << test_ << "\n"
           << " Error: Invalid right eigenvector detected\n"
           << " Details:\n"
           << "   Random seed = " << blaze::getSeed() << "\n"
-          << "   System matrix:\n" << (~A) << "\n"
+          << "   System matrix:\n" << A << "\n"
           << "   Eigenvalue = " << w << "\n"
-          << "   Right eigenvector:\n" << (~v) << "\n"
-          << "   A * v =\n" << ( (~A) * (~v) ) << "\n"
-          << "   w * v =\n" << ( w * (~v) ) << "\n";
+          << "   Right eigenvector:\n" << v << "\n"
+          << "   A * v =\n" << ( A * v ) << "\n"
+          << "   w * v =\n" << ( w * v ) << "\n";
       throw std::runtime_error( oss.str() );
    }
 }
@@ -189,17 +189,17 @@ template< typename VT    // Type of the eigenvector u
 void DenseTest::checkEigenvector( const blaze::DenseVector<VT,true>& u,
                                   const blaze::DenseMatrix<MT,SO>& A, ST w )
 {
-   if( (~u) * (~A) != (~u) * w ) {
+   if( u * A != u * w ) {
       std::ostringstream oss;
       oss << " Test: " << test_ << "\n"
           << " Error: Invalid left eigenvector detected\n"
           << " Details:\n"
           << "   Random seed = " << blaze::getSeed() << "\n"
-          << "   System matrix:\n" << (~A) << "\n"
+          << "   System matrix:\n" << A << "\n"
           << "   Eigenvalue = " << w << "\n"
-          << "   Left eigenvector:\n" << (~u) << "\n"
-          << "   v * A =\n" << ( (~u) * (~A) ) << "\n"
-          << "   v * w =\n" << ( (~u) * w ) << "\n";
+          << "   Left eigenvector:\n" << u << "\n"
+          << "   v * A =\n" << ( u * A ) << "\n"
+          << "   v * w =\n" << ( u * w ) << "\n";
       throw std::runtime_error( oss.str() );
    }
 }

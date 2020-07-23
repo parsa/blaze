@@ -402,8 +402,8 @@ void DenseTest::testRandom( size_t N )
 template< typename MT, bool SO >
 void DenseTest::initializeForLU( blaze::DenseMatrix<MT,SO>& matrix, size_t N )
 {
-   resize( ~matrix, N, N );
-   randomize( ~matrix );
+   resize( crtp_cast(matrix), N, N );
+   randomize( crtp_cast(matrix) );
 }
 //*************************************************************************************************
 
@@ -417,8 +417,8 @@ void DenseTest::initializeForLU( blaze::DenseMatrix<MT,SO>& matrix, size_t N )
 template< typename MT, bool SO >
 void DenseTest::initializeForLDLT( blaze::DenseMatrix<MT,SO>& matrix, size_t N )
 {
-   resize( ~matrix, N, N );
-   makeSymmetric( ~matrix );
+   resize( crtp_cast(matrix), N, N );
+   makeSymmetric( crtp_cast(matrix) );
 }
 //*************************************************************************************************
 
@@ -432,8 +432,8 @@ void DenseTest::initializeForLDLT( blaze::DenseMatrix<MT,SO>& matrix, size_t N )
 template< typename MT, bool SO >
 void DenseTest::initializeForLDLH( blaze::DenseMatrix<MT,SO>& matrix, size_t N )
 {
-   resize( ~matrix, N, N );
-   makeHermitian( ~matrix );
+   resize( crtp_cast(matrix), N, N );
+   makeHermitian( crtp_cast(matrix) );
 }
 //*************************************************************************************************
 
@@ -447,8 +447,8 @@ void DenseTest::initializeForLDLH( blaze::DenseMatrix<MT,SO>& matrix, size_t N )
 template< typename MT, bool SO >
 void DenseTest::initializeForLLH( blaze::DenseMatrix<MT,SO>& matrix, size_t N )
 {
-   resize( ~matrix, N, N );
-   makePositiveDefinite( ~matrix );
+   resize( crtp_cast(matrix), N, N );
+   makePositiveDefinite( crtp_cast(matrix) );
 }
 //*************************************************************************************************
 
