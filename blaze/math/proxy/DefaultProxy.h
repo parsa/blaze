@@ -67,8 +67,8 @@ class DefaultProxy
    //**Conversion operators************************************************************************
    /*!\name Conversion operators */
    //@{
-   /*[[deprecated]]*/ BLAZE_ALWAYS_INLINE PT&       operator~()       noexcept;
-   /*[[deprecated]]*/ BLAZE_ALWAYS_INLINE const PT& operator~() const noexcept;
+   [[deprecated]] BLAZE_ALWAYS_INLINE PT&       operator~()       noexcept;
+   [[deprecated]] BLAZE_ALWAYS_INLINE const PT& operator~() const noexcept;
 
    BLAZE_ALWAYS_INLINE PT&       operator*()       noexcept;
    BLAZE_ALWAYS_INLINE const PT& operator*() const noexcept;
@@ -109,7 +109,7 @@ class DefaultProxy
 */
 template< typename PT    // Type of the proxy
         , typename RT >  // Type of the represented element
-/*[[deprecated]]*/ BLAZE_ALWAYS_INLINE PT& DefaultProxy<PT,RT>::operator~() noexcept
+[[deprecated]] BLAZE_ALWAYS_INLINE PT& DefaultProxy<PT,RT>::operator~() noexcept
 {
    return static_cast<PT&>( *this );
 }
@@ -126,7 +126,7 @@ template< typename PT    // Type of the proxy
 */
 template< typename PT    // Type of the proxy
         , typename RT >  // Type of the represented element
-/*[[deprecated]]*/ BLAZE_ALWAYS_INLINE const PT& DefaultProxy<PT,RT>::operator~() const noexcept
+[[deprecated]] BLAZE_ALWAYS_INLINE const PT& DefaultProxy<PT,RT>::operator~() const noexcept
 {
    return static_cast<const PT&>( *this );
 }

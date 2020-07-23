@@ -90,8 +90,8 @@ class Vector
    //**Conversion operators************************************************************************
    /*!\name Conversion operators */
    //@{
-   /*[[deprecated]]*/ BLAZE_ALWAYS_INLINE constexpr VT&       operator~()       noexcept;
-   /*[[deprecated]]*/ BLAZE_ALWAYS_INLINE constexpr const VT& operator~() const noexcept;
+   [[deprecated]] BLAZE_ALWAYS_INLINE constexpr VT&       operator~()       noexcept;
+   [[deprecated]] BLAZE_ALWAYS_INLINE constexpr const VT& operator~() const noexcept;
 
    constexpr VT&       operator*()       noexcept;
    constexpr const VT& operator*() const noexcept;
@@ -132,7 +132,7 @@ class Vector
 */
 template< typename VT  // Type of the vector
         , bool TF >    // Transpose flag
-/*[[deprecated]]*/ BLAZE_ALWAYS_INLINE constexpr VT& Vector<VT,TF>::operator~() noexcept
+[[deprecated]] BLAZE_ALWAYS_INLINE constexpr VT& Vector<VT,TF>::operator~() noexcept
 {
    return static_cast<VT&>( *this );
 }
@@ -149,7 +149,7 @@ template< typename VT  // Type of the vector
 */
 template< typename VT  // Type of the vector
         , bool TF >    // Transpose flag
-/*[[deprecated]]*/ BLAZE_ALWAYS_INLINE constexpr const VT& Vector<VT,TF>::operator~() const noexcept
+[[deprecated]] BLAZE_ALWAYS_INLINE constexpr const VT& Vector<VT,TF>::operator~() const noexcept
 {
    return static_cast<const VT&>( *this );
 }

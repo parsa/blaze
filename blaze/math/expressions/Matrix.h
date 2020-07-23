@@ -92,8 +92,8 @@ class Matrix
    //**Conversion operators************************************************************************
    /*!\name Conversion operators */
    //@{
-   /*[[deprecated]]*/ BLAZE_ALWAYS_INLINE constexpr MT&       operator~()       noexcept;
-   /*[[deprecated]]*/ BLAZE_ALWAYS_INLINE constexpr const MT& operator~() const noexcept;
+   [[deprecated]] BLAZE_ALWAYS_INLINE constexpr MT&       operator~()       noexcept;
+   [[deprecated]] BLAZE_ALWAYS_INLINE constexpr const MT& operator~() const noexcept;
 
    constexpr MT&       operator*()       noexcept;
    constexpr const MT& operator*() const noexcept;
@@ -135,7 +135,7 @@ class Matrix
 */
 template< typename MT  // Type of the matrix
         , bool SO >    // Storage order
-/*[[deprecated]]*/ BLAZE_ALWAYS_INLINE constexpr MT& Matrix<MT,SO>::operator~() noexcept
+[[deprecated]] BLAZE_ALWAYS_INLINE constexpr MT& Matrix<MT,SO>::operator~() noexcept
 {
    return static_cast<MT&>( *this );
 }
@@ -153,7 +153,7 @@ template< typename MT  // Type of the matrix
 */
 template< typename MT  // Type of the matrix
         , bool SO >    // Storage order
-/*[[deprecated]]*/ BLAZE_ALWAYS_INLINE constexpr const MT& Matrix<MT,SO>::operator~() const noexcept
+[[deprecated]] BLAZE_ALWAYS_INLINE constexpr const MT& Matrix<MT,SO>::operator~() const noexcept
 {
    return static_cast<const MT&>( *this );
 }
@@ -446,7 +446,7 @@ bool isSame( const Matrix<MT1,SO1>& a, const Matrix<MT2,SO2>& b ) noexcept;
 
 
 //*************************************************************************************************
-/*!\brief CRTP-based conversion operation for non-constant matricesx.
+/*!\brief CRTP-based conversion operation for non-constant matrices.
 //
 // \return Mutable reference of the actual type of the matrix.
 //

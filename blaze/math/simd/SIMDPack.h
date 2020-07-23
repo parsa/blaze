@@ -66,8 +66,8 @@ class SIMDPack
    //**Conversion operators************************************************************************
    /*!\name Conversion operators */
    //@{
-   /*[[deprecated]]*/ BLAZE_ALWAYS_INLINE constexpr T&       operator~()       noexcept;
-   /*[[deprecated]]*/ BLAZE_ALWAYS_INLINE constexpr const T& operator~() const noexcept;
+   [[deprecated]] BLAZE_ALWAYS_INLINE constexpr T&       operator~()       noexcept;
+   [[deprecated]] BLAZE_ALWAYS_INLINE constexpr const T& operator~() const noexcept;
 
    constexpr T&       operator*()       noexcept;
    constexpr const T& operator*() const noexcept;
@@ -107,7 +107,7 @@ class SIMDPack
 // SIMD pack. It will return a mutable reference to the actual type \a T.
 */
 template< typename T >  // Type of the SIMD pack
-/*[[deprecated]]*/ BLAZE_ALWAYS_INLINE constexpr T& SIMDPack<T>::operator~() noexcept
+[[deprecated]] BLAZE_ALWAYS_INLINE constexpr T& SIMDPack<T>::operator~() noexcept
 {
    return static_cast<T&>( *this );
 }
@@ -122,7 +122,7 @@ template< typename T >  // Type of the SIMD pack
 // SIMD pack. It will return a constant reference to the actual type \a T.
 */
 template< typename T >  // Type of the SIMD pack
-/*[[deprecated]]*/ BLAZE_ALWAYS_INLINE constexpr const T& SIMDPack<T>::operator~() const noexcept
+[[deprecated]] BLAZE_ALWAYS_INLINE constexpr const T& SIMDPack<T>::operator~() const noexcept
 {
    return static_cast<const T&>( *this );
 }

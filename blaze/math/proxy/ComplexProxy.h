@@ -86,8 +86,8 @@ class ComplexProxy
    //**Conversion operators************************************************************************
    /*!\name Conversion operators */
    //@{
-   /*[[deprecated]]*/ BLAZE_ALWAYS_INLINE PT&       operator~()       noexcept;
-   /*[[deprecated]]*/ BLAZE_ALWAYS_INLINE const PT& operator~() const noexcept;
+   [[deprecated]] BLAZE_ALWAYS_INLINE PT&       operator~()       noexcept;
+   [[deprecated]] BLAZE_ALWAYS_INLINE const PT& operator~() const noexcept;
 
    BLAZE_ALWAYS_INLINE PT&       operator*()       noexcept;
    BLAZE_ALWAYS_INLINE const PT& operator*() const noexcept;
@@ -217,7 +217,7 @@ inline void ComplexProxy<PT,CT>::imag( ValueType value ) const
 */
 template< typename PT    // Type of the proxy
         , typename CT >  // Type of the complex number
-/*[[deprecated]]*/ BLAZE_ALWAYS_INLINE PT& ComplexProxy<PT,CT>::operator~() noexcept
+[[deprecated]] BLAZE_ALWAYS_INLINE PT& ComplexProxy<PT,CT>::operator~() noexcept
 {
    return static_cast<PT&>( *this );
 }
@@ -234,7 +234,7 @@ template< typename PT    // Type of the proxy
 */
 template< typename PT    // Type of the proxy
         , typename CT >  // Type of the complex number
-/*[[deprecated]]*/ BLAZE_ALWAYS_INLINE const PT& ComplexProxy<PT,CT>::operator~() const noexcept
+[[deprecated]] BLAZE_ALWAYS_INLINE const PT& ComplexProxy<PT,CT>::operator~() const noexcept
 {
    return static_cast<const PT&>( *this );
 }
