@@ -5289,7 +5289,7 @@ void runTest( const Creator<VT>& creator1, const Creator<MT>& creator2 )
 #if BLAZETEST_MATHTEST_TEST_MULTIPLICATION
    if( BLAZETEST_MATHTEST_TEST_MULTIPLICATION > 1 )
    {
-      for( size_t rep=0UL; rep<repetitions; ++rep ) {
+      for( size_t rep=0UL; rep<BLAZETEST_REPETITIONS; ++rep ) {
          OperationTest<VT,MT>( creator1, creator2 );
       }
    }

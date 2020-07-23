@@ -582,7 +582,7 @@ void runTest( const Creator<VT>& creator )
       class Sum : public blaze::Add
       {};
 
-      for( size_t rep=0UL; rep<repetitions; ++rep ) {
+      for( size_t rep=0UL; rep<BLAZETEST_REPETITIONS; ++rep ) {
          OperationTest<VT>( creator, []( const auto& a, const auto& b ){ return a + b; } );
          OperationTest<VT>( creator, blaze::Add() );
          OperationTest<VT>( creator, Sum() );

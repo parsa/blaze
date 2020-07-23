@@ -5030,7 +5030,7 @@ void runTest( const Creator<VT1>& creator1, const Creator<VT2>& creator2 )
 #if BLAZETEST_MATHTEST_TEST_MAXIMUM
    if( BLAZETEST_MATHTEST_TEST_MAXIMUM > 1 )
    {
-      for( size_t rep=0UL; rep<repetitions; ++rep ) {
+      for( size_t rep=0UL; rep<BLAZETEST_REPETITIONS; ++rep ) {
          OperationTest<VT1,VT2>( creator1, creator2 );
       }
    }

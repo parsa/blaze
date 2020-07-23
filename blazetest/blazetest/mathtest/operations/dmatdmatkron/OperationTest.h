@@ -13382,7 +13382,7 @@ void runTest( const Creator<MT1>& creator1, const Creator<MT2>& creator2 )
 #if BLAZETEST_MATHTEST_TEST_MULTIPLICATION
    if( BLAZETEST_MATHTEST_TEST_MULTIPLICATION > 1 )
    {
-      for( size_t rep=0UL; rep<repetitions; ++rep ) {
+      for( size_t rep=0UL; rep<BLAZETEST_REPETITIONS; ++rep ) {
          OperationTest<MT1,MT2>( creator1, creator2 );
       }
    }

@@ -11162,7 +11162,7 @@ void OperationTest<VT,E>::convertException( const std::exception& ex )
 template< typename VT >  // Type of the dense vector
 void runTest( const Creator<VT>& creator )
 {
-   for( size_t rep=0UL; rep<repetitions; ++rep ) {
+   for( size_t rep=0UL; rep<BLAZETEST_REPETITIONS; ++rep ) {
       OperationTest<VT,3UL>{ creator };
       OperationTest<VT,6UL>{ creator };
       OperationTest<VT,7UL>{ creator };

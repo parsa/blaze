@@ -104,6 +104,32 @@ using blaze::StaticVector;
 
 //=================================================================================================
 //
+//  BASIC DATA TYPES
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*!\brief First data type for the math tests.
+//
+// This type represents the first basic element type used for vector and matrix operation tests.
+*/
+using TypeA = BLAZETEST_MATHTEST_TYPE_A;
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Second data type for the math tests.
+//
+// This type represents the second basic element type used for vector and matrix operation tests.
+*/
+using TypeB = BLAZETEST_MATHTEST_TYPE_B;
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
 //  DERIVED DATA TYPES
 //
 //=================================================================================================
@@ -114,7 +140,7 @@ using blaze::StaticVector;
 // This type represents the underlying scalar element type of the specified TypeA. It is used
 // for vector and matrix type that only support scalar data types.
 */
-typedef blaze::UnderlyingScalar_t<TypeA>  ScalarA;
+using ScalarA = blaze::UnderlyingScalar_t<TypeA>;
 //*************************************************************************************************
 
 
@@ -124,7 +150,7 @@ typedef blaze::UnderlyingScalar_t<TypeA>  ScalarA;
 // This type represents the underlying scalar element type of the specified TypeB. It is used
 // for vector and matrix type that only support scalar data types.
 */
-typedef blaze::UnderlyingScalar_t<TypeB>  ScalarB;
+using ScalarB = blaze::UnderlyingScalar_t<TypeB>;
 //*************************************************************************************************
 
 

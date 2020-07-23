@@ -38,8 +38,22 @@
 //
 // The math tests are always conducted with two data types to test mixed type arithmetic
 // expressions. This type definition defines the first of these two data types.
+//
+// \note It is possible to specify this compilation switch via command line or by defining this
+// symbol manually before including any Blazetest header file:
+
+   \code
+   g++ ... -DBLAZETEST_MATHTEST_TYPE_A=int ...
+   \endcode
+
+   \code
+   #define BLAZETEST_MATHTEST_TYPE_A int
+   #include <blazetest/config/MathTest.h>
+   \endcode
 */
-typedef int  TypeA;
+#ifndef BLAZETEST_MATHTEST_TYPE_A
+#define BLAZETEST_MATHTEST_TYPE_A int
+#endif
 //*************************************************************************************************
 
 
@@ -48,8 +62,22 @@ typedef int  TypeA;
 //
 // The math tests are always conducted with two data types to test mixed type arithmetic
 // expressions. This type definition defines the second of these two data types.
+//
+// \note It is possible to specify this compilation switch via command line or by defining this
+// symbol manually before including any Blazetest header file:
+
+   \code
+   g++ ... -DBLAZETEST_MATHTEST_TYPE_B=double ...
+   \endcode
+
+   \code
+   #define BLAZETEST_MATHTEST_TYPE_B double
+   #include <blazetest/config/MathTest.h>
+   \endcode
 */
-typedef double  TypeB;
+#ifndef BLAZETEST_MATHTEST_TYPE_B
+#define BLAZETEST_MATHTEST_TYPE_B double
+#endif
 //*************************************************************************************************
 
 
@@ -65,8 +93,22 @@ typedef double  TypeB;
 //   - 0: The addition tests are not included in the compilation process and not executed
 //   - 1: The addition tests are included in the compilation process, but not executed
 //   - 2: The addition tests are included in the compilation process and executed
+//
+// \note It is possible to specify this compilation switch via command line or by defining this
+// symbol manually before including any Blazetest header file:
+
+   \code
+   g++ ... -DBLAZETEST_MATHTEST_TEST_ADDITION=2 ...
+   \endcode
+
+   \code
+   #define BLAZETEST_MATHTEST_TEST_ADDITION 2
+   #include <blazetest/config/MathTest.h>
+   \endcode
 */
+#ifndef BLAZETEST_MATHTEST_TEST_ADDITION
 #define BLAZETEST_MATHTEST_TEST_ADDITION 2
+#endif
 //*************************************************************************************************
 
 
@@ -83,8 +125,22 @@ typedef double  TypeB;
 //   - 0: The subtraction tests are not included in the compilation process and not executed
 //   - 1: The subtraction tests are included in the compilation process, but not executed
 //   - 2: The subtraction tests are included in the compilation process and executed
+//
+// \note It is possible to specify this compilation switch via command line or by defining this
+// symbol manually before including any Blazetest header file:
+
+   \code
+   g++ ... -DBLAZETEST_MATHTEST_TEST_SUBTRACTION=2 ...
+   \endcode
+
+   \code
+   #define BLAZETEST_MATHTEST_TEST_SUBTRACTION 2
+   #include <blazetest/config/MathTest.h>
+   \endcode
 */
+#ifndef BLAZETEST_MATHTEST_TEST_SUBTRACTION
 #define BLAZETEST_MATHTEST_TEST_SUBTRACTION 2
+#endif
 //*************************************************************************************************
 
 
@@ -101,8 +157,22 @@ typedef double  TypeB;
 //   - 0: The multiplication tests are not included in the compilation process and not executed
 //   - 1: The multiplication tests are included in the compilation process, but not executed
 //   - 2: The multiplication tests are included in the compilation process and executed
+//
+// \note It is possible to specify this compilation switch via command line or by defining this
+// symbol manually before including any Blazetest header file:
+
+   \code
+   g++ ... -DBLAZETEST_MATHTEST_TEST_MULTIPLICATION=2 ...
+   \endcode
+
+   \code
+   #define BLAZETEST_MATHTEST_TEST_MULTIPLICATION 2
+   #include <blazetest/config/MathTest.h>
+   \endcode
 */
+#ifndef BLAZETEST_MATHTEST_TEST_MULTIPLICATION
 #define BLAZETEST_MATHTEST_TEST_MULTIPLICATION 2
+#endif
 //*************************************************************************************************
 
 
@@ -118,8 +188,22 @@ typedef double  TypeB;
 //   - 0: The division tests are not included in the compilation process and not executed
 //   - 1: The division tests are included in the compilation process, but not executed
 //   - 2: The division tests are included in the compilation process and executed
+//
+// \note It is possible to specify this compilation switch via command line or by defining this
+// symbol manually before including any Blazetest header file:
+
+   \code
+   g++ ... -DBLAZETEST_MATHTEST_TEST_DIVISION=2 ...
+   \endcode
+
+   \code
+   #define BLAZETEST_MATHTEST_TEST_DIVISION 2
+   #include <blazetest/config/MathTest.h>
+   \endcode
 */
+#ifndef BLAZETEST_MATHTEST_TEST_DIVISION
 #define BLAZETEST_MATHTEST_TEST_DIVISION 2
+#endif
 //*************************************************************************************************
 
 
@@ -135,8 +219,22 @@ typedef double  TypeB;
 //   - 0: The minimum tests are not included in the compilation process and not executed
 //   - 1: The minimum tests are included in the compilation process, but not executed
 //   - 2: The minimum tests are included in the compilation process and executed
+//
+// \note It is possible to specify this compilation switch via command line or by defining this
+// symbol manually before including any Blazetest header file:
+
+   \code
+   g++ ... -DBLAZETEST_MATHTEST_TEST_MINIMUM=2 ...
+   \endcode
+
+   \code
+   #define BLAZETEST_MATHTEST_TEST_MINIMUM 2
+   #include <blazetest/config/MathTest.h>
+   \endcode
 */
+#ifndef BLAZETEST_MATHTEST_TEST_MINIMUM
 #define BLAZETEST_MATHTEST_TEST_MINIMUM 2
+#endif
 //*************************************************************************************************
 
 
@@ -152,8 +250,22 @@ typedef double  TypeB;
 //   - 0: The maximum tests are not included in the compilation process and not executed
 //   - 1: The maximum tests are included in the compilation process, but not executed
 //   - 2: The maximum tests are included in the compilation process and executed
+//
+// \note It is possible to specify this compilation switch via command line or by defining this
+// symbol manually before including any Blazetest header file:
+
+   \code
+   g++ ... -DBLAZETEST_MATHTEST_TEST_MAXIMUM=2 ...
+   \endcode
+
+   \code
+   #define BLAZETEST_MATHTEST_TEST_MAXIMUM 2
+   #include <blazetest/config/MathTest.h>
+   \endcode
 */
+#ifndef BLAZETEST_MATHTEST_TEST_MAXIMUM
 #define BLAZETEST_MATHTEST_TEST_MAXIMUM 2
+#endif
 //*************************************************************************************************
 
 
@@ -175,8 +287,22 @@ typedef double  TypeB;
 //   - 0: The basic tests are not included in the compilation process and not executed
 //   - 1: The basic tests are included in the compilation process, but not executed
 //   - 2: The basic tests are included in the compilation process and executed
+//
+// \note It is possible to specify this compilation switch via command line or by defining this
+// symbol manually before including any Blazetest header file:
+
+   \code
+   g++ ... -DBLAZETEST_MATHTEST_TEST_BASIC_OPERATION=2 ...
+   \endcode
+
+   \code
+   #define BLAZETEST_MATHTEST_TEST_BASIC_OPERATION 2
+   #include <blazetest/config/MathTest.h>
+   \endcode
 */
+#ifndef BLAZETEST_MATHTEST_TEST_BASIC_OPERATION
 #define BLAZETEST_MATHTEST_TEST_BASIC_OPERATION 2
+#endif
 //*************************************************************************************************
 
 
@@ -197,8 +323,22 @@ typedef double  TypeB;
 //   - 0: The negation tests are not included in the compilation process and not executed
 //   - 1: The negation tests are included in the compilation process, but not executed
 //   - 2: The negation tests are included in the compilation process and executed
+//
+// \note It is possible to specify this compilation switch via command line or by defining this
+// symbol manually before including any Blazetest header file:
+
+   \code
+   g++ ... -DBLAZETEST_MATHTEST_TEST_NEGATED_OPERATION=0 ...
+   \endcode
+
+   \code
+   #define BLAZETEST_MATHTEST_TEST_NEGATED_OPERATION 0
+   #include <blazetest/config/MathTest.h>
+   \endcode
 */
+#ifndef BLAZETEST_MATHTEST_TEST_NEGATED_OPERATION
 #define BLAZETEST_MATHTEST_TEST_NEGATED_OPERATION 0
+#endif
 //*************************************************************************************************
 
 
@@ -222,8 +362,22 @@ typedef double  TypeB;
 //   - 0: The scaling tests are not included in the compilation process and not executed
 //   - 1: The scaling tests are included in the compilation process, but not executed
 //   - 2: The scaling tests are included in the compilation process and executed
+//
+// \note It is possible to specify this compilation switch via command line or by defining this
+// symbol manually before including any Blazetest header file:
+
+   \code
+   g++ ... -DBLAZETEST_MATHTEST_TEST_SCALED_OPERATION=0 ...
+   \endcode
+
+   \code
+   #define BLAZETEST_MATHTEST_TEST_SCALED_OPERATION 0
+   #include <blazetest/config/MathTest.h>
+   \endcode
 */
+#ifndef BLAZETEST_MATHTEST_TEST_SCALED_OPERATION
 #define BLAZETEST_MATHTEST_TEST_SCALED_OPERATION 0
+#endif
 //*************************************************************************************************
 
 
@@ -245,8 +399,22 @@ typedef double  TypeB;
 //   - 0: The transpose tests are not included in the compilation process and not executed
 //   - 1: The transpose tests are included in the compilation process, but not executed
 //   - 2: The transpose tests are included in the compilation process and executed
+//
+// \note It is possible to specify this compilation switch via command line or by defining this
+// symbol manually before including any Blazetest header file:
+
+   \code
+   g++ ... -DBLAZETEST_MATHTEST_TEST_TRANS_OPERATION=0 ...
+   \endcode
+
+   \code
+   #define BLAZETEST_MATHTEST_TEST_TRANS_OPERATION 0
+   #include <blazetest/config/MathTest.h>
+   \endcode
 */
+#ifndef BLAZETEST_MATHTEST_TEST_TRANS_OPERATION
 #define BLAZETEST_MATHTEST_TEST_TRANS_OPERATION 0
+#endif
 //*************************************************************************************************
 
 
@@ -269,8 +437,22 @@ typedef double  TypeB;
 //   - 0: The conjugate transpose tests are not included in the compilation process and not executed
 //   - 1: The conjugate transpose tests are included in the compilation process, but not executed
 //   - 2: The conjugate transpose tests are included in the compilation process and executed
+//
+// \note It is possible to specify this compilation switch via command line or by defining this
+// symbol manually before including any Blazetest header file:
+
+   \code
+   g++ ... -DBLAZETEST_MATHTEST_TEST_CTRANS_OPERATION=0 ...
+   \endcode
+
+   \code
+   #define BLAZETEST_MATHTEST_TEST_CTRANS_OPERATION 0
+   #include <blazetest/config/MathTest.h>
+   \endcode
 */
+#ifndef BLAZETEST_MATHTEST_TEST_CTRANS_OPERATION
 #define BLAZETEST_MATHTEST_TEST_CTRANS_OPERATION 0
+#endif
 //*************************************************************************************************
 
 
@@ -291,8 +473,22 @@ typedef double  TypeB;
 //   - 0: The \a abs tests are not included in the compilation process and not executed
 //   - 1: The \a abs tests are included in the compilation process, but not executed
 //   - 2: The \a abs tests are included in the compilation process and executed
+//
+// \note It is possible to specify this compilation switch via command line or by defining this
+// symbol manually before including any Blazetest header file:
+
+   \code
+   g++ ... -DBLAZETEST_MATHTEST_TEST_ABS_OPERATION=0 ...
+   \endcode
+
+   \code
+   #define BLAZETEST_MATHTEST_TEST_ABS_OPERATION 0
+   #include <blazetest/config/MathTest.h>
+   \endcode
 */
+#ifndef BLAZETEST_MATHTEST_TEST_ABS_OPERATION
 #define BLAZETEST_MATHTEST_TEST_ABS_OPERATION 0
+#endif
 //*************************************************************************************************
 
 
@@ -314,8 +510,22 @@ typedef double  TypeB;
 //   - 0: The complex conjugate tests are not included in the compilation process and not executed
 //   - 1: The complex conjugate tests are included in the compilation process, but not executed
 //   - 2: The complex conjugate tests are included in the compilation process and executed
+//
+// \note It is possible to specify this compilation switch via command line or by defining this
+// symbol manually before including any Blazetest header file:
+
+   \code
+   g++ ... -DBLAZETEST_MATHTEST_TEST_CONJ_OPERATION=0 ...
+   \endcode
+
+   \code
+   #define BLAZETEST_MATHTEST_TEST_CONJ_OPERATION 0
+   #include <blazetest/config/MathTest.h>
+   \endcode
 */
+#ifndef BLAZETEST_MATHTEST_TEST_CONJ_OPERATION
 #define BLAZETEST_MATHTEST_TEST_CONJ_OPERATION 0
+#endif
 //*************************************************************************************************
 
 
@@ -336,8 +546,22 @@ typedef double  TypeB;
 //   - 0: The \a real tests are not included in the compilation process and not executed
 //   - 1: The \a real tests are included in the compilation process, but not executed
 //   - 2: The \a real tests are included in the compilation process and executed
+//
+// \note It is possible to specify this compilation switch via command line or by defining this
+// symbol manually before including any Blazetest header file:
+
+   \code
+   g++ ... -DBLAZETEST_MATHTEST_TEST_REAL_OPERATION=0 ...
+   \endcode
+
+   \code
+   #define BLAZETEST_MATHTEST_TEST_REAL_OPERATION 0
+   #include <blazetest/config/MathTest.h>
+   \endcode
 */
+#ifndef BLAZETEST_MATHTEST_TEST_REAL_OPERATION
 #define BLAZETEST_MATHTEST_TEST_REAL_OPERATION 0
+#endif
 //*************************************************************************************************
 
 
@@ -358,8 +582,22 @@ typedef double  TypeB;
 //   - 0: The \a imag tests are not included in the compilation process and not executed
 //   - 1: The \a imag tests are included in the compilation process, but not executed
 //   - 2: The \a imag tests are included in the compilation process and executed
+//
+// \note It is possible to specify this compilation switch via command line or by defining this
+// symbol manually before including any Blazetest header file:
+
+   \code
+   g++ ... -DBLAZETEST_MATHTEST_TEST_IMAG_OPERATION=0 ...
+   \endcode
+
+   \code
+   #define BLAZETEST_MATHTEST_TEST_IMAG_OPERATION 0
+   #include <blazetest/config/MathTest.h>
+   \endcode
 */
+#ifndef BLAZETEST_MATHTEST_TEST_IMAG_OPERATION
 #define BLAZETEST_MATHTEST_TEST_IMAG_OPERATION 0
+#endif
 //*************************************************************************************************
 
 
@@ -383,8 +621,22 @@ typedef double  TypeB;
 //
 // \note In case the inversion tests are activated both \a TypeA and \a TypeB must be set to
 // BLAS compatible data types (i.e. float, double, complex<float>, or complex<double>).
+//
+// \note It is possible to specify this compilation switch via command line or by defining this
+// symbol manually before including any Blazetest header file:
+
+   \code
+   g++ ... -DBLAZETEST_MATHTEST_TEST_INV_OPERATION=0 ...
+   \endcode
+
+   \code
+   #define BLAZETEST_MATHTEST_TEST_INV_OPERATION 0
+   #include <blazetest/config/MathTest.h>
+   \endcode
 */
+#ifndef BLAZETEST_MATHTEST_TEST_INV_OPERATION
 #define BLAZETEST_MATHTEST_TEST_INV_OPERATION 0
+#endif
 //*************************************************************************************************
 
 
@@ -405,8 +657,22 @@ typedef double  TypeB;
 //   - 0: The \a eval tests are not included in the compilation process and not executed
 //   - 1: The \a eval tests are included in the compilation process, but not executed
 //   - 2: The \a eval tests are included in the compilation process and executed
+//
+// \note It is possible to specify this compilation switch via command line or by defining this
+// symbol manually before including any Blazetest header file:
+
+   \code
+   g++ ... -DBLAZETEST_MATHTEST_TEST_EVAL_OPERATION=0 ...
+   \endcode
+
+   \code
+   #define BLAZETEST_MATHTEST_TEST_EVAL_OPERATION 0
+   #include <blazetest/config/MathTest.h>
+   \endcode
 */
+#ifndef BLAZETEST_MATHTEST_TEST_EVAL_OPERATION
 #define BLAZETEST_MATHTEST_TEST_EVAL_OPERATION 0
+#endif
 //*************************************************************************************************
 
 
@@ -427,8 +693,22 @@ typedef double  TypeB;
 //   - 0: The serial tests are not included in the compilation process and not executed
 //   - 1: The serial tests are included in the compilation process, but not executed
 //   - 2: The serial tests are included in the compilation process and executed
+//
+// \note It is possible to specify this compilation switch via command line or by defining this
+// symbol manually before including any Blazetest header file:
+
+   \code
+   g++ ... -DBLAZETEST_MATHTEST_TEST_SERIAL_OPERATION=0 ...
+   \endcode
+
+   \code
+   #define BLAZETEST_MATHTEST_TEST_SERIAL_OPERATION 0
+   #include <blazetest/config/MathTest.h>
+   \endcode
 */
+#ifndef BLAZETEST_MATHTEST_TEST_SERIAL_OPERATION
 #define BLAZETEST_MATHTEST_TEST_SERIAL_OPERATION 0
+#endif
 //*************************************************************************************************
 
 
@@ -449,8 +729,22 @@ typedef double  TypeB;
 //   - 0: The \a noalias tests are not included in the compilation process and not executed
 //   - 1: The \a noalias tests are included in the compilation process, but not executed
 //   - 2: The \a noalias tests are included in the compilation process and executed
+//
+// \note It is possible to specify this compilation switch via command line or by defining this
+// symbol manually before including any Blazetest header file:
+
+   \code
+   g++ ... -DBLAZETEST_MATHTEST_TEST_NOALIAS_OPERATION=0 ...
+   \endcode
+
+   \code
+   #define BLAZETEST_MATHTEST_TEST_NOALIAS_OPERATION 0
+   #include <blazetest/config/MathTest.h>
+   \endcode
 */
+#ifndef BLAZETEST_MATHTEST_TEST_NOALIAS_OPERATION
 #define BLAZETEST_MATHTEST_TEST_NOALIAS_OPERATION 0
+#endif
 //*************************************************************************************************
 
 
@@ -471,8 +765,22 @@ typedef double  TypeB;
 //   - 0: The \a nosimd tests are not included in the compilation process and not executed
 //   - 1: The \a nosimd tests are included in the compilation process, but not executed
 //   - 2: The \a nosimd tests are included in the compilation process and executed
+//
+// \note It is possible to specify this compilation switch via command line or by defining this
+// symbol manually before including any Blazetest header file:
+
+   \code
+   g++ ... -DBLAZETEST_MATHTEST_TEST_NOSIMD_OPERATION=0 ...
+   \endcode
+
+   \code
+   #define BLAZETEST_MATHTEST_TEST_NOSIMD_OPERATION 0
+   #include <blazetest/config/MathTest.h>
+   \endcode
 */
+#ifndef BLAZETEST_MATHTEST_TEST_NOSIMD_OPERATION
 #define BLAZETEST_MATHTEST_TEST_NOSIMD_OPERATION 0
+#endif
 //*************************************************************************************************
 
 
@@ -493,8 +801,22 @@ typedef double  TypeB;
 //   - 0: The declsym tests are not included in the compilation process and not executed
 //   - 1: The declsym tests are included in the compilation process, but not executed
 //   - 2: The declsym tests are included in the compilation process and executed
+//
+// \note It is possible to specify this compilation switch via command line or by defining this
+// symbol manually before including any Blazetest header file:
+
+   \code
+   g++ ... -DBLAZETEST_MATHTEST_TEST_DECLSYM_OPERATION=0 ...
+   \endcode
+
+   \code
+   #define BLAZETEST_MATHTEST_TEST_DECLSYM_OPERATION 0
+   #include <blazetest/config/MathTest.h>
+   \endcode
 */
+#ifndef BLAZETEST_MATHTEST_TEST_DECLSYM_OPERATION
 #define BLAZETEST_MATHTEST_TEST_DECLSYM_OPERATION 0
+#endif
 //*************************************************************************************************
 
 
@@ -515,8 +837,22 @@ typedef double  TypeB;
 //   - 0: The declherm tests are not included in the compilation process and not executed
 //   - 1: The declherm tests are included in the compilation process, but not executed
 //   - 2: The declherm tests are included in the compilation process and executed
+//
+// \note It is possible to specify this compilation switch via command line or by defining this
+// symbol manually before including any Blazetest header file:
+
+   \code
+   g++ ... -DBLAZETEST_MATHTEST_TEST_DECLHERM_OPERATION=0 ...
+   \endcode
+
+   \code
+   #define BLAZETEST_MATHTEST_TEST_DECLHERM_OPERATION 0
+   #include <blazetest/config/MathTest.h>
+   \endcode
 */
+#ifndef BLAZETEST_MATHTEST_TEST_DECLHERM_OPERATION
 #define BLAZETEST_MATHTEST_TEST_DECLHERM_OPERATION 0
+#endif
 //*************************************************************************************************
 
 
@@ -537,8 +873,22 @@ typedef double  TypeB;
 //   - 0: The decllow tests are not included in the compilation process and not executed
 //   - 1: The decllow tests are included in the compilation process, but not executed
 //   - 2: The decllow tests are included in the compilation process and executed
+//
+// \note It is possible to specify this compilation switch via command line or by defining this
+// symbol manually before including any Blazetest header file:
+
+   \code
+   g++ ... -DBLAZETEST_MATHTEST_TEST_DECLLOW_OPERATION=0 ...
+   \endcode
+
+   \code
+   #define BLAZETEST_MATHTEST_TEST_DECLLOW_OPERATION 0
+   #include <blazetest/config/MathTest.h>
+   \endcode
 */
+#ifndef BLAZETEST_MATHTEST_TEST_DECLLOW_OPERATION
 #define BLAZETEST_MATHTEST_TEST_DECLLOW_OPERATION 0
+#endif
 //*************************************************************************************************
 
 
@@ -559,8 +909,22 @@ typedef double  TypeB;
 //   - 0: The declupp tests are not included in the compilation process and not executed
 //   - 1: The declupp tests are included in the compilation process, but not executed
 //   - 2: The declupp tests are included in the compilation process and executed
+//
+// \note It is possible to specify this compilation switch via command line or by defining this
+// symbol manually before including any Blazetest header file:
+
+   \code
+   g++ ... -DBLAZETEST_MATHTEST_TEST_DECLUPP_OPERATION=0 ...
+   \endcode
+
+   \code
+   #define BLAZETEST_MATHTEST_TEST_DECLUPP_OPERATION 0
+   #include <blazetest/config/MathTest.h>
+   \endcode
 */
+#ifndef BLAZETEST_MATHTEST_TEST_DECLUPP_OPERATION
 #define BLAZETEST_MATHTEST_TEST_DECLUPP_OPERATION 0
+#endif
 //*************************************************************************************************
 
 
@@ -581,8 +945,22 @@ typedef double  TypeB;
 //   - 0: The decldiag tests are not included in the compilation process and not executed
 //   - 1: The decldiag tests are included in the compilation process, but not executed
 //   - 2: The decldiag tests are included in the compilation process and executed
+//
+// \note It is possible to specify this compilation switch via command line or by defining this
+// symbol manually before including any Blazetest header file:
+
+   \code
+   g++ ... -DBLAZETEST_MATHTEST_TEST_DECLDIAG_OPERATION=0 ...
+   \endcode
+
+   \code
+   #define BLAZETEST_MATHTEST_TEST_DECLDIAG_OPERATION 0
+   #include <blazetest/config/MathTest.h>
+   \endcode
 */
+#ifndef BLAZETEST_MATHTEST_TEST_DECLDIAG_OPERATION
 #define BLAZETEST_MATHTEST_TEST_DECLDIAG_OPERATION 0
+#endif
 //*************************************************************************************************
 
 
@@ -605,8 +983,22 @@ typedef double  TypeB;
 //   - 0: The subvector tests are not included in the compilation process and not executed
 //   - 1: The subvector tests are included in the compilation process, but not executed
 //   - 2: The subvector tests are included in the compilation process and executed
+//
+// \note It is possible to specify this compilation switch via command line or by defining this
+// symbol manually before including any Blazetest header file:
+
+   \code
+   g++ ... -DBLAZETEST_MATHTEST_TEST_SUBVECTOR_OPERATION=0 ...
+   \endcode
+
+   \code
+   #define BLAZETEST_MATHTEST_TEST_SUBVECTOR_OPERATION 0
+   #include <blazetest/config/MathTest.h>
+   \endcode
 */
+#ifndef BLAZETEST_MATHTEST_TEST_SUBVECTOR_OPERATION
 #define BLAZETEST_MATHTEST_TEST_SUBVECTOR_OPERATION 0
+#endif
 //*************************************************************************************************
 
 
@@ -629,8 +1021,22 @@ typedef double  TypeB;
 //   - 0: The element selection tests are not included in the compilation process and not executed
 //   - 1: The element selection tests are included in the compilation process, but not executed
 //   - 2: The element selection tests are included in the compilation process and executed
+//
+// \note It is possible to specify this compilation switch via command line or by defining this
+// symbol manually before including any Blazetest header file:
+
+   \code
+   g++ ... -DBLAZETEST_MATHTEST_TEST_ELEMENTS_OPERATION=0 ...
+   \endcode
+
+   \code
+   #define BLAZETEST_MATHTEST_TEST_ELEMENTS_OPERATION 0
+   #include <blazetest/config/MathTest.h>
+   \endcode
 */
+#ifndef BLAZETEST_MATHTEST_TEST_ELEMENTS_OPERATION
 #define BLAZETEST_MATHTEST_TEST_ELEMENTS_OPERATION 0
+#endif
 //*************************************************************************************************
 
 
@@ -654,8 +1060,22 @@ typedef double  TypeB;
 //   - 0: The submatrix tests are not included in the compilation process and not executed
 //   - 1: The submatrix tests are included in the compilation process, but not executed
 //   - 2: The submatrix tests are included in the compilation process and executed
+//
+// \note It is possible to specify this compilation switch via command line or by defining this
+// symbol manually before including any Blazetest header file:
+
+   \code
+   g++ ... -DBLAZETEST_MATHTEST_TEST_SUBMATRIX_OPERATION=0 ...
+   \endcode
+
+   \code
+   #define BLAZETEST_MATHTEST_TEST_SUBMATRIX_OPERATION 0
+   #include <blazetest/config/MathTest.h>
+   \endcode
 */
+#ifndef BLAZETEST_MATHTEST_TEST_SUBMATRIX_OPERATION
 #define BLAZETEST_MATHTEST_TEST_SUBMATRIX_OPERATION 0
+#endif
 //*************************************************************************************************
 
 
@@ -677,8 +1097,22 @@ typedef double  TypeB;
 //   - 0: The row tests are not included in the compilation process and not executed
 //   - 1: The row tests are included in the compilation process, but not executed
 //   - 2: The row tests are included in the compilation process and executed
+//
+// \note It is possible to specify this compilation switch via command line or by defining this
+// symbol manually before including any Blazetest header file:
+
+   \code
+   g++ ... -DBLAZETEST_MATHTEST_TEST_ROW_OPERATION=0 ...
+   \endcode
+
+   \code
+   #define BLAZETEST_MATHTEST_TEST_ROW_OPERATION 0
+   #include <blazetest/config/MathTest.h>
+   \endcode
 */
+#ifndef BLAZETEST_MATHTEST_TEST_ROW_OPERATION
 #define BLAZETEST_MATHTEST_TEST_ROW_OPERATION 0
+#endif
 //*************************************************************************************************
 
 
@@ -701,8 +1135,22 @@ typedef double  TypeB;
 //   - 0: The row selection tests are not included in the compilation process and not executed
 //   - 1: The row selection tests are included in the compilation process, but not executed
 //   - 2: The row selection tests are included in the compilation process and executed
+//
+// \note It is possible to specify this compilation switch via command line or by defining this
+// symbol manually before including any Blazetest header file:
+
+   \code
+   g++ ... -DBLAZETEST_MATHTEST_TEST_ROWS_OPERATION=0 ...
+   \endcode
+
+   \code
+   #define BLAZETEST_MATHTEST_TEST_ROWS_OPERATION 0
+   #include <blazetest/config/MathTest.h>
+   \endcode
 */
+#ifndef BLAZETEST_MATHTEST_TEST_ROWS_OPERATION
 #define BLAZETEST_MATHTEST_TEST_ROWS_OPERATION 0
+#endif
 //*************************************************************************************************
 
 
@@ -724,8 +1172,22 @@ typedef double  TypeB;
 //   - 0: The column tests are not included in the compilation process and not executed
 //   - 1: The column tests are included in the compilation process, but not executed
 //   - 2: The column tests are included in the compilation process and executed
+//
+// \note It is possible to specify this compilation switch via command line or by defining this
+// symbol manually before including any Blazetest header file:
+
+   \code
+   g++ ... -DBLAZETEST_MATHTEST_TEST_COLUMN_OPERATION=0 ...
+   \endcode
+
+   \code
+   #define BLAZETEST_MATHTEST_TEST_COLUMN_OPERATION 0
+   #include <blazetest/config/MathTest.h>
+   \endcode
 */
+#ifndef BLAZETEST_MATHTEST_TEST_COLUMN_OPERATION
 #define BLAZETEST_MATHTEST_TEST_COLUMN_OPERATION 0
+#endif
 //*************************************************************************************************
 
 
@@ -748,8 +1210,22 @@ typedef double  TypeB;
 //   - 0: The column selection tests are not included in the compilation process and not executed
 //   - 1: The column selection tests are included in the compilation process, but not executed
 //   - 2: The column selection tests are included in the compilation process and executed
+//
+// \note It is possible to specify this compilation switch via command line or by defining this
+// symbol manually before including any Blazetest header file:
+
+   \code
+   g++ ... -DBLAZETEST_MATHTEST_TEST_COLUMNS_OPERATION=0 ...
+   \endcode
+
+   \code
+   #define BLAZETEST_MATHTEST_TEST_COLUMNS_OPERATION 0
+   #include <blazetest/config/MathTest.h>
+   \endcode
 */
+#ifndef BLAZETEST_MATHTEST_TEST_COLUMNS_OPERATION
 #define BLAZETEST_MATHTEST_TEST_COLUMNS_OPERATION 0
+#endif
 //*************************************************************************************************
 
 
@@ -773,18 +1249,46 @@ typedef double  TypeB;
 //   - 0: The band tests are not included in the compilation process and not executed
 //   - 1: The band tests are included in the compilation process, but not executed
 //   - 2: The band tests are included in the compilation process and executed
+//
+// \note It is possible to specify this compilation switch via command line or by defining this
+// symbol manually before including any Blazetest header file:
+
+   \code
+   g++ ... -DBLAZETEST_MATHTEST_TEST_BAND_OPERATION=0 ...
+   \endcode
+
+   \code
+   #define BLAZETEST_MATHTEST_TEST_BAND_OPERATION 0
+   #include <blazetest/config/MathTest.h>
+   \endcode
 */
+#ifndef BLAZETEST_MATHTEST_TEST_BAND_OPERATION
 #define BLAZETEST_MATHTEST_TEST_BAND_OPERATION 0
+#endif
 //*************************************************************************************************
 
 
 //*************************************************************************************************
 /*!\brief Number of repetitions for a single test case.
 //
-// The \a repetitions value specifies the number of repetitions for each single test case. In
-// each repetition the test case is run with random input values. Therefore a higher number of
-// repetitions increases the likelihood of detecting implementationn errors. On the downside
-// the execution of all tests takes longer.
+// The \a BLAZETEST_REPETITIONS value specifies the number of repetitions for each single test
+// case. In each repetition the test case is run with random input values. Therefore a higher
+// number of repetitions increases the likelihood of detecting implementationn errors. On the
+// downside the execution of all tests takes longer.
+//
+// \note It is possible to specify the number of repetitions via command line or by defining this
+// symbol manually before including any Blaze header file:
+
+   \code
+   g++ ... -DBLAZETEST_REPETITIONS=3 ...
+   \endcode
+
+   \code
+   #define BLAZETEST_REPETITIONS 3UL
+   #include <blazetest/config/MathTest.h>
+   \endcode
 */
-const size_t repetitions = 3;
+#ifndef BLAZETEST_REPETITIONS
+#define BLAZETEST_REPETITIONS 3UL
+#endif
 //*************************************************************************************************

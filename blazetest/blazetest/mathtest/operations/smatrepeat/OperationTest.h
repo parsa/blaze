@@ -10370,7 +10370,7 @@ void OperationTest<MT,R0,R1>::convertException( const std::exception& ex )
 template< typename MT >  // Type of the sparse matrix
 void runTest( const Creator<MT>& creator )
 {
-   for( size_t rep=0UL; rep<repetitions; ++rep ) {
+   for( size_t rep=0UL; rep<BLAZETEST_REPETITIONS; ++rep ) {
       OperationTest<MT,3UL,9UL>{ creator };
       OperationTest<MT,6UL,6UL>{ creator };
       OperationTest<MT,9UL,3UL>{ creator };
