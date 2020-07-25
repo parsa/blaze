@@ -42,13 +42,15 @@
 
 #include <iterator>
 #include <memory>
+#include <blaze/util/algorithms/Destroy.h>
+#include <blaze/util/Types.h>
 
 
 namespace blaze {
 
 //=================================================================================================
 //
-//  UNINITIALIZED_VALUE_CONSTRUCT ALGORITHM
+//  UNINITIALIZED_VALUE_CONSTRUCT ALGORITHMS
 //
 //=================================================================================================
 
@@ -63,22 +65,51 @@ namespace blaze {
 // This function value constructs elements in the given range \f$ [first,last) \f$. The range
 // is assumed to be uninitialized.
 */
-template< class ForwardIt >
+template< typename ForwardIt >
 void uninitialized_value_construct( ForwardIt first, ForwardIt last )
 {
-   using Value = typename std::iterator_traits<ForwardIt>::value_type;
+   using T = typename std::iterator_traits<ForwardIt>::value_type;
 
    ForwardIt current( first );
 
    try {
       for( ; current!=last; ++current ) {
-         ::new ( std::addressof( *current ) ) Value();
+         ::new ( std::addressof( *current ) ) T();
       }
    }
-   catch (...) {
-      for( ; first!=current; ++first ) {
-         first->~Value();
+   catch( ... ) {
+      blaze::destroy( first, current );
+      throw;
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Value constructs elements in the given range.
+// \ingroup algorithms
+//
+// \param first Iterator to the first element of the range.
+// \param n The number of elements to be constructed.
+// \return void
+//
+// This function value constructs elements in the given range \f$ [first,first+n) \f$. The range
+// is assumed to be uninitialized.
+*/
+template< typename ForwardIt >
+void uninitialized_value_construct_n( ForwardIt first, size_t n )
+{
+   using T = typename std::iterator_traits<ForwardIt>::value_type;
+
+   ForwardIt current( first );
+
+   try {
+      for( ; n > 0UL; (void) ++current, --n ) {
+         ::new ( std::addressof( *current ) ) T();
       }
+   }
+   catch( ... ) {
+      blaze::destroy( first, current );
       throw;
    }
 }
