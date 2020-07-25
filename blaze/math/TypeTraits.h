@@ -42,6 +42,7 @@
 
 #include <blaze/math/typetraits/CustomOppositeType.h>
 #include <blaze/math/typetraits/CustomTransposeType.h>
+#include <blaze/math/typetraits/DynamicAllocator.h>
 #include <blaze/math/typetraits/HasAbs.h>
 #include <blaze/math/typetraits/HasAcos.h>
 #include <blaze/math/typetraits/HasAcosh.h>
