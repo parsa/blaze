@@ -52,6 +52,26 @@ namespace blaze {
 //=================================================================================================
 
 //*************************************************************************************************
+/*!\brief Alias declaration for nested \c AllocatorType type definitions.
+// \ingroup aliases
+//
+// The AllocatorType_t alias declaration provides a convenient shortcut to access the nested
+// \a AllocatorType type definition of the given type \a T. The following code example shows
+// both ways to access the nested type definition:
+
+   \code
+   using Type1 = typename T::AllocatorType;
+   using Type2 = AllocatorType_t<T>;
+
+   BLAZE_CONSTRAINT_MUST_BE_STRICTLY_SAME_TYPE( Type1, Type2 );
+   \endcode
+*/
+template< typename T >
+using AllocatorType_t = typename T::AllocatorType;
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Alias declaration for nested \c BaseType type definitions.
 // \ingroup aliases
 //
