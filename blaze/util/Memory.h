@@ -45,6 +45,9 @@
 #endif
 #include <cstdlib>
 #include <new>
+#include <blaze/util/algorithms/ConstructAt.h>
+#include <blaze/util/algorithms/Destroy.h>
+#include <blaze/util/algorithms/DestroyAt.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/Exception.h>
@@ -57,13 +60,12 @@ namespace blaze {
 
 //=================================================================================================
 //
-//  BACKEND ALLOCATION FUNCTIONS
+//  BYTE-BASED ALLOCATION FUNCTIONS
 //
 //=================================================================================================
 
 //*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Backend implementation for aligned array allocation.
+/*!\brief Aligned array allocation.
 // \ingroup util
 //
 // \param size The number of bytes to be allocated.
@@ -75,7 +77,7 @@ namespace blaze {
 // restrictions. For that purpose it uses the according system-specific memory allocation
 // functions.
 */
-inline byte_t* allocate_backend( size_t size, size_t alignment )
+inline byte_t* alignedAllocate( size_t size, size_t alignment )
 {
    void* raw( nullptr );
 
@@ -94,22 +96,21 @@ inline byte_t* allocate_backend( size_t size, size_t alignment )
 
    return reinterpret_cast<byte_t*>( raw );
 }
-/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Backend implementation for the deallocation of aligned memory.
+/*!\brief Deallocation of aligned memory.
 // \ingroup util
 //
 // \param address The address of the first element of the array to be deallocated.
 // \return void
 //
-// This function deallocates the given memory that was previously allocated via the allocate()
-// function. For that purpose it uses the according system-specific memory deallocation functions.
+// This function deallocates the given memory that was previously allocated via the
+// alignedAllocate() function. For that purpose it uses the according system-specific memory
+// deallocation functions.
 */
-inline void deallocate_backend( const void* address ) noexcept
+inline void alignedDeallocate( const void* address ) noexcept
 {
 #if BLAZE_WIN32_PLATFORM || BLAZE_WIN64_PLATFORM || BLAZE_MINGW64_PLATFORM
    _aligned_free( const_cast<void*>( address ) );
@@ -119,7 +120,6 @@ inline void deallocate_backend( const void* address ) noexcept
    free( const_cast<void*>( address ) );
 #endif
 }
-/*! \endcond */
 //*************************************************************************************************
 
 
@@ -127,7 +127,7 @@ inline void deallocate_backend( const void* address ) noexcept
 
 //=================================================================================================
 //
-//  ALLOCATION FUNCTIONS
+//  TYPE-BASED ALLOCATION FUNCTIONS
 //
 //=================================================================================================
 
@@ -151,12 +151,13 @@ inline void deallocate_backend( const void* address ) noexcept
    double* dp = allocate<double>( 10UL );
    \endcode
 */
-template< typename T >
-EnableIf_t< IsBuiltin_v<T>, T* > allocate( size_t size )
+template< typename T
+        , EnableIf_t< IsBuiltin_v<T> >* = nullptr >
+T* allocate( size_t size )
 {
    constexpr size_t alignment( AlignmentOf_v<T> );
 
-   return reinterpret_cast<T*>( allocate_backend( size*sizeof(T), alignment ) );
+   return reinterpret_cast<T*>( alignedAllocate( size*sizeof(T), alignment ) );
 }
 //*************************************************************************************************
 
@@ -177,8 +178,9 @@ EnableIf_t< IsBuiltin_v<T>, T* > allocate( size_t size )
 // case any element throws an exception during construction, all elements that have already been
 // constructed are destroyed in reverse order and the allocated memory is deallocated again.
 */
-template< typename T >
-DisableIf_t< IsBuiltin_v<T>, T* > allocate( size_t size )
+template< typename T
+        , DisableIf_t< IsBuiltin_v<T> >* = nullptr >
+T* allocate( size_t size )
 {
    constexpr size_t alignment ( AlignmentOf_v<T> );
    constexpr size_t headersize( ( sizeof(size_t) < alignment ) ? ( alignment ) : ( sizeof( size_t ) ) );
@@ -186,7 +188,7 @@ DisableIf_t< IsBuiltin_v<T>, T* > allocate( size_t size )
    BLAZE_INTERNAL_ASSERT( headersize >= alignment      , "Invalid header size detected" );
    BLAZE_INTERNAL_ASSERT( headersize % alignment == 0UL, "Invalid header size detected" );
 
-   byte_t* const raw( allocate_backend( size*sizeof(T)+headersize, alignment ) );
+   byte_t* const raw( alignedAllocate( size*sizeof(T)+headersize, alignment ) );
 
    *reinterpret_cast<size_t*>( raw ) = size;
 
@@ -194,13 +196,15 @@ DisableIf_t< IsBuiltin_v<T>, T* > allocate( size_t size )
    size_t i( 0UL );
 
    try {
-      for( ; i<size; ++i )
-         ::new (address+i) T();
+      for( ; i<size; ++i ) {
+         blaze::construct_at( address+i );
+      }
    }
    catch( ... ) {
-      while( i != 0UL )
-         address[--i].~T();
-      deallocate_backend( raw );
+      for( ; i>0UL; --i ) {
+         blaze::destroy_at( address+i );
+      }
+      alignedDeallocate( raw );
       throw;
    }
 
@@ -219,13 +223,14 @@ DisableIf_t< IsBuiltin_v<T>, T* > allocate( size_t size )
 // This function deallocates the given memory that was previously allocated via the allocate()
 // function.
 */
-template< typename T >
-EnableIf_t< IsBuiltin_v<T> > deallocate( T* address ) noexcept
+template< typename T
+        , EnableIf_t< IsBuiltin_v<T> >* = nullptr >
+void deallocate( T* address ) noexcept
 {
    if( address == nullptr )
       return;
 
-   deallocate_backend( address );
+   alignedDeallocate( address );
 }
 //*************************************************************************************************
 
@@ -240,8 +245,9 @@ EnableIf_t< IsBuiltin_v<T> > deallocate( T* address ) noexcept
 // This function deallocates the given memory that was previously allocated via the allocate()
 // function.
 */
-template< typename T >
-DisableIf_t< IsBuiltin_v<T> > deallocate( T* address )
+template< typename T
+        , DisableIf_t< IsBuiltin_v<T> >* = nullptr >
+void deallocate( T* address )
 {
    if( address == nullptr )
       return;
@@ -253,12 +259,10 @@ DisableIf_t< IsBuiltin_v<T> > deallocate( T* address )
    BLAZE_INTERNAL_ASSERT( headersize % alignment == 0UL, "Invalid header size detected" );
 
    const byte_t* const raw = reinterpret_cast<byte_t*>( address ) - headersize;
-
    const size_t size( *reinterpret_cast<const size_t*>( raw ) );
-   for( size_t i=0UL; i<size; ++i )
-      address[i].~T();
 
-   deallocate_backend( raw );
+   blaze::destroy_n( address, size );
+   alignedDeallocate( raw );
 }
 //*************************************************************************************************
 
