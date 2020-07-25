@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze/util/Algorithms.h
-//  \brief Headerfile for generic algorithms
+//  \file blaze/util/algorithms/ConstructAt.h
+//  \brief Headerfile for the generic construct_at algorithm
 //
 //  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
@@ -32,23 +32,35 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_UTIL_ALGORITHMS_H_
-#define _BLAZE_UTIL_ALGORITHMS_H_
+#ifndef _BLAZE_UTIL_ALGORITHMS_CONSTRUCTAT_H_
+#define _BLAZE_UTIL_ALGORITHMS_CONSTRUCTAT_H_
 
+
+namespace blaze {
+
+//=================================================================================================
+//
+//  CONSTRUCT_AT ALGORITHM
+//
+//=================================================================================================
 
 //*************************************************************************************************
-// Includes
+/*!\brief Constructs the object at the given address.
+// \ingroup algorithms
+//
+// \param p The address of the object to be constructed.
+// \param args The constructor arguments for the object to be constructed.
+// \return void
+//
+// This function constructs an object of type \a T at the given address.
+*/
+template< typename T, typename... Args >
+void construct_at( T* p, Args&&... args )
+{
+   ::new ( static_cast<void*>( p ) ) T( std::forward<Args>( args )... );
+}
 //*************************************************************************************************
 
-#include <blaze/util/algorithms/ConstructAt.h>
-#include <blaze/util/algorithms/Destroy.h>
-#include <blaze/util/algorithms/DestroyAt.h>
-#include <blaze/util/algorithms/Max.h>
-#include <blaze/util/algorithms/Min.h>
-#include <blaze/util/algorithms/Minmax.h>
-#include <blaze/util/algorithms/Transfer.h>
-#include <blaze/util/algorithms/UninitializedDefaultConstruct.h>
-#include <blaze/util/algorithms/UninitializedMove.h>
-#include <blaze/util/algorithms/UninitializedValueConstruct.h>
+} // namespace blaze
 
 #endif
