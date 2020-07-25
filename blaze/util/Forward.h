@@ -45,6 +45,7 @@ namespace blaze {
 //=================================================================================================
 
 template< typename Type > class AlignedAllocator;
+template< typename Type > class NullAllocator;
 
 } // namespace blaze
 

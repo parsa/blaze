@@ -66,6 +66,7 @@
 #include <blaze/util/MPL.h>
 #include <blaze/util/NonCopyable.h>
 #include <blaze/util/NonCreatable.h>
+#include <blaze/util/NullAllocator.h>
 #include <blaze/util/NullType.h>
 #include <blaze/util/NumericCast.h>
 #include <blaze/util/PointerCast.h>
