@@ -42,13 +42,15 @@
 
 #include <iterator>
 #include <memory>
+#include <blaze/util/algorithms/Destroy.h>
+#include <blaze/util/Types.h>
 
 
 namespace blaze {
 
 //=================================================================================================
 //
-//  UNINITIALIZED_MOVE ALGORITHM
+//  UNINITIALIZED_MOVE ALGORITHMS
 //
 //=================================================================================================
 
@@ -69,20 +71,53 @@ template< typename InputIt
         , typename ForwardIt >
 ForwardIt uninitialized_move( InputIt first, InputIt last, ForwardIt dest )
 {
-   using Value = typename std::iterator_traits<ForwardIt>::value_type;
+   using T = typename std::iterator_traits<ForwardIt>::value_type;
 
    ForwardIt current( dest );
 
    try {
       for( ; first!=last; ++first, ++current ) {
-         ::new ( std::addressof( *current ) ) Value( std::move( *first ) );
+         ::new ( std::addressof( *current ) ) T( std::move( *first ) );
       }
       return current;
    }
    catch( ... ) {
-      for( ; dest != current; ++dest ) {
-         dest->~Value();
+      blaze::destroy( dest, current );
+      throw;
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Move the elements from the given source range to the uninitialized destination range.
+// \ingroup algorithms
+//
+// \param first Iterator to the first element of the source range.
+// \param n The number of elements to be moved.
+// \param dest Iterator to the first element of the destination range.
+// \return Output iterator to the element one past the last copied element.
+//
+// This function moves the elements from the source range \f$ [first,first+n) \f$ to the specified
+// destination range. The destination range is assumed to be uninitialized, i.e. the elements
+// are move constructed.
+*/
+template< typename InputIt
+        , typename ForwardIt >
+ForwardIt uninitialized_move_n( InputIt first, size_t n, ForwardIt dest )
+{
+   using T = typename std::iterator_traits<ForwardIt>::value_type;
+
+   ForwardIt current( dest );
+
+   try {
+      for( ; n > 0UL; (void) ++first, (void) ++current, --n ) {
+         ::new ( std::addressof( *current ) ) T( std::move( *first ) );
       }
+      return current;
+   }
+   catch( ... ) {
+      blaze::destroy( dest, current );
       throw;
    }
 }
