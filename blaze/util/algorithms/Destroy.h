@@ -42,13 +42,14 @@
 
 #include <memory>
 #include <blaze/util/algorithms/DestroyAt.h>
+#include <blaze/util/Types.h>
 
 
 namespace blaze {
 
 //=================================================================================================
 //
-//  DESTROY ALGORITHM
+//  DESTROY ALGORITHMS
 //
 //=================================================================================================
 
@@ -66,6 +67,26 @@ template< typename ForwardIt >
 void destroy( ForwardIt first, ForwardIt last )
 {
    for( ; first!=last; ++first ) {
+      blaze::destroy_at( std::addressof( *first ) );
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Destroys the given range of objects .
+// \ingroup algorithms
+//
+// \param first Iterator to the first element to be destroyed.
+// \param n The number of elements to be destroyed.
+// \return void
+//
+// This function explicitly calls the destructor of all object in the given range.
+*/
+template< typename ForwardIt >
+void destroy_n( ForwardIt first, size_t n )
+{
+   for( ; n > 0UL; (void) ++first, --n ) {
       blaze::destroy_at( std::addressof( *first ) );
    }
 }
