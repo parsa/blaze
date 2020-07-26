@@ -80,6 +80,8 @@ class OperationTest
    //**Test functions******************************************************************************
    /*!\name Test functions */
    //@{
+   void testDynamicAllocator();
+   void testGetAllocator();
    void testHasCompositeType();
    void testHasResultType();
    void testIsColumnMajorMatrix();

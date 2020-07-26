@@ -79,6 +79,8 @@
 #include <blaze/math/StrictlyLowerMatrix.h>
 #include <blaze/math/StrictlyUpperMatrix.h>
 #include <blaze/math/SymmetricMatrix.h>
+#include <blaze/math/typetraits/DynamicAllocator.h>
+#include <blaze/math/typetraits/GetAllocator.h>
 #include <blaze/math/typetraits/HasCompositeType.h>
 #include <blaze/math/typetraits/HasResultType.h>
 #include <blaze/math/typetraits/IsColumnMajorMatrix.h>
@@ -137,6 +139,7 @@ namespace typetraits {
 */
 OperationTest::OperationTest()
 {
+   testGetAllocator();
    testHasCompositeType();
    testHasResultType();
    testIsColumnMajorMatrix();
@@ -178,6 +181,86 @@ OperationTest::OperationTest()
 //  TEST TYPE TRAITS
 //
 //=================================================================================================
+
+//*************************************************************************************************
+/*!\brief Test of the mathematical 'DynamicAllocator' type trait.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a compile time test of the mathematical 'DynamicAllocator' type trait.
+// In case an error is detected, a compilation error is created.
+*/
+void OperationTest::testDynamicAllocator()
+{
+   using blaze::DynamicAllocator;
+   using blaze::AlignedAllocator;
+   using blaze::NullAllocator;
+
+   using Alloc1 = AlignedAllocator<int>;
+   using Alloc2 = NullAllocator<double>;
+
+   using Result1 = DynamicAllocator<Alloc1>::Type<A>;
+   using Result2 = DynamicAllocator<Alloc2>::Type<A>;
+   using Result3 = DynamicAllocator<Alloc1,Alloc1>::Type<A>;
+   using Result4 = DynamicAllocator<Alloc1,Alloc2>::Type<A>;
+   using Result5 = DynamicAllocator<Alloc2,Alloc1>::Type<A>;
+   using Result6 = DynamicAllocator<Alloc2,Alloc2>::Type<A>;
+
+   using Expected = AlignedAllocator<A>;
+
+   BLAZE_CONSTRAINT_MUST_BE_STRICTLY_SAME_TYPE( Result1, Expected );
+   BLAZE_CONSTRAINT_MUST_BE_STRICTLY_SAME_TYPE( Result2, Expected );
+   BLAZE_CONSTRAINT_MUST_BE_STRICTLY_SAME_TYPE( Result3, Expected );
+   BLAZE_CONSTRAINT_MUST_BE_STRICTLY_SAME_TYPE( Result4, Expected );
+   BLAZE_CONSTRAINT_MUST_BE_STRICTLY_SAME_TYPE( Result5, Expected );
+   BLAZE_CONSTRAINT_MUST_BE_STRICTLY_SAME_TYPE( Result6, Expected );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the mathematical 'GetAllocator' type trait.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a compile time test of the mathematical 'GetAllocator' type trait.
+// In case an error is detected, a compilation error is created.
+*/
+void OperationTest::testGetAllocator()
+{
+   using blaze::DynamicVector;
+   using blaze::DynamicMatrix;
+   using blaze::StaticVector;
+   using blaze::CompressedMatrix;
+   using blaze::GetAllocator;
+   using blaze::AlignedAllocator;
+   using blaze::NullAllocator;
+
+   using Source1 = DynamicVector<int>;
+   using Source2 = const DynamicVector<double>;
+   using Source3 = volatile DynamicMatrix<int>;
+   using Source4 = int;
+   using Source5 = const StaticVector<float,3UL>;
+   using Source6 = volatile CompressedMatrix<int>;
+
+   using Result1 = AlignedAllocator<int>;
+   using Result2 = AlignedAllocator<double>;
+   using Result3 = AlignedAllocator<int>;
+   using Result4 = NullAllocator<int>;
+   using Result5 = NullAllocator<float>;
+   using Result6 = NullAllocator<int>;
+
+   BLAZE_CONSTRAINT_MUST_BE_STRICTLY_SAME_TYPE( GetAllocator<Source1>::Type, Result1 );
+   BLAZE_CONSTRAINT_MUST_BE_STRICTLY_SAME_TYPE( GetAllocator<Source2>::Type, Result2 );
+   BLAZE_CONSTRAINT_MUST_BE_STRICTLY_SAME_TYPE( GetAllocator<Source3>::Type, Result3 );
+   BLAZE_CONSTRAINT_MUST_BE_STRICTLY_SAME_TYPE( GetAllocator<Source4>::Type, Result4 );
+   BLAZE_CONSTRAINT_MUST_BE_STRICTLY_SAME_TYPE( GetAllocator<Source5>::Type, Result5 );
+   BLAZE_CONSTRAINT_MUST_BE_STRICTLY_SAME_TYPE( GetAllocator<Source6>::Type, Result6 );
+}
+//*************************************************************************************************
+
 
 //*************************************************************************************************
 /*!\brief Test of the mathematical 'HasCompositeType' type trait.
