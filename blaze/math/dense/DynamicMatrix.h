@@ -42,6 +42,7 @@
 
 #include <array>
 #include <algorithm>
+#include <memory>
 #include <utility>
 #include <blaze/math/Aliases.h>
 #include <blaze/math/AlignmentFlag.h>
@@ -77,6 +78,8 @@
 #include <blaze/math/traits/SolveTrait.h>
 #include <blaze/math/traits/SubmatrixTrait.h>
 #include <blaze/math/traits/SubTrait.h>
+#include <blaze/math/typetraits/DynamicAllocator.h>
+#include <blaze/math/typetraits/GetAllocator.h>
 #include <blaze/math/typetraits/HasConstDataAccess.h>
 #include <blaze/math/typetraits/HasMutableDataAccess.h>
 #include <blaze/math/typetraits/HasSIMDAdd.h>
@@ -114,9 +117,8 @@
 #include <blaze/system/Optimizations.h>
 #include <blaze/system/Restrict.h>
 #include <blaze/system/Thresholds.h>
-#include <blaze/util/algorithms/Max.h>
-#include <blaze/util/algorithms/Min.h>
-#include <blaze/util/algorithms/Transfer.h>
+#include <blaze/util/Algorithms.h>
+#include <blaze/util/AlignedAllocator.h>
 #include <blaze/util/AlignmentCheck.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Const.h>
@@ -129,6 +131,7 @@
 #include <blaze/util/MaybeUnused.h>
 #include <blaze/util/Memory.h>
 #include <blaze/util/Types.h>
+#include <blaze/util/typetraits/IsBuiltin.h>
 #include <blaze/util/typetraits/IsSame.h>
 #include <blaze/util/typetraits/IsVectorizable.h>
 #include <blaze/util/typetraits/RemoveConst.h>
@@ -157,18 +160,20 @@ namespace blaze {
    \code
    namespace blaze {
 
-   template< typename Type, bool SO, typename Tag >
+   template< typename Type, bool SO, typename Alloc, typename Tag >
    class DynamicMatrix;
 
    } // namespace blaze
    \endcode
 
-//  - Type: specifies the type of the matrix elements. DynamicMatrix can be used with any
-//          non-cv-qualified, non-reference, non-pointer element type.
-//  - SO  : specifies the storage order (blaze::rowMajor, blaze::columnMajor) of the matrix.
-//          The default value is blaze::defaultStorageOrder.
-//  - Tag : optional type parameter to tag the matrix. The default type is \c blaze::Group0.
-//          See \ref grouping_tagging for details.
+//  - Type : specifies the type of the matrix elements. DynamicMatrix can be used with any
+//           non-cv-qualified, non-reference, non-pointer element type.
+//  - SO   : specifies the storage order (blaze::rowMajor, blaze::columnMajor) of the matrix.
+//           The default value is blaze::defaultStorageOrder.
+//  - Alloc: specifies the type of allocator used to allocate dynamic memory. The default type
+//           of allocator is \c blaze::AlignedAllocator.
+//  - Tag  : optional type parameter to tag the matrix. The default type is \c blaze::Group0.
+//           See \ref grouping_tagging for details.
 //
 // Depending on the storage order, the matrix elements are either stored in a row-wise fashion
 // or in a column-wise fashion. Given the 2x3 matrix
@@ -230,9 +235,10 @@ namespace blaze {
 */
 template< typename Type   // Data type of the matrix
         , bool SO         // Storage order
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
 class DynamicMatrix
-   : public DenseMatrix< DynamicMatrix<Type,SO,Tag>, SO >
+   : public DenseMatrix< DynamicMatrix<Type,SO,Alloc,Tag>, SO >
 {
  private:
    //**********************************************************************************************
@@ -242,18 +248,19 @@ class DynamicMatrix
 
  public:
    //**Type definitions****************************************************************************
-   using This       = DynamicMatrix<Type,SO,Tag>;  //!< Type of this DynamicMatrix instance.
-   using BaseType   = DenseMatrix<This,SO>;        //!< Base type of this DynamicMatrix instance.
-   using ResultType = This;                        //!< Result type for expression template evaluations.
+   using This       = DynamicMatrix<Type,SO,Alloc,Tag>;  //!< Type of this DynamicMatrix instance.
+   using BaseType   = DenseMatrix<This,SO>;              //!< Base type of this DynamicMatrix instance.
+   using ResultType = This;                              //!< Result type for expression template evaluations.
 
    //! Result type with opposite storage order for expression template evaluations.
-   using OppositeType = DynamicMatrix<Type,!SO,Tag>;
+   using OppositeType = DynamicMatrix<Type,!SO,Alloc,Tag>;
 
    //! Transpose type for expression template evaluations.
-   using TransposeType = DynamicMatrix<Type,!SO,Tag>;
+   using TransposeType = DynamicMatrix<Type,!SO,Alloc,Tag>;
 
    using ElementType   = Type;                      //!< Type of the matrix elements.
    using SIMDType      = SIMDTrait_t<ElementType>;  //!< SIMD type of the matrix elements.
+   using AllocatorType = AlignedAllocator<Type>;    //!< Allocator type of this DynamicMatrix instance.
    using TagType       = Tag;                       //!< Tag type of this DynamicMatrix instance.
    using ReturnType    = const Type&;               //!< Return type for expression template evaluations.
    using CompositeType = const This&;               //!< Data type for composite expression templates.
@@ -271,8 +278,13 @@ class DynamicMatrix
    /*!\brief Rebind mechanism to obtain a DynamicMatrix with different data/element type.
    */
    template< typename NewType >  // Data type of the other matrix
-   struct Rebind {
-      using Other = DynamicMatrix<NewType,SO,Tag>;  //!< The type of the other DynamicMatrix.
+   struct Rebind
+   {
+      //! The new type of allocator.
+      using NewAlloc = typename std::allocator_traits<Alloc>::template rebind_alloc<NewType>;
+
+      //! The type of the other DynamicMatrix.
+      using Other = DynamicMatrix<NewType,SO,NewAlloc,Tag>;
    };
    //**********************************************************************************************
 
@@ -281,8 +293,9 @@ class DynamicMatrix
    */
    template< size_t NewM    // Number of rows of the other matrix
            , size_t NewN >  // Number of columns of the other matrix
-   struct Resize {
-      using Other = DynamicMatrix<Type,SO,Tag>;  //!< The type of the other DynamicMatrix.
+   struct Resize
+   {
+      using Other = DynamicMatrix<Type,SO,Alloc,Tag>;  //!< The type of the other DynamicMatrix.
    };
    //**********************************************************************************************
 
@@ -527,6 +540,8 @@ class DynamicMatrix
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
+   inline Type*  allocate( size_t n );
+   inline void   deallocate( Type* ptr, size_t n ) noexcept;
    inline size_t addPadding( size_t value ) const noexcept;
    //@}
    //**********************************************************************************************
@@ -600,8 +615,9 @@ DynamicMatrix( std::array<std::array<Type,N>,M> ) -> DynamicMatrix<Type>;
 */
 template< typename Type   // Data type of the matrix
         , bool SO         // Storage order
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
-inline DynamicMatrix<Type,SO,Tag>::DynamicMatrix() noexcept
+inline DynamicMatrix<Type,SO,Alloc,Tag>::DynamicMatrix() noexcept
    : m_       ( 0UL )      // The current number of rows of the matrix
    , n_       ( 0UL )      // The current number of columns of the matrix
    , nn_      ( 0UL )      // The alignment adjusted number of columns
@@ -612,25 +628,27 @@ inline DynamicMatrix<Type,SO,Tag>::DynamicMatrix() noexcept
 
 
 //*************************************************************************************************
-/*!\brief Constructor for a matrix of size \f$ m \times n \f$. No element initialization is performed!
+/*!\brief Constructor for a matrix of size \f$ m \times n \f$. For built-in types no initialization
+//        is performed!
 //
 // \param m The number of rows of the matrix.
 // \param n The number of columns of the matrix.
 //
-// \note This constructor is only responsible to allocate the required dynamic memory. No
-// element initialization is performed!
+// \note This constructor is only responsible to allocate the required dynamic memory. For
+// built-in types no initialization of the elements is performed!
 */
 template< typename Type   // Data type of the matrix
         , bool SO         // Storage order
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
-inline DynamicMatrix<Type,SO,Tag>::DynamicMatrix( size_t m, size_t n )
-   : m_       ( m )                            // The current number of rows of the matrix
-   , n_       ( n )                            // The current number of columns of the matrix
-   , nn_      ( addPadding( n ) )              // The alignment adjusted number of columns
-   , capacity_( m_*nn_ )                       // The maximum capacity of the matrix
-   , v_       ( allocate<Type>( capacity_ ) )  // The matrix elements
+inline DynamicMatrix<Type,SO,Alloc,Tag>::DynamicMatrix( size_t m, size_t n )
+   : m_       ( m )                      // The current number of rows of the matrix
+   , n_       ( n )                      // The current number of columns of the matrix
+   , nn_      ( addPadding( n ) )        // The alignment adjusted number of columns
+   , capacity_( m_*nn_ )                 // The maximum capacity of the matrix
+   , v_       ( allocate( capacity_ ) )  // The matrix elements
 {
-   if( IsVectorizable_v<Type> ) {
+   if( IsVectorizable_v<Type> && IsBuiltin_v<Type> ) {
       for( size_t i=0UL; i<m_; ++i ) {
          for( size_t j=n_; j<nn_; ++j ) {
             v_[i*nn_+j] = Type();
@@ -654,8 +672,9 @@ inline DynamicMatrix<Type,SO,Tag>::DynamicMatrix( size_t m, size_t n )
 */
 template< typename Type   // Data type of the matrix
         , bool SO         // Storage order
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
-inline DynamicMatrix<Type,SO,Tag>::DynamicMatrix( size_t m, size_t n, const Type& init )
+inline DynamicMatrix<Type,SO,Alloc,Tag>::DynamicMatrix( size_t m, size_t n, const Type& init )
    : DynamicMatrix( m, n )
 {
    for( size_t i=0UL; i<m; ++i ) {
@@ -691,8 +710,9 @@ inline DynamicMatrix<Type,SO,Tag>::DynamicMatrix( size_t m, size_t n, const Type
 */
 template< typename Type   // Data type of the matrix
         , bool SO         // Storage order
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
-inline DynamicMatrix<Type,SO,Tag>::DynamicMatrix( initializer_list< initializer_list<Type> > list )
+inline DynamicMatrix<Type,SO,Alloc,Tag>::DynamicMatrix( initializer_list< initializer_list<Type> > list )
    : DynamicMatrix( list.size(), determineColumns( list ) )
 {
    size_t i( 0UL );
@@ -732,9 +752,10 @@ inline DynamicMatrix<Type,SO,Tag>::DynamicMatrix( initializer_list< initializer_
 */
 template< typename Type     // Data type of the matrix
         , bool SO           // Storage order
+        , typename Alloc    // Type of the allocator
         , typename Tag >    // Type tag
 template< typename Other >  // Data type of the initialization array
-inline DynamicMatrix<Type,SO,Tag>::DynamicMatrix( size_t m, size_t n, const Other* array )
+inline DynamicMatrix<Type,SO,Alloc,Tag>::DynamicMatrix( size_t m, size_t n, const Other* array )
    : DynamicMatrix( m, n )
 {
    for( size_t i=0UL; i<m; ++i ) {
@@ -771,11 +792,12 @@ inline DynamicMatrix<Type,SO,Tag>::DynamicMatrix( size_t m, size_t n, const Othe
 */
 template< typename Type   // Data type of the matrix
         , bool SO         // Storage order
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
 template< typename Other  // Data type of the static array
         , size_t Rows     // Number of rows of the static array
         , size_t Cols >   // Number of columns of the static array
-inline DynamicMatrix<Type,SO,Tag>::DynamicMatrix( const Other (&array)[Rows][Cols] )
+inline DynamicMatrix<Type,SO,Alloc,Tag>::DynamicMatrix( const Other (&array)[Rows][Cols] )
    : DynamicMatrix( Rows, Cols )
 {
    for( size_t i=0UL; i<Rows; ++i ) {
@@ -812,11 +834,12 @@ inline DynamicMatrix<Type,SO,Tag>::DynamicMatrix( const Other (&array)[Rows][Col
 */
 template< typename Type   // Data type of the matrix
         , bool SO         // Storage order
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
 template< typename Other  // Data type of the std::array
         , size_t Rows     // Number of rows of the std::array
         , size_t Cols >   // Number of columns of the std::array
-inline DynamicMatrix<Type,SO,Tag>::DynamicMatrix( const std::array<std::array<Other,Cols>,Rows>& array )
+inline DynamicMatrix<Type,SO,Alloc,Tag>::DynamicMatrix( const std::array<std::array<Other,Cols>,Rows>& array )
    : DynamicMatrix( Rows, Cols )
 {
    for( size_t i=0UL; i<Rows; ++i ) {
@@ -840,8 +863,9 @@ inline DynamicMatrix<Type,SO,Tag>::DynamicMatrix( const std::array<std::array<Ot
 */
 template< typename Type   // Data type of the matrix
         , bool SO         // Storage order
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
-inline DynamicMatrix<Type,SO,Tag>::DynamicMatrix( const DynamicMatrix& m )
+inline DynamicMatrix<Type,SO,Alloc,Tag>::DynamicMatrix( const DynamicMatrix& m )
    : DynamicMatrix( m.m_, m.n_ )
 {
    BLAZE_INTERNAL_ASSERT( capacity_ <= m.capacity_, "Invalid capacity estimation" );
@@ -860,8 +884,9 @@ inline DynamicMatrix<Type,SO,Tag>::DynamicMatrix( const DynamicMatrix& m )
 */
 template< typename Type   // Data type of the matrix
         , bool SO         // Storage order
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
-inline DynamicMatrix<Type,SO,Tag>::DynamicMatrix( DynamicMatrix&& m ) noexcept
+inline DynamicMatrix<Type,SO,Alloc,Tag>::DynamicMatrix( DynamicMatrix&& m ) noexcept
    : m_       ( m.m_        )  // The current number of rows of the matrix
    , n_       ( m.n_        )  // The current number of columns of the matrix
    , nn_      ( m.nn_       )  // The alignment adjusted number of columns
@@ -884,15 +909,16 @@ inline DynamicMatrix<Type,SO,Tag>::DynamicMatrix( DynamicMatrix&& m ) noexcept
 */
 template< typename Type   // Data type of the matrix
         , bool SO         // Storage order
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
 template< typename MT     // Type of the foreign matrix
         , bool SO2 >      // Storage order of the foreign matrix
-inline DynamicMatrix<Type,SO,Tag>::DynamicMatrix( const Matrix<MT,SO2>& m )
+inline DynamicMatrix<Type,SO,Alloc,Tag>::DynamicMatrix( const Matrix<MT,SO2>& m )
    : DynamicMatrix( (*m).rows(), (*m).columns() )
 {
    BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<MT> );
 
-   if( IsSparseMatrix_v<MT> ) {
+   if( IsSparseMatrix_v<MT> && IsBuiltin_v<Type> ) {
       reset();
    }
 
@@ -916,10 +942,11 @@ inline DynamicMatrix<Type,SO,Tag>::DynamicMatrix( const Matrix<MT,SO2>& m )
 */
 template< typename Type   // Data type of the matrix
         , bool SO         // Storage order
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
-inline DynamicMatrix<Type,SO,Tag>::~DynamicMatrix()
+inline DynamicMatrix<Type,SO,Alloc,Tag>::~DynamicMatrix()
 {
-   deallocate( v_ );
+   deallocate( v_, capacity_ );
 }
 //*************************************************************************************************
 
@@ -944,9 +971,10 @@ inline DynamicMatrix<Type,SO,Tag>::~DynamicMatrix()
 */
 template< typename Type   // Data type of the matrix
         , bool SO         // Storage order
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
-inline typename DynamicMatrix<Type,SO,Tag>::Reference
-   DynamicMatrix<Type,SO,Tag>::operator()( size_t i, size_t j ) noexcept
+inline typename DynamicMatrix<Type,SO,Alloc,Tag>::Reference
+   DynamicMatrix<Type,SO,Alloc,Tag>::operator()( size_t i, size_t j ) noexcept
 {
    BLAZE_USER_ASSERT( i<m_, "Invalid row access index"    );
    BLAZE_USER_ASSERT( j<n_, "Invalid column access index" );
@@ -967,9 +995,10 @@ inline typename DynamicMatrix<Type,SO,Tag>::Reference
 */
 template< typename Type   // Data type of the matrix
         , bool SO         // Storage order
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
-inline typename DynamicMatrix<Type,SO,Tag>::ConstReference
-   DynamicMatrix<Type,SO,Tag>::operator()( size_t i, size_t j ) const noexcept
+inline typename DynamicMatrix<Type,SO,Alloc,Tag>::ConstReference
+   DynamicMatrix<Type,SO,Alloc,Tag>::operator()( size_t i, size_t j ) const noexcept
 {
    BLAZE_USER_ASSERT( i<m_, "Invalid row access index"    );
    BLAZE_USER_ASSERT( j<n_, "Invalid column access index" );
@@ -991,9 +1020,10 @@ inline typename DynamicMatrix<Type,SO,Tag>::ConstReference
 */
 template< typename Type   // Data type of the matrix
         , bool SO         // Storage order
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
-inline typename DynamicMatrix<Type,SO,Tag>::Reference
-   DynamicMatrix<Type,SO,Tag>::at( size_t i, size_t j )
+inline typename DynamicMatrix<Type,SO,Alloc,Tag>::Reference
+   DynamicMatrix<Type,SO,Alloc,Tag>::at( size_t i, size_t j )
 {
    if( i >= m_ ) {
       BLAZE_THROW_OUT_OF_RANGE( "Invalid row access index" );
@@ -1019,9 +1049,10 @@ inline typename DynamicMatrix<Type,SO,Tag>::Reference
 */
 template< typename Type   // Data type of the matrix
         , bool SO         // Storage order
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
-inline typename DynamicMatrix<Type,SO,Tag>::ConstReference
-   DynamicMatrix<Type,SO,Tag>::at( size_t i, size_t j ) const
+inline typename DynamicMatrix<Type,SO,Alloc,Tag>::ConstReference
+   DynamicMatrix<Type,SO,Alloc,Tag>::at( size_t i, size_t j ) const
 {
    if( i >= m_ ) {
       BLAZE_THROW_OUT_OF_RANGE( "Invalid row access index" );
@@ -1048,9 +1079,10 @@ inline typename DynamicMatrix<Type,SO,Tag>::ConstReference
 */
 template< typename Type   // Data type of the matrix
         , bool SO         // Storage order
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
-inline typename DynamicMatrix<Type,SO,Tag>::Pointer
-   DynamicMatrix<Type,SO,Tag>::data() noexcept
+inline typename DynamicMatrix<Type,SO,Alloc,Tag>::Pointer
+   DynamicMatrix<Type,SO,Alloc,Tag>::data() noexcept
 {
    return v_;
 }
@@ -1071,9 +1103,10 @@ inline typename DynamicMatrix<Type,SO,Tag>::Pointer
 */
 template< typename Type   // Data type of the matrix
         , bool SO         // Storage order
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
-inline typename DynamicMatrix<Type,SO,Tag>::ConstPointer
-   DynamicMatrix<Type,SO,Tag>::data() const noexcept
+inline typename DynamicMatrix<Type,SO,Alloc,Tag>::ConstPointer
+   DynamicMatrix<Type,SO,Alloc,Tag>::data() const noexcept
 {
    return v_;
 }
@@ -1090,9 +1123,10 @@ inline typename DynamicMatrix<Type,SO,Tag>::ConstPointer
 */
 template< typename Type   // Data type of the matrix
         , bool SO         // Storage order
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
-inline typename DynamicMatrix<Type,SO,Tag>::Pointer
-   DynamicMatrix<Type,SO,Tag>::data( size_t i ) noexcept
+inline typename DynamicMatrix<Type,SO,Alloc,Tag>::Pointer
+   DynamicMatrix<Type,SO,Alloc,Tag>::data( size_t i ) noexcept
 {
    BLAZE_USER_ASSERT( i < m_, "Invalid dense matrix row access index" );
    return v_ + i*nn_;
@@ -1110,9 +1144,10 @@ inline typename DynamicMatrix<Type,SO,Tag>::Pointer
 */
 template< typename Type   // Data type of the matrix
         , bool SO         // Storage order
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
-inline typename DynamicMatrix<Type,SO,Tag>::ConstPointer
-   DynamicMatrix<Type,SO,Tag>::data( size_t i ) const noexcept
+inline typename DynamicMatrix<Type,SO,Alloc,Tag>::ConstPointer
+   DynamicMatrix<Type,SO,Alloc,Tag>::data( size_t i ) const noexcept
 {
    BLAZE_USER_ASSERT( i < m_, "Invalid dense matrix row access index" );
    return v_ + i*nn_;
@@ -1133,9 +1168,10 @@ inline typename DynamicMatrix<Type,SO,Tag>::ConstPointer
 */
 template< typename Type   // Data type of the matrix
         , bool SO         // Storage order
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
-inline typename DynamicMatrix<Type,SO,Tag>::Iterator
-   DynamicMatrix<Type,SO,Tag>::begin( size_t i ) noexcept
+inline typename DynamicMatrix<Type,SO,Alloc,Tag>::Iterator
+   DynamicMatrix<Type,SO,Alloc,Tag>::begin( size_t i ) noexcept
 {
    BLAZE_USER_ASSERT( i < m_, "Invalid dense matrix row access index" );
    return Iterator( v_ + i*nn_ );
@@ -1156,9 +1192,10 @@ inline typename DynamicMatrix<Type,SO,Tag>::Iterator
 */
 template< typename Type   // Data type of the matrix
         , bool SO         // Storage order
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
-inline typename DynamicMatrix<Type,SO,Tag>::ConstIterator
-   DynamicMatrix<Type,SO,Tag>::begin( size_t i ) const noexcept
+inline typename DynamicMatrix<Type,SO,Alloc,Tag>::ConstIterator
+   DynamicMatrix<Type,SO,Alloc,Tag>::begin( size_t i ) const noexcept
 {
    BLAZE_USER_ASSERT( i < m_, "Invalid dense matrix row access index" );
    return ConstIterator( v_ + i*nn_ );
@@ -1179,9 +1216,10 @@ inline typename DynamicMatrix<Type,SO,Tag>::ConstIterator
 */
 template< typename Type   // Data type of the matrix
         , bool SO         // Storage order
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
-inline typename DynamicMatrix<Type,SO,Tag>::ConstIterator
-   DynamicMatrix<Type,SO,Tag>::cbegin( size_t i ) const noexcept
+inline typename DynamicMatrix<Type,SO,Alloc,Tag>::ConstIterator
+   DynamicMatrix<Type,SO,Alloc,Tag>::cbegin( size_t i ) const noexcept
 {
    BLAZE_USER_ASSERT( i < m_, "Invalid dense matrix row access index" );
    return ConstIterator( v_ + i*nn_ );
@@ -1202,9 +1240,10 @@ inline typename DynamicMatrix<Type,SO,Tag>::ConstIterator
 */
 template< typename Type   // Data type of the matrix
         , bool SO         // Storage order
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
-inline typename DynamicMatrix<Type,SO,Tag>::Iterator
-   DynamicMatrix<Type,SO,Tag>::end( size_t i ) noexcept
+inline typename DynamicMatrix<Type,SO,Alloc,Tag>::Iterator
+   DynamicMatrix<Type,SO,Alloc,Tag>::end( size_t i ) noexcept
 {
    BLAZE_USER_ASSERT( i < m_, "Invalid dense matrix row access index" );
    return Iterator( v_ + i*nn_ + n_ );
@@ -1225,9 +1264,10 @@ inline typename DynamicMatrix<Type,SO,Tag>::Iterator
 */
 template< typename Type   // Data type of the matrix
         , bool SO         // Storage order
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
-inline typename DynamicMatrix<Type,SO,Tag>::ConstIterator
-   DynamicMatrix<Type,SO,Tag>::end( size_t i ) const noexcept
+inline typename DynamicMatrix<Type,SO,Alloc,Tag>::ConstIterator
+   DynamicMatrix<Type,SO,Alloc,Tag>::end( size_t i ) const noexcept
 {
    BLAZE_USER_ASSERT( i < m_, "Invalid dense matrix row access index" );
    return ConstIterator( v_ + i*nn_ + n_ );
@@ -1248,9 +1288,10 @@ inline typename DynamicMatrix<Type,SO,Tag>::ConstIterator
 */
 template< typename Type   // Data type of the matrix
         , bool SO         // Storage order
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
-inline typename DynamicMatrix<Type,SO,Tag>::ConstIterator
-   DynamicMatrix<Type,SO,Tag>::cend( size_t i ) const noexcept
+inline typename DynamicMatrix<Type,SO,Alloc,Tag>::ConstIterator
+   DynamicMatrix<Type,SO,Alloc,Tag>::cend( size_t i ) const noexcept
 {
    BLAZE_USER_ASSERT( i < m_, "Invalid dense matrix row access index" );
    return ConstIterator( v_ + i*nn_ + n_ );
@@ -1274,9 +1315,10 @@ inline typename DynamicMatrix<Type,SO,Tag>::ConstIterator
 */
 template< typename Type   // Data type of the matrix
         , bool SO         // Storage order
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
-inline DynamicMatrix<Type,SO,Tag>&
-   DynamicMatrix<Type,SO,Tag>::operator=( const Type& rhs ) &
+inline DynamicMatrix<Type,SO,Alloc,Tag>&
+   DynamicMatrix<Type,SO,Alloc,Tag>::operator=( const Type& rhs ) &
 {
    for( size_t i=0UL; i<m_; ++i )
       for( size_t j=0UL; j<n_; ++j )
@@ -1310,9 +1352,10 @@ inline DynamicMatrix<Type,SO,Tag>&
 */
 template< typename Type   // Data type of the matrix
         , bool SO         // Storage order
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
-inline DynamicMatrix<Type,SO,Tag>&
-   DynamicMatrix<Type,SO,Tag>::operator=( initializer_list< initializer_list<Type> > list ) &
+inline DynamicMatrix<Type,SO,Alloc,Tag>&
+   DynamicMatrix<Type,SO,Alloc,Tag>::operator=( initializer_list< initializer_list<Type> > list ) &
 {
    resize( list.size(), determineColumns( list ), false );
 
@@ -1352,12 +1395,13 @@ inline DynamicMatrix<Type,SO,Tag>&
 */
 template< typename Type   // Data type of the matrix
         , bool SO         // Storage order
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
 template< typename Other  // Data type of the static array
         , size_t Rows     // Number of rows of the static array
         , size_t Cols >   // Number of columns of the static array
-inline DynamicMatrix<Type,SO,Tag>&
-   DynamicMatrix<Type,SO,Tag>::operator=( const Other (&array)[Rows][Cols] ) &
+inline DynamicMatrix<Type,SO,Alloc,Tag>&
+   DynamicMatrix<Type,SO,Alloc,Tag>::operator=( const Other (&array)[Rows][Cols] ) &
 {
    resize( Rows, Cols, false );
 
@@ -1394,12 +1438,13 @@ inline DynamicMatrix<Type,SO,Tag>&
 */
 template< typename Type   // Data type of the matrix
         , bool SO         // Storage order
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
 template< typename Other  // Data type of the std::array
         , size_t Rows     // Number of rows of the std::array
         , size_t Cols >   // Number of columns of the std::array
-inline DynamicMatrix<Type,SO,Tag>&
-   DynamicMatrix<Type,SO,Tag>::operator=( const std::array<std::array<Other,Cols>,Rows>& array ) &
+inline DynamicMatrix<Type,SO,Alloc,Tag>&
+   DynamicMatrix<Type,SO,Alloc,Tag>::operator=( const std::array<std::array<Other,Cols>,Rows>& array ) &
 {
    resize( Rows, Cols, false );
 
@@ -1423,9 +1468,10 @@ inline DynamicMatrix<Type,SO,Tag>&
 */
 template< typename Type   // Data type of the matrix
         , bool SO         // Storage order
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
-inline DynamicMatrix<Type,SO,Tag>&
-   DynamicMatrix<Type,SO,Tag>::operator=( const DynamicMatrix& rhs ) &
+inline DynamicMatrix<Type,SO,Alloc,Tag>&
+   DynamicMatrix<Type,SO,Alloc,Tag>::operator=( const DynamicMatrix& rhs ) &
 {
    if( &rhs == this ) return *this;
 
@@ -1447,11 +1493,12 @@ inline DynamicMatrix<Type,SO,Tag>&
 */
 template< typename Type   // Data type of the matrix
         , bool SO         // Storage order
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
-inline DynamicMatrix<Type,SO,Tag>&
-   DynamicMatrix<Type,SO,Tag>::operator=( DynamicMatrix&& rhs ) & noexcept
+inline DynamicMatrix<Type,SO,Alloc,Tag>&
+   DynamicMatrix<Type,SO,Alloc,Tag>::operator=( DynamicMatrix&& rhs ) & noexcept
 {
-   deallocate( v_ );
+   deallocate( v_, capacity_ );
 
    m_        = rhs.m_;
    n_        = rhs.n_;
@@ -1481,11 +1528,12 @@ inline DynamicMatrix<Type,SO,Tag>&
 */
 template< typename Type   // Data type of the matrix
         , bool SO         // Storage order
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
 template< typename MT     // Type of the right-hand side matrix
         , bool SO2 >      // Storage order of the right-hand side matrix
-inline DynamicMatrix<Type,SO,Tag>&
-   DynamicMatrix<Type,SO,Tag>::operator=( const Matrix<MT,SO2>& rhs ) &
+inline DynamicMatrix<Type,SO,Alloc,Tag>&
+   DynamicMatrix<Type,SO,Alloc,Tag>::operator=( const Matrix<MT,SO2>& rhs ) &
 {
    using TT = decltype( trans( *this ) );
    using CT = decltype( ctrans( *this ) );
@@ -1529,11 +1577,12 @@ inline DynamicMatrix<Type,SO,Tag>&
 */
 template< typename Type   // Data type of the matrix
         , bool SO         // Storage order
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
 template< typename MT     // Type of the right-hand side matrix
         , bool SO2 >      // Storage order of the right-hand side matrix
-inline DynamicMatrix<Type,SO,Tag>&
-   DynamicMatrix<Type,SO,Tag>::operator+=( const Matrix<MT,SO2>& rhs ) &
+inline DynamicMatrix<Type,SO,Alloc,Tag>&
+   DynamicMatrix<Type,SO,Alloc,Tag>::operator+=( const Matrix<MT,SO2>& rhs ) &
 {
    BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<MT> );
 
@@ -1568,11 +1617,12 @@ inline DynamicMatrix<Type,SO,Tag>&
 */
 template< typename Type   // Data type of the matrix
         , bool SO         // Storage order
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
 template< typename MT     // Type of the right-hand side matrix
         , bool SO2 >      // Storage order of the right-hand side matrix
-inline DynamicMatrix<Type,SO,Tag>&
-   DynamicMatrix<Type,SO,Tag>::operator-=( const Matrix<MT,SO2>& rhs ) &
+inline DynamicMatrix<Type,SO,Alloc,Tag>&
+   DynamicMatrix<Type,SO,Alloc,Tag>::operator-=( const Matrix<MT,SO2>& rhs ) &
 {
    BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<MT> );
 
@@ -1607,11 +1657,12 @@ inline DynamicMatrix<Type,SO,Tag>&
 */
 template< typename Type   // Data type of the matrix
         , bool SO         // Storage order
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
 template< typename MT     // Type of the right-hand side matrix
         , bool SO2 >      // Storage order of the right-hand side matrix
-inline DynamicMatrix<Type,SO,Tag>&
-   DynamicMatrix<Type,SO,Tag>::operator%=( const Matrix<MT,SO2>& rhs ) &
+inline DynamicMatrix<Type,SO,Alloc,Tag>&
+   DynamicMatrix<Type,SO,Alloc,Tag>::operator%=( const Matrix<MT,SO2>& rhs ) &
 {
    BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<MT> );
 
@@ -1649,8 +1700,9 @@ inline DynamicMatrix<Type,SO,Tag>&
 */
 template< typename Type   // Data type of the matrix
         , bool SO         // Storage order
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
-inline size_t DynamicMatrix<Type,SO,Tag>::rows() const noexcept
+inline size_t DynamicMatrix<Type,SO,Alloc,Tag>::rows() const noexcept
 {
    return m_;
 }
@@ -1664,8 +1716,9 @@ inline size_t DynamicMatrix<Type,SO,Tag>::rows() const noexcept
 */
 template< typename Type   // Data type of the matrix
         , bool SO         // Storage order
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
-inline size_t DynamicMatrix<Type,SO,Tag>::columns() const noexcept
+inline size_t DynamicMatrix<Type,SO,Alloc,Tag>::columns() const noexcept
 {
    return n_;
 }
@@ -1684,8 +1737,9 @@ inline size_t DynamicMatrix<Type,SO,Tag>::columns() const noexcept
 */
 template< typename Type   // Data type of the matrix
         , bool SO         // Storage order
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
-inline size_t DynamicMatrix<Type,SO,Tag>::spacing() const noexcept
+inline size_t DynamicMatrix<Type,SO,Alloc,Tag>::spacing() const noexcept
 {
    return nn_;
 }
@@ -1699,8 +1753,9 @@ inline size_t DynamicMatrix<Type,SO,Tag>::spacing() const noexcept
 */
 template< typename Type   // Data type of the matrix
         , bool SO         // Storage order
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
-inline size_t DynamicMatrix<Type,SO,Tag>::capacity() const noexcept
+inline size_t DynamicMatrix<Type,SO,Alloc,Tag>::capacity() const noexcept
 {
    return capacity_;
 }
@@ -1720,8 +1775,9 @@ inline size_t DynamicMatrix<Type,SO,Tag>::capacity() const noexcept
 */
 template< typename Type   // Data type of the matrix
         , bool SO         // Storage order
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
-inline size_t DynamicMatrix<Type,SO,Tag>::capacity( size_t i ) const noexcept
+inline size_t DynamicMatrix<Type,SO,Alloc,Tag>::capacity( size_t i ) const noexcept
 {
    MAYBE_UNUSED( i );
    BLAZE_USER_ASSERT( i < rows(), "Invalid row access index" );
@@ -1737,8 +1793,9 @@ inline size_t DynamicMatrix<Type,SO,Tag>::capacity( size_t i ) const noexcept
 */
 template< typename Type   // Data type of the matrix
         , bool SO         // Storage order
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
-inline size_t DynamicMatrix<Type,SO,Tag>::nonZeros() const
+inline size_t DynamicMatrix<Type,SO,Alloc,Tag>::nonZeros() const
 {
    size_t nonzeros( 0UL );
 
@@ -1765,8 +1822,9 @@ inline size_t DynamicMatrix<Type,SO,Tag>::nonZeros() const
 */
 template< typename Type   // Data type of the matrix
         , bool SO         // Storage order
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
-inline size_t DynamicMatrix<Type,SO,Tag>::nonZeros( size_t i ) const
+inline size_t DynamicMatrix<Type,SO,Alloc,Tag>::nonZeros( size_t i ) const
 {
    BLAZE_USER_ASSERT( i < rows(), "Invalid row access index" );
 
@@ -1789,8 +1847,9 @@ inline size_t DynamicMatrix<Type,SO,Tag>::nonZeros( size_t i ) const
 */
 template< typename Type   // Data type of the matrix
         , bool SO         // Storage order
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
-inline void DynamicMatrix<Type,SO,Tag>::reset()
+inline void DynamicMatrix<Type,SO,Alloc,Tag>::reset()
 {
    using blaze::clear;
 
@@ -1814,8 +1873,9 @@ inline void DynamicMatrix<Type,SO,Tag>::reset()
 */
 template< typename Type   // Data type of the matrix
         , bool SO         // Storage order
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
-inline void DynamicMatrix<Type,SO,Tag>::reset( size_t i )
+inline void DynamicMatrix<Type,SO,Alloc,Tag>::reset( size_t i )
 {
    using blaze::clear;
 
@@ -1835,8 +1895,9 @@ inline void DynamicMatrix<Type,SO,Tag>::reset( size_t i )
 */
 template< typename Type   // Data type of the matrix
         , bool SO         // Storage order
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
-inline void DynamicMatrix<Type,SO,Tag>::clear()
+inline void DynamicMatrix<Type,SO,Alloc,Tag>::clear()
 {
    resize( 0UL, 0UL, false );
 }
@@ -1856,7 +1917,8 @@ inline void DynamicMatrix<Type,SO,Tag>::clear()
 // small. Note that this function may invalidate all existing views (submatrices, rows, columns,
 // ...) on the matrix if it is used to shrink the matrix. Additionally, the resize operation
 // potentially changes all matrix elements. In order to preserve the old matrix values, the
-// \a preserve flag can be set to \a true. However, new matrix elements are not initialized!
+// \a preserve flag can be set to \a true. However, new matrix elements of built-in type are
+// not initialized!
 //
 // The following example illustrates the resize operation of a \f$ 2 \times 4 \f$ matrix to a
 // \f$ 4 \times 2 \f$ matrix. The new, uninitialized elements are marked with \a x:
@@ -1879,10 +1941,10 @@ inline void DynamicMatrix<Type,SO,Tag>::clear()
 */
 template< typename Type   // Data type of the matrix
         , bool SO         // Storage order
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
-void DynamicMatrix<Type,SO,Tag>::resize( size_t m, size_t n, bool preserve )
+void DynamicMatrix<Type,SO,Alloc,Tag>::resize( size_t m, size_t n, bool preserve )
 {
-   using std::swap;
    using blaze::min;
 
    if( m == m_ && n == n_ ) return;
@@ -1891,7 +1953,7 @@ void DynamicMatrix<Type,SO,Tag>::resize( size_t m, size_t n, bool preserve )
 
    if( preserve )
    {
-      Type* BLAZE_RESTRICT v = allocate<Type>( m*nn );
+      Type* BLAZE_RESTRICT v = allocate( m*nn );
       const size_t min_m( min( m, m_ ) );
       const size_t min_n( min( n, n_ ) );
 
@@ -1899,14 +1961,15 @@ void DynamicMatrix<Type,SO,Tag>::resize( size_t m, size_t n, bool preserve )
          transfer( v_+i*nn_, v_+i*nn_+min_n, v+i*nn );
       }
 
-      swap( v_, v );
-      deallocate( v );
+      deallocate( v_, capacity_ );
+      v_ = v;
       capacity_ = m*nn;
    }
-   else if( m*nn > capacity_ ) {
-      Type* BLAZE_RESTRICT v = allocate<Type>( m*nn );
-      swap( v_, v );
-      deallocate( v );
+   else if( m*nn > capacity_ )
+   {
+      Type* BLAZE_RESTRICT v = allocate( m*nn );
+      deallocate( v_, capacity_ );
+      v_ = v;
       capacity_ = m*nn;
    }
 
@@ -1934,13 +1997,14 @@ void DynamicMatrix<Type,SO,Tag>::resize( size_t m, size_t n, bool preserve )
 // This function increases the matrix size by \a m rows and \a n columns. During this operation,
 // new dynamic memory may be allocated in case the capacity of the matrix is too small. Therefore
 // this function potentially changes all matrix elements. In order to preserve the old matrix
-// values, the \a preserve flag can be set to \a true. However, new matrix elements are not
-// initialized!
+// values, the \a preserve flag can be set to \a true. However, new matrix elements of built-in
+// type are not initialized!
 */
 template< typename Type   // Data type of the matrix
         , bool SO         // Storage order
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
-inline void DynamicMatrix<Type,SO,Tag>::extend( size_t m, size_t n, bool preserve )
+inline void DynamicMatrix<Type,SO,Alloc,Tag>::extend( size_t m, size_t n, bool preserve )
 {
    resize( m_+m, n_+n, preserve );
 }
@@ -1958,15 +2022,14 @@ inline void DynamicMatrix<Type,SO,Tag>::extend( size_t m, size_t n, bool preserv
 */
 template< typename Type   // Data type of the matrix
         , bool SO         // Storage order
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
-inline void DynamicMatrix<Type,SO,Tag>::reserve( size_t elements )
+inline void DynamicMatrix<Type,SO,Alloc,Tag>::reserve( size_t elements )
 {
-   using std::swap;
-
    if( elements > capacity_ )
    {
       // Allocating a new array
-      Type* BLAZE_RESTRICT tmp = allocate<Type>( elements );
+      Type* BLAZE_RESTRICT tmp = allocate( elements );
 
       // Initializing the new array
       transfer( v_, v_+capacity_, tmp );
@@ -1977,8 +2040,8 @@ inline void DynamicMatrix<Type,SO,Tag>::reserve( size_t elements )
       }
 
       // Replacing the old array
-      swap( tmp, v_ );
-      deallocate( tmp );
+      deallocate( v_, capacity_ );
+      v_ = tmp;
       capacity_ = elements;
    }
 }
@@ -1997,8 +2060,9 @@ inline void DynamicMatrix<Type,SO,Tag>::reserve( size_t elements )
 */
 template< typename Type   // Data type of the matrix
         , bool SO         // Storage order
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
-inline void DynamicMatrix<Type,SO,Tag>::shrinkToFit()
+inline void DynamicMatrix<Type,SO,Alloc,Tag>::shrinkToFit()
 {
    if( ( m_ * nn_ ) < capacity_ ) {
       DynamicMatrix( *this ).swap( *this );
@@ -2015,8 +2079,9 @@ inline void DynamicMatrix<Type,SO,Tag>::shrinkToFit()
 */
 template< typename Type   // Data type of the matrix
         , bool SO         // Storage order
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
-inline void DynamicMatrix<Type,SO,Tag>::swap( DynamicMatrix& m ) noexcept
+inline void DynamicMatrix<Type,SO,Alloc,Tag>::swap( DynamicMatrix& m ) noexcept
 {
    using std::swap;
 
@@ -2025,6 +2090,59 @@ inline void DynamicMatrix<Type,SO,Tag>::swap( DynamicMatrix& m ) noexcept
    swap( nn_, m.nn_ );
    swap( capacity_, m.capacity_ );
    swap( v_ , m.v_  );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Aligned array allocation.
+//
+// \param size The number of elements of the given type to be allocated.
+// \return Pointer to the first element of the aligned array.
+// \exception std::bad_alloc Allocation failed.
+//
+// The allocate() function performs the allocation of aligned memory via the given allocator
+// \a Alloc. In case the allocation failed entirely or in case the pointer returned by the
+// allocator is not properly aligned (i.e. 16-byte aligned in case of SSE, 32-byte aligned
+// in case of AVX, and 64-byte aligned in case of AVX-512), a \a std::bad_alloc expresion is
+// thrown.
+*/
+template< typename Type   // Data type of the matrix
+        , bool SO         // Storage order
+        , typename Alloc  // Type of the allocator
+        , typename Tag >  // Type tag
+inline Type* DynamicMatrix<Type,SO,Alloc,Tag>::allocate( size_t n )
+{
+   Type* const ptr = Alloc{}.allocate( n );
+
+   if( !checkAlignment( ptr ) ) {
+      BLAZE_THROW_BAD_ALLOC;
+   }
+
+   blaze::uninitialized_default_construct_n( ptr, n );
+
+   return ptr;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Deallocation of aligned memory.
+//
+// \param address Pointer to the first element of the array to be deallocated.
+// \return void
+//
+// This function deallocates the given aligned memory that was previously allocated via the
+// allocate() function.
+*/
+template< typename Type   // Data type of the matrix
+        , bool SO         // Storage order
+        , typename Alloc  // Type of the allocator
+        , typename Tag >  // Type tag
+inline void DynamicMatrix<Type,SO,Alloc,Tag>::deallocate( Type* ptr, size_t n ) noexcept
+{
+   blaze::destroy_n( ptr, n );
+   Alloc{}.deallocate( ptr, n );
 }
 //*************************************************************************************************
 
@@ -2040,8 +2158,9 @@ inline void DynamicMatrix<Type,SO,Tag>::swap( DynamicMatrix& m ) noexcept
 */
 template< typename Type   // Data type of the matrix
         , bool SO         // Storage order
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
-inline size_t DynamicMatrix<Type,SO,Tag>::addPadding( size_t value ) const noexcept
+inline size_t DynamicMatrix<Type,SO,Alloc,Tag>::addPadding( size_t value ) const noexcept
 {
    if( usePadding && IsVectorizable_v<Type> )
       return nextMultiple<size_t>( value, SIMDSIZE );
@@ -2065,8 +2184,9 @@ inline size_t DynamicMatrix<Type,SO,Tag>::addPadding( size_t value ) const noexc
 */
 template< typename Type   // Data type of the matrix
         , bool SO         // Storage order
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
-inline DynamicMatrix<Type,SO,Tag>& DynamicMatrix<Type,SO,Tag>::transpose()
+inline DynamicMatrix<Type,SO,Alloc,Tag>& DynamicMatrix<Type,SO,Alloc,Tag>::transpose()
 {
    using std::swap;
 
@@ -2104,8 +2224,9 @@ inline DynamicMatrix<Type,SO,Tag>& DynamicMatrix<Type,SO,Tag>::transpose()
 */
 template< typename Type   // Data type of the matrix
         , bool SO         // Storage order
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
-inline DynamicMatrix<Type,SO,Tag>& DynamicMatrix<Type,SO,Tag>::ctranspose()
+inline DynamicMatrix<Type,SO,Alloc,Tag>& DynamicMatrix<Type,SO,Alloc,Tag>::ctranspose()
 {
    constexpr size_t block( BLOCK_SIZE );
 
@@ -2159,9 +2280,11 @@ inline DynamicMatrix<Type,SO,Tag>& DynamicMatrix<Type,SO,Tag>::ctranspose()
 */
 template< typename Type     // Data type of the matrix
         , bool SO           // Storage order
+        , typename Alloc    // Type of the allocator
         , typename Tag >    // Type tag
 template< typename Other >  // Data type of the scalar value
-inline DynamicMatrix<Type,SO,Tag>& DynamicMatrix<Type,SO,Tag>::scale( const Other& scalar )
+inline DynamicMatrix<Type,SO,Alloc,Tag>&
+   DynamicMatrix<Type,SO,Alloc,Tag>::scale( const Other& scalar )
 {
    for( size_t i=0UL; i<m_; ++i )
       for( size_t j=0UL; j<n_; ++j )
@@ -2191,8 +2314,9 @@ inline DynamicMatrix<Type,SO,Tag>& DynamicMatrix<Type,SO,Tag>::scale( const Othe
 */
 template< typename Type   // Data type of the matrix
         , bool SO         // Storage order
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
-inline bool DynamicMatrix<Type,SO,Tag>::isIntact() const noexcept
+inline bool DynamicMatrix<Type,SO,Alloc,Tag>::isIntact() const noexcept
 {
    if( m_ * n_ > capacity_ )
       return false;
@@ -2231,9 +2355,10 @@ inline bool DynamicMatrix<Type,SO,Tag>::isIntact() const noexcept
 */
 template< typename Type     // Data type of the matrix
         , bool SO           // Storage order
+        , typename Alloc    // Type of the allocator
         , typename Tag >    // Type tag
 template< typename Other >  // Data type of the foreign expression
-inline bool DynamicMatrix<Type,SO,Tag>::canAlias( const Other* alias ) const noexcept
+inline bool DynamicMatrix<Type,SO,Alloc,Tag>::canAlias( const Other* alias ) const noexcept
 {
    return static_cast<const void*>( this ) == static_cast<const void*>( alias );
 }
@@ -2252,9 +2377,10 @@ inline bool DynamicMatrix<Type,SO,Tag>::canAlias( const Other* alias ) const noe
 */
 template< typename Type     // Data type of the matrix
         , bool SO           // Storage order
+        , typename Alloc    // Type of the allocator
         , typename Tag >    // Type tag
 template< typename Other >  // Data type of the foreign expression
-inline bool DynamicMatrix<Type,SO,Tag>::isAliased( const Other* alias ) const noexcept
+inline bool DynamicMatrix<Type,SO,Alloc,Tag>::isAliased( const Other* alias ) const noexcept
 {
    return static_cast<const void*>( this ) == static_cast<const void*>( alias );
 }
@@ -2272,8 +2398,9 @@ inline bool DynamicMatrix<Type,SO,Tag>::isAliased( const Other* alias ) const no
 */
 template< typename Type   // Data type of the matrix
         , bool SO         // Storage order
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
-inline bool DynamicMatrix<Type,SO,Tag>::isAligned() const noexcept
+inline bool DynamicMatrix<Type,SO,Alloc,Tag>::isAligned() const noexcept
 {
    return ( usePadding || columns() % SIMDSIZE == 0UL );
 }
@@ -2292,8 +2419,9 @@ inline bool DynamicMatrix<Type,SO,Tag>::isAligned() const noexcept
 */
 template< typename Type   // Data type of the matrix
         , bool SO         // Storage order
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
-inline bool DynamicMatrix<Type,SO,Tag>::canSMPAssign() const noexcept
+inline bool DynamicMatrix<Type,SO,Alloc,Tag>::canSMPAssign() const noexcept
 {
    return ( rows() * columns() >= SMP_DMATASSIGN_THRESHOLD );
 }
@@ -2317,9 +2445,10 @@ inline bool DynamicMatrix<Type,SO,Tag>::canSMPAssign() const noexcept
 */
 template< typename Type   // Data type of the matrix
         , bool SO         // Storage order
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
-BLAZE_ALWAYS_INLINE typename DynamicMatrix<Type,SO,Tag>::SIMDType
-   DynamicMatrix<Type,SO,Tag>::load( size_t i, size_t j ) const noexcept
+BLAZE_ALWAYS_INLINE typename DynamicMatrix<Type,SO,Alloc,Tag>::SIMDType
+   DynamicMatrix<Type,SO,Alloc,Tag>::load( size_t i, size_t j ) const noexcept
 {
    if( usePadding )
       return loada( i, j );
@@ -2346,9 +2475,10 @@ BLAZE_ALWAYS_INLINE typename DynamicMatrix<Type,SO,Tag>::SIMDType
 */
 template< typename Type   // Data type of the matrix
         , bool SO         // Storage order
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
-BLAZE_ALWAYS_INLINE typename DynamicMatrix<Type,SO,Tag>::SIMDType
-   DynamicMatrix<Type,SO,Tag>::loada( size_t i, size_t j ) const noexcept
+BLAZE_ALWAYS_INLINE typename DynamicMatrix<Type,SO,Alloc,Tag>::SIMDType
+   DynamicMatrix<Type,SO,Alloc,Tag>::loada( size_t i, size_t j ) const noexcept
 {
    using blaze::loada;
 
@@ -2382,9 +2512,10 @@ BLAZE_ALWAYS_INLINE typename DynamicMatrix<Type,SO,Tag>::SIMDType
 */
 template< typename Type   // Data type of the matrix
         , bool SO         // Storage order
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
-BLAZE_ALWAYS_INLINE typename DynamicMatrix<Type,SO,Tag>::SIMDType
-   DynamicMatrix<Type,SO,Tag>::loadu( size_t i, size_t j ) const noexcept
+BLAZE_ALWAYS_INLINE typename DynamicMatrix<Type,SO,Alloc,Tag>::SIMDType
+   DynamicMatrix<Type,SO,Alloc,Tag>::loadu( size_t i, size_t j ) const noexcept
 {
    using blaze::loadu;
 
@@ -2417,9 +2548,10 @@ BLAZE_ALWAYS_INLINE typename DynamicMatrix<Type,SO,Tag>::SIMDType
 */
 template< typename Type   // Data type of the matrix
         , bool SO         // Storage order
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
 BLAZE_ALWAYS_INLINE void
-   DynamicMatrix<Type,SO,Tag>::store( size_t i, size_t j, const SIMDType& value ) noexcept
+   DynamicMatrix<Type,SO,Alloc,Tag>::store( size_t i, size_t j, const SIMDType& value ) noexcept
 {
    if( usePadding )
       storea( i, j, value );
@@ -2447,9 +2579,10 @@ BLAZE_ALWAYS_INLINE void
 */
 template< typename Type   // Data type of the matrix
         , bool SO         // Storage order
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
 BLAZE_ALWAYS_INLINE void
-   DynamicMatrix<Type,SO,Tag>::storea( size_t i, size_t j, const SIMDType& value ) noexcept
+   DynamicMatrix<Type,SO,Alloc,Tag>::storea( size_t i, size_t j, const SIMDType& value ) noexcept
 {
    using blaze::storea;
 
@@ -2484,9 +2617,10 @@ BLAZE_ALWAYS_INLINE void
 */
 template< typename Type   // Data type of the matrix
         , bool SO         // Storage order
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
 BLAZE_ALWAYS_INLINE void
-   DynamicMatrix<Type,SO,Tag>::storeu( size_t i, size_t j, const SIMDType& value ) noexcept
+   DynamicMatrix<Type,SO,Alloc,Tag>::storeu( size_t i, size_t j, const SIMDType& value ) noexcept
 {
    using blaze::storeu;
 
@@ -2520,9 +2654,10 @@ BLAZE_ALWAYS_INLINE void
 */
 template< typename Type   // Data type of the matrix
         , bool SO         // Storage order
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
 BLAZE_ALWAYS_INLINE void
-   DynamicMatrix<Type,SO,Tag>::stream( size_t i, size_t j, const SIMDType& value ) noexcept
+   DynamicMatrix<Type,SO,Alloc,Tag>::stream( size_t i, size_t j, const SIMDType& value ) noexcept
 {
    using blaze::stream;
 
@@ -2552,9 +2687,10 @@ BLAZE_ALWAYS_INLINE void
 */
 template< typename Type   // Data type of the matrix
         , bool SO         // Storage order
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
 template< typename MT >   // Type of the right-hand side dense matrix
-inline auto DynamicMatrix<Type,SO,Tag>::assign( const DenseMatrix<MT,SO>& rhs )
+inline auto DynamicMatrix<Type,SO,Alloc,Tag>::assign( const DenseMatrix<MT,SO>& rhs )
    -> DisableIf_t< VectorizedAssign_v<MT> >
 {
    BLAZE_INTERNAL_ASSERT( m_ == (*rhs).rows()   , "Invalid number of rows"    );
@@ -2589,9 +2725,10 @@ inline auto DynamicMatrix<Type,SO,Tag>::assign( const DenseMatrix<MT,SO>& rhs )
 */
 template< typename Type   // Data type of the matrix
         , bool SO         // Storage order
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
 template< typename MT >   // Type of the right-hand side dense matrix
-inline auto DynamicMatrix<Type,SO,Tag>::assign( const DenseMatrix<MT,SO>& rhs )
+inline auto DynamicMatrix<Type,SO,Alloc,Tag>::assign( const DenseMatrix<MT,SO>& rhs )
    -> EnableIf_t< VectorizedAssign_v<MT> >
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
@@ -2661,9 +2798,10 @@ inline auto DynamicMatrix<Type,SO,Tag>::assign( const DenseMatrix<MT,SO>& rhs )
 */
 template< typename Type   // Data type of the matrix
         , bool SO         // Storage order
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
 template< typename MT >   // Type of the right-hand side dense matrix
-inline void DynamicMatrix<Type,SO,Tag>::assign( const DenseMatrix<MT,!SO>& rhs )
+inline void DynamicMatrix<Type,SO,Alloc,Tag>::assign( const DenseMatrix<MT,!SO>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
 
@@ -2700,9 +2838,10 @@ inline void DynamicMatrix<Type,SO,Tag>::assign( const DenseMatrix<MT,!SO>& rhs )
 */
 template< typename Type   // Data type of the matrix
         , bool SO         // Storage order
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
 template< typename MT >   // Type of the right-hand side sparse matrix
-inline void DynamicMatrix<Type,SO,Tag>::assign( const SparseMatrix<MT,SO>& rhs )
+inline void DynamicMatrix<Type,SO,Alloc,Tag>::assign( const SparseMatrix<MT,SO>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( m_ == (*rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (*rhs).columns(), "Invalid number of columns" );
@@ -2727,9 +2866,10 @@ inline void DynamicMatrix<Type,SO,Tag>::assign( const SparseMatrix<MT,SO>& rhs )
 */
 template< typename Type   // Data type of the matrix
         , bool SO         // Storage order
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
 template< typename MT >   // Type of the right-hand side sparse matrix
-inline void DynamicMatrix<Type,SO,Tag>::assign( const SparseMatrix<MT,!SO>& rhs )
+inline void DynamicMatrix<Type,SO,Alloc,Tag>::assign( const SparseMatrix<MT,!SO>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
 
@@ -2756,9 +2896,10 @@ inline void DynamicMatrix<Type,SO,Tag>::assign( const SparseMatrix<MT,!SO>& rhs 
 */
 template< typename Type   // Data type of the matrix
         , bool SO         // Storage order
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
 template< typename MT >   // Type of the right-hand side dense matrix
-inline auto DynamicMatrix<Type,SO,Tag>::addAssign( const DenseMatrix<MT,SO>& rhs )
+inline auto DynamicMatrix<Type,SO,Alloc,Tag>::addAssign( const DenseMatrix<MT,SO>& rhs )
    -> DisableIf_t< VectorizedAddAssign_v<MT> >
 {
    BLAZE_INTERNAL_ASSERT( m_ == (*rhs).rows()   , "Invalid number of rows"    );
@@ -2808,9 +2949,10 @@ inline auto DynamicMatrix<Type,SO,Tag>::addAssign( const DenseMatrix<MT,SO>& rhs
 */
 template< typename Type   // Data type of the matrix
         , bool SO         // Storage order
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
 template< typename MT >   // Type of the right-hand side dense matrix
-inline auto DynamicMatrix<Type,SO,Tag>::addAssign( const DenseMatrix<MT,SO>& rhs )
+inline auto DynamicMatrix<Type,SO,Alloc,Tag>::addAssign( const DenseMatrix<MT,SO>& rhs )
    -> EnableIf_t< VectorizedAddAssign_v<MT> >
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
@@ -2868,9 +3010,10 @@ inline auto DynamicMatrix<Type,SO,Tag>::addAssign( const DenseMatrix<MT,SO>& rhs
 */
 template< typename Type   // Data type of the matrix
         , bool SO         // Storage order
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
 template< typename MT >   // Type of the right-hand side dense matrix
-inline void DynamicMatrix<Type,SO,Tag>::addAssign( const DenseMatrix<MT,!SO>& rhs )
+inline void DynamicMatrix<Type,SO,Alloc,Tag>::addAssign( const DenseMatrix<MT,!SO>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
 
@@ -2919,9 +3062,10 @@ inline void DynamicMatrix<Type,SO,Tag>::addAssign( const DenseMatrix<MT,!SO>& rh
 */
 template< typename Type   // Data type of the matrix
         , bool SO         // Storage order
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
 template< typename MT >   // Type of the right-hand side sparse matrix
-inline void DynamicMatrix<Type,SO,Tag>::addAssign( const SparseMatrix<MT,SO>& rhs )
+inline void DynamicMatrix<Type,SO,Alloc,Tag>::addAssign( const SparseMatrix<MT,SO>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( m_ == (*rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (*rhs).columns(), "Invalid number of columns" );
@@ -2946,9 +3090,10 @@ inline void DynamicMatrix<Type,SO,Tag>::addAssign( const SparseMatrix<MT,SO>& rh
 */
 template< typename Type   // Data type of the matrix
         , bool SO         // Storage order
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
 template< typename MT >   // Type of the right-hand side sparse matrix
-inline void DynamicMatrix<Type,SO,Tag>::addAssign( const SparseMatrix<MT,!SO>& rhs )
+inline void DynamicMatrix<Type,SO,Alloc,Tag>::addAssign( const SparseMatrix<MT,!SO>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
 
@@ -2975,9 +3120,10 @@ inline void DynamicMatrix<Type,SO,Tag>::addAssign( const SparseMatrix<MT,!SO>& r
 */
 template< typename Type   // Data type of the matrix
         , bool SO         // Storage order
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
 template< typename MT >   // Type of the right-hand side dense matrix
-inline auto DynamicMatrix<Type,SO,Tag>::subAssign( const DenseMatrix<MT,SO>& rhs )
+inline auto DynamicMatrix<Type,SO,Alloc,Tag>::subAssign( const DenseMatrix<MT,SO>& rhs )
    -> DisableIf_t< VectorizedSubAssign_v<MT> >
 {
    BLAZE_INTERNAL_ASSERT( m_ == (*rhs).rows()   , "Invalid number of rows"    );
@@ -3027,9 +3173,10 @@ inline auto DynamicMatrix<Type,SO,Tag>::subAssign( const DenseMatrix<MT,SO>& rhs
 */
 template< typename Type   // Data type of the matrix
         , bool SO         // Storage order
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
 template< typename MT >   // Type of the right-hand side dense matrix
-inline auto DynamicMatrix<Type,SO,Tag>::subAssign( const DenseMatrix<MT,SO>& rhs )
+inline auto DynamicMatrix<Type,SO,Alloc,Tag>::subAssign( const DenseMatrix<MT,SO>& rhs )
    -> EnableIf_t< VectorizedSubAssign_v<MT> >
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
@@ -3087,9 +3234,10 @@ inline auto DynamicMatrix<Type,SO,Tag>::subAssign( const DenseMatrix<MT,SO>& rhs
 */
 template< typename Type   // Data type of the matrix
         , bool SO         // Storage order
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
 template< typename MT >   // Type of the right-hand side dense matrix
-inline void DynamicMatrix<Type,SO,Tag>::subAssign( const DenseMatrix<MT,!SO>& rhs )
+inline void DynamicMatrix<Type,SO,Alloc,Tag>::subAssign( const DenseMatrix<MT,!SO>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
 
@@ -3138,9 +3286,10 @@ inline void DynamicMatrix<Type,SO,Tag>::subAssign( const DenseMatrix<MT,!SO>& rh
 */
 template< typename Type   // Data type of the matrix
         , bool SO         // Storage order
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
 template< typename MT >   // Type of the right-hand side sparse matrix
-inline void DynamicMatrix<Type,SO,Tag>::subAssign( const SparseMatrix<MT,SO>& rhs )
+inline void DynamicMatrix<Type,SO,Alloc,Tag>::subAssign( const SparseMatrix<MT,SO>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( m_ == (*rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (*rhs).columns(), "Invalid number of columns" );
@@ -3165,9 +3314,10 @@ inline void DynamicMatrix<Type,SO,Tag>::subAssign( const SparseMatrix<MT,SO>& rh
 */
 template< typename Type   // Data type of the matrix
         , bool SO         // Storage order
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
 template< typename MT >   // Type of the right-hand side sparse matrix
-inline void DynamicMatrix<Type,SO,Tag>::subAssign( const SparseMatrix<MT,!SO>& rhs )
+inline void DynamicMatrix<Type,SO,Alloc,Tag>::subAssign( const SparseMatrix<MT,!SO>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
 
@@ -3194,9 +3344,10 @@ inline void DynamicMatrix<Type,SO,Tag>::subAssign( const SparseMatrix<MT,!SO>& r
 */
 template< typename Type   // Data type of the matrix
         , bool SO         // Storage order
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
 template< typename MT >   // Type of the right-hand side dense matrix
-inline auto DynamicMatrix<Type,SO,Tag>::schurAssign( const DenseMatrix<MT,SO>& rhs )
+inline auto DynamicMatrix<Type,SO,Alloc,Tag>::schurAssign( const DenseMatrix<MT,SO>& rhs )
    -> DisableIf_t< VectorizedSchurAssign_v<MT> >
 {
    BLAZE_INTERNAL_ASSERT( m_ == (*rhs).rows()   , "Invalid number of rows"    );
@@ -3231,9 +3382,10 @@ inline auto DynamicMatrix<Type,SO,Tag>::schurAssign( const DenseMatrix<MT,SO>& r
 */
 template< typename Type   // Data type of the matrix
         , bool SO         // Storage order
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
 template< typename MT >   // Type of the right-hand side dense matrix
-inline auto DynamicMatrix<Type,SO,Tag>::schurAssign( const DenseMatrix<MT,SO>& rhs )
+inline auto DynamicMatrix<Type,SO,Alloc,Tag>::schurAssign( const DenseMatrix<MT,SO>& rhs )
    -> EnableIf_t< VectorizedSchurAssign_v<MT> >
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
@@ -3282,9 +3434,10 @@ inline auto DynamicMatrix<Type,SO,Tag>::schurAssign( const DenseMatrix<MT,SO>& r
 */
 template< typename Type   // Data type of the matrix
         , bool SO         // Storage order
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
 template< typename MT >   // Type of the right-hand side dense matrix
-inline void DynamicMatrix<Type,SO,Tag>::schurAssign( const DenseMatrix<MT,!SO>& rhs )
+inline void DynamicMatrix<Type,SO,Alloc,Tag>::schurAssign( const DenseMatrix<MT,!SO>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
 
@@ -3321,9 +3474,10 @@ inline void DynamicMatrix<Type,SO,Tag>::schurAssign( const DenseMatrix<MT,!SO>& 
 */
 template< typename Type   // Data type of the matrix
         , bool SO         // Storage order
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
 template< typename MT >   // Type of the right-hand side sparse matrix
-inline void DynamicMatrix<Type,SO,Tag>::schurAssign( const SparseMatrix<MT,SO>& rhs )
+inline void DynamicMatrix<Type,SO,Alloc,Tag>::schurAssign( const SparseMatrix<MT,SO>& rhs )
 {
    using blaze::reset;
 
@@ -3362,9 +3516,10 @@ inline void DynamicMatrix<Type,SO,Tag>::schurAssign( const SparseMatrix<MT,SO>& 
 */
 template< typename Type   // Data type of the matrix
         , bool SO         // Storage order
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
 template< typename MT >   // Type of the right-hand side sparse matrix
-inline void DynamicMatrix<Type,SO,Tag>::schurAssign( const SparseMatrix<MT,!SO>& rhs )
+inline void DynamicMatrix<Type,SO,Alloc,Tag>::schurAssign( const SparseMatrix<MT,!SO>& rhs )
 {
    using blaze::reset;
 
@@ -3413,9 +3568,10 @@ inline void DynamicMatrix<Type,SO,Tag>::schurAssign( const SparseMatrix<MT,!SO>&
 // column-major matrices.
 */
 template< typename Type   // Data type of the matrix
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
-class DynamicMatrix<Type,true,Tag>
-   : public DenseMatrix< DynamicMatrix<Type,true,Tag>, true >
+class DynamicMatrix<Type,true,Alloc,Tag>
+   : public DenseMatrix< DynamicMatrix<Type,true,Alloc,Tag>, true >
 {
  private:
    //**********************************************************************************************
@@ -3425,18 +3581,19 @@ class DynamicMatrix<Type,true,Tag>
 
  public:
    //**Type definitions****************************************************************************
-   using This       = DynamicMatrix<Type,true,Tag>;  //!< Type of this DynamicMatrix instance.
-   using BaseType   = DenseMatrix<This,true>;        //!< Base type of this DynamicMatrix instance.
-   using ResultType = This;                          //!< Result type for expression template evaluations.
+   using This       = DynamicMatrix<Type,true,Alloc,Tag>;  //!< Type of this DynamicMatrix instance.
+   using BaseType   = DenseMatrix<This,true>;              //!< Base type of this DynamicMatrix instance.
+   using ResultType = This;                                //!< Result type for expression template evaluations.
 
    //! Result type with opposite storage order for expression template evaluations.
-   using OppositeType = DynamicMatrix<Type,false,Tag>;
+   using OppositeType = DynamicMatrix<Type,false,Alloc,Tag>;
 
    //! Transpose type for expression template evaluations.
-   using TransposeType = DynamicMatrix<Type,false,Tag>;
+   using TransposeType = DynamicMatrix<Type,false,Alloc,Tag>;
 
    using ElementType   = Type;                      //!< Type of the matrix elements.
    using SIMDType      = SIMDTrait_t<ElementType>;  //!< SIMD type of the matrix elements.
+   using AllocatorType = AlignedAllocator<Type>;    //!< Allocator type of this DynamicMatrix instance.
    using TagType       = Tag;                       //!< Tag type of this DynamicMatrix instance.
    using ReturnType    = const Type&;               //!< Return type for expression template evaluations.
    using CompositeType = const This&;               //!< Data type for composite expression templates.
@@ -3454,8 +3611,13 @@ class DynamicMatrix<Type,true,Tag>
    /*!\brief Rebind mechanism to obtain a DynamicMatrix with different data/element type.
    */
    template< typename NewType >  // Data type of the other matrix
-   struct Rebind {
-      using Other = DynamicMatrix<NewType,true,Tag>;  //!< The type of the other DynamicMatrix.
+   struct Rebind
+   {
+      //! The new type of allocator.
+      using NewAlloc = typename std::allocator_traits<Alloc>::template rebind_alloc<NewType>;
+
+      //! The type of the other DynamicMatrix.
+      using Other = DynamicMatrix<NewType,true,NewAlloc,Tag>;
    };
    //**********************************************************************************************
 
@@ -3464,8 +3626,9 @@ class DynamicMatrix<Type,true,Tag>
    */
    template< size_t NewM    // Number of rows of the other matrix
            , size_t NewN >  // Number of columns of the other matrix
-   struct Resize {
-      using Other = DynamicMatrix<Type,true,Tag>;  //!< The type of the other DynamicMatrix.
+   struct Resize
+   {
+      using Other = DynamicMatrix<Type,true,Alloc,Tag>;  //!< The type of the other DynamicMatrix.
    };
    //**********************************************************************************************
 
@@ -3702,6 +3865,8 @@ class DynamicMatrix<Type,true,Tag>
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
+   inline Type*  allocate( size_t n );
+   inline void   deallocate( Type* ptr, size_t n ) noexcept;
    inline size_t addPadding( size_t minRows ) const noexcept;
    //@}
    //**********************************************************************************************
@@ -3743,8 +3908,9 @@ class DynamicMatrix<Type,true,Tag>
 /*!\brief The default constructor for DynamicMatrix.
 */
 template< typename Type   // Data type of the matrix
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
-inline DynamicMatrix<Type,true,Tag>::DynamicMatrix() noexcept
+inline DynamicMatrix<Type,true,Alloc,Tag>::DynamicMatrix() noexcept
    : m_       ( 0UL )      // The current number of rows of the matrix
    , mm_      ( 0UL )      // The alignment adjusted number of rows
    , n_       ( 0UL )      // The current number of columns of the matrix
@@ -3757,24 +3923,26 @@ inline DynamicMatrix<Type,true,Tag>::DynamicMatrix() noexcept
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Constructor for a matrix of size \f$ m \times n \f$. No element initialization is performed!
+/*!\brief Constructor for a matrix of size \f$ m \times n \f$. For built-in types no initialization
+//        is performed!
 //
 // \param m The number of rows of the matrix.
 // \param n The number of columns of the matrix.
 //
-// \note This constructor is only responsible to allocate the required dynamic memory. No
-// element initialization is performed!
+// \note This constructor is only responsible to allocate the required dynamic memory. For
+// built-in types no initialization of the elements is performed!
 */
 template< typename Type   // Data type of the matrix
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
-inline DynamicMatrix<Type,true,Tag>::DynamicMatrix( size_t m, size_t n )
-   : m_       ( m )                            // The current number of rows of the matrix
-   , mm_      ( addPadding( m ) )              // The alignment adjusted number of rows
-   , n_       ( n )                            // The current number of columns of the matrix
-   , capacity_( mm_*n_ )                       // The maximum capacity of the matrix
-   , v_       ( allocate<Type>( capacity_ ) )  // The matrix elements
+inline DynamicMatrix<Type,true,Alloc,Tag>::DynamicMatrix( size_t m, size_t n )
+   : m_       ( m )                      // The current number of rows of the matrix
+   , mm_      ( addPadding( m ) )        // The alignment adjusted number of rows
+   , n_       ( n )                      // The current number of columns of the matrix
+   , capacity_( mm_*n_ )                 // The maximum capacity of the matrix
+   , v_       ( allocate( capacity_ ) )  // The matrix elements
 {
-   if( IsVectorizable_v<Type> ) {
+   if( IsVectorizable_v<Type> && IsBuiltin_v<Type> ) {
       for( size_t j=0UL; j<n_; ++j ) {
          for( size_t i=m_; i<mm_; ++i ) {
             v_[i+j*mm_] = Type();
@@ -3799,8 +3967,9 @@ inline DynamicMatrix<Type,true,Tag>::DynamicMatrix( size_t m, size_t n )
 // All matrix elements are initialized with the specified value.
 */
 template< typename Type   // Data type of the matrix
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
-inline DynamicMatrix<Type,true,Tag>::DynamicMatrix( size_t m, size_t n, const Type& init )
+inline DynamicMatrix<Type,true,Alloc,Tag>::DynamicMatrix( size_t m, size_t n, const Type& init )
    : DynamicMatrix( m, n )
 {
    for( size_t j=0UL; j<n_; ++j ) {
@@ -3837,8 +4006,9 @@ inline DynamicMatrix<Type,true,Tag>::DynamicMatrix( size_t m, size_t n, const Ty
 // default (as e.g. the value 6 in the example).
 */
 template< typename Type   // Data type of the matrix
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
-inline DynamicMatrix<Type,true,Tag>::DynamicMatrix( initializer_list< initializer_list<Type> > list )
+inline DynamicMatrix<Type,true,Alloc,Tag>::DynamicMatrix( initializer_list< initializer_list<Type> > list )
    : DynamicMatrix( list.size(), determineColumns( list ) )
 {
    size_t i( 0UL );
@@ -3887,9 +4057,10 @@ inline DynamicMatrix<Type,true,Tag>::DynamicMatrix( initializer_list< initialize
 // \a n elements. Providing an array with less elements results in undefined behavior!
 */
 template< typename Type     // Data type of the matrix
+        , typename Alloc    // Type of the allocator
         , typename Tag >    // Type tag
 template< typename Other >  // Data type of the initialization array
-inline DynamicMatrix<Type,true,Tag>::DynamicMatrix( size_t m, size_t n, const Other* array )
+inline DynamicMatrix<Type,true,Alloc,Tag>::DynamicMatrix( size_t m, size_t n, const Other* array )
    : DynamicMatrix( m, n )
 {
    for( size_t j=0UL; j<n; ++j ) {
@@ -3927,11 +4098,12 @@ inline DynamicMatrix<Type,true,Tag>::DynamicMatrix( size_t m, size_t n, const Ot
 // value 6 in the example).
 */
 template< typename Type   // Data type of the matrix
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
 template< typename Other  // Data type of the static array
         , size_t Rows     // Number of rows of the static array
         , size_t Cols >   // Number of columns of the static array
-inline DynamicMatrix<Type,true,Tag>::DynamicMatrix( const Other (&array)[Rows][Cols] )
+inline DynamicMatrix<Type,true,Alloc,Tag>::DynamicMatrix( const Other (&array)[Rows][Cols] )
    : DynamicMatrix( Rows, Cols )
 {
    for( size_t j=0UL; j<Cols; ++j ) {
@@ -3969,11 +4141,12 @@ inline DynamicMatrix<Type,true,Tag>::DynamicMatrix( const Other (&array)[Rows][C
 // value 6 in the example).
 */
 template< typename Type   // Data type of the matrix
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
 template< typename Other  // Data type of the std::array
         , size_t Rows     // Number of rows of the std::array
         , size_t Cols >   // Number of columns of the std::array
-inline DynamicMatrix<Type,true,Tag>::DynamicMatrix( const std::array<std::array<Other,Cols>,Rows>& array )
+inline DynamicMatrix<Type,true,Alloc,Tag>::DynamicMatrix( const std::array<std::array<Other,Cols>,Rows>& array )
    : DynamicMatrix( Rows, Cols )
 {
    for( size_t j=0UL; j<Cols; ++j ) {
@@ -3998,8 +4171,9 @@ inline DynamicMatrix<Type,true,Tag>::DynamicMatrix( const std::array<std::array<
 // and in order to enable/facilitate NRV optimization.
 */
 template< typename Type   // Data type of the matrix
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
-inline DynamicMatrix<Type,true,Tag>::DynamicMatrix( const DynamicMatrix& m )
+inline DynamicMatrix<Type,true,Alloc,Tag>::DynamicMatrix( const DynamicMatrix& m )
    : DynamicMatrix( m.m_, m.n_ )
 {
    BLAZE_INTERNAL_ASSERT( capacity_ <= m.capacity_, "Invalid capacity estimation" );
@@ -4019,8 +4193,9 @@ inline DynamicMatrix<Type,true,Tag>::DynamicMatrix( const DynamicMatrix& m )
 // \param m The matrix to be moved into this instance.
 */
 template< typename Type   // Data type of the matrix
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
-inline DynamicMatrix<Type,true,Tag>::DynamicMatrix( DynamicMatrix&& m )
+inline DynamicMatrix<Type,true,Alloc,Tag>::DynamicMatrix( DynamicMatrix&& m )
    : m_       ( m.m_        )  // The current number of rows of the matrix
    , mm_      ( m.mm_       )  // The alignment adjusted number of rows
    , n_       ( m.n_        )  // The current number of columns of the matrix
@@ -4044,15 +4219,16 @@ inline DynamicMatrix<Type,true,Tag>::DynamicMatrix( DynamicMatrix&& m )
 // \param m Matrix to be copied.
 */
 template< typename Type   // Data type of the matrix
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
 template< typename MT     // Type of the foreign matrix
         , bool SO >       // Storage order of the foreign matrix
-inline DynamicMatrix<Type,true,Tag>::DynamicMatrix( const Matrix<MT,SO>& m )
+inline DynamicMatrix<Type,true,Alloc,Tag>::DynamicMatrix( const Matrix<MT,SO>& m )
    : DynamicMatrix( (*m).rows(), (*m).columns() )
 {
    BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<MT> );
 
-   if( IsSparseMatrix_v<MT> ) {
+   if( IsSparseMatrix_v<MT> && IsBuiltin_v<Type> ) {
       reset();
    }
 
@@ -4077,10 +4253,11 @@ inline DynamicMatrix<Type,true,Tag>::DynamicMatrix( const Matrix<MT,SO>& m )
 /*!\brief The destructor for DynamicMatrix.
 */
 template< typename Type   // Data type of the matrix
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
-inline DynamicMatrix<Type,true,Tag>::~DynamicMatrix()
+inline DynamicMatrix<Type,true,Alloc,Tag>::~DynamicMatrix()
 {
-   deallocate( v_ );
+   deallocate( v_, capacity_ );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -4106,9 +4283,10 @@ inline DynamicMatrix<Type,true,Tag>::~DynamicMatrix()
 // the at() function is guaranteed to perform a check of the given access indices.
 */
 template< typename Type   // Data type of the matrix
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
-inline typename DynamicMatrix<Type,true,Tag>::Reference
-   DynamicMatrix<Type,true,Tag>::operator()( size_t i, size_t j ) noexcept
+inline typename DynamicMatrix<Type,true,Alloc,Tag>::Reference
+   DynamicMatrix<Type,true,Alloc,Tag>::operator()( size_t i, size_t j ) noexcept
 {
    BLAZE_USER_ASSERT( i<m_, "Invalid row access index"    );
    BLAZE_USER_ASSERT( j<n_, "Invalid column access index" );
@@ -4130,9 +4308,10 @@ inline typename DynamicMatrix<Type,true,Tag>::Reference
 // the at() function is guaranteed to perform a check of the given access indices.
 */
 template< typename Type   // Data type of the matrix
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
-inline typename DynamicMatrix<Type,true,Tag>::ConstReference
-   DynamicMatrix<Type,true,Tag>::operator()( size_t i, size_t j ) const noexcept
+inline typename DynamicMatrix<Type,true,Alloc,Tag>::ConstReference
+   DynamicMatrix<Type,true,Alloc,Tag>::operator()( size_t i, size_t j ) const noexcept
 {
    BLAZE_USER_ASSERT( i<m_, "Invalid row access index"    );
    BLAZE_USER_ASSERT( j<n_, "Invalid column access index" );
@@ -4155,9 +4334,10 @@ inline typename DynamicMatrix<Type,true,Tag>::ConstReference
 // access indices.
 */
 template< typename Type   // Data type of the matrix
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
-inline typename DynamicMatrix<Type,true,Tag>::Reference
-   DynamicMatrix<Type,true,Tag>::at( size_t i, size_t j )
+inline typename DynamicMatrix<Type,true,Alloc,Tag>::Reference
+   DynamicMatrix<Type,true,Alloc,Tag>::at( size_t i, size_t j )
 {
    if( i >= m_ ) {
       BLAZE_THROW_OUT_OF_RANGE( "Invalid row access index" );
@@ -4184,9 +4364,10 @@ inline typename DynamicMatrix<Type,true,Tag>::Reference
 // access indices.
 */
 template< typename Type   // Data type of the matrix
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
-inline typename DynamicMatrix<Type,true,Tag>::ConstReference
-   DynamicMatrix<Type,true,Tag>::at( size_t i, size_t j ) const
+inline typename DynamicMatrix<Type,true,Alloc,Tag>::ConstReference
+   DynamicMatrix<Type,true,Alloc,Tag>::at( size_t i, size_t j ) const
 {
    if( i >= m_ ) {
       BLAZE_THROW_OUT_OF_RANGE( "Invalid row access index" );
@@ -4213,9 +4394,10 @@ inline typename DynamicMatrix<Type,true,Tag>::ConstReference
 // of elements including padding is given by the \c spacing() member function.
 */
 template< typename Type   // Data type of the matrix
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
-inline typename DynamicMatrix<Type,true,Tag>::Pointer
-   DynamicMatrix<Type,true,Tag>::data() noexcept
+inline typename DynamicMatrix<Type,true,Alloc,Tag>::Pointer
+   DynamicMatrix<Type,true,Alloc,Tag>::data() noexcept
 {
    return v_;
 }
@@ -4236,9 +4418,10 @@ inline typename DynamicMatrix<Type,true,Tag>::Pointer
 // of elements including padding is given by the \c spacing() member function.
 */
 template< typename Type   // Data type of the matrix
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
-inline typename DynamicMatrix<Type,true,Tag>::ConstPointer
-   DynamicMatrix<Type,true,Tag>::data() const noexcept
+inline typename DynamicMatrix<Type,true,Alloc,Tag>::ConstPointer
+   DynamicMatrix<Type,true,Alloc,Tag>::data() const noexcept
 {
    return v_;
 }
@@ -4256,9 +4439,10 @@ inline typename DynamicMatrix<Type,true,Tag>::ConstPointer
 // This function returns a pointer to the internal storage for the elements in column \a j.
 */
 template< typename Type   // Data type of the matrix
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
-inline typename DynamicMatrix<Type,true,Tag>::Pointer
-   DynamicMatrix<Type,true,Tag>::data( size_t j ) noexcept
+inline typename DynamicMatrix<Type,true,Alloc,Tag>::Pointer
+   DynamicMatrix<Type,true,Alloc,Tag>::data( size_t j ) noexcept
 {
    BLAZE_USER_ASSERT( j < n_, "Invalid dense matrix column access index" );
    return v_ + j*mm_;
@@ -4277,9 +4461,10 @@ inline typename DynamicMatrix<Type,true,Tag>::Pointer
 // This function returns a pointer to the internal storage for the elements in column \a j.
 */
 template< typename Type   // Data type of the matrix
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
-inline typename DynamicMatrix<Type,true,Tag>::ConstPointer
-   DynamicMatrix<Type,true,Tag>::data( size_t j ) const noexcept
+inline typename DynamicMatrix<Type,true,Alloc,Tag>::ConstPointer
+   DynamicMatrix<Type,true,Alloc,Tag>::data( size_t j ) const noexcept
 {
    BLAZE_USER_ASSERT( j < n_, "Invalid dense matrix column access index" );
    return v_ + j*mm_;
@@ -4296,9 +4481,10 @@ inline typename DynamicMatrix<Type,true,Tag>::ConstPointer
 // \return Iterator to the first element of column \a j.
 */
 template< typename Type   // Data type of the matrix
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
-inline typename DynamicMatrix<Type,true,Tag>::Iterator
-   DynamicMatrix<Type,true,Tag>::begin( size_t j ) noexcept
+inline typename DynamicMatrix<Type,true,Alloc,Tag>::Iterator
+   DynamicMatrix<Type,true,Alloc,Tag>::begin( size_t j ) noexcept
 {
    BLAZE_USER_ASSERT( j < n_, "Invalid dense matrix column access index" );
    return Iterator( v_ + j*mm_ );
@@ -4315,9 +4501,10 @@ inline typename DynamicMatrix<Type,true,Tag>::Iterator
 // \return Iterator to the first element of column \a j.
 */
 template< typename Type   // Data type of the matrix
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
-inline typename DynamicMatrix<Type,true,Tag>::ConstIterator
-   DynamicMatrix<Type,true,Tag>::begin( size_t j ) const noexcept
+inline typename DynamicMatrix<Type,true,Alloc,Tag>::ConstIterator
+   DynamicMatrix<Type,true,Alloc,Tag>::begin( size_t j ) const noexcept
 {
    BLAZE_USER_ASSERT( j < n_, "Invalid dense matrix column access index" );
    return ConstIterator( v_ + j*mm_ );
@@ -4334,9 +4521,10 @@ inline typename DynamicMatrix<Type,true,Tag>::ConstIterator
 // \return Iterator to the first element of column \a j.
 */
 template< typename Type   // Data type of the matrix
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
-inline typename DynamicMatrix<Type,true,Tag>::ConstIterator
-   DynamicMatrix<Type,true,Tag>::cbegin( size_t j ) const noexcept
+inline typename DynamicMatrix<Type,true,Alloc,Tag>::ConstIterator
+   DynamicMatrix<Type,true,Alloc,Tag>::cbegin( size_t j ) const noexcept
 {
    BLAZE_USER_ASSERT( j < n_, "Invalid dense matrix column access index" );
    return ConstIterator( v_ + j*mm_ );
@@ -4353,9 +4541,10 @@ inline typename DynamicMatrix<Type,true,Tag>::ConstIterator
 // \return Iterator just past the last element of column \a j.
 */
 template< typename Type   // Data type of the matrix
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
-inline typename DynamicMatrix<Type,true,Tag>::Iterator
-   DynamicMatrix<Type,true,Tag>::end( size_t j ) noexcept
+inline typename DynamicMatrix<Type,true,Alloc,Tag>::Iterator
+   DynamicMatrix<Type,true,Alloc,Tag>::end( size_t j ) noexcept
 {
    BLAZE_USER_ASSERT( j < n_, "Invalid dense matrix column access index" );
    return Iterator( v_ + j*mm_ + m_ );
@@ -4372,9 +4561,10 @@ inline typename DynamicMatrix<Type,true,Tag>::Iterator
 // \return Iterator just past the last element of column \a j.
 */
 template< typename Type   // Data type of the matrix
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
-inline typename DynamicMatrix<Type,true,Tag>::ConstIterator
-   DynamicMatrix<Type,true,Tag>::end( size_t j ) const noexcept
+inline typename DynamicMatrix<Type,true,Alloc,Tag>::ConstIterator
+   DynamicMatrix<Type,true,Alloc,Tag>::end( size_t j ) const noexcept
 {
    BLAZE_USER_ASSERT( j < n_, "Invalid dense matrix column access index" );
    return ConstIterator( v_ + j*mm_ + m_ );
@@ -4391,9 +4581,10 @@ inline typename DynamicMatrix<Type,true,Tag>::ConstIterator
 // \return Iterator just past the last element of column \a j.
 */
 template< typename Type   // Data type of the matrix
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
-inline typename DynamicMatrix<Type,true,Tag>::ConstIterator
-   DynamicMatrix<Type,true,Tag>::cend( size_t j ) const noexcept
+inline typename DynamicMatrix<Type,true,Alloc,Tag>::ConstIterator
+   DynamicMatrix<Type,true,Alloc,Tag>::cend( size_t j ) const noexcept
 {
    BLAZE_USER_ASSERT( j < n_, "Invalid dense matrix column access index" );
    return ConstIterator( v_ + j*mm_ + m_ );
@@ -4418,9 +4609,10 @@ inline typename DynamicMatrix<Type,true,Tag>::ConstIterator
 // \return Reference to the assigned matrix.
 */
 template< typename Type   // Data type of the matrix
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
-inline DynamicMatrix<Type,true,Tag>&
-   DynamicMatrix<Type,true,Tag>::operator=( const Type& rhs ) &
+inline DynamicMatrix<Type,true,Alloc,Tag>&
+   DynamicMatrix<Type,true,Alloc,Tag>::operator=( const Type& rhs ) &
 {
    for( size_t j=0UL; j<n_; ++j )
       for( size_t i=0UL; i<m_; ++i )
@@ -4455,9 +4647,10 @@ inline DynamicMatrix<Type,true,Tag>&
 // as default (as e.g. the value 6 in the example).
 */
 template< typename Type   // Data type of the matrix
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
-inline DynamicMatrix<Type,true,Tag>&
-   DynamicMatrix<Type,true,Tag>::operator=( initializer_list< initializer_list<Type> > list ) &
+inline DynamicMatrix<Type,true,Alloc,Tag>&
+   DynamicMatrix<Type,true,Alloc,Tag>::operator=( initializer_list< initializer_list<Type> > list ) &
 {
    resize( list.size(), determineColumns( list ), false );
 
@@ -4505,12 +4698,13 @@ inline DynamicMatrix<Type,true,Tag>&
 // the example).
 */
 template< typename Type   // Data type of the matrix
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
 template< typename Other  // Data type of the static array
         , size_t Rows     // Number of rows of the static array
         , size_t Cols >   // Number of columns of the static array
-inline DynamicMatrix<Type,true,Tag>&
-   DynamicMatrix<Type,true,Tag>::operator=( const Other (&array)[Rows][Cols] ) &
+inline DynamicMatrix<Type,true,Alloc,Tag>&
+   DynamicMatrix<Type,true,Alloc,Tag>::operator=( const Other (&array)[Rows][Cols] ) &
 {
    resize( Rows, Cols, false );
 
@@ -4548,12 +4742,13 @@ inline DynamicMatrix<Type,true,Tag>&
 // the example).
 */
 template< typename Type   // Data type of the matrix
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
 template< typename Other  // Data type of the std::array
         , size_t Rows     // Number of rows of the std::array
         , size_t Cols >   // Number of columns of the std::array
-inline DynamicMatrix<Type,true,Tag>&
-   DynamicMatrix<Type,true,Tag>::operator=( const std::array<std::array<Other,Cols>,Rows>& array ) &
+inline DynamicMatrix<Type,true,Alloc,Tag>&
+   DynamicMatrix<Type,true,Alloc,Tag>::operator=( const std::array<std::array<Other,Cols>,Rows>& array ) &
 {
    resize( Rows, Cols, false );
 
@@ -4578,9 +4773,10 @@ inline DynamicMatrix<Type,true,Tag>&
 // copy of this matrix.
 */
 template< typename Type   // Data type of the matrix
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
-inline DynamicMatrix<Type,true,Tag>&
-   DynamicMatrix<Type,true,Tag>::operator=( const DynamicMatrix& rhs ) &
+inline DynamicMatrix<Type,true,Alloc,Tag>&
+   DynamicMatrix<Type,true,Alloc,Tag>::operator=( const DynamicMatrix& rhs ) &
 {
    if( &rhs == this ) return *this;
 
@@ -4603,11 +4799,12 @@ inline DynamicMatrix<Type,true,Tag>&
 // \return Reference to the assigned matrix.
 */
 template< typename Type   // Data type of the matrix
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
-inline DynamicMatrix<Type,true,Tag>&
-   DynamicMatrix<Type,true,Tag>::operator=( DynamicMatrix&& rhs ) &
+inline DynamicMatrix<Type,true,Alloc,Tag>&
+   DynamicMatrix<Type,true,Alloc,Tag>::operator=( DynamicMatrix&& rhs ) &
 {
-   deallocate( v_ );
+   deallocate( v_, capacity_ );
 
    m_        = rhs.m_;
    mm_       = rhs.mm_;
@@ -4638,11 +4835,12 @@ inline DynamicMatrix<Type,true,Tag>&
 // copy of this matrix.
 */
 template< typename Type   // Data type of the matrix
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
 template< typename MT      // Type of the right-hand side matrix
         , bool SO >        // Storage order of the right-hand side matrix
-inline DynamicMatrix<Type,true,Tag>&
-   DynamicMatrix<Type,true,Tag>::operator=( const Matrix<MT,SO>& rhs ) &
+inline DynamicMatrix<Type,true,Alloc,Tag>&
+   DynamicMatrix<Type,true,Alloc,Tag>::operator=( const Matrix<MT,SO>& rhs ) &
 {
    using TT = decltype( trans( *this ) );
    using CT = decltype( ctrans( *this ) );
@@ -4687,11 +4885,12 @@ inline DynamicMatrix<Type,true,Tag>&
 // is thrown.
 */
 template< typename Type   // Data type of the matrix
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
 template< typename MT     // Type of the right-hand side matrix
         , bool SO >       // Storage order of the right-hand side matrix
-inline DynamicMatrix<Type,true,Tag>&
-   DynamicMatrix<Type,true,Tag>::operator+=( const Matrix<MT,SO>& rhs ) &
+inline DynamicMatrix<Type,true,Alloc,Tag>&
+   DynamicMatrix<Type,true,Alloc,Tag>::operator+=( const Matrix<MT,SO>& rhs ) &
 {
    BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<MT> );
 
@@ -4727,11 +4926,12 @@ inline DynamicMatrix<Type,true,Tag>&
 // is thrown.
 */
 template< typename Type   // Data type of the matrix
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
 template< typename MT     // Type of the right-hand side matrix
         , bool SO >       // Storage order of the right-hand side matrix
-inline DynamicMatrix<Type,true,Tag>&
-   DynamicMatrix<Type,true,Tag>::operator-=( const Matrix<MT,SO>& rhs ) &
+inline DynamicMatrix<Type,true,Alloc,Tag>&
+   DynamicMatrix<Type,true,Alloc,Tag>::operator-=( const Matrix<MT,SO>& rhs ) &
 {
    BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<MT> );
 
@@ -4767,11 +4967,12 @@ inline DynamicMatrix<Type,true,Tag>&
 // is thrown.
 */
 template< typename Type   // Data type of the matrix
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
 template< typename MT     // Type of the right-hand side matrix
         , bool SO >       // Storage order of the right-hand side matrix
-inline DynamicMatrix<Type,true,Tag>&
-   DynamicMatrix<Type,true,Tag>::operator%=( const Matrix<MT,SO>& rhs ) &
+inline DynamicMatrix<Type,true,Alloc,Tag>&
+   DynamicMatrix<Type,true,Alloc,Tag>::operator%=( const Matrix<MT,SO>& rhs ) &
 {
    BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<MT> );
 
@@ -4810,8 +5011,9 @@ inline DynamicMatrix<Type,true,Tag>&
 // \return The number of rows of the matrix.
 */
 template< typename Type   // Data type of the matrix
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
-inline size_t DynamicMatrix<Type,true,Tag>::rows() const noexcept
+inline size_t DynamicMatrix<Type,true,Alloc,Tag>::rows() const noexcept
 {
    return m_;
 }
@@ -4826,8 +5028,9 @@ inline size_t DynamicMatrix<Type,true,Tag>::rows() const noexcept
 // \return The number of columns of the matrix.
 */
 template< typename Type   // Data type of the matrix
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
-inline size_t DynamicMatrix<Type,true,Tag>::columns() const noexcept
+inline size_t DynamicMatrix<Type,true,Alloc,Tag>::columns() const noexcept
 {
    return n_;
 }
@@ -4845,8 +5048,9 @@ inline size_t DynamicMatrix<Type,true,Tag>::columns() const noexcept
 // of elements of a column.
 */
 template< typename Type   // Data type of the matrix
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
-inline size_t DynamicMatrix<Type,true,Tag>::spacing() const noexcept
+inline size_t DynamicMatrix<Type,true,Alloc,Tag>::spacing() const noexcept
 {
    return mm_;
 }
@@ -4861,8 +5065,9 @@ inline size_t DynamicMatrix<Type,true,Tag>::spacing() const noexcept
 // \return The capacity of the matrix.
 */
 template< typename Type   // Data type of the matrix
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
-inline size_t DynamicMatrix<Type,true,Tag>::capacity() const noexcept
+inline size_t DynamicMatrix<Type,true,Alloc,Tag>::capacity() const noexcept
 {
    return capacity_;
 }
@@ -4878,8 +5083,9 @@ inline size_t DynamicMatrix<Type,true,Tag>::capacity() const noexcept
 // \return The current capacity of column \a j.
 */
 template< typename Type   // Data type of the matrix
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
-inline size_t DynamicMatrix<Type,true,Tag>::capacity( size_t j ) const noexcept
+inline size_t DynamicMatrix<Type,true,Alloc,Tag>::capacity( size_t j ) const noexcept
 {
    MAYBE_UNUSED( j );
    BLAZE_USER_ASSERT( j < columns(), "Invalid column access index" );
@@ -4896,8 +5102,9 @@ inline size_t DynamicMatrix<Type,true,Tag>::capacity( size_t j ) const noexcept
 // \return The number of non-zero elements in the dense matrix.
 */
 template< typename Type   // Data type of the matrix
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
-inline size_t DynamicMatrix<Type,true,Tag>::nonZeros() const
+inline size_t DynamicMatrix<Type,true,Alloc,Tag>::nonZeros() const
 {
    size_t nonzeros( 0UL );
 
@@ -4920,8 +5127,9 @@ inline size_t DynamicMatrix<Type,true,Tag>::nonZeros() const
 // \return The number of non-zero elements of column \a j.
 */
 template< typename Type   // Data type of the matrix
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
-inline size_t DynamicMatrix<Type,true,Tag>::nonZeros( size_t j ) const
+inline size_t DynamicMatrix<Type,true,Alloc,Tag>::nonZeros( size_t j ) const
 {
    BLAZE_USER_ASSERT( j < columns(), "Invalid column access index" );
 
@@ -4945,8 +5153,9 @@ inline size_t DynamicMatrix<Type,true,Tag>::nonZeros( size_t j ) const
 // \return void
 */
 template< typename Type   // Data type of the matrix
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
-inline void DynamicMatrix<Type,true,Tag>::reset()
+inline void DynamicMatrix<Type,true,Alloc,Tag>::reset()
 {
    using blaze::clear;
 
@@ -4969,8 +5178,9 @@ inline void DynamicMatrix<Type,true,Tag>::reset()
 // the capacity of the column remains unchanged.
 */
 template< typename Type   // Data type of the matrix
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
-inline void DynamicMatrix<Type,true,Tag>::reset( size_t j )
+inline void DynamicMatrix<Type,true,Alloc,Tag>::reset( size_t j )
 {
    using blaze::clear;
 
@@ -4991,8 +5201,9 @@ inline void DynamicMatrix<Type,true,Tag>::reset( size_t j )
 // After the clear() function, the size of the matrix is 0.
 */
 template< typename Type   // Data type of the matrix
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
-inline void DynamicMatrix<Type,true,Tag>::clear()
+inline void DynamicMatrix<Type,true,Alloc,Tag>::clear()
 {
    resize( 0UL, 0UL, false );
 }
@@ -5014,7 +5225,8 @@ inline void DynamicMatrix<Type,true,Tag>::clear()
 // small. Note that this function may invalidate all existing views (submatrices, rows, columns,
 // ...) on the matrix if it is used to shrink the matrix. Additionally, the resize operation
 // potentially changes all matrix elements. In order to preserve the old matrix values, the
-// \a preserve flag can be set to \a true. However, new matrix elements are not initialized!
+// \a preserve flag can be set to \a true. However, new matrix elements of built-in type are
+// not initialized!
 //
 // The following example illustrates the resize operation of a \f$ 2 \times 4 \f$ matrix to a
 // \f$ 4 \times 2 \f$ matrix. The new, uninitialized elements are marked with \a x:
@@ -5036,10 +5248,10 @@ inline void DynamicMatrix<Type,true,Tag>::clear()
                               \f]
 */
 template< typename Type   // Data type of the matrix
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
-void DynamicMatrix<Type,true,Tag>::resize( size_t m, size_t n, bool preserve )
+void DynamicMatrix<Type,true,Alloc,Tag>::resize( size_t m, size_t n, bool preserve )
 {
-   using std::swap;
    using blaze::min;
 
    if( m == m_ && n == n_ ) return;
@@ -5048,7 +5260,7 @@ void DynamicMatrix<Type,true,Tag>::resize( size_t m, size_t n, bool preserve )
 
    if( preserve )
    {
-      Type* BLAZE_RESTRICT v = allocate<Type>( mm*n );
+      Type* BLAZE_RESTRICT v = allocate( mm*n );
       const size_t min_m( min( m, m_ ) );
       const size_t min_n( min( n, n_ ) );
 
@@ -5056,14 +5268,15 @@ void DynamicMatrix<Type,true,Tag>::resize( size_t m, size_t n, bool preserve )
          transfer( v_+j*mm_, v_+min_m+j*mm_, v+j*mm );
       }
 
-      swap( v_, v );
-      deallocate( v );
+      deallocate( v_, capacity_ );
+      v_ = v;
       capacity_ = mm*n;
    }
-   else if( mm*n > capacity_ ) {
-      Type* BLAZE_RESTRICT v = allocate<Type>( mm*n );
-      swap( v_, v );
-      deallocate( v );
+   else if( mm*n > capacity_ )
+   {
+      Type* BLAZE_RESTRICT v = allocate( mm*n );
+      deallocate( v_, capacity_ );
+      v_ = v;
       capacity_ = mm*n;
    }
 
@@ -5093,12 +5306,13 @@ void DynamicMatrix<Type,true,Tag>::resize( size_t m, size_t n, bool preserve )
 // This function increases the matrix size by \a m rows and \a n columns. During this operation,
 // new dynamic memory may be allocated in case the capacity of the matrix is too small. Therefore
 // this function potentially changes all matrix elements. In order to preserve the old matrix
-// values, the \a preserve flag can be set to \a true. However, new matrix elements are not
-// initialized!
+// values, the \a preserve flag can be set to \a true. However, new matrix elements of built-in
+// type are not initialized!
 */
 template< typename Type   // Data type of the matrix
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
-inline void DynamicMatrix<Type,true,Tag>::extend( size_t m, size_t n, bool preserve )
+inline void DynamicMatrix<Type,true,Alloc,Tag>::extend( size_t m, size_t n, bool preserve )
 {
    resize( m_+m, n_+n, preserve );
 }
@@ -5117,15 +5331,14 @@ inline void DynamicMatrix<Type,true,Tag>::extend( size_t m, size_t n, bool prese
 // The current values of the matrix elements are preserved.
 */
 template< typename Type   // Data type of the matrix
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
-inline void DynamicMatrix<Type,true,Tag>::reserve( size_t elements )
+inline void DynamicMatrix<Type,true,Alloc,Tag>::reserve( size_t elements )
 {
-   using std::swap;
-
    if( elements > capacity_ )
    {
       // Allocating a new array
-      Type* BLAZE_RESTRICT tmp = allocate<Type>( elements );
+      Type* BLAZE_RESTRICT tmp = allocate( elements );
 
       // Initializing the new array
       transfer( v_, v_+capacity_, tmp );
@@ -5136,8 +5349,8 @@ inline void DynamicMatrix<Type,true,Tag>::reserve( size_t elements )
       }
 
       // Replacing the old array
-      swap( tmp, v_ );
-      deallocate( tmp );
+      deallocate( v_, capacity_ );
+      v_ = tmp;
       capacity_ = elements;
    }
 }
@@ -5157,8 +5370,9 @@ inline void DynamicMatrix<Type,true,Tag>::reserve( size_t elements )
 // all pointers and references to elements of this matrix are invalidated.
 */
 template< typename Type   // Data type of the matrix
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
-inline void DynamicMatrix<Type,true,Tag>::shrinkToFit()
+inline void DynamicMatrix<Type,true,Alloc,Tag>::shrinkToFit()
 {
    if( ( mm_ * n_ ) < capacity_ ) {
       DynamicMatrix( *this ).swap( *this );
@@ -5176,8 +5390,9 @@ inline void DynamicMatrix<Type,true,Tag>::shrinkToFit()
 // \return void
 */
 template< typename Type   // Data type of the matrix
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
-inline void DynamicMatrix<Type,true,Tag>::swap( DynamicMatrix& m ) noexcept
+inline void DynamicMatrix<Type,true,Alloc,Tag>::swap( DynamicMatrix& m ) noexcept
 {
    using std::swap;
 
@@ -5192,6 +5407,57 @@ inline void DynamicMatrix<Type,true,Tag>::swap( DynamicMatrix& m ) noexcept
 
 
 //*************************************************************************************************
+/*!\brief Aligned array allocation.
+//
+// \param size The number of elements of the given type to be allocated.
+// \return Pointer to the first element of the aligned array.
+// \exception std::bad_alloc Allocation failed.
+//
+// The allocate() function performs the allocation of aligned memory via the given allocator
+// \a Alloc. In case the allocation failed entirely or in case the pointer returned by the
+// allocator is not properly aligned (i.e. 16-byte aligned in case of SSE, 32-byte aligned
+// in case of AVX, and 64-byte aligned in case of AVX-512), a \a std::bad_alloc expresion is
+// thrown.
+*/
+template< typename Type   // Data type of the matrix
+        , typename Alloc  // Type of the allocator
+        , typename Tag >  // Type tag
+inline Type* DynamicMatrix<Type,true,Alloc,Tag>::allocate( size_t n )
+{
+   Type* const ptr = Alloc{}.allocate( n );
+
+   if( !checkAlignment( ptr ) ) {
+      BLAZE_THROW_BAD_ALLOC;
+   }
+
+   blaze::uninitialized_default_construct_n( ptr, n );
+
+   return ptr;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Deallocation of aligned memory.
+//
+// \param address Pointer to the first element of the array to be deallocated.
+// \return void
+//
+// This function deallocates the given aligned memory that was previously allocated via the
+// allocate() function.
+*/
+template< typename Type   // Data type of the matrix
+        , typename Alloc  // Type of the allocator
+        , typename Tag >  // Type tag
+inline void DynamicMatrix<Type,true,Alloc,Tag>::deallocate( Type* ptr, size_t n ) noexcept
+{
+   blaze::destroy_n( ptr, n );
+   Alloc{}.deallocate( ptr, n );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Add the necessary amount of padding to the given value.
 //
@@ -5202,8 +5468,9 @@ inline void DynamicMatrix<Type,true,Tag>::swap( DynamicMatrix& m ) noexcept
 // vector's data type \a Type.
 */
 template< typename Type   // Data type of the matrix
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
-inline size_t DynamicMatrix<Type,true,Tag>::addPadding( size_t values ) const noexcept
+inline size_t DynamicMatrix<Type,true,Alloc,Tag>::addPadding( size_t values ) const noexcept
 {
    if( usePadding && IsVectorizable_v<Type> )
       return nextMultiple<size_t>( values, SIMDSIZE );
@@ -5228,8 +5495,9 @@ inline size_t DynamicMatrix<Type,true,Tag>::addPadding( size_t values ) const no
 // \return Reference to the transposed matrix.
 */
 template< typename Type   // Data type of the matrix
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
-inline DynamicMatrix<Type,true,Tag>& DynamicMatrix<Type,true,Tag>::transpose()
+inline DynamicMatrix<Type,true,Alloc,Tag>& DynamicMatrix<Type,true,Alloc,Tag>::transpose()
 {
    using std::swap;
 
@@ -5268,8 +5536,9 @@ inline DynamicMatrix<Type,true,Tag>& DynamicMatrix<Type,true,Tag>::transpose()
 // \return Reference to the transposed matrix.
 */
 template< typename Type   // Data type of the matrix
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
-inline DynamicMatrix<Type,true,Tag>& DynamicMatrix<Type,true,Tag>::ctranspose()
+inline DynamicMatrix<Type,true,Alloc,Tag>& DynamicMatrix<Type,true,Alloc,Tag>::ctranspose()
 {
    constexpr size_t block( BLOCK_SIZE );
 
@@ -5324,9 +5593,10 @@ inline DynamicMatrix<Type,true,Tag>& DynamicMatrix<Type,true,Tag>::ctranspose()
    \endcode
 */
 template< typename Type     // Data type of the matrix
+        , typename Alloc    // Type of the allocator
         , typename Tag >    // Type tag
 template< typename Other >  // Data type of the scalar value
-inline DynamicMatrix<Type,true,Tag>& DynamicMatrix<Type,true,Tag>::scale( const Other& scalar )
+inline DynamicMatrix<Type,true,Alloc,Tag>& DynamicMatrix<Type,true,Alloc,Tag>::scale( const Other& scalar )
 {
    for( size_t j=0UL; j<n_; ++j )
       for( size_t i=0UL; i<m_; ++i )
@@ -5357,8 +5627,9 @@ inline DynamicMatrix<Type,true,Tag>& DynamicMatrix<Type,true,Tag>::scale( const 
 // will return \a false.
 */
 template< typename Type   // Data type of the matrix
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
-inline bool DynamicMatrix<Type,true,Tag>::isIntact() const noexcept
+inline bool DynamicMatrix<Type,true,Alloc,Tag>::isIntact() const noexcept
 {
    if( m_ * n_ > capacity_ )
       return false;
@@ -5398,9 +5669,10 @@ inline bool DynamicMatrix<Type,true,Tag>::isIntact() const noexcept
 // to optimize the evaluation.
 */
 template< typename Type     // Data type of the matrix
+        , typename Alloc    // Type of the allocator
         , typename Tag >    // Type tag
 template< typename Other >  // Data type of the foreign expression
-inline bool DynamicMatrix<Type,true,Tag>::canAlias( const Other* alias ) const noexcept
+inline bool DynamicMatrix<Type,true,Alloc,Tag>::canAlias( const Other* alias ) const noexcept
 {
    return static_cast<const void*>( this ) == static_cast<const void*>( alias );
 }
@@ -5420,9 +5692,10 @@ inline bool DynamicMatrix<Type,true,Tag>::canAlias( const Other* alias ) const n
 // to optimize the evaluation.
 */
 template< typename Type     // Data type of the matrix
+        , typename Alloc    // Type of the allocator
         , typename Tag >    // Type tag
 template< typename Other >  // Data type of the foreign expression
-inline bool DynamicMatrix<Type,true,Tag>::isAliased( const Other* alias ) const noexcept
+inline bool DynamicMatrix<Type,true,Alloc,Tag>::isAliased( const Other* alias ) const noexcept
 {
    return static_cast<const void*>( this ) == static_cast<const void*>( alias );
 }
@@ -5441,8 +5714,9 @@ inline bool DynamicMatrix<Type,true,Tag>::isAliased( const Other* alias ) const 
 // the alignment restrictions of the element type \a Type.
 */
 template< typename Type   // Data type of the matrix
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
-inline bool DynamicMatrix<Type,true,Tag>::isAligned() const noexcept
+inline bool DynamicMatrix<Type,true,Alloc,Tag>::isAligned() const noexcept
 {
    return ( usePadding || rows() % SIMDSIZE == 0UL );
 }
@@ -5462,8 +5736,9 @@ inline bool DynamicMatrix<Type,true,Tag>::isAligned() const noexcept
 // rows and/or columns of the matrix).
 */
 template< typename Type   // Data type of the matrix
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
-inline bool DynamicMatrix<Type,true,Tag>::canSMPAssign() const noexcept
+inline bool DynamicMatrix<Type,true,Alloc,Tag>::canSMPAssign() const noexcept
 {
    return ( rows() * columns() >= SMP_DMATASSIGN_THRESHOLD );
 }
@@ -5487,9 +5762,10 @@ inline bool DynamicMatrix<Type,true,Tag>::canSMPAssign() const noexcept
 // explicitly might result in erroneous results and/or in compilation errors.
 */
 template< typename Type   // Data type of the matrix
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
-BLAZE_ALWAYS_INLINE typename DynamicMatrix<Type,true,Tag>::SIMDType
-   DynamicMatrix<Type,true,Tag>::load( size_t i, size_t j ) const noexcept
+BLAZE_ALWAYS_INLINE typename DynamicMatrix<Type,true,Alloc,Tag>::SIMDType
+   DynamicMatrix<Type,true,Alloc,Tag>::load( size_t i, size_t j ) const noexcept
 {
    if( usePadding )
       return loada( i, j );
@@ -5516,9 +5792,10 @@ BLAZE_ALWAYS_INLINE typename DynamicMatrix<Type,true,Tag>::SIMDType
 // function explicitly might result in erroneous results and/or in compilation errors.
 */
 template< typename Type   // Data type of the matrix
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
-BLAZE_ALWAYS_INLINE typename DynamicMatrix<Type,true,Tag>::SIMDType
-   DynamicMatrix<Type,true,Tag>::loada( size_t i, size_t j ) const noexcept
+BLAZE_ALWAYS_INLINE typename DynamicMatrix<Type,true,Alloc,Tag>::SIMDType
+   DynamicMatrix<Type,true,Alloc,Tag>::loada( size_t i, size_t j ) const noexcept
 {
    using blaze::loada;
 
@@ -5552,9 +5829,10 @@ BLAZE_ALWAYS_INLINE typename DynamicMatrix<Type,true,Tag>::SIMDType
 // function explicitly might result in erroneous results and/or in compilation errors.
 */
 template< typename Type   // Data type of the matrix
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
-BLAZE_ALWAYS_INLINE typename DynamicMatrix<Type,true,Tag>::SIMDType
-   DynamicMatrix<Type,true,Tag>::loadu( size_t i, size_t j ) const noexcept
+BLAZE_ALWAYS_INLINE typename DynamicMatrix<Type,true,Alloc,Tag>::SIMDType
+   DynamicMatrix<Type,true,Alloc,Tag>::loadu( size_t i, size_t j ) const noexcept
 {
    using blaze::loadu;
 
@@ -5587,9 +5865,10 @@ BLAZE_ALWAYS_INLINE typename DynamicMatrix<Type,true,Tag>::SIMDType
 // might result in erroneous results and/or in compilation errors.
 */
 template< typename Type   // Data type of the matrix
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
 BLAZE_ALWAYS_INLINE void
-   DynamicMatrix<Type,true,Tag>::store( size_t i, size_t j, const SIMDType& value ) noexcept
+   DynamicMatrix<Type,true,Alloc,Tag>::store( size_t i, size_t j, const SIMDType& value ) noexcept
 {
    if( usePadding )
       storea( i, j, value );
@@ -5617,9 +5896,10 @@ BLAZE_ALWAYS_INLINE void
 // function explicitly might result in erroneous results and/or in compilation errors.
 */
 template< typename Type   // Data type of the matrix
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
 BLAZE_ALWAYS_INLINE void
-   DynamicMatrix<Type,true,Tag>::storea( size_t i, size_t j, const SIMDType& value ) noexcept
+   DynamicMatrix<Type,true,Alloc,Tag>::storea( size_t i, size_t j, const SIMDType& value ) noexcept
 {
    using blaze::storea;
 
@@ -5654,9 +5934,10 @@ BLAZE_ALWAYS_INLINE void
 // function explicitly might result in erroneous results and/or in compilation errors.
 */
 template< typename Type   // Data type of the matrix
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
 BLAZE_ALWAYS_INLINE void
-   DynamicMatrix<Type,true,Tag>::storeu( size_t i, size_t j, const SIMDType& value ) noexcept
+   DynamicMatrix<Type,true,Alloc,Tag>::storeu( size_t i, size_t j, const SIMDType& value ) noexcept
 {
    using blaze::storeu;
 
@@ -5690,9 +5971,10 @@ BLAZE_ALWAYS_INLINE void
 // compilation errors.
 */
 template< typename Type   // Data type of the matrix
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
 BLAZE_ALWAYS_INLINE void
-   DynamicMatrix<Type,true,Tag>::stream( size_t i, size_t j, const SIMDType& value ) noexcept
+   DynamicMatrix<Type,true,Alloc,Tag>::stream( size_t i, size_t j, const SIMDType& value ) noexcept
 {
    using blaze::stream;
 
@@ -5723,9 +6005,10 @@ BLAZE_ALWAYS_INLINE void
 // assignment operator.
 */
 template< typename Type   // Data type of the matrix
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
 template< typename MT >   // Type of the right-hand side dense matrix
-inline auto DynamicMatrix<Type,true,Tag>::assign( const DenseMatrix<MT,true>& rhs )
+inline auto DynamicMatrix<Type,true,Alloc,Tag>::assign( const DenseMatrix<MT,true>& rhs )
    -> DisableIf_t< VectorizedAssign_v<MT> >
 {
    BLAZE_INTERNAL_ASSERT( m_ == (*rhs).rows()   , "Invalid number of rows"    );
@@ -5761,9 +6044,10 @@ inline auto DynamicMatrix<Type,true,Tag>::assign( const DenseMatrix<MT,true>& rh
 // assignment operator.
 */
 template< typename Type   // Data type of the matrix
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
 template< typename MT >   // Type of the right-hand side dense matrix
-inline auto DynamicMatrix<Type,true,Tag>::assign( const DenseMatrix<MT,true>& rhs )
+inline auto DynamicMatrix<Type,true,Alloc,Tag>::assign( const DenseMatrix<MT,true>& rhs )
    -> EnableIf_t< VectorizedAssign_v<MT> >
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
@@ -5834,9 +6118,10 @@ inline auto DynamicMatrix<Type,true,Tag>::assign( const DenseMatrix<MT,true>& rh
 // assignment operator.
 */
 template< typename Type   // Data type of the matrix
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
 template< typename MT >   // Type of the right-hand side dense matrix
-inline void DynamicMatrix<Type,true,Tag>::assign( const DenseMatrix<MT,false>& rhs )
+inline void DynamicMatrix<Type,true,Alloc,Tag>::assign( const DenseMatrix<MT,false>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
 
@@ -5874,9 +6159,10 @@ inline void DynamicMatrix<Type,true,Tag>::assign( const DenseMatrix<MT,false>& r
 // assignment operator.
 */
 template< typename Type   // Data type of the matrix
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
 template< typename MT >   // Type of the right-hand side sparse matrix
-inline void DynamicMatrix<Type,true,Tag>::assign( const SparseMatrix<MT,true>& rhs )
+inline void DynamicMatrix<Type,true,Alloc,Tag>::assign( const SparseMatrix<MT,true>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( m_ == (*rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (*rhs).columns(), "Invalid number of columns" );
@@ -5902,9 +6188,10 @@ inline void DynamicMatrix<Type,true,Tag>::assign( const SparseMatrix<MT,true>& r
 // assignment operator.
 */
 template< typename Type   // Data type of the matrix
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
 template< typename MT >   // Type of the right-hand side sparse matrix
-inline void DynamicMatrix<Type,true,Tag>::assign( const SparseMatrix<MT,false>& rhs )
+inline void DynamicMatrix<Type,true,Alloc,Tag>::assign( const SparseMatrix<MT,false>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
 
@@ -5932,9 +6219,10 @@ inline void DynamicMatrix<Type,true,Tag>::assign( const SparseMatrix<MT,false>& 
 // assignment operator.
 */
 template< typename Type   // Data type of the matrix
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
 template< typename MT >   // Type of the right-hand side dense matrix
-inline auto DynamicMatrix<Type,true,Tag>::addAssign( const DenseMatrix<MT,true>& rhs )
+inline auto DynamicMatrix<Type,true,Alloc,Tag>::addAssign( const DenseMatrix<MT,true>& rhs )
    -> DisableIf_t< VectorizedAddAssign_v<MT> >
 {
    BLAZE_INTERNAL_ASSERT( m_ == (*rhs).rows()   , "Invalid number of rows"    );
@@ -5985,9 +6273,10 @@ inline auto DynamicMatrix<Type,true,Tag>::addAssign( const DenseMatrix<MT,true>&
 // assignment operator.
 */
 template< typename Type   // Data type of the matrix
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
 template< typename MT >   // Type of the right-hand side dense matrix
-inline auto DynamicMatrix<Type,true,Tag>::addAssign( const DenseMatrix<MT,true>& rhs )
+inline auto DynamicMatrix<Type,true,Alloc,Tag>::addAssign( const DenseMatrix<MT,true>& rhs )
    -> EnableIf_t< VectorizedAddAssign_v<MT> >
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
@@ -6046,9 +6335,10 @@ inline auto DynamicMatrix<Type,true,Tag>::addAssign( const DenseMatrix<MT,true>&
 // assignment operator.
 */
 template< typename Type   // Data type of the matrix
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
 template< typename MT >   // Type of the right-hand side dense matrix
-inline void DynamicMatrix<Type,true,Tag>::addAssign( const DenseMatrix<MT,false>& rhs )
+inline void DynamicMatrix<Type,true,Alloc,Tag>::addAssign( const DenseMatrix<MT,false>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
 
@@ -6098,9 +6388,10 @@ inline void DynamicMatrix<Type,true,Tag>::addAssign( const DenseMatrix<MT,false>
 // assignment operator.
 */
 template< typename Type   // Data type of the matrix
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
 template< typename MT >   // Type of the right-hand side sparse matrix
-inline void DynamicMatrix<Type,true,Tag>::addAssign( const SparseMatrix<MT,true>& rhs )
+inline void DynamicMatrix<Type,true,Alloc,Tag>::addAssign( const SparseMatrix<MT,true>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( m_ == (*rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (*rhs).columns(), "Invalid number of columns" );
@@ -6126,9 +6417,10 @@ inline void DynamicMatrix<Type,true,Tag>::addAssign( const SparseMatrix<MT,true>
 // assignment operator.
 */
 template< typename Type   // Data type of the matrix
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
 template< typename MT >   // Type of the right-hand side sparse matrix
-inline void DynamicMatrix<Type,true,Tag>::addAssign( const SparseMatrix<MT,false>& rhs )
+inline void DynamicMatrix<Type,true,Alloc,Tag>::addAssign( const SparseMatrix<MT,false>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
 
@@ -6156,9 +6448,10 @@ inline void DynamicMatrix<Type,true,Tag>::addAssign( const SparseMatrix<MT,false
 // assignment operator.
 */
 template< typename Type   // Data type of the matrix
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
 template< typename MT >   // Type of the right-hand side dense matrix
-inline auto DynamicMatrix<Type,true,Tag>::subAssign( const DenseMatrix<MT,true>& rhs )
+inline auto DynamicMatrix<Type,true,Alloc,Tag>::subAssign( const DenseMatrix<MT,true>& rhs )
    -> DisableIf_t< VectorizedSubAssign_v<MT> >
 {
    BLAZE_INTERNAL_ASSERT( m_ == (*rhs).rows()   , "Invalid number of rows"    );
@@ -6209,9 +6502,10 @@ inline auto DynamicMatrix<Type,true,Tag>::subAssign( const DenseMatrix<MT,true>&
 // assignment operator.
 */
 template< typename Type   // Data type of the matrix
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
 template< typename MT >   // Type of the right-hand side dense matrix
-inline auto DynamicMatrix<Type,true,Tag>::subAssign( const DenseMatrix<MT,true>& rhs )
+inline auto DynamicMatrix<Type,true,Alloc,Tag>::subAssign( const DenseMatrix<MT,true>& rhs )
    -> EnableIf_t< VectorizedSubAssign_v<MT> >
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
@@ -6270,9 +6564,10 @@ inline auto DynamicMatrix<Type,true,Tag>::subAssign( const DenseMatrix<MT,true>&
 // assignment operator.
 */
 template< typename Type   // Data type of the matrix
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
 template< typename MT >   // Type of the right-hand side dense matrix
-inline void DynamicMatrix<Type,true,Tag>::subAssign( const DenseMatrix<MT,false>& rhs )
+inline void DynamicMatrix<Type,true,Alloc,Tag>::subAssign( const DenseMatrix<MT,false>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
 
@@ -6322,9 +6617,10 @@ inline void DynamicMatrix<Type,true,Tag>::subAssign( const DenseMatrix<MT,false>
 // assignment operator.
 */
 template< typename Type   // Data type of the matrix
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
 template< typename MT >   // Type of the right-hand side sparse matrix
-inline void DynamicMatrix<Type,true,Tag>::subAssign( const SparseMatrix<MT,true>& rhs )
+inline void DynamicMatrix<Type,true,Alloc,Tag>::subAssign( const SparseMatrix<MT,true>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( m_ == (*rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (*rhs).columns(), "Invalid number of columns" );
@@ -6350,9 +6646,10 @@ inline void DynamicMatrix<Type,true,Tag>::subAssign( const SparseMatrix<MT,true>
 // assignment operator.
 */
 template< typename Type   // Data type of the matrix
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
 template< typename MT >   // Type of the right-hand side sparse matrix
-inline void DynamicMatrix<Type,true,Tag>::subAssign( const SparseMatrix<MT,false>& rhs )
+inline void DynamicMatrix<Type,true,Alloc,Tag>::subAssign( const SparseMatrix<MT,false>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
 
@@ -6380,9 +6677,10 @@ inline void DynamicMatrix<Type,true,Tag>::subAssign( const SparseMatrix<MT,false
 // assignment operator.
 */
 template< typename Type   // Data type of the matrix
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
 template< typename MT >   // Type of the right-hand side dense matrix
-inline auto DynamicMatrix<Type,true,Tag>::schurAssign( const DenseMatrix<MT,true>& rhs )
+inline auto DynamicMatrix<Type,true,Alloc,Tag>::schurAssign( const DenseMatrix<MT,true>& rhs )
    -> DisableIf_t< VectorizedSchurAssign_v<MT> >
 {
    BLAZE_INTERNAL_ASSERT( m_ == (*rhs).rows()   , "Invalid number of rows"    );
@@ -6418,9 +6716,10 @@ inline auto DynamicMatrix<Type,true,Tag>::schurAssign( const DenseMatrix<MT,true
 // assignment operator.
 */
 template< typename Type   // Data type of the matrix
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
 template< typename MT >   // Type of the right-hand side dense matrix
-inline auto DynamicMatrix<Type,true,Tag>::schurAssign( const DenseMatrix<MT,true>& rhs )
+inline auto DynamicMatrix<Type,true,Alloc,Tag>::schurAssign( const DenseMatrix<MT,true>& rhs )
    -> EnableIf_t< VectorizedSchurAssign_v<MT> >
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
@@ -6470,9 +6769,10 @@ inline auto DynamicMatrix<Type,true,Tag>::schurAssign( const DenseMatrix<MT,true
 // assignment operator.
 */
 template< typename Type   // Data type of the matrix
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
 template< typename MT >   // Type of the right-hand side dense matrix
-inline void DynamicMatrix<Type,true,Tag>::schurAssign( const DenseMatrix<MT,false>& rhs )
+inline void DynamicMatrix<Type,true,Alloc,Tag>::schurAssign( const DenseMatrix<MT,false>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
 
@@ -6510,9 +6810,10 @@ inline void DynamicMatrix<Type,true,Tag>::schurAssign( const DenseMatrix<MT,fals
 // assignment operator.
 */
 template< typename Type   // Data type of the matrix
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
 template< typename MT >   // Type of the right-hand side sparse matrix
-inline void DynamicMatrix<Type,true,Tag>::schurAssign( const SparseMatrix<MT,true>& rhs )
+inline void DynamicMatrix<Type,true,Alloc,Tag>::schurAssign( const SparseMatrix<MT,true>& rhs )
 {
    using blaze::reset;
 
@@ -6552,9 +6853,10 @@ inline void DynamicMatrix<Type,true,Tag>::schurAssign( const SparseMatrix<MT,tru
 // assignment operator.
 */
 template< typename Type   // Data type of the matrix
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
 template< typename MT >   // Type of the right-hand side sparse matrix
-inline void DynamicMatrix<Type,true,Tag>::schurAssign( const SparseMatrix<MT,false>& rhs )
+inline void DynamicMatrix<Type,true,Alloc,Tag>::schurAssign( const SparseMatrix<MT,false>& rhs )
 {
    using blaze::reset;
 
@@ -6598,23 +6900,23 @@ inline void DynamicMatrix<Type,true,Tag>::schurAssign( const SparseMatrix<MT,fal
 //*************************************************************************************************
 /*!\name DynamicMatrix operators */
 //@{
-template< typename Type, bool SO, typename Tag >
-void reset( DynamicMatrix<Type,SO,Tag>& m );
+template< typename Type, bool SO, typename Alloc, typename Tag >
+void reset( DynamicMatrix<Type,SO,Alloc,Tag>& m );
 
-template< typename Type, bool SO, typename Tag >
-void reset( DynamicMatrix<Type,SO,Tag>& m, size_t i );
+template< typename Type, bool SO, typename Alloc, typename Tag >
+void reset( DynamicMatrix<Type,SO,Alloc,Tag>& m, size_t i );
 
-template< typename Type, bool SO, typename Tag >
-void clear( DynamicMatrix<Type,SO,Tag>& m );
+template< typename Type, bool SO, typename Alloc, typename Tag >
+void clear( DynamicMatrix<Type,SO,Alloc,Tag>& m );
 
-template< RelaxationFlag RF, typename Type, bool SO, typename Tag >
-bool isDefault( const DynamicMatrix<Type,SO,Tag>& m );
+template< RelaxationFlag RF, typename Type, bool SO, typename Alloc, typename Tag >
+bool isDefault( const DynamicMatrix<Type,SO,Alloc,Tag>& m );
 
-template< typename Type, bool SO, typename Tag >
-bool isIntact( const DynamicMatrix<Type,SO,Tag>& m ) noexcept;
+template< typename Type, bool SO, typename Alloc, typename Tag >
+bool isIntact( const DynamicMatrix<Type,SO,Alloc,Tag>& m ) noexcept;
 
-template< typename Type, bool SO, typename Tag >
-void swap( DynamicMatrix<Type,SO,Tag>& a, DynamicMatrix<Type,SO,Tag>& b ) noexcept;
+template< typename Type, bool SO, typename Alloc, typename Tag >
+void swap( DynamicMatrix<Type,SO,Alloc,Tag>& a, DynamicMatrix<Type,SO,Alloc,Tag>& b ) noexcept;
 //@}
 //*************************************************************************************************
 
@@ -6628,8 +6930,9 @@ void swap( DynamicMatrix<Type,SO,Tag>& a, DynamicMatrix<Type,SO,Tag>& b ) noexce
 */
 template< typename Type   // Data type of the matrix
         , bool SO         // Storage order
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
-inline void reset( DynamicMatrix<Type,SO,Tag>& m )
+inline void reset( DynamicMatrix<Type,SO,Alloc,Tag>& m )
 {
    m.reset();
 }
@@ -6651,8 +6954,9 @@ inline void reset( DynamicMatrix<Type,SO,Tag>& m )
 */
 template< typename Type   // Data type of the matrix
         , bool SO         // Storage order
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
-inline void reset( DynamicMatrix<Type,SO,Tag>& m, size_t i )
+inline void reset( DynamicMatrix<Type,SO,Alloc,Tag>& m, size_t i )
 {
    m.reset( i );
 }
@@ -6668,8 +6972,9 @@ inline void reset( DynamicMatrix<Type,SO,Tag>& m, size_t i )
 */
 template< typename Type   // Data type of the matrix
         , bool SO         // Storage order
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
-inline void clear( DynamicMatrix<Type,SO,Tag>& m )
+inline void clear( DynamicMatrix<Type,SO,Alloc,Tag>& m )
 {
    m.clear();
 }
@@ -6704,8 +7009,9 @@ inline void clear( DynamicMatrix<Type,SO,Tag>& m )
 template< RelaxationFlag RF  // Relaxation flag
         , typename Type      // Data type of the matrix
         , bool SO            // Storage order
+        , typename Alloc     // Type of the allocator
         , typename Tag >     // Type tag
-inline bool isDefault( const DynamicMatrix<Type,SO,Tag>& m )
+inline bool isDefault( const DynamicMatrix<Type,SO,Alloc,Tag>& m )
 {
    return ( m.rows() == 0UL && m.columns() == 0UL );
 }
@@ -6732,8 +7038,9 @@ inline bool isDefault( const DynamicMatrix<Type,SO,Tag>& m )
 */
 template< typename Type   // Data type of the matrix
         , bool SO         // Storage order
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
-inline bool isIntact( const DynamicMatrix<Type,SO,Tag>& m ) noexcept
+inline bool isIntact( const DynamicMatrix<Type,SO,Alloc,Tag>& m ) noexcept
 {
    return m.isIntact();
 }
@@ -6750,8 +7057,9 @@ inline bool isIntact( const DynamicMatrix<Type,SO,Tag>& m ) noexcept
 */
 template< typename Type   // Data type of the matrix
         , bool SO         // Storage order
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
-inline void swap( DynamicMatrix<Type,SO,Tag>& a, DynamicMatrix<Type,SO,Tag>& b ) noexcept
+inline void swap( DynamicMatrix<Type,SO,Alloc,Tag>& a, DynamicMatrix<Type,SO,Alloc,Tag>& b ) noexcept
 {
    a.swap( b );
 }
@@ -6768,8 +7076,8 @@ inline void swap( DynamicMatrix<Type,SO,Tag>& a, DynamicMatrix<Type,SO,Tag>& b )
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T, bool SO, typename Tag >
-struct HasConstDataAccess< DynamicMatrix<T,SO,Tag> >
+template< typename T, bool SO, typename Alloc, typename Tag >
+struct HasConstDataAccess< DynamicMatrix<T,SO,Alloc,Tag> >
    : public TrueType
 {};
 /*! \endcond */
@@ -6786,8 +7094,8 @@ struct HasConstDataAccess< DynamicMatrix<T,SO,Tag> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T, bool SO, typename Tag >
-struct HasMutableDataAccess< DynamicMatrix<T,SO,Tag> >
+template< typename T, bool SO, typename Alloc, typename Tag >
+struct HasMutableDataAccess< DynamicMatrix<T,SO,Alloc,Tag> >
    : public TrueType
 {};
 /*! \endcond */
@@ -6804,8 +7112,8 @@ struct HasMutableDataAccess< DynamicMatrix<T,SO,Tag> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T, bool SO, typename Tag >
-struct IsAligned< DynamicMatrix<T,SO,Tag> >
+template< typename T, bool SO, typename Alloc, typename Tag >
+struct IsAligned< DynamicMatrix<T,SO,Alloc,Tag> >
    : public BoolConstant<usePadding>
 {};
 /*! \endcond */
@@ -6822,8 +7130,8 @@ struct IsAligned< DynamicMatrix<T,SO,Tag> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T, bool SO, typename Tag >
-struct IsContiguous< DynamicMatrix<T,SO,Tag> >
+template< typename T, bool SO, typename Alloc, typename Tag >
+struct IsContiguous< DynamicMatrix<T,SO,Alloc,Tag> >
    : public TrueType
 {};
 /*! \endcond */
@@ -6840,8 +7148,8 @@ struct IsContiguous< DynamicMatrix<T,SO,Tag> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T, bool SO, typename Tag >
-struct IsPadded< DynamicMatrix<T,SO,Tag> >
+template< typename T, bool SO, typename Alloc, typename Tag >
+struct IsPadded< DynamicMatrix<T,SO,Alloc,Tag> >
    : public BoolConstant<usePadding>
 {};
 /*! \endcond */
@@ -6858,8 +7166,8 @@ struct IsPadded< DynamicMatrix<T,SO,Tag> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T, bool SO, typename Tag >
-struct IsResizable< DynamicMatrix<T,SO,Tag> >
+template< typename T, bool SO, typename Alloc, typename Tag >
+struct IsResizable< DynamicMatrix<T,SO,Alloc,Tag> >
    : public TrueType
 {};
 /*! \endcond */
@@ -6876,8 +7184,8 @@ struct IsResizable< DynamicMatrix<T,SO,Tag> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T, bool SO, typename Tag >
-struct IsShrinkable< DynamicMatrix<T,SO,Tag> >
+template< typename T, bool SO, typename Alloc, typename Tag >
+struct IsShrinkable< DynamicMatrix<T,SO,Alloc,Tag> >
    : public TrueType
 {};
 /*! \endcond */
@@ -6908,6 +7216,8 @@ struct AddTraitEval2< T1, T2
                                   ( MaxSize_v<T1,1UL> == DefaultMaxSize_v ) &&
                                   ( MaxSize_v<T2,1UL> == DefaultMaxSize_v ) > >
 {
+   using ET = AddTrait_t< ElementType_t<T1>, ElementType_t<T2> >;
+
    static constexpr bool SO1 = StorageOrder_v<T1>;
    static constexpr bool SO2 = StorageOrder_v<T2>;
 
@@ -6921,8 +7231,9 @@ struct AddTraitEval2< T1, T2
                                     ? SO1
                                     : SO2 ) );
 
-   using Type = DynamicMatrix< AddTrait_t< ElementType_t<T1>, ElementType_t<T2> >
+   using Type = DynamicMatrix< ET
                              , SO
+                             , DynamicAllocator_t< ET, GetAllocator_t<T1>, GetAllocator_t<T2> >
                              , AddTrait_t< TagType_t<T1>, TagType_t<T2> > >;
 };
 /*! \endcond */
@@ -6953,6 +7264,8 @@ struct SubTraitEval2< T1, T2
                                   ( MaxSize_v<T1,1UL> == DefaultMaxSize_v ) &&
                                   ( MaxSize_v<T2,1UL> == DefaultMaxSize_v ) > >
 {
+   using ET = SubTrait_t< ElementType_t<T1>, ElementType_t<T2> >;
+
    static constexpr bool SO1 = StorageOrder_v<T1>;
    static constexpr bool SO2 = StorageOrder_v<T2>;
 
@@ -6966,8 +7279,9 @@ struct SubTraitEval2< T1, T2
                                     ? SO1
                                     : SO2 ) );
 
-   using Type = DynamicMatrix< SubTrait_t< ElementType_t<T1>, ElementType_t<T2> >
+   using Type = DynamicMatrix< ET
                              , SO
+                             , DynamicAllocator_t< ET, GetAllocator_t<T1>, GetAllocator_t<T2> >
                              , SubTrait_t< TagType_t<T1>, TagType_t<T2> > >;
 };
 /*! \endcond */
@@ -6997,6 +7311,8 @@ struct SchurTraitEval2< T1, T2
                                     ( MaxSize_v<T1,1UL> == DefaultMaxSize_v ) &&
                                     ( MaxSize_v<T2,1UL> == DefaultMaxSize_v ) > >
 {
+   using ET = MultTrait_t< ElementType_t<T1>, ElementType_t<T2> >;
+
    static constexpr bool SO1 = StorageOrder_v<T1>;
    static constexpr bool SO2 = StorageOrder_v<T2>;
 
@@ -7006,8 +7322,9 @@ struct SchurTraitEval2< T1, T2
                                     : SO1 )
                                 : SO1 && SO2 );
 
-   using Type = DynamicMatrix< MultTrait_t< ElementType_t<T1>, ElementType_t<T2> >
+   using Type = DynamicMatrix< ET
                              , SO
+                             , DynamicAllocator_t< ET, GetAllocator_t<T1>, GetAllocator_t<T2> >
                              , MultTrait_t< TagType_t<T1>, TagType_t<T2> > >;
 };
 /*! \endcond */
@@ -7033,8 +7350,11 @@ struct MultTraitEval2< T1, T2
                                    ( MaxSize_v<T1,0UL> == DefaultMaxSize_v ) &&
                                    ( MaxSize_v<T1,1UL> == DefaultMaxSize_v ) > >
 {
-   using Type = DynamicMatrix< MultTrait_t< ElementType_t<T1>, T2 >
+   using ET = MultTrait_t< ElementType_t<T1>, T2 >;
+
+   using Type = DynamicMatrix< ET
                              , StorageOrder_v<T1>
+                             , DynamicAllocator_t< ET, GetAllocator_t<T1> >
                              , MultTrait_t< TagType_t<T1>, T2 > >;
 };
 
@@ -7047,8 +7367,11 @@ struct MultTraitEval2< T1, T2
                                    ( MaxSize_v<T2,0UL> == DefaultMaxSize_v ) &&
                                    ( MaxSize_v<T2,1UL> == DefaultMaxSize_v ) > >
 {
-   using Type = DynamicMatrix< MultTrait_t< T1, ElementType_t<T2> >
+   using ET = MultTrait_t< T1, ElementType_t<T2> >;
+
+   using Type = DynamicMatrix< ET
                              , StorageOrder_v<T2>
+                             , DynamicAllocator_t< ET, GetAllocator_t<T2> >
                              , MultTrait_t< T1, TagType_t<T2> > >;
 };
 
@@ -7063,8 +7386,11 @@ struct MultTraitEval2< T1, T2
                                    ( ( MaxSize_v<T1,0UL> == DefaultMaxSize_v ) ||
                                      ( MaxSize_v<T2,0UL> == DefaultMaxSize_v ) ) > >
 {
-   using Type = DynamicMatrix< MultTrait_t< ElementType_t<T1>, ElementType_t<T2> >
+   using ET = MultTrait_t< ElementType_t<T1>, ElementType_t<T2> >;
+
+   using Type = DynamicMatrix< ET
                              , false
+                             , DynamicAllocator_t< ET, GetAllocator_t<T1>, GetAllocator_t<T2> >
                              , MultTrait_t< TagType_t<T1>, TagType_t<T2> > >;
 };
 
@@ -7082,12 +7408,14 @@ struct MultTraitEval2< T1, T2
                                      ( MaxSize_v<T2,1UL> == DefaultMaxSize_v &&
                                        ( !IsSquare_v<T2> || MaxSize_v<T1,1UL> == DefaultMaxSize_v ) ) ) > >
 {
-   using MultType = MultTrait_t< ElementType_t<T1>, ElementType_t<T2> >;
-   using MultTag  = MultTrait_t< TagType_t<T1>, TagType_t<T2> >;
+   using M1 = MultTrait_t< ElementType_t<T1>, ElementType_t<T2> >;
+   using M2 = MultTrait_t< TagType_t<T1>, TagType_t<T2> >;
+   using ET = AddTrait_t<M1,M1>;
 
-   using Type = DynamicMatrix< AddTrait_t<MultType,MultType>
+   using Type = DynamicMatrix< ET
                              , ( IsSparseMatrix_v<T1> ? StorageOrder_v<T2> : StorageOrder_v<T1> )
-                             , AddTrait_t<MultTag,MultTag> >;
+                             , DynamicAllocator_t< ET, GetAllocator_t<T1>, GetAllocator_t<T2> >
+                             , AddTrait_t<M2,M2> >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -7116,8 +7444,11 @@ struct KronTraitEval2< T1, T2
                                      ( MaxSize_v<T1,1UL> == DefaultMaxSize_v ) ||
                                      ( MaxSize_v<T2,1UL> == DefaultMaxSize_v ) ) > >
 {
-   using Type = DynamicMatrix< MultTrait_t< ElementType_t<T1>, ElementType_t<T2> >
+   using ET = MultTrait_t< ElementType_t<T1>, ElementType_t<T2> >;
+
+   using Type = DynamicMatrix< ET
                              , StorageOrder_v<T2>
+                             , DynamicAllocator_t< ET, GetAllocator_t<T1>, GetAllocator_t<T2> >
                              , MultTrait_t< TagType_t<T1>, TagType_t<T2> > >;
 };
 /*! \endcond */
@@ -7143,8 +7474,11 @@ struct DivTraitEval2< T1, T2
                                   ( MaxSize_v<T1,0UL> == DefaultMaxSize_v ) &&
                                   ( MaxSize_v<T1,1UL> == DefaultMaxSize_v ) > >
 {
-   using Type = DynamicMatrix< DivTrait_t< ElementType_t<T1>, T2 >
+   using ET = DivTrait_t< ElementType_t<T1>, T2 >;
+
+   using Type = DynamicMatrix< ET
                              , StorageOrder_v<T1>
+                             , DynamicAllocator_t< ET, GetAllocator_t<T1> >
                              , DivTrait_t< TagType_t<T1>, T2 > >;
 };
 /*! \endcond */
@@ -7169,10 +7503,12 @@ struct UnaryMapTraitEval2< T, OP
                                        ( MaxSize_v<T,0UL> == DefaultMaxSize_v ||
                                          MaxSize_v<T,1UL> == DefaultMaxSize_v ) > >
 {
-   using ElementType = decltype( std::declval<OP>()( std::declval< ElementType_t<T> >() ) );
+   using ET =
+      EvaluateTrait_t< decltype( std::declval<OP>()( std::declval< ElementType_t<T> >() ) ) >;
 
-   using Type = DynamicMatrix< EvaluateTrait_t<ElementType>
+   using Type = DynamicMatrix< ET
                              , StorageOrder_v<T>
+                             , DynamicAllocator_t< ET, GetAllocator_t<T> >
                              , MapTrait_t< TagType_t<T>, OP > >;
 };
 /*! \endcond */
@@ -7190,11 +7526,13 @@ struct BinaryMapTraitEval2< T1, T2, OP
                                         ( ( MaxSize_v<T1,0UL> == DefaultMaxSize_v ) ||
                                           ( MaxSize_v<T2,0UL> == DefaultMaxSize_v ) ) > >
 {
-   using ElementType = decltype( std::declval<OP>()( std::declval< ElementType_t<T1> >()
-                                                   , std::declval< ElementType_t<T2> >() ) );
+   using ET =
+      EvaluateTrait_t< decltype( std::declval<OP>()( std::declval< ElementType_t<T1> >()
+                                                   , std::declval< ElementType_t<T2> >() ) ) >;
 
-   using Type = DynamicMatrix< EvaluateTrait_t<ElementType>
+   using Type = DynamicMatrix< ET
                              , false
+                             , DynamicAllocator_t< ET, GetAllocator_t<T1>, GetAllocator_t<T2> >
                              , MapTrait_t< TagType_t<T1>, TagType_t<T2>, OP > >;
 };
 
@@ -7211,8 +7549,9 @@ struct BinaryMapTraitEval2< T1, T2, OP
                                         ( MaxSize_v<T1,1UL> == DefaultMaxSize_v ) &&
                                         ( MaxSize_v<T2,1UL> == DefaultMaxSize_v ) > >
 {
-   using ElementType = decltype( std::declval<OP>()( std::declval< ElementType_t<T1> >()
-                                                   , std::declval< ElementType_t<T2> >() ) );
+   using ET =
+      EvaluateTrait_t< decltype( std::declval<OP>()( std::declval< ElementType_t<T1> >()
+                                                   , std::declval< ElementType_t<T2> >() ) ) >;
 
    static constexpr bool SO1 = StorageOrder_v<T1>;
    static constexpr bool SO2 = StorageOrder_v<T2>;
@@ -7227,8 +7566,9 @@ struct BinaryMapTraitEval2< T1, T2, OP
                                     ? SO1
                                     : SO2 ) );
 
-   using Type = DynamicMatrix< EvaluateTrait_t<ElementType>
+   using Type = DynamicMatrix< ET
                              , SO
+                             , DynamicAllocator_t< ET, GetAllocator_t<T1>, GetAllocator_t<T2> >
                              , MapTrait_t< TagType_t<T1>, TagType_t<T2>, OP > >;
 };
 /*! \endcond */
@@ -7254,6 +7594,7 @@ struct ExpandTraitEval2< T, E
 {
    using Type = DynamicMatrix< ElementType_t<T>
                              , ( IsColumnVector_v<T> ? columnMajor : rowMajor )
+                             , DynamicAllocator_t< ElementType_t<T>, GetAllocator_t<T> >
                              , TagType_t<T> >;
 };
 /*! \endcond */
@@ -7281,6 +7622,7 @@ struct RepeatTraitEval2< T, R0, R1, inf
 {
    using Type = DynamicMatrix< ElementType_t<T>
                              , StorageOrder_v<T>
+                             , DynamicAllocator_t< ElementType_t<T>, GetAllocator_t<T> >
                              , TagType_t<T> >;
 };
 /*! \endcond */
@@ -7312,6 +7654,7 @@ struct SolveTraitEval2< T1, T2
 {
    using Type = DynamicMatrix< ElementType_t<T2>
                              , StorageOrder_v<T2>
+                             , DynamicAllocator_t< ElementType_t<T2>, GetAllocator_t<T2> >
                              , TagType_t<T2> >;
 };
 /*! \endcond */
@@ -7328,10 +7671,10 @@ struct SolveTraitEval2< T1, T2
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T1, bool SO, typename Tag, typename T2 >
-struct HighType< DynamicMatrix<T1,SO,Tag>, DynamicMatrix<T2,SO,Tag> >
+template< typename T1, bool SO, typename Alloc, typename Tag, typename T2 >
+struct HighType< DynamicMatrix<T1,SO,Alloc,Tag>, DynamicMatrix<T2,SO,Alloc,Tag> >
 {
-   using Type = DynamicMatrix< typename HighType<T1,T2>::Type, SO, Tag >;
+   using Type = DynamicMatrix< typename HighType<T1,T2>::Type, SO, Alloc, Tag >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -7347,10 +7690,10 @@ struct HighType< DynamicMatrix<T1,SO,Tag>, DynamicMatrix<T2,SO,Tag> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T1, bool SO, typename Tag, typename T2 >
-struct LowType< DynamicMatrix<T1,SO,Tag>, DynamicMatrix<T2,SO,Tag> >
+template< typename T1, bool SO, typename Alloc, typename Tag, typename T2 >
+struct LowType< DynamicMatrix<T1,SO,Alloc,Tag>, DynamicMatrix<T2,SO,Alloc,Tag> >
 {
-   using Type = DynamicMatrix< typename LowType<T1,T2>::Type, SO, Tag >;
+   using Type = DynamicMatrix< typename LowType<T1,T2>::Type, SO, Alloc, Tag >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -7374,8 +7717,11 @@ struct SubmatrixTraitEval2< MT, inf, inf, inf, inf
                                         ( MaxSize_v<MT,0UL> == DefaultMaxSize_v ||
                                           MaxSize_v<MT,1UL> == DefaultMaxSize_v ) > >
 {
-   using Type = DynamicMatrix< RemoveConst_t< ElementType_t<MT> >
+   using ET = RemoveConst_t< ElementType_t<MT> >;
+
+   using Type = DynamicMatrix< ET
                              , StorageOrder_v<MT>
+                             , DynamicAllocator_t< ET, GetAllocator_t<MT> >
                              , TagType_t<MT> >;
 };
 /*! \endcond */
@@ -7398,8 +7744,11 @@ struct RowsTraitEval2< MT, M
                                    ( M == 0UL || Size_v<MT,1UL> == DefaultSize_v ) &&
                                    ( M == 0UL || MaxSize_v<MT,1UL> == DefaultMaxSize_v ) > >
 {
-   using Type = DynamicMatrix< RemoveConst_t< ElementType_t<MT> >
+   using ET = RemoveConst_t< ElementType_t<MT> >;
+
+   using Type = DynamicMatrix< ET
                              , false
+                             , DynamicAllocator_t< ET, GetAllocator_t<MT> >
                              , TagType_t<MT> >;
 };
 /*! \endcond */
@@ -7422,8 +7771,11 @@ struct ColumnsTraitEval2< MT, N
                                       ( N == 0UL || Size_v<MT,0UL> == DefaultSize_v ) &&
                                       ( N == 0UL || MaxSize_v<MT,0UL> == DefaultMaxSize_v ) > >
 {
-   using Type = DynamicMatrix< RemoveConst_t< ElementType_t<MT> >
+   using ET = RemoveConst_t< ElementType_t<MT> >;
+
+   using Type = DynamicMatrix< ET
                              , true
+                             , DynamicAllocator_t< ET, GetAllocator_t<MT> >
                              , TagType_t<MT> >;
 };
 /*! \endcond */

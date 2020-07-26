@@ -100,9 +100,10 @@ template< typename Type                            // Data type of the vector
         , typename Tag = Group0 >                  // Type tag
 class DynamicVector;
 
-template< typename Type                  // Data type of the matrix
-        , bool SO = defaultStorageOrder  // Storage order
-        , typename Tag = Group0 >        // Type tag
+template< typename Type                            // Data type of the matrix
+        , bool SO = defaultStorageOrder            // Storage order
+        , typename Alloc = AlignedAllocator<Type>  // Type of the allocator
+        , typename Tag = Group0 >                  // Type tag
 class DynamicMatrix;
 
 template< typename Type                   // Data type of the vector
@@ -114,12 +115,13 @@ template< typename Type                   // Data type of the vector
              DynamicVector<RemoveConst_t<Type>,TF,AlignedAllocator<Type>,Tag> >
 class CustomVector;
 
-template< typename Type                                          // Data type of the matrix
-        , AlignmentFlag AF                                       // Alignment flag
-        , PaddingFlag PF                                         // Padding flag
-        , bool SO = defaultStorageOrder                          // Storage order
-        , typename Tag = Group0                                  // Type tag
-        , typename RT = DynamicMatrix<RemoveConst_t<Type>,SO> >  // Result type
+template< typename Type                  // Data type of the matrix
+        , AlignmentFlag AF               // Alignment flag
+        , PaddingFlag PF                 // Padding flag
+        , bool SO = defaultStorageOrder  // Storage order
+        , typename Tag = Group0          // Type tag
+        , typename RT =                  // Result type
+             DynamicMatrix<RemoveConst_t<Type>,SO,AlignedAllocator<Type>,Tag> >
 class CustomMatrix;
 
 template< typename Type                   // Data type of the vector
