@@ -47,6 +47,7 @@
 #include <blaze/system/Padding.h>
 #include <blaze/system/StorageOrder.h>
 #include <blaze/system/TransposeFlag.h>
+#include <blaze/util/Forward.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/RemoveConst.h>
 
@@ -93,9 +94,10 @@ template< typename Type                            // Data type of the matrix
         , typename Tag = Group0 >                  // Type tag
 class HybridMatrix;
 
-template< typename Type                   // Data type of the vector
-        , bool TF = defaultTransposeFlag  // Transpose flag
-        , typename Tag = Group0 >         // Type tag
+template< typename Type                            // Data type of the vector
+        , bool TF = defaultTransposeFlag           // Transpose flag
+        , typename Alloc = AlignedAllocator<Type>  // Type of the allocator
+        , typename Tag = Group0 >                  // Type tag
 class DynamicVector;
 
 template< typename Type                  // Data type of the matrix
@@ -103,12 +105,13 @@ template< typename Type                  // Data type of the matrix
         , typename Tag = Group0 >        // Type tag
 class DynamicMatrix;
 
-template< typename Type                                              // Data type of the vector
-        , AlignmentFlag AF                                           // Alignment flag
-        , PaddingFlag PF                                             // Padding flag
-        , bool TF = defaultTransposeFlag                             // Transpose flag
-        , typename Tag = Group0                                      // Type tag
-        , typename RT = DynamicVector<RemoveConst_t<Type>,TF,Tag> >  // Result type
+template< typename Type                   // Data type of the vector
+        , AlignmentFlag AF                // Alignment flag
+        , PaddingFlag PF                  // Padding flag
+        , bool TF = defaultTransposeFlag  // Transpose flag
+        , typename Tag = Group0           // Type tag
+        , typename RT =                   // Result type
+             DynamicVector<RemoveConst_t<Type>,TF,AlignedAllocator<Type>,Tag> >
 class CustomVector;
 
 template< typename Type                                          // Data type of the matrix

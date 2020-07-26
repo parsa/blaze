@@ -42,6 +42,7 @@
 
 #include <array>
 #include <algorithm>
+#include <memory>
 #include <utility>
 #include <blaze/math/Aliases.h>
 #include <blaze/math/AlignmentFlag.h>
@@ -80,6 +81,8 @@
 #include <blaze/math/traits/SolveTrait.h>
 #include <blaze/math/traits/SubTrait.h>
 #include <blaze/math/traits/SubvectorTrait.h>
+#include <blaze/math/typetraits/DynamicAllocator.h>
+#include <blaze/math/typetraits/GetAllocator.h>
 #include <blaze/math/typetraits/HasConstDataAccess.h>
 #include <blaze/math/typetraits/HasMutableDataAccess.h>
 #include <blaze/math/typetraits/HasSIMDAdd.h>
@@ -113,7 +116,8 @@
 #include <blaze/system/Restrict.h>
 #include <blaze/system/Thresholds.h>
 #include <blaze/system/TransposeFlag.h>
-#include <blaze/util/algorithms/Transfer.h>
+#include <blaze/util/Algorithms.h>
+#include <blaze/util/AlignedAllocator.h>
 #include <blaze/util/AlignmentCheck.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Const.h>
@@ -123,8 +127,8 @@
 #include <blaze/util/constraints/Volatile.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/IntegralConstant.h>
-#include <blaze/util/Memory.h>
 #include <blaze/util/Types.h>
+#include <blaze/util/typetraits/IsBuiltin.h>
 #include <blaze/util/typetraits/IsVectorizable.h>
 #include <blaze/util/typetraits/RemoveConst.h>
 #include <blaze/util/typetraits/RemoveCV.h>
@@ -152,18 +156,20 @@ namespace blaze {
    \code
    namespace blaze {
 
-   template< typename Type, bool TF, typename Tag >
+   template< typename Type, bool TF, typename Alloc, typename Tag >
    class DynamicVector;
 
    } // namespace blaze
    \endcode
 
-//  - Type: specifies the type of the vector elements. DynamicVector can be used with any
-//          non-cv-qualified, non-reference, non-pointer element type.
-//  - TF  : specifies whether the vector is a row vector (\c blaze::rowVector) or a column
-//          vector (\c blaze::columnVector). The default value is \c blaze::defaultTransposeFlag.
-//  - Tag : optional type parameter to tag the vector. The default type is \c blaze::Group0.
-//          See \ref grouping_tagging for details.
+//  - Type : specifies the type of the vector elements. DynamicVector can be used with any
+//           non-cv-qualified, non-reference, non-pointer element type.
+//  - TF   : specifies whether the vector is a row vector (\c blaze::rowVector) or a column
+//           vector (\c blaze::columnVector). The default value is \c blaze::defaultTransposeFlag.
+//  - Alloc: specifies the type of allocator used to allocate dynamic memory. The default type
+//           of allocator is \c blaze::AlignedAllocator.
+//  - Tag  : optional type parameter to tag the vector. The default type is \c blaze::Group0.
+//           See \ref grouping_tagging for details.
 //
 // These contiguously stored elements can be directly accessed with the subscript operator. The
 // numbering of the vector elements is
@@ -210,21 +216,26 @@ namespace blaze {
 */
 template< typename Type   // Data type of the vector
         , bool TF         // Transpose flag
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
 class DynamicVector
-   : public DenseVector< DynamicVector<Type,TF,Tag>, TF >
+   : public DenseVector< DynamicVector<Type,TF,Alloc,Tag>, TF >
 {
  public:
    //**Type definitions****************************************************************************
-   using This          = DynamicVector<Type,TF,Tag>;   //!< Type of this DynamicVector instance.
-   using BaseType      = DenseVector<This,TF>;         //!< Base type of this DynamicVector instance.
-   using ResultType    = This;                         //!< Result type for expression template evaluations.
-   using TransposeType = DynamicVector<Type,!TF,Tag>;  //!< Transpose type for expression template evaluations.
-   using ElementType   = Type;                         //!< Type of the vector elements.
-   using SIMDType      = SIMDTrait_t<ElementType>;     //!< SIMD type of the vector elements.
-   using TagType       = Tag;                          //!< Tag type of this DynamicVector instance.
-   using ReturnType    = const Type&;                  //!< Return type for expression template evaluations
-   using CompositeType = const DynamicVector&;         //!< Data type for composite expression templates.
+   using This       = DynamicVector<Type,TF,Alloc,Tag>;  //!< Type of this DynamicVector instance.
+   using BaseType   = DenseVector<This,TF>;              //!< Base type of this DynamicVector instance.
+   using ResultType = This;                              //!< Result type for expression template evaluations.
+
+   //! Transpose type for expression template evaluations.
+   using TransposeType = DynamicVector<Type,!TF,Alloc,Tag>;
+
+   using ElementType   = Type;                      //!< Type of the vector elements.
+   using SIMDType      = SIMDTrait_t<ElementType>;  //!< SIMD type of the vector elements.
+   using AllocatorType = AlignedAllocator<Type>;    //!< Allocator type of this DynamicVector instance.
+   using TagType       = Tag;                       //!< Tag type of this DynamicVector instance.
+   using ReturnType    = const Type&;               //!< Return type for expression template evaluations
+   using CompositeType = const DynamicVector&;      //!< Data type for composite expression templates.
 
    using Reference      = Type&;        //!< Reference to a non-constant vector value.
    using ConstReference = const Type&;  //!< Reference to a constant vector value.
@@ -239,8 +250,13 @@ class DynamicVector
    /*!\brief Rebind mechanism to obtain a DynamicVector with different data/element type.
    */
    template< typename NewType >  // Data type of the other vector
-   struct Rebind {
-      using Other = DynamicVector<NewType,TF,Tag>;  //!< The type of the other DynamicVector.
+   struct Rebind
+   {
+      //! The new type of allocator.
+      using NewAlloc = typename std::allocator_traits<Alloc>::template rebind_alloc<NewType>;
+
+      //! The type of the other DynamicVector.
+      using Other = DynamicVector<NewType,TF,NewAlloc,Tag>;
    };
    //**********************************************************************************************
 
@@ -248,8 +264,9 @@ class DynamicVector
    /*!\brief Resize mechanism to obtain a DynamicVector with a different fixed number of elements.
    */
    template< size_t NewN >  // Number of elements of the other vector
-   struct Resize {
-      using Other = DynamicVector<Type,TF,Tag>;  //!< The type of the other DynamicVector.
+   struct Resize
+   {
+      using Other = DynamicVector<Type,TF,Alloc,Tag>;  //!< The type of the other DynamicVector.
    };
    //**********************************************************************************************
 
@@ -491,6 +508,8 @@ class DynamicVector
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
+   inline Type*  allocate( size_t n );
+   inline void   deallocate( Type* ptr, size_t n ) noexcept;
    inline size_t addPadding( size_t value ) const noexcept;
    //@}
    //**********************************************************************************************
@@ -558,8 +577,9 @@ DynamicVector( std::array<Type,N> ) -> DynamicVector<Type>;
 */
 template< typename Type   // Data type of the vector
         , bool TF         // Transpose flag
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
-inline DynamicVector<Type,TF,Tag>::DynamicVector() noexcept
+inline DynamicVector<Type,TF,Alloc,Tag>::DynamicVector() noexcept
    : size_    ( 0UL )      // The current size/dimension of the vector
    , capacity_( 0UL )      // The maximum capacity of the vector
    , v_       ( nullptr )  // The vector elements
@@ -568,22 +588,23 @@ inline DynamicVector<Type,TF,Tag>::DynamicVector() noexcept
 
 
 //*************************************************************************************************
-/*!\brief Constructor for a vector of size \a n. No element initialization is performed!
+/*!\brief Constructor for a vector of size \a n. For built-in types no initialization is performed!
 //
 // \param n The size of the vector.
 //
-// \note This constructor is only responsible to allocate the required dynamic memory. No
-// element initialization is performed!
+// \note This constructor is only responsible to allocate the required dynamic memory. For
+// built-in types no initialization of the elements is performed!
 */
 template< typename Type   // Data type of the vector
         , bool TF         // Transpose flag
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
-inline DynamicVector<Type,TF,Tag>::DynamicVector( size_t n )
-   : size_    ( n )                            // The current size/dimension of the vector
-   , capacity_( addPadding( n ) )              // The maximum capacity of the vector
-   , v_       ( allocate<Type>( capacity_ ) )  // The vector elements
+inline DynamicVector<Type,TF,Alloc,Tag>::DynamicVector( size_t n )
+   : size_    ( n )                      // The current size/dimension of the vector
+   , capacity_( addPadding( n ) )        // The maximum capacity of the vector
+   , v_       ( allocate( capacity_ ) )  // The vector elements
 {
-   if( IsVectorizable_v<Type> ) {
+   if( IsVectorizable_v<Type> && IsBuiltin_v<Type> ) {
       for( size_t i=size_; i<capacity_; ++i )
          v_[i] = Type();
    }
@@ -603,8 +624,9 @@ inline DynamicVector<Type,TF,Tag>::DynamicVector( size_t n )
 */
 template< typename Type   // Data type of the vector
         , bool TF         // Transpose flag
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
-inline DynamicVector<Type,TF,Tag>::DynamicVector( size_t n, const Type& init )
+inline DynamicVector<Type,TF,Alloc,Tag>::DynamicVector( size_t n, const Type& init )
    : DynamicVector( n )
 {
    for( size_t i=0UL; i<size_; ++i )
@@ -632,11 +654,12 @@ inline DynamicVector<Type,TF,Tag>::DynamicVector( size_t n, const Type& init )
 */
 template< typename Type   // Data type of the vector
         , bool TF         // Transpose flag
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
-inline DynamicVector<Type,TF,Tag>::DynamicVector( initializer_list<Type> list )
+inline DynamicVector<Type,TF,Alloc,Tag>::DynamicVector( initializer_list<Type> list )
    : DynamicVector( list.size() )
 {
-   std::fill( std::copy( list.begin(), list.end(), begin() ), end(), Type() );
+   std::copy( list.begin(), list.end(), v_ );
 
    BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
 }
@@ -665,9 +688,10 @@ inline DynamicVector<Type,TF,Tag>::DynamicVector( initializer_list<Type> list )
 */
 template< typename Type     // Data type of the vector
         , bool TF           // Transpose flag
+        , typename Alloc    // Type of the allocator
         , typename Tag >    // Type tag
 template< typename Other >  // Data type of the initialization array
-inline DynamicVector<Type,TF,Tag>::DynamicVector( size_t n, const Other* array )
+inline DynamicVector<Type,TF,Alloc,Tag>::DynamicVector( size_t n, const Other* array )
    : DynamicVector( n )
 {
    for( size_t i=0UL; i<n; ++i )
@@ -697,10 +721,11 @@ inline DynamicVector<Type,TF,Tag>::DynamicVector( size_t n, const Other* array )
 */
 template< typename Type   // Data type of the vector
         , bool TF         // Transpose flag
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
 template< typename Other  // Data type of the static array
         , size_t Dim >    // Dimension of the static array
-inline DynamicVector<Type,TF,Tag>::DynamicVector( const Other (&array)[Dim] )
+inline DynamicVector<Type,TF,Alloc,Tag>::DynamicVector( const Other (&array)[Dim] )
    : DynamicVector( Dim )
 {
    for( size_t i=0UL; i<Dim; ++i )
@@ -730,10 +755,11 @@ inline DynamicVector<Type,TF,Tag>::DynamicVector( const Other (&array)[Dim] )
 */
 template< typename Type   // Data type of the vector
         , bool TF         // Transpose flag
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
 template< typename Other  // Data type of the std::array
         , size_t Dim >    // Dimension of the std::array
-inline DynamicVector<Type,TF,Tag>::DynamicVector( const std::array<Other,Dim>& array )
+inline DynamicVector<Type,TF,Alloc,Tag>::DynamicVector( const std::array<Other,Dim>& array )
    : DynamicVector( Dim )
 {
    for( size_t i=0UL; i<Dim; ++i )
@@ -754,8 +780,9 @@ inline DynamicVector<Type,TF,Tag>::DynamicVector( const std::array<Other,Dim>& a
 */
 template< typename Type   // Data type of the vector
         , bool TF         // Transpose flag
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
-inline DynamicVector<Type,TF,Tag>::DynamicVector( const DynamicVector& v )
+inline DynamicVector<Type,TF,Alloc,Tag>::DynamicVector( const DynamicVector& v )
    : DynamicVector( v.size_ )
 {
    BLAZE_INTERNAL_ASSERT( capacity_ <= v.capacity_, "Invalid capacity estimation" );
@@ -774,8 +801,9 @@ inline DynamicVector<Type,TF,Tag>::DynamicVector( const DynamicVector& v )
 */
 template< typename Type   // Data type of the vector
         , bool TF         // Transpose flag
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
-inline DynamicVector<Type,TF,Tag>::DynamicVector( DynamicVector&& v ) noexcept
+inline DynamicVector<Type,TF,Alloc,Tag>::DynamicVector( DynamicVector&& v ) noexcept
    : size_    ( v.size_     )  // The current size/dimension of the vector
    , capacity_( v.capacity_ )  // The maximum capacity of the vector
    , v_       ( v.v_        )  // The vector elements
@@ -794,17 +822,16 @@ inline DynamicVector<Type,TF,Tag>::DynamicVector( DynamicVector&& v ) noexcept
 */
 template< typename Type   // Data type of the vector
         , bool TF         // Transpose flag
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
 template< typename VT >   // Type of the foreign vector
-inline DynamicVector<Type,TF,Tag>::DynamicVector( const Vector<VT,TF>& v )
+inline DynamicVector<Type,TF,Alloc,Tag>::DynamicVector( const Vector<VT,TF>& v )
    : DynamicVector( (*v).size() )
 {
    BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<VT> );
 
-   if( IsSparseVector_v<VT> ) {
-      for( size_t i=0UL; i<size_; ++i ) {
-         v_[i] = Type();
-      }
+   if( IsSparseVector_v<VT> && IsBuiltin_v<Type> ) {
+      reset();
    }
 
    smpAssign( *this, *v );
@@ -827,10 +854,11 @@ inline DynamicVector<Type,TF,Tag>::DynamicVector( const Vector<VT,TF>& v )
 */
 template< typename Type   // Data type of the vector
         , bool TF         // Transpose flag
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
-inline DynamicVector<Type,TF,Tag>::~DynamicVector()
+inline DynamicVector<Type,TF,Alloc,Tag>::~DynamicVector()
 {
-   deallocate( v_ );
+   deallocate( v_, capacity_ );
 }
 //*************************************************************************************************
 
@@ -854,9 +882,10 @@ inline DynamicVector<Type,TF,Tag>::~DynamicVector()
 */
 template< typename Type   // Data type of the vector
         , bool TF         // Transpose flag
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
-inline typename DynamicVector<Type,TF,Tag>::Reference
-   DynamicVector<Type,TF,Tag>::operator[]( size_t index ) noexcept
+inline typename DynamicVector<Type,TF,Alloc,Tag>::Reference
+   DynamicVector<Type,TF,Alloc,Tag>::operator[]( size_t index ) noexcept
 {
    BLAZE_USER_ASSERT( index < size_, "Invalid vector access index" );
    return v_[index];
@@ -875,9 +904,10 @@ inline typename DynamicVector<Type,TF,Tag>::Reference
 */
 template< typename Type   // Data type of the vector
         , bool TF         // Transpose flag
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
-inline typename DynamicVector<Type,TF,Tag>::ConstReference
-   DynamicVector<Type,TF,Tag>::operator[]( size_t index ) const noexcept
+inline typename DynamicVector<Type,TF,Alloc,Tag>::ConstReference
+   DynamicVector<Type,TF,Alloc,Tag>::operator[]( size_t index ) const noexcept
 {
    BLAZE_USER_ASSERT( index < size_, "Invalid vector access index" );
    return v_[index];
@@ -897,9 +927,10 @@ inline typename DynamicVector<Type,TF,Tag>::ConstReference
 */
 template< typename Type   // Data type of the vector
         , bool TF         // Transpose flag
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
-inline typename DynamicVector<Type,TF,Tag>::Reference
-   DynamicVector<Type,TF,Tag>::at( size_t index )
+inline typename DynamicVector<Type,TF,Alloc,Tag>::Reference
+   DynamicVector<Type,TF,Alloc,Tag>::at( size_t index )
 {
    if( index >= size_ ) {
       BLAZE_THROW_OUT_OF_RANGE( "Invalid vector access index" );
@@ -921,9 +952,10 @@ inline typename DynamicVector<Type,TF,Tag>::Reference
 */
 template< typename Type   // Data type of the vector
         , bool TF         // Transpose flag
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
-inline typename DynamicVector<Type,TF,Tag>::ConstReference
-   DynamicVector<Type,TF,Tag>::at( size_t index ) const
+inline typename DynamicVector<Type,TF,Alloc,Tag>::ConstReference
+   DynamicVector<Type,TF,Alloc,Tag>::at( size_t index ) const
 {
    if( index >= size_ ) {
       BLAZE_THROW_OUT_OF_RANGE( "Invalid vector access index" );
@@ -942,9 +974,10 @@ inline typename DynamicVector<Type,TF,Tag>::ConstReference
 */
 template< typename Type   // Data type of the vector
         , bool TF         // Transpose flag
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
-inline typename DynamicVector<Type,TF,Tag>::Pointer
-   DynamicVector<Type,TF,Tag>::data() noexcept
+inline typename DynamicVector<Type,TF,Alloc,Tag>::Pointer
+   DynamicVector<Type,TF,Alloc,Tag>::data() noexcept
 {
    return v_;
 }
@@ -960,9 +993,10 @@ inline typename DynamicVector<Type,TF,Tag>::Pointer
 */
 template< typename Type   // Data type of the vector
         , bool TF         // Transpose flag
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
-inline typename DynamicVector<Type,TF,Tag>::ConstPointer
-   DynamicVector<Type,TF,Tag>::data() const noexcept
+inline typename DynamicVector<Type,TF,Alloc,Tag>::ConstPointer
+   DynamicVector<Type,TF,Alloc,Tag>::data() const noexcept
 {
    return v_;
 }
@@ -976,9 +1010,10 @@ inline typename DynamicVector<Type,TF,Tag>::ConstPointer
 */
 template< typename Type   // Data type of the vector
         , bool TF         // Transpose flag
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
-inline typename DynamicVector<Type,TF,Tag>::Iterator
-   DynamicVector<Type,TF,Tag>::begin() noexcept
+inline typename DynamicVector<Type,TF,Alloc,Tag>::Iterator
+   DynamicVector<Type,TF,Alloc,Tag>::begin() noexcept
 {
    return Iterator( v_ );
 }
@@ -992,9 +1027,10 @@ inline typename DynamicVector<Type,TF,Tag>::Iterator
 */
 template< typename Type   // Data type of the vector
         , bool TF         // Transpose flag
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
-inline typename DynamicVector<Type,TF,Tag>::ConstIterator
-   DynamicVector<Type,TF,Tag>::begin() const noexcept
+inline typename DynamicVector<Type,TF,Alloc,Tag>::ConstIterator
+   DynamicVector<Type,TF,Alloc,Tag>::begin() const noexcept
 {
    return ConstIterator( v_ );
 }
@@ -1008,9 +1044,10 @@ inline typename DynamicVector<Type,TF,Tag>::ConstIterator
 */
 template< typename Type   // Data type of the vector
         , bool TF         // Transpose flag
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
-inline typename DynamicVector<Type,TF,Tag>::ConstIterator
-   DynamicVector<Type,TF,Tag>::cbegin() const noexcept
+inline typename DynamicVector<Type,TF,Alloc,Tag>::ConstIterator
+   DynamicVector<Type,TF,Alloc,Tag>::cbegin() const noexcept
 {
    return ConstIterator( v_ );
 }
@@ -1024,9 +1061,10 @@ inline typename DynamicVector<Type,TF,Tag>::ConstIterator
 */
 template< typename Type   // Data type of the vector
         , bool TF         // Transpose flag
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
-inline typename DynamicVector<Type,TF,Tag>::Iterator
-   DynamicVector<Type,TF,Tag>::end() noexcept
+inline typename DynamicVector<Type,TF,Alloc,Tag>::Iterator
+   DynamicVector<Type,TF,Alloc,Tag>::end() noexcept
 {
    return Iterator( v_ + size_ );
 }
@@ -1040,9 +1078,10 @@ inline typename DynamicVector<Type,TF,Tag>::Iterator
 */
 template< typename Type   // Data type of the vector
         , bool TF         // Transpose flag
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
-inline typename DynamicVector<Type,TF,Tag>::ConstIterator
-   DynamicVector<Type,TF,Tag>::end() const noexcept
+inline typename DynamicVector<Type,TF,Alloc,Tag>::ConstIterator
+   DynamicVector<Type,TF,Alloc,Tag>::end() const noexcept
 {
    return ConstIterator( v_ + size_ );
 }
@@ -1056,9 +1095,10 @@ inline typename DynamicVector<Type,TF,Tag>::ConstIterator
 */
 template< typename Type   // Data type of the vector
         , bool TF         // Transpose flag
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
-inline typename DynamicVector<Type,TF,Tag>::ConstIterator
-   DynamicVector<Type,TF,Tag>::cend() const noexcept
+inline typename DynamicVector<Type,TF,Alloc,Tag>::ConstIterator
+   DynamicVector<Type,TF,Alloc,Tag>::cend() const noexcept
 {
    return ConstIterator( v_ + size_ );
 }
@@ -1081,9 +1121,10 @@ inline typename DynamicVector<Type,TF,Tag>::ConstIterator
 */
 template< typename Type   // Data type of the vector
         , bool TF         // Transpose flag
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
-inline DynamicVector<Type,TF,Tag>&
-   DynamicVector<Type,TF,Tag>::operator=( const Type& rhs ) &
+inline DynamicVector<Type,TF,Alloc,Tag>&
+   DynamicVector<Type,TF,Alloc,Tag>::operator=( const Type& rhs ) &
 {
    for( size_t i=0UL; i<size_; ++i )
       v_[i] = rhs;
@@ -1110,9 +1151,10 @@ inline DynamicVector<Type,TF,Tag>&
 */
 template< typename Type   // Data type of the vector
         , bool TF         // Transpose flag
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
-inline DynamicVector<Type,TF,Tag>&
-   DynamicVector<Type,TF,Tag>::operator=( initializer_list<Type> list ) &
+inline DynamicVector<Type,TF,Alloc,Tag>&
+   DynamicVector<Type,TF,Alloc,Tag>::operator=( initializer_list<Type> list ) &
 {
    resize( list.size(), false );
    std::copy( list.begin(), list.end(), v_ );
@@ -1142,11 +1184,12 @@ inline DynamicVector<Type,TF,Tag>&
 */
 template< typename Type   // Data type of the vector
         , bool TF         // Transpose flag
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
 template< typename Other  // Data type of the static array
         , size_t Dim >    // Dimension of the static array
-inline DynamicVector<Type,TF,Tag>&
-   DynamicVector<Type,TF,Tag>::operator=( const Other (&array)[Dim] ) &
+inline DynamicVector<Type,TF,Alloc,Tag>&
+   DynamicVector<Type,TF,Alloc,Tag>::operator=( const Other (&array)[Dim] ) &
 {
    resize( Dim, false );
 
@@ -1178,11 +1221,12 @@ inline DynamicVector<Type,TF,Tag>&
 */
 template< typename Type   // Data type of the vector
         , bool TF         // Transpose flag
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
 template< typename Other  // Data type of the std::array
         , size_t Dim >    // Dimension of the std::array
-inline DynamicVector<Type,TF,Tag>&
-   DynamicVector<Type,TF,Tag>::operator=( const std::array<Other,Dim>& array ) &
+inline DynamicVector<Type,TF,Alloc,Tag>&
+   DynamicVector<Type,TF,Alloc,Tag>::operator=( const std::array<Other,Dim>& array ) &
 {
    resize( Dim, false );
 
@@ -1205,9 +1249,10 @@ inline DynamicVector<Type,TF,Tag>&
 */
 template< typename Type   // Data type of the vector
         , bool TF         // Transpose flag
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
-inline DynamicVector<Type,TF,Tag>&
-   DynamicVector<Type,TF,Tag>::operator=( const DynamicVector& rhs ) &
+inline DynamicVector<Type,TF,Alloc,Tag>&
+   DynamicVector<Type,TF,Alloc,Tag>::operator=( const DynamicVector& rhs ) &
 {
    if( &rhs == this ) return *this;
 
@@ -1229,11 +1274,12 @@ inline DynamicVector<Type,TF,Tag>&
 */
 template< typename Type   // Data type of the vector
         , bool TF         // Transpose flag
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
-inline DynamicVector<Type,TF,Tag>&
-   DynamicVector<Type,TF,Tag>::operator=( DynamicVector&& rhs ) & noexcept
+inline DynamicVector<Type,TF,Alloc,Tag>&
+   DynamicVector<Type,TF,Alloc,Tag>::operator=( DynamicVector&& rhs ) & noexcept
 {
-   deallocate( v_ );
+   deallocate( v_, capacity_ );
 
    size_     = rhs.size_;
    capacity_ = rhs.capacity_;
@@ -1258,10 +1304,11 @@ inline DynamicVector<Type,TF,Tag>&
 */
 template< typename Type   // Data type of the vector
         , bool TF         // Transpose flag
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
 template< typename VT >   // Type of the right-hand side vector
-inline DynamicVector<Type,TF,Tag>&
-   DynamicVector<Type,TF,Tag>::operator=( const Vector<VT,TF>& rhs ) &
+inline DynamicVector<Type,TF,Alloc,Tag>&
+   DynamicVector<Type,TF,Alloc,Tag>::operator=( const Vector<VT,TF>& rhs ) &
 {
    BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<VT> );
 
@@ -1295,10 +1342,11 @@ inline DynamicVector<Type,TF,Tag>&
 */
 template< typename Type   // Data type of the vector
         , bool TF         // Transpose flag
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
 template< typename VT >   // Type of the right-hand side vector
-inline DynamicVector<Type,TF,Tag>&
-   DynamicVector<Type,TF,Tag>::operator+=( const Vector<VT,TF>& rhs ) &
+inline DynamicVector<Type,TF,Alloc,Tag>&
+   DynamicVector<Type,TF,Alloc,Tag>::operator+=( const Vector<VT,TF>& rhs ) &
 {
    BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<VT> );
 
@@ -1334,10 +1382,11 @@ inline DynamicVector<Type,TF,Tag>&
 */
 template< typename Type   // Data type of the vector
         , bool TF         // Transpose flag
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
 template< typename VT >   // Type of the right-hand side vector
-inline DynamicVector<Type,TF,Tag>&
-   DynamicVector<Type,TF,Tag>::operator-=( const Vector<VT,TF>& rhs ) &
+inline DynamicVector<Type,TF,Alloc,Tag>&
+   DynamicVector<Type,TF,Alloc,Tag>::operator-=( const Vector<VT,TF>& rhs ) &
 {
    BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<VT> );
 
@@ -1373,10 +1422,11 @@ inline DynamicVector<Type,TF,Tag>&
 */
 template< typename Type   // Data type of the vector
         , bool TF         // Transpose flag
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
 template< typename VT >   // Type of the right-hand side vector
-inline DynamicVector<Type,TF,Tag>&
-   DynamicVector<Type,TF,Tag>::operator*=( const Vector<VT,TF>& rhs ) &
+inline DynamicVector<Type,TF,Alloc,Tag>&
+   DynamicVector<Type,TF,Alloc,Tag>::operator*=( const Vector<VT,TF>& rhs ) &
 {
    BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<VT> );
 
@@ -1411,10 +1461,11 @@ inline DynamicVector<Type,TF,Tag>&
 */
 template< typename Type   // Data type of the vector
         , bool TF         // Transpose flag
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
 template< typename VT >   // Type of the right-hand side vector
-inline DynamicVector<Type,TF,Tag>&
-   DynamicVector<Type,TF,Tag>::operator/=( const DenseVector<VT,TF>& rhs ) &
+inline DynamicVector<Type,TF,Alloc,Tag>&
+   DynamicVector<Type,TF,Alloc,Tag>::operator/=( const DenseVector<VT,TF>& rhs ) &
 {
    BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<VT> );
 
@@ -1450,10 +1501,11 @@ inline DynamicVector<Type,TF,Tag>&
 */
 template< typename Type   // Data type of the vector
         , bool TF         // Transpose flag
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
 template< typename VT >   // Type of the right-hand side vector
-inline DynamicVector<Type,TF,Tag>&
-   DynamicVector<Type,TF,Tag>::operator%=( const Vector<VT,TF>& rhs ) &
+inline DynamicVector<Type,TF,Alloc,Tag>&
+   DynamicVector<Type,TF,Alloc,Tag>::operator%=( const Vector<VT,TF>& rhs ) &
 {
    using blaze::assign;
 
@@ -1497,8 +1549,9 @@ inline DynamicVector<Type,TF,Tag>&
 */
 template< typename Type   // Data type of the vector
         , bool TF         // Transpose flag
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
-inline size_t DynamicVector<Type,TF,Tag>::size() const noexcept
+inline size_t DynamicVector<Type,TF,Alloc,Tag>::size() const noexcept
 {
    return size_;
 }
@@ -1515,8 +1568,9 @@ inline size_t DynamicVector<Type,TF,Tag>::size() const noexcept
 */
 template< typename Type   // Data type of the vector
         , bool TF         // Transpose flag
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
-inline size_t DynamicVector<Type,TF,Tag>::spacing() const noexcept
+inline size_t DynamicVector<Type,TF,Alloc,Tag>::spacing() const noexcept
 {
    return addPadding( size_ );
 }
@@ -1530,8 +1584,9 @@ inline size_t DynamicVector<Type,TF,Tag>::spacing() const noexcept
 */
 template< typename Type   // Data type of the vector
         , bool TF         // Transpose flag
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
-inline size_t DynamicVector<Type,TF,Tag>::capacity() const noexcept
+inline size_t DynamicVector<Type,TF,Alloc,Tag>::capacity() const noexcept
 {
    return capacity_;
 }
@@ -1548,8 +1603,9 @@ inline size_t DynamicVector<Type,TF,Tag>::capacity() const noexcept
 */
 template< typename Type   // Data type of the vector
         , bool TF         // Transpose flag
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
-inline size_t DynamicVector<Type,TF,Tag>::nonZeros() const
+inline size_t DynamicVector<Type,TF,Alloc,Tag>::nonZeros() const
 {
    size_t nonzeros( 0 );
 
@@ -1570,8 +1626,9 @@ inline size_t DynamicVector<Type,TF,Tag>::nonZeros() const
 */
 template< typename Type   // Data type of the vector
         , bool TF         // Transpose flag
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
-inline void DynamicVector<Type,TF,Tag>::reset()
+inline void DynamicVector<Type,TF,Alloc,Tag>::reset()
 {
    using blaze::clear;
    for( size_t i=0UL; i<size_; ++i )
@@ -1589,8 +1646,9 @@ inline void DynamicVector<Type,TF,Tag>::reset()
 */
 template< typename Type   // Data type of the vector
         , bool TF         // Transpose flag
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
-inline void DynamicVector<Type,TF,Tag>::clear()
+inline void DynamicVector<Type,TF,Alloc,Tag>::clear()
 {
    resize( 0UL, false );
 }
@@ -1609,7 +1667,7 @@ inline void DynamicVector<Type,TF,Tag>::clear()
 // this function may invalidate all existing views (subvectors, ...) on the vector if it is
 // used to shrink the vector. Additionally, the resize operation potentially changes all vector
 // elements. In order to preserve the old vector values, the \a preserve flag can be set to
-// \a true. However, new vector elements are not initialized!
+// \a true. However, new vector elements of built-in type are not initialized!
 //
 // The following example illustrates the resize operation of a vector of size 2 to a vector of
 // size 4. The new, uninitialized elements are marked with \a x:
@@ -1628,16 +1686,15 @@ inline void DynamicVector<Type,TF,Tag>::clear()
 */
 template< typename Type   // Data type of the vector
         , bool TF         // Transpose flag
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
-inline void DynamicVector<Type,TF,Tag>::resize( size_t n, bool preserve )
+inline void DynamicVector<Type,TF,Alloc,Tag>::resize( size_t n, bool preserve )
 {
-   using std::swap;
-
    if( n > capacity_ )
    {
       // Allocating a new array
       const size_t newCapacity( addPadding( n ) );
-      Type* BLAZE_RESTRICT tmp = allocate<Type>( newCapacity );
+      Type* BLAZE_RESTRICT tmp = allocate( newCapacity );
 
       // Initializing the new array
       if( preserve ) {
@@ -1650,8 +1707,8 @@ inline void DynamicVector<Type,TF,Tag>::resize( size_t n, bool preserve )
       }
 
       // Replacing the old array
-      swap( v_, tmp );
-      deallocate( tmp );
+      deallocate( v_, capacity_ );
+      v_ = tmp;
       capacity_ = newCapacity;
    }
    else if( IsVectorizable_v<Type> && n < size_ )
@@ -1675,12 +1732,14 @@ inline void DynamicVector<Type,TF,Tag>::resize( size_t n, bool preserve )
 // This function increases the vector size by \a n elements. During this operation, new dynamic
 // memory may be allocated in case the capacity of the vector is too small. Therefore this
 // function potentially changes all vector elements. In order to preserve the old vector values,
-// the \a preserve flag can be set to \a true. However, new vector elements are not initialized!
+// the \a preserve flag can be set to \a true. However, new vector elements of built-in type are
+// not initialized!
 */
 template< typename Type   // Data type of the vector
         , bool TF         // Transpose flag
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
-inline void DynamicVector<Type,TF,Tag>::extend( size_t n, bool preserve )
+inline void DynamicVector<Type,TF,Alloc,Tag>::extend( size_t n, bool preserve )
 {
    resize( size_+n, preserve );
 }
@@ -1698,28 +1757,27 @@ inline void DynamicVector<Type,TF,Tag>::extend( size_t n, bool preserve )
 */
 template< typename Type   // Data type of the vector
         , bool TF         // Transpose flag
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
-inline void DynamicVector<Type,TF,Tag>::reserve( size_t n )
+inline void DynamicVector<Type,TF,Alloc,Tag>::reserve( size_t n )
 {
-   using std::swap;
-
    if( n > capacity_ )
    {
       // Allocating a new array
       const size_t newCapacity( addPadding( n ) );
-      Type* BLAZE_RESTRICT tmp = allocate<Type>( newCapacity );
+      Type* BLAZE_RESTRICT tmp = allocate( newCapacity );
 
       // Initializing the new array
       transfer( v_, v_+size_, tmp );
 
-      if( IsVectorizable_v<Type> ) {
+      if( IsVectorizable_v<Type> && IsBuiltin_v<Type> ) {
          for( size_t i=size_; i<newCapacity; ++i )
             tmp[i] = Type();
       }
 
       // Replacing the old array
-      swap( tmp, v_ );
-      deallocate( tmp );
+      deallocate( v_, capacity_ );
+      v_ = tmp;
       capacity_ = newCapacity;
    }
 }
@@ -1738,8 +1796,9 @@ inline void DynamicVector<Type,TF,Tag>::reserve( size_t n )
 */
 template< typename Type   // Data type of the vector
         , bool TF         // Transpose flag
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
-inline void DynamicVector<Type,TF,Tag>::shrinkToFit()
+inline void DynamicVector<Type,TF,Alloc,Tag>::shrinkToFit()
 {
    if( spacing() < capacity_ ) {
       DynamicVector( *this ).swap( *this );
@@ -1756,14 +1815,68 @@ inline void DynamicVector<Type,TF,Tag>::shrinkToFit()
 */
 template< typename Type   // Data type of the vector
         , bool TF         // Transpose flag
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
-inline void DynamicVector<Type,TF,Tag>::swap( DynamicVector& v ) noexcept
+inline void DynamicVector<Type,TF,Alloc,Tag>::swap( DynamicVector& v ) noexcept
 {
    using std::swap;
 
    swap( size_, v.size_ );
    swap( capacity_, v.capacity_ );
    swap( v_, v.v_ );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Aligned array allocation.
+//
+// \param size The number of elements of the given type to be allocated.
+// \return Pointer to the first element of the aligned array.
+// \exception std::bad_alloc Allocation failed.
+//
+// The allocate() function performs the allocation of aligned memory via the given allocator
+// \a Alloc. In case the allocation failed entirely or in case the pointer returned by the
+// allocator is not properly aligned (i.e. 16-byte aligned in case of SSE, 32-byte aligned
+// in case of AVX, and 64-byte aligned in case of AVX-512), a \a std::bad_alloc expresion is
+// thrown.
+*/
+template< typename Type   // Data type of the vector
+        , bool TF         // Transpose flag
+        , typename Alloc  // Type of the allocator
+        , typename Tag >  // Type tag
+inline Type* DynamicVector<Type,TF,Alloc,Tag>::allocate( size_t n )
+{
+   Type* const ptr = Alloc{}.allocate( n );
+
+   if( !checkAlignment( ptr ) ) {
+      BLAZE_THROW_BAD_ALLOC;
+   }
+
+   blaze::uninitialized_default_construct_n( ptr, n );
+
+   return ptr;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Deallocation of aligned memory.
+//
+// \param address Pointer to the first element of the array to be deallocated.
+// \return void
+//
+// This function deallocates the given aligned memory that was previously allocated via the
+// allocate() function.
+*/
+template< typename Type   // Data type of the vector
+        , bool TF         // Transpose flag
+        , typename Alloc  // Type of the allocator
+        , typename Tag >  // Type tag
+inline void DynamicVector<Type,TF,Alloc,Tag>::deallocate( Type* ptr, size_t n ) noexcept
+{
+   blaze::destroy_n( ptr, n );
+   Alloc{}.deallocate( ptr, n );
 }
 //*************************************************************************************************
 
@@ -1779,8 +1892,9 @@ inline void DynamicVector<Type,TF,Tag>::swap( DynamicVector& v ) noexcept
 */
 template< typename Type   // Data type of the vector
         , bool TF         // Transpose flag
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
-inline size_t DynamicVector<Type,TF,Tag>::addPadding( size_t value ) const noexcept
+inline size_t DynamicVector<Type,TF,Alloc,Tag>::addPadding( size_t value ) const noexcept
 {
    if( usePadding && IsVectorizable_v<Type> )
       return nextMultiple<size_t>( value, SIMDSIZE );
@@ -1816,9 +1930,11 @@ inline size_t DynamicVector<Type,TF,Tag>::addPadding( size_t value ) const noexc
 */
 template< typename Type     // Data type of the vector
         , bool TF           // Transpose flag
+        , typename Alloc    // Type of the allocator
         , typename Tag >    // Type tag
 template< typename Other >  // Data type of the scalar value
-inline DynamicVector<Type,TF,Tag>& DynamicVector<Type,TF,Tag>::scale( const Other& scalar )
+inline DynamicVector<Type,TF,Alloc,Tag>&
+   DynamicVector<Type,TF,Alloc,Tag>::scale( const Other& scalar )
 {
    for( size_t i=0UL; i<size_; ++i )
       v_[i] *= scalar;
@@ -1846,8 +1962,9 @@ inline DynamicVector<Type,TF,Tag>& DynamicVector<Type,TF,Tag>::scale( const Othe
 */
 template< typename Type   // Data type of the vector
         , bool TF         // Transpose flag
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
-inline bool DynamicVector<Type,TF,Tag>::isIntact() const noexcept
+inline bool DynamicVector<Type,TF,Alloc,Tag>::isIntact() const noexcept
 {
    if( size_ > capacity_ )
       return false;
@@ -1884,9 +2001,10 @@ inline bool DynamicVector<Type,TF,Tag>::isIntact() const noexcept
 */
 template< typename Type     // Data type of the vector
         , bool TF           // Transpose flag
+        , typename Alloc    // Type of the allocator
         , typename Tag >    // Type tag
 template< typename Other >  // Data type of the foreign expression
-inline bool DynamicVector<Type,TF,Tag>::canAlias( const Other* alias ) const noexcept
+inline bool DynamicVector<Type,TF,Alloc,Tag>::canAlias( const Other* alias ) const noexcept
 {
    return static_cast<const void*>( this ) == static_cast<const void*>( alias );
 }
@@ -1905,9 +2023,10 @@ inline bool DynamicVector<Type,TF,Tag>::canAlias( const Other* alias ) const noe
 */
 template< typename Type     // Data type of the vector
         , bool TF           // Transpose flag
+        , typename Alloc    // Type of the allocator
         , typename Tag >    // Type tag
 template< typename Other >  // Data type of the foreign expression
-inline bool DynamicVector<Type,TF,Tag>::isAliased( const Other* alias ) const noexcept
+inline bool DynamicVector<Type,TF,Alloc,Tag>::isAliased( const Other* alias ) const noexcept
 {
    return static_cast<const void*>( this ) == static_cast<const void*>( alias );
 }
@@ -1925,8 +2044,9 @@ inline bool DynamicVector<Type,TF,Tag>::isAliased( const Other* alias ) const no
 */
 template< typename Type   // Data type of the vector
         , bool TF         // Transpose flag
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
-inline bool DynamicVector<Type,TF,Tag>::isAligned() const noexcept
+inline bool DynamicVector<Type,TF,Alloc,Tag>::isAligned() const noexcept
 {
    return true;
 }
@@ -1945,8 +2065,9 @@ inline bool DynamicVector<Type,TF,Tag>::isAligned() const noexcept
 */
 template< typename Type   // Data type of the vector
         , bool TF         // Transpose flag
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
-inline bool DynamicVector<Type,TF,Tag>::canSMPAssign() const noexcept
+inline bool DynamicVector<Type,TF,Alloc,Tag>::canSMPAssign() const noexcept
 {
    return ( size() > SMP_DVECASSIGN_THRESHOLD );
 }
@@ -1967,9 +2088,10 @@ inline bool DynamicVector<Type,TF,Tag>::canSMPAssign() const noexcept
 */
 template< typename Type   // Data type of the vector
         , bool TF         // Transpose flag
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
-BLAZE_ALWAYS_INLINE typename DynamicVector<Type,TF,Tag>::SIMDType
-   DynamicVector<Type,TF,Tag>::load( size_t index ) const noexcept
+BLAZE_ALWAYS_INLINE typename DynamicVector<Type,TF,Alloc,Tag>::SIMDType
+   DynamicVector<Type,TF,Alloc,Tag>::load( size_t index ) const noexcept
 {
    return loada( index );
 }
@@ -1991,9 +2113,10 @@ BLAZE_ALWAYS_INLINE typename DynamicVector<Type,TF,Tag>::SIMDType
 */
 template< typename Type   // Data type of the vector
         , bool TF         // Transpose flag
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
-BLAZE_ALWAYS_INLINE typename DynamicVector<Type,TF,Tag>::SIMDType
-   DynamicVector<Type,TF,Tag>::loada( size_t index ) const noexcept
+BLAZE_ALWAYS_INLINE typename DynamicVector<Type,TF,Alloc,Tag>::SIMDType
+   DynamicVector<Type,TF,Alloc,Tag>::loada( size_t index ) const noexcept
 {
    using blaze::loada;
 
@@ -2024,9 +2147,10 @@ BLAZE_ALWAYS_INLINE typename DynamicVector<Type,TF,Tag>::SIMDType
 */
 template< typename Type   // Data type of the vector
         , bool TF         // Transpose flag
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
-BLAZE_ALWAYS_INLINE typename DynamicVector<Type,TF,Tag>::SIMDType
-   DynamicVector<Type,TF,Tag>::loadu( size_t index ) const noexcept
+BLAZE_ALWAYS_INLINE typename DynamicVector<Type,TF,Alloc,Tag>::SIMDType
+   DynamicVector<Type,TF,Alloc,Tag>::loadu( size_t index ) const noexcept
 {
    using blaze::loadu;
 
@@ -2055,9 +2179,10 @@ BLAZE_ALWAYS_INLINE typename DynamicVector<Type,TF,Tag>::SIMDType
 */
 template< typename Type   // Data type of the vector
         , bool TF         // Transpose flag
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
 BLAZE_ALWAYS_INLINE void
-   DynamicVector<Type,TF,Tag>::store( size_t index, const SIMDType& value ) noexcept
+   DynamicVector<Type,TF,Alloc,Tag>::store( size_t index, const SIMDType& value ) noexcept
 {
    storea( index, value );
 }
@@ -2079,9 +2204,10 @@ BLAZE_ALWAYS_INLINE void
 */
 template< typename Type   // Data type of the vector
         , bool TF         // Transpose flag
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
 BLAZE_ALWAYS_INLINE void
-   DynamicVector<Type,TF,Tag>::storea( size_t index, const SIMDType& value ) noexcept
+   DynamicVector<Type,TF,Alloc,Tag>::storea( size_t index, const SIMDType& value ) noexcept
 {
    using blaze::storea;
 
@@ -2112,9 +2238,10 @@ BLAZE_ALWAYS_INLINE void
 */
 template< typename Type   // Data type of the vector
         , bool TF         // Transpose flag
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
 BLAZE_ALWAYS_INLINE void
-   DynamicVector<Type,TF,Tag>::storeu( size_t index, const SIMDType& value ) noexcept
+   DynamicVector<Type,TF,Alloc,Tag>::storeu( size_t index, const SIMDType& value ) noexcept
 {
    using blaze::storeu;
 
@@ -2144,9 +2271,10 @@ BLAZE_ALWAYS_INLINE void
 */
 template< typename Type   // Data type of the vector
         , bool TF         // Transpose flag
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
 BLAZE_ALWAYS_INLINE void
-   DynamicVector<Type,TF,Tag>::stream( size_t index, const SIMDType& value ) noexcept
+   DynamicVector<Type,TF,Alloc,Tag>::stream( size_t index, const SIMDType& value ) noexcept
 {
    using blaze::stream;
 
@@ -2175,9 +2303,10 @@ BLAZE_ALWAYS_INLINE void
 */
 template< typename Type   // Data type of the vector
         , bool TF         // Transpose flag
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
 template< typename VT >   // Type of the right-hand side dense vector
-inline auto DynamicVector<Type,TF,Tag>::assign( const DenseVector<VT,TF>& rhs )
+inline auto DynamicVector<Type,TF,Alloc,Tag>::assign( const DenseVector<VT,TF>& rhs )
    -> DisableIf_t< VectorizedAssign_v<VT> >
 {
    BLAZE_INTERNAL_ASSERT( size_ == (*rhs).size(), "Invalid vector sizes" );
@@ -2208,9 +2337,10 @@ inline auto DynamicVector<Type,TF,Tag>::assign( const DenseVector<VT,TF>& rhs )
 */
 template< typename Type   // Data type of the vector
         , bool TF         // Transpose flag
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
 template< typename VT >   // Type of the right-hand side dense vector
-inline auto DynamicVector<Type,TF,Tag>::assign( const DenseVector<VT,TF>& rhs )
+inline auto DynamicVector<Type,TF,Alloc,Tag>::assign( const DenseVector<VT,TF>& rhs )
    -> EnableIf_t< VectorizedAssign_v<VT> >
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
@@ -2269,9 +2399,10 @@ inline auto DynamicVector<Type,TF,Tag>::assign( const DenseVector<VT,TF>& rhs )
 */
 template< typename Type   // Data type of the vector
         , bool TF         // Transpose flag
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
 template< typename VT >   // Type of the right-hand side sparse vector
-inline void DynamicVector<Type,TF,Tag>::assign( const SparseVector<VT,TF>& rhs )
+inline void DynamicVector<Type,TF,Alloc,Tag>::assign( const SparseVector<VT,TF>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( size_ == (*rhs).size(), "Invalid vector sizes" );
 
@@ -2294,9 +2425,10 @@ inline void DynamicVector<Type,TF,Tag>::assign( const SparseVector<VT,TF>& rhs )
 */
 template< typename Type   // Data type of the vector
         , bool TF         // Transpose flag
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
 template< typename VT >   // Type of the right-hand side dense vector
-inline auto DynamicVector<Type,TF,Tag>::addAssign( const DenseVector<VT,TF>& rhs )
+inline auto DynamicVector<Type,TF,Alloc,Tag>::addAssign( const DenseVector<VT,TF>& rhs )
    -> DisableIf_t< VectorizedAddAssign_v<VT> >
 {
    BLAZE_INTERNAL_ASSERT( size_ == (*rhs).size(), "Invalid vector sizes" );
@@ -2327,9 +2459,10 @@ inline auto DynamicVector<Type,TF,Tag>::addAssign( const DenseVector<VT,TF>& rhs
 */
 template< typename Type   // Data type of the vector
         , bool TF         // Transpose flag
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
 template< typename VT >   // Type of the right-hand side dense vector
-inline auto DynamicVector<Type,TF,Tag>::addAssign( const DenseVector<VT,TF>& rhs )
+inline auto DynamicVector<Type,TF,Alloc,Tag>::addAssign( const DenseVector<VT,TF>& rhs )
    -> EnableIf_t< VectorizedAddAssign_v<VT> >
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
@@ -2374,9 +2507,10 @@ inline auto DynamicVector<Type,TF,Tag>::addAssign( const DenseVector<VT,TF>& rhs
 */
 template< typename Type   // Data type of the vector
         , bool TF         // Transpose flag
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
 template< typename VT >   // Type of the right-hand side sparse vector
-inline void DynamicVector<Type,TF,Tag>::addAssign( const SparseVector<VT,TF>& rhs )
+inline void DynamicVector<Type,TF,Alloc,Tag>::addAssign( const SparseVector<VT,TF>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( size_ == (*rhs).size(), "Invalid vector sizes" );
 
@@ -2399,9 +2533,10 @@ inline void DynamicVector<Type,TF,Tag>::addAssign( const SparseVector<VT,TF>& rh
 */
 template< typename Type   // Data type of the vector
         , bool TF         // Transpose flag
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
 template< typename VT >   // Type of the right-hand side dense vector
-inline auto DynamicVector<Type,TF,Tag>::subAssign( const DenseVector<VT,TF>& rhs )
+inline auto DynamicVector<Type,TF,Alloc,Tag>::subAssign( const DenseVector<VT,TF>& rhs )
    -> DisableIf_t< VectorizedSubAssign_v<VT> >
 {
    BLAZE_INTERNAL_ASSERT( size_ == (*rhs).size(), "Invalid vector sizes" );
@@ -2432,9 +2567,10 @@ inline auto DynamicVector<Type,TF,Tag>::subAssign( const DenseVector<VT,TF>& rhs
 */
 template< typename Type   // Data type of the vector
         , bool TF         // Transpose flag
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
 template< typename VT >   // Type of the right-hand side dense vector
-inline auto DynamicVector<Type,TF,Tag>::subAssign( const DenseVector<VT,TF>& rhs )
+inline auto DynamicVector<Type,TF,Alloc,Tag>::subAssign( const DenseVector<VT,TF>& rhs )
    -> EnableIf_t< VectorizedSubAssign_v<VT> >
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
@@ -2479,9 +2615,10 @@ inline auto DynamicVector<Type,TF,Tag>::subAssign( const DenseVector<VT,TF>& rhs
 */
 template< typename Type   // Data type of the vector
         , bool TF         // Transpose flag
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
 template< typename VT >   // Type of the right-hand side sparse vector
-inline void DynamicVector<Type,TF,Tag>::subAssign( const SparseVector<VT,TF>& rhs )
+inline void DynamicVector<Type,TF,Alloc,Tag>::subAssign( const SparseVector<VT,TF>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( size_ == (*rhs).size(), "Invalid vector sizes" );
 
@@ -2504,9 +2641,10 @@ inline void DynamicVector<Type,TF,Tag>::subAssign( const SparseVector<VT,TF>& rh
 */
 template< typename Type   // Data type of the vector
         , bool TF         // Transpose flag
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
 template< typename VT >   // Type of the right-hand side dense vector
-inline auto DynamicVector<Type,TF,Tag>::multAssign( const DenseVector<VT,TF>& rhs )
+inline auto DynamicVector<Type,TF,Alloc,Tag>::multAssign( const DenseVector<VT,TF>& rhs )
    -> DisableIf_t< VectorizedMultAssign_v<VT> >
 {
    BLAZE_INTERNAL_ASSERT( size_ == (*rhs).size(), "Invalid vector sizes" );
@@ -2537,9 +2675,10 @@ inline auto DynamicVector<Type,TF,Tag>::multAssign( const DenseVector<VT,TF>& rh
 */
 template< typename Type   // Data type of the vector
         , bool TF         // Transpose flag
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
 template< typename VT >   // Type of the right-hand side dense vector
-inline auto DynamicVector<Type,TF,Tag>::multAssign( const DenseVector<VT,TF>& rhs )
+inline auto DynamicVector<Type,TF,Alloc,Tag>::multAssign( const DenseVector<VT,TF>& rhs )
    -> EnableIf_t< VectorizedMultAssign_v<VT> >
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
@@ -2584,9 +2723,10 @@ inline auto DynamicVector<Type,TF,Tag>::multAssign( const DenseVector<VT,TF>& rh
 */
 template< typename Type   // Data type of the vector
         , bool TF         // Transpose flag
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
 template< typename VT >   // Type of the right-hand side sparse vector
-inline void DynamicVector<Type,TF,Tag>::multAssign( const SparseVector<VT,TF>& rhs )
+inline void DynamicVector<Type,TF,Alloc,Tag>::multAssign( const SparseVector<VT,TF>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( size_ == (*rhs).size(), "Invalid vector sizes" );
 
@@ -2613,9 +2753,10 @@ inline void DynamicVector<Type,TF,Tag>::multAssign( const SparseVector<VT,TF>& r
 */
 template< typename Type   // Data type of the vector
         , bool TF         // Transpose flag
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
 template< typename VT >   // Type of the right-hand side dense vector
-inline auto DynamicVector<Type,TF,Tag>::divAssign( const DenseVector<VT,TF>& rhs )
+inline auto DynamicVector<Type,TF,Alloc,Tag>::divAssign( const DenseVector<VT,TF>& rhs )
    -> DisableIf_t< VectorizedDivAssign_v<VT> >
 {
    BLAZE_INTERNAL_ASSERT( size_ == (*rhs).size(), "Invalid vector sizes" );
@@ -2646,9 +2787,10 @@ inline auto DynamicVector<Type,TF,Tag>::divAssign( const DenseVector<VT,TF>& rhs
 */
 template< typename Type   // Data type of the vector
         , bool TF         // Transpose flag
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
 template< typename VT >   // Type of the right-hand side dense vector
-inline auto DynamicVector<Type,TF,Tag>::divAssign( const DenseVector<VT,TF>& rhs )
+inline auto DynamicVector<Type,TF,Alloc,Tag>::divAssign( const DenseVector<VT,TF>& rhs )
    -> EnableIf_t< VectorizedDivAssign_v<VT> >
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
@@ -2689,20 +2831,20 @@ inline auto DynamicVector<Type,TF,Tag>::divAssign( const DenseVector<VT,TF>& rhs
 //*************************************************************************************************
 /*!\name DynamicVector operators */
 //@{
-template< typename Type, bool TF, typename Tag >
-void reset( DynamicVector<Type,TF,Tag>& v );
+template< typename Type, bool TF, typename Alloc, typename Tag >
+void reset( DynamicVector<Type,TF,Alloc,Tag>& v );
 
-template< typename Type, bool TF, typename Tag >
-void clear( DynamicVector<Type,TF,Tag>& v );
+template< typename Type, bool TF, typename Alloc, typename Tag >
+void clear( DynamicVector<Type,TF,Alloc,Tag>& v );
 
-template< RelaxationFlag RF, typename Type, bool TF, typename Tag >
-bool isDefault( const DynamicVector<Type,TF,Tag>& v );
+template< RelaxationFlag RF, typename Type, bool TF, typename Alloc, typename Tag >
+bool isDefault( const DynamicVector<Type,TF,Alloc,Tag>& v );
 
-template< typename Type, bool TF, typename Tag >
-bool isIntact( const DynamicVector<Type,TF,Tag>& v ) noexcept;
+template< typename Type, bool TF, typename Alloc, typename Tag >
+bool isIntact( const DynamicVector<Type,TF,Alloc,Tag>& v ) noexcept;
 
-template< typename Type, bool TF, typename Tag >
-void swap( DynamicVector<Type,TF,Tag>& a, DynamicVector<Type,TF,Tag>& b ) noexcept;
+template< typename Type, bool TF, typename Alloc, typename Tag >
+void swap( DynamicVector<Type,TF,Alloc,Tag>& a, DynamicVector<Type,TF,Alloc,Tag>& b ) noexcept;
 //@}
 //*************************************************************************************************
 
@@ -2716,8 +2858,9 @@ void swap( DynamicVector<Type,TF,Tag>& a, DynamicVector<Type,TF,Tag>& b ) noexce
 */
 template< typename Type   // Data type of the vector
         , bool TF         // Transpose flag
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
-inline void reset( DynamicVector<Type,TF,Tag>& v )
+inline void reset( DynamicVector<Type,TF,Alloc,Tag>& v )
 {
    v.reset();
 }
@@ -2733,8 +2876,9 @@ inline void reset( DynamicVector<Type,TF,Tag>& v )
 */
 template< typename Type   // Data type of the vector
         , bool TF         // Transpose flag
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
-inline void clear( DynamicVector<Type,TF,Tag>& v )
+inline void clear( DynamicVector<Type,TF,Alloc,Tag>& v )
 {
    v.clear();
 }
@@ -2768,8 +2912,9 @@ inline void clear( DynamicVector<Type,TF,Tag>& v )
 template< RelaxationFlag RF  // Relaxation flag
         , typename Type      // Data type of the vector
         , bool TF            // Transpose flag
+        , typename Alloc     // Type of the allocator
         , typename Tag >     // Type tag
-inline bool isDefault( const DynamicVector<Type,TF,Tag>& v )
+inline bool isDefault( const DynamicVector<Type,TF,Alloc,Tag>& v )
 {
    return ( v.size() == 0UL );
 }
@@ -2796,8 +2941,9 @@ inline bool isDefault( const DynamicVector<Type,TF,Tag>& v )
 */
 template< typename Type   // Data type of the vector
         , bool TF         // Transpose flag
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
-inline bool isIntact( const DynamicVector<Type,TF,Tag>& v ) noexcept
+inline bool isIntact( const DynamicVector<Type,TF,Alloc,Tag>& v ) noexcept
 {
    return v.isIntact();
 }
@@ -2814,8 +2960,9 @@ inline bool isIntact( const DynamicVector<Type,TF,Tag>& v ) noexcept
 */
 template< typename Type   // Data type of the vector
         , bool TF         // Transpose flag
+        , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
-inline void swap( DynamicVector<Type,TF,Tag>& a, DynamicVector<Type,TF,Tag>& b ) noexcept
+inline void swap( DynamicVector<Type,TF,Alloc,Tag>& a, DynamicVector<Type,TF,Alloc,Tag>& b ) noexcept
 {
    a.swap( b );
 }
@@ -2832,8 +2979,8 @@ inline void swap( DynamicVector<Type,TF,Tag>& a, DynamicVector<Type,TF,Tag>& b )
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T, bool TF, typename Tag >
-struct HasConstDataAccess< DynamicVector<T,TF,Tag> >
+template< typename T, bool TF, typename Alloc, typename Tag >
+struct HasConstDataAccess< DynamicVector<T,TF,Alloc,Tag> >
    : public TrueType
 {};
 /*! \endcond */
@@ -2850,8 +2997,8 @@ struct HasConstDataAccess< DynamicVector<T,TF,Tag> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T, bool TF, typename Tag >
-struct HasMutableDataAccess< DynamicVector<T,TF,Tag> >
+template< typename T, bool TF, typename Alloc, typename Tag >
+struct HasMutableDataAccess< DynamicVector<T,TF,Alloc,Tag> >
    : public TrueType
 {};
 /*! \endcond */
@@ -2868,8 +3015,8 @@ struct HasMutableDataAccess< DynamicVector<T,TF,Tag> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T, bool TF, typename Tag >
-struct IsAligned< DynamicVector<T,TF,Tag> >
+template< typename T, bool TF, typename Alloc, typename Tag >
+struct IsAligned< DynamicVector<T,TF,Alloc,Tag> >
    : public TrueType
 {};
 /*! \endcond */
@@ -2886,8 +3033,8 @@ struct IsAligned< DynamicVector<T,TF,Tag> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T, bool TF, typename Tag >
-struct IsContiguous< DynamicVector<T,TF,Tag> >
+template< typename T, bool TF, typename Alloc, typename Tag >
+struct IsContiguous< DynamicVector<T,TF,Alloc,Tag> >
    : public TrueType
 {};
 /*! \endcond */
@@ -2904,8 +3051,8 @@ struct IsContiguous< DynamicVector<T,TF,Tag> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T, bool TF, typename Tag >
-struct IsPadded< DynamicVector<T,TF,Tag> >
+template< typename T, bool TF, typename Alloc, typename Tag >
+struct IsPadded< DynamicVector<T,TF,Alloc,Tag> >
    : public BoolConstant<usePadding>
 {};
 /*! \endcond */
@@ -2922,8 +3069,8 @@ struct IsPadded< DynamicVector<T,TF,Tag> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T, bool TF, typename Tag >
-struct IsResizable< DynamicVector<T,TF,Tag> >
+template< typename T, bool TF, typename Alloc, typename Tag >
+struct IsResizable< DynamicVector<T,TF,Alloc,Tag> >
    : public TrueType
 {};
 /*! \endcond */
@@ -2940,8 +3087,8 @@ struct IsResizable< DynamicVector<T,TF,Tag> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T, bool TF, typename Tag >
-struct IsShrinkable< DynamicVector<T,TF,Tag> >
+template< typename T, bool TF, typename Alloc, typename Tag >
+struct IsShrinkable< DynamicVector<T,TF,Alloc,Tag> >
    : public TrueType
 {};
 /*! \endcond */
@@ -2968,8 +3115,11 @@ struct AddTraitEval2< T1, T2
                                   ( MaxSize_v<T1,0UL> == DefaultMaxSize_v ) &&
                                   ( MaxSize_v<T2,0UL> == DefaultMaxSize_v ) > >
 {
-   using Type = DynamicVector< AddTrait_t< ElementType_t<T1>, ElementType_t<T2> >
+   using ET = AddTrait_t< ElementType_t<T1>, ElementType_t<T2> >;
+
+   using Type = DynamicVector< ET
                              , TransposeFlag_v<T1>
+                             , DynamicAllocator_t< ET, GetAllocator_t<T1>, GetAllocator_t<T2> >
                              , AddTrait_t< TagType_t<T1>, TagType_t<T2> > >;
 };
 /*! \endcond */
@@ -2996,8 +3146,11 @@ struct SubTraitEval2< T1, T2
                                   ( MaxSize_v<T1,0UL> == DefaultMaxSize_v ) &&
                                   ( MaxSize_v<T2,0UL> == DefaultMaxSize_v ) > >
 {
-   using Type = DynamicVector< SubTrait_t< ElementType_t<T1>, ElementType_t<T2> >
+   using ET = SubTrait_t< ElementType_t<T1>, ElementType_t<T2> >;
+
+   using Type = DynamicVector< ET
                              , TransposeFlag_v<T1>
+                             , DynamicAllocator_t< ET, GetAllocator_t<T1>, GetAllocator_t<T2> >
                              , SubTrait_t< TagType_t<T1>, TagType_t<T2> > >;
 };
 /*! \endcond */
@@ -3021,8 +3174,11 @@ struct MultTraitEval2< T1, T2
                                    ( Size_v<T1,0UL> == DefaultSize_v ) &&
                                    ( MaxSize_v<T1,0UL> == DefaultMaxSize_v ) > >
 {
-   using Type = DynamicVector< MultTrait_t< ElementType_t<T1>, T2 >
+   using ET = MultTrait_t< ElementType_t<T1>, T2 >;
+
+   using Type = DynamicVector< ET
                              , TransposeFlag_v<T1>
+                             , DynamicAllocator_t< ET, GetAllocator_t<T1> >
                              , MultTrait_t< TagType_t<T1>, T2 > >;
 };
 
@@ -3033,8 +3189,11 @@ struct MultTraitEval2< T1, T2
                                    ( Size_v<T2,0UL> == DefaultSize_v ) &&
                                    ( MaxSize_v<T2,0UL> == DefaultMaxSize_v ) > >
 {
-   using Type = DynamicVector< MultTrait_t< T1, ElementType_t<T2> >
+   using ET = MultTrait_t< T1, ElementType_t<T2> >;
+
+   using Type = DynamicVector< ET
                              , TransposeFlag_v<T2>
+                             , DynamicAllocator_t< ET, GetAllocator_t<T2> >
                              , MultTrait_t< T1, TagType_t<T2> > >;
 };
 
@@ -3049,8 +3208,11 @@ struct MultTraitEval2< T1, T2
                                    ( MaxSize_v<T1,0UL> == DefaultMaxSize_v ) &&
                                    ( MaxSize_v<T2,0UL> == DefaultMaxSize_v ) > >
 {
-   using Type = DynamicVector< MultTrait_t< ElementType_t<T1>, ElementType_t<T2> >
+   using ET = MultTrait_t< ElementType_t<T1>, ElementType_t<T2> >;
+
+   using Type = DynamicVector< ET
                              , TransposeFlag_v<T1>
+                             , DynamicAllocator_t< ET, GetAllocator_t<T1>, GetAllocator_t<T2> >
                              , MultTrait_t< TagType_t<T1>, TagType_t<T2> > >;
 };
 
@@ -3064,12 +3226,14 @@ struct MultTraitEval2< T1, T2
                                    ( MaxSize_v<T1,0UL> == DefaultMaxSize_v &&
                                      ( !IsSquare_v<T1> || MaxSize_v<T2,0UL> == DefaultMaxSize_v ) ) > >
 {
-   using MultType = MultTrait_t< ElementType_t<T1>, ElementType_t<T2> >;
-   using MultTag  = MultTrait_t< TagType_t<T1>, TagType_t<T2> >;
+   using M1 = MultTrait_t< ElementType_t<T1>, ElementType_t<T2> >;
+   using M2 = MultTrait_t< TagType_t<T1>, TagType_t<T2> >;
+   using ET = AddTrait_t<M1,M1>;
 
-   using Type = DynamicVector< AddTrait_t<MultType,MultType>
+   using Type = DynamicVector< ET
                              , false
-                             , AddTrait_t<MultTag,MultTag> >;
+                             , DynamicAllocator_t< ET, GetAllocator_t<T1>, GetAllocator_t<T2> >
+                             , AddTrait_t<M2,M2> >;
 };
 
 template< typename T1, typename T2 >
@@ -3082,12 +3246,14 @@ struct MultTraitEval2< T1, T2
                                    ( MaxSize_v<T2,1UL> == DefaultMaxSize_v &&
                                      ( !IsSquare_v<T2> || MaxSize_v<T1,0UL> == DefaultMaxSize_v ) ) > >
 {
-   using MultType = MultTrait_t< ElementType_t<T1>, ElementType_t<T2> >;
-   using MultTag  = MultTrait_t< TagType_t<T1>, TagType_t<T2> >;
+   using M1 = MultTrait_t< ElementType_t<T1>, ElementType_t<T2> >;
+   using M2 = MultTrait_t< TagType_t<T1>, TagType_t<T2> >;
+   using ET = AddTrait_t<M1,M1>;
 
-   using Type = DynamicVector< AddTrait_t<MultType,MultType>
+   using Type = DynamicVector< ET
                              , true
-                             , AddTrait_t<MultTag,MultTag> >;
+                             , DynamicAllocator_t< ET, GetAllocator_t<T1>, GetAllocator_t<T2> >
+                             , AddTrait_t<M2,M2> >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -3112,8 +3278,11 @@ struct KronTraitEval2< T1, T2
                                    ( ( MaxSize_v<T1,0UL> == DefaultMaxSize_v ) ||
                                      ( MaxSize_v<T2,0UL> == DefaultMaxSize_v ) ) > >
 {
-   using Type = DynamicVector< MultTrait_t< ElementType_t<T1>, ElementType_t<T2> >
+   using ET = MultTrait_t< ElementType_t<T1>, ElementType_t<T2> >;
+
+   using Type = DynamicVector< ET
                              , TransposeFlag_v<T2>
+                             , DynamicAllocator_t< ET, GetAllocator_t<T1>, GetAllocator_t<T2> >
                              , MultTrait_t< TagType_t<T1>, TagType_t<T2> > >;
 };
 /*! \endcond */
@@ -3137,8 +3306,11 @@ struct DivTraitEval2< T1, T2
                                   ( Size_v<T1,0UL> == DefaultSize_v ) &&
                                   ( MaxSize_v<T1,0UL> == DefaultMaxSize_v ) > >
 {
-   using Type = DynamicVector< DivTrait_t< ElementType_t<T1>, T2 >
+   using ET = DivTrait_t< ElementType_t<T1>, T2 >;
+
+   using Type = DynamicVector< ET
                              , TransposeFlag_v<T1>
+                             , DynamicAllocator_t< ET, GetAllocator_t<T1> >
                              , DivTrait_t< TagType_t<T1>, T2 > >;
 };
 
@@ -3151,8 +3323,11 @@ struct DivTraitEval2< T1, T2
                                   ( MaxSize_v<T1,0UL> == DefaultMaxSize_v ) &&
                                   ( MaxSize_v<T2,0UL> == DefaultMaxSize_v ) > >
 {
-   using Type = DynamicVector< DivTrait_t< ElementType_t<T1>, ElementType_t<T2> >
+   using ET = DivTrait_t< ElementType_t<T1>, ElementType_t<T2> >;
+
+   using Type = DynamicVector< ET
                              , TransposeFlag_v<T1>
+                             , DynamicAllocator_t< ET, GetAllocator_t<T1>, GetAllocator_t<T2> >
                              , DivTrait_t< TagType_t<T1>, TagType_t<T2> > >;
 };
 /*! \endcond */
@@ -3175,10 +3350,12 @@ struct UnaryMapTraitEval2< T, OP
                                        Size_v<T,0UL> == DefaultSize_v &&
                                        MaxSize_v<T,0UL> == DefaultMaxSize_v > >
 {
-   using ElementType = decltype( std::declval<OP>()( std::declval< ElementType_t<T> >() ) );
+   using ET =
+      EvaluateTrait_t< decltype( std::declval<OP>()( std::declval< ElementType_t<T> >() ) ) >;
 
-   using Type = DynamicVector< EvaluateTrait_t<ElementType>
+   using Type = DynamicVector< ET
                              , TransposeFlag_v<T>
+                             , DynamicAllocator_t< ET, GetAllocator_t<T> >
                              , MapTrait_t< TagType_t<T>, OP > >;
 };
 /*! \endcond */
@@ -3196,11 +3373,13 @@ struct BinaryMapTraitEval2< T1, T2, OP
                                         MaxSize_v<T1,0UL> == DefaultMaxSize_v &&
                                         MaxSize_v<T2,0UL> == DefaultMaxSize_v > >
 {
-   using ElementType = decltype( std::declval<OP>()( std::declval< ElementType_t<T1> >()
-                                                   , std::declval< ElementType_t<T2> >() ) );
+   using ET =
+      EvaluateTrait_t< decltype( std::declval<OP>()( std::declval< ElementType_t<T1> >()
+                                                   , std::declval< ElementType_t<T2> >() ) ) >;
 
-   using Type = DynamicVector< EvaluateTrait_t<ElementType>
+   using Type = DynamicVector< ET
                              , TransposeFlag_v<T1>
+                             , DynamicAllocator_t< ET, GetAllocator_t<T1>, GetAllocator_t<T2> >
                              , MapTrait_t< TagType_t<T1>, TagType_t<T2>, OP > >;
 };
 /*! \endcond */
@@ -3225,10 +3404,12 @@ struct PartialReduceTraitEval2< T, OP, RF
                                             ( MaxSize_v<T,0UL> == DefaultMaxSize_v ||
                                               MaxSize_v<T,1UL> == DefaultMaxSize_v ) > >
 {
-   using ET = ElementType_t<T>;
+   using ET = decltype( std::declval<OP>()( std::declval< ElementType_t<T> >()
+                                          , std::declval< ElementType_t<T> >() ) );
 
-   using Type = DynamicVector< decltype( std::declval<OP>()( std::declval<ET>(), std::declval<ET>() ) )
+   using Type = DynamicVector< ET
                              , ( RF == columnwise )
+                             , DynamicAllocator_t< ET, GetAllocator_t<T> >
                              , MapTrait_t< TagType_t<T>, OP > >;
 };
 /*! \endcond */
@@ -3254,6 +3435,7 @@ struct RepeatTraitEval2< T, R0, inf, inf
 {
    using Type = DynamicVector< ElementType_t<T>
                              , TransposeFlag_v<T>
+                             , DynamicAllocator_t< ElementType_t<T>, GetAllocator_t<T> >
                              , TagType_t<T> >;
 };
 /*! \endcond */
@@ -3281,6 +3463,7 @@ struct SolveTraitEval2< T1, T2
 {
    using Type = DynamicVector< ElementType_t<T2>
                              , TransposeFlag_v<T2>
+                             , DynamicAllocator_t< ElementType_t<T2>, GetAllocator_t<T1>, GetAllocator_t<T2> >
                              , TagType_t<T2> >;
 };
 /*! \endcond */
@@ -3297,10 +3480,10 @@ struct SolveTraitEval2< T1, T2
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T1, bool TF, typename Tag, typename T2 >
-struct HighType< DynamicVector<T1,TF,Tag>, DynamicVector<T2,TF,Tag> >
+template< typename T1, bool TF, typename Alloc, typename Tag, typename T2 >
+struct HighType< DynamicVector<T1,TF,Alloc,Tag>, DynamicVector<T2,TF,Alloc,Tag> >
 {
-   using Type = DynamicVector< typename HighType<T1,T2>::Type, TF, Tag >;
+   using Type = DynamicVector< typename HighType<T1,T2>::Type, TF, Alloc, Tag >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -3316,10 +3499,10 @@ struct HighType< DynamicVector<T1,TF,Tag>, DynamicVector<T2,TF,Tag> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T1, bool TF, typename T2 >
-struct LowType< DynamicVector<T1,TF>, DynamicVector<T2,TF> >
+template< typename T1, bool TF, typename Alloc, typename Tag, typename T2 >
+struct LowType< DynamicVector<T1,TF,Alloc,Tag>, DynamicVector<T2,TF,Alloc,Tag> >
 {
-   using Type = DynamicVector< typename LowType<T1,T2>::Type, TF >;
+   using Type = DynamicVector< typename LowType<T1,T2>::Type, TF, Alloc, Tag >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -3341,8 +3524,11 @@ struct SubvectorTraitEval2< VT, inf, inf
                                         Size_v<VT,0UL> == DefaultSize_v &&
                                         MaxSize_v<VT,0UL> == DefaultMaxSize_v > >
 {
-   using Type = DynamicVector< RemoveConst_t< ElementType_t<VT> >
+   using ET = RemoveConst_t< ElementType_t<VT> >;
+
+   using Type = DynamicVector< ET
                              , TransposeFlag_v<VT>
+                             , DynamicAllocator_t< ET, GetAllocator_t<VT> >
                              , TagType_t<VT> >;
 };
 /*! \endcond */
@@ -3363,8 +3549,11 @@ template< typename VT >
 struct ElementsTraitEval2< VT, 0UL
                          , EnableIf_t< IsDenseVector_v<VT> > >
 {
-   using Type = DynamicVector< RemoveConst_t< ElementType_t<VT> >
+   using ET = RemoveConst_t< ElementType_t<VT> >;
+
+   using Type = DynamicVector< ET
                              , TransposeFlag_v<VT>
+                             , DynamicAllocator_t< ET, GetAllocator_t<VT> >
                              , TagType_t<VT> >;
 };
 /*! \endcond */
@@ -3387,8 +3576,11 @@ struct RowTraitEval2< MT, I
                                   Size_v<MT,1UL> == DefaultSize_v &&
                                   MaxSize_v<MT,1UL> == DefaultMaxSize_v > >
 {
-   using Type = DynamicVector< RemoveConst_t< ElementType_t<MT> >
+   using ET = RemoveConst_t< ElementType_t<MT> >;
+
+   using Type = DynamicVector< ET
                              , true
+                             , DynamicAllocator_t< ET, GetAllocator_t<MT> >
                              , TagType_t<MT> >;
 };
 /*! \endcond */
@@ -3411,8 +3603,11 @@ struct ColumnTraitEval2< MT, I
                                      Size_v<MT,0UL> == DefaultSize_v &&
                                      MaxSize_v<MT,0UL> == DefaultMaxSize_v > >
 {
-   using Type = DynamicVector< RemoveConst_t< ElementType_t<MT> >
+   using ET = RemoveConst_t< ElementType_t<MT> >;
+
+   using Type = DynamicVector< ET
                              , false
+                             , DynamicAllocator_t< ET, GetAllocator_t<MT> >
                              , TagType_t<MT> >;
 };
 /*! \endcond */
@@ -3437,8 +3632,11 @@ struct BandTraitEval2< MT, I
                                    ( MaxSize_v<MT,0UL> == DefaultMaxSize_v ||
                                      MaxSize_v<MT,1UL> == DefaultMaxSize_v ) > >
 {
-   using Type = DynamicVector< RemoveConst_t< ElementType_t<MT> >
+   using ET = RemoveConst_t< ElementType_t<MT> >;
+
+   using Type = DynamicVector< ET
                              , defaultTransposeFlag
+                             , DynamicAllocator_t< ET, GetAllocator_t<MT> >
                              , TagType_t<MT> >;
 };
 /*! \endcond */
