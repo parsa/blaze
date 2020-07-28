@@ -49,6 +49,7 @@
 #include <blaze/util/algorithms/Transfer.h>
 #include <blaze/util/algorithms/UninitializedDefaultConstruct.h>
 #include <blaze/util/algorithms/UninitializedMove.h>
+#include <blaze/util/algorithms/UninitializedTransfer.h>
 #include <blaze/util/algorithms/UninitializedValueConstruct.h>
 
 #endif
