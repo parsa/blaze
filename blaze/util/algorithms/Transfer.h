@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
 //  \file blaze/util/algorithms/Transfer.h
-//  \brief Headerfile for the generic transfer algorithm
+//  \brief Header file for the generic transfer algorithm
 //
 //  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //

@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
 //  \file blaze/util/algorithms/Min.h
-//  \brief Headerfile for the generic min algorithm
+//  \brief Header file for the generic min algorithm
 //
 //  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //

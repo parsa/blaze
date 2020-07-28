@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
 //  \file blaze/util/Algorithms.h
-//  \brief Headerfile for generic algorithms
+//  \brief Header file for generic algorithms
 //
 //  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //

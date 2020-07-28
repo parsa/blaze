@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
 //  \file blaze/util/algorithms/UninitializedTransfer.h
-//  \brief Headerfile for the generic uninitialized_transfer algorithm
+//  \brief Header file for the generic uninitialized_transfer algorithm
 //
 //  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //

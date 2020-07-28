@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
 //  \file blaze/util/algorithms/UninitializedDefaultConstruct.h
-//  \brief Headerfile for the generic uninitialized_default_construct algorithm
+//  \brief Header file for the generic uninitialized_default_construct algorithm
 //
 //  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //

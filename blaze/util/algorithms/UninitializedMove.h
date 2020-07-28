@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
 //  \file blaze/util/algorithms/UninitializedMove.h
-//  \brief Headerfile for the generic uninitialized_move algorithm
+//  \brief Header file for the generic uninitialized_move algorithm
 //
 //  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //

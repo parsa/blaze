@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
 //  \file blaze/util/algorithms/ConstructAt.h
-//  \brief Headerfile for the generic construct_at algorithm
+//  \brief Header file for the generic construct_at algorithm
 //
 //  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
