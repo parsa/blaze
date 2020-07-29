@@ -55,8 +55,8 @@ namespace blaze {
 /*!\brief Constraint on the data type.
 // \ingroup math_constraints
 //
-// In case the given data type \a T is not a N-dimensional matrix type, a compilation error
-// is created.
+// In case the given data type \a T is not a matrix type (i.e. a type that is derived from the
+// Matrix base class), a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_BE_MATRIX_TYPE(T) \
    static_assert( ::blaze::IsMatrix_v<T>, "Non-matrix type detected" )
@@ -75,8 +75,8 @@ namespace blaze {
 /*!\brief Constraint on the data type.
 // \ingroup math_constraints
 //
-// In case the given data type \a T is a N-dimensional matrix type, a compilation error
-// is created.
+// In case the given data type \a T is a matrix type (i.e. a type that is derived from the Matrix
+// base class), a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_NOT_BE_MATRIX_TYPE(T) \
    static_assert( !::blaze::IsMatrix_v<T>, "Matrix type detected" )
