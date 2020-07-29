@@ -112,6 +112,7 @@
 #include <blaze/math/typetraits/TransposeFlag.h>
 #include <blaze/system/CacheSize.h>
 #include <blaze/system/Inline.h>
+#include <blaze/system/NoUniqueAddress.h>
 #include <blaze/system/Optimizations.h>
 #include <blaze/system/Restrict.h>
 #include <blaze/system/Thresholds.h>
@@ -150,8 +151,9 @@ namespace blaze {
 // \ingroup dynamic_vector
 //
 // The DynamicVector class template is the representation of an arbitrary sized vector with
-// dynamically allocated elements of arbitrary type. The type of the elements and the transpose
-// flag of the vector can be specified via the three template parameters:
+// dynamically allocated elements of arbitrary type. The type of the elements, the transpose
+// flag and the type of the allocator of the vector can be specified via the four template
+// parameters:
 
    \code
    namespace blaze {
@@ -288,19 +290,19 @@ class DynamicVector
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-            inline DynamicVector() noexcept;
-   explicit inline DynamicVector( size_t n );
-            inline DynamicVector( size_t n, const Type& init );
-            inline DynamicVector( initializer_list<Type> list );
+            inline DynamicVector( const Alloc& alloc = Alloc{} ) noexcept;
+   explicit inline DynamicVector( size_t n, const Alloc& alloc = Alloc{} );
+            inline DynamicVector( size_t n, const Type& init, const Alloc& alloc = Alloc{} );
+            inline DynamicVector( initializer_list<Type> list, const Alloc& alloc = Alloc{} );
 
    template< typename Other >
-   inline DynamicVector( size_t n, const Other* array );
+   inline DynamicVector( size_t n, const Other* array, const Alloc& alloc = Alloc{} );
 
    template< typename Other, size_t Dim >
-   inline DynamicVector( const Other (&array)[Dim] );
+   inline DynamicVector( const Other (&array)[Dim], const Alloc& alloc = Alloc{} );
 
    template< typename Other, size_t Dim >
-   inline DynamicVector( const std::array<Other,Dim>& array );
+   inline DynamicVector( const std::array<Other,Dim>& array, const Alloc& alloc = Alloc{} );
 
                            inline DynamicVector( const DynamicVector& v );
                            inline DynamicVector( DynamicVector&& v ) noexcept;
@@ -505,11 +507,22 @@ class DynamicVector
    //**********************************************************************************************
 
  private:
+   //**Uninitialized struct definition*************************************************************
+   /*!\brief Definition of the nested auxiliary struct Uninitialized.
+   */
+   struct Uninitialized {};
+   //**********************************************************************************************
+
+   //**Constructors********************************************************************************
+   /*!\name Constructors */
+   //@{
+   inline DynamicVector( size_t n, size_t capa, const Alloc& alloc, Uninitialized );
+   //@}
+   //**********************************************************************************************
+
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-   inline Type*  allocate( size_t n );
-   inline void   deallocate( Type* ptr, size_t n ) noexcept;
    inline size_t addPadding( size_t value ) const noexcept;
    //@}
    //**********************************************************************************************
@@ -517,14 +530,17 @@ class DynamicVector
    //**Member variables****************************************************************************
    /*!\name Member variables */
    //@{
-   size_t size_;             //!< The current size/dimension of the vector.
-   size_t capacity_;         //!< The maximum capacity of the vector.
+   size_t size_;      //!< The current size/dimension of the vector.
+   size_t capacity_;  //!< The maximum capacity of the vector.
+
    Type* BLAZE_RESTRICT v_;  //!< The dynamically allocated vector elements.
-                             /*!< Access to the vector elements is gained via the subscript operator.
-                                  The order of the elements is
+                             /*!< Access to the vector elements is gained via the
+                                  subscript operator. The order of the elements is
                                   \f[\left(\begin{array}{*{5}{c}}
                                   0 & 1 & 2 & \cdots & N-1 \\
                                   \end{array}\right)\f] */
+
+   BLAZE_NO_UNIQUE_ADDRESS Alloc alloc_;  //!< The allocator of the vector.
    //@}
    //**********************************************************************************************
 
@@ -573,17 +589,48 @@ DynamicVector( std::array<Type,N> ) -> DynamicVector<Type>;
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief The default constructor for DynamicVector.
+/*!\brief The (default) constructor for DynamicVector.
+//
+// \param alloc Allocator for all memory allocations of this vector.
 */
 template< typename Type   // Data type of the vector
         , bool TF         // Transpose flag
         , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
-inline DynamicVector<Type,TF,Alloc,Tag>::DynamicVector() noexcept
+inline DynamicVector<Type,TF,Alloc,Tag>::DynamicVector( const Alloc& alloc ) noexcept
    : size_    ( 0UL )      // The current size/dimension of the vector
    , capacity_( 0UL )      // The maximum capacity of the vector
    , v_       ( nullptr )  // The vector elements
+   , alloc_   ( alloc )    // The allocator of the vector
 {}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Auxiliary constructor for DynamicVector.
+//
+// \param n The size of the vector.
+// \param capa The initial capacity of the vector.
+// \param alloc Allocator for all memory allocations of this vector.
+// \exception std::bad_alloc Allocation failed.
+*/
+template< typename Type   // Data type of the vector
+        , bool TF         // Transpose flag
+        , typename Alloc  // Type of the allocator
+        , typename Tag >  // Type tag
+inline DynamicVector<Type,TF,Alloc,Tag>::DynamicVector( size_t n, size_t capa, const Alloc& alloc, Uninitialized )
+   : size_    ( n )        // The current size/dimension of the vector
+   , capacity_( capa )     // The maximum capacity of the vector
+   , v_       ( nullptr )  // The vector elements
+   , alloc_   ( alloc )    // The allocator of the vector
+{
+   v_ = alloc_.allocate( capacity_ );
+
+   if( !checkAlignment( v_ ) ) {
+      alloc_.deallocate( v_, capacity_ );
+      BLAZE_THROW_BAD_ALLOC;
+   }
+}
 //*************************************************************************************************
 
 
@@ -591,6 +638,7 @@ inline DynamicVector<Type,TF,Alloc,Tag>::DynamicVector() noexcept
 /*!\brief Constructor for a vector of size \a n. For built-in types no initialization is performed!
 //
 // \param n The size of the vector.
+// \param alloc Allocator for all memory allocations of this vector.
 //
 // \note This constructor is only responsible to allocate the required dynamic memory. For
 // built-in types no initialization of the elements is performed!
@@ -599,12 +647,12 @@ template< typename Type   // Data type of the vector
         , bool TF         // Transpose flag
         , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
-inline DynamicVector<Type,TF,Alloc,Tag>::DynamicVector( size_t n )
-   : size_    ( n )                      // The current size/dimension of the vector
-   , capacity_( addPadding( n ) )        // The maximum capacity of the vector
-   , v_       ( allocate( capacity_ ) )  // The vector elements
+inline DynamicVector<Type,TF,Alloc,Tag>::DynamicVector( size_t n, const Alloc& alloc )
+   : DynamicVector( n, addPadding(n), alloc, Uninitialized{} )
 {
    using blaze::clear;
+
+   blaze::uninitialized_default_construct_n( v_, capacity_ );
 
    if( IsVectorizable_v<Type> && IsBuiltin_v<Type> ) {
       for( size_t i=size_; i<capacity_; ++i )
@@ -621,6 +669,7 @@ inline DynamicVector<Type,TF,Alloc,Tag>::DynamicVector( size_t n )
 //
 // \param n The size of the vector.
 // \param init The initial value of the vector elements.
+// \param alloc Allocator for all memory allocations of this vector.
 //
 // All vector elements are initialized with the specified value.
 */
@@ -628,8 +677,8 @@ template< typename Type   // Data type of the vector
         , bool TF         // Transpose flag
         , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
-inline DynamicVector<Type,TF,Alloc,Tag>::DynamicVector( size_t n, const Type& init )
-   : DynamicVector( n )
+inline DynamicVector<Type,TF,Alloc,Tag>::DynamicVector( size_t n, const Type& init, const Alloc& alloc )
+   : DynamicVector( n, alloc )
 {
    for( size_t i=0UL; i<size_; ++i )
       v_[i] = init;
@@ -643,6 +692,7 @@ inline DynamicVector<Type,TF,Alloc,Tag>::DynamicVector( size_t n, const Type& in
 /*!\brief List initialization of all vector elements.
 //
 // \param list The initializer list.
+// \param alloc Allocator for all memory allocations of this vector.
 //
 // This constructor provides the option to explicitly initialize the elements of the vector
 // within a constructor call:
@@ -658,8 +708,8 @@ template< typename Type   // Data type of the vector
         , bool TF         // Transpose flag
         , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
-inline DynamicVector<Type,TF,Alloc,Tag>::DynamicVector( initializer_list<Type> list )
-   : DynamicVector( list.size() )
+inline DynamicVector<Type,TF,Alloc,Tag>::DynamicVector( initializer_list<Type> list, const Alloc& alloc )
+   : DynamicVector( list.size(), alloc )
 {
    std::copy( list.begin(), list.end(), v_ );
 
@@ -673,6 +723,7 @@ inline DynamicVector<Type,TF,Alloc,Tag>::DynamicVector( initializer_list<Type> l
 //
 // \param n The size of the vector.
 // \param array Dynamic array for the initialization.
+// \param alloc Allocator for all memory allocations of this vector.
 //
 // This constructor offers the option to directly initialize the elements of the vector with a
 // dynamic array:
@@ -693,8 +744,8 @@ template< typename Type     // Data type of the vector
         , typename Alloc    // Type of the allocator
         , typename Tag >    // Type tag
 template< typename Other >  // Data type of the initialization array
-inline DynamicVector<Type,TF,Alloc,Tag>::DynamicVector( size_t n, const Other* array )
-   : DynamicVector( n )
+inline DynamicVector<Type,TF,Alloc,Tag>::DynamicVector( size_t n, const Other* array, const Alloc& alloc )
+   : DynamicVector( n, alloc )
 {
    for( size_t i=0UL; i<n; ++i )
       v_[i] = array[i];
@@ -708,6 +759,7 @@ inline DynamicVector<Type,TF,Alloc,Tag>::DynamicVector( size_t n, const Other* a
 /*!\brief Array initialization of all vector elements.
 //
 // \param array Static array for the initialization.
+// \param alloc Allocator for all memory allocations of this vector.
 //
 // This constructor offers the option to directly initialize the elements of the vector with a
 // static array:
@@ -727,8 +779,8 @@ template< typename Type   // Data type of the vector
         , typename Tag >  // Type tag
 template< typename Other  // Data type of the static array
         , size_t Dim >    // Dimension of the static array
-inline DynamicVector<Type,TF,Alloc,Tag>::DynamicVector( const Other (&array)[Dim] )
-   : DynamicVector( Dim )
+inline DynamicVector<Type,TF,Alloc,Tag>::DynamicVector( const Other (&array)[Dim], const Alloc& alloc )
+   : DynamicVector( Dim, alloc )
 {
    for( size_t i=0UL; i<Dim; ++i )
       v_[i] = array[i];
@@ -742,6 +794,7 @@ inline DynamicVector<Type,TF,Alloc,Tag>::DynamicVector( const Other (&array)[Dim
 /*!\brief Initialization of all vector elements from the given std::array.
 //
 // \param array The given std::array for the initialization.
+// \param alloc Allocator for all memory allocations of this vector.
 //
 // This constructor offers the option to directly initialize the elements of the vector with a
 // std::array:
@@ -761,8 +814,8 @@ template< typename Type   // Data type of the vector
         , typename Tag >  // Type tag
 template< typename Other  // Data type of the std::array
         , size_t Dim >    // Dimension of the std::array
-inline DynamicVector<Type,TF,Alloc,Tag>::DynamicVector( const std::array<Other,Dim>& array )
-   : DynamicVector( Dim )
+inline DynamicVector<Type,TF,Alloc,Tag>::DynamicVector( const std::array<Other,Dim>& array, const Alloc& alloc )
+   : DynamicVector( Dim, alloc )
 {
    for( size_t i=0UL; i<Dim; ++i )
       v_[i] = array[i];
@@ -860,7 +913,8 @@ template< typename Type   // Data type of the vector
         , typename Tag >  // Type tag
 inline DynamicVector<Type,TF,Alloc,Tag>::~DynamicVector()
 {
-   deallocate( v_, capacity_ );
+   blaze::destroy_n( v_, capacity_ );
+   alloc_.deallocate( v_, capacity_ );
 }
 //*************************************************************************************************
 
@@ -1281,7 +1335,8 @@ template< typename Type   // Data type of the vector
 inline DynamicVector<Type,TF,Alloc,Tag>&
    DynamicVector<Type,TF,Alloc,Tag>::operator=( DynamicVector&& rhs ) & noexcept
 {
-   deallocate( v_, capacity_ );
+   blaze::destroy_n( v_, capacity_ );
+   alloc_.deallocate( v_, capacity_ );
 
    size_     = rhs.size_;
    capacity_ = rhs.capacity_;
@@ -1696,24 +1751,23 @@ inline void DynamicVector<Type,TF,Alloc,Tag>::resize( size_t n, bool preserve )
 
    if( n > capacity_ )
    {
-      // Allocating a new array
-      const size_t newCapacity( addPadding( n ) );
-      Type* BLAZE_RESTRICT tmp = allocate( newCapacity );
+      DynamicVector tmp( n, addPadding(n), Alloc{}, Uninitialized{} );
 
-      // Initializing the new array
       if( preserve ) {
-         transfer( v_, v_+size_, tmp );
+         blaze::uninitialized_transfer( v_, v_+size_, tmp.v_ );
+         blaze::uninitialized_default_construct( tmp.v_+size_, tmp.v_+tmp.capacity_ );
+      }
+      else {
+         blaze::uninitialized_default_construct( tmp.v_, tmp.v_+tmp.capacity_ );
       }
 
-      if( IsVectorizable_v<Type> ) {
-         for( size_t i=size_; i<newCapacity; ++i )
-            clear( tmp[i] );
+      if( IsVectorizable_v<Type> && IsBuiltin_v<Type> ) {
+         for( size_t i=size_; i<tmp.capacity_; ++i )
+            clear( tmp.v_[i] );
       }
 
-      // Replacing the old array
-      deallocate( v_, capacity_ );
-      v_ = tmp;
-      capacity_ = newCapacity;
+      std::swap( capacity_, tmp.capacity_ );
+      std::swap( v_, tmp.v_ );
    }
    else if( IsVectorizable_v<Type> && n < size_ )
    {
@@ -1722,6 +1776,8 @@ inline void DynamicVector<Type,TF,Alloc,Tag>::resize( size_t n, bool preserve )
    }
 
    size_ = n;
+
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
 }
 //*************************************************************************************************
 
@@ -1769,22 +1825,13 @@ inline void DynamicVector<Type,TF,Alloc,Tag>::reserve( size_t n )
 
    if( n > capacity_ )
    {
-      // Allocating a new array
-      const size_t newCapacity( addPadding( n ) );
-      Type* BLAZE_RESTRICT tmp = allocate( newCapacity );
+      DynamicVector tmp( size_, addPadding(n), Alloc{}, Uninitialized{} );
 
-      // Initializing the new array
-      transfer( v_, v_+size_, tmp );
+      blaze::uninitialized_transfer( v_, v_+size_, tmp.v_ );
+      blaze::uninitialized_value_construct( tmp.v_+size_, tmp.v_+tmp.capacity_ );
 
-      if( IsVectorizable_v<Type> && IsBuiltin_v<Type> ) {
-         for( size_t i=size_; i<newCapacity; ++i )
-            clear( tmp[i] );
-      }
-
-      // Replacing the old array
-      deallocate( v_, capacity_ );
-      v_ = tmp;
-      capacity_ = newCapacity;
+      std::swap( capacity_, tmp.capacity_ );
+      std::swap( v_, tmp.v_ );
    }
 }
 //*************************************************************************************************
@@ -1830,59 +1877,6 @@ inline void DynamicVector<Type,TF,Alloc,Tag>::swap( DynamicVector& v ) noexcept
    swap( size_, v.size_ );
    swap( capacity_, v.capacity_ );
    swap( v_, v.v_ );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Aligned array allocation.
-//
-// \param size The number of elements of the given type to be allocated.
-// \return Pointer to the first element of the aligned array.
-// \exception std::bad_alloc Allocation failed.
-//
-// The allocate() function performs the allocation of aligned memory via the given allocator
-// \a Alloc. In case the allocation failed entirely or in case the pointer returned by the
-// allocator is not properly aligned (i.e. 16-byte aligned in case of SSE, 32-byte aligned
-// in case of AVX, and 64-byte aligned in case of AVX-512), a \a std::bad_alloc expresion is
-// thrown.
-*/
-template< typename Type   // Data type of the vector
-        , bool TF         // Transpose flag
-        , typename Alloc  // Type of the allocator
-        , typename Tag >  // Type tag
-inline Type* DynamicVector<Type,TF,Alloc,Tag>::allocate( size_t n )
-{
-   Type* const ptr = Alloc{}.allocate( n );
-
-   if( !checkAlignment( ptr ) ) {
-      BLAZE_THROW_BAD_ALLOC;
-   }
-
-   blaze::uninitialized_default_construct_n( ptr, n );
-
-   return ptr;
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Deallocation of aligned memory.
-//
-// \param address Pointer to the first element of the array to be deallocated.
-// \return void
-//
-// This function deallocates the given aligned memory that was previously allocated via the
-// allocate() function.
-*/
-template< typename Type   // Data type of the vector
-        , bool TF         // Transpose flag
-        , typename Alloc  // Type of the allocator
-        , typename Tag >  // Type tag
-inline void DynamicVector<Type,TF,Alloc,Tag>::deallocate( Type* ptr, size_t n ) noexcept
-{
-   blaze::destroy_n( ptr, n );
-   Alloc{}.deallocate( ptr, n );
 }
 //*************************************************************************************************
 
