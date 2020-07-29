@@ -70,19 +70,21 @@ FalseType isSparseMatrix_backend( ... );
 /*!\brief Compile time check for sparse matrix types.
 // \ingroup math_type_traits
 //
-// This type trait tests whether or not the given template parameter is a sparse, N-dimensional
-// matrix type. In case the type is a sparse matrix type, the \a value member constant is set
-// to \a true, the nested type definition \a Type is \a TrueType, and the class derives from
-// \a TrueType. Otherwise \a value is set to \a false, \a Type is \a FalseType, and the class
-// derives from \a FalseType.
+// This type trait tests whether or not the given template parameter is a sparse matrix type
+// (i.e. whether \a T is derived from the SparseMatrix base class). In case the type is a sparse
+// matrix type, the \a value member constant is set to \a true, the nested type definition
+// \a Type is \a TrueType, and the class derives from \a TrueType. Otherwise \a value is set
+// to \a false, \a Type is \a FalseType, and the class derives from \a FalseType.
 
    \code
-   blaze::IsSparseMatrix< CompressedMatrix<double,false> >::value     // Evaluates to 1
-   blaze::IsSparseMatrix< const CompressedMatrix<float,true> >::Type  // Results in TrueType
-   blaze::IsSparseMatrix< volatile CompressedMatrix<int,true> >       // Is derived from TrueType
-   blaze::IsSparseMatrix< DynamicVector<double,false> >::value        // Evaluates to 0
-   blaze::IsSparseMatrix< const DynamicMatrix<double,true> >::Type    // Results in FalseType
-   blaze::IsSparseMatrix< CompressedVector<double,true> >             // Is derived from FalseType
+   using namespace blaze;
+
+   IsSparseMatrix< CompressedMatrix<double> >::value      // Evaluates to 1
+   IsSparseMatrix< const CompressedMatrix<float> >::Type  // Results in TrueType
+   IsSparseMatrix< volatile CompressedMatrix<int> >       // Is derived from TrueType
+   IsSparseMatrix< DynamicVector<double> >::value         // Evaluates to 0
+   IsSparseMatrix< const DynamicMatrix<double> >::Type    // Results in FalseType
+   IsSparseMatrix< CompressedVector<double> >             // Is derived from FalseType
    \endcode
 */
 template< typename T >
