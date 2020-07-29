@@ -617,9 +617,11 @@ inline StaticVector<Type,N,TF,AF,PF,Tag>::StaticVector()
 #endif
 {
 #if !BLAZE_USE_DEFAULT_INITIALIZATION
+   using blaze::clear;
+
    if( IsNumeric_v<Type> && PF == unpadded ) {
       for( size_t i=N; i<NN; ++i )
-         v_[i] = Type();
+         clear( v_[i] );
    }
 #endif
 
@@ -642,11 +644,13 @@ template< typename Type     // Data type of the vector
 inline StaticVector<Type,N,TF,AF,PF,Tag>::StaticVector( const Type& init )
    // v_ is intentionally left uninitialized
 {
+   using blaze::clear;
+
    for( size_t i=0UL; i<N; ++i )
       v_[i] = init;
 
    for( size_t i=N; i<NN; ++i )
-      v_[i] = Type();
+      clear( v_[i] );
 
    BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
 }
@@ -727,6 +731,8 @@ template< typename Other >  // Data type of the initialization array
 inline StaticVector<Type,N,TF,AF,PF,Tag>::StaticVector( size_t n, const Other* array )
    // v_ is intentionally left uninitialized
 {
+   using blaze::clear;
+
    if( n > N ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid setup of static vector" );
    }
@@ -736,7 +742,7 @@ inline StaticVector<Type,N,TF,AF,PF,Tag>::StaticVector( size_t n, const Other* a
 
    if( IsNumeric_v<Type> ) {
       for( size_t i=n; i<NN; ++i )
-         v_[i] = Type();
+         clear( v_[i] );
    }
 
    BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
@@ -855,11 +861,13 @@ template< typename Other     // Data type of the foreign vector
 inline StaticVector<Type,N,TF,AF,PF,Tag>::StaticVector( const StaticVector<Other,N,TF,AF2,PF2,Tag>& v )
    // v_ is intentionally left uninitialized
 {
+   using blaze::clear;
+
    for( size_t i=0UL; i<N; ++i )
       v_[i] = v[i];
 
    for( size_t i=N; i<NN; ++i )
-      v_[i] = Type();
+      clear( v_[i] );
 
    BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
 }
@@ -887,6 +895,7 @@ inline StaticVector<Type,N,TF,AF,PF,Tag>::StaticVector( const Vector<VT,TF>& v )
    // v_ is intentionally left uninitialized
 {
    using blaze::assign;
+   using blaze::clear;
 
    BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<VT> );
 
@@ -895,7 +904,7 @@ inline StaticVector<Type,N,TF,AF,PF,Tag>::StaticVector( const Vector<VT,TF>& v )
    }
 
    for( size_t i=( IsSparseVector_v<VT> ? 0UL : N ); i<NN; ++i ) {
-      v_[i] = Type();
+      clear( v_[i] );
    }
 
    assign( *this, *v );
@@ -1228,6 +1237,8 @@ template< typename Type     // Data type of the vector
 constexpr StaticVector<Type,N,TF,AF,PF,Tag>&
    StaticVector<Type,N,TF,AF,PF,Tag>::operator=( initializer_list<Type> list ) &
 {
+   using blaze::clear;
+
    if( list.size() > N ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to static vector" );
    }
@@ -1240,7 +1251,7 @@ constexpr StaticVector<Type,N,TF,AF,PF,Tag>&
    }
 
    for( ; i<N; ++i ) {
-      v_[i] = Type();
+      clear( v_[i] );
    }
 
    return *this;
@@ -2045,7 +2056,7 @@ constexpr bool StaticVector<Type,N,TF,AF,PF,Tag>::isIntact() const noexcept
 {
    if( IsNumeric_v<Type> ) {
       for( size_t i=N; i<NN; ++i ) {
-         if( v_[i] != Type() )
+         if( !isDefault<strict>( v_[i] ) )
             return false;
       }
    }

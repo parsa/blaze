@@ -648,10 +648,12 @@ inline DynamicMatrix<Type,SO,Alloc,Tag>::DynamicMatrix( size_t m, size_t n )
    , capacity_( m_*nn_ )                 // The maximum capacity of the matrix
    , v_       ( allocate( capacity_ ) )  // The matrix elements
 {
+   using blaze::clear;
+
    if( IsVectorizable_v<Type> && IsBuiltin_v<Type> ) {
       for( size_t i=0UL; i<m_; ++i ) {
          for( size_t j=n_; j<nn_; ++j ) {
-            v_[i*nn_+j] = Type();
+            clear( v_[i*nn_+j] );
          }
       }
    }
@@ -1945,6 +1947,7 @@ template< typename Type   // Data type of the matrix
         , typename Tag >  // Type tag
 void DynamicMatrix<Type,SO,Alloc,Tag>::resize( size_t m, size_t n, bool preserve )
 {
+   using blaze::clear;
    using blaze::min;
 
    if( m == m_ && n == n_ ) return;
@@ -1976,7 +1979,7 @@ void DynamicMatrix<Type,SO,Alloc,Tag>::resize( size_t m, size_t n, bool preserve
    if( IsVectorizable_v<Type> ) {
       for( size_t i=0UL; i<m; ++i )
          for( size_t j=n; j<nn; ++j )
-            v_[i*nn+j] = Type();
+            clear( v_[i*nn+j] );
    }
 
    m_  = m;
@@ -2026,6 +2029,8 @@ template< typename Type   // Data type of the matrix
         , typename Tag >  // Type tag
 inline void DynamicMatrix<Type,SO,Alloc,Tag>::reserve( size_t elements )
 {
+   using blaze::clear;
+
    if( elements > capacity_ )
    {
       // Allocating a new array
@@ -2036,7 +2041,7 @@ inline void DynamicMatrix<Type,SO,Alloc,Tag>::reserve( size_t elements )
 
       if( IsVectorizable_v<Type> ) {
          for( size_t i=capacity_; i<elements; ++i )
-            tmp[i] = Type();
+            clear( tmp[i] );
       }
 
       // Replacing the old array
@@ -2324,7 +2329,7 @@ inline bool DynamicMatrix<Type,SO,Alloc,Tag>::isIntact() const noexcept
    if( IsVectorizable_v<Type> ) {
       for( size_t i=0UL; i<m_; ++i ) {
          for( size_t j=n_; j<nn_; ++j ) {
-            if( v_[i*nn_+j] != Type() )
+            if( !isDefault<strict>( v_[i*nn_+j] ) )
                return false;
          }
       }
@@ -3942,10 +3947,12 @@ inline DynamicMatrix<Type,true,Alloc,Tag>::DynamicMatrix( size_t m, size_t n )
    , capacity_( mm_*n_ )                 // The maximum capacity of the matrix
    , v_       ( allocate( capacity_ ) )  // The matrix elements
 {
+   using blaze::clear;
+
    if( IsVectorizable_v<Type> && IsBuiltin_v<Type> ) {
       for( size_t j=0UL; j<n_; ++j ) {
          for( size_t i=m_; i<mm_; ++i ) {
-            v_[i+j*mm_] = Type();
+            clear( v_[i+j*mm_] );
          }
       }
    }
@@ -4011,6 +4018,8 @@ template< typename Type   // Data type of the matrix
 inline DynamicMatrix<Type,true,Alloc,Tag>::DynamicMatrix( initializer_list< initializer_list<Type> > list )
    : DynamicMatrix( list.size(), determineColumns( list ) )
 {
+   using blaze::clear;
+
    size_t i( 0UL );
 
    for( const auto& rowList : list ) {
@@ -4020,7 +4029,7 @@ inline DynamicMatrix<Type,true,Alloc,Tag>::DynamicMatrix( initializer_list< init
          ++j;
       }
       for( ; j<n_; ++j ) {
-         v_[i+j*mm_] = Type();
+         clear( v_[i+j*mm_] );
       }
       ++i;
    }
@@ -4652,6 +4661,8 @@ template< typename Type   // Data type of the matrix
 inline DynamicMatrix<Type,true,Alloc,Tag>&
    DynamicMatrix<Type,true,Alloc,Tag>::operator=( initializer_list< initializer_list<Type> > list ) &
 {
+   using blaze::clear;
+
    resize( list.size(), determineColumns( list ), false );
 
    size_t i( 0UL );
@@ -4663,7 +4674,7 @@ inline DynamicMatrix<Type,true,Alloc,Tag>&
          ++j;
       }
       for( ; j<n_; ++j ) {
-         v_[i+j*mm_] = Type();
+         clear( v_[i+j*mm_] );
       }
       ++i;
    }
@@ -5252,6 +5263,7 @@ template< typename Type   // Data type of the matrix
         , typename Tag >  // Type tag
 void DynamicMatrix<Type,true,Alloc,Tag>::resize( size_t m, size_t n, bool preserve )
 {
+   using blaze::clear;
    using blaze::min;
 
    if( m == m_ && n == n_ ) return;
@@ -5283,7 +5295,7 @@ void DynamicMatrix<Type,true,Alloc,Tag>::resize( size_t m, size_t n, bool preser
    if( IsVectorizable_v<Type> ) {
       for( size_t j=0UL; j<n; ++j )
          for( size_t i=m; i<mm; ++i )
-            v_[i+j*mm] = Type();
+            clear( v_[i+j*mm] );
    }
 
    m_  = m;
@@ -5335,6 +5347,8 @@ template< typename Type   // Data type of the matrix
         , typename Tag >  // Type tag
 inline void DynamicMatrix<Type,true,Alloc,Tag>::reserve( size_t elements )
 {
+   using blaze::clear;
+
    if( elements > capacity_ )
    {
       // Allocating a new array
@@ -5345,7 +5359,7 @@ inline void DynamicMatrix<Type,true,Alloc,Tag>::reserve( size_t elements )
 
       if( IsVectorizable_v<Type> ) {
          for( size_t i=capacity_; i<elements; ++i )
-            tmp[i] = Type();
+            clear( tmp[i] );
       }
 
       // Replacing the old array
@@ -5637,7 +5651,7 @@ inline bool DynamicMatrix<Type,true,Alloc,Tag>::isIntact() const noexcept
    if( IsVectorizable_v<Type> ) {
       for( size_t j=0UL; j<n_; ++j ) {
          for( size_t i=m_; i<mm_; ++i ) {
-            if( v_[i+j*mm_] != Type() )
+            if( !isDefault<strict>( v_[i+j*mm_] ) )
                return false;
          }
       }

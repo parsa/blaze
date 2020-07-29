@@ -653,6 +653,8 @@ inline HybridVector<Type,N,TF,AF,PF,Tag>::HybridVector( size_t n, const Type& in
    : size_( n )  // The current size/dimension of the vector
    // v_ is intentionally left uninitialized
 {
+   using blaze::clear;
+
    if( n > N ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid size for hybrid vector" );
    }
@@ -662,7 +664,7 @@ inline HybridVector<Type,N,TF,AF,PF,Tag>::HybridVector( size_t n, const Type& in
 
    if( IsNumeric_v<Type> ) {
       for( size_t i=n; i<NN; ++i )
-         v_[i] = Type();
+         clear( v_[i] );
    }
 
    BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
@@ -748,6 +750,8 @@ inline HybridVector<Type,N,TF,AF,PF,Tag>::HybridVector( size_t n, const Other* a
    : size_( n )  // The current size/dimension of the vector
    // v_ is intentionally left uninitialized
 {
+   using blaze::clear;
+
    if( n > N ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid setup of hybrid vector" );
    }
@@ -757,7 +761,7 @@ inline HybridVector<Type,N,TF,AF,PF,Tag>::HybridVector( size_t n, const Other* a
 
    if( IsNumeric_v<Type> ) {
       for( size_t i=n; i<NN; ++i )
-         v_[i] = Type();
+         clear( v_[i] );
    }
 
    BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
@@ -884,6 +888,7 @@ inline HybridVector<Type,N,TF,AF,PF,Tag>::HybridVector( const Vector<VT,TF>& v )
    // v_ is intentionally left uninitialized
 {
    using blaze::assign;
+   using blaze::clear;
 
    BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<VT> );
 
@@ -893,7 +898,7 @@ inline HybridVector<Type,N,TF,AF,PF,Tag>::HybridVector( const Vector<VT,TF>& v )
 
    for( size_t i=( IsSparseVector_v<VT> ? 0UL : size_ );
                i<( IsNumeric_v<Type>    ? NN  : size_ ); ++i ) {
-      v_[i] = Type();
+      clear( v_[i] );
    }
 
    assign( *this, *v );
@@ -1806,6 +1811,8 @@ template< typename Type     // Data type of the vector
         , typename Tag >    // Type tag
 constexpr void HybridVector<Type,N,TF,AF,PF,Tag>::resize( size_t n, bool preserve )
 {
+   using blaze::clear;
+
    MAYBE_UNUSED( preserve );
 
    if( n > N ) {
@@ -1814,7 +1821,7 @@ constexpr void HybridVector<Type,N,TF,AF,PF,Tag>::resize( size_t n, bool preserv
 
    if( IsNumeric_v<Type> && n < size_ ) {
       for( size_t i=n; i<size_; ++i )
-         v_[i] = Type();
+         clear( v_[i] );
    }
 
    size_ = n;
@@ -2136,7 +2143,7 @@ constexpr bool HybridVector<Type,N,TF,AF,PF,Tag>::isIntact() const noexcept
 
    if( IsVectorizable_v<Type> ) {
       for( size_t i=size_; i<NN; ++i ) {
-         if( v_[i] != Type() )
+         if( !isDefault<strict>( v_[i] ) )
             return false;
       }
    }

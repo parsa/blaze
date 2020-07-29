@@ -652,10 +652,12 @@ inline StaticMatrix<Type,M,N,SO,AF,PF,Tag>::StaticMatrix()
 #endif
 {
 #if !BLAZE_USE_DEFAULT_INITIALIZATION
+   using blaze::clear;
+
    if( IsNumeric_v<Type> && PF == padded ) {
       for( size_t i=0UL; i<M; ++i )
          for( size_t j=N; j<NN; ++j )
-            v_[i*NN+j] = Type();
+            clear( v_[i*NN+j] );
    }
 #endif
 
@@ -679,12 +681,14 @@ template< typename Type     // Data type of the matrix
 inline StaticMatrix<Type,M,N,SO,AF,PF,Tag>::StaticMatrix( const Type& init )
    // v_ is intentionally left uninitialized
 {
+   using blaze::clear;
+
    for( size_t i=0UL; i<M; ++i ) {
       for( size_t j=0UL; j<N; ++j )
          v_[i*NN+j] = init;
 
       for( size_t j=N; j<NN; ++j )
-         v_[i*NN+j] = Type();
+         clear( v_[i*NN+j] );
    }
 
    BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
@@ -782,6 +786,8 @@ template< typename Other >  // Data type of the initialization array
 inline StaticMatrix<Type,M,N,SO,AF,PF,Tag>::StaticMatrix( size_t m, size_t n, const Other* array )
    // v_ is intentionally left uninitialized
 {
+   using blaze::clear;
+
    if( m > M || n > N ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid setup of static matrix" );
    }
@@ -792,14 +798,14 @@ inline StaticMatrix<Type,M,N,SO,AF,PF,Tag>::StaticMatrix( size_t m, size_t n, co
 
       if( IsNumeric_v<Type> ) {
          for( size_t j=n; j<NN; ++j )
-            v_[i*NN+j] = Type();
+            clear( v_[i*NN+j] );
       }
    }
 
    if( IsNumeric_v<Type> ) {
       for( size_t i=m; i<M; ++i ) {
          for( size_t j=0UL; j<NN; ++j )
-            v_[i*NN+j] = Type();
+            clear( v_[i*NN+j] );
       }
    }
 
@@ -841,6 +847,8 @@ template< typename Other    // Data type of the static array
 inline StaticMatrix<Type,M,N,SO,AF,PF,Tag>::StaticMatrix( const Other (&array)[Rows][Cols] )
    // v_ is intentionally left uninitialized
 {
+   using blaze::clear;
+
    BLAZE_STATIC_ASSERT( Rows == M && Cols == N );
 
    for( size_t i=0UL; i<M; ++i ) {
@@ -848,7 +856,7 @@ inline StaticMatrix<Type,M,N,SO,AF,PF,Tag>::StaticMatrix( const Other (&array)[R
          v_[i*NN+j] = array[i][j];
 
       for( size_t j=N; j<NN; ++j )
-            v_[i*NN+j] = Type();
+            clear( v_[i*NN+j] );
    }
 
    BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
@@ -889,6 +897,8 @@ template< typename Other    // Data type of the std::array
 inline StaticMatrix<Type,M,N,SO,AF,PF,Tag>::StaticMatrix( const std::array<std::array<Other,Cols>,Rows>& array )
    // v_ is intentionally left uninitialized
 {
+   using blaze::clear;
+
    BLAZE_STATIC_ASSERT( Rows == M && Cols == N );
 
    for( size_t i=0UL; i<M; ++i ) {
@@ -896,7 +906,7 @@ inline StaticMatrix<Type,M,N,SO,AF,PF,Tag>::StaticMatrix( const std::array<std::
          v_[i*NN+j] = array[i][j];
 
       for( size_t j=N; j<NN; ++j )
-            v_[i*NN+j] = Type();
+         clear( v_[i*NN+j] );
    }
 
    BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
@@ -951,7 +961,7 @@ inline StaticMatrix<Type,M,N,SO,AF,PF,Tag>::StaticMatrix( const StaticMatrix<Oth
          v_[i*NN+j] = m(i,j);
 
       for( size_t j=N; j<NN; ++j )
-         v_[i*NN+j] = Type();
+         clear( v_[i*NN+j] );
    }
 
    BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
@@ -982,6 +992,7 @@ inline StaticMatrix<Type,M,N,SO,AF,PF,Tag>::StaticMatrix( const Matrix<MT,SO2>& 
    // v_ is intentionally left uninitialized
 {
    using blaze::assign;
+   using blaze::clear;
 
    BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<MT> );
 
@@ -991,7 +1002,7 @@ inline StaticMatrix<Type,M,N,SO,AF,PF,Tag>::StaticMatrix( const Matrix<MT,SO2>& 
 
    for( size_t i=0UL; i<M; ++i ) {
       for( size_t j=( IsSparseMatrix_v<MT> ? 0UL : N ); j<NN; ++j ) {
-         v_[i*NN+j] = Type();
+         clear( v_[i*NN+j] );
       }
    }
 
@@ -1461,6 +1472,8 @@ template< typename Type     // Data type of the matrix
 constexpr StaticMatrix<Type,M,N,SO,AF,PF,Tag>&
    StaticMatrix<Type,M,N,SO,AF,PF,Tag>::operator=( initializer_list< initializer_list<Type> > list ) &
 {
+   using blaze::clear;
+
    if( list.size() != M || determineColumns( list ) > N ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to static matrix" );
    }
@@ -1474,7 +1487,7 @@ constexpr StaticMatrix<Type,M,N,SO,AF,PF,Tag>&
          ++j;
       }
       for( ; j<N; ++j ) {
-         v_[i*NN+j] = Type();
+         clear( v_[i*NN+j] );
       }
       ++i;
    }
@@ -2530,7 +2543,7 @@ constexpr bool StaticMatrix<Type,M,N,SO,AF,PF,Tag>::isIntact() const noexcept
    if( IsNumeric_v<Type> ) {
       for( size_t i=0UL; i<M; ++i ) {
          for( size_t j=N; j<NN; ++j ) {
-            if( v_[i*NN+j] != Type() )
+            if( !isDefault<strict>( v_[i*NN+j] ) )
                return false;
          }
       }
@@ -3912,10 +3925,12 @@ inline StaticMatrix<Type,M,N,true,AF,PF,Tag>::StaticMatrix()
 #endif
 {
 #if !BLAZE_USE_DEFAULT_INITIALIZATION
+   using blaze::clear;
+
    if( IsNumeric_v<Type> && PF == padded ) {
       for( size_t j=0UL; j<N; ++j )
          for( size_t i=M; i<MM; ++i )
-            v_[i+j*MM] = Type();
+            clear( v_[i+j*MM] );
    }
 #endif
 
@@ -3940,12 +3955,14 @@ template< typename Type     // Data type of the matrix
 inline StaticMatrix<Type,M,N,true,AF,PF,Tag>::StaticMatrix( const Type& init )
    // v_ is intentionally left uninitialized
 {
+   using blaze::clear;
+
    for( size_t j=0UL; j<N; ++j ) {
       for( size_t i=0UL; i<M; ++i )
          v_[i+j*MM] = init;
 
       for( size_t i=M; i<MM; ++i )
-         v_[i+j*MM] = Type();
+         clear( v_[i+j*MM] );
    }
 
    BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
@@ -4044,6 +4061,8 @@ template< typename Other >  // Data type of the initialization array
 inline StaticMatrix<Type,M,N,true,AF,PF,Tag>::StaticMatrix( size_t m, size_t n, const Other* array )
    // v_ is intentionally left uninitialized
 {
+   using blaze::clear;
+
    if( m > M || n > N ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid setup of static matrix" );
    }
@@ -4054,14 +4073,14 @@ inline StaticMatrix<Type,M,N,true,AF,PF,Tag>::StaticMatrix( size_t m, size_t n, 
 
       if( IsNumeric_v<Type> ) {
          for( size_t i=m; i<MM; ++i )
-            v_[i+j*MM] = Type();
+            clear( v_[i+j*MM] );
       }
    }
 
    if( IsNumeric_v<Type> ) {
       for( size_t j=n; j<N; ++j ) {
          for( size_t i=0UL; i<MM; ++i )
-            v_[i+j*MM] = Type();
+            clear( v_[i+j*MM] );
       }
    }
 
@@ -4104,6 +4123,8 @@ template< typename Other    // Data type of the static array
 inline StaticMatrix<Type,M,N,true,AF,PF,Tag>::StaticMatrix( const Other (&array)[Rows][Cols] )
    // v_ is intentionally left uninitialized
 {
+   using blaze::clear;
+
    BLAZE_STATIC_ASSERT( Rows == M && Cols == N );
 
    for( size_t j=0UL; j<N; ++j ) {
@@ -4111,7 +4132,7 @@ inline StaticMatrix<Type,M,N,true,AF,PF,Tag>::StaticMatrix( const Other (&array)
          v_[i+j*MM] = array[i][j];
 
       for( size_t i=M; i<MM; ++i )
-         v_[i+j*MM] = Type();
+         clear( v_[i+j*MM] );
    }
 
    BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
@@ -4153,6 +4174,8 @@ template< typename Other    // Data type of the std::array
 inline StaticMatrix<Type,M,N,true,AF,PF,Tag>::StaticMatrix( const std::array<std::array<Other,Cols>,Rows>& array )
    // v_ is intentionally left uninitialized
 {
+   using blaze::clear;
+
    BLAZE_STATIC_ASSERT( Rows == M && Cols == N );
 
    for( size_t j=0UL; j<N; ++j ) {
@@ -4160,7 +4183,7 @@ inline StaticMatrix<Type,M,N,true,AF,PF,Tag>::StaticMatrix( const std::array<std
          v_[i+j*MM] = array[i][j];
 
       for( size_t i=M; i<MM; ++i )
-         v_[i+j*MM] = Type();
+         clear( v_[i+j*MM] );
    }
 
    BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
@@ -4212,12 +4235,14 @@ template< typename Other     // Data type of the foreign matrix
 inline StaticMatrix<Type,M,N,true,AF,PF,Tag>::StaticMatrix( const StaticMatrix<Other,M,N,SO2,AF2,PF2,Tag>& m )
    // v_ is intentionally left uninitialized
 {
+   using blaze::clear;
+
    for( size_t j=0UL; j<N; ++j ) {
       for( size_t i=0UL; i<M; ++i )
          v_[i+j*MM] = m(i,j);
 
       for( size_t i=M; i<MM; ++i )
-         v_[i+j*MM] = Type();
+         clear( v_[i+j*MM] );
    }
 
    BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
@@ -4249,6 +4274,7 @@ inline StaticMatrix<Type,M,N,true,AF,PF,Tag>::StaticMatrix( const Matrix<MT,SO>&
    // v_ is intentionally left uninitialized
 {
    using blaze::assign;
+   using blaze::clear;
 
    BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<MT> );
 
@@ -4258,7 +4284,7 @@ inline StaticMatrix<Type,M,N,true,AF,PF,Tag>::StaticMatrix( const Matrix<MT,SO>&
 
    for( size_t j=0UL; j<N; ++j ) {
       for( size_t i=( IsSparseMatrix_v<MT> ? 0UL : M ); i<MM; ++i ) {
-         v_[i+j*MM] = Type();
+         clear( v_[i+j*MM] );
       }
    }
 
@@ -4711,6 +4737,8 @@ template< typename Type     // Data type of the matrix
 constexpr StaticMatrix<Type,M,N,true,AF,PF,Tag>&
    StaticMatrix<Type,M,N,true,AF,PF,Tag>::operator=( initializer_list< initializer_list<Type> > list ) &
 {
+   using blaze::clear;
+
    if( list.size() != M || determineColumns( list ) > N ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to static matrix" );
    }
@@ -4724,7 +4752,7 @@ constexpr StaticMatrix<Type,M,N,true,AF,PF,Tag>&
          ++j;
       }
       for( ; j<N; ++j ) {
-         v_[i+j*MM] = Type();
+         clear( v_[i+j*MM] );
       }
       ++i;
    }
@@ -5794,7 +5822,7 @@ constexpr bool StaticMatrix<Type,M,N,true,AF,PF,Tag>::isIntact() const noexcept
    if( IsNumeric_v<Type> ) {
       for( size_t j=0UL; j<N; ++j ) {
          for( size_t i=M; i<MM; ++i ) {
-            if( v_[i+j*MM] != Type() )
+            if( !isDefault<strict>( v_[i+j*MM] ) )
                return false;
          }
       }

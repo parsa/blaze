@@ -710,6 +710,8 @@ inline HybridMatrix<Type,M,N,SO,AF,PF,Tag>::HybridMatrix( size_t m, size_t n, co
    , n_( n )  // The current number of columns of the matrix
    // v_ is intentionally left uninitialized
 {
+   using blaze::clear;
+
    if( m > M ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid number of rows for hybrid matrix" );
    }
@@ -724,14 +726,14 @@ inline HybridMatrix<Type,M,N,SO,AF,PF,Tag>::HybridMatrix( size_t m, size_t n, co
 
       if( IsNumeric_v<Type> ) {
          for( size_t j=n; j<NN; ++j )
-            v_[i*NN+j] = Type();
+            clear( v_[i*NN+j] );
       }
    }
 
    if( IsNumeric_v<Type> ) {
       for( size_t i=m; i<M; ++i )
          for( size_t j=0UL; j<NN; ++j )
-            v_[i*NN+j] = Type();
+            clear( v_[i*NN+j] );
    }
 
    BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
@@ -839,6 +841,8 @@ inline HybridMatrix<Type,M,N,SO,AF,PF,Tag>::HybridMatrix( size_t m, size_t n, co
    , n_( n )  // The current number of columns of the matrix
    // v_ is intentionally left uninitialized
 {
+   using blaze::clear;
+
    if( m > M ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid number of rows for hybrid matrix" );
    }
@@ -853,14 +857,14 @@ inline HybridMatrix<Type,M,N,SO,AF,PF,Tag>::HybridMatrix( size_t m, size_t n, co
 
       if( IsNumeric_v<Type> ) {
          for( size_t j=n; j<NN; ++j )
-            v_[i*NN+j] = Type();
+            clear( v_[i*NN+j] );
       }
    }
 
    if( IsNumeric_v<Type> ) {
       for( size_t i=m; i<M; ++i )
          for( size_t j=0UL; j<NN; ++j )
-            v_[i*NN+j] = Type();
+            clear( v_[i*NN+j] );
    }
 
    BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
@@ -904,6 +908,8 @@ inline HybridMatrix<Type,M,N,SO,AF,PF,Tag>::HybridMatrix( const Other (&array)[R
    , n_( Cols )  // The current number of columns of the matrix
    // v_ is intentionally left uninitialized
 {
+   using blaze::clear;
+
    BLAZE_STATIC_ASSERT( Rows <= M );
    BLAZE_STATIC_ASSERT( Cols <= N );
 
@@ -913,14 +919,14 @@ inline HybridMatrix<Type,M,N,SO,AF,PF,Tag>::HybridMatrix( const Other (&array)[R
 
       if( IsNumeric_v<Type> ) {
          for( size_t j=Cols; j<NN; ++j )
-            v_[i*NN+j] = Type();
+            clear( v_[i*NN+j] );
       }
    }
 
    if( IsNumeric_v<Type> ) {
       for( size_t i=Rows; i<M; ++i )
          for( size_t j=0UL; j<NN; ++j )
-            v_[i*NN+j] = Type();
+            clear( v_[i*NN+j] );
    }
 
    BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
@@ -964,6 +970,8 @@ inline HybridMatrix<Type,M,N,SO,AF,PF,Tag>::HybridMatrix( const std::array<std::
    , n_( Cols )  // The current number of columns of the matrix
    // v_ is intentionally left uninitialized
 {
+   using blaze::clear;
+
    BLAZE_STATIC_ASSERT( Rows <= M );
    BLAZE_STATIC_ASSERT( Cols <= N );
 
@@ -973,14 +981,14 @@ inline HybridMatrix<Type,M,N,SO,AF,PF,Tag>::HybridMatrix( const std::array<std::
 
       if( IsNumeric_v<Type> ) {
          for( size_t j=Cols; j<NN; ++j )
-            v_[i*NN+j] = Type();
+            clear( v_[i*NN+j] );
       }
    }
 
    if( IsNumeric_v<Type> ) {
       for( size_t i=Rows; i<M; ++i )
          for( size_t j=0UL; j<NN; ++j )
-            v_[i*NN+j] = Type();
+            clear( v_[i*NN+j] );
    }
 
    BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
@@ -1035,6 +1043,7 @@ inline HybridMatrix<Type,M,N,SO,AF,PF,Tag>::HybridMatrix( const Matrix<MT,SO2>& 
    // v_ is intentionally left uninitialized
 {
    using blaze::assign;
+   using blaze::clear;
 
    BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<MT> );
 
@@ -1046,14 +1055,14 @@ inline HybridMatrix<Type,M,N,SO,AF,PF,Tag>::HybridMatrix( const Matrix<MT,SO2>& 
       for( size_t j=( IsSparseMatrix_v<MT> ? 0UL : n_ );
                   j<( IsNumeric_v<Type>    ? NN  : n_ );
                   ++j ) {
-         v_[i*NN+j] = Type();
+         clear( v_[i*NN+j] );
       }
    }
 
    if( IsNumeric_v<Type> ) {
       for( size_t i=m_; i<M; ++i )
          for( size_t j=0UL; j<NN; ++j )
-            v_[i*NN+j] = Type();
+            clear( v_[i*NN+j] );
    }
 
    assign( *this, *m );
@@ -1524,6 +1533,8 @@ template< typename Type     // Data type of the matrix
 constexpr HybridMatrix<Type,M,N,SO,AF,PF,Tag>&
    HybridMatrix<Type,M,N,SO,AF,PF,Tag>::operator=( initializer_list< initializer_list<Type> > list ) &
 {
+   using blaze::clear;
+
    const size_t m( list.size() );
    const size_t n( determineColumns( list ) );
 
@@ -1546,7 +1557,7 @@ constexpr HybridMatrix<Type,M,N,SO,AF,PF,Tag>&
          ++j;
       }
       for( ; j<N; ++j ) {
-         v_[i*NN+j] = Type();
+         clear( v_[i*NN+j] );
       }
       ++i;
    }
@@ -2174,6 +2185,8 @@ template< typename Type     // Data type of the matrix
         , typename Tag >    // Type tag
 constexpr void HybridMatrix<Type,M,N,SO,AF,PF,Tag>::resize( size_t m, size_t n, bool preserve )
 {
+   using blaze::clear;
+
    MAYBE_UNUSED( preserve );
 
    if( m > M ) {
@@ -2187,13 +2200,13 @@ constexpr void HybridMatrix<Type,M,N,SO,AF,PF,Tag>::resize( size_t m, size_t n, 
    if( IsVectorizable_v<Type> && n < n_ ) {
       for( size_t i=0UL; i<m; ++i )
          for( size_t j=n; j<n_; ++j )
-            v_[i*NN+j] = Type();
+            clear( v_[i*NN+j] );
    }
 
    if( IsVectorizable_v<Type> && m < m_ ) {
       for( size_t i=m; i<m_; ++i )
          for( size_t j=0UL; j<n_; ++j )
-            v_[i*NN+j] = Type();
+            clear( v_[i*NN+j] );
    }
 
    m_ = m;
@@ -2293,6 +2306,7 @@ template< typename Type     // Data type of the matrix
 inline HybridMatrix<Type,M,N,SO,AF,PF,Tag>& HybridMatrix<Type,M,N,SO,AF,PF,Tag>::transpose()
 {
    using std::swap;
+   using blaze::clear;
 
    if( m_ > N || n_ > M ) {
       BLAZE_THROW_LOGIC_ERROR( "Impossible transpose operation" );
@@ -2308,7 +2322,7 @@ inline HybridMatrix<Type,M,N,SO,AF,PF,Tag>& HybridMatrix<Type,M,N,SO,AF,PF,Tag>:
    if( IsVectorizable_v<Type> && m_ < n_ ) {
       for( size_t i=0UL; i<m_; ++i ) {
          for( size_t j=m_; j<n_; ++j ) {
-            v_[i*NN+j] = Type();
+            clear( v_[i*NN+j] );
          }
       }
    }
@@ -2316,7 +2330,7 @@ inline HybridMatrix<Type,M,N,SO,AF,PF,Tag>& HybridMatrix<Type,M,N,SO,AF,PF,Tag>:
    if( IsVectorizable_v<Type> && m_ > n_ ) {
       for( size_t i=n_; i<m_; ++i ) {
          for( size_t j=0UL; j<n_; ++j ) {
-            v_[i*NN+j] = Type();
+            clear( v_[i*NN+j] );
          }
       }
    }
@@ -2351,6 +2365,7 @@ template< typename Type     // Data type of the matrix
 inline HybridMatrix<Type,M,N,SO,AF,PF,Tag>& HybridMatrix<Type,M,N,SO,AF,PF,Tag>::ctranspose()
 {
    using std::swap;
+   using blaze::clear;
 
    if( m_ > N || n_ > M ) {
       BLAZE_THROW_LOGIC_ERROR( "Impossible transpose operation" );
@@ -2367,7 +2382,7 @@ inline HybridMatrix<Type,M,N,SO,AF,PF,Tag>& HybridMatrix<Type,M,N,SO,AF,PF,Tag>:
    if( IsVectorizable_v<Type> && m_ < n_ ) {
       for( size_t i=0UL; i<m_; ++i ) {
          for( size_t j=m_; j<n_; ++j ) {
-            v_[i*NN+j] = Type();
+            clear( v_[i*NN+j] );
          }
       }
    }
@@ -2375,7 +2390,7 @@ inline HybridMatrix<Type,M,N,SO,AF,PF,Tag>& HybridMatrix<Type,M,N,SO,AF,PF,Tag>:
    if( IsVectorizable_v<Type> && m_ > n_ ) {
       for( size_t i=n_; i<m_; ++i ) {
          for( size_t j=0UL; j<n_; ++j ) {
-            v_[i*NN+j] = Type();
+            clear( v_[i*NN+j] );
          }
       }
    }
@@ -2657,14 +2672,14 @@ constexpr bool HybridMatrix<Type,M,N,SO,AF,PF,Tag>::isIntact() const noexcept
    {
       for( size_t i=0UL; i<m_; ++i ) {
          for( size_t j=n_; j<NN; ++j ) {
-            if( v_[i*NN+j] != Type() )
+            if( !isDefault<strict>( v_[i*NN+j] ) )
                return false;
          }
       }
 
       for( size_t i=m_; i<M; ++i ) {
          for( size_t j=0UL; j<NN; ++j ) {
-            if( v_[i*NN+j] != Type() )
+            if( !isDefault<strict>( v_[i*NN+j] ) )
                return false;
          }
       }
@@ -4101,6 +4116,8 @@ inline HybridMatrix<Type,M,N,true,AF,PF,Tag>::HybridMatrix( size_t m, size_t n, 
    , n_( n )  // The current number of columns of the matrix
    // v_ is intentionally left uninitialized
 {
+   using blaze::clear;
+
    if( m > M ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid number of rows for hybrid matrix" );
    }
@@ -4115,14 +4132,14 @@ inline HybridMatrix<Type,M,N,true,AF,PF,Tag>::HybridMatrix( size_t m, size_t n, 
 
       if( IsNumeric_v<Type> ) {
          for( size_t i=m; i<MM; ++i )
-            v_[i+j*MM] = Type();
+            clear( v_[i+j*MM] );
       }
    }
 
    if( IsNumeric_v<Type> ) {
       for( size_t j=n; j<N; ++j )
          for( size_t i=0UL; i<MM; ++i )
-            v_[i+j*MM] = Type();
+            clear( v_[i+j*MM] );
    }
 
    BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
@@ -4232,6 +4249,8 @@ inline HybridMatrix<Type,M,N,true,AF,PF,Tag>::HybridMatrix( size_t m, size_t n, 
    , n_( n )  // The current number of columns of the matrix
    // v_ is intentionally left uninitialized
 {
+   using blaze::clear;
+
    if( m > M ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid number of rows for hybrid matrix" );
    }
@@ -4246,14 +4265,14 @@ inline HybridMatrix<Type,M,N,true,AF,PF,Tag>::HybridMatrix( size_t m, size_t n, 
 
       if( IsNumeric_v<Type> ) {
          for( size_t i=m; i<MM; ++i )
-            v_[i+j*MM] = Type();
+            clear( v_[i+j*MM] );
       }
    }
 
    if( IsNumeric_v<Type> ) {
       for( size_t j=n; j<N; ++j )
          for( size_t i=0UL; i<MM; ++i )
-            v_[i+j*MM] = Type();
+            clear( v_[i+j*MM] );
    }
 
    BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
@@ -4298,6 +4317,8 @@ inline HybridMatrix<Type,M,N,true,AF,PF,Tag>::HybridMatrix( const Other (&array)
    , n_( Cols )  // The current number of columns of the matrix
    // v_ is intentionally left uninitialized
 {
+   using blaze::clear;
+
    BLAZE_STATIC_ASSERT( Rows <= M );
    BLAZE_STATIC_ASSERT( Cols <= N );
 
@@ -4307,14 +4328,14 @@ inline HybridMatrix<Type,M,N,true,AF,PF,Tag>::HybridMatrix( const Other (&array)
 
       if( IsNumeric_v<Type> ) {
          for( size_t i=Rows; i<MM; ++i )
-            v_[i+j*MM] = Type();
+            clear( v_[i+j*MM] );
       }
    }
 
    if( IsNumeric_v<Type> ) {
       for( size_t j=Cols; j<N; ++j )
          for( size_t i=0UL; i<MM; ++i )
-            v_[i+j*MM] = Type();
+            clear( v_[i+j*MM] );
    }
 
    BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
@@ -4359,6 +4380,8 @@ inline HybridMatrix<Type,M,N,true,AF,PF,Tag>::HybridMatrix( const std::array<std
    , n_( Cols )  // The current number of columns of the matrix
    // v_ is intentionally left uninitialized
 {
+   using blaze::clear;
+
    BLAZE_STATIC_ASSERT( Rows <= M );
    BLAZE_STATIC_ASSERT( Cols <= N );
 
@@ -4368,14 +4391,14 @@ inline HybridMatrix<Type,M,N,true,AF,PF,Tag>::HybridMatrix( const std::array<std
 
       if( IsNumeric_v<Type> ) {
          for( size_t i=Rows; i<MM; ++i )
-            v_[i+j*MM] = Type();
+            clear( v_[i+j*MM] );
       }
    }
 
    if( IsNumeric_v<Type> ) {
       for( size_t j=Cols; j<N; ++j )
          for( size_t i=0UL; i<MM; ++i )
-            v_[i+j*MM] = Type();
+            clear( v_[i+j*MM] );
    }
 
    BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
@@ -4432,6 +4455,7 @@ inline HybridMatrix<Type,M,N,true,AF,PF,Tag>::HybridMatrix( const Matrix<MT,SO2>
    // v_ is intentionally left uninitialized
 {
    using blaze::assign;
+   using blaze::clear;
 
    BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<MT> );
 
@@ -4443,14 +4467,14 @@ inline HybridMatrix<Type,M,N,true,AF,PF,Tag>::HybridMatrix( const Matrix<MT,SO2>
       for( size_t i=( IsSparseMatrix_v<MT> ? 0UL : m_ );
                   i<( IsNumeric_v<Type>    ? MM  : m_ );
                   ++i ) {
-         v_[i+j*MM] = Type();
+         clear( v_[i+j*MM] );
       }
    }
 
    if( IsNumeric_v<Type> ) {
       for( size_t j=n_; j<N; ++j )
          for( size_t i=0UL; i<MM; ++i )
-            v_[i+j*MM] = Type();
+            clear( v_[i+j*MM] );
    }
 
    assign( *this, *m );
@@ -4905,6 +4929,8 @@ template< typename Type     // Data type of the matrix
 constexpr HybridMatrix<Type,M,N,true,AF,PF,Tag>&
    HybridMatrix<Type,M,N,true,AF,PF,Tag>::operator=( initializer_list< initializer_list<Type> > list ) &
 {
+   using blaze::clear;
+
    const size_t m( list.size() );
    const size_t n( determineColumns( list ) );
 
@@ -4927,7 +4953,7 @@ constexpr HybridMatrix<Type,M,N,true,AF,PF,Tag>&
          ++j;
       }
       for( ; j<n_; ++j ) {
-         v_[i+j*MM] = Type();
+         clear( v_[i+j*MM] );
       }
       ++i;
    }
@@ -5561,6 +5587,8 @@ template< typename Type     // Data type of the matrix
         , typename Tag >    // Type tag
 constexpr void HybridMatrix<Type,M,N,true,AF,PF,Tag>::resize( size_t m, size_t n, bool preserve )
 {
+   using blaze::clear;
+
    MAYBE_UNUSED( preserve );
 
    if( m > M ) {
@@ -5574,13 +5602,13 @@ constexpr void HybridMatrix<Type,M,N,true,AF,PF,Tag>::resize( size_t m, size_t n
    if( IsVectorizable_v<Type> && m < m_ ) {
       for( size_t j=0UL; j<n; ++j )
          for( size_t i=m; i<m_; ++i )
-            v_[i+j*MM] = Type();
+            clear( v_[i+j*MM] );
    }
 
    if( IsVectorizable_v<Type> && n < n_ ) {
       for( size_t j=n; j<n_; ++j )
          for( size_t i=0UL; i<m_; ++i )
-            v_[i+j*MM] = Type();
+            clear( v_[i+j*MM] );
    }
 
    m_ = m;
@@ -5683,6 +5711,7 @@ template< typename Type     // Data type of the matrix
 inline HybridMatrix<Type,M,N,true,AF,PF,Tag>& HybridMatrix<Type,M,N,true,AF,PF,Tag>::transpose()
 {
    using std::swap;
+   using blaze::clear;
 
    if( m_ > N || n_ > M ) {
       BLAZE_THROW_LOGIC_ERROR( "Impossible transpose operation" );
@@ -5698,7 +5727,7 @@ inline HybridMatrix<Type,M,N,true,AF,PF,Tag>& HybridMatrix<Type,M,N,true,AF,PF,T
    if( IsVectorizable_v<Type> && n_ < m_ ) {
       for( size_t j=0UL; j<n_; ++j ) {
          for( size_t i=n_; i<m_; ++i ) {
-            v_[i+j*MM] = Type();
+            clear( v_[i+j*MM] );
          }
       }
    }
@@ -5706,7 +5735,7 @@ inline HybridMatrix<Type,M,N,true,AF,PF,Tag>& HybridMatrix<Type,M,N,true,AF,PF,T
    if( IsVectorizable_v<Type> && n_ > m_ ) {
       for( size_t j=m_; j<n_; ++j ) {
          for( size_t i=0UL; i<m_; ++i ) {
-            v_[i+j*MM] = Type();
+            clear( v_[i+j*MM] );
          }
       }
    }
@@ -5742,6 +5771,7 @@ template< typename Type     // Data type of the matrix
 inline HybridMatrix<Type,M,N,true,AF,PF,Tag>& HybridMatrix<Type,M,N,true,AF,PF,Tag>::ctranspose()
 {
    using std::swap;
+   using blaze::clear;
 
    if( m_ > N || n_ > M ) {
       BLAZE_THROW_LOGIC_ERROR( "Impossible transpose operation" );
@@ -5758,7 +5788,7 @@ inline HybridMatrix<Type,M,N,true,AF,PF,Tag>& HybridMatrix<Type,M,N,true,AF,PF,T
    if( IsVectorizable_v<Type> && n_ < m_ ) {
       for( size_t j=0UL; j<n_; ++j ) {
          for( size_t i=n_; i<m_; ++i ) {
-            v_[i+j*MM] = Type();
+            clear( v_[i+j*MM] );
          }
       }
    }
@@ -5766,7 +5796,7 @@ inline HybridMatrix<Type,M,N,true,AF,PF,Tag>& HybridMatrix<Type,M,N,true,AF,PF,T
    if( IsVectorizable_v<Type> && n_ > m_ ) {
       for( size_t j=m_; j<n_; ++j ) {
          for( size_t i=0UL; i<m_; ++i ) {
-            v_[i+j*MM] = Type();
+            clear( v_[i+j*MM] );
          }
       }
    }
@@ -6058,14 +6088,14 @@ constexpr bool HybridMatrix<Type,M,N,true,AF,PF,Tag>::isIntact() const noexcept
    {
       for( size_t j=0UL; j<n_; ++j ) {
          for( size_t i=m_; i<MM; ++i ) {
-            if( v_[i+j*MM] != Type() )
+            if( !isDefault<strict>( v_[i+j*MM] ) )
                return false;
          }
       }
 
       for( size_t j=n_; j<N; ++j ) {
          for( size_t i=0UL; i<MM; ++i ) {
-            if( v_[i+j*MM] != Type() )
+            if( !isDefault<strict>( v_[i+j*MM] ) )
                return false;
          }
       }

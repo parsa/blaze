@@ -604,9 +604,11 @@ inline DynamicVector<Type,TF,Alloc,Tag>::DynamicVector( size_t n )
    , capacity_( addPadding( n ) )        // The maximum capacity of the vector
    , v_       ( allocate( capacity_ ) )  // The vector elements
 {
+   using blaze::clear;
+
    if( IsVectorizable_v<Type> && IsBuiltin_v<Type> ) {
       for( size_t i=size_; i<capacity_; ++i )
-         v_[i] = Type();
+         clear( v_[i] );
    }
 
    BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
@@ -1690,6 +1692,8 @@ template< typename Type   // Data type of the vector
         , typename Tag >  // Type tag
 inline void DynamicVector<Type,TF,Alloc,Tag>::resize( size_t n, bool preserve )
 {
+   using blaze::clear;
+
    if( n > capacity_ )
    {
       // Allocating a new array
@@ -1703,7 +1707,7 @@ inline void DynamicVector<Type,TF,Alloc,Tag>::resize( size_t n, bool preserve )
 
       if( IsVectorizable_v<Type> ) {
          for( size_t i=size_; i<newCapacity; ++i )
-            tmp[i] = Type();
+            clear( tmp[i] );
       }
 
       // Replacing the old array
@@ -1714,7 +1718,7 @@ inline void DynamicVector<Type,TF,Alloc,Tag>::resize( size_t n, bool preserve )
    else if( IsVectorizable_v<Type> && n < size_ )
    {
       for( size_t i=n; i<size_; ++i )
-         v_[i] = Type();
+         clear( v_[i] );
    }
 
    size_ = n;
@@ -1761,6 +1765,8 @@ template< typename Type   // Data type of the vector
         , typename Tag >  // Type tag
 inline void DynamicVector<Type,TF,Alloc,Tag>::reserve( size_t n )
 {
+   using blaze::clear;
+
    if( n > capacity_ )
    {
       // Allocating a new array
@@ -1772,7 +1778,7 @@ inline void DynamicVector<Type,TF,Alloc,Tag>::reserve( size_t n )
 
       if( IsVectorizable_v<Type> && IsBuiltin_v<Type> ) {
          for( size_t i=size_; i<newCapacity; ++i )
-            tmp[i] = Type();
+            clear( tmp[i] );
       }
 
       // Replacing the old array
@@ -1971,7 +1977,7 @@ inline bool DynamicVector<Type,TF,Alloc,Tag>::isIntact() const noexcept
 
    if( IsVectorizable_v<Type> ) {
       for( size_t i=size_; i<capacity_; ++i ) {
-         if( v_[i] != Type() )
+         if( !isDefault<strict>( v_[i] ) )
             return false;
       }
    }
