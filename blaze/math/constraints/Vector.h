@@ -55,8 +55,8 @@ namespace blaze {
 /*!\brief Constraint on the data type.
 // \ingroup math_constraints
 //
-// In case the given data type \a T is not a N-dimensional vector type, a compilation error
-// is created.
+// In case the given data type \a T is not a vector type (i.e. a type that is derived from the
+// Vector base class), a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_BE_VECTOR_TYPE(T) \
    static_assert( ::blaze::IsVector_v<T>, "Non-vector type detected" )
@@ -75,8 +75,8 @@ namespace blaze {
 /*!\brief Constraint on the data type.
 // \ingroup math_constraints
 //
-// In case the given data type \a T is a N-dimensional vector type, a compilation error
-// is created.
+// In case the given data type \a T is a vector type (i.e. a type that is derived from the Vector
+// base class), a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_NOT_BE_VECTOR_TYPE(T) \
    static_assert( !::blaze::IsVector_v<T>, "Vector type detected" )

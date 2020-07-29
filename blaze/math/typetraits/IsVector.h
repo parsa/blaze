@@ -70,19 +70,21 @@ FalseType isVector_backend( ... );
 /*!\brief Compile time check for vector types.
 // \ingroup math_type_traits
 //
-// This type trait tests whether or not the given template parameter is a N-dimensional dense
-// or sparse vector type (i.e. whether \a T is derived from the Vector base class). In case
-// the type is a vector type, the \a value member constant is set to \a true, the nested type
-// definition \a Type is \a TrueType, and the class derives from \a TrueType. Otherwise \a value
-// is set to \a false, \a Type is \a FalseType, and the class derives from \a FalseType.
+// This type trait tests whether or not the given template parameter is a dense or sparse vector
+// type (i.e. whether \a T is derived from the Vector base class). In case the type is a vector
+// type, the \a value member constant is set to \a true, the nested type definition \a Type is
+// \a TrueType, and the class derives from \a TrueType. Otherwise \a value is set to \a false,
+// \a Type is \a FalseType, and the class derives from \a FalseType.
 
    \code
-   blaze::IsVector< StaticVector<float,3U,false> >::value      // Evaluates to 1
-   blaze::IsVector< const DynamicVector<double,true> >::Type   // Results in TrueType
-   blaze::IsVector< volatile CompressedVector<int,true> >      // Is derived from TrueType
-   blaze::IsVector< StaticMatrix<double,3U,3U,false> >::value  // Evaluates to 0
-   blaze::IsVector< const DynamicMatrix<double,true> >::Type   // Results in FalseType
-   blaze::IsVector< volatile CompressedMatrix<int,true> >      // Is derived from FalseType
+   using namespace blaze;
+
+   IsVector< StaticVector<float,3U> >::value      // Evaluates to 1
+   IsVector< const DynamicVector<double> >::Type  // Results in TrueType
+   IsVector< volatile CompressedVector<int> >     // Is derived from TrueType
+   IsVector< StaticMatrix<double,3U,3U> >::value  // Evaluates to 0
+   IsVector< const DynamicMatrix<double> >::Type  // Results in FalseType
+   IsVector< volatile CompressedMatrix<int> >     // Is derived from FalseType
    \endcode
 */
 
