@@ -373,7 +373,7 @@ template< typename T    // Data type of the elements
         , size_t N      // Number of preallocated elements
         , typename A >  // Type of the allocator
 inline SmallArray<T,N,A>::SmallArray( size_t n, const A& alloc, Uninitialized )
-   // SmallArrayData is initialization
+   // SmallArrayData is initialized
    // begin_ is intentionally not initialized
    // end_ is intentionally not initialized
    // final_ is intentionally not initialized
