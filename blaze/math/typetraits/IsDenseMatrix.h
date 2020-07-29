@@ -70,19 +70,21 @@ FalseType isDenseMatrix_backend( ... );
 /*!\brief Compile time check for dense matrix types.
 // \ingroup math_type_traits
 //
-// This type trait tests whether or not the given template parameter is a dense, N-dimensional
-// matrix type. In case the type is a dense matrix type, the \a value member constant is set
-// to \a true, the nested type definition \a Type is \a TrueType, and the class derives from
-// \a TrueType. Otherwise \a yes is set to \a false, \a Type is \a FalseType, and the class
-// derives from \a FalseType.
+// This type trait tests whether or not the given template parameter is a dense matrix type
+// (i.e. whether \a T is derived from the DenseMatrix base class). In case the type is a dense
+// matrix type, the \a value member constant is set to \a true, the nested type definition
+// \a Type is \a TrueType, and the class derives from \a TrueType. Otherwise \a value is set
+// to \a false, \a Type is \a FalseType, and the class derives from \a FalseType.
 
    \code
-   blaze::IsDenseMatrix< DynamicMatrix<double,false> >::value     // Evaluates to 1
-   blaze::IsDenseMatrix< const DynamicMatrix<float,true> >::Type  // Results in TrueType
-   blaze::IsDenseMatrix< volatile DynamicMatrix<int,true> >       // Is derived from TrueType
-   blaze::IsDenseMatrix< CompressedMatrix<double,false>::value    // Evaluates to 0
-   blaze::IsDenseMatrix< CompressedVector<double,true> >::Type    // Results in FalseType
-   blaze::IsDenseMatrix< DynamicVector<double,true> >             // Is derived from FalseType
+   using namespace blaze;
+
+   IsDenseMatrix< DynamicMatrix<double> >::value      // Evaluates to 1
+   IsDenseMatrix< const DynamicMatrix<float> >::Type  // Results in TrueType
+   IsDenseMatrix< volatile DynamicMatrix<int> >       // Is derived from TrueType
+   IsDenseMatrix< CompressedMatrix<double>::value     // Evaluates to 0
+   IsDenseMatrix< CompressedVector<double> >::Type    // Results in FalseType
+   IsDenseMatrix< DynamicVector<double> >             // Is derived from FalseType
    \endcode
 */
 template< typename T >
