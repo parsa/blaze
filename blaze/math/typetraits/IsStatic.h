@@ -40,6 +40,9 @@
 // Includes
 //*************************************************************************************************
 
+#include <blaze/math/typetraits/IsMatrix.h>
+#include <blaze/math/typetraits/IsVector.h>
+#include <blaze/math/typetraits/Size.h>
 #include <blaze/util/IntegralConstant.h>
 
 
@@ -82,47 +85,10 @@ namespace blaze {
 */
 template< typename T >
 struct IsStatic
-   : public FalseType
+   : public BoolConstant< ( IsVector_v<T> && Size_v<T,0UL> != DefaultSize_v ) ||
+                          ( IsMatrix_v<T> && Size_v<T,0UL> != DefaultSize_v &&
+                                             Size_v<T,1UL> != DefaultSize_v ) >
 {};
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Specialization of the IsStatic type trait for const types.
-// \ingroup math_type_traits
-*/
-template< typename T >
-struct IsStatic< const T >
-   : public IsStatic<T>
-{};
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Specialization of the IsStatic type trait for volatile types.
-// \ingroup math_type_traits
-*/
-template< typename T >
-struct IsStatic< volatile T >
-   : public IsStatic<T>
-{};
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Specialization of the IsStatic type trait for cv qualified types.
-// \ingroup math_type_traits
-*/
-template< typename T >
-struct IsStatic< const volatile T >
-   : public IsStatic<T>
-{};
-/*! \endcond */
 //*************************************************************************************************
 
 

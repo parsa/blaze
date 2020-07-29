@@ -100,7 +100,6 @@
 #include <blaze/math/typetraits/IsSIMDCombinable.h>
 #include <blaze/math/typetraits/IsSparseVector.h>
 #include <blaze/math/typetraits/IsSquare.h>
-#include <blaze/math/typetraits/IsStatic.h>
 #include <blaze/math/typetraits/IsVector.h>
 #include <blaze/math/typetraits/LowType.h>
 #include <blaze/math/typetraits/MaxSize.h>
@@ -3237,24 +3236,6 @@ struct HasConstDataAccess< StaticVector<T,N,TF,AF,PF,Tag> >
 /*! \cond BLAZE_INTERNAL */
 template< typename T, size_t N, bool TF, AlignmentFlag AF, PaddingFlag PF, typename Tag >
 struct HasMutableDataAccess< StaticVector<T,N,TF,AF,PF,Tag> >
-   : public TrueType
-{};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  ISSTATIC SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename T, size_t N, bool TF, AlignmentFlag AF, PaddingFlag PF, typename Tag >
-struct IsStatic< StaticVector<T,N,TF,AF,PF,Tag> >
    : public TrueType
 {};
 /*! \endcond */
