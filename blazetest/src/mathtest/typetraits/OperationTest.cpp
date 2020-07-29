@@ -59,6 +59,7 @@
 #include <blaze/math/constraints/RowVector.h>
 #include <blaze/math/constraints/Scalar.h>
 #include <blaze/math/constraints/SIMDEnabled.h>
+#include <blaze/math/constraints/Static.h>
 #include <blaze/math/constraints/StrictlyLower.h>
 #include <blaze/math/constraints/StrictlyUpper.h>
 #include <blaze/math/constraints/Symmetric.h>
@@ -97,6 +98,7 @@
 #include <blaze/math/typetraits/IsRowVector.h>
 #include <blaze/math/typetraits/IsScalar.h>
 #include <blaze/math/typetraits/IsSIMDEnabled.h>
+#include <blaze/math/typetraits/IsStatic.h>
 #include <blaze/math/typetraits/IsStrictlyLower.h>
 #include <blaze/math/typetraits/IsStrictlyUpper.h>
 #include <blaze/math/typetraits/IsSymmetric.h>
@@ -156,6 +158,7 @@ OperationTest::OperationTest()
    testIsRowVector();
    testIsScalar();
    testIsSIMDEnabled();
+   testIsStatic();
    testIsStrictlyLower();
    testIsStrictlyUpper();
    testIsSymmetric();
@@ -1626,6 +1629,94 @@ void OperationTest::testIsSIMDEnabled()
    BLAZE_CONSTRAINT_MUST_BE_SIMD_ENABLED    ( H );
 }
 //*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the mathematical 'IsStatic' type trait.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a compile time test of the mathematical 'IsStatic' type trait. In
+// case an error is detected, a compilation error is created.
+*/
+void OperationTest::testIsStatic()
+{
+   using blaze::StaticVector;
+   using blaze::DynamicVector;
+   using blaze::StaticMatrix;
+   using blaze::DynamicMatrix;
+   using blaze::SymmetricMatrix;
+
+   using Type1 = StaticVector<int,3UL>;
+   using Type2 = DynamicVector<int>;
+   using Type3 = StaticMatrix<int,3UL,4UL>;
+   using Type4 = DynamicMatrix<int>;
+   using Type5 = SymmetricMatrix< StaticMatrix<int,3UL,3UL> >;
+   using Type6 = SymmetricMatrix< DynamicMatrix<int> >;
+
+   BLAZE_CONSTRAINT_MUST_BE_STATIC_TYPE    ( Type1                 );
+   BLAZE_CONSTRAINT_MUST_BE_STATIC_TYPE    ( Type1 const           );
+   BLAZE_CONSTRAINT_MUST_BE_STATIC_TYPE    ( Type1 volatile        );
+   BLAZE_CONSTRAINT_MUST_BE_STATIC_TYPE    ( Type1 const volatile  );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_STATIC_TYPE( Type1&                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_STATIC_TYPE( Type1*                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_STATIC_TYPE( Type1* const          );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_STATIC_TYPE( Type1* volatile       );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_STATIC_TYPE( Type1* const volatile );
+
+   BLAZE_CONSTRAINT_MUST_NOT_BE_STATIC_TYPE( Type2                 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_STATIC_TYPE( Type2 const           );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_STATIC_TYPE( Type2 volatile        );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_STATIC_TYPE( Type2 const volatile  );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_STATIC_TYPE( Type2&                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_STATIC_TYPE( Type2*                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_STATIC_TYPE( Type2* const          );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_STATIC_TYPE( Type2* volatile       );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_STATIC_TYPE( Type2* const volatile );
+
+   BLAZE_CONSTRAINT_MUST_BE_STATIC_TYPE    ( Type3                 );
+   BLAZE_CONSTRAINT_MUST_BE_STATIC_TYPE    ( Type3 const           );
+   BLAZE_CONSTRAINT_MUST_BE_STATIC_TYPE    ( Type3 volatile        );
+   BLAZE_CONSTRAINT_MUST_BE_STATIC_TYPE    ( Type3 const volatile  );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_STATIC_TYPE( Type3&                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_STATIC_TYPE( Type3*                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_STATIC_TYPE( Type3* const          );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_STATIC_TYPE( Type3* volatile       );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_STATIC_TYPE( Type3* const volatile );
+
+   BLAZE_CONSTRAINT_MUST_NOT_BE_STATIC_TYPE( Type4                 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_STATIC_TYPE( Type4 const           );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_STATIC_TYPE( Type4 volatile        );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_STATIC_TYPE( Type4 const volatile  );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_STATIC_TYPE( Type4&                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_STATIC_TYPE( Type4*                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_STATIC_TYPE( Type4* const          );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_STATIC_TYPE( Type4* volatile       );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_STATIC_TYPE( Type4* const volatile );
+
+   BLAZE_CONSTRAINT_MUST_BE_STATIC_TYPE    ( Type5                 );
+   BLAZE_CONSTRAINT_MUST_BE_STATIC_TYPE    ( Type5 const           );
+   BLAZE_CONSTRAINT_MUST_BE_STATIC_TYPE    ( Type5 volatile        );
+   BLAZE_CONSTRAINT_MUST_BE_STATIC_TYPE    ( Type5 const volatile  );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_STATIC_TYPE( Type5&                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_STATIC_TYPE( Type5*                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_STATIC_TYPE( Type5* const          );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_STATIC_TYPE( Type5* volatile       );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_STATIC_TYPE( Type5* const volatile );
+
+   BLAZE_CONSTRAINT_MUST_NOT_BE_STATIC_TYPE( Type6                 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_STATIC_TYPE( Type6 const           );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_STATIC_TYPE( Type6 volatile        );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_STATIC_TYPE( Type6 const volatile  );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_STATIC_TYPE( Type6&                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_STATIC_TYPE( Type6*                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_STATIC_TYPE( Type6* const          );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_STATIC_TYPE( Type6* volatile       );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_STATIC_TYPE( Type6* const volatile );
+}
+//*************************************************************************************************
+
 
 
 //*************************************************************************************************

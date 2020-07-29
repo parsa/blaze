@@ -99,6 +99,7 @@ class OperationTest
    void testIsRowVector();
    void testIsScalar();
    void testIsSIMDEnabled();
+   void testIsStatic();
    void testIsStrictlyLower();
    void testIsStrictlyUpper();
    void testIsSymmetric();
