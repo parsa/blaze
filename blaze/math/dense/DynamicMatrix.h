@@ -114,6 +114,7 @@
 #include <blaze/system/Blocking.h>
 #include <blaze/system/CacheSize.h>
 #include <blaze/system/Inline.h>
+#include <blaze/system/NoUniqueAddress.h>
 #include <blaze/system/Optimizations.h>
 #include <blaze/system/Restrict.h>
 #include <blaze/system/Thresholds.h>
@@ -154,8 +155,9 @@ namespace blaze {
 // \ingroup dynamic_matrix
 //
 // The DynamicMatrix class template is the representation of an arbitrary sized matrix with
-// \f$ M \times N \f$ dynamically allocated elements of arbitrary type. The type of the elements
-// and the storage order of the matrix can be specified via the three template parameters:
+// \f$ M \times N \f$ dynamically allocated elements of arbitrary type. The type of the elements,
+// the storage order and the type of the allocator of the matrix can be specified via the four
+// template parameters:
 
    \code
    namespace blaze {
@@ -317,19 +319,19 @@ class DynamicMatrix
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   inline DynamicMatrix() noexcept;
-   inline DynamicMatrix( size_t m, size_t n );
-   inline DynamicMatrix( size_t m, size_t n, const Type& init );
-   inline DynamicMatrix( initializer_list< initializer_list<Type> > list );
+   inline DynamicMatrix( const Alloc& alloc = Alloc{} ) noexcept;
+   inline DynamicMatrix( size_t m, size_t n, const Alloc& alloc = Alloc{} );
+   inline DynamicMatrix( size_t m, size_t n, const Type& init, const Alloc& alloc = Alloc{} );
+   inline DynamicMatrix( initializer_list< initializer_list<Type> > list, const Alloc& alloc = Alloc{} );
 
    template< typename Other >
-   inline DynamicMatrix( size_t m, size_t n, const Other* array );
+   inline DynamicMatrix( size_t m, size_t n, const Other* array, const Alloc& alloc = Alloc{} );
 
    template< typename Other, size_t Rows, size_t Cols >
-   inline DynamicMatrix( const Other (&array)[Rows][Cols] );
+   inline DynamicMatrix( const Other (&array)[Rows][Cols], const Alloc& alloc = Alloc{} );
 
    template< typename Other, size_t Rows, size_t Cols >
-   inline DynamicMatrix( const std::array<std::array<Other,Cols>,Rows>& array );
+   inline DynamicMatrix( const std::array<std::array<Other,Cols>,Rows>& array, const Alloc& alloc = Alloc{} );
 
    inline DynamicMatrix( const DynamicMatrix& m );
    inline DynamicMatrix( DynamicMatrix&& m ) noexcept;
@@ -537,11 +539,23 @@ class DynamicMatrix
    //**********************************************************************************************
 
  private:
+   //**Uninitialized struct definition*************************************************************
+   /*!\brief Definition of the nested auxiliary struct Uninitialized.
+   */
+   struct Uninitialized {};
+   //**********************************************************************************************
+
+   //**Constructors********************************************************************************
+   /*!\name Constructors */
+   //@{
+   inline DynamicMatrix( size_t m, size_t n, size_t nn, const Alloc& alloc, Uninitialized );
+   inline DynamicMatrix( size_t m, size_t n, size_t nn, size_t capa, const Alloc& alloc, Uninitialized );
+   //@}
+   //**********************************************************************************************
+
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-   inline Type*  allocate( size_t n );
-   inline void   deallocate( Type* ptr, size_t n ) noexcept;
    inline size_t addPadding( size_t value ) const noexcept;
    //@}
    //**********************************************************************************************
@@ -549,10 +563,11 @@ class DynamicMatrix
    //**Member variables****************************************************************************
    /*!\name Member variables */
    //@{
-   size_t m_;                //!< The current number of rows of the matrix.
-   size_t n_;                //!< The current number of columns of the matrix.
-   size_t nn_;               //!< The alignment adjusted number of columns.
-   size_t capacity_;         //!< The maximum capacity of the matrix.
+   size_t m_;         //!< The current number of rows of the matrix.
+   size_t n_;         //!< The current number of columns of the matrix.
+   size_t nn_;        //!< The alignment adjusted number of columns.
+   size_t capacity_;  //!< The maximum capacity of the matrix.
+
    Type* BLAZE_RESTRICT v_;  //!< The dynamically allocated matrix elements.
                              /*!< Access to the matrix elements is gained via the function call
                                   operator. In case of row-major order the memory layout of the
@@ -563,6 +578,8 @@ class DynamicMatrix
                                   \vdots       & \vdots        & \vdots        & \ddots & \vdots      \\
                                   M \cdot N-N  & M \cdot N-N+1 & M \cdot N-N+2 & \cdots & M \cdot N-1 \\
                                   \end{array}\right)\f]. */
+
+   BLAZE_NO_UNIQUE_ADDRESS Alloc alloc_;  //!< The allocator of the matrix.
    //@}
    //**********************************************************************************************
 
@@ -611,19 +628,73 @@ DynamicMatrix( std::array<std::array<Type,N>,M> ) -> DynamicMatrix<Type>;
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief The default constructor for DynamicMatrix.
+/*!\brief The (default) constructor for DynamicMatrix.
+//
+// \param alloc Allocator for all memory allocations of this matrix.
 */
 template< typename Type   // Data type of the matrix
         , bool SO         // Storage order
         , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
-inline DynamicMatrix<Type,SO,Alloc,Tag>::DynamicMatrix() noexcept
+inline DynamicMatrix<Type,SO,Alloc,Tag>::DynamicMatrix( const Alloc& alloc ) noexcept
    : m_       ( 0UL )      // The current number of rows of the matrix
    , n_       ( 0UL )      // The current number of columns of the matrix
    , nn_      ( 0UL )      // The alignment adjusted number of columns
    , capacity_( 0UL )      // The maximum capacity of the matrix
    , v_       ( nullptr )  // The matrix elements
+   , alloc_   ( alloc )    // The allocator of the matrix
 {}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Auxiliary constructor for DynamicMatrix.
+//
+// \param m The number of rows of the matrix.
+// \param n The number of columns of the matrix.
+// \param nn The alignment adjusted number of columns.
+// \param alloc Allocator for all memory allocations of this matrix.
+// \exception std::bad_alloc Allocation failed.
+*/
+template< typename Type   // Data type of the matrix
+        , bool SO         // Storage order
+        , typename Alloc  // Type of the allocator
+        , typename Tag >  // Type tag
+inline DynamicMatrix<Type,SO,Alloc,Tag>::DynamicMatrix( size_t m, size_t n, size_t nn, const Alloc& alloc, Uninitialized )
+   : DynamicMatrix( m, n, nn, m*nn, alloc, Uninitialized{} )
+{}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Auxiliary constructor for DynamicMatrix.
+//
+// \param m The number of rows of the matrix.
+// \param n The number of columns of the matrix.
+// \param nn The alignment adjusted number of columns.
+// \param capa The initial capacity of the matrix.
+// \param alloc Allocator for all memory allocations of this matrix.
+// \exception std::bad_alloc Allocation failed.
+*/
+template< typename Type   // Data type of the matrix
+        , bool SO         // Storage order
+        , typename Alloc  // Type of the allocator
+        , typename Tag >  // Type tag
+inline DynamicMatrix<Type,SO,Alloc,Tag>::DynamicMatrix( size_t m, size_t n, size_t nn, size_t capa, const Alloc& alloc, Uninitialized )
+   : m_       ( m )        // The current number of rows of the matrix
+   , n_       ( n )        // The current number of columns of the matrix
+   , nn_      ( nn )       // The alignment adjusted number of columns
+   , capacity_( capa )     // The maximum capacity of the matrix
+   , v_       ( nullptr )  // The matrix elements
+   , alloc_   ( alloc )    // The allocator of the matrix
+{
+   v_ = alloc_.allocate( capacity_ );
+
+   if( !checkAlignment( v_ ) ) {
+      alloc_.deallocate( v_, capacity_ );
+      BLAZE_THROW_BAD_ALLOC;
+   }
+}
 //*************************************************************************************************
 
 
@@ -633,6 +704,7 @@ inline DynamicMatrix<Type,SO,Alloc,Tag>::DynamicMatrix() noexcept
 //
 // \param m The number of rows of the matrix.
 // \param n The number of columns of the matrix.
+// \param alloc Allocator for all memory allocations of this matrix.
 //
 // \note This constructor is only responsible to allocate the required dynamic memory. For
 // built-in types no initialization of the elements is performed!
@@ -641,14 +713,12 @@ template< typename Type   // Data type of the matrix
         , bool SO         // Storage order
         , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
-inline DynamicMatrix<Type,SO,Alloc,Tag>::DynamicMatrix( size_t m, size_t n )
-   : m_       ( m )                      // The current number of rows of the matrix
-   , n_       ( n )                      // The current number of columns of the matrix
-   , nn_      ( addPadding( n ) )        // The alignment adjusted number of columns
-   , capacity_( m_*nn_ )                 // The maximum capacity of the matrix
-   , v_       ( allocate( capacity_ ) )  // The matrix elements
+inline DynamicMatrix<Type,SO,Alloc,Tag>::DynamicMatrix( size_t m, size_t n, const Alloc& alloc )
+   : DynamicMatrix( m, n, addPadding(n), alloc, Uninitialized{} )
 {
    using blaze::clear;
+
+   blaze::uninitialized_default_construct_n( v_, capacity_ );
 
    if( IsVectorizable_v<Type> && IsBuiltin_v<Type> ) {
       for( size_t i=0UL; i<m_; ++i ) {
@@ -669,6 +739,7 @@ inline DynamicMatrix<Type,SO,Alloc,Tag>::DynamicMatrix( size_t m, size_t n )
 // \param m The number of rows of the matrix.
 // \param n The number of columns of the matrix.
 // \param init The initial value of the matrix elements.
+// \param alloc Allocator for all memory allocations of this matrix.
 //
 // All matrix elements are initialized with the specified value.
 */
@@ -676,8 +747,8 @@ template< typename Type   // Data type of the matrix
         , bool SO         // Storage order
         , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
-inline DynamicMatrix<Type,SO,Alloc,Tag>::DynamicMatrix( size_t m, size_t n, const Type& init )
-   : DynamicMatrix( m, n )
+inline DynamicMatrix<Type,SO,Alloc,Tag>::DynamicMatrix( size_t m, size_t n, const Type& init, const Alloc& alloc )
+   : DynamicMatrix( m, n, alloc )
 {
    for( size_t i=0UL; i<m; ++i ) {
       for( size_t j=0UL; j<n_; ++j ) {
@@ -694,6 +765,7 @@ inline DynamicMatrix<Type,SO,Alloc,Tag>::DynamicMatrix( size_t m, size_t n, cons
 /*!\brief List initialization of all matrix elements.
 //
 // \param list The initializer list.
+// \param alloc Allocator for all memory allocations of this matrix.
 //
 // This constructor provides the option to explicitly initialize the elements of the matrix by
 // means of an initializer list:
@@ -714,8 +786,8 @@ template< typename Type   // Data type of the matrix
         , bool SO         // Storage order
         , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
-inline DynamicMatrix<Type,SO,Alloc,Tag>::DynamicMatrix( initializer_list< initializer_list<Type> > list )
-   : DynamicMatrix( list.size(), determineColumns( list ) )
+inline DynamicMatrix<Type,SO,Alloc,Tag>::DynamicMatrix( initializer_list< initializer_list<Type> > list, const Alloc& alloc )
+   : DynamicMatrix( list.size(), determineColumns( list ), alloc )
 {
    size_t i( 0UL );
 
@@ -735,6 +807,7 @@ inline DynamicMatrix<Type,SO,Alloc,Tag>::DynamicMatrix( initializer_list< initia
 // \param m The number of rows of the matrix.
 // \param n The number of columns of the matrix.
 // \param array Dynamic array for the initialization.
+// \param alloc Allocator for all memory allocations of this matrix.
 //
 // This constructor offers the option to directly initialize the elements of the matrix with
 // a dynamic array:
@@ -757,8 +830,8 @@ template< typename Type     // Data type of the matrix
         , typename Alloc    // Type of the allocator
         , typename Tag >    // Type tag
 template< typename Other >  // Data type of the initialization array
-inline DynamicMatrix<Type,SO,Alloc,Tag>::DynamicMatrix( size_t m, size_t n, const Other* array )
-   : DynamicMatrix( m, n )
+inline DynamicMatrix<Type,SO,Alloc,Tag>::DynamicMatrix( size_t m, size_t n, const Other* array, const Alloc& alloc )
+   : DynamicMatrix( m, n, alloc )
 {
    for( size_t i=0UL; i<m; ++i ) {
       for( size_t j=0UL; j<n; ++j ) {
@@ -775,6 +848,7 @@ inline DynamicMatrix<Type,SO,Alloc,Tag>::DynamicMatrix( size_t m, size_t n, cons
 /*!\brief Array initialization of all matrix elements.
 //
 // \param array Static array for the initialization.
+// \param alloc Allocator for all memory allocations of this matrix.
 //
 // This constructor offers the option to directly initialize the elements of the matrix with
 // a static array:
@@ -799,8 +873,8 @@ template< typename Type   // Data type of the matrix
 template< typename Other  // Data type of the static array
         , size_t Rows     // Number of rows of the static array
         , size_t Cols >   // Number of columns of the static array
-inline DynamicMatrix<Type,SO,Alloc,Tag>::DynamicMatrix( const Other (&array)[Rows][Cols] )
-   : DynamicMatrix( Rows, Cols )
+inline DynamicMatrix<Type,SO,Alloc,Tag>::DynamicMatrix( const Other (&array)[Rows][Cols], const Alloc& alloc )
+   : DynamicMatrix( Rows, Cols, alloc )
 {
    for( size_t i=0UL; i<Rows; ++i ) {
       for( size_t j=0UL; j<Cols; ++j ) {
@@ -817,6 +891,7 @@ inline DynamicMatrix<Type,SO,Alloc,Tag>::DynamicMatrix( const Other (&array)[Row
 /*!\brief Initialization of all matrix elements from the given std::array.
 //
 // \param array The given std::array for the initialization.
+// \param alloc Allocator for all memory allocations of this matrix.
 //
 // This constructor offers the option to directly initialize the elements of the matrix with
 // a std::array:
@@ -841,8 +916,8 @@ template< typename Type   // Data type of the matrix
 template< typename Other  // Data type of the std::array
         , size_t Rows     // Number of rows of the std::array
         , size_t Cols >   // Number of columns of the std::array
-inline DynamicMatrix<Type,SO,Alloc,Tag>::DynamicMatrix( const std::array<std::array<Other,Cols>,Rows>& array )
-   : DynamicMatrix( Rows, Cols )
+inline DynamicMatrix<Type,SO,Alloc,Tag>::DynamicMatrix( const std::array<std::array<Other,Cols>,Rows>& array, const Alloc& alloc )
+   : DynamicMatrix( Rows, Cols, alloc )
 {
    for( size_t i=0UL; i<Rows; ++i ) {
       for( size_t j=0UL; j<Cols; ++j ) {
@@ -948,7 +1023,8 @@ template< typename Type   // Data type of the matrix
         , typename Tag >  // Type tag
 inline DynamicMatrix<Type,SO,Alloc,Tag>::~DynamicMatrix()
 {
-   deallocate( v_, capacity_ );
+   blaze::destroy_n( v_, capacity_ );
+   alloc_.deallocate( v_, capacity_ );
 }
 //*************************************************************************************************
 
@@ -1500,7 +1576,8 @@ template< typename Type   // Data type of the matrix
 inline DynamicMatrix<Type,SO,Alloc,Tag>&
    DynamicMatrix<Type,SO,Alloc,Tag>::operator=( DynamicMatrix&& rhs ) & noexcept
 {
-   deallocate( v_, capacity_ );
+   blaze::destroy_n( v_, capacity_ );
+   alloc_.deallocate( v_, capacity_ );
 
    m_        = rhs.m_;
    n_        = rhs.n_;
@@ -1956,24 +2033,28 @@ void DynamicMatrix<Type,SO,Alloc,Tag>::resize( size_t m, size_t n, bool preserve
 
    if( preserve )
    {
-      Type* BLAZE_RESTRICT v = allocate( m*nn );
       const size_t min_m( min( m, m_ ) );
       const size_t min_n( min( n, n_ ) );
 
-      for( size_t i=0UL; i<min_m; ++i ) {
-         transfer( v_+i*nn_, v_+i*nn_+min_n, v+i*nn );
-      }
+      DynamicMatrix tmp( m, n, nn, Alloc{}, Uninitialized{} );
 
-      deallocate( v_, capacity_ );
-      v_ = v;
-      capacity_ = m*nn;
+      for( size_t i=0UL; i<min_m; ++i ) {
+         blaze::uninitialized_transfer( v_+i*nn_, v_+i*nn_+min_n, tmp.v_+i*nn );
+         blaze::uninitialized_default_construct( tmp.v_+i*nn+min_n, tmp.v_+i*nn+nn );
+      }
+      blaze::uninitialized_default_construct( tmp.v_+min_m*nn, tmp.v_+m*nn );
+
+      std::swap( capacity_, tmp.capacity_ );
+      std::swap( v_, tmp.v_ );
    }
    else if( m*nn > capacity_ )
    {
-      Type* BLAZE_RESTRICT v = allocate( m*nn );
-      deallocate( v_, capacity_ );
-      v_ = v;
-      capacity_ = m*nn;
+      DynamicMatrix tmp( m, n, nn, Alloc{}, Uninitialized{} );
+
+      blaze::uninitialized_default_construct( tmp.v_, tmp.v_+tmp.capacity_ );
+
+      std::swap( capacity_, tmp.capacity_ );
+      std::swap( v_, tmp.v_ );
    }
 
    if( IsVectorizable_v<Type> ) {
@@ -1985,6 +2066,8 @@ void DynamicMatrix<Type,SO,Alloc,Tag>::resize( size_t m, size_t n, bool preserve
    m_  = m;
    n_  = n;
    nn_ = nn;
+
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
 }
 //*************************************************************************************************
 
@@ -2033,21 +2116,13 @@ inline void DynamicMatrix<Type,SO,Alloc,Tag>::reserve( size_t elements )
 
    if( elements > capacity_ )
    {
-      // Allocating a new array
-      Type* BLAZE_RESTRICT tmp = allocate( elements );
+      DynamicMatrix tmp( m_, n_, nn_, elements, Alloc{}, Uninitialized{} );
 
-      // Initializing the new array
-      transfer( v_, v_+capacity_, tmp );
+      blaze::uninitialized_transfer( v_, v_+capacity_, tmp.v_ );
+      blaze::uninitialized_value_construct( tmp.v_+capacity_, tmp.v_+elements );
 
-      if( IsVectorizable_v<Type> ) {
-         for( size_t i=capacity_; i<elements; ++i )
-            clear( tmp[i] );
-      }
-
-      // Replacing the old array
-      deallocate( v_, capacity_ );
-      v_ = tmp;
-      capacity_ = elements;
+      std::swap( capacity_, tmp.capacity_ );
+      std::swap( v_, tmp.v_ );
    }
 }
 //*************************************************************************************************
@@ -2095,59 +2170,6 @@ inline void DynamicMatrix<Type,SO,Alloc,Tag>::swap( DynamicMatrix& m ) noexcept
    swap( nn_, m.nn_ );
    swap( capacity_, m.capacity_ );
    swap( v_ , m.v_  );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Aligned array allocation.
-//
-// \param size The number of elements of the given type to be allocated.
-// \return Pointer to the first element of the aligned array.
-// \exception std::bad_alloc Allocation failed.
-//
-// The allocate() function performs the allocation of aligned memory via the given allocator
-// \a Alloc. In case the allocation failed entirely or in case the pointer returned by the
-// allocator is not properly aligned (i.e. 16-byte aligned in case of SSE, 32-byte aligned
-// in case of AVX, and 64-byte aligned in case of AVX-512), a \a std::bad_alloc expresion is
-// thrown.
-*/
-template< typename Type   // Data type of the matrix
-        , bool SO         // Storage order
-        , typename Alloc  // Type of the allocator
-        , typename Tag >  // Type tag
-inline Type* DynamicMatrix<Type,SO,Alloc,Tag>::allocate( size_t n )
-{
-   Type* const ptr = Alloc{}.allocate( n );
-
-   if( !checkAlignment( ptr ) ) {
-      BLAZE_THROW_BAD_ALLOC;
-   }
-
-   blaze::uninitialized_default_construct_n( ptr, n );
-
-   return ptr;
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Deallocation of aligned memory.
-//
-// \param address Pointer to the first element of the array to be deallocated.
-// \return void
-//
-// This function deallocates the given aligned memory that was previously allocated via the
-// allocate() function.
-*/
-template< typename Type   // Data type of the matrix
-        , bool SO         // Storage order
-        , typename Alloc  // Type of the allocator
-        , typename Tag >  // Type tag
-inline void DynamicMatrix<Type,SO,Alloc,Tag>::deallocate( Type* ptr, size_t n ) noexcept
-{
-   blaze::destroy_n( ptr, n );
-   Alloc{}.deallocate( ptr, n );
 }
 //*************************************************************************************************
 
@@ -2323,7 +2345,7 @@ template< typename Type   // Data type of the matrix
         , typename Tag >  // Type tag
 inline bool DynamicMatrix<Type,SO,Alloc,Tag>::isIntact() const noexcept
 {
-   if( m_ * n_ > capacity_ )
+   if( n_ > nn_ || m_ * nn_ > capacity_ )
       return false;
 
    if( IsVectorizable_v<Type> ) {
@@ -3655,19 +3677,19 @@ class DynamicMatrix<Type,true,Alloc,Tag>
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   inline DynamicMatrix() noexcept;
-   inline DynamicMatrix( size_t m, size_t n );
-   inline DynamicMatrix( size_t m, size_t n, const Type& init );
-   inline DynamicMatrix( initializer_list< initializer_list<Type> > list );
+   inline DynamicMatrix( const Alloc& alloc = Alloc{} ) noexcept;
+   inline DynamicMatrix( size_t m, size_t n, const Alloc& alloc = Alloc{} );
+   inline DynamicMatrix( size_t m, size_t n, const Type& init, const Alloc& alloc = Alloc{} );
+   inline DynamicMatrix( initializer_list< initializer_list<Type> > list, const Alloc& alloc = Alloc{} );
 
    template< typename Other >
-   inline DynamicMatrix( size_t m, size_t n, const Other* array );
+   inline DynamicMatrix( size_t m, size_t n, const Other* array, const Alloc& alloc = Alloc{} );
 
    template< typename Other, size_t Rows, size_t Cols >
-   inline DynamicMatrix( const Other (&array)[Rows][Cols] );
+   inline DynamicMatrix( const Other (&array)[Rows][Cols], const Alloc& alloc = Alloc{} );
 
    template< typename Other, size_t Rows, size_t Cols >
-   inline DynamicMatrix( const std::array<std::array<Other,Cols>,Rows>& array );
+   inline DynamicMatrix( const std::array<std::array<Other,Cols>,Rows>& array, const Alloc& alloc = Alloc{} );
 
    inline DynamicMatrix( const DynamicMatrix& m );
    inline DynamicMatrix( DynamicMatrix&& m );
@@ -3867,11 +3889,23 @@ class DynamicMatrix<Type,true,Alloc,Tag>
    //**********************************************************************************************
 
  private:
+   //**Uninitialized struct definition*************************************************************
+   /*!\brief Definition of the nested auxiliary struct Uninitialized.
+   */
+   struct Uninitialized {};
+   //**********************************************************************************************
+
+   //**Constructors********************************************************************************
+   /*!\name Constructors */
+   //@{
+   inline DynamicMatrix( size_t m, size_t mm, size_t n, const Alloc& alloc, Uninitialized );
+   inline DynamicMatrix( size_t m, size_t mm, size_t n, size_t capa, const Alloc& alloc, Uninitialized );
+   //@}
+   //**********************************************************************************************
+
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-   inline Type*  allocate( size_t n );
-   inline void   deallocate( Type* ptr, size_t n ) noexcept;
    inline size_t addPadding( size_t minRows ) const noexcept;
    //@}
    //**********************************************************************************************
@@ -3879,13 +3913,16 @@ class DynamicMatrix<Type,true,Alloc,Tag>
    //**Member variables****************************************************************************
    /*!\name Member variables */
    //@{
-   size_t m_;                //!< The current number of rows of the matrix.
-   size_t mm_;               //!< The alignment adjusted number of rows.
-   size_t n_;                //!< The current number of columns of the matrix.
-   size_t capacity_;         //!< The maximum capacity of the matrix.
+   size_t m_;         //!< The current number of rows of the matrix.
+   size_t mm_;        //!< The alignment adjusted number of rows.
+   size_t n_;         //!< The current number of columns of the matrix.
+   size_t capacity_;  //!< The maximum capacity of the matrix.
+
    Type* BLAZE_RESTRICT v_;  //!< The dynamically allocated matrix elements.
-                             /*!< Access to the matrix elements is gained via the function call
-                                  operator. */
+                             /*!< Access to the matrix elements is gained via the function
+                                  call operator. */
+
+   BLAZE_NO_UNIQUE_ADDRESS Alloc alloc_;  //!< The allocator of the matrix.
    //@}
    //**********************************************************************************************
 
@@ -3910,19 +3947,71 @@ class DynamicMatrix<Type,true,Alloc,Tag>
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief The default constructor for DynamicMatrix.
+/*!\brief The (default) constructor for DynamicMatrix.
+//
+// \param alloc Allocator for all memory allocations of this matrix.
 */
 template< typename Type   // Data type of the matrix
         , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
-inline DynamicMatrix<Type,true,Alloc,Tag>::DynamicMatrix() noexcept
+inline DynamicMatrix<Type,true,Alloc,Tag>::DynamicMatrix( const Alloc& alloc ) noexcept
    : m_       ( 0UL )      // The current number of rows of the matrix
    , mm_      ( 0UL )      // The alignment adjusted number of rows
    , n_       ( 0UL )      // The current number of columns of the matrix
    , capacity_( 0UL )      // The maximum capacity of the matrix
    , v_       ( nullptr )  // The matrix elements
+   , alloc_   ( alloc )    // The allocator of the matrix
 {}
 /*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Auxiliary constructor for DynamicMatrix.
+//
+// \param m The number of rows of the matrix.
+// \param mm The alignment adjusted number of rows.
+// \param n The number of columns of the matrix.
+// \param alloc Allocator for all memory allocations of this matrix.
+// \exception std::bad_alloc Allocation failed.
+*/
+template< typename Type   // Data type of the matrix
+        , typename Alloc  // Type of the allocator
+        , typename Tag >  // Type tag
+inline DynamicMatrix<Type,true,Alloc,Tag>::DynamicMatrix( size_t m, size_t mm, size_t n, const Alloc& alloc, Uninitialized )
+   : DynamicMatrix( m, mm, n, mm*n, alloc, Uninitialized{} )
+{}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Auxiliary constructor for DynamicMatrix.
+//
+// \param m The number of rows of the matrix.
+// \param mm The alignment adjusted number of rows.
+// \param n The number of columns of the matrix.
+// \param capa The initial capacity of the matrix.
+// \param alloc Allocator for all memory allocations of this matrix.
+// \exception std::bad_alloc Allocation failed.
+*/
+template< typename Type   // Data type of the matrix
+        , typename Alloc  // Type of the allocator
+        , typename Tag >  // Type tag
+inline DynamicMatrix<Type,true,Alloc,Tag>::DynamicMatrix( size_t m, size_t mm, size_t n, size_t capa, const Alloc& alloc, Uninitialized )
+   : m_       ( m )        // The current number of rows of the matrix
+   , mm_      ( mm )       // The alignment adjusted number of rows
+   , n_       ( n )        // The current number of columns of the matrix
+   , capacity_( capa )     // The maximum capacity of the matrix
+   , v_       ( nullptr )  // The matrix elements
+   , alloc_   ( alloc )    // The allocator of the matrix
+{
+   v_ = alloc_.allocate( capacity_ );
+
+   if( !checkAlignment( v_ ) ) {
+      alloc_.deallocate( v_, capacity_ );
+      BLAZE_THROW_BAD_ALLOC;
+   }
+}
 //*************************************************************************************************
 
 
@@ -3933,6 +4022,7 @@ inline DynamicMatrix<Type,true,Alloc,Tag>::DynamicMatrix() noexcept
 //
 // \param m The number of rows of the matrix.
 // \param n The number of columns of the matrix.
+// \param alloc Allocator for all memory allocations of this matrix.
 //
 // \note This constructor is only responsible to allocate the required dynamic memory. For
 // built-in types no initialization of the elements is performed!
@@ -3940,14 +4030,12 @@ inline DynamicMatrix<Type,true,Alloc,Tag>::DynamicMatrix() noexcept
 template< typename Type   // Data type of the matrix
         , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
-inline DynamicMatrix<Type,true,Alloc,Tag>::DynamicMatrix( size_t m, size_t n )
-   : m_       ( m )                      // The current number of rows of the matrix
-   , mm_      ( addPadding( m ) )        // The alignment adjusted number of rows
-   , n_       ( n )                      // The current number of columns of the matrix
-   , capacity_( mm_*n_ )                 // The maximum capacity of the matrix
-   , v_       ( allocate( capacity_ ) )  // The matrix elements
+inline DynamicMatrix<Type,true,Alloc,Tag>::DynamicMatrix( size_t m, size_t n, const Alloc& alloc )
+   : DynamicMatrix( m, addPadding(m), n, alloc, Uninitialized{} )
 {
    using blaze::clear;
+
+   blaze::uninitialized_default_construct_n( v_, capacity_ );
 
    if( IsVectorizable_v<Type> && IsBuiltin_v<Type> ) {
       for( size_t j=0UL; j<n_; ++j ) {
@@ -3970,14 +4058,15 @@ inline DynamicMatrix<Type,true,Alloc,Tag>::DynamicMatrix( size_t m, size_t n )
 // \param m The number of rows of the matrix.
 // \param n The number of columns of the matrix.
 // \param init The initial value of the matrix elements.
+// \param alloc Allocator for all memory allocations of this matrix.
 //
 // All matrix elements are initialized with the specified value.
 */
 template< typename Type   // Data type of the matrix
         , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
-inline DynamicMatrix<Type,true,Alloc,Tag>::DynamicMatrix( size_t m, size_t n, const Type& init )
-   : DynamicMatrix( m, n )
+inline DynamicMatrix<Type,true,Alloc,Tag>::DynamicMatrix( size_t m, size_t n, const Type& init, const Alloc& alloc )
+   : DynamicMatrix( m, n, alloc )
 {
    for( size_t j=0UL; j<n_; ++j ) {
       for( size_t i=0UL; i<m_; ++i ) {
@@ -3996,6 +4085,7 @@ inline DynamicMatrix<Type,true,Alloc,Tag>::DynamicMatrix( size_t m, size_t n, co
 /*!\brief List initialization of all matrix elements.
 //
 // \param list The initializer list.
+// \param alloc Allocator for all memory allocations of this matrix.
 //
 // This constructor provides the option to explicitly initialize the elements of the matrix by
 // means of an initializer list:
@@ -4015,8 +4105,8 @@ inline DynamicMatrix<Type,true,Alloc,Tag>::DynamicMatrix( size_t m, size_t n, co
 template< typename Type   // Data type of the matrix
         , typename Alloc  // Type of the allocator
         , typename Tag >  // Type tag
-inline DynamicMatrix<Type,true,Alloc,Tag>::DynamicMatrix( initializer_list< initializer_list<Type> > list )
-   : DynamicMatrix( list.size(), determineColumns( list ) )
+inline DynamicMatrix<Type,true,Alloc,Tag>::DynamicMatrix( initializer_list< initializer_list<Type> > list, const Alloc& alloc )
+   : DynamicMatrix( list.size(), determineColumns( list ), alloc )
 {
    using blaze::clear;
 
@@ -4048,6 +4138,7 @@ inline DynamicMatrix<Type,true,Alloc,Tag>::DynamicMatrix( initializer_list< init
 // \param m The number of rows of the matrix.
 // \param n The number of columns of the matrix.
 // \param array Dynamic array for the initialization.
+// \param alloc Allocator for all memory allocations of this matrix.
 //
 // This constructor offers the option to directly initialize the elements of the matrix with
 // a dynamic array:
@@ -4069,8 +4160,8 @@ template< typename Type     // Data type of the matrix
         , typename Alloc    // Type of the allocator
         , typename Tag >    // Type tag
 template< typename Other >  // Data type of the initialization array
-inline DynamicMatrix<Type,true,Alloc,Tag>::DynamicMatrix( size_t m, size_t n, const Other* array )
-   : DynamicMatrix( m, n )
+inline DynamicMatrix<Type,true,Alloc,Tag>::DynamicMatrix( size_t m, size_t n, const Other* array, const Alloc& alloc )
+   : DynamicMatrix( m, n, alloc )
 {
    for( size_t j=0UL; j<n; ++j ) {
       for( size_t i=0UL; i<m; ++i ) {
@@ -4089,6 +4180,7 @@ inline DynamicMatrix<Type,true,Alloc,Tag>::DynamicMatrix( size_t m, size_t n, co
 /*!\brief Array initialization of all matrix elements.
 //
 // \param array Static array for the initialization.
+// \param alloc Allocator for all memory allocations of this matrix.
 //
 // This constructor offers the option to directly initialize the elements of the matrix with
 // a static array:
@@ -4112,8 +4204,8 @@ template< typename Type   // Data type of the matrix
 template< typename Other  // Data type of the static array
         , size_t Rows     // Number of rows of the static array
         , size_t Cols >   // Number of columns of the static array
-inline DynamicMatrix<Type,true,Alloc,Tag>::DynamicMatrix( const Other (&array)[Rows][Cols] )
-   : DynamicMatrix( Rows, Cols )
+inline DynamicMatrix<Type,true,Alloc,Tag>::DynamicMatrix( const Other (&array)[Rows][Cols], const Alloc& alloc )
+   : DynamicMatrix( Rows, Cols, alloc )
 {
    for( size_t j=0UL; j<Cols; ++j ) {
       for( size_t i=0UL; i<Rows; ++i ) {
@@ -4132,6 +4224,7 @@ inline DynamicMatrix<Type,true,Alloc,Tag>::DynamicMatrix( const Other (&array)[R
 /*!\brief Initialization of all matrix elements from the given std::array.
 //
 // \param array The given std::array for the initialization.
+// \param alloc Allocator for all memory allocations of this matrix.
 //
 // This constructor offers the option to directly initialize the elements of the matrix with
 // a std::array:
@@ -4155,8 +4248,8 @@ template< typename Type   // Data type of the matrix
 template< typename Other  // Data type of the std::array
         , size_t Rows     // Number of rows of the std::array
         , size_t Cols >   // Number of columns of the std::array
-inline DynamicMatrix<Type,true,Alloc,Tag>::DynamicMatrix( const std::array<std::array<Other,Cols>,Rows>& array )
-   : DynamicMatrix( Rows, Cols )
+inline DynamicMatrix<Type,true,Alloc,Tag>::DynamicMatrix( const std::array<std::array<Other,Cols>,Rows>& array, const Alloc& alloc )
+   : DynamicMatrix( Rows, Cols, alloc )
 {
    for( size_t j=0UL; j<Cols; ++j ) {
       for( size_t i=0UL; i<Rows; ++i ) {
@@ -4266,7 +4359,8 @@ template< typename Type   // Data type of the matrix
         , typename Tag >  // Type tag
 inline DynamicMatrix<Type,true,Alloc,Tag>::~DynamicMatrix()
 {
-   deallocate( v_, capacity_ );
+   blaze::destroy_n( v_, capacity_ );
+   alloc_.deallocate( v_, capacity_ );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -4815,7 +4909,8 @@ template< typename Type   // Data type of the matrix
 inline DynamicMatrix<Type,true,Alloc,Tag>&
    DynamicMatrix<Type,true,Alloc,Tag>::operator=( DynamicMatrix&& rhs ) &
 {
-   deallocate( v_, capacity_ );
+   blaze::destroy_n( v_, capacity_ );
+   alloc_.deallocate( v_, capacity_ );
 
    m_        = rhs.m_;
    mm_       = rhs.mm_;
@@ -5272,24 +5367,28 @@ void DynamicMatrix<Type,true,Alloc,Tag>::resize( size_t m, size_t n, bool preser
 
    if( preserve )
    {
-      Type* BLAZE_RESTRICT v = allocate( mm*n );
       const size_t min_m( min( m, m_ ) );
       const size_t min_n( min( n, n_ ) );
 
-      for( size_t j=0UL; j<min_n; ++j ) {
-         transfer( v_+j*mm_, v_+min_m+j*mm_, v+j*mm );
-      }
+      DynamicMatrix tmp( m, mm, n, Alloc{}, Uninitialized{} );
 
-      deallocate( v_, capacity_ );
-      v_ = v;
-      capacity_ = mm*n;
+      for( size_t j=0UL; j<min_n; ++j ) {
+         blaze::uninitialized_transfer( v_+j*mm_, v_+j*mm_+min_m, tmp.v_+j*mm );
+         blaze::uninitialized_default_construct( tmp.v_+j*mm+min_m, tmp.v_+j*mm+mm );
+      }
+      blaze::uninitialized_default_construct( tmp.v_+min_n*mm, tmp.v_+mm*n );
+
+      std::swap( capacity_, tmp.capacity_ );
+      std::swap( v_, tmp.v_ );
    }
    else if( mm*n > capacity_ )
    {
-      Type* BLAZE_RESTRICT v = allocate( mm*n );
-      deallocate( v_, capacity_ );
-      v_ = v;
-      capacity_ = mm*n;
+      DynamicMatrix tmp( m, mm, n, Alloc{}, Uninitialized{} );
+
+      blaze::uninitialized_default_construct( tmp.v_, tmp.v_+tmp.capacity_ );
+
+      std::swap( capacity_, tmp.capacity_ );
+      std::swap( v_, tmp.v_ );
    }
 
    if( IsVectorizable_v<Type> ) {
@@ -5301,6 +5400,8 @@ void DynamicMatrix<Type,true,Alloc,Tag>::resize( size_t m, size_t n, bool preser
    m_  = m;
    mm_ = mm;
    n_  = n;
+
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -5351,21 +5452,13 @@ inline void DynamicMatrix<Type,true,Alloc,Tag>::reserve( size_t elements )
 
    if( elements > capacity_ )
    {
-      // Allocating a new array
-      Type* BLAZE_RESTRICT tmp = allocate( elements );
+      DynamicMatrix tmp( m_, mm_, n_, elements, Alloc{}, Uninitialized{} );
 
-      // Initializing the new array
-      transfer( v_, v_+capacity_, tmp );
+      blaze::uninitialized_transfer( v_, v_+capacity_, tmp.v_ );
+      blaze::uninitialized_value_construct( tmp.v_+capacity_, tmp.v_+elements );
 
-      if( IsVectorizable_v<Type> ) {
-         for( size_t i=capacity_; i<elements; ++i )
-            clear( tmp[i] );
-      }
-
-      // Replacing the old array
-      deallocate( v_, capacity_ );
-      v_ = tmp;
-      capacity_ = elements;
+      std::swap( capacity_, tmp.capacity_ );
+      std::swap( v_, tmp.v_ );
    }
 }
 /*! \endcond */
@@ -5417,57 +5510,6 @@ inline void DynamicMatrix<Type,true,Alloc,Tag>::swap( DynamicMatrix& m ) noexcep
    swap( v_ , m.v_  );
 }
 /*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Aligned array allocation.
-//
-// \param size The number of elements of the given type to be allocated.
-// \return Pointer to the first element of the aligned array.
-// \exception std::bad_alloc Allocation failed.
-//
-// The allocate() function performs the allocation of aligned memory via the given allocator
-// \a Alloc. In case the allocation failed entirely or in case the pointer returned by the
-// allocator is not properly aligned (i.e. 16-byte aligned in case of SSE, 32-byte aligned
-// in case of AVX, and 64-byte aligned in case of AVX-512), a \a std::bad_alloc expresion is
-// thrown.
-*/
-template< typename Type   // Data type of the matrix
-        , typename Alloc  // Type of the allocator
-        , typename Tag >  // Type tag
-inline Type* DynamicMatrix<Type,true,Alloc,Tag>::allocate( size_t n )
-{
-   Type* const ptr = Alloc{}.allocate( n );
-
-   if( !checkAlignment( ptr ) ) {
-      BLAZE_THROW_BAD_ALLOC;
-   }
-
-   blaze::uninitialized_default_construct_n( ptr, n );
-
-   return ptr;
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Deallocation of aligned memory.
-//
-// \param address Pointer to the first element of the array to be deallocated.
-// \return void
-//
-// This function deallocates the given aligned memory that was previously allocated via the
-// allocate() function.
-*/
-template< typename Type   // Data type of the matrix
-        , typename Alloc  // Type of the allocator
-        , typename Tag >  // Type tag
-inline void DynamicMatrix<Type,true,Alloc,Tag>::deallocate( Type* ptr, size_t n ) noexcept
-{
-   blaze::destroy_n( ptr, n );
-   Alloc{}.deallocate( ptr, n );
-}
 //*************************************************************************************************
 
 
@@ -5645,7 +5687,7 @@ template< typename Type   // Data type of the matrix
         , typename Tag >  // Type tag
 inline bool DynamicMatrix<Type,true,Alloc,Tag>::isIntact() const noexcept
 {
-   if( m_ * n_ > capacity_ )
+   if( m_ > mm_ || mm_ * n_ > capacity_ )
       return false;
 
    if( IsVectorizable_v<Type> ) {
