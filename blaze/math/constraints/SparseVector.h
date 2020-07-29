@@ -55,8 +55,8 @@ namespace blaze {
 /*!\brief Constraint on the data type.
 // \ingroup math_constraints
 //
-// In case the given data type \a T is not a sparse, N-dimensional vector type, a compilation
-// error is created.
+// In case the given data type \a T is not a sparse vector type (i.e. a type that is derived
+// from the SparseVector base class), a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE(T) \
    static_assert( ::blaze::IsSparseVector_v<T>, "Non-sparse vector type detected" )
@@ -75,8 +75,8 @@ namespace blaze {
 /*!\brief Constraint on the data type.
 // \ingroup math_constraints
 //
-// In case the given data type \a T is a sparse, N-dimensional vector type, a compilation
-// error is created.
+// In case the given data type \a T is a sparse vector type (i.e. a type that is derived from
+// the SparseVector base class), a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_NOT_BE_SPARSE_VECTOR_TYPE(T) \
    static_assert( !::blaze::IsSparseVector_v<T>, "Sparse vector type detected" )
