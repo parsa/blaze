@@ -156,8 +156,8 @@ namespace blaze {
 //
 // The DynamicMatrix class template is the representation of an arbitrary sized matrix with
 // \f$ M \times N \f$ dynamically allocated elements of arbitrary type. The type of the elements,
-// the storage order and the type of the allocator of the matrix can be specified via the four
-// template parameters:
+// the storage order, the type of the allocator, and the group tag of the matrix can be specified
+// via the four template parameters:
 
    \code
    namespace blaze {

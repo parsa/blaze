@@ -142,8 +142,8 @@ namespace blaze {
 // the blaze::StaticVector and the blaze::DynamicVector class templates: Similar to the static
 // vector it uses static stack memory instead of dynamically allocated memory and similar to the
 // dynamic vector it can be resized (within the extend of the static memory). The type of the
-// elements, the maximum number of elements, the transpose flag, the alignment, and the padding
-// of the vector can be specified via the six template parameters:
+// elements, the maximum number of elements, the transpose flag, the alignment, the padding, and
+// the group tag of the vector can be specified via the six template parameters:
 
    \code
    namespace blaze {

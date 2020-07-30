@@ -117,8 +117,9 @@ namespace blaze {
 // \ingroup identity_matrix
 //
 // The IdentityMatrix class template is the representation of an immutable, arbitrary sized
-// identity matrix with \f$ N \cdot N \f$ elements of arbitrary type. The type of the elements
-// and the storage order of the matrix can be specified via the three template parameters:
+// identity matrix with \f$ N \cdot N \f$ elements of arbitrary type. The type of the elements,
+// the storage order, and the group tag of the matrix can be specified via the three template
+// parameters:
 
    \code
    namespace blaze {

@@ -152,8 +152,8 @@ namespace blaze {
 //
 // The DynamicVector class template is the representation of an arbitrary sized vector with
 // dynamically allocated elements of arbitrary type. The type of the elements, the transpose
-// flag and the type of the allocator of the vector can be specified via the four template
-// parameters:
+// flag, the type of the allocator, and the group tag of the vector can be specified via the
+// four template parameters:
 
    \code
    namespace blaze {

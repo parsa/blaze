@@ -149,8 +149,8 @@ namespace blaze {
 //
 // The StaticVector class template is the representation of a fixed-size vector with statically
 // allocated elements of arbitrary type. The type of the elements, the number of elements, the
-// transpose flag, the alignment, and the padding of the vector can be specified via the six
-// template parameters:
+// transpose flag, the alignment, the padding, and the group tag of the vector can be specified
+// via the six template parameters:
 
    \code
    namespace blaze {

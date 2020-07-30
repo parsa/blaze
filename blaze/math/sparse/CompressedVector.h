@@ -122,8 +122,8 @@ namespace blaze {
 // \ingroup compressed_vector
 //
 // The CompressedVector class is the representation of an arbitrarily sized sparse vector,
-// which stores only non-zero elements of arbitrary type. The type of the elements and the
-// transpose flag of the vector can be specified via the three template parameters:
+// which stores only non-zero elements of arbitrary type. The type of the elements, the transpose
+// flag, and the group tag of the vector can be specified via the three template parameters:
 
    \code
    namespace blaze {

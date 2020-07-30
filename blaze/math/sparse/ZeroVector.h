@@ -107,8 +107,8 @@ namespace blaze {
 // \ingroup zero_vector
 //
 // The ZeroVector class template is the representation of an immutable, arbitrary sized zero
-// vector with N elements of arbitrary type. The type of the elements and the transpose flag
-// of the vector can be specified via the three template parameters:
+// vector with N elements of arbitrary type. The type of the elements, the transpose flag, and
+// the group tag of the vector can be specified via the three template parameters:
 
    \code
    namespace blaze {

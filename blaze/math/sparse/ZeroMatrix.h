@@ -116,8 +116,9 @@ namespace blaze {
 // \ingroup zero_matrix
 //
 // The ZeroMatrix class template is the representation of an immutable, arbitrary sized zero
-// matrix with \f$ M \cdot N \f$ elements of arbitrary type. The type of the elements and the
-// storage order of the matrix can be specified via the three template parameters:
+// matrix with \f$ M \cdot N \f$ elements of arbitrary type. The type of the elements, the
+// storage order, and the group tag of the matrix can be specified via the three template
+// parameters:
 
    \code
    namespace blaze {

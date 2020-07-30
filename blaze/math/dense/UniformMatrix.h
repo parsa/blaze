@@ -119,8 +119,8 @@ namespace blaze {
 // \ingroup uniform_matrix
 //
 // The UniformMatrix class template is the representation of an arbitrary sized uniform matrix
-// with elements of arbitrary type. The type of the elements and the storage order of the matrix
-// can be specified via the three template parameters:
+// with elements of arbitrary type. The type of the elements, the storage order, and the group
+// tag of the matrix can be specified via the three template parameters:
 
    \code
    namespace blaze {

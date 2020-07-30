@@ -135,8 +135,8 @@ namespace blaze {
 // of memory allocation by itself, but it is provided with an existing array of element during
 // construction. A custom matrix can therefore be considered an alias to the existing array.
 //
-// The type of the elements, the properties of the given array of elements and the storage order
-// of the matrix can be specified via the following five template parameters:
+// The type of the elements, the properties of the given array of elements, the storage order,
+// and the group tag of the matrix can be specified via the following five template parameters:
 
    \code
    namespace blaze {

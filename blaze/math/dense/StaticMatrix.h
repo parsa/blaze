@@ -150,8 +150,8 @@ namespace blaze {
 //
 // The StaticMatrix class template is the representation of a fixed-size matrix with statically
 // allocated elements of arbitrary type. The type of the elements, the number of rows and columns,
-// the storage order of the matrix, the alignment and the padding of the matrix can be specified
-// via the seven template parameters:
+// the storage order of the matrix, the alignment, the padding, and the group tag of the matrix
+// can be specified via the seven template parameters:
 
    \code
    namespace blaze {

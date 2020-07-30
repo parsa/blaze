@@ -78,8 +78,8 @@ namespace blaze {
 // \ingroup initializer_vector
 //
 // The InitializerVector class template is a dense vector representation of an (extended)
-// initializer list of arbitrary type. The type of the elements and the transpose flag of the
-// vector can be specified via the three template parameters:
+// initializer list of arbitrary type. The type of the elements, the transpose flag, and the
+// group tag of the vector can be specified via the three template parameters:
 
    \code
    namespace blaze {

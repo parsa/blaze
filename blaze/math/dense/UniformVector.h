@@ -117,8 +117,8 @@ namespace blaze {
 // \ingroup uniform_vector
 //
 // The UniformVector class template is the representation of an arbitrary sized uniform vector
-// with elements of arbitrary type. The type of the elements and the transpose flag of the vector
-// can be specified via the three template parameters:
+// with elements of arbitrary type. The type of the elements, the transpose flag, and the group
+// tag of the vector can be specified via the three template parameters:
 
    \code
    namespace blaze {

@@ -126,8 +126,8 @@ namespace blaze {
 //
 // The CompressedMatrix class template is the representation of an arbitrary sized sparse
 // matrix with \f$ M \cdot N \f$ dynamically allocated elements of arbitrary type. The type
-// of the elements and the storage order of the matrix can be specified via the three template
-// parameters:
+// of the elements, the storage order, and the group tag of the matrix can be specified via
+// the three template parameters:
 
    \code
    namespace blaze {

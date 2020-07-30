@@ -77,8 +77,8 @@ namespace blaze {
 // \ingroup initializer_matrix
 //
 // The InitializerMatrix class template is a dense matrix representation of an (extended)
-// initializer list of arbitrary type. The type of the elements of the matrix can be specified
-// via the two template parameters:
+// initializer list of arbitrary type. The type of the elements and the group tag of the matrix
+// can be specified via the two template parameters:
 
    \code
    namespace blaze {
