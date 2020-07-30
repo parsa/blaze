@@ -717,8 +717,8 @@
    #include <blaze/Forward.h>
    \endcode
 
-// The type of the elements, the number of elements, the transpose flag, the alignment, and the
-// padding of the vector can be specified via the six template parameters:
+// The type of the elements, the number of elements, the transpose flag, the alignment, the
+// padding, and the group tag of the vector can be specified via the six template parameters:
 
    \code
    namespace blaze {
@@ -859,8 +859,8 @@
    #include <blaze/Forward.h>
    \endcode
 
-// The type of the elements and the transpose flag of the vector can be specified via the three
-// template parameters:
+// The type of the elements, the transpose flag, and the group tag of the vector can be specified
+// via the three template parameters:
 
    \code
    namespace blaze {
@@ -914,7 +914,7 @@
    \endcode
 
 // The type of the elements, the maximum number of elements, the transpose flag, the alignment,
-// and the padding of the vector can be specified via the six template parameters:
+// the padding, and the group tag of the vector can be specified via the six template parameters:
 
    \code
    namespace blaze {
@@ -1061,8 +1061,8 @@
    #include <blaze/Forward.h>
    \endcode
 
-// The type of the elements, the properties of the given array of elements and the transpose
-// flag of the vector can be specified via the following five template parameters:
+// The type of the elements, the properties of the given array of elements, the transpose flag,
+// and the group tag of the vector can be specified via the following five template parameters:
 
    \code
    namespace blaze {
@@ -1307,8 +1307,8 @@
    #include <blaze/Forward.h>
    \endcode
 
-// The type of the elements and the transpose flag of the vector can be specified via the three
-// template parameters:
+// The type of the elements, the transpose flag, and the group tag of the vector can be specified
+// via the three template parameters:
 
    \code
    namespace blaze {
@@ -1363,8 +1363,8 @@
    #include <blaze/Forward.h>
    \endcode
 
-// The type of the elements and the transpose flag of the vector can be specified via the three
-// template parameters:
+// The type of the elements, the transpose flag, and the group tag of the vector can be specified
+// via the three template parameters:
 
    \code
    namespace blaze {
@@ -1414,8 +1414,8 @@
    #include <blaze/Forward.h>
    \endcode
 
-// The type of the elements and the transpose flag of the vector can be specified via the three
-// template parameters:
+// The type of the elements, the transpose flag, and the group tag of the vector can be specified
+// via the three template parameters:
 
    \code
    namespace blaze {
@@ -3632,7 +3632,8 @@
    \endcode
 
 // The type of the elements, the number of rows and columns, the storage order of the matrix,
-// the alignment and the padding of the matrix can be specified via the seven template parameters:
+// the alignment, the padding, and the group tag of the matrix can be specified via the seven
+// template parameters:
 
    \code
    namespace blaze {
@@ -3775,8 +3776,8 @@
    #include <blaze/Forward.h>
    \endcode
 
-// The type of the elements and the storage order of the matrix can be specified via the three
-// template parameters:
+// The type of the elements, the storage order, and the group tag of the matrix can be specified
+// via the three template parameters:
 
    \code
    namespace blaze {
@@ -3832,8 +3833,8 @@
    \endcode
 
 // The type of the elements, the maximum number of rows and columns, the storage order of the
-// matrix, the alignment and the padding of the matrix can be specified via the seven template
-// parameters:
+// matrix, the alignment, the padding, and the group tag of the matrix can be specified via the
+// seven template parameters:
 
    \code
    namespace blaze {
@@ -3981,8 +3982,8 @@
    #include <blaze/Forward.h>
    \endcode
 
-// The type of the elements, the properties of the given array of elements and the storage order
-// of the matrix can be specified via the following five template parameters:
+// The type of the elements, the properties of the given array of elements, the storage order,
+// and the group tag of the matrix can be specified via the following five template parameters:
 
    \code
    namespace blaze {
@@ -4232,8 +4233,8 @@
    #include <blaze/Forward.h>
    \endcode
 
-// The type of the elements and the storage order of the matrix can be specified via the three
-// template parameters:
+// The type of the elements, the storage order, and the group tag of the matrix can be specified
+// via the three template parameters:
 
    \code
    namespace blaze {
@@ -4288,8 +4289,8 @@
    #include <blaze/Forward.h>
    \endcode
 
-// The type of the elements and the storage order of the matrix can be specified via the three
-// template parameters:
+// The type of the elements, the storage order, and the group tag of the matrix can be specified
+// via the three template parameters:
 
    \code
    namespace blaze {
@@ -4392,8 +4393,8 @@
    #include <blaze/Forward.h>
    \endcode
 
-// The type of the elements and the storage order of the matrix can be specified via the three
-// template parameters:
+// The type of the elements, the storage order, and the group tag of the matrix can be specified
+// via the three template parameters:
 
    \code
    namespace blaze {
