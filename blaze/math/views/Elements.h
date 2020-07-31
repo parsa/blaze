@@ -892,12 +892,12 @@ inline decltype(auto) elements( const VecVecKronExpr<VT>& vector, REAs... args )
    const size_t N( rhs.size() );
 
    const auto lhsIndices( [N]( size_t i ) {
-      static constexpr size_t indices[] = { I, Is... };
+      constexpr size_t indices[] = { I, Is... };
       return indices[i] / N;
    } );
 
    const auto rhsIndices( [N]( size_t i ) {
-      static constexpr size_t indices[] = { I, Is... };
+      constexpr size_t indices[] = { I, Is... };
       return indices[i] % N;
    } );
 
@@ -1277,7 +1277,7 @@ inline decltype(auto) elements( const VecRepeatExpr<VT,CRAs...>& vector, REAs...
    BLAZE_FUNCTION_TRACE;
 
    if( isChecked( args... ) ) {
-      static constexpr size_t indices[] = { I, Is... };
+      constexpr size_t indices[] = { I, Is... };
       for( size_t i=0UL; i<sizeof...(Is)+1UL; ++i ) {
          if( (*vector).size() <= indices[i] ) {
             BLAZE_THROW_INVALID_ARGUMENT( "Invalid element access index" );
@@ -1286,7 +1286,7 @@ inline decltype(auto) elements( const VecRepeatExpr<VT,CRAs...>& vector, REAs...
    }
 
    auto lambda = [size=(*vector).operand().size()]( size_t i ) {
-      static constexpr size_t indices[] = { I, Is... };
+      constexpr size_t indices[] = { I, Is... };
       return indices[i] % size;
    };
 
@@ -1442,7 +1442,7 @@ inline decltype(auto) elements( VT&& e, REAs... args )
    BLAZE_FUNCTION_TRACE;
 
    if( isChecked( args... ) ) {
-      static constexpr size_t indices[] = { I, Is... };
+      constexpr size_t indices[] = { I, Is... };
       for( size_t i=0UL; i<sizeof...(Is)+1UL; ++i ) {
          if( e.size() <= indices[i] ) {
             BLAZE_THROW_INVALID_ARGUMENT( "Invalid element access index" );

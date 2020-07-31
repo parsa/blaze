@@ -2231,7 +2231,7 @@ inline decltype(auto) rows( MT&& sm, RRAs... args )
    BLAZE_FUNCTION_TRACE;
 
    if( isChecked( args... ) ) {
-      static constexpr size_t indices[] = { I, Is... };
+      constexpr size_t indices[] = { I, Is... };
       for( size_t i=0UL; i<sizeof...(Is)+1UL; ++i ) {
          if( sm.rows() <= indices[i] ) {
             BLAZE_THROW_INVALID_ARGUMENT( "Invalid row access index" );
@@ -2512,7 +2512,7 @@ inline decltype(auto) columns( MT&& sm, RCAs... args )
    BLAZE_FUNCTION_TRACE;
 
    if( isChecked( args... ) ) {
-      static constexpr size_t indices[] = { I, Is... };
+      constexpr size_t indices[] = { I, Is... };
       for( size_t j=0UL; j<sizeof...(Is)+1UL; ++j ) {
          if( sm.columns() <= indices[j] ) {
             BLAZE_THROW_INVALID_ARGUMENT( "Invalid column access index" );

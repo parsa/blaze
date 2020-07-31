@@ -942,12 +942,12 @@ inline decltype(auto) columns( const MatMatKronExpr<MT>& matrix, RCAs... args )
    const auto rhsRows( [M]( size_t i ){ return i % M; } );
 
    const auto lhsColumns( [N]( size_t i ) {
-      static constexpr size_t indices[] = { I, Is... };
+      constexpr size_t indices[] = { I, Is... };
       return indices[i] / N;
    } );
 
    const auto rhsColumns( [N]( size_t i ) {
-      static constexpr size_t indices[] = { I, Is... };
+      constexpr size_t indices[] = { I, Is... };
       return indices[i] % N;
    } );
 
@@ -1413,7 +1413,7 @@ inline decltype(auto) columns( const VecExpandExpr<MT,CEAs...>& matrix, RCAs... 
    BLAZE_FUNCTION_TRACE;
 
    if( isChecked( args... ) ) {
-      static constexpr size_t indices[] = { CCAs... };
+      constexpr size_t indices[] = { CCAs... };
       for( size_t i=0UL; i<sizeof...(CCAs); ++i ) {
          if( (*matrix).columns() <= indices[i] ) {
             BLAZE_THROW_INVALID_ARGUMENT( "Invalid column access index" );
@@ -1562,7 +1562,7 @@ inline decltype(auto) columns( const MatRepeatExpr<MT,CRAs...>& matrix, RCAs... 
    BLAZE_FUNCTION_TRACE;
 
    if( isChecked( args... ) ) {
-      static constexpr size_t indices[] = { I, Is... };
+      constexpr size_t indices[] = { I, Is... };
       for( size_t i=0UL; i<sizeof...(Is)+1UL; ++i ) {
          if( (*matrix).columns() <= indices[i] ) {
             BLAZE_THROW_INVALID_ARGUMENT( "Invalid column access index" );
@@ -1728,7 +1728,7 @@ inline decltype(auto) columns( MT&& c, RCAs... args )
    BLAZE_FUNCTION_TRACE;
 
    if( isChecked( args... ) ) {
-      static constexpr size_t indices[] = { I, Is... };
+      constexpr size_t indices[] = { I, Is... };
       for( size_t i=0UL; i<sizeof...(Is)+1UL; ++i ) {
          if( c.columns() <= indices[i] ) {
             BLAZE_THROW_INVALID_ARGUMENT( "Invalid column access index" );
