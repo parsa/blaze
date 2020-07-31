@@ -249,7 +249,7 @@ class Rand< UpperMatrix<MT,SO,DF> >
       }
 
       for( size_t i=0UL; i<n; ++i ) {
-         const Indices indices( i, n-1UL, dist[i] );
+         const Indices<size_t> indices( i, n-1UL, dist[i] );
          for( size_t j : indices ) {
             matrix.append( i, j, rand<ET>() );
          }
@@ -293,7 +293,7 @@ class Rand< UpperMatrix<MT,SO,DF> >
       }
 
       for( size_t j=0UL; j<n; ++j ) {
-         const Indices indices( 0UL, j, dist[j] );
+         const Indices<size_t> indices( 0UL, j, dist[j] );
          for( size_t i : indices ) {
             matrix.append( i, j, rand<ET>() );
          }
@@ -356,7 +356,7 @@ class Rand< UpperMatrix<MT,SO,DF> >
       }
 
       for( size_t i=0UL; i<n; ++i ) {
-         const Indices indices( i, n-1UL, dist[i] );
+         const Indices<size_t> indices( i, n-1UL, dist[i] );
          for( size_t j : indices ) {
             matrix.append( i, j, rand<ET>( min, max ) );
          }
@@ -404,7 +404,7 @@ class Rand< UpperMatrix<MT,SO,DF> >
       }
 
       for( size_t j=0UL; j<n; ++j ) {
-         const Indices indices( 0UL, j, dist[j] );
+         const Indices<size_t> indices( 0UL, j, dist[j] );
          for( size_t i : indices ) {
             matrix.append( i, j, rand<ET>( min, max ) );
          }

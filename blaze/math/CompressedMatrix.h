@@ -211,7 +211,7 @@ class Rand< CompressedMatrix<Type,SO,Tag> >
       }
 
       for( size_t i=0UL; i<m; ++i ) {
-         const Indices indices( 0UL, n-1UL, dist[i] );
+         const Indices<size_t> indices( 0UL, n-1UL, dist[i] );
          for( size_t j : indices ) {
             matrix.append( i, j, rand<Type>() );
          }
@@ -252,7 +252,7 @@ class Rand< CompressedMatrix<Type,SO,Tag> >
       }
 
       for( size_t j=0UL; j<n; ++j ) {
-         const Indices indices( 0UL, m-1UL, dist[j] );
+         const Indices<size_t> indices( 0UL, m-1UL, dist[j] );
          for( size_t i : indices ) {
             matrix.append( i, j, rand<Type>() );
          }
@@ -320,7 +320,7 @@ class Rand< CompressedMatrix<Type,SO,Tag> >
       }
 
       for( size_t i=0UL; i<m; ++i ) {
-         const Indices indices( 0UL, n-1UL, dist[i] );
+         const Indices<size_t> indices( 0UL, n-1UL, dist[i] );
          for( size_t j : indices ) {
             matrix.append( i, j, rand<Type>( min, max ) );
          }
@@ -365,7 +365,7 @@ class Rand< CompressedMatrix<Type,SO,Tag> >
       }
 
       for( size_t j=0UL; j<n; ++j ) {
-         const Indices indices( 0UL, m-1UL, dist[j] );
+         const Indices<size_t> indices( 0UL, m-1UL, dist[j] );
          for( size_t i : indices ) {
             matrix.append( i, j, rand<Type>( min, max ) );
          }

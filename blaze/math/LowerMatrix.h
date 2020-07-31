@@ -250,7 +250,7 @@ class Rand< LowerMatrix<MT,SO,DF> >
       }
 
       for( size_t i=0UL; i<n; ++i ) {
-         const Indices indices( 0UL, i, dist[i] );
+         const Indices<size_t> indices( 0UL, i, dist[i] );
          for( size_t j : indices ) {
             matrix.append( i, j, rand<ET>() );
          }
@@ -294,7 +294,7 @@ class Rand< LowerMatrix<MT,SO,DF> >
       }
 
       for( size_t j=0UL; j<n; ++j ) {
-         const Indices indices( j, n-1UL, dist[j] );
+         const Indices<size_t> indices( j, n-1UL, dist[j] );
          for( size_t i : indices ) {
             matrix.append( i, j, rand<ET>() );
          }
@@ -357,7 +357,7 @@ class Rand< LowerMatrix<MT,SO,DF> >
       }
 
       for( size_t i=0UL; i<n; ++i ) {
-         const Indices indices( 0UL, i, dist[i] );
+         const Indices<size_t> indices( 0UL, i, dist[i] );
          for( size_t j : indices ) {
             matrix.append( i, j, rand<ET>( min, max ) );
          }
@@ -405,7 +405,7 @@ class Rand< LowerMatrix<MT,SO,DF> >
       }
 
       for( size_t j=0UL; j<n; ++j ) {
-         const Indices indices( j, n-1UL, dist[j] );
+         const Indices<size_t> indices( j, n-1UL, dist[j] );
          for( size_t i : indices ) {
             matrix.append( i, j, rand<ET>( min, max ) );
          }

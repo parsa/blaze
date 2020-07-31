@@ -236,7 +236,7 @@ class Rand< DiagonalMatrix<MT,SO,DF> >
       matrix.reset();
       matrix.reserve( nonzeros );
 
-      Indices indices( 0UL, n-1UL, nonzeros );
+      Indices<size_t> indices( 0UL, n-1UL, nonzeros );
       size_t i( 0UL );
 
       for( size_t index : indices ) {
@@ -296,7 +296,7 @@ class Rand< DiagonalMatrix<MT,SO,DF> >
       matrix.reset();
       matrix.reserve( nonzeros );
 
-      Indices indices( 0UL, n-1UL, nonzeros );
+      Indices<size_t> indices( 0UL, n-1UL, nonzeros );
       size_t i( 0UL );
 
       for( size_t index : indices ) {

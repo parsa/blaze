@@ -250,7 +250,7 @@ class Rand< StrictlyUpperMatrix<MT,SO,DF> >
       }
 
       for( size_t i=0UL; i<n-1UL; ++i ) {
-         const Indices indices( i+1UL, n-1UL, dist[i] );
+         const Indices<size_t> indices( i+1UL, n-1UL, dist[i] );
          for( size_t j : indices ) {
             matrix.append( i, j, rand<ET>() );
          }
@@ -297,7 +297,7 @@ class Rand< StrictlyUpperMatrix<MT,SO,DF> >
       }
 
       for( size_t j=1UL; j<n; ++j ) {
-         const Indices indices( 0UL, j-1UL, dist[j] );
+         const Indices<size_t> indices( 0UL, j-1UL, dist[j] );
          for( size_t i : indices ) {
             matrix.append( i, j, rand<ET>() );
          }
@@ -360,7 +360,7 @@ class Rand< StrictlyUpperMatrix<MT,SO,DF> >
       }
 
       for( size_t i=0UL; i<n-1UL; ++i ) {
-         const Indices indices( i+1UL, n-1UL, dist[i] );
+         const Indices<size_t> indices( i+1UL, n-1UL, dist[i] );
          for( size_t j : indices ) {
             matrix.append( i, j, rand<ET>( min, max ) );
          }
@@ -411,7 +411,7 @@ class Rand< StrictlyUpperMatrix<MT,SO,DF> >
       }
 
       for( size_t j=1UL; j<n; ++j ) {
-         const Indices indices( 0UL, j-1UL, dist[j] );
+         const Indices<size_t> indices( 0UL, j-1UL, dist[j] );
          for( size_t i : indices ) {
             matrix.append( i, j, rand<ET>( min, max ) );
          }

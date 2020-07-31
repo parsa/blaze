@@ -190,7 +190,7 @@ class Rand< CompressedVector<Type,TF,Tag> >
       vector.reset();
       vector.reserve( nonzeros );
 
-      const Indices indices( 0UL, vector.size()-1UL, nonzeros );
+      const Indices<size_t> indices( 0UL, vector.size()-1UL, nonzeros );
 
       for( size_t index : indices ) {
          vector.append( index, rand<Type>() );
@@ -245,7 +245,7 @@ class Rand< CompressedVector<Type,TF,Tag> >
       vector.reset();
       vector.reserve( nonzeros );
 
-      const Indices indices( 0UL, vector.size()-1UL, nonzeros );
+      const Indices<size_t> indices( 0UL, vector.size()-1UL, nonzeros );
 
       for( size_t index : indices ) {
          vector.append( index, rand<Type>( min, max ) );

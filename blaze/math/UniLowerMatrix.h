@@ -251,7 +251,7 @@ class Rand< UniLowerMatrix<MT,SO,DF> >
       }
 
       for( size_t i=1UL; i<n; ++i ) {
-         const Indices indices( 0UL, i-1UL, dist[i] );
+         const Indices<size_t> indices( 0UL, i-1UL, dist[i] );
          for( size_t j : indices ) {
             matrix.append( i, j, rand<ET>() );
          }
@@ -295,7 +295,7 @@ class Rand< UniLowerMatrix<MT,SO,DF> >
       }
 
       for( size_t j=0UL; j<n-1UL; ++j ) {
-         const Indices indices( j+1UL, n-1UL, dist[j] );
+         const Indices<size_t> indices( j+1UL, n-1UL, dist[j] );
          for( size_t i : indices ) {
             matrix.append( i, j, rand<ET>() );
          }
@@ -361,7 +361,7 @@ class Rand< UniLowerMatrix<MT,SO,DF> >
       }
 
       for( size_t i=1UL; i<n; ++i ) {
-         const Indices indices( 0UL, i-1UL, dist[i] );
+         const Indices<size_t> indices( 0UL, i-1UL, dist[i] );
          for( size_t j : indices ) {
             matrix.append( i, j, rand<ET>( min, max ) );
          }
@@ -409,7 +409,7 @@ class Rand< UniLowerMatrix<MT,SO,DF> >
       }
 
       for( size_t j=0UL; j<n-1UL; ++j ) {
-         const Indices indices( j+1UL, n-1UL, dist[j] );
+         const Indices<size_t> indices( j+1UL, n-1UL, dist[j] );
          for( size_t i : indices ) {
             matrix.append( i, j, rand<ET>( min, max ) );
          }
