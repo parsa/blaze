@@ -2011,6 +2011,10 @@ constexpr size_t HybridMatrix<Type,M,N,SO,AF,PF,Tag>::capacity( size_t i ) const
 /*!\brief Returns the total number of non-zero elements in the matrix
 //
 // \return The number of non-zero elements in the matrix.
+//
+// This function returns the number of non-zero elements in the matrix (i.e. the elements that
+// compare unequal to their default value). Note that the number of non-zero elements is always
+// less than or equal to the total number of elements in the matrix.
 */
 template< typename Type     // Data type of the matrix
         , size_t M          // Number of rows
@@ -2025,7 +2029,7 @@ inline size_t HybridMatrix<Type,M,N,SO,AF,PF,Tag>::nonZeros() const
 
    for( size_t i=0UL; i<m_; ++i )
       for( size_t j=0UL; j<n_; ++j )
-         if( !isDefault( v_[i*NN+j] ) )
+         if( !isDefault<strict>( v_[i*NN+j] ) )
             ++nonzeros;
 
    return nonzeros;
@@ -2039,10 +2043,11 @@ inline size_t HybridMatrix<Type,M,N,SO,AF,PF,Tag>::nonZeros() const
 // \param i The index of the row/column.
 // \return The number of non-zero elements of row/column \a i.
 //
-// This function returns the current number of non-zero elements in the specified row/column.
-// In case the storage order is set to \a rowMajor the function returns the number of non-zero
-// elements in row \a i, in case the storage flag is set to \a columnMajor the function returns
-// the number of non-zero elements in column \a i.
+// This function returns the current number of non-zero elements in the specified row/column
+// (i.e. the elements that compare unequal to their default value). In case the storage order
+// is set to \a rowMajor the function returns the number of non-zero elements in row \a i, in
+// case the storage flag is set to \a columnMajor the function returns the number of non-zero
+// elements in column \a i.
 */
 template< typename Type     // Data type of the matrix
         , size_t M          // Number of rows
@@ -2059,7 +2064,7 @@ inline size_t HybridMatrix<Type,M,N,SO,AF,PF,Tag>::nonZeros( size_t i ) const
    size_t nonzeros( 0UL );
 
    for( size_t j=i*NN; j<jend; ++j )
-      if( !isDefault( v_[j] ) )
+      if( !isDefault<strict>( v_[j] ) )
          ++nonzeros;
 
    return nonzeros;
@@ -5416,6 +5421,10 @@ constexpr size_t HybridMatrix<Type,M,N,true,AF,PF,Tag>::capacity( size_t j ) con
 /*!\brief Returns the total number of non-zero elements in the matrix
 //
 // \return The number of non-zero elements in the dense matrix.
+//
+// This function returns the number of non-zero elements in the matrix (i.e. the elements that
+// compare unequal to their default value). Note that the number of non-zero elements is always
+// less than or equal to the total number of elements in the matrix.
 */
 template< typename Type     // Data type of the matrix
         , size_t M          // Number of rows
@@ -5429,7 +5438,7 @@ inline size_t HybridMatrix<Type,M,N,true,AF,PF,Tag>::nonZeros() const
 
    for( size_t j=0UL; j<n_; ++j )
       for( size_t i=0UL; i<m_; ++i )
-         if( !isDefault( v_[i+j*MM] ) )
+         if( !isDefault<strict>( v_[i+j*MM] ) )
             ++nonzeros;
 
    return nonzeros;
@@ -5444,6 +5453,9 @@ inline size_t HybridMatrix<Type,M,N,true,AF,PF,Tag>::nonZeros() const
 //
 // \param j The index of the column.
 // \return The number of non-zero elements of column \a j.
+//
+// This function returns the current number of non-zero elements in the specified column (i.e.
+// the elements that compare unequal to their default value).
 */
 template< typename Type     // Data type of the matrix
         , size_t M          // Number of rows
@@ -5459,7 +5471,7 @@ inline size_t HybridMatrix<Type,M,N,true,AF,PF,Tag>::nonZeros( size_t j ) const
    size_t nonzeros( 0UL );
 
    for( size_t i=j*MM; i<iend; ++i )
-      if( !isDefault( v_[i] ) )
+      if( !isDefault<strict>( v_[i] ) )
          ++nonzeros;
 
    return nonzeros;

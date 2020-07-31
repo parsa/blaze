@@ -666,6 +666,10 @@ inline size_t InitializerMatrix<Type,Tag>::capacity( size_t i ) const noexcept
 /*!\brief Returns the total number of non-zero elements in the matrix
 //
 // \return The number of non-zero elements in the dense matrix.
+//
+// This function returns the number of non-zero elements in the matrix (i.e. the elements that
+// compare unequal to their default value). Note that the number of non-zero elements is always
+// less than or equal to the total number of elements in the matrix.
 */
 template< typename Type   // Data type of the matrix
         , typename Tag >  // Type tag
@@ -675,7 +679,7 @@ inline size_t InitializerMatrix<Type,Tag>::nonZeros() const
 
    for( const auto& rowList : list_ ) {
       for( size_t i=0UL; i<rowList.size(); ++i ) {
-         if( !isDefault( rowList.begin()[i] ) )
+         if( !isDefault<strict>( rowList.begin()[i] ) )
             ++nonzeros;
       }
    }
@@ -691,7 +695,8 @@ inline size_t InitializerMatrix<Type,Tag>::nonZeros() const
 // \param i The index of the row.
 // \return The number of non-zero elements of row \a i.
 //
-// This function returns the current number of non-zero elements in the specified row.
+// This function returns the current number of non-zero elements in the specified row (i.e. the
+// elements that compare unequal to their default value).
 */
 template< typename Type   // Data type of the matrix
         , typename Tag >  // Type tag

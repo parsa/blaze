@@ -1731,8 +1731,9 @@ constexpr size_t StaticVector<Type,N,TF,AF,PF,Tag>::capacity() noexcept
 //
 // \return The number of non-zero elements in the vector.
 //
-// Note that the number of non-zero elements is always less than or equal to the current size
-// of the vector.
+// This function returns the number of non-zero elements in the vector (i.e. the elements that
+// compare unequal to their default value). Note that the number of non-zero elements is always
+// less than or equal to the current size of the vector.
 */
 template< typename Type     // Data type of the vector
         , size_t N          // Number of elements
@@ -1745,7 +1746,7 @@ inline size_t StaticVector<Type,N,TF,AF,PF,Tag>::nonZeros() const
    size_t nonzeros( 0 );
 
    for( size_t i=0UL; i<N; ++i ) {
-      if( !isDefault( v_[i] ) )
+      if( !isDefault<strict>( v_[i] ) )
          ++nonzeros;
    }
 

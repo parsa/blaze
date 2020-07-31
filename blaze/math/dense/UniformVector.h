@@ -905,15 +905,16 @@ constexpr size_t UniformVector<Type,TF,Tag>::capacity() const noexcept
 //
 // \return The number of non-zero elements in the vector.
 //
-// Note that the number of non-zero elements is always less than or equal to the current size
-// of the vector.
+// This function returns the number of non-zero elements in the vector (i.e. the elements that
+// compare unequal to their default value). Note that the number of non-zero elements is always
+// less than or equal to the current size of the vector.
 */
 template< typename Type   // Data type of the vector
         , bool TF         // Transpose flag
         , typename Tag >  // Type tag
 inline size_t UniformVector<Type,TF,Tag>::nonZeros() const
 {
-   if( size_ == 0UL || isDefault( value_ ) )
+   if( size_ == 0UL || isDefault<strict>( value_ ) )
       return 0UL;
    else
       return size_;

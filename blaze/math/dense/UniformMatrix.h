@@ -1067,13 +1067,17 @@ constexpr size_t UniformMatrix<Type,SO,Tag>::capacity( size_t i ) const noexcept
 /*!\brief Returns the total number of non-zero elements in the matrix
 //
 // \return The number of non-zero elements in the dense matrix.
+//
+// This function returns the number of non-zero elements in the matrix (i.e. the elements that
+// compare unequal to their default value). Note that the number of non-zero elements is always
+// less than or equal to the total number of elements in the matrix.
 */
 template< typename Type   // Data type of the matrix
         , bool SO         // Storage order
         , typename Tag >  // Type tag
 inline size_t UniformMatrix<Type,SO,Tag>::nonZeros() const
 {
-   if( m_ == 0UL || n_ == 0UL || isDefault( value_ ) )
+   if( m_ == 0UL || n_ == 0UL || isDefault<strict>( value_ ) )
       return 0UL;
    else
       return m_ * n_;
@@ -1087,10 +1091,11 @@ inline size_t UniformMatrix<Type,SO,Tag>::nonZeros() const
 // \param i The index of the row/column.
 // \return The number of non-zero elements of row/column \a i.
 //
-// This function returns the current number of non-zero elements in the specified row/column.
-// In case the storage order is set to \a rowMajor the function returns the number of non-zero
-// elements in row \a i, in case the storage flag is set to \a columnMajor the function returns
-// the number of non-zero elements in column \a i.
+// This function returns the current number of non-zero elements in the specified row/column
+// (i.e. the elements that compare unequal to their default value). In case the storage order
+// is set to \a rowMajor the function returns the number of non-zero elements in row \a i, in
+// case the storage flag is set to \a columnMajor the function returns the number of non-zero
+// elements in column \a i.
 */
 template< typename Type   // Data type of the matrix
         , bool SO         // Storage order
@@ -1103,7 +1108,7 @@ inline size_t UniformMatrix<Type,SO,Tag>::nonZeros( size_t i ) const
    BLAZE_USER_ASSERT( !SO || i < n_, "Invalid dense matrix row access index" );
 
    const size_t tmp( SO ? m_ : n_ );
-   if( tmp == 0UL || isDefault( value_ ) )
+   if( tmp == 0UL || isDefault<strict>( value_ ) )
       return 0UL;
    else
       return tmp;

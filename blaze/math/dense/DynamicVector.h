@@ -1655,8 +1655,9 @@ inline size_t DynamicVector<Type,TF,Alloc,Tag>::capacity() const noexcept
 //
 // \return The number of non-zero elements in the vector.
 //
-// Note that the number of non-zero elements is always less than or equal to the current size
-// of the vector.
+// This function returns the number of non-zero elements in the vector (i.e. the elements that
+// compare unequal to their default value). Note that the number of non-zero elements is always
+// less than or equal to the current size of the vector.
 */
 template< typename Type   // Data type of the vector
         , bool TF         // Transpose flag
@@ -1667,7 +1668,7 @@ inline size_t DynamicVector<Type,TF,Alloc,Tag>::nonZeros() const
    size_t nonzeros( 0 );
 
    for( size_t i=0UL; i<size_; ++i ) {
-      if( !isDefault( v_[i] ) )
+      if( !isDefault<strict>( v_[i] ) )
          ++nonzeros;
    }
 
