@@ -16531,11 +16531,11 @@
 // Sometimes it may be desirable to separate two or more distinct groups of vectors and matrices,
 // for instance in order to allow operations only within a group and to prevent operations across
 // groups. This goal can be achieved by means of tags. All vector and matrix classes provide a
-// template parameter to specify a tag (for instance, the third template parameter for
+// template parameter to specify a tag (for instance, the fourth template parameter for
 // blaze::DynamicVector and the sixth template parameter for blaze::StaticVector):
 
    \code
-   template< typename Type, bool TF, typename Tag >
+   template< typename Type, bool TF, typename Alloc, typename Tag >
    class DynamicVector;
 
    template< typename Type, size_t N, bool TF, AlignmentFlag AF, PaddingFlag PF, typename Tag >
@@ -16548,12 +16548,13 @@
 
    \code
    using blaze::DynamicVector;
+   using blaze::AlignedAllocator;
    using blaze::Group0;
    using blaze::Group1;
    using blaze::columnVector;
 
-   DynamicVector<int,columnVector,Group0> a0, b0;
-   DynamicVector<int,columnVector,Group1> a1, b1;
+   DynamicVector<int,columnVector,AlignedAllocator<int>,Group0> a0, b0;
+   DynamicVector<int,columnVector,AlignedAllocator<int>,Group1> a1, b1;
 
    a0 + b0;  // Compiles, a0 and b0 are in the same group (Group0)
    a1 + b1;  // Compiles, a1 and b1 are in the same group (Group1)
@@ -16618,11 +16619,11 @@
 // meters and seconds:
 
    \code
-   const DynamicVector<int,rowVector,Meter> m1{ 1, 2, 3 };
-   const DynamicVector<int,rowVector,Meter> m2{ 4, 5, 6 };
+   const DynamicVector<int,rowVector,AlignedAllocator<int>,Meter> m1{ 1, 2, 3 };
+   const DynamicVector<int,rowVector,AlignedAllocator<int>,Meter> m2{ 4, 5, 6 };
 
-   const DynamicVector<int,rowVector,Second> s1{ 1, 2, 3 };
-   const DynamicVector<int,rowVector,Second> s2{ 4, 5, 6 };
+   const DynamicVector<int,rowVector,AlignedAllocator<int>,Second> s1{ 1, 2, 3 };
+   const DynamicVector<int,rowVector,AlignedAllocator<int>,Second> s2{ 4, 5, 6 };
 
    m1 + m2;  // Compiles and results in vector tagged with 'Meter'
    s1 + s2;  // Compiles and results in vector tagged with 'Second'
