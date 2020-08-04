@@ -859,24 +859,26 @@
    #include <blaze/Forward.h>
    \endcode
 
-// The type of the elements, the transpose flag, and the group tag of the vector can be specified
-// via the three template parameters:
+// The type of the elements, the transpose flag, the type of the allocator, and the group tag of
+// the vector can be specified via the four template parameters:
 
    \code
    namespace blaze {
 
-   template< typename Type, bool TF, typename Tag >
+   template< typename Type, bool TF, typename Alloc, typename Tag >
    class DynamicVector;
 
    } // namespace blaze
    \endcode
 
-//  - \c Type: specifies the type of the vector elements. DynamicVector can be used with any
-//             non-cv-qualified, non-reference, non-pointer element type.
-//  - \c TF  : specifies whether the vector is a row vector (\c blaze::rowVector) or a column
-//             vector (\c blaze::columnVector). The default value is \c blaze::defaultTransposeFlag.
-//  - \c Tag : optional type parameter to tag the vector. The default type is \c blaze::Group0.
-//             See \ref grouping_tagging for details.
+//  - \c Type : specifies the type of the vector elements. DynamicVector can be used with any
+//              non-cv-qualified, non-reference, non-pointer element type.
+//  - \c TF   : specifies whether the vector is a row vector (\c blaze::rowVector) or a column
+//              vector (\c blaze::columnVector). The default value is \c blaze::defaultTransposeFlag.
+//  - \c Alloc: specifies the type of allocator used to allocate dynamic memory. The default type
+//              of allocator is \c blaze::AlignedAllocator.
+//  - \c Tag  : optional type parameter to tag the vector. The default type is \c blaze::Group0.
+//              See \ref grouping_tagging for details.
 //
 // The blaze::DynamicVector is the default choice for all kinds of dense vectors and the best
 // choice for medium to large vectors. Its size can be modified at runtime:
@@ -892,6 +894,19 @@
    blaze::DynamicVector<double,blaze::rowVector> c;
    \endcode
 
+// \subsubsection vector_types_dynamic_vector_allocators Allocators
+//
+// Via the third template parameter it is possible to customize the memory allocation of a
+// \c blaze::DynamicVector. The provided allocator is expected to represent an implementation of
+// the allocator concept of the standard library (see for instance
+// <a href="https://en.cppreference.com/w/cpp/container/vector">std::vector</a> and
+// <a href="https://en.cppreference.com/w/cpp/memory/allocator">std::allocator</a>). In
+// addition, the provided allocator is also required to provide properly (over-)aligned memory
+// for fundamental and complex numbers. For instance, in case SSE vectorization is possible, the
+// returned memory must be at least 16-byte aligned. In case AVX is active, the memory must be at
+// least 32-byte aligned, and in case of AVX-512 the memory must be even 64-byte aligned.
+//
+//
 // \n \subsection vector_types_hybrid_vector HybridVector
 //
 // The blaze::HybridVector class template combines the advantages of the blaze::StaticVector and
@@ -3776,24 +3791,26 @@
    #include <blaze/Forward.h>
    \endcode
 
-// The type of the elements, the storage order, and the group tag of the matrix can be specified
-// via the three template parameters:
+// The type of the elements, the storage order, the type of the allocator, and the group tag of
+// the matrix can be specified via the three template parameters:
 
    \code
    namespace blaze {
 
-   template< typename Type, bool SO, typename Tag >
+   template< typename Type, bool SO, typename Alloc, typename Tag >
    class DynamicMatrix;
 
    } // namespace blaze
    \endcode
 
-//  - \c Type: specifies the type of the matrix elements. DynamicMatrix can be used with any
-//             non-cv-qualified, non-reference element type.
-//  - \c SO  : specifies the storage order (\c blaze::rowMajor, \c blaze::columnMajor) of the
-//             matrix. The default value is \c blaze::defaultStorageOrder.
-//  - \c Tag : optional type parameter to tag the matrix. The default type is \c blaze::Group0.
-//             See \ref grouping_tagging for details.
+//  - \c Type : specifies the type of the matrix elements. DynamicMatrix can be used with any
+//              non-cv-qualified, non-reference element type.
+//  - \c SO   : specifies the storage order (\c blaze::rowMajor, \c blaze::columnMajor) of the
+//              matrix. The default value is \c blaze::defaultStorageOrder.
+//  - \c Alloc: specifies the type of allocator used to allocate dynamic memory. The default type
+//              of allocator is \c blaze::AlignedAllocator.
+//  - \c Tag  : optional type parameter to tag the matrix. The default type is \c blaze::Group0.
+//              See \ref grouping_tagging for details.
 //
 // The blaze::DynamicMatrix is the default choice for all kinds of dense matrices and the best
 // choice for medium to large matrices. The number of rows and columns can be modified at runtime:
@@ -3809,6 +3826,19 @@
    blaze::DynamicMatrix<double,blaze::columnMajor> C;
    \endcode
 
+// \subsubsection matrix_types_dynamic_matrix_allocators Allocators
+//
+// Via the third template parameter it is possible to customize the memory allocation of a
+// \c blaze::DynamicMatrix. The provided allocator is expected to represent an implementation of
+// the allocator concept of the standard library (see for instance
+// <a href="https://en.cppreference.com/w/cpp/container/vector">std::vector</a> and
+// <a href="https://en.cppreference.com/w/cpp/memory/allocator">std::allocator</a>). In
+// addition, the provided allocator is also required to provide properly (over-)aligned memory
+// for fundamental and complex numbers. For instance, in case SSE vectorization is possible, the
+// returned memory must be at least 16-byte aligned. In case AVX is active, the memory must be at
+// least 32-byte aligned, and in case of AVX-512 the memory must be even 64-byte aligned.
+//
+//
 // \n \subsection matrix_types_hybrid_matrix HybridMatrix
 //
 // The HybridMatrix class template combines the flexibility of a dynamically sized matrix with
