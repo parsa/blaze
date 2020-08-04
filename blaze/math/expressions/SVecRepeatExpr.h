@@ -116,7 +116,7 @@ class SVecRepeatExpr
    /*!\brief Constructor for the SVecRepeatExpr class.
    //
    // \param sv The sparse vector operand of the repeater expression.
-   // \param repetitions The number of repetitions.
+   // \param args The number of repetitions.
    */
    template< typename... RRAs >  // Runtime repeater arguments
    explicit inline SVecRepeatExpr( const VT& sv, RRAs... args ) noexcept

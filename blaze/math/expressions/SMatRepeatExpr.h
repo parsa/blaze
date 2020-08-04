@@ -119,7 +119,7 @@ class SMatRepeatExpr
    /*!\brief Constructor for the SMatRepeatExpr class.
    //
    // \param sm The sparse matrix operand of the repeater expression.
-   // \param repetitions The number of repetitions.
+   // \param args The number of repetitions.
    */
    template< typename... RRAs >  // Runtime repeater arguments
    explicit inline SMatRepeatExpr( const MT& sm, RRAs... args ) noexcept

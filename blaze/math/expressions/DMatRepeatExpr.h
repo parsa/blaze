@@ -121,7 +121,7 @@ class DMatRepeatExpr
    /*!\brief Constructor for the DMatRepeatExpr class.
    //
    // \param dm The dense matrix operand of the repeater expression.
-   // \param repetitions The number of repetitions.
+   // \param args The number of repetitions.
    */
    template< typename... RRAs >  // Runtime repeater arguments
    explicit inline DMatRepeatExpr( const MT& dm, RRAs... args ) noexcept

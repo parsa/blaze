@@ -120,7 +120,7 @@ class DVecRepeatExpr
    /*!\brief Constructor for the DVecRepeatExpr class.
    //
    // \param dv The dense vector operand of the repeater expression.
-   // \param repetitions The number of repetitions.
+   // \param args The number of repetitions.
    */
    template< typename... RRAs >  // Runtime repeater arguments
    explicit inline DVecRepeatExpr( const VT& dv, RRAs... args ) noexcept
