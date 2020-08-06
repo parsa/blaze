@@ -4754,6 +4754,9 @@ void OperationTest<VT,R0>::testSubvectorOperation( blaze::TrueType )
 #if BLAZETEST_MATHTEST_TEST_SUBVECTOR_OPERATION
    if( BLAZETEST_MATHTEST_TEST_SUBVECTOR_OPERATION > 1 )
    {
+      using blaze::repeat;
+
+
       if( vec_.size() == 0UL )
          return;
 
@@ -5448,6 +5451,9 @@ void OperationTest<VT,R0>::testElementsOperation( blaze::TrueType )
 #if BLAZETEST_MATHTEST_TEST_ELEMENTS_OPERATION
    if( BLAZETEST_MATHTEST_TEST_ELEMENTS_OPERATION > 1 )
    {
+      using blaze::repeat;
+
+
       if( vec_.size() == 0UL )
          return;
 

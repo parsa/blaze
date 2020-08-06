@@ -4461,6 +4461,9 @@ void OperationTest<MT,R0,R1>::testSubmatrixOperation()
 #if BLAZETEST_MATHTEST_TEST_SUBMATRIX_OPERATION
    if( BLAZETEST_MATHTEST_TEST_SUBMATRIX_OPERATION > 1 )
    {
+      using blaze::repeat;
+
+
       if( mat_.rows() == 0UL || mat_.columns() == 0UL )
          return;
 
@@ -5545,6 +5548,9 @@ void OperationTest<MT,R0,R1>::testRowOperation()
 #if BLAZETEST_MATHTEST_TEST_ROW_OPERATION
    if( BLAZETEST_MATHTEST_TEST_ROW_OPERATION > 1 )
    {
+      using blaze::repeat;
+
+
       if( mat_.rows() == 0UL )
          return;
 
@@ -6279,6 +6285,9 @@ void OperationTest<MT,R0,R1>::testRowsOperation( blaze::TrueType )
 #if BLAZETEST_MATHTEST_TEST_ROWS_OPERATION
    if( BLAZETEST_MATHTEST_TEST_ROWS_OPERATION > 1 )
    {
+      using blaze::repeat;
+
+
       if( mat_.rows() == 0UL )
          return;
 
@@ -7140,6 +7149,9 @@ void OperationTest<MT,R0,R1>::testColumnOperation()
 #if BLAZETEST_MATHTEST_TEST_COLUMN_OPERATION
    if( BLAZETEST_MATHTEST_TEST_COLUMN_OPERATION > 1 )
    {
+      using blaze::repeat;
+
+
       if( mat_.columns() == 0UL )
          return;
 
@@ -7874,6 +7886,9 @@ void OperationTest<MT,R0,R1>::testColumnsOperation( blaze::TrueType )
 #if BLAZETEST_MATHTEST_TEST_COLUMNS_OPERATION
    if( BLAZETEST_MATHTEST_TEST_COLUMNS_OPERATION > 1 )
    {
+      using blaze::repeat;
+
+
       if( mat_.columns() == 0UL )
          return;
 
@@ -8735,6 +8750,9 @@ void OperationTest<MT,R0,R1>::testBandOperation()
 #if BLAZETEST_MATHTEST_TEST_BAND_OPERATION
    if( BLAZETEST_MATHTEST_TEST_BAND_OPERATION > 1 )
    {
+      using blaze::repeat;
+
+
       if( mat_.rows() == 0UL || mat_.columns() == 0UL )
          return;
 
