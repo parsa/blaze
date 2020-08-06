@@ -41,7 +41,6 @@
 //*************************************************************************************************
 
 #include <utility>
-#include <blaze/math/typetraits/IsScalar.h>
 #include <blaze/system/Inline.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/typetraits/IsNumeric.h>
@@ -56,14 +55,14 @@ namespace blaze {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Computing the conjugate of the given value/object.
+/*!\brief Computing the conjugate of the given numeric value.
 // \ingroup math_shims
 //
-// \param a The given value/object.
+// \param a The given numeric value.
 // \return The complex conjugate of the given value.
 //
 // The \a conj shim represents an abstract interface for the computation of the complex conjugate
-// of any given data type. In case the given value is of complex type the function computes the
+// of a numeric value. In case the given value is of complex type the function computes the
 // complex conjugate by reversing the sign of the imaginary part:
 
    \code
@@ -71,14 +70,14 @@ namespace blaze {
    const blaze::complex<double> b( conj( a ) );  // Results in ( 1, -2 )
    \endcode
 
-// Values of other data types, such as all built-in data types, are considered complex numbers
-// with an imaginary part of 0. Thus the returned value corresponds to the given value. For more
-// information on complex conjugates, see
+// Values of built-in data type are considered complex numbers with an imaginary part of 0. Thus
+// the returned value corresponds to the given value. For more information on complex conjugates,
+// see
 //
 //       https://en.wikipedia.org/wiki/Complex_conjugate
 */
-template< typename T, EnableIf_t< IsScalar_v<T> >* = nullptr >
-BLAZE_ALWAYS_INLINE constexpr const T& conj( const T& a ) noexcept
+template< typename T, EnableIf_t< IsNumeric_v<T> >* = nullptr >
+BLAZE_ALWAYS_INLINE constexpr T conj( const T& a ) noexcept
 {
    return a;
 }
