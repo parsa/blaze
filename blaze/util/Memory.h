@@ -40,11 +40,9 @@
 // Includes
 //*************************************************************************************************
 
-#if BLAZE_WIN32_PLATFORM || BLAZE_WIN64_PLATFORM || BLAZE_MINGW64_PLATFORM || BLAZE_MINGW32_PLATFORM
-#  include <malloc.h>
-#endif
 #include <cstdlib>
 #include <new>
+#include <blaze/system/Platform.h>
 #include <blaze/util/algorithms/ConstructAt.h>
 #include <blaze/util/algorithms/Destroy.h>
 #include <blaze/util/algorithms/DestroyAt.h>
@@ -54,6 +52,10 @@
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/AlignmentOf.h>
 #include <blaze/util/typetraits/IsBuiltin.h>
+
+#if BLAZE_WIN32_PLATFORM || BLAZE_WIN64_PLATFORM || BLAZE_MINGW32_PLATFORM || BLAZE_MINGW64_PLATFORM
+#  include <malloc.h>
+#endif
 
 
 namespace blaze {
