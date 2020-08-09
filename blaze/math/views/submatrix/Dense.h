@@ -2638,7 +2638,7 @@ inline auto Submatrix<MT,unaligned,false,true,CSAs...>::assign( const DenseMatri
             left.stream( right.load() ); left += SIMDSIZE; right += SIMDSIZE;
          }
          for( ; j<columns(); ++j ) {
-            *left = *right;
+            *left = *right; ++left; ++right;
          }
       }
    }
