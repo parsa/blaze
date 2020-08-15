@@ -5,7 +5,7 @@
 The **Blaze** library offers ...
 
   * ... **high performance** through the integration of BLAS libraries and manually tuned HPC math kernels
-  * ... **vectorization** by SSE, SSE2, SSE3, SSSE3, SSE4, AVX, AVX2, AVX-512, FMA, and SVML
+  * ... **vectorization** by SSE, SSE2, SSE3, SSSE3, SSE4, AVX, AVX2, AVX-512, FMA, SVML and SLEEF
   * ... **parallel execution** by OpenMP, HPX, C++11 threads and Boost threads
   * ... the **intuitive** and **easy to use** API of a domain specific language
   * ... **unified arithmetic** with dense and sparse vectors and matrices
@@ -19,9 +19,9 @@ Get an impression of the clear but powerful syntax of **Blaze** in the [Getting 
 ## Download ##
 
 ![white20x120.jpg](https://bitbucket.org/blaze-lib/blaze/wiki/images/white20x120.jpg)
-[![blaze-3.7.jpg](https://bitbucket.org/blaze-lib/blaze/wiki/images/blaze-3.7.jpg)](https://bitbucket.org/blaze-lib/blaze/downloads/blaze-3.7.tar.gz)
+[![blaze-3.8.jpg](https://bitbucket.org/blaze-lib/blaze/wiki/images/blaze-3.8.jpg)](https://bitbucket.org/blaze-lib/blaze/downloads/blaze-3.8.tar.gz)
 ![white40x120.jpg](https://bitbucket.org/blaze-lib/blaze/wiki/images/white40x120.jpg)
-[![blaze-docu-3.7.jpg](https://bitbucket.org/blaze-lib/blaze/wiki/images/blaze-docu-3.7.jpg)](https://bitbucket.org/blaze-lib/blaze/downloads/blaze-docu-3.7.tar.gz)
+[![blaze-docu-3.8.jpg](https://bitbucket.org/blaze-lib/blaze/wiki/images/blaze-docu-3.8.jpg)](https://bitbucket.org/blaze-lib/blaze/downloads/blaze-docu-3.8.tar.gz)
 
 Older releases of **Blaze** can be found in the [downloads](https://bitbucket.org/blaze-lib/blaze/downloads) section or in our [release archive](https://bitbucket.org/blaze-lib/blaze/wiki/Release Archive).
 
@@ -41,7 +41,17 @@ Older releases of **Blaze** can be found in the [downloads](https://bitbucket.or
 
 ## News ##
 
-**23.2.2020**: Today we are very proud to release **Blaze** 3.7. This  release is packed with a long list of new features and improvements:
+**15.8.2020**: We are very happy to announce the release of **Blaze** 3.8. Again, we have extended the library with a number of amazing new features:
+
+* Introduction of the [```isinf()```](https://bitbucket.org/blaze-lib/blaze/wiki/Vector%20Operations#!isinf) and [```isfinite()```](https://bitbucket.org/blaze-lib/blaze/wiki/Vector%20Operations#!isinf) functions
+* Introduction of [groups/tags for vectors and matrices](https://bitbucket.org/blaze-lib/blaze/wiki/Grouping-Tagging)
+* Introduction of the [```repeat()```](https://bitbucket.org/blaze-lib/blaze/wiki/Vector%20Operations#!repeat) function for vectors and matrices
+* Introduction of allocators for [```DynamicVector```](https://bitbucket.org/blaze-lib/blaze/wiki/Vector%20Types#!dynamicvector) and [```DynamicMatrix```](https://bitbucket.org/blaze-lib/blaze/wiki/Matrix%20Types#!dynamicmatrix)
+* Extended support for [custom data types](https://bitbucket.org/blaze-lib/blaze/wiki/Vector%20and%20Matrix%20Customization#!custom-data-types)
+
+We hope that you enjoy this new release!
+
+**23.2.2020**: Today we are very proud to release **Blaze** 3.7. This release is packed with a long list of new features and improvements:
 
 * Introduction of [vector generators](https://bitbucket.org/blaze-lib/blaze/wiki/Vector%20Operations#!vector-generators) and [matrix generators](https://bitbucket.org/blaze-lib/blaze/wiki/Matrix%20Operations#!matrix-generators)
 * Introduction of the [dense matrix exponential](https://bitbucket.org/blaze-lib/blaze/wiki/Matrix%20Operations#!matrix-exponential)
@@ -68,8 +78,6 @@ Older releases of **Blaze** can be found in the [downloads](https://bitbucket.or
 
 We hope that these new additions and improvements enable you to get even more out of **Blaze**. Enjoy!
 
-**25.8.2019**: On time for [CppCon 2019](https://cppcon.org) and [SC19](https://sc19.supercomputing.org) we release the next **Blaze** milestone. **Blaze** 3.6 comes with a multitude of new features including the Kronecker product for [vectors](https://bitbucket.org/blaze-lib/blaze/wiki/Vector-Vector Multiplication#!kronecker-product) and [matrices](https://bitbucket.org/blaze-lib/blaze/wiki/Matrix-Matrix Multiplication#!kronecker-product), the [`mean()`](https://bitbucket.org/blaze-lib/blaze/wiki/Vector Operations#!mean), [`var()`](https://bitbucket.org/blaze-lib/blaze/wiki/Vector Operations#!var) and [`stddev()`](https://bitbucket.org/blaze-lib/blaze/wiki/Vector Operations#!stddev) statistic functions for all kinds of vectors and matrices, [scalar additions](https://bitbucket.org/blaze-lib/blaze/wiki/Addition#!scalar_addition), [scalar subtractions](https://bitbucket.org/blaze-lib/blaze/wiki/Addition#!scalar_subtraction), and [scalar expansion](https://bitbucket.org/blaze-lib/blaze/wiki/Vector Operations#!scalar-expansion). Furthermore we have integrated various bitwise operations for dense vectors and dense matrices ([bitwise shift](https://bitbucket.org/blaze-lib/blaze/wiki/Bitwise Shift), [AND](https://bitbucket.org/blaze-lib/blaze/wiki/Bitwise AND), [OR](https://bitbucket.org/blaze-lib/blaze/wiki/Bitwise OR), and [XOR](https://bitbucket.org/blaze-lib/blaze/wiki/Bitwise XOR)) and logical operations ([logical NOT](https://bitbucket.org/blaze-lib/blaze/wiki/Logical NOT), [AND](https://bitbucket.org/blaze-lib/blaze/wiki/Logical AND), and [OR](https://bitbucket.org/blaze-lib/blaze/wiki/Logical OR)). We hope you enjoy this amazing release of **Blaze**!
-
 ----
 
 ## Wiki: Table of Contents ##
@@ -94,6 +102,7 @@ We hope that these new additions and improvements enable you to get even more ou
         * [Norms](https://bitbucket.org/blaze-lib/blaze/wiki/Vector Operations#!norms)
         * [Scalar Expansion](https://bitbucket.org/blaze-lib/blaze/wiki/Vector Operations#!scalar-expansion)
         * [Vector Expansion](https://bitbucket.org/blaze-lib/blaze/wiki/Vector Operations#!vector-expansion)
+        * [Vector Repetition](https://bitbucket.org/blaze-lib/blaze/wiki/Vector Operations#!vector-repetition)
         * [Statistic Operations](https://bitbucket.org/blaze-lib/blaze/wiki/Vector Operations#!statistic-operations)
         * [Declaration Operations](https://bitbucket.org/blaze-lib/blaze/wiki/Vector Operations#!declaration-operations)
         * [Vector Generators](https://bitbucket.org/blaze-lib/blaze/wiki/Vector Operations#!vector-generators)
@@ -114,6 +123,7 @@ We hope that these new additions and improvements enable you to get even more ou
         * [Reduction Operations](https://bitbucket.org/blaze-lib/blaze/wiki/Matrix Operations#!reduction-operations)
         * [Norms](https://bitbucket.org/blaze-lib/blaze/wiki/Matrix Operations#!norms)
         * [Scalar Expansion](https://bitbucket.org/blaze-lib/blaze/wiki/Matrix Operations#!scalar-expansion)
+        * [Matrix Repetition](https://bitbucket.org/blaze-lib/blaze/wiki/Matrix Operations#!matrix-repetition)
         * [Statistic Operations](https://bitbucket.org/blaze-lib/blaze/wiki/Matrix Operations#!statistic-operations)
         * [Declaration Operations](https://bitbucket.org/blaze-lib/blaze/wiki/Matrix Operations#!declaration-operations)
         * [Matrix Generators](https://bitbucket.org/blaze-lib/blaze/wiki/Matrix Operations#!matrix-generators)
@@ -176,6 +186,7 @@ We hope that these new additions and improvements enable you to get even more ou
         * [Custom Data Members](https://bitbucket.org/blaze-lib/blaze/wiki/Vector and Matrix Customization#!custom-data-members)
         * [Custom Operations](https://bitbucket.org/blaze-lib/blaze/wiki/Vector and Matrix Customization#!custom-operations)
         * [Custom Data Types](https://bitbucket.org/blaze-lib/blaze/wiki/Vector and Matrix Customization#!custom-data-types)
+    * [Grouping/Tagging](https://bitbucket.org/blaze-lib/blaze/wiki/Grouping-Tagging)
     * [Error Reporting Customization](https://bitbucket.org/blaze-lib/blaze/wiki/Error Reporting Customization)
 * [BLAS Functions](https://bitbucket.org/blaze-lib/blaze/wiki/BLAS Functions)
 * [LAPACK Functions](https://bitbucket.org/blaze-lib/blaze/wiki/LAPACK Functions)
@@ -204,7 +215,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 
 ## Compiler Compatibility ##
 
-**Blaze** supports the C++14 standard and is compatible with a wide range of C++ compilers. In fact, **Blaze** is constantly tested with the GNU compiler collection (version 6.0 through 9.2), the Clang compiler (version 5.0 through 9.0), and Visual C++ 2017 (Win64 only). Other compilers are not explicitly tested, but might work with a high probability.
+**Blaze** supports the C++14 standard and is compatible with a wide range of C++ compilers. In fact, **Blaze** is constantly tested with the GNU compiler collection (version 6.0 through 10.2), the Clang compiler (version 5.0 through 10.0), and Visual C++ 2017 (Win64 only). Other compilers are not explicitly tested, but might work with a high probability.
 
 If you are looking for a C++98 compatible math library you might consider using an older release of **Blaze**. Until the release 2.6 **Blaze** was written in C++-98 and constantly tested with the GNU compiler collection (version 4.5 through 5.0), the Intel C++ compiler (12.1, 13.1, 14.0, 15.0), the Clang compiler (version 3.4 through 3.7), and Visual C++ 2010, 2012, 2013, and 2015 (Win64 only).
 
