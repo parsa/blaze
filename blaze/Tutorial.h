@@ -82,6 +82,7 @@
 //                <li> \ref vector_operations_norms </li>
 //                <li> \ref vector_operations_scalar_expansion </li>
 //                <li> \ref vector_operations_vector_expansion </li>
+//                <li> \ref vector_operations_vector_repetition </li>
 //                <li> \ref vector_operations_statistic_operations </li>
 //                <li> \ref vector_operations_declaration_operations </li>
 //                <li> \ref vector_operations_vector_generators </li>
@@ -111,6 +112,7 @@
 //                <li> \ref matrix_operations_reduction_operations </li>
 //                <li> \ref matrix_operations_norms </li>
 //                <li> \ref matrix_operations_scalar_expansion </li>
+//                <li> \ref matrix_operations_matrix_repetition </li>
 //                <li> \ref matrix_operations_statistic_operations </li>
 //                <li> \ref matrix_operations_declaration_operations </li>
 //                <li> \ref matrix_operations_matrix_generators </li>
