@@ -87,7 +87,7 @@ template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order
 auto softmax( const DenseMatrix<MT,SO>& dm )
 {
-   auto tmp( evaluate( exp( *dm ) ) );
+   auto tmp( evaluate( exp( *dm - max( *dm ) ) ) );
    const auto scalar( sum( tmp ) );
    tmp /= scalar;
    return tmp;
@@ -136,7 +136,8 @@ template< ReductionFlag RF  // Reduction flag
         , bool SO >         // Storage order
 auto softmax( const DenseMatrix<MT,SO>& dm )
 {
-   auto tmp( evaluate( exp( *dm ) ) );
+   const size_t expansion( ( RF == rowwise ) ? (*dm).columns() : (*dm).rows() );
+   auto tmp( evaluate( exp( *dm - expand( max<RF>(*dm), expansion ) ) ) );
 
    if( RF == rowwise ) {
       for( size_t i=0UL; i<tmp.rows(); ++i ) {
