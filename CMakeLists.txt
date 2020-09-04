@@ -145,12 +145,13 @@ if (${BLAZE_CACHE_SIZE_AUTO})
       endif (flag EQUAL 0)
    endif (APPLE)
 
-   if (flag)
+   string(REGEX MATCH "([0-9][0-9]+)" tmp ${tmp}) # Get a number containing at least 2 digits in the string tmp
+
+   if (flag OR NOT tmp)
       message("Cache size not found automatically. Using default value as cache size.")
       set(tmp ${BLAZE_CACHE_SIZE_DEFAULT})
    endif (flag)
 
-   string(REGEX MATCH "([0-9][0-9]+)" tmp ${tmp}) # Get a number containing at least 2 digits in the string tmp
    math(EXPR BLAZE_CACHE_SIZE ${tmp}*1024) # Convert to bytes (assuming that the value is given in kibibytes)
 
 endif (${BLAZE_CACHE_SIZE_AUTO})
