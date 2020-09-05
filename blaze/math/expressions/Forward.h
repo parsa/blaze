@@ -234,6 +234,7 @@ template< typename, bool > class SVecEvalExpr;
 template< typename, bool, size_t... > class SVecExpandExpr;
 template< typename, typename, bool > class SVecMapExpr;
 template< typename, bool > class SVecNoAliasExpr;
+template< typename, bool > class SVecNoResizeExpr;
 template< typename, bool, size_t... > class SVecRepeatExpr;
 template< typename, typename, bool > class SVecScalarDivExpr;
 template< typename, typename, bool > class SVecScalarMultExpr;
@@ -719,9 +720,15 @@ decltype(auto) noalias( const SparseMatrix<MT,SO>& );
 template< typename VT, bool TF >
 decltype(auto) nosimd( const DenseVector<VT,TF>& );
 
+template< typename VT, bool TF >
+decltype(auto) nosimd( const SparseVector<VT,TF>& );
+
 
 template< typename VT, bool TF >
 decltype(auto) noresize( const DenseVector<VT,TF>& );
+
+template< typename VT, bool TF >
+decltype(auto) noresize( const SparseVector<VT,TF>& );
 
 
 template< typename MT, bool SO >
