@@ -95,6 +95,7 @@ template< typename, typename, bool > class DMatGenExpr;
 template< typename, bool > class DMatInvExpr;
 template< typename, typename, bool > class DMatMapExpr;
 template< typename, bool > class DMatNoAliasExpr;
+template< typename, bool > class DMatNoResizeExpr;
 template< typename, bool > class DMatNoSIMDExpr;
 template< typename, typename, ReductionFlag > class DMatReduceExpr;
 template< typename, bool, size_t... > class DMatRepeatExpr;
@@ -723,12 +724,18 @@ decltype(auto) nosimd( const DenseVector<VT,TF>& );
 template< typename VT, bool TF >
 decltype(auto) nosimd( const SparseVector<VT,TF>& );
 
+template< typename MT, bool SO >
+decltype(auto) nosimd( const DenseMatrix<MT,SO>& );
+
 
 template< typename VT, bool TF >
 decltype(auto) noresize( const DenseVector<VT,TF>& );
 
 template< typename VT, bool TF >
 decltype(auto) noresize( const SparseVector<VT,TF>& );
+
+template< typename MT, bool SO >
+decltype(auto) noresize( const DenseMatrix<MT,SO>& );
 
 
 template< typename MT, bool SO >
