@@ -199,6 +199,7 @@ template< typename, typename > class SMatDVecMultExpr;
 template< typename, bool > class SMatEvalExpr;
 template< typename, typename, bool > class SMatMapExpr;
 template< typename, bool > class SMatNoAliasExpr;
+template< typename, bool > class SMatNoResizeExpr;
 template< typename, typename, ReductionFlag > class SMatReduceExpr;
 template< typename, bool, size_t... > class SMatRepeatExpr;
 template< typename, typename, bool > class SMatScalarDivExpr;
@@ -727,6 +728,9 @@ decltype(auto) nosimd( const SparseVector<VT,TF>& );
 template< typename MT, bool SO >
 decltype(auto) nosimd( const DenseMatrix<MT,SO>& );
 
+template< typename MT, bool SO >
+decltype(auto) nosimd( const SparseMatrix<MT,SO>& );
+
 
 template< typename VT, bool TF >
 decltype(auto) noresize( const DenseVector<VT,TF>& );
@@ -736,6 +740,9 @@ decltype(auto) noresize( const SparseVector<VT,TF>& );
 
 template< typename MT, bool SO >
 decltype(auto) noresize( const DenseMatrix<MT,SO>& );
+
+template< typename MT, bool SO >
+decltype(auto) noresize( const SparseMatrix<MT,SO>& );
 
 
 template< typename MT, bool SO >
