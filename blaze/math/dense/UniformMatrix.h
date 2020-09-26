@@ -1663,18 +1663,18 @@ constexpr void swap( UniformMatrix<Type,SO,Tag>& a, UniformMatrix<Type,SO,Tag>& 
    // Creates the uniform row-major matrix
    //    ( 1, 1, 1, 1, 1 )
    //    ( 1, 1, 1, 1, 1 )
-   auto U1 = uniform<int>( 2UL, 5UL, 1 );
+   auto U1 = uniform( 2UL, 5UL, 1 );
 
    // Creates the uniform row-major matrix
    //    ( 1.2, 1.2 )
    //    ( 1.2, 1.2 )
    //    ( 1.2, 1.2 )
-   auto U2 = uniform<int,rowMajor>( 3UL, 2UL, 1.2 );
+   auto U2 = uniform<rowMajor>( 3UL, 2UL, 1.2 );
 
    // Creates the uniform column-major matrix
    //   ( 5U, 5U, 5U, 5U, 5U, 5U, 5U )
    //   ( 5U, 5U, 5U, 5U, 5U, 5U, 5U )
-   auto U3 = uniform<int,columnMajor>( 2UL, 7UL, 5U );
+   auto U3 = uniform<columnMajor>( 2UL, 7UL, 5U );
    \endcode
 */
 template< bool SO = defaultStorageOrder, typename T >
