@@ -82,6 +82,7 @@
 #include <blaze/math/simd/Reduce.h>
 #include <blaze/math/simd/Round.h>
 #include <blaze/math/simd/Set.h>
+#include <blaze/math/simd/Setall.h>
 #include <blaze/math/simd/Setzero.h>
 #include <blaze/math/simd/ShiftLI.h>
 #include <blaze/math/simd/ShiftLV.h>
