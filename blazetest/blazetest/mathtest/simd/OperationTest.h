@@ -200,6 +200,7 @@ class OperationTest : private blaze::NonCopyable
    void testStoreu        ( size_t offset );
    void testStream        ();
    void testSet           ();
+   void testSetall        ();
 
    void testEquality      ( blaze::TrueType , blaze::TrueType  );
    void testEquality      ( blaze::TrueType , blaze::FalseType );
@@ -402,6 +403,7 @@ OperationTest<T>::OperationTest()
 
    testStream        ();
    testSet           ();
+   testSetall        ();
 
    testEquality      ( blaze::HasSIMDEqual<T,T>(), blaze::IsFloatingPoint<T>() );
    testInequality    ( blaze::HasSIMDEqual<T,T>(), blaze::IsFloatingPoint<T>() );
@@ -621,6 +623,44 @@ void OperationTest<T>::testSet()
 
    for( size_t i=0UL; i<N; i+=SIMDSIZE ) {
       storea( c_+i, set( value ) );
+   }
+
+   compare( b_, c_ );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Testing the setall operation.
+//
+// \return void
+// \exception std::runtime_error Setall error detected.
+//
+// This function tests the setall operation by comparing the results of a vectorized and a scalar
+// array assignment. In case any error is detected, a \a std::runtime_error exception is thrown.
+*/
+template< typename T >  // Data type of the SIMD test
+void OperationTest<T>::testSetall()
+{
+   using blaze::setall;
+   using blaze::storea;
+   using blaze::rand;
+
+   test_  = "setall() operation";
+
+   initialize();
+
+   const T value( rand<T>() );
+
+   for( size_t i=0UL; i<N; ++i ) {
+      if( i % SIMDSIZE == 0 )
+         b_[i] = value;
+      else
+         b_[i] = T(0);
+   }
+
+   for( size_t i=0UL; i<N; i+=SIMDSIZE ) {
+      storea( c_+i, setall( value ) );
    }
 
    compare( b_, c_ );
