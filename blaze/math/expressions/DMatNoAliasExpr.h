@@ -56,7 +56,6 @@
 #include <blaze/math/typetraits/RequiresEvaluation.h>
 #include <blaze/system/Inline.h>
 #include <blaze/util/Assert.h>
-#include <blaze/util/EnableIf.h>
 #include <blaze/util/FunctionTrace.h>
 #include <blaze/util/InvalidType.h>
 #include <blaze/util/MaybeUnused.h>
@@ -92,36 +91,6 @@ class DMatNoAliasExpr
    BLAZE_CREATE_GET_TYPE_MEMBER_TYPE_TRAIT( GetConstIterator, ConstIterator, INVALID_TYPE );
    //**********************************************************************************************
 
-   //**Serial evaluation strategy******************************************************************
-   //! Compilation switch for the serial evaluation strategy of the no-alias expression.
-   /*! The \a useAssign compile time constant expression represents a compilation switch for
-       the serial evaluation strategy of the no-alias expression. In case the given dense
-       matrix expression of type \a MT requires an intermediate evaluation, \a useAssign will
-       be set to 1 and the no-alias expression will be evaluated via the \a assign function
-       family. Otherwise \a useAssign will be set to 0 and the expression will be evaluated
-       via the subscript operator. */
-   static constexpr bool useAssign = RequiresEvaluation_v<MT>;
-
-   /*! \cond BLAZE_INTERNAL */
-   //! Helper variable template for the explicit application of the SFINAE principle.
-   template< typename MT2 >
-   static constexpr bool UseAssign_v = useAssign;
-   /*! \endcond */
-   //**********************************************************************************************
-
-   //**Parallel evaluation strategy****************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   //! Helper variable template for the explicit application of the SFINAE principle.
-   /*! This variable template is a helper for the selection of the parallel evaluation strategy.
-       In case the target matrix is SMP assignable and the dense matrix operand requires an
-       intermediate evaluation, the variable is set to 1 and the expression specific evaluation
-       strategy is selected. Otherwise the variable is set to 0 and the default strategy is
-       chosen. */
-   template< typename MT2 >
-   static constexpr bool UseSMPAssign_v = ( MT2::smpAssignable && useAssign );
-   /*! \endcond */
-   //**********************************************************************************************
-
  public:
    //**Type definitions****************************************************************************
    //! Type of this DMatNoAliasExpr instance.
@@ -137,7 +106,7 @@ class DMatNoAliasExpr
    using ReturnType    = ReturnType_t<MT>;     //!< Return type for expression template evaluations.
 
    //! Data type for composite expression templates.
-   using CompositeType = If_t< useAssign, const ResultType, const DMatNoAliasExpr& >;
+   using CompositeType = If_t< RequiresEvaluation_v<MT>, const ResultType, const DMatNoAliasExpr& >;
 
    //! Iterator over the elements of the dense matrix.
    using ConstIterator = GetConstIterator_t<MT>;
@@ -366,8 +335,7 @@ class DMatNoAliasExpr
    */
    template< typename MT2  // Type of the target dense matrix
            , bool SO2 >    // Storage order of the target dense matrix
-   friend inline auto assign( DenseMatrix<MT2,SO2>& lhs, const DMatNoAliasExpr& rhs )
-      -> EnableIf_t< UseAssign_v<MT2> >
+   friend inline void assign( DenseMatrix<MT2,SO2>& lhs, const DMatNoAliasExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -395,8 +363,7 @@ class DMatNoAliasExpr
    */
    template< typename MT2  // Type of the target sparse matrix
            , bool SO2 >    // Storage order of the target dense matrix
-   friend inline auto assign( SparseMatrix<MT2,SO2>& lhs, const DMatNoAliasExpr& rhs )
-      -> EnableIf_t< UseAssign_v<MT2> >
+   friend inline void assign( SparseMatrix<MT2,SO2>& lhs, const DMatNoAliasExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -424,8 +391,7 @@ class DMatNoAliasExpr
    */
    template< typename MT2  // Type of the target dense matrix
            , bool SO2 >    // Storage order of the target dense matrix
-   friend inline auto addAssign( DenseMatrix<MT2,SO2>& lhs, const DMatNoAliasExpr& rhs )
-      -> EnableIf_t< UseAssign_v<MT2> >
+   friend inline void addAssign( DenseMatrix<MT2,SO2>& lhs, const DMatNoAliasExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -457,8 +423,7 @@ class DMatNoAliasExpr
    */
    template< typename MT2  // Type of the target dense matrix
            , bool SO2 >    // Storage order of the target dense matrix
-   friend inline auto subAssign( DenseMatrix<MT2,SO2>& lhs, const DMatNoAliasExpr& rhs )
-      -> EnableIf_t< UseAssign_v<MT2> >
+   friend inline void subAssign( DenseMatrix<MT2,SO2>& lhs, const DMatNoAliasExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -490,8 +455,7 @@ class DMatNoAliasExpr
    */
    template< typename MT2  // Type of the target dense matrix
            , bool SO2 >    // Storage order of the target dense matrix
-   friend inline auto schurAssign( DenseMatrix<MT2,SO2>& lhs, const DMatNoAliasExpr& rhs )
-      -> EnableIf_t< UseAssign_v<MT2> >
+   friend inline void schurAssign( DenseMatrix<MT2,SO2>& lhs, const DMatNoAliasExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -531,8 +495,7 @@ class DMatNoAliasExpr
    */
    template< typename MT2  // Type of the target dense matrix
            , bool SO2 >    // Storage order of the target dense matrix
-   friend inline auto smpAssign( DenseMatrix<MT2,SO2>& lhs, const DMatNoAliasExpr& rhs )
-      -> EnableIf_t< UseSMPAssign_v<MT2> >
+   friend inline void smpAssign( DenseMatrix<MT2,SO2>& lhs, const DMatNoAliasExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -560,8 +523,7 @@ class DMatNoAliasExpr
    */
    template< typename MT2  // Type of the target sparse matrix
            , bool SO2 >    // Storage order of the target dense matrix
-   friend inline auto smpAssign( SparseMatrix<MT2,SO2>& lhs, const DMatNoAliasExpr& rhs )
-      -> EnableIf_t< UseSMPAssign_v<MT2> >
+   friend inline void smpAssign( SparseMatrix<MT2,SO2>& lhs, const DMatNoAliasExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -589,8 +551,7 @@ class DMatNoAliasExpr
    */
    template< typename MT2  // Type of the target dense matrix
            , bool SO2 >    // Storage order of the target dense matrix
-   friend inline auto smpAddAssign( DenseMatrix<MT2,SO2>& lhs, const DMatNoAliasExpr& rhs )
-      -> EnableIf_t< UseSMPAssign_v<MT2> >
+   friend inline void smpAddAssign( DenseMatrix<MT2,SO2>& lhs, const DMatNoAliasExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -622,8 +583,7 @@ class DMatNoAliasExpr
    */
    template< typename MT2  // Type of the target dense matrix
            , bool SO2 >    // Storage order of the target dense matrix
-   friend inline auto smpSubAssign( DenseMatrix<MT2,SO2>& lhs, const DMatNoAliasExpr& rhs )
-      -> EnableIf_t< UseSMPAssign_v<MT2> >
+   friend inline void smpSubAssign( DenseMatrix<MT2,SO2>& lhs, const DMatNoAliasExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -655,8 +615,7 @@ class DMatNoAliasExpr
    */
    template< typename MT2  // Type of the target dense matrix
            , bool SO2 >    // Storage order of the target dense matrix
-   friend inline auto smpSchurAssign( DenseMatrix<MT2,SO2>& lhs, const DMatNoAliasExpr& rhs )
-      -> EnableIf_t< UseSMPAssign_v<MT2> >
+   friend inline void smpSchurAssign( DenseMatrix<MT2,SO2>& lhs, const DMatNoAliasExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
 

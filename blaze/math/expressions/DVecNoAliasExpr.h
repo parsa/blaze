@@ -57,7 +57,6 @@
 #include <blaze/system/Inline.h>
 #include <blaze/system/MacroDisable.h>
 #include <blaze/util/Assert.h>
-#include <blaze/util/EnableIf.h>
 #include <blaze/util/FunctionTrace.h>
 #include <blaze/util/InvalidType.h>
 #include <blaze/util/MaybeUnused.h>
@@ -93,36 +92,6 @@ class DVecNoAliasExpr
    BLAZE_CREATE_GET_TYPE_MEMBER_TYPE_TRAIT( GetConstIterator, ConstIterator, INVALID_TYPE );
    //**********************************************************************************************
 
-   //**Serial evaluation strategy******************************************************************
-   //! Compilation switch for the serial evaluation strategy of the no-alias expression.
-   /*! The \a useAssign compile time constant expression represents a compilation switch for
-       the serial evaluation strategy of the no-alias expression. In case the given dense vector
-       expression of type \a VT requires an intermediate evaluation, \a useAssign will be set
-       to 1 and the no-alias expression will be evaluated via the \a assign function family.
-       Otherwise \a useAssign will be set to 0 and the expression will be evaluated via the
-       subscript operator. */
-   static constexpr bool useAssign = RequiresEvaluation_v<VT>;
-
-   /*! \cond BLAZE_INTERNAL */
-   //! Helper variable template for the explicit application of the SFINAE principle.
-   template< typename VT2 >
-   static constexpr bool UseAssign_v = useAssign;
-   /*! \endcond */
-   //**********************************************************************************************
-
-   //**Parallel evaluation strategy****************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   //! Helper variable template for the explicit application of the SFINAE principle.
-   /*! This variable template is a helper for the selection of the parallel evaluation strategy.
-       In case the target vector is SMP assignable and the dense vector operand requires an
-       intermediate evaluation, the variable is set to 1 and the expression specific evaluation
-       strategy is selected. Otherwise the variable is set to 0 and the default strategy is
-       chosen. */
-   template< typename VT2 >
-   static constexpr bool UseSMPAssign_v = ( VT2::smpAssignable && useAssign );
-   /*! \endcond */
-   //**********************************************************************************************
-
  public:
    //**Type definitions****************************************************************************
    //! Type of this DVecNoAliasExpr instance.
@@ -137,7 +106,7 @@ class DVecNoAliasExpr
    using ReturnType    = ReturnType_t<VT>;     //!< Return type for expression template evaluations.
 
    //! Data type for composite expression templates.
-   using CompositeType = If_t< useAssign, const ResultType, const DVecNoAliasExpr& >;
+   using CompositeType = If_t< RequiresEvaluation_v<VT>, const ResultType, const DVecNoAliasExpr& >;
 
    //! Iterator over the elements of the dense vector.
    using ConstIterator = GetConstIterator_t<VT>;
@@ -319,8 +288,7 @@ class DVecNoAliasExpr
    // evaluation.
    */
    template< typename VT2 >  // Type of the target dense vector
-   friend inline auto assign( DenseVector<VT2,TF>& lhs, const DVecNoAliasExpr& rhs )
-      -> EnableIf_t< UseAssign_v<VT2> >
+   friend inline void assign( DenseVector<VT2,TF>& lhs, const DVecNoAliasExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -346,8 +314,7 @@ class DVecNoAliasExpr
    // intermediate evaluation.
    */
    template< typename VT2 >  // Type of the target sparse vector
-   friend inline auto assign( SparseVector<VT2,TF>& lhs, const DVecNoAliasExpr& rhs )
-      -> EnableIf_t< UseAssign_v<VT2> >
+   friend inline void assign( SparseVector<VT2,TF>& lhs, const DVecNoAliasExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -373,8 +340,7 @@ class DVecNoAliasExpr
    // requires an intermediate evaluation.
    */
    template< typename VT2 >  // Type of the target dense vector
-   friend inline auto addAssign( DenseVector<VT2,TF>& lhs, const DVecNoAliasExpr& rhs )
-      -> EnableIf_t< UseAssign_v<VT2> >
+   friend inline void addAssign( DenseVector<VT2,TF>& lhs, const DVecNoAliasExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -404,8 +370,7 @@ class DVecNoAliasExpr
    // requires an intermediate evaluation.
    */
    template< typename VT2 >  // Type of the target dense vector
-   friend inline auto subAssign( DenseVector<VT2,TF>& lhs, const DVecNoAliasExpr& rhs )
-      -> EnableIf_t< UseAssign_v<VT2> >
+   friend inline void subAssign( DenseVector<VT2,TF>& lhs, const DVecNoAliasExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -435,8 +400,7 @@ class DVecNoAliasExpr
    // requires an intermediate evaluation.
    */
    template< typename VT2 >  // Type of the target dense vector
-   friend inline auto multAssign( DenseVector<VT2,TF>& lhs, const DVecNoAliasExpr& rhs )
-      -> EnableIf_t< UseAssign_v<VT2> >
+   friend inline void multAssign( DenseVector<VT2,TF>& lhs, const DVecNoAliasExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -466,8 +430,7 @@ class DVecNoAliasExpr
    // requires an intermediate evaluation.
    */
    template< typename VT2 >  // Type of the target dense vector
-   friend inline auto divAssign( DenseVector<VT2,TF>& lhs, const DVecNoAliasExpr& rhs )
-      -> EnableIf_t< UseAssign_v<VT2> >
+   friend inline void divAssign( DenseVector<VT2,TF>& lhs, const DVecNoAliasExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -497,8 +460,7 @@ class DVecNoAliasExpr
    // specific parallel evaluation strategy is selected.
    */
    template< typename VT2 >  // Type of the target dense vector
-   friend inline auto smpAssign( DenseVector<VT2,TF>& lhs, const DVecNoAliasExpr& rhs )
-      -> EnableIf_t< UseSMPAssign_v<VT2> >
+   friend inline void smpAssign( DenseVector<VT2,TF>& lhs, const DVecNoAliasExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -524,8 +486,7 @@ class DVecNoAliasExpr
    // specific parallel evaluation strategy is selected.
    */
    template< typename VT2 >  // Type of the target sparse vector
-   friend inline auto smpAssign( SparseVector<VT2,TF>& lhs, const DVecNoAliasExpr& rhs )
-      -> EnableIf_t< UseSMPAssign_v<VT2> >
+   friend inline void smpAssign( SparseVector<VT2,TF>& lhs, const DVecNoAliasExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -551,8 +512,7 @@ class DVecNoAliasExpr
    // expression specific parallel evaluation strategy is selected.
    */
    template< typename VT2 >  // Type of the target dense vector
-   friend inline auto smpAddAssign( DenseVector<VT2,TF>& lhs, const DVecNoAliasExpr& rhs )
-      -> EnableIf_t< UseSMPAssign_v<VT2> >
+   friend inline void smpAddAssign( DenseVector<VT2,TF>& lhs, const DVecNoAliasExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -582,8 +542,7 @@ class DVecNoAliasExpr
    // the expression specific parallel evaluation strategy is selected.
    */
    template< typename VT2 >  // Type of the target dense vector
-   friend inline auto smpSubAssign( DenseVector<VT2,TF>& lhs, const DVecNoAliasExpr& rhs )
-      -> EnableIf_t< UseSMPAssign_v<VT2> >
+   friend inline void smpSubAssign( DenseVector<VT2,TF>& lhs, const DVecNoAliasExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -613,8 +572,7 @@ class DVecNoAliasExpr
    // expression specific parallel evaluation strategy is selected.
    */
    template< typename VT2 >  // Type of the target dense vector
-   friend inline auto smpMultAssign( DenseVector<VT2,TF>& lhs, const DVecNoAliasExpr& rhs )
-      -> EnableIf_t< UseSMPAssign_v<VT2> >
+   friend inline void smpMultAssign( DenseVector<VT2,TF>& lhs, const DVecNoAliasExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -644,8 +602,7 @@ class DVecNoAliasExpr
    // expression specific parallel evaluation strategy is selected.
    */
    template< typename VT2 >  // Type of the target dense vector
-   friend inline auto smpDivAssign( DenseVector<VT2,TF>& lhs, const DVecNoAliasExpr& rhs )
-      -> EnableIf_t< UseSMPAssign_v<VT2> >
+   friend inline void smpDivAssign( DenseVector<VT2,TF>& lhs, const DVecNoAliasExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
 
