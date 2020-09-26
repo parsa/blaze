@@ -53,9 +53,11 @@
 #include <blaze/math/expressions/DenseVector.h>
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/shims/Serial.h>
+#include <blaze/math/SIMD.h>
 #include <blaze/math/traits/CrossTrait.h>
 #include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsExpression.h>
+#include <blaze/math/typetraits/IsPadded.h>
 #include <blaze/math/typetraits/IsTemporary.h>
 #include <blaze/system/MacroDisable.h>
 #include <blaze/util/Assert.h>
@@ -128,7 +130,9 @@ class DVecDVecCrossExpr
    using ReturnType = const If_t< returnExpr, ExprReturnType, ElementType >;
 
    //! Data type for composite expression templates.
-   using CompositeType = const ResultType;
+   using CompositeType = If_t< !RequiresEvaluation_v<VT1> && !RequiresEvaluation_v<VT2>
+                             , const DVecDVecCrossExpr&
+                             , const ResultType >;
 
    //! Composite type of the left-hand side dense vector expression.
    using LeftOperand = If_t< IsExpression_v<VT1>, const VT1, const VT1& >;
@@ -143,9 +147,263 @@ class DVecDVecCrossExpr
    using RT = If_t< IsComputation_v<VT2>, const StaticVector<ET2,3UL,TF>, CT2 >;
    //**********************************************************************************************
 
+   //**ConstIterator class definition**************************************************************
+   /*!\brief Iterator over the elements of the dense vector.
+   */
+   class ConstIterator
+   {
+    public:
+      //**Type definitions*************************************************************************
+      using IteratorCategory = std::random_access_iterator_tag;  //!< The iterator category.
+      using ValueType        = ElementType;                      //!< Type of the underlying elements.
+      using PointerType      = ElementType*;                     //!< Pointer return type.
+      using ReferenceType    = ElementType&;                     //!< Reference return type.
+      using DifferenceType   = ptrdiff_t;                        //!< Difference between two iterators.
+
+      // STL iterator requirements
+      using iterator_category = IteratorCategory;  //!< The iterator category.
+      using value_type = ValueType;                //!< Type of the underlying elements.
+      using pointer = PointerType;                 //!< Pointer return type.
+      using reference = ReferenceType;             //!< Reference return type.
+      using difference_type = DifferenceType;      //!< Difference between two iterators.
+      //*******************************************************************************************
+
+      //**Constructor******************************************************************************
+      /*!\brief Constructor for the ConstIterator class.
+      //
+      // \param left Iterator to the initial left-hand side element.
+      // \param right Iterator to the initial right-hand side element.
+      // \param index Index to the initial element of the cross product.
+      */
+      inline BLAZE_DEVICE_CALLABLE ConstIterator( const LeftOperand& left, const RightOperand& right, size_t index )
+         : left_ ( left  )  // Reference to the left-hand side operand
+         , right_( right )  // Reference to the right-hand side operand
+         , index_( index )  // Index to the current element of the cross product
+      {}
+      //*******************************************************************************************
+
+      //**Addition assignment operator*************************************************************
+      /*!\brief Addition assignment operator.
+      //
+      // \param inc The increment of the iterator.
+      // \return The incremented iterator.
+      */
+      inline BLAZE_DEVICE_CALLABLE ConstIterator& operator+=( size_t inc ) {
+         index_ += inc;
+         return *this;
+      }
+      //*******************************************************************************************
+
+      //**Subtraction assignment operator**********************************************************
+      /*!\brief Subtraction assignment operator.
+      //
+      // \param dec The decrement of the iterator.
+      // \return The decremented iterator.
+      */
+      inline BLAZE_DEVICE_CALLABLE ConstIterator& operator-=( size_t dec ) {
+         index_ -= dec;
+         return *this;
+      }
+      //*******************************************************************************************
+
+      //**Prefix increment operator****************************************************************
+      /*!\brief Pre-increment operator.
+      //
+      // \return Reference to the incremented iterator.
+      */
+      inline BLAZE_DEVICE_CALLABLE ConstIterator& operator++() {
+         ++index_;
+         return *this;
+      }
+      //*******************************************************************************************
+
+      //**Postfix increment operator***************************************************************
+      /*!\brief Post-increment operator.
+      //
+      // \return The previous position of the iterator.
+      */
+      inline BLAZE_DEVICE_CALLABLE const ConstIterator operator++( int ) {
+         return ConstIterator( left_, right_, ++index_ );
+      }
+      //*******************************************************************************************
+
+      //**Prefix decrement operator****************************************************************
+      /*!\brief Pre-decrement operator.
+      //
+      // \return Reference to the decremented iterator.
+      */
+      inline BLAZE_DEVICE_CALLABLE ConstIterator& operator--() {
+         --index_;
+         return *this;
+      }
+      //*******************************************************************************************
+
+      //**Postfix decrement operator***************************************************************
+      /*!\brief Post-decrement operator.
+      //
+      // \return The previous position of the iterator.
+      */
+      inline BLAZE_DEVICE_CALLABLE const ConstIterator operator--( int ) {
+         return ConstIterator( left_, right_, --index_ );
+      }
+      //*******************************************************************************************
+
+      //**Element access operator******************************************************************
+      /*!\brief Direct access to the element at the current iterator position.
+      //
+      // \return The resulting value.
+      */
+      inline BLAZE_DEVICE_CALLABLE ReturnType operator*() const {
+         BLAZE_INTERNAL_ASSERT( index_ < 3UL, "Invalid vector access index" );
+         if( index_ == 0UL )
+            return left_[1UL] * right_[2UL] - left_[2UL] * right_[1UL];
+         else if( index_ == 1UL )
+            return left_[2UL] * right_[0UL] - left_[0UL] * right_[2UL];
+         else
+            return left_[0UL] * right_[1UL] - left_[1UL] * right_[0UL];
+      }
+      //*******************************************************************************************
+
+      //**Load function****************************************************************************
+      /*!\brief Access to the SIMD elements of the vector.
+      //
+      // \return The resulting SIMD element.
+      */
+      inline auto load() const noexcept {
+         BLAZE_INTERNAL_ASSERT( index_ == 0UL, "Invalid vector access index" );
+         LT x( serial( left_  ) );  // Evaluation of the left-hand side dense vector operand
+         RT y( serial( right_ ) );  // Evaluation of the right-hand side dense vector operand
+         return setall( x[1UL] * y[2UL] - x[2UL] * y[1UL]
+                      , x[2UL] * y[0UL] - x[0UL] * y[2UL]
+                      , x[0UL] * y[1UL] - x[1UL] * y[0UL] );
+      }
+      //*******************************************************************************************
+
+      //**Equality operator************************************************************************
+      /*!\brief Equality comparison between two ConstIterator objects.
+      //
+      // \param rhs The right-hand side iterator.
+      // \return \a true if the iterators refer to the same element, \a false if not.
+      */
+      inline BLAZE_DEVICE_CALLABLE bool operator==( const ConstIterator& rhs ) const {
+         return index_ == rhs.index_;
+      }
+      //*******************************************************************************************
+
+      //**Inequality operator**********************************************************************
+      /*!\brief Inequality comparison between two ConstIterator objects.
+      //
+      // \param rhs The right-hand side iterator.
+      // \return \a true if the iterators don't refer to the same element, \a false if they do.
+      */
+      inline BLAZE_DEVICE_CALLABLE bool operator!=( const ConstIterator& rhs ) const {
+         return index_ != rhs.index_;
+      }
+      //*******************************************************************************************
+
+      //**Less-than operator***********************************************************************
+      /*!\brief Less-than comparison between two ConstIterator objects.
+      //
+      // \param rhs The right-hand side iterator.
+      // \return \a true if the left-hand side iterator is smaller, \a false if not.
+      */
+      inline BLAZE_DEVICE_CALLABLE bool operator<( const ConstIterator& rhs ) const {
+         return index_ < rhs.index_;
+      }
+      //*******************************************************************************************
+
+      //**Greater-than operator********************************************************************
+      /*!\brief Greater-than comparison between two ConstIterator objects.
+      //
+      // \param rhs The right-hand side iterator.
+      // \return \a true if the left-hand side iterator is greater, \a false if not.
+      */
+      inline BLAZE_DEVICE_CALLABLE bool operator>( const ConstIterator& rhs ) const {
+         return index_ > rhs.index_;
+      }
+      //*******************************************************************************************
+
+      //**Less-or-equal-than operator**************************************************************
+      /*!\brief Less-than comparison between two ConstIterator objects.
+      //
+      // \param rhs The right-hand side iterator.
+      // \return \a true if the left-hand side iterator is smaller or equal, \a false if not.
+      */
+      inline BLAZE_DEVICE_CALLABLE bool operator<=( const ConstIterator& rhs ) const {
+         return index_ <= rhs.index_;
+      }
+      //*******************************************************************************************
+
+      //**Greater-or-equal-than operator***********************************************************
+      /*!\brief Greater-than comparison between two ConstIterator objects.
+      //
+      // \param rhs The right-hand side iterator.
+      // \return \a true if the left-hand side iterator is greater or equal, \a false if not.
+      */
+      inline BLAZE_DEVICE_CALLABLE bool operator>=( const ConstIterator& rhs ) const {
+         return index_ >= rhs.index_;
+      }
+      //*******************************************************************************************
+
+      //**Subtraction operator*********************************************************************
+      /*!\brief Calculating the number of elements between two iterators.
+      //
+      // \param rhs The right-hand side iterator.
+      // \return The number of elements between the two iterators.
+      */
+      inline BLAZE_DEVICE_CALLABLE DifferenceType operator-( const ConstIterator& rhs ) const {
+         return index_ - rhs.index_;
+      }
+      //*******************************************************************************************
+
+      //**Addition operator************************************************************************
+      /*!\brief Addition between a ConstIterator and an integral value.
+      //
+      // \param it The iterator to be incremented.
+      // \param inc The number of elements the iterator is incremented.
+      // \return The incremented iterator.
+      */
+      friend inline BLAZE_DEVICE_CALLABLE const ConstIterator operator+( const ConstIterator& it, size_t inc ) {
+         return ConstIterator( it.left_, it.right_, it.index_ + inc );
+      }
+      //*******************************************************************************************
+
+      //**Addition operator************************************************************************
+      /*!\brief Addition between an integral value and a ConstIterator.
+      //
+      // \param inc The number of elements the iterator is incremented.
+      // \param it The iterator to be incremented.
+      // \return The incremented iterator.
+      */
+      friend inline BLAZE_DEVICE_CALLABLE const ConstIterator operator+( size_t inc, const ConstIterator& it ) {
+         return ConstIterator( it.left_, it.right_, it.index_ + inc );
+      }
+      //*******************************************************************************************
+
+      //**Subtraction operator*********************************************************************
+      /*!\brief Subtraction between a ConstIterator and an integral value.
+      //
+      // \param it The iterator to be decremented.
+      // \param dec The number of elements the iterator is decremented.
+      // \return The decremented iterator.
+      */
+      friend inline BLAZE_DEVICE_CALLABLE const ConstIterator operator-( const ConstIterator& it, size_t dec ) {
+         return ConstIterator( it.left_, it.right_, it.index_ - dec );
+      }
+      //*******************************************************************************************
+
+    private:
+      //**Member variables*************************************************************************
+      const LeftOperand&  left_;   //!< Iterator to the current left-hand side element.
+      const RightOperand& right_;  //!< Iterator to the current right-hand side element.
+      size_t              index_;  //!< Index to the current element of the cross product.
+      //*******************************************************************************************
+   };
+   //**********************************************************************************************
+
    //**Compilation flags***************************************************************************
    //! Compilation switch for the expression template evaluation strategy.
-   static constexpr bool simdEnabled = false;
+   static constexpr bool simdEnabled = ( SIMDTrait<ElementType>::size >= 3UL );
 
    //! Compilation switch for the expression template assignment strategy.
    static constexpr bool smpAssignable = false;
@@ -196,6 +454,42 @@ class DVecDVecCrossExpr
          BLAZE_THROW_OUT_OF_RANGE( "Invalid vector access index" );
       }
       return (*this)[index];
+   }
+   //**********************************************************************************************
+
+   //**Load function*******************************************************************************
+   /*!\brief Access to the SIMD elements of the vector.
+   //
+   // \param index Access index. The index has to be in the range \f$[0..N-1]\f$.
+   // \return Reference to the accessed values.
+   */
+   BLAZE_ALWAYS_INLINE auto load( size_t index ) const noexcept {
+      BLAZE_INTERNAL_ASSERT( index == 0UL, "Invalid vector access index" );
+      LT x( serial( lhs_ ) );  // Evaluation of the left-hand side dense vector operand
+      RT y( serial( rhs_ ) );  // Evaluation of the right-hand side dense vector operand
+      return setall( x[1UL] * y[2UL] - x[2UL] * y[1UL]
+                   , x[2UL] * y[0UL] - x[0UL] * y[2UL]
+                   , x[0UL] * y[1UL] - x[1UL] * y[0UL] );
+   }
+   //**********************************************************************************************
+
+   //**Begin function******************************************************************************
+   /*!\brief Returns an iterator to the first non-zero element of the dense vector.
+   //
+   // \return Iterator to the first non-zero element of the dense vector.
+   */
+   inline ConstIterator begin() const {
+      return ConstIterator( lhs_, rhs_, 0UL );
+   }
+   //**********************************************************************************************
+
+   //**End function********************************************************************************
+   /*!\brief Returns an iterator just past the last non-zero element of the dense vector.
+   //
+   // \return Iterator just past the last non-zero element of the dense vector.
+   */
+   inline ConstIterator end() const {
+      return ConstIterator( lhs_, rhs_, 3UL );
    }
    //**********************************************************************************************
 
@@ -550,6 +844,24 @@ inline decltype(auto) cross( const DenseVector<VT1,TF>& lhs, const DenseVector<V
 {
    return lhs % rhs;
 }
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  ISPADDED SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename VT1, typename VT2, bool TF >
+struct IsPadded< DVecDVecCrossExpr<VT1,VT2,TF> >
+   : public BoolConstant< DVecDVecCrossExpr<VT1,VT2,TF>::simdEnabled >
+{};
+/*! \endcond */
 //*************************************************************************************************
 
 } // namespace blaze
