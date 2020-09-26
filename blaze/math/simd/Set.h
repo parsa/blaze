@@ -318,11 +318,11 @@ BLAZE_ALWAYS_INLINE const EnableIf_t< IsIntegral_v<T> && HasSize_v<T,8UL>
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Sets all values in the vector to the given 'float' value.
+/*!\brief Sets all values in the vector to the given \c float value.
 // \ingroup simd
 //
-// \param value The given 'float' value.
-// \return The set vector of 'float' values.
+// \param value The given \c float value.
+// \return The set vector of \c float values.
 */
 BLAZE_ALWAYS_INLINE const SIMDfloat set( float value ) noexcept
 {
@@ -340,11 +340,11 @@ BLAZE_ALWAYS_INLINE const SIMDfloat set( float value ) noexcept
 
 
 //*************************************************************************************************
-/*!\brief Sets all values in the vector to the given 'complex<float>' value.
+/*!\brief Sets all values in the vector to the given \c complex<float> value.
 // \ingroup simd
 //
-// \param value The given 'complex<float>' value.
-// \return The set vector of 'complex<float>' values.
+// \param value The given \c complex<float> value.
+// \return The set vector of \c complex<float> values.
 */
 BLAZE_ALWAYS_INLINE const SIMDcfloat set( const complex<float>& value ) noexcept
 {
@@ -375,11 +375,11 @@ BLAZE_ALWAYS_INLINE const SIMDcfloat set( const complex<float>& value ) noexcept
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Sets all values in the vector to the given 'double' value.
+/*!\brief Sets all values in the vector to the given \c double value.
 // \ingroup simd
 //
-// \param value The given 'double' value.
-// \return The set vector of 'double' values.
+// \param value The given \c double value.
+// \return The set vector of \c double values.
 */
 BLAZE_ALWAYS_INLINE const SIMDdouble set( double value ) noexcept
 {
@@ -397,11 +397,11 @@ BLAZE_ALWAYS_INLINE const SIMDdouble set( double value ) noexcept
 
 
 //*************************************************************************************************
-/*!\brief Sets all values in the vector to the given 'complex<double>' value.
+/*!\brief Sets all values in the vector to the given \c complex<double> value.
 // \ingroup simd
 //
-// \param value The given 'complex<double>' value.
-// \return The set vector of 'complex<double>' values.
+// \param value The given \c complex<double> value.
+// \return The set vector of \c complex<double> values.
 */
 BLAZE_ALWAYS_INLINE const SIMDcdouble set( const complex<double>& value ) noexcept
 {
