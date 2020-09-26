@@ -55,6 +55,7 @@
 #include <blazemark/blaze/Mat3Vec3Mult.h>
 #include <blazemark/blitz/Mat3Vec3Mult.h>
 #include <blazemark/boost/Mat3Vec3Mult.h>
+#include <blazemark/clike/Mat3Vec3Mult.h>
 #include <blazemark/eigen/Mat3Vec3Mult.h>
 #include <blazemark/flens/Mat3Vec3Mult.h>
 #include <blazemark/mtl/Mat3Vec3Mult.h>
@@ -213,6 +214,17 @@ void mat3vec3mult( std::vector<Run>& runs, Benchmarks benchmarks )
                slowSize = run->getSize();
          }
          else run->setSteps( 1UL );
+      }
+   }
+
+   if( benchmarks.runClike ) {
+      std::cout << "   C-like implementation [MFlop/s]:\n";
+      for( std::vector<Run>::iterator run=runs.begin(); run!=runs.end(); ++run ) {
+         const size_t N    ( run->getNumber() );
+         const size_t steps( run->getSteps()  );
+         run->setClikeResult( blazemark::clike::mat3vec3mult( N, steps ) );
+         const double mflops( run->getFlops() * steps / run->getClikeResult() / 1E6 );
+         std::cout << "     " << std::setw(12) << N << mflops << std::endl;
       }
    }
 

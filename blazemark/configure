@@ -1542,7 +1542,7 @@ fi
 VEC6VEC6ADD="$VEC6VEC6ADD \$(OBJECT_PATH)/MAIN_Vec6Vec6Add.o"
 
 # Configuration of the 3-dimensional matrix/vector multiplication benchmark
-MAT3VEC3MULT="\$(OBJECT_PATH)/BLAZE_Mat3Vec3Mult.o"
+MAT3VEC3MULT="\$(OBJECT_PATH)/CLIKE_Mat3Vec3Mult.o \$(OBJECT_PATH)/BLAZE_Mat3Vec3Mult.o"
 if [ "$BOOST" = "yes" ]; then
    MAT3VEC3MULT="$MAT3VEC3MULT \$(OBJECT_PATH)/BOOST_Mat3Vec3Mult.o"
 fi
@@ -1561,7 +1561,7 @@ fi
 MAT3VEC3MULT="$MAT3VEC3MULT \$(OBJECT_PATH)/MAIN_Mat3Vec3Mult.o"
 
 # Configuration of the 3-dimensional transpose matrix/vector multiplication benchmark
-TMAT3VEC3MULT="\$(OBJECT_PATH)/BLAZE_TMat3Vec3Mult.o"
+TMAT3VEC3MULT="\$(OBJECT_PATH)/CLIKE_TMat3Vec3Mult.o \$(OBJECT_PATH)/BLAZE_TMat3Vec3Mult.o"
 if [ "$BOOST" = "yes" ]; then
    TMAT3VEC3MULT="$TMAT3VEC3MULT \$(OBJECT_PATH)/BOOST_TMat3Vec3Mult.o"
 fi
@@ -6865,9 +6865,12 @@ mat3vec3mult: \$(BINARY_PATH)/mat3vec3mult
 	${SILENT}\$(CXX) \$(CXXFLAGS) -o \$(BINARY_PATH)/mat3vec3mult $MAT3VEC3MULT \$(LIBRARIES)
 	@echo "... finished"
 	@echo
-\$(OBJECT_PATH)/BLAZE_Mat3Vec3Mult.o:
+\$(OBJECT_PATH)/CLIKE_Mat3Vec3Mult.o:
 	@echo
 	@echo "Building 3-dimensional matrix/vector multiplication (mat3vec3mult) binary..."
+	@echo "  Building the C-like kernel..."
+	${SILENT}\$(CXX) \$(CXXFLAGS) -c -o \$(OBJECT_PATH)/CLIKE_Mat3Vec3Mult.o \$(INSTALL_PATH)/src/clike/Mat3Vec3Mult.cpp \$(INCLUDES)
+\$(OBJECT_PATH)/BLAZE_Mat3Vec3Mult.o:
 	@echo "  Building the Blaze kernel..."
 	${SILENT}\$(CXX) \$(CXXFLAGS) -c -o \$(OBJECT_PATH)/BLAZE_Mat3Vec3Mult.o \$(INSTALL_PATH)/src/blaze/Mat3Vec3Mult.cpp \$(INCLUDES)
 EOF
@@ -6927,9 +6930,12 @@ tmat3vec3mult: \$(BINARY_PATH)/tmat3vec3mult
 	${SILENT}\$(CXX) \$(CXXFLAGS) -o \$(BINARY_PATH)/tmat3vec3mult $TMAT3VEC3MULT \$(LIBRARIES)
 	@echo "... finished"
 	@echo
-\$(OBJECT_PATH)/BLAZE_TMat3Vec3Mult.o:
+\$(OBJECT_PATH)/CLIKE_TMat3Vec3Mult.o:
 	@echo
 	@echo "Building 3-dimensional transpose matrix/vector multiplication (tmat3vec3mult) binary..."
+	@echo "  Building the C-like kernel..."
+	${SILENT}\$(CXX) \$(CXXFLAGS) -c -o \$(OBJECT_PATH)/CLIKE_TMat3Vec3Mult.o \$(INSTALL_PATH)/src/clike/TMat3Vec3Mult.cpp \$(INCLUDES)
+\$(OBJECT_PATH)/BLAZE_TMat3Vec3Mult.o:
 	@echo "  Building the Blaze kernel..."
 	${SILENT}\$(CXX) \$(CXXFLAGS) -c -o \$(OBJECT_PATH)/BLAZE_TMat3Vec3Mult.o \$(INSTALL_PATH)/src/blaze/TMat3Vec3Mult.cpp \$(INCLUDES)
 EOF
