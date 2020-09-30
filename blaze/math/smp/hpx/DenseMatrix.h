@@ -96,8 +96,13 @@ template< typename MT1   // Type of the left-hand side dense matrix
         , typename OP >  // Type of the assignment operation
 void hpxAssign( DenseMatrix<MT1,SO1>& lhs, const DenseMatrix<MT2,SO2>& rhs, OP op )
 {
+#if HPX_VERSION_FULL >= 0x010500
+   using hpx::for_loop;
+   using hpx::execution::par;
+#else
    using hpx::parallel::for_loop;
    using hpx::parallel::execution::par;
+#endif
 
    BLAZE_FUNCTION_TRACE;
 
@@ -184,8 +189,13 @@ template< typename MT1   // Type of the left-hand side dense matrix
         , typename OP >  // Type of the assignment operation
 void hpxAssign( DenseMatrix<MT1,SO1>& lhs, const SparseMatrix<MT2,SO2>& rhs, OP op )
 {
+#if HPX_VERSION_FULL >= 0x010500
+   using hpx::for_loop;
+   using hpx::execution::par;
+#else
    using hpx::parallel::for_loop;
    using hpx::parallel::execution::par;
+#endif
 
    BLAZE_FUNCTION_TRACE;
 

@@ -40,7 +40,12 @@
 // Includes
 //*************************************************************************************************
 
+#include <hpx/config.hpp>
+#if HPX_VERSION_FULL >= 0x010500
+#include <hpx/runtime.hpp>
+#else
 #include <hpx/runtime/get_os_thread_count.hpp>
+#endif
 
 #include <blaze/math/Exception.h>
 #include <blaze/system/Inline.h>
