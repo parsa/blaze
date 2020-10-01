@@ -5496,10 +5496,6 @@ void solveNxN( const DenseMatrix<MT,SO>& A, DenseVector<VT1,TF1>& x, const Dense
    VT1& x_( *x );
    const VT2& b_( *b );
 
-   if( !isDivisor( trace( A_ ) ) ) {
-      BLAZE_THROW_DIVISION_BY_ZERO( "Solving LSE with singular system matrix failed" );
-   }
-
    const size_t N( (*b).size() );
 
    resize( x_, N );
@@ -5628,10 +5624,6 @@ void solveNxN( const DenseMatrix<MT,SO>& A, DenseVector<VT1,TF1>& x, const Dense
    CompositeType_t<MT> A_( *A );
    VT1& x_( *x );
    const VT2& b_( *b );
-
-   if( !isDivisor( trace( A_ ) ) ) {
-      BLAZE_THROW_DIVISION_BY_ZERO( "Solving LSE with singular system matrix failed" );
-   }
 
    const size_t N( (*b).size() );
 
