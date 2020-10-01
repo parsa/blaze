@@ -5429,7 +5429,7 @@ void solveNxN( const DenseMatrix<MT,SO>& A, DenseVector<VT1,TF1>& x, const Dense
    VT1& x_( *x );
    const VT2& b_( *b );
 
-   if( !isDivisor( trace( A_ ) ) ) {
+   if( !isDivisor( det( A_ ) ) ) {
       BLAZE_THROW_DIVISION_BY_ZERO( "Solving LSE with singular system matrix failed" );
    }
 
@@ -5562,7 +5562,7 @@ void solveNxN( const DenseMatrix<MT,SO>& A, DenseVector<VT1,TF1>& x, const Dense
    VT1& x_( *x );
    const VT2& b_( *b );
 
-   if( !isDivisor( trace( A_ ) ) ) {
+   if( !isDivisor( det( A_ ) ) ) {
       BLAZE_THROW_DIVISION_BY_ZERO( "Solving LSE with singular system matrix failed" );
    }
 
@@ -5696,7 +5696,7 @@ void solveNxN( const DenseMatrix<MT,SO>& A, DenseVector<VT1,TF1>& x, const Dense
    VT1& x_( *x );
    const VT2& b_( *b );
 
-   if( !isDivisor( trace( A_ ) ) ) {
+   if( !isDivisor( det( A_ ) ) ) {
       BLAZE_THROW_DIVISION_BY_ZERO( "Solving LSE with singular system matrix failed" );
    }
 
@@ -5963,7 +5963,7 @@ void solveNxN( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& X, const Den
    MT2& X_( *X );
    const MT3& B_( *B );
 
-   if( !isDivisor( trace( A_ ) ) ) {
+   if( !isDivisor( det( A_ ) ) ) {
       BLAZE_THROW_DIVISION_BY_ZERO( "Solving LSE with singular system matrix failed" );
    }
 
@@ -6105,7 +6105,7 @@ void solveNxN( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& X, const Den
    MT2& X_( *X );
    const MT3& B_( *B );
 
-   if( !isDivisor( trace( A_ ) ) ) {
+   if( !isDivisor( det( A_ ) ) ) {
       BLAZE_THROW_DIVISION_BY_ZERO( "Solving LSE with singular system matrix failed" );
    }
 
@@ -6246,7 +6246,7 @@ void solveNxN( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& X, const Den
    MT2& X_( *X );
    const MT3& B_( *B );
 
-   if( !isDivisor( trace( A_ ) ) ) {
+   if( !isDivisor( det( A_ ) ) ) {
       BLAZE_THROW_DIVISION_BY_ZERO( "Solving LSE with singular system matrix failed" );
    }
 
