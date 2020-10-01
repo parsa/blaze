@@ -94,8 +94,13 @@ template< typename VT1   // Type of the left-hand side dense vector
         , typename OP >  // Type of the assignment operation
 void hpxAssign( DenseVector<VT1,TF1>& lhs, const DenseVector<VT2,TF2>& rhs, OP op )
 {
+#if HPX_VERSION_FULL >= 0x010500
+   using hpx::for_loop;
+   using hpx::execution::par;
+#else
    using hpx::parallel::for_loop;
    using hpx::parallel::execution::par;
+#endif
 
    BLAZE_FUNCTION_TRACE;
 
@@ -173,8 +178,13 @@ template< typename VT1   // Type of the left-hand side dense vector
         , typename OP >  // Type of the assignment operation
 void hpxAssign( DenseVector<VT1,TF1>& lhs, const SparseVector<VT2,TF2>& rhs, OP op )
 {
+#if HPX_VERSION_FULL >= 0x010500
+   using hpx::for_loop;
+   using hpx::execution::par;
+#else
    using hpx::parallel::for_loop;
    using hpx::parallel::execution::par;
+#endif
 
    BLAZE_FUNCTION_TRACE;
 

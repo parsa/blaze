@@ -150,7 +150,7 @@ if (${BLAZE_CACHE_SIZE_AUTO})
    if (flag OR NOT tmp)
       message("Cache size not found automatically. Using default value as cache size.")
       set(tmp ${BLAZE_CACHE_SIZE_DEFAULT})
-   endif (flag)
+   endif (flag OR NOT tmp)
 
    math(EXPR BLAZE_CACHE_SIZE ${tmp}*1024) # Convert to bytes (assuming that the value is given in kibibytes)
 
