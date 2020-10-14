@@ -135,7 +135,7 @@ void estimateSteps( Run& run )
    while( true ) {
       timer.start();
       for( size_t i=0UL; i<steps; ++i ) {
-         B = inv( A );
+         B = noalias( inv( A ) );
       }
       timer.end();
       wct = timer.last();

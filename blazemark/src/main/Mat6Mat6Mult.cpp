@@ -140,7 +140,7 @@ void estimateSteps( Run& run )
       timer.start();
       for( size_t step=0UL, i=0UL; step<steps; ++step, ++i ) {
          if( i == N ) i = 0UL;
-         C[i] = A[i] * B[i];
+         C[i] = noalias( A[i] * B[i] );
       }
       timer.end();
       wct = timer.last();

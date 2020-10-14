@@ -85,13 +85,13 @@ double tsvecdmatmult( size_t N, size_t F, size_t steps )
    init( a, F );
    init( A );
 
-   b = a * A;
+   b = noalias( a * A );
 
    for( size_t rep=0UL; rep<reps; ++rep )
    {
       timer.start();
       for( size_t step=0UL; step<steps; ++step ) {
-         b = a * A;
+         b = noalias( a * A );
       }
       timer.end();
 

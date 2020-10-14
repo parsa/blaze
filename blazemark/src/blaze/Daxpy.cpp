@@ -81,7 +81,7 @@ double daxpy( size_t N, size_t steps )
    {
       timer.start();
       for( size_t step=0UL; step<steps; ++step ) {
-         b += a * element_t(3);
+         b += noalias( a * element_t(3) );
       }
       timer.end();
 

@@ -142,7 +142,7 @@ void estimateSteps( Run& run )
    while( true ) {
       timer.start();
       for( size_t i=0UL; i<steps; ++i ) {
-         E = ( A + B ) * ( C - D );
+         E = noalias( ( A + B ) * ( C - D ) );
       }
       timer.end();
       wct = timer.last();

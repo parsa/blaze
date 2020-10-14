@@ -115,12 +115,12 @@ double cg( size_t N, size_t steps, size_t iterations )
 
          for( size_t iteration=0UL; iteration<iterations; ++iteration )
          {
-            h = A * d;
+            h = noalias( A * d );
             alpha = delta / ( trans(d) * h );
-            x += alpha * d;
-            r += alpha * h;
+            x += noalias( alpha * d );
+            r += noalias( alpha * h );
             beta = trans(r) * r;
-            d = ( beta / delta ) * d - r;
+            d = noalias( ( beta / delta ) * d - r );
             delta = beta;
          }
       }

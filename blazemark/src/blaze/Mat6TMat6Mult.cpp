@@ -90,7 +90,7 @@ double mat6tmat6mult( size_t N, size_t steps )
    }
 
    for( size_t i=0UL; i<N; ++i ) {
-      C[i] = A[i] * B[i];
+      C[i] = noalias( A[i] * B[i] );
    }
 
    for( size_t rep=0UL; rep<reps; ++rep )
@@ -98,7 +98,7 @@ double mat6tmat6mult( size_t N, size_t steps )
       timer.start();
       for( size_t step=0UL, i=0UL; step<steps; ++step, ++i ) {
          if( i == N ) i = 0UL;
-         C[i] = A[i] * B[i];
+         C[i] = noalias( A[i] * B[i] );
       }
       timer.end();
 

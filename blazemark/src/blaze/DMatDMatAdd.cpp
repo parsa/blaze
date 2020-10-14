@@ -78,13 +78,13 @@ double dmatdmatadd( size_t N, size_t steps )
    init( A );
    init( B );
 
-   C = A + B;
+   C = noalias( A + B );
 
    for( size_t rep=0UL; rep<reps; ++rep )
    {
       timer.start();
       for( size_t step=0UL; step<steps; ++step ) {
-         C = A + B;
+         C = noalias( A + B );
       }
       timer.end();
 

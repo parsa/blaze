@@ -79,13 +79,13 @@ double complex5( size_t N, size_t steps )
    init( B );
    init( C );
 
-   D = ( A * B ) + C;
+   D = noalias( ( A * B ) + C );
 
    for( size_t rep=0UL; rep<reps; ++rep )
    {
       timer.start();
       for( size_t step=0UL; step<steps; ++step ) {
-         D = ( A * B ) + C;
+         D = noalias( ( A * B ) + C );
       }
       timer.end();
 

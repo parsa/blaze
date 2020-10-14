@@ -76,13 +76,13 @@ double dmattrans( size_t N, size_t steps )
 
    init( A );
 
-   B = trans( A );
+   B = noalias( trans( A ) );
 
    for( size_t rep=0UL; rep<reps; ++rep )
    {
       timer.start();
       for( size_t step=0UL; step<steps; ++step ) {
-         B = trans( A );
+         B = noalias( trans( A ) );
       }
       timer.end();
 

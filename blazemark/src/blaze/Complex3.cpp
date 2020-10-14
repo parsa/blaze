@@ -84,13 +84,13 @@ double complex3( size_t N, size_t steps )
    init( a );
    init( b );
 
-   c = A * B * ( a + b );
+   c = noalias( A * B * ( a + b ) );
 
    for( size_t rep=0UL; rep<reps; ++rep )
    {
       timer.start();
       for( size_t step=0UL; step<steps; ++step ) {
-         c = A * B * ( a + b );
+         c = noalias( A * B * ( a + b ) );
       }
       timer.end();
 

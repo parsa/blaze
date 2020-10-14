@@ -86,13 +86,13 @@ double dvecsvecouter( size_t N, size_t F, size_t steps )
    init( a );
    init( b, F );
 
-   A = a * b;
+   A = noalias( a * b );
 
    for( size_t rep=0UL; rep<reps; ++rep )
    {
       timer.start();
       for( size_t step=0UL; step<steps; ++step ) {
-         A = a * b;
+         A = noalias( a * b );
       }
       timer.end();
 

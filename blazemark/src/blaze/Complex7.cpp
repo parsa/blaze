@@ -80,13 +80,13 @@ double complex7( size_t N, size_t steps )
    init( C );
    init( D );
 
-   E = ( A + B ) * ( C - D );
+   E = noalias( ( A + B ) * ( C - D ) );
 
    for( size_t rep=0UL; rep<reps; ++rep )
    {
       timer.start();
       for( size_t step=0UL; step<steps; ++step ) {
-         E = ( A + B ) * ( C - D );
+         E = noalias( ( A + B ) * ( C - D ) );
       }
       timer.end();
 

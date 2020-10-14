@@ -92,7 +92,7 @@ double mat3vec3mult( size_t N, size_t steps )
    }
 
    for( size_t i=0UL; i<N; ++i ) {
-      b[i] = A[i] * a[i];
+      b[i] = noalias( A[i] * a[i] );
    }
 
    for( size_t rep=0UL; rep<reps; ++rep )
@@ -100,7 +100,7 @@ double mat3vec3mult( size_t N, size_t steps )
       timer.start();
       for( size_t step=0UL, i=0UL; step<steps; ++step, ++i ) {
          if( i == N ) i = 0UL;
-         b[i] = A[i] * a[i];
+         b[i] = noalias( A[i] * a[i] );
       }
       timer.end();
 
