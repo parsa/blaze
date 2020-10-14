@@ -76,6 +76,8 @@ BLAZE_ALWAYS_INLINE const SIMDfloat floor( const SIMDf32<T>& a ) noexcept
 {
    return Sleef_floorf16( (*a).eval().value );
 }
+#elif BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
+= delete;
 #elif BLAZE_AVX_MODE
 {
    return _mm256_floor_ps((*a).eval().value);
@@ -118,6 +120,8 @@ BLAZE_ALWAYS_INLINE const SIMDdouble floor( const SIMDf64<T>& a ) noexcept
 {
    return Sleef_floord8( (*a).eval().value );
 }
+#elif BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
+= delete;
 #elif BLAZE_AVX_MODE
 {
    return _mm256_floor_pd((*a).eval().value);
