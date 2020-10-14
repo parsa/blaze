@@ -110,8 +110,8 @@ void init( ::flens::GeCRSMatrix< ::flens::CRS<Type,::flens::IndexBaseZero<IndexT
    else
    {
       for( IndexType i=tmp.firstRow(); i<=tmp.lastRow(); ++i ) {
-         ::blaze::Indices indices( 0UL, columns-1UL, nonzeros );
-         for( ::blaze::Indices::ConstIterator it=indices.begin(); it!=indices.end(); ++it ) {
+         ::blaze::Indices<size_t> indices( 0UL, columns-1UL, nonzeros );
+         for( auto it=indices.begin(); it!=indices.end(); ++it ) {
             tmp(i,*it) += ::blaze::rand<Type>( 0, 10 );
          }
       }

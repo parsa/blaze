@@ -107,8 +107,8 @@ void init( ::blaze::StrictlyLowerMatrix< ::blaze::CompressedMatrix<Type,::blaze:
    else
    {
       for( size_t i=1UL; i<N; ++i ) {
-         ::blaze::Indices indices( 0UL, N-1UL, nonzeros );
-         for( ::blaze::Indices::ConstIterator it=indices.begin(); it!=indices.end(); ++it ) {
+         ::blaze::Indices<size_t> indices( 0UL, N-1UL, nonzeros );
+         for( auto it=indices.begin(); it!=indices.end(); ++it ) {
             if( *it >= i ) break;
             m.append( i, *it, ::blaze::rand<Type>( 0, 10 ) );
          }
@@ -152,8 +152,8 @@ void init( ::blaze::StrictlyLowerMatrix< ::blaze::CompressedMatrix<Type,::blaze:
    else
    {
       for( size_t j=0UL; j<N; ++j ) {
-         ::blaze::Indices indices( 0UL, N-1UL, nonzeros );
-         for( ::blaze::Indices::ConstIterator it=indices.begin(); it!=indices.end(); ++it ) {
+         ::blaze::Indices<size_t> indices( 0UL, N-1UL, nonzeros );
+         for( auto it=indices.begin(); it!=indices.end(); ++it ) {
             if( *it <= j ) continue;
             m.append( *it, j, ::blaze::rand<Type>( 0, 10 ) );
          }

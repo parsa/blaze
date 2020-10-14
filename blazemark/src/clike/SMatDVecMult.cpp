@@ -81,8 +81,8 @@ double smatdvecmult( size_t N, size_t F, size_t steps )
    size_t counter( 0 );
 
    for( size_t i=0UL; i<N; ++i ) {
-      ::blaze::Indices indices( 0UL, N-1UL, F );
-      for( ::blaze::Indices::ConstIterator it=indices.begin(); it!=indices.end(); ++it ) {
+      ::blaze::Indices<size_t> indices( 0UL, N-1UL, F );
+      for( auto it=indices.begin(); it!=indices.end(); ++it ) {
          value[counter] = ::blaze::rand<element_t>();
          index[counter] = *it;
          ++counter;

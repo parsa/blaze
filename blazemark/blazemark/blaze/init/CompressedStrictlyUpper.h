@@ -107,8 +107,8 @@ void init( ::blaze::StrictlyUpperMatrix< ::blaze::CompressedMatrix<Type,::blaze:
    else
    {
       for( size_t i=0UL; i<N; ++i ) {
-         ::blaze::Indices indices( 0UL, N-1UL, nonzeros );
-         for( ::blaze::Indices::ConstIterator it=indices.begin(); it!=indices.end(); ++it ) {
+         ::blaze::Indices<size_t> indices( 0UL, N-1UL, nonzeros );
+         for( auto it=indices.begin(); it!=indices.end(); ++it ) {
             if( *it <= i ) continue;
             m.append( i, *it, ::blaze::rand<Type>( 0, 10 ) );
          }
@@ -152,8 +152,8 @@ void init( ::blaze::StrictlyUpperMatrix< ::blaze::CompressedMatrix<Type,::blaze:
    else
    {
       for( size_t j=1UL; j<N; ++j ) {
-         ::blaze::Indices indices( 0UL, N-1UL, nonzeros );
-         for( ::blaze::Indices::ConstIterator it=indices.begin(); it!=indices.end(); ++it ) {
+         ::blaze::Indices<size_t> indices( 0UL, N-1UL, nonzeros );
+         for( auto it=indices.begin(); it!=indices.end(); ++it ) {
             if( *it >= j ) break;
             m.append( *it, j, ::blaze::rand<Type>( 0, 10 ) );
          }
