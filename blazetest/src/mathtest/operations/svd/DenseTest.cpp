@@ -173,6 +173,9 @@ void DenseTest::testGeneral()
       {
          test_ = "svd( DenseMatrix, DenseMatrix, DenseVector, DenseMatrix ) (double)";
 
+         testMatrixRandom<double, columnMajor>();
+         testMatrixRandom<double, rowMajor>();
+
          DynamicMatrix<double,columnMajor> A1( 8UL, 5UL );
          randomize( A1 );
          DynamicMatrix<double,rowMajor> A2( A1 );
@@ -218,6 +221,9 @@ void DenseTest::testGeneral()
 
       {
          test_ = "svd( DenseMatrix, DenseMatrix, DenseVector, DenseMatrix ) (complex<double>)";
+
+         testMatrixRandom<complex<double>, columnMajor>();
+         testMatrixRandom<complex<double>, rowMajor>();
 
          DynamicMatrix<complex<double>,columnMajor> A1( 8UL, 5UL );
          randomize( A1 );

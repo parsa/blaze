@@ -69,7 +69,7 @@ inline void svd( const DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& s );
 
 template< typename MT1, bool SO, typename VT, bool TF, typename MT2, typename MT3 >
 inline void svd( const DenseMatrix<MT1,SO>& A, DenseMatrix<MT2,SO>& U,
-                 DenseVector<VT,TF>& s, DenseMatrix<MT3,SO>& V );
+                 DenseVector<VT,TF>& s, DenseMatrix<MT3,SO>& V, bool square = false );
 
 template< typename MT, bool SO, typename VT, bool TF, typename ST >
 inline size_t svd( const DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& s, ST low, ST upp );
@@ -169,6 +169,7 @@ inline void svd( const DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& s )
 // \param U The resulting matrix of left singular vectors.
 // \param s The resulting vector of singular values.
 // \param V The resulting matrix of right singular vectors.
+// \param square Defaults to False.  If True, will make sure U and V are square matrices.
 // \return void
 // \exception std::invalid_argument Dimensions of fixed size matrix U do not match.
 // \exception std::invalid_argument Size of fixed size vector does not match.
@@ -225,7 +226,7 @@ template< typename MT1    // Type of the matrix A
         , typename MT2    // Type of the matrix U
         , typename MT3 >  // Type of the matrix V
 inline void svd( const DenseMatrix<MT1,SO>& A, DenseMatrix<MT2,SO>& U,
-                 DenseVector<VT,TF>& s, DenseMatrix<MT3,SO>& V )
+                 DenseVector<VT,TF>& s, DenseMatrix<MT3,SO>& V, bool square )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( MT1 );
    BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<MT1> );
@@ -259,7 +260,7 @@ inline void svd( const DenseMatrix<MT1,SO>& A, DenseMatrix<MT2,SO>& U,
    STmp stmp( *s );
    VTmp Vtmp( *V );
 
-   gesdd( Atmp, Utmp, stmp, Vtmp, 'S' );
+   gesdd( Atmp, Utmp, stmp, Vtmp, (square) ? 'A' : 'S' );
 
    if( !IsContiguous_v<MT2> ) {
       (*U) = Utmp;

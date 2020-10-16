@@ -41,6 +41,8 @@
 //*************************************************************************************************
 
 #include <string>
+#include <blaze/math/DynamicMatrix.h>
+#include <blaze/math/DynamicVector.h>
 
 
 namespace blazetest {
@@ -83,6 +85,11 @@ class DenseTest
    //**Test functions******************************************************************************
    /*!\name Test functions */
    //@{
+   template< typename Type, bool SO >
+   void testMatrixRandom();
+   template< typename Type, bool SO >
+   void testMatrixRandomSingle(size_t m, size_t n, bool square);
+
    void testGeneral();
    //@}
    //**********************************************************************************************
@@ -96,6 +103,119 @@ class DenseTest
 };
 //*************************************************************************************************
 
+
+//=================================================================================================
+//
+//  TEST FUNCTIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*!\brief Test of the SVD decomposition with a randomly initialized matrix of the given type.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function tests the dense matrix SVD decomposition for a randomly initialized matrix of the
+// given type. In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+template< typename Type, bool SO >
+void DenseTest::testMatrixRandom()
+{
+   size_t m( blaze::rand<size_t>( 4UL, 8UL ) );
+   size_t n( m );
+
+   // test m == n
+   testMatrixRandomSingle<Type, SO>(m, n, false);
+   
+   if (!blaze::IsSquare<Type>::value) {
+      // test m > n, squareV = false
+      n = blaze::rand<size_t>( 2UL, m - 1 );
+      testMatrixRandomSingle<Type, SO>(m, n, false);
+
+      // test m > n, squareV = true
+      testMatrixRandomSingle<Type, SO>(m, n, true);
+
+      // test m < n, squareV = false
+      n = blaze::rand<size_t>( m + 1, 10UL );
+      testMatrixRandomSingle<Type, SO>(m, n, false);
+
+      // test m < n, squareV = true
+      testMatrixRandomSingle<Type, SO>(m, n, true);
+   }
+}
+
+//*************************************************************************************************
+/*!\brief Test of the QR decomposition with a randomly initialized matrix of the given type.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function tests the dense matrix QR decomposition for a randomly initialized matrix of the
+// given type. In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+template< typename Type, bool SO >
+void DenseTest::testMatrixRandomSingle(size_t m, size_t n, bool square)
+{
+#if BLAZETEST_MATHTEST_LAPACK_MODE
+
+   using MT = blaze::RemoveAdaptor_t<Type>;
+
+   DynamicMatrix<Type, SO> A( m, n );
+   randomize( A );
+
+   DynamicMatrix<Type, SO> U, V;
+   DynamicVector<Type, rowVector> s;
+
+   svd(A, U, s, V, square);
+
+   DynamicMatrix<Type, SO> S( U.columns(), V.rows(), 0 );
+   diagonal(S) = s;
+
+   DynamicMatrix<Type, SO> USV = U * S * V;
+
+   if (square) {
+      if (U.rows() != U.columns() || U.rows() != m) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+               << " Error: Singular value computation failed\n"
+               << " Details:\n"
+               << "   Random seed = " << blaze::getSeed() << "\n"
+               << "   U # of rows:\n" << U.rows() << "\n"
+               << "   U # of columns:\n" << U.columns() << "\n"
+               << "   Expected # of rows/columns:\n" << m << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      if (V.rows() != V.columns() || V.rows() != n) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+               << " Error: Singular value computation failed\n"
+               << " Details:\n"
+               << "   Random seed = " << blaze::getSeed() << "\n"
+               << "   V # of rows:\n" << V.rows() << "\n"
+               << "   V # of columns:\n" << V.columns() << "\n"
+               << "   Expected # of rows/columns:\n" << n << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   if (A != USV) {
+      std::ostringstream oss;
+      oss << " Test: " << test_ << "\n"
+            << " Error: Singular value computation failed\n"
+            << " Details:\n"
+            << "   Random seed = " << blaze::getSeed() << "\n"
+            << "   singular values:\n" << s << "\n"
+            << "   left singular vectors:\n" << U << "\n"
+            << "   right singular vectors:\n" << V << "\n"
+            << "   Product:\n" << USV << "\n"
+            << "   Expected Result:\n" << A << "\n";
+      throw std::runtime_error( oss.str() );
+   }
+
+#endif
+}
+//*************************************************************************************************
 
 
 
