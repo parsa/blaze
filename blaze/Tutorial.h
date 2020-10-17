@@ -3255,6 +3255,18 @@
    const double norm2 = maxNorm( b );
    \endcode
 
+// \n \subsection vector_operations_norms_minnorm minNorm()
+//
+// The \c minNorm() function computes the minimum norm of the given dense or sparse vector:
+
+   \code
+   blaze::DynamicVector<double> a;
+   blaze::CompressedVector<double> b;
+   // ... Resizing and initialization
+
+   const double norm = minNorm( b );
+   \endcode
+
 // \n \section vector_operations_scalar_expansion Scalar Expansion
 // <hr>
 //
@@ -6841,6 +6853,18 @@
 
    const double norm1 = linfNorm( A );
    const double norm2 = maxNorm( B );
+   \endcode
+
+// \n \subsection matrix_operations_norms_minnorm minNorm()
+//
+// The \c minNorm() function computes the minimum norm of the given dense or sparse matrix:
+
+   \code
+   blaze::DynamicMatrix<double> A;
+   blaze::CompressedMatrix<double> B;
+   // ... Resizing and initialization
+
+   const double norm = minNorm( B );
    \endcode
 
 // \n \section matrix_operations_scalar_expansion Scalar Expansion
