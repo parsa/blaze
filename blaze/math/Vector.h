@@ -43,6 +43,7 @@
 #include <iomanip>
 #include <iosfwd>
 #include <blaze/math/Aliases.h>
+#include <blaze/math/expressions/Forward.h>
 #include <blaze/math/expressions/Vector.h>
 #include <blaze/math/TransposeFlag.h>
 #include <blaze/math/views/Elements.h>
@@ -62,35 +63,20 @@ namespace blaze {
 template< typename VT, bool TF >
 bool isUniform( const Vector<VT,TF>& v );
 
-template< typename T1, typename T2 >
-decltype(auto) inner( const Vector<T1,false>& lhs, const Vector<T2,false>& rhs );
+template< typename VT1, bool TF1, typename VT2, bool TF2 >
+decltype(auto) inner( const Vector<VT1,TF1>& lhs, const Vector<VT2,TF2>& rhs );
 
-template< typename T1, typename T2 >
-decltype(auto) inner( const Vector<T1,false>& lhs, const Vector<T2,true>& rhs );
+template< typename VT1, bool TF1, typename VT2, bool TF2 >
+decltype(auto) dot( const Vector<VT1,TF1>& lhs, const Vector<VT2,TF2>& rhs );
 
-template< typename T1, typename T2 >
-decltype(auto) inner( const Vector<T1,true>& lhs, const Vector<T2,false>& rhs );
+template< typename VT1, bool TF1, typename VT2, bool TF2 >
+decltype(auto) operator,( const Vector<VT1,TF1>& lhs, const Vector<VT2,TF2>& rhs );
 
-template< typename T1, typename T2 >
-decltype(auto) inner( const Vector<T1,true>& lhs, const Vector<T2,true>& rhs );
+template< typename VT1, bool TF1, typename VT2, bool TF2 >
+decltype(auto) outer( const Vector<VT1,TF1>& lhs, const Vector<VT2,TF2>& rhs );
 
-template< typename T1, bool TF1, typename T2, bool TF2 >
-decltype(auto) dot( const Vector<T1,TF1>& lhs, const Vector<T2,TF2>& rhs );
-
-template< typename T1, bool TF1, typename T2, bool TF2 >
-decltype(auto) operator,( const Vector<T1,TF1>& lhs, const Vector<T2,TF2>& rhs );
-
-template< typename T1, typename T2 >
-decltype(auto) outer( const Vector<T1,false>& lhs, const Vector<T2,false>& rhs );
-
-template< typename T1, typename T2 >
-decltype(auto) outer( const Vector<T1,false>& lhs, const Vector<T2,true>& rhs );
-
-template< typename T1, typename T2 >
-decltype(auto) outer( const Vector<T1,true>& lhs, const Vector<T2,false>& rhs );
-
-template< typename T1, typename T2 >
-decltype(auto) outer( const Vector<T1,true>& lhs, const Vector<T2,true>& rhs );
+template< typename VT1, typename VT2, bool TF >
+decltype(auto) cross( const Vector<VT1,TF>& lhs, const Vector<VT2,TF>& rhs );
 
 template< typename VT >
 decltype(auto) reverse( VT&& v );
@@ -141,91 +127,69 @@ inline bool isUniform( const Vector<VT,TF>& v )
 
 
 //*************************************************************************************************
-/*!\brief Multiplication operator for the scalar product (dot/inner product) of two vectors
-//        (\f$ s=(\vec{a},\vec{b}) \f$).
+/*!\brief Scalar product (dot/inner product) of two vectors (\f$ s=(\vec{a},\vec{b}) \f$).
 // \ingroup vector
 //
 // \param lhs The left-hand side vector for the scalar product.
 // \param rhs The right-hand side vector for the scalar product.
 // \return The scalar product.
+//
+// This function represents the scalar product (inner product) of two vectors:
+
+   \code
+   blaze::DynamicVector<double> a, b;
+   blaze::double res;
+   // ... Resizing and initialization
+   res = inner( a, b );
+   \endcode
+
+// The function returns a scalar value of the higher-order element type of the two involved
+// vector element types \a VT1::ElementType and \a VT2::ElementType. Both vector types \a VT1
+// and \a VT2 as well as the two element types \a VT1::ElementType and \a VT2::ElementType
+// have to be supported by the MultTrait class template.\n
+// In case the current sizes of the two given vectors don't match, a \a std::invalid_argument
+// is thrown.
 */
-template< typename T1    // Type of the left-hand side vector
-        , typename T2 >  // Type of the right-hand side vector
-inline decltype(auto) inner( const Vector<T1,false>& lhs, const Vector<T2,false>& rhs )
+template< typename VT1  // Type of the left-hand side vector
+        , bool TF1      // Transpose flag of the left-hand side vector
+        , typename VT2  // Type of the right-hand side vector
+        , bool TF2 >    // Transpose flag of the right-hand side vector
+inline decltype(auto) inner( const Vector<VT1,TF1>& lhs, const Vector<VT2,TF2>& rhs )
 {
-   return trans(*lhs) * (*rhs);
+   return transTo<rowVector>( *lhs ) * transTo<columnVector>( *rhs );
 }
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\brief Multiplication operator for the scalar product (dot/inner product) of two vectors
-//        (\f$ s=(\vec{a},\vec{b}) \f$).
+/*!\brief Scalar product (dot/inner product) of two vectors (\f$ s=(\vec{a},\vec{b}) \f$).
 // \ingroup vector
 //
 // \param lhs The left-hand side vector for the scalar product.
 // \param rhs The right-hand side vector for the scalar product.
 // \return The scalar product.
-*/
-template< typename T1    // Type of the left-hand side vector
-        , typename T2 >  // Type of the right-hand side vector
-inline decltype(auto) inner( const Vector<T1,false>& lhs, const Vector<T2,true>& rhs )
-{
-   return trans(*lhs) * trans(*rhs);
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Multiplication operator for the scalar product (dot/inner product) of two vectors
-//        (\f$ s=(\vec{a},\vec{b}) \f$).
-// \ingroup vector
 //
-// \param lhs The left-hand side vector for the scalar product.
-// \param rhs The right-hand side vector for the scalar product.
-// \return The scalar product.
+// This function represents the scalar product (inner product) of two vectors:
+
+   \code
+   blaze::DynamicVector<double> a, b;
+   blaze::double res;
+   // ... Resizing and initialization
+   res = dot( a, b );
+   \endcode
+
+// The function returns a scalar value of the higher-order element type of the two involved
+// vector element types \a VT1::ElementType and \a VT2::ElementType. Both vector types \a VT1
+// and \a VT2 as well as the two element types \a VT1::ElementType and \a VT2::ElementType
+// have to be supported by the MultTrait class template.\n
+// In case the current sizes of the two given vectors don't match, a \a std::invalid_argument
+// is thrown.
 */
-template< typename T1    // Type of the left-hand side vector
-        , typename T2 >  // Type of the right-hand side vector
-inline decltype(auto) inner( const Vector<T1,true>& lhs, const Vector<T2,false>& rhs )
-{
-   return (*lhs) * (*rhs);
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Multiplication operator for the scalar product (dot/inner product) of two vectors
-//        (\f$ s=(\vec{a},\vec{b}) \f$).
-// \ingroup vector
-//
-// \param lhs The left-hand side vector for the scalar product.
-// \param rhs The right-hand side vector for the scalar product.
-// \return The scalar product.
-*/
-template< typename T1    // Type of the left-hand side vector
-        , typename T2 >  // Type of the right-hand side vector
-inline decltype(auto) inner( const Vector<T1,true>& lhs, const Vector<T2,true>& rhs )
-{
-   return (*lhs) * trans(*rhs);
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Multiplication operator for the scalar product (dot/inner product) of two vectors
-//        (\f$ s=(\vec{a},\vec{b}) \f$).
-// \ingroup vector
-//
-// \param lhs The left-hand side vector for the scalar product.
-// \param rhs The right-hand side vector for the scalar product.
-// \return The scalar product.
-*/
-template< typename T1  // Type of the left-hand side vector
-        , bool TF1     // Transpose flag of the left-hand side vector
-        , typename T2  // Type of the right-hand side vector
-        , bool TF2 >   // Transpose flag of the right-hand side vector
-inline decltype(auto) dot( const Vector<T1,TF1>& lhs, const Vector<T2,TF2>& rhs )
+template< typename VT1  // Type of the left-hand side vector
+        , bool TF1      // Transpose flag of the left-hand side vector
+        , typename VT2  // Type of the right-hand side vector
+        , bool TF2 >    // Transpose flag of the right-hand side vector
+inline decltype(auto) dot( const Vector<VT1,TF1>& lhs, const Vector<VT2,TF2>& rhs )
 {
    return inner( *lhs, *rhs );
 }
@@ -233,19 +197,34 @@ inline decltype(auto) dot( const Vector<T1,TF1>& lhs, const Vector<T2,TF2>& rhs 
 
 
 //*************************************************************************************************
-/*!\brief Multiplication operator for the scalar product (dot/inner product) of two vectors
-//        (\f$ s=(\vec{a},\vec{b}) \f$).
+/*!\brief Scalar product (dot/inner product) of two vectors (\f$ s=(\vec{a},\vec{b}) \f$).
 // \ingroup vector
 //
 // \param lhs The left-hand side vector for the scalar product.
 // \param rhs The right-hand side vector for the scalar product.
 // \return The scalar product.
+//
+// This function represents the scalar product (inner product) of two vectors:
+
+   \code
+   blaze::DynamicVector<double> a, b;
+   blaze::double res;
+   // ... Resizing and initialization
+   res = (a,b);
+   \endcode
+
+// The function returns a scalar value of the higher-order element type of the two involved
+// vector element types \a VT1::ElementType and \a VT2::ElementType. Both vector types \a VT1
+// and \a VT2 as well as the two element types \a VT1::ElementType and \a VT2::ElementType
+// have to be supported by the MultTrait class template.\n
+// In case the current sizes of the two given vectors don't match, a \a std::invalid_argument
+// is thrown.
 */
-template< typename T1  // Type of the left-hand side vector
-        , bool TF1     // Transpose flag of the left-hand side vector
-        , typename T2  // Type of the right-hand side vector
-        , bool TF2 >   // Transpose flag of the right-hand side vector
-inline decltype(auto) operator,( const Vector<T1,TF1>& lhs, const Vector<T2,TF2>& rhs )
+template< typename VT1  // Type of the left-hand side vector
+        , bool TF1      // Transpose flag of the left-hand side vector
+        , typename VT2  // Type of the right-hand side vector
+        , bool TF2 >    // Transpose flag of the right-hand side vector
+inline decltype(auto) operator,( const Vector<VT1,TF1>& lhs, const Vector<VT2,TF2>& rhs )
 {
    return inner( *lhs, *rhs );
 }
@@ -253,73 +232,70 @@ inline decltype(auto) operator,( const Vector<T1,TF1>& lhs, const Vector<T2,TF2>
 
 
 //*************************************************************************************************
-/*!\brief Multiplication operator for the outer product of two vectors
-//        (\f$ s=(\vec{a},\vec{b}) \f$).
+/*!\brief Outer product of two vectors (\f$ A=\vec{b}*\vec{c}^T \f$).
 // \ingroup vector
 //
 // \param lhs The left-hand side vector for the outer product.
 // \param rhs The right-hand side vector for the outer product.
 // \return The outer product.
+//
+// This function represents the outer product between two vectors:
+
+   \code
+   using blaze::columnVector;
+   using blaze::rowMajor;
+
+   blaze::DynamicVector<double,columnVector> a, b;
+   blaze::DynamicMatrix<double,rowMajor> A;
+   // ... Resizing and initialization
+   A = outer( a, b );
+   \endcode
+
+// The operator returns an expression representing a matrix of the higher-order element type
+// of the two involved element types \a VT1::ElementType and \a VT2::ElementType.
 */
-template< typename T1    // Type of the left-hand side vector
-        , typename T2 >  // Type of the right-hand side vector
-inline decltype(auto) outer( const Vector<T1,false>& lhs, const Vector<T2,false>& rhs )
+template< typename VT1  // Type of the left-hand side vector
+        , bool TF1      // Transpose flag of the left-hand side vector
+        , typename VT2  // Type of the right-hand side vector
+        , bool TF2 >    // Transpose flag of the right-hand side vector
+inline decltype(auto) outer( const Vector<VT1,TF1>& lhs, const Vector<VT2,TF2>& rhs )
 {
-   return (*lhs) * trans(*rhs);
+   return transTo<columnVector>( *lhs ) * transTo<rowVector>( *rhs );
 }
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\brief Multiplication operator for the outer product of two vectors
-//        (\f$ s=(\vec{a},\vec{b}) \f$).
+/*!\brief Cross product of two vectors (\f$ \vec{a}=\vec{b} \times \vec{c} \f$).
 // \ingroup vector
 //
-// \param lhs The left-hand side vector for the outer product.
-// \param rhs The right-hand side vector for the outer product.
-// \return The outer product.
-*/
-template< typename T1    // Type of the left-hand side vector
-        , typename T2 >  // Type of the right-hand side vector
-inline decltype(auto) outer( const Vector<T1,false>& lhs, const Vector<T2,true>& rhs )
-{
-   return (*lhs) * (*rhs);
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Multiplication operator for the outer product of two vectors
-//        (\f$ s=(\vec{a},\vec{b}) \f$).
-// \ingroup vector
+// \param lhs The left-hand side vector for the cross product.
+// \param rhs The right-hand side vector for the cross product.
+// \return The cross product of the two vectors.
+// \exception std::invalid_argument Invalid vector size for cross product.
 //
-// \param lhs The left-hand side vector for the outer product.
-// \param rhs The right-hand side vector for the outer product.
-// \return The outer product.
-*/
-template< typename T1    // Type of the left-hand side vector
-        , typename T2 >  // Type of the right-hand side vector
-inline decltype(auto) outer( const Vector<T1,true>& lhs, const Vector<T2,false>& rhs )
-{
-   return trans(*lhs) * trans(*rhs);
-}
-//*************************************************************************************************
+// This function computes the cross product of two vectors:
 
+   \code
+   blaze::DynamicVector<double> a( 3UL ), b( 3UL );
+   blaze::StaticVector<double,3UL> c;
+   // ... Resizing and initialization
+   c = cross( a, b );
+   \endcode
 
-//*************************************************************************************************
-/*!\brief Multiplication operator for the outer product of two vectors
-//        (\f$ s=(\vec{a},\vec{b}) \f$).
-// \ingroup vector
-//
-// \param lhs The left-hand side vector for the outer product.
-// \param rhs The right-hand side vector for the outer product.
-// \return The outer product.
+// The function returns an expression representing a dense vector of the higher-order element
+// type of the two involved vector element types \a VT1::ElementType and \a VT2::ElementType.
+// Both vector types \a VT1 and \a VT2 as well as the two element types \a VT1::ElementType
+// and \a VT2::ElementType have to be supported by the CrossTrait class template.\n
+// In case the current sizes of the two given vectors don't match, a \a std::invalid_argument
+// is thrown.
 */
-template< typename T1    // Type of the left-hand side vector
-        , typename T2 >  // Type of the right-hand side vector
-inline decltype(auto) outer( const Vector<T1,true>& lhs, const Vector<T2,true>& rhs )
+template< typename VT1  // Type of the left-hand side vector
+        , typename VT2  // Type of the right-hand side vector
+        , bool TF >     // Transpose flag
+inline decltype(auto) cross( const Vector<VT1,TF>& lhs, const Vector<VT2,TF>& rhs )
 {
-   return trans(*lhs) * (*rhs);
+   return (*lhs) % (*rhs);
 }
 //*************************************************************************************************
 
