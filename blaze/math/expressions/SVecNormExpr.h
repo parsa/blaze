@@ -412,6 +412,32 @@ decltype(auto) maxNorm( const SparseVector<VT,TF>& sv )
 
 
 //*************************************************************************************************
+/*!\brief Computes the minimum norm for the given sparse vector.
+// \ingroup sparse_vector
+//
+// \param sv The given sparse vector for the norm computation.
+// \return The minimum norm of the given sparse vector.
+//
+// This function computes the minimum norm of the given sparse vector:
+
+   \code
+   blaze::CompressedVector<double> a;
+   // ... Resizing and initialization
+   const double min = minNorm( a );
+   \endcode
+*/
+template< typename VT  // Type of the sparse vector
+        , bool TF >    // Transpose flag
+decltype(auto) minNorm( const SparseVector<VT,TF>& sv )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return min( abs( *sv ) );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Calculation of the square length (magnitude) of the sparse vector \f$|\vec{a}|^2\f$.
 // \ingroup sparse_vector
 //

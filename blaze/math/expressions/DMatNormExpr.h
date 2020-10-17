@@ -830,6 +830,32 @@ decltype(auto) maxNorm( const DenseMatrix<MT,SO>& dm )
 }
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Computes the minimum norm for the given dense matrix.
+// \ingroup dense_matrix
+//
+// \param dm The given dense matrix for the norm computation.
+// \return The minimum norm of the given dense matrix.
+//
+// This function computes the minimum norm of the given dense matrix:
+
+   \code
+   blaze::DynamicMatrix<double> A;
+   // ... Resizing and initialization
+   const double min = minNorm( A );
+   \endcode
+*/
+template< typename MT  // Type of the dense matrix
+        , bool SO >    // Storage order
+decltype(auto) minNorm( const DenseMatrix<MT,SO>& dm )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return min( abs( *dm ) );
+}
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

@@ -411,6 +411,32 @@ decltype(auto) maxNorm( const SparseMatrix<MT,SO>& sm )
 }
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Computes the minimum norm for the given sparse matrix.
+// \ingroup sparse_matrix
+//
+// \param sm The given sparse matrix for the norm computation.
+// \return The minimum norm of the given sparse matrix.
+//
+// This function computes the minimum norm of the given sparse matrix:
+
+   \code
+   blaze::CompressedMatrix<double> A;
+   // ... Resizing and initialization
+   const double min = minNorm( A );
+   \endcode
+*/
+template< typename MT  // Type of the sparse matrix
+        , bool SO >    // Storage order
+decltype(auto) minNorm( const SparseMatrix<MT,SO>& sm )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return min( abs( *sm ) );
+}
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

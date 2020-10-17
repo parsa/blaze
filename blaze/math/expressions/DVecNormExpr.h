@@ -595,6 +595,32 @@ inline decltype(auto) maxNorm( const DenseVector<VT,TF>& dv )
 
 
 //*************************************************************************************************
+/*!\brief Computes the minimum norm for the given dense vector.
+// \ingroup dense_vector
+//
+// \param dv The given dense vector for the norm computation.
+// \return The minimum norm of the given dense vector.
+//
+// This function computes the minimum norm of the given dense vector:
+
+   \code
+   blaze::DynamicVector<double> a;
+   // ... Resizing and initialization
+   const double min = minNorm( a );
+   \endcode
+*/
+template< typename VT  // Type of the dense vector
+        , bool TF >    // Transpose flag
+inline decltype(auto) minNorm( const DenseVector<VT,TF>& dv )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return min( abs( *dv ) );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Calculation of the square length (magnitude) of the dense vector \f$|\vec{a}|^2\f$.
 // \ingroup dense_vector
 //
