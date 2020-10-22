@@ -93,7 +93,7 @@ class DMatExpExpr
    //**********************************************************************************************
 
    //**********************************************************************************************
-   static constexpr size_t K = 24;  //!< The approximation limit for the exponential computation.
+   static constexpr size_t K = 18;  //!< The approximation limit for the exponential computation.
    //**********************************************************************************************
 
  public:
@@ -230,12 +230,11 @@ class DMatExpExpr
       {
          using BT = UnderlyingBuiltin_t<ET>;
 
-         const BT norm    ( maxNorm( rhs.dm_ ) );
-         const BT log2norm( norm > BT(0) ? log2( norm ) : BT(0) );
+         const BT norm( maxNorm( rhs.dm_ ) );
 
          int exponent( 0 );
-         frexp( ceil( log2norm ), &exponent );
-         exponent = max( 0, exponent+1 );
+         frexp( norm, &exponent );
+         exponent = max( 0, exponent );
 
          ResultType R( rhs.dm_ / pow( 2.0, double(exponent) ) );
          ResultType A( R );
@@ -327,12 +326,11 @@ class DMatExpExpr
       {
          using BT = UnderlyingBuiltin_t<ET>;
 
-         const BT norm    ( maxNorm( rhs.dm_ ) );
-         const BT log2norm( norm > BT(0) ? log2( norm ) : BT(0) );
+         const BT norm( maxNorm( rhs.dm_ ) );
 
          int exponent( 0 );
-         frexp( ceil( log2norm ), &exponent );
-         exponent = max( 0, exponent+1 );
+         frexp( norm, &exponent );
+         exponent = max( 0, exponent );
 
          ResultType R( rhs.dm_ / pow( 2.0, double(exponent) ) );
          ResultType A( R );
@@ -397,12 +395,11 @@ class DMatExpExpr
       {
          using BT = UnderlyingBuiltin_t<ET>;
 
-         const BT norm    ( maxNorm( rhs.dm_ ) );
-         const BT log2norm( norm > BT(0) ? log2( norm ) : BT(0) );
+         const BT norm( maxNorm( rhs.dm_ ) );
 
          int exponent( 0 );
-         frexp( ceil( log2norm ), &exponent );
-         exponent = max( 0, exponent+1 );
+         frexp( norm, &exponent );
+         exponent = max( 0, exponent );
 
          ResultType R( rhs.dm_ / pow( 2.0, double(exponent) ) );
          ResultType A( R );
@@ -467,12 +464,11 @@ class DMatExpExpr
       {
          using BT = UnderlyingBuiltin_t<ET>;
 
-         const BT norm    ( maxNorm( rhs.dm_ ) );
-         const BT log2norm( norm > BT(0) ? log2( norm ) : BT(0) );
+         const BT norm( maxNorm( rhs.dm_ ) );
 
          int exponent( 0 );
-         frexp( ceil( log2norm ), &exponent );
-         exponent = max( 0, exponent+1 );
+         frexp( norm, &exponent );
+         exponent = max( 0, exponent );
 
          ResultType R( rhs.dm_ / pow( 2.0, double(exponent) ) );
          ResultType A( R );
