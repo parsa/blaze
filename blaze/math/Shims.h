@@ -58,6 +58,7 @@
 #include <blaze/math/shims/Cos.h>
 #include <blaze/math/shims/Cosh.h>
 #include <blaze/math/shims/Digits.h>
+#include <blaze/math/shims/Div.h>
 #include <blaze/math/shims/Equal.h>
 #include <blaze/math/shims/Erf.h>
 #include <blaze/math/shims/Erfc.h>
