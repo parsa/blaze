@@ -13370,7 +13370,8 @@
 
    // ... Initializing the vectors
 
-   v3 = v1 + v2;  // Addition of a dense and a sparse column vector of different data type
+   v3 = v1 + v2;        // Addition of a dense and a sparse column vector of different data type
+   v3 = add( v1, v2 );  // Alternative syntax
    \endcode
 
 // Note that it is necessary that both operands have exactly the same dimensions. Violating this
@@ -13415,7 +13416,8 @@
    //   A = (  4  8  3  9 )
    //       ( -2  2 -3  3 )
    //
-   blaze::StaticMatrix<int,3UL,4UL> M1 = v1 + v2;
+   blaze::StaticMatrix<int,3UL,4UL> M1 = v1 + v2;        // Outer sum
+   blaze::StaticMatrix<int,3UL,4UL> M2 = add( v1, v2 );  // Alternative syntax
    \endcode
 
 // The \c trans() function can be used to transpose a vector as necessary:
@@ -13442,7 +13444,8 @@
 
    // ... Initializing the matrices
 
-   M3 = M1 + M2;  // Addition of a sparse column-major and a dense row-major matrix of different data type
+   M3 = M1 + M2;        // Addition of a sparse column-major and a dense row-major matrix of different data type
+   M3 = add( M1, M2 );  // Alternative syntax
    \endcode
 
 // Note that it is necessary that both operands have exactly the same dimensions. Violating this
@@ -13472,16 +13475,18 @@
    \code
    blaze::StaticVector<int,3UL> v1{ 3, 2, 5, -4, 1, 6 };
 
-   blaze::DynamicVector<int>    v2 = v1 + 2;  // Results in { 5, 4, 7, -2, 3, 8 }
-   blaze::CompressedVector<int> v3 = 3 + v1;  // Results in { 6, 5, 8, -1, 4, 9 }
+   blaze::DynamicVector<int>    v2 = v1 + 2;        // Results in { 5, 4, 7, -2, 3, 8 }
+   blaze::CompressedVector<int> v3 = 3 + v1;        // Results in { 6, 5, 8, -1, 4, 9 }
+   blaze::DynamicVector<int>    v4 = add( v1, 2 );  // Alternative syntax
    \endcode
 
    \code
    blaze::StaticMatrix<int,2UL,3UL> M1{ {  3, 2, 5 },
                                         { -4, 1, 6 } };
 
-   blaze::DynamicMatrix<int>    M2 = M1 + 2;  // Results in { { 5, 4, 7 }, { -2, 3, 8 } }
-   blaze::CompressedMatrix<int> M3 = 3 + M1;  // Results in { { 6, 5, 8 }, { -1, 4, 9 } }
+   blaze::DynamicMatrix<int>    M2 = M1 + 2;        // Results in { { 5, 4, 7 }, { -2, 3, 8 } }
+   blaze::CompressedMatrix<int> M3 = 3 + M1;        // Results in { { 6, 5, 8 }, { -1, 4, 9 } }
+   blaze::DynamicMatrix<int>    M4 = add( M1, 2 );  // Alternative syntax
    \endcode
 
 // \n Previous: \ref arithmetic_operations &nbsp; &nbsp; Next: \ref subtraction
@@ -13504,7 +13509,8 @@
 
    // ... Initializing the vectors
 
-   v3 = v1 - v2;  // Subtraction of a dense and a sparse column vector of different data type
+   v3 = v1 - v2;        // Subtraction of a dense and a sparse column vector of different data type
+   v3 = sub( v1, v2 );  // Alternative syntax
    \endcode
 
 // Note that it is necessary that both operands have exactly the same dimensions. Violating this
@@ -13546,7 +13552,8 @@
    //   A = ( 6  2  7  1 )
    //       ( 0 -4  1 -5 )
    //
-   StaticMatrix<int,3UL,3UL> M1 = v1 - v2;
+   blaze::StaticMatrix<int,3UL,3UL> M1 = v1 - v2;        // Outer difference
+   blaze::StaticMatrix<int,3UL,3UL> M2 = sub( v1, v2 );  // Alternative syntax
    \endcode
 
 // The \c trans() function can be used to transpose a vector as necessary:
@@ -13570,7 +13577,8 @@
 
    // ... Initializing the matrices
 
-   M3 = M1 - M2;  // Subtraction of a row-major and a column-major matrix of different data type
+   M3 = M1 - M2;        // Subtraction of a row-major and a column-major matrix of different data type
+   M3 = sub( M1, M2 );  // Alternative syntax
    \endcode
 
 // Note that it is necessary that both operands have exactly the same dimensions. Violating this
@@ -13600,16 +13608,18 @@
    \code
    blaze::StaticVector<int,3UL> v1{ 3, 2, 5, -4, 1, 6 };
 
-   blaze::DynamicVector<int>    v2 = v1 - 2;  // Results in { 1, 0, 3, -6, -1, 4 }
-   blaze::CompressedVector<int> v3 = 3 - v1;  // Results in { 0, 1, -2, 7, 2, -3 }
+   blaze::DynamicVector<int>    v2 = v1 - 2;        // Results in { 1, 0, 3, -6, -1, 4 }
+   blaze::CompressedVector<int> v3 = 3 - v1;        // Results in { 0, 1, -2, 7, 2, -3 }
+   blaze::DynamicVector<int>    v4 = sub( v1, 2 );  // Alternative syntax
    \endcode
 
    \code
    blaze::StaticMatrix<int,2UL,3UL> M1{ {  3, 2, 5 },
                                         { -4, 1, 6 } };
 
-   blaze::DynamicMatrix<int>    M2 = M1 - 2;  // Results in { { 1, 0, 3 }, { -6, -1, 4 } }
-   blaze::CompressedMatrix<int> M3 = 3 - M1;  // Results in { { 0, 1, -2 }, { 7, 2, -3 } }
+   blaze::DynamicMatrix<int>    M2 = M1 - 2;        // Results in { { 1, 0, 3 }, { -6, -1, 4 } }
+   blaze::CompressedMatrix<int> M3 = 3 - M1;        // Results in { { 0, 1, -2 }, { 7, 2, -3 } }
+   blaze::DynamicMatrix<int>    M4 = sub( M1, 2 );  // Alternative syntax
    \endcode
 
 // \n Previous: \ref addition &nbsp; &nbsp; Next: \ref scalar_multiplication
@@ -13629,19 +13639,23 @@
    \code
    blaze::StaticVector<int,3UL> v1{ 1, 2, 3 };
 
-   blaze::DynamicVector<double>   v2 = v1 * 1.2;    // Scalar multiplication
-   blaze::CompressedVector<float> v3 = -0.3F * v1;  // Scalar multiplication
-   blaze::DynamicVector<double>   v4 = v1 / 1.2;    // Scalar division
-   blaze::CompressedVector<float> v5 = 12.0F / v1;  // Scalar division (only dense vectors)
+   blaze::DynamicVector<double>   v2 = v1 * 1.2;         // Scalar multiplication
+   blaze::CompressedVector<float> v3 = -0.3F * v1;       // Scalar multiplication
+   blaze::DynamicVector<double>   v4 = v1 / 1.2;         // Scalar division
+   blaze::CompressedVector<float> v5 = 12.0F / v1;       // Scalar division (only dense vectors)
+   blaze::DynamicVector<double>   v6 = mult( v1, 1.2 );  // Alternative syntax
+   blaze::DynamicVector<double>   v7 = div( v1, 1.2 );   // Alternative syntax
    \endcode
 
    \code
    blaze::StaticMatrix<int,3UL,2UL> M1{ { 1, 2 }, { 3, 4 }, { 5, 6 } };
 
-   blaze::DynamicMatrix<double>   M2 = M1 * 1.2;    // Scalar multiplication
-   blaze::CompressedMatrix<float> M3 = -0.3F * M1;  // Scalar multiplication
-   blaze::DynamicMatrix<double>   M4 = M1 / 1.2;    // Scalar division
-   blaze::CompressedMatrix<float> M5 = 12.0F / M1;  // Scalar division (only dense matrices)
+   blaze::DynamicMatrix<double>   M2 = M1 * 1.2;         // Scalar multiplication
+   blaze::CompressedMatrix<float> M3 = -0.3F * M1;       // Scalar multiplication
+   blaze::DynamicMatrix<double>   M4 = M1 / 1.2;         // Scalar division
+   blaze::CompressedMatrix<float> M5 = 12.0F / M1;       // Scalar division (only dense matrices)
+   blaze::DynamicMatrix<double>   M6 = mult( M1, 1.2 );  // Alternative syntax
+   blaze::DynamicMatrix<double>   M7 = div( M1, 1.2 );   // Alternative syntax
    \endcode
 
 // Vectors and matrices cannot be used for as scalar value for scalar multiplications or divisions
@@ -13689,6 +13703,9 @@
                                                       // column vector.
    DynamicVector<double,rowVector>    v6( v3 * v4 );  // Componentwise multiplication of two dense row
                                                       // vectors. The result is a dense row vector.
+
+   CompressedVector<int,columnVector> v7( mult( v1, v2 ) );  // Alternative syntax
+   DynamicVector<double,rowVector>    v8( mult( v3, v4 ) );  // Alternative syntax
    \endcode
 
 // \n \section inner_product Inner Product / Scalar Product / Dot Product
@@ -13701,7 +13718,8 @@
    blaze::StaticVector<int,3UL,rowVector> v1{  2, 5, -1 };
    blaze::DynamicVector<int,columnVector> v2{ -1, 3, -2 };
 
-   int result = v1 * v2;  // Results in the value 15
+   int result1 = v1 * v2;         // Results in the value 15
+   int result2 = mult( v1, v2 );  // Alternative syntax
    \endcode
 
 // The \c trans() function can be used to transpose a vector as necessary:
@@ -13748,7 +13766,8 @@
    //   A = ( -5 15 -10 20 )
    //       (  1 -3   2 -4 )
    //
-   StaticMatrix<int,3UL,3UL> M1 = v1 * v2;
+   blaze::StaticMatrix<int,3UL,3UL> M1 = v1 * v2;         // Outer product
+   blaze::StaticMatrix<int,3UL,3UL> M2 = mult( v1, v2 );  // Alternative syntax
    \endcode
 
 // The \c trans() function can be used to transpose a vector as necessary:
@@ -13859,6 +13878,9 @@
                                                       // column vector.
    DynamicVector<double,rowVector>    v6( v3 / v4 );  // Componentwise division of two dense row
                                                       // vectors. The result is a dense row vector.
+
+   CompressedVector<int,columnVector> v7( div( v1, v2 ) );  // Alternative syntax
+   DynamicVector<double,rowVector>    v8( div( v3, v4 ) );  // Alternative syntax
    \endcode
 
 // Note that all values of the divisor must be non-zero and that no checks are performed to assert
@@ -13881,7 +13903,8 @@
    //   A = ( -5    1 -2.5  1.25 )
    //       (  1 -0.2  0.5 -0.25 )
    //
-   blaze::StaticMatrix<int,3UL,4UL> M1 = v1 / v2;
+   blaze::StaticMatrix<int,3UL,4UL> M1 = v1 / v2;        // Outer quotient
+   blaze::StaticMatrix<int,3UL,4UL> M2 = div( v1, v2 );  // Alternative syntax
    \endcode
 
 // The \c trans() function can be used to transpose a vector as necessary:
@@ -13920,6 +13943,9 @@
 
    DynamicVector<int,columnVector> v2 = M1 * v1;           // Matrix/column vector multiplication
    DynamicVector<int,rowVector>    v3 = trans( v1 ) * M1;  // Row vector/matrix multiplication
+
+   DynamicVector<int,columnVector> v4 = mult( M1, v1 );           // Alternative syntax
+   DynamicVector<int,rowVector>    v5 = mult( trans( v1 ), M1 );  // Alternative syntax
    \endcode
 
 // Note that the storage order of the matrix poses no restrictions on the operation. Also note,
@@ -13950,7 +13976,8 @@
 
    // ... Initialization of the matrices
 
-   DynamicMatrix<double> M3 = M1 % M2;
+   DynamicMatrix<double> M3 = M1 % M2;          // Schur product
+   DynamicMatrix<double> M4 = schur( M1, M2 );  // Alternative syntax
    \endcode
 
 // Both dense and sparse matrices can be used for a Schur product. The storage order of the two
@@ -13973,7 +14000,8 @@
 
    // ... Initialization of the matrices
 
-   DynamicMatrix<double> M3 = M1 * M2;
+   DynamicMatrix<double> M3 = M1 * M2;         // Matrix product
+   DynamicMatrix<double> M4 = mult( M1, M2 );  // Alternative syntax
    \endcode
 
 // The storage order of the two matrices poses no restrictions on the operation, all variations
