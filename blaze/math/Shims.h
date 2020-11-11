@@ -43,6 +43,7 @@
 #include <blaze/math/shims/Abs.h>
 #include <blaze/math/shims/Acos.h>
 #include <blaze/math/shims/Acosh.h>
+#include <blaze/math/shims/Add.h>
 #include <blaze/math/shims/Arg.h>
 #include <blaze/math/shims/Asin.h>
 #include <blaze/math/shims/Asinh.h>

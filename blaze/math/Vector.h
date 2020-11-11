@@ -45,6 +45,7 @@
 #include <blaze/math/Aliases.h>
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/expressions/Vector.h>
+#include <blaze/math/shims/Add.h>
 #include <blaze/math/TransposeFlag.h>
 #include <blaze/math/views/Elements.h>
 
