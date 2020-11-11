@@ -103,6 +103,7 @@
 #include <blaze/math/shims/Sin.h>
 #include <blaze/math/shims/Sinh.h>
 #include <blaze/math/shims/Sqrt.h>
+#include <blaze/math/shims/Sub.h>
 #include <blaze/math/shims/Tan.h>
 #include <blaze/math/shims/Tanh.h>
 #include <blaze/math/shims/Trunc.h>
