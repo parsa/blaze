@@ -88,6 +88,7 @@
 #include <blaze/math/shims/Log1p.h>
 #include <blaze/math/shims/Log2.h>
 #include <blaze/math/shims/Log10.h>
+#include <blaze/math/shims/Mult.h>
 #include <blaze/math/shims/NextMultiple.h>
 #include <blaze/math/shims/Pow.h>
 #include <blaze/math/shims/Pow2.h>

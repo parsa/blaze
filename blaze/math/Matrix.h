@@ -46,6 +46,7 @@
 #include <blaze/math/Exception.h>
 #include <blaze/math/expressions/Matrix.h>
 #include <blaze/math/shims/Add.h>
+#include <blaze/math/shims/Mult.h>
 #include <blaze/math/shims/Sub.h>
 #include <blaze/math/ReductionFlag.h>
 #include <blaze/math/views/Band.h>
