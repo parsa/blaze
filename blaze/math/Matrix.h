@@ -95,6 +95,9 @@ bool isDiagonal( const Matrix<MT,SO>& m );
 template< typename MT, bool SO >
 bool isIdentity( const Matrix<MT,SO>& m );
 
+template< typename MT1, bool SO1, typename MT2, bool SO2 >
+decltype(auto) schur( const Matrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs );
+
 template< typename MT, bool SO >
 auto trace( const Matrix<MT,SO>& m );
 
@@ -646,6 +649,35 @@ inline bool isIdentity( const Matrix<MT,SO>& m )
 }
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Schur product of two matrices (\f$ A=B \circ C \f$).
+// \ingroup matrix
+//
+// \param lhs The left-hand side matrix for the Schur product.
+// \param rhs The right-hand side matrix for the Schur product.
+// \return The Schur product.
+//
+// This function represents the Schur product between two matrices:
+
+   \code
+   blaze::DynamicMatrix<double> A, B, C;
+   // ... Resizing and initialization
+   C = schur( A, B );
+   \endcode
+
+// The function returns an expression representing a matrix of the higher-order element type
+// of the two involved element types \a VT1::ElementType and \a VT2::ElementType.
+*/
+template< typename MT1  // Type of the left-hand side matrix
+        , bool SO1      // Storage order of the left-hand side matrix
+        , typename MT2  // Type of the right-hand side matrix
+        , bool SO2 >    // Storage order of the right-hand side matrix
+inline decltype(auto) schur( const Matrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs )
+{
+   return (*lhs) % (*rhs);
+}
+//*************************************************************************************************
 
 
 //*************************************************************************************************
