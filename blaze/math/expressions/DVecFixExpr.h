@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze/math/expressions/DVecNoResizeExpr.h
-//  \brief Header file for the dense vector noresize expression
+//  \file blaze/math/expressions/DVecFixExpr.h
+//  \brief Header file for the dense vector fix expression
 //
 //  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
@@ -32,8 +32,8 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_MATH_EXPRESSIONS_DVECNORESIZEEXPR_H_
-#define _BLAZE_MATH_EXPRESSIONS_DVECNORESIZEEXPR_H_
+#ifndef _BLAZE_MATH_EXPRESSIONS_DVECFIXEXPR_H_
+#define _BLAZE_MATH_EXPRESSIONS_DVECFIXEXPR_H_
 
 
 //*************************************************************************************************
@@ -55,7 +55,7 @@ namespace blaze {
 
 //=================================================================================================
 //
-//  CLASS DVECNORESIZEEXPR
+//  CLASS DVECFIXEXPR
 //
 //=================================================================================================
 
@@ -63,12 +63,12 @@ namespace blaze {
 /*!\brief Expression object for fixing the size of a dense vector.
 // \ingroup dense_vector_expression
 //
-// The DVecNoResizeExpr class represents the compile time expression for fixing the size of
-// dense vectors.
+// The DVecFixExpr class represents the compile time expression for fixing the size of dense
+// vectors.
 */
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
-class DVecNoResizeExpr
+class DVecFixExpr
 {
  public:
    //**Constructor*********************************************************************************
@@ -76,7 +76,7 @@ class DVecNoResizeExpr
    //
    // \param dv The dense vector operand.
    */
-   explicit inline DVecNoResizeExpr( VT& dv ) noexcept
+   explicit inline DVecFixExpr( VT& dv ) noexcept
       : dv_( dv )  // The dense vector operand
    {}
    //**********************************************************************************************
@@ -93,7 +93,7 @@ class DVecNoResizeExpr
    // match the size of this vector, a \a std::invalid_argument exception is thrown.
    */
    template< typename Type >  // Type of the initializer list elements
-   DVecNoResizeExpr& operator=( initializer_list<Type> list )
+   DVecFixExpr& operator=( initializer_list<Type> list )
    {
       if( dv_.size() != list.size() ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to fixed-size vector" );
@@ -118,7 +118,7 @@ class DVecNoResizeExpr
    */
    template< typename Other  // Data type of the static array
            , size_t Dim >    // Dimension of the static array
-   DVecNoResizeExpr& operator=( const Other (&array)[Dim] )
+   DVecFixExpr& operator=( const Other (&array)[Dim] )
    {
       if( dv_.size() != Dim ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to fixed-size vector" );
@@ -143,7 +143,7 @@ class DVecNoResizeExpr
    */
    template< typename Other  // Data type of the std::array
            , size_t Dim >    // Dimension of the std::array
-   DVecNoResizeExpr& operator=( const std::array<Other,Dim>& array )
+   DVecFixExpr& operator=( const std::array<Other,Dim>& array )
    {
       if( dv_.size() != Dim ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to fixed-size vector" );
@@ -167,7 +167,7 @@ class DVecNoResizeExpr
    // of this vector, a \a std::invalid_argument exception is thrown.
    */
    template< typename VT2 >  // Type of the right-hand side vector
-   DVecNoResizeExpr& operator=( const Vector<VT2,TF>& rhs )
+   DVecFixExpr& operator=( const Vector<VT2,TF>& rhs )
    {
       if( dv_.size() != (*rhs).size() ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to fixed-size vector" );
@@ -216,14 +216,14 @@ class DVecNoResizeExpr
    blaze::DynamicVector<double> a;
    blaze::DynamicVector<double> b;
    // ... Resizing and initialization
-   noresize( b ) = a;
+   fix( b ) = a;
    \endcode
 */
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
-decltype(auto) noresize( DenseVector<VT,TF>& dv ) noexcept
+decltype(auto) fix( DenseVector<VT,TF>& dv ) noexcept
 {
-   return DVecNoResizeExpr<VT,TF>( *dv );
+   return DVecFixExpr<VT,TF>( *dv );
 }
 //*************************************************************************************************
 

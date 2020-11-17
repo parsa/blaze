@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze/math/expressions/DMatNoResizeExpr.h
-//  \brief Header file for the dense matrix noresize expression
+//  \file blaze/math/expressions/DMatFixExpr.h
+//  \brief Header file for the dense matrix fix expression
 //
 //  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
@@ -32,8 +32,8 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_MATH_EXPRESSIONS_DMATNORESIZEEXPR_H_
-#define _BLAZE_MATH_EXPRESSIONS_DMATNORESIZEEXPR_H_
+#ifndef _BLAZE_MATH_EXPRESSIONS_DMATFIXEXPR_H_
+#define _BLAZE_MATH_EXPRESSIONS_DMATFIXEXPR_H_
 
 
 //*************************************************************************************************
@@ -55,7 +55,7 @@ namespace blaze {
 
 //=================================================================================================
 //
-//  CLASS DMATNORESIZEEXPR
+//  CLASS DMATFIXEXPR
 //
 //=================================================================================================
 
@@ -63,12 +63,12 @@ namespace blaze {
 /*!\brief Expression object for fixing the size of a dense matrix.
 // \ingroup dense_matrix_expression
 //
-// The DMatNoResizeExpr class represents the compile time expression for fixing the size of
-// dense matrices.
+// The DMatFixExpr class represents the compile time expression for fixing the size of dense
+// matrices.
 */
 template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order
-class DMatNoResizeExpr
+class DMatFixExpr
 {
  public:
    //**Constructor*********************************************************************************
@@ -76,7 +76,7 @@ class DMatNoResizeExpr
    //
    // \param dm The dense matrix operand.
    */
-   explicit inline DMatNoResizeExpr( MT& dm ) noexcept
+   explicit inline DMatFixExpr( MT& dm ) noexcept
       : dm_( dm )  // The dense matrix operand
    {}
    //**********************************************************************************************
@@ -93,7 +93,7 @@ class DMatNoResizeExpr
    // match the size of this matrix, a \a std::invalid_argument exception is thrown.
    */
    template< typename Type >  // Type of the initializer list elements
-   DMatNoResizeExpr& operator=( initializer_list< initializer_list<Type> > list )
+   DMatFixExpr& operator=( initializer_list< initializer_list<Type> > list )
    {
       if( dm_.rows() != list.size() || dm_.columns() != determineColumns( list ) ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to fixed-size matrix" );
@@ -119,7 +119,7 @@ class DMatNoResizeExpr
    template< typename Other  // Data type of the static array
            , size_t Rows     // Number of rows of the static array
            , size_t Cols >   // Number of columns of the static array
-   DMatNoResizeExpr& operator=( const Other (&array)[Rows][Cols] )
+   DMatFixExpr& operator=( const Other (&array)[Rows][Cols] )
    {
       if( dm_.rows() != Rows || dm_.columns() != Cols ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to fixed-size matrix" );
@@ -145,7 +145,7 @@ class DMatNoResizeExpr
    template< typename Other  // Data type of the std::array
            , size_t Rows     // Number of rows of the std::array
            , size_t Cols >   // Number of columns of the std::array
-   DMatNoResizeExpr& operator=( const std::array<std::array<Other,Cols>,Rows>& array )
+   DMatFixExpr& operator=( const std::array<std::array<Other,Cols>,Rows>& array )
    {
       if( dm_.rows() != Rows || dm_.columns() != Cols ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to fixed-size matrix" );
@@ -170,7 +170,7 @@ class DMatNoResizeExpr
    */
    template< typename MT2  // Type of the right-hand side matrix
            , bool SO2 >    // Storage order of the right-hand side matrix
-   DMatNoResizeExpr& operator=( const Matrix<MT2,SO2>& rhs )
+   DMatFixExpr& operator=( const Matrix<MT2,SO2>& rhs )
    {
       if( dm_.rows() != (*rhs).rows() || dm_.columns() != (*rhs).columns() ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to fixed-size matrix" );
@@ -219,14 +219,14 @@ class DMatNoResizeExpr
    blaze::DynamicMatrix<double> A;
    blaze::DynamicMatrix<double> B;
    // ... Resizing and initialization
-   noresize( B ) = A;
+   fix( B ) = A;
    \endcode
 */
 template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order
-decltype(auto) noresize( DenseMatrix<MT,SO>& dm ) noexcept
+decltype(auto) fix( DenseMatrix<MT,SO>& dm ) noexcept
 {
-   return DMatNoResizeExpr<MT,SO>( *dm );
+   return DMatFixExpr<MT,SO>( *dm );
 }
 //*************************************************************************************************
 

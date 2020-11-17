@@ -52,10 +52,10 @@
 #include <blaze/math/expressions/SVecDVecMultExpr.h>
 #include <blaze/math/expressions/SVecEvalExpr.h>
 #include <blaze/math/expressions/SVecExpandExpr.h>
+#include <blaze/math/expressions/SVecFixExpr.h>
 #include <blaze/math/expressions/SVecMapExpr.h>
 #include <blaze/math/expressions/SVecMeanExpr.h>
 #include <blaze/math/expressions/SVecNoAliasExpr.h>
-#include <blaze/math/expressions/SVecNoResizeExpr.h>
 #include <blaze/math/expressions/SVecNormExpr.h>
 #include <blaze/math/expressions/SVecNoSIMDExpr.h>
 #include <blaze/math/expressions/SVecReduceExpr.h>

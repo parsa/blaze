@@ -91,11 +91,11 @@ template< typename, typename, bool > class DMatDVecSolveExpr;
 template< typename, bool > class DMatEigenExpr;
 template< typename, bool > class DMatEvalExpr;
 template< typename, bool > class DMatExpExpr;
+template< typename, bool > class DMatFixExpr;
 template< typename, typename, bool > class DMatGenExpr;
 template< typename, bool > class DMatInvExpr;
 template< typename, typename, bool > class DMatMapExpr;
 template< typename, bool > class DMatNoAliasExpr;
-template< typename, bool > class DMatNoResizeExpr;
 template< typename, bool > class DMatNoSIMDExpr;
 template< typename, typename, ReductionFlag > class DMatReduceExpr;
 template< typename, bool, size_t... > class DMatRepeatExpr;
@@ -130,10 +130,10 @@ template< typename, typename,typename > class DVecDVecOuterExpr;
 template< typename, typename, bool > class DVecDVecSubExpr;
 template< typename, bool > class DVecEvalExpr;
 template< typename, bool, size_t... > class DVecExpandExpr;
+template< typename, bool > class DVecFixExpr;
 template< typename, typename, bool > class DVecGenExpr;
 template< typename, typename, bool > class DVecMapExpr;
 template< typename, bool > class DVecNoAliasExpr;
-template< typename, bool > class DVecNoResizeExpr;
 template< typename, bool > class DVecNoSIMDExpr;
 template< typename, bool, size_t... > class DVecRepeatExpr;
 template< typename, typename, bool > class DVecScalarDivExpr;
@@ -197,9 +197,9 @@ template< typename, typename > class SMatDMatSchurExpr;
 template< typename, typename, bool > class SMatDMatSubExpr;
 template< typename, typename > class SMatDVecMultExpr;
 template< typename, bool > class SMatEvalExpr;
+template< typename, bool > class SMatFixExpr;
 template< typename, typename, bool > class SMatMapExpr;
 template< typename, bool > class SMatNoAliasExpr;
-template< typename, bool > class SMatNoResizeExpr;
 template< typename, typename, ReductionFlag > class SMatReduceExpr;
 template< typename, bool, size_t... > class SMatRepeatExpr;
 template< typename, typename, bool > class SMatScalarDivExpr;
@@ -234,9 +234,9 @@ template< typename, typename > class SVecDVecOuterExpr;
 template< typename, typename, bool > class SVecDVecSubExpr;
 template< typename, bool > class SVecEvalExpr;
 template< typename, bool, size_t... > class SVecExpandExpr;
+template< typename, bool > class SVecFixExpr;
 template< typename, typename, bool > class SVecMapExpr;
 template< typename, bool > class SVecNoAliasExpr;
-template< typename, bool > class SVecNoResizeExpr;
 template< typename, bool, size_t... > class SVecRepeatExpr;
 template< typename, typename, bool > class SVecScalarDivExpr;
 template< typename, typename, bool > class SVecScalarMultExpr;
@@ -733,16 +733,16 @@ decltype(auto) nosimd( const SparseMatrix<MT,SO>& );
 
 
 template< typename VT, bool TF >
-decltype(auto) noresize( const DenseVector<VT,TF>& );
+decltype(auto) fix( const DenseVector<VT,TF>& );
 
 template< typename VT, bool TF >
-decltype(auto) noresize( const SparseVector<VT,TF>& );
+decltype(auto) fix( const SparseVector<VT,TF>& );
 
 template< typename MT, bool SO >
-decltype(auto) noresize( const DenseMatrix<MT,SO>& );
+decltype(auto) fix( const DenseMatrix<MT,SO>& );
 
 template< typename MT, bool SO >
-decltype(auto) noresize( const SparseMatrix<MT,SO>& );
+decltype(auto) fix( const SparseMatrix<MT,SO>& );
 
 
 template< typename MT, bool SO >

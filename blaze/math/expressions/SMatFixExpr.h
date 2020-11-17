@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze/math/expressions/SVecNoResizeExpr.h
-//  \brief Header file for the dense vector noresize expression
+//  \file blaze/math/expressions/SMatFixExpr.h
+//  \brief Header file for the sparse matrix fix expression
 //
 //  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
@@ -32,19 +32,19 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_MATH_EXPRESSIONS_SVECNORESIZEEXPR_H_
-#define _BLAZE_MATH_EXPRESSIONS_SVECNORESIZEEXPR_H_
+#ifndef _BLAZE_MATH_EXPRESSIONS_SMATFIXEXPR_H_
+#define _BLAZE_MATH_EXPRESSIONS_SMATFIXEXPR_H_
 
 
 //*************************************************************************************************
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/constraints/SparseVector.h>
+#include <blaze/math/constraints/SparseMatrix.h>
 #include <blaze/math/constraints/Expression.h>
-#include <blaze/math/constraints/TransposeFlag.h>
+#include <blaze/math/constraints/StorageOrder.h>
 #include <blaze/math/Exception.h>
-#include <blaze/math/expressions/SparseVector.h>
+#include <blaze/math/expressions/SparseMatrix.h>
 #include <blaze/math/InitializerList.h>
 #include <blaze/system/MacroDisable.h>
 
@@ -53,75 +53,76 @@ namespace blaze {
 
 //=================================================================================================
 //
-//  CLASS SVECNORESIZEEXPR
+//  CLASS SMATFIXEXPR
 //
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Expression object for fixing the size of a sparse vector.
-// \ingroup sparse_vector_expression
+/*!\brief Expression object for fixing the size of a sparse matrix.
+// \ingroup sparse_matrix_expression
 //
-// The SVecNoResizeExpr class represents the compile time expression for fixing the size of
-// sparse vectors.
+// The SMatFixExpr class represents the compile time expression for fixing the size of
+// sparse matrices.
 */
-template< typename VT  // Type of the sparse vector
-        , bool TF >    // Transpose flag
-class SVecNoResizeExpr
+template< typename MT  // Type of the sparse matrix
+        , bool SO >    // Storage order
+class SMatFixExpr
 {
  public:
    //**Constructor*********************************************************************************
-   /*!\brief Constructor for the SVecTransposer class.
+   /*!\brief Constructor for the SMatTransposer class.
    //
-   // \param sv The sparse vector operand.
+   // \param sm The sparse matrix operand.
    */
-   explicit inline SVecNoResizeExpr( VT& sv ) noexcept
-      : sv_( sv )  // The sparse vector operand
+   explicit inline SMatFixExpr( MT& sm ) noexcept
+      : sm_( sm )  // The sparse matrix operand
    {}
    //**********************************************************************************************
 
    //**********************************************************************************************
-   /*!\brief List assignment to all vector elements.
+   /*!\brief List assignment to all matrix elements.
    //
    // \param list The initializer list.
-   // \exception std::invalid_argument Invalid assignment to fixed-size vector.
-   // \return Reference to the assigned fixed-size vector.
+   // \exception std::invalid_argument Invalid assignment to fixed-size matrix.
+   // \return Reference to the assigned fixed-size matrix.
    //
    // This assignment operator offers the option to directly (copy) assign to all elements of the
-   // vector by means of an initializer list. In case the size of the given initializer doesn't
-   // match the size of this vector, a \a std::invalid_argument exception is thrown.
+   // matrix by means of an initializer list. In case the size of the given initializer doesn't
+   // match the size of this matrix, a \a std::invalid_argument exception is thrown.
    */
    template< typename Type >  // Type of the initializer list elements
-   SVecNoResizeExpr& operator=( initializer_list<Type> list )
+   SMatFixExpr& operator=( initializer_list< initializer_list<Type> > list )
    {
-      if( sv_.size() != list.size() ) {
-         BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to fixed-size vector" );
+      if( sm_.rows() != list.size() || sm_.columns() != determineColumns( list ) ) {
+         BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to fixed-size matrix" );
       }
 
-      sv_ = list;
+      sm_ = list;
 
       return *this;
    }
    //**********************************************************************************************
 
    //**********************************************************************************************
-   /*!\brief Assignment operator for different vectors.
+   /*!\brief Assignment operator for different matrices.
    //
-   // \param rhs Vector to be copied.
-   // \exception std::invalid_argument Invalid assignment to fixed-size vector.
-   // \return Reference to the assigned fixed-size vector.
+   // \param rhs Matrix to be copied.
+   // \exception std::invalid_argument Invalid assignment to fixed-size matrix.
+   // \return Reference to the assigned fixed-size matrix.
    //
    // This assignment operator offers the option to directly (copy) assign to all elements of the
-   // vector by means of a vector. In case the size of the given vector doesn't match the size
-   // of this vector, a \a std::invalid_argument exception is thrown.
+   // matrix by means of a matrix. In case the size of the given matrix doesn't match the size
+   // of this matrix, a \a std::invalid_argument exception is thrown.
    */
-   template< typename VT2 >  // Type of the right-hand side vector
-   SVecNoResizeExpr& operator=( const Vector<VT2,TF>& rhs )
+   template< typename MT2  // Type of the right-hand side matrix
+           , bool SO2 >    // Storage order of the right-hand side matrix
+   SMatFixExpr& operator=( const Matrix<MT2,SO2>& rhs )
    {
-      if( sv_.size() != (*rhs).size() ) {
-         BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to fixed-size vector" );
+      if( sm_.rows() != (*rhs).rows() || sm_.columns() != (*rhs).columns() ) {
+         BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to fixed-size matrix" );
       }
 
-      sv_ = *rhs;
+      sm_ = *rhs;
 
       return *this;
    }
@@ -129,14 +130,14 @@ class SVecNoResizeExpr
 
  private:
    //**Member variables****************************************************************************
-   VT& sv_;  //!< The sparse vector operand.
+   MT& sm_;  //!< The sparse matrix operand.
    //**********************************************************************************************
 
    //**Compile time checks*************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE( VT );
-   BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( VT, TF );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_EXPRESSION_TYPE( VT );
+   BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( MT );
+   BLAZE_CONSTRAINT_MUST_BE_MATRIX_WITH_STORAGE_ORDER( MT, SO );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_EXPRESSION_TYPE( MT );
    /*! \endcond */
    //**********************************************************************************************
 };
@@ -152,26 +153,26 @@ class SVecNoResizeExpr
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Fixing the size of the given sparse vector.
-// \ingroup sparse_vector
+/*!\brief Fixing the size of the given sparse matrix.
+// \ingroup sparse_matrix
 //
-// \param sv The sparse vector to be size-fixed.
-// \return The size-fixed sparse vector.
+// \param sm The sparse matrix to be size-fixed.
+// \return The size-fixed sparse matrix.
 //
-// This function returns an expression representing the size-fixed given sparse vector:
+// This function returns an expression representing the size-fixed given sparse matrix:
 
    \code
-   blaze::CompressedVector<double> a;
-   blaze::CompressedVector<double> b;
+   blaze::CompressedMatrix<double> A;
+   blaze::CompressedMatrix<double> B;
    // ... Resizing and initialization
-   noresize( b ) = a;
+   fix( B ) = A;
    \endcode
 */
-template< typename VT  // Type of the sparse vector
-        , bool TF >    // Transpose flag
-decltype(auto) noresize( SparseVector<VT,TF>& sv ) noexcept
+template< typename MT  // Type of the sparse matrix
+        , bool SO >    // Storage order
+decltype(auto) fix( SparseMatrix<MT,SO>& sm ) noexcept
 {
-   return SVecNoResizeExpr<VT,TF>( *sv );
+   return SMatFixExpr<MT,SO>( *sm );
 }
 //*************************************************************************************************
 
