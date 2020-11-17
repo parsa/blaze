@@ -99,6 +99,15 @@ bool isDiagonal( const Matrix<MT,SO>& m );
 template< typename MT, bool SO >
 bool isIdentity( const Matrix<MT,SO>& m );
 
+template< typename MT, bool SO >
+decltype(auto) pow2( const Matrix<MT,SO>& m );
+
+template< typename MT, bool SO >
+decltype(auto) pow3( const Matrix<MT,SO>& m );
+
+template< typename MT, bool SO >
+decltype(auto) pow4( const Matrix<MT,SO>& m );
+
 template< typename MT1, bool SO1, typename MT2, bool SO2 >
 decltype(auto) schur( const Matrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs );
 
@@ -650,6 +659,84 @@ template< typename MT  // Type of the matrix
 inline bool isIdentity( const Matrix<MT,SO>& m )
 {
    return isIdentity<relaxed>( *m );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Computes the square for each single element of the matrix \a m.
+// \ingroup matrix
+//
+// \param m The input matrix.
+// \return The square of each single element of \a m.
+//
+// The \a pow2() function computes the square for each element of the input matrix \a m. The
+// function returns an expression representing this operation.\n
+// The following example demonstrates the use of the \a pow2() function:
+
+   \code
+   blaze::DynamicMatrix<double> A, B;
+   // ... Resizing and initialization
+   B = pow2( A );
+   \endcode
+*/
+template< typename MT  // Type of the matrix
+        , bool SO >    // Storage order
+inline decltype(auto) pow2( const Matrix<MT,SO>& m )
+{
+   return (*m) % (*m);
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Computes the cube for each single element of the matrix \a m.
+// \ingroup matrix
+//
+// \param m The input matrix.
+// \return The cube of each single element of \a m.
+//
+// The \a pow3() function computes the cube for each element of the input matrix \a m. The
+// function returns an expression representing this operation.\n
+// The following example demonstrates the use of the \a pow3() function:
+
+   \code
+   blaze::DynamicMatrix<double> A, B;
+   // ... Resizing and initialization
+   B = pow3( A );
+   \endcode
+*/
+template< typename MT  // Type of the matrix
+        , bool SO >    // Storage order
+inline decltype(auto) pow3( const Matrix<MT,SO>& m )
+{
+   return (*m) % (*m) % (*m);
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Computes the quadruple for each single element of the matrix \a m.
+// \ingroup matrix
+//
+// \param m The input matrix.
+// \return The quadruple of each single element of \a m.
+//
+// The \a pow4() function computes the quadruple for each element of the input matrix \a m. The
+// function returns an expression representing this operation.\n
+// The following example demonstrates the use of the \a pow4() function:
+
+   \code
+   blaze::DynamicMatrix<double> A, B;
+   // ... Resizing and initialization
+   B = pow4( A );
+   \endcode
+*/
+template< typename MT  // Type of the matrix
+        , bool SO >    // Storage order
+inline decltype(auto) pow4( const Matrix<MT,SO>& m )
+{
+   return pow2( pow2( *m ) );
 }
 //*************************************************************************************************
 

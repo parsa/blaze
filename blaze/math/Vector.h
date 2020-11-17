@@ -67,6 +67,15 @@ namespace blaze {
 template< typename VT, bool TF >
 bool isUniform( const Vector<VT,TF>& v );
 
+template< typename VT, bool TF >
+decltype(auto) pow2( const Vector<VT,TF>& v );
+
+template< typename VT, bool TF >
+decltype(auto) pow3( const Vector<VT,TF>& v );
+
+template< typename VT, bool TF >
+decltype(auto) pow4( const Vector<VT,TF>& v );
+
 template< typename VT1, bool TF1, typename VT2, bool TF2 >
 decltype(auto) inner( const Vector<VT1,TF1>& lhs, const Vector<VT2,TF2>& rhs );
 
@@ -126,6 +135,84 @@ template< typename VT  // Type of the vector
 inline bool isUniform( const Vector<VT,TF>& v )
 {
    return isUniform<relaxed>( *v );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Computes the square for each single element of the vector \a v.
+// \ingroup matrix
+//
+// \param v The input vector.
+// \return The square of each single element of \a v.
+//
+// The \a pow2() function computes the square for each element of the input vector \a v. The
+// function returns an expression representing this operation.\n
+// The following example demonstrates the use of the \a pow2() function:
+
+   \code
+   blaze::DynamicVector<double> a, b;
+   // ... Resizing and initialization
+   b = pow2( a );
+   \endcode
+*/
+template< typename VT  // Type of the vector
+        , bool TF >    // Transpose flag
+inline decltype(auto) pow2( const Vector<VT,TF>& v )
+{
+   return (*v) * (*v);
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Computes the cube for each single element of the vector \a v.
+// \ingroup matrix
+//
+// \param v The input vector.
+// \return The cube of each single element of \a v.
+//
+// The \a pow3() function computes the cube for each element of the input vector \a v. The
+// function returns an expression representing this operation.\n
+// The following example demonstrates the use of the \a pow3() function:
+
+   \code
+   blaze::DynamicVector<double> a, b;
+   // ... Resizing and initialization
+   b = pow3( a );
+   \endcode
+*/
+template< typename VT  // Type of the vector
+        , bool TF >    // Transpose flag
+inline decltype(auto) pow3( const Vector<VT,TF>& v )
+{
+   return (*v) * (*v) * (*v);
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Computes the quadruple for each single element of the vector \a v.
+// \ingroup matrix
+//
+// \param v The input vector.
+// \return The quadruple of each single element of \a v.
+//
+// The \a pow4() function computes the quadruple for each element of the input vector \a v. The
+// function returns an expression representing this operation.\n
+// The following example demonstrates the use of the \a pow4() function:
+
+   \code
+   blaze::DynamicVector<double> a, b;
+   // ... Resizing and initialization
+   b = pow4( a );
+   \endcode
+*/
+template< typename VT  // Type of the vector
+        , bool TF >    // Transpose flag
+inline decltype(auto) pow4( const Vector<VT,TF>& v )
+{
+   return pow2( pow2( *v ) );
 }
 //*************************************************************************************************
 
