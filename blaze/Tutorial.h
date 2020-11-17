@@ -2381,7 +2381,7 @@
 // comparison between the vectorized and non-vectorized evaluation. Using the \c nosimd() operation
 // will likely result in significantly reduced performance!
 //
-// \n \subsection vector_operations_noresize noresize()
+// \n \subsection vector_operations_fix fix()
 //
 // By default, resizable vectors such as \c DynamicVector, \c HybridVector, and \c CompressedVector
 // can adapt their size during an assignment:
@@ -2393,15 +2393,15 @@
    a = b;  // Resizes vector 'a' to 4 elements
    \endcode
 
-// Via the \c noresize() operation it is possible to fix the size of a resizable vector. If a
-// vector with a different size is assigned, instead of resizing the vector the operation fails
-// by throwing a \c std::invalid_argument exception:
+// Via the \c fix() operation it is possible to fix the size of a resizable vector. If a vector
+// with a different size is assigned, instead of resizing the vector the operation fails by
+// throwing a \c std::invalid_argument exception:
 
    \code
    blaze::DynamicVector<int> a{ 1, 2 };        // Setup of a vector with 2 elements
    blaze::DynamicVector<int> b{ 1, 2, 3, 4 };  // Setup of a vector with 4 elements
 
-   noresize( a ) = b;  // Throws an exception: Vector cannot be resized!
+   fix( a ) = b;  // Throws an exception: Vector cannot be resized!
    \endcode
 
 // \n \section vector_operations_modifying_operations Modifying Operations
@@ -5741,7 +5741,7 @@
 // comparison between the vectorized and non-vectorized evaluation. Using the \c nosimd() operation
 // will likely result in significantly reduced performance!
 //
-// \n \subsection matrix_operations_noresize noresize()
+// \n \subsection matrix_operations_fix fix()
 //
 // By default, resizable matrices such as \c DynamicMatrix, \c HybridMatrix, and \c CompressedMatrix
 // can adapt their numbers of rows and columns during an assignment:
@@ -5753,15 +5753,15 @@
    A = B;  // Resizes matrix 'A' to a 2x3 matrix
    \endcode
 
-// Via the \c noresize() operation it is possible to fix the size of a resizable matrix. If a
-// matrix with a different number of rows or a different number of columns is assigned, instead
-// of resizing the matrix the operation fails by throwing a \c std::invalid_argument exception:
+// Via the \c fix() operation it is possible to fix the size of a resizable matrix. If a matrix
+// with a different number of rows or a different number of columns is assigned, instead of
+// resizing the matrix the operation fails by throwing a \c std::invalid_argument exception:
 
    \code
    blaze::DynamicMatrix<int> A{ { 1, 2 } };                   // Setup of a 1x2 matrix
    blaze::DynamicVector<int> B{ { 1, 2, 3 }, { 4, 5, 6, } };  // Setup of a 2x3 matrix
 
-   noresize( A ) = B;  // Throws an exception: Matrix cannot be resized!
+   fix( A ) = B;  // Throws an exception: Matrix cannot be resized!
    \endcode
 
 // \n \section matrix_operations_modifying_operations Modifying Operations
