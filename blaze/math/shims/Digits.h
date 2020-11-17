@@ -40,8 +40,9 @@
 // Includes
 //*************************************************************************************************
 
-#include <blaze/util/constraints/Integral.h>
+#include <blaze/util/EnableIf.h>
 #include <blaze/util/Types.h>
+#include <blaze/util/typetraits/IsIntegral.h>
 
 
 namespace blaze {
@@ -70,11 +71,10 @@ namespace blaze {
 // The digits function only works for integral built-in data types. The attempt to use any
 // other type will result in a compile time error.
 */
-template< typename T >
+template< typename T
+        , EnableIf_t< IsIntegral_v<T> >* = nullptr >
 constexpr size_t digits( T a ) noexcept
 {
-   BLAZE_CONSTRAINT_MUST_BE_INTEGRAL_TYPE( T );
-
    size_t count( 0 );
 
    while( a != 0 ) {
