@@ -179,7 +179,6 @@ class UniUpperProxy
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-   inline void clear () const;
    inline void invert() const;
 
    inline RepresentedType get()          const noexcept;
@@ -249,6 +248,28 @@ class UniUpperProxy
 
       if( proxy.row_ < proxy.column_ ) {
          reset( proxy.value_ );
+      }
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**********************************************************************************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief Clearing the represented element.
+   // \ingroup uniupper_matrix
+   //
+   // \param proxy The given access proxy.
+   // \return void
+   //
+   // This function clears the element represented by the access proxy to its default initial
+   // state.
+   */
+   friend inline void clear( const UniUpperProxy& proxy )
+   {
+      using blaze::clear;
+
+      if( proxy.row_ < proxy.column_ ) {
+         clear( proxy.value_ );
       }
    }
    /*! \endcond */
@@ -493,24 +514,6 @@ inline const UniUpperProxy<MT>* UniUpperProxy<MT>::operator->() const noexcept
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Clearing the represented element.
-//
-// \return void
-//
-// This function clears the element represented by the proxy to its default initial state.
-*/
-template< typename MT >  // Type of the adapted matrix
-inline void UniUpperProxy<MT>::clear() const
-{
-   using blaze::clear;
-
-   if( row_ < column_ )
-      clear( value_ );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
 /*!\brief In-place inversion of the represented element
 //
 // \return void
@@ -678,9 +681,6 @@ inline void UniUpperProxy<MT>::imag( ValueType value ) const
 /*!\name UniUpperProxy global functions */
 //@{
 template< typename MT >
-void clear( const UniUpperProxy<MT>& proxy );
-
-template< typename MT >
 void invert( const UniUpperProxy<MT>& proxy );
 
 template< RelaxationFlag RF, typename MT >
@@ -695,24 +695,6 @@ bool isZero( const UniUpperProxy<MT>& proxy );
 template< RelaxationFlag RF, typename MT >
 bool isOne( const UniUpperProxy<MT>& proxy );
 //@}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Clearing the represented element.
-// \ingroup uniupper_matrix
-//
-// \param proxy The given access proxy.
-// \return void
-//
-// This function clears the element represented by the access proxy to its default initial
-// state.
-*/
-template< typename MT >
-inline void clear( const UniUpperProxy<MT>& proxy )
-{
-   proxy.clear();
-}
 //*************************************************************************************************
 
 

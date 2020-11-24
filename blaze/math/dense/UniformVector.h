@@ -1246,9 +1246,6 @@ BLAZE_ALWAYS_INLINE typename UniformVector<Type,TF,Tag>::SIMDType
 //*************************************************************************************************
 /*!\name UniformVector operators */
 //@{
-template< typename Type, bool TF, typename Tag >
-constexpr void clear( UniformVector<Type,TF,Tag>& v );
-
 template< RelaxationFlag RF, typename Type, bool TF, typename Tag >
 constexpr bool isDefault( const UniformVector<Type,TF,Tag>& v );
 
@@ -1258,23 +1255,6 @@ constexpr bool isIntact( const UniformVector<Type,TF,Tag>& v ) noexcept;
 template< typename Type, bool TF, typename Tag >
 constexpr void swap( UniformVector<Type,TF,Tag>& a, UniformVector<Type,TF,Tag>& b ) noexcept;
 //@}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Clearing the given uniform vector.
-// \ingroup uniform_vector
-//
-// \param v The uniform vector to be cleared.
-// \return void
-*/
-template< typename Type   // Data type of the vector
-        , bool TF         // Transpose flag
-        , typename Tag >  // Type tag
-constexpr void clear( UniformVector<Type,TF,Tag>& v )
-{
-   v.clear();
-}
 //*************************************************************************************************
 
 

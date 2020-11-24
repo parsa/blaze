@@ -53,7 +53,6 @@
 #include <blaze/math/InitializerList.h>
 #include <blaze/math/proxy/Proxy.h>
 #include <blaze/math/RelaxationFlag.h>
-#include <blaze/math/shims/Clear.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/shims/IsOne.h>
 #include <blaze/math/shims/IsReal.h>
@@ -544,9 +543,6 @@ inline UpperProxy<MT>::operator ConstReference() const noexcept
 //*************************************************************************************************
 /*!\name UpperProxy global functions */
 //@{
-template< typename MT >
-void clear( const UpperProxy<MT>& proxy );
-
 template< RelaxationFlag RF, typename MT >
 bool isDefault( const UpperProxy<MT>& proxy );
 
@@ -559,26 +555,6 @@ bool isZero( const UpperProxy<MT>& proxy );
 template< RelaxationFlag RF, typename MT >
 bool isOne( const UpperProxy<MT>& proxy );
 //@}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Clearing the represented element.
-// \ingroup upper_matrix
-//
-// \param proxy The given access proxy.
-// \return void
-//
-// This function clears the element represented by the access proxy to its default initial
-// state.
-*/
-template< typename MT >
-inline void clear( const UpperProxy<MT>& proxy )
-{
-   using blaze::clear;
-
-   clear( proxy.get() );
-}
 //*************************************************************************************************
 
 

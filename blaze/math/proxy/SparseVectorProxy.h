@@ -803,9 +803,6 @@ template< typename PT, typename VT >
 void resize( const SparseVectorProxy<PT,VT>& proxy, size_t n, bool preserve=true );
 
 template< typename PT, typename VT >
-void clear( const SparseVectorProxy<PT,VT>& proxy );
-
-template< typename PT, typename VT >
 typename SparseVectorProxy<PT,VT>::Iterator
    find( const SparseVectorProxy<PT,VT>& proxy, size_t index );
 
@@ -955,24 +952,6 @@ template< typename PT    // Type of the proxy
 BLAZE_ALWAYS_INLINE void resize( const SparseVectorProxy<PT,VT>& proxy, size_t n, bool preserve )
 {
    proxy.resize( n, preserve );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Clearing the represented element.
-// \ingroup math
-//
-// \param proxy The given access proxy.
-// \return void
-//
-// This function clears the vector to its default initial state.
-*/
-template< typename PT    // Type of the proxy
-        , typename VT >  // Type of the sparse vector
-BLAZE_ALWAYS_INLINE void clear( const SparseVectorProxy<PT,VT>& proxy )
-{
-   proxy.clear();
 }
 //*************************************************************************************************
 

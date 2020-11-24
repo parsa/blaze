@@ -1634,48 +1634,6 @@ inline decltype(auto) elements( VT&& sv, P p, size_t n, REAs... args )
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Clearing the given subvector.
-// \ingroup subvector
-//
-// \param sv The subvector to be cleared.
-// \return void
-*/
-template< typename VT       // Type of the vector
-        , AlignmentFlag AF  // Alignment flag
-        , bool TF           // Transpose flag
-        , bool DF           // Density flag
-        , size_t... CSAs >  // Compile time subvector arguments
-inline void clear( Subvector<VT,AF,TF,DF,CSAs...>& sv )
-{
-   sv.reset();
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Clearing the given temporary subvector.
-// \ingroup subvector
-//
-// \param sv The temporary subvector to be cleared.
-// \return void
-*/
-template< typename VT       // Type of the vector
-        , AlignmentFlag AF  // Alignment flag
-        , bool TF           // Transpose flag
-        , bool DF           // Density flag
-        , size_t... CSAs >  // Compile time subvector arguments
-inline void clear( Subvector<VT,AF,TF,DF,CSAs...>&& sv )
-{
-   sv.reset();
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
 /*!\brief Returns whether the given dense subvector is in default state.
 // \ingroup subvector
 //

@@ -1163,9 +1163,6 @@ constexpr void reset( IdentityMatrix<Type,SO,Tag>& m ) noexcept;
 template< typename Type, bool SO, typename Tag >
 constexpr void reset( IdentityMatrix<Type,SO,Tag>& m, size_t i ) noexcept;
 
-template< typename Type, bool SO, typename Tag >
-constexpr void clear( IdentityMatrix<Type,SO,Tag>& m ) noexcept;
-
 template< RelaxationFlag RF, typename Type, bool SO, typename Tag >
 constexpr bool isDefault( const IdentityMatrix<Type,SO,Tag>& m ) noexcept;
 
@@ -1214,23 +1211,6 @@ template< typename Type   // Data type of the matrix
 constexpr void reset( IdentityMatrix<Type,SO,Tag>& m, size_t i ) noexcept
 {
    MAYBE_UNUSED( m, i );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Clearing the given identity matrix.
-// \ingroup identity_matrix
-//
-// \param m The matrix to be cleared.
-// \return void
-*/
-template< typename Type   // Data type of the matrix
-        , bool SO         // Storage order
-        , typename Tag >  // Tag type
-constexpr void clear( IdentityMatrix<Type,SO,Tag>& m ) noexcept
-{
-   m.clear();
 }
 //*************************************************************************************************
 

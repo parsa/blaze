@@ -847,9 +847,6 @@ inline bool ZeroVector<Type,TF,Tag>::canSMPAssign() const noexcept
 template< typename Type, bool TF, typename Tag >
 constexpr void reset( ZeroVector<Type,TF,Tag>& m ) noexcept;
 
-template< typename Type, bool TF, typename Tag >
-constexpr void clear( ZeroVector<Type,TF,Tag>& m ) noexcept;
-
 template< RelaxationFlag RF, typename Type, bool TF, typename Tag >
 constexpr bool isDefault( const ZeroVector<Type,TF,Tag>& m ) noexcept;
 
@@ -875,23 +872,6 @@ template< typename Type   // Data type of the vector
 constexpr void reset( ZeroVector<Type,TF,Tag>& v ) noexcept
 {
    MAYBE_UNUSED( v );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Clearing the given zero vector.
-// \ingroup zero_vector
-//
-// \param v The zero vector to be cleared.
-// \return void
-*/
-template< typename Type   // Data type of the vector
-        , bool TF         // Transpose flag
-        , typename Tag >  // Type tag
-constexpr void clear( ZeroVector<Type,TF,Tag>& v ) noexcept
-{
-   v.clear();
 }
 //*************************************************************************************************
 

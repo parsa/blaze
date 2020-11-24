@@ -2009,52 +2009,6 @@ inline decltype(auto) column( MT&& rows, RCAs... args )
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Clearing the given row selection.
-// \ingroup rows
-//
-// \param rows The row selection to be cleared.
-// \return void
-//
-// Clearing a row selection is equivalent to resetting it via the reset() function.
-*/
-template< typename MT         // Type of the matrix
-        , bool SO             // Storage order
-        , bool DF             // Density flag
-        , bool SF             // Symmetry flag
-        , typename... CRAs >  // Compile time row arguments
-inline void clear( Rows<MT,SO,DF,SF,CRAs...>& rows )
-{
-   rows.reset();
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Clearing the given temporary row selection.
-// \ingroup rows
-//
-// \param rows The row selection to be cleared.
-// \return void
-//
-// Clearing a row selection is equivalent to resetting it via the reset() function.
-*/
-template< typename MT         // Type of the matrix
-        , bool SO             // Storage order
-        , bool DF             // Density flag
-        , bool SF             // Symmetry flag
-        , typename... CRAs >  // Compile time row arguments
-inline void clear( Rows<MT,SO,DF,SF,CRAs...>&& rows )
-{
-   rows.reset();
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
 /*!\brief Returns whether the given dense row selection is in default state.
 // \ingroup rows
 //

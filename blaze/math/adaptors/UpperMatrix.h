@@ -124,9 +124,6 @@ namespace blaze {
 //*************************************************************************************************
 /*!\name UpperMatrix operators */
 //@{
-template< typename MT, bool SO, bool DF >
-void clear( UpperMatrix<MT,SO,DF>& m );
-
 template< RelaxationFlag RF, typename MT, bool SO, bool DF >
 bool isDefault( const UpperMatrix<MT,SO,DF>& m );
 
@@ -136,23 +133,6 @@ bool isIntact( const UpperMatrix<MT,SO,DF>& m );
 template< typename MT, bool SO, bool DF >
 void swap( UpperMatrix<MT,SO,DF>& a, UpperMatrix<MT,SO,DF>& b ) noexcept;
 //@}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Clearing the given upper matrix.
-// \ingroup upper_matrix
-//
-// \param m The upper matrix to be cleared.
-// \return void
-*/
-template< typename MT  // Type of the adapted matrix
-        , bool SO      // Storage order of the adapted matrix
-        , bool DF >    // Density flag
-inline void clear( UpperMatrix<MT,SO,DF>& m )
-{
-   m.clear();
-}
 //*************************************************************************************************
 
 

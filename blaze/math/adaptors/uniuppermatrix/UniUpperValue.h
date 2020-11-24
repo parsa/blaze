@@ -169,7 +169,6 @@ class UniUpperValue
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-   inline void clear () const;
    inline void invert() const;
 
    inline RepresentedType get() const noexcept;
@@ -234,6 +233,27 @@ class UniUpperValue
 
       if( !value.diagonal_ ) {
          reset( *value.value_ );
+      }
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**********************************************************************************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief Clearing the uniupper value.
+   // \ingroup uniupper_matrix
+   //
+   // \param value The given uniupper value.
+   // \return void
+   //
+   // This function clears the uniupper value to its default initial state.
+   */
+   friend inline void clear( const UniUpperValue& value )
+   {
+      using blaze::clear;
+
+      if( !value.diagonal_ ) {
+         clear( *value.value_ );
       }
    }
    /*! \endcond */
@@ -412,24 +432,6 @@ inline UniUpperValue<MT>& UniUpperValue<MT>::operator/=( const T& value )
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Clearing the uniupper value.
-//
-// \return void
-//
-// This function clears the uniupper value to its default initial state.
-*/
-template< typename MT >  // Type of the adapted matrix
-inline void UniUpperValue<MT>::clear() const
-{
-   using blaze::clear;
-
-   if( !diagonal_ )
-      clear( *value_ );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
 /*!\brief In-place inversion of the uniupper value
 //
 // \return void
@@ -588,9 +590,6 @@ inline void UniUpperValue<MT>::imag( ValueType value ) const
 /*!\name UniUpperValue global functions */
 //@{
 template< typename MT >
-void clear( const UniUpperValue<MT>& value );
-
-template< typename MT >
 void invert( const UniUpperValue<MT>& value );
 
 template< RelaxationFlag RF, typename MT >
@@ -605,23 +604,6 @@ bool isZero( const UniUpperValue<MT>& value );
 template< RelaxationFlag RF, typename MT >
 bool isOne( const UniUpperValue<MT>& value );
 //@}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Clearing the uniupper value.
-// \ingroup uniupper_matrix
-//
-// \param value The given uniupper value.
-// \return void
-//
-// This function clears the uniupper value to its default initial state.
-*/
-template< typename MT >
-inline void clear( const UniUpperValue<MT>& value )
-{
-   value.clear();
-}
 //*************************************************************************************************
 
 

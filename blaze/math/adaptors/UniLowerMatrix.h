@@ -116,9 +116,6 @@ namespace blaze {
 //*************************************************************************************************
 /*!\name UniLowerMatrix operators */
 //@{
-template< typename MT, bool SO, bool DF >
-void clear( UniLowerMatrix<MT,SO,DF>& m );
-
 template< RelaxationFlag RF, typename MT, bool SO, bool DF >
 bool isDefault( const UniLowerMatrix<MT,SO,DF>& m );
 
@@ -128,23 +125,6 @@ bool isIntact( const UniLowerMatrix<MT,SO,DF>& m );
 template< typename MT, bool SO, bool DF >
 void swap( UniLowerMatrix<MT,SO,DF>& a, UniLowerMatrix<MT,SO,DF>& b ) noexcept;
 //@}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Clearing the given unilower matrix.
-// \ingroup unilower_matrix
-//
-// \param m The unilower matrix to be cleared.
-// \return void
-*/
-template< typename MT  // Type of the adapted matrix
-        , bool SO      // Storage order of the adapted matrix
-        , bool DF >    // Density flag
-inline void clear( UniLowerMatrix<MT,SO,DF>& m )
-{
-   m.clear();
-}
 //*************************************************************************************************
 
 

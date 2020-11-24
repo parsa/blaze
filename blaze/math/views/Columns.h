@@ -2016,52 +2016,6 @@ inline decltype(auto) column( MT&& columns, RCAs... args )
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Clearing the given column selection.
-// \ingroup columns
-//
-// \param columns The column selection to be cleared.
-// \return void
-//
-// Clearing a column selection is equivalent to resetting it via the reset() function.
-*/
-template< typename MT         // Type of the matrix
-        , bool SO             // Storage order
-        , bool DF             // Density flag
-        , bool SF             // Symmetry flag
-        , typename... CCAs >  // Compile time column arguments
-inline void clear( Columns<MT,SO,DF,SF,CCAs...>& columns )
-{
-   columns.reset();
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Clearing the given temporary column selection.
-// \ingroup columns
-//
-// \param columns The column selection to be cleared.
-// \return void
-//
-// Clearing a column selection is equivalent to resetting it via the reset() function.
-*/
-template< typename MT         // Type of the matrix
-        , bool SO             // Storage order
-        , bool DF             // Density flag
-        , bool SF             // Symmetry flag
-        , typename... CCAs >  // Compile time column arguments
-inline void clear( Columns<MT,SO,DF,SF,CCAs...>&& columns )
-{
-   columns.reset();
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
 /*!\brief Returns whether the given dense column selection is in default state.
 // \ingroup columns
 //

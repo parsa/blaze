@@ -1018,52 +1018,6 @@ inline decltype(auto) column( const MatRepeatExpr<MT,CRAs...>& matrix, RCAs... a
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Clearing the given column.
-// \ingroup column
-//
-// \param column The column to be cleared.
-// \return void
-//
-// Clearing a column is equivalent to resetting it via the reset() function.
-*/
-template< typename MT       // Type of the matrix
-        , bool SO           // Storage order
-        , bool DF           // Density flag
-        , bool SF           // Symmetry flag
-        , size_t... CCAs >  // Compile time column arguments
-inline void clear( Column<MT,SO,DF,SF,CCAs...>& column )
-{
-   column.reset();
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Clearing the given temporary column.
-// \ingroup column
-//
-// \param column The temporary column to be cleared.
-// \return void
-//
-// Clearing a column is equivalent to resetting it via the reset() function.
-*/
-template< typename MT       // Type of the matrix
-        , bool SO           // Storage order
-        , bool DF           // Density flag
-        , bool SF           // Symmetry flag
-        , size_t... CCAs >  // Compile time column arguments
-inline void clear( Column<MT,SO,DF,SF,CCAs...>&& column )
-{
-   column.reset();
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
 /*!\brief Returns whether the given dense column is in default state.
 // \ingroup column
 //

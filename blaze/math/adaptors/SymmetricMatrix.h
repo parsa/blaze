@@ -119,9 +119,6 @@ namespace blaze {
 //*************************************************************************************************
 /*!\name SymmetricMatrix operators */
 //@{
-template< typename MT, bool SO, bool DF, bool SF >
-void clear( SymmetricMatrix<MT,SO,DF,SF>& m );
-
 template< RelaxationFlag RF, typename MT, bool SO, bool DF, bool SF >
 bool isDefault( const SymmetricMatrix<MT,SO,DF,SF>& m );
 
@@ -131,24 +128,6 @@ bool isIntact( const SymmetricMatrix<MT,SO,DF,SF>& m );
 template< typename MT, bool SO, bool DF, bool SF >
 void swap( SymmetricMatrix<MT,SO,DF,SF>& a, SymmetricMatrix<MT,SO,DF,SF>& b ) noexcept;
 //@}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Clearing the given symmetric matrix.
-// \ingroup symmetric_matrix
-//
-// \param m The symmetric matrix to be cleared.
-// \return void
-*/
-template< typename MT  // Type of the adapted matrix
-        , bool SO      // Storage order of the adapted matrix
-        , bool DF      // Density flag
-        , bool SF >    // Scalar flag
-inline void clear( SymmetricMatrix<MT,SO,DF,SF>& m )
-{
-   m.clear();
-}
 //*************************************************************************************************
 
 

@@ -241,6 +241,12 @@ template< typename VT, bool TF >
 constexpr void reset( Vector<VT,TF>&& vector );
 
 template< typename VT, bool TF >
+constexpr void clear( Vector<VT,TF>& vector );
+
+template< typename VT, bool TF >
+constexpr void clear( Vector<VT,TF>&& vector );
+
+template< typename VT, bool TF >
 void resize( Vector<VT,TF>& vector, size_t n, bool preserve=true );
 
 template< typename VT, bool TF >
@@ -472,6 +478,76 @@ template< typename VT  // Type of the vector
 constexpr void reset( Vector<VT,TF>&& vector )
 {
    (*vector).reset();
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Backend implementation of the \c clear() function for non-resizable vectors.
+// \ingroup vector
+//
+// \param vector The given vector to be cleared.
+// \return void
+*/
+template< typename VT  // Type of the vector
+        , bool TF >    // Transpose flag of the vector
+BLAZE_ALWAYS_INLINE auto clear_backend( Vector<VT,TF>& vector )
+   -> DisableIf_t< IsResizable_v<VT> >
+{
+   (*vector).reset();
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Backend implementation of the \c clear() function for resizable vectors.
+// \ingroup vector
+//
+// \param vector The given vector to be cleared.
+// \return void
+*/
+template< typename VT  // Type of the vector
+        , bool TF >    // Transpose flag of the vector
+BLAZE_ALWAYS_INLINE auto clear_backend( Vector<VT,TF>& vector )
+   -> EnableIf_t< IsResizable_v<VT> >
+{
+   (*vector).clear();
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Clearing the given vector.
+// \ingroup vector
+//
+// \param vector The vector to be cleared.
+// \return void
+*/
+template< typename VT  // Type of the vector
+        , bool TF >    // Transpose flag of the vector
+constexpr void clear( Vector<VT,TF>& vector )
+{
+   clear_backend( *vector );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Clearing the given temporary vector.
+// \ingroup vector
+//
+// \param vector The temporary vector to be cleared.
+// \return void
+*/
+template< typename VT  // Type of the vector
+        , bool TF >    // Transpose flag of the vector
+constexpr void clear( Vector<VT,TF>&& vector )
+{
+   clear_backend( *vector );
 }
 //*************************************************************************************************
 

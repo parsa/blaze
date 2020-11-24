@@ -124,9 +124,6 @@ namespace blaze {
 //*************************************************************************************************
 /*!\name DiagonalMatrix operators */
 //@{
-template< typename MT, bool SO, bool DF >
-void clear( DiagonalMatrix<MT,SO,DF>& m );
-
 template< RelaxationFlag RF, typename MT, bool SO, bool DF >
 bool isDefault( const DiagonalMatrix<MT,SO,DF>& m );
 
@@ -136,23 +133,6 @@ bool isIntact( const DiagonalMatrix<MT,SO,DF>& m );
 template< typename MT, bool SO, bool DF >
 void swap( DiagonalMatrix<MT,SO,DF>& a, DiagonalMatrix<MT,SO,DF>& b ) noexcept;
 //@}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Clearing the given diagonal matrix.
-// \ingroup diagonal_matrix
-//
-// \param m The diagonal matrix to be cleared.
-// \return void
-*/
-template< typename MT  // Type of the adapted matrix
-        , bool SO      // Storage order of the adapted matrix
-        , bool DF >    // Density flag
-inline void clear( DiagonalMatrix<MT,SO,DF>& m )
-{
-   m.clear();
-}
 //*************************************************************************************************
 
 

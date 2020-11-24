@@ -2445,9 +2445,6 @@ inline void CompressedVector<Type,TF,Tag>::divAssign( const DenseVector<VT,TF>& 
 //*************************************************************************************************
 /*!\name CompressedVector operators */
 //@{
-template< typename Type, bool TF, typename Tag >
-void clear( CompressedVector<Type,TF,Tag>& v );
-
 template< RelaxationFlag RF, typename Type, bool TF, typename Tag >
 bool isDefault( const CompressedVector<Type,TF,Tag>& v );
 
@@ -2457,23 +2454,6 @@ bool isIntact( const CompressedVector<Type,TF,Tag>& v ) noexcept;
 template< typename Type, bool TF, typename Tag >
 void swap( CompressedVector<Type,TF,Tag>& a, CompressedVector<Type,TF,Tag>& b ) noexcept;
 //@}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Clearing the given compressed vector.
-// \ingroup compressed_vector
-//
-// \param v The compressed vector to be cleared.
-// \return void
-*/
-template< typename Type   // Data type of the vector
-        , bool TF         // Transpose flag
-        , typename Tag >  // Type tag
-inline void clear( CompressedVector<Type,TF,Tag>& v )
-{
-   v.clear();
-}
 //*************************************************************************************************
 
 

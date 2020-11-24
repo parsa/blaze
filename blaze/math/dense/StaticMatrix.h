@@ -6857,9 +6857,6 @@ inline void StaticMatrix<Type,M,N,true,AF,PF,Tag>::schurAssign( const SparseMatr
 //*************************************************************************************************
 /*!\name StaticMatrix operators */
 //@{
-template< typename Type, size_t M, size_t N, bool SO, AlignmentFlag AF, PaddingFlag PF, typename Tag >
-void clear( StaticMatrix<Type,M,N,SO,AF,PF,Tag>& m );
-
 template< RelaxationFlag RF, typename Type, size_t M, size_t N, bool SO, AlignmentFlag AF, PaddingFlag PF, typename Tag >
 bool isDefault( const StaticMatrix<Type,M,N,SO,AF,PF,Tag>& m );
 
@@ -6869,29 +6866,6 @@ bool isIntact( const StaticMatrix<Type,M,N,SO,AF,PF,Tag>& m ) noexcept;
 template< typename Type, size_t M, size_t N, bool SO, AlignmentFlag AF, PaddingFlag PF, typename Tag >
 void swap( StaticMatrix<Type,M,N,SO,AF,PF,Tag>& a, StaticMatrix<Type,M,N,SO,AF,PF,Tag>& b ) noexcept;
 //@}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Clearing the given static matrix.
-// \ingroup static_matrix
-//
-// \param m The matrix to be cleared.
-// \return void
-//
-// Clearing a static matrix is equivalent to resetting it via the reset() function.
-*/
-template< typename Type     // Data type of the matrix
-        , size_t M          // Number of rows
-        , size_t N          // Number of columns
-        , bool SO           // Storage order
-        , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF    // Padding flag
-        , typename Tag >    // Type tag
-inline void clear( StaticMatrix<Type,M,N,SO,AF,PF,Tag>& m )
-{
-   m.reset();
-}
 //*************************************************************************************************
 
 

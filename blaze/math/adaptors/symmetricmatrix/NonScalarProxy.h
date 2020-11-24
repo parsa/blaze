@@ -53,7 +53,6 @@
 #include <blaze/math/InitializerList.h>
 #include <blaze/math/proxy/Proxy.h>
 #include <blaze/math/RelaxationFlag.h>
-#include <blaze/math/shims/Clear.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/shims/IsOne.h>
 #include <blaze/math/shims/IsReal.h>
@@ -482,9 +481,6 @@ inline NonScalarProxy<MT>::operator RawReference() const noexcept
 //*************************************************************************************************
 /*!\name NonScalarProxy global functions */
 //@{
-template< typename MT >
-void clear( const NonScalarProxy<MT>& proxy );
-
 template< RelaxationFlag RF, typename MT >
 bool isDefault( const NonScalarProxy<MT>& proxy );
 
@@ -497,27 +493,6 @@ bool isZero( const NonScalarProxy<MT>& proxy );
 template< RelaxationFlag RF, typename MT >
 bool isOne( const NonScalarProxy<MT>& proxy );
 //@}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Clearing the represented element.
-// \ingroup symmetric_matrix
-//
-// \param proxy The given access proxy.
-// \return void
-//
-// This function clears the element represented by the access proxy to its default initial state.
-// In case the access proxy represents a vector- or matrix-like data structure that provides a
-// clear() function, this function clears the vector/matrix to its default initial state.
-*/
-template< typename MT >
-inline void clear( const NonScalarProxy<MT>& proxy )
-{
-   using blaze::clear;
-
-   clear( proxy.get() );
-}
 //*************************************************************************************************
 
 

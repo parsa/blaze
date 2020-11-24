@@ -112,9 +112,6 @@ namespace blaze {
 //*************************************************************************************************
 /*!\name StrictlyUpperMatrix operators */
 //@{
-template< typename MT, bool SO, bool DF >
-void clear( StrictlyUpperMatrix<MT,SO,DF>& m );
-
 template< RelaxationFlag RF, typename MT, bool SO, bool DF >
 bool isDefault( const StrictlyUpperMatrix<MT,SO,DF>& m );
 
@@ -124,23 +121,6 @@ bool isIntact( const StrictlyUpperMatrix<MT,SO,DF>& m );
 template< typename MT, bool SO, bool DF >
 void swap( StrictlyUpperMatrix<MT,SO,DF>& a, StrictlyUpperMatrix<MT,SO,DF>& b ) noexcept;
 //@}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Clearing the given strictly upper matrix.
-// \ingroup strictly_upper_matrix
-//
-// \param m The strictly upper matrix to be cleared.
-// \return void
-*/
-template< typename MT  // Type of the adapted matrix
-        , bool SO      // Storage order of the adapted matrix
-        , bool DF >    // Density flag
-inline void clear( StrictlyUpperMatrix<MT,SO,DF>& m )
-{
-   m.clear();
-}
 //*************************************************************************************************
 
 

@@ -458,9 +458,6 @@ inline VectorAccessProxy<VT>::operator RawReference() const noexcept
 //*************************************************************************************************
 /*!\name VectorAccessProxy global functions */
 //@{
-template< typename VT >
-void clear( const VectorAccessProxy<VT>& proxy );
-
 template< RelaxationFlag RF, typename VT >
 bool isDefault( const VectorAccessProxy<VT>& proxy );
 
@@ -482,23 +479,6 @@ void swap( const VectorAccessProxy<VT>& a, T& b ) noexcept;
 template< typename T, typename VT >
 void swap( T& a, const VectorAccessProxy<VT>& v ) noexcept;
 //@}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Clearing the represented element.
-// \ingroup sparse_vector
-//
-// \param proxy The given access proxy.
-// \return void
-*/
-template< typename VT >
-inline void clear( const VectorAccessProxy<VT>& proxy )
-{
-   using blaze::clear;
-
-   clear( proxy.get() );
-}
 //*************************************************************************************************
 
 

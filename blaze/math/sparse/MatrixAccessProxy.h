@@ -471,9 +471,6 @@ inline MatrixAccessProxy<MT>::operator RawReference() const noexcept
 //*************************************************************************************************
 /*!\name MatrixAccessProxy global functions */
 //@{
-template< typename MT >
-void clear( const MatrixAccessProxy<MT>& proxy );
-
 template< RelaxationFlag RF, typename MT >
 bool isDefault( const MatrixAccessProxy<MT>& proxy );
 
@@ -495,27 +492,6 @@ void swap( const MatrixAccessProxy<MT>& a, T& b ) noexcept;
 template< typename T, typename MT >
 void swap( T& a, const MatrixAccessProxy<MT>& v ) noexcept;
 //@}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Clearing the represented element.
-// \ingroup sparse_matrix
-//
-// \param proxy The given access proxy.
-// \return void
-//
-// This function clears the element represented by the access proxy to its default initial state.
-// In case the access proxy represents a vector- or matrix-like data structure that provides a
-// clear() function, this function clears the vector/matrix to its default initial state.
-*/
-template< typename MT >
-inline void clear( const MatrixAccessProxy<MT>& proxy )
-{
-   using blaze::clear;
-
-   clear( proxy.get() );
-}
 //*************************************************************************************************
 
 

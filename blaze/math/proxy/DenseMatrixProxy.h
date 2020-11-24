@@ -736,9 +736,6 @@ size_t nonZeros( const DenseMatrixProxy<PT,MT>& proxy, size_t i );
 
 template< typename PT, typename MT >
 void resize( const DenseMatrixProxy<PT,MT>& proxy, size_t m, size_t n, bool preserve=true );
-
-template< typename PT, typename MT >
-void clear( const DenseMatrixProxy<PT,MT>& proxy );
 //@}
 //*************************************************************************************************
 
@@ -1060,24 +1057,6 @@ template< typename PT    // Type of the proxy
 BLAZE_ALWAYS_INLINE void resize( const DenseMatrixProxy<PT,MT>& proxy, size_t m, size_t n, bool preserve )
 {
    resize_backend( proxy, m, n, preserve );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Clearing the represented matrix.
-// \ingroup math
-//
-// \param proxy The given access proxy.
-// \return void
-//
-// This function clears the matrix to its default initial state.
-*/
-template< typename PT    // Type of the proxy
-        , typename MT >  // Type of the dense matrix
-BLAZE_ALWAYS_INLINE void clear( const DenseMatrixProxy<PT,MT>& proxy )
-{
-   proxy.clear();
 }
 //*************************************************************************************************
 

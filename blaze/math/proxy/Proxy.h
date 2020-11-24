@@ -61,6 +61,7 @@
 #include <blaze/math/shims/Atanh.h>
 #include <blaze/math/shims/Cbrt.h>
 #include <blaze/math/shims/Ceil.h>
+#include <blaze/math/shims/Clear.h>
 #include <blaze/math/shims/Conjugate.h>
 #include <blaze/math/shims/Cos.h>
 #include <blaze/math/shims/Cosh.h>
@@ -2087,6 +2088,23 @@ inline void reset( const Proxy<PT,RT>& proxy, size_t i )
    using blaze::reset;
 
    reset( (*proxy).get(), i );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Clearing the represented element.
+// \ingroup math
+//
+// \param proxy The given proxy instance.
+// \return void
+*/
+template< typename PT, typename RT >
+inline void clear( const Proxy<PT,RT>& proxy )
+{
+   using blaze::clear;
+
+   clear( (*proxy).get() );
 }
 //*************************************************************************************************
 

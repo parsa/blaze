@@ -1116,52 +1116,6 @@ inline decltype(auto) subvector( VT&& b, RSAs... args )
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Clearing the given band.
-// \ingroup band
-//
-// \param band The band to be cleared.
-// \return void
-//
-// Clearing a band is equivalent to resetting it via the reset() function.
-*/
-template< typename MT          // Type of the matrix
-        , bool TF              // Transpose flag
-        , bool DF              // Density flag
-        , bool MF              // Multiplication flag
-        , ptrdiff_t... CBAs >  // Compile time band arguments
-inline void clear( Band<MT,TF,DF,MF,CBAs...>& band )
-{
-   band.reset();
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Clearing the given temporary band.
-// \ingroup band
-//
-// \param band The temporary band to be cleared.
-// \return void
-//
-// Clearing a band is equivalent to resetting it via the reset() function.
-*/
-template< typename MT          // Type of the matrix
-        , bool TF              // Transpose flag
-        , bool DF              // Density flag
-        , bool MF              // Multiplication flag
-        , ptrdiff_t... CBAs >  // Compile time band arguments
-inline void clear( Band<MT,TF,DF,MF,CBAs...>&& band )
-{
-   band.reset();
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
 /*!\brief Returns whether the given dense band is in default state.
 // \ingroup band
 //

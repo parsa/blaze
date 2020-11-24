@@ -425,6 +425,15 @@ template< typename MT, bool SO >
 constexpr void reset( Matrix<MT,SO>& matrix, size_t i );
 
 template< typename MT, bool SO >
+constexpr void reset( Matrix<MT,SO>&& matrix, size_t i );
+
+template< typename MT, bool SO >
+constexpr void clear( Matrix<MT,SO>& matrix );
+
+template< typename MT, bool SO >
+constexpr void clear( Matrix<MT,SO>&& matrix );
+
+template< typename MT, bool SO >
 void resize( Matrix<MT,SO>& matrix, size_t rows, size_t columns, bool preserve=true );
 
 template< typename MT, bool SO >
@@ -816,6 +825,76 @@ template< typename MT  // Type of the matrix
 BLAZE_ALWAYS_INLINE constexpr void reset( Matrix<MT,SO>&& matrix, size_t i )
 {
    (*matrix).reset( i );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Backend implementation of the \c clear() function for non-resizable matrices.
+// \ingroup matrix
+//
+// \param matrix The given matrix to be cleared.
+// \return void
+*/
+template< typename MT  // Type of the matrix
+        , bool SO >    // Storage order of the matrix
+BLAZE_ALWAYS_INLINE auto clear_backend( Matrix<MT,SO>& matrix )
+   -> DisableIf_t< IsResizable_v<MT> >
+{
+   (*matrix).reset();
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Backend implementation of the \c clear() function for resizable matrices.
+// \ingroup matrix
+//
+// \param matrix The given matrix to be cleared.
+// \return void
+*/
+template< typename MT  // Type of the matrix
+        , bool SO >    // Storage order of the matrix
+BLAZE_ALWAYS_INLINE auto clear_backend( Matrix<MT,SO>& matrix )
+   -> EnableIf_t< IsResizable_v<MT> >
+{
+   (*matrix).clear();
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Clearing the given matrix.
+// \ingroup matrix
+//
+// \param matrix The matrix to be cleared.
+// \return void
+*/
+template< typename MT  // Type of the matrix
+        , bool SO >    // Storage order of the matrix
+BLAZE_ALWAYS_INLINE constexpr void clear( Matrix<MT,SO>& matrix )
+{
+   clear_backend( *matrix );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Clearing the given temporary matrix.
+// \ingroup matrix
+//
+// \param matrix The temporary matrix to be cleared.
+// \return void
+*/
+template< typename MT  // Type of the matrix
+        , bool SO >    // Storage order of the matrix
+BLAZE_ALWAYS_INLINE constexpr void clear( Matrix<MT,SO>&& matrix )
+{
+   clear_backend( *matrix );
 }
 //*************************************************************************************************
 

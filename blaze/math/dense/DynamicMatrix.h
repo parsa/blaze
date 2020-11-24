@@ -6968,9 +6968,6 @@ inline void DynamicMatrix<Type,true,Alloc,Tag>::schurAssign( const SparseMatrix<
 //*************************************************************************************************
 /*!\name DynamicMatrix operators */
 //@{
-template< typename Type, bool SO, typename Alloc, typename Tag >
-void clear( DynamicMatrix<Type,SO,Alloc,Tag>& m );
-
 template< RelaxationFlag RF, typename Type, bool SO, typename Alloc, typename Tag >
 bool isDefault( const DynamicMatrix<Type,SO,Alloc,Tag>& m );
 
@@ -6980,24 +6977,6 @@ bool isIntact( const DynamicMatrix<Type,SO,Alloc,Tag>& m ) noexcept;
 template< typename Type, bool SO, typename Alloc, typename Tag >
 void swap( DynamicMatrix<Type,SO,Alloc,Tag>& a, DynamicMatrix<Type,SO,Alloc,Tag>& b ) noexcept;
 //@}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Clearing the given dynamic matrix.
-// \ingroup dynamic_matrix
-//
-// \param m The matrix to be cleared.
-// \return void
-*/
-template< typename Type   // Data type of the matrix
-        , bool SO         // Storage order
-        , typename Alloc  // Type of the allocator
-        , typename Tag >  // Type tag
-inline void clear( DynamicMatrix<Type,SO,Alloc,Tag>& m )
-{
-   m.clear();
-}
 //*************************************************************************************************
 
 

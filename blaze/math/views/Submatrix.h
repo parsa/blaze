@@ -2615,52 +2615,6 @@ inline decltype(auto) columns( MT&& sm, P p, size_t n, RCAs... args )
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Clearing the given matrix.
-// \ingroup submatrix
-//
-// \param sm The matrix to be cleared.
-// \return void
-//
-// Clearing a submatrix is equivalent to resetting it via the reset() function.
-*/
-template< typename MT       // Type of the matrix
-        , AlignmentFlag AF  // Alignment flag
-        , bool SO           // Storage order
-        , bool DF           // Density flag
-        , size_t... CSAs >  // Compile time submatrix arguments
-inline void clear( Submatrix<MT,AF,SO,DF,CSAs...>& sm )
-{
-   sm.reset();
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Clearing the given temporary matrix.
-// \ingroup submatrix
-//
-// \param sm The temporary matrix to be cleared.
-// \return void
-//
-// Clearing a submatrix is equivalent to resetting it via the reset() function.
-*/
-template< typename MT       // Type of the matrix
-        , AlignmentFlag AF  // Alignment flag
-        , bool SO           // Storage order
-        , bool DF           // Density flag
-        , size_t... CSAs >  // Compile time submatrix arguments
-inline void clear( Submatrix<MT,AF,SO,DF,CSAs...>&& sm )
-{
-   sm.reset();
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
 /*!\brief Returns whether the given dense submatrix is in default state.
 // \ingroup submatrix
 //

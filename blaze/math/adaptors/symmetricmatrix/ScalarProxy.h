@@ -173,7 +173,6 @@ class ScalarProxy
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-   inline void clear () const;
    inline void invert() const;
 
    inline ConstReference get() const noexcept;
@@ -243,6 +242,29 @@ class ScalarProxy
       reset( proxy.matrix_( proxy.row_, proxy.column_ ) );
       if( proxy.row_ != proxy.column_ ) {
          reset( proxy.matrix_( proxy.column_, proxy.row_ ) );
+      }
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**********************************************************************************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief Clearing the represented element.
+   // \ingroup symmetric_matrix
+   //
+   // \param proxy The given access proxy.
+   // \return void
+   //
+   // This function clears the element represented by the scalar proxy to its default initial
+   // state.
+   */
+   friend inline void clear( const ScalarProxy& proxy )
+   {
+      using blaze::clear;
+
+      clear( proxy.matrix_( proxy.row_, proxy.column_ ) );
+      if( proxy.row_ != proxy.column_ ) {
+         clear( proxy.matrix_( proxy.column_, proxy.row_ ) );
       }
    }
    /*! \endcond */
@@ -457,25 +479,6 @@ inline typename ScalarProxy<MT>::ConstPointer ScalarProxy<MT>::operator->() cons
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Clearing the represented element.
-//
-// \return void
-//
-// This function clears the element represented by the proxy to its default initial state.
-*/
-template< typename MT >  // Type of the adapted matrix
-inline void ScalarProxy<MT>::clear() const
-{
-   using blaze::clear;
-
-   clear( matrix_(row_,column_) );
-   if( row_ != column_ )
-      clear( matrix_(column_,row_) );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
 /*!\brief In-place inversion of the represented element
 //
 // \return void
@@ -615,9 +618,6 @@ inline void ScalarProxy<MT>::imag( ValueType value ) const
 /*!\name ScalarProxy global functions */
 //@{
 template< typename MT >
-void clear( const ScalarProxy<MT>& proxy );
-
-template< typename MT >
 void invert( const ScalarProxy<MT>& proxy );
 
 template< RelaxationFlag RF, typename MT >
@@ -632,24 +632,6 @@ bool isZero( const ScalarProxy<MT>& proxy );
 template< RelaxationFlag RF, typename MT >
 bool isOne( const ScalarProxy<MT>& proxy );
 //@}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Clearing the represented element.
-// \ingroup symmetric_matrix
-//
-// \param proxy The given access proxy.
-// \return void
-//
-// This function clears the element represented by the scalar proxy to its default initial
-// state.
-*/
-template< typename MT >
-inline void clear( const ScalarProxy<MT>& proxy )
-{
-   proxy.clear();
-}
 //*************************************************************************************************
 
 

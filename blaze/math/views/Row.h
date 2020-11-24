@@ -1014,52 +1014,6 @@ inline decltype(auto) row( const MatRepeatExpr<MT,CRAs2...>& matrix, RRAs... arg
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Clearing the given row.
-// \ingroup row
-//
-// \param row The row to be cleared.
-// \return void
-//
-// Clearing a row is equivalent to resetting it via the reset() function.
-*/
-template< typename MT       // Type of the matrix
-        , bool SO           // Storage order
-        , bool DF           // Density flag
-        , bool SF           // Symmetry flag
-        , size_t... CRAs >  // Compile time row arguments
-inline void clear( Row<MT,SO,DF,SF,CRAs...>& row )
-{
-   row.reset();
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Clearing the given temporary row.
-// \ingroup row
-//
-// \param row The temporary row to be cleared.
-// \return void
-//
-// Clearing a row is equivalent to resetting it via the reset() function.
-*/
-template< typename MT       // Type of the matrix
-        , bool SO           // Storage order
-        , bool DF           // Density flag
-        , bool SF           // Symmetry flag
-        , size_t... CRAs >  // Compile time row arguments
-inline void clear( Row<MT,SO,DF,SF,CRAs...>&& row )
-{
-   row.reset();
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
 /*!\brief Returns whether the given dense row is in default state.
 // \ingroup row
 //

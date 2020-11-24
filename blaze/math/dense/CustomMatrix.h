@@ -6549,9 +6549,6 @@ inline void CustomMatrix<Type,AF,PF,true,Tag,RT>::schurAssign( const SparseMatri
 //*************************************************************************************************
 /*!\name CustomMatrix operators */
 //@{
-template< typename Type, AlignmentFlag AF, PaddingFlag PF, bool SO, typename Tag, typename RT >
-void clear( CustomMatrix<Type,AF,PF,SO,Tag,RT>& m );
-
 template< RelaxationFlag RF, typename Type, AlignmentFlag AF, PaddingFlag PF, bool SO, typename Tag, typename RT >
 bool isDefault( const CustomMatrix<Type,AF,PF,SO,Tag,RT>& m );
 
@@ -6561,26 +6558,6 @@ bool isIntact( const CustomMatrix<Type,AF,PF,SO,Tag,RT>& m );
 template< typename Type, AlignmentFlag AF, PaddingFlag PF, bool SO, typename Tag, typename RT >
 void swap( CustomMatrix<Type,AF,PF,SO,Tag,RT>& a, CustomMatrix<Type,AF,PF,SO,Tag,RT>& b ) noexcept;
 //@}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Clearing the given custom matrix.
-// \ingroup custom_matrix
-//
-// \param m The matrix to be cleared.
-// \return void
-*/
-template< typename Type     // Data type of the matrix
-        , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF    // Padding flag
-        , bool SO           // Storage order
-        , typename Tag      // Type tag
-        , typename RT >     // Result type
-inline void clear( CustomMatrix<Type,AF,PF,SO,Tag,RT>& m )
-{
-   m.clear();
-}
 //*************************************************************************************************
 
 

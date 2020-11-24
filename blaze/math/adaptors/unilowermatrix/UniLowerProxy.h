@@ -179,7 +179,6 @@ class UniLowerProxy
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-   inline void clear () const;
    inline void invert() const;
 
    inline RepresentedType get() const noexcept;
@@ -249,6 +248,28 @@ class UniLowerProxy
 
       if( proxy.column_ < proxy.row_ ) {
          reset( proxy.value_ );
+      }
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**********************************************************************************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief Clearing the represented element.
+   // \ingroup unilower_matrix
+   //
+   // \param proxy The given access proxy.
+   // \return void
+   //
+   // This function clears the element represented by the access proxy to its default initial
+   // state.
+   */
+   friend inline void clear( const UniLowerProxy& proxy )
+   {
+      using blaze::clear;
+
+      if( proxy.column_ < proxy.row_ ) {
+         clear( proxy.value_ );
       }
    }
    /*! \endcond */
@@ -493,24 +514,6 @@ inline const UniLowerProxy<MT>* UniLowerProxy<MT>::operator->() const noexcept
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Clearing the represented element.
-//
-// \return void
-//
-// This function clears the element represented by the proxy to its default initial state.
-*/
-template< typename MT >  // Type of the adapted matrix
-inline void UniLowerProxy<MT>::clear() const
-{
-   using blaze::clear;
-
-   if( column_ < row_ )
-      clear( value_ );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
 /*!\brief In-place inversion of the represented element
 //
 // \return void
@@ -678,9 +681,6 @@ inline void UniLowerProxy<MT>::imag( ValueType value ) const
 /*!\name UniLowerProxy global functions */
 //@{
 template< typename MT >
-void clear( const UniLowerProxy<MT>& proxy );
-
-template< typename MT >
 void invert( const UniLowerProxy<MT>& proxy );
 
 template< RelaxationFlag RF, typename MT >
@@ -695,24 +695,6 @@ bool isZero( const UniLowerProxy<MT>& proxy );
 template< RelaxationFlag RF, typename MT >
 bool isOne( const UniLowerProxy<MT>& proxy );
 //@}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Clearing the represented element.
-// \ingroup unilower_matrix
-//
-// \param proxy The given access proxy.
-// \return void
-//
-// This function clears the element represented by the access proxy to its default initial
-// state.
-*/
-template< typename MT >
-inline void clear( const UniLowerProxy<MT>& proxy )
-{
-   proxy.clear();
-}
 //*************************************************************************************************
 
 

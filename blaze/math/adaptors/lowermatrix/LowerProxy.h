@@ -544,9 +544,6 @@ inline LowerProxy<MT>::operator ConstReference() const noexcept
 //*************************************************************************************************
 /*!\name LowerProxy global functions */
 //@{
-template< typename MT >
-void clear( const LowerProxy<MT>& proxy );
-
 template< RelaxationFlag RF, typename MT >
 bool isDefault( const LowerProxy<MT>& proxy );
 
@@ -559,26 +556,6 @@ bool isZero( const LowerProxy<MT>& proxy );
 template< RelaxationFlag RF, typename MT >
 bool isOne( const LowerProxy<MT>& proxy );
 //@}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Clearing the represented element.
-// \ingroup lower_matrix
-//
-// \param proxy The given access proxy.
-// \return void
-//
-// This function clears the element represented by the access proxy to its default initial
-// state.
-*/
-template< typename MT >
-inline void clear( const LowerProxy<MT>& proxy )
-{
-   using blaze::clear;
-
-   clear( proxy.get() );
-}
 //*************************************************************************************************
 
 

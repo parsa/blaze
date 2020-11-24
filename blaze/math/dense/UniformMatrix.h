@@ -1499,9 +1499,6 @@ BLAZE_ALWAYS_INLINE typename UniformMatrix<Type,SO,Tag>::SIMDType
 //*************************************************************************************************
 /*!\name UniformMatrix operators */
 //@{
-template< typename Type, bool SO, typename Tag >
-constexpr void clear( UniformMatrix<Type,SO,Tag>& m );
-
 template< RelaxationFlag RF, typename Type, bool SO, typename Tag >
 constexpr bool isDefault( const UniformMatrix<Type,SO,Tag>& m );
 
@@ -1511,23 +1508,6 @@ constexpr bool isIntact( const UniformMatrix<Type,SO,Tag>& m ) noexcept;
 template< typename Type, bool SO, typename Tag >
 constexpr void swap( UniformMatrix<Type,SO,Tag>& a, UniformMatrix<Type,SO,Tag>& b ) noexcept;
 //@}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Clearing the given dynamic matrix.
-// \ingroup dynamic_matrix
-//
-// \param m The matrix to be cleared.
-// \return void
-*/
-template< typename Type   // Data type of the matrix
-        , bool SO         // Storage order
-        , typename Tag >  // Type tag
-constexpr void clear( UniformMatrix<Type,SO,Tag>& m )
-{
-   m.clear();
-}
 //*************************************************************************************************
 
 

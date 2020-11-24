@@ -113,9 +113,6 @@ namespace blaze {
 //*************************************************************************************************
 /*!\name StrictlyLowerMatrix operators */
 //@{
-template< typename MT, bool SO, bool DF >
-void clear( StrictlyLowerMatrix<MT,SO,DF>& m );
-
 template< RelaxationFlag RF, typename MT, bool SO, bool DF >
 bool isDefault( const StrictlyLowerMatrix<MT,SO,DF>& m );
 
@@ -125,23 +122,6 @@ bool isIntact( const StrictlyLowerMatrix<MT,SO,DF>& m );
 template< typename MT, bool SO, bool DF >
 void swap( StrictlyLowerMatrix<MT,SO,DF>& a, StrictlyLowerMatrix<MT,SO,DF>& b ) noexcept;
 //@}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Clearing the given strictly lower matrix.
-// \ingroup strictly_lower_matrix
-//
-// \param m The strictly lower matrix to be cleared.
-// \return void
-*/
-template< typename MT  // Type of the adapted matrix
-        , bool SO      // Storage order of the adapted matrix
-        , bool DF >    // Density flag
-inline void clear( StrictlyLowerMatrix<MT,SO,DF>& m )
-{
-   m.clear();
-}
 //*************************************************************************************************
 
 

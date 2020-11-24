@@ -40,7 +40,10 @@
 // Includes
 //*************************************************************************************************
 
+#include <blaze/math/typetraits/IsScalar.h>
+#include <blaze/math/typetraits/IsSIMDPack.h>
 #include <blaze/system/Inline.h>
+#include <blaze/util/EnableIf.h>
 
 
 namespace blaze {
@@ -61,10 +64,11 @@ namespace blaze {
 // The \a clear shim represents an abstract interface for clearing a value/object of any given
 // data type to its default state. Values of built-in data type are reset to zero.
 */
-template< typename Type >
-BLAZE_ALWAYS_INLINE constexpr void clear( Type& clearable )
+template< typename T
+        , EnableIf_t< IsScalar_v<T> || IsSIMDPack_v<T> >* = nullptr >
+BLAZE_ALWAYS_INLINE constexpr void clear( T& clearable )
 {
-   clearable = Type();
+   clearable = T();
 }
 //*************************************************************************************************
 

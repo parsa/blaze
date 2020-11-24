@@ -6005,9 +6005,6 @@ inline void CompressedMatrix<Type,true,Tag>::schurAssign( const DenseMatrix<MT,S
 //*************************************************************************************************
 /*!\name CompressedMatrix operators */
 //@{
-template< typename Type, bool SO, typename Tag >
-void clear( CompressedMatrix<Type,SO,Tag>& m );
-
 template< RelaxationFlag RF, typename Type, bool SO, typename Tag >
 bool isDefault( const CompressedMatrix<Type,SO,Tag>& m );
 
@@ -6017,23 +6014,6 @@ bool isIntact( const CompressedMatrix<Type,SO,Tag>& m );
 template< typename Type, bool SO, typename Tag >
 void swap( CompressedMatrix<Type,SO,Tag>& a, CompressedMatrix<Type,SO,Tag>& b ) noexcept;
 //@}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Clearing the given compressed matrix.
-// \ingroup compressed_matrix
-//
-// \param m The matrix to be cleared.
-// \return void
-*/
-template< typename Type   // Data type of the matrix
-        , bool SO         // Storage order
-        , typename Tag >  // Type tag
-inline void clear( CompressedMatrix<Type,SO,Tag>& m )
-{
-   m.clear();
-}
 //*************************************************************************************************
 
 

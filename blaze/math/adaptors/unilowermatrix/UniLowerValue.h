@@ -169,7 +169,6 @@ class UniLowerValue
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-   inline void clear () const;
    inline void invert() const;
 
    inline RepresentedType get() const noexcept;
@@ -234,6 +233,27 @@ class UniLowerValue
 
       if( !value.diagonal_ ) {
          reset( *value.value_ );
+      }
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**********************************************************************************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief Clearing the unilower value.
+   // \ingroup unilower_matrix
+   //
+   // \param value The given unilower value.
+   // \return void
+   //
+   // This function clears the unilower value to its default initial state.
+   */
+   friend inline void clear( const UniLowerValue& value )
+   {
+      using blaze::clear;
+
+      if( !value.diagonal_ ) {
+         clear( *value.value_ );
       }
    }
    /*! \endcond */
@@ -412,24 +432,6 @@ inline UniLowerValue<MT>& UniLowerValue<MT>::operator/=( const T& value )
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Clearing the unilower value.
-//
-// \return void
-//
-// This function clears the unilower value to its default initial state.
-*/
-template< typename MT >  // Type of the adapted matrix
-inline void UniLowerValue<MT>::clear() const
-{
-   using blaze::clear;
-
-   if( !diagonal_ )
-      clear( *value_ );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
 /*!\brief In-place inversion of the unilower value
 //
 // \return void
@@ -588,9 +590,6 @@ inline void UniLowerValue<MT>::imag( ValueType value ) const
 /*!\name UniLowerValue global functions */
 //@{
 template< typename MT >
-void clear( const UniLowerValue<MT>& value );
-
-template< typename MT >
 void invert( const UniLowerValue<MT>& value );
 
 template< RelaxationFlag RF, typename MT >
@@ -605,23 +604,6 @@ bool isZero( const UniLowerValue<MT>& value );
 template< RelaxationFlag RF, typename MT >
 bool isOne( const UniLowerValue<MT>& value );
 //@}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Clearing the unilower value.
-// \ingroup unilower_matrix
-//
-// \param value The given unilower value.
-// \return void
-//
-// This function clears the unilower value to its default initial state.
-*/
-template< typename MT >
-inline void clear( const UniLowerValue<MT>& value )
-{
-   value.clear();
-}
 //*************************************************************************************************
 
 

@@ -2832,9 +2832,6 @@ inline auto DynamicVector<Type,TF,Alloc,Tag>::divAssign( const DenseVector<VT,TF
 //*************************************************************************************************
 /*!\name DynamicVector operators */
 //@{
-template< typename Type, bool TF, typename Alloc, typename Tag >
-void clear( DynamicVector<Type,TF,Alloc,Tag>& v );
-
 template< RelaxationFlag RF, typename Type, bool TF, typename Alloc, typename Tag >
 bool isDefault( const DynamicVector<Type,TF,Alloc,Tag>& v );
 
@@ -2844,24 +2841,6 @@ bool isIntact( const DynamicVector<Type,TF,Alloc,Tag>& v ) noexcept;
 template< typename Type, bool TF, typename Alloc, typename Tag >
 void swap( DynamicVector<Type,TF,Alloc,Tag>& a, DynamicVector<Type,TF,Alloc,Tag>& b ) noexcept;
 //@}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Clearing the given dynamic vector.
-// \ingroup dynamic_vector
-//
-// \param v The dynamic vector to be cleared.
-// \return void
-*/
-template< typename Type   // Data type of the vector
-        , bool TF         // Transpose flag
-        , typename Alloc  // Type of the allocator
-        , typename Tag >  // Type tag
-inline void clear( DynamicVector<Type,TF,Alloc,Tag>& v )
-{
-   v.clear();
-}
 //*************************************************************************************************
 
 

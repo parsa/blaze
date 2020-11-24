@@ -155,7 +155,6 @@ class HermitianProxy
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-   inline void clear () const;
    inline void invert() const;
 
    inline ConstReference get() const noexcept;
@@ -228,6 +227,26 @@ class HermitianProxy
       reset( proxy.value1_ );
       if( !proxy.diagonal_ ) {
          reset( proxy.value2_ );
+      }
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**********************************************************************************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief Clearing the represented element.
+   //
+   // \return void
+   //
+   // This function clears the element represented by the proxy to its default initial state.
+   */
+   friend inline void clear( const HermitianProxy& proxy )
+   {
+      using blaze::clear;
+
+      clear( proxy.value1_ );
+      if( !proxy.diagonal_ ) {
+         clear( proxy.value2_ );
       }
    }
    /*! \endcond */
@@ -513,25 +532,6 @@ inline typename HermitianProxy<MT>::ConstPointer HermitianProxy<MT>::operator->(
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Clearing the represented element.
-//
-// \return void
-//
-// This function clears the element represented by the proxy to its default initial state.
-*/
-template< typename MT >  // Type of the adapted matrix
-inline void HermitianProxy<MT>::clear() const
-{
-   using blaze::clear;
-
-   clear( value1_ );
-   if( !diagonal_ )
-      clear( value2_ );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
 /*!\brief In-place inversion of the represented element
 //
 // \return void
@@ -677,9 +677,6 @@ inline void HermitianProxy<MT>::imag( ValueType value ) const
 /*!\name HermitianProxy global functions */
 //@{
 template< typename MT >
-void clear( const HermitianProxy<MT>& proxy );
-
-template< typename MT >
 void invert( const HermitianProxy<MT>& proxy );
 
 template< RelaxationFlag RF, typename MT >
@@ -694,24 +691,6 @@ bool isZero( const HermitianProxy<MT>& proxy );
 template< RelaxationFlag RF, typename MT >
 bool isOne( const HermitianProxy<MT>& proxy );
 //@}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Clearing the represented element.
-// \ingroup hermitian_matrix
-//
-// \param proxy The given access proxy.
-// \return void
-//
-// This function clears the element represented by the access proxy to its default initial
-// state.
-*/
-template< typename MT >
-inline void clear( const HermitianProxy<MT>& proxy )
-{
-   proxy.clear();
-}
 //*************************************************************************************************
 
 

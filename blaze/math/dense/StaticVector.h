@@ -2864,9 +2864,6 @@ inline auto StaticVector<Type,N,TF,AF,PF,Tag>::divAssign( const DenseVector<VT,T
 //*************************************************************************************************
 /*!\name StaticVector operators */
 //@{
-template< typename Type, size_t N, bool TF, AlignmentFlag AF, PaddingFlag PF, typename Tag >
-constexpr void clear( StaticVector<Type,N,TF,AF,PF,Tag>& v );
-
 template< RelaxationFlag RF, typename Type, size_t N, bool TF, AlignmentFlag AF, PaddingFlag PF, typename Tag >
 bool isDefault( const StaticVector<Type,N,TF,AF,PF,Tag>& v );
 
@@ -2894,28 +2891,6 @@ constexpr const Type& get( const StaticVector<Type,N,TF,AF,PF,Tag>& v) noexcept;
 template< size_t I, typename Type, size_t N, bool TF, AlignmentFlag AF, PaddingFlag PF, typename Tag >
 constexpr const Type&& get( const StaticVector<Type,N,TF,AF,PF,Tag>&& v ) noexcept;
 //@}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Clearing the given static vector.
-// \ingroup static_vector
-//
-// \param v The vector to be cleared.
-// \return void
-//
-// Clearing a static vector is equivalent to resetting it via the reset() function.
-*/
-template< typename Type     // Data type of the vector
-        , size_t N          // Number of elements
-        , bool TF           // Transpose flag
-        , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF    // Padding flag
-        , typename Tag >    // Type tag
-constexpr void clear( StaticVector<Type,N,TF,AF,PF,Tag>& v )
-{
-   v.reset();
-}
 //*************************************************************************************************
 
 

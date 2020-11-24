@@ -7131,9 +7131,6 @@ inline void HybridMatrix<Type,M,N,true,AF,PF,Tag>::schurAssign( const SparseMatr
 //*************************************************************************************************
 /*!\name HybridMatrix operators */
 //@{
-template< typename Type, size_t M, size_t N, bool SO, AlignmentFlag AF, PaddingFlag PF, typename Tag >
-void clear( HybridMatrix<Type,M,N,SO,AF,PF,Tag>& m );
-
 template< RelaxationFlag RF, typename Type, size_t M, size_t N, bool SO, AlignmentFlag AF, PaddingFlag PF, typename Tag >
 bool isDefault( const HybridMatrix<Type,M,N,SO,AF,PF,Tag>& m );
 
@@ -7143,27 +7140,6 @@ bool isIntact( const HybridMatrix<Type,M,N,SO,AF,PF,Tag>& m ) noexcept;
 template< typename Type, size_t M, size_t N, bool SO, AlignmentFlag AF, PaddingFlag PF, typename Tag >
 void swap( HybridMatrix<Type,M,N,SO,AF,PF,Tag>& a, HybridMatrix<Type,M,N,SO,AF,PF,Tag>& b ) noexcept;
 //@}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Clearing the given hybrid matrix.
-// \ingroup hybrid_matrix
-//
-// \param m The matrix to be cleared.
-// \return void
-*/
-template< typename Type     // Data type of the matrix
-        , size_t M          // Number of rows
-        , size_t N          // Number of columns
-        , bool SO           // Storage order
-        , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF    // Padding flag
-        , typename Tag >    // Type tag
-inline void clear( HybridMatrix<Type,M,N,SO,AF,PF,Tag>& m )
-{
-   m.clear();
-}
 //*************************************************************************************************
 
 
