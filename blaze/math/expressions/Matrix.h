@@ -416,6 +416,15 @@ template< typename MT, bool SO >
 size_t nonZeros( const Matrix<MT,SO>& matrix, size_t i );
 
 template< typename MT, bool SO >
+constexpr void reset( Matrix<MT,SO>& matrix );
+
+template< typename MT, bool SO >
+constexpr void reset( Matrix<MT,SO>&& matrix );
+
+template< typename MT, bool SO >
+constexpr void reset( Matrix<MT,SO>& matrix, size_t i );
+
+template< typename MT, bool SO >
 void resize( Matrix<MT,SO>& matrix, size_t rows, size_t columns, bool preserve=true );
 
 template< typename MT, bool SO >
@@ -731,6 +740,82 @@ template< typename MT  // Type of the matrix
 BLAZE_ALWAYS_INLINE size_t nonZeros( const Matrix<MT,SO>& matrix, size_t i )
 {
    return (*matrix).nonZeros( i );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Resetting the given matrix.
+// \ingroup matrix
+//
+// \param matrix The matrix to be resetted.
+// \return void
+*/
+template< typename MT  // Type of the matrix
+        , bool SO >    // Storage order of the matrix
+BLAZE_ALWAYS_INLINE constexpr void reset( Matrix<MT,SO>& matrix )
+{
+   (*matrix).reset();
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Resetting the given temporary matrix.
+// \ingroup matrix
+//
+// \param matrix The temporary matrix to be resetted.
+// \return void
+*/
+template< typename MT  // Type of the matrix
+        , bool SO >    // Storage order of the matrix
+BLAZE_ALWAYS_INLINE constexpr void reset( Matrix<MT,SO>&& matrix )
+{
+   (*matrix).reset();
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Reset the specified row/column of the given matrix.
+// \ingroup matrix
+//
+// \param matrix The matrix to be resetted.
+// \param i The index of the row/column to be resetted.
+// \return void
+//
+// This function resets the values in the specified row/column of the given matrix to their
+// default value. In case the given matrix is a \a rowMajor matrix the function resets the
+// values in row \a i, if it is a \a columnMajor matrix the function resets the values in
+// column \a i. Note that the capacity of the row/column remains unchanged.
+*/
+template< typename MT  // Type of the matrix
+        , bool SO >    // Storage order of the matrix
+BLAZE_ALWAYS_INLINE constexpr void reset( Matrix<MT,SO>& matrix, size_t i )
+{
+   (*matrix).reset( i );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Reset the specified row/column of the given temporary matrix.
+// \ingroup matrix
+//
+// \param matrix The temporary matrix to be resetted.
+// \param i The index of the row/column to be resetted.
+// \return void
+//
+// This function resets the values in the specified row/column of the given temporary matrix
+// to their default value. In case the given matrix is a \a rowMajor matrix the function resets
+// the values in row \a i, if it is a \a columnMajor matrix the function resets the values in
+// column \a i. Note that the capacity of the row/column remains unchanged.
+*/
+template< typename MT  // Type of the matrix
+        , bool SO >    // Storage order of the matrix
+BLAZE_ALWAYS_INLINE constexpr void reset( Matrix<MT,SO>&& matrix, size_t i )
+{
+   (*matrix).reset( i );
 }
 //*************************************************************************************************
 

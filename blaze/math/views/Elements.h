@@ -1633,46 +1633,6 @@ inline decltype(auto) subvector( VT&& e, size_t index, size_t size, RSAs... args
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Resetting the given selection of elements.
-// \ingroup elements
-//
-// \param e The selection of elements to be resetted.
-// \return void
-*/
-template< typename VT         // Type of the vector
-        , bool TF             // Transpose flag
-        , bool DF             // Density flag
-        , typename... CEAs >  // Compile time element arguments
-inline void reset( Elements<VT,TF,DF,CEAs...>& e )
-{
-   e.reset();
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Resetting the given temporary selection of elements.
-// \ingroup elements
-//
-// \param e The temporary selection of elements to be resetted.
-// \return void
-*/
-template< typename VT         // Type of the vector
-        , bool TF             // Transpose flag
-        , bool DF             // Density flag
-        , typename... CEAs >  // Compile time element arguments
-inline void reset( Elements<VT,TF,DF,CEAs...>&& e )
-{
-   e.reset();
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
 /*!\brief Clearing the given selection of elements.
 // \ingroup elements
 //

@@ -6006,12 +6006,6 @@ inline void CompressedMatrix<Type,true,Tag>::schurAssign( const DenseMatrix<MT,S
 /*!\name CompressedMatrix operators */
 //@{
 template< typename Type, bool SO, typename Tag >
-void reset( CompressedMatrix<Type,SO,Tag>& m );
-
-template< typename Type, bool SO, typename Tag >
-void reset( CompressedMatrix<Type,SO,Tag>& m, size_t i );
-
-template< typename Type, bool SO, typename Tag >
 void clear( CompressedMatrix<Type,SO,Tag>& m );
 
 template< RelaxationFlag RF, typename Type, bool SO, typename Tag >
@@ -6023,46 +6017,6 @@ bool isIntact( const CompressedMatrix<Type,SO,Tag>& m );
 template< typename Type, bool SO, typename Tag >
 void swap( CompressedMatrix<Type,SO,Tag>& a, CompressedMatrix<Type,SO,Tag>& b ) noexcept;
 //@}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Resetting the given compressed matrix.
-// \ingroup compressed_matrix
-//
-// \param m The matrix to be resetted.
-// \return void
-*/
-template< typename Type   // Data type of the matrix
-        , bool SO         // Storage order
-        , typename Tag >  // Type tag
-inline void reset( CompressedMatrix<Type,SO,Tag>& m )
-{
-   m.reset();
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Reset the specified row/column of the given compressed matrix.
-// \ingroup compressed_matrix
-//
-// \param m The matrix to be resetted.
-// \param i The index of the row/column to be resetted.
-// \return void
-//
-// This function resets the values in the specified row/column of the given compressed matrix to
-// their default value. In case the given matrix is a \a rowMajor matrix the function resets the
-// values in row \a i, if it is a \a columnMajor matrix the function resets the values in column
-// \a i. Note that the capacity of the row/column remains unchanged.
-*/
-template< typename Type   // Data type of the matrix
-        , bool SO         // Storage order
-        , typename Tag >  // Type tag
-inline void reset( CompressedMatrix<Type,SO,Tag>& m, size_t i )
-{
-   m.reset( i );
-}
 //*************************************************************************************************
 
 

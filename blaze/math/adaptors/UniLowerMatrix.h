@@ -117,12 +117,6 @@ namespace blaze {
 /*!\name UniLowerMatrix operators */
 //@{
 template< typename MT, bool SO, bool DF >
-void reset( UniLowerMatrix<MT,SO,DF>& m );
-
-template< typename MT, bool SO, bool DF >
-void reset( UniLowerMatrix<MT,SO,DF>& m, size_t i );
-
-template< typename MT, bool SO, bool DF >
 void clear( UniLowerMatrix<MT,SO,DF>& m );
 
 template< RelaxationFlag RF, typename MT, bool SO, bool DF >
@@ -134,46 +128,6 @@ bool isIntact( const UniLowerMatrix<MT,SO,DF>& m );
 template< typename MT, bool SO, bool DF >
 void swap( UniLowerMatrix<MT,SO,DF>& a, UniLowerMatrix<MT,SO,DF>& b ) noexcept;
 //@}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Resetting the given unilower matrix.
-// \ingroup unilower_matrix
-//
-// \param m The unilower matrix to be resetted.
-// \return void
-*/
-template< typename MT  // Type of the adapted matrix
-        , bool SO      // Storage order of the adapted matrix
-        , bool DF >    // Density flag
-inline void reset( UniLowerMatrix<MT,SO,DF>& m )
-{
-   m.reset();
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Resetting the specified row/column of the given unilower matrix.
-// \ingroup unilower_matrix
-//
-// \param m The unilower matrix to be resetted.
-// \param i The index of the row/column to be resetted.
-// \return void
-//
-// This function resets the values in the specified row/column of the given unilower matrix to
-// their default value. In case the given matrix is a \a rowMajor matrix the function resets the
-// values in row \a i, if it is a \a columnMajor matrix the function resets the values in column
-// \a i. Note that the capacity of the row/column remains unchanged.
-*/
-template< typename MT  // Type of the adapted matrix
-        , bool SO      // Storage order of the adapted matrix
-        , bool DF >    // Density flag
-inline void reset( UniLowerMatrix<MT,SO,DF>& m, size_t i )
-{
-   m.reset( i );
-}
 //*************************************************************************************************
 
 

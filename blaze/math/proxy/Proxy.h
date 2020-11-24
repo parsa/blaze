@@ -89,6 +89,7 @@
 #include <blaze/math/shims/Pow3.h>
 #include <blaze/math/shims/Pow4.h>
 #include <blaze/math/shims/Real.h>
+#include <blaze/math/shims/Reset.h>
 #include <blaze/math/shims/Round.h>
 #include <blaze/math/shims/Sign.h>
 #include <blaze/math/shims/Sin.h>
@@ -1004,6 +1005,12 @@ decltype(auto) erf( const Proxy<PT,RT>& proxy );
 
 template< typename PT, typename RT >
 decltype(auto) erfc( const Proxy<PT,RT>& proxy );
+
+template< typename PT, typename RT >
+void reset( const Proxy<PT,RT>& proxy );
+
+template< typename PT, typename RT >
+void reset( const Proxy<PT,RT>& proxy, size_t i );
 
 template< typename PT, typename RT >
 void transpose( const Proxy<PT,RT>& proxy );
@@ -2040,6 +2047,46 @@ inline decltype(auto) erfc( const Proxy<PT,RT>& proxy )
    using blaze::erfc;
 
    return erfc( (*proxy).get() );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Resetting the represented element to the default initial values.
+// \ingroup math
+//
+// \param proxy The given proxy instance.
+// \return void
+*/
+template< typename PT, typename RT >
+inline void reset( const Proxy<PT,RT>& proxy )
+{
+   using blaze::reset;
+
+   reset( (*proxy).get() );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Reset the specified row/column of the represented matrix.
+// \ingroup math
+//
+// \param proxy The given proxy instance.
+// \param i The index of the row/column to be resetted.
+// \return void
+//
+// This function resets all elements in the specified row/column of the given matrix to their
+// default value. In case the given matrix is a \a rowMajor matrix the function resets the values
+// in row \a i, if it is a \a columnMajor matrix the function resets the values in column \a i.
+// Note that the capacity of the row/column remains unchanged.
+*/
+template< typename PT, typename RT >
+inline void reset( const Proxy<PT,RT>& proxy, size_t i )
+{
+   using blaze::reset;
+
+   reset( (*proxy).get(), i );
 }
 //*************************************************************************************************
 

@@ -432,24 +432,6 @@ class SVecTransposer
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Resetting the sparse vector contained in a SVecTransposer.
-// \ingroup sparse_vector_expression
-//
-// \param v The sparse vector to be resetted.
-// \return void
-*/
-template< typename VT  // Type of the sparse vector
-        , bool TF >    // Transpose flag
-inline void reset( SVecTransposer<VT,TF>& v )
-{
-   v.reset();
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
 /*!\brief Returns whether the invariants of the given SVecTransposer are intact.
 // \ingroup sparse_vector_expression
 //

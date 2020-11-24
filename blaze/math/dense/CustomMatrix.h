@@ -6550,12 +6550,6 @@ inline void CustomMatrix<Type,AF,PF,true,Tag,RT>::schurAssign( const SparseMatri
 /*!\name CustomMatrix operators */
 //@{
 template< typename Type, AlignmentFlag AF, PaddingFlag PF, bool SO, typename Tag, typename RT >
-void reset( CustomMatrix<Type,AF,PF,SO,Tag,RT>& m );
-
-template< typename Type, AlignmentFlag AF, PaddingFlag PF, bool SO, typename Tag, typename RT >
-void reset( CustomMatrix<Type,AF,PF,SO,Tag,RT>& m, size_t i );
-
-template< typename Type, AlignmentFlag AF, PaddingFlag PF, bool SO, typename Tag, typename RT >
 void clear( CustomMatrix<Type,AF,PF,SO,Tag,RT>& m );
 
 template< RelaxationFlag RF, typename Type, AlignmentFlag AF, PaddingFlag PF, bool SO, typename Tag, typename RT >
@@ -6567,52 +6561,6 @@ bool isIntact( const CustomMatrix<Type,AF,PF,SO,Tag,RT>& m );
 template< typename Type, AlignmentFlag AF, PaddingFlag PF, bool SO, typename Tag, typename RT >
 void swap( CustomMatrix<Type,AF,PF,SO,Tag,RT>& a, CustomMatrix<Type,AF,PF,SO,Tag,RT>& b ) noexcept;
 //@}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Resetting the given custom matrix.
-// \ingroup custom_matrix
-//
-// \param m The matrix to be resetted.
-// \return void
-*/
-template< typename Type     // Data type of the matrix
-        , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF    // Padding flag
-        , bool SO           // Storage order
-        , typename Tag      // Type tag
-        , typename RT >     // Result type
-inline void reset( CustomMatrix<Type,AF,PF,SO,Tag,RT>& m )
-{
-   m.reset();
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Reset the specified row/column of the given custom matrix.
-// \ingroup custom_matrix
-//
-// \param m The matrix to be resetted.
-// \param i The index of the row/column to be resetted.
-// \return void
-//
-// This function resets the values in the specified row/column of the given custom matrix to
-// their default value. In case the given matrix is a \a rowMajor matrix the function resets the
-// values in row \a i, if it is a \a columnMajor matrix the function resets the values in column
-// \a i. Note that the capacity of the row/column remains unchanged.
-*/
-template< typename Type     // Data type of the matrix
-        , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF    // Padding flag
-        , bool SO           // Storage order
-        , typename Tag      // Type tag
-        , typename RT >     // Result type
-inline void reset( CustomMatrix<Type,AF,PF,SO,Tag,RT>& m, size_t i )
-{
-   m.reset( i );
-}
 //*************************************************************************************************
 
 

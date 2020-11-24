@@ -120,12 +120,6 @@ namespace blaze {
 /*!\name SymmetricMatrix operators */
 //@{
 template< typename MT, bool SO, bool DF, bool SF >
-void reset( SymmetricMatrix<MT,SO,DF,SF>& m );
-
-template< typename MT, bool SO, bool DF, bool SF >
-void reset( SymmetricMatrix<MT,SO,DF,SF>& m, size_t i );
-
-template< typename MT, bool SO, bool DF, bool SF >
 void clear( SymmetricMatrix<MT,SO,DF,SF>& m );
 
 template< RelaxationFlag RF, typename MT, bool SO, bool DF, bool SF >
@@ -137,48 +131,6 @@ bool isIntact( const SymmetricMatrix<MT,SO,DF,SF>& m );
 template< typename MT, bool SO, bool DF, bool SF >
 void swap( SymmetricMatrix<MT,SO,DF,SF>& a, SymmetricMatrix<MT,SO,DF,SF>& b ) noexcept;
 //@}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Resetting the given symmetric matrix.
-// \ingroup symmetric_matrix
-//
-// \param m The symmetric matrix to be resetted.
-// \return void
-*/
-template< typename MT  // Type of the adapted matrix
-        , bool SO      // Storage order of the adapted matrix
-        , bool DF      // Density flag
-        , bool SF >    // Scalar flag
-inline void reset( SymmetricMatrix<MT,SO,DF,SF>& m )
-{
-   m.reset();
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Resetting the specified row/column of the given symmetric matrix.
-// \ingroup symmetric_matrix
-//
-// \param m The symmetric matrix to be resetted.
-// \param i The index of the row/column to be resetted.
-// \return void
-//
-// This function resets the values in the specified row/column of the given symmetric matrix to
-// their default value. In case the given matrix is a \a rowMajor matrix the function resets the
-// values in row \a i, if it is a \a columnMajor matrix the function resets the values in column
-// \a i. Note that the capacity of the row/column remains unchanged.
-*/
-template< typename MT  // Type of the adapted matrix
-        , bool SO      // Storage order of the adapted matrix
-        , bool DF      // Density flag
-        , bool SF >    // Scalar flag
-inline void reset( SymmetricMatrix<MT,SO,DF,SF>& m, size_t i )
-{
-   m.reset( i );
-}
 //*************************************************************************************************
 
 

@@ -642,24 +642,6 @@ class DMatTransposer
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Resetting the dense matrix contained in a DMatTransposer.
-// \ingroup dense_matrix_expression
-//
-// \param m The dense matrix to be resetted.
-// \return void
-*/
-template< typename MT  // Type of the dense matrix
-        , bool SO >    // Storage order
-inline void reset( DMatTransposer<MT,SO>& m )
-{
-   m.reset();
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
 /*!\brief Returns whether the invariants of the given DMatTransposer are intact.
 // \ingroup dense_matrix_expression
 //

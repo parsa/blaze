@@ -169,7 +169,6 @@ class UniLowerValue
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-   inline void reset () const;
    inline void clear () const;
    inline void invert() const;
 
@@ -216,6 +215,27 @@ class UniLowerValue
    BLAZE_CONSTRAINT_MUST_NOT_BE_LOWER_MATRIX_TYPE    ( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_UPPER_MATRIX_TYPE    ( MT );
    BLAZE_CONSTRAINT_MUST_BE_SCALAR_TYPE              ( RepresentedType );
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**********************************************************************************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief Resetting the unilower value to the default initial values.
+   // \ingroup unilower_matrix
+   //
+   // \param value The given unilower value.
+   // \return void
+   //
+   // This function resets the unilower value to its default initial value.
+   */
+   friend inline void reset( const UniLowerValue& value )
+   {
+      using blaze::reset;
+
+      if( !value.diagonal_ ) {
+         reset( *value.value_ );
+      }
+   }
    /*! \endcond */
    //**********************************************************************************************
 };
@@ -390,24 +410,6 @@ inline UniLowerValue<MT>& UniLowerValue<MT>::operator/=( const T& value )
 //  UTILITY FUNCTIONS
 //
 //=================================================================================================
-
-//*************************************************************************************************
-/*!\brief Reset the unilower value to its default initial value.
-//
-// \return void
-//
-// This function resets the unilower value to its default initial value.
-*/
-template< typename MT >  // Type of the adapted matrix
-inline void UniLowerValue<MT>::reset() const
-{
-   using blaze::reset;
-
-   if( !diagonal_ )
-      reset( *value_ );
-}
-//*************************************************************************************************
-
 
 //*************************************************************************************************
 /*!\brief Clearing the unilower value.
@@ -586,9 +588,6 @@ inline void UniLowerValue<MT>::imag( ValueType value ) const
 /*!\name UniLowerValue global functions */
 //@{
 template< typename MT >
-void reset( const UniLowerValue<MT>& value );
-
-template< typename MT >
 void clear( const UniLowerValue<MT>& value );
 
 template< typename MT >
@@ -606,23 +605,6 @@ bool isZero( const UniLowerValue<MT>& value );
 template< RelaxationFlag RF, typename MT >
 bool isOne( const UniLowerValue<MT>& value );
 //@}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Resetting the unilower value to the default initial values.
-// \ingroup unilower_matrix
-//
-// \param value The given unilower value.
-// \return void
-//
-// This function resets the unilower value to its default initial value.
-*/
-template< typename MT >
-inline void reset( const UniLowerValue<MT>& value )
-{
-   value.reset();
-}
 //*************************************************************************************************
 
 

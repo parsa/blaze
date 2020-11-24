@@ -155,7 +155,6 @@ class HermitianProxy
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-   inline void reset () const;
    inline void clear () const;
    inline void invert() const;
 
@@ -208,6 +207,29 @@ class HermitianProxy
    BLAZE_CONSTRAINT_MUST_NOT_BE_LOWER_MATRIX_TYPE    ( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_UPPER_MATRIX_TYPE    ( MT );
    BLAZE_CONSTRAINT_MUST_BE_SCALAR_TYPE              ( RepresentedType );
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**********************************************************************************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief Resetting the represented element to the default initial values.
+   // \ingroup hermitian_matrix
+   //
+   // \param proxy The given access proxy.
+   // \return void
+   //
+   // This function resets the element represented by the access proxy to its default initial
+   // value.
+   */
+   friend inline void reset( const HermitianProxy& proxy )
+   {
+      using blaze::reset;
+
+      reset( proxy.value1_ );
+      if( !proxy.diagonal_ ) {
+         reset( proxy.value2_ );
+      }
+   }
    /*! \endcond */
    //**********************************************************************************************
 };
@@ -491,25 +513,6 @@ inline typename HermitianProxy<MT>::ConstPointer HermitianProxy<MT>::operator->(
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Reset the represented element to its default initial value.
-//
-// \return void
-//
-// This function resets the element represented by the proxy to its default initial value.
-*/
-template< typename MT >  // Type of the adapted matrix
-inline void HermitianProxy<MT>::reset() const
-{
-   using blaze::reset;
-
-   reset( value1_ );
-   if( !diagonal_ )
-      reset( value2_ );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
 /*!\brief Clearing the represented element.
 //
 // \return void
@@ -674,9 +677,6 @@ inline void HermitianProxy<MT>::imag( ValueType value ) const
 /*!\name HermitianProxy global functions */
 //@{
 template< typename MT >
-void reset( const HermitianProxy<MT>& proxy );
-
-template< typename MT >
 void clear( const HermitianProxy<MT>& proxy );
 
 template< typename MT >
@@ -694,24 +694,6 @@ bool isZero( const HermitianProxy<MT>& proxy );
 template< RelaxationFlag RF, typename MT >
 bool isOne( const HermitianProxy<MT>& proxy );
 //@}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Resetting the represented element to the default initial values.
-// \ingroup hermitian_matrix
-//
-// \param proxy The given access proxy.
-// \return void
-//
-// This function resets the element represented by the access proxy to its default initial
-// value.
-*/
-template< typename MT >
-inline void reset( const HermitianProxy<MT>& proxy )
-{
-   proxy.reset();
-}
 //*************************************************************************************************
 
 

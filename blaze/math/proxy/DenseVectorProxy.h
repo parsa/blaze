@@ -530,9 +530,6 @@ template< typename PT, typename VT >
 void resize( const DenseVectorProxy<PT,VT>& proxy, size_t n, bool preserve=true );
 
 template< typename PT, typename VT >
-void reset( const DenseVectorProxy<PT,VT>& proxy );
-
-template< typename PT, typename VT >
 void clear( const DenseVectorProxy<PT,VT>& proxy );
 //@}
 //*************************************************************************************************
@@ -735,24 +732,6 @@ template< typename PT    // Type of the proxy
 BLAZE_ALWAYS_INLINE void resize( const DenseVectorProxy<PT,VT>& proxy, size_t n, bool preserve )
 {
    resize_backend( proxy, n, preserve );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Resetting the represented vector to the default initial values.
-// \ingroup math
-//
-// \param proxy The given access proxy.
-// \return void
-//
-// This function resets all elements of the vector to the default initial values.
-*/
-template< typename PT    // Type of the proxy
-        , typename VT >  // Type of the dense vector
-BLAZE_ALWAYS_INLINE void reset( const DenseVectorProxy<PT,VT>& proxy )
-{
-   proxy.reset();
 }
 //*************************************************************************************************
 

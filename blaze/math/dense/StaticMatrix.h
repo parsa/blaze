@@ -6858,12 +6858,6 @@ inline void StaticMatrix<Type,M,N,true,AF,PF,Tag>::schurAssign( const SparseMatr
 /*!\name StaticMatrix operators */
 //@{
 template< typename Type, size_t M, size_t N, bool SO, AlignmentFlag AF, PaddingFlag PF, typename Tag >
-void reset( StaticMatrix<Type,M,N,SO,AF,PF,Tag>& m );
-
-template< typename Type, size_t M, size_t N, bool SO, AlignmentFlag AF, PaddingFlag PF, typename Tag >
-void reset( StaticMatrix<Type,M,N,SO,AF,PF,Tag>& m, size_t i );
-
-template< typename Type, size_t M, size_t N, bool SO, AlignmentFlag AF, PaddingFlag PF, typename Tag >
 void clear( StaticMatrix<Type,M,N,SO,AF,PF,Tag>& m );
 
 template< RelaxationFlag RF, typename Type, size_t M, size_t N, bool SO, AlignmentFlag AF, PaddingFlag PF, typename Tag >
@@ -6875,54 +6869,6 @@ bool isIntact( const StaticMatrix<Type,M,N,SO,AF,PF,Tag>& m ) noexcept;
 template< typename Type, size_t M, size_t N, bool SO, AlignmentFlag AF, PaddingFlag PF, typename Tag >
 void swap( StaticMatrix<Type,M,N,SO,AF,PF,Tag>& a, StaticMatrix<Type,M,N,SO,AF,PF,Tag>& b ) noexcept;
 //@}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Resetting the given static matrix.
-// \ingroup static_matrix
-//
-// \param m The matrix to be resetted.
-// \return void
-*/
-template< typename Type     // Data type of the matrix
-        , size_t M          // Number of rows
-        , size_t N          // Number of columns
-        , bool SO           // Storage order
-        , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF    // Padding flag
-        , typename Tag >    // Type tag
-inline void reset( StaticMatrix<Type,M,N,SO,AF,PF,Tag>& m )
-{
-   m.reset();
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Reset the specified row/column of the given static matrix.
-// \ingroup static_matrix
-//
-// \param m The matrix to be resetted.
-// \param i The index of the row/column to be resetted.
-// \return void
-//
-// This function resets the values in the specified row/column of the given static matrix to
-// their default value. In case the given matrix is a \a rowMajor matrix the function resets the
-// values in row \a i, if it is a \a columnMajor matrix the function resets the values in column
-// \a i. Note that the capacity of the row/column remains unchanged.
-*/
-template< typename Type     // Data type of the matrix
-        , size_t M          // Number of rows
-        , size_t N          // Number of columns
-        , bool SO           // Storage order
-        , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF    // Padding flag
-        , typename Tag >    // Type tag
-inline void reset( StaticMatrix<Type,M,N,SO,AF,PF,Tag>& m, size_t i )
-{
-   m.reset( i );
-}
 //*************************************************************************************************
 
 

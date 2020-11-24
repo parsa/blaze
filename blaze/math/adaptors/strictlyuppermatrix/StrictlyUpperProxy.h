@@ -58,7 +58,6 @@
 #include <blaze/math/shims/IsOne.h>
 #include <blaze/math/shims/IsReal.h>
 #include <blaze/math/shims/IsZero.h>
-#include <blaze/math/shims/Reset.h>
 #include <blaze/util/constraints/Const.h>
 #include <blaze/util/constraints/Pointer.h>
 #include <blaze/util/constraints/Reference.h>
@@ -550,9 +549,6 @@ inline StrictlyUpperProxy<MT>::operator ConstReference() const noexcept
 /*!\name StrictlyUpperProxy global functions */
 //@{
 template< typename MT >
-void reset( const StrictlyUpperProxy<MT>& proxy );
-
-template< typename MT >
 void clear( const StrictlyUpperProxy<MT>& proxy );
 
 template< RelaxationFlag RF, typename MT >
@@ -567,26 +563,6 @@ bool isZero( const StrictlyUpperProxy<MT>& proxy );
 template< RelaxationFlag RF, typename MT >
 bool isOne( const StrictlyUpperProxy<MT>& proxy );
 //@}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Resetting the represented element to the default initial values.
-// \ingroup strictly_upper_matrix
-//
-// \param proxy The given access proxy.
-// \return void
-//
-// This function resets the element represented by the access proxy to its default initial
-// value.
-*/
-template< typename MT >
-inline void reset( const StrictlyUpperProxy<MT>& proxy )
-{
-   using blaze::reset;
-
-   reset( proxy.get() );
-}
 //*************************************************************************************************
 
 

@@ -577,24 +577,6 @@ class DVecTransposer
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Resetting the dense vector contained in a DVecTransposer.
-// \ingroup dense_vector_expression
-//
-// \param v The dense vector to be resetted.
-// \return void
-*/
-template< typename VT  // Type of the dense vector
-        , bool TF >    // Transpose flag
-inline void reset( DVecTransposer<VT,TF>& v )
-{
-   v.reset();
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
 /*!\brief Returns whether the invariants of the given DVecTransposer are intact.
 // \ingroup dense_vector_expression
 //

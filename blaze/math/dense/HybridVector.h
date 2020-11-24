@@ -2953,9 +2953,6 @@ inline auto HybridVector<Type,N,TF,AF,PF,Tag>::divAssign( const DenseVector<VT,T
 /*!\name HybridVector operators */
 //@{
 template< typename Type, size_t N, bool TF, AlignmentFlag AF, PaddingFlag PF, typename Tag >
-constexpr void reset( HybridVector<Type,N,TF,AF,PF,Tag>& v );
-
-template< typename Type, size_t N, bool TF, AlignmentFlag AF, PaddingFlag PF, typename Tag >
 constexpr void clear( HybridVector<Type,N,TF,AF,PF,Tag>& v );
 
 template< RelaxationFlag RF, typename Type, size_t N, bool TF, AlignmentFlag AF, PaddingFlag PF, typename Tag >
@@ -2967,26 +2964,6 @@ constexpr bool isIntact( const HybridVector<Type,N,TF,AF,PF,Tag>& v );
 template< typename Type, size_t N, bool TF, AlignmentFlag AF, PaddingFlag PF, typename Tag >
 void swap( HybridVector<Type,N,TF,AF,PF,Tag>& a, HybridVector<Type,N,TF,AF,PF,Tag>& b ) noexcept;
 //@}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Resetting the given hybrid vector.
-// \ingroup hybrid_vector
-//
-// \param v The vector to be resetted.
-// \return void
-*/
-template< typename Type     // Data type of the vector
-        , size_t N          // Number of elements
-        , bool TF           // Transpose flag
-        , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF    // Padding flag
-        , typename Tag >    // Type tag
-constexpr void reset( HybridVector<Type,N,TF,AF,PF,Tag>& v )
-{
-   v.reset();
-}
 //*************************************************************************************************
 
 

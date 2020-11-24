@@ -58,7 +58,6 @@
 #include <blaze/math/shims/IsOne.h>
 #include <blaze/math/shims/IsReal.h>
 #include <blaze/math/shims/IsZero.h>
-#include <blaze/math/shims/Reset.h>
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Const.h>
@@ -484,9 +483,6 @@ inline NonScalarProxy<MT>::operator RawReference() const noexcept
 /*!\name NonScalarProxy global functions */
 //@{
 template< typename MT >
-void reset( const NonScalarProxy<MT>& proxy );
-
-template< typename MT >
 void clear( const NonScalarProxy<MT>& proxy );
 
 template< RelaxationFlag RF, typename MT >
@@ -501,28 +497,6 @@ bool isZero( const NonScalarProxy<MT>& proxy );
 template< RelaxationFlag RF, typename MT >
 bool isOne( const NonScalarProxy<MT>& proxy );
 //@}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Resetting the represented element to the default initial values.
-// \ingroup symmetric_matrix
-//
-// \param proxy The given access proxy.
-// \return void
-//
-// This function resets the element represented by the access proxy to its default initial value.
-// In case the access proxy represents a vector- or matrix-like data structure that provides a
-// reset() function, this function resets all elements of the vector/matrix to the default initial
-// values.
-*/
-template< typename MT >
-inline void reset( const NonScalarProxy<MT>& proxy )
-{
-   using blaze::reset;
-
-   reset( proxy.get() );
-}
 //*************************************************************************************************
 
 

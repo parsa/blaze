@@ -5275,9 +5275,6 @@ inline auto CustomVector<Type,AF,padded,TF,Tag,RT>::divAssign( const DenseVector
 /*!\name CustomVector operators */
 //@{
 template< typename Type, AlignmentFlag AF, PaddingFlag PF, bool TF, typename Tag, typename RT >
-void reset( CustomVector<Type,AF,PF,TF,Tag,RT>& v );
-
-template< typename Type, AlignmentFlag AF, PaddingFlag PF, bool TF, typename Tag, typename RT >
 void clear( CustomVector<Type,AF,PF,TF,Tag,RT>& v );
 
 template< RelaxationFlag RF, typename Type, AlignmentFlag AF, PaddingFlag PF, bool TF, typename Tag, typename RT >
@@ -5289,26 +5286,6 @@ bool isIntact( const CustomVector<Type,AF,PF,TF,Tag,RT>& v ) noexcept;
 template< typename Type, AlignmentFlag AF, PaddingFlag PF, bool TF, typename Tag, typename RT >
 void swap( CustomVector<Type,AF,PF,TF,Tag,RT>& a, CustomVector<Type,AF,PF,TF,Tag,RT>& b ) noexcept;
 //@}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Resetting the given custom vector.
-// \ingroup custom_vector
-//
-// \param v The custom vector to be resetted.
-// \return void
-*/
-template< typename Type     // Data type of the vector
-        , AlignmentFlag AF  // Alignment flag
-        , PaddingFlag PF    // Padding flag
-        , bool TF           // Transpose flag
-        , typename Tag      // Type tag
-        , typename RT >     // Result type
-inline void reset( CustomVector<Type,AF,PF,TF,Tag,RT>& v )
-{
-   v.reset();
-}
 //*************************************************************************************************
 
 

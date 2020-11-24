@@ -6969,12 +6969,6 @@ inline void DynamicMatrix<Type,true,Alloc,Tag>::schurAssign( const SparseMatrix<
 /*!\name DynamicMatrix operators */
 //@{
 template< typename Type, bool SO, typename Alloc, typename Tag >
-void reset( DynamicMatrix<Type,SO,Alloc,Tag>& m );
-
-template< typename Type, bool SO, typename Alloc, typename Tag >
-void reset( DynamicMatrix<Type,SO,Alloc,Tag>& m, size_t i );
-
-template< typename Type, bool SO, typename Alloc, typename Tag >
 void clear( DynamicMatrix<Type,SO,Alloc,Tag>& m );
 
 template< RelaxationFlag RF, typename Type, bool SO, typename Alloc, typename Tag >
@@ -6986,48 +6980,6 @@ bool isIntact( const DynamicMatrix<Type,SO,Alloc,Tag>& m ) noexcept;
 template< typename Type, bool SO, typename Alloc, typename Tag >
 void swap( DynamicMatrix<Type,SO,Alloc,Tag>& a, DynamicMatrix<Type,SO,Alloc,Tag>& b ) noexcept;
 //@}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Resetting the given dynamic matrix.
-// \ingroup dynamic_matrix
-//
-// \param m The matrix to be resetted.
-// \return void
-*/
-template< typename Type   // Data type of the matrix
-        , bool SO         // Storage order
-        , typename Alloc  // Type of the allocator
-        , typename Tag >  // Type tag
-inline void reset( DynamicMatrix<Type,SO,Alloc,Tag>& m )
-{
-   m.reset();
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Reset the specified row/column of the given dynamic matrix.
-// \ingroup dynamic_matrix
-//
-// \param m The matrix to be resetted.
-// \param i The index of the row/column to be resetted.
-// \return void
-//
-// This function resets the values in the specified row/column of the given dynamic matrix to
-// their default value. In case the given matrix is a \a rowMajor matrix the function resets the
-// values in row \a i, if it is a \a columnMajor matrix the function resets the values in column
-// \a i. Note that the capacity of the row/column remains unchanged.
-*/
-template< typename Type   // Data type of the matrix
-        , bool SO         // Storage order
-        , typename Alloc  // Type of the allocator
-        , typename Tag >  // Type tag
-inline void reset( DynamicMatrix<Type,SO,Alloc,Tag>& m, size_t i )
-{
-   m.reset( i );
-}
 //*************************************************************************************************
 
 

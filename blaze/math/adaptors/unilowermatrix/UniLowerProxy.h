@@ -179,7 +179,6 @@ class UniLowerProxy
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-   inline void reset () const;
    inline void clear () const;
    inline void invert() const;
 
@@ -230,6 +229,28 @@ class UniLowerProxy
    BLAZE_CONSTRAINT_MUST_NOT_BE_LOWER_MATRIX_TYPE    ( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_UPPER_MATRIX_TYPE    ( MT );
    BLAZE_CONSTRAINT_MUST_BE_SCALAR_TYPE              ( RepresentedType );
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**********************************************************************************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief Resetting the represented element to the default initial values.
+   // \ingroup unilower_matrix
+   //
+   // \param proxy The given access proxy.
+   // \return void
+   //
+   // This function resets the element represented by the access proxy to its default initial
+   // value.
+   */
+   friend inline void reset( const UniLowerProxy& proxy )
+   {
+      using blaze::reset;
+
+      if( proxy.column_ < proxy.row_ ) {
+         reset( proxy.value_ );
+      }
+   }
    /*! \endcond */
    //**********************************************************************************************
 };
@@ -472,24 +493,6 @@ inline const UniLowerProxy<MT>* UniLowerProxy<MT>::operator->() const noexcept
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Reset the represented element to its default initial value.
-//
-// \return void
-//
-// This function resets the element represented by the proxy to its default initial value.
-*/
-template< typename MT >  // Type of the adapted matrix
-inline void UniLowerProxy<MT>::reset() const
-{
-   using blaze::reset;
-
-   if( column_ < row_ )
-      reset( value_ );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
 /*!\brief Clearing the represented element.
 //
 // \return void
@@ -675,9 +678,6 @@ inline void UniLowerProxy<MT>::imag( ValueType value ) const
 /*!\name UniLowerProxy global functions */
 //@{
 template< typename MT >
-void reset( const UniLowerProxy<MT>& proxy );
-
-template< typename MT >
 void clear( const UniLowerProxy<MT>& proxy );
 
 template< typename MT >
@@ -695,24 +695,6 @@ bool isZero( const UniLowerProxy<MT>& proxy );
 template< RelaxationFlag RF, typename MT >
 bool isOne( const UniLowerProxy<MT>& proxy );
 //@}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Resetting the represented element to the default initial values.
-// \ingroup unilower_matrix
-//
-// \param proxy The given access proxy.
-// \return void
-//
-// This function resets the element represented by the access proxy to its default initial
-// value.
-*/
-template< typename MT >
-inline void reset( const UniLowerProxy<MT>& proxy )
-{
-   proxy.reset();
-}
 //*************************************************************************************************
 
 

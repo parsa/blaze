@@ -181,7 +181,6 @@ class SymmetricValue
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-   inline void reset () const;
    inline void clear () const;
    inline void invert() const;
 
@@ -235,6 +234,34 @@ class SymmetricValue
    BLAZE_CONSTRAINT_MUST_NOT_BE_LOWER_MATRIX_TYPE    ( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_UPPER_MATRIX_TYPE    ( MT );
    BLAZE_CONSTRAINT_MUST_BE_SCALAR_TYPE              ( RepresentedType );
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**********************************************************************************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief Resetting the symmetric value to the default initial values.
+   // \ingroup symmetric_matrix
+   //
+   // \param value The given symmetric value.
+   // \return void
+   //
+   // This function resets the symmetric value to its default initial value.
+   */
+   friend inline void reset( const SymmetricValue& value )
+   {
+      using blaze::reset;
+
+      reset( value.pos_->value() );
+
+      if( value.pos_->index() != value.index_ )
+      {
+         const size_t row   ( ( IsRowMajorMatrix_v<MT> )?( value.pos_->index() ):( value.index_ ) );
+         const size_t column( ( IsRowMajorMatrix_v<MT> )?( value.index_ ):( value.pos_->index() ) );
+         const IteratorType pos2( value.matrix_->find( row, column ) );
+
+         reset( pos2->value() );
+      }
+   }
    /*! \endcond */
    //**********************************************************************************************
 };
@@ -382,32 +409,6 @@ inline SymmetricValue<MT>& SymmetricValue<MT>::operator/=( const T& value )
 //  UTILITY FUNCTIONS
 //
 //=================================================================================================
-
-//*************************************************************************************************
-/*!\brief Reset the symmetric value to its default initial value.
-//
-// \return void
-//
-// This function resets the symmetric value to its default initial value.
-*/
-template< typename MT >  // Type of the adapted matrix
-inline void SymmetricValue<MT>::reset() const
-{
-   using blaze::reset;
-
-   reset( pos_->value() );
-
-   if( pos_->index() != index_ )
-   {
-      const size_t row   ( ( IsRowMajorMatrix_v<MT> )?( pos_->index() ):( index_ ) );
-      const size_t column( ( IsRowMajorMatrix_v<MT> )?( index_ ):( pos_->index() ) );
-      const IteratorType pos2( matrix_->find( row, column ) );
-
-      reset( pos2->value() );
-   }
-}
-//*************************************************************************************************
-
 
 //*************************************************************************************************
 /*!\brief Clearing the symmetric value.
@@ -600,9 +601,6 @@ inline void SymmetricValue<MT>::imag( ValueType value ) const
 /*!\name SymmetricValue global functions */
 //@{
 template< typename MT >
-void reset( const SymmetricValue<MT>& value );
-
-template< typename MT >
 void clear( const SymmetricValue<MT>& value );
 
 template< typename MT >
@@ -620,23 +618,6 @@ bool isZero( const SymmetricValue<MT>& value );
 template< RelaxationFlag RF, typename MT >
 bool isOne( const SymmetricValue<MT>& value );
 //@}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Resetting the symmetric value to the default initial values.
-// \ingroup symmetric_matrix
-//
-// \param value The given symmetric value.
-// \return void
-//
-// This function resets the symmetric value to its default initial value.
-*/
-template< typename MT >
-inline void reset( const SymmetricValue<MT>& value )
-{
-   value.reset();
-}
 //*************************************************************************************************
 
 

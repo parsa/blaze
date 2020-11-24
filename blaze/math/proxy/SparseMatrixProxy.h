@@ -1094,12 +1094,6 @@ template< typename PT, typename MT >
 void resize( const SparseMatrixProxy<PT,MT>& proxy, size_t m, size_t n, bool preserve=true );
 
 template< typename PT, typename MT >
-void reset( const SparseMatrixProxy<PT,MT>& proxy );
-
-template< typename PT, typename MT >
-void reset( const SparseMatrixProxy<PT,MT>& proxy, size_t i );
-
-template< typename PT, typename MT >
 void clear( const SparseMatrixProxy<PT,MT>& proxy );
 
 template< typename PT, typename MT >
@@ -1393,46 +1387,6 @@ template< typename PT    // Type of the proxy
 BLAZE_ALWAYS_INLINE void resize( const SparseMatrixProxy<PT,MT>& proxy, size_t m, size_t n, bool preserve )
 {
    resize_backend( proxy, m, n, preserve );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Resetting the represented element to the default initial values.
-// \ingroup math
-//
-// \param proxy The given access proxy.
-// \return void
-//
-// This function resets all elements of the matrix to the default initial values.
-*/
-template< typename PT    // Type of the proxy
-        , typename MT >  // Type of the sparse matrix
-BLAZE_ALWAYS_INLINE void reset( const SparseMatrixProxy<PT,MT>& proxy )
-{
-   proxy.reset();
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Reset the specified row/column of the represented matrix.
-// \ingroup math
-//
-// \param proxy The given access proxy.
-// \param i The index of the row/column to be resetted.
-// \return void
-//
-// This function resets all elements in the specified row/column of the given matrix to their
-// default value. In case the given matrix is a \a rowMajor matrix the function resets the values
-// in row \a i, if it is a \a columnMajor matrix the function resets the values in column \a i.
-// Note that the capacity of the row/column remains unchanged.
-*/
-template< typename PT    // Type of the proxy
-        , typename MT >  // Type of the sparse matrix
-BLAZE_ALWAYS_INLINE void reset( const SparseMatrixProxy<PT,MT>& proxy, size_t i )
-{
-   proxy.reset(i);
 }
 //*************************************************************************************************
 

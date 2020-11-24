@@ -235,6 +235,12 @@ template< typename VT, bool TF >
 size_t nonZeros( const Vector<VT,TF>& vector );
 
 template< typename VT, bool TF >
+constexpr void reset( Vector<VT,TF>& vector );
+
+template< typename VT, bool TF >
+constexpr void reset( Vector<VT,TF>&& vector );
+
+template< typename VT, bool TF >
 void resize( Vector<VT,TF>& vector, size_t n, bool preserve=true );
 
 template< typename VT, bool TF >
@@ -434,6 +440,38 @@ template< typename VT  // Type of the vector
 BLAZE_ALWAYS_INLINE size_t nonZeros( const Vector<VT,TF>& vector )
 {
    return (*vector).nonZeros();
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Resetting the given vector.
+// \ingroup vector
+//
+// \param vector The vector to be resetted.
+// \return void
+*/
+template< typename VT  // Type of the vector
+        , bool TF >    // Transpose flag of the vector
+constexpr void reset( Vector<VT,TF>& vector )
+{
+   (*vector).reset();
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Resetting the given temporary vector.
+// \ingroup vector
+//
+// \param vector The temporary vector to be resetted.
+// \return void
+*/
+template< typename VT  // Type of the vector
+        , bool TF >    // Transpose flag of the vector
+constexpr void reset( Vector<VT,TF>&& vector )
+{
+   (*vector).reset();
 }
 //*************************************************************************************************
 

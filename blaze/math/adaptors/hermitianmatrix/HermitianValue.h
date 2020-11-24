@@ -164,7 +164,6 @@ class HermitianValue
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-   inline void reset () const;
    inline void clear () const;
    inline void invert() const;
 
@@ -218,6 +217,34 @@ class HermitianValue
    BLAZE_CONSTRAINT_MUST_NOT_BE_LOWER_MATRIX_TYPE    ( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_UPPER_MATRIX_TYPE    ( MT );
    BLAZE_CONSTRAINT_MUST_BE_SCALAR_TYPE              ( RepresentedType );
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**********************************************************************************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief Resetting the Hermitian value to the default initial values.
+   // \ingroup hermitian_matrix
+   //
+   // \param value The given Hermitian value.
+   // \return void
+   //
+   // This function resets the Hermitian value to its default initial value.
+   */
+   friend inline void reset( const HermitianValue& value )
+   {
+      using blaze::reset;
+
+      reset( value.pos_->value() );
+
+      if( value.pos_->index() != value.index_ )
+      {
+         const size_t row   ( ( IsRowMajorMatrix_v<MT> )?( value.pos_->index() ):( value.index_ ) );
+         const size_t column( ( IsRowMajorMatrix_v<MT> )?( value.index_ ):( value.pos_->index() ) );
+         const IteratorType pos2( value.matrix_->find( row, column ) );
+
+         reset( pos2->value() );
+      }
+   }
    /*! \endcond */
    //**********************************************************************************************
 };
@@ -406,32 +433,6 @@ inline HermitianValue<MT>& HermitianValue<MT>::operator/=( const T& value )
 //  UTILITY FUNCTIONS
 //
 //=================================================================================================
-
-//*************************************************************************************************
-/*!\brief Reset the Hermitian value to its default initial value.
-//
-// \return void
-//
-// This function resets the Hermitian value to its default initial value.
-*/
-template< typename MT >  // Type of the adapted matrix
-inline void HermitianValue<MT>::reset() const
-{
-   using blaze::reset;
-
-   reset( pos_->value() );
-
-   if( pos_->index() != index_ )
-   {
-      const size_t row   ( ( IsRowMajorMatrix_v<MT> )?( pos_->index() ):( index_ ) );
-      const size_t column( ( IsRowMajorMatrix_v<MT> )?( index_ ):( pos_->index() ) );
-      const IteratorType pos2( matrix_->find( row, column ) );
-
-      reset( pos2->value() );
-   }
-}
-//*************************************************************************************************
-
 
 //*************************************************************************************************
 /*!\brief Clearing the Hermitian value.
@@ -624,9 +625,6 @@ inline void HermitianValue<MT>::imag( ValueType value ) const
 /*!\name HermitianValue global functions */
 //@{
 template< typename MT >
-void reset( const HermitianValue<MT>& value );
-
-template< typename MT >
 void clear( const HermitianValue<MT>& value );
 
 template< typename MT >
@@ -644,23 +642,6 @@ bool isZero( const HermitianValue<MT>& value );
 template< RelaxationFlag RF, typename MT >
 bool isOne( const HermitianValue<MT>& value );
 //@}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Resetting the Hermitian value to the default initial values.
-// \ingroup hermitian_matrix
-//
-// \param value The given Hermitian value.
-// \return void
-//
-// This function resets the Hermitian value to its default initial value.
-*/
-template< typename MT >
-inline void reset( const HermitianValue<MT>& value )
-{
-   value.reset();
-}
 //*************************************************************************************************
 
 

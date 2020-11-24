@@ -173,7 +173,6 @@ class ScalarProxy
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-   inline void reset () const;
    inline void clear () const;
    inline void invert() const;
 
@@ -223,6 +222,29 @@ class ScalarProxy
    BLAZE_CONSTRAINT_MUST_NOT_BE_LOWER_MATRIX_TYPE    ( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_UPPER_MATRIX_TYPE    ( MT );
    BLAZE_CONSTRAINT_MUST_BE_SCALAR_TYPE              ( RepresentedType );
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**********************************************************************************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief Resetting the represented element to the default initial values.
+   // \ingroup symmetric_matrix
+   //
+   // \param proxy The given access proxy.
+   // \return void
+   //
+   // This function resets the element represented by the scalar proxy to its default initial
+   // value.
+   */
+   friend inline void reset( const ScalarProxy& proxy )
+   {
+      using blaze::reset;
+
+      reset( proxy.matrix_( proxy.row_, proxy.column_ ) );
+      if( proxy.row_ != proxy.column_ ) {
+         reset( proxy.matrix_( proxy.column_, proxy.row_ ) );
+      }
+   }
    /*! \endcond */
    //**********************************************************************************************
 };
@@ -435,25 +457,6 @@ inline typename ScalarProxy<MT>::ConstPointer ScalarProxy<MT>::operator->() cons
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Reset the represented element to its default initial value.
-//
-// \return void
-//
-// This function resets the element represented by the proxy to its default initial value.
-*/
-template< typename MT >  // Type of the adapted matrix
-inline void ScalarProxy<MT>::reset() const
-{
-   using blaze::reset;
-
-   reset( matrix_(row_,column_) );
-   if( row_ != column_ )
-      reset( matrix_(column_,row_) );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
 /*!\brief Clearing the represented element.
 //
 // \return void
@@ -612,9 +615,6 @@ inline void ScalarProxy<MT>::imag( ValueType value ) const
 /*!\name ScalarProxy global functions */
 //@{
 template< typename MT >
-void reset( const ScalarProxy<MT>& proxy );
-
-template< typename MT >
 void clear( const ScalarProxy<MT>& proxy );
 
 template< typename MT >
@@ -632,24 +632,6 @@ bool isZero( const ScalarProxy<MT>& proxy );
 template< RelaxationFlag RF, typename MT >
 bool isOne( const ScalarProxy<MT>& proxy );
 //@}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Resetting the represented element to the default initial values.
-// \ingroup symmetric_matrix
-//
-// \param proxy The given access proxy.
-// \return void
-//
-// This function resets the element represented by the scalar proxy to its default initial
-// value.
-*/
-template< typename MT >
-inline void reset( const ScalarProxy<MT>& proxy )
-{
-   proxy.reset();
-}
 //*************************************************************************************************
 
 

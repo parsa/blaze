@@ -1116,48 +1116,6 @@ inline decltype(auto) subvector( VT&& b, RSAs... args )
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Resetting the given band.
-// \ingroup band
-//
-// \param band The band to be resetted.
-// \return void
-*/
-template< typename MT          // Type of the matrix
-        , bool TF              // Transpose flag
-        , bool DF              // Density flag
-        , bool MF              // Multiplication flag
-        , ptrdiff_t... CBAs >  // Compile time band arguments
-inline void reset( Band<MT,TF,DF,MF,CBAs...>& band )
-{
-   band.reset();
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Resetting the given temporary band.
-// \ingroup band
-//
-// \param band The temporary band to be resetted.
-// \return void
-*/
-template< typename MT          // Type of the matrix
-        , bool TF              // Transpose flag
-        , bool DF              // Density flag
-        , bool MF              // Multiplication flag
-        , ptrdiff_t... CBAs >  // Compile time band arguments
-inline void reset( Band<MT,TF,DF,MF,CBAs...>&& band )
-{
-   band.reset();
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
 /*!\brief Clearing the given band.
 // \ingroup band
 //

@@ -499,24 +499,6 @@ class SMatTransposer
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Resetting the sparse matrix contained in a SMatTransposer.
-// \ingroup sparse_matrix_expression
-//
-// \param m The sparse matrix to be resetted.
-// \return void
-*/
-template< typename MT  // Type of the sparse matrix
-        , bool SO >    // Storage order
-inline void reset( SMatTransposer<MT,SO>& m )
-{
-   m.reset();
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
 /*!\brief Returns whether the invariants of the given SMatTransposer are intact.
 // \ingroup sparse_matrix_expression
 //
