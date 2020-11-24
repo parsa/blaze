@@ -56,6 +56,7 @@
 #include <blaze/math/shims/Atanh.h>
 #include <blaze/math/shims/Cbrt.h>
 #include <blaze/math/shims/Ceil.h>
+#include <blaze/math/shims/Clear.h>
 #include <blaze/math/shims/Conjugate.h>
 #include <blaze/math/shims/Cos.h>
 #include <blaze/math/shims/Cosh.h>
@@ -202,6 +203,7 @@ class OperationTest : private blaze::NonCopyable
    void testSet           ();
    void testSetall        ();
    void testReset         ();
+   void testClear         ();
 
    void testEquality      ( blaze::TrueType , blaze::TrueType  );
    void testEquality      ( blaze::TrueType , blaze::FalseType );
@@ -406,6 +408,7 @@ OperationTest<T>::OperationTest()
    testSet           ();
    testSetall        ();
    testReset         ();
+   testClear         ();
 
    testEquality      ( blaze::HasSIMDEqual<T,T>(), blaze::IsFloatingPoint<T>() );
    testInequality    ( blaze::HasSIMDEqual<T,T>(), blaze::IsFloatingPoint<T>() );
@@ -697,6 +700,41 @@ void OperationTest<T>::testReset()
    for( size_t i=0UL; i<N; i+=SIMDSIZE ) {
       auto xmm( loada( a_+i ) );
       reset( xmm );
+      storea( c_+i, xmm );
+   }
+
+   compare( b_, c_ );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Testing the clear operation.
+//
+// \return void
+// \exception std::runtime_error Clear error detected.
+//
+// This function tests the clear operation by comparing the results of a vectorized and a scalar
+// array assignment. In case any error is detected, a \a std::runtime_error exception is thrown.
+*/
+template< typename T >  // Data type of the SIMD test
+void OperationTest<T>::testClear()
+{
+   using blaze::loada;
+   using blaze::storea;
+   using blaze::clear;
+
+   test_  = "clear() operation";
+
+   initialize();
+
+   for( size_t i=0UL; i<N; ++i ) {
+      clear( b_[i] );
+   }
+
+   for( size_t i=0UL; i<N; i+=SIMDSIZE ) {
+      auto xmm( loada( a_+i ) );
+      clear( xmm );
       storea( c_+i, xmm );
    }
 
