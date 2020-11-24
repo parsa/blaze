@@ -201,6 +201,7 @@ class OperationTest : private blaze::NonCopyable
    void testStream        ();
    void testSet           ();
    void testSetall        ();
+   void testReset         ();
 
    void testEquality      ( blaze::TrueType , blaze::TrueType  );
    void testEquality      ( blaze::TrueType , blaze::FalseType );
@@ -404,6 +405,7 @@ OperationTest<T>::OperationTest()
    testStream        ();
    testSet           ();
    testSetall        ();
+   testReset         ();
 
    testEquality      ( blaze::HasSIMDEqual<T,T>(), blaze::IsFloatingPoint<T>() );
    testInequality    ( blaze::HasSIMDEqual<T,T>(), blaze::IsFloatingPoint<T>() );
@@ -661,6 +663,41 @@ void OperationTest<T>::testSetall()
 
    for( size_t i=0UL; i<N; i+=SIMDSIZE ) {
       storea( c_+i, setall( value ) );
+   }
+
+   compare( b_, c_ );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Testing the reset operation.
+//
+// \return void
+// \exception std::runtime_error Reset error detected.
+//
+// This function tests the reset operation by comparing the results of a vectorized and a scalar
+// array assignment. In case any error is detected, a \a std::runtime_error exception is thrown.
+*/
+template< typename T >  // Data type of the SIMD test
+void OperationTest<T>::testReset()
+{
+   using blaze::loada;
+   using blaze::storea;
+   using blaze::reset;
+
+   test_  = "reset() operation";
+
+   initialize();
+
+   for( size_t i=0UL; i<N; ++i ) {
+      reset( b_[i] );
+   }
+
+   for( size_t i=0UL; i<N; i+=SIMDSIZE ) {
+      auto xmm( loada( a_+i ) );
+      reset( xmm );
+      storea( c_+i, xmm );
    }
 
    compare( b_, c_ );
