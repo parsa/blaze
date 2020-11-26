@@ -1060,12 +1060,6 @@ inline bool ZeroMatrix<Type,SO,Tag>::canSMPAssign() const noexcept
 //*************************************************************************************************
 /*!\name ZeroMatrix operators */
 //@{
-template< typename Type, bool SO, typename Tag >
-constexpr void reset( ZeroMatrix<Type,SO,Tag>& m ) noexcept;
-
-template< typename Type, bool SO, typename Tag >
-constexpr void reset( ZeroMatrix<Type,SO,Tag>& m, size_t i ) noexcept;
-
 template< RelaxationFlag RF, typename Type, bool SO, typename Tag >
 constexpr bool isDefault( const ZeroMatrix<Type,SO,Tag>& m ) noexcept;
 
@@ -1075,45 +1069,6 @@ constexpr bool isIntact( const ZeroMatrix<Type,SO,Tag>& m ) noexcept;
 template< typename Type, bool SO, typename Tag >
 constexpr void swap( ZeroMatrix<Type,SO,Tag>& a, ZeroMatrix<Type,SO,Tag>& b ) noexcept;
 //@}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Resetting the given zero matrix.
-// \ingroup zero_matrix
-//
-// \param m The zero matrix to be resetted.
-// \return void
-*/
-template< typename Type   // Data type of the matrix
-        , bool SO         // Storage order
-        , typename Tag >  // Type tag
-constexpr void reset( ZeroMatrix<Type,SO,Tag>& m ) noexcept
-{
-   MAYBE_UNUSED( m );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Reset the specified row/column of the given zero matrix.
-// \ingroup zero_matrix
-//
-// \param m The matrix to be resetted.
-// \param i The index of the row/column to be resetted.
-// \return void
-//
-// This function resets the values in the specified row/column of the given zero matrix to their
-// default value. In case the given matrix is a \a rowMajor matrix the function resets the values
-// in row \a i, if it is a \a columnMajor matrix the function resets the values in column \a i.
-*/
-template< typename Type   // Data type of the matrix
-        , bool SO         // Storage order
-        , typename Tag >  // Type tag
-constexpr void reset( ZeroMatrix<Type,SO,Tag>& m, size_t i ) noexcept
-{
-   MAYBE_UNUSED( m, i );
-}
 //*************************************************************************************************
 
 

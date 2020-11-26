@@ -43,6 +43,7 @@
 #include <blaze/math/Exception.h>
 #include <blaze/math/typetraits/IsResizable.h>
 #include <blaze/math/typetraits/IsShrinkable.h>
+#include <blaze/math/typetraits/IsZero.h>
 #include <blaze/system/Inline.h>
 #include <blaze/system/MacroDisable.h>
 #include <blaze/util/Assert.h>
@@ -451,6 +452,44 @@ BLAZE_ALWAYS_INLINE size_t nonZeros( const Vector<VT,TF>& vector )
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Backend implementation of the \c reset() function for non-zero vectors.
+// \ingroup vector
+//
+// \param vector The given vector to be resetted.
+// \return void
+*/
+template< typename VT  // Type of the vector
+        , bool TF >    // Transpose flag of the vector
+constexpr auto reset_backend( Vector<VT,TF>& vector )
+   -> DisableIf_t< IsZero_v<VT> >
+{
+   (*vector).reset();
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Backend implementation of the \c reset() function for zero vectors.
+// \ingroup vector
+//
+// \param vector The given vector to be resetted.
+// \return void
+*/
+template< typename VT  // Type of the vector
+        , bool TF >    // Transpose flag of the vector
+constexpr auto reset_backend( Vector<VT,TF>& vector )
+   -> EnableIf_t< IsZero_v<VT> >
+{
+   MAYBE_UNUSED( vector );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Resetting the given vector.
 // \ingroup vector
 //
@@ -461,7 +500,7 @@ template< typename VT  // Type of the vector
         , bool TF >    // Transpose flag of the vector
 constexpr void reset( Vector<VT,TF>& vector )
 {
-   (*vector).reset();
+   reset_backend( *vector );
 }
 //*************************************************************************************************
 
@@ -477,7 +516,7 @@ template< typename VT  // Type of the vector
         , bool TF >    // Transpose flag of the vector
 constexpr void reset( Vector<VT,TF>&& vector )
 {
-   (*vector).reset();
+   reset_backend( *vector );
 }
 //*************************************************************************************************
 
@@ -492,7 +531,7 @@ constexpr void reset( Vector<VT,TF>&& vector )
 */
 template< typename VT  // Type of the vector
         , bool TF >    // Transpose flag of the vector
-BLAZE_ALWAYS_INLINE auto clear_backend( Vector<VT,TF>& vector )
+constexpr auto clear_backend( Vector<VT,TF>& vector )
    -> DisableIf_t< IsResizable_v<VT> >
 {
    (*vector).reset();
@@ -511,7 +550,7 @@ BLAZE_ALWAYS_INLINE auto clear_backend( Vector<VT,TF>& vector )
 */
 template< typename VT  // Type of the vector
         , bool TF >    // Transpose flag of the vector
-BLAZE_ALWAYS_INLINE auto clear_backend( Vector<VT,TF>& vector )
+constexpr auto clear_backend( Vector<VT,TF>& vector )
    -> EnableIf_t< IsResizable_v<VT> >
 {
    (*vector).clear();

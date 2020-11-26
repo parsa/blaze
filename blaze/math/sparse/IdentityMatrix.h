@@ -1157,12 +1157,6 @@ inline bool IdentityMatrix<Type,SO,Tag>::canSMPAssign() const noexcept
 //*************************************************************************************************
 /*!\name IdentityMatrix operators */
 //@{
-template< typename Type, bool SO, typename Tag >
-constexpr void reset( IdentityMatrix<Type,SO,Tag>& m ) noexcept;
-
-template< typename Type, bool SO, typename Tag >
-constexpr void reset( IdentityMatrix<Type,SO,Tag>& m, size_t i ) noexcept;
-
 template< RelaxationFlag RF, typename Type, bool SO, typename Tag >
 constexpr bool isDefault( const IdentityMatrix<Type,SO,Tag>& m ) noexcept;
 
@@ -1172,46 +1166,6 @@ constexpr bool isIntact( const IdentityMatrix<Type,SO,Tag>& m ) noexcept;
 template< typename Type, bool SO, typename Tag >
 constexpr void swap( IdentityMatrix<Type,SO,Tag>& a, IdentityMatrix<Type,SO,Tag>& b ) noexcept;
 //@}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Resetting the given identity matrix.
-// \ingroup identity_matrix
-//
-// \param m The matrix to be resetted.
-// \return void
-*/
-template< typename Type   // Data type of the matrix
-        , bool SO         // Storage order
-        , typename Tag >  // Tag type
-constexpr void reset( IdentityMatrix<Type,SO,Tag>& m ) noexcept
-{
-   MAYBE_UNUSED( m );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Reset the specified row/column of the given identity matrix.
-// \ingroup identity_matrix
-//
-// \param m The matrix to be resetted.
-// \param i The index of the row/column to be resetted.
-// \return void
-//
-// This function resets the values in the specified row/column of the given identity matrix to
-// their default value. In case the given matrix is a \a rowMajor matrix the function resets the
-// values in row \a i, if it is a \a columnMajor matrix the function resets the values in column
-// \a i.
-*/
-template< typename Type   // Data type of the matrix
-        , bool SO         // Storage order
-        , typename Tag >  // Tag type
-constexpr void reset( IdentityMatrix<Type,SO,Tag>& m, size_t i ) noexcept
-{
-   MAYBE_UNUSED( m, i );
-}
 //*************************************************************************************************
 
 

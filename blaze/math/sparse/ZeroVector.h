@@ -844,35 +844,15 @@ inline bool ZeroVector<Type,TF,Tag>::canSMPAssign() const noexcept
 //*************************************************************************************************
 /*!\name ZeroVector operators */
 //@{
-template< typename Type, bool TF, typename Tag >
-constexpr void reset( ZeroVector<Type,TF,Tag>& m ) noexcept;
-
 template< RelaxationFlag RF, typename Type, bool TF, typename Tag >
-constexpr bool isDefault( const ZeroVector<Type,TF,Tag>& m ) noexcept;
+constexpr bool isDefault( const ZeroVector<Type,TF,Tag>& v ) noexcept;
 
 template< typename Type, bool TF, typename Tag >
-constexpr bool isIntact( const ZeroVector<Type,TF,Tag>& m ) noexcept;
+constexpr bool isIntact( const ZeroVector<Type,TF,Tag>& v ) noexcept;
 
 template< typename Type, bool TF, typename Tag >
 constexpr void swap( ZeroVector<Type,TF,Tag>& a, ZeroVector<Type,TF,Tag>& b ) noexcept;
 //@}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Resetting the given zero vector.
-// \ingroup zero_vector
-//
-// \param v The zero vector to be resetted.
-// \return void
-*/
-template< typename Type   // Data type of the vector
-        , bool TF         // Transpose flag
-        , typename Tag >  // Type tag
-constexpr void reset( ZeroVector<Type,TF,Tag>& v ) noexcept
-{
-   MAYBE_UNUSED( v );
-}
 //*************************************************************************************************
 
 

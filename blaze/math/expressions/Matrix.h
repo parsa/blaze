@@ -44,10 +44,12 @@
 #include <blaze/math/constraints/Symmetric.h>
 #include <blaze/math/Exception.h>
 #include <blaze/math/expressions/Forward.h>
+#include <blaze/math/typetraits/IsIdentity.h>
 #include <blaze/math/typetraits/IsResizable.h>
 #include <blaze/math/typetraits/IsShrinkable.h>
 #include <blaze/math/typetraits/IsSquare.h>
 #include <blaze/math/typetraits/IsSymmetric.h>
+#include <blaze/math/typetraits/IsZero.h>
 #include <blaze/system/Inline.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/EnableIf.h>
@@ -754,6 +756,44 @@ BLAZE_ALWAYS_INLINE size_t nonZeros( const Matrix<MT,SO>& matrix, size_t i )
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Backend implementation of the \c reset() function for non-zero and non-identity matrices.
+// \ingroup matrix
+//
+// \param matrix The matrix to be resetted.
+// \return void
+*/
+template< typename MT  // Type of the matrix
+        , bool SO >    // Storage order of the matrix
+constexpr auto reset_backend( Matrix<MT,SO>& matrix )
+   -> DisableIf_t< IsZero_v<MT> || IsIdentity_v<MT> >
+{
+   (*matrix).reset();
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Backend implementation of the \c reset() function for zero or identity matrices.
+// \ingroup matrix
+//
+// \param matrix The matrix to be resetted.
+// \return void
+*/
+template< typename MT  // Type of the matrix
+        , bool SO >    // Storage order of the matrix
+constexpr auto reset_backend( Matrix<MT,SO>& matrix )
+   -> EnableIf_t< IsZero_v<MT> || IsIdentity_v<MT> >
+{
+   MAYBE_UNUSED( matrix );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Resetting the given matrix.
 // \ingroup matrix
 //
@@ -762,9 +802,9 @@ BLAZE_ALWAYS_INLINE size_t nonZeros( const Matrix<MT,SO>& matrix, size_t i )
 */
 template< typename MT  // Type of the matrix
         , bool SO >    // Storage order of the matrix
-BLAZE_ALWAYS_INLINE constexpr void reset( Matrix<MT,SO>& matrix )
+constexpr void reset( Matrix<MT,SO>& matrix )
 {
-   (*matrix).reset();
+   reset_backend( *matrix );
 }
 //*************************************************************************************************
 
@@ -778,10 +818,50 @@ BLAZE_ALWAYS_INLINE constexpr void reset( Matrix<MT,SO>& matrix )
 */
 template< typename MT  // Type of the matrix
         , bool SO >    // Storage order of the matrix
-BLAZE_ALWAYS_INLINE constexpr void reset( Matrix<MT,SO>&& matrix )
+constexpr void reset( Matrix<MT,SO>&& matrix )
 {
-   (*matrix).reset();
+   reset_backend( *matrix );
 }
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Backend implementation of the \c reset() function for non-zero and non-identity matrices.
+// \ingroup matrix
+//
+// \param matrix The matrix to be resetted.
+// \param i The index of the row/column to be resetted.
+// \return void
+*/
+template< typename MT  // Type of the matrix
+        , bool SO >    // Storage order of the matrix
+constexpr auto reset_backend( Matrix<MT,SO>& matrix, size_t i )
+   -> DisableIf_t< IsZero_v<MT> || IsIdentity_v<MT> >
+{
+   (*matrix).reset( i );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Backend implementation of the \c reset() function for zero or identity matrices.
+// \ingroup matrix
+//
+// \param matrix The matrix to be resetted.
+// \param i The index of the row/column to be resetted.
+// \return void
+*/
+template< typename MT  // Type of the matrix
+        , bool SO >    // Storage order of the matrix
+constexpr auto reset_backend( Matrix<MT,SO>& matrix, size_t i )
+   -> EnableIf_t< IsZero_v<MT> || IsIdentity_v<MT> >
+{
+   MAYBE_UNUSED( matrix, i );
+}
+/*! \endcond */
 //*************************************************************************************************
 
 
@@ -800,9 +880,9 @@ BLAZE_ALWAYS_INLINE constexpr void reset( Matrix<MT,SO>&& matrix )
 */
 template< typename MT  // Type of the matrix
         , bool SO >    // Storage order of the matrix
-BLAZE_ALWAYS_INLINE constexpr void reset( Matrix<MT,SO>& matrix, size_t i )
+constexpr void reset( Matrix<MT,SO>& matrix, size_t i )
 {
-   (*matrix).reset( i );
+   reset_backend( *matrix, i );
 }
 //*************************************************************************************************
 
@@ -822,9 +902,9 @@ BLAZE_ALWAYS_INLINE constexpr void reset( Matrix<MT,SO>& matrix, size_t i )
 */
 template< typename MT  // Type of the matrix
         , bool SO >    // Storage order of the matrix
-BLAZE_ALWAYS_INLINE constexpr void reset( Matrix<MT,SO>&& matrix, size_t i )
+constexpr void reset( Matrix<MT,SO>&& matrix, size_t i )
 {
-   (*matrix).reset( i );
+   reset_backend( *matrix, i );
 }
 //*************************************************************************************************
 
@@ -834,12 +914,12 @@ BLAZE_ALWAYS_INLINE constexpr void reset( Matrix<MT,SO>&& matrix, size_t i )
 /*!\brief Backend implementation of the \c clear() function for non-resizable matrices.
 // \ingroup matrix
 //
-// \param matrix The given matrix to be cleared.
+// \param matrix The matrix to be cleared.
 // \return void
 */
 template< typename MT  // Type of the matrix
         , bool SO >    // Storage order of the matrix
-BLAZE_ALWAYS_INLINE auto clear_backend( Matrix<MT,SO>& matrix )
+constexpr auto clear_backend( Matrix<MT,SO>& matrix )
    -> DisableIf_t< IsResizable_v<MT> >
 {
    (*matrix).reset();
@@ -853,12 +933,12 @@ BLAZE_ALWAYS_INLINE auto clear_backend( Matrix<MT,SO>& matrix )
 /*!\brief Backend implementation of the \c clear() function for resizable matrices.
 // \ingroup matrix
 //
-// \param matrix The given matrix to be cleared.
+// \param matrix The matrix to be cleared.
 // \return void
 */
 template< typename MT  // Type of the matrix
         , bool SO >    // Storage order of the matrix
-BLAZE_ALWAYS_INLINE auto clear_backend( Matrix<MT,SO>& matrix )
+constexpr auto clear_backend( Matrix<MT,SO>& matrix )
    -> EnableIf_t< IsResizable_v<MT> >
 {
    (*matrix).clear();
@@ -876,7 +956,7 @@ BLAZE_ALWAYS_INLINE auto clear_backend( Matrix<MT,SO>& matrix )
 */
 template< typename MT  // Type of the matrix
         , bool SO >    // Storage order of the matrix
-BLAZE_ALWAYS_INLINE constexpr void clear( Matrix<MT,SO>& matrix )
+constexpr void clear( Matrix<MT,SO>& matrix )
 {
    clear_backend( *matrix );
 }
@@ -892,7 +972,7 @@ BLAZE_ALWAYS_INLINE constexpr void clear( Matrix<MT,SO>& matrix )
 */
 template< typename MT  // Type of the matrix
         , bool SO >    // Storage order of the matrix
-BLAZE_ALWAYS_INLINE constexpr void clear( Matrix<MT,SO>&& matrix )
+constexpr void clear( Matrix<MT,SO>&& matrix )
 {
    clear_backend( *matrix );
 }
