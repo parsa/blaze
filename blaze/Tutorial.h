@@ -1091,7 +1091,7 @@
    \endcode
 
 //  - \c Type: specifies the type of the vector elements. blaze::CustomVector can be used with
-//             any non-cv-qualified, non-reference, non-pointer element type.
+//             any possibly cv-qualified, non-reference, non-pointer element type.
 //  - \c AF  : specifies whether the represented, external arrays are properly aligned with
 //             respect to the available instruction set (SSE, AVX, ...) or not (\c blaze::aligned
 //             or \c blaze::unaligned).
@@ -4027,7 +4027,7 @@
    \endcode
 
 //  - \c Type: specifies the type of the matrix elements. blaze::CustomMatrix can be used with
-//             any non-cv-qualified, non-reference, non-pointer element type.
+//             any possibly cv-qualified, non-reference, non-pointer element type.
 //  - \c AF  : specifies whether the represented, external arrays are properly aligned with
 //             respect to the available instruction set (SSE, AVX, ...) or not (\c blaze::aligned
 //             or \c blaze::unaligned).
