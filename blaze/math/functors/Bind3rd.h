@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <utility>
 #include <blaze/math/simd/Set.h>
 #include <blaze/math/typetraits/IsSIMDEnabled.h>
 #include <blaze/math/typetraits/YieldsSymmetric.h>
