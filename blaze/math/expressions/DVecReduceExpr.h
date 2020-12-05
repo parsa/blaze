@@ -57,6 +57,7 @@
 #include <blaze/util/FunctionTrace.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/HasMember.h>
+#include <blaze/util/typetraits/RemoveCV.h>
 #include <blaze/util/typetraits/RemoveReference.h>
 
 
@@ -82,7 +83,7 @@ struct DVecReduceExprHelper
    using CT = RemoveReference_t< CompositeType_t<VT> >;
 
    //! Element type of the dense vector expression.
-   using ET = ElementType_t<CT>;
+   using ET = RemoveCV_t< ElementType_t<CT> >;
    //**********************************************************************************************
 
    //**********************************************************************************************
@@ -120,10 +121,10 @@ template< typename VT    // Type of the dense vector
         , bool TF        // Transpose flag
         , typename OP >  // Type of the reduction operation
 inline auto dvecreduce( const DenseVector<VT,TF>& dv, OP op )
-   -> DisableIf_t< DVecReduceExprHelper<VT,OP>::value, ElementType_t<VT> >
+   -> DisableIf_t< DVecReduceExprHelper<VT,OP>::value, RemoveCV_t< ElementType_t<VT> > >
 {
    using CT = CompositeType_t<VT>;
-   using ET = ElementType_t<VT>;
+   using ET = RemoveCV_t< ElementType_t<VT> >;
 
    const size_t N( (*dv).size() );
 
@@ -173,10 +174,10 @@ template< typename VT    // Type of the dense vector
         , bool TF        // Transpose flag
         , typename OP >  // Type of the reduction operation
 inline auto dvecreduce( const DenseVector<VT,TF>& dv, OP op )
-   -> EnableIf_t< DVecReduceExprHelper<VT,OP>::value, ElementType_t<VT> >
+   -> EnableIf_t< DVecReduceExprHelper<VT,OP>::value, RemoveCV_t< ElementType_t<VT> > >
 {
    using CT = CompositeType_t<VT>;
-   using ET = ElementType_t<VT>;
+   using ET = RemoveCV_t< ElementType_t<VT> >;
 
    const size_t N( (*dv).size() );
 
@@ -247,10 +248,10 @@ inline auto dvecreduce( const DenseVector<VT,TF>& dv, OP op )
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
 inline auto dvecreduce( const DenseVector<VT,TF>& dv, Add /*op*/ )
-   -> EnableIf_t< DVecReduceExprHelper<VT,Add>::value, ElementType_t<VT> >
+   -> EnableIf_t< DVecReduceExprHelper<VT,Add>::value, RemoveCV_t< ElementType_t<VT> > >
 {
    using CT = CompositeType_t<VT>;
-   using ET = ElementType_t<VT>;
+   using ET = RemoveCV_t< ElementType_t<VT> >;
 
    const size_t N( (*dv).size() );
 
@@ -338,7 +339,7 @@ inline auto dvecreduce( const DenseVector<VT,TF>& dv, Add /*op*/ )
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
 inline auto dvecreduce( const DenseVector<VT,TF>& dv, Min /*op*/ )
-   -> EnableIf_t< IsUniform_v<VT>, ElementType_t<VT> >
+   -> EnableIf_t< IsUniform_v<VT>, RemoveCV_t< ElementType_t<VT> > >
 {
    return (*dv)[0UL];
 }
@@ -360,7 +361,7 @@ inline auto dvecreduce( const DenseVector<VT,TF>& dv, Min /*op*/ )
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
 inline auto dvecreduce( const DenseVector<VT,TF>& dv, Max /*op*/ )
-   -> EnableIf_t< IsUniform_v<VT>, ElementType_t<VT> >
+   -> EnableIf_t< IsUniform_v<VT>, RemoveCV_t< ElementType_t<VT> > >
 {
    return (*dv)[0UL];
 }

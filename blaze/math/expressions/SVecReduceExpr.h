@@ -94,7 +94,7 @@ inline decltype(auto) reduce( const SparseVector<VT,TF>& sv, OP op )
    BLAZE_FUNCTION_TRACE;
 
    using CT = CompositeType_t<VT>;
-   using ET = ElementType_t<VT>;
+   using ET = RemoveCV_t< ElementType_t<VT> >;
 
    if( (*sv).size() == 0UL ) return ET{};
 

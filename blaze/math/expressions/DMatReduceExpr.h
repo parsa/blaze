@@ -82,6 +82,7 @@
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/HasMember.h>
 #include <blaze/util/typetraits/IsSame.h>
+#include <blaze/util/typetraits/RemoveCV.h>
 #include <blaze/util/typetraits/RemoveReference.h>
 
 
@@ -132,7 +133,6 @@ class DMatReduceExpr<MT,OP,columnwise>
  private:
    //**Type definitions****************************************************************************
    using RT = ResultType_t<MT>;     //!< Result type of the dense matrix expression.
-   using ET = ElementType_t<MT>;    //!< Element type of the dense matrix expression.
    using CT = CompositeType_t<MT>;  //!< Composite type of the dense matrix expression.
    //**********************************************************************************************
 
@@ -773,8 +773,7 @@ class DMatReduceExpr<MT,OP,rowwise>
 {
  private:
    //**Type definitions****************************************************************************
-   using RT = ResultType_t<MT>;   //!< Result type of the dense matrix expression.
-   using ET = ElementType_t<MT>;  //!< Element type of the dense matrix expression.
+   using RT = ResultType_t<MT>;  //!< Result type of the dense matrix expression.
    //**********************************************************************************************
 
    //**Serial evaluation strategy******************************************************************
@@ -1528,7 +1527,7 @@ struct DMatReduceExprHelper
    using CT = RemoveReference_t< CompositeType_t<MT> >;
 
    //! Element type of the dense matrix expression.
-   using ET = ElementType_t<CT>;
+   using ET = RemoveCV_t< ElementType_t<CT> >;
    //**********************************************************************************************
 
    //**********************************************************************************************
@@ -1565,10 +1564,10 @@ struct DMatReduceExprHelper
 template< typename MT    // Type of the dense matrix
         , typename OP >  // Type of the reduction operation
 inline auto dmatreduce( const DenseMatrix<MT,false>& dm, OP op )
-   -> DisableIf_t< DMatReduceExprHelper<MT,OP>::value, ElementType_t<MT> >
+   -> DisableIf_t< DMatReduceExprHelper<MT,OP>::value, RemoveCV_t< ElementType_t<MT> > >
 {
    using CT = CompositeType_t<MT>;
-   using ET = ElementType_t<MT>;
+   using ET = RemoveCV_t< ElementType_t<MT> >;
 
    const size_t M( (*dm).rows()    );
    const size_t N( (*dm).columns() );
@@ -1640,10 +1639,10 @@ inline auto dmatreduce( const DenseMatrix<MT,false>& dm, OP op )
 template< typename MT    // Type of the dense matrix
         , typename OP >  // Type of the reduction operation
 inline auto dmatreduce( const DenseMatrix<MT,false>& dm, OP op )
-   -> EnableIf_t< DMatReduceExprHelper<MT,OP>::value, ElementType_t<MT> >
+   -> EnableIf_t< DMatReduceExprHelper<MT,OP>::value, RemoveCV_t< ElementType_t<MT> > >
 {
    using CT = CompositeType_t<MT>;
-   using ET = ElementType_t<MT>;
+   using ET = RemoveCV_t< ElementType_t<MT> >;
 
    const size_t M( (*dm).rows()    );
    const size_t N( (*dm).columns() );
@@ -1821,10 +1820,10 @@ inline auto dmatreduce( const DenseMatrix<MT,false>& dm, OP op )
 */
 template< typename MT >  // Type of the dense matrix
 inline auto dmatreduce( const DenseMatrix<MT,false>& dm, Add /*op*/ )
-   -> EnableIf_t< DMatReduceExprHelper<MT,Add>::value, ElementType_t<MT> >
+   -> EnableIf_t< DMatReduceExprHelper<MT,Add>::value, RemoveCV_t< ElementType_t<MT> > >
 {
    using CT = CompositeType_t<MT>;
-   using ET = ElementType_t<MT>;
+   using ET = RemoveCV_t< ElementType_t<MT> >;
 
    const size_t M( (*dm).rows()    );
    const size_t N( (*dm).columns() );
@@ -1939,7 +1938,7 @@ inline auto dmatreduce( const DenseMatrix<MT,false>& dm, Add /*op*/ )
 */
 template< typename MT >  // Type of the dense matrix
 inline auto dmatreduce( const DenseMatrix<MT,false>& dm, Min /*op*/ )
-   -> EnableIf_t< IsUniform_v<MT>, ElementType_t<MT> >
+   -> EnableIf_t< IsUniform_v<MT>, RemoveCV_t< ElementType_t<MT> > >
 {
    return (*dm)(0UL,0UL);
 }
@@ -1960,7 +1959,7 @@ inline auto dmatreduce( const DenseMatrix<MT,false>& dm, Min /*op*/ )
 */
 template< typename MT >  // Type of the dense matrix
 inline auto dmatreduce( const DenseMatrix<MT,false>& dm, Max /*op*/ )
-   -> EnableIf_t< IsUniform_v<MT>, ElementType_t<MT> >
+   -> EnableIf_t< IsUniform_v<MT>, RemoveCV_t< ElementType_t<MT> > >
 {
    return (*dm)(0UL,0UL);
 }
@@ -1983,7 +1982,7 @@ inline auto dmatreduce( const DenseMatrix<MT,false>& dm, Max /*op*/ )
 */
 template< typename MT    // Type of the dense matrix
         , typename OP >  // Type of the reduction operation
-inline ElementType_t<MT> dmatreduce( const DenseMatrix<MT,true>& dm, OP op )
+inline RemoveCV_t< ElementType_t<MT> > dmatreduce( const DenseMatrix<MT,true>& dm, OP op )
 {
    return dmatreduce( trans( *dm ), std::move(op) );
 }

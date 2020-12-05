@@ -124,7 +124,6 @@ class SMatReduceExpr<MT,OP,columnwise>
    //**Type definitions****************************************************************************
    using RT = ResultType_t<MT>;     //!< Result type of the sparse matrix expression.
    using OT = OppositeType_t<MT>;   //!< Opposite type of the sparse matrix expression.
-   using ET = ElementType_t<MT>;    //!< Element type of the sparse matrix expression.
    using CT = CompositeType_t<MT>;  //!< Composite type of the sparse matrix expression.
    //**********************************************************************************************
 
@@ -765,8 +764,7 @@ class SMatReduceExpr<MT,OP,rowwise>
 {
  private:
    //**Type definitions****************************************************************************
-   using RT = ResultType_t<MT>;   //!< Result type of the sparse matrix expression.
-   using ET = ElementType_t<MT>;  //!< Element type of the sparse matrix expression.
+   using RT = ResultType_t<MT>;  //!< Result type of the sparse matrix expression.
    //**********************************************************************************************
 
    //**Serial evaluation strategy******************************************************************
@@ -1541,7 +1539,7 @@ inline decltype(auto) reduce( const SparseMatrix<MT,SO>& sm, OP op )
    BLAZE_FUNCTION_TRACE;
 
    using CT = CompositeType_t<MT>;
-   using ET = ElementType_t<MT>;
+   using ET = RemoveCV_t< ElementType_t<MT> >;
 
    const size_t M( (*sm).rows()    );
    const size_t N( (*sm).columns() );
