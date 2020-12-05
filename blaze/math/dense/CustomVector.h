@@ -137,7 +137,7 @@ namespace blaze {
    \endcode
 
 //  - Type: specifies the type of the vector elements. CustomVector can be used with any
-//          non-cv-qualified, non-reference, non-pointer element type.
+//          possibly cv-qualified, non-reference, non-pointer element type.
 //  - AF  : specifies whether the represented, external arrays are properly aligned with
 //          respect to the available instruction set (SSE, AVX, ...) or not (\c blaze::aligned
 //          or \c blaze::unaligned).
