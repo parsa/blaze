@@ -145,7 +145,7 @@ if (${BLAZE_CACHE_SIZE_AUTO})
       endif (flag EQUAL 0)
    endif (APPLE)
 
-   string(REGEX MATCH "([0-9][0-9]+)" tmp ${tmp}) # Get a number containing at least 2 digits in the string tmp
+   string(REGEX MATCH "([0-9][0-9]+)" tmp "${tmp}") # Get a number containing at least 2 digits in the string tmp
 
    if (flag OR NOT tmp)
       message("Cache size not found automatically. Using default value as cache size.")
