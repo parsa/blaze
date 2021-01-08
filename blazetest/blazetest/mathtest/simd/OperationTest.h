@@ -69,6 +69,7 @@
 #include <blaze/math/shims/Hypot.h>
 #include <blaze/math/shims/InvCbrt.h>
 #include <blaze/math/shims/InvSqrt.h>
+#include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/shims/Log.h>
 #include <blaze/math/shims/Log2.h>
 #include <blaze/math/shims/Log10.h>
@@ -204,6 +205,7 @@ class OperationTest : private blaze::NonCopyable
    void testSetall        ();
    void testReset         ();
    void testClear         ();
+   void testIsDefault     ();
 
    void testEquality      ( blaze::TrueType , blaze::TrueType  );
    void testEquality      ( blaze::TrueType , blaze::FalseType );
@@ -409,6 +411,7 @@ OperationTest<T>::OperationTest()
    testSetall        ();
    testReset         ();
    testClear         ();
+   testIsDefault     ();
 
    testEquality      ( blaze::HasSIMDEqual<T,T>(), blaze::IsFloatingPoint<T>() );
    testInequality    ( blaze::HasSIMDEqual<T,T>(), blaze::IsFloatingPoint<T>() );
@@ -601,13 +604,14 @@ void OperationTest<T>::testStoreu( size_t offset )
 
 
 //*************************************************************************************************
-/*!\brief Testing the set operation.
+/*!\brief Testing the set() operation.
 //
 // \return void
 // \exception std::runtime_error Set error detected.
 //
-// This function tests the set operation by comparing the results of a vectorized and a scalar
-// array assignment. In case any error is detected, a \a std::runtime_error exception is thrown.
+// This function tests the \c set() operation by comparing the results of a vectorized and a
+// scalar array assignment. In case any error is detected, a \a std::runtime_error exception
+// is thrown.
 */
 template< typename T >  // Data type of the SIMD test
 void OperationTest<T>::testSet()
@@ -636,13 +640,14 @@ void OperationTest<T>::testSet()
 
 
 //*************************************************************************************************
-/*!\brief Testing the setall operation.
+/*!\brief Testing the setall() operation.
 //
 // \return void
 // \exception std::runtime_error Setall error detected.
 //
-// This function tests the setall operation by comparing the results of a vectorized and a scalar
-// array assignment. In case any error is detected, a \a std::runtime_error exception is thrown.
+// This function tests the \c setall() operation by comparing the results of a vectorized and
+// a scalar array assignment. In case any error is detected, a \a std::runtime_error exception
+// is thrown.
 */
 template< typename T >  // Data type of the SIMD test
 void OperationTest<T>::testSetall()
@@ -674,13 +679,14 @@ void OperationTest<T>::testSetall()
 
 
 //*************************************************************************************************
-/*!\brief Testing the reset operation.
+/*!\brief Testing the reset() operation.
 //
 // \return void
 // \exception std::runtime_error Reset error detected.
 //
-// This function tests the reset operation by comparing the results of a vectorized and a scalar
-// array assignment. In case any error is detected, a \a std::runtime_error exception is thrown.
+// This function tests the \c reset() operation by comparing the results of a vectorized and a
+// scalar array assignment. In case any error is detected, a \a std::runtime_error exception is
+// thrown.
 */
 template< typename T >  // Data type of the SIMD test
 void OperationTest<T>::testReset()
@@ -709,13 +715,14 @@ void OperationTest<T>::testReset()
 
 
 //*************************************************************************************************
-/*!\brief Testing the clear operation.
+/*!\brief Testing the clear() operation.
 //
 // \return void
 // \exception std::runtime_error Clear error detected.
 //
-// This function tests the clear operation by comparing the results of a vectorized and a scalar
-// array assignment. In case any error is detected, a \a std::runtime_error exception is thrown.
+// This function tests the \c clear() operation by comparing the results of a vectorized and a
+// scalar array assignment. In case any error is detected, a \a std::runtime_error exception is
+// thrown.
 */
 template< typename T >  // Data type of the SIMD test
 void OperationTest<T>::testClear()
@@ -739,6 +746,42 @@ void OperationTest<T>::testClear()
    }
 
    compare( b_, c_ );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Testing the isDefault() operation.
+//
+// \return void
+// \exception std::runtime_error IsDefault error detected.
+//
+// This function tests the \c isDefault() operation on SIMD vectors. In case any error is
+// detected, a \a std::runtime_error exception is thrown.
+*/
+template< typename T >  // Data type of the SIMD test
+void OperationTest<T>::testIsDefault()
+{
+   using blaze::set;
+   using blaze::isDefault;
+
+   test_  = "isDefault() operation";
+
+   if( !isDefault( SIMDType() ) ) {
+      std::ostringstream oss;
+      oss.precision( 20 );
+      oss << " Test : " << test_ << "\n"
+          << " Error: Invalid isDefault evaluation, default not recognized\n";
+      throw std::runtime_error( oss.str() );
+   }
+
+   if( isDefault( set( T(1) ) ) ) {
+      std::ostringstream oss;
+      oss.precision( 20 );
+      oss << " Test : " << test_ << "\n"
+          << " Error: Invalid isDefault evaluation, non-default not recognized\n";
+      throw std::runtime_error( oss.str() );
+   }
 }
 //*************************************************************************************************
 
