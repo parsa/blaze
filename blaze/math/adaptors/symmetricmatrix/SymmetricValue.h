@@ -603,9 +603,6 @@ inline void SymmetricValue<MT>::imag( ValueType value ) const
 //@{
 template< typename MT >
 void invert( const SymmetricValue<MT>& value );
-
-template< RelaxationFlag RF, typename MT >
-bool isOne( const SymmetricValue<MT>& value );
 //@}
 //*************************************************************************************************
 
@@ -621,26 +618,6 @@ template< typename MT >
 inline void invert( const SymmetricValue<MT>& value )
 {
    value.invert();
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Returns whether the symmetric value is 1.
-// \ingroup symmetric_matrix
-//
-// \param value The given symmetric value.
-// \return \a true in case the symmetric value is 1, \a false otherwise.
-//
-// This function checks whether the symmetric value represents the numeric value 1. In case it
-// is 1, the function returns \a true, otherwise it returns \a false.
-*/
-template< RelaxationFlag RF, typename MT >
-inline bool isOne( const SymmetricValue<MT>& value )
-{
-   using blaze::isOne;
-
-   return isOne<RF>( value.get() );
 }
 //*************************************************************************************************
 

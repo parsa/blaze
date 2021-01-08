@@ -531,43 +531,6 @@ inline DiagonalProxy<MT>::operator ConstReference() const noexcept
 }
 //*************************************************************************************************
 
-
-
-
-//=================================================================================================
-//
-//  GLOBAL FUNCTIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*!\name DiagonalProxy global functions */
-//@{
-template< RelaxationFlag RF, typename MT >
-bool isOne( const DiagonalProxy<MT>& proxy );
-//@}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Returns whether the represented element is 1.
-// \ingroup diagonal_matrix
-//
-// \param proxy The given access proxy.
-// \return \a true in case the represented element is 1, \a false otherwise.
-//
-// This function checks whether the element represented by the access proxy represents the numeric
-// value 1. In case it is 1, the function returns \a true, otherwise it returns \a false.
-*/
-template< RelaxationFlag RF, typename MT >
-inline bool isOne( const DiagonalProxy<MT>& proxy )
-{
-   using blaze::isOne;
-
-   return isOne<RF>( proxy.get() );
-}
-//*************************************************************************************************
-
 } // namespace blaze
 
 #endif

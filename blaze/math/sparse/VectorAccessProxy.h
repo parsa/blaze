@@ -458,9 +458,6 @@ inline VectorAccessProxy<VT>::operator RawReference() const noexcept
 //*************************************************************************************************
 /*!\name VectorAccessProxy global functions */
 //@{
-template< RelaxationFlag RF, typename VT >
-bool isOne( const VectorAccessProxy<VT>& proxy );
-
 template< typename VT >
 void swap( const VectorAccessProxy<VT>& a, const VectorAccessProxy<VT>& b ) noexcept;
 
@@ -470,26 +467,6 @@ void swap( const VectorAccessProxy<VT>& a, T& b ) noexcept;
 template< typename T, typename VT >
 void swap( T& a, const VectorAccessProxy<VT>& v ) noexcept;
 //@}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Returns whether the represented element is 1.
-// \ingroup sparse_vector
-//
-// \param proxy The given access proxy.
-// \return \a true in case the represented element is 1, \a false otherwise.
-//
-// This function checks whether the element represented by the access proxy represents the numeric
-// value 1. In case it is 1, the function returns \a true, otherwise it returns \a false.
-*/
-template< RelaxationFlag RF, typename VT >
-inline bool isOne( const VectorAccessProxy<VT>& proxy )
-{
-   using blaze::isOne;
-
-   return isOne<RF>( proxy.get() );
-}
 //*************************************************************************************************
 
 

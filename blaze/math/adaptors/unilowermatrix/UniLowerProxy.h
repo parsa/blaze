@@ -682,9 +682,6 @@ inline void UniLowerProxy<MT>::imag( ValueType value ) const
 //@{
 template< typename MT >
 void invert( const UniLowerProxy<MT>& proxy );
-
-template< RelaxationFlag RF, typename MT >
-bool isOne( const UniLowerProxy<MT>& proxy );
 //@}
 //*************************************************************************************************
 
@@ -700,26 +697,6 @@ template< typename MT >
 inline void invert( const UniLowerProxy<MT>& proxy )
 {
    proxy.invert();
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Returns whether the represented element is 1.
-// \ingroup unilower_matrix
-//
-// \param proxy The given access proxy.
-// \return \a true in case the represented element is 1, \a false otherwise.
-//
-// This function checks whether the element represented by the access proxy represents the numeric
-// value 1. In case it is 1, the function returns \a true, otherwise it returns \a false.
-*/
-template< RelaxationFlag RF, typename MT >
-inline bool isOne( const UniLowerProxy<MT>& proxy )
-{
-   using blaze::isOne;
-
-   return isOne<RF>( proxy.get() );
 }
 //*************************************************************************************************
 
