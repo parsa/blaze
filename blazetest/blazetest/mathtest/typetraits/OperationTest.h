@@ -84,6 +84,7 @@ class OperationTest
    void testGetAllocator();
    void testHasCompositeType();
    void testHasResultType();
+   void testIsClearable();
    void testIsColumnMajorMatrix();
    void testIsColumnVector();
    void testIsCommutative();
