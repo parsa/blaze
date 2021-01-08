@@ -151,6 +151,7 @@
 #include <blaze/math/typetraits/IsBand.h>
 #include <blaze/math/typetraits/IsBinaryMapExpr.h>
 #include <blaze/math/typetraits/IsBLASCompatible.h>
+#include <blaze/math/typetraits/IsClearable.h>
 #include <blaze/math/typetraits/IsColumn.h>
 #include <blaze/math/typetraits/IsColumnMajorMatrix.h>
 #include <blaze/math/typetraits/IsColumns.h>

@@ -46,6 +46,7 @@
 #include <blaze/math/constraints/Band.h>
 #include <blaze/math/constraints/BinaryMapExpr.h>
 #include <blaze/math/constraints/BLASCompatible.h>
+#include <blaze/math/constraints/Clearable.h>
 #include <blaze/math/constraints/Column.h>
 #include <blaze/math/constraints/ColumnMajorMatrix.h>
 #include <blaze/math/constraints/Columns.h>
