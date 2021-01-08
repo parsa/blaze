@@ -544,31 +544,8 @@ inline DiagonalProxy<MT>::operator ConstReference() const noexcept
 /*!\name DiagonalProxy global functions */
 //@{
 template< RelaxationFlag RF, typename MT >
-bool isZero( const DiagonalProxy<MT>& proxy );
-
-template< RelaxationFlag RF, typename MT >
 bool isOne( const DiagonalProxy<MT>& proxy );
 //@}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Returns whether the represented element is 0.
-// \ingroup diagonal_matrix
-//
-// \param proxy The given access proxy.
-// \return \a true in case the represented element is 0, \a false otherwise.
-//
-// This function checks whether the element represented by the access proxy represents the numeric
-// value 0. In case it is 0, the function returns \a true, otherwise it returns \a false.
-*/
-template< RelaxationFlag RF, typename MT >
-inline bool isZero( const DiagonalProxy<MT>& proxy )
-{
-   using blaze::isZero;
-
-   return isZero<RF>( proxy.get() );
-}
 //*************************************************************************************************
 
 

@@ -593,9 +593,6 @@ template< typename MT >
 void invert( const UniLowerValue<MT>& value );
 
 template< RelaxationFlag RF, typename MT >
-bool isZero( const UniLowerValue<MT>& value );
-
-template< RelaxationFlag RF, typename MT >
 bool isOne( const UniLowerValue<MT>& value );
 //@}
 //*************************************************************************************************
@@ -612,26 +609,6 @@ template< typename MT >
 inline void invert( const UniLowerValue<MT>& value )
 {
    value.invert();
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Returns whether the unilower value is 0.
-// \ingroup unilower_matrix
-//
-// \param value The given unilower value.
-// \return \a true in case the unilower value is 0, \a false otherwise.
-//
-// This function checks whether the unilower value represents the numeric value 0. In case it
-// is 0, the function returns \a true, otherwise it returns \a false.
-*/
-template< RelaxationFlag RF, typename MT >
-inline bool isZero( const UniLowerValue<MT>& value )
-{
-   using blaze::isZero;
-
-   return isZero<RF>( value.get() );
 }
 //*************************************************************************************************
 

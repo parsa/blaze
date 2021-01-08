@@ -472,9 +472,6 @@ inline MatrixAccessProxy<MT>::operator RawReference() const noexcept
 /*!\name MatrixAccessProxy global functions */
 //@{
 template< RelaxationFlag RF, typename MT >
-bool isZero( const MatrixAccessProxy<MT>& proxy );
-
-template< RelaxationFlag RF, typename MT >
 bool isOne( const MatrixAccessProxy<MT>& proxy );
 
 template< typename MT >
@@ -486,26 +483,6 @@ void swap( const MatrixAccessProxy<MT>& a, T& b ) noexcept;
 template< typename T, typename MT >
 void swap( T& a, const MatrixAccessProxy<MT>& v ) noexcept;
 //@}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Returns whether the represented element is 0.
-// \ingroup sparse_matrix
-//
-// \param proxy The given access proxy.
-// \return \a true in case the represented element is 0, \a false otherwise.
-//
-// This function checks whether the element represented by the access proxy represents the numeric
-// value 0. In case it is 0, the function returns \a true, otherwise it returns \a false.
-*/
-template< RelaxationFlag RF, typename MT >
-inline bool isZero( const MatrixAccessProxy<MT>& proxy )
-{
-   using blaze::isZero;
-
-   return isZero<RF>( proxy.get() );
-}
 //*************************************************************************************************
 
 
