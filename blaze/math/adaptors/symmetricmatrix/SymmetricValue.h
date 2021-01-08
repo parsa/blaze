@@ -605,9 +605,6 @@ template< typename MT >
 void invert( const SymmetricValue<MT>& value );
 
 template< RelaxationFlag RF, typename MT >
-bool isReal( const SymmetricValue<MT>& value );
-
-template< RelaxationFlag RF, typename MT >
 bool isZero( const SymmetricValue<MT>& value );
 
 template< RelaxationFlag RF, typename MT >
@@ -627,28 +624,6 @@ template< typename MT >
 inline void invert( const SymmetricValue<MT>& value )
 {
    value.invert();
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Returns whether the symmetric value represents a real number.
-// \ingroup symmetric_matrix
-//
-// \param value The given symmetric value.
-// \return \a true in case the symmetric value represents a real number, \a false otherwise.
-//
-// This function checks whether the symmetric value represents the a real number. In case the
-// value is of built-in type, the function returns \a true. In case the element is of complex
-// type, the function returns \a true if the imaginary part is equal to 0. Otherwise it returns
-// \a false.
-*/
-template< RelaxationFlag RF, typename MT >
-inline bool isReal( const SymmetricValue<MT>& value )
-{
-   using blaze::isReal;
-
-   return isReal<RF>( value.get() );
 }
 //*************************************************************************************************
 

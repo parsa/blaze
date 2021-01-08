@@ -459,9 +459,6 @@ inline VectorAccessProxy<VT>::operator RawReference() const noexcept
 /*!\name VectorAccessProxy global functions */
 //@{
 template< RelaxationFlag RF, typename VT >
-bool isReal( const VectorAccessProxy<VT>& proxy );
-
-template< RelaxationFlag RF, typename VT >
 bool isZero( const VectorAccessProxy<VT>& proxy );
 
 template< RelaxationFlag RF, typename VT >
@@ -476,28 +473,6 @@ void swap( const VectorAccessProxy<VT>& a, T& b ) noexcept;
 template< typename T, typename VT >
 void swap( T& a, const VectorAccessProxy<VT>& v ) noexcept;
 //@}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Returns whether the vector element represents a real number.
-// \ingroup sparse_vector
-//
-// \param proxy The given access proxy.
-// \return \a true in case the vector element represents a real number, \a false otherwise.
-//
-// This function checks whether the element represented by the access proxy represents the a
-// real number. In case the element is of built-in type, the function returns \a true. In case
-// the element is of complex type, the function returns \a true if the imaginary part is equal
-// to 0. Otherwise it returns \a false.
-*/
-template< RelaxationFlag RF, typename VT >
-inline bool isReal( const VectorAccessProxy<VT>& proxy )
-{
-   using blaze::isReal;
-
-   return isReal<RF>( proxy.get() );
-}
 //*************************************************************************************************
 
 

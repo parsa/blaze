@@ -42,8 +42,10 @@
 
 #include <blaze/math/RelaxationFlag.h>
 #include <blaze/math/shims/IsZero.h>
+#include <blaze/math/typetraits/IsScalar.h>
 #include <blaze/system/Inline.h>
 #include <blaze/util/Complex.h>
+#include <blaze/util/EnableIf.h>
 #include <blaze/util/MaybeUnused.h>
 #include <blaze/util/typetraits/IsBuiltin.h>
 
@@ -94,7 +96,8 @@ namespace blaze {
 // For all other types the function returns \a false.
 */
 template< RelaxationFlag RF  // Relaxation flag
-        , typename Type >    // Type of the given value
+        , typename Type      // Type of the given value
+        , EnableIf_t< IsScalar_v<Type> >* = nullptr >
 BLAZE_ALWAYS_INLINE bool isReal( const Type& v ) noexcept
 {
    MAYBE_UNUSED( v );

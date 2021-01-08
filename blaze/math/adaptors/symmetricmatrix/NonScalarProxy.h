@@ -482,36 +482,11 @@ inline NonScalarProxy<MT>::operator RawReference() const noexcept
 /*!\name NonScalarProxy global functions */
 //@{
 template< RelaxationFlag RF, typename MT >
-bool isReal( const NonScalarProxy<MT>& proxy );
-
-template< RelaxationFlag RF, typename MT >
 bool isZero( const NonScalarProxy<MT>& proxy );
 
 template< RelaxationFlag RF, typename MT >
 bool isOne( const NonScalarProxy<MT>& proxy );
 //@}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Returns whether the matrix element represents a real number.
-// \ingroup symmetric_matrix
-//
-// \param proxy The given access proxy.
-// \return \a true in case the matrix element represents a real number, \a false otherwise.
-//
-// This function checks whether the element represented by the access proxy represents the a
-// real number. In case the element is of built-in type, the function returns \a true. In case
-// the element is of complex type, the function returns \a true if the imaginary part is equal
-// to 0. Otherwise it returns \a false.
-*/
-template< RelaxationFlag RF, typename MT >
-inline bool isReal( const NonScalarProxy<MT>& proxy )
-{
-   using blaze::isReal;
-
-   return isReal<RF>( proxy.get() );
-}
 //*************************************************************************************************
 
 
