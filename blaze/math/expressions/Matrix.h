@@ -44,6 +44,7 @@
 #include <blaze/math/constraints/Symmetric.h>
 #include <blaze/math/Exception.h>
 #include <blaze/math/expressions/Forward.h>
+#include <blaze/math/typetraits/IsClearable.h>
 #include <blaze/math/typetraits/IsIdentity.h>
 #include <blaze/math/typetraits/IsResizable.h>
 #include <blaze/math/typetraits/IsShrinkable.h>
@@ -911,7 +912,7 @@ constexpr void reset( Matrix<MT,SO>&& matrix, size_t i )
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Backend implementation of the \c clear() function for non-resizable matrices.
+/*!\brief Backend implementation of the \c clear() function for non-clearable matrices.
 // \ingroup matrix
 //
 // \param matrix The matrix to be cleared.
@@ -920,7 +921,7 @@ constexpr void reset( Matrix<MT,SO>&& matrix, size_t i )
 template< typename MT  // Type of the matrix
         , bool SO >    // Storage order of the matrix
 constexpr auto clear_backend( Matrix<MT,SO>& matrix )
-   -> DisableIf_t< IsResizable_v<MT> >
+   -> DisableIf_t< IsClearable_v<MT> >
 {
    (*matrix).reset();
 }
@@ -930,7 +931,7 @@ constexpr auto clear_backend( Matrix<MT,SO>& matrix )
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Backend implementation of the \c clear() function for resizable matrices.
+/*!\brief Backend implementation of the \c clear() function for clearable matrices.
 // \ingroup matrix
 //
 // \param matrix The matrix to be cleared.
@@ -939,7 +940,7 @@ constexpr auto clear_backend( Matrix<MT,SO>& matrix )
 template< typename MT  // Type of the matrix
         , bool SO >    // Storage order of the matrix
 constexpr auto clear_backend( Matrix<MT,SO>& matrix )
-   -> EnableIf_t< IsResizable_v<MT> >
+   -> EnableIf_t< IsClearable_v<MT> >
 {
    (*matrix).clear();
 }

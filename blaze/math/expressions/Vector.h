@@ -41,6 +41,7 @@
 //*************************************************************************************************
 
 #include <blaze/math/Exception.h>
+#include <blaze/math/typetraits/IsClearable.h>
 #include <blaze/math/typetraits/IsResizable.h>
 #include <blaze/math/typetraits/IsShrinkable.h>
 #include <blaze/math/typetraits/IsZero.h>
@@ -523,7 +524,7 @@ constexpr void reset( Vector<VT,TF>&& vector )
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Backend implementation of the \c clear() function for non-resizable vectors.
+/*!\brief Backend implementation of the \c clear() function non-clearable vectors.
 // \ingroup vector
 //
 // \param vector The given vector to be cleared.
@@ -532,7 +533,7 @@ constexpr void reset( Vector<VT,TF>&& vector )
 template< typename VT  // Type of the vector
         , bool TF >    // Transpose flag of the vector
 constexpr auto clear_backend( Vector<VT,TF>& vector )
-   -> DisableIf_t< IsResizable_v<VT> >
+   -> DisableIf_t< IsClearable_v<VT> >
 {
    (*vector).reset();
 }
@@ -542,7 +543,7 @@ constexpr auto clear_backend( Vector<VT,TF>& vector )
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Backend implementation of the \c clear() function for resizable vectors.
+/*!\brief Backend implementation of the \c clear() function for clearable vectors.
 // \ingroup vector
 //
 // \param vector The given vector to be cleared.
@@ -551,7 +552,7 @@ constexpr auto clear_backend( Vector<VT,TF>& vector )
 template< typename VT  // Type of the vector
         , bool TF >    // Transpose flag of the vector
 constexpr auto clear_backend( Vector<VT,TF>& vector )
-   -> EnableIf_t< IsResizable_v<VT> >
+   -> EnableIf_t< IsClearable_v<VT> >
 {
    (*vector).clear();
 }
