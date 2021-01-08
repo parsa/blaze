@@ -170,7 +170,14 @@ template< RelaxationFlag RF  // Relaxation flag
         , bool DF >          // Density flag
 inline bool isDefault( const DiagonalMatrix<MT,SO,DF>& m )
 {
-   return isDefault<RF>( m.matrix_ );
+   if( Size_v<MT,0UL> == DefaultSize_v )
+      return m.rows() == 0UL;
+
+   for( size_t i=0UL; i<m.rows(); ++i ) {
+      if( !isDefault<RF>( m(i,i) ) ) return false;
+   }
+
+   return true;
 }
 //*************************************************************************************************
 

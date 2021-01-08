@@ -76,6 +76,7 @@
 #include <blaze/math/shims/InvCbrt.h>
 #include <blaze/math/shims/Invert.h>
 #include <blaze/math/shims/InvSqrt.h>
+#include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/shims/IsFinite.h>
 #include <blaze/math/shims/IsInf.h>
 #include <blaze/math/shims/IsNaN.h>
@@ -1024,6 +1025,9 @@ void invert( const Proxy<PT,RT>& proxy );
 
 template< InversionFlag IF, typename PT, typename RT >
 void invert( const Proxy<PT,RT>& proxy );
+
+template< RelaxationFlag RF, typename PT, typename RT >
+bool isDefault( const Proxy<PT,RT>& proxy );
 
 template< RelaxationFlag RF, typename PT, typename RT >
 bool isReal( const Proxy<PT,RT>& proxy );
@@ -2252,6 +2256,27 @@ inline void invert( const Proxy<PT,RT>& proxy )
    }
 
    invert<IF>( (*proxy).get() );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns whether the represented element is in default state.
+// \ingroup math
+//
+// \param proxy The given proxy instance.
+// \return \a true in case the represented element is in default state, \a false otherwise.
+//
+// This function checks whether the element represented by the proxy is in default state. In
+// case the element is of built-in type, the function returns \a true. In case the element is
+// in default state, the function returns \a true. Otherwise it returns \a false.
+*/
+template< RelaxationFlag RF, typename PT, typename RT >
+inline bool isDefault( const Proxy<PT,RT>& proxy )
+{
+   using blaze::isDefault;
+
+   return isDefault<RF>( (*proxy).get() );
 }
 //*************************************************************************************************
 

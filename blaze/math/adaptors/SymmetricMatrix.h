@@ -163,7 +163,9 @@ template< RelaxationFlag RF  // Relaxation flag
         , bool SF >          // Scalar flag
 inline bool isDefault( const SymmetricMatrix<MT,SO,DF,SF>& m )
 {
-   return isDefault<RF>( m.matrix_ );
+   if( Size_v<MT,0UL> == DefaultSize_v )
+      return m.rows() == 0UL;
+   else return isStrictlyLower<RF>( m );
 }
 //*************************************************************************************************
 

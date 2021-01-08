@@ -63,7 +63,6 @@
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/expressions/SparseMatrix.h>
 #include <blaze/math/InitializerList.h>
-#include <blaze/math/RelaxationFlag.h>
 #include <blaze/math/shims/Clear.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/shims/IsReal.h>
@@ -518,11 +517,6 @@ class HermitianMatrix<MT,SO,false>
    //@{
    MT matrix_;  //!< The adapted sparse matrix.
    //@}
-   //**********************************************************************************************
-
-   //**Friend declarations*************************************************************************
-   template< RelaxationFlag RF, typename MT2, bool SO2, bool DF2 >
-   friend bool isDefault( const HermitianMatrix<MT2,SO2,DF2>& m );
    //**********************************************************************************************
 
    //**Compile time checks*************************************************************************

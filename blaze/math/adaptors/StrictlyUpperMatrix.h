@@ -125,69 +125,6 @@ void swap( StrictlyUpperMatrix<MT,SO,DF>& a, StrictlyUpperMatrix<MT,SO,DF>& b ) 
 
 
 //*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Returns whether the given resizable strictly upper matrix is in default state.
-// \ingroup strictly_upper_matrix
-//
-// \param m The strictly upper matrix to be tested for its default state.
-// \return \a true in case the given matrix is in default state, \a false otherwise.
-//
-// This function checks whether the resizable strictly upper triangular matrix is in default
-// state.
-*/
-template< RelaxationFlag RF  // Relaxation flag
-        , typename MT        // Type of the adapted matrix
-        , bool SO            // Storage order of the adapted matrix
-        , bool DF >          // Density flag
-inline bool isDefault_backend( const StrictlyUpperMatrix<MT,SO,DF>& m, TrueType )
-{
-   return ( m.rows() == 0UL );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Returns whether the given fixed-size strictly upper matrix is in default state.
-// \ingroup strictly_upper_matrix
-//
-// \param m The strictly upper matrix to be tested for its default state.
-// \return \a true in case the given matrix is in default state, \a false otherwise.
-//
-// This function checks whether the fixed-size strictly upper triangular matrix is in default
-// state.
-*/
-template< RelaxationFlag RF  // Relaxation flag
-        , typename MT        // Type of the adapted matrix
-        , bool SO            // Storage order of the adapted matrix
-        , bool DF >          // Density flag
-inline bool isDefault_backend( const StrictlyUpperMatrix<MT,SO,DF>& m, FalseType )
-{
-   if( SO ) {
-      for( size_t j=1UL; j<m.columns(); ++j ) {
-         for( size_t i=0UL; i<j; ++i ) {
-            if( !isDefault<RF>( m(i,j) ) )
-               return false;
-         }
-      }
-   }
-   else {
-      for( size_t i=0UL; i<m.rows(); ++i ) {
-         for( size_t j=i+1UL; j<m.columns(); ++j ) {
-            if( !isDefault<RF>( m(i,j) ) )
-               return false;
-         }
-      }
-   }
-
-   return true;
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
 /*!\brief Returns whether the given strictly upper matrix is in default state.
 // \ingroup strictly_upper_matrix
 //
@@ -220,7 +157,9 @@ template< RelaxationFlag RF  // Relaxation flag
         , bool DF >          // Density flag
 inline bool isDefault( const StrictlyUpperMatrix<MT,SO,DF>& m )
 {
-   return isDefault_backend<RF>( m, typename IsResizable<MT>::Type() );
+   if( Size_v<MT,0UL> == DefaultSize_v )
+      return m.rows() == 0UL;
+   else return isLower<RF>( m );
 }
 //*************************************************************************************************
 

@@ -684,9 +684,6 @@ template< typename MT >
 void invert( const UniUpperProxy<MT>& proxy );
 
 template< RelaxationFlag RF, typename MT >
-bool isDefault( const UniUpperProxy<MT>& proxy );
-
-template< RelaxationFlag RF, typename MT >
 bool isReal( const UniUpperProxy<MT>& proxy );
 
 template< RelaxationFlag RF, typename MT >
@@ -709,26 +706,6 @@ template< typename MT >
 inline void invert( const UniUpperProxy<MT>& proxy )
 {
    proxy.invert();
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Returns whether the represented element is in default state.
-// \ingroup uniupper_matrix
-//
-// \param proxy The given access proxy
-// \return \a true in case the represented element is in default state, \a false otherwise.
-//
-// This function checks whether the element represented by the access proxy is in default state.
-// In case it is in default state, the function returns \a true, otherwise it returns \a false.
-*/
-template< RelaxationFlag RF, typename MT >
-inline bool isDefault( const UniUpperProxy<MT>& proxy )
-{
-   using blaze::isDefault;
-
-   return isDefault<RF>( proxy.get() );
 }
 //*************************************************************************************************
 

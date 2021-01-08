@@ -629,9 +629,6 @@ template< typename MT >
 void invert( const HermitianValue<MT>& value );
 
 template< RelaxationFlag RF, typename MT >
-bool isDefault( const HermitianValue<MT>& value );
-
-template< RelaxationFlag RF, typename MT >
 bool isReal( const HermitianValue<MT>& value );
 
 template< RelaxationFlag RF, typename MT >
@@ -654,26 +651,6 @@ template< typename MT >
 inline void invert( const HermitianValue<MT>& value )
 {
    value.invert();
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Returns whether the Hermitian value is in default state.
-// \ingroup hermitian_matrix
-//
-// \param value The given Hermitian value.
-// \return \a true in case the Hermitian value is in default state, \a false otherwise.
-//
-// This function checks whether the Hermitian value is in default state. In case it is in
-// default state, the function returns \a true, otherwise it returns \a false.
-*/
-template< RelaxationFlag RF, typename MT >
-inline bool isDefault( const HermitianValue<MT>& value )
-{
-   using blaze::isDefault;
-
-   return isDefault<RF>( value.get() );
 }
 //*************************************************************************************************
 

@@ -163,7 +163,9 @@ template< RelaxationFlag RF  // Relaxation flag
         , bool DF >          // Density flag
 inline bool isDefault( const HermitianMatrix<MT,SO,DF>& m )
 {
-   return isDefault<RF>( m.matrix_ );
+   if( Size_v<MT,0UL> == DefaultSize_v )
+      return m.rows() == 0UL;
+   else return isStrictlyLower<RF>( m );
 }
 //*************************************************************************************************
 

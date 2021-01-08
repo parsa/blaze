@@ -63,7 +63,6 @@
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/InitializerList.h>
 #include <blaze/math/InversionFlag.h>
-#include <blaze/math/RelaxationFlag.h>
 #include <blaze/math/shims/Clear.h>
 #include <blaze/math/shims/Conjugate.h>
 #include <blaze/math/shims/IsZero.h>
@@ -913,9 +912,6 @@ class SymmetricMatrix<MT,SO,true,true>
    //**********************************************************************************************
 
    //**Friend declarations*************************************************************************
-   template< RelaxationFlag RF, typename MT2, bool SO2, bool DF2, bool SF2 >
-   friend bool isDefault( const SymmetricMatrix<MT2,SO2,DF2,SF2>& m );
-
    template< InversionFlag IF, typename MT2, bool SO2 >
    friend void invert( SymmetricMatrix<MT2,SO2,true,true>& m );
    //**********************************************************************************************

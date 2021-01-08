@@ -593,9 +593,6 @@ template< typename MT >
 void invert( const UniUpperValue<MT>& value );
 
 template< RelaxationFlag RF, typename MT >
-bool isDefault( const UniUpperValue<MT>& value );
-
-template< RelaxationFlag RF, typename MT >
 bool isReal( const UniUpperValue<MT>& value );
 
 template< RelaxationFlag RF, typename MT >
@@ -618,26 +615,6 @@ template< typename MT >
 inline void invert( const UniUpperValue<MT>& value )
 {
    value.invert();
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Returns whether the uniupper value is in default state.
-// \ingroup uniupper_matrix
-//
-// \param value The given uniupper value.
-// \return \a true in case the uniupper value is in default state, \a false otherwise.
-//
-// This function checks whether the uniupper value is in default state. In case it is in
-// default state, the function returns \a true, otherwise it returns \a false.
-*/
-template< RelaxationFlag RF, typename MT >
-inline bool isDefault( const UniUpperValue<MT>& value )
-{
-   using blaze::isDefault;
-
-   return isDefault<RF>( value.get() );
 }
 //*************************************************************************************************
 

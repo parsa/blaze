@@ -63,7 +63,6 @@
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/InitializerList.h>
 #include <blaze/math/InversionFlag.h>
-#include <blaze/math/RelaxationFlag.h>
 #include <blaze/math/shims/Clear.h>
 #include <blaze/math/shims/Conjugate.h>
 #include <blaze/math/shims/IsZero.h>
@@ -930,10 +929,6 @@ class HermitianMatrix<MT,SO,true>
    //**********************************************************************************************
 
    //**Friend declarations*************************************************************************
-   template< RelaxationFlag RF, typename MT2, bool SO2, bool DF2 >
-   friend bool isDefault( const HermitianMatrix<MT2,SO2,DF2>& m );
-
-
    template< InversionFlag IF, typename MT2, bool SO2 >
    friend void invert( HermitianMatrix<MT2,SO2,true>& m );
    //**********************************************************************************************

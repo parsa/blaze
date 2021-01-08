@@ -126,69 +126,6 @@ void swap( StrictlyLowerMatrix<MT,SO,DF>& a, StrictlyLowerMatrix<MT,SO,DF>& b ) 
 
 
 //*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Returns whether the given resizable strictly lower matrix is in default state.
-// \ingroup strictly_lower_matrix
-//
-// \param m The strictly lower matrix to be tested for its default state.
-// \return \a true in case the given matrix is in default state, \a false otherwise.
-//
-// This function checks whether the resizable strictly lower triangular matrix is in default
-// state.
-*/
-template< RelaxationFlag RF  // Relaxation flag
-        , typename MT        // Type of the adapted matrix
-        , bool SO            // Storage order of the adapted matrix
-        , bool DF >          // Density flag
-inline bool isDefault_backend( const StrictlyLowerMatrix<MT,SO,DF>& m, TrueType )
-{
-   return ( m.rows() == 0UL );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Returns whether the given fixed-size strictly lower matrix is in default state.
-// \ingroup strictly_lower_matrix
-//
-// \param m The strictly lower matrix to be tested for its default state.
-// \return \a true in case the given matrix is in default state, \a false otherwise.
-//
-// This function checks whether the fixed-size strictly lower triangular matrix is in default
-// state.
-*/
-template< RelaxationFlag RF  // Relaxation flag
-        , typename MT        // Type of the adapted matrix
-        , bool SO            // Storage order of the adapted matrix
-        , bool DF >          // Density flag
-inline bool isDefault_backend( const StrictlyLowerMatrix<MT,SO,DF>& m, FalseType )
-{
-   if( SO ) {
-      for( size_t j=0UL; j<m.columns(); ++j ) {
-         for( size_t i=j+1UL; i<m.rows(); ++i ) {
-            if( !isDefault<RF>( m(i,j) ) )
-               return false;
-         }
-      }
-   }
-   else {
-      for( size_t i=1UL; i<m.rows(); ++i ) {
-         for( size_t j=0UL; j<i; ++j ) {
-            if( !isDefault<RF>( m(i,j) ) )
-               return false;
-         }
-      }
-   }
-
-   return true;
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
 /*!\brief Returns whether the given strictly lower matrix is in default state.
 // \ingroup strictly_lower_matrix
 //
@@ -220,7 +157,9 @@ template< RelaxationFlag RF  // Relaxation flag
         , bool DF >          // Density flag
 inline bool isDefault( const StrictlyLowerMatrix<MT,SO,DF>& m )
 {
-   return isDefault_backend<RF>( m, typename IsResizable<MT>::Type() );
+   if( Size_v<MT,0UL> == DefaultSize_v )
+      return m.rows() == 0UL;
+   else return isUpper<RF>( m );
 }
 //*************************************************************************************************
 

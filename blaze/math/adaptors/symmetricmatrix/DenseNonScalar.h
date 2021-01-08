@@ -59,7 +59,6 @@
 #include <blaze/math/Exception.h>
 #include <blaze/math/expressions/DenseMatrix.h>
 #include <blaze/math/expressions/Forward.h>
-#include <blaze/math/RelaxationFlag.h>
 #include <blaze/math/shims/Clear.h>
 #include <blaze/math/shims/Conjugate.h>
 #include <blaze/math/shims/IsDefault.h>
@@ -639,11 +638,6 @@ class SymmetricMatrix<MT,SO,true,false>
    //@{
    MT matrix_;  //!< The adapted dense matrix.
    //@}
-   //**********************************************************************************************
-
-   //**Friend declarations*************************************************************************
-   template< RelaxationFlag RF, typename MT2, bool SO2, bool DF2, bool SF2 >
-   friend bool isDefault( const SymmetricMatrix<MT2,SO2,DF2,SF2>& m );
    //**********************************************************************************************
 
    //**Compile time checks*************************************************************************

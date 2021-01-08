@@ -459,9 +459,6 @@ inline VectorAccessProxy<VT>::operator RawReference() const noexcept
 /*!\name VectorAccessProxy global functions */
 //@{
 template< RelaxationFlag RF, typename VT >
-bool isDefault( const VectorAccessProxy<VT>& proxy );
-
-template< RelaxationFlag RF, typename VT >
 bool isReal( const VectorAccessProxy<VT>& proxy );
 
 template< RelaxationFlag RF, typename VT >
@@ -479,26 +476,6 @@ void swap( const VectorAccessProxy<VT>& a, T& b ) noexcept;
 template< typename T, typename VT >
 void swap( T& a, const VectorAccessProxy<VT>& v ) noexcept;
 //@}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Returns whether the represented element is in default state.
-// \ingroup sparse_vector
-//
-// \param proxy The given access proxy.
-// \return \a true in case the represented element is in default state, \a false otherwise.
-//
-// This function checks whether the element represented by the access proxy is in default state.
-// In case it is in default state, the function returns \a true, otherwise it returns \a false.
-*/
-template< RelaxationFlag RF, typename VT >
-inline bool isDefault( const VectorAccessProxy<VT>& proxy )
-{
-   using blaze::isDefault;
-
-   return isDefault<RF>( proxy.get() );
-}
 //*************************************************************************************************
 
 

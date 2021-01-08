@@ -605,9 +605,6 @@ template< typename MT >
 void invert( const SymmetricValue<MT>& value );
 
 template< RelaxationFlag RF, typename MT >
-bool isDefault( const SymmetricValue<MT>& value );
-
-template< RelaxationFlag RF, typename MT >
 bool isReal( const SymmetricValue<MT>& value );
 
 template< RelaxationFlag RF, typename MT >
@@ -630,26 +627,6 @@ template< typename MT >
 inline void invert( const SymmetricValue<MT>& value )
 {
    value.invert();
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Returns whether the symmetric value is in default state.
-// \ingroup symmetric_matrix
-//
-// \param value The given symmetric value.
-// \return \a true in case the symmetric value is in default state, \a false otherwise.
-//
-// This function checks whether the symmetric value is in default state. In case it is in
-// default state, the function returns \a true, otherwise it returns \a false.
-*/
-template< RelaxationFlag RF, typename MT >
-inline bool isDefault( const SymmetricValue<MT>& value )
-{
-   using blaze::isDefault;
-
-   return isDefault<RF>( value.get() );
 }
 //*************************************************************************************************
 

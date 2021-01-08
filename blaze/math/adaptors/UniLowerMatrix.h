@@ -129,50 +129,6 @@ void swap( UniLowerMatrix<MT,SO,DF>& a, UniLowerMatrix<MT,SO,DF>& b ) noexcept;
 
 
 //*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Returns whether the given resizable unilower matrix is in default state.
-// \ingroup unilower_matrix
-//
-// \param m The unilower matrix to be tested for its default state.
-// \return \a true in case the given matrix is in default state, \a false otherwise.
-//
-// This function checks whether the resizable lower unitriangular matrix is in default state.
-*/
-template< RelaxationFlag RF  // Relaxation flag
-        , typename MT        // Type of the adapted matrix
-        , bool SO            // Storage order of the adapted matrix
-        , bool DF >          // Density flag
-inline bool isDefault_backend( const UniLowerMatrix<MT,SO,DF>& m, TrueType )
-{
-   return ( m.rows() == 0UL );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Returns whether the given fixed-size unilower matrix is in default state.
-// \ingroup unilower_matrix
-//
-// \param m The unilower matrix to be tested for its default state.
-// \return \a true in case the given matrix is in default state, \a false otherwise.
-//
-// This function checks whether the fixed-size lower unitriangular matrix is in default state.
-*/
-template< RelaxationFlag RF  // Relaxation flag
-        , typename MT        // Type of the adapted matrix
-        , bool SO            // Storage order of the adapted matrix
-        , bool DF >          // Density flag
-inline bool isDefault_backend( const UniLowerMatrix<MT,SO,DF>& m, FalseType )
-{
-   return isIdentity<RF>( m );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
 /*!\brief Returns whether the given unilower matrix is in default state.
 // \ingroup unilower_matrix
 //
@@ -204,7 +160,9 @@ template< RelaxationFlag RF  // Relaxation flag
         , bool DF >          // Density flag
 inline bool isDefault( const UniLowerMatrix<MT,SO,DF>& m )
 {
-   return isDefault_backend<RF>( m, typename IsResizable<MT>::Type() );
+   if( Size_v<MT,0UL> == DefaultSize_v )
+      return m.rows() == 0UL;
+   else return isIdentity<RF>( m );
 }
 //*************************************************************************************************
 

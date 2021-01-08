@@ -43,8 +43,11 @@
 #include <cmath>
 #include <blaze/math/Accuracy.h>
 #include <blaze/math/RelaxationFlag.h>
+#include <blaze/math/typetraits/IsScalar.h>
+#include <blaze/math/typetraits/IsSIMDPack.h>
 #include <blaze/system/Inline.h>
 #include <blaze/util/Complex.h>
+#include <blaze/util/EnableIf.h>
 #include <blaze/util/typetraits/IsBuiltin.h>
 
 
@@ -94,7 +97,8 @@ namespace blaze {
    \endcode
 */
 template< RelaxationFlag RF  // Relaxation flag
-        , typename Type >    // Type of the given value/object
+        , typename Type      // Type of the given value/object
+        , EnableIf_t< IsScalar_v<Type> || IsSIMDPack_v<Type> >* = nullptr >
 BLAZE_ALWAYS_INLINE bool isDefault( const Type& v ) noexcept( IsBuiltin_v<Type> )
 {
    return v == Type();

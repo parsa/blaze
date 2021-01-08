@@ -545,9 +545,6 @@ inline LowerProxy<MT>::operator ConstReference() const noexcept
 /*!\name LowerProxy global functions */
 //@{
 template< RelaxationFlag RF, typename MT >
-bool isDefault( const LowerProxy<MT>& proxy );
-
-template< RelaxationFlag RF, typename MT >
 bool isReal( const LowerProxy<MT>& proxy );
 
 template< RelaxationFlag RF, typename MT >
@@ -556,26 +553,6 @@ bool isZero( const LowerProxy<MT>& proxy );
 template< RelaxationFlag RF, typename MT >
 bool isOne( const LowerProxy<MT>& proxy );
 //@}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Returns whether the represented element is in default state.
-// \ingroup lower_matrix
-//
-// \param proxy The given access proxy
-// \return \a true in case the represented element is in default state, \a false otherwise.
-//
-// This function checks whether the element represented by the access proxy is in default state.
-// In case it is in default state, the function returns \a true, otherwise it returns \a false.
-*/
-template< RelaxationFlag RF, typename MT >
-inline bool isDefault( const LowerProxy<MT>& proxy )
-{
-   using blaze::isDefault;
-
-   return isDefault<RF>( proxy.get() );
-}
 //*************************************************************************************************
 
 

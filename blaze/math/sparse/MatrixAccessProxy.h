@@ -472,9 +472,6 @@ inline MatrixAccessProxy<MT>::operator RawReference() const noexcept
 /*!\name MatrixAccessProxy global functions */
 //@{
 template< RelaxationFlag RF, typename MT >
-bool isDefault( const MatrixAccessProxy<MT>& proxy );
-
-template< RelaxationFlag RF, typename MT >
 bool isReal( const MatrixAccessProxy<MT>& proxy );
 
 template< RelaxationFlag RF, typename MT >
@@ -492,26 +489,6 @@ void swap( const MatrixAccessProxy<MT>& a, T& b ) noexcept;
 template< typename T, typename MT >
 void swap( T& a, const MatrixAccessProxy<MT>& v ) noexcept;
 //@}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Returns whether the represented element is in default state.
-// \ingroup sparse_matrix
-//
-// \param proxy The given access proxy.
-// \return \a true in case the represented element is in default state, \a false otherwise.
-//
-// This function checks whether the element represented by the access proxy is in default state.
-// In case it is in default state, the function returns \a true, otherwise it returns \a false.
-*/
-template< RelaxationFlag RF, typename MT >
-inline bool isDefault( const MatrixAccessProxy<MT>& proxy )
-{
-   using blaze::isDefault;
-
-   return isDefault<RF>( proxy.get() );
-}
 //*************************************************************************************************
 
 
