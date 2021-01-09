@@ -2129,7 +2129,10 @@ template< typename MT  // Type of the adapted dense matrix
         , bool SO >    // Storage order of the adapted dense matrix
 inline void DiagonalMatrix<MT,SO,true>::reset()
 {
-   matrix_.reset();
+   using blaze::clear;
+
+   for( size_t i=0UL; i<rows(); ++i )
+      clear( matrix_(i,i) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -2152,7 +2155,9 @@ template< typename MT  // Type of the adapted dense matrix
         , bool SO >    // Storage order of the adapted dense matrix
 inline void DiagonalMatrix<MT,SO,true>::reset( size_t i )
 {
-   matrix_.reset( i );
+   using blaze::clear;
+
+   clear( matrix_(i,i) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -2174,9 +2179,10 @@ template< typename MT  // Type of the adapted dense matrix
         , bool SO >    // Storage order of the adapted dense matrix
 inline void DiagonalMatrix<MT,SO,true>::clear()
 {
-   using blaze::clear;
+   matrix_.clear();
 
-   clear( matrix_ );
+   BLAZE_INTERNAL_ASSERT( matrix_.rows()    == 0UL, "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( matrix_.columns() == 0UL, "Invalid number of columns" );
 }
 /*! \endcond */
 //*************************************************************************************************
