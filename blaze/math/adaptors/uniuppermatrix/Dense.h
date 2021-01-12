@@ -874,7 +874,7 @@ template< typename MT    // Type of the adapted dense matrix
         , bool SO >      // Storage order of the adapted dense matrix
 template< typename A1 >  // Type of the constructor argument
 inline UniUpperMatrix<MT,SO,true>::UniUpperMatrix( const A1& a1 )
-   : matrix_( construct( a1, typename IsResizable<MT>::Type() ) )  // The adapted dense matrix
+   : matrix_( construct( a1, IsResizable<MT>() ) )  // The adapted dense matrix
 {
    BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square uniupper matrix detected" );
    BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );
