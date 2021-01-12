@@ -97,7 +97,6 @@
 #include <blaze/math/typetraits/IsPadded.h>
 #include <blaze/math/typetraits/IsRowVector.h>
 #include <blaze/math/typetraits/IsScalar.h>
-#include <blaze/math/typetraits/IsShrinkable.h>
 #include <blaze/math/typetraits/IsSIMDCombinable.h>
 #include <blaze/math/typetraits/IsSMPAssignable.h>
 #include <blaze/math/typetraits/IsSparseMatrix.h>
@@ -7149,24 +7148,6 @@ struct IsContiguous< DynamicMatrix<T,SO,Alloc,Tag> >
 template< typename T, bool SO, typename Alloc, typename Tag >
 struct IsPadded< DynamicMatrix<T,SO,Alloc,Tag> >
    : public BoolConstant<usePadding>
-{};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  ISSHRINKABLE SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename T, bool SO, typename Alloc, typename Tag >
-struct IsShrinkable< DynamicMatrix<T,SO,Alloc,Tag> >
-   : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************

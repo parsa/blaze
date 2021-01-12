@@ -78,7 +78,6 @@
 #include <blaze/math/typetraits/IsMatrix.h>
 #include <blaze/math/typetraits/IsRowVector.h>
 #include <blaze/math/typetraits/IsScalar.h>
-#include <blaze/math/typetraits/IsShrinkable.h>
 #include <blaze/math/typetraits/IsSMPAssignable.h>
 #include <blaze/math/typetraits/IsSparseMatrix.h>
 #include <blaze/math/typetraits/IsSparseVector.h>
@@ -6095,24 +6094,6 @@ inline void swap( CompressedMatrix<Type,SO,Tag>& a, CompressedMatrix<Type,SO,Tag
 {
    a.swap( b );
 }
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  ISSHRINKABLE SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename T, bool SO, typename Tag >
-struct IsShrinkable< CompressedMatrix<T,SO,Tag> >
-   : public TrueType
-{};
-/*! \endcond */
 //*************************************************************************************************
 
 

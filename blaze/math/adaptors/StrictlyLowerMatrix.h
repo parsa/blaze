@@ -76,7 +76,6 @@
 #include <blaze/math/typetraits/IsPadded.h>
 #include <blaze/math/typetraits/IsRestricted.h>
 #include <blaze/math/typetraits/IsScalar.h>
-#include <blaze/math/typetraits/IsShrinkable.h>
 #include <blaze/math/typetraits/IsSquare.h>
 #include <blaze/math/typetraits/IsStrictlyLower.h>
 #include <blaze/math/typetraits/IsStrictlyUpper.h>
@@ -1697,24 +1696,6 @@ struct IsContiguous< StrictlyLowerMatrix<MT,SO,DF> >
 template< typename MT, bool SO, bool DF >
 struct IsPadded< StrictlyLowerMatrix<MT,SO,DF> >
    : public IsPadded<MT>
-{};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  ISSHRINKABLE SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO, bool DF >
-struct IsShrinkable< StrictlyLowerMatrix<MT,SO,DF> >
-   : public IsShrinkable<MT>
 {};
 /*! \endcond */
 //*************************************************************************************************
