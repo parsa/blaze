@@ -85,7 +85,6 @@
 #include <blaze/math/typetraits/IsDenseVector.h>
 #include <blaze/math/typetraits/IsMatrix.h>
 #include <blaze/math/typetraits/IsPadded.h>
-#include <blaze/math/typetraits/IsResizable.h>
 #include <blaze/math/typetraits/IsRowVector.h>
 #include <blaze/math/typetraits/IsScalar.h>
 #include <blaze/math/typetraits/IsSIMDCombinable.h>
@@ -3157,24 +3156,6 @@ struct IsContiguous< HybridVector<T,N,TF,AF,PF,Tag> >
 template< typename T, size_t N, bool TF, AlignmentFlag AF, PaddingFlag PF, typename Tag >
 struct IsPadded< HybridVector<T,N,TF,AF,PF,Tag> >
    : public BoolConstant< PF == padded >
-{};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  ISRESIZABLE SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename T, size_t N, bool TF, AlignmentFlag AF, PaddingFlag PF, typename Tag >
-struct IsResizable< HybridVector<T,N,TF,AF,PF,Tag> >
-   : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************

@@ -74,7 +74,6 @@
 #include <blaze/math/typetraits/IsColumnVector.h>
 #include <blaze/math/typetraits/IsDenseMatrix.h>
 #include <blaze/math/typetraits/IsMatrix.h>
-#include <blaze/math/typetraits/IsResizable.h>
 #include <blaze/math/typetraits/IsRowVector.h>
 #include <blaze/math/typetraits/IsScalar.h>
 #include <blaze/math/typetraits/IsSMPAssignable.h>
@@ -1675,24 +1674,6 @@ struct IsUniform< UniformMatrix<Type,SO,Tag> >
 /*! \cond BLAZE_INTERNAL */
 template< typename Type, bool SO, typename Tag >
 struct IsAligned< UniformMatrix<Type,SO,Tag> >
-   : public TrueType
-{};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  ISRESIZABLE SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename Type, bool SO, typename Tag >
-struct IsResizable< UniformMatrix<Type,SO,Tag> >
    : public TrueType
 {};
 /*! \endcond */

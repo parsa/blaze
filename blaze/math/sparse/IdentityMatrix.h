@@ -75,7 +75,6 @@
 #include <blaze/math/typetraits/IsHermitian.h>
 #include <blaze/math/typetraits/IsIdentity.h>
 #include <blaze/math/typetraits/IsMatrix.h>
-#include <blaze/math/typetraits/IsResizable.h>
 #include <blaze/math/typetraits/IsSMPAssignable.h>
 #include <blaze/math/typetraits/IsSparseMatrix.h>
 #include <blaze/math/typetraits/IsSquare.h>
@@ -1380,24 +1379,6 @@ struct IsUniLower< IdentityMatrix<MT,SO,Tag> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO, typename Tag >
 struct IsUniUpper< IdentityMatrix<MT,SO,Tag> >
-   : public TrueType
-{};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  ISRESIZABLE SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename T, bool SO, typename Tag >
-struct IsResizable< IdentityMatrix<T,SO,Tag> >
    : public TrueType
 {};
 /*! \endcond */

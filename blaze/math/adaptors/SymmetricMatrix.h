@@ -81,7 +81,6 @@
 #include <blaze/math/typetraits/IsHermitian.h>
 #include <blaze/math/typetraits/IsMatrix.h>
 #include <blaze/math/typetraits/IsPadded.h>
-#include <blaze/math/typetraits/IsResizable.h>
 #include <blaze/math/typetraits/IsRestricted.h>
 #include <blaze/math/typetraits/IsScalar.h>
 #include <blaze/math/typetraits/IsShrinkable.h>
@@ -680,24 +679,6 @@ struct IsContiguous< SymmetricMatrix<MT,SO,DF,SF> >
 template< typename MT, bool SO, bool DF, bool SF >
 struct IsPadded< SymmetricMatrix<MT,SO,DF,SF> >
    : public IsPadded<MT>
-{};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  ISRESIZABLE SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO, bool DF, bool SF >
-struct IsResizable< SymmetricMatrix<MT,SO,DF,SF> >
-   : public IsResizable<MT>
 {};
 /*! \endcond */
 //*************************************************************************************************

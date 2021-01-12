@@ -68,7 +68,6 @@
 #include <blaze/math/typetraits/LowType.h>
 #include <blaze/math/typetraits/IsColumnVector.h>
 #include <blaze/math/typetraits/IsMatrix.h>
-#include <blaze/math/typetraits/IsResizable.h>
 #include <blaze/math/typetraits/IsRowVector.h>
 #include <blaze/math/typetraits/IsScalar.h>
 #include <blaze/math/typetraits/IsSMPAssignable.h>
@@ -1184,24 +1183,6 @@ struct IsUniform< ZeroVector<Type,TF,Tag> >
 /*! \cond BLAZE_INTERNAL */
 template< typename Type, bool TF, typename Tag >
 struct IsZero< ZeroVector<Type,TF,Tag> >
-   : public TrueType
-{};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  ISRESIZABLE SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename Type, bool TF, typename Tag >
-struct IsResizable< ZeroVector<Type,TF,Tag> >
    : public TrueType
 {};
 /*! \endcond */

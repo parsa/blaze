@@ -94,7 +94,6 @@
 #include <blaze/math/typetraits/IsLower.h>
 #include <blaze/math/typetraits/IsMatrix.h>
 #include <blaze/math/typetraits/IsPadded.h>
-#include <blaze/math/typetraits/IsResizable.h>
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
 #include <blaze/math/typetraits/IsRowVector.h>
 #include <blaze/math/typetraits/IsScalar.h>
@@ -7345,24 +7344,6 @@ struct IsContiguous< HybridMatrix<T,M,N,SO,AF,PF,Tag> >
 template< typename T, size_t M, size_t N, bool SO, AlignmentFlag AF, PaddingFlag PF, typename Tag >
 struct IsPadded< HybridMatrix<T,M,N,SO,AF,PF,Tag> >
    : public BoolConstant< PF == padded >
-{};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  ISRESIZABLE SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename T, size_t M, size_t N, bool SO, AlignmentFlag AF, PaddingFlag PF, typename Tag >
-struct IsResizable< HybridMatrix<T,M,N,SO,AF,PF,Tag> >
-   : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************
