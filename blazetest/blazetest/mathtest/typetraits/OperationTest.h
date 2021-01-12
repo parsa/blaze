@@ -100,6 +100,7 @@ class OperationTest
    void testIsRowMajorMatrix();
    void testIsRowVector();
    void testIsScalar();
+   void testIsShrinkable();
    void testIsSIMDEnabled();
    void testIsStatic();
    void testIsStrictlyLower();
