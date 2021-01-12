@@ -96,6 +96,7 @@ class OperationTest
    void testIsLower();
    void testIsMatrix();
    void testIsPaddingEnabled();
+   void testIsResizable();
    void testIsRowMajorMatrix();
    void testIsRowVector();
    void testIsScalar();

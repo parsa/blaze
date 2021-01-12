@@ -55,6 +55,7 @@
 #include <blaze/math/constraints/Lower.h>
 #include <blaze/math/constraints/Matrix.h>
 #include <blaze/math/constraints/PaddingEnabled.h>
+#include <blaze/math/constraints/Resizable.h>
 #include <blaze/math/constraints/ResultType.h>
 #include <blaze/math/constraints/RowMajorMatrix.h>
 #include <blaze/math/constraints/RowVector.h>
@@ -98,6 +99,7 @@
 #include <blaze/math/typetraits/IsLower.h>
 #include <blaze/math/typetraits/IsMatrix.h>
 #include <blaze/math/typetraits/IsPaddingEnabled.h>
+#include <blaze/math/typetraits/IsResizable.h>
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
 #include <blaze/math/typetraits/IsRowVector.h>
 #include <blaze/math/typetraits/IsScalar.h>
@@ -161,6 +163,8 @@ OperationTest::OperationTest()
    testIsLower();
    testIsMatrix();
    testIsPaddingEnabled();
+   testIsResizable();
+   testIsRowMajorMatrix();
    testIsRowVector();
    testIsScalar();
    testIsSIMDEnabled();
@@ -178,6 +182,7 @@ OperationTest::OperationTest()
    testRemoveAdaptor();
    testUnderlyingBuiltin();
    testUnderlyingElement();
+   testUnderlyingNumeric();
    testUnderlyingScalar();
 }
 //*************************************************************************************************
@@ -453,14 +458,16 @@ void OperationTest::testIsClearable()
    using Type2  = blaze::complex<double>;
    using Type3  = blaze::StaticVector<int,5UL,rowVector>;
    using Type4  = blaze::DynamicVector<int,rowVector>;
-   using Type5  = blaze::CompressedVector<int,rowVector>;
-   using Type6  = blaze::StaticMatrix<int,3UL,5UL,rowMajor>;
-   using Type7  = blaze::DynamicMatrix<int,rowMajor>;
-   using Type8  = blaze::CompressedMatrix<int,rowMajor>;
-   using Type9  = blaze::SymmetricMatrix< blaze::StaticMatrix<int,5UL,5UL,rowMajor> >;
-   using Type10 = blaze::SymmetricMatrix< blaze::DynamicMatrix<int,rowMajor> >;
-   using Type11 = blaze::LowerMatrix< blaze::StaticMatrix<int,5UL,5UL,rowMajor> >;
-   using Type12 = blaze::LowerMatrix< blaze::DynamicMatrix<int,rowMajor> >;
+   using Type5  = blaze::CustomVector<int,unaligned,unpadded,rowVector>;
+   using Type6  = blaze::CompressedVector<int,rowVector>;
+   using Type7  = blaze::StaticMatrix<int,3UL,5UL,rowMajor>;
+   using Type8  = blaze::DynamicMatrix<int,rowMajor>;
+   using Type9  = blaze::CustomMatrix<int,unaligned,unpadded,rowMajor>;
+   using Type10 = blaze::CompressedMatrix<int,rowMajor>;
+   using Type11 = blaze::SymmetricMatrix< blaze::StaticMatrix<int,5UL,5UL,rowMajor> >;
+   using Type12 = blaze::SymmetricMatrix< blaze::DynamicMatrix<int,rowMajor> >;
+   using Type13 = blaze::LowerMatrix< blaze::StaticMatrix<int,5UL,5UL,rowMajor> >;
+   using Type14 = blaze::LowerMatrix< blaze::DynamicMatrix<int,rowMajor> >;
 
    BLAZE_CONSTRAINT_MUST_NOT_BE_CLEARABLE_TYPE( Type1                 );
    BLAZE_CONSTRAINT_MUST_NOT_BE_CLEARABLE_TYPE( Type1 const           );
@@ -512,7 +519,7 @@ void OperationTest::testIsClearable()
    BLAZE_CONSTRAINT_MUST_NOT_BE_CLEARABLE_TYPE( Type5* volatile       );
    BLAZE_CONSTRAINT_MUST_NOT_BE_CLEARABLE_TYPE( Type5* const volatile );
 
-   BLAZE_CONSTRAINT_MUST_NOT_BE_CLEARABLE_TYPE( Type6                 );
+   BLAZE_CONSTRAINT_MUST_BE_CLEARABLE_TYPE    ( Type6                 );
    BLAZE_CONSTRAINT_MUST_NOT_BE_CLEARABLE_TYPE( Type6 const           );
    BLAZE_CONSTRAINT_MUST_NOT_BE_CLEARABLE_TYPE( Type6 volatile        );
    BLAZE_CONSTRAINT_MUST_NOT_BE_CLEARABLE_TYPE( Type6 const volatile  );
@@ -522,7 +529,7 @@ void OperationTest::testIsClearable()
    BLAZE_CONSTRAINT_MUST_NOT_BE_CLEARABLE_TYPE( Type6* volatile       );
    BLAZE_CONSTRAINT_MUST_NOT_BE_CLEARABLE_TYPE( Type6* const volatile );
 
-   BLAZE_CONSTRAINT_MUST_BE_CLEARABLE_TYPE    ( Type7                 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_CLEARABLE_TYPE( Type7                 );
    BLAZE_CONSTRAINT_MUST_NOT_BE_CLEARABLE_TYPE( Type7 const           );
    BLAZE_CONSTRAINT_MUST_NOT_BE_CLEARABLE_TYPE( Type7 volatile        );
    BLAZE_CONSTRAINT_MUST_NOT_BE_CLEARABLE_TYPE( Type7 const volatile  );
@@ -542,7 +549,7 @@ void OperationTest::testIsClearable()
    BLAZE_CONSTRAINT_MUST_NOT_BE_CLEARABLE_TYPE( Type8* volatile       );
    BLAZE_CONSTRAINT_MUST_NOT_BE_CLEARABLE_TYPE( Type8* const volatile );
 
-   BLAZE_CONSTRAINT_MUST_NOT_BE_CLEARABLE_TYPE( Type9                 );
+   BLAZE_CONSTRAINT_MUST_BE_CLEARABLE_TYPE    ( Type9                 );
    BLAZE_CONSTRAINT_MUST_NOT_BE_CLEARABLE_TYPE( Type9 const           );
    BLAZE_CONSTRAINT_MUST_NOT_BE_CLEARABLE_TYPE( Type9 volatile        );
    BLAZE_CONSTRAINT_MUST_NOT_BE_CLEARABLE_TYPE( Type9 const volatile  );
@@ -581,6 +588,26 @@ void OperationTest::testIsClearable()
    BLAZE_CONSTRAINT_MUST_NOT_BE_CLEARABLE_TYPE( Type12* const          );
    BLAZE_CONSTRAINT_MUST_NOT_BE_CLEARABLE_TYPE( Type12* volatile       );
    BLAZE_CONSTRAINT_MUST_NOT_BE_CLEARABLE_TYPE( Type12* const volatile );
+
+   BLAZE_CONSTRAINT_MUST_NOT_BE_CLEARABLE_TYPE( Type13                 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_CLEARABLE_TYPE( Type13 const           );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_CLEARABLE_TYPE( Type13 volatile        );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_CLEARABLE_TYPE( Type13 const volatile  );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_CLEARABLE_TYPE( Type13&                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_CLEARABLE_TYPE( Type13*                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_CLEARABLE_TYPE( Type13* const          );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_CLEARABLE_TYPE( Type13* volatile       );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_CLEARABLE_TYPE( Type13* const volatile );
+
+   BLAZE_CONSTRAINT_MUST_BE_CLEARABLE_TYPE    ( Type14                 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_CLEARABLE_TYPE( Type14 const           );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_CLEARABLE_TYPE( Type14 volatile        );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_CLEARABLE_TYPE( Type14 const volatile  );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_CLEARABLE_TYPE( Type14&                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_CLEARABLE_TYPE( Type14*                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_CLEARABLE_TYPE( Type14* const          );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_CLEARABLE_TYPE( Type14* volatile       );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_CLEARABLE_TYPE( Type14* const volatile );
 }
 //*************************************************************************************************
 
@@ -1465,6 +1492,180 @@ void OperationTest::testIsPaddingEnabled()
    BLAZE_CONSTRAINT_MUST_NOT_BE_PADDING_ENABLED( A );
    BLAZE_CONSTRAINT_MUST_NOT_BE_PADDING_ENABLED( E );
    BLAZE_CONSTRAINT_MUST_BE_PADDING_ENABLED    ( F );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the mathematical 'IsResizable' type trait.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a compile time test of the mathematical 'IsResizable' type trait.
+// In case an error is detected, a compilation error is created.
+*/
+void OperationTest::testIsResizable()
+{
+   using blaze::rowVector;
+   using blaze::rowMajor;
+   using blaze::unaligned;
+   using blaze::unpadded;
+
+   using Type1  = int;
+   using Type2  = blaze::complex<double>;
+   using Type3  = blaze::StaticVector<int,5UL,rowVector>;
+   using Type4  = blaze::DynamicVector<int,rowVector>;
+   using Type5  = blaze::CustomVector<int,unaligned,unpadded,rowVector>;
+   using Type6  = blaze::CompressedVector<int,rowVector>;
+   using Type7  = blaze::StaticMatrix<int,3UL,5UL,rowMajor>;
+   using Type8  = blaze::DynamicMatrix<int,rowMajor>;
+   using Type9  = blaze::CustomMatrix<int,unaligned,unpadded,rowVector>;
+   using Type10 = blaze::CompressedMatrix<int,rowMajor>;
+   using Type11 = blaze::SymmetricMatrix< blaze::StaticMatrix<int,5UL,5UL,rowMajor> >;
+   using Type12 = blaze::SymmetricMatrix< blaze::DynamicMatrix<int,rowMajor> >;
+   using Type13 = blaze::LowerMatrix< blaze::StaticMatrix<int,5UL,5UL,rowMajor> >;
+   using Type14 = blaze::LowerMatrix< blaze::DynamicMatrix<int,rowMajor> >;
+
+   BLAZE_CONSTRAINT_MUST_NOT_BE_RESIZABLE_TYPE( Type1                 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_RESIZABLE_TYPE( Type1 const           );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_RESIZABLE_TYPE( Type1 volatile        );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_RESIZABLE_TYPE( Type1 const volatile  );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_RESIZABLE_TYPE( Type1&                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_RESIZABLE_TYPE( Type1*                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_RESIZABLE_TYPE( Type1* const          );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_RESIZABLE_TYPE( Type1* volatile       );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_RESIZABLE_TYPE( Type1* const volatile );
+
+   BLAZE_CONSTRAINT_MUST_NOT_BE_RESIZABLE_TYPE( Type2                 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_RESIZABLE_TYPE( Type2 const           );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_RESIZABLE_TYPE( Type2 volatile        );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_RESIZABLE_TYPE( Type2 const volatile  );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_RESIZABLE_TYPE( Type2&                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_RESIZABLE_TYPE( Type2*                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_RESIZABLE_TYPE( Type2* const          );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_RESIZABLE_TYPE( Type2* volatile       );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_RESIZABLE_TYPE( Type2* const volatile );
+
+   BLAZE_CONSTRAINT_MUST_NOT_BE_RESIZABLE_TYPE( Type3                 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_RESIZABLE_TYPE( Type3 const           );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_RESIZABLE_TYPE( Type3 volatile        );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_RESIZABLE_TYPE( Type3 const volatile  );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_RESIZABLE_TYPE( Type3&                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_RESIZABLE_TYPE( Type3*                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_RESIZABLE_TYPE( Type3* const          );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_RESIZABLE_TYPE( Type3* volatile       );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_RESIZABLE_TYPE( Type3* const volatile );
+
+   BLAZE_CONSTRAINT_MUST_BE_RESIZABLE_TYPE    ( Type4                 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_RESIZABLE_TYPE( Type4 const           );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_RESIZABLE_TYPE( Type4 volatile        );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_RESIZABLE_TYPE( Type4 const volatile  );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_RESIZABLE_TYPE( Type4&                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_RESIZABLE_TYPE( Type4*                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_RESIZABLE_TYPE( Type4* const          );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_RESIZABLE_TYPE( Type4* volatile       );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_RESIZABLE_TYPE( Type4* const volatile );
+
+   BLAZE_CONSTRAINT_MUST_NOT_BE_RESIZABLE_TYPE( Type5                 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_RESIZABLE_TYPE( Type5 const           );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_RESIZABLE_TYPE( Type5 volatile        );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_RESIZABLE_TYPE( Type5 const volatile  );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_RESIZABLE_TYPE( Type5&                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_RESIZABLE_TYPE( Type5*                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_RESIZABLE_TYPE( Type5* const          );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_RESIZABLE_TYPE( Type5* volatile       );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_RESIZABLE_TYPE( Type5* const volatile );
+
+   BLAZE_CONSTRAINT_MUST_BE_RESIZABLE_TYPE    ( Type6                 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_RESIZABLE_TYPE( Type6 const           );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_RESIZABLE_TYPE( Type6 volatile        );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_RESIZABLE_TYPE( Type6 const volatile  );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_RESIZABLE_TYPE( Type6&                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_RESIZABLE_TYPE( Type6*                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_RESIZABLE_TYPE( Type6* const          );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_RESIZABLE_TYPE( Type6* volatile       );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_RESIZABLE_TYPE( Type6* const volatile );
+
+   BLAZE_CONSTRAINT_MUST_NOT_BE_RESIZABLE_TYPE( Type7                 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_RESIZABLE_TYPE( Type7 const           );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_RESIZABLE_TYPE( Type7 volatile        );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_RESIZABLE_TYPE( Type7 const volatile  );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_RESIZABLE_TYPE( Type7&                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_RESIZABLE_TYPE( Type7*                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_RESIZABLE_TYPE( Type7* const          );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_RESIZABLE_TYPE( Type7* volatile       );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_RESIZABLE_TYPE( Type7* const volatile );
+
+   BLAZE_CONSTRAINT_MUST_BE_RESIZABLE_TYPE    ( Type8                 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_RESIZABLE_TYPE( Type8 const           );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_RESIZABLE_TYPE( Type8 volatile        );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_RESIZABLE_TYPE( Type8 const volatile  );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_RESIZABLE_TYPE( Type8&                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_RESIZABLE_TYPE( Type8*                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_RESIZABLE_TYPE( Type8* const          );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_RESIZABLE_TYPE( Type8* volatile       );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_RESIZABLE_TYPE( Type8* const volatile );
+
+   BLAZE_CONSTRAINT_MUST_NOT_BE_RESIZABLE_TYPE( Type9                 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_RESIZABLE_TYPE( Type9 const           );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_RESIZABLE_TYPE( Type9 volatile        );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_RESIZABLE_TYPE( Type9 const volatile  );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_RESIZABLE_TYPE( Type9&                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_RESIZABLE_TYPE( Type9*                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_RESIZABLE_TYPE( Type9* const          );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_RESIZABLE_TYPE( Type9* volatile       );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_RESIZABLE_TYPE( Type9* const volatile );
+
+   BLAZE_CONSTRAINT_MUST_BE_RESIZABLE_TYPE    ( Type10                 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_RESIZABLE_TYPE( Type10 const           );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_RESIZABLE_TYPE( Type10 volatile        );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_RESIZABLE_TYPE( Type10 const volatile  );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_RESIZABLE_TYPE( Type10&                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_RESIZABLE_TYPE( Type10*                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_RESIZABLE_TYPE( Type10* const          );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_RESIZABLE_TYPE( Type10* volatile       );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_RESIZABLE_TYPE( Type10* const volatile );
+
+   BLAZE_CONSTRAINT_MUST_NOT_BE_RESIZABLE_TYPE( Type11                 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_RESIZABLE_TYPE( Type11 const           );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_RESIZABLE_TYPE( Type11 volatile        );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_RESIZABLE_TYPE( Type11 const volatile  );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_RESIZABLE_TYPE( Type11&                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_RESIZABLE_TYPE( Type11*                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_RESIZABLE_TYPE( Type11* const          );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_RESIZABLE_TYPE( Type11* volatile       );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_RESIZABLE_TYPE( Type11* const volatile );
+
+   BLAZE_CONSTRAINT_MUST_BE_RESIZABLE_TYPE    ( Type12                 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_RESIZABLE_TYPE( Type12 const           );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_RESIZABLE_TYPE( Type12 volatile        );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_RESIZABLE_TYPE( Type12 const volatile  );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_RESIZABLE_TYPE( Type12&                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_RESIZABLE_TYPE( Type12*                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_RESIZABLE_TYPE( Type12* const          );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_RESIZABLE_TYPE( Type12* volatile       );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_RESIZABLE_TYPE( Type12* const volatile );
+
+   BLAZE_CONSTRAINT_MUST_NOT_BE_RESIZABLE_TYPE( Type13                 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_RESIZABLE_TYPE( Type13 const           );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_RESIZABLE_TYPE( Type13 volatile        );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_RESIZABLE_TYPE( Type13 const volatile  );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_RESIZABLE_TYPE( Type13&                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_RESIZABLE_TYPE( Type13*                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_RESIZABLE_TYPE( Type13* const          );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_RESIZABLE_TYPE( Type13* volatile       );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_RESIZABLE_TYPE( Type13* const volatile );
+
+   BLAZE_CONSTRAINT_MUST_BE_RESIZABLE_TYPE    ( Type14                 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_RESIZABLE_TYPE( Type14 const           );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_RESIZABLE_TYPE( Type14 volatile        );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_RESIZABLE_TYPE( Type14 const volatile  );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_RESIZABLE_TYPE( Type14&                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_RESIZABLE_TYPE( Type14*                );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_RESIZABLE_TYPE( Type14* const          );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_RESIZABLE_TYPE( Type14* volatile       );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_RESIZABLE_TYPE( Type14* const volatile );
 }
 //*************************************************************************************************
 
