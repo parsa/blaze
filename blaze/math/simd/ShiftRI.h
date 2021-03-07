@@ -67,7 +67,7 @@ BLAZE_ALWAYS_INLINE const SIMDint16
    operator>>( const SIMDint16& a, int count ) noexcept
 #if BLAZE_AVX512BW_MODE
 {
-   return _mm512_srai_epi16( a.value, count );
+   return _mm512_srai_epi16( a.value, static_cast<unsigned int>( count ) );
 }
 #elif BLAZE_AVX2_MODE
 {
@@ -97,7 +97,7 @@ BLAZE_ALWAYS_INLINE const SIMDuint16
    operator>>( const SIMDuint16& a, int count ) noexcept
 #if BLAZE_AVX512BW_MODE
 {
-   return _mm512_srli_epi16( a.value, count );
+   return _mm512_srli_epi16( a.value, static_cast<unsigned int>( count ) );
 }
 #elif BLAZE_AVX2_MODE
 {
@@ -135,7 +135,7 @@ BLAZE_ALWAYS_INLINE const SIMDint32
    operator>>( const SIMDint32& a, int count ) noexcept
 #if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
 {
-   return _mm512_srai_epi32( a.value, count );
+   return _mm512_srai_epi32( a.value, static_cast<unsigned int>( count ) );
 }
 #elif BLAZE_AVX2_MODE
 {
@@ -165,7 +165,7 @@ BLAZE_ALWAYS_INLINE const SIMDuint32
    operator>>( const SIMDuint32& a, int count ) noexcept
 #if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
 {
-   return _mm512_srli_epi32( a.value, count );
+   return _mm512_srli_epi32( a.value, static_cast<unsigned int>( count ) );
 }
 #elif BLAZE_AVX2_MODE
 {
@@ -203,7 +203,7 @@ BLAZE_ALWAYS_INLINE const SIMDint64
    operator>>( const SIMDint64& a, int count ) noexcept
 #if BLAZE_AVX512F_MODE
 {
-   return _mm512_srai_epi64( a.value, count );
+   return _mm512_srai_epi64( a.value, static_cast<unsigned int>( count ) );
 }
 #else
 = delete;
@@ -225,7 +225,7 @@ BLAZE_ALWAYS_INLINE const SIMDuint64
    operator>>( const SIMDuint64& a, int count ) noexcept
 #if BLAZE_AVX512F_MODE
 {
-   return _mm512_srli_epi64( a.value, count );
+   return _mm512_srli_epi64( a.value, static_cast<unsigned int>( count ) );
 }
 #elif BLAZE_AVX2_MODE
 {

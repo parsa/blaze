@@ -3002,7 +3002,7 @@ inline decltype(auto) unview( const Elements<VT,TF,DF,CEAs...>& e )
 /*! \cond BLAZE_INTERNAL */
 template< typename VT, bool TF, bool DF, size_t I, size_t... Is, typename... CEAs >
 struct Size< Elements<VT,TF,DF,index_sequence<I,Is...>,CEAs...>, 0UL >
-   : public Ptrdiff_t<1UL+sizeof...(Is)>
+   : public Ptrdiff_t< static_cast<ptrdiff_t>( 1UL+sizeof...(Is) ) >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -3020,7 +3020,7 @@ struct Size< Elements<VT,TF,DF,index_sequence<I,Is...>,CEAs...>, 0UL >
 /*! \cond BLAZE_INTERNAL */
 template< typename VT, bool TF, bool DF, size_t I, size_t... Is, typename... CEAs >
 struct MaxSize< Elements<VT,TF,DF,index_sequence<I,Is...>,CEAs...>, 0UL >
-   : public Ptrdiff_t<1UL+sizeof...(Is)>
+   : public Ptrdiff_t< static_cast<ptrdiff_t>( 1UL+sizeof...(Is) ) >
 {};
 /*! \endcond */
 //*************************************************************************************************

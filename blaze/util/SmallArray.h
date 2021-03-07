@@ -766,7 +766,7 @@ template< typename T    // Data type of the elements
         , typename A >  // Type of the allocator
 inline size_t SmallArray<T,N,A>::size() const noexcept
 {
-   return end_ - begin_;
+   return static_cast<size_t>( end_ - begin_ );
 }
 //*************************************************************************************************
 

@@ -140,11 +140,11 @@ inline void orgr2( DenseMatrix<MT,SO>& A, const ElementType_t<MT>* tau )
    const std::unique_ptr<ET[]> work( new ET[m] );
 
    if( SO ) {
-      const size_t offset( ( m > n )?( m - n ):( 0UL ) );
+      const size_t offset( static_cast<size_t>( ( m > n )?( m - n ):( 0 ) ) );
       orgr2( k, n, k, (*A).data()+offset, lda, tau, work.get(), &info );
    }
    else {
-      const size_t offset( ( m < n )?( n - m ):( 0UL ) );
+      const size_t offset( static_cast<size_t>( ( m < n )?( n - m ):( 0 ) ) );
       org2l( m, k, k, (*A).data(offset), lda, tau, work.get(), &info );
    }
 

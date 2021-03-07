@@ -99,15 +99,15 @@ template< typename T >  // Type of the SIMD element
 BLAZE_ALWAYS_INLINE const ValueType_t<T> prod( const SIMDci8<T>& a ) noexcept
 {
 #if BLAZE_AVX512BW_MODE
-   return complex<int8_t>( (*a)[ 0] * (*a)[ 1] * (*a)[ 2] * (*a)[ 3] * (*a)[ 4] * (*a)[ 5] * (*a)[ 6] * (*a)[ 7] *
-                           (*a)[ 8] * (*a)[ 9] * (*a)[10] * (*a)[11] * (*a)[12] * (*a)[13] * (*a)[14] * (*a)[15] *
-                           (*a)[16] * (*a)[17] * (*a)[18] * (*a)[19] * (*a)[20] * (*a)[21] * (*a)[22] * (*a)[23] *
-                           (*a)[24] * (*a)[25] * (*a)[26] * (*a)[27] * (*a)[28] * (*a)[29] * (*a)[30] * (*a)[31] );
+   return (*a)[ 0] * (*a)[ 1] * (*a)[ 2] * (*a)[ 3] * (*a)[ 4] * (*a)[ 5] * (*a)[ 6] * (*a)[ 7] *
+          (*a)[ 8] * (*a)[ 9] * (*a)[10] * (*a)[11] * (*a)[12] * (*a)[13] * (*a)[14] * (*a)[15] *
+          (*a)[16] * (*a)[17] * (*a)[18] * (*a)[19] * (*a)[20] * (*a)[21] * (*a)[22] * (*a)[23] *
+          (*a)[24] * (*a)[25] * (*a)[26] * (*a)[27] * (*a)[28] * (*a)[29] * (*a)[30] * (*a)[31];
 #elif BLAZE_AVX2_MODE
-   return complex<int8_t>( (*a)[0] * (*a)[1] * (*a)[ 2] * (*a)[ 3] * (*a)[ 4] * (*a)[ 5] * (*a)[ 6] * (*a)[ 7] *
-                           (*a)[8] * (*a)[9] * (*a)[10] * (*a)[11] * (*a)[12] * (*a)[13] * (*a)[14] * (*a)[15] );
+   return (*a)[0] * (*a)[1] * (*a)[ 2] * (*a)[ 3] * (*a)[ 4] * (*a)[ 5] * (*a)[ 6] * (*a)[ 7] *
+          (*a)[8] * (*a)[9] * (*a)[10] * (*a)[11] * (*a)[12] * (*a)[13] * (*a)[14] * (*a)[15];
 #elif BLAZE_SSE2_MODE
-   return complex<int8_t>( (*a)[0] * (*a)[1] * (*a)[2] * (*a)[3] * (*a)[4] * (*a)[5] * (*a)[6] * (*a)[7] );
+   return (*a)[0] * (*a)[1] * (*a)[2] * (*a)[3] * (*a)[4] * (*a)[5] * (*a)[6] * (*a)[7];
 #else
    return (*a).value;
 #endif
@@ -161,12 +161,12 @@ template< typename T >  // Type of the SIMD element
 BLAZE_ALWAYS_INLINE const ValueType_t<T> prod( const SIMDci16<T>& a ) noexcept
 {
 #if BLAZE_AVX512BW_MODE
-   return complex<int16_t>( (*a)[0] * (*a)[1] * (*a)[ 2] * (*a)[ 3] * (*a)[ 4] * (*a)[ 5] * (*a)[ 6] * (*a)[ 7] *
-                            (*a)[8] * (*a)[9] * (*a)[10] * (*a)[11] * (*a)[12] * (*a)[13] * (*a)[14] * (*a)[15] );
+   return (*a)[0] * (*a)[1] * (*a)[ 2] * (*a)[ 3] * (*a)[ 4] * (*a)[ 5] * (*a)[ 6] * (*a)[ 7] *
+          (*a)[8] * (*a)[9] * (*a)[10] * (*a)[11] * (*a)[12] * (*a)[13] * (*a)[14] * (*a)[15];
 #elif BLAZE_AVX2_MODE
-   return complex<int16_t>( (*a)[0] * (*a)[1] * (*a)[2] * (*a)[3] * (*a)[4] * (*a)[5] * (*a)[6] * (*a)[7] );
+   return (*a)[0] * (*a)[1] * (*a)[2] * (*a)[3] * (*a)[4] * (*a)[5] * (*a)[6] * (*a)[7];
 #elif BLAZE_SSE2_MODE
-   return complex<int16_t>( (*a)[0] * (*a)[1] * (*a)[2] * (*a)[3] );
+   return (*a)[0] * (*a)[1] * (*a)[2] * (*a)[3];
 #else
    return (*a).value;
 #endif
@@ -222,11 +222,11 @@ template< typename T >  // Type of the SIMD element
 BLAZE_ALWAYS_INLINE const ValueType_t<T> prod( const SIMDci32<T>& a ) noexcept
 {
 #if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
-   return complex<int32_t>( (*a)[0] * (*a)[1] * (*a)[2] * (*a)[3] * (*a)[4] * (*a)[5] * (*a)[6] * (*a)[7] );
+   return (*a)[0] * (*a)[1] * (*a)[2] * (*a)[3] * (*a)[4] * (*a)[5] * (*a)[6] * (*a)[7];
 #elif BLAZE_AVX2_MODE
-   return complex<int32_t>( (*a)[0] * (*a)[1] * (*a)[2] * (*a)[3] );
+   return (*a)[0] * (*a)[1] * (*a)[2] * (*a)[3];
 #elif BLAZE_SSE2_MODE
-   return complex<int32_t>( (*a)[0] * (*a)[1] );
+   return (*a)[0] * (*a)[1];
 #else
    return (*a).value;
 #endif
@@ -276,9 +276,9 @@ template< typename T >  // Type of the SIMD element
 BLAZE_ALWAYS_INLINE const ValueType_t<T> prod( const SIMDci64<T>& a ) noexcept
 {
 #if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
-   return complex<int64_t>( (*a)[0] * (*a)[1] * (*a)[2] * (*a)[3] );
+   return (*a)[0] * (*a)[1] * (*a)[2] * (*a)[3];
 #elif BLAZE_AVX2_MODE
-   return complex<int64_t>( (*a)[0] * (*a)[1] );
+   return (*a)[0] * (*a)[1];
 #elif BLAZE_SSE2_MODE
    return (*a)[0];
 #else
@@ -331,11 +331,11 @@ BLAZE_ALWAYS_INLINE float prod( const SIMDfloat& a ) noexcept
 BLAZE_ALWAYS_INLINE const complex<float> prod( const SIMDcfloat& a ) noexcept
 {
 #if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
-   return complex<float>( a[0] * a[1] * a[2] * a[3] * a[4] * a[5] * a[6] * a[7] );
+   return a[0] * a[1] * a[2] * a[3] * a[4] * a[5] * a[6] * a[7];
 #elif BLAZE_AVX_MODE
-   return complex<float>( a[0] * a[1] * a[2] * a[3] );
+   return a[0] * a[1] * a[2] * a[3];
 #elif BLAZE_SSE_MODE
-   return complex<float>( a[0] * a[1] );
+   return a[0] * a[1];
 #else
    return a.value;
 #endif
@@ -384,9 +384,9 @@ BLAZE_ALWAYS_INLINE double prod( const SIMDdouble& a ) noexcept
 BLAZE_ALWAYS_INLINE const complex<double> prod( const SIMDcdouble& a ) noexcept
 {
 #if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
-   return complex<double>( a[0] * a[1] * a[2] * a[3] );
+   return a[0] * a[1] * a[2] * a[3];
 #elif BLAZE_AVX_MODE
-   return complex<double>( a[0] * a[1] );
+   return a[0] * a[1];
 #elif BLAZE_SSE2_MODE
    return a[0];
 #else

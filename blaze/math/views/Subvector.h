@@ -2894,7 +2894,7 @@ inline decltype(auto) unview( const Subvector<VT,AF,TF,DF,CSAs...>& sv )
 /*! \cond BLAZE_INTERNAL */
 template< typename VT, AlignmentFlag AF, bool TF, bool DF, size_t I, size_t N >
 struct Size< Subvector<VT,AF,TF,DF,I,N>, 0UL >
-   : public Ptrdiff_t<N>
+   : public Ptrdiff_t< static_cast<ptrdiff_t>(N) >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -2912,7 +2912,7 @@ struct Size< Subvector<VT,AF,TF,DF,I,N>, 0UL >
 /*! \cond BLAZE_INTERNAL */
 template< typename VT, AlignmentFlag AF, bool TF, bool DF, size_t I, size_t N >
 struct MaxSize< Subvector<VT,AF,TF,DF,I,N>, 0UL >
-   : public Ptrdiff_t<N>
+   : public Ptrdiff_t< static_cast<ptrdiff_t>(N) >
 {};
 /*! \endcond */
 //*************************************************************************************************

@@ -68,7 +68,7 @@ template< typename T > void checkedArrayDelete( T* ptr );
 template< typename T >
 void checkedDelete( T* ptr )
 {
-   using TypeMustBeComplete = char[ sizeof(T)? 1 : -1 ];
+   using TypeMustBeComplete = T;
    (void) sizeof(TypeMustBeComplete);
    delete ptr;
 }
@@ -90,7 +90,7 @@ void checkedDelete( T* ptr )
 template< typename T >
 void checkedArrayDelete( T* ptr )
 {
-   using TypeMustBeComplete = char[ sizeof(T)? 1 : -1 ];
+   using TypeMustBeComplete = T;
    (void) sizeof(TypeMustBeComplete);
    delete[] ptr;
 }

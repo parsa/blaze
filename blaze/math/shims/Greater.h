@@ -134,7 +134,7 @@ BLAZE_ALWAYS_INLINE constexpr bool greater_backend( double a, double b ) noexcep
 */
 BLAZE_ALWAYS_INLINE constexpr bool greater_backend( long double a, long double b ) noexcept
 {
-   return ( b - a ) > 1E-10;
+   return ( b - a ) > 1E-10L;
 }
 /*! \endcond */
 //*************************************************************************************************

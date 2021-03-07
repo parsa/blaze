@@ -7248,12 +7248,12 @@ inline void swap( HybridMatrix<Type,M,N,SO,AF,PF,Tag>& a, HybridMatrix<Type,M,N,
 /*! \cond BLAZE_INTERNAL */
 template< typename T, size_t M, size_t N, bool SO, AlignmentFlag AF, PaddingFlag PF, typename Tag >
 struct MaxSize< HybridMatrix<T,M,N,SO,AF,PF,Tag>, 0UL >
-   : public Ptrdiff_t<M>
+   : public Ptrdiff_t< static_cast<ptrdiff_t>(M) >
 {};
 
 template< typename T, size_t M, size_t N, bool SO, AlignmentFlag AF, PaddingFlag PF, typename Tag >
 struct MaxSize< HybridMatrix<T,M,N,SO,AF,PF,Tag>, 1UL >
-   : public Ptrdiff_t<N>
+   : public Ptrdiff_t< static_cast<ptrdiff_t>(N) >
 {};
 /*! \endcond */
 //*************************************************************************************************

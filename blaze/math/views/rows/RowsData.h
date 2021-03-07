@@ -42,6 +42,7 @@
 
 #include <array>
 #include <blaze/system/Standard.h>
+#include <blaze/util/AsConst.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/IntegerSequence.h>
 #include <blaze/util/MaybeUnused.h>
@@ -498,7 +499,7 @@ inline RowsData<>::RowsData( T* indices, size_t n, RRAs... args )
 */
 inline decltype(auto) RowsData<>::idces() const noexcept
 {
-   return const_cast<const Indices&>( indices_ );
+   return blaze::as_const( indices_ );
 }
 /*! \endcond */
 //*************************************************************************************************

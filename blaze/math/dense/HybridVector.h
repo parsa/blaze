@@ -3065,7 +3065,7 @@ inline void swap( HybridVector<Type,N,TF,AF,PF,Tag>& a, HybridVector<Type,N,TF,A
 /*! \cond BLAZE_INTERNAL */
 template< typename T, size_t N, bool TF, AlignmentFlag AF, PaddingFlag PF, typename Tag >
 struct MaxSize< HybridVector<T,N,TF,AF,PF,Tag>, 0UL >
-   : public Ptrdiff_t<N>
+   : public Ptrdiff_t< static_cast<ptrdiff_t>(N) >
 {};
 /*! \endcond */
 //*************************************************************************************************
