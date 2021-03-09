@@ -49,6 +49,7 @@
 #include <blaze/math/dense/Eigen.h>
 #include <blaze/math/dense/Inversion.h>
 #include <blaze/math/dense/LLH.h>
+#include <blaze/math/dense/PLLHP.h>
 #include <blaze/math/dense/LQ.h>
 #include <blaze/math/dense/LSE.h>
 #include <blaze/math/dense/LU.h>
