@@ -84,6 +84,50 @@ blas_int_t pstrf( DenseMatrix<MT,SO>& A, char uplo, blas_int_t* piv,
 //*************************************************************************************************
 
 
+//*************************************************************************************************
+/*!\brief LAPACK kernel for the Cholesky decomposition of the given dense positive definite matrix.
+// \ingroup lapack_decomposition
+//
+// \param A The matrix to be decomposed.
+// \param uplo \c 'L' to use the lower part of the matrix, \c 'U' to use the upper part.
+// \param piv The pivoting indices applied to A
+// \return void
+// \exception std::invalid_argument Invalid non-square matrix provided.
+// \exception std::invalid_argument Invalid uplo argument provided.
+// \exception std::runtime_error Decomposition of singular matrix failed.
+//
+// This function performs the dense matrix Cholesky decomposition of a symmetric positive semi-definite
+// matrix based on the LAPACK pstrf() functions. Note that the function only works for general,
+// non-adapted matrices with \c float, \c double, \c complex<float>, or \c complex<double> element
+// type. The attempt to call the function with any adapted matrix or matrices of any other element
+// type results in a compile time error!\n
+//
+// The decomposition has the form
+
+                      \f[ A = P^T U^{H} U P \texttt{ (if uplo = 'U'), or }
+                          A = P L L^{H} P^T \texttt{ (if uplo = 'L'), } \f]
+
+// where \c U is an upper triangular matrix and \c L is a lower triangular matrix.
+// The pivoting indices are represented by the pivoting matrix \c P.
+// The Cholesky decomposition fails if ...
+//
+//  - ... the given system matrix \a A is not a symmetric positive semi-definite matrix;
+//  - ... the given \a uplo argument is neither \c 'L' nor \c 'U'.
+//
+// In all failure cases an exception is thrown.
+//
+// For more information on the pstrf() functions (i.e. spstrf(), dpstrf(), cpstrf(), and zpstrf())
+// see the LAPACK online documentation browser:
+//
+//        http://www.netlib.org/lapack/explore-html/
+//
+// \note This function can only be used if a fitting LAPACK library, which supports this function,
+// is available and linked to the executable. Otherwise a call to this function will result in a
+// linker error.
+//
+// \note This function does only provide the basic exception safety guarantee, i.e. in case of an
+// exception \a A may already have been modified.
+*/
 template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order of the dense matrix
 inline blas_int_t pstrf( DenseMatrix<MT,SO>& A, char uplo,
