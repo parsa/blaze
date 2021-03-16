@@ -59,13 +59,13 @@ namespace blaze {
 template< typename T >
 struct RemoveComplex
 {
-	using type = T;
+  using type = T;
 };
 
 template< typename T >
 struct RemoveComplex< complex<T> >
 {
-	using type = T;
+  using type = T;
 };
 
 //=================================================================================================
@@ -79,7 +79,7 @@ struct RemoveComplex< complex<T> >
 //@{
 template< typename MT, bool SO >
 blas_int_t pstrf( DenseMatrix<MT,SO>& A, char uplo, blas_int_t* piv,
-				  typename RemoveComplex<ElementType_t<MT>>::type tol );
+          typename RemoveComplex<ElementType_t<MT>>::type tol );
 //@}
 //*************************************************************************************************
 
@@ -87,8 +87,8 @@ blas_int_t pstrf( DenseMatrix<MT,SO>& A, char uplo, blas_int_t* piv,
 template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order of the dense matrix
 inline blas_int_t pstrf( DenseMatrix<MT,SO>& A, char uplo,
-	blas_int_t* piv,
-	typename RemoveComplex<ElementType_t<MT>>::type tol
+  blas_int_t* piv,
+  typename RemoveComplex<ElementType_t<MT>>::type tol
     )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_ADAPTOR_TYPE( MT );
@@ -120,7 +120,7 @@ inline blas_int_t pstrf( DenseMatrix<MT,SO>& A, char uplo,
    BLAZE_INTERNAL_ASSERT( info >= 0, "Invalid argument for Cholesky decomposition" );
 
    for(size_t i=0; i < n; i++)
-	   piv[i]--;	// From fortran 1-based to C 0-based indexing
+     piv[i]--;  // From fortran 1-based to C 0-based indexing
 
    return rank;
 }

@@ -162,7 +162,7 @@ void DenseTest::testRandom()
    size_t rank = blaze::pllhp( A, L, pivot.data(), tol );
 
    for(size_t i=0; i < n; i++)
-	   ipivot[pivot[i]] = i;
+     ipivot[pivot[i]] = i;
 
    const MT PLLHP( L * ctrans( L ) );
    const MT LLHP = blaze::rows(PLLHP, [&]( size_t i ){ return ipivot[i]; }, n);

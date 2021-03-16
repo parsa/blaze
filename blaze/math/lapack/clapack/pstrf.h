@@ -59,15 +59,15 @@ extern "C" {
 
 void spstrf_( char* uplo, blaze::blas_int_t* n, float* A, blaze::blas_int_t* lda,
               blaze::blas_int_t* piv, blaze::blas_int_t* rank, float* tol, float* work,
-			  blaze::blas_int_t* info, blaze::fortran_charlen_t nuplo );
+        blaze::blas_int_t* info, blaze::fortran_charlen_t nuplo );
 void dpstrf_( char* uplo, blaze::blas_int_t* n, double* A, blaze::blas_int_t* lda,
-			  blaze::blas_int_t* piv, blaze::blas_int_t* rank, double* tol, double* work,
+        blaze::blas_int_t* piv, blaze::blas_int_t* rank, double* tol, double* work,
               blaze::blas_int_t* info, blaze::fortran_charlen_t nuplo );
 void cpstrf_( char* uplo, blaze::blas_int_t* n, float* A, blaze::blas_int_t* lda,
-			  blaze::blas_int_t* piv, blaze::blas_int_t* rank, float* tol, float* work,
+        blaze::blas_int_t* piv, blaze::blas_int_t* rank, float* tol, float* work,
               blaze::blas_int_t* info, blaze::fortran_charlen_t nuplo );
 void zpstrf_( char* uplo, blaze::blas_int_t* n, double* A, blaze::blas_int_t* lda,
-			  blaze::blas_int_t* piv, blaze::blas_int_t* rank, double* tol, double* work,
+        blaze::blas_int_t* piv, blaze::blas_int_t* rank, double* tol, double* work,
               blaze::blas_int_t* info, blaze::fortran_charlen_t nuplo );
 
 }
@@ -89,20 +89,20 @@ namespace blaze {
 /*!\name LAPACK LLH (Cholesky) decomposition functions (potrf) */
 //@{
 void pstrf( char uplo, blas_int_t n, float* A, blas_int_t lda,
-			blaze::blas_int_t* piv, blaze::blas_int_t* rank, float tol, float* work,
-			blas_int_t* info );
+      blaze::blas_int_t* piv, blaze::blas_int_t* rank, float tol, float* work,
+      blas_int_t* info );
 
 void pstrf( char uplo, blas_int_t n, double* A, blas_int_t lda,
-			blaze::blas_int_t* piv, blaze::blas_int_t* rank, double tol, double* work,
-			blas_int_t* info );
+      blaze::blas_int_t* piv, blaze::blas_int_t* rank, double tol, double* work,
+      blas_int_t* info );
 
 void pstrf( char uplo, blas_int_t n, complex<float>* A, blas_int_t lda,
-			blaze::blas_int_t* piv, blaze::blas_int_t* rank, float tol, complex<float>* work,
-			blas_int_t* info );
+      blaze::blas_int_t* piv, blaze::blas_int_t* rank, float tol, complex<float>* work,
+      blas_int_t* info );
 
 void pstrf( char uplo, blas_int_t n, complex<double>* A, blas_int_t lda,
-			blaze::blas_int_t* piv, blaze::blas_int_t* rank, double tol, complex<double>* work,
-			blas_int_t* info );
+      blaze::blas_int_t* piv, blaze::blas_int_t* rank, double tol, complex<double>* work,
+      blas_int_t* info );
 //@}
 //*************************************************************************************************
 
@@ -110,8 +110,8 @@ void pstrf( char uplo, blas_int_t n, complex<double>* A, blas_int_t lda,
 /*!\brief LAPACK kernel for the pivoting Cholesky decomposition of the given dense semi-positive definite
 */
 inline void pstrf( char uplo, blas_int_t n, float* A, blas_int_t lda,
-			blaze::blas_int_t* piv, blaze::blas_int_t* rank, float tol, float* work,
-			blas_int_t* info )
+      blaze::blas_int_t* piv, blaze::blas_int_t* rank, float tol, float* work,
+      blas_int_t* info )
 {
 #if defined(INTEL_MKL_VERSION)
    BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( blas_int_t ) );
@@ -128,8 +128,8 @@ inline void pstrf( char uplo, blas_int_t n, float* A, blas_int_t lda,
 /*!\brief LAPACK kernel for the pivoting Cholesky decomposition of the given dense semi-positive definite
 */
 inline void pstrf( char uplo, blas_int_t n, double* A, blas_int_t lda,
-			blaze::blas_int_t* piv, blaze::blas_int_t* rank, double tol, double* work,
-			blas_int_t* info )
+      blaze::blas_int_t* piv, blaze::blas_int_t* rank, double tol, double* work,
+      blas_int_t* info )
 {
 #if defined(INTEL_MKL_VERSION)
    BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( blas_int_t ) );
@@ -146,8 +146,8 @@ inline void pstrf( char uplo, blas_int_t n, double* A, blas_int_t lda,
 /*!\brief LAPACK kernel for the pivoting Cholesky decomposition of the given dense semi-positive definite
 */
 inline void pstrf( char uplo, blas_int_t n, complex<float>* A, blas_int_t lda,
-			blaze::blas_int_t* piv, blaze::blas_int_t* rank, float tol, complex<float>* work,
-			blas_int_t* info )
+      blaze::blas_int_t* piv, blaze::blas_int_t* rank, float tol, complex<float>* work,
+      blas_int_t* info )
 {
 #if defined(INTEL_MKL_VERSION)
    BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( blas_int_t ) );
@@ -172,8 +172,8 @@ inline void pstrf( char uplo, blas_int_t n, complex<float>* A, blas_int_t lda,
 /*!\brief LAPACK kernel for the pivoting Cholesky decomposition of the given dense semi-positive definite
 */
 inline void pstrf( char uplo, blas_int_t n, complex<double>* A, blas_int_t lda,
-			blaze::blas_int_t* piv, blaze::blas_int_t* rank, double tol, complex<double>* work,
-			blas_int_t* info )
+      blaze::blas_int_t* piv, blaze::blas_int_t* rank, double tol, complex<double>* work,
+      blas_int_t* info )
 {
 #if defined(INTEL_MKL_VERSION)
    BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( blas_int_t ) );

@@ -23,7 +23,7 @@ namespace blaze {
 
 template< typename MT1, bool SO1, typename MT2, bool SO2 >
 int pllhp(const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& L, blas_int_t* P,
-		  typename RemoveComplex<ElementType_t<MT2>>::type tol );
+      typename RemoveComplex<ElementType_t<MT2>>::type tol );
 
 
 template< typename MT1  // Type of matrix A
@@ -32,7 +32,7 @@ template< typename MT1  // Type of matrix A
         , bool SO2      // Storage order of matrix L
         >
 int pllhp( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& L, blas_int_t* P,
-		   typename RemoveComplex<ElementType_t<MT2>>::type tol )
+       typename RemoveComplex<ElementType_t<MT2>>::type tol )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_STRICTLY_TRIANGULAR_MATRIX_TYPE( MT1 );
    BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<MT1> );
