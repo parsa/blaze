@@ -57,7 +57,7 @@ all: dvecdvecadd dvecsvecadd svecdvecadd svecsvecadd \
      dmatdmatmin dmatdmatmax \
      dmatreduce smatreduce \
      dmatrepeat smatrepeat \
-     determinant lu llh qr rq ql lq inversion lse exponential eigen svd
+     determinant lu llh pllhp qr rq ql lq inversion lse exponential eigen svd
 
 essential: all
 
@@ -436,6 +436,11 @@ llh:
 	@echo "Building the matrix LLH decomposition tests..."
 	@$(MAKE) --no-print-directory -C ./llh $(MAKECMDGOALS)
 
+pllhp:
+	@echo
+	@echo "Building the matrix PLLHP decomposition tests..."
+	@$(MAKE) --no-print-directory -C ./pllhp $(MAKECMDGOALS)
+
 qr:
 	@echo
 	@echo "Building the matrix QR decomposition tests..."
@@ -559,6 +564,7 @@ reset:
 	@$(MAKE) --no-print-directory -C ./determinant reset
 	@$(MAKE) --no-print-directory -C ./lu reset
 	@$(MAKE) --no-print-directory -C ./llh reset
+	@$(MAKE) --no-print-directory -C ./pllhp reset
 	@$(MAKE) --no-print-directory -C ./qr reset
 	@$(MAKE) --no-print-directory -C ./rq reset
 	@$(MAKE) --no-print-directory -C ./ql reset
@@ -645,6 +651,7 @@ clean:
 	@$(MAKE) --no-print-directory -C ./determinant clean
 	@$(MAKE) --no-print-directory -C ./lu clean
 	@$(MAKE) --no-print-directory -C ./llh clean
+	@$(MAKE) --no-print-directory -C ./pllhp clean
 	@$(MAKE) --no-print-directory -C ./qr clean
 	@$(MAKE) --no-print-directory -C ./rq clean
 	@$(MAKE) --no-print-directory -C ./ql clean
@@ -680,4 +687,4 @@ clean:
         dmatdmatmin dmatdmatmax \
         dmatreduce smatreduce \
         dmatrepeat smatrepeat \
-        determinant lu llh qr rq ql lq inversion lse exponential eigen svd
+        determinant lu llh pllhp qr rq ql lq inversion lse exponential eigen svd
