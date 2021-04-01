@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file src/mathtest/operations/llh/DenseTest.cpp
-//  \brief Source file for the dense matrix LLH test
+//  \file src/mathtest/operations/pllhp/DenseTest.cpp
+//  \brief Source file for the dense matrix PLLHP test
 //
 //  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
@@ -70,7 +70,7 @@ namespace pllhp {
 //*************************************************************************************************
 /*!\brief Constructor for the DenseTest test.
 //
-// \exception std::runtime_error Error during LLH decomposition detected.
+// \exception std::runtime_error Error during PLLHP decomposition detected.
 */
 DenseTest::DenseTest()
 {
@@ -95,13 +95,13 @@ DenseTest::DenseTest()
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Test of the LLH decomposition functionality for general matrices.
+/*!\brief Test of the PLLHP decomposition functionality for general matrices.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function tests the dense matrix LLH decomposition for general matrices. In case an error
-// is detected, a \a std::runtime_error exception is thrown.
+// This function tests the dense matrix PLLHP decomposition for general matrices. In case an
+// error is detected, a \a std::runtime_error exception is thrown.
 */
 void DenseTest::testGeneral()
 {
@@ -121,13 +121,13 @@ void DenseTest::testGeneral()
 
 
 //*************************************************************************************************
-/*!\brief Test of the LLH decomposition functionality for symmetric matrices.
+/*!\brief Test of the PLLHP decomposition functionality for symmetric matrices.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function tests the dense matrix LLH decomposition for symmetric matrices. In case an error
-// is detected, a \a std::runtime_error exception is thrown.
+// This function tests the dense matrix PLLHP decomposition for symmetric matrices. In case an
+// error is detected, a \a std::runtime_error exception is thrown.
 */
 void DenseTest::testSymmetric()
 {
@@ -147,13 +147,13 @@ void DenseTest::testSymmetric()
 
 
 //*************************************************************************************************
-/*!\brief Test of the LLH decomposition functionality for Hermitian matrices.
+/*!\brief Test of the PLLHP decomposition functionality for Hermitian matrices.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function tests the dense matrix LLH decomposition for Hermitian matrices. In case an error
-// is detected, a \a std::runtime_error exception is thrown.
+// This function tests the dense matrix PLLHP decomposition for Hermitian matrices. In case an
+// error is detected, a \a std::runtime_error exception is thrown.
 */
 void DenseTest::testHermitian()
 {
@@ -173,13 +173,13 @@ void DenseTest::testHermitian()
 
 
 //*************************************************************************************************
-/*!\brief Test of the LLH decomposition functionality for lower matrices.
+/*!\brief Test of the PLLHP decomposition functionality for lower matrices.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function tests the dense matrix LLH decomposition for lower matrices. In case an error
-// is detected, a \a std::runtime_error exception is thrown.
+// This function tests the dense matrix PLLHP decomposition for lower matrices. In case an
+// error is detected, a \a std::runtime_error exception is thrown.
 */
 void DenseTest::testLower()
 {
@@ -199,13 +199,13 @@ void DenseTest::testLower()
 
 
 //*************************************************************************************************
-/*!\brief Test of the LLH decomposition functionality for unilower matrices.
+/*!\brief Test of the PLLHP decomposition functionality for unilower matrices.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function tests the dense matrix LLH decomposition for unilower matrices. In case an error
-// is detected, a \a std::runtime_error exception is thrown.
+// This function tests the dense matrix PLLHP decomposition for unilower matrices. In case an
+// error is detected, a \a std::runtime_error exception is thrown.
 */
 void DenseTest::testUniLower()
 {
@@ -225,13 +225,13 @@ void DenseTest::testUniLower()
 
 
 //*************************************************************************************************
-/*!\brief Test of the LLH decomposition functionality for upper matrices.
+/*!\brief Test of the PLLHP decomposition functionality for upper matrices.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function tests the dense matrix LLH decomposition for upper matrices. In case an error
-// is detected, a \a std::runtime_error exception is thrown.
+// This function tests the dense matrix PLLHP decomposition for upper matrices. In case an
+// error is detected, a \a std::runtime_error exception is thrown.
 */
 void DenseTest::testUpper()
 {
@@ -251,13 +251,13 @@ void DenseTest::testUpper()
 
 
 //*************************************************************************************************
-/*!\brief Test of the LLH decomposition functionality for uniupper matrices.
+/*!\brief Test of the PLLHP decomposition functionality for uniupper matrices.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function tests the dense matrix LLH decomposition for uniupper matrices. In case an error
-// is detected, a \a std::runtime_error exception is thrown.
+// This function tests the dense matrix PLLHP decomposition for uniupper matrices. In case an
+// error is detected, a \a std::runtime_error exception is thrown.
 */
 void DenseTest::testUniUpper()
 {
@@ -277,13 +277,13 @@ void DenseTest::testUniUpper()
 
 
 //*************************************************************************************************
-/*!\brief Test of the LLH decomposition functionality for diagonal matrices.
+/*!\brief Test of the PLLHP decomposition functionality for diagonal matrices.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function tests the dense matrix LLH decomposition for diagonal matrices. In case an error
-// is detected, a \a std::runtime_error exception is thrown.
+// This function tests the dense matrix PLLHP decomposition for diagonal matrices. In case an
+// error is detected, a \a std::runtime_error exception is thrown.
 */
 void DenseTest::testDiagonal()
 {
@@ -301,7 +301,7 @@ void DenseTest::testDiagonal()
 }
 //*************************************************************************************************
 
-} // namespace llh
+} // namespace pllhp
 
 } // namespace operations
 

@@ -45,9 +45,11 @@
 #include <string>
 #include <typeinfo>
 #include <blaze/math/Aliases.h>
+#include <blaze/math/Epsilon.h>
 #include <blaze/math/LowerMatrix.h>
 #include <blaze/math/Rows.h>
 #include <blaze/math/typetraits/RemoveAdaptor.h>
+#include <blaze/math/typetraits/UnderlyingElement.h>
 #include <blaze/util/Complex.h>
 #include <blaze/util/Random.h>
 #include <blazetest/system/LAPACK.h>
@@ -68,10 +70,10 @@ namespace pllhp {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Auxiliary class for all dense matrix LLH tests.
+/*!\brief Auxiliary class for all dense matrix PLLHP tests.
 //
-// This class represents a test suite for the dense matrix LLH decomposition functionality. It
-// performs a series of LLH decompositions on all dense matrix types of the Blaze library.
+// This class represents a test suite for the dense matrix PLLHP decomposition functionality. It
+// performs a series of PLLHP decompositions on all dense matrix types of the Blaze library.
 */
 class DenseTest
 {
@@ -130,13 +132,13 @@ class DenseTest
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Test of the LLH decomposition with a randomly initialized matrix of the given type.
+/*!\brief Test of the PLLHP decomposition with a randomly initialized matrix of the given type.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function tests the dense matrix LLH decomposition for a randomly initialized matrix of the
-// given type. In case an error is detected, a \a std::runtime_error exception is thrown.
+// This function tests the dense matrix PLLHP decomposition for a randomly initialized matrix of
+// the given type. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
 template< typename Type >
 void DenseTest::testRandom()
@@ -147,26 +149,27 @@ void DenseTest::testRandom()
 
    using MT = blaze::RemoveAdaptor_t<Type>;
    using ET = blaze::ElementType_t<Type>;
-   using NCET = typename blaze::RemoveComplex<ET>::type;
+   using BT = blaze::UnderlyingElement_t<ET>;
 
    const size_t n( blaze::rand<size_t>( 3UL, 8UL ) );
 
    Type A;
    blaze::LowerMatrix<MT> L;
+   std::vector<blaze::blas_int_t> pivot(n);
+   std::vector<blaze::blas_int_t> ipivot(n);
+   const BT tol( std::sqrt( BT( blaze::epsilon ) ) );
 
    resize( A, n, n );
    makePositiveDefinite( A );
+   blaze::pllhp( A, L, pivot.data(), tol );
 
-   NCET tol = std::sqrt(std::numeric_limits<NCET>::epsilon());
-   std::vector<blaze::blas_int_t> pivot(n), ipivot(n);
-   size_t rank = blaze::pllhp( A, L, pivot.data(), tol );
-
-   for(size_t i=0; i < n; i++)
-     ipivot[pivot[i]] = i;
+   for( size_t i=0UL; i<n; ++i ) {
+      ipivot[pivot[i]] = i;
+   }
 
    const MT PLLHP( L * ctrans( L ) );
-   const MT LLHP = blaze::rows(PLLHP, [&]( size_t i ){ return ipivot[i]; }, n);
-   const MT LLH = blaze::columns(LLHP, [&]( size_t i ){ return ipivot[i]; }, n);
+   const MT LLHP ( rows( PLLHP, [&]( size_t i ){ return ipivot[i]; }, n ) );
+   const MT LLH  ( columns( LLHP, [&]( size_t i ){ return ipivot[i]; }, n ) );
 
    if( LLH != A ) {
       std::ostringstream oss;
@@ -196,7 +199,7 @@ void DenseTest::testRandom()
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Testing the dense matrix LLH decomposition.
+/*!\brief Testing the dense matrix PLLHP decomposition.
 //
 // \return void
 */

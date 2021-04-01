@@ -267,3 +267,5 @@ Jan Rudolph -- CMake fixes
 Mikhail Katliar -- LAPACK extensions
 
 Daniel Baker -- Integration of Sleef
+
+Thijs Withaar -- LAPACK extensions
