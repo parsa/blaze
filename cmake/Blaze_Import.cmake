@@ -182,7 +182,7 @@ function(Blaze_Import)
 
       set(BLAZE_VERSION ${BLAZE_MAJOR_VERSION}.${BLAZE_MINOR_VERSION})
 
-      msg("Configuring blaze version ${BLAZE_VERSION}")
+      msg("Configuring Blaze version ${BLAZE_VERSION}")
 
    #==================================================================================================
    #   Help Message
@@ -222,9 +222,9 @@ function(Blaze_Import)
 
       if(Blaze_Import_THREADING  STREQUAL "HPX")
          find_package(HPX REQUIRED)
-         target_compile_definitions(blaze INTERFACE BLAZE_USE_HPX_THREADS)
-         target_include_directories(blaze INTERFACE ${HPX_INCLUDE_DIRS})
-         target_link_libraries(blaze INTERFACE ${HPX_LIBRARIES})
+         target_compile_definitions(Blaze INTERFACE BLAZE_USE_HPX_THREADS)
+         target_include_directories(Blaze INTERFACE ${HPX_INCLUDE_DIRS})
+         target_link_libraries(Blaze INTERFACE ${HPX_LIBRARIES})
          msg("Configured HPX for multithreading.")
       elseif(Blaze_Import_THREADING  STREQUAL "C++11")
          find_package(Threads REQUIRED)
@@ -233,17 +233,17 @@ function(Blaze_Import)
          msg("Configured C++11 for multithreading.")
       elseif(Blaze_Import_THREADING  STREQUAL "BOOST")
          find_package(Boost REQUIRED COMPONENTS thread)
-         target_compile_definitions(blaze INTERFACE BLAZE_USE_BOOST_THREADS)
-         target_include_directories(blaze INTERFACE ${Boost_INCLUDE_DIRS})
-         target_compile_definitions(blaze INTERFACE BOOST_ALL_DYN_LINK ) # Needed for Visual Studio 2015
-         target_link_libraries(blaze INTERFACE ${Boost_LIBRARIES})
+         target_compile_definitions(Blaze INTERFACE BLAZE_USE_BOOST_THREADS)
+         target_include_directories(Blaze INTERFACE ${Boost_INCLUDE_DIRS})
+         target_compile_definitions(Blaze INTERFACE BOOST_ALL_DYN_LINK ) # Needed for Visual Studio 2015
+         target_link_libraries(Blaze INTERFACE ${Boost_LIBRARIES})
          msg("Configured BOOST for multithreading.")
       elseif(Blaze_Import_THREADING  STREQUAL "OpenMP")
          find_package(OpenMP)
          if (OPENMP_FOUND)
-            target_compile_options(blaze INTERFACE ${OpenMP_CXX_FLAGS})
+            target_compile_options(Blaze INTERFACE ${OpenMP_CXX_FLAGS})
             if (NOT "${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
-               target_link_libraries(blaze INTERFACE ${OpenMP_CXX_FLAGS}) # Needed for GNU and Clang
+               target_link_libraries(Blaze INTERFACE ${OpenMP_CXX_FLAGS}) # Needed for GNU and Clang
             endif ()
          msg("Configured OpenMP for multithreading.")
          else ()
@@ -1066,7 +1066,7 @@ function(Blaze_Import)
    #
    #==================================================================================================
 
-      set(blaze_FOUND TRUE CACHE BOOL "Indicates whether the blaze library was found successfully.")
+      set(blaze_FOUND TRUE CACHE BOOL "Indicates whether the Blaze library was found successfully.")
 
       msg("Blaze has been configured successfully")
 
