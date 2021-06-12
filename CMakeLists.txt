@@ -33,7 +33,7 @@
 
 cmake_minimum_required(VERSION 3.5)
 
-file(READ blaze/system/Version.h BLAZE_VERSION_FILE)
+file(READ ${Blaze_Import_DIR_PATH}/../blaze/system/Version.h BLAZE_VERSION_FILE)
 
 string(REGEX MATCH "#define BLAZE_MAJOR_VERSION ([0-9]*)" _BLAZE_MAJOR_VERSION ${BLAZE_VERSION_FILE})
 set(BLAZE_MAJOR_VERSION ${CMAKE_MATCH_1})
