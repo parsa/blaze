@@ -141,7 +141,7 @@ if (${BLAZE_CACHE_SIZE_AUTO})
       endif (flag)
 
       if (flag EQUAL 0)
-         math(EXPR tmp ${tmp}/1024)  # If successful convert to kibibytes to comply with rest
+         math(EXPR tmp "${tmp}/1024")  # If successful convert to kibibytes to comply with rest
       endif (flag EQUAL 0)
    endif (APPLE)
 
@@ -152,7 +152,7 @@ if (${BLAZE_CACHE_SIZE_AUTO})
       set(tmp ${BLAZE_CACHE_SIZE_DEFAULT})
    endif (flag OR NOT tmp)
 
-   math(EXPR BLAZE_CACHE_SIZE ${tmp}*1024) # Convert to bytes (assuming that the value is given in kibibytes)
+   math(EXPR BLAZE_CACHE_SIZE "${tmp}*1024") # Convert to bytes (assuming that the value is given in kibibytes)
 
 endif (${BLAZE_CACHE_SIZE_AUTO})
 
