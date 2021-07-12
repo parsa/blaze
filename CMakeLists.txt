@@ -89,18 +89,18 @@ if (${BLAZE_CACHE_SIZE_AUTO})
                       OUTPUT_VARIABLE tmp
                       RESULT_VARIABLE flag
                       ERROR_QUIET)
-      if (flag)
+      if (flag OR "${tmp}" STREQUAL "")
          execute_process(COMMAND wmic cpu get L2CacheSize
                          OUTPUT_VARIABLE tmp
                          RESULT_VARIABLE flag
                          ERROR_QUIET)
-      endif (flag)
-      if (flag)
+      endif (flag OR "${tmp}" STREQUAL "")
+      if (flag OR "${tmp}" STREQUAL "")
          execute_process(COMMAND wmic cpu get L1CacheSize
                          OUTPUT_VARIABLE tmp
                          RESULT_VARIABLE flag
                          ERROR_QUIET)
-      endif (flag)
+      endif (flag OR "${tmp}" STREQUAL "")
    endif (WIN32)
 
    if (UNIX)
@@ -108,18 +108,18 @@ if (${BLAZE_CACHE_SIZE_AUTO})
                       OUTPUT_VARIABLE tmp
                       RESULT_VARIABLE flag
                       ERROR_QUIET)
-      if (flag)
+      if (flag OR "${tmp}" STREQUAL "")
          execute_process(COMMAND cat /sys/devices/system/cpu/cpu0/cache/index2/size
                          OUTPUT_VARIABLE tmp
                          RESULT_VARIABLE flag
                          ERROR_QUIET)
-      endif (flag)
-      if (flag)
+      endif (flag OR "${tmp}" STREQUAL "")
+      if (flag OR "${tmp}" STREQUAL "")
          execute_process(COMMAND cat /sys/devices/system/cpu/cpu0/cache/index1/size
                          OUTPUT_VARIABLE tmp
                          RESULT_VARIABLE flag
                          ERROR_QUIET)
-      endif (flag)
+      endif (flag OR "${tmp}" STREQUAL "")
    endif (UNIX)
 
    if (APPLE)
@@ -127,22 +127,22 @@ if (${BLAZE_CACHE_SIZE_AUTO})
                       OUTPUT_VARIABLE tmp
                       RESULT_VARIABLE flag
                       ERROR_QUIET)
-      if (flag)
+      if (flag OR "${tmp}" STREQUAL "")
          execute_process(COMMAND sysctl -n hw.l2cachesize
                          OUTPUT_VARIABLE tmp
                          RESULT_VARIABLE flag
                          ERROR_QUIET)
-      endif (flag)
-      if (flag)
+      endif (flag OR "${tmp}" STREQUAL "")
+      if (flag OR "${tmp}" STREQUAL "")
          execute_process(COMMAND sysctl -n hw.l1icachesize
                          OUTPUT_VARIABLE tmp
                          RESULT_VARIABLE flag
                          ERROR_QUIET)
-      endif (flag)
+      endif (flag OR "${tmp}" STREQUAL "")
 
-      if (flag EQUAL 0)
+      if (flag EQUAL 0 AND NOT "${tmp}" STREQUAL "")
          math(EXPR tmp "${tmp}/1024")  # If successful convert to kibibytes to comply with rest
-      endif (flag EQUAL 0)
+      endif (flag EQUAL 0 AND NOT "${tmp}" STREQUAL "")
    endif (APPLE)
 
    string(REGEX MATCH "([0-9][0-9]+)" tmp "${tmp}") # Get a number containing at least 2 digits in the string tmp
