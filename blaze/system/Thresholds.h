@@ -1034,6 +1034,7 @@ constexpr size_t SMP_SMATREDUCE_THRESHOLD     = ( BLAZE_DEBUG_MODE ? SMP_SMATRED
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+#pragma warning(disable : 4296) // '>=': expression is always true
 namespace {
 
 BLAZE_STATIC_ASSERT( blaze::DMATDVECMULT_THRESHOLD   > 0UL );
