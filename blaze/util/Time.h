@@ -128,7 +128,7 @@ inline double getWcTime()
 {
 #ifdef WIN32
    struct _timeb timeptr;
-   _ftime( &timeptr );
+   _ftime64_s( &timeptr );
    return ( static_cast<double>( timeptr.time ) + static_cast<double>( timeptr.millitm )/1E3 );
 #else
    struct timeval tp;
