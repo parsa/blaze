@@ -1564,15 +1564,15 @@ struct DMatReduceExprHelper
 template< typename MT    // Type of the dense matrix
         , typename OP >  // Type of the reduction operation
 inline auto dmatreduce( const DenseMatrix<MT,false>& dm, OP op )
-   -> DisableIf_t< DMatReduceExprHelper<MT,OP>::value, RemoveCV_t< ElementType_t<MT> > >
+   -> DisableIf_t< DMatReduceExprHelper<MT,OP>::value, RemoveCV_t< ReduceTrait_t<MT,OP> > >
 {
    using CT = CompositeType_t<MT>;
-   using ET = RemoveCV_t< ElementType_t<MT> >;
+   using RT = RemoveCV_t< ReduceTrait_t<MT,OP> >;
 
    const size_t M( (*dm).rows()    );
    const size_t N( (*dm).columns() );
 
-   if( M == 0UL || N == 0UL ) return ET{};
+   if( M == 0UL || N == 0UL ) return RT{};
    if( M == 1UL && N == 1UL ) return (*dm)(0UL,0UL);
 
    CT tmp( *dm );
@@ -1580,7 +1580,7 @@ inline auto dmatreduce( const DenseMatrix<MT,false>& dm, OP op )
    BLAZE_INTERNAL_ASSERT( tmp.rows()    == M, "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( tmp.columns() == N, "Invalid number of columns" );
 
-   ET redux0{};
+   RT redux0{};
 
    {
       redux0 = tmp(0UL,0UL);
@@ -1594,8 +1594,8 @@ inline auto dmatreduce( const DenseMatrix<MT,false>& dm, OP op )
 
    for( ; (i+2UL) <= M; i+=2UL )
    {
-      ET redux1( tmp(i    ,0UL) );
-      ET redux2( tmp(i+1UL,0UL) );
+      RT redux1( tmp(i    ,0UL) );
+      RT redux2( tmp(i+1UL,0UL) );
 
       for( size_t j=1UL; j<N; ++j ) {
          redux1 = op( redux1, tmp(i    ,j) );
@@ -1608,7 +1608,7 @@ inline auto dmatreduce( const DenseMatrix<MT,false>& dm, OP op )
 
    if( i < M )
    {
-      ET redux1( tmp(i,0UL) );
+      RT redux1( tmp(i,0UL) );
 
       for( size_t j=1UL; j<N; ++j ) {
          redux1 = op( redux1, tmp(i,j) );

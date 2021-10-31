@@ -191,7 +191,8 @@ struct TotalReduceTraitEval2< T, OP, EnableIf_t< IsVector_v<T> || IsMatrix_v<T> 
 {
  public:
    //**********************************************************************************************
-   using Type = ElementType_t<T>;
+   using Type = decltype( std::declval<OP>()( std::declval< ElementType_t<T> >()
+                                            , std::declval< ElementType_t<T> >() ) );
    //**********************************************************************************************
 };
 /*! \endcond */

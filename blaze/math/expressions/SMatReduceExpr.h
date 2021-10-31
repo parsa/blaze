@@ -1539,12 +1539,12 @@ inline decltype(auto) reduce( const SparseMatrix<MT,SO>& sm, OP op )
    BLAZE_FUNCTION_TRACE;
 
    using CT = CompositeType_t<MT>;
-   using ET = RemoveCV_t< ElementType_t<MT> >;
+   using RT = RemoveCV_t< ReduceTrait_t<MT,OP> >;
 
    const size_t M( (*sm).rows()    );
    const size_t N( (*sm).columns() );
 
-   if( M == 0UL || N == 0UL ) return ET{};
+   if( M == 0UL || N == 0UL ) return RT{};
 
    const size_t iend( SO ? N : M );
 
@@ -1553,7 +1553,7 @@ inline decltype(auto) reduce( const SparseMatrix<MT,SO>& sm, OP op )
    BLAZE_INTERNAL_ASSERT( tmp.rows()    == M, "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( tmp.columns() == N, "Invalid number of columns" );
 
-   ET redux0{};
+   RT redux0{};
 
    for( size_t i=0UL; i<iend; ++i )
    {
@@ -1562,7 +1562,7 @@ inline decltype(auto) reduce( const SparseMatrix<MT,SO>& sm, OP op )
 
       if( element == end ) continue;
 
-      ET redux1( element->value() );
+      RT redux1( element->value() );
       ++element;
 
       for( ; element!=end; ++element ) {

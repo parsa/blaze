@@ -121,22 +121,22 @@ template< typename VT    // Type of the dense vector
         , bool TF        // Transpose flag
         , typename OP >  // Type of the reduction operation
 inline auto dvecreduce( const DenseVector<VT,TF>& dv, OP op )
-   -> DisableIf_t< DVecReduceExprHelper<VT,OP>::value, RemoveCV_t< ElementType_t<VT> > >
+   -> DisableIf_t< DVecReduceExprHelper<VT,OP>::value, RemoveCV_t< ReduceTrait_t<VT,OP> > >
 {
    using CT = CompositeType_t<VT>;
-   using ET = RemoveCV_t< ElementType_t<VT> >;
+   using RT = RemoveCV_t< ReduceTrait_t<VT,OP> >;
 
    const size_t N( (*dv).size() );
 
-   if( N == 0UL ) return ET{};
+   if( N == 0UL ) return RT{};
    if( N == 1UL ) return (*dv)[0UL];
 
    CT tmp( *dv );
 
    BLAZE_INTERNAL_ASSERT( tmp.size() == N, "Invalid vector size" );
 
-   ET redux1( tmp[0UL] );
-   ET redux2( tmp[1UL] );
+   RT redux1( tmp[0UL] );
+   RT redux2( tmp[1UL] );
    size_t i( 2UL );
 
    for( ; (i+4UL) <= N; i+=4UL ) {
