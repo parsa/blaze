@@ -58,7 +58,7 @@ namespace blaze {
 */
 #if BLAZE_BLAS_IS_64BIT && ( defined(INTEL_MKL_VERSION) || defined(MKL_ILP64) )
 using blas_int_t = long long int;
-#elif BLAS_BLAS_IS_64BIT
+#elif BLAZE_BLAS_IS_64BIT
 using blas_int_t = int64_t;
 #else
 using blas_int_t = int32_t;
