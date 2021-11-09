@@ -172,7 +172,8 @@ function(Blaze_Import)
    #   Blaze Version
    #==================================================================================================
 
-      file(READ ${CMAKE_CURRENT_LIST_DIR}/blaze/system/Version.h BLAZE_VERSION_FILE)
+      get_filename_component(Blaze_Import_PARENT_DIR_PATH ${Blaze_Import_DIR_PATH} DIRECTORY)
+      file(READ ${Blaze_Import_PARENT_DIR_PATH}/blaze/system/Version.h BLAZE_VERSION_FILE)
 
       string(REGEX MATCH "#define BLAZE_MAJOR_VERSION ([0-9]*)" _BLAZE_MAJOR_VERSION ${BLAZE_VERSION_FILE})
       set(BLAZE_MAJOR_VERSION ${CMAKE_MATCH_1})
