@@ -50,6 +50,8 @@ function(Blaze_Import)
 
    cmake_minimum_required(VERSION 3.5)
 
+   get_filename_component(Blaze_ROOT_DIR_PATH ${Blaze_Import_DIR_PATH} DIRECTORY)
+
    #==================================================================================================
    #   Input Parsing
    #==================================================================================================
@@ -172,8 +174,7 @@ function(Blaze_Import)
    #   Blaze Version
    #==================================================================================================
 
-      get_filename_component(Blaze_Import_PARENT_DIR_PATH ${Blaze_Import_DIR_PATH} DIRECTORY)
-      file(READ ${Blaze_Import_PARENT_DIR_PATH}/blaze/system/Version.h BLAZE_VERSION_FILE)
+      file(READ ${Blaze_ROOT_DIR_PATH}/blaze/system/Version.h BLAZE_VERSION_FILE)
 
       string(REGEX MATCH "#define BLAZE_MAJOR_VERSION ([0-9]*)" _BLAZE_MAJOR_VERSION ${BLAZE_VERSION_FILE})
       set(BLAZE_MAJOR_VERSION ${CMAKE_MATCH_1})
@@ -206,9 +207,8 @@ function(Blaze_Import)
 
       add_library(Blaze INTERFACE)
       target_include_directories(Blaze INTERFACE
-         $<BUILD_INTERFACE:${IMPORT_BLAZE_BLAZEROOT}>
+         $<BUILD_INTERFACE:${Blaze_ROOT_DIR_PATH}>
          $<INSTALL_INTERFACE:include>
-         GLOBAL
          )
 
       if(${CMAKE_VERSION} VERSION_LESS "3.8.0")
