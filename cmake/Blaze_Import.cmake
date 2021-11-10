@@ -161,16 +161,6 @@ function(Blaze_Import)
       )
 
    #==================================================================================================
-   #   Include Guard
-   #==================================================================================================
-
-      if(blaze_FOUND)
-         if(NOT Blaze_Import_QUIET OR Blaze_Import_DEBUG)
-            message(WARNING "Blaze was already imported and will not be imported again")
-         endif()
-      else()
-
-   #==================================================================================================
    #   Blaze Version
    #==================================================================================================
 
@@ -1070,8 +1060,6 @@ function(Blaze_Import)
       set(blaze_FOUND TRUE CACHE BOOL "Indicates whether the Blaze library was found successfully.")
 
       msg("Blaze has been configured successfully")
-
-   endif()
 
 
 endfunction()
