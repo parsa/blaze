@@ -66,8 +66,9 @@ namespace blaze {
 //
 // This operation is only available via the SVML or SLEEF for SSE, AVX, MIC, and AVX-512.
 */
-template< typename T >  // Type of the operands
-BLAZE_ALWAYS_INLINE const SIMDfloat pow( const SIMDf32<T>& a, const SIMDf32<T>& b ) noexcept
+template< typename T1    // Type of the left-hand side operand
+        , typename T2 >  // Type of the right-hand side operand
+BLAZE_ALWAYS_INLINE const SIMDfloat pow( const SIMDf32<T1>& a, const SIMDf32<T2>& b ) noexcept
 #if BLAZE_SVML_MODE
 #  if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
 {
@@ -120,8 +121,9 @@ BLAZE_ALWAYS_INLINE const SIMDfloat pow( const SIMDf32<T>& a, const SIMDf32<T>& 
 //
 // This operation is only available via the SVML or SLEEF for SSE, AVX, MIC, and AVX-512.
 */
-template< typename T >  // Type of the operands
-BLAZE_ALWAYS_INLINE const SIMDdouble pow( const SIMDf64<T>& a, const SIMDf64<T>& b ) noexcept
+template< typename T1    // Type of the left-hand side operand
+        , typename T2 >  // Type of the right-hand side operand
+BLAZE_ALWAYS_INLINE const SIMDdouble pow( const SIMDf64<T1>& a, const SIMDf64<T2>& b ) noexcept
 #if BLAZE_SVML_MODE
 #  if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
 {
