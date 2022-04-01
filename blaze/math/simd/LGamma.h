@@ -81,6 +81,10 @@ BLAZE_ALWAYS_INLINE const SIMDfloat lgamma( const SIMDf32<T>& a ) noexcept
    return Sleef_lgammaf4_u10( (*a).eval().value );
 }
 #  endif
+#elif BLAZE_XSIMD_MODE
+{
+  return SIMDfloat{ xsimd::lgamma( xsimd::batch<float>{ (*a).eval().value } ).data };
+}
 #else
 = delete;
 #endif
@@ -120,6 +124,10 @@ BLAZE_ALWAYS_INLINE const SIMDdouble lgamma( const SIMDf64<T>& a ) noexcept
    return Sleef_lgammad2_u10( (*a).eval().value );
 }
 #  endif
+#elif BLAZE_XSIMD_MODE
+{
+  return SIMDdouble{ xsimd::lgamma( xsimd::batch<double>{ (*a).eval().value } ).data };
+}
 #else
 = delete;
 #endif

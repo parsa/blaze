@@ -96,6 +96,10 @@ BLAZE_ALWAYS_INLINE const SIMDfloat trunc( const SIMDf32<T>& a ) noexcept
    return Sleef_truncf4( (*a).eval().value );
 }
 #  endif
+#elif BLAZE_XSIMD_MODE
+{
+  return SIMDfloat{ xsimd::trunc( xsimd::batch<float>{ (*a).eval().value } ).data };
+}
 #else
 = delete;
 #endif
@@ -150,6 +154,10 @@ BLAZE_ALWAYS_INLINE const SIMDdouble trunc( const SIMDf64<T>& a ) noexcept
    return Sleef_truncd2( (*a).eval().value );
 }
 #  endif
+#elif BLAZE_XSIMD_MODE
+{
+  return SIMDdouble{ xsimd::trunc( xsimd::batch<double>{ (*a).eval().value } ).data };
+}
 #else
 = delete;
 #endif

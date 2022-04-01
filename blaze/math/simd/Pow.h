@@ -97,6 +97,11 @@ BLAZE_ALWAYS_INLINE const SIMDfloat pow( const SIMDf32<T1>& a, const SIMDf32<T2>
    return Sleef_powf4_u10( (*a).eval().value, (*b).eval().value );
 }
 #  endif
+#elif BLAZE_XSIMD_MODE
+{
+  return SIMDfloat{ xsimd::pow( xsimd::batch<float>{ (*a).eval().value },
+                                xsimd::batch<float>{ (*b).eval().value } ).data };
+}
 #else
 = delete;
 #endif
@@ -152,6 +157,11 @@ BLAZE_ALWAYS_INLINE const SIMDdouble pow( const SIMDf64<T1>& a, const SIMDf64<T2
    return Sleef_powd2_u10( (*a).eval().value, (*b).eval().value );
 }
 #  endif
+#elif BLAZE_XSIMD_MODE
+{
+  return SIMDdouble{ xsimd::pow( xsimd::batch<double>{ (*a).eval().value },
+                                 xsimd::batch<double>{ (*b).eval().value } ).data };
+}
 #else
 = delete;
 #endif

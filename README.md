@@ -5,7 +5,7 @@
 The **Blaze** library offers ...
 
   * ... **high performance** through the integration of BLAS libraries and manually tuned HPC math kernels
-  * ... **vectorization** by SSE, SSE2, SSE3, SSSE3, SSE4, AVX, AVX2, AVX-512, FMA, SVML and SLEEF
+  * ... **vectorization** by SSE, SSE2, SSE3, SSSE3, SSE4, AVX, AVX2, AVX-512, FMA, SVML, SLEEF, and XSIMD
   * ... **parallel execution** by OpenMP, HPX, C++11 threads and Boost threads
   * ... the **intuitive** and **easy to use** API of a domain specific language
   * ... **unified arithmetic** with dense and sparse vectors and matrices
@@ -269,3 +269,5 @@ Mikhail Katliar -- LAPACK extensions
 Daniel Baker -- Integration of Sleef
 
 Thijs Withaar -- LAPACK extensions
+
+Nils Deppe -- Integration of XSIMD
