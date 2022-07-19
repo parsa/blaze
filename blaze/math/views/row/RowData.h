@@ -3,7 +3,7 @@
 //  \file blaze/math/views/row/RowData.h
 //  \brief Header file for the implementation of the RowData class template
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -40,8 +40,8 @@
 // Includes
 //*************************************************************************************************
 
+#include <blaze/util/MaybeUnused.h>
 #include <blaze/util/Types.h>
-#include <blaze/util/Unused.h>
 
 
 namespace blaze {
@@ -61,7 +61,7 @@ namespace blaze {
 // of compile time row arguments.
 */
 template< size_t... CRAs >  // Compile time row arguments
-struct RowData
+class RowData
 {};
 //*************************************************************************************************
 
@@ -83,9 +83,18 @@ struct RowData
 // time row arguments.
 */
 template<>
-struct RowData<>
+class RowData<>
 {
  public:
+   //**Compile time flags**************************************************************************
+   //! Compilation flag for compile time optimization.
+   /*! The \a compileTimeArgs compilation flag indicates whether the view has been created by
+       means of compile time arguments and whether these arguments can be queried at compile
+       time. In that case, the \a compileTimeArgs compilation flag is set to \a true, otherwise
+       it is set to \a false. */
+   static constexpr bool compileTimeArgs = false;
+   //**********************************************************************************************
+
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
@@ -140,7 +149,7 @@ template< typename... RRAs >  // Optional row arguments
 inline RowData<>::RowData( size_t index, RRAs... args )
    : row_( index )  // The index of the row in the matrix
 {
-   UNUSED_PARAMETER( args... );
+   MAYBE_UNUSED( args... );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -177,9 +186,18 @@ inline size_t RowData<>::row() const noexcept
 // compile time row argument.
 */
 template< size_t Index >  // Compile time row index
-struct RowData<Index>
+class RowData<Index>
 {
  public:
+   //**Compile time flags**************************************************************************
+   //! Compilation flag for compile time optimization.
+   /*! The \a compileTimeArgs compilation flag indicates whether the view has been created by
+       means of compile time arguments and whether these arguments can be queried at compile
+       time. In that case, the \a compileTimeArgs compilation flag is set to \a true, otherwise
+       it is set to \a false. */
+   static constexpr bool compileTimeArgs = true;
+   //**********************************************************************************************
+
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
@@ -207,7 +225,7 @@ struct RowData<Index>
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-   static inline constexpr size_t row() noexcept;
+   static constexpr size_t row() noexcept;
    //@}
    //**********************************************************************************************
 };
@@ -225,7 +243,7 @@ template< size_t Index >      // Compile time row index
 template< typename... RRAs >  // Optional row arguments
 inline RowData<Index>::RowData( RRAs... args )
 {
-   UNUSED_PARAMETER( args... );
+   MAYBE_UNUSED( args... );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -238,7 +256,7 @@ inline RowData<Index>::RowData( RRAs... args )
 // \return The index of the row.
 */
 template< size_t Index >  // Compile time row index
-inline constexpr size_t RowData<Index>::row() noexcept
+constexpr size_t RowData<Index>::row() noexcept
 {
    return Index;
 }

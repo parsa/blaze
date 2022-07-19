@@ -3,7 +3,7 @@
 //  \file blaze/system/Vectorization.h
 //  \brief System settings for the SSE mode
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -120,7 +120,7 @@
 // the linear algebra operations by SSE intrinsics. In case the SSE mode is disabled, the
 // Blaze library chooses default, non-vectorized functionality for the operations.
 */
-#if BLAZE_USE_VECTORIZATION && ( defined(__SSE__) || ( _M_IX86_FP > 0 ) )
+#if BLAZE_USE_VECTORIZATION && ( defined(__SSE__) || defined(_M_AMD64) || defined(_M_X64) || ( _M_IX86_FP > 0 ) )
 #  define BLAZE_SSE_MODE 1
 #else
 #  define BLAZE_SSE_MODE 0
@@ -137,7 +137,7 @@
 // the linear algebra operations by SSE2 intrinsics. In case the SSE2 mode is disabled, the
 // Blaze library chooses default, non-vectorized functionality for the operations.
 */
-#if BLAZE_USE_VECTORIZATION && ( defined(__SSE2__) || ( _M_IX86_FP > 1 ) )
+#if BLAZE_USE_VECTORIZATION && ( defined(__SSE2__) || defined(_M_AMD64) || defined(_M_X64) || ( _M_IX86_FP > 1 ) )
 #  define BLAZE_SSE2_MODE 1
 #else
 #  define BLAZE_SSE2_MODE 0
@@ -347,6 +347,23 @@
 #  define BLAZE_SVML_MODE 1
 #else
 #  define BLAZE_SVML_MODE 0
+#endif
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Compilation switch for the Sleef mode.
+// \ingroup system
+//
+// This compilation switch enables/disables the Sleef mode. In case the Sleef mode is enabled
+// the Blaze library attempts to vectorize several linear algebra operations by Sleef intrinsics.
+// In case the Sleef mode is disabled, the Blaze library chooses default, non-vectorized
+// functionality for the operations.
+*/
+#if BLAZE_USE_VECTORIZATION && BLAZE_USE_SLEEF
+#  define BLAZE_SLEEF_MODE 1
+#else
+#  define BLAZE_SLEEF_MODE 0
 #endif
 //*************************************************************************************************
 

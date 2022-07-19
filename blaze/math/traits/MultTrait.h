@@ -3,7 +3,7 @@
 //  \file blaze/math/traits/MultTrait.h
 //  \brief Header file for the multiplication trait
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -41,16 +41,14 @@
 //*************************************************************************************************
 
 #include <utility>
-#include <blaze/math/typetraits/HasMult.h>
+#include <blaze/math/GroupTag.h>
 #include <blaze/math/typetraits/IsColumnVector.h>
 #include <blaze/math/typetraits/IsRowVector.h>
-#include <blaze/util/Complex.h>
 #include <blaze/util/EnableIf.h>
-#include <blaze/util/InvalidType.h>
-#include <blaze/util/mpl/If.h>
 #include <blaze/util/typetraits/CommonType.h>
-#include <blaze/util/typetraits/Decay.h>
-#include <blaze/util/typetraits/IsBuiltin.h>
+#include <blaze/util/typetraits/IsNumeric.h>
+#include <blaze/util/typetraits/RemoveCVRef.h>
+#include <blaze/util/typetraits/Void.h>
 
 
 namespace blaze {
@@ -66,6 +64,7 @@ namespace blaze {
 template< typename, typename, typename = void > struct MultTrait;
 template< typename, typename, typename = void > struct MultTraitEval1;
 template< typename, typename, typename = void > struct MultTraitEval2;
+template< typename, typename, typename = void > struct MultTraitEval3;
 /*! \endcond */
 //*************************************************************************************************
 
@@ -73,24 +72,7 @@ template< typename, typename, typename = void > struct MultTraitEval2;
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename T1, typename T2 >
-auto evalMultTrait( T1&, T2& )
-   -> typename MultTraitEval1<T1,T2>::Type;
-
-template< typename T1, typename T2 >
-auto evalMultTrait( const T1&, const T2& )
-   -> typename MultTrait<T1,T2>::Type;
-
-template< typename T1, typename T2 >
-auto evalMultTrait( const volatile T1&, const T2& )
-   -> typename MultTrait<T1,T2>::Type;
-
-template< typename T1, typename T2 >
-auto evalMultTrait( const T1&, const volatile T2& )
-   -> typename MultTrait<T1,T2>::Type;
-
-template< typename T1, typename T2 >
-auto evalMultTrait( const volatile T1&, const volatile T2& )
-   -> typename MultTrait<T1,T2>::Type;
+auto evalMultTrait( const volatile T1&, const volatile T2& ) -> MultTraitEval1<T1,T2>;
 /*! \endcond */
 //*************************************************************************************************
 
@@ -104,7 +86,7 @@ auto evalMultTrait( const volatile T1&, const volatile T2& )
 // The MultTrait class template offers the possibility to select the resulting data type of
 // a generic multiplication operation between the two given types \a T1 and \a T2. MultTrait
 // defines the nested type \a Type, which represents the resulting data type of the multiplication.
-// In case the two types \a T1 and \a T2 cannot be multiplied, a compilation error is created.
+// In case the two types \a T1 and \a T2 cannot be multiplied, there is no nested type \a Type.
 // Note that \c const and \c volatile qualifiers and reference modifiers are generally ignored.
 //
 //
@@ -144,79 +126,22 @@ template< typename T1  // Type of the left-hand side operand
         , typename T2  // Type of the right-hand side operand
         , typename >   // Restricting condition
 struct MultTrait
-{
- public:
-   //**********************************************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   using Type = decltype( evalMultTrait( std::declval<T1&>(), std::declval<T2&>() ) );
-   /*! \endcond */
-   //**********************************************************************************************
-};
+   : public decltype( evalMultTrait( std::declval<T1&>(), std::declval<T2&>() ) )
+{};
 //*************************************************************************************************
 
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Specialization of the MultTrait class template for two identical builtin types.
-// \ingroup math_traits
-*/
-template< typename T >
-struct MultTrait< T, T, EnableIf_t< IsBuiltin_v<T> > >
-{
- public:
-   //**********************************************************************************************
-   using Type = Decay_t<T>;
-   //**********************************************************************************************
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Specialization of the MultTrait class template for a complex and a built-in type.
+/*!\brief Specialization of the MultTrait class template for two numeric types.
 // \ingroup math_traits
 */
 template< typename T1, typename T2 >
-struct MultTrait< complex<T1>, T2, EnableIf_t< IsBuiltin_v<T2> > >
+struct MultTrait< T1, T2, EnableIf_t< IsNumeric_v<T1> && IsNumeric_v<T2> > >
 {
  public:
    //**********************************************************************************************
-   using Type = CommonType_t< complex<T1> , T2 >;
-   //**********************************************************************************************
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Specialization of the MultTrait class template for a built-in and a complex type.
-// \ingroup math_traits
-*/
-template< typename T1, typename T2 >
-struct MultTrait< T1, complex<T2>, EnableIf_t< IsBuiltin_v<T1> > >
-{
- public:
-   //**********************************************************************************************
-   using Type = CommonType_t< T1, complex<T2> >;
-   //**********************************************************************************************
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Specialization of the MultTrait class template for two complex types.
-// \ingroup math_traits
-*/
-template< typename T1, typename T2 >
-struct MultTrait< complex<T1>, complex<T2> >
-{
- public:
-   //**********************************************************************************************
-   using Type = CommonType_t< complex<T1>, complex<T2> >;
+   using Type = CommonType_t<T1,T2>;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -250,10 +175,57 @@ template< typename T1  // Type of the left-hand side operand
         , typename T2  // Type of the right-hand side operand
         , typename >   // Restricting condition
 struct MultTraitEval1
+   : public MultTraitEval2<T1,T2>
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Specialization of the MultTraitEval1 class template for two 'GroupTag'.
+// \ingroup math_traits
+*/
+template< size_t ID >
+struct MultTraitEval1<GroupTag<ID>,GroupTag<ID>,void>
 {
  public:
    //**********************************************************************************************
-   using Type = typename MultTraitEval2<T1,T2>::Type;
+   using Type = GroupTag<ID>;
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Specialization of the MultTraitEval1 class template for a 'GroupTag' and a numeric type.
+// \ingroup math_traits
+*/
+template< size_t ID, typename T2 >
+struct MultTraitEval1< GroupTag<ID>, T2 >
+{
+ public:
+   //**********************************************************************************************
+   using Type = GroupTag<ID>;
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Specialization of the MultTraitEval1 class template for a numeric type and a'GroupTag'.
+// \ingroup math_traits
+*/
+template< typename T1, size_t ID >
+struct MultTraitEval1< T1, GroupTag<ID> >
+{
+ public:
+   //**********************************************************************************************
+   using Type = GroupTag<ID>;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -269,18 +241,8 @@ template< typename T1  // Type of the left-hand side operand
         , typename T2  // Type of the right-hand side operand
         , typename >   // Restricting condition
 struct MultTraitEval2
-{
- private:
-   //**********************************************************************************************
-   struct MultType { using Type = decltype( std::declval<T1>() * std::declval<T2>() ); };
-   struct Failure  { using Type = INVALID_TYPE; };
-   //**********************************************************************************************
-
- public:
-   //**********************************************************************************************
-   using Type = typename If_t< HasMult_v<T1,T2>, MultType, Failure >::Type;
-   //**********************************************************************************************
-};
+   : public MultTraitEval3<T1,T2>
+{};
 /*! \endcond */
 //*************************************************************************************************
 
@@ -298,6 +260,39 @@ struct MultTraitEval2< T1, T2
  public:
    //**********************************************************************************************
    using Type = MultTrait_t< typename T1::ElementType, typename T2::ElementType >;
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Third auxiliary helper struct for the MultTrait type trait.
+// \ingroup math_traits
+*/
+template< typename T1  // Type of the left-hand side operand
+        , typename T2  // Type of the right-hand side operand
+        , typename >   // Restricting condition
+struct MultTraitEval3
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Specialization of the MultTraitEval3 class template for two types supporting multiplication.
+// \ingroup math_traits
+*/
+template< typename T1    // Type of the left-hand side operand
+        , typename T2 >  // Type of the right-hand side operand
+struct MultTraitEval3< T1, T2
+                     , Void_t< decltype( std::declval<T1>() * std::declval<T2>() ) > >
+{
+ public:
+   //**********************************************************************************************
+   using Type = RemoveCVRef_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
    //**********************************************************************************************
 };
 /*! \endcond */

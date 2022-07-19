@@ -3,7 +3,7 @@
 //  \file blazetest/mathtest/creator/DynamicUpper.h
 //  \brief Specialization of the Creator class template for UpperMatrix<DynamicMatrix>
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -89,10 +89,10 @@ class Creator< blaze::UpperMatrix< blaze::DynamicMatrix<T,SO> > >
    //@{
    // No explicitly declared copy assignment operator.
 
-   const blaze::UpperMatrix< blaze::DynamicMatrix<T,SO> > operator()() const;
+   blaze::UpperMatrix< blaze::DynamicMatrix<T,SO> > operator()() const;
 
    template< typename CP >
-   const blaze::UpperMatrix< blaze::DynamicMatrix<T,SO> > operator()( const CP& policy ) const;
+   blaze::UpperMatrix< blaze::DynamicMatrix<T,SO> > operator()( const CP& policy ) const;
    //@}
    //**********************************************************************************************
 
@@ -160,7 +160,7 @@ inline Creator< blaze::UpperMatrix< blaze::DynamicMatrix<T,SO> > >::Creator( siz
 */
 template< typename T  // Element type of the dynamic matrix
         , bool SO >   // Storage order of the dynamic matrix
-inline const blaze::UpperMatrix< blaze::DynamicMatrix<T,SO> >
+inline blaze::UpperMatrix< blaze::DynamicMatrix<T,SO> >
    Creator< blaze::UpperMatrix< blaze::DynamicMatrix<T,SO> > >::operator()() const
 {
    return (*this)( Default() );
@@ -177,7 +177,7 @@ inline const blaze::UpperMatrix< blaze::DynamicMatrix<T,SO> >
 template< typename T     // Element type of the dynamic matrix
         , bool SO >      // Storage order of the dynamic matrix
 template< typename CP >  // Creation policy
-inline const blaze::UpperMatrix< blaze::DynamicMatrix<T,SO> >
+inline blaze::UpperMatrix< blaze::DynamicMatrix<T,SO> >
    Creator< blaze::UpperMatrix< blaze::DynamicMatrix<T,SO> > >::operator()( const CP& policy ) const
 {
    blaze::UpperMatrix< blaze::DynamicMatrix<T,SO> > matrix( n_ );

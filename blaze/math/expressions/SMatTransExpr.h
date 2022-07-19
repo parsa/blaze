@@ -3,7 +3,7 @@
 //  \file blaze/math/expressions/SMatTransExpr.h
 //  \brief Header file for the sparse matrix transpose expression
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -40,7 +40,6 @@
 // Includes
 //*************************************************************************************************
 
-#include <iterator>
 #include <blaze/math/Aliases.h>
 #include <blaze/math/constraints/RequiresEvaluation.h>
 #include <blaze/math/constraints/SparseMatrix.h>
@@ -55,14 +54,6 @@
 #include <blaze/math/expressions/Transformation.h>
 #include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsExpression.h>
-#include <blaze/math/typetraits/IsHermitian.h>
-#include <blaze/math/typetraits/IsLower.h>
-#include <blaze/math/typetraits/IsStrictlyLower.h>
-#include <blaze/math/typetraits/IsStrictlyUpper.h>
-#include <blaze/math/typetraits/IsSymmetric.h>
-#include <blaze/math/typetraits/IsUniLower.h>
-#include <blaze/math/typetraits/IsUniUpper.h>
-#include <blaze/math/typetraits/IsUpper.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/EnableIf.h>
@@ -71,7 +62,6 @@
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/GetMemberType.h>
-#include <blaze/util/typetraits/RemoveReference.h>
 
 
 namespace blaze {
@@ -93,13 +83,10 @@ template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
 class SMatTransExpr
    : public MatTransExpr< SparseMatrix< SMatTransExpr<MT,SO>, SO > >
-   , private If< IsComputation_v<MT>, Computation, Transformation >::Type
+   , private If_t< IsComputation_v<MT>, Computation, Transformation >
 {
  private:
    //**Type definitions****************************************************************************
-   using RT = ResultType_t<MT>;     //!< Result type of the sparse matrix expression.
-   using CT = CompositeType_t<MT>;  //!< Composite type of the sparse matrix expression.
-
    //! Definition of the GetConstIterator type trait.
    BLAZE_CREATE_GET_TYPE_MEMBER_TYPE_TRAIT( GetConstIterator, ConstIterator, INVALID_TYPE );
    //**********************************************************************************************
@@ -130,13 +117,18 @@ class SMatTransExpr
        strategy is selected. Otherwise the variable is set to 0 and the default strategy is
        chosen. */
    template< typename MT2 >
-    static constexpr bool UseSMPAssign_v = ( MT2::smpAssignable && useAssign );
+   static constexpr bool UseSMPAssign_v = ( MT2::smpAssignable && useAssign );
    /*! \endcond */
    //**********************************************************************************************
 
  public:
    //**Type definitions****************************************************************************
-   using This          = SMatTransExpr<MT,SO>;        //!< Type of this SMatTransExpr instance.
+   //! Type of this SMatTransExpr instance.
+   using This = SMatTransExpr<MT,SO>;
+
+   //! Base type of this SMatTransExpr instance.
+   using BaseType = MatTransExpr< SparseMatrix<This,SO> >;
+
    using ResultType    = TransposeType_t<MT>;         //!< Result type for expression template evaluations.
    using OppositeType  = OppositeType_t<ResultType>;  //!< Result type with opposite storage order for expression template evaluations.
    using TransposeType = ResultType_t<MT>;            //!< Transpose type for expression template evaluations.
@@ -368,15 +360,15 @@ class SMatTransExpr
    */
    template< typename MT2  // Type of the target dense matrix
            , bool SO2 >    // Storage order of the target dense matrix
-   friend inline EnableIf_t< UseAssign_v<MT2> >
-      assign( DenseMatrix<MT2,SO2>& lhs, const SMatTransExpr& rhs )
+   friend inline auto assign( DenseMatrix<MT2,SO2>& lhs, const SMatTransExpr& rhs )
+      -> EnableIf_t< UseAssign_v<MT2> >
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      DMatTransposer<MT2,!SO2> tmp( ~lhs );
+      DMatTransposer<MT2,!SO2> tmp( *lhs );
       assign( tmp, rhs.sm_ );
    }
    /*! \endcond */
@@ -398,15 +390,15 @@ class SMatTransExpr
    */
    template< typename MT2  // Type of the target sparse matrix
            , bool SO2 >    // Storage order of the target sparse matrix
-   friend inline EnableIf_t< UseAssign_v<MT2> >
-      assign( SparseMatrix<MT2,SO2>& lhs, const SMatTransExpr& rhs )
+   friend inline auto assign( SparseMatrix<MT2,SO2>& lhs, const SMatTransExpr& rhs )
+      -> EnableIf_t< UseAssign_v<MT2> >
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      SMatTransposer<MT2,!SO2> tmp( ~lhs );
+      SMatTransposer<MT2,!SO2> tmp( *lhs );
       assign( tmp, rhs.sm_ );
    }
    /*! \endcond */
@@ -428,15 +420,15 @@ class SMatTransExpr
    */
    template< typename MT2  // Type of the target dense matrix
            , bool SO2 >    // Storage order of the target dense matrix
-   friend inline EnableIf_t< UseAssign_v<MT2> >
-      addAssign( DenseMatrix<MT2,SO2>& lhs, const SMatTransExpr& rhs )
+   friend inline auto addAssign( DenseMatrix<MT2,SO2>& lhs, const SMatTransExpr& rhs )
+      -> EnableIf_t< UseAssign_v<MT2> >
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      DMatTransposer<MT2,!SO2> tmp( ~lhs );
+      DMatTransposer<MT2,!SO2> tmp( *lhs );
       addAssign( tmp, rhs.sm_ );
    }
    /*! \endcond */
@@ -462,15 +454,15 @@ class SMatTransExpr
    */
    template< typename MT2  // Type of the target dense matrix
            , bool SO2 >    // Storage order of the target dense matrix
-   friend inline EnableIf_t< UseAssign_v<MT2> >
-      subAssign( DenseMatrix<MT2,SO2>& lhs, const SMatTransExpr& rhs )
+   friend inline auto subAssign( DenseMatrix<MT2,SO2>& lhs, const SMatTransExpr& rhs )
+      -> EnableIf_t< UseAssign_v<MT2> >
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      DMatTransposer<MT2,!SO2> tmp( ~lhs );
+      DMatTransposer<MT2,!SO2> tmp( *lhs );
       subAssign( tmp, rhs.sm_ );
    }
    /*! \endcond */
@@ -496,15 +488,15 @@ class SMatTransExpr
    */
    template< typename MT2  // Type of the target dense matrix
            , bool SO2 >    // Storage order of the target dense matrix
-   friend inline EnableIf_t< UseAssign_v<MT2> >
-      schurAssign( DenseMatrix<MT2,SO2>& lhs, const SMatTransExpr& rhs )
+   friend inline auto schurAssign( DenseMatrix<MT2,SO2>& lhs, const SMatTransExpr& rhs )
+      -> EnableIf_t< UseAssign_v<MT2> >
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      DMatTransposer<MT2,!SO2> tmp( ~lhs );
+      DMatTransposer<MT2,!SO2> tmp( *lhs );
       schurAssign( tmp, rhs.sm_ );
    }
    /*! \endcond */
@@ -538,15 +530,15 @@ class SMatTransExpr
    */
    template< typename MT2  // Type of the target dense matrix
            , bool SO2 >    // Storage order of the target dense matrix
-   friend inline EnableIf_t< UseSMPAssign_v<MT2> >
-      smpAssign( DenseMatrix<MT2,SO2>& lhs, const SMatTransExpr& rhs )
+   friend inline auto smpAssign( DenseMatrix<MT2,SO2>& lhs, const SMatTransExpr& rhs )
+      -> EnableIf_t< UseSMPAssign_v<MT2> >
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      DMatTransposer<MT2,!SO2> tmp( ~lhs );
+      DMatTransposer<MT2,!SO2> tmp( *lhs );
       smpAssign( tmp, rhs.sm_ );
    }
    /*! \endcond */
@@ -568,15 +560,15 @@ class SMatTransExpr
    */
    template< typename MT2  // Type of the target sparse matrix
            , bool SO2 >    // Storage order of the target sparse matrix
-   friend inline EnableIf_t< UseSMPAssign_v<MT2> >
-      smpAssign( SparseMatrix<MT2,SO2>& lhs, const SMatTransExpr& rhs )
+   friend inline auto smpAssign( SparseMatrix<MT2,SO2>& lhs, const SMatTransExpr& rhs )
+      -> EnableIf_t< UseSMPAssign_v<MT2> >
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      SMatTransposer<MT2,!SO2> tmp( ~lhs );
+      SMatTransposer<MT2,!SO2> tmp( *lhs );
       smpAssign( tmp, rhs.sm_ );
    }
    /*! \endcond */
@@ -598,15 +590,15 @@ class SMatTransExpr
    */
    template< typename MT2  // Type of the target dense matrix
            , bool SO2 >    // Storage order of the target dense matrix
-   friend inline EnableIf_t< UseSMPAssign_v<MT2> >
-      smpAddAssign( DenseMatrix<MT2,SO2>& lhs, const SMatTransExpr& rhs )
+   friend inline auto smpAddAssign( DenseMatrix<MT2,SO2>& lhs, const SMatTransExpr& rhs )
+      -> EnableIf_t< UseSMPAssign_v<MT2> >
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      DMatTransposer<MT2,!SO2> tmp( ~lhs );
+      DMatTransposer<MT2,!SO2> tmp( *lhs );
       smpAddAssign( tmp, rhs.sm_ );
    }
    /*! \endcond */
@@ -633,15 +625,15 @@ class SMatTransExpr
    */
    template< typename MT2  // Type of the target dense matrix
            , bool SO2 >    // Storage order of the target dense matrix
-   friend inline EnableIf_t< UseSMPAssign_v<MT2> >
-      smpSubAssign( DenseMatrix<MT2,SO2>& lhs, const SMatTransExpr& rhs )
+   friend inline auto smpSubAssign( DenseMatrix<MT2,SO2>& lhs, const SMatTransExpr& rhs )
+      -> EnableIf_t< UseSMPAssign_v<MT2> >
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      DMatTransposer<MT2,!SO2> tmp( ~lhs );
+      DMatTransposer<MT2,!SO2> tmp( *lhs );
       smpSubAssign( tmp, rhs.sm_ );
    }
    /*! \endcond */
@@ -668,15 +660,15 @@ class SMatTransExpr
    */
    template< typename MT2  // Type of the target dense matrix
            , bool SO2 >    // Storage order of the target dense matrix
-   friend inline EnableIf_t< UseSMPAssign_v<MT2> >
-      smpSchurAssign( DenseMatrix<MT2,SO2>& lhs, const SMatTransExpr& rhs )
+   friend inline auto smpSchurAssign( DenseMatrix<MT2,SO2>& lhs, const SMatTransExpr& rhs )
+      -> EnableIf_t< UseSMPAssign_v<MT2> >
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      DMatTransposer<MT2,!SO2> tmp( ~lhs );
+      DMatTransposer<MT2,!SO2> tmp( *lhs );
       smpSchurAssign( tmp, rhs.sm_ );
    }
    /*! \endcond */
@@ -738,46 +730,27 @@ inline decltype(auto) trans( const SparseMatrix<MT,SO>& sm )
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = const SMatTransExpr<MT,!SO>;
-   return ReturnType( ~sm );
+   return ReturnType( *sm );
 }
 //*************************************************************************************************
 
 
-
-
-//=================================================================================================
-//
-//  GLOBAL RESTRUCTURING FUNCTIONS
-//
-//=================================================================================================
-
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Calculating the transpose of a transpose sparse matrix.
+/*!\brief Conditional calculation of the transpose of the given sparse matrix.
 // \ingroup sparse_matrix
 //
-// \param sm The sparse matrix to be (re-)transposed.
-// \return The transpose of the transpose matrix.
+// \param sm The sparse matrix to be transposed.
+// \return The transpose of the matrix.
 //
-// This function implements a performance optimized treatment of the transpose operation on a
-// sparse matrix transpose expression. It returns an expression representing the transpose of a
-// transpose sparse matrix:
-
-   \code
-   using blaze::rowMajor;
-
-   blaze::CompressedMatrix<double,rowMajor> A, B;
-   // ... Resizing and initialization
-   B = trans( trans( A ) );
-   \endcode
+// This function does not calculate the transpose of the given sparse matrix and returns a
+// reference to the matrix.
 */
-template< typename MT  // Type of the dense matrix
+template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
-inline decltype(auto) trans( const SMatTransExpr<MT,SO>& sm )
+inline decltype(auto) transIf( FalseType, const SparseMatrix<MT,SO>& sm )
 {
-   BLAZE_FUNCTION_TRACE;
-
-   return sm.operand();
+   return *sm;
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -785,170 +758,43 @@ inline decltype(auto) trans( const SMatTransExpr<MT,SO>& sm )
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Calculation of the transpose of the given sparse matrix-scalar multiplication.
+/*!\brief Conditional calculation of the transpose of the given sparse matrix.
 // \ingroup sparse_matrix
 //
-// \param sm The sparse matrix-scalar multiplication expression to be transposed.
-// \return The transpose of the expression.
+// \param sm The sparse matrix to be transposed.
+// \return The transpose of the matrix.
 //
-// This operator implements the performance optimized treatment of the transpose of a sparse
-// matrix-scalar multiplication. It restructures the expression \f$ A=trans(B*s1) \f$ to the
-// expression \f$ A=trans(B)*s1 \f$.
+// This function calculates the transpose of the given sparse matrix and returns an expression
+// representing the transpose of the given sparse matrix.
 */
-template< typename MT  // Type of the left-hand side sparse matrix
-        , typename ST  // Type of the right-hand side scalar value
+template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
-inline decltype(auto) trans( const SMatScalarMultExpr<MT,ST,SO>& sm )
+inline decltype(auto) transIf( TrueType, const SparseMatrix<MT,SO>& sm )
 {
-   BLAZE_FUNCTION_TRACE;
-
-   return trans( sm.leftOperand() ) * sm.rightOperand();
+   return trans( *sm );
 }
 /*! \endcond */
 //*************************************************************************************************
 
 
-
-
-//=================================================================================================
-//
-//  ISSYMMETRIC SPECIALIZATIONS
-//
-//=================================================================================================
-
 //*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO >
-struct IsSymmetric< SMatTransExpr<MT,SO> >
-   : public IsSymmetric<MT>
-{};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
+/*!\brief Conditional calculation of the transpose of the given sparse matrix.
+// \ingroup sparse_matrix
 //
-//  ISHERMITIAN SPECIALIZATIONS
+// \param sm The sparse matrix to be transposed.
+// \return The transpose of the matrix.
 //
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO >
-struct IsHermitian< SMatTransExpr<MT,SO> >
-   : public IsHermitian<MT>
-{};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  ISLOWER SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO >
-struct IsLower< SMatTransExpr<MT,SO> >
-   : public IsUpper<MT>
-{};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  ISUNILOWER SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO >
-struct IsUniLower< SMatTransExpr<MT,SO> >
-   : public IsUniUpper<MT>
-{};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  ISSTRICTLYLOWER SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO >
-struct IsStrictlyLower< SMatTransExpr<MT,SO> >
-   : public IsStrictlyUpper<MT>
-{};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  ISUPPER SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO >
-struct IsUpper< SMatTransExpr<MT,SO> >
-   : public IsLower<MT>
-{};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  ISUNIUPPER SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO >
-struct IsUniUpper< SMatTransExpr<MT,SO> >
-   : public IsUniLower<MT>
-{};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  ISSTRICTLYUPPER SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO >
-struct IsStrictlyUpper< SMatTransExpr<MT,SO> >
-   : public IsStrictlyLower<MT>
-{};
-/*! \endcond */
+// In case the given compile time condition evaluates to \a true, this function returns an
+// expression representing the transpose of the given sparse matrix. Otherwise the function
+// returns a reference to the given matrix.
+*/
+template< bool B       // Compile time condition
+        , typename MT  // Type of the sparse matrix
+        , bool SO >    // Storage order
+inline decltype(auto) transIf( const SparseMatrix<MT,SO>& sm )
+{
+   return transIf( BoolConstant<B>(), *sm );
+}
 //*************************************************************************************************
 
 } // namespace blaze

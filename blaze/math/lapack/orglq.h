@@ -3,7 +3,7 @@
 //  \file blaze/math/lapack/orglq.h
 //  \brief Header file for the LAPACK functions to reconstruct Q from a LQ decomposition (orglq)
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -67,7 +67,7 @@ namespace blaze {
 /*!\name LAPACK functions to reconstruct Q from a LQ decomposition (orglq) */
 //@{
 template< typename MT, bool SO >
-inline void orglq( DenseMatrix<MT,SO>& A, const ElementType_t<MT>* tau );
+void orglq( DenseMatrix<MT,SO>& A, const ElementType_t<MT>* tau );
 //@}
 //*************************************************************************************************
 
@@ -99,8 +99,8 @@ inline void orglq( DenseMatrix<MT,SO>& A, const ElementType_t<MT>* tau );
    gelqf( A, tau.data() );  // Performing the LQ decomposition
    orglq( A, tau.data() );  // Reconstructing the Q matrix
 
-   const int m( A.rows() );
-   const int n( A.columns() );
+   const size_t m( A.rows() );
+   const size_t n( A.columns() );
 
    DynamicMatrix<double,columnMajor> Q( submatrix( A, 0UL, 0UL, min(m,n), n ) );
    \endcode
@@ -126,24 +126,24 @@ inline void orglq( DenseMatrix<MT,SO>& A, const ElementType_t<MT>* tau )
 
    using ET = ElementType_t<MT>;
 
-   int m   ( numeric_cast<int>( SO ? (~A).rows() : (~A).columns() ) );
-   int n   ( numeric_cast<int>( SO ? (~A).columns() : (~A).rows() ) );
-   int k   ( min( m, n ) );
-   int lda ( numeric_cast<int>( (~A).spacing() ) );
-   int info( 0 );
+   blas_int_t m   ( numeric_cast<blas_int_t>( SO ? (*A).rows() : (*A).columns() ) );
+   blas_int_t n   ( numeric_cast<blas_int_t>( SO ? (*A).columns() : (*A).rows() ) );
+   blas_int_t k   ( min( m, n ) );
+   blas_int_t lda ( numeric_cast<blas_int_t>( (*A).spacing() ) );
+   blas_int_t info( 0 );
 
    if( k == 0 ) {
       return;
    }
 
-   int lwork( k*lda );
+   blas_int_t lwork( k*lda );
    const std::unique_ptr<ET[]> work( new ET[lwork] );
 
    if( SO ) {
-      orglq( k, n, k, (~A).data(), lda, tau, work.get(), lwork, &info );
+      orglq( k, n, k, (*A).data(), lda, tau, work.get(), lwork, &info );
    }
    else {
-      orgqr( m, k, k, (~A).data(), lda, tau, work.get(), lwork, &info );
+      orgqr( m, k, k, (*A).data(), lda, tau, work.get(), lwork, &info );
    }
 
    BLAZE_INTERNAL_ASSERT( info == 0, "Invalid argument for Q reconstruction" );

@@ -3,7 +3,7 @@
 //  \file src/blaze/TVec6Mat6Mult.cpp
 //  \brief Source file for the Blaze 6D transpose vector/matrix multiplication kernel
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -92,7 +92,7 @@ double tvec6mat6mult( size_t N, size_t steps )
    }
 
    for( size_t i=0UL; i<N; ++i ) {
-      b[i] = a[i] * A[i];
+      b[i] = noalias( a[i] * A[i] );
    }
 
    for( size_t rep=0UL; rep<reps; ++rep )
@@ -100,7 +100,7 @@ double tvec6mat6mult( size_t N, size_t steps )
       timer.start();
       for( size_t step=0UL, i=0UL; step<steps; ++step, ++i ) {
          if( i == N ) i = 0UL;
-         b[i] = a[i] * A[i];
+         b[i] = noalias( a[i] * A[i] );
       }
       timer.end();
 

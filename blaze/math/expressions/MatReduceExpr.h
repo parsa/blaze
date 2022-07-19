@@ -3,7 +3,7 @@
 //  \file blaze/math/expressions/MatReduceExpr.h
 //  \brief Header file for the MatReduceExpr base class
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -41,6 +41,7 @@
 //*************************************************************************************************
 
 #include <blaze/math/expressions/ReduceExpr.h>
+#include <blaze/math/ReductionFlag.h>
 
 
 namespace blaze {
@@ -62,8 +63,8 @@ namespace blaze {
 // publicly from the MatReduceExpr base class, the IsMatReduceExpr type trait recognizes the
 // class as valid matrix reduction expression template.
 */
-template< typename VT  // Vector base type of the expression
-        , size_t RF >  // Reduction flag
+template< typename VT         // Vector base type of the expression
+        , ReductionFlag RF >  // Reduction flag
 struct MatReduceExpr
    : public ReduceExpr<VT>
 {};

@@ -3,7 +3,7 @@
 //  \file blaze/math/traits/RowTrait.h
 //  \brief Header file for the row trait
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -42,7 +42,6 @@
 
 #include <utility>
 #include <blaze/math/Infinity.h>
-#include <blaze/util/InvalidType.h>
 #include <blaze/util/Types.h>
 
 
@@ -66,28 +65,10 @@ template< typename, size_t, typename = void > struct RowTraitEval2;
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< size_t I, typename T >
-auto evalRowTrait( T& )
-   -> typename RowTraitEval1<T,I>::Type;
+auto evalRowTrait( const volatile T& ) -> RowTraitEval1<T,I>;
 
 template< typename T >
-auto evalRowTrait( T& )
-   -> typename RowTraitEval2<T,inf>::Type;
-
-template< size_t I, typename T >
-auto evalRowTrait( const T& )
-   -> typename RowTrait<T,I>::Type;
-
-template< typename T >
-auto evalRowTrait( const T& )
-   -> typename RowTrait<T>::Type;
-
-template< size_t I, typename T >
-auto evalRowTrait( const volatile T& )
-   -> typename RowTrait<T,I>::Type;
-
-template< typename T >
-auto evalRowTrait( const volatile T& )
-   -> typename RowTrait<T>::Type;
+auto evalRowTrait( const volatile T& ) -> RowTraitEval1<T,inf>;
 /*! \endcond */
 //*************************************************************************************************
 
@@ -99,11 +80,10 @@ auto evalRowTrait( const volatile T& )
 // \section rowtrait_general General
 //
 // The RowTrait class template offers the possibility to select the resulting data type when
-// creating a view on a specific row of a dense or sparse matrix. RowTrait defines the nested
-// type \a Type, which represents the resulting data type of the row operation. In case the
-// given data type is not a dense or sparse matrix type, the resulting data type \a Type is
-// set to \a INVALID_TYPE. Note that \a const and \a volatile qualifiers and reference modifiers
-// are generally ignored.
+// creating a view on a specific row of a dense or sparse matrix. In case the given type \a MT
+// is a dense or sparse matrix type, RowTrait defines the nested type \a Type, which represents
+// the resulting data type of the row operation. Otherwise there is no nested type \a Type.
+// Note that \a const and \a volatile qualifiers and reference modifiers are generally ignored.
 //
 //
 // \section rowtrait_specializations Creating custom specializations
@@ -141,14 +121,8 @@ auto evalRowTrait( const volatile T& )
 template< typename MT       // Type of the matrix
         , size_t... CRAs >  // Compile time row arguments
 struct RowTrait
-{
- public:
-   //**********************************************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   using Type = decltype( evalRowTrait<CRAs...>( std::declval<MT&>() ) );
-   /*! \endcond */
-   //**********************************************************************************************
-};
+   : public decltype( evalRowTrait<CRAs...>( std::declval<MT&>() ) )
+{};
 //*************************************************************************************************
 
 
@@ -180,12 +154,8 @@ template< typename MT  // Type of the matrix
         , size_t I     // Compile time row index
         , typename >   // Restricting condition
 struct RowTraitEval1
-{
- public:
-   //**********************************************************************************************
-   using Type = typename RowTraitEval2<MT,I>::Type;
-   //**********************************************************************************************
-};
+   : public RowTraitEval2<MT,I>
+{};
 /*! \endcond */
 //*************************************************************************************************
 
@@ -199,12 +169,7 @@ template< typename MT  // Type of the matrix
         , size_t I     // Compile time row index
         , typename >   // Restricting condition
 struct RowTraitEval2
-{
- public:
-   //**********************************************************************************************
-   using Type = INVALID_TYPE;
-   //**********************************************************************************************
-};
+{};
 /*! \endcond */
 //*************************************************************************************************
 

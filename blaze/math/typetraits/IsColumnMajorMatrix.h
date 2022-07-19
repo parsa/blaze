@@ -3,7 +3,7 @@
 //  \file blaze/math/typetraits/IsColumnMajorMatrix.h
 //  \brief Header file for the IsColumnMajorMatrix type trait
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -41,10 +41,9 @@
 //*************************************************************************************************
 
 #include <utility>
-#include <blaze/math/expressions/Matrix.h>
+#include <blaze/math/expressions/Forward.h>
 #include <blaze/math/StorageOrder.h>
-#include <blaze/util/FalseType.h>
-#include <blaze/util/TrueType.h>
+#include <blaze/util/IntegralConstant.h>
 
 
 namespace blaze {
@@ -57,28 +56,13 @@ namespace blaze {
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Auxiliary helper struct for the IsColumnMajorMatrix type trait.
+/*!\brief Auxiliary helper functions for the IsColumnMajorMatrix type trait.
 // \ingroup math_type_traits
 */
-template< typename T >
-struct IsColumnMajorMatrixHelper
-{
- private:
-   //**********************************************************************************************
-   template< typename MT >
-   static TrueType test( const Matrix<MT,columnMajor>& );
+template< typename MT >
+TrueType isColumnMajorMatrix_backend( const volatile Matrix<MT,columnMajor>* );
 
-   template< typename MT >
-   static TrueType test( const volatile Matrix<MT,columnMajor>& );
-
-   static FalseType test( ... );
-   //**********************************************************************************************
-
- public:
-   //**********************************************************************************************
-   using Type = decltype( test( std::declval<T&>() ) );
-   //**********************************************************************************************
-};
+FalseType isColumnMajorMatrix_backend( ... );
 /*! \endcond */
 //*************************************************************************************************
 
@@ -110,14 +94,27 @@ struct IsColumnMajorMatrixHelper
 */
 template< typename T >
 struct IsColumnMajorMatrix
-   : public IsColumnMajorMatrixHelper<T>::Type
+   : public decltype( isColumnMajorMatrix_backend( std::declval<T*>() ) )
 {};
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Specialization of the IsColumnMajorMatrix type trait for references.
+// \ingroup math_type_traits
+*/
+template< typename T >
+struct IsColumnMajorMatrix<T&>
+   : public FalseType
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Auxiliary variable template for the IsColumnMajorMatrix type trait.
-// \ingroup type_traits
+// \ingroup math_type_traits
 //
 // The IsColumnMajorMatrix_v variable template provides a convenient shortcut to access the nested
 // \a value of the IsColumnMajorMatrix class template. For instance, given the type \a T the

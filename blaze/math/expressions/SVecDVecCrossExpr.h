@@ -3,7 +3,7 @@
 //  \file blaze/math/expressions/SVecDVecCrossExpr.h
 //  \brief Header file for the sparse vector/sparse vector cross product expression
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -47,6 +47,7 @@
 #include <blaze/math/constraints/RequiresEvaluation.h>
 #include <blaze/math/constraints/SparseVector.h>
 #include <blaze/math/constraints/TransposeFlag.h>
+#include <blaze/math/constraints/Zero.h>
 #include <blaze/math/dense/Forward.h>
 #include <blaze/math/Exception.h>
 #include <blaze/math/expressions/Computation.h>
@@ -58,8 +59,12 @@
 #include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsTemporary.h>
+#include <blaze/math/typetraits/IsZero.h>
+#include <blaze/system/MacroDisable.h>
 #include <blaze/util/Assert.h>
+#include <blaze/util/EnableIf.h>
 #include <blaze/util/FunctionTrace.h>
+#include <blaze/util/MaybeUnused.h>
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/Types.h>
 
@@ -114,10 +119,15 @@ class SVecDVecCrossExpr
 
  public:
    //**Type definitions****************************************************************************
-   using This          = SVecDVecCrossExpr<VT1,VT2,TF>;  //!< Type of this SVecDVecCrossExpr instance.
-   using ResultType    = CrossTrait_t<RT1,RT2>;          //!< Result type for expression template evaluations.
-   using TransposeType = TransposeType_t<ResultType>;    //!< Transpose type for expression template evaluations.
-   using ElementType   = ElementType_t<ResultType>;      //!< Resulting element type.
+   //! Type of this SVecDVecCrossExpr instance.
+   using This = SVecDVecCrossExpr<VT1,VT2,TF>;
+
+   //! Base type of this SVecDVecCrossExpr instance.
+   using BaseType = CrossExpr< DenseVector<This,TF> >;
+
+   using ResultType    = CrossTrait_t<RT1,RT2>;        //!< Result type for expression template evaluations.
+   using TransposeType = TransposeType_t<ResultType>;  //!< Transpose type for expression template evaluations.
+   using ElementType   = ElementType_t<ResultType>;    //!< Resulting element type.
 
    //! Return type for expression template evaluations.
    using ReturnType = const If_t< returnExpr, ExprReturnType, ElementType >;
@@ -152,7 +162,7 @@ class SVecDVecCrossExpr
    // \param lhs The left-hand side operand of the cross product expression.
    // \param rhs The right-hand side operand of the cross product expression.
    */
-   explicit inline SVecDVecCrossExpr( const VT1& lhs, const VT2& rhs ) noexcept
+   inline SVecDVecCrossExpr( const VT1& lhs, const VT2& rhs ) noexcept
       : lhs_( lhs )  // Left-hand side sparse vector of the cross product expression
       , rhs_( rhs )  // Right-hand side dense vector of the cross product expression
    {
@@ -199,7 +209,7 @@ class SVecDVecCrossExpr
    //
    // \return The size of the vector.
    */
-   inline constexpr size_t size() const noexcept {
+   constexpr size_t size() const noexcept {
       return 3UL;
    }
    //**********************************************************************************************
@@ -271,15 +281,15 @@ class SVecDVecCrossExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == 3UL, "Invalid vector size" );
-      BLAZE_INTERNAL_ASSERT( (~rhs).size() == 3UL, "Invalid vector size" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == 3UL, "Invalid vector size" );
+      BLAZE_INTERNAL_ASSERT( (*rhs).size() == 3UL, "Invalid vector size" );
 
       LT x( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side sparse vector operand
       RT y( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side dense vector operand
 
-      (~lhs)[0] = x[1UL]*y[2UL] - x[2UL]*y[1UL];
-      (~lhs)[1] = x[2UL]*y[0UL] - x[0UL]*y[2UL];
-      (~lhs)[2] = x[0UL]*y[1UL] - x[1UL]*y[0UL];
+      (*lhs)[0] = x[1UL]*y[2UL] - x[2UL]*y[1UL];
+      (*lhs)[1] = x[2UL]*y[0UL] - x[0UL]*y[2UL];
+      (*lhs)[2] = x[0UL]*y[1UL] - x[1UL]*y[0UL];
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -305,11 +315,11 @@ class SVecDVecCrossExpr
       BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType, TF );
       BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == 3UL, "Invalid vector size" );
-      BLAZE_INTERNAL_ASSERT( (~rhs).size() == 3UL, "Invalid vector size" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == 3UL, "Invalid vector size" );
+      BLAZE_INTERNAL_ASSERT( (*rhs).size() == 3UL, "Invalid vector size" );
 
       const ResultType tmp( serial( rhs ) );
-      assign( ~lhs, tmp );
+      assign( *lhs, tmp );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -331,15 +341,15 @@ class SVecDVecCrossExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == 3UL, "Invalid vector size" );
-      BLAZE_INTERNAL_ASSERT( (~rhs).size() == 3UL, "Invalid vector size" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == 3UL, "Invalid vector size" );
+      BLAZE_INTERNAL_ASSERT( (*rhs).size() == 3UL, "Invalid vector size" );
 
       LT x( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side sparse vector operand
       RT y( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side dense vector operand
 
-      (~lhs)[0] += x[1UL]*y[2UL] - x[2UL]*y[1UL];
-      (~lhs)[1] += x[2UL]*y[0UL] - x[0UL]*y[2UL];
-      (~lhs)[2] += x[0UL]*y[1UL] - x[1UL]*y[0UL];
+      (*lhs)[0] += x[1UL]*y[2UL] - x[2UL]*y[1UL];
+      (*lhs)[1] += x[2UL]*y[0UL] - x[0UL]*y[2UL];
+      (*lhs)[2] += x[0UL]*y[1UL] - x[1UL]*y[0UL];
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -365,15 +375,15 @@ class SVecDVecCrossExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == 3UL, "Invalid vector size" );
-      BLAZE_INTERNAL_ASSERT( (~rhs).size() == 3UL, "Invalid vector size" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == 3UL, "Invalid vector size" );
+      BLAZE_INTERNAL_ASSERT( (*rhs).size() == 3UL, "Invalid vector size" );
 
       LT x( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side sparse vector operand
       RT y( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side dense vector operand
 
-      (~lhs)[0] -= x[1UL]*y[2UL] - x[2UL]*y[1UL];
-      (~lhs)[1] -= x[2UL]*y[0UL] - x[0UL]*y[2UL];
-      (~lhs)[2] -= x[0UL]*y[1UL] - x[1UL]*y[0UL];
+      (*lhs)[0] -= x[1UL]*y[2UL] - x[2UL]*y[1UL];
+      (*lhs)[1] -= x[2UL]*y[0UL] - x[0UL]*y[2UL];
+      (*lhs)[2] -= x[0UL]*y[1UL] - x[1UL]*y[0UL];
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -399,15 +409,15 @@ class SVecDVecCrossExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == 3UL, "Invalid vector size" );
-      BLAZE_INTERNAL_ASSERT( (~rhs).size() == 3UL, "Invalid vector size" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == 3UL, "Invalid vector size" );
+      BLAZE_INTERNAL_ASSERT( (*rhs).size() == 3UL, "Invalid vector size" );
 
       LT x( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side sparse vector operand
       RT y( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side dense vector operand
 
-      (~lhs)[0] *= x[1UL]*y[2UL] - x[2UL]*y[1UL];
-      (~lhs)[1] *= x[2UL]*y[0UL] - x[0UL]*y[2UL];
-      (~lhs)[2] *= x[0UL]*y[1UL] - x[1UL]*y[0UL];
+      (*lhs)[0] *= x[1UL]*y[2UL] - x[2UL]*y[1UL];
+      (*lhs)[1] *= x[2UL]*y[0UL] - x[0UL]*y[2UL];
+      (*lhs)[2] *= x[0UL]*y[1UL] - x[1UL]*y[0UL];
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -433,15 +443,15 @@ class SVecDVecCrossExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == 3UL, "Invalid vector size" );
-      BLAZE_INTERNAL_ASSERT( (~rhs).size() == 3UL, "Invalid vector size" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == 3UL, "Invalid vector size" );
+      BLAZE_INTERNAL_ASSERT( (*rhs).size() == 3UL, "Invalid vector size" );
 
       LT x( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side sparse vector operand
       RT y( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side dense vector operand
 
-      (~lhs)[0] /= x[1UL]*y[2UL] - x[2UL]*y[1UL];
-      (~lhs)[1] /= x[2UL]*y[0UL] - x[0UL]*y[2UL];
-      (~lhs)[2] /= x[0UL]*y[1UL] - x[1UL]*y[0UL];
+      (*lhs)[0] /= x[1UL]*y[2UL] - x[2UL]*y[1UL];
+      (*lhs)[1] /= x[2UL]*y[0UL] - x[0UL]*y[2UL];
+      (*lhs)[2] /= x[0UL]*y[1UL] - x[1UL]*y[0UL];
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -456,6 +466,7 @@ class SVecDVecCrossExpr
    BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE ( VT2 );
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( VT1, TF );
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( VT2, TF );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_ZERO_TYPE( VT1 );
    /*! \endcond */
    //**********************************************************************************************
 };
@@ -469,6 +480,73 @@ class SVecDVecCrossExpr
 //  GLOBAL BINARY ARITHMETIC OPERATORS
 //
 //=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Backend implementation of the cross product of a sparse vector and a dense vector
+//        (\f$ \vec{a}=\vec{b} \times \vec{c} \f$).
+// \ingroup dense_vector
+//
+// \param lhs The left-hand side sparse vector for the cross product.
+// \param rhs The right-hand side dense vector for the cross product.
+// \return The cross product of the two vectors.
+//
+// This function implements a performance optimized treatment of the cross product of a sparse
+// vector and a dense vector.
+*/
+template< typename VT1  // Type of the left-hand side sparse vector
+        , typename VT2  // Type of the right-hand side dense vector
+        , bool TF       // Transpose flag
+        , DisableIf_t< IsZero_v<VT1> >* = nullptr >
+inline const SVecDVecCrossExpr<VT1,VT2,TF>
+   svecdveccross( const SparseVector<VT1,TF>& lhs, const DenseVector<VT2,TF>& rhs )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   BLAZE_INTERNAL_ASSERT( (*lhs).size() == (*rhs).size(), "Invalid vector sizes" );
+
+   return SVecDVecCrossExpr<VT1,VT2,TF>( *lhs, *rhs );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Backend implementation of the cross product of a zero vector and a dense vector
+//        (\f$ \vec{a}=\vec{b} \times \vec{c} \f$).
+// \ingroup dense_vector
+//
+// \param lhs The left-hand side zero vector for the cross product.
+// \param rhs The right-hand side dense vector for the cross product.
+// \return The resulting zero vector.
+//
+// This function implements a performance optimized treatment of the cross product of a zero
+// vector and a dense vector. It returns a zero vector.
+*/
+template< typename VT1  // Type of the left-hand side sparse vector
+        , typename VT2  // Type of the right-hand side dense vector
+        , bool TF       // Transpose flag
+        , EnableIf_t< IsZero_v<VT1> >* = nullptr >
+inline decltype(auto)
+   svecdveccross( const SparseVector<VT1,TF>& lhs, const DenseVector<VT2,TF>& rhs )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   MAYBE_UNUSED( lhs, rhs );
+
+   BLAZE_INTERNAL_ASSERT( (*lhs).size() == (*rhs).size(), "Invalid vector sizes" );
+
+   using ReturnType = const CrossTrait_t< ResultType_t<VT1>, ResultType_t<VT2> >;
+
+   BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ReturnType, TF );
+   BLAZE_CONSTRAINT_MUST_BE_ZERO_TYPE( ReturnType );
+
+   return ReturnType( 3UL );
+}
+/*! \endcond */
+//*************************************************************************************************
+
 
 //*************************************************************************************************
 /*!\brief Operator for the cross product of a sparse vector and a dense vector
@@ -505,48 +583,11 @@ inline decltype(auto)
 {
    BLAZE_FUNCTION_TRACE;
 
-   if( (~lhs).size() != 3UL || (~rhs).size() != 3UL ) {
+   if( (*lhs).size() != 3UL || (*rhs).size() != 3UL ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid vector size for cross product" );
    }
 
-   using ReturnType = const SVecDVecCrossExpr<VT1,VT2,TF>;
-   return ReturnType( ~lhs, ~rhs );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Cross product of a sparse vector and a dense vector (\f$ \vec{a}=\vec{b} \times \vec{c} \f$).
-// \ingroup dense_vector
-//
-// \param lhs The left-hand side sparse vector for the cross product.
-// \param rhs The right-hand side dense vector for the cross product.
-// \return The cross product of the two vectors.
-// \exception std::invalid_argument Invalid vector size for cross product.
-//
-// This function computes the cross product of a sparse vector and a dense vector:
-
-   \code
-   blaze::CompressedVector<double> a( 3UL );
-   blaze::DynamicVector<double> b( 3UL );
-   blaze::StaticVector<double,3UL> c;
-   // ... Resizing and initialization
-   c = a % b;
-   \endcode
-
-// The operator returns an expression representing a dense vector of the higher-order element
-// type of the two involved vector element types \a VT1::ElementType and \a VT2::ElementType.
-// Both vector types \a VT1 and \a VT2 as well as the two element types \a VT1::ElementType
-// and \a VT2::ElementType have to be supported by the CrossTrait class template.\n
-// In case the current sizes of the two given vectors don't match, a \a std::invalid_argument
-// is thrown.
-*/
-template< typename VT1  // Type of the left-hand side sparse vector
-        , typename VT2  // Type of the right-hand side dense vector
-        , bool TF >     // Transpose flag
-inline decltype(auto) cross( const SparseVector<VT1,TF>& lhs, const DenseVector<VT2,TF>& rhs )
-{
-   return lhs % rhs;
+   return svecdveccross( *lhs, *rhs );
 }
 //*************************************************************************************************
 

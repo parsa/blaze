@@ -3,7 +3,7 @@
 //  \file blaze/math/dense/SVD.h
 //  \brief Header file for the dense matrix singular value decomposition (SVD)
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -69,7 +69,7 @@ inline void svd( const DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& s );
 
 template< typename MT1, bool SO, typename VT, bool TF, typename MT2, typename MT3 >
 inline void svd( const DenseMatrix<MT1,SO>& A, DenseMatrix<MT2,SO>& U,
-                 DenseVector<VT,TF>& s, DenseMatrix<MT3,SO>& V );
+                 DenseVector<VT,TF>& s, DenseMatrix<MT3,SO>& V, bool square = false );
 
 template< typename MT, bool SO, typename VT, bool TF, typename ST >
 inline size_t svd( const DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& s, ST low, ST upp );
@@ -149,13 +149,13 @@ inline void svd( const DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& s )
    BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( ATmp );
    BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<ATmp> );
 
-   ATmp Atmp( ~A );
-   STmp stmp( ~s );
+   ATmp Atmp( *A );
+   STmp stmp( *s );
 
    gesdd( Atmp, stmp );
 
    if( !IsContiguous_v<VT> ) {
-      (~s) = stmp;
+      (*s) = stmp;
    }
 }
 //*************************************************************************************************
@@ -169,6 +169,7 @@ inline void svd( const DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& s )
 // \param U The resulting matrix of left singular vectors.
 // \param s The resulting vector of singular values.
 // \param V The resulting matrix of right singular vectors.
+// \param square Defaults to False.  If True, will make sure U and V are square matrices.
 // \return void
 // \exception std::invalid_argument Dimensions of fixed size matrix U do not match.
 // \exception std::invalid_argument Size of fixed size vector does not match.
@@ -225,7 +226,7 @@ template< typename MT1    // Type of the matrix A
         , typename MT2    // Type of the matrix U
         , typename MT3 >  // Type of the matrix V
 inline void svd( const DenseMatrix<MT1,SO>& A, DenseMatrix<MT2,SO>& U,
-                 DenseVector<VT,TF>& s, DenseMatrix<MT3,SO>& V )
+                 DenseVector<VT,TF>& s, DenseMatrix<MT3,SO>& V, bool square )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( MT1 );
    BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<MT1> );
@@ -254,23 +255,23 @@ inline void svd( const DenseMatrix<MT1,SO>& A, DenseMatrix<MT2,SO>& U,
    BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( ATmp );
    BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<ATmp> );
 
-   ATmp Atmp( ~A );
-   UTmp Utmp( ~U );
-   STmp stmp( ~s );
-   VTmp Vtmp( ~V );
+   ATmp Atmp( *A );
+   UTmp Utmp( *U );
+   STmp stmp( *s );
+   VTmp Vtmp( *V );
 
-   gesdd( Atmp, Utmp, stmp, Vtmp, 'S' );
+   gesdd( Atmp, Utmp, stmp, Vtmp, (square) ? 'A' : 'S' );
 
    if( !IsContiguous_v<MT2> ) {
-      (~U) = Utmp;
+      (*U) = Utmp;
    }
 
    if( !IsContiguous_v<VT> ) {
-      (~s) = stmp;
+      (*s) = stmp;
    }
 
    if( !IsContiguous_v<MT3> ) {
-      (~V) = Vtmp;
+      (*V) = Vtmp;
    }
 }
 //*************************************************************************************************
@@ -362,13 +363,13 @@ inline size_t svd( const DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& s, ST low, S
    BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( ATmp );
    BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<ATmp> );
 
-   ATmp Atmp( ~A );
-   STmp stmp( ~s );
+   ATmp Atmp( *A );
+   STmp stmp( *s );
 
    const auto num = gesvdx( Atmp, stmp, low, upp );
 
    if( !IsContiguous_v<VT> ) {
-      (~s) = stmp;
+      (*s) = stmp;
    }
 
    return num;
@@ -493,23 +494,23 @@ inline size_t svd( const DenseMatrix<MT1,SO>& A, DenseMatrix<MT2,SO>& U,
    BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( ATmp );
    BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<ATmp> );
 
-   ATmp Atmp( ~A );
-   UTmp Utmp( ~U );
-   STmp stmp( ~s );
-   VTmp Vtmp( ~V );
+   ATmp Atmp( *A );
+   UTmp Utmp( *U );
+   STmp stmp( *s );
+   VTmp Vtmp( *V );
 
    const auto num = gesvdx( Atmp, Utmp, stmp, Vtmp, low, upp );
 
    if( !IsContiguous_v<MT2> ) {
-      (~U) = Utmp;
+      (*U) = Utmp;
    }
 
    if( !IsContiguous_v<VT> ) {
-      (~s) = stmp;
+      (*s) = stmp;
    }
 
    if( !IsContiguous_v<MT3> ) {
-      (~V) = Vtmp;
+      (*V) = Vtmp;
    }
 
    return num;

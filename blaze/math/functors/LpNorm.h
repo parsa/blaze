@@ -3,7 +3,7 @@
 //  \file blaze/math/functors/LpNorm.h
 //  \brief Header file for the LpNorm functor
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -40,6 +40,8 @@
 // Includes
 //*************************************************************************************************
 
+#include <utility>
+#include <blaze/system/HostDevice.h>
 #include <blaze/system/Inline.h>
 #include <blaze/util/StaticAssert.h>
 
@@ -60,23 +62,16 @@ template< size_t... P >  // Compile time norm parameter
 struct LpNorm
 {
    //**********************************************************************************************
-   /*!\brief Default constructor of the LpNorm functor.
-   */
-   explicit inline LpNorm()
-   {}
-   //**********************************************************************************************
-
-   //**********************************************************************************************
    /*!\brief Calls the lpNorm() function with the given object/value.
    //
    // \param a The given object/value.
    // \return The Lp norm of the given object/value.
    */
    template< typename T >
-   BLAZE_ALWAYS_INLINE decltype(auto) operator()( const T& a ) const
+   BLAZE_ALWAYS_INLINE BLAZE_DEVICE_CALLABLE decltype(auto) operator()( T&& a ) const
    {
       BLAZE_STATIC_ASSERT_MSG( sizeof...( P ) == 1UL, "Missing norm parameter detected" );
-      return lpNorm( a, P... );
+      return lpNorm( std::forward<T>( a ), P... );
    }
    //**********************************************************************************************
 
@@ -88,10 +83,10 @@ struct LpNorm
    // \return The Lp norm of the given object/value.
    */
    template< typename T, typename ST >
-   BLAZE_ALWAYS_INLINE decltype(auto) operator()( const T& a, ST p ) const
+   BLAZE_ALWAYS_INLINE BLAZE_DEVICE_CALLABLE decltype(auto) operator()( T&& a, ST p ) const
    {
       BLAZE_STATIC_ASSERT_MSG( sizeof...( P ) == 0UL, "Over-specified norm parameter detected" );
-      return lpNorm( a, p );
+      return lpNorm( std::forward<T>( a ), p );
    }
    //**********************************************************************************************
 };
@@ -115,20 +110,13 @@ template<>
 struct LpNorm<1UL>
 {
    //**********************************************************************************************
-   /*!\brief Default constructor of the LpNorm functor.
-   */
-   explicit inline LpNorm()
-   {}
-   //**********************************************************************************************
-
-   //**********************************************************************************************
    /*!\brief Calls the lpNorm() function with the given object/value.
    //
    // \param a The given object/value.
    // \return The Lp norm of the given object/value.
    */
    template< typename T >
-   BLAZE_ALWAYS_INLINE decltype(auto) operator()( const T& a ) const
+   BLAZE_ALWAYS_INLINE BLAZE_DEVICE_CALLABLE decltype(auto) operator()( const T& a ) const
    {
       return l1Norm( a );
    }
@@ -147,20 +135,13 @@ template<>
 struct LpNorm<2UL>
 {
    //**********************************************************************************************
-   /*!\brief Default constructor of the LpNorm functor.
-   */
-   explicit inline LpNorm()
-   {}
-   //**********************************************************************************************
-
-   //**********************************************************************************************
    /*!\brief Calls the lpNorm() function with the given object/value.
    //
    // \param a The given object/value.
    // \return The Lp norm of the given object/value.
    */
    template< typename T >
-   BLAZE_ALWAYS_INLINE decltype(auto) operator()( const T& a ) const
+   BLAZE_ALWAYS_INLINE BLAZE_DEVICE_CALLABLE decltype(auto) operator()( const T& a ) const
    {
       return l2Norm( a );
    }
@@ -179,20 +160,13 @@ template<>
 struct LpNorm<3UL>
 {
    //**********************************************************************************************
-   /*!\brief Default constructor of the LpNorm functor.
-   */
-   explicit inline LpNorm()
-   {}
-   //**********************************************************************************************
-
-   //**********************************************************************************************
    /*!\brief Calls the lpNorm() function with the given object/value.
    //
    // \param a The given object/value.
    // \return The Lp norm of the given object/value.
    */
    template< typename T >
-   BLAZE_ALWAYS_INLINE decltype(auto) operator()( const T& a ) const
+   BLAZE_ALWAYS_INLINE BLAZE_DEVICE_CALLABLE decltype(auto) operator()( const T& a ) const
    {
       return l3Norm( a );
    }
@@ -211,20 +185,13 @@ template<>
 struct LpNorm<4UL>
 {
    //**********************************************************************************************
-   /*!\brief Default constructor of the LpNorm functor.
-   */
-   explicit inline LpNorm()
-   {}
-   //**********************************************************************************************
-
-   //**********************************************************************************************
    /*!\brief Calls the lpNorm() function with the given object/value.
    //
    // \param a The given object/value.
    // \return The Lp norm of the given object/value.
    */
    template< typename T >
-   BLAZE_ALWAYS_INLINE decltype(auto) operator()( const T& a ) const
+   BLAZE_ALWAYS_INLINE BLAZE_DEVICE_CALLABLE decltype(auto) operator()( const T& a ) const
    {
       return l4Norm( a );
    }

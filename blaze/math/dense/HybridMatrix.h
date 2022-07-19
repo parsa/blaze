@@ -3,7 +3,7 @@
 //  \file blaze/math/dense/HybridMatrix.h
 //  \brief Header file for the implementation of a fixed-size matrix
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -40,30 +40,42 @@
 // Includes
 //*************************************************************************************************
 
+#include <array>
 #include <algorithm>
 #include <utility>
 #include <blaze/math/Aliases.h>
+#include <blaze/math/AlignmentFlag.h>
 #include <blaze/math/constraints/Diagonal.h>
+#include <blaze/math/constraints/SameTag.h>
 #include <blaze/math/constraints/Symmetric.h>
 #include <blaze/math/dense/DenseIterator.h>
+#include <blaze/math/dense/Forward.h>
 #include <blaze/math/Exception.h>
 #include <blaze/math/expressions/DenseMatrix.h>
 #include <blaze/math/expressions/SparseMatrix.h>
 #include <blaze/math/Forward.h>
 #include <blaze/math/InitializerList.h>
+#include <blaze/math/PaddingFlag.h>
+#include <blaze/math/RelaxationFlag.h>
 #include <blaze/math/shims/Clear.h>
 #include <blaze/math/shims/Conjugate.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/shims/NextMultiple.h>
+#include <blaze/math/shims/PrevMultiple.h>
 #include <blaze/math/shims/Serial.h>
 #include <blaze/math/SIMD.h>
 #include <blaze/math/traits/AddTrait.h>
 #include <blaze/math/traits/ColumnsTrait.h>
 #include <blaze/math/traits/DivTrait.h>
+#include <blaze/math/traits/EvaluateTrait.h>
+#include <blaze/math/traits/ExpandTrait.h>
+#include <blaze/math/traits/KronTrait.h>
 #include <blaze/math/traits/MapTrait.h>
 #include <blaze/math/traits/MultTrait.h>
+#include <blaze/math/traits/RepeatTrait.h>
 #include <blaze/math/traits/RowsTrait.h>
 #include <blaze/math/traits/SchurTrait.h>
+#include <blaze/math/traits/SolveTrait.h>
 #include <blaze/math/traits/SubmatrixTrait.h>
 #include <blaze/math/traits/SubTrait.h>
 #include <blaze/math/typetraits/HasConstDataAccess.h>
@@ -77,15 +89,17 @@
 #include <blaze/math/typetraits/IsColumnVector.h>
 #include <blaze/math/typetraits/IsContiguous.h>
 #include <blaze/math/typetraits/IsDenseMatrix.h>
+#include <blaze/math/typetraits/IsDenseVector.h>
 #include <blaze/math/typetraits/IsDiagonal.h>
 #include <blaze/math/typetraits/IsLower.h>
 #include <blaze/math/typetraits/IsMatrix.h>
 #include <blaze/math/typetraits/IsPadded.h>
-#include <blaze/math/typetraits/IsResizable.h>
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
 #include <blaze/math/typetraits/IsRowVector.h>
+#include <blaze/math/typetraits/IsScalar.h>
 #include <blaze/math/typetraits/IsSIMDCombinable.h>
 #include <blaze/math/typetraits/IsSparseMatrix.h>
+#include <blaze/math/typetraits/IsSquare.h>
 #include <blaze/math/typetraits/IsStrictlyLower.h>
 #include <blaze/math/typetraits/IsStrictlyUpper.h>
 #include <blaze/math/typetraits/IsSymmetric.h>
@@ -94,10 +108,10 @@
 #include <blaze/math/typetraits/MaxSize.h>
 #include <blaze/math/typetraits/Size.h>
 #include <blaze/math/typetraits/StorageOrder.h>
+#include <blaze/system/Alignment.h>
 #include <blaze/system/Inline.h>
 #include <blaze/system/Optimizations.h>
-#include <blaze/system/StorageOrder.h>
-#include <blaze/system/TransposeFlag.h>
+#include <blaze/system/Padding.h>
 #include <blaze/util/algorithms/Max.h>
 #include <blaze/util/algorithms/Min.h>
 #include <blaze/util/AlignedArray.h>
@@ -109,20 +123,18 @@
 #include <blaze/util/constraints/Reference.h>
 #include <blaze/util/constraints/Vectorizable.h>
 #include <blaze/util/constraints/Volatile.h>
-#include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/IntegralConstant.h>
+#include <blaze/util/MaybeUnused.h>
 #include <blaze/util/Memory.h>
-#include <blaze/util/mpl/PtrdiffT.h>
 #include <blaze/util/StaticAssert.h>
-#include <blaze/util/TrueType.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/AlignmentOf.h>
 #include <blaze/util/typetraits/IsNumeric.h>
 #include <blaze/util/typetraits/IsSame.h>
 #include <blaze/util/typetraits/IsVectorizable.h>
 #include <blaze/util/typetraits/RemoveConst.h>
-#include <blaze/util/Unused.h>
+#include <blaze/util/typetraits/RemoveCV.h>
 
 
 namespace blaze {
@@ -145,12 +157,16 @@ namespace blaze {
 // the blaze::StaticMatrix and the blaze::DynamicMatrix class templates: Similar to the static
 // matrix it uses static stack memory instead of dynamically allocated memory and similar to the
 // dynamic matrix it can be resized (within the extend of the static memory). The type of the
-// elements, the maximum number of rows and columns and the storage order of the matrix can be
-// specified via the four template parameters:
+// elements, the maximum number of rows and columns, the storage order of the matrix, the alignment,
+// the padding, and the group tag of the matrix can be specified via the seven template parameters:
 
    \code
-   template< typename Type, size_t M, size_t N, bool SO >
+   namespace blaze {
+
+   template< typename Type, size_t M, size_t N, bool SO, AlignmentFlag AF, PaddingFlag PF, typename Tag >
    class HybridMatrix;
+
+   } // namespace blaze
    \endcode
 
 //  - Type: specifies the type of the matrix elements. HybridMatrix can be used with any
@@ -158,8 +174,17 @@ namespace blaze {
 //  - M   : specifies the maximum number of rows of the matrix.
 //  - N   : specifies the maximum number of columns of the matrix. Note that it is expected
 //          that HybridMatrix is only used for tiny and small matrices.
-//  - SO  : specifies the storage order (blaze::rowMajor, blaze::columnMajor) of the matrix.
-//          The default value is blaze::rowMajor.
+//  - SO  : specifies the storage order (\c blaze::rowMajor, \c blaze::columnMajor) of the
+//          matrix. The default value is \c blaze::defaultStorageOrder.
+//  - AF  : specifies whether the first element of every row/column is properly aligned with
+//          respect to the available instruction set (SSE, AVX, ...). Possible values are
+//          \c blaze::aligned and \c blaze::unaligned. The default value is
+//          \c blaze::defaultAlignmentFlag.
+//  - PF  : specifies whether every row/column of the matrix should be padded to maximize the
+//          efficiency of vectorized operations. Possible values are \c blaze::padded and
+//          \c blaze::unpadded. The default value is \c blaze::defaultPaddingFlag.
+//  - Tag : optional type parameter to tag the matrix. The default type is \c blaze::Group0.
+//          See \ref grouping_tagging for details.
 //
 // Depending on the storage order, the matrix elements are either stored in a row-wise fashion
 // or in a column-wise fashion. Given the 2x3 matrix
@@ -219,44 +244,43 @@ namespace blaze {
    F *= A * D;    // Multiplication assignment
    \endcode
 */
-template< typename Type                    // Data type of the matrix
-        , size_t M                         // Number of rows
-        , size_t N                         // Number of columns
-        , bool SO = defaultStorageOrder >  // Storage order
+template< typename Type     // Data type of the matrix
+        , size_t M          // Number of rows
+        , size_t N          // Number of columns
+        , bool SO           // Storage order
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
 class HybridMatrix
-   : public DenseMatrix< HybridMatrix<Type,M,N,SO>, SO >
+   : public DenseMatrix< HybridMatrix<Type,M,N,SO,AF,PF,Tag>, SO >
 {
- private:
-   //**********************************************************************************************
-   //! The number of elements packed within a single SIMD element.
-   static constexpr size_t SIMDSIZE = SIMDTrait<Type>::size;
-
-   //! Alignment adjustment.
-   static constexpr size_t NN = ( usePadding ? nextMultiple( N, SIMDSIZE ) : N );
-
-   //! Compilation switch for the choice of alignment.
-   static constexpr bool align = ( usePadding || NN % SIMDSIZE == 0UL );
-   //**********************************************************************************************
-
  public:
    //**Type definitions****************************************************************************
-   using This          = HybridMatrix<Type,M,N,SO>;   //!< Type of this HybridMatrix instance.
-   using BaseType      = DenseMatrix<This,SO>;        //!< Base type of this HybridMatrix instance.
-   using ResultType    = This;                        //!< Result type for expression template evaluations.
-   using OppositeType  = HybridMatrix<Type,M,N,!SO>;  //!< Result type with opposite storage order for expression template evaluations.
-   using TransposeType = HybridMatrix<Type,N,M,!SO>;  //!< Transpose type for expression template evaluations.
-   using ElementType   = Type;                        //!< Type of the matrix elements.
-   using SIMDType      = SIMDTrait_t<ElementType>;    //!< SIMD type of the matrix elements.
-   using ReturnType    = const Type&;                 //!< Return type for expression template evaluations.
-   using CompositeType = const This&;                 //!< Data type for composite expression templates.
+   //! Type of this HybridMatrix instance.
+   using This = HybridMatrix<Type,M,N,SO,AF,PF,Tag>;
+
+   using BaseType   = DenseMatrix<This,SO>;  //!< Base type of this HybridMatrix instance.
+   using ResultType = This;                  //!< Result type for expression template evaluations.
+
+   //! Result type with opposite storage order for expression template evaluations.
+   using OppositeType  = HybridMatrix<Type,M,N,!SO,AF,PF,Tag>;
+
+   //! Transpose type for expression template evaluations.
+   using TransposeType = HybridMatrix<Type,N,M,!SO,AF,PF,Tag>;
+
+   using ElementType   = Type;                      //!< Type of the matrix elements.
+   using SIMDType      = SIMDTrait_t<ElementType>;  //!< SIMD type of the matrix elements.
+   using TagType       = Tag;                       //!< Tag type of this StaticMatrix instance.
+   using ReturnType    = const Type&;               //!< Return type for expression template evaluations.
+   using CompositeType = const This&;               //!< Data type for composite expression templates.
 
    using Reference      = Type&;        //!< Reference to a non-constant matrix value.
    using ConstReference = const Type&;  //!< Reference to a constant matrix value.
    using Pointer        = Type*;        //!< Pointer to a non-constant matrix value.
    using ConstPointer   = const Type*;  //!< Pointer to a constant matrix value.
 
-   using Iterator      = DenseIterator<Type,align>;        //!< Iterator over non-constant elements.
-   using ConstIterator = DenseIterator<const Type,align>;  //!< Iterator over constant elements.
+   using Iterator      = DenseIterator<Type,AF>;        //!< Iterator over non-constant elements.
+   using ConstIterator = DenseIterator<const Type,AF>;  //!< Iterator over constant elements.
    //**********************************************************************************************
 
    //**Rebind struct definition********************************************************************
@@ -264,7 +288,7 @@ class HybridMatrix
    */
    template< typename NewType >  // Data type of the other matrix
    struct Rebind {
-      using Other = HybridMatrix<NewType,M,N,SO>;  //!< The type of the other HybridMatrix.
+      using Other = HybridMatrix<NewType,M,N,SO,AF,PF,Tag>;  //!< The type of the other HybridMatrix.
    };
    //**********************************************************************************************
 
@@ -274,7 +298,7 @@ class HybridMatrix
    template< size_t NewM    // Number of rows of the other matrix
            , size_t NewN >  // Number of columns of the other matrix
    struct Resize {
-      using Other = HybridMatrix<Type,NewM,NewN,SO>;  //!< The type of the other HybridMatrix.
+      using Other = HybridMatrix<Type,NewM,NewN,SO,AF,PF,Tag>;  //!< The type of the other HybridMatrix.
    };
    //**********************************************************************************************
 
@@ -296,19 +320,24 @@ class HybridMatrix
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit inline HybridMatrix();
-   explicit inline HybridMatrix( size_t m, size_t n );
-   explicit inline HybridMatrix( size_t m, size_t n, const Type& init );
-   explicit inline HybridMatrix( initializer_list< initializer_list<Type> > list );
+   constexpr HybridMatrix();
+   constexpr HybridMatrix( size_t m, size_t n );
+   inline    HybridMatrix( size_t m, size_t n, const Type& init );
+   constexpr HybridMatrix( initializer_list< initializer_list<Type> > list );
 
    template< typename Other >
-   explicit inline HybridMatrix( size_t m, size_t n, const Other* array );
+   inline HybridMatrix( size_t m, size_t n, const Other* array );
 
    template< typename Other, size_t Rows, size_t Cols >
-   explicit inline HybridMatrix( const Other (&array)[Rows][Cols] );
+   inline HybridMatrix( const Other (&array)[Rows][Cols] );
 
-                                     inline HybridMatrix( const HybridMatrix& m );
-   template< typename MT, bool SO2 > inline HybridMatrix( const Matrix<MT,SO2>& m );
+   template< typename Other, size_t Rows, size_t Cols >
+   inline HybridMatrix( const std::array<std::array<Other,Cols>,Rows>& array );
+
+   constexpr HybridMatrix( const HybridMatrix& m );
+
+   template< typename MT, bool SO2 >
+   inline HybridMatrix( const Matrix<MT,SO2>& m );
    //@}
    //**********************************************************************************************
 
@@ -322,56 +351,60 @@ class HybridMatrix
    //**Data access functions***********************************************************************
    /*!\name Data access functions */
    //@{
-   inline Reference      operator()( size_t i, size_t j ) noexcept;
-   inline ConstReference operator()( size_t i, size_t j ) const noexcept;
-   inline Reference      at( size_t i, size_t j );
-   inline ConstReference at( size_t i, size_t j ) const;
-   inline Pointer        data  () noexcept;
-   inline ConstPointer   data  () const noexcept;
-   inline Pointer        data  ( size_t i ) noexcept;
-   inline ConstPointer   data  ( size_t i ) const noexcept;
-   inline Iterator       begin ( size_t i ) noexcept;
-   inline ConstIterator  begin ( size_t i ) const noexcept;
-   inline ConstIterator  cbegin( size_t i ) const noexcept;
-   inline Iterator       end   ( size_t i ) noexcept;
-   inline ConstIterator  end   ( size_t i ) const noexcept;
-   inline ConstIterator  cend  ( size_t i ) const noexcept;
+   constexpr Reference      operator()( size_t i, size_t j ) noexcept;
+   constexpr ConstReference operator()( size_t i, size_t j ) const noexcept;
+   inline    Reference      at( size_t i, size_t j );
+   inline    ConstReference at( size_t i, size_t j ) const;
+   constexpr Pointer        data  () noexcept;
+   constexpr ConstPointer   data  () const noexcept;
+   constexpr Pointer        data  ( size_t i ) noexcept;
+   constexpr ConstPointer   data  ( size_t i ) const noexcept;
+   constexpr Iterator       begin ( size_t i ) noexcept;
+   constexpr ConstIterator  begin ( size_t i ) const noexcept;
+   constexpr ConstIterator  cbegin( size_t i ) const noexcept;
+   constexpr Iterator       end   ( size_t i ) noexcept;
+   constexpr ConstIterator  end   ( size_t i ) const noexcept;
+   constexpr ConstIterator  cend  ( size_t i ) const noexcept;
    //@}
    //**********************************************************************************************
 
    //**Assignment operators************************************************************************
    /*!\name Assignment operators */
    //@{
-   inline HybridMatrix& operator=( const Type& set );
-   inline HybridMatrix& operator=( initializer_list< initializer_list<Type> > list );
+   constexpr HybridMatrix& operator=( const Type& set ) &;
+   constexpr HybridMatrix& operator=( initializer_list< initializer_list<Type> > list ) &;
 
    template< typename Other, size_t Rows, size_t Cols >
-   inline HybridMatrix& operator=( const Other (&array)[Rows][Cols] );
+   constexpr HybridMatrix& operator=( const Other (&array)[Rows][Cols] ) &;
 
-                                     inline HybridMatrix& operator= ( const HybridMatrix& rhs );
-   template< typename MT, bool SO2 > inline HybridMatrix& operator= ( const Matrix<MT,SO2>& rhs );
-   template< typename MT, bool SO2 > inline HybridMatrix& operator+=( const Matrix<MT,SO2>& rhs );
-   template< typename MT, bool SO2 > inline HybridMatrix& operator-=( const Matrix<MT,SO2>& rhs );
-   template< typename MT, bool SO2 > inline HybridMatrix& operator%=( const Matrix<MT,SO2>& rhs );
+   template< typename Other, size_t Rows, size_t Cols >
+   constexpr HybridMatrix& operator=( const std::array<std::array<Other,Cols>,Rows>& array ) &;
+
+   constexpr HybridMatrix& operator=( const HybridMatrix& rhs ) &;
+
+   template< typename MT, bool SO2 > inline HybridMatrix& operator= ( const Matrix<MT,SO2>& rhs ) &;
+   template< typename MT, bool SO2 > inline HybridMatrix& operator+=( const Matrix<MT,SO2>& rhs ) &;
+   template< typename MT, bool SO2 > inline HybridMatrix& operator-=( const Matrix<MT,SO2>& rhs ) &;
+   template< typename MT, bool SO2 > inline HybridMatrix& operator%=( const Matrix<MT,SO2>& rhs ) &;
    //@}
    //**********************************************************************************************
 
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-          inline           size_t rows() const noexcept;
-          inline           size_t columns() const noexcept;
-   static inline constexpr size_t spacing() noexcept;
-   static inline constexpr size_t capacity() noexcept;
-          inline           size_t capacity( size_t i ) const noexcept;
-          inline           size_t nonZeros() const;
-          inline           size_t nonZeros( size_t i ) const;
-          inline           void   reset();
-          inline           void   reset( size_t i );
-          inline           void   clear();
-                           void   resize ( size_t m, size_t n, bool preserve=true );
-          inline           void   extend ( size_t m, size_t n, bool preserve=true );
-          inline           void   swap( HybridMatrix& m ) noexcept;
+          constexpr size_t rows() const noexcept;
+          constexpr size_t columns() const noexcept;
+   static constexpr size_t spacing() noexcept;
+   static constexpr size_t capacity() noexcept;
+          constexpr size_t capacity( size_t i ) const noexcept;
+          inline    size_t nonZeros() const;
+          inline    size_t nonZeros( size_t i ) const;
+          constexpr void   reset();
+          constexpr void   reset( size_t i );
+          constexpr void   clear();
+          constexpr void   resize ( size_t m, size_t n, bool preserve=true );
+          constexpr void   extend ( size_t m, size_t n, bool preserve=true );
+          inline    void   swap( HybridMatrix& m ) noexcept;
    //@}
    //**********************************************************************************************
 
@@ -402,11 +435,20 @@ class HybridMatrix
 
  private:
    //**********************************************************************************************
+   //! The number of elements packed within a single SIMD element.
+   static constexpr size_t SIMDSIZE = SIMDTrait<Type>::size;
+
+   //! Alignment adjustment.
+   static constexpr size_t NN = ( PF == padded ? nextMultiple( N, SIMDSIZE ) : N );
+   //**********************************************************************************************
+
+   //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
    //! Helper variable template for the explicit application of the SFINAE principle.
    template< typename MT >
    static constexpr bool VectorizedAssign_v =
       ( useOptimizedKernels &&
+        NN >= SIMDSIZE &&
         simdEnabled && MT::simdEnabled &&
         IsSIMDCombinable_v< Type, ElementType_t<MT> > &&
         IsRowMajorMatrix_v<MT> );
@@ -418,11 +460,8 @@ class HybridMatrix
    //! Helper variable template for the explicit application of the SFINAE principle.
    template< typename MT >
    static constexpr bool VectorizedAddAssign_v =
-      ( useOptimizedKernels &&
-        simdEnabled && MT::simdEnabled &&
-        IsSIMDCombinable_v< Type, ElementType_t<MT> > &&
+      ( VectorizedAssign_v<MT> &&
         HasSIMDAdd_v< Type, ElementType_t<MT> > &&
-        IsRowMajorMatrix_v<MT> &&
         !IsDiagonal_v<MT> );
    /*! \endcond */
    //**********************************************************************************************
@@ -432,11 +471,8 @@ class HybridMatrix
    //! Helper variable template for the explicit application of the SFINAE principle.
    template< typename MT >
    static constexpr bool VectorizedSubAssign_v =
-      ( useOptimizedKernels &&
-        simdEnabled && MT::simdEnabled &&
-        IsSIMDCombinable_v< Type, ElementType_t<MT> > &&
+      ( VectorizedAssign_v<MT> &&
         HasSIMDSub_v< Type, ElementType_t<MT> > &&
-        IsRowMajorMatrix_v<MT> &&
         !IsDiagonal_v<MT> );
    /*! \endcond */
    //**********************************************************************************************
@@ -446,11 +482,8 @@ class HybridMatrix
    //! Helper variable template for the explicit application of the SFINAE principle.
    template< typename MT >
    static constexpr bool VectorizedSchurAssign_v =
-      ( useOptimizedKernels &&
-        simdEnabled && MT::simdEnabled &&
-        IsSIMDCombinable_v< Type, ElementType_t<MT> > &&
-        HasSIMDMult_v< Type, ElementType_t<MT> > &&
-        IsRowMajorMatrix_v<MT> );
+      ( VectorizedAssign_v<MT> &&
+        HasSIMDMult_v< Type, ElementType_t<MT> > );
    /*! \endcond */
    //**********************************************************************************************
 
@@ -458,7 +491,7 @@ class HybridMatrix
    //**Debugging functions*************************************************************************
    /*!\name Debugging functions */
    //@{
-   inline bool isIntact() const noexcept;
+   constexpr bool isIntact() const noexcept;
    //@}
    //**********************************************************************************************
 
@@ -468,7 +501,7 @@ class HybridMatrix
    template< typename Other > inline bool canAlias ( const Other* alias ) const noexcept;
    template< typename Other > inline bool isAliased( const Other* alias ) const noexcept;
 
-   static inline constexpr bool isAligned() noexcept;
+   static constexpr bool isAligned() noexcept;
 
    BLAZE_ALWAYS_INLINE SIMDType load ( size_t i, size_t j ) const noexcept;
    BLAZE_ALWAYS_INLINE SIMDType loada( size_t i, size_t j ) const noexcept;
@@ -521,7 +554,7 @@ class HybridMatrix
    //**********************************************************************************************
    //! Alignment of the data elements.
    static constexpr size_t Alignment =
-      ( align ? AlignmentOf_v<Type> : std::alignment_of<Type>::value );
+      ( AF == aligned ? AlignmentOf_v<Type> : std::alignment_of<Type>::value );
 
    //! Type of the aligned storage.
    using AlignedStorage = AlignedArray<Type,M*NN,Alignment>;
@@ -551,11 +584,34 @@ class HybridMatrix
    BLAZE_CONSTRAINT_MUST_NOT_BE_REFERENCE_TYPE( Type );
    BLAZE_CONSTRAINT_MUST_NOT_BE_CONST         ( Type );
    BLAZE_CONSTRAINT_MUST_NOT_BE_VOLATILE      ( Type );
-   BLAZE_STATIC_ASSERT( !usePadding || NN % SIMDSIZE == 0UL );
+   BLAZE_STATIC_ASSERT( AF == unaligned || PF == padded || N % SIMDSIZE == 0UL );
+   BLAZE_STATIC_ASSERT( PF == unpadded || NN % SIMDSIZE == 0UL );
    BLAZE_STATIC_ASSERT( NN >= N );
+   BLAZE_STATIC_ASSERT( IsVectorizable_v<Type> || NN == N );
    /*! \endcond */
    //**********************************************************************************************
 };
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  DEDUCTION GUIDES
+//
+//=================================================================================================
+
+//*************************************************************************************************
+#if BLAZE_CPP17_MODE
+
+template< typename Type, size_t M, size_t N >
+HybridMatrix( Type (&)[M][N] ) -> HybridMatrix< RemoveCV_t<Type>, M, N >;
+
+template< typename Type, size_t M, size_t N >
+HybridMatrix( std::array<std::array<Type,N>,M> ) -> HybridMatrix<Type,M,N>;
+
+#endif
 //*************************************************************************************************
 
 
@@ -572,22 +628,18 @@ class HybridMatrix
 //
 // The size of a default constructed HybridMatrix is initially set to 0.
 */
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N       // Number of columns
-        , bool SO >      // Storage order
-inline HybridMatrix<Type,M,N,SO>::HybridMatrix()
+template< typename Type     // Data type of the matrix
+        , size_t M          // Number of rows
+        , size_t N          // Number of columns
+        , bool SO           // Storage order
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+constexpr HybridMatrix<Type,M,N,SO,AF,PF,Tag>::HybridMatrix()
    : v_()       // The statically allocated matrix elements
    , m_( 0UL )  // The current number of rows of the matrix
    , n_( 0UL )  // The current number of columns of the matrix
 {
-   BLAZE_STATIC_ASSERT( IsVectorizable_v<Type> || NN == N );
-
-   if( IsNumeric_v<Type> ) {
-      for( size_t i=0UL; i<M*NN; ++i )
-         v_[i] = Type();
-   }
-
    BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
 }
 //*************************************************************************************************
@@ -606,28 +658,24 @@ inline HybridMatrix<Type,M,N,SO>::HybridMatrix()
 // or \a n is larger than the maximum allowed number of columns a \a std::invalid_argument
 // exception is thrown.
 */
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N       // Number of columns
-        , bool SO >      // Storage order
-inline HybridMatrix<Type,M,N,SO>::HybridMatrix( size_t m, size_t n )
+template< typename Type     // Data type of the matrix
+        , size_t M          // Number of rows
+        , size_t N          // Number of columns
+        , bool SO           // Storage order
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+constexpr HybridMatrix<Type,M,N,SO,AF,PF,Tag>::HybridMatrix( size_t m, size_t n )
    : v_()     // The statically allocated matrix elements
    , m_( m )  // The current number of rows of the matrix
    , n_( n )  // The current number of columns of the matrix
 {
-   BLAZE_STATIC_ASSERT( IsVectorizable_v<Type> || NN == N );
-
    if( m > M ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid number of rows for hybrid matrix" );
    }
 
    if( n > N ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid number of columns for hybrid matrix" );
-   }
-
-   if( IsNumeric_v<Type> ) {
-      for( size_t i=0UL; i<M*NN; ++i )
-         v_[i] = Type();
    }
 
    BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
@@ -649,16 +697,19 @@ inline HybridMatrix<Type,M,N,SO>::HybridMatrix( size_t m, size_t n )
 // number of rows (i.e. \a m > M) or \a n is larger than the maximum allowed number of columns
 // a \a std::invalid_argument exception is thrown.
 */
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N       // Number of columns
-        , bool SO >      // Storage order
-inline HybridMatrix<Type,M,N,SO>::HybridMatrix( size_t m, size_t n, const Type& init )
-   : v_()     // The statically allocated matrix elements
-   , m_( m )  // The current number of rows of the matrix
+template< typename Type     // Data type of the matrix
+        , size_t M          // Number of rows
+        , size_t N          // Number of columns
+        , bool SO           // Storage order
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+inline HybridMatrix<Type,M,N,SO,AF,PF,Tag>::HybridMatrix( size_t m, size_t n, const Type& init )
+   : m_( m )  // The current number of rows of the matrix
    , n_( n )  // The current number of columns of the matrix
+   // v_ is intentionally left uninitialized
 {
-   BLAZE_STATIC_ASSERT( IsVectorizable_v<Type> || NN == N );
+   using blaze::clear;
 
    if( m > M ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid number of rows for hybrid matrix" );
@@ -674,14 +725,14 @@ inline HybridMatrix<Type,M,N,SO>::HybridMatrix( size_t m, size_t n, const Type& 
 
       if( IsNumeric_v<Type> ) {
          for( size_t j=n; j<NN; ++j )
-            v_[i*NN+j] = Type();
+            clear( v_[i*NN+j] );
       }
    }
 
    if( IsNumeric_v<Type> ) {
       for( size_t i=m; i<M; ++i )
          for( size_t j=0UL; j<NN; ++j )
-            v_[i*NN+j] = Type();
+            clear( v_[i*NN+j] );
    }
 
    BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
@@ -708,22 +759,23 @@ inline HybridMatrix<Type,M,N,SO>::HybridMatrix( size_t m, size_t n, const Type& 
    \endcode
 
 // The matrix is sized according to the size of the initializer list and all its elements are
-// initialized by the values of the given initializer list. Missing values are initialized as
+// (copy) assigned the values of the given initializer list. Missing values are initialized as
 // default (as e.g. the value 6 in the example). Note that in case the size of the top-level
 // initializer list exceeds the maximum number of rows or the size of any nested list exceeds
 // the maximum number of columns, a \a std::invalid_argument exception is thrown.
 */
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N       // Number of columns
-        , bool SO >      // Storage order
-inline HybridMatrix<Type,M,N,SO>::HybridMatrix( initializer_list< initializer_list<Type> > list )
+template< typename Type     // Data type of the matrix
+        , size_t M          // Number of rows
+        , size_t N          // Number of columns
+        , bool SO           // Storage order
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+constexpr HybridMatrix<Type,M,N,SO,AF,PF,Tag>::HybridMatrix( initializer_list< initializer_list<Type> > list )
    : v_()                            // The statically allocated matrix elements
    , m_( list.size() )               // The current number of rows of the matrix
    , n_( determineColumns( list ) )  // The current number of columns of the matrix
 {
-   BLAZE_STATIC_ASSERT( IsVectorizable_v<Type> || NN == N );
-
    if( m_ > M ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid number of rows for hybrid matrix" );
    }
@@ -735,14 +787,12 @@ inline HybridMatrix<Type,M,N,SO>::HybridMatrix( initializer_list< initializer_li
    size_t i( 0UL );
 
    for( const auto& rowList : list ) {
-      std::fill( std::copy( rowList.begin(), rowList.end(), v_+i*NN ), v_+(i+1UL)*NN, Type() );
+      size_t j( 0UL );
+      for( const auto& element : rowList ) {
+         v_[i*NN+j] = element;
+         ++j;
+      }
       ++i;
-   }
-
-   if( IsNumeric_v<Type> ) {
-      for( ; i<M; ++i )
-         for( size_t j=0UL; j<NN; ++j )
-            v_[i*NN+j] = Type();
    }
 
    BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
@@ -780,14 +830,17 @@ inline HybridMatrix<Type,M,N,SO>::HybridMatrix( initializer_list< initializer_li
 template< typename Type     // Data type of the matrix
         , size_t M          // Number of rows
         , size_t N          // Number of columns
-        , bool SO >         // Storage order
+        , bool SO           // Storage order
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
 template< typename Other >  // Data type of the initialization array
-inline HybridMatrix<Type,M,N,SO>::HybridMatrix( size_t m, size_t n, const Other* array )
-   : v_()     // The statically allocated matrix elements
-   , m_( m )  // The current number of rows of the matrix
+inline HybridMatrix<Type,M,N,SO,AF,PF,Tag>::HybridMatrix( size_t m, size_t n, const Other* array )
+   : m_( m )  // The current number of rows of the matrix
    , n_( n )  // The current number of columns of the matrix
+   // v_ is intentionally left uninitialized
 {
-   BLAZE_STATIC_ASSERT( IsVectorizable_v<Type> || NN == N );
+   using blaze::clear;
 
    if( m > M ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid number of rows for hybrid matrix" );
@@ -803,14 +856,14 @@ inline HybridMatrix<Type,M,N,SO>::HybridMatrix( size_t m, size_t n, const Other*
 
       if( IsNumeric_v<Type> ) {
          for( size_t j=n; j<NN; ++j )
-            v_[i*NN+j] = Type();
+            clear( v_[i*NN+j] );
       }
    }
 
    if( IsNumeric_v<Type> ) {
       for( size_t i=m; i<M; ++i )
          for( size_t j=0UL; j<NN; ++j )
-            v_[i*NN+j] = Type();
+            clear( v_[i*NN+j] );
    }
 
    BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
@@ -821,7 +874,7 @@ inline HybridMatrix<Type,M,N,SO>::HybridMatrix( size_t m, size_t n, const Other*
 //*************************************************************************************************
 /*!\brief Array initialization of all matrix elements.
 //
-// \param array \f$ M \times N \f$ dimensional array for the initialization.
+// \param array Static array for the initialization.
 //
 // This constructor offers the option to directly initialize the elements of the matrix with
 // a static array:
@@ -835,25 +888,29 @@ inline HybridMatrix<Type,M,N,SO>::HybridMatrix( size_t m, size_t n, const Other*
    blaze::HybridMatrix<int,3,3,rowMajor> A( init );
    \endcode
 
-// The matrix is sized according to the size of the array and initialized with the values from
-// the given array. Missing values are initialized with default values (as e.g. the value 6 in
-// the example).
+// The matrix is sized according to the size of the static array and initialized with the values
+// from the given static array. Missing values are initialized with default values (as e.g. the
+// value 6 in the example).
 */
-template< typename Type   // Data type of the matrix
-        , size_t M        // Number of rows
-        , size_t N        // Number of columns
-        , bool SO >       // Storage order
-template< typename Other  // Data type of the initialization array
-        , size_t Rows     // Number of rows of the initialization array
-        , size_t Cols >   // Number of columns of the initialization array
-inline HybridMatrix<Type,M,N,SO>::HybridMatrix( const Other (&array)[Rows][Cols] )
-   : v_()        // The statically allocated matrix elements
-   , m_( Rows )  // The current number of rows of the matrix
+template< typename Type     // Data type of the matrix
+        , size_t M          // Number of rows
+        , size_t N          // Number of columns
+        , bool SO           // Storage order
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+template< typename Other    // Data type of the static array
+        , size_t Rows       // Number of rows of the static array
+        , size_t Cols >     // Number of columns of the static array
+inline HybridMatrix<Type,M,N,SO,AF,PF,Tag>::HybridMatrix( const Other (&array)[Rows][Cols] )
+   : m_( Rows )  // The current number of rows of the matrix
    , n_( Cols )  // The current number of columns of the matrix
+   // v_ is intentionally left uninitialized
 {
+   using blaze::clear;
+
    BLAZE_STATIC_ASSERT( Rows <= M );
    BLAZE_STATIC_ASSERT( Cols <= N );
-   BLAZE_STATIC_ASSERT( IsVectorizable_v<Type> || NN == N );
 
    for( size_t i=0UL; i<Rows; ++i ) {
       for( size_t j=0UL; j<Cols; ++j )
@@ -861,14 +918,76 @@ inline HybridMatrix<Type,M,N,SO>::HybridMatrix( const Other (&array)[Rows][Cols]
 
       if( IsNumeric_v<Type> ) {
          for( size_t j=Cols; j<NN; ++j )
-            v_[i*NN+j] = Type();
+            clear( v_[i*NN+j] );
       }
    }
 
    if( IsNumeric_v<Type> ) {
       for( size_t i=Rows; i<M; ++i )
          for( size_t j=0UL; j<NN; ++j )
-            v_[i*NN+j] = Type();
+            clear( v_[i*NN+j] );
+   }
+
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Initialization of all matrix elements from the given std::array.
+//
+// \param array The given std::array for the initialization.
+//
+// This constructor offers the option to directly initialize the elements of the matrix with
+// a std::array:
+
+   \code
+   using blaze::rowMajor;
+
+   const std::array<std::array<int,3UL>,3UL> init{ { { 1, 2, 3 },
+                                                     { 4, 5 },
+                                                     { 7, 8, 9 } } };
+   blaze::HybridMatrix<int,3,3,rowMajor> A( init );
+   \endcode
+
+// The matrix is sized according to the size of the std::array and initialized with the values
+// from the given std::array. Missing values are initialized with default values (as e.g. the
+// value 6 in the example).
+*/
+template< typename Type     // Data type of the matrix
+        , size_t M          // Number of rows
+        , size_t N          // Number of columns
+        , bool SO           // Storage order
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+template< typename Other    // Data type of the static array
+        , size_t Rows       // Number of rows of the static array
+        , size_t Cols >     // Number of columns of the static array
+inline HybridMatrix<Type,M,N,SO,AF,PF,Tag>::HybridMatrix( const std::array<std::array<Other,Cols>,Rows>& array )
+   : m_( Rows )  // The current number of rows of the matrix
+   , n_( Cols )  // The current number of columns of the matrix
+   // v_ is intentionally left uninitialized
+{
+   using blaze::clear;
+
+   BLAZE_STATIC_ASSERT( Rows <= M );
+   BLAZE_STATIC_ASSERT( Cols <= N );
+
+   for( size_t i=0UL; i<Rows; ++i ) {
+      for( size_t j=0UL; j<Cols; ++j )
+         v_[i*NN+j] = array[i][j];
+
+      if( IsNumeric_v<Type> ) {
+         for( size_t j=Cols; j<NN; ++j )
+            clear( v_[i*NN+j] );
+      }
+   }
+
+   if( IsNumeric_v<Type> ) {
+      for( size_t i=Rows; i<M; ++i )
+         for( size_t j=0UL; j<NN; ++j )
+            clear( v_[i*NN+j] );
    }
 
    BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
@@ -887,30 +1006,16 @@ inline HybridMatrix<Type,M,N,SO>::HybridMatrix( const Other (&array)[Rows][Cols]
 template< typename Type     // Data type of the matrix
         , size_t M          // Number of rows
         , size_t N          // Number of columns
-        , bool SO >         // Storage order
-inline HybridMatrix<Type,M,N,SO>::HybridMatrix( const HybridMatrix& m )
-   : v_()        // The statically allocated matrix elements
+        , bool SO           // Storage order
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+constexpr HybridMatrix<Type,M,N,SO,AF,PF,Tag>::HybridMatrix( const HybridMatrix& m )
+   : BaseType()  // Initialization of the base class
+   , v_( m.v_ )  // The statically allocated matrix elements
    , m_( m.m_ )  // The current number of rows of the matrix
-   , n_( m.n_ )  // The current number of columns of the matrix
+   , n_( m.n_ )  // The current number of columns of the matrix{
 {
-   BLAZE_STATIC_ASSERT( IsVectorizable_v<Type> || NN == N );
-
-   for( size_t i=0UL; i<m_; ++i ) {
-      for( size_t j=0UL; j<n_; ++j )
-         v_[i*NN+j] = m.v_[i*NN+j];
-
-      if( IsNumeric_v<Type> ) {
-         for( size_t j=n_; j<NN; ++j )
-            v_[i*NN+j] = Type();
-      }
-   }
-
-   if( IsNumeric_v<Type> ) {
-      for( size_t i=m_; i<M; ++i )
-         for( size_t j=0UL; j<NN; ++j )
-            v_[i*NN+j] = Type();
-   }
-
    BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
 }
 //*************************************************************************************************
@@ -922,22 +1027,26 @@ inline HybridMatrix<Type,M,N,SO>::HybridMatrix( const HybridMatrix& m )
 // \param m Matrix to be copied.
 // \exception std::invalid_argument Invalid setup of hybrid matrix.
 */
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N       // Number of columns
-        , bool SO >      // Storage order
-template< typename MT    // Type of the foreign matrix
-        , bool SO2 >     // Storage order of the foreign matrix
-inline HybridMatrix<Type,M,N,SO>::HybridMatrix( const Matrix<MT,SO2>& m )
-   : v_()                  // The statically allocated matrix elements
-   , m_( (~m).rows() )     // The current number of rows of the matrix
-   , n_( (~m).columns() )  // The current number of columns of the matrix
+template< typename Type     // Data type of the matrix
+        , size_t M          // Number of rows
+        , size_t N          // Number of columns
+        , bool SO           // Storage order
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+template< typename MT       // Type of the foreign matrix
+        , bool SO2 >        // Storage order of the foreign matrix
+inline HybridMatrix<Type,M,N,SO,AF,PF,Tag>::HybridMatrix( const Matrix<MT,SO2>& m )
+   : m_( (*m).rows() )     // The current number of rows of the matrix
+   , n_( (*m).columns() )  // The current number of columns of the matrix
+   // v_ is intentionally left uninitialized
 {
    using blaze::assign;
+   using blaze::clear;
 
-   BLAZE_STATIC_ASSERT( IsVectorizable_v<Type> || NN == N );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<MT> );
 
-   if( (~m).rows() > M || (~m).columns() > N ) {
+   if( (*m).rows() > M || (*m).columns() > N ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid setup of hybrid matrix" );
    }
 
@@ -945,17 +1054,17 @@ inline HybridMatrix<Type,M,N,SO>::HybridMatrix( const Matrix<MT,SO2>& m )
       for( size_t j=( IsSparseMatrix_v<MT> ? 0UL : n_ );
                   j<( IsNumeric_v<Type>    ? NN  : n_ );
                   ++j ) {
-         v_[i*NN+j] = Type();
+         clear( v_[i*NN+j] );
       }
    }
 
    if( IsNumeric_v<Type> ) {
       for( size_t i=m_; i<M; ++i )
          for( size_t j=0UL; j<NN; ++j )
-            v_[i*NN+j] = Type();
+            clear( v_[i*NN+j] );
    }
 
-   assign( *this, ~m );
+   assign( *this, *m );
 
    BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
 }
@@ -980,12 +1089,15 @@ inline HybridMatrix<Type,M,N,SO>::HybridMatrix( const Matrix<MT,SO2>& m )
 // This function only performs an index check in case BLAZE_USER_ASSERT() is active. In contrast,
 // the at() function is guaranteed to perform a check of the given access indices.
 */
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N       // Number of columns
-        , bool SO >      // Storage order
-inline typename HybridMatrix<Type,M,N,SO>::Reference
-   HybridMatrix<Type,M,N,SO>::operator()( size_t i, size_t j ) noexcept
+template< typename Type     // Data type of the matrix
+        , size_t M          // Number of rows
+        , size_t N          // Number of columns
+        , bool SO           // Storage order
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+constexpr typename HybridMatrix<Type,M,N,SO,AF,PF,Tag>::Reference
+   HybridMatrix<Type,M,N,SO,AF,PF,Tag>::operator()( size_t i, size_t j ) noexcept
 {
    BLAZE_USER_ASSERT( i<M, "Invalid row access index"    );
    BLAZE_USER_ASSERT( j<N, "Invalid column access index" );
@@ -1004,12 +1116,15 @@ inline typename HybridMatrix<Type,M,N,SO>::Reference
 // This function only performs an index check in case BLAZE_USER_ASSERT() is active. In contrast,
 // the at() function is guaranteed to perform a check of the given access indices.
 */
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N       // Number of columns
-        , bool SO >      // Storage order
-inline typename HybridMatrix<Type,M,N,SO>::ConstReference
-   HybridMatrix<Type,M,N,SO>::operator()( size_t i, size_t j ) const noexcept
+template< typename Type     // Data type of the matrix
+        , size_t M          // Number of rows
+        , size_t N          // Number of columns
+        , bool SO           // Storage order
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+constexpr typename HybridMatrix<Type,M,N,SO,AF,PF,Tag>::ConstReference
+   HybridMatrix<Type,M,N,SO,AF,PF,Tag>::operator()( size_t i, size_t j ) const noexcept
 {
    BLAZE_USER_ASSERT( i<M, "Invalid row access index"    );
    BLAZE_USER_ASSERT( j<N, "Invalid column access index" );
@@ -1029,12 +1144,15 @@ inline typename HybridMatrix<Type,M,N,SO>::ConstReference
 // In contrast to the subscript operator this function always performs a check of the given
 // access indices.
 */
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N       // Number of columns
-        , bool SO >      // Storage order
-inline typename HybridMatrix<Type,M,N,SO>::Reference
-   HybridMatrix<Type,M,N,SO>::at( size_t i, size_t j )
+template< typename Type     // Data type of the matrix
+        , size_t M          // Number of rows
+        , size_t N          // Number of columns
+        , bool SO           // Storage order
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+inline typename HybridMatrix<Type,M,N,SO,AF,PF,Tag>::Reference
+   HybridMatrix<Type,M,N,SO,AF,PF,Tag>::at( size_t i, size_t j )
 {
    if( i >= m_ ) {
       BLAZE_THROW_OUT_OF_RANGE( "Invalid row access index" );
@@ -1058,12 +1176,15 @@ inline typename HybridMatrix<Type,M,N,SO>::Reference
 // In contrast to the subscript operator this function always performs a check of the given
 // access indices.
 */
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N       // Number of columns
-        , bool SO >      // Storage order
-inline typename HybridMatrix<Type,M,N,SO>::ConstReference
-   HybridMatrix<Type,M,N,SO>::at( size_t i, size_t j ) const
+template< typename Type     // Data type of the matrix
+        , size_t M          // Number of rows
+        , size_t N          // Number of columns
+        , bool SO           // Storage order
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+inline typename HybridMatrix<Type,M,N,SO,AF,PF,Tag>::ConstReference
+   HybridMatrix<Type,M,N,SO,AF,PF,Tag>::at( size_t i, size_t j ) const
 {
    if( i >= m_ ) {
       BLAZE_THROW_OUT_OF_RANGE( "Invalid row access index" );
@@ -1088,12 +1209,15 @@ inline typename HybridMatrix<Type,M,N,SO>::ConstReference
 // respectively, the total number of elements including padding is given by the \c spacing()
 // member function.
 */
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N       // Number of columns
-        , bool SO >      // Storage order
-inline typename HybridMatrix<Type,M,N,SO>::Pointer
-   HybridMatrix<Type,M,N,SO>::data() noexcept
+template< typename Type     // Data type of the matrix
+        , size_t M          // Number of rows
+        , size_t N          // Number of columns
+        , bool SO           // Storage order
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+constexpr typename HybridMatrix<Type,M,N,SO,AF,PF,Tag>::Pointer
+   HybridMatrix<Type,M,N,SO,AF,PF,Tag>::data() noexcept
 {
    return v_;
 }
@@ -1112,12 +1236,15 @@ inline typename HybridMatrix<Type,M,N,SO>::Pointer
 // respectively, the total number of elements including padding is given by the \c spacing()
 // member function.
 */
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N       // Number of columns
-        , bool SO >      // Storage order
-inline typename HybridMatrix<Type,M,N,SO>::ConstPointer
-   HybridMatrix<Type,M,N,SO>::data() const noexcept
+template< typename Type     // Data type of the matrix
+        , size_t M          // Number of rows
+        , size_t N          // Number of columns
+        , bool SO           // Storage order
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+constexpr typename HybridMatrix<Type,M,N,SO,AF,PF,Tag>::ConstPointer
+   HybridMatrix<Type,M,N,SO,AF,PF,Tag>::data() const noexcept
 {
    return v_;
 }
@@ -1132,12 +1259,15 @@ inline typename HybridMatrix<Type,M,N,SO>::ConstPointer
 //
 // This function returns a pointer to the internal storage for the elements in row/column \a i.
 */
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N       // Number of columns
-        , bool SO >      // Storage order
-inline typename HybridMatrix<Type,M,N,SO>::Pointer
-   HybridMatrix<Type,M,N,SO>::data( size_t i ) noexcept
+template< typename Type     // Data type of the matrix
+        , size_t M          // Number of rows
+        , size_t N          // Number of columns
+        , bool SO           // Storage order
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+constexpr typename HybridMatrix<Type,M,N,SO,AF,PF,Tag>::Pointer
+   HybridMatrix<Type,M,N,SO,AF,PF,Tag>::data( size_t i ) noexcept
 {
    BLAZE_USER_ASSERT( i < M, "Invalid dense matrix row access index" );
    return v_ + i*NN;
@@ -1153,12 +1283,15 @@ inline typename HybridMatrix<Type,M,N,SO>::Pointer
 //
 // This function returns a pointer to the internal storage for the elements in row/column \a i.
 */
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N       // Number of columns
-        , bool SO >      // Storage order
-inline typename HybridMatrix<Type,M,N,SO>::ConstPointer
-   HybridMatrix<Type,M,N,SO>::data( size_t i ) const noexcept
+template< typename Type     // Data type of the matrix
+        , size_t M          // Number of rows
+        , size_t N          // Number of columns
+        , bool SO           // Storage order
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+constexpr typename HybridMatrix<Type,M,N,SO,AF,PF,Tag>::ConstPointer
+   HybridMatrix<Type,M,N,SO,AF,PF,Tag>::data( size_t i ) const noexcept
 {
    BLAZE_USER_ASSERT( i < M, "Invalid dense matrix row access index" );
    return v_ + i*NN;
@@ -1177,12 +1310,15 @@ inline typename HybridMatrix<Type,M,N,SO>::ConstPointer
 // of row \a i, in case the storage flag is set to \a columnMajor the function returns an iterator
 // to the first element of column \a i.
 */
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N       // Number of columns
-        , bool SO >      // Storage order
-inline typename HybridMatrix<Type,M,N,SO>::Iterator
-   HybridMatrix<Type,M,N,SO>::begin( size_t i ) noexcept
+template< typename Type     // Data type of the matrix
+        , size_t M          // Number of rows
+        , size_t N          // Number of columns
+        , bool SO           // Storage order
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+constexpr typename HybridMatrix<Type,M,N,SO,AF,PF,Tag>::Iterator
+   HybridMatrix<Type,M,N,SO,AF,PF,Tag>::begin( size_t i ) noexcept
 {
    BLAZE_USER_ASSERT( i < M, "Invalid dense matrix row access index" );
    return Iterator( v_ + i*NN );
@@ -1201,12 +1337,15 @@ inline typename HybridMatrix<Type,M,N,SO>::Iterator
 // of row \a i, in case the storage flag is set to \a columnMajor the function returns an iterator
 // to the first element of column \a i.
 */
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N       // Number of columns
-        , bool SO >      // Storage order
-inline typename HybridMatrix<Type,M,N,SO>::ConstIterator
-   HybridMatrix<Type,M,N,SO>::begin( size_t i ) const noexcept
+template< typename Type     // Data type of the matrix
+        , size_t M          // Number of rows
+        , size_t N          // Number of columns
+        , bool SO           // Storage order
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+constexpr typename HybridMatrix<Type,M,N,SO,AF,PF,Tag>::ConstIterator
+   HybridMatrix<Type,M,N,SO,AF,PF,Tag>::begin( size_t i ) const noexcept
 {
    BLAZE_USER_ASSERT( i < M, "Invalid dense matrix row access index" );
    return ConstIterator( v_ + i*NN );
@@ -1225,12 +1364,15 @@ inline typename HybridMatrix<Type,M,N,SO>::ConstIterator
 // of row \a i, in case the storage flag is set to \a columnMajor the function returns an iterator
 // to the first element of column \a i.
 */
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N       // Number of columns
-        , bool SO >      // Storage order
-inline typename HybridMatrix<Type,M,N,SO>::ConstIterator
-   HybridMatrix<Type,M,N,SO>::cbegin( size_t i ) const noexcept
+template< typename Type     // Data type of the matrix
+        , size_t M          // Number of rows
+        , size_t N          // Number of columns
+        , bool SO           // Storage order
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+constexpr typename HybridMatrix<Type,M,N,SO,AF,PF,Tag>::ConstIterator
+   HybridMatrix<Type,M,N,SO,AF,PF,Tag>::cbegin( size_t i ) const noexcept
 {
    BLAZE_USER_ASSERT( i < M, "Invalid dense matrix row access index" );
    return ConstIterator( v_ + i*NN );
@@ -1249,12 +1391,15 @@ inline typename HybridMatrix<Type,M,N,SO>::ConstIterator
 // the last element of row \a i, in case the storage flag is set to \a columnMajor the function
 // returns an iterator just past the last element of column \a i.
 */
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N       // Number of columns
-        , bool SO >      // Storage order
-inline typename HybridMatrix<Type,M,N,SO>::Iterator
-   HybridMatrix<Type,M,N,SO>::end( size_t i ) noexcept
+template< typename Type     // Data type of the matrix
+        , size_t M          // Number of rows
+        , size_t N          // Number of columns
+        , bool SO           // Storage order
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+constexpr typename HybridMatrix<Type,M,N,SO,AF,PF,Tag>::Iterator
+   HybridMatrix<Type,M,N,SO,AF,PF,Tag>::end( size_t i ) noexcept
 {
    BLAZE_USER_ASSERT( i < M, "Invalid dense matrix row access index" );
    return Iterator( v_ + i*NN + N );
@@ -1273,12 +1418,15 @@ inline typename HybridMatrix<Type,M,N,SO>::Iterator
 // the last element of row \a i, in case the storage flag is set to \a columnMajor the function
 // returns an iterator just past the last element of column \a i.
 */
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N       // Number of columns
-        , bool SO >      // Storage order
-inline typename HybridMatrix<Type,M,N,SO>::ConstIterator
-   HybridMatrix<Type,M,N,SO>::end( size_t i ) const noexcept
+template< typename Type     // Data type of the matrix
+        , size_t M          // Number of rows
+        , size_t N          // Number of columns
+        , bool SO           // Storage order
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+constexpr typename HybridMatrix<Type,M,N,SO,AF,PF,Tag>::ConstIterator
+   HybridMatrix<Type,M,N,SO,AF,PF,Tag>::end( size_t i ) const noexcept
 {
    BLAZE_USER_ASSERT( i < M, "Invalid dense matrix row access index" );
    return ConstIterator( v_ + i*NN + N );
@@ -1297,12 +1445,15 @@ inline typename HybridMatrix<Type,M,N,SO>::ConstIterator
 // the last element of row \a i, in case the storage flag is set to \a columnMajor the function
 // returns an iterator just past the last element of column \a i.
 */
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N       // Number of columns
-        , bool SO >      // Storage order
-inline typename HybridMatrix<Type,M,N,SO>::ConstIterator
-   HybridMatrix<Type,M,N,SO>::cend( size_t i ) const noexcept
+template< typename Type     // Data type of the matrix
+        , size_t M          // Number of rows
+        , size_t N          // Number of columns
+        , bool SO           // Storage order
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+constexpr typename HybridMatrix<Type,M,N,SO,AF,PF,Tag>::ConstIterator
+   HybridMatrix<Type,M,N,SO,AF,PF,Tag>::cend( size_t i ) const noexcept
 {
    BLAZE_USER_ASSERT( i < M, "Invalid dense matrix row access index" );
    return ConstIterator( v_ + i*NN + N );
@@ -1324,11 +1475,15 @@ inline typename HybridMatrix<Type,M,N,SO>::ConstIterator
 // \param set Scalar value to be assigned to all matrix elements.
 // \return Reference to the assigned matrix.
 */
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N       // Number of columns
-        , bool SO >      // Storage order
-inline HybridMatrix<Type,M,N,SO>& HybridMatrix<Type,M,N,SO>::operator=( const Type& set )
+template< typename Type     // Data type of the matrix
+        , size_t M          // Number of rows
+        , size_t N          // Number of columns
+        , bool SO           // Storage order
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+constexpr HybridMatrix<Type,M,N,SO,AF,PF,Tag>&
+   HybridMatrix<Type,M,N,SO,AF,PF,Tag>::operator=( const Type& set ) &
 {
    BLAZE_INTERNAL_ASSERT( m_ <= M, "Invalid number of rows detected"    );
    BLAZE_INTERNAL_ASSERT( n_ <= N, "Invalid number of columns detected" );
@@ -1362,18 +1517,23 @@ inline HybridMatrix<Type,M,N,SO>& HybridMatrix<Type,M,N,SO>::operator=( const Ty
    \endcode
 
 // The matrix is resized according to the given initializer list and all its elements are
-// assigned the values from the given initializer list. Missing values are initialized as
-// default (as e.g. the value 6 in the example). Note that in case the size of the top-level
+// (copy) assigned the values from the given initializer list. Missing values are initialized
+// as default (as e.g. the value 6 in the example). Note that in case the size of the top-level
 // initializer list exceeds the maximum number of rows or the size of any nested list exceeds
 // the maximum number of columns, a \a std::invalid_argument exception is thrown.
 */
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N       // Number of columns
-        , bool SO >      // Storage order
-inline HybridMatrix<Type,M,N,SO>&
-   HybridMatrix<Type,M,N,SO>::operator=( initializer_list< initializer_list<Type> > list )
+template< typename Type     // Data type of the matrix
+        , size_t M          // Number of rows
+        , size_t N          // Number of columns
+        , bool SO           // Storage order
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+constexpr HybridMatrix<Type,M,N,SO,AF,PF,Tag>&
+   HybridMatrix<Type,M,N,SO,AF,PF,Tag>::operator=( initializer_list< initializer_list<Type> > list ) &
 {
+   using blaze::clear;
+
    const size_t m( list.size() );
    const size_t n( determineColumns( list ) );
 
@@ -1390,7 +1550,14 @@ inline HybridMatrix<Type,M,N,SO>&
    size_t i( 0UL );
 
    for( const auto& rowList : list ) {
-      std::fill( std::copy( rowList.begin(), rowList.end(), v_+i*NN ), v_+(i+1UL)*NN, Type() );
+      size_t j( 0UL );
+      for( const auto& element : rowList ) {
+         v_[i*NN+j] = element;
+         ++j;
+      }
+      for( ; j<N; ++j ) {
+         clear( v_[i*NN+j] );
+      }
       ++i;
    }
 
@@ -1402,7 +1569,7 @@ inline HybridMatrix<Type,M,N,SO>&
 //*************************************************************************************************
 /*!\brief Array assignment to all matrix elements.
 //
-// \param array \f$ M \times N \f$ dimensional array for the assignment.
+// \param array Static array for the assignment.
 // \return Reference to the assigned matrix.
 //
 // This assignment operator offers the option to directly set all elements of the matrix:
@@ -1417,17 +1584,69 @@ inline HybridMatrix<Type,M,N,SO>&
    A = init;
    \endcode
 
-// The matrix is assigned the values from the given array. Missing values are initialized with
-// default values (as e.g. the value 6 in the example).
+// The matrix is assigned the values from the given static array. Missing values are initialized
+// wit default values (as e.g. the value 6 in the example).
 */
-template< typename Type   // Data type of the matrix
-        , size_t M        // Number of rows
-        , size_t N        // Number of columns
-        , bool SO >       // Storage order
-template< typename Other  // Data type of the initialization array
-        , size_t Rows     // Number of rows of the initialization array
-        , size_t Cols >   // Number of columns of the initialization array
-inline HybridMatrix<Type,M,N,SO>& HybridMatrix<Type,M,N,SO>::operator=( const Other (&array)[Rows][Cols] )
+template< typename Type     // Data type of the matrix
+        , size_t M          // Number of rows
+        , size_t N          // Number of columns
+        , bool SO           // Storage order
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+template< typename Other    // Data type of the static array
+        , size_t Rows       // Number of rows of the static array
+        , size_t Cols >     // Number of columns of the static array
+constexpr HybridMatrix<Type,M,N,SO,AF,PF,Tag>&
+   HybridMatrix<Type,M,N,SO,AF,PF,Tag>::operator=( const Other (&array)[Rows][Cols] ) &
+{
+   BLAZE_STATIC_ASSERT( Rows <= M );
+   BLAZE_STATIC_ASSERT( Cols <= N );
+
+   resize( Rows, Cols );
+
+   for( size_t i=0UL; i<Rows; ++i )
+      for( size_t j=0UL; j<Cols; ++j )
+         v_[i*NN+j] = array[i][j];
+
+   return *this;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Array assignment to all matrix elements.
+//
+// \param array The given std::array for the assignment.
+// \return Reference to the assigned matrix.
+//
+// This assignment operator offers the option to directly set all elements of the matrix:
+
+   \code
+   using blaze::rowMajor;
+
+   const std::array<std::array<int,3UL>,3UL> init{ { { 1, 2, 3 },
+                                                     { 4, 5 },
+                                                     { 7, 8, 9 } } };
+   blaze::HybridMatrix<int,3UL,3UL,rowMajor> A;
+   A = init;
+   \endcode
+
+// The matrix is assigned the values from the given static array. Missing values are initialized
+// wit default values (as e.g. the value 6 in the example).
+*/
+template< typename Type     // Data type of the matrix
+        , size_t M          // Number of rows
+        , size_t N          // Number of columns
+        , bool SO           // Storage order
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+template< typename Other    // Data type of the static array
+        , size_t Rows       // Number of rows of the static array
+        , size_t Cols >     // Number of columns of the static array
+constexpr HybridMatrix<Type,M,N,SO,AF,PF,Tag>&
+   HybridMatrix<Type,M,N,SO,AF,PF,Tag>::operator=( const std::array<std::array<Other,Cols>,Rows>& array ) &
 {
    BLAZE_STATIC_ASSERT( Rows <= M );
    BLAZE_STATIC_ASSERT( Cols <= N );
@@ -1451,11 +1670,15 @@ inline HybridMatrix<Type,M,N,SO>& HybridMatrix<Type,M,N,SO>::operator=( const Ot
 //
 // Explicit definition of a copy assignment operator for performance reasons.
 */
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N       // Number of columns
-        , bool SO >      // Storage order
-inline HybridMatrix<Type,M,N,SO>& HybridMatrix<Type,M,N,SO>::operator=( const HybridMatrix& rhs )
+template< typename Type     // Data type of the matrix
+        , size_t M          // Number of rows
+        , size_t N          // Number of columns
+        , bool SO           // Storage order
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+constexpr HybridMatrix<Type,M,N,SO,AF,PF,Tag>&
+   HybridMatrix<Type,M,N,SO,AF,PF,Tag>::operator=( const HybridMatrix& rhs ) &
 {
    using blaze::assign;
 
@@ -1463,7 +1686,7 @@ inline HybridMatrix<Type,M,N,SO>& HybridMatrix<Type,M,N,SO>::operator=( const Hy
    BLAZE_INTERNAL_ASSERT( n_ <= N, "Invalid number of columns detected" );
 
    resize( rhs.rows(), rhs.columns() );
-   assign( *this, ~rhs );
+   assign( *this, *rhs );
 
    BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
 
@@ -1483,13 +1706,17 @@ inline HybridMatrix<Type,M,N,SO>& HybridMatrix<Type,M,N,SO>::operator=( const Hy
 // number of rows of the given matrix is not M or the number of columns is not N, a
 // \a std::invalid_argument exception is thrown.
 */
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N       // Number of columns
-        , bool SO >      // Storage order
-template< typename MT    // Type of the right-hand side matrix
-        , bool SO2 >     // Storage order of the right-hand side matrix
-inline HybridMatrix<Type,M,N,SO>& HybridMatrix<Type,M,N,SO>::operator=( const Matrix<MT,SO2>& rhs )
+template< typename Type     // Data type of the matrix
+        , size_t M          // Number of rows
+        , size_t N          // Number of columns
+        , bool SO           // Storage order
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+template< typename MT       // Type of the right-hand side matrix
+        , bool SO2 >        // Storage order of the right-hand side matrix
+inline HybridMatrix<Type,M,N,SO,AF,PF,Tag>&
+   HybridMatrix<Type,M,N,SO,AF,PF,Tag>::operator=( const Matrix<MT,SO2>& rhs ) &
 {
    using blaze::assign;
 
@@ -1497,26 +1724,28 @@ inline HybridMatrix<Type,M,N,SO>& HybridMatrix<Type,M,N,SO>::operator=( const Ma
    using CT = decltype( ctrans( *this ) );
    using IT = decltype( inv( *this ) );
 
-   if( (~rhs).rows() > M || (~rhs).columns() > N ) {
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<MT> );
+
+   if( (*rhs).rows() > M || (*rhs).columns() > N ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to hybrid matrix" );
    }
 
-   if( IsSame_v<MT,TT> && (~rhs).isAliased( this ) ) {
+   if( IsSame_v<MT,TT> && (*rhs).isAliased( this ) ) {
       transpose();
    }
-   else if( IsSame_v<MT,CT> && (~rhs).isAliased( this ) ) {
+   else if( IsSame_v<MT,CT> && (*rhs).isAliased( this ) ) {
       ctranspose();
    }
-   else if( !IsSame_v<MT,IT> && (~rhs).canAlias( this ) ) {
-      HybridMatrix tmp( ~rhs );
+   else if( !IsSame_v<MT,IT> && (*rhs).canAlias( this ) ) {
+      HybridMatrix tmp( *rhs );
       resize( tmp.rows(), tmp.columns() );
       assign( *this, tmp );
    }
    else {
-      resize( (~rhs).rows(), (~rhs).columns() );
+      resize( (*rhs).rows(), (*rhs).columns() );
       if( IsSparseMatrix_v<MT> )
          reset();
-      assign( *this, ~rhs );
+      assign( *this, *rhs );
    }
 
    BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
@@ -1536,26 +1765,32 @@ inline HybridMatrix<Type,M,N,SO>& HybridMatrix<Type,M,N,SO>::operator=( const Ma
 // In case the current sizes of the two matrices don't match, a \a std::invalid_argument exception
 // is thrown.
 */
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N       // Number of columns
-        , bool SO >      // Storage order
-template< typename MT    // Type of the right-hand side matrix
-        , bool SO2 >     // Storage order of the right-hand side matrix
-inline HybridMatrix<Type,M,N,SO>& HybridMatrix<Type,M,N,SO>::operator+=( const Matrix<MT,SO2>& rhs )
+template< typename Type     // Data type of the matrix
+        , size_t M          // Number of rows
+        , size_t N          // Number of columns
+        , bool SO           // Storage order
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+template< typename MT       // Type of the right-hand side matrix
+        , bool SO2 >        // Storage order of the right-hand side matrix
+inline HybridMatrix<Type,M,N,SO,AF,PF,Tag>&
+   HybridMatrix<Type,M,N,SO,AF,PF,Tag>::operator+=( const Matrix<MT,SO2>& rhs ) &
 {
    using blaze::addAssign;
 
-   if( (~rhs).rows() != m_ || (~rhs).columns() != n_ ) {
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<MT> );
+
+   if( (*rhs).rows() != m_ || (*rhs).columns() != n_ ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
-   if( (~rhs).canAlias( this ) ) {
-      const ResultType_t<MT> tmp( ~rhs );
+   if( (*rhs).canAlias( this ) ) {
+      const ResultType_t<MT> tmp( *rhs );
       addAssign( *this, tmp );
    }
    else {
-      addAssign( *this, ~rhs );
+      addAssign( *this, *rhs );
    }
 
    BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
@@ -1575,26 +1810,32 @@ inline HybridMatrix<Type,M,N,SO>& HybridMatrix<Type,M,N,SO>::operator+=( const M
 // In case the current sizes of the two matrices don't match, a \a std::invalid_argument exception
 // is thrown.
 */
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N       // Number of columns
-        , bool SO >      // Storage order
-template< typename MT    // Type of the right-hand side matrix
-        , bool SO2 >     // Storage order of the right-hand side matrix
-inline HybridMatrix<Type,M,N,SO>& HybridMatrix<Type,M,N,SO>::operator-=( const Matrix<MT,SO2>& rhs )
+template< typename Type     // Data type of the matrix
+        , size_t M          // Number of rows
+        , size_t N          // Number of columns
+        , bool SO           // Storage order
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+template< typename MT       // Type of the right-hand side matrix
+        , bool SO2 >        // Storage order of the right-hand side matrix
+inline HybridMatrix<Type,M,N,SO,AF,PF,Tag>&
+   HybridMatrix<Type,M,N,SO,AF,PF,Tag>::operator-=( const Matrix<MT,SO2>& rhs ) &
 {
    using blaze::subAssign;
 
-   if( (~rhs).rows() != m_ || (~rhs).columns() != n_ ) {
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<MT> );
+
+   if( (*rhs).rows() != m_ || (*rhs).columns() != n_ ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
-   if( (~rhs).canAlias( this ) ) {
-      const ResultType_t<MT> tmp( ~rhs );
+   if( (*rhs).canAlias( this ) ) {
+      const ResultType_t<MT> tmp( *rhs );
       subAssign( *this, tmp );
    }
    else {
-      subAssign( *this, ~rhs );
+      subAssign( *this, *rhs );
    }
 
    BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
@@ -1614,26 +1855,32 @@ inline HybridMatrix<Type,M,N,SO>& HybridMatrix<Type,M,N,SO>::operator-=( const M
 // In case the current sizes of the two matrices don't match, a \a std::invalid_argument exception
 // is thrown.
 */
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N       // Number of columns
-        , bool SO >      // Storage order
-template< typename MT    // Type of the right-hand side matrix
-        , bool SO2 >     // Storage order of the right-hand side matrix
-inline HybridMatrix<Type,M,N,SO>& HybridMatrix<Type,M,N,SO>::operator%=( const Matrix<MT,SO2>& rhs )
+template< typename Type     // Data type of the matrix
+        , size_t M          // Number of rows
+        , size_t N          // Number of columns
+        , bool SO           // Storage order
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+template< typename MT       // Type of the right-hand side matrix
+        , bool SO2 >        // Storage order of the right-hand side matrix
+inline HybridMatrix<Type,M,N,SO,AF,PF,Tag>&
+   HybridMatrix<Type,M,N,SO,AF,PF,Tag>::operator%=( const Matrix<MT,SO2>& rhs ) &
 {
    using blaze::schurAssign;
 
-   if( (~rhs).rows() != m_ || (~rhs).columns() != n_ ) {
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<MT> );
+
+   if( (*rhs).rows() != m_ || (*rhs).columns() != n_ ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
-   if( (~rhs).canAlias( this ) ) {
-      const ResultType_t<MT> tmp( ~rhs );
+   if( (*rhs).canAlias( this ) ) {
+      const ResultType_t<MT> tmp( *rhs );
       schurAssign( *this, tmp );
    }
    else {
-      schurAssign( *this, ~rhs );
+      schurAssign( *this, *rhs );
    }
 
    BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
@@ -1656,11 +1903,14 @@ inline HybridMatrix<Type,M,N,SO>& HybridMatrix<Type,M,N,SO>::operator%=( const M
 //
 // \return The number of rows of the matrix.
 */
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N       // Number of columns
-        , bool SO >      // Storage order
-inline size_t HybridMatrix<Type,M,N,SO>::rows() const noexcept
+template< typename Type     // Data type of the matrix
+        , size_t M          // Number of rows
+        , size_t N          // Number of columns
+        , bool SO           // Storage order
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+constexpr size_t HybridMatrix<Type,M,N,SO,AF,PF,Tag>::rows() const noexcept
 {
    return m_;
 }
@@ -1672,11 +1922,14 @@ inline size_t HybridMatrix<Type,M,N,SO>::rows() const noexcept
 //
 // \return The number of columns of the matrix.
 */
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N       // Number of columns
-        , bool SO >      // Storage order
-inline size_t HybridMatrix<Type,M,N,SO>::columns() const noexcept
+template< typename Type     // Data type of the matrix
+        , size_t M          // Number of rows
+        , size_t N          // Number of columns
+        , bool SO           // Storage order
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+constexpr size_t HybridMatrix<Type,M,N,SO,AF,PF,Tag>::columns() const noexcept
 {
    return n_;
 }
@@ -1691,11 +1944,14 @@ inline size_t HybridMatrix<Type,M,N,SO>::columns() const noexcept
 // This function returns the spacing between the beginning of two rows, i.e. the total number
 // of elements of a row.
 */
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N       // Number of columns
-        , bool SO >      // Storage order
-inline constexpr size_t HybridMatrix<Type,M,N,SO>::spacing() noexcept
+template< typename Type     // Data type of the matrix
+        , size_t M          // Number of rows
+        , size_t N          // Number of columns
+        , bool SO           // Storage order
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+constexpr size_t HybridMatrix<Type,M,N,SO,AF,PF,Tag>::spacing() noexcept
 {
    return NN;
 }
@@ -1707,11 +1963,14 @@ inline constexpr size_t HybridMatrix<Type,M,N,SO>::spacing() noexcept
 //
 // \return The capacity of the matrix.
 */
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N       // Number of columns
-        , bool SO >      // Storage order
-inline constexpr size_t HybridMatrix<Type,M,N,SO>::capacity() noexcept
+template< typename Type     // Data type of the matrix
+        , size_t M          // Number of rows
+        , size_t N          // Number of columns
+        , bool SO           // Storage order
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+constexpr size_t HybridMatrix<Type,M,N,SO,AF,PF,Tag>::capacity() noexcept
 {
    return M*NN;
 }
@@ -1729,13 +1988,16 @@ inline constexpr size_t HybridMatrix<Type,M,N,SO>::capacity() noexcept
 // in case the storage flag is set to \a columnMajor the function returns the capacity
 // of column \a i.
 */
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N       // Number of columns
-        , bool SO >      // Storage order
-inline size_t HybridMatrix<Type,M,N,SO>::capacity( size_t i ) const noexcept
+template< typename Type     // Data type of the matrix
+        , size_t M          // Number of rows
+        , size_t N          // Number of columns
+        , bool SO           // Storage order
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+constexpr size_t HybridMatrix<Type,M,N,SO,AF,PF,Tag>::capacity( size_t i ) const noexcept
 {
-   UNUSED_PARAMETER( i );
+   MAYBE_UNUSED( i );
 
    BLAZE_USER_ASSERT( i < rows(), "Invalid row access index" );
 
@@ -1748,18 +2010,25 @@ inline size_t HybridMatrix<Type,M,N,SO>::capacity( size_t i ) const noexcept
 /*!\brief Returns the total number of non-zero elements in the matrix
 //
 // \return The number of non-zero elements in the matrix.
+//
+// This function returns the number of non-zero elements in the matrix (i.e. the elements that
+// compare unequal to their default value). Note that the number of non-zero elements is always
+// less than or equal to the total number of elements in the matrix.
 */
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N       // Number of columns
-        , bool SO >      // Storage order
-inline size_t HybridMatrix<Type,M,N,SO>::nonZeros() const
+template< typename Type     // Data type of the matrix
+        , size_t M          // Number of rows
+        , size_t N          // Number of columns
+        , bool SO           // Storage order
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+inline size_t HybridMatrix<Type,M,N,SO,AF,PF,Tag>::nonZeros() const
 {
    size_t nonzeros( 0UL );
 
    for( size_t i=0UL; i<m_; ++i )
       for( size_t j=0UL; j<n_; ++j )
-         if( !isDefault( v_[i*NN+j] ) )
+         if( !isDefault<strict>( v_[i*NN+j] ) )
             ++nonzeros;
 
    return nonzeros;
@@ -1773,16 +2042,20 @@ inline size_t HybridMatrix<Type,M,N,SO>::nonZeros() const
 // \param i The index of the row/column.
 // \return The number of non-zero elements of row/column \a i.
 //
-// This function returns the current number of non-zero elements in the specified row/column.
-// In case the storage order is set to \a rowMajor the function returns the number of non-zero
-// elements in row \a i, in case the storage flag is set to \a columnMajor the function returns
-// the number of non-zero elements in column \a i.
+// This function returns the current number of non-zero elements in the specified row/column
+// (i.e. the elements that compare unequal to their default value). In case the storage order
+// is set to \a rowMajor the function returns the number of non-zero elements in row \a i, in
+// case the storage flag is set to \a columnMajor the function returns the number of non-zero
+// elements in column \a i.
 */
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N       // Number of columns
-        , bool SO >      // Storage order
-inline size_t HybridMatrix<Type,M,N,SO>::nonZeros( size_t i ) const
+template< typename Type     // Data type of the matrix
+        , size_t M          // Number of rows
+        , size_t N          // Number of columns
+        , bool SO           // Storage order
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+inline size_t HybridMatrix<Type,M,N,SO,AF,PF,Tag>::nonZeros( size_t i ) const
 {
    BLAZE_USER_ASSERT( i < rows(), "Invalid row access index" );
 
@@ -1790,7 +2063,7 @@ inline size_t HybridMatrix<Type,M,N,SO>::nonZeros( size_t i ) const
    size_t nonzeros( 0UL );
 
    for( size_t j=i*NN; j<jend; ++j )
-      if( !isDefault( v_[j] ) )
+      if( !isDefault<strict>( v_[j] ) )
          ++nonzeros;
 
    return nonzeros;
@@ -1803,11 +2076,14 @@ inline size_t HybridMatrix<Type,M,N,SO>::nonZeros( size_t i ) const
 //
 // \return void
 */
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N       // Number of columns
-        , bool SO >      // Storage order
-inline void HybridMatrix<Type,M,N,SO>::reset()
+template< typename Type     // Data type of the matrix
+        , size_t M          // Number of rows
+        , size_t N          // Number of columns
+        , bool SO           // Storage order
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+constexpr void HybridMatrix<Type,M,N,SO,AF,PF,Tag>::reset()
 {
    using blaze::clear;
 
@@ -1829,11 +2105,14 @@ inline void HybridMatrix<Type,M,N,SO>::reset()
 // the storage order is set to \a columnMajor the function resets the values in column \a i.
 // Note that the capacity of the row/column remains unchanged.
 */
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N       // Number of columns
-        , bool SO >      // Storage order
-inline void HybridMatrix<Type,M,N,SO>::reset( size_t i )
+template< typename Type     // Data type of the matrix
+        , size_t M          // Number of rows
+        , size_t N          // Number of columns
+        , bool SO           // Storage order
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+constexpr void HybridMatrix<Type,M,N,SO,AF,PF,Tag>::reset( size_t i )
 {
    using blaze::clear;
 
@@ -1851,11 +2130,14 @@ inline void HybridMatrix<Type,M,N,SO>::reset( size_t i )
 //
 // After the clear() function, the size of the matrix is 0.
 */
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N       // Number of columns
-        , bool SO >      // Storage order
-inline void HybridMatrix<Type,M,N,SO>::clear()
+template< typename Type     // Data type of the matrix
+        , size_t M          // Number of rows
+        , size_t N          // Number of columns
+        , bool SO           // Storage order
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+constexpr void HybridMatrix<Type,M,N,SO,AF,PF,Tag>::clear()
 {
    resize( 0UL, 0UL );
 }
@@ -1898,13 +2180,18 @@ inline void HybridMatrix<Type,M,N,SO>::clear()
                               \end{array}\right)
                               \f]
 */
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N       // Number of columns
-        , bool SO >      // Storage order
-void HybridMatrix<Type,M,N,SO>::resize( size_t m, size_t n, bool preserve )
+template< typename Type     // Data type of the matrix
+        , size_t M          // Number of rows
+        , size_t N          // Number of columns
+        , bool SO           // Storage order
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+constexpr void HybridMatrix<Type,M,N,SO,AF,PF,Tag>::resize( size_t m, size_t n, bool preserve )
 {
-   UNUSED_PARAMETER( preserve );
+   using blaze::clear;
+
+   MAYBE_UNUSED( preserve );
 
    if( m > M ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid number of rows for hybrid matrix" );
@@ -1917,13 +2204,13 @@ void HybridMatrix<Type,M,N,SO>::resize( size_t m, size_t n, bool preserve )
    if( IsVectorizable_v<Type> && n < n_ ) {
       for( size_t i=0UL; i<m; ++i )
          for( size_t j=n; j<n_; ++j )
-            v_[i*NN+j] = Type();
+            clear( v_[i*NN+j] );
    }
 
    if( IsVectorizable_v<Type> && m < m_ ) {
       for( size_t i=m; i<m_; ++i )
          for( size_t j=0UL; j<n_; ++j )
-            v_[i*NN+j] = Type();
+            clear( v_[i*NN+j] );
    }
 
    m_ = m;
@@ -1947,13 +2234,16 @@ void HybridMatrix<Type,M,N,SO>::resize( size_t m, size_t n, bool preserve )
 // flag can be set to \a true.\n
 // Note that new matrix elements are not initialized!
 */
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N       // Number of columns
-        , bool SO >      // Storage order
-inline void HybridMatrix<Type,M,N,SO>::extend( size_t m, size_t n, bool preserve )
+template< typename Type     // Data type of the matrix
+        , size_t M          // Number of rows
+        , size_t N          // Number of columns
+        , bool SO           // Storage order
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+constexpr void HybridMatrix<Type,M,N,SO,AF,PF,Tag>::extend( size_t m, size_t n, bool preserve )
 {
-   UNUSED_PARAMETER( preserve );
+   MAYBE_UNUSED( preserve );
    resize( m_+m, n_+n );
 }
 //*************************************************************************************************
@@ -1965,11 +2255,14 @@ inline void HybridMatrix<Type,M,N,SO>::extend( size_t m, size_t n, bool preserve
 // \param m The matrix to be swapped.
 // \return void
 */
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N       // Number of columns
-        , bool SO >      // Storage order
-inline void HybridMatrix<Type,M,N,SO>::swap( HybridMatrix& m ) noexcept
+template< typename Type     // Data type of the matrix
+        , size_t M          // Number of rows
+        , size_t N          // Number of columns
+        , bool SO           // Storage order
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+inline void HybridMatrix<Type,M,N,SO,AF,PF,Tag>::swap( HybridMatrix& m ) noexcept
 {
    using std::swap;
 
@@ -2007,13 +2300,17 @@ inline void HybridMatrix<Type,M,N,SO>::swap( HybridMatrix& m ) noexcept
 // current number of rows is larger than the maximum number of columns or if the current number
 // of columns is larger than the maximum number of rows, an \a std::logic_error is thrown.
 */
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N       // Number of columns
-        , bool SO >      // Storage order
-inline HybridMatrix<Type,M,N,SO>& HybridMatrix<Type,M,N,SO>::transpose()
+template< typename Type     // Data type of the matrix
+        , size_t M          // Number of rows
+        , size_t N          // Number of columns
+        , bool SO           // Storage order
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+inline HybridMatrix<Type,M,N,SO,AF,PF,Tag>& HybridMatrix<Type,M,N,SO,AF,PF,Tag>::transpose()
 {
    using std::swap;
+   using blaze::clear;
 
    if( m_ > N || n_ > M ) {
       BLAZE_THROW_LOGIC_ERROR( "Impossible transpose operation" );
@@ -2029,7 +2326,7 @@ inline HybridMatrix<Type,M,N,SO>& HybridMatrix<Type,M,N,SO>::transpose()
    if( IsVectorizable_v<Type> && m_ < n_ ) {
       for( size_t i=0UL; i<m_; ++i ) {
          for( size_t j=m_; j<n_; ++j ) {
-            v_[i*NN+j] = Type();
+            clear( v_[i*NN+j] );
          }
       }
    }
@@ -2037,7 +2334,7 @@ inline HybridMatrix<Type,M,N,SO>& HybridMatrix<Type,M,N,SO>::transpose()
    if( IsVectorizable_v<Type> && m_ > n_ ) {
       for( size_t i=n_; i<m_; ++i ) {
          for( size_t j=0UL; j<n_; ++j ) {
-            v_[i*NN+j] = Type();
+            clear( v_[i*NN+j] );
          }
       }
    }
@@ -2062,13 +2359,17 @@ inline HybridMatrix<Type,M,N,SO>& HybridMatrix<Type,M,N,SO>::transpose()
 // current number of rows is larger than the maximum number of columns or if the current number
 // of columns is larger than the maximum number of rows, an \a std::logic_error is thrown.
 */
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N       // Number of columns
-        , bool SO >      // Storage order
-inline HybridMatrix<Type,M,N,SO>& HybridMatrix<Type,M,N,SO>::ctranspose()
+template< typename Type     // Data type of the matrix
+        , size_t M          // Number of rows
+        , size_t N          // Number of columns
+        , bool SO           // Storage order
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+inline HybridMatrix<Type,M,N,SO,AF,PF,Tag>& HybridMatrix<Type,M,N,SO,AF,PF,Tag>::ctranspose()
 {
    using std::swap;
+   using blaze::clear;
 
    if( m_ > N || n_ > M ) {
       BLAZE_THROW_LOGIC_ERROR( "Impossible transpose operation" );
@@ -2085,7 +2386,7 @@ inline HybridMatrix<Type,M,N,SO>& HybridMatrix<Type,M,N,SO>::ctranspose()
    if( IsVectorizable_v<Type> && m_ < n_ ) {
       for( size_t i=0UL; i<m_; ++i ) {
          for( size_t j=m_; j<n_; ++j ) {
-            v_[i*NN+j] = Type();
+            clear( v_[i*NN+j] );
          }
       }
    }
@@ -2093,7 +2394,7 @@ inline HybridMatrix<Type,M,N,SO>& HybridMatrix<Type,M,N,SO>::ctranspose()
    if( IsVectorizable_v<Type> && m_ > n_ ) {
       for( size_t i=n_; i<m_; ++i ) {
          for( size_t j=0UL; j<n_; ++j ) {
-            v_[i*NN+j] = Type();
+            clear( v_[i*NN+j] );
          }
       }
    }
@@ -2127,9 +2428,13 @@ inline HybridMatrix<Type,M,N,SO>& HybridMatrix<Type,M,N,SO>::ctranspose()
 template< typename Type     // Data type of the matrix
         , size_t M          // Number of rows
         , size_t N          // Number of columns
-        , bool SO >         // Storage order
+        , bool SO           // Storage order
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
 template< typename Other >  // Data type of the scalar value
-inline HybridMatrix<Type,M,N,SO>& HybridMatrix<Type,M,N,SO>::scale( const Other& scalar )
+inline HybridMatrix<Type,M,N,SO,AF,PF,Tag>&
+   HybridMatrix<Type,M,N,SO,AF,PF,Tag>::scale( const Other& scalar )
 {
    for( size_t i=0UL; i<m_; ++i )
       for( size_t j=0UL; j<n_; ++j )
@@ -2158,13 +2463,16 @@ inline HybridMatrix<Type,M,N,SO>& HybridMatrix<Type,M,N,SO>::scale( const Other&
 // This class-specific implementation of operator new provides the functionality to allocate
 // dynamic memory based on the alignment restrictions of the HybridMatrix class template.
 */
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N       // Number of columns
-        , bool SO >      // Storage order
-inline void* HybridMatrix<Type,M,N,SO>::operator new( std::size_t size )
+template< typename Type     // Data type of the matrix
+        , size_t M          // Number of rows
+        , size_t N          // Number of columns
+        , bool SO           // Storage order
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+inline void* HybridMatrix<Type,M,N,SO,AF,PF,Tag>::operator new( std::size_t size )
 {
-   UNUSED_PARAMETER( size );
+   MAYBE_UNUSED( size );
 
    BLAZE_INTERNAL_ASSERT( size == sizeof( HybridMatrix ), "Invalid number of bytes detected" );
 
@@ -2183,11 +2491,14 @@ inline void* HybridMatrix<Type,M,N,SO>::operator new( std::size_t size )
 // This class-specific implementation of operator new provides the functionality to allocate
 // dynamic memory based on the alignment restrictions of the HybridMatrix class template.
 */
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N       // Number of columns
-        , bool SO >      // Storage order
-inline void* HybridMatrix<Type,M,N,SO>::operator new[]( std::size_t size )
+template< typename Type     // Data type of the matrix
+        , size_t M          // Number of rows
+        , size_t N          // Number of columns
+        , bool SO           // Storage order
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+inline void* HybridMatrix<Type,M,N,SO,AF,PF,Tag>::operator new[]( std::size_t size )
 {
    BLAZE_INTERNAL_ASSERT( size >= sizeof( HybridMatrix )       , "Invalid number of bytes detected" );
    BLAZE_INTERNAL_ASSERT( size %  sizeof( HybridMatrix ) == 0UL, "Invalid number of bytes detected" );
@@ -2207,13 +2518,16 @@ inline void* HybridMatrix<Type,M,N,SO>::operator new[]( std::size_t size )
 // This class-specific implementation of operator new provides the functionality to allocate
 // dynamic memory based on the alignment restrictions of the HybridMatrix class template.
 */
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N       // Number of columns
-        , bool SO >      // Storage order
-inline void* HybridMatrix<Type,M,N,SO>::operator new( std::size_t size, const std::nothrow_t& )
+template< typename Type     // Data type of the matrix
+        , size_t M          // Number of rows
+        , size_t N          // Number of columns
+        , bool SO           // Storage order
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+inline void* HybridMatrix<Type,M,N,SO,AF,PF,Tag>::operator new( std::size_t size, const std::nothrow_t& )
 {
-   UNUSED_PARAMETER( size );
+   MAYBE_UNUSED( size );
 
    BLAZE_INTERNAL_ASSERT( size == sizeof( HybridMatrix ), "Invalid number of bytes detected" );
 
@@ -2232,11 +2546,14 @@ inline void* HybridMatrix<Type,M,N,SO>::operator new( std::size_t size, const st
 // This class-specific implementation of operator new provides the functionality to allocate
 // dynamic memory based on the alignment restrictions of the HybridMatrix class template.
 */
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N       // Number of columns
-        , bool SO >      // Storage order
-inline void* HybridMatrix<Type,M,N,SO>::operator new[]( std::size_t size, const std::nothrow_t& )
+template< typename Type     // Data type of the matrix
+        , size_t M          // Number of rows
+        , size_t N          // Number of columns
+        , bool SO           // Storage order
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+inline void* HybridMatrix<Type,M,N,SO,AF,PF,Tag>::operator new[]( std::size_t size, const std::nothrow_t& )
 {
    BLAZE_INTERNAL_ASSERT( size >= sizeof( HybridMatrix )       , "Invalid number of bytes detected" );
    BLAZE_INTERNAL_ASSERT( size %  sizeof( HybridMatrix ) == 0UL, "Invalid number of bytes detected" );
@@ -2252,11 +2569,14 @@ inline void* HybridMatrix<Type,M,N,SO>::operator new[]( std::size_t size, const 
 // \param ptr The memory to be deallocated.
 // \return void
 */
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N       // Number of columns
-        , bool SO >      // Storage order
-inline void HybridMatrix<Type,M,N,SO>::operator delete( void* ptr )
+template< typename Type     // Data type of the matrix
+        , size_t M          // Number of rows
+        , size_t N          // Number of columns
+        , bool SO           // Storage order
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+inline void HybridMatrix<Type,M,N,SO,AF,PF,Tag>::operator delete( void* ptr )
 {
    deallocate( static_cast<HybridMatrix*>( ptr ) );
 }
@@ -2269,11 +2589,14 @@ inline void HybridMatrix<Type,M,N,SO>::operator delete( void* ptr )
 // \param ptr The memory to be deallocated.
 // \return void
 */
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N       // Number of columns
-        , bool SO >      // Storage order
-inline void HybridMatrix<Type,M,N,SO>::operator delete[]( void* ptr )
+template< typename Type     // Data type of the matrix
+        , size_t M          // Number of rows
+        , size_t N          // Number of columns
+        , bool SO           // Storage order
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+inline void HybridMatrix<Type,M,N,SO,AF,PF,Tag>::operator delete[]( void* ptr )
 {
    deallocate( static_cast<HybridMatrix*>( ptr ) );
 }
@@ -2286,11 +2609,14 @@ inline void HybridMatrix<Type,M,N,SO>::operator delete[]( void* ptr )
 // \param ptr The memory to be deallocated.
 // \return void
 */
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N       // Number of columns
-        , bool SO >      // Storage order
-inline void HybridMatrix<Type,M,N,SO>::operator delete( void* ptr, const std::nothrow_t& )
+template< typename Type     // Data type of the matrix
+        , size_t M          // Number of rows
+        , size_t N          // Number of columns
+        , bool SO           // Storage order
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+inline void HybridMatrix<Type,M,N,SO,AF,PF,Tag>::operator delete( void* ptr, const std::nothrow_t& )
 {
    deallocate( static_cast<HybridMatrix*>( ptr ) );
 }
@@ -2303,11 +2629,14 @@ inline void HybridMatrix<Type,M,N,SO>::operator delete( void* ptr, const std::no
 // \param ptr The memory to be deallocated.
 // \return void
 */
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N       // Number of columns
-        , bool SO >      // Storage order
-inline void HybridMatrix<Type,M,N,SO>::operator delete[]( void* ptr, const std::nothrow_t& )
+template< typename Type     // Data type of the matrix
+        , size_t M          // Number of rows
+        , size_t N          // Number of columns
+        , bool SO           // Storage order
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+inline void HybridMatrix<Type,M,N,SO,AF,PF,Tag>::operator delete[]( void* ptr, const std::nothrow_t& )
 {
    deallocate( static_cast<HybridMatrix*>( ptr ) );
 }
@@ -2331,11 +2660,14 @@ inline void HybridMatrix<Type,M,N,SO>::operator delete[]( void* ptr, const std::
 // state is valid. In case the invariants are intact, the function returns \a true, else it
 // will return \a false.
 */
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N       // Number of columns
-        , bool SO >      // Storage order
-inline bool HybridMatrix<Type,M,N,SO>::isIntact() const noexcept
+template< typename Type     // Data type of the matrix
+        , size_t M          // Number of rows
+        , size_t N          // Number of columns
+        , bool SO           // Storage order
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+constexpr bool HybridMatrix<Type,M,N,SO,AF,PF,Tag>::isIntact() const noexcept
 {
    if( m_ > M || n_ > N )
       return false;
@@ -2344,14 +2676,14 @@ inline bool HybridMatrix<Type,M,N,SO>::isIntact() const noexcept
    {
       for( size_t i=0UL; i<m_; ++i ) {
          for( size_t j=n_; j<NN; ++j ) {
-            if( v_[i*NN+j] != Type() )
+            if( !isDefault<strict>( v_[i*NN+j] ) )
                return false;
          }
       }
 
       for( size_t i=m_; i<M; ++i ) {
          for( size_t j=0UL; j<NN; ++j ) {
-            if( v_[i*NN+j] != Type() )
+            if( !isDefault<strict>( v_[i*NN+j] ) )
                return false;
          }
       }
@@ -2383,9 +2715,12 @@ inline bool HybridMatrix<Type,M,N,SO>::isIntact() const noexcept
 template< typename Type     // Data type of the matrix
         , size_t M          // Number of rows
         , size_t N          // Number of columns
-        , bool SO >         // Storage order
+        , bool SO           // Storage order
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
 template< typename Other >  // Data type of the foreign expression
-inline bool HybridMatrix<Type,M,N,SO>::canAlias( const Other* alias ) const noexcept
+inline bool HybridMatrix<Type,M,N,SO,AF,PF,Tag>::canAlias( const Other* alias ) const noexcept
 {
    return static_cast<const void*>( this ) == static_cast<const void*>( alias );
 }
@@ -2405,9 +2740,12 @@ inline bool HybridMatrix<Type,M,N,SO>::canAlias( const Other* alias ) const noex
 template< typename Type     // Data type of the matrix
         , size_t M          // Number of rows
         , size_t N          // Number of columns
-        , bool SO >         // Storage order
+        , bool SO           // Storage order
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
 template< typename Other >  // Data type of the foreign expression
-inline bool HybridMatrix<Type,M,N,SO>::isAliased( const Other* alias ) const noexcept
+inline bool HybridMatrix<Type,M,N,SO,AF,PF,Tag>::isAliased( const Other* alias ) const noexcept
 {
    return static_cast<const void*>( this ) == static_cast<const void*>( alias );
 }
@@ -2423,13 +2761,16 @@ inline bool HybridMatrix<Type,M,N,SO>::isAliased( const Other* alias ) const noe
 // whether the beginning and the end of each row/column of the matrix are guaranteed to conform
 // to the alignment restrictions of the element type \a Type.
 */
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N       // Number of columns
-        , bool SO >      // Storage order
-inline constexpr bool HybridMatrix<Type,M,N,SO>::isAligned() noexcept
+template< typename Type     // Data type of the matrix
+        , size_t M          // Number of rows
+        , size_t N          // Number of columns
+        , bool SO           // Storage order
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+constexpr bool HybridMatrix<Type,M,N,SO,AF,PF,Tag>::isAligned() noexcept
 {
-   return align;
+   return AF == aligned;
 }
 //*************************************************************************************************
 
@@ -2449,14 +2790,17 @@ inline constexpr bool HybridMatrix<Type,M,N,SO>::isAligned() noexcept
 // performance optimized evaluation of expression templates. Calling this function explicitly
 // might result in erroneous results and/or in compilation errors.
 */
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N       // Number of columns
-        , bool SO >      // Storage order
-BLAZE_ALWAYS_INLINE typename HybridMatrix<Type,M,N,SO>::SIMDType
-   HybridMatrix<Type,M,N,SO>::load( size_t i, size_t j ) const noexcept
+template< typename Type     // Data type of the matrix
+        , size_t M          // Number of rows
+        , size_t N          // Number of columns
+        , bool SO           // Storage order
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+BLAZE_ALWAYS_INLINE typename HybridMatrix<Type,M,N,SO,AF,PF,Tag>::SIMDType
+   HybridMatrix<Type,M,N,SO,AF,PF,Tag>::load( size_t i, size_t j ) const noexcept
 {
-   if( align )
+   if( AF == aligned )
       return loada( i, j );
    else
       return loadu( i, j );
@@ -2479,12 +2823,15 @@ BLAZE_ALWAYS_INLINE typename HybridMatrix<Type,M,N,SO>::SIMDType
 // internally for the performance optimized evaluation of expression templates. Calling this
 // function explicitly might result in erroneous results and/or in compilation errors.
 */
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N       // Number of columns
-        , bool SO >      // Storage order
-BLAZE_ALWAYS_INLINE typename HybridMatrix<Type,M,N,SO>::SIMDType
-   HybridMatrix<Type,M,N,SO>::loada( size_t i, size_t j ) const noexcept
+template< typename Type     // Data type of the matrix
+        , size_t M          // Number of rows
+        , size_t N          // Number of columns
+        , bool SO           // Storage order
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+BLAZE_ALWAYS_INLINE typename HybridMatrix<Type,M,N,SO,AF,PF,Tag>::SIMDType
+   HybridMatrix<Type,M,N,SO,AF,PF,Tag>::loada( size_t i, size_t j ) const noexcept
 {
    using blaze::loada;
 
@@ -2493,7 +2840,7 @@ BLAZE_ALWAYS_INLINE typename HybridMatrix<Type,M,N,SO>::SIMDType
    BLAZE_INTERNAL_ASSERT( i < m_, "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( j < n_, "Invalid column access index" );
    BLAZE_INTERNAL_ASSERT( j + SIMDSIZE <= NN, "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( !usePadding || j % SIMDSIZE == 0UL, "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( PF == unpadded || j % SIMDSIZE == 0UL, "Invalid column access index" );
    BLAZE_INTERNAL_ASSERT( checkAlignment( &v_[i*NN+j] ), "Invalid alignment detected" );
 
    return loada( &v_[i*NN+j] );
@@ -2516,12 +2863,15 @@ BLAZE_ALWAYS_INLINE typename HybridMatrix<Type,M,N,SO>::SIMDType
 // internally for the performance optimized evaluation of expression templates. Calling this
 // function explicitly might result in erroneous results and/or in compilation errors.
 */
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N       // Number of columns
-        , bool SO >      // Storage order
-BLAZE_ALWAYS_INLINE typename HybridMatrix<Type,M,N,SO>::SIMDType
-   HybridMatrix<Type,M,N,SO>::loadu( size_t i, size_t j ) const noexcept
+template< typename Type     // Data type of the matrix
+        , size_t M          // Number of rows
+        , size_t N          // Number of columns
+        , bool SO           // Storage order
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+BLAZE_ALWAYS_INLINE typename HybridMatrix<Type,M,N,SO,AF,PF,Tag>::SIMDType
+   HybridMatrix<Type,M,N,SO,AF,PF,Tag>::loadu( size_t i, size_t j ) const noexcept
 {
    using blaze::loadu;
 
@@ -2552,14 +2902,17 @@ BLAZE_ALWAYS_INLINE typename HybridMatrix<Type,M,N,SO>::SIMDType
 // performance optimized evaluation of expression templates. Calling this function explicitly
 // might result in erroneous results and/or in compilation errors.
 */
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N       // Number of columns
-        , bool SO >      // Storage order
+template< typename Type     // Data type of the matrix
+        , size_t M          // Number of rows
+        , size_t N          // Number of columns
+        , bool SO           // Storage order
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
 BLAZE_ALWAYS_INLINE void
-   HybridMatrix<Type,M,N,SO>::store( size_t i, size_t j, const SIMDType& value ) noexcept
+   HybridMatrix<Type,M,N,SO,AF,PF,Tag>::store( size_t i, size_t j, const SIMDType& value ) noexcept
 {
-   if( align )
+   if( AF == aligned )
       storea( i, j, value );
    else
       storeu( i, j, value );
@@ -2583,12 +2936,15 @@ BLAZE_ALWAYS_INLINE void
 // internally for the performance optimized evaluation of expression templates. Calling this
 // function explicitly might result in erroneous results and/or in compilation errors.
 */
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N       // Number of columns
-        , bool SO >      // Storage order
+template< typename Type     // Data type of the matrix
+        , size_t M          // Number of rows
+        , size_t N          // Number of columns
+        , bool SO           // Storage order
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
 BLAZE_ALWAYS_INLINE void
-   HybridMatrix<Type,M,N,SO>::storea( size_t i, size_t j, const SIMDType& value ) noexcept
+   HybridMatrix<Type,M,N,SO,AF,PF,Tag>::storea( size_t i, size_t j, const SIMDType& value ) noexcept
 {
    using blaze::storea;
 
@@ -2597,7 +2953,7 @@ BLAZE_ALWAYS_INLINE void
    BLAZE_INTERNAL_ASSERT( i < m_, "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( j < n_, "Invalid column access index" );
    BLAZE_INTERNAL_ASSERT( j + SIMDSIZE <= NN, "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( !usePadding || j % SIMDSIZE == 0UL, "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( PF == unpadded || j % SIMDSIZE == 0UL, "Invalid column access index" );
    BLAZE_INTERNAL_ASSERT( checkAlignment( &v_[i*NN+j] ), "Invalid alignment detected" );
 
    storea( &v_[i*NN+j], value );
@@ -2621,12 +2977,15 @@ BLAZE_ALWAYS_INLINE void
 // internally for the performance optimized evaluation of expression templates. Calling this
 // function explicitly might result in erroneous results and/or in compilation errors.
 */
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N       // Number of columns
-        , bool SO >      // Storage order
+template< typename Type     // Data type of the matrix
+        , size_t M          // Number of rows
+        , size_t N          // Number of columns
+        , bool SO           // Storage order
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
 BLAZE_ALWAYS_INLINE void
-   HybridMatrix<Type,M,N,SO>::storeu( size_t i, size_t j, const SIMDType& value ) noexcept
+   HybridMatrix<Type,M,N,SO,AF,PF,Tag>::storeu( size_t i, size_t j, const SIMDType& value ) noexcept
 {
    using blaze::storeu;
 
@@ -2658,12 +3017,15 @@ BLAZE_ALWAYS_INLINE void
 // templates. Calling this function explicitly might result in erroneous results and/or in
 // compilation errors.
 */
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N       // Number of columns
-        , bool SO >      // Storage order
+template< typename Type     // Data type of the matrix
+        , size_t M          // Number of rows
+        , size_t N          // Number of columns
+        , bool SO           // Storage order
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
 BLAZE_ALWAYS_INLINE void
-   HybridMatrix<Type,M,N,SO>::stream( size_t i, size_t j, const SIMDType& value ) noexcept
+   HybridMatrix<Type,M,N,SO,AF,PF,Tag>::stream( size_t i, size_t j, const SIMDType& value ) noexcept
 {
    using blaze::stream;
 
@@ -2672,7 +3034,7 @@ BLAZE_ALWAYS_INLINE void
    BLAZE_INTERNAL_ASSERT( i < m_, "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( j < n_, "Invalid column access index" );
    BLAZE_INTERNAL_ASSERT( j + SIMDSIZE <= NN, "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( !usePadding || j % SIMDSIZE == 0UL, "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( PF == unpadded || j % SIMDSIZE == 0UL, "Invalid column access index" );
    BLAZE_INTERNAL_ASSERT( checkAlignment( &v_[i*NN+j] ), "Invalid alignment detected" );
 
    stream( &v_[i*NN+j], value );
@@ -2691,20 +3053,23 @@ BLAZE_ALWAYS_INLINE void
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N       // Number of columns
-        , bool SO >      // Storage order
-template< typename MT    // Type of the right-hand side dense matrix
-        , bool SO2 >     // Storage order of the right-hand side dense matrix
-inline auto HybridMatrix<Type,M,N,SO>::assign( const DenseMatrix<MT,SO2>& rhs )
+template< typename Type     // Data type of the matrix
+        , size_t M          // Number of rows
+        , size_t N          // Number of columns
+        , bool SO           // Storage order
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+template< typename MT       // Type of the right-hand side dense matrix
+        , bool SO2 >        // Storage order of the right-hand side dense matrix
+inline auto HybridMatrix<Type,M,N,SO,AF,PF,Tag>::assign( const DenseMatrix<MT,SO2>& rhs )
    -> DisableIf_t< VectorizedAssign_v<MT> >
 {
-   BLAZE_INTERNAL_ASSERT( (~rhs).rows() == m_ && (~rhs).columns() == n_, "Invalid matrix size" );
+   BLAZE_INTERNAL_ASSERT( (*rhs).rows() == m_ && (*rhs).columns() == n_, "Invalid matrix size" );
 
    for( size_t i=0UL; i<m_; ++i ) {
       for( size_t j=0UL; j<n_; ++j ) {
-         v_[i*NN+j] = (~rhs)(i,j);
+         v_[i*NN+j] = (*rhs)(i,j);
       }
    }
 }
@@ -2722,33 +3087,36 @@ inline auto HybridMatrix<Type,M,N,SO>::assign( const DenseMatrix<MT,SO2>& rhs )
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N       // Number of columns
-        , bool SO >      // Storage order
-template< typename MT    // Type of the right-hand side dense matrix
-        , bool SO2 >     // Storage order of the right-hand side dense matrix
-inline auto HybridMatrix<Type,M,N,SO>::assign( const DenseMatrix<MT,SO2>& rhs )
+template< typename Type     // Data type of the matrix
+        , size_t M          // Number of rows
+        , size_t N          // Number of columns
+        , bool SO           // Storage order
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+template< typename MT       // Type of the right-hand side dense matrix
+        , bool SO2 >        // Storage order of the right-hand side dense matrix
+inline auto HybridMatrix<Type,M,N,SO,AF,PF,Tag>::assign( const DenseMatrix<MT,SO2>& rhs )
    -> EnableIf_t< VectorizedAssign_v<MT> >
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
-   BLAZE_INTERNAL_ASSERT( (~rhs).rows() == m_ && (~rhs).columns() == n_, "Invalid matrix size" );
+   BLAZE_INTERNAL_ASSERT( (*rhs).rows() == m_ && (*rhs).columns() == n_, "Invalid matrix size" );
 
-   constexpr bool remainder( !usePadding || !IsPadded_v<MT> );
+   constexpr bool remainder( PF == unpadded || !IsPadded_v<MT> );
 
-   const size_t jpos( ( remainder )?( n_ & size_t(-SIMDSIZE) ):( n_ ) );
-   BLAZE_INTERNAL_ASSERT( !remainder || ( n_ - ( n_ % (SIMDSIZE) ) ) == jpos, "Invalid end calculation" );
+   const size_t jpos( remainder ? prevMultiple( n_, SIMDSIZE ) : n_ );
+   BLAZE_INTERNAL_ASSERT( jpos <= n_, "Invalid end calculation" );
 
    for( size_t i=0UL; i<m_; ++i )
    {
       size_t j( 0UL );
 
       for( ; j<jpos; j+=SIMDSIZE ) {
-         store( i, j, (~rhs).load(i,j) );
+         store( i, j, (*rhs).load(i,j) );
       }
       for( ; remainder && j<n_; ++j ) {
-         v_[i*NN+j] = (~rhs)(i,j);
+         v_[i*NN+j] = (*rhs)(i,j);
       }
    }
 }
@@ -2766,17 +3134,20 @@ inline auto HybridMatrix<Type,M,N,SO>::assign( const DenseMatrix<MT,SO2>& rhs )
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N       // Number of columns
-        , bool SO >      // Storage order
-template< typename MT >  // Type of the right-hand side sparse matrix
-inline void HybridMatrix<Type,M,N,SO>::assign( const SparseMatrix<MT,SO>& rhs )
+template< typename Type     // Data type of the matrix
+        , size_t M          // Number of rows
+        , size_t N          // Number of columns
+        , bool SO           // Storage order
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+template< typename MT >     // Type of the right-hand side sparse matrix
+inline void HybridMatrix<Type,M,N,SO,AF,PF,Tag>::assign( const SparseMatrix<MT,SO>& rhs )
 {
-   BLAZE_INTERNAL_ASSERT( (~rhs).rows() == m_ && (~rhs).columns() == n_, "Invalid matrix size" );
+   BLAZE_INTERNAL_ASSERT( (*rhs).rows() == m_ && (*rhs).columns() == n_, "Invalid matrix size" );
 
    for( size_t i=0UL; i<m_; ++i )
-      for( ConstIterator_t<MT> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
+      for( auto element=(*rhs).begin(i); element!=(*rhs).end(i); ++element )
          v_[i*NN+element->index()] = element->value();
 }
 //*************************************************************************************************
@@ -2793,19 +3164,22 @@ inline void HybridMatrix<Type,M,N,SO>::assign( const SparseMatrix<MT,SO>& rhs )
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N       // Number of columns
-        , bool SO >      // Storage order
-template< typename MT >  // Type of the right-hand side sparse matrix
-inline void HybridMatrix<Type,M,N,SO>::assign( const SparseMatrix<MT,!SO>& rhs )
+template< typename Type     // Data type of the matrix
+        , size_t M          // Number of rows
+        , size_t N          // Number of columns
+        , bool SO           // Storage order
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+template< typename MT >     // Type of the right-hand side sparse matrix
+inline void HybridMatrix<Type,M,N,SO,AF,PF,Tag>::assign( const SparseMatrix<MT,!SO>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
 
-   BLAZE_INTERNAL_ASSERT( (~rhs).rows() == m_ && (~rhs).columns() == n_, "Invalid matrix size" );
+   BLAZE_INTERNAL_ASSERT( (*rhs).rows() == m_ && (*rhs).columns() == n_, "Invalid matrix size" );
 
    for( size_t j=0UL; j<n_; ++j )
-      for( ConstIterator_t<MT> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
+      for( auto element=(*rhs).begin(j); element!=(*rhs).end(j); ++element )
          v_[element->index()*NN+j] = element->value();
 }
 //*************************************************************************************************
@@ -2822,22 +3196,25 @@ inline void HybridMatrix<Type,M,N,SO>::assign( const SparseMatrix<MT,!SO>& rhs )
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N       // Number of columns
-        , bool SO >      // Storage order
-template< typename MT    // Type of the right-hand side dense matrix
-        , bool SO2 >     // Storage order of the right-hand side dense matrix
-inline auto HybridMatrix<Type,M,N,SO>::addAssign( const DenseMatrix<MT,SO2>& rhs )
+template< typename Type     // Data type of the matrix
+        , size_t M          // Number of rows
+        , size_t N          // Number of columns
+        , bool SO           // Storage order
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+template< typename MT       // Type of the right-hand side dense matrix
+        , bool SO2 >        // Storage order of the right-hand side dense matrix
+inline auto HybridMatrix<Type,M,N,SO,AF,PF,Tag>::addAssign( const DenseMatrix<MT,SO2>& rhs )
    -> DisableIf_t< VectorizedAddAssign_v<MT> >
 {
-   BLAZE_INTERNAL_ASSERT( (~rhs).rows() == m_ && (~rhs).columns() == n_, "Invalid matrix size" );
+   BLAZE_INTERNAL_ASSERT( (*rhs).rows() == m_ && (*rhs).columns() == n_, "Invalid matrix size" );
 
    for( size_t i=0UL; i<m_; ++i )
    {
       if( IsDiagonal_v<MT> )
       {
-         v_[i*NN+i] += (~rhs)(i,i);
+         v_[i*NN+i] += (*rhs)(i,i);
       }
       else
       {
@@ -2850,7 +3227,7 @@ inline auto HybridMatrix<Type,M,N,SO>::addAssign( const DenseMatrix<MT,SO2>& rhs
          BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
          for( size_t j=jbegin; j<jend; ++j ) {
-            v_[i*NN+j] += (~rhs)(i,j);
+            v_[i*NN+j] += (*rhs)(i,j);
          }
       }
    }
@@ -2869,42 +3246,45 @@ inline auto HybridMatrix<Type,M,N,SO>::addAssign( const DenseMatrix<MT,SO2>& rhs
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N       // Number of columns
-        , bool SO >      // Storage order
-template< typename MT    // Type of the right-hand side dense matrix
-        , bool SO2 >     // Storage order of the right-hand side dense matrix
-inline auto HybridMatrix<Type,M,N,SO>::addAssign( const DenseMatrix<MT,SO2>& rhs )
+template< typename Type     // Data type of the matrix
+        , size_t M          // Number of rows
+        , size_t N          // Number of columns
+        , bool SO           // Storage order
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+template< typename MT       // Type of the right-hand side dense matrix
+        , bool SO2 >        // Storage order of the right-hand side dense matrix
+inline auto HybridMatrix<Type,M,N,SO,AF,PF,Tag>::addAssign( const DenseMatrix<MT,SO2>& rhs )
    -> EnableIf_t< VectorizedAddAssign_v<MT> >
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
    BLAZE_CONSTRAINT_MUST_NOT_BE_DIAGONAL_MATRIX_TYPE( MT );
 
-   BLAZE_INTERNAL_ASSERT( (~rhs).rows() == m_ && (~rhs).columns() == n_, "Invalid matrix size" );
+   BLAZE_INTERNAL_ASSERT( (*rhs).rows() == m_ && (*rhs).columns() == n_, "Invalid matrix size" );
 
-   constexpr bool remainder( !usePadding || !IsPadded_v<MT> );
+   constexpr bool remainder( PF == unpadded || !IsPadded_v<MT> );
 
    for( size_t i=0UL; i<m_; ++i )
    {
       const size_t jbegin( ( IsUpper_v<MT> )
-                           ?( ( IsStrictlyUpper_v<MT> ? i+1UL : i ) & size_t(-SIMDSIZE) )
+                           ?( prevMultiple( ( IsStrictlyUpper_v<MT> ? i+1UL : i ), SIMDSIZE ) )
                            :( 0UL ) );
       const size_t jend  ( ( IsLower_v<MT> )
                            ?( IsStrictlyLower_v<MT> ? i : i+1UL )
                            :( n_ ) );
       BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
-      const size_t jpos( ( remainder )?( jend & size_t(-SIMDSIZE) ):( jend ) );
-      BLAZE_INTERNAL_ASSERT( !remainder || ( jend - ( jend % (SIMDSIZE) ) ) == jpos, "Invalid end calculation" );
+      const size_t jpos( remainder ? prevMultiple( jend, SIMDSIZE ) : jend );
+      BLAZE_INTERNAL_ASSERT( jpos <= jend, "Invalid end calculation" );
 
       size_t j( jbegin );
 
       for( ; j<jpos; j+=SIMDSIZE ) {
-         store( i, j, load(i,j) + (~rhs).load(i,j) );
+         store( i, j, load(i,j) + (*rhs).load(i,j) );
       }
       for( ; remainder && j<jend; ++j ) {
-         v_[i*NN+j] += (~rhs)(i,j);
+         v_[i*NN+j] += (*rhs)(i,j);
       }
    }
 }
@@ -2922,17 +3302,20 @@ inline auto HybridMatrix<Type,M,N,SO>::addAssign( const DenseMatrix<MT,SO2>& rhs
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N       // Number of columns
-        , bool SO >      // Storage order
-template< typename MT >  // Type of the right-hand side sparse matrix
-inline void HybridMatrix<Type,M,N,SO>::addAssign( const SparseMatrix<MT,SO>& rhs )
+template< typename Type     // Data type of the matrix
+        , size_t M          // Number of rows
+        , size_t N          // Number of columns
+        , bool SO           // Storage order
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+template< typename MT >     // Type of the right-hand side sparse matrix
+inline void HybridMatrix<Type,M,N,SO,AF,PF,Tag>::addAssign( const SparseMatrix<MT,SO>& rhs )
 {
-   BLAZE_INTERNAL_ASSERT( (~rhs).rows() == m_ && (~rhs).columns() == n_, "Invalid matrix size" );
+   BLAZE_INTERNAL_ASSERT( (*rhs).rows() == m_ && (*rhs).columns() == n_, "Invalid matrix size" );
 
    for( size_t i=0UL; i<m_; ++i )
-      for( ConstIterator_t<MT> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
+      for( auto element=(*rhs).begin(i); element!=(*rhs).end(i); ++element )
          v_[i*NN+element->index()] += element->value();
 }
 //*************************************************************************************************
@@ -2949,19 +3332,22 @@ inline void HybridMatrix<Type,M,N,SO>::addAssign( const SparseMatrix<MT,SO>& rhs
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N       // Number of columns
-        , bool SO >      // Storage order
-template< typename MT >  // Type of the right-hand side sparse matrix
-inline void HybridMatrix<Type,M,N,SO>::addAssign( const SparseMatrix<MT,!SO>& rhs )
+template< typename Type     // Data type of the matrix
+        , size_t M          // Number of rows
+        , size_t N          // Number of columns
+        , bool SO           // Storage order
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+template< typename MT >     // Type of the right-hand side sparse matrix
+inline void HybridMatrix<Type,M,N,SO,AF,PF,Tag>::addAssign( const SparseMatrix<MT,!SO>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
 
-   BLAZE_INTERNAL_ASSERT( (~rhs).rows() == m_ && (~rhs).columns() == n_, "Invalid matrix size" );
+   BLAZE_INTERNAL_ASSERT( (*rhs).rows() == m_ && (*rhs).columns() == n_, "Invalid matrix size" );
 
    for( size_t j=0UL; j<n_; ++j )
-      for( ConstIterator_t<MT> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
+      for( auto element=(*rhs).begin(j); element!=(*rhs).end(j); ++element )
          v_[element->index()*NN+j] += element->value();
 }
 //*************************************************************************************************
@@ -2978,22 +3364,25 @@ inline void HybridMatrix<Type,M,N,SO>::addAssign( const SparseMatrix<MT,!SO>& rh
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N       // Number of columns
-        , bool SO >      // Storage order
-template< typename MT    // Type of the right-hand side dense matrix
-        , bool SO2 >     // Storage order of the right-hand side dense matrix
-inline auto HybridMatrix<Type,M,N,SO>::subAssign( const DenseMatrix<MT,SO2>& rhs )
+template< typename Type     // Data type of the matrix
+        , size_t M          // Number of rows
+        , size_t N          // Number of columns
+        , bool SO           // Storage order
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+template< typename MT       // Type of the right-hand side dense matrix
+        , bool SO2 >        // Storage order of the right-hand side dense matrix
+inline auto HybridMatrix<Type,M,N,SO,AF,PF,Tag>::subAssign( const DenseMatrix<MT,SO2>& rhs )
    -> DisableIf_t< VectorizedSubAssign_v<MT> >
 {
-   BLAZE_INTERNAL_ASSERT( (~rhs).rows() == m_ && (~rhs).columns() == n_, "Invalid matrix size" );
+   BLAZE_INTERNAL_ASSERT( (*rhs).rows() == m_ && (*rhs).columns() == n_, "Invalid matrix size" );
 
    for( size_t i=0UL; i<m_; ++i )
    {
       if( IsDiagonal_v<MT> )
       {
-         v_[i*NN+i] -= (~rhs)(i,i);
+         v_[i*NN+i] -= (*rhs)(i,i);
       }
       else
       {
@@ -3006,7 +3395,7 @@ inline auto HybridMatrix<Type,M,N,SO>::subAssign( const DenseMatrix<MT,SO2>& rhs
          BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
          for( size_t j=jbegin; j<jend; ++j ) {
-            v_[i*NN+j] -= (~rhs)(i,j);
+            v_[i*NN+j] -= (*rhs)(i,j);
          }
       }
    }
@@ -3025,42 +3414,45 @@ inline auto HybridMatrix<Type,M,N,SO>::subAssign( const DenseMatrix<MT,SO2>& rhs
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N       // Number of columns
-        , bool SO >      // Storage order
-template< typename MT    // Type of the right-hand side dense matrix
-        , bool SO2 >     // Storage order of the right-hand side dense matrix
-inline auto HybridMatrix<Type,M,N,SO>::subAssign( const DenseMatrix<MT,SO2>& rhs )
+template< typename Type     // Data type of the matrix
+        , size_t M          // Number of rows
+        , size_t N          // Number of columns
+        , bool SO           // Storage order
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+template< typename MT       // Type of the right-hand side dense matrix
+        , bool SO2 >        // Storage order of the right-hand side dense matrix
+inline auto HybridMatrix<Type,M,N,SO,AF,PF,Tag>::subAssign( const DenseMatrix<MT,SO2>& rhs )
    -> EnableIf_t< VectorizedSubAssign_v<MT> >
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
    BLAZE_CONSTRAINT_MUST_NOT_BE_DIAGONAL_MATRIX_TYPE( MT );
 
-   BLAZE_INTERNAL_ASSERT( (~rhs).rows() == m_ && (~rhs).columns() == n_, "Invalid matrix size" );
+   BLAZE_INTERNAL_ASSERT( (*rhs).rows() == m_ && (*rhs).columns() == n_, "Invalid matrix size" );
 
-   constexpr bool remainder( !usePadding || !IsPadded_v<MT> );
+   constexpr bool remainder( PF == unpadded || !IsPadded_v<MT> );
 
    for( size_t i=0UL; i<m_; ++i )
    {
       const size_t jbegin( ( IsUpper_v<MT> )
-                           ?( ( IsStrictlyUpper_v<MT> ? i+1UL : i ) & size_t(-SIMDSIZE) )
+                           ?( prevMultiple( ( IsStrictlyUpper_v<MT> ? i+1UL : i ), SIMDSIZE ) )
                            :( 0UL ) );
       const size_t jend  ( ( IsLower_v<MT> )
                            ?( IsStrictlyLower_v<MT> ? i : i+1UL )
                            :( n_ ) );
       BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
-      const size_t jpos( ( remainder )?( jend & size_t(-SIMDSIZE) ):( jend ) );
-      BLAZE_INTERNAL_ASSERT( !remainder || ( jend - ( jend % (SIMDSIZE) ) ) == jpos, "Invalid end calculation" );
+      const size_t jpos( remainder ? prevMultiple( jend, SIMDSIZE ) : jend );
+      BLAZE_INTERNAL_ASSERT( jpos <= jend, "Invalid end calculation" );
 
       size_t j( jbegin );
 
       for( ; j<jpos; j+=SIMDSIZE ) {
-         store( i, j, load(i,j) - (~rhs).load(i,j) );
+         store( i, j, load(i,j) - (*rhs).load(i,j) );
       }
       for( ; remainder && j<jend; ++j ) {
-         v_[i*NN+j] -= (~rhs)(i,j);
+         v_[i*NN+j] -= (*rhs)(i,j);
       }
    }
 }
@@ -3078,17 +3470,20 @@ inline auto HybridMatrix<Type,M,N,SO>::subAssign( const DenseMatrix<MT,SO2>& rhs
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N       // Number of columns
-        , bool SO >      // Storage order
-template< typename MT >  // Type of the right-hand side sparse matrix
-inline void HybridMatrix<Type,M,N,SO>::subAssign( const SparseMatrix<MT,SO>& rhs )
+template< typename Type     // Data type of the matrix
+        , size_t M          // Number of rows
+        , size_t N          // Number of columns
+        , bool SO           // Storage order
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+template< typename MT >     // Type of the right-hand side sparse matrix
+inline void HybridMatrix<Type,M,N,SO,AF,PF,Tag>::subAssign( const SparseMatrix<MT,SO>& rhs )
 {
-   BLAZE_INTERNAL_ASSERT( (~rhs).rows() == m_ && (~rhs).columns() == n_, "Invalid matrix size" );
+   BLAZE_INTERNAL_ASSERT( (*rhs).rows() == m_ && (*rhs).columns() == n_, "Invalid matrix size" );
 
    for( size_t i=0UL; i<m_; ++i )
-      for( ConstIterator_t<MT> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
+      for( auto element=(*rhs).begin(i); element!=(*rhs).end(i); ++element )
          v_[i*NN+element->index()] -= element->value();
 }
 //*************************************************************************************************
@@ -3105,19 +3500,22 @@ inline void HybridMatrix<Type,M,N,SO>::subAssign( const SparseMatrix<MT,SO>& rhs
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N       // Number of columns
-        , bool SO >      // Storage order
-template< typename MT >  // Type of the right-hand side sparse matrix
-inline void HybridMatrix<Type,M,N,SO>::subAssign( const SparseMatrix<MT,!SO>& rhs )
+template< typename Type     // Data type of the matrix
+        , size_t M          // Number of rows
+        , size_t N          // Number of columns
+        , bool SO           // Storage order
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+template< typename MT >     // Type of the right-hand side sparse matrix
+inline void HybridMatrix<Type,M,N,SO,AF,PF,Tag>::subAssign( const SparseMatrix<MT,!SO>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
 
-   BLAZE_INTERNAL_ASSERT( (~rhs).rows() == m_ && (~rhs).columns() == n_, "Invalid matrix size" );
+   BLAZE_INTERNAL_ASSERT( (*rhs).rows() == m_ && (*rhs).columns() == n_, "Invalid matrix size" );
 
    for( size_t j=0UL; j<n_; ++j )
-      for( ConstIterator_t<MT> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
+      for( auto element=(*rhs).begin(j); element!=(*rhs).end(j); ++element )
          v_[element->index()*NN+j] -= element->value();
 }
 //*************************************************************************************************
@@ -3134,20 +3532,23 @@ inline void HybridMatrix<Type,M,N,SO>::subAssign( const SparseMatrix<MT,!SO>& rh
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N       // Number of columns
-        , bool SO >      // Storage order
-template< typename MT    // Type of the right-hand side dense matrix
-        , bool SO2 >     // Storage order of the right-hand side dense matrix
-inline auto HybridMatrix<Type,M,N,SO>::schurAssign( const DenseMatrix<MT,SO2>& rhs )
+template< typename Type     // Data type of the matrix
+        , size_t M          // Number of rows
+        , size_t N          // Number of columns
+        , bool SO           // Storage order
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+template< typename MT       // Type of the right-hand side dense matrix
+        , bool SO2 >        // Storage order of the right-hand side dense matrix
+inline auto HybridMatrix<Type,M,N,SO,AF,PF,Tag>::schurAssign( const DenseMatrix<MT,SO2>& rhs )
    -> DisableIf_t< VectorizedSchurAssign_v<MT> >
 {
-   BLAZE_INTERNAL_ASSERT( (~rhs).rows() == m_ && (~rhs).columns() == n_, "Invalid matrix size" );
+   BLAZE_INTERNAL_ASSERT( (*rhs).rows() == m_ && (*rhs).columns() == n_, "Invalid matrix size" );
 
    for( size_t i=0UL; i<m_; ++i ) {
       for( size_t j=0UL; j<n_; ++j ) {
-         v_[i*NN+j] *= (~rhs)(i,j);
+         v_[i*NN+j] *= (*rhs)(i,j);
       }
    }
 }
@@ -3165,33 +3566,36 @@ inline auto HybridMatrix<Type,M,N,SO>::schurAssign( const DenseMatrix<MT,SO2>& r
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N       // Number of columns
-        , bool SO >      // Storage order
-template< typename MT    // Type of the right-hand side dense matrix
-        , bool SO2 >     // Storage order of the right-hand side dense matrix
-inline auto HybridMatrix<Type,M,N,SO>::schurAssign( const DenseMatrix<MT,SO2>& rhs )
+template< typename Type     // Data type of the matrix
+        , size_t M          // Number of rows
+        , size_t N          // Number of columns
+        , bool SO           // Storage order
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+template< typename MT       // Type of the right-hand side dense matrix
+        , bool SO2 >        // Storage order of the right-hand side dense matrix
+inline auto HybridMatrix<Type,M,N,SO,AF,PF,Tag>::schurAssign( const DenseMatrix<MT,SO2>& rhs )
    -> EnableIf_t< VectorizedSchurAssign_v<MT> >
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
-   BLAZE_INTERNAL_ASSERT( (~rhs).rows() == m_ && (~rhs).columns() == n_, "Invalid matrix size" );
+   BLAZE_INTERNAL_ASSERT( (*rhs).rows() == m_ && (*rhs).columns() == n_, "Invalid matrix size" );
 
-   constexpr bool remainder( !usePadding || !IsPadded_v<MT> );
+   constexpr bool remainder( PF == unpadded || !IsPadded_v<MT> );
 
    for( size_t i=0UL; i<m_; ++i )
    {
-      const size_t jpos( ( remainder )?( n_ & size_t(-SIMDSIZE) ):( n_ ) );
-      BLAZE_INTERNAL_ASSERT( !remainder || ( n_ - ( n_ % (SIMDSIZE) ) ) == jpos, "Invalid end calculation" );
+      const size_t jpos( remainder ? prevMultiple( n_, SIMDSIZE ) : n_ );
+      BLAZE_INTERNAL_ASSERT( jpos <= n_, "Invalid end calculation" );
 
       size_t j( 0UL );
 
       for( ; j<jpos; j+=SIMDSIZE ) {
-         store( i, j, load(i,j) * (~rhs).load(i,j) );
+         store( i, j, load(i,j) * (*rhs).load(i,j) );
       }
       for( ; remainder && j<n_; ++j ) {
-         v_[i*NN+j] *= (~rhs)(i,j);
+         v_[i*NN+j] *= (*rhs)(i,j);
       }
    }
 }
@@ -3209,21 +3613,24 @@ inline auto HybridMatrix<Type,M,N,SO>::schurAssign( const DenseMatrix<MT,SO2>& r
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N       // Number of columns
-        , bool SO >      // Storage order
-template< typename MT >  // Type of the right-hand side sparse matrix
-inline void HybridMatrix<Type,M,N,SO>::schurAssign( const SparseMatrix<MT,SO>& rhs )
+template< typename Type     // Data type of the matrix
+        , size_t M          // Number of rows
+        , size_t N          // Number of columns
+        , bool SO           // Storage order
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+template< typename MT >     // Type of the right-hand side sparse matrix
+inline void HybridMatrix<Type,M,N,SO,AF,PF,Tag>::schurAssign( const SparseMatrix<MT,SO>& rhs )
 {
-   BLAZE_INTERNAL_ASSERT( (~rhs).rows() == m_ && (~rhs).columns() == n_, "Invalid matrix size" );
+   BLAZE_INTERNAL_ASSERT( (*rhs).rows() == m_ && (*rhs).columns() == n_, "Invalid matrix size" );
 
    const HybridMatrix tmp( serial( *this ) );
 
    reset();
 
    for( size_t i=0UL; i<m_; ++i )
-      for( ConstIterator_t<MT> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
+      for( auto element=(*rhs).begin(i); element!=(*rhs).end(i); ++element )
          v_[i*NN+element->index()] = tmp.v_[i*NN+element->index()] * element->value();
 }
 //*************************************************************************************************
@@ -3240,23 +3647,26 @@ inline void HybridMatrix<Type,M,N,SO>::schurAssign( const SparseMatrix<MT,SO>& r
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N       // Number of columns
-        , bool SO >      // Storage order
-template< typename MT >  // Type of the right-hand side sparse matrix
-inline void HybridMatrix<Type,M,N,SO>::schurAssign( const SparseMatrix<MT,!SO>& rhs )
+template< typename Type     // Data type of the matrix
+        , size_t M          // Number of rows
+        , size_t N          // Number of columns
+        , bool SO           // Storage order
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+template< typename MT >     // Type of the right-hand side sparse matrix
+inline void HybridMatrix<Type,M,N,SO,AF,PF,Tag>::schurAssign( const SparseMatrix<MT,!SO>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
 
-   BLAZE_INTERNAL_ASSERT( (~rhs).rows() == m_ && (~rhs).columns() == n_, "Invalid matrix size" );
+   BLAZE_INTERNAL_ASSERT( (*rhs).rows() == m_ && (*rhs).columns() == n_, "Invalid matrix size" );
 
    const HybridMatrix tmp( serial( *this ) );
 
    reset();
 
    for( size_t j=0UL; j<n_; ++j )
-      for( ConstIterator_t<MT> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
+      for( auto element=(*rhs).begin(j); element!=(*rhs).end(j); ++element )
          v_[element->index()*NN+j] = tmp.v_[element->index()*NN+j] * element->value();
 }
 //*************************************************************************************************
@@ -3282,43 +3692,42 @@ inline void HybridMatrix<Type,M,N,SO>::schurAssign( const SparseMatrix<MT,!SO>& 
 // This specialization of HybridMatrix adapts the class template to the requirements of
 // column-major matrices.
 */
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N >     // Number of columns
-class HybridMatrix<Type,M,N,true>
-   : public DenseMatrix< HybridMatrix<Type,M,N,true>, true >
+template< typename Type     // Data type of the matrix
+        , size_t M          // Number of rows
+        , size_t N          // Number of columns
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+class HybridMatrix<Type,M,N,true,AF,PF,Tag>
+   : public DenseMatrix< HybridMatrix<Type,M,N,true,AF,PF,Tag>, true >
 {
- private:
-   //**********************************************************************************************
-   //! The number of elements packed within a single SIMD element.
-   static constexpr size_t SIMDSIZE = SIMDTrait<Type>::size;
-
-   //! Alignment adjustment.
-   static constexpr size_t MM = ( usePadding ? nextMultiple( M, SIMDSIZE ) : M );
-
-   //! Compilation switch for the choice of alignment.
-   static constexpr bool align = ( usePadding || MM % SIMDSIZE == 0UL );
-   //**********************************************************************************************
-
  public:
    //**Type definitions****************************************************************************
-   using This          = HybridMatrix<Type,M,N,true>;   //!< Type of this HybridMatrix instance.
-   using BaseType      = DenseMatrix<This,true>;        //!< Base type of this HybridMatrix instance.
-   using ResultType    = This;                          //!< Result type for expression template evaluations.
-   using OppositeType  = HybridMatrix<Type,M,N,false>;  //!< Result type with opposite storage order for expression template evaluations.
-   using TransposeType = HybridMatrix<Type,N,M,false>;  //!< Transpose type for expression template evaluations.
-   using ElementType   = Type;                          //!< Type of the matrix elements.
-   using SIMDType      = SIMDTrait_t<ElementType>;      //!< SIMD type of the matrix elements.
-   using ReturnType    = const Type&;                   //!< Return type for expression template evaluations.
-   using CompositeType = const This&;                   //!< Data type for composite expression templates.
+   //! Type of this HybridMatrix instance.
+   using This = HybridMatrix<Type,M,N,true,AF,PF,Tag>;
+
+   using BaseType   = DenseMatrix<This,true>;  //!< Base type of this HybridMatrix instance.
+   using ResultType = This;                    //!< Result type for expression template evaluations.
+
+   //! Result type with opposite storage order for expression template evaluations.
+   using OppositeType = HybridMatrix<Type,M,N,false,AF,PF,Tag>;
+
+   //! Transpose type for expression template evaluations.
+   using TransposeType = HybridMatrix<Type,N,M,false,AF,PF,Tag>;
+
+   using ElementType   = Type;                      //!< Type of the matrix elements.
+   using SIMDType      = SIMDTrait_t<ElementType>;  //!< SIMD type of the matrix elements.
+   using TagType       = Tag;                       //!< Tag type of this StaticMatrix instance.
+   using ReturnType    = const Type&;               //!< Return type for expression template evaluations.
+   using CompositeType = const This&;               //!< Data type for composite expression templates.
 
    using Reference      = Type&;        //!< Reference to a non-constant matrix value.
    using ConstReference = const Type&;  //!< Reference to a constant matrix value.
    using Pointer        = Type*;        //!< Pointer to a non-constant matrix value.
    using ConstPointer   = const Type*;  //!< Pointer to a constant matrix value.
 
-   using Iterator      = DenseIterator<Type,align>;        //!< Iterator over non-constant elements.
-   using ConstIterator = DenseIterator<const Type,align>;  //!< Iterator over constant elements.
+   using Iterator      = DenseIterator<Type,AF>;        //!< Iterator over non-constant elements.
+   using ConstIterator = DenseIterator<const Type,AF>;  //!< Iterator over constant elements.
    //**********************************************************************************************
 
    //**Rebind struct definition********************************************************************
@@ -3326,7 +3735,7 @@ class HybridMatrix<Type,M,N,true>
    */
    template< typename NewType >  // Data type of the other matrix
    struct Rebind {
-      using Other = HybridMatrix<NewType,M,N,true>;  //!< The type of the other HybridMatrix.
+      using Other = HybridMatrix<NewType,M,N,true,AF,PF,Tag>;  //!< The type of the other HybridMatrix.
    };
    //**********************************************************************************************
 
@@ -3336,7 +3745,7 @@ class HybridMatrix<Type,M,N,true>
    template< size_t NewM    // Number of rows of the other matrix
            , size_t NewN >  // Number of columns of the other matrix
    struct Resize {
-      using Other = HybridMatrix<Type,NewM,NewN,true>;  //!< The type of the other HybridMatrix.
+      using Other = HybridMatrix<Type,NewM,NewN,true,AF,PF,Tag>;  //!< The type of the other HybridMatrix.
    };
    //**********************************************************************************************
 
@@ -3358,19 +3767,24 @@ class HybridMatrix<Type,M,N,true>
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit inline HybridMatrix();
-   explicit inline HybridMatrix( size_t m, size_t n );
-   explicit inline HybridMatrix( size_t m, size_t n, const Type& init );
-   explicit inline HybridMatrix( initializer_list< initializer_list<Type> > list );
+   constexpr HybridMatrix();
+   constexpr HybridMatrix( size_t m, size_t n );
+   inline    HybridMatrix( size_t m, size_t n, const Type& init );
+   constexpr HybridMatrix( initializer_list< initializer_list<Type> > list );
 
    template< typename Other >
-   explicit inline HybridMatrix( size_t m, size_t n, const Other* array );
+   inline HybridMatrix( size_t m, size_t n, const Other* array );
 
    template< typename Other, size_t Rows, size_t Cols >
-   explicit inline HybridMatrix( const Other (&array)[Rows][Cols] );
+   inline HybridMatrix( const Other (&array)[Rows][Cols] );
 
-                                    inline HybridMatrix( const HybridMatrix& m );
-   template< typename MT, bool SO > inline HybridMatrix( const Matrix<MT,SO>& m );
+   template< typename Other, size_t Rows, size_t Cols >
+   inline HybridMatrix( const std::array<std::array<Other,Cols>,Rows>& array );
+
+   constexpr HybridMatrix( const HybridMatrix& m );
+
+   template< typename MT, bool SO >
+   inline HybridMatrix( const Matrix<MT,SO>& m );
    //@}
    //**********************************************************************************************
 
@@ -3384,56 +3798,60 @@ class HybridMatrix<Type,M,N,true>
    //**Data access functions***********************************************************************
    /*!\name Data access functions */
    //@{
-   inline Reference      operator()( size_t i, size_t j ) noexcept;
-   inline ConstReference operator()( size_t i, size_t j ) const noexcept;
-   inline Reference      at( size_t i, size_t j );
-   inline ConstReference at( size_t i, size_t j ) const;
-   inline Pointer        data  () noexcept;
-   inline ConstPointer   data  () const noexcept;
-   inline Pointer        data  ( size_t j ) noexcept;
-   inline ConstPointer   data  ( size_t j ) const noexcept;
-   inline Iterator       begin ( size_t j ) noexcept;
-   inline ConstIterator  begin ( size_t j ) const noexcept;
-   inline ConstIterator  cbegin( size_t j ) const noexcept;
-   inline Iterator       end   ( size_t j ) noexcept;
-   inline ConstIterator  end   ( size_t j ) const noexcept;
-   inline ConstIterator  cend  ( size_t j ) const noexcept;
+   constexpr Reference      operator()( size_t i, size_t j ) noexcept;
+   constexpr ConstReference operator()( size_t i, size_t j ) const noexcept;
+   inline    Reference      at( size_t i, size_t j );
+   inline    ConstReference at( size_t i, size_t j ) const;
+   constexpr Pointer        data  () noexcept;
+   constexpr ConstPointer   data  () const noexcept;
+   constexpr Pointer        data  ( size_t j ) noexcept;
+   constexpr ConstPointer   data  ( size_t j ) const noexcept;
+   constexpr Iterator       begin ( size_t j ) noexcept;
+   constexpr ConstIterator  begin ( size_t j ) const noexcept;
+   constexpr ConstIterator  cbegin( size_t j ) const noexcept;
+   constexpr Iterator       end   ( size_t j ) noexcept;
+   constexpr ConstIterator  end   ( size_t j ) const noexcept;
+   constexpr ConstIterator  cend  ( size_t j ) const noexcept;
    //@}
    //**********************************************************************************************
 
    //**Assignment operators************************************************************************
    /*!\name Assignment operators */
    //@{
-   inline HybridMatrix& operator=( const Type& set );
-   inline HybridMatrix& operator=( initializer_list< initializer_list<Type> > list );
+   constexpr HybridMatrix& operator=( const Type& set ) &;
+   constexpr HybridMatrix& operator=( initializer_list< initializer_list<Type> > list ) &;
 
    template< typename Other, size_t Rows, size_t Cols >
-   inline HybridMatrix& operator=( const Other (&array)[Rows][Cols] );
+   constexpr HybridMatrix& operator=( const Other (&array)[Rows][Cols] ) &;
 
-                                    inline HybridMatrix& operator= ( const HybridMatrix& rhs );
-   template< typename MT, bool SO > inline HybridMatrix& operator= ( const Matrix<MT,SO>& rhs );
-   template< typename MT, bool SO > inline HybridMatrix& operator+=( const Matrix<MT,SO>& rhs );
-   template< typename MT, bool SO > inline HybridMatrix& operator-=( const Matrix<MT,SO>& rhs );
-   template< typename MT, bool SO > inline HybridMatrix& operator%=( const Matrix<MT,SO>& rhs );
+   template< typename Other, size_t Rows, size_t Cols >
+   constexpr HybridMatrix& operator=( const std::array<std::array<Other,Cols>,Rows>& array ) &;
+
+   constexpr HybridMatrix& operator=( const HybridMatrix& rhs ) &;
+
+   template< typename MT, bool SO > inline HybridMatrix& operator= ( const Matrix<MT,SO>& rhs ) &;
+   template< typename MT, bool SO > inline HybridMatrix& operator+=( const Matrix<MT,SO>& rhs ) &;
+   template< typename MT, bool SO > inline HybridMatrix& operator-=( const Matrix<MT,SO>& rhs ) &;
+   template< typename MT, bool SO > inline HybridMatrix& operator%=( const Matrix<MT,SO>& rhs ) &;
    //@}
    //**********************************************************************************************
 
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-          inline           size_t rows() const noexcept;
-          inline           size_t columns() const noexcept;
-   static inline constexpr size_t spacing() noexcept;
-   static inline constexpr size_t capacity() noexcept;
-          inline           size_t capacity( size_t j ) const noexcept;
-          inline           size_t nonZeros() const;
-          inline           size_t nonZeros( size_t j ) const;
-          inline           void   reset();
-          inline           void   reset( size_t i );
-          inline           void   clear();
-                           void   resize ( size_t m, size_t n, bool preserve=true );
-          inline           void   extend ( size_t m, size_t n, bool preserve=true );
-          inline           void   swap( HybridMatrix& m ) noexcept;
+          constexpr size_t rows() const noexcept;
+          constexpr size_t columns() const noexcept;
+   static constexpr size_t spacing() noexcept;
+   static constexpr size_t capacity() noexcept;
+          constexpr size_t capacity( size_t j ) const noexcept;
+          inline    size_t nonZeros() const;
+          inline    size_t nonZeros( size_t j ) const;
+          constexpr void   reset();
+          constexpr void   reset( size_t i );
+          constexpr void   clear();
+          constexpr void   resize ( size_t m, size_t n, bool preserve=true );
+          constexpr void   extend ( size_t m, size_t n, bool preserve=true );
+          inline    void   swap( HybridMatrix& m ) noexcept;
    //@}
    //**********************************************************************************************
 
@@ -3464,10 +3882,19 @@ class HybridMatrix<Type,M,N,true>
 
  private:
    //**********************************************************************************************
+   //! The number of elements packed within a single SIMD element.
+   static constexpr size_t SIMDSIZE = SIMDTrait<Type>::size;
+
+   //! Alignment adjustment.
+   static constexpr size_t MM = ( PF == padded ? nextMultiple( M, SIMDSIZE ) : M );
+   //**********************************************************************************************
+
+   //**********************************************************************************************
    //! Helper variable template for the explicit application of the SFINAE principle.
    template< typename MT >
    static constexpr bool VectorizedAssign_v =
       ( useOptimizedKernels &&
+        MM >= SIMDSIZE &&
         simdEnabled && MT::simdEnabled &&
         IsSIMDCombinable_v< Type, ElementType_t<MT> > &&
         IsColumnMajorMatrix_v<MT> );
@@ -3477,11 +3904,8 @@ class HybridMatrix<Type,M,N,true>
    //! Helper variable template for the explicit application of the SFINAE principle.
    template< typename MT >
    static constexpr bool VectorizedAddAssign_v =
-      ( useOptimizedKernels &&
-        simdEnabled && MT::simdEnabled &&
-        IsSIMDCombinable_v< Type, ElementType_t<MT> > &&
+      ( VectorizedAssign_v<MT> &&
         HasSIMDAdd_v< Type, ElementType_t<MT> > &&
-        IsColumnMajorMatrix_v<MT> &&
         !IsDiagonal_v<MT> );
    //**********************************************************************************************
 
@@ -3489,11 +3913,8 @@ class HybridMatrix<Type,M,N,true>
    //! Helper variable template for the explicit application of the SFINAE principle.
    template< typename MT >
    static constexpr bool VectorizedSubAssign_v =
-      ( useOptimizedKernels &&
-        simdEnabled && MT::simdEnabled &&
-        IsSIMDCombinable_v< Type, ElementType_t<MT> > &&
+      ( VectorizedAssign_v<MT> &&
         HasSIMDSub_v< Type, ElementType_t<MT> > &&
-        IsColumnMajorMatrix_v<MT> &&
         !IsDiagonal_v<MT> );
    //**********************************************************************************************
 
@@ -3501,18 +3922,15 @@ class HybridMatrix<Type,M,N,true>
    //! Helper variable template for the explicit application of the SFINAE principle.
    template< typename MT >
    static constexpr bool VectorizedSchurAssign_v =
-      ( useOptimizedKernels &&
-        simdEnabled && MT::simdEnabled &&
-        IsSIMDCombinable_v< Type, ElementType_t<MT> > &&
-        HasSIMDMult_v< Type, ElementType_t<MT> > &&
-        IsColumnMajorMatrix_v<MT> );
+      ( VectorizedAssign_v<MT> &&
+        HasSIMDMult_v< Type, ElementType_t<MT> > );
    //**********************************************************************************************
 
  public:
    //**Debugging functions*************************************************************************
    /*!\name Debugging functions */
    //@{
-   inline bool isIntact() const noexcept;
+   constexpr bool isIntact() const noexcept;
    //@}
    //**********************************************************************************************
 
@@ -3522,7 +3940,7 @@ class HybridMatrix<Type,M,N,true>
    template< typename Other > inline bool canAlias ( const Other* alias ) const noexcept;
    template< typename Other > inline bool isAliased( const Other* alias ) const noexcept;
 
-   static inline constexpr bool isAligned() noexcept;
+   static constexpr bool isAligned() noexcept;
 
    BLAZE_ALWAYS_INLINE SIMDType load ( size_t i, size_t j ) const noexcept;
    BLAZE_ALWAYS_INLINE SIMDType loada( size_t i, size_t j ) const noexcept;
@@ -3575,7 +3993,7 @@ class HybridMatrix<Type,M,N,true>
    //**********************************************************************************************
    //! Alignment of the data elements.
    static constexpr size_t Alignment =
-      ( align ? AlignmentOf_v<Type> : std::alignment_of<Type>::value );
+      ( AF == aligned ? AlignmentOf_v<Type> : std::alignment_of<Type>::value );
 
    //! Type of the aligned storage.
    using AlignedStorage = AlignedArray<Type,MM*N,Alignment>;
@@ -3596,8 +4014,10 @@ class HybridMatrix<Type,M,N,true>
    BLAZE_CONSTRAINT_MUST_NOT_BE_REFERENCE_TYPE( Type );
    BLAZE_CONSTRAINT_MUST_NOT_BE_CONST         ( Type );
    BLAZE_CONSTRAINT_MUST_NOT_BE_VOLATILE      ( Type );
-   BLAZE_STATIC_ASSERT( !usePadding || MM % SIMDSIZE == 0UL );
+   BLAZE_STATIC_ASSERT( AF == unaligned || PF == padded || M % SIMDSIZE == 0UL );
+   BLAZE_STATIC_ASSERT( PF == unpadded || MM % SIMDSIZE == 0UL );
    BLAZE_STATIC_ASSERT( MM >= M );
+   BLAZE_STATIC_ASSERT( IsVectorizable_v<Type> || MM == M );
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -3618,21 +4038,17 @@ class HybridMatrix<Type,M,N,true>
 //
 // All matrix elements are initialized to the default value (i.e. 0 for integral data types).
 */
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N >     // Number of columns
-inline HybridMatrix<Type,M,N,true>::HybridMatrix()
+template< typename Type     // Data type of the matrix
+        , size_t M          // Number of rows
+        , size_t N          // Number of columns
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+constexpr HybridMatrix<Type,M,N,true,AF,PF,Tag>::HybridMatrix()
    : v_()       // The statically allocated matrix elements
    , m_( 0UL )  // The current number of rows of the matrix
    , n_( 0UL )  // The current number of columns of the matrix
 {
-   BLAZE_STATIC_ASSERT( IsVectorizable_v<Type> || MM == M );
-
-   if( IsNumeric_v<Type> ) {
-      for( size_t i=0UL; i<MM*N; ++i )
-         v_[i] = Type();
-   }
-
    BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
 }
 /*! \endcond */
@@ -3653,27 +4069,23 @@ inline HybridMatrix<Type,M,N,true>::HybridMatrix()
 // or \a n is larger than the maximum allowed number of columns a \a std::invalid_argument
 // exception is thrown.
 */
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N >     // Number of columns
-inline HybridMatrix<Type,M,N,true>::HybridMatrix( size_t m, size_t n )
+template< typename Type     // Data type of the matrix
+        , size_t M          // Number of rows
+        , size_t N          // Number of columns
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+constexpr HybridMatrix<Type,M,N,true,AF,PF,Tag>::HybridMatrix( size_t m, size_t n )
    : v_()     // The statically allocated matrix elements
    , m_( m )  // The current number of rows of the matrix
    , n_( n )  // The current number of columns of the matrix
 {
-   BLAZE_STATIC_ASSERT( IsVectorizable_v<Type> || MM == M );
-
    if( m > M ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid number of rows for hybrid matrix" );
    }
 
    if( n > N ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid number of columns for hybrid matrix" );
-   }
-
-   if( IsNumeric_v<Type> ) {
-      for( size_t i=0UL; i<MM*N; ++i )
-         v_[i] = Type();
    }
 
    BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
@@ -3697,15 +4109,18 @@ inline HybridMatrix<Type,M,N,true>::HybridMatrix( size_t m, size_t n )
 // number of rows (i.e. \a m > M) or \a n is larger than the maximum allowed number of columns
 // a \a std::invalid_argument exception is thrown.
 */
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N >     // Number of columns
-inline HybridMatrix<Type,M,N,true>::HybridMatrix( size_t m, size_t n, const Type& init )
-   : v_()     // The statically allocated matrix elements
-   , m_( m )  // The current number of rows of the matrix
+template< typename Type     // Data type of the matrix
+        , size_t M          // Number of rows
+        , size_t N          // Number of columns
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+inline HybridMatrix<Type,M,N,true,AF,PF,Tag>::HybridMatrix( size_t m, size_t n, const Type& init )
+   : m_( m )  // The current number of rows of the matrix
    , n_( n )  // The current number of columns of the matrix
+   // v_ is intentionally left uninitialized
 {
-   BLAZE_STATIC_ASSERT( IsVectorizable_v<Type> || MM == M );
+   using blaze::clear;
 
    if( m > M ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid number of rows for hybrid matrix" );
@@ -3721,14 +4136,14 @@ inline HybridMatrix<Type,M,N,true>::HybridMatrix( size_t m, size_t n, const Type
 
       if( IsNumeric_v<Type> ) {
          for( size_t i=m; i<MM; ++i )
-            v_[i+j*MM] = Type();
+            clear( v_[i+j*MM] );
       }
    }
 
    if( IsNumeric_v<Type> ) {
       for( size_t j=n; j<N; ++j )
          for( size_t i=0UL; i<MM; ++i )
-            v_[i+j*MM] = Type();
+            clear( v_[i+j*MM] );
    }
 
    BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
@@ -3757,21 +4172,22 @@ inline HybridMatrix<Type,M,N,true>::HybridMatrix( size_t m, size_t n, const Type
    \endcode
 
 // The matrix is sized according to the size of the initializer list and all its elements are
-// initialized by the values of the given initializer list. Missing values are initialized as
+// (copy) assigned the values of the given initializer list. Missing values are initialized as
 // default (as e.g. the value 6 in the example). Note that in case the size of the top-level
 // initializer list exceeds the number of rows or the size of any nested list exceeds the
 // number of columns, a \a std::invalid_argument exception is thrown.
 */
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N >     // Number of columns
-inline HybridMatrix<Type,M,N,true>::HybridMatrix( initializer_list< initializer_list<Type> > list )
+template< typename Type     // Data type of the matrix
+        , size_t M          // Number of rows
+        , size_t N          // Number of columns
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+constexpr HybridMatrix<Type,M,N,true,AF,PF,Tag>::HybridMatrix( initializer_list< initializer_list<Type> > list )
    : v_()                            // The statically allocated matrix elements
    , m_( list.size() )               // The current number of rows of the matrix
    , n_( determineColumns( list ) )  // The current number of columns of the matrix
 {
-   BLAZE_STATIC_ASSERT( IsVectorizable_v<Type> || MM == M );
-
    if( m_ > M ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid number of rows for hybrid matrix" );
    }
@@ -3788,22 +4204,7 @@ inline HybridMatrix<Type,M,N,true>::HybridMatrix( initializer_list< initializer_
          v_[i+j*MM] = element;
          ++j;
       }
-      if( IsNumeric_v<Type> ) {
-         for( ; j<N; ++j ) {
-            v_[i+j*MM] = Type();
-         }
-      }
       ++i;
-   }
-
-   BLAZE_INTERNAL_ASSERT( i == m_, "Invalid number of elements detected" );
-
-   if( IsNumeric_v<Type> ) {
-      for( ; i<MM; ++i ) {
-         for( size_t j=0UL; j<N; ++j ) {
-            v_[i+j*MM] = Type();
-         }
-      }
    }
 
    BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
@@ -3842,14 +4243,17 @@ inline HybridMatrix<Type,M,N,true>::HybridMatrix( initializer_list< initializer_
 */
 template< typename Type     // Data type of the matrix
         , size_t M          // Number of rows
-        , size_t N >        // Number of columns
+        , size_t N          // Number of columns
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
 template< typename Other >  // Data type of the initialization array
-inline HybridMatrix<Type,M,N,true>::HybridMatrix( size_t m, size_t n, const Other* array )
-   : v_()     // The statically allocated matrix elements
-   , m_( m )  // The current number of rows of the matrix
+inline HybridMatrix<Type,M,N,true,AF,PF,Tag>::HybridMatrix( size_t m, size_t n, const Other* array )
+   : m_( m )  // The current number of rows of the matrix
    , n_( n )  // The current number of columns of the matrix
+   // v_ is intentionally left uninitialized
 {
-   BLAZE_STATIC_ASSERT( IsVectorizable_v<Type> || MM == M );
+   using blaze::clear;
 
    if( m > M ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid number of rows for hybrid matrix" );
@@ -3865,14 +4269,14 @@ inline HybridMatrix<Type,M,N,true>::HybridMatrix( size_t m, size_t n, const Othe
 
       if( IsNumeric_v<Type> ) {
          for( size_t i=m; i<MM; ++i )
-            v_[i+j*MM] = Type();
+            clear( v_[i+j*MM] );
       }
    }
 
    if( IsNumeric_v<Type> ) {
       for( size_t j=n; j<N; ++j )
          for( size_t i=0UL; i<MM; ++i )
-            v_[i+j*MM] = Type();
+            clear( v_[i+j*MM] );
    }
 
    BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
@@ -3885,7 +4289,7 @@ inline HybridMatrix<Type,M,N,true>::HybridMatrix( size_t m, size_t n, const Othe
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Array initialization of all matrix elements.
 //
-// \param array \f$ M \times N \f$ dimensional array for the initialization.
+// \param array Static array for the initialization.
 //
 // This constructor offers the option to directly initialize the elements of the matrix with
 // a static array:
@@ -3899,24 +4303,28 @@ inline HybridMatrix<Type,M,N,true>::HybridMatrix( size_t m, size_t n, const Othe
    blaze::HybridMatrix<int,3,3,columnMajor> A( init );
    \endcode
 
-// The matrix is sized according to the size of the array and initialized with the values from
-// the given array. Missing values are initialized with default values (as e.g. the value 6 in
-// the example).
+// The matrix is sized according to the size of the static array and initialized with the values
+// from the given array. Missing values are initialized with default values (as e.g. the value 6
+// in the example).
 */
-template< typename Type   // Data type of the matrix
-        , size_t M        // Number of rows
-        , size_t N >      // Number of columns
-template< typename Other  // Data type of the initialization array
-        , size_t Rows     // Number of rows of the initialization array
-        , size_t Cols >   // Number of columns of the initialization array
-inline HybridMatrix<Type,M,N,true>::HybridMatrix( const Other (&array)[Rows][Cols] )
-   : v_()        // The statically allocated matrix elements
-   , m_( Rows )  // The current number of rows of the matrix
+template< typename Type     // Data type of the matrix
+        , size_t M          // Number of rows
+        , size_t N          // Number of columns
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+template< typename Other    // Data type of the static array
+        , size_t Rows       // Number of rows of the static array
+        , size_t Cols >     // Number of columns of the static array
+inline HybridMatrix<Type,M,N,true,AF,PF,Tag>::HybridMatrix( const Other (&array)[Rows][Cols] )
+   : m_( Rows )  // The current number of rows of the matrix
    , n_( Cols )  // The current number of columns of the matrix
+   // v_ is intentionally left uninitialized
 {
+   using blaze::clear;
+
    BLAZE_STATIC_ASSERT( Rows <= M );
    BLAZE_STATIC_ASSERT( Cols <= N );
-   BLAZE_STATIC_ASSERT( IsVectorizable_v<Type> || MM == M );
 
    for( size_t j=0UL; j<Cols; ++j ) {
       for( size_t i=0UL; i<Rows; ++i )
@@ -3924,14 +4332,77 @@ inline HybridMatrix<Type,M,N,true>::HybridMatrix( const Other (&array)[Rows][Col
 
       if( IsNumeric_v<Type> ) {
          for( size_t i=Rows; i<MM; ++i )
-            v_[i+j*MM] = Type();
+            clear( v_[i+j*MM] );
       }
    }
 
    if( IsNumeric_v<Type> ) {
       for( size_t j=Cols; j<N; ++j )
          for( size_t i=0UL; i<MM; ++i )
-            v_[i+j*MM] = Type();
+            clear( v_[i+j*MM] );
+   }
+
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Initialization of all matrix elements from the given std::array.
+//
+// \param array The given std::array for the initialization.
+//
+// This constructor offers the option to directly initialize the elements of the matrix with
+// a std::array:
+
+   \code
+   using blaze::columnMajor;
+
+   const std::array<std::array<int,3UL>,3UL> init{ { { 1, 2, 3 },
+                                                     { 4, 5 },
+                                                     { 7, 8, 9 } } };
+   blaze::HybridMatrix<int,3,3,columnMajor> A( init );
+   \endcode
+
+// The matrix is sized according to the size of the std::array and initialized with the values
+// from the given array. Missing values are initialized with default values (as e.g. the value 6
+// in the example).
+*/
+template< typename Type     // Data type of the matrix
+        , size_t M          // Number of rows
+        , size_t N          // Number of columns
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+template< typename Other    // Data type of the static array
+        , size_t Rows       // Number of rows of the static array
+        , size_t Cols >     // Number of columns of the static array
+inline HybridMatrix<Type,M,N,true,AF,PF,Tag>::HybridMatrix( const std::array<std::array<Other,Cols>,Rows>& array )
+   : m_( Rows )  // The current number of rows of the matrix
+   , n_( Cols )  // The current number of columns of the matrix
+   // v_ is intentionally left uninitialized
+{
+   using blaze::clear;
+
+   BLAZE_STATIC_ASSERT( Rows <= M );
+   BLAZE_STATIC_ASSERT( Cols <= N );
+
+   for( size_t j=0UL; j<Cols; ++j ) {
+      for( size_t i=0UL; i<Rows; ++i )
+         v_[i+j*MM] = array[i][j];
+
+      if( IsNumeric_v<Type> ) {
+         for( size_t i=Rows; i<MM; ++i )
+            clear( v_[i+j*MM] );
+      }
+   }
+
+   if( IsNumeric_v<Type> ) {
+      for( size_t j=Cols; j<N; ++j )
+         for( size_t i=0UL; i<MM; ++i )
+            clear( v_[i+j*MM] );
    }
 
    BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
@@ -3951,30 +4422,16 @@ inline HybridMatrix<Type,M,N,true>::HybridMatrix( const Other (&array)[Rows][Col
 */
 template< typename Type     // Data type of the matrix
         , size_t M          // Number of rows
-        , size_t N >        // Number of columns
-inline HybridMatrix<Type,M,N,true>::HybridMatrix( const HybridMatrix& m )
-   : v_()        // The statically allocated matrix elements
+        , size_t N          // Number of columns
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+constexpr HybridMatrix<Type,M,N,true,AF,PF,Tag>::HybridMatrix( const HybridMatrix& m )
+   : BaseType()  // Initialization of the base class
+   , v_( m.v_ )  // The statically allocated matrix elements
    , m_( m.m_ )  // The current number of rows of the matrix
    , n_( m.n_ )  // The current number of columns of the matrix
 {
-   BLAZE_STATIC_ASSERT( IsVectorizable_v<Type> || MM == M );
-
-   for( size_t j=0UL; j<n_; ++j ) {
-      for( size_t i=0UL; i<m_; ++i )
-         v_[i+j*MM] = m.v_[i+j*MM];
-
-      if( IsNumeric_v<Type> ) {
-         for( size_t i=m_; i<MM; ++i )
-            v_[i+j*MM] = Type();
-      }
-   }
-
-   if( IsNumeric_v<Type> ) {
-      for( size_t j=n_; j<N; ++j )
-         for( size_t i=0UL; i<MM; ++i )
-            v_[i+j*MM] = Type();
-   }
-
    BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
 }
 /*! \endcond */
@@ -3988,21 +4445,25 @@ inline HybridMatrix<Type,M,N,true>::HybridMatrix( const HybridMatrix& m )
 // \param m Matrix to be copied.
 // \exception std::invalid_argument Invalid setup of hybrid matrix.
 */
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N >     // Number of columns
-template< typename MT    // Type of the foreign matrix
-        , bool SO2 >     // Storage order of the foreign matrix
-inline HybridMatrix<Type,M,N,true>::HybridMatrix( const Matrix<MT,SO2>& m )
-   : v_()                  // The statically allocated matrix elements
-   , m_( (~m).rows() )     // The current number of rows of the matrix
-   , n_( (~m).columns() )  // The current number of columns of the matrix
+template< typename Type     // Data type of the matrix
+        , size_t M          // Number of rows
+        , size_t N          // Number of columns
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+template< typename MT       // Type of the foreign matrix
+        , bool SO2 >        // Storage order of the foreign matrix
+inline HybridMatrix<Type,M,N,true,AF,PF,Tag>::HybridMatrix( const Matrix<MT,SO2>& m )
+   : m_( (*m).rows() )     // The current number of rows of the matrix
+   , n_( (*m).columns() )  // The current number of columns of the matrix
+   // v_ is intentionally left uninitialized
 {
    using blaze::assign;
+   using blaze::clear;
 
-   BLAZE_STATIC_ASSERT( IsVectorizable_v<Type> || MM == M );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<MT> );
 
-   if( (~m).rows() > M || (~m).columns() > N ) {
+   if( (*m).rows() > M || (*m).columns() > N ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid setup of hybrid matrix" );
    }
 
@@ -4010,17 +4471,17 @@ inline HybridMatrix<Type,M,N,true>::HybridMatrix( const Matrix<MT,SO2>& m )
       for( size_t i=( IsSparseMatrix_v<MT> ? 0UL : m_ );
                   i<( IsNumeric_v<Type>    ? MM  : m_ );
                   ++i ) {
-         v_[i+j*MM] = Type();
+         clear( v_[i+j*MM] );
       }
    }
 
    if( IsNumeric_v<Type> ) {
       for( size_t j=n_; j<N; ++j )
          for( size_t i=0UL; i<MM; ++i )
-            v_[i+j*MM] = Type();
+            clear( v_[i+j*MM] );
    }
 
-   assign( *this, ~m );
+   assign( *this, *m );
 
    BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
 }
@@ -4047,11 +4508,14 @@ inline HybridMatrix<Type,M,N,true>::HybridMatrix( const Matrix<MT,SO2>& m )
 // This function only performs an index check in case BLAZE_USER_ASSERT() is active. In contrast,
 // the at() function is guaranteed to perform a check of the given access indices.
 */
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N >     // Number of columns
-inline typename HybridMatrix<Type,M,N,true>::Reference
-   HybridMatrix<Type,M,N,true>::operator()( size_t i, size_t j ) noexcept
+template< typename Type     // Data type of the matrix
+        , size_t M          // Number of rows
+        , size_t N          // Number of columns
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+constexpr typename HybridMatrix<Type,M,N,true,AF,PF,Tag>::Reference
+   HybridMatrix<Type,M,N,true,AF,PF,Tag>::operator()( size_t i, size_t j ) noexcept
 {
    BLAZE_USER_ASSERT( i<M, "Invalid row access index"    );
    BLAZE_USER_ASSERT( j<N, "Invalid column access index" );
@@ -4072,11 +4536,14 @@ inline typename HybridMatrix<Type,M,N,true>::Reference
 // This function only performs an index check in case BLAZE_USER_ASSERT() is active. In contrast,
 // the at() function is guaranteed to perform a check of the given access indices.
 */
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N >     // Number of columns
-inline typename HybridMatrix<Type,M,N,true>::ConstReference
-   HybridMatrix<Type,M,N,true>::operator()( size_t i, size_t j ) const noexcept
+template< typename Type     // Data type of the matrix
+        , size_t M          // Number of rows
+        , size_t N          // Number of columns
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+constexpr typename HybridMatrix<Type,M,N,true,AF,PF,Tag>::ConstReference
+   HybridMatrix<Type,M,N,true,AF,PF,Tag>::operator()( size_t i, size_t j ) const noexcept
 {
    BLAZE_USER_ASSERT( i<M, "Invalid row access index"    );
    BLAZE_USER_ASSERT( j<N, "Invalid column access index" );
@@ -4098,11 +4565,14 @@ inline typename HybridMatrix<Type,M,N,true>::ConstReference
 // In contrast to the subscript operator this function always performs a check of the given
 // access indices.
 */
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N >     // Number of columns
-inline typename HybridMatrix<Type,M,N,true>::Reference
-   HybridMatrix<Type,M,N,true>::at( size_t i, size_t j )
+template< typename Type     // Data type of the matrix
+        , size_t M          // Number of rows
+        , size_t N          // Number of columns
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+inline typename HybridMatrix<Type,M,N,true,AF,PF,Tag>::Reference
+   HybridMatrix<Type,M,N,true,AF,PF,Tag>::at( size_t i, size_t j )
 {
    if( i >= m_ ) {
       BLAZE_THROW_OUT_OF_RANGE( "Invalid row access index" );
@@ -4128,11 +4598,14 @@ inline typename HybridMatrix<Type,M,N,true>::Reference
 // In contrast to the subscript operator this function always performs a check of the given
 // access indices.
 */
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N >     // Number of columns
-inline typename HybridMatrix<Type,M,N,true>::ConstReference
-   HybridMatrix<Type,M,N,true>::at( size_t i, size_t j ) const
+template< typename Type     // Data type of the matrix
+        , size_t M          // Number of rows
+        , size_t N          // Number of columns
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+inline typename HybridMatrix<Type,M,N,true,AF,PF,Tag>::ConstReference
+   HybridMatrix<Type,M,N,true,AF,PF,Tag>::at( size_t i, size_t j ) const
 {
    if( i >= m_ ) {
       BLAZE_THROW_OUT_OF_RANGE( "Invalid row access index" );
@@ -4158,11 +4631,14 @@ inline typename HybridMatrix<Type,M,N,true>::ConstReference
 // elements within a column are given by the \c columns() member functions, the total number
 // of elements including padding is given by the \c spacing() member function.
 */
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N >     // Number of columns
-inline typename HybridMatrix<Type,M,N,true>::Pointer
-   HybridMatrix<Type,M,N,true>::data() noexcept
+template< typename Type     // Data type of the matrix
+        , size_t M          // Number of rows
+        , size_t N          // Number of columns
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+constexpr typename HybridMatrix<Type,M,N,true,AF,PF,Tag>::Pointer
+   HybridMatrix<Type,M,N,true,AF,PF,Tag>::data() noexcept
 {
    return v_;
 }
@@ -4182,11 +4658,14 @@ inline typename HybridMatrix<Type,M,N,true>::Pointer
 // elements within a column are given by the \c columns() member functions, the total number
 // of elements including padding is given by the \c spacing() member function.
 */
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N >     // Number of columns
-inline typename HybridMatrix<Type,M,N,true>::ConstPointer
-   HybridMatrix<Type,M,N,true>::data() const noexcept
+template< typename Type     // Data type of the matrix
+        , size_t M          // Number of rows
+        , size_t N          // Number of columns
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+constexpr typename HybridMatrix<Type,M,N,true,AF,PF,Tag>::ConstPointer
+   HybridMatrix<Type,M,N,true,AF,PF,Tag>::data() const noexcept
 {
    return v_;
 }
@@ -4203,11 +4682,14 @@ inline typename HybridMatrix<Type,M,N,true>::ConstPointer
 //
 // This function returns a pointer to the internal storage for the elements in column \a j.
 */
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N >     // Number of columns
-inline typename HybridMatrix<Type,M,N,true>::Pointer
-   HybridMatrix<Type,M,N,true>::data( size_t j ) noexcept
+template< typename Type     // Data type of the matrix
+        , size_t M          // Number of rows
+        , size_t N          // Number of columns
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+constexpr typename HybridMatrix<Type,M,N,true,AF,PF,Tag>::Pointer
+   HybridMatrix<Type,M,N,true,AF,PF,Tag>::data( size_t j ) noexcept
 {
    BLAZE_USER_ASSERT( j < N, "Invalid dense matrix column access index" );
    return v_ + j*MM;
@@ -4225,11 +4707,14 @@ inline typename HybridMatrix<Type,M,N,true>::Pointer
 //
 // This function returns a pointer to the internal storage for the elements in column \a j
 */
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N >     // Number of columns
-inline typename HybridMatrix<Type,M,N,true>::ConstPointer
-   HybridMatrix<Type,M,N,true>::data( size_t j ) const noexcept
+template< typename Type     // Data type of the matrix
+        , size_t M          // Number of rows
+        , size_t N          // Number of columns
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+constexpr typename HybridMatrix<Type,M,N,true,AF,PF,Tag>::ConstPointer
+   HybridMatrix<Type,M,N,true,AF,PF,Tag>::data( size_t j ) const noexcept
 {
    BLAZE_USER_ASSERT( j < N, "Invalid dense matrix column access index" );
    return v_ + j*MM;
@@ -4245,11 +4730,14 @@ inline typename HybridMatrix<Type,M,N,true>::ConstPointer
 // \param j The column index.
 // \return Iterator to the first element of column \a j.
 */
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N >     // Number of columns
-inline typename HybridMatrix<Type,M,N,true>::Iterator
-   HybridMatrix<Type,M,N,true>::begin( size_t j ) noexcept
+template< typename Type     // Data type of the matrix
+        , size_t M          // Number of rows
+        , size_t N          // Number of columns
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+constexpr typename HybridMatrix<Type,M,N,true,AF,PF,Tag>::Iterator
+   HybridMatrix<Type,M,N,true,AF,PF,Tag>::begin( size_t j ) noexcept
 {
    BLAZE_USER_ASSERT( j < N, "Invalid dense matrix column access index" );
    return Iterator( v_ + j*MM );
@@ -4265,11 +4753,14 @@ inline typename HybridMatrix<Type,M,N,true>::Iterator
 // \param j The column index.
 // \return Iterator to the first element of column \a j.
 */
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N >     // Number of columns
-inline typename HybridMatrix<Type,M,N,true>::ConstIterator
-   HybridMatrix<Type,M,N,true>::begin( size_t j ) const noexcept
+template< typename Type     // Data type of the matrix
+        , size_t M          // Number of rows
+        , size_t N          // Number of columns
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+constexpr typename HybridMatrix<Type,M,N,true,AF,PF,Tag>::ConstIterator
+   HybridMatrix<Type,M,N,true,AF,PF,Tag>::begin( size_t j ) const noexcept
 {
    BLAZE_USER_ASSERT( j < N, "Invalid dense matrix column access index" );
    return ConstIterator( v_ + j*MM );
@@ -4285,11 +4776,14 @@ inline typename HybridMatrix<Type,M,N,true>::ConstIterator
 // \param j The column index.
 // \return Iterator to the first element of column \a j.
 */
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N >     // Number of columns
-inline typename HybridMatrix<Type,M,N,true>::ConstIterator
-   HybridMatrix<Type,M,N,true>::cbegin( size_t j ) const noexcept
+template< typename Type     // Data type of the matrix
+        , size_t M          // Number of rows
+        , size_t N          // Number of columns
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+constexpr typename HybridMatrix<Type,M,N,true,AF,PF,Tag>::ConstIterator
+   HybridMatrix<Type,M,N,true,AF,PF,Tag>::cbegin( size_t j ) const noexcept
 {
    BLAZE_USER_ASSERT( j < N, "Invalid dense matrix column access index" );
    return ConstIterator( v_ + j*MM );
@@ -4305,11 +4799,14 @@ inline typename HybridMatrix<Type,M,N,true>::ConstIterator
 // \param j The column index.
 // \return Iterator just past the last element of column \a j.
 */
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N >     // Number of columns
-inline typename HybridMatrix<Type,M,N,true>::Iterator
-   HybridMatrix<Type,M,N,true>::end( size_t j ) noexcept
+template< typename Type     // Data type of the matrix
+        , size_t M          // Number of rows
+        , size_t N          // Number of columns
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+constexpr typename HybridMatrix<Type,M,N,true,AF,PF,Tag>::Iterator
+   HybridMatrix<Type,M,N,true,AF,PF,Tag>::end( size_t j ) noexcept
 {
    BLAZE_USER_ASSERT( j < N, "Invalid dense matrix column access index" );
    return Iterator( v_ + j*MM + M );
@@ -4325,11 +4822,14 @@ inline typename HybridMatrix<Type,M,N,true>::Iterator
 // \param j The column index.
 // \return Iterator just past the last element of column \a j.
 */
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N >     // Number of columns
-inline typename HybridMatrix<Type,M,N,true>::ConstIterator
-   HybridMatrix<Type,M,N,true>::end( size_t j ) const noexcept
+template< typename Type     // Data type of the matrix
+        , size_t M          // Number of rows
+        , size_t N          // Number of columns
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+constexpr typename HybridMatrix<Type,M,N,true,AF,PF,Tag>::ConstIterator
+   HybridMatrix<Type,M,N,true,AF,PF,Tag>::end( size_t j ) const noexcept
 {
    BLAZE_USER_ASSERT( j < N, "Invalid dense matrix column access index" );
    return ConstIterator( v_ + j*MM + M );
@@ -4345,11 +4845,14 @@ inline typename HybridMatrix<Type,M,N,true>::ConstIterator
 // \param j The column index.
 // \return Iterator just past the last element of column \a j.
 */
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N >     // Number of columns
-inline typename HybridMatrix<Type,M,N,true>::ConstIterator
-   HybridMatrix<Type,M,N,true>::cend( size_t j ) const noexcept
+template< typename Type     // Data type of the matrix
+        , size_t M          // Number of rows
+        , size_t N          // Number of columns
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+constexpr typename HybridMatrix<Type,M,N,true,AF,PF,Tag>::ConstIterator
+   HybridMatrix<Type,M,N,true,AF,PF,Tag>::cend( size_t j ) const noexcept
 {
    BLAZE_USER_ASSERT( j < N, "Invalid dense matrix column access index" );
    return ConstIterator( v_ + j*MM + M );
@@ -4373,11 +4876,14 @@ inline typename HybridMatrix<Type,M,N,true>::ConstIterator
 // \param set Scalar value to be assigned to all matrix elements.
 // \return Reference to the assigned matrix.
 */
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N >     // Number of columns
-inline HybridMatrix<Type,M,N,true>&
-   HybridMatrix<Type,M,N,true>::operator=( const Type& set )
+template< typename Type     // Data type of the matrix
+        , size_t M          // Number of rows
+        , size_t N          // Number of columns
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+constexpr HybridMatrix<Type,M,N,true,AF,PF,Tag>&
+   HybridMatrix<Type,M,N,true,AF,PF,Tag>::operator=( const Type& set ) &
 {
    BLAZE_INTERNAL_ASSERT( m_ <= M, "Invalid number of rows detected"    );
    BLAZE_INTERNAL_ASSERT( n_ <= N, "Invalid number of columns detected" );
@@ -4413,17 +4919,22 @@ inline HybridMatrix<Type,M,N,true>&
    \endcode
 
 // The matrix is resized according to the given initializer list and all its elements are
-// assigned the values from the given initializer list. Missing values are initialized as
-// default (as e.g. the value 6 in the example). Note that in case the size of the top-level
+// (copy) assigned the values from the given initializer list. Missing values are initialized
+// as default (as e.g. the value 6 in the example). Note that in case the size of the top-level
 // initializer list exceeds the number of rows or the size of any nested list exceeds the
 // number of columns, a \a std::invalid_argument exception is thrown.
 */
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N >     // Number of columns
-inline HybridMatrix<Type,M,N,true>&
-   HybridMatrix<Type,M,N,true>::operator=( initializer_list< initializer_list<Type> > list )
+template< typename Type     // Data type of the matrix
+        , size_t M          // Number of rows
+        , size_t N          // Number of columns
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+constexpr HybridMatrix<Type,M,N,true,AF,PF,Tag>&
+   HybridMatrix<Type,M,N,true,AF,PF,Tag>::operator=( initializer_list< initializer_list<Type> > list ) &
 {
+   using blaze::clear;
+
    const size_t m( list.size() );
    const size_t n( determineColumns( list ) );
 
@@ -4446,7 +4957,7 @@ inline HybridMatrix<Type,M,N,true>&
          ++j;
       }
       for( ; j<n_; ++j ) {
-         v_[i+j*MM] = Type();
+         clear( v_[i+j*MM] );
       }
       ++i;
    }
@@ -4461,7 +4972,7 @@ inline HybridMatrix<Type,M,N,true>&
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Array assignment to all matrix elements.
 //
-// \param array \f$ M \times N \f$ dimensional array for the assignment.
+// \param array Static array for the assignment.
 // \return Reference to the assigned matrix.
 //
 // This assignment operator offers the option to directly set all elements of the matrix:
@@ -4476,17 +4987,69 @@ inline HybridMatrix<Type,M,N,true>&
    A = init;
    \endcode
 
-// The matrix is assigned the values from the given array. Missing values are initialized with
-// default values (as e.g. the value 6 in the example).
+// The matrix is assigned the values from the given static array. Missing values are initialized
+// with default values (as e.g. the value 6 in the example).
 */
-template< typename Type   // Data type of the matrix
-        , size_t M        // Number of rows
-        , size_t N >      // Number of columns
-template< typename Other  // Data type of the initialization array
-        , size_t Rows     // Number of rows of the initialization array
-        , size_t Cols >   // Number of columns of the initialization array
-inline HybridMatrix<Type,M,N,true>&
-   HybridMatrix<Type,M,N,true>::operator=( const Other (&array)[Rows][Cols] )
+template< typename Type     // Data type of the matrix
+        , size_t M          // Number of rows
+        , size_t N          // Number of columns
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+template< typename Other    // Data type of the static array
+        , size_t Rows       // Number of rows of the static array
+        , size_t Cols >     // Number of columns of the static array
+constexpr HybridMatrix<Type,M,N,true,AF,PF,Tag>&
+   HybridMatrix<Type,M,N,true,AF,PF,Tag>::operator=( const Other (&array)[Rows][Cols] ) &
+{
+   BLAZE_STATIC_ASSERT( Rows <= M );
+   BLAZE_STATIC_ASSERT( Cols <= N );
+
+   resize( Rows, Cols );
+
+   for( size_t j=0UL; j<Cols; ++j )
+      for( size_t i=0UL; i<Rows; ++i )
+         v_[i+j*MM] = array[i][j];
+
+   return *this;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Array assignment to all matrix elements.
+//
+// \param array The given std::array for the assignment.
+// \return Reference to the assigned matrix.
+//
+// This assignment operator offers the option to directly set all elements of the matrix:
+
+   \code
+   using blaze::columnMajor;
+
+   const std::array<std::array<int,3UL>,3UL> init{ { { 1, 2, 3 },
+                                                     { 4, 5 },
+                                                     { 7, 8, 9 } } };
+   blaze::HybridMatrix<int,3UL,3UL,columnMajor> A;
+   A = init;
+   \endcode
+
+// The matrix is assigned the values from the given static array. Missing values are initialized
+// with default values (as e.g. the value 6 in the example).
+*/
+template< typename Type     // Data type of the matrix
+        , size_t M          // Number of rows
+        , size_t N          // Number of columns
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+template< typename Other    // Data type of the static array
+        , size_t Rows       // Number of rows of the static array
+        , size_t Cols >     // Number of columns of the static array
+constexpr HybridMatrix<Type,M,N,true,AF,PF,Tag>&
+   HybridMatrix<Type,M,N,true,AF,PF,Tag>::operator=( const std::array<std::array<Other,Cols>,Rows>& array ) &
 {
    BLAZE_STATIC_ASSERT( Rows <= M );
    BLAZE_STATIC_ASSERT( Cols <= N );
@@ -4512,11 +5075,14 @@ inline HybridMatrix<Type,M,N,true>&
 //
 // Explicit definition of a copy assignment operator for performance reasons.
 */
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N >     // Number of columns
-inline HybridMatrix<Type,M,N,true>&
-   HybridMatrix<Type,M,N,true>::operator=( const HybridMatrix& rhs )
+template< typename Type     // Data type of the matrix
+        , size_t M          // Number of rows
+        , size_t N          // Number of columns
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+constexpr HybridMatrix<Type,M,N,true,AF,PF,Tag>&
+   HybridMatrix<Type,M,N,true,AF,PF,Tag>::operator=( const HybridMatrix& rhs ) &
 {
    using blaze::assign;
 
@@ -4524,7 +5090,7 @@ inline HybridMatrix<Type,M,N,true>&
    BLAZE_INTERNAL_ASSERT( n_ <= N, "Invalid number of columns detected" );
 
    resize( rhs.rows(), rhs.columns() );
-   assign( *this, ~rhs );
+   assign( *this, *rhs );
 
    BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
 
@@ -4546,12 +5112,16 @@ inline HybridMatrix<Type,M,N,true>&
 // number of rows of the given matrix is not M or the number of columns is not N, a
 // \a std::invalid_argument exception is thrown.
 */
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N >     // Number of columns
-template< typename MT    // Type of the right-hand side matrix
-        , bool SO >      // Storage order of the right-hand side matrix
-inline HybridMatrix<Type,M,N,true>& HybridMatrix<Type,M,N,true>::operator=( const Matrix<MT,SO>& rhs )
+template< typename Type     // Data type of the matrix
+        , size_t M          // Number of rows
+        , size_t N          // Number of columns
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+template< typename MT       // Type of the right-hand side matrix
+        , bool SO >         // Storage order of the right-hand side matrix
+inline HybridMatrix<Type,M,N,true,AF,PF,Tag>&
+   HybridMatrix<Type,M,N,true,AF,PF,Tag>::operator=( const Matrix<MT,SO>& rhs ) &
 {
    using blaze::assign;
 
@@ -4559,26 +5129,28 @@ inline HybridMatrix<Type,M,N,true>& HybridMatrix<Type,M,N,true>::operator=( cons
    using CT = decltype( ctrans( *this ) );
    using IT = decltype( inv( *this ) );
 
-   if( (~rhs).rows() > M || (~rhs).columns() > N ) {
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<MT> );
+
+   if( (*rhs).rows() > M || (*rhs).columns() > N ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to hybrid matrix" );
    }
 
-   if( IsSame_v<MT,TT> && (~rhs).isAliased( this ) ) {
+   if( IsSame_v<MT,TT> && (*rhs).isAliased( this ) ) {
       transpose();
    }
-   else if( IsSame_v<MT,CT> && (~rhs).isAliased( this ) ) {
+   else if( IsSame_v<MT,CT> && (*rhs).isAliased( this ) ) {
       ctranspose();
    }
-   else if( !IsSame_v<MT,IT> && (~rhs).canAlias( this ) ) {
-      HybridMatrix tmp( ~rhs );
+   else if( !IsSame_v<MT,IT> && (*rhs).canAlias( this ) ) {
+      HybridMatrix tmp( *rhs );
       resize( tmp.rows(), tmp.columns() );
       assign( *this, tmp );
    }
    else {
-      resize( (~rhs).rows(), (~rhs).columns() );
+      resize( (*rhs).rows(), (*rhs).columns() );
       if( IsSparseMatrix_v<MT> )
          reset();
-      assign( *this, ~rhs );
+      assign( *this, *rhs );
    }
 
    BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
@@ -4600,25 +5172,31 @@ inline HybridMatrix<Type,M,N,true>& HybridMatrix<Type,M,N,true>::operator=( cons
 // In case the current sizes of the two matrices don't match, a \a std::invalid_argument exception
 // is thrown.
 */
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N >     // Number of columns
-template< typename MT    // Type of the right-hand side matrix
-        , bool SO >      // Storage order of the right-hand side matrix
-inline HybridMatrix<Type,M,N,true>& HybridMatrix<Type,M,N,true>::operator+=( const Matrix<MT,SO>& rhs )
+template< typename Type     // Data type of the matrix
+        , size_t M          // Number of rows
+        , size_t N          // Number of columns
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+template< typename MT       // Type of the right-hand side matrix
+        , bool SO >         // Storage order of the right-hand side matrix
+inline HybridMatrix<Type,M,N,true,AF,PF,Tag>&
+   HybridMatrix<Type,M,N,true,AF,PF,Tag>::operator+=( const Matrix<MT,SO>& rhs ) &
 {
    using blaze::addAssign;
 
-   if( (~rhs).rows() != m_ || (~rhs).columns() != n_ ) {
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<MT> );
+
+   if( (*rhs).rows() != m_ || (*rhs).columns() != n_ ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
-   if( (~rhs).canAlias( this ) ) {
-      const ResultType_t<MT> tmp( ~rhs );
+   if( (*rhs).canAlias( this ) ) {
+      const ResultType_t<MT> tmp( *rhs );
       addAssign( *this, tmp );
    }
    else {
-      addAssign( *this, ~rhs );
+      addAssign( *this, *rhs );
    }
 
    BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
@@ -4640,25 +5218,31 @@ inline HybridMatrix<Type,M,N,true>& HybridMatrix<Type,M,N,true>::operator+=( con
 // In case the current sizes of the two matrices don't match, a \a std::invalid_argument exception
 // is thrown.
 */
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N >     // Number of columns
-template< typename MT    // Type of the right-hand side matrix
-        , bool SO >      // Storage order of the right-hand side matrix
-inline HybridMatrix<Type,M,N,true>& HybridMatrix<Type,M,N,true>::operator-=( const Matrix<MT,SO>& rhs )
+template< typename Type     // Data type of the matrix
+        , size_t M          // Number of rows
+        , size_t N          // Number of columns
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+template< typename MT       // Type of the right-hand side matrix
+        , bool SO >         // Storage order of the right-hand side matrix
+inline HybridMatrix<Type,M,N,true,AF,PF,Tag>&
+   HybridMatrix<Type,M,N,true,AF,PF,Tag>::operator-=( const Matrix<MT,SO>& rhs ) &
 {
    using blaze::subAssign;
 
-   if( (~rhs).rows() != m_ || (~rhs).columns() != n_ ) {
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<MT> );
+
+   if( (*rhs).rows() != m_ || (*rhs).columns() != n_ ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
-   if( (~rhs).canAlias( this ) ) {
-      const ResultType_t<MT> tmp( ~rhs );
+   if( (*rhs).canAlias( this ) ) {
+      const ResultType_t<MT> tmp( *rhs );
       subAssign( *this, tmp );
    }
    else {
-      subAssign( *this, ~rhs );
+      subAssign( *this, *rhs );
    }
 
    BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
@@ -4680,25 +5264,31 @@ inline HybridMatrix<Type,M,N,true>& HybridMatrix<Type,M,N,true>::operator-=( con
 // In case the current sizes of the two matrices don't match, a \a std::invalid_argument exception
 // is thrown.
 */
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N >     // Number of columns
-template< typename MT    // Type of the right-hand side matrix
-        , bool SO >      // Storage order of the right-hand side matrix
-inline HybridMatrix<Type,M,N,true>& HybridMatrix<Type,M,N,true>::operator%=( const Matrix<MT,SO>& rhs )
+template< typename Type     // Data type of the matrix
+        , size_t M          // Number of rows
+        , size_t N          // Number of columns
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+template< typename MT       // Type of the right-hand side matrix
+        , bool SO >         // Storage order of the right-hand side matrix
+inline HybridMatrix<Type,M,N,true,AF,PF,Tag>&
+   HybridMatrix<Type,M,N,true,AF,PF,Tag>::operator%=( const Matrix<MT,SO>& rhs ) &
 {
    using blaze::schurAssign;
 
-   if( (~rhs).rows() != m_ || (~rhs).columns() != n_ ) {
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<MT> );
+
+   if( (*rhs).rows() != m_ || (*rhs).columns() != n_ ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
-   if( (~rhs).canAlias( this ) ) {
-      const ResultType_t<MT> tmp( ~rhs );
+   if( (*rhs).canAlias( this ) ) {
+      const ResultType_t<MT> tmp( *rhs );
       schurAssign( *this, tmp );
    }
    else {
-      schurAssign( *this, ~rhs );
+      schurAssign( *this, *rhs );
    }
 
    BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
@@ -4723,10 +5313,13 @@ inline HybridMatrix<Type,M,N,true>& HybridMatrix<Type,M,N,true>::operator%=( con
 //
 // \return The number of rows of the matrix.
 */
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N >     // Number of columns
-inline size_t HybridMatrix<Type,M,N,true>::rows() const noexcept
+template< typename Type     // Data type of the matrix
+        , size_t M          // Number of rows
+        , size_t N          // Number of columns
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+constexpr size_t HybridMatrix<Type,M,N,true,AF,PF,Tag>::rows() const noexcept
 {
    return m_;
 }
@@ -4740,10 +5333,13 @@ inline size_t HybridMatrix<Type,M,N,true>::rows() const noexcept
 //
 // \return The number of columns of the matrix.
 */
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N >     // Number of columns
-inline size_t HybridMatrix<Type,M,N,true>::columns() const noexcept
+template< typename Type     // Data type of the matrix
+        , size_t M          // Number of rows
+        , size_t N          // Number of columns
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+constexpr size_t HybridMatrix<Type,M,N,true,AF,PF,Tag>::columns() const noexcept
 {
    return n_;
 }
@@ -4760,10 +5356,13 @@ inline size_t HybridMatrix<Type,M,N,true>::columns() const noexcept
 // This function returns the spacing between the beginning of two column, i.e. the total number
 // of elements of a column.
 */
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N >     // Number of columns
-inline constexpr size_t HybridMatrix<Type,M,N,true>::spacing() noexcept
+template< typename Type     // Data type of the matrix
+        , size_t M          // Number of rows
+        , size_t N          // Number of columns
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+constexpr size_t HybridMatrix<Type,M,N,true,AF,PF,Tag>::spacing() noexcept
 {
    return MM;
 }
@@ -4777,10 +5376,13 @@ inline constexpr size_t HybridMatrix<Type,M,N,true>::spacing() noexcept
 //
 // \return The capacity of the matrix.
 */
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N >     // Number of columns
-inline constexpr size_t HybridMatrix<Type,M,N,true>::capacity() noexcept
+template< typename Type     // Data type of the matrix
+        , size_t M          // Number of rows
+        , size_t N          // Number of columns
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+constexpr size_t HybridMatrix<Type,M,N,true,AF,PF,Tag>::capacity() noexcept
 {
    return MM*N;
 }
@@ -4795,12 +5397,15 @@ inline constexpr size_t HybridMatrix<Type,M,N,true>::capacity() noexcept
 // \param j The index of the column.
 // \return The current capacity of column \a j.
 */
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N >     // Number of columns
-inline size_t HybridMatrix<Type,M,N,true>::capacity( size_t j ) const noexcept
+template< typename Type     // Data type of the matrix
+        , size_t M          // Number of rows
+        , size_t N          // Number of columns
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+constexpr size_t HybridMatrix<Type,M,N,true,AF,PF,Tag>::capacity( size_t j ) const noexcept
 {
-   UNUSED_PARAMETER( j );
+   MAYBE_UNUSED( j );
 
    BLAZE_USER_ASSERT( j < columns(), "Invalid column access index" );
 
@@ -4815,17 +5420,24 @@ inline size_t HybridMatrix<Type,M,N,true>::capacity( size_t j ) const noexcept
 /*!\brief Returns the total number of non-zero elements in the matrix
 //
 // \return The number of non-zero elements in the dense matrix.
+//
+// This function returns the number of non-zero elements in the matrix (i.e. the elements that
+// compare unequal to their default value). Note that the number of non-zero elements is always
+// less than or equal to the total number of elements in the matrix.
 */
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N >     // Number of columns
-inline size_t HybridMatrix<Type,M,N,true>::nonZeros() const
+template< typename Type     // Data type of the matrix
+        , size_t M          // Number of rows
+        , size_t N          // Number of columns
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+inline size_t HybridMatrix<Type,M,N,true,AF,PF,Tag>::nonZeros() const
 {
    size_t nonzeros( 0UL );
 
    for( size_t j=0UL; j<n_; ++j )
       for( size_t i=0UL; i<m_; ++i )
-         if( !isDefault( v_[i+j*MM] ) )
+         if( !isDefault<strict>( v_[i+j*MM] ) )
             ++nonzeros;
 
    return nonzeros;
@@ -4840,11 +5452,17 @@ inline size_t HybridMatrix<Type,M,N,true>::nonZeros() const
 //
 // \param j The index of the column.
 // \return The number of non-zero elements of column \a j.
+//
+// This function returns the current number of non-zero elements in the specified column (i.e.
+// the elements that compare unequal to their default value).
 */
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N >     // Number of columns
-inline size_t HybridMatrix<Type,M,N,true>::nonZeros( size_t j ) const
+template< typename Type     // Data type of the matrix
+        , size_t M          // Number of rows
+        , size_t N          // Number of columns
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+inline size_t HybridMatrix<Type,M,N,true,AF,PF,Tag>::nonZeros( size_t j ) const
 {
    BLAZE_USER_ASSERT( j < columns(), "Invalid column access index" );
 
@@ -4852,7 +5470,7 @@ inline size_t HybridMatrix<Type,M,N,true>::nonZeros( size_t j ) const
    size_t nonzeros( 0UL );
 
    for( size_t i=j*MM; i<iend; ++i )
-      if( !isDefault( v_[i] ) )
+      if( !isDefault<strict>( v_[i] ) )
          ++nonzeros;
 
    return nonzeros;
@@ -4867,10 +5485,13 @@ inline size_t HybridMatrix<Type,M,N,true>::nonZeros( size_t j ) const
 //
 // \return void
 */
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N >     // Number of columns
-inline void HybridMatrix<Type,M,N,true>::reset()
+template< typename Type     // Data type of the matrix
+        , size_t M          // Number of rows
+        , size_t N          // Number of columns
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+constexpr void HybridMatrix<Type,M,N,true,AF,PF,Tag>::reset()
 {
    using blaze::clear;
 
@@ -4892,10 +5513,13 @@ inline void HybridMatrix<Type,M,N,true>::reset()
 // This function reset the values in the specified column to their default value. Note that
 // the capacity of the column remains unchanged.
 */
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N >     // Number of columns
-inline void HybridMatrix<Type,M,N,true>::reset( size_t j )
+template< typename Type     // Data type of the matrix
+        , size_t M          // Number of rows
+        , size_t N          // Number of columns
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+constexpr void HybridMatrix<Type,M,N,true,AF,PF,Tag>::reset( size_t j )
 {
    using blaze::clear;
 
@@ -4915,10 +5539,13 @@ inline void HybridMatrix<Type,M,N,true>::reset( size_t j )
 //
 // After the clear() function, the size of the matrix is 0.
 */
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N >     // Number of columns
-inline void HybridMatrix<Type,M,N,true>::clear()
+template< typename Type     // Data type of the matrix
+        , size_t M          // Number of rows
+        , size_t N          // Number of columns
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+constexpr void HybridMatrix<Type,M,N,true,AF,PF,Tag>::clear()
 {
    resize( 0UL, 0UL );
 }
@@ -4963,12 +5590,17 @@ inline void HybridMatrix<Type,M,N,true>::clear()
                               \end{array}\right)
                               \f]
 */
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N >     // Number of columns
-void HybridMatrix<Type,M,N,true>::resize( size_t m, size_t n, bool preserve )
+template< typename Type     // Data type of the matrix
+        , size_t M          // Number of rows
+        , size_t N          // Number of columns
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+constexpr void HybridMatrix<Type,M,N,true,AF,PF,Tag>::resize( size_t m, size_t n, bool preserve )
 {
-   UNUSED_PARAMETER( preserve );
+   using blaze::clear;
+
+   MAYBE_UNUSED( preserve );
 
    if( m > M ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid number of rows for hybrid matrix" );
@@ -4981,13 +5613,13 @@ void HybridMatrix<Type,M,N,true>::resize( size_t m, size_t n, bool preserve )
    if( IsVectorizable_v<Type> && m < m_ ) {
       for( size_t j=0UL; j<n; ++j )
          for( size_t i=m; i<m_; ++i )
-            v_[i+j*MM] = Type();
+            clear( v_[i+j*MM] );
    }
 
    if( IsVectorizable_v<Type> && n < n_ ) {
       for( size_t j=n; j<n_; ++j )
          for( size_t i=0UL; i<m_; ++i )
-            v_[i+j*MM] = Type();
+            clear( v_[i+j*MM] );
    }
 
    m_ = m;
@@ -5013,12 +5645,15 @@ void HybridMatrix<Type,M,N,true>::resize( size_t m, size_t n, bool preserve )
 // flag can be set to \a true.\n
 // Note that new matrix elements are not initialized!
 */
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N >     // Number of columns
-inline void HybridMatrix<Type,M,N,true>::extend( size_t m, size_t n, bool preserve )
+template< typename Type     // Data type of the matrix
+        , size_t M          // Number of rows
+        , size_t N          // Number of columns
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+constexpr void HybridMatrix<Type,M,N,true,AF,PF,Tag>::extend( size_t m, size_t n, bool preserve )
 {
-   UNUSED_PARAMETER( preserve );
+   MAYBE_UNUSED( preserve );
    resize( m_+m, n_+n );
 }
 /*! \endcond */
@@ -5032,10 +5667,13 @@ inline void HybridMatrix<Type,M,N,true>::extend( size_t m, size_t n, bool preser
 // \param m The matrix to be swapped.
 // \return void
 */
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N >     // Number of columns
-inline void HybridMatrix<Type,M,N,true>::swap( HybridMatrix& m ) noexcept
+template< typename Type     // Data type of the matrix
+        , size_t M          // Number of rows
+        , size_t N          // Number of columns
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+inline void HybridMatrix<Type,M,N,true,AF,PF,Tag>::swap( HybridMatrix& m ) noexcept
 {
    using std::swap;
 
@@ -5075,12 +5713,16 @@ inline void HybridMatrix<Type,M,N,true>::swap( HybridMatrix& m ) noexcept
 // current number of rows is larger than the maximum number of columns or if the current number
 // of columns is larger than the maximum number of rows, an \a std::logic_error is thrown.
 */
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N >     // Number of columns
-inline HybridMatrix<Type,M,N,true>& HybridMatrix<Type,M,N,true>::transpose()
+template< typename Type     // Data type of the matrix
+        , size_t M          // Number of rows
+        , size_t N          // Number of columns
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+inline HybridMatrix<Type,M,N,true,AF,PF,Tag>& HybridMatrix<Type,M,N,true,AF,PF,Tag>::transpose()
 {
    using std::swap;
+   using blaze::clear;
 
    if( m_ > N || n_ > M ) {
       BLAZE_THROW_LOGIC_ERROR( "Impossible transpose operation" );
@@ -5096,7 +5738,7 @@ inline HybridMatrix<Type,M,N,true>& HybridMatrix<Type,M,N,true>::transpose()
    if( IsVectorizable_v<Type> && n_ < m_ ) {
       for( size_t j=0UL; j<n_; ++j ) {
          for( size_t i=n_; i<m_; ++i ) {
-            v_[i+j*MM] = Type();
+            clear( v_[i+j*MM] );
          }
       }
    }
@@ -5104,7 +5746,7 @@ inline HybridMatrix<Type,M,N,true>& HybridMatrix<Type,M,N,true>::transpose()
    if( IsVectorizable_v<Type> && n_ > m_ ) {
       for( size_t j=m_; j<n_; ++j ) {
          for( size_t i=0UL; i<m_; ++i ) {
-            v_[i+j*MM] = Type();
+            clear( v_[i+j*MM] );
          }
       }
    }
@@ -5131,12 +5773,16 @@ inline HybridMatrix<Type,M,N,true>& HybridMatrix<Type,M,N,true>::transpose()
 // current number of rows is larger than the maximum number of columns or if the current number
 // of columns is larger than the maximum number of rows, an \a std::logic_error is thrown.
 */
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N >     // Number of columns
-inline HybridMatrix<Type,M,N,true>& HybridMatrix<Type,M,N,true>::ctranspose()
+template< typename Type     // Data type of the matrix
+        , size_t M          // Number of rows
+        , size_t N          // Number of columns
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+inline HybridMatrix<Type,M,N,true,AF,PF,Tag>& HybridMatrix<Type,M,N,true,AF,PF,Tag>::ctranspose()
 {
    using std::swap;
+   using blaze::clear;
 
    if( m_ > N || n_ > M ) {
       BLAZE_THROW_LOGIC_ERROR( "Impossible transpose operation" );
@@ -5153,7 +5799,7 @@ inline HybridMatrix<Type,M,N,true>& HybridMatrix<Type,M,N,true>::ctranspose()
    if( IsVectorizable_v<Type> && n_ < m_ ) {
       for( size_t j=0UL; j<n_; ++j ) {
          for( size_t i=n_; i<m_; ++i ) {
-            v_[i+j*MM] = Type();
+            clear( v_[i+j*MM] );
          }
       }
    }
@@ -5161,7 +5807,7 @@ inline HybridMatrix<Type,M,N,true>& HybridMatrix<Type,M,N,true>::ctranspose()
    if( IsVectorizable_v<Type> && n_ > m_ ) {
       for( size_t j=m_; j<n_; ++j ) {
          for( size_t i=0UL; i<m_; ++i ) {
-            v_[i+j*MM] = Type();
+            clear( v_[i+j*MM] );
          }
       }
    }
@@ -5196,10 +5842,13 @@ inline HybridMatrix<Type,M,N,true>& HybridMatrix<Type,M,N,true>::ctranspose()
 */
 template< typename Type     // Data type of the matrix
         , size_t M          // Number of rows
-        , size_t N >        // Number of columns
+        , size_t N          // Number of columns
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
 template< typename Other >  // Data type of the scalar value
-inline HybridMatrix<Type,M,N,true>&
-   HybridMatrix<Type,M,N,true>::scale( const Other& scalar )
+inline HybridMatrix<Type,M,N,true,AF,PF,Tag>&
+   HybridMatrix<Type,M,N,true,AF,PF,Tag>::scale( const Other& scalar )
 {
    for( size_t j=0UL; j<n_; ++j )
       for( size_t i=0UL; i<m_; ++i )
@@ -5230,12 +5879,15 @@ inline HybridMatrix<Type,M,N,true>&
 // This class-specific implementation of operator new provides the functionality to allocate
 // dynamic memory based on the alignment restrictions of the HybridMatrix class template.
 */
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N >     // Number of columns
-inline void* HybridMatrix<Type,M,N,true>::operator new( std::size_t size )
+template< typename Type     // Data type of the matrix
+        , size_t M          // Number of rows
+        , size_t N          // Number of columns
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+inline void* HybridMatrix<Type,M,N,true,AF,PF,Tag>::operator new( std::size_t size )
 {
-   UNUSED_PARAMETER( size );
+   MAYBE_UNUSED( size );
 
    BLAZE_INTERNAL_ASSERT( size == sizeof( HybridMatrix ), "Invalid number of bytes detected" );
 
@@ -5256,10 +5908,13 @@ inline void* HybridMatrix<Type,M,N,true>::operator new( std::size_t size )
 // This class-specific implementation of operator new provides the functionality to allocate
 // dynamic memory based on the alignment restrictions of the HybridMatrix class template.
 */
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N >     // Number of columns
-inline void* HybridMatrix<Type,M,N,true>::operator new[]( std::size_t size )
+template< typename Type     // Data type of the matrix
+        , size_t M          // Number of rows
+        , size_t N          // Number of columns
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+inline void* HybridMatrix<Type,M,N,true,AF,PF,Tag>::operator new[]( std::size_t size )
 {
    BLAZE_INTERNAL_ASSERT( size >= sizeof( HybridMatrix )       , "Invalid number of bytes detected" );
    BLAZE_INTERNAL_ASSERT( size %  sizeof( HybridMatrix ) == 0UL, "Invalid number of bytes detected" );
@@ -5281,12 +5936,15 @@ inline void* HybridMatrix<Type,M,N,true>::operator new[]( std::size_t size )
 // This class-specific implementation of operator new provides the functionality to allocate
 // dynamic memory based on the alignment restrictions of the HybridMatrix class template.
 */
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N >     // Number of columns
-inline void* HybridMatrix<Type,M,N,true>::operator new( std::size_t size, const std::nothrow_t& )
+template< typename Type     // Data type of the matrix
+        , size_t M          // Number of rows
+        , size_t N          // Number of columns
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+inline void* HybridMatrix<Type,M,N,true,AF,PF,Tag>::operator new( std::size_t size, const std::nothrow_t& )
 {
-   UNUSED_PARAMETER( size );
+   MAYBE_UNUSED( size );
 
    BLAZE_INTERNAL_ASSERT( size == sizeof( HybridMatrix ), "Invalid number of bytes detected" );
 
@@ -5307,10 +5965,13 @@ inline void* HybridMatrix<Type,M,N,true>::operator new( std::size_t size, const 
 // This class-specific implementation of operator new provides the functionality to allocate
 // dynamic memory based on the alignment restrictions of the HybridMatrix class template.
 */
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N >     // Number of columns
-inline void* HybridMatrix<Type,M,N,true>::operator new[]( std::size_t size, const std::nothrow_t& )
+template< typename Type     // Data type of the matrix
+        , size_t M          // Number of rows
+        , size_t N          // Number of columns
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+inline void* HybridMatrix<Type,M,N,true,AF,PF,Tag>::operator new[]( std::size_t size, const std::nothrow_t& )
 {
    BLAZE_INTERNAL_ASSERT( size >= sizeof( HybridMatrix )       , "Invalid number of bytes detected" );
    BLAZE_INTERNAL_ASSERT( size %  sizeof( HybridMatrix ) == 0UL, "Invalid number of bytes detected" );
@@ -5328,10 +5989,13 @@ inline void* HybridMatrix<Type,M,N,true>::operator new[]( std::size_t size, cons
 // \param ptr The memory to be deallocated.
 // \return void
 */
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N >     // Number of columns
-inline void HybridMatrix<Type,M,N,true>::operator delete( void* ptr )
+template< typename Type     // Data type of the matrix
+        , size_t M          // Number of rows
+        , size_t N          // Number of columns
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+inline void HybridMatrix<Type,M,N,true,AF,PF,Tag>::operator delete( void* ptr )
 {
    deallocate( static_cast<HybridMatrix*>( ptr ) );
 }
@@ -5346,10 +6010,13 @@ inline void HybridMatrix<Type,M,N,true>::operator delete( void* ptr )
 // \param ptr The memory to be deallocated.
 // \return void
 */
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N >     // Number of columns
-inline void HybridMatrix<Type,M,N,true>::operator delete[]( void* ptr )
+template< typename Type     // Data type of the matrix
+        , size_t M          // Number of rows
+        , size_t N          // Number of columns
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+inline void HybridMatrix<Type,M,N,true,AF,PF,Tag>::operator delete[]( void* ptr )
 {
    deallocate( static_cast<HybridMatrix*>( ptr ) );
 }
@@ -5364,10 +6031,13 @@ inline void HybridMatrix<Type,M,N,true>::operator delete[]( void* ptr )
 // \param ptr The memory to be deallocated.
 // \return void
 */
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N >     // Number of columns
-inline void HybridMatrix<Type,M,N,true>::operator delete( void* ptr, const std::nothrow_t& )
+template< typename Type     // Data type of the matrix
+        , size_t M          // Number of rows
+        , size_t N          // Number of columns
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+inline void HybridMatrix<Type,M,N,true,AF,PF,Tag>::operator delete( void* ptr, const std::nothrow_t& )
 {
    deallocate( static_cast<HybridMatrix*>( ptr ) );
 }
@@ -5382,10 +6052,13 @@ inline void HybridMatrix<Type,M,N,true>::operator delete( void* ptr, const std::
 // \param ptr The memory to be deallocated.
 // \return void
 */
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N >     // Number of columns
-inline void HybridMatrix<Type,M,N,true>::operator delete[]( void* ptr, const std::nothrow_t& )
+template< typename Type     // Data type of the matrix
+        , size_t M          // Number of rows
+        , size_t N          // Number of columns
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+inline void HybridMatrix<Type,M,N,true,AF,PF,Tag>::operator delete[]( void* ptr, const std::nothrow_t& )
 {
    deallocate( static_cast<HybridMatrix*>( ptr ) );
 }
@@ -5411,10 +6084,13 @@ inline void HybridMatrix<Type,M,N,true>::operator delete[]( void* ptr, const std
 // state is valid. In case the invariants are intact, the function returns \a true, else it
 // will return \a false.
 */
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N >     // Number of columns
-inline bool HybridMatrix<Type,M,N,true>::isIntact() const noexcept
+template< typename Type     // Data type of the matrix
+        , size_t M          // Number of rows
+        , size_t N          // Number of columns
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+constexpr bool HybridMatrix<Type,M,N,true,AF,PF,Tag>::isIntact() const noexcept
 {
    if( m_ > M || n_ > N )
       return false;
@@ -5423,14 +6099,14 @@ inline bool HybridMatrix<Type,M,N,true>::isIntact() const noexcept
    {
       for( size_t j=0UL; j<n_; ++j ) {
          for( size_t i=m_; i<MM; ++i ) {
-            if( v_[i+j*MM] != Type() )
+            if( !isDefault<strict>( v_[i+j*MM] ) )
                return false;
          }
       }
 
       for( size_t j=n_; j<N; ++j ) {
          for( size_t i=0UL; i<MM; ++i ) {
-            if( v_[i+j*MM] != Type() )
+            if( !isDefault<strict>( v_[i+j*MM] ) )
                return false;
          }
       }
@@ -5463,9 +6139,12 @@ inline bool HybridMatrix<Type,M,N,true>::isIntact() const noexcept
 */
 template< typename Type     // Data type of the matrix
         , size_t M          // Number of rows
-        , size_t N >        // Number of columns
+        , size_t N          // Number of columns
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
 template< typename Other >  // Data type of the foreign expression
-inline bool HybridMatrix<Type,M,N,true>::canAlias( const Other* alias ) const noexcept
+inline bool HybridMatrix<Type,M,N,true,AF,PF,Tag>::canAlias( const Other* alias ) const noexcept
 {
    return static_cast<const void*>( this ) == static_cast<const void*>( alias );
 }
@@ -5486,9 +6165,12 @@ inline bool HybridMatrix<Type,M,N,true>::canAlias( const Other* alias ) const no
 */
 template< typename Type     // Data type of the matrix
         , size_t M          // Number of rows
-        , size_t N >        // Number of columns
+        , size_t N          // Number of columns
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
 template< typename Other >  // Data type of the foreign expression
-inline bool HybridMatrix<Type,M,N,true>::isAliased( const Other* alias ) const noexcept
+inline bool HybridMatrix<Type,M,N,true,AF,PF,Tag>::isAliased( const Other* alias ) const noexcept
 {
    return static_cast<const void*>( this ) == static_cast<const void*>( alias );
 }
@@ -5506,12 +6188,15 @@ inline bool HybridMatrix<Type,M,N,true>::isAliased( const Other* alias ) const n
 // whether the beginning and the end of each column of the matrix are guaranteed to conform to
 // the alignment restrictions of the element type \a Type.
 */
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N >     // Number of columns
-inline constexpr bool HybridMatrix<Type,M,N,true>::isAligned() noexcept
+template< typename Type     // Data type of the matrix
+        , size_t M          // Number of rows
+        , size_t N          // Number of columns
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+constexpr bool HybridMatrix<Type,M,N,true,AF,PF,Tag>::isAligned() noexcept
 {
-   return align;
+   return AF == aligned;
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -5532,13 +6217,16 @@ inline constexpr bool HybridMatrix<Type,M,N,true>::isAligned() noexcept
 // for the performance optimized evaluation of expression templates. Calling this function
 // explicitly might result in erroneous results and/or in compilation errors.
 */
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N >     // Number of columns
-BLAZE_ALWAYS_INLINE typename HybridMatrix<Type,M,N,true>::SIMDType
-   HybridMatrix<Type,M,N,true>::load( size_t i, size_t j ) const noexcept
+template< typename Type     // Data type of the matrix
+        , size_t M          // Number of rows
+        , size_t N          // Number of columns
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+BLAZE_ALWAYS_INLINE typename HybridMatrix<Type,M,N,true,AF,PF,Tag>::SIMDType
+   HybridMatrix<Type,M,N,true,AF,PF,Tag>::load( size_t i, size_t j ) const noexcept
 {
-   if( align )
+   if( AF == aligned )
       return loada( i, j );
    else
       return loadu( i, j );
@@ -5562,11 +6250,14 @@ BLAZE_ALWAYS_INLINE typename HybridMatrix<Type,M,N,true>::SIMDType
 // internally for the performance optimized evaluation of expression templates. Calling this
 // function explicitly might result in erroneous results and/or in compilation errors.
 */
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N >     // Number of columns
-BLAZE_ALWAYS_INLINE typename HybridMatrix<Type,M,N,true>::SIMDType
-   HybridMatrix<Type,M,N,true>::loada( size_t i, size_t j ) const noexcept
+template< typename Type     // Data type of the matrix
+        , size_t M          // Number of rows
+        , size_t N          // Number of columns
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+BLAZE_ALWAYS_INLINE typename HybridMatrix<Type,M,N,true,AF,PF,Tag>::SIMDType
+   HybridMatrix<Type,M,N,true,AF,PF,Tag>::loada( size_t i, size_t j ) const noexcept
 {
    using blaze::loada;
 
@@ -5574,7 +6265,7 @@ BLAZE_ALWAYS_INLINE typename HybridMatrix<Type,M,N,true>::SIMDType
 
    BLAZE_INTERNAL_ASSERT( i < m_, "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( i + SIMDSIZE <= MM, "Invalid row access index" );
-   BLAZE_INTERNAL_ASSERT( !usePadding || i % SIMDSIZE == 0UL, "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( PF == unpadded || i % SIMDSIZE == 0UL, "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( j < n_, "Invalid column access index" );
    BLAZE_INTERNAL_ASSERT( checkAlignment( &v_[i+j*MM] ), "Invalid alignment detected" );
 
@@ -5599,11 +6290,14 @@ BLAZE_ALWAYS_INLINE typename HybridMatrix<Type,M,N,true>::SIMDType
 // internally for the performance optimized evaluation of expression templates. Calling this
 // function explicitly might result in erroneous results and/or in compilation errors.
 */
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N >     // Number of columns
-BLAZE_ALWAYS_INLINE typename HybridMatrix<Type,M,N,true>::SIMDType
-   HybridMatrix<Type,M,N,true>::loadu( size_t i, size_t j ) const noexcept
+template< typename Type     // Data type of the matrix
+        , size_t M          // Number of rows
+        , size_t N          // Number of columns
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+BLAZE_ALWAYS_INLINE typename HybridMatrix<Type,M,N,true,AF,PF,Tag>::SIMDType
+   HybridMatrix<Type,M,N,true,AF,PF,Tag>::loadu( size_t i, size_t j ) const noexcept
 {
    using blaze::loadu;
 
@@ -5635,13 +6329,16 @@ BLAZE_ALWAYS_INLINE typename HybridMatrix<Type,M,N,true>::SIMDType
 // performance optimized evaluation of expression templates. Calling this function explicitly
 // might result in erroneous results and/or in compilation errors.
 */
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N >     // Number of columns
+template< typename Type     // Data type of the matrix
+        , size_t M          // Number of rows
+        , size_t N          // Number of columns
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
 BLAZE_ALWAYS_INLINE void
-   HybridMatrix<Type,M,N,true>::store( size_t i, size_t j, const SIMDType& value ) noexcept
+   HybridMatrix<Type,M,N,true,AF,PF,Tag>::store( size_t i, size_t j, const SIMDType& value ) noexcept
 {
-   if( align )
+   if( AF == aligned )
       storea( i, j, value );
    else
       storeu( i, j, value );
@@ -5666,11 +6363,14 @@ BLAZE_ALWAYS_INLINE void
 // internally for the performance optimized evaluation of expression templates. Calling this
 // function explicitly might result in erroneous results and/or in compilation errors.
 */
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N >     // Number of columns
+template< typename Type     // Data type of the matrix
+        , size_t M          // Number of rows
+        , size_t N          // Number of columns
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
 BLAZE_ALWAYS_INLINE void
-   HybridMatrix<Type,M,N,true>::storea( size_t i, size_t j, const SIMDType& value ) noexcept
+   HybridMatrix<Type,M,N,true,AF,PF,Tag>::storea( size_t i, size_t j, const SIMDType& value ) noexcept
 {
    using blaze::storea;
 
@@ -5678,7 +6378,7 @@ BLAZE_ALWAYS_INLINE void
 
    BLAZE_INTERNAL_ASSERT( i < m_, "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( i + SIMDSIZE <= MM, "Invalid row access index" );
-   BLAZE_INTERNAL_ASSERT( !usePadding || i % SIMDSIZE == 0UL, "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( PF == unpadded || i % SIMDSIZE == 0UL, "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( j < n_, "Invalid column access index" );
    BLAZE_INTERNAL_ASSERT( checkAlignment( &v_[i+j*MM] ), "Invalid alignment detected" );
 
@@ -5704,11 +6404,14 @@ BLAZE_ALWAYS_INLINE void
 // internally for the performance optimized evaluation of expression templates. Calling this
 // function explicitly might result in erroneous results and/or in compilation errors.
 */
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N >     // Number of columns
+template< typename Type     // Data type of the matrix
+        , size_t M          // Number of rows
+        , size_t N          // Number of columns
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
 BLAZE_ALWAYS_INLINE void
-   HybridMatrix<Type,M,N,true>::storeu( size_t i, size_t j, const SIMDType& value ) noexcept
+   HybridMatrix<Type,M,N,true,AF,PF,Tag>::storeu( size_t i, size_t j, const SIMDType& value ) noexcept
 {
    using blaze::storeu;
 
@@ -5741,11 +6444,14 @@ BLAZE_ALWAYS_INLINE void
 // templates. Calling this function explicitly might result in erroneous results and/or in
 // compilation errors.
 */
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N >     // Number of columns
+template< typename Type     // Data type of the matrix
+        , size_t M          // Number of rows
+        , size_t N          // Number of columns
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
 BLAZE_ALWAYS_INLINE void
-   HybridMatrix<Type,M,N,true>::stream( size_t i, size_t j, const SIMDType& value ) noexcept
+   HybridMatrix<Type,M,N,true,AF,PF,Tag>::stream( size_t i, size_t j, const SIMDType& value ) noexcept
 {
    using blaze::stream;
 
@@ -5753,7 +6459,7 @@ BLAZE_ALWAYS_INLINE void
 
    BLAZE_INTERNAL_ASSERT( i < m_, "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( i + SIMDSIZE <= MM, "Invalid row access index" );
-   BLAZE_INTERNAL_ASSERT( !usePadding || i % SIMDSIZE == 0UL, "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( PF == unpadded || i % SIMDSIZE == 0UL, "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( j < n_, "Invalid column access index" );
    BLAZE_INTERNAL_ASSERT( checkAlignment( &v_[i+j*MM] ), "Invalid alignment detected" );
 
@@ -5775,19 +6481,22 @@ BLAZE_ALWAYS_INLINE void
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N >     // Number of columns
-template< typename MT    // Type of the right-hand side dense matrix
-        , bool SO >      // Storage order of the right-hand side dense matrix
-inline auto HybridMatrix<Type,M,N,true>::assign( const DenseMatrix<MT,SO>& rhs )
+template< typename Type     // Data type of the matrix
+        , size_t M          // Number of rows
+        , size_t N          // Number of columns
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+template< typename MT       // Type of the right-hand side dense matrix
+        , bool SO >         // Storage order of the right-hand side dense matrix
+inline auto HybridMatrix<Type,M,N,true,AF,PF,Tag>::assign( const DenseMatrix<MT,SO>& rhs )
    -> DisableIf_t< VectorizedAssign_v<MT> >
 {
-   BLAZE_INTERNAL_ASSERT( (~rhs).rows() == m_ && (~rhs).columns() == n_, "Invalid matrix size" );
+   BLAZE_INTERNAL_ASSERT( (*rhs).rows() == m_ && (*rhs).columns() == n_, "Invalid matrix size" );
 
    for( size_t j=0UL; j<n_; ++j ) {
       for( size_t i=0UL; i<m_; ++i ) {
-         v_[i+j*MM] = (~rhs)(i,j);
+         v_[i+j*MM] = (*rhs)(i,j);
       }
    }
 }
@@ -5807,32 +6516,35 @@ inline auto HybridMatrix<Type,M,N,true>::assign( const DenseMatrix<MT,SO>& rhs )
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N >     // Number of columns
-template< typename MT    // Type of the right-hand side dense matrix
-        , bool SO >      // Storage order of the right-hand side dense matrix
-inline auto HybridMatrix<Type,M,N,true>::assign( const DenseMatrix<MT,SO>& rhs )
+template< typename Type     // Data type of the matrix
+        , size_t M          // Number of rows
+        , size_t N          // Number of columns
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+template< typename MT       // Type of the right-hand side dense matrix
+        , bool SO >         // Storage order of the right-hand side dense matrix
+inline auto HybridMatrix<Type,M,N,true,AF,PF,Tag>::assign( const DenseMatrix<MT,SO>& rhs )
    -> EnableIf_t< VectorizedAssign_v<MT> >
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
-   BLAZE_INTERNAL_ASSERT( (~rhs).rows() == m_ && (~rhs).columns() == n_, "Invalid matrix size" );
+   BLAZE_INTERNAL_ASSERT( (*rhs).rows() == m_ && (*rhs).columns() == n_, "Invalid matrix size" );
 
-   constexpr bool remainder( !usePadding || !IsPadded_v<MT> );
+   constexpr bool remainder( PF == unpadded || !IsPadded_v<MT> );
 
-   const size_t ipos( ( remainder )?( m_ & size_t(-SIMDSIZE) ):( m_ ) );
-   BLAZE_INTERNAL_ASSERT( !remainder || ( m_ - ( m_ % (SIMDSIZE) ) ) == ipos, "Invalid end calculation" );
+   const size_t ipos( remainder ? prevMultiple( m_, SIMDSIZE ) : m_ );
+   BLAZE_INTERNAL_ASSERT( ipos <= m_, "Invalid end calculation" );
 
    for( size_t j=0UL; j<n_; ++j )
    {
       size_t i( 0UL );
 
       for( ; i<ipos; i+=SIMDSIZE ) {
-         store( i, j, (~rhs).load(i,j) );
+         store( i, j, (*rhs).load(i,j) );
       }
       for( ; remainder && i<m_; ++i ) {
-         v_[i+j*MM] = (~rhs)(i,j);
+         v_[i+j*MM] = (*rhs)(i,j);
       }
    }
 }
@@ -5852,16 +6564,19 @@ inline auto HybridMatrix<Type,M,N,true>::assign( const DenseMatrix<MT,SO>& rhs )
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N >     // Number of columns
-template< typename MT >  // Type of the right-hand side sparse matrix
-inline void HybridMatrix<Type,M,N,true>::assign( const SparseMatrix<MT,true>& rhs )
+template< typename Type     // Data type of the matrix
+        , size_t M          // Number of rows
+        , size_t N          // Number of columns
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+template< typename MT >     // Type of the right-hand side sparse matrix
+inline void HybridMatrix<Type,M,N,true,AF,PF,Tag>::assign( const SparseMatrix<MT,true>& rhs )
 {
-   BLAZE_INTERNAL_ASSERT( (~rhs).rows() == m_ && (~rhs).columns() == n_, "Invalid matrix size" );
+   BLAZE_INTERNAL_ASSERT( (*rhs).rows() == m_ && (*rhs).columns() == n_, "Invalid matrix size" );
 
    for( size_t j=0UL; j<n_; ++j )
-      for( ConstIterator_t<MT> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
+      for( auto element=(*rhs).begin(j); element!=(*rhs).end(j); ++element )
          v_[element->index()+j*MM] = element->value();
 }
 /*! \endcond */
@@ -5880,18 +6595,21 @@ inline void HybridMatrix<Type,M,N,true>::assign( const SparseMatrix<MT,true>& rh
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N >     // Number of columns
-template< typename MT >  // Type of the right-hand side sparse matrix
-inline void HybridMatrix<Type,M,N,true>::assign( const SparseMatrix<MT,false>& rhs )
+template< typename Type     // Data type of the matrix
+        , size_t M          // Number of rows
+        , size_t N          // Number of columns
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+template< typename MT >     // Type of the right-hand side sparse matrix
+inline void HybridMatrix<Type,M,N,true,AF,PF,Tag>::assign( const SparseMatrix<MT,false>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
 
-   BLAZE_INTERNAL_ASSERT( (~rhs).rows() == m_ && (~rhs).columns() == n_, "Invalid matrix size" );
+   BLAZE_INTERNAL_ASSERT( (*rhs).rows() == m_ && (*rhs).columns() == n_, "Invalid matrix size" );
 
    for( size_t i=0UL; i<m_; ++i )
-      for( ConstIterator_t<MT> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
+      for( auto element=(*rhs).begin(i); element!=(*rhs).end(i); ++element )
          v_[i+element->index()*MM] = element->value();
 }
 /*! \endcond */
@@ -5910,21 +6628,24 @@ inline void HybridMatrix<Type,M,N,true>::assign( const SparseMatrix<MT,false>& r
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N >     // Number of columns
-template< typename MT    // Type of the right-hand side dense matrix
-        , bool SO >      // Storage order of the right-hand side dense matrix
-inline auto HybridMatrix<Type,M,N,true>::addAssign( const DenseMatrix<MT,SO>& rhs )
+template< typename Type     // Data type of the matrix
+        , size_t M          // Number of rows
+        , size_t N          // Number of columns
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+template< typename MT       // Type of the right-hand side dense matrix
+        , bool SO >         // Storage order of the right-hand side dense matrix
+inline auto HybridMatrix<Type,M,N,true,AF,PF,Tag>::addAssign( const DenseMatrix<MT,SO>& rhs )
    -> DisableIf_t< VectorizedAddAssign_v<MT> >
 {
-   BLAZE_INTERNAL_ASSERT( (~rhs).rows() == m_ && (~rhs).columns() == n_, "Invalid matrix size" );
+   BLAZE_INTERNAL_ASSERT( (*rhs).rows() == m_ && (*rhs).columns() == n_, "Invalid matrix size" );
 
    for( size_t j=0UL; j<n_; ++j )
    {
       if( IsDiagonal_v<MT> )
       {
-         v_[j+j*MM] += (~rhs)(j,j);
+         v_[j+j*MM] += (*rhs)(j,j);
       }
       else
       {
@@ -5937,7 +6658,7 @@ inline auto HybridMatrix<Type,M,N,true>::addAssign( const DenseMatrix<MT,SO>& rh
          BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
 
          for( size_t i=ibegin; i<iend; ++i ) {
-            v_[i+j*MM] += (~rhs)(i,j);
+            v_[i+j*MM] += (*rhs)(i,j);
          }
       }
    }
@@ -5958,41 +6679,44 @@ inline auto HybridMatrix<Type,M,N,true>::addAssign( const DenseMatrix<MT,SO>& rh
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N >     // Number of columns
-template< typename MT    // Type of the right-hand side dense matrix
-        , bool SO >      // Storage order of the right-hand side dense matrix
-inline auto HybridMatrix<Type,M,N,true>::addAssign( const DenseMatrix<MT,SO>& rhs )
+template< typename Type     // Data type of the matrix
+        , size_t M          // Number of rows
+        , size_t N          // Number of columns
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+template< typename MT       // Type of the right-hand side dense matrix
+        , bool SO >         // Storage order of the right-hand side dense matrix
+inline auto HybridMatrix<Type,M,N,true,AF,PF,Tag>::addAssign( const DenseMatrix<MT,SO>& rhs )
    -> EnableIf_t< VectorizedAddAssign_v<MT> >
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
    BLAZE_CONSTRAINT_MUST_NOT_BE_DIAGONAL_MATRIX_TYPE( MT );
 
-   BLAZE_INTERNAL_ASSERT( (~rhs).rows() == m_ && (~rhs).columns() == n_, "Invalid matrix size" );
+   BLAZE_INTERNAL_ASSERT( (*rhs).rows() == m_ && (*rhs).columns() == n_, "Invalid matrix size" );
 
-   constexpr bool remainder( !usePadding || !IsPadded_v<MT> );
+   constexpr bool remainder( PF == unpadded || !IsPadded_v<MT> );
 
    for( size_t j=0UL; j<n_; ++j )
    {
       const size_t ibegin( ( IsLower_v<MT> )
-                           ?( ( IsStrictlyLower_v<MT> ? j+1UL : j ) & size_t(-SIMDSIZE) )
+                           ?( prevMultiple( ( IsStrictlyLower_v<MT> ? j+1UL : j ), SIMDSIZE ) )
                            :( 0UL ) );
       const size_t iend  ( ( IsUpper_v<MT> )
                            ?( IsStrictlyUpper_v<MT> ? j : j+1UL )
                            :( m_ ) );
       BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
 
-      const size_t ipos( ( remainder )?( iend & size_t(-SIMDSIZE) ):( iend ) );
-      BLAZE_INTERNAL_ASSERT( !remainder || ( iend - ( iend % (SIMDSIZE) ) ) == ipos, "Invalid end calculation" );
+      const size_t ipos( remainder ? prevMultiple( iend, SIMDSIZE ) : iend );
+      BLAZE_INTERNAL_ASSERT( ipos <= iend, "Invalid end calculation" );
 
       size_t i( ibegin );
 
       for( ; i<ipos; i+=SIMDSIZE ) {
-         store( i, j, load(i,j) + (~rhs).load(i,j) );
+         store( i, j, load(i,j) + (*rhs).load(i,j) );
       }
       for( ; remainder && i<iend; ++i ) {
-         v_[i+j*MM] += (~rhs)(i,j);
+         v_[i+j*MM] += (*rhs)(i,j);
       }
    }
 }
@@ -6012,16 +6736,19 @@ inline auto HybridMatrix<Type,M,N,true>::addAssign( const DenseMatrix<MT,SO>& rh
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N >     // Number of columns
-template< typename MT >  // Type of the right-hand side sparse matrix
-inline void HybridMatrix<Type,M,N,true>::addAssign( const SparseMatrix<MT,true>& rhs )
+template< typename Type     // Data type of the matrix
+        , size_t M          // Number of rows
+        , size_t N          // Number of columns
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+template< typename MT >     // Type of the right-hand side sparse matrix
+inline void HybridMatrix<Type,M,N,true,AF,PF,Tag>::addAssign( const SparseMatrix<MT,true>& rhs )
 {
-   BLAZE_INTERNAL_ASSERT( (~rhs).rows() == m_ && (~rhs).columns() == n_, "Invalid matrix size" );
+   BLAZE_INTERNAL_ASSERT( (*rhs).rows() == m_ && (*rhs).columns() == n_, "Invalid matrix size" );
 
    for( size_t j=0UL; j<n_; ++j )
-      for( ConstIterator_t<MT> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
+      for( auto element=(*rhs).begin(j); element!=(*rhs).end(j); ++element )
          v_[element->index()+j*MM] += element->value();
 }
 /*! \endcond */
@@ -6040,18 +6767,21 @@ inline void HybridMatrix<Type,M,N,true>::addAssign( const SparseMatrix<MT,true>&
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N >     // Number of columns
-template< typename MT >  // Type of the right-hand side sparse matrix
-inline void HybridMatrix<Type,M,N,true>::addAssign( const SparseMatrix<MT,false>& rhs )
+template< typename Type     // Data type of the matrix
+        , size_t M          // Number of rows
+        , size_t N          // Number of columns
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+template< typename MT >     // Type of the right-hand side sparse matrix
+inline void HybridMatrix<Type,M,N,true,AF,PF,Tag>::addAssign( const SparseMatrix<MT,false>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
 
-   BLAZE_INTERNAL_ASSERT( (~rhs).rows() == m_ && (~rhs).columns() == n_, "Invalid matrix size" );
+   BLAZE_INTERNAL_ASSERT( (*rhs).rows() == m_ && (*rhs).columns() == n_, "Invalid matrix size" );
 
    for( size_t i=0UL; i<m_; ++i )
-      for( ConstIterator_t<MT> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
+      for( auto element=(*rhs).begin(i); element!=(*rhs).end(i); ++element )
          v_[i+element->index()*MM] += element->value();
 }
 /*! \endcond */
@@ -6070,21 +6800,24 @@ inline void HybridMatrix<Type,M,N,true>::addAssign( const SparseMatrix<MT,false>
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N >     // Number of columns
-template< typename MT    // Type of the right-hand side dense matrix
-        , bool SO >      // Storage order of the right-hand side dense matrix
-inline auto HybridMatrix<Type,M,N,true>::subAssign( const DenseMatrix<MT,SO>& rhs )
+template< typename Type     // Data type of the matrix
+        , size_t M          // Number of rows
+        , size_t N          // Number of columns
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+template< typename MT       // Type of the right-hand side dense matrix
+        , bool SO >         // Storage order of the right-hand side dense matrix
+inline auto HybridMatrix<Type,M,N,true,AF,PF,Tag>::subAssign( const DenseMatrix<MT,SO>& rhs )
    -> DisableIf_t< VectorizedSubAssign_v<MT> >
 {
-   BLAZE_INTERNAL_ASSERT( (~rhs).rows() == m_ && (~rhs).columns() == n_, "Invalid matrix size" );
+   BLAZE_INTERNAL_ASSERT( (*rhs).rows() == m_ && (*rhs).columns() == n_, "Invalid matrix size" );
 
    for( size_t j=0UL; j<n_; ++j )
    {
       if( IsDiagonal_v<MT> )
       {
-         v_[j+j*MM] -= (~rhs)(j,j);
+         v_[j+j*MM] -= (*rhs)(j,j);
       }
       else
       {
@@ -6097,7 +6830,7 @@ inline auto HybridMatrix<Type,M,N,true>::subAssign( const DenseMatrix<MT,SO>& rh
          BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
 
          for( size_t i=ibegin; i<iend; ++i ) {
-            v_[i+j*MM] -= (~rhs)(i,j);
+            v_[i+j*MM] -= (*rhs)(i,j);
          }
       }
    }
@@ -6118,41 +6851,44 @@ inline auto HybridMatrix<Type,M,N,true>::subAssign( const DenseMatrix<MT,SO>& rh
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N >     // Number of columns
-template< typename MT    // Type of the right-hand side dense matrix
-        , bool SO >      // Storage order of the right-hand side dense matrix
-inline auto HybridMatrix<Type,M,N,true>::subAssign( const DenseMatrix<MT,SO>& rhs )
+template< typename Type     // Data type of the matrix
+        , size_t M          // Number of rows
+        , size_t N          // Number of columns
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+template< typename MT       // Type of the right-hand side dense matrix
+        , bool SO >         // Storage order of the right-hand side dense matrix
+inline auto HybridMatrix<Type,M,N,true,AF,PF,Tag>::subAssign( const DenseMatrix<MT,SO>& rhs )
    -> EnableIf_t< VectorizedSubAssign_v<MT> >
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
    BLAZE_CONSTRAINT_MUST_NOT_BE_DIAGONAL_MATRIX_TYPE( MT );
 
-   BLAZE_INTERNAL_ASSERT( (~rhs).rows() == m_ && (~rhs).columns() == n_, "Invalid matrix size" );
+   BLAZE_INTERNAL_ASSERT( (*rhs).rows() == m_ && (*rhs).columns() == n_, "Invalid matrix size" );
 
-   constexpr bool remainder( !usePadding || !IsPadded_v<MT> );
+   constexpr bool remainder( PF == unpadded || !IsPadded_v<MT> );
 
    for( size_t j=0UL; j<n_; ++j )
    {
       const size_t ibegin( ( IsLower_v<MT> )
-                           ?( ( IsStrictlyLower_v<MT> ? j+1UL : j ) & size_t(-SIMDSIZE) )
+                           ?( prevMultiple( ( IsStrictlyLower_v<MT> ? j+1UL : j ), SIMDSIZE ) )
                            :( 0UL ) );
       const size_t iend  ( ( IsUpper_v<MT> )
                            ?( IsStrictlyUpper_v<MT> ? j : j+1UL )
                            :( m_ ) );
       BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
 
-      const size_t ipos( ( remainder )?( iend & size_t(-SIMDSIZE) ):( iend ) );
-      BLAZE_INTERNAL_ASSERT( !remainder || ( iend - ( iend % (SIMDSIZE) ) ) == ipos, "Invalid end calculation" );
+      const size_t ipos( remainder ? prevMultiple( iend, SIMDSIZE ) : iend );
+      BLAZE_INTERNAL_ASSERT( ipos <= iend, "Invalid end calculation" );
 
       size_t i( ibegin );
 
       for( ; i<ipos; i+=SIMDSIZE ) {
-         store( i, j, load(i,j) - (~rhs).load(i,j) );
+         store( i, j, load(i,j) - (*rhs).load(i,j) );
       }
       for( ; remainder && i<iend; ++i ) {
-         v_[i+j*MM] -= (~rhs)(i,j);
+         v_[i+j*MM] -= (*rhs)(i,j);
       }
    }
 }
@@ -6172,16 +6908,19 @@ inline auto HybridMatrix<Type,M,N,true>::subAssign( const DenseMatrix<MT,SO>& rh
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N >     // Number of columns
-template< typename MT >  // Type of the right-hand side sparse matrix
-inline void HybridMatrix<Type,M,N,true>::subAssign( const SparseMatrix<MT,true>& rhs )
+template< typename Type     // Data type of the matrix
+        , size_t M          // Number of rows
+        , size_t N          // Number of columns
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+template< typename MT >     // Type of the right-hand side sparse matrix
+inline void HybridMatrix<Type,M,N,true,AF,PF,Tag>::subAssign( const SparseMatrix<MT,true>& rhs )
 {
-   BLAZE_INTERNAL_ASSERT( (~rhs).rows() == m_ && (~rhs).columns() == n_, "Invalid matrix size" );
+   BLAZE_INTERNAL_ASSERT( (*rhs).rows() == m_ && (*rhs).columns() == n_, "Invalid matrix size" );
 
    for( size_t j=0UL; j<n_; ++j )
-      for( ConstIterator_t<MT> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
+      for( auto element=(*rhs).begin(j); element!=(*rhs).end(j); ++element )
          v_[element->index()+j*MM] -= element->value();
 }
 /*! \endcond */
@@ -6200,18 +6939,21 @@ inline void HybridMatrix<Type,M,N,true>::subAssign( const SparseMatrix<MT,true>&
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N >     // Number of columns
-template< typename MT >  // Type of the right-hand side sparse matrix
-inline void HybridMatrix<Type,M,N,true>::subAssign( const SparseMatrix<MT,false>& rhs )
+template< typename Type     // Data type of the matrix
+        , size_t M          // Number of rows
+        , size_t N          // Number of columns
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+template< typename MT >     // Type of the right-hand side sparse matrix
+inline void HybridMatrix<Type,M,N,true,AF,PF,Tag>::subAssign( const SparseMatrix<MT,false>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
 
-   BLAZE_INTERNAL_ASSERT( (~rhs).rows() == m_ && (~rhs).columns() == n_, "Invalid matrix size" );
+   BLAZE_INTERNAL_ASSERT( (*rhs).rows() == m_ && (*rhs).columns() == n_, "Invalid matrix size" );
 
    for( size_t i=0UL; i<m_; ++i )
-      for( ConstIterator_t<MT> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
+      for( auto element=(*rhs).begin(i); element!=(*rhs).end(i); ++element )
          v_[i+element->index()*MM] -= element->value();
 }
 /*! \endcond */
@@ -6230,19 +6972,22 @@ inline void HybridMatrix<Type,M,N,true>::subAssign( const SparseMatrix<MT,false>
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N >     // Number of columns
-template< typename MT    // Type of the right-hand side dense matrix
-        , bool SO >      // Storage order of the right-hand side dense matrix
-inline auto HybridMatrix<Type,M,N,true>::schurAssign( const DenseMatrix<MT,SO>& rhs )
+template< typename Type     // Data type of the matrix
+        , size_t M          // Number of rows
+        , size_t N          // Number of columns
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+template< typename MT       // Type of the right-hand side dense matrix
+        , bool SO >         // Storage order of the right-hand side dense matrix
+inline auto HybridMatrix<Type,M,N,true,AF,PF,Tag>::schurAssign( const DenseMatrix<MT,SO>& rhs )
    -> DisableIf_t< VectorizedSchurAssign_v<MT> >
 {
-   BLAZE_INTERNAL_ASSERT( (~rhs).rows() == m_ && (~rhs).columns() == n_, "Invalid matrix size" );
+   BLAZE_INTERNAL_ASSERT( (*rhs).rows() == m_ && (*rhs).columns() == n_, "Invalid matrix size" );
 
    for( size_t j=0UL; j<n_; ++j ) {
       for( size_t i=0UL; i<m_; ++i ) {
-         v_[i+j*MM] *= (~rhs)(i,j);
+         v_[i+j*MM] *= (*rhs)(i,j);
       }
    }
 }
@@ -6262,32 +7007,35 @@ inline auto HybridMatrix<Type,M,N,true>::schurAssign( const DenseMatrix<MT,SO>& 
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N >     // Number of columns
-template< typename MT    // Type of the right-hand side dense matrix
-        , bool SO >      // Storage order of the right-hand side dense matrix
-inline auto HybridMatrix<Type,M,N,true>::schurAssign( const DenseMatrix<MT,SO>& rhs )
+template< typename Type     // Data type of the matrix
+        , size_t M          // Number of rows
+        , size_t N          // Number of columns
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+template< typename MT       // Type of the right-hand side dense matrix
+        , bool SO >         // Storage order of the right-hand side dense matrix
+inline auto HybridMatrix<Type,M,N,true,AF,PF,Tag>::schurAssign( const DenseMatrix<MT,SO>& rhs )
    -> EnableIf_t< VectorizedSchurAssign_v<MT> >
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
-   BLAZE_INTERNAL_ASSERT( (~rhs).rows() == m_ && (~rhs).columns() == n_, "Invalid matrix size" );
+   BLAZE_INTERNAL_ASSERT( (*rhs).rows() == m_ && (*rhs).columns() == n_, "Invalid matrix size" );
 
-   constexpr bool remainder( !usePadding || !IsPadded_v<MT> );
+   constexpr bool remainder( PF == unpadded || !IsPadded_v<MT> );
 
    for( size_t j=0UL; j<n_; ++j )
    {
-      const size_t ipos( ( remainder )?( m_ & size_t(-SIMDSIZE) ):( m_ ) );
-      BLAZE_INTERNAL_ASSERT( !remainder || ( m_ - ( m_ % (SIMDSIZE) ) ) == ipos, "Invalid end calculation" );
+      const size_t ipos( remainder ? prevMultiple( m_, SIMDSIZE ) : m_ );
+      BLAZE_INTERNAL_ASSERT( ipos <= m_, "Invalid end calculation" );
 
       size_t i( 0UL );
 
       for( ; i<ipos; i+=SIMDSIZE ) {
-         store( i, j, load(i,j) * (~rhs).load(i,j) );
+         store( i, j, load(i,j) * (*rhs).load(i,j) );
       }
       for( ; remainder && i<m_; ++i ) {
-         v_[i+j*MM] *= (~rhs)(i,j);
+         v_[i+j*MM] *= (*rhs)(i,j);
       }
    }
 }
@@ -6307,20 +7055,23 @@ inline auto HybridMatrix<Type,M,N,true>::schurAssign( const DenseMatrix<MT,SO>& 
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N >     // Number of columns
-template< typename MT >  // Type of the right-hand side sparse matrix
-inline void HybridMatrix<Type,M,N,true>::schurAssign( const SparseMatrix<MT,true>& rhs )
+template< typename Type     // Data type of the matrix
+        , size_t M          // Number of rows
+        , size_t N          // Number of columns
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+template< typename MT >     // Type of the right-hand side sparse matrix
+inline void HybridMatrix<Type,M,N,true,AF,PF,Tag>::schurAssign( const SparseMatrix<MT,true>& rhs )
 {
-   BLAZE_INTERNAL_ASSERT( (~rhs).rows() == m_ && (~rhs).columns() == n_, "Invalid matrix size" );
+   BLAZE_INTERNAL_ASSERT( (*rhs).rows() == m_ && (*rhs).columns() == n_, "Invalid matrix size" );
 
    const HybridMatrix tmp( serial( *this ) );
 
    reset();
 
    for( size_t j=0UL; j<n_; ++j )
-      for( ConstIterator_t<MT> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
+      for( auto element=(*rhs).begin(j); element!=(*rhs).end(j); ++element )
          v_[element->index()+j*MM] = tmp.v_[element->index()+j*MM] * element->value();
 }
 /*! \endcond */
@@ -6339,22 +7090,25 @@ inline void HybridMatrix<Type,M,N,true>::schurAssign( const SparseMatrix<MT,true
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N >     // Number of columns
-template< typename MT >  // Type of the right-hand side sparse matrix
-inline void HybridMatrix<Type,M,N,true>::schurAssign( const SparseMatrix<MT,false>& rhs )
+template< typename Type     // Data type of the matrix
+        , size_t M          // Number of rows
+        , size_t N          // Number of columns
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+template< typename MT >     // Type of the right-hand side sparse matrix
+inline void HybridMatrix<Type,M,N,true,AF,PF,Tag>::schurAssign( const SparseMatrix<MT,false>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
 
-   BLAZE_INTERNAL_ASSERT( (~rhs).rows() == m_ && (~rhs).columns() == n_, "Invalid matrix size" );
+   BLAZE_INTERNAL_ASSERT( (*rhs).rows() == m_ && (*rhs).columns() == n_, "Invalid matrix size" );
 
    const HybridMatrix tmp( serial( *this ) );
 
    reset();
 
    for( size_t i=0UL; i<m_; ++i )
-      for( ConstIterator_t<MT> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
+      for( auto element=(*rhs).begin(i); element!=(*rhs).end(i); ++element )
          v_[i+element->index()*MM] = tmp.v_[i+element->index()*MM] * element->value();
 }
 /*! \endcond */
@@ -6369,91 +7123,22 @@ inline void HybridMatrix<Type,M,N,true>::schurAssign( const SparseMatrix<MT,fals
 
 //=================================================================================================
 //
-//  STATICMATRIX OPERATORS
+//  HYBRIDMATRIX OPERATORS
 //
 //=================================================================================================
 
 //*************************************************************************************************
 /*!\name HybridMatrix operators */
 //@{
-template< typename Type, size_t M, size_t N, bool SO >
-inline void reset( HybridMatrix<Type,M,N,SO>& m );
+template< RelaxationFlag RF, typename Type, size_t M, size_t N, bool SO, AlignmentFlag AF, PaddingFlag PF, typename Tag >
+bool isDefault( const HybridMatrix<Type,M,N,SO,AF,PF,Tag>& m );
 
-template< typename Type, size_t M, size_t N, bool SO >
-inline void reset( HybridMatrix<Type,M,N,SO>& m, size_t i );
+template< typename Type, size_t M, size_t N, bool SO, AlignmentFlag AF, PaddingFlag PF, typename Tag >
+bool isIntact( const HybridMatrix<Type,M,N,SO,AF,PF,Tag>& m ) noexcept;
 
-template< typename Type, size_t M, size_t N, bool SO >
-inline void clear( HybridMatrix<Type,M,N,SO>& m );
-
-template< bool RF, typename Type, size_t M, size_t N, bool SO >
-inline bool isDefault( const HybridMatrix<Type,M,N,SO>& m );
-
-template< typename Type, size_t M, size_t N, bool SO >
-inline bool isIntact( const HybridMatrix<Type,M,N,SO>& m ) noexcept;
-
-template< typename Type, size_t M, size_t N, bool SO >
-inline void swap( HybridMatrix<Type,M,N,SO>& a, HybridMatrix<Type,M,N,SO>& b ) noexcept;
+template< typename Type, size_t M, size_t N, bool SO, AlignmentFlag AF, PaddingFlag PF, typename Tag >
+void swap( HybridMatrix<Type,M,N,SO,AF,PF,Tag>& a, HybridMatrix<Type,M,N,SO,AF,PF,Tag>& b ) noexcept;
 //@}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Resetting the given hybrid matrix.
-// \ingroup hybrid_matrix
-//
-// \param m The matrix to be resetted.
-// \return void
-*/
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N       // Number of columns
-        , bool SO >      // Storage order
-inline void reset( HybridMatrix<Type,M,N,SO>& m )
-{
-   m.reset();
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Reset the specified row/column of the given hybrid matrix.
-// \ingroup hybrid_matrix
-//
-// \param m The matrix to be resetted.
-// \param i The index of the row/column to be resetted.
-// \return void
-//
-// This function resets the values in the specified row/column of the given hybrid matrix to
-// their default value. In case the given matrix is a \a rowMajor matrix the function resets the
-// values in row \a i, if it is a \a columnMajor matrix the function resets the values in column
-// \a i. Note that the capacity of the row/column remains unchanged.
-*/
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N       // Number of columns
-        , bool SO >      // Storage order
-inline void reset( HybridMatrix<Type,M,N,SO>& m, size_t i )
-{
-   m.reset( i );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Clearing the given hybrid matrix.
-// \ingroup hybrid_matrix
-//
-// \param m The matrix to be cleared.
-// \return void
-*/
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N       // Number of columns
-        , bool SO >      // Storage order
-inline void clear( HybridMatrix<Type,M,N,SO>& m )
-{
-   m.clear();
-}
 //*************************************************************************************************
 
 
@@ -6482,12 +7167,15 @@ inline void clear( HybridMatrix<Type,M,N,SO>& m )
    if( isDefault<relaxed>( A ) ) { ... }
    \endcode
 */
-template< bool RF        // Relaxation flag
-        , typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N       // Number of columns
-        , bool SO >      // Storage order
-inline bool isDefault( const HybridMatrix<Type,M,N,SO>& m )
+template< RelaxationFlag RF  // Relaxation flag
+        , typename Type      // Data type of the matrix
+        , size_t M           // Number of rows
+        , size_t N           // Number of columns
+        , bool SO            // Storage order
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+inline bool isDefault( const HybridMatrix<Type,M,N,SO,AF,PF,Tag>& m )
 {
    return ( m.rows() == 0UL && m.columns() == 0UL );
 }
@@ -6512,11 +7200,14 @@ inline bool isDefault( const HybridMatrix<Type,M,N,SO>& m )
    if( isIntact( A ) ) { ... }
    \endcode
 */
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N       // Number of columns
-        , bool SO >      // Storage order
-inline bool isIntact( const HybridMatrix<Type,M,N,SO>& m ) noexcept
+template< typename Type     // Data type of the matrix
+        , size_t M          // Number of rows
+        , size_t N          // Number of columns
+        , bool SO           // Storage order
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+inline bool isIntact( const HybridMatrix<Type,M,N,SO,AF,PF,Tag>& m ) noexcept
 {
    return m.isIntact();
 }
@@ -6531,11 +7222,14 @@ inline bool isIntact( const HybridMatrix<Type,M,N,SO>& m ) noexcept
 // \param b The second matrix to be swapped.
 // \return void
 */
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N       // Number of columns
-        , bool SO >      // Storage order
-inline void swap( HybridMatrix<Type,M,N,SO>& a, HybridMatrix<Type,M,N,SO>& b ) noexcept
+template< typename Type     // Data type of the matrix
+        , size_t M          // Number of rows
+        , size_t N          // Number of columns
+        , bool SO           // Storage order
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
+        , typename Tag >    // Type tag
+inline void swap( HybridMatrix<Type,M,N,SO,AF,PF,Tag>& a, HybridMatrix<Type,M,N,SO,AF,PF,Tag>& b ) noexcept
 {
    a.swap( b );
 }
@@ -6552,14 +7246,14 @@ inline void swap( HybridMatrix<Type,M,N,SO>& a, HybridMatrix<Type,M,N,SO>& b ) n
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T, size_t M, size_t N, bool SO >
-struct MaxSize< HybridMatrix<T,M,N,SO>, 0UL >
-   : public PtrdiffT<M>
+template< typename T, size_t M, size_t N, bool SO, AlignmentFlag AF, PaddingFlag PF, typename Tag >
+struct MaxSize< HybridMatrix<T,M,N,SO,AF,PF,Tag>, 0UL >
+   : public Ptrdiff_t< static_cast<ptrdiff_t>(M) >
 {};
 
-template< typename T, size_t M, size_t N, bool SO >
-struct MaxSize< HybridMatrix<T,M,N,SO>, 1UL >
-   : public PtrdiffT<N>
+template< typename T, size_t M, size_t N, bool SO, AlignmentFlag AF, PaddingFlag PF, typename Tag >
+struct MaxSize< HybridMatrix<T,M,N,SO,AF,PF,Tag>, 1UL >
+   : public Ptrdiff_t< static_cast<ptrdiff_t>(N) >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -6575,8 +7269,8 @@ struct MaxSize< HybridMatrix<T,M,N,SO>, 1UL >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T, size_t M, size_t N, bool SO >
-struct HasConstDataAccess< HybridMatrix<T,M,N,SO> >
+template< typename T, size_t M, size_t N, bool SO, AlignmentFlag AF, PaddingFlag PF, typename Tag >
+struct HasConstDataAccess< HybridMatrix<T,M,N,SO,AF,PF,Tag> >
    : public TrueType
 {};
 /*! \endcond */
@@ -6593,8 +7287,8 @@ struct HasConstDataAccess< HybridMatrix<T,M,N,SO> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T, size_t M, size_t N, bool SO >
-struct HasMutableDataAccess< HybridMatrix<T,M,N,SO> >
+template< typename T, size_t M, size_t N, bool SO, AlignmentFlag AF, PaddingFlag PF, typename Tag >
+struct HasMutableDataAccess< HybridMatrix<T,M,N,SO,AF,PF,Tag> >
    : public TrueType
 {};
 /*! \endcond */
@@ -6611,9 +7305,9 @@ struct HasMutableDataAccess< HybridMatrix<T,M,N,SO> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T, size_t M, size_t N, bool SO >
-struct IsAligned< HybridMatrix<T,M,N,SO> >
-   : public BoolConstant< HybridMatrix<T,M,N,SO>::isAligned() >
+template< typename T, size_t M, size_t N, bool SO, AlignmentFlag AF, PaddingFlag PF, typename Tag >
+struct IsAligned< HybridMatrix<T,M,N,SO,AF,PF,Tag> >
+   : public BoolConstant< AF == aligned >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -6629,8 +7323,8 @@ struct IsAligned< HybridMatrix<T,M,N,SO> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T, size_t M, size_t N, bool SO >
-struct IsContiguous< HybridMatrix<T,M,N,SO> >
+template< typename T, size_t M, size_t N, bool SO, AlignmentFlag AF, PaddingFlag PF, typename Tag >
+struct IsContiguous< HybridMatrix<T,M,N,SO,AF,PF,Tag> >
    : public TrueType
 {};
 /*! \endcond */
@@ -6647,27 +7341,9 @@ struct IsContiguous< HybridMatrix<T,M,N,SO> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T, size_t M, size_t N, bool SO >
-struct IsPadded< HybridMatrix<T,M,N,SO> >
-   : public BoolConstant<usePadding>
-{};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  ISRESIZABLE SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename T, size_t M, size_t N, bool SO >
-struct IsResizable< HybridMatrix<T,M,N,SO> >
-   : public TrueType
+template< typename T, size_t M, size_t N, bool SO, AlignmentFlag AF, PaddingFlag PF, typename Tag >
+struct IsPadded< HybridMatrix<T,M,N,SO,AF,PF,Tag> >
+   : public BoolConstant< PF == padded >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -6691,17 +7367,11 @@ struct AddTraitEval2< T1, T2
                                   ( Size_v<T2,0UL> == DefaultSize_v ) &&
                                   ( Size_v<T1,1UL> == DefaultSize_v ) &&
                                   ( Size_v<T2,1UL> == DefaultSize_v ) &&
-                                  ( MaxSize_v<T1,0UL> != DefaultSize_v ||
-                                    MaxSize_v<T2,0UL> != DefaultSize_v ) &&
-                                  ( MaxSize_v<T1,1UL> != DefaultSize_v ||
-                                    MaxSize_v<T2,1UL> != DefaultSize_v ) > >
+                                  ( MaxSize_v<T1,0UL> != DefaultMaxSize_v ||
+                                    MaxSize_v<T2,0UL> != DefaultMaxSize_v ) &&
+                                  ( MaxSize_v<T1,1UL> != DefaultMaxSize_v ||
+                                    MaxSize_v<T2,1UL> != DefaultMaxSize_v ) > >
 {
-   using ET1 = ElementType_t<T1>;
-   using ET2 = ElementType_t<T2>;
-
-   static constexpr size_t M = min( size_t( MaxSize_v<T1,0UL> ), size_t( MaxSize_v<T2,0UL> ) );
-   static constexpr size_t N = min( size_t( MaxSize_v<T1,1UL> ), size_t( MaxSize_v<T2,1UL> ) );
-
    static constexpr bool SO1 = StorageOrder_v<T1>;
    static constexpr bool SO2 = StorageOrder_v<T2>;
 
@@ -6715,7 +7385,13 @@ struct AddTraitEval2< T1, T2
                                     ? SO1
                                     : SO2 ) );
 
-   using Type = HybridMatrix< AddTrait_t<ET1,ET2>, M, N, SO >;
+   using Type = HybridMatrix< AddTrait_t< ElementType_t<T1>, ElementType_t<T2> >
+                            , min( size_t( MaxSize_v<T1,0UL> ), size_t( MaxSize_v<T2,0UL> ) )
+                            , min( size_t( MaxSize_v<T1,1UL> ), size_t( MaxSize_v<T2,1UL> ) )
+                            , SO
+                            , defaultAlignmentFlag
+                            , defaultPaddingFlag
+                            , AddTrait_t< TagType_t<T1>, TagType_t<T2> > >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -6744,12 +7420,6 @@ struct SubTraitEval2< T1, T2
                                   ( MaxSize_v<T1,1UL> != DefaultMaxSize_v ||
                                     MaxSize_v<T2,1UL> != DefaultMaxSize_v ) > >
 {
-   using ET1 = ElementType_t<T1>;
-   using ET2 = ElementType_t<T2>;
-
-   static constexpr size_t M = min( size_t( MaxSize_v<T1,0UL> ), size_t( MaxSize_v<T2,0UL> ) );
-   static constexpr size_t N = min( size_t( MaxSize_v<T1,1UL> ), size_t( MaxSize_v<T2,1UL> ) );
-
    static constexpr bool SO1 = StorageOrder_v<T1>;
    static constexpr bool SO2 = StorageOrder_v<T2>;
 
@@ -6763,7 +7433,13 @@ struct SubTraitEval2< T1, T2
                                     ? SO1
                                     : SO2 ) );
 
-   using Type = HybridMatrix< SubTrait_t<ET1,ET2>, M, N, SO >;
+   using Type = HybridMatrix< SubTrait_t< ElementType_t<T1>, ElementType_t<T2> >
+                            , min( size_t( MaxSize_v<T1,0UL> ), size_t( MaxSize_v<T2,0UL> ) )
+                            , min( size_t( MaxSize_v<T1,1UL> ), size_t( MaxSize_v<T2,1UL> ) )
+                            , SO
+                            , defaultAlignmentFlag
+                            , defaultPaddingFlag
+                            , SubTrait_t< TagType_t<T1>, TagType_t<T2> > >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -6792,12 +7468,6 @@ struct SchurTraitEval2< T1, T2
                                     ( MaxSize_v<T1,1UL> != DefaultMaxSize_v ||
                                       MaxSize_v<T2,1UL> != DefaultMaxSize_v ) > >
 {
-   using ET1 = ElementType_t<T1>;
-   using ET2 = ElementType_t<T2>;
-
-   static constexpr size_t M = min( size_t( MaxSize_v<T1,0UL> ), size_t( MaxSize_v<T2,0UL> ) );
-   static constexpr size_t N = min( size_t( MaxSize_v<T1,1UL> ), size_t( MaxSize_v<T2,1UL> ) );
-
    static constexpr bool SO1 = StorageOrder_v<T1>;
    static constexpr bool SO2 = StorageOrder_v<T2>;
 
@@ -6807,7 +7477,13 @@ struct SchurTraitEval2< T1, T2
                                     : SO1 )
                                 : SO1 && SO2 );
 
-   using Type = HybridMatrix< MultTrait_t<ET1,ET2>, M, N, SO >;
+   using Type = HybridMatrix< MultTrait_t< ElementType_t<T1>, ElementType_t<T2> >
+                            , min( size_t( MaxSize_v<T1,0UL> ), size_t( MaxSize_v<T2,0UL> ) )
+                            , min( size_t( MaxSize_v<T1,1UL> ), size_t( MaxSize_v<T2,1UL> ) )
+                            , SO
+                            , defaultAlignmentFlag
+                            , defaultPaddingFlag
+                            , MultTrait_t< TagType_t<T1>, TagType_t<T2> > >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -6826,35 +7502,37 @@ struct SchurTraitEval2< T1, T2
 template< typename T1, typename T2 >
 struct MultTraitEval2< T1, T2
                      , EnableIf_t< IsMatrix_v<T1> &&
-                                   IsNumeric_v<T2> &&
+                                   IsScalar_v<T2> &&
                                    ( Size_v<T1,0UL> == DefaultSize_v ) &&
                                    ( Size_v<T1,1UL> == DefaultSize_v ) &&
                                    ( MaxSize_v<T1,0UL> != DefaultMaxSize_v ) &&
                                    ( MaxSize_v<T1,1UL> != DefaultMaxSize_v ) > >
 {
-   using ET1 = ElementType_t<T1>;
-
-   static constexpr size_t M = MaxSize_v<T1,0UL>;
-   static constexpr size_t N = MaxSize_v<T1,1UL>;
-
-   using Type = HybridMatrix< MultTrait_t<ET1,T2>, M, N, StorageOrder_v<T1> >;
+   using Type = HybridMatrix< MultTrait_t< ElementType_t<T1>, T2 >
+                            , MaxSize_v<T1,0UL>
+                            , MaxSize_v<T1,1UL>
+                            , StorageOrder_v<T1>
+                            , defaultAlignmentFlag
+                            , defaultPaddingFlag
+                            , MultTrait_t< TagType_t<T1>, T2 > >;
 };
 
 template< typename T1, typename T2 >
 struct MultTraitEval2< T1, T2
-                     , EnableIf_t< IsNumeric_v<T1> &&
+                     , EnableIf_t< IsScalar_v<T1> &&
                                    IsMatrix_v<T2> &&
                                    ( Size_v<T2,0UL> == DefaultSize_v ) &&
                                    ( Size_v<T2,1UL> == DefaultSize_v ) &&
                                    ( MaxSize_v<T2,0UL> != DefaultMaxSize_v ) &&
                                    ( MaxSize_v<T2,1UL> != DefaultMaxSize_v ) > >
 {
-   using ET2 = ElementType_t<T2>;
-
-   static constexpr size_t M = MaxSize_v<T2,0UL>;
-   static constexpr size_t N = MaxSize_v<T2,1UL>;
-
-   using Type = HybridMatrix< MultTrait_t<T1,ET2>, M, N, StorageOrder_v<T2> >;
+   using Type = HybridMatrix< MultTrait_t< T1, ElementType_t<T2> >
+                            , MaxSize_v<T2,0UL>
+                            , MaxSize_v<T2,1UL>
+                            , StorageOrder_v<T2>
+                            , defaultAlignmentFlag
+                            , defaultPaddingFlag
+                            , MultTrait_t< T1, TagType_t<T2> > >;
 };
 
 template< typename T1, typename T2 >
@@ -6866,13 +7544,13 @@ struct MultTraitEval2< T1, T2
                                    ( MaxSize_v<T1,0UL> != DefaultMaxSize_v ) &&
                                    ( MaxSize_v<T2,0UL> != DefaultMaxSize_v ) > >
 {
-   using ET1 = ElementType_t<T1>;
-   using ET2 = ElementType_t<T2>;
-
-   static constexpr size_t M = MaxSize_v<T1,0UL>;
-   static constexpr size_t N = MaxSize_v<T2,0UL>;
-
-   using Type = HybridMatrix< MultTrait_t<ET1,ET2>, M, N, false >;
+   using Type = HybridMatrix< MultTrait_t< ElementType_t<T1>, ElementType_t<T2> >
+                            , MaxSize_v<T1,0UL>
+                            , MaxSize_v<T2,0UL>
+                            , false
+                            , defaultAlignmentFlag
+                            , defaultPaddingFlag
+                            , MultTrait_t< TagType_t<T1>, TagType_t<T2> > >;
 };
 
 template< typename T1, typename T2 >
@@ -6888,13 +7566,51 @@ struct MultTraitEval2< T1, T2
                                    ( MaxSize_v<T2,1UL> != DefaultMaxSize_v ||
                                      ( IsSquare_v<T2> && MaxSize_v<T1,1UL> != DefaultMaxSize_v ) ) > >
 {
-   using ET1 = ElementType_t<T1>;
-   using ET2 = ElementType_t<T2>;
+   using MultType = MultTrait_t< ElementType_t<T1>, ElementType_t<T2> >;
+   using MultTag  = MultTrait_t< TagType_t<T1>, TagType_t<T2> >;
 
-   static constexpr size_t M = ( MaxSize_v<T1,0UL> != DefaultMaxSize_v ? MaxSize_v<T1,0UL> : MaxSize_v<T2,0UL> );
-   static constexpr size_t N = ( MaxSize_v<T2,1UL> != DefaultMaxSize_v ? MaxSize_v<T2,1UL> : MaxSize_v<T1,1UL> );
+   using Type = HybridMatrix< AddTrait_t<MultType,MultType>
+                            , ( MaxSize_v<T1,0UL> != DefaultMaxSize_v ? MaxSize_v<T1,0UL> : MaxSize_v<T2,0UL> )
+                            , ( MaxSize_v<T2,1UL> != DefaultMaxSize_v ? MaxSize_v<T2,1UL> : MaxSize_v<T1,1UL> )
+                            , ( IsSparseMatrix_v<T1> ? StorageOrder_v<T2> : StorageOrder_v<T1> )
+                            , defaultAlignmentFlag
+                            , defaultPaddingFlag
+                            , AddTrait_t<MultTag,MultTag> >;
+};
+/*! \endcond */
+//*************************************************************************************************
 
-   using Type = HybridMatrix< MultTrait_t<ET1,ET2>, M, N, StorageOrder_v<T1> >;
+
+
+
+//=================================================================================================
+//
+//  KRONTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename T1, typename T2 >
+struct KronTraitEval2< T1, T2
+                     , EnableIf_t< IsDenseMatrix_v<T1> &&
+                                   IsDenseMatrix_v<T2> &&
+                                   ( ( Size_v<T1,0UL> == DefaultSize_v ) ||
+                                     ( Size_v<T2,0UL> == DefaultSize_v ) ||
+                                     ( Size_v<T1,1UL> == DefaultSize_v ) ||
+                                     ( Size_v<T2,1UL> == DefaultSize_v ) ) &&
+                                   ( MaxSize_v<T1,0UL> != DefaultMaxSize_v ) &&
+                                   ( MaxSize_v<T2,0UL> != DefaultMaxSize_v ) &&
+                                   ( MaxSize_v<T1,1UL> != DefaultMaxSize_v ) &&
+                                   ( MaxSize_v<T2,1UL> != DefaultMaxSize_v ) > >
+{
+   using Type = HybridMatrix< MultTrait_t< ElementType_t<T1>, ElementType_t<T2> >
+                            , MaxSize_v<T1,0UL> * MaxSize_v<T2,0UL>
+                            , MaxSize_v<T1,1UL> * MaxSize_v<T2,1UL>
+                            , StorageOrder_v<T2>
+                            , defaultAlignmentFlag
+                            , defaultPaddingFlag
+                            , MultTrait_t< TagType_t<T1>, TagType_t<T2> > >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -6913,18 +7629,19 @@ struct MultTraitEval2< T1, T2
 template< typename T1, typename T2 >
 struct DivTraitEval2< T1, T2
                     , EnableIf_t< IsMatrix_v<T1> &&
-                                  IsNumeric_v<T2> &&
+                                  IsScalar_v<T2> &&
                                   ( Size_v<T1,0UL> == DefaultSize_v ) &&
                                   ( Size_v<T1,1UL> == DefaultSize_v ) &&
                                   ( MaxSize_v<T1,0UL> != DefaultMaxSize_v ) &&
                                   ( MaxSize_v<T1,1UL> != DefaultMaxSize_v ) > >
 {
-   using ET1 = ElementType_t<T1>;
-
-   static constexpr size_t M = MaxSize_v<T1,0UL>;
-   static constexpr size_t N = MaxSize_v<T1,1UL>;
-
-   using Type = HybridMatrix< DivTrait_t<ET1,T2>, M, N, StorageOrder_v<T1> >;
+   using Type = HybridMatrix< DivTrait_t< ElementType_t<T1>, T2 >
+                            , MaxSize_v<T1,0UL>
+                            , MaxSize_v<T1,1UL>
+                            , StorageOrder_v<T1>
+                            , defaultAlignmentFlag
+                            , defaultPaddingFlag
+                            , DivTrait_t< TagType_t<T1>, T2 > >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -6948,9 +7665,15 @@ struct UnaryMapTraitEval2< T, OP
                                        MaxSize_v<T,0UL> != DefaultMaxSize_v &&
                                        MaxSize_v<T,1UL> != DefaultMaxSize_v > >
 {
-   using ET = ElementType_t<T>;
+   using ElementType = decltype( std::declval<OP>()( std::declval< ElementType_t<T> >() ) );
 
-   using Type = HybridMatrix< MapTrait_t<ET,OP>, MaxSize_v<T,0UL>, MaxSize_v<T,1UL>, StorageOrder_v<T> >;
+   using Type = HybridMatrix< EvaluateTrait_t<ElementType>
+                            , MaxSize_v<T,0UL>
+                            , MaxSize_v<T,1UL>
+                            , StorageOrder_v<T>
+                            , defaultAlignmentFlag
+                            , defaultPaddingFlag
+                            , MapTrait_t< TagType_t<T>, OP > >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -6960,22 +7683,40 @@ struct UnaryMapTraitEval2< T, OP
 /*! \cond BLAZE_INTERNAL */
 template< typename T1, typename T2, typename OP >
 struct BinaryMapTraitEval2< T1, T2, OP
+                          , EnableIf_t< IsColumnVector_v<T1> &&
+                                        IsRowVector_v<T2> &&
+                                        ( ( Size_v<T1,0UL> == DefaultSize_v ) ||
+                                          ( Size_v<T2,0UL> == DefaultSize_v ) ) &&
+                                        ( MaxSize_v<T1,0UL> != DefaultMaxSize_v ) &&
+                                        ( MaxSize_v<T2,0UL> != DefaultMaxSize_v ) > >
+{
+   using ElementType = decltype( std::declval<OP>()( std::declval< ElementType_t<T1> >()
+                                                   , std::declval< ElementType_t<T2> >() ) );
+
+   using Type = HybridMatrix< EvaluateTrait_t<ElementType>
+                            , MaxSize_v<T1,0UL>
+                            , MaxSize_v<T2,0UL>
+                            , false
+                            , defaultAlignmentFlag
+                            , defaultPaddingFlag
+                            , MapTrait_t< TagType_t<T1>, TagType_t<T2>, OP > >;
+};
+
+template< typename T1, typename T2, typename OP >
+struct BinaryMapTraitEval2< T1, T2, OP
                           , EnableIf_t< IsMatrix_v<T1> &&
                                         IsMatrix_v<T2> &&
                                         ( Size_v<T1,0UL> == DefaultSize_v ) &&
                                         ( Size_v<T2,0UL> == DefaultSize_v ) &&
                                         ( Size_v<T1,1UL> == DefaultSize_v ) &&
                                         ( Size_v<T2,1UL> == DefaultSize_v ) &&
-                                        ( MaxSize_v<T1,0UL> != DefaultSize_v ||
-                                          MaxSize_v<T2,0UL> != DefaultSize_v ) &&
-                                        ( MaxSize_v<T1,1UL> != DefaultSize_v ||
-                                          MaxSize_v<T2,1UL> != DefaultSize_v ) > >
+                                        ( MaxSize_v<T1,0UL> != DefaultMaxSize_v ||
+                                          MaxSize_v<T2,0UL> != DefaultMaxSize_v ) &&
+                                        ( MaxSize_v<T1,1UL> != DefaultMaxSize_v ||
+                                          MaxSize_v<T2,1UL> != DefaultMaxSize_v ) > >
 {
-   using ET1 = ElementType_t<T1>;
-   using ET2 = ElementType_t<T2>;
-
-   static constexpr size_t M = min( size_t( MaxSize_v<T1,0UL> ), size_t( MaxSize_v<T2,0UL> ) );
-   static constexpr size_t N = min( size_t( MaxSize_v<T1,1UL> ), size_t( MaxSize_v<T2,1UL> ) );
+   using ElementType = decltype( std::declval<OP>()( std::declval< ElementType_t<T1> >()
+                                                   , std::declval< ElementType_t<T2> >() ) );
 
    static constexpr bool SO1 = StorageOrder_v<T1>;
    static constexpr bool SO2 = StorageOrder_v<T2>;
@@ -6990,7 +7731,123 @@ struct BinaryMapTraitEval2< T1, T2, OP
                                     ? SO1
                                     : SO2 ) );
 
-   using Type = HybridMatrix< MapTrait_t<ET1,ET2,OP>, M, N, SO >;
+   using Type = HybridMatrix< EvaluateTrait_t<ElementType>
+                            , min( size_t( MaxSize_v<T1,0UL> ), size_t( MaxSize_v<T2,0UL> ) )
+                            , min( size_t( MaxSize_v<T1,1UL> ), size_t( MaxSize_v<T2,1UL> ) )
+                            , SO
+                            , defaultAlignmentFlag
+                            , defaultPaddingFlag
+                            , MapTrait_t< TagType_t<T1>, TagType_t<T2>, OP > >;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  EXPANDTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename T, size_t E >
+struct ExpandTraitEval2< T, E
+                       , EnableIf_t< IsDenseVector_v<T> &&
+                                     ( E != inf ) &&
+                                     ( Size_v<T,0UL> == DefaultSize_v ) &&
+                                     ( MaxSize_v<T,0UL> != DefaultMaxSize_v ) > >
+{
+   using Type = HybridMatrix< ElementType_t<T>
+                            , ( IsColumnVector_v<T> ? MaxSize_v<T,0UL> : E )
+                            , ( IsColumnVector_v<T> ? E : MaxSize_v<T,0UL> )
+                            , ( IsColumnVector_v<T> ? columnMajor : rowMajor )
+                            , defaultAlignmentFlag
+                            , defaultPaddingFlag
+                            , TagType_t<T> >;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  REPEATTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename T, size_t R0, size_t R1 >
+struct RepeatTraitEval2< T, R0, R1, inf
+                       , EnableIf_t< IsDenseMatrix_v<T> &&
+                                     ( R0 != inf ) &&
+                                     ( R1 != inf ) &&
+                                     ( Size_v<T,0UL> == DefaultSize_v ||
+                                       Size_v<T,1UL> == DefaultSize_v ) &&
+                                     ( MaxSize_v<T,0UL> != DefaultMaxSize_v ) &&
+                                     ( MaxSize_v<T,1UL> != DefaultMaxSize_v ) > >
+{
+   using Type = HybridMatrix< ElementType_t<T>
+                            , R0*MaxSize_v<T,0UL>
+                            , R1*MaxSize_v<T,1UL>
+                            , StorageOrder_v<T>
+                            , defaultAlignmentFlag
+                            , defaultPaddingFlag
+                            , TagType_t<T> >;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  SOLVETRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename T1, typename T2 >
+struct SolveTraitEval2< T1, T2
+                      , EnableIf_t< IsDenseMatrix_v<T1> &&
+                                    IsDenseMatrix_v<T2> &&
+                                    ( ( ( Size_v<T1,0UL> == DefaultSize_v ) &&
+                                        ( Size_v<T1,1UL> == DefaultSize_v ) &&
+                                        ( Size_v<T2,0UL> == DefaultSize_v ) ) ||
+                                      ( Size_v<T2,1UL> == DefaultSize_v ) ) &&
+                                    ( ( MaxSize_v<T1,0UL> != DefaultMaxSize_v ) ||
+                                      ( MaxSize_v<T1,1UL> != DefaultMaxSize_v ) ||
+                                      ( MaxSize_v<T2,0UL> != DefaultMaxSize_v ) ) &&
+                                    ( MaxSize_v<T2,1UL> != DefaultMaxSize_v ) > >
+{
+   static constexpr size_t M = ( MaxSize_v<T1,0UL> != DefaultMaxSize_v
+                                 ?( MaxSize_v<T1,1UL> != DefaultMaxSize_v
+                                    ?( MaxSize_v<T2,0UL> != DefaultMaxSize_v
+                                       ? min( MaxSize_v<T1,0UL>, MaxSize_v<T1,1UL>, MaxSize_v<T2,0UL> )
+                                       : min( MaxSize_v<T1,0UL>, MaxSize_v<T1,1UL> ) )
+                                    :( MaxSize_v<T2,0UL> != DefaultMaxSize_v
+                                       ? min( MaxSize_v<T1,0UL>, MaxSize_v<T2,0UL> )
+                                       : MaxSize_v<T1,0UL> ) )
+                                 :( MaxSize_v<T1,1UL> != DefaultMaxSize_v
+                                    ?( MaxSize_v<T2,0UL> != DefaultMaxSize_v
+                                       ? min( MaxSize_v<T1,1UL>, MaxSize_v<T2,0UL> )
+                                       : MaxSize_v<T1,1UL> )
+                                    : MaxSize_v<T2,0UL> ) );
+
+   using Type = HybridMatrix< ElementType_t<T2>
+                            , M
+                            , MaxSize_v<T2,1UL>
+                            , StorageOrder_v<T2>
+                            , defaultAlignmentFlag
+                            , defaultPaddingFlag
+                            , TagType_t<T2> >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -7006,10 +7863,10 @@ struct BinaryMapTraitEval2< T1, T2, OP
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T1, size_t M, size_t N, bool SO, typename T2 >
-struct HighType< HybridMatrix<T1,M,N,SO>, HybridMatrix<T2,M,N,SO> >
+template< typename T1, size_t M, size_t N, bool SO, AlignmentFlag AF, PaddingFlag PF, typename Tag, typename T2 >
+struct HighType< HybridMatrix<T1,M,N,SO,AF,PF,Tag>, HybridMatrix<T2,M,N,SO,AF,PF,Tag> >
 {
-   using Type = HybridMatrix< typename HighType<T1,T2>::Type, M, N, SO >;
+   using Type = HybridMatrix< typename HighType<T1,T2>::Type, M, N, SO, AF, PF, Tag >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -7025,10 +7882,10 @@ struct HighType< HybridMatrix<T1,M,N,SO>, HybridMatrix<T2,M,N,SO> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T1, size_t M, size_t N, bool SO, typename T2 >
-struct LowType< HybridMatrix<T1,M,N,SO>, HybridMatrix<T2,M,N,SO> >
+template< typename T1, size_t M, size_t N, bool SO, AlignmentFlag AF, PaddingFlag PF, typename Tag, typename T2 >
+struct LowType< HybridMatrix<T1,M,N,SO,AF,PF,Tag>, HybridMatrix<T2,M,N,SO,AF,PF,Tag> >
 {
-   using Type = HybridMatrix< typename LowType<T1,T2>::Type, M, N, SO >;
+   using Type = HybridMatrix< typename LowType<T1,T2>::Type, M, N, SO, AF, PF, Tag >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -7052,10 +7909,13 @@ struct SubmatrixTraitEval2< MT, inf, inf, inf, inf
                                           ( MaxSize_v<MT,0UL> != DefaultMaxSize_v &&
                                             MaxSize_v<MT,1UL> != DefaultMaxSize_v ) ) > >
 {
-   static constexpr size_t M = max( Size_v<MT,0UL>, MaxSize_v<MT,0UL> );
-   static constexpr size_t N = max( Size_v<MT,1UL>, MaxSize_v<MT,1UL> );
-
-   using Type = HybridMatrix< RemoveConst_t< ElementType_t<MT> >, M, N, StorageOrder_v<MT> >;
+   using Type = HybridMatrix< RemoveConst_t< ElementType_t<MT> >
+                            , max( Size_v<MT,0UL>, MaxSize_v<MT,0UL> )
+                            , max( Size_v<MT,1UL>, MaxSize_v<MT,1UL> )
+                            , StorageOrder_v<MT>
+                            , defaultAlignmentFlag
+                            , defaultPaddingFlag
+                            , TagType_t<MT> >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -7078,7 +7938,13 @@ struct RowsTraitEval2< MT, M
                                    Size_v<MT,1UL> == DefaultSize_v &&
                                    MaxSize_v<MT,1UL> != DefaultMaxSize_v > >
 {
-   using Type = HybridMatrix< ElementType_t<MT>, M, MaxSize_v<MT,1UL>, false >;
+   using Type = HybridMatrix< RemoveConst_t< ElementType_t<MT> >
+                            , M
+                            , MaxSize_v<MT,1UL>
+                            , false
+                            , defaultAlignmentFlag
+                            , defaultPaddingFlag
+                            , TagType_t<MT> >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -7101,7 +7967,13 @@ struct ColumnsTraitEval2< MT, N
                                       Size_v<MT,0UL> == DefaultSize_v &&
                                       MaxSize_v<MT,0UL> != DefaultMaxSize_v > >
 {
-   using Type = HybridMatrix< ElementType_t<MT>, MaxSize_v<MT,0UL>, N, true >;
+   using Type = HybridMatrix< RemoveConst_t< ElementType_t<MT> >
+                            , MaxSize_v<MT,0UL>
+                            , N
+                            , true
+                            , defaultAlignmentFlag
+                            , defaultPaddingFlag
+                            , TagType_t<MT> >;
 };
 /*! \endcond */
 //*************************************************************************************************

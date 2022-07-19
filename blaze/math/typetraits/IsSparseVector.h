@@ -3,7 +3,7 @@
 //  \file blaze/math/typetraits/IsSparseVector.h
 //  \brief Header file for the IsSparseVector type trait
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -41,9 +41,8 @@
 //*************************************************************************************************
 
 #include <utility>
-#include <blaze/math/expressions/SparseVector.h>
-#include <blaze/util/FalseType.h>
-#include <blaze/util/TrueType.h>
+#include <blaze/math/expressions/Forward.h>
+#include <blaze/util/IntegralConstant.h>
 
 
 namespace blaze {
@@ -56,28 +55,13 @@ namespace blaze {
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Auxiliary helper struct for the IsSparseVector type trait.
+/*!\brief Auxiliary helper functions for the IsSparseVector type trait.
 // \ingroup math_type_traits
 */
-template< typename T >
-struct IsSparseVectorHelper
-{
- private:
-   //**********************************************************************************************
-   template< typename VT, bool TF >
-   static TrueType test( const SparseVector<VT,TF>& );
+template< typename VT, bool TF >
+TrueType isSparseVector_backend( const volatile SparseVector<VT,TF>* );
 
-   template< typename VT, bool TF >
-   static TrueType test( const volatile SparseVector<VT,TF>& );
-
-   static FalseType test( ... );
-   //**********************************************************************************************
-
- public:
-   //**********************************************************************************************
-   using Type = decltype( test( std::declval<T&>() ) );
-   //**********************************************************************************************
-};
+FalseType isSparseVector_backend( ... );
 /*! \endcond */
 //*************************************************************************************************
 
@@ -86,31 +70,46 @@ struct IsSparseVectorHelper
 /*!\brief Compile time check for sparse vector types.
 // \ingroup math_type_traits
 //
-// This type trait tests whether or not the given template parameter is a sparse, N-dimensional
-// vector type. In case the type is a sparse vector type, the \a value member constant is set
-// to \a true, the nested type definition \a Type is \a TrueType, and the class derives from
-// \a TrueType. Otherwise \a value is set to \a false, \a Type is \a FalseType, and the class
-// derives from \a FalseType.
+// This type trait tests whether or not the given template parameter is a sparse vector type
+// (i.e. whether \a T is derived from the SparseVector base class). In case the type is a sparse
+// vector type, the \a value member constant is set to \a true, the nested type definition
+// \a Type is \a TrueType, and the class derives from \a TrueType. Otherwise \a value is set
+// to \a false, \a Type is \a FalseType, and the class derives from \a FalseType.
 
    \code
-   blaze::IsSparseVector< CompressedVector<double,false> >::value     // Evaluates to 1
-   blaze::IsSparseVector< const CompressedVector<float,true> >::Type  // Results in TrueType
-   blaze::IsSparseVector< volatile CompressedVector<int,true> >       // Is derived from TrueType
-   blaze::IsSparseVector< DynamicVector<double,false> >::value        // Evaluates to 0
-   blaze::IsSparseVector< const DynamicMatrix<double,true> >::Type    // Results in FalseType
-   blaze::IsSparseVector< CompressedMatrix<double,true> >             // Is derived from FalseType
+   using namespace blaze;
+
+   IsSparseVector< CompressedVector<double> >::value      // Evaluates to 1
+   IsSparseVector< const CompressedVector<float> >::Type  // Results in TrueType
+   IsSparseVector< volatile CompressedVector<int> >       // Is derived from TrueType
+   IsSparseVector< DynamicVector<double> >::value         // Evaluates to 0
+   IsSparseVector< const DynamicMatrix<double> >::Type    // Results in FalseType
+   IsSparseVector< CompressedMatrix<double> >             // Is derived from FalseType
    \endcode
 */
 template< typename T >
 struct IsSparseVector
-   : public IsSparseVectorHelper<T>::Type
+   : public decltype( isSparseVector_backend( std::declval<T*>() ) )
 {};
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Specialization of the IsSparseVector type trait for references.
+// \ingroup math_type_traits
+*/
+template< typename T >
+struct IsSparseVector<T&>
+   : public FalseType
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Auxiliary variable template for the IsSparseVector type trait.
-// \ingroup type_traits
+// \ingroup math_type_traits
 //
 // The IsSparseVector_v variable template provides a convenient shortcut to access the nested
 // \a value of the IsSparseVector class template. For instance, given the type \a T the

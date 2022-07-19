@@ -3,7 +3,7 @@
 //  \file blaze/math/typetraits/IsTemporary.h
 //  \brief Header file for the IsTemporary type trait class
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -41,9 +41,9 @@
 //*************************************************************************************************
 
 #include <blaze/math/typetraits/IsExpression.h>
+#include <blaze/math/typetraits/IsMatrix.h>
+#include <blaze/math/typetraits/IsVector.h>
 #include <blaze/util/IntegralConstant.h>
-#include <blaze/util/typetraits/IsNumeric.h>
-#include <blaze/util/typetraits/IsReference.h>
 
 
 namespace blaze {
@@ -66,14 +66,14 @@ namespace blaze {
 */
 template< typename T >
 struct IsTemporary
-   : public BoolConstant< !IsReference_v<T> && !IsNumeric_v<T> && !IsExpression_v<T> >
+   : public BoolConstant< ( IsVector_v<T> || IsMatrix_v<T> ) && !IsExpression_v<T> >
 {};
 //*************************************************************************************************
 
 
 //*************************************************************************************************
 /*!\brief Auxiliary variable template for the IsTemporary type trait.
-// \ingroup type_traits
+// \ingroup math_type_traits
 //
 // The IsTemporary_v variable template provides a convenient shortcut to access the nested
 // \a value of the IsTemporary class template. For instance, given the type \a T the following

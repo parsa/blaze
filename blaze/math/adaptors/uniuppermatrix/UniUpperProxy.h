@@ -3,7 +3,7 @@
 //  \file blaze/math/adaptors/uniuppermatrix/UniUpperProxy.h
 //  \brief Header file for the UniUpperProxy class
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -41,24 +41,26 @@
 //*************************************************************************************************
 
 #include <blaze/math/Aliases.h>
-#include <blaze/math/constraints/Expression.h>
+#include <blaze/math/constraints/Computation.h>
 #include <blaze/math/constraints/Hermitian.h>
 #include <blaze/math/constraints/Lower.h>
 #include <blaze/math/constraints/Matrix.h>
+#include <blaze/math/constraints/Scalar.h>
 #include <blaze/math/constraints/Symmetric.h>
+#include <blaze/math/constraints/Transformation.h>
 #include <blaze/math/constraints/Upper.h>
+#include <blaze/math/constraints/View.h>
 #include <blaze/math/Exception.h>
 #include <blaze/math/proxy/Proxy.h>
+#include <blaze/math/RelaxationFlag.h>
 #include <blaze/math/shims/Clear.h>
 #include <blaze/math/shims/Invert.h>
 #include <blaze/math/shims/IsDefault.h>
-#include <blaze/math/shims/IsNaN.h>
 #include <blaze/math/shims/IsOne.h>
 #include <blaze/math/shims/IsReal.h>
 #include <blaze/math/shims/IsZero.h>
 #include <blaze/math/shims/Reset.h>
 #include <blaze/util/constraints/Const.h>
-#include <blaze/util/constraints/Numeric.h>
 #include <blaze/util/constraints/Pointer.h>
 #include <blaze/util/constraints/Reference.h>
 #include <blaze/util/constraints/Volatile.h>
@@ -141,8 +143,9 @@ class UniUpperProxy
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit inline UniUpperProxy( MT& matrix, size_t row, size_t column );
-            inline UniUpperProxy( const UniUpperProxy& uup );
+   inline UniUpperProxy( MT& matrix, size_t row, size_t column );
+
+   UniUpperProxy( const UniUpperProxy& ) = default;
    //@}
    //**********************************************************************************************
 
@@ -176,8 +179,6 @@ class UniUpperProxy
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-   inline void reset () const;
-   inline void clear () const;
    inline void invert() const;
 
    inline RepresentedType get()          const noexcept;
@@ -219,12 +220,58 @@ class UniUpperProxy
    BLAZE_CONSTRAINT_MUST_NOT_BE_POINTER_TYPE         ( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_CONST                ( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_VOLATILE             ( MT );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_EXPRESSION_TYPE      ( MT );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_VIEW_TYPE            ( MT );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE     ( MT );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_TRANSFORMATION_TYPE  ( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_HERMITIAN_MATRIX_TYPE( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_LOWER_MATRIX_TYPE    ( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_UPPER_MATRIX_TYPE    ( MT );
-   BLAZE_CONSTRAINT_MUST_BE_NUMERIC_TYPE( RepresentedType );
+   BLAZE_CONSTRAINT_MUST_BE_SCALAR_TYPE              ( RepresentedType );
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**********************************************************************************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief Resetting the represented element to the default initial values.
+   // \ingroup uniupper_matrix
+   //
+   // \param proxy The given access proxy.
+   // \return void
+   //
+   // This function resets the element represented by the access proxy to its default initial
+   // value.
+   */
+   friend inline void reset( const UniUpperProxy& proxy )
+   {
+      using blaze::reset;
+
+      if( proxy.row_ < proxy.column_ ) {
+         reset( proxy.value_ );
+      }
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**********************************************************************************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief Clearing the represented element.
+   // \ingroup uniupper_matrix
+   //
+   // \param proxy The given access proxy.
+   // \return void
+   //
+   // This function clears the element represented by the access proxy to its default initial
+   // state.
+   */
+   friend inline void clear( const UniUpperProxy& proxy )
+   {
+      using blaze::clear;
+
+      if( proxy.row_ < proxy.column_ ) {
+         clear( proxy.value_ );
+      }
+   }
    /*! \endcond */
    //**********************************************************************************************
 };
@@ -251,20 +298,6 @@ inline UniUpperProxy<MT>::UniUpperProxy( MT& matrix, size_t row, size_t column )
    : value_ ( matrix( row, column ) )  // Reference to the accessed matrix element
    , row_   ( row    )                 // Row index of the accessed matrix element
    , column_( column )                 // Column index of the accessed matrix element
-{}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief The copy constructor for UniUpperProxy.
-//
-// \param uup Proxy to be copied.
-*/
-template< typename MT >  // Type of the adapted matrix
-inline UniUpperProxy<MT>::UniUpperProxy( const UniUpperProxy& uup )
-   : value_ ( uup.value_  )  // Reference to the accessed matrix element
-   , row_   ( uup.row_    )  // Row index of the accessed matrix element
-   , column_( uup.column_ )  // Column index of the accessed matrix element
 {}
 //*************************************************************************************************
 
@@ -481,42 +514,6 @@ inline const UniUpperProxy<MT>* UniUpperProxy<MT>::operator->() const noexcept
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Reset the represented element to its default initial value.
-//
-// \return void
-//
-// This function resets the element represented by the proxy to its default initial value.
-*/
-template< typename MT >  // Type of the adapted matrix
-inline void UniUpperProxy<MT>::reset() const
-{
-   using blaze::reset;
-
-   if( row_ < column_ )
-      reset( value_ );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Clearing the represented element.
-//
-// \return void
-//
-// This function clears the element represented by the proxy to its default initial state.
-*/
-template< typename MT >  // Type of the adapted matrix
-inline void UniUpperProxy<MT>::clear() const
-{
-   using blaze::clear;
-
-   if( row_ < column_ )
-      clear( value_ );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
 /*!\brief In-place inversion of the represented element
 //
 // \return void
@@ -684,65 +681,8 @@ inline void UniUpperProxy<MT>::imag( ValueType value ) const
 /*!\name UniUpperProxy global functions */
 //@{
 template< typename MT >
-inline void reset( const UniUpperProxy<MT>& proxy );
-
-template< typename MT >
-inline void clear( const UniUpperProxy<MT>& proxy );
-
-template< typename MT >
-inline void invert( const UniUpperProxy<MT>& proxy );
-
-template< bool RF, typename MT >
-inline bool isDefault( const UniUpperProxy<MT>& proxy );
-
-template< bool RF, typename MT >
-inline bool isReal( const UniUpperProxy<MT>& proxy );
-
-template< bool RF, typename MT >
-inline bool isZero( const UniUpperProxy<MT>& proxy );
-
-template< bool RF, typename MT >
-inline bool isOne( const UniUpperProxy<MT>& proxy );
-
-template< typename MT >
-inline bool isnan( const UniUpperProxy<MT>& proxy );
+void invert( const UniUpperProxy<MT>& proxy );
 //@}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Resetting the represented element to the default initial values.
-// \ingroup uniupper_matrix
-//
-// \param proxy The given access proxy.
-// \return void
-//
-// This function resets the element represented by the access proxy to its default initial
-// value.
-*/
-template< typename MT >
-inline void reset( const UniUpperProxy<MT>& proxy )
-{
-   proxy.reset();
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Clearing the represented element.
-// \ingroup uniupper_matrix
-//
-// \param proxy The given access proxy.
-// \return void
-//
-// This function clears the element represented by the access proxy to its default initial
-// state.
-*/
-template< typename MT >
-inline void clear( const UniUpperProxy<MT>& proxy )
-{
-   proxy.clear();
-}
 //*************************************************************************************************
 
 
@@ -757,108 +697,6 @@ template< typename MT >
 inline void invert( const UniUpperProxy<MT>& proxy )
 {
    proxy.invert();
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Returns whether the represented element is in default state.
-// \ingroup uniupper_matrix
-//
-// \param proxy The given access proxy
-// \return \a true in case the represented element is in default state, \a false otherwise.
-//
-// This function checks whether the element represented by the access proxy is in default state.
-// In case it is in default state, the function returns \a true, otherwise it returns \a false.
-*/
-template< bool RF, typename MT >
-inline bool isDefault( const UniUpperProxy<MT>& proxy )
-{
-   using blaze::isDefault;
-
-   return isDefault<RF>( proxy.get() );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Returns whether the matrix element represents a real number.
-// \ingroup uniupper_matrix
-//
-// \param proxy The given access proxy.
-// \return \a true in case the matrix element represents a real number, \a false otherwise.
-//
-// This function checks whether the element represented by the access proxy represents the a
-// real number. In case the element is of built-in type, the function returns \a true. In case
-// the element is of complex type, the function returns \a true if the imaginary part is equal
-// to 0. Otherwise it returns \a false.
-*/
-template< bool RF, typename MT >
-inline bool isReal( const UniUpperProxy<MT>& proxy )
-{
-   using blaze::isReal;
-
-   return isReal<RF>( proxy.get() );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Returns whether the represented element is 0.
-// \ingroup uniupper_matrix
-//
-// \param proxy The given access proxy.
-// \return \a true in case the represented element is 0, \a false otherwise.
-//
-// This function checks whether the element represented by the access proxy represents the numeric
-// value 0. In case it is 0, the function returns \a true, otherwise it returns \a false.
-*/
-template< bool RF, typename MT >
-inline bool isZero( const UniUpperProxy<MT>& proxy )
-{
-   using blaze::isZero;
-
-   return isZero<RF>( proxy.get() );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Returns whether the represented element is 1.
-// \ingroup uniupper_matrix
-//
-// \param proxy The given access proxy.
-// \return \a true in case the represented element is 1, \a false otherwise.
-//
-// This function checks whether the element represented by the access proxy represents the numeric
-// value 1. In case it is 1, the function returns \a true, otherwise it returns \a false.
-*/
-template< bool RF, typename MT >
-inline bool isOne( const UniUpperProxy<MT>& proxy )
-{
-   using blaze::isOne;
-
-   return isOne<RF>( proxy.get() );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Returns whether the represented element is not a number.
-// \ingroup uniupper_matrix
-//
-// \param proxy The given access proxy.
-// \return \a true in case the represented element is in not a number, \a false otherwise.
-//
-// This function checks whether the element represented by the access proxy is not a number (NaN).
-// In case it is not a number, the function returns \a true, otherwise it returns \a false.
-*/
-template< typename MT >
-inline bool isnan( const UniUpperProxy<MT>& proxy )
-{
-   using blaze::isnan;
-
-   return isnan( proxy.get() );
 }
 //*************************************************************************************************
 

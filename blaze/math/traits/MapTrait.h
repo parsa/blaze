@@ -3,7 +3,7 @@
 //  \file blaze/math/traits/MapTrait.h
 //  \brief Header file for the map trait
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -41,7 +41,8 @@
 //*************************************************************************************************
 
 #include <utility>
-#include <blaze/util/typetraits/Decay.h>
+#include <blaze/math/GroupTag.h>
+#include <blaze/util/typetraits/RemoveCVRef.h>
 
 
 namespace blaze {
@@ -57,8 +58,10 @@ namespace blaze {
 template< typename... > struct MapTrait;
 template< typename, typename, typename = void > struct UnaryMapTraitEval1;
 template< typename, typename, typename = void > struct UnaryMapTraitEval2;
+template< typename, typename, typename = void > struct UnaryMapTraitEval3;
 template< typename, typename, typename, typename = void > struct BinaryMapTraitEval1;
 template< typename, typename, typename, typename = void > struct BinaryMapTraitEval2;
+template< typename, typename, typename, typename = void > struct BinaryMapTraitEval3;
 /*! \endcond */
 //*************************************************************************************************
 
@@ -66,36 +69,10 @@ template< typename, typename, typename, typename = void > struct BinaryMapTraitE
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename T, typename OP >
-auto evalMapTrait( T&, OP )
-   -> typename UnaryMapTraitEval1<T,OP>::Type;
-
-template< typename T, typename OP >
-auto evalMapTrait( const T&, OP )
-   -> typename MapTrait<T,OP>::Type;
-
-template< typename T, typename OP >
-auto evalMapTrait( const volatile T&, OP )
-   -> typename MapTrait<T,OP>::Type;
+auto evalMapTrait( const volatile T&, OP ) -> UnaryMapTraitEval1<T,OP>;
 
 template< typename T1, typename T2, typename OP >
-auto evalMapTrait( T1&, T2&, OP )
-   -> typename BinaryMapTraitEval1<T1,T2,OP>::Type;
-
-template< typename T1, typename T2, typename OP >
-auto evalMapTrait( const T1&, const T2&, OP )
-   -> typename MapTrait<T1,T2,OP>::Type;
-
-template< typename T1, typename T2, typename OP >
-auto evalMapTrait( const T1&, const volatile T2&, OP )
-   -> typename MapTrait<T1,T2,OP>::Type;
-
-template< typename T1, typename T2, typename OP >
-auto evalMapTrait( const volatile T1&, const T2&, OP )
-   -> typename MapTrait<T1,T2,OP>::Type;
-
-template< typename T1, typename T2, typename OP >
-auto evalMapTrait( const volatile T1&, const volatile T2&, OP )
-   -> typename MapTrait<T1,T2,OP>::Type;
+auto evalMapTrait( const volatile T1&, const volatile T2&, OP ) -> BinaryMapTraitEval1<T1,T2,OP>;
 /*! \endcond */
 //*************************************************************************************************
 
@@ -108,8 +85,8 @@ auto evalMapTrait( const volatile T1&, const volatile T2&, OP )
 //
 // The MapTrait class template offers the possibility to select the resulting data type of a
 // generic unary or binary map operation. MapTrait defines the nested type \a Type, which
-// represents the resulting data type of the map operation. In case no result type
-// can be determined for the type \a T, a compilation error is created. Note that \c const and
+// represents the resulting data type of the map operation. In case no result type can be
+// determined for the type \a T, there is no nested type \a Type. Note that \c const and
 // \c volatile qualifiers and reference modifiers are generally ignored.
 //
 //
@@ -132,14 +109,8 @@ auto evalMapTrait( const volatile T1&, const volatile T2&, OP )
 */
 template< typename... Args >  // Types of the map template paramters
 struct MapTrait
-{
- public:
-   //**********************************************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   using Type = decltype( evalMapTrait( std::declval<Args&>()... ) );
-   /*! \endcond */
-   //**********************************************************************************************
-};
+   : public decltype( evalMapTrait( std::declval<Args&>()... ) )
+{};
 //*************************************************************************************************
 
 
@@ -170,10 +141,23 @@ template< typename T   // Type of the operand
         , typename OP  // Type of the custom operation
         , typename >   // Restricting condition
 struct UnaryMapTraitEval1
+   : public UnaryMapTraitEval2<T,OP>
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Specialization of the UnaryMapTraitEval1 class template for 'GroupTag'.
+// \ingroup math_traits
+*/
+template< size_t ID, typename OP >
+struct UnaryMapTraitEval1<GroupTag<ID>,OP,void>
 {
  public:
    //**********************************************************************************************
-   using Type = typename UnaryMapTraitEval2<T,OP>::Type;
+   using Type = GroupTag<ID>;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -189,10 +173,39 @@ template< typename T   // Type of the operand
         , typename OP  // Type of the custom operation
         , typename >   // Restricting condition
 struct UnaryMapTraitEval2
+   : public UnaryMapTraitEval3<T,OP>
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Auxiliary helper struct for the MapTrait type trait.
+// \ingroup math_traits
+*/
+template< typename T   // Type of the operand
+        , typename OP  // Type of the custom operation
+        , typename >   // Restricting condition
+struct UnaryMapTraitEval3
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Specialization of UnaryMapTraitEval3 for a type supporting the given operation.
+// \ingroup math_traits
+*/
+template< typename T     // Type of the operand
+        , typename OP >  // Type of the custom operation
+struct UnaryMapTraitEval3< T, OP
+                         , Void_t< decltype( std::declval<OP>()( std::declval<T>() ) ) > >
 {
  public:
    //**********************************************************************************************
-   using Type = Decay_t< decltype( std::declval<OP>()( std::declval<T>() ) ) >;
+   using Type = RemoveCVRef_t< decltype( std::declval<OP>()( std::declval<T>() ) ) >;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -209,10 +222,23 @@ template< typename T1  // Type of the left-hand side operand
         , typename OP  // Type of the custom operation
         , typename >   // Restricting condition
 struct BinaryMapTraitEval1
+   : public BinaryMapTraitEval2<T1,T2,OP>
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Specialization of the UnaryMapTraitEval1 class template for two 'GroupTag'.
+// \ingroup math_traits
+*/
+template< size_t ID, typename OP >
+struct BinaryMapTraitEval1<GroupTag<ID>,GroupTag<ID>,OP,void>
 {
  public:
    //**********************************************************************************************
-   using Type = typename BinaryMapTraitEval2<T1,T2,OP>::Type;
+   using Type = GroupTag<ID>;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -229,10 +255,41 @@ template< typename T1  // Type of the left-hand side operand
         , typename OP  // Type of the custom operation
         , typename >   // Restricting condition
 struct BinaryMapTraitEval2
+   : public BinaryMapTraitEval3<T1,T2,OP>
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Auxiliary helper struct for the MapTrait type trait.
+// \ingroup math_traits
+*/
+template< typename T1  // Type of the left-hand side operand
+        , typename T2  // Type of the right-hand side operand
+        , typename OP  // Type of the custom operation
+        , typename >   // Restricting condition
+struct BinaryMapTraitEval3
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Specialization of BinaryMapTraitEval3 for a type supporting the given operation.
+// \ingroup math_traits
+*/
+template< typename T1    // Type of the left-hand side operand
+        , typename T2    // Type of the right-hand side operand
+        , typename OP >  // Type of the custom operation
+struct BinaryMapTraitEval3< T1, T2, OP
+                          , Void_t< decltype( std::declval<OP>()( std::declval<T1>(), std::declval<T2>() ) ) > >
 {
  public:
    //**********************************************************************************************
-   using Type = Decay_t< decltype( std::declval<OP>()( std::declval<T1>(), std::declval<T2>() ) ) >;
+   using Type = RemoveCVRef_t< decltype( std::declval<OP>()( std::declval<T1>(), std::declval<T2>() ) ) >;
    //**********************************************************************************************
 };
 /*! \endcond */

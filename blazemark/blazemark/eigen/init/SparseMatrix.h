@@ -3,7 +3,7 @@
 //  \file blazemark/eigen/init/SparseMatrix.h
 //  \brief Header file for the Eigen sparse matrix initialization functions
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -107,8 +107,8 @@ void init( ::Eigen::SparseMatrix<Type,::Eigen::RowMajor,EigenSparseIndexType>& m
    {
       for( int i=0UL; i<M; ++i ) {
          m.startVec( i );
-         ::blaze::Indices indices( 0UL, N-1UL, nonzeros );
-         for( ::blaze::Indices::ConstIterator it=indices.begin(); it!=indices.end(); ++it ) {
+         ::blaze::Indices<size_t> indices( 0UL, N-1UL, nonzeros );
+         for( auto it=indices.begin(); it!=indices.end(); ++it ) {
             m.insertBack(i,*it) = ::blaze::rand<Type>( 0, 10 );
          }
       }
@@ -158,8 +158,8 @@ void init( ::Eigen::SparseMatrix<Type,::Eigen::ColMajor,EigenSparseIndexType>& m
    {
       for( int j=0UL; j<N; ++j ) {
          m.startVec( j );
-         ::blaze::Indices indices( 0UL, M-1UL, nonzeros );
-         for( ::blaze::Indices::ConstIterator it=indices.begin(); it!=indices.end(); ++it ) {
+         ::blaze::Indices<size_t> indices( 0UL, M-1UL, nonzeros );
+         for( auto it=indices.begin(); it!=indices.end(); ++it ) {
             m.insertBack(*it,j) = ::blaze::rand<Type>( 0, 10 );
          }
       }

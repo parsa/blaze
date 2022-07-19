@@ -3,7 +3,7 @@
 //  \file blaze/math/simd/BasicTypes.h
 //  \brief Header file for the basic SIMD types
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -44,7 +44,6 @@
 #include <blaze/system/Inline.h>
 #include <blaze/system/Vectorization.h>
 #include <blaze/util/Complex.h>
-#include <blaze/util/TrueType.h>
 #include <blaze/util/Types.h>
 
 
@@ -113,10 +112,10 @@ struct SIMDint8
    BLAZE_ALWAYS_INLINE SIMDint8( IntrinsicType v ) noexcept : value( v ) {}
 
    template< typename T >
-   BLAZE_ALWAYS_INLINE SIMDint8( const SIMDi8<T>& v ) noexcept : value( (~v).value ) {}
+   BLAZE_ALWAYS_INLINE SIMDint8( const SIMDi8<T>& v ) noexcept : value( (*v).value ) {}
 
    template< typename T >
-   BLAZE_ALWAYS_INLINE SIMDint8& operator=( const SIMDi8<T>& v ) noexcept { value = (~v).value; return *this; }
+   BLAZE_ALWAYS_INLINE SIMDint8& operator=( const SIMDi8<T>& v ) noexcept { value = (*v).value; return *this; }
 
    IntrinsicType value;
 };
@@ -167,10 +166,10 @@ struct SIMDuint8
    BLAZE_ALWAYS_INLINE SIMDuint8( IntrinsicType v ) noexcept : value( v ) {}
 
    template< typename T >
-   BLAZE_ALWAYS_INLINE SIMDuint8( const SIMDi8<T>& v ) noexcept : value( (~v).value ) {}
+   BLAZE_ALWAYS_INLINE SIMDuint8( const SIMDi8<T>& v ) noexcept : value( (*v).value ) {}
 
    template< typename T >
-   BLAZE_ALWAYS_INLINE SIMDuint8& operator=( const SIMDi8<T>& v ) noexcept { value = (~v).value; return *this; }
+   BLAZE_ALWAYS_INLINE SIMDuint8& operator=( const SIMDi8<T>& v ) noexcept { value = (*v).value; return *this; }
 
    IntrinsicType value;
 };
@@ -243,10 +242,10 @@ struct SIMDcint8
    BLAZE_ALWAYS_INLINE SIMDcint8( IntrinsicType v ) noexcept : value( v ) {}
 
    template< typename T >
-   BLAZE_ALWAYS_INLINE SIMDcint8( const SIMDci8<T>& v ) noexcept : value( (~v).value ) {}
+   BLAZE_ALWAYS_INLINE SIMDcint8( const SIMDci8<T>& v ) noexcept : value( (*v).value ) {}
 
    template< typename T >
-   BLAZE_ALWAYS_INLINE SIMDcint8& operator=( const SIMDci8<T>& v ) noexcept { value = (~v).value; return *this; }
+   BLAZE_ALWAYS_INLINE SIMDcint8& operator=( const SIMDci8<T>& v ) noexcept { value = (*v).value; return *this; }
 
    IntrinsicType value;
 };
@@ -297,10 +296,10 @@ struct SIMDcuint8
    BLAZE_ALWAYS_INLINE SIMDcuint8( IntrinsicType v ) noexcept : value( v ) {}
 
    template< typename T >
-   BLAZE_ALWAYS_INLINE SIMDcuint8( const SIMDci8<T>& v ) noexcept : value( (~v).value ) {}
+   BLAZE_ALWAYS_INLINE SIMDcuint8( const SIMDci8<T>& v ) noexcept : value( (*v).value ) {}
 
    template< typename T >
-   BLAZE_ALWAYS_INLINE SIMDcuint8& operator=( const SIMDci8<T>& v ) noexcept { value = (~v).value; return *this; }
+   BLAZE_ALWAYS_INLINE SIMDcuint8& operator=( const SIMDci8<T>& v ) noexcept { value = (*v).value; return *this; }
 
    IntrinsicType value;
 };
@@ -373,10 +372,10 @@ struct SIMDint16
    BLAZE_ALWAYS_INLINE SIMDint16( IntrinsicType v ) noexcept : value( v ) {}
 
    template< typename T >
-   BLAZE_ALWAYS_INLINE SIMDint16( const SIMDi16<T>& v ) noexcept : value( (~v).value ) {}
+   BLAZE_ALWAYS_INLINE SIMDint16( const SIMDi16<T>& v ) noexcept : value( (*v).value ) {}
 
    template< typename T >
-   BLAZE_ALWAYS_INLINE SIMDint16& operator=( const SIMDi16<T>& v ) noexcept { value = (~v).value; return *this; }
+   BLAZE_ALWAYS_INLINE SIMDint16& operator=( const SIMDi16<T>& v ) noexcept { value = (*v).value; return *this; }
 
    IntrinsicType value;
 };
@@ -427,10 +426,10 @@ struct SIMDuint16
    BLAZE_ALWAYS_INLINE SIMDuint16( IntrinsicType v ) noexcept : value( v ) {}
 
    template< typename T >
-   BLAZE_ALWAYS_INLINE SIMDuint16( const SIMDi16<T>& v ) noexcept : value( (~v).value ) {}
+   BLAZE_ALWAYS_INLINE SIMDuint16( const SIMDi16<T>& v ) noexcept : value( (*v).value ) {}
 
    template< typename T >
-   BLAZE_ALWAYS_INLINE SIMDuint16& operator=( const SIMDi16<T>& v ) noexcept { value = (~v).value; return *this; }
+   BLAZE_ALWAYS_INLINE SIMDuint16& operator=( const SIMDi16<T>& v ) noexcept { value = (*v).value; return *this; }
 
    IntrinsicType value;
 };
@@ -503,10 +502,10 @@ struct SIMDcint16
    BLAZE_ALWAYS_INLINE SIMDcint16( IntrinsicType v ) noexcept : value( v ) {}
 
    template< typename T >
-   BLAZE_ALWAYS_INLINE SIMDcint16( const SIMDci16<T>& v ) noexcept : value( (~v).value ) {}
+   BLAZE_ALWAYS_INLINE SIMDcint16( const SIMDci16<T>& v ) noexcept : value( (*v).value ) {}
 
    template< typename T >
-   BLAZE_ALWAYS_INLINE SIMDcint16& operator=( const SIMDci16<T>& v ) noexcept { value = (~v).value; return *this; }
+   BLAZE_ALWAYS_INLINE SIMDcint16& operator=( const SIMDci16<T>& v ) noexcept { value = (*v).value; return *this; }
 
    IntrinsicType value;
 };
@@ -557,10 +556,10 @@ struct SIMDcuint16
    BLAZE_ALWAYS_INLINE SIMDcuint16( IntrinsicType v ) noexcept : value( v ) {}
 
    template< typename T >
-   BLAZE_ALWAYS_INLINE SIMDcuint16( const SIMDci16<T>& v ) noexcept : value( (~v).value ) {}
+   BLAZE_ALWAYS_INLINE SIMDcuint16( const SIMDci16<T>& v ) noexcept : value( (*v).value ) {}
 
    template< typename T >
-   BLAZE_ALWAYS_INLINE SIMDcuint16& operator=( const SIMDci16<T>& v ) noexcept { value = (~v).value; return *this; }
+   BLAZE_ALWAYS_INLINE SIMDcuint16& operator=( const SIMDci16<T>& v ) noexcept { value = (*v).value; return *this; }
 
    IntrinsicType value;
 };
@@ -628,10 +627,10 @@ struct SIMDint32
    BLAZE_ALWAYS_INLINE SIMDint32( IntrinsicType v ) noexcept : value( v ) {}
 
    template< typename T >
-   BLAZE_ALWAYS_INLINE SIMDint32( const SIMDi32<T>& v ) noexcept : value( (~v).value ) {}
+   BLAZE_ALWAYS_INLINE SIMDint32( const SIMDi32<T>& v ) noexcept : value( (*v).value ) {}
 
    template< typename T >
-   BLAZE_ALWAYS_INLINE SIMDint32& operator=( const SIMDi32<T>& v ) noexcept { value = (~v).value; return *this; }
+   BLAZE_ALWAYS_INLINE SIMDint32& operator=( const SIMDi32<T>& v ) noexcept { value = (*v).value; return *this; }
 
    IntrinsicType value;
 };
@@ -677,10 +676,10 @@ struct SIMDuint32
    BLAZE_ALWAYS_INLINE SIMDuint32( IntrinsicType v ) noexcept : value( v ) {}
 
    template< typename T >
-   BLAZE_ALWAYS_INLINE SIMDuint32( const SIMDi32<T>& v ) noexcept : value( (~v).value ) {}
+   BLAZE_ALWAYS_INLINE SIMDuint32( const SIMDi32<T>& v ) noexcept : value( (*v).value ) {}
 
    template< typename T >
-   BLAZE_ALWAYS_INLINE SIMDuint32& operator=( const SIMDi32<T>& v ) noexcept { value = (~v).value; return *this; }
+   BLAZE_ALWAYS_INLINE SIMDuint32& operator=( const SIMDi32<T>& v ) noexcept { value = (*v).value; return *this; }
 
    IntrinsicType value;
 };
@@ -748,10 +747,10 @@ struct SIMDcint32
    BLAZE_ALWAYS_INLINE SIMDcint32( IntrinsicType v ) noexcept : value( v ) {}
 
    template< typename T >
-   BLAZE_ALWAYS_INLINE SIMDcint32( const SIMDci32<T>& v ) noexcept : value( (~v).value ) {}
+   BLAZE_ALWAYS_INLINE SIMDcint32( const SIMDci32<T>& v ) noexcept : value( (*v).value ) {}
 
    template< typename T >
-   BLAZE_ALWAYS_INLINE SIMDcint32& operator=( const SIMDci32<T>& v ) noexcept { value = (~v).value; return *this; }
+   BLAZE_ALWAYS_INLINE SIMDcint32& operator=( const SIMDci32<T>& v ) noexcept { value = (*v).value; return *this; }
 
    IntrinsicType value;
 };
@@ -797,10 +796,10 @@ struct SIMDcuint32
    BLAZE_ALWAYS_INLINE SIMDcuint32( IntrinsicType v ) noexcept : value( v ) {}
 
    template< typename T >
-   BLAZE_ALWAYS_INLINE SIMDcuint32( const SIMDci32<T>& v ) noexcept : value( (~v).value ) {}
+   BLAZE_ALWAYS_INLINE SIMDcuint32( const SIMDci32<T>& v ) noexcept : value( (*v).value ) {}
 
    template< typename T >
-   BLAZE_ALWAYS_INLINE SIMDcuint32& operator=( const SIMDci32<T>& v ) noexcept { value = (~v).value; return *this; }
+   BLAZE_ALWAYS_INLINE SIMDcuint32& operator=( const SIMDci32<T>& v ) noexcept { value = (*v).value; return *this; }
 
    IntrinsicType value;
 };
@@ -868,10 +867,10 @@ struct SIMDint64
    BLAZE_ALWAYS_INLINE SIMDint64( IntrinsicType v ) noexcept : value( v ) {}
 
    template< typename T >
-   BLAZE_ALWAYS_INLINE SIMDint64( const SIMDi64<T>& v ) noexcept : value( (~v).value ) {}
+   BLAZE_ALWAYS_INLINE SIMDint64( const SIMDi64<T>& v ) noexcept : value( (*v).value ) {}
 
    template< typename T >
-   BLAZE_ALWAYS_INLINE SIMDint64& operator=( const SIMDi64<T>& v ) noexcept { value = (~v).value; return *this; }
+   BLAZE_ALWAYS_INLINE SIMDint64& operator=( const SIMDi64<T>& v ) noexcept { value = (*v).value; return *this; }
 
    IntrinsicType value;
 };
@@ -917,10 +916,10 @@ struct SIMDuint64
    BLAZE_ALWAYS_INLINE SIMDuint64( IntrinsicType v ) noexcept : value( v ) {}
 
    template< typename T >
-   BLAZE_ALWAYS_INLINE SIMDuint64( const SIMDi64<T>& v ) noexcept : value( (~v).value ) {}
+   BLAZE_ALWAYS_INLINE SIMDuint64( const SIMDi64<T>& v ) noexcept : value( (*v).value ) {}
 
    template< typename T >
-   BLAZE_ALWAYS_INLINE SIMDuint64& operator=( const SIMDi64<T>& v ) noexcept { value = (~v).value; return *this; }
+   BLAZE_ALWAYS_INLINE SIMDuint64& operator=( const SIMDi64<T>& v ) noexcept { value = (*v).value; return *this; }
 
    IntrinsicType value;
 };
@@ -988,10 +987,10 @@ struct SIMDcint64
    BLAZE_ALWAYS_INLINE SIMDcint64( IntrinsicType v ) noexcept : value( v ) {}
 
    template< typename T >
-   BLAZE_ALWAYS_INLINE SIMDcint64( const SIMDci64<T>& v ) noexcept : value( (~v).value ) {}
+   BLAZE_ALWAYS_INLINE SIMDcint64( const SIMDci64<T>& v ) noexcept : value( (*v).value ) {}
 
    template< typename T >
-   BLAZE_ALWAYS_INLINE SIMDcint64& operator=( const SIMDci64<T>& v ) noexcept { value = (~v).value; return *this; }
+   BLAZE_ALWAYS_INLINE SIMDcint64& operator=( const SIMDci64<T>& v ) noexcept { value = (*v).value; return *this; }
 
    IntrinsicType value;
 };
@@ -1037,10 +1036,10 @@ struct SIMDcuint64
    BLAZE_ALWAYS_INLINE SIMDcuint64( IntrinsicType v ) noexcept : value( v ) {}
 
    template< typename T >
-   BLAZE_ALWAYS_INLINE SIMDcuint64( const SIMDci64<T>& v ) noexcept : value( (~v).value ) {}
+   BLAZE_ALWAYS_INLINE SIMDcuint64( const SIMDci64<T>& v ) noexcept : value( (*v).value ) {}
 
    template< typename T >
-   BLAZE_ALWAYS_INLINE SIMDcuint64& operator=( const SIMDci64<T>& v ) noexcept { value = (~v).value; return *this; }
+   BLAZE_ALWAYS_INLINE SIMDcuint64& operator=( const SIMDci64<T>& v ) noexcept { value = (*v).value; return *this; }
 
    IntrinsicType value;
 };
@@ -1108,10 +1107,10 @@ struct SIMDfloat
    BLAZE_ALWAYS_INLINE SIMDfloat( IntrinsicType v ) noexcept : value( v ) {}
 
    template< typename T >
-   BLAZE_ALWAYS_INLINE SIMDfloat( const SIMDf32<T>& v ) noexcept : value( (~v).eval().value ) {}
+   BLAZE_ALWAYS_INLINE SIMDfloat( const SIMDf32<T>& v ) noexcept : value( (*v).eval().value ) {}
 
    template< typename T >
-   BLAZE_ALWAYS_INLINE SIMDfloat& operator=( const SIMDf32<T>& v ) noexcept { value = (~v).eval().value; return *this; }
+   BLAZE_ALWAYS_INLINE SIMDfloat& operator=( const SIMDf32<T>& v ) noexcept { value = (*v).eval().value; return *this; }
 
    BLAZE_ALWAYS_INLINE const This& eval() const { return *this; }
 
@@ -1181,10 +1180,10 @@ struct SIMDcfloat
    BLAZE_ALWAYS_INLINE SIMDcfloat( IntrinsicType v ) noexcept : value( v ) {}
 
    template< typename T >
-   BLAZE_ALWAYS_INLINE SIMDcfloat( const SIMDcf32<T>& v ) noexcept : value( (~v).value ) {}
+   BLAZE_ALWAYS_INLINE SIMDcfloat( const SIMDcf32<T>& v ) noexcept : value( (*v).value ) {}
 
    template< typename T >
-   BLAZE_ALWAYS_INLINE SIMDcfloat& operator=( const SIMDcf32<T>& v ) noexcept { value = (~v).value; return *this; }
+   BLAZE_ALWAYS_INLINE SIMDcfloat& operator=( const SIMDcf32<T>& v ) noexcept { value = (*v).value; return *this; }
 
    IntrinsicType value;
 };
@@ -1252,10 +1251,10 @@ struct SIMDdouble
    BLAZE_ALWAYS_INLINE SIMDdouble( IntrinsicType v ) noexcept : value( v ) {}
 
    template< typename T >
-   BLAZE_ALWAYS_INLINE SIMDdouble( const SIMDf64<T>& v ) noexcept : value( (~v).eval().value ) {}
+   BLAZE_ALWAYS_INLINE SIMDdouble( const SIMDf64<T>& v ) noexcept : value( (*v).eval().value ) {}
 
    template< typename T >
-   BLAZE_ALWAYS_INLINE SIMDdouble& operator=( const SIMDf64<T>& v ) noexcept { value = (~v).eval().value; return *this; }
+   BLAZE_ALWAYS_INLINE SIMDdouble& operator=( const SIMDf64<T>& v ) noexcept { value = (*v).eval().value; return *this; }
 
    BLAZE_ALWAYS_INLINE const This& eval() const { return *this; }
 
@@ -1325,10 +1324,10 @@ struct SIMDcdouble
    BLAZE_ALWAYS_INLINE SIMDcdouble( IntrinsicType v ) noexcept : value( v ) {}
 
    template< typename T >
-   BLAZE_ALWAYS_INLINE SIMDcdouble( const SIMDcf64<T>& v ) noexcept : value( (~v).value ) {}
+   BLAZE_ALWAYS_INLINE SIMDcdouble( const SIMDcf64<T>& v ) noexcept : value( (*v).value ) {}
 
    template< typename T >
-   BLAZE_ALWAYS_INLINE SIMDcdouble& operator=( const SIMDcf64<T>& v ) noexcept { value = (~v).value; return *this; }
+   BLAZE_ALWAYS_INLINE SIMDcdouble& operator=( const SIMDcf64<T>& v ) noexcept { value = (*v).value; return *this; }
 
    IntrinsicType value;
 };
@@ -1356,8 +1355,8 @@ template< typename T1    // Type of the left-hand side SIMD operand
         , typename T2 >  // Type of the right-hand side SIMD operand
 BLAZE_ALWAYS_INLINE T1& operator+=( SIMDPack<T1>& lhs, const SIMDPack<T2>& rhs )
 {
-   (~lhs) = (~lhs) + (~rhs);
-   return ~lhs;
+   (*lhs) = (*lhs) + (*rhs);
+   return *lhs;
 }
 //*************************************************************************************************
 
@@ -1374,8 +1373,8 @@ template< typename T1    // Type of the left-hand side SIMD operand
         , typename T2 >  // Type of the right-hand side SIMD operand
 BLAZE_ALWAYS_INLINE T1& operator-=( SIMDPack<T1>& lhs, const SIMDPack<T2>& rhs )
 {
-   (~lhs) = (~lhs) - (~rhs);
-   return ~lhs;
+   (*lhs) = (*lhs) - (*rhs);
+   return *lhs;
 }
 //*************************************************************************************************
 
@@ -1392,8 +1391,8 @@ template< typename T1    // Type of the left-hand side SIMD operand
         , typename T2 >  // Type of the right-hand side SIMD operand
 BLAZE_ALWAYS_INLINE T1& operator*=( SIMDPack<T1>& lhs, const SIMDPack<T2>& rhs )
 {
-   (~lhs) = (~lhs) * (~rhs);
-   return ~lhs;
+   (*lhs) = (*lhs) * (*rhs);
+   return *lhs;
 }
 //*************************************************************************************************
 
@@ -1410,8 +1409,8 @@ template< typename T1    // Type of the left-hand side SIMD operand
         , typename T2 >  // Type of the right-hand side SIMD operand
 BLAZE_ALWAYS_INLINE T1& operator/=( SIMDPack<T1>& lhs, const SIMDPack<T2>& rhs )
 {
-   (~lhs) = (~lhs) / (~rhs);
-   return ~lhs;
+   (*lhs) = (*lhs) / (*rhs);
+   return *lhs;
 }
 //*************************************************************************************************
 

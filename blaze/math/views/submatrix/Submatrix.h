@@ -3,7 +3,7 @@
 //  \file blaze/math/views/submatrix/Submatrix.h
 //  \brief Submatrix documentation
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -59,10 +59,20 @@
 // \n \section submatrix_setup Setup of Submatrices
 //
 // A view on a dense or sparse submatrix can be created very conveniently via the \c submatrix()
-// function. It can be included via the header file
+// function. It can be included via the header files
 
    \code
+   #include <blaze/Blaze.h>
+   // or
+   #include <blaze/Math.h>
+   // or
    #include <blaze/math/Submatrix.h>
+   \endcode
+
+// and forward declared via the header file
+
+   \code
+   #include <blaze/Forward.h>
    \endcode
 
 // The first and second parameter specify the row and column of the first element of the submatrix.

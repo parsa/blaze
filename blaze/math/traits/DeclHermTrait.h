@@ -3,7 +3,7 @@
 //  \file blaze/math/traits/DeclHermTrait.h
 //  \brief Header file for the declherm trait
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -44,7 +44,7 @@
 #include <blaze/math/adaptors/hermitianmatrix/BaseTemplate.h>
 #include <blaze/math/typetraits/IsMatrix.h>
 #include <blaze/math/typetraits/Size.h>
-#include <blaze/util/InvalidType.h>
+#include <blaze/util/EnableIf.h>
 
 
 namespace blaze {
@@ -66,16 +66,7 @@ template< typename, typename = void > struct DeclHermTraitEval;
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename T >
-auto evalDeclHermTrait( T& )
-   -> typename DeclHermTraitEval<T>::Type;
-
-template< typename T >
-auto evalDeclHermTrait( const T& )
-   -> typename DeclHermTrait<T>::Type;
-
-template< typename T >
-auto evalDeclHermTrait( const volatile T& )
-   -> typename DeclHermTrait<T>::Type;
+auto evalDeclHermTrait( const volatile T& ) -> DeclHermTraitEval<T>;
 /*! \endcond */
 //*************************************************************************************************
 
@@ -87,11 +78,10 @@ auto evalDeclHermTrait( const volatile T& )
 // \section declhermtrait_general General
 //
 // The DeclHermTrait class template offers the possibility to select the resulting data type
-// of a generic declherm() operation on the given type \a MT. DeclHermTrait defines the nested
-// type \a Type, which represents the resulting data type of the declherm() operation. In case
-// the given data type is not a dense or sparse matrix type, the resulting data type \a Type is
-// set to \a INVALID_TYPE. Note that \a const and \a volatile qualifiers and reference modifiers
-// are generally ignored.
+// of a generic declherm() operation on the given type \a MT. In case the given type \a MT is
+// a dense or sparse matrix type, DeclHermTrait defines the nested type \a Type, which represents
+// the resulting data type of the declherm() operation. Otherwise there is no nested type \a Type.
+// Note that \a const and \a volatile qualifiers and reference modifiers are generally ignored.
 //
 //
 // \section declhermtrait_specializations Creating custom specializations
@@ -132,14 +122,8 @@ auto evalDeclHermTrait( const volatile T& )
 */
 template< typename MT >  // Type of the matrix
 struct DeclHermTrait
-{
- public:
-   //**********************************************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   using Type = decltype( evalDeclHermTrait( std::declval<MT&>() ) );
-   /*! \endcond */
-   //**********************************************************************************************
-};
+   : public decltype( evalDeclHermTrait( std::declval<MT&>() ) )
+{};
 //*************************************************************************************************
 
 
@@ -169,9 +153,7 @@ using DeclHermTrait_t = typename DeclHermTrait<MT>::Type;
 template< typename MT  // Type of the matrix
         , typename >   // Restricting condition
 struct DeclHermTraitEval
-{
-   using Type = INVALID_TYPE;
-};
+{};
 /*! \endcond */
 //*************************************************************************************************
 
@@ -188,7 +170,7 @@ struct DeclHermTraitEval< MT
                                         Size_v<MT,1UL> == DefaultSize_v ||
                                         Size_v<MT,0UL> == Size_v<MT,1UL> ) > >
 {
-   using Type = HermitianMatrix<MT>;
+   using Type = HermitianMatrix<typename MT::ResultType>;
 };
 /*! \endcond */
 //*************************************************************************************************

@@ -2,7 +2,7 @@
 #
 #  Makefile for the utiltest module of the Blaze test suite
 #
-#  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+#  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 #
 #  This file is part of the Blaze library. You can redistribute it and/or modify it under
 #  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -40,8 +40,6 @@ all: constraints alignedallocator memory numericcast smallarray typetraits value
 essential: all
 
 single: all
-
-noop: all
 
 
 # Internal rules

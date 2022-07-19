@@ -3,7 +3,7 @@
 //  \file src/blaze/DVecDVecOuter.cpp
 //  \brief Source file for the Blaze dense vector/dense vector outer product kernel
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -83,13 +83,13 @@ double dvecdvecouter( size_t N, size_t steps )
    init( a );
    init( b );
 
-   A = a * b;
+   A = noalias( a * b );
 
    for( size_t rep=0UL; rep<reps; ++rep )
    {
       timer.start();
       for( size_t step=0UL; step<steps; ++step ) {
-         A = a * b;
+         A = noalias( a * b );
       }
       timer.end();
 

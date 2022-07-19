@@ -3,7 +3,7 @@
 //  \file blaze/math/expressions/SVecSVecMultExpr.h
 //  \brief Header file for the sparse vector/sparse vector multiplication expression
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -45,6 +45,7 @@
 #include <blaze/math/constraints/SparseVector.h>
 #include <blaze/math/constraints/TransposeFlag.h>
 #include <blaze/math/constraints/VecVecMultExpr.h>
+#include <blaze/math/constraints/Zero.h>
 #include <blaze/math/Exception.h>
 #include <blaze/math/expressions/Computation.h>
 #include <blaze/math/expressions/Forward.h>
@@ -53,15 +54,17 @@
 #include <blaze/math/shims/Reset.h>
 #include <blaze/math/shims/Serial.h>
 #include <blaze/math/traits/MultTrait.h>
-#include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsTemporary.h>
+#include <blaze/math/typetraits/IsZero.h>
+#include <blaze/system/MacroDisable.h>
 #include <blaze/util/algorithms/Min.h>
 #include <blaze/util/Assert.h>
+#include <blaze/util/EnableIf.h>
 #include <blaze/util/FunctionTrace.h>
+#include <blaze/util/MaybeUnused.h>
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/Types.h>
-#include <blaze/util/typetraits/RemoveReference.h>
 
 
 namespace blaze {
@@ -111,10 +114,15 @@ class SVecSVecMultExpr
 
  public:
    //**Type definitions****************************************************************************
-   using This          = SVecSVecMultExpr<VT1,VT2,TF>;  //!< Type of this SVecSVecMultExpr instance.
-   using ResultType    = MultTrait_t<RT1,RT2>;          //!< Result type for expression template evaluations.
-   using TransposeType = TransposeType_t<ResultType>;   //!< Transpose type for expression template evaluations.
-   using ElementType   = ElementType_t<ResultType>;     //!< Resulting element type.
+   //! Type of this SVecSVecMultExpr instance.
+   using This = SVecSVecMultExpr<VT1,VT2,TF>;
+
+   //! Base type of this SVecSVecMultExpr instance.
+   using BaseType = VecVecMultExpr< SparseVector<This,TF> >;
+
+   using ResultType    = MultTrait_t<RT1,RT2>;         //!< Result type for expression template evaluations.
+   using TransposeType = TransposeType_t<ResultType>;  //!< Transpose type for expression template evaluations.
+   using ElementType   = ElementType_t<ResultType>;    //!< Resulting element type.
 
    //! Return type for expression template evaluations.
    using ReturnType = const If_t< returnExpr, ExprReturnType, ElementType >;
@@ -137,7 +145,7 @@ class SVecSVecMultExpr
    //**Constructor*********************************************************************************
    /*!\brief Constructor for the SVecSVecMultExpr class.
    */
-   explicit inline SVecSVecMultExpr( const VT1& lhs, const VT2& rhs ) noexcept
+   inline SVecSVecMultExpr( const VT1& lhs, const VT2& rhs ) noexcept
       : lhs_( lhs )  // Left-hand side sparse vector of the multiplication expression
       , rhs_( rhs )  // Right-hand side sparse vector of the multiplication expression
    {
@@ -259,29 +267,26 @@ class SVecSVecMultExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
-
-      using LeftIterator  = ConstIterator_t< RemoveReference_t<CT1> >;
-      using RightIterator = ConstIterator_t< RemoveReference_t<CT2> >;
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       CT1 x( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side sparse vector operand
       CT2 y( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side sparse vector operand
 
       BLAZE_INTERNAL_ASSERT( x.size() == rhs.lhs_.size(), "Invalid vector size" );
       BLAZE_INTERNAL_ASSERT( y.size() == rhs.rhs_.size(), "Invalid vector size" );
-      BLAZE_INTERNAL_ASSERT( x.size() == (~lhs).size()  , "Invalid vector size" );
+      BLAZE_INTERNAL_ASSERT( x.size() == (*lhs).size()  , "Invalid vector size" );
 
-      const LeftIterator  lend( x.end() );
-      const RightIterator rend( y.end() );
+      const auto lend( x.end() );
+      const auto rend( y.end() );
 
-      LeftIterator  l( x.begin()  );
-      RightIterator r( y.begin() );
+      auto l( x.begin()  );
+      auto r( y.begin() );
 
       for( ; l!=lend; ++l ) {
          while( r!=rend && r->index() < l->index() ) ++r;
          if( r==rend ) break;
          if( l->index() == r->index() ) {
-            (~lhs)[l->index()] = l->value() * r->value();
+            (*lhs)[l->index()] = l->value() * r->value();
             ++r;
          }
       }
@@ -306,33 +311,30 @@ class SVecSVecMultExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
-
-      using LeftIterator  = ConstIterator_t< RemoveReference_t<CT1> >;
-      using RightIterator = ConstIterator_t< RemoveReference_t<CT2> >;
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       CT1 x( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side sparse vector operand
       CT2 y( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side sparse vector operand
 
       BLAZE_INTERNAL_ASSERT( x.size() == rhs.lhs_.size(), "Invalid vector size" );
       BLAZE_INTERNAL_ASSERT( y.size() == rhs.rhs_.size(), "Invalid vector size" );
-      BLAZE_INTERNAL_ASSERT( x.size() == (~lhs).size()  , "Invalid vector size" );
+      BLAZE_INTERNAL_ASSERT( x.size() == (*lhs).size()  , "Invalid vector size" );
 
       // Final memory allocation (based on the evaluated operands)
-      (~lhs).reserve( min( x.nonZeros(), y.nonZeros() ) );
+      (*lhs).reserve( min( x.nonZeros(), y.nonZeros() ) );
 
       // Performing the vector multiplication
-      const LeftIterator  lend( x.end() );
-      const RightIterator rend( y.end() );
+      const auto lend( x.end() );
+      const auto rend( y.end() );
 
-      LeftIterator  l( x.begin()  );
-      RightIterator r( y.begin() );
+      auto l( x.begin()  );
+      auto r( y.begin() );
 
       for( ; l!=lend; ++l ) {
          while( r!=rend && r->index() < l->index() ) ++r;
          if( r==rend ) break;
          if( l->index() == r->index() ) {
-            (~lhs).append( l->index(), l->value() * r->value() );
+            (*lhs).append( l->index(), l->value() * r->value() );
             ++r;
          }
       }
@@ -357,29 +359,26 @@ class SVecSVecMultExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
-
-      using LeftIterator  = ConstIterator_t< RemoveReference_t<CT1> >;
-      using RightIterator = ConstIterator_t< RemoveReference_t<CT2> >;
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       CT1 x( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side sparse vector operand
       CT2 y( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side sparse vector operand
 
       BLAZE_INTERNAL_ASSERT( x.size() == rhs.lhs_.size(), "Invalid vector size" );
       BLAZE_INTERNAL_ASSERT( y.size() == rhs.rhs_.size(), "Invalid vector size" );
-      BLAZE_INTERNAL_ASSERT( x.size() == (~lhs).size()  , "Invalid vector size" );
+      BLAZE_INTERNAL_ASSERT( x.size() == (*lhs).size()  , "Invalid vector size" );
 
-      const LeftIterator  lend( x.end() );
-      const RightIterator rend( y.end() );
+      const auto lend( x.end() );
+      const auto rend( y.end() );
 
-      LeftIterator  l( x.begin() );
-      RightIterator r( y.begin() );
+      auto l( x.begin() );
+      auto r( y.begin() );
 
       for( ; l!=lend; ++l ) {
          while( r!=rend && r->index() < l->index() ) ++r;
          if( r==rend ) break;
          if( l->index() == r->index() ) {
-            (~lhs)[l->index()] += l->value() * r->value();
+            (*lhs)[l->index()] += l->value() * r->value();
             ++r;
          }
       }
@@ -408,29 +407,26 @@ class SVecSVecMultExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
-
-      using LeftIterator  = ConstIterator_t< RemoveReference_t<CT1> >;
-      using RightIterator = ConstIterator_t< RemoveReference_t<CT2> >;
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       CT1 x( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side sparse vector operand
       CT2 y( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side sparse vector operand
 
       BLAZE_INTERNAL_ASSERT( x.size() == rhs.lhs_.size(), "Invalid vector size" );
       BLAZE_INTERNAL_ASSERT( y.size() == rhs.rhs_.size(), "Invalid vector size" );
-      BLAZE_INTERNAL_ASSERT( x.size() == (~lhs).size()  , "Invalid vector size" );
+      BLAZE_INTERNAL_ASSERT( x.size() == (*lhs).size()  , "Invalid vector size" );
 
-      const LeftIterator  lend( x.end() );
-      const RightIterator rend( y.end() );
+      const auto lend( x.end() );
+      const auto rend( y.end() );
 
-      LeftIterator  l( x.begin()  );
-      RightIterator r( y.begin() );
+      auto l( x.begin()  );
+      auto r( y.begin() );
 
       for( ; l!=lend; ++l ) {
          while( r!=rend && r->index() < l->index() ) ++r;
          if( r==rend ) break;
          if( l->index() == r->index() ) {
-            (~lhs)[l->index()] -= l->value() * r->value();
+            (*lhs)[l->index()] -= l->value() * r->value();
             ++r;
          }
       }
@@ -459,40 +455,37 @@ class SVecSVecMultExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
-
-      using LeftIterator  = ConstIterator_t< RemoveReference_t<CT1> >;
-      using RightIterator = ConstIterator_t< RemoveReference_t<CT2> >;
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       CT1 x( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side sparse vector operand
       CT2 y( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side sparse vector operand
 
       BLAZE_INTERNAL_ASSERT( x.size() == rhs.lhs_.size(), "Invalid vector size" );
       BLAZE_INTERNAL_ASSERT( y.size() == rhs.rhs_.size(), "Invalid vector size" );
-      BLAZE_INTERNAL_ASSERT( x.size() == (~lhs).size()  , "Invalid vector size" );
+      BLAZE_INTERNAL_ASSERT( x.size() == (*lhs).size()  , "Invalid vector size" );
 
-      const LeftIterator  lend( x.end() );
-      const RightIterator rend( y.end() );
+      const auto lend( x.end() );
+      const auto rend( y.end() );
 
-      LeftIterator  l( x.begin()  );
-      RightIterator r( y.begin() );
+      auto l( x.begin()  );
+      auto r( y.begin() );
 
-      size_t i( 0 );
+      size_t i( 0UL );
 
       for( ; l!=lend; ++l ) {
          while( r!=rend && r->index() < l->index() ) ++r;
          if( r==rend ) break;
          if( l->index() == r->index() ) {
             for( ; i<r->index(); ++i )
-               reset( (~lhs)[i] );
-            (~lhs)[l->index()] *= l->value() * r->value();
+               reset( (*lhs)[i] );
+            (*lhs)[l->index()] *= l->value() * r->value();
             ++r;
             ++i;
          }
       }
 
       for( ; i<rhs.size(); ++i )
-         reset( (~lhs)[i] );
+         reset( (*lhs)[i] );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -514,28 +507,24 @@ class SVecSVecMultExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
-
-      using Iterator1 = ConstIterator_t<VT>;
-      using Iterator2 = ConstIterator_t< RemoveReference_t<CT1> >;
-      using Iterator3 = ConstIterator_t< RemoveReference_t<CT2> >;
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       CT1 x( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side sparse vector operand
       CT2 y( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side sparse vector operand
 
       BLAZE_INTERNAL_ASSERT( x.size() == rhs.lhs_.size(), "Invalid vector size" );
       BLAZE_INTERNAL_ASSERT( y.size() == rhs.rhs_.size(), "Invalid vector size" );
-      BLAZE_INTERNAL_ASSERT( x.size() == (~lhs).size()  , "Invalid vector size" );
+      BLAZE_INTERNAL_ASSERT( x.size() == (*lhs).size()  , "Invalid vector size" );
 
       VT tmp( rhs.size(), rhs.nonZeros() );
 
-      const Iterator1 end1( (~lhs).end() );
-      const Iterator2 end2( x.end() );
-      const Iterator3 end3( y.end() );
+      const auto end1( (*lhs).end() );
+      const auto end2( x.end() );
+      const auto end3( y.end() );
 
-      Iterator1 i1( (~lhs).begin() );
-      Iterator2 i2( x.begin() );
-      Iterator3 i3( y.begin() );
+      auto i1( (*lhs).begin() );
+      auto i2( x.begin() );
+      auto i3( y.begin() );
 
       for( ; i1!=end1; ++i1 ) {
          while( i2!=end2 && i2->index() < i1->index() ) ++i2;
@@ -549,7 +538,7 @@ class SVecSVecMultExpr
          }
       }
 
-      swap( ~lhs, tmp );
+      swap( *lhs, tmp );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -560,6 +549,8 @@ class SVecSVecMultExpr
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE( VT2 );
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( VT1, TF );
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( VT2, TF );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_ZERO_TYPE( VT1 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_ZERO_TYPE( VT2 );
    BLAZE_CONSTRAINT_MUST_FORM_VALID_VECVECMULTEXPR( VT1, VT2 );
    /*! \endcond */
    //**********************************************************************************************
@@ -574,6 +565,73 @@ class SVecSVecMultExpr
 //  GLOBAL BINARY ARITHMETIC OPERATORS
 //
 //=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Backend implementation of the componentwise multiplication of two sparse vectors
+//        (\f$ \vec{a}=\vec{b}*\vec{c} \f$).
+// \ingroup sparse_vector
+//
+// \param lhs The left-hand side sparse vector for the component product.
+// \param rhs The right-hand side sparse vector for the component product.
+// \return The product of the two sparse vectors.
+//
+// This function implements a performance optimized treatment of the componentwise multiplication
+// of two sparse vectors.
+*/
+template< typename VT1  // Type of the left-hand side sparse vector
+        , typename VT2  // Type of the right-hand side sparse vector
+        , bool TF       // Transpose flag
+        , DisableIf_t< IsZero_v<VT1> || IsZero_v<VT2> >* = nullptr >
+inline const SVecSVecMultExpr<VT1,VT2,TF>
+   svecsvecmult( const SparseVector<VT1,TF>& lhs, const SparseVector<VT2,TF>& rhs )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   BLAZE_INTERNAL_ASSERT( (*lhs).size() == (*rhs).size(), "Invalid vector sizes" );
+
+   return SVecSVecMultExpr<VT1,VT2,TF>( *lhs, *rhs );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Backend implementation of the componentwise multiplication of two (zero) sparse vectors
+//        (\f$ \vec{a}=\vec{b}*\vec{c} \f$).
+// \ingroup sparse_vector
+//
+// \param lhs The left-hand side sparse vector for the component product.
+// \param rhs The right-hand side sparse vector for the component product.
+// \return The resulting zero vector.
+//
+// This function implements a performance optimized treatment of the componentwise multiplication
+// of two (zero) sparse vectors. It returns a zero vector.
+*/
+template< typename VT1  // Type of the left-hand side sparse vector
+        , typename VT2  // Type of the right-hand side sparse vector
+        , bool TF       // Transpose flag
+        , EnableIf_t< IsZero_v<VT1> || IsZero_v<VT2> >* = nullptr >
+inline decltype(auto)
+   svecsvecmult( const SparseVector<VT1,TF>& lhs, const SparseVector<VT2,TF>& rhs )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   MAYBE_UNUSED( rhs );
+
+   BLAZE_INTERNAL_ASSERT( (*lhs).size() == (*rhs).size(), "Invalid vector sizes" );
+
+   using ReturnType = const MultTrait_t< ResultType_t<VT1>, ResultType_t<VT2> >;
+
+   BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ReturnType, TF );
+   BLAZE_CONSTRAINT_MUST_BE_ZERO_TYPE( ReturnType );
+
+   return ReturnType( (*lhs).size() );
+}
+/*! \endcond */
+//*************************************************************************************************
+
 
 //*************************************************************************************************
 /*!\brief Multiplication operator for the componentwise multiplication of two sparse vectors
@@ -608,12 +666,11 @@ inline decltype(auto)
 {
    BLAZE_FUNCTION_TRACE;
 
-   if( (~lhs).size() != (~rhs).size() ) {
+   if( (*lhs).size() != (*rhs).size() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   using ReturnType = const SVecSVecMultExpr<VT1,VT2,TF>;
-   return ReturnType( ~lhs, ~rhs );
+   return svecsvecmult( *lhs, *rhs );
 }
 //*************************************************************************************************
 

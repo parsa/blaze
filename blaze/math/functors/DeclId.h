@@ -3,7 +3,7 @@
 //  \file blaze/math/functors/DeclId.h
 //  \brief Header file for the DeclId functor
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -40,6 +40,8 @@
 // Includes
 //*************************************************************************************************
 
+#include <utility>
+#include <blaze/system/HostDevice.h>
 #include <blaze/system/Inline.h>
 
 
@@ -58,22 +60,15 @@ namespace blaze {
 struct DeclId
 {
    //**********************************************************************************************
-   /*!\brief Default constructor of the DeclId functor.
-   */
-   explicit inline DeclId()
-   {}
-   //**********************************************************************************************
-
-   //**********************************************************************************************
    /*!\brief Returns the result of the declid() function for the given object/value.
    //
    // \param a The given object/value.
    // \return The result of the declid() function for the given object/value.
    */
    template< typename T >
-   BLAZE_ALWAYS_INLINE decltype(auto) operator()( const T& a ) const
+   BLAZE_ALWAYS_INLINE BLAZE_DEVICE_CALLABLE decltype(auto) operator()( T&& a ) const
    {
-      return declid( a );
+      return declid( std::forward<T>( a ) );
    }
    //**********************************************************************************************
 };

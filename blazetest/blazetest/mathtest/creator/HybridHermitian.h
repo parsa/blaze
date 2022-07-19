@@ -3,7 +3,7 @@
 //  \file blazetest/mathtest/creator/HybridHermitian.h
 //  \brief Specialization of the Creator class template for HermitianMatrix<HybridMatrix>
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -92,10 +92,10 @@ class Creator< blaze::HermitianMatrix< blaze::HybridMatrix<T,M,N,SO> > >
    //@{
    // No explicitly declared copy assignment operator.
 
-   const blaze::HermitianMatrix< blaze::HybridMatrix<T,M,N,SO> > operator()() const;
+   blaze::HermitianMatrix< blaze::HybridMatrix<T,M,N,SO> > operator()() const;
 
    template< typename CP >
-   const blaze::HermitianMatrix< blaze::HybridMatrix<T,M,N,SO> > operator()( const CP& policy ) const;
+   blaze::HermitianMatrix< blaze::HybridMatrix<T,M,N,SO> > operator()( const CP& policy ) const;
    //@}
    //**********************************************************************************************
 
@@ -169,7 +169,7 @@ template< typename T  // Element type of the hybrid matrix
         , size_t M    // Number of rows of the hybrid matrix
         , size_t N    // Number of columns of the hybrid matrix
         , bool SO >   // Storage order of the hybrid matrix
-inline const blaze::HermitianMatrix< blaze::HybridMatrix<T,M,N,SO> >
+inline blaze::HermitianMatrix< blaze::HybridMatrix<T,M,N,SO> >
    Creator< blaze::HermitianMatrix< blaze::HybridMatrix<T,M,N,SO> > >::operator()() const
 {
    return (*this)( Default() );
@@ -188,7 +188,7 @@ template< typename T     // Element type of the hybrid matrix
         , size_t N       // Number of columns of the hybrid matrix
         , bool SO >      // Storage order of the hybrid matrix
 template< typename CP >  // Creation policy
-inline const blaze::HermitianMatrix< blaze::HybridMatrix<T,M,N,SO> >
+inline blaze::HermitianMatrix< blaze::HybridMatrix<T,M,N,SO> >
    Creator< blaze::HermitianMatrix< blaze::HybridMatrix<T,M,N,SO> > >::operator()( const CP& policy ) const
 {
    using blaze::real;

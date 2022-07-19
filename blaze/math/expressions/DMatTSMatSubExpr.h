@@ -3,7 +3,7 @@
 //  \file blaze/math/expressions/DMatTSMatSubExpr.h
 //  \brief Header file for the dense matrix/transpose sparse matrix subtraction expression
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -57,22 +57,17 @@
 #include <blaze/math/shims/Serial.h>
 #include <blaze/math/traits/SubTrait.h>
 #include <blaze/math/typetraits/IsExpression.h>
-#include <blaze/math/typetraits/IsHermitian.h>
-#include <blaze/math/typetraits/IsLower.h>
 #include <blaze/math/typetraits/IsOperation.h>
-#include <blaze/math/typetraits/IsStrictlyLower.h>
-#include <blaze/math/typetraits/IsStrictlyUpper.h>
-#include <blaze/math/typetraits/IsSymmetric.h>
 #include <blaze/math/typetraits/IsTemporary.h>
-#include <blaze/math/typetraits/IsUniLower.h>
-#include <blaze/math/typetraits/IsUniUpper.h>
-#include <blaze/math/typetraits/IsUpper.h>
+#include <blaze/math/typetraits/IsZero.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/FunctionTrace.h>
 #include <blaze/util/IntegralConstant.h>
+#include <blaze/util/MaybeUnused.h>
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/Types.h>
+#include <blaze/util/typetraits/IsSame.h>
 
 
 namespace blaze {
@@ -131,7 +126,12 @@ class DMatTSMatSubExpr
 
  public:
    //**Type definitions****************************************************************************
-   using This          = DMatTSMatSubExpr<MT1,MT2>;    //!< Type of this DMatTSMatSubExpr instance.
+   //! Type of this DMatTSMatSubExpr instance.
+   using This = DMatTSMatSubExpr<MT1,MT2>;
+
+   //! Base type of this DMatTSMatSubExpr instance.
+   using BaseType = MatMatSubExpr< DenseMatrix<This,false> >;
+
    using ResultType    = SubTrait_t<RT1,RT2>;          //!< Result type for expression template evaluations.
    using OppositeType  = OppositeType_t<ResultType>;   //!< Result type with opposite storage order for expression template evaluations.
    using TransposeType = TransposeType_t<ResultType>;  //!< Transpose type for expression template evaluations.
@@ -164,7 +164,7 @@ class DMatTSMatSubExpr
    // \param lhs The left-hand side dense matrix operand of the subtraction expression.
    // \param rhs The right-hand side sparse matrix operand of the subtraction expression.
    */
-   explicit inline DMatTSMatSubExpr( const MT1& lhs, const MT2& rhs ) noexcept
+   inline DMatTSMatSubExpr( const MT1& lhs, const MT2& rhs ) noexcept
       : lhs_( lhs )  // Left-hand side dense matrix of the subtraction expression
       , rhs_( rhs )  // Right-hand side sparse matrix of the subtraction expression
    {
@@ -295,15 +295,15 @@ class DMatTSMatSubExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      if( !IsOperation_v<MT1> && isSame( ~lhs, rhs.lhs_ ) ) {
-         subAssign( ~lhs, rhs.rhs_ );
+      if( !IsOperation_v<MT1> && isSame( *lhs, rhs.lhs_ ) ) {
+         subAssign( *lhs, rhs.rhs_ );
       }
       else {
-         assign   ( ~lhs, rhs.lhs_ );
-         subAssign( ~lhs, rhs.rhs_ );
+         assign   ( *lhs, rhs.lhs_ );
+         subAssign( *lhs, rhs.rhs_ );
       }
    }
    /*! \endcond */
@@ -336,11 +336,11 @@ class DMatTSMatSubExpr
       BLAZE_CONSTRAINT_MATRICES_MUST_HAVE_SAME_STORAGE_ORDER( MT, TmpType );
       BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( TmpType );
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
       const TmpType tmp( serial( rhs ) );
-      assign( ~lhs, tmp );
+      assign( *lhs, tmp );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -364,11 +364,11 @@ class DMatTSMatSubExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      addAssign( ~lhs, rhs.lhs_ );
-      subAssign( ~lhs, rhs.rhs_ );
+      addAssign( *lhs, rhs.lhs_ );
+      subAssign( *lhs, rhs.rhs_ );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -396,11 +396,11 @@ class DMatTSMatSubExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      subAssign( ~lhs, rhs.lhs_ );
-      addAssign( ~lhs, rhs.rhs_ );
+      subAssign( *lhs, rhs.lhs_ );
+      addAssign( *lhs, rhs.rhs_ );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -432,11 +432,11 @@ class DMatTSMatSubExpr
       BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( ResultType );
       BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
       const ResultType tmp( serial( rhs ) );
-      schurAssign( ~lhs, tmp );
+      schurAssign( *lhs, tmp );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -469,20 +469,20 @@ class DMatTSMatSubExpr
    */
    template< typename MT  // Type of the target dense matrix
            , bool SO2 >   // Storage order of the target dense matrix
-   friend inline EnableIf_t< UseSMPAssign_v<MT> >
-      smpAssign( DenseMatrix<MT,SO2>& lhs, const DMatTSMatSubExpr& rhs )
+   friend inline auto smpAssign( DenseMatrix<MT,SO2>& lhs, const DMatTSMatSubExpr& rhs )
+      -> EnableIf_t< UseSMPAssign_v<MT> >
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      if( !IsOperation_v<MT1> && isSame( ~lhs, rhs.lhs_ ) ) {
-         smpSubAssign( ~lhs, rhs.rhs_ );
+      if( !IsOperation_v<MT1> && isSame( *lhs, rhs.lhs_ ) ) {
+         smpSubAssign( *lhs, rhs.rhs_ );
       }
       else {
-         smpAssign   ( ~lhs, rhs.lhs_ );
-         smpSubAssign( ~lhs, rhs.rhs_ );
+         smpAssign   ( *lhs, rhs.lhs_ );
+         smpSubAssign( *lhs, rhs.rhs_ );
       }
    }
    /*! \endcond */
@@ -504,8 +504,8 @@ class DMatTSMatSubExpr
    */
    template< typename MT  // Type of the target sparse matrix
            , bool SO2 >   // Storage order of the target sparse matrix
-   friend inline EnableIf_t< UseSMPAssign_v<MT> >
-      smpAssign( SparseMatrix<MT,SO2>& lhs, const DMatTSMatSubExpr& rhs )
+   friend inline auto smpAssign( SparseMatrix<MT,SO2>& lhs, const DMatTSMatSubExpr& rhs )
+      -> EnableIf_t< UseSMPAssign_v<MT> >
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -518,11 +518,11 @@ class DMatTSMatSubExpr
       BLAZE_CONSTRAINT_MATRICES_MUST_HAVE_SAME_STORAGE_ORDER( MT, TmpType );
       BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( TmpType );
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
       const TmpType tmp( rhs );
-      smpAssign( ~lhs, tmp );
+      smpAssign( *lhs, tmp );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -544,16 +544,16 @@ class DMatTSMatSubExpr
    */
    template< typename MT  // Type of the target dense matrix
            , bool SO2 >   // Storage order of the target dense matrix
-   friend inline EnableIf_t< UseSMPAssign_v<MT> >
-      smpAddAssign( DenseMatrix<MT,SO2>& lhs, const DMatTSMatSubExpr& rhs )
+   friend inline auto smpAddAssign( DenseMatrix<MT,SO2>& lhs, const DMatTSMatSubExpr& rhs )
+      -> EnableIf_t< UseSMPAssign_v<MT> >
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      smpAddAssign( ~lhs, rhs.lhs_ );
-      smpSubAssign( ~lhs, rhs.rhs_ );
+      smpAddAssign( *lhs, rhs.lhs_ );
+      smpSubAssign( *lhs, rhs.rhs_ );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -579,16 +579,16 @@ class DMatTSMatSubExpr
    */
    template< typename MT  // Type of the target dense matrix
            , bool SO2 >   // Storage order of the target dense matrix
-   friend inline EnableIf_t< UseSMPAssign_v<MT> >
-      smpSubAssign( DenseMatrix<MT,SO2>& lhs, const DMatTSMatSubExpr& rhs )
+   friend inline auto smpSubAssign( DenseMatrix<MT,SO2>& lhs, const DMatTSMatSubExpr& rhs )
+      -> EnableIf_t< UseSMPAssign_v<MT> >
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      smpSubAssign( ~lhs, rhs.lhs_ );
-      smpAddAssign( ~lhs, rhs.rhs_ );
+      smpSubAssign( *lhs, rhs.lhs_ );
+      smpAddAssign( *lhs, rhs.rhs_ );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -614,8 +614,8 @@ class DMatTSMatSubExpr
    */
    template< typename MT  // Type of the target dense matrix
            , bool SO2 >   // Storage order of the target dense matrix
-   friend inline EnableIf_t< UseSMPAssign_v<MT> >
-      smpSchurAssign( DenseMatrix<MT,SO2>& lhs, const DMatTSMatSubExpr& rhs )
+   friend inline auto smpSchurAssign( DenseMatrix<MT,SO2>& lhs, const DMatTSMatSubExpr& rhs )
+      -> EnableIf_t< UseSMPAssign_v<MT> >
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -623,11 +623,11 @@ class DMatTSMatSubExpr
       BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( ResultType );
       BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
       const ResultType tmp( rhs );
-      smpSchurAssign( ~lhs, tmp );
+      smpSchurAssign( *lhs, tmp );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -666,8 +666,73 @@ class DMatTSMatSubExpr
 //=================================================================================================
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Backend implementation of the subtraction between a row-major dense matrix and a
+//        column-major sparse matrix (\f$ A=B-C \f$).
+// \ingroup dense_matrix
+//
+// \param lhs The left-hand side dense matrix for the subtraction.
+// \param rhs The right-hand side sparse matrix for the subtraction.
+// \return The difference of the two matrices.
+//
+// This function implements a performance optimized treatment of the subtraction between a
+// row-major dense matrix and a column-major sparse matrix.
+*/
+template< typename MT1  // Type of the left-hand side dense matrix
+        , typename MT2  // Type of the right-hand side sparse matrix
+        , DisableIf_t< IsZero_v<MT2> &&
+                       IsSame_v< ElementType_t<MT1>, ElementType_t<MT2> > >* = nullptr >
+inline const DMatTSMatSubExpr<MT1,MT2>
+   dmattsmatsub( const DenseMatrix<MT1,false>& lhs, const SparseMatrix<MT2,true>& rhs )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( (*lhs).columns() == (*rhs).columns(), "Invalid number of columns" );
+
+   return DMatTSMatSubExpr<MT1,MT2>( *lhs, *rhs );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Backend implementation of the subtraction between a row-major dense matrix and a
+//        column-major zero matrix (\f$ A=B-C \f$).
+// \ingroup dense_matrix
+//
+// \param lhs The left-hand side dense matrix for the subtraction.
+// \param rhs The right-hand side zero matrix for the subtraction.
+// \return Reference to the left-hand side dense matrix.
+//
+// This function implements a performance optimized treatment of the subtraction between a
+// row-major dense matrix and a column-major zero matrix. It returns a reference to the left-hand
+// side dense matrix.
+*/
+template< typename MT1  // Type of the left-hand side dense matrix
+        , typename MT2  // Type of the right-hand side sparse matrix
+        , EnableIf_t< IsZero_v<MT2> &&
+                      IsSame_v< ElementType_t<MT1>, ElementType_t<MT2> > >* = nullptr >
+inline const MT1&
+   dmattsmatsub( const DenseMatrix<MT1,false>& lhs, const SparseMatrix<MT2,true>& rhs )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   MAYBE_UNUSED( rhs );
+
+   BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( (*lhs).columns() == (*rhs).columns(), "Invalid number of columns" );
+
+   return (*lhs);
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Subtraction operator for the subtraction of a row-major dense matrix and a column-major
-//        sparse matrix (\f$ A=B+C \f$).
+//        sparse matrix (\f$ A=B-C \f$).
 // \ingroup dense_matrix
 //
 // \param lhs The left-hand side dense matrix for the matrix subtraction.
@@ -702,12 +767,11 @@ inline decltype(auto)
 {
    BLAZE_FUNCTION_TRACE;
 
-   if( (~lhs).rows() != (~rhs).rows() || (~lhs).columns() != (~rhs).columns() ) {
+   if( (*lhs).rows() != (*rhs).rows() || (*lhs).columns() != (*rhs).columns() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
-   using ReturnType = const DMatTSMatSubExpr<MT1,MT2>;
-   return ReturnType( ~lhs, ~rhs );
+   return dmattsmatsub( *lhs, *rhs );
 }
 //*************************************************************************************************
 
@@ -742,7 +806,7 @@ inline decltype(auto)
 {
    BLAZE_FUNCTION_TRACE;
 
-   return ( lhs.leftOperand() + (~rhs) ) - lhs.rightOperand();
+   return ( lhs.leftOperand() + (*rhs) ) - lhs.rightOperand();
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -770,152 +834,8 @@ inline decltype(auto)
 {
    BLAZE_FUNCTION_TRACE;
 
-   return ( lhs.leftOperand() - (~rhs) ) - lhs.rightOperand();
+   return ( lhs.leftOperand() - (*rhs) ) - lhs.rightOperand();
 }
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  ISSYMMETRIC SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT1, typename MT2 >
-struct IsSymmetric< DMatTSMatSubExpr<MT1,MT2> >
-   : public BoolConstant< IsSymmetric_v<MT1> && IsSymmetric_v<MT2> >
-{};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  ISHERMITIAN SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT1, typename MT2 >
-struct IsHermitian< DMatTSMatSubExpr<MT1,MT2> >
-   : public BoolConstant< IsHermitian_v<MT1> && IsHermitian_v<MT2> >
-{};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  ISLOWER SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT1, typename MT2 >
-struct IsLower< DMatTSMatSubExpr<MT1,MT2> >
-   : public BoolConstant< IsLower_v<MT1> && IsLower_v<MT2> >
-{};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  ISUNILOWER SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT1, typename MT2 >
-struct IsUniLower< DMatTSMatSubExpr<MT1,MT2> >
-   : public BoolConstant< IsUniLower_v<MT1> && IsStrictlyLower_v<MT2> >
-{};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  ISSTRICTLYLOWER SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT1, typename MT2 >
-struct IsStrictlyLower< DMatTSMatSubExpr<MT1,MT2> >
-   : public BoolConstant< IsStrictlyLower_v<MT1> && IsStrictlyLower_v<MT2> >
-{};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  ISUPPER SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT1, typename MT2 >
-struct IsUpper< DMatTSMatSubExpr<MT1,MT2> >
-   : public BoolConstant< IsUpper_v<MT1> && IsUpper_v<MT2> >
-{};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  ISUNIUPPER SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT1, typename MT2 >
-struct IsUniUpper< DMatTSMatSubExpr<MT1,MT2> >
-   : public BoolConstant< IsUniUpper_v<MT1> && IsStrictlyUpper_v<MT2> >
-{};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  ISSTRICTLYUPPER SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT1, typename MT2 >
-struct IsStrictlyUpper< DMatTSMatSubExpr<MT1,MT2> >
-   : public BoolConstant< IsStrictlyUpper_v<MT1> && IsStrictlyUpper_v<MT2> >
-{};
 /*! \endcond */
 //*************************************************************************************************
 

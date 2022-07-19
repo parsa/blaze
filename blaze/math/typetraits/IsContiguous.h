@@ -3,7 +3,7 @@
 //  \file blaze/math/typetraits/IsContiguous.h
 //  \brief Header file for the IsContiguous type trait
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -40,8 +40,7 @@
 // Includes
 //*************************************************************************************************
 
-#include <blaze/util/FalseType.h>
-#include <blaze/util/TrueType.h>
+#include <blaze/util/IntegralConstant.h>
 
 
 namespace blaze {
@@ -130,7 +129,7 @@ struct IsContiguous< const volatile T >
 
 //*************************************************************************************************
 /*!\brief Auxiliary variable template for the IsContiguous type trait.
-// \ingroup type_traits
+// \ingroup math_type_traits
 //
 // The IsContiguous_v variable template provides a convenient shortcut to access the nested
 // \a value of the IsContiguous class template. For instance, given the type \a T the

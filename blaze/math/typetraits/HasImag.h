@@ -3,7 +3,7 @@
 //  \file blaze/math/typetraits/HasImag.h
 //  \brief Header file for the HasImag type trait
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -44,8 +44,7 @@
 #include <blaze/math/typetraits/IsMatrix.h>
 #include <blaze/math/typetraits/IsVector.h>
 #include <blaze/util/EnableIf.h>
-#include <blaze/util/FalseType.h>
-#include <blaze/util/TrueType.h>
+#include <blaze/util/IntegralConstant.h>
 #include <blaze/util/typetraits/Void.h>
 
 
@@ -139,7 +138,7 @@ struct HasImag< T, EnableIf_t< IsMatrix_v<T> > >
 
 //*************************************************************************************************
 /*!\brief Auxiliary variable template for the HasImag type trait.
-// \ingroup type_traits
+// \ingroup math_type_traits
 //
 // The HasImag_v variable template provides a convenient shortcut to access the nested \a value
 // of the HasImag class template. For instance, given the type \a T the following two statements

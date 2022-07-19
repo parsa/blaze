@@ -3,7 +3,7 @@
 //  \file blaze/math/proxy/SparseMatrixProxy.h
 //  \brief Header file for the SparseMatrixProxy class
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -49,7 +49,6 @@
 #include <blaze/math/typetraits/IsSquare.h>
 #include <blaze/math/typetraits/IsColumnMajorMatrix.h>
 #include <blaze/system/Inline.h>
-#include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/Types.h>
 
@@ -171,6 +170,19 @@ class SparseMatrixProxy
    //@}
    //**********************************************************************************************
 
+ protected:
+   //**Special member functions********************************************************************
+   /*!\name Special member functions */
+   //@{
+   SparseMatrixProxy() = default;
+   SparseMatrixProxy( const SparseMatrixProxy& ) = default;
+   SparseMatrixProxy( SparseMatrixProxy&& ) = default;
+   ~SparseMatrixProxy() = default;
+   SparseMatrixProxy& operator=( const SparseMatrixProxy& ) = default;
+   SparseMatrixProxy& operator=( SparseMatrixProxy&& ) = default;
+   //@}
+   //**********************************************************************************************
+
  private:
    //**Compile time checks*************************************************************************
    /*! \cond BLAZE_INTERNAL */
@@ -208,11 +220,11 @@ template< typename PT    // Type of the proxy
 inline typename SparseMatrixProxy<PT,MT>::Reference
    SparseMatrixProxy<PT,MT>::operator()( size_t i, size_t j ) const
 {
-   if( (~*this).isRestricted() ) {
+   if( (**this).isRestricted() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid access to restricted element" );
    }
 
-   return (~*this).get()(i,j);
+   return (**this).get()(i,j);
 }
 //*************************************************************************************************
 
@@ -236,11 +248,11 @@ template< typename PT    // Type of the proxy
 inline typename SparseMatrixProxy<PT,MT>::Reference
    SparseMatrixProxy<PT,MT>::at( size_t i, size_t j ) const
 {
-   if( (~*this).isRestricted() ) {
+   if( (**this).isRestricted() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid access to restricted element" );
    }
 
-   return (~*this).get().at(i,j);
+   return (**this).get().at(i,j);
 }
 //*************************************************************************************************
 
@@ -261,7 +273,7 @@ template< typename PT    // Type of the proxy
 inline typename SparseMatrixProxy<PT,MT>::Iterator
    SparseMatrixProxy<PT,MT>::begin( size_t i ) const
 {
-   return (~*this).get().begin(i);
+   return (**this).get().begin(i);
 }
 //*************************************************************************************************
 
@@ -282,7 +294,7 @@ template< typename PT    // Type of the proxy
 inline typename SparseMatrixProxy<PT,MT>::ConstIterator
    SparseMatrixProxy<PT,MT>::cbegin( size_t i ) const
 {
-   return (~*this).get().cbegin(i);
+   return (**this).get().cbegin(i);
 }
 //*************************************************************************************************
 
@@ -303,7 +315,7 @@ template< typename PT    // Type of the proxy
 inline typename SparseMatrixProxy<PT,MT>::Iterator
    SparseMatrixProxy<PT,MT>::end( size_t i ) const
 {
-   return (~*this).get().end(i);
+   return (**this).get().end(i);
 }
 //*************************************************************************************************
 
@@ -324,7 +336,7 @@ template< typename PT    // Type of the proxy
 inline typename SparseMatrixProxy<PT,MT>::ConstIterator
    SparseMatrixProxy<PT,MT>::cend( size_t i ) const
 {
-   return (~*this).get().cend(i);
+   return (**this).get().cend(i);
 }
 //*************************************************************************************************
 
@@ -346,7 +358,7 @@ template< typename PT    // Type of the proxy
         , typename MT >  // Type of the sparse matrix
 inline size_t SparseMatrixProxy<PT,MT>::rows() const
 {
-   return (~*this).get().rows();
+   return (**this).get().rows();
 }
 //*************************************************************************************************
 
@@ -360,7 +372,7 @@ template< typename PT    // Type of the proxy
         , typename MT >  // Type of the sparse matrix
 inline size_t SparseMatrixProxy<PT,MT>::columns() const
 {
-   return (~*this).get().columns();
+   return (**this).get().columns();
 }
 //*************************************************************************************************
 
@@ -374,7 +386,7 @@ template< typename PT    // Type of the proxy
         , typename MT >  // Type of the sparse matrix
 inline size_t SparseMatrixProxy<PT,MT>::capacity() const
 {
-   return (~*this).get().capacity();
+   return (**this).get().capacity();
 }
 //*************************************************************************************************
 
@@ -394,7 +406,7 @@ template< typename PT    // Type of the proxy
         , typename MT >  // Type of the sparse matrix
 inline size_t SparseMatrixProxy<PT,MT>::capacity( size_t i ) const
 {
-   return (~*this).get().capacity(i);
+   return (**this).get().capacity(i);
 }
 //*************************************************************************************************
 
@@ -408,7 +420,7 @@ template< typename PT    // Type of the proxy
         , typename MT >  // Type of the sparse matrix
 inline size_t SparseMatrixProxy<PT,MT>::nonZeros() const
 {
-   return (~*this).get().nonZeros();
+   return (**this).get().nonZeros();
 }
 //*************************************************************************************************
 
@@ -428,7 +440,7 @@ template< typename PT    // Type of the proxy
         , typename MT >  // Type of the sparse matrix
 inline size_t SparseMatrixProxy<PT,MT>::nonZeros( size_t i ) const
 {
-   return (~*this).get().nonZeros(i);
+   return (**this).get().nonZeros(i);
 }
 //*************************************************************************************************
 
@@ -446,7 +458,7 @@ inline void SparseMatrixProxy<PT,MT>::reset() const
 {
    using blaze::reset;
 
-   reset( (~*this).get() );
+   reset( (**this).get() );
 }
 //*************************************************************************************************
 
@@ -468,7 +480,7 @@ inline void SparseMatrixProxy<PT,MT>::reset( size_t i ) const
 {
    using blaze::reset;
 
-   reset( (~*this).get(), i );
+   reset( (**this).get(), i );
 }
 //*************************************************************************************************
 
@@ -486,7 +498,7 @@ inline void SparseMatrixProxy<PT,MT>::clear() const
 {
    using blaze::clear;
 
-   clear( (~*this).get() );
+   clear( (**this).get() );
 }
 //*************************************************************************************************
 
@@ -510,11 +522,11 @@ template< typename PT    // Type of the proxy
 inline typename SparseMatrixProxy<PT,MT>::Iterator
    SparseMatrixProxy<PT,MT>::set( size_t i, size_t j, const ElementType& value ) const
 {
-   if( (~*this).isRestricted() ) {
+   if( (**this).isRestricted() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid access to restricted element" );
    }
 
-   return (~*this).get().set( i, j, value );
+   return (**this).get().set( i, j, value );
 }
 //*************************************************************************************************
 
@@ -538,11 +550,11 @@ template< typename PT    // Type of the proxy
 inline typename SparseMatrixProxy<PT,MT>::Iterator
    SparseMatrixProxy<PT,MT>::insert( size_t i, size_t j, const ElementType& value ) const
 {
-   if( (~*this).isRestricted() ) {
+   if( (**this).isRestricted() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid access to restricted element" );
    }
 
-   return (~*this).get().insert( i, j, value );
+   return (**this).get().insert( i, j, value );
 }
 //*************************************************************************************************
 
@@ -578,11 +590,11 @@ template< typename PT    // Type of the proxy
         , typename MT >  // Type of the sparse matrix
 inline void SparseMatrixProxy<PT,MT>::append( size_t i, size_t j, const ElementType& value, bool check ) const
 {
-   if( (~*this).isRestricted() ) {
+   if( (**this).isRestricted() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid access to restricted element" );
    }
 
-   (~*this).get().append( i, j, value, check );
+   (**this).get().append( i, j, value, check );
 }
 //*************************************************************************************************
 
@@ -605,11 +617,11 @@ template< typename PT    // Type of the proxy
         , typename MT >  // Type of the sparse matrix
 inline void SparseMatrixProxy<PT,MT>::finalize( size_t i ) const
 {
-   if( (~*this).isRestricted() ) {
+   if( (**this).isRestricted() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid access to restricted element" );
    }
 
-   (~*this).get().finalize( i );
+   (**this).get().finalize( i );
 }
 //*************************************************************************************************
 
@@ -634,11 +646,11 @@ template< typename PT    // Type of the proxy
         , typename MT >  // Type of the sparse matrix
 inline void SparseMatrixProxy<PT,MT>::resize( size_t m, size_t n, bool preserve ) const
 {
-   if( (~*this).isRestricted() ) {
+   if( (**this).isRestricted() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid access to restricted element" );
    }
 
-   (~*this).get().resize( m, n, preserve );
+   (**this).get().resize( m, n, preserve );
 }
 //*************************************************************************************************
 
@@ -658,11 +670,11 @@ template< typename PT    // Type of the proxy
         , typename MT >  // Type of the sparse matrix
 inline void SparseMatrixProxy<PT,MT>::reserve( size_t n ) const
 {
-   if( (~*this).isRestricted() ) {
+   if( (**this).isRestricted() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid access to restricted element" );
    }
 
-   (~*this).get().reserve( n );
+   (**this).get().reserve( n );
 }
 //*************************************************************************************************
 
@@ -686,11 +698,11 @@ template< typename PT    // Type of the proxy
         , typename MT >  // Type of the sparse matrix
 inline void SparseMatrixProxy<PT,MT>::reserve( size_t i, size_t n ) const
 {
-   if( (~*this).isRestricted() ) {
+   if( (**this).isRestricted() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid access to restricted element" );
    }
 
-   (~*this).get().reserve( i, n );
+   (**this).get().reserve( i, n );
 }
 //*************************************************************************************************
 
@@ -710,11 +722,11 @@ template< typename PT    // Type of the proxy
         , typename MT >  // Type of the sparse matrix
 inline void SparseMatrixProxy<PT,MT>::trim() const
 {
-   if( (~*this).isRestricted() ) {
+   if( (**this).isRestricted() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid access to restricted element" );
    }
 
-   (~*this).get().trim();
+   (**this).get().trim();
 }
 //*************************************************************************************************
 
@@ -735,11 +747,11 @@ template< typename PT    // Type of the proxy
         , typename MT >  // Type of the sparse matrix
 inline void SparseMatrixProxy<PT,MT>::trim( size_t i ) const
 {
-   if( (~*this).isRestricted() ) {
+   if( (**this).isRestricted() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid access to restricted element" );
    }
 
-   (~*this).get().trim( i );
+   (**this).get().trim( i );
 }
 //*************************************************************************************************
 
@@ -754,11 +766,11 @@ template< typename PT    // Type of the proxy
         , typename MT >  // Type of the sparse matrix
 inline void SparseMatrixProxy<PT,MT>::transpose() const
 {
-   if( (~*this).isRestricted() ) {
+   if( (**this).isRestricted() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid access to restricted element" );
    }
 
-   (~*this).get().transpose();
+   (**this).get().transpose();
 }
 //*************************************************************************************************
 
@@ -773,11 +785,11 @@ template< typename PT    // Type of the proxy
         , typename MT >  // Type of the sparse matrix
 inline void SparseMatrixProxy<PT,MT>::ctranspose() const
 {
-   if( (~*this).isRestricted() ) {
+   if( (**this).isRestricted() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid access to restricted element" );
    }
 
-   (~*this).get().ctranspose();
+   (**this).get().ctranspose();
 }
 //*************************************************************************************************
 
@@ -798,11 +810,11 @@ template< typename PT       // Type of the proxy
 template< typename Other >  // Data type of the scalar value
 inline void SparseMatrixProxy<PT,MT>::scale( const Other& scalar ) const
 {
-   if( (~*this).isRestricted() ) {
+   if( (**this).isRestricted() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid access to restricted element" );
    }
 
-   (~*this).get().scale( scalar );
+   (**this).get().scale( scalar );
 }
 //*************************************************************************************************
 
@@ -829,11 +841,11 @@ template< typename PT    // Type of the proxy
         , typename MT >  // Type of the sparse matrix
 inline void SparseMatrixProxy<PT,MT>::erase( size_t i, size_t j ) const
 {
-   if( (~*this).isRestricted() ) {
+   if( (**this).isRestricted() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid access to restricted element" );
    }
 
-   (~*this).get().erase( i, j );
+   (**this).get().erase( i, j );
 }
 //*************************************************************************************************
 
@@ -855,11 +867,11 @@ template< typename PT    // Type of the proxy
 inline typename SparseMatrixProxy<PT,MT>::Iterator
    SparseMatrixProxy<PT,MT>::erase( size_t i, Iterator pos ) const
 {
-   if( (~*this).isRestricted() ) {
+   if( (**this).isRestricted() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid access to restricted element" );
    }
 
-   return (~*this).get().erase( i, pos );
+   return (**this).get().erase( i, pos );
 }
 //*************************************************************************************************
 
@@ -882,11 +894,11 @@ template< typename PT    // Type of the proxy
 inline typename SparseMatrixProxy<PT,MT>::Iterator
    SparseMatrixProxy<PT,MT>::erase( size_t i, Iterator first, Iterator last ) const
 {
-   if( (~*this).isRestricted() ) {
+   if( (**this).isRestricted() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid access to restricted element" );
    }
 
-   return (~*this).get().erase( i, first, last );
+   return (**this).get().erase( i, first, last );
 }
 //*************************************************************************************************
 
@@ -909,11 +921,11 @@ template< typename PT      // Type of the proxy
 template< typename Pred >  // Type of the unary predicate
 inline void SparseMatrixProxy<PT,MT>::erase( Pred predicate )
 {
-   if( (~*this).isRestricted() ) {
+   if( (**this).isRestricted() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid access to restricted element" );
    }
 
-   (~*this).get().erase( predicate );
+   (**this).get().erase( predicate );
 }
 //*************************************************************************************************
 
@@ -941,11 +953,11 @@ template< typename PT      // Type of the proxy
 template< typename Pred >  // Type of the unary predicate
 inline void SparseMatrixProxy<PT,MT>::erase( size_t i, Iterator first, Iterator last, Pred predicate )
 {
-   if( (~*this).isRestricted() ) {
+   if( (**this).isRestricted() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid access to restricted element" );
    }
 
-   (~*this).get().erase( i, first, last, predicate );
+   (**this).get().erase( i, first, last, predicate );
 }
 //*************************************************************************************************
 
@@ -978,7 +990,7 @@ template< typename PT    // Type of the proxy
 inline typename SparseMatrixProxy<PT,MT>::Iterator
    SparseMatrixProxy<PT,MT>::find( size_t i, size_t j ) const
 {
-   return (~*this).get().find( i, j );
+   return (**this).get().find( i, j );
 }
 //*************************************************************************************************
 
@@ -1003,7 +1015,7 @@ template< typename PT    // Type of the proxy
 inline typename SparseMatrixProxy<PT,MT>::Iterator
    SparseMatrixProxy<PT,MT>::lowerBound( size_t i, size_t j ) const
 {
-   return (~*this).get().lowerBound( i, j );
+   return (**this).get().lowerBound( i, j );
 }
 //*************************************************************************************************
 
@@ -1028,7 +1040,7 @@ template< typename PT    // Type of the proxy
 inline typename SparseMatrixProxy<PT,MT>::Iterator
    SparseMatrixProxy<PT,MT>::upperBound( size_t i, size_t j ) const
 {
-   return (~*this).get().upperBound( i, j );
+   return (**this).get().upperBound( i, j );
 }
 //*************************************************************************************************
 
@@ -1045,50 +1057,53 @@ inline typename SparseMatrixProxy<PT,MT>::Iterator
 /*!\name SparseMatrixProxy global functions */
 //@{
 template< typename PT, typename MT >
-BLAZE_ALWAYS_INLINE typename SparseMatrixProxy<PT,MT>::Iterator
+typename SparseMatrixProxy<PT,MT>::Iterator
    begin( const SparseMatrixProxy<PT,MT>& proxy, size_t i );
 
 template< typename PT, typename MT >
-BLAZE_ALWAYS_INLINE typename SparseMatrixProxy<PT,MT>::ConstIterator
+typename SparseMatrixProxy<PT,MT>::ConstIterator
    cbegin( const SparseMatrixProxy<PT,MT>& proxy, size_t i );
 
 template< typename PT, typename MT >
-BLAZE_ALWAYS_INLINE typename SparseMatrixProxy<PT,MT>::Iterator
+typename SparseMatrixProxy<PT,MT>::Iterator
    end( const SparseMatrixProxy<PT,MT>& proxy, size_t i );
 
 template< typename PT, typename MT >
-BLAZE_ALWAYS_INLINE typename SparseMatrixProxy<PT,MT>::ConstIterator
+typename SparseMatrixProxy<PT,MT>::ConstIterator
    cend( const SparseMatrixProxy<PT,MT>& proxy, size_t i );
 
 template< typename PT, typename MT >
-BLAZE_ALWAYS_INLINE size_t rows( const SparseMatrixProxy<PT,MT>& proxy );
+size_t rows( const SparseMatrixProxy<PT,MT>& proxy );
 
 template< typename PT, typename MT >
-BLAZE_ALWAYS_INLINE size_t columns( const SparseMatrixProxy<PT,MT>& proxy );
+size_t columns( const SparseMatrixProxy<PT,MT>& proxy );
 
 template< typename PT, typename MT >
-BLAZE_ALWAYS_INLINE size_t capacity( const SparseMatrixProxy<PT,MT>& proxy );
+size_t capacity( const SparseMatrixProxy<PT,MT>& proxy );
 
 template< typename PT, typename MT >
-BLAZE_ALWAYS_INLINE size_t capacity( const SparseMatrixProxy<PT,MT>& proxy, size_t i );
+size_t capacity( const SparseMatrixProxy<PT,MT>& proxy, size_t i );
 
 template< typename PT, typename MT >
-BLAZE_ALWAYS_INLINE size_t nonZeros( const SparseMatrixProxy<PT,MT>& proxy );
+size_t nonZeros( const SparseMatrixProxy<PT,MT>& proxy );
 
 template< typename PT, typename MT >
-BLAZE_ALWAYS_INLINE size_t nonZeros( const SparseMatrixProxy<PT,MT>& proxy, size_t i );
+size_t nonZeros( const SparseMatrixProxy<PT,MT>& proxy, size_t i );
 
 template< typename PT, typename MT >
-BLAZE_ALWAYS_INLINE void resize( const SparseMatrixProxy<PT,MT>& proxy, size_t m, size_t n, bool preserve=true );
+void resize( const SparseMatrixProxy<PT,MT>& proxy, size_t m, size_t n, bool preserve=true );
 
 template< typename PT, typename MT >
-BLAZE_ALWAYS_INLINE void reset( const SparseMatrixProxy<PT,MT>& proxy );
+typename SparseMatrixProxy<PT,MT>::Iterator
+   find( const SparseMatrixProxy<PT,MT>& proxy, size_t i, size_t j );
 
 template< typename PT, typename MT >
-BLAZE_ALWAYS_INLINE void reset( const SparseMatrixProxy<PT,MT>& proxy, size_t i );
+typename SparseMatrixProxy<PT,MT>::Iterator
+   lowerBound( const SparseMatrixProxy<PT,MT>& proxy, size_t i, size_t j );
 
 template< typename PT, typename MT >
-BLAZE_ALWAYS_INLINE void clear( const SparseMatrixProxy<PT,MT>& proxy );
+typename SparseMatrixProxy<PT,MT>::Iterator
+   upperBound( const SparseMatrixProxy<PT,MT>& proxy, size_t i, size_t j );
 //@}
 //*************************************************************************************************
 
@@ -1374,59 +1389,58 @@ BLAZE_ALWAYS_INLINE void resize( const SparseMatrixProxy<PT,MT>& proxy, size_t m
 
 
 //*************************************************************************************************
-/*!\brief Resetting the represented element to the default initial values.
+/*!\brief Searches for a specific matrix element.
 // \ingroup math
 //
 // \param proxy The given access proxy.
-// \return void
-//
-// This function resets all elements of the matrix to the default initial values.
+// \param i The row index of the search element. The index has to be in the range \f$[0..M-1]\f$.
+// \param j The column index of the search element. The index has to be in the range \f$[0..N-1]\f$.
+// \return Iterator to the element in case the index is found, end() iterator otherwise.
 */
 template< typename PT    // Type of the proxy
         , typename MT >  // Type of the sparse matrix
-BLAZE_ALWAYS_INLINE void reset( const SparseMatrixProxy<PT,MT>& proxy )
+BLAZE_ALWAYS_INLINE typename SparseMatrixProxy<PT,MT>::Iterator
+   find( const SparseMatrixProxy<PT,MT>& proxy, size_t i, size_t j )
 {
-   proxy.reset();
+   return proxy.find( i, j );
 }
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\brief Reset the specified row/column of the represented matrix.
+/*!\brief Returns an iterator to the first index not less than the given index.
 // \ingroup math
 //
 // \param proxy The given access proxy.
-// \param i The index of the row/column to be resetted.
-// \return void
-//
-// This function resets all elements in the specified row/column of the given matrix to their
-// default value. In case the given matrix is a \a rowMajor matrix the function resets the values
-// in row \a i, if it is a \a columnMajor matrix the function resets the values in column \a i.
-// Note that the capacity of the row/column remains unchanged.
+// \param i The row index of the search element. The index has to be in the range \f$[0..M-1]\f$.
+// \param j The column index of the search element. The index has to be in the range \f$[0..N-1]\f$.
+// \return Iterator to the first index not less than the given index, end() iterator otherwise.
 */
 template< typename PT    // Type of the proxy
         , typename MT >  // Type of the sparse matrix
-BLAZE_ALWAYS_INLINE void reset( const SparseMatrixProxy<PT,MT>& proxy, size_t i )
+BLAZE_ALWAYS_INLINE typename SparseMatrixProxy<PT,MT>::Iterator
+   lowerBound( const SparseMatrixProxy<PT,MT>& proxy, size_t i, size_t j )
 {
-   proxy.reset(i);
+   return proxy.lowerBound( i, j );
 }
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\brief Clearing the represented matrix.
+/*!\brief Returns an iterator to the first index greater than the given index.
 // \ingroup math
 //
 // \param proxy The given access proxy.
-// \return void
-//
-// This function clears the matrix to its default initial state.
+// \param i The row index of the search element. The index has to be in the range \f$[0..M-1]\f$.
+// \param j The column index of the search element. The index has to be in the range \f$[0..N-1]\f$.
+// \return Iterator to the first index greater than the given index, end() iterator otherwise.
 */
 template< typename PT    // Type of the proxy
         , typename MT >  // Type of the sparse matrix
-BLAZE_ALWAYS_INLINE void clear( const SparseMatrixProxy<PT,MT>& proxy )
+BLAZE_ALWAYS_INLINE typename SparseMatrixProxy<PT,MT>::Iterator
+   upperBound( const SparseMatrixProxy<PT,MT>& proxy, size_t i, size_t j )
 {
-   proxy.clear();
+   return proxy.upperBound( i, j );
 }
 //*************************************************************************************************
 

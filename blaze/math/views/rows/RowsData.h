@@ -3,7 +3,7 @@
 //  \file blaze/math/views/rows/RowsData.h
 //  \brief Header file for the implementation of the RowsData class template
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -40,10 +40,14 @@
 // Includes
 //*************************************************************************************************
 
+#include <array>
+#include <blaze/system/Standard.h>
+#include <blaze/util/AsConst.h>
 #include <blaze/util/Assert.h>
+#include <blaze/util/IntegerSequence.h>
+#include <blaze/util/MaybeUnused.h>
 #include <blaze/util/SmallArray.h>
 #include <blaze/util/Types.h>
-#include <blaze/util/Unused.h>
 
 
 namespace blaze {
@@ -64,12 +68,46 @@ namespace blaze {
 // of compile time row arguments. The basic implementation of RowsData adapts the class template
 // to the requirements of multiple compile time row arguments.
 */
-template< size_t... CRAs >  // Compile time row arguments
-struct RowsData
+template< typename... CRAs >  // Compile time row arguments
+class RowsData
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  CLASS TEMPLATE SPECIALIZATION FOR INDEX SEQUENCES
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Specialization of the RowsData class template for index sequences.
+// \ingroup rows
+//
+// This specialization of RowsData adapts the class template to the requirements of a non-zero
+// number of compile time indices.
+*/
+template< size_t I        // First row index
+        , size_t... Is >  // Remaining row indices
+class RowsData< index_sequence<I,Is...> >
 {
+ protected:
+   //**Compile time flags**************************************************************************
+   static constexpr size_t N = sizeof...( Is ) + 1UL;  //! Number of compile time indices.
+   //**********************************************************************************************
+
  public:
-   //**Type definitions****************************************************************************
-   using Indices = std::array<size_t,sizeof...(CRAs)>;  //!< Type of the container for row indices.
+   //**Compile time flags**************************************************************************
+   //! Compilation flag for compile time optimization.
+   /*! The \a compileTimeArgs compilation flag indicates whether the view has been created by
+       means of compile time arguments and whether these arguments can be queried at compile
+       time. In that case, the \a compileTimeArgs compilation flag is set to \a true, otherwise
+       it is set to \a false. */
+   static constexpr bool compileTimeArgs = true;
    //**********************************************************************************************
 
    //**Constructors********************************************************************************
@@ -99,17 +137,21 @@ struct RowsData
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-   inline static constexpr const Indices& idces() noexcept;
-   inline static constexpr size_t         idx  ( size_t i ) noexcept;
-   inline static constexpr size_t         rows () noexcept;
+   static constexpr decltype(auto) idces() noexcept;
+   static constexpr size_t         idx  ( size_t i ) noexcept;
+   static constexpr size_t         rows () noexcept;
    //@}
    //**********************************************************************************************
 
  private:
+   //**Type definitions****************************************************************************
+   using Indices = std::array<size_t,N>;  //!< Type of the container for row indices.
+   //**********************************************************************************************
+
    //**Member variables****************************************************************************
    /*!\name Member variables */
    //@{
-   static constexpr Indices indices_{ { CRAs... } };  //!< The indices of the rows in the matrix.
+   static constexpr Indices indices_{ { I, Is... } };  //!< The indices of the rows in the matrix.
    //@}
    //**********************************************************************************************
 };
@@ -121,8 +163,10 @@ struct RowsData
 /*! \cond BLAZE_INTERNAL */
 #if BLAZE_CPP14_MODE
 // Definition and initialization of the static member variables
-template< size_t... CRAs >  // Compile time row arguments
-constexpr typename RowsData<CRAs...>::Indices RowsData<CRAs...>::indices_;
+template< size_t I        // First row index
+        , size_t... Is >  // Remaining row indices
+constexpr typename RowsData< index_sequence<I,Is...> >::Indices
+   RowsData< index_sequence<I,Is...> >::indices_;
 #endif
 /*! \endcond */
 //*************************************************************************************************
@@ -134,11 +178,12 @@ constexpr typename RowsData<CRAs...>::Indices RowsData<CRAs...>::indices_;
 //
 // \param args The optional row arguments.
 */
-template< size_t... CRAs >    // Compile time row arguments
+template< size_t I            // First row index
+        , size_t... Is >      // Remaining row indices
 template< typename... RRAs >  // Optional row arguments
-inline RowsData<CRAs...>::RowsData( RRAs... args ) noexcept
+inline RowsData< index_sequence<I,Is...> >::RowsData( RRAs... args ) noexcept
 {
-   UNUSED_PARAMETER( args... );
+   MAYBE_UNUSED( args... );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -146,14 +191,15 @@ inline RowsData<CRAs...>::RowsData( RRAs... args ) noexcept
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Returns the indices of the specified rows in the underlying matrix.
+/*!\brief Returns a representation of the indices of the specified rows in the underlying matrix.
 //
-// \return The indices of the specified rows.
+// \return A representation of the indices of the specified rows.
 */
-template< size_t... CRAs >  // Compile time row arguments
-inline constexpr const typename RowsData<CRAs...>::Indices& RowsData<CRAs...>::idces() noexcept
+template< size_t I        // First row index
+        , size_t... Is >  // Remaining row indices
+constexpr decltype(auto) RowsData< index_sequence<I,Is...> >::idces() noexcept
 {
-   return indices_;
+   return index_sequence<I,Is...>();
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -166,8 +212,9 @@ inline constexpr const typename RowsData<CRAs...>::Indices& RowsData<CRAs...>::i
 // \param i Access index for the row.
 // \return The index of the specified row.
 */
-template< size_t... CRAs >  // Compile time row arguments
-inline constexpr size_t RowsData<CRAs...>::idx( size_t i ) noexcept
+template< size_t I        // First row index
+        , size_t... Is >  // Remaining row indices
+constexpr size_t RowsData< index_sequence<I,Is...> >::idx( size_t i ) noexcept
 {
    BLAZE_USER_ASSERT( i < rows(), "Invalid row access index" );
    return indices_[i];
@@ -182,10 +229,160 @@ inline constexpr size_t RowsData<CRAs...>::idx( size_t i ) noexcept
 //
 // \return The number of rows.
 */
-template< size_t... CRAs >  // Compile time row arguments
-inline constexpr size_t RowsData<CRAs...>::rows() noexcept
+template< size_t I        // First row index
+        , size_t... Is >  // Remaining row indices
+constexpr size_t RowsData< index_sequence<I,Is...> >::rows() noexcept
 {
-   return sizeof...( CRAs );
+   return N;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  CLASS TEMPLATE SPECIALIZATION FOR INDEX PRODUCING CALLABLES
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Specialization of the RowsData class template for index producing callables.
+// \ingroup rows
+//
+// This specialization of RowsData adapts the class template to the requirements of index
+// producing callables.
+*/
+template< typename P >  // Type of the index producer
+class RowsData<P>
+{
+ protected:
+   //**Compile time flags**************************************************************************
+   static constexpr size_t N = 0UL;  //! Number of compile time indices.
+   //**********************************************************************************************
+
+ public:
+   //**Compile time flags**************************************************************************
+   //! Compilation flag for compile time optimization.
+   /*! The \a compileTimeArgs compilation flag indicates whether the view has been created by
+       means of compile time arguments and whether these arguments can be queried at compile
+       time. In that case, the \a compileTimeArgs compilation flag is set to \a true, otherwise
+       it is set to \a false. */
+   static constexpr bool compileTimeArgs = false;
+   //**********************************************************************************************
+
+   //**Constructors********************************************************************************
+   /*!\name Constructors */
+   //@{
+   template< typename... RRAs >
+   inline RowsData( P p, size_t n, RRAs... args ) noexcept;
+
+   RowsData( const RowsData& ) = default;
+   RowsData( RowsData&& ) = default;
+   //@}
+   //**********************************************************************************************
+
+   //**Destructor**********************************************************************************
+   /*!\name Destructor */
+   //@{
+   ~RowsData() = default;
+   //@}
+   //**********************************************************************************************
+
+   //**Assignment operators************************************************************************
+   /*!\name Assignment operators */
+   //@{
+   RowsData& operator=( const RowsData& ) = delete;
+   RowsData& operator=( RowsData&& ) = delete;
+   //@}
+   //**********************************************************************************************
+
+   //**Utility functions***************************************************************************
+   /*!\name Utility functions */
+   //@{
+   inline decltype(auto) idces() const noexcept;
+   inline size_t         idx  ( size_t i ) const noexcept;
+   inline size_t         rows () const noexcept;
+   //@}
+   //**********************************************************************************************
+
+ private:
+   //**Member variables****************************************************************************
+   /*!\name Member variables */
+   //@{
+   P      p_;  //!< The callable producing the indices.
+   size_t n_;  //!< The total number of indices.
+   //@}
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief The constructor for RowsData.
+//
+// \param p A callable producing the indices.
+// \param n The total number of indices.
+// \param args The optional row arguments.
+*/
+template< typename P >        // Type of the index producer
+template< typename... RRAs >  // Optional row arguments
+inline RowsData<P>::RowsData( P p, size_t n, RRAs... args ) noexcept
+   : p_( p )
+   , n_( n )
+{
+   MAYBE_UNUSED( args... );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns a representation of the indices of the specified rows in the underlying matrix.
+//
+// \return A representation of the indices of the specified rows.
+*/
+template< typename P >  // Type of the index producer
+inline decltype(auto) RowsData<P>::idces() const noexcept
+{
+   return std::make_pair( p_, n_ );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns the index of the specified row in the underlying matrix.
+//
+// \param i Access index for the row.
+// \return The index of the specified row.
+*/
+template< typename P >  // Type of the index producer
+inline size_t RowsData<P>::idx( size_t i ) const noexcept
+{
+   BLAZE_USER_ASSERT( i < rows(), "Invalid row access index" );
+   return p_(i);
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns the number of rows.
+//
+// \return The number of rows.
+*/
+template< typename P >  // Type of the index producer
+inline size_t RowsData<P>::rows() const noexcept
+{
+   return n_;
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -208,18 +405,28 @@ inline constexpr size_t RowsData<CRAs...>::rows() noexcept
 // time row arguments.
 */
 template<>
-struct RowsData<>
+class RowsData<>
 {
+ protected:
+   //**Compile time flags**************************************************************************
+   static constexpr size_t N = 0UL;  //! Number of compile time indices.
+   //**********************************************************************************************
+
  public:
-   //**Type definitions****************************************************************************
-   using Indices = SmallArray<size_t,8UL>;  //!< Type of the container for row indices.
+   //**Compile time flags**************************************************************************
+   //! Compilation flag for compile time optimization.
+   /*! The \a compileTimeArgs compilation flag indicates whether the view has been created by
+       means of compile time arguments and whether these arguments can be queried at compile
+       time. In that case, the \a compileTimeArgs compilation flag is set to \a true, otherwise
+       it is set to \a false. */
+   static constexpr bool compileTimeArgs = false;
    //**********************************************************************************************
 
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
    template< typename T, typename... RRAs >
-   explicit inline RowsData( const T* indices, size_t n, RRAs... args );
+   inline RowsData( T* indices, size_t n, RRAs... args );
 
    RowsData( const RowsData& ) = default;
    RowsData( RowsData&& ) = default;
@@ -243,13 +450,17 @@ struct RowsData<>
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-   inline const Indices& idces() const noexcept;
+   inline decltype(auto) idces() const noexcept;
    inline size_t         idx  ( size_t i ) const noexcept;
    inline size_t         rows () const noexcept;
    //@}
    //**********************************************************************************************
 
  private:
+   //**Type definitions****************************************************************************
+   using Indices = SmallArray<size_t,8UL>;  //!< Type of the container for row indices.
+   //**********************************************************************************************
+
    //**Member variables****************************************************************************
    /*!\name Member variables */
    //@{
@@ -271,10 +482,10 @@ struct RowsData<>
 */
 template< typename T          // Type of the row indices
         , typename... RRAs >  // Optional row arguments
-inline RowsData<>::RowsData( const T* indices, size_t n, RRAs... args )
+inline RowsData<>::RowsData( T* indices, size_t n, RRAs... args )
    : indices_( indices, indices+n )  // The indices of the rows in the matrix
 {
-   UNUSED_PARAMETER( args... );
+   MAYBE_UNUSED( args... );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -282,13 +493,13 @@ inline RowsData<>::RowsData( const T* indices, size_t n, RRAs... args )
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Returns the indices of the specified rows in the underlying matrix.
+/*!\brief Returns a representation of the indices of the specified rows in the underlying matrix.
 //
-// \return The indices of the specified rows.
+// \return A representation of the indices of the specified rows.
 */
-inline const RowsData<>::Indices& RowsData<>::idces() const noexcept
+inline decltype(auto) RowsData<>::idces() const noexcept
 {
-   return indices_;
+   return blaze::as_const( indices_ );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -321,6 +532,41 @@ inline size_t RowsData<>::idx( size_t i ) const noexcept
 inline size_t RowsData<>::rows() const noexcept
 {
    return indices_.size();
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  GLOBAL FUNCTIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Compares the indices of two RowsData instances.
+// \ingroup rows
+//
+// \param lhs The left-hand side instance for the comparison.
+// \param rhs The right-hand side instance for the comparison.
+// \return \a true if the indices of both instances are equal, \a false if not.
+*/
+template< typename... CRAs1, typename... CRAs2 >
+constexpr bool
+   compareIndices( const RowsData<CRAs1...>& lhs, const RowsData<CRAs2...>& rhs ) noexcept
+{
+   if( lhs.rows() != rhs.rows() )
+      return false;
+
+   for( size_t i=0UL; i<lhs.rows(); ++i ) {
+      if( lhs.idx(i) != rhs.idx(i) )
+         return false;
+   }
+
+   return true;
 }
 /*! \endcond */
 //*************************************************************************************************

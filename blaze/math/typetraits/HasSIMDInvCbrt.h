@@ -3,7 +3,7 @@
 //  \file blaze/math/typetraits/HasSIMDInvCbrt.h
 //  \brief Header file for the HasSIMDInvCbrt type trait
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -42,9 +42,9 @@
 
 #include <blaze/system/Vectorization.h>
 #include <blaze/util/IntegralConstant.h>
-#include <blaze/util/typetraits/Decay.h>
 #include <blaze/util/typetraits/IsDouble.h>
 #include <blaze/util/typetraits/IsFloat.h>
+#include <blaze/util/typetraits/RemoveCVRef.h>
 
 
 namespace blaze {
@@ -94,14 +94,14 @@ using HasSIMDInvCbrtHelper =
 */
 template< typename T >  // Type of the operand
 struct HasSIMDInvCbrt
-   : public BoolConstant< HasSIMDInvCbrtHelper< Decay_t<T> >::value >
+   : public BoolConstant< HasSIMDInvCbrtHelper< RemoveCVRef_t<T> >::value >
 {};
 //*************************************************************************************************
 
 
 //*************************************************************************************************
 /*!\brief Auxiliary variable template for the HasSIMDInvCbrt type trait.
-// \ingroup type_traits
+// \ingroup math_type_traits
 //
 // The HasSIMDInvCbrt_v variable template provides a convenient shortcut to access the nested
 // \a value of the HasSIMDInvCbrt class template. For instance, given the type \a T the following

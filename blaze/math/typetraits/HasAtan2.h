@@ -3,7 +3,7 @@
 //  \file blaze/math/typetraits/HasAtan2.h
 //  \brief Header file for the HasAtan2 type trait
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -44,8 +44,7 @@
 #include <blaze/math/typetraits/IsMatrix.h>
 #include <blaze/math/typetraits/IsVector.h>
 #include <blaze/util/EnableIf.h>
-#include <blaze/util/FalseType.h>
-#include <blaze/util/TrueType.h>
+#include <blaze/util/IntegralConstant.h>
 #include <blaze/util/typetraits/Void.h>
 
 
@@ -137,7 +136,7 @@ struct HasAtan2< T1, T2, EnableIf_t< IsMatrix_v<T1> && IsMatrix_v<T2> > >
 
 //*************************************************************************************************
 /*!\brief Auxiliary variable template for the HasAtan2 type trait.
-// \ingroup type_traits
+// \ingroup math_type_traits
 //
 // The HasAtan2_v variable template provides a convenient shortcut to access the nested \a value
 // of the HasAtan2 class template. For instance, given the types \a T1 and \a T2 the following

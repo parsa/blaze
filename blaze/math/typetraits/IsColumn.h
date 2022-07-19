@@ -3,7 +3,7 @@
 //  \file blaze/math/typetraits/IsColumn.h
 //  \brief Header file for the IsColumn type trait
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -41,8 +41,7 @@
 //*************************************************************************************************
 
 #include <blaze/math/views/Forward.h>
-#include <blaze/util/FalseType.h>
-#include <blaze/util/TrueType.h>
+#include <blaze/util/IntegralConstant.h>
 
 
 namespace blaze {
@@ -147,7 +146,7 @@ struct IsColumn< const volatile Column<MT,SO,DF,SF,CCAs...> >
 
 //*************************************************************************************************
 /*!\brief Auxiliary variable template for the IsColumn type trait.
-// \ingroup type_traits
+// \ingroup math_type_traits
 //
 // The IsColumn_v variable template provides a convenient shortcut to access the nested \a value
 // of the IsColumn class template. For instance, given the type \a T the following two statements

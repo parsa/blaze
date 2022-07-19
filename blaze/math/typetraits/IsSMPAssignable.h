@@ -3,7 +3,7 @@
 //  \file blaze/math/typetraits/IsSMPAssignable.h
 //  \brief Header file for the IsSMPAssignable type trait
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -40,7 +40,6 @@
 // Includes
 //*************************************************************************************************
 
-#include <blaze/util/FalseType.h>
 #include <blaze/util/IntegralConstant.h>
 #include <blaze/util/typetraits/Void.h>
 
@@ -118,7 +117,7 @@ struct IsSMPAssignable
 
 //*************************************************************************************************
 /*!\brief Auxiliary variable template for the IsSMPAssignable type trait.
-// \ingroup type_traits
+// \ingroup math_type_traits
 //
 // The IsSMPAssignable_v variable template provides a convenient shortcut to access the nested
 // \a value of the IsSMPAssignable class template. For instance, given the type \a T the

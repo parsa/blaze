@@ -3,7 +3,7 @@
 //  \file blaze/math/adaptors/hermitianmatrix/HermitianValue.h
 //  \brief Header file for the HermitianValue class
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -41,30 +41,32 @@
 //*************************************************************************************************
 
 #include <blaze/math/Aliases.h>
-#include <blaze/math/constraints/Expression.h>
+#include <blaze/math/constraints/Computation.h>
 #include <blaze/math/constraints/Hermitian.h>
 #include <blaze/math/constraints/Lower.h>
+#include <blaze/math/constraints/Scalar.h>
 #include <blaze/math/constraints/SparseMatrix.h>
 #include <blaze/math/constraints/Symmetric.h>
+#include <blaze/math/constraints/Transformation.h>
 #include <blaze/math/constraints/Upper.h>
+#include <blaze/math/constraints/View.h>
 #include <blaze/math/Exception.h>
 #include <blaze/math/proxy/Proxy.h>
+#include <blaze/math/RelaxationFlag.h>
 #include <blaze/math/shims/Clear.h>
 #include <blaze/math/shims/Conjugate.h>
 #include <blaze/math/shims/Invert.h>
 #include <blaze/math/shims/IsDefault.h>
-#include <blaze/math/shims/IsNaN.h>
 #include <blaze/math/shims/IsOne.h>
 #include <blaze/math/shims/IsReal.h>
 #include <blaze/math/shims/IsZero.h>
 #include <blaze/math/shims/Reset.h>
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
+#include <blaze/math/typetraits/UnderlyingBuiltin.h>
 #include <blaze/util/constraints/Const.h>
-#include <blaze/util/constraints/Numeric.h>
 #include <blaze/util/constraints/Pointer.h>
 #include <blaze/util/constraints/Reference.h>
 #include <blaze/util/constraints/Volatile.h>
-#include <blaze/util/InvalidType.h>
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsComplex.h>
@@ -121,32 +123,12 @@ class HermitianValue
    using IteratorType = typename MT::Iterator;  //!< Type of the underlying sparse matrix iterators.
    //**********************************************************************************************
 
-   //**struct BuiltinType**************************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   /*!\brief Auxiliary struct to determine the value type of the represented complex element.
-   */
-   template< typename T >
-   struct BuiltinType { using Type = INVALID_TYPE; };
-   /*! \endcond */
-   //**********************************************************************************************
-
-   //**struct ComplexType**************************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   /*!\brief Auxiliary struct to determine the value type of the represented complex element.
-   */
-   template< typename T >
-   struct ComplexType { using Type = typename T::value_type; };
-   /*! \endcond */
-   //**********************************************************************************************
-
  public:
    //**Type definitions****************************************************************************
    using RepresentedType = ElementType_t<MT>;  //!< Type of the represented matrix element.
 
    //! Value type of the represented complex element.
-   using ValueType = typename If_t< IsComplex_v<RepresentedType>
-                                  , ComplexType<RepresentedType>
-                                  , BuiltinType<RepresentedType> >::Type;
+   using ValueType = UnderlyingBuiltin_t<RepresentedType>;
 
    using value_type = ValueType;  //!< Value type of the represented complex element.
    //**********************************************************************************************
@@ -155,6 +137,15 @@ class HermitianValue
    /*!\name Constructors */
    //@{
    inline HermitianValue( IteratorType pos, MT* matrix, size_t index );
+
+   HermitianValue( const HermitianValue& ) = default;
+   //@}
+   //**********************************************************************************************
+
+   //**Destructor**********************************************************************************
+   /*!\name Destructor */
+   //@{
+   ~HermitianValue() = default;
    //@}
    //**********************************************************************************************
 
@@ -173,8 +164,6 @@ class HermitianValue
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-   inline void reset () const;
-   inline void clear () const;
    inline void invert() const;
 
    inline RepresentedType get() const noexcept;
@@ -219,12 +208,70 @@ class HermitianValue
    BLAZE_CONSTRAINT_MUST_NOT_BE_POINTER_TYPE         ( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_CONST                ( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_VOLATILE             ( MT );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_EXPRESSION_TYPE      ( MT );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_VIEW_TYPE            ( MT );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE     ( MT );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_TRANSFORMATION_TYPE  ( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_HERMITIAN_MATRIX_TYPE( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_LOWER_MATRIX_TYPE    ( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_UPPER_MATRIX_TYPE    ( MT );
-   BLAZE_CONSTRAINT_MUST_BE_NUMERIC_TYPE( RepresentedType );
+   BLAZE_CONSTRAINT_MUST_BE_SCALAR_TYPE              ( RepresentedType );
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**********************************************************************************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief Resetting the Hermitian value to the default initial values.
+   // \ingroup hermitian_matrix
+   //
+   // \param value The given Hermitian value.
+   // \return void
+   //
+   // This function resets the Hermitian value to its default initial value.
+   */
+   friend inline void reset( const HermitianValue& value )
+   {
+      using blaze::reset;
+
+      reset( value.pos_->value() );
+
+      if( value.pos_->index() != value.index_ )
+      {
+         const size_t row   ( ( IsRowMajorMatrix_v<MT> )?( value.pos_->index() ):( value.index_ ) );
+         const size_t column( ( IsRowMajorMatrix_v<MT> )?( value.index_ ):( value.pos_->index() ) );
+         const IteratorType pos2( value.matrix_->find( row, column ) );
+
+         reset( pos2->value() );
+      }
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**********************************************************************************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief Clearing the Hermitian value.
+   // \ingroup hermitian_matrix
+   //
+   // \param value The given Hermitian value.
+   // \return void
+   //
+   // This function clears the Hermitian value to its default initial state.
+   */
+   friend inline void clear( const HermitianValue& value )
+   {
+      using blaze::clear;
+
+      clear( value.pos_->value() );
+
+      if( value.pos_->index() != value.index_ )
+      {
+         const size_t row   ( ( IsRowMajorMatrix_v<MT> )?( value.pos_->index() ):( value.index_ ) );
+         const size_t column( ( IsRowMajorMatrix_v<MT> )?( value.index_ ):( value.pos_->index() ) );
+         const IteratorType pos2( value.matrix_->find( row, column ) );
+
+         clear( pos2->value() );
+      }
+   }
    /*! \endcond */
    //**********************************************************************************************
 };
@@ -415,58 +462,6 @@ inline HermitianValue<MT>& HermitianValue<MT>::operator/=( const T& value )
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Reset the Hermitian value to its default initial value.
-//
-// \return void
-//
-// This function resets the Hermitian value to its default initial value.
-*/
-template< typename MT >  // Type of the adapted matrix
-inline void HermitianValue<MT>::reset() const
-{
-   using blaze::reset;
-
-   reset( pos_->value() );
-
-   if( pos_->index() != index_ )
-   {
-      const size_t row   ( ( IsRowMajorMatrix_v<MT> )?( pos_->index() ):( index_ ) );
-      const size_t column( ( IsRowMajorMatrix_v<MT> )?( index_ ):( pos_->index() ) );
-      const IteratorType pos2( matrix_->find( row, column ) );
-
-      reset( pos2->value() );
-   }
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Clearing the Hermitian value.
-//
-// \return void
-//
-// This function clears the Hermitian value to its default initial state.
-*/
-template< typename MT >  // Type of the adapted matrix
-inline void HermitianValue<MT>::clear() const
-{
-   using blaze::clear;
-
-   clear( pos_->value() );
-
-   if( pos_->index() != index_ )
-   {
-      const size_t row   ( ( IsRowMajorMatrix_v<MT> )?( pos_->index() ):( index_ ) );
-      const size_t column( ( IsRowMajorMatrix_v<MT> )?( index_ ):( pos_->index() ) );
-      const IteratorType pos2( matrix_->find( row, column ) );
-
-      clear( pos2->value() );
-   }
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
 /*!\brief In-place inversion of the Hermitian value
 //
 // \return void
@@ -631,63 +626,8 @@ inline void HermitianValue<MT>::imag( ValueType value ) const
 /*!\name HermitianValue global functions */
 //@{
 template< typename MT >
-inline void reset( const HermitianValue<MT>& value );
-
-template< typename MT >
-inline void clear( const HermitianValue<MT>& value );
-
-template< typename MT >
-inline void invert( const HermitianValue<MT>& value );
-
-template< bool RF, typename MT >
-inline bool isDefault( const HermitianValue<MT>& value );
-
-template< bool RF, typename MT >
-inline bool isReal( const HermitianValue<MT>& value );
-
-template< bool RF, typename MT >
-inline bool isZero( const HermitianValue<MT>& value );
-
-template< bool RF, typename MT >
-inline bool isOne( const HermitianValue<MT>& value );
-
-template< typename MT >
-inline bool isnan( const HermitianValue<MT>& value );
+void invert( const HermitianValue<MT>& value );
 //@}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Resetting the Hermitian value to the default initial values.
-// \ingroup hermitian_matrix
-//
-// \param value The given Hermitian value.
-// \return void
-//
-// This function resets the Hermitian value to its default initial value.
-*/
-template< typename MT >
-inline void reset( const HermitianValue<MT>& value )
-{
-   value.reset();
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Clearing the Hermitian value.
-// \ingroup hermitian_matrix
-//
-// \param value The given Hermitian value.
-// \return void
-//
-// This function clears the Hermitian value to its default initial state.
-*/
-template< typename MT >
-inline void clear( const HermitianValue<MT>& value )
-{
-   value.clear();
-}
 //*************************************************************************************************
 
 
@@ -702,108 +642,6 @@ template< typename MT >
 inline void invert( const HermitianValue<MT>& value )
 {
    value.invert();
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Returns whether the Hermitian value is in default state.
-// \ingroup hermitian_matrix
-//
-// \param value The given Hermitian value.
-// \return \a true in case the Hermitian value is in default state, \a false otherwise.
-//
-// This function checks whether the Hermitian value is in default state. In case it is in
-// default state, the function returns \a true, otherwise it returns \a false.
-*/
-template< bool RF, typename MT >
-inline bool isDefault( const HermitianValue<MT>& value )
-{
-   using blaze::isDefault;
-
-   return isDefault<RF>( value.get() );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Returns whether the Hermitian value represents a real number.
-// \ingroup hermitian_matrix
-//
-// \param value The given Hermitian value.
-// \return \a true in case the Hermitian value represents a real number, \a false otherwise.
-//
-// This function checks whether the Hermitian value represents the a real number. In case the
-// value is of built-in type, the function returns \a true. In case the element is of complex
-// type, the function returns \a true if the imaginary part is equal to 0. Otherwise it returns
-// \a false.
-*/
-template< bool RF, typename MT >
-inline bool isReal( const HermitianValue<MT>& value )
-{
-   using blaze::isReal;
-
-   return isReal<RF>( value.get() );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Returns whether the Hermitian value is 0.
-// \ingroup hermitian_matrix
-//
-// \param value The given Hermitian value.
-// \return \a true in case the Hermitian value is 0, \a false otherwise.
-//
-// This function checks whether the Hermitian value represents the numeric value 0. In case it
-// is 0, the function returns \a true, otherwise it returns \a false.
-*/
-template< bool RF, typename MT >
-inline bool isZero( const HermitianValue<MT>& value )
-{
-   using blaze::isZero;
-
-   return isZero<RF>( value.get() );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Returns whether the Hermitian value is 1.
-// \ingroup hermitian_matrix
-//
-// \param value The given Hermitian value.
-// \return \a true in case the Hermitian value is 1, \a false otherwise.
-//
-// This function checks whether the Hermitian value represents the numeric value 1. In case it
-// is 1, the function returns \a true, otherwise it returns \a false.
-*/
-template< bool RF, typename MT >
-inline bool isOne( const HermitianValue<MT>& value )
-{
-   using blaze::isOne;
-
-   return isOne<RF>( value.get() );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Returns whether the Hermitian value is not a number.
-// \ingroup hermitian_matrix
-//
-// \param value The given Hermitian value.
-// \return \a true in case the Hermitian value is in not a number, \a false otherwise.
-//
-// This function checks whether the Hermitian value is not a number (NaN). In case it is not a
-// number, the function returns \a true, otherwise it returns \a false.
-*/
-template< typename MT >
-inline bool isnan( const HermitianValue<MT>& value )
-{
-   using blaze::isnan;
-
-   return isnan( value.get() );
 }
 //*************************************************************************************************
 

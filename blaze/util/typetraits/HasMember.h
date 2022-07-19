@@ -3,7 +3,7 @@
 //  \file blaze/util/typetraits/HasMember.h
 //  \brief Header file for the HasMember type traits
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -41,10 +41,8 @@
 //*************************************************************************************************
 
 #include <blaze/util/EmptyType.h>
-#include <blaze/util/FalseType.h>
 #include <blaze/util/IntegralConstant.h>
 #include <blaze/util/mpl/If.h>
-#include <blaze/util/TrueType.h>
 #include <blaze/util/typetraits/IsBuiltin.h>
 
 
@@ -109,7 +107,7 @@ class TYPE_TRAIT_NAME##HELPER                                                   
    struct Fallback { int MEMBER_NAME; };                                                     \
                                                                                              \
    struct Derived                                                                            \
-      : blaze::If< blaze::IsBuiltin_v<TYPE1230>, blaze::EmptyType, TYPE1230 >::Type          \
+      : blaze::If_t< blaze::IsBuiltin_v<TYPE1230>, blaze::EmptyType, TYPE1230 >              \
       , Fallback                                                                             \
    {};                                                                                       \
                                                                                              \
@@ -185,7 +183,7 @@ struct TYPE_TRAIT_NAME##HELPER                                                  
    struct Fallback { using MEMBER_NAME = int; };                                     \
                                                                                      \
    struct Derived                                                                    \
-      : blaze::If< blaze::IsBuiltin_v<TYPE1231>, blaze::EmptyType, TYPE1231 >::Type  \
+      : blaze::If_t< blaze::IsBuiltin_v<TYPE1231>, blaze::EmptyType, TYPE1231 >      \
       , Fallback                                                                     \
    {};                                                                               \
                                                                                      \

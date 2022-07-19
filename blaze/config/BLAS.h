@@ -3,7 +3,7 @@
 //  \file blaze/config/BLAS.h
 //  \brief Configuration of the BLAS mode
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -56,12 +56,84 @@
 // symbol manually before including any Blaze header file:
 
    \code
+   g++ ... -DBLAZE_BLAS_MODE=1 ...
+   \endcode
+
+   \code
    #define BLAZE_BLAS_MODE 1
    #include <blaze/Blaze.h>
    \endcode
 */
 #ifndef BLAZE_BLAS_MODE
 #define BLAZE_BLAS_MODE 0
+#endif
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Compilation switch for the BLAS 64-bit support.
+// \ingroup config
+//
+// This compilation switch enables/disables 64-bit BLAS and LAPACK support. In case the 64-bit
+// BLAS mode is enabled, \c blaze::blas_int_t, which is used in the BLAS and LAPACK wrapper
+// functions, is a 64-bit signed integral type. In case the 64-bit BLAS mode is disabled,
+// \c blaze::blas_int_t is a 32-bit signed integral type.
+//
+// Possible settings for the switch:
+//  - 32-bit BLAS/LAPACK: \b 0 (default)
+//  - 64-bit BLAS/LAPACK: \b 1
+//
+// \warning Changing the setting of the BLAS mode requires a recompilation of all code using the
+// Blaze library!
+//
+// \note It is possible to (de-)activate the 64-bit BLAS mode via command line or by defining
+// this symbol manually before including any Blaze header file:
+
+   \code
+   g++ ... -DBLAZE_BLAS_IS_64BIT=1 ...
+   \endcode
+
+   \code
+   #define BLAZE_BLAS_IS_64BIT 1
+   #include <blaze/Blaze.h>
+   \endcode
+*/
+#ifndef BLAZE_BLAS_IS_64BIT
+#define BLAZE_BLAS_IS_64BIT 0
+#endif
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Compilation switch for the parallel BLAS mode.
+// \ingroup config
+//
+// This compilation switch specifies whether the used BLAS library is itself parallelized or not.
+// In case the given BLAS library is itself parallelized, the Blaze library does not perform any
+// attempt to parallelize the execution of BLAS kernels. If, however, the given BLAS library is
+// not parallelized Blaze will attempt to parallelize the execution of BLAS kernels.
+//
+// Possible settings for the switch:
+//  - BLAS library is not parallelized: \b 0 (default)
+//  - BLAS library is parallelized    : \b 1
+//
+// \warning Changing the setting of the BLAS mode requires a recompilation of all code using the
+// Blaze library!
+//
+// \note It is possible to (de-)activate the parallel BLAS mode via command line or by defining
+// this symbol manually before including any Blaze header file:
+
+   \code
+   g++ ... -DBLAZE_BLAS_IS_PARALLEL=1 ...
+   \endcode
+
+   \code
+   #define BLAZE_BLAS_IS_PARALLEL 1
+   #include <blaze/Blaze.h>
+   \endcode
+*/
+#ifndef BLAZE_BLAS_IS_PARALLEL
+#define BLAZE_BLAS_IS_PARALLEL 0
 #endif
 //*************************************************************************************************
 
@@ -83,6 +155,10 @@
 //
 // \note It is possible to (de-)activate the use of the BLAS matrix/vector multiplication kernels
 // via command line or by defining this symbol manually before including any Blaze header file:
+
+   \code
+   g++ ... -DBLAZE_USE_BLAS_MATRIX_VECTOR_MULTIPLICATION=1 ...
+   \endcode
 
    \code
    #define BLAZE_USE_BLAS_MATRIX_VECTOR_MULTIPLICATION 1
@@ -114,42 +190,16 @@
 // via command line or by defining this symbol manually before including any Blaze header file:
 
    \code
+   g++ ... -DBLAZE_USE_BLAS_MATRIX_MATRIX_MULTIPLICATION=1 ...
+   \endcode
+
+   \code
    #define BLAZE_USE_BLAS_MATRIX_MATRIX_MULTIPLICATION 1
    #include <blaze/Blaze.h>
    \endcode
 */
 #ifndef BLAZE_USE_BLAS_MATRIX_MATRIX_MULTIPLICATION
 #define BLAZE_USE_BLAS_MATRIX_MATRIX_MULTIPLICATION 1
-#endif
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Compilation switch for the parallel BLAS mode.
-// \ingroup config
-//
-// This compilation switch specifies whether the used BLAS library is itself parallelized or not.
-// In case the given BLAS library is itself parallelized, the Blaze library does not perform any
-// attempt to parallelize the execution of BLAS kernels. If, however, the given BLAS library is
-// not parallelized Blaze will attempt to parallelize the execution of BLAS kernels.
-//
-// Possible settings for the switch:
-//  - BLAS library is not parallelized: \b 0 (default)
-//  - BLAS library is parallelized    : \b 1
-//
-// \warning Changing the setting of the BLAS mode requires a recompilation of all code using the
-// Blaze library!
-//
-// \note It is possible to (de-)activate the parallel BLAS mode via command line or by defining
-// this symbol manually before including any Blaze header file:
-
-   \code
-   #define BLAZE_BLAS_IS_PARALLEL 1
-   #include <blaze/Blaze.h>
-   \endcode
-*/
-#ifndef BLAZE_BLAS_IS_PARALLEL
-#define BLAZE_BLAS_IS_PARALLEL 0
 #endif
 //*************************************************************************************************
 
@@ -168,6 +218,10 @@
 //
 // \note It is possible to specify the BLAS include file via command line or by defining this
 // symbol manually before including any Blaze header file:
+
+   \code
+   g++ ... -DBLAZE_BLAS_INCLUDE_FILE="<cblas.h>" ...
+   \endcode
 
    \code
    #define BLAZE_BLAS_INCLUDE_FILE <cblas.h>

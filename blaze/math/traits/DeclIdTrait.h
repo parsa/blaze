@@ -3,7 +3,7 @@
 //  \file blaze/math/traits/DeclIdTrait.h
 //  \brief Header file for the declid trait
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -45,7 +45,7 @@
 #include <blaze/math/typetraits/IsMatrix.h>
 #include <blaze/math/typetraits/Size.h>
 #include <blaze/math/typetraits/StorageOrder.h>
-#include <blaze/util/InvalidType.h>
+#include <blaze/util/EnableIf.h>
 
 
 namespace blaze {
@@ -67,16 +67,7 @@ template< typename, typename = void > struct DeclIdTraitEval;
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename T >
-auto evalDeclIdTrait( T& )
-   -> typename DeclIdTraitEval<T>::Type;
-
-template< typename T >
-auto evalDeclIdTrait( const T& )
-   -> typename DeclIdTrait<T>::Type;
-
-template< typename T >
-auto evalDeclIdTrait( const volatile T& )
-   -> typename DeclIdTrait<T>::Type;
+auto evalDeclIdTrait( const volatile T& ) -> DeclIdTraitEval<T>;
 /*! \endcond */
 //*************************************************************************************************
 
@@ -88,11 +79,10 @@ auto evalDeclIdTrait( const volatile T& )
 // \section declidtrait_general General
 //
 // The DeclIdTrait class template offers the possibility to select the resulting data type
-// of a generic declid() operation on the given type \a MT. DeclIdTrait defines the nested
-// type \a Type, which represents the resulting data type of the declid() operation. In case
-// the given data type is not a dense or sparse matrix type, the resulting data type \a Type is
-// set to \a INVALID_TYPE. Note that \a const and \a volatile qualifiers and reference modifiers
-// are generally ignored.
+// of a generic declid() operation on the given type \a MT. In case the given type \a MT is
+// a dense or sparse matrix type, DeclIdTrait defines the nested type \a Type, which represents
+// the resulting data type of the declid() operation. Otherwise there is no nested type \a Type.
+// Note that \a const and \a volatile qualifiers and reference modifiers are generally ignored.
 //
 //
 // \section declidtrait_specializations Creating custom specializations
@@ -102,8 +92,8 @@ auto evalDeclIdTrait( const volatile T& )
 // following example shows the according specialization for the SymmetricMatrix class template:
 
    \code
-   template< typename MT, bool SO, bool DF, bool NF >
-   struct DeclIdTrait< SymmetricMatrix<MT,SO,DF,NF> >
+   template< typename MT, bool SO, bool DF, bool SF >
+   struct DeclIdTrait< SymmetricMatrix<MT,SO,DF,SF> >
    {
       using Type = IdentityMatrix< ElementType_t<MT>, SO >;
    };
@@ -133,14 +123,8 @@ auto evalDeclIdTrait( const volatile T& )
 */
 template< typename MT >  // Type of the matrix
 struct DeclIdTrait
-{
- public:
-   //**********************************************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   using Type = decltype( evalDeclIdTrait( std::declval<MT&>() ) );
-   /*! \endcond */
-   //**********************************************************************************************
-};
+   : public decltype( evalDeclIdTrait( std::declval<MT&>() ) )
+{};
 //*************************************************************************************************
 
 
@@ -170,9 +154,7 @@ using DeclIdTrait_t = typename DeclIdTrait<MT>::Type;
 template< typename MT  // Type of the matrix
         , typename >   // Restricting condition
 struct DeclIdTraitEval
-{
-   using Type = INVALID_TYPE;
-};
+{};
 /*! \endcond */
 //*************************************************************************************************
 

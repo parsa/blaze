@@ -3,7 +3,7 @@
 //  \file blaze/math/lapack/syev.h
 //  \brief Header file for the LAPACK symmetric matrix eigenvalue functions (syev)
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -51,7 +51,6 @@
 #include <blaze/math/expressions/DenseMatrix.h>
 #include <blaze/math/expressions/DenseVector.h>
 #include <blaze/math/lapack/clapack/syev.h>
-#include <blaze/math/typetraits/IsResizable.h>
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Builtin.h>
@@ -70,7 +69,7 @@ namespace blaze {
 /*!\name LAPACK symmetric matrix eigenvalue functions (syev) */
 //@{
 template< typename MT, bool SO, typename VT, bool TF >
-inline void syev( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& w, char jobz, char uplo );
+void syev( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& w, char jobz, char uplo );
 //@}
 //*************************************************************************************************
 
@@ -154,7 +153,7 @@ inline void syev( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& w, char jobz, char 
 
    using ET = ElementType_t<MT>;
 
-   if( !isSquare( ~A ) ) {
+   if( !isSquare( *A ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid non-square matrix provided" );
    }
 
@@ -166,24 +165,24 @@ inline void syev( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& w, char jobz, char 
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid uplo argument provided" );
    }
 
-   resize( ~w, (~A).rows(), false );
+   resize( *w, (*A).rows(), false );
 
-   int n   ( numeric_cast<int>( (~A).rows()    ) );
-   int lda ( numeric_cast<int>( (~A).spacing() ) );
-   int info( 0 );
+   blas_int_t n   ( numeric_cast<blas_int_t>( (*A).rows()    ) );
+   blas_int_t lda ( numeric_cast<blas_int_t>( (*A).spacing() ) );
+   blas_int_t info( 0 );
 
    if( n == 0 ) {
       return;
    }
 
-   int lwork( 10*n + 2 );
+   blas_int_t lwork( 10*n + 2 );
    const std::unique_ptr<ET[]> work( new ET[lwork] );
 
    if( IsRowMajorMatrix_v<MT> ) {
       ( uplo == 'L' )?( uplo = 'U' ):( uplo = 'L' );
    }
 
-   syev( jobz, uplo, n, (~A).data(), lda, (~w).data(), work.get(), lwork, &info );
+   syev( jobz, uplo, n, (*A).data(), lda, (*w).data(), work.get(), lwork, &info );
 
    BLAZE_INTERNAL_ASSERT( info >= 0, "Invalid argument for eigenvalue computation" );
 

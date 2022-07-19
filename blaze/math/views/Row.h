@@ -3,7 +3,7 @@
 //  \file blaze/math/views/Row.h
 //  \brief Header file for the implementation of the Row view
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -40,27 +40,37 @@
 // Includes
 //*************************************************************************************************
 
+#include <blaze/math/dense/UniformVector.h>
 #include <blaze/math/Exception.h>
 #include <blaze/math/expressions/DeclExpr.h>
 #include <blaze/math/expressions/MatEvalExpr.h>
 #include <blaze/math/expressions/MatMapExpr.h>
 #include <blaze/math/expressions/MatMatAddExpr.h>
+#include <blaze/math/expressions/MatMatKronExpr.h>
 #include <blaze/math/expressions/MatMatMapExpr.h>
 #include <blaze/math/expressions/MatMatMultExpr.h>
 #include <blaze/math/expressions/MatMatSubExpr.h>
+#include <blaze/math/expressions/MatNoAliasExpr.h>
+#include <blaze/math/expressions/MatNoSIMDExpr.h>
+#include <blaze/math/expressions/MatRepeatExpr.h>
 #include <blaze/math/expressions/Matrix.h>
 #include <blaze/math/expressions/MatScalarDivExpr.h>
 #include <blaze/math/expressions/MatScalarMultExpr.h>
 #include <blaze/math/expressions/MatSerialExpr.h>
 #include <blaze/math/expressions/MatTransExpr.h>
 #include <blaze/math/expressions/SchurExpr.h>
+#include <blaze/math/expressions/VecExpandExpr.h>
+#include <blaze/math/expressions/VecTVecMapExpr.h>
 #include <blaze/math/expressions/VecTVecMultExpr.h>
+#include <blaze/math/functors/Bind2nd.h>
+#include <blaze/math/RelaxationFlag.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/typetraits/HasConstDataAccess.h>
 #include <blaze/math/typetraits/HasMutableDataAccess.h>
 #include <blaze/math/typetraits/IsAligned.h>
 #include <blaze/math/typetraits/IsContiguous.h>
 #include <blaze/math/typetraits/IsOpposedView.h>
+#include <blaze/math/typetraits/IsPadded.h>
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
 #include <blaze/math/typetraits/IsSymmetric.h>
 #include <blaze/math/typetraits/MaxSize.h>
@@ -68,14 +78,13 @@
 #include <blaze/math/views/Check.h>
 #include <blaze/math/views/row/BaseTemplate.h>
 #include <blaze/math/views/row/Dense.h>
+#include <blaze/math/views/row/RowData.h>
 #include <blaze/math/views/row/Sparse.h>
 #include <blaze/util/Assert.h>
+#include <blaze/util/EnableIf.h>
 #include <blaze/util/FunctionTrace.h>
 #include <blaze/util/IntegralConstant.h>
-#include <blaze/util/TrueType.h>
-#include <blaze/util/TypeList.h>
 #include <blaze/util/Types.h>
-#include <blaze/util/Unused.h>
 
 
 namespace blaze {
@@ -130,7 +139,7 @@ inline decltype(auto) row( Matrix<MT,SO>& matrix, RRAs... args )
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = Row_<MT,I>;
-   return ReturnType( ~matrix, args... );
+   return ReturnType( *matrix, args... );
 }
 //*************************************************************************************************
 
@@ -179,7 +188,7 @@ inline decltype(auto) row( const Matrix<MT,SO>& matrix, RRAs... args )
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = const Row_<const MT,I>;
-   return ReturnType( ~matrix, args... );
+   return ReturnType( *matrix, args... );
 }
 //*************************************************************************************************
 
@@ -207,7 +216,7 @@ inline decltype(auto) row( Matrix<MT,SO>&& matrix, RRAs... args )
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = Row_<MT,I>;
-   return ReturnType( ~matrix, args... );
+   return ReturnType( *matrix, args... );
 }
 //*************************************************************************************************
 
@@ -256,7 +265,7 @@ inline decltype(auto) row( Matrix<MT,SO>& matrix, size_t index, RRAs... args )
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = Row_<MT>;
-   return ReturnType( ~matrix, index, args... );
+   return ReturnType( *matrix, index, args... );
 }
 //*************************************************************************************************
 
@@ -305,7 +314,7 @@ inline decltype(auto) row( const Matrix<MT,SO>& matrix, size_t index, RRAs... ar
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = const Row_<const MT>;
-   return ReturnType( ~matrix, index, args... );
+   return ReturnType( *matrix, index, args... );
 }
 //*************************************************************************************************
 
@@ -333,7 +342,7 @@ inline decltype(auto) row( Matrix<MT,SO>&& matrix, size_t index, RRAs... args )
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = Row_<MT>;
-   return ReturnType( ~matrix, index, args... );
+   return ReturnType( *matrix, index, args... );
 }
 //*************************************************************************************************
 
@@ -354,6 +363,7 @@ inline decltype(auto) row( Matrix<MT,SO>&& matrix, size_t index, RRAs... args )
 // \param matrix The constant matrix/matrix addition.
 // \param args The runtime row arguments.
 // \return View on the specified row of the addition.
+// \exception std::invalid_argument Invalid row access index.
 //
 // This function returns an expression representing the specified row of the given matrix/matrix
 // addition.
@@ -365,8 +375,8 @@ inline decltype(auto) row( const MatMatAddExpr<MT>& matrix, RRAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return row<CRAs...>( (~matrix).leftOperand(), args... ) +
-          row<CRAs...>( (~matrix).rightOperand(), args... );
+   return row<CRAs...>( (*matrix).leftOperand(), args... ) +
+          row<CRAs...>( (*matrix).rightOperand(), args... );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -380,6 +390,7 @@ inline decltype(auto) row( const MatMatAddExpr<MT>& matrix, RRAs... args )
 // \param matrix The constant matrix/matrix subtraction.
 // \param args The runtime row arguments.
 // \return View on the specified row of the subtraction.
+// \exception std::invalid_argument Invalid row access index.
 //
 // This function returns an expression representing the specified row of the given matrix/matrix
 // subtraction.
@@ -391,8 +402,8 @@ inline decltype(auto) row( const MatMatSubExpr<MT>& matrix, RRAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return row<CRAs...>( (~matrix).leftOperand(), args... ) -
-          row<CRAs...>( (~matrix).rightOperand(), args... );
+   return row<CRAs...>( (*matrix).leftOperand(), args... ) -
+          row<CRAs...>( (*matrix).rightOperand(), args... );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -406,6 +417,7 @@ inline decltype(auto) row( const MatMatSubExpr<MT>& matrix, RRAs... args )
 // \param matrix The constant Schur product.
 // \param args The runtime row arguments.
 // \return View on the specified row of the Schur product.
+// \exception std::invalid_argument Invalid row access index.
 //
 // This function returns an expression representing the specified row of the given Schur product.
 */
@@ -416,8 +428,8 @@ inline decltype(auto) row( const SchurExpr<MT>& matrix, RRAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return row<CRAs...>( (~matrix).leftOperand(), args... ) *
-          row<CRAs...>( (~matrix).rightOperand(), args... );
+   return row<CRAs...>( (*matrix).leftOperand(), args... ) *
+          row<CRAs...>( (*matrix).rightOperand(), args... );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -429,8 +441,9 @@ inline decltype(auto) row( const SchurExpr<MT>& matrix, RRAs... args )
 // \ingroup row
 //
 // \param matrix The constant matrix/matrix multiplication.
-// \param args The runtime row arguments
+// \param args The runtime row arguments.
 // \return View on the specified row of the multiplication.
+// \exception std::invalid_argument Invalid row access index.
 //
 // This function returns an expression representing the specified row of the given matrix/matrix
 // multiplication.
@@ -442,7 +455,44 @@ inline decltype(auto) row( const MatMatMultExpr<MT>& matrix, RRAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return row<CRAs...>( (~matrix).leftOperand(), args... ) * (~matrix).rightOperand();
+   return row<CRAs...>( (*matrix).leftOperand(), args... ) * (*matrix).rightOperand();
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific row of the given Kronecker product.
+// \ingroup row
+//
+// \param matrix The constant Kronecker product.
+// \param args The runtime row arguments.
+// \return View on the specified row of the Kronecker product.
+// \exception std::invalid_argument Invalid row access index.
+//
+// This function returns an expression representing the specified row of the given Kronecker
+// product.
+*/
+template< size_t... CRAs      // Compile time row arguments
+        , typename MT         // Matrix base type of the expression
+        , typename... RRAs >  // Runtime row arguments
+inline decltype(auto) row( const MatMatKronExpr<MT>& matrix, RRAs... args )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   const RowData<CRAs...> rd( args... );
+
+   if( isChecked( args... ) ) {
+      if( (*matrix).rows() <= rd.row() ) {
+         BLAZE_THROW_INVALID_ARGUMENT( "Invalid row access index" );
+      }
+   }
+
+   const size_t rows( (*matrix).rightOperand().rows() );
+
+   return kron( row( (*matrix).leftOperand(), rd.row()/rows, unchecked ),
+                row( (*matrix).rightOperand(), rd.row()%rows, unchecked ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -467,15 +517,13 @@ inline decltype(auto) row( const VecTVecMultExpr<MT>& matrix, RRAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   UNUSED_PARAMETER( args... );
-
-   if( !Contains_v< TypeList<RRAs...>, Unchecked > ) {
-      if( (~matrix).rows() <= I ) {
+   if( isChecked( args... ) ) {
+      if( (*matrix).rows() <= I ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid row access index" );
       }
    }
 
-   return (~matrix).leftOperand()[I] * (~matrix).rightOperand();
+   return (*matrix).leftOperand()[I] * (*matrix).rightOperand();
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -500,15 +548,13 @@ inline decltype(auto) row( const VecTVecMultExpr<MT>& matrix, size_t index, RRAs
 {
    BLAZE_FUNCTION_TRACE;
 
-   UNUSED_PARAMETER( args... );
-
-   if( !Contains_v< TypeList<RRAs...>, Unchecked > ) {
-      if( (~matrix).rows() <= index ) {
+   if( isChecked( args... ) ) {
+      if( (*matrix).rows() <= index ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid row access index" );
       }
    }
 
-   return (~matrix).leftOperand()[index] * (~matrix).rightOperand();
+   return (*matrix).leftOperand()[index] * (*matrix).rightOperand();
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -520,8 +566,9 @@ inline decltype(auto) row( const VecTVecMultExpr<MT>& matrix, size_t index, RRAs
 // \ingroup row
 //
 // \param matrix The constant matrix/scalar multiplication.
-// \param args The runtime row arguments
+// \param args The runtime row arguments.
 // \return View on the specified row of the multiplication.
+// \exception std::invalid_argument Invalid row access index.
 //
 // This function returns an expression representing the specified row of the given matrix/scalar
 // multiplication.
@@ -533,7 +580,7 @@ inline decltype(auto) row( const MatScalarMultExpr<MT>& matrix, RRAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return row<CRAs...>( (~matrix).leftOperand(), args... ) * (~matrix).rightOperand();
+   return row<CRAs...>( (*matrix).leftOperand(), args... ) * (*matrix).rightOperand();
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -545,8 +592,9 @@ inline decltype(auto) row( const MatScalarMultExpr<MT>& matrix, RRAs... args )
 // \ingroup row
 //
 // \param matrix The constant matrix/scalar division.
-// \param args The runtime row arguments
+// \param args The runtime row arguments.
 // \return View on the specified row of the division.
+// \exception std::invalid_argument Invalid row access index.
 //
 // This function returns an expression representing the specified row of the given matrix/scalar
 // division.
@@ -558,7 +606,7 @@ inline decltype(auto) row( const MatScalarDivExpr<MT>& matrix, RRAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return row<CRAs...>( (~matrix).leftOperand(), args... ) / (~matrix).rightOperand();
+   return row<CRAs...>( (*matrix).leftOperand(), args... ) / (*matrix).rightOperand();
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -570,8 +618,9 @@ inline decltype(auto) row( const MatScalarDivExpr<MT>& matrix, RRAs... args )
 // \ingroup row
 //
 // \param matrix The constant unary matrix map operation.
-// \param args The runtime row arguments
+// \param args The runtime row arguments.
 // \return View on the specified row of the unary map operation.
+// \exception std::invalid_argument Invalid row access index.
 //
 // This function returns an expression representing the specified row of the given unary matrix
 // map operation.
@@ -583,7 +632,7 @@ inline decltype(auto) row( const MatMapExpr<MT>& matrix, RRAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( row<CRAs...>( (~matrix).operand(), args... ), (~matrix).operation() );
+   return map( row<CRAs...>( (*matrix).operand(), args... ), (*matrix).operation() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -595,8 +644,9 @@ inline decltype(auto) row( const MatMapExpr<MT>& matrix, RRAs... args )
 // \ingroup row
 //
 // \param matrix The constant binary matrix map operation.
-// \param args The runtime row arguments
+// \param args The runtime row arguments.
 // \return View on the specified row of the binary map operation.
+// \exception std::invalid_argument Invalid row access index.
 //
 // This function returns an expression representing the specified row of the given binary matrix
 // map operation.
@@ -608,9 +658,75 @@ inline decltype(auto) row( const MatMatMapExpr<MT>& matrix, RRAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( row<CRAs...>( (~matrix).leftOperand(), args... ),
-               row<CRAs...>( (~matrix).rightOperand(), args... ),
-               (~matrix).operation() );
+   return map( row<CRAs...>( (*matrix).leftOperand(), args... ),
+               row<CRAs...>( (*matrix).rightOperand(), args... ),
+               (*matrix).operation() );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific row of the given outer map operation.
+// \ingroup row
+//
+// \param matrix The constant outer map operation.
+// \param args Optional row arguments.
+// \return View on the specified row of the outer map operation.
+// \exception std::invalid_argument Invalid row access index.
+//
+// This function returns an expression representing the specified row of the given outer map
+// operation.
+*/
+template< size_t I            // Row index
+        , typename MT         // Matrix base type of the expression
+        , typename... RRAs >  // Optional row arguments
+inline decltype(auto) row( const VecTVecMapExpr<MT>& matrix, RRAs... args )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   if( isChecked( args... ) ) {
+      if( (*matrix).rows() <= I ) {
+         BLAZE_THROW_INVALID_ARGUMENT( "Invalid row access index" );
+      }
+   }
+
+   return map( (*matrix).rightOperand(),
+               blaze::bind2nd( (*matrix).operation(), (*matrix).leftOperand()[I] ) );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific row of the given outer map operation.
+// \ingroup row
+//
+// \param matrix The constant outer map operation.
+// \param index The index of the row.
+// \param args Optional row arguments.
+// \return View on the specified row of the outer map operation.
+// \exception std::invalid_argument Invalid row access index.
+//
+// This function returns an expression representing the specified row of the given outer map
+// operation.
+*/
+template< typename MT         // Matrix base type of the expression
+        , typename... RRAs >  // Optional row arguments
+inline decltype(auto) row( const VecTVecMapExpr<MT>& matrix, size_t index, RRAs... args )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   if( isChecked( args... ) ) {
+      if( (*matrix).rows() <= index ) {
+         BLAZE_THROW_INVALID_ARGUMENT( "Invalid row access index" );
+      }
+   }
+
+   return map( (*matrix).rightOperand(),
+               blaze::bind2nd( (*matrix).operation(), (*matrix).leftOperand()[index] ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -622,8 +738,9 @@ inline decltype(auto) row( const MatMatMapExpr<MT>& matrix, RRAs... args )
 // \ingroup row
 //
 // \param matrix The constant matrix evaluation operation.
-// \param args The runtime row arguments
+// \param args The runtime row arguments.
 // \return View on the specified row of the evaluation operation.
+// \exception std::invalid_argument Invalid row access index.
 //
 // This function returns an expression representing the specified row of the given matrix
 // evaluation operation.
@@ -635,7 +752,7 @@ inline decltype(auto) row( const MatEvalExpr<MT>& matrix, RRAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return eval( row<CRAs...>( (~matrix).operand(), args... ) );
+   return eval( row<CRAs...>( (*matrix).operand(), args... ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -647,8 +764,9 @@ inline decltype(auto) row( const MatEvalExpr<MT>& matrix, RRAs... args )
 // \ingroup row
 //
 // \param matrix The constant matrix serialization operation.
-// \param args The runtime row arguments
+// \param args The runtime row arguments.
 // \return View on the specified row of the serialization operation.
+// \exception std::invalid_argument Invalid row access index.
 //
 // This function returns an expression representing the specified row of the given matrix
 // serialization operation.
@@ -660,7 +778,59 @@ inline decltype(auto) row( const MatSerialExpr<MT>& matrix, RRAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return serial( row<CRAs...>( (~matrix).operand(), args... ) );
+   return serial( row<CRAs...>( (*matrix).operand(), args... ) );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific row of the given matrix no-alias operation.
+// \ingroup row
+//
+// \param matrix The constant matrix no-alias operation.
+// \param args The runtime row arguments.
+// \return View on the specified row of the no-alias operation.
+// \exception std::invalid_argument Invalid row access index.
+//
+// This function returns an expression representing the specified row of the given matrix
+// no-alias operation.
+*/
+template< size_t... CRAs      // Compile time row arguments
+        , typename MT         // Matrix base type of the expression
+        , typename... RRAs >  // Runtime row arguments
+inline decltype(auto) row( const MatNoAliasExpr<MT>& matrix, RRAs... args )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return noalias( row<CRAs...>( (*matrix).operand(), args... ) );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific row of the given matrix no-SIMD operation.
+// \ingroup row
+//
+// \param matrix The constant matrix no-SIMD operation.
+// \param args The runtime row arguments.
+// \return View on the specified row of the no-SIMD operation.
+// \exception std::invalid_argument Invalid row access index.
+//
+// This function returns an expression representing the specified row of the given matrix
+// no-SIMD operation.
+*/
+template< size_t... CRAs      // Compile time row arguments
+        , typename MT         // Matrix base type of the expression
+        , typename... RRAs >  // Runtime row arguments
+inline decltype(auto) row( const MatNoSIMDExpr<MT>& matrix, RRAs... args )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return nosimd( row<CRAs...>( (*matrix).operand(), args... ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -672,8 +842,9 @@ inline decltype(auto) row( const MatSerialExpr<MT>& matrix, RRAs... args )
 // \ingroup row
 //
 // \param matrix The constant matrix declaration operation.
-// \param args The runtime row arguments
+// \param args The runtime row arguments.
 // \return View on the specified row of the declaration operation.
+// \exception std::invalid_argument Invalid row access index.
 //
 // This function returns an expression representing the specified row of the given matrix
 // declaration operation.
@@ -685,7 +856,7 @@ inline decltype(auto) row( const DeclExpr<MT>& matrix, RRAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return row<CRAs...>( (~matrix).operand(), args... );
+   return row<CRAs...>( (*matrix).operand(), args... );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -697,8 +868,9 @@ inline decltype(auto) row( const DeclExpr<MT>& matrix, RRAs... args )
 // \ingroup row
 //
 // \param matrix The constant matrix transpose operation.
-// \param args The runtime row arguments
+// \param args The runtime row arguments.
 // \return View on the specified row of the transpose operation.
+// \exception std::invalid_argument Invalid row access index.
 //
 // This function returns an expression representing the specified row of the given matrix
 // transpose operation.
@@ -710,7 +882,123 @@ inline decltype(auto) row( const MatTransExpr<MT>& matrix, RRAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return trans( column<CRAs...>( (~matrix).operand(), args... ) );
+   try {
+      return trans( column<CRAs...>( (*matrix).operand(), args... ) );
+   }
+   catch( ... ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid row access index" );
+   }
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific row of the given row-major vector expansion operation.
+// \ingroup row
+//
+// \param matrix The constant vector expansion operation.
+// \param args The runtime row arguments.
+// \return View on the specified row of the expansion operation.
+// \exception std::invalid_argument Invalid row access index.
+//
+// This function returns an expression representing the specified row of the given row-major
+// vector expansion operation.
+*/
+template< size_t... CRAs    // Compile time row arguments
+        , typename MT       // Matrix base type of the expression
+        , size_t... CEAs    // Compile time expansion arguments
+        , typename... RRAs  // Runtime row arguments
+        , EnableIf_t< IsRowMajorMatrix_v<MT> >* = nullptr >
+inline decltype(auto) row( const VecExpandExpr<MT,CEAs...>& matrix, RRAs... args )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   if( isChecked( args... ) ) {
+      const RowData<CRAs...> rd( args... );
+      if( (*matrix).rows() <= rd.row() ) {
+         BLAZE_THROW_INVALID_ARGUMENT( "Invalid row access index" );
+      }
+   }
+
+   return subvector( (*matrix).operand(), 0UL, (*matrix).columns(), unchecked );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific row of the given column-major vector expansion operation.
+// \ingroup row
+//
+// \param matrix The constant vector expansion operation.
+// \param args The runtime row arguments.
+// \return View on the specified row of the expansion operation.
+// \exception std::invalid_argument Invalid row access index.
+//
+// This function returns an expression representing the specified row of the given column-major
+// vector expansion operation.
+*/
+template< size_t... CRAs    // Compile time row arguments
+        , typename MT       // Matrix base type of the expression
+        , size_t... CEAs    // Compile time expansion arguments
+        , typename... RRAs  // Runtime row arguments
+        , EnableIf_t< !IsRowMajorMatrix_v<MT> >* = nullptr >
+inline decltype(auto) row( const VecExpandExpr<MT,CEAs...>& matrix, RRAs... args )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   const RowData<CRAs...> rd( args... );
+
+   if( isChecked( args... ) ) {
+      if( (*matrix).rows() <= rd.row() ) {
+         BLAZE_THROW_INVALID_ARGUMENT( "Invalid row access index" );
+      }
+   }
+
+   using ET = ElementType_t< MatrixType_t<MT> >;
+
+   return UniformVector<ET,rowVector>( (*matrix).columns(), (*matrix).operand()[rd.row()] );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific row of the given matrix repeat operation.
+// \ingroup row
+//
+// \param matrix The constant matrix repeat operation.
+// \param args The runtime row arguments.
+// \return View on the specified row of the repeat operation.
+// \exception std::invalid_argument Invalid row access index.
+//
+// This function returns an expression representing the specified row of the given row-major
+// matrix repeat operation.
+*/
+template< size_t... CRAs1     // Compile time row arguments
+        , typename MT         // Matrix base type of the expression
+        , size_t... CRAs2     // Compile time repeater arguments
+        , typename... RRAs >  // Runtime row arguments
+inline decltype(auto) row( const MatRepeatExpr<MT,CRAs2...>& matrix, RRAs... args )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   const RowData<CRAs1...> rd( args... );
+
+   if( isChecked( args... ) ) {
+      if( (*matrix).rows() <= rd.row() ) {
+         BLAZE_THROW_INVALID_ARGUMENT( "Invalid row access index" );
+      }
+   }
+
+   return repeat( row( (*matrix).operand()
+                     , rd.row() % (*matrix).operand().rows()
+                     , unchecked )
+                , (*matrix).template repetitions<1UL>() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -723,94 +1011,6 @@ inline decltype(auto) row( const MatTransExpr<MT>& matrix, RRAs... args )
 //  ROW OPERATORS
 //
 //=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Resetting the given row.
-// \ingroup row
-//
-// \param row The row to be resetted.
-// \return void
-*/
-template< typename MT       // Type of the matrix
-        , bool SO           // Storage order
-        , bool DF           // Density flag
-        , bool SF           // Symmetry flag
-        , size_t... CRAs >  // Compile time row arguments
-inline void reset( Row<MT,SO,DF,SF,CRAs...>& row )
-{
-   row.reset();
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Resetting the given temporary row.
-// \ingroup row
-//
-// \param row The temporary row to be resetted.
-// \return void
-*/
-template< typename MT       // Type of the matrix
-        , bool SO           // Storage order
-        , bool DF           // Density flag
-        , bool SF           // Symmetry flag
-        , size_t... CRAs >  // Compile time row arguments
-inline void reset( Row<MT,SO,DF,SF,CRAs...>&& row )
-{
-   row.reset();
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Clearing the given row.
-// \ingroup row
-//
-// \param row The row to be cleared.
-// \return void
-//
-// Clearing a row is equivalent to resetting it via the reset() function.
-*/
-template< typename MT       // Type of the matrix
-        , bool SO           // Storage order
-        , bool DF           // Density flag
-        , bool SF           // Symmetry flag
-        , size_t... CRAs >  // Compile time row arguments
-inline void clear( Row<MT,SO,DF,SF,CRAs...>& row )
-{
-   row.reset();
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Clearing the given temporary row.
-// \ingroup row
-//
-// \param row The temporary row to be cleared.
-// \return void
-//
-// Clearing a row is equivalent to resetting it via the reset() function.
-*/
-template< typename MT       // Type of the matrix
-        , bool SO           // Storage order
-        , bool DF           // Density flag
-        , bool SF           // Symmetry flag
-        , size_t... CRAs >  // Compile time row arguments
-inline void clear( Row<MT,SO,DF,SF,CRAs...>&& row )
-{
-   row.reset();
-}
-/*! \endcond */
-//*************************************************************************************************
-
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
@@ -838,11 +1038,11 @@ inline void clear( Row<MT,SO,DF,SF,CRAs...>&& row )
    if( isDefault<relaxed>( row( A, 0UL ) ) ) { ... }
    \endcode
 */
-template< bool RF           // Relaxation flag
-        , typename MT       // Type of the matrix
-        , bool SO           // Storage order
-        , bool SF           // Symmetry flag
-        , size_t... CRAs >  // Compile time row arguments
+template< RelaxationFlag RF  // Relaxation flag
+        , typename MT        // Type of the matrix
+        , bool SO            // Storage order
+        , bool SF            // Symmetry flag
+        , size_t... CRAs >   // Compile time row arguments
 inline bool isDefault( const Row<MT,SO,true,SF,CRAs...>& row )
 {
    using blaze::isDefault;
@@ -881,11 +1081,11 @@ inline bool isDefault( const Row<MT,SO,true,SF,CRAs...>& row )
    if( isDefault<relaxed>( row( A, 0UL ) ) ) { ... }
    \endcode
 */
-template< bool RF           // Relaxation flag
-        , typename MT       // Type of the matrix
-        , bool SO           // Storage order
-        , bool SF           // Symmetry flag
-        , size_t... CRAs >  // Compile time row arguments
+template< RelaxationFlag RF  // Relaxation flag
+        , typename MT        // Type of the matrix
+        , bool SO            // Storage order
+        , bool SF            // Symmetry flag
+        , size_t... CRAs >   // Compile time row arguments
 inline bool isDefault( const Row<MT,SO,false,SF,CRAs...>& row )
 {
    using blaze::isDefault;
@@ -993,6 +1193,40 @@ inline bool trySet( const Row<MT,SO,DF,SF,CRAs...>& row, size_t index, const ET&
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by setting a range of elements of a row.
+// \ingroup row
+//
+// \param row The target row.
+// \param index The index of the first element of the range to be modified.
+// \param size The number of elements of the range to be modified.
+// \param value The value to be set to the range of elements.
+// \return \a true in case the operation would be successful, \a false if not.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT     // Type of the matrix
+        , bool SO         // Storage order
+        , bool DF         // Density flag
+        , bool SF         // Symmetry flag
+        , size_t... CRAs  // Compile time row arguments
+        , typename ET >   // Type of the element
+BLAZE_ALWAYS_INLINE bool
+   trySet( const Row<MT,SO,DF,SF,CRAs...>& row, size_t index, size_t size, const ET& value )
+{
+   BLAZE_INTERNAL_ASSERT( index <= (*row).size(), "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( index + size <= (*row).size(), "Invalid range size" );
+
+   return trySet( row.operand(), row.row(), index, 1UL, size, value );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Predict invariant violations by adding to a single element of a row.
 // \ingroup row
 //
@@ -1024,6 +1258,40 @@ inline bool tryAdd( const Row<MT,SO,DF,SF,CRAs...>& row, size_t index, const ET&
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by adding to a range of elements of a row.
+// \ingroup row
+//
+// \param row The target row.
+// \param index The index of the first element of the range to be modified.
+// \param size The number of elements of the range to be modified.
+// \param value The value to be added to the range of elements.
+// \return \a true in case the operation would be successful, \a false if not.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT     // Type of the matrix
+        , bool SO         // Storage order
+        , bool DF         // Density flag
+        , bool SF         // Symmetry flag
+        , size_t... CRAs  // Compile time row arguments
+        , typename ET >   // Type of the element
+BLAZE_ALWAYS_INLINE bool
+   tryAdd( const Row<MT,SO,DF,SF,CRAs...>& row, size_t index, size_t size, const ET& value )
+{
+   BLAZE_INTERNAL_ASSERT( index <= (*row).size(), "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( index + size <= (*row).size(), "Invalid range size" );
+
+   return tryAdd( row.operand(), row.row(), index, 1UL, size, value );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Predict invariant violations by subtracting from a single element of a row.
 // \ingroup row
 //
@@ -1048,6 +1316,40 @@ inline bool trySub( const Row<MT,SO,DF,SF,CRAs...>& row, size_t index, const ET&
    BLAZE_INTERNAL_ASSERT( index < row.size(), "Invalid vector access index" );
 
    return trySub( row.operand(), row.row(), index, value );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by subtracting from a range of elements of a row.
+// \ingroup row
+//
+// \param row The target row.
+// \param index The index of the first element of the range to be modified.
+// \param size The number of elements of the range to be modified.
+// \param value The value to be subtracted from the range of elements.
+// \return \a true in case the operation would be successful, \a false if not.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT     // Type of the matrix
+        , bool SO         // Storage order
+        , bool DF         // Density flag
+        , bool SF         // Symmetry flag
+        , size_t... CRAs  // Compile time row arguments
+        , typename ET >   // Type of the element
+BLAZE_ALWAYS_INLINE bool
+   trySub( const Row<MT,SO,DF,SF,CRAs...>& row, size_t index, size_t size, const ET& value )
+{
+   BLAZE_INTERNAL_ASSERT( index <= (*row).size(), "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( index + size <= (*row).size(), "Invalid range size" );
+
+   return trySub( row.operand(), row.row(), index, 1UL, size, value );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1105,12 +1407,12 @@ template< typename MT     // Type of the matrix
         , bool DF         // Density flag
         , bool SF         // Symmetry flag
         , size_t... CRAs  // Compile time row arguments
-        , typename ET >  // Type of the element
+        , typename ET >   // Type of the element
 BLAZE_ALWAYS_INLINE bool
    tryMult( const Row<MT,SO,DF,SF,CRAs...>& row, size_t index, size_t size, const ET& value )
 {
-   BLAZE_INTERNAL_ASSERT( index <= (~row).size(), "Invalid vector access index" );
-   BLAZE_INTERNAL_ASSERT( index + size <= (~row).size(), "Invalid range size" );
+   BLAZE_INTERNAL_ASSERT( index <= (*row).size(), "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( index + size <= (*row).size(), "Invalid range size" );
 
    return tryMult( row.operand(), row.row(), index, 1UL, size, value );
 }
@@ -1170,14 +1472,272 @@ template< typename MT     // Type of the matrix
         , bool DF         // Density flag
         , bool SF         // Symmetry flag
         , size_t... CRAs  // Compile time row arguments
-        , typename ET >  // Type of the element
+        , typename ET >   // Type of the element
 BLAZE_ALWAYS_INLINE bool
    tryDiv( const Row<MT,SO,DF,SF,CRAs...>& row, size_t index, size_t size, const ET& value )
 {
-   BLAZE_INTERNAL_ASSERT( index <= (~row).size(), "Invalid vector access index" );
-   BLAZE_INTERNAL_ASSERT( index + size <= (~row).size(), "Invalid range size" );
+   BLAZE_INTERNAL_ASSERT( index <= (*row).size(), "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( index + size <= (*row).size(), "Invalid range size" );
 
    return tryDiv( row.operand(), row.row(), index, 1UL, size, value );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by shifting a single element of a row.
+// \ingroup row
+//
+// \param row The target row.
+// \param index The index of the element to be modified.
+// \param count The number of bits to shift the element.
+// \return \a true in case the operation would be successful, \a false if not.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT       // Type of the matrix
+        , bool SO           // Storage order
+        , bool DF           // Density flag
+        , bool SF           // Symmetry flag
+        , size_t... CRAs >  // Compile time row arguments
+inline bool tryShift( const Row<MT,SO,DF,SF,CRAs...>& row, size_t index, int count )
+{
+   BLAZE_INTERNAL_ASSERT( index < row.size(), "Invalid vector access index" );
+
+   return tryShift( row.operand(), row.row(), index, count );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by shifting a range of elements of a row.
+// \ingroup row
+//
+// \param row The target row.
+// \param index The index of the first element of the range to be modified.
+// \param size The number of elements of the range to be modified.
+// \param count The number of bits to shift the range of elements.
+// \return \a true in case the operation would be successful, \a false if not.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT       // Type of the matrix
+        , bool SO           // Storage order
+        , bool DF           // Density flag
+        , bool SF           // Symmetry flag
+        , size_t... CRAs >  // Compile time row arguments
+BLAZE_ALWAYS_INLINE bool
+   tryShift( const Row<MT,SO,DF,SF,CRAs...>& row, size_t index, size_t size, int count )
+{
+   BLAZE_INTERNAL_ASSERT( index <= (*row).size(), "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( index + size <= (*row).size(), "Invalid range size" );
+
+   return tryShift( row.operand(), row.row(), index, 1UL, size, count );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by a bitwise AND on a single element of a row.
+// \ingroup row
+//
+// \param row The target row.
+// \param index The index of the element to be modified.
+// \param value The bit pattern to be used on the element.
+// \return \a true in case the operation would be successful, \a false if not.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT     // Type of the matrix
+        , bool SO         // Storage order
+        , bool DF         // Density flag
+        , bool SF         // Symmetry flag
+        , size_t... CRAs  // Compile time row arguments
+        , typename ET >   // Type of the element
+inline bool tryBitand( const Row<MT,SO,DF,SF,CRAs...>& row, size_t index, const ET& value )
+{
+   BLAZE_INTERNAL_ASSERT( index < row.size(), "Invalid vector access index" );
+
+   return tryBitand( row.operand(), row.row(), index, value );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by a bitwise AND on a range of elements of a row.
+// \ingroup row
+//
+// \param row The target row.
+// \param index The index of the first element of the range to be modified.
+// \param size The number of elements of the range to be modified.
+// \param value The bit pattern to be used on the range of elements.
+// \return \a true in case the operation would be successful, \a false if not.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT     // Type of the matrix
+        , bool SO         // Storage order
+        , bool DF         // Density flag
+        , bool SF         // Symmetry flag
+        , size_t... CRAs  // Compile time row arguments
+        , typename ET >   // Type of the element
+BLAZE_ALWAYS_INLINE bool
+   tryBitand( const Row<MT,SO,DF,SF,CRAs...>& row, size_t index, size_t size, const ET& value )
+{
+   BLAZE_INTERNAL_ASSERT( index <= (*row).size(), "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( index + size <= (*row).size(), "Invalid range size" );
+
+   return tryBitand( row.operand(), row.row(), index, 1UL, size, value );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by a bitwise OR on a single element of a row.
+// \ingroup row
+//
+// \param row The target row.
+// \param index The index of the element to be modified.
+// \param value The bit pattern to be used on the element.
+// \return \a true in case the operation would be successful, \a false if not.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT     // Type of the matrix
+        , bool SO         // Storage order
+        , bool DF         // Density flag
+        , bool SF         // Symmetry flag
+        , size_t... CRAs  // Compile time row arguments
+        , typename ET >   // Type of the element
+inline bool tryBitor( const Row<MT,SO,DF,SF,CRAs...>& row, size_t index, const ET& value )
+{
+   BLAZE_INTERNAL_ASSERT( index < row.size(), "Invalid vector access index" );
+
+   return tryBitor( row.operand(), row.row(), index, value );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by a bitwise OR on a range of elements of a row.
+// \ingroup row
+//
+// \param row The target row.
+// \param index The index of the first element of the range to be modified.
+// \param size The number of elements of the range to be modified.
+// \param value The bit pattern to be used on the range of elements.
+// \return \a true in case the operation would be successful, \a false if not.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT     // Type of the matrix
+        , bool SO         // Storage order
+        , bool DF         // Density flag
+        , bool SF         // Symmetry flag
+        , size_t... CRAs  // Compile time row arguments
+        , typename ET >   // Type of the element
+BLAZE_ALWAYS_INLINE bool
+   tryBitor( const Row<MT,SO,DF,SF,CRAs...>& row, size_t index, size_t size, const ET& value )
+{
+   BLAZE_INTERNAL_ASSERT( index <= (*row).size(), "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( index + size <= (*row).size(), "Invalid range size" );
+
+   return tryBitor( row.operand(), row.row(), index, 1UL, size, value );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by a bitwise XOR on a single element of a row.
+// \ingroup row
+//
+// \param row The target row.
+// \param index The index of the element to be modified.
+// \param value The bit pattern to be used on the element.
+// \return \a true in case the operation would be successful, \a false if not.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT     // Type of the matrix
+        , bool SO         // Storage order
+        , bool DF         // Density flag
+        , bool SF         // Symmetry flag
+        , size_t... CRAs  // Compile time row arguments
+        , typename ET >   // Type of the element
+inline bool tryBitxor( const Row<MT,SO,DF,SF,CRAs...>& row, size_t index, const ET& value )
+{
+   BLAZE_INTERNAL_ASSERT( index < row.size(), "Invalid vector access index" );
+
+   return tryBitxor( row.operand(), row.row(), index, value );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by a bitwise XOR on a range of elements of a row.
+// \ingroup row
+//
+// \param row The target row.
+// \param index The index of the first element of the range to be modified.
+// \param size The number of elements of the range to be modified.
+// \param value The bit pattern to be used on the range of elements.
+// \return \a true in case the operation would be successful, \a false if not.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT     // Type of the matrix
+        , bool SO         // Storage order
+        , bool DF         // Density flag
+        , bool SF         // Symmetry flag
+        , size_t... CRAs  // Compile time row arguments
+        , typename ET >   // Type of the element
+BLAZE_ALWAYS_INLINE bool
+   tryBitxor( const Row<MT,SO,DF,SF,CRAs...>& row, size_t index, size_t size, const ET& value )
+{
+   BLAZE_INTERNAL_ASSERT( index <= (*row).size(), "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( index + size <= (*row).size(), "Invalid range size" );
+
+   return tryBitxor( row.operand(), row.row(), index, 1UL, size, value );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1208,9 +1768,9 @@ inline bool tryAssign( const Row<MT,SO,DF,SF,CRAs...>& lhs,
                        const Vector<VT,true>& rhs, size_t index )
 {
    BLAZE_INTERNAL_ASSERT( index <= lhs.size(), "Invalid vector access index" );
-   BLAZE_INTERNAL_ASSERT( index + (~rhs).size() <= lhs.size(), "Invalid vector size" );
+   BLAZE_INTERNAL_ASSERT( index + (*rhs).size() <= lhs.size(), "Invalid vector size" );
 
-   return tryAssign( lhs.operand(), ~rhs, lhs.row(), index );
+   return tryAssign( lhs.operand(), *rhs, lhs.row(), index );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1241,9 +1801,9 @@ inline bool tryAddAssign( const Row<MT,SO,DF,SF,CRAs...>& lhs,
                           const Vector<VT,true>& rhs, size_t index )
 {
    BLAZE_INTERNAL_ASSERT( index <= lhs.size(), "Invalid vector access index" );
-   BLAZE_INTERNAL_ASSERT( index + (~rhs).size() <= lhs.size(), "Invalid vector size" );
+   BLAZE_INTERNAL_ASSERT( index + (*rhs).size() <= lhs.size(), "Invalid vector size" );
 
-   return tryAddAssign( lhs.operand(), ~rhs, lhs.row(), index );
+   return tryAddAssign( lhs.operand(), *rhs, lhs.row(), index );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1274,9 +1834,9 @@ inline bool trySubAssign( const Row<MT,SO,DF,SF,CRAs...>& lhs,
                           const Vector<VT,true>& rhs, size_t index )
 {
    BLAZE_INTERNAL_ASSERT( index <= lhs.size(), "Invalid vector access index" );
-   BLAZE_INTERNAL_ASSERT( index + (~rhs).size() <= lhs.size(), "Invalid vector size" );
+   BLAZE_INTERNAL_ASSERT( index + (*rhs).size() <= lhs.size(), "Invalid vector size" );
 
-   return trySubAssign( lhs.operand(), ~rhs, lhs.row(), index );
+   return trySubAssign( lhs.operand(), *rhs, lhs.row(), index );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1307,9 +1867,9 @@ inline bool tryMultAssign( const Row<MT,SO,DF,SF,CRAs...>& lhs,
                            const Vector<VT,true>& rhs, size_t index )
 {
    BLAZE_INTERNAL_ASSERT( index <= lhs.size(), "Invalid vector access index" );
-   BLAZE_INTERNAL_ASSERT( index + (~rhs).size() <= lhs.size(), "Invalid vector size" );
+   BLAZE_INTERNAL_ASSERT( index + (*rhs).size() <= lhs.size(), "Invalid vector size" );
 
-   return tryMultAssign( lhs.operand(), ~rhs, lhs.row(), index );
+   return tryMultAssign( lhs.operand(), *rhs, lhs.row(), index );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1340,9 +1900,141 @@ inline bool tryDivAssign( const Row<MT,SO,DF,SF,CRAs...>& lhs,
                           const Vector<VT,true>& rhs, size_t index )
 {
    BLAZE_INTERNAL_ASSERT( index <= lhs.size(), "Invalid vector access index" );
-   BLAZE_INTERNAL_ASSERT( index + (~rhs).size() <= lhs.size(), "Invalid vector size" );
+   BLAZE_INTERNAL_ASSERT( index + (*rhs).size() <= lhs.size(), "Invalid vector size" );
 
-   return tryDivAssign( lhs.operand(), ~rhs, lhs.row(), index );
+   return tryDivAssign( lhs.operand(), *rhs, lhs.row(), index );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by the shift assignment of a vector to a row.
+// \ingroup row
+//
+// \param lhs The target left-hand side row.
+// \param rhs The right-hand side vector of bits to shift.
+// \param index The index of the first element to be modified.
+// \return \a true in case the assignment would be successful, \a false if not.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT     // Type of the matrix
+        , bool SO         // Storage order
+        , bool DF         // Density flag
+        , bool SF         // Symmetry flag
+        , size_t... CRAs  // Compile time row arguments
+        , typename VT >   // Type of the right-hand side vector
+inline bool tryShiftAssign( const Row<MT,SO,DF,SF,CRAs...>& lhs,
+                            const Vector<VT,true>& rhs, size_t index )
+{
+   BLAZE_INTERNAL_ASSERT( index <= lhs.size(), "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( index + (*rhs).size() <= lhs.size(), "Invalid vector size" );
+
+   return tryShiftAssign( lhs.operand(), *rhs, lhs.row(), index );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by the bitwise AND assignment of a vector to a row.
+// \ingroup row
+//
+// \param lhs The target left-hand side row.
+// \param rhs The right-hand side vector for the bitwise AND operation.
+// \param index The index of the first element to be modified.
+// \return \a true in case the assignment would be successful, \a false if not.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT     // Type of the matrix
+        , bool SO         // Storage order
+        , bool DF         // Density flag
+        , bool SF         // Symmetry flag
+        , size_t... CRAs  // Compile time row arguments
+        , typename VT >   // Type of the right-hand side vector
+inline bool tryBitandAssign( const Row<MT,SO,DF,SF,CRAs...>& lhs,
+                             const Vector<VT,true>& rhs, size_t index )
+{
+   BLAZE_INTERNAL_ASSERT( index <= lhs.size(), "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( index + (*rhs).size() <= lhs.size(), "Invalid vector size" );
+
+   return tryBitandAssign( lhs.operand(), *rhs, lhs.row(), index );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by the bitwise OR assignment of a vector to a row.
+// \ingroup row
+//
+// \param lhs The target left-hand side row.
+// \param rhs The right-hand side vector for the bitwise OR operation.
+// \param index The index of the first element to be modified.
+// \return \a true in case the assignment would be successful, \a false if not.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT     // Type of the matrix
+        , bool SO         // Storage order
+        , bool DF         // Density flag
+        , bool SF         // Symmetry flag
+        , size_t... CRAs  // Compile time row arguments
+        , typename VT >   // Type of the right-hand side vector
+inline bool tryBitorAssign( const Row<MT,SO,DF,SF,CRAs...>& lhs,
+                            const Vector<VT,true>& rhs, size_t index )
+{
+   BLAZE_INTERNAL_ASSERT( index <= lhs.size(), "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( index + (*rhs).size() <= lhs.size(), "Invalid vector size" );
+
+   return tryBitorAssign( lhs.operand(), *rhs, lhs.row(), index );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by the bitwise XOR assignment of a vector to a row.
+// \ingroup row
+//
+// \param lhs The target left-hand side row.
+// \param rhs The right-hand side vector for the bitwise XOR operation.
+// \param index The index of the first element to be modified.
+// \return \a true in case the assignment would be successful, \a false if not.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT     // Type of the matrix
+        , bool SO         // Storage order
+        , bool DF         // Density flag
+        , bool SF         // Symmetry flag
+        , size_t... CRAs  // Compile time row arguments
+        , typename VT >   // Type of the right-hand side vector
+inline bool tryBitxorAssign( const Row<MT,SO,DF,SF,CRAs...>& lhs,
+                             const Vector<VT,true>& rhs, size_t index )
+{
+   BLAZE_INTERNAL_ASSERT( index <= lhs.size(), "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( index + (*rhs).size() <= lhs.size(), "Invalid vector size" );
+
+   return tryBitxorAssign( lhs.operand(), *rhs, lhs.row(), index );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1453,6 +2145,58 @@ template< typename MT  // Type of the matrix
 inline decltype(auto) derestrict( Row<MT,SO,DF,SF>&& r )
 {
    return row( derestrict( r.operand() ), r.row(), unchecked );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns a reference to the underlying matrix of the given row.
+// \ingroup row
+//
+// \param r The given row.
+// \return Reference to the underlying matrix.
+//
+// This function returns a reference to the underlying matrix of the given row.\n
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in the violation of invariants, erroneous results and/or in compilation errors.
+*/
+template< typename MT        // Type of the matrix
+        , bool SO            // Storage order
+        , bool DF            // Density flag
+        , bool SF            // Symmetry flag
+        , size_t... CRAs >   // Compile time row arguments
+inline decltype(auto) unview( Row<MT,SO,DF,SF,CRAs...>& r )
+{
+   return r.operand();
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns a reference to the underlying matrix of the given constant row.
+// \ingroup row
+//
+// \param r The given constant row.
+// \return Reference to the underlying matrix.
+//
+// This function returns a reference to the underlying matrix of the given constant row.\n
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in the violation of invariants, erroneous results and/or in compilation errors.
+*/
+template< typename MT        // Type of the matrix
+        , bool SO            // Storage order
+        , bool DF            // Density flag
+        , bool SF            // Symmetry flag
+        , size_t... CRAs >   // Compile time row arguments
+inline decltype(auto) unview( const Row<MT,SO,DF,SF,CRAs...>& r )
+{
+   return r.operand();
 }
 /*! \endcond */
 //*************************************************************************************************

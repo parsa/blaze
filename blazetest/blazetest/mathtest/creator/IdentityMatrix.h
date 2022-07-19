@@ -3,7 +3,7 @@
 //  \file blazetest/mathtest/creator/IdentityMatrix.h
 //  \brief Specialization of the Creator class template for IdentityMatrix
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -83,7 +83,7 @@ class Creator< blaze::IdentityMatrix<T,SO> >
    //@{
    // No explicitly declared copy assignment operator.
 
-   const blaze::IdentityMatrix<T,SO> operator()() const;
+   blaze::IdentityMatrix<T,SO> operator()() const;
    //@}
    //**********************************************************************************************
 
@@ -145,7 +145,7 @@ inline Creator< blaze::IdentityMatrix<T,SO> >::Creator( size_t n )
 */
 template< typename T  // Element type of the identity matrix
         , bool SO >   // Storage order of the identity matrix
-inline const blaze::IdentityMatrix<T,SO>
+inline blaze::IdentityMatrix<T,SO>
    Creator< blaze::IdentityMatrix<T,SO> >::operator()() const
 {
    return blaze::IdentityMatrix<T,SO>( n_ );

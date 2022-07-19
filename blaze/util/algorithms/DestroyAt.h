@@ -1,9 +1,9 @@
 //=================================================================================================
 /*!
 //  \file blaze/util/algorithms/DestroyAt.h
-//  \brief Headerfile for the generic destroy_at algorithm
+//  \brief Header file for the generic destroy_at algorithm
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary

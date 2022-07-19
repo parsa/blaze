@@ -3,7 +3,7 @@
 //  \file blaze/math/shims/NextMultiple.h
 //  \brief Header file for the nextMultiple shim
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -57,7 +57,7 @@ namespace blaze {
 //
 // \param value The integral value to be rounded up \f$[1..\infty)\f$.
 // \param factor The factor of the multiple \f$[1..\infty)\f$.
-// \return The multiple of the given factor.
+// \return The next multiple of the given factor.
 //
 // This function rounds up the given integral value to the next multiple of the given integral
 // factor. In case the integral value is already a multiple of the given factor, the value itself

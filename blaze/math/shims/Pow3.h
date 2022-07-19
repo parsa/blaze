@@ -3,7 +3,7 @@
 //  \file blaze/math/shims/Pow3.h
 //  \brief Header file for the pow3 shim
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -40,7 +40,10 @@
 // Includes
 //*************************************************************************************************
 
+#include <blaze/math/typetraits/IsScalar.h>
+#include <blaze/math/typetraits/IsSIMDPack.h>
 #include <blaze/system/Inline.h>
+#include <blaze/util/EnableIf.h>
 
 
 namespace blaze {
@@ -61,7 +64,8 @@ namespace blaze {
 // The \a pow3 shim represents an abstract interface for cubing a value/object of any given
 // data type. For values of built-in data type this results in a plain multiplication.
 */
-template< typename T >
+template< typename T
+        , EnableIf_t< IsScalar_v<T> || IsSIMDPack_v<T> >* = nullptr >
 BLAZE_ALWAYS_INLINE constexpr decltype(auto) pow3( const T& a ) noexcept( noexcept( a * a * a ) )
 {
    return ( a * a * a );

@@ -3,7 +3,7 @@
 //  \file blaze/math/expressions/DVecSVecAddExpr.h
 //  \brief Header file for the dense vector/sparse vector addition expression
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -57,11 +57,15 @@
 #include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsTemporary.h>
+#include <blaze/math/typetraits/IsZero.h>
+#include <blaze/system/MacroDisable.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/FunctionTrace.h>
+#include <blaze/util/MaybeUnused.h>
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/Types.h>
+#include <blaze/util/typetraits/IsSame.h>
 
 
 namespace blaze {
@@ -125,7 +129,12 @@ class DVecSVecAddExpr
 
  public:
    //**Type definitions****************************************************************************
-   using This          = DVecSVecAddExpr<VT1,VT2,TF>;  //!< Type of this DVecSVecAddExpr instance.
+   //! Type of this DVecSVecAddExpr instance.
+   using This = DVecSVecAddExpr<VT1,VT2,TF>;
+
+   //! Base type of this DVecSVecAddExpr instance.
+   using BaseType = VecVecAddExpr< DenseVector<This,TF> >;
+
    using ResultType    = AddTrait_t<RT1,RT2>;          //!< Result type for expression template evaluations.
    using TransposeType = TransposeType_t<ResultType>;  //!< Transpose type for expression template evaluations.
    using ElementType   = ElementType_t<ResultType>;    //!< Resulting element type.
@@ -157,7 +166,7 @@ class DVecSVecAddExpr
    // \param lhs The left-hand side dense vector operand of the addition expression.
    // \param rhs The right-hand side sparse vector operand of the addition expression.
    */
-   explicit inline DVecSVecAddExpr( const VT1& lhs, const VT2& rhs ) noexcept
+   inline DVecSVecAddExpr( const VT1& lhs, const VT2& rhs ) noexcept
       : lhs_( lhs )  // Left-hand side dense vector of the addition expression
       , rhs_( rhs )  // Right-hand side sparse vector of the addition expression
    {
@@ -270,14 +279,14 @@ class DVecSVecAddExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      if( !IsComputation_v<VT1> && isSame( ~lhs, rhs.lhs_ ) ) {
-         addAssign( ~lhs, rhs.rhs_ );
+      if( !IsComputation_v<VT1> && isSame( *lhs, rhs.lhs_ ) ) {
+         addAssign( *lhs, rhs.rhs_ );
       }
       else {
-         assign   ( ~lhs, rhs.lhs_ );
-         addAssign( ~lhs, rhs.rhs_ );
+         assign   ( *lhs, rhs.lhs_ );
+         addAssign( *lhs, rhs.rhs_ );
       }
    }
    /*! \endcond */
@@ -304,10 +313,10 @@ class DVecSVecAddExpr
       BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType, TF );
       BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       const ResultType tmp( serial( rhs ) );
-      assign( ~lhs, tmp );
+      assign( *lhs, tmp );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -329,10 +338,10 @@ class DVecSVecAddExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      addAssign( ~lhs, rhs.lhs_ );
-      addAssign( ~lhs, rhs.rhs_ );
+      addAssign( *lhs, rhs.lhs_ );
+      addAssign( *lhs, rhs.rhs_ );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -358,10 +367,10 @@ class DVecSVecAddExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      subAssign( ~lhs, rhs.lhs_ );
-      subAssign( ~lhs, rhs.rhs_ );
+      subAssign( *lhs, rhs.lhs_ );
+      subAssign( *lhs, rhs.rhs_ );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -391,10 +400,10 @@ class DVecSVecAddExpr
       BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType, TF );
       BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       const ResultType tmp( serial( rhs ) );
-      multAssign( ~lhs, tmp );
+      multAssign( *lhs, tmp );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -424,10 +433,10 @@ class DVecSVecAddExpr
       BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType, TF );
       BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       const ResultType tmp( serial( rhs ) );
-      divAssign( ~lhs, tmp );
+      divAssign( *lhs, tmp );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -451,19 +460,19 @@ class DVecSVecAddExpr
    // specific parallel evaluation strategy is selected.
    */
    template< typename VT >  // Type of the target dense vector
-   friend inline EnableIf_t< UseSMPAssign_v<VT> >
-      smpAssign( DenseVector<VT,TF>& lhs, const DVecSVecAddExpr& rhs )
+   friend inline auto smpAssign( DenseVector<VT,TF>& lhs, const DVecSVecAddExpr& rhs )
+      -> EnableIf_t< UseSMPAssign_v<VT> >
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      if( !IsComputation_v<VT1> && isSame( ~lhs, rhs.lhs_ ) ) {
-         smpAddAssign( ~lhs, rhs.rhs_ );
+      if( !IsComputation_v<VT1> && isSame( *lhs, rhs.lhs_ ) ) {
+         smpAddAssign( *lhs, rhs.rhs_ );
       }
       else {
-         smpAssign   ( ~lhs, rhs.lhs_ );
-         smpAddAssign( ~lhs, rhs.rhs_ );
+         smpAssign   ( *lhs, rhs.lhs_ );
+         smpAddAssign( *lhs, rhs.rhs_ );
       }
    }
    /*! \endcond */
@@ -484,8 +493,8 @@ class DVecSVecAddExpr
    // specific parallel evaluation strategy is selected.
    */
    template< typename VT >  // Type of the target sparse vector
-   friend inline EnableIf_t< UseSMPAssign_v<VT> >
-      smpAssign( SparseVector<VT,TF>& lhs, const DVecSVecAddExpr& rhs )
+   friend inline auto smpAssign( SparseVector<VT,TF>& lhs, const DVecSVecAddExpr& rhs )
+      -> EnableIf_t< UseSMPAssign_v<VT> >
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -493,10 +502,10 @@ class DVecSVecAddExpr
       BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType, TF );
       BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       const ResultType tmp( rhs );
-      smpAssign( ~lhs, tmp );
+      smpAssign( *lhs, tmp );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -516,15 +525,15 @@ class DVecSVecAddExpr
    // expression specific parallel evaluation strategy is selected.
    */
    template< typename VT >  // Type of the target dense vector
-   friend inline EnableIf_t< UseSMPAssign_v<VT> >
-      smpAddAssign( DenseVector<VT,TF>& lhs, const DVecSVecAddExpr& rhs )
+   friend inline auto smpAddAssign( DenseVector<VT,TF>& lhs, const DVecSVecAddExpr& rhs )
+      -> EnableIf_t< UseSMPAssign_v<VT> >
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      smpAddAssign( ~lhs, rhs.lhs_ );
-      smpAddAssign( ~lhs, rhs.rhs_ );
+      smpAddAssign( *lhs, rhs.lhs_ );
+      smpAddAssign( *lhs, rhs.rhs_ );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -548,15 +557,15 @@ class DVecSVecAddExpr
    // specific parallel evaluation strategy is selected.
    */
    template< typename VT >  // Type of the target dense vector
-   friend inline EnableIf_t< UseSMPAssign_v<VT> >
-      smpSubAssign( DenseVector<VT,TF>& lhs, const DVecSVecAddExpr& rhs )
+   friend inline auto smpSubAssign( DenseVector<VT,TF>& lhs, const DVecSVecAddExpr& rhs )
+      -> EnableIf_t< UseSMPAssign_v<VT> >
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      smpSubAssign( ~lhs, rhs.lhs_ );
-      smpSubAssign( ~lhs, rhs.rhs_ );
+      smpSubAssign( *lhs, rhs.lhs_ );
+      smpSubAssign( *lhs, rhs.rhs_ );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -581,8 +590,8 @@ class DVecSVecAddExpr
    // expression specific parallel evaluation strategy is selected.
    */
    template< typename VT >  // Type of the target dense vector
-   friend inline EnableIf_t< UseSMPAssign_v<VT> >
-      smpMultAssign( DenseVector<VT,TF>& lhs, const DVecSVecAddExpr& rhs )
+   friend inline auto smpMultAssign( DenseVector<VT,TF>& lhs, const DVecSVecAddExpr& rhs )
+      -> EnableIf_t< UseSMPAssign_v<VT> >
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -590,10 +599,10 @@ class DVecSVecAddExpr
       BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType, TF );
       BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       const ResultType tmp( rhs );
-      smpMultAssign( ~lhs, tmp );
+      smpMultAssign( *lhs, tmp );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -617,8 +626,8 @@ class DVecSVecAddExpr
    // specific parallel evaluation strategy is selected.
    */
    template< typename VT >  // Type of the target dense vector
-   friend inline EnableIf_t< UseSMPAssign_v<VT> >
-      smpDivAssign( DenseVector<VT,TF>& lhs, const DVecSVecAddExpr& rhs )
+   friend inline auto smpDivAssign( DenseVector<VT,TF>& lhs, const DVecSVecAddExpr& rhs )
+      -> EnableIf_t< UseSMPAssign_v<VT> >
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -626,10 +635,10 @@ class DVecSVecAddExpr
       BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType, TF );
       BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       const ResultType tmp( rhs );
-      smpDivAssign( ~lhs, tmp );
+      smpDivAssign( *lhs, tmp );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -658,6 +667,70 @@ class DVecSVecAddExpr
 //  GLOBAL BINARY ARITHMETIC OPERATORS
 //
 //=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Backend implementation of the addition between a dense vector and a sparse vector
+//        (\f$ \vec{a}=\vec{b}+\vec{c} \f$).
+// \ingroup dense_vector
+//
+// \param lhs The left-hand side dense vector for the vector addition.
+// \param rhs The right-hand side sparse vector for the vector addition.
+// \return The sum of the two vectors.
+//
+// This function implements a performance optimized treatment of the addition between a dense
+// vector and a sparse vector.
+*/
+template< typename VT1  // Type of the left-hand side dense vector
+        , typename VT2  // Type of the right-hand side sparse vector
+        , bool TF       // Transpose flag
+        , DisableIf_t< IsZero_v<VT2> &&
+                       IsSame_v< ElementType_t<VT1>, ElementType_t<VT2> > >* = nullptr >
+inline const DVecSVecAddExpr<VT1,VT2,TF>
+   dvecsvecadd( const DenseVector<VT1,TF>& lhs, const SparseVector<VT2,TF>& rhs )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   BLAZE_INTERNAL_ASSERT( (*lhs).size() == (*rhs).size(), "Invalid vector sizes" );
+
+   return DVecSVecAddExpr<VT1,VT2,TF>( *lhs, *rhs );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Backend implementation of the addition between a dense vector and a zero vector
+//        (\f$ \vec{a}=\vec{b}+\vec{c} \f$).
+// \ingroup dense_vector
+//
+// \param lhs The left-hand side dense vector for the vector addition.
+// \param rhs The right-hand side zero vector for the vector addition.
+// \return The sum of the two vectors.
+//
+// This function implements a performance optimized treatment of the addition between a dense
+// vector and a zero vector.
+*/
+template< typename VT1  // Type of the left-hand side dense vector
+        , typename VT2  // Type of the right-hand side sparse vector
+        , bool TF       // Transpose flag
+        , EnableIf_t< IsZero_v<VT2> &&
+                      IsSame_v< ElementType_t<VT1>, ElementType_t<VT2> > >* = nullptr >
+inline const VT1&
+   dvecsvecadd( const DenseVector<VT1,TF>& lhs, const SparseVector<VT2,TF>& rhs )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   MAYBE_UNUSED( rhs );
+
+   BLAZE_INTERNAL_ASSERT( (*lhs).size() == (*rhs).size(), "Invalid vector sizes" );
+
+   return (*lhs);
+}
+/*! \endcond */
+//*************************************************************************************************
+
 
 //*************************************************************************************************
 /*!\brief Addition operator for the addition of a dense vector and a sparse vector
@@ -693,12 +766,11 @@ inline decltype(auto)
 {
    BLAZE_FUNCTION_TRACE;
 
-   if( (~lhs).size() != (~rhs).size() ) {
+   if( (*lhs).size() != (*rhs).size() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   using ReturnType = const DVecSVecAddExpr<VT1,VT2,TF>;
-   return ReturnType( ~lhs, ~rhs );
+   return dvecsvecadd( *lhs, *rhs );
 }
 //*************************************************************************************************
 
@@ -737,12 +809,11 @@ inline decltype(auto)
 {
    BLAZE_FUNCTION_TRACE;
 
-   if( (~lhs).size() != (~rhs).size() ) {
+   if( (*lhs).size() != (*rhs).size() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   using ReturnType = const DVecSVecAddExpr<VT2,VT1,TF>;
-   return ReturnType( ~rhs, ~lhs );
+   return dvecsvecadd( *rhs, *lhs );
 }
 //*************************************************************************************************
 
@@ -777,7 +848,7 @@ inline decltype(auto)
 {
    BLAZE_FUNCTION_TRACE;
 
-   return ( lhs.leftOperand() + (~rhs) ) + lhs.rightOperand();
+   return ( lhs.leftOperand() + (*rhs) ) + lhs.rightOperand();
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -805,7 +876,7 @@ inline decltype(auto)
 {
    BLAZE_FUNCTION_TRACE;
 
-   return ( lhs.leftOperand() - (~rhs) ) + lhs.rightOperand();
+   return ( lhs.leftOperand() - (*rhs) ) + lhs.rightOperand();
 }
 /*! \endcond */
 //*************************************************************************************************

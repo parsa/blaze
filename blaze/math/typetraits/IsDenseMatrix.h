@@ -3,7 +3,7 @@
 //  \file blaze/math/typetraits/IsDenseMatrix.h
 //  \brief Header file for the IsDenseMatrix type trait
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -41,9 +41,8 @@
 //*************************************************************************************************
 
 #include <utility>
-#include <blaze/math/expressions/DenseMatrix.h>
-#include <blaze/util/FalseType.h>
-#include <blaze/util/TrueType.h>
+#include <blaze/math/expressions/Forward.h>
+#include <blaze/util/IntegralConstant.h>
 
 
 namespace blaze {
@@ -56,28 +55,13 @@ namespace blaze {
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Auxiliary helper struct for the IsDenseMatrix type trait.
+/*!\brief Auxiliary helper functions for the IsDenseMatrix type trait.
 // \ingroup math_type_traits
 */
-template< typename T >
-struct IsDenseMatrixHelper
-{
- private:
-   //**********************************************************************************************
-   template< typename MT, bool SO >
-   static TrueType test( const DenseMatrix<MT,SO>& );
+template< typename MT, bool SO >
+TrueType isDenseMatrix_backend( const volatile DenseMatrix<MT,SO>* );
 
-   template< typename MT, bool SO >
-   static TrueType test( const volatile DenseMatrix<MT,SO>& );
-
-   static FalseType test( ... );
-   //**********************************************************************************************
-
- public:
-   //**********************************************************************************************
-   using Type = decltype( test( std::declval<T&>() ) );
-   //**********************************************************************************************
-};
+FalseType isDenseMatrix_backend( ... );
 /*! \endcond */
 //*************************************************************************************************
 
@@ -86,31 +70,46 @@ struct IsDenseMatrixHelper
 /*!\brief Compile time check for dense matrix types.
 // \ingroup math_type_traits
 //
-// This type trait tests whether or not the given template parameter is a dense, N-dimensional
-// matrix type. In case the type is a dense matrix type, the \a value member constant is set
-// to \a true, the nested type definition \a Type is \a TrueType, and the class derives from
-// \a TrueType. Otherwise \a yes is set to \a false, \a Type is \a FalseType, and the class
-// derives from \a FalseType.
+// This type trait tests whether or not the given template parameter is a dense matrix type
+// (i.e. whether \a T is derived from the DenseMatrix base class). In case the type is a dense
+// matrix type, the \a value member constant is set to \a true, the nested type definition
+// \a Type is \a TrueType, and the class derives from \a TrueType. Otherwise \a value is set
+// to \a false, \a Type is \a FalseType, and the class derives from \a FalseType.
 
    \code
-   blaze::IsDenseMatrix< DynamicMatrix<double,false> >::value     // Evaluates to 1
-   blaze::IsDenseMatrix< const DynamicMatrix<float,true> >::Type  // Results in TrueType
-   blaze::IsDenseMatrix< volatile DynamicMatrix<int,true> >       // Is derived from TrueType
-   blaze::IsDenseMatrix< CompressedMatrix<double,false>::value    // Evaluates to 0
-   blaze::IsDenseMatrix< CompressedVector<double,true> >::Type    // Results in FalseType
-   blaze::IsDenseMatrix< DynamicVector<double,true> >             // Is derived from FalseType
+   using namespace blaze;
+
+   IsDenseMatrix< DynamicMatrix<double> >::value      // Evaluates to 1
+   IsDenseMatrix< const DynamicMatrix<float> >::Type  // Results in TrueType
+   IsDenseMatrix< volatile DynamicMatrix<int> >       // Is derived from TrueType
+   IsDenseMatrix< CompressedMatrix<double>::value     // Evaluates to 0
+   IsDenseMatrix< CompressedVector<double> >::Type    // Results in FalseType
+   IsDenseMatrix< DynamicVector<double> >             // Is derived from FalseType
    \endcode
 */
 template< typename T >
 struct IsDenseMatrix
-   : public IsDenseMatrixHelper<T>::Type
+   : public decltype( isDenseMatrix_backend( std::declval<T*>() ) )
 {};
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Specialization of the IsDenseMatrix type trait for references.
+// \ingroup math_type_traits
+*/
+template< typename T >
+struct IsDenseMatrix<T&>
+   : public FalseType
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Auxiliary variable template for the IsDenseMatrix type trait.
-// \ingroup type_traits
+// \ingroup math_type_traits
 //
 // The IsDenseMatrix_v variable template provides a convenient shortcut to access the nested
 // \a value of the IsDenseMatrix class template. For instance, given the type \a T the

@@ -3,7 +3,7 @@
 //  \file blaze/system/Platform.h
 //  \brief Platform-specific system settings
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -50,6 +50,17 @@
 //  PLATFORM MACRO DEFINITIONS
 //
 //=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+#if defined(_WIN32)
+#  define BLAZE_WIN32_PLATFORM 1
+#else
+#  define BLAZE_WIN32_PLATFORM 0
+#endif
+/*! \endcond */
+//*************************************************************************************************
+
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */

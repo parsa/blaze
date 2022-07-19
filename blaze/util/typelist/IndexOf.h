@@ -3,7 +3,7 @@
 //  \file blaze/util/typelist/IndexOf.h
 //  \brief Header file for the IndexOf class template
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -40,7 +40,7 @@
 // Includes
 //*************************************************************************************************
 
-#include <blaze/util/mpl/SizeT.h>
+#include <blaze/util/IntegralConstant.h>
 #include <blaze/util/typelist/TypeList.h>
 
 
@@ -83,7 +83,7 @@ struct IndexOf;
 */
 template< typename T >  // The search type
 struct IndexOf< TypeList<>, T >
-   : public SizeT<1UL>
+   : public Size_t<1UL>
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -97,7 +97,7 @@ struct IndexOf< TypeList<>, T >
 template< typename T        // The search type
         , typename... Ts >  // Types of the tail of the type list
 struct IndexOf< TypeList<T,Ts...>, T >
-   : public SizeT<0UL>
+   : public Size_t<0UL>
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -112,7 +112,7 @@ template< typename U      // Type of the head of the type list
         , typename... Ts  // Types of the tail of the type list
         , typename T >    // The search type
 struct IndexOf< TypeList<U,Ts...>, T >
-   : public SizeT< 1UL + IndexOf< TypeList<Ts...>, T >::value >
+   : public Size_t< 1UL + IndexOf< TypeList<Ts...>, T >::value >
 {};
 /*! \endcond */
 //*************************************************************************************************

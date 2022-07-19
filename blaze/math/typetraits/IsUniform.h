@@ -3,7 +3,7 @@
 //  \file blaze/math/typetraits/IsUniform.h
 //  \brief Header file for the IsUniform type trait
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -40,8 +40,11 @@
 // Includes
 //*************************************************************************************************
 
-#include <blaze/util/FalseType.h>
-#include <blaze/util/TrueType.h>
+#include <blaze/math/typetraits/IsExpression.h>
+#include <blaze/math/typetraits/IsZero.h>
+#include <blaze/util/EnableIf.h>
+#include <blaze/util/IntegralConstant.h>
+#include <blaze/util/typetraits/IsSame.h>
 
 
 namespace blaze {
@@ -53,6 +56,32 @@ namespace blaze {
 //=================================================================================================
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename T > struct IsUniform;
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Auxiliary helper struct for the IsUniform type trait.
+// \ingroup math_traits
+*/
+template< typename T
+        , typename = void >
+struct IsUniformHelper
+   : public IsZero<T>
+{};
+
+template< typename T >  // Type of the operand
+struct IsUniformHelper< T, EnableIf_t< IsExpression_v<T> && !IsSame_v<T,typename T::ResultType> > >
+   : public IsUniform< typename T::ResultType >::Type
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Compile time check for uniform vectors and matrices.
 // \ingroup math_type_traits
 //
@@ -62,10 +91,19 @@ namespace blaze {
 // set to \a true, the nested type definition \a Type is \a TrueType, and the class derives from
 // \a TrueType. Otherwise \a value is set to \a false, \a Type is \a FalseType, and the class
 // derives from \a FalseType.
+
+   \code
+   blaze::IsUniform< UniformVector<int> >::value          // Evaluates to 1
+   blaze::IsUniform< const UniformMatrix<float> >::Type   // Results in TrueType
+   blaze::IsUniform< volatile UniformVector<double> >     // Is derived from TrueType
+   blaze::IsUniform< DynamicVector<int> >::value          // Evaluates to 0
+   blaze::IsUniform< const DynamicMatrix<float> >::Type   // Results in FalseType
+   blaze::IsUniform< volatile CompressedVector<double> >  // Is derived from FalseType
+   \endcode
 */
 template< typename T >
 struct IsUniform
-   : public FalseType
+   : public IsUniformHelper<T>
 {};
 //*************************************************************************************************
 
@@ -111,7 +149,7 @@ struct IsUniform< const volatile T >
 
 //*************************************************************************************************
 /*!\brief Auxiliary variable template for the IsUniform type trait.
-// \ingroup type_traits
+// \ingroup math_type_traits
 //
 // The IsUniform_v variable template provides a convenient shortcut to access the nested
 // \a value of the IsUniform class template. For instance, given the type \a T the following

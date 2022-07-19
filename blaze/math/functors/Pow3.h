@@ -3,7 +3,7 @@
 //  \file blaze/math/functors/Pow3.h
 //  \brief Header file for the Pow3 functor
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -40,21 +40,27 @@
 // Includes
 //*************************************************************************************************
 
+#include <utility>
 #include <blaze/math/constraints/SIMDPack.h>
 #include <blaze/math/shims/Pow3.h>
 #include <blaze/math/typetraits/HasSIMDMult.h>
 #include <blaze/math/typetraits/IsLower.h>
 #include <blaze/math/typetraits/IsStrictlyLower.h>
 #include <blaze/math/typetraits/IsStrictlyUpper.h>
+#include <blaze/math/typetraits/IsUniform.h>
 #include <blaze/math/typetraits/IsUniLower.h>
 #include <blaze/math/typetraits/IsUniUpper.h>
 #include <blaze/math/typetraits/IsUpper.h>
+#include <blaze/math/typetraits/IsZero.h>
 #include <blaze/math/typetraits/YieldsLower.h>
 #include <blaze/math/typetraits/YieldsStrictlyLower.h>
 #include <blaze/math/typetraits/YieldsStrictlyUpper.h>
+#include <blaze/math/typetraits/YieldsUniform.h>
 #include <blaze/math/typetraits/YieldsUniLower.h>
 #include <blaze/math/typetraits/YieldsUniUpper.h>
 #include <blaze/math/typetraits/YieldsUpper.h>
+#include <blaze/math/typetraits/YieldsZero.h>
+#include <blaze/system/HostDevice.h>
 #include <blaze/system/Inline.h>
 
 
@@ -73,22 +79,15 @@ namespace blaze {
 struct Pow3
 {
    //**********************************************************************************************
-   /*!\brief Default constructor of the Pow3 functor.
-   */
-   explicit inline Pow3()
-   {}
-   //**********************************************************************************************
-
-   //**********************************************************************************************
    /*!\brief Returns the result of the pow3() function for the given object/value.
    //
    // \param a The given object/value.
    // \return The result of the pow3() function for the given object/value.
    */
    template< typename T >
-   BLAZE_ALWAYS_INLINE constexpr decltype(auto) operator()( const T& a ) const
+   BLAZE_ALWAYS_INLINE BLAZE_DEVICE_CALLABLE constexpr decltype(auto) operator()( T&& a ) const
    {
-      return pow3( a );
+      return pow3( std::forward<T>( a ) );
    }
    //**********************************************************************************************
 
@@ -99,6 +98,14 @@ struct Pow3
    */
    template< typename T >
    static constexpr bool simdEnabled() { return HasSIMDMult_v<T,T>; }
+   //**********************************************************************************************
+
+   //**********************************************************************************************
+   /*!\brief Returns whether the operation supports padding, i.e. whether it can deal with zeros.
+   //
+   // \return \a true in case padding is supported, \a false if not.
+   */
+   static constexpr bool paddingEnabled() { return true; }
    //**********************************************************************************************
 
    //**********************************************************************************************
@@ -115,6 +122,24 @@ struct Pow3
    }
    //**********************************************************************************************
 };
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  YIELDSUNIFORM SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename T >
+struct YieldsUniform<Pow3,T>
+   : public IsUniform<T>
+{};
+/*! \endcond */
 //*************************************************************************************************
 
 
@@ -221,6 +246,24 @@ struct YieldsUniUpper<Pow3,MT>
 template< typename MT >
 struct YieldsStrictlyUpper<Pow3,MT>
    : public IsStrictlyUpper<MT>
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  YIELDSZERO SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename T >
+struct YieldsZero<Pow3,T>
+   : public IsZero<T>
 {};
 /*! \endcond */
 //*************************************************************************************************

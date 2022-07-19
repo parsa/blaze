@@ -3,7 +3,7 @@
 //  \file blaze/math/lapack/ungql.h
 //  \brief Header file for the LAPACK functions to reconstruct Q from a QL decomposition (ungql)
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -67,7 +67,7 @@ namespace blaze {
 /*!\name LAPACK functions to reconstruct Q from a QL decomposition (ungql) */
 //@{
 template< typename MT, bool SO >
-inline void ungql( DenseMatrix<MT,SO>& A, const ElementType_t<MT>* tau );
+void ungql( DenseMatrix<MT,SO>& A, const ElementType_t<MT>* tau );
 //@}
 //*************************************************************************************************
 
@@ -101,8 +101,8 @@ inline void ungql( DenseMatrix<MT,SO>& A, const ElementType_t<MT>* tau );
    geqlf( A, tau.data() );  // Performing the QL decomposition
    ungql( A, tau.data() );  // Reconstructing the Q matrix
 
-   const int m( A.rows() );
-   const int n( A.columns() );
+   const size_t m( A.rows() );
+   const size_t n( A.columns() );
 
    const size_t column( m < n ? n - m : 0UL )
    DynamicMatrix<cplx,columnMajor> Q( submatrix( A, 0UL, column, m, min(m,n) ) );
@@ -129,26 +129,26 @@ inline void ungql( DenseMatrix<MT,SO>& A, const ElementType_t<MT>* tau )
 
    using ET = ElementType_t<MT>;
 
-   int n   ( numeric_cast<int>( SO ? (~A).columns() : (~A).rows() ) );
-   int m   ( numeric_cast<int>( SO ? (~A).rows() : (~A).columns() ) );
-   int k   ( min( m, n ) );
-   int lda ( numeric_cast<int>( (~A).spacing() ) );
-   int info( 0 );
+   blas_int_t n   ( numeric_cast<blas_int_t>( SO ? (*A).columns() : (*A).rows() ) );
+   blas_int_t m   ( numeric_cast<blas_int_t>( SO ? (*A).rows() : (*A).columns() ) );
+   blas_int_t k   ( min( m, n ) );
+   blas_int_t lda ( numeric_cast<blas_int_t>( (*A).spacing() ) );
+   blas_int_t info( 0 );
 
    if( k == 0 ) {
       return;
    }
 
-   int lwork( k*lda );
+   blas_int_t lwork( k*lda );
    const std::unique_ptr<ET[]> work( new ET[lwork] );
 
    if( SO ) {
       const size_t offset( ( m < n )?( n - m ):( 0UL ) );
-      ungql( m, k, k, (~A).data(offset), lda, tau, work.get(), lwork, &info );
+      ungql( m, k, k, (*A).data(offset), lda, tau, work.get(), lwork, &info );
    }
    else {
       const size_t offset( ( m > n )?( m - n ):( 0UL ) );
-      ungrq( k, n, k, (~A).data()+offset, lda, tau, work.get(), lwork, &info );
+      ungrq( k, n, k, (*A).data()+offset, lda, tau, work.get(), lwork, &info );
    }
 
    BLAZE_INTERNAL_ASSERT( info == 0, "Invalid argument for Q reconstruction" );

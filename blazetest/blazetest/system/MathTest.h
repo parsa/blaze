@@ -3,7 +3,7 @@
 //  \file blazetest/system/MathTest.h
 //  \brief General settings for the math tests of the blaze test suite
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -43,6 +43,7 @@
 #include <blaze/math/CompressedMatrix.h>
 #include <blaze/math/CompressedVector.h>
 #include <blaze/math/typetraits/IsMatrix.h>
+#include <blaze/math/typetraits/IsScalar.h>
 #include <blaze/math/typetraits/IsVector.h>
 #include <blaze/math/DynamicMatrix.h>
 #include <blaze/math/DynamicVector.h>
@@ -55,10 +56,9 @@
 #include <blaze/math/typetraits/HasMult.h>
 #include <blaze/math/typetraits/HasSub.h>
 #include <blaze/math/typetraits/IsBLASCompatible.h>
-#include <blaze/math/typetraits/UnderlyingNumeric.h>
+#include <blaze/math/typetraits/UnderlyingScalar.h>
 #include <blaze/util/constraints/Valid.h>
 #include <blaze/util/StaticAssert.h>
-#include <blaze/util/typetraits/IsNumeric.h>
 #include <blazetest/system/Types.h>
 
 
@@ -104,27 +104,53 @@ using blaze::StaticVector;
 
 //=================================================================================================
 //
+//  BASIC DATA TYPES
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*!\brief First data type for the math tests.
+//
+// This type represents the first basic element type used for vector and matrix operation tests.
+*/
+using TypeA = BLAZETEST_MATHTEST_TYPE_A;
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Second data type for the math tests.
+//
+// This type represents the second basic element type used for vector and matrix operation tests.
+*/
+using TypeB = BLAZETEST_MATHTEST_TYPE_B;
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
 //  DERIVED DATA TYPES
 //
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief The numeric element type of TypeA.
+/*!\brief The scalar element type of TypeA.
 //
-// This type represents the underlying numeric element type of the specified TypeA. It is used
-// for vector and matrix type that only support numeric data types.
+// This type represents the underlying scalar element type of the specified TypeA. It is used
+// for vector and matrix type that only support scalar data types.
 */
-typedef blaze::UnderlyingNumeric_t<TypeA>  NumericA;
+using ScalarA = blaze::UnderlyingScalar_t<TypeA>;
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\brief The numeric element type of TypeB.
+/*!\brief The scalar element type of TypeB.
 //
-// This type represents the underlying numeric element type of the specified TypeB. It is used
-// for vector and matrix type that only support numeric data types.
+// This type represents the underlying scalar element type of the specified TypeB. It is used
+// for vector and matrix type that only support scalar data types.
 */
-typedef blaze::UnderlyingNumeric_t<TypeB>  NumericB;
+using ScalarB = blaze::UnderlyingScalar_t<TypeB>;
 //*************************************************************************************************
 
 
@@ -140,10 +166,10 @@ typedef blaze::UnderlyingNumeric_t<TypeB>  NumericB;
 /*! \cond BLAZE_INTERNAL */
 namespace {
 
-BLAZE_STATIC_ASSERT( blaze::IsNumeric<TypeA>::value || blaze::IsVector<TypeA>::value || blaze::IsMatrix<TypeA>::value );
-BLAZE_STATIC_ASSERT( blaze::IsNumeric<TypeB>::value || blaze::IsVector<TypeB>::value || blaze::IsMatrix<TypeB>::value );
-BLAZE_STATIC_ASSERT( blaze::IsNumeric<NumericA>::value );
-BLAZE_STATIC_ASSERT( blaze::IsNumeric<NumericB>::value );
+BLAZE_STATIC_ASSERT( blaze::IsScalar<TypeA>::value || blaze::IsVector<TypeA>::value || blaze::IsMatrix<TypeA>::value );
+BLAZE_STATIC_ASSERT( blaze::IsScalar<TypeB>::value || blaze::IsVector<TypeB>::value || blaze::IsMatrix<TypeB>::value );
+BLAZE_STATIC_ASSERT( blaze::IsScalar<ScalarA>::value );
+BLAZE_STATIC_ASSERT( blaze::IsScalar<ScalarB>::value );
 
 BLAZE_STATIC_ASSERT( !( BLAZETEST_MATHTEST_TEST_ADDITION < 0 ) );
 BLAZE_STATIC_ASSERT( !( BLAZETEST_MATHTEST_TEST_ADDITION > 2 ) );
@@ -225,15 +251,21 @@ BLAZE_STATIC_ASSERT( !( BLAZETEST_MATHTEST_TEST_EVAL_OPERATION > 2 ) );
 BLAZE_STATIC_ASSERT( !( BLAZETEST_MATHTEST_TEST_SERIAL_OPERATION < 0 ) );
 BLAZE_STATIC_ASSERT( !( BLAZETEST_MATHTEST_TEST_SERIAL_OPERATION > 2 ) );
 
+BLAZE_STATIC_ASSERT( !( BLAZETEST_MATHTEST_TEST_NOALIAS_OPERATION < 0 ) );
+BLAZE_STATIC_ASSERT( !( BLAZETEST_MATHTEST_TEST_NOALIAS_OPERATION > 2 ) );
+
+BLAZE_STATIC_ASSERT( !( BLAZETEST_MATHTEST_TEST_NOSIMD_OPERATION < 0 ) );
+BLAZE_STATIC_ASSERT( !( BLAZETEST_MATHTEST_TEST_NOSIMD_OPERATION > 2 ) );
+
 BLAZE_STATIC_ASSERT( !( BLAZETEST_MATHTEST_TEST_DECLSYM_OPERATION < 0 ) );
 BLAZE_STATIC_ASSERT( !( BLAZETEST_MATHTEST_TEST_DECLSYM_OPERATION > 2 ) );
-BLAZE_STATIC_ASSERT( !BLAZETEST_MATHTEST_TEST_DECLSYM_OPERATION || blaze::IsNumeric<TypeA>::value );
-BLAZE_STATIC_ASSERT( !BLAZETEST_MATHTEST_TEST_DECLSYM_OPERATION || blaze::IsNumeric<TypeB>::value );
+BLAZE_STATIC_ASSERT( !BLAZETEST_MATHTEST_TEST_DECLSYM_OPERATION || blaze::IsScalar<TypeA>::value );
+BLAZE_STATIC_ASSERT( !BLAZETEST_MATHTEST_TEST_DECLSYM_OPERATION || blaze::IsScalar<TypeB>::value );
 
 BLAZE_STATIC_ASSERT( !( BLAZETEST_MATHTEST_TEST_DECLHERM_OPERATION < 0 ) );
 BLAZE_STATIC_ASSERT( !( BLAZETEST_MATHTEST_TEST_DECLHERM_OPERATION > 2 ) );
-BLAZE_STATIC_ASSERT( !BLAZETEST_MATHTEST_TEST_DECLHERM_OPERATION || blaze::IsNumeric<TypeA>::value );
-BLAZE_STATIC_ASSERT( !BLAZETEST_MATHTEST_TEST_DECLHERM_OPERATION || blaze::IsNumeric<TypeB>::value );
+BLAZE_STATIC_ASSERT( !BLAZETEST_MATHTEST_TEST_DECLHERM_OPERATION || blaze::IsScalar<TypeA>::value );
+BLAZE_STATIC_ASSERT( !BLAZETEST_MATHTEST_TEST_DECLHERM_OPERATION || blaze::IsScalar<TypeB>::value );
 
 BLAZE_STATIC_ASSERT( !( BLAZETEST_MATHTEST_TEST_DECLLOW_OPERATION < 0 ) );
 BLAZE_STATIC_ASSERT( !( BLAZETEST_MATHTEST_TEST_DECLLOW_OPERATION > 2 ) );

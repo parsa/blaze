@@ -3,7 +3,7 @@
 //  \file blaze/math/typetraits/IsCrossExpr.h
 //  \brief Header file for the IsCrossExpr type trait class
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -42,8 +42,7 @@
 
 #include <utility>
 #include <blaze/math/expressions/CrossExpr.h>
-#include <blaze/util/FalseType.h>
-#include <blaze/util/TrueType.h>
+#include <blaze/util/IntegralConstant.h>
 
 
 namespace blaze {
@@ -56,28 +55,13 @@ namespace blaze {
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Auxiliary helper struct for the IsCrossExpr type trait.
+/*!\brief Auxiliary helper functions for the IsCrossExpr type trait.
 // \ingroup math_type_traits
 */
-template< typename T >
-struct IsCrossExprHelper
-{
- private:
-   //**********************************************************************************************
-   template< typename VT >
-   static TrueType test( const CrossExpr<VT>& );
+template< typename VT >
+TrueType isCrossExpr_backend( const volatile CrossExpr<VT>* );
 
-   template< typename VT >
-   static TrueType test( const volatile CrossExpr<VT>& );
-
-   static FalseType test( ... );
-   //**********************************************************************************************
-
- public:
-   //**********************************************************************************************
-   using Type = decltype( test( std::declval<T&>() ) );
-   //**********************************************************************************************
-};
+FalseType isCrossExpr_backend( ... );
 /*! \endcond */
 //*************************************************************************************************
 
@@ -96,14 +80,27 @@ struct IsCrossExprHelper
 */
 template< typename T >
 struct IsCrossExpr
-   : public IsCrossExprHelper<T>::Type
+   : public decltype( isCrossExpr_backend( std::declval<T*>() ) )
 {};
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Specialization of the IsCrossExpr type trait for references.
+// \ingroup math_type_traits
+*/
+template< typename T >
+struct IsCrossExpr<T&>
+   : public FalseType
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Auxiliary variable template for the IsCrossExpr type trait.
-// \ingroup type_traits
+// \ingroup math_type_traits
 //
 // The IsCrossExpr_v variable template provides a convenient shortcut to access the nested
 // \a value of the IsCrossExpr class template. For instance, given the type \a T the

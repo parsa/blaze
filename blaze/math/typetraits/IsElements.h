@@ -3,7 +3,7 @@
 //  \file blaze/math/typetraits/IsElements.h
 //  \brief Header file for the IsElements type trait
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -41,8 +41,7 @@
 //*************************************************************************************************
 
 #include <blaze/math/views/Forward.h>
-#include <blaze/util/FalseType.h>
-#include <blaze/util/TrueType.h>
+#include <blaze/util/IntegralConstant.h>
 
 
 namespace blaze {
@@ -96,7 +95,7 @@ struct IsElements
 /*!\brief Specialization of the IsElements type trait for 'Elements'.
 // \ingroup math_type_traits
 */
-template< typename VT, bool TF, bool DF, size_t... CEAs >
+template< typename VT, bool TF, bool DF, typename... CEAs >
 struct IsElements< Elements<VT,TF,DF,CEAs...> >
    : public TrueType
 {};
@@ -109,7 +108,7 @@ struct IsElements< Elements<VT,TF,DF,CEAs...> >
 /*!\brief Specialization of the IsElements type trait for 'const Elements'.
 // \ingroup math_type_traits
 */
-template< typename VT, bool TF, bool DF, size_t... CEAs >
+template< typename VT, bool TF, bool DF, typename... CEAs >
 struct IsElements< const Elements<VT,TF,DF,CEAs...> >
    : public TrueType
 {};
@@ -122,7 +121,7 @@ struct IsElements< const Elements<VT,TF,DF,CEAs...> >
 /*!\brief Specialization of the IsElements type trait for 'volatile Elements'.
 // \ingroup math_type_traits
 */
-template< typename VT, bool TF, bool DF, size_t... CEAs >
+template< typename VT, bool TF, bool DF, typename... CEAs >
 struct IsElements< volatile Elements<VT,TF,DF,CEAs...> >
    : public TrueType
 {};
@@ -135,7 +134,7 @@ struct IsElements< volatile Elements<VT,TF,DF,CEAs...> >
 /*!\brief Specialization of the IsElements type trait for 'const volatile Elements'.
 // \ingroup math_type_traits
 */
-template< typename VT, bool TF, bool DF, size_t... CEAs >
+template< typename VT, bool TF, bool DF, typename... CEAs >
 struct IsElements< const volatile Elements<VT,TF,DF,CEAs...> >
    : public TrueType
 {};
@@ -145,7 +144,7 @@ struct IsElements< const volatile Elements<VT,TF,DF,CEAs...> >
 
 //*************************************************************************************************
 /*!\brief Auxiliary variable template for the IsElements type trait.
-// \ingroup type_traits
+// \ingroup math_type_traits
 //
 // The IsElements_v variable template provides a convenient shortcut to access the nested
 // \a value of the IsElements class template. For instance, given the type \a T the following

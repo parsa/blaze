@@ -3,7 +3,7 @@
 //  \file blaze/math/typetraits/MaxSize.h
 //  \brief Header file for the MaxSize type trait
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -40,7 +40,7 @@
 // Includes
 //*************************************************************************************************
 
-#include <blaze/util/mpl/PtrdiffT.h>
+#include <blaze/util/IntegralConstant.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/Void.h>
 
@@ -77,7 +77,7 @@ constexpr ptrdiff_t DefaultMaxSize_v = -1L;
 /*!\brief Type representation of the default size of the MaxSize type trait.
 // \ingroup math_type_traits
 */
-using DefaultMaxSize = PtrdiffT<DefaultMaxSize_v>;
+using DefaultMaxSize = Ptrdiff_t<DefaultMaxSize_v>;
 //*************************************************************************************************
 
 
@@ -160,7 +160,7 @@ struct MaxSize< const volatile T, N >
 
 //*************************************************************************************************
 /*!\brief Auxiliary variable template for the MaxSize type trait.
-// \ingroup type_traits
+// \ingroup math_type_traits
 //
 // The MaxSize_v variable template provides a convenient shortcut to access the nested \a value
 // of the MaxSize class template. For instance, given the type \a T and the dimension \a N the

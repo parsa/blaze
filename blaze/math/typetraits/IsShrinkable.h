@@ -3,7 +3,7 @@
 //  \file blaze/math/typetraits/IsShrinkable.h
 //  \brief Header file for the IsShrinkable type trait
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -40,8 +40,10 @@
 // Includes
 //*************************************************************************************************
 
-#include <blaze/util/FalseType.h>
-#include <blaze/util/TrueType.h>
+#include <utility>
+#include <blaze/math/typetraits/RemoveAdaptor.h>
+#include <blaze/util/IntegralConstant.h>
+#include <blaze/util/typetraits/IsDetected.h>
 
 
 namespace blaze {
@@ -51,6 +53,17 @@ namespace blaze {
 //  CLASS DEFINITION
 //
 //=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Auxiliary helper for the IsClearable type trait.
+// \ingroup math_type_traits
+*/
+template< typename T >
+using ShrinkToFit_t = decltype( std::declval<T&>().shrinkToFit() );
+/*! \endcond */
+//*************************************************************************************************
+
 
 //*************************************************************************************************
 /*!\brief Compile time check for shrinkable data types.
@@ -63,55 +76,29 @@ namespace blaze {
 // derives from \a FalseType. Examples:
 
    \code
-   blaze::IsShrinkable< DynamicVector<double,false> >::value       // Evaluates to 1
-   blaze::IsShrinkable< const DynamicMatrix<double,false> >::Type  // Results in TrueType
-   blaze::IsShrinkable< volatile CompressedMatrix<int,true> >      // Is derived from TrueType
-   blaze::IsShrinkable< int >::value                               // Evaluates to 0
-   blaze::IsShrinkable< const StaticVector<float,3U,false >::Type  // Results in FalseType
-   blaze::IsShrinkable< volatile HybridMatrix<int,3U,4U,false> >   // Is derived from FalseType
+   blaze::IsShrinkable< DynamicVector<double> >::value    // Evaluates to 1
+   blaze::IsShrinkable< CompressedVector<double> >::Type  // Results in TrueType
+   blaze::IsShrinkable< DynamicMatrix<int> >              // Is derived from TrueType
+   blaze::IsShrinkable< int >::value                      // Evaluates to 0
+   blaze::IsShrinkable< StaticVector<float,3UL> >::Type   // Results in FalseType
+   blaze::IsShrinkable< const DynamicVector<float> >      // Is derived from FalseType
    \endcode
 */
 template< typename T >
 struct IsShrinkable
+   : public IsDetected< ShrinkToFit_t, RemoveAdaptor_t<T> >
+{};
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Specialization of the IsShrinkable type trait for references.
+// \ingroup math_type_traits
+*/
+template< typename T >
+struct IsShrinkable<T&>
    : public FalseType
-{};
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Specialization of the IsShrinkable type trait for const types.
-// \ingroup math_type_traits
-*/
-template< typename T >
-struct IsShrinkable< const T >
-   : public IsShrinkable<T>
-{};
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Specialization of the IsShrinkable type trait for volatile types.
-// \ingroup math_type_traits
-*/
-template< typename T >
-struct IsShrinkable< volatile T >
-   : public IsShrinkable<T>
-{};
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Specialization of the IsShrinkable type trait for cv qualified types.
-// \ingroup math_type_traits
-*/
-template< typename T >
-struct IsShrinkable< const volatile T >
-   : public IsShrinkable<T>
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -119,7 +106,7 @@ struct IsShrinkable< const volatile T >
 
 //*************************************************************************************************
 /*!\brief Auxiliary variable template for the IsShrinkable type trait.
-// \ingroup type_traits
+// \ingroup math_type_traits
 //
 // The IsShrinkable_v variable template provides a convenient shortcut to access the nested
 // \a value of the IsShrinkable class template. For instance, given the type \a T the following

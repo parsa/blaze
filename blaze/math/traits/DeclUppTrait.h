@@ -3,7 +3,7 @@
 //  \file blaze/math/traits/DeclUppTrait.h
 //  \brief Header file for the declupp trait
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -44,7 +44,7 @@
 #include <blaze/math/adaptors/uppermatrix/BaseTemplate.h>
 #include <blaze/math/typetraits/IsMatrix.h>
 #include <blaze/math/typetraits/Size.h>
-#include <blaze/util/InvalidType.h>
+#include <blaze/util/EnableIf.h>
 
 
 namespace blaze {
@@ -66,16 +66,7 @@ template< typename, typename = void > struct DeclUppTraitEval;
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename T >
-auto evalDeclUppTrait( T& )
-   -> typename DeclUppTraitEval<T>::Type;
-
-template< typename T >
-auto evalDeclUppTrait( const T& )
-   -> typename DeclUppTrait<T>::Type;
-
-template< typename T >
-auto evalDeclUppTrait( const volatile T& )
-   -> typename DeclUppTrait<T>::Type;
+auto evalDeclUppTrait( const volatile T& ) -> DeclUppTraitEval<T>;
 /*! \endcond */
 //*************************************************************************************************
 
@@ -87,11 +78,10 @@ auto evalDeclUppTrait( const volatile T& )
 // \section declupptrait_general General
 //
 // The DeclUppTrait class template offers the possibility to select the resulting data type
-// of a generic declupp() operation on the given type \a MT. DeclUppTrait defines the nested
-// type \a Type, which represents the resulting data type of the declupp() operation. In case
-// the given data type is not a dense or sparse matrix type, the resulting data type \a Type is
-// set to \a INVALID_TYPE. Note that \a const and \a volatile qualifiers and reference modifiers
-// are generally ignored.
+// of a generic declupp() operation on the given type \a MT. In case the given type \a MT is
+// a dense or sparse matrix type, DeclUppTrait defines the nested type \a Type, which represents
+// the resulting data type of the declupp() operation. Otherwise there is no nested type \a Type.
+// Note that \a const and \a volatile qualifiers and reference modifiers are generally ignored.
 //
 //
 // \section declupptrait_specializations Creating custom specializations
@@ -101,8 +91,8 @@ auto evalDeclUppTrait( const volatile T& )
 // following example shows the according specialization for the SymmetricMatrix class template:
 
    \code
-   template< typename MT, bool SO, bool DF, bool NF >
-   struct DeclUppTrait< SymmetricMatrix<MT,SO,DF,NF> >
+   template< typename MT, bool SO, bool DF, bool SF >
+   struct DeclUppTrait< SymmetricMatrix<MT,SO,DF,SF> >
    {
       using Type = DiagonalMatrix<MT>;
    };
@@ -132,14 +122,8 @@ auto evalDeclUppTrait( const volatile T& )
 */
 template< typename MT >  // Type of the matrix
 struct DeclUppTrait
-{
- public:
-   //**********************************************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   using Type = decltype( evalDeclUppTrait( std::declval<MT&>() ) );
-   /*! \endcond */
-   //**********************************************************************************************
-};
+   : public decltype( evalDeclUppTrait( std::declval<MT&>() ) )
+{};
 //*************************************************************************************************
 
 
@@ -169,9 +153,7 @@ using DeclUppTrait_t = typename DeclUppTrait<MT>::Type;
 template< typename MT  // Type of the matrix
         , typename >   // Restricting condition
 struct DeclUppTraitEval
-{
-   using Type = INVALID_TYPE;
-};
+{};
 /*! \endcond */
 //*************************************************************************************************
 
@@ -188,7 +170,7 @@ struct DeclUppTraitEval< MT
                                        Size_v<MT,1UL> == DefaultSize_v ||
                                        Size_v<MT,0UL> == Size_v<MT,1UL> ) > >
 {
-   using Type = UpperMatrix<MT>;
+   using Type = UpperMatrix<typename MT::ResultType>;
 };
 /*! \endcond */
 //*************************************************************************************************

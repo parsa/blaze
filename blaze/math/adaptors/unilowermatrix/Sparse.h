@@ -3,7 +3,7 @@
 //  \file blaze/math/adaptors/unilowermatrix/Sparse.h
 //  \brief UniLowerMatrix specialization for sparse matrices
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -49,25 +49,27 @@
 #include <blaze/math/adaptors/unilowermatrix/UniLowerProxy.h>
 #include <blaze/math/adaptors/unilowermatrix/UniLowerValue.h>
 #include <blaze/math/Aliases.h>
-#include <blaze/math/constraints/Expression.h>
+#include <blaze/math/constraints/Computation.h>
 #include <blaze/math/constraints/Hermitian.h>
 #include <blaze/math/constraints/Lower.h>
 #include <blaze/math/constraints/Resizable.h>
+#include <blaze/math/constraints/Scalar.h>
 #include <blaze/math/constraints/SparseMatrix.h>
 #include <blaze/math/constraints/Static.h>
 #include <blaze/math/constraints/StorageOrder.h>
 #include <blaze/math/constraints/Symmetric.h>
+#include <blaze/math/constraints/Transformation.h>
+#include <blaze/math/constraints/Uniform.h>
 #include <blaze/math/constraints/Upper.h>
+#include <blaze/math/constraints/View.h>
 #include <blaze/math/dense/InitializerMatrix.h>
 #include <blaze/math/Exception.h>
 #include <blaze/math/expressions/SparseMatrix.h>
 #include <blaze/math/InitializerList.h>
-#include <blaze/math/shims/Clear.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/shims/IsOne.h>
 #include <blaze/math/sparse/SparseMatrix.h>
 #include <blaze/math/typetraits/IsComputation.h>
-#include <blaze/math/typetraits/IsResizable.h>
 #include <blaze/math/typetraits/IsSquare.h>
 #include <blaze/math/typetraits/IsStrictlyLower.h>
 #include <blaze/math/typetraits/IsStrictlyTriangular.h>
@@ -78,11 +80,9 @@
 #include <blaze/util/algorithms/Max.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Const.h>
-#include <blaze/util/constraints/Numeric.h>
 #include <blaze/util/constraints/Pointer.h>
 #include <blaze/util/constraints/Reference.h>
 #include <blaze/util/constraints/Volatile.h>
-#include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/StaticAssert.h>
 #include <blaze/util/Types.h>
@@ -124,6 +124,7 @@ class UniLowerMatrix<MT,SO,false>
    using OppositeType   = UniLowerMatrix<OT,!SO,false>;  //!< Result type with opposite storage order for expression template evaluations.
    using TransposeType  = UniUpperMatrix<TT,!SO,false>;  //!< Transpose type for expression template evaluations.
    using ElementType    = ET;                            //!< Type of the matrix elements.
+   using TagType        = TagType_t<MT>;                //!< Tag type of this UniLowerMatrix instance.
    using ReturnType     = ReturnType_t<MT>;              //!< Return type for expression template evaluations.
    using CompositeType  = const This&;                   //!< Data type for composite expression templates.
    using Reference      = UniLowerProxy<MT>;             //!< Reference to a non-constant matrix value.
@@ -308,11 +309,11 @@ class UniLowerMatrix<MT,SO,false>
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit inline UniLowerMatrix();
+            inline UniLowerMatrix();
    explicit inline UniLowerMatrix( size_t n );
-   explicit inline UniLowerMatrix( size_t n, size_t nonzeros );
-   explicit inline UniLowerMatrix( size_t n, const std::vector<size_t>& nonzeros );
-   explicit inline UniLowerMatrix( initializer_list< initializer_list<ElementType> > list );
+            inline UniLowerMatrix( size_t n, size_t nonzeros );
+            inline UniLowerMatrix( size_t n, const std::vector<size_t>& nonzeros );
+            inline UniLowerMatrix( initializer_list< initializer_list<ElementType> > list );
 
    inline UniLowerMatrix( const UniLowerMatrix& m );
    inline UniLowerMatrix( UniLowerMatrix&& m ) noexcept;
@@ -402,8 +403,8 @@ class UniLowerMatrix<MT,SO,false>
    inline void   shrinkToFit();
    inline void   swap( UniLowerMatrix& m ) noexcept;
 
-   static inline constexpr size_t maxNonZeros() noexcept;
-   static inline constexpr size_t maxNonZeros( size_t n ) noexcept;
+   static constexpr size_t maxNonZeros() noexcept;
+   static constexpr size_t maxNonZeros( size_t n ) noexcept;
    //@}
    //**********************************************************************************************
 
@@ -487,14 +488,17 @@ class UniLowerMatrix<MT,SO,false>
    BLAZE_CONSTRAINT_MUST_NOT_BE_POINTER_TYPE         ( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_CONST                ( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_VOLATILE             ( MT );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_EXPRESSION_TYPE      ( MT );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_VIEW_TYPE            ( MT );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE     ( MT );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_TRANSFORMATION_TYPE  ( MT );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNIFORM_TYPE         ( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_HERMITIAN_MATRIX_TYPE( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_LOWER_MATRIX_TYPE    ( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_UPPER_MATRIX_TYPE    ( MT );
    BLAZE_CONSTRAINT_MUST_BE_MATRIX_WITH_STORAGE_ORDER( OT, !SO );
    BLAZE_CONSTRAINT_MUST_BE_MATRIX_WITH_STORAGE_ORDER( TT, !SO );
-   BLAZE_CONSTRAINT_MUST_BE_NUMERIC_TYPE( ElementType );
+   BLAZE_CONSTRAINT_MUST_BE_SCALAR_TYPE( ElementType );
    BLAZE_STATIC_ASSERT( ( Size_v<MT,0UL> == Size_v<MT,1UL> ) );
    //**********************************************************************************************
 };
@@ -706,7 +710,7 @@ template< typename MT   // Type of the adapted sparse matrix
 template< typename MT2  // Type of the foreign matrix
         , bool SO2 >    // Storage order of the foreign matrix
 inline UniLowerMatrix<MT,SO,false>::UniLowerMatrix( const Matrix<MT2,SO2>& m )
-   : matrix_( ~m )  // The adapted sparse matrix
+   : matrix_( *m )  // The adapted sparse matrix
 {
    if( !IsUniLower_v<MT2> && !isUniLower( matrix_ ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid setup of unilower matrix" );
@@ -1120,11 +1124,11 @@ template< typename MT2  // Type of the right-hand side matrix
 inline auto UniLowerMatrix<MT,SO,false>::operator=( const Matrix<MT2,SO2>& rhs )
    -> DisableIf_t< IsComputation_v<MT2>, UniLowerMatrix& >
 {
-   if( IsStrictlyTriangular_v<MT2> || ( !IsUniLower_v<MT2> && !isUniLower( ~rhs ) ) ) {
+   if( IsStrictlyTriangular_v<MT2> || ( !IsUniLower_v<MT2> && !isUniLower( *rhs ) ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to unilower matrix" );
    }
 
-   matrix_ = decllow( ~rhs );
+   matrix_ = decllow( *rhs );
 
    if( !IsUniLower_v<MT2> )
       resetUpper();
@@ -1158,15 +1162,15 @@ template< typename MT2  // Type of the right-hand side matrix
 inline auto UniLowerMatrix<MT,SO,false>::operator=( const Matrix<MT2,SO2>& rhs )
    -> EnableIf_t< IsComputation_v<MT2>, UniLowerMatrix& >
 {
-   if( IsStrictlyTriangular_v<MT2> || ( !IsSquare_v<MT2> && !isSquare( ~rhs ) ) ) {
+   if( IsStrictlyTriangular_v<MT2> || ( !IsSquare_v<MT2> && !isSquare( *rhs ) ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to unilower matrix" );
    }
 
    if( IsUniLower_v<MT2> ) {
-      matrix_ = ~rhs;
+      matrix_ = *rhs;
    }
    else {
-      MT tmp( ~rhs );
+      MT tmp( *rhs );
 
       if( !isUniLower( tmp ) ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to unilower matrix" );
@@ -1208,11 +1212,11 @@ inline auto UniLowerMatrix<MT,SO,false>::operator+=( const Matrix<MT2,SO2>& rhs 
    -> DisableIf_t< IsComputation_v<MT2>, UniLowerMatrix& >
 {
    if( IsUpper_v<MT2> || IsUniTriangular_v<MT2> ||
-       ( !IsStrictlyLower_v<MT2> && !isStrictlyLower( ~rhs ) ) ) {
+       ( !IsStrictlyLower_v<MT2> && !isStrictlyLower( *rhs ) ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to unilower matrix" );
    }
 
-   matrix_ += decllow( ~rhs );
+   matrix_ += decllow( *rhs );
 
    if( !IsStrictlyLower_v<MT2> )
       resetUpper();
@@ -1247,15 +1251,15 @@ inline auto UniLowerMatrix<MT,SO,false>::operator+=( const Matrix<MT2,SO2>& rhs 
    -> EnableIf_t< IsComputation_v<MT2>, UniLowerMatrix& >
 {
    if( IsUpper_v<MT2> || IsUniTriangular_v<MT2> ||
-       ( !IsSquare_v<MT2> && !isSquare( ~rhs ) ) ) {
+       ( !IsSquare_v<MT2> && !isSquare( *rhs ) ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to unilower matrix" );
    }
 
    if( IsStrictlyLower_v<MT2> ) {
-      matrix_ += ~rhs;
+      matrix_ += *rhs;
    }
    else {
-      const ResultType_t<MT2> tmp( ~rhs );
+      const ResultType_t<MT2> tmp( *rhs );
 
       if( !isStrictlyLower( tmp ) ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to unilower matrix" );
@@ -1297,11 +1301,11 @@ inline auto UniLowerMatrix<MT,SO,false>::operator-=( const Matrix<MT2,SO2>& rhs 
    -> DisableIf_t< IsComputation_v<MT2>, UniLowerMatrix& >
 {
    if( IsUpper_v<MT2> || IsUniTriangular_v<MT2> ||
-       ( !IsStrictlyLower_v<MT2> && !isStrictlyLower( ~rhs ) ) ) {
+       ( !IsStrictlyLower_v<MT2> && !isStrictlyLower( *rhs ) ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to unilower matrix" );
    }
 
-   matrix_ -= decllow( ~rhs );
+   matrix_ -= decllow( *rhs );
 
    if( !IsStrictlyLower_v<MT2> )
       resetUpper();
@@ -1336,15 +1340,15 @@ inline auto UniLowerMatrix<MT,SO,false>::operator-=( const Matrix<MT2,SO2>& rhs 
    -> EnableIf_t< IsComputation_v<MT2>, UniLowerMatrix& >
 {
    if( IsUpper_v<MT2> || IsUniTriangular_v<MT2> ||
-       ( !IsSquare_v<MT2> && !isSquare( ~rhs ) ) ) {
+       ( !IsSquare_v<MT2> && !isSquare( *rhs ) ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to unilower matrix" );
    }
 
    if( IsStrictlyLower_v<MT2> ) {
-      matrix_ -= ~rhs;
+      matrix_ -= *rhs;
    }
    else {
-      const ResultType_t<MT2> tmp( ~rhs );
+      const ResultType_t<MT2> tmp( *rhs );
 
       if( !isStrictlyLower( tmp ) ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to unilower matrix" );
@@ -1385,13 +1389,13 @@ template< typename MT2  // Type of the right-hand side matrix
 inline auto UniLowerMatrix<MT,SO,false>::operator%=( const Matrix<MT2,SO2>& rhs )
    -> UniLowerMatrix&
 {
-   if( !IsSquare_v<MT2> && !isSquare( ~rhs ) ) {
+   if( !IsSquare_v<MT2> && !isSquare( *rhs ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to unilower matrix" );
    }
 
-   If_t< IsComputation_v<MT2>, ResultType_t<MT2>, const MT2& > tmp( ~rhs );
+   If_t< IsComputation_v<MT2>, ResultType_t<MT2>, const MT2& > tmp( *rhs );
 
-   for( size_t i=0UL; i<(~rhs).rows(); ++i ) {
+   for( size_t i=0UL; i<(*rhs).rows(); ++i ) {
       if( !isOne( tmp(i,i) ) ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to unilower matrix" );
       }
@@ -1592,14 +1596,10 @@ template< typename MT  // Type of the adapted sparse matrix
         , bool SO >    // Storage order of the adapted sparse matrix
 inline void UniLowerMatrix<MT,SO,false>::clear()
 {
-   using blaze::clear;
+   matrix_.clear();
 
-   if( IsResizable_v<MT> ) {
-      clear( matrix_ );
-   }
-   else {
-      reset();
-   }
+   BLAZE_INTERNAL_ASSERT( matrix_.rows()    == 0UL, "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( matrix_.columns() == 0UL, "Invalid number of columns" );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1781,7 +1781,7 @@ inline void UniLowerMatrix<MT,SO,false>::swap( UniLowerMatrix& m ) noexcept
 */
 template< typename MT  // Type of the adapted dense matrix
         , bool SO >    // Storage order of the adapted dense matrix
-inline constexpr size_t UniLowerMatrix<MT,SO,false>::maxNonZeros() noexcept
+constexpr size_t UniLowerMatrix<MT,SO,false>::maxNonZeros() noexcept
 {
    BLAZE_CONSTRAINT_MUST_BE_STATIC_TYPE( MT );
 
@@ -1803,7 +1803,7 @@ inline constexpr size_t UniLowerMatrix<MT,SO,false>::maxNonZeros() noexcept
 */
 template< typename MT  // Type of the adapted dense matrix
         , bool SO >    // Storage order of the adapted dense matrix
-inline constexpr size_t UniLowerMatrix<MT,SO,false>::maxNonZeros( size_t n ) noexcept
+constexpr size_t UniLowerMatrix<MT,SO,false>::maxNonZeros( size_t n ) noexcept
 {
    return ( ( n + 1UL ) * n ) / 2UL;
 }

@@ -3,7 +3,7 @@
 //  \file blaze/math/expressions/DVecNormExpr.h
 //  \brief Header file for the dense vector norm expression
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -44,6 +44,7 @@
 #include <blaze/math/Aliases.h>
 #include <blaze/math/expressions/DenseVector.h>
 #include <blaze/math/functors/Abs.h>
+#include <blaze/math/functors/Bind2nd.h>
 #include <blaze/math/functors/Cbrt.h>
 #include <blaze/math/functors/L1Norm.h>
 #include <blaze/math/functors/L2Norm.h>
@@ -51,34 +52,35 @@
 #include <blaze/math/functors/L4Norm.h>
 #include <blaze/math/functors/LpNorm.h>
 #include <blaze/math/functors/Noop.h>
+#include <blaze/math/functors/Pow.h>
 #include <blaze/math/functors/Pow2.h>
 #include <blaze/math/functors/Pow3.h>
-#include <blaze/math/functors/Pow4.h>
 #include <blaze/math/functors/Qdrt.h>
+#include <blaze/math/functors/SqrAbs.h>
 #include <blaze/math/functors/Sqrt.h>
-#include <blaze/math/functors/UnaryPow.h>
 #include <blaze/math/shims/Evaluate.h>
 #include <blaze/math/shims/Invert.h>
 #include <blaze/math/shims/IsZero.h>
+#include <blaze/math/shims/PrevMultiple.h>
 #include <blaze/math/SIMD.h>
 #include <blaze/math/traits/MultTrait.h>
+#include <blaze/math/typetraits/HasLoad.h>
 #include <blaze/math/typetraits/HasSIMDAdd.h>
 #include <blaze/math/typetraits/IsPadded.h>
+#include <blaze/math/typetraits/IsSIMDEnabled.h>
 #include <blaze/math/typetraits/UnderlyingBuiltin.h>
 #include <blaze/system/Optimizations.h>
 #include <blaze/util/algorithms/Min.h>
 #include <blaze/util/Assert.h>
-#include <blaze/util/FalseType.h>
 #include <blaze/util/FunctionTrace.h>
+#include <blaze/util/IntegralConstant.h>
 #include <blaze/util/mpl/And.h>
-#include <blaze/util/mpl/Bool.h>
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/StaticAssert.h>
-#include <blaze/util/Template.h>
-#include <blaze/util/TrueType.h>
 #include <blaze/util/TypeList.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/HasMember.h>
+#include <blaze/util/typetraits/RemoveCVRef.h>
 #include <blaze/util/typetraits/RemoveReference.h>
 
 
@@ -108,30 +110,13 @@ struct DVecNormHelper
    using CT = RemoveReference_t< CompositeType_t<VT> >;
    //**********************************************************************************************
 
-   //**SIMD support detection**********************************************************************
-   //! Definition of the HasSIMDEnabled type trait.
-   BLAZE_CREATE_HAS_DATA_OR_FUNCTION_MEMBER_TYPE_TRAIT( HasSIMDEnabled, simdEnabled );
-
-   //! Definition of the HasLoad type trait.
-   BLAZE_CREATE_HAS_DATA_OR_FUNCTION_MEMBER_TYPE_TRAIT( HasLoad, load );
-
-   //! Helper structure for the detection of the SIMD capabilities of the given custom operation.
-   struct UseSIMDEnabledFlag {
-      static constexpr bool test( bool (*fnc)() ) { return fnc(); }
-      static constexpr bool test( bool b ) { return b; }
-      static constexpr bool value =
-         test( Abs::BLAZE_TEMPLATE simdEnabled<ET> ) &&
-         test( Power::BLAZE_TEMPLATE simdEnabled<ET> );
-   };
-   //**********************************************************************************************
-
    //**********************************************************************************************
    static constexpr bool value =
       ( useOptimizedKernels &&
         CT::simdEnabled &&
         If_t< HasSIMDEnabled_v<Abs> && HasSIMDEnabled_v<Power>
-            , UseSIMDEnabledFlag
-            , And< HasLoad<Abs>, HasLoad<Power> > >::value &&
+            , And_t< GetSIMDEnabled<Abs,ET>, GetSIMDEnabled<Power,ET> >
+            , And_t< HasLoad<Abs>, HasLoad<Power> > >::value &&
         HasSIMDAdd_v< ElementType_t<CT>, ElementType_t<CT> > );
    //**********************************************************************************************
 };
@@ -171,15 +156,16 @@ inline decltype(auto) norm_backend( const DenseVector<VT,TF>& dv, Abs abs, Power
 {
    using CT = CompositeType_t<VT>;
    using ET = ElementType_t<VT>;
-   using RT = decltype( evaluate( root( std::declval<ET>() ) ) );
+   using PT = RemoveCVRef_t< decltype( power( abs( std::declval<ET>() ) ) ) >;
+   using RT = RemoveCVRef_t< decltype( evaluate( root( std::declval<PT>() ) ) ) >;
 
-   if( (~dv).size() == 0UL ) return RT();
+   if( (*dv).size() == 0UL ) return RT{};
 
-   CT tmp( ~dv );
+   CT tmp( *dv );
 
    const size_t N( tmp.size() );
 
-   ET norm( power( abs( tmp[0UL] ) ) );
+   PT norm( power( abs( tmp[0UL] ) ) );
    size_t i( 1UL );
 
    for( ; (i+4UL) <= N; i+=4UL ) {
@@ -227,35 +213,64 @@ inline decltype(auto) norm_backend( const DenseVector<VT,TF>& dv, Abs abs, Power
 
    static constexpr size_t SIMDSIZE = SIMDTrait<ET>::size;
 
-   if( (~dv).size() == 0UL ) return RT();
+   if( (*dv).size() == 0UL ) return RT{};
 
-   CT tmp( ~dv );
+   CT tmp( *dv );
 
    const size_t N( tmp.size() );
 
-   constexpr bool remainder( !usePadding || !IsPadded_v< RemoveReference_t<VT> > );
+   constexpr bool remainder( !IsPadded_v< RemoveReference_t<VT> > );
 
-   const size_t ipos( ( remainder )?( N & size_t(-SIMDSIZE) ):( N ) );
-   BLAZE_INTERNAL_ASSERT( !remainder || ( N - ( N % SIMDSIZE ) ) == ipos, "Invalid end calculation" );
+   const size_t ipos( remainder ? prevMultiple( N, SIMDSIZE ) : N );
+   BLAZE_INTERNAL_ASSERT( ipos <= N, "Invalid end calculation" );
 
-   SIMDTrait_t<ET> xmm1, xmm2, xmm3, xmm4;
    size_t i( 0UL );
+   ET norm{};
 
-   for( ; (i+SIMDSIZE*3UL) < ipos; i+=SIMDSIZE*4UL ) {
-      xmm1 += power( abs( tmp.load(i             ) ) );
-      xmm2 += power( abs( tmp.load(i+SIMDSIZE    ) ) );
-      xmm3 += power( abs( tmp.load(i+SIMDSIZE*2UL) ) );
-      xmm4 += power( abs( tmp.load(i+SIMDSIZE*3UL) ) );
-   }
-   for( ; (i+SIMDSIZE) < ipos; i+=SIMDSIZE*2UL ) {
-      xmm1 += power( abs( tmp.load(i         ) ) );
-      xmm2 += power( abs( tmp.load(i+SIMDSIZE) ) );
-   }
-   for( ; i<ipos; i+=SIMDSIZE ) {
-      xmm1 += power( abs( tmp.load(i) ) );
-   }
+   if( SIMDSIZE*3UL < ipos )
+   {
+      SIMDTrait_t<ET> xmm1{}, xmm2{}, xmm3{}, xmm4{};
 
-   ET norm( sum( xmm1 + xmm2 + xmm3 + xmm4 ) );
+      for( ; (i+SIMDSIZE*3UL) < ipos; i+=SIMDSIZE*4UL ) {
+         xmm1 += power( abs( tmp.load(i             ) ) );
+         xmm2 += power( abs( tmp.load(i+SIMDSIZE    ) ) );
+         xmm3 += power( abs( tmp.load(i+SIMDSIZE*2UL) ) );
+         xmm4 += power( abs( tmp.load(i+SIMDSIZE*3UL) ) );
+      }
+      for( ; (i+SIMDSIZE) < ipos; i+=SIMDSIZE*2UL ) {
+         xmm1 += power( abs( tmp.load(i         ) ) );
+         xmm2 += power( abs( tmp.load(i+SIMDSIZE) ) );
+      }
+      for( ; i<ipos; i+=SIMDSIZE ) {
+         xmm1 += power( abs( tmp.load(i) ) );
+      }
+
+      norm = sum( xmm1 + xmm2 + xmm3 + xmm4 );
+   }
+   else if( SIMDSIZE < ipos )
+   {
+      SIMDTrait_t<ET> xmm1{}, xmm2{};
+
+      for( ; (i+SIMDSIZE) < ipos; i+=SIMDSIZE*2UL ) {
+         xmm1 += power( abs( tmp.load(i         ) ) );
+         xmm2 += power( abs( tmp.load(i+SIMDSIZE) ) );
+      }
+      for( ; i<ipos; i+=SIMDSIZE ) {
+         xmm1 += power( abs( tmp.load(i) ) );
+      }
+
+      norm = sum( xmm1 + xmm2 );
+   }
+   else
+   {
+      SIMDTrait_t<ET> xmm1{};
+
+      for( ; i<ipos; i+=SIMDSIZE ) {
+         xmm1 += power( abs( tmp.load(i) ) );
+      }
+
+      norm = sum( xmm1 );
+   }
 
    for( ; remainder && i<N; ++i ) {
       norm += power( abs( tmp[i] ) );
@@ -293,9 +308,9 @@ template< typename VT      // Type of the dense vector
         , typename Abs     // Type of the abs operation
         , typename Power   // Type of the power operation
         , typename Root >  // Type of the root operation
-decltype(auto) norm_backend( const DenseVector<VT,TF>& dv, Abs abs, Power power, Root root )
+inline decltype(auto) norm_backend( const DenseVector<VT,TF>& dv, Abs abs, Power power, Root root )
 {
-   return norm_backend( ~dv, abs, power, root, Bool< DVecNormHelper<VT,Abs,Power>::value >() );
+   return norm_backend( *dv, abs, power, root, Bool_t< DVecNormHelper<VT,Abs,Power>::value >() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -318,11 +333,11 @@ decltype(auto) norm_backend( const DenseVector<VT,TF>& dv, Abs abs, Power power,
 */
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
-decltype(auto) norm( const DenseVector<VT,TF>& dv )
+inline decltype(auto) norm( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return norm_backend( ~dv, Noop(), Pow2(), Sqrt() );
+   return norm_backend( *dv, SqrAbs(), Noop(), Sqrt() );
 }
 //*************************************************************************************************
 
@@ -344,11 +359,11 @@ decltype(auto) norm( const DenseVector<VT,TF>& dv )
 */
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
-decltype(auto) sqrNorm( const DenseVector<VT,TF>& dv )
+inline decltype(auto) sqrNorm( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return norm_backend( ~dv, Noop(), Pow2(), Noop() );
+   return norm_backend( *dv, SqrAbs(), Noop(), Noop() );
 }
 //*************************************************************************************************
 
@@ -370,11 +385,11 @@ decltype(auto) sqrNorm( const DenseVector<VT,TF>& dv )
 */
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
-decltype(auto) l1Norm( const DenseVector<VT,TF>& dv )
+inline decltype(auto) l1Norm( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return norm_backend( ~dv, Abs(), Noop(), Noop() );
+   return norm_backend( *dv, Abs(), Noop(), Noop() );
 }
 //*************************************************************************************************
 
@@ -396,11 +411,11 @@ decltype(auto) l1Norm( const DenseVector<VT,TF>& dv )
 */
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
-decltype(auto) l2Norm( const DenseVector<VT,TF>& dv )
+inline decltype(auto) l2Norm( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return norm_backend( ~dv, Noop(), Pow2(), Sqrt() );
+   return norm_backend( *dv, SqrAbs(), Noop(), Sqrt() );
 }
 //*************************************************************************************************
 
@@ -422,11 +437,11 @@ decltype(auto) l2Norm( const DenseVector<VT,TF>& dv )
 */
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
-decltype(auto) l3Norm( const DenseVector<VT,TF>& dv )
+inline decltype(auto) l3Norm( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return norm_backend( ~dv, Abs(), Pow3(), Cbrt() );
+   return norm_backend( *dv, Abs(), Pow3(), Cbrt() );
 }
 //*************************************************************************************************
 
@@ -448,11 +463,11 @@ decltype(auto) l3Norm( const DenseVector<VT,TF>& dv )
 */
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
-decltype(auto) l4Norm( const DenseVector<VT,TF>& dv )
+inline decltype(auto) l4Norm( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return norm_backend( ~dv, Noop(), Pow4(), Qdrt() );
+   return norm_backend( *dv, SqrAbs(), Pow2(), Qdrt() );
 }
 //*************************************************************************************************
 
@@ -480,14 +495,15 @@ decltype(auto) l4Norm( const DenseVector<VT,TF>& dv )
 template< typename VT    // Type of the dense vector
         , bool TF        // Transpose flag
         , typename ST >  // Type of the norm parameter
-decltype(auto) lpNorm( const DenseVector<VT,TF>& dv, ST p )
+inline decltype(auto) lpNorm( const DenseVector<VT,TF>& dv, ST p )
 {
    BLAZE_FUNCTION_TRACE;
 
    BLAZE_USER_ASSERT( !isZero( p ), "Invalid p for Lp norm detected" );
 
    using ScalarType = MultTrait_t< UnderlyingBuiltin_t<VT>, decltype( inv( p ) ) >;
-   return norm_backend( ~dv, Abs(), UnaryPow<ScalarType>( p ), UnaryPow<ScalarType>( inv( p ) ) );
+   using UnaryPow = Bind2nd<Pow,ScalarType>;
+   return norm_backend( *dv, Abs(), UnaryPow( Pow(), p ), UnaryPow( Pow(), inv( p ) ) );
 }
 //*************************************************************************************************
 
@@ -521,7 +537,33 @@ inline decltype(auto) lpNorm( const DenseVector<VT,TF>& dv )
    using Norms = TypeList< L1Norm, L2Norm, L3Norm, L4Norm, LpNorm<P> >;
    using Norm  = typename TypeAt< Norms, min( P-1UL, 4UL ) >::Type;
 
-   return Norm()( ~dv );
+   return Norm()( *dv );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Computes the infinity norm for the given dense vector.
+// \ingroup dense_vector
+//
+// \param dv The given dense vector for the norm computation.
+// \return The infinity norm of the given dense vector.
+//
+// This function computes the infinity norm of the given dense vector:
+
+   \code
+   blaze::DynamicVector<double> a;
+   // ... Resizing and initialization
+   const double linf = linfNorm( a );
+   \endcode
+*/
+template< typename VT  // Type of the dense vector
+        , bool TF >    // Transpose flag
+inline decltype(auto) linfNorm( const DenseVector<VT,TF>& dv )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return max( abs( *dv ) );
 }
 //*************************************************************************************************
 
@@ -543,11 +585,75 @@ inline decltype(auto) lpNorm( const DenseVector<VT,TF>& dv )
 */
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
-decltype(auto) maxNorm( const DenseVector<VT,TF>& dv )
+inline decltype(auto) maxNorm( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return max( abs( ~dv ) );
+   return linfNorm( *dv );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Computes the minimum norm for the given dense vector.
+// \ingroup dense_vector
+//
+// \param dv The given dense vector for the norm computation.
+// \return The minimum norm of the given dense vector.
+//
+// This function computes the minimum norm of the given dense vector:
+
+   \code
+   blaze::DynamicVector<double> a;
+   // ... Resizing and initialization
+   const double min = minNorm( a );
+   \endcode
+*/
+template< typename VT  // Type of the dense vector
+        , bool TF >    // Transpose flag
+inline decltype(auto) minNorm( const DenseVector<VT,TF>& dv )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return min( abs( *dv ) );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Calculation of the square length (magnitude) of the dense vector \f$|\vec{a}|^2\f$.
+// \ingroup dense_vector
+//
+// \param dv The given dense vector.
+// \return The square length (magnitude) of the dense vector.
+//
+// This function calculates the actual square length (magnitude) of the dense vector. The
+// function has the same effect as calling the \a sqrNorm() function on the dense vector.
+*/
+template< typename VT  // Type of the dense vector
+        , bool TF >    // Transpose flag
+inline decltype(auto) sqrLength( const DenseVector<VT,TF>& dv )
+{
+   return sqrNorm( *dv );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Calculation of the length (magnitude) of the dense vector \f$|\vec{a}|\f$.
+// \ingroup dense_vector
+//
+// \param dv The given dense vector.
+// \return The length (magnitude) of the dense vector.
+//
+// This function calculates the actual length (magnitude) of the dense vector. The function has
+// the same effect as calling the \a norm() function on the dense vector.
+*/
+template< typename VT  // Type of the dense vector
+        , bool TF >    // Transpose flag
+inline decltype(auto) length( const DenseVector<VT,TF>& dv )
+{
+   return norm( *dv );
 }
 //*************************************************************************************************
 

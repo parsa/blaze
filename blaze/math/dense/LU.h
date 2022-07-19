@@ -3,7 +3,7 @@
 //  \file blaze/math/dense/LU.h
 //  \brief Header file for the dense matrix in-place LU decomposition
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -55,6 +55,7 @@
 #include <blaze/math/expressions/DenseMatrix.h>
 #include <blaze/math/lapack/getrf.h>
 #include <blaze/math/typetraits/IsResizable.h>
+#include <blaze/math/typetraits/IsSquare.h>
 #include <blaze/util/algorithms/Min.h>
 #include <blaze/util/NumericCast.h>
 
@@ -104,16 +105,16 @@ void lu( DenseMatrix<MT1,SO1>& A, Matrix<MT2,SO2>& P )
 
    using ET = ElementType_t<MT2>;
 
-   const int m( numeric_cast<int>( (~A).rows()    ) );
-   const int n( numeric_cast<int>( (~A).columns() ) );
-   const int mindim( min( m, n ) );
-   const int size( SO1 ? m : n );
+   const blas_int_t m( numeric_cast<blas_int_t>( (*A).rows()    ) );
+   const blas_int_t n( numeric_cast<blas_int_t>( (*A).columns() ) );
+   const blas_int_t mindim( min( m, n ) );
+   const blas_int_t size( SO1 ? m : n );
 
-   const std::unique_ptr<int[]> helper( new int[mindim + size] );
-   int* ipiv  ( helper.get() );
-   int* permut( ipiv + mindim );
+   const std::unique_ptr<blas_int_t[]> helper( new blas_int_t[mindim + size] );
+   blas_int_t* ipiv  ( helper.get() );
+   blas_int_t* permut( ipiv + mindim );
 
-   getrf( ~A, ipiv );
+   getrf( *A, ipiv );
 
    for( int i=0; i<size; ++i ) {
       permut[i] = i;
@@ -126,10 +127,10 @@ void lu( DenseMatrix<MT1,SO1>& A, Matrix<MT2,SO2>& P )
       }
    }
 
-   resize( ~P, size, size, false );
-   reset( ~P );
+   resize( *P, size, size, false );
+   reset( *P );
    for( int i=0; i<size; ++i ) {
-      (~P)( ( SO1 ? permut[i] : i ), ( SO1 ? i : permut[i] ) ) = ET(1);
+      (*P)( ( SO1 ? permut[i] : i ), ( SO1 ? i : permut[i] ) ) = ET(1);
    }
 }
 /*! \endcond */
@@ -237,14 +238,14 @@ void lu( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO1>& L,
    using ET2 = ElementType_t<MT2>;
    using ET3 = ElementType_t<MT3>;
 
-   const size_t m( (~A).rows()    );
-   const size_t n( (~A).columns() );
+   const size_t m( (*A).rows()    );
+   const size_t n( (*A).columns() );
    const size_t mindim( min( m, n ) );
    const size_t size( SO1 ? m : n );
 
-   if( ( !IsResizable_v<MT2> && ( (~L).rows() != m      || (~L).columns() != mindim ) ) ||
-       ( !IsResizable_v<MT3> && ( (~U).rows() != mindim || (~U).columns() != n      ) ) ||
-       ( !IsResizable_v<MT4> && ( (~P).rows() != size   || (~P).columns() != size   ) ) ) {
+   if( ( !IsResizable_v<MT2> && ( (*L).rows() != m      || (*L).columns() != mindim ) ) ||
+       ( !IsResizable_v<MT3> && ( (*U).rows() != mindim || (*U).columns() != n      ) ) ||
+       ( !IsResizable_v<MT4> && ( (*P).rows() != size   || (*P).columns() != size   ) ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Dimensions of fixed size matrix do not match" );
    }
 
@@ -252,15 +253,15 @@ void lu( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO1>& L,
       BLAZE_THROW_INVALID_ARGUMENT( "Square matrix cannot be resized to m-by-n" );
    }
 
-   decltype(auto) l( derestrict( ~L ) );
-   decltype(auto) u( derestrict( ~U ) );
+   decltype(auto) l( derestrict( *L ) );
+   decltype(auto) u( derestrict( *U ) );
 
    if( m < n )
    {
-      u = (~A);
-      lu( u, ~P );
+      u = (*A);
+      lu( u, *P );
 
-      resize( ~L, m, m, false );
+      resize( *L, m, m, false );
       reset( l );
 
       if( SO1 == rowMajor )
@@ -291,10 +292,10 @@ void lu( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO1>& L,
    }
    else
    {
-      l = (~A);
-      lu( l, ~P );
+      l = (*A);
+      lu( l, *P );
 
-      resize( ~U, n, n, false );
+      resize( *U, n, n, false );
       reset( u );
 
       if( SO1 == rowMajor )

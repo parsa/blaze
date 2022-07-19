@@ -3,7 +3,7 @@
 //  \file blaze/util/typetraits/IsVectorizable.h
 //  \brief Header file for the IsVectorizable type trait
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -41,8 +41,7 @@
 //*************************************************************************************************
 
 #include <blaze/system/Vectorization.h>
-#include <blaze/util/mpl/If.h>
-#include <blaze/util/typetraits/IsComplex.h>
+#include <blaze/util/Complex.h>
 #include <blaze/util/typetraits/IsFloat.h>
 #include <blaze/util/typetraits/IsNumeric.h>
 #include <blaze/util/typetraits/RemoveCV.h>
@@ -64,28 +63,31 @@ namespace blaze {
 template< typename T >
 struct IsVectorizableHelper
 {
- private:
-   //**struct Builtin******************************************************************************
-   template< typename BT >
-   struct Builtin { using Type = BT ; };
-   //**********************************************************************************************
-
-   //**struct Complex******************************************************************************
-   template< typename CT >
-   struct Complex { using Type = typename CT::value_type; };
-   //**********************************************************************************************
-
-   //**********************************************************************************************
-   using T2 = typename If_t< IsComplex_v<T>, Complex<T>, Builtin<T> >::Type;
-   //**********************************************************************************************
-
  public:
    //**********************************************************************************************
-   static constexpr bool value = ( ( bool( BLAZE_SSE_MODE      ) && IsFloat_v<T2>   ) ||
-                                   ( bool( BLAZE_SSE2_MODE     ) && IsNumeric_v<T2> ) ||
-                                   ( bool( BLAZE_AVX512BW_MODE ) && IsNumeric_v<T2> ) ||
-                                   ( bool( BLAZE_AVX512F_MODE || BLAZE_MIC_MODE  )
-                                     && IsNumeric_v<T2> && sizeof(T2) >= 4UL ) );
+   static constexpr bool value = ( sizeof(T) <= 8UL ) &&
+                                 ( ( bool( BLAZE_SSE_MODE      ) && IsFloat_v<T>   ) ||
+                                   ( bool( BLAZE_SSE2_MODE     ) && IsNumeric_v<T> ) ||
+                                   ( bool( BLAZE_AVX512BW_MODE ) && IsNumeric_v<T> ) ||
+                                   ( bool( BLAZE_AVX512F_MODE || BLAZE_MIC_MODE )
+                                     && IsNumeric_v<T> && sizeof(T) >= 4UL ) );
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Specialization of the IsVectorizableHelper class template for 'complex'.
+// \ingroup type_traits
+*/
+template< typename T >
+struct IsVectorizableHelper< complex<T> >
+{
+ public:
+   //**********************************************************************************************
+   static constexpr bool value = IsVectorizableHelper< RemoveCV_t<T> >::value;
    //**********************************************************************************************
 };
 /*! \endcond */

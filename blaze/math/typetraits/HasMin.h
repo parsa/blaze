@@ -3,7 +3,7 @@
 //  \file blaze/math/typetraits/HasMin.h
 //  \brief Header file for the HasMin type trait
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -44,8 +44,7 @@
 #include <blaze/math/typetraits/IsVector.h>
 #include <blaze/util/Complex.h>
 #include <blaze/util/EnableIf.h>
-#include <blaze/util/FalseType.h>
-#include <blaze/util/TrueType.h>
+#include <blaze/util/IntegralConstant.h>
 #include <blaze/util/typetraits/Void.h>
 
 
@@ -138,7 +137,7 @@ struct HasMin< T1, T2, EnableIf_t< IsVector_v<T1> && IsVector_v<T2> > >
 
 //*************************************************************************************************
 /*!\brief Auxiliary variable template for the HasMin type trait.
-// \ingroup type_traits
+// \ingroup math_type_traits
 //
 // The HasMin_v variable template provides a convenient shortcut to access the nested \a value
 // of the HasMin class template. For instance, given the types \a T1 and \a T2 the following

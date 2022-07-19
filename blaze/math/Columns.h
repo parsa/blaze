@@ -3,7 +3,7 @@
 //  \file blaze/math/Columns.h
 //  \brief Header file for the complete Columns implementation
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -68,108 +68,82 @@ namespace blaze {
 //
 // This specialization of the Rand class randomizes dense column selections.
 */
-template< typename MT       // Type of the matrix
-        , bool SO           // Storage order
-        , bool SF           // Symmetry flag
-        , size_t... CCAs >  // Compile time column arguments
+template< typename MT         // Type of the matrix
+        , bool SO             // Storage order
+        , bool SF             // Symmetry flag
+        , typename... CCAs >  // Compile time column arguments
 class Rand< Columns<MT,SO,true,SF,CCAs...> >
 {
  public:
-   //**Randomize functions*************************************************************************
-   /*!\name Randomize functions */
-   //@{
-   template< typename CT >
-   inline void randomize( CT&& columns ) const;
+   //**********************************************************************************************
+   /*!\brief Randomization of a dense column selection.
+   //
+   // \param columns The column selection to be randomized.
+   // \return void
+   */
+   template< typename CT >  // Type of the column selection
+   inline void randomize( CT&& columns ) const
+   {
+      using blaze::randomize;
 
-   template< typename CT, typename Arg >
-   inline void randomize( CT&& columns, const Arg& min, const Arg& max ) const;
-   //@}
+      using ColumnsType = RemoveReference_t<CT>;
+
+      BLAZE_CONSTRAINT_MUST_BE_COLUMNS_TYPE( ColumnsType );
+      BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( ColumnsType );
+
+      if( SO == false ) {
+         for( size_t i=0UL; i<columns.rows(); ++i ) {
+            for( size_t j=0UL; j<columns.columns(); ++j ) {
+               randomize( columns(i,j) );
+            }
+         }
+      }
+      else {
+         for( size_t j=0UL; j<columns.columns(); ++j ) {
+            for( size_t i=0UL; i<columns.rows(); ++i ) {
+               randomize( columns(i,j) );
+            }
+         }
+      }
+   }
+   //**********************************************************************************************
+
+   //**********************************************************************************************
+   /*!\brief Randomization of a dense column selection.
+   //
+   // \param columns The column selection to be randomized.
+   // \param min The smallest possible value for a matrix element.
+   // \param max The largest possible value for a matrix element.
+   // \return void
+   */
+   template< typename CT     // Type of the column selection
+           , typename Arg >  // Min/max argument type
+   inline void randomize( CT&& columns, const Arg& min, const Arg& max ) const
+   {
+      using blaze::randomize;
+
+      using ColumnsType = RemoveReference_t<CT>;
+
+      BLAZE_CONSTRAINT_MUST_BE_COLUMNS_TYPE( ColumnsType );
+      BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( ColumnsType );
+
+      if( SO == false ) {
+         for( size_t i=0UL; i<columns.rows(); ++i ) {
+            for( size_t j=0UL; j<columns.columns(); ++j ) {
+               randomize( columns(i,j), min, max );
+            }
+         }
+      }
+      else {
+         for( size_t j=0UL; j<columns.columns(); ++j ) {
+            for( size_t i=0UL; i<columns.rows(); ++i ) {
+               randomize( columns(i,j), min, max );
+            }
+         }
+      }
+   }
    //**********************************************************************************************
 };
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Randomization of a dense column selection.
-//
-// \param columns The column selection to be randomized.
-// \return void
-*/
-template< typename MT       // Type of the matrix
-        , bool SO           // Storage order
-        , bool SF           // Symmetry flag
-        , size_t... CCAs >  // Compile time column arguments
-template< typename CT >     // Type of the column selection
-inline void Rand< Columns<MT,SO,true,SF,CCAs...> >::randomize( CT&& columns ) const
-{
-   using blaze::randomize;
-
-   using ColumnsType = RemoveReference_t<CT>;
-
-   BLAZE_CONSTRAINT_MUST_BE_COLUMNS_TYPE( ColumnsType );
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( ColumnsType );
-
-   if( SO == false ) {
-      for( size_t i=0UL; i<columns.rows(); ++i ) {
-         for( size_t j=0UL; j<columns.columns(); ++j ) {
-            randomize( columns(i,j) );
-         }
-      }
-   }
-   else {
-      for( size_t j=0UL; j<columns.columns(); ++j ) {
-         for( size_t i=0UL; i<columns.rows(); ++i ) {
-            randomize( columns(i,j) );
-         }
-      }
-   }
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Randomization of a dense column selection.
-//
-// \param columns The column selection to be randomized.
-// \param min The smallest possible value for a matrix element.
-// \param max The largest possible value for a matrix element.
-// \return void
-*/
-template< typename MT       // Type of the matrix
-        , bool SO           // Storage order
-        , bool SF           // Symmetry flag
-        , size_t... CCAs >  // Compile time column arguments
-template< typename CT       // Type of the column selection
-        , typename Arg >    // Min/max argument type
-inline void Rand< Columns<MT,SO,true,SF,CCAs...> >::randomize( CT&& columns,
-                                                               const Arg& min, const Arg& max ) const
-{
-   using blaze::randomize;
-
-   using ColumnsType = RemoveReference_t<CT>;
-
-   BLAZE_CONSTRAINT_MUST_BE_COLUMNS_TYPE( ColumnsType );
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( ColumnsType );
-
-   if( SO == false ) {
-      for( size_t i=0UL; i<columns.rows(); ++i ) {
-         for( size_t j=0UL; j<columns.columns(); ++j ) {
-            randomize( columns(i,j), min, max );
-         }
-      }
-   }
-   else {
-      for( size_t j=0UL; j<columns.columns(); ++j ) {
-         for( size_t i=0UL; i<columns.rows(); ++i ) {
-            randomize( columns(i,j), min, max );
-         }
-      }
-   }
-}
 /*! \endcond */
 //*************************************************************************************************
 
@@ -189,198 +163,151 @@ inline void Rand< Columns<MT,SO,true,SF,CCAs...> >::randomize( CT&& columns,
 //
 // This specialization of the Rand class randomizes sparse column selections.
 */
-template< typename MT       // Type of the matrix
-        , bool SO           // Storage order
-        , bool SF           // Symmetry flag
-        , size_t... CCAs >  // Compile time column arguments
+template< typename MT         // Type of the matrix
+        , bool SO             // Storage order
+        , bool SF             // Symmetry flag
+        , typename... CCAs >  // Compile time column arguments
 class Rand< Columns<MT,SO,false,SF,CCAs...> >
 {
  public:
-   //**Randomize functions*************************************************************************
-   /*!\name Randomize functions */
-   //@{
-   template< typename CT >
-   inline void randomize( CT&& columns ) const;
+   //**********************************************************************************************
+   /*!\brief Randomization of a sparse column selection.
+   //
+   // \param columns The column selection to be randomized.
+   // \return void
+   */
+   template< typename CT >  // Type of the column selection
+   inline void randomize( CT&& columns ) const
+   {
+      using ColumnsType = RemoveReference_t<CT>;
+      using ElementType = ElementType_t<ColumnsType>;
 
-   template< typename CT >
-   inline void randomize( CT&& columns, size_t nonzeros ) const;
+      BLAZE_CONSTRAINT_MUST_BE_COLUMNS_TYPE( ColumnsType );
+      BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( ColumnsType );
 
-   template< typename CT, typename Arg >
-   inline void randomize( CT&& columns, const Arg& min, const Arg& max ) const;
+      const size_t m( columns.rows()    );
+      const size_t n( columns.columns() );
 
-   template< typename CT, typename Arg >
-   inline void randomize( CT&& columns, size_t nonzeros, const Arg& min, const Arg& max ) const;
-   //@}
+      if( m == 0UL || n == 0UL ) return;
+
+      const size_t nonzeros( rand<size_t>( 1UL, std::ceil( 0.5*m*n ) ) );
+
+      columns.reset();
+      columns.reserve( nonzeros );
+
+      while( columns.nonZeros() < nonzeros ) {
+         columns( rand<size_t>( 0UL, m-1UL ), rand<size_t>( 0UL, n-1UL ) ) = rand<ElementType>();
+      }
+   }
+   //**********************************************************************************************
+
+   //**********************************************************************************************
+   /*!\brief Randomization of a sparse column selection.
+   //
+   // \param columns The column selection to be randomized.
+   // \param nonzeros The number of non-zero elements of the random column selection.
+   // \return void
+   // \exception std::invalid_argument Invalid number of non-zero elements.
+   */
+   template< typename CT >  // Type of the column selection
+   inline void randomize( CT&& columns, size_t nonzeros ) const
+   {
+      using ColumnsType = RemoveReference_t<CT>;
+      using ElementType = ElementType_t<ColumnsType>;
+
+      BLAZE_CONSTRAINT_MUST_BE_COLUMNS_TYPE( ColumnsType );
+      BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( ColumnsType );
+
+      const size_t m( columns.rows()    );
+      const size_t n( columns.columns() );
+
+      if( nonzeros > m*n ) {
+         BLAZE_THROW_INVALID_ARGUMENT( "Invalid number of non-zero elements" );
+      }
+
+      if( m == 0UL || n == 0UL ) return;
+
+      columns.reset();
+      columns.reserve( nonzeros );
+
+      while( columns.nonZeros() < nonzeros ) {
+         columns( rand<size_t>( 0UL, m-1UL ), rand<size_t>( 0UL, n-1UL ) ) = rand<ElementType>();
+      }
+   }
+   //**********************************************************************************************
+
+   //**********************************************************************************************
+   /*!\brief Randomization of a sparse column selection.
+   //
+   // \param columns The column selection to be randomized.
+   // \param min The smallest possible value for a matrix element.
+   // \param max The largest possible value for a matrix element.
+   // \return void
+   */
+   template< typename CT     // Type of the column selection
+           , typename Arg >  // Min/max argument type
+   inline void randomize( CT&& columns, const Arg& min, const Arg& max ) const
+   {
+      using ColumnsType = RemoveReference_t<CT>;
+      using ElementType = ElementType_t<ColumnsType>;
+
+      BLAZE_CONSTRAINT_MUST_BE_COLUMNS_TYPE( ColumnsType );
+      BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( ColumnsType );
+
+      const size_t m( columns.rows()    );
+      const size_t n( columns.columns() );
+
+      if( m == 0UL || n == 0UL ) return;
+
+      const size_t nonzeros( rand<size_t>( 1UL, std::ceil( 0.5*m*n ) ) );
+
+      columns.reset();
+      columns.reserve( nonzeros );
+
+      while( columns.nonZeros() < nonzeros ) {
+         columns( rand<size_t>( 0UL, m-1UL ), rand<size_t>( 0UL, n-1UL ) ) = rand<ElementType>( min, max );
+      }
+   }
+   //**********************************************************************************************
+
+   //**********************************************************************************************
+   /*!\brief Randomization of a sparse column selection.
+   //
+   // \param columns The column selection to be randomized.
+   // \param nonzeros The number of non-zero elements of the random column selection.
+   // \param min The smallest possible value for a matrix element.
+   // \param max The largest possible value for a matrix element.
+   // \return void
+   // \exception std::invalid_argument Invalid number of non-zero elements.
+   */
+   template< typename CT     // Type of the column selection
+           , typename Arg >  // Min/max argument type
+   inline void randomize( CT&& columns, size_t nonzeros, const Arg& min, const Arg& max ) const
+   {
+      using ColumnsType = RemoveReference_t<CT>;
+      using ElementType = ElementType_t<ColumnsType>;
+
+      BLAZE_CONSTRAINT_MUST_BE_COLUMNS_TYPE( ColumnsType );
+      BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( ColumnsType );
+
+      const size_t m( columns.rows()    );
+      const size_t n( columns.columns() );
+
+      if( nonzeros > m*n ) {
+         BLAZE_THROW_INVALID_ARGUMENT( "Invalid number of non-zero elements" );
+      }
+
+      if( m == 0UL || n == 0UL ) return;
+
+      columns.reset();
+      columns.reserve( nonzeros );
+
+      while( columns.nonZeros() < nonzeros ) {
+         columns( rand<size_t>( 0UL, m-1UL ), rand<size_t>( 0UL, n-1UL ) ) = rand<ElementType>( min, max );
+      }
+   }
    //**********************************************************************************************
 };
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Randomization of a sparse column selection.
-//
-// \param columns The column selection to be randomized.
-// \return void
-*/
-template< typename MT       // Type of the matrix
-        , bool SO           // Storage order
-        , bool SF           // Symmetry flag
-        , size_t... CCAs >  // Compile time column arguments
-template< typename CT >     // Type of the column selection
-inline void Rand< Columns<MT,SO,false,SF,CCAs...> >::randomize( CT&& columns ) const
-{
-   using ColumnsType = RemoveReference_t<CT>;
-   using ElementType = ElementType_t<ColumnsType>;
-
-   BLAZE_CONSTRAINT_MUST_BE_COLUMNS_TYPE( ColumnsType );
-   BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( ColumnsType );
-
-   const size_t m( columns.rows()    );
-   const size_t n( columns.columns() );
-
-   if( m == 0UL || n == 0UL ) return;
-
-   const size_t nonzeros( rand<size_t>( 1UL, std::ceil( 0.5*m*n ) ) );
-
-   columns.reset();
-   columns.reserve( nonzeros );
-
-   while( columns.nonZeros() < nonzeros ) {
-      columns( rand<size_t>( 0UL, m-1UL ), rand<size_t>( 0UL, n-1UL ) ) = rand<ElementType>();
-   }
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Randomization of a sparse column selection.
-//
-// \param columns The column selection to be randomized.
-// \param nonzeros The number of non-zero elements of the random column selection.
-// \return void
-// \exception std::invalid_argument Invalid number of non-zero elements.
-*/
-template< typename MT       // Type of the matrix
-        , bool SO           // Storage order
-        , bool SF           // Symmetry flag
-        , size_t... CCAs >  // Compile time column arguments
-template< typename CT >     // Type of the column selection
-inline void Rand< Columns<MT,SO,false,SF,CCAs...> >::randomize( CT&& columns, size_t nonzeros ) const
-{
-   using ColumnsType = RemoveReference_t<CT>;
-   using ElementType = ElementType_t<ColumnsType>;
-
-   BLAZE_CONSTRAINT_MUST_BE_COLUMNS_TYPE( ColumnsType );
-   BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( ColumnsType );
-
-   const size_t m( columns.rows()    );
-   const size_t n( columns.columns() );
-
-   if( nonzeros > m*n ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Invalid number of non-zero elements" );
-   }
-
-   if( m == 0UL || n == 0UL ) return;
-
-   columns.reset();
-   columns.reserve( nonzeros );
-
-   while( columns.nonZeros() < nonzeros ) {
-      columns( rand<size_t>( 0UL, m-1UL ), rand<size_t>( 0UL, n-1UL ) ) = rand<ElementType>();
-   }
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Randomization of a sparse column selection.
-//
-// \param columns The column selection to be randomized.
-// \param min The smallest possible value for a matrix element.
-// \param max The largest possible value for a matrix element.
-// \return void
-*/
-template< typename MT       // Type of the matrix
-        , bool SO           // Storage order
-        , bool SF           // Symmetry flag
-        , size_t... CCAs >  // Compile time column arguments
-template< typename CT       // Type of the column selection
-        , typename Arg >    // Min/max argument type
-inline void Rand< Columns<MT,SO,false,SF,CCAs...> >::randomize( CT&& columns,
-                                                                const Arg& min, const Arg& max ) const
-{
-   using ColumnsType = RemoveReference_t<CT>;
-   using ElementType = ElementType_t<ColumnsType>;
-
-   BLAZE_CONSTRAINT_MUST_BE_COLUMNS_TYPE( ColumnsType );
-   BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( ColumnsType );
-
-   const size_t m( columns.rows()    );
-   const size_t n( columns.columns() );
-
-   if( m == 0UL || n == 0UL ) return;
-
-   const size_t nonzeros( rand<size_t>( 1UL, std::ceil( 0.5*m*n ) ) );
-
-   columns.reset();
-   columns.reserve( nonzeros );
-
-   while( columns.nonZeros() < nonzeros ) {
-      columns( rand<size_t>( 0UL, m-1UL ), rand<size_t>( 0UL, n-1UL ) ) = rand<ElementType>( min, max );
-   }
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Randomization of a sparse column selection.
-//
-// \param columns The column selection to be randomized.
-// \param nonzeros The number of non-zero elements of the random column selection.
-// \param min The smallest possible value for a matrix element.
-// \param max The largest possible value for a matrix element.
-// \return void
-// \exception std::invalid_argument Invalid number of non-zero elements.
-*/
-template< typename MT       // Type of the matrix
-        , bool SO           // Storage order
-        , bool SF           // Symmetry flag
-        , size_t... CCAs >  // Compile time column arguments
-template< typename CT       // Type of the column selection
-        , typename Arg >    // Min/max argument type
-inline void Rand< Columns<MT,SO,false,SF,CCAs...> >::randomize( CT&& columns, size_t nonzeros,
-                                                                const Arg& min, const Arg& max ) const
-{
-   using ColumnsType = RemoveReference_t<CT>;
-   using ElementType = ElementType_t<ColumnsType>;
-
-   BLAZE_CONSTRAINT_MUST_BE_COLUMNS_TYPE( ColumnsType );
-   BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( ColumnsType );
-
-   const size_t m( columns.rows()    );
-   const size_t n( columns.columns() );
-
-   if( nonzeros > m*n ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Invalid number of non-zero elements" );
-   }
-
-   if( m == 0UL || n == 0UL ) return;
-
-   columns.reset();
-   columns.reserve( nonzeros );
-
-   while( columns.nonZeros() < nonzeros ) {
-      columns( rand<size_t>( 0UL, m-1UL ), rand<size_t>( 0UL, n-1UL ) ) = rand<ElementType>( min, max );
-   }
-}
 /*! \endcond */
 //*************************************************************************************************
 

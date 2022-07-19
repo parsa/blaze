@@ -3,7 +3,7 @@
 //  \file blaze/math/typetraits/HasSIMDDiv.h
 //  \brief Header file for the HasSIMDDiv type trait
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -43,12 +43,11 @@
 #include <blaze/system/Vectorization.h>
 #include <blaze/util/Complex.h>
 #include <blaze/util/EnableIf.h>
-#include <blaze/util/FalseType.h>
 #include <blaze/util/IntegralConstant.h>
-#include <blaze/util/typetraits/Decay.h>
 #include <blaze/util/typetraits/IsIntegral.h>
 #include <blaze/util/typetraits/IsNumeric.h>
 #include <blaze/util/typetraits/IsSigned.h>
+#include <blaze/util/typetraits/RemoveCVRef.h>
 
 
 namespace blaze {
@@ -77,20 +76,22 @@ struct HasSIMDDivHelper
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename T1, typename T2 >
-struct HasSIMDDivHelper< T1, T2, EnableIf_t< IsNumeric_v<T1> && IsIntegral_v<T1> &&
-                                             IsSigned_v<T1> && IsNumeric_v<T2> &&
-                                             IsIntegral_v<T2> && IsSigned_v<T2> &&
+struct HasSIMDDivHelper< T1, T2, EnableIf_t< ( IsNumeric_v<T1> && IsNumeric_v<T2> ) &&
+                                             ( IsIntegral_v<T1> && IsIntegral_v<T2> ) &&
+                                             !( IsSigned_v<T1> ^ IsSigned_v<T2> ) &&
                                              sizeof(T1) == sizeof(T2) > >
    : public BoolConstant< bool( BLAZE_SVML_MODE ) &&
-                          ( ( bool( BLAZE_MIC_MODE      ) && sizeof(T1) >= 4UL ) ||
+                          ( ( bool( BLAZE_AVX2_MODE     ) ) ||
+                            ( bool( BLAZE_MIC_MODE      ) && sizeof(T1) >= 4UL ) ||
                             ( bool( BLAZE_AVX512BW_MODE ) && sizeof(T1) <= 2UL ) ||
                             ( bool( BLAZE_AVX512F_MODE  ) && sizeof(T1) >= 4UL ) ) >
 {};
 
 template< typename T >
-struct HasSIMDDivHelper< complex<T>, T, EnableIf_t< IsNumeric_v<T> && IsIntegral_v<T> && IsSigned_v<T> > >
+struct HasSIMDDivHelper< complex<T>, T, EnableIf_t< IsNumeric_v<T> && IsIntegral_v<T> > >
    : public BoolConstant< bool( BLAZE_SVML_MODE ) &&
-                          ( ( bool( BLAZE_MIC_MODE      ) && sizeof(T) >= 4UL ) ||
+                          ( ( bool( BLAZE_AVX2_MODE     ) ) ||
+                            ( bool( BLAZE_MIC_MODE      ) && sizeof(T) >= 4UL ) ||
                             ( bool( BLAZE_AVX512BW_MODE ) && sizeof(T) <= 2UL ) ||
                             ( bool( BLAZE_AVX512F_MODE  ) && sizeof(T) >= 4UL ) ) >
 {};
@@ -149,14 +150,14 @@ template< typename T1        // Type of the left-hand side operand
         , typename T2        // Type of the right-hand side operand
         , typename = void >  // Restricting condition
 struct HasSIMDDiv
-   : public BoolConstant< HasSIMDDivHelper< Decay_t<T1>, Decay_t<T2> >::value >
+   : public BoolConstant< HasSIMDDivHelper< RemoveCVRef_t<T1>, RemoveCVRef_t<T2> >::value >
 {};
 //*************************************************************************************************
 
 
 //*************************************************************************************************
 /*!\brief Auxiliary variable template for the HasSIMDDiv type trait.
-// \ingroup type_traits
+// \ingroup math_type_traits
 //
 // The HasSIMDDiv_v variable template provides a convenient shortcut to access the nested
 // \a value of the HasSIMDDiv class template. For instance, given the types \a T1 and \a T2

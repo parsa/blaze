@@ -3,7 +3,7 @@
 //  \file blaze/math/typetraits/HasSIMDSin.h
 //  \brief Header file for the HasSIMDSin type trait
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -42,9 +42,9 @@
 
 #include <blaze/system/Vectorization.h>
 #include <blaze/util/IntegralConstant.h>
-#include <blaze/util/typetraits/Decay.h>
 #include <blaze/util/typetraits/IsDouble.h>
 #include <blaze/util/typetraits/IsFloat.h>
+#include <blaze/util/typetraits/RemoveCVRef.h>
 
 
 namespace blaze {
@@ -63,7 +63,8 @@ namespace blaze {
 template< typename T >  // Type of the operand
 using HasSIMDSinHelper =
    BoolConstant< ( IsFloat_v<T> || IsDouble_v<T> ) &&
-                 bool( BLAZE_SVML_MODE ) &&
+                 ( bool( BLAZE_SVML_MODE    ) ||
+                   bool( BLAZE_SLEEF_MODE ) ) &&
                  ( bool( BLAZE_SSE_MODE     ) ||
                    bool( BLAZE_AVX_MODE     ) ||
                    bool( BLAZE_MIC_MODE     ) ||
@@ -95,14 +96,14 @@ using HasSIMDSinHelper =
 */
 template< typename T >  // Type of the operand
 struct HasSIMDSin
-   : public BoolConstant< HasSIMDSinHelper< Decay_t<T> >::value >
+   : public BoolConstant< HasSIMDSinHelper< RemoveCVRef_t<T> >::value >
 {};
 //*************************************************************************************************
 
 
 //*************************************************************************************************
 /*!\brief Auxiliary variable template for the HasSIMDSin type trait.
-// \ingroup type_traits
+// \ingroup math_type_traits
 //
 // The HasSIMDSin_v variable template provides a convenient shortcut to access the nested
 // \a value of the HasSIMDSin class template. For instance, given the type \a T the following

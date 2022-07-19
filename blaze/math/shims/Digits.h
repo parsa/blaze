@@ -3,7 +3,7 @@
 //  \file blaze/math/shims/Digits.h
 //  \brief Header file for the digits shim
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -40,8 +40,9 @@
 // Includes
 //*************************************************************************************************
 
-#include <blaze/util/constraints/Integral.h>
+#include <blaze/util/EnableIf.h>
 #include <blaze/util/Types.h>
+#include <blaze/util/typetraits/IsIntegral.h>
 
 
 namespace blaze {
@@ -70,11 +71,10 @@ namespace blaze {
 // The digits function only works for integral built-in data types. The attempt to use any
 // other type will result in a compile time error.
 */
-template< typename T >
-inline constexpr size_t digits( T a ) noexcept
+template< typename T
+        , EnableIf_t< IsIntegral_v<T> >* = nullptr >
+constexpr size_t digits( T a ) noexcept
 {
-   BLAZE_CONSTRAINT_MUST_BE_INTEGRAL_TYPE( T );
-
    size_t count( 0 );
 
    while( a != 0 ) {

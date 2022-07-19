@@ -3,7 +3,7 @@
 //  \file src/mathtest/lapack/EigenvalueTest.cpp
 //  \brief Source file for the LAPACK eigenvalue test
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -41,6 +41,10 @@
 #include <iostream>
 #include <blazetest/mathtest/lapack/EigenvalueTest.h>
 
+#ifdef BLAZE_USE_HPX_THREADS
+#  include <hpx/hpx_main.hpp>
+#endif
+
 
 namespace blazetest {
 
@@ -69,6 +73,7 @@ EigenvalueTest::EigenvalueTest()
    //=====================================================================================
 
    //testGeev < float >();
+   //testGges < float >();
    //testSyev < float >();
    //testSyevd< float >();
    //testSyevx< float >();
@@ -79,6 +84,7 @@ EigenvalueTest::EigenvalueTest()
    //=====================================================================================
 
    testGeev < double >();
+   testGges < double >();
    testSyev < double >();
    testSyevd< double >();
    testSyevx< double >();
@@ -89,6 +95,7 @@ EigenvalueTest::EigenvalueTest()
    //=====================================================================================
 
    //testGeev < complex<float> >();
+   //testGges < complex<float> >();
    //testHeev < complex<float> >();
    //testHeevd< complex<float> >();
    //testHeevx< complex<float> >();
@@ -99,6 +106,7 @@ EigenvalueTest::EigenvalueTest()
    //=====================================================================================
 
    testGeev < complex<double> >();
+   testGges < complex<double> >();
    testHeev < complex<double> >();
    testHeevd< complex<double> >();
    testHeevx< complex<double> >();

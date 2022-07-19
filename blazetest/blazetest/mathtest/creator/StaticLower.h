@@ -3,7 +3,7 @@
 //  \file blazetest/mathtest/creator/StaticLower.h
 //  \brief Specialization of the Creator class template for LowerMatrix<StaticMatrix>
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -89,10 +89,10 @@ class Creator< blaze::LowerMatrix< blaze::StaticMatrix<T,N,N,SO> > >
    //@{
    // No explicitly declared copy assignment operator.
 
-   const blaze::LowerMatrix< blaze::StaticMatrix<T,N,N,SO> > operator()() const;
+   blaze::LowerMatrix< blaze::StaticMatrix<T,N,N,SO> > operator()() const;
 
    template< typename CP >
-   const blaze::LowerMatrix< blaze::StaticMatrix<T,N,N,SO> > operator()( const CP& policy ) const;
+   blaze::LowerMatrix< blaze::StaticMatrix<T,N,N,SO> > operator()( const CP& policy ) const;
    //@}
    //**********************************************************************************************
 
@@ -145,7 +145,7 @@ inline Creator< blaze::LowerMatrix< blaze::StaticMatrix<T,N,N,SO> > >::Creator( 
 template< typename T  // Element type of the static matrix
         , size_t N    // Number of rows and columns of the static matrix
         , bool SO >   // Storage order of the static matrix
-inline const blaze::LowerMatrix< blaze::StaticMatrix<T,N,N,SO> >
+inline blaze::LowerMatrix< blaze::StaticMatrix<T,N,N,SO> >
    Creator< blaze::LowerMatrix< blaze::StaticMatrix<T,N,N,SO> > >::operator()() const
 {
    return (*this)( Default() );
@@ -163,7 +163,7 @@ template< typename T     // Element type of the static matrix
         , size_t N       // Number of rows and columns of the static matrix
         , bool SO >      // Storage order of the static matrix
 template< typename CP >  // Creation policy
-inline const blaze::LowerMatrix< blaze::StaticMatrix<T,N,N,SO> >
+inline blaze::LowerMatrix< blaze::StaticMatrix<T,N,N,SO> >
    Creator< blaze::LowerMatrix< blaze::StaticMatrix<T,N,N,SO> > >::operator()( const CP& policy ) const
 {
    blaze::LowerMatrix< blaze::StaticMatrix<T,N,N,SO> > matrix;

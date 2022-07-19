@@ -3,7 +3,7 @@
 //  \file blaze/math/ReductionFlag.h
 //  \brief Header file for the reduction flags
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -52,6 +52,13 @@ namespace blaze {
 //=================================================================================================
 
 //*************************************************************************************************
+/*!\brief Type of the reduction flags.
+*/
+using ReductionFlag = size_t;
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Reduction flag for row-wise reduction operations.
 //
 // This flag can be used to perform row-wise reduction operations on matrices. The following
@@ -67,7 +74,7 @@ namespace blaze {
    v = sum<rowwise>( A );  // Results in ( 7, 1 )
    \endcode
 */
-constexpr size_t rowwise = 1UL;
+constexpr ReductionFlag rowwise = 1UL;
 //*************************************************************************************************
 
 
@@ -87,7 +94,7 @@ constexpr size_t rowwise = 1UL;
    v = sum<columnwise>( A );  // Results in ( 2, 1, 5 )
    \endcode
 */
-constexpr size_t columnwise = 0UL;
+constexpr ReductionFlag columnwise = 0UL;
 //*************************************************************************************************
 
 } // namespace blaze

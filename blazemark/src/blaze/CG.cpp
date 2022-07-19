@@ -3,7 +3,7 @@
 //  \file src/blaze/CG.cpp
 //  \brief Source file for the Blaze conjugate gradient kernel
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -115,12 +115,12 @@ double cg( size_t N, size_t steps, size_t iterations )
 
          for( size_t iteration=0UL; iteration<iterations; ++iteration )
          {
-            h = A * d;
+            h = noalias( A * d );
             alpha = delta / ( trans(d) * h );
-            x += alpha * d;
-            r += alpha * h;
+            x += noalias( alpha * d );
+            r += noalias( alpha * h );
             beta = trans(r) * r;
-            d = ( beta / delta ) * d - r;
+            d = noalias( ( beta / delta ) * d - r );
             delta = beta;
          }
       }

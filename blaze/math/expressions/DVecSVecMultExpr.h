@@ -3,7 +3,7 @@
 //  \file blaze/math/expressions/DVecSVecMultExpr.h
 //  \brief Header file for the dense vector/sparse vector multiplication expression
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -48,6 +48,7 @@
 #include <blaze/math/constraints/SparseVector.h>
 #include <blaze/math/constraints/TransposeFlag.h>
 #include <blaze/math/constraints/VecVecMultExpr.h>
+#include <blaze/math/constraints/Zero.h>
 #include <blaze/math/Exception.h>
 #include <blaze/math/expressions/Computation.h>
 #include <blaze/math/expressions/Forward.h>
@@ -59,13 +60,16 @@
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsTemporary.h>
+#include <blaze/math/typetraits/IsZero.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
 #include <blaze/math/typetraits/Size.h>
+#include <blaze/system/MacroDisable.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/FunctionTrace.h>
+#include <blaze/util/MaybeUnused.h>
 #include <blaze/util/mpl/If.h>
-#include <blaze/util/mpl/Maximum.h>
+#include <blaze/util/mpl/Max.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/RemoveReference.h>
 
@@ -136,10 +140,15 @@ class DVecSVecMultExpr
 
  public:
    //**Type definitions****************************************************************************
-   using This          = DVecSVecMultExpr<VT1,VT2,TF>;  //!< Type of this DVecSVecMultExpr instance.
-   using ResultType    = MultTrait_t<RT1,RT2>;          //!< Result type for expression template evaluations.
-   using TransposeType = TransposeType_t<ResultType>;   //!< Transpose type for expression template evaluations.
-   using ElementType   = ElementType_t<ResultType>;     //!< Resulting element type.
+   //! Type of this DVecSVecMultExpr instance.
+   using This = DVecSVecMultExpr<VT1,VT2,TF>;
+
+   //! Base type of this DVecSVecMultExpr instance.
+   using BaseType = VecVecMultExpr< SparseVector<This,TF> >;
+
+   using ResultType    = MultTrait_t<RT1,RT2>;         //!< Result type for expression template evaluations.
+   using TransposeType = TransposeType_t<ResultType>;  //!< Transpose type for expression template evaluations.
+   using ElementType   = ElementType_t<ResultType>;    //!< Resulting element type.
 
    //! Return type for expression template evaluations.
    using ReturnType = const If_t< returnExpr, ExprReturnType, ElementType >;
@@ -296,7 +305,7 @@ class DVecSVecMultExpr
    // \param lhs The left-hand side dense vector operand of the multiplication expression.
    // \param rhs The right-hand side sparse vector operand of the multiplication expression.
    */
-   explicit inline DVecSVecMultExpr( const VT1& lhs, const VT2& rhs ) noexcept
+   inline DVecSVecMultExpr( const VT1& lhs, const VT2& rhs ) noexcept
       : lhs_( lhs )  // Left-hand side dense vector of the multiplication expression
       , rhs_( rhs )  // Right-hand side sparse vector of the multiplication expression
    {
@@ -472,22 +481,22 @@ class DVecSVecMultExpr
    // of the two operands requires an intermediate evaluation.
    */
    template< typename VT >  // Type of the target dense vector
-   friend inline EnableIf_t< UseAssign_v<VT> >
-      assign( DenseVector<VT,TF>& lhs, const DVecSVecMultExpr& rhs )
+   friend inline auto assign( DenseVector<VT,TF>& lhs, const DVecSVecMultExpr& rhs )
+      -> EnableIf_t< UseAssign_v<VT> >
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       CT1 x( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side dense vector operand
       CT2 y( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side sparse vector operand
 
       BLAZE_INTERNAL_ASSERT( x.size() == rhs.lhs_.size(), "Invalid vector size" );
       BLAZE_INTERNAL_ASSERT( y.size() == rhs.rhs_.size(), "Invalid vector size" );
-      BLAZE_INTERNAL_ASSERT( x.size() == (~lhs).size()  , "Invalid vector size" );
+      BLAZE_INTERNAL_ASSERT( x.size() == (*lhs).size()  , "Invalid vector size" );
 
       for( auto element=y.begin(); element!=y.end(); ++element )
-         (~lhs)[element->index()] = x[element->index()] * element->value();
+         (*lhs)[element->index()] = x[element->index()] * element->value();
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -507,26 +516,26 @@ class DVecSVecMultExpr
    // of the two operands requires an intermediate evaluation.
    */
    template< typename VT >  // Type of the target sparse vector
-   friend inline EnableIf_t< UseAssign_v<VT> >
-      assign( SparseVector<VT,TF>& lhs, const DVecSVecMultExpr& rhs )
+   friend inline auto assign( SparseVector<VT,TF>& lhs, const DVecSVecMultExpr& rhs )
+      -> EnableIf_t< UseAssign_v<VT> >
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       CT1 x( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side dense vector operand
       CT2 y( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side sparse vector operand
 
       BLAZE_INTERNAL_ASSERT( x.size() == rhs.lhs_.size(), "Invalid vector size" );
       BLAZE_INTERNAL_ASSERT( y.size() == rhs.rhs_.size(), "Invalid vector size" );
-      BLAZE_INTERNAL_ASSERT( x.size() == (~lhs).size()  , "Invalid vector size" );
+      BLAZE_INTERNAL_ASSERT( x.size() == (*lhs).size()  , "Invalid vector size" );
 
       // Final memory allocation (based on the evaluated operands)
-      (~lhs).reserve( y.nonZeros() );
+      (*lhs).reserve( y.nonZeros() );
 
       // Performing the vector multiplication
       for( auto element=y.begin(); element!=y.end(); ++element )
-         (~lhs).append( element->index(), x[element->index()] * element->value() );
+         (*lhs).append( element->index(), x[element->index()] * element->value() );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -546,22 +555,22 @@ class DVecSVecMultExpr
    // of the two operands requires an intermediate evaluation.
    */
    template< typename VT >  // Type of the target dense vector
-   friend inline EnableIf_t< UseAssign_v<VT> >
-      addAssign( DenseVector<VT,TF>& lhs, const DVecSVecMultExpr& rhs )
+   friend inline auto addAssign( DenseVector<VT,TF>& lhs, const DVecSVecMultExpr& rhs )
+      -> EnableIf_t< UseAssign_v<VT> >
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       CT1 x( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side dense vector operand
       CT2 y( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side sparse vector operand
 
       BLAZE_INTERNAL_ASSERT( x.size() == rhs.lhs_.size(), "Invalid vector size" );
       BLAZE_INTERNAL_ASSERT( y.size() == rhs.rhs_.size(), "Invalid vector size" );
-      BLAZE_INTERNAL_ASSERT( x.size() == (~lhs).size()  , "Invalid vector size" );
+      BLAZE_INTERNAL_ASSERT( x.size() == (*lhs).size()  , "Invalid vector size" );
 
       for( auto element=y.begin(); element!=y.end(); ++element )
-         (~lhs)[element->index()] += x[element->index()] * element->value();
+         (*lhs)[element->index()] += x[element->index()] * element->value();
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -585,22 +594,22 @@ class DVecSVecMultExpr
    // of the two operands requires an intermediate evaluation.
    */
    template< typename VT >  // Type of the target dense vector
-   friend inline EnableIf_t< UseAssign_v<VT> >
-      subAssign( DenseVector<VT,TF>& lhs, const DVecSVecMultExpr& rhs )
+   friend inline auto subAssign( DenseVector<VT,TF>& lhs, const DVecSVecMultExpr& rhs )
+      -> EnableIf_t< UseAssign_v<VT> >
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       CT1 x( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side dense vector operand
       CT2 y( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side sparse vector operand
 
       BLAZE_INTERNAL_ASSERT( x.size() == rhs.lhs_.size(), "Invalid vector size" );
       BLAZE_INTERNAL_ASSERT( y.size() == rhs.rhs_.size(), "Invalid vector size" );
-      BLAZE_INTERNAL_ASSERT( x.size() == (~lhs).size()  , "Invalid vector size" );
+      BLAZE_INTERNAL_ASSERT( x.size() == (*lhs).size()  , "Invalid vector size" );
 
       for( auto element=y.begin(); element!=y.end(); ++element )
-         (~lhs)[element->index()] -= x[element->index()] * element->value();
+         (*lhs)[element->index()] -= x[element->index()] * element->value();
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -624,19 +633,19 @@ class DVecSVecMultExpr
    // in case either of the two operands requires an intermediate evaluation.
    */
    template< typename VT >  // Type of the target dense vector
-   friend inline EnableIf_t< UseAssign_v<VT> >
-      multAssign( DenseVector<VT,TF>& lhs, const DVecSVecMultExpr& rhs )
+   friend inline auto multAssign( DenseVector<VT,TF>& lhs, const DVecSVecMultExpr& rhs )
+      -> EnableIf_t< UseAssign_v<VT> >
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       CT1 x( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side dense vector operand
       CT2 y( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side sparse vector operand
 
       BLAZE_INTERNAL_ASSERT( x.size() == rhs.lhs_.size(), "Invalid vector size" );
       BLAZE_INTERNAL_ASSERT( y.size() == rhs.rhs_.size(), "Invalid vector size" );
-      BLAZE_INTERNAL_ASSERT( x.size() == (~lhs).size()  , "Invalid vector size" );
+      BLAZE_INTERNAL_ASSERT( x.size() == (*lhs).size()  , "Invalid vector size" );
 
       const auto end( y.end() );
       auto begin( y.begin() );
@@ -645,13 +654,13 @@ class DVecSVecMultExpr
       for( ; begin!=end; ++begin ) {
          const size_t index( begin->index() );
          for( ; i<index; ++i )
-            reset( (~lhs)[i] );
-         (~lhs)[index] *= x[index] * begin->value();
+            reset( (*lhs)[i] );
+         (*lhs)[index] *= x[index] * begin->value();
          ++i;
       }
 
-      for( ; i<(~lhs).size(); ++i )
-         reset( (~lhs)[i] );
+      for( ; i<(*lhs).size(); ++i )
+         reset( (*lhs)[i] );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -666,6 +675,7 @@ class DVecSVecMultExpr
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE( VT2 );
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( VT1, TF );
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( VT2, TF );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_ZERO_TYPE( VT2 );
    BLAZE_CONSTRAINT_MUST_FORM_VALID_VECVECMULTEXPR( VT1, VT2 );
    /*! \endcond */
    //**********************************************************************************************
@@ -680,6 +690,73 @@ class DVecSVecMultExpr
 //  GLOBAL BINARY ARITHMETIC OPERATORS
 //
 //=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Backend implementation of the componentwise product of a dense vector and a sparse vector
+//        (\f$ \vec{a}=\vec{b}*\vec{c} \f$).
+// \ingroup sparse_vector
+//
+// \param lhs The left-hand side dense vector for the component product.
+// \param rhs The right-hand side sparse vector for the component product.
+// \return The product of the two vectors.
+//
+// This function implements a performance optimized treatment of the componentwise multiplication
+// of a dense vector and a sparse vector.
+*/
+template< typename VT1  // Type of the left-hand side dense vector
+        , typename VT2  // Type of the right-hand side sparse vector
+        , bool TF       // Transpose flag
+        , DisableIf_t< IsZero_v<VT2> >* = nullptr >
+inline const DVecSVecMultExpr<VT1,VT2,TF>
+   dvecsvecmult( const DenseVector<VT1,TF>& lhs, const SparseVector<VT2,TF>& rhs )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   BLAZE_INTERNAL_ASSERT( (*lhs).size() == (*rhs).size(), "Invalid vector sizes" );
+
+   return DVecSVecMultExpr<VT1,VT2,TF>( *lhs, *rhs );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Backend implementation of the componentwise product of a dense vector and a zero vector
+//        (\f$ \vec{a}=\vec{b}*\vec{c} \f$).
+// \ingroup dense_vector
+//
+// \param lhs The left-hand side dense vector for the component product.
+// \param rhs The right-hand side sparse vector for the component product.
+// \return The resulting zero vector.
+//
+// This function implements a performance optimized treatment of the componentwise multiplication
+// of a dense vector and a zero vector. It returns a zero vector.
+*/
+template< typename VT1  // Type of the left-hand side dense vector
+        , typename VT2  // Type of the right-hand side sparse vector
+        , bool TF       // Transpose flag
+        , EnableIf_t< IsZero_v<VT2> >* = nullptr >
+inline decltype(auto)
+   dvecsvecmult( const DenseVector<VT1,TF>& lhs, const SparseVector<VT2,TF>& rhs )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   MAYBE_UNUSED( rhs );
+
+   BLAZE_INTERNAL_ASSERT( (*lhs).size() == (*rhs).size(), "Invalid vector sizes" );
+
+   using ReturnType = const MultTrait_t< ResultType_t<VT1>, ResultType_t<VT2> >;
+
+   BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ReturnType, TF );
+   BLAZE_CONSTRAINT_MUST_BE_ZERO_TYPE( ReturnType );
+
+   return ReturnType( (*lhs).size() );
+}
+/*! \endcond */
+//*************************************************************************************************
+
 
 //*************************************************************************************************
 /*!\brief Multiplication operator for the componentwise product of a dense vector and a sparse
@@ -716,12 +793,11 @@ inline decltype(auto)
 {
    BLAZE_FUNCTION_TRACE;
 
-   if( (~lhs).size() != (~rhs).size() ) {
+   if( (*lhs).size() != (*rhs).size() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   using ReturnType = const DVecSVecMultExpr<VT1,VT2,TF>;
-   return ReturnType( ~lhs, ~rhs );
+   return dvecsvecmult( *lhs, *rhs );
 }
 //*************************************************************************************************
 
@@ -738,7 +814,7 @@ inline decltype(auto)
 /*! \cond BLAZE_INTERNAL */
 template< typename VT1, typename VT2, bool TF >
 struct Size< DVecSVecMultExpr<VT1,VT2,TF>, 0UL >
-   : public Maximum< Size<VT1,0UL>, Size<VT2,0UL> >
+   : public Max_t< Size<VT1,0UL>, Size<VT2,0UL> >
 {};
 /*! \endcond */
 //*************************************************************************************************

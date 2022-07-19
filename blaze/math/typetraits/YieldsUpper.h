@@ -3,7 +3,7 @@
 //  \file blaze/math/typetraits/YieldsUpper.h
 //  \brief Header file for the YieldsUpper type trait
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -111,7 +111,7 @@ struct YieldsUpper< const volatile OP, MT, MTs... >
 
 //*************************************************************************************************
 /*!\brief Auxiliary variable template for the YieldsUpper type trait.
-// \ingroup type_traits
+// \ingroup math_type_traits
 //
 // The YieldsUpper_v variable template provides a convenient shortcut to access the nested
 // \a value of the YieldsUpper class template. For instance, given the operation \a OP and

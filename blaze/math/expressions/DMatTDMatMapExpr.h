@@ -3,7 +3,7 @@
 //  \file blaze/math/expressions/DMatTDMatMapExpr.h
 //  \brief Header file for the dense matrix/transpose dense matrix map expression
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -52,27 +52,17 @@
 #include <blaze/math/expressions/DenseMatrix.h>
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/expressions/MatMatMapExpr.h>
-#include <blaze/math/functors/Max.h>
-#include <blaze/math/functors/Min.h>
 #include <blaze/math/shims/Serial.h>
 #include <blaze/math/SIMD.h>
 #include <blaze/math/traits/MapTrait.h>
 #include <blaze/math/typetraits/IsAligned.h>
 #include <blaze/math/typetraits/IsExpression.h>
-#include <blaze/math/typetraits/IsHermitian.h>
-#include <blaze/math/typetraits/IsLower.h>
 #include <blaze/math/typetraits/IsPadded.h>
-#include <blaze/math/typetraits/IsStrictlyLower.h>
-#include <blaze/math/typetraits/IsStrictlyUpper.h>
 #include <blaze/math/typetraits/IsSymmetric.h>
-#include <blaze/math/typetraits/IsUniLower.h>
-#include <blaze/math/typetraits/IsUniUpper.h>
-#include <blaze/math/typetraits/IsUpper.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
 #include <blaze/system/Blocking.h>
 #include <blaze/system/Inline.h>
 #include <blaze/util/Assert.h>
-#include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/FunctionTrace.h>
 #include <blaze/util/IntegralConstant.h>
@@ -148,11 +138,16 @@ class DMatTDMatMapExpr
 
  public:
    //**Type definitions****************************************************************************
-   using This          = DMatTDMatMapExpr<MT1,MT2,OP>;  //!< Type of this DMatTDMatMapExpr instance.
-   using ResultType    = MapTrait_t<RT1,RT2,OP>;        //!< Result type for expression template evaluations.
-   using OppositeType  = OppositeType_t<ResultType>;    //!< Result type with opposite storage order for expression template evaluations.
-   using TransposeType = TransposeType_t<ResultType>;   //!< Transpose type for expression template evaluations.
-   using ElementType   = ElementType_t<ResultType>;     //!< Resulting element type.
+   //! Type of this DMatTDMatMapExpr instance.
+   using This = DMatTDMatMapExpr<MT1,MT2,OP>;
+
+   //! Base type of this DMatTDMatMapExpr instance.
+   using BaseType = MatMatMapExpr< DenseMatrix<This,false> >;
+
+   using ResultType    = MapTrait_t<RT1,RT2,OP>;       //!< Result type for expression template evaluations.
+   using OppositeType  = OppositeType_t<ResultType>;   //!< Result type with opposite storage order for expression template evaluations.
+   using TransposeType = TransposeType_t<ResultType>;  //!< Transpose type for expression template evaluations.
+   using ElementType   = ElementType_t<ResultType>;    //!< Resulting element type.
 
    //! Return type for expression template evaluations.
    using ReturnType = decltype( std::declval<OP>()( std::declval<RN1>(), std::declval<RN2>() ) );
@@ -191,10 +186,10 @@ class DMatTDMatMapExpr
    // \param rhs The right-hand side dense matrix operand of the map expression.
    // \param op The custom unary operation.
    */
-   explicit inline DMatTDMatMapExpr( const MT1& lhs, const MT2& rhs, OP op ) noexcept
-      : lhs_( lhs )  // Left-hand side dense matrix of the map expression
-      , rhs_( rhs )  // Right-hand side dense matrix of the map expression
-      , op_ ( op  )  // The custom unary operation
+   inline DMatTDMatMapExpr( const MT1& lhs, const MT2& rhs, OP op ) noexcept
+      : lhs_( lhs )            // Left-hand side dense matrix of the map expression
+      , rhs_( rhs )            // Right-hand side dense matrix of the map expression
+      , op_ ( std::move(op) )  // The custom unary operation
    {}
    //**********************************************************************************************
 
@@ -349,13 +344,13 @@ class DMatTDMatMapExpr
    */
    template< typename MT  // Type of the target dense matrix
            , bool SO >    // Storage order of the target dense matrix
-   friend inline DisableIf_t< UseAssign_v<MT> >
-      assign( DenseMatrix<MT,SO>& lhs, const DMatTDMatMapExpr& rhs )
+   friend inline auto assign( DenseMatrix<MT,SO>& lhs, const DMatTDMatMapExpr& rhs )
+      -> DisableIf_t< UseAssign_v<MT> >
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
       constexpr size_t block( BLOCK_SIZE );
 
@@ -368,7 +363,7 @@ class DMatTDMatMapExpr
             const size_t jend( ( n < jj+block )?( n ):( jj+block ) );
             for( size_t i=ii; i<iend; ++i ) {
                for( size_t j=jj; j<jend; ++j ) {
-                  (~lhs)(i,j) = rhs.op_( rhs.lhs_(i,j), rhs.rhs_(i,j) );
+                  (*lhs)(i,j) = rhs.op_( rhs.lhs_(i,j), rhs.rhs_(i,j) );
                }
             }
          }
@@ -393,13 +388,13 @@ class DMatTDMatMapExpr
    */
    template< typename MT  // Type of the target dense matrix
            , bool SO >    // Storage order of the target dense matrix
-   friend inline EnableIf_t< UseAssign_v<MT> >
-      assign( DenseMatrix<MT,SO>& lhs, const DMatTDMatMapExpr& rhs )
+   friend inline auto assign( DenseMatrix<MT,SO>& lhs, const DMatTDMatMapExpr& rhs )
+      -> EnableIf_t< UseAssign_v<MT> >
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
       LT A( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side dense matrix operand
       RT B( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side dense matrix operand
@@ -408,10 +403,10 @@ class DMatTDMatMapExpr
       BLAZE_INTERNAL_ASSERT( A.columns() == rhs.lhs_.columns(), "Invalid number of columns" );
       BLAZE_INTERNAL_ASSERT( B.rows()    == rhs.rhs_.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( B.columns() == rhs.rhs_.columns(), "Invalid number of columns" );
-      BLAZE_INTERNAL_ASSERT( A.rows()    == (~lhs).rows()     , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( B.columns() == (~lhs).columns()  , "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( A.rows()    == (*lhs).rows()     , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( B.columns() == (*lhs).columns()  , "Invalid number of columns" );
 
-      assign( ~lhs, map( A, B, rhs.op_ ) );
+      assign( *lhs, map( A, B, rhs.op_ ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -432,8 +427,8 @@ class DMatTDMatMapExpr
    */
    template< typename MT  // Type of the target sparse matrix
            , bool SO >    // Storage order of the target sparse matrix
-   friend inline EnableIf_t< UseAssign_v<MT> >
-      assign( SparseMatrix<MT,SO>& lhs, const DMatTDMatMapExpr& rhs )
+   friend inline auto assign( SparseMatrix<MT,SO>& lhs, const DMatTDMatMapExpr& rhs )
+      -> EnableIf_t< UseAssign_v<MT> >
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -446,11 +441,11 @@ class DMatTDMatMapExpr
       BLAZE_CONSTRAINT_MATRICES_MUST_HAVE_SAME_STORAGE_ORDER( MT, TmpType );
       BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( TmpType );
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
       const TmpType tmp( serial( rhs ) );
-      assign( ~lhs, tmp );
+      assign( *lhs, tmp );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -471,13 +466,13 @@ class DMatTDMatMapExpr
    */
    template< typename MT  // Type of the target dense matrix
            , bool SO >    // Storage order of the target dense matrix
-   friend inline DisableIf_t< UseAssign_v<MT> >
-      addAssign( DenseMatrix<MT,SO>& lhs, const DMatTDMatMapExpr& rhs )
+   friend inline auto addAssign( DenseMatrix<MT,SO>& lhs, const DMatTDMatMapExpr& rhs )
+      -> DisableIf_t< UseAssign_v<MT> >
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
       constexpr size_t block( BLOCK_SIZE );
 
@@ -490,7 +485,7 @@ class DMatTDMatMapExpr
             const size_t jend( ( n < jj+block )?( n ):( jj+block ) );
             for( size_t i=ii; i<iend; ++i ) {
                for( size_t j=jj; j<jend; ++j ) {
-                  (~lhs)(i,j) += rhs.op_( rhs.lhs_(i,j), rhs.rhs_(i,j) );
+                  (*lhs)(i,j) += rhs.op_( rhs.lhs_(i,j), rhs.rhs_(i,j) );
                }
             }
          }
@@ -515,13 +510,13 @@ class DMatTDMatMapExpr
    */
    template< typename MT  // Type of the target dense matrix
            , bool SO >    // Storage order of the target dense matrix
-   friend inline EnableIf_t< UseAssign_v<MT> >
-      addAssign( DenseMatrix<MT,SO>& lhs, const DMatTDMatMapExpr& rhs )
+   friend inline auto addAssign( DenseMatrix<MT,SO>& lhs, const DMatTDMatMapExpr& rhs )
+      -> EnableIf_t< UseAssign_v<MT> >
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
       LT A( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side dense matrix operand
       RT B( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side dense matrix operand
@@ -530,10 +525,10 @@ class DMatTDMatMapExpr
       BLAZE_INTERNAL_ASSERT( A.columns() == rhs.lhs_.columns(), "Invalid number of columns" );
       BLAZE_INTERNAL_ASSERT( B.rows()    == rhs.rhs_.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( B.columns() == rhs.rhs_.columns(), "Invalid number of columns" );
-      BLAZE_INTERNAL_ASSERT( A.rows()    == (~lhs).rows()     , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( B.columns() == (~lhs).columns()  , "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( A.rows()    == (*lhs).rows()     , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( B.columns() == (*lhs).columns()  , "Invalid number of columns" );
 
-      addAssign( ~lhs, map( A, B, rhs.op_ ) );
+      addAssign( *lhs, map( A, B, rhs.op_ ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -558,13 +553,13 @@ class DMatTDMatMapExpr
    */
    template< typename MT  // Type of the target dense matrix
            , bool SO >    // Storage order of the target dense matrix
-   friend inline DisableIf_t< UseAssign_v<MT> >
-      subAssign( DenseMatrix<MT,SO>& lhs, const DMatTDMatMapExpr& rhs )
+   friend inline auto subAssign( DenseMatrix<MT,SO>& lhs, const DMatTDMatMapExpr& rhs )
+      -> DisableIf_t< UseAssign_v<MT> >
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
       constexpr size_t block( BLOCK_SIZE );
 
@@ -577,7 +572,7 @@ class DMatTDMatMapExpr
             const size_t jend( ( n < jj+block )?( n ):( jj+block ) );
             for( size_t i=ii; i<iend; ++i ) {
                for( size_t j=jj; j<jend; ++j ) {
-                  (~lhs)(i,j) -= rhs.op_( rhs.lhs_(i,j), rhs.rhs_(i,j) );
+                  (*lhs)(i,j) -= rhs.op_( rhs.lhs_(i,j), rhs.rhs_(i,j) );
                }
             }
          }
@@ -602,13 +597,13 @@ class DMatTDMatMapExpr
    */
    template< typename MT  // Type of the target dense matrix
            , bool SO >    // Storage order of the target dense matrix
-   friend inline EnableIf_t< UseAssign_v<MT> >
-      subAssign( DenseMatrix<MT,SO>& lhs, const DMatTDMatMapExpr& rhs )
+   friend inline auto subAssign( DenseMatrix<MT,SO>& lhs, const DMatTDMatMapExpr& rhs )
+      -> EnableIf_t< UseAssign_v<MT> >
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
       LT A( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side dense matrix operand
       RT B( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side dense matrix operand
@@ -617,10 +612,10 @@ class DMatTDMatMapExpr
       BLAZE_INTERNAL_ASSERT( A.columns() == rhs.lhs_.columns(), "Invalid number of columns" );
       BLAZE_INTERNAL_ASSERT( B.rows()    == rhs.rhs_.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( B.columns() == rhs.rhs_.columns(), "Invalid number of columns" );
-      BLAZE_INTERNAL_ASSERT( A.rows()    == (~lhs).rows()     , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( B.columns() == (~lhs).columns()  , "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( A.rows()    == (*lhs).rows()     , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( B.columns() == (*lhs).columns()  , "Invalid number of columns" );
 
-      subAssign( ~lhs, map( A, B, rhs.op_ ) );
+      subAssign( *lhs, map( A, B, rhs.op_ ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -645,13 +640,13 @@ class DMatTDMatMapExpr
    */
    template< typename MT  // Type of the target dense matrix
            , bool SO >    // Storage order of the target dense matrix
-   friend inline DisableIf_t< UseAssign_v<MT> >
-      schurAssign( DenseMatrix<MT,SO>& lhs, const DMatTDMatMapExpr& rhs )
+   friend inline auto schurAssign( DenseMatrix<MT,SO>& lhs, const DMatTDMatMapExpr& rhs )
+      -> DisableIf_t< UseAssign_v<MT> >
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
       constexpr size_t block( BLOCK_SIZE );
 
@@ -664,7 +659,7 @@ class DMatTDMatMapExpr
             const size_t jend( ( n < jj+block )?( n ):( jj+block ) );
             for( size_t i=ii; i<iend; ++i ) {
                for( size_t j=jj; j<jend; ++j ) {
-                  (~lhs)(i,j) *= rhs.op_( rhs.lhs_(i,j), rhs.rhs_(i,j) );
+                  (*lhs)(i,j) *= rhs.op_( rhs.lhs_(i,j), rhs.rhs_(i,j) );
                }
             }
          }
@@ -689,13 +684,13 @@ class DMatTDMatMapExpr
    */
    template< typename MT  // Type of the target dense matrix
            , bool SO >    // Storage order of the target dense matrix
-   friend inline EnableIf_t< UseAssign_v<MT> >
-      schurAssign( DenseMatrix<MT,SO>& lhs, const DMatTDMatMapExpr& rhs )
+   friend inline auto schurAssign( DenseMatrix<MT,SO>& lhs, const DMatTDMatMapExpr& rhs )
+      -> EnableIf_t< UseAssign_v<MT> >
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
       LT A( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side dense matrix operand
       RT B( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side dense matrix operand
@@ -704,10 +699,10 @@ class DMatTDMatMapExpr
       BLAZE_INTERNAL_ASSERT( A.columns() == rhs.lhs_.columns(), "Invalid number of columns" );
       BLAZE_INTERNAL_ASSERT( B.rows()    == rhs.rhs_.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( B.columns() == rhs.rhs_.columns(), "Invalid number of columns" );
-      BLAZE_INTERNAL_ASSERT( A.rows()    == (~lhs).rows()     , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( B.columns() == (~lhs).columns()  , "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( A.rows()    == (*lhs).rows()     , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( B.columns() == (*lhs).columns()  , "Invalid number of columns" );
 
-      schurAssign( ~lhs, map( A, B, rhs.op_ ) );
+      schurAssign( *lhs, map( A, B, rhs.op_ ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -740,13 +735,13 @@ class DMatTDMatMapExpr
    */
    template< typename MT  // Type of the target dense matrix
            , bool SO >    // Storage order of the target dense matrix
-   friend inline EnableIf_t< UseSMPAssign_v<MT> >
-      smpAssign( DenseMatrix<MT,SO>& lhs, const DMatTDMatMapExpr& rhs )
+   friend inline auto smpAssign( DenseMatrix<MT,SO>& lhs, const DMatTDMatMapExpr& rhs )
+      -> EnableIf_t< UseSMPAssign_v<MT> >
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
       LT A( rhs.lhs_ );  // Evaluation of the left-hand side dense matrix operand
       RT B( rhs.rhs_ );  // Evaluation of the right-hand side dense matrix operand
@@ -755,10 +750,10 @@ class DMatTDMatMapExpr
       BLAZE_INTERNAL_ASSERT( A.columns() == rhs.lhs_.columns(), "Invalid number of columns" );
       BLAZE_INTERNAL_ASSERT( B.rows()    == rhs.rhs_.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( B.columns() == rhs.rhs_.columns(), "Invalid number of columns" );
-      BLAZE_INTERNAL_ASSERT( A.rows()    == (~lhs).rows()     , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( B.columns() == (~lhs).columns()  , "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( A.rows()    == (*lhs).rows()     , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( B.columns() == (*lhs).columns()  , "Invalid number of columns" );
 
-      smpAssign( ~lhs, map( A, B, rhs.op_ ) );
+      smpAssign( *lhs, map( A, B, rhs.op_ ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -779,8 +774,8 @@ class DMatTDMatMapExpr
    */
    template< typename MT  // Type of the target sparse matrix
            , bool SO >    // Storage order of the target sparse matrix
-   friend inline EnableIf_t< UseSMPAssign_v<MT> >
-      smpAssign( SparseMatrix<MT,SO>& lhs, const DMatTDMatMapExpr& rhs )
+   friend inline auto smpAssign( SparseMatrix<MT,SO>& lhs, const DMatTDMatMapExpr& rhs )
+      -> EnableIf_t< UseSMPAssign_v<MT> >
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -793,11 +788,11 @@ class DMatTDMatMapExpr
       BLAZE_CONSTRAINT_MATRICES_MUST_HAVE_SAME_STORAGE_ORDER( MT, TmpType );
       BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( TmpType );
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
       const TmpType tmp( rhs );
-      smpAssign( ~lhs, tmp );
+      smpAssign( *lhs, tmp );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -819,13 +814,13 @@ class DMatTDMatMapExpr
    */
    template< typename MT  // Type of the target dense matrix
            , bool SO >    // Storage order of the target dense matrix
-   friend inline EnableIf_t< UseSMPAssign_v<MT> >
-      smpAddAssign( DenseMatrix<MT,SO>& lhs, const DMatTDMatMapExpr& rhs )
+   friend inline auto smpAddAssign( DenseMatrix<MT,SO>& lhs, const DMatTDMatMapExpr& rhs )
+      -> EnableIf_t< UseSMPAssign_v<MT> >
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
       LT A( rhs.lhs_ );  // Evaluation of the left-hand side dense matrix operand
       RT B( rhs.rhs_ );  // Evaluation of the right-hand side dense matrix operand
@@ -834,10 +829,10 @@ class DMatTDMatMapExpr
       BLAZE_INTERNAL_ASSERT( A.columns() == rhs.lhs_.columns(), "Invalid number of columns" );
       BLAZE_INTERNAL_ASSERT( B.rows()    == rhs.rhs_.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( B.columns() == rhs.rhs_.columns(), "Invalid number of columns" );
-      BLAZE_INTERNAL_ASSERT( A.rows()    == (~lhs).rows()     , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( B.columns() == (~lhs).columns()  , "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( A.rows()    == (*lhs).rows()     , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( B.columns() == (*lhs).columns()  , "Invalid number of columns" );
 
-      smpAddAssign( ~lhs, map( A, B, rhs.op_ ) );
+      smpAddAssign( *lhs, map( A, B, rhs.op_ ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -863,13 +858,13 @@ class DMatTDMatMapExpr
    */
    template< typename MT  // Type of the target dense matrix
            , bool SO >    // Storage order of the target dense matrix
-   friend inline EnableIf_t< UseSMPAssign_v<MT> >
-      smpSubAssign( DenseMatrix<MT,SO>& lhs, const DMatTDMatMapExpr& rhs )
+   friend inline auto smpSubAssign( DenseMatrix<MT,SO>& lhs, const DMatTDMatMapExpr& rhs )
+      -> EnableIf_t< UseSMPAssign_v<MT> >
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
       LT A( rhs.lhs_ );  // Evaluation of the left-hand side dense matrix operand
       RT B( rhs.rhs_ );  // Evaluation of the right-hand side dense matrix operand
@@ -878,10 +873,10 @@ class DMatTDMatMapExpr
       BLAZE_INTERNAL_ASSERT( A.columns() == rhs.lhs_.columns(), "Invalid number of columns" );
       BLAZE_INTERNAL_ASSERT( B.rows()    == rhs.rhs_.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( B.columns() == rhs.rhs_.columns(), "Invalid number of columns" );
-      BLAZE_INTERNAL_ASSERT( A.rows()    == (~lhs).rows()     , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( B.columns() == (~lhs).columns()  , "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( A.rows()    == (*lhs).rows()     , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( B.columns() == (*lhs).columns()  , "Invalid number of columns" );
 
-      smpSubAssign( ~lhs, map( A, B, rhs.op_ ) );
+      smpSubAssign( *lhs, map( A, B, rhs.op_ ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -907,13 +902,13 @@ class DMatTDMatMapExpr
    */
    template< typename MT  // Type of the target dense matrix
            , bool SO >    // Storage order of the target dense matrix
-   friend inline EnableIf_t< UseSMPAssign_v<MT> >
-      smpSchurAssign( DenseMatrix<MT,SO>& lhs, const DMatTDMatMapExpr& rhs )
+   friend inline auto smpSchurAssign( DenseMatrix<MT,SO>& lhs, const DMatTDMatMapExpr& rhs )
+      -> EnableIf_t< UseSMPAssign_v<MT> >
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
       LT A( rhs.lhs_ );  // Evaluation of the left-hand side dense matrix operand
       RT B( rhs.rhs_ );  // Evaluation of the right-hand side dense matrix operand
@@ -922,10 +917,10 @@ class DMatTDMatMapExpr
       BLAZE_INTERNAL_ASSERT( A.columns() == rhs.lhs_.columns(), "Invalid number of columns" );
       BLAZE_INTERNAL_ASSERT( B.rows()    == rhs.rhs_.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( B.columns() == rhs.rhs_.columns(), "Invalid number of columns" );
-      BLAZE_INTERNAL_ASSERT( A.rows()    == (~lhs).rows()     , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( B.columns() == (~lhs).columns()  , "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( A.rows()    == (*lhs).rows()     , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( B.columns() == (*lhs).columns()  , "Invalid number of columns" );
 
-      smpSchurAssign( ~lhs, map( A, B, rhs.op_ ) );
+      smpSchurAssign( *lhs, map( A, B, rhs.op_ ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -984,10 +979,10 @@ inline const DMatTDMatMapExpr<MT1,MT2,OP>
 {
    BLAZE_FUNCTION_TRACE;
 
-   BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( (*lhs).columns() == (*rhs).columns(), "Invalid number of columns" );
 
-   return DMatTDMatMapExpr<MT1,MT2,OP>( ~lhs, ~rhs, op );
+   return DMatTDMatMapExpr<MT1,MT2,OP>( *lhs, *rhs, std::move(op) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1016,10 +1011,10 @@ inline decltype(auto)
 {
    BLAZE_FUNCTION_TRACE;
 
-   BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( (*lhs).columns() == (*rhs).columns(), "Invalid number of columns" );
 
-   return map( trans( ~lhs ), ~rhs, op );
+   return map( trans( *lhs ), *rhs, std::move(op) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1049,10 +1044,10 @@ inline decltype(auto)
 {
    BLAZE_FUNCTION_TRACE;
 
-   BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( (*lhs).columns() == (*rhs).columns(), "Invalid number of columns" );
 
-   return map( ~lhs, trans( ~rhs ), op );
+   return map( *lhs, trans( *rhs ), std::move(op) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1091,11 +1086,11 @@ inline decltype(auto)
 {
    BLAZE_FUNCTION_TRACE;
 
-   if( (~lhs).rows() != (~rhs).rows() || (~lhs).columns() != (~rhs).columns() ) {
+   if( (*lhs).rows() != (*rhs).rows() || (*lhs).columns() != (*rhs).columns() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
-   return map_backend( ~lhs, ~rhs, op );
+   return map_backend( *lhs, *rhs, std::move(op) );
 }
 //*************************************************************************************************
 
@@ -1123,10 +1118,10 @@ inline const DMatTDMatMapExpr<MT1,MT2,OP>
 {
    BLAZE_FUNCTION_TRACE;
 
-   BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( (*lhs).columns() == (*rhs).columns(), "Invalid number of columns" );
 
-   return DMatTDMatMapExpr<MT1,MT2,OP>( ~lhs, ~rhs, op );
+   return DMatTDMatMapExpr<MT1,MT2,OP>( *lhs, *rhs, std::move(op) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1155,10 +1150,10 @@ inline decltype(auto)
 {
    BLAZE_FUNCTION_TRACE;
 
-   BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( (*lhs).columns() == (*rhs).columns(), "Invalid number of columns" );
 
-   return map( ~lhs, trans( ~rhs ), op );
+   return map( *lhs, trans( *rhs ), std::move(op) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1188,10 +1183,10 @@ inline decltype(auto)
 {
    BLAZE_FUNCTION_TRACE;
 
-   BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( (*lhs).columns() == (*rhs).columns(), "Invalid number of columns" );
 
-   return map( trans( ~lhs ), ~rhs, op );
+   return map( trans( *lhs ), *rhs, std::move(op) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1230,11 +1225,11 @@ inline decltype(auto)
 {
    BLAZE_FUNCTION_TRACE;
 
-   if( (~lhs).rows() != (~rhs).rows() || (~lhs).columns() != (~rhs).columns() ) {
+   if( (*lhs).rows() != (*rhs).rows() || (*lhs).columns() != (*rhs).columns() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
-   return map_backend( ~lhs, ~rhs, op );
+   return map_backend( *lhs, *rhs, std::move(op) );
 }
 //*************************************************************************************************
 
@@ -1270,190 +1265,6 @@ struct IsAligned< DMatTDMatMapExpr<MT1,MT2,OP> >
 template< typename MT1, typename MT2, typename OP >
 struct IsPadded< DMatTDMatMapExpr<MT1,MT2,OP> >
    : public BoolConstant< IsPadded_v<MT1> && IsPadded_v<MT2> >
-{};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  ISSYMMETRIC SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT1, typename MT2 >
-struct IsSymmetric< DMatTDMatMapExpr<MT1,MT2,Min> >
-   : public BoolConstant< IsSymmetric_v<MT1> && IsSymmetric_v<MT2> >
-{};
-
-template< typename MT1, typename MT2 >
-struct IsSymmetric< DMatTDMatMapExpr<MT1,MT2,Max> >
-   : public BoolConstant< IsSymmetric_v<MT1> && IsSymmetric_v<MT2> >
-{};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  ISHERMITIAN SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT1, typename MT2 >
-struct IsHermitian< DMatTDMatMapExpr<MT1,MT2,Min> >
-   : public BoolConstant< IsHermitian_v<MT1> && IsHermitian_v<MT2> >
-{};
-
-template< typename MT1, typename MT2 >
-struct IsHermitian< DMatTDMatMapExpr<MT1,MT2,Max> >
-   : public BoolConstant< IsHermitian_v<MT1> && IsHermitian_v<MT2> >
-{};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  ISLOWER SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT1, typename MT2 >
-struct IsLower< DMatTDMatMapExpr<MT1,MT2,Min> >
-   : public BoolConstant< IsLower_v<MT1> && IsLower_v<MT2> >
-{};
-
-template< typename MT1, typename MT2 >
-struct IsLower< DMatTDMatMapExpr<MT1,MT2,Max> >
-   : public BoolConstant< IsLower_v<MT1> && IsLower_v<MT2> >
-{};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  ISUNILOWER SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT1, typename MT2 >
-struct IsUniLower< DMatTDMatMapExpr<MT1,MT2,Min> >
-   : public BoolConstant< IsUniLower_v<MT1> && IsUniLower_v<MT2> >
-{};
-
-template< typename MT1, typename MT2 >
-struct IsUniLower< DMatTDMatMapExpr<MT1,MT2,Max> >
-   : public BoolConstant< IsUniLower_v<MT1> && IsUniLower_v<MT2> >
-{};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  ISSTRICTLYLOWER SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT1, typename MT2 >
-struct IsStrictlyLower< DMatTDMatMapExpr<MT1,MT2,Min> >
-   : public BoolConstant< IsStrictlyLower_v<MT1> && IsStrictlyLower_v<MT2> >
-{};
-
-template< typename MT1, typename MT2 >
-struct IsStrictlyLower< DMatTDMatMapExpr<MT1,MT2,Max> >
-   : public BoolConstant< IsStrictlyLower_v<MT1> && IsStrictlyLower_v<MT2> >
-{};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  ISUPPER SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT1, typename MT2 >
-struct IsUpper< DMatTDMatMapExpr<MT1,MT2,Min> >
-   : public BoolConstant< IsUpper_v<MT1> && IsUpper_v<MT2> >
-{};
-
-template< typename MT1, typename MT2 >
-struct IsUpper< DMatTDMatMapExpr<MT1,MT2,Max> >
-   : public BoolConstant< IsUpper_v<MT1> && IsUpper_v<MT2> >
-{};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  ISUNIUPPER SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT1, typename MT2 >
-struct IsUniUpper< DMatTDMatMapExpr<MT1,MT2,Min> >
-   : public BoolConstant< IsUniUpper_v<MT1> && IsUniUpper_v<MT2> >
-{};
-
-template< typename MT1, typename MT2 >
-struct IsUniUpper< DMatTDMatMapExpr<MT1,MT2,Max> >
-   : public BoolConstant< IsUniUpper_v<MT1> && IsUniUpper_v<MT2> >
-{};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  ISSTRICTLYUPPER SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT1, typename MT2 >
-struct IsStrictlyUpper< DMatTDMatMapExpr<MT1,MT2,Min> >
-   : public BoolConstant< IsStrictlyUpper_v<MT1> && IsStrictlyUpper_v<MT2> >
-{};
-
-template< typename MT1, typename MT2 >
-struct IsStrictlyUpper< DMatTDMatMapExpr<MT1,MT2,Max> >
-   : public BoolConstant< IsStrictlyUpper_v<MT1> && IsStrictlyUpper_v<MT2> >
 {};
 /*! \endcond */
 //*************************************************************************************************

@@ -3,7 +3,7 @@
 //  \file blaze/system/Compiler.h
 //  \brief Compiler-specific system settings
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -47,24 +47,32 @@
 
 //=================================================================================================
 //
-//  COMPILER MACRO DEFINITIONS
+//  INTEL COMPILER MACRO DEFINITIONS
 //
 //=================================================================================================
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-#if defined(__GNUC__) && !defined(__clang__)
-#  define BLAZE_GNU_COMPILER 1
+#if defined(__INTEL_COMPILER) || defined(__ICL) || defined(__ICC) || defined(__ECC)
+#  define BLAZE_INTEL_COMPILER 1
 #else
-#  define BLAZE_GNU_COMPILER 0
+#  define BLAZE_INTEL_COMPILER 0
 #endif
 /*! \endcond */
 //*************************************************************************************************
 
 
+
+
+//=================================================================================================
+//
+//  CLANG COMPILER MACRO DEFINITIONS
+//
+//=================================================================================================
+
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-#if defined(__clang__)
+#if defined(__clang__) && !BLAZE_INTEL_COMPILER
 #  define BLAZE_CLANG_COMPILER 1
 #else
 #  define BLAZE_CLANG_COMPILER 0
@@ -75,10 +83,39 @@
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-#if defined(_MSC_VER) && !defined(__clang__)
-#  define BLAZE_MSC_COMPILER 1
+#define BLAZE_CLANG_MAJOR_VERSION __clang_major__
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+#define BLAZE_CLANG_MINOR_VERSION __clang_minor__
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+#define BLAZE_CLANG_PATCH_VERSION __clang_patchlevel__
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  GNU COMPILER MACRO DEFINITIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+#if defined(__GNUC__) && !BLAZE_CLANG_COMPILER && !BLAZE_INTEL_COMPILER
+#  define BLAZE_GNU_COMPILER 1
 #else
-#  define BLAZE_MSC_COMPILER 0
+#  define BLAZE_GNU_COMPILER 0
 #endif
 /*! \endcond */
 //*************************************************************************************************
@@ -86,10 +123,32 @@
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-#if defined(__INTEL_COMPILER) || defined(__ICL) || defined(__ICC) || defined(__ECC)
-#  define BLAZE_INTEL_COMPILER 1
+#define BLAZE_GNU_MAJOR_VERSION __GNUC__
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+#define BLAZE_GNU_MINOR_VERSION __GNUC_MINOR__
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  MICROSOFT COMPILER MACRO DEFINITIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+#if defined(_MSC_VER) && !BLAZE_CLANG_COMPILER && !BLAZE_INTEL_COMPILER
+#  define BLAZE_MSC_COMPILER 1
 #else
-#  define BLAZE_INTEL_COMPILER 0
+#  define BLAZE_MSC_COMPILER 0
 #endif
 /*! \endcond */
 //*************************************************************************************************

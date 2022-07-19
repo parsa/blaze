@@ -3,7 +3,7 @@
 //  \file blaze/system/Random.h
 //  \brief Header file for the random number generator used in the Blaze library
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -54,7 +54,7 @@ namespace blaze {
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-using RNG = BLAZE_RANDOM_NUMBER_GENERATOR;
+using DefaultRNG = BLAZE_RANDOM_NUMBER_GENERATOR;
 /*! \endcond */
 //*************************************************************************************************
 

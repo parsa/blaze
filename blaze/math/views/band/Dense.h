@@ -3,7 +3,7 @@
 //  \file blaze/math/views/band/Dense.h
 //  \brief Band specialization for dense matrices
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -54,11 +54,14 @@
 #include <blaze/math/dense/InitializerVector.h>
 #include <blaze/math/Exception.h>
 #include <blaze/math/expressions/DenseVector.h>
+#include <blaze/math/expressions/Forward.h>
 #include <blaze/math/expressions/SparseVector.h>
 #include <blaze/math/expressions/View.h>
 #include <blaze/math/InitializerList.h>
 #include <blaze/math/shims/Clear.h>
 #include <blaze/math/shims/IsDefault.h>
+#include <blaze/math/shims/PrevMultiple.h>
+#include <blaze/math/shims/Reset.h>
 #include <blaze/math/traits/BandTrait.h>
 #include <blaze/math/traits/CrossTrait.h>
 #include <blaze/math/typetraits/HasMutableDataAccess.h>
@@ -80,11 +83,11 @@
 #include <blaze/math/views/band/BaseTemplate.h>
 #include <blaze/math/views/Check.h>
 #include <blaze/system/Thresholds.h>
+#include <blaze/util/algorithms/Min.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Pointer.h>
 #include <blaze/util/constraints/Reference.h>
 #include <blaze/util/mpl/If.h>
-#include <blaze/util/TypeList.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsConst.h>
 #include <blaze/util/typetraits/IsReference.h>
@@ -102,7 +105,7 @@ namespace blaze {
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Specialization of Band for dense matrices.
-// \ingroup views
+// \ingroup band
 //
 // This specialization of Band adapts the class template to the requirements of dense matrices.
 */
@@ -125,7 +128,9 @@ class Band<MT,TF,true,false,CBAs...>
    //! Type of this Band instance.
    using This = Band<MT,TF,true,false,CBAs...>;
 
-   using BaseType      = DenseVector<This,TF>;         //!< Base type of this Band instance.
+   //! Base type of this Band instance.
+   using BaseType = View< DenseVector<This,TF> >;
+
    using ViewedType    = MT;                           //!< The type viewed by this Band instance.
    using ResultType    = BandTrait_t<RT,CBAs...>;      //!< Result type for expression template evaluations.
    using TransposeType = TransposeType_t<ResultType>;  //!< Transpose type for expression template evaluations.
@@ -518,6 +523,9 @@ class Band<MT,TF,true,false,CBAs...>
 
    //! Compilation switch for the expression template assignment strategy.
    static constexpr bool smpAssignable = MT::smpAssignable;
+
+   //! Compilation switch for the expression template evaluation strategy.
+   static constexpr bool compileTimeArgs = DataType::compileTimeArgs;
    //**********************************************************************************************
 
    //**Constructors********************************************************************************
@@ -679,7 +687,7 @@ inline Band<MT,TF,true,false,CBAs...>::Band( MT& matrix, RBAs... args )
    : DataType( args... )  // Base class initialization
    , matrix_ ( matrix  )  // The matrix containing the band
 {
-   if( !Contains_v< TypeList<RBAs...>, Unchecked > ) {
+   if( isChecked( args... ) ) {
       if( ( band() > 0L && column() >= matrix.columns() ) ||
           ( band() < 0L && row() >= matrix.rows() ) ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid band access index" );
@@ -1092,7 +1100,7 @@ inline Band<MT,TF,true,false,CBAs...>&
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( IsExpression_v<MT> && rhs.canAlias( &matrix_ ) ) {
+   if( IsExpression_v<MT> && rhs.canAlias( this ) ) {
       const ResultType tmp( rhs );
       smpAssign( left, tmp );
    }
@@ -1132,12 +1140,12 @@ inline Band<MT,TF,true,false,CBAs...>&
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType_t<VT>, TF );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_t<VT> );
 
-   if( size() != (~rhs).size() ) {
+   if( size() != (*rhs).size() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
    using Right = If_t< IsRestricted_v<MT>, CompositeType_t<VT>, const VT& >;
-   Right right( ~rhs );
+   Right right( *rhs );
 
    if( !tryAssign( matrix_, right, band(), row(), column() ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
@@ -1145,7 +1153,7 @@ inline Band<MT,TF,true,false,CBAs...>&
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( IsReference_v<Right> && right.canAlias( &matrix_ ) ) {
+   if( IsReference_v<Right> && right.canAlias( this ) ) {
       const ResultType_t<VT> tmp( right );
       smpAssign( left, tmp );
    }
@@ -1187,12 +1195,12 @@ inline Band<MT,TF,true,false,CBAs...>&
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType_t<VT>, TF );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_t<VT> );
 
-   if( size() != (~rhs).size() ) {
+   if( size() != (*rhs).size() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
    using Right = If_t< IsRestricted_v<MT>, CompositeType_t<VT>, const VT& >;
-   Right right( ~rhs );
+   Right right( *rhs );
 
    if( !tryAddAssign( matrix_, right, band(), row(), column() ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
@@ -1200,7 +1208,7 @@ inline Band<MT,TF,true,false,CBAs...>&
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( IsReference_v<Right> && right.canAlias( &matrix_ ) ) {
+   if( IsReference_v<Right> && right.canAlias( this ) ) {
       const ResultType_t<VT> tmp( right );
       smpAddAssign( left, tmp );
    }
@@ -1240,12 +1248,12 @@ inline Band<MT,TF,true,false,CBAs...>&
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType_t<VT>, TF );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_t<VT> );
 
-   if( size() != (~rhs).size() ) {
+   if( size() != (*rhs).size() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
    using Right = If_t< IsRestricted_v<MT>, CompositeType_t<VT>, const VT& >;
-   Right right( ~rhs );
+   Right right( *rhs );
 
    if( !trySubAssign( matrix_, right, band(), row(), column() ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
@@ -1253,7 +1261,7 @@ inline Band<MT,TF,true,false,CBAs...>&
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( IsReference_v<Right> && right.canAlias( &matrix_ ) ) {
+   if( IsReference_v<Right> && right.canAlias( this ) ) {
       const ResultType_t<VT> tmp( right );
       smpSubAssign( left, tmp );
    }
@@ -1295,12 +1303,12 @@ inline Band<MT,TF,true,false,CBAs...>&
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_t<VT> );
 
-   if( size() != (~rhs).size() ) {
+   if( size() != (*rhs).size() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
    using Right = If_t< IsRestricted_v<MT>, CompositeType_t<VT>, const VT& >;
-   Right right( ~rhs );
+   Right right( *rhs );
 
    if( !tryMultAssign( matrix_, right, band(), row(), column() ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
@@ -1308,7 +1316,7 @@ inline Band<MT,TF,true,false,CBAs...>&
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( IsReference_v<Right> && right.canAlias( &matrix_ ) ) {
+   if( IsReference_v<Right> && right.canAlias( this ) ) {
       const ResultType_t<VT> tmp( right );
       smpMultAssign( left, tmp );
    }
@@ -1346,12 +1354,12 @@ inline Band<MT,TF,true,false,CBAs...>&
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType_t<VT>, TF );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_t<VT> );
 
-   if( size() != (~rhs).size() ) {
+   if( size() != (*rhs).size() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
    using Right = If_t< IsRestricted_v<MT>, CompositeType_t<VT>, const VT& >;
-   Right right( ~rhs );
+   Right right( *rhs );
 
    if( !tryDivAssign( matrix_, right, band(), row(), column() ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
@@ -1359,7 +1367,7 @@ inline Band<MT,TF,true,false,CBAs...>&
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( IsReference_v<Right> && right.canAlias( &matrix_ ) ) {
+   if( IsReference_v<Right> && right.canAlias( this ) ) {
       const ResultType_t<VT> tmp( right );
       smpDivAssign( left, tmp );
    }
@@ -1406,11 +1414,11 @@ inline Band<MT,TF,true,false,CBAs...>&
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( CrossType, TF );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( CrossType );
 
-   if( size() != 3UL || (~rhs).size() != 3UL ) {
+   if( size() != 3UL || (*rhs).size() != 3UL ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid vector size for cross product" );
    }
 
-   const CrossType right( *this % (~rhs) );
+   const CrossType right( *this % (*rhs) );
 
    if( !tryAssign( matrix_, right, band(), row(), column() ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
@@ -1650,7 +1658,7 @@ template< typename MT          // Type of the dense matrix
 template< typename Other >     // Data type of the foreign expression
 inline bool Band<MT,TF,true,false,CBAs...>::canAlias( const Other* alias ) const noexcept
 {
-   return matrix_.isAliased( alias );
+   return matrix_.isAliased( &unview( *alias ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1698,7 +1706,7 @@ template< typename MT          // Type of the dense matrix
 template< typename Other >     // Data type of the foreign expression
 inline bool Band<MT,TF,true,false,CBAs...>::isAliased( const Other* alias ) const noexcept
 {
-   return matrix_.isAliased( alias );
+   return matrix_.isAliased( &unview( *alias ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1790,15 +1798,17 @@ template< typename MT          // Type of the dense matrix
 template< typename VT >        // Type of the right-hand side dense vector
 inline void Band<MT,TF,true,false,CBAs...>::assign( const DenseVector<VT,TF>& rhs )
 {
-   BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
+   BLAZE_INTERNAL_ASSERT( size() == (*rhs).size(), "Invalid vector sizes" );
 
-   const size_t ipos( (~rhs).size() & size_t(-2) );
+   const size_t ipos( prevMultiple( (*rhs).size(), 2UL ) );
+   BLAZE_INTERNAL_ASSERT( ipos <= (*rhs).size(), "Invalid end calculation" );
+
    for( size_t i=0UL; i<ipos; i+=2UL ) {
-      matrix_(row()+i    ,column()+i    ) = (~rhs)[i    ];
-      matrix_(row()+i+1UL,column()+i+1UL) = (~rhs)[i+1UL];
+      matrix_(row()+i    ,column()+i    ) = (*rhs)[i    ];
+      matrix_(row()+i+1UL,column()+i+1UL) = (*rhs)[i+1UL];
    }
-   if( ipos < (~rhs).size() ) {
-      matrix_(row()+ipos,column()+ipos) = (~rhs)[ipos];
+   if( ipos < (*rhs).size() ) {
+      matrix_(row()+ipos,column()+ipos) = (*rhs)[ipos];
    }
 }
 /*! \endcond */
@@ -1823,9 +1833,9 @@ template< typename MT          // Type of the dense matrix
 template< typename VT >        // Type of the right-hand side sparse vector
 inline void Band<MT,TF,true,false,CBAs...>::assign( const SparseVector<VT,TF>& rhs )
 {
-   BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
+   BLAZE_INTERNAL_ASSERT( size() == (*rhs).size(), "Invalid vector sizes" );
 
-   for( ConstIterator_t<VT> element=(~rhs).begin(); element!=(~rhs).end(); ++element ) {
+   for( ConstIterator_t<VT> element=(*rhs).begin(); element!=(*rhs).end(); ++element ) {
       const size_t index( element->index() );
       matrix_(row()+index,column()+index) = element->value();
    }
@@ -1852,15 +1862,17 @@ template< typename MT          // Type of the dense matrix
 template< typename VT >        // Type of the right-hand side dense vector
 inline void Band<MT,TF,true,false,CBAs...>::addAssign( const DenseVector<VT,TF>& rhs )
 {
-   BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
+   BLAZE_INTERNAL_ASSERT( size() == (*rhs).size(), "Invalid vector sizes" );
 
-   const size_t ipos( (~rhs).size() & size_t(-2) );
+   const size_t ipos( prevMultiple( (*rhs).size(), 2UL ) );
+   BLAZE_INTERNAL_ASSERT( ipos <= (*rhs).size(), "Invalid end calculation" );
+
    for( size_t i=0UL; i<ipos; i+=2UL ) {
-      matrix_(row()+i    ,column()+i    ) += (~rhs)[i    ];
-      matrix_(row()+i+1UL,column()+i+1UL) += (~rhs)[i+1UL];
+      matrix_(row()+i    ,column()+i    ) += (*rhs)[i    ];
+      matrix_(row()+i+1UL,column()+i+1UL) += (*rhs)[i+1UL];
    }
-   if( ipos < (~rhs).size() ) {
-      matrix_(row()+ipos,column()+ipos) += (~rhs)[ipos];
+   if( ipos < (*rhs).size() ) {
+      matrix_(row()+ipos,column()+ipos) += (*rhs)[ipos];
    }
 }
 /*! \endcond */
@@ -1885,9 +1897,9 @@ template< typename MT          // Type of the dense matrix
 template< typename VT >        // Type of the right-hand side sparse vector
 inline void Band<MT,TF,true,false,CBAs...>::addAssign( const SparseVector<VT,TF>& rhs )
 {
-   BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
+   BLAZE_INTERNAL_ASSERT( size() == (*rhs).size(), "Invalid vector sizes" );
 
-   for( ConstIterator_t<VT> element=(~rhs).begin(); element!=(~rhs).end(); ++element ) {
+   for( ConstIterator_t<VT> element=(*rhs).begin(); element!=(*rhs).end(); ++element ) {
       const size_t index( element->index() );
       matrix_(row()+index,column()+index) += element->value();
    }
@@ -1914,15 +1926,17 @@ template< typename MT          // Type of the dense matrix
 template< typename VT >        // Type of the right-hand side dense vector
 inline void Band<MT,TF,true,false,CBAs...>::subAssign( const DenseVector<VT,TF>& rhs )
 {
-   BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
+   BLAZE_INTERNAL_ASSERT( size() == (*rhs).size(), "Invalid vector sizes" );
 
-   const size_t ipos( (~rhs).size() & size_t(-2) );
+   const size_t ipos( prevMultiple( (*rhs).size(), 2UL ) );
+   BLAZE_INTERNAL_ASSERT( ipos <= (*rhs).size(), "Invalid end calculation" );
+
    for( size_t i=0UL; i<ipos; i+=2UL ) {
-      matrix_(row()+i    ,column()+i    ) -= (~rhs)[i    ];
-      matrix_(row()+i+1UL,column()+i+1UL) -= (~rhs)[i+1UL];
+      matrix_(row()+i    ,column()+i    ) -= (*rhs)[i    ];
+      matrix_(row()+i+1UL,column()+i+1UL) -= (*rhs)[i+1UL];
    }
-   if( ipos < (~rhs).size() ) {
-      matrix_(row()+ipos,column()+ipos) -= (~rhs)[ipos];
+   if( ipos < (*rhs).size() ) {
+      matrix_(row()+ipos,column()+ipos) -= (*rhs)[ipos];
    }
 }
 /*! \endcond */
@@ -1947,9 +1961,9 @@ template< typename MT          // Type of the dense matrix
 template< typename VT >        // Type of the right-hand side sparse vector
 inline void Band<MT,TF,true,false,CBAs...>::subAssign( const SparseVector<VT,TF>& rhs )
 {
-   BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
+   BLAZE_INTERNAL_ASSERT( size() == (*rhs).size(), "Invalid vector sizes" );
 
-   for( ConstIterator_t<VT> element=(~rhs).begin(); element!=(~rhs).end(); ++element ) {
+   for( ConstIterator_t<VT> element=(*rhs).begin(); element!=(*rhs).end(); ++element ) {
       const size_t index( element->index() );
       matrix_(row()+index,column()+index) -= element->value();
    }
@@ -1976,15 +1990,17 @@ template< typename MT          // Type of the dense matrix
 template< typename VT >        // Type of the right-hand side dense vector
 inline void Band<MT,TF,true,false,CBAs...>::multAssign( const DenseVector<VT,TF>& rhs )
 {
-   BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
+   BLAZE_INTERNAL_ASSERT( size() == (*rhs).size(), "Invalid vector sizes" );
 
-   const size_t ipos( (~rhs).size() & size_t(-2) );
+   const size_t ipos( prevMultiple( (*rhs).size(), 2UL ) );
+   BLAZE_INTERNAL_ASSERT( ipos <= (*rhs).size(), "Invalid end calculation" );
+
    for( size_t i=0UL; i<ipos; i+=2UL ) {
-      matrix_(row()+i    ,column()+i    ) *= (~rhs)[i    ];
-      matrix_(row()+i+1UL,column()+i+1UL) *= (~rhs)[i+1UL];
+      matrix_(row()+i    ,column()+i    ) *= (*rhs)[i    ];
+      matrix_(row()+i+1UL,column()+i+1UL) *= (*rhs)[i+1UL];
    }
-   if( ipos < (~rhs).size() ) {
-      matrix_(row()+ipos,column()+ipos) *= (~rhs)[ipos];
+   if( ipos < (*rhs).size() ) {
+      matrix_(row()+ipos,column()+ipos) *= (*rhs)[ipos];
    }
 }
 /*! \endcond */
@@ -2011,11 +2027,11 @@ inline void Band<MT,TF,true,false,CBAs...>::multAssign( const SparseVector<VT,TF
 {
    using blaze::reset;
 
-   BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
+   BLAZE_INTERNAL_ASSERT( size() == (*rhs).size(), "Invalid vector sizes" );
 
    size_t i( 0UL );
 
-   for( ConstIterator_t<VT> element=(~rhs).begin(); element!=(~rhs).end(); ++element ) {
+   for( ConstIterator_t<VT> element=(*rhs).begin(); element!=(*rhs).end(); ++element ) {
       const size_t index( element->index() );
       for( ; i<index; ++i )
          reset( matrix_(row()+i,column()+i) );
@@ -2049,15 +2065,17 @@ template< typename MT          // Type of the dense matrix
 template< typename VT >        // Type of the right-hand side dense vector
 inline void Band<MT,TF,true,false,CBAs...>::divAssign( const DenseVector<VT,TF>& rhs )
 {
-   BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
+   BLAZE_INTERNAL_ASSERT( size() == (*rhs).size(), "Invalid vector sizes" );
 
-   const size_t ipos( (~rhs).size() & size_t(-2) );
+   const size_t ipos( prevMultiple( (*rhs).size(), 2UL ) );
+   BLAZE_INTERNAL_ASSERT( ipos <= (*rhs).size(), "Invalid end calculation" );
+
    for( size_t i=0UL; i<ipos; i+=2UL ) {
-      matrix_(row()+i    ,column()+i    ) /= (~rhs)[i    ];
-      matrix_(row()+i+1UL,column()+i+1UL) /= (~rhs)[i+1UL];
+      matrix_(row()+i    ,column()+i    ) /= (*rhs)[i    ];
+      matrix_(row()+i+1UL,column()+i+1UL) /= (*rhs)[i+1UL];
    }
-   if( ipos < (~rhs).size() ) {
-      matrix_(row()+ipos,column()+ipos) /= (~rhs)[ipos];
+   if( ipos < (*rhs).size() ) {
+      matrix_(row()+ipos,column()+ipos) /= (*rhs)[ipos];
    }
 }
 /*! \endcond */
@@ -2075,7 +2093,7 @@ inline void Band<MT,TF,true,false,CBAs...>::divAssign( const DenseVector<VT,TF>&
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Specialization of Band for dense matrix multiplications.
-// \ingroup views
+// \ingroup band
 //
 // This specialization of Band adapts the class template to the requirements of dense matrix
 // multiplications.
@@ -2106,7 +2124,7 @@ class Band<MT,TF,true,true,CBAs...>
    using This = Band<MT,TF,true,true,CBAs...>;
 
    //! Base type of this Band instance.
-   using BaseType = DenseVector<This,TF>;
+   using BaseType = View< DenseVector<This,TF> >;
 
    //! The type viewed by this Band instance.
    using ViewedType = MT;
@@ -2125,12 +2143,12 @@ class Band<MT,TF,true,true,CBAs...>
 
    //! Type for the assignment of the left-hand side matrix operand.
    using LT = If_t< IsSparseMatrix_v<LeftOperand> && IsColumnMajorMatrix_v<LeftOperand>
-                  , ResultType_t<LeftOperand>
+                  , OppositeType_t<LeftOperand>
                   , CompositeType_t<LeftOperand> >;
 
    //! Type for the assignment of the right-hand side matrix operand.
    using RT = If_t< IsSparseMatrix_v<RightOperand> && IsRowMajorMatrix_v<RightOperand>
-                  , ResultType_t<RightOperand>
+                  , OppositeType_t<RightOperand>
                   , CompositeType_t<RightOperand> >;
    //**********************************************************************************************
 
@@ -2140,6 +2158,9 @@ class Band<MT,TF,true,true,CBAs...>
 
    //! Compilation switch for the expression template assignment strategy.
    static constexpr bool smpAssignable = false;
+
+   //! Compilation switch for the expression template evaluation strategy.
+   static constexpr bool compileTimeArgs = DataType::compileTimeArgs;
    //**********************************************************************************************
 
    //**Constructor*********************************************************************************
@@ -2154,7 +2175,7 @@ class Band<MT,TF,true,true,CBAs...>
       : DataType( args... )  // Base class initialization
       , matrix_ ( mmm )      // The matrix multiplication containing the band
    {
-      if( !Contains_v< TypeList<RBAs...>, Unchecked > ) {
+      if( isChecked( args... ) ) {
          if( ( band() > 0L && column() >= mmm.columns() ) ||
              ( band() < 0L && row() >= mmm.rows() ) ) {
             BLAZE_THROW_INVALID_ARGUMENT( "Invalid band access index" );
@@ -2228,7 +2249,7 @@ class Band<MT,TF,true,true,CBAs...>
    */
    template< typename T >
    inline bool canAlias( const T* alias ) const noexcept {
-      return matrix_.isAliased( alias );
+      return matrix_.isAliased( &unview( *alias ) );
    }
    //**********************************************************************************************
 
@@ -2240,7 +2261,7 @@ class Band<MT,TF,true,true,CBAs...>
    */
    template< typename T >
    inline bool isAliased( const T* alias ) const noexcept {
-      return matrix_.isAliased( alias );
+      return matrix_.isAliased( &unview( *alias ) );
    }
    //**********************************************************************************************
 
@@ -2249,7 +2270,7 @@ class Band<MT,TF,true,true,CBAs...>
    //
    // \return \a true in case the operands are aligned, \a false if not.
    */
-   inline constexpr bool isAligned() const noexcept {
+   constexpr bool isAligned() const noexcept {
       return false;
    }
    //**********************************************************************************************
@@ -2260,7 +2281,6 @@ class Band<MT,TF,true,true,CBAs...>
    //**********************************************************************************************
 
    //**Assignment to dense vectors*****************************************************************
-   /*! \cond BLAZE_INTERNAL */
    /*!\brief Assignment of a band view on a dense matrix multiplication to a dense vector.
    // \ingroup dense_vector
    //
@@ -2279,21 +2299,19 @@ class Band<MT,TF,true,true,CBAs...>
 
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       LT A( serial( rhs.operand().leftOperand()  ) );
       RT B( serial( rhs.operand().rightOperand() ) );
 
       const size_t n( rhs.size() );
       for( size_t i=0UL; i<n; ++i ) {
-         (~lhs)[i] = row( A, rhs.row()+i, unchecked ) * column( B, rhs.column()+i, unchecked );
+         (*lhs)[i] = row( A, rhs.row()+i, unchecked ) * column( B, rhs.column()+i, unchecked );
       }
    }
-   /*! \endcond */
    //**********************************************************************************************
 
    //**Assignment to sparse vectors****************************************************************
-   /*! \cond BLAZE_INTERNAL */
    /*!\brief Assignment of a band view on a dense matrix multiplication to a sparse vector.
    // \ingroup dense_vector
    //
@@ -2313,16 +2331,14 @@ class Band<MT,TF,true,true,CBAs...>
       BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType, TF );
       BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       const ResultType tmp( serial( rhs ) );
-      assign( ~lhs, tmp );
+      assign( *lhs, tmp );
    }
-   /*! \endcond */
    //**********************************************************************************************
 
    //**Addition assignment to dense vectors********************************************************
-   /*! \cond BLAZE_INTERNAL */
    /*!\brief Addition assignment of a band view on a dense matrix multiplication to a dense vector.
    // \ingroup dense_vector
    //
@@ -2341,17 +2357,16 @@ class Band<MT,TF,true,true,CBAs...>
 
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       LT A( serial( rhs.operand().leftOperand()  ) );
       RT B( serial( rhs.operand().rightOperand() ) );
 
       const size_t n( rhs.size() );
       for( size_t i=0UL; i<n; ++i ) {
-         (~lhs)[i] += row( A, rhs.row()+i, unchecked ) * column( B, rhs.column()+i, unchecked );
+         (*lhs)[i] += row( A, rhs.row()+i, unchecked ) * column( B, rhs.column()+i, unchecked );
       }
    }
-   /*! \endcond */
    //**********************************************************************************************
 
    //**Addition assignment to sparse vectors*******************************************************
@@ -2359,7 +2374,6 @@ class Band<MT,TF,true,true,CBAs...>
    //**********************************************************************************************
 
    //**Subtraction assignment to dense vectors*****************************************************
-   /*! \cond BLAZE_INTERNAL */
    /*!\brief Subtraction assignment of a band view on a dense matrix multiplication to a dense vector.
    // \ingroup dense_vector
    //
@@ -2378,17 +2392,16 @@ class Band<MT,TF,true,true,CBAs...>
 
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       LT A( serial( rhs.operand().leftOperand()  ) );
       RT B( serial( rhs.operand().rightOperand() ) );
 
       const size_t n( rhs.size() );
       for( size_t i=0UL; i<n; ++i ) {
-         (~lhs)[i] -= row( A, rhs.row()+i, unchecked ) * column( B, rhs.column()+i, unchecked );
+         (*lhs)[i] -= row( A, rhs.row()+i, unchecked ) * column( B, rhs.column()+i, unchecked );
       }
    }
-   /*! \endcond */
    //**********************************************************************************************
 
    //**Subtraction assignment to sparse vectors****************************************************
@@ -2396,7 +2409,6 @@ class Band<MT,TF,true,true,CBAs...>
    //**********************************************************************************************
 
    //**Multiplication assignment to dense vectors**************************************************
-   /*! \cond BLAZE_INTERNAL */
    /*!\brief Multiplication assignment of a band view on a dense matrix multiplication to a
    //        dense vector.
    // \ingroup dense_vector
@@ -2416,17 +2428,16 @@ class Band<MT,TF,true,true,CBAs...>
 
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       LT A( serial( rhs.operand().leftOperand()  ) );
       RT B( serial( rhs.operand().rightOperand() ) );
 
       const size_t n( rhs.size() );
       for( size_t i=0UL; i<n; ++i ) {
-         (~lhs)[i] *= row( A, rhs.row()+i, unchecked ) * column( B, rhs.column()+i, unchecked );
+         (*lhs)[i] *= row( A, rhs.row()+i, unchecked ) * column( B, rhs.column()+i, unchecked );
       }
    }
-   /*! \endcond */
    //**********************************************************************************************
 
    //**Multiplication assignment to sparse vectors*************************************************
@@ -2434,7 +2445,6 @@ class Band<MT,TF,true,true,CBAs...>
    //**********************************************************************************************
 
    //**Division assignment to dense vectors********************************************************
-   /*! \cond BLAZE_INTERNAL */
    /*!\brief Division assignment of a band view on a dense matrix multiplication to a dense vector.
    // \ingroup dense_vector
    //
@@ -2453,17 +2463,16 @@ class Band<MT,TF,true,true,CBAs...>
 
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       LT A( serial( rhs.operand().leftOperand()  ) );
       RT B( serial( rhs.operand().rightOperand() ) );
 
       const size_t n( rhs.size() );
       for( size_t i=0UL; i<n; ++i ) {
-         (~lhs)[i] /= row( A, rhs.row()+i, unchecked ) * column( B, rhs.column()+i, unchecked );
+         (*lhs)[i] /= row( A, rhs.row()+i, unchecked ) * column( B, rhs.column()+i, unchecked );
       }
    }
-   /*! \endcond */
    //**********************************************************************************************
 
    //**Division assignment to sparse vectors*******************************************************
@@ -2471,14 +2480,200 @@ class Band<MT,TF,true,true,CBAs...>
    //**********************************************************************************************
 
    //**Compile time checks*************************************************************************
-   /*! \cond BLAZE_INTERNAL */
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( MT );
    BLAZE_CONSTRAINT_MUST_BE_MATMATMULTEXPR_TYPE( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_POINTER_TYPE   ( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_REFERENCE_TYPE ( MT );
-   /*! \endcond */
    //**********************************************************************************************
 };
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  CLASS TEMPLATE SPECIALIZATION FOR DENSE MATRIX REPEATER EXPRESSIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Specialization of Band for dense matrix repeater expressions.
+// \ingroup band
+//
+// This specialization of Band adapts the class template to the requirements of dense matrix
+// repeater expressions.
+*/
+template< typename MT          // Type of the dense matrix
+        , bool SO              // Storage order
+        , size_t... CRAs       // Compile time repeater arguments
+        , bool TF              // Transpose flag
+        , ptrdiff_t... CBAs >  // Compile time band arguments
+class Band< DMatRepeatExpr<MT,SO,CRAs...>, TF, true, false, CBAs... >
+   : public View< DenseVector< Band< DMatRepeatExpr<MT,SO,CRAs...>, TF, true, false, CBAs... >, TF > >
+   , private BandData<CBAs...>
+   , private Computation
+{
+ private:
+   //**Type definitions****************************************************************************
+   //! Type of the dense matrix repeater expression.
+   using RE = DMatRepeatExpr<MT,SO,CRAs...>;
+
+   //! The type of the BandData base class.
+   using DataType = BandData<CBAs...>;
+   //**********************************************************************************************
+
+ public:
+   //**Type definitions****************************************************************************
+   //! Type of this Band instance.
+   using This = Band<RE,TF,true,false,CBAs...>;
+
+   //! Base type of this Band instance.
+   using BaseType = View< DenseVector<This,TF> >;
+
+   //! The type viewed by this Band instance.
+   using ViewedType = RE;
+
+   //! Result type for expression template evaluations.
+   using ResultType = BandTrait_t<ResultType_t<RE>,CBAs...>;
+
+   using TransposeType = TransposeType_t<ResultType>;  //!< Transpose type for expression template evaluations.
+   using ElementType   = ElementType_t<ResultType>;    //!< Resulting element type.
+   using ReturnType    = ReturnType_t<MT>;             //!< Return type for expression template evaluations.
+   using CompositeType = const ResultType;             //!< Data type for composite expression templates.
+   //**********************************************************************************************
+
+   //**Compilation flags***************************************************************************
+   //! Compilation switch for the expression template evaluation strategy.
+   static constexpr bool simdEnabled = false;
+
+   //! Compilation switch for the expression template assignment strategy.
+   static constexpr bool smpAssignable = false;
+
+   //! Compilation switch for the expression template evaluation strategy.
+   static constexpr bool compileTimeArgs = DataType::compileTimeArgs;
+   //**********************************************************************************************
+
+   //**Constructor*********************************************************************************
+   /*!\brief Constructor for bands on dense matrix repeater expressions.
+   //
+   // \param re The matrix repeater expression containing the band.
+   // \param args The runtime band arguments.
+   // \exception std::invalid_argument Invalid band access index.
+   */
+   template< typename... RBAs >  // Runtime band arguments
+   explicit inline Band( const RE& re, RBAs... args )
+      : DataType( args... )  // Base class initialization
+      , matrix_ ( re )       // The matrix repeater expression containing the band
+   {
+      if( isChecked( args... ) ) {
+         if( ( band() > 0L && column() >= re.columns() ) ||
+             ( band() < 0L && row() >= re.rows() ) ) {
+            BLAZE_THROW_INVALID_ARGUMENT( "Invalid band access index" );
+         }
+      }
+      else {
+         BLAZE_USER_ASSERT( band() <= 0L || column() < re.columns(), "Invalid band access index" );
+         BLAZE_USER_ASSERT( band() >= 0L || row() < re.rows(), "Invalid band access index" );
+      }
+   }
+   //**********************************************************************************************
+
+   //**Subscript operator**************************************************************************
+   /*!\brief Subscript operator for the direct access to the vector elements.
+   //
+   // \param index Access index. The index has to be in the range \f$[0..N-1]\f$.
+   // \return The resulting value.
+   */
+   inline ReturnType operator[]( size_t index ) const {
+      BLAZE_INTERNAL_ASSERT( index < size(), "Invalid vector access index" );
+      return matrix_(row()+index,column()+index);
+   }
+   //**********************************************************************************************
+
+   //**At function*********************************************************************************
+   /*!\brief Checked access to the vector elements.
+   //
+   // \param index Access index. The index has to be in the range \f$[0..N-1]\f$.
+   // \return The resulting value.
+   // \exception std::out_of_range Invalid vector access index.
+   */
+   inline ReturnType at( size_t index ) const {
+      if( index >= size() ) {
+         BLAZE_THROW_OUT_OF_RANGE( "Invalid vector access index" );
+      }
+      return (*this)[index];
+   }
+   //**********************************************************************************************
+
+   //**Size function*******************************************************************************
+   /*!\brief Returns the current size/dimension of the vector.
+   //
+   // \return The size of the vector.
+   */
+   inline size_t size() const noexcept {
+      return min( matrix_.rows() - row(), matrix_.columns() - column() );
+   }
+   //**********************************************************************************************
+
+   //**********************************************************************************************
+   using DataType::band;
+   using DataType::row;
+   using DataType::column;
+   //**********************************************************************************************
+
+   //**Operand access******************************************************************************
+   /*!\brief Returns the matrix repeater expression containing the band.
+   //
+   // \return The matrix repeater expression containing the band.
+   */
+   inline const MT& operand() const noexcept {
+      return matrix_;
+   }
+   //**********************************************************************************************
+
+   //**********************************************************************************************
+   /*!\brief Returns whether the expression can alias with the given address \a alias.
+   //
+   // \param alias The alias to be checked.
+   // \return \a true in case the expression can alias, \a false otherwise.
+   */
+   template< typename T >
+   inline bool canAlias( const T* alias ) const noexcept {
+      return matrix_.isAliased( &unview( *alias ) );
+   }
+   //**********************************************************************************************
+
+   //**********************************************************************************************
+   /*!\brief Returns whether the expression is aliased with the given address \a alias.
+   //
+   // \param alias The alias to be checked.
+   // \return \a true in case an alias effect is detected, \a false otherwise.
+   */
+   template< typename T >
+   inline bool isAliased( const T* alias ) const noexcept {
+      return matrix_.isAliased( &unview( *alias ) );
+   }
+   //**********************************************************************************************
+
+   //**********************************************************************************************
+   /*!\brief Returns whether the operands of the expression are properly aligned in memory.
+   //
+   // \return \a true in case the operands are aligned, \a false if not.
+   */
+   constexpr bool isAligned() const noexcept {
+      return false;
+   }
+   //**********************************************************************************************
+
+ private:
+   //**Member variables****************************************************************************
+   RE matrix_;  //!< The matrix repeater expression containing the band.
+   //**********************************************************************************************
+};
+/*! \endcond */
 //*************************************************************************************************
 
 } // namespace blaze

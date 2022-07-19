@@ -3,7 +3,7 @@
 //  \file blaze/math/dense/InitializerVector.h
 //  \brief Header file for the implementation of a vector representation of an initializer list
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -52,15 +52,14 @@
 #include <blaze/math/typetraits/HighType.h>
 #include <blaze/math/typetraits/IsInitializer.h>
 #include <blaze/math/typetraits/LowType.h>
-#include <blaze/system/TransposeFlag.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Const.h>
 #include <blaze/util/constraints/Pointer.h>
 #include <blaze/util/constraints/Reference.h>
 #include <blaze/util/constraints/Volatile.h>
-#include <blaze/util/TrueType.h>
+#include <blaze/util/IntegralConstant.h>
+#include <blaze/util/MaybeUnused.h>
 #include <blaze/util/Types.h>
-#include <blaze/util/Unused.h>
 
 
 namespace blaze {
@@ -79,18 +78,24 @@ namespace blaze {
 // \ingroup initializer_vector
 //
 // The InitializerVector class template is a dense vector representation of an (extended)
-// initializer list of arbitrary type. The type of the elements and the transpose flag of the
-// vector can be specified via the two template parameters:
+// initializer list of arbitrary type. The type of the elements, the transpose flag, and the
+// group tag of the vector can be specified via the three template parameters:
 
    \code
-   template< typename Type, bool TF >
+   namespace blaze {
+
+   template< typename Type, bool TF, typename Tag >
    class InitializerVector;
+
+   } // namespace blaze
    \endcode
 
 //  - Type: specifies the type of the vector elements. InitializerVector can be used with any
 //          non-cv-qualified, non-reference, non-pointer element type.
-//  - TF  : specifies whether the vector is a row vector (\a blaze::rowVector) or a column
-//          vector (\a blaze::columnVector). The default value is \a blaze::columnVector.
+//  - TF  : specifies whether the vector is a row vector (\c blaze::rowVector) or a column
+//          vector (\c blaze::columnVector). The default value is \c blaze::defaultTransposeFlag.
+//  - Tag : optional type parameter to tag the vector. The default type is \c blaze::Group0.
+//          See \ref grouping_tagging for details.
 //
 // On construction, an InitializerVector is immediately bound to an initializer list:
 
@@ -169,20 +174,27 @@ namespace blaze {
    A = a * trans( b );  // Outer product between two vectors
    \endcode
 */
-template< typename Type                     // Data type of the vector
-        , bool TF = defaultTransposeFlag >  // Transpose flag
+template< typename Type   // Data type of the vector
+        , bool TF         // Transpose flag
+        , typename Tag >  // Type tag
 class InitializerVector
-   : public DenseVector< InitializerVector<Type,TF>, TF >
+   : public DenseVector< InitializerVector<Type,TF,Tag>, TF >
 {
  public:
    //**Type definitions****************************************************************************
-   using This          = InitializerVector<Type,TF>;  //!< Type of this InitializerVector instance.
-   using BaseType      = DenseVector<This,TF>;        //!< Base type of this InitializerVector instance.
-   using ResultType    = DynamicVector<Type,TF>;      //!< Result type for expression template evaluations.
-   using TransposeType = DynamicVector<Type,!TF>;     //!< Transpose type for expression template evaluations.
-   using ElementType   = Type;                        //!< Type of the vector elements.
-   using ReturnType    = const Type&;                 //!< Return type for expression template evaluations
-   using CompositeType = const InitializerVector&;    //!< Data type for composite expression templates.
+   using This     = InitializerVector<Type,TF,Tag>;  //!< Type of this InitializerVector instance.
+   using BaseType = DenseVector<This,TF>;            //!< Base type of this InitializerVector instance.
+
+   //! Result type for expression template evaluations.
+   using ResultType = DynamicVector<Type,TF>;
+
+   //! Transpose type for expression template evaluations.
+   using TransposeType = DynamicVector<Type,!TF>;
+
+   using ElementType   = Type;                     //!< Type of the vector elements.
+   using TagType       = Tag;                      //!< Tag type of this InitializerVector instance.
+   using ReturnType    = const Type&;              //!< Return type for expression template evaluations
+   using CompositeType = const InitializerVector&; //!< Data type for composite expression templates.
 
    using Reference      = const Type&;  //!< Reference to a non-constant vector value.
    using ConstReference = const Type&;  //!< Reference to a constant vector value.
@@ -198,7 +210,7 @@ class InitializerVector
    */
    template< typename NewType >  // Data type of the other vector
    struct Rebind {
-      using Other = InitializerVector<NewType,TF>;  //!< The type of the other InitializerVector.
+      using Other = InitializerVector<NewType,TF,Tag>;  //!< The type of the other InitializerVector.
    };
    //**********************************************************************************************
 
@@ -207,7 +219,7 @@ class InitializerVector
    */
    template< size_t NewN >  // Number of elements of the other vector
    struct Resize {
-      using Other = InitializerVector<Type,TF>;  //!< The type of the other InitializerVector.
+      using Other = InitializerVector<Type,TF,Tag>;  //!< The type of the other InitializerVector.
    };
    //**********************************************************************************************
 
@@ -229,8 +241,8 @@ class InitializerVector
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit inline InitializerVector( initializer_list<Type> list ) noexcept;
-   explicit inline InitializerVector( initializer_list<Type> list, size_t n );
+   inline InitializerVector( initializer_list<Type> list ) noexcept;
+   inline InitializerVector( initializer_list<Type> list, size_t n );
 
    InitializerVector( const InitializerVector& ) = default;
    //@}
@@ -322,9 +334,10 @@ class InitializerVector
 //
 //=================================================================================================
 
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-const Type InitializerVector<Type,TF>::zero_{};
+template< typename Type   // Data type of the vector
+        , bool TF         // Transpose flag
+        , typename Tag >  // Type tag
+const Type InitializerVector<Type,TF,Tag>::zero_{};
 
 
 
@@ -340,9 +353,10 @@ const Type InitializerVector<Type,TF>::zero_{};
 //
 // \param list The initializer list represented by the vector.
 */
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-inline InitializerVector<Type,TF>::InitializerVector( initializer_list<Type> list ) noexcept
+template< typename Type   // Data type of the vector
+        , bool TF         // Transpose flag
+        , typename Tag >  // Type tag
+inline InitializerVector<Type,TF,Tag>::InitializerVector( initializer_list<Type> list ) noexcept
    : size_( list.size() )  // The current size/dimension of the vector
    , list_( list )         // The initializer list represented by the vector
 {}
@@ -356,9 +370,10 @@ inline InitializerVector<Type,TF>::InitializerVector( initializer_list<Type> lis
 // \param n The size of the vector.
 // \exception std::invalid_argument Invalid initializer list dimension.
 */
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-inline InitializerVector<Type,TF>::InitializerVector( initializer_list<Type> list, size_t n )
+template< typename Type   // Data type of the vector
+        , bool TF         // Transpose flag
+        , typename Tag >  // Type tag
+inline InitializerVector<Type,TF,Tag>::InitializerVector( initializer_list<Type> list, size_t n )
    : size_( n    )  // The current size/dimension of the vector
    , list_( list )  // The initializer list represented by the vector
 {
@@ -386,10 +401,11 @@ inline InitializerVector<Type,TF>::InitializerVector( initializer_list<Type> lis
 // This function only performs an index check in case BLAZE_USER_ASSERT() is active. In contrast,
 // the at() function is guaranteed to perform a check of the given access index.
 */
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-inline typename InitializerVector<Type,TF>::ConstReference
-   InitializerVector<Type,TF>::operator[]( size_t index ) const noexcept
+template< typename Type   // Data type of the vector
+        , bool TF         // Transpose flag
+        , typename Tag >  // Type tag
+inline typename InitializerVector<Type,TF,Tag>::ConstReference
+   InitializerVector<Type,TF,Tag>::operator[]( size_t index ) const noexcept
 {
    BLAZE_USER_ASSERT( index < size_, "Invalid vector access index" );
    if( index < list_.size() )
@@ -410,10 +426,11 @@ inline typename InitializerVector<Type,TF>::ConstReference
 // In contrast to the subscript operator this function always performs a check of the given
 // access index.
 */
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-inline typename InitializerVector<Type,TF>::ConstReference
-   InitializerVector<Type,TF>::at( size_t index ) const
+template< typename Type   // Data type of the vector
+        , bool TF         // Transpose flag
+        , typename Tag >  // Type tag
+inline typename InitializerVector<Type,TF,Tag>::ConstReference
+   InitializerVector<Type,TF,Tag>::at( size_t index ) const
 {
    if( index >= size_ ) {
       BLAZE_THROW_OUT_OF_RANGE( "Invalid vector access index" );
@@ -430,10 +447,11 @@ inline typename InitializerVector<Type,TF>::ConstReference
 //
 // This function returns a pointer to the internal storage of the initializer vector.
 */
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-inline typename InitializerVector<Type,TF>::ConstPointer
-   InitializerVector<Type,TF>::data() const noexcept
+template< typename Type   // Data type of the vector
+        , bool TF         // Transpose flag
+        , typename Tag >  // Type tag
+inline typename InitializerVector<Type,TF,Tag>::ConstPointer
+   InitializerVector<Type,TF,Tag>::data() const noexcept
 {
    return list_.begin();
 }
@@ -445,10 +463,11 @@ inline typename InitializerVector<Type,TF>::ConstPointer
 //
 // \return Iterator to the first element of the initializer vector.
 */
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-inline typename InitializerVector<Type,TF>::ConstIterator
-   InitializerVector<Type,TF>::begin() const noexcept
+template< typename Type   // Data type of the vector
+        , bool TF         // Transpose flag
+        , typename Tag >  // Type tag
+inline typename InitializerVector<Type,TF,Tag>::ConstIterator
+   InitializerVector<Type,TF,Tag>::begin() const noexcept
 {
    return ConstIterator( 0UL, list_ );;
 }
@@ -460,10 +479,11 @@ inline typename InitializerVector<Type,TF>::ConstIterator
 //
 // \return Iterator to the first element of the initializer vector.
 */
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-inline typename InitializerVector<Type,TF>::ConstIterator
-   InitializerVector<Type,TF>::cbegin() const noexcept
+template< typename Type   // Data type of the vector
+        , bool TF         // Transpose flag
+        , typename Tag >  // Type tag
+inline typename InitializerVector<Type,TF,Tag>::ConstIterator
+   InitializerVector<Type,TF,Tag>::cbegin() const noexcept
 {
    return ConstIterator( 0UL, list_ );
 }
@@ -475,10 +495,11 @@ inline typename InitializerVector<Type,TF>::ConstIterator
 //
 // \return Iterator just past the last element of the initializer vector.
 */
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-inline typename InitializerVector<Type,TF>::ConstIterator
-   InitializerVector<Type,TF>::end() const noexcept
+template< typename Type   // Data type of the vector
+        , bool TF         // Transpose flag
+        , typename Tag >  // Type tag
+inline typename InitializerVector<Type,TF,Tag>::ConstIterator
+   InitializerVector<Type,TF,Tag>::end() const noexcept
 {
    return ConstIterator( size_, list_ );
 }
@@ -490,10 +511,11 @@ inline typename InitializerVector<Type,TF>::ConstIterator
 //
 // \return Iterator just past the last element of the initializer vector.
 */
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-inline typename InitializerVector<Type,TF>::ConstIterator
-   InitializerVector<Type,TF>::cend() const noexcept
+template< typename Type   // Data type of the vector
+        , bool TF         // Transpose flag
+        , typename Tag >  // Type tag
+inline typename InitializerVector<Type,TF,Tag>::ConstIterator
+   InitializerVector<Type,TF,Tag>::cend() const noexcept
 {
    return ConstIterator( size_, list_ );
 }
@@ -513,9 +535,10 @@ inline typename InitializerVector<Type,TF>::ConstIterator
 //
 // \return The size of the vector.
 */
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-inline size_t InitializerVector<Type,TF>::size() const noexcept
+template< typename Type   // Data type of the vector
+        , bool TF         // Transpose flag
+        , typename Tag >  // Type tag
+inline size_t InitializerVector<Type,TF,Tag>::size() const noexcept
 {
    return size_;
 }
@@ -530,9 +553,10 @@ inline size_t InitializerVector<Type,TF>::size() const noexcept
 // This function returns the minimum capacity of the vector, which corresponds to the current
 // size plus padding.
 */
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-inline size_t InitializerVector<Type,TF>::spacing() const noexcept
+template< typename Type   // Data type of the vector
+        , bool TF         // Transpose flag
+        , typename Tag >  // Type tag
+inline size_t InitializerVector<Type,TF,Tag>::spacing() const noexcept
 {
    return size_;
 }
@@ -544,9 +568,10 @@ inline size_t InitializerVector<Type,TF>::spacing() const noexcept
 //
 // \return The maximum capacity of the vector.
 */
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-inline size_t InitializerVector<Type,TF>::capacity() const noexcept
+template< typename Type   // Data type of the vector
+        , bool TF         // Transpose flag
+        , typename Tag >  // Type tag
+inline size_t InitializerVector<Type,TF,Tag>::capacity() const noexcept
 {
    return size_;
 }
@@ -558,17 +583,19 @@ inline size_t InitializerVector<Type,TF>::capacity() const noexcept
 //
 // \return The number of non-zero elements in the vector.
 //
-// Note that the number of non-zero elements is always less than or equal to the current size
-// of the vector.
+// This function returns the number of non-zero elements in the vector (i.e. the elements that
+// compare unequal to their default value). Note that the number of non-zero elements is always
+// less than or equal to the current size of the vector.
 */
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-inline size_t InitializerVector<Type,TF>::nonZeros() const
+template< typename Type   // Data type of the vector
+        , bool TF         // Transpose flag
+        , typename Tag >  // Type tag
+inline size_t InitializerVector<Type,TF,Tag>::nonZeros() const
 {
    size_t nonzeros( 0 );
 
    for( size_t i=0UL; i<list_.size(); ++i ) {
-      if( !isDefault( list_.begin()[i] ) )
+      if( !isDefault<strict>( list_.begin()[i] ) )
          ++nonzeros;
    }
 
@@ -583,9 +610,10 @@ inline size_t InitializerVector<Type,TF>::nonZeros() const
 // \param v The vector to be swapped.
 // \return void
 */
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-inline void InitializerVector<Type,TF>::swap( InitializerVector& v ) noexcept
+template< typename Type   // Data type of the vector
+        , bool TF         // Transpose flag
+        , typename Tag >  // Type tag
+inline void InitializerVector<Type,TF,Tag>::swap( InitializerVector& v ) noexcept
 {
    using std::swap;
 
@@ -614,9 +642,10 @@ inline void InitializerVector<Type,TF>::swap( InitializerVector& v ) noexcept
 // to optimize the evaluation.
 */
 template< typename Type     // Data type of the vector
-        , bool TF >         // Transpose flag
+        , bool TF           // Transpose flag
+        , typename Tag >    // Type tag
 template< typename Other >  // Data type of the foreign expression
-inline bool InitializerVector<Type,TF>::canAlias( const Other* alias ) const noexcept
+inline bool InitializerVector<Type,TF,Tag>::canAlias( const Other* alias ) const noexcept
 {
    return static_cast<const void*>( this ) == static_cast<const void*>( alias );
 }
@@ -634,9 +663,10 @@ inline bool InitializerVector<Type,TF>::canAlias( const Other* alias ) const noe
 // to optimize the evaluation.
 */
 template< typename Type     // Data type of the vector
-        , bool TF >         // Transpose flag
+        , bool TF           // Transpose flag
+        , typename Tag >    // Type tag
 template< typename Other >  // Data type of the foreign expression
-inline bool InitializerVector<Type,TF>::isAliased( const Other* alias ) const noexcept
+inline bool InitializerVector<Type,TF,Tag>::isAliased( const Other* alias ) const noexcept
 {
    return static_cast<const void*>( this ) == static_cast<const void*>( alias );
 }
@@ -654,11 +684,11 @@ inline bool InitializerVector<Type,TF>::isAliased( const Other* alias ) const no
 //*************************************************************************************************
 /*!\name InitializerVector operators */
 //@{
-template< typename Type, bool TF >
-inline bool isIntact( const InitializerVector<Type,TF>& v ) noexcept;
+template< typename Type, bool TF, typename Tag >
+bool isIntact( const InitializerVector<Type,TF,Tag>& v ) noexcept;
 
-template< typename Type, bool TF >
-inline void swap( InitializerVector<Type,TF>& a, InitializerVector<Type,TF>& b ) noexcept;
+template< typename Type, bool TF, typename Tag >
+void swap( InitializerVector<Type,TF,Tag>& a, InitializerVector<Type,TF,Tag>& b ) noexcept;
 //@}
 //*************************************************************************************************
 
@@ -681,11 +711,12 @@ inline void swap( InitializerVector<Type,TF>& a, InitializerVector<Type,TF>& b )
    if( isIntact( a ) ) { ... }
    \endcode
 */
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-inline bool isIntact( const InitializerVector<Type,TF>& v ) noexcept
+template< typename Type   // Data type of the vector
+        , bool TF         // Transpose flag
+        , typename Tag >  // Type tag
+inline bool isIntact( const InitializerVector<Type,TF,Tag>& v ) noexcept
 {
-   UNUSED_PARAMETER( v );
+   MAYBE_UNUSED( v );
 
    return true;
 }
@@ -700,9 +731,10 @@ inline bool isIntact( const InitializerVector<Type,TF>& v ) noexcept
 // \param b The second vector to be swapped.
 // \return void
 */
-template< typename Type  // Data type of the vector
-        , bool TF >      // Transpose flag
-inline void swap( InitializerVector<Type,TF>& a, InitializerVector<Type,TF>& b ) noexcept
+template< typename Type   // Data type of the vector
+        , bool TF         // Transpose flag
+        , typename Tag >  // Type tag
+inline void swap( InitializerVector<Type,TF,Tag>& a, InitializerVector<Type,TF,Tag>& b ) noexcept
 {
    a.swap( b );
 }
@@ -719,8 +751,8 @@ inline void swap( InitializerVector<Type,TF>& a, InitializerVector<Type,TF>& b )
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T, bool TF >
-struct HasConstDataAccess< InitializerVector<T,TF> >
+template< typename T, bool TF, typename Tag >
+struct HasConstDataAccess< InitializerVector<T,TF,Tag> >
    : public TrueType
 {};
 /*! \endcond */
@@ -737,8 +769,8 @@ struct HasConstDataAccess< InitializerVector<T,TF> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T, bool TF >
-struct IsInitializer< InitializerVector<T,TF> >
+template< typename T, bool TF, typename Tag >
+struct IsInitializer< InitializerVector<T,TF,Tag> >
    : public TrueType
 {};
 /*! \endcond */
@@ -755,10 +787,10 @@ struct IsInitializer< InitializerVector<T,TF> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T1, bool TF, typename T2 >
-struct HighType< InitializerVector<T1,TF>, InitializerVector<T2,TF> >
+template< typename T1, bool TF, typename Tag, typename T2 >
+struct HighType< InitializerVector<T1,TF,Tag>, InitializerVector<T2,TF,Tag> >
 {
-   using Type = InitializerVector< typename HighType<T1,T2>::Type, TF >;
+   using Type = InitializerVector< typename HighType<T1,T2>::Type, TF, Tag >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -774,10 +806,10 @@ struct HighType< InitializerVector<T1,TF>, InitializerVector<T2,TF> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T1, bool TF, typename T2 >
-struct LowType< InitializerVector<T1,TF>, InitializerVector<T2,TF> >
+template< typename T1, bool TF, typename Tag, typename T2 >
+struct LowType< InitializerVector<T1,TF,Tag>, InitializerVector<T2,TF,Tag> >
 {
-   using Type = InitializerVector< typename LowType<T1,T2>::Type, TF >;
+   using Type = InitializerVector< typename LowType<T1,T2>::Type, TF, Tag >;
 };
 /*! \endcond */
 //*************************************************************************************************

@@ -3,7 +3,7 @@
 //  \file blaze/math/typetraits/IsMatTransExpr.h
 //  \brief Header file for the IsMatTransExpr type trait class
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -42,8 +42,7 @@
 
 #include <utility>
 #include <blaze/math/expressions/MatTransExpr.h>
-#include <blaze/util/FalseType.h>
-#include <blaze/util/TrueType.h>
+#include <blaze/util/IntegralConstant.h>
 
 
 namespace blaze {
@@ -56,28 +55,13 @@ namespace blaze {
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Auxiliary helper struct for the IsMatTransExpr type trait.
+/*!\brief Auxiliary helper functions for the IsMatTransExpr type trait.
 // \ingroup math_type_traits
 */
-template< typename T >
-struct IsMatTransExprHelper
-{
- private:
-   //**********************************************************************************************
-   template< typename MT >
-   static TrueType test( const MatTransExpr<MT>& );
+template< typename MT >
+TrueType isMatTransExpr_backend( const volatile MatTransExpr<MT>* );
 
-   template< typename MT >
-   static TrueType test( const volatile MatTransExpr<MT>& );
-
-   static FalseType test( ... );
-   //**********************************************************************************************
-
- public:
-   //**********************************************************************************************
-   using Type = decltype( test( std::declval<T&>() ) );
-   //**********************************************************************************************
-};
+FalseType isMatTransExpr_backend( ... );
 /*! \endcond */
 //*************************************************************************************************
 
@@ -96,14 +80,27 @@ struct IsMatTransExprHelper
 */
 template< typename T >
 struct IsMatTransExpr
-   : public IsMatTransExprHelper<T>::Type
+   : public decltype( isMatTransExpr_backend( std::declval<T*>() ) )
 {};
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Specialization of the IsMatTransExpr type trait for references.
+// \ingroup math_type_traits
+*/
+template< typename T >
+struct IsMatTransExpr<T&>
+   : public FalseType
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Auxiliary variable template for the IsMatTransExpr type trait.
-// \ingroup type_traits
+// \ingroup math_type_traits
 //
 // The IsMatTransExpr_v variable template provides a convenient shortcut to access the nested
 // \a value of the IsMatTransExpr class template. For instance, given the type \a T the

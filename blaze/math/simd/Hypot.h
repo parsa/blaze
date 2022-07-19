@@ -3,7 +3,7 @@
 //  \file blaze/math/simd/Hypot.h
 //  \brief Header file for the SIMD hypothenous functionality
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -40,6 +40,9 @@
 // Includes
 //*************************************************************************************************
 
+#if BLAZE_SLEEF_MODE
+#  include <sleef.h>
+#endif
 #include <blaze/math/simd/BasicTypes.h>
 #include <blaze/system/Inline.h>
 #include <blaze/system/Vectorization.h>
@@ -64,22 +67,42 @@ namespace blaze {
 //
 // This function computes the square root of the sum of the squares of \a a and \a b, which
 // corresponds to the length of the hypotenous of a right triangle. This operation is only
-// available via the SVML for SSE, AVX, MIC, and AVX-512.
+// available via the SVML or SLEEF or Sleef for SSE, AVX, MIC, and AVX-512.
 */
 template< typename T >  // Type of the operand
 BLAZE_ALWAYS_INLINE const SIMDfloat hypot( const SIMDf32<T>& a, const SIMDf32<T>& b ) noexcept
-#if BLAZE_SVML_MODE && ( BLAZE_AVX512F_MODE || BLAZE_MIC_MODE )
+#if BLAZE_SVML_MODE
+#  if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
 {
-   return _mm512_hypot_ps( (~a).eval().value, (~b).eval().value );
+   return _mm512_hypot_ps( (*a).eval().value, (*b).eval().value );
 }
-#elif BLAZE_SVML_MODE && BLAZE_AVX_MODE
+#  elif BLAZE_AVX_MODE
 {
-   return _mm256_hypot_ps( (~a).eval().value, (~b).eval().value );
+   return _mm256_hypot_ps( (*a).eval().value, (*b).eval().value );
 }
-#elif BLAZE_SVML_MODE && BLAZE_SSE_MODE
+#  elif BLAZE_SSE_MODE
 {
-   return _mm_hypot_ps( (~a).eval().value, (~b).eval().value );
+   return _mm_hypot_ps( (*a).eval().value, (*b).eval().value );
 }
+#  endif
+#elif BLAZE_SLEEF_MODE
+#  if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
+{
+   return Sleef_hypotf16_u05avx512f( (*a).eval().value, (*b).eval().value );
+}
+#  elif BLAZE_AVX2_MODE
+{
+   return Sleef_hypotf8_u05avx2( (*a).eval().value, (*b).eval().value );
+}
+#  elif BLAZE_AVX_MODE
+{
+   return Sleef_hypotf8_u05avx( (*a).eval().value, (*b).eval().value );
+}
+#  elif BLAZE_SSE_MODE
+{
+   return Sleef_hypotf4_u05( (*a).eval().value, (*b).eval().value );
+}
+#  endif
 #else
 = delete;
 #endif
@@ -105,22 +128,42 @@ BLAZE_ALWAYS_INLINE const SIMDfloat hypot( const SIMDf32<T>& a, const SIMDf32<T>
 //
 // This function computes the square root of the sum of the squares of \a a and \a b, which
 // corresponds to the length of the hypotenous of a right triangle. This operation is only
-// available via the SVML for SSE, AVX, MIC, and AVX-512.
+// available via the SVML or SLEEF or Sleef for SSE, AVX, MIC, and AVX-512.
 */
 template< typename T >  // Type of the operand
 BLAZE_ALWAYS_INLINE const SIMDdouble hypot( const SIMDf64<T>& a, const SIMDf64<T>& b ) noexcept
-#if BLAZE_SVML_MODE && ( BLAZE_AVX512F_MODE || BLAZE_MIC_MODE )
+#if BLAZE_SVML_MODE
+#  if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
 {
-   return _mm512_hypot_pd( (~a).eval().value, (~b).eval().value );
+   return _mm512_hypot_pd( (*a).eval().value, (*b).eval().value );
 }
-#elif BLAZE_SVML_MODE && BLAZE_AVX_MODE
+#  elif BLAZE_AVX_MODE
 {
-   return _mm256_hypot_pd( (~a).eval().value, (~b).eval().value );
+   return _mm256_hypot_pd( (*a).eval().value, (*b).eval().value );
 }
-#elif BLAZE_SVML_MODE && BLAZE_SSE_MODE
+#  elif BLAZE_SSE_MODE
 {
-   return _mm_hypot_pd( (~a).eval().value, (~b).eval().value );
+   return _mm_hypot_pd( (*a).eval().value, (*b).eval().value );
 }
+#  endif
+#elif BLAZE_SLEEF_MODE
+#  if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
+{
+   return Sleef_hypotd8_u05avx512f( (*a).eval().value, (*b).eval().value );
+}
+#  elif BLAZE_AVX2_MODE
+{
+   return Sleef_hypotd4_u05avx2( (*a).eval().value, (*b).eval().value );
+}
+#  elif BLAZE_AVX_MODE
+{
+   return Sleef_hypotd4_u05avx( (*a).eval().value, (*b).eval().value );
+}
+#  elif BLAZE_SSE_MODE
+{
+   return Sleef_hypotd2_u05( (*a).eval().value, (*b).eval().value );
+}
+#  endif
 #else
 = delete;
 #endif

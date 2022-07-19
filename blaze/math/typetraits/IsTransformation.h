@@ -3,7 +3,7 @@
 //  \file blaze/math/typetraits/IsTransformation.h
 //  \brief Header file for the IsTransformation type trait class
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -74,7 +74,7 @@ struct IsTransformation
 
 //*************************************************************************************************
 /*!\brief Auxiliary variable template for the IsTransformation type trait.
-// \ingroup type_traits
+// \ingroup math_type_traits
 //
 // The IsTransformation_v variable template provides a convenient shortcut to access the nested
 // \a value of the IsTransformation class template. For instance, given the type \a T the

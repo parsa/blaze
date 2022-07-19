@@ -3,7 +3,7 @@
 //  \file src/blaze/Daxpy.cpp
 //  \brief Source file for the Blaze Daxpy product kernel
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -81,7 +81,7 @@ double daxpy( size_t N, size_t steps )
    {
       timer.start();
       for( size_t step=0UL; step<steps; ++step ) {
-         b += a * element_t(3);
+         b += noalias( a * element_t(3) );
       }
       timer.end();
 

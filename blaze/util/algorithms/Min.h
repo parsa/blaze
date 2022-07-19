@@ -1,9 +1,9 @@
 //=================================================================================================
 /*!
 //  \file blaze/util/algorithms/Min.h
-//  \brief Headerfile for the generic min algorithm
+//  \brief Header file for the generic min algorithm
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -40,10 +40,15 @@
 // Includes
 //*************************************************************************************************
 
-#include <blaze/system/Inline.h>
+#include <utility>
 #include <blaze/util/EnableIf.h>
+#include <blaze/util/mpl/If.h>
+#include <blaze/util/typetraits/HasLessThan.h>
 #include <blaze/util/typetraits/IsSigned.h>
 #include <blaze/util/typetraits/IsUnsigned.h>
+#include <blaze/util/typetraits/RemoveConst.h>
+#include <blaze/util/typetraits/RemoveCVRef.h>
+#include <blaze/util/typetraits/RemoveRValueReference.h>
 
 
 namespace blaze {
@@ -55,23 +60,28 @@ namespace blaze {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Minimum function for two values of builtin data type.
+/*!\brief Minimum function for two values/objects.
 // \ingroup algorithms
 //
-// \param a The first value.
-// \param b The second value.
-// \return The minimum of the two values.
+// \param a The first value/object.
+// \param b The second value/object.
+// \return The minimum of the two values/objects.
 //
-// This function returns the minimum of the two given data values. The return type of the function
-// is determined by the data types of the given arguments.
+// This function determines the minimum of the two given values by means of a less-than comparison.
+// The return type of the function is determined by the data types of the given arguments.
 */
 template< typename T1, typename T2
-        , typename = EnableIf_t< ( IsSigned_v<T1> && IsSigned_v<T2> ) ||
-                                 ( IsUnsigned_v<T1> && IsUnsigned_v<T2> ) > >
-BLAZE_ALWAYS_INLINE constexpr auto
-   min( const T1& a, const T2& b ) noexcept
+        , typename R1 = RemoveCVRef_t<T1>
+        , typename R2 = RemoveCVRef_t<T2>
+        , EnableIf_t< HasLessThan_v<R2,R1> &&
+                      !( IsSigned_v<R1> && IsUnsigned_v<R2> ) &&
+                      !( IsUnsigned_v<R1> && IsSigned_v<R2> ) >* = nullptr >
+constexpr decltype(auto) min( T1&& a, T2&& b )
 {
-   return ( a < b )?( a ):( b );
+   using Result = decltype( b < a ? std::forward<T2>( b ) : std::forward<T1>( a ) );
+   using Return = RemoveConst_t< RemoveRValueReference_t< Result > >;
+
+   return static_cast<Return>( b < a ? std::forward<T2>( b ) : std::forward<T1>( a ) );
 }
 //*************************************************************************************************
 
@@ -85,16 +95,16 @@ BLAZE_ALWAYS_INLINE constexpr auto
 // \param c The third value/object.
 // \return The minimum of the given values/objects.
 //
-// This function returns the minimum of the given data values/objects. The return type of the
-// function is determined by the data types of the given arguments.
+// This function returns the minimum of the given values/objects. The return type of the function
+// is determined by the data types of the given arguments.
 */
 template< typename T1, typename T2, typename T3 >
-BLAZE_ALWAYS_INLINE constexpr decltype(auto)
-   min( const T1& a, const T2& b, const T3& c ) noexcept
+constexpr decltype(auto) min( T1&& a, T2&& b, T3&& c )
 {
+   using std::forward;
    using blaze::min;
 
-   return min( min( a, b ), c );
+   return min( min( forward<T1>( a ), forward<T2>( b ) ), forward<T3>( c ) );
 }
 //*************************************************************************************************
 
@@ -109,16 +119,16 @@ BLAZE_ALWAYS_INLINE constexpr decltype(auto)
 // \param args The pack of additional values/objects.
 // \return The minimum of the given values/objects.
 //
-// This function returns the minimum of the given data values/objects. The return type of the
-// function is determined by the data types of the given arguments.
+// This function returns the minimum of the given values/objects. The return type of the function
+// is determined by the data types of the given arguments.
 */
 template< typename T1, typename T2, typename T3, typename... Ts >
-BLAZE_ALWAYS_INLINE constexpr decltype(auto)
-   min( const T1& a, const T2& b, const T3& c, const Ts&... args ) noexcept
+constexpr decltype(auto) min( T1&& a, T2&& b, T3&& c, Ts&&... args )
 {
+   using std::forward;
    using blaze::min;
 
-   return min( min( min( a, b ), c ), args... );
+   return min( min( min( forward<T1>( a ), forward<T2>( b ) ), forward<T3>( c ) ), forward<Ts>( args )... );
 }
 //*************************************************************************************************
 

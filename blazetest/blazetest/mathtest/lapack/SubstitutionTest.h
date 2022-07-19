@@ -3,7 +3,7 @@
 //  \file blazetest/mathtest/lapack/SubstitutionTest.h
 //  \brief Header file for the LAPACK substitution test
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -151,7 +151,7 @@ void SubstitutionTest::testGetrs()
       blaze::StaticVector<Type,3UL,blaze::columnVector> b, x;
       randomize( b );
 
-      blaze::StaticVector<int,3UL,blaze::rowVector> ipiv;
+      blaze::StaticVector<blaze::blas_int_t,3UL,blaze::rowVector> ipiv;
 
       LU = A;
       x = b;
@@ -187,7 +187,7 @@ void SubstitutionTest::testGetrs()
       blaze::StaticVector<Type,3UL,blaze::columnVector> b, x;
       randomize( b );
 
-      blaze::StaticVector<int,3UL,blaze::rowVector> ipiv;
+      blaze::StaticVector<blaze::blas_int_t,3UL,blaze::rowVector> ipiv;
 
       LU = trans( A );
       x = b;
@@ -223,7 +223,7 @@ void SubstitutionTest::testGetrs()
       blaze::StaticVector<Type,3UL,blaze::columnVector> b, x;
       randomize( b );
 
-      blaze::StaticVector<int,3UL,blaze::rowVector> ipiv;
+      blaze::StaticVector<blaze::blas_int_t,3UL,blaze::rowVector> ipiv;
 
       LU = ctrans( A );
       x = b;
@@ -259,7 +259,7 @@ void SubstitutionTest::testGetrs()
       blaze::StaticMatrix<Type,6UL,3UL,blaze::rowMajor> B, X;
       randomize( B );
 
-      blaze::StaticVector<int,3UL,blaze::rowVector> ipiv;
+      blaze::StaticVector<blaze::blas_int_t,3UL,blaze::rowVector> ipiv;
 
       LU = A;
       X = B;
@@ -295,7 +295,7 @@ void SubstitutionTest::testGetrs()
       blaze::StaticMatrix<Type,6UL,3UL,blaze::rowMajor> B, X;
       randomize( B );
 
-      blaze::StaticVector<int,3UL,blaze::rowVector> ipiv;
+      blaze::StaticVector<blaze::blas_int_t,3UL,blaze::rowVector> ipiv;
 
       LU = trans( A );
       X = B;
@@ -331,7 +331,7 @@ void SubstitutionTest::testGetrs()
       blaze::StaticMatrix<Type,6UL,3UL,blaze::rowMajor> B, X;
       randomize( B );
 
-      blaze::StaticVector<int,3UL,blaze::rowVector> ipiv;
+      blaze::StaticVector<blaze::blas_int_t,3UL,blaze::rowVector> ipiv;
 
       LU = ctrans( A );
       X = B;
@@ -372,7 +372,7 @@ void SubstitutionTest::testGetrs()
       blaze::StaticVector<Type,3UL,blaze::columnVector> b, x;
       randomize( b );
 
-      blaze::StaticVector<int,3UL,blaze::rowVector> ipiv;
+      blaze::StaticVector<blaze::blas_int_t,3UL,blaze::rowVector> ipiv;
 
       LU = A;
       x = b;
@@ -408,7 +408,7 @@ void SubstitutionTest::testGetrs()
       blaze::StaticVector<Type,3UL,blaze::columnVector> b, x;
       randomize( b );
 
-      blaze::StaticVector<int,3UL,blaze::rowVector> ipiv;
+      blaze::StaticVector<blaze::blas_int_t,3UL,blaze::rowVector> ipiv;
 
       LU = trans( A );
       x = b;
@@ -444,7 +444,7 @@ void SubstitutionTest::testGetrs()
       blaze::StaticVector<Type,3UL,blaze::columnVector> b, x;
       randomize( b );
 
-      blaze::StaticVector<int,3UL,blaze::rowVector> ipiv;
+      blaze::StaticVector<blaze::blas_int_t,3UL,blaze::rowVector> ipiv;
 
       LU = ctrans( A );
       x = b;
@@ -480,7 +480,7 @@ void SubstitutionTest::testGetrs()
       blaze::StaticMatrix<Type,3UL,6UL,blaze::columnMajor> B, X;
       randomize( B );
 
-      blaze::StaticVector<int,3UL,blaze::rowVector> ipiv;
+      blaze::StaticVector<blaze::blas_int_t,3UL,blaze::rowVector> ipiv;
 
       LU = A;
       X = B;
@@ -516,7 +516,7 @@ void SubstitutionTest::testGetrs()
       blaze::StaticMatrix<Type,3UL,6UL,blaze::columnMajor> B, X;
       randomize( B );
 
-      blaze::StaticVector<int,3UL,blaze::rowVector> ipiv;
+      blaze::StaticVector<blaze::blas_int_t,3UL,blaze::rowVector> ipiv;
 
       LU = trans( A );
       X = B;
@@ -552,7 +552,7 @@ void SubstitutionTest::testGetrs()
       blaze::StaticMatrix<Type,3UL,6UL,blaze::columnMajor> B, X;
       randomize( B );
 
-      blaze::StaticVector<int,3UL,blaze::rowVector> ipiv;
+      blaze::StaticVector<blaze::blas_int_t,3UL,blaze::rowVector> ipiv;
 
       LU = ctrans( A );
       X = B;
@@ -612,7 +612,7 @@ void SubstitutionTest::testSytrs()
       blaze::StaticVector<Type,3UL,blaze::columnVector> b, x;
       randomize( b );
 
-      blaze::StaticVector<int,3UL,blaze::rowVector> ipiv;
+      blaze::StaticVector<blaze::blas_int_t,3UL,blaze::rowVector> ipiv;
 
       LU = A;
       x = b;
@@ -649,7 +649,7 @@ void SubstitutionTest::testSytrs()
       blaze::StaticVector<Type,3UL,blaze::columnVector> b, x;
       randomize( b );
 
-      blaze::StaticVector<int,3UL,blaze::rowVector> ipiv;
+      blaze::StaticVector<blaze::blas_int_t,3UL,blaze::rowVector> ipiv;
 
       LU = A;
       x = b;
@@ -686,7 +686,7 @@ void SubstitutionTest::testSytrs()
       blaze::StaticMatrix<Type,6UL,3UL,blaze::rowMajor> B, X;
       randomize( B );
 
-      blaze::StaticVector<int,3UL,blaze::rowVector> ipiv;
+      blaze::StaticVector<blaze::blas_int_t,3UL,blaze::rowVector> ipiv;
 
       LU = A;
       X = B;
@@ -723,7 +723,7 @@ void SubstitutionTest::testSytrs()
       blaze::StaticMatrix<Type,6UL,3UL,blaze::rowMajor> B, X;
       randomize( B );
 
-      blaze::StaticVector<int,3UL,blaze::rowVector> ipiv;
+      blaze::StaticVector<blaze::blas_int_t,3UL,blaze::rowVector> ipiv;
 
       LU = A;
       X = B;
@@ -765,7 +765,7 @@ void SubstitutionTest::testSytrs()
       blaze::StaticVector<Type,3UL,blaze::columnVector> b, x;
       randomize( b );
 
-      blaze::StaticVector<int,3UL,blaze::rowVector> ipiv;
+      blaze::StaticVector<blaze::blas_int_t,3UL,blaze::rowVector> ipiv;
 
       LU = A;
       x = b;
@@ -802,7 +802,7 @@ void SubstitutionTest::testSytrs()
       blaze::StaticVector<Type,3UL,blaze::columnVector> b, x;
       randomize( b );
 
-      blaze::StaticVector<int,3UL,blaze::rowVector> ipiv;
+      blaze::StaticVector<blaze::blas_int_t,3UL,blaze::rowVector> ipiv;
 
       LU = A;
       x = b;
@@ -839,7 +839,7 @@ void SubstitutionTest::testSytrs()
       blaze::StaticMatrix<Type,3UL,6UL,blaze::columnMajor> B, X;
       randomize( B );
 
-      blaze::StaticVector<int,3UL,blaze::rowVector> ipiv;
+      blaze::StaticVector<blaze::blas_int_t,3UL,blaze::rowVector> ipiv;
 
       LU = A;
       X = B;
@@ -876,7 +876,7 @@ void SubstitutionTest::testSytrs()
       blaze::StaticMatrix<Type,3UL,6UL,blaze::columnMajor> B, X;
       randomize( B );
 
-      blaze::StaticVector<int,3UL,blaze::rowVector> ipiv;
+      blaze::StaticVector<blaze::blas_int_t,3UL,blaze::rowVector> ipiv;
 
       LU = A;
       X = B;
@@ -936,7 +936,7 @@ void SubstitutionTest::testHetrs()
       blaze::StaticVector<Type,3UL,blaze::columnVector> b, x;
       randomize( b );
 
-      blaze::StaticVector<int,3UL,blaze::rowVector> ipiv;
+      blaze::StaticVector<blaze::blas_int_t,3UL,blaze::rowVector> ipiv;
 
       LU = A;
       x = b;
@@ -973,7 +973,7 @@ void SubstitutionTest::testHetrs()
       blaze::StaticVector<Type,3UL,blaze::columnVector> b, x;
       randomize( b );
 
-      blaze::StaticVector<int,3UL,blaze::rowVector> ipiv;
+      blaze::StaticVector<blaze::blas_int_t,3UL,blaze::rowVector> ipiv;
 
       LU = A;
       x = b;
@@ -1010,7 +1010,7 @@ void SubstitutionTest::testHetrs()
       blaze::StaticMatrix<Type,6UL,3UL,blaze::rowMajor> B, X;
       randomize( B );
 
-      blaze::StaticVector<int,3UL,blaze::rowVector> ipiv;
+      blaze::StaticVector<blaze::blas_int_t,3UL,blaze::rowVector> ipiv;
 
       LU = A;
       X = B;
@@ -1047,7 +1047,7 @@ void SubstitutionTest::testHetrs()
       blaze::StaticMatrix<Type,6UL,3UL,blaze::rowMajor> B, X;
       randomize( B );
 
-      blaze::StaticVector<int,3UL,blaze::rowVector> ipiv;
+      blaze::StaticVector<blaze::blas_int_t,3UL,blaze::rowVector> ipiv;
 
       LU = A;
       X = B;
@@ -1089,7 +1089,7 @@ void SubstitutionTest::testHetrs()
       blaze::StaticVector<Type,3UL,blaze::columnVector> b, x;
       randomize( b );
 
-      blaze::StaticVector<int,3UL,blaze::rowVector> ipiv;
+      blaze::StaticVector<blaze::blas_int_t,3UL,blaze::rowVector> ipiv;
 
       LU = A;
       x = b;
@@ -1126,7 +1126,7 @@ void SubstitutionTest::testHetrs()
       blaze::StaticVector<Type,3UL,blaze::columnVector> b, x;
       randomize( b );
 
-      blaze::StaticVector<int,3UL,blaze::rowVector> ipiv;
+      blaze::StaticVector<blaze::blas_int_t,3UL,blaze::rowVector> ipiv;
 
       LU = A;
       x = b;
@@ -1163,7 +1163,7 @@ void SubstitutionTest::testHetrs()
       blaze::StaticMatrix<Type,3UL,6UL,blaze::columnMajor> B, X;
       randomize( B );
 
-      blaze::StaticVector<int,3UL,blaze::rowVector> ipiv;
+      blaze::StaticVector<blaze::blas_int_t,3UL,blaze::rowVector> ipiv;
 
       LU = A;
       X = B;
@@ -1200,7 +1200,7 @@ void SubstitutionTest::testHetrs()
       blaze::StaticMatrix<Type,3UL,6UL,blaze::columnMajor> B, X;
       randomize( B );
 
-      blaze::StaticVector<int,3UL,blaze::rowVector> ipiv;
+      blaze::StaticVector<blaze::blas_int_t,3UL,blaze::rowVector> ipiv;
 
       LU = A;
       X = B;

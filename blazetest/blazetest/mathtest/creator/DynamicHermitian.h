@@ -3,7 +3,7 @@
 //  \file blazetest/mathtest/creator/DynamicHermitian.h
 //  \brief Specialization of the Creator class template for HermitianMatrix<DynamicMatrix>
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -90,10 +90,10 @@ class Creator< blaze::HermitianMatrix< blaze::DynamicMatrix<T,SO> > >
    //@{
    // No explicitly declared copy assignment operator.
 
-   const blaze::HermitianMatrix< blaze::DynamicMatrix<T,SO> > operator()() const;
+   blaze::HermitianMatrix< blaze::DynamicMatrix<T,SO> > operator()() const;
 
    template< typename CP >
-   const blaze::HermitianMatrix< blaze::DynamicMatrix<T,SO> > operator()( const CP& policy ) const;
+   blaze::HermitianMatrix< blaze::DynamicMatrix<T,SO> > operator()( const CP& policy ) const;
    //@}
    //**********************************************************************************************
 
@@ -161,7 +161,7 @@ inline Creator< blaze::HermitianMatrix< blaze::DynamicMatrix<T,SO> > >::Creator(
 */
 template< typename T  // Element type of the dynamic matrix
         , bool SO >   // Storage order of the dynamic matrix
-inline const blaze::HermitianMatrix< blaze::DynamicMatrix<T,SO> >
+inline blaze::HermitianMatrix< blaze::DynamicMatrix<T,SO> >
    Creator< blaze::HermitianMatrix< blaze::DynamicMatrix<T,SO> > >::operator()() const
 {
    return (*this)( Default() );
@@ -178,7 +178,7 @@ inline const blaze::HermitianMatrix< blaze::DynamicMatrix<T,SO> >
 template< typename T     // Element type of the dynamic matrix
         , bool SO >      // Storage order of the dynamic matrix
 template< typename CP >  // Creation policy
-inline const blaze::HermitianMatrix< blaze::DynamicMatrix<T,SO> >
+inline blaze::HermitianMatrix< blaze::DynamicMatrix<T,SO> >
    Creator< blaze::HermitianMatrix< blaze::DynamicMatrix<T,SO> > >::operator()( const CP& policy ) const
 {
    using blaze::real;

@@ -3,7 +3,7 @@
 //  \file blaze/math/lapack/potrs.h
 //  \brief Header file for the LAPACK positive definite backward substitution functions (potrs)
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -69,10 +69,10 @@ namespace blaze {
 /*!\name LAPACK LLH-based substitution functions (potrs) */
 //@{
 template< typename MT, bool SO, typename VT, bool TF >
-inline void potrs( const DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& b, char uplo );
+void potrs( const DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& b, char uplo );
 
 template< typename MT1, bool SO1, typename MT2, bool SO2 >
-inline void potrs( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B, char uplo );
+void potrs( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B, char uplo );
 //@}
 //*************************************************************************************************
 
@@ -176,11 +176,11 @@ inline void potrs( const DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& b, char uplo
    BLAZE_CONSTRAINT_MUST_BE_CONTIGUOUS_TYPE( VT );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT>, ElementType_t<VT> );
 
-   if( !isSquare( ~A ) ) {
+   if( !isSquare( *A ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid non-square matrix provided" );
    }
 
-   if( (~b).size() != (~A).rows() ) {
+   if( (*b).size() != (*A).rows() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid right-hand side vector provided" );
    }
 
@@ -188,11 +188,11 @@ inline void potrs( const DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& b, char uplo
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid uplo argument provided" );
    }
 
-   int n   ( numeric_cast<int>( (~A).rows() ) );
-   int nrhs( 1 );
-   int lda ( numeric_cast<int>( (~A).spacing() ) );
-   int ldb ( numeric_cast<int>( (~b).size() ) );
-   int info( 0 );
+   blas_int_t n   ( numeric_cast<blas_int_t>( (*A).rows() ) );
+   blas_int_t nrhs( 1 );
+   blas_int_t lda ( numeric_cast<blas_int_t>( (*A).spacing() ) );
+   blas_int_t ldb ( numeric_cast<blas_int_t>( (*b).size() ) );
+   blas_int_t info( 0 );
 
    if( n == 0 ) {
       return;
@@ -202,7 +202,7 @@ inline void potrs( const DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& b, char uplo
       ( uplo == 'L' )?( uplo = 'U' ):( uplo = 'L' );
    }
 
-   potrs( uplo, n, nrhs, (~A).data(), lda, (~b).data(), ldb, &info );
+   potrs( uplo, n, nrhs, (*A).data(), lda, (*b).data(), ldb, &info );
 
    BLAZE_INTERNAL_ASSERT( info == 0, "Invalid function argument" );
 }
@@ -309,7 +309,7 @@ inline void potrs( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B, char 
    BLAZE_CONSTRAINT_MUST_BE_CONTIGUOUS_TYPE( MT2 );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT1>, ElementType_t<MT2> );
 
-   if( !isSquare( ~A ) ) {
+   if( !isSquare( *A ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid non-square matrix provided" );
    }
 
@@ -317,12 +317,12 @@ inline void potrs( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B, char 
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid uplo argument provided" );
    }
 
-   int n   ( numeric_cast<int>( (~A).rows() ) );
-   int mrhs( numeric_cast<int>( SO2 ? (~B).rows() : (~B).columns() ) );
-   int nrhs( numeric_cast<int>( SO2 ? (~B).columns() : (~B).rows() ) );
-   int lda ( numeric_cast<int>( (~A).spacing() ) );
-   int ldb ( numeric_cast<int>( (~B).spacing() ) );
-   int info( 0 );
+   blas_int_t n   ( numeric_cast<blas_int_t>( (*A).rows() ) );
+   blas_int_t mrhs( numeric_cast<blas_int_t>( SO2 ? (*B).rows() : (*B).columns() ) );
+   blas_int_t nrhs( numeric_cast<blas_int_t>( SO2 ? (*B).columns() : (*B).rows() ) );
+   blas_int_t lda ( numeric_cast<blas_int_t>( (*A).spacing() ) );
+   blas_int_t ldb ( numeric_cast<blas_int_t>( (*B).spacing() ) );
+   blas_int_t info( 0 );
 
    if( n != mrhs ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid right-hand side matrix provided" );
@@ -336,7 +336,7 @@ inline void potrs( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B, char 
       ( uplo == 'L' )?( uplo = 'U' ):( uplo = 'L' );
    }
 
-   potrs( uplo, n, nrhs, (~A).data(), lda, (~B).data(), ldb, &info );
+   potrs( uplo, n, nrhs, (*A).data(), lda, (*B).data(), ldb, &info );
 
    BLAZE_INTERNAL_ASSERT( info == 0, "Invalid function argument" );
 }

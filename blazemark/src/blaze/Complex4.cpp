@@ -3,7 +3,7 @@
 //  \file src/blaze/Complex4.cpp
 //  \brief Source file for the Blaze kernel for the complex expression b += s * A * a
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -88,7 +88,7 @@ double complex4( size_t N, size_t steps )
    {
       timer.start();
       for( size_t step=0UL; step<steps; ++step ) {
-         b += element_t(3) * A * a;
+         b += noalias( element_t(3) * A * a );
       }
       timer.end();
 

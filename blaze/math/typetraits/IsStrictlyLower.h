@@ -3,7 +3,7 @@
 //  \file blaze/math/typetraits/IsStrictlyLower.h
 //  \brief Header file for the IsStrictlyLower type trait
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -40,8 +40,10 @@
 // Includes
 //*************************************************************************************************
 
-#include <blaze/util/FalseType.h>
-#include <blaze/util/TrueType.h>
+#include <blaze/math/typetraits/IsExpression.h>
+#include <blaze/util/EnableIf.h>
+#include <blaze/util/IntegralConstant.h>
+#include <blaze/util/typetraits/IsSame.h>
 
 
 namespace blaze {
@@ -51,6 +53,32 @@ namespace blaze {
 //  CLASS DEFINITION
 //
 //=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename T > struct IsStrictlyLower;
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Auxiliary helper struct for the IsStrictlyLower type trait.
+// \ingroup math_traits
+*/
+template< typename T
+        , typename = void >
+struct IsStrictlyLowerHelper
+   : public FalseType
+{};
+
+template< typename T >  // Type of the operand
+struct IsStrictlyLowerHelper< T, EnableIf_t< IsExpression_v<T> && !IsSame_v<T,typename T::ResultType> > >
+   : public IsStrictlyLower< typename T::ResultType >::Type
+{};
+/*! \endcond */
+//*************************************************************************************************
+
 
 //*************************************************************************************************
 /*!\brief Compile time check for strictly lower triangular matrices.
@@ -84,7 +112,7 @@ namespace blaze {
 */
 template< typename T >
 struct IsStrictlyLower
-   : public FalseType
+   : public IsStrictlyLowerHelper<T>
 {};
 //*************************************************************************************************
 
@@ -130,7 +158,7 @@ struct IsStrictlyLower< const volatile T >
 
 //*************************************************************************************************
 /*!\brief Auxiliary variable template for the IsStrictlyLower type trait.
-// \ingroup type_traits
+// \ingroup math_type_traits
 //
 // The IsStrictlyLower_v variable template provides a convenient shortcut to access the nested
 // \a value of the IsStrictlyLower class template. For instance, given the type \a T the

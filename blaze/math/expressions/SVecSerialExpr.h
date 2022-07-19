@@ -3,7 +3,7 @@
 //  \file blaze/math/expressions/SVecSerialExpr.h
 //  \brief Header file for the sparse vector serial evaluation expression
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -48,8 +48,8 @@
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/expressions/VecSerialExpr.h>
 #include <blaze/math/expressions/SparseVector.h>
-#include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsExpression.h>
+#include <blaze/system/MacroDisable.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/FunctionTrace.h>
 #include <blaze/util/mpl/If.h>
@@ -79,11 +79,16 @@ class SVecSerialExpr
 {
  public:
    //**Type definitions****************************************************************************
-   using This          = SVecSerialExpr<VT,TF>;  //!< Type of this SVecSerialExpr instance.
-   using ResultType    = ResultType_t<VT>;       //!< Result type for expression template evaluations.
-   using TransposeType = TransposeType_t<VT>;    //!< Transpose type for expression template evaluations.
-   using ElementType   = ElementType_t<VT>;      //!< Resulting element type.
-   using ReturnType    = ReturnType_t<VT>;       //!< Return type for expression template evaluations.
+   //! Type of this SVecSerialExpr instance.
+   using This = SVecSerialExpr<VT,TF>;
+
+   //! Base type of this SVecSerialExpr instance.
+   using BaseType = VecSerialExpr< SparseVector<This,TF> >;
+
+   using ResultType    = ResultType_t<VT>;     //!< Result type for expression template evaluations.
+   using TransposeType = TransposeType_t<VT>;  //!< Transpose type for expression template evaluations.
+   using ElementType   = ElementType_t<VT>;    //!< Resulting element type.
+   using ReturnType    = ReturnType_t<VT>;     //!< Return type for expression template evaluations.
 
    //! Data type for composite expression templates.
    using CompositeType = const ResultType;
@@ -230,9 +235,9 @@ class SVecSerialExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      assign( ~lhs, rhs.sv_ );
+      assign( *lhs, rhs.sv_ );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -254,9 +259,9 @@ class SVecSerialExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      assign( ~lhs, rhs.sv_ );
+      assign( *lhs, rhs.sv_ );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -278,9 +283,9 @@ class SVecSerialExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      addAssign( ~lhs, rhs.sv_ );
+      addAssign( *lhs, rhs.sv_ );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -302,9 +307,9 @@ class SVecSerialExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      addAssign( ~lhs, rhs.sv_ );
+      addAssign( *lhs, rhs.sv_ );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -327,9 +332,9 @@ class SVecSerialExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      subAssign( ~lhs, rhs.sv_ );
+      subAssign( *lhs, rhs.sv_ );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -352,9 +357,9 @@ class SVecSerialExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      subAssign( ~lhs, rhs.sv_ );
+      subAssign( *lhs, rhs.sv_ );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -377,9 +382,9 @@ class SVecSerialExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      multAssign( ~lhs, rhs.sv_ );
+      multAssign( *lhs, rhs.sv_ );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -402,9 +407,9 @@ class SVecSerialExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      multAssign( ~lhs, rhs.sv_ );
+      multAssign( *lhs, rhs.sv_ );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -426,9 +431,9 @@ class SVecSerialExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      assign( ~lhs, rhs.sv_ );
+      assign( *lhs, rhs.sv_ );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -450,9 +455,9 @@ class SVecSerialExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      assign( ~lhs, rhs.sv_ );
+      assign( *lhs, rhs.sv_ );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -475,9 +480,9 @@ class SVecSerialExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      addAssign( ~lhs, rhs.sv_ );
+      addAssign( *lhs, rhs.sv_ );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -500,9 +505,9 @@ class SVecSerialExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      addAssign( ~lhs, rhs.sv_ );
+      addAssign( *lhs, rhs.sv_ );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -525,9 +530,9 @@ class SVecSerialExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      subAssign( ~lhs, rhs.sv_ );
+      subAssign( *lhs, rhs.sv_ );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -550,9 +555,9 @@ class SVecSerialExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      subAssign( ~lhs, rhs.sv_ );
+      subAssign( *lhs, rhs.sv_ );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -575,9 +580,9 @@ class SVecSerialExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      multAssign( ~lhs, rhs.sv_ );
+      multAssign( *lhs, rhs.sv_ );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -600,9 +605,9 @@ class SVecSerialExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      multAssign( ~lhs, rhs.sv_ );
+      multAssign( *lhs, rhs.sv_ );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -649,37 +654,8 @@ inline decltype(auto) serial( const SparseVector<VT,TF>& sv )
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = const SVecSerialExpr<VT,TF>;
-   return ReturnType( ~sv );
+   return ReturnType( *sv );
 }
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  GLOBAL RESTRUCTURING FUNCTIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Evaluation of the given sparse vector serial evaluation expression \a sv.
-// \ingroup sparse_vector
-//
-// \param sv The input serial evaluation expression.
-// \return The evaluated sparse vector.
-//
-// This function implements a performance optimized treatment of the serial evaluation of a sparse
-// vector serial evaluation expression.
-*/
-template< typename VT  // Type of the sparse vector
-        , bool TF >    // Transpose flag
-inline decltype(auto) serial( const SVecSerialExpr<VT,TF>& sv )
-{
-   return sv;
-}
-/*! \endcond */
 //*************************************************************************************************
 
 } // namespace blaze

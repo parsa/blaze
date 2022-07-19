@@ -3,7 +3,7 @@
 //  \file blaze/math/simd/Reduce.h
 //  \brief Header file for the generic SIMD reduction functionality
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -70,7 +70,7 @@ inline decltype(auto) reduce( const SIMDPack<T>& a, OP op )
    using ValueType = typename T::ValueType;
 
    alignas( AlignmentOf_v<ValueType> ) ValueType array[T::size];
-   storea( array, ~a );
+   storea( array, *a );
 
    ValueType redux( array[0UL] );
    for( size_t k=1UL; k<T::size; ++k ) {
@@ -93,7 +93,7 @@ inline decltype(auto) reduce( const SIMDPack<T>& a, OP op )
 template< typename T >
 inline decltype(auto) reduce( const SIMDPack<T>& a, const Add& /*op*/ )
 {
-   return sum( ~a );
+   return sum( *a );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -110,7 +110,7 @@ inline decltype(auto) reduce( const SIMDPack<T>& a, const Add& /*op*/ )
 template< typename T >
 inline decltype(auto) reduce( const SIMDPack<T>& a, const Mult& /*op*/ )
 {
-   return prod( ~a );
+   return prod( *a );
 }
 /*! \endcond */
 //*************************************************************************************************

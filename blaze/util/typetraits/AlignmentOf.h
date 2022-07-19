@@ -3,7 +3,7 @@
 //  \file blaze/util/typetraits/AlignmentOf.h
 //  \brief Header file for the AlignmentOf type trait
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -43,6 +43,7 @@
 #include <type_traits>
 #include <blaze/system/Vectorization.h>
 #include <blaze/util/Complex.h>
+#include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsVectorizable.h>
 
 
@@ -141,50 +142,15 @@ struct AlignmentOfHelper<double>
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Specialization of \c AlignmentOfHelper for 'complex<float>'.
+/*!\brief Specialization of \c AlignmentOfHelper for 'complex<T>'.
 // \ingroup type_traits
 */
-template<>
-struct AlignmentOfHelper< complex<float> >
+template< typename T >
+struct AlignmentOfHelper< complex<T> >
 {
  public:
    //**********************************************************************************************
-   static constexpr size_t value =
-#if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
-      64UL;
-#elif BLAZE_AVX_MODE
-      32UL;
-#elif BLAZE_SSE_MODE
-      16UL;
-#else
-      std::alignment_of< complex<float> >::value;
-#endif
-   //**********************************************************************************************
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Specialization of \c AlignmentOfHelper for 'complex<double>'.
-// \ingroup type_traits
-*/
-template<>
-struct AlignmentOfHelper< complex<double> >
-{
- public:
-   //**********************************************************************************************
-   static constexpr size_t value =
-#if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
-      64UL;
-#elif BLAZE_AVX_MODE
-      32UL;
-#elif BLAZE_SSE2_MODE
-      16UL;
-#else
-      std::alignment_of< complex<double> >::value;
-#endif
+   static constexpr size_t value = AlignmentOfHelper<T>::value;
    //**********************************************************************************************
 };
 /*! \endcond */

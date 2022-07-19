@@ -62,8 +62,8 @@ The tool automatically downloads the latest Blaze release and copies the header 
 common include directory.
 
 
-Installation on Linux/macOS
----------------------------
+Manual Installation on Linux/macOS
+----------------------------------
 
 Since Blaze only consists of header files, the './blaze' subdirectory can be simply copied to a
 standard include directory (note that this requires root privileges):
@@ -85,8 +85,8 @@ The following example demonstrates this by means of the GNU C++ compiler:
 g++ -I/usr/home/jon/blaze -o BlazeTest BlazeTest.cpp
 
 
-Installation on Windows
------------------------
+Manual Installation on Windows
+------------------------------
 
 Windows doesn't have a standard include directory. Therefore the Blaze header files can be copied
 to any other directory or simply left in the default Blaze directory. However, the chosen include
@@ -98,32 +98,42 @@ include directories can be specified.
 Step 2: Configuration
 *********************
 
-// The second step is the configuration and customization of the \b Blaze library. Many aspects
-// of \b Blaze can be adapted to specific requirements, environments and architectures. The most
-// convenient way to configure \b Blaze is by means of CMake. Alternatively, the header files
-// in the <tt>./blaze/config/</tt> subdirectory can be customized manually. Since the default
-// settings are reasonable for most systems this step can also be skipped. However, in order to
-// achieve maximum performance a customization of at least the following configuration files is
-// required:
-
 The second step is the configuration and customization of the Blaze library. Many aspects of Blaze
 can be adapted to specific requirements, environments and architectures. The most convenient way
-to configure Blaze is by means of CMake (https://cmake.org). Alternatively, the header files in
-the <tt>./blaze/config/</tt> subdirectory can be customized manually. Since the default settings
-are reasonable for most systems this step can also be skipped. However, in order to achieve
-maximum performance a customization of at least the following configuration files is required:
+to configure Blaze is to modify the headers in the './blaze/config/' subdirectory by means of
+CMake (https://cmake.org). Alternatively these header files can be customized manually. In both
+cases, however, the files are modified. If this is not an option it is possible to configure Blaze
+via the command line (see https://bitbucket.org/blaze-lib/blaze/wiki/Configuration%20Files or
+or the documentation in the configuration files).
 
- - './blaze/config/BLAS.h': Via this configuration file Blaze can be enabled to use a third-party
+Since the default settings are reasonable for most systems this step can also be skipped. However,
+in order to achieve maximum performance a customization of at least the following configuration
+files is required:
+
+ - <blaze/config/BLAS.h>: Via this configuration file Blaze can be enabled to use a third-party
    BLAS library for several basic linear algebra functions (such as for instance dense matrix
    multiplications). In case no BLAS library is used, all linear algebra functions use the default
-   implementations of the \b Blaze library and therefore BLAS is not a requirement for the
-   compilation process. However, please note that performance may be limited.
- - './blaze/config/CacheSize.h': This file contains the hardware specific cache settings. Blaze
-   uses this information to optimize its cache usage. For maximum performance it is recommended
-   to adapt these setting to a specific target architecture.
- - './blaze/config/Thresholds.h': This file contains all thresholds for the customization of the
+   implementations of the Blaze library and therefore BLAS is not a requirement for the compilation
+   process. However, please note that performance may be limited.
+ - <blaze/config/CacheSize.h>: This file contains the hardware specific cache settings. Blaze
+   uses this information to optimize its cache usage. For maximum performance it is recommended to
+   adapt these setting to a specific target architecture.
+ - <blaze/config/Thresholds.h>: This file contains all thresholds for the customization of the
    Blaze compute kernels. In order to tune the kernels for a specific architecture and to maximize
    performance it can be necessary to adjust the thresholds, especially for a parallel execution.
 
 For an overview of other customization options and more details, please see the Blaze wiki at
 https://bitbucket.org/blaze-lib/blaze/wiki/Home.
+
+
+Blaze Version
+*************
+
+The current major and minor version number of the Blaze library can be found in the
+<blaze/system/Version.h> header file. It is automatically included via the <blaze/Blaze.h> header
+file. The file contains the two following macros, which can for instance be used for conditional
+compilation:
+
+#define BLAZE_MAJOR_VERSION 3
+#define BLAZE_MINOR_VERSION 5
+#define BLAZE_PATCH_VERSION 0

@@ -3,7 +3,7 @@
 //  \file blaze/math/Shims.h
 //  \brief Header file for the mathematical shims
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -43,6 +43,8 @@
 #include <blaze/math/shims/Abs.h>
 #include <blaze/math/shims/Acos.h>
 #include <blaze/math/shims/Acosh.h>
+#include <blaze/math/shims/Add.h>
+#include <blaze/math/shims/Arg.h>
 #include <blaze/math/shims/Asin.h>
 #include <blaze/math/shims/Asinh.h>
 #include <blaze/math/shims/Atan.h>
@@ -56,6 +58,7 @@
 #include <blaze/math/shims/Cos.h>
 #include <blaze/math/shims/Cosh.h>
 #include <blaze/math/shims/Digits.h>
+#include <blaze/math/shims/Div.h>
 #include <blaze/math/shims/Equal.h>
 #include <blaze/math/shims/Erf.h>
 #include <blaze/math/shims/Erfc.h>
@@ -65,6 +68,7 @@
 #include <blaze/math/shims/Exp2.h>
 #include <blaze/math/shims/Exp10.h>
 #include <blaze/math/shims/Floor.h>
+#include <blaze/math/shims/Frexp.h>
 #include <blaze/math/shims/Greater.h>
 #include <blaze/math/shims/Hypot.h>
 #include <blaze/math/shims/Imaginary.h>
@@ -73,19 +77,25 @@
 #include <blaze/math/shims/InvSqrt.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/shims/IsDivisor.h>
+#include <blaze/math/shims/IsFinite.h>
+#include <blaze/math/shims/IsInf.h>
 #include <blaze/math/shims/IsNaN.h>
 #include <blaze/math/shims/IsOne.h>
 #include <blaze/math/shims/IsReal.h>
 #include <blaze/math/shims/IsZero.h>
 #include <blaze/math/shims/Less.h>
+#include <blaze/math/shims/LGamma.h>
 #include <blaze/math/shims/Log.h>
+#include <blaze/math/shims/Log1p.h>
 #include <blaze/math/shims/Log2.h>
 #include <blaze/math/shims/Log10.h>
+#include <blaze/math/shims/Mult.h>
 #include <blaze/math/shims/NextMultiple.h>
 #include <blaze/math/shims/Pow.h>
 #include <blaze/math/shims/Pow2.h>
 #include <blaze/math/shims/Pow3.h>
 #include <blaze/math/shims/Pow4.h>
+#include <blaze/math/shims/PrevMultiple.h>
 #include <blaze/math/shims/Qdrt.h>
 #include <blaze/math/shims/Real.h>
 #include <blaze/math/shims/Reset.h>
@@ -95,6 +105,7 @@
 #include <blaze/math/shims/Sin.h>
 #include <blaze/math/shims/Sinh.h>
 #include <blaze/math/shims/Sqrt.h>
+#include <blaze/math/shims/Sub.h>
 #include <blaze/math/shims/Tan.h>
 #include <blaze/math/shims/Tanh.h>
 #include <blaze/math/shims/Trunc.h>

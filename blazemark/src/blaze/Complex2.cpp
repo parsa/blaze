@@ -3,7 +3,7 @@
 //  \file src/blaze/Complex2.cpp
 //  \brief Source file for the Blaze kernel for the complex expression d = A * ( a + b + c )
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -84,13 +84,13 @@ double complex2( size_t N, size_t steps )
    init( b );
    init( c );
 
-   d = A * ( a + b + c );
+   d = noalias( A * ( a + b + c ) );
 
    for( size_t rep=0UL; rep<reps; ++rep )
    {
       timer.start();
       for( size_t step=0UL; step<steps; ++step ) {
-         d = A * ( a + b + c );
+         d = noalias( A * ( a + b + c ) );
       }
       timer.end();
 

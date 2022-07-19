@@ -3,7 +3,7 @@
 //  \file blaze/math/typetraits/IsAdaptor.h
 //  \brief Header file for the IsAdaptor type trait
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -40,8 +40,7 @@
 // Includes
 //*************************************************************************************************
 
-#include <blaze/util/FalseType.h>
-#include <blaze/util/TrueType.h>
+#include <blaze/util/IntegralConstant.h>
 
 
 namespace blaze {
@@ -76,12 +75,12 @@ namespace blaze {
    using UpperDynamicType        = blaze::UpperMatrix<DynamicMatrixType>;
    using SymmetricCompressedType = blaze::SymmetricMatrix<CompressedMatrixType>;
 
-   blaze::IsLower< LowerStaticType >::value            // Evaluates to 1
-   blaze::IsLower< const UpperDynamicType >::Type      // Results in TrueType
-   blaze::IsLower< volatile SymmetricCompressedType >  // Is derived from TrueType
-   blaze::IsLower< StaticMatrixType >::value           // Evaluates to 0
-   blaze::IsLower< const DynamicMatrixType >::Type     // Results in FalseType
-   blaze::IsLower< volatile CompressedMatrixType >     // Is derived from FalseType
+   blaze::IsAdaptor< LowerStaticType >::value            // Evaluates to 1
+   blaze::IsAdaptor< const UpperDynamicType >::Type      // Results in TrueType
+   blaze::IsAdaptor< volatile SymmetricCompressedType >  // Is derived from TrueType
+   blaze::IsAdaptor< StaticMatrixType >::value           // Evaluates to 0
+   blaze::IsAdaptor< const DynamicMatrixType >::Type     // Results in FalseType
+   blaze::IsAdaptor< volatile CompressedMatrixType >     // Is derived from FalseType
    \endcode
 */
 template< typename T >
@@ -132,7 +131,7 @@ struct IsAdaptor< const volatile T >
 
 //*************************************************************************************************
 /*!\brief Auxiliary variable template for the IsAdaptor type trait.
-// \ingroup type_traits
+// \ingroup math_type_traits
 //
 // The IsAdaptor_v variable template provides a convenient shortcut to access the nested
 // \a value of the IsAdaptor class template. For instance, given the type \a T the following

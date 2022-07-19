@@ -3,7 +3,7 @@
 //  \file blaze/math/typetraits/IsRowMajorMatrix.h
 //  \brief Header file for the IsRowMajorMatrix type trait
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -41,10 +41,9 @@
 //*************************************************************************************************
 
 #include <utility>
-#include <blaze/math/expressions/Matrix.h>
+#include <blaze/math/expressions/Forward.h>
 #include <blaze/math/StorageOrder.h>
-#include <blaze/util/FalseType.h>
-#include <blaze/util/TrueType.h>
+#include <blaze/util/IntegralConstant.h>
 
 
 namespace blaze {
@@ -57,28 +56,13 @@ namespace blaze {
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Auxiliary helper struct for the IsRowMajorMatrix type trait.
+/*!\brief Auxiliary helper functions for the IsRowMajorMatrix type trait.
 // \ingroup math_type_traits
 */
-template< typename T >
-struct IsRowMajorMatrixHelper
-{
- private:
-   //**********************************************************************************************
-   template< typename MT >
-   static TrueType test( const Matrix<MT,rowMajor>& );
+template< typename MT >
+TrueType isRowMajorMatrix_backend( const volatile Matrix<MT,rowMajor>* );
 
-   template< typename MT >
-   static TrueType test( const volatile Matrix<MT,rowMajor>& );
-
-   static FalseType test( ... );
-   //**********************************************************************************************
-
- public:
-   //**********************************************************************************************
-   using Type = decltype( test( std::declval<T&>() ) );
-   //**********************************************************************************************
-};
+FalseType isRowMajorMatrix_backend( ... );
 /*! \endcond */
 //*************************************************************************************************
 
@@ -110,14 +94,27 @@ struct IsRowMajorMatrixHelper
 */
 template< typename T >
 struct IsRowMajorMatrix
-   : public IsRowMajorMatrixHelper<T>::Type
+   : public decltype( isRowMajorMatrix_backend( std::declval<T*>() ) )
 {};
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Specialization of the IsRowMajorMatrix type trait for references.
+// \ingroup math_type_traits
+*/
+template< typename T >
+struct IsRowMajorMatrix<T&>
+   : public FalseType
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Auxiliary variable template for the IsRowMajorMatrix type trait.
-// \ingroup type_traits
+// \ingroup math_type_traits
 //
 // The IsRowMajorMatrix_v variable template provides a convenient shortcut to access the nested
 // \a value of the IsRowMajorMatrix class template. For instance, given the type \a T the

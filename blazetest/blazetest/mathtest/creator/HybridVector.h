@@ -3,7 +3,7 @@
 //  \file blazetest/mathtest/creator/HybridVector.h
 //  \brief Specialization of the Creator class template for HybridVector
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -87,10 +87,10 @@ class Creator< blaze::HybridVector<T,N,TF> >
    //@{
    // No explicitly declared copy assignment operator.
 
-   const blaze::HybridVector<T,N,TF> operator()() const;
+   blaze::HybridVector<T,N,TF> operator()() const;
 
    template< typename CP >
-   const blaze::HybridVector<T,N,TF> operator()( const CP& policy ) const;
+   blaze::HybridVector<T,N,TF> operator()( const CP& policy ) const;
    //@}
    //**********************************************************************************************
 
@@ -161,7 +161,7 @@ inline Creator< blaze::HybridVector<T,N,TF> >::Creator( size_t size, const Creat
 template< typename T  // Element type of the hybrid vector
         , size_t N    // Number of elements of the hybrid vector
         , bool TF >   // Transpose flag of the hybrid vector
-inline const blaze::HybridVector<T,N,TF> Creator< blaze::HybridVector<T,N,TF> >::operator()() const
+inline blaze::HybridVector<T,N,TF> Creator< blaze::HybridVector<T,N,TF> >::operator()() const
 {
    return (*this)( Default() );
 }
@@ -178,7 +178,7 @@ template< typename T     // Element type of the hybrid vector
         , size_t N       // Number of elements of the hybrid vector
         , bool TF >      // Transpose flag of the hybrid vector
 template< typename CP >  // Creation policy
-inline const blaze::HybridVector<T,N,TF>
+inline blaze::HybridVector<T,N,TF>
    Creator< blaze::HybridVector<T,N,TF> >::operator()( const CP& policy ) const
 {
    blaze::HybridVector<T,N,TF> vector( size_ );

@@ -3,7 +3,7 @@
 //  \file blaze/math/functors/Reset.h
 //  \brief Header file for the Reset functor
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -41,6 +41,7 @@
 //*************************************************************************************************
 
 #include <blaze/math/shims/Reset.h>
+#include <blaze/system/HostDevice.h>
 #include <blaze/system/Inline.h>
 
 
@@ -59,20 +60,13 @@ namespace blaze {
 struct Reset
 {
    //**********************************************************************************************
-   /*!\brief Default constructor of the Reset functor.
-   */
-   explicit inline Reset()
-   {}
-   //**********************************************************************************************
-
-   //**********************************************************************************************
    /*!\brief Returns the result of the reset() function for the given object/value.
    //
    // \param a The object/value to be resetted.
    // \return void
    */
    template< typename T >
-   BLAZE_ALWAYS_INLINE void operator()( T& a ) const
+   BLAZE_ALWAYS_INLINE BLAZE_DEVICE_CALLABLE void operator()( T& a ) const
    {
       reset( a );
    }

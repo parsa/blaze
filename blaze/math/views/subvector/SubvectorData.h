@@ -3,7 +3,7 @@
 //  \file blaze/math/views/subvector/SubvectorData.h
 //  \brief Header file for the implementation of the SubvectorData class template
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -40,8 +40,8 @@
 // Includes
 //*************************************************************************************************
 
+#include <blaze/util/MaybeUnused.h>
 #include <blaze/util/Types.h>
-#include <blaze/util/Unused.h>
 
 
 namespace blaze {
@@ -61,7 +61,7 @@ namespace blaze {
 // number of compile time subvector arguments.
 */
 template< size_t... CSAs >  // Compile time subvector arguments
-struct SubvectorData
+class SubvectorData
 {};
 //*************************************************************************************************
 
@@ -84,14 +84,23 @@ struct SubvectorData
 // compile time subvector arguments.
 */
 template<>
-struct SubvectorData<>
+class SubvectorData<>
 {
  public:
+   //**Compile time flags**************************************************************************
+   //! Compilation flag for compile time optimization.
+   /*! The \a compileTimeArgs compilation flag indicates whether the view has been created by
+       means of compile time arguments and whether these arguments can be queried at compile
+       time. In that case, the \a compileTimeArgs compilation flag is set to \a true, otherwise
+       it is set to \a false. */
+   static constexpr bool compileTimeArgs = false;
+   //**********************************************************************************************
+
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
    template< typename... RSAs >
-   explicit inline SubvectorData( size_t index, size_t n, RSAs... args );
+   inline SubvectorData( size_t index, size_t n, RSAs... args );
 
    SubvectorData( const SubvectorData& ) = default;
    //@}
@@ -145,7 +154,7 @@ inline SubvectorData<>::SubvectorData( size_t index, size_t n, RSAs... args )
    : offset_( index )  // The offset of the subvector within the vector
    , size_  ( n     )  // The size of the subvector
 {
-   UNUSED_PARAMETER( args... );
+   MAYBE_UNUSED( args... );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -198,9 +207,18 @@ inline size_t SubvectorData<>::size() const noexcept
 */
 template< size_t I    // Index of the first element
         , size_t N >  // Number of elements
-struct SubvectorData<I,N>
+class SubvectorData<I,N>
 {
  public:
+   //**Compile time flags**************************************************************************
+   //! Compilation flag for compile time optimization.
+   /*! The \a compileTimeArgs compilation flag indicates whether the view has been created by
+       means of compile time arguments and whether these arguments can be queried at compile
+       time. In that case, the \a compileTimeArgs compilation flag is set to \a true, otherwise
+       it is set to \a false. */
+   static constexpr bool compileTimeArgs = true;
+   //**********************************************************************************************
+
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
@@ -228,8 +246,8 @@ struct SubvectorData<I,N>
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-   static inline constexpr size_t offset() noexcept;
-   static inline constexpr size_t size  () noexcept;
+   static constexpr size_t offset() noexcept;
+   static constexpr size_t size  () noexcept;
    //@}
    //**********************************************************************************************
 };
@@ -248,7 +266,7 @@ template< size_t I            // Index of the first element
 template< typename... RSAs >  // Optional subvector arguments
 inline SubvectorData<I,N>::SubvectorData( RSAs... args )
 {
-   UNUSED_PARAMETER( args... );
+   MAYBE_UNUSED( args... );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -262,7 +280,7 @@ inline SubvectorData<I,N>::SubvectorData( RSAs... args )
 */
 template< size_t I    // Index of the first element
         , size_t N >  // Number of elements
-inline constexpr size_t SubvectorData<I,N>::offset() noexcept
+constexpr size_t SubvectorData<I,N>::offset() noexcept
 {
    return I;
 }
@@ -278,7 +296,7 @@ inline constexpr size_t SubvectorData<I,N>::offset() noexcept
 */
 template< size_t I    // Index of the first element
         , size_t N >  // Number of elements
-inline constexpr size_t SubvectorData<I,N>::size() noexcept
+constexpr size_t SubvectorData<I,N>::size() noexcept
 {
    return N;
 }

@@ -3,7 +3,7 @@
 //  \file blaze/math/expressions/DenseVector.h
 //  \brief Header file for the DenseVector base class
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -44,9 +44,8 @@
 #include <blaze/math/typetraits/HasConstDataAccess.h>
 #include <blaze/math/typetraits/HasMutableDataAccess.h>
 #include <blaze/system/Inline.h>
-#include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
-#include <blaze/util/Unused.h>
+#include <blaze/util/MaybeUnused.h>
 
 
 namespace blaze {
@@ -73,9 +72,22 @@ namespace blaze {
 */
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
-struct DenseVector
+class DenseVector
    : public Vector<VT,TF>
-{};
+{
+ protected:
+   //**Special member functions********************************************************************
+   /*!\name Special member functions */
+   //@{
+   DenseVector() = default;
+   DenseVector( const DenseVector& ) = default;
+   DenseVector( DenseVector&& ) = default;
+   ~DenseVector() = default;
+   DenseVector& operator=( const DenseVector& ) = default;
+   DenseVector& operator=( DenseVector&& ) = default;
+   //@}
+   //**********************************************************************************************
+};
 //*************************************************************************************************
 
 
@@ -91,10 +103,10 @@ struct DenseVector
 /*!\name DenseVector global functions */
 //@{
 template< typename VT, bool TF >
-BLAZE_ALWAYS_INLINE typename VT::ElementType* data( DenseVector<VT,TF>& dv ) noexcept;
+typename VT::ElementType* data( DenseVector<VT,TF>& dv ) noexcept;
 
 template< typename VT, bool TF >
-BLAZE_ALWAYS_INLINE const typename VT::ElementType* data( const DenseVector<VT,TF>& dv ) noexcept;
+const typename VT::ElementType* data( const DenseVector<VT,TF>& dv ) noexcept;
 //@}
 //*************************************************************************************************
 
@@ -112,10 +124,10 @@ BLAZE_ALWAYS_INLINE const typename VT::ElementType* data( const DenseVector<VT,T
 */
 template< typename VT  // Type of the vector
         , bool TF >    // Transpose flag of the vector
-BLAZE_ALWAYS_INLINE DisableIf_t< HasMutableDataAccess_v<VT>, typename VT::ElementType* >
-   data_backend( DenseVector<VT,TF>& dv ) noexcept
+BLAZE_ALWAYS_INLINE auto data_backend( DenseVector<VT,TF>& dv ) noexcept
+   -> DisableIf_t< HasMutableDataAccess_v<VT>, typename VT::ElementType* >
 {
-   UNUSED_PARAMETER( dv );
+   MAYBE_UNUSED( dv );
 
    return nullptr;
 }
@@ -135,10 +147,10 @@ BLAZE_ALWAYS_INLINE DisableIf_t< HasMutableDataAccess_v<VT>, typename VT::Elemen
 */
 template< typename VT  // Type of the vector
         , bool TF >    // Transpose flag of the vector
-BLAZE_ALWAYS_INLINE EnableIf_t< HasMutableDataAccess_v<VT>, typename VT::ElementType* >
-   data_backend( DenseVector<VT,TF>& dv ) noexcept
+BLAZE_ALWAYS_INLINE auto data_backend( DenseVector<VT,TF>& dv ) noexcept
+   -> EnableIf_t< HasMutableDataAccess_v<VT>, typename VT::ElementType* >
 {
-   return (~dv).data();
+   return (*dv).data();
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -161,7 +173,7 @@ template< typename VT  // Type of the vector
         , bool TF >    // Transpose flag of the vector
 BLAZE_ALWAYS_INLINE typename VT::ElementType* data( DenseVector<VT,TF>& dv ) noexcept
 {
-   return data_backend( ~dv );
+   return data_backend( *dv );
 }
 //*************************************************************************************************
 
@@ -179,10 +191,10 @@ BLAZE_ALWAYS_INLINE typename VT::ElementType* data( DenseVector<VT,TF>& dv ) noe
 */
 template< typename VT  // Type of the vector
         , bool TF >    // Transpose flag of the vector
-BLAZE_ALWAYS_INLINE DisableIf_t< HasConstDataAccess_v<VT>, const typename VT::ElementType* >
-   data_backend( const DenseVector<VT,TF>& dv ) noexcept
+BLAZE_ALWAYS_INLINE auto data_backend( const DenseVector<VT,TF>& dv ) noexcept
+   -> DisableIf_t< HasConstDataAccess_v<VT>, const typename VT::ElementType* >
 {
-   UNUSED_PARAMETER( dv );
+   MAYBE_UNUSED( dv );
 
    return nullptr;
 }
@@ -202,10 +214,10 @@ BLAZE_ALWAYS_INLINE DisableIf_t< HasConstDataAccess_v<VT>, const typename VT::El
 */
 template< typename VT  // Type of the vector
         , bool TF >    // Transpose flag of the vector
-BLAZE_ALWAYS_INLINE EnableIf_t< HasConstDataAccess_v<VT>, const typename VT::ElementType* >
-   data_backend( const DenseVector<VT,TF>& dv ) noexcept
+BLAZE_ALWAYS_INLINE auto data_backend( const DenseVector<VT,TF>& dv ) noexcept
+   -> EnableIf_t< HasConstDataAccess_v<VT>, const typename VT::ElementType* >
 {
-   return (~dv).data();
+   return (*dv).data();
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -228,7 +240,7 @@ template< typename VT  // Type of the vector
         , bool TF >    // Transpose flag of the vector
 BLAZE_ALWAYS_INLINE const typename VT::ElementType* data( const DenseVector<VT,TF>& dv ) noexcept
 {
-   return data_backend( ~dv );
+   return data_backend( *dv );
 }
 //*************************************************************************************************
 

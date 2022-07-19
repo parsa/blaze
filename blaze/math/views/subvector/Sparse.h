@@ -3,7 +3,7 @@
 //  \file blaze/math/views/subvector/Sparse.h
 //  \brief Subvector specialization for sparse vectors
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -55,7 +55,6 @@
 #include <blaze/math/expressions/SparseVector.h>
 #include <blaze/math/expressions/View.h>
 #include <blaze/math/InitializerList.h>
-#include <blaze/math/RelaxationFlag.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/shims/Serial.h>
 #include <blaze/math/sparse/SparseElement.h>
@@ -70,15 +69,14 @@
 #include <blaze/math/views/Check.h>
 #include <blaze/math/views/subvector/BaseTemplate.h>
 #include <blaze/math/views/subvector/SubvectorData.h>
+#include <blaze/system/MacroDisable.h>
 #include <blaze/util/Assert.h>
-#include <blaze/util/DisableIf.h>
+#include <blaze/util/EnableIf.h>
 #include <blaze/util/mpl/If.h>
-#include <blaze/util/TypeList.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsConst.h>
 #include <blaze/util/typetraits/IsIntegral.h>
 #include <blaze/util/typetraits/IsReference.h>
-#include <blaze/util/typetraits/RemoveReference.h>
 
 
 namespace blaze {
@@ -116,13 +114,13 @@ class Subvector<VT,AF,TF,false,CSAs...>
    //! Type of this Subvector instance.
    using This = Subvector<VT,AF,TF,false,CSAs...>;
 
-   using BaseType      = SparseVector<This,TF>;         //!< Base type of this Subvector instance.
-   using ViewedType    = VT;                            //!< The type viewed by this Subvector instance.
-   using ResultType    = SubvectorTrait_t<VT,CSAs...>;  //!< Result type for expression template evaluations.
-   using TransposeType = TransposeType_t<ResultType>;   //!< Transpose type for expression template evaluations.
-   using ElementType   = ElementType_t<VT>;             //!< Type of the subvector elements.
-   using ReturnType    = ReturnType_t<VT>;              //!< Return type for expression template evaluations
-   using CompositeType = const Subvector&;              //!< Data type for composite expression templates.
+   using BaseType      = View< SparseVector<This,TF> >;  //!< Base type of this Subvector instance.
+   using ViewedType    = VT;                             //!< The type viewed by this Subvector instance.
+   using ResultType    = SubvectorTrait_t<VT,CSAs...>;   //!< Result type for expression template evaluations.
+   using TransposeType = TransposeType_t<ResultType>;    //!< Transpose type for expression template evaluations.
+   using ElementType   = ElementType_t<VT>;              //!< Type of the subvector elements.
+   using ReturnType    = ReturnType_t<VT>;               //!< Return type for expression template evaluations
+   using CompositeType = const Subvector&;               //!< Data type for composite expression templates.
 
    //! Reference to a constant subvector value.
    using ConstReference = ConstReference_t<VT>;
@@ -423,6 +421,9 @@ class Subvector<VT,AF,TF,false,CSAs...>
    //**Compilation flags***************************************************************************
    //! Compilation switch for the expression template assignment strategy.
    static constexpr bool smpAssignable = VT::smpAssignable;
+
+   //! Compilation switch for the expression template evaluation strategy.
+   static constexpr bool compileTimeArgs = DataType::compileTimeArgs;
    //**********************************************************************************************
 
    //**Constructors********************************************************************************
@@ -599,7 +600,7 @@ inline Subvector<VT,AF,TF,false,CSAs...>::Subvector( VT& vector, RSAs... args )
    : DataType( args... )  // Base class initialization
    , vector_ ( vector  )  // The vector containing the subvector
 {
-   if( !Contains_v< TypeList<RSAs...>, Unchecked > ) {
+   if( isChecked( args... ) ) {
       if( offset() + size() > vector.size() ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid subvector specification" );
       }
@@ -958,7 +959,7 @@ inline Subvector<VT,AF,TF,false,CSAs...>&
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( rhs.canAlias( &vector_ ) ) {
+   if( rhs.canAlias( this ) ) {
       const ResultType tmp( rhs );
       reset();
       assign( left, tmp );
@@ -1001,12 +1002,12 @@ inline Subvector<VT,AF,TF,false,CSAs...>&
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType_t<VT2>, TF );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_t<VT2> );
 
-   if( size() != (~rhs).size() ) {
+   if( size() != (*rhs).size() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
    using Right = If_t< IsRestricted_v<VT>, CompositeType_t<VT2>, const VT2& >;
-   Right right( ~rhs );
+   Right right( *rhs );
 
    if( !tryAssign( vector_, right, offset() ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted vector" );
@@ -1014,7 +1015,7 @@ inline Subvector<VT,AF,TF,false,CSAs...>&
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( IsReference_v<Right> || right.canAlias( &vector_ ) ) {
+   if( IsReference_v<Right> || right.canAlias( this ) ) {
       const ResultType_t<VT2> tmp( right );
       reset();
       assign( left, tmp );
@@ -1063,11 +1064,11 @@ inline Subvector<VT,AF,TF,false,CSAs...>&
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( AddType, TF );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( AddType );
 
-   if( size() != (~rhs).size() ) {
+   if( size() != (*rhs).size() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   const AddType tmp( *this + (~rhs) );
+   const AddType tmp( *this + (*rhs) );
 
    if( !tryAssign( vector_, tmp, offset() ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted vector" );
@@ -1117,11 +1118,11 @@ inline Subvector<VT,AF,TF,false,CSAs...>&
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( SubType, TF );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SubType );
 
-   if( size() != (~rhs).size() ) {
+   if( size() != (*rhs).size() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   const SubType tmp( *this - (~rhs) );
+   const SubType tmp( *this - (*rhs) );
 
    if( !tryAssign( vector_, tmp, offset() ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted vector" );
@@ -1172,11 +1173,11 @@ inline Subvector<VT,AF,TF,false,CSAs...>&
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( MultType, TF );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MultType );
 
-   if( size() != (~rhs).size() ) {
+   if( size() != (*rhs).size() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   const MultType tmp( *this * (~rhs) );
+   const MultType tmp( *this * (*rhs) );
 
    if( !tryAssign( vector_, tmp, offset() ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted vector" );
@@ -1228,11 +1229,11 @@ inline Subvector<VT,AF,TF,false,CSAs...>&
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( DivType, TF );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( DivType );
 
-   if( size() != (~rhs).size() ) {
+   if( size() != (*rhs).size() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   const DivType tmp( *this / (~rhs) );
+   const DivType tmp( *this / (*rhs) );
 
    if( !tryAssign( vector_, tmp, offset() ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted vector" );
@@ -1283,11 +1284,11 @@ inline Subvector<VT,AF,TF,false,CSAs...>&
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( CrossType, TF );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( CrossType );
 
-   if( size() != 3UL || (~rhs).size() != 3UL ) {
+   if( size() != 3UL || (*rhs).size() != 3UL ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid vector size for cross product" );
    }
 
-   const CrossType tmp( *this % (~rhs) );
+   const CrossType tmp( *this % (*rhs) );
 
    if( !tryAssign( vector_, tmp, offset() ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted vector" );
@@ -1918,7 +1919,7 @@ template< typename VT       // Type of the sparse vector
 template< typename Other >  // Data type of the foreign expression
 inline bool Subvector<VT,AF,TF,false,CSAs...>::canAlias( const Other* alias ) const noexcept
 {
-   return vector_.isAliased( alias );
+   return vector_.isAliased( &unview( *alias ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1942,7 +1943,7 @@ template< typename VT       // Type of the sparse vector
 template< typename Other >  // Data type of the foreign expression
 inline bool Subvector<VT,AF,TF,false,CSAs...>::isAliased( const Other* alias ) const noexcept
 {
-   return vector_.isAliased( alias );
+   return vector_.isAliased( &unview( *alias ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1990,13 +1991,13 @@ template< typename VT       // Type of the sparse vector
 template< typename VT2 >    // Type of the right-hand side dense vector
 inline void Subvector<VT,AF,TF,false,CSAs...>::assign( const DenseVector<VT2,TF>& rhs )
 {
-   BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
+   BLAZE_INTERNAL_ASSERT( size() == (*rhs).size(), "Invalid vector sizes" );
    BLAZE_INTERNAL_ASSERT( nonZeros() == 0UL, "Invalid non-zero elements detected" );
 
-   reserve( (~rhs).size() );
+   reserve( (*rhs).size() );
 
    for( size_t i=0UL; i<size(); ++i ) {
-      append( i, (~rhs)[i], true );
+      append( i, (*rhs)[i], true );
    }
 }
 /*! \endcond */
@@ -2022,12 +2023,12 @@ template< typename VT       // Type of the sparse vector
 template< typename VT2 >    // Type of the right-hand side sparse vector
 inline void Subvector<VT,AF,TF,false,CSAs...>::assign( const SparseVector<VT2,TF>& rhs )
 {
-   BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
+   BLAZE_INTERNAL_ASSERT( size() == (*rhs).size(), "Invalid vector sizes" );
    BLAZE_INTERNAL_ASSERT( nonZeros() == 0UL, "Invalid non-zero elements detected" );
 
-   reserve( (~rhs).nonZeros() );
+   reserve( (*rhs).nonZeros() );
 
-   for( ConstIterator_t<VT2> element=(~rhs).begin(); element!=(~rhs).end(); ++element ) {
+   for( ConstIterator_t<VT2> element=(*rhs).begin(); element!=(*rhs).end(); ++element ) {
       append( element->index(), element->value(), true );
    }
 }
@@ -2060,9 +2061,9 @@ inline void Subvector<VT,AF,TF,false,CSAs...>::addAssign( const DenseVector<VT2,
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( AddType, TF );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( AddType );
 
-   BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
+   BLAZE_INTERNAL_ASSERT( size() == (*rhs).size(), "Invalid vector sizes" );
 
-   const AddType tmp( serial( *this + (~rhs) ) );
+   const AddType tmp( serial( *this + (*rhs) ) );
    reset();
    assign( tmp );
 }
@@ -2095,9 +2096,9 @@ inline void Subvector<VT,AF,TF,false,CSAs...>::addAssign( const SparseVector<VT2
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( AddType, TF );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( AddType );
 
-   BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
+   BLAZE_INTERNAL_ASSERT( size() == (*rhs).size(), "Invalid vector sizes" );
 
-   const AddType tmp( serial( *this + (~rhs) ) );
+   const AddType tmp( serial( *this + (*rhs) ) );
    reset();
    assign( tmp );
 }
@@ -2130,9 +2131,9 @@ inline void Subvector<VT,AF,TF,false,CSAs...>::subAssign( const DenseVector<VT2,
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( SubType, TF );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SubType );
 
-   BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
+   BLAZE_INTERNAL_ASSERT( size() == (*rhs).size(), "Invalid vector sizes" );
 
-   const SubType tmp( serial( *this - (~rhs) ) );
+   const SubType tmp( serial( *this - (*rhs) ) );
    reset();
    assign( tmp );
 }
@@ -2165,9 +2166,9 @@ inline void Subvector<VT,AF,TF,false,CSAs...>::subAssign( const SparseVector<VT2
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( SubType, TF );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SubType );
 
-   BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
+   BLAZE_INTERNAL_ASSERT( size() == (*rhs).size(), "Invalid vector sizes" );
 
-   const SubType tmp( serial( *this - (~rhs) ) );
+   const SubType tmp( serial( *this - (*rhs) ) );
    reset();
    assign( tmp );
 }

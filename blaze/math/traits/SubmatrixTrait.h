@@ -3,7 +3,7 @@
 //  \file blaze/math/traits/SubmatrixTrait.h
 //  \brief Header file for the submatrix trait
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -42,7 +42,6 @@
 
 #include <utility>
 #include <blaze/math/Infinity.h>
-#include <blaze/util/InvalidType.h>
 #include <blaze/util/Types.h>
 
 
@@ -66,28 +65,10 @@ template< typename, size_t, size_t, size_t, size_t, typename = void > struct Sub
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< size_t I, size_t J, size_t M, size_t N, typename T >
-auto evalSubmatrixTrait( T& )
-   -> typename SubmatrixTraitEval1<T,I,J,M,N>::Type;
+auto evalSubmatrixTrait( const volatile T& ) -> SubmatrixTraitEval1<T,I,J,M,N>;
 
 template< typename T >
-auto evalSubmatrixTrait( T& )
-   -> typename SubmatrixTraitEval2<T,inf,inf,inf,inf>::Type;
-
-template< size_t I, size_t J, size_t M, size_t N, typename T >
-auto evalSubmatrixTrait( const T& )
-   -> typename SubmatrixTrait<T,I,J,M,N>::Type;
-
-template< typename T >
-auto evalSubmatrixTrait( const T& )
-   -> typename SubmatrixTrait<T>::Type;
-
-template< size_t I, size_t J, size_t M, size_t N, typename T >
-auto evalSubmatrixTrait( const volatile T& )
-   -> typename SubmatrixTrait<T,I,J,M,N>::Type;
-
-template< typename T >
-auto evalSubmatrixTrait( const volatile T& )
-   -> typename SubmatrixTrait<T>::Type;
+auto evalSubmatrixTrait( const volatile T& ) -> SubmatrixTraitEval1<T,inf,inf,inf,inf>;
 /*! \endcond */
 //*************************************************************************************************
 
@@ -99,11 +80,10 @@ auto evalSubmatrixTrait( const volatile T& )
 // \section submatrixtrait_general General
 //
 // The SubmatrixTrait class template offers the possibility to select the resulting data type
-// when creating a submatrix of a dense or sparse matrix. SubmatrixTrait defines the nested
-// type \a Type, which represents the resulting data type of the submatrix operation. In case
-// the given data type is not a dense or sparse matrix type, the resulting data type \a Type
-// is set to \a INVALID_TYPE. Note that \a const and \a volatile qualifiers and reference
-// modifiers are generally ignored.
+// when creating a submatrix of a dense or sparse matrix. In case the given type \a MT is a
+// dense or sparse matrix type, SubmatrixTrait defines the nested type \a Type, which represents
+// the resulting data type of the submatrix operation. Otherwise therer is no nested type \a Type.
+// Note that \a const and \a volatile qualifiers and reference modifiers are generally ignored.
 //
 //
 // \section submatrixtrait_specializations Creating custom specializations
@@ -142,14 +122,8 @@ auto evalSubmatrixTrait( const volatile T& )
 template< typename MT       // Type of the matrix
         , size_t... CSAs >  // Compile time submatrix arguments
 struct SubmatrixTrait
-{
- public:
-   //**********************************************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   using Type = decltype( evalSubmatrixTrait<CSAs...>( std::declval<MT&>() ) );
-   /*! \endcond */
-   //**********************************************************************************************
-};
+   : public decltype( evalSubmatrixTrait<CSAs...>( std::declval<MT&>() ) )
+{};
 //*************************************************************************************************
 
 
@@ -184,12 +158,8 @@ template< typename MT  // Type of the matrix
         , size_t N     // Number of columns
         , typename >   // Restricting condition
 struct SubmatrixTraitEval1
-{
- public:
-   //**********************************************************************************************
-   using Type = typename SubmatrixTraitEval2<MT,I,J,M,N>::Type;
-   //**********************************************************************************************
-};
+   : public SubmatrixTraitEval2<MT,I,J,M,N>
+{};
 /*! \endcond */
 //*************************************************************************************************
 
@@ -206,12 +176,7 @@ template< typename MT  // Type of the matrix
         , size_t N     // Number of columns
         , typename >   // Restricting condition
 struct SubmatrixTraitEval2
-{
- public:
-   //**********************************************************************************************
-   using Type = INVALID_TYPE;
-   //**********************************************************************************************
-};
+{};
 /*! \endcond */
 //*************************************************************************************************
 

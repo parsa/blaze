@@ -3,7 +3,7 @@
 //  \file src/utiltest/typetraits/OperationTest.cpp
 //  \brief Source file for the type traits operation test
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -72,8 +72,9 @@ OperationTest::OperationTest()
 {
    testAddConst();
    testAddCV();
+   testAddLValueReference();
    testAddPointer();
-   testAddReference();
+   testAddRValueReference();
    testAddVolatile();
    testAll();
    testAny();
@@ -81,6 +82,8 @@ OperationTest::OperationTest()
    testDecay();
    testExtent();
    testGetMember();
+   testHasGreaterThan();
+   testHasLessThan();
    testHasMember();
    testHasSize();
    testHaveSameSize();
@@ -111,6 +114,7 @@ OperationTest::OperationTest()
    testIsPod();
    testIsPointer();
    testIsReference();
+   testIsRValueReference();
    testIsSame();
    testIsStrictlySame();
    testIsShort();
@@ -123,12 +127,15 @@ OperationTest::OperationTest()
    testIsVolatile();
    testMakeSigned();
    testMakeUnsigned();
+   testRank();
    testRemoveAllExtents();
    testRemoveConst();
    testRemoveCV();
    testRemoveExtent();
+   testRemoveLValueReference();
    testRemovePointer();
    testRemoveReference();
+   testRemoveRValueReference();
    testRemoveVolatile();
 }
 //*************************************************************************************************
@@ -187,6 +194,29 @@ void OperationTest::testAddCV()
 
 
 //*************************************************************************************************
+/*!\brief Test of the \c AddLValueReference type trait.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a compile time test of the \c AddLValueReference type trait. In case
+// an error is detected, a compilation error is created.
+*/
+void OperationTest::testAddLValueReference()
+{
+   using blaze::AddLValueReference;
+
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( AddLValueReference<int>::Type, int& );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( AddLValueReference<int const&>::Type, int const& );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( AddLValueReference<int volatile&&>::Type, int volatile& );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( AddLValueReference<int*>::Type, int*& );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( AddLValueReference<int*&>::Type, int*& );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( AddLValueReference<int*&&>::Type, int*& );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Test of the \c AddPointer type trait.
 //
 // \return void
@@ -208,22 +238,24 @@ void OperationTest::testAddPointer()
 
 
 //*************************************************************************************************
-/*!\brief Test of the \c AddReference type trait.
+/*!\brief Test of the \c AddRValueReference type trait.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a compile time test of the \c AddReference type trait. In case an error
-// is detected, a compilation error is created.
+// This function performs a compile time test of the \c AddRValueReference type trait. In case
+// an error is detected, a compilation error is created.
 */
-void OperationTest::testAddReference()
+void OperationTest::testAddRValueReference()
 {
-   using blaze::AddReference;
+   using blaze::AddRValueReference;
 
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( AddReference<int>::Type, int& );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( AddReference<int const&>::Type, int const& );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( AddReference<int*>::Type, int*& );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( AddReference<int*&>::Type, int*& );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( AddRValueReference<int>::Type, int&& );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( AddRValueReference<int const&>::Type, int const& );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( AddRValueReference<int volatile&&>::Type, int volatile&& );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( AddRValueReference<int*>::Type, int*&& );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( AddRValueReference<int*&>::Type, int*& );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( AddRValueReference<int*&&>::Type, int*&& );
 }
 //*************************************************************************************************
 
@@ -388,6 +420,66 @@ void OperationTest::testExtent()
    BLAZE_STATIC_ASSERT( ( Extent< int[][2], 1 >::value == 2U ) );
    BLAZE_STATIC_ASSERT( ( Extent< int*, 0 >::value == 0U ) );
    BLAZE_STATIC_ASSERT( ( Extent< std::vector<int>, 0 >::value == 0U ) );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c HasGreaterThan type trait.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a compile time test of the \c HasGreaterThan type trait. In case an
+// error is detected, a compilation error is created.
+*/
+void OperationTest::testHasGreaterThan()
+{
+   using blaze::HasGreaterThan;
+
+   using T1 = HasGreaterThan< int, int >;
+   using T2 = HasGreaterThan< const std::string, std::string >;
+   using T3 = HasGreaterThan< volatile int*, int* >;
+   using T4 = HasGreaterThan< int, blaze::complex<float> >;
+   using T5 = HasGreaterThan< std::string, int >;
+   using T6 = HasGreaterThan< int*, std::string* >;
+
+   BLAZE_STATIC_ASSERT( T1::value == true );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( T2::Type, blaze::TrueType );
+   BLAZE_CONSTRAINT_MUST_BE_DERIVED_FROM( T3, blaze::TrueType );
+   BLAZE_STATIC_ASSERT( T4::value == false );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( T5::Type, blaze::FalseType );
+   BLAZE_CONSTRAINT_MUST_BE_DERIVED_FROM( T6, blaze::FalseType );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c HasLessThan type trait.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a compile time test of the \c HasLessThan type trait. In case an error
+// is detected, a compilation error is created.
+*/
+void OperationTest::testHasLessThan()
+{
+   using blaze::HasLessThan;
+
+   using T1 = HasLessThan< int, int >;
+   using T2 = HasLessThan< const std::string, std::string >;
+   using T3 = HasLessThan< volatile int*, int* >;
+   using T4 = HasLessThan< int, blaze::complex<float> >;
+   using T5 = HasLessThan< std::string, int >;
+   using T6 = HasLessThan< int*, std::string* >;
+
+   BLAZE_STATIC_ASSERT( T1::value == true );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( T2::Type, blaze::TrueType );
+   BLAZE_CONSTRAINT_MUST_BE_DERIVED_FROM( T3, blaze::TrueType );
+   BLAZE_STATIC_ASSERT( T4::value == false );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( T5::Type, blaze::FalseType );
+   BLAZE_CONSTRAINT_MUST_BE_DERIVED_FROM( T6, blaze::FalseType );
 }
 //*************************************************************************************************
 
@@ -1638,6 +1730,29 @@ void OperationTest::testRemoveExtent()
 
 
 //*************************************************************************************************
+/*!\brief Test of the \c RemoveLValueReference type trait.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a compile time test of the \c RemoveLValueReference type trait. In
+// case an error is detected, a compilation error is created.
+*/
+void OperationTest::testRemoveLValueReference()
+{
+   using blaze::RemoveLValueReference;
+
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( RemoveLValueReference<int>::Type, int );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( RemoveLValueReference<const int&>::Type, const int );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( RemoveLValueReference<volatile int&&>::Type, volatile int&& );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( RemoveLValueReference<int*>::Type, int* );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( RemoveLValueReference<int*&>::Type, int* );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( RemoveLValueReference<int*&&>::Type, int*&& );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Test of the \c RemovePointer type trait.
 //
 // \return void
@@ -1677,6 +1792,29 @@ void OperationTest::testRemoveReference()
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( RemoveReference<volatile int&&>::Type, volatile int );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( RemoveReference<int*>::Type, int* );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( RemoveReference<int*&>::Type, int* );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c RemoveRValueReference type trait.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a compile time test of the \c RemoveRValueReference type trait. In
+// case an error is detected, a compilation error is created.
+*/
+void OperationTest::testRemoveRValueReference()
+{
+   using blaze::RemoveRValueReference;
+
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( RemoveRValueReference<int>::Type, int );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( RemoveRValueReference<const int&>::Type, const int& );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( RemoveRValueReference<volatile int&&>::Type, volatile int );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( RemoveRValueReference<int*>::Type, int* );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( RemoveRValueReference<int*&>::Type, int*& );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( RemoveRValueReference<int*&&>::Type, int* );
 }
 //*************************************************************************************************
 

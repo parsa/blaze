@@ -3,7 +3,7 @@
 //  \file blaze/math/lapack/trsv.h
 //  \brief Header file for the LAPACK triangular linear system solver functions (trsv)
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -68,8 +68,7 @@ namespace blaze {
 /*!\name LAPACK triangular linear system functions (trsv) */
 //@{
 template< typename MT, bool SO, typename VT, bool TF >
-inline void trsv( const DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& b,
-                  char uplo, char trans, char diag );
+void trsv( const DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& b, char uplo, char trans, char diag );
 //@}
 //*************************************************************************************************
 
@@ -180,11 +179,11 @@ inline void trsv( const DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& b, char uplo,
    BLAZE_CONSTRAINT_MUST_BE_CONTIGUOUS_TYPE( VT );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT>, ElementType_t<VT> );
 
-   if( !isSquare( ~A ) ) {
+   if( !isSquare( *A ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid non-square matrix provided" );
    }
 
-   if( (~b).size() != (~A).rows() ) {
+   if( (*b).size() != (*A).rows() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid right-hand side vector provided" );
    }
 
@@ -200,9 +199,9 @@ inline void trsv( const DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& b, char uplo,
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid diag argument provided" );
    }
 
-   int n   ( numeric_cast<int>( (~A).rows() ) );
-   int lda ( numeric_cast<int>( (~A).spacing() ) );
-   int incX( 1 );
+   blas_int_t n   ( numeric_cast<blas_int_t>( (*A).rows() ) );
+   blas_int_t lda ( numeric_cast<blas_int_t>( (*A).spacing() ) );
+   blas_int_t incX( 1 );
 
    if( n == 0 ) {
       return;
@@ -212,7 +211,7 @@ inline void trsv( const DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& b, char uplo,
       ( uplo == 'L' )?( uplo = 'U' ):( uplo = 'L' );
    }
 
-   trsv( uplo, trans, diag, n, (~A).data(), lda, (~b).data(), incX );
+   trsv( uplo, trans, diag, n, (*A).data(), lda, (*b).data(), incX );
 }
 //*************************************************************************************************
 

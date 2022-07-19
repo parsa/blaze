@@ -3,7 +3,7 @@
 //  \file blaze/math/traits/ColumnTrait.h
 //  \brief Header file for the column trait
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -42,7 +42,6 @@
 
 #include <utility>
 #include <blaze/math/Infinity.h>
-#include <blaze/util/InvalidType.h>
 #include <blaze/util/Types.h>
 
 
@@ -66,28 +65,10 @@ template< typename, size_t, typename = void > struct ColumnTraitEval2;
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< size_t I, typename T >
-auto evalColumnTrait( T& )
-   -> typename ColumnTraitEval1<T,I>::Type;
+auto evalColumnTrait( const volatile T& ) -> ColumnTraitEval1<T,I>;
 
 template< typename T >
-auto evalColumnTrait( T& )
-   -> typename ColumnTraitEval2<T,inf>::Type;
-
-template< size_t I, typename T >
-auto evalColumnTrait( const T& )
-   -> typename ColumnTrait<T,I>::Type;
-
-template< typename T >
-auto evalColumnTrait( const T& )
-   -> typename ColumnTrait<T>::Type;
-
-template< size_t I, typename T >
-auto evalColumnTrait( const volatile T& )
-   -> typename ColumnTrait<T,I>::Type;
-
-template< typename T >
-auto evalColumnTrait( const volatile T& )
-   -> typename ColumnTrait<T>::Type;
+auto evalColumnTrait( const volatile T& ) -> ColumnTraitEval1<T,inf>;
 /*! \endcond */
 //*************************************************************************************************
 
@@ -99,11 +80,10 @@ auto evalColumnTrait( const volatile T& )
 // \section columntrait_general General
 //
 // The ColumnTrait class template offers the possibility to select the resulting data type when
-// creating a view on a specific column of a dense or sparse matrix. ColumnTrait defines the nested
-// type \a Type, which represents the resulting data type of the column operation. In case the
-// given data type is not a dense or sparse matrix type, the resulting data type \a Type is
-// set to \a INVALID_TYPE. Note that \a const and \a volatile qualifiers and reference modifiers
-// are generally ignored.
+// creating a view on a specific column of a dense or sparse matrix. In case the given type \a MT
+// is a dense or sparse matrix type, ColumnTrait defines the nested type \a Type, which represents
+// the resulting data type of the column operation. Otherwise there is no nested type \a Type.
+// Note that \a const and \a volatile qualifiers and reference modifiers are generally ignored.
 //
 //
 // \section columntrait_specializations Creating custom specializations
@@ -141,14 +121,8 @@ auto evalColumnTrait( const volatile T& )
 template< typename MT       // Type of the matrix
         , size_t... CCAs >  // Compile time column arguments
 struct ColumnTrait
-{
- public:
-   //**********************************************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   using Type = decltype( evalColumnTrait<CCAs...>( std::declval<MT&>() ) );
-   /*! \endcond */
-   //**********************************************************************************************
-};
+   : public decltype( evalColumnTrait<CCAs...>( std::declval<MT&>() ) )
+{};
 //*************************************************************************************************
 
 
@@ -180,9 +154,8 @@ template< typename MT  // Type of the matrix
         , size_t I     // Compile time column index
         , typename >   // Restricting condition
 struct ColumnTraitEval1
-{
-   using Type = typename ColumnTraitEval2<MT,I>::Type;
-};
+   : public ColumnTraitEval2<MT,I>
+{};
 /*! \endcond */
 //*************************************************************************************************
 
@@ -196,9 +169,7 @@ template< typename MT  // Type of the matrix
         , size_t I     // Compile time column index
         , typename >   // Restricting condition
 struct ColumnTraitEval2
-{
-   using Type = INVALID_TYPE;
-};
+{};
 /*! \endcond */
 //*************************************************************************************************
 

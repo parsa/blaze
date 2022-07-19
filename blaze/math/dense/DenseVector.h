@@ -3,7 +3,7 @@
 //  \file blaze/math/dense/DenseVector.h
 //  \brief Header file for utility functions for dense vectors
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -43,20 +43,26 @@
 #include <blaze/math/Aliases.h>
 #include <blaze/math/expressions/DenseVector.h>
 #include <blaze/math/Exception.h>
+#include <blaze/math/RelaxationFlag.h>
 #include <blaze/math/shims/Equal.h>
 #include <blaze/math/shims/IsDivisor.h>
+#include <blaze/math/shims/IsFinite.h>
+#include <blaze/math/shims/IsInf.h>
 #include <blaze/math/shims/IsNaN.h>
 #include <blaze/math/shims/IsZero.h>
 #include <blaze/math/shims/Pow2.h>
 #include <blaze/math/shims/Sqrt.h>
 #include <blaze/math/typetraits/IsRestricted.h>
+#include <blaze/math/typetraits/IsScalar.h>
 #include <blaze/math/typetraits/IsUniform.h>
+#include <blaze/math/typetraits/IsZero.h>
+#include <blaze/math/typetraits/UnderlyingBuiltin.h>
+#include <blaze/system/MacroDisable.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Numeric.h>
-#include <blaze/util/DecltypeAuto.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/Types.h>
-#include <blaze/util/typetraits/IsNumeric.h>
+#include <blaze/util/typetraits/IsFloatingPoint.h>
 #include <blaze/util/typetraits/RemoveReference.h>
 
 
@@ -72,36 +78,118 @@ namespace blaze {
 /*!\name DenseVector operators */
 //@{
 template< typename T1, typename T2, bool TF >
-inline auto operator==( const DenseVector<T1,TF>& vec, T2 scalar )
-   -> EnableIf_t< IsNumeric_v<T2>, bool >;
+auto operator==( const DenseVector<T1,TF>& vec, T2 scalar )
+   -> EnableIf_t< IsScalar_v<T2>, bool >;
 
 template< typename T1, typename T2, bool TF >
-inline auto operator==( T1 scalar, const DenseVector<T2,TF>& vec )
-   -> EnableIf_t< IsNumeric_v<T1>, bool >;
+auto operator==( T1 scalar, const DenseVector<T2,TF>& vec )
+   -> EnableIf_t< IsScalar_v<T1>, bool >;
 
 template< typename T1, typename T2, bool TF >
-inline auto operator!=( const DenseVector<T1,TF>& vec, T2 scalar )
-   -> EnableIf_t< IsNumeric_v<T2>, bool >;
+auto operator!=( const DenseVector<T1,TF>& vec, T2 scalar )
+   -> EnableIf_t< IsScalar_v<T2>, bool >;
 
 template< typename T1, typename T2, bool TF >
-inline auto operator!=( T1 scalar, const DenseVector<T2,TF>& vec )
-   -> EnableIf_t< IsNumeric_v<T1>, bool >;
+auto operator!=( T1 scalar, const DenseVector<T2,TF>& vec )
+   -> EnableIf_t< IsScalar_v<T1>, bool >;
 
 template< typename VT, bool TF, typename ST >
-inline auto operator*=( DenseVector<VT,TF>& vec, ST scalar )
-   -> EnableIf_t< IsNumeric_v<ST>, VT& >;
+auto operator+=( DenseVector<VT,TF>& vec, ST scalar )
+   -> EnableIf_t< IsScalar_v<ST>, VT& >;
 
 template< typename VT, bool TF, typename ST >
-inline auto operator*=( DenseVector<VT,TF>&& vec, ST scalar )
-   -> EnableIf_t< IsNumeric_v<ST>, VT& >;
+auto operator+=( DenseVector<VT,TF>&& vec, ST scalar )
+   -> EnableIf_t< IsScalar_v<ST>, VT& >;
 
 template< typename VT, bool TF, typename ST >
-inline auto operator/=( DenseVector<VT,TF>& vec, ST scalar )
-   -> EnableIf_t< IsNumeric_v<ST>, VT& >;
+auto operator-=( DenseVector<VT,TF>& vec, ST scalar )
+   -> EnableIf_t< IsScalar_v<ST>, VT& >;
 
 template< typename VT, bool TF, typename ST >
-inline auto operator/=( DenseVector<VT,TF>&& vec, ST scalar )
-   -> EnableIf_t< IsNumeric_v<ST>, VT& >;
+auto operator-=( DenseVector<VT,TF>&& vec, ST scalar )
+   -> EnableIf_t< IsScalar_v<ST>, VT& >;
+
+template< typename VT, bool TF, typename ST >
+auto operator*=( DenseVector<VT,TF>& vec, ST scalar )
+   -> EnableIf_t< IsScalar_v<ST>, VT& >;
+
+template< typename VT, bool TF, typename ST >
+auto operator*=( DenseVector<VT,TF>&& vec, ST scalar )
+   -> EnableIf_t< IsScalar_v<ST>, VT& >;
+
+template< typename VT, bool TF, typename ST >
+auto operator/=( DenseVector<VT,TF>& vec, ST scalar )
+   -> EnableIf_t< IsScalar_v<ST>, VT& >;
+
+template< typename VT, bool TF, typename ST >
+auto operator/=( DenseVector<VT,TF>&& vec, ST scalar )
+   -> EnableIf_t< IsScalar_v<ST>, VT& >;
+
+template< typename VT, bool TF >
+VT& operator<<=( DenseVector<VT,TF>& vec, int count );
+
+template< typename VT, bool TF >
+VT& operator<<=( DenseVector<VT,TF>&& vec, int count );
+
+template< typename VT1, typename VT2, bool TF >
+VT1& operator<<=( DenseVector<VT1,TF>& lhs, const DenseVector<VT2,TF>& rhs );
+
+template< typename VT1, typename VT2, bool TF >
+VT1& operator<<=( DenseVector<VT1,TF>&& lhs, const DenseVector<VT2,TF>& rhs );
+
+template< typename VT, bool TF >
+VT& operator>>=( DenseVector<VT,TF>& vec, int count );
+
+template< typename VT, bool TF >
+VT& operator>>=( DenseVector<VT,TF>&& vec, int count );
+
+template< typename VT1, typename VT2, bool TF >
+VT1& operator>>=( DenseVector<VT1,TF>& lhs, const DenseVector<VT2,TF>& rhs );
+
+template< typename VT1, typename VT2, bool TF >
+VT1& operator>>=( DenseVector<VT1,TF>&& lhs, const DenseVector<VT2,TF>& rhs );
+
+template< typename VT, bool TF, typename ST >
+auto operator&=( DenseVector<VT,TF>& vec, ST scalar )
+   -> EnableIf_t< IsScalar_v<ST>, VT& >;
+
+template< typename VT, bool TF, typename ST >
+auto operator&=( DenseVector<VT,TF>&& vec, ST scalar )
+   -> EnableIf_t< IsScalar_v<ST>, VT& >;
+
+template< typename VT1, typename VT2, bool TF >
+VT1& operator&=( DenseVector<VT1,TF>& lhs, const DenseVector<VT2,TF>& rhs );
+
+template< typename VT1, typename VT2, bool TF >
+VT1& operator&=( DenseVector<VT1,TF>&& lhs, const DenseVector<VT2,TF>& rhs );
+
+template< typename VT, bool TF, typename ST >
+auto operator|=( DenseVector<VT,TF>& vec, ST scalar )
+   -> EnableIf_t< IsScalar_v<ST>, VT& >;
+
+template< typename VT, bool TF, typename ST >
+auto operator|=( DenseVector<VT,TF>&& vec, ST scalar )
+   -> EnableIf_t< IsScalar_v<ST>, VT& >;
+
+template< typename VT1, typename VT2, bool TF >
+VT1& operator|=( DenseVector<VT1,TF>& lhs, const DenseVector<VT2,TF>& rhs );
+
+template< typename VT1, typename VT2, bool TF >
+VT1& operator|=( DenseVector<VT1,TF>&& lhs, const DenseVector<VT2,TF>& rhs );
+
+template< typename VT, bool TF, typename ST >
+auto operator^=( DenseVector<VT,TF>& vec, ST scalar )
+   -> EnableIf_t< IsScalar_v<ST>, VT& >;
+
+template< typename VT, bool TF, typename ST >
+auto operator^=( DenseVector<VT,TF>&& vec, ST scalar )
+   -> EnableIf_t< IsScalar_v<ST>, VT& >;
+
+template< typename VT1, typename VT2, bool TF >
+VT1& operator^=( DenseVector<VT1,TF>& lhs, const DenseVector<VT2,TF>& rhs );
+
+template< typename VT1, typename VT2, bool TF >
+VT1& operator^=( DenseVector<VT1,TF>&& lhs, const DenseVector<VT2,TF>& rhs );
 //@}
 //*************************************************************************************************
 
@@ -122,12 +210,12 @@ template< typename T1  // Type of the left-hand side dense vector
         , typename T2  // Type of the right-hand side scalar
         , bool TF >    // Transpose flag
 inline auto operator==( const DenseVector<T1,TF>& vec, T2 scalar )
-   -> EnableIf_t< IsNumeric_v<T2>, bool >
+   -> EnableIf_t< IsScalar_v<T2>, bool >
 {
    using CT1 = CompositeType_t<T1>;
 
    // Evaluation of the dense vector operand
-   CT1 a( ~vec );
+   CT1 a( *vec );
 
    // In order to compare the vector and the scalar value, the data values of the lower-order
    // data type are converted to the higher-order data type within the equal function.
@@ -154,7 +242,7 @@ template< typename T1  // Type of the left-hand side scalar
         , typename T2  // Type of the right-hand side dense vector
         , bool TF >    // Transpose flag
 inline auto operator==( T1 scalar, const DenseVector<T2,TF>& vec )
-   -> EnableIf_t< IsNumeric_v<T1>, bool >
+   -> EnableIf_t< IsScalar_v<T1>, bool >
 {
    return ( vec == scalar );
 }
@@ -177,7 +265,7 @@ template< typename T1  // Type of the left-hand side dense vector
         , typename T2  // Type of the right-hand side scalar
         , bool TF >    // Transpose flag
 inline auto operator!=( const DenseVector<T1,TF>& vec, T2 scalar )
-   -> EnableIf_t< IsNumeric_v<T2>, bool >
+   -> EnableIf_t< IsScalar_v<T2>, bool >
 {
    return !( vec == scalar );
 }
@@ -200,9 +288,129 @@ template< typename T1  // Type of the left-hand side scalar
         , typename T2  // Type of the right-hand side vector
         , bool TF >    // Transpose flag
 inline auto operator!=( T1 scalar, const DenseVector<T2,TF>& vec )
-   -> EnableIf_t< IsNumeric_v<T1>, bool >
+   -> EnableIf_t< IsScalar_v<T1>, bool >
 {
    return !( vec == scalar );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Addition assignment operator for the addition of a dense vector and a scalar value
+//        (\f$ \vec{a}+=s \f$).
+// \ingroup dense_vector
+//
+// \param vec The left-hand side dense vector for the addition.
+// \param scalar The right-hand side scalar value for the addition.
+// \return Reference to the left-hand side dense vector.
+// \exception std::invalid_argument Invalid addition to restricted vector.
+//
+// In case the vector \a VT is restricted and the assignment would violate an invariant of the
+// vector, a \a std::invalid_argument exception is thrown.
+*/
+template< typename VT    // Type of the left-hand side dense vector
+        , bool TF        // Transpose flag
+        , typename ST >  // Data type of the right-hand side scalar
+inline auto operator+=( DenseVector<VT,TF>& vec, ST scalar )
+   -> EnableIf_t< IsScalar_v<ST>, VT& >
+{
+   if( IsRestricted_v<VT> ) {
+      if( !tryAdd( *vec, 0UL, (*vec).size(), scalar ) ) {
+         BLAZE_THROW_INVALID_ARGUMENT( "Invalid addition to restricted vector" );
+      }
+   }
+
+   decltype(auto) left( derestrict( *vec ) );
+
+   smpAssign( left, left + scalar );
+
+   BLAZE_INTERNAL_ASSERT( isIntact( *vec ), "Invariant violation detected" );
+
+   return *vec;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Addition assignment operator for the addition of a temporary dense vector and a scalar
+//        value (\f$ \vec{v}+=s \f$).
+// \ingroup dense_vector
+//
+// \param vec The left-hand side temporary dense vector for the addition.
+// \param scalar The right-hand side scalar value for the addition.
+// \return Reference to the left-hand side dense vector.
+// \exception std::invalid_argument Invalid addition to restricted vector.
+//
+// In case the vector \a VT is restricted and the assignment would violate an invariant of the
+// vector, a \a std::invalid_argument exception is thrown.
+*/
+template< typename VT    // Type of the left-hand side dense vector
+        , bool TF        // Transpose flag
+        , typename ST >  // Data type of the right-hand side scalar
+inline auto operator+=( DenseVector<VT,TF>&& vec, ST scalar )
+   -> EnableIf_t< IsScalar_v<ST>, VT& >
+{
+   return operator+=( *vec, scalar );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Subtraction assignment operator for the subtraction of a dense vector and a scalar value
+//        (\f$ \vec{a}-=s \f$).
+// \ingroup dense_vector
+//
+// \param vec The left-hand side dense vector for the subtraction.
+// \param scalar The right-hand side scalar value for the subtraction.
+// \return Reference to the left-hand side dense vector.
+// \exception std::invalid_argument Invalid subtraction from restricted vector.
+//
+// In case the vector \a VT is restricted and the assignment would violate an invariant of the
+// vector, a \a std::invalid_argument exception is thrown.
+*/
+template< typename VT    // Type of the left-hand side dense vector
+        , bool TF        // Transpose flag
+        , typename ST >  // Data type of the right-hand side scalar
+inline auto operator-=( DenseVector<VT,TF>& vec, ST scalar )
+   -> EnableIf_t< IsScalar_v<ST>, VT& >
+{
+   if( IsRestricted_v<VT> ) {
+      if( !trySub( *vec, 0UL, (*vec).size(), scalar ) ) {
+         BLAZE_THROW_INVALID_ARGUMENT( "Invalid subtraction from restricted vector" );
+      }
+   }
+
+   decltype(auto) left( derestrict( *vec ) );
+
+   smpAssign( left, left - scalar );
+
+   BLAZE_INTERNAL_ASSERT( isIntact( *vec ), "Invariant violation detected" );
+
+   return *vec;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Subtraction assignment operator for the subtraction of a temporary dense vector and a
+//        scalar value (\f$ \vec{v}-=s \f$).
+// \ingroup dense_vector
+//
+// \param vec The left-hand side temporary dense vector for the subtraction.
+// \param scalar The right-hand side scalar value for the subtraction.
+// \return Reference to the left-hand side dense vector.
+// \exception std::invalid_argument Invalid subtraction from restricted vector.
+//
+// In case the vector \a VT is restricted and the assignment would violate an invariant of the
+// vector, a \a std::invalid_argument exception is thrown.
+*/
+template< typename VT    // Type of the left-hand side dense vector
+        , bool TF        // Transpose flag
+        , typename ST >  // Data type of the right-hand side scalar
+inline auto operator-=( DenseVector<VT,TF>&& vec, ST scalar )
+   -> EnableIf_t< IsScalar_v<ST>, VT& >
+{
+   return operator-=( *vec, scalar );
 }
 //*************************************************************************************************
 
@@ -224,28 +432,28 @@ template< typename VT    // Type of the left-hand side dense vector
         , bool TF        // Transpose flag
         , typename ST >  // Data type of the right-hand side scalar
 inline auto operator*=( DenseVector<VT,TF>& vec, ST scalar )
-   -> EnableIf_t< IsNumeric_v<ST>, VT& >
+   -> EnableIf_t< IsScalar_v<ST>, VT& >
 {
    if( IsRestricted_v<VT> ) {
-      if( !tryMult( ~vec, 0UL, (~vec).size(), scalar ) ) {
+      if( !tryMult( *vec, 0UL, (*vec).size(), scalar ) ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid scaling of restricted vector" );
       }
    }
 
-   BLAZE_DECLTYPE_AUTO( left, derestrict( ~vec ) );
+   decltype(auto) left( derestrict( *vec ) );
 
    smpAssign( left, left * scalar );
 
-   BLAZE_INTERNAL_ASSERT( isIntact( ~vec ), "Invariant violation detected" );
+   BLAZE_INTERNAL_ASSERT( isIntact( *vec ), "Invariant violation detected" );
 
-   return ~vec;
+   return *vec;
 }
 //*************************************************************************************************
 
 
 //*************************************************************************************************
 /*!\brief Multiplication assignment operator for the multiplication of a temporary dense vector
-//        and a scalar (\f$ v*=s \f$).
+//        and a scalar value (\f$ \vec{v}*=s \f$).
 // \ingroup dense_vector
 //
 // \param vec The left-hand side temporary dense vector for the multiplication.
@@ -260,9 +468,9 @@ template< typename VT    // Type of the left-hand side dense vector
         , bool TF        // Transpose flag
         , typename ST >  // Data type of the right-hand side scalar
 inline auto operator*=( DenseVector<VT,TF>&& vec, ST scalar )
-   -> EnableIf_t< IsNumeric_v<ST>, VT& >
+   -> EnableIf_t< IsScalar_v<ST>, VT& >
 {
-   return operator*=( ~vec, scalar );
+   return operator*=( *vec, scalar );
 }
 //*************************************************************************************************
 
@@ -286,23 +494,23 @@ template< typename VT    // Type of the left-hand side dense vector
         , bool TF        // Transpose flag
         , typename ST >  // Data type of the right-hand side scalar
 inline auto operator/=( DenseVector<VT,TF>& vec, ST scalar )
-   -> EnableIf_t< IsNumeric_v<ST>, VT& >
+   -> EnableIf_t< IsScalar_v<ST>, VT& >
 {
-   BLAZE_USER_ASSERT( !isZero( scalar ), "Division by zero detected" );
+   BLAZE_USER_ASSERT( isDivisor( scalar ), "Division by zero detected" );
 
    if( IsRestricted_v<VT> ) {
-      if( !tryDiv( ~vec, 0UL, (~vec).size(), scalar ) ) {
+      if( !tryDiv( *vec, 0UL, (*vec).size(), scalar ) ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid scaling of restricted vector" );
       }
    }
 
-   BLAZE_DECLTYPE_AUTO( left, derestrict( ~vec ) );
+   decltype(auto) left( derestrict( *vec ) );
 
    smpAssign( left, left / scalar );
 
-   BLAZE_INTERNAL_ASSERT( isIntact( ~vec ), "Invariant violation detected" );
+   BLAZE_INTERNAL_ASSERT( isIntact( *vec ), "Invariant violation detected" );
 
-   return ~vec;
+   return *vec;
 }
 //*************************************************************************************************
 
@@ -326,9 +534,575 @@ template< typename VT    // Type of the left-hand side dense vector
         , bool TF        // Transpose flag
         , typename ST >  // Data type of the right-hand side scalar
 inline auto operator/=( DenseVector<VT,TF>&& vec, ST scalar )
-   -> EnableIf_t< IsNumeric_v<ST>, VT& >
+   -> EnableIf_t< IsScalar_v<ST>, VT& >
 {
-   return operator/=( ~vec, scalar );
+   return operator/=( *vec, scalar );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Left-shift assignment operator for the uniform left-shift of a dense vector.
+// \ingroup dense_vector
+//
+// \param vec The dense vector for the uniform left-shift operation.
+// \param count The number of bits to shift all vector elements.
+// \return Reference to the dense vector.
+// \exception std::invalid_argument Invalid left-shift of restricted vector.
+//
+// In case the vector \a VT is restricted and the assignment would violate an invariant of the
+// vector, a \a std::invalid_argument exception is thrown.
+*/
+template< typename VT  // Type of the dense vector
+        , bool TF >    // Transpose flag
+inline VT& operator<<=( DenseVector<VT,TF>& vec, int count )
+{
+   if( IsRestricted_v<VT> ) {
+      if( !tryShift( *vec, 0UL, (*vec).size(), count ) ) {
+         BLAZE_THROW_INVALID_ARGUMENT( "Invalid left-shift of restricted vector" );
+      }
+   }
+
+   decltype(auto) left( derestrict( *vec ) );
+
+   smpAssign( left, left << count );
+
+   BLAZE_INTERNAL_ASSERT( isIntact( *vec ), "Invariant violation detected" );
+
+   return *vec;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Left-shift assignment operator for the uniform shift of a temporary dense vector.
+// \ingroup dense_vector
+//
+// \param vec The temporary dense vector for the uniform left-shift operation.
+// \param count The number of bits to shift all vector elements.
+// \return Reference to the dense vector.
+// \exception std::invalid_argument Invalid left-shift of restricted vector.
+//
+// In case the vector \a VT is restricted and the assignment would violate an invariant of the
+// vector, a \a std::invalid_argument exception is thrown.
+*/
+template< typename VT  // Type of the dense vector
+        , bool TF >    // Transpose flag
+inline VT& operator<<=( DenseVector<VT,TF>&& vec, int count )
+{
+   return operator<<=( *vec, count );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Left-shift assignment operator for the elementwise left-shift of a dense vector.
+// \ingroup dense_vector
+//
+// \param lhs The left-hand side dense vector to be shifted.
+// \param rhs The right-hand side dense vector of bits to shift.
+// \return Reference to the dense vector.
+// \exception std::invalid_argument Invalid left-shift of restricted vector.
+//
+// In case the vector \a VT is restricted and the assignment would violate an invariant of the
+// vector, a \a std::invalid_argument exception is thrown.
+*/
+template< typename VT1  // Type of the left-hand side dense vector
+        , typename VT2  // Type of the right-hand side dense vector
+        , bool TF >     // Transpose flag
+inline VT1& operator<<=( DenseVector<VT1,TF>& lhs, const DenseVector<VT2,TF>& rhs )
+{
+   if( IsRestricted_v<VT1> ) {
+      if( !tryShiftAssign( *lhs, *rhs, 0UL ) ) {
+         BLAZE_THROW_INVALID_ARGUMENT( "Invalid left-shift of restricted vector" );
+      }
+   }
+
+   decltype(auto) left( derestrict( *lhs ) );
+
+   smpAssign( left, left << (*rhs) );
+
+   BLAZE_INTERNAL_ASSERT( isIntact( *lhs ), "Invariant violation detected" );
+
+   return *lhs;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Left-shift assignment operator for the elementwise left-shift of a temporary dense
+//        vector.
+// \ingroup dense_vector
+//
+// \param lhs The left-hand side temporary dense vector to be shifted.
+// \param rhs The right-hand side dense vector of bits to shift.
+// \return Reference to the dense vector.
+// \exception std::invalid_argument Invalid left-shift of restricted vector.
+//
+// In case the vector \a VT is restricted and the assignment would violate an invariant of the
+// vector, a \a std::invalid_argument exception is thrown.
+*/
+template< typename VT1  // Type of the left-hand side dense vector
+        , typename VT2  // Type of the right-hand side dense vector
+        , bool TF >     // Transpose flag
+inline VT1& operator<<=( DenseVector<VT1,TF>&& lhs, const DenseVector<VT2,TF>& rhs )
+{
+   return operator<<=( *lhs, *rhs );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Right-shift assignment operator for the uniform right-shift of a dense vector.
+// \ingroup dense_vector
+//
+// \param vec The dense vector for the uniform right-shift operation.
+// \param count The number of bits to shift all vector elements.
+// \return Reference to the dense vector.
+// \exception std::invalid_argument Invalid right-shift of restricted vector.
+//
+// In case the vector \a VT is restricted and the assignment would violate an invariant of the
+// vector, a \a std::invalid_argument exception is thrown.
+*/
+template< typename VT  // Type of the dense vector
+        , bool TF >    // Transpose flag
+inline VT& operator>>=( DenseVector<VT,TF>& vec, int count )
+{
+   if( IsRestricted_v<VT> ) {
+      if( !tryShift( *vec, 0UL, (*vec).size(), count ) ) {
+         BLAZE_THROW_INVALID_ARGUMENT( "Invalid right-shift of restricted vector" );
+      }
+   }
+
+   decltype(auto) left( derestrict( *vec ) );
+
+   smpAssign( left, left >> count );
+
+   BLAZE_INTERNAL_ASSERT( isIntact( *vec ), "Invariant violation detected" );
+
+   return *vec;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Right-shift assignment operator for the uniform shift of a temporary dense vector.
+// \ingroup dense_vector
+//
+// \param vec The temporary dense vector for the uniform right-shift operation.
+// \param count The number of bits to shift all vector elements.
+// \return Reference to the dense vector.
+// \exception std::invalid_argument Invalid right-shift of restricted vector.
+//
+// In case the vector \a VT is restricted and the assignment would violate an invariant of the
+// vector, a \a std::invalid_argument exception is thrown.
+*/
+template< typename VT  // Type of the dense vector
+        , bool TF >    // Transpose flag
+inline VT& operator>>=( DenseVector<VT,TF>&& vec, int count )
+{
+   return operator>>=( *vec, count );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Right-shift assignment operator for the elementwise right-shift of a dense vector.
+// \ingroup dense_vector
+//
+// \param lhs The left-hand side dense vector to be shifted.
+// \param rhs The right-hand side dense vector of bits to shift.
+// \return Reference to the dense vector.
+// \exception std::invalid_argument Invalid right-shift of restricted vector.
+//
+// In case the vector \a VT is restricted and the assignment would violate an invariant of the
+// vector, a \a std::invalid_argument exception is thrown.
+*/
+template< typename VT1  // Type of the left-hand side dense vector
+        , typename VT2  // Type of the right-hand side dense vector
+        , bool TF >     // Transpose flag
+inline VT1& operator>>=( DenseVector<VT1,TF>& lhs, const DenseVector<VT2,TF>& rhs )
+{
+   if( IsRestricted_v<VT1> ) {
+      if( !tryShiftAssign( *lhs, *rhs, 0UL ) ) {
+         BLAZE_THROW_INVALID_ARGUMENT( "Invalid right-shift of restricted vector" );
+      }
+   }
+
+   decltype(auto) left( derestrict( *lhs ) );
+
+   smpAssign( left, left >> (*rhs) );
+
+   BLAZE_INTERNAL_ASSERT( isIntact( *lhs ), "Invariant violation detected" );
+
+   return *lhs;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Right-shift assignment operator for the elementwise right-shift of a temporary dense.
+// \ingroup dense_vector
+//
+// \param lhs The left-hand side temporary dense vector to be shifted.
+// \param rhs The right-hand side dense vector of bits to shift.
+// \return Reference to the dense vector.
+// \exception std::invalid_argument Invalid right-shift of restricted vector.
+//
+// In case the vector \a VT is restricted and the assignment would violate an invariant of the
+// vector, a \a std::invalid_argument exception is thrown.
+*/
+template< typename VT1  // Type of the left-hand side dense vector
+        , typename VT2  // Type of the right-hand side dense vector
+        , bool TF >     // Transpose flag
+inline VT1& operator>>=( DenseVector<VT1,TF>&& lhs, const DenseVector<VT2,TF>& rhs )
+{
+   return operator>>=( *lhs, *rhs );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Bitwise AND assignment operator for the bitwise AND of a dense vector and a scalar value.
+// \ingroup dense_vector
+//
+// \param vec The left-hand side dense vector for the bitwise AND.
+// \param scalar The right-hand side scalar value for the bitwise AND.
+// \return Reference to the left-hand side dense vector.
+// \exception std::invalid_argument Invalid bitwise AND of restricted vector.
+//
+// In case the vector \a VT is restricted and the assignment would violate an invariant of the
+// vector, a \a std::invalid_argument exception is thrown.
+*/
+template< typename VT    // Type of the left-hand side dense vector
+        , bool TF        // Transpose flag
+        , typename ST >  // Data type of the right-hand side scalar
+inline auto operator&=( DenseVector<VT,TF>& vec, ST scalar )
+   -> EnableIf_t< IsScalar_v<ST>, VT& >
+{
+   if( IsRestricted_v<VT> ) {
+      if( !tryBitand( *vec, 0UL, (*vec).size(), scalar ) ) {
+         BLAZE_THROW_INVALID_ARGUMENT( "Invalid bitwise AND of restricted vector" );
+      }
+   }
+
+   decltype(auto) left( derestrict( *vec ) );
+
+   smpAssign( left, left & scalar );
+
+   BLAZE_INTERNAL_ASSERT( isIntact( *vec ), "Invariant violation detected" );
+
+   return *vec;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Bitwise AND assignment operator for the bitwise AND of a temporary dense vector and
+//        a scalar value.
+// \ingroup dense_vector
+//
+// \param vec The left-hand side temporary dense vector for the bitwise AND.
+// \param scalar The right-hand side scalar value for the bitwise AND.
+// \return Reference to the left-hand side dense vector.
+// \exception std::invalid_argument Invalid bitwise AND of restricted vector.
+//
+// In case the vector \a VT is restricted and the assignment would violate an invariant of the
+// vector, a \a std::invalid_argument exception is thrown.
+*/
+template< typename VT    // Type of the left-hand side dense vector
+        , bool TF        // Transpose flag
+        , typename ST >  // Data type of the right-hand side scalar
+inline auto operator&=( DenseVector<VT,TF>&& vec, ST scalar )
+   -> EnableIf_t< IsScalar_v<ST>, VT& >
+{
+   return operator&=( *vec, scalar );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Bitwise AND assignment operator for the bitwise AND of a dense vector.
+// \ingroup dense_vector
+//
+// \param lhs The left-hand side dense vector for the bitwise AND operation.
+// \param rhs The right-hand side dense vector for the bitwise AND operation.
+// \return Reference to the dense vector.
+// \exception std::invalid_argument Invalid bitwise AND of restricted vector.
+//
+// In case the vector \a VT is restricted and the assignment would violate an invariant of the
+// vector, a \a std::invalid_argument exception is thrown.
+*/
+template< typename VT1  // Type of the left-hand side dense vector
+        , typename VT2  // Type of the right-hand side dense vector
+        , bool TF >     // Transpose flag
+inline VT1& operator&=( DenseVector<VT1,TF>& lhs, const DenseVector<VT2,TF>& rhs )
+{
+   if( IsRestricted_v<VT1> ) {
+      if( !tryBitandAssign( *lhs, *rhs, 0UL ) ) {
+         BLAZE_THROW_INVALID_ARGUMENT( "Invalid bitwise AND of restricted vector" );
+      }
+   }
+
+   decltype(auto) left( derestrict( *lhs ) );
+
+   smpAssign( left, left & (*rhs) );
+
+   BLAZE_INTERNAL_ASSERT( isIntact( *lhs ), "Invariant violation detected" );
+
+   return *lhs;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Bitwise AND assignment operator for the bitwise AND of a temporary dense vector.
+// \ingroup dense_vector
+//
+// \param lhs The left-hand side temporary dense vector for the bitwise AND operation.
+// \param rhs The right-hand side dense vector for the bitwise AND operation.
+// \return Reference to the dense vector.
+// \exception std::invalid_argument Invalid bitwise AND of restricted vector.
+//
+// In case the vector \a VT is restricted and the assignment would violate an invariant of the
+// vector, a \a std::invalid_argument exception is thrown.
+*/
+template< typename VT1  // Type of the left-hand side dense vector
+        , typename VT2  // Type of the right-hand side dense vector
+        , bool TF >     // Transpose flag
+inline VT1& operator&=( DenseVector<VT1,TF>&& lhs, const DenseVector<VT2,TF>& rhs )
+{
+   return operator&=( *lhs, *rhs );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Bitwise OR assignment operator for the bitwise OR of a dense vector and a scalar value.
+// \ingroup dense_vector
+//
+// \param vec The left-hand side dense vector for the bitwise OR.
+// \param scalar The right-hand side scalar value for the bitwise OR.
+// \return Reference to the left-hand side dense vector.
+// \exception std::invalid_argument Invalid bitwise OR of restricted vector.
+//
+// In case the vector \a VT is restricted and the assignment would violate an invariant of the
+// vector, a \a std::invalid_argument exception is thrown.
+*/
+template< typename VT    // Type of the left-hand side dense vector
+        , bool TF        // Transpose flag
+        , typename ST >  // Data type of the right-hand side scalar
+inline auto operator|=( DenseVector<VT,TF>& vec, ST scalar )
+   -> EnableIf_t< IsScalar_v<ST>, VT& >
+{
+   if( IsRestricted_v<VT> ) {
+      if( !tryBitor( *vec, 0UL, (*vec).size(), scalar ) ) {
+         BLAZE_THROW_INVALID_ARGUMENT( "Invalid bitwise OR of restricted vector" );
+      }
+   }
+
+   decltype(auto) left( derestrict( *vec ) );
+
+   smpAssign( left, left | scalar );
+
+   BLAZE_INTERNAL_ASSERT( isIntact( *vec ), "Invariant violation detected" );
+
+   return *vec;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Bitwise OR assignment operator for the bitwise OR of a temporary dense vector and
+//        a scalar value.
+// \ingroup dense_vector
+//
+// \param vec The left-hand side temporary dense vector for the bitwise OR.
+// \param scalar The right-hand side scalar value for the bitwise OR.
+// \return Reference to the left-hand side dense vector.
+// \exception std::invalid_argument Invalid bitwise OR of restricted vector.
+//
+// In case the vector \a VT is restricted and the assignment would violate an invariant of the
+// vector, a \a std::invalid_argument exception is thrown.
+*/
+template< typename VT    // Type of the left-hand side dense vector
+        , bool TF        // Transpose flag
+        , typename ST >  // Data type of the right-hand side scalar
+inline auto operator|=( DenseVector<VT,TF>&& vec, ST scalar )
+   -> EnableIf_t< IsScalar_v<ST>, VT& >
+{
+   return operator|=( *vec, scalar );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Bitwise OR assignment operator for the bitwise OR of a dense vector.
+// \ingroup dense_vector
+//
+// \param lhs The left-hand side dense vector for the bitwise OR operation.
+// \param rhs The right-hand side dense vector for the bitwise OR operation.
+// \return Reference to the dense vector.
+// \exception std::invalid_argument Invalid bitwise OR of restricted vector.
+//
+// In case the vector \a VT is restricted and the assignment would violate an invariant of the
+// vector, a \a std::invalid_argument exception is thrown.
+*/
+template< typename VT1  // Type of the left-hand side dense vector
+        , typename VT2  // Type of the right-hand side dense vector
+        , bool TF >     // Transpose flag
+inline VT1& operator|=( DenseVector<VT1,TF>& lhs, const DenseVector<VT2,TF>& rhs )
+{
+   if( IsRestricted_v<VT1> ) {
+      if( !tryBitorAssign( *lhs, *rhs, 0UL ) ) {
+         BLAZE_THROW_INVALID_ARGUMENT( "Invalid bitwise OR of restricted vector" );
+      }
+   }
+
+   decltype(auto) left( derestrict( *lhs ) );
+
+   smpAssign( left, left | (*rhs) );
+
+   BLAZE_INTERNAL_ASSERT( isIntact( *lhs ), "Invariant violation detected" );
+
+   return *lhs;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Bitwise OR assignment operator for the bitwise OR of a temporary dense vector.
+// \ingroup dense_vector
+//
+// \param lhs The left-hand side temporary dense vector for the bitwise OR operation.
+// \param rhs The right-hand side dense vector for the bitwise OR operation.
+// \return Reference to the dense vector.
+// \exception std::invalid_argument Invalid bitwise OR of restricted vector.
+//
+// In case the vector \a VT is restricted and the assignment would violate an invariant of the
+// vector, a \a std::invalid_argument exception is thrown.
+*/
+template< typename VT1  // Type of the left-hand side dense vector
+        , typename VT2  // Type of the right-hand side dense vector
+        , bool TF >     // Transpose flag
+inline VT1& operator|=( DenseVector<VT1,TF>&& lhs, const DenseVector<VT2,TF>& rhs )
+{
+   return operator|=( *lhs, *rhs );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Bitwise XOR assignment operator for the bitwise XOR of a dense vector and a scalar value.
+// \ingroup dense_vector
+//
+// \param vec The left-hand side dense vector for the bitwise XOR.
+// \param scalar The right-hand side scalar value for the bitwise XOR.
+// \return Reference to the left-hand side dense vector.
+// \exception std::invalid_argument Invalid bitwise XOR of restricted vector.
+//
+// In case the vector \a VT is restricted and the assignment would violate an invariant of the
+// vector, a \a std::invalid_argument exception is thrown.
+*/
+template< typename VT    // Type of the left-hand side dense vector
+        , bool TF        // Transpose flag
+        , typename ST >  // Data type of the right-hand side scalar
+inline auto operator^=( DenseVector<VT,TF>& vec, ST scalar )
+   -> EnableIf_t< IsScalar_v<ST>, VT& >
+{
+   if( IsRestricted_v<VT> ) {
+      if( !tryBitxor( *vec, 0UL, (*vec).size(), scalar ) ) {
+         BLAZE_THROW_INVALID_ARGUMENT( "Invalid bitwise XOR of restricted vector" );
+      }
+   }
+
+   decltype(auto) left( derestrict( *vec ) );
+
+   smpAssign( left, left ^ scalar );
+
+   BLAZE_INTERNAL_ASSERT( isIntact( *vec ), "Invariant violation detected" );
+
+   return *vec;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Bitwise XOR assignment operator for the bitwise XOR of a temporary dense vector and
+//        a scalar value.
+// \ingroup dense_vector
+//
+// \param vec The left-hand side temporary dense vector for the bitwise XOR.
+// \param scalar The right-hand side scalar value for the bitwise XOR.
+// \return Reference to the left-hand side dense vector.
+// \exception std::invalid_argument Invalid bitwise XOR of restricted vector.
+//
+// In case the vector \a VT is restricted and the assignment would violate an invariant of the
+// vector, a \a std::invalid_argument exception is thrown.
+*/
+template< typename VT    // Type of the left-hand side dense vector
+        , bool TF        // Transpose flag
+        , typename ST >  // Data type of the right-hand side scalar
+inline auto operator^=( DenseVector<VT,TF>&& vec, ST scalar )
+   -> EnableIf_t< IsScalar_v<ST>, VT& >
+{
+   return operator^=( *vec, scalar );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Bitwise XOR assignment operator for the bitwise XOR of a dense vector.
+// \ingroup dense_vector
+//
+// \param lhs The left-hand side dense vector for the bitwise XOR operation.
+// \param rhs The right-hand side dense vector for the bitwise XOR operation.
+// \return Reference to the dense vector.
+// \exception std::invalid_argument Invalid bitwise XOR of restricted vector.
+//
+// In case the vector \a VT is restricted and the assignment would violate an invariant of the
+// vector, a \a std::invalid_argument exception is thrown.
+*/
+template< typename VT1  // Type of the left-hand side dense vector
+        , typename VT2  // Type of the right-hand side dense vector
+        , bool TF >     // Transpose flag
+inline VT1& operator^=( DenseVector<VT1,TF>& lhs, const DenseVector<VT2,TF>& rhs )
+{
+   if( IsRestricted_v<VT1> ) {
+      if( !tryBitxorAssign( *lhs, *rhs, 0UL ) ) {
+         BLAZE_THROW_INVALID_ARGUMENT( "Invalid bitwise XOR of restricted vector" );
+      }
+   }
+
+   decltype(auto) left( derestrict( *lhs ) );
+
+   smpAssign( left, left ^ (*rhs) );
+
+   BLAZE_INTERNAL_ASSERT( isIntact( *lhs ), "Invariant violation detected" );
+
+   return *lhs;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Bitwise XOR assignment operator for the bitwise XOR of a temporary dense vector.
+// \ingroup dense_vector
+//
+// \param lhs The left-hand side temporary dense vector for the bitwise XOR operation.
+// \param rhs The right-hand side dense vector for the bitwise XOR operation.
+// \return Reference to the dense vector.
+// \exception std::invalid_argument Invalid bitwise XOR of restricted vector.
+//
+// In case the vector \a VT is restricted and the assignment would violate an invariant of the
+// vector, a \a std::invalid_argument exception is thrown.
+*/
+template< typename VT1  // Type of the left-hand side dense vector
+        , typename VT2  // Type of the right-hand side dense vector
+        , bool TF >     // Transpose flag
+inline VT1& operator^=( DenseVector<VT1,TF>&& lhs, const DenseVector<VT2,TF>& rhs )
+{
+   return operator^=( *lhs, *rhs );
 }
 //*************************************************************************************************
 
@@ -348,19 +1122,19 @@ template< typename VT, bool TF >
 bool isnan( const DenseVector<VT,TF>& dv );
 
 template< typename VT, bool TF >
+bool isinf( const DenseVector<VT,TF>& dv );
+
+template< typename VT, bool TF >
+bool isfinite( const DenseVector<VT,TF>& dv );
+
+template< typename VT, bool TF >
 bool isDivisor( const DenseVector<VT,TF>& dv );
 
-template< typename VT, bool TF >
+template< RelaxationFlag RF, typename VT, bool TF >
 bool isUniform( const DenseVector<VT,TF>& dv );
 
-template< typename VT, bool TF >
-const ElementType_t<VT> sqrLength( const DenseVector<VT,TF>& dv );
-
-template< typename VT, bool TF >
-inline auto length( const DenseVector<VT,TF>& dv ) -> decltype( sqrt( sqrLength( ~dv ) ) );
-
-template< typename VT, bool TF >
-auto softmax( const DenseVector<VT,TF>& dv );
+template< RelaxationFlag RF, typename VT, bool TF >
+bool isZero( const DenseVector<VT,TF>& dv );
 //@}
 //*************************************************************************************************
 
@@ -369,7 +1143,7 @@ auto softmax( const DenseVector<VT,TF>& dv );
 /*!\brief Checks the given dense vector for not-a-number elements.
 // \ingroup dense_vector
 //
-// \param dv The vector to be checked for not-a-number elements.
+// \param dv The dense vector to be checked for not-a-number elements.
 // \return \a true if at least one element of the vector is not-a-number, \a false otherwise.
 //
 // This function checks the N-dimensional dense vector for not-a-number (NaN) elements. If at
@@ -381,20 +1155,87 @@ auto softmax( const DenseVector<VT,TF>& dv );
    // ... Resizing and initialization
    if( isnan( a ) ) { ... }
    \endcode
-
-// Note that this function only works for vectors with floating point elements. The attempt to
-// use it for a vector with a non-floating point element type results in a compile time error.
 */
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
 bool isnan( const DenseVector<VT,TF>& dv )
 {
-   CompositeType_t<VT> a( ~dv );  // Evaluation of the dense vector operand
+   if( !IsFloatingPoint_v< UnderlyingBuiltin_t<VT> > )
+      return false;
+
+   CompositeType_t<VT> a( *dv );  // Evaluation of the dense vector operand
 
    for( size_t i=0UL; i<a.size(); ++i ) {
       if( isnan( a[i] ) ) return true;
    }
    return false;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Checks the given dense vector for infinite elements.
+// \ingroup dense_vector
+//
+// \param dv The dense vector to be checked for infinite elements.
+// \return \a true if at least one element of the vector is infinite, \a false otherwise.
+//
+// This function checks the N-dimensional dense vector for infinite elements. If at least one
+// element of the vector is infinite, the function returns \a true, otherwise it returns \a false.
+
+   \code
+   blaze::DynamicVector<double> a;
+   // ... Resizing and initialization
+   if( isinf( a ) ) { ... }
+   \endcode
+*/
+template< typename VT  // Type of the dense vector
+        , bool TF >    // Transpose flag
+bool isinf( const DenseVector<VT,TF>& dv )
+{
+   if( !IsFloatingPoint_v< UnderlyingBuiltin_t<VT> > )
+      return false;
+
+   CompositeType_t<VT> a( *dv );  // Evaluation of the dense vector operand
+
+   for( size_t i=0UL; i<a.size(); ++i ) {
+      if( isinf( a[i] ) ) return true;
+   }
+   return false;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Checks the given dense vector for finite elements.
+// \ingroup dense_vector
+//
+// \param dv The dense vector to be checked for finite elements.
+// \return \a true if all elements of the vector are finite, \a false otherwise.
+//
+// This function checks if all elements of the N-dimensional dense vector are finite elements
+// (i.e. normal, subnormal or zero elements, but not infinite or NaN). If all elements of the
+// vector are finite, the function returns \a true, otherwise it returns \a false.
+
+   \code
+   blaze::DynamicVector<double> a;
+   // ... Resizing and initialization
+   if( isfinite( a ) ) { ... }
+   \endcode
+*/
+template< typename VT  // Type of the dense vector
+        , bool TF >    // Transpose flag
+bool isfinite( const DenseVector<VT,TF>& dv )
+{
+   if( !IsFloatingPoint_v< UnderlyingBuiltin_t<VT> > )
+      return true;
+
+   CompositeType_t<VT> a( *dv );  // Evaluation of the dense vector operand
+
+   for( size_t i=0UL; i<a.size(); ++i ) {
+      if( !isfinite( a[i] ) ) return false;
+   }
+   return true;
 }
 //*************************************************************************************************
 
@@ -419,7 +1260,7 @@ template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
 bool isDivisor( const DenseVector<VT,TF>& dv )
 {
-   CompositeType_t<VT> a( ~dv );  // Evaluation of the dense vector operand
+   CompositeType_t<VT> a( *dv );  // Evaluation of the dense vector operand
 
    for( size_t i=0UL; i<a.size(); ++i ) {
       if( !isDivisor( a[i] ) ) return false;
@@ -446,7 +1287,14 @@ bool isDivisor( const DenseVector<VT,TF>& dv )
    if( isUniform( a ) ) { ... }
    \endcode
 
-// It is also possible to check if a vector expression results in a uniform vector:
+// Optionally, it is possible to switch between strict semantics (blaze::strict) and relaxed
+// semantics (blaze::relaxed):
+
+   \code
+   if( isUniform<relaxed>( a ) ) { ... }
+   \endcode
+
+// It is also possible to check if a vector expression results is a uniform vector:
 
    \code
    if( isUniform( a + b ) ) { ... }
@@ -455,22 +1303,20 @@ bool isDivisor( const DenseVector<VT,TF>& dv )
 // However, note that this might require the complete evaluation of the expression, including
 // the generation of a temporary vector.
 */
-template< typename VT  // Type of the dense vector
-        , bool TF >    // Transpose flag
+template< RelaxationFlag RF  // Relaxation flag
+        , typename VT        // Type of the dense vector
+        , bool TF >          // Transpose flag
 bool isUniform( const DenseVector<VT,TF>& dv )
 {
-   using CT = CompositeType_t<VT>;
-   using ConstReference = ConstReference_t< RemoveReference_t<CT> >;
-
-   if( IsUniform_v<VT> || (~dv).size() < 2UL )
+   if( IsUniform_v<VT> || (*dv).size() < 2UL )
       return true;
 
-   CT a( ~dv );  // Evaluation of the dense vector operand
+   CompositeType_t<VT> a( *dv );  // Evaluation of the dense vector operand
 
-   ConstReference cmp( a[0UL] );
+   const auto& cmp( a[0UL] );
 
    for( size_t i=1UL; i<a.size(); ++i ) {
-      if( a[i] != cmp )
+      if( !equal<RF>( a[i], cmp ) )
          return false;
    }
 
@@ -480,99 +1326,54 @@ bool isUniform( const DenseVector<VT,TF>& dv )
 
 
 //*************************************************************************************************
-/*!\brief Calculation of the square length (magnitude) of the dense vector \f$|\vec{a}|^2\f$.
+/*!\brief Checks if the given dense vector is a zero vector.
 // \ingroup dense_vector
 //
-// \param dv The given dense vector.
-// \return The square length (magnitude) of the dense vector.
+// \param dv The dense vector to be checked.
+// \return \a true if the vector is a zero vector, \a false if not.
 //
-// This function calculates the actual square length (magnitude) of the dense vector.
-//
-// \note This operation is only defined for numeric data types. In case the element type is
-// not a numeric data type (i.e. a user defined data type or boolean) the attempt to use the
-// sqrLength() function results in a compile time error!
+// This function checks if the given dense vector is a zero vector. The vector is considered to
+// be zero if all its elements are zero. The following code example demonstrates the use of the
+// function:
+
+   \code
+   blaze::DynamicVector<int,blaze::columnVector> a, b;
+   // ... Initialization
+   if( isZero( a ) ) { ... }
+   \endcode
+
+// Optionally, it is possible to switch between strict semantics (blaze::strict) and relaxed
+// semantics (blaze::relaxed):
+
+   \code
+   if( isZero<relaxed>( a ) ) { ... }
+   \endcode
+
+// It is also possible to check if a vector expression results is a zero vector:
+
+   \code
+   if( isZero( a + b ) ) { ... }
+   \endcode
+
+// However, note that this might require the complete evaluation of the expression, including
+// the generation of a temporary vector.
 */
-template< typename VT  // Type of the dense vector
-        , bool TF >    // Transpose flag
-const ElementType_t<VT> sqrLength( const DenseVector<VT,TF>& dv )
+template< RelaxationFlag RF  // Relaxation flag
+        , typename VT        // Type of the dense vector
+        , bool TF >          // Transpose flag
+bool isZero( const DenseVector<VT,TF>& dv )
 {
-   using ElementType = ElementType_t<VT>;
+   if( IsZero_v<VT> || (*dv).size() == 0UL )
+      return true;
 
-   BLAZE_CONSTRAINT_MUST_BE_NUMERIC_TYPE( ElementType );
+   CompositeType_t<VT> a( *dv );  // Evaluation of the dense vector operand
 
-   ElementType sum( 0 );
-   for( size_t i=0UL; i<(~dv).size(); ++i )
-      sum += pow2( (~dv)[i] );
-   return sum;
-}
-//*************************************************************************************************
+   for( size_t i=0UL; i<a.size(); ++i ) {
+      if( !isZero<RF>( a[i] ) )
+         return false;
+   }
 
-
-//*************************************************************************************************
-/*!\brief Calculation of the length (magnitude) of the dense vector \f$|\vec{a}|\f$.
-// \ingroup dense_vector
-//
-// \param dv The given dense vector.
-// \return The length (magnitude) of the dense vector.
-//
-// This function calculates the actual length (magnitude) of the dense vector. The return type
-// of the length() function depends on the actual element type of the vector instance:
-//
-// <table border="0" cellspacing="0" cellpadding="1">
-//    <tr>
-//       <td width="250px"> \b Type </td>
-//       <td width="100px"> \b LengthType </td>
-//    </tr>
-//    <tr>
-//       <td>float</td>
-//       <td>float</td>
-//    </tr>
-//    <tr>
-//       <td>integral data types and double</td>
-//       <td>double</td>
-//    </tr>
-//    <tr>
-//       <td>long double</td>
-//       <td>long double</td>
-//    </tr>
-//    <tr>
-//       <td>complex<T></td>
-//       <td>complex<T></td>
-//    </tr>
-// </table>
-//
-// \note This operation is only defined for numeric data types. In case the element type is
-// not a numeric data type (i.e. a user defined data type or boolean) the attempt to use the
-// sqrLength() function results in a compile time error!
-*/
-template< typename VT  // Type of the dense vector
-        , bool TF >    // Transpose flag
-inline auto length( const DenseVector<VT,TF>& dv ) -> decltype( sqrt( sqrLength( ~dv ) ) )
-{
-   return sqrt( sqrLength( ~dv ) );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Computes the softmax function for the given dense vector.
-// \ingroup dense_vector
-//
-// \param dv The given dense vector for the softmax computation.
-// \return The resulting dense vector.
-//
-// This function computes the softmax function (i.e. the normalized exponential function) for
-// the given dense vector \a dv (see also https://en.wikipedia.org/wiki/Softmax_function). The
-// resulting dense vector consists of real values in the range (0..1], which add up to 1.
-*/
-template< typename VT  // Type of the dense vector
-        , bool TF >    // Transpose flag
-auto softmax( const DenseVector<VT,TF>& dv )
-{
-   auto tmp( evaluate( exp( ~dv ) ) );
-   const auto scalar( sum( ~tmp ) );
-   tmp /= scalar;
-   return tmp;
+   return true;
 }
 //*************************************************************************************************
 

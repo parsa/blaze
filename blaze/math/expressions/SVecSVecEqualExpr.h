@@ -3,7 +3,7 @@
 //  \file blaze/math/expressions/SVecSVecEqualExpr.h
 //  \brief Header file for the sparse vector/sparse vector equality comparison expression
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -45,7 +45,7 @@
 #include <blaze/math/RelaxationFlag.h>
 #include <blaze/math/shims/Equal.h>
 #include <blaze/math/shims/IsDefault.h>
-#include <blaze/util/typetraits/RemoveReference.h>
+#include <blaze/system/MacroDisable.h>
 
 
 namespace blaze {
@@ -69,32 +69,30 @@ namespace blaze {
 // a direct comparison of two floating point numbers should be avoided. This function offers the
 // possibility to compare two floating-point vectors with a certain accuracy margin.
 */
-template< bool RF       // Relaxation flag
-        , typename VT1  // Type of the left-hand side sparse vector
-        , bool TF1      // Transpose flag of the left-hand side sparse vector
-        , typename VT2  // Type of the right-hand side sparse vector
-        , bool TF2 >    // Transpose flag of the right-hand side sparse vector
+template< RelaxationFlag RF  // Relaxation flag
+        , typename VT1       // Type of the left-hand side sparse vector
+        , bool TF1           // Transpose flag of the left-hand side sparse vector
+        , typename VT2       // Type of the right-hand side sparse vector
+        , bool TF2 >         // Transpose flag of the right-hand side sparse vector
 inline bool equal( const SparseVector<VT1,TF1>& lhs, const SparseVector<VT2,TF2>& rhs )
 {
    using CT1 = CompositeType_t<VT1>;
    using CT2 = CompositeType_t<VT2>;
-   using LhsConstIterator = ConstIterator_t< RemoveReference_t<CT1> >;
-   using RhsConstIterator = ConstIterator_t< RemoveReference_t<CT2> >;
 
    // Early exit in case the vector sizes don't match
-   if( (~lhs).size() != (~rhs).size() ) return false;
+   if( (*lhs).size() != (*rhs).size() ) return false;
 
    // Evaluation of the two sparse vector operands
-   CT1 a( ~lhs );
-   CT2 b( ~rhs );
+   CT1 a( *lhs );
+   CT2 b( *rhs );
 
    // In order to compare the two vectors, the data values of the lower-order data
    // type are converted to the higher-order data type within the equal function.
-   const LhsConstIterator lend( a.end() );
-   const RhsConstIterator rend( b.end() );
+   const auto lend( a.end() );
+   const auto rend( b.end() );
 
-   LhsConstIterator lelem( a.begin() );
-   RhsConstIterator relem( b.begin() );
+   auto lelem( a.begin() );
+   auto relem( b.begin() );
 
    while( lelem != lend && relem != rend )
    {

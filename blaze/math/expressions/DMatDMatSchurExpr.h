@@ -3,7 +3,7 @@
 //  \file blaze/math/expressions/DMatDMatSchurExpr.h
 //  \brief Header file for the dense matrix/dense matrix Schur product expression
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -44,9 +44,11 @@
 #include <utility>
 #include <blaze/math/Aliases.h>
 #include <blaze/math/constraints/DenseMatrix.h>
+#include <blaze/math/constraints/Identity.h>
 #include <blaze/math/constraints/RequiresEvaluation.h>
 #include <blaze/math/constraints/SchurExpr.h>
 #include <blaze/math/constraints/StorageOrder.h>
+#include <blaze/math/constraints/Zero.h>
 #include <blaze/math/Exception.h>
 #include <blaze/math/expressions/Computation.h>
 #include <blaze/math/expressions/DenseMatrix.h>
@@ -55,34 +57,31 @@
 #include <blaze/math/shims/Serial.h>
 #include <blaze/math/SIMD.h>
 #include <blaze/math/sparse/Forward.h>
-#include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/traits/SchurTrait.h>
 #include <blaze/math/typetraits/HasSIMDMult.h>
 #include <blaze/math/typetraits/IsAligned.h>
 #include <blaze/math/typetraits/IsCommutative.h>
 #include <blaze/math/typetraits/IsExpression.h>
-#include <blaze/math/typetraits/IsHermitian.h>
 #include <blaze/math/typetraits/IsLower.h>
 #include <blaze/math/typetraits/IsOperation.h>
 #include <blaze/math/typetraits/IsPadded.h>
 #include <blaze/math/typetraits/IsStrictlyLower.h>
 #include <blaze/math/typetraits/IsStrictlyUpper.h>
-#include <blaze/math/typetraits/IsSymmetric.h>
 #include <blaze/math/typetraits/IsTemporary.h>
 #include <blaze/math/typetraits/IsUniLower.h>
 #include <blaze/math/typetraits/IsUniUpper.h>
 #include <blaze/math/typetraits/IsUpper.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
+#include <blaze/system/HostDevice.h>
 #include <blaze/system/Inline.h>
 #include <blaze/system/Thresholds.h>
 #include <blaze/util/Assert.h>
-#include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/FunctionTrace.h>
 #include <blaze/util/IntegralConstant.h>
+#include <blaze/util/MaybeUnused.h>
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/Types.h>
-#include <blaze/util/Unused.h>
 
 
 namespace blaze {
@@ -166,11 +165,16 @@ class DMatDMatSchurExpr
 
  public:
    //**Type definitions****************************************************************************
-   using This          = DMatDMatSchurExpr<MT1,MT2,SO>;  //!< Type of this DMatDMatSchurExpr instance.
-   using ResultType    = SchurTrait_t<RT1,RT2>;          //!< Result type for expression template evaluations.
-   using OppositeType  = OppositeType_t<ResultType>;     //!< Result type with opposite storage order for expression template evaluations.
-   using TransposeType = TransposeType_t<ResultType>;    //!< Transpose type for expression template evaluations.
-   using ElementType   = ElementType_t<ResultType>;      //!< Resulting element type.
+   //! Type of this DMatDMatSchurExpr instance.
+   using This = DMatDMatSchurExpr<MT1,MT2,SO>;
+
+   //! Base type of this DMatDMatSchurExpr instance.
+   using BaseType = SchurExpr< DenseMatrix<This,SO> >;
+
+   using ResultType    = SchurTrait_t<RT1,RT2>;        //!< Result type for expression template evaluations.
+   using OppositeType  = OppositeType_t<ResultType>;   //!< Result type with opposite storage order for expression template evaluations.
+   using TransposeType = TransposeType_t<ResultType>;  //!< Transpose type for expression template evaluations.
+   using ElementType   = ElementType_t<ResultType>;    //!< Resulting element type.
 
    //! Return type for expression template evaluations.
    using ReturnType = const If_t< returnExpr, ExprReturnType, ElementType >;
@@ -218,7 +222,7 @@ class DMatDMatSchurExpr
       // \param left Iterator to the initial left-hand side element.
       // \param right Iterator to the initial right-hand side element.
       */
-      explicit inline ConstIterator( LeftIteratorType left, RightIteratorType right )
+      inline BLAZE_DEVICE_CALLABLE ConstIterator( LeftIteratorType left, RightIteratorType right )
          : left_ ( left  )  // Iterator to the current left-hand side element
          , right_( right )  // Iterator to the current right-hand side element
       {}
@@ -230,7 +234,7 @@ class DMatDMatSchurExpr
       // \param inc The increment of the iterator.
       // \return The incremented iterator.
       */
-      inline ConstIterator& operator+=( size_t inc ) {
+      inline BLAZE_DEVICE_CALLABLE ConstIterator& operator+=( size_t inc ) {
          left_  += inc;
          right_ += inc;
          return *this;
@@ -243,7 +247,7 @@ class DMatDMatSchurExpr
       // \param dec The decrement of the iterator.
       // \return The decremented iterator.
       */
-      inline ConstIterator& operator-=( size_t dec ) {
+      inline BLAZE_DEVICE_CALLABLE ConstIterator& operator-=( size_t dec ) {
          left_  -= dec;
          right_ -= dec;
          return *this;
@@ -255,7 +259,7 @@ class DMatDMatSchurExpr
       //
       // \return Reference to the incremented iterator.
       */
-      inline ConstIterator& operator++() {
+      inline BLAZE_DEVICE_CALLABLE ConstIterator& operator++() {
          ++left_;
          ++right_;
          return *this;
@@ -267,7 +271,7 @@ class DMatDMatSchurExpr
       //
       // \return The previous position of the iterator.
       */
-      inline const ConstIterator operator++( int ) {
+      inline BLAZE_DEVICE_CALLABLE const ConstIterator operator++( int ) {
          return ConstIterator( left_++, right_++ );
       }
       //*******************************************************************************************
@@ -277,7 +281,7 @@ class DMatDMatSchurExpr
       //
       // \return Reference to the decremented iterator.
       */
-      inline ConstIterator& operator--() {
+      inline BLAZE_DEVICE_CALLABLE ConstIterator& operator--() {
          --left_;
          --right_;
          return *this;
@@ -289,7 +293,7 @@ class DMatDMatSchurExpr
       //
       // \return The previous position of the iterator.
       */
-      inline const ConstIterator operator--( int ) {
+      inline BLAZE_DEVICE_CALLABLE const ConstIterator operator--( int ) {
          return ConstIterator( left_--, right_-- );
       }
       //*******************************************************************************************
@@ -320,7 +324,7 @@ class DMatDMatSchurExpr
       // \param rhs The right-hand side iterator.
       // \return \a true if the iterators refer to the same element, \a false if not.
       */
-      inline bool operator==( const ConstIterator& rhs ) const {
+      inline BLAZE_DEVICE_CALLABLE bool operator==( const ConstIterator& rhs ) const {
          return left_ == rhs.left_;
       }
       //*******************************************************************************************
@@ -331,7 +335,7 @@ class DMatDMatSchurExpr
       // \param rhs The right-hand side iterator.
       // \return \a true if the iterators don't refer to the same element, \a false if they do.
       */
-      inline bool operator!=( const ConstIterator& rhs ) const {
+      inline BLAZE_DEVICE_CALLABLE bool operator!=( const ConstIterator& rhs ) const {
          return left_ != rhs.left_;
       }
       //*******************************************************************************************
@@ -342,7 +346,7 @@ class DMatDMatSchurExpr
       // \param rhs The right-hand side iterator.
       // \return \a true if the left-hand side iterator is smaller, \a false if not.
       */
-      inline bool operator<( const ConstIterator& rhs ) const {
+      inline BLAZE_DEVICE_CALLABLE bool operator<( const ConstIterator& rhs ) const {
          return left_ < rhs.left_;
       }
       //*******************************************************************************************
@@ -353,7 +357,7 @@ class DMatDMatSchurExpr
       // \param rhs The right-hand side iterator.
       // \return \a true if the left-hand side iterator is greater, \a false if not.
       */
-      inline bool operator>( const ConstIterator& rhs ) const {
+      inline BLAZE_DEVICE_CALLABLE bool operator>( const ConstIterator& rhs ) const {
          return left_ > rhs.left_;
       }
       //*******************************************************************************************
@@ -364,7 +368,7 @@ class DMatDMatSchurExpr
       // \param rhs The right-hand side iterator.
       // \return \a true if the left-hand side iterator is smaller or equal, \a false if not.
       */
-      inline bool operator<=( const ConstIterator& rhs ) const {
+      inline BLAZE_DEVICE_CALLABLE bool operator<=( const ConstIterator& rhs ) const {
          return left_ <= rhs.left_;
       }
       //*******************************************************************************************
@@ -375,7 +379,7 @@ class DMatDMatSchurExpr
       // \param rhs The right-hand side iterator.
       // \return \a true if the left-hand side iterator is greater or equal, \a false if not.
       */
-      inline bool operator>=( const ConstIterator& rhs ) const {
+      inline BLAZE_DEVICE_CALLABLE bool operator>=( const ConstIterator& rhs ) const {
          return left_ >= rhs.left_;
       }
       //*******************************************************************************************
@@ -386,7 +390,7 @@ class DMatDMatSchurExpr
       // \param rhs The right-hand side iterator.
       // \return The number of elements between the two iterators.
       */
-      inline DifferenceType operator-( const ConstIterator& rhs ) const {
+      inline BLAZE_DEVICE_CALLABLE DifferenceType operator-( const ConstIterator& rhs ) const {
          return left_ - rhs.left_;
       }
       //*******************************************************************************************
@@ -422,7 +426,7 @@ class DMatDMatSchurExpr
       // \param dec The number of elements the iterator is decremented.
       // \return The decremented iterator.
       */
-      friend inline const ConstIterator operator-( const ConstIterator& it, size_t dec ) {
+      friend inline BLAZE_DEVICE_CALLABLE const ConstIterator operator-( const ConstIterator& it, size_t dec ) {
          return ConstIterator( it.left_ - dec, it.right_ - dec );
       }
       //*******************************************************************************************
@@ -455,7 +459,7 @@ class DMatDMatSchurExpr
    // \param lhs The left-hand side operand of the Schur product expression.
    // \param rhs The right-hand side operand of the Schur product expression.
    */
-   explicit inline DMatDMatSchurExpr( const MT1& lhs, const MT2& rhs ) noexcept
+   inline DMatDMatSchurExpr( const MT1& lhs, const MT2& rhs ) noexcept
       : lhs_( lhs )  // Left-hand side dense matrix of the Schur product expression
       , rhs_( rhs )  // Right-hand side dense matrix of the Schur product expression
    {
@@ -514,10 +518,10 @@ class DMatDMatSchurExpr
    //**********************************************************************************************
 
    //**Begin function******************************************************************************
-   /*!\brief Returns an iterator to the first non-zero element of row \a i.
+   /*!\brief Returns an iterator to the first non-zero element of row/column \a i.
    //
-   // \param i The row index.
-   // \return Iterator to the first non-zero element of row \a i.
+   // \param i The row/column index.
+   // \return Iterator to the first non-zero element of row/column \a i.
    */
    inline ConstIterator begin( size_t i ) const {
       return ConstIterator( lhs_.begin(i), rhs_.begin(i) );
@@ -525,10 +529,10 @@ class DMatDMatSchurExpr
    //**********************************************************************************************
 
    //**End function********************************************************************************
-   /*!\brief Returns an iterator just past the last non-zero element of row \a i.
+   /*!\brief Returns an iterator just past the last non-zero element of row/column \a i.
    //
-   // \param i The row index.
-   // \return Iterator just past the last non-zero element of row \a i.
+   // \param i The row/column index.
+   // \return Iterator just past the last non-zero element of row/column \a i.
    */
    inline ConstIterator end( size_t i ) const {
       return ConstIterator( lhs_.end(i), rhs_.end(i) );
@@ -644,21 +648,21 @@ class DMatDMatSchurExpr
    */
    template< typename MT  // Type of the target dense matrix
            , bool SO2 >   // Storage order of the target dense matrix
-   friend inline EnableIf_t< UseAssign_v<MT> && !IsCommutative_v<MT1,MT2> >
-      assign( DenseMatrix<MT,SO2>& lhs, const DMatDMatSchurExpr& rhs )
+   friend inline auto assign( DenseMatrix<MT,SO2>& lhs, const DMatDMatSchurExpr& rhs )
+      -> EnableIf_t< UseAssign_v<MT> && !IsCommutative_v<MT1,MT2> >
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      if( !IsOperation_v<MT1> && isSame( ~lhs, rhs.lhs_ ) ) {
-         schurAssign( ~lhs, rhs.rhs_ );
+      if( !IsOperation_v<MT1> && isSame( *lhs, rhs.lhs_ ) ) {
+         schurAssign( *lhs, rhs.rhs_ );
       }
       else {
          CT1 A( serial( rhs.lhs_ ) );
          CT2 B( serial( rhs.rhs_ ) );
-         assign( ~lhs, A % B );
+         assign( *lhs, A % B );
       }
    }
    /*! \endcond */
@@ -680,27 +684,27 @@ class DMatDMatSchurExpr
    */
    template< typename MT  // Type of the target dense matrix
            , bool SO2 >   // Storage order of the target dense matrix
-   friend inline EnableIf_t< UseAssign_v<MT> && IsCommutative_v<MT1,MT2> >
-      assign( DenseMatrix<MT,SO2>& lhs, const DMatDMatSchurExpr& rhs )
+   friend inline auto assign( DenseMatrix<MT,SO2>& lhs, const DMatDMatSchurExpr& rhs )
+      -> EnableIf_t< UseAssign_v<MT> && IsCommutative_v<MT1,MT2> >
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      if( !IsOperation_v<MT1> && isSame( ~lhs, rhs.lhs_ ) ) {
-         schurAssign( ~lhs, rhs.rhs_ );
+      if( !IsOperation_v<MT1> && isSame( *lhs, rhs.lhs_ ) ) {
+         schurAssign( *lhs, rhs.rhs_ );
       }
-      else if( !IsOperation_v<MT2> && isSame( ~lhs, rhs.rhs_ ) ) {
-         schurAssign( ~lhs, rhs.lhs_ );
+      else if( !IsOperation_v<MT2> && isSame( *lhs, rhs.rhs_ ) ) {
+         schurAssign( *lhs, rhs.lhs_ );
       }
       else if( !RequiresEvaluation_v<MT2> ) {
-         assign     ( ~lhs, rhs.rhs_ );
-         schurAssign( ~lhs, rhs.lhs_ );
+         assign     ( *lhs, rhs.rhs_ );
+         schurAssign( *lhs, rhs.lhs_ );
       }
       else {
-         assign     ( ~lhs, rhs.lhs_ );
-         schurAssign( ~lhs, rhs.rhs_ );
+         assign     ( *lhs, rhs.lhs_ );
+         schurAssign( *lhs, rhs.rhs_ );
       }
    }
    /*! \endcond */
@@ -722,8 +726,8 @@ class DMatDMatSchurExpr
    */
    template< typename MT  // Type of the target sparse matrix
            , bool SO2 >   // Storage order of the target sparse matrix
-   friend inline EnableIf_t< UseAssign_v<MT> >
-      assign( SparseMatrix<MT,SO2>& lhs, const DMatDMatSchurExpr& rhs )
+   friend inline auto assign( SparseMatrix<MT,SO2>& lhs, const DMatDMatSchurExpr& rhs )
+      -> EnableIf_t< UseAssign_v<MT> >
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -736,11 +740,11 @@ class DMatDMatSchurExpr
       BLAZE_CONSTRAINT_MATRICES_MUST_HAVE_SAME_STORAGE_ORDER( MT, TmpType );
       BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( TmpType );
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
       const TmpType tmp( serial( rhs ) );
-      assign( ~lhs, tmp );
+      assign( *lhs, tmp );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -761,8 +765,8 @@ class DMatDMatSchurExpr
    */
    template< typename MT  // Type of the target dense matrix
            , bool SO2 >   // Storage order of the target dense matrix
-   friend inline EnableIf_t< UseAssign_v<MT> >
-      addAssign( DenseMatrix<MT,SO2>& lhs, const DMatDMatSchurExpr& rhs )
+   friend inline auto addAssign( DenseMatrix<MT,SO2>& lhs, const DMatDMatSchurExpr& rhs )
+      -> EnableIf_t< UseAssign_v<MT> >
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -770,11 +774,11 @@ class DMatDMatSchurExpr
       BLAZE_CONSTRAINT_MUST_BE_MATRIX_WITH_STORAGE_ORDER( ResultType, SO );
       BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
       const ResultType tmp( serial( rhs ) );
-      addAssign( ~lhs, tmp );
+      addAssign( *lhs, tmp );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -799,8 +803,8 @@ class DMatDMatSchurExpr
    */
    template< typename MT  // Type of the target dense matrix
            , bool SO2 >   // Storage order of the target dense matrix
-   friend inline EnableIf_t< UseAssign_v<MT> >
-      subAssign( DenseMatrix<MT,SO2>& lhs, const DMatDMatSchurExpr& rhs )
+   friend inline auto subAssign( DenseMatrix<MT,SO2>& lhs, const DMatDMatSchurExpr& rhs )
+      -> EnableIf_t< UseAssign_v<MT> >
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -808,11 +812,11 @@ class DMatDMatSchurExpr
       BLAZE_CONSTRAINT_MUST_BE_MATRIX_WITH_STORAGE_ORDER( ResultType, SO );
       BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
       const ResultType tmp( serial( rhs ) );
-      subAssign( ~lhs, tmp );
+      subAssign( *lhs, tmp );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -838,8 +842,8 @@ class DMatDMatSchurExpr
    */
    template< typename MT  // Type of the target dense matrix
            , bool SO2 >   // Storage order of the target dense matrix
-   friend inline EnableIf_t< UseAssign_v<MT> && !IsCommutative_v<MT1,MT2> >
-      schurAssign( DenseMatrix<MT,SO2>& lhs, const DMatDMatSchurExpr& rhs )
+   friend inline auto schurAssign( DenseMatrix<MT,SO2>& lhs, const DMatDMatSchurExpr& rhs )
+      -> EnableIf_t< UseAssign_v<MT> && !IsCommutative_v<MT1,MT2> >
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -847,11 +851,11 @@ class DMatDMatSchurExpr
       BLAZE_CONSTRAINT_MUST_BE_MATRIX_WITH_STORAGE_ORDER( ResultType, SO );
       BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
       const ResultType tmp( serial( rhs ) );
-      schurAssign( ~lhs, tmp );
+      schurAssign( *lhs, tmp );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -873,21 +877,21 @@ class DMatDMatSchurExpr
    */
    template< typename MT  // Type of the target dense matrix
            , bool SO2 >   // Storage order of the target dense matrix
-   friend inline EnableIf_t< UseAssign_v<MT> && IsCommutative_v<MT1,MT2> >
-      schurAssign( DenseMatrix<MT,SO2>& lhs, const DMatDMatSchurExpr& rhs )
+   friend inline auto schurAssign( DenseMatrix<MT,SO2>& lhs, const DMatDMatSchurExpr& rhs )
+      -> EnableIf_t< UseAssign_v<MT> && IsCommutative_v<MT1,MT2> >
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
       if( !RequiresEvaluation_v<MT2> ) {
-         schurAssign( ~lhs, rhs.rhs_ );
-         schurAssign( ~lhs, rhs.lhs_ );
+         schurAssign( *lhs, rhs.rhs_ );
+         schurAssign( *lhs, rhs.lhs_ );
       }
       else {
-         schurAssign( ~lhs, rhs.lhs_ );
-         schurAssign( ~lhs, rhs.rhs_ );
+         schurAssign( *lhs, rhs.lhs_ );
+         schurAssign( *lhs, rhs.rhs_ );
       }
    }
    /*! \endcond */
@@ -922,21 +926,21 @@ class DMatDMatSchurExpr
    */
    template< typename MT  // Type of the target dense matrix
            , bool SO2 >   // Storage order of the target dense matrix
-   friend inline EnableIf_t< UseSMPAssign_v<MT> && !IsCommutative_v<MT1,MT2> >
-      smpAssign( DenseMatrix<MT,SO2>& lhs, const DMatDMatSchurExpr& rhs )
+   friend inline auto smpAssign( DenseMatrix<MT,SO2>& lhs, const DMatDMatSchurExpr& rhs )
+      -> EnableIf_t< UseSMPAssign_v<MT> && !IsCommutative_v<MT1,MT2> >
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      if( !IsOperation_v<MT1> && isSame( ~lhs, rhs.lhs_ ) ) {
-         smpSchurAssign( ~lhs, rhs.rhs_ );
+      if( !IsOperation_v<MT1> && isSame( *lhs, rhs.lhs_ ) ) {
+         smpSchurAssign( *lhs, rhs.rhs_ );
       }
       else {
          CT1 A( rhs.lhs_ );
          CT2 B( rhs.rhs_ );
-         smpAssign( ~lhs, A % B );
+         smpAssign( *lhs, A % B );
       }
    }
    /*! \endcond */
@@ -959,27 +963,27 @@ class DMatDMatSchurExpr
    */
    template< typename MT  // Type of the target dense matrix
            , bool SO2 >   // Storage order of the target dense matrix
-   friend inline EnableIf_t< UseSMPAssign_v<MT> && IsCommutative_v<MT1,MT2> >
-      smpAssign( DenseMatrix<MT,SO2>& lhs, const DMatDMatSchurExpr& rhs )
+   friend inline auto smpAssign( DenseMatrix<MT,SO2>& lhs, const DMatDMatSchurExpr& rhs )
+      -> EnableIf_t< UseSMPAssign_v<MT> && IsCommutative_v<MT1,MT2> >
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      if( !IsOperation_v<MT1> && isSame( ~lhs, rhs.lhs_ ) ) {
-         smpSchurAssign( ~lhs, rhs.rhs_ );
+      if( !IsOperation_v<MT1> && isSame( *lhs, rhs.lhs_ ) ) {
+         smpSchurAssign( *lhs, rhs.rhs_ );
       }
-      else if( !IsOperation_v<MT2> && isSame( ~lhs, rhs.rhs_ ) ) {
-         smpSchurAssign( ~lhs, rhs.lhs_ );
+      else if( !IsOperation_v<MT2> && isSame( *lhs, rhs.rhs_ ) ) {
+         smpSchurAssign( *lhs, rhs.lhs_ );
       }
       else if( !RequiresEvaluation_v<MT2> ) {
-         smpAssign     ( ~lhs, rhs.rhs_ );
-         smpSchurAssign( ~lhs, rhs.lhs_ );
+         smpAssign     ( *lhs, rhs.rhs_ );
+         smpSchurAssign( *lhs, rhs.lhs_ );
       }
       else {
-         smpAssign     ( ~lhs, rhs.lhs_ );
-         smpSchurAssign( ~lhs, rhs.rhs_ );
+         smpAssign     ( *lhs, rhs.lhs_ );
+         smpSchurAssign( *lhs, rhs.rhs_ );
       }
    }
    /*! \endcond */
@@ -1001,8 +1005,8 @@ class DMatDMatSchurExpr
    */
    template< typename MT  // Type of the target sparse matrix
            , bool SO2 >   // Storage order of the target sparse matrix
-   friend inline EnableIf_t< UseSMPAssign_v<MT> >
-      smpAssign( SparseMatrix<MT,SO2>& lhs, const DMatDMatSchurExpr& rhs )
+   friend inline auto smpAssign( SparseMatrix<MT,SO2>& lhs, const DMatDMatSchurExpr& rhs )
+      -> EnableIf_t< UseSMPAssign_v<MT> >
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -1015,11 +1019,11 @@ class DMatDMatSchurExpr
       BLAZE_CONSTRAINT_MATRICES_MUST_HAVE_SAME_STORAGE_ORDER( MT, TmpType );
       BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( TmpType );
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
       const TmpType tmp( rhs );
-      smpAssign( ~lhs, tmp );
+      smpAssign( *lhs, tmp );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -1040,8 +1044,8 @@ class DMatDMatSchurExpr
    */
    template< typename MT  // Type of the target dense matrix
            , bool SO2 >   // Storage order of the target dense matrix
-   friend inline EnableIf_t< UseAssign_v<MT> >
-      smpAddAssign( DenseMatrix<MT,SO2>& lhs, const DMatDMatSchurExpr& rhs )
+   friend inline auto smpAddAssign( DenseMatrix<MT,SO2>& lhs, const DMatDMatSchurExpr& rhs )
+      -> EnableIf_t< UseAssign_v<MT> >
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -1049,11 +1053,11 @@ class DMatDMatSchurExpr
       BLAZE_CONSTRAINT_MUST_BE_MATRIX_WITH_STORAGE_ORDER( ResultType, SO );
       BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
       const ResultType tmp( rhs );
-      smpAddAssign( ~lhs, tmp );
+      smpAddAssign( *lhs, tmp );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -1079,8 +1083,8 @@ class DMatDMatSchurExpr
    */
    template< typename MT  // Type of the target dense matrix
            , bool SO2 >   // Storage order of the target dense matrix
-   friend inline EnableIf_t< UseSMPAssign_v<MT> >
-      smpSubAssign( DenseMatrix<MT,SO2>& lhs, const DMatDMatSchurExpr& rhs )
+   friend inline auto smpSubAssign( DenseMatrix<MT,SO2>& lhs, const DMatDMatSchurExpr& rhs )
+      -> EnableIf_t< UseSMPAssign_v<MT> >
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -1088,11 +1092,11 @@ class DMatDMatSchurExpr
       BLAZE_CONSTRAINT_MUST_BE_MATRIX_WITH_STORAGE_ORDER( ResultType, SO );
       BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
       const ResultType tmp( rhs );
-      smpSubAssign( ~lhs, tmp );
+      smpSubAssign( *lhs, tmp );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -1118,8 +1122,8 @@ class DMatDMatSchurExpr
    */
    template< typename MT  // Type of the target dense matrix
            , bool SO2 >   // Storage order of the target dense matrix
-   friend inline EnableIf_t< UseSMPAssign_v<MT> && !IsCommutative_v<MT1,MT2> >
-      smpSchurAssign( DenseMatrix<MT,SO2>& lhs, const DMatDMatSchurExpr& rhs )
+   friend inline auto smpSchurAssign( DenseMatrix<MT,SO2>& lhs, const DMatDMatSchurExpr& rhs )
+      -> EnableIf_t< UseSMPAssign_v<MT> && !IsCommutative_v<MT1,MT2> >
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -1127,11 +1131,11 @@ class DMatDMatSchurExpr
       BLAZE_CONSTRAINT_MUST_BE_MATRIX_WITH_STORAGE_ORDER( ResultType, SO );
       BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
       const ResultType tmp( rhs );
-      smpSchurAssign( ~lhs, tmp );
+      smpSchurAssign( *lhs, tmp );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -1153,21 +1157,21 @@ class DMatDMatSchurExpr
    */
    template< typename MT  // Type of the target dense matrix
            , bool SO2 >   // Storage order of the target dense matrix
-   friend inline EnableIf_t< UseSMPAssign_v<MT> && IsCommutative_v<MT1,MT2> >
-      smpSchurAssign( DenseMatrix<MT,SO2>& lhs, const DMatDMatSchurExpr& rhs )
+   friend inline auto smpSchurAssign( DenseMatrix<MT,SO2>& lhs, const DMatDMatSchurExpr& rhs )
+      -> EnableIf_t< UseSMPAssign_v<MT> && IsCommutative_v<MT1,MT2> >
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
       if( !RequiresEvaluation_v<MT2> ) {
-         smpSchurAssign( ~lhs, rhs.rhs_ );
-         smpSchurAssign( ~lhs, rhs.lhs_ );
+         smpSchurAssign( *lhs, rhs.rhs_ );
+         smpSchurAssign( *lhs, rhs.lhs_ );
       }
       else {
-         smpSchurAssign( ~lhs, rhs.lhs_ );
-         smpSchurAssign( ~lhs, rhs.rhs_ );
+         smpSchurAssign( *lhs, rhs.lhs_ );
+         smpSchurAssign( *lhs, rhs.rhs_ );
       }
    }
    /*! \endcond */
@@ -1221,16 +1225,20 @@ template< typename MT1  // Type of the left-hand side dense matrix
         , typename MT2  // Type of the right-hand side dense matrix
         , bool SO       // Storage order
         , DisableIf_t< ( IsUniLower_v<MT1> && IsUniUpper_v<MT2> ) ||
-                       ( IsUniUpper_v<MT1> && IsUniLower_v<MT2> ) >* = nullptr >
+                       ( IsUniUpper_v<MT1> && IsUniLower_v<MT2> ) ||
+                       ( IsStrictlyLower_v<MT1> && IsUpper_v<MT2> ) ||
+                       ( IsStrictlyUpper_v<MT1> && IsLower_v<MT2> ) ||
+                       ( IsLower_v<MT1> && IsStrictlyUpper_v<MT2> ) ||
+                       ( IsUpper_v<MT1> && IsStrictlyLower_v<MT2> ) >* = nullptr >
 inline const DMatDMatSchurExpr<MT1,MT2,SO>
    dmatdmatschur( const DenseMatrix<MT1,SO>& lhs, const DenseMatrix<MT2,SO>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 
-   BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( (*lhs).columns() == (*rhs).columns(), "Invalid number of columns" );
 
-   return DMatDMatSchurExpr<MT1,MT2,SO>( ~lhs, ~rhs );
+   return DMatDMatSchurExpr<MT1,MT2,SO>( *lhs, *rhs );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1244,27 +1252,73 @@ inline const DMatDMatSchurExpr<MT1,MT2,SO>
 //
 // \param lhs The left-hand side dense matrix for the Schur product.
 // \param rhs The right-hand side dense matrix for the Schur product.
-// \return The Schur product of the two matrices.
+// \return The resulting identity matrix.
 //
 // This function implements a performance optimized treatment of the Schur product between two
-// unitriangular dense matrices with identical storage order.
+// unitriangular dense matrices with identical storage order. It returns an identity matrix.
 */
 template< typename MT1  // Type of the left-hand side dense matrix
         , typename MT2  // Type of the right-hand side dense matrix
         , bool SO       // Storage order
         , EnableIf_t< ( IsUniLower_v<MT1> && IsUniUpper_v<MT2> ) ||
                       ( IsUniUpper_v<MT1> && IsUniLower_v<MT2> ) >* = nullptr >
-inline const IdentityMatrix< MultTrait_t< ElementType_t<MT1>, ElementType_t<MT2> >, SO >
+inline decltype(auto)
    dmatdmatschur( const DenseMatrix<MT1,SO>& lhs, const DenseMatrix<MT2,SO>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 
-   UNUSED_PARAMETER( rhs );
+   MAYBE_UNUSED( rhs );
 
-   BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( (*lhs).columns() == (*rhs).columns(), "Invalid number of columns" );
 
-   return IdentityMatrix< MultTrait_t< ElementType_t<MT1>, ElementType_t<MT2> >, SO >( (~lhs).rows() );
+   using ReturnType = const SchurTrait_t< ResultType_t<MT1>, ResultType_t<MT2> >;
+
+   BLAZE_CONSTRAINT_MUST_BE_MATRIX_WITH_STORAGE_ORDER( ReturnType, SO );
+   BLAZE_CONSTRAINT_MUST_BE_IDENTITY_MATRIX_TYPE( ReturnType );
+
+   return ReturnType( (*lhs).rows() );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Backend implementation of the Schur product between two (strictly) triangular dense
+//        matrices with identical storage order (\f$ A=B \circ C \f$).
+// \ingroup dense_matrix
+//
+// \param lhs The left-hand side dense matrix for the Schur product.
+// \param rhs The right-hand side dense matrix for the Schur product.
+// \return The resulting zero matrix.
+//
+// This function implements a performance optimized treatment of the Schur product between two
+// (strictly) triangular dense matrices with identical storage order. It returns a zero matrix.
+*/
+template< typename MT1  // Type of the left-hand side dense matrix
+        , typename MT2  // Type of the right-hand side dense matrix
+        , bool SO       // Storage order
+        , EnableIf_t< ( IsStrictlyLower_v<MT1> && IsUpper_v<MT2> ) ||
+                      ( IsStrictlyUpper_v<MT1> && IsLower_v<MT2> ) ||
+                      ( IsLower_v<MT1> && IsStrictlyUpper_v<MT2> ) ||
+                      ( IsUpper_v<MT1> && IsStrictlyLower_v<MT2> ) >* = nullptr >
+inline decltype(auto)
+   dmatdmatschur( const DenseMatrix<MT1,SO>& lhs, const DenseMatrix<MT2,SO>& rhs )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   MAYBE_UNUSED( rhs );
+
+   BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( (*lhs).columns() == (*rhs).columns(), "Invalid number of columns" );
+
+   using ReturnType = const SchurTrait_t< ResultType_t<MT1>, ResultType_t<MT2> >;
+
+   BLAZE_CONSTRAINT_MUST_BE_MATRIX_WITH_STORAGE_ORDER( ReturnType, SO );
+   BLAZE_CONSTRAINT_MUST_BE_ZERO_TYPE( ReturnType );
+
+   return ReturnType( (*lhs).rows(), (*lhs).columns() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1303,11 +1357,11 @@ inline decltype(auto)
 {
    BLAZE_FUNCTION_TRACE;
 
-   if( (~lhs).rows() != (~rhs).rows() || (~lhs).columns() != (~rhs).columns() ) {
+   if( (*lhs).rows() != (*rhs).rows() || (*lhs).columns() != (*rhs).columns() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
-   return dmatdmatschur( ~lhs, ~rhs );
+   return dmatdmatschur( *lhs, *rhs );
 }
 //*************************************************************************************************
 
@@ -1343,150 +1397,6 @@ struct IsAligned< DMatDMatSchurExpr<MT1,MT2,SO> >
 template< typename MT1, typename MT2, bool SO >
 struct IsPadded< DMatDMatSchurExpr<MT1,MT2,SO> >
    : public BoolConstant< IsPadded_v<MT1> && IsPadded_v<MT2> >
-{};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  ISSYMMETRIC SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT1, typename MT2, bool SO >
-struct IsSymmetric< DMatDMatSchurExpr<MT1,MT2,SO> >
-   : public BoolConstant< IsSymmetric_v<MT1> && IsSymmetric_v<MT2> >
-{};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  ISHERMITIAN SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT1, typename MT2, bool SO >
-struct IsHermitian< DMatDMatSchurExpr<MT1,MT2,SO> >
-   : public BoolConstant< IsHermitian_v<MT1> && IsHermitian_v<MT2> >
-{};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  ISLOWER SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT1, typename MT2, bool SO >
-struct IsLower< DMatDMatSchurExpr<MT1,MT2,SO> >
-   : public BoolConstant< IsLower_v<MT1> || IsLower_v<MT2> >
-{};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  ISUNILOWER SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT1, typename MT2, bool SO >
-struct IsUniLower< DMatDMatSchurExpr<MT1,MT2,SO> >
-   : public BoolConstant< IsUniLower_v<MT1> && IsUniLower_v<MT2> >
-{};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  ISSTRICTLYLOWER SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT1, typename MT2, bool SO >
-struct IsStrictlyLower< DMatDMatSchurExpr<MT1,MT2,SO> >
-   : public BoolConstant< IsStrictlyLower_v<MT1> || IsStrictlyLower_v<MT2> >
-{};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  ISUPPER SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT1, typename MT2, bool SO >
-struct IsUpper< DMatDMatSchurExpr<MT1,MT2,SO> >
-   : public BoolConstant< IsUpper_v<MT1> || IsUpper_v<MT2> >
-{};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  ISUNIUPPER SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT1, typename MT2, bool SO >
-struct IsUniUpper< DMatDMatSchurExpr<MT1,MT2,SO> >
-   : public BoolConstant< IsUniUpper_v<MT1> && IsUniUpper_v<MT2> >
-{};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  ISSTRICTLYUPPER SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT1, typename MT2, bool SO >
-struct IsStrictlyUpper< DMatDMatSchurExpr<MT1,MT2,SO> >
-   : public BoolConstant< IsStrictlyUpper_v<MT1> || IsStrictlyUpper_v<MT2> >
 {};
 /*! \endcond */
 //*************************************************************************************************

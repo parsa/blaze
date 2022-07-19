@@ -3,7 +3,7 @@
 //  \file blaze/math/typetraits/IsDiagonal.h
 //  \brief Header file for the IsDiagonal type trait
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -133,7 +133,7 @@ struct IsDiagonal< const volatile T >
 
 //*************************************************************************************************
 /*!\brief Auxiliary variable template for the IsDiagonal type trait.
-// \ingroup type_traits
+// \ingroup math_type_traits
 //
 // The IsDiagonal_v variable template provides a convenient shortcut to access the nested
 // \a value of the IsDiagonal class template. For instance, given the type \a T the following

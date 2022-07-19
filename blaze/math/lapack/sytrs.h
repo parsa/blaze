@@ -3,7 +3,7 @@
 //  \file blaze/math/lapack/sytrs.h
 //  \brief Header file for the LAPACK symmetric indefinite backward substitution functions (sytrs)
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -69,11 +69,12 @@ namespace blaze {
 /*!\name LAPACK LDLT-based substitution functions (sytrs) */
 //@{
 template< typename MT, bool SO, typename VT, bool TF >
-inline void sytrs( const DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& b, char uplo, const int* ipiv );
+void sytrs( const DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& b, char uplo,
+            const blas_int_t* ipiv );
 
 template< typename MT1, bool SO1, typename MT2, bool SO2 >
-inline void sytrs( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B,
-                   char uplo, const int* ipiv );
+void sytrs( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B, char uplo,
+            const blas_int_t* ipiv );
 //@}
 //*************************************************************************************************
 
@@ -119,10 +120,11 @@ inline void sytrs( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B,
    using blaze::DynamicVector;
    using blaze::columnMajor;
    using blaze::columnVector;
+   using blaze::blas_int_t;
 
-   DynamicMatrix<double,columnMajor>  A( 2UL, 2UL );  // The system matrix A
-   DynamicVector<double,columnVector> b( 2UL );       // The right-hand side vector b
-   DynamicVector<int,columnVector> ipiv( 2UL );       // Pivoting indices
+   DynamicMatrix<double,columnMajor>  A( 2UL, 2UL );    // The system matrix A
+   DynamicVector<double,columnVector> b( 2UL );         // The right-hand side vector b
+   DynamicVector<blas_int_t,columnVector> ipiv( 2UL );  // Pivoting indices
    // ... Initialization
 
    DynamicMatrix<double,columnMajor>  D( A );  // Temporary matrix to be decomposed
@@ -139,10 +141,11 @@ inline void sytrs( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B,
    using blaze::DynamicVector;
    using blaze::rowMajor;
    using blaze::columnVector;
+   using blaze::blas_int_t;
 
-   DynamicMatrix<double,rowMajor> A( 2UL, 2UL );  // The system matrix A
-   DynamicVector<double,columnVector> b( 2UL );   // The right-hand side vector b
-   DynamicVector<int,columnVector> ipiv( 2UL );   // Pivoting indices
+   DynamicMatrix<double,rowMajor> A( 2UL, 2UL );        // The system matrix A
+   DynamicVector<double,columnVector> b( 2UL );         // The right-hand side vector b
+   DynamicVector<blas_int_t,columnVector> ipiv( 2UL );  // Pivoting indices
    // ... Initialization
 
    DynamicMatrix<double,rowMajor>     D( A );  // Temporary matrix to be decomposed
@@ -167,7 +170,8 @@ template< typename MT  // Type of the system matrix
         , bool SO      // Storage order of the system matrix
         , typename VT  // Type of the right-hand side vector
         , bool TF >    // Transpose flag of the right-hand side vector
-inline void sytrs( const DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& b, char uplo, const int* ipiv )
+inline void sytrs( const DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& b, char uplo,
+                   const blas_int_t* ipiv )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_ADAPTOR_TYPE( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( MT );
@@ -180,11 +184,11 @@ inline void sytrs( const DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& b, char uplo
    BLAZE_CONSTRAINT_MUST_BE_CONTIGUOUS_TYPE( VT );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT>, ElementType_t<VT> );
 
-   if( !isSquare( ~A ) ) {
+   if( !isSquare( *A ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid non-square matrix provided" );
    }
 
-   if( (~b).size() != (~A).rows() ) {
+   if( (*b).size() != (*A).rows() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid right-hand side vector provided" );
    }
 
@@ -192,11 +196,11 @@ inline void sytrs( const DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& b, char uplo
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid uplo argument provided" );
    }
 
-   int n   ( numeric_cast<int>( (~A).rows() ) );
-   int nrhs( 1 );
-   int lda ( numeric_cast<int>( (~A).spacing() ) );
-   int ldb ( numeric_cast<int>( (~b).size() ) );
-   int info( 0 );
+   blas_int_t n   ( numeric_cast<blas_int_t>( (*A).rows() ) );
+   blas_int_t nrhs( 1 );
+   blas_int_t lda ( numeric_cast<blas_int_t>( (*A).spacing() ) );
+   blas_int_t ldb ( numeric_cast<blas_int_t>( (*b).size() ) );
+   blas_int_t info( 0 );
 
    if( n == 0 ) {
       return;
@@ -206,7 +210,7 @@ inline void sytrs( const DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& b, char uplo
       ( uplo == 'L' )?( uplo = 'U' ):( uplo = 'L' );
    }
 
-   sytrs( uplo, n, nrhs, (~A).data(), lda, ipiv, (~b).data(), ldb, &info );
+   sytrs( uplo, n, nrhs, (*A).data(), lda, ipiv, (*b).data(), ldb, &info );
 
    BLAZE_INTERNAL_ASSERT( info == 0, "Invalid function argument" );
 }
@@ -256,10 +260,11 @@ inline void sytrs( const DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& b, char uplo
    \code
    using blaze::DynamicMatrix;
    using blaze::columnMajor;
+   using blaze::blas_int_t;
 
-   DynamicMatrix<double,columnMajor> A( 2UL, 2UL );  // The system matrix A
-   DynamicMatrix<double,columnMajor> B( 2UL, 4UL );  // The right-hand side matrix B
-   DynamicVector<int,columnVector> ipiv( 2UL );      // Pivoting indices
+   DynamicMatrix<double,columnMajor> A( 2UL, 2UL );     // The system matrix A
+   DynamicMatrix<double,columnMajor> B( 2UL, 4UL );     // The right-hand side matrix B
+   DynamicVector<blas_int_t,columnVector> ipiv( 2UL );  // Pivoting indices
    // ... Initialization
 
    DynamicMatrix<double,columnMajor> D( A );  // Temporary matrix to be decomposed
@@ -274,10 +279,11 @@ inline void sytrs( const DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& b, char uplo
    \code
    using blaze::DynamicMatrix;
    using blaze::rowMajor;
+   using blaze::blas_int_t;
 
-   DynamicMatrix<double,rowMajor> A( 2UL, 2UL );  // The system matrix A
-   DynamicMatrix<double,rowMajor> B( 4UL, 2UL );  // The right-hand side matrix B
-   DynamicVector<int,columnVector> ipiv( 2UL );   // Pivoting indices
+   DynamicMatrix<double,rowMajor> A( 2UL, 2UL );        // The system matrix A
+   DynamicMatrix<double,rowMajor> B( 4UL, 2UL );        // The right-hand side matrix B
+   DynamicVector<blas_int_t,columnVector> ipiv( 2UL );  // Pivoting indices
    // ... Initialization
 
    DynamicMatrix<double,rowMajor> D( A );  // Temporary matrix to be decomposed
@@ -302,7 +308,8 @@ template< typename MT1  // Type of the system matrix
         , bool SO1      // Storage order of the system matrix
         , typename MT2  // Type of the right-hand side matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
-inline void sytrs( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B, char uplo, const int* ipiv )
+inline void sytrs( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B, char uplo,
+                   const blas_int_t* ipiv )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_ADAPTOR_TYPE( MT1 );
    BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( MT1 );
@@ -316,7 +323,7 @@ inline void sytrs( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B, char 
    BLAZE_CONSTRAINT_MUST_BE_CONTIGUOUS_TYPE( MT2 );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ElementType_t<MT1>, ElementType_t<MT2> );
 
-   if( !isSquare( ~A ) ) {
+   if( !isSquare( *A ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid non-square matrix provided" );
    }
 
@@ -324,12 +331,12 @@ inline void sytrs( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B, char 
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid uplo argument provided" );
    }
 
-   int n   ( numeric_cast<int>( (~A).rows() ) );
-   int mrhs( numeric_cast<int>( SO2 ? (~B).rows() : (~B).columns() ) );
-   int nrhs( numeric_cast<int>( SO2 ? (~B).columns() : (~B).rows() ) );
-   int lda ( numeric_cast<int>( (~A).spacing() ) );
-   int ldb ( numeric_cast<int>( (~B).spacing() ) );
-   int info( 0 );
+   blas_int_t n   ( numeric_cast<blas_int_t>( (*A).rows() ) );
+   blas_int_t mrhs( numeric_cast<blas_int_t>( SO2 ? (*B).rows() : (*B).columns() ) );
+   blas_int_t nrhs( numeric_cast<blas_int_t>( SO2 ? (*B).columns() : (*B).rows() ) );
+   blas_int_t lda ( numeric_cast<blas_int_t>( (*A).spacing() ) );
+   blas_int_t ldb ( numeric_cast<blas_int_t>( (*B).spacing() ) );
+   blas_int_t info( 0 );
 
    if( n != mrhs ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid right-hand side matrix provided" );
@@ -343,7 +350,7 @@ inline void sytrs( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B, char 
       ( uplo == 'L' )?( uplo = 'U' ):( uplo = 'L' );
    }
 
-   sytrs( uplo, n, nrhs, (~A).data(), lda, ipiv, (~B).data(), ldb, &info );
+   sytrs( uplo, n, nrhs, (*A).data(), lda, ipiv, (*B).data(), ldb, &info );
 
    BLAZE_INTERNAL_ASSERT( info == 0, "Invalid function argument" );
 }

@@ -3,7 +3,7 @@
 //  \file blaze/math/traits/DeclSymTrait.h
 //  \brief Header file for the declsym trait
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -44,7 +44,7 @@
 #include <blaze/math/adaptors/symmetricmatrix/BaseTemplate.h>
 #include <blaze/math/typetraits/IsMatrix.h>
 #include <blaze/math/typetraits/Size.h>
-#include <blaze/util/InvalidType.h>
+#include <blaze/util/EnableIf.h>
 
 
 namespace blaze {
@@ -66,16 +66,7 @@ template< typename, typename = void > struct DeclSymTraitEval;
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename T >
-auto evalDeclSymTrait( T& )
-   -> typename DeclSymTraitEval<T>::Type;
-
-template< typename T >
-auto evalDeclSymTrait( const T& )
-   -> typename DeclSymTrait<T>::Type;
-
-template< typename T >
-auto evalDeclSymTrait( const volatile T& )
-   -> typename DeclSymTrait<T>::Type;
+auto evalDeclSymTrait( const volatile T& ) -> DeclSymTraitEval<T>;
 /*! \endcond */
 //*************************************************************************************************
 
@@ -87,11 +78,10 @@ auto evalDeclSymTrait( const volatile T& )
 // \section declsymtrait_general General
 //
 // The DeclSymTrait class template offers the possibility to select the resulting data type
-// of a generic declsym() operation on the given type \a MT. DeclSymTrait defines the nested
-// type \a Type, which represents the resulting data type of the declsym() operation. In case
-// the given data type is not a dense or sparse matrix type, the resulting data type \a Type is
-// set to \a INVALID_TYPE. Note that \a const and \a volatile qualifiers and reference modifiers
-// are generally ignored.
+// of a generic declsym() operation on the given type \a MT. In case the given type \a MT is
+// a dense or sparse matrix type, DeclSymTrait defines the nested type \a Type, which represents
+// the resulting data type of the declsym() operation. Otherwise there is no nested type \a Type.
+// Note that \a const and \a volatile qualifiers and reference modifiers are generally ignored.
 //
 //
 // \section declsymtrait_specializations Creating custom specializations
@@ -132,14 +122,8 @@ auto evalDeclSymTrait( const volatile T& )
 */
 template< typename MT >  // Type of the matrix
 struct DeclSymTrait
-{
- public:
-   //**********************************************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   using Type = decltype( evalDeclSymTrait( std::declval<MT&>() ) );
-   /*! \endcond */
-   //**********************************************************************************************
-};
+   : public decltype( evalDeclSymTrait( std::declval<MT&>() ) )
+{};
 //*************************************************************************************************
 
 
@@ -169,9 +153,7 @@ using DeclSymTrait_t = typename DeclSymTrait<MT>::Type;
 template< typename MT  // Type of the matrix
         , typename >   // Restricting condition
 struct DeclSymTraitEval
-{
-   using Type = INVALID_TYPE;
-};
+{};
 /*! \endcond */
 //*************************************************************************************************
 
@@ -188,7 +170,7 @@ struct DeclSymTraitEval< MT
                                        Size_v<MT,1UL> == DefaultSize_v ||
                                        Size_v<MT,0UL> == Size_v<MT,1UL> ) > >
 {
-   using Type = SymmetricMatrix<MT>;
+   using Type = SymmetricMatrix<typename MT::ResultType>;
 };
 /*! \endcond */
 //*************************************************************************************************

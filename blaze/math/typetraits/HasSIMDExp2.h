@@ -3,7 +3,7 @@
 //  \file blaze/math/typetraits/HasSIMDExp2.h
 //  \brief Header file for the HasSIMDExp2 type trait
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -42,9 +42,9 @@
 
 #include <blaze/system/Vectorization.h>
 #include <blaze/util/IntegralConstant.h>
-#include <blaze/util/typetraits/Decay.h>
 #include <blaze/util/typetraits/IsDouble.h>
 #include <blaze/util/typetraits/IsFloat.h>
+#include <blaze/util/typetraits/RemoveCVRef.h>
 
 
 namespace blaze {
@@ -63,7 +63,8 @@ namespace blaze {
 template< typename T >  // Type of the operand
 using HasSIMDExp2Helper =
    BoolConstant< ( IsFloat_v<T> || IsDouble_v<T> ) &&
-                 bool( BLAZE_SVML_MODE ) &&
+                 ( bool( BLAZE_SVML_MODE    ) ||
+                   bool( BLAZE_SLEEF_MODE ) ) &&
                  ( bool( BLAZE_SSE_MODE     ) ||
                    bool( BLAZE_AVX_MODE     ) ||
                    bool( BLAZE_MIC_MODE     ) ||
@@ -95,14 +96,14 @@ using HasSIMDExp2Helper =
 */
 template< typename T >  // Type of the operand
 struct HasSIMDExp2
-   : public BoolConstant< HasSIMDExp2Helper< Decay_t<T> >::value >
+   : public BoolConstant< HasSIMDExp2Helper< RemoveCVRef_t<T> >::value >
 {};
 //*************************************************************************************************
 
 
 //*************************************************************************************************
 /*!\brief Auxiliary variable template for the HasSIMDExp2 type trait.
-// \ingroup type_traits
+// \ingroup math_type_traits
 //
 // The HasSIMDExp2_v variable template provides a convenient shortcut to access the nested
 // \a value of the HasSIMDExp2 class template. For instance, given the type \a T the following

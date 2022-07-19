@@ -3,7 +3,7 @@
 //  \file blaze/math/smp/threads/ThreadBackend.h
 //  \brief Header file for the C++11 and Boost thread backend
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -119,7 +119,7 @@ class ThreadBackend
       // \param source The source operand to be assigned to the target.
       // \param op The (compound) assignment operation.
       */
-      explicit inline Assigner( Target& target, const Source& source, OP op )
+      inline Assigner( Target& target, const Source& source, OP op )
          : target_( target )  // The target operand
          , source_( source )  // The source operand
          , op_    ( op     )  // The (compound) assignment operation

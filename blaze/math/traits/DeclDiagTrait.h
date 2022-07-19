@@ -3,7 +3,7 @@
 //  \file blaze/math/traits/DeclDiagTrait.h
 //  \brief Header file for the decldiag trait
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -44,6 +44,7 @@
 #include <blaze/math/adaptors/diagonalmatrix/BaseTemplate.h>
 #include <blaze/math/typetraits/IsMatrix.h>
 #include <blaze/math/typetraits/Size.h>
+#include <blaze/util/EnableIf.h>
 #include <blaze/util/InvalidType.h>
 
 
@@ -66,16 +67,7 @@ template< typename, typename = void > struct DeclDiagTraitEval;
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename T >
-auto evalDeclDiagTrait( T& )
-   -> typename DeclDiagTraitEval<T>::Type;
-
-template< typename T >
-auto evalDeclDiagTrait( const T& )
-   -> typename DeclDiagTrait<T>::Type;
-
-template< typename T >
-auto evalDeclDiagTrait( const volatile T& )
-   -> typename DeclDiagTrait<T>::Type;
+auto evalDeclDiagTrait( const volatile T& ) -> DeclDiagTraitEval<T>;
 /*! \endcond */
 //*************************************************************************************************
 
@@ -87,11 +79,10 @@ auto evalDeclDiagTrait( const volatile T& )
 // \section decldiagtrait_general General
 //
 // The DeclDiagTrait class template offers the possibility to select the resulting data type
-// of a generic decldiag() operation on the given type \a MT. DeclDiagTrait defines the nested
-// type \a Type, which represents the resulting data type of the decldiag() operation. In case
-// the given data type is not a dense or sparse matrix type, the resulting data type \a Type is
-// set to \a INVALID_TYPE. Note that \a const and \a volatile qualifiers and reference modifiers
-// are generally ignored.
+// of a generic decldiag() operation on the given type \a MT. In case the given type \a MT is
+// a dense or sparse matrix type, DeclDiagTrait defines the nested type \a Type, which represents
+// the resulting data type of the decldiag() operation. Otherwise there is no nested type \a Type.
+// Note that \a const and \a volatile qualifiers and reference modifiers are generally ignored.
 //
 //
 // \section decldiagtrait_specializations Creating custom specializations
@@ -101,8 +92,8 @@ auto evalDeclDiagTrait( const volatile T& )
 // The following example shows the according specialization for the SymmetricMatrix class template:
 
    \code
-   template< typename MT, bool SO, bool DF, bool NF >
-   struct DeclDiagTrait< SymmetricMatrix<MT,SO,DF,NF> >
+   template< typename MT, bool SO, bool DF, bool SF >
+   struct DeclDiagTrait< SymmetricMatrix<MT,SO,DF,SF> >
    {
       using Type = DiagonalMatrix<MT>;
    };
@@ -132,14 +123,8 @@ auto evalDeclDiagTrait( const volatile T& )
 */
 template< typename MT >  // Type of the matrix
 struct DeclDiagTrait
-{
- public:
-   //**********************************************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   using Type = decltype( evalDeclDiagTrait( std::declval<MT&>() ) );
-   /*! \endcond */
-   //**********************************************************************************************
-};
+   : public decltype( evalDeclDiagTrait( std::declval<MT&>() ) )
+{};
 //*************************************************************************************************
 
 
@@ -169,9 +154,7 @@ using DeclDiagTrait_t = typename DeclDiagTrait<MT>::Type;
 template< typename MT  // Type of the matrix
         , typename >   // Restricting condition
 struct DeclDiagTraitEval
-{
-   using Type = INVALID_TYPE;
-};
+{};
 /*! \endcond */
 //*************************************************************************************************
 
@@ -188,7 +171,7 @@ struct DeclDiagTraitEval< MT
                                         Size_v<MT,1UL> == DefaultSize_v ||
                                         Size_v<MT,0UL> == Size_v<MT,1UL> ) > >
 {
-   using Type = DiagonalMatrix<MT>;
+   using Type = DiagonalMatrix<typename MT::ResultType>;
 };
 /*! \endcond */
 //*************************************************************************************************

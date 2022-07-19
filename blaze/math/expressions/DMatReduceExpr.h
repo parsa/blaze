@@ -3,7 +3,7 @@
 //  \file blaze/math/expressions/DMatReduceExpr.h
 //  \brief Header file for the dense matrix reduce expression
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -60,23 +60,29 @@
 #include <blaze/math/functors/Min.h>
 #include <blaze/math/functors/Mult.h>
 #include <blaze/math/ReductionFlag.h>
+#include <blaze/math/shims/PrevMultiple.h>
 #include <blaze/math/shims/Serial.h>
 #include <blaze/math/SIMD.h>
 #include <blaze/math/traits/ReduceTrait.h>
+#include <blaze/math/typetraits/HasLoad.h>
 #include <blaze/math/typetraits/IsExpression.h>
+#include <blaze/math/typetraits/IsPadded.h>
+#include <blaze/math/typetraits/IsSIMDEnabled.h>
+#include <blaze/math/typetraits/IsUniform.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
 #include <blaze/math/views/Check.h>
+#include <blaze/system/HostDevice.h>
+#include <blaze/system/MacroDisable.h>
 #include <blaze/system/Thresholds.h>
 #include <blaze/util/Assert.h>
-#include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/FunctionTrace.h>
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/StaticAssert.h>
-#include <blaze/util/Template.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/HasMember.h>
 #include <blaze/util/typetraits/IsSame.h>
+#include <blaze/util/typetraits/RemoveCV.h>
 #include <blaze/util/typetraits/RemoveReference.h>
 
 
@@ -89,15 +95,15 @@ namespace blaze {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Base template for row-major dense matrix reduction operations.
+/*!\brief Base template for row-major dense matrix partial reduction operations.
 // \ingroup dense_vector_expression
 //
 // The DMatReduceExpr class represents the compile time expression for partial reduction operations
 // of row-major dense matrices.
 */
-template< typename MT  // Type of the dense matrix
-        , typename OP  // Type of the reduction operation
-        , size_t RF >  // Reduction flag
+template< typename MT         // Type of the dense matrix
+        , typename OP         // Type of the reduction operation
+        , ReductionFlag RF >  // Reduction flag
 class DMatReduceExpr
 {};
 //*************************************************************************************************
@@ -127,7 +133,6 @@ class DMatReduceExpr<MT,OP,columnwise>
  private:
    //**Type definitions****************************************************************************
    using RT = ResultType_t<MT>;     //!< Result type of the dense matrix expression.
-   using ET = ElementType_t<MT>;    //!< Element type of the dense matrix expression.
    using CT = CompositeType_t<MT>;  //!< Composite type of the dense matrix expression.
    //**********************************************************************************************
 
@@ -145,13 +150,18 @@ class DMatReduceExpr<MT,OP,columnwise>
 
  public:
    //**Type definitions****************************************************************************
-   using This          = DMatReduceExpr<MT,OP,columnwise>;  //!< Type of this DMatReduceExpr instance.
-   using ResultType    = ReduceTrait_t<RT,OP,columnwise>;   //!< Result type for expression template evaluations.
-   using TransposeType = TransposeType_t<ResultType>;       //!< Transpose type for expression template evaluations.
-   using ElementType   = ElementType_t<ResultType>;         //!< Resulting element type.
-   using SIMDType      = SIMDTrait_t<ElementType>;          //!< Resulting SIMD element type.
-   using ReturnType    = const ElementType;                 //!< Return type for expression template evaluations.
-   using CompositeType = const ResultType;                  //!< Data type for composite expression templates.
+   //! Type of this DMatReduceExpr instance.
+   using This = DMatReduceExpr<MT,OP,columnwise>;
+
+   //! Base type of this DMatReduceExpr instance.
+   using BaseType = MatReduceExpr< DenseVector<This,true>, columnwise >;
+
+   using ResultType    = ReduceTrait_t<RT,OP,columnwise>;  //!< Result type for expression template evaluations.
+   using TransposeType = TransposeType_t<ResultType>;      //!< Transpose type for expression template evaluations.
+   using ElementType   = ElementType_t<ResultType>;        //!< Resulting element type.
+   using SIMDType      = SIMDTrait_t<ElementType>;         //!< Resulting SIMD element type.
+   using ReturnType    = const ElementType;                //!< Return type for expression template evaluations.
+   using CompositeType = const ResultType;                 //!< Data type for composite expression templates.
 
    //! Composite type of the left-hand side dense matrix expression.
    using Operand = If_t< IsExpression_v<MT>, const MT, const MT& >;
@@ -174,9 +184,9 @@ class DMatReduceExpr<MT,OP,columnwise>
    // \param dm The matrix operand of the reduction expression.
    // \param op The reduction operation.
    */
-   explicit inline DMatReduceExpr( const MT& dm, OP op ) noexcept
-      : dm_( dm )  // Dense matrix of the reduction expression
-      , op_( op )  // The reduction operation
+   inline DMatReduceExpr( const MT& dm, OP op ) noexcept
+      : dm_( dm )             // Dense matrix of the reduction expression
+      , op_( std::move(op) )  // The reduction operation
    {}
    //**********************************************************************************************
 
@@ -304,20 +314,20 @@ class DMatReduceExpr<MT,OP,columnwise>
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       const size_t M( rhs.dm_.rows() );
 
       if( M == 0UL ) {
-         reset( ~lhs );
+         reset( *lhs );
          return;
       }
 
       CT tmp( serial( rhs.dm_ ) );
 
-      assign( ~lhs, row( tmp, 0UL, unchecked ) );
+      assign( *lhs, row( tmp, 0UL, unchecked ) );
       for( size_t i=1UL; i<M; ++i ) {
-         assign( ~lhs, map( ~lhs, row( tmp, i, unchecked ), rhs.op_ ) );
+         assign( *lhs, map( *lhs, row( tmp, i, unchecked ), rhs.op_ ) );
       }
    }
    /*! \endcond */
@@ -344,10 +354,10 @@ class DMatReduceExpr<MT,OP,columnwise>
       BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE( ResultType );
       BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       const ResultType tmp( serial( rhs ) );
-      assign( ~lhs, tmp );
+      assign( *lhs, tmp );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -370,7 +380,7 @@ class DMatReduceExpr<MT,OP,columnwise>
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       if( rhs.dm_.rows() == 0UL ) {
          return;
@@ -379,12 +389,12 @@ class DMatReduceExpr<MT,OP,columnwise>
          CT tmp( serial( rhs.dm_ ) );
          const size_t M( tmp.rows() );
          for( size_t i=0UL; i<M; ++i ) {
-            addAssign( (~lhs), row( tmp, i, unchecked ) );
+            addAssign( (*lhs), row( tmp, i, unchecked ) );
          }
       }
       else {
          const ResultType tmp( serial( rhs ) );
-         addAssign( ~lhs, tmp );
+         addAssign( *lhs, tmp );
       }
    }
    /*! \endcond */
@@ -412,10 +422,10 @@ class DMatReduceExpr<MT,OP,columnwise>
       BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE( ResultType );
       BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       const ResultType tmp( serial( rhs ) );
-      addAssign( ~lhs, tmp );
+      addAssign( *lhs, tmp );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -438,7 +448,7 @@ class DMatReduceExpr<MT,OP,columnwise>
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       if( rhs.dm_.rows() == 0UL ) {
          return;
@@ -447,12 +457,12 @@ class DMatReduceExpr<MT,OP,columnwise>
          CT tmp( serial( rhs.dm_ ) );
          const size_t M( tmp.rows() );
          for( size_t i=0UL; i<M; ++i ) {
-            subAssign( (~lhs), row( tmp, i, unchecked ) );
+            subAssign( (*lhs), row( tmp, i, unchecked ) );
          }
       }
       else {
          const ResultType tmp( serial( rhs ) );
-         subAssign( ~lhs, tmp );
+         subAssign( *lhs, tmp );
       }
    }
    /*! \endcond */
@@ -480,10 +490,10 @@ class DMatReduceExpr<MT,OP,columnwise>
       BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE( ResultType );
       BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       const ResultType tmp( serial( rhs ) );
-      subAssign( ~lhs, tmp );
+      subAssign( *lhs, tmp );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -506,21 +516,21 @@ class DMatReduceExpr<MT,OP,columnwise>
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       if( rhs.dm_.rows() == 0UL ) {
-         reset( ~lhs );
+         reset( *lhs );
       }
       else if( IsSame_v<OP,Mult> ) {
          CT tmp( serial( rhs.dm_ ) );
          const size_t M( tmp.rows() );
          for( size_t i=0UL; i<M; ++i ) {
-            multAssign( (~lhs), row( tmp, i, unchecked ) );
+            multAssign( (*lhs), row( tmp, i, unchecked ) );
          }
       }
       else {
          const ResultType tmp( serial( rhs ) );
-         multAssign( ~lhs, tmp );
+         multAssign( *lhs, tmp );
       }
    }
    /*! \endcond */
@@ -548,10 +558,10 @@ class DMatReduceExpr<MT,OP,columnwise>
       BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE( ResultType );
       BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       const ResultType tmp( serial( rhs ) );
-      multAssign( ~lhs, tmp );
+      multAssign( *lhs, tmp );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -578,10 +588,10 @@ class DMatReduceExpr<MT,OP,columnwise>
       BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE( ResultType );
       BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       const ResultType tmp( serial( rhs ) );
-      divAssign( ~lhs, tmp );
+      divAssign( *lhs, tmp );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -606,10 +616,10 @@ class DMatReduceExpr<MT,OP,columnwise>
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       const RT tmp( rhs.dm_ );  // Evaluation of the dense matrix operand
-      smpAssign( ~lhs, reduce<columnwise>( tmp, rhs.op_ ) );
+      smpAssign( *lhs, reduce<columnwise>( tmp, rhs.op_ ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -635,10 +645,10 @@ class DMatReduceExpr<MT,OP,columnwise>
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       const RT tmp( rhs.dm_ );  // Evaluation of the dense matrix operand
-      smpAddAssign( ~lhs, reduce<columnwise>( tmp, rhs.op_ ) );
+      smpAddAssign( *lhs, reduce<columnwise>( tmp, rhs.op_ ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -664,10 +674,10 @@ class DMatReduceExpr<MT,OP,columnwise>
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       const RT tmp( rhs.dm_ );  // Evaluation of the dense matrix operand
-      smpSubAssign( ~lhs, reduce<columnwise>( tmp, rhs.op_ ) );
+      smpSubAssign( *lhs, reduce<columnwise>( tmp, rhs.op_ ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -693,10 +703,10 @@ class DMatReduceExpr<MT,OP,columnwise>
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       const RT tmp( rhs.dm_ );  // Evaluation of the dense matrix operand
-      smpMultAssign( ~lhs, reduce<columnwise>( tmp, rhs.op_ ) );
+      smpMultAssign( *lhs, reduce<columnwise>( tmp, rhs.op_ ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -722,10 +732,10 @@ class DMatReduceExpr<MT,OP,columnwise>
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       const RT tmp( rhs.dm_ );  // Evaluation of the dense matrix operand
-      smpDivAssign( ~lhs, reduce<columnwise>( tmp, rhs.op_ ) );
+      smpDivAssign( *lhs, reduce<columnwise>( tmp, rhs.op_ ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -763,8 +773,7 @@ class DMatReduceExpr<MT,OP,rowwise>
 {
  private:
    //**Type definitions****************************************************************************
-   using RT = ResultType_t<MT>;   //!< Result type of the dense matrix expression.
-   using ET = ElementType_t<MT>;  //!< Element type of the dense matrix expression.
+   using RT = ResultType_t<MT>;  //!< Result type of the dense matrix expression.
    //**********************************************************************************************
 
    //**Serial evaluation strategy******************************************************************
@@ -798,12 +807,17 @@ class DMatReduceExpr<MT,OP,rowwise>
 
  public:
    //**Type definitions****************************************************************************
-   using This          = DMatReduceExpr<MT,OP,rowwise>;  //!< Type of this DMatReduceExpr instance.
-   using ResultType    = ReduceTrait_t<RT,OP,rowwise>;   //!< Result type for expression template evaluations.
-   using TransposeType = TransposeType_t<ResultType>;    //!< Transpose type for expression template evaluations.
-   using ElementType   = ElementType_t<ResultType>;      //!< Resulting element type.
-   using SIMDType      = SIMDTrait_t<ElementType>;       //!< Resulting SIMD element type.
-   using ReturnType    = const ElementType;              //!< Return type for expression template evaluations.
+   //! Type of this DMatReduceExpr instance.
+   using This = DMatReduceExpr<MT,OP,rowwise>;
+
+   //! Base type of this DMatReduceExpr instance.
+   using BaseType = MatReduceExpr< DenseVector<This,false>, rowwise >;
+
+   using ResultType    = ReduceTrait_t<RT,OP,rowwise>;  //!< Result type for expression template evaluations.
+   using TransposeType = TransposeType_t<ResultType>;   //!< Transpose type for expression template evaluations.
+   using ElementType   = ElementType_t<ResultType>;     //!< Resulting element type.
+   using SIMDType      = SIMDTrait_t<ElementType>;      //!< Resulting SIMD element type.
+   using ReturnType    = const ElementType;             //!< Return type for expression template evaluations.
 
    //! Data type for composite expression templates.
    using CompositeType = If_t< useAssign, const ResultType, const DMatReduceExpr& >;
@@ -843,10 +857,10 @@ class DMatReduceExpr<MT,OP,rowwise>
       // \param index Index to the initial matrix row.
       // \param op The reduction operation.
       */
-      explicit inline ConstIterator( Operand dm, size_t index, OP op )
-         : dm_   ( dm    )  // Dense matrix of the reduction expression
-         , index_( index )  // Index to the current matrix row
-         , op_   ( op    )  // The reduction operation
+      inline ConstIterator( Operand dm, size_t index, OP op )
+         : dm_   ( dm    )          // Dense matrix of the reduction expression
+         , index_( index )          // Index to the current matrix row
+         , op_   ( std::move(op) )  // The reduction operation
       {}
       //*******************************************************************************************
 
@@ -856,7 +870,7 @@ class DMatReduceExpr<MT,OP,rowwise>
       // \param inc The increment of the iterator.
       // \return The incremented iterator.
       */
-      inline ConstIterator& operator+=( size_t inc ) {
+      inline BLAZE_DEVICE_CALLABLE ConstIterator& operator+=( size_t inc ) {
          index_ += inc;
          return *this;
       }
@@ -868,7 +882,7 @@ class DMatReduceExpr<MT,OP,rowwise>
       // \param dec The decrement of the iterator.
       // \return The decremented iterator.
       */
-      inline ConstIterator& operator-=( size_t dec ) {
+      inline BLAZE_DEVICE_CALLABLE ConstIterator& operator-=( size_t dec ) {
          index_ -= dec;
          return *this;
       }
@@ -879,7 +893,7 @@ class DMatReduceExpr<MT,OP,rowwise>
       //
       // \return Reference to the incremented iterator.
       */
-      inline ConstIterator& operator++() {
+      inline BLAZE_DEVICE_CALLABLE ConstIterator& operator++() {
          ++index_;
          return *this;
       }
@@ -890,7 +904,7 @@ class DMatReduceExpr<MT,OP,rowwise>
       //
       // \return The previous position of the iterator.
       */
-      inline const ConstIterator operator++( int ) {
+      inline BLAZE_DEVICE_CALLABLE const ConstIterator operator++( int ) {
          return ConstIterator( index_++ );
       }
       //*******************************************************************************************
@@ -900,7 +914,7 @@ class DMatReduceExpr<MT,OP,rowwise>
       //
       // \return Reference to the decremented iterator.
       */
-      inline ConstIterator& operator--() {
+      inline BLAZE_DEVICE_CALLABLE ConstIterator& operator--() {
          --index_;
          return *this;
       }
@@ -911,7 +925,7 @@ class DMatReduceExpr<MT,OP,rowwise>
       //
       // \return The previous position of the iterator.
       */
-      inline const ConstIterator operator--( int ) {
+      inline BLAZE_DEVICE_CALLABLE const ConstIterator operator--( int ) {
          return ConstIterator( index_-- );
       }
       //*******************************************************************************************
@@ -1062,9 +1076,9 @@ class DMatReduceExpr<MT,OP,rowwise>
    // \param dm The matrix operand of the reduction expression.
    // \param op The reduction operation.
    */
-   explicit inline DMatReduceExpr( const MT& dm, OP op ) noexcept
-      : dm_( dm )  // Dense matrix of the reduction expression
-      , op_( op )  // The reduction operation
+   inline DMatReduceExpr( const MT& dm, OP op ) noexcept
+      : dm_( dm )             // Dense matrix of the reduction expression
+      , op_( std::move(op) )  // The reduction operation
    {}
    //**********************************************************************************************
 
@@ -1215,10 +1229,10 @@ class DMatReduceExpr<MT,OP,rowwise>
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       const RT tmp( serial( rhs.dm_ ) );  // Evaluation of the dense matrix operand
-      assign( ~lhs, reduce<rowwise>( tmp, rhs.op_ ) );
+      assign( *lhs, reduce<rowwise>( tmp, rhs.op_ ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -1243,10 +1257,10 @@ class DMatReduceExpr<MT,OP,rowwise>
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       const RT tmp( serial( rhs.dm_ ) );  // Evaluation of the dense matrix operand
-      addAssign( ~lhs, reduce<rowwise>( tmp, rhs.op_ ) );
+      addAssign( *lhs, reduce<rowwise>( tmp, rhs.op_ ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -1272,10 +1286,10 @@ class DMatReduceExpr<MT,OP,rowwise>
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       const RT tmp( serial( rhs.dm_ ) );  // Evaluation of the dense matrix operand
-      subAssign( ~lhs, reduce<rowwise>( tmp, rhs.op_ ) );
+      subAssign( *lhs, reduce<rowwise>( tmp, rhs.op_ ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -1301,10 +1315,10 @@ class DMatReduceExpr<MT,OP,rowwise>
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       const RT tmp( serial( rhs.dm_ ) );  // Evaluation of the dense matrix operand
-      multAssign( ~lhs, reduce<rowwise>( tmp, rhs.op_ ) );
+      multAssign( *lhs, reduce<rowwise>( tmp, rhs.op_ ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -1329,10 +1343,10 @@ class DMatReduceExpr<MT,OP,rowwise>
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       const RT tmp( serial( rhs.dm_ ) );  // Evaluation of the dense matrix operand
-      divAssign( ~lhs, reduce<rowwise>( tmp, rhs.op_ ) );
+      divAssign( *lhs, reduce<rowwise>( tmp, rhs.op_ ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -1357,10 +1371,10 @@ class DMatReduceExpr<MT,OP,rowwise>
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       const RT tmp( rhs.dm_ );  // Evaluation of the dense matrix operand
-      smpAssign( ~lhs, reduce<rowwise>( tmp, rhs.op_ ) );
+      smpAssign( *lhs, reduce<rowwise>( tmp, rhs.op_ ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -1386,10 +1400,10 @@ class DMatReduceExpr<MT,OP,rowwise>
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       const RT tmp( rhs.dm_ );  // Evaluation of the dense matrix operand
-      smpAddAssign( ~lhs, reduce<rowwise>( tmp, rhs.op_ ) );
+      smpAddAssign( *lhs, reduce<rowwise>( tmp, rhs.op_ ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -1415,10 +1429,10 @@ class DMatReduceExpr<MT,OP,rowwise>
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       const RT tmp( rhs.dm_ );  // Evaluation of the dense matrix operand
-      smpSubAssign( ~lhs, reduce<rowwise>( tmp, rhs.op_ ) );
+      smpSubAssign( *lhs, reduce<rowwise>( tmp, rhs.op_ ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -1444,10 +1458,10 @@ class DMatReduceExpr<MT,OP,rowwise>
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       const RT tmp( rhs.dm_ );  // Evaluation of the dense matrix operand
-      smpMultAssign( ~lhs, reduce<rowwise>( tmp, rhs.op_ ) );
+      smpMultAssign( *lhs, reduce<rowwise>( tmp, rhs.op_ ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -1473,10 +1487,10 @@ class DMatReduceExpr<MT,OP,rowwise>
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       const RT tmp( rhs.dm_ );  // Evaluation of the dense matrix operand
-      smpDivAssign( ~lhs, reduce<rowwise>( tmp, rhs.op_ ) );
+      smpDivAssign( *lhs, reduce<rowwise>( tmp, rhs.op_ ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -1513,28 +1527,13 @@ struct DMatReduceExprHelper
    using CT = RemoveReference_t< CompositeType_t<MT> >;
 
    //! Element type of the dense matrix expression.
-   using ET = ElementType_t<CT>;
-
-   //! Definition of the HasSIMDEnabled type trait.
-   BLAZE_CREATE_HAS_DATA_OR_FUNCTION_MEMBER_TYPE_TRAIT( HasSIMDEnabled, simdEnabled );
-
-   //! Definition of the HasLoad type trait.
-   BLAZE_CREATE_HAS_DATA_OR_FUNCTION_MEMBER_TYPE_TRAIT( HasLoad, load );
-   //**********************************************************************************************
-
-   //**SIMD support detection**********************************************************************
-   //! Helper structure for the detection of the SIMD capabilities of the given custom operation.
-   struct UseSIMDEnabledFlag {
-      static constexpr bool test( bool (*fnc)() ) { return fnc(); }
-      static constexpr bool test( bool b ) { return b; }
-      static constexpr bool value = test( OP::BLAZE_TEMPLATE simdEnabled<ET,ET> );
-   };
+   using ET = RemoveCV_t< ElementType_t<CT> >;
    //**********************************************************************************************
 
    //**********************************************************************************************
    static constexpr bool value =
       ( CT::simdEnabled &&
-        If_t< HasSIMDEnabled_v<OP>, UseSIMDEnabledFlag, HasLoad<OP> >::value );
+        If_t< HasSIMDEnabled_v<OP>, GetSIMDEnabled<OP,ET,ET>, HasLoad<OP> >::value );
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -1565,23 +1564,23 @@ struct DMatReduceExprHelper
 template< typename MT    // Type of the dense matrix
         , typename OP >  // Type of the reduction operation
 inline auto dmatreduce( const DenseMatrix<MT,false>& dm, OP op )
-   -> DisableIf_t< DMatReduceExprHelper<MT,OP>::value, ElementType_t<MT> >
+   -> DisableIf_t< DMatReduceExprHelper<MT,OP>::value, RemoveCV_t< ReduceTrait_t<MT,OP> > >
 {
    using CT = CompositeType_t<MT>;
-   using ET = ElementType_t<MT>;
+   using RT = RemoveCV_t< ReduceTrait_t<MT,OP> >;
 
-   const size_t M( (~dm).rows()    );
-   const size_t N( (~dm).columns() );
+   const size_t M( (*dm).rows()    );
+   const size_t N( (*dm).columns() );
 
-   if( M == 0UL || N == 0UL ) return ET{};
-   if( M == 1UL && N == 1UL ) return (~dm)(0UL,0UL);
+   if( M == 0UL || N == 0UL ) return RT{};
+   if( M == 1UL && N == 1UL ) return (*dm)(0UL,0UL);
 
-   CT tmp( ~dm );
+   CT tmp( *dm );
 
    BLAZE_INTERNAL_ASSERT( tmp.rows()    == M, "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( tmp.columns() == N, "Invalid number of columns" );
 
-   ET redux0{};
+   RT redux0{};
 
    {
       redux0 = tmp(0UL,0UL);
@@ -1595,8 +1594,8 @@ inline auto dmatreduce( const DenseMatrix<MT,false>& dm, OP op )
 
    for( ; (i+2UL) <= M; i+=2UL )
    {
-      ET redux1( tmp(i    ,0UL) );
-      ET redux2( tmp(i+1UL,0UL) );
+      RT redux1( tmp(i    ,0UL) );
+      RT redux2( tmp(i+1UL,0UL) );
 
       for( size_t j=1UL; j<N; ++j ) {
          redux1 = op( redux1, tmp(i    ,j) );
@@ -1609,7 +1608,7 @@ inline auto dmatreduce( const DenseMatrix<MT,false>& dm, OP op )
 
    if( i < M )
    {
-      ET redux1( tmp(i,0UL) );
+      RT redux1( tmp(i,0UL) );
 
       for( size_t j=1UL; j<N; ++j ) {
          redux1 = op( redux1, tmp(i,j) );
@@ -1640,17 +1639,17 @@ inline auto dmatreduce( const DenseMatrix<MT,false>& dm, OP op )
 template< typename MT    // Type of the dense matrix
         , typename OP >  // Type of the reduction operation
 inline auto dmatreduce( const DenseMatrix<MT,false>& dm, OP op )
-   -> EnableIf_t< DMatReduceExprHelper<MT,OP>::value, ElementType_t<MT> >
+   -> EnableIf_t< DMatReduceExprHelper<MT,OP>::value, RemoveCV_t< ElementType_t<MT> > >
 {
    using CT = CompositeType_t<MT>;
-   using ET = ElementType_t<MT>;
+   using ET = RemoveCV_t< ElementType_t<MT> >;
 
-   const size_t M( (~dm).rows()    );
-   const size_t N( (~dm).columns() );
+   const size_t M( (*dm).rows()    );
+   const size_t N( (*dm).columns() );
 
    if( M == 0UL || N == 0UL ) return ET{};
 
-   CT tmp( ~dm );
+   CT tmp( *dm );
 
    BLAZE_INTERNAL_ASSERT( tmp.rows()    == M, "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( tmp.columns() == N, "Invalid number of columns" );
@@ -1666,8 +1665,8 @@ inline auto dmatreduce( const DenseMatrix<MT,false>& dm, OP op )
 
    if( N >= SIMDSIZE )
    {
-      const size_t jpos( N & size_t(-SIMDSIZE) );
-      BLAZE_INTERNAL_ASSERT( ( N - ( N % SIMDSIZE ) ) == jpos, "Invalid end calculation" );
+      const size_t jpos( prevMultiple( N, SIMDSIZE ) );
+      BLAZE_INTERNAL_ASSERT( jpos <= N, "Invalid end calculation" );
 
       SIMDTrait_t<ET> xmm1;
 
@@ -1821,30 +1820,30 @@ inline auto dmatreduce( const DenseMatrix<MT,false>& dm, OP op )
 */
 template< typename MT >  // Type of the dense matrix
 inline auto dmatreduce( const DenseMatrix<MT,false>& dm, Add /*op*/ )
-   -> EnableIf_t< DMatReduceExprHelper<MT,Add>::value, ElementType_t<MT> >
+   -> EnableIf_t< DMatReduceExprHelper<MT,Add>::value, RemoveCV_t< ElementType_t<MT> > >
 {
    using CT = CompositeType_t<MT>;
-   using ET = ElementType_t<MT>;
+   using ET = RemoveCV_t< ElementType_t<MT> >;
 
-   const size_t M( (~dm).rows()    );
-   const size_t N( (~dm).columns() );
+   const size_t M( (*dm).rows()    );
+   const size_t N( (*dm).columns() );
 
    if( M == 0UL || N == 0UL ) return ET{};
 
-   CT tmp( ~dm );
+   CT tmp( *dm );
 
    BLAZE_INTERNAL_ASSERT( tmp.rows()    == M, "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( tmp.columns() == N, "Invalid number of columns" );
 
-   constexpr bool remainder( !usePadding || !IsPadded_v< RemoveReference_t<CT> > );
+   constexpr bool remainder( !IsPadded_v< RemoveReference_t<CT> > );
    constexpr size_t SIMDSIZE = SIMDTrait<ET>::size;
 
    ET redux{};
 
    if( !remainder || N >= SIMDSIZE )
    {
-      const size_t jpos( ( remainder )?( N & size_t(-SIMDSIZE) ):( N ) );
-      BLAZE_INTERNAL_ASSERT( !remainder || ( N - ( N % SIMDSIZE ) ) == jpos, "Invalid end calculation" );
+      const size_t jpos( remainder ? prevMultiple( N, SIMDSIZE ) : N );
+      BLAZE_INTERNAL_ASSERT( jpos <= N, "Invalid end calculation" );
 
       SIMDTrait_t<ET> xmm1;
       size_t i( 0UL );
@@ -1928,6 +1927,48 @@ inline auto dmatreduce( const DenseMatrix<MT,false>& dm, Add /*op*/ )
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+/*!\brief Optimized backend implementation of the minimum evaluation of a uniform dense matrix.
+// \ingroup dense_matrix
+//
+// \param dm The given dense matrix.
+// \return The smallest dense matrix element.
+//
+// This function implements the performance optimized minimum evaluation for a given uniform
+// dense matrix.
+*/
+template< typename MT >  // Type of the dense matrix
+inline auto dmatreduce( const DenseMatrix<MT,false>& dm, Min /*op*/ )
+   -> EnableIf_t< IsUniform_v<MT>, RemoveCV_t< ElementType_t<MT> > >
+{
+   return (*dm)(0UL,0UL);
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Optimized backend implementation of the maximum evaluation of a uniform dense matrix.
+// \ingroup dense_matrix
+//
+// \param dm The given dense matrix.
+// \return The smallest dense matrix element.
+//
+// This function implements the performance optimized maximum evaluation for a given uniform
+// dense matrix.
+*/
+template< typename MT >  // Type of the dense matrix
+inline auto dmatreduce( const DenseMatrix<MT,false>& dm, Max /*op*/ )
+   -> EnableIf_t< IsUniform_v<MT>, RemoveCV_t< ElementType_t<MT> > >
+{
+   return (*dm)(0UL,0UL);
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Default backend implementation of the reduction of a column-major dense matrix.
 // \ingroup dense_matrix
 //
@@ -1941,9 +1982,9 @@ inline auto dmatreduce( const DenseMatrix<MT,false>& dm, Add /*op*/ )
 */
 template< typename MT    // Type of the dense matrix
         , typename OP >  // Type of the reduction operation
-inline ElementType_t<MT> dmatreduce( const DenseMatrix<MT,true>& dm, OP op )
+inline RemoveCV_t< ElementType_t<MT> > dmatreduce( const DenseMatrix<MT,true>& dm, OP op )
 {
-   return dmatreduce( trans( ~dm ), op );
+   return dmatreduce( trans( *dm ), std::move(op) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1985,7 +2026,7 @@ inline decltype(auto) reduce( const DenseMatrix<MT,SO>& dm, OP op )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return dmatreduce( ~dm, op );
+   return dmatreduce( *dm, std::move(op) );
 }
 //*************************************************************************************************
 
@@ -1999,13 +2040,13 @@ inline decltype(auto) reduce( const DenseMatrix<MT,SO>& dm, OP op )
 // \param op The reduction operation.
 // \return The result of the reduction operation.
 */
-template< size_t RF      // Reduction flag
-        , typename MT    // Type of the dense matrix
-        , typename OP >  // Type of the reduction operation
+template< ReductionFlag RF  // Reduction flag
+        , typename MT       // Type of the dense matrix
+        , typename OP >     // Type of the reduction operation
 inline const DMatReduceExpr<MT,OP,RF> reduce_backend( const DenseMatrix<MT,false>& dm, OP op )
 {
    using ReturnType = const DMatReduceExpr<MT,OP,RF>;
-   return ReturnType( ~dm, op );
+   return ReturnType( *dm, std::move(op) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -2020,12 +2061,13 @@ inline const DMatReduceExpr<MT,OP,RF> reduce_backend( const DenseMatrix<MT,false
 // \param op The reduction operation.
 // \return The result of the reduction operation.
 */
-template< size_t RF      // Reduction flag
-        , typename MT    // Type of the dense matrix
-        , typename OP >  // Type of the reduction operation
+template< ReductionFlag RF  // Reduction flag
+        , typename MT       // Type of the dense matrix
+        , typename OP >     // Type of the reduction operation
 inline decltype(auto) reduce_backend( const DenseMatrix<MT,true>& dm, OP op )
 {
-   return trans( reduce<1UL-RF>( trans( ~dm ), op ) );
+   constexpr ReductionFlag RF2( RF == rowwise ? columnwise : rowwise );
+   return trans( reduce<RF2>( trans( *dm ), std::move(op) ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -2077,17 +2119,17 @@ inline decltype(auto) reduce_backend( const DenseMatrix<MT,true>& dm, OP op )
 // behavior is non-deterministic if \a op is not associative or not commutative. Also, the
 // operation is undefined if the given reduction operation modifies the values.
 */
-template< size_t RF      // Reduction flag
-        , typename MT    // Type of the dense matrix
-        , bool SO        // Storage order
-        , typename OP >  // Type of the reduction operation
+template< ReductionFlag RF  // Reduction flag
+        , typename MT       // Type of the dense matrix
+        , bool SO           // Storage order
+        , typename OP >     // Type of the reduction operation
 inline decltype(auto) reduce( const DenseMatrix<MT,SO>& dm, OP op )
 {
    BLAZE_FUNCTION_TRACE;
 
    BLAZE_STATIC_ASSERT_MSG( RF < 2UL, "Invalid reduction flag" );
 
-   return reduce_backend<RF>( ~dm, op );
+   return reduce_backend<RF>( *dm, std::move(op) );
 }
 //*************************************************************************************************
 
@@ -2115,7 +2157,7 @@ inline decltype(auto) sum( const DenseMatrix<MT,SO>& dm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return reduce( ~dm, Add() );
+   return reduce( *dm, Add() );
 }
 //*************************************************************************************************
 
@@ -2153,14 +2195,14 @@ inline decltype(auto) sum( const DenseMatrix<MT,SO>& dm )
 
 // Please note that the evaluation order of the reduction operation is unspecified.
 */
-template< size_t RF    // Reduction flag
-        , typename MT  // Type of the dense matrix
-        , bool SO >    // Storage order
+template< ReductionFlag RF  // Reduction flag
+        , typename MT       // Type of the dense matrix
+        , bool SO >         // Storage order
 inline decltype(auto) sum( const DenseMatrix<MT,SO>& dm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return reduce<RF>( ~dm, Add() );
+   return reduce<RF>( *dm, Add() );
 }
 //*************************************************************************************************
 
@@ -2188,7 +2230,7 @@ inline decltype(auto) prod( const DenseMatrix<MT,SO>& dm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return reduce( ~dm, Mult() );
+   return reduce( *dm, Mult() );
 }
 //*************************************************************************************************
 
@@ -2226,14 +2268,14 @@ inline decltype(auto) prod( const DenseMatrix<MT,SO>& dm )
 
 // Please note that the evaluation order of the reduction operation is unspecified.
 */
-template< size_t RF    // Reduction flag
-        , typename MT  // Type of the dense matrix
-        , bool SO >    // Storage order
+template< ReductionFlag RF  // Reduction flag
+        , typename MT       // Type of the dense matrix
+        , bool SO >         // Storage order
 inline decltype(auto) prod( const DenseMatrix<MT,SO>& dm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return reduce<RF>( ~dm, Mult() );
+   return reduce<RF>( *dm, Mult() );
 }
 //*************************************************************************************************
 
@@ -2262,7 +2304,7 @@ inline decltype(auto) min( const DenseMatrix<MT,SO>& dm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return reduce( ~dm, Min() );
+   return reduce( *dm, Min() );
 }
 //*************************************************************************************************
 
@@ -2297,14 +2339,14 @@ inline decltype(auto) min( const DenseMatrix<MT,SO>& dm )
    rowmin = min<rowwise>( A );  // Results in ( 0, 1 )
    \endcode
 */
-template< size_t RF    // Reduction flag
-        , typename MT  // Type of the dense matrix
-        , bool SO >    // Storage order
+template< ReductionFlag RF  // Reduction flag
+        , typename MT       // Type of the dense matrix
+        , bool SO >         // Storage order
 inline decltype(auto) min( const DenseMatrix<MT,SO>& dm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return reduce<RF>( ~dm, Min() );
+   return reduce<RF>( *dm, Min() );
 }
 //*************************************************************************************************
 
@@ -2333,7 +2375,7 @@ inline decltype(auto) max( const DenseMatrix<MT,SO>& dm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return reduce( ~dm, Max() );
+   return reduce( *dm, Max() );
 }
 //*************************************************************************************************
 
@@ -2368,14 +2410,14 @@ inline decltype(auto) max( const DenseMatrix<MT,SO>& dm )
    rowmax = max<rowwise>( A );  // Results in ( 2, 4 )
    \endcode
 */
-template< size_t RF    // Reduction flag
-        , typename MT  // Type of the dense matrix
-        , bool SO >    // Storage order
+template< ReductionFlag RF  // Reduction flag
+        , typename MT       // Type of the dense matrix
+        , bool SO >         // Storage order
 inline decltype(auto) max( const DenseMatrix<MT,SO>& dm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return reduce<RF>( ~dm, Max() );
+   return reduce<RF>( *dm, Max() );
 }
 //*************************************************************************************************
 

@@ -3,7 +3,7 @@
 //  \file blaze/math/lapack/gerqf.h
 //  \brief Header file for the LAPACK RQ decomposition functions (gerqf)
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -66,7 +66,7 @@ namespace blaze {
 /*!\name LAPACK RQ decomposition functions (gerqf) */
 //@{
 template< typename MT, bool SO >
-inline void gerqf( DenseMatrix<MT,SO>& A, ElementType_t<MT>* tau );
+void gerqf( DenseMatrix<MT,SO>& A, ElementType_t<MT>* tau );
 //@}
 //*************************************************************************************************
 
@@ -126,23 +126,23 @@ inline void gerqf( DenseMatrix<MT,SO>& A, ElementType_t<MT>* tau )
 
    using ET = ElementType_t<MT>;
 
-   int m   ( numeric_cast<int>( SO ? (~A).rows() : (~A).columns() ) );
-   int n   ( numeric_cast<int>( SO ? (~A).columns() : (~A).rows() ) );
-   int lda ( numeric_cast<int>( (~A).spacing() ) );
-   int info( 0 );
+   blas_int_t m   ( numeric_cast<blas_int_t>( SO ? (*A).rows() : (*A).columns() ) );
+   blas_int_t n   ( numeric_cast<blas_int_t>( SO ? (*A).columns() : (*A).rows() ) );
+   blas_int_t lda ( numeric_cast<blas_int_t>( (*A).spacing() ) );
+   blas_int_t info( 0 );
 
    if( m == 0 || n == 0 ) {
       return;
    }
 
-   int lwork( ( SO ? m : n ) * lda );
+   blas_int_t lwork( ( SO ? m : n ) * lda );
    const std::unique_ptr<ET[]> work( new ET[lwork] );
 
    if( SO ) {
-      gerqf( m, n, (~A).data(), lda, tau, work.get(), lwork, &info );
+      gerqf( m, n, (*A).data(), lda, tau, work.get(), lwork, &info );
    }
    else {
-      geqlf( m, n, (~A).data(), lda, tau, work.get(), lwork, &info );
+      geqlf( m, n, (*A).data(), lda, tau, work.get(), lwork, &info );
    }
 
    BLAZE_INTERNAL_ASSERT( info == 0, "Invalid argument for RQ decomposition" );

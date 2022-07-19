@@ -3,7 +3,7 @@
 //  \file blaze/math/lapack/sytri.h
 //  \brief Header file for the LAPACK symmetric matrix inversion functions (sytri)
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -67,7 +67,7 @@ namespace blaze {
 /*!\name LAPACK LDLT-based inversion functions (sytri) */
 //@{
 template< typename MT, bool SO >
-inline void sytri( DenseMatrix<MT,SO>& A, char uplo, const int* ipiv );
+void sytri( DenseMatrix<MT,SO>& A, char uplo, const blas_int_t* ipiv );
 //@}
 //*************************************************************************************************
 
@@ -112,7 +112,7 @@ inline void sytri( DenseMatrix<MT,SO>& A, char uplo, const int* ipiv );
 */
 template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order of the dense matrix
-inline void sytri( DenseMatrix<MT,SO>& A, char uplo, const int* ipiv )
+inline void sytri( DenseMatrix<MT,SO>& A, char uplo, const blas_int_t* ipiv )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_ADAPTOR_TYPE( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( MT );
@@ -122,7 +122,7 @@ inline void sytri( DenseMatrix<MT,SO>& A, char uplo, const int* ipiv )
 
    using ET = ElementType_t<MT>;
 
-   if( !isSquare( ~A ) ) {
+   if( !isSquare( *A ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid non-square matrix provided" );
    }
 
@@ -130,9 +130,9 @@ inline void sytri( DenseMatrix<MT,SO>& A, char uplo, const int* ipiv )
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid uplo argument provided" );
    }
 
-   int n   ( numeric_cast<int>( (~A).columns() ) );
-   int lda ( numeric_cast<int>( (~A).spacing() ) );
-   int info( 0 );
+   blas_int_t n   ( numeric_cast<blas_int_t>( (*A).columns() ) );
+   blas_int_t lda ( numeric_cast<blas_int_t>( (*A).spacing() ) );
+   blas_int_t info( 0 );
 
    if( n == 0 ) {
       return;
@@ -144,7 +144,7 @@ inline void sytri( DenseMatrix<MT,SO>& A, char uplo, const int* ipiv )
 
    const std::unique_ptr<ET[]> work( new ET[n] );
 
-   sytri( uplo, n, (~A).data(), lda, ipiv, work.get(), &info );
+   sytri( uplo, n, (*A).data(), lda, ipiv, work.get(), &info );
 
    BLAZE_INTERNAL_ASSERT( info >= 0, "Invalid argument for matrix inversion" );
 

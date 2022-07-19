@@ -3,7 +3,7 @@
 //  \file blazemark/blaze/init/CompressedMatrix.h
 //  \brief Header file for the Blaze compressed matrix initialization functions
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -111,8 +111,8 @@ void init( ::blaze::CompressedMatrix<Type,::blaze::rowMajor>& m, size_t nonzeros
    else
    {
       for( size_t i=0UL; i<M; ++i ) {
-         ::blaze::Indices indices( 0UL, N-1UL, nonzeros );
-         for( ::blaze::Indices::ConstIterator it=indices.begin(); it!=indices.end(); ++it ) {
+         ::blaze::Indices<size_t> indices( 0UL, N-1UL, nonzeros );
+         for( auto it=indices.begin(); it!=indices.end(); ++it ) {
             m.append( i, *it, ::blaze::rand<Type>( 0, 10 ) );
          }
          m.finalize( i );
@@ -160,8 +160,8 @@ void init( ::blaze::CompressedMatrix<Type,::blaze::columnMajor>& m, size_t nonze
    else
    {
       for( size_t j=0UL; j<N; ++j ) {
-         ::blaze::Indices indices( 0UL, M-1UL, nonzeros );
-         for( ::blaze::Indices::ConstIterator it=indices.begin(); it!=indices.end(); ++it ) {
+         ::blaze::Indices<size_t> indices( 0UL, M-1UL, nonzeros );
+         for( auto it=indices.begin(); it!=indices.end(); ++it ) {
             m.append( *it, j, ::blaze::rand<Type>( 0, 10 ) );
          }
          m.finalize( j );

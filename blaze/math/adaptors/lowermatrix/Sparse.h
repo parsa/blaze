@@ -3,7 +3,7 @@
 //  \file blaze/math/adaptors/lowermatrix/Sparse.h
 //  \brief LowerMatrix specialization for sparse matrices
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -46,7 +46,7 @@
 #include <blaze/math/adaptors/lowermatrix/BaseTemplate.h>
 #include <blaze/math/adaptors/lowermatrix/LowerProxy.h>
 #include <blaze/math/Aliases.h>
-#include <blaze/math/constraints/Expression.h>
+#include <blaze/math/constraints/Computation.h>
 #include <blaze/math/constraints/Hermitian.h>
 #include <blaze/math/constraints/Lower.h>
 #include <blaze/math/constraints/Resizable.h>
@@ -54,12 +54,13 @@
 #include <blaze/math/constraints/Static.h>
 #include <blaze/math/constraints/StorageOrder.h>
 #include <blaze/math/constraints/Symmetric.h>
+#include <blaze/math/constraints/Transformation.h>
 #include <blaze/math/constraints/Upper.h>
+#include <blaze/math/constraints/View.h>
 #include <blaze/math/dense/InitializerMatrix.h>
 #include <blaze/math/Exception.h>
 #include <blaze/math/expressions/SparseMatrix.h>
 #include <blaze/math/InitializerList.h>
-#include <blaze/math/shims/Clear.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/sparse/SparseMatrix.h>
 #include <blaze/math/typetraits/IsComputation.h>
@@ -71,7 +72,6 @@
 #include <blaze/util/constraints/Pointer.h>
 #include <blaze/util/constraints/Reference.h>
 #include <blaze/util/constraints/Volatile.h>
-#include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/StaticAssert.h>
 #include <blaze/util/Types.h>
@@ -113,6 +113,7 @@ class LowerMatrix<MT,SO,false>
    using OppositeType   = LowerMatrix<OT,!SO,false>;  //!< Result type with opposite storage order for expression template evaluations.
    using TransposeType  = UpperMatrix<TT,!SO,false>;  //!< Transpose type for expression template evaluations.
    using ElementType    = ET;                         //!< Type of the matrix elements.
+   using TagType        = TagType_t<MT>;              //!< Tag type of this LowerMatrix instance.
    using ReturnType     = ReturnType_t<MT>;           //!< Return type for expression template evaluations.
    using CompositeType  = const This&;                //!< Data type for composite expression templates.
    using Reference      = LowerProxy<MT>;             //!< Reference to a non-constant matrix value.
@@ -150,11 +151,11 @@ class LowerMatrix<MT,SO,false>
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit inline LowerMatrix();
+            inline LowerMatrix();
    explicit inline LowerMatrix( size_t n );
-   explicit inline LowerMatrix( size_t n, size_t nonzeros );
-   explicit inline LowerMatrix( size_t n, const std::vector<size_t>& nonzeros );
-   explicit inline LowerMatrix( initializer_list< initializer_list<ElementType> > list );
+            inline LowerMatrix( size_t n, size_t nonzeros );
+            inline LowerMatrix( size_t n, const std::vector<size_t>& nonzeros );
+            inline LowerMatrix( initializer_list< initializer_list<ElementType> > list );
 
    inline LowerMatrix( const LowerMatrix& m );
    inline LowerMatrix( LowerMatrix&& m ) noexcept;
@@ -244,8 +245,8 @@ class LowerMatrix<MT,SO,false>
    inline void   shrinkToFit();
    inline void   swap( LowerMatrix& m ) noexcept;
 
-   static inline constexpr size_t maxNonZeros() noexcept;
-   static inline constexpr size_t maxNonZeros( size_t n ) noexcept;
+   static constexpr size_t maxNonZeros() noexcept;
+   static constexpr size_t maxNonZeros( size_t n ) noexcept;
    //@}
    //**********************************************************************************************
 
@@ -326,9 +327,6 @@ class LowerMatrix<MT,SO,false>
    //**********************************************************************************************
 
    //**Friend declarations*************************************************************************
-   template< bool RF, typename MT2, bool SO2, bool DF2 >
-   friend bool isDefault( const LowerMatrix<MT2,SO2,DF2>& m );
-
    template< typename MT2, bool SO2, bool DF2 >
    friend MT2& derestrict( LowerMatrix<MT2,SO2,DF2>& m );
    //**********************************************************************************************
@@ -339,7 +337,9 @@ class LowerMatrix<MT,SO,false>
    BLAZE_CONSTRAINT_MUST_NOT_BE_POINTER_TYPE         ( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_CONST                ( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_VOLATILE             ( MT );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_EXPRESSION_TYPE      ( MT );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_VIEW_TYPE            ( MT );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE     ( MT );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_TRANSFORMATION_TYPE  ( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_HERMITIAN_MATRIX_TYPE( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_LOWER_MATRIX_TYPE    ( MT );
@@ -533,7 +533,7 @@ template< typename MT   // Type of the adapted sparse matrix
 template< typename MT2  // Type of the foreign matrix
         , bool SO2 >    // Storage order of the foreign matrix
 inline LowerMatrix<MT,SO,false>::LowerMatrix( const Matrix<MT2,SO2>& m )
-   : matrix_( ~m )  // The adapted sparse matrix
+   : matrix_( *m )  // The adapted sparse matrix
 {
    if( !IsLower_v<MT2> && !isLower( matrix_ ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid setup of lower matrix" );
@@ -947,11 +947,11 @@ template< typename MT2  // Type of the right-hand side matrix
 inline auto LowerMatrix<MT,SO,false>::operator=( const Matrix<MT2,SO2>& rhs )
    -> DisableIf_t< IsComputation_v<MT2>, LowerMatrix& >
 {
-   if( !IsLower_v<MT2> && !isLower( ~rhs ) ) {
+   if( !IsLower_v<MT2> && !isLower( *rhs ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to lower matrix" );
    }
 
-   matrix_ = decllow( ~rhs );
+   matrix_ = decllow( *rhs );
 
    if( !IsLower_v<MT2> )
       resetUpper();
@@ -985,15 +985,15 @@ template< typename MT2  // Type of the right-hand side matrix
 inline auto LowerMatrix<MT,SO,false>::operator=( const Matrix<MT2,SO2>& rhs )
    -> EnableIf_t< IsComputation_v<MT2>, LowerMatrix& >
 {
-   if( !IsSquare_v<MT2> && !isSquare( ~rhs ) ) {
+   if( !IsSquare_v<MT2> && !isSquare( *rhs ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to lower matrix" );
    }
 
    if( IsLower_v<MT2> ) {
-      matrix_ = ~rhs;
+      matrix_ = *rhs;
    }
    else {
-      MT tmp( ~rhs );
+      MT tmp( *rhs );
 
       if( !isLower( tmp ) ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to lower matrix" );
@@ -1034,11 +1034,11 @@ template< typename MT2  // Type of the right-hand side matrix
 inline auto LowerMatrix<MT,SO,false>::operator+=( const Matrix<MT2,SO2>& rhs )
    -> DisableIf_t< IsComputation_v<MT2>, LowerMatrix& >
 {
-   if( !IsLower_v<MT2> && !isLower( ~rhs ) ) {
+   if( !IsLower_v<MT2> && !isLower( *rhs ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to lower matrix" );
    }
 
-   matrix_ += decllow( ~rhs );
+   matrix_ += decllow( *rhs );
 
    if( !IsLower_v<MT2> )
       resetUpper();
@@ -1072,15 +1072,15 @@ template< typename MT2  // Type of the right-hand side matrix
 inline auto LowerMatrix<MT,SO,false>::operator+=( const Matrix<MT2,SO2>& rhs )
    -> EnableIf_t< IsComputation_v<MT2>, LowerMatrix& >
 {
-   if( !IsSquare_v<MT2> && !isSquare( ~rhs ) ) {
+   if( !IsSquare_v<MT2> && !isSquare( *rhs ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to lower matrix" );
    }
 
    if( IsLower_v<MT2> ) {
-      matrix_ += ~rhs;
+      matrix_ += *rhs;
    }
    else {
-      const ResultType_t<MT2> tmp( ~rhs );
+      const ResultType_t<MT2> tmp( *rhs );
 
       if( !isLower( tmp ) ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to lower matrix" );
@@ -1121,11 +1121,11 @@ template< typename MT2  // Type of the right-hand side matrix
 inline auto LowerMatrix<MT,SO,false>::operator-=( const Matrix<MT2,SO2>& rhs )
    -> DisableIf_t< IsComputation_v<MT2>, LowerMatrix& >
 {
-   if( !IsLower_v<MT2> && !isLower( ~rhs ) ) {
+   if( !IsLower_v<MT2> && !isLower( *rhs ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to lower matrix" );
    }
 
-   matrix_ -= decllow( ~rhs );
+   matrix_ -= decllow( *rhs );
 
    if( !IsLower_v<MT2> )
       resetUpper();
@@ -1159,15 +1159,15 @@ template< typename MT2  // Type of the right-hand side matrix
 inline auto LowerMatrix<MT,SO,false>::operator-=( const Matrix<MT2,SO2>& rhs )
    -> EnableIf_t< IsComputation_v<MT2>, LowerMatrix& >
 {
-   if( !IsSquare_v<MT2> && !isSquare( ~rhs ) ) {
+   if( !IsSquare_v<MT2> && !isSquare( *rhs ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to lower matrix" );
    }
 
    if( IsLower_v<MT2> ) {
-      matrix_ -= ~rhs;
+      matrix_ -= *rhs;
    }
    else {
-      const ResultType_t<MT2> tmp( ~rhs );
+      const ResultType_t<MT2> tmp( *rhs );
 
       if( !isLower( tmp ) ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to lower matrix" );
@@ -1206,11 +1206,11 @@ template< typename MT2  // Type of the right-hand side matrix
 inline auto LowerMatrix<MT,SO,false>::operator%=( const Matrix<MT2,SO2>& rhs )
    -> LowerMatrix&
 {
-   if( !IsSquare_v<MT2> && !isSquare( ~rhs ) ) {
+   if( !IsSquare_v<MT2> && !isSquare( *rhs ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to lower matrix" );
    }
 
-   matrix_ %= ~rhs;
+   matrix_ %= *rhs;
 
    if( !IsLower_v<MT2> )
       resetUpper();
@@ -1391,9 +1391,10 @@ template< typename MT  // Type of the adapted sparse matrix
         , bool SO >    // Storage order of the adapted sparse matrix
 inline void LowerMatrix<MT,SO,false>::clear()
 {
-   using blaze::clear;
+   matrix_.clear();
 
-   clear( matrix_ );
+   BLAZE_INTERNAL_ASSERT( matrix_.rows()    == 0UL, "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( matrix_.columns() == 0UL, "Invalid number of columns" );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1568,7 +1569,7 @@ inline void LowerMatrix<MT,SO,false>::swap( LowerMatrix& m ) noexcept
 */
 template< typename MT  // Type of the adapted dense matrix
         , bool SO >    // Storage order of the adapted dense matrix
-inline constexpr size_t LowerMatrix<MT,SO,false>::maxNonZeros() noexcept
+constexpr size_t LowerMatrix<MT,SO,false>::maxNonZeros() noexcept
 {
    BLAZE_CONSTRAINT_MUST_BE_STATIC_TYPE( MT );
 
@@ -1590,7 +1591,7 @@ inline constexpr size_t LowerMatrix<MT,SO,false>::maxNonZeros() noexcept
 */
 template< typename MT  // Type of the adapted dense matrix
         , bool SO >    // Storage order of the adapted dense matrix
-inline constexpr size_t LowerMatrix<MT,SO,false>::maxNonZeros( size_t n ) noexcept
+constexpr size_t LowerMatrix<MT,SO,false>::maxNonZeros( size_t n ) noexcept
 {
    return ( ( n + 1UL ) * n ) / 2UL;
 }
@@ -1608,13 +1609,15 @@ template< typename MT  // Type of the adapted dense matrix
         , bool SO >    // Storage order of the adapted dense matrix
 inline void LowerMatrix<MT,SO,false>::resetUpper()
 {
+   using blaze::erase;
+
    if( SO ) {
       for( size_t j=1UL; j<columns(); ++j )
-         matrix_.erase( j, matrix_.begin( j ), matrix_.lowerBound( j, j ) );
+         erase( matrix_, j, matrix_.begin( j ), matrix_.lowerBound( j, j ) );
    }
    else {
       for( size_t i=0UL; i<rows(); ++i )
-         matrix_.erase( i, matrix_.upperBound( i, i ), matrix_.end( i ) );
+         erase( matrix_, i, matrix_.upperBound( i, i ), matrix_.end( i ) );
    }
 }
 /*! \endcond */
@@ -1802,7 +1805,9 @@ template< typename MT  // Type of the adapted sparse matrix
         , bool SO >    // Storage order of the adapted sparse matrix
 inline void LowerMatrix<MT,SO,false>::erase( size_t i, size_t j )
 {
-   matrix_.erase( i, j );
+   using blaze::erase;
+
+   erase( matrix_, i, j );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1825,7 +1830,9 @@ template< typename MT  // Type of the adapted sparse matrix
 inline typename LowerMatrix<MT,SO,false>::Iterator
    LowerMatrix<MT,SO,false>::erase( size_t i, Iterator pos )
 {
-   return matrix_.erase( i, pos );
+   using blaze::erase;
+
+   return erase( matrix_, i, pos );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1849,7 +1856,9 @@ template< typename MT  // Type of the adapted sparse matrix
 inline typename LowerMatrix<MT,SO,false>::Iterator
    LowerMatrix<MT,SO,false>::erase( size_t i, Iterator first, Iterator last )
 {
-   return matrix_.erase( i, first, last );
+   using blaze::erase;
+
+   return erase( matrix_, i, first, last );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1882,7 +1891,9 @@ template< typename MT      // Type of the adapted sparse matrix
 template< typename Pred >  // Type of the unary predicate
 inline void LowerMatrix<MT,SO,false>::erase( Pred predicate )
 {
-   matrix_.erase( predicate );
+   using blaze::erase;
+
+   erase( matrix_, predicate );
 
    BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );
 }
@@ -1923,7 +1934,9 @@ template< typename MT      // Type of the adapted sparse matrix
 template< typename Pred >  // Type of the unary predicate
 inline void LowerMatrix<MT,SO,false>::erase( size_t i, Iterator first, Iterator last, Pred predicate )
 {
-   matrix_.erase( i, first, last, predicate );
+   using blaze::erase;
+
+   erase( matrix_, i, first, last, predicate );
 
    BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );
 }

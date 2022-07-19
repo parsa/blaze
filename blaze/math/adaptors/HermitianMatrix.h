@@ -3,7 +3,7 @@
 //  \file blaze/math/adaptors/HermitianMatrix.h
 //  \brief Header file for the implementation of a Hermitian matrix adaptor
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -49,6 +49,7 @@
 #include <blaze/math/Exception.h>
 #include <blaze/math/Forward.h>
 #include <blaze/math/InversionFlag.h>
+#include <blaze/math/RelaxationFlag.h>
 #include <blaze/math/shims/Conjugate.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/shims/IsDivisor.h>
@@ -57,11 +58,17 @@
 #include <blaze/math/traits/DeclDiagTrait.h>
 #include <blaze/math/traits/DeclHermTrait.h>
 #include <blaze/math/traits/DeclLowTrait.h>
+#include <blaze/math/traits/DeclStrLowTrait.h>
+#include <blaze/math/traits/DeclStrUppTrait.h>
 #include <blaze/math/traits/DeclSymTrait.h>
+#include <blaze/math/traits/DeclUniLowTrait.h>
+#include <blaze/math/traits/DeclUniUppTrait.h>
 #include <blaze/math/traits/DeclUppTrait.h>
 #include <blaze/math/traits/DivTrait.h>
+#include <blaze/math/traits/KronTrait.h>
 #include <blaze/math/traits/MapTrait.h>
 #include <blaze/math/traits/MultTrait.h>
+#include <blaze/math/traits/RepeatTrait.h>
 #include <blaze/math/traits/SchurTrait.h>
 #include <blaze/math/traits/SubmatrixTrait.h>
 #include <blaze/math/traits/SubTrait.h>
@@ -72,30 +79,32 @@
 #include <blaze/math/typetraits/IsContiguous.h>
 #include <blaze/math/typetraits/IsDiagonal.h>
 #include <blaze/math/typetraits/IsHermitian.h>
-#include <blaze/math/typetraits/IsIdentity.h>
+#include <blaze/math/typetraits/IsMatrix.h>
 #include <blaze/math/typetraits/IsPadded.h>
-#include <blaze/math/typetraits/IsResizable.h>
 #include <blaze/math/typetraits/IsRestricted.h>
-#include <blaze/math/typetraits/IsShrinkable.h>
+#include <blaze/math/typetraits/IsScalar.h>
 #include <blaze/math/typetraits/IsSquare.h>
+#include <blaze/math/typetraits/IsStrictlyLower.h>
+#include <blaze/math/typetraits/IsStrictlyUpper.h>
 #include <blaze/math/typetraits/IsSymmetric.h>
+#include <blaze/math/typetraits/IsUniform.h>
+#include <blaze/math/typetraits/IsZero.h>
 #include <blaze/math/typetraits/LowType.h>
 #include <blaze/math/typetraits/MaxSize.h>
 #include <blaze/math/typetraits/RemoveAdaptor.h>
 #include <blaze/math/typetraits/Size.h>
 #include <blaze/math/typetraits/StorageOrder.h>
-#include <blaze/math/typetraits/UnderlyingNumeric.h>
+#include <blaze/math/typetraits/UnderlyingScalar.h>
 #include <blaze/math/typetraits/YieldsHermitian.h>
 #include <blaze/math/typetraits/YieldsIdentity.h>
 #include <blaze/math/typetraits/YieldsSymmetric.h>
 #include <blaze/util/algorithms/Min.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/EnableIf.h>
-#include <blaze/util/TrueType.h>
+#include <blaze/util/IntegralConstant.h>
+#include <blaze/util/MaybeUnused.h>
 #include <blaze/util/typetraits/IsBuiltin.h>
 #include <blaze/util/typetraits/IsComplex.h>
-#include <blaze/util/typetraits/IsNumeric.h>
-#include <blaze/util/Unused.h>
 
 
 namespace blaze {
@@ -109,81 +118,15 @@ namespace blaze {
 //*************************************************************************************************
 /*!\name HermitianMatrix operators */
 //@{
-template< typename MT, bool SO, bool DF >
-inline void reset( HermitianMatrix<MT,SO,DF>& m );
+template< RelaxationFlag RF, typename MT, bool SO, bool DF >
+bool isDefault( const HermitianMatrix<MT,SO,DF>& m );
 
 template< typename MT, bool SO, bool DF >
-inline void reset( HermitianMatrix<MT,SO,DF>& m, size_t i );
+bool isIntact( const HermitianMatrix<MT,SO,DF>& m );
 
 template< typename MT, bool SO, bool DF >
-inline void clear( HermitianMatrix<MT,SO,DF>& m );
-
-template< bool RF, typename MT, bool SO, bool DF >
-inline bool isDefault( const HermitianMatrix<MT,SO,DF>& m );
-
-template< typename MT, bool SO, bool DF >
-inline bool isIntact( const HermitianMatrix<MT,SO,DF>& m );
-
-template< typename MT, bool SO, bool DF >
-inline void swap( HermitianMatrix<MT,SO,DF>& a, HermitianMatrix<MT,SO,DF>& b ) noexcept;
+void swap( HermitianMatrix<MT,SO,DF>& a, HermitianMatrix<MT,SO,DF>& b ) noexcept;
 //@}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Resetting the given Hermitian matrix.
-// \ingroup hermitian_matrix
-//
-// \param m The Hermitian matrix to be resetted.
-// \return void
-*/
-template< typename MT  // Type of the adapted matrix
-        , bool SO      // Storage order of the adapted matrix
-        , bool DF >    // Density flag
-inline void reset( HermitianMatrix<MT,SO,DF>& m )
-{
-   m.reset();
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Resetting the specified row/column of the given Hermitian matrix.
-// \ingroup hermitian_matrix
-//
-// \param m The Hermitian matrix to be resetted.
-// \param i The index of the row/column to be resetted.
-// \return void
-//
-// This function resets the values in the specified row/column of the given Hermitian matrix to
-// their default value. In case the given matrix is a \a rowMajor matrix the function resets the
-// values in row \a i, if it is a \a columnMajor matrix the function resets the values in column
-// \a i. Note that the capacity of the row/column remains unchanged.
-*/
-template< typename MT  // Type of the adapted matrix
-        , bool SO      // Storage order of the adapted matrix
-        , bool DF >    // Density flag
-inline void reset( HermitianMatrix<MT,SO,DF>& m, size_t i )
-{
-   m.reset( i );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Clearing the given Hermitian matrix.
-// \ingroup hermitian_matrix
-//
-// \param m The Hermitian matrix to be cleared.
-// \return void
-*/
-template< typename MT  // Type of the adapted matrix
-        , bool SO      // Storage order of the adapted matrix
-        , bool DF >    // Density flag
-inline void clear( HermitianMatrix<MT,SO,DF>& m )
-{
-   m.clear();
-}
 //*************************************************************************************************
 
 
@@ -212,13 +155,15 @@ inline void clear( HermitianMatrix<MT,SO,DF>& m )
    if( isDefault<relaxed>( A ) ) { ... }
    \endcode
 */
-template< bool RF      // Relaxation flag
-        , typename MT  // Type of the adapted matrix
-        , bool SO      // Storage order of the adapted matrix
-        , bool DF >    // Density flag
+template< RelaxationFlag RF  // Relaxation flag
+        , typename MT        // Type of the adapted matrix
+        , bool SO            // Storage order of the adapted matrix
+        , bool DF >          // Density flag
 inline bool isDefault( const HermitianMatrix<MT,SO,DF>& m )
 {
-   return isDefault<RF>( m.matrix_ );
+   if( Size_v<MT,0UL> == DefaultSize_v )
+      return m.rows() == 0UL;
+   else return isStrictlyLower<RF>( m );
 }
 //*************************************************************************************************
 
@@ -327,7 +272,7 @@ inline void invert( HermitianMatrix<MT,SO,true>& m )
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Predict invariant violations by setting a single element of an Hermitian matrix.
-// \ingroup matrix
+// \ingroup hermitian_matrix
 //
 // \param mat The target Hermitian matrix.
 // \param i The row index of the element to be set.
@@ -346,10 +291,10 @@ template< typename MT    // Type of the adapted matrix
         , typename ET >  // Type of the element
 inline bool trySet( const HermitianMatrix<MT,SO,DF>& mat, size_t i, size_t j, const ET& value )
 {
-   BLAZE_INTERNAL_ASSERT( i < (~mat).rows(), "Invalid row access index" );
-   BLAZE_INTERNAL_ASSERT( j < (~mat).columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( i < (*mat).rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( j < (*mat).columns(), "Invalid column access index" );
 
-   UNUSED_PARAMETER( mat );
+   MAYBE_UNUSED( mat );
 
    return ( i != j || isReal( value ) );
 }
@@ -359,8 +304,50 @@ inline bool trySet( const HermitianMatrix<MT,SO,DF>& mat, size_t i, size_t j, co
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by setting a range of elements of an Hermitian matrix.
+// \ingroup hermitian_matrix
+//
+// \param mat The target Hermitian matrix.
+// \param row The index of the first row of the range to be multiplied.
+// \param column The index of the first column of the range to be multiplied.
+// \param m The number of rows of the range to be multiplied.
+// \param n The number of columns of the range to be multiplied.
+// \param value The value to be set to the range of elements.
+// \return \a true in case the operation would be successful, \a false if not.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT    // Type of the adapted matrix
+        , bool SO        // Storage order of the adapted matrix
+        , bool DF        // Density flag
+        , typename ET >  // Type of the element
+BLAZE_ALWAYS_INLINE bool
+   trySet( const HermitianMatrix<MT,SO,DF>& mat, size_t row, size_t column, size_t m, size_t n, const ET& value )
+{
+   BLAZE_INTERNAL_ASSERT( row <= (*mat).rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( column <= (*mat).columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( row + m <= (*mat).rows(), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( column + n <= (*mat).columns(), "Invalid number of columns" );
+
+   MAYBE_UNUSED( mat );
+
+   return ( m == 0UL ) ||
+          ( n == 0UL ) ||
+          ( row >= column + n ) ||
+          ( column >= row + m ) ||
+          isReal( value );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Predict invariant violations by adding to a single element of an Hermitian matrix.
-// \ingroup matrix
+// \ingroup hermitian_matrix
 //
 // \param mat The target Hermitian matrix.
 // \param i The row index of the element to be modified.
@@ -387,8 +374,39 @@ inline bool tryAdd( const HermitianMatrix<MT,SO,DF>& mat, size_t i, size_t j, co
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by adding to a range of elements of an Hermitian matrix.
+// \ingroup hermitian_matrix
+//
+// \param mat The target Hermitian matrix.
+// \param row The index of the first row of the range to be multiplied.
+// \param column The index of the first column of the range to be multiplied.
+// \param m The number of rows of the range to be multiplied.
+// \param n The number of columns of the range to be multiplied.
+// \param value The value to be added to the range of elements.
+// \return \a true in case the operation would be successful, \a false if not.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT    // Type of the adapted matrix
+        , bool SO        // Storage order of the adapted matrix
+        , bool DF        // Density flag
+        , typename ET >  // Type of the element
+BLAZE_ALWAYS_INLINE bool
+   tryAdd( const HermitianMatrix<MT,SO,DF>& mat, size_t row, size_t column, size_t m, size_t n, const ET& value )
+{
+   return trySet( mat, row, column, m, n, value );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Predict invariant violations by subtracting from a single element of an Hermitian matrix.
-// \ingroup matrix
+// \ingroup hermitian_matrix
 //
 // \param mat The target Hermitian matrix.
 // \param i The row index of the element to be modified.
@@ -415,8 +433,39 @@ inline bool trySub( const HermitianMatrix<MT,SO,DF>& mat, size_t i, size_t j, co
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by subtracting from a range of elements of an Hermitian matrix.
+// \ingroup hermitian_matrix
+//
+// \param mat The target Hermitian matrix.
+// \param row The index of the first row of the range to be multiplied.
+// \param column The index of the first column of the range to be multiplied.
+// \param m The number of rows of the range to be multiplied.
+// \param n The number of columns of the range to be multiplied.
+// \param value The value to be subtracted from the range of elements.
+// \return \a true in case the operation would be successful, \a false if not.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT    // Type of the adapted matrix
+        , bool SO        // Storage order of the adapted matrix
+        , bool DF        // Density flag
+        , typename ET >  // Type of the element
+BLAZE_ALWAYS_INLINE bool
+   trySub( const HermitianMatrix<MT,SO,DF>& mat, size_t row, size_t column, size_t m, size_t n, const ET& value )
+{
+   return trySet( mat, row, column, m, n, value );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Predict invariant violations by scaling a single element of an Hermitian matrix.
-// \ingroup matrix
+// \ingroup hermitian_matrix
 //
 // \param mat The target Hermitian matrix.
 // \param i The row index of the element to be modified.
@@ -443,8 +492,39 @@ inline bool tryMult( const HermitianMatrix<MT,SO,DF>& mat, size_t i, size_t j, c
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by scaling a range of elements of an Hermitian matrix.
+// \ingroup hermitian_matrix
+//
+// \param mat The target Hermitian matrix.
+// \param row The index of the first row of the range to be multiplied.
+// \param column The index of the first column of the range to be multiplied.
+// \param m The number of rows of the range to be multiplied.
+// \param n The number of columns of the range to be multiplied.
+// \param value The factor for the elements.
+// \return \a true in case the operation would be successful, \a false if not.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT    // Type of the adapted matrix
+        , bool SO        // Storage order of the adapted matrix
+        , bool DF        // Density flag
+        , typename ET >  // Type of the element
+BLAZE_ALWAYS_INLINE bool
+   tryMult( const HermitianMatrix<MT,SO,DF>& mat, size_t row, size_t column, size_t m, size_t n, const ET& value )
+{
+   return trySet( mat, row, column, m, n, value );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Predict invariant violations by scaling a single element of an Hermitian matrix.
-// \ingroup matrix
+// \ingroup hermitian_matrix
 //
 // \param mat The target Hermitian matrix.
 // \param i The row index of the element to be modified.
@@ -464,6 +544,37 @@ template< typename MT    // Type of the adapted matrix
 inline bool tryDiv( const HermitianMatrix<MT,SO,DF>& mat, size_t i, size_t j, const ET& value )
 {
    return trySet( mat, i, j, value );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by scaling a range of elements of an Hermitian matrix.
+// \ingroup hermitian_matrix
+//
+// \param mat The target Hermitian matrix.
+// \param row The index of the first row of the range to be multiplied.
+// \param column The index of the first column of the range to be multiplied.
+// \param m The number of rows of the range to be multiplied.
+// \param n The number of columns of the range to be multiplied.
+// \param value The divisor for the elements.
+// \return \a true in case the operation would be successful, \a false if not.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT    // Type of the adapted matrix
+        , bool SO        // Storage order of the adapted matrix
+        , bool DF        // Density flag
+        , typename ET >  // Type of the element
+BLAZE_ALWAYS_INLINE bool
+   tryDiv( const HermitianMatrix<MT,SO,DF>& mat, size_t row, size_t column, size_t m, size_t n, const ET& value )
+{
+   return trySet( mat, row, column, m, n, value );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -496,16 +607,16 @@ inline bool tryAssign( const HermitianMatrix<MT,SO,DF>& lhs,
 
    BLAZE_INTERNAL_ASSERT( row <= lhs.rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( row + (~rhs).size() <= lhs.rows(), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( row + (*rhs).size() <= lhs.rows(), "Invalid number of rows" );
 
-   UNUSED_PARAMETER( lhs );
+   MAYBE_UNUSED( lhs );
 
    using ET = ElementType_t< HermitianMatrix<MT,SO,DF> >;
 
    return ( IsBuiltin_v<ET> ||
             column < row ||
-            (~rhs).size() <= column - row ||
-            isReal( (~rhs)[column-row] ) );
+            (*rhs).size() <= column - row ||
+            isReal( (*rhs)[column-row] ) );
 
    return true;
 }
@@ -540,16 +651,16 @@ inline bool tryAssign( const HermitianMatrix<MT,SO,DF>& lhs,
 
    BLAZE_INTERNAL_ASSERT( row <= lhs.rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( column + (~rhs).size() <= lhs.columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( column + (*rhs).size() <= lhs.columns(), "Invalid number of columns" );
 
-   UNUSED_PARAMETER( lhs );
+   MAYBE_UNUSED( lhs );
 
    using ET = ElementType_t< HermitianMatrix<MT,SO,DF> >;
 
    return ( IsBuiltin_v<ET> ||
             row < column ||
-            (~rhs).size() <= row - column ||
-            isReal( (~rhs)[row-column] ) );
+            (*rhs).size() <= row - column ||
+            isReal( (*rhs)[row-column] ) );
 
    return true;
 }
@@ -587,14 +698,14 @@ inline bool tryAssign( const HermitianMatrix<MT,SO,DF>& lhs, const DenseVector<V
 
    BLAZE_INTERNAL_ASSERT( row <= lhs.rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( row + (~rhs).size() <= lhs.rows(), "Invalid number of rows" );
-   BLAZE_INTERNAL_ASSERT( column + (~rhs).size() <= lhs.columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( row + (*rhs).size() <= lhs.rows(), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( column + (*rhs).size() <= lhs.columns(), "Invalid number of columns" );
 
-   UNUSED_PARAMETER( lhs, row, column );
+   MAYBE_UNUSED( lhs, row, column );
 
    if( band == 0L ) {
-      for( size_t i=0UL; i<(~rhs).size(); ++i ) {
-         if( !isReal( (~rhs)[i] ) )
+      for( size_t i=0UL; i<(*rhs).size(); ++i ) {
+         if( !isReal( (*rhs)[i] ) )
             return false;
       }
    }
@@ -635,13 +746,13 @@ inline bool tryAssign( const HermitianMatrix<MT,SO,DF>& lhs, const SparseVector<
 
    BLAZE_INTERNAL_ASSERT( row <= lhs.rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( row + (~rhs).size() <= lhs.rows(), "Invalid number of rows" );
-   BLAZE_INTERNAL_ASSERT( column + (~rhs).size() <= lhs.columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( row + (*rhs).size() <= lhs.rows(), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( column + (*rhs).size() <= lhs.columns(), "Invalid number of columns" );
 
-   UNUSED_PARAMETER( lhs, row, column );
+   MAYBE_UNUSED( lhs, row, column );
 
    if( band == 0L ) {
-      for( const auto& element : ~rhs ) {
+      for( const auto& element : *rhs ) {
          if( !isReal( element.value() ) )
             return false;
       }
@@ -681,13 +792,13 @@ inline bool tryAssign( const HermitianMatrix<MT1,SO1,DF>& lhs,
 
    BLAZE_INTERNAL_ASSERT( row <= lhs.rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( row + (~rhs).rows() <= lhs.rows(), "Invalid number of rows" );
-   BLAZE_INTERNAL_ASSERT( column + (~rhs).columns() <= lhs.columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( row + (*rhs).rows() <= lhs.rows(), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( column + (*rhs).columns() <= lhs.columns(), "Invalid number of columns" );
 
-   UNUSED_PARAMETER( lhs );
+   MAYBE_UNUSED( lhs );
 
-   const size_t M( (~rhs).rows()    );
-   const size_t N( (~rhs).columns() );
+   const size_t M( (*rhs).rows()    );
+   const size_t N( (*rhs).columns() );
 
    if( ( row + M <= column ) || ( column + N <= row ) )
       return true;
@@ -701,7 +812,7 @@ inline bool tryAssign( const HermitianMatrix<MT1,SO1,DF>& lhs,
    const size_t subrow( lower ? 0UL : column - row );
    const size_t subcol( lower ? row - column : 0UL );
 
-   return isHermitian( submatrix( ~rhs, subrow, subcol, size, size ) );
+   return isHermitian( submatrix( *rhs, subrow, subcol, size, size ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -731,7 +842,7 @@ template< typename MT  // Type of the adapted matrix
 inline bool tryAddAssign( const HermitianMatrix<MT,SO,DF>& lhs,
                           const Vector<VT,TF>& rhs, size_t row, size_t column )
 {
-   return tryAssign( lhs, ~rhs, row, column );
+   return tryAssign( lhs, *rhs, row, column );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -763,7 +874,7 @@ template< typename MT  // Type of the adapted matrix
 inline bool tryAddAssign( const HermitianMatrix<MT,SO,DF>& lhs, const Vector<VT,TF>& rhs,
                           ptrdiff_t band, size_t row, size_t column )
 {
-   return tryAssign( lhs, ~rhs, band, row, column );
+   return tryAssign( lhs, *rhs, band, row, column );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -793,7 +904,7 @@ template< typename MT1  // Type of the adapted matrix
 inline bool tryAddAssign( const HermitianMatrix<MT1,SO1,DF>& lhs,
                           const Matrix<MT2,SO2>& rhs, size_t row, size_t column )
 {
-   return tryAssign( lhs, ~rhs, row, column );
+   return tryAssign( lhs, *rhs, row, column );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -824,7 +935,7 @@ template< typename MT  // Type of the adapted matrix
 inline bool trySubAssign( const HermitianMatrix<MT,SO,DF>& lhs,
                           const Vector<VT,TF>& rhs, size_t row, size_t column )
 {
-   return tryAssign( lhs, ~rhs, row, column );
+   return tryAssign( lhs, *rhs, row, column );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -856,7 +967,7 @@ template< typename MT  // Type of the adapted matrix
 inline bool trySubAssign( const HermitianMatrix<MT,SO,DF>& lhs, const Vector<VT,TF>& rhs,
                           ptrdiff_t band, size_t row, size_t column )
 {
-   return tryAssign( lhs, ~rhs, band, row, column );
+   return tryAssign( lhs, *rhs, band, row, column );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -887,7 +998,7 @@ template< typename MT1  // Type of the adapted matrix
 inline bool trySubAssign( const HermitianMatrix<MT1,SO1,DF>& lhs,
                           const Matrix<MT2,SO2>& rhs, size_t row, size_t column )
 {
-   return tryAssign( lhs, ~rhs, row, column );
+   return tryAssign( lhs, *rhs, row, column );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -918,7 +1029,7 @@ template< typename MT  // Type of the adapted matrix
 inline bool tryMultAssign( const HermitianMatrix<MT,SO,DF>& lhs,
                            const Vector<VT,TF>& rhs, size_t row, size_t column )
 {
-   return tryAssign( lhs, ~rhs, row, column );
+   return tryAssign( lhs, *rhs, row, column );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -950,7 +1061,7 @@ template< typename MT  // Type of the adapted matrix
 inline bool tryMultAssign( const HermitianMatrix<MT,SO,DF>& lhs, const Vector<VT,TF>& rhs,
                            ptrdiff_t band, size_t row, size_t column )
 {
-   return tryAssign( lhs, ~rhs, band, row, column );
+   return tryAssign( lhs, *rhs, band, row, column );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -981,7 +1092,7 @@ template< typename MT1  // Type of the adapted matrix
 inline bool trySchurAssign( const HermitianMatrix<MT1,SO1,DF>& lhs,
                             const Matrix<MT2,SO2>& rhs, size_t row, size_t column )
 {
-   return tryAssign( lhs, ~rhs, row, column );
+   return tryAssign( lhs, *rhs, row, column );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1011,7 +1122,7 @@ template< typename MT  // Type of the adapted matrix
 inline bool tryDivAssign( const HermitianMatrix<MT,SO,DF>& lhs,
                           const Vector<VT,TF>& rhs, size_t row, size_t column )
 {
-   return tryAssign( lhs, ~rhs, row, column );
+   return tryAssign( lhs, *rhs, row, column );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1043,7 +1154,7 @@ template< typename MT  // Type of the adapted matrix
 inline bool tryDivAssign( const HermitianMatrix<MT,SO,DF>& lhs, const Vector<VT,TF>& rhs,
                           ptrdiff_t band, size_t row, size_t column )
 {
-   return tryAssign( lhs, ~rhs, band, row, column );
+   return tryAssign( lhs, *rhs, band, row, column );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1117,6 +1228,24 @@ struct IsSquare< HermitianMatrix<MT,SO,DF> >
 
 //=================================================================================================
 //
+//  ISUNIFORM SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, bool SO, bool DF >
+struct IsUniform< HermitianMatrix<MT,SO,DF> >
+   : public IsUniform<MT>
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
 //  ISSYMMETRIC SPECIALIZATIONS
 //
 //=================================================================================================
@@ -1144,6 +1273,42 @@ struct IsSymmetric< HermitianMatrix<MT,SO,DF> >
 template< typename MT, bool SO, bool DF >
 struct IsHermitian< HermitianMatrix<MT,SO,DF> >
    : public TrueType
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  ISSTRICTLYLOWER SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, bool SO, bool DF >
+struct IsStrictlyLower< HermitianMatrix<MT,SO,DF> >
+   : public IsZero<MT>
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  ISSTRICTLYUPPER SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, bool SO, bool DF >
+struct IsStrictlyUpper< HermitianMatrix<MT,SO,DF> >
+   : public IsZero<MT>
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1261,42 +1426,6 @@ struct IsPadded< HermitianMatrix<MT,SO,DF> >
 
 //=================================================================================================
 //
-//  ISRESIZABLE SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO, bool DF >
-struct IsResizable< HermitianMatrix<MT,SO,DF> >
-   : public IsResizable<MT>
-{};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  ISSHRINKABLE SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO, bool DF >
-struct IsShrinkable< HermitianMatrix<MT,SO,DF> >
-   : public IsShrinkable<MT>
-{};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
 //  REMOVEADAPTOR SPECIALIZATIONS
 //
 //=================================================================================================
@@ -1324,12 +1453,16 @@ struct RemoveAdaptor< HermitianMatrix<MT,SO,DF> >
 /*! \cond BLAZE_INTERNAL */
 template< typename T1, typename T2 >
 struct AddTraitEval1< T1, T2
-                    , EnableIf_t< ( IsHermitian_v<T1> && !IsSymmetric_v<T1> &&
-                                    IsHermitian_v<T2> && !IsSymmetric_v<T2> ) ||
-                                  ( IsHermitian_v<T1> && !IsSymmetric_v<T1> &&
-                                    IsSymmetric_v<T2> && !IsComplex_v< UnderlyingNumeric_t<T2> > ) ||
-                                  ( IsSymmetric_v<T1> && !IsComplex_v< UnderlyingNumeric_t<T1> > &&
-                                    IsHermitian_v<T2> && !IsSymmetric_v<T2> ) > >
+                    , EnableIf_t< IsMatrix_v<T1> &&
+                                  IsMatrix_v<T2> &&
+                                  ( ( IsHermitian_v<T1> && !IsSymmetric_v<T1> &&
+                                      IsHermitian_v<T2> && !IsSymmetric_v<T2> ) ||
+                                    ( IsHermitian_v<T1> && !IsSymmetric_v<T1> &&
+                                      IsSymmetric_v<T2> && !IsComplex_v< UnderlyingScalar_t<T2> > ) ||
+                                    ( IsSymmetric_v<T1> && !IsComplex_v< UnderlyingScalar_t<T1> > &&
+                                      IsHermitian_v<T2> && !IsSymmetric_v<T2> ) ) &&
+                                  !( IsUniform_v<T1> && IsUniform_v<T2> ) &&
+                                  !( IsZero_v<T1> || IsZero_v<T2> ) > >
 {
    using Type = HermitianMatrix< typename AddTraitEval2<T1,T2>::Type >;
 };
@@ -1349,12 +1482,15 @@ struct AddTraitEval1< T1, T2
 /*! \cond BLAZE_INTERNAL */
 template< typename T1, typename T2 >
 struct SubTraitEval1< T1, T2
-                    , EnableIf_t< ( IsHermitian_v<T1> && !IsSymmetric_v<T1> &&
-                                    IsHermitian_v<T2> && !IsSymmetric_v<T2> ) ||
-                                  ( IsHermitian_v<T1> && !IsSymmetric_v<T1> &&
-                                    IsSymmetric_v<T2> && !IsComplex_v< UnderlyingNumeric_t<T2> > ) ||
-                                  ( IsSymmetric_v<T1> && !IsComplex_v< UnderlyingNumeric_t<T1> > &&
-                                    IsHermitian_v<T2> && !IsSymmetric_v<T2> ) > >
+                    , EnableIf_t< IsMatrix_v<T1> &&
+                                  IsMatrix_v<T2> &&
+                                  ( ( IsHermitian_v<T1> && !IsSymmetric_v<T1> &&
+                                      IsHermitian_v<T2> && !IsSymmetric_v<T2> ) ||
+                                    ( IsHermitian_v<T1> && !IsSymmetric_v<T1> &&
+                                      IsSymmetric_v<T2> && !IsComplex_v< UnderlyingScalar_t<T2> > ) ||
+                                    ( IsSymmetric_v<T1> && !IsComplex_v< UnderlyingScalar_t<T1> > &&
+                                      IsHermitian_v<T2> && !IsSymmetric_v<T2> ) ) &&
+                                  !( IsZero_v<T1> || IsZero_v<T2> ) > >
 {
    using Type = HermitianMatrix< typename SubTraitEval2<T1,T2>::Type >;
 };
@@ -1374,10 +1510,12 @@ struct SubTraitEval1< T1, T2
 /*! \cond BLAZE_INTERNAL */
 template< typename T1, typename T2 >
 struct SchurTraitEval1< T1, T2
-                      , EnableIf_t< ( IsHermitian_v<T1> && IsHermitian_v<T2> ) &&
+                      , EnableIf_t< IsMatrix_v<T1> &&
+                                    IsMatrix_v<T2> &&
+                                    ( IsHermitian_v<T1> && IsHermitian_v<T2> ) &&
                                     !( IsSymmetric_v<T1> && IsSymmetric_v<T2> ) &&
-                                    !IsDiagonal_v<T1> &&
-                                    !IsDiagonal_v<T2> > >
+                                    !( IsDiagonal_v<T1> || IsZero_v<T1> ) &&
+                                    !( IsDiagonal_v<T2> || IsZero_v<T2> ) > >
 {
    using Type = HermitianMatrix< typename SchurTraitEval2<T1,T2>::Type >;
 };
@@ -1397,12 +1535,44 @@ struct SchurTraitEval1< T1, T2
 /*! \cond BLAZE_INTERNAL */
 template< typename T1, typename T2 >
 struct MultTraitEval1< T1, T2
-                     , EnableIf_t< ( IsHermitian_v<T1> && !IsSymmetric_v<T1> && IsNumeric_v<T2> ) ||
-                                   ( IsNumeric_v<T1> && IsHermitian_v<T2> && !IsSymmetric_v<T2> ) ||
-                                   ( IsHermitian_v<T1> && !IsSymmetric_v<T1> && IsIdentity_v<T2> ) ||
-                                   ( IsIdentity_v<T1> && IsHermitian_v<T2> && !IsSymmetric_v<T2> ) > >
+                     , EnableIf_t< IsMatrix_v<T1> &&
+                                   IsScalar_v<T2> &&
+                                   ( IsHermitian_v<T1> && !IsSymmetric_v<T1> && !IsUniform_v<T1> ) > >
 {
    using Type = HermitianMatrix< typename MultTraitEval2<T1,T2>::Type >;
+};
+
+template< typename T1, typename T2 >
+struct MultTraitEval1< T1, T2
+                     , EnableIf_t< IsScalar_v<T1> &&
+                                   IsMatrix_v<T2> &&
+                                   ( IsHermitian_v<T2> && !IsSymmetric_v<T2> && !IsUniform_v<T2> ) > >
+{
+   using Type = HermitianMatrix< typename MultTraitEval2<T1,T2>::Type >;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  KRONTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename T1, typename T2 >
+struct KronTraitEval1< T1, T2
+                     , EnableIf_t< IsMatrix_v<T1> &&
+                                   IsMatrix_v<T2> &&
+                                   ( IsHermitian_v<T1> && IsHermitian_v<T2> ) &&
+                                   !( IsSymmetric_v<T1> && IsSymmetric_v<T2> ) &&
+                                   !( IsZero_v<T1> || IsZero_v<T2> ) > >
+{
+   using Type = HermitianMatrix< typename KronTraitEval2<T1,T2>::Type >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -1420,7 +1590,7 @@ struct MultTraitEval1< T1, T2
 /*! \cond BLAZE_INTERNAL */
 template< typename T1, typename T2 >
 struct DivTraitEval1< T1, T2
-                    , EnableIf_t< IsHermitian_v<T1> && !IsSymmetric_v<T1> && IsNumeric_v<T2> > >
+                    , EnableIf_t< IsHermitian_v<T1> && !IsSymmetric_v<T1> && IsScalar_v<T2> > >
 {
    using Type = HermitianMatrix< typename DivTraitEval2<T1,T2>::Type >;
 };
@@ -1459,6 +1629,27 @@ struct BinaryMapTraitEval1< T1, T2, OP
                                         !YieldsIdentity_v<OP,T1,T2> > >
 {
    using Type = HermitianMatrix< typename BinaryMapTraitEval2<T1,T2,OP>::Type >;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  REPEATTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename T, size_t R0, size_t R1 >
+struct RepeatTraitEval1< T, R0, R1, inf
+                       , EnableIf_t< R0 != inf && R1 != inf && R0 == R1 &&
+                                     IsHermitian_v<T> && !IsSymmetric_v<T> > >
+{
+   using Type = HermitianMatrix< typename RepeatTraitEval2<T,R0,R1,inf>::Type >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -1525,6 +1716,44 @@ struct DeclLowTrait< HermitianMatrix<MT,SO,DF> >
 
 //=================================================================================================
 //
+//  DECLUNILOWTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, bool SO, bool DF >
+struct DeclUniLowTrait< HermitianMatrix<MT,SO,DF> >
+{
+   using Type = IdentityMatrix< ElementType_t<MT>, SO >;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  DECLSTRLOWTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, bool SO, bool DF >
+struct DeclStrLowTrait< HermitianMatrix<MT,SO,DF> >
+{
+   using Type = ZeroMatrix< ElementType_t<MT>, SO >;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
 //  DECLUPPTRAIT SPECIALIZATIONS
 //
 //=================================================================================================
@@ -1535,6 +1764,44 @@ template< typename MT, bool SO, bool DF >
 struct DeclUppTrait< HermitianMatrix<MT,SO,DF> >
 {
    using Type = DiagonalMatrix<MT,SO,DF>;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  DECLUNIUPPTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, bool SO, bool DF >
+struct DeclUniUppTrait< HermitianMatrix<MT,SO,DF> >
+{
+   using Type = IdentityMatrix< ElementType_t<MT>, SO >;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  DECLSTRUPPTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, bool SO, bool DF >
+struct DeclStrUppTrait< HermitianMatrix<MT,SO,DF> >
+{
+   using Type = ZeroMatrix< ElementType_t<MT>, SO >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -1609,7 +1876,8 @@ struct LowType< HermitianMatrix<MT1,SO1,DF1>, HermitianMatrix<MT2,SO2,DF2> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, size_t I, size_t N >
 struct SubmatrixTraitEval1< MT, I, I, N, N
-                          , EnableIf_t< IsHermitian_v<MT> &&
+                          , EnableIf_t< I != inf && N != inf &&
+                                        IsHermitian_v<MT> &&
                                         !IsSymmetric_v<MT> > >
 {
    using Type = HermitianMatrix< typename SubmatrixTraitEval2<MT,I,I,N,N>::Type >;

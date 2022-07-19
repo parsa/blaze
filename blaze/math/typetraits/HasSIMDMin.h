@@ -3,7 +3,7 @@
 //  \file blaze/math/typetraits/HasSIMDMin.h
 //  \brief Header file for the HasSIMDMin type trait
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -43,14 +43,13 @@
 #include <blaze/system/Vectorization.h>
 #include <blaze/util/Complex.h>
 #include <blaze/util/EnableIf.h>
-#include <blaze/util/FalseType.h>
 #include <blaze/util/IntegralConstant.h>
-#include <blaze/util/typetraits/Decay.h>
 #include <blaze/util/typetraits/HasSize.h>
 #include <blaze/util/typetraits/IsIntegral.h>
 #include <blaze/util/typetraits/IsNumeric.h>
 #include <blaze/util/typetraits/IsSigned.h>
 #include <blaze/util/typetraits/IsUnsigned.h>
+#include <blaze/util/typetraits/RemoveCVRef.h>
 
 
 namespace blaze {
@@ -166,14 +165,14 @@ template< typename T1        // Type of the left-hand side operand
         , typename T2        // Type of the right-hand side operand
         , typename = void >  // Restricting condition
 struct HasSIMDMin
-   : public BoolConstant< HasSIMDMinHelper< Decay_t<T1>, Decay_t<T2> >::value >
+   : public BoolConstant< HasSIMDMinHelper< RemoveCVRef_t<T1>, RemoveCVRef_t<T2> >::value >
 {};
 //*************************************************************************************************
 
 
 //*************************************************************************************************
 /*!\brief Auxiliary variable template for the HasSIMDMin type trait.
-// \ingroup type_traits
+// \ingroup math_type_traits
 //
 // The HasSIMDMin_v variable template provides a convenient shortcut to access the nested
 // \a value of the HasSIMDMin class template. For instance, given the types \a T1 and \a T2

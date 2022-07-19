@@ -3,7 +3,7 @@
 //  \file blaze/math/simd/Mult.h
 //  \brief Header file for the SIMD multiplication functionality
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -68,15 +68,15 @@ BLAZE_ALWAYS_INLINE const T
    operator*( const SIMDi16<T>& a, const SIMDi16<T>& b ) noexcept
 #if BLAZE_AVX512BW_MODE
 {
-   return _mm512_mullo_epi16( (~a).value, (~b).value );
+   return _mm512_mullo_epi16( (*a).value, (*b).value );
 }
 #elif BLAZE_AVX2_MODE
 {
-   return _mm256_mullo_epi16( (~a).value, (~b).value );
+   return _mm256_mullo_epi16( (*a).value, (*b).value );
 }
 #elif BLAZE_SSE2_MODE
 {
-   return _mm_mullo_epi16( (~a).value, (~b).value );
+   return _mm_mullo_epi16( (*a).value, (*b).value );
 }
 #else
 = delete;
@@ -100,15 +100,15 @@ BLAZE_ALWAYS_INLINE const SIMDuint16
    operator*( const SIMDi16<T1>& a, const SIMDi16<T2>& b ) noexcept
 #if BLAZE_AVX512BW_MODE
 {
-   return _mm512_mullo_epi16( (~a).value, (~b).value );
+   return _mm512_mullo_epi16( (*a).value, (*b).value );
 }
 #elif BLAZE_AVX2_MODE
 {
-   return _mm256_mullo_epi16( (~a).value, (~b).value );
+   return _mm256_mullo_epi16( (*a).value, (*b).value );
 }
 #elif BLAZE_SSE2_MODE
 {
-   return _mm_mullo_epi16( (~a).value, (~b).value );
+   return _mm_mullo_epi16( (*a).value, (*b).value );
 }
 #else
 = delete;
@@ -130,15 +130,15 @@ BLAZE_ALWAYS_INLINE const SIMDcint16
    operator*( const SIMDcint16& a, const SIMDint16& b ) noexcept
 #if BLAZE_AVX512BW_MODE
 {
-   return _mm512_mullo_epi16( (~a).value, (~b).value );
+   return _mm512_mullo_epi16( (*a).value, (*b).value );
 }
 #elif BLAZE_AVX2_MODE
 {
-   return _mm256_mullo_epi16( (~a).value, (~b).value );
+   return _mm256_mullo_epi16( (*a).value, (*b).value );
 }
 #elif BLAZE_SSE2_MODE
 {
-   return _mm_mullo_epi16( (~a).value, (~b).value );
+   return _mm_mullo_epi16( (*a).value, (*b).value );
 }
 #else
 = delete;
@@ -160,15 +160,15 @@ BLAZE_ALWAYS_INLINE const SIMDcuint16
    operator*( const SIMDcuint16& a, const SIMDuint16& b ) noexcept
 #if BLAZE_AVX512BW_MODE
 {
-   return _mm512_mullo_epi16( (~a).value, (~b).value );
+   return _mm512_mullo_epi16( (*a).value, (*b).value );
 }
 #elif BLAZE_AVX2_MODE
 {
-   return _mm256_mullo_epi16( (~a).value, (~b).value );
+   return _mm256_mullo_epi16( (*a).value, (*b).value );
 }
 #elif BLAZE_SSE2_MODE
 {
-   return _mm_mullo_epi16( (~a).value, (~b).value );
+   return _mm_mullo_epi16( (*a).value, (*b).value );
 }
 #else
 = delete;
@@ -190,15 +190,15 @@ BLAZE_ALWAYS_INLINE const SIMDcint16
    operator*( const SIMDint16& a, const SIMDcint16& b ) noexcept
 #if BLAZE_AVX512BW_MODE
 {
-   return _mm512_mullo_epi16( (~a).value, (~b).value );
+   return _mm512_mullo_epi16( (*a).value, (*b).value );
 }
 #elif BLAZE_AVX2_MODE
 {
-   return _mm256_mullo_epi16( (~a).value, (~b).value );
+   return _mm256_mullo_epi16( (*a).value, (*b).value );
 }
 #elif BLAZE_SSE2_MODE
 {
-   return _mm_mullo_epi16( (~a).value, (~b).value );
+   return _mm_mullo_epi16( (*a).value, (*b).value );
 }
 #else
 = delete;
@@ -220,15 +220,15 @@ BLAZE_ALWAYS_INLINE const SIMDcuint16
    operator*( const SIMDuint16& a, const SIMDcuint16& b ) noexcept
 #if BLAZE_AVX512BW_MODE
 {
-   return _mm512_mullo_epi16( (~a).value, (~b).value );
+   return _mm512_mullo_epi16( (*a).value, (*b).value );
 }
 #elif BLAZE_AVX2_MODE
 {
-   return _mm256_mullo_epi16( (~a).value, (~b).value );
+   return _mm256_mullo_epi16( (*a).value, (*b).value );
 }
 #elif BLAZE_SSE2_MODE
 {
-   return _mm_mullo_epi16( (~a).value, (~b).value );
+   return _mm_mullo_epi16( (*a).value, (*b).value );
 }
 #else
 = delete;
@@ -251,16 +251,16 @@ BLAZE_ALWAYS_INLINE const T
    operator*( const SIMDci16<T>& a, const SIMDci16<T>& b ) noexcept
 #if BLAZE_AVX512BW_MODE
 {
-   __m512i a_ii = _mm512_shufflelo_epi16( (~a).value, 0b11'11'01'01 );
+   __m512i a_ii = _mm512_shufflelo_epi16( (*a).value, 0b11'11'01'01 );
    a_ii = _mm512_shufflehi_epi16( a_ii, 0b11'11'01'01 );
 
-   __m512i b_ri = _mm512_shufflelo_epi16( (~b).value, 0b10'11'00'01 );
+   __m512i b_ri = _mm512_shufflelo_epi16( (*b).value, 0b10'11'00'01 );
    b_ri = _mm512_shufflehi_epi16( b_ri, 0b10'11'00'01 );
 
-   __m512i a_rr = _mm512_shufflelo_epi16( (~a).value, 0b10'10'00'00 );
+   __m512i a_rr = _mm512_shufflelo_epi16( (*a).value, 0b10'10'00'00 );
    a_rr = _mm512_shufflehi_epi16( a_rr, 0b10'10'00'00 );
 
-   const __m512i a_rr_b = _mm512_mullo_epi16( a_rr, (~b).value );
+   const __m512i a_rr_b = _mm512_mullo_epi16( a_rr, (*b).value );
    const __m512i a_ii_b_ri = _mm512_mullo_epi16( a_ii, b_ri );
    const __m512i a_ii_b_ri_signed = _mm512_mask_sub_epi16( a_ii_b_ri, 0x55555555,
                                                            _mm512_setzero_si512(), a_ii_b_ri );
@@ -271,12 +271,12 @@ BLAZE_ALWAYS_INLINE const T
    __m256i x, y, z;
    const __m256i neg( _mm256_set_epi16( 1, -1, 1, -1, 1, -1, 1, -1, 1, -1, 1, -1, 1, -1, 1, -1 ) );
 
-   x = _mm256_shufflelo_epi16( (~a).value, 0xA0 );
+   x = _mm256_shufflelo_epi16( (*a).value, 0xA0 );
    x = _mm256_shufflehi_epi16( x, 0xA0 );
-   z = _mm256_mullo_epi16( x, (~b).value );
-   x = _mm256_shufflelo_epi16( (~a).value, 0xF5 );
+   z = _mm256_mullo_epi16( x, (*b).value );
+   x = _mm256_shufflelo_epi16( (*a).value, 0xF5 );
    x = _mm256_shufflehi_epi16( x, 0xF5 );
-   y = _mm256_shufflelo_epi16( (~b).value, 0xB1 );
+   y = _mm256_shufflelo_epi16( (*b).value, 0xB1 );
    y = _mm256_shufflehi_epi16( y, 0xB1 );
    y = _mm256_mullo_epi16( x, y );
    y = _mm256_mullo_epi16( y, neg );
@@ -287,12 +287,12 @@ BLAZE_ALWAYS_INLINE const T
    __m128i x, y, z;
    const __m128i neg( _mm_set_epi16( 1, -1, 1, -1, 1, -1, 1, -1 ) );
 
-   x = _mm_shufflelo_epi16( (~a).value, 0xA0 );
+   x = _mm_shufflelo_epi16( (*a).value, 0xA0 );
    x = _mm_shufflehi_epi16( x, 0xA0 );
-   z = _mm_mullo_epi16( x, (~b).value );
-   x = _mm_shufflelo_epi16( (~a).value, 0xF5 );
+   z = _mm_mullo_epi16( x, (*b).value );
+   x = _mm_shufflelo_epi16( (*a).value, 0xF5 );
    x = _mm_shufflehi_epi16( x, 0xF5 );
-   y = _mm_shufflelo_epi16( (~b).value, 0xB1 );
+   y = _mm_shufflelo_epi16( (*b).value, 0xB1 );
    y = _mm_shufflehi_epi16( y, 0xB1 );
    y = _mm_mullo_epi16( x, y );
    y = _mm_mullo_epi16( y, neg );
@@ -327,15 +327,15 @@ BLAZE_ALWAYS_INLINE const T
    operator*( const SIMDi32<T>& a, const SIMDi32<T>& b ) noexcept
 #if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
 {
-   return _mm512_mullo_epi32( (~a).value, (~b).value );
+   return _mm512_mullo_epi32( (*a).value, (*b).value );
 }
 #elif BLAZE_AVX2_MODE
 {
-   return _mm256_mullo_epi32( (~a).value, (~b).value );
+   return _mm256_mullo_epi32( (*a).value, (*b).value );
 }
 #elif BLAZE_SSE4_MODE
 {
-   return _mm_mullo_epi32( (~a).value, (~b).value );
+   return _mm_mullo_epi32( (*a).value, (*b).value );
 }
 #else
 = delete;
@@ -359,15 +359,15 @@ BLAZE_ALWAYS_INLINE const SIMDuint32
    operator*( const SIMDi32<T1>& a, const SIMDi32<T2>& b ) noexcept
 #if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
 {
-   return _mm512_mullo_epi32( (~a).value, (~b).value );
+   return _mm512_mullo_epi32( (*a).value, (*b).value );
 }
 #elif BLAZE_AVX2_MODE
 {
-   return _mm256_mullo_epi32( (~a).value, (~b).value );
+   return _mm256_mullo_epi32( (*a).value, (*b).value );
 }
 #elif BLAZE_SSE4_MODE
 {
-   return _mm_mullo_epi32( (~a).value, (~b).value );
+   return _mm_mullo_epi32( (*a).value, (*b).value );
 }
 #else
 = delete;
@@ -389,15 +389,15 @@ BLAZE_ALWAYS_INLINE const SIMDcint32
    operator*( const SIMDcint32& a, const SIMDint32& b ) noexcept
 #if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
 {
-   return _mm512_mullo_epi32( (~a).value, (~b).value );
+   return _mm512_mullo_epi32( (*a).value, (*b).value );
 }
 #elif BLAZE_AVX2_MODE
 {
-   return _mm256_mullo_epi32( (~a).value, (~b).value );
+   return _mm256_mullo_epi32( (*a).value, (*b).value );
 }
 #elif BLAZE_SSE4_MODE
 {
-   return _mm_mullo_epi32( (~a).value, (~b).value );
+   return _mm_mullo_epi32( (*a).value, (*b).value );
 }
 #else
 = delete;
@@ -419,15 +419,15 @@ BLAZE_ALWAYS_INLINE const SIMDcuint32
    operator*( const SIMDcuint32& a, const SIMDuint32& b ) noexcept
 #if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
 {
-   return _mm512_mullo_epi32( (~a).value, (~b).value );
+   return _mm512_mullo_epi32( (*a).value, (*b).value );
 }
 #elif BLAZE_AVX2_MODE
 {
-   return _mm256_mullo_epi32( (~a).value, (~b).value );
+   return _mm256_mullo_epi32( (*a).value, (*b).value );
 }
 #elif BLAZE_SSE4_MODE
 {
-   return _mm_mullo_epi32( (~a).value, (~b).value );
+   return _mm_mullo_epi32( (*a).value, (*b).value );
 }
 #else
 = delete;
@@ -451,15 +451,15 @@ BLAZE_ALWAYS_INLINE const SIMDcint32
    operator*( const SIMDint32& a, const SIMDcint32& b ) noexcept
 #if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
 {
-   return _mm512_mullo_epi32( (~a).value, (~b).value );
+   return _mm512_mullo_epi32( (*a).value, (*b).value );
 }
 #elif BLAZE_AVX2_MODE
 {
-   return _mm256_mullo_epi32( (~a).value, (~b).value );
+   return _mm256_mullo_epi32( (*a).value, (*b).value );
 }
 #elif BLAZE_SSE4_MODE
 {
-   return _mm_mullo_epi32( (~a).value, (~b).value );
+   return _mm_mullo_epi32( (*a).value, (*b).value );
 }
 #else
 = delete;
@@ -483,15 +483,15 @@ BLAZE_ALWAYS_INLINE const SIMDcuint32
    operator*( const SIMDuint32& a, const SIMDcuint32& b ) noexcept
 #if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
 {
-   return _mm512_mullo_epi32( (~a).value, (~b).value );
+   return _mm512_mullo_epi32( (*a).value, (*b).value );
 }
 #elif BLAZE_AVX2_MODE
 {
-   return _mm256_mullo_epi32( (~a).value, (~b).value );
+   return _mm256_mullo_epi32( (*a).value, (*b).value );
 }
 #elif BLAZE_SSE4_MODE
 {
-   return _mm_mullo_epi32( (~a).value, (~b).value );
+   return _mm_mullo_epi32( (*a).value, (*b).value );
 }
 #else
 = delete;
@@ -514,11 +514,11 @@ BLAZE_ALWAYS_INLINE const T
    operator*( const SIMDci32<T>& a, const SIMDci32<T>& b ) noexcept
 #if BLAZE_AVX512F_MODE
 {
-   const __m512i a_ii = _mm512_shuffle_epi32( (~a).value, 0b11'11'01'01 );
-   const __m512i b_ri = _mm512_shuffle_epi32( (~b).value, 0b10'11'00'01 );
-   const __m512i a_rr = _mm512_shuffle_epi32( (~a).value, 0b10'10'00'00 );
+   const __m512i a_ii = _mm512_shuffle_epi32( (*a).value, _MM_PERM_DDBB );
+   const __m512i b_ri = _mm512_shuffle_epi32( (*b).value, _MM_PERM_CDAB );
+   const __m512i a_rr = _mm512_shuffle_epi32( (*a).value, _MM_PERM_CCAA );
 
-   const __m512i a_rr_b = _mm512_mullo_epi32( a_rr, (~b).value );
+   const __m512i a_rr_b = _mm512_mullo_epi32( a_rr, (*b).value );
    const __m512i a_ii_b_ri = _mm512_mullo_epi32( a_ii, b_ri );
    const __m512i a_ii_b_ri_signed = _mm512_mask_sub_epi32( a_ii_b_ri, 0b0101010101010101,
                                                            _mm512_setzero_si512(), a_ii_b_ri );
@@ -529,10 +529,10 @@ BLAZE_ALWAYS_INLINE const T
    __m256i x, y, z;
    const __m256i neg( _mm256_set_epi32( 1, -1, 1, -1, 1, -1, 1, -1 ) );
 
-   x = _mm256_shuffle_epi32( (~a).value, 0xA0 );
-   z = _mm256_mullo_epi32( x, (~b).value );
-   x = _mm256_shuffle_epi32( (~a).value, 0xF5 );
-   y = _mm256_shuffle_epi32( (~b).value, 0xB1 );
+   x = _mm256_shuffle_epi32( (*a).value, 0xA0 );
+   z = _mm256_mullo_epi32( x, (*b).value );
+   x = _mm256_shuffle_epi32( (*a).value, 0xF5 );
+   y = _mm256_shuffle_epi32( (*b).value, 0xB1 );
    y = _mm256_mullo_epi32( x, y );
    y = _mm256_mullo_epi32( y, neg );
    return _mm256_add_epi32( z, y );
@@ -542,10 +542,10 @@ BLAZE_ALWAYS_INLINE const T
    __m128i x, y, z;
    const __m128i neg( _mm_set_epi32( 1, -1, 1, -1 ) );
 
-   x = _mm_shuffle_epi32( (~a).value, 0xA0 );
-   z = _mm_mullo_epi32( x, (~b).value );
-   x = _mm_shuffle_epi32( (~a).value, 0xF5 );
-   y = _mm_shuffle_epi32( (~b).value, 0xB1 );
+   x = _mm_shuffle_epi32( (*a).value, 0xA0 );
+   z = _mm_mullo_epi32( x, (*b).value );
+   x = _mm_shuffle_epi32( (*a).value, 0xF5 );
+   y = _mm_shuffle_epi32( (*b).value, 0xB1 );
    y = _mm_mullo_epi32( x, y );
    y = _mm_mullo_epi32( y, neg );
    return _mm_add_epi32( z, y );
@@ -579,7 +579,7 @@ BLAZE_ALWAYS_INLINE const T
    operator*( const SIMDi64<T>& a, const SIMDi64<T>& b ) noexcept
 #if BLAZE_AVX512DQ_MODE
 {
-   return _mm512_mullo_epi64( (~a).value, (~b).value );
+   return _mm512_mullo_epi64( (*a).value, (*b).value );
 }
 #else
 = delete;
@@ -603,7 +603,7 @@ BLAZE_ALWAYS_INLINE const SIMDuint64
    operator*( const SIMDi64<T1>& a, const SIMDi64<T2>& b ) noexcept
 #if BLAZE_AVX512DQ_MODE
 {
-   return _mm512_mullo_epi64( (~a).value, (~b).value );
+   return _mm512_mullo_epi64( (*a).value, (*b).value );
 }
 #else
 = delete;
@@ -625,7 +625,7 @@ BLAZE_ALWAYS_INLINE const SIMDcint64
    operator*( const SIMDcint64& a, const SIMDint64& b ) noexcept
 #if BLAZE_AVX512DQ_MODE
 {
-   return _mm512_mullo_epi64( (~a).value, (~b).value );
+   return _mm512_mullo_epi64( (*a).value, (*b).value );
 }
 #else
 = delete;
@@ -647,7 +647,7 @@ BLAZE_ALWAYS_INLINE const SIMDcuint64
    operator*( const SIMDcuint64& a, const SIMDuint64& b ) noexcept
 #if BLAZE_AVX512DQ_MODE
 {
-   return _mm512_mullo_epi64( (~a).value, (~b).value );
+   return _mm512_mullo_epi64( (*a).value, (*b).value );
 }
 #else
 = delete;
@@ -671,7 +671,7 @@ BLAZE_ALWAYS_INLINE const SIMDcint64
    operator*( const SIMDint64& a, const SIMDcint64& b ) noexcept
 #if BLAZE_AVX512DQ_MODE
 {
-   return _mm512_mullo_epi64( (~a).value, (~b).value );
+   return _mm512_mullo_epi64( (*a).value, (*b).value );
 }
 #else
 = delete;
@@ -695,7 +695,7 @@ BLAZE_ALWAYS_INLINE const SIMDcuint64
    operator*( const SIMDuint64& a, const SIMDcuint64& b ) noexcept
 #if BLAZE_AVX512DQ_MODE || BLAZE_MIC_MODE
 {
-   return _mm512_mullo_epi64( (~a).value, (~b).value );
+   return _mm512_mullo_epi64( (*a).value, (*b).value );
 }
 #else
 = delete;
@@ -718,11 +718,11 @@ BLAZE_ALWAYS_INLINE const T
    operator*( const SIMDci64<T>& a, const SIMDci64<T>& b ) noexcept
 #if BLAZE_AVX512DQ_MODE
 {
-   const __m512i a_ii = _mm512_shuffle_epi32( (~a).value, 0b11'10'11'10 );
-   const __m512i b_ri = _mm512_shuffle_epi32( (~b).value, 0b01'00'11'10 );
-   const __m512i a_rr = _mm512_shuffle_epi32( (~a).value, 0b01'00'01'00 );
+   const __m512i a_ii = _mm512_shuffle_epi32( (*a).value, 0b11'10'11'10 );
+   const __m512i b_ri = _mm512_shuffle_epi32( (*b).value, 0b01'00'11'10 );
+   const __m512i a_rr = _mm512_shuffle_epi32( (*a).value, 0b01'00'01'00 );
 
-   const __m512i a_rr_b = _mm512_mullo_epi64( a_rr, (~b).value );
+   const __m512i a_rr_b = _mm512_mullo_epi64( a_rr, (*b).value );
    const __m512i a_ii_b_ri = _mm512_mullo_epi64( a_ii, b_ri );
    const __m512i a_ii_b_ri_signed = _mm512_mask_sub_epi64( a_ii_b_ri, 0b01010101,
                                                            _mm512_setzero_si512(), a_ii_b_ri );
@@ -765,7 +765,7 @@ struct SIMDf32MultExpr
    // \param a The left-hand side operand for the multiplication.
    // \param b The right-hand side operand for the multiplication.
    */
-   explicit BLAZE_ALWAYS_INLINE SIMDf32MultExpr( const T1& a, const T2& b )
+   BLAZE_ALWAYS_INLINE SIMDf32MultExpr( const T1& a, const T2& b )
       : a_( a )  // The left-hand side operand for the multiplication
       , b_( b )  // The right-hand side operand for the multiplication
    {}
@@ -817,7 +817,7 @@ template< typename T1    // Type of the left-hand side operand
 BLAZE_ALWAYS_INLINE const SIMDf32MultExpr<T1,T2>
    operator*( const SIMDf32<T1>& a, const SIMDf32<T2>& b ) noexcept
 {
-   return SIMDf32MultExpr<T1,T2>( ~a, ~b );
+   return SIMDf32MultExpr<T1,T2>( *a, *b );
 }
 //*************************************************************************************************
 
@@ -960,7 +960,7 @@ struct SIMDf64MultExpr
    // \param a The left-hand side operand for the multiplication.
    // \param b The right-hand side operand for the multiplication.
    */
-   explicit BLAZE_ALWAYS_INLINE SIMDf64MultExpr( const T1& a, const T2& b )
+   BLAZE_ALWAYS_INLINE SIMDf64MultExpr( const T1& a, const T2& b )
       : a_( a )  // The left-hand side operand for the multiplication
       , b_( b )  // The right-hand side operand for the multiplication
    {}
@@ -1012,7 +1012,7 @@ template< typename T1    // Type of the left-hand side operand
 BLAZE_ALWAYS_INLINE const SIMDf64MultExpr<T1,T2>
    operator*( const SIMDf64<T1>& a, const SIMDf64<T2>& b ) noexcept
 {
-   return SIMDf64MultExpr<T1,T2>( ~a, ~b );
+   return SIMDf64MultExpr<T1,T2>( *a, *b );
 }
 //*************************************************************************************************
 

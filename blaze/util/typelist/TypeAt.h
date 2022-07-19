@@ -3,7 +3,7 @@
 //  \file blaze/util/typelist/TypeAt.h
 //  \brief Header file for the TypeAt class template
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -41,7 +41,6 @@
 //*************************************************************************************************
 
 #include <blaze/util/InvalidType.h>
-#include <blaze/util/mpl/SizeT.h>
 #include <blaze/util/typelist/TypeList.h>
 #include <blaze/util/Types.h>
 

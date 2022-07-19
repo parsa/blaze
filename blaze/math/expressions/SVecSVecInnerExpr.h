@@ -3,7 +3,7 @@
 //  \file blaze/math/expressions/SVecSVecInnerExpr.h
 //  \brief Header file for the sparse vector/sparse vector inner product expression
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -48,6 +48,7 @@
 #include <blaze/math/expressions/SparseVector.h>
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/typetraits/IsOpposedView.h>
+#include <blaze/system/MacroDisable.h>
 #include <blaze/util/FunctionTrace.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/RemoveReference.h>
@@ -96,30 +97,28 @@ inline decltype(auto)
 {
    BLAZE_FUNCTION_TRACE;
 
-   using CT1           = CompositeType_t<VT1>;    // Composite type of the left-hand side sparse vector expression
-   using CT2           = CompositeType_t<VT2>;    // Composite type of the right-hand side sparse vector expression
-   using XT1           = RemoveReference_t<CT1>;  // Auxiliary type for the left-hand side composite type
-   using XT2           = RemoveReference_t<CT2>;  // Auxiliary type for the right-hand side composite type
-   using ET1           = ElementType_t<XT1>;      // Element type of the left-hand side sparse vector expression
-   using ET2           = ElementType_t<XT2>;      // Element type of the right-hand side sparse vector expression
-   using MultType      = MultTrait_t<ET1,ET2>;    // Multiplication result type
-   using LeftIterator  = ConstIterator_t<XT1>;    // Iterator type of the left-hand sparse vector expression
-   using RightIterator = ConstIterator_t<XT2>;    // Iterator type of the right-hand sparse vector expression
+   using CT1      = CompositeType_t<VT1>;    // Composite type of the left-hand side sparse vector expression
+   using CT2      = CompositeType_t<VT2>;    // Composite type of the right-hand side sparse vector expression
+   using XT1      = RemoveReference_t<CT1>;  // Auxiliary type for the left-hand side composite type
+   using XT2      = RemoveReference_t<CT2>;  // Auxiliary type for the right-hand side composite type
+   using ET1      = ElementType_t<XT1>;      // Element type of the left-hand side sparse vector expression
+   using ET2      = ElementType_t<XT2>;      // Element type of the right-hand side sparse vector expression
+   using MultType = MultTrait_t<ET1,ET2>;    // Multiplication result typen
 
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE( VT1 );
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE( VT2 );
    BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE   ( VT1 );
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE( VT2 );
 
-   if( (~lhs).size() != (~rhs).size() ) {
+   if( (*lhs).size() != (*rhs).size() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   CT1 left ( ~lhs );  // Evaluation of the left-hand side sparse vector operand
-   CT2 right( ~rhs );  // Evaluation of the right-hand side sparse vector operand
+   CT1 left ( *lhs );  // Evaluation of the left-hand side sparse vector operand
+   CT2 right( *rhs );  // Evaluation of the right-hand side sparse vector operand
 
-   BLAZE_INTERNAL_ASSERT( left.size()  == (~lhs).size(), "Invalid vector size" );
-   BLAZE_INTERNAL_ASSERT( right.size() == (~rhs).size(), "Invalid vector size" );
+   BLAZE_INTERNAL_ASSERT( left.size()  == (*lhs).size(), "Invalid vector size" );
+   BLAZE_INTERNAL_ASSERT( right.size() == (*rhs).size(), "Invalid vector size" );
 
    MultType sp{};
 
@@ -134,8 +133,8 @@ inline decltype(auto)
    }
    else if( IsOpposedView_v<VT1> )
    {
-      const RightIterator rend( right.end() );
-      RightIterator r( right.begin() );
+      const auto rend( right.end() );
+      auto r( right.begin() );
 
       if( r == rend ) return sp;
 
@@ -147,8 +146,8 @@ inline decltype(auto)
    }
    else if( IsOpposedView_v<VT2> )
    {
-      const LeftIterator lend( left.end()  );
-      LeftIterator l( left.begin()  );
+      const auto lend( left.end()  );
+      auto l( left.begin()  );
 
       if( l == lend ) return sp;
 
@@ -160,10 +159,10 @@ inline decltype(auto)
    }
    else
    {
-      const LeftIterator  lend( left.end()  );
-      const RightIterator rend( right.end() );
-      LeftIterator  l( left.begin()  );
-      RightIterator r( right.begin() );
+      const auto lend( left.end()  );
+      const auto rend( right.end() );
+      auto l( left.begin()  );
+      auto r( right.begin() );
 
       if( l == lend || r == rend ) return sp;
 

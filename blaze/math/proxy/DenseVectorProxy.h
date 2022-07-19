@@ -3,7 +3,7 @@
 //  \file blaze/math/proxy/DenseVectorProxy.h
 //  \brief Header file for the DenseVectorProxy class
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -49,10 +49,9 @@
 #include <blaze/math/typetraits/IsResizable.h>
 #include <blaze/math/typetraits/IsRowVector.h>
 #include <blaze/system/Inline.h>
-#include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
+#include <blaze/util/MaybeUnused.h>
 #include <blaze/util/Types.h>
-#include <blaze/util/Unused.h>
 
 
 namespace blaze {
@@ -134,6 +133,19 @@ class DenseVectorProxy
    //@}
    //**********************************************************************************************
 
+ protected:
+   //**Special member functions********************************************************************
+   /*!\name Special member functions */
+   //@{
+   DenseVectorProxy() = default;
+   DenseVectorProxy( const DenseVectorProxy& ) = default;
+   DenseVectorProxy( DenseVectorProxy&& ) = default;
+   ~DenseVectorProxy() = default;
+   DenseVectorProxy& operator=( const DenseVectorProxy& ) = default;
+   DenseVectorProxy& operator=( DenseVectorProxy&& ) = default;
+   //@}
+   //**********************************************************************************************
+
  private:
    //**Compile time checks*************************************************************************
    /*! \cond BLAZE_INTERNAL */
@@ -164,11 +176,11 @@ template< typename PT    // Type of the proxy
 inline typename DenseVectorProxy<PT,VT>::Reference
    DenseVectorProxy<PT,VT>::operator[]( size_t index ) const
 {
-   if( (~*this).isRestricted() ) {
+   if( (**this).isRestricted() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid access to restricted element" );
    }
 
-   return (~*this).get()[index];
+   return (**this).get()[index];
 }
 //*************************************************************************************************
 
@@ -189,11 +201,11 @@ template< typename PT    // Type of the proxy
 inline typename DenseVectorProxy<PT,VT>::Reference
    DenseVectorProxy<PT,VT>::at( size_t index ) const
 {
-   if( (~*this).isRestricted() ) {
+   if( (**this).isRestricted() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid access to restricted element" );
    }
 
-   return (~*this).get().at( index );
+   return (**this).get().at( index );
 }
 //*************************************************************************************************
 
@@ -210,11 +222,11 @@ template< typename PT    // Type of the proxy
         , typename VT >  // Type of the dense vector
 inline typename DenseVectorProxy<PT,VT>::Pointer DenseVectorProxy<PT,VT>::data() const
 {
-   if( (~*this).isRestricted() ) {
+   if( (**this).isRestricted() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid access to restricted element" );
    }
 
-   return (~*this).get().data();
+   return (**this).get().data();
 }
 //*************************************************************************************************
 
@@ -229,11 +241,11 @@ template< typename PT    // Type of the proxy
         , typename VT >  // Type of the dense vector
 inline typename DenseVectorProxy<PT,VT>::Iterator DenseVectorProxy<PT,VT>::begin() const
 {
-   if( (~*this).isRestricted() ) {
+   if( (**this).isRestricted() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid access to restricted element" );
    }
 
-   return (~*this).get().begin();
+   return (**this).get().begin();
 }
 //*************************************************************************************************
 
@@ -247,7 +259,7 @@ template< typename PT    // Type of the proxy
         , typename VT >  // Type of the dense vector
 inline typename DenseVectorProxy<PT,VT>::ConstIterator DenseVectorProxy<PT,VT>::cbegin() const
 {
-   return (~*this).get().cbegin();
+   return (**this).get().cbegin();
 }
 //*************************************************************************************************
 
@@ -262,11 +274,11 @@ template< typename PT    // Type of the proxy
         , typename VT >  // Type of the dense vector
 inline typename DenseVectorProxy<PT,VT>::Iterator DenseVectorProxy<PT,VT>::end() const
 {
-   if( (~*this).isRestricted() ) {
+   if( (**this).isRestricted() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid access to restricted element" );
    }
 
-   return (~*this).get().end();
+   return (**this).get().end();
 }
 //*************************************************************************************************
 
@@ -280,7 +292,7 @@ template< typename PT    // Type of the proxy
         , typename VT >  // Type of the dense vector
 inline typename DenseVectorProxy<PT,VT>::ConstIterator DenseVectorProxy<PT,VT>::cend() const
 {
-   return (~*this).get().cend();
+   return (**this).get().cend();
 }
 //*************************************************************************************************
 
@@ -302,7 +314,7 @@ template< typename PT    // Type of the proxy
         , typename VT >  // Type of the dense vector
 inline size_t DenseVectorProxy<PT,VT>::size() const
 {
-   return (~*this).get().size();
+   return (**this).get().size();
 }
 //*************************************************************************************************
 
@@ -316,7 +328,7 @@ template< typename PT    // Type of the proxy
         , typename VT >  // Type of the dense vector
 inline size_t DenseVectorProxy<PT,VT>::capacity() const
 {
-   return (~*this).get().capacity();
+   return (**this).get().capacity();
 }
 //*************************************************************************************************
 
@@ -333,7 +345,7 @@ template< typename PT    // Type of the proxy
         , typename VT >  // Type of the dense vector
 inline size_t DenseVectorProxy<PT,VT>::nonZeros() const
 {
-   return (~*this).get().nonZeros();
+   return (**this).get().nonZeros();
 }
 //*************************************************************************************************
 
@@ -351,7 +363,7 @@ inline void DenseVectorProxy<PT,VT>::reset() const
 {
    using blaze::reset;
 
-   reset( (~*this).get() );
+   reset( (**this).get() );
 }
 //*************************************************************************************************
 
@@ -369,7 +381,7 @@ inline void DenseVectorProxy<PT,VT>::clear() const
 {
    using blaze::clear;
 
-   clear( (~*this).get() );
+   clear( (**this).get() );
 }
 //*************************************************************************************************
 
@@ -394,11 +406,11 @@ template< typename PT    // Type of the proxy
         , typename VT >  // Type of the dense vector
 inline void DenseVectorProxy<PT,VT>::resize( size_t n, bool preserve ) const
 {
-   if( (~*this).isRestricted() ) {
+   if( (**this).isRestricted() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid access to restricted element" );
    }
 
-   (~*this).get().resize( n, preserve );
+   (**this).get().resize( n, preserve );
 }
 //*************************************************************************************************
 
@@ -421,11 +433,11 @@ template< typename PT    // Type of the proxy
         , typename VT >  // Type of the dense vector
 inline void DenseVectorProxy<PT,VT>::extend( size_t n, bool preserve ) const
 {
-   if( (~*this).isRestricted() ) {
+   if( (**this).isRestricted() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid access to restricted element" );
    }
 
-   (~*this).get().extend( n, preserve );
+   (**this).get().extend( n, preserve );
 }
 //*************************************************************************************************
 
@@ -444,11 +456,11 @@ template< typename PT    // Type of the proxy
         , typename VT >  // Type of the dense vector
 inline void DenseVectorProxy<PT,VT>::reserve( size_t n ) const
 {
-   if( (~*this).isRestricted() ) {
+   if( (**this).isRestricted() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid access to restricted element" );
    }
 
-   (~*this).get().reserve( n );
+   (**this).get().reserve( n );
 }
 //*************************************************************************************************
 
@@ -469,11 +481,11 @@ template< typename PT       // Type of the proxy
 template< typename Other >  // Data type of the scalar value
 inline void DenseVectorProxy<PT,VT>::scale( const Other& scalar ) const
 {
-   if( (~*this).isRestricted() ) {
+   if( (**this).isRestricted() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid access to restricted element" );
    }
 
-   (~*this).get().scale( scalar );
+   (**this).get().scale( scalar );
 }
 //*************************************************************************************************
 
@@ -490,38 +502,32 @@ inline void DenseVectorProxy<PT,VT>::scale( const Other& scalar ) const
 /*!\name DenseVectorProxy global functions */
 //@{
 template< typename PT, typename VT >
-BLAZE_ALWAYS_INLINE typename DenseVectorProxy<PT,VT>::Iterator
+typename DenseVectorProxy<PT,VT>::Iterator
    begin( const DenseVectorProxy<PT,VT>& proxy );
 
 template< typename PT, typename VT >
-BLAZE_ALWAYS_INLINE typename DenseVectorProxy<PT,VT>::ConstIterator
+typename DenseVectorProxy<PT,VT>::ConstIterator
    cbegin( const DenseVectorProxy<PT,VT>& proxy );
 
 template< typename PT, typename VT >
-BLAZE_ALWAYS_INLINE typename DenseVectorProxy<PT,VT>::Iterator
+typename DenseVectorProxy<PT,VT>::Iterator
    end( const DenseVectorProxy<PT,VT>& proxy );
 
 template< typename PT, typename VT >
-BLAZE_ALWAYS_INLINE typename DenseVectorProxy<PT,VT>::ConstIterator
+typename DenseVectorProxy<PT,VT>::ConstIterator
    cend( const DenseVectorProxy<PT,VT>& proxy );
 
 template< typename PT, typename VT >
-BLAZE_ALWAYS_INLINE size_t size( const DenseVectorProxy<PT,VT>& proxy );
+size_t size( const DenseVectorProxy<PT,VT>& proxy );
 
 template< typename PT, typename VT >
-BLAZE_ALWAYS_INLINE size_t capacity( const DenseVectorProxy<PT,VT>& proxy );
+size_t capacity( const DenseVectorProxy<PT,VT>& proxy );
 
 template< typename PT, typename VT >
-BLAZE_ALWAYS_INLINE size_t nonZeros( const DenseVectorProxy<PT,VT>& proxy );
+size_t nonZeros( const DenseVectorProxy<PT,VT>& proxy );
 
 template< typename PT, typename VT >
-BLAZE_ALWAYS_INLINE void resize( const DenseVectorProxy<PT,VT>& proxy, size_t n, bool preserve=true );
-
-template< typename PT, typename VT >
-BLAZE_ALWAYS_INLINE void reset( const DenseVectorProxy<PT,VT>& proxy );
-
-template< typename PT, typename VT >
-BLAZE_ALWAYS_INLINE void clear( const DenseVectorProxy<PT,VT>& proxy );
+void resize( const DenseVectorProxy<PT,VT>& proxy, size_t n, bool preserve=true );
 //@}
 //*************************************************************************************************
 
@@ -665,7 +671,7 @@ template< typename PT    // Type of the proxy
 BLAZE_ALWAYS_INLINE DisableIf_t< IsResizable_v<VT> >
    resize_backend( const DenseVectorProxy<PT,VT>& proxy, size_t n, bool preserve )
 {
-   UNUSED_PARAMETER( preserve );
+   MAYBE_UNUSED( preserve );
 
    if( proxy.size() != n ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Vector cannot be resized" );
@@ -723,42 +729,6 @@ template< typename PT    // Type of the proxy
 BLAZE_ALWAYS_INLINE void resize( const DenseVectorProxy<PT,VT>& proxy, size_t n, bool preserve )
 {
    resize_backend( proxy, n, preserve );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Resetting the represented vector to the default initial values.
-// \ingroup math
-//
-// \param proxy The given access proxy.
-// \return void
-//
-// This function resets all elements of the vector to the default initial values.
-*/
-template< typename PT    // Type of the proxy
-        , typename VT >  // Type of the dense vector
-BLAZE_ALWAYS_INLINE void reset( const DenseVectorProxy<PT,VT>& proxy )
-{
-   proxy.reset();
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Clearing the represented vector.
-// \ingroup math
-//
-// \param proxy The given access proxy.
-// \return void
-//
-// This function clears the vector to its default initial state.
-*/
-template< typename PT    // Type of the proxy
-        , typename VT >  // Type of the dense vector
-BLAZE_ALWAYS_INLINE void clear( const DenseVectorProxy<PT,VT>& proxy )
-{
-   proxy.clear();
 }
 //*************************************************************************************************
 

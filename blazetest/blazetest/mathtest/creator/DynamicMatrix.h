@@ -3,7 +3,7 @@
 //  \file blazetest/mathtest/creator/DynamicMatrix.h
 //  \brief Specialization of the Creator class template for DynamicMatrix
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -87,10 +87,10 @@ class Creator< blaze::DynamicMatrix<T,SO> >
    //@{
    // No explicitly declared copy assignment operator.
 
-   const blaze::DynamicMatrix<T,SO> operator()() const;
+   blaze::DynamicMatrix<T,SO> operator()() const;
 
    template< typename CP >
-   const blaze::DynamicMatrix<T,SO> operator()( const CP& policy ) const;
+   blaze::DynamicMatrix<T,SO> operator()( const CP& policy ) const;
    //@}
    //**********************************************************************************************
 
@@ -162,7 +162,7 @@ inline Creator< blaze::DynamicMatrix<T,SO> >::Creator( size_t m, size_t n, const
 */
 template< typename T  // Element type of the dynamic matrix
         , bool SO >   // Storage order of the dynamic matrix
-inline const blaze::DynamicMatrix<T,SO> Creator< blaze::DynamicMatrix<T,SO> >::operator()() const
+inline blaze::DynamicMatrix<T,SO> Creator< blaze::DynamicMatrix<T,SO> >::operator()() const
 {
    return (*this)( Default() );
 }
@@ -178,7 +178,7 @@ inline const blaze::DynamicMatrix<T,SO> Creator< blaze::DynamicMatrix<T,SO> >::o
 template< typename T     // Element type of the dynamic matrix
         , bool SO >      // Storage order of the dynamic matrix
 template< typename CP >  // Creation policy
-inline const blaze::DynamicMatrix<T,SO>
+inline blaze::DynamicMatrix<T,SO>
    Creator< blaze::DynamicMatrix<T,SO> >::operator()( const CP& policy ) const
 {
    blaze::DynamicMatrix<T,SO> matrix( m_, n_ );

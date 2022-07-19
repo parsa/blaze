@@ -3,7 +3,7 @@
 //  \file blaze/math/functors/Pow.h
 //  \brief Header file for the Pow functor
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -40,10 +40,12 @@
 // Includes
 //*************************************************************************************************
 
+#include <utility>
 #include <blaze/math/constraints/SIMDPack.h>
 #include <blaze/math/shims/Pow.h>
 #include <blaze/math/simd/Pow.h>
 #include <blaze/math/typetraits/HasSIMDPow.h>
+#include <blaze/system/HostDevice.h>
 #include <blaze/system/Inline.h>
 
 
@@ -61,14 +63,6 @@ namespace blaze {
 */
 struct Pow
 {
- public:
-   //**********************************************************************************************
-   /*!\brief Constructor of the Pow functor.
-   */
-   explicit inline Pow()
-   {}
-   //**********************************************************************************************
-
    //**********************************************************************************************
    /*!\brief Returns the result of the pow() function for the given objects/values.
    //
@@ -77,9 +71,9 @@ struct Pow
    // \return The result of the pow() function for the given objects/values.
    */
    template< typename T1, typename T2 >
-   BLAZE_ALWAYS_INLINE decltype(auto) operator()( const T1& a, const T2& b ) const
+   BLAZE_ALWAYS_INLINE BLAZE_DEVICE_CALLABLE decltype(auto) operator()( T1&& a, T2&& b ) const
    {
-      return pow( a, b );
+      return pow( std::forward<T1>( a ), std::forward<T2>( b ) );
    }
    //**********************************************************************************************
 
@@ -90,6 +84,14 @@ struct Pow
    */
    template< typename T1, typename T2 >
    static constexpr bool simdEnabled() { return HasSIMDPow_v<T1,T2>; }
+   //**********************************************************************************************
+
+   //**********************************************************************************************
+   /*!\brief Returns whether the operation supports padding, i.e. whether it can deal with zeros.
+   //
+   // \return \a true in case padding is supported, \a false if not.
+   */
+   static constexpr bool paddingEnabled() { return false; }
    //**********************************************************************************************
 
    //**********************************************************************************************

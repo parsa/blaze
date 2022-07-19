@@ -3,7 +3,7 @@
 //  \file blazetest/mathtest/creator/CompressedVector.h
 //  \brief Specialization of the Creator class template for CompressedVector
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -90,10 +90,10 @@ class Creator< blaze::CompressedVector<T,TF> >
    //@{
    // No explicitly declared copy assignment operator.
 
-   const blaze::CompressedVector<T,TF> operator()() const;
+   blaze::CompressedVector<T,TF> operator()() const;
 
    template< typename CP >
-   const blaze::CompressedVector<T,TF> operator()( const CP& policy ) const;
+   blaze::CompressedVector<T,TF> operator()( const CP& policy ) const;
    //@}
    //**********************************************************************************************
 
@@ -173,7 +173,7 @@ inline Creator< blaze::CompressedVector<T,TF> >::Creator( size_t size, size_t no
 */
 template< typename T  // Element type of the N-dimensional compressed vector
         , bool TF >   // Transpose flag of the N-dimensional compressed vector
-inline const blaze::CompressedVector<T,TF> Creator< blaze::CompressedVector<T,TF> >::operator()() const
+inline blaze::CompressedVector<T,TF> Creator< blaze::CompressedVector<T,TF> >::operator()() const
 {
    return (*this)( Default() );
 }
@@ -189,7 +189,7 @@ inline const blaze::CompressedVector<T,TF> Creator< blaze::CompressedVector<T,TF
 template< typename T     // Element type of the N-dimensional compressed vector
         , bool TF >      // Transpose flag of the N-dimensional compressed vector
 template< typename CP >  // Creation policy
-inline const blaze::CompressedVector<T,TF>
+inline blaze::CompressedVector<T,TF>
    Creator< blaze::CompressedVector<T,TF> >::operator()( const CP& policy ) const
 {
    blaze::CompressedVector<T,TF> vector( size_ );

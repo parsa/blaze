@@ -3,7 +3,7 @@
 //  \file blazetest/mathtest/creator/DynamicVector.h
 //  \brief Specialization of the Creator class template for DynamicVector
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -87,10 +87,10 @@ class Creator< blaze::DynamicVector<T,TF> >
    //@{
    // No explicitly declared copy assignment operator.
 
-   const blaze::DynamicVector<T,TF> operator()() const;
+   blaze::DynamicVector<T,TF> operator()() const;
 
    template< typename CP >
-   const blaze::DynamicVector<T,TF> operator()( const CP& policy ) const;
+   blaze::DynamicVector<T,TF> operator()( const CP& policy ) const;
    //@}
    //**********************************************************************************************
 
@@ -158,7 +158,7 @@ inline Creator< blaze::DynamicVector<T,TF> >::Creator( size_t size, const Creato
 */
 template< typename T  // Element type of the N-dimensional vector
         , bool TF >   // Transpose flag of the N-dimensional vector
-inline const blaze::DynamicVector<T,TF> Creator< blaze::DynamicVector<T,TF> >::operator()() const
+inline blaze::DynamicVector<T,TF> Creator< blaze::DynamicVector<T,TF> >::operator()() const
 {
    return (*this)( Default() );
 }
@@ -174,7 +174,7 @@ inline const blaze::DynamicVector<T,TF> Creator< blaze::DynamicVector<T,TF> >::o
 template< typename T     // Element type of the N-dimensional vector
         , bool TF >      // Transpose flag of the N-dimensional vector
 template< typename CP >  // Creation policy
-inline const blaze::DynamicVector<T,TF>
+inline blaze::DynamicVector<T,TF>
    Creator< blaze::DynamicVector<T,TF> >::operator()( const CP& policy ) const
 {
    blaze::DynamicVector<T,TF> vector( size_ );

@@ -3,7 +3,7 @@
 //  \file blazetest/mathtest/lapack/EigenvalueTest.h
 //  \brief Header file for the LAPACK eigenvalue test
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -45,6 +45,7 @@
 #include <stdexcept>
 #include <string>
 #include <typeinfo>
+#include <blaze/math/Accuracy.h>
 #include <blaze/math/Aliases.h>
 #include <blaze/math/Column.h>
 #include <blaze/math/HermitianMatrix.h>
@@ -56,6 +57,7 @@
 #include <blaze/math/typetraits/UnderlyingElement.h>
 #include <blazetest/system/LAPACK.h>
 #include <blaze/util/Complex.h>
+#include <blaze/util/MaybeUnused.h>
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/Random.h>
 #include <blaze/util/typetraits/IsComplex.h>
@@ -98,6 +100,7 @@ class EigenvalueTest
    /*!\name Test functions */
    //@{
    template< typename Type > void testGeev();
+   template< typename Type > void testGges();
    template< typename Type > void testSyev();
    template< typename Type > void testSyevd();
    template< typename Type > void testSyevx();
@@ -127,6 +130,36 @@ class EigenvalueTest
    //@}
    //**********************************************************************************************
 };
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  HELPER TEMPLATES
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Auxiliary variable template for the test of the gges() LAPACK function.
+// \ingroup math_traits
+*/
+template< typename T >
+const auto select =
+   []( const T* alphar, const T* alphai, const T* beta ) -> blaze::blas_int_t {
+      blaze::MAYBE_UNUSED( alphai, beta );
+      return *alphar > T(0);
+   };
+
+template< typename T >
+const auto select< blaze::complex<T> > =
+   []( const blaze::complex<T>* alpha, const blaze::complex<T>* beta ) -> blaze::blas_int_t {
+      blaze::MAYBE_UNUSED( beta );
+      return alpha->real() > T(0);
+   };
+/*! \endcond */
 //*************************************************************************************************
 
 
@@ -290,11 +323,11 @@ void EigenvalueTest::testGeev()
              << "   Element type:\n"
              << "     " << typeid( Type ).name() << "\n"
              << "   Row-major eigenvalues:\n" << w1 << "\n"
-             << "   Row-major left eigenvalues:\n" << VL1 << "\n"
-             << "   Row-major right eigenvalues:\n" << VR1 << "\n"
+             << "   Row-major left eigenvectors:\n" << VL1 << "\n"
+             << "   Row-major right eigenvectors:\n" << VR1 << "\n"
              << "   Column-major eigenvalues:\n" << w2 << "\n"
-             << "   Column-major left eigenvalues:\n" << VL2 << "\n"
-             << "   Column-major right eigenvalues:\n" << VR2 << "\n";
+             << "   Column-major left eigenvectors:\n" << VL2 << "\n"
+             << "   Column-major right eigenvectors:\n" << VR2 << "\n";
          throw std::runtime_error( oss.str() );
       }
 
@@ -312,6 +345,227 @@ void EigenvalueTest::testGeev()
 
       for( size_t i=0UL; i<VR2.columns(); ++i ) {
          checkEigenvector( column( VR2, i ), A, w2[i] );
+      }
+   }
+
+#endif
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the generalized Schur factorization functions for general matrices (gges).
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the generalized Schur factorization functions for general
+// matrices for various data types. In case an error is detected, a \a std::runtime_error
+// exception is thrown.
+*/
+template< typename Type >
+void EigenvalueTest::testGges()
+{
+#if BLAZETEST_MATHTEST_LAPACK_MODE
+
+   test_ = "General matrix eigenvalue and Schur form computation (gges)";
+
+   using CT = blaze::If_t< blaze::IsComplex_v<Type>, Type, blaze::complex<Type> >;
+   using RT = typename CT::value_type;
+
+   const auto comparator = []( const CT& c1, const CT& c2 ) {
+      return blaze::equal( c1, c2 );
+   };
+
+   {
+      blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> A;
+      blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> B;
+      randomize( A );
+      randomize( B );
+
+      blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> A1( trans(A) );
+      blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> A2( A );
+
+      blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> B1( trans(B) );
+      blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> B2( B );
+
+      blaze::StaticVector<CT,3UL,blaze::rowVector> alpha1;
+      blaze::StaticVector<CT,3UL,blaze::rowVector> alpha2;
+
+      blaze::StaticVector<Type,3UL,blaze::rowVector> beta1;
+      blaze::StaticVector<Type,3UL,blaze::rowVector> beta2;
+
+      blaze::gges( A1, B1, alpha1, beta1 );
+      blaze::gges( A2, B2, alpha2, beta2 );
+
+      if( !std::is_permutation( alpha1.begin(), alpha1.end(), alpha2.begin(), comparator ) ||
+          !std::is_permutation( beta1.begin(), beta1.end(), beta2.begin(), comparator ) )
+      {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Matrix generalized Schur factorization failed\n"
+             << " Details:\n"
+             << "   Random seed = " << blaze::getSeed() << "\n"
+             << "   Element type:\n"
+             << "     " << typeid( Type ).name() << "\n"
+             << "   Row-major alpha:\n" << alpha1 << "\n"
+             << "   Row-major beta:\n" << beta1 << "\n"
+             << "   Column-major alpha:\n" << alpha2 << "\n"
+             << "   Column-major beta:\n" << beta2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> A;
+      blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> B;
+      randomize( A );
+      randomize( B );
+
+      blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> A1( trans(A) );
+      blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> A2( A );
+
+      blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> B1( trans(B) );
+      blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> B2( B );
+
+      blaze::StaticVector<CT,3UL,blaze::rowVector> alpha1;
+      blaze::StaticVector<CT,3UL,blaze::rowVector> alpha2;
+
+      blaze::StaticVector<Type,3UL,blaze::rowVector> beta1;
+      blaze::StaticVector<Type,3UL,blaze::rowVector> beta2;
+
+      blaze::gges( A1, B1, alpha1, beta1, select<Type> );
+      blaze::gges( A2, B2, alpha2, beta2, select<Type> );
+
+      if( !std::is_permutation( alpha1.begin(), alpha1.end(), alpha2.begin(), comparator ) ||
+          !std::is_permutation( beta1.begin(), beta1.end(), beta2.begin(), comparator ) )
+      {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Matrix generalized Schur factorization failed\n"
+             << " Details:\n"
+             << "   Random seed = " << blaze::getSeed() << "\n"
+             << "   Element type:\n"
+             << "     " << typeid( Type ).name() << "\n"
+             << "   Row-major alpha:\n" << alpha1 << "\n"
+             << "   Row-major beta:\n" << beta1 << "\n"
+             << "   Column-major alpha:\n" << alpha2 << "\n"
+             << "   Column-major beta:\n" << beta2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> A;
+      blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> B;
+      randomize( A );
+      randomize( B );
+
+      blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> A1( trans(A) );
+      blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> A2( A );
+
+      blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> B1( trans(B) );
+      blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> B2( B );
+
+      blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> VSL1;
+      blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> VSL2;
+
+      blaze::StaticVector<CT,3UL,blaze::rowVector> alpha1;
+      blaze::StaticVector<CT,3UL,blaze::rowVector> alpha2;
+
+      blaze::StaticVector<Type,3UL,blaze::rowVector> beta1;
+      blaze::StaticVector<Type,3UL,blaze::rowVector> beta2;
+
+      blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> VSR1;
+      blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> VSR2;
+
+      blaze::gges( A1, B1, VSL1, alpha1, beta1, VSR1 );
+      blaze::gges( A2, B2, VSL2, alpha2, beta2, VSR2 );
+
+      if( !std::is_permutation( alpha1.begin(), alpha1.end(), alpha2.begin(), comparator ) ||
+          !std::is_permutation( beta1.begin(), beta1.end(), beta2.begin(), comparator ) ||
+          !( maxNorm( trans(VSL1) * trans(A1) * conj(VSR1) - A ) < blaze::accuracy ) ||
+          !( maxNorm( trans(VSL1) * trans(B1) * conj(VSR1) - B ) < blaze::accuracy ) ||
+          !( maxNorm( VSL2 * A2 * ctrans(VSR2) - A ) < blaze::accuracy ) ||
+          !( maxNorm( VSL2 * B2 * ctrans(VSR2) - B ) < blaze::accuracy ) )
+      {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Matrix generalized Schur factorization failed\n"
+             << " Details:\n"
+             << "   Random seed = " << blaze::getSeed() << "\n"
+             << "   Element type:\n"
+             << "     " << typeid( Type ).name() << "\n"
+             << "   Row-major left Schur vectors:\n" << VSL1 << "\n"
+             << "   Row-major right Schur vectors:\n" << VSR1 << "\n"
+             << "   Row-major alpha:\n" << alpha1 << "\n"
+             << "   Row-major beta:\n" << beta1 << "\n"
+             << "   Row-major residual A:\n" << ( trans(VSL1) * trans(A1) * conj(VSR1) - A ) << "\n"
+             << "   Row-major residual B:\n" << ( trans(VSL1) * trans(B1) * conj(VSR1) - B ) << "\n"
+             << "   Column-major left Schur vectors:\n" << VSL2 << "\n"
+             << "   Column-major right Schur vectors:\n" << VSR2 << "\n"
+             << "   Column-major alpha:\n" << alpha2 << "\n"
+             << "   Column-major beta:\n" << beta2 << "\n"
+             << "   Column-major residual A:\n" << ( VSL2 * A2 * ctrans(VSR2) - A ) << "\n"
+             << "   Column-major residual B:\n" << ( VSL2 * B2 * ctrans(VSR2) - B ) << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> A;
+      blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> B;
+      randomize( A );
+      randomize( B );
+
+      blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> A1( trans(A) );
+      blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> A2( A );
+
+      blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> B1( trans(B) );
+      blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> B2( B );
+
+      blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> VSL1;
+      blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> VSL2;
+
+      blaze::StaticVector<CT,3UL,blaze::rowVector> alpha1;
+      blaze::StaticVector<CT,3UL,blaze::rowVector> alpha2;
+
+      blaze::StaticVector<Type,3UL,blaze::rowVector> beta1;
+      blaze::StaticVector<Type,3UL,blaze::rowVector> beta2;
+
+      blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> VSR1;
+      blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> VSR2;
+
+      blaze::gges( A1, B1, VSL1, alpha1, beta1, VSR1, select<Type> );
+      blaze::gges( A2, B2, VSL2, alpha2, beta2, VSR2, select<Type> );
+
+      if( !std::is_permutation( alpha1.begin(), alpha1.end(), alpha2.begin(), comparator ) ||
+          !std::is_permutation( beta1.begin(), beta1.end(), beta2.begin(), comparator ) ||
+          !( maxNorm( trans(VSL1) * trans(A1) * conj(VSR1) - A ) < blaze::accuracy ) ||
+          !( maxNorm( trans(VSL1) * trans(B1) * conj(VSR1) - B ) < blaze::accuracy ) ||
+          !( maxNorm( VSL2 * A2 * ctrans(VSR2) - A ) < blaze::accuracy ) ||
+          !( maxNorm( VSL2 * B2 * ctrans(VSR2) - B ) < blaze::accuracy ) )
+      {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Matrix generalized Schur factorization failed\n"
+             << " Details:\n"
+             << "   Random seed = " << blaze::getSeed() << "\n"
+             << "   Element type:\n"
+             << "     " << typeid( Type ).name() << "\n"
+             << "   Row-major left Schur vectors:\n" << VSL1 << "\n"
+             << "   Row-major right Schur vectors:\n" << VSR1 << "\n"
+             << "   Row-major alpha:\n" << alpha1 << "\n"
+             << "   Row-major beta:\n" << beta1 << "\n"
+             << "   Row-major residual A:\n" << ( trans(VSL1) * trans(A1) * conj(VSR1) - A ) << "\n"
+             << "   Row-major residual B:\n" << ( trans(VSL1) * trans(B1) * conj(VSR1) - B ) << "\n"
+             << "   Column-major left Schur vectors:\n" << VSL2 << "\n"
+             << "   Column-major right Schur vectors:\n" << VSR2 << "\n"
+             << "   Column-major alpha:\n" << alpha2 << "\n"
+             << "   Column-major beta:\n" << beta2 << "\n"
+             << "   Column-major residual A:\n" << ( VSL2 * A2 * ctrans(VSR2) - A ) << "\n"
+             << "   Column-major residual B:\n" << ( VSL2 * B2 * ctrans(VSR2) - B ) << "\n";
+         throw std::runtime_error( oss.str() );
       }
    }
 
@@ -1134,17 +1388,17 @@ template< typename VT    // Type of the eigenvector v
 void EigenvalueTest::checkEigenvector( const blaze::DenseVector<VT,false>& v,
                                        const blaze::DenseMatrix<MT,SO>& A, ST w )
 {
-   if( (~A) * (~v) != w * (~v) ) {
+   if( A * v != w * v ) {
       std::ostringstream oss;
       oss << " Test: " << test_ << "\n"
           << " Error: Invalid right eigenvector detected\n"
           << " Details:\n"
           << "   Random seed = " << blaze::getSeed() << "\n"
-          << "   System matrix:\n" << (~A) << "\n"
+          << "   System matrix:\n" << A << "\n"
           << "   Eigenvalue = " << w << "\n"
-          << "   Right eigenvector:\n" << (~v) << "\n"
-          << "   A * v =\n" << ( (~A) * (~v) ) << "\n"
-          << "   A * w =\n" << ( w * (~v) ) << "\n";
+          << "   Right eigenvector:\n" << v << "\n"
+          << "   A * v =\n" << ( A * v ) << "\n"
+          << "   A * w =\n" << ( w * v ) << "\n";
       throw std::runtime_error( oss.str() );
    }
 }
@@ -1173,17 +1427,17 @@ template< typename VT    // Type of the eigenvector u
 void EigenvalueTest::checkEigenvector( const blaze::DenseVector<VT,true>& u,
                                        const blaze::DenseMatrix<MT,SO>& A, ST w )
 {
-   if( (~u) * (~A) != (~u) * w ) {
+   if( u * A != u * w ) {
       std::ostringstream oss;
       oss << " Test: " << test_ << "\n"
           << " Error: Invalid left eigenvector detected\n"
           << " Details:\n"
           << "   Random seed = " << blaze::getSeed() << "\n"
-          << "   System matrix:\n" << (~A) << "\n"
+          << "   System matrix:\n" << A << "\n"
           << "   Eigenvalue = " << w << "\n"
-          << "   Left eigenvector:\n" << (~u) << "\n"
-          << "   v * A =\n" << ( (~u) * (~A) ) << "\n"
-          << "   v * w =\n" << ( (~u) * w ) << "\n";
+          << "   Left eigenvector:\n" << u << "\n"
+          << "   v * A =\n" << ( u * A ) << "\n"
+          << "   v * w =\n" << ( u * w ) << "\n";
       throw std::runtime_error( oss.str() );
    }
 }

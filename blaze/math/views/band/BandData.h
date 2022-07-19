@@ -3,7 +3,7 @@
 //  \file blaze/math/views/band/BandData.h
 //  \brief Header file for the implementation of the BandData class template
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -40,8 +40,8 @@
 // Includes
 //*************************************************************************************************
 
+#include <blaze/util/MaybeUnused.h>
 #include <blaze/util/Types.h>
-#include <blaze/util/Unused.h>
 
 
 namespace blaze {
@@ -61,7 +61,7 @@ namespace blaze {
 // of compile time band arguments.
 */
 template< ptrdiff_t... CBAs >  // Compile time band arguments
-struct BandData
+class BandData
 {};
 //*************************************************************************************************
 
@@ -83,9 +83,18 @@ struct BandData
 // time band arguments.
 */
 template<>
-struct BandData<>
+class BandData<>
 {
  public:
+   //**Compile time flags**************************************************************************
+   //! Compilation flag for compile time optimization.
+   /*! The \a compileTimeArgs compilation flag indicates whether the view has been created by
+       means of compile time arguments and whether these arguments can be queried at compile
+       time. In that case, the \a compileTimeArgs compilation flag is set to \a true, otherwise
+       it is set to \a false. */
+   static constexpr bool compileTimeArgs = false;
+   //**********************************************************************************************
+
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
@@ -146,7 +155,7 @@ inline BandData<>::BandData( ptrdiff_t index, RBAs... args )
    , row_   ( index >= 0L ?   0UL : -index )  // The index of the row containing the first element of the band
    , column_( index >= 0L ? index :    0UL )  // The index of the column containing the first element of the band
 {
-   UNUSED_PARAMETER( args... );
+   MAYBE_UNUSED( args... );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -211,9 +220,18 @@ inline size_t BandData<>::column() const noexcept
 // compile time band argument.
 */
 template< ptrdiff_t I >  // Compile time band index
-struct BandData<I>
+class BandData<I>
 {
  public:
+   //**Compile time flags**************************************************************************
+   //! Compilation flag for compile time optimization.
+   /*! The \a compileTimeArgs compilation flag indicates whether the view has been created by
+       means of compile time arguments and whether these arguments can be queried at compile
+       time. In that case, the \a compileTimeArgs compilation flag is set to \a true, otherwise
+       it is set to \a false. */
+   static constexpr bool compileTimeArgs = true;
+   //**********************************************************************************************
+
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
@@ -241,9 +259,9 @@ struct BandData<I>
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-   static inline constexpr ptrdiff_t band  () noexcept;
-   static inline constexpr size_t    row   () noexcept;
-   static inline constexpr size_t    column() noexcept;
+   static constexpr ptrdiff_t band  () noexcept;
+   static constexpr size_t    row   () noexcept;
+   static constexpr size_t    column() noexcept;
    //@}
    //**********************************************************************************************
 };
@@ -261,7 +279,7 @@ template< ptrdiff_t I >       // Compile time band index
 template< typename... RBAs >  // Optional band arguments
 inline BandData<I>::BandData( RBAs... args )
 {
-   UNUSED_PARAMETER( args... );
+   MAYBE_UNUSED( args... );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -274,7 +292,7 @@ inline BandData<I>::BandData( RBAs... args )
 // \return The index of the band.
 */
 template< ptrdiff_t I >  // Compile time band index
-inline constexpr ptrdiff_t BandData<I>::band() noexcept
+constexpr ptrdiff_t BandData<I>::band() noexcept
 {
    return I;
 }
@@ -289,7 +307,7 @@ inline constexpr ptrdiff_t BandData<I>::band() noexcept
 // \return The first row index.
 */
 template< ptrdiff_t I >  // Compile time band index
-inline constexpr size_t BandData<I>::row() noexcept
+constexpr size_t BandData<I>::row() noexcept
 {
    return ( I >= 0L ? 0UL : -I );
 }
@@ -304,7 +322,7 @@ inline constexpr size_t BandData<I>::row() noexcept
 // \return The first column index.
 */
 template< ptrdiff_t I >  // Compile time band index
-inline constexpr size_t BandData<I>::column() noexcept
+constexpr size_t BandData<I>::column() noexcept
 {
    return ( I >= 0L ? I : 0UL );
 }

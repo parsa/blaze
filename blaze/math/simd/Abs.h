@@ -3,7 +3,7 @@
 //  \file blaze/math/simd/Abs.h
 //  \brief Header file for the SIMD abs functionality
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -203,17 +203,17 @@ template< typename T >  // Type of the operand
 BLAZE_ALWAYS_INLINE const SIMDfloat abs( const SIMDf32<T>& a ) noexcept
 #if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
 {
-   return _mm512_abs_ps( (~a).eval().value );
+   return _mm512_abs_ps( (*a).eval().value );
 }
 #elif BLAZE_AVX_MODE
 {
    const __m256 mask( _mm256_castsi256_ps( _mm256_set1_epi32( 0x80000000 ) ) );
-   return _mm256_andnot_ps( mask, (~a).eval().value );
+   return _mm256_andnot_ps( mask, (*a).eval().value );
 }
 #elif BLAZE_SSE2_MODE
 {
    const __m128 mask( _mm_castsi128_ps( _mm_set1_epi32( 0x80000000 ) ) );
-   return _mm_andnot_ps( mask, (~a).eval().value );
+   return _mm_andnot_ps( mask, (*a).eval().value );
 }
 #else
 = delete;
@@ -244,18 +244,18 @@ BLAZE_ALWAYS_INLINE const SIMDdouble abs( const SIMDf64<T>& a ) noexcept
 = delete;
 #elif BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
 {
-   return _mm512_abs_pd( (~a).eval().value );
+   return _mm512_abs_pd( (*a).eval().value );
 }
 #elif BLAZE_AVX_MODE
 {
    const __m256d mask( _mm256_castsi256_pd(
       _mm256_set_epi32( 0x80000000, 0x0, 0x80000000, 0x0, 0x80000000, 0x0, 0x80000000, 0x0 ) ) );
-   return _mm256_andnot_pd( mask, (~a).eval().value );
+   return _mm256_andnot_pd( mask, (*a).eval().value );
 }
 #elif BLAZE_SSE2_MODE
 {
    const __m128d mask( _mm_castsi128_pd( _mm_set_epi32( 0x80000000, 0x0, 0x80000000, 0x0 ) ) );
-   return _mm_andnot_pd( mask, (~a).eval().value );
+   return _mm_andnot_pd( mask, (*a).eval().value );
 }
 #else
 = delete;

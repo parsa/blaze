@@ -3,7 +3,7 @@
 //  \file blaze/math/adaptors/SymmetricMatrix.h
 //  \brief Header file for the implementation of a symmetric matrix adaptor
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -42,26 +42,33 @@
 
 #include <blaze/math/Aliases.h>
 #include <blaze/math/adaptors/symmetricmatrix/BaseTemplate.h>
-#include <blaze/math/adaptors/symmetricmatrix/DenseNonNumeric.h>
-#include <blaze/math/adaptors/symmetricmatrix/DenseNumeric.h>
-#include <blaze/math/adaptors/symmetricmatrix/SparseNonNumeric.h>
-#include <blaze/math/adaptors/symmetricmatrix/SparseNumeric.h>
+#include <blaze/math/adaptors/symmetricmatrix/DenseNonScalar.h>
+#include <blaze/math/adaptors/symmetricmatrix/DenseScalar.h>
+#include <blaze/math/adaptors/symmetricmatrix/SparseNonScalar.h>
+#include <blaze/math/adaptors/symmetricmatrix/SparseScalar.h>
 #include <blaze/math/constraints/BLASCompatible.h>
 #include <blaze/math/constraints/RequiresEvaluation.h>
 #include <blaze/math/Exception.h>
-#include <blaze/math/InversionFlag.h>
 #include <blaze/math/Forward.h>
+#include <blaze/math/InversionFlag.h>
+#include <blaze/math/RelaxationFlag.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/shims/IsDivisor.h>
 #include <blaze/math/traits/AddTrait.h>
 #include <blaze/math/traits/DeclDiagTrait.h>
 #include <blaze/math/traits/DeclHermTrait.h>
 #include <blaze/math/traits/DeclLowTrait.h>
+#include <blaze/math/traits/DeclStrLowTrait.h>
+#include <blaze/math/traits/DeclStrUppTrait.h>
 #include <blaze/math/traits/DeclSymTrait.h>
+#include <blaze/math/traits/DeclUniLowTrait.h>
+#include <blaze/math/traits/DeclUniUppTrait.h>
 #include <blaze/math/traits/DeclUppTrait.h>
 #include <blaze/math/traits/DivTrait.h>
+#include <blaze/math/traits/KronTrait.h>
 #include <blaze/math/traits/MapTrait.h>
 #include <blaze/math/traits/MultTrait.h>
+#include <blaze/math/traits/RepeatTrait.h>
 #include <blaze/math/traits/SchurTrait.h>
 #include <blaze/math/traits/SubmatrixTrait.h>
 #include <blaze/math/traits/SubTrait.h>
@@ -72,13 +79,16 @@
 #include <blaze/math/typetraits/IsContiguous.h>
 #include <blaze/math/typetraits/IsDiagonal.h>
 #include <blaze/math/typetraits/IsHermitian.h>
-#include <blaze/math/typetraits/IsIdentity.h>
+#include <blaze/math/typetraits/IsMatrix.h>
 #include <blaze/math/typetraits/IsPadded.h>
-#include <blaze/math/typetraits/IsResizable.h>
 #include <blaze/math/typetraits/IsRestricted.h>
-#include <blaze/math/typetraits/IsShrinkable.h>
+#include <blaze/math/typetraits/IsScalar.h>
 #include <blaze/math/typetraits/IsSquare.h>
+#include <blaze/math/typetraits/IsStrictlyLower.h>
+#include <blaze/math/typetraits/IsStrictlyUpper.h>
 #include <blaze/math/typetraits/IsSymmetric.h>
+#include <blaze/math/typetraits/IsUniform.h>
+#include <blaze/math/typetraits/IsZero.h>
 #include <blaze/math/typetraits/LowType.h>
 #include <blaze/math/typetraits/MaxSize.h>
 #include <blaze/math/typetraits/RemoveAdaptor.h>
@@ -91,10 +101,9 @@
 #include <blaze/util/algorithms/Min.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/EnableIf.h>
-#include <blaze/util/TrueType.h>
+#include <blaze/util/IntegralConstant.h>
+#include <blaze/util/MaybeUnused.h>
 #include <blaze/util/typetraits/IsBuiltin.h>
-#include <blaze/util/typetraits/IsNumeric.h>
-#include <blaze/util/Unused.h>
 
 
 namespace blaze {
@@ -108,84 +117,15 @@ namespace blaze {
 //*************************************************************************************************
 /*!\name SymmetricMatrix operators */
 //@{
-template< typename MT, bool SO, bool DF, bool NF >
-inline void reset( SymmetricMatrix<MT,SO,DF,NF>& m );
+template< RelaxationFlag RF, typename MT, bool SO, bool DF, bool SF >
+bool isDefault( const SymmetricMatrix<MT,SO,DF,SF>& m );
 
-template< typename MT, bool SO, bool DF, bool NF >
-inline void reset( SymmetricMatrix<MT,SO,DF,NF>& m, size_t i );
+template< typename MT, bool SO, bool DF, bool SF >
+bool isIntact( const SymmetricMatrix<MT,SO,DF,SF>& m );
 
-template< typename MT, bool SO, bool DF, bool NF >
-inline void clear( SymmetricMatrix<MT,SO,DF,NF>& m );
-
-template< bool RF, typename MT, bool SO, bool DF, bool NF >
-inline bool isDefault( const SymmetricMatrix<MT,SO,DF,NF>& m );
-
-template< typename MT, bool SO, bool DF, bool NF >
-inline bool isIntact( const SymmetricMatrix<MT,SO,DF,NF>& m );
-
-template< typename MT, bool SO, bool DF, bool NF >
-inline void swap( SymmetricMatrix<MT,SO,DF,NF>& a, SymmetricMatrix<MT,SO,DF,NF>& b ) noexcept;
+template< typename MT, bool SO, bool DF, bool SF >
+void swap( SymmetricMatrix<MT,SO,DF,SF>& a, SymmetricMatrix<MT,SO,DF,SF>& b ) noexcept;
 //@}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Resetting the given symmetric matrix.
-// \ingroup symmetric_matrix
-//
-// \param m The symmetric matrix to be resetted.
-// \return void
-*/
-template< typename MT  // Type of the adapted matrix
-        , bool SO      // Storage order of the adapted matrix
-        , bool DF      // Density flag
-        , bool NF >    // Numeric flag
-inline void reset( SymmetricMatrix<MT,SO,DF,NF>& m )
-{
-   m.reset();
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Resetting the specified row/column of the given symmetric matrix.
-// \ingroup symmetric_matrix
-//
-// \param m The symmetric matrix to be resetted.
-// \param i The index of the row/column to be resetted.
-// \return void
-//
-// This function resets the values in the specified row/column of the given symmetric matrix to
-// their default value. In case the given matrix is a \a rowMajor matrix the function resets the
-// values in row \a i, if it is a \a columnMajor matrix the function resets the values in column
-// \a i. Note that the capacity of the row/column remains unchanged.
-*/
-template< typename MT  // Type of the adapted matrix
-        , bool SO      // Storage order of the adapted matrix
-        , bool DF      // Density flag
-        , bool NF >    // Numeric flag
-inline void reset( SymmetricMatrix<MT,SO,DF,NF>& m, size_t i )
-{
-   m.reset( i );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Clearing the given symmetric matrix.
-// \ingroup symmetric_matrix
-//
-// \param m The symmetric matrix to be cleared.
-// \return void
-*/
-template< typename MT  // Type of the adapted matrix
-        , bool SO      // Storage order of the adapted matrix
-        , bool DF      // Density flag
-        , bool NF >    // Numeric flag
-inline void clear( SymmetricMatrix<MT,SO,DF,NF>& m )
-{
-   m.clear();
-}
 //*************************************************************************************************
 
 
@@ -214,14 +154,16 @@ inline void clear( SymmetricMatrix<MT,SO,DF,NF>& m )
    if( isDefault<relaxed>( A ) ) { ... }
    \endcode
 */
-template< bool RF      // Relaxation flag
-        , typename MT  // Type of the adapted matrix
-        , bool SO      // Storage order of the adapted matrix
-        , bool DF      // Density flag
-        , bool NF >    // Numeric flag
-inline bool isDefault( const SymmetricMatrix<MT,SO,DF,NF>& m )
+template< RelaxationFlag RF  // Relaxation flag
+        , typename MT        // Type of the adapted matrix
+        , bool SO            // Storage order of the adapted matrix
+        , bool DF            // Density flag
+        , bool SF >          // Scalar flag
+inline bool isDefault( const SymmetricMatrix<MT,SO,DF,SF>& m )
 {
-   return isDefault<RF>( m.matrix_ );
+   if( Size_v<MT,0UL> == DefaultSize_v )
+      return m.rows() == 0UL;
+   else return isStrictlyLower<RF>( m );
 }
 //*************************************************************************************************
 
@@ -250,8 +192,8 @@ inline bool isDefault( const SymmetricMatrix<MT,SO,DF,NF>& m )
 template< typename MT  // Type of the adapted matrix
         , bool SO      // Storage order of the adapted matrix
         , bool DF      // Density flag
-        , bool NF >    // Numeric flag
-inline bool isIntact( const SymmetricMatrix<MT,SO,DF,NF>& m )
+        , bool SF >    // Scalar flag
+inline bool isIntact( const SymmetricMatrix<MT,SO,DF,SF>& m )
 {
    return m.isIntact();
 }
@@ -269,8 +211,8 @@ inline bool isIntact( const SymmetricMatrix<MT,SO,DF,NF>& m )
 template< typename MT  // Type of the adapted matrix
         , bool SO      // Storage order of the adapted matrix
         , bool DF      // Density flag
-        , bool NF >    // Numeric flag
-inline void swap( SymmetricMatrix<MT,SO,DF,NF>& a, SymmetricMatrix<MT,SO,DF,NF>& b ) noexcept
+        , bool SF >    // Scalar flag
+inline void swap( SymmetricMatrix<MT,SO,DF,SF>& a, SymmetricMatrix<MT,SO,DF,SF>& b ) noexcept
 {
    a.swap( b );
 }
@@ -348,23 +290,23 @@ inline void invert( SymmetricMatrix<MT,SO,true,true>& m )
 template< typename MT1  // Type of the adapted matrix
         , bool SO1      // Storage order of the adapted matrix
         , bool DF       // Density flag
-        , bool NF       // Numeric flag
+        , bool SF       // Scalar flag
         , typename MT2  // Type of the right-hand side matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
-inline bool tryAssign( const SymmetricMatrix<MT1,SO1,DF,NF>& lhs,
+inline bool tryAssign( const SymmetricMatrix<MT1,SO1,DF,SF>& lhs,
                        const Matrix<MT2,SO2>& rhs, size_t row, size_t column )
 {
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT2 );
 
    BLAZE_INTERNAL_ASSERT( row <= lhs.rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( (~rhs).rows() <= lhs.rows() - row, "Invalid number of rows" );
-   BLAZE_INTERNAL_ASSERT( (~rhs).columns() <= lhs.columns() - column, "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( (*rhs).rows() <= lhs.rows() - row, "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( (*rhs).columns() <= lhs.columns() - column, "Invalid number of columns" );
 
-   UNUSED_PARAMETER( lhs );
+   MAYBE_UNUSED( lhs );
 
-   const size_t M( (~rhs).rows()    );
-   const size_t N( (~rhs).columns() );
+   const size_t M( (*rhs).rows()    );
+   const size_t N( (*rhs).columns() );
 
    if( ( row + M <= column ) || ( column + N <= row ) )
       return true;
@@ -378,7 +320,7 @@ inline bool tryAssign( const SymmetricMatrix<MT1,SO1,DF,NF>& lhs,
    const size_t subrow( lower ? 0UL : column - row );
    const size_t subcol( lower ? row - column : 0UL );
 
-   return isSymmetric( submatrix( ~rhs, subrow, subcol, size, size ) );
+   return isSymmetric( submatrix( *rhs, subrow, subcol, size, size ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -403,13 +345,13 @@ inline bool tryAssign( const SymmetricMatrix<MT1,SO1,DF,NF>& lhs,
 template< typename MT1  // Type of the adapted matrix
         , bool SO1      // Storage order of the adapted matrix
         , bool DF       // Density flag
-        , bool NF       // Numeric flag
+        , bool SF       // Scalar flag
         , typename MT2  // Type of the right-hand side matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
-inline bool tryAddAssign( const SymmetricMatrix<MT1,SO1,DF,NF>& lhs,
+inline bool tryAddAssign( const SymmetricMatrix<MT1,SO1,DF,SF>& lhs,
                           const Matrix<MT2,SO2>& rhs, size_t row, size_t column )
 {
-   return tryAssign( lhs, ~rhs, row, column );
+   return tryAssign( lhs, *rhs, row, column );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -435,13 +377,13 @@ inline bool tryAddAssign( const SymmetricMatrix<MT1,SO1,DF,NF>& lhs,
 template< typename MT1  // Type of the adapted matrix
         , bool SO1      // Storage order of the adapted matrix
         , bool DF       // Density flag
-        , bool NF       // Numeric flag
+        , bool SF       // Scalar flag
         , typename MT2  // Type of the right-hand side matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
-inline bool trySubAssign( const SymmetricMatrix<MT1,SO1,DF,NF>& lhs,
+inline bool trySubAssign( const SymmetricMatrix<MT1,SO1,DF,SF>& lhs,
                           const Matrix<MT2,SO2>& rhs, size_t row, size_t column )
 {
-   return tryAssign( lhs, ~rhs, row, column );
+   return tryAssign( lhs, *rhs, row, column );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -467,13 +409,13 @@ inline bool trySubAssign( const SymmetricMatrix<MT1,SO1,DF,NF>& lhs,
 template< typename MT1  // Type of the adapted matrix
         , bool SO1      // Storage order of the adapted matrix
         , bool DF       // Density flag
-        , bool NF       // Numeric flag
+        , bool SF       // Scalar flag
         , typename MT2  // Type of the right-hand side matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
-inline bool trySchurAssign( const SymmetricMatrix<MT1,SO1,DF,NF>& lhs,
+inline bool trySchurAssign( const SymmetricMatrix<MT1,SO1,DF,SF>& lhs,
                             const Matrix<MT2,SO2>& rhs, size_t row, size_t column )
 {
-   return tryAssign( lhs, ~rhs, row, column );
+   return tryAssign( lhs, *rhs, row, column );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -489,13 +431,13 @@ inline bool trySchurAssign( const SymmetricMatrix<MT1,SO1,DF,NF>& lhs,
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO, bool DF, bool NF >
-struct Size< SymmetricMatrix<MT,SO,DF,NF>, 0UL >
+template< typename MT, bool SO, bool DF, bool SF >
+struct Size< SymmetricMatrix<MT,SO,DF,SF>, 0UL >
    : public Size<MT,0UL>
 {};
 
-template< typename MT, bool SO, bool DF, bool NF >
-struct Size< SymmetricMatrix<MT,SO,DF,NF>, 1UL >
+template< typename MT, bool SO, bool DF, bool SF >
+struct Size< SymmetricMatrix<MT,SO,DF,SF>, 1UL >
    : public Size<MT,1UL>
 {};
 /*! \endcond */
@@ -512,13 +454,13 @@ struct Size< SymmetricMatrix<MT,SO,DF,NF>, 1UL >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO, bool DF, bool NF >
-struct MaxSize< SymmetricMatrix<MT,SO,DF,NF>, 0UL >
+template< typename MT, bool SO, bool DF, bool SF >
+struct MaxSize< SymmetricMatrix<MT,SO,DF,SF>, 0UL >
    : public MaxSize<MT,0UL>
 {};
 
-template< typename MT, bool SO, bool DF, bool NF >
-struct MaxSize< SymmetricMatrix<MT,SO,DF,NF>, 1UL >
+template< typename MT, bool SO, bool DF, bool SF >
+struct MaxSize< SymmetricMatrix<MT,SO,DF,SF>, 1UL >
    : public MaxSize<MT,1UL>
 {};
 /*! \endcond */
@@ -535,9 +477,27 @@ struct MaxSize< SymmetricMatrix<MT,SO,DF,NF>, 1UL >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO, bool DF, bool NF >
-struct IsSquare< SymmetricMatrix<MT,SO,DF,NF> >
+template< typename MT, bool SO, bool DF, bool SF >
+struct IsSquare< SymmetricMatrix<MT,SO,DF,SF> >
    : public TrueType
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  ISUNIFORM SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, bool SO, bool DF, bool SF >
+struct IsUniform< SymmetricMatrix<MT,SO,DF,SF> >
+   : public IsUniform<MT>
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -553,8 +513,8 @@ struct IsSquare< SymmetricMatrix<MT,SO,DF,NF> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO, bool DF, bool NF >
-struct IsSymmetric< SymmetricMatrix<MT,SO,DF,NF> >
+template< typename MT, bool SO, bool DF, bool SF >
+struct IsSymmetric< SymmetricMatrix<MT,SO,DF,SF> >
    : public TrueType
 {};
 /*! \endcond */
@@ -571,9 +531,45 @@ struct IsSymmetric< SymmetricMatrix<MT,SO,DF,NF> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO, bool DF, bool NF >
-struct IsHermitian< SymmetricMatrix<MT,SO,DF,NF> >
+template< typename MT, bool SO, bool DF, bool SF >
+struct IsHermitian< SymmetricMatrix<MT,SO,DF,SF> >
    : public IsBuiltin< ElementType_t<MT> >
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  ISSTRICTLYLOWER SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, bool SO, bool DF, bool SF >
+struct IsStrictlyLower< SymmetricMatrix<MT,SO,DF,SF> >
+   : public IsZero<MT>
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  ISSTRICTLYUPPER SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, bool SO, bool DF, bool SF >
+struct IsStrictlyUpper< SymmetricMatrix<MT,SO,DF,SF> >
+   : public IsZero<MT>
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -589,8 +585,8 @@ struct IsHermitian< SymmetricMatrix<MT,SO,DF,NF> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO, bool DF, bool NF >
-struct IsAdaptor< SymmetricMatrix<MT,SO,DF,NF> >
+template< typename MT, bool SO, bool DF, bool SF >
+struct IsAdaptor< SymmetricMatrix<MT,SO,DF,SF> >
    : public TrueType
 {};
 /*! \endcond */
@@ -607,8 +603,8 @@ struct IsAdaptor< SymmetricMatrix<MT,SO,DF,NF> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO, bool DF, bool NF >
-struct IsRestricted< SymmetricMatrix<MT,SO,DF,NF> >
+template< typename MT, bool SO, bool DF, bool SF >
+struct IsRestricted< SymmetricMatrix<MT,SO,DF,SF> >
    : public TrueType
 {};
 /*! \endcond */
@@ -625,8 +621,8 @@ struct IsRestricted< SymmetricMatrix<MT,SO,DF,NF> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO, bool NF >
-struct HasConstDataAccess< SymmetricMatrix<MT,SO,true,NF> >
+template< typename MT, bool SO, bool SF >
+struct HasConstDataAccess< SymmetricMatrix<MT,SO,true,SF> >
    : public TrueType
 {};
 /*! \endcond */
@@ -643,8 +639,8 @@ struct HasConstDataAccess< SymmetricMatrix<MT,SO,true,NF> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO, bool DF, bool NF >
-struct IsAligned< SymmetricMatrix<MT,SO,DF,NF> >
+template< typename MT, bool SO, bool DF, bool SF >
+struct IsAligned< SymmetricMatrix<MT,SO,DF,SF> >
    : public IsAligned<MT>
 {};
 /*! \endcond */
@@ -661,8 +657,8 @@ struct IsAligned< SymmetricMatrix<MT,SO,DF,NF> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO, bool DF, bool NF >
-struct IsContiguous< SymmetricMatrix<MT,SO,DF,NF> >
+template< typename MT, bool SO, bool DF, bool SF >
+struct IsContiguous< SymmetricMatrix<MT,SO,DF,SF> >
    : public IsContiguous<MT>
 {};
 /*! \endcond */
@@ -679,45 +675,9 @@ struct IsContiguous< SymmetricMatrix<MT,SO,DF,NF> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO, bool DF, bool NF >
-struct IsPadded< SymmetricMatrix<MT,SO,DF,NF> >
+template< typename MT, bool SO, bool DF, bool SF >
+struct IsPadded< SymmetricMatrix<MT,SO,DF,SF> >
    : public IsPadded<MT>
-{};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  ISRESIZABLE SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO, bool DF, bool NF >
-struct IsResizable< SymmetricMatrix<MT,SO,DF,NF> >
-   : public IsResizable<MT>
-{};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  ISSHRINKABLE SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO, bool DF, bool NF >
-struct IsShrinkable< SymmetricMatrix<MT,SO,DF,NF> >
-   : public IsShrinkable<MT>
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -733,8 +693,8 @@ struct IsShrinkable< SymmetricMatrix<MT,SO,DF,NF> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO, bool DF, bool NF >
-struct RemoveAdaptor< SymmetricMatrix<MT,SO,DF,NF> >
+template< typename MT, bool SO, bool DF, bool SF >
+struct RemoveAdaptor< SymmetricMatrix<MT,SO,DF,SF> >
 {
    using Type = MT;
 };
@@ -754,10 +714,14 @@ struct RemoveAdaptor< SymmetricMatrix<MT,SO,DF,NF> >
 /*! \cond BLAZE_INTERNAL */
 template< typename T1, typename T2 >
 struct AddTraitEval1< T1, T2
-                    , EnableIf_t< ( ( IsSymmetric_v<T1> && IsSymmetric_v<T2> ) ||
+                    , EnableIf_t< IsMatrix_v<T1> &&
+                                  IsMatrix_v<T2> &&
+                                  ( ( IsSymmetric_v<T1> && IsSymmetric_v<T2> ) ||
                                     ( IsSymmetric_v<T1> && IsDiagonal_v<T2> ) ||
                                     ( IsDiagonal_v<T1> && IsSymmetric_v<T2> ) ) &&
-                                  !( IsDiagonal_v<T1> && IsDiagonal_v<T2> ) > >
+                                  !( IsDiagonal_v<T1> && IsDiagonal_v<T2> ) &&
+                                  !( IsUniform_v<T1> && IsUniform_v<T2> ) &&
+                                  !( IsZero_v<T1> || IsZero_v<T2> ) > >
 {
    using Type = SymmetricMatrix< typename AddTraitEval2<T1,T2>::Type >;
 };
@@ -777,10 +741,14 @@ struct AddTraitEval1< T1, T2
 /*! \cond BLAZE_INTERNAL */
 template< typename T1, typename T2 >
 struct SubTraitEval1< T1, T2
-                    , EnableIf_t< ( ( IsSymmetric_v<T1> && IsSymmetric_v<T2> ) ||
+                    , EnableIf_t< IsMatrix_v<T1> &&
+                                  IsMatrix_v<T2> &&
+                                  ( ( IsSymmetric_v<T1> && IsSymmetric_v<T2> ) ||
                                     ( IsSymmetric_v<T1> && IsDiagonal_v<T2> ) ||
                                     ( IsDiagonal_v<T1> && IsSymmetric_v<T2> ) ) &&
-                                  !( IsDiagonal_v<T1> && IsDiagonal_v<T2> ) > >
+                                  !( IsDiagonal_v<T1> && IsDiagonal_v<T2> ) &&
+                                  !( IsUniform_v<T1> && IsUniform_v<T2> ) &&
+                                  !( IsZero_v<T1> || IsZero_v<T2> ) > >
 {
    using Type = SymmetricMatrix< typename SubTraitEval2<T1,T2>::Type >;
 };
@@ -800,8 +768,12 @@ struct SubTraitEval1< T1, T2
 /*! \cond BLAZE_INTERNAL */
 template< typename T1, typename T2 >
 struct SchurTraitEval1< T1, T2
-                      , EnableIf_t< IsSymmetric_v<T1> && !IsDiagonal_v<T1> &&
-                                    IsSymmetric_v<T2> && !IsDiagonal_v<T2> > >
+                      , EnableIf_t< IsMatrix_v<T1> &&
+                                    IsMatrix_v<T2> &&
+                                    ( IsSymmetric_v<T1> && IsSymmetric_v<T2> ) &&
+                                    !( IsDiagonal_v<T1> || IsDiagonal_v<T2> ) &&
+                                    !( IsUniform_v<T1> && IsUniform_v<T2> ) &&
+                                    !( IsZero_v<T1> || IsZero_v<T2> ) > >
 {
    using Type = SymmetricMatrix< typename SchurTraitEval2<T1,T2>::Type >;
 };
@@ -821,12 +793,45 @@ struct SchurTraitEval1< T1, T2
 /*! \cond BLAZE_INTERNAL */
 template< typename T1, typename T2 >
 struct MultTraitEval1< T1, T2
-                     , EnableIf_t< ( IsSymmetric_v<T1> && !IsDiagonal_v<T1> && IsNumeric_v<T2> ) ||
-                                   ( IsNumeric_v<T1> && IsSymmetric_v<T2> && !IsDiagonal_v<T2> ) ||
-                                   ( IsSymmetric_v<T1> && !IsDiagonal_v<T1> && IsIdentity_v<T2> ) ||
-                                   ( IsIdentity_v<T1> && IsSymmetric_v<T2> && !IsDiagonal_v<T2> ) > >
+                     , EnableIf_t< IsMatrix_v<T1> &&
+                                   IsScalar_v<T2> &&
+                                   ( IsSymmetric_v<T1> && !IsDiagonal_v<T1> && !IsUniform_v<T1> ) > >
 {
    using Type = SymmetricMatrix< typename MultTraitEval2<T1,T2>::Type >;
+};
+
+template< typename T1, typename T2 >
+struct MultTraitEval1< T1, T2
+                     , EnableIf_t< IsScalar_v<T1> &&
+                                   IsMatrix_v<T2> &&
+                                   ( IsSymmetric_v<T2> && !IsDiagonal_v<T2> && !IsUniform_v<T2> ) > >
+{
+   using Type = SymmetricMatrix< typename MultTraitEval2<T1,T2>::Type >;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  KRONTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename T1, typename T2 >
+struct KronTraitEval1< T1, T2
+                     , EnableIf_t< IsMatrix_v<T1> &&
+                                   IsMatrix_v<T2> &&
+                                   ( IsSymmetric_v<T1> && IsSymmetric_v<T2> ) &&
+                                   !( IsDiagonal_v<T1> && IsDiagonal_v<T2> ) &&
+                                   !( IsUniform_v<T1> && IsUniform_v<T2> ) &&
+                                   !( IsZero_v<T1> || IsZero_v<T2> ) > >
+{
+   using Type = SymmetricMatrix< typename KronTraitEval2<T1,T2>::Type >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -844,7 +849,7 @@ struct MultTraitEval1< T1, T2
 /*! \cond BLAZE_INTERNAL */
 template< typename T1, typename T2 >
 struct DivTraitEval1< T1, T2
-                    , EnableIf_t< IsSymmetric_v<T1> && !IsDiagonal_v<T1> && IsNumeric_v<T2> > >
+                    , EnableIf_t< IsSymmetric_v<T1> && !IsDiagonal_v<T1> && IsScalar_v<T2> > >
 {
    using Type = SymmetricMatrix< typename DivTraitEval2<T1,T2>::Type >;
 };
@@ -894,16 +899,37 @@ struct BinaryMapTraitEval1< T1, T2, OP
 
 //=================================================================================================
 //
+//  REPEATTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename T, size_t R0, size_t R1 >
+struct RepeatTraitEval1< T, R0, R1, inf
+                       , EnableIf_t< R0 != inf && R1 != inf && R0 == R1 &&
+                                     IsSymmetric_v<T> > >
+{
+   using Type = SymmetricMatrix< typename RepeatTraitEval2<T,R0,R1,inf>::Type >;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
 //  DECLSYMTRAIT SPECIALIZATIONS
 //
 //=================================================================================================
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO, bool DF, bool NF >
-struct DeclSymTrait< SymmetricMatrix<MT,SO,DF,NF> >
+template< typename MT, bool SO, bool DF, bool SF >
+struct DeclSymTrait< SymmetricMatrix<MT,SO,DF,SF> >
 {
-   using Type = SymmetricMatrix<MT,SO,DF,NF>;
+   using Type = SymmetricMatrix<MT,SO,DF,SF>;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -919,10 +945,10 @@ struct DeclSymTrait< SymmetricMatrix<MT,SO,DF,NF> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO, bool DF, bool NF >
-struct DeclHermTrait< SymmetricMatrix<MT,SO,DF,NF> >
+template< typename MT, bool SO, bool DF, bool SF >
+struct DeclHermTrait< SymmetricMatrix<MT,SO,DF,SF> >
 {
-   using Type = HermitianMatrix<MT>;
+   using Type = HermitianMatrix<MT,SO,DF>;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -938,10 +964,48 @@ struct DeclHermTrait< SymmetricMatrix<MT,SO,DF,NF> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO, bool DF, bool NF >
-struct DeclLowTrait< SymmetricMatrix<MT,SO,DF,NF> >
+template< typename MT, bool SO, bool DF, bool SF >
+struct DeclLowTrait< SymmetricMatrix<MT,SO,DF,SF> >
 {
-   using Type = DiagonalMatrix<MT>;
+   using Type = DiagonalMatrix<MT,SO,DF>;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  DECLUNILOWTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, bool SO, bool DF, bool SF >
+struct DeclUniLowTrait< SymmetricMatrix<MT,SO,DF,SF> >
+{
+   using Type = IdentityMatrix< ElementType_t<MT>, SO >;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  DECLSTRLOWTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, bool SO, bool DF, bool SF >
+struct DeclStrLowTrait< SymmetricMatrix<MT,SO,DF,SF> >
+{
+   using Type = ZeroMatrix< ElementType_t<MT>, SO >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -957,10 +1021,48 @@ struct DeclLowTrait< SymmetricMatrix<MT,SO,DF,NF> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO, bool DF, bool NF >
-struct DeclUppTrait< SymmetricMatrix<MT,SO,DF,NF> >
+template< typename MT, bool SO, bool DF, bool SF >
+struct DeclUppTrait< SymmetricMatrix<MT,SO,DF,SF> >
 {
-   using Type = DiagonalMatrix<MT>;
+   using Type = DiagonalMatrix<MT,SO,DF>;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  DECLUNIUPPTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, bool SO, bool DF, bool SF >
+struct DeclUniUppTrait< SymmetricMatrix<MT,SO,DF,SF> >
+{
+   using Type = IdentityMatrix< ElementType_t<MT>, SO >;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  DECLSTRUPPTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, bool SO, bool DF, bool SF >
+struct DeclStrUppTrait< SymmetricMatrix<MT,SO,DF,SF> >
+{
+   using Type = ZeroMatrix< ElementType_t<MT>, SO >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -976,10 +1078,10 @@ struct DeclUppTrait< SymmetricMatrix<MT,SO,DF,NF> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO, bool DF, bool NF >
-struct DeclDiagTrait< SymmetricMatrix<MT,SO,DF,NF> >
+template< typename MT, bool SO, bool DF, bool SF >
+struct DeclDiagTrait< SymmetricMatrix<MT,SO,DF,SF> >
 {
-   using Type = DiagonalMatrix<MT>;
+   using Type = DiagonalMatrix<MT,SO,DF>;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -995,8 +1097,8 @@ struct DeclDiagTrait< SymmetricMatrix<MT,SO,DF,NF> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT1, bool SO1, bool DF1, bool NF1, typename MT2, bool SO2, bool DF2, bool NF2 >
-struct HighType< SymmetricMatrix<MT1,SO1,DF1,NF1>, SymmetricMatrix<MT2,SO2,DF2,NF2> >
+template< typename MT1, bool SO1, bool DF1, bool SF1, typename MT2, bool SO2, bool DF2, bool SF2 >
+struct HighType< SymmetricMatrix<MT1,SO1,DF1,SF1>, SymmetricMatrix<MT2,SO2,DF2,SF2> >
 {
    using Type = SymmetricMatrix< typename HighType<MT1,MT2>::Type >;
 };
@@ -1014,8 +1116,8 @@ struct HighType< SymmetricMatrix<MT1,SO1,DF1,NF1>, SymmetricMatrix<MT2,SO2,DF2,N
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT1, bool SO1, bool DF1, bool NF1, typename MT2, bool SO2, bool DF2, bool NF2 >
-struct LowType< SymmetricMatrix<MT1,SO1,DF1,NF1>, SymmetricMatrix<MT2,SO2,DF2,NF2> >
+template< typename MT1, bool SO1, bool DF1, bool SF1, typename MT2, bool SO2, bool DF2, bool SF2 >
+struct LowType< SymmetricMatrix<MT1,SO1,DF1,SF1>, SymmetricMatrix<MT2,SO2,DF2,SF2> >
 {
    using Type = SymmetricMatrix< typename LowType<MT1,MT2>::Type >;
 };
@@ -1035,8 +1137,11 @@ struct LowType< SymmetricMatrix<MT1,SO1,DF1,NF1>, SymmetricMatrix<MT2,SO2,DF2,NF
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, size_t I, size_t N >
 struct SubmatrixTraitEval1< MT, I, I, N, N
-                          , EnableIf_t< IsSymmetric_v<MT> &&
-                                        !IsDiagonal_v<MT> > >
+                          , EnableIf_t< I != inf && N != inf &&
+                                        IsSymmetric_v<MT> &&
+                                        !IsDiagonal_v<MT> &&
+                                        !IsUniform_v<MT> &&
+                                        !IsZero_v<MT> > >
 {
    using Type = SymmetricMatrix< typename SubmatrixTraitEval2<MT,I,I,N,N>::Type >;
 };

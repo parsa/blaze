@@ -3,7 +3,7 @@
 //  \file blaze/math/expressions/DVecScalarDivExpr.h
 //  \brief Header file for the dense vector/scalar division expression
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -45,12 +45,14 @@
 #include <blaze/math/Aliases.h>
 #include <blaze/math/constraints/DenseVector.h>
 #include <blaze/math/constraints/RequiresEvaluation.h>
+#include <blaze/math/constraints/Scalar.h>
 #include <blaze/math/constraints/TransposeFlag.h>
 #include <blaze/math/Exception.h>
 #include <blaze/math/expressions/Computation.h>
 #include <blaze/math/expressions/DenseVector.h>
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/expressions/VecScalarDivExpr.h>
+#include <blaze/math/shims/Invert.h>
 #include <blaze/math/shims/Serial.h>
 #include <blaze/math/SIMD.h>
 #include <blaze/math/traits/DivTrait.h>
@@ -60,25 +62,24 @@
 #include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsInvertible.h>
-#include <blaze/math/typetraits/IsMultExpr.h>
 #include <blaze/math/typetraits/IsPadded.h>
+#include <blaze/math/typetraits/IsScalar.h>
 #include <blaze/math/typetraits/IsTemporary.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
 #include <blaze/math/typetraits/UnderlyingBuiltin.h>
 #include <blaze/math/typetraits/UnderlyingElement.h>
-#include <blaze/math/typetraits/UnderlyingNumeric.h>
+#include <blaze/system/HostDevice.h>
 #include <blaze/system/Inline.h>
+#include <blaze/system/MacroDisable.h>
 #include <blaze/system/Thresholds.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/FloatingPoint.h>
-#include <blaze/util/constraints/Numeric.h>
 #include <blaze/util/constraints/SameType.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/FunctionTrace.h>
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsBuiltin.h>
-#include <blaze/util/typetraits/IsComplex.h>
 #include <blaze/util/typetraits/IsFloatingPoint.h>
 #include <blaze/util/typetraits/IsNumeric.h>
 
@@ -159,7 +160,12 @@ class DVecScalarDivExpr
 
  public:
    //**Type definitions****************************************************************************
-   using This          = DVecScalarDivExpr<VT,ST,TF>;  //!< Type of this DVecScalarDivExpr instance.
+   //! Type of this DVecScalarDivExpr instance.
+   using This = DVecScalarDivExpr<VT,ST,TF>;
+
+   //! Base type of this DVecScalarDivExpr instance.
+   using BaseType = VecScalarDivExpr< DenseVector<This,TF> >;
+
    using ResultType    = DivTrait_t<RT,ST>;            //!< Result type for expression template evaluations.
    using TransposeType = TransposeType_t<ResultType>;  //!< Transpose type for expression template evaluations.
    using ElementType   = ElementType_t<ResultType>;    //!< Resulting element type.
@@ -207,7 +213,7 @@ class DVecScalarDivExpr
       // \param iterator Iterator to the initial element.
       // \param scalar Scalar of the division expression.
       */
-      explicit inline ConstIterator( IteratorType iterator, RightOperand scalar )
+      inline ConstIterator( IteratorType iterator, RightOperand scalar )
          : iterator_( iterator )  // Iterator to the current element
          , scalar_  ( scalar   )  // Scalar of the division expression
       {}
@@ -219,7 +225,7 @@ class DVecScalarDivExpr
       // \param inc The increment of the iterator.
       // \return The incremented iterator.
       */
-      inline ConstIterator& operator+=( size_t inc ) {
+      inline BLAZE_DEVICE_CALLABLE ConstIterator& operator+=( size_t inc ) {
          iterator_ += inc;
          return *this;
       }
@@ -231,7 +237,7 @@ class DVecScalarDivExpr
       // \param dec The decrement of the iterator.
       // \return The decremented iterator.
       */
-      inline ConstIterator& operator-=( size_t dec ) {
+      inline BLAZE_DEVICE_CALLABLE ConstIterator& operator-=( size_t dec ) {
          iterator_ -= dec;
          return *this;
       }
@@ -242,7 +248,7 @@ class DVecScalarDivExpr
       //
       // \return Reference to the incremented iterator.
       */
-      inline ConstIterator& operator++() {
+      inline BLAZE_DEVICE_CALLABLE ConstIterator& operator++() {
          ++iterator_;
          return *this;
       }
@@ -253,8 +259,8 @@ class DVecScalarDivExpr
       //
       // \return The previous position of the iterator.
       */
-      inline const ConstIterator operator++( int ) {
-         return ConstIterator( iterator_++ );
+      inline BLAZE_DEVICE_CALLABLE const ConstIterator operator++( int ) {
+         return ConstIterator( iterator_++, scalar_ );
       }
       //*******************************************************************************************
 
@@ -263,7 +269,7 @@ class DVecScalarDivExpr
       //
       // \return Reference to the decremented iterator.
       */
-      inline ConstIterator& operator--() {
+      inline BLAZE_DEVICE_CALLABLE ConstIterator& operator--() {
          --iterator_;
          return *this;
       }
@@ -274,8 +280,8 @@ class DVecScalarDivExpr
       //
       // \return The previous position of the iterator.
       */
-      inline const ConstIterator operator--( int ) {
-         return ConstIterator( iterator_-- );
+      inline BLAZE_DEVICE_CALLABLE const ConstIterator operator--( int ) {
+         return ConstIterator( iterator_--, scalar_ );
       }
       //*******************************************************************************************
 
@@ -384,7 +390,7 @@ class DVecScalarDivExpr
       // \return The incremented iterator.
       */
       friend inline const ConstIterator operator+( const ConstIterator& it, size_t inc ) {
-         return ConstIterator( it.iterator_ + inc );
+         return ConstIterator( it.iterator_ + inc, it.scalar_ );
       }
       //*******************************************************************************************
 
@@ -396,7 +402,7 @@ class DVecScalarDivExpr
       // \return The incremented iterator.
       */
       friend inline const ConstIterator operator+( size_t inc, const ConstIterator& it ) {
-         return ConstIterator( it.iterator_ + inc );
+         return ConstIterator( it.iterator_ + inc, it.scalar_ );
       }
       //*******************************************************************************************
 
@@ -408,7 +414,7 @@ class DVecScalarDivExpr
       // \return The decremented iterator.
       */
       friend inline const ConstIterator operator-( const ConstIterator& it, size_t dec ) {
-         return ConstIterator( it.iterator_ - dec );
+         return ConstIterator( it.iterator_ - dec, it.scalar_ );
       }
       //*******************************************************************************************
 
@@ -441,7 +447,7 @@ class DVecScalarDivExpr
    // \param vector The left-hand side dense vector of the division expression.
    // \param scalar The right-hand side scalar of the division expression.
    */
-   explicit inline DVecScalarDivExpr( const VT& vector, ST scalar ) noexcept
+   inline DVecScalarDivExpr( const VT& vector, ST scalar ) noexcept
       : vector_( vector )  // Left-hand side dense vector of the division expression
       , scalar_( scalar )  // Right-hand side scalar of the division expression
    {}
@@ -602,15 +608,15 @@ class DVecScalarDivExpr
    // operand is a computation expression and requires an intermediate evaluation.
    */
    template< typename VT2 >  // Type of the target dense vector
-   friend inline EnableIf_t< UseAssign_v<VT2> >
-      assign( DenseVector<VT2,TF>& lhs, const DVecScalarDivExpr& rhs )
+   friend inline auto assign( DenseVector<VT2,TF>& lhs, const DVecScalarDivExpr& rhs )
+      -> EnableIf_t< UseAssign_v<VT2> >
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      assign( ~lhs, rhs.vector_ );
-      assign( ~lhs, (~lhs) / rhs.scalar_ );
+      assign( *lhs, rhs.vector_ );
+      assign( *lhs, (*lhs) / rhs.scalar_ );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -630,15 +636,15 @@ class DVecScalarDivExpr
    // operand is a computation expression and requires an intermediate evaluation.
    */
    template< typename VT2 >  // Type of the target sparse vector
-   friend inline EnableIf_t< UseAssign_v<VT2> >
-      assign( SparseVector<VT2,TF>& lhs, const DVecScalarDivExpr& rhs )
+   friend inline auto assign( SparseVector<VT2,TF>& lhs, const DVecScalarDivExpr& rhs )
+      -> EnableIf_t< UseAssign_v<VT2> >
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      assign( ~lhs, rhs.vector_ );
-      (~lhs) /= rhs.scalar_;
+      assign( *lhs, rhs.vector_ );
+      (*lhs) /= rhs.scalar_;
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -658,8 +664,8 @@ class DVecScalarDivExpr
    // operand is a computation expression and requires an intermediate evaluation.
    */
    template< typename VT2 >  // Type of the target dense vector
-   friend inline EnableIf_t< UseAssign_v<VT2> >
-      addAssign( DenseVector<VT2,TF>& lhs, const DVecScalarDivExpr& rhs )
+   friend inline auto addAssign( DenseVector<VT2,TF>& lhs, const DVecScalarDivExpr& rhs )
+      -> EnableIf_t< UseAssign_v<VT2> >
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -667,10 +673,10 @@ class DVecScalarDivExpr
       BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType, TF );
       BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       const ResultType tmp( serial( rhs ) );
-      addAssign( ~lhs, tmp );
+      addAssign( *lhs, tmp );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -694,8 +700,8 @@ class DVecScalarDivExpr
    // a computation expression and requires an intermediate evaluation.
    */
    template< typename VT2 >  // Type of the target dense vector
-   friend inline EnableIf_t< UseAssign_v<VT2> >
-      subAssign( DenseVector<VT2,TF>& lhs, const DVecScalarDivExpr& rhs )
+   friend inline auto subAssign( DenseVector<VT2,TF>& lhs, const DVecScalarDivExpr& rhs )
+      -> EnableIf_t< UseAssign_v<VT2> >
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -703,10 +709,10 @@ class DVecScalarDivExpr
       BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType, TF );
       BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       const ResultType tmp( serial( rhs ) );
-      subAssign( ~lhs, tmp );
+      subAssign( *lhs, tmp );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -730,8 +736,8 @@ class DVecScalarDivExpr
    // vector operand is a computation expression and requires an intermediate evaluation.
    */
    template< typename VT2 >  // Type of the target dense vector
-   friend inline EnableIf_t< UseAssign_v<VT2> >
-      multAssign( DenseVector<VT2,TF>& lhs, const DVecScalarDivExpr& rhs )
+   friend inline auto multAssign( DenseVector<VT2,TF>& lhs, const DVecScalarDivExpr& rhs )
+      -> EnableIf_t< UseAssign_v<VT2> >
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -739,10 +745,10 @@ class DVecScalarDivExpr
       BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType, TF );
       BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       const ResultType tmp( serial( rhs ) );
-      multAssign( ~lhs, tmp );
+      multAssign( *lhs, tmp );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -766,8 +772,8 @@ class DVecScalarDivExpr
    // is a computation expression and requires an intermediate evaluation.
    */
    template< typename VT2 >  // Type of the target dense vector
-   friend inline EnableIf_t< UseAssign_v<VT2> >
-      divAssign( DenseVector<VT2,TF>& lhs, const DVecScalarDivExpr& rhs )
+   friend inline auto divAssign( DenseVector<VT2,TF>& lhs, const DVecScalarDivExpr& rhs )
+      -> EnableIf_t< UseAssign_v<VT2> >
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -775,10 +781,10 @@ class DVecScalarDivExpr
       BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType, TF );
       BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       const ResultType tmp( serial( rhs ) );
-      divAssign( ~lhs, tmp );
+      divAssign( *lhs, tmp );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -802,15 +808,15 @@ class DVecScalarDivExpr
    // expression specific parallel evaluation strategy is selected.
    */
    template< typename VT2 >  // Type of the target dense vector
-   friend inline EnableIf_t< UseSMPAssign_v<VT2> >
-      smpAssign( DenseVector<VT2,TF>& lhs, const DVecScalarDivExpr& rhs )
+   friend inline auto smpAssign( DenseVector<VT2,TF>& lhs, const DVecScalarDivExpr& rhs )
+      -> EnableIf_t< UseSMPAssign_v<VT2> >
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      smpAssign( ~lhs, rhs.vector_ );
-      smpAssign( ~lhs, (~lhs) / rhs.scalar_ );
+      smpAssign( *lhs, rhs.vector_ );
+      smpAssign( *lhs, (*lhs) / rhs.scalar_ );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -830,15 +836,15 @@ class DVecScalarDivExpr
    // expression specific parallel evaluation strategy is selected.
    */
    template< typename VT2 >  // Type of the target sparse vector
-   friend inline EnableIf_t< UseSMPAssign_v<VT2> >
-      smpAssign( SparseVector<VT2,TF>& lhs, const DVecScalarDivExpr& rhs )
+   friend inline auto smpAssign( SparseVector<VT2,TF>& lhs, const DVecScalarDivExpr& rhs )
+      -> EnableIf_t< UseSMPAssign_v<VT2> >
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      smpAssign( ~lhs, rhs.vector_ );
-      (~lhs) /= rhs.scalar_;
+      smpAssign( *lhs, rhs.vector_ );
+      (*lhs) /= rhs.scalar_;
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -858,8 +864,8 @@ class DVecScalarDivExpr
    // the expression specific parallel evaluation strategy is selected.
    */
    template< typename VT2 >  // Type of the target dense vector
-   friend inline EnableIf_t< UseSMPAssign_v<VT2> >
-      smpAddAssign( DenseVector<VT2,TF>& lhs, const DVecScalarDivExpr& rhs )
+   friend inline auto smpAddAssign( DenseVector<VT2,TF>& lhs, const DVecScalarDivExpr& rhs )
+      -> EnableIf_t< UseSMPAssign_v<VT2> >
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -867,10 +873,10 @@ class DVecScalarDivExpr
       BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType, TF );
       BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       const ResultType tmp( rhs );
-      smpAddAssign( ~lhs, tmp );
+      smpAddAssign( *lhs, tmp );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -894,8 +900,8 @@ class DVecScalarDivExpr
    // expression specific parallel evaluation strategy is selected.
    */
    template< typename VT2 >  // Type of the target dense vector
-   friend inline EnableIf_t< UseSMPAssign_v<VT2> >
-      smpSubAssign( DenseVector<VT2,TF>& lhs, const DVecScalarDivExpr& rhs )
+   friend inline auto smpSubAssign( DenseVector<VT2,TF>& lhs, const DVecScalarDivExpr& rhs )
+      -> EnableIf_t< UseSMPAssign_v<VT2> >
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -903,10 +909,10 @@ class DVecScalarDivExpr
       BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType, TF );
       BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       const ResultType tmp( rhs );
-      smpSubAssign( ~lhs, tmp );
+      smpSubAssign( *lhs, tmp );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -930,8 +936,8 @@ class DVecScalarDivExpr
    // expression specific parallel evaluation strategy is selected.
    */
    template< typename VT2 >  // Type of the target dense vector
-   friend inline EnableIf_t< UseSMPAssign_v<VT2> >
-      smpMultAssign( DenseVector<VT2,TF>& lhs, const DVecScalarDivExpr& rhs )
+   friend inline auto smpMultAssign( DenseVector<VT2,TF>& lhs, const DVecScalarDivExpr& rhs )
+      -> EnableIf_t< UseSMPAssign_v<VT2> >
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -939,10 +945,10 @@ class DVecScalarDivExpr
       BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType, TF );
       BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       const ResultType tmp( rhs );
-      smpMultAssign( ~lhs, tmp );
+      smpMultAssign( *lhs, tmp );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -966,8 +972,8 @@ class DVecScalarDivExpr
    // expression specific parallel evaluation strategy is selected.
    */
    template< typename VT2 >  // Type of the target dense vector
-   friend inline EnableIf_t< UseSMPAssign_v<VT2> >
-      smpDivAssign( DenseVector<VT2,TF>& lhs, const DVecScalarDivExpr& rhs )
+   friend inline auto smpDivAssign( DenseVector<VT2,TF>& lhs, const DVecScalarDivExpr& rhs )
+      -> EnableIf_t< UseSMPAssign_v<VT2> >
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -975,10 +981,10 @@ class DVecScalarDivExpr
       BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType, TF );
       BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       const ResultType tmp( rhs );
-      smpDivAssign( ~lhs, tmp );
+      smpDivAssign( *lhs, tmp );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -991,7 +997,7 @@ class DVecScalarDivExpr
    /*! \cond BLAZE_INTERNAL */
    BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( VT );
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( VT, TF );
-   BLAZE_CONSTRAINT_MUST_BE_NUMERIC_TYPE( ST );
+   BLAZE_CONSTRAINT_MUST_BE_SCALAR_TYPE( ST );
    BLAZE_CONSTRAINT_MUST_NOT_BE_FLOATING_POINT_TYPE( ST );
    BLAZE_CONSTRAINT_MUST_NOT_BE_FLOATING_POINT_TYPE( ElementType );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ST, RightOperand );
@@ -1012,30 +1018,75 @@ class DVecScalarDivExpr
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Auxiliary helper struct for the dense vector/scalar division operator.
-// \ingroup math_traits
+// \ingroup dense_vector
 */
-template< typename VT  // Type of the left-hand side dense vector
-        , typename ST  // Type of the right-hand side scalar
-        , bool TF >    // Transpose flag
-struct DVecScalarDivExprHelper
-{
- private:
-   //**********************************************************************************************
-   using ScalarType = If_t< IsFloatingPoint_v< UnderlyingBuiltin_t<VT> > ||
-                            IsFloatingPoint_v< UnderlyingBuiltin_t<ST> >
-                          , If_t< IsComplex_v< UnderlyingNumeric_t<VT> > && IsBuiltin_v<ST>
-                                , DivTrait_t< UnderlyingBuiltin_t<VT>, ST >
-                                , DivTrait_t< UnderlyingNumeric_t<VT>, ST > >
-                          , ST >;
-   //**********************************************************************************************
+template< typename VT    // Type of the left-hand side dense vector
+        , typename ST >  // Type of the right-hand side scalar
+using DVecScalarDivExprHelper_t =
+   If_t< IsFloatingPoint_v< UnderlyingBuiltin_t<VT> > ||
+         IsFloatingPoint_v< UnderlyingBuiltin_t<ST> >
+       , If_t< IsBuiltin_v<ST>
+             , DivTrait_t< UnderlyingBuiltin_t<VT>, ST >
+             , decltype( inv( std::declval<ST>() ) ) >
+       , ST >;
+/*! \endcond */
+//*************************************************************************************************
 
- public:
-   //**********************************************************************************************
-   using Type = If_t< IsInvertible_v<ScalarType>
-                    , DVecScalarMultExpr<VT,ScalarType,TF>
-                    , DVecScalarDivExpr<VT,ScalarType,TF> >;
-   //**********************************************************************************************
-};
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Backend implementation of the division between a dense vector and a scalar value
+//        (\f$ \vec{a}=\vec{b}/s \f$).
+// \ingroup dense_vector
+//
+// \param vec The left-hand side dense vector for the division.
+// \param scalar The right-hand side scalar value for the division.
+// \return The scaled result vector.
+//
+// This function implements the default treatment of the dense vector/scalar division.
+*/
+template< typename VT  // Type of the left-hand side sparse vector
+        , bool TF      // Transpose flag of the left-hand side sparse vector
+        , typename ST  // Type of the right-hand side scalar
+        , EnableIf_t< !IsInvertible_v< DVecScalarDivExprHelper_t<VT,ST> > >* = nullptr >
+inline decltype(auto) dvecscalardiv( const DenseVector<VT,TF>& vec, ST scalar )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   using ScalarType = DVecScalarDivExprHelper_t<VT,ST>;
+   using ReturnType = const DVecScalarDivExpr<VT,ScalarType,TF>;
+
+   return ReturnType( *vec, scalar );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Backend implementation of the division between a dense vector and a scalar value
+//        (\f$ \vec{a}=\vec{b}/s \f$).
+// \ingroup dense_vector
+//
+// \param vec The left-hand side dense vector for the division.
+// \param scalar The right-hand side scalar value for the division.
+// \return The scaled result vector.
+//
+// This function implements a performance optimized treatment of the dense vector/scalar division.
+*/
+template< typename VT  // Type of the left-hand side sparse vector
+        , bool TF      // Transpose flag of the left-hand side sparse vector
+        , typename ST  // Type of the right-hand side scalar
+        , EnableIf_t< IsInvertible_v< DVecScalarDivExprHelper_t<VT,ST> > >* = nullptr >
+inline decltype(auto) dvecscalardiv( const DenseVector<VT,TF>& vec, ST scalar )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   using ScalarType = DVecScalarDivExprHelper_t<VT,ST>;
+   using ReturnType = const DVecScalarMultExpr<VT,ScalarType,TF>;
+
+   return ReturnType( *vec, inv(scalar) );
+}
 /*! \endcond */
 //*************************************************************************************************
 
@@ -1067,126 +1118,15 @@ struct DVecScalarDivExprHelper
 template< typename VT  // Type of the left-hand side dense vector
         , typename ST  // Type of the right-hand side scalar
         , bool TF      // Transpose flag
-        , EnableIf_t< IsNumeric_v<ST> >* = nullptr >
+        , EnableIf_t< IsScalar_v<ST> >* = nullptr >
 inline decltype(auto) operator/( const DenseVector<VT,TF>& vec, ST scalar )
 {
    BLAZE_FUNCTION_TRACE;
 
-   BLAZE_USER_ASSERT( scalar != ST(0), "Division by zero detected" );
+   BLAZE_USER_ASSERT( scalar != ST{}, "Division by zero detected" );
 
-   using ReturnType = typename DVecScalarDivExprHelper<VT,ST,TF>::Type;
-   using ScalarType = RightOperand_t<ReturnType>;
-
-   if( IsMultExpr_v<ReturnType> ) {
-      return ReturnType( ~vec, ScalarType(1)/ScalarType(scalar) );
-   }
-   else {
-      return ReturnType( ~vec, scalar );
-   }
+   return dvecscalardiv( *vec, scalar );
 }
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  GLOBAL RESTRUCTURING BINARY ARITHMETIC OPERATORS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Multiplication operator for the multiplication of a dense vector-scalar division
-//        expression and a scalar value (\f$ \vec{a}=(\vec{b}/s1)*s2 \f$).
-// \ingroup dense_vector
-//
-// \param vec The left-hand side dense vector-scalar division.
-// \param scalar The right-hand side scalar value for the multiplication.
-// \return The scaled result vector.
-//
-// This operator implements a performance optimized treatment of the multiplication of a
-// dense vector-scalar division expression and a scalar value.
-*/
-template< typename VT   // Type of the dense vector of the left-hand side expression
-        , typename ST1  // Type of the scalar of the left-hand side expression
-        , bool TF       // Transpose flag of the dense vector
-        , typename ST2  // Type of the right-hand side scalar
-        , EnableIf_t< IsNumeric_v<ST2> && ( IsInvertible_v<ST1> || IsInvertible_v<ST2> ) >* = nullptr >
-inline decltype(auto) operator*( const DVecScalarDivExpr<VT,ST1,TF>& vec, ST2 scalar )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   return vec.leftOperand() * ( scalar / vec.rightOperand() );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Multiplication operator for the multiplication of a scalar value and a dense vector-
-//        scalar division expression (\f$ \vec{a}=s2*(\vec{b}/s1) \f$).
-// \ingroup dense_vector
-//
-// \param scalar The left-hand side scalar value for the multiplication.
-// \param vec The right-hand side dense vector-scalar division.
-// \return The scaled result vector.
-//
-// This operator implements a performance optimized treatment of the multiplication of a
-// scalar value and a dense vector-scalar division expression.
-*/
-template< typename ST1  // Type of the left-hand side scalar
-        , typename VT   // Type of the dense vector of the right-hand side expression
-        , typename ST2  // Type of the scalar of the right-hand side expression
-        , bool TF       // Transpose flag of the dense vector
-        , EnableIf_t< IsNumeric_v<ST1> && ( IsInvertible_v<ST1> || IsInvertible_v<ST2> ) >* = nullptr >
-inline decltype(auto) operator*( ST1 scalar, const DVecScalarDivExpr<VT,ST2,TF>& vec )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   return vec.leftOperand() * ( scalar / vec.rightOperand() );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Division operator for the division of a dense vector-scalar division expression
-//        and a scalar value (\f$ \vec{a}=(\vec{b}/s1)/s2 \f$).
-// \ingroup dense_vector
-//
-// \param vec The left-hand side dense vector-scalar division.
-// \param scalar The right-hand side scalar value for the division.
-// \return The scaled result vector.
-//
-// This operator implements a performance optimized treatment of the division of a dense
-// vector-scalar division expression and a scalar value.
-*/
-template< typename VT   // Type of the dense vector of the left-hand side expression
-        , typename ST1  // Type of the scalar of the left-hand side expression
-        , bool TF       // Transpose flag of the dense vector
-        , typename ST2  // Type of the right-hand side scalar
-        , EnableIf_t< IsNumeric_v<ST2> >* = nullptr >
-inline decltype(auto) operator/( const DVecScalarDivExpr<VT,ST1,TF>& vec, ST2 scalar )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   BLAZE_USER_ASSERT( scalar != ST2(0), "Division by zero detected" );
-
-   using MultType   = MultTrait_t<ST1,ST2>;
-   using ReturnType = typename DVecScalarDivExprHelper<VT,MultType,TF>::Type;
-   using ScalarType = RightOperand_t<ReturnType>;
-
-   if( IsMultExpr_v<ReturnType> ) {
-      return ReturnType( vec.leftOperand(), ScalarType(1)/( vec.rightOperand() * scalar ) );
-   }
-   else {
-      return ReturnType( vec.leftOperand(), vec.rightOperand() * scalar );
-   }
-}
-/*! \endcond */
 //*************************************************************************************************
 
 

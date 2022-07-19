@@ -3,7 +3,7 @@
 //  \file blaze/util/mpl/If.h
 //  \brief Header file for the If class template
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -53,14 +53,13 @@ namespace blaze {
 // evaluates to \a true, the member type definition \a Type is set to \a T1. In case
 // \a Condition evaluates to \a false, \a Type is set to \a T2.
 */
-template< bool Condition  // Compile time selection
-        , typename T1     // Type to be selected if Condition=true
-        , typename T2 >   // Type to be selected if Condition=false
+template< bool Condition >  // Compile time selection
 struct If
 {
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
+   template< typename T1, typename T2 >
    using Type = T1;  //!< The selected type.
    /*! \endcond */
    //**********************************************************************************************
@@ -77,12 +76,12 @@ struct If
 // constant expression evaluates to \a false. The member type definition is set to the second
 // given type \a T2.
 */
-template< typename T1    // Type not to be selected
-        , typename T2 >  // Type to be selected
-struct If<false,T1,T2>
+template<>
+struct If<false>
 {
  public:
    //**********************************************************************************************
+   template< typename T1, typename T2 >
    using Type = T2;  //!< The selected type.
    //**********************************************************************************************
 };
@@ -91,10 +90,10 @@ struct If<false,T1,T2>
 
 
 //*************************************************************************************************
-/*!\brief Auxiliary alias declaration for the If class template.
+/*!\brief Auxiliary alias template for the If class template.
 // \ingroup util
 //
-// The If_t alias declaration provides a convenient shortcut to access the nested \a Type of
+// The If_t alias template provides a convenient shortcut to access the nested \a Type of
 // the If class template. For instance, given the types \a C, \a T1, and \a T2 the following
 // two type definitions are identical:
 
@@ -106,7 +105,7 @@ struct If<false,T1,T2>
 template< bool Condition  // Compile time selection
         , typename T1     // Type to be selected if Condition=true
         , typename T2 >   // Type to be selected if Condition=false
-using If_t = typename If<Condition,T1,T2>::Type;
+using If_t = typename If<Condition>::template Type<T1,T2>;
 //*************************************************************************************************
 
 } // namespace blaze

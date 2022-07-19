@@ -3,7 +3,7 @@
 //  \file blaze/math/traits/ReduceTrait.h
 //  \brief Header file for the reduce trait
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -42,9 +42,10 @@
 
 #include <utility>
 #include <blaze/math/Aliases.h>
-#include <blaze/util/InvalidType.h>
+#include <blaze/math/ReductionFlag.h>
+#include <blaze/math/typetraits/IsMatrix.h>
+#include <blaze/math/typetraits/IsVector.h>
 #include <blaze/util/Types.h>
-#include <blaze/util/typetraits/Decay.h>
 
 
 namespace blaze {
@@ -57,40 +58,22 @@ namespace blaze {
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename, typename, size_t... > struct ReduceTrait;
+template< typename, typename, ReductionFlag... > struct ReduceTrait;
 template< typename, typename, typename = void > struct TotalReduceTraitEval1;
 template< typename, typename, typename = void > struct TotalReduceTraitEval2;
-template< typename, typename, size_t, typename = void > struct PartialReduceTraitEval1;
-template< typename, typename, size_t, typename = void > struct PartialReduceTraitEval2;
+template< typename, typename, ReductionFlag, typename = void > struct PartialReduceTraitEval1;
+template< typename, typename, ReductionFlag, typename = void > struct PartialReduceTraitEval2;
 /*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< size_t RF, typename T, typename OP >
-auto evalReduceTrait( T&, OP )
-   -> typename PartialReduceTraitEval1<T,OP,RF>::Type;
+template< ReductionFlag RF, typename T, typename OP >
+auto evalReduceTrait( const volatile T&, OP ) -> PartialReduceTraitEval1<T,OP,RF>;
 
 template< typename T, typename OP >
-auto evalReduceTrait( T&, OP )
-   -> typename TotalReduceTraitEval1<T,OP>::Type;
-
-template< size_t RF, typename T, typename OP >
-auto evalReduceTrait( const T&, OP )
-   -> typename ReduceTrait<T,OP,RF>::Type;
-
-template< typename T, typename OP >
-auto evalReduceTrait( const T&, OP )
-   -> typename ReduceTrait<T,OP>::Type;
-
-template< size_t RF, typename T, typename OP >
-auto evalReduceTrait( const volatile T&, OP )
-   -> typename ReduceTrait<T,OP,RF>::Type;
-
-template< typename T, typename OP >
-auto evalReduceTrait( const volatile T&, OP )
-   -> typename ReduceTrait<T,OP>::Type;
+auto evalReduceTrait( const volatile T&, OP ) -> TotalReduceTraitEval1<T,OP>;
 /*! \endcond */
 //*************************************************************************************************
 
@@ -104,9 +87,8 @@ auto evalReduceTrait( const volatile T&, OP )
 // The ReduceTrait class template offers the possibility to select the resulting data type of
 // a generic reduction operation on the given type \a T. ReduceTrait defines the nested type
 // \a Type, which represents the resulting data type of the reduction operation. In case no
-// result type can be determined for the type \a T, the resulting data type \a Type is set to
-// \a INVALID_TYPE. Note that \c const and \c volatile qualifiers and reference modifiers are
-// generally ignored.
+// result type can be determined for the type \a T, there is no nested type \a Type. Note that
+// \c const and \c volatile qualifiers and reference modifiers are generally ignored.
 //
 //
 // \n \section reducetrait_specializations Creating custom specializations
@@ -128,30 +110,24 @@ auto evalReduceTrait( const volatile T&, OP )
 
    \code
    template< typename T, bool SO, typename OP >
-   struct ReduceTrait< DynamicMatrix<T,SO>, OP, 0UL >
+   struct ReduceTrait< DynamicMatrix<T,SO>, OP, columnwise >
    {
       using Type = DynamicVector<T,rowVector>;
    };
 
    template< typename T, bool SO, typename OP >
-   struct ReduceTrait< DynamicMatrix<T,SO>, OP, 1UL >
+   struct ReduceTrait< DynamicMatrix<T,SO>, OP, rowwise >
    {
       using Type = DynamicVector<T,columnVector>;
    };
    \endcode
 */
-template< typename T      // Type of the operand
-        , typename OP     // Type of the reduction operation
-        , size_t... RF >  // Reduction flag
+template< typename T             // Type of the operand
+        , typename OP            // Type of the reduction operation
+        , ReductionFlag... RF >  // Reduction flag
 struct ReduceTrait
-{
- public:
-   //**********************************************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   using Type = decltype( evalReduceTrait<RF...>( std::declval<T&>(), std::declval<OP>() ) );
-   /*! \endcond */
-   //**********************************************************************************************
-};
+   : public decltype( evalReduceTrait<RF...>( std::declval<T&>(), std::declval<OP>() ) )
+{};
 //*************************************************************************************************
 
 
@@ -168,9 +144,9 @@ struct ReduceTrait
    using Type2 = blaze::ReduceTrait_t<T,OP>;
    \endcode
 */
-template< typename T      // Type of the operand
-        , typename OP     // Type of the reduction operation
-        , size_t... RF >  // Reduction flag
+template< typename T             // Type of the operand
+        , typename OP            // Type of the reduction operation
+        , ReductionFlag... RF >  // Reduction flag
 using ReduceTrait_t = typename ReduceTrait<T,OP,RF...>::Type;
 //*************************************************************************************************
 
@@ -184,12 +160,8 @@ template< typename T   // Type of the operand
         , typename OP  // Type of the custom operation
         , typename >   // Restricting condition
 struct TotalReduceTraitEval1
-{
- public:
-   //**********************************************************************************************
-   using Type = typename TotalReduceTraitEval2<T,OP>::Type;
-   //**********************************************************************************************
-};
+   : public TotalReduceTraitEval2<T,OP>
+{};
 /*! \endcond */
 //*************************************************************************************************
 
@@ -203,10 +175,24 @@ template< typename T   // Type of the operand
         , typename OP  // Type of the custom operation
         , typename >   // Restricting condition
 struct TotalReduceTraitEval2
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Specialization of the TotalReduceTraitEval2 class template for vectors and matrices.
+// \ingroup math_traits
+*/
+template< typename T     // Type of the operand
+        , typename OP >  // Type of the custom operation
+struct TotalReduceTraitEval2< T, OP, EnableIf_t< IsVector_v<T> || IsMatrix_v<T> > >
 {
  public:
    //**********************************************************************************************
-   using Type = ElementType_t<T>;
+   using Type = decltype( std::declval<OP>()( std::declval< ElementType_t<T> >()
+                                            , std::declval< ElementType_t<T> >() ) );
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -218,17 +204,13 @@ struct TotalReduceTraitEval2
 /*!\brief Auxiliary helper struct for the ReduceTrait type trait.
 // \ingroup math_traits
 */
-template< typename T   // Type of the operand
-        , typename OP  // Type of the custom operation
-        , size_t RF    // Reduction flag
-        , typename >   // Restricting condition
+template< typename T        // Type of the operand
+        , typename OP       // Type of the custom operation
+        , ReductionFlag RF  // Reduction flag
+        , typename >        // Restricting condition
 struct PartialReduceTraitEval1
-{
- public:
-   //**********************************************************************************************
-   using Type = typename PartialReduceTraitEval2<T,OP,RF>::Type;
-   //**********************************************************************************************
-};
+   : public PartialReduceTraitEval2<T,OP,RF>
+{};
 /*! \endcond */
 //*************************************************************************************************
 
@@ -238,17 +220,12 @@ struct PartialReduceTraitEval1
 /*!\brief Auxiliary helper struct for the ReduceTrait type trait.
 // \ingroup math_traits
 */
-template< typename T   // Type of the operand
-        , typename OP  // Type of the custom operation
-        , size_t RF    // Reduction flag
-        , typename >   // Restricting condition
+template< typename T        // Type of the operand
+        , typename OP       // Type of the custom operation
+        , ReductionFlag RF  // Reduction flag
+        , typename >        // Restricting condition
 struct PartialReduceTraitEval2
-{
- public:
-   //**********************************************************************************************
-   using Type = INVALID_TYPE;
-   //**********************************************************************************************
-};
+{};
 /*! \endcond */
 //*************************************************************************************************
 

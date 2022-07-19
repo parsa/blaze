@@ -3,7 +3,7 @@
 //  \file blazemark/flens/init/GeCCSMatrix.h
 //  \brief Header file for the FLENS CCS matrix initialization functions
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -110,8 +110,8 @@ void init( ::flens::GeCCSMatrix< ::flens::CCS<Type,::flens::IndexBaseZero<IndexT
    else
    {
       for( IndexType j=tmp.firstCol(); j<=tmp.lastCol(); ++j ) {
-         ::blaze::Indices indices( 0UL, columns-1UL, nonzeros );
-         for( ::blaze::Indices::ConstIterator it=indices.begin(); it!=indices.end(); ++it ) {
+         ::blaze::Indices<size_t> indices( 0UL, columns-1UL, nonzeros );
+         for( auto it=indices.begin(); it!=indices.end(); ++it ) {
             tmp(*it,j) += ::blaze::rand<Type>( 0, 10 );
          }
       }

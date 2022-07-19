@@ -3,7 +3,7 @@
 //  \file blaze/math/typetraits/IsExpression.h
 //  \brief Header file for the IsExpression type trait class
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -42,8 +42,7 @@
 
 #include <utility>
 #include <blaze/math/expressions/Expression.h>
-#include <blaze/util/FalseType.h>
-#include <blaze/util/TrueType.h>
+#include <blaze/util/IntegralConstant.h>
 
 
 namespace blaze {
@@ -56,28 +55,13 @@ namespace blaze {
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Auxiliary helper struct for the IsExpression type trait.
+/*!\brief Auxiliary helper functions for the IsExpression type trait.
 // \ingroup math_type_traits
 */
-template< typename T >
-struct IsExpressionHelper
-{
- private:
-   //**********************************************************************************************
-   template< typename U >
-   static TrueType test( const Expression<U>& );
+template< typename U >
+TrueType isExpression_backend( const volatile Expression<U>* );
 
-   template< typename U >
-   static TrueType test( const volatile Expression<U>& );
-
-   static FalseType test( ... );
-   //**********************************************************************************************
-
- public:
-   //**********************************************************************************************
-   using Type = decltype( test( std::declval<T&>() ) );
-   //**********************************************************************************************
-};
+FalseType isExpression_backend( ... );
 /*! \endcond */
 //*************************************************************************************************
 
@@ -95,14 +79,27 @@ struct IsExpressionHelper
 */
 template< typename T >
 struct IsExpression
-   : public IsExpressionHelper<T>::Type
+   : public decltype( isExpression_backend( std::declval<T*>() ) )
 {};
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Specialization of the IsExpression type trait for references.
+// \ingroup math_type_traits
+*/
+template< typename T >
+struct IsExpression<T&>
+   : public FalseType
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Auxiliary variable template for the IsExpression type trait.
-// \ingroup type_traits
+// \ingroup math_type_traits
 //
 // The IsExpression_v variable template provides a convenient shortcut to access the nested
 // \a value of the IsExpression class template. For instance, given the type \a T the

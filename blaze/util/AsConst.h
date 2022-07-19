@@ -3,7 +3,7 @@
 //  \file blaze/util/AsConst.h
 //  \brief Header file for the as_const function template
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -61,7 +61,7 @@ namespace blaze {
 // This function adds the 'const' qualifier to the given lvalue.
 */
 template< typename T >
-inline constexpr AddConst_t<T>& as_const( T& v ) noexcept
+constexpr AddConst_t<T>& as_const( T& v ) noexcept
 {
    return v;
 }

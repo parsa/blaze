@@ -3,7 +3,7 @@
 //  \file blaze/math/functors/Clear.h
 //  \brief Header file for the Clear functor
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -41,6 +41,7 @@
 //*************************************************************************************************
 
 #include <blaze/math/shims/Clear.h>
+#include <blaze/system/HostDevice.h>
 #include <blaze/system/Inline.h>
 
 
@@ -59,20 +60,13 @@ namespace blaze {
 struct Clear
 {
    //**********************************************************************************************
-   /*!\brief Default constructor of the Clear functor.
-   */
-   explicit inline Clear()
-   {}
-   //**********************************************************************************************
-
-   //**********************************************************************************************
    /*!\brief Returns the result of the clear() function for the given object/value.
    //
    // \param a The object/value to be cleared.
    // \return void
    */
    template< typename T >
-   BLAZE_ALWAYS_INLINE void operator()( T& a ) const
+   BLAZE_ALWAYS_INLINE BLAZE_DEVICE_CALLABLE void operator()( T& a ) const
    {
       clear( a );
    }

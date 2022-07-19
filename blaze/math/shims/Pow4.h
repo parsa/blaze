@@ -3,7 +3,7 @@
 //  \file blaze/math/shims/Pow4.h
 //  \brief Header file for the pow4 shim
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -41,7 +41,11 @@
 //*************************************************************************************************
 
 #include <blaze/math/shims/Pow2.h>
+#include <blaze/math/typetraits/IsScalar.h>
+#include <blaze/math/typetraits/IsSIMDPack.h>
 #include <blaze/system/Inline.h>
+#include <blaze/util/EnableIf.h>
+
 
 
 namespace blaze {
@@ -62,7 +66,8 @@ namespace blaze {
 // The \a pow4 shim represents an abstract interface for quadrupling a value/object of any
 // given data type. For values of built-in data type this results in a plain multiplication.
 */
-template< typename T >
+template< typename T
+        , EnableIf_t< IsScalar_v<T> || IsSIMDPack_v<T> >* = nullptr >
 BLAZE_ALWAYS_INLINE constexpr decltype(auto) pow4( const T& a ) noexcept( noexcept( pow2( pow2( a ) ) ) )
 {
    return pow2( pow2( a ) );

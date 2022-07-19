@@ -3,7 +3,7 @@
 //  \file src/blaze/SVecSVecCross.cpp
 //  \brief Source file for the Blaze sparse vector/sparse vector cross product kernel
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -92,7 +92,7 @@ double svecsveccross( size_t N, size_t F, size_t steps )
    }
 
    for( size_t i=0UL; i<N; ++i ) {
-      c[i] = a[i] % b[i];
+      c[i] = noalias( a[i] % b[i] );
    }
 
    for( size_t rep=0UL; rep<reps; ++rep )
@@ -100,7 +100,7 @@ double svecsveccross( size_t N, size_t F, size_t steps )
       timer.start();
       for( size_t step=0UL, i=0UL; step<steps; ++step, ++i ) {
          if( i == N ) i = 0UL;
-         c[i] = a[i] % b[i];
+         c[i] = noalias( a[i] % b[i] );
       }
       timer.end();
 

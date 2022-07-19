@@ -3,7 +3,7 @@
 //  \file blaze/math/adaptors/diagonalmatrix/Sparse.h
 //  \brief DiagonalMatrix specialization for sparse matrices
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -45,19 +45,20 @@
 #include <blaze/math/adaptors/diagonalmatrix/BaseTemplate.h>
 #include <blaze/math/adaptors/diagonalmatrix/DiagonalProxy.h>
 #include <blaze/math/Aliases.h>
-#include <blaze/math/constraints/Expression.h>
+#include <blaze/math/constraints/Computation.h>
 #include <blaze/math/constraints/Hermitian.h>
 #include <blaze/math/constraints/Lower.h>
 #include <blaze/math/constraints/Resizable.h>
 #include <blaze/math/constraints/SparseMatrix.h>
 #include <blaze/math/constraints/StorageOrder.h>
 #include <blaze/math/constraints/Symmetric.h>
+#include <blaze/math/constraints/Transformation.h>
 #include <blaze/math/constraints/Upper.h>
+#include <blaze/math/constraints/View.h>
 #include <blaze/math/dense/InitializerMatrix.h>
 #include <blaze/math/Exception.h>
 #include <blaze/math/expressions/SparseMatrix.h>
 #include <blaze/math/InitializerList.h>
-#include <blaze/math/shims/Clear.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/sparse/SparseMatrix.h>
 #include <blaze/math/typetraits/IsComputation.h>
@@ -69,7 +70,6 @@
 #include <blaze/util/constraints/Pointer.h>
 #include <blaze/util/constraints/Reference.h>
 #include <blaze/util/constraints/Volatile.h>
-#include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/StaticAssert.h>
 #include <blaze/util/Types.h>
@@ -111,6 +111,7 @@ class DiagonalMatrix<MT,SO,false>
    using OppositeType   = DiagonalMatrix<OT,!SO,false>;  //!< Result type with opposite storage order for expression template evaluations.
    using TransposeType  = DiagonalMatrix<TT,!SO,false>;  //!< Transpose type for expression template evaluations.
    using ElementType    = ET;                            //!< Type of the matrix elements.
+   using TagType        = TagType_t<MT>;                 //!< Tag type of this DiagonalMatrix instance.
    using ReturnType     = ReturnType_t<MT>;              //!< Return type for expression template evaluations.
    using CompositeType  = const This&;                   //!< Data type for composite expression templates.
    using Reference      = DiagonalProxy<MT>;             //!< Reference to a non-constant matrix value.
@@ -148,11 +149,11 @@ class DiagonalMatrix<MT,SO,false>
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit inline DiagonalMatrix();
+            inline DiagonalMatrix();
    explicit inline DiagonalMatrix( size_t n );
-   explicit inline DiagonalMatrix( size_t n, size_t nonzeros );
-   explicit inline DiagonalMatrix( size_t n, const std::vector<size_t>& nonzeros );
-   explicit inline DiagonalMatrix( initializer_list< initializer_list<ElementType> > list );
+            inline DiagonalMatrix( size_t n, size_t nonzeros );
+            inline DiagonalMatrix( size_t n, const std::vector<size_t>& nonzeros );
+            inline DiagonalMatrix( initializer_list< initializer_list<ElementType> > list );
 
    inline DiagonalMatrix( const DiagonalMatrix& m );
    inline DiagonalMatrix( DiagonalMatrix&& m ) noexcept;
@@ -321,9 +322,6 @@ class DiagonalMatrix<MT,SO,false>
    //**********************************************************************************************
 
    //**Friend declarations*************************************************************************
-   template< bool RF, typename MT2, bool SO2, bool DF2 >
-   friend bool isDefault( const DiagonalMatrix<MT2,SO2,DF2>& m );
-
    template< typename MT2, bool SO2, bool DF2 >
    friend MT2& derestrict( DiagonalMatrix<MT2,SO2,DF2>& m );
    //**********************************************************************************************
@@ -334,7 +332,9 @@ class DiagonalMatrix<MT,SO,false>
    BLAZE_CONSTRAINT_MUST_NOT_BE_POINTER_TYPE         ( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_CONST                ( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_VOLATILE             ( MT );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_EXPRESSION_TYPE      ( MT );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_VIEW_TYPE            ( MT );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE     ( MT );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_TRANSFORMATION_TYPE  ( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_HERMITIAN_MATRIX_TYPE( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_LOWER_MATRIX_TYPE    ( MT );
@@ -528,7 +528,7 @@ template< typename MT   // Type of the adapted sparse matrix
 template< typename MT2  // Type of the foreign matrix
         , bool SO2 >    // Storage order of the foreign matrix
 inline DiagonalMatrix<MT,SO,false>::DiagonalMatrix( const Matrix<MT2,SO2>& m )
-   : matrix_( ~m )  // The adapted sparse matrix
+   : matrix_( *m )  // The adapted sparse matrix
 {
    if( !IsDiagonal_v<MT2> && !isDiagonal( matrix_ ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid setup of diagonal matrix" );
@@ -942,11 +942,11 @@ template< typename MT2  // Type of the right-hand side matrix
 inline auto DiagonalMatrix<MT,SO,false>::operator=( const Matrix<MT2,SO2>& rhs )
    -> DisableIf_t< IsComputation_v<MT2>, DiagonalMatrix& >
 {
-   if( !IsDiagonal_v<MT2> && !isDiagonal( ~rhs ) ) {
+   if( !IsDiagonal_v<MT2> && !isDiagonal( *rhs ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to diagonal matrix" );
    }
 
-   matrix_ = decldiag( ~rhs );
+   matrix_ = decldiag( *rhs );
 
    if( !IsDiagonal_v<MT2> )
       resetNonDiagonal();
@@ -980,15 +980,15 @@ template< typename MT2  // Type of the right-hand side matrix
 inline auto DiagonalMatrix<MT,SO,false>::operator=( const Matrix<MT2,SO2>& rhs )
    -> EnableIf_t< IsComputation_v<MT2>, DiagonalMatrix& >
 {
-   if( !IsSquare_v<MT2> && !isSquare( ~rhs ) ) {
+   if( !IsSquare_v<MT2> && !isSquare( *rhs ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to diagonal matrix" );
    }
 
    if( IsDiagonal_v<MT2> ) {
-      matrix_ = ~rhs;
+      matrix_ = *rhs;
    }
    else {
-      MT tmp( ~rhs );
+      MT tmp( *rhs );
 
       if( !isDiagonal( tmp ) ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to diagonal matrix" );
@@ -1029,11 +1029,11 @@ template< typename MT2  // Type of the right-hand side matrix
 inline auto DiagonalMatrix<MT,SO,false>::operator+=( const Matrix<MT2,SO2>& rhs )
    -> DisableIf_t< IsComputation_v<MT2>, DiagonalMatrix& >
 {
-   if( !IsDiagonal_v<MT2> && !isDiagonal( ~rhs ) ) {
+   if( !IsDiagonal_v<MT2> && !isDiagonal( *rhs ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to diagonal matrix" );
    }
 
-   matrix_ += decldiag( ~rhs );
+   matrix_ += decldiag( *rhs );
 
    if( !IsDiagonal_v<MT2> )
       resetNonDiagonal();
@@ -1067,15 +1067,15 @@ template< typename MT2  // Type of the right-hand side matrix
 inline auto DiagonalMatrix<MT,SO,false>::operator+=( const Matrix<MT2,SO2>& rhs )
    -> EnableIf_t< IsComputation_v<MT2>, DiagonalMatrix& >
 {
-   if( !IsSquare_v<MT2> && !isSquare( ~rhs ) ) {
+   if( !IsSquare_v<MT2> && !isSquare( *rhs ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to diagonal matrix" );
    }
 
    if( IsDiagonal_v<MT2> ) {
-      matrix_ += ~rhs;
+      matrix_ += *rhs;
    }
    else {
-      const ResultType_t<MT2> tmp( ~rhs );
+      const ResultType_t<MT2> tmp( *rhs );
 
       if( !isDiagonal( tmp ) ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to diagonal matrix" );
@@ -1116,11 +1116,11 @@ template< typename MT2  // Type of the right-hand side matrix
 inline auto DiagonalMatrix<MT,SO,false>::operator-=( const Matrix<MT2,SO2>& rhs )
    -> DisableIf_t< IsComputation_v<MT2>, DiagonalMatrix& >
 {
-   if( !IsDiagonal_v<MT2> && !isDiagonal( ~rhs ) ) {
+   if( !IsDiagonal_v<MT2> && !isDiagonal( *rhs ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to diagonal matrix" );
    }
 
-   matrix_ -= decldiag( ~rhs );
+   matrix_ -= decldiag( *rhs );
 
    if( !IsDiagonal_v<MT2> )
       resetNonDiagonal();
@@ -1154,15 +1154,15 @@ template< typename MT2  // Type of the right-hand side matrix
 inline auto DiagonalMatrix<MT,SO,false>::operator-=( const Matrix<MT2,SO2>& rhs )
    -> EnableIf_t< IsComputation_v<MT2>, DiagonalMatrix& >
 {
-   if( !IsSquare_v<MT2> && !isSquare( ~rhs ) ) {
+   if( !IsSquare_v<MT2> && !isSquare( *rhs ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to diagonal matrix" );
    }
 
    if( IsDiagonal_v<MT2> ) {
-      matrix_ -= ~rhs;
+      matrix_ -= *rhs;
    }
    else {
-      const ResultType_t<MT2> tmp( ~rhs );
+      const ResultType_t<MT2> tmp( *rhs );
 
       if( !isDiagonal( tmp ) ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to diagonal matrix" );
@@ -1201,11 +1201,11 @@ template< typename MT2  // Type of the right-hand side matrix
 inline auto DiagonalMatrix<MT,SO,false>::operator%=( const Matrix<MT2,SO2>& rhs )
    -> DiagonalMatrix&
 {
-   if( !IsSquare_v<MT2> && !isSquare( ~rhs ) ) {
+   if( !IsSquare_v<MT2> && !isSquare( *rhs ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to diagonal matrix" );
    }
 
-   matrix_ %= ~rhs;
+   matrix_ %= *rhs;
 
    if( !IsDiagonal_v<MT2> )
       resetNonDiagonal();
@@ -1386,9 +1386,10 @@ template< typename MT  // Type of the adapted sparse matrix
         , bool SO >    // Storage order of the adapted sparse matrix
 inline void DiagonalMatrix<MT,SO,false>::clear()
 {
-   using blaze::clear;
+   matrix_.clear();
 
-   clear( matrix_ );
+   BLAZE_INTERNAL_ASSERT( matrix_.rows()    == 0UL, "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( matrix_.columns() == 0UL, "Invalid number of columns" );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1552,17 +1553,19 @@ inline void DiagonalMatrix<MT,SO,false>::swap( DiagonalMatrix& m ) noexcept
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Reset the complete upper part of the matrix to the default initial values.
+/*!\brief Reset the complete lower and upper parts of the matrix to the default initial values.
 //
 // \return void
 */
-template< typename MT  // Type of the adapted dense matrix
-        , bool SO >    // Storage order of the adapted dense matrix
+template< typename MT  // Type of the adapted sparse matrix
+        , bool SO >    // Storage order of the adapted sparse matrix
 inline void DiagonalMatrix<MT,SO,false>::resetNonDiagonal()
 {
+   using blaze::erase;
+
    for( size_t i=0UL; i<rows(); ++i ) {
-      matrix_.erase( i, matrix_.begin( i ), matrix_.lowerBound( i, i ) );
-      matrix_.erase( i, matrix_.upperBound( i, i ), matrix_.end( i ) );
+      erase( matrix_, i, matrix_.begin( i ), matrix_.lowerBound( i, i ) );
+      erase( matrix_, i, matrix_.upperBound( i, i ), matrix_.end( i ) );
    }
 }
 /*! \endcond */
@@ -1750,7 +1753,9 @@ template< typename MT  // Type of the adapted sparse matrix
         , bool SO >    // Storage order of the adapted sparse matrix
 inline void DiagonalMatrix<MT,SO,false>::erase( size_t i, size_t j )
 {
-   matrix_.erase( i, j );
+   using blaze::erase;
+
+   erase( matrix_, i, j );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1773,7 +1778,9 @@ template< typename MT  // Type of the adapted sparse matrix
 inline typename DiagonalMatrix<MT,SO,false>::Iterator
    DiagonalMatrix<MT,SO,false>::erase( size_t i, Iterator pos )
 {
-   return matrix_.erase( i, pos );
+   using blaze::erase;
+
+   return erase( matrix_, i, pos );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1798,7 +1805,9 @@ template< typename MT  // Type of the adapted sparse matrix
 inline typename DiagonalMatrix<MT,SO,false>::Iterator
    DiagonalMatrix<MT,SO,false>::erase( size_t i, Iterator first, Iterator last )
 {
-   return matrix_.erase( i, first, last );
+   using blaze::erase;
+
+   return erase( matrix_, i, first, last );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1831,7 +1840,9 @@ template< typename MT      // Type of the adapted sparse matrix
 template< typename Pred >  // Type of the unary predicate
 inline void DiagonalMatrix<MT,SO,false>::erase( Pred predicate )
 {
-   matrix_.erase( predicate );
+   using blaze::erase;
+
+   erase( matrix_, predicate );
 
    BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );
 }
@@ -1872,7 +1883,9 @@ template< typename MT      // Type of the adapted sparse matrix
 template< typename Pred >  // Type of the unary predicate
 inline void DiagonalMatrix<MT,SO,false>::erase( size_t i, Iterator first, Iterator last, Pred predicate )
 {
-   matrix_.erase( i, first, last, predicate );
+   using blaze::erase;
+
+   erase( matrix_, i, first, last, predicate );
 
    BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );
 }

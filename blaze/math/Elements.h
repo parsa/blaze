@@ -3,7 +3,7 @@
 //  \file blaze/math/Elements.h
 //  \brief Header file for the complete Elements implementation
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -67,82 +67,59 @@ namespace blaze {
 //
 // This specialization of the Rand class randomizes dense element selections.
 */
-template< typename VT       // Type of the vector
-        , bool TF           // Transpose flag
-        , size_t... CEAs >  // Compile time element arguments
+template< typename VT         // Type of the vector
+        , bool TF             // Transpose flag
+        , typename... CEAs >  // Compile time element arguments
 class Rand< Elements<VT,TF,true,CEAs...> >
 {
  public:
-   //**Randomize functions*************************************************************************
-   /*!\name Randomize functions */
-   //@{
-   template< typename ET >
-   inline void randomize( ET&& elements ) const;
+   //**********************************************************************************************
+   /*!\brief Randomization of a dense element selection.
+   //
+   // \param elements The element selection to be randomized.
+   // \return void
+   */
+   template< typename ET >  // Type of the element selection
+   inline void randomize( ET&& elements ) const
+   {
+      using blaze::randomize;
 
-   template< typename ET, typename Arg >
-   inline void randomize( ET&& elements, const Arg& min, const Arg& max ) const;
-   //@}
+      using ElementsType = RemoveReference_t<ET>;
+
+      BLAZE_CONSTRAINT_MUST_BE_ELEMENTS_TYPE( ElementsType );
+      BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( ElementsType );
+
+      for( size_t i=0UL; i<elements.size(); ++i ) {
+         randomize( elements[i] );
+      }
+   }
+   //**********************************************************************************************
+
+   //**********************************************************************************************
+   /*!\brief Randomization of a dense element selection.
+   //
+   // \param elements The element selection to be randomized.
+   // \param min The smallest possible value for an element.
+   // \param max The largest possible value for an element.
+   // \return void
+   */
+   template< typename ET     // Type of the element selection
+           , typename Arg >  // Min/max argument type
+   inline void randomize( ET&& elements, const Arg& min, const Arg& max ) const
+   {
+      using blaze::randomize;
+
+      using ElementsType = RemoveReference_t<ET>;
+
+      BLAZE_CONSTRAINT_MUST_BE_ELEMENTS_TYPE( ElementsType );
+      BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( ElementsType );
+
+      for( size_t i=0UL; i<elements.size(); ++i ) {
+         randomize( elements[i], min, max );
+      }
+   }
    //**********************************************************************************************
 };
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Randomization of a dense element selection.
-//
-// \param elements The element selection to be randomized.
-// \return void
-*/
-template< typename VT       // Type of the vector
-        , bool TF           // Transpose flag
-        , size_t... CEAs >  // Compile time element arguments
-template< typename ET >     // Type of the element selection
-inline void Rand< Elements<VT,TF,true,CEAs...> >::randomize( ET&& elements ) const
-{
-   using blaze::randomize;
-
-   using ElementsType = RemoveReference_t<ET>;
-
-   BLAZE_CONSTRAINT_MUST_BE_ELEMENTS_TYPE( ElementsType );
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( ElementsType );
-
-   for( size_t i=0UL; i<elements.size(); ++i ) {
-      randomize( elements[i] );
-   }
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Randomization of a dense element selection.
-//
-// \param elements The element selection to be randomized.
-// \param min The smallest possible value for an element.
-// \param max The largest possible value for an element.
-// \return void
-*/
-template< typename VT       // Type of the vector
-        , bool TF           // Transpose flag
-        , size_t... CEAs >  // Compile time element arguments
-template< typename ET       // Type of the element selection
-        , typename Arg >    // Min/max argument type
-inline void Rand< Elements<VT,TF,true,CEAs...> >::randomize( ET&& elements, const Arg& min, const Arg& max ) const
-{
-   using blaze::randomize;
-
-   using ElementsType = RemoveReference_t<ET>;
-
-   BLAZE_CONSTRAINT_MUST_BE_ELEMENTS_TYPE( ElementsType );
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( ElementsType );
-
-   for( size_t i=0UL; i<elements.size(); ++i ) {
-      randomize( elements[i], min, max );
-   }
-}
 /*! \endcond */
 //*************************************************************************************************
 
@@ -162,189 +139,146 @@ inline void Rand< Elements<VT,TF,true,CEAs...> >::randomize( ET&& elements, cons
 //
 // This specialization of the Rand class randomizes sparse element selections.
 */
-template< typename VT       // Type of the vector
-        , bool TF           // Transpose flag
-        , size_t... CEAs >  // Compile time element arguments
+template< typename VT         // Type of the vector
+        , bool TF             // Transpose flag
+        , typename... CEAs >  // Compile time element arguments
 class Rand< Elements<VT,TF,false,CEAs...> >
 {
  public:
-   //**Randomize functions*************************************************************************
-   /*!\name Randomize functions */
-   //@{
-   template< typename ET >
-   inline void randomize( ET&& elements ) const;
+   //**********************************************************************************************
+   /*!\brief Randomization of a sparse element selection.
+   //
+   // \param elements The element selection to be randomized.
+   // \return void
+   */
+   template< typename ET >  // Type of the element selection
+   inline void randomize( ET&& elements ) const
+   {
+      using ElementsType = RemoveReference_t<ET>;
+      using ElementType  = ElementType_t<ElementsType>;
 
-   template< typename ET >
-   inline void randomize( ET&& elements, size_t nonzeros ) const;
+      BLAZE_CONSTRAINT_MUST_BE_ELEMENTS_TYPE( ElementsType );
+      BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE( ElementsType );
 
-   template< typename ET, typename Arg >
-   inline void randomize( ET&& elements, const Arg& min, const Arg& max ) const;
+      const size_t size( elements.size() );
 
-   template< typename ET, typename Arg >
-   inline void randomize( ET&& elements, size_t nonzeros, const Arg& min, const Arg& max ) const;
-   //@}
+      if( size == 0UL ) return;
+
+      const size_t nonzeros( rand<size_t>( 1UL, std::ceil( 0.5*size ) ) );
+
+      elements.reset();
+      elements.reserve( nonzeros );
+
+      while( elements.nonZeros() < nonzeros ) {
+         elements[ rand<size_t>( 0UL, size-1UL ) ] = rand<ElementType>();
+      }
+   }
+   //**********************************************************************************************
+
+   //**********************************************************************************************
+   /*!\brief Randomization of a sparse element selection.
+   //
+   // \param elements The element selection to be randomized.
+   // \param nonzeros The number of non-zero elements of the random element selection.
+   // \return void
+   // \exception std::invalid_argument Invalid number of non-zero elements.
+   */
+   template< typename ET >  // Type of the element selection
+   inline void randomize( ET&& elements, size_t nonzeros ) const
+   {
+      using ElementsType = RemoveReference_t<ET>;
+      using ElementType  = ElementType_t<ElementsType>;
+
+      BLAZE_CONSTRAINT_MUST_BE_ELEMENTS_TYPE( ElementsType );
+      BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE( ElementsType );
+
+      const size_t size( elements.size() );
+
+      if( nonzeros > size ) {
+         BLAZE_THROW_INVALID_ARGUMENT( "Invalid number of non-zero elements" );
+      }
+
+      if( size == 0UL ) return;
+
+      elements.reset();
+      elements.reserve( nonzeros );
+
+      while( elements.nonZeros() < nonzeros ) {
+         elements[ rand<size_t>( 0UL, size-1UL ) ] = rand<ElementType>();
+      }
+   }
+   //**********************************************************************************************
+
+   //**********************************************************************************************
+   /*!\brief Randomization of a sparse element selection.
+   //
+   // \param elements The element selection to be randomized.
+   // \param min The smallest possible value for an element.
+   // \param max The largest possible value for an element.
+   // \return void
+   */
+   template< typename ET     // Type of the element selection
+           , typename Arg >  // Min/max argument type
+   inline void randomize( ET&& elements, const Arg& min, const Arg& max ) const
+   {
+      using ElementsType = RemoveReference_t<ET>;
+      using ElementType  = ElementType_t<ElementsType>;
+
+      BLAZE_CONSTRAINT_MUST_BE_ELEMENTS_TYPE( ElementsType );
+      BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE( ElementsType );
+
+      const size_t size( elements.size() );
+
+      if( size == 0UL ) return;
+
+      const size_t nonzeros( rand<size_t>( 1UL, std::ceil( 0.5*size ) ) );
+
+      elements.reset();
+      elements.reserve( nonzeros );
+
+      while( elements.nonZeros() < nonzeros ) {
+         elements[ rand<size_t>( 0UL, size-1UL ) ] = rand<ElementType>( min, max );
+      }
+   }
+   //**********************************************************************************************
+
+   //**********************************************************************************************
+   /*!\brief Randomization of a sparse element selection.
+   //
+   // \param elements The element selection to be randomized.
+   // \param nonzeros The number of non-zero elements of the random element selection.
+   // \param min The smallest possible value for an element.
+   // \param max The largest possible value for an element.
+   // \return void
+   // \exception std::invalid_argument Invalid number of non-zero elements.
+   */
+   template< typename ET     // Type of the element selection
+           , typename Arg >  // Min/max argument type
+   inline void randomize( ET&& elements, size_t nonzeros, const Arg& min, const Arg& max ) const
+   {
+      using ElementsType = RemoveReference_t<ET>;
+      using ElementType  = ElementType_t<ElementsType>;
+
+      BLAZE_CONSTRAINT_MUST_BE_ELEMENTS_TYPE( ElementsType );
+      BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE( ElementsType );
+
+      const size_t size( elements.size() );
+
+      if( nonzeros > size ) {
+         BLAZE_THROW_INVALID_ARGUMENT( "Invalid number of non-zero elements" );
+      }
+
+      if( size == 0UL ) return;
+
+      elements.reset();
+      elements.reserve( nonzeros );
+
+      while( elements.nonZeros() < nonzeros ) {
+         elements[ rand<size_t>( 0UL, size-1UL ) ] = rand<ElementType>( min, max );
+      }
+   }
    //**********************************************************************************************
 };
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Randomization of a sparse element selection.
-//
-// \param elements The element selection to be randomized.
-// \return void
-*/
-template< typename VT       // Type of the vector
-        , bool TF           // Transpose flag
-        , size_t... CEAs >  // Compile time element arguments
-template< typename ET >     // Type of the element selection
-inline void Rand< Elements<VT,TF,false,CEAs...> >::randomize( ET&& elements ) const
-{
-   using ElementsType = RemoveReference_t<ET>;
-   using ElementType  = ElementType_t<ElementsType>;
-
-   BLAZE_CONSTRAINT_MUST_BE_ELEMENTS_TYPE( ElementsType );
-   BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE( ElementsType );
-
-   const size_t size( elements.size() );
-
-   if( size == 0UL ) return;
-
-   const size_t nonzeros( rand<size_t>( 1UL, std::ceil( 0.5*size ) ) );
-
-   elements.reset();
-   elements.reserve( nonzeros );
-
-   while( elements.nonZeros() < nonzeros ) {
-      elements[ rand<size_t>( 0UL, size-1UL ) ] = rand<ElementType>();
-   }
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Randomization of a sparse element selection.
-//
-// \param elements The element selection to be randomized.
-// \param nonzeros The number of non-zero elements of the random element selection.
-// \return void
-// \exception std::invalid_argument Invalid number of non-zero elements.
-*/
-template< typename VT       // Type of the vector
-        , bool TF           // Transpose flag
-        , size_t... CEAs >  // Compile time element arguments
-template< typename ET >     // Type of the element selection
-inline void Rand< Elements<VT,TF,false,CEAs...> >::randomize( ET&& elements, size_t nonzeros ) const
-{
-   using ElementsType = RemoveReference_t<ET>;
-   using ElementType  = ElementType_t<ElementsType>;
-
-   BLAZE_CONSTRAINT_MUST_BE_ELEMENTS_TYPE( ElementsType );
-   BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE( ElementsType );
-
-   const size_t size( elements.size() );
-
-   if( nonzeros > size ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Invalid number of non-zero elements" );
-   }
-
-   if( size == 0UL ) return;
-
-   elements.reset();
-   elements.reserve( nonzeros );
-
-   while( elements.nonZeros() < nonzeros ) {
-      elements[ rand<size_t>( 0UL, size-1UL ) ] = rand<ElementType>();
-   }
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Randomization of a sparse element selection.
-//
-// \param elements The element selection to be randomized.
-// \param min The smallest possible value for an element.
-// \param max The largest possible value for an element.
-// \return void
-*/
-template< typename VT       // Type of the vector
-        , bool TF           // Transpose flag
-        , size_t... CEAs >  // Compile time element arguments
-template< typename ET       // Type of the element selection
-        , typename Arg >    // Min/max argument type
-inline void Rand< Elements<VT,TF,false,CEAs...> >::randomize( ET&& elements,
-                                                              const Arg& min, const Arg& max ) const
-{
-   using ElementsType = RemoveReference_t<ET>;
-   using ElementType  = ElementType_t<ElementsType>;
-
-   BLAZE_CONSTRAINT_MUST_BE_ELEMENTS_TYPE( ElementsType );
-   BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE( ElementsType );
-
-   const size_t size( elements.size() );
-
-   if( size == 0UL ) return;
-
-   const size_t nonzeros( rand<size_t>( 1UL, std::ceil( 0.5*size ) ) );
-
-   elements.reset();
-   elements.reserve( nonzeros );
-
-   while( elements.nonZeros() < nonzeros ) {
-      elements[ rand<size_t>( 0UL, size-1UL ) ] = rand<ElementType>( min, max );
-   }
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Randomization of a sparse element selection.
-//
-// \param elements The element selection to be randomized.
-// \param nonzeros The number of non-zero elements of the random element selection.
-// \param min The smallest possible value for an element.
-// \param max The largest possible value for an element.
-// \return void
-// \exception std::invalid_argument Invalid number of non-zero elements.
-*/
-template< typename VT       // Type of the vector
-        , bool TF           // Transpose flag
-        , size_t... CEAs >  // Compile time element arguments
-template< typename ET       // Type of the element selection
-        , typename Arg >    // Min/max argument type
-inline void Rand< Elements<VT,TF,false,CEAs...> >::randomize( ET&& elements, size_t nonzeros,
-                                                              const Arg& min, const Arg& max ) const
-{
-   using ElementsType = RemoveReference_t<ET>;
-   using ElementType  = ElementType_t<ElementsType>;
-
-   BLAZE_CONSTRAINT_MUST_BE_ELEMENTS_TYPE( ElementsType );
-   BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE( ElementsType );
-
-   const size_t size( elements.size() );
-
-   if( nonzeros > size ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Invalid number of non-zero elements" );
-   }
-
-   if( size == 0UL ) return;
-
-   elements.reset();
-   elements.reserve( nonzeros );
-
-   while( elements.nonZeros() < nonzeros ) {
-      elements[ rand<size_t>( 0UL, size-1UL ) ] = rand<ElementType>( min, max );
-   }
-}
 /*! \endcond */
 //*************************************************************************************************
 

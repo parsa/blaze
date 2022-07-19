@@ -3,7 +3,7 @@
 //  \file blazetest/utiltest/typetraits/OperationTest.h
 //  \brief Header file for the type traits operation test
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -83,8 +83,9 @@ class OperationTest
    //@{
    void testAddConst();
    void testAddCV();
+   void testAddLValueReference();
    void testAddPointer();
-   void testAddReference();
+   void testAddRValueReference();
    void testAddVolatile();
    void testAll();
    void testAny();
@@ -92,6 +93,8 @@ class OperationTest
    void testDecay();
    void testExtent();
    void testGetMember();
+   void testHasGreaterThan();
+   void testHasLessThan();
    void testHasMember();
    void testHasSize();
    void testHaveSameSize();
@@ -140,8 +143,10 @@ class OperationTest
    void testRemoveConst();
    void testRemoveCV();
    void testRemoveExtent();
+   void testRemoveLValueReference();
    void testRemovePointer();
    void testRemoveReference();
+   void testRemoveRValueReference();
    void testRemoveVolatile();
    //@}
    //**********************************************************************************************

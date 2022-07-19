@@ -3,7 +3,7 @@
 //  \file blaze/math/views/row/Row.h
 //  \brief Row documentation
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -60,10 +60,20 @@
 // \image latex row.eps "Row view" width=250pt
 //
 // A reference to a dense or sparse row can be created very conveniently via the \c row() function.
-// It can be included via the header file
+// It can be included via the header files
 
    \code
+   #include <blaze/Blaze.h>
+   // or
+   #include <blaze/Math.h>
+   // or
    #include <blaze/math/Row.h>
+   \endcode
+
+// and forward declared via the header file
+
+   \code
+   #include <blaze/Forward.h>
    \endcode
 
 // The row index must be in the range from \f$[0..M-1]\f$, where \c M is the total number of rows

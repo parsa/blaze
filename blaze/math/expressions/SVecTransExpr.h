@@ -3,7 +3,7 @@
 //  \file blaze/math/expressions/SVecTransExpr.h
 //  \brief Header file for the sparse vector transpose expression
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -40,7 +40,6 @@
 // Includes
 //*************************************************************************************************
 
-#include <iterator>
 #include <blaze/math/Aliases.h>
 #include <blaze/math/constraints/RequiresEvaluation.h>
 #include <blaze/math/constraints/SparseVector.h>
@@ -54,17 +53,15 @@
 #include <blaze/math/expressions/VecTransExpr.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
+#include <blaze/system/MacroDisable.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/EnableIf.h>
-#include <blaze/util/FalseType.h>
 #include <blaze/util/FunctionTrace.h>
 #include <blaze/util/IntegralConstant.h>
 #include <blaze/util/InvalidType.h>
 #include <blaze/util/mpl/If.h>
-#include <blaze/util/TrueType.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/GetMemberType.h>
-#include <blaze/util/typetraits/RemoveReference.h>
 
 
 namespace blaze {
@@ -86,12 +83,10 @@ template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
 class SVecTransExpr
    : public VecTransExpr< SparseVector< SVecTransExpr<VT,TF>, TF > >
-   , private If< IsComputation_v<VT>, Computation, Transformation >::Type
+   , private If_t< IsComputation_v<VT>, Computation, Transformation >
 {
  private:
    //**Type definitions****************************************************************************
-   using CT = CompositeType_t<VT>;  //!< Composite type of the sparse vector expression.
-
    //! Definition of the GetConstIterator type trait.
    BLAZE_CREATE_GET_TYPE_MEMBER_TYPE_TRAIT( GetConstIterator, ConstIterator, INVALID_TYPE );
    //**********************************************************************************************
@@ -128,11 +123,16 @@ class SVecTransExpr
 
  public:
    //**Type definitions****************************************************************************
-   using This          = SVecTransExpr<VT,TF>;  //!< Type of this SVecTransExpr instance.
-   using ResultType    = TransposeType_t<VT>;   //!< Result type for expression template evaluations.
-   using TransposeType = ResultType_t<VT>;      //!< Transpose type for expression template evaluations.
-   using ElementType   = ElementType_t<VT>;     //!< Resulting element type.
-   using ReturnType    = ReturnType_t<VT>;      //!< Return type for expression template evaluations.
+   //! Type of this SVecTransExpr instance.
+   using This = SVecTransExpr<VT,TF>;
+
+   //! Base type of this SVecTransExpr instance.
+   using BaseType = VecTransExpr< SparseVector<This,TF> >;
+
+   using ResultType    = TransposeType_t<VT>;  //!< Result type for expression template evaluations.
+   using TransposeType = ResultType_t<VT>;     //!< Transpose type for expression template evaluations.
+   using ElementType   = ElementType_t<VT>;    //!< Resulting element type.
+   using ReturnType    = ReturnType_t<VT>;     //!< Return type for expression template evaluations.
 
    //! Data type for composite expression templates.
    using CompositeType = If_t< useAssign, const ResultType, const SVecTransExpr& >;
@@ -326,14 +326,14 @@ class SVecTransExpr
    // the operand requires an intermediate evaluation.
    */
    template< typename VT2 >  // Type of the target dense vector
-   friend inline EnableIf_t< UseAssign_v<VT2> >
-      assign( DenseVector<VT2,TF>& lhs, const SVecTransExpr& rhs )
+   friend inline auto assign( DenseVector<VT2,TF>& lhs, const SVecTransExpr& rhs )
+      -> EnableIf_t< UseAssign_v<VT2> >
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      DVecTransposer<VT2,!TF> tmp( ~lhs );
+      DVecTransposer<VT2,!TF> tmp( *lhs );
       assign( tmp, rhs.sv_ );
    }
    /*! \endcond */
@@ -354,14 +354,14 @@ class SVecTransExpr
    // the operand requires an intermediate evaluation.
    */
    template< typename VT2 >  // Type of the target sparse vector
-   friend inline EnableIf_t< UseAssign_v<VT2> >
-      assign( SparseVector<VT2,TF>& lhs, const SVecTransExpr& rhs )
+   friend inline auto assign( SparseVector<VT2,TF>& lhs, const SVecTransExpr& rhs )
+      -> EnableIf_t< UseAssign_v<VT2> >
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      SVecTransposer<VT2,!TF> tmp( ~lhs );
+      SVecTransposer<VT2,!TF> tmp( *lhs );
       assign( tmp, rhs.sv_ );
    }
    /*! \endcond */
@@ -382,14 +382,14 @@ class SVecTransExpr
    // the operand requires an intermediate evaluation.
    */
    template< typename VT2 >  // Type of the target dense vector
-   friend inline EnableIf_t< UseAssign_v<VT2> >
-      addAssign( DenseVector<VT2,TF>& lhs, const SVecTransExpr& rhs )
+   friend inline auto addAssign( DenseVector<VT2,TF>& lhs, const SVecTransExpr& rhs )
+      -> EnableIf_t< UseAssign_v<VT2> >
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      DVecTransposer<VT2,!TF> tmp( ~lhs );
+      DVecTransposer<VT2,!TF> tmp( *lhs );
       addAssign( tmp, rhs.sv_ );
    }
    /*! \endcond */
@@ -414,14 +414,14 @@ class SVecTransExpr
    // operand requires an intermediate evaluation.
    */
    template< typename VT2 >  // Type of the target dense vector
-   friend inline EnableIf_t< UseAssign_v<VT2> >
-      subAssign( DenseVector<VT2,TF>& lhs, const SVecTransExpr& rhs )
+   friend inline auto subAssign( DenseVector<VT2,TF>& lhs, const SVecTransExpr& rhs )
+      -> EnableIf_t< UseAssign_v<VT2> >
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      DVecTransposer<VT2,!TF> tmp( ~lhs );
+      DVecTransposer<VT2,!TF> tmp( *lhs );
       subAssign( tmp, rhs.sv_ );
    }
    /*! \endcond */
@@ -446,14 +446,14 @@ class SVecTransExpr
    // requires an intermediate evaluation.
    */
    template< typename VT2 >  // Type of the target dense vector
-   friend inline EnableIf_t< UseAssign_v<VT2> >
-      multAssign( DenseVector<VT2,TF>& lhs, const SVecTransExpr& rhs )
+   friend inline auto multAssign( DenseVector<VT2,TF>& lhs, const SVecTransExpr& rhs )
+      -> EnableIf_t< UseAssign_v<VT2> >
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      DVecTransposer<VT2,!TF> tmp( ~lhs );
+      DVecTransposer<VT2,!TF> tmp( *lhs );
       multAssign( tmp, rhs.sv_ );
    }
    /*! \endcond */
@@ -478,14 +478,14 @@ class SVecTransExpr
    // expression specific parallel evaluation strategy is selected.
    */
    template< typename VT2 >  // Type of the target dense vector
-   friend inline EnableIf_t< UseSMPAssign_v<VT2> >
-      smpAssign( DenseVector<VT2,TF>& lhs, const SVecTransExpr& rhs )
+   friend inline auto smpAssign( DenseVector<VT2,TF>& lhs, const SVecTransExpr& rhs )
+      -> EnableIf_t< UseSMPAssign_v<VT2> >
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      DVecTransposer<VT2,!TF> tmp( ~lhs );
+      DVecTransposer<VT2,!TF> tmp( *lhs );
       smpAssign( tmp, rhs.sv_ );
    }
    /*! \endcond */
@@ -506,14 +506,14 @@ class SVecTransExpr
    // expression specific parallel evaluation strategy is selected.
    */
    template< typename VT2 >  // Type of the target sparse vector
-   friend inline EnableIf_t< UseSMPAssign_v<VT2> >
-      smpAssign( SparseVector<VT2,TF>& lhs, const SVecTransExpr& rhs )
+   friend inline auto smpAssign( SparseVector<VT2,TF>& lhs, const SVecTransExpr& rhs )
+      -> EnableIf_t< UseSMPAssign_v<VT2> >
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      SVecTransposer<VT2,!TF> tmp( ~lhs );
+      SVecTransposer<VT2,!TF> tmp( *lhs );
       smpAssign( tmp, rhs.sv_ );
    }
    /*! \endcond */
@@ -534,14 +534,14 @@ class SVecTransExpr
    // expression specific parallel evaluation strategy is selected.
    */
    template< typename VT2 >  // Type of the target dense vector
-   friend inline EnableIf_t< UseSMPAssign_v<VT2> >
-      smpAddAssign( DenseVector<VT2,TF>& lhs, const SVecTransExpr& rhs )
+   friend inline auto smpAddAssign( DenseVector<VT2,TF>& lhs, const SVecTransExpr& rhs )
+      -> EnableIf_t< UseSMPAssign_v<VT2> >
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      DVecTransposer<VT2,!TF> tmp( ~lhs );
+      DVecTransposer<VT2,!TF> tmp( *lhs );
       smpAddAssign( tmp, rhs.sv_ );
    }
    /*! \endcond */
@@ -566,14 +566,14 @@ class SVecTransExpr
    // specific parallel evaluation strategy is selected.
    */
    template< typename VT2 >  // Type of the target dense vector
-   friend inline EnableIf_t< UseSMPAssign_v<VT2> >
-      smpSubAssign( DenseVector<VT2,TF>& lhs, const SVecTransExpr& rhs )
+   friend inline auto smpSubAssign( DenseVector<VT2,TF>& lhs, const SVecTransExpr& rhs )
+      -> EnableIf_t< UseSMPAssign_v<VT2> >
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      DVecTransposer<VT2,!TF> tmp( ~lhs );
+      DVecTransposer<VT2,!TF> tmp( *lhs );
       smpSubAssign( tmp, rhs.sv_ );
    }
    /*! \endcond */
@@ -599,14 +599,14 @@ class SVecTransExpr
    // specific parallel evaluation strategy is selected.
    */
    template< typename VT2 >  // Type of the target dense vector
-   friend inline EnableIf_t< UseSMPAssign_v<VT2> >
-      smpMultAssign( DenseVector<VT2,TF>& lhs, const SVecTransExpr& rhs )
+   friend inline auto smpMultAssign( DenseVector<VT2,TF>& lhs, const SVecTransExpr& rhs )
+      -> EnableIf_t< UseSMPAssign_v<VT2> >
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      DVecTransposer<VT2,!TF> tmp( ~lhs );
+      DVecTransposer<VT2,!TF> tmp( *lhs );
       smpMultAssign( tmp, rhs.sv_ );
    }
    /*! \endcond */
@@ -659,7 +659,7 @@ inline decltype(auto) trans( const SparseVector<VT,TF>& sv )
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = const SVecTransExpr<VT,!TF>;
-   return ReturnType( ~sv );
+   return ReturnType( *sv );
 }
 //*************************************************************************************************
 
@@ -676,7 +676,7 @@ template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
 inline decltype(auto) transTo_backend( const SparseVector<VT,TF>& sv, FalseType )
 {
-   return trans( ~sv );
+   return trans( *sv );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -694,7 +694,7 @@ template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
 inline const VT& transTo_backend( const SparseVector<VT,TF>& sv, TrueType )
 {
-   return ~sv;
+   return *sv;
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -717,73 +717,8 @@ template< bool TTF     // Target transpose flag
         , bool TF >    // Current transpose flag of the sparse vector
 inline decltype(auto) transTo( const SparseVector<VT,TF>& sv )
 {
-   return transTo_backend( ~sv, BoolConstant<TTF == TF>() );
+   return transTo_backend( *sv, BoolConstant<TTF == TF>() );
 }
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  GLOBAL RESTRUCTURING FUNCTIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Calculating the transpose of a transpose sparse vector.
-// \ingroup sparse_vector
-//
-// \param sv The sparse vector to be (re-)transposed.
-// \return The transpose of the transpose vector.
-//
-// This function implements a performance optimized treatment of the transpose operation on a
-// sparse vector transpose expression. It returns an expression representing the transpose of a
-// transpose sparse vector:
-
-   \code
-   using blaze::columnVector;
-
-   blaze::CompressedVector<double,columnVector> a, b;
-   // ... Resizing and initialization
-   b = trans( trans( a ) );
-   \endcode
-*/
-template< typename VT  // Type of the sparse vector
-        , bool TF >    // Transpose flag
-inline decltype(auto) trans( const SVecTransExpr<VT,TF>& sv )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   return sv.operand();
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Calculation of the transpose of the given sparse vector-scalar multiplication.
-// \ingroup sparse_vector
-//
-// \param sv The sparse vector-scalar multiplication expression to be transposed.
-// \return The transpose of the expression.
-//
-// This operator implements the performance optimized treatment of the transpose of a sparse
-// vector-scalar multiplication. It restructures the expression \f$ a=trans(b*s1) \f$ to the
-// expression \f$ a=trans(b)*s1 \f$.
-*/
-template< typename VT  // Type of the left-hand side sparse vector
-        , typename ST  // Type of the right-hand side scalar value
-        , bool TF >    // Transpose flag
-inline decltype(auto) trans( const SVecScalarMultExpr<VT,ST,TF>& sv )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   return trans( sv.leftOperand() ) * sv.rightOperand();
-}
-/*! \endcond */
 //*************************************************************************************************
 
 } // namespace blaze

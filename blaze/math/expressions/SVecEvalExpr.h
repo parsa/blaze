@@ -3,7 +3,7 @@
 //  \file blaze/math/expressions/SVecEvalExpr.h
 //  \brief Header file for the sparse vector evaluation expression
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -48,8 +48,8 @@
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/expressions/VecEvalExpr.h>
 #include <blaze/math/expressions/SparseVector.h>
-#include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsExpression.h>
+#include <blaze/system/MacroDisable.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/FunctionTrace.h>
 #include <blaze/util/mpl/If.h>
@@ -79,7 +79,12 @@ class SVecEvalExpr
 {
  public:
    //**Type definitions****************************************************************************
-   using This          = SVecEvalExpr<VT,TF>;  //!< Type of this SVecEvalExpr instance.
+   //! Type of this SVecEvalExpr instance.
+   using This = SVecEvalExpr<VT,TF>;
+
+   //! Base type of this SVecEvalExpr instance.
+   using BaseType = VecEvalExpr< SparseVector<This,TF> >;
+
    using ResultType    = ResultType_t<VT>;     //!< Result type for expression template evaluations.
    using TransposeType = TransposeType_t<VT>;  //!< Transpose type for expression template evaluations.
    using ElementType   = ElementType_t<VT>;    //!< Resulting element type.
@@ -220,9 +225,9 @@ class SVecEvalExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      assign( ~lhs, rhs.sv_ );
+      assign( *lhs, rhs.sv_ );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -244,9 +249,9 @@ class SVecEvalExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      assign( ~lhs, rhs.sv_ );
+      assign( *lhs, rhs.sv_ );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -268,9 +273,9 @@ class SVecEvalExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      addAssign( ~lhs, rhs.sv_ );
+      addAssign( *lhs, rhs.sv_ );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -292,9 +297,9 @@ class SVecEvalExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      addAssign( ~lhs, rhs.sv_ );
+      addAssign( *lhs, rhs.sv_ );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -316,9 +321,9 @@ class SVecEvalExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      subAssign( ~lhs, rhs.sv_ );
+      subAssign( *lhs, rhs.sv_ );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -340,9 +345,9 @@ class SVecEvalExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      subAssign( ~lhs, rhs.sv_ );
+      subAssign( *lhs, rhs.sv_ );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -364,9 +369,9 @@ class SVecEvalExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      multAssign( ~lhs, rhs.sv_ );
+      multAssign( *lhs, rhs.sv_ );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -388,9 +393,9 @@ class SVecEvalExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      multAssign( ~lhs, rhs.sv_ );
+      multAssign( *lhs, rhs.sv_ );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -412,9 +417,9 @@ class SVecEvalExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      smpAssign( ~lhs, rhs.sv_ );
+      smpAssign( *lhs, rhs.sv_ );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -436,9 +441,9 @@ class SVecEvalExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      smpAssign( ~lhs, rhs.sv_ );
+      smpAssign( *lhs, rhs.sv_ );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -460,9 +465,9 @@ class SVecEvalExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      smpAddAssign( ~lhs, rhs.sv_ );
+      smpAddAssign( *lhs, rhs.sv_ );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -484,9 +489,9 @@ class SVecEvalExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      smpAddAssign( ~lhs, rhs.sv_ );
+      smpAddAssign( *lhs, rhs.sv_ );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -508,9 +513,9 @@ class SVecEvalExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      smpSubAssign( ~lhs, rhs.sv_ );
+      smpSubAssign( *lhs, rhs.sv_ );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -532,9 +537,9 @@ class SVecEvalExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      smpSubAssign( ~lhs, rhs.sv_ );
+      smpSubAssign( *lhs, rhs.sv_ );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -556,9 +561,9 @@ class SVecEvalExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      smpMultAssign( ~lhs, rhs.sv_ );
+      smpMultAssign( *lhs, rhs.sv_ );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -580,9 +585,9 @@ class SVecEvalExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      smpMultAssign( ~lhs, rhs.sv_ );
+      smpMultAssign( *lhs, rhs.sv_ );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -629,37 +634,8 @@ inline decltype(auto) eval( const SparseVector<VT,TF>& sv )
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = const SVecEvalExpr<VT,TF>;
-   return ReturnType( ~sv );
+   return ReturnType( *sv );
 }
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  GLOBAL RESTRUCTURING FUNCTIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Evaluation of the given sparse vector evaluation expression \a sv.
-// \ingroup sparse_vector
-//
-// \param sv The input evaluation expression.
-// \return The evaluated sparse vector.
-//
-// This function implements a performance optimized treatment of the evaluation of a sparse vector
-// evaluation expression.
-*/
-template< typename VT  // Type of the sparse vector
-        , bool TF >    // Transpose flag
-inline decltype(auto) eval( const SVecEvalExpr<VT,TF>& sv )
-{
-   return sv;
-}
-/*! \endcond */
 //*************************************************************************************************
 
 } // namespace blaze

@@ -3,7 +3,7 @@
 //  \file blaze/math/typetraits/YieldsUniUpper.h
 //  \brief Header file for the YieldsUniUpper type trait
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -40,8 +40,7 @@
 // Includes
 //*************************************************************************************************
 
-#include <blaze/util/FalseType.h>
-#include <blaze/util/TrueType.h>
+#include <blaze/util/IntegralConstant.h>
 
 
 namespace blaze {
@@ -110,7 +109,7 @@ struct YieldsUniUpper< const volatile OP, MT, MTs... >
 
 //*************************************************************************************************
 /*!\brief Auxiliary variable template for the YieldsUniUpper type trait.
-// \ingroup type_traits
+// \ingroup math_type_traits
 //
 // The YieldsUniUpper_v variable template provides a convenient shortcut to access the nested
 // \a value of the YieldsUniUpper class template. For instance, given the operation \a OP and

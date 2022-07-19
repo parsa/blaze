@@ -3,7 +3,7 @@
 //  \file blaze/math/functors/Exp2.h
 //  \brief Header file for the Exp2 functor
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -40,12 +40,16 @@
 // Includes
 //*************************************************************************************************
 
+#include <utility>
 #include <blaze/math/constraints/SIMDPack.h>
 #include <blaze/math/shims/Exp2.h>
 #include <blaze/math/simd/Exp2.h>
 #include <blaze/math/typetraits/HasSIMDExp2.h>
 #include <blaze/math/typetraits/IsSymmetric.h>
+#include <blaze/math/typetraits/IsUniform.h>
 #include <blaze/math/typetraits/YieldsSymmetric.h>
+#include <blaze/math/typetraits/YieldsUniform.h>
+#include <blaze/system/HostDevice.h>
 #include <blaze/system/Inline.h>
 
 
@@ -64,22 +68,15 @@ namespace blaze {
 struct Exp2
 {
    //**********************************************************************************************
-   /*!\brief Default constructor of the Exp2 functor.
-   */
-   explicit inline Exp2()
-   {}
-   //**********************************************************************************************
-
-   //**********************************************************************************************
    /*!\brief Returns the result of the exp2() function for the given object/value.
    //
    // \param a The given object/value.
    // \return The result of the exp2() function for the given object/value.
    */
    template< typename T >
-   BLAZE_ALWAYS_INLINE decltype(auto) operator()( const T& a ) const
+   BLAZE_ALWAYS_INLINE BLAZE_DEVICE_CALLABLE decltype(auto) operator()( T&& a ) const
    {
-      return exp2( a );
+      return exp2( std::forward<T>( a ) );
    }
    //**********************************************************************************************
 
@@ -90,6 +87,14 @@ struct Exp2
    */
    template< typename T >
    static constexpr bool simdEnabled() { return HasSIMDExp2_v<T>; }
+   //**********************************************************************************************
+
+   //**********************************************************************************************
+   /*!\brief Returns whether the operation supports padding, i.e. whether it can deal with zeros.
+   //
+   // \return \a true in case padding is supported, \a false if not.
+   */
+   static constexpr bool paddingEnabled() { return false; }
    //**********************************************************************************************
 
    //**********************************************************************************************
@@ -106,6 +111,24 @@ struct Exp2
    }
    //**********************************************************************************************
 };
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  YIELDSUNIFORM SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename T >
+struct YieldsUniform<Exp2,T>
+   : public IsUniform<T>
+{};
+/*! \endcond */
 //*************************************************************************************************
 
 

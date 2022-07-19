@@ -3,7 +3,7 @@
 //  \file blaze/math/typetraits/IsDeclHermExpr.h
 //  \brief Header file for the IsDeclHermExpr type trait class
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -42,8 +42,7 @@
 
 #include <utility>
 #include <blaze/math/expressions/DeclHermExpr.h>
-#include <blaze/util/FalseType.h>
-#include <blaze/util/TrueType.h>
+#include <blaze/util/IntegralConstant.h>
 
 
 namespace blaze {
@@ -56,28 +55,13 @@ namespace blaze {
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Auxiliary helper struct for the IsDeclHermExpr type trait.
+/*!\brief Auxiliary helper functions for the IsDeclHermExpr type trait.
 // \ingroup math_type_traits
 */
-template< typename T >
-struct IsDeclHermExprHelper
-{
- private:
-   //**********************************************************************************************
-   template< typename MT >
-   static TrueType test( const DeclHermExpr<MT>& );
+template< typename MT >
+TrueType isDeclHermExpr_backend( const volatile DeclHermExpr<MT>* );
 
-   template< typename MT >
-   static TrueType test( const volatile DeclHermExpr<MT>& );
-
-   static FalseType test( ... );
-   //**********************************************************************************************
-
- public:
-   //**********************************************************************************************
-   using Type = decltype( test( std::declval<T&>() ) );
-   //**********************************************************************************************
-};
+FalseType isDeclHermExpr_backend( ... );
 /*! \endcond */
 //*************************************************************************************************
 
@@ -95,14 +79,27 @@ struct IsDeclHermExprHelper
 */
 template< typename T >
 struct IsDeclHermExpr
-   : public IsDeclHermExprHelper<T>::Type
+   : public decltype( isDeclHermExpr_backend( std::declval<T*>() ) )
 {};
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Specialization of the IsDeclHermExpr type trait for references.
+// \ingroup math_type_traits
+*/
+template< typename T >
+struct IsDeclHermExpr<T&>
+   : public FalseType
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Auxiliary variable template for the IsDeclHermExpr type trait.
-// \ingroup type_traits
+// \ingroup math_type_traits
 //
 // The IsDeclHermExpr_v variable template provides a convenient shortcut to access the nested
 // \a value of the IsDeclHermExpr class template. For instance, given the type \a T the

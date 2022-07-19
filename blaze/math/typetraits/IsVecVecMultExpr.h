@@ -3,7 +3,7 @@
 //  \file blaze/math/typetraits/IsVecVecMultExpr.h
 //  \brief Header file for the IsVecVecMultExpr type trait class
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -42,8 +42,7 @@
 
 #include <utility>
 #include <blaze/math/expressions/VecVecMultExpr.h>
-#include <blaze/util/FalseType.h>
-#include <blaze/util/TrueType.h>
+#include <blaze/util/IntegralConstant.h>
 
 
 namespace blaze {
@@ -56,28 +55,13 @@ namespace blaze {
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Auxiliary helper struct for the IsVecVecMultExpr type trait.
+/*!\brief Auxiliary helper functions for the IsVecVecMultExpr type trait.
 // \ingroup math_type_traits
 */
-template< typename T >
-struct IsVecVecMultExprHelper
-{
- private:
-   //**********************************************************************************************
-   template< typename VT >
-   static TrueType test( const VecVecMultExpr<VT>& );
+template< typename VT >
+TrueType isVecVecMultExpr_backend( const volatile VecVecMultExpr<VT>* );
 
-   template< typename VT >
-   static TrueType test( const volatile VecVecMultExpr<VT>& );
-
-   static FalseType test( ... );
-   //**********************************************************************************************
-
- public:
-   //**********************************************************************************************
-   using Type = decltype( test( std::declval<T&>() ) );
-   //**********************************************************************************************
-};
+FalseType isVecVecMultExpr_backend( ... );
 /*! \endcond */
 //*************************************************************************************************
 
@@ -97,14 +81,27 @@ struct IsVecVecMultExprHelper
 */
 template< typename T >
 struct IsVecVecMultExpr
-   : public IsVecVecMultExprHelper<T>::Type
+   : public decltype( isVecVecMultExpr_backend( std::declval<T*>() ) )
 {};
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Specialization of the IsVecVecMultExpr type trait for references.
+// \ingroup math_type_traits
+*/
+template< typename T >
+struct IsVecVecMultExpr<T&>
+   : public FalseType
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Auxiliary variable template for the IsVecVecMultExpr type trait.
-// \ingroup type_traits
+// \ingroup math_type_traits
 //
 // The IsVecVecMultExpr_v variable template provides a convenient shortcut to access the nested
 // \a value of the IsVecVecMultExpr class template. For instance, given the type \a T the

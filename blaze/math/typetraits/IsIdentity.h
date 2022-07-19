@@ -3,7 +3,7 @@
 //  \file blaze/math/typetraits/IsIdentity.h
 //  \brief Header file for the IsIdentity type trait
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -64,25 +64,14 @@ namespace blaze {
 // \a value is set to \a false, \a Type is \a FalseType, and the class derives from \a FalseType.
 
    \code
-   using blaze::rowMajor;
+   using DiagonalMatrixType = blaze::DiagonalMatrix< StaticMatrix<float,3UL,3UL> >;
 
-   using StaticMatrixType     = blaze::StaticMatrix<double,3UL,3UL,rowMajor>;
-   using DynamicMatrixType    = blaze::DynamicMatrix<float,rowMajor>;
-   using CompressedMatrixType = blaze::CompressedMatrix<int,rowMajor>;
-
-   using IdentityStaticType     = blaze::IdentityMatrix<StaticMatrixType>;
-   using IdentityDynamicType    = blaze::IdentityMatrix<DynamicMatrixType>;
-   using IdentityCompressedType = blaze::IdentityMatrix<CompressedMatrixType>;
-
-   using LowerStaticType  = blaze::LowerMatrix<StaticMatrixType>;
-   using UpperDynamicType = blaze::UpperMatrix<DynamicMatrixType>;
-
-   blaze::IsIdentity< IdentityStaticType >::value           // Evaluates to 1
-   blaze::IsIdentity< const IdentityDynamicType >::Type     // Results in TrueType
-   blaze::IsIdentity< volatile IdentityCompressedType >     // Is derived from TrueType
-   blaze::IsIdentity< LowerStaticMatrixType >::value        // Evaluates to 0
-   blaze::IsIdentity< const UpperDynamicMatrixType >::Type  // Results in FalseType
-   blaze::IsIdentity< volatile CompressedMatrixType >       // Is derived from FalseType
+   blaze::IsIdentity< IdentityMatrix<int> >::value         // Evaluates to 1
+   blaze::IsIdentity< const IdentityMatrix<float> >::Type  // Results in TrueType
+   blaze::IsIdentity< volatile IdentityMatrix<double> >    // Is derived from TrueType
+   blaze::IsIdentity< DynamicMatrix<int> >::value          // Evaluates to 0
+   blaze::IsIdentity< const DiagonalMatrixType >::Type     // Results in FalseType
+   blaze::IsIdentity< volatile CompressedMatrix<double> >  // Is derived from FalseType
    \endcode
 */
 template< typename T >
@@ -133,7 +122,7 @@ struct IsIdentity< const volatile T >
 
 //*************************************************************************************************
 /*!\brief Auxiliary variable template for the IsIdentity type trait.
-// \ingroup type_traits
+// \ingroup math_type_traits
 //
 // The IsIdentity_v variable template provides a convenient shortcut to access the nested
 // \a value of the IsIdentity class template. For instance, given the type \a T the following

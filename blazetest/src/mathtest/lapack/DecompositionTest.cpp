@@ -3,7 +3,7 @@
 //  \file src/mathtest/lapack/DecompositionTest.cpp
 //  \brief Source file for the LAPACK decomposition test
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -42,6 +42,10 @@
 #include <blaze/util/Complex.h>
 #include <blazetest/mathtest/lapack/DecompositionTest.h>
 
+#ifdef BLAZE_USE_HPX_THREADS
+#  include <hpx/hpx_main.hpp>
+#endif
+
 
 namespace blazetest {
 
@@ -74,15 +78,19 @@ DecompositionTest::DecompositionTest()
    //testPotrf< float >();
    //testGeqrf< float >();
    //testOrgqr< float >();
+   //testOrg2r< float >();
    //testOrmqr< float >();
    //testGerqf< float >();
    //testOrgrq< float >();
+   //testOrgr2< float >();
    //testOrmrq< float >();
    //testGeqlf< float >();
    //testOrgql< float >();
+   //testOrg2l< float >();
    //testOrmql< float >();
    //testGelqf< float >();
    //testOrglq< float >();
+   //testOrgl2< float >();
    //testOrmlq< float >();
 
 
@@ -95,15 +103,19 @@ DecompositionTest::DecompositionTest()
    testPotrf< double >();
    testGeqrf< double >();
    testOrgqr< double >();
+   testOrg2r< double >();
    testOrmqr< double >();
    testGerqf< double >();
    testOrgrq< double >();
+   testOrgr2< double >();
    testOrmrq< double >();
    testGeqlf< double >();
    testOrgql< double >();
+   testOrg2l< double >();
    testOrmql< double >();
    testGelqf< double >();
    testOrglq< double >();
+   testOrgl2< double >();
    testOrmlq< double >();
 
 
@@ -117,15 +129,19 @@ DecompositionTest::DecompositionTest()
    //testPotrf< complex<float> >();
    //testGeqrf< complex<float> >();
    //testUngqr< complex<float> >();
+   //testUng2r< complex<float> >();
    //testUnmqr< complex<float> >();
    //testGerqf< complex<float> >();
    //testUngrq< complex<float> >();
+   //testUngr2< complex<float> >();
    //testUnmrq< complex<float> >();
    //testGeqlf< complex<float> >();
    //testUngql< complex<float> >();
+   //testUng2l< complex<float> >();
    //testUnmql< complex<float> >();
    //testGelqf< complex<float> >();
    //testUnglq< complex<float> >();
+   //testUngl2< complex<float> >();
    //testUnmlq< complex<float> >();
 
 
@@ -139,15 +155,19 @@ DecompositionTest::DecompositionTest()
    testPotrf< complex<double> >();
    testGeqrf< complex<double> >();
    testUngqr< complex<double> >();
+   testUng2r< complex<double> >();
    testUnmqr< complex<double> >();
    testGerqf< complex<double> >();
    testUngrq< complex<double> >();
+   testUngr2< complex<double> >();
    testUnmrq< complex<double> >();
    testGeqlf< complex<double> >();
    testUngql< complex<double> >();
+   testUng2l< complex<double> >();
    testUnmql< complex<double> >();
    testGelqf< complex<double> >();
    testUnglq< complex<double> >();
+   testUngl2< complex<double> >();
    testUnmlq< complex<double> >();
 }
 //*************************************************************************************************

@@ -3,7 +3,7 @@
 //  \file blaze/math/traits/AddTrait.h
 //  \brief Header file for the addition trait
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -41,14 +41,12 @@
 //*************************************************************************************************
 
 #include <utility>
-#include <blaze/math/typetraits/HasAdd.h>
-#include <blaze/util/Complex.h>
+#include <blaze/math/GroupTag.h>
 #include <blaze/util/EnableIf.h>
-#include <blaze/util/InvalidType.h>
-#include <blaze/util/mpl/If.h>
 #include <blaze/util/typetraits/CommonType.h>
-#include <blaze/util/typetraits/Decay.h>
-#include <blaze/util/typetraits/IsBuiltin.h>
+#include <blaze/util/typetraits/IsNumeric.h>
+#include <blaze/util/typetraits/RemoveCVRef.h>
+#include <blaze/util/typetraits/Void.h>
 
 
 namespace blaze {
@@ -64,6 +62,7 @@ namespace blaze {
 template< typename, typename, typename = void > struct AddTrait;
 template< typename, typename, typename = void > struct AddTraitEval1;
 template< typename, typename, typename = void > struct AddTraitEval2;
+template< typename, typename, typename = void > struct AddTraitEval3;
 /*! \endcond */
 //*************************************************************************************************
 
@@ -71,24 +70,7 @@ template< typename, typename, typename = void > struct AddTraitEval2;
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename T1, typename T2 >
-auto evalAddTrait( T1&, T2& )
-   -> typename AddTraitEval1<T1,T2>::Type;
-
-template< typename T1, typename T2 >
-auto evalAddTrait( const T1&, const T2& )
-   -> typename AddTrait<T1,T2>::Type;
-
-template< typename T1, typename T2 >
-auto evalAddTrait( const volatile T1&, const T2& )
-   -> typename AddTrait<T1,T2>::Type;
-
-template< typename T1, typename T2 >
-auto evalAddTrait( const T1&, const volatile T2& )
-   -> typename AddTrait<T1,T2>::Type;
-
-template< typename T1, typename T2 >
-auto evalAddTrait( const volatile T1&, const volatile T2& )
-   -> typename AddTrait<T1,T2>::Type;
+auto evalAddTrait( const volatile T1&, const volatile T2& ) -> AddTraitEval1<T1,T2>;
 /*! \endcond */
 //*************************************************************************************************
 
@@ -102,7 +84,7 @@ auto evalAddTrait( const volatile T1&, const volatile T2& )
 // The AddTrait class template offers the possibility to select the resulting data type of a
 // generic addition operation between the two given types \a T1 and \a T2. AddTrait defines
 // the nested type \a Type, which represents the resulting data type of the addition. In case
-// the two types \a T1 and \a T2 cannot be added, a compilation error is created. Note that
+// the two types \a T1 and \a T2 cannot be added, there is no nested type \a Type. Note that
 // \c const and \c volatile qualifiers and reference modifiers are generally ignored.
 //
 //
@@ -142,79 +124,22 @@ template< typename T1  // Type of the left-hand side operand
         , typename T2  // Type of the right-hand side operand
         , typename >   // Restricting condition
 struct AddTrait
-{
- public:
-   //**********************************************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   using Type = decltype( evalAddTrait( std::declval<T1&>(), std::declval<T2&>() ) );
-   /*! \endcond */
-   //**********************************************************************************************
-};
+   : public decltype( evalAddTrait( std::declval<T1&>(), std::declval<T2&>() ) )
+{};
 //*************************************************************************************************
 
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Specialization of the AddTrait class template for two identical builtin types.
-// \ingroup math_traits
-*/
-template< typename T >
-struct AddTrait< T, T, EnableIf_t< IsBuiltin_v<T> > >
-{
- public:
-   //**********************************************************************************************
-   using Type = Decay_t<T>;
-   //**********************************************************************************************
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Specialization of the AddTrait class template for a complex and a built-in type.
+/*!\brief Specialization of the AddTrait class template for two numeric types.
 // \ingroup math_traits
 */
 template< typename T1, typename T2 >
-struct AddTrait< complex<T1>, T2, EnableIf_t< IsBuiltin_v<T2> > >
+struct AddTrait< T1, T2, EnableIf_t< IsNumeric_v<T1> && IsNumeric_v<T2> > >
 {
  public:
    //**********************************************************************************************
-   using Type = CommonType_t< complex<T1> , T2 >;
-   //**********************************************************************************************
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Specialization of the AddTrait class template for a built-in and a complex type.
-// \ingroup math_traits
-*/
-template< typename T1, typename T2 >
-struct AddTrait< T1, complex<T2>, EnableIf_t< IsBuiltin_v<T1> > >
-{
- public:
-   //**********************************************************************************************
-   using Type = CommonType_t< T1, complex<T2> >;
-   //**********************************************************************************************
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Specialization of the AddTrait class template for two complex types.
-// \ingroup math_traits
-*/
-template< typename T1, typename T2 >
-struct AddTrait< complex<T1>, complex<T2> >
-{
- public:
-   //**********************************************************************************************
-   using Type = CommonType_t< complex<T1>, complex<T2> >;
+   using Type = CommonType_t<T1,T2>;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -248,10 +173,23 @@ template< typename T1  // Type of the left-hand side operand
         , typename T2  // Type of the right-hand side operand
         , typename >   // Restricting condition
 struct AddTraitEval1
+   : public AddTraitEval2<T1,T2>
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Specialization of the AddTraitEval1 class template for two 'GroupTag'.
+// \ingroup math_traits
+*/
+template< size_t ID >
+struct AddTraitEval1<GroupTag<ID>,GroupTag<ID>,void>
 {
  public:
    //**********************************************************************************************
-   using Type = typename AddTraitEval2<T1,T2>::Type;
+   using Type = GroupTag<ID>;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -267,16 +205,39 @@ template< typename T1  // Type of the left-hand side operand
         , typename T2  // Type of the right-hand side operand
         , typename >   // Restricting condition
 struct AddTraitEval2
-{
- private:
-   //**********************************************************************************************
-   struct AddType { using Type = decltype( std::declval<T1>() + std::declval<T2>() ); };
-   struct Failure { using Type = INVALID_TYPE; };
-   //**********************************************************************************************
+   : public AddTraitEval3<T1,T2>
+{};
+/*! \endcond */
+//*************************************************************************************************
 
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Third auxiliary helper struct for the AddTrait type trait.
+// \ingroup math_traits
+*/
+template< typename T1  // Type of the left-hand side operand
+        , typename T2  // Type of the right-hand side operand
+        , typename >   // Restricting condition
+struct AddTraitEval3
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Specialization of the AddTraitEval3 class template for two types supporting addition.
+// \ingroup math_traits
+*/
+template< typename T1    // Type of the left-hand side operand
+        , typename T2 >  // Type of the right-hand side operand
+struct AddTraitEval3< T1, T2
+                    , Void_t< decltype( std::declval<T1>() + std::declval<T2>() ) > >
+{
  public:
    //**********************************************************************************************
-   using Type = typename If_t< HasAdd_v<T1,T2>, AddType, Failure >::Type;
+   using Type = RemoveCVRef_t< decltype( std::declval<T1>() + std::declval<T2>() ) >;
    //**********************************************************************************************
 };
 /*! \endcond */

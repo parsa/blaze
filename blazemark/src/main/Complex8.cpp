@@ -3,7 +3,7 @@
 //  \file src/main/Complex8.cpp
 //  \brief Source file for the benchmark for the complex expression C += s * A * B
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -140,7 +140,7 @@ void estimateSteps( Run& run )
    while( true ) {
       timer.start();
       for( size_t i=0UL; i<steps; ++i ) {
-         C += element_t(3) * A * B;
+         C += noalias( element_t(3) * A * B );
       }
       timer.end();
       wct = timer.last();

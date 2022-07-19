@@ -3,7 +3,7 @@
 //  \file blaze/math/adaptors/symmetricmatrix/SymmetricValue.h
 //  \brief Header file for the SymmetricValue class
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -41,24 +41,26 @@
 //*************************************************************************************************
 
 #include <blaze/math/Aliases.h>
-#include <blaze/math/constraints/Expression.h>
+#include <blaze/math/constraints/Computation.h>
 #include <blaze/math/constraints/Hermitian.h>
 #include <blaze/math/constraints/Lower.h>
+#include <blaze/math/constraints/Scalar.h>
 #include <blaze/math/constraints/SparseMatrix.h>
 #include <blaze/math/constraints/Symmetric.h>
+#include <blaze/math/constraints/Transformation.h>
 #include <blaze/math/constraints/Upper.h>
+#include <blaze/math/constraints/View.h>
 #include <blaze/math/proxy/Proxy.h>
+#include <blaze/math/RelaxationFlag.h>
 #include <blaze/math/shims/Clear.h>
 #include <blaze/math/shims/Invert.h>
 #include <blaze/math/shims/IsDefault.h>
-#include <blaze/math/shims/IsNaN.h>
 #include <blaze/math/shims/IsOne.h>
 #include <blaze/math/shims/IsReal.h>
 #include <blaze/math/shims/IsZero.h>
 #include <blaze/math/shims/Reset.h>
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
 #include <blaze/util/constraints/Const.h>
-#include <blaze/util/constraints/Numeric.h>
 #include <blaze/util/constraints/Pointer.h>
 #include <blaze/util/constraints/Reference.h>
 #include <blaze/util/constraints/Volatile.h>
@@ -152,6 +154,15 @@ class SymmetricValue
    /*!\name Constructors */
    //@{
    inline SymmetricValue( IteratorType pos, MT* matrix, size_t index );
+
+   SymmetricValue( const SymmetricValue& ) = default;
+   //@}
+   //**********************************************************************************************
+
+   //**Destructor**********************************************************************************
+   /*!\name Destructor */
+   //@{
+   ~SymmetricValue() = default;
    //@}
    //**********************************************************************************************
 
@@ -170,8 +181,6 @@ class SymmetricValue
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-   inline void reset () const;
-   inline void clear () const;
    inline void invert() const;
 
    inline RepresentedType get() const noexcept;
@@ -216,12 +225,70 @@ class SymmetricValue
    BLAZE_CONSTRAINT_MUST_NOT_BE_POINTER_TYPE         ( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_CONST                ( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_VOLATILE             ( MT );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_EXPRESSION_TYPE      ( MT );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_VIEW_TYPE            ( MT );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE     ( MT );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_TRANSFORMATION_TYPE  ( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_HERMITIAN_MATRIX_TYPE( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_LOWER_MATRIX_TYPE    ( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_UPPER_MATRIX_TYPE    ( MT );
-   BLAZE_CONSTRAINT_MUST_BE_NUMERIC_TYPE( RepresentedType );
+   BLAZE_CONSTRAINT_MUST_BE_SCALAR_TYPE              ( RepresentedType );
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**********************************************************************************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief Resetting the symmetric value to the default initial values.
+   // \ingroup symmetric_matrix
+   //
+   // \param value The given symmetric value.
+   // \return void
+   //
+   // This function resets the symmetric value to its default initial value.
+   */
+   friend inline void reset( const SymmetricValue& value )
+   {
+      using blaze::reset;
+
+      reset( value.pos_->value() );
+
+      if( value.pos_->index() != value.index_ )
+      {
+         const size_t row   ( ( IsRowMajorMatrix_v<MT> )?( value.pos_->index() ):( value.index_ ) );
+         const size_t column( ( IsRowMajorMatrix_v<MT> )?( value.index_ ):( value.pos_->index() ) );
+         const IteratorType pos2( value.matrix_->find( row, column ) );
+
+         reset( pos2->value() );
+      }
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**********************************************************************************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief Clearing the symmetric value.
+   // \ingroup symmetric_matrix
+   //
+   // \param value The given symmetric value.
+   // \return void
+   //
+   // This function clears the symmetric value to its default initial state.
+   */
+   friend inline void clear( const SymmetricValue& value )
+   {
+      using blaze::clear;
+
+      clear( value.pos_->value() );
+
+      if( value.pos_->index() != value.index_ )
+      {
+         const size_t row   ( ( IsRowMajorMatrix_v<MT> )?( value.pos_->index() ):( value.index_ ) );
+         const size_t column( ( IsRowMajorMatrix_v<MT> )?( value.index_ ):( value.pos_->index() ) );
+         const IteratorType pos2( value.matrix_->find( row, column ) );
+
+         clear( pos2->value() );
+      }
+   }
    /*! \endcond */
    //**********************************************************************************************
 };
@@ -369,58 +436,6 @@ inline SymmetricValue<MT>& SymmetricValue<MT>::operator/=( const T& value )
 //  UTILITY FUNCTIONS
 //
 //=================================================================================================
-
-//*************************************************************************************************
-/*!\brief Reset the symmetric value to its default initial value.
-//
-// \return void
-//
-// This function resets the symmetric value to its default initial value.
-*/
-template< typename MT >  // Type of the adapted matrix
-inline void SymmetricValue<MT>::reset() const
-{
-   using blaze::reset;
-
-   reset( pos_->value() );
-
-   if( pos_->index() != index_ )
-   {
-      const size_t row   ( ( IsRowMajorMatrix_v<MT> )?( pos_->index() ):( index_ ) );
-      const size_t column( ( IsRowMajorMatrix_v<MT> )?( index_ ):( pos_->index() ) );
-      const IteratorType pos2( matrix_->find( row, column ) );
-
-      reset( pos2->value() );
-   }
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Clearing the symmetric value.
-//
-// \return void
-//
-// This function clears the symmetric value to its default initial state.
-*/
-template< typename MT >  // Type of the adapted matrix
-inline void SymmetricValue<MT>::clear() const
-{
-   using blaze::clear;
-
-   clear( pos_->value() );
-
-   if( pos_->index() != index_ )
-   {
-      const size_t row   ( ( IsRowMajorMatrix_v<MT> )?( pos_->index() ):( index_ ) );
-      const size_t column( ( IsRowMajorMatrix_v<MT> )?( index_ ):( pos_->index() ) );
-      const IteratorType pos2( matrix_->find( row, column ) );
-
-      clear( pos2->value() );
-   }
-}
-//*************************************************************************************************
-
 
 //*************************************************************************************************
 /*!\brief In-place inversion of the symmetric value
@@ -587,63 +602,8 @@ inline void SymmetricValue<MT>::imag( ValueType value ) const
 /*!\name SymmetricValue global functions */
 //@{
 template< typename MT >
-inline void reset( const SymmetricValue<MT>& value );
-
-template< typename MT >
-inline void clear( const SymmetricValue<MT>& value );
-
-template< typename MT >
-inline void invert( const SymmetricValue<MT>& value );
-
-template< bool RF, typename MT >
-inline bool isDefault( const SymmetricValue<MT>& value );
-
-template< bool RF, typename MT >
-inline bool isReal( const SymmetricValue<MT>& value );
-
-template< bool RF, typename MT >
-inline bool isZero( const SymmetricValue<MT>& value );
-
-template< bool RF, typename MT >
-inline bool isOne( const SymmetricValue<MT>& value );
-
-template< typename MT >
-inline bool isnan( const SymmetricValue<MT>& value );
+void invert( const SymmetricValue<MT>& value );
 //@}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Resetting the symmetric value to the default initial values.
-// \ingroup symmetric_matrix
-//
-// \param value The given symmetric value.
-// \return void
-//
-// This function resets the symmetric value to its default initial value.
-*/
-template< typename MT >
-inline void reset( const SymmetricValue<MT>& value )
-{
-   value.reset();
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Clearing the symmetric value.
-// \ingroup symmetric_matrix
-//
-// \param value The given symmetric value.
-// \return void
-//
-// This function clears the symmetric value to its default initial state.
-*/
-template< typename MT >
-inline void clear( const SymmetricValue<MT>& value )
-{
-   value.clear();
-}
 //*************************************************************************************************
 
 
@@ -658,108 +618,6 @@ template< typename MT >
 inline void invert( const SymmetricValue<MT>& value )
 {
    value.invert();
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Returns whether the symmetric value is in default state.
-// \ingroup symmetric_matrix
-//
-// \param value The given symmetric value.
-// \return \a true in case the symmetric value is in default state, \a false otherwise.
-//
-// This function checks whether the symmetric value is in default state. In case it is in
-// default state, the function returns \a true, otherwise it returns \a false.
-*/
-template< bool RF, typename MT >
-inline bool isDefault( const SymmetricValue<MT>& value )
-{
-   using blaze::isDefault;
-
-   return isDefault<RF>( value.get() );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Returns whether the symmetric value represents a real number.
-// \ingroup symmetric_matrix
-//
-// \param value The given symmetric value.
-// \return \a true in case the symmetric value represents a real number, \a false otherwise.
-//
-// This function checks whether the symmetric value represents the a real number. In case the
-// value is of built-in type, the function returns \a true. In case the element is of complex
-// type, the function returns \a true if the imaginary part is equal to 0. Otherwise it returns
-// \a false.
-*/
-template< bool RF, typename MT >
-inline bool isReal( const SymmetricValue<MT>& value )
-{
-   using blaze::isReal;
-
-   return isReal<RF>( value.get() );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Returns whether the symmetric value is 0.
-// \ingroup symmetric_matrix
-//
-// \param value The given symmetric value.
-// \return \a true in case the symmetric value is 0, \a false otherwise.
-//
-// This function checks whether the symmetric value represents the numeric value 0. In case it
-// is 0, the function returns \a true, otherwise it returns \a false.
-*/
-template< bool RF, typename MT >
-inline bool isZero( const SymmetricValue<MT>& value )
-{
-   using blaze::isZero;
-
-   return isZero<RF>( value.get() );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Returns whether the symmetric value is 1.
-// \ingroup symmetric_matrix
-//
-// \param value The given symmetric value.
-// \return \a true in case the symmetric value is 1, \a false otherwise.
-//
-// This function checks whether the symmetric value represents the numeric value 1. In case it
-// is 1, the function returns \a true, otherwise it returns \a false.
-*/
-template< bool RF, typename MT >
-inline bool isOne( const SymmetricValue<MT>& value )
-{
-   using blaze::isOne;
-
-   return isOne<RF>( value.get() );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Returns whether the symmetric value is not a number.
-// \ingroup symmetric_matrix
-//
-// \param value The given symmetric value.
-// \return \a true in case the symmetric value is in not a number, \a false otherwise.
-//
-// This function checks whether the symmetric value is not a number (NaN). In case it is not a
-// number, the function returns \a true, otherwise it returns \a false.
-*/
-template< typename MT >
-inline bool isnan( const SymmetricValue<MT>& value )
-{
-   using blaze::isnan;
-
-   return isnan( value.get() );
 }
 //*************************************************************************************************
 

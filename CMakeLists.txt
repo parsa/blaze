@@ -2,7 +2,7 @@
 #
 #   CMake file exposing Blaze configuration and allowing integration in CMake projects.
 #
-#   Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+#   Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 #
 #   This file is part of the Blaze library. You can redistribute it and/or modify it under
 #   the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -33,7 +33,7 @@
 
 cmake_minimum_required(VERSION 3.5)
 
-file(READ blaze/system/Version.h BLAZE_VERSION_FILE)
+file(READ ${CMAKE_CURRENT_LIST_DIR}/blaze/system/Version.h BLAZE_VERSION_FILE)
 
 string(REGEX MATCH "#define BLAZE_MAJOR_VERSION ([0-9]*)" _BLAZE_MAJOR_VERSION ${BLAZE_VERSION_FILE})
 set(BLAZE_MAJOR_VERSION ${CMAKE_MATCH_1})
@@ -89,18 +89,18 @@ if (${BLAZE_CACHE_SIZE_AUTO})
                       OUTPUT_VARIABLE tmp
                       RESULT_VARIABLE flag
                       ERROR_QUIET)
-      if (flag)
+      if (flag OR "${tmp}" STREQUAL "")
          execute_process(COMMAND wmic cpu get L2CacheSize
                          OUTPUT_VARIABLE tmp
                          RESULT_VARIABLE flag
                          ERROR_QUIET)
-      endif (flag)
-      if (flag)
+      endif (flag OR "${tmp}" STREQUAL "")
+      if (flag OR "${tmp}" STREQUAL "")
          execute_process(COMMAND wmic cpu get L1CacheSize
                          OUTPUT_VARIABLE tmp
                          RESULT_VARIABLE flag
                          ERROR_QUIET)
-      endif (flag)
+      endif (flag OR "${tmp}" STREQUAL "")
    endif (WIN32)
 
    if (UNIX)
@@ -108,18 +108,18 @@ if (${BLAZE_CACHE_SIZE_AUTO})
                       OUTPUT_VARIABLE tmp
                       RESULT_VARIABLE flag
                       ERROR_QUIET)
-      if (flag)
+      if (flag OR "${tmp}" STREQUAL "")
          execute_process(COMMAND cat /sys/devices/system/cpu/cpu0/cache/index2/size
                          OUTPUT_VARIABLE tmp
                          RESULT_VARIABLE flag
                          ERROR_QUIET)
-      endif (flag)
-      if (flag)
+      endif (flag OR "${tmp}" STREQUAL "")
+      if (flag OR "${tmp}" STREQUAL "")
          execute_process(COMMAND cat /sys/devices/system/cpu/cpu0/cache/index1/size
                          OUTPUT_VARIABLE tmp
                          RESULT_VARIABLE flag
                          ERROR_QUIET)
-      endif (flag)
+      endif (flag OR "${tmp}" STREQUAL "")
    endif (UNIX)
 
    if (APPLE)
@@ -127,31 +127,32 @@ if (${BLAZE_CACHE_SIZE_AUTO})
                       OUTPUT_VARIABLE tmp
                       RESULT_VARIABLE flag
                       ERROR_QUIET)
-      if (flag)
+      if (flag OR "${tmp}" STREQUAL "")
          execute_process(COMMAND sysctl -n hw.l2cachesize
                          OUTPUT_VARIABLE tmp
                          RESULT_VARIABLE flag
                          ERROR_QUIET)
-      endif (flag)
-      if (flag)
+      endif (flag OR "${tmp}" STREQUAL "")
+      if (flag OR "${tmp}" STREQUAL "")
          execute_process(COMMAND sysctl -n hw.l1icachesize
                          OUTPUT_VARIABLE tmp
                          RESULT_VARIABLE flag
                          ERROR_QUIET)
-      endif (flag)
+      endif (flag OR "${tmp}" STREQUAL "")
 
-      if (flag EQUAL 0)
-         math(EXPR tmp ${tmp}/1024)  # If successful convert to kibibytes to comply with rest
-      endif (flag EQUAL 0)
+      if (flag EQUAL 0 AND NOT "${tmp}" STREQUAL "")
+         math(EXPR tmp "${tmp}/1024")  # If successful convert to kibibytes to comply with rest
+      endif (flag EQUAL 0 AND NOT "${tmp}" STREQUAL "")
    endif (APPLE)
 
-   if (flag)
+   string(REGEX MATCH "([0-9][0-9]+)" tmp "${tmp}") # Get a number containing at least 2 digits in the string tmp
+
+   if (flag OR NOT tmp)
       message("Cache size not found automatically. Using default value as cache size.")
       set(tmp ${BLAZE_CACHE_SIZE_DEFAULT})
-   endif (flag)
+   endif (flag OR NOT tmp)
 
-   string(REGEX MATCH "([0-9][0-9]+)" tmp ${tmp}) # Get a number containing at least 2 digits in the string tmp
-   math(EXPR BLAZE_CACHE_SIZE ${tmp}*1024) # Convert to bytes (assuming that the value is given in kibibytes)
+   math(EXPR BLAZE_CACHE_SIZE "${tmp}*1024") # Convert to bytes (assuming that the value is given in kibibytes)
 
 endif (${BLAZE_CACHE_SIZE_AUTO})
 
@@ -174,14 +175,16 @@ set(BLAZE_BLAS_MODE OFF CACHE BOOL "Enables/Disable the BLAS mode.")
 
 if (BLAZE_BLAS_MODE)
    find_package (BLAS REQUIRED)
+   set(BLAZE_BLAS_IS_64BIT 0 CACHE BOOL "Specify whether the used BLAS library itself is 64-bit or not.")
+   set(BLAZE_BLAS_IS_PARALLEL 0 CACHE BOOL "Specify whether the used BLAS library is itself parallelized or not.")
    set(BLAZE_BLAS_USE_MATRIX_VECTOR_MULTIPLICATION 0 CACHE BOOL "Use BLAS kernels for dense matrix/vector multiplications instead of the default Blaze kernels.")
    set(BLAZE_BLAS_USE_MATRIX_MATRIX_MULTIPLICATION 1 CACHE BOOL "Use BLAS kernels for dense matrix multiplications instead of the default Blaze kernels.")
-   set(BLAZE_BLAS_IS_PARALLEL 0 CACHE BOOL "Specify whether the used BLAS library is itself parallelized or not.")
    set(BLAZE_BLAS_INCLUDE_FILE "<cblas.h>" CACHE STRING "Specify the name of the BLAS header file (e.g. with MKL the file is called mkl_cblas.h)")
 else ()
+   unset(BLAZE_BLAS_IS_64BIT CACHE)
+   unset(BLAZE_BLAS_IS_PARALLEL CACHE)
    unset(BLAZE_BLAS_USE_MATRIX_VECTOR_MULTIPLICATION CACHE)
    unset(BLAZE_BLAS_USE_MATRIX_MATRIX_MULTIPLICATION CACHE)
-   unset(BLAZE_BLAS_IS_PARALLEL CACHE)
    unset(BLAZE_BLAS_INCLUDE_FILE CACHE)
 endif ()
 
@@ -189,6 +192,18 @@ if (BLAZE_BLAS_MODE)
    set(BLAZE_BLAS_MODE 1)
 else ()
    set(BLAZE_BLAS_MODE 0)
+endif ()
+
+if (BLAZE_BLAS_IS_64BIT)
+   set(BLAZE_BLAS_IS_64BIT 1)
+else ()
+   set(BLAZE_BLAS_IS_64BIT 0)
+endif ()
+
+if (BLAZE_BLAS_IS_PARALLEL)
+   set(BLAZE_BLAS_IS_PARALLEL 1)
+else ()
+   set(BLAZE_BLAS_IS_PARALLEL 0)
 endif ()
 
 if (BLAZE_BLAS_USE_MATRIX_VECTOR_MULTIPLICATION)
@@ -201,12 +216,6 @@ if (BLAZE_BLAS_USE_MATRIX_MATRIX_MULTIPLICATION)
    set(BLAZE_BLAS_USE_MATRIX_MATRIX_MULTIPLICATION 1)
 else ()
    set(BLAZE_BLAS_USE_MATRIX_MATRIX_MULTIPLICATION 0)
-endif ()
-
-if (BLAZE_BLAS_IS_PARALLEL)
-   set(BLAZE_BLAS_IS_PARALLEL 1)
-else ()
-   set(BLAZE_BLAS_IS_PARALLEL 0)
 endif ()
 
 if (BLAZE_BLAS_INCLUDE_FILE)
@@ -223,8 +232,8 @@ configure_file ("${CMAKE_CURRENT_LIST_DIR}/cmake/BLAS.h.in"
 # Configure transpose flag
 #==================================================================================================
 
-set(BLAZE_TRANSPOSE_FLAG "columnVector" CACHE STRING "Specify the default transpose flag for all vectors of the Blaze library.")
-set_property(CACHE BLAZE_TRANSPOSE_FLAG PROPERTY STRINGS "columnVector;rowVector")
+set(BLAZE_TRANSPOSE_FLAG "blaze::columnVector" CACHE STRING "Specify the default transpose flag for all vectors of the Blaze library.")
+set_property(CACHE BLAZE_TRANSPOSE_FLAG PROPERTY STRINGS "blaze::columnVector;blaze::rowVector")
 
 configure_file ("${CMAKE_CURRENT_LIST_DIR}/cmake/TransposeFlag.h.in"
                 "${CMAKE_CURRENT_BINARY_DIR}/blaze/config/TransposeFlag.h")
@@ -234,11 +243,33 @@ configure_file ("${CMAKE_CURRENT_LIST_DIR}/cmake/TransposeFlag.h.in"
 # Configure storage order
 #==================================================================================================
 
-set(BLAZE_STORAGE_ORDER "rowMajor" CACHE STRING "Specify the default storage order for all matrices of the Blaze library.")
-set_property(CACHE BLAZE_STORAGE_ORDER PROPERTY STRINGS "rowMajor;columnMajor")
+set(BLAZE_STORAGE_ORDER "blaze::rowMajor" CACHE STRING "Specify the default storage order for all matrices of the Blaze library.")
+set_property(CACHE BLAZE_STORAGE_ORDER PROPERTY STRINGS "blaze::rowMajor;blaze::columnMajor")
 
 configure_file ("${CMAKE_CURRENT_LIST_DIR}/cmake/StorageOrder.h.in"
                 "${CMAKE_CURRENT_BINARY_DIR}/blaze/config/StorageOrder.h")
+
+
+#==================================================================================================
+# Configure alignment
+#==================================================================================================
+
+set(BLAZE_ALIGNMENT "blaze::aligned" CACHE STRING "Specify the default alignment for all vectors and matrices of the Blaze library.")
+set_property(CACHE BLAZE_ALIGNMENT PROPERTY STRINGS "blaze::aligned;blaze::unaligned")
+
+configure_file ("${CMAKE_CURRENT_LIST_DIR}/cmake/Alignment.h.in"
+                "${CMAKE_CURRENT_BINARY_DIR}/blaze/config/Alignment.h")
+
+
+#==================================================================================================
+# Configure padding
+#==================================================================================================
+
+set(BLAZE_PADDING "blaze::padded" CACHE STRING "Specify the default padding flag for all vectors and matrices of the Blaze library")
+set_property(CACHE BLAZE_PADDING PROPERTY STRINGS "blaze::padded;blaze::unpadded")
+
+configure_file ("${CMAKE_CURRENT_LIST_DIR}/cmake/Padding.h.in"
+                "${CMAKE_CURRENT_BINARY_DIR}/blaze/config/Padding.h")
 
 
 #==================================================================================================
@@ -326,23 +357,30 @@ configure_file ("${CMAKE_CURRENT_LIST_DIR}/cmake/Restrict.h.in"
 set(BLAZE_OPTIMIZATION_PADDING ON CACHE BOOL "Enable/Disable the padding of dense vectors and matrices.")
 set(BLAZE_OPTIMIZATION_STREAMING ON CACHE BOOL "Enable/Disable streaming (i.e. non-temporal stores).")
 set(BLAZE_OPTIMIZATION_KERNELS ON CACHE BOOL "Enable/Disable all optimized compute kernels of the Blaze library.")
+set(BLAZE_OPTIMIZATION_INITIALIZATION ON CACHE BOOL "Enable/Disable the default initialization of StaticVector and StaticMatrix.")
 
 if (BLAZE_OPTIMIZATION_PADDING)
-   set(BLAZE_OPTIMIZATION_PADDING "true")
+   set(BLAZE_OPTIMIZATION_PADDING "1")
 else ()
-   set(BLAZE_OPTIMIZATION_PADDING "false")
+   set(BLAZE_OPTIMIZATION_PADDING "0")
 endif ()
 
 if (BLAZE_OPTIMIZATION_STREAMING)
-   set(BLAZE_OPTIMIZATION_STREAMING "true")
+   set(BLAZE_OPTIMIZATION_STREAMING "1")
 else ()
-   set(BLAZE_OPTIMIZATION_STREAMING "false")
+   set(BLAZE_OPTIMIZATION_STREAMING "0")
 endif ()
 
 if (BLAZE_OPTIMIZATION_KERNELS)
-   set(BLAZE_OPTIMIZATION_KERNELS "true")
+   set(BLAZE_OPTIMIZATION_KERNELS "1")
 else ()
-   set(BLAZE_OPTIMIZATION_KERNELS "false")
+   set(BLAZE_OPTIMIZATION_KERNELS "0")
+endif ()
+
+if (BLAZE_OPTIMIZATION_INITIALIZATION)
+   set(BLAZE_OPTIMIZATION_INITIALIZATION "1")
+else ()
+   set(BLAZE_OPTIMIZATION_INITIALIZATION "0")
 endif ()
 
 configure_file ("${CMAKE_CURRENT_LIST_DIR}/cmake/Optimizations.h.in"

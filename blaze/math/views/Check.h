@@ -3,7 +3,7 @@
 //  \file blaze/math/views/Check.h
 //  \brief Header file for the blaze::checked and blaze::unchecked instances
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -36,6 +36,13 @@
 #define _BLAZE_MATH_VIEWS_CHECK_H_
 
 
+//*************************************************************************************************
+// Includes
+//*************************************************************************************************
+
+#include <blaze/util/IntegralConstant.h>
+
+
 namespace blaze {
 
 //=================================================================================================
@@ -46,7 +53,7 @@ namespace blaze {
 
 //*************************************************************************************************
 /*!\brief Template for the blaze::checked and blaze::unchecked instances.
-// \ingroup math
+// \ingroup views
 //
 // blaze::Check is the template for the blaze::checked and blaze::unchecked instance, which is
 // an optional token for the creation of views. It can be used to enforce or skip all runtime
@@ -54,11 +61,12 @@ namespace blaze {
 */
 template< bool C >
 struct Check
+   : public BoolConstant<C>
 {
    //**Constructor*********************************************************************************
    /*!\name Constructor */
    //@{
-   explicit inline constexpr Check() {}
+   constexpr Check() = default;
    //@}
    //**********************************************************************************************
 };
@@ -75,7 +83,7 @@ struct Check
 
 //*************************************************************************************************
 /*!\brief Type of the blaze::checked instance.
-// \ingroup math
+// \ingroup views
 //
 // blaze::Checked is the type of the blaze::checked instance, which is an optional token for the
 // creation of views. It can be used to enforce runtime checks during the creation of a view
@@ -87,7 +95,7 @@ using Checked = Check<true>;
 
 //*************************************************************************************************
 /*!\brief Type of the blaze::unchecked instance.
-// \ingroup math
+// \ingroup views
 //
 // blaze::Unchecked is the type of the blaze::unchecked instance, which is an optional token for
 // the creation of views. It can be used to skip all runtime checks during the creation of a view
@@ -107,7 +115,7 @@ using Unchecked = Check<false>;
 
 //*************************************************************************************************
 /*!\brief Global Checked instance.
-// \ingroup math
+// \ingroup views
 //
 // The blaze::checked instance is an optional token for the creation of views. It can be used
 // used to enforce runtime checks during the creation of a view (subvectors, submatrices, rows,
@@ -124,7 +132,7 @@ constexpr Checked checked;
 
 //*************************************************************************************************
 /*!\brief Global Unchecked instance.
-// \ingroup math
+// \ingroup views
 //
 // The blaze::unchecked instance is an optional token for the creation of views. It can be
 // used to skip all runtime checks during the creation of a view (subvectors, submatrices, rows,
@@ -136,6 +144,88 @@ constexpr Checked checked;
    \endcode
 */
 constexpr Unchecked unchecked;
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  UTILITY FUNCTIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Termination condition for the variadic \c getCheck() function (zero arguments).
+// \ingroup views
+//
+// \return An instance of type blaze::Checked.
+*/
+constexpr Checked getCheck() noexcept
+{
+   return Checked{};
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Termination condition for the variadic \c getCheck() function (blaze::Unchecked found).
+// \ingroup views
+//
+// \param a The instance of type blaze::Unchecked.
+// \param args The remaining arguments.
+// \return An instance of type blaze::Unchecked.
+*/
+template< typename... Ts >
+constexpr Unchecked getCheck( const Unchecked& a, const Ts&... args ) noexcept
+{
+   MAYBE_UNUSED( a, args... );
+   return Unchecked{};
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Extracting blaze::Check arguments from a given list of arguments.
+// \ingroup views
+//
+// \param a The first given argument.
+// \param args The remaining given arguments.
+// \return blaze::Unchecked if at least one blaze::Unchecked is given, blaze::Checked otherwise.
+//
+// This function extracts any argument of type blaze::Check from the given list of arguments.
+// It returns an instance of type blaze::Unchecked if at least one argument of type
+// blaze::Unchecked is given, otherwise an instance of blaze::Checked.
+*/
+template< typename T, typename... Ts >
+constexpr auto getCheck( const T& a, const Ts&... args ) noexcept
+{
+   MAYBE_UNUSED( a );
+   return getCheck( args ... );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Extracting blaze::Check arguments from a given list of arguments.
+// \ingroup views
+//
+// \param args The given arguments.
+// \return \a false if at least one blaze::Unchecked is given, \a true otherwise.
+//
+// This function extracts any argument of type blaze::Check from the given list of arguments.
+// It returns \a false if at least one argument of type blaze::Unchecked is given, otherwise
+// it returns \a true.
+*/
+template< typename... Ts >
+constexpr bool isChecked( const Ts&... args )
+{
+   return getCheck( args... ).value;
+}
 //*************************************************************************************************
 
 } // namespace blaze

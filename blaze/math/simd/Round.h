@@ -3,7 +3,7 @@
 //  \file blaze/math/simd/Round.h
 //  \brief Header file for the SIMD round functionality
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -66,19 +66,19 @@ template< typename T >  // Type of the operand
 BLAZE_ALWAYS_INLINE const SIMDfloat round( const SIMDf32<T>& a ) noexcept
 #if BLAZE_AVX512F_MODE
 {
-   return _mm512_roundscale_ps( (~a).eval().value, 0 );
+   return _mm512_roundscale_ps( (*a).eval().value, 0 );
 }
 #elif BLAZE_MIC_MODE
 {
-   return _mm512_round_ps( (~a).eval().value, ( _MM_FROUND_TO_NEAREST_INT | _MM_FROUND_NO_EXC ), _MM_EXPADJ_NONE );
+   return _mm512_round_ps( (*a).eval().value, ( _MM_FROUND_TO_NEAREST_INT | _MM_FROUND_NO_EXC ), _MM_EXPADJ_NONE );
 }
 #elif BLAZE_AVX_MODE
 {
-   return _mm256_round_ps( (~a).eval().value, ( _MM_FROUND_TO_NEAREST_INT | _MM_FROUND_NO_EXC ) );
+   return _mm256_round_ps( (*a).eval().value, ( _MM_FROUND_TO_NEAREST_INT | _MM_FROUND_NO_EXC ) );
 }
 #elif BLAZE_SSE4_MODE
 {
-   return _mm_round_ps( (~a).eval().value, ( _MM_FROUND_TO_NEAREST_INT | _MM_FROUND_NO_EXC ) );
+   return _mm_round_ps( (*a).eval().value, ( _MM_FROUND_TO_NEAREST_INT | _MM_FROUND_NO_EXC ) );
 }
 #else
 = delete;
@@ -107,15 +107,15 @@ template< typename T >  // Type of the operand
 BLAZE_ALWAYS_INLINE const SIMDdouble round( const SIMDf64<T>& a ) noexcept
 #if BLAZE_AVX512F_MODE
 {
-   return _mm512_roundscale_pd( (~a).eval().value, 0 );
+   return _mm512_roundscale_pd( (*a).eval().value, 0 );
 }
 #elif BLAZE_AVX_MODE
 {
-   return _mm256_round_pd( (~a).eval().value, ( _MM_FROUND_TO_NEAREST_INT | _MM_FROUND_NO_EXC ) );
+   return _mm256_round_pd( (*a).eval().value, ( _MM_FROUND_TO_NEAREST_INT | _MM_FROUND_NO_EXC ) );
 }
 #elif BLAZE_SSE4_MODE
 {
-   return _mm_round_pd( (~a).eval().value, ( _MM_FROUND_TO_NEAREST_INT | _MM_FROUND_NO_EXC ) );
+   return _mm_round_pd( (*a).eval().value, ( _MM_FROUND_TO_NEAREST_INT | _MM_FROUND_NO_EXC ) );
 }
 #else
 = delete;

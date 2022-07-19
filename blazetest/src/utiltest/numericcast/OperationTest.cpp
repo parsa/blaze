@@ -3,7 +3,7 @@
 //  \file src/utiltest/numericcast/OperationTest.cpp
 //  \brief Source file for the numeric cast operation test
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -569,7 +569,7 @@ void OperationTest::testIntToDouble()
       const int a( 123 );
       const double b( blaze::numeric_cast<double>( a ) );
 
-      if( b != 123.0F ) {
+      if( b != static_cast<double>( 123 ) ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Failed numeric cast detected\n"
@@ -631,7 +631,7 @@ void OperationTest::testFloatToDouble()
       const float a( std::numeric_limits<float>::max() );
       const double b( blaze::numeric_cast<double>( a ) );
 
-      if( b != std::numeric_limits<float>::max() ) {
+      if( b != static_cast<double>( std::numeric_limits<float>::max() ) ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Failed numeric cast detected\n"
@@ -659,7 +659,7 @@ void OperationTest::testDoubleToFloat()
    {
       test_ = "Successful conversion from 'double' to 'float'";
 
-      const double a( std::numeric_limits<float>::max() );
+      const double a( static_cast<double>( std::numeric_limits<float>::max() ) );
       const float b( blaze::numeric_cast<float>( a ) );
 
       if( b != std::numeric_limits<float>::max() ) {

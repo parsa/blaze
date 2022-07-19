@@ -3,7 +3,7 @@
 //  \file blaze/math/views/column/Column.h
 //  \brief Column documentation
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -60,10 +60,20 @@
 // \image latex column.eps "Column view" width=250pt
 //
 // A reference to a dense or sparse column can be created very conveniently via the \c column()
-// function. It can be included via the header file
+// function. It can be included via the header files
 
    \code
+   #include <blaze/Blaze.h>
+   // or
+   #include <blaze/Math.h>
+   // or
    #include <blaze/math/Column.h>
+   \endcode
+
+// and forward declared via the header file
+
+   \code
+   #include <blaze/Forward.h>
    \endcode
 
 // The column index must be in the range from \f$[0..N-1]\f$, where \c N is the total number of

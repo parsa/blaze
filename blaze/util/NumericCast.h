@@ -3,7 +3,7 @@
 //  \file blaze/util/NumericCast.h
 //  \brief Cast operators for numeric types
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -45,9 +45,7 @@
 #include <blaze/util/constraints/Numeric.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/Exception.h>
-#include <blaze/util/FalseType.h>
 #include <blaze/util/IntegralConstant.h>
-#include <blaze/util/TrueType.h>
 #include <blaze/util/typetraits/IsFloatingPoint.h>
 #include <blaze/util/typetraits/IsIntegral.h>
 #include <blaze/util/typetraits/IsSame.h>
@@ -162,12 +160,14 @@ inline EnableIf_t< IsCriticalIntIntConversion_v<To,From>, To >
    numeric_cast_backend( From from )
 {
    if( ( sizeof(To) < sizeof(From) || ( IsSigned_v<To> && IsUnsigned_v<From> ) ) &&
-       ( from > From( std::numeric_limits<To>::max() ) ) )
+       ( from > From( std::numeric_limits<To>::max() ) ) ) {
       BLAZE_THROW_OVERFLOW_ERROR( "Invalid numeric cast (overflow)" );
+   }
 
    if( IsSigned_v<From> &&
-       ( from < From( std::numeric_limits<To>::min() ) ) )
+       ( from < From( std::numeric_limits<To>::min() ) ) ) {
       BLAZE_THROW_UNDERFLOW_ERROR( "Invalid numeric cast (underflow)" );
+   }
 
    BLAZE_INTERNAL_ASSERT( from == From( To( from ) ), "Numeric cast failed" );
 
@@ -193,11 +193,13 @@ inline EnableIf_t< IsCriticalFloatIntConversion_v<To,From>, To >
 {
    using std::trunc;
 
-   if( from > From( std::numeric_limits<To>::max() ) )
+   if( from > From( std::numeric_limits<To>::max() ) ) {
       BLAZE_THROW_OVERFLOW_ERROR( "Invalid numeric cast (overflow)" );
+   }
 
-   if( from < From( std::numeric_limits<To>::min() ) )
+   if( from < From( std::numeric_limits<To>::min() ) ) {
       BLAZE_THROW_UNDERFLOW_ERROR( "Invalid numeric cast (underflow)" );
+   }
 
    BLAZE_INTERNAL_ASSERT( trunc( from ) == From( To( from ) ), "Numeric cast failed" );
 
@@ -221,11 +223,13 @@ template< typename To, typename From >
 inline EnableIf_t< IsCriticalFloatFloatConversion_v<To,From>, To >
    numeric_cast_backend( From from )
 {
-   if( from > From( std::numeric_limits<To>::max() ) )
+   if( from > From( std::numeric_limits<To>::max() ) ) {
       BLAZE_THROW_OVERFLOW_ERROR( "Invalid numeric cast (overflow)" );
+   }
 
-   if( from < From( std::numeric_limits<To>::min() ) )
+   if( from < From( std::numeric_limits<To>::min() ) ) {
       BLAZE_THROW_UNDERFLOW_ERROR( "Invalid numeric cast (underflow)" );
+   }
 
    BLAZE_INTERNAL_ASSERT( from == From( To( from ) ), "Numeric cast failed" );
 

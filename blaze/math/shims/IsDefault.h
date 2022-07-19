@@ -3,7 +3,7 @@
 //  \file blaze/math/shims/IsDefault.h
 //  \brief Header file for the isDefault shim
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -43,8 +43,11 @@
 #include <cmath>
 #include <blaze/math/Accuracy.h>
 #include <blaze/math/RelaxationFlag.h>
+#include <blaze/math/typetraits/IsScalar.h>
+#include <blaze/math/typetraits/IsSIMDPack.h>
 #include <blaze/system/Inline.h>
 #include <blaze/util/Complex.h>
+#include <blaze/util/EnableIf.h>
 #include <blaze/util/typetraits/IsBuiltin.h>
 
 
@@ -93,8 +96,9 @@ namespace blaze {
    double d3 = 1.0;   //    false                 |    false
    \endcode
 */
-template< bool RF          // Relaxation flag
-        , typename Type >  // Type of the given value/object
+template< RelaxationFlag RF  // Relaxation flag
+        , typename Type      // Type of the given value/object
+        , EnableIf_t< IsScalar_v<Type> || IsSIMDPack_v<Type> >* = nullptr >
 BLAZE_ALWAYS_INLINE bool isDefault( const Type& v ) noexcept( IsBuiltin_v<Type> )
 {
    return v == Type();
@@ -114,7 +118,7 @@ BLAZE_ALWAYS_INLINE bool isDefault( const Type& v ) noexcept( IsBuiltin_v<Type> 
 // value is exactly zero or within an epsilon range to zero. In case the value is zero or close
 // to zero the function returns \a true, otherwise it returns \a false.
 */
-template< bool RF >  // Relaxation flag
+template< RelaxationFlag RF >  // Relaxation flag
 BLAZE_ALWAYS_INLINE bool isDefault( float v ) noexcept
 {
    if( RF == relaxed )
@@ -138,7 +142,7 @@ BLAZE_ALWAYS_INLINE bool isDefault( float v ) noexcept
 // value is exactly zero or within an epsilon range to zero. In case the value is zero or close
 // to zero the function returns \a true, otherwise it returns \a false.
 */
-template< bool RF >  // Relaxation flag
+template< RelaxationFlag RF >  // Relaxation flag
 BLAZE_ALWAYS_INLINE bool isDefault( double v ) noexcept
 {
    if( RF == relaxed )
@@ -162,7 +166,7 @@ BLAZE_ALWAYS_INLINE bool isDefault( double v ) noexcept
 // point value is exactly zero or within an epsilon range to zero. In case the value is zero or
 // close to zero the function returns \a true, otherwise it returns \a false.
 */
-template< bool RF >  // Relaxation flag
+template< RelaxationFlag RF >  // Relaxation flag
 BLAZE_ALWAYS_INLINE bool isDefault( long double v ) noexcept
 {
    if( RF == relaxed )
@@ -186,8 +190,8 @@ BLAZE_ALWAYS_INLINE bool isDefault( long double v ) noexcept
 // the given complex number are exactly zero or within an epsilon range to zero. In case the both
 // parts are zero or close to zero the function returns \a true, otherwise it returns \a false.
 */
-template< bool RF       // Relaxation flag
-        , typename T >  // Value type of the complex number
+template< RelaxationFlag RF  // Relaxation flag
+        , typename T >       // Value type of the complex number
 BLAZE_ALWAYS_INLINE bool isDefault( const complex<T>& v ) noexcept( IsBuiltin_v<T> )
 {
    return isDefault<RF>( real( v ) ) && isDefault<RF>( imag( v ) );

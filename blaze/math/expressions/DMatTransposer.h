@@ -3,7 +3,7 @@
 //  \file blaze/math/expressions/DMatTransposer.h
 //  \brief Header file for the dense matrix transposer
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -49,6 +49,7 @@
 #include <blaze/math/typetraits/HasConstDataAccess.h>
 #include <blaze/math/typetraits/HasMutableDataAccess.h>
 #include <blaze/math/typetraits/IsAligned.h>
+#include <blaze/math/typetraits/IsContiguous.h>
 #include <blaze/math/typetraits/IsPadded.h>
 #include <blaze/math/typetraits/MaxSize.h>
 #include <blaze/math/typetraits/Size.h>
@@ -79,6 +80,7 @@ class DMatTransposer
  public:
    //**Type definitions****************************************************************************
    using This           = DMatTransposer<MT,SO>;     //!< Type of this DMatTransposer instance.
+   using BaseType       = DenseMatrix<This,SO>;      //!< Base type of this DMatTransposer instance.
    using ResultType     = TransposeType_t<MT>;       //!< Result type for expression template evaluations.
    using OppositeType   = OppositeType_t<MT>;        //!< Result type with opposite storage order for expression template evaluations.
    using TransposeType  = ResultType_t<MT>;          //!< Transpose type for expression template evaluations.
@@ -340,6 +342,19 @@ class DMatTransposer
    }
    //**********************************************************************************************
 
+   //**Resize function*****************************************************************************
+   /*!\brief Changing the size of the matrix.
+   //
+   // \param m The new number of rows of the matrix.
+   // \param n The new number of columns of the matrix.
+   // \param preserve \a true if the old values of the matrix should be preserved, \a false if not.
+   // \return void
+   */
+   inline void resize( size_t m, size_t n, bool preserve=true ) {
+      dm_.resize( m, n, preserve );
+   }
+   //**********************************************************************************************
+
    //**IsIntact function***************************************************************************
    /*!\brief Returns whether the invariants of the matrix are intact.
    //
@@ -537,7 +552,7 @@ class DMatTransposer
            , bool SO2 >    // Storage order of the right-hand side matrix
    inline void assign( const Matrix<MT2,SO2>& rhs )
    {
-      dm_.assign( trans( ~rhs ) );
+      dm_.assign( trans( *rhs ) );
    }
    //**********************************************************************************************
 
@@ -556,7 +571,7 @@ class DMatTransposer
            , bool SO2 >    // Storage order of the right-hand side matrix
    inline void addAssign( const Matrix<MT2,SO2>& rhs )
    {
-      dm_.addAssign( trans( ~rhs ) );
+      dm_.addAssign( trans( *rhs ) );
    }
    //**********************************************************************************************
 
@@ -575,7 +590,7 @@ class DMatTransposer
            , bool SO2 >    // Storage order of the right-hand side matrix
    inline void subAssign( const Matrix<MT2,SO2>& rhs )
    {
-      dm_.subAssign( trans( ~rhs ) );
+      dm_.subAssign( trans( *rhs ) );
    }
    //**********************************************************************************************
 
@@ -594,7 +609,7 @@ class DMatTransposer
            , bool SO2 >    // Storage order of the right-hand side matrix
    inline void schurAssign( const Matrix<MT2,SO2>& rhs )
    {
-      dm_.schurAssign( trans( ~rhs ) );
+      dm_.schurAssign( trans( *rhs ) );
    }
    //**********************************************************************************************
 
@@ -624,24 +639,6 @@ class DMatTransposer
 //  GLOBAL OPERATORS
 //
 //=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Resetting the dense matrix contained in a DMatTransposer.
-// \ingroup dense_matrix_expression
-//
-// \param m The dense matrix to be resetted.
-// \return void
-*/
-template< typename MT  // Type of the dense matrix
-        , bool SO >    // Storage order
-inline void reset( DMatTransposer<MT,SO>& m )
-{
-   m.reset();
-}
-/*! \endcond */
-//*************************************************************************************************
-
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
@@ -756,6 +753,24 @@ struct HasMutableDataAccess< DMatTransposer<MT,SO> >
 template< typename MT, bool SO >
 struct IsAligned< DMatTransposer<MT,SO> >
    : public IsAligned<MT>
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  ISCONTIGUOUS SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, bool SO >
+struct IsContiguous< DMatTransposer<MT,SO> >
+   : public IsContiguous<MT>
 {};
 /*! \endcond */
 //*************************************************************************************************

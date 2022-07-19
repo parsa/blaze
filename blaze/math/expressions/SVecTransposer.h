@@ -3,7 +3,7 @@
 //  \file blaze/math/expressions/SVecTransposer.h
 //  \brief Header file for the sparse vector transposer
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -49,6 +49,7 @@
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/typetraits/MaxSize.h>
 #include <blaze/math/typetraits/Size.h>
+#include <blaze/system/MacroDisable.h>
 #include <blaze/util/algorithms/Max.h>
 #include <blaze/util/algorithms/Min.h>
 #include <blaze/util/Assert.h>
@@ -77,6 +78,7 @@ class SVecTransposer
  public:
    //**Type definitions****************************************************************************
    using This           = SVecTransposer<VT,TF>;  //!< Type of this SVecTransposer instance.
+   using BaseType       = SparseVector<This,TF>;  //!< Base type of this SVecTransposer instance.
    using ResultType     = TransposeType_t<VT>;    //!< Result type for expression template evaluations.
    using TransposeType  = ResultType_t<VT>;       //!< Transpose type for expression template evaluations.
    using ElementType    = ElementType_t<VT>;      //!< Resulting element type.
@@ -377,7 +379,7 @@ class SVecTransposer
    {
       BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( VT2, TF );
 
-      sv_.assign( trans( ~rhs ) );
+      sv_.assign( trans( *rhs ) );
    }
    //**********************************************************************************************
 
@@ -427,24 +429,6 @@ class SVecTransposer
 //  GLOBAL OPERATORS
 //
 //=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Resetting the sparse vector contained in a SVecTransposer.
-// \ingroup sparse_vector_expression
-//
-// \param v The sparse vector to be resetted.
-// \return void
-*/
-template< typename VT  // Type of the sparse vector
-        , bool TF >    // Transpose flag
-inline void reset( SVecTransposer<VT,TF>& v )
-{
-   v.reset();
-}
-/*! \endcond */
-//*************************************************************************************************
-
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */

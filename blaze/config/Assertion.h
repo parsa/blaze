@@ -3,7 +3,7 @@
 //  \file blaze/config/Assertion.h
 //  \brief Configuration of the run time assertion macros
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -49,6 +49,10 @@
 // this symbol manually before including any Blaze header file:
 
    \code
+   g++ ... -DBLAZE_INTERNAL_ASSERTION=1 ...
+   \endcode
+
+   \code
    #define BLAZE_INTERNAL_ASSERTION 1
    #include <blaze/Blaze.h>
    \endcode
@@ -73,6 +77,10 @@
 //
 // \note It is possible to (de-)activate user assertions via command line or by defining this
 // symbol manually before including any Blaze header file:
+
+   \code
+   g++ ... -DBLAZE_USER_ASSERTION=1 ...
+   \endcode
 
    \code
    #define BLAZE_USER_ASSERTION 1

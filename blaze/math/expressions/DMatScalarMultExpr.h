@@ -3,7 +3,7 @@
 //  \file blaze/math/expressions/DMatScalarMultExpr.h
 //  \brief Header file for the dense matrix/scalar multiplication expression
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -45,6 +45,7 @@
 #include <blaze/math/Aliases.h>
 #include <blaze/math/constraints/DenseMatrix.h>
 #include <blaze/math/constraints/RequiresEvaluation.h>
+#include <blaze/math/constraints/Scalar.h>
 #include <blaze/math/constraints/StorageOrder.h>
 #include <blaze/math/Exception.h>
 #include <blaze/math/expressions/Computation.h>
@@ -59,22 +60,17 @@
 #include <blaze/math/typetraits/IsAligned.h>
 #include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsExpression.h>
-#include <blaze/math/typetraits/IsHermitian.h>
 #include <blaze/math/typetraits/IsInvertible.h>
-#include <blaze/math/typetraits/IsLower.h>
 #include <blaze/math/typetraits/IsPadded.h>
-#include <blaze/math/typetraits/IsStrictlyLower.h>
-#include <blaze/math/typetraits/IsStrictlyUpper.h>
-#include <blaze/math/typetraits/IsSymmetric.h>
+#include <blaze/math/typetraits/IsScalar.h>
 #include <blaze/math/typetraits/IsTemporary.h>
-#include <blaze/math/typetraits/IsUpper.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
 #include <blaze/math/typetraits/UnderlyingBuiltin.h>
 #include <blaze/math/typetraits/UnderlyingElement.h>
+#include <blaze/system/HostDevice.h>
 #include <blaze/system/Inline.h>
 #include <blaze/system/Thresholds.h>
 #include <blaze/util/Assert.h>
-#include <blaze/util/constraints/Numeric.h>
 #include <blaze/util/constraints/SameType.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/FunctionTrace.h>
@@ -159,11 +155,16 @@ class DMatScalarMultExpr
 
  public:
    //**Type definitions****************************************************************************
-   using This          = DMatScalarMultExpr<MT,ST,SO>;  //!< Type of this DMatScalarMultExpr instance.
-   using ResultType    = MultTrait_t<RT,ST>;            //!< Result type for expression template evaluations.
-   using OppositeType  = OppositeType_t<ResultType>;    //!< Result type with opposite storage order for expression template evaluations.
-   using TransposeType = TransposeType_t<ResultType>;   //!< Transpose type for expression template evaluations.
-   using ElementType   = ElementType_t<ResultType>;     //!< Resulting element type.
+   //! Type of this DMatScalarMultExpr instance.
+   using This = DMatScalarMultExpr<MT,ST,SO>;
+
+   //! Base type of this DMatScalarMultExpr instance.
+   using BaseType = MatScalarMultExpr< DenseMatrix<This,SO> >;
+
+   using ResultType    = MultTrait_t<RT,ST>;           //!< Result type for expression template evaluations.
+   using OppositeType  = OppositeType_t<ResultType>;   //!< Result type with opposite storage order for expression template evaluations.
+   using TransposeType = TransposeType_t<ResultType>;  //!< Transpose type for expression template evaluations.
+   using ElementType   = ElementType_t<ResultType>;    //!< Resulting element type.
 
    //! Return type for expression template evaluations.
    using ReturnType = const If_t< returnExpr, ExprReturnType, ElementType >;
@@ -208,7 +209,7 @@ class DMatScalarMultExpr
       // \param iterator Iterator to the initial element.
       // \param scalar Scalar of the multiplication expression.
       */
-      explicit inline ConstIterator( IteratorType iterator, RightOperand scalar )
+      inline ConstIterator( IteratorType iterator, RightOperand scalar )
          : iterator_( iterator )  // Iterator to the current element
          , scalar_  ( scalar   )  // Scalar of the multiplication expression
       {}
@@ -220,7 +221,7 @@ class DMatScalarMultExpr
       // \param inc The increment of the iterator.
       // \return The incremented iterator.
       */
-      inline ConstIterator& operator+=( size_t inc ) {
+      inline BLAZE_DEVICE_CALLABLE ConstIterator& operator+=( size_t inc ) {
          iterator_ += inc;
          return *this;
       }
@@ -232,7 +233,7 @@ class DMatScalarMultExpr
       // \param dec The decrement of the iterator.
       // \return The decremented iterator.
       */
-      inline ConstIterator& operator-=( size_t dec ) {
+      inline BLAZE_DEVICE_CALLABLE ConstIterator& operator-=( size_t dec ) {
          iterator_ -= dec;
          return *this;
       }
@@ -243,7 +244,7 @@ class DMatScalarMultExpr
       //
       // \return Reference to the incremented iterator.
       */
-      inline ConstIterator& operator++() {
+      inline BLAZE_DEVICE_CALLABLE ConstIterator& operator++() {
          ++iterator_;
          return *this;
       }
@@ -254,8 +255,8 @@ class DMatScalarMultExpr
       //
       // \return The previous position of the iterator.
       */
-      inline const ConstIterator operator++( int ) {
-         return ConstIterator( iterator_++ );
+      inline BLAZE_DEVICE_CALLABLE const ConstIterator operator++( int ) {
+         return ConstIterator( iterator_++, scalar_ );
       }
       //*******************************************************************************************
 
@@ -264,7 +265,7 @@ class DMatScalarMultExpr
       //
       // \return Reference to the decremented iterator.
       */
-      inline ConstIterator& operator--() {
+      inline BLAZE_DEVICE_CALLABLE ConstIterator& operator--() {
          --iterator_;
          return *this;
       }
@@ -275,8 +276,8 @@ class DMatScalarMultExpr
       //
       // \return The previous position of the iterator.
       */
-      inline const ConstIterator operator--( int ) {
-         return ConstIterator( iterator_-- );
+      inline BLAZE_DEVICE_CALLABLE const ConstIterator operator--( int ) {
+         return ConstIterator( iterator_--, scalar_ );
       }
       //*******************************************************************************************
 
@@ -442,7 +443,7 @@ class DMatScalarMultExpr
    // \param matrix The left-hand side dense matrix of the multiplication expression.
    // \param scalar The right-hand side scalar of the multiplication expression.
    */
-   explicit inline DMatScalarMultExpr( const MT& matrix, ST scalar ) noexcept
+   inline DMatScalarMultExpr( const MT& matrix, ST scalar ) noexcept
       : matrix_( matrix )  // Left-hand side dense matrix of the multiplication expression
       , scalar_( scalar )  // Right-hand side scalar of the multiplication expression
    {}
@@ -498,10 +499,10 @@ class DMatScalarMultExpr
    //**********************************************************************************************
 
    //**Begin function******************************************************************************
-   /*!\brief Returns an iterator to the first non-zero element of row \a i.
+   /*!\brief Returns an iterator to the first non-zero element of row/column \a i.
    //
-   // \param i The row index.
-   // \return Iterator to the first non-zero element of row \a i.
+   // \param i The row/column index.
+   // \return Iterator to the first non-zero element of row/column \a i.
    */
    inline ConstIterator begin( size_t i ) const {
       return ConstIterator( matrix_.begin(i), scalar_ );
@@ -509,10 +510,10 @@ class DMatScalarMultExpr
    //**********************************************************************************************
 
    //**End function********************************************************************************
-   /*!\brief Returns an iterator just past the last non-zero element of row \a i.
+   /*!\brief Returns an iterator just past the last non-zero element of row/column \a i.
    //
-   // \param i The row index.
-   // \return Iterator just past the last non-zero element of row \a i.
+   // \param i The row/column index.
+   // \return Iterator just past the last non-zero element of row/column \a i.
    */
    inline ConstIterator end( size_t i ) const {
       return ConstIterator( matrix_.end(i), scalar_ );
@@ -626,16 +627,16 @@ class DMatScalarMultExpr
    */
    template< typename MT2  // Type of the target dense matrix
            , bool SO2 >    // Storage order of the target dense matrix
-   friend inline EnableIf_t< UseAssign_v<MT2> >
-      assign( DenseMatrix<MT2,SO2>& lhs, const DMatScalarMultExpr& rhs )
+   friend inline auto assign( DenseMatrix<MT2,SO2>& lhs, const DMatScalarMultExpr& rhs )
+      -> EnableIf_t< UseAssign_v<MT2> >
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      assign( ~lhs, rhs.matrix_ );
-      assign( ~lhs, (~lhs) * rhs.scalar_ );
+      assign( *lhs, rhs.matrix_ );
+      assign( *lhs, (*lhs) * rhs.scalar_ );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -656,16 +657,16 @@ class DMatScalarMultExpr
    */
    template< typename MT2  // Type of the target sparse matrix
            , bool SO2 >    // Storage order of the target sparse matrix
-   friend inline EnableIf_t< UseAssign_v<MT2> >
-      assign( SparseMatrix<MT2,SO2>& lhs, const DMatScalarMultExpr& rhs )
+   friend inline auto assign( SparseMatrix<MT2,SO2>& lhs, const DMatScalarMultExpr& rhs )
+      -> EnableIf_t< UseAssign_v<MT2> >
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      assign( ~lhs, rhs.matrix_ );
-      (~lhs) *= rhs.scalar_;
+      assign( *lhs, rhs.matrix_ );
+      (*lhs) *= rhs.scalar_;
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -686,8 +687,8 @@ class DMatScalarMultExpr
    */
    template< typename MT2  // Type of the target dense matrix
            , bool SO2 >    // Storage order of the target dense matrix
-   friend inline EnableIf_t< UseAssign_v<MT2> >
-      addAssign( DenseMatrix<MT2,SO2>& lhs, const DMatScalarMultExpr& rhs )
+   friend inline auto addAssign( DenseMatrix<MT2,SO2>& lhs, const DMatScalarMultExpr& rhs )
+      -> EnableIf_t< UseAssign_v<MT2> >
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -695,11 +696,11 @@ class DMatScalarMultExpr
       BLAZE_CONSTRAINT_MUST_BE_MATRIX_WITH_STORAGE_ORDER( ResultType, SO );
       BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
       const ResultType tmp( serial( rhs ) );
-      addAssign( ~lhs, tmp );
+      addAssign( *lhs, tmp );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -724,8 +725,8 @@ class DMatScalarMultExpr
    */
    template< typename MT2  // Type of the target dense matrix
            , bool SO2 >    // Storage order of the target dense matrix
-   friend inline EnableIf_t< UseAssign_v<MT2> >
-      subAssign( DenseMatrix<MT2,SO2>& lhs, const DMatScalarMultExpr& rhs )
+   friend inline auto subAssign( DenseMatrix<MT2,SO2>& lhs, const DMatScalarMultExpr& rhs )
+      -> EnableIf_t< UseAssign_v<MT2> >
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -733,11 +734,11 @@ class DMatScalarMultExpr
       BLAZE_CONSTRAINT_MUST_BE_MATRIX_WITH_STORAGE_ORDER( ResultType, SO );
       BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
       const ResultType tmp( serial( rhs ) );
-      subAssign( ~lhs, tmp );
+      subAssign( *lhs, tmp );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -762,8 +763,8 @@ class DMatScalarMultExpr
    */
    template< typename MT2  // Type of the target dense matrix
            , bool SO2 >    // Storage order of the target dense matrix
-   friend inline EnableIf_t< UseAssign_v<MT2> >
-      schurAssign( DenseMatrix<MT2,SO2>& lhs, const DMatScalarMultExpr& rhs )
+   friend inline auto schurAssign( DenseMatrix<MT2,SO2>& lhs, const DMatScalarMultExpr& rhs )
+      -> EnableIf_t< UseAssign_v<MT2> >
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -771,11 +772,11 @@ class DMatScalarMultExpr
       BLAZE_CONSTRAINT_MUST_BE_MATRIX_WITH_STORAGE_ORDER( ResultType, SO );
       BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
       const ResultType tmp( serial( rhs ) );
-      schurAssign( ~lhs, tmp );
+      schurAssign( *lhs, tmp );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -808,16 +809,16 @@ class DMatScalarMultExpr
    */
    template< typename MT2  // Type of the target dense matrix
            , bool SO2 >    // Storage order of the target dense matrix
-   friend inline EnableIf_t< UseSMPAssign_v<MT2> >
-      smpAssign( DenseMatrix<MT2,SO2>& lhs, const DMatScalarMultExpr& rhs )
+   friend inline auto smpAssign( DenseMatrix<MT2,SO2>& lhs, const DMatScalarMultExpr& rhs )
+      -> EnableIf_t< UseSMPAssign_v<MT2> >
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      smpAssign( ~lhs, rhs.matrix_ );
-      smpAssign( ~lhs, (~lhs) * rhs.scalar_ );
+      smpAssign( *lhs, rhs.matrix_ );
+      smpAssign( *lhs, (*lhs) * rhs.scalar_ );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -838,16 +839,16 @@ class DMatScalarMultExpr
    */
    template< typename MT2  // Type of the target sparse matrix
            , bool SO2 >    // Storage order of the target sparse matrix
-   friend inline EnableIf_t< UseSMPAssign_v<MT2> >
-      smpAssign( SparseMatrix<MT2,SO2>& lhs, const DMatScalarMultExpr& rhs )
+   friend inline auto smpAssign( SparseMatrix<MT2,SO2>& lhs, const DMatScalarMultExpr& rhs )
+      -> EnableIf_t< UseSMPAssign_v<MT2> >
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      smpAssign( ~lhs, rhs.matrix_ );
-      (~lhs) *= rhs.scalar_;
+      smpAssign( *lhs, rhs.matrix_ );
+      (*lhs) *= rhs.scalar_;
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -868,8 +869,8 @@ class DMatScalarMultExpr
    */
    template< typename MT2  // Type of the target dense matrix
            , bool SO2 >    // Storage order of the target dense matrix
-   friend inline EnableIf_t< UseSMPAssign_v<MT2> >
-      smpAddAssign( DenseMatrix<MT2,SO2>& lhs, const DMatScalarMultExpr& rhs )
+   friend inline auto smpAddAssign( DenseMatrix<MT2,SO2>& lhs, const DMatScalarMultExpr& rhs )
+      -> EnableIf_t< UseSMPAssign_v<MT2> >
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -877,11 +878,11 @@ class DMatScalarMultExpr
       BLAZE_CONSTRAINT_MUST_BE_MATRIX_WITH_STORAGE_ORDER( ResultType, SO );
       BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
       const ResultType tmp( rhs );
-      smpAddAssign( ~lhs, tmp );
+      smpAddAssign( *lhs, tmp );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -906,8 +907,8 @@ class DMatScalarMultExpr
    */
    template< typename MT2  // Type of the target dense matrix
            , bool SO2 >    // Storage order of the target dense matrix
-   friend inline EnableIf_t< UseSMPAssign_v<MT2> >
-      smpSubAssign( DenseMatrix<MT2,SO2>& lhs, const DMatScalarMultExpr& rhs )
+   friend inline auto smpSubAssign( DenseMatrix<MT2,SO2>& lhs, const DMatScalarMultExpr& rhs )
+      -> EnableIf_t< UseSMPAssign_v<MT2> >
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -915,11 +916,11 @@ class DMatScalarMultExpr
       BLAZE_CONSTRAINT_MUST_BE_MATRIX_WITH_STORAGE_ORDER( ResultType, SO );
       BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
       const ResultType tmp( rhs );
-      smpSubAssign( ~lhs, tmp );
+      smpSubAssign( *lhs, tmp );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -944,8 +945,8 @@ class DMatScalarMultExpr
    */
    template< typename MT2  // Type of the target dense matrix
            , bool SO2 >    // Storage order of the target dense matrix
-   friend inline EnableIf_t< UseSMPAssign_v<MT2> >
-      smpSchurAssign( DenseMatrix<MT2,SO2>& lhs, const DMatScalarMultExpr& rhs )
+   friend inline auto smpSchurAssign( DenseMatrix<MT2,SO2>& lhs, const DMatScalarMultExpr& rhs )
+      -> EnableIf_t< UseSMPAssign_v<MT2> >
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -953,11 +954,11 @@ class DMatScalarMultExpr
       BLAZE_CONSTRAINT_MUST_BE_MATRIX_WITH_STORAGE_ORDER( ResultType, SO );
       BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
       const ResultType tmp( rhs );
-      smpSchurAssign( ~lhs, tmp );
+      smpSchurAssign( *lhs, tmp );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -978,7 +979,7 @@ class DMatScalarMultExpr
    /*! \cond BLAZE_INTERNAL */
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( MT );
    BLAZE_CONSTRAINT_MUST_BE_MATRIX_WITH_STORAGE_ORDER( MT, SO );
-   BLAZE_CONSTRAINT_MUST_BE_NUMERIC_TYPE( ST );
+   BLAZE_CONSTRAINT_MUST_BE_SCALAR_TYPE( ST );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ST, RightOperand );
    /*! \endcond */
    //**********************************************************************************************
@@ -1019,7 +1020,7 @@ inline decltype(auto) operator-( const DenseMatrix<MT,SO>& dm )
 
    using ScalarType = UnderlyingBuiltin_t<MT>;
    using ReturnType = const DMatScalarMultExpr<MT,ScalarType,SO>;
-   return ReturnType( ~dm, ScalarType(-1) );
+   return ReturnType( *dm, ScalarType(-1) );
 }
 //*************************************************************************************************
 
@@ -1056,14 +1057,14 @@ inline decltype(auto) operator-( const DenseMatrix<MT,SO>& dm )
 template< typename MT  // Type of the left-hand side dense matrix
         , bool SO      // Storage order of the left-hand side dense matrix
         , typename ST  // Type of the right-hand side scalar
-        , EnableIf_t< IsNumeric_v<ST> >* = nullptr >
+        , EnableIf_t< IsScalar_v<ST> >* = nullptr >
 inline decltype(auto) operator*( const DenseMatrix<MT,SO>& mat, ST scalar )
 {
    BLAZE_FUNCTION_TRACE;
 
    using ScalarType = MultTrait_t< UnderlyingBuiltin_t<MT>, ST >;
    using ReturnType = const DMatScalarMultExpr<MT,ScalarType,SO>;
-   return ReturnType( ~mat, scalar );
+   return ReturnType( *mat, scalar );
 }
 //*************************************************************************************************
 
@@ -1092,600 +1093,15 @@ inline decltype(auto) operator*( const DenseMatrix<MT,SO>& mat, ST scalar )
 template< typename ST  // Type of the left-hand side scalar
         , typename MT  // Type of the right-hand side dense matrix
         , bool SO      // Storage order of the right-hand side dense matrix
-        , EnableIf_t< IsNumeric_v<ST> >* = nullptr >
+        , EnableIf_t< IsScalar_v<ST> >* = nullptr >
 inline decltype(auto) operator*( ST scalar, const DenseMatrix<MT,SO>& mat )
 {
    BLAZE_FUNCTION_TRACE;
 
    using ScalarType = MultTrait_t< ST, UnderlyingBuiltin_t<MT> >;
    using ReturnType = const DMatScalarMultExpr<MT,ScalarType,SO>;
-   return ReturnType( ~mat, scalar );
+   return ReturnType( *mat, scalar );
 }
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  GLOBAL RESTRUCTURING UNARY ARITHMETIC OPERATORS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Unary minus operator for the negation of a dense matrix-scalar multiplication
-//        (\f$ A = -(B*s) \f$).
-// \ingroup dense_matrix
-//
-// \param dm The dense matrix-scalar multiplication to be negated.
-// \return The negation of the dense matrix-scalar multiplication.
-//
-// This operator implements a performance optimized treatment of the negation of a dense matrix-
-// scalar multiplication expression.
-*/
-template< typename MT  // Type of the dense matrix
-        , typename ST  // Type of the scalar
-        , bool TF >    // Transpose flag
-inline decltype(auto) operator-( const DMatScalarMultExpr<MT,ST,TF>& dm )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   using ReturnType = const DMatScalarMultExpr<MT,ST,TF>;
-   return ReturnType( dm.leftOperand(), -dm.rightOperand() );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  GLOBAL RESTRUCTURING BINARY ARITHMETIC OPERATORS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Multiplication operator for the multiplication of a dense matrix-scalar multiplication
-//        expression and a scalar value (\f$ A=(B*s1)*s2 \f$).
-// \ingroup dense_matrix
-//
-// \param mat The left-hand side dense matrix-scalar multiplication.
-// \param scalar The right-hand side scalar value for the multiplication.
-// \return The scaled result matrix.
-//
-// This operator implements a performance optimized treatment of the multiplication of a
-// dense matrix-scalar multiplication expression and a scalar value.
-*/
-template< typename MT   // Type of the dense matrix of the left-hand side expression
-        , typename ST1  // Type of the scalar of the left-hand side expression
-        , bool SO       // Storage order of the dense matrix
-        , typename ST2  // Type of the right-hand side scalar
-        , EnableIf_t< IsNumeric_v<ST2> >* = nullptr >
-inline decltype(auto) operator*( const DMatScalarMultExpr<MT,ST1,SO>& mat, ST2 scalar )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   return mat.leftOperand() * ( mat.rightOperand() * scalar );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Multiplication operator for the multiplication of a scalar value and a dense matrix-
-//        scalar multiplication expression (\f$ A=s2*(B*s1) \f$).
-// \ingroup dense_matrix
-//
-// \param scalar The left-hand side scalar value for the multiplication.
-// \param mat The right-hand side dense matrix-scalar multiplication.
-// \return The scaled result matrix.
-//
-// This operator implements a performance optimized treatment of the multiplication of a
-// scalar value and a dense matrix-scalar multiplication expression.
-*/
-template< typename ST1  // Type of the left-hand side scalar
-        , typename MT   // Type of the dense matrix of the right-hand side expression
-        , typename ST2  // Type of the scalar of the right-hand side expression
-        , bool SO       // Storage order of the dense matrix
-        , EnableIf_t< IsNumeric_v<ST1> >* = nullptr >
-inline decltype(auto) operator*( ST1 scalar, const DMatScalarMultExpr<MT,ST2,SO>& mat )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   return mat.leftOperand() * ( scalar * mat.rightOperand() );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Division operator for the division of a dense matrix-scalar multiplication
-//        expression by a scalar value (\f$ A=(B*s1)/s2 \f$).
-// \ingroup dense_matrix
-//
-// \param mat The left-hand side dense matrix-scalar multiplication.
-// \param scalar The right-hand side scalar value for the division.
-// \return The scaled result matrix.
-//
-// This operator implements a performance optimized treatment of the division of a
-// dense matrix-scalar multiplication expression by a scalar value.
-*/
-template< typename MT   // Type of the dense matrix of the left-hand side expression
-        , typename ST1  // Type of the scalar of the left-hand side expression
-        , bool SO       // Storage order of the dense matrix
-        , typename ST2  // Type of the right-hand side scalar
-        , EnableIf_t< IsNumeric_v<ST2> && ( IsInvertible_v<ST1> || IsInvertible_v<ST2> ) >* = nullptr >
-inline decltype(auto) operator/( const DMatScalarMultExpr<MT,ST1,SO>& mat, ST2 scalar )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   return mat.leftOperand() * ( mat.rightOperand() / scalar );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Multiplication operator for the multiplication of a dense matrix-scalar
-//        multiplication expression and a dense vector (\f$ \vec{a}=(B*s1)*\vec{c} \f$).
-// \ingroup dense_vector
-//
-// \param mat The left-hand side dense matrix-scalar multiplication.
-// \param vec The right-hand side dense vector.
-// \return The scaled result vector.
-//
-// This operator implements the performance optimized treatment of the multiplication of a
-// dense matrix-scalar multiplication and a dense vector. It restructures the expression
-// \f$ \vec{a}=(B*s1)*\vec{c} \f$ to the expression \f$ \vec{a}=(B*\vec{c})*s1 \f$.
-*/
-template< typename MT    // Type of the dense matrix of the left-hand side expression
-        , typename ST    // Type of the scalar of the left-hand side expression
-        , bool SO        // Storage order of the left-hand side expression
-        , typename VT >  // Type of the right-hand side dense vector
-inline decltype(auto)
-   operator*( const DMatScalarMultExpr<MT,ST,SO>& mat, const DenseVector<VT,false>& vec )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   return ( mat.leftOperand() * (~vec) ) * mat.rightOperand();
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Multiplication operator for the multiplication of a dense vector and a dense
-//        matrix-scalar multiplication expression (\f$ \vec{a}^T=\vec{c}^T*(B*s1) \f$).
-// \ingroup dense_vector
-//
-// \param vec The left-hand side dense vector.
-// \param mat The right-hand side dense matrix-scalar multiplication.
-// \return The scaled result vector.
-//
-// This operator implements the performance optimized treatment of the multiplication of a
-// dense vector and a dense matrix-scalar multiplication. It restructures the expression
-// \f$ \vec{a}=\vec{c}^T*(B*s1) \f$ to the expression \f$ \vec{a}^T=(\vec{c}^T*B)*s1 \f$.
-*/
-template< typename VT  // Type of the left-hand side dense vector
-        , typename MT  // Type of the dense matrix of the right-hand side expression
-        , typename ST  // Type of the scalar of the right-hand side expression
-        , bool SO >    // Storage order of the right-hand side expression
-inline decltype(auto)
-   operator*( const DenseVector<VT,true>& vec, const DMatScalarMultExpr<MT,ST,SO>& mat )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   return ( (~vec) * mat.leftOperand() ) * mat.rightOperand();
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Multiplication operator for the multiplication of a dense matrix-scalar
-//        multiplication expression and a dense vector-scalar multiplication expression
-//        (\f$ \vec{a}=(B*s1)*(\vec{c}*s2) \f$).
-// \ingroup dense_vector
-//
-// \param mat The left-hand side dense matrix-scalar multiplication.
-// \param vec The right-hand side dense vector-scalar multiplication.
-// \return The scaled result vector.
-//
-// This operator implements the performance optimized treatment of the multiplication
-// of a dense matrix-scalar multiplication and a dense vector-scalar multiplication. It
-// restructures the expression \f$ \vec{a}=(B*s1)*(\vec{c}*s2) \f$ to the expression
-// \f$ \vec{a}=(B*\vec{c})*(s1*s2) \f$.
-*/
-template< typename MT     // Type of the dense matrix of the left-hand side expression
-        , typename ST1    // Type of the scalar of the left-hand side expression
-        , bool SO         // Storage order of the left-hand side expression
-        , typename VT     // Type of the dense vector of the right-hand side expression
-        , typename ST2 >  // Type of the scalar of the right-hand side expression
-inline decltype(auto)
-   operator*( const DMatScalarMultExpr<MT,ST1,SO>& mat, const DVecScalarMultExpr<VT,ST2,false>& vec )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   return ( mat.leftOperand() * vec.leftOperand() ) * ( mat.rightOperand() * vec.rightOperand() );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Multiplication operator for the multiplication of a dense vector-scalar
-//        multiplication expression and a dense matrix-scalar multiplication expression
-//        (\f$ \vec{a}^T=\vec{b}^T*(C*s1) \f$).
-// \ingroup dense_vector
-//
-// \param vec The left-hand side dense vector-scalar multiplication.
-// \param mat The right-hand side dense matrix-scalar multiplication.
-// \return The scaled result vector.
-//
-// This operator implements the performance optimized treatment of the multiplication
-// of a dense vector-scalar multiplication and a dense matrix-scalar multiplication. It
-// restructures the expression \f$ \vec{a}=(\vec{b}^T*s1)*(C*s2) \f$ to the expression
-// \f$ \vec{a}^T=(\vec{b}^T*C)*(s1*s2) \f$.
-*/
-template< typename VT   // Type of the dense vector of the left-hand side expression
-        , typename ST1  // Type of the scalar of the left-hand side expression
-        , typename MT   // Type of the dense matrix of the right-hand side expression
-        , typename ST2  // Type of the scalar of the right-hand side expression
-        , bool SO >     // Storage order of the right-hand side expression
-inline decltype(auto)
-   operator*( const DVecScalarMultExpr<VT,ST1,true>& vec, const DMatScalarMultExpr<MT,ST2,SO>& mat )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   return ( vec.leftOperand() * mat.leftOperand() ) * ( vec.rightOperand() * mat.rightOperand() );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Multiplication operator for the multiplication of a dense matrix-scalar
-//        multiplication expression and a sparse vector (\f$ \vec{a}=(B*s1)*\vec{c} \f$).
-// \ingroup dense_vector
-//
-// \param mat The left-hand side dense matrix-scalar multiplication.
-// \param vec The right-hand side sparse vector.
-// \return The scaled result vector.
-//
-// This operator implements the performance optimized treatment of the multiplication of a
-// dense matrix-scalar multiplication and a sparse vector. It restructures the expression
-// \f$ \vec{a}=(B*s1)*\vec{c} \f$ to the expression \f$ \vec{a}=(B*\vec{c})*s1 \f$.
-*/
-template< typename MT    // Type of the dense matrix of the left-hand side expression
-        , typename ST    // Type of the scalar of the left-hand side expression
-        , bool SO        // Storage order of the left-hand side expression
-        , typename VT >  // Type of the right-hand side sparse vector
-inline decltype(auto)
-   operator*( const DMatScalarMultExpr<MT,ST,SO>& mat, const SparseVector<VT,false>& vec )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   return ( mat.leftOperand() * (~vec) ) * mat.rightOperand();
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Multiplication operator for the multiplication of a sparse vector and a dense
-//        matrix-scalar multiplication expression (\f$ \vec{a}^T=\vec{c}^T*(B*s1) \f$).
-// \ingroup dense_vector
-//
-// \param vec The left-hand side sparse vector.
-// \param mat The right-hand side dense matrix-scalar multiplication.
-// \return The scaled result vector.
-//
-// This operator implements the performance optimized treatment of the multiplication of a
-// sparse vector and a dense matrix-scalar multiplication. It restructures the expression
-// \f$ \vec{a}=\vec{c}^T*(B*s1) \f$ to the expression \f$ \vec{a}^T=(\vec{c}^T*B)*s1 \f$.
-*/
-template< typename VT  // Type of the left-hand side sparse vector
-        , typename MT  // Type of the dense matrix of the right-hand side expression
-        , typename ST  // Type of the scalar of the right-hand side expression
-        , bool SO >    // Storage order of the right-hand side expression
-inline decltype(auto)
-   operator*( const SparseVector<VT,true>& vec, const DMatScalarMultExpr<MT,ST,SO>& mat )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   return ( (~vec) * mat.leftOperand() ) * mat.rightOperand();
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Multiplication operator for the multiplication of a dense matrix-scalar
-//        multiplication expression and a sparse vector-scalar multiplication expression
-//        (\f$ \vec{a}=(B*s1)*(\vec{c}*s2) \f$).
-// \ingroup dense_vector
-//
-// \param mat The left-hand side dense matrix-scalar multiplication.
-// \param vec The right-hand side sparse vector-scalar multiplication.
-// \return The scaled result vector.
-//
-// This operator implements the performance optimized treatment of the multiplication
-// of a dense matrix-scalar multiplication and a sparse vector-scalar multiplication. It
-// restructures the expression \f$ \vec{a}=(B*s1)*(\vec{c}*s2) \f$ to the expression
-// \f$ \vec{a}=(B*\vec{c})*(s1*s2) \f$.
-*/
-template< typename MT     // Type of the dense matrix of the left-hand side expression
-        , typename ST1    // Type of the scalar of the left-hand side expression
-        , bool SO         // Storage order of the left-hand side expression
-        , typename VT     // Type of the sparse vector of the right-hand side expression
-        , typename ST2 >  // Type of the scalar of the right-hand side expression
-inline decltype(auto)
-   operator*( const DMatScalarMultExpr<MT,ST1,SO>& mat, const SVecScalarMultExpr<VT,ST2,false>& vec )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   return ( mat.leftOperand() * vec.leftOperand() ) * ( mat.rightOperand() * vec.rightOperand() );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Multiplication operator for the multiplication of a sparse vector-scalar
-//        multiplication expression and a dense matrix-scalar multiplication expression
-//        (\f$ \vec{a}^T=\vec{b}^T*(C*s1) \f$).
-// \ingroup dense_vector
-//
-// \param vec The left-hand side sparse vector-scalar multiplication.
-// \param mat The right-hand side dense matrix-scalar multiplication.
-// \return The scaled result vector.
-//
-// This operator implements the performance optimized treatment of the multiplication
-// of a sparse vector-scalar multiplication and a dense matrix-scalar multiplication. It
-// restructures the expression \f$ \vec{a}=(\vec{b}^T*s1)*(C*s2) \f$ to the expression
-// \f$ \vec{a}^T=(\vec{b}^T*C)*(s1*s2) \f$.
-*/
-template< typename VT   // Type of the sparse vector of the left-hand side expression
-        , typename ST1  // Type of the scalar of the left-hand side expression
-        , typename MT   // Type of the dense matrix of the right-hand side expression
-        , typename ST2  // Type of the scalar of the right-hand side expression
-        , bool SO >     // Storage order of the right-hand side expression
-inline decltype(auto)
-   operator*( const SVecScalarMultExpr<VT,ST1,true>& vec, const DMatScalarMultExpr<MT,ST2,SO>& mat )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   return ( vec.leftOperand() * mat.leftOperand() ) * ( vec.rightOperand() * mat.rightOperand() );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Multiplication operator for the multiplication of a dense matrix-scalar multiplication
-//        expression and a dense matrix (\f$ A=(B*s1)*C \f$).
-// \ingroup dense_matrix
-//
-// \param lhs The left-hand side dense matrix-scalar multiplication.
-// \param rhs The right-hand side dense matrix.
-// \return The scaled result matrix.
-//
-// This operator implements the performance optimized treatment of the multiplication of a
-// dense matrix-scalar multiplication and a dense matrix. It restructures the expression
-// \f$ A=(B*s1)*C \f$ to the expression \f$ A=(B*C)*s1 \f$.
-*/
-template< typename MT1  // Type of the dense matrix of the left-hand side expression
-        , typename ST   // Type of the scalar of the left-hand side expression
-        , bool SO1      // Storage order of the left-hand side expression
-        , typename MT2  // Type of the right-hand side dense matrix
-        , bool SO2 >    // Storage order of the right-hand side dense matrix
-inline decltype(auto)
-   operator*( const DMatScalarMultExpr<MT1,ST,SO1>& lhs, const DenseMatrix<MT2,SO2>& rhs )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   return ( lhs.leftOperand() * (~rhs) ) * lhs.rightOperand();
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Multiplication operator for the multiplication of a dense matrix and a dense matrix-
-//        scalar multiplication expression (\f$ A=(B*s1)*C \f$).
-// \ingroup dense_matrix
-//
-// \param lhs The left-hand side dense matrix.
-// \param rhs The right-hand side dense matrix-scalar multiplication.
-// \return The scaled result matrix.
-//
-// This operator implements the performance optimized treatment of the multiplication of a
-// dense matrix and a dense matrix-scalar multiplication. It restructures the expression
-// \f$ A=B*(C*s1) \f$ to the expression \f$ A=(B*C)*s1 \f$.
-*/
-template< typename MT1  // Type of the left-hand side dense matrix
-        , bool SO1      // Storage order of the left-hand side dense matrix
-        , typename MT2  // Type of the dense matrix of the right-hand side expression
-        , typename ST   // Type of the scalar of the right-hand side expression
-        , bool SO2 >    // Storage order of the right-hand side expression
-inline decltype(auto)
-   operator*( const DenseMatrix<MT1,SO1>& lhs, const DMatScalarMultExpr<MT2,ST,SO2>& rhs )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   return ( (~lhs) * rhs.leftOperand() ) * rhs.rightOperand();
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Multiplication operator for the multiplication of two dense matrix-scalar multiplication
-//        expressions (\f$ A=(B*s1)*(C*s2) \f$).
-// \ingroup dense_matrix
-//
-// \param lhs The left-hand side dense matrix-scalar multiplication.
-// \param rhs The right-hand side dense matrix-scalar multiplication.
-// \return The scaled result matrix.
-//
-// This operator implements the performance optimized treatment of the multiplication of
-// two dense matrix-scalar multiplication expressions. It restructures the expression
-// \f$ A=(B*s1)*(C*s2) \f$ to the expression \f$ A=(B*C)*(s1*s2) \f$.
-*/
-template< typename MT1  // Type of the dense matrix of the left-hand side expression
-        , typename ST1  // Type of the scalar of the left-hand side expression
-        , bool SO1      // Storage order of the left-hand side expression
-        , typename MT2  // Type of the right-hand side dense matrix
-        , typename ST2  // Type of the scalar of the right-hand side expression
-        , bool SO2 >    // Storage order of the right-hand side expression
-inline decltype(auto)
-   operator*( const DMatScalarMultExpr<MT1,ST1,SO1>& lhs, const DMatScalarMultExpr<MT2,ST2,SO2>& rhs )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   return ( lhs.leftOperand() * rhs.leftOperand() ) * ( lhs.rightOperand() * rhs.rightOperand() );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Multiplication operator for the multiplication of a dense matrix-scalar multiplication
-//        expression and a sparse matrix (\f$ A=(B*s1)*C \f$).
-// \ingroup dense_matrix
-//
-// \param lhs The left-hand side dense matrix-scalar multiplication.
-// \param rhs The right-hand side sparse matrix.
-// \return The scaled result matrix.
-//
-// This operator implements the performance optimized treatment of the multiplication of a
-// dense matrix-scalar multiplication and a sparse matrix. It restructures the expression
-// \f$ A=(B*s1)*C \f$ to the expression \f$ A=(B*C)*s1 \f$.
-*/
-template< typename MT1    // Type of the dense matrix of the left-hand side expression
-        , typename ST     // Type of the scalar of the left-hand side expression
-        , bool SO1        // Storage order of the left-hand side expression
-        , typename MT2    // Type of the right-hand side sparse matrix
-        , bool SO2 >      // Storage order of the right-hand side sparse matrix
-inline decltype(auto)
-   operator*( const DMatScalarMultExpr<MT1,ST,SO1>& lhs, const SparseMatrix<MT2,SO2>& rhs )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   return ( lhs.leftOperand() * (~rhs) ) * lhs.rightOperand();
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Multiplication operator for the multiplication of a sparse matrix and a dense matrix-
-//        scalar multiplication expression (\f$ A=(B*s1)*C \f$).
-// \ingroup dense_matrix
-//
-// \param lhs The left-hand side sparse matrix.
-// \param rhs The right-hand side dense matrix-scalar multiplication.
-// \return The scaled result matrix.
-//
-// This operator implements the performance optimized treatment of the multiplication of a
-// sparse matrix and a dense matrix-scalar multiplication. It restructures the expression
-// \f$ A=B*(C*s1) \f$ to the expression \f$ A=(B*C)*s1 \f$.
-*/
-template< typename MT1    // Type of the left-hand side sparse matrix
-        , bool SO1        // Storage order of the left-hand side sparse matrix
-        , typename MT2    // Type of the dense matrix of the right-hand side expression
-        , typename ST     // Type of the scalar of the right-hand side expression
-        , bool SO2 >      // Storage order of the right-hand side expression
-inline decltype(auto)
-   operator*( const SparseMatrix<MT1,SO1>& lhs, const DMatScalarMultExpr<MT2,ST,SO2>& rhs )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   return ( (~lhs) * rhs.leftOperand() ) * rhs.rightOperand();
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Multiplication operator for the multiplication of a dense matrix-scalar
-//        multiplication expression and a sparse matrix-scalar multiplication expression
-//        (\f$ A=(B*s1)*(C*s2) \f$).
-// \ingroup dense_matrix
-//
-// \param mat The left-hand side dense matrix-scalar multiplication.
-// \param vec The right-hand side sparse matrix-scalar multiplication.
-// \return The scaled result matrix.
-//
-// This operator implements the performance optimized treatment of the multiplication of a dense
-// matrix-scalar multiplication and a sparse matrix-scalar multiplication. It restructures the
-// expression \f$ A=(B*s1)*(C*s2) \f$ to the expression \f$ A=(B*C)*(s1*s2) \f$.
-*/
-template< typename MT1  // Type of the dense matrix of the left-hand side expression
-        , typename ST1  // Type of the scalar of the left-hand side expression
-        , bool SO1      // Storage order of the left-hand side expression
-        , typename MT2  // Type of the sparse matrix of the right-hand side expression
-        , typename ST2  // Type of the scalar of the right-hand side expression
-        , bool SO2 >    // Storage order of the right-hand side expression
-inline decltype(auto)
-   operator*( const DMatScalarMultExpr<MT1,ST1,SO1>& mat, const SMatScalarMultExpr<MT2,ST2,SO2>& vec )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   return ( mat.leftOperand() * vec.leftOperand() ) * ( mat.rightOperand() * vec.rightOperand() );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Multiplication operator for the multiplication of a sparse matrix-scalar
-//        multiplication expression and a dense matrix-scalar multiplication expression
-//        (\f$ A=(B*s1)*(C*s2) \f$).
-// \ingroup dense_matrix
-//
-// \param mat The left-hand side sparse matrix-scalar multiplication.
-// \param vec The right-hand side dense matrix-scalar multiplication.
-// \return The scaled result matrix.
-//
-// This operator implements the performance optimized treatment of the multiplication of a sparse
-// matrix-scalar multiplication and a dense matrix-scalar multiplication. It restructures the
-// expression \f$ A=(B*s1)*(C*s2) \f$ to the expression \f$ A=(B*C)*(s1*s2) \f$.
-*/
-template< typename MT1  // Type of the sparse matrix of the left-hand side expression
-        , typename ST1  // Type of the scalar of the left-hand side expression
-        , bool SO1      // Storage order of the left-hand side expression
-        , typename MT2  // Type of the dense matrix of the right-hand side expression
-        , typename ST2  // Type of the scalar of the right-hand side expression
-        , bool SO2 >    // Storage order of the right-hand side expression
-inline decltype(auto)
-   operator*( const SMatScalarMultExpr<MT1,ST1,SO1>& mat, const DMatScalarMultExpr<MT2,ST2,SO2>& vec )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   return ( mat.leftOperand() * vec.leftOperand() ) * ( mat.rightOperand() * vec.rightOperand() );
-}
-/*! \endcond */
 //*************************************************************************************************
 
 
@@ -1720,114 +1136,6 @@ struct IsAligned< DMatScalarMultExpr<MT,ST,SO> >
 template< typename MT, typename ST, bool SO >
 struct IsPadded< DMatScalarMultExpr<MT,ST,SO> >
    : public IsPadded<MT>
-{};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  ISSYMMETRIC SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT, typename ST, bool SO >
-struct IsSymmetric< DMatScalarMultExpr<MT,ST,SO> >
-   : public IsSymmetric<MT>
-{};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  ISHERMITIAN SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT, typename ST, bool SO >
-struct IsHermitian< DMatScalarMultExpr<MT,ST,SO> >
-   : public IsHermitian<MT>
-{};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  ISLOWER SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT, typename ST, bool SO >
-struct IsLower< DMatScalarMultExpr<MT,ST,SO> >
-   : public IsLower<MT>
-{};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  ISSTRICTLYLOWER SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT, typename ST, bool SO >
-struct IsStrictlyLower< DMatScalarMultExpr<MT,ST,SO> >
-   : public IsStrictlyLower<MT>
-{};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  ISUPPER SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT, typename ST, bool SO >
-struct IsUpper< DMatScalarMultExpr<MT,ST,SO> >
-   : public IsUpper<MT>
-{};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  ISSTRICTLYUPPER SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT, typename ST, bool SO >
-struct IsStrictlyUpper< DMatScalarMultExpr<MT,ST,SO> >
-   : public IsStrictlyUpper<MT>
 {};
 /*! \endcond */
 //*************************************************************************************************

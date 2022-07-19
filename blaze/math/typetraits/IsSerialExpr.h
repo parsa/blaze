@@ -3,7 +3,7 @@
 //  \file blaze/math/typetraits/IsSerialExpr.h
 //  \brief Header file for the IsSerialExpr type trait class
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -42,8 +42,7 @@
 
 #include <utility>
 #include <blaze/math/expressions/SerialExpr.h>
-#include <blaze/util/FalseType.h>
-#include <blaze/util/TrueType.h>
+#include <blaze/util/IntegralConstant.h>
 
 
 namespace blaze {
@@ -56,28 +55,13 @@ namespace blaze {
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Auxiliary helper struct for the IsSerialExpr type trait.
+/*!\brief Auxiliary helper functions for the IsSerialExpr type trait.
 // \ingroup math_type_traits
 */
-template< typename T >
-struct IsSerialExprHelper
-{
- private:
-   //**********************************************************************************************
-   template< typename U >
-   static TrueType test( const SerialExpr<U>& );
+template< typename U >
+TrueType isSerialExpr_backend( const volatile SerialExpr<U>* );
 
-   template< typename U >
-   static TrueType test( const volatile SerialExpr<U>& );
-
-   static FalseType test( ... );
-   //**********************************************************************************************
-
- public:
-   //**********************************************************************************************
-   using Type = decltype( test( std::declval<T&>() ) );
-   //**********************************************************************************************
-};
+FalseType isSerialExpr_backend( ... );
 /*! \endcond */
 //*************************************************************************************************
 
@@ -96,14 +80,27 @@ struct IsSerialExprHelper
 */
 template< typename T >
 struct IsSerialExpr
-   : public IsSerialExprHelper<T>::Type
+   : public decltype( isSerialExpr_backend( std::declval<T*>() ) )
 {};
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Specialization of the IsSerialExpr type trait for references.
+// \ingroup math_type_traits
+*/
+template< typename T >
+struct IsSerialExpr<T&>
+   : public FalseType
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Auxiliary variable template for the IsSerialExpr type trait.
-// \ingroup type_traits
+// \ingroup math_type_traits
 //
 // The IsSerialExpr_v variable template provides a convenient shortcut to access the nested
 // \a value of the IsSerialExpr class template. For instance, given the type \a T the following

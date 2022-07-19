@@ -3,7 +3,7 @@
 //  \file blaze/math/views/submatrix/Sparse.h
 //  \brief Submatrix specialization for sparse matrices
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -60,14 +60,12 @@
 #include <blaze/math/expressions/SparseMatrix.h>
 #include <blaze/math/expressions/View.h>
 #include <blaze/math/InitializerList.h>
-#include <blaze/math/RelaxationFlag.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/shims/Serial.h>
 #include <blaze/math/shims/Reset.h>
 #include <blaze/math/StorageOrder.h>
 #include <blaze/math/sparse/SparseElement.h>
 #include <blaze/math/traits/AddTrait.h>
-#include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/traits/SchurTrait.h>
 #include <blaze/math/traits/SubmatrixTrait.h>
 #include <blaze/math/traits/SubTrait.h>
@@ -89,7 +87,6 @@
 #include <blaze/util/constraints/Pointer.h>
 #include <blaze/util/constraints/Reference.h>
 #include <blaze/util/mpl/If.h>
-#include <blaze/util/TypeList.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsConst.h>
 #include <blaze/util/typetraits/IsReference.h>
@@ -129,7 +126,9 @@ class Submatrix<MT,AF,false,false,CSAs...>
    //! Type of this Submatrix instance.
    using This = Submatrix<MT,AF,false,false,CSAs...>;
 
-   using BaseType      = SparseMatrix<This,false>;      //!< Base type of this Submatrix instance.
+   //! Base type of this Submatrix instance.
+   using BaseType = View< SparseMatrix<This,false> >;
+
    using ViewedType    = MT;                            //!< The type viewed by this Submatrix instance.
    using ResultType    = SubmatrixTrait_t<MT,CSAs...>;  //!< Result type for expression template evaluations.
    using OppositeType  = OppositeType_t<ResultType>;    //!< Result type with opposite storage order for expression template evaluations.
@@ -437,6 +436,9 @@ class Submatrix<MT,AF,false,false,CSAs...>
    //**Compilation flags***************************************************************************
    //! Compilation switch for the expression template assignment strategy.
    static constexpr bool smpAssignable = MT::smpAssignable;
+
+   //! Compilation switch for the expression template evaluation strategy.
+   static constexpr bool compileTimeArgs = DataType::compileTimeArgs;
    //**********************************************************************************************
 
    //**Constructors********************************************************************************
@@ -574,13 +576,6 @@ class Submatrix<MT,AF,false,false,CSAs...>
    //**********************************************************************************************
 
  private:
-   //**Utility functions***************************************************************************
-   /*!\name Utility functions */
-   //@{
-   inline bool hasOverlap() const noexcept;
-   //@}
-   //**********************************************************************************************
-
    //**Member variables****************************************************************************
    /*!\name Member variables */
    //@{
@@ -631,7 +626,7 @@ inline Submatrix<MT,AF,false,false,CSAs...>::Submatrix( MT& matrix, RSAs... args
    : DataType( args... )  // Base class initialization
    , matrix_ ( matrix  )  // The matrix containing the submatrix
 {
-   if( !Contains_v< TypeList<RSAs...>, Unchecked > ) {
+   if( isChecked( args... ) ) {
       if( ( row() + rows() > matrix_.rows() ) || ( column() + columns() > matrix_.columns() ) ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid submatrix specification" );
       }
@@ -1031,7 +1026,7 @@ inline Submatrix<MT,AF,false,false,CSAs...>&
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( rhs.canAlias( &matrix_ ) ) {
+   if( rhs.canAlias( this ) ) {
       const ResultType tmp( rhs );
       left.reset();
       assign( left, tmp );
@@ -1076,12 +1071,12 @@ inline Submatrix<MT,AF,false,false,CSAs...>&
 
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_t<MT2> );
 
-   if( rows() != (~rhs).rows() || columns() != (~rhs).columns() ) {
+   if( rows() != (*rhs).rows() || columns() != (*rhs).columns() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
    using Right = CompositeType_t<MT2>;
-   Right right( ~rhs );
+   Right right( *rhs );
 
    if( !tryAssign( matrix_, right, row(), column() ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
@@ -1089,14 +1084,14 @@ inline Submatrix<MT,AF,false,false,CSAs...>&
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( IsReference_v<Right> && right.canAlias( &matrix_ ) ) {
+   if( IsReference_v<Right> && right.canAlias( this ) ) {
       const ResultType_t<MT2> tmp( right );
       left.reset();
-      assign( left, tmp );
+      assign( left, transIf< IsSymmetric_v<This> >( tmp ) );
    }
    else {
       left.reset();
-      assign( left, right );
+      assign( left, transIf< IsSymmetric_v<This> >( right ) );
    }
 
    BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
@@ -1139,11 +1134,11 @@ inline Submatrix<MT,AF,false,false,CSAs...>&
 
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( AddType );
 
-   if( rows() != (~rhs).rows() || columns() != (~rhs).columns() ) {
+   if( rows() != (*rhs).rows() || columns() != (*rhs).columns() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
-   const AddType tmp( *this + (~rhs) );
+   const AddType tmp( *this + (*rhs) );
 
    if( !tryAssign( matrix_, tmp, row(), column() ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
@@ -1152,7 +1147,7 @@ inline Submatrix<MT,AF,false,false,CSAs...>&
    decltype(auto) left( derestrict( *this ) );
 
    left.reset();
-   assign( left, tmp );
+   assign( left, transIf< IsSymmetric_v<This> >( tmp ) );
 
    BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
 
@@ -1194,11 +1189,11 @@ inline Submatrix<MT,AF,false,false,CSAs...>&
 
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SubType );
 
-   if( rows() != (~rhs).rows() || columns() != (~rhs).columns() ) {
+   if( rows() != (*rhs).rows() || columns() != (*rhs).columns() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
-   const SubType tmp( *this - (~rhs) );
+   const SubType tmp( *this - (*rhs) );
 
    if( !tryAssign( matrix_, tmp, row(), column() ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
@@ -1207,7 +1202,7 @@ inline Submatrix<MT,AF,false,false,CSAs...>&
    decltype(auto) left( derestrict( *this ) );
 
    left.reset();
-   assign( left, tmp );
+   assign( left, transIf< IsSymmetric_v<This> >( tmp ) );
 
    BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
 
@@ -1249,11 +1244,11 @@ inline Submatrix<MT,AF,false,false,CSAs...>&
 
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SchurType );
 
-   if( rows() != (~rhs).rows() || columns() != (~rhs).columns() ) {
+   if( rows() != (*rhs).rows() || columns() != (*rhs).columns() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
-   const SchurType tmp( *this % (~rhs) );
+   const SchurType tmp( *this % (*rhs) );
 
    if( !tryAssign( matrix_, tmp, row(), column() ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
@@ -1262,7 +1257,7 @@ inline Submatrix<MT,AF,false,false,CSAs...>&
    decltype(auto) left( derestrict( *this ) );
 
    left.reset();
-   assign( left, tmp );
+   assign( left, transIf< IsSymmetric_v<This> >( tmp ) );
 
    BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
 
@@ -1570,31 +1565,6 @@ void Submatrix<MT,AF,false,false,CSAs...>::trim( size_t i )
 {
    BLAZE_USER_ASSERT( i < rows(), "Invalid row access index" );
    matrix_.trim( row() + i );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Checking whether there exists an overlap in the context of a symmetric matrix.
-//
-// \return \a true in case an overlap exists, \a false if not.
-//
-// This function checks if in the context of a symmetric matrix the submatrix has an overlap with
-// its counterpart. In case an overlap exists, the function return \a true, otherwise it returns
-// \a false.
-*/
-template< typename MT       // Type of the sparse matrix
-        , AlignmentFlag AF  // Alignment flag
-        , size_t... CSAs >  // Compile time submatrix arguments
-inline bool Submatrix<MT,AF,false,false,CSAs...>::hasOverlap() const noexcept
-{
-   BLAZE_INTERNAL_ASSERT( IsSymmetric_v<MT> || IsHermitian_v<MT>, "Invalid matrix detected" );
-
-   if( ( row() + rows() <= column() ) || ( column() + columns() <= row() ) )
-      return false;
-   else return true;
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -2252,7 +2222,7 @@ template< typename MT       // Type of the sparse matrix
 template< typename Other >  // Data type of the foreign expression
 inline bool Submatrix<MT,AF,false,false,CSAs...>::canAlias( const Other* alias ) const noexcept
 {
-   return matrix_.isAliased( alias );
+   return matrix_.isAliased( &unview( *alias ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -2275,7 +2245,7 @@ template< typename MT       // Type of the sparse matrix
 template< typename Other >  // Data type of the foreign expression
 inline bool Submatrix<MT,AF,false,false,CSAs...>::isAliased( const Other* alias ) const noexcept
 {
-   return matrix_.isAliased( alias );
+   return matrix_.isAliased( &unview( *alias ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -2322,20 +2292,20 @@ template< typename MT2      // Type of the right-hand side dense matrix
         , bool SO >         // Storage order of the right-hand side dense matrix
 inline void Submatrix<MT,AF,false,false,CSAs...>::assign( const DenseMatrix<MT2,SO>& rhs )
 {
-   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( columns() == (*rhs).columns(), "Invalid number of columns" );
 
    reserve( 0UL, rows() * columns() );
 
    for( size_t i=0UL; i<rows(); ++i ) {
       for( size_t j=0UL; j<columns(); ++j ) {
          if( IsSymmetric_v<MT> || IsHermitian_v<MT> ) {
-            const ElementType& value( (~rhs)(i,j) );
+            const ElementType& value( (*rhs)(i,j) );
             if( !isDefault<strict>( value ) )
                set( i, j, value );
          }
          else {
-            append( i, j, (~rhs)(i,j), true );
+            append( i, j, (*rhs)(i,j), true );
          }
       }
       finalize( i );
@@ -2363,13 +2333,13 @@ template< typename MT       // Type of the sparse matrix
 template< typename MT2 >    // Type of the right-hand side sparse matrix
 inline void Submatrix<MT,AF,false,false,CSAs...>::assign( const SparseMatrix<MT2,false>& rhs )
 {
-   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( columns() == (*rhs).columns(), "Invalid number of columns" );
 
-   reserve( 0UL, (~rhs).nonZeros() );
+   reserve( 0UL, (*rhs).nonZeros() );
 
-   for( size_t i=0UL; i<(~rhs).rows(); ++i ) {
-      for( ConstIterator_t<MT2> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element ) {
+   for( size_t i=0UL; i<(*rhs).rows(); ++i ) {
+      for( ConstIterator_t<MT2> element=(*rhs).begin(i); element!=(*rhs).end(i); ++element ) {
          if( IsSymmetric_v<MT> || IsHermitian_v<MT> ) {
             const ElementType& value( element->value() );
             if( !isDefault<strict>( value ) )
@@ -2406,15 +2376,13 @@ inline void Submatrix<MT,AF,false,false,CSAs...>::assign( const SparseMatrix<MT2
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT2 );
 
-   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
-
-   using RhsIterator = ConstIterator_t<MT2>;
+   BLAZE_INTERNAL_ASSERT( rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( columns() == (*rhs).columns(), "Invalid number of columns" );
 
    // Counting the number of elements per row
    std::vector<size_t> rowLengths( rows(), 0UL );
    for( size_t j=0UL; j<columns(); ++j ) {
-      for( RhsIterator element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
+      for( auto element=(*rhs).begin(j); element!=(*rhs).end(j); ++element )
          ++rowLengths[element->index()];
    }
 
@@ -2425,7 +2393,7 @@ inline void Submatrix<MT,AF,false,false,CSAs...>::assign( const SparseMatrix<MT2
 
    // Appending the elements to the rows of the sparse submatrix
    for( size_t j=0UL; j<columns(); ++j ) {
-      for( RhsIterator element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
+      for( auto element=(*rhs).begin(j); element!=(*rhs).end(j); ++element )
          if( IsSymmetric_v<MT> || IsHermitian_v<MT> ) {
             const ElementType& value( element->value() );
             if( !isDefault<strict>( value ) )
@@ -2463,10 +2431,10 @@ inline void Submatrix<MT,AF,false,false,CSAs...>::addAssign( const Matrix<MT2,SO
 
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( AddType );
 
-   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( columns() == (*rhs).columns(), "Invalid number of columns" );
 
-   const AddType tmp( serial( *this + (~rhs) ) );
+   const AddType tmp( serial( *this + (*rhs) ) );
    reset();
    assign( tmp );
 }
@@ -2497,10 +2465,10 @@ inline void Submatrix<MT,AF,false,false,CSAs...>::subAssign( const Matrix<MT2,SO
 
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SubType );
 
-   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( columns() == (*rhs).columns(), "Invalid number of columns" );
 
-   const SubType tmp( serial( *this - (~rhs) ) );
+   const SubType tmp( serial( *this - (*rhs) ) );
    reset();
    assign( tmp );
 }
@@ -2532,10 +2500,10 @@ inline void Submatrix<MT,AF,false,false,CSAs...>::schurAssign( const Matrix<MT2,
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE ( SchurType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SchurType );
 
-   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( columns() == (*rhs).columns(), "Invalid number of columns" );
 
-   const SchurType tmp( serial( *this % (~rhs) ) );
+   const SchurType tmp( serial( *this % (*rhs) ) );
    reset();
    assign( tmp );
 }
@@ -2581,7 +2549,9 @@ class Submatrix<MT,AF,true,false,CSAs...>
    //! Type of this Submatrix instance.
    using This = Submatrix<MT,AF,true,false,CSAs...>;
 
-   using BaseType      = SparseMatrix<This,true>;       //!< Base type of this Submatrix instance.
+   //! Base type of this Submatrix instance.
+   using BaseType = View< SparseMatrix<This,true> >;
+
    using ViewedType    = MT;                            //!< The type viewed by this Submatrix instance.
    using ResultType    = SubmatrixTrait_t<MT,CSAs...>;  //!< Result type for expression template evaluations.
    using OppositeType  = OppositeType_t<ResultType>;    //!< Result type with opposite storage order for expression template evaluations.
@@ -2889,6 +2859,9 @@ class Submatrix<MT,AF,true,false,CSAs...>
    //**Compilation flags***************************************************************************
    //! Compilation switch for the expression template assignment strategy.
    static constexpr bool smpAssignable = MT::smpAssignable;
+
+   //! Compilation switch for the expression template evaluation strategy.
+   static constexpr bool compileTimeArgs = DataType::compileTimeArgs;
    //**********************************************************************************************
 
    //**Constructors********************************************************************************
@@ -3026,13 +2999,6 @@ class Submatrix<MT,AF,true,false,CSAs...>
    //**********************************************************************************************
 
  private:
-   //**Utility functions***************************************************************************
-   /*!\name Utility functions */
-   //@{
-   inline bool hasOverlap() const noexcept;
-   //@}
-   //**********************************************************************************************
-
    //**Member variables****************************************************************************
    /*!\name Member variables */
    //@{
@@ -3083,7 +3049,7 @@ inline Submatrix<MT,AF,true,false,CSAs...>::Submatrix( MT& matrix, RSAs... args 
    : DataType( args... )  // Base class initialization
    , matrix_ ( matrix  )  // The matrix containing the submatrix
 {
-   if( !Contains_v< TypeList<RSAs...>, Unchecked > ) {
+   if( isChecked( args... ) ) {
       if( ( row() + rows() > matrix_.rows() ) || ( column() + columns() > matrix_.columns() ) ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid submatrix specification" );
       }
@@ -3453,7 +3419,7 @@ inline Submatrix<MT,AF,true,false,CSAs...>&
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( rhs.canAlias( &matrix_ ) ) {
+   if( rhs.canAlias( this ) ) {
       const ResultType tmp( rhs );
       left.reset();
       assign( left, tmp );
@@ -3498,12 +3464,12 @@ inline Submatrix<MT,AF,true,false,CSAs...>&
 
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_t<MT2> );
 
-   if( rows() != (~rhs).rows() || columns() != (~rhs).columns() ) {
+   if( rows() != (*rhs).rows() || columns() != (*rhs).columns() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
    using Right = CompositeType_t<MT2>;
-   Right right( ~rhs );
+   Right right( *rhs );
 
    if( !tryAssign( matrix_, right, row(), column() ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
@@ -3511,14 +3477,14 @@ inline Submatrix<MT,AF,true,false,CSAs...>&
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( IsReference_v<Right> && right.canAlias( &matrix_ ) ) {
+   if( IsReference_v<Right> && right.canAlias( this ) ) {
       const ResultType_t<MT2> tmp( right );
       left.reset();
-      assign( left, tmp );
+      assign( left, transIf< IsSymmetric_v<This> >( tmp ) );
    }
    else {
       left.reset();
-      assign( left, right );
+      assign( left, transIf< IsSymmetric_v<This> >( right ) );
    }
 
    BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
@@ -3561,11 +3527,11 @@ inline Submatrix<MT,AF,true,false,CSAs...>&
 
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( AddType );
 
-   if( rows() != (~rhs).rows() || columns() != (~rhs).columns() ) {
+   if( rows() != (*rhs).rows() || columns() != (*rhs).columns() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
-   const AddType tmp( *this + (~rhs) );
+   const AddType tmp( *this + (*rhs) );
 
    if( !tryAssign( matrix_, tmp, row(), column() ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
@@ -3574,7 +3540,7 @@ inline Submatrix<MT,AF,true,false,CSAs...>&
    decltype(auto) left( derestrict( *this ) );
 
    left.reset();
-   assign( left, tmp );
+   assign( left, transIf< IsSymmetric_v<This> >( tmp ) );
 
    BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
 
@@ -3616,11 +3582,11 @@ inline Submatrix<MT,AF,true,false,CSAs...>&
 
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SubType );
 
-   if( rows() != (~rhs).rows() || columns() != (~rhs).columns() ) {
+   if( rows() != (*rhs).rows() || columns() != (*rhs).columns() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
-   const SubType tmp( *this - (~rhs) );
+   const SubType tmp( *this - (*rhs) );
 
    if( !tryAssign( matrix_, tmp, row(), column() ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
@@ -3629,7 +3595,7 @@ inline Submatrix<MT,AF,true,false,CSAs...>&
    decltype(auto) left( derestrict( *this ) );
 
    left.reset();
-   assign( left, tmp );
+   assign( left, transIf< IsSymmetric_v<This> >( tmp ) );
 
    BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
 
@@ -3671,11 +3637,11 @@ inline Submatrix<MT,AF,true,false,CSAs...>&
 
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SchurType );
 
-   if( rows() != (~rhs).rows() || columns() != (~rhs).columns() ) {
+   if( rows() != (*rhs).rows() || columns() != (*rhs).columns() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
-   const SchurType tmp( *this % (~rhs) );
+   const SchurType tmp( *this % (*rhs) );
 
    if( !tryAssign( matrix_, tmp, row(), column() ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
@@ -3684,7 +3650,7 @@ inline Submatrix<MT,AF,true,false,CSAs...>&
    decltype(auto) left( derestrict( *this ) );
 
    left.reset();
-   assign( left, tmp );
+   assign( left, transIf< IsSymmetric_v<This> >( tmp ) );
 
    BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
 
@@ -3971,31 +3937,6 @@ void Submatrix<MT,AF,true,false,CSAs...>::trim( size_t j )
 {
    BLAZE_USER_ASSERT( j < columns(), "Invalid column access index" );
    matrix_.trim( column() + j );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Checking whether there exists an overlap in the context of a symmetric matrix.
-//
-// \return \a true in case an overlap exists, \a false if not.
-//
-// This function checks if in the context of a symmetric matrix the submatrix has an overlap with
-// its counterpart. In case an overlap exists, the function return \a true, otherwise it returns
-// \a false.
-*/
-template< typename MT       // Type of the sparse matrix
-        , AlignmentFlag AF  // Alignment flag
-        , size_t... CSAs >  // Compile time submatrix arguments
-inline bool Submatrix<MT,AF,true,false,CSAs...>::hasOverlap() const noexcept
-{
-   BLAZE_INTERNAL_ASSERT( IsSymmetric_v<MT> || IsHermitian_v<MT>, "Invalid matrix detected" );
-
-   if( ( row() + rows() <= column() ) || ( column() + columns() <= row() ) )
-      return false;
-   else return true;
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -4645,7 +4586,7 @@ template< typename MT       // Type of the sparse matrix
 template< typename Other >  // Data type of the foreign expression
 inline bool Submatrix<MT,AF,true,false,CSAs...>::canAlias( const Other* alias ) const noexcept
 {
-   return matrix_.isAliased( alias );
+   return matrix_.isAliased( &unview( *alias ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -4668,7 +4609,7 @@ template< typename MT       // Type of the sparse matrix
 template< typename Other >  // Data type of the foreign expression
 inline bool Submatrix<MT,AF,true,false,CSAs...>::isAliased( const Other* alias ) const noexcept
 {
-   return matrix_.isAliased( alias );
+   return matrix_.isAliased( &unview( *alias ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -4715,20 +4656,20 @@ template< typename MT2      // Type of the right-hand side dense matrix
         , bool SO >         // Storage order of the right-hand side dense matrix
 inline void Submatrix<MT,AF,true,false,CSAs...>::assign( const DenseMatrix<MT2,SO>& rhs )
 {
-   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( columns() == (*rhs).columns(), "Invalid number of columns" );
 
    reserve( 0UL, rows() * columns() );
 
    for( size_t j=0UL; j<columns(); ++j ) {
       for( size_t i=0UL; i<rows(); ++i ) {
          if( IsSymmetric_v<MT> || IsHermitian_v<MT> ) {
-            const ElementType& value( (~rhs)(i,j) );
+            const ElementType& value( (*rhs)(i,j) );
             if( !isDefault<strict>( value ) )
                set( i, j, value );
          }
          else {
-            append( i, j, (~rhs)(i,j), true );
+            append( i, j, (*rhs)(i,j), true );
          }
       }
       finalize( j );
@@ -4756,13 +4697,13 @@ template< typename MT       // Type of the sparse matrix
 template< typename MT2 >    // Type of the right-hand side sparse matrix
 inline void Submatrix<MT,AF,true,false,CSAs...>::assign( const SparseMatrix<MT2,true>& rhs )
 {
-   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( columns() == (*rhs).columns(), "Invalid number of columns" );
 
-   reserve( 0UL, (~rhs).nonZeros() );
+   reserve( 0UL, (*rhs).nonZeros() );
 
-   for( size_t j=0UL; j<(~rhs).columns(); ++j ) {
-      for( ConstIterator_t<MT2> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element ) {
+   for( size_t j=0UL; j<(*rhs).columns(); ++j ) {
+      for( ConstIterator_t<MT2> element=(*rhs).begin(j); element!=(*rhs).end(j); ++element ) {
          if( IsSymmetric_v<MT> || IsHermitian_v<MT> ) {
             const ElementType& value( element->value() );
             if( !isDefault<strict>( value ) )
@@ -4798,15 +4739,13 @@ inline void Submatrix<MT,AF,true,false,CSAs...>::assign( const SparseMatrix<MT2,
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT2 );
 
-   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
-
-   using RhsIterator = ConstIterator_t<MT2>;
+   BLAZE_INTERNAL_ASSERT( rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( columns() == (*rhs).columns(), "Invalid number of columns" );
 
    // Counting the number of elements per column
    std::vector<size_t> columnLengths( columns(), 0UL );
    for( size_t i=0UL; i<rows(); ++i ) {
-      for( RhsIterator element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
+      for( auto element=(*rhs).begin(i); element!=(*rhs).end(i); ++element )
          ++columnLengths[element->index()];
    }
 
@@ -4817,7 +4756,7 @@ inline void Submatrix<MT,AF,true,false,CSAs...>::assign( const SparseMatrix<MT2,
 
    // Appending the elements to the columns of the sparse matrix
    for( size_t i=0UL; i<rows(); ++i ) {
-      for( RhsIterator element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
+      for( auto element=(*rhs).begin(i); element!=(*rhs).end(i); ++element )
          if( IsSymmetric_v<MT> || IsHermitian_v<MT> ) {
             const ElementType& value( element->value() );
             if( !isDefault<strict>( value ) )
@@ -4855,10 +4794,10 @@ inline void Submatrix<MT,AF,true,false,CSAs...>::addAssign( const Matrix<MT2,SO>
 
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( AddType );
 
-   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( columns() == (*rhs).columns(), "Invalid number of columns" );
 
-   const AddType tmp( serial( *this + (~rhs) ) );
+   const AddType tmp( serial( *this + (*rhs) ) );
    reset();
    assign( tmp );
 }
@@ -4889,10 +4828,10 @@ inline void Submatrix<MT,AF,true,false,CSAs...>::subAssign( const Matrix<MT2,SO>
 
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SubType );
 
-   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( columns() == (*rhs).columns(), "Invalid number of columns" );
 
-   const SubType tmp( serial( *this - (~rhs) ) );
+   const SubType tmp( serial( *this - (*rhs) ) );
    reset();
    assign( tmp );
 }
@@ -4923,10 +4862,10 @@ inline void Submatrix<MT,AF,true,false,CSAs...>::schurAssign( const Matrix<MT2,S
 
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SchurType );
 
-   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( columns() == (*rhs).columns(), "Invalid number of columns" );
 
-   const SchurType tmp( serial( *this % (~rhs) ) );
+   const SchurType tmp( serial( *this % (*rhs) ) );
    reset();
    assign( tmp );
 }

@@ -1,9 +1,9 @@
 //=================================================================================================
 /*!
 //  \file blaze/math/AlignmentFlag.h
-//  \brief Header file for the alignment flag values
+//  \brief Header file for the alignment flag enumeration
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -64,6 +64,24 @@ enum AlignmentFlag : bool
    unaligned = false,  //!< Flag for unaligned vectors and matrices.
    aligned   = true    //!< Flag for aligned vectors and matrices.
 };
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Negating the given alignment flag.
+// \ingroup math
+//
+// \param flag The given alignment flag to be negated.
+// \return The negated alignment flag.
+//
+// This logical NOT operator negates the given alignment flag. In case the given flag represents
+// \a unaligned, the function returns \a aligned, in case it represents \a aligned it returns
+// \a unaligned.
+*/
+constexpr AlignmentFlag operator!( AlignmentFlag flag ) noexcept
+{
+   return static_cast<AlignmentFlag>( !static_cast<bool>( flag ) );
+}
 //*************************************************************************************************
 
 } // namespace blaze

@@ -3,7 +3,7 @@
 //  \file blaze/math/shims/Evaluate.h
 //  \brief Header file for the evaluate shim
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -40,10 +40,9 @@
 // Includes
 //*************************************************************************************************
 
-#include <blaze/system/Inline.h>
+#include <blaze/math/typetraits/HasCompositeType.h>
+#include <blaze/math/typetraits/IsProxy.h>
 #include <blaze/util/EnableIf.h>
-#include <blaze/util/typetraits/IsBuiltin.h>
-#include <blaze/util/typetraits/IsComplex.h>
 
 
 namespace blaze {
@@ -66,9 +65,9 @@ namespace blaze {
 // types that don't require an evaluation, as for instance built-in or complex data types, the
 // default behavior is not changed.
 */
-template< typename T >
-BLAZE_ALWAYS_INLINE constexpr EnableIf_t< IsBuiltin_v<T> || IsComplex_v<T>, T >
-   evaluate( const T& a ) noexcept
+template< typename T
+        , EnableIf_t< !HasCompositeType_v<T> && !IsProxy_v<T> >*  = nullptr >
+constexpr T evaluate( const T& a ) noexcept
 {
    return a;
 }

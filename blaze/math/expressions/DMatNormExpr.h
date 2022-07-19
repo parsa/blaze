@@ -3,13 +3,13 @@
 //  \file blaze/math/expressions/DMatNormExpr.h
 //  \brief Header file for the dense matrix norm expression
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
 //  forms, with or without modification, are permitted provided that the following conditions
 //  are met:
-//
+//x
 //  1. Redistributions of source code must retain the above copyright notice, this list of
 //     conditions and the following disclaimer.
 //  2. Redistributions in binary form must reproduce the above copyright notice, this list
@@ -44,6 +44,7 @@
 #include <blaze/math/Aliases.h>
 #include <blaze/math/expressions/DenseMatrix.h>
 #include <blaze/math/functors/Abs.h>
+#include <blaze/math/functors/Bind2nd.h>
 #include <blaze/math/functors/Cbrt.h>
 #include <blaze/math/functors/L1Norm.h>
 #include <blaze/math/functors/L2Norm.h>
@@ -51,33 +52,34 @@
 #include <blaze/math/functors/L4Norm.h>
 #include <blaze/math/functors/LpNorm.h>
 #include <blaze/math/functors/Noop.h>
+#include <blaze/math/functors/Pow.h>
 #include <blaze/math/functors/Pow2.h>
 #include <blaze/math/functors/Pow3.h>
-#include <blaze/math/functors/Pow4.h>
 #include <blaze/math/functors/Qdrt.h>
+#include <blaze/math/functors/SqrAbs.h>
 #include <blaze/math/functors/Sqrt.h>
-#include <blaze/math/functors/UnaryPow.h>
 #include <blaze/math/shims/Evaluate.h>
 #include <blaze/math/shims/Invert.h>
 #include <blaze/math/shims/IsZero.h>
+#include <blaze/math/shims/PrevMultiple.h>
 #include <blaze/math/SIMD.h>
 #include <blaze/math/traits/MultTrait.h>
+#include <blaze/math/typetraits/HasLoad.h>
 #include <blaze/math/typetraits/HasSIMDAdd.h>
 #include <blaze/math/typetraits/IsPadded.h>
+#include <blaze/math/typetraits/IsSIMDEnabled.h>
 #include <blaze/math/typetraits/UnderlyingBuiltin.h>
 #include <blaze/system/Optimizations.h>
 #include <blaze/util/Assert.h>
-#include <blaze/util/FalseType.h>
 #include <blaze/util/FunctionTrace.h>
+#include <blaze/util/IntegralConstant.h>
 #include <blaze/util/mpl/And.h>
-#include <blaze/util/mpl/Bool.h>
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/StaticAssert.h>
-#include <blaze/util/Template.h>
-#include <blaze/util/TrueType.h>
 #include <blaze/util/TypeList.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/HasMember.h>
+#include <blaze/util/typetraits/RemoveCVRef.h>
 #include <blaze/util/typetraits/RemoveReference.h>
 
 
@@ -107,30 +109,13 @@ struct DMatNormHelper
    using CT = RemoveReference_t< CompositeType_t<MT> >;
    //**********************************************************************************************
 
-   //**SIMD support detection**********************************************************************
-   //! Definition of the HasSIMDEnabled type trait.
-   BLAZE_CREATE_HAS_DATA_OR_FUNCTION_MEMBER_TYPE_TRAIT( HasSIMDEnabled, simdEnabled );
-
-   //! Definition of the HasLoad type trait.
-   BLAZE_CREATE_HAS_DATA_OR_FUNCTION_MEMBER_TYPE_TRAIT( HasLoad, load );
-
-   //! Helper structure for the detection of the SIMD capabilities of the given custom operation.
-   struct UseSIMDEnabledFlag {
-      static constexpr bool test( bool (*fnc)() ) { return fnc(); }
-      static constexpr bool test( bool b ) { return b; }
-      static constexpr bool value =
-         test( Abs::BLAZE_TEMPLATE simdEnabled<ET> ) &&
-         test( Power::BLAZE_TEMPLATE simdEnabled<ET> );
-   };
-   //**********************************************************************************************
-
    //**********************************************************************************************
    static constexpr bool value =
       ( useOptimizedKernels &&
         CT::simdEnabled &&
         If_t< HasSIMDEnabled_v<Abs> && HasSIMDEnabled_v<Power>
-            , UseSIMDEnabledFlag
-            , And< HasLoad<Abs>, HasLoad<Power> > >::value &&
+            , And_t< GetSIMDEnabled<Abs,ET>, GetSIMDEnabled<Power,ET> >
+            , And_t< HasLoad<Abs>, HasLoad<Power> > >::value &&
         HasSIMDAdd_v< ElementType_t<CT>, ElementType_t<CT> > );
    //**********************************************************************************************
 };
@@ -169,16 +154,17 @@ inline decltype(auto) norm_backend( const DenseMatrix<MT,false>& dm, Abs abs, Po
 {
    using CT = CompositeType_t<MT>;
    using ET = ElementType_t<MT>;
-   using RT = decltype( evaluate( root( std::declval<ET>() ) ) );
+   using PT = RemoveCVRef_t< decltype( power( abs( std::declval<ET>() ) ) ) >;
+   using RT = RemoveCVRef_t< decltype( evaluate( root( std::declval<PT>() ) ) ) >;
 
-   if( (~dm).rows() == 0UL || (~dm).columns() == 0UL ) return RT();
+   if( (*dm).rows() == 0UL || (*dm).columns() == 0UL ) return RT{};
 
-   CT tmp( ~dm );
+   CT tmp( *dm );
 
    const size_t M( tmp.rows()    );
    const size_t N( tmp.columns() );
 
-   ET norm( power( abs( tmp(0UL,0UL) ) ) );
+   PT norm( power( abs( tmp(0UL,0UL) ) ) );
 
    {
       size_t j( 1UL );
@@ -240,16 +226,17 @@ inline decltype(auto) norm_backend( const DenseMatrix<MT,true>& dm, Abs abs, Pow
 {
    using CT = CompositeType_t<MT>;
    using ET = ElementType_t<MT>;
-   using RT = decltype( evaluate( root( std::declval<ET>() ) ) );
+   using PT = RemoveCVRef_t< decltype( power( abs( std::declval<ET>() ) ) ) >;
+   using RT = RemoveCVRef_t< decltype( evaluate( root( std::declval<PT>() ) ) ) >;
 
-   if( (~dm).rows() == 0UL || (~dm).columns() == 0UL ) return RT();
+   if( (*dm).rows() == 0UL || (*dm).columns() == 0UL ) return RT{};
 
-   CT tmp( ~dm );
+   CT tmp( *dm );
 
    const size_t M( tmp.rows()    );
    const size_t N( tmp.columns() );
 
-   ET norm( power( abs( tmp(0UL,0UL) ) ) );
+   PT norm( power( abs( tmp(0UL,0UL) ) ) );
 
    {
       size_t i( 1UL );
@@ -315,44 +302,94 @@ inline decltype(auto) norm_backend( const DenseMatrix<MT,false>& dm, Abs abs, Po
 
    static constexpr size_t SIMDSIZE = SIMDTrait<ET>::size;
 
-   if( (~dm).rows() == 0UL || (~dm).columns() == 0UL ) return RT();
+   if( (*dm).rows() == 0UL || (*dm).columns() == 0UL ) return RT{};
 
-   CT tmp( ~dm );
+   CT tmp( *dm );
 
    const size_t M( tmp.rows()    );
    const size_t N( tmp.columns() );
 
-   constexpr bool remainder( !usePadding || !IsPadded_v< RemoveReference_t<CT> > );
+   constexpr bool remainder( !IsPadded_v< RemoveReference_t<CT> > );
 
-   const size_t jpos( ( remainder )?( N & size_t(-SIMDSIZE) ):( N ) );
-   BLAZE_INTERNAL_ASSERT( !remainder || ( N - ( N % SIMDSIZE ) ) == jpos, "Invalid end calculation" );
-
-   SIMDTrait_t<ET> xmm1, xmm2, xmm3, xmm4;
    ET norm{};
 
-   for( size_t i=0UL; i<M; ++i )
+   if( !remainder || N >= SIMDSIZE )
    {
-      size_t j( 0UL );
+      const size_t jpos( remainder ? prevMultiple( N, SIMDSIZE ) : N );
+      BLAZE_INTERNAL_ASSERT( jpos <= N, "Invalid end calculation" );
 
-      for( ; (j+SIMDSIZE*3UL) < jpos; j+=SIMDSIZE*4UL ) {
-         xmm1 += power( abs( tmp.load(i,j             ) ) );
-         xmm2 += power( abs( tmp.load(i,j+SIMDSIZE    ) ) );
-         xmm3 += power( abs( tmp.load(i,j+SIMDSIZE*2UL) ) );
-         xmm4 += power( abs( tmp.load(i,j+SIMDSIZE*3UL) ) );
+      SIMDTrait_t<ET> xmm1{};
+      size_t i( 0UL );
+
+      for( ; (i+4UL) <= M; i+=4UL )
+      {
+         xmm1 += power( abs( tmp.load(i,0UL) ) );
+         SIMDTrait_t<ET> xmm2( power( abs( tmp.load(i+1UL,0UL) ) ) );
+         SIMDTrait_t<ET> xmm3( power( abs( tmp.load(i+2UL,0UL) ) ) );
+         SIMDTrait_t<ET> xmm4( power( abs( tmp.load(i+3UL,0UL) ) ) );
+         size_t j( SIMDSIZE );
+
+         for( ; j<jpos; j+=SIMDSIZE ) {
+            xmm1 += power( abs( tmp.load(i    ,j) ) );
+            xmm2 += power( abs( tmp.load(i+1UL,j) ) );
+            xmm3 += power( abs( tmp.load(i+2UL,j) ) );
+            xmm4 += power( abs( tmp.load(i+3UL,j) ) );
+         }
+         for( ; remainder && j<N; ++j ) {
+            norm += power( abs( tmp(i    ,j) ) );
+            norm += power( abs( tmp(i+1UL,j) ) );
+            norm += power( abs( tmp(i+2UL,j) ) );
+            norm += power( abs( tmp(i+3UL,j) ) );
+         }
+
+         xmm1 += xmm2;
+         xmm3 += xmm4;
+         xmm1 += xmm3;
       }
-      for( ; (j+SIMDSIZE) < jpos; j+=SIMDSIZE*2UL ) {
-         xmm1 += power( abs( tmp.load(i,j         ) ) );
-         xmm2 += power( abs( tmp.load(i,j+SIMDSIZE) ) );
+
+      if( i+2UL <= M )
+      {
+         xmm1 += power( abs( tmp.load(i,0UL) ) );
+         SIMDTrait_t<ET> xmm2( power( abs( tmp.load(i+1UL,0UL) ) ) );
+         size_t j( SIMDSIZE );
+
+         for( ; j<jpos; j+=SIMDSIZE ) {
+            xmm1 += power( abs( tmp.load(i    ,j) ) );
+            xmm2 += power( abs( tmp.load(i+1UL,j) ) );
+         }
+         for( ; remainder && j<N; ++j ) {
+            norm += power( abs( tmp(i    ,j) ) );
+            norm += power( abs( tmp(i+1UL,j) ) );
+         }
+
+         xmm1 += xmm2;
+
+         i += 2UL;
       }
-      for( ; j<jpos; j+=SIMDSIZE ) {
-         xmm1 += power( abs( tmp.load(i,j) ) );
+
+      if( i < M )
+      {
+         xmm1 += power( abs( tmp.load(i,0UL) ) );
+         size_t j( SIMDSIZE );
+
+         for( ; j<jpos; j+=SIMDSIZE ) {
+            xmm1 += power( abs( tmp.load(i,j) ) );
+         }
+         for( ; remainder && j<N; ++j ) {
+            norm += power( abs( tmp(i,j) ) );
+         }
       }
-      for( ; remainder && j<N; ++j ) {
-         norm += power( abs( tmp(i,j) ) );
+
+      norm += sum( xmm1 );
+   }
+   else
+   {
+      for( size_t i=0UL; i<M; ++i ) {
+         for( size_t j=0UL; j<N; ++j ) {
+            norm += power( abs( tmp(i,j) ) );
+         }
       }
    }
-
-   norm += sum( xmm1 + xmm2 + xmm3 + xmm4 );
 
    return evaluate( root( norm ) );
 }
@@ -387,44 +424,94 @@ inline decltype(auto) norm_backend( const DenseMatrix<MT,true>& dm, Abs abs, Pow
 
    static constexpr size_t SIMDSIZE = SIMDTrait<ET>::size;
 
-   if( (~dm).rows() == 0UL || (~dm).columns() == 0UL ) return RT();
+   if( (*dm).rows() == 0UL || (*dm).columns() == 0UL ) return RT{};
 
-   CT tmp( ~dm );
+   CT tmp( *dm );
 
    const size_t M( tmp.rows()    );
    const size_t N( tmp.columns() );
 
-   constexpr bool remainder( !usePadding || !IsPadded_v< RemoveReference_t<CT> > );
+   constexpr bool remainder( !IsPadded_v< RemoveReference_t<CT> > );
 
-   const size_t ipos( ( remainder )?( M & size_t(-SIMDSIZE) ):( M ) );
-   BLAZE_INTERNAL_ASSERT( !remainder || ( M - ( M % SIMDSIZE ) ) == ipos, "Invalid end calculation" );
-
-   SIMDTrait_t<ET> xmm1, xmm2, xmm3, xmm4;
    ET norm{};
 
-   for( size_t j=0UL; j<N; ++j )
+   if( !remainder || N >= SIMDSIZE )
    {
-      size_t i( 0UL );
+      const size_t ipos( remainder ? prevMultiple( M, SIMDSIZE ) :M );
+      BLAZE_INTERNAL_ASSERT( ipos <= M, "Invalid end calculation" );
 
-      for( ; (i+SIMDSIZE*3UL) < ipos; i+=SIMDSIZE*4UL ) {
-         xmm1 += power( abs( tmp.load(i             ,j) ) );
-         xmm2 += power( abs( tmp.load(i+SIMDSIZE    ,j) ) );
-         xmm3 += power( abs( tmp.load(i+SIMDSIZE*2UL,j) ) );
-         xmm4 += power( abs( tmp.load(i+SIMDSIZE*3UL,j) ) );
+      SIMDTrait_t<ET> xmm1{};
+      size_t j( 0UL );
+
+      for( ; (j+4UL) <= N; j+=4UL )
+      {
+         xmm1 += power( abs( tmp.load(0UL,j) ) );
+         SIMDTrait_t<ET> xmm2( power( abs( tmp.load(0UL,j+1UL) ) ) );
+         SIMDTrait_t<ET> xmm3( power( abs( tmp.load(0UL,j+2UL) ) ) );
+         SIMDTrait_t<ET> xmm4( power( abs( tmp.load(0UL,j+3UL) ) ) );
+         size_t i( SIMDSIZE );
+
+         for( ; i<ipos; i+=SIMDSIZE ) {
+            xmm1 += power( abs( tmp.load(i,j    ) ) );
+            xmm2 += power( abs( tmp.load(i,j+1UL) ) );
+            xmm3 += power( abs( tmp.load(i,j+2UL) ) );
+            xmm4 += power( abs( tmp.load(i,j+3UL) ) );
+         }
+         for( ; remainder && i<M; ++i ) {
+            norm += power( abs( tmp(i,j    ) ) );
+            norm += power( abs( tmp(i,j+1UL) ) );
+            norm += power( abs( tmp(i,j+2UL) ) );
+            norm += power( abs( tmp(i,j+3UL) ) );
+         }
+
+         xmm1 += xmm2;
+         xmm3 += xmm4;
+         xmm1 += xmm3;
       }
-      for( ; (i+SIMDSIZE) < ipos; i+=SIMDSIZE*2UL ) {
-         xmm1 += power( abs( tmp.load(i         ,j) ) );
-         xmm2 += power( abs( tmp.load(i+SIMDSIZE,j) ) );
+
+      if( j+2UL <= N )
+      {
+         xmm1 += power( abs( tmp.load(0UL,j) ) );
+         SIMDTrait_t<ET> xmm2( power( abs( tmp.load(0UL,j+1UL) ) ) );
+         size_t i( SIMDSIZE );
+
+         for( ; i<ipos; i+=SIMDSIZE ) {
+            xmm1 += power( abs( tmp.load(i,j    ) ) );
+            xmm2 += power( abs( tmp.load(i,j+1UL) ) );
+         }
+         for( ; remainder && i<M; ++i ) {
+            norm += power( abs( tmp(i,j    ) ) );
+            norm += power( abs( tmp(i,j+1UL) ) );
+         }
+
+         xmm1 += xmm2;
+
+         j += 2UL;
       }
-      for( ; i<ipos; i+=SIMDSIZE ) {
-         xmm1 += power( abs( tmp.load(i,j) ) );
+
+      if( j < N )
+      {
+         xmm1 += power( abs( tmp.load(0UL,j) ) );
+         size_t i( SIMDSIZE );
+
+         for( ; i<ipos; i+=SIMDSIZE ) {
+            xmm1 += power( abs( tmp.load(i,j) ) );
+         }
+         for( ; remainder && i<M; ++i ) {
+            norm += power( abs( tmp(i,j) ) );
+         }
       }
-      for( ; remainder && i<M; ++i ) {
-         norm += power( abs( tmp(i,j) ) );
+
+      norm += sum( xmm1 );
+   }
+   else
+   {
+      for( size_t j=0UL; j<N; ++j ) {
+         for( size_t i=0UL; i<M; ++i ) {
+            norm += power( abs( tmp(i,j) ) );
+         }
       }
    }
-
-   norm += sum( xmm1 + xmm2 + xmm3 + xmm4 );
 
    return evaluate( root( norm ) );
 }
@@ -460,7 +547,7 @@ template< typename MT      // Type of the dense matrix
         , typename Root >  // Type of the root operation
 decltype(auto) norm_backend( const DenseMatrix<MT,SO>& dm, Abs abs, Power power, Root root )
 {
-   return norm_backend( ~dm, abs, power, root, Bool< DMatNormHelper<MT,Abs,Power>::value >() );
+   return norm_backend( *dm, abs, power, root, Bool_t< DMatNormHelper<MT,Abs,Power>::value >() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -487,7 +574,7 @@ decltype(auto) norm( const DenseMatrix<MT,SO>& dm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return norm_backend( ~dm, Noop(), Pow2(), Sqrt() );
+   return norm_backend( *dm, SqrAbs(), Noop(), Sqrt() );
 }
 //*************************************************************************************************
 
@@ -513,7 +600,7 @@ decltype(auto) sqrNorm( const DenseMatrix<MT,SO>& dm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return norm_backend( ~dm, Noop(), Pow2(), Noop() );
+   return norm_backend( *dm, SqrAbs(), Noop(), Noop() );
 }
 //*************************************************************************************************
 
@@ -539,7 +626,7 @@ decltype(auto) l1Norm( const DenseMatrix<MT,SO>& dm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return norm_backend( ~dm, Abs(), Noop(), Noop() );
+   return norm_backend( *dm, Abs(), Noop(), Noop() );
 }
 //*************************************************************************************************
 
@@ -565,7 +652,7 @@ decltype(auto) l2Norm( const DenseMatrix<MT,SO>& dm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return norm_backend( ~dm, Noop(), Pow2(), Sqrt() );
+   return norm_backend( *dm, SqrAbs(), Noop(), Sqrt() );
 }
 //*************************************************************************************************
 
@@ -591,7 +678,7 @@ decltype(auto) l3Norm( const DenseMatrix<MT,SO>& dm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return norm_backend( ~dm, Abs(), Pow3(), Cbrt() );
+   return norm_backend( *dm, Abs(), Pow3(), Cbrt() );
 }
 //*************************************************************************************************
 
@@ -617,7 +704,7 @@ decltype(auto) l4Norm( const DenseMatrix<MT,SO>& dm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return norm_backend( ~dm, Noop(), Pow4(), Qdrt() );
+   return norm_backend( *dm, SqrAbs(), Pow2(), Qdrt() );
 }
 //*************************************************************************************************
 
@@ -652,7 +739,8 @@ decltype(auto) lpNorm( const DenseMatrix<MT,SO>& dm, ST p )
    BLAZE_USER_ASSERT( !isZero( p ), "Invalid p for Lp norm detected" );
 
    using ScalarType = MultTrait_t< UnderlyingBuiltin_t<MT>, decltype( inv( p ) ) >;
-   return norm_backend( ~dm, Abs(), UnaryPow<ScalarType>( p ), UnaryPow<ScalarType>( inv( p ) ) );
+   using UnaryPow = Bind2nd<Pow,ScalarType>;
+   return norm_backend( *dm, Abs(), UnaryPow( Pow(), p ), UnaryPow( Pow(), inv( p ) ) );
 }
 //*************************************************************************************************
 
@@ -686,7 +774,33 @@ inline decltype(auto) lpNorm( const DenseMatrix<MT,SO>& dm )
    using Norms = TypeList< L1Norm, L2Norm, L3Norm, L4Norm, LpNorm<P> >;
    using Norm  = typename TypeAt< Norms, min( P-1UL, 4UL ) >::Type;
 
-   return Norm()( ~dm );
+   return Norm()( *dm );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Computes the infinity norm for the given dense matrix.
+// \ingroup dense_matrix
+//
+// \param dm The given dense matrix for the norm computation.
+// \return The infinity norm of the given dense matrix.
+//
+// This function computes the infinity norm of the given dense matrix:
+
+   \code
+   blaze::DynamicMatrix<double> A;
+   // ... Resizing and initialization
+   const double linf = linfNorm( A );
+   \endcode
+*/
+template< typename MT  // Type of the dense matrix
+        , bool SO >    // Storage order
+decltype(auto) linfNorm( const DenseMatrix<MT,SO>& dm )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return max( abs( *dm ) );
 }
 //*************************************************************************************************
 
@@ -712,7 +826,33 @@ decltype(auto) maxNorm( const DenseMatrix<MT,SO>& dm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return max( abs( ~dm ) );
+   return linfNorm( *dm );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Computes the minimum norm for the given dense matrix.
+// \ingroup dense_matrix
+//
+// \param dm The given dense matrix for the norm computation.
+// \return The minimum norm of the given dense matrix.
+//
+// This function computes the minimum norm of the given dense matrix:
+
+   \code
+   blaze::DynamicMatrix<double> A;
+   // ... Resizing and initialization
+   const double min = minNorm( A );
+   \endcode
+*/
+template< typename MT  // Type of the dense matrix
+        , bool SO >    // Storage order
+decltype(auto) minNorm( const DenseMatrix<MT,SO>& dm )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return min( abs( *dm ) );
 }
 //*************************************************************************************************
 

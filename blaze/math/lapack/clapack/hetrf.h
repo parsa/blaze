@@ -3,7 +3,7 @@
 //  \file blaze/math/lapack/clapack/hetrf.h
 //  \brief Header file for the CLAPACK hetrf wrapper functions
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -40,8 +40,10 @@
 // Includes
 //*************************************************************************************************
 
+#include <blaze/math/blas/Types.h>
 #include <blaze/util/Complex.h>
 #include <blaze/util/StaticAssert.h>
+#include <blaze/util/Types.h>
 
 
 //=================================================================================================
@@ -55,8 +57,12 @@
 #if !defined(INTEL_MKL_VERSION)
 extern "C" {
 
-void chetrf_( char* uplo, int* n, float*  A, int* lda, int* ipiv, float*  work, int* lwork, int* info );
-void zhetrf_( char* uplo, int* n, double* A, int* lda, int* ipiv, double* work, int* lwork, int* info );
+void chetrf_( char* uplo, blaze::blas_int_t* n, float* A, blaze::blas_int_t* lda,
+              blaze::blas_int_t* ipiv, float* work, blaze::blas_int_t* lwork,
+              blaze::blas_int_t* info, blaze::fortran_charlen_t nuplo );
+void zhetrf_( char* uplo, blaze::blas_int_t* n, double* A, blaze::blas_int_t* lda,
+              blaze::blas_int_t* ipiv, double* work, blaze::blas_int_t* lwork,
+              blaze::blas_int_t* info, blaze::fortran_charlen_t nuplo );
 
 }
 #endif
@@ -77,11 +83,11 @@ namespace blaze {
 //*************************************************************************************************
 /*!\name LAPACK LDLH decomposition functions (hetrf) */
 //@{
-inline void hetrf( char uplo, int n, complex<float>* A, int lda, int* ipiv,
-                   complex<float>* work, int lwork, int* info );
+void hetrf( char uplo, blas_int_t n, complex<float>* A, blas_int_t lda,
+            blas_int_t* ipiv, complex<float>* work, blas_int_t lwork, blas_int_t* info );
 
-inline void hetrf( char uplo, int n, complex<double>* A, int lda, int* ipiv,
-                   complex<double>* work, int lwork, int* info );
+void hetrf( char uplo, blas_int_t n, complex<double>* A, blas_int_t lda,
+            blas_int_t* ipiv, complex<double>* work, blas_int_t lwork, blas_int_t* info );
 //@}
 //*************************************************************************************************
 
@@ -134,20 +140,25 @@ inline void hetrf( char uplo, int n, complex<double>* A, int lda, int* ipiv,
 // is available and linked to the executable. Otherwise a call to this function will result in a
 // linker error.
 */
-inline void hetrf( char uplo, int n, complex<float>* A, int lda, int* ipiv,
-                   complex<float>* work, int lwork, int* info )
+inline void hetrf( char uplo, blas_int_t n, complex<float>* A, blas_int_t lda,
+                   blas_int_t* ipiv, complex<float>* work, blas_int_t lwork, blas_int_t* info )
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<float> ) == 2UL*sizeof( float ) );
 
 #if defined(INTEL_MKL_VERSION)
-   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( int ) );
+   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( blas_int_t ) );
+   BLAZE_STATIC_ASSERT( sizeof( MKL_Complex8 ) == sizeof( complex<float> ) );
    using ET = MKL_Complex8;
 #else
    using ET = float;
 #endif
 
    chetrf_( &uplo, &n, reinterpret_cast<ET*>( A ), &lda, ipiv,
-            reinterpret_cast<ET*>( work ), &lwork, info );
+            reinterpret_cast<ET*>( work ), &lwork, info
+#if !defined(INTEL_MKL_VERSION)
+          , blaze::fortran_charlen_t(1)
+#endif
+          );
 }
 //*************************************************************************************************
 
@@ -200,20 +211,25 @@ inline void hetrf( char uplo, int n, complex<float>* A, int lda, int* ipiv,
 // is available and linked to the executable. Otherwise a call to this function will result in a
 // linker error.
 */
-inline void hetrf( char uplo, int n, complex<double>* A, int lda, int* ipiv,
-                   complex<double>* work, int lwork, int* info )
+inline void hetrf( char uplo, blas_int_t n, complex<double>* A, blas_int_t lda,
+                   blas_int_t* ipiv, complex<double>* work, blas_int_t lwork, blas_int_t* info )
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<double> ) == 2UL*sizeof( double ) );
 
 #if defined(INTEL_MKL_VERSION)
-   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( int ) );
+   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( blas_int_t ) );
+   BLAZE_STATIC_ASSERT( sizeof( MKL_Complex16 ) == sizeof( complex<double> ) );
    using ET = MKL_Complex16;
 #else
    using ET = double;
 #endif
 
    zhetrf_( &uplo, &n, reinterpret_cast<ET*>( A ), &lda, ipiv,
-            reinterpret_cast<ET*>( work ), &lwork, info );
+            reinterpret_cast<ET*>( work ), &lwork, info
+#if !defined(INTEL_MKL_VERSION)
+          , blaze::fortran_charlen_t(1)
+#endif
+          );
 }
 //*************************************************************************************************
 

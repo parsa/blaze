@@ -3,7 +3,7 @@
 //  \file blaze/math/lapack/gesvdx.h
 //  \brief Header file for the LAPACK singular value decomposition functions (gesvdx)
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -58,7 +58,6 @@
 #include <blaze/util/algorithms/Min.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Builtin.h>
-#include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/NumericCast.h>
 #include <blaze/util/Types.h>
@@ -78,32 +77,32 @@ namespace blaze {
 /*!\name LAPACK SVD functions (gesvdx) */
 //@{
 template< typename MT, bool SO, typename VT, bool TF >
-inline size_t gesvdx( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& s );
+size_t gesvdx( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& s );
 
 template< typename MT, bool SO, typename VT, bool TF, typename ST >
-inline size_t gesvdx( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& s, ST low, ST upp );
+size_t gesvdx( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& s, ST low, ST upp );
 
 template< typename MT1, bool SO, typename MT2, typename VT, bool TF >
-inline size_t gesvdx( DenseMatrix<MT1,SO>& A, DenseMatrix<MT2,SO>& U, DenseVector<VT,TF>& s );
+size_t gesvdx( DenseMatrix<MT1,SO>& A, DenseMatrix<MT2,SO>& U, DenseVector<VT,TF>& s );
 
 template< typename MT1, bool SO, typename MT2, typename VT, bool TF, typename ST >
-inline size_t gesvdx( DenseMatrix<MT1,SO>& A, DenseMatrix<MT2,SO>& U,
-                      DenseVector<VT,TF>& s, ST low, ST upp );
+size_t gesvdx( DenseMatrix<MT1,SO>& A, DenseMatrix<MT2,SO>& U,
+               DenseVector<VT,TF>& s, ST low, ST upp );
 
 template< typename MT1, bool SO, typename VT, bool TF, typename MT2 >
-inline size_t gesvdx( DenseMatrix<MT1,SO>& A, DenseVector<VT,TF>& s, DenseMatrix<MT2,SO>& V );
+size_t gesvdx( DenseMatrix<MT1,SO>& A, DenseVector<VT,TF>& s, DenseMatrix<MT2,SO>& V );
 
 template< typename MT1, bool SO, typename VT, bool TF, typename MT2, typename ST >
-inline size_t gesvdx( DenseMatrix<MT1,SO>& A, DenseVector<VT,TF>& s,
-                      DenseMatrix<MT2,SO>& V, ST low, ST upp );
+size_t gesvdx( DenseMatrix<MT1,SO>& A, DenseVector<VT,TF>& s,
+               DenseMatrix<MT2,SO>& V, ST low, ST upp );
 
 template< typename MT1, bool SO, typename MT2, typename VT, bool TF, typename MT3 >
-inline size_t gesvdx( DenseMatrix<MT1,SO>& A, DenseMatrix<MT2,SO>& U,
-                      DenseVector<VT,TF>& s, DenseMatrix<MT3,SO>& V );
+size_t gesvdx( DenseMatrix<MT1,SO>& A, DenseMatrix<MT2,SO>& U,
+               DenseVector<VT,TF>& s, DenseMatrix<MT3,SO>& V );
 
 template< typename MT1, bool SO, typename MT2, typename VT, bool TF, typename MT3, typename ST >
-inline size_t gesvdx( DenseMatrix<MT1,SO>& A, DenseMatrix<MT2,SO>& U,
-                      DenseVector<VT,TF>& s, DenseMatrix<MT3,SO>& V, ST low, ST upp );
+size_t gesvdx( DenseMatrix<MT1,SO>& A, DenseMatrix<MT2,SO>& U,
+               DenseVector<VT,TF>& s, DenseMatrix<MT3,SO>& V, ST low, ST upp );
 //@}
 //*************************************************************************************************
 
@@ -135,60 +134,60 @@ template< typename MT    // Type of the matrix A
         , typename VT    // Type of the vector s
         , bool TF        // Transpose flag of the vector s
         , typename ST >  // Type of the scalar boundary values
-inline DisableIf_t< IsComplex_v< ElementType_t<MT> >, size_t >
-   gesvdx_backend( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& s,
-                   char range, ST vl, ST vu, int il, int iu )
+inline auto gesvdx_backend( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& s,
+                            char range, ST vl, ST vu, blas_int_t il, blas_int_t iu )
+   -> DisableIf_t< IsComplex_v< ElementType_t<MT> >, size_t >
 {
    BLAZE_INTERNAL_ASSERT( range == 'A' || range == 'V' || range == 'I', "Invalid range flag detected" );
-   BLAZE_INTERNAL_ASSERT( range != 'A' || (~s).size() == min( (~A).rows(), (~A).columns() ), "Invalid vector dimension detected" );
-   BLAZE_INTERNAL_ASSERT( range != 'V' || (~s).size() == min( (~A).rows(), (~A).columns() ), "Invalid vector dimension detected" );
-   BLAZE_INTERNAL_ASSERT( range != 'I' || (~s).size() == size_t( iu-il+1 ), "Invalid vector dimension detected" );
+   BLAZE_INTERNAL_ASSERT( range != 'A' || (*s).size() == min( (*A).rows(), (*A).columns() ), "Invalid vector dimension detected" );
+   BLAZE_INTERNAL_ASSERT( range != 'V' || (*s).size() == min( (*A).rows(), (*A).columns() ), "Invalid vector dimension detected" );
+   BLAZE_INTERNAL_ASSERT( range != 'I' || (*s).size() == size_t( iu-il+1 ), "Invalid vector dimension detected" );
    BLAZE_INTERNAL_ASSERT( vl <= vu, "Invalid floating point range detected" );
    BLAZE_INTERNAL_ASSERT( il <= iu, "Invalid integral range detected" );
 
    using ET = ElementType_t<MT>;
 
-   const size_t M( (~A).rows() );
-   const size_t N( (~A).columns() );
+   const size_t M( (*A).rows() );
+   const size_t N( (*A).columns() );
    const size_t mindim( min( M, N ) );
 
-   int m   ( numeric_cast<int>( SO ? (~A).rows() : (~A).columns() ) );
-   int n   ( numeric_cast<int>( SO ? (~A).columns() : (~A).rows() ) );
-   int lda ( numeric_cast<int>( (~A).spacing() ) );
-   int ns  ( 0 );
-   int info( 0 );
+   blas_int_t m   ( numeric_cast<blas_int_t>( SO ? (*A).rows() : (*A).columns() ) );
+   blas_int_t n   ( numeric_cast<blas_int_t>( SO ? (*A).columns() : (*A).rows() ) );
+   blas_int_t lda ( numeric_cast<blas_int_t>( (*A).spacing() ) );
+   blas_int_t ns  ( 0 );
+   blas_int_t info( 0 );
 
-   ET* sptr( (~s).data() );
+   ET* sptr( (*s).data() );
    std::unique_ptr<ET[]> stmp;
 
-   const bool tmpRequired( (~s).size() < mindim );
+   const bool tmpRequired( (*s).size() < mindim );
 
    if( tmpRequired ) {
       stmp.reset( new ET[2UL*mindim] );
       sptr = stmp.get();
    }
 
-   const int minimum( min( m, n ) );
+   const blas_int_t minimum( min( m, n ) );
 
-   int lwork( minimum*( minimum*3 + 20 ) + 2 );
+   blas_int_t lwork( minimum*( minimum*3 + 20 ) + 2 );
    const std::unique_ptr<ET[]>  work ( new ET[lwork] );
-   const std::unique_ptr<int[]> iwork( new int[12*minimum] );
+   const std::unique_ptr<blas_int_t[]> iwork( new blas_int_t[12*minimum] );
 
-   gesvdx( 'N', 'N', range, m, n, (~A).data(), lda, vl, vu, il, iu, &ns, sptr,
+   gesvdx( 'N', 'N', range, m, n, (*A).data(), lda, vl, vu, il, iu, &ns, sptr,
            nullptr, 1, nullptr, 1, work.get(), lwork, iwork.get(), &info );
 
    const size_t num( numeric_cast<size_t>( ns ) );
 
    BLAZE_INTERNAL_ASSERT( info >= 0, "Invalid argument for singular value decomposition" );
-   BLAZE_INTERNAL_ASSERT( num <= (~s).size(), "Invalid number of singular values detected" );
+   BLAZE_INTERNAL_ASSERT( num <= (*s).size(), "Invalid number of singular values detected" );
 
    if( info > 0 ) {
       BLAZE_THROW_LAPACK_ERROR( "Singular value decomposition failed" );
    }
 
    if( tmpRequired ) {
-      for( size_t i=0UL; i<(~s).size(); ++i ) {
-         (~s)[i] = stmp[i];
+      for( size_t i=0UL; i<(*s).size(); ++i ) {
+         (*s)[i] = stmp[i];
       }
    }
 
@@ -225,62 +224,62 @@ template< typename MT    // Type of the matrix A
         , typename VT    // Type of the vector s
         , bool TF        // Transpose flag of the vector s
         , typename ST >  // Type of the scalar boundary values
-inline EnableIf_t< IsComplex_v< ElementType_t<MT> >, size_t >
-   gesvdx_backend( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& s,
-                   char range, ST vl, ST vu, int il, int iu )
+inline auto gesvdx_backend( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& s,
+                            char range, ST vl, ST vu, blas_int_t il, blas_int_t iu )
+   -> EnableIf_t< IsComplex_v< ElementType_t<MT> >, size_t >
 {
    BLAZE_INTERNAL_ASSERT( range == 'A' || range == 'V' || range == 'I', "Invalid range flag detected" );
-   BLAZE_INTERNAL_ASSERT( range != 'A' || (~s).size() == min( (~A).rows(), (~A).columns() ), "Invalid vector dimension detected" );
-   BLAZE_INTERNAL_ASSERT( range != 'V' || (~s).size() == min( (~A).rows(), (~A).columns() ), "Invalid vector dimension detected" );
-   BLAZE_INTERNAL_ASSERT( range != 'I' || (~s).size() == size_t( iu-il+1 ), "Invalid vector dimension detected" );
+   BLAZE_INTERNAL_ASSERT( range != 'A' || (*s).size() == min( (*A).rows(), (*A).columns() ), "Invalid vector dimension detected" );
+   BLAZE_INTERNAL_ASSERT( range != 'V' || (*s).size() == min( (*A).rows(), (*A).columns() ), "Invalid vector dimension detected" );
+   BLAZE_INTERNAL_ASSERT( range != 'I' || (*s).size() == size_t( iu-il+1 ), "Invalid vector dimension detected" );
    BLAZE_INTERNAL_ASSERT( vl <= vu, "Invalid floating point range detected" );
    BLAZE_INTERNAL_ASSERT( il <= iu, "Invalid integral range detected" );
 
    using CT = ElementType_t<MT>;
    using BT = UnderlyingElement_t<CT>;
 
-   const size_t M( (~A).rows() );
-   const size_t N( (~A).columns() );
+   const size_t M( (*A).rows() );
+   const size_t N( (*A).columns() );
    const size_t mindim( min( M, N ) );
 
-   int m   ( numeric_cast<int>( SO ? (~A).rows() : (~A).columns() ) );
-   int n   ( numeric_cast<int>( SO ? (~A).columns() : (~A).rows() ) );
-   int lda ( numeric_cast<int>( (~A).spacing() ) );
-   int ns  ( 0 );
-   int info( 0 );
+   blas_int_t m   ( numeric_cast<blas_int_t>( SO ? (*A).rows() : (*A).columns() ) );
+   blas_int_t n   ( numeric_cast<blas_int_t>( SO ? (*A).columns() : (*A).rows() ) );
+   blas_int_t lda ( numeric_cast<blas_int_t>( (*A).spacing() ) );
+   blas_int_t ns  ( 0 );
+   blas_int_t info( 0 );
 
-   BT* sptr( (~s).data() );
+   BT* sptr( (*s).data() );
    std::unique_ptr<BT[]> stmp;
 
-   const bool tmpRequired( (~s).size() < mindim );
+   const bool tmpRequired( (*s).size() < mindim );
 
    if( tmpRequired ) {
       stmp.reset( new BT[2UL*mindim] );
       sptr = stmp.get();
    }
 
-   const int minimum( min( m, n ) );
+   const blas_int_t minimum( min( m, n ) );
 
-   int lwork( minimum*( minimum*3 + 20 ) + 2 );
+   blas_int_t lwork( minimum*( minimum*3 + 20 ) + 2 );
    const std::unique_ptr<CT[]>  work ( new CT[lwork] );
    const std::unique_ptr<BT[]>  rwork( new BT[17*minimum*minimum] );
-   const std::unique_ptr<int[]> iwork( new int[12*minimum] );
+   const std::unique_ptr<blas_int_t[]> iwork( new blas_int_t[12*minimum] );
 
-   gesvdx( 'N', 'N', range, m, n, (~A).data(), lda, vl, vu, il, iu, &ns, sptr,
+   gesvdx( 'N', 'N', range, m, n, (*A).data(), lda, vl, vu, il, iu, &ns, sptr,
            nullptr, 1, nullptr, 1, work.get(), lwork, rwork.get(), iwork.get(), &info );
 
    const size_t num( numeric_cast<size_t>( ns ) );
 
    BLAZE_INTERNAL_ASSERT( info >= 0, "Invalid argument for singular value decomposition" );
-   BLAZE_INTERNAL_ASSERT( num <= (~s).size(), "Invalid number of singular values detected" );
+   BLAZE_INTERNAL_ASSERT( num <= (*s).size(), "Invalid number of singular values detected" );
 
    if( info > 0 ) {
       BLAZE_THROW_LAPACK_ERROR( "Singular value decomposition failed" );
    }
 
    if( tmpRequired ) {
-      for( size_t i=0UL; i<(~s).size(); ++i ) {
-         (~s)[i] = stmp[i];
+      for( size_t i=0UL; i<(*s).size(); ++i ) {
+         (*s)[i] = stmp[i];
       }
    }
 
@@ -362,17 +361,17 @@ inline size_t gesvdx( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& s )
    using ET = ElementType_t<MT>;
    using UT = UnderlyingElement_t<ET>;
 
-   const size_t M( (~A).rows() );
-   const size_t N( (~A).columns() );
+   const size_t M( (*A).rows() );
+   const size_t N( (*A).columns() );
    const size_t mindim( min( M, N ) );
 
-   resize( ~s, mindim, false );
+   resize( *s, mindim, false );
 
    if( M == 0UL || N == 0UL ) {
       return 0;
    }
 
-   return gesvdx_backend( ~A, ~s, 'A', UT(), UT(), 0, 0 );
+   return gesvdx_backend( *A, *s, 'A', UT(), UT(), 0, 0 );
 }
 //*************************************************************************************************
 
@@ -486,8 +485,8 @@ inline size_t gesvdx( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& s, ST low, ST u
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid index range provided" );
    }
 
-   const size_t M( (~A).rows() );
-   const size_t N( (~A).columns() );
+   const size_t M( (*A).rows() );
+   const size_t N( (*A).columns() );
    const size_t mindim( min( M, N ) );
    const size_t expected( IsFloatingPoint_v<ST> ? mindim : size_t( upp - low ) + 1UL );
 
@@ -495,22 +494,22 @@ inline size_t gesvdx( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& s, ST low, ST u
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid index range provided" );
    }
 
-   resize( ~s, expected, false );
+   resize( *s, expected, false );
 
    if( M == 0UL || N == 0UL ) {
       return 0;
    }
 
-   const char range( IsFloatingPoint_v<ST> ? 'V' : 'I' );
-   const ST   vl   ( IsFloatingPoint_v<ST> ? low : ST() );
-   const ST   vu   ( IsFloatingPoint_v<ST> ? upp : ST() );
-   const int  il   ( IsFloatingPoint_v<ST> ? 0 : numeric_cast<int>( low ) );
-   const int  iu   ( IsFloatingPoint_v<ST> ? 0 : numeric_cast<int>( upp ) );
+   const char       range( IsFloatingPoint_v<ST> ? 'V' : 'I' );
+   const ST         vl   ( IsFloatingPoint_v<ST> ? low : ST() );
+   const ST         vu   ( IsFloatingPoint_v<ST> ? upp : ST() );
+   const blas_int_t il   ( IsFloatingPoint_v<ST> ? 0 : numeric_cast<blas_int_t>( low ) );
+   const blas_int_t iu   ( IsFloatingPoint_v<ST> ? 0 : numeric_cast<blas_int_t>( upp ) );
 
-   const size_t actual( gesvdx_backend( ~A, ~s, range, vl, vu, il, iu ) );
+   const size_t actual( gesvdx_backend( *A, *s, range, vl, vu, il, iu ) );
 
    if( IsResizable_v<VT> ) {
-      resize( ~s, actual, true );
+      resize( *s, actual, true );
    }
 
    return actual;
@@ -547,38 +546,38 @@ template< typename MT1   // Type of the matrix A
         , typename VT    // Type of the vector s
         , bool TF        // Transpose flag of the vector s
         , typename ST >  // Type of the scalar boundary values
-inline DisableIf_t< IsComplex_v< ElementType_t<MT1> >, size_t >
-   gesvdx_backend( DenseMatrix<MT1,SO>& A, DenseMatrix<MT2,SO>& U, DenseVector<VT,TF>& s,
-                   char range, ST vl, ST vu, int il, int iu )
+inline auto gesvdx_backend( DenseMatrix<MT1,SO>& A, DenseMatrix<MT2,SO>& U, DenseVector<VT,TF>& s,
+                            char range, ST vl, ST vu, blas_int_t il, blas_int_t iu )
+   -> DisableIf_t< IsComplex_v< ElementType_t<MT1> >, size_t >
 {
    BLAZE_INTERNAL_ASSERT( range == 'A' || range == 'V' || range == 'I', "Invalid range flag detected" );
-   BLAZE_INTERNAL_ASSERT( range != 'A' || (~s).size() == min( (~A).rows(), (~A).columns() ), "Invalid vector dimension detected" );
-   BLAZE_INTERNAL_ASSERT( range != 'V' || (~s).size() == min( (~A).rows(), (~A).columns() ), "Invalid vector dimension detected" );
-   BLAZE_INTERNAL_ASSERT( range != 'I' || (~s).size() == size_t( iu-il+1 ), "Invalid vector dimension detected" );
-   BLAZE_INTERNAL_ASSERT( (~U).rows() == (~A).rows()   , "Invalid matrix dimension detected" );
-   BLAZE_INTERNAL_ASSERT( (~U).columns() == (~s).size(), "Invalid matrix dimension detected" );
+   BLAZE_INTERNAL_ASSERT( range != 'A' || (*s).size() == min( (*A).rows(), (*A).columns() ), "Invalid vector dimension detected" );
+   BLAZE_INTERNAL_ASSERT( range != 'V' || (*s).size() == min( (*A).rows(), (*A).columns() ), "Invalid vector dimension detected" );
+   BLAZE_INTERNAL_ASSERT( range != 'I' || (*s).size() == size_t( iu-il+1 ), "Invalid vector dimension detected" );
+   BLAZE_INTERNAL_ASSERT( (*U).rows() == (*A).rows()   , "Invalid matrix dimension detected" );
+   BLAZE_INTERNAL_ASSERT( (*U).columns() == (*s).size(), "Invalid matrix dimension detected" );
    BLAZE_INTERNAL_ASSERT( vl <= vu, "Invalid floating point range detected" );
    BLAZE_INTERNAL_ASSERT( il <= iu, "Invalid integral range detected" );
 
    using ET = ElementType_t<MT1>;
 
-   const size_t M( (~A).rows() );
-   const size_t N( (~A).columns() );
+   const size_t M( (*A).rows() );
+   const size_t N( (*A).columns() );
    const size_t mindim( min( M, N ) );
 
-   int m   ( numeric_cast<int>( SO ? M : N ) );
-   int n   ( numeric_cast<int>( SO ? N : M ) );
-   int lda ( numeric_cast<int>( (~A).spacing() ) );
-   int ldu ( numeric_cast<int>( (~U).spacing() ) );
-   int ns  ( 0 );
-   int info( 0 );
+   blas_int_t m   ( numeric_cast<blas_int_t>( SO ? M : N ) );
+   blas_int_t n   ( numeric_cast<blas_int_t>( SO ? N : M ) );
+   blas_int_t lda ( numeric_cast<blas_int_t>( (*A).spacing() ) );
+   blas_int_t ldu ( numeric_cast<blas_int_t>( (*U).spacing() ) );
+   blas_int_t ns  ( 0 );
+   blas_int_t info( 0 );
 
-   ET* sptr( (~s).data() );
-   ET* uptr( (~U).data() );
+   ET* sptr( (*s).data() );
+   ET* uptr( (*U).data() );
    std::unique_ptr<ET[]> stmp;
    std::unique_ptr<ET[]> utmp;
 
-   const bool tmpRequired( (~s).size() < mindim );
+   const bool tmpRequired( (*s).size() < mindim );
 
    if( tmpRequired ) {
       stmp.reset( new ET[2UL*mindim] );
@@ -587,14 +586,14 @@ inline DisableIf_t< IsComplex_v< ElementType_t<MT1> >, size_t >
       uptr = utmp.get();
    }
 
-   const int minimum( min( m, n ) );
+   const blas_int_t minimum( min( m, n ) );
 
-   int lwork( minimum*( minimum*3 + 20 ) + 2 );
+   blas_int_t lwork( minimum*( minimum*3 + 20 ) + 2 );
    const std::unique_ptr<ET[]>  work ( new ET[lwork] );
-   const std::unique_ptr<int[]> iwork( new int[12*minimum] );
+   const std::unique_ptr<blas_int_t[]> iwork( new blas_int_t[12*minimum] );
 
    gesvdx( ( SO ? 'V' : 'N' ), ( SO ? 'N' : 'V' ), range, m, n,
-           (~A).data(), lda, vl, vu, il, iu, &ns, sptr,
+           (*A).data(), lda, vl, vu, il, iu, &ns, sptr,
            ( SO ? uptr : nullptr ), ( tmpRequired ? m : ( SO ? ldu : 1 ) ),
            ( SO ? nullptr : uptr ), ( tmpRequired ? mindim : ( SO ? 1 : ldu ) ),
            work.get(), lwork, iwork.get(), &info );
@@ -602,7 +601,7 @@ inline DisableIf_t< IsComplex_v< ElementType_t<MT1> >, size_t >
    const size_t num( numeric_cast<size_t>( ns ) );
 
    BLAZE_INTERNAL_ASSERT( info >= 0, "Invalid argument for singular value decomposition" );
-   BLAZE_INTERNAL_ASSERT( num <= (~s).size(), "Invalid number of singular values detected" );
+   BLAZE_INTERNAL_ASSERT( num <= (*s).size(), "Invalid number of singular values detected" );
 
    if( info > 0 ) {
       BLAZE_THROW_LAPACK_ERROR( "Singular value decomposition failed" );
@@ -610,23 +609,23 @@ inline DisableIf_t< IsComplex_v< ElementType_t<MT1> >, size_t >
 
    if( tmpRequired )
    {
-      for( size_t i=0UL; i<(~s).size(); ++i ) {
-         (~s)[i] = stmp[i];
+      for( size_t i=0UL; i<(*s).size(); ++i ) {
+         (*s)[i] = stmp[i];
       }
 
       if( SO )
       {
-         for( size_t j=0UL; j<(~U).columns(); ++j ) {
-            for( size_t i=0UL; i<(~U).rows(); ++i ) {
-               (~U)(i,j) = utmp[i+j*M];
+         for( size_t j=0UL; j<(*U).columns(); ++j ) {
+            for( size_t i=0UL; i<(*U).rows(); ++i ) {
+               (*U)(i,j) = utmp[i+j*M];
             }
          }
       }
       else
       {
-         for( size_t i=0UL; i<(~U).rows(); ++i ) {
-            for( size_t j=0UL; j<(~U).columns(); ++j ) {
-               (~U)(i,j) = utmp[i*mindim+j];
+         for( size_t i=0UL; i<(*U).rows(); ++i ) {
+            for( size_t j=0UL; j<(*U).columns(); ++j ) {
+               (*U)(i,j) = utmp[i*mindim+j];
             }
          }
       }
@@ -667,39 +666,39 @@ template< typename MT1   // Type of the matrix A
         , typename VT    // Type of the vector s
         , bool TF        // Transpose flag of the vector s
         , typename ST >  // Type of the scalar boundary values
-inline EnableIf_t< IsComplex_v< ElementType_t<MT1> >, size_t >
-   gesvdx_backend( DenseMatrix<MT1,SO>& A, DenseMatrix<MT2,SO>& U, DenseVector<VT,TF>& s,
-                   char range, ST vl, ST vu, int il, int iu )
+inline auto gesvdx_backend( DenseMatrix<MT1,SO>& A, DenseMatrix<MT2,SO>& U, DenseVector<VT,TF>& s,
+                            char range, ST vl, ST vu, blas_int_t il, blas_int_t iu )
+   -> EnableIf_t< IsComplex_v< ElementType_t<MT1> >, size_t >
 {
    BLAZE_INTERNAL_ASSERT( range == 'A' || range == 'V' || range == 'I', "Invalid range flag detected" );
-   BLAZE_INTERNAL_ASSERT( range != 'A' || (~s).size() == min( (~A).rows(), (~A).columns() ), "Invalid vector dimension detected" );
-   BLAZE_INTERNAL_ASSERT( range != 'V' || (~s).size() == min( (~A).rows(), (~A).columns() ), "Invalid vector dimension detected" );
-   BLAZE_INTERNAL_ASSERT( range != 'I' || (~s).size() == size_t( iu-il+1 ), "Invalid vector dimension detected" );
-   BLAZE_INTERNAL_ASSERT( (~U).rows() == (~A).rows()   , "Invalid matrix dimension detected" );
-   BLAZE_INTERNAL_ASSERT( (~U).columns() == (~s).size(), "Invalid matrix dimension detected" );
+   BLAZE_INTERNAL_ASSERT( range != 'A' || (*s).size() == min( (*A).rows(), (*A).columns() ), "Invalid vector dimension detected" );
+   BLAZE_INTERNAL_ASSERT( range != 'V' || (*s).size() == min( (*A).rows(), (*A).columns() ), "Invalid vector dimension detected" );
+   BLAZE_INTERNAL_ASSERT( range != 'I' || (*s).size() == size_t( iu-il+1 ), "Invalid vector dimension detected" );
+   BLAZE_INTERNAL_ASSERT( (*U).rows() == (*A).rows()   , "Invalid matrix dimension detected" );
+   BLAZE_INTERNAL_ASSERT( (*U).columns() == (*s).size(), "Invalid matrix dimension detected" );
    BLAZE_INTERNAL_ASSERT( vl <= vu, "Invalid floating point range detected" );
    BLAZE_INTERNAL_ASSERT( il <= iu, "Invalid integral range detected" );
 
    using CT = ElementType_t<MT1>;
    using BT = UnderlyingElement_t<CT>;
 
-   const size_t M( (~A).rows() );
-   const size_t N( (~A).columns() );
+   const size_t M( (*A).rows() );
+   const size_t N( (*A).columns() );
    const size_t mindim( min( M, N ) );
 
-   int m   ( numeric_cast<int>( SO ? M : N ) );
-   int n   ( numeric_cast<int>( SO ? N : M ) );
-   int lda ( numeric_cast<int>( (~A).spacing() ) );
-   int ldu ( numeric_cast<int>( (~U).spacing() ) );
-   int ns  ( 0 );
-   int info( 0 );
+   blas_int_t m   ( numeric_cast<blas_int_t>( SO ? M : N ) );
+   blas_int_t n   ( numeric_cast<blas_int_t>( SO ? N : M ) );
+   blas_int_t lda ( numeric_cast<blas_int_t>( (*A).spacing() ) );
+   blas_int_t ldu ( numeric_cast<blas_int_t>( (*U).spacing() ) );
+   blas_int_t ns  ( 0 );
+   blas_int_t info( 0 );
 
-   BT* sptr( (~s).data() );
-   CT* uptr( (~U).data() );
+   BT* sptr( (*s).data() );
+   CT* uptr( (*U).data() );
    std::unique_ptr<BT[]> stmp;
    std::unique_ptr<CT[]> utmp;
 
-   const bool tmpRequired( (~s).size() < mindim );
+   const bool tmpRequired( (*s).size() < mindim );
 
    if( tmpRequired ) {
       stmp.reset( new BT[2UL*mindim] );
@@ -708,15 +707,15 @@ inline EnableIf_t< IsComplex_v< ElementType_t<MT1> >, size_t >
       uptr = utmp.get();
    }
 
-   const int minimum( min( m, n ) );
+   const blas_int_t minimum( min( m, n ) );
 
-   int lwork( minimum*( minimum*3 + 20 ) + 2 );
+   blas_int_t lwork( minimum*( minimum*3 + 20 ) + 2 );
    const std::unique_ptr<CT[]>  work ( new CT[lwork] );
    const std::unique_ptr<BT[]>  rwork( new BT[17*minimum*minimum] );
-   const std::unique_ptr<int[]> iwork( new int[12*minimum] );
+   const std::unique_ptr<blas_int_t[]> iwork( new blas_int_t[12*minimum] );
 
    gesvdx( ( SO ? 'V' : 'N' ), ( SO ? 'N' : 'V' ), range, m, n,
-           (~A).data(), lda, vl, vu, il, iu, &ns, sptr,
+           (*A).data(), lda, vl, vu, il, iu, &ns, sptr,
            ( SO ? uptr : nullptr ), ( tmpRequired ? m : ( SO ? ldu : 1 ) ),
            ( SO ? nullptr : uptr ), ( tmpRequired ? mindim : ( SO ? 1 : ldu ) ),
            work.get(), lwork, rwork.get(), iwork.get(), &info );
@@ -724,7 +723,7 @@ inline EnableIf_t< IsComplex_v< ElementType_t<MT1> >, size_t >
    const size_t num( numeric_cast<size_t>( ns ) );
 
    BLAZE_INTERNAL_ASSERT( info >= 0, "Invalid argument for singular value decomposition" );
-   BLAZE_INTERNAL_ASSERT( num <= (~s).size(), "Invalid number of singular values detected" );
+   BLAZE_INTERNAL_ASSERT( num <= (*s).size(), "Invalid number of singular values detected" );
 
    if( info > 0 ) {
       BLAZE_THROW_LAPACK_ERROR( "Singular value decomposition failed" );
@@ -732,23 +731,23 @@ inline EnableIf_t< IsComplex_v< ElementType_t<MT1> >, size_t >
 
    if( tmpRequired )
    {
-      for( size_t i=0UL; i<(~s).size(); ++i ) {
-         (~s)[i] = stmp[i];
+      for( size_t i=0UL; i<(*s).size(); ++i ) {
+         (*s)[i] = stmp[i];
       }
 
       if( SO )
       {
-         for( size_t j=0UL; j<(~U).columns(); ++j ) {
-            for( size_t i=0UL; i<(~U).rows(); ++i ) {
-               (~U)(i,j) = utmp[i+j*M];
+         for( size_t j=0UL; j<(*U).columns(); ++j ) {
+            for( size_t i=0UL; i<(*U).rows(); ++i ) {
+               (*U)(i,j) = utmp[i+j*M];
             }
          }
       }
       else
       {
-         for( size_t i=0UL; i<(~U).rows(); ++i ) {
-            for( size_t j=0UL; j<(~U).columns(); ++j ) {
-               (~U)(i,j) = utmp[i*mindim+j];
+         for( size_t i=0UL; i<(*U).rows(); ++i ) {
+            for( size_t j=0UL; j<(*U).columns(); ++j ) {
+               (*U)(i,j) = utmp[i*mindim+j];
             }
          }
       }
@@ -844,18 +843,18 @@ inline size_t gesvdx( DenseMatrix<MT1,SO>& A, DenseMatrix<MT2,SO>& U, DenseVecto
    using ET = ElementType_t<MT1>;
    using UT = UnderlyingElement_t<ET>;
 
-   const size_t M( (~A).rows() );
-   const size_t N( (~A).columns() );
+   const size_t M( (*A).rows() );
+   const size_t N( (*A).columns() );
    const size_t mindim( min( M, N ) );
 
-   resize( ~s, mindim, false );
-   resize( ~U, M, mindim, false );
+   resize( *s, mindim, false );
+   resize( *U, M, mindim, false );
 
    if( M == 0UL || N == 0UL ) {
       return 0;
    }
 
-   return gesvdx_backend( ~A, ~U, ~s, 'A', UT(), UT(), 0, 0 );
+   return gesvdx_backend( *A, *U, *s, 'A', UT(), UT(), 0, 0 );
 }
 //*************************************************************************************************
 
@@ -986,8 +985,8 @@ inline size_t gesvdx( DenseMatrix<MT1,SO>& A, DenseMatrix<MT2,SO>& U,
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid index range provided" );
    }
 
-   const size_t M( (~A).rows() );
-   const size_t N( (~A).columns() );
+   const size_t M( (*A).rows() );
+   const size_t N( (*A).columns() );
    const size_t mindim( min( M, N ) );
    const size_t expected( IsFloatingPoint_v<ST> ? mindim : size_t( upp - low ) + 1UL );
 
@@ -995,27 +994,27 @@ inline size_t gesvdx( DenseMatrix<MT1,SO>& A, DenseMatrix<MT2,SO>& U,
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid index range provided" );
    }
 
-   resize( ~s, expected, false );
-   resize( ~U, M, expected, false );
+   resize( *s, expected, false );
+   resize( *U, M, expected, false );
 
    if( M == 0UL || N == 0UL ) {
       return 0;
    }
 
-   const char range( IsFloatingPoint_v<ST> ? 'V' : 'I' );
-   const ST   vl   ( IsFloatingPoint_v<ST> ? low : ST() );
-   const ST   vu   ( IsFloatingPoint_v<ST> ? upp : ST() );
-   const int  il   ( IsFloatingPoint_v<ST> ? 0 : numeric_cast<int>( low ) );
-   const int  iu   ( IsFloatingPoint_v<ST> ? 0 : numeric_cast<int>( upp ) );
+   const char       range( IsFloatingPoint_v<ST> ? 'V' : 'I' );
+   const ST         vl   ( IsFloatingPoint_v<ST> ? low : ST() );
+   const ST         vu   ( IsFloatingPoint_v<ST> ? upp : ST() );
+   const blas_int_t il   ( IsFloatingPoint_v<ST> ? 0 : numeric_cast<blas_int_t>( low ) );
+   const blas_int_t iu   ( IsFloatingPoint_v<ST> ? 0 : numeric_cast<blas_int_t>( upp ) );
 
-   const size_t actual( gesvdx_backend( ~A, ~U, ~s, range, vl, vu, il, iu ) );
+   const size_t actual( gesvdx_backend( *A, *U, *s, range, vl, vu, il, iu ) );
 
    if( IsResizable_v<VT> ) {
-      resize( ~s, actual, true );
+      resize( *s, actual, true );
    }
 
    if( IsResizable_v<MT2> ) {
-      resize( ~U, M, actual, true );
+      resize( *U, M, actual, true );
    }
 
    return actual;
@@ -1052,38 +1051,38 @@ template< typename MT1   // Type of the matrix A
         , bool TF        // Transpose flag of the vector s
         , typename MT2   // Type of the matrix V
         , typename ST >  // Type of the scalar boundary values
-inline DisableIf_t< IsComplex_v< ElementType_t<MT1> >, size_t >
-   gesvdx_backend( DenseMatrix<MT1,SO>& A, DenseVector<VT,TF>& s, DenseMatrix<MT2,SO>& V,
-                   char range, ST vl, ST vu, int il, int iu )
+inline auto gesvdx_backend( DenseMatrix<MT1,SO>& A, DenseVector<VT,TF>& s, DenseMatrix<MT2,SO>& V,
+                            char range, ST vl, ST vu, blas_int_t il, blas_int_t iu )
+   -> DisableIf_t< IsComplex_v< ElementType_t<MT1> >, size_t >
 {
    BLAZE_INTERNAL_ASSERT( range == 'A' || range == 'V' || range == 'I', "Invalid range flag detected" );
-   BLAZE_INTERNAL_ASSERT( range != 'A' || (~s).size() == min( (~A).rows(), (~A).columns() ), "Invalid vector dimension detected" );
-   BLAZE_INTERNAL_ASSERT( range != 'V' || (~s).size() == min( (~A).rows(), (~A).columns() ), "Invalid vector dimension detected" );
-   BLAZE_INTERNAL_ASSERT( range != 'I' || (~s).size() == size_t( iu-il+1 ), "Invalid vector dimension detected" );
-   BLAZE_INTERNAL_ASSERT( (~V).rows()    == (~s).size()   , "Invalid matrix dimension detected" );
-   BLAZE_INTERNAL_ASSERT( (~V).columns() == (~A).columns(), "Invalid matrix dimension detected" );
+   BLAZE_INTERNAL_ASSERT( range != 'A' || (*s).size() == min( (*A).rows(), (*A).columns() ), "Invalid vector dimension detected" );
+   BLAZE_INTERNAL_ASSERT( range != 'V' || (*s).size() == min( (*A).rows(), (*A).columns() ), "Invalid vector dimension detected" );
+   BLAZE_INTERNAL_ASSERT( range != 'I' || (*s).size() == size_t( iu-il+1 ), "Invalid vector dimension detected" );
+   BLAZE_INTERNAL_ASSERT( (*V).rows()    == (*s).size()   , "Invalid matrix dimension detected" );
+   BLAZE_INTERNAL_ASSERT( (*V).columns() == (*A).columns(), "Invalid matrix dimension detected" );
    BLAZE_INTERNAL_ASSERT( vl <= vu, "Invalid floating point range detected" );
    BLAZE_INTERNAL_ASSERT( il <= iu, "Invalid integral range detected" );
 
    using ET = ElementType_t<MT1>;
 
-   const size_t M( (~A).rows() );
-   const size_t N( (~A).columns() );
+   const size_t M( (*A).rows() );
+   const size_t N( (*A).columns() );
    const size_t mindim( min( M, N ) );
 
-   int m   ( numeric_cast<int>( SO ? M : N ) );
-   int n   ( numeric_cast<int>( SO ? N : M ) );
-   int lda ( numeric_cast<int>( (~A).spacing() ) );
-   int ldv ( numeric_cast<int>( (~V).spacing() ) );
-   int ns  ( 0 );
-   int info( 0 );
+   blas_int_t m   ( numeric_cast<blas_int_t>( SO ? M : N ) );
+   blas_int_t n   ( numeric_cast<blas_int_t>( SO ? N : M ) );
+   blas_int_t lda ( numeric_cast<blas_int_t>( (*A).spacing() ) );
+   blas_int_t ldv ( numeric_cast<blas_int_t>( (*V).spacing() ) );
+   blas_int_t ns  ( 0 );
+   blas_int_t info( 0 );
 
-   ET* sptr( (~s).data() );
-   ET* vptr( (~V).data() );
+   ET* sptr( (*s).data() );
+   ET* vptr( (*V).data() );
    std::unique_ptr<ET[]> stmp;
    std::unique_ptr<ET[]> vtmp;
 
-   const bool tmpRequired( (~s).size() < mindim );
+   const bool tmpRequired( (*s).size() < mindim );
 
    if( tmpRequired ) {
       stmp.reset( new ET[2UL*mindim] );
@@ -1092,14 +1091,14 @@ inline DisableIf_t< IsComplex_v< ElementType_t<MT1> >, size_t >
       vptr = vtmp.get();
    }
 
-   const int minimum( min( m, n ) );
+   const blas_int_t minimum( min( m, n ) );
 
-   int lwork( minimum*( minimum*3 + 20 ) + 2 );
+   blas_int_t lwork( minimum*( minimum*3 + 20 ) + 2 );
    const std::unique_ptr<ET[]>  work ( new ET[lwork] );
-   const std::unique_ptr<int[]> iwork( new int[12*minimum] );
+   const std::unique_ptr<blas_int_t[]> iwork( new blas_int_t[12*minimum] );
 
    gesvdx( ( SO ? 'N' : 'V' ), ( SO ? 'V' : 'N' ), range, m, n,
-           (~A).data(), lda, vl, vu, il, iu, &ns, sptr,
+           (*A).data(), lda, vl, vu, il, iu, &ns, sptr,
            ( SO ? nullptr : vptr ), ( tmpRequired ? m : ( SO ? 1 : ldv ) ),
            ( SO ? vptr : nullptr ), ( tmpRequired ? mindim : ( SO ? ldv : 1 ) ),
            work.get(), lwork, iwork.get(), &info );
@@ -1107,7 +1106,7 @@ inline DisableIf_t< IsComplex_v< ElementType_t<MT1> >, size_t >
    const size_t num( numeric_cast<size_t>( ns ) );
 
    BLAZE_INTERNAL_ASSERT( info >= 0, "Invalid argument for singular value decomposition" );
-   BLAZE_INTERNAL_ASSERT( num <= (~s).size(), "Invalid number of singular values detected" );
+   BLAZE_INTERNAL_ASSERT( num <= (*s).size(), "Invalid number of singular values detected" );
 
    if( info > 0 ) {
       BLAZE_THROW_LAPACK_ERROR( "Singular value decomposition failed" );
@@ -1115,23 +1114,23 @@ inline DisableIf_t< IsComplex_v< ElementType_t<MT1> >, size_t >
 
    if( tmpRequired )
    {
-      for( size_t i=0UL; i<(~s).size(); ++i ) {
-         (~s)[i] = stmp[i];
+      for( size_t i=0UL; i<(*s).size(); ++i ) {
+         (*s)[i] = stmp[i];
       }
 
       if( SO )
       {
-         for( size_t j=0UL; j<(~V).columns(); ++j ) {
-            for( size_t i=0UL; i<(~V).rows(); ++i ) {
-               (~V)(i,j) = vtmp[i+j*mindim];
+         for( size_t j=0UL; j<(*V).columns(); ++j ) {
+            for( size_t i=0UL; i<(*V).rows(); ++i ) {
+               (*V)(i,j) = vtmp[i+j*mindim];
             }
          }
       }
       else
       {
-         for( size_t i=0UL; i<(~V).rows(); ++i ) {
-            for( size_t j=0UL; j<(~V).columns(); ++j ) {
-               (~V)(i,j) = vtmp[i*N+j];
+         for( size_t i=0UL; i<(*V).rows(); ++i ) {
+            for( size_t j=0UL; j<(*V).columns(); ++j ) {
+               (*V)(i,j) = vtmp[i*N+j];
             }
          }
       }
@@ -1172,39 +1171,39 @@ template< typename MT1   // Type of the matrix A
         , bool TF        // Transpose flag of the vector s
         , typename MT2   // Type of the matrix V
         , typename ST >  // Type of the scalar boundary values
-inline EnableIf_t< IsComplex_v< ElementType_t<MT1> >, size_t >
-   gesvdx_backend( DenseMatrix<MT1,SO>& A, DenseVector<VT,TF>& s, DenseMatrix<MT2,SO>& V,
-                   char range, ST vl, ST vu, int il, int iu )
+inline auto gesvdx_backend( DenseMatrix<MT1,SO>& A, DenseVector<VT,TF>& s, DenseMatrix<MT2,SO>& V,
+                            char range, ST vl, ST vu, blas_int_t il, blas_int_t iu )
+   -> EnableIf_t< IsComplex_v< ElementType_t<MT1> >, size_t >
 {
    BLAZE_INTERNAL_ASSERT( range == 'A' || range == 'V' || range == 'I', "Invalid range flag detected" );
-   BLAZE_INTERNAL_ASSERT( range != 'A' || (~s).size() == min( (~A).rows(), (~A).columns() ), "Invalid vector dimension detected" );
-   BLAZE_INTERNAL_ASSERT( range != 'V' || (~s).size() == min( (~A).rows(), (~A).columns() ), "Invalid vector dimension detected" );
-   BLAZE_INTERNAL_ASSERT( range != 'I' || (~s).size() == size_t( iu-il+1 ), "Invalid vector dimension detected" );
-   BLAZE_INTERNAL_ASSERT( (~V).rows()    == (~s).size()   , "Invalid matrix dimension detected" );
-   BLAZE_INTERNAL_ASSERT( (~V).columns() == (~A).columns(), "Invalid matrix dimension detected" );
+   BLAZE_INTERNAL_ASSERT( range != 'A' || (*s).size() == min( (*A).rows(), (*A).columns() ), "Invalid vector dimension detected" );
+   BLAZE_INTERNAL_ASSERT( range != 'V' || (*s).size() == min( (*A).rows(), (*A).columns() ), "Invalid vector dimension detected" );
+   BLAZE_INTERNAL_ASSERT( range != 'I' || (*s).size() == size_t( iu-il+1 ), "Invalid vector dimension detected" );
+   BLAZE_INTERNAL_ASSERT( (*V).rows()    == (*s).size()   , "Invalid matrix dimension detected" );
+   BLAZE_INTERNAL_ASSERT( (*V).columns() == (*A).columns(), "Invalid matrix dimension detected" );
    BLAZE_INTERNAL_ASSERT( vl <= vu, "Invalid floating point range detected" );
    BLAZE_INTERNAL_ASSERT( il <= iu, "Invalid integral range detected" );
 
    using CT = ElementType_t<MT1>;
    using BT = UnderlyingElement_t<CT>;
 
-   const size_t M( (~A).rows() );
-   const size_t N( (~A).columns() );
+   const size_t M( (*A).rows() );
+   const size_t N( (*A).columns() );
    const size_t mindim( min( M, N ) );
 
-   int m   ( numeric_cast<int>( SO ? M : N ) );
-   int n   ( numeric_cast<int>( SO ? N : M ) );
-   int lda ( numeric_cast<int>( (~A).spacing() ) );
-   int ldv ( numeric_cast<int>( (~V).spacing() ) );
-   int ns  ( 0 );
-   int info( 0 );
+   blas_int_t m   ( numeric_cast<blas_int_t>( SO ? M : N ) );
+   blas_int_t n   ( numeric_cast<blas_int_t>( SO ? N : M ) );
+   blas_int_t lda ( numeric_cast<blas_int_t>( (*A).spacing() ) );
+   blas_int_t ldv ( numeric_cast<blas_int_t>( (*V).spacing() ) );
+   blas_int_t ns  ( 0 );
+   blas_int_t info( 0 );
 
-   BT* sptr( (~s).data() );
-   CT* vptr( (~V).data() );
+   BT* sptr( (*s).data() );
+   CT* vptr( (*V).data() );
    std::unique_ptr<BT[]> stmp;
    std::unique_ptr<CT[]> vtmp;
 
-   const bool tmpRequired( (~s).size() < mindim );
+   const bool tmpRequired( (*s).size() < mindim );
 
    if( tmpRequired ) {
       stmp.reset( new BT[2UL*mindim] );
@@ -1213,15 +1212,15 @@ inline EnableIf_t< IsComplex_v< ElementType_t<MT1> >, size_t >
       vptr = vtmp.get();
    }
 
-   const int minimum( min( m, n ) );
+   const blas_int_t minimum( min( m, n ) );
 
-   int lwork( minimum*( minimum*3 + 20 ) + 2 );
+   blas_int_t lwork( minimum*( minimum*3 + 20 ) + 2 );
    const std::unique_ptr<CT[]>  work ( new CT[lwork] );
    const std::unique_ptr<BT[]>  rwork( new BT[17*minimum*minimum] );
-   const std::unique_ptr<int[]> iwork( new int[12*minimum] );
+   const std::unique_ptr<blas_int_t[]> iwork( new blas_int_t[12*minimum] );
 
    gesvdx( ( SO ? 'N' : 'V' ), ( SO ? 'V' : 'N' ), range, m, n,
-           (~A).data(), lda, vl, vu, il, iu, &ns, sptr,
+           (*A).data(), lda, vl, vu, il, iu, &ns, sptr,
            ( SO ? nullptr : vptr ), ( tmpRequired ? m : ( SO ? 1 : ldv ) ),
            ( SO ? vptr : nullptr ), ( tmpRequired ? mindim : ( SO ? ldv : 1 ) ),
            work.get(), lwork, rwork.get(), iwork.get(), &info );
@@ -1229,7 +1228,7 @@ inline EnableIf_t< IsComplex_v< ElementType_t<MT1> >, size_t >
    const size_t num( numeric_cast<size_t>( ns ) );
 
    BLAZE_INTERNAL_ASSERT( info >= 0, "Invalid argument for singular value decomposition" );
-   BLAZE_INTERNAL_ASSERT( num <= (~s).size(), "Invalid number of singular values detected" );
+   BLAZE_INTERNAL_ASSERT( num <= (*s).size(), "Invalid number of singular values detected" );
 
    if( info > 0 ) {
       BLAZE_THROW_LAPACK_ERROR( "Singular value decomposition failed" );
@@ -1237,23 +1236,23 @@ inline EnableIf_t< IsComplex_v< ElementType_t<MT1> >, size_t >
 
    if( tmpRequired )
    {
-      for( size_t i=0UL; i<(~s).size(); ++i ) {
-         (~s)[i] = stmp[i];
+      for( size_t i=0UL; i<(*s).size(); ++i ) {
+         (*s)[i] = stmp[i];
       }
 
       if( SO )
       {
-         for( size_t j=0UL; j<(~V).columns(); ++j ) {
-            for( size_t i=0UL; i<(~V).rows(); ++i ) {
-               (~V)(i,j) = vtmp[i+j*mindim];
+         for( size_t j=0UL; j<(*V).columns(); ++j ) {
+            for( size_t i=0UL; i<(*V).rows(); ++i ) {
+               (*V)(i,j) = vtmp[i+j*mindim];
             }
          }
       }
       else
       {
-         for( size_t i=0UL; i<(~V).rows(); ++i ) {
-            for( size_t j=0UL; j<(~V).columns(); ++j ) {
-               (~V)(i,j) = vtmp[i*N+j];
+         for( size_t i=0UL; i<(*V).rows(); ++i ) {
+            for( size_t j=0UL; j<(*V).columns(); ++j ) {
+               (*V)(i,j) = vtmp[i*N+j];
             }
          }
       }
@@ -1349,18 +1348,18 @@ inline size_t gesvdx( DenseMatrix<MT1,SO>& A, DenseVector<VT,TF>& s, DenseMatrix
    using ET = ElementType_t<MT1>;
    using UT = UnderlyingElement_t<ET>;
 
-   const size_t M( (~A).rows() );
-   const size_t N( (~A).columns() );
+   const size_t M( (*A).rows() );
+   const size_t N( (*A).columns() );
    const size_t mindim( min( M, N ) );
 
-   resize( ~s, mindim, false );
-   resize( ~V, mindim, N, false );
+   resize( *s, mindim, false );
+   resize( *V, mindim, N, false );
 
    if( M == 0UL || N == 0UL ) {
       return 0;
    }
 
-   return gesvdx_backend( ~A, ~s, ~V, 'A', UT(), UT(), 0, 0 );
+   return gesvdx_backend( *A, *s, *V, 'A', UT(), UT(), 0, 0 );
 }
 //*************************************************************************************************
 
@@ -1491,8 +1490,8 @@ inline size_t gesvdx( DenseMatrix<MT1,SO>& A, DenseVector<VT,TF>& s,
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid index range provided" );
    }
 
-   const size_t M( (~A).rows() );
-   const size_t N( (~A).columns() );
+   const size_t M( (*A).rows() );
+   const size_t N( (*A).columns() );
    const size_t mindim( min( M, N ) );
    const size_t expected( IsFloatingPoint_v<ST> ? mindim : size_t( upp - low ) + 1UL );
 
@@ -1500,27 +1499,27 @@ inline size_t gesvdx( DenseMatrix<MT1,SO>& A, DenseVector<VT,TF>& s,
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid index range provided" );
    }
 
-   resize( ~s, expected, false );
-   resize( ~V, expected, N, false );
+   resize( *s, expected, false );
+   resize( *V, expected, N, false );
 
    if( M == 0UL || N == 0UL ) {
       return 0;
    }
 
-   const char range( IsFloatingPoint_v<ST> ? 'V' : 'I' );
-   const ST   vl   ( IsFloatingPoint_v<ST> ? low : ST() );
-   const ST   vu   ( IsFloatingPoint_v<ST> ? upp : ST() );
-   const int  il   ( IsFloatingPoint_v<ST> ? 0 : numeric_cast<int>( low ) );
-   const int  iu   ( IsFloatingPoint_v<ST> ? 0 : numeric_cast<int>( upp ) );
+   const char       range( IsFloatingPoint_v<ST> ? 'V' : 'I' );
+   const ST         vl   ( IsFloatingPoint_v<ST> ? low : ST() );
+   const ST         vu   ( IsFloatingPoint_v<ST> ? upp : ST() );
+   const blas_int_t il   ( IsFloatingPoint_v<ST> ? 0 : numeric_cast<blas_int_t>( low ) );
+   const blas_int_t iu   ( IsFloatingPoint_v<ST> ? 0 : numeric_cast<blas_int_t>( upp ) );
 
-   const size_t actual( gesvdx_backend( ~A, ~s, ~V, range, vl, vu, il, iu ) );
+   const size_t actual( gesvdx_backend( *A, *s, *V, range, vl, vu, il, iu ) );
 
    if( IsResizable_v<VT> ) {
-      resize( ~s, actual, true );
+      resize( *s, actual, true );
    }
 
    if( IsResizable_v<MT2> ) {
-      resize( ~V, actual, N, true );
+      resize( *V, actual, N, true );
    }
 
    return actual;
@@ -1559,43 +1558,44 @@ template< typename MT1   // Type of the matrix A
         , bool TF        // Transpose flag of the vector s
         , typename MT3   // Type of the matrix V
         , typename ST >  // Type of the scalar boundary values
-inline DisableIf_t< IsComplex_v< ElementType_t<MT1> >, size_t >
-   gesvdx_backend( DenseMatrix<MT1,SO>& A, DenseMatrix<MT2,SO>& U, DenseVector<VT,TF>& s,
-                   DenseMatrix<MT3,SO>& V, char range, ST vl, ST vu, int il, int iu )
+inline auto gesvdx_backend( DenseMatrix<MT1,SO>& A, DenseMatrix<MT2,SO>& U, DenseVector<VT,TF>& s,
+                            DenseMatrix<MT3,SO>& V, char range, ST vl, ST vu,
+                            blas_int_t il, blas_int_t iu )
+   -> DisableIf_t< IsComplex_v< ElementType_t<MT1> >, size_t >
 {
    BLAZE_INTERNAL_ASSERT( range == 'A' || range == 'V' || range == 'I', "Invalid range flag detected" );
-   BLAZE_INTERNAL_ASSERT( range != 'A' || (~s).size() == min( (~A).rows(), (~A).columns() ), "Invalid vector dimension detected" );
-   BLAZE_INTERNAL_ASSERT( range != 'V' || (~s).size() == min( (~A).rows(), (~A).columns() ), "Invalid vector dimension detected" );
-   BLAZE_INTERNAL_ASSERT( range != 'I' || (~s).size() == size_t( iu-il+1 ), "Invalid vector dimension detected" );
-   BLAZE_INTERNAL_ASSERT( (~U).rows()    == (~A).rows()   , "Invalid matrix dimension detected" );
-   BLAZE_INTERNAL_ASSERT( (~U).columns() == (~s).size()   , "Invalid matrix dimension detected" );
-   BLAZE_INTERNAL_ASSERT( (~V).rows()    == (~s).size()   , "Invalid matrix dimension detected" );
-   BLAZE_INTERNAL_ASSERT( (~V).columns() == (~A).columns(), "Invalid matrix dimension detected" );
+   BLAZE_INTERNAL_ASSERT( range != 'A' || (*s).size() == min( (*A).rows(), (*A).columns() ), "Invalid vector dimension detected" );
+   BLAZE_INTERNAL_ASSERT( range != 'V' || (*s).size() == min( (*A).rows(), (*A).columns() ), "Invalid vector dimension detected" );
+   BLAZE_INTERNAL_ASSERT( range != 'I' || (*s).size() == size_t( iu-il+1 ), "Invalid vector dimension detected" );
+   BLAZE_INTERNAL_ASSERT( (*U).rows()    == (*A).rows()   , "Invalid matrix dimension detected" );
+   BLAZE_INTERNAL_ASSERT( (*U).columns() == (*s).size()   , "Invalid matrix dimension detected" );
+   BLAZE_INTERNAL_ASSERT( (*V).rows()    == (*s).size()   , "Invalid matrix dimension detected" );
+   BLAZE_INTERNAL_ASSERT( (*V).columns() == (*A).columns(), "Invalid matrix dimension detected" );
    BLAZE_INTERNAL_ASSERT( vl <= vu, "Invalid floating point range detected" );
    BLAZE_INTERNAL_ASSERT( il <= iu, "Invalid integral range detected" );
 
    using ET = ElementType_t<MT1>;
 
-   const size_t M( (~A).rows() );
-   const size_t N( (~A).columns() );
+   const size_t M( (*A).rows() );
+   const size_t N( (*A).columns() );
    const size_t mindim( min( M, N ) );
 
-   int m   ( numeric_cast<int>( SO ? M : N ) );
-   int n   ( numeric_cast<int>( SO ? N : M ) );
-   int lda ( numeric_cast<int>( (~A).spacing() ) );
-   int ldu ( numeric_cast<int>( (~U).spacing() ) );
-   int ldv ( numeric_cast<int>( (~V).spacing() ) );
-   int ns  ( 0 );
-   int info( 0 );
+   blas_int_t m   ( numeric_cast<blas_int_t>( SO ? M : N ) );
+   blas_int_t n   ( numeric_cast<blas_int_t>( SO ? N : M ) );
+   blas_int_t lda ( numeric_cast<blas_int_t>( (*A).spacing() ) );
+   blas_int_t ldu ( numeric_cast<blas_int_t>( (*U).spacing() ) );
+   blas_int_t ldv ( numeric_cast<blas_int_t>( (*V).spacing() ) );
+   blas_int_t ns  ( 0 );
+   blas_int_t info( 0 );
 
-   ET* sptr( (~s).data() );
-   ET* uptr( (~U).data() );
-   ET* vptr( (~V).data() );
+   ET* sptr( (*s).data() );
+   ET* uptr( (*U).data() );
+   ET* vptr( (*V).data() );
    std::unique_ptr<ET[]> stmp;
    std::unique_ptr<ET[]> utmp;
    std::unique_ptr<ET[]> vtmp;
 
-   const bool tmpRequired( (~s).size() < mindim );
+   const bool tmpRequired( (*s).size() < mindim );
 
    if( tmpRequired ) {
       stmp.reset( new ET[2UL*mindim] );
@@ -1606,13 +1606,13 @@ inline DisableIf_t< IsComplex_v< ElementType_t<MT1> >, size_t >
       vptr = vtmp.get();
    }
 
-   const int minimum( min( m, n ) );
+   const blas_int_t minimum( min( m, n ) );
 
-   int lwork( minimum*( minimum*3 + 20 ) + 2 );
+   blas_int_t lwork( minimum*( minimum*3 + 20 ) + 2 );
    const std::unique_ptr<ET[]>  work ( new ET[lwork] );
-   const std::unique_ptr<int[]> iwork( new int[12*minimum] );
+   const std::unique_ptr<blas_int_t[]> iwork( new blas_int_t[12*minimum] );
 
-   gesvdx( 'V', 'V', range, m, n, (~A).data(), lda, vl, vu, il, iu, &ns, sptr,
+   gesvdx( 'V', 'V', range, m, n, (*A).data(), lda, vl, vu, il, iu, &ns, sptr,
            ( SO ? uptr : vptr ), ( tmpRequired ? m : ( SO ? ldu : ldv ) ),
            ( SO ? vptr : uptr ), ( tmpRequired ? mindim : ( SO ? ldv : ldu ) ),
            work.get(), lwork, iwork.get(), &info );
@@ -1620,7 +1620,7 @@ inline DisableIf_t< IsComplex_v< ElementType_t<MT1> >, size_t >
    const size_t num( numeric_cast<size_t>( ns ) );
 
    BLAZE_INTERNAL_ASSERT( info >= 0, "Invalid argument for singular value decomposition" );
-   BLAZE_INTERNAL_ASSERT( num <= (~s).size(), "Invalid number of singular values detected" );
+   BLAZE_INTERNAL_ASSERT( num <= (*s).size(), "Invalid number of singular values detected" );
 
    if( info > 0 ) {
       BLAZE_THROW_LAPACK_ERROR( "Singular value decomposition failed" );
@@ -1628,35 +1628,35 @@ inline DisableIf_t< IsComplex_v< ElementType_t<MT1> >, size_t >
 
    if( tmpRequired )
    {
-      for( size_t i=0UL; i<(~s).size(); ++i ) {
-         (~s)[i] = stmp[i];
+      for( size_t i=0UL; i<(*s).size(); ++i ) {
+         (*s)[i] = stmp[i];
       }
 
       if( SO )
       {
-         for( size_t j=0UL; j<(~U).columns(); ++j ) {
-            for( size_t i=0UL; i<(~U).rows(); ++i ) {
-               (~U)(i,j) = utmp[i+j*M];
+         for( size_t j=0UL; j<(*U).columns(); ++j ) {
+            for( size_t i=0UL; i<(*U).rows(); ++i ) {
+               (*U)(i,j) = utmp[i+j*M];
             }
          }
 
-         for( size_t j=0UL; j<(~V).columns(); ++j ) {
-            for( size_t i=0UL; i<(~V).rows(); ++i ) {
-               (~V)(i,j) = vtmp[i+j*mindim];
+         for( size_t j=0UL; j<(*V).columns(); ++j ) {
+            for( size_t i=0UL; i<(*V).rows(); ++i ) {
+               (*V)(i,j) = vtmp[i+j*mindim];
             }
          }
       }
       else
       {
-         for( size_t i=0UL; i<(~U).rows(); ++i ) {
-            for( size_t j=0UL; j<(~U).columns(); ++j ) {
-               (~U)(i,j) = utmp[i*mindim+j];
+         for( size_t i=0UL; i<(*U).rows(); ++i ) {
+            for( size_t j=0UL; j<(*U).columns(); ++j ) {
+               (*U)(i,j) = utmp[i*mindim+j];
             }
          }
 
-         for( size_t i=0UL; i<(~V).rows(); ++i ) {
-            for( size_t j=0UL; j<(~V).columns(); ++j ) {
-               (~V)(i,j) = vtmp[i*N+j];
+         for( size_t i=0UL; i<(*V).rows(); ++i ) {
+            for( size_t j=0UL; j<(*V).columns(); ++j ) {
+               (*V)(i,j) = vtmp[i*N+j];
             }
          }
       }
@@ -1699,44 +1699,45 @@ template< typename MT1   // Type of the matrix A
         , bool TF        // Transpose flag of the vector s
         , typename MT3   // Type of the matrix V
         , typename ST >  // Type of the scalar boundary values
-inline EnableIf_t< IsComplex_v< ElementType_t<MT1> >, size_t >
-   gesvdx_backend( DenseMatrix<MT1,SO>& A, DenseMatrix<MT2,SO>& U, DenseVector<VT,TF>& s,
-                   DenseMatrix<MT3,SO>& V, char range, ST vl, ST vu, int il, int iu )
+inline auto gesvdx_backend( DenseMatrix<MT1,SO>& A, DenseMatrix<MT2,SO>& U, DenseVector<VT,TF>& s,
+                            DenseMatrix<MT3,SO>& V, char range, ST vl, ST vu,
+                            blas_int_t il, blas_int_t iu )
+   -> EnableIf_t< IsComplex_v< ElementType_t<MT1> >, size_t >
 {
    BLAZE_INTERNAL_ASSERT( range == 'A' || range == 'V' || range == 'I', "Invalid range flag detected" );
-   BLAZE_INTERNAL_ASSERT( range != 'A' || (~s).size() == min( (~A).rows(), (~A).columns() ), "Invalid vector dimension detected" );
-   BLAZE_INTERNAL_ASSERT( range != 'V' || (~s).size() == min( (~A).rows(), (~A).columns() ), "Invalid vector dimension detected" );
-   BLAZE_INTERNAL_ASSERT( range != 'I' || (~s).size() == size_t( iu-il+1 ), "Invalid vector dimension detected" );
-   BLAZE_INTERNAL_ASSERT( (~U).rows()    == (~A).rows()   , "Invalid matrix dimension detected" );
-   BLAZE_INTERNAL_ASSERT( (~U).columns() == (~s).size()   , "Invalid matrix dimension detected" );
-   BLAZE_INTERNAL_ASSERT( (~V).rows()    == (~s).size()   , "Invalid matrix dimension detected" );
-   BLAZE_INTERNAL_ASSERT( (~V).columns() == (~A).columns(), "Invalid matrix dimension detected" );
+   BLAZE_INTERNAL_ASSERT( range != 'A' || (*s).size() == min( (*A).rows(), (*A).columns() ), "Invalid vector dimension detected" );
+   BLAZE_INTERNAL_ASSERT( range != 'V' || (*s).size() == min( (*A).rows(), (*A).columns() ), "Invalid vector dimension detected" );
+   BLAZE_INTERNAL_ASSERT( range != 'I' || (*s).size() == size_t( iu-il+1 ), "Invalid vector dimension detected" );
+   BLAZE_INTERNAL_ASSERT( (*U).rows()    == (*A).rows()   , "Invalid matrix dimension detected" );
+   BLAZE_INTERNAL_ASSERT( (*U).columns() == (*s).size()   , "Invalid matrix dimension detected" );
+   BLAZE_INTERNAL_ASSERT( (*V).rows()    == (*s).size()   , "Invalid matrix dimension detected" );
+   BLAZE_INTERNAL_ASSERT( (*V).columns() == (*A).columns(), "Invalid matrix dimension detected" );
    BLAZE_INTERNAL_ASSERT( vl <= vu, "Invalid floating point range detected" );
    BLAZE_INTERNAL_ASSERT( il <= iu, "Invalid integral range detected" );
 
    using CT = ElementType_t<MT1>;
    using BT = UnderlyingElement_t<CT>;
 
-   const size_t M( (~A).rows() );
-   const size_t N( (~A).columns() );
+   const size_t M( (*A).rows() );
+   const size_t N( (*A).columns() );
    const size_t mindim( min( M, N ) );
 
-   int m   ( numeric_cast<int>( SO ? M : N ) );
-   int n   ( numeric_cast<int>( SO ? N : M ) );
-   int lda ( numeric_cast<int>( (~A).spacing() ) );
-   int ldu ( numeric_cast<int>( (~U).spacing() ) );
-   int ldv ( numeric_cast<int>( (~V).spacing() ) );
-   int ns  ( 0 );
-   int info( 0 );
+   blas_int_t m   ( numeric_cast<blas_int_t>( SO ? M : N ) );
+   blas_int_t n   ( numeric_cast<blas_int_t>( SO ? N : M ) );
+   blas_int_t lda ( numeric_cast<blas_int_t>( (*A).spacing() ) );
+   blas_int_t ldu ( numeric_cast<blas_int_t>( (*U).spacing() ) );
+   blas_int_t ldv ( numeric_cast<blas_int_t>( (*V).spacing() ) );
+   blas_int_t ns  ( 0 );
+   blas_int_t info( 0 );
 
-   BT* sptr( (~s).data() );
-   CT* uptr( (~U).data() );
-   CT* vptr( (~V).data() );
+   BT* sptr( (*s).data() );
+   CT* uptr( (*U).data() );
+   CT* vptr( (*V).data() );
    std::unique_ptr<BT[]> stmp;
    std::unique_ptr<CT[]> utmp;
    std::unique_ptr<CT[]> vtmp;
 
-   const bool tmpRequired( (~s).size() < mindim );
+   const bool tmpRequired( (*s).size() < mindim );
 
    if( tmpRequired ) {
       stmp.reset( new BT[2UL*mindim] );
@@ -1747,14 +1748,14 @@ inline EnableIf_t< IsComplex_v< ElementType_t<MT1> >, size_t >
       vptr = vtmp.get();
    }
 
-   const int minimum( min( m, n ) );
+   const blas_int_t minimum( min( m, n ) );
 
-   int lwork( minimum*( minimum*3 + 20 ) + 2 );
+   blas_int_t lwork( minimum*( minimum*3 + 20 ) + 2 );
    const std::unique_ptr<CT[]>  work ( new CT[lwork] );
    const std::unique_ptr<BT[]>  rwork( new BT[17*minimum*minimum] );
-   const std::unique_ptr<int[]> iwork( new int[12*minimum] );
+   const std::unique_ptr<blas_int_t[]> iwork( new blas_int_t[12*minimum] );
 
-   gesvdx( 'V', 'V', range, m, n, (~A).data(), lda, vl, vu, il, iu, &ns, sptr,
+   gesvdx( 'V', 'V', range, m, n, (*A).data(), lda, vl, vu, il, iu, &ns, sptr,
            ( SO ? uptr : vptr ), ( tmpRequired ? m : ( SO ? ldu : ldv ) ),
            ( SO ? vptr : uptr ), ( tmpRequired ? mindim : ( SO ? ldv : ldu ) ),
            work.get(), lwork, rwork.get(), iwork.get(), &info );
@@ -1762,7 +1763,7 @@ inline EnableIf_t< IsComplex_v< ElementType_t<MT1> >, size_t >
    const size_t num( numeric_cast<size_t>( ns ) );
 
    BLAZE_INTERNAL_ASSERT( info >= 0, "Invalid argument for singular value decomposition" );
-   BLAZE_INTERNAL_ASSERT( num <= (~s).size(), "Invalid number of singular values detected" );
+   BLAZE_INTERNAL_ASSERT( num <= (*s).size(), "Invalid number of singular values detected" );
 
    if( info > 0 ) {
       BLAZE_THROW_LAPACK_ERROR( "Singular value decomposition failed" );
@@ -1770,35 +1771,35 @@ inline EnableIf_t< IsComplex_v< ElementType_t<MT1> >, size_t >
 
    if( tmpRequired )
    {
-      for( size_t i=0UL; i<(~s).size(); ++i ) {
-         (~s)[i] = stmp[i];
+      for( size_t i=0UL; i<(*s).size(); ++i ) {
+         (*s)[i] = stmp[i];
       }
 
       if( SO )
       {
-         for( size_t j=0UL; j<(~U).columns(); ++j ) {
-            for( size_t i=0UL; i<(~U).rows(); ++i ) {
-               (~U)(i,j) = utmp[i+j*M];
+         for( size_t j=0UL; j<(*U).columns(); ++j ) {
+            for( size_t i=0UL; i<(*U).rows(); ++i ) {
+               (*U)(i,j) = utmp[i+j*M];
             }
          }
 
-         for( size_t j=0UL; j<(~V).columns(); ++j ) {
-            for( size_t i=0UL; i<(~V).rows(); ++i ) {
-               (~V)(i,j) = vtmp[i+j*mindim];
+         for( size_t j=0UL; j<(*V).columns(); ++j ) {
+            for( size_t i=0UL; i<(*V).rows(); ++i ) {
+               (*V)(i,j) = vtmp[i+j*mindim];
             }
          }
       }
       else
       {
-         for( size_t i=0UL; i<(~U).rows(); ++i ) {
-            for( size_t j=0UL; j<(~U).columns(); ++j ) {
-               (~U)(i,j) = utmp[i*mindim+j];
+         for( size_t i=0UL; i<(*U).rows(); ++i ) {
+            for( size_t j=0UL; j<(*U).columns(); ++j ) {
+               (*U)(i,j) = utmp[i*mindim+j];
             }
          }
 
-         for( size_t i=0UL; i<(~V).rows(); ++i ) {
-            for( size_t j=0UL; j<(~V).columns(); ++j ) {
-               (~V)(i,j) = vtmp[i*N+j];
+         for( size_t i=0UL; i<(*V).rows(); ++i ) {
+            for( size_t j=0UL; j<(*V).columns(); ++j ) {
+               (*V)(i,j) = vtmp[i*N+j];
             }
          }
       }
@@ -1906,19 +1907,19 @@ inline size_t gesvdx( DenseMatrix<MT1,SO>& A, DenseMatrix<MT2,SO>& U,
    using ET = ElementType_t<MT1>;
    using UT = UnderlyingElement_t<ET>;
 
-   const size_t M( (~A).rows() );
-   const size_t N( (~A).columns() );
+   const size_t M( (*A).rows() );
+   const size_t N( (*A).columns() );
    const size_t mindim( min( M, N ) );
 
-   resize( ~s, mindim, false );
-   resize( ~U, M, mindim, false );
-   resize( ~V, mindim, N, false );
+   resize( *s, mindim, false );
+   resize( *U, M, mindim, false );
+   resize( *V, mindim, N, false );
 
    if( M == 0UL || N == 0UL ) {
       return 0;
    }
 
-   return gesvdx_backend( ~A, ~U, ~s, ~V, 'A', UT(), UT(), 0, 0 );
+   return gesvdx_backend( *A, *U, *s, *V, 'A', UT(), UT(), 0, 0 );
 }
 //*************************************************************************************************
 
@@ -2063,8 +2064,8 @@ inline size_t gesvdx( DenseMatrix<MT1,SO>& A, DenseMatrix<MT2,SO>& U,
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid index range provided" );
    }
 
-   const size_t M( (~A).rows() );
-   const size_t N( (~A).columns() );
+   const size_t M( (*A).rows() );
+   const size_t N( (*A).columns() );
    const size_t mindim( min( M, N ) );
    const size_t expected( IsFloatingPoint_v<ST> ? mindim : size_t( upp - low ) + 1UL );
 
@@ -2072,32 +2073,32 @@ inline size_t gesvdx( DenseMatrix<MT1,SO>& A, DenseMatrix<MT2,SO>& U,
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid index range provided" );
    }
 
-   resize( ~s, expected, false );
-   resize( ~U, M, expected, false );
-   resize( ~V, expected, N, false );
+   resize( *s, expected, false );
+   resize( *U, M, expected, false );
+   resize( *V, expected, N, false );
 
    if( M == 0UL || N == 0UL ) {
       return 0;
    }
 
-   const char range( IsFloatingPoint_v<ST> ? 'V' : 'I' );
-   const ST   vl   ( IsFloatingPoint_v<ST> ? low : ST() );
-   const ST   vu   ( IsFloatingPoint_v<ST> ? upp : ST() );
-   const int  il   ( IsFloatingPoint_v<ST> ? 0 : numeric_cast<int>( low ) );
-   const int  iu   ( IsFloatingPoint_v<ST> ? 0 : numeric_cast<int>( upp ) );
+   const char       range( IsFloatingPoint_v<ST> ? 'V' : 'I' );
+   const ST         vl   ( IsFloatingPoint_v<ST> ? low : ST() );
+   const ST         vu   ( IsFloatingPoint_v<ST> ? upp : ST() );
+   const blas_int_t il   ( IsFloatingPoint_v<ST> ? 0 : numeric_cast<blas_int_t>( low ) );
+   const blas_int_t iu   ( IsFloatingPoint_v<ST> ? 0 : numeric_cast<blas_int_t>( upp ) );
 
-   const size_t actual( gesvdx_backend( ~A, ~U, ~s, ~V, range, vl, vu, il, iu ) );
+   const size_t actual( gesvdx_backend( *A, *U, *s, *V, range, vl, vu, il, iu ) );
 
    if( IsResizable_v<VT> ) {
-      resize( ~s, actual, true );
+      resize( *s, actual, true );
    }
 
    if( IsResizable_v<MT2> ) {
-      resize( ~U, M, actual, true );
+      resize( *U, M, actual, true );
    }
 
    if( IsResizable_v<MT3> ) {
-      resize( ~V, actual, N, true );
+      resize( *V, actual, N, true );
    }
 
    return actual;

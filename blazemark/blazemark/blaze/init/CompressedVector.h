@@ -3,7 +3,7 @@
 //  \file blazemark/blaze/init/CompressedVector.h
 //  \brief Header file for the Blaze compressed vector initialization functions
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -85,8 +85,8 @@ void init( ::blaze::CompressedVector<Type,TF>& v, size_t nonzeros )
 {
    const size_t N( v.size() );
 
-   ::blaze::Indices indices( 0UL, N-1UL, nonzeros );
-   for( ::blaze::Indices::ConstIterator it=indices.begin(); it!=indices.end(); ++it ) {
+   ::blaze::Indices<size_t> indices( 0UL, N-1UL, nonzeros );
+   for( auto it=indices.begin(); it!=indices.end(); ++it ) {
       v[*it] = ::blaze::rand<Type>( 0, 10 );
    }
 }

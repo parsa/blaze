@@ -3,7 +3,7 @@
 //  \file blaze/math/lapack/clapack/gesvd.h
 //  \brief Header file for the CLAPACK gesvd wrapper functions
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -40,8 +40,10 @@
 // Includes
 //*************************************************************************************************
 
+#include <blaze/math/blas/Types.h>
 #include <blaze/util/Complex.h>
 #include <blaze/util/StaticAssert.h>
+#include <blaze/util/Types.h>
 
 
 //=================================================================================================
@@ -55,10 +57,22 @@
 #if !defined(INTEL_MKL_VERSION)
 extern "C" {
 
-void sgesvd_( char* jobu, char* jobv, int* m, int* n, float*  A, int* lda, float*  s, float*  U, int* ldu, float*  V, int* ldv, float*  work, int* lwork, int* info );
-void dgesvd_( char* jobu, char* jobv, int* m, int* n, double* A, int* lda, double* s, double* U, int* ldu, double* V, int* ldv, double* work, int* lwork, int* info );
-void cgesvd_( char* jobu, char* jobv, int* m, int* n, float*  A, int* lda, float*  s, float*  U, int* ldu, float*  V, int* ldv, float*  work, int* lwork, float*  rwork, int* info );
-void zgesvd_( char* jobu, char* jobv, int* m, int* n, double* A, int* lda, double* s, double* U, int* ldu, double* V, int* ldv, double* work, int* lwork, double* rwork, int* info );
+void sgesvd_( char* jobu, char* jobv, blaze::blas_int_t* m, blaze::blas_int_t* n, float* A,
+              blaze::blas_int_t* lda, float* s, float* U, blaze::blas_int_t* ldu, float* V,
+              blaze::blas_int_t* ldv, float* work, blaze::blas_int_t* lwork, blaze::blas_int_t* info,
+              blaze::fortran_charlen_t njobu, blaze::fortran_charlen_t njobv );
+void dgesvd_( char* jobu, char* jobv, blaze::blas_int_t* m, blaze::blas_int_t* n, double* A,
+              blaze::blas_int_t* lda, double* s, double* U, blaze::blas_int_t* ldu, double* V,
+              blaze::blas_int_t* ldv, double* work, blaze::blas_int_t* lwork, blaze::blas_int_t* info,
+              blaze::fortran_charlen_t njobu, blaze::fortran_charlen_t njobv );
+void cgesvd_( char* jobu, char* jobv, blaze::blas_int_t* m, blaze::blas_int_t* n, float* A,
+              blaze::blas_int_t* lda, float* s, float* U, blaze::blas_int_t* ldu, float* V,
+              blaze::blas_int_t* ldv, float* work, blaze::blas_int_t* lwork, float* rwork,
+              blaze::blas_int_t* info, blaze::fortran_charlen_t njobu, blaze::fortran_charlen_t njobv );
+void zgesvd_( char* jobu, char* jobv, blaze::blas_int_t* m, blaze::blas_int_t* n, double* A,
+              blaze::blas_int_t* lda, double* s, double* U, blaze::blas_int_t* ldu, double* V,
+              blaze::blas_int_t* ldv, double* work, blaze::blas_int_t* lwork, double* rwork,
+              blaze::blas_int_t* info, blaze::fortran_charlen_t njobu, blaze::fortran_charlen_t njobv );
 
 }
 #endif
@@ -79,21 +93,23 @@ namespace blaze {
 //*************************************************************************************************
 /*!\name LAPACK SVD functions (gesvd) */
 //@{
-inline void gesvd( char jobu, char jobv, int m, int n, float* A, int lda,
-                   float* s, float* U, int ldu, float* V, int ldv,
-                   float* work, int lwork, int* info );
+void gesvd( char jobu, char jobv, blas_int_t m, blas_int_t n, float* A,
+            blas_int_t lda, float* s, float* U, blas_int_t ldu, float* V,
+            blas_int_t ldv, float* work, blas_int_t lwork, blas_int_t* info );
 
-inline void gesvd( char jobu, char jobv, int m, int n, double* A, int lda,
-                   double* s, double* U, int ldu, double* V, int ldv,
-                   double* work, int lwork, int* info );
+void gesvd( char jobu, char jobv, blas_int_t m, blas_int_t n, double* A,
+            blas_int_t lda, double* s, double* U, blas_int_t ldu, double* V,
+            blas_int_t ldv, double* work, blas_int_t lwork, blas_int_t* info );
 
-inline void gesvd( char jobu, char jobv, int m, int n, complex<float>* A, int lda,
-                   float* s, complex<float>* U, int ldu, complex<float>* V, int ldv,
-                   complex<float>* work, int lwork, float* rwork, int* info );
+void gesvd( char jobu, char jobv, blas_int_t m, blas_int_t n, complex<float>* A,
+            blas_int_t lda, float* s, complex<float>* U, blas_int_t ldu,
+            complex<float>* V, blas_int_t ldv, complex<float>* work,
+            blas_int_t lwork, float* rwork, blas_int_t* info );
 
-inline void gesvd( char jobu, char jobv, int m, int n, complex<double>* A, int lda,
-                   double* s, complex<double>* U, int ldu, complex<double>* V, int ldv,
-                   complex<double>* work, int lwork, double* rwork, int* info );
+void gesvd( char jobu, char jobv, blas_int_t m, blas_int_t n, complex<double>* A,
+            blas_int_t lda, double* s, complex<double>* U, blas_int_t ldu,
+            complex<double>* V, blas_int_t ldv, complex<double>* work,
+            blas_int_t lwork, double* rwork, blas_int_t* info );
 //@}
 //*************************************************************************************************
 
@@ -160,15 +176,19 @@ inline void gesvd( char jobu, char jobv, int m, int n, complex<double>* A, int l
 // is available and linked to the executable. Otherwise a call to this function will result in a
 // linker error.
 */
-inline void gesvd( char jobu, char jobv, int m, int n, float* A, int lda,
-                   float* s, float* U, int ldu, float* V, int ldv,
-                   float* work, int lwork, int* info )
+inline void gesvd( char jobu, char jobv, blas_int_t m, blas_int_t n, float* A,
+                   blas_int_t lda, float* s, float* U, blas_int_t ldu, float* V,
+                   blas_int_t ldv, float* work, blas_int_t lwork, blas_int_t* info )
 {
 #if defined(INTEL_MKL_VERSION)
-   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( int ) );
+   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( blas_int_t ) );
 #endif
 
-   sgesvd_( &jobu, &jobv, &m, &n, A, &lda, s, U, &ldu, V, &ldv, work, &lwork, info );
+   sgesvd_( &jobu, &jobv, &m, &n, A, &lda, s, U, &ldu, V, &ldv, work, &lwork, info
+#if !defined(INTEL_MKL_VERSION)
+          , blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1)
+#endif
+          );
 }
 //*************************************************************************************************
 
@@ -235,15 +255,19 @@ inline void gesvd( char jobu, char jobv, int m, int n, float* A, int lda,
 // is available and linked to the executable. Otherwise a call to this function will result in a
 // linker error.
 */
-inline void gesvd( char jobu, char jobv, int m, int n, double* A, int lda,
-                   double* s, double* U, int ldu, double* V, int ldv,
-                   double* work, int lwork, int* info )
+inline void gesvd( char jobu, char jobv, blas_int_t m, blas_int_t n, double* A,
+                   blas_int_t lda, double* s, double* U, blas_int_t ldu, double* V,
+                   blas_int_t ldv, double* work, blas_int_t lwork, blas_int_t* info )
 {
 #if defined(INTEL_MKL_VERSION)
-   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( int ) );
+   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( blas_int_t ) );
 #endif
 
-   dgesvd_( &jobu, &jobv, &m, &n, A, &lda, s, U, &ldu, V, &ldv, work, &lwork, info );
+   dgesvd_( &jobu, &jobv, &m, &n, A, &lda, s, U, &ldu, V, &ldv, work, &lwork, info
+#if !defined(INTEL_MKL_VERSION)
+          , blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1)
+#endif
+          );
 }
 //*************************************************************************************************
 
@@ -311,14 +335,16 @@ inline void gesvd( char jobu, char jobv, int m, int n, double* A, int lda,
 // is available and linked to the executable. Otherwise a call to this function will result in a
 // linker error.
 */
-inline void gesvd( char jobu, char jobv, int m, int n, complex<float>* A, int lda,
-                   float* s, complex<float>* U, int ldu, complex<float>* V, int ldv,
-                   complex<float>* work, int lwork, float* rwork, int* info )
+inline void gesvd( char jobu, char jobv, blas_int_t m, blas_int_t n, complex<float>* A,
+                   blas_int_t lda, float* s, complex<float>* U, blas_int_t ldu,
+                   complex<float>* V, blas_int_t ldv, complex<float>* work,
+                   blas_int_t lwork, float* rwork, blas_int_t* info )
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<float> ) == 2UL*sizeof( float ) );
 
 #if defined(INTEL_MKL_VERSION)
-   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( int ) );
+   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( blas_int_t ) );
+   BLAZE_STATIC_ASSERT( sizeof( MKL_Complex8 ) == sizeof( complex<float> ) );
    using ET = MKL_Complex8;
 #else
    using ET = float;
@@ -326,7 +352,11 @@ inline void gesvd( char jobu, char jobv, int m, int n, complex<float>* A, int ld
 
    cgesvd_( &jobu, &jobv, &m, &n, reinterpret_cast<ET*>( A ), &lda, s,
             reinterpret_cast<ET*>( U ), &ldu, reinterpret_cast<ET*>( V ), &ldv,
-            reinterpret_cast<ET*>( work ), &lwork, rwork, info );
+            reinterpret_cast<ET*>( work ), &lwork, rwork, info
+#if !defined(INTEL_MKL_VERSION)
+          , blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1)
+#endif
+          );
 }
 //*************************************************************************************************
 
@@ -394,14 +424,16 @@ inline void gesvd( char jobu, char jobv, int m, int n, complex<float>* A, int ld
 // is available and linked to the executable. Otherwise a call to this function will result in a
 // linker error.
 */
-inline void gesvd( char jobu, char jobv, int m, int n, complex<double>* A, int lda,
-                   double* s, complex<double>* U, int ldu, complex<double>* V, int ldv,
-                   complex<double>* work, int lwork, double* rwork, int* info )
+inline void gesvd( char jobu, char jobv, blas_int_t m, blas_int_t n, complex<double>* A,
+                   blas_int_t lda, double* s, complex<double>* U, blas_int_t ldu,
+                   complex<double>* V, blas_int_t ldv, complex<double>* work,
+                   blas_int_t lwork, double* rwork, blas_int_t* info )
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<double> ) == 2UL*sizeof( double ) );
 
 #if defined(INTEL_MKL_VERSION)
-   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( int ) );
+   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( blas_int_t ) );
+   BLAZE_STATIC_ASSERT( sizeof( MKL_Complex16 ) == sizeof( complex<double> ) );
    using ET = MKL_Complex16;
 #else
    using ET = double;
@@ -409,7 +441,11 @@ inline void gesvd( char jobu, char jobv, int m, int n, complex<double>* A, int l
 
    zgesvd_( &jobu, &jobv, &m, &n, reinterpret_cast<ET*>( A ), &lda, s,
             reinterpret_cast<ET*>( U ), &ldu, reinterpret_cast<ET*>( V ), &ldv,
-            reinterpret_cast<ET*>( work ), &lwork, rwork, info );
+            reinterpret_cast<ET*>( work ), &lwork, rwork, info
+#if !defined(INTEL_MKL_VERSION)
+          , blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1)
+#endif
+          );
 }
 //*************************************************************************************************
 

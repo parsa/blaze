@@ -3,7 +3,7 @@
 //  \file blaze/math/smp/threads/DenseMatrix.h
 //  \brief Header file for the C++11/Boost thread-based dense matrix SMP implementation
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -44,11 +44,6 @@
 #include <blaze/math/constraints/SMPAssignable.h>
 #include <blaze/math/expressions/DenseMatrix.h>
 #include <blaze/math/expressions/SparseMatrix.h>
-#include <blaze/math/functors/AddAssign.h>
-#include <blaze/math/functors/Assign.h>
-#include <blaze/math/functors/MultAssign.h>
-#include <blaze/math/functors/SchurAssign.h>
-#include <blaze/math/functors/SubAssign.h>
 #include <blaze/math/simd/SIMDTrait.h>
 #include <blaze/math/smp/ParallelSection.h>
 #include <blaze/math/smp/SerialSection.h>
@@ -110,18 +105,18 @@ void threadAssign( DenseMatrix<MT1,SO1>& lhs, const DenseMatrix<MT2,SO2>& rhs, O
    constexpr bool simdEnabled( MT1::simdEnabled && MT2::simdEnabled && IsSIMDCombinable_v<ET1,ET2> );
    constexpr size_t SIMDSIZE( SIMDTrait< ElementType_t<MT1> >::size );
 
-   const bool lhsAligned( (~lhs).isAligned() );
-   const bool rhsAligned( (~rhs).isAligned() );
+   const bool lhsAligned( (*lhs).isAligned() );
+   const bool rhsAligned( (*rhs).isAligned() );
 
-   const ThreadMapping threads( createThreadMapping( TheThreadBackend::size(), ~rhs ) );
+   const ThreadMapping threads( createThreadMapping( TheThreadBackend::size(), *rhs ) );
 
-   const size_t addon1     ( ( ( (~rhs).rows() % threads.first ) != 0UL )? 1UL : 0UL );
-   const size_t equalShare1( (~rhs).rows() / threads.first + addon1 );
+   const size_t addon1     ( ( ( (*rhs).rows() % threads.first ) != 0UL )? 1UL : 0UL );
+   const size_t equalShare1( (*rhs).rows() / threads.first + addon1 );
    const size_t rest1      ( equalShare1 & ( SIMDSIZE - 1UL ) );
    const size_t rowsPerThread( ( simdEnabled && rest1 )?( equalShare1 - rest1 + SIMDSIZE ):( equalShare1 ) );
 
-   const size_t addon2     ( ( ( (~rhs).columns() % threads.second ) != 0UL )? 1UL : 0UL );
-   const size_t equalShare2( (~rhs).columns() / threads.second + addon2 );
+   const size_t addon2     ( ( ( (*rhs).columns() % threads.second ) != 0UL )? 1UL : 0UL );
+   const size_t equalShare2( (*rhs).columns() / threads.second + addon2 );
    const size_t rest2      ( equalShare2 & ( SIMDSIZE - 1UL ) );
    const size_t colsPerThread( ( simdEnabled && rest2 )?( equalShare2 - rest2 + SIMDSIZE ):( equalShare2 ) );
 
@@ -129,37 +124,37 @@ void threadAssign( DenseMatrix<MT1,SO1>& lhs, const DenseMatrix<MT2,SO2>& rhs, O
    {
       const size_t row( i*rowsPerThread );
 
-      if( row >= (~lhs).rows() )
+      if( row >= (*lhs).rows() )
          continue;
 
       for( size_t j=0UL; j<threads.second; ++j )
       {
          const size_t column( j*colsPerThread );
 
-         if( column >= (~rhs).columns() )
+         if( column >= (*rhs).columns() )
             continue;
 
-         const size_t m( min( rowsPerThread, (~lhs).rows()    - row    ) );
-         const size_t n( min( colsPerThread, (~rhs).columns() - column ) );
+         const size_t m( min( rowsPerThread, (*lhs).rows()    - row    ) );
+         const size_t n( min( colsPerThread, (*rhs).columns() - column ) );
 
          if( simdEnabled && lhsAligned && rhsAligned ) {
-            auto       target( submatrix<aligned>( ~lhs, row, column, m, n, unchecked ) );
-            const auto source( submatrix<aligned>( ~rhs, row, column, m, n, unchecked ) );
+            auto       target( submatrix<aligned>( *lhs, row, column, m, n, unchecked ) );
+            const auto source( submatrix<aligned>( *rhs, row, column, m, n, unchecked ) );
             TheThreadBackend::schedule( target, source, op );
          }
          else if( simdEnabled && lhsAligned ) {
-            auto       target( submatrix<aligned>( ~lhs, row, column, m, n, unchecked ) );
-            const auto source( submatrix<unaligned>( ~rhs, row, column, m, n, unchecked ) );
+            auto       target( submatrix<aligned>( *lhs, row, column, m, n, unchecked ) );
+            const auto source( submatrix<unaligned>( *rhs, row, column, m, n, unchecked ) );
             TheThreadBackend::schedule( target, source, op );
          }
          else if( simdEnabled && rhsAligned ) {
-            auto       target( submatrix<unaligned>( ~lhs, row, column, m, n, unchecked ) );
-            const auto source( submatrix<aligned>( ~rhs, row, column, m, n, unchecked ) );
+            auto       target( submatrix<unaligned>( *lhs, row, column, m, n, unchecked ) );
+            const auto source( submatrix<aligned>( *rhs, row, column, m, n, unchecked ) );
             TheThreadBackend::schedule( target, source, op );
          }
          else {
-            auto       target( submatrix<unaligned>( ~lhs, row, column, m, n, unchecked ) );
-            const auto source( submatrix<unaligned>( ~rhs, row, column, m, n, unchecked ) );
+            auto       target( submatrix<unaligned>( *lhs, row, column, m, n, unchecked ) );
+            const auto source( submatrix<unaligned>( *rhs, row, column, m, n, unchecked ) );
             TheThreadBackend::schedule( target, source, op );
          }
       }
@@ -200,33 +195,33 @@ void threadAssign( DenseMatrix<MT1,SO1>& lhs, const SparseMatrix<MT2,SO2>& rhs, 
 
    BLAZE_INTERNAL_ASSERT( isParallelSectionActive(), "Invalid call outside a parallel section" );
 
-   const ThreadMapping threads( createThreadMapping( TheThreadBackend::size(), ~rhs ) );
+   const ThreadMapping threads( createThreadMapping( TheThreadBackend::size(), *rhs ) );
 
-   const size_t addon1       ( ( ( (~rhs).rows() % threads.first ) != 0UL )? 1UL : 0UL );
-   const size_t rowsPerThread( (~rhs).rows() / threads.first + addon1 );
+   const size_t addon1       ( ( ( (*rhs).rows() % threads.first ) != 0UL )? 1UL : 0UL );
+   const size_t rowsPerThread( (*rhs).rows() / threads.first + addon1 );
 
-   const size_t addon2       ( ( ( (~rhs).columns() % threads.second ) != 0UL )? 1UL : 0UL );
-   const size_t colsPerThread( (~rhs).columns() / threads.second + addon2 );
+   const size_t addon2       ( ( ( (*rhs).columns() % threads.second ) != 0UL )? 1UL : 0UL );
+   const size_t colsPerThread( (*rhs).columns() / threads.second + addon2 );
 
    for( size_t i=0UL; i<threads.first; ++i )
    {
       const size_t row( i*rowsPerThread );
 
-      if( row >= (~lhs).rows() )
+      if( row >= (*lhs).rows() )
          continue;
 
       for( size_t j=0UL; j<threads.second; ++j )
       {
          const size_t column( j*colsPerThread );
 
-         if( column >= (~lhs).columns() )
+         if( column >= (*lhs).columns() )
             continue;
 
-         const size_t m( min( rowsPerThread, (~lhs).rows()    - row    ) );
-         const size_t n( min( colsPerThread, (~lhs).columns() - column ) );
+         const size_t m( min( rowsPerThread, (*lhs).rows()    - row    ) );
+         const size_t n( min( colsPerThread, (*lhs).columns() - column ) );
 
-         auto       target( submatrix<unaligned>( ~lhs, row, column, m, n, unchecked ) );
-         const auto source( submatrix<unaligned>( ~rhs, row, column, m, n, unchecked ) );
+         auto       target( submatrix<unaligned>( *lhs, row, column, m, n, unchecked ) );
+         const auto source( submatrix<unaligned>( *rhs, row, column, m, n, unchecked ) );
          TheThreadBackend::schedule( target, source, op );
       }
    }
@@ -267,15 +262,15 @@ template< typename MT1  // Type of the left-hand side dense matrix
         , bool SO1      // Storage order of the left-hand side dense matrix
         , typename MT2  // Type of the right-hand side matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
-inline EnableIf_t< IsDenseMatrix_v<MT1> && ( !IsSMPAssignable_v<MT1> || !IsSMPAssignable_v<MT2> ) >
-   smpAssign( Matrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs )
+inline auto smpAssign( Matrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs )
+   -> EnableIf_t< IsDenseMatrix_v<MT1> && ( !IsSMPAssignable_v<MT1> || !IsSMPAssignable_v<MT2> ) >
 {
    BLAZE_FUNCTION_TRACE;
 
-   BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( (*lhs).columns() == (*rhs).columns(), "Invalid number of columns" );
 
-   assign( ~lhs, ~rhs );
+   assign( *lhs, *rhs );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -303,24 +298,24 @@ template< typename MT1  // Type of the left-hand side dense matrix
         , bool SO1      // Storage order of the left-hand side dense matrix
         , typename MT2  // Type of the right-hand side matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
-inline EnableIf_t< IsDenseMatrix_v<MT1> && IsSMPAssignable_v<MT1> && IsSMPAssignable_v<MT2> >
-   smpAssign( Matrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs )
+inline auto smpAssign( Matrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs )
+   -> EnableIf_t< IsDenseMatrix_v<MT1> && IsSMPAssignable_v<MT1> && IsSMPAssignable_v<MT2> >
 {
    BLAZE_FUNCTION_TRACE;
 
    BLAZE_CONSTRAINT_MUST_NOT_BE_SMP_ASSIGNABLE( ElementType_t<MT1> );
    BLAZE_CONSTRAINT_MUST_NOT_BE_SMP_ASSIGNABLE( ElementType_t<MT2> );
 
-   BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( (*lhs).columns() == (*rhs).columns(), "Invalid number of columns" );
 
    BLAZE_PARALLEL_SECTION
    {
-      if( isSerialSectionActive() || !(~rhs).canSMPAssign() ) {
-         assign( ~lhs, ~rhs );
+      if( isSerialSectionActive() || !(*rhs).canSMPAssign() ) {
+         assign( *lhs, *rhs );
       }
       else {
-         threadAssign( ~lhs, ~rhs, Assign() );
+         threadAssign( *lhs, *rhs, []( auto& a, const auto& b ){ assign( a, b ); } );
       }
    }
 }
@@ -359,15 +354,15 @@ template< typename MT1  // Type of the left-hand side dense matrix
         , bool SO1      // Storage order of the left-hand side dense matrix
         , typename MT2  // Type of the right-hand side matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
-inline EnableIf_t< IsDenseMatrix_v<MT1> && ( !IsSMPAssignable_v<MT1> || !IsSMPAssignable_v<MT2> ) >
-   smpAddAssign( Matrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs )
+inline auto smpAddAssign( Matrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs )
+   -> EnableIf_t< IsDenseMatrix_v<MT1> && ( !IsSMPAssignable_v<MT1> || !IsSMPAssignable_v<MT2> ) >
 {
    BLAZE_FUNCTION_TRACE;
 
-   BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( (*lhs).columns() == (*rhs).columns(), "Invalid number of columns" );
 
-   addAssign( ~lhs, ~rhs );
+   addAssign( *lhs, *rhs );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -395,24 +390,24 @@ template< typename MT1  // Type of the left-hand side dense matrix
         , bool SO1      // Storage order of the left-hand side dense matrix
         , typename MT2  // Type of the right-hand side matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
-inline EnableIf_t< IsDenseMatrix_v<MT1> && IsSMPAssignable_v<MT1> && IsSMPAssignable_v<MT2> >
-   smpAddAssign( Matrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs )
+inline auto smpAddAssign( Matrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs )
+   -> EnableIf_t< IsDenseMatrix_v<MT1> && IsSMPAssignable_v<MT1> && IsSMPAssignable_v<MT2> >
 {
    BLAZE_FUNCTION_TRACE;
 
    BLAZE_CONSTRAINT_MUST_NOT_BE_SMP_ASSIGNABLE( ElementType_t<MT1> );
    BLAZE_CONSTRAINT_MUST_NOT_BE_SMP_ASSIGNABLE( ElementType_t<MT2> );
 
-   BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( (*lhs).columns() == (*rhs).columns(), "Invalid number of columns" );
 
    BLAZE_PARALLEL_SECTION
    {
-      if( isSerialSectionActive() || !(~rhs).canSMPAssign() ) {
-         addAssign( ~lhs, ~rhs );
+      if( isSerialSectionActive() || !(*rhs).canSMPAssign() ) {
+         addAssign( *lhs, *rhs );
       }
       else {
-         threadAssign( ~lhs, ~rhs, AddAssign() );
+         threadAssign( *lhs, *rhs, []( auto& a, const auto& b ){ addAssign( a, b ); } );
       }
    }
 }
@@ -451,15 +446,15 @@ template< typename MT1  // Type of the left-hand side dense matrix
         , bool SO1      // Storage order of the left-hand side dense matrix
         , typename MT2  // Type of the right-hand side matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
-inline EnableIf_t< IsDenseMatrix_v<MT1> && ( !IsSMPAssignable_v<MT1> || !IsSMPAssignable_v<MT2> ) >
-   smpSubAssign( Matrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs )
+inline auto smpSubAssign( Matrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs )
+   -> EnableIf_t< IsDenseMatrix_v<MT1> && ( !IsSMPAssignable_v<MT1> || !IsSMPAssignable_v<MT2> ) >
 {
    BLAZE_FUNCTION_TRACE;
 
-   BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( (*lhs).columns() == (*rhs).columns(), "Invalid number of columns" );
 
-   subAssign( ~lhs, ~rhs );
+   subAssign( *lhs, *rhs );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -488,24 +483,24 @@ template< typename MT1  // Type of the left-hand side dense matrix
         , bool SO1      // Storage order of the left-hand side dense matrix
         , typename MT2  // Type of the right-hand side matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
-inline EnableIf_t< IsDenseMatrix_v<MT1> && IsSMPAssignable_v<MT1> && IsSMPAssignable_v<MT2> >
-   smpSubAssign( Matrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs )
+inline auto smpSubAssign( Matrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs )
+   -> EnableIf_t< IsDenseMatrix_v<MT1> && IsSMPAssignable_v<MT1> && IsSMPAssignable_v<MT2> >
 {
    BLAZE_FUNCTION_TRACE;
 
    BLAZE_CONSTRAINT_MUST_NOT_BE_SMP_ASSIGNABLE( ElementType_t<MT1> );
    BLAZE_CONSTRAINT_MUST_NOT_BE_SMP_ASSIGNABLE( ElementType_t<MT2> );
 
-   BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( (*lhs).columns() == (*rhs).columns(), "Invalid number of columns" );
 
    BLAZE_PARALLEL_SECTION
    {
-      if( isSerialSectionActive() || !(~rhs).canSMPAssign() ) {
-         subAssign( ~lhs, ~rhs );
+      if( isSerialSectionActive() || !(*rhs).canSMPAssign() ) {
+         subAssign( *lhs, *rhs );
       }
       else {
-         threadAssign( ~lhs, ~rhs, SubAssign() );
+         threadAssign( *lhs, *rhs, []( auto& a, const auto& b ){ subAssign( a, b ); } );
       }
    }
 }
@@ -544,15 +539,15 @@ template< typename MT1  // Type of the left-hand side dense matrix
         , bool SO1      // Storage order of the left-hand side dense matrix
         , typename MT2  // Type of the right-hand side matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
-inline EnableIf_t< IsDenseMatrix_v<MT1> && ( !IsSMPAssignable_v<MT1> || !IsSMPAssignable_v<MT2> ) >
-   smpSchurAssign( Matrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs )
+inline auto smpSchurAssign( Matrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs )
+   -> EnableIf_t< IsDenseMatrix_v<MT1> && ( !IsSMPAssignable_v<MT1> || !IsSMPAssignable_v<MT2> ) >
 {
    BLAZE_FUNCTION_TRACE;
 
-   BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( (*lhs).columns() == (*rhs).columns(), "Invalid number of columns" );
 
-   schurAssign( ~lhs, ~rhs );
+   schurAssign( *lhs, *rhs );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -581,24 +576,24 @@ template< typename MT1  // Type of the left-hand side dense matrix
         , bool SO1      // Storage order of the left-hand side dense matrix
         , typename MT2  // Type of the right-hand side matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
-inline EnableIf_t< IsDenseMatrix_v<MT1> && IsSMPAssignable_v<MT1> && IsSMPAssignable_v<MT2> >
-   smpSchurAssign( Matrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs )
+inline auto smpSchurAssign( Matrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs )
+   -> EnableIf_t< IsDenseMatrix_v<MT1> && IsSMPAssignable_v<MT1> && IsSMPAssignable_v<MT2> >
 {
    BLAZE_FUNCTION_TRACE;
 
    BLAZE_CONSTRAINT_MUST_NOT_BE_SMP_ASSIGNABLE( ElementType_t<MT1> );
    BLAZE_CONSTRAINT_MUST_NOT_BE_SMP_ASSIGNABLE( ElementType_t<MT2> );
 
-   BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( (*lhs).columns() == (*rhs).columns(), "Invalid number of columns" );
 
    BLAZE_PARALLEL_SECTION
    {
-      if( isSerialSectionActive() || !(~rhs).canSMPAssign() ) {
-         schurAssign( ~lhs, ~rhs );
+      if( isSerialSectionActive() || !(*rhs).canSMPAssign() ) {
+         schurAssign( *lhs, *rhs );
       }
       else {
-         threadAssign( ~lhs, ~rhs, SchurAssign() );
+         threadAssign( *lhs, *rhs, []( auto& a, const auto& b ){ schurAssign( a, b ); } );
       }
    }
 }
@@ -635,15 +630,15 @@ template< typename MT1  // Type of the left-hand side dense matrix
         , bool SO1      // Storage order of the left-hand side matrix
         , typename MT2  // Type of the right-hand side matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
-inline EnableIf_t< IsDenseMatrix_v<MT1> >
-   smpMultAssign( Matrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs )
+inline auto smpMultAssign( Matrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs )
+   -> EnableIf_t< IsDenseMatrix_v<MT1> >
 {
    BLAZE_FUNCTION_TRACE;
 
-   BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( (*lhs).columns() == (*rhs).columns(), "Invalid number of columns" );
 
-   multAssign( ~lhs, ~rhs );
+   multAssign( *lhs, *rhs );
 }
 /*! \endcond */
 //*************************************************************************************************

@@ -3,7 +3,7 @@
 //  \file blaze/math/shims/Greater.h
 //  \brief Header file for the greater shim
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -134,7 +134,7 @@ BLAZE_ALWAYS_INLINE constexpr bool greater_backend( double a, double b ) noexcep
 */
 BLAZE_ALWAYS_INLINE constexpr bool greater_backend( long double a, long double b ) noexcept
 {
-   return ( b - a ) > 1E-10;
+   return ( b - a ) > 1E-10L;
 }
 /*! \endcond */
 //*************************************************************************************************

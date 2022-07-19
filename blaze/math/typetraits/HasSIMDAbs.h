@@ -3,7 +3,7 @@
 //  \file blaze/math/typetraits/HasSIMDAbs.h
 //  \brief Header file for the HasSIMDAbs type trait
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -43,12 +43,12 @@
 #include <blaze/system/Compiler.h>
 #include <blaze/system/Vectorization.h>
 #include <blaze/util/IntegralConstant.h>
-#include <blaze/util/typetraits/Decay.h>
 #include <blaze/util/typetraits/IsIntegral.h>
 #include <blaze/util/typetraits/IsNumeric.h>
 #include <blaze/util/typetraits/IsSigned.h>
 #include <blaze/util/typetraits/IsDouble.h>
 #include <blaze/util/typetraits/IsFloat.h>
+#include <blaze/util/typetraits/RemoveCVRef.h>
 
 
 namespace blaze {
@@ -110,14 +110,14 @@ using HasSIMDAbsHelper =
 */
 template< typename T >  // Type of the operand
 struct HasSIMDAbs
-   : public BoolConstant< HasSIMDAbsHelper< Decay_t<T> >::value >
+   : public BoolConstant< HasSIMDAbsHelper< RemoveCVRef_t<T> >::value >
 {};
 //*************************************************************************************************
 
 
 //*************************************************************************************************
 /*!\brief Auxiliary variable template for the HasSIMDAbs type trait.
-// \ingroup type_traits
+// \ingroup math_type_traits
 //
 // The HasSIMDAbs_v variable template provides a convenient shortcut to access the nested
 // \a value of the HasSIMDAbs class template. For instance, given the type \a T the following

@@ -3,7 +3,7 @@
 //  \file blaze/math/expressions/SMatScalarDivExpr.h
 //  \brief Header file for the sparse matrix/scalar division expression
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -44,8 +44,10 @@
 #include <utility>
 #include <blaze/math/Aliases.h>
 #include <blaze/math/constraints/RequiresEvaluation.h>
+#include <blaze/math/constraints/Scalar.h>
 #include <blaze/math/constraints/SparseMatrix.h>
 #include <blaze/math/constraints/StorageOrder.h>
+#include <blaze/math/constraints/Zero.h>
 #include <blaze/math/Exception.h>
 #include <blaze/math/expressions/Computation.h>
 #include <blaze/math/expressions/Forward.h>
@@ -55,33 +57,25 @@
 #include <blaze/math/sparse/ValueIndexPair.h>
 #include <blaze/math/traits/DivTrait.h>
 #include <blaze/math/traits/MultTrait.h>
-#include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsExpression.h>
-#include <blaze/math/typetraits/IsHermitian.h>
 #include <blaze/math/typetraits/IsInvertible.h>
-#include <blaze/math/typetraits/IsLower.h>
 #include <blaze/math/typetraits/IsMultExpr.h>
-#include <blaze/math/typetraits/IsStrictlyLower.h>
-#include <blaze/math/typetraits/IsStrictlyUpper.h>
-#include <blaze/math/typetraits/IsSymmetric.h>
+#include <blaze/math/typetraits/IsScalar.h>
 #include <blaze/math/typetraits/IsTemporary.h>
-#include <blaze/math/typetraits/IsUpper.h>
+#include <blaze/math/typetraits/IsZero.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
 #include <blaze/math/typetraits/UnderlyingBuiltin.h>
 #include <blaze/math/typetraits/UnderlyingElement.h>
-#include <blaze/math/typetraits/UnderlyingNumeric.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/FloatingPoint.h>
-#include <blaze/util/constraints/Numeric.h>
 #include <blaze/util/constraints/SameType.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/FunctionTrace.h>
+#include <blaze/util/MaybeUnused.h>
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsBuiltin.h>
-#include <blaze/util/typetraits/IsComplex.h>
 #include <blaze/util/typetraits/IsFloatingPoint.h>
-#include <blaze/util/typetraits/IsNumeric.h>
 #include <blaze/util/typetraits/RemoveReference.h>
 
 
@@ -160,7 +154,12 @@ class SMatScalarDivExpr
 
  public:
    //**Type definitions****************************************************************************
-   using This          = SMatScalarDivExpr<MT,ST,SO>;  //!< Type of this SMatScalarDivExpr instance.
+   //! Type of this SMatScalarDivExpr instance.
+   using This = SMatScalarDivExpr<MT,ST,SO>;
+
+   //! Base type of this SMatScalarDivExpr instance.
+   using BaseType = MatScalarDivExpr< SparseMatrix<This,SO> >;
+
    using ResultType    = MultTrait_t<RT,ST>;           //!< Result type for expression template evaluations.
    using OppositeType  = OppositeType_t<ResultType>;   //!< Result type with opposite storage order for expression template evaluations.
    using TransposeType = TransposeType_t<ResultType>;  //!< Transpose type for expression template evaluations.
@@ -318,7 +317,7 @@ class SMatScalarDivExpr
    // \param matrix The left-hand side sparse matrix of the division expression.
    // \param scalar The right-hand side scalar of the division expression.
    */
-   explicit inline SMatScalarDivExpr( const MT& matrix, ST scalar ) noexcept
+   inline SMatScalarDivExpr( const MT& matrix, ST scalar ) noexcept
       : matrix_( matrix )  // Left-hand side sparse matrix of the division expression
       , scalar_( scalar )  // Right-hand side scalar of the division expression
    {}
@@ -358,10 +357,10 @@ class SMatScalarDivExpr
    //**********************************************************************************************
 
    //**Begin function******************************************************************************
-   /*!\brief Returns an iterator to the first non-zero element of row \a i.
+   /*!\brief Returns an iterator to the first non-zero element of row/column \a i.
    //
-   // \param i The row index.
-   // \return Iterator to the first non-zero element of row \a i.
+   // \param i The row/column index.
+   // \return Iterator to the first non-zero element of row/column \a i.
    */
    inline ConstIterator begin( size_t i ) const {
       return ConstIterator( matrix_.begin(i), scalar_ );
@@ -369,10 +368,10 @@ class SMatScalarDivExpr
    //**********************************************************************************************
 
    //**End function********************************************************************************
-   /*!\brief Returns an iterator just past the last non-zero element of row \a i.
+   /*!\brief Returns an iterator just past the last non-zero element of row/column \a i.
    //
-   // \param i The row index.
-   // \return Iterator just past the last non-zero element of row \a i.
+   // \param i The row/column index.
+   // \return Iterator just past the last non-zero element of row/column \a i.
    */
    inline ConstIterator end( size_t i ) const {
       return ConstIterator( matrix_.end(i), scalar_ );
@@ -525,16 +524,16 @@ class SMatScalarDivExpr
    */
    template< typename MT2  // Type of the target dense matrix
            , bool SO2 >    // Storage order of the target dense matrix
-   friend inline EnableIf_t< UseAssign_v<MT2> >
-      assign( DenseMatrix<MT2,SO2>& lhs, const SMatScalarDivExpr& rhs )
+   friend inline auto assign( DenseMatrix<MT2,SO2>& lhs, const SMatScalarDivExpr& rhs )
+      -> EnableIf_t< UseAssign_v<MT2> >
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      assign( ~lhs, rhs.matrix_ );
-      (~lhs) /= rhs.scalar_;
+      assign( *lhs, rhs.matrix_ );
+      (*lhs) /= rhs.scalar_;
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -555,16 +554,16 @@ class SMatScalarDivExpr
    */
    template< typename MT2  // Type of the target sparse matrix
            , bool SO2 >    // Storage order of the target sparse matrix
-   friend inline EnableIf_t< UseAssign_v<MT2> >
-      assign( SparseMatrix<MT2,SO2>& lhs, const SMatScalarDivExpr& rhs )
+   friend inline auto assign( SparseMatrix<MT2,SO2>& lhs, const SMatScalarDivExpr& rhs )
+      -> EnableIf_t< UseAssign_v<MT2> >
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      assign( ~lhs, rhs.matrix_ );
-      (~lhs) /= rhs.scalar_;
+      assign( *lhs, rhs.matrix_ );
+      (*lhs) /= rhs.scalar_;
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -585,19 +584,19 @@ class SMatScalarDivExpr
    */
    template< typename MT2  // Type of the target dense matrix
            , bool SO2 >    // Storage order of the target dense matrix
-   friend inline EnableIf_t< UseAssign_v<MT2> >
-      addAssign( DenseMatrix<MT2,SO2>& lhs, const SMatScalarDivExpr& rhs )
+   friend inline auto addAssign( DenseMatrix<MT2,SO2>& lhs, const SMatScalarDivExpr& rhs )
+      -> EnableIf_t< UseAssign_v<MT2> >
    {
       BLAZE_FUNCTION_TRACE;
 
       BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( ResultType );
       BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
       const ResultType tmp( serial( rhs ) );
-      addAssign( ~lhs, tmp );
+      addAssign( *lhs, tmp );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -622,19 +621,19 @@ class SMatScalarDivExpr
    */
    template< typename MT2  // Type of the target dense matrix
            , bool SO2 >    // Storage order of the target dense matrix
-   friend inline EnableIf_t< UseAssign_v<MT2> >
-      subAssign( DenseMatrix<MT2,SO2>& lhs, const SMatScalarDivExpr& rhs )
+   friend inline auto subAssign( DenseMatrix<MT2,SO2>& lhs, const SMatScalarDivExpr& rhs )
+      -> EnableIf_t< UseAssign_v<MT2> >
    {
       BLAZE_FUNCTION_TRACE;
 
       BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( ResultType );
       BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
       const ResultType tmp( serial( rhs ) );
-      subAssign( ~lhs, tmp );
+      subAssign( *lhs, tmp );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -659,19 +658,19 @@ class SMatScalarDivExpr
    */
    template< typename MT2  // Type of the target dense matrix
            , bool SO2 >    // Storage order of the target dense matrix
-   friend inline EnableIf_t< UseAssign_v<MT2> >
-      schurAssign( DenseMatrix<MT2,SO2>& lhs, const SMatScalarDivExpr& rhs )
+   friend inline auto schurAssign( DenseMatrix<MT2,SO2>& lhs, const SMatScalarDivExpr& rhs )
+      -> EnableIf_t< UseAssign_v<MT2> >
    {
       BLAZE_FUNCTION_TRACE;
 
       BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( ResultType );
       BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
       const ResultType tmp( serial( rhs ) );
-      schurAssign( ~lhs, tmp );
+      schurAssign( *lhs, tmp );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -712,19 +711,19 @@ class SMatScalarDivExpr
    */
    template< typename MT2  // Type of the target dense matrix
            , bool SO2 >    // Storage order of the target dense matrix
-   friend inline EnableIf_t< UseSMPAssign_v<MT2> >
-      smpAddAssign( DenseMatrix<MT2,SO2>& lhs, const SMatScalarDivExpr& rhs )
+   friend inline auto smpAddAssign( DenseMatrix<MT2,SO2>& lhs, const SMatScalarDivExpr& rhs )
+      -> EnableIf_t< UseSMPAssign_v<MT2> >
    {
       BLAZE_FUNCTION_TRACE;
 
       BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( ResultType );
       BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
       const ResultType tmp( rhs );
-      smpAddAssign( ~lhs, tmp );
+      smpAddAssign( *lhs, tmp );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -749,19 +748,19 @@ class SMatScalarDivExpr
    */
    template< typename MT2  // Type of the target dense matrix
            , bool SO2 >    // Storage order of the target dense matrix
-   friend inline EnableIf_t< UseSMPAssign_v<MT2> >
-      smpSubAssign( DenseMatrix<MT2,SO2>& lhs, const SMatScalarDivExpr& rhs )
+   friend inline auto smpSubAssign( DenseMatrix<MT2,SO2>& lhs, const SMatScalarDivExpr& rhs )
+      -> EnableIf_t< UseSMPAssign_v<MT2> >
    {
       BLAZE_FUNCTION_TRACE;
 
       BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( ResultType );
       BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
       const ResultType tmp( rhs );
-      smpSubAssign( ~lhs, tmp );
+      smpSubAssign( *lhs, tmp );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -786,19 +785,19 @@ class SMatScalarDivExpr
    */
    template< typename MT2  // Type of the target dense matrix
            , bool SO2 >    // Storage order of the target dense matrix
-   friend inline EnableIf_t< UseSMPAssign_v<MT2> >
-      smpSchurAssign( DenseMatrix<MT2,SO2>& lhs, const SMatScalarDivExpr& rhs )
+   friend inline auto smpSchurAssign( DenseMatrix<MT2,SO2>& lhs, const SMatScalarDivExpr& rhs )
+      -> EnableIf_t< UseSMPAssign_v<MT2> >
    {
       BLAZE_FUNCTION_TRACE;
 
       BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( ResultType );
       BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
       const ResultType tmp( rhs );
-      smpSchurAssign( ~lhs, tmp );
+      smpSchurAssign( *lhs, tmp );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -819,7 +818,8 @@ class SMatScalarDivExpr
    /*! \cond BLAZE_INTERNAL */
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( MT );
    BLAZE_CONSTRAINT_MUST_BE_MATRIX_WITH_STORAGE_ORDER( MT, SO );
-   BLAZE_CONSTRAINT_MUST_BE_NUMERIC_TYPE( ST );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_ZERO_TYPE( MT );
+   BLAZE_CONSTRAINT_MUST_BE_SCALAR_TYPE( ST );
    BLAZE_CONSTRAINT_MUST_NOT_BE_FLOATING_POINT_TYPE( ST );
    BLAZE_CONSTRAINT_MUST_NOT_BE_FLOATING_POINT_TYPE( ElementType );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ST, RightOperand );
@@ -840,30 +840,112 @@ class SMatScalarDivExpr
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Auxiliary helper struct for the sparse matrix/scalar division operator.
-// \ingroup math_traits
+// \ingroup sparse_matrix
+*/
+template< typename MT    // Type of the left-hand side sparse matrix
+        , typename ST >  // Type of the right-hand side scalar
+using SMatScalarDivExprHelper_t =
+   If_t< IsFloatingPoint_v< UnderlyingBuiltin_t<MT> > ||
+         IsFloatingPoint_v< UnderlyingBuiltin_t<ST> >
+       , If_t< IsBuiltin_v<ST>
+             , DivTrait_t< UnderlyingBuiltin_t<MT>, ST >
+             , decltype( inv( std::declval<ST>() ) ) >
+       , ST >;
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Backend implementation of the division between a sparse matrix and a scalar value
+//        (\f$ A=B/s \f$).
+// \ingroup sparse_matrix
+//
+// \param mat The left-hand side sparse matrix for the division.
+// \param scalar The right-hand side scalar value for the division.
+// \return The scaled result matrix.
+//
+// This function implements the default treatment of the sparse matrix/scalar division.
 */
 template< typename MT  // Type of the left-hand side sparse matrix
+        , bool SO      // Storage order of the left-hand side sparse matrix
         , typename ST  // Type of the right-hand side scalar
-        , bool SO >    // Storage order
-struct SMatScalarDivExprHelper
+        , EnableIf_t< !IsZero_v<MT> &&
+                      !IsInvertible_v< SMatScalarDivExprHelper_t<MT,ST> > >* = nullptr >
+inline decltype(auto) smatscalardiv( const SparseMatrix<MT,SO>& mat, ST scalar )
 {
- private:
-   //**********************************************************************************************
-   using ScalarType = If_t< IsFloatingPoint_v< UnderlyingBuiltin_t<MT> > ||
-                            IsFloatingPoint_v< UnderlyingBuiltin_t<ST> >
-                          , If_t< IsComplex_v< UnderlyingNumeric_t<MT> > && IsBuiltin_v<ST>
-                                , DivTrait_t< UnderlyingBuiltin_t<MT>, ST >
-                                , DivTrait_t< UnderlyingNumeric_t<MT>, ST > >
-                          , ST >;
-   //**********************************************************************************************
+   BLAZE_FUNCTION_TRACE;
 
- public:
-   //**********************************************************************************************
-   using Type = If_t< IsInvertible_v<ScalarType>
-                    , SMatScalarMultExpr<MT,ScalarType,SO>
-                    , SMatScalarDivExpr<MT,ScalarType,SO> >;
-   //**********************************************************************************************
-};
+   using ScalarType = SMatScalarDivExprHelper_t<MT,ST>;
+   using ReturnType = const SMatScalarDivExpr<MT,ScalarType,SO>;
+
+   return ReturnType( *mat, scalar );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Backend implementation of the division between a sparse matrix and a scalar value
+//        (\f$ A=B/s \f$).
+// \ingroup sparse_matrix
+//
+// \param mat The left-hand side sparse matrix for the division.
+// \param scalar The right-hand side scalar value for the division.
+// \return The scaled result matrix.
+//
+// This function implements a performance optimized treatment of the sparse matrix/scalar division.
+*/
+template< typename MT  // Type of the left-hand side sparse matrix
+        , bool SO      // Storage order of the left-hand side sparse matrix
+        , typename ST  // Type of the right-hand side scalar
+        , EnableIf_t< !IsZero_v<MT> &&
+                      IsInvertible_v< SMatScalarDivExprHelper_t<MT,ST> > >* = nullptr >
+inline decltype(auto) smatscalardiv( const SparseMatrix<MT,SO>& mat, ST scalar )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   using ScalarType = SMatScalarDivExprHelper_t<MT,ST>;
+   using ReturnType = const SMatScalarMultExpr<MT,ScalarType,SO>;
+
+   return ReturnType( *mat, inv(scalar) );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Backend implementation of the division between a zero matrix and a scalar value
+//        (\f$ A=B/s \f$).
+// \ingroup sparse_matrix
+//
+// \param mat The left-hand side zero matrix for the division.
+// \param scalar The right-hand side scalar value for the division.
+// \return The resulting zero matrix.
+//
+// This function implements a performance optimized treatment of the division between a zero
+// matrix and a scalar value. It returns a zero matrix.
+*/
+template< typename MT  // Type of the left-hand side sparse matrix
+        , bool SO      // Storage order of the left-hand side zero matrix
+        , typename ST  // Type of the right-hand side scalar
+        , EnableIf_t< IsZero_v<MT> >* = nullptr >
+inline decltype(auto)
+   smatscalardiv( const SparseMatrix<MT,SO>& mat, ST scalar )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   MAYBE_UNUSED( scalar );
+
+   using ReturnType = const DivTrait_t< ResultType_t<MT>, ST >;
+
+   BLAZE_CONSTRAINT_MUST_BE_MATRIX_WITH_STORAGE_ORDER( ReturnType, SO );
+   BLAZE_CONSTRAINT_MUST_BE_ZERO_TYPE( ReturnType );
+
+   return ReturnType( (*mat).rows(), (*mat).columns() );
+}
 /*! \endcond */
 //*************************************************************************************************
 
@@ -893,234 +975,15 @@ struct SMatScalarDivExprHelper
 template< typename MT  // Type of the left-hand side sparse matrix
         , bool SO      // Storage order of the left-hand side sparse matrix
         , typename ST  // Type of the right-hand side scalar
-        , EnableIf_t< IsNumeric_v<ST> >* = nullptr >
+        , EnableIf_t< IsScalar_v<ST> >* = nullptr >
 inline decltype(auto) operator/( const SparseMatrix<MT,SO>& mat, ST scalar )
 {
    BLAZE_FUNCTION_TRACE;
 
-   BLAZE_USER_ASSERT( scalar != ST(0), "Division by zero detected" );
+   BLAZE_USER_ASSERT( scalar != ST{}, "Division by zero detected" );
 
-   using ReturnType = typename SMatScalarDivExprHelper<MT,ST,SO>::Type;
-   using ScalarType = RightOperand_t<ReturnType>;
-
-   if( IsMultExpr_v<ReturnType> ) {
-      return ReturnType( ~mat, ScalarType(1)/ScalarType(scalar) );
-   }
-   else {
-      return ReturnType( ~mat, scalar );
-   }
+   return smatscalardiv( *mat, scalar );
 }
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  GLOBAL RESTRUCTURING BINARY ARITHMETIC OPERATORS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Multiplication operator for the multiplication of a sparse matrix-scalar division
-//        expression and a scalar value (\f$ A=(B/s1)*s2 \f$).
-// \ingroup sparse_matrix
-//
-// \param mat The left-hand side sparse matrix-scalar division.
-// \param scalar The right-hand side scalar value for the multiplication.
-// \return The scaled result matrix.
-//
-// This operator implements a performance optimized treatment of the multiplication of a
-// sparse matrix-scalar division expression and a scalar value.
-*/
-template< typename MT   // Type of the sparse matrix of the left-hand side expression
-        , typename ST1  // Type of the scalar of the left-hand side expression
-        , bool SO       // Storage order of the sparse matrix
-        , typename ST2  // Type of the right-hand side scalar
-        , EnableIf_t< IsNumeric_v<ST2> && ( IsInvertible_v<ST1> || IsInvertible_v<ST2> ) >* = nullptr >
-inline decltype(auto) operator*( const SMatScalarDivExpr<MT,ST1,SO>& mat, ST2 scalar )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   return mat.leftOperand() * ( scalar / mat.rightOperand() );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Multiplication operator for the multiplication of a scalar value and a sparse matrix-
-//        scalar division expression (\f$ A=s2*(B/s1) \f$).
-// \ingroup sparse_matrix
-//
-// \param scalar The left-hand side scalar value for the multiplication.
-// \param mat The right-hand side sparse matrix-scalar division.
-// \return The scaled result matrix.
-//
-// This operator implements a performance optimized treatment of the multiplication of a
-// scalar value and a sparse matrix-scalar division expression.
-*/
-template< typename ST1  // Type of the left-hand side scalar
-        , typename MT   // Type of the sparse matrix of the right-hand side expression
-        , typename ST2  // Type of the scalar of the right-hand side expression
-        , bool SO       // Storage order of the sparse matrix
-        , EnableIf_t< IsNumeric_v<ST1> && ( IsInvertible_v<ST1> || IsInvertible_v<ST2> ) >* = nullptr >
-inline decltype(auto) operator*( ST1 scalar, const SMatScalarDivExpr<MT,ST2,SO>& mat )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   return mat.leftOperand() * ( scalar / mat.rightOperand() );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Division operator for the division of a sparse matrix-scalar division expression
-//        and a scalar value (\f$ A=(B/s1)/s2 \f$).
-// \ingroup sparse_matrix
-//
-// \param mat The left-hand side sparse matrix-scalar division.
-// \param scalar The right-hand side scalar value for the division.
-// \return The scaled result matrix.
-//
-// This operator implements a performance optimized treatment of the division of a sparse
-// matrix-scalar division expression and a scalar value.
-*/
-template< typename MT   // Type of the sparse matrix of the left-hand side expression
-        , typename ST1  // Type of the scalar of the left-hand side expression
-        , bool SO       // Storage order of the sparse matrix
-        , typename ST2  // Type of the right-hand side scalar
-        , EnableIf_t< IsNumeric_v<ST2> >* = nullptr >
-inline decltype(auto) operator/( const SMatScalarDivExpr<MT,ST1,SO>& mat, ST2 scalar )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   BLAZE_USER_ASSERT( scalar != ST2(0), "Division by zero detected" );
-
-   using MultType   = MultTrait_t<ST1,ST2>;
-   using ReturnType = typename SMatScalarDivExprHelper<MT,MultType,SO>::Type;
-   using ScalarType = RightOperand_t<ReturnType>;
-
-   if( IsMultExpr_v<ReturnType> ) {
-      return ReturnType( mat.leftOperand(), ScalarType(1)/( mat.rightOperand() * scalar ) );
-   }
-   else {
-      return ReturnType( mat.leftOperand(), mat.rightOperand() * scalar );
-   }
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  ISSYMMETRIC SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT, typename ST, bool SO >
-struct IsSymmetric< SMatScalarDivExpr<MT,ST,SO> >
-   : public IsSymmetric<MT>
-{};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  ISHERMITIAN SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT, typename ST, bool SO >
-struct IsHermitian< SMatScalarDivExpr<MT,ST,SO> >
-   : public IsHermitian<MT>
-{};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  ISLOWER SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT, typename ST, bool SO >
-struct IsLower< SMatScalarDivExpr<MT,ST,SO> >
-   : public IsLower<MT>
-{};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  ISSTRICTLYLOWER SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT, typename ST, bool SO >
-struct IsStrictlyLower< SMatScalarDivExpr<MT,ST,SO> >
-   : public IsStrictlyLower<MT>
-{};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  ISUPPER SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT, typename ST, bool SO >
-struct IsUpper< SMatScalarDivExpr<MT,ST,SO> >
-   : public IsUpper<MT>
-{};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  ISSTRICTLYUPPER SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT, typename ST, bool SO >
-struct IsStrictlyUpper< SMatScalarDivExpr<MT,ST,SO> >
-   : public IsStrictlyUpper<MT>
-{};
-/*! \endcond */
 //*************************************************************************************************
 
 } // namespace blaze

@@ -3,7 +3,7 @@
 //  \file blaze/math/typetraits/IsColumns.h
 //  \brief Header file for the IsColumns type trait
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -41,8 +41,7 @@
 //*************************************************************************************************
 
 #include <blaze/math/views/Forward.h>
-#include <blaze/util/FalseType.h>
-#include <blaze/util/TrueType.h>
+#include <blaze/util/IntegralConstant.h>
 
 
 namespace blaze {
@@ -98,7 +97,7 @@ struct IsColumns
 /*!\brief Specialization of the IsColumns type trait for 'Columns'.
 // \ingroup math_type_traits
 */
-template< typename MT, bool SO, bool DF, bool SF, size_t... CRAs >
+template< typename MT, bool SO, bool DF, bool SF, typename... CRAs >
 struct IsColumns< Columns<MT,SO,DF,SF,CRAs...> >
    : public TrueType
 {};
@@ -111,7 +110,7 @@ struct IsColumns< Columns<MT,SO,DF,SF,CRAs...> >
 /*!\brief Specialization of the IsColumns type trait for 'const Columns'.
 // \ingroup math_type_traits
 */
-template< typename MT, bool SO, bool DF, bool SF, size_t... CRAs >
+template< typename MT, bool SO, bool DF, bool SF, typename... CRAs >
 struct IsColumns< const Columns<MT,SO,DF,SF,CRAs...> >
    : public TrueType
 {};
@@ -124,7 +123,7 @@ struct IsColumns< const Columns<MT,SO,DF,SF,CRAs...> >
 /*!\brief Specialization of the IsColumns type trait for 'volatile Columns'.
 // \ingroup math_type_traits
 */
-template< typename MT, bool SO, bool DF, bool SF, size_t... CRAs >
+template< typename MT, bool SO, bool DF, bool SF, typename... CRAs >
 struct IsColumns< volatile Columns<MT,SO,DF,SF,CRAs...> >
    : public TrueType
 {};
@@ -137,7 +136,7 @@ struct IsColumns< volatile Columns<MT,SO,DF,SF,CRAs...> >
 /*!\brief Specialization of the IsColumns type trait for 'const volatile Columns'.
 // \ingroup math_type_traits
 */
-template< typename MT, bool SO, bool DF, bool SF, size_t... CRAs >
+template< typename MT, bool SO, bool DF, bool SF, typename... CRAs >
 struct IsColumns< const volatile Columns<MT,SO,DF,SF,CRAs...> >
    : public TrueType
 {};
@@ -147,7 +146,7 @@ struct IsColumns< const volatile Columns<MT,SO,DF,SF,CRAs...> >
 
 //*************************************************************************************************
 /*!\brief Auxiliary variable template for the IsColumns type trait.
-// \ingroup type_traits
+// \ingroup math_type_traits
 //
 // The IsColumns_v variable template provides a convenient shortcut to access the nested \a value
 // of the IsColumns class template. For instance, given the type \a T the following two statements

@@ -3,7 +3,7 @@
 //  \file blaze/math/expressions/SMatTransposer.h
 //  \brief Header file for the sparse matrix transposer
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -73,6 +73,7 @@ class SMatTransposer
  public:
    //**Type definitions****************************************************************************
    using This           = SMatTransposer<MT,SO>;  //!< Type of this SMatTransposer instance.
+   using BaseType       = SparseMatrix<This,SO>;  //!< Base type of this SMatTransposer instance.
    using ResultType     = TransposeType_t<MT>;    //!< Result type for expression template evaluations.
    using OppositeType   = MT;                     //!< Result type with opposite storage order for expression template evaluations.
    using TransposeType  = ResultType_t<MT>;       //!< Transpose type for expression template evaluations.
@@ -469,7 +470,7 @@ class SMatTransposer
            , bool SO2 >    // Storage order of the right-hand side matrix
    inline void assign( const Matrix<MT2,SO2>& rhs )
    {
-      sm_.assign( trans( ~rhs ) );
+      sm_.assign( trans( *rhs ) );
    }
    //**********************************************************************************************
 
@@ -495,24 +496,6 @@ class SMatTransposer
 //  GLOBAL OPERATORS
 //
 //=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Resetting the sparse matrix contained in a SMatTransposer.
-// \ingroup sparse_matrix_expression
-//
-// \param m The sparse matrix to be resetted.
-// \return void
-*/
-template< typename MT  // Type of the sparse matrix
-        , bool SO >    // Storage order
-inline void reset( SMatTransposer<MT,SO>& m )
-{
-   m.reset();
-}
-/*! \endcond */
-//*************************************************************************************************
-
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */

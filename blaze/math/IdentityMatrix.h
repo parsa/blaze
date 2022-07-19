@@ -3,7 +3,7 @@
 //  \file blaze/math/IdentityMatrix.h
 //  \brief Header file for the complete IdentityMatrix implementation
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -62,36 +62,24 @@ namespace blaze {
 //
 // This specialization of the Rand class creates random instances of IdentityMatrix.
 */
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-class Rand< IdentityMatrix<Type,SO> >
+template< typename Type   // Data type of the matrix
+        , bool SO         // Storage order
+        , typename Tag >  // Type tag
+class Rand< IdentityMatrix<Type,SO,Tag> >
 {
  public:
-   //**Generate functions**************************************************************************
-   /*!\name Generate functions */
-   //@{
-   inline const IdentityMatrix<Type,SO> generate( size_t n ) const;
-   //@}
+   //**********************************************************************************************
+   /*!\brief Generation of a random IdentityMatrix.
+   //
+   // \param n The number of rows and columns of the random matrix.
+   // \return The generated random matrix.
+   */
+   inline const IdentityMatrix<Type,SO,Tag> generate( size_t n ) const
+   {
+      return IdentityMatrix<Type,SO,Tag>( n );
+   }
    //**********************************************************************************************
 };
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Generation of a random IdentityMatrix.
-//
-// \param n The number of rows and columns of the random matrix.
-// \return The generated random matrix.
-*/
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-inline const IdentityMatrix<Type,SO>
-   Rand< IdentityMatrix<Type,SO> >::generate( size_t n ) const
-{
-   return IdentityMatrix<Type,SO>( n );
-}
 /*! \endcond */
 //*************************************************************************************************
 

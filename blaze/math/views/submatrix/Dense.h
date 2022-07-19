@@ -3,7 +3,7 @@
 //  \file blaze/math/views/submatrix/Dense.h
 //  \brief Submatrix specialization for dense matrices
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -60,11 +60,11 @@
 #include <blaze/math/InitializerList.h>
 #include <blaze/math/shims/Clear.h>
 #include <blaze/math/shims/IsDefault.h>
+#include <blaze/math/shims/PrevMultiple.h>
 #include <blaze/math/shims/Reset.h>
 #include <blaze/math/SIMD.h>
 #include <blaze/math/StorageOrder.h>
 #include <blaze/math/traits/AddTrait.h>
-#include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/traits/SchurTrait.h>
 #include <blaze/math/traits/SubmatrixTrait.h>
 #include <blaze/math/traits/SubTrait.h>
@@ -72,6 +72,7 @@
 #include <blaze/math/typetraits/HasSIMDAdd.h>
 #include <blaze/math/typetraits/HasSIMDMult.h>
 #include <blaze/math/typetraits/HasSIMDSub.h>
+#include <blaze/math/typetraits/IsContiguous.h>
 #include <blaze/math/typetraits/IsDiagonal.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsHermitian.h>
@@ -102,14 +103,12 @@
 #include <blaze/util/constraints/Pointer.h>
 #include <blaze/util/constraints/Reference.h>
 #include <blaze/util/constraints/Vectorizable.h>
-#include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
+#include <blaze/util/MaybeUnused.h>
 #include <blaze/util/mpl/If.h>
-#include <blaze/util/TypeList.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsConst.h>
 #include <blaze/util/typetraits/IsReference.h>
-#include <blaze/util/Unused.h>
 
 
 namespace blaze {
@@ -152,7 +151,9 @@ class Submatrix<MT,unaligned,false,true,CSAs...>
    //! Type of this Submatrix instance.
    using This = Submatrix<MT,unaligned,false,true,CSAs...>;
 
-   using BaseType      = DenseMatrix<This,false>;       //!< Base type of this Submatrix instance.
+   //! Base type of this Submatrix instance.
+   using BaseType = View< DenseMatrix<This,false> >;
+
    using ViewedType    = MT;                            //!< The type viewed by this Submatrix instance.
    using ResultType    = SubmatrixTrait_t<MT,CSAs...>;  //!< Result type for expression template evaluations.
    using OppositeType  = OppositeType_t<ResultType>;    //!< Result type with opposite storage order for expression template evaluations.
@@ -385,7 +386,12 @@ class Submatrix<MT,unaligned,false,true,CSAs...>
       // result in erroneous results and/or in compilation errors.
       */
       inline void store( const SIMDType& value ) const {
-         storeu( value );
+         if( isAligned_ ) {
+            storea( value );
+         }
+         else {
+            storeu( value );
+         }
       }
       //*******************************************************************************************
 
@@ -417,12 +423,7 @@ class Submatrix<MT,unaligned,false,true,CSAs...>
       // might result in erroneous results and/or in compilation errors.
       */
       inline void storeu( const SIMDType& value ) const {
-         if( isAligned_ ) {
-            iterator_.storea( value );
-         }
-         else {
-            iterator_.storeu( value );
-         }
+         iterator_.storeu( value );
       }
       //*******************************************************************************************
 
@@ -597,6 +598,9 @@ class Submatrix<MT,unaligned,false,true,CSAs...>
 
    //! Compilation switch for the expression template assignment strategy.
    static constexpr bool smpAssignable = MT::smpAssignable;
+
+   //! Compilation switch for the expression template evaluation strategy.
+   static constexpr bool compileTimeArgs = DataType::compileTimeArgs;
    //**********************************************************************************************
 
    //**Constructors********************************************************************************
@@ -717,9 +721,7 @@ class Submatrix<MT,unaligned,false,true,CSAs...>
    //! Helper variable template for the explicit application of the SFINAE principle.
    template< typename MT2 >
    static constexpr bool VectorizedAddAssign_v =
-      ( useOptimizedKernels &&
-        simdEnabled && MT2::simdEnabled &&
-        IsSIMDCombinable_v< ElementType, ElementType_t<MT2> > &&
+      ( VectorizedAssign_v<MT2> &&
         HasSIMDAdd_v< ElementType, ElementType_t<MT2> > &&
         !IsDiagonal_v<MT2> );
    //**********************************************************************************************
@@ -728,9 +730,7 @@ class Submatrix<MT,unaligned,false,true,CSAs...>
    //! Helper variable template for the explicit application of the SFINAE principle.
    template< typename MT2 >
    static constexpr bool VectorizedSubAssign_v =
-      ( useOptimizedKernels &&
-        simdEnabled && MT2::simdEnabled &&
-        IsSIMDCombinable_v< ElementType, ElementType_t<MT2> > &&
+      ( VectorizedAssign_v<MT2> &&
         HasSIMDSub_v< ElementType, ElementType_t<MT2> > &&
         !IsDiagonal_v<MT2> );
    //**********************************************************************************************
@@ -739,9 +739,7 @@ class Submatrix<MT,unaligned,false,true,CSAs...>
    //! Helper variable template for the explicit application of the SFINAE principle.
    template< typename MT2 >
    static constexpr bool VectorizedSchurAssign_v =
-      ( useOptimizedKernels &&
-        simdEnabled && MT2::simdEnabled &&
-        IsSIMDCombinable_v< ElementType, ElementType_t<MT2> > &&
+      ( VectorizedAssign_v<MT2> &&
         HasSIMDMult_v< ElementType, ElementType_t<MT2> > );
    //**********************************************************************************************
 
@@ -887,10 +885,11 @@ template< typename... RSAs >  // Runtime submatrix arguments
 inline Submatrix<MT,unaligned,false,true,CSAs...>::Submatrix( MT& matrix, RSAs... args )
    : DataType  ( args... )  // Base class initialization
    , matrix_   ( matrix  )  // The matrix containing the submatrix
-   , isAligned_( simdEnabled && matrix.data() != nullptr && checkAlignment( data() ) &&
-                 ( rows() < 2UL || ( matrix.spacing() & size_t(-SIMDSIZE) ) == 0UL ) )
+   , isAligned_( simdEnabled && IsContiguous_v<MT> &&
+                 matrix.data() != nullptr && checkAlignment( data() ) &&
+                 ( rows() < 2UL || ( matrix.spacing() % SIMDSIZE ) == 0UL ) )
 {
-   if( !Contains_v< TypeList<RSAs...>, Unchecked > ) {
+   if( isChecked( args... ) ) {
       if( ( row() + rows() > matrix_.rows() ) || ( column() + columns() > matrix_.columns() ) ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid submatrix specification" );
       }
@@ -1380,7 +1379,7 @@ inline Submatrix<MT,unaligned,false,true,CSAs...>&
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( rhs.canAlias( &matrix_ ) ) {
+   if( rhs.canAlias( this ) ) {
       const ResultType tmp( rhs );
       smpAssign( left, tmp );
    }
@@ -1420,12 +1419,12 @@ inline Submatrix<MT,unaligned,false,true,CSAs...>&
 {
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_t<MT2> );
 
-   if( rows() != (~rhs).rows() || columns() != (~rhs).columns() ) {
+   if( rows() != (*rhs).rows() || columns() != (*rhs).columns() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
    using Right = If_t< IsRestricted_v<MT>, CompositeType_t<MT2>, const MT2& >;
-   Right right( ~rhs );
+   Right right( *rhs );
 
    if( !tryAssign( matrix_, right, row(), column() ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
@@ -1433,16 +1432,16 @@ inline Submatrix<MT,unaligned,false,true,CSAs...>&
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( IsReference_v<Right> && right.canAlias( &matrix_ ) ) {
+   if( IsReference_v<Right> && right.canAlias( this ) ) {
       const ResultType_t<MT2> tmp( right );
       if( IsSparseMatrix_v<MT2> )
          reset();
-      smpAssign( left, tmp );
+      smpAssign( left, transIf< IsSymmetric_v<This> >( tmp ) );
    }
    else {
       if( IsSparseMatrix_v<MT2> )
          reset();
-      smpAssign( left, right );
+      smpAssign( left, transIf< IsSymmetric_v<This> >( right ) );
    }
 
    BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
@@ -1483,23 +1482,22 @@ inline auto Submatrix<MT,unaligned,false,true,CSAs...>::operator+=( const Matrix
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( AddType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( AddType );
 
-   if( rows() != (~rhs).rows() || columns() != (~rhs).columns() ) {
+   if( rows() != (*rhs).rows() || columns() != (*rhs).columns() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
-   if( !tryAddAssign( matrix_, ~rhs, row(), column() ) ) {
+   if( !tryAddAssign( matrix_, *rhs, row(), column() ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
    }
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( ( ( IsSymmetric_v<MT> || IsHermitian_v<MT> ) && hasOverlap() ) ||
-       (~rhs).canAlias( &matrix_ ) ) {
-      const AddType tmp( *this + (~rhs) );
-      smpAssign( left, tmp );
+   if( ( ( IsSymmetric_v<MT> || IsHermitian_v<MT> ) && hasOverlap() ) || (*rhs).canAlias( this ) ) {
+      const AddType tmp( *this + (*rhs) );
+      smpAssign( left, transIf< IsSymmetric_v<This> >( tmp ) );
    }
    else {
-      smpAddAssign( left, ~rhs );
+      smpAddAssign( left, transIf< IsSymmetric_v<This> >( *rhs ) );
    }
 
    BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
@@ -1540,11 +1538,11 @@ inline auto Submatrix<MT,unaligned,false,true,CSAs...>::operator+=( const Matrix
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( AddType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( AddType );
 
-   if( rows() != (~rhs).rows() || columns() != (~rhs).columns() ) {
+   if( rows() != (*rhs).rows() || columns() != (*rhs).columns() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
-   const AddType tmp( *this + (~rhs) );
+   const AddType tmp( *this + (*rhs) );
 
    if( !tryAssign( matrix_, tmp, row(), column() ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
@@ -1552,7 +1550,7 @@ inline auto Submatrix<MT,unaligned,false,true,CSAs...>::operator+=( const Matrix
 
    decltype(auto) left( derestrict( *this ) );
 
-   smpAssign( left, tmp );
+   smpAssign( left, transIf< IsSymmetric_v<This> >( tmp ) );
 
    BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
 
@@ -1592,23 +1590,22 @@ inline auto Submatrix<MT,unaligned,false,true,CSAs...>::operator-=( const Matrix
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( SubType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SubType );
 
-   if( rows() != (~rhs).rows() || columns() != (~rhs).columns() ) {
+   if( rows() != (*rhs).rows() || columns() != (*rhs).columns() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
-   if( !trySubAssign( matrix_, ~rhs, row(), column() ) ) {
+   if( !trySubAssign( matrix_, *rhs, row(), column() ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
    }
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( ( ( IsSymmetric_v<MT> || IsHermitian_v<MT> ) && hasOverlap() ) ||
-       (~rhs).canAlias( &matrix_ ) ) {
-      const SubType tmp( *this - (~rhs ) );
-      smpAssign( left, tmp );
+   if( ( ( IsSymmetric_v<MT> || IsHermitian_v<MT> ) && hasOverlap() ) || (*rhs).canAlias( this ) ) {
+      const SubType tmp( *this - (*rhs ) );
+      smpAssign( left, transIf< IsSymmetric_v<This> >( tmp ) );
    }
    else {
-      smpSubAssign( left, ~rhs );
+      smpSubAssign( left, transIf< IsSymmetric_v<This> >( *rhs ) );
    }
 
    BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
@@ -1649,11 +1646,11 @@ inline auto Submatrix<MT,unaligned,false,true,CSAs...>::operator-=( const Matrix
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( SubType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SubType );
 
-   if( rows() != (~rhs).rows() || columns() != (~rhs).columns() ) {
+   if( rows() != (*rhs).rows() || columns() != (*rhs).columns() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
-   const SubType tmp( *this - (~rhs) );
+   const SubType tmp( *this - (*rhs) );
 
    if( !tryAssign( matrix_, tmp, row(), column() ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
@@ -1661,7 +1658,7 @@ inline auto Submatrix<MT,unaligned,false,true,CSAs...>::operator-=( const Matrix
 
    decltype(auto) left( derestrict( *this ) );
 
-   smpAssign( left, tmp );
+   smpAssign( left, transIf< IsSymmetric_v<This> >( tmp ) );
 
    BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
 
@@ -1700,25 +1697,24 @@ inline auto Submatrix<MT,unaligned,false,true,CSAs...>::operator%=( const Matrix
 
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SchurType );
 
-   if( rows() != (~rhs).rows() || columns() != (~rhs).columns() ) {
+   if( rows() != (*rhs).rows() || columns() != (*rhs).columns() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
-   if( !trySchurAssign( matrix_, ~rhs, row(), column() ) ) {
+   if( !trySchurAssign( matrix_, *rhs, row(), column() ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
    }
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( ( ( IsSymmetric_v<MT> || IsHermitian_v<MT> ) && hasOverlap() ) ||
-       (~rhs).canAlias( &matrix_ ) ) {
-      const SchurType tmp( *this % (~rhs) );
+   if( ( ( IsSymmetric_v<MT> || IsHermitian_v<MT> ) && hasOverlap() ) || (*rhs).canAlias( this ) ) {
+      const SchurType tmp( *this % (*rhs) );
       if( IsSparseMatrix_v<SchurType> )
          reset();
-      smpAssign( left, tmp );
+      smpAssign( left, transIf< IsSymmetric_v<This> >( tmp ) );
    }
    else {
-      smpSchurAssign( left, ~rhs );
+      smpSchurAssign( left, transIf< IsSymmetric_v<This> >( *rhs ) );
    }
 
    BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
@@ -1758,11 +1754,11 @@ inline auto Submatrix<MT,unaligned,false,true,CSAs...>::operator%=( const Matrix
 
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SchurType );
 
-   if( rows() != (~rhs).rows() || columns() != (~rhs).columns() ) {
+   if( rows() != (*rhs).rows() || columns() != (*rhs).columns() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
-   const SchurType tmp( *this % (~rhs) );
+   const SchurType tmp( *this % (*rhs) );
 
    if( !tryAssign( matrix_, tmp, row(), column() ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
@@ -1774,7 +1770,7 @@ inline auto Submatrix<MT,unaligned,false,true,CSAs...>::operator%=( const Matrix
       reset();
    }
 
-   smpAssign( left, tmp );
+   smpAssign( left, transIf< IsSymmetric_v<This> >( tmp ) );
 
    BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
 
@@ -1877,7 +1873,7 @@ template< typename MT       // Type of the dense matrix
         , size_t... CSAs >  // Compile time submatrix arguments
 inline size_t Submatrix<MT,unaligned,false,true,CSAs...>::capacity( size_t i ) const noexcept
 {
-   UNUSED_PARAMETER( i );
+   MAYBE_UNUSED( i );
 
    BLAZE_USER_ASSERT( i < rows(), "Invalid row access index" );
 
@@ -2200,7 +2196,7 @@ template< typename MT       // Type of the dense matrix
 template< typename Other >  // Data type of the foreign expression
 inline bool Submatrix<MT,unaligned,false,true,CSAs...>::canAlias( const Other* alias ) const noexcept
 {
-   return matrix_.isAliased( alias );
+   return matrix_.isAliased( &unview( *alias ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -2252,7 +2248,7 @@ template< typename MT       // Type of the dense matrix
 template< typename Other >  // Data type of the foreign expression
 inline bool Submatrix<MT,unaligned,false,true,CSAs...>::isAliased( const Other* alias ) const noexcept
 {
-   return matrix_.isAliased( alias );
+   return matrix_.isAliased( &unview( *alias ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -2419,7 +2415,6 @@ BLAZE_ALWAYS_INLINE typename Submatrix<MT,unaligned,false,true,CSAs...>::SIMDTyp
    BLAZE_INTERNAL_ASSERT( i < rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( j < columns(), "Invalid column access index" );
    BLAZE_INTERNAL_ASSERT( j + SIMDSIZE <= columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( j % SIMDSIZE == 0UL, "Invalid column access index" );
 
    return matrix_.loadu( row()+i, column()+j );
 }
@@ -2520,7 +2515,6 @@ BLAZE_ALWAYS_INLINE void
    BLAZE_INTERNAL_ASSERT( i < rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( j < columns(), "Invalid column access index" );
    BLAZE_INTERNAL_ASSERT( j + SIMDSIZE <= columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( j % SIMDSIZE == 0UL, "Invalid column access index" );
 
    matrix_.storeu( row()+i, column()+j, value );
 }
@@ -2584,19 +2578,19 @@ template< typename MT2 >    // Type of the right-hand side dense matrix
 inline auto Submatrix<MT,unaligned,false,true,CSAs...>::assign( const DenseMatrix<MT2,false>& rhs )
    -> DisableIf_t< VectorizedAssign_v<MT2> >
 {
-   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( columns() == (*rhs).columns(), "Invalid number of columns" );
 
-   const size_t jpos( columns() & size_t(-2) );
-   BLAZE_INTERNAL_ASSERT( ( columns() - ( columns() % 2UL ) ) == jpos, "Invalid end calculation" );
+   const size_t jpos( prevMultiple( columns(), 2UL ) );
+   BLAZE_INTERNAL_ASSERT( jpos <= columns(), "Invalid end calculation" );
 
    for( size_t i=0UL; i<rows(); ++i ) {
       for( size_t j=0UL; j<jpos; j+=2UL ) {
-         matrix_(row()+i,column()+j    ) = (~rhs)(i,j    );
-         matrix_(row()+i,column()+j+1UL) = (~rhs)(i,j+1UL);
+         matrix_(row()+i,column()+j    ) = (*rhs)(i,j    );
+         matrix_(row()+i,column()+j+1UL) = (*rhs)(i,j+1UL);
       }
       if( jpos < columns() ) {
-         matrix_(row()+i,column()+jpos) = (~rhs)(i,jpos);
+         matrix_(row()+i,column()+jpos) = (*rhs)(i,jpos);
       }
    }
 }
@@ -2624,27 +2618,27 @@ inline auto Submatrix<MT,unaligned,false,true,CSAs...>::assign( const DenseMatri
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
-   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( columns() == (*rhs).columns(), "Invalid number of columns" );
 
-   const size_t jpos( columns() & size_t(-SIMDSIZE) );
-   BLAZE_INTERNAL_ASSERT( ( columns() - ( columns() % (SIMDSIZE) ) ) == jpos, "Invalid end calculation" );
+   const size_t jpos( prevMultiple( columns(), SIMDSIZE ) );
+   BLAZE_INTERNAL_ASSERT( jpos <= columns(), "Invalid end calculation" );
 
    if( useStreaming && isAligned_ &&
        rows()*columns() > ( cacheSize / ( sizeof(ElementType) * 3UL ) ) &&
-       !(~rhs).isAliased( &matrix_ ) )
+       !(*rhs).isAliased( this ) )
    {
       for( size_t i=0UL; i<rows(); ++i )
       {
          size_t j( 0UL );
          Iterator left( begin(i) );
-         ConstIterator_t<MT2> right( (~rhs).begin(i) );
+         ConstIterator_t<MT2> right( (*rhs).begin(i) );
 
          for( ; j<jpos; j+=SIMDSIZE ) {
             left.stream( right.load() ); left += SIMDSIZE; right += SIMDSIZE;
          }
          for( ; j<columns(); ++j ) {
-            *left = *right;
+            *left = *right; ++left; ++right;
          }
       }
    }
@@ -2654,7 +2648,7 @@ inline auto Submatrix<MT,unaligned,false,true,CSAs...>::assign( const DenseMatri
       {
          size_t j( 0UL );
          Iterator left( begin(i) );
-         ConstIterator_t<MT2> right( (~rhs).begin(i) );
+         ConstIterator_t<MT2> right( (*rhs).begin(i) );
 
          for( ; (j+SIMDSIZE*3UL) < jpos; j+=SIMDSIZE*4UL ) {
             left.store( right.load() ); left += SIMDSIZE; right += SIMDSIZE;
@@ -2694,8 +2688,8 @@ inline void Submatrix<MT,unaligned,false,true,CSAs...>::assign( const DenseMatri
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT2 );
 
-   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( columns() == (*rhs).columns(), "Invalid number of columns" );
 
    constexpr size_t block( BLOCK_SIZE );
 
@@ -2705,7 +2699,7 @@ inline void Submatrix<MT,unaligned,false,true,CSAs...>::assign( const DenseMatri
          const size_t jend( ( columns()<(jj+block) )?( columns() ):( jj+block ) );
          for( size_t i=ii; i<iend; ++i ) {
             for( size_t j=jj; j<jend; ++j ) {
-               matrix_(row()+i,column()+j) = (~rhs)(i,j);
+               matrix_(row()+i,column()+j) = (*rhs)(i,j);
             }
          }
       }
@@ -2732,11 +2726,11 @@ template< typename MT       // Type of the dense matrix
 template< typename MT2 >    // Type of the right-hand side sparse matrix
 inline void Submatrix<MT,unaligned,false,true,CSAs...>::assign( const SparseMatrix<MT2,false>& rhs )
 {
-   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( columns() == (*rhs).columns(), "Invalid number of columns" );
 
    for( size_t i=0UL; i<rows(); ++i )
-      for( ConstIterator_t<MT2> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
+      for( ConstIterator_t<MT2> element=(*rhs).begin(i); element!=(*rhs).end(i); ++element )
          matrix_(row()+i,column()+element->index()) = element->value();
 }
 /*! \endcond */
@@ -2762,11 +2756,11 @@ inline void Submatrix<MT,unaligned,false,true,CSAs...>::assign( const SparseMatr
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT2 );
 
-   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( columns() == (*rhs).columns(), "Invalid number of columns" );
 
    for( size_t j=0UL; j<columns(); ++j )
-      for( ConstIterator_t<MT2> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
+      for( ConstIterator_t<MT2> element=(*rhs).begin(j); element!=(*rhs).end(j); ++element )
          matrix_(row()+element->index(),column()+j) = element->value();
 }
 /*! \endcond */
@@ -2791,24 +2785,24 @@ template< typename MT2 >    // Type of the right-hand side dense matrix
 inline auto Submatrix<MT,unaligned,false,true,CSAs...>::addAssign( const DenseMatrix<MT2,false>& rhs )
    -> DisableIf_t< VectorizedAddAssign_v<MT2> >
 {
-   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( columns() == (*rhs).columns(), "Invalid number of columns" );
 
-   const size_t jpos( columns() & size_t(-2) );
-   BLAZE_INTERNAL_ASSERT( ( columns() - ( columns() % 2UL ) ) == jpos, "Invalid end calculation" );
+   const size_t jpos( prevMultiple( columns(), 2UL ) );
+   BLAZE_INTERNAL_ASSERT( jpos <= columns(), "Invalid end calculation" );
 
    for( size_t i=0UL; i<rows(); ++i )
    {
       if( IsDiagonal_v<MT2> ) {
-         matrix_(row()+i,column()+i) += (~rhs)(i,i);
+         matrix_(row()+i,column()+i) += (*rhs)(i,i);
       }
       else {
          for( size_t j=0UL; j<jpos; j+=2UL ) {
-            matrix_(row()+i,column()+j    ) += (~rhs)(i,j    );
-            matrix_(row()+i,column()+j+1UL) += (~rhs)(i,j+1UL);
+            matrix_(row()+i,column()+j    ) += (*rhs)(i,j    );
+            matrix_(row()+i,column()+j+1UL) += (*rhs)(i,j+1UL);
          }
          if( jpos < columns() ) {
-            matrix_(row()+i,column()+jpos) += (~rhs)(i,jpos);
+            matrix_(row()+i,column()+jpos) += (*rhs)(i,jpos);
          }
       }
    }
@@ -2837,25 +2831,25 @@ inline auto Submatrix<MT,unaligned,false,true,CSAs...>::addAssign( const DenseMa
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
-   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( columns() == (*rhs).columns(), "Invalid number of columns" );
 
    for( size_t i=0UL; i<rows(); ++i )
    {
       const size_t jbegin( ( IsUpper_v<MT2> )
-                           ?( ( IsStrictlyUpper_v<MT2> ? i+1UL : i ) & size_t(-SIMDSIZE) )
+                           ?( prevMultiple( ( IsStrictlyUpper_v<MT2> ? i+1UL : i ), SIMDSIZE ) )
                            :( 0UL ) );
       const size_t jend  ( ( IsLower_v<MT2> )
                            ?( IsStrictlyLower_v<MT2> ? i : i+1UL )
                            :( columns() ) );
       BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
-      const size_t jpos( jend & size_t(-SIMDSIZE) );
-      BLAZE_INTERNAL_ASSERT( ( jend - ( jend % (SIMDSIZE) ) ) == jpos, "Invalid end calculation" );
+      const size_t jpos( prevMultiple( jend, SIMDSIZE ) );
+      BLAZE_INTERNAL_ASSERT( jpos <= jend, "Invalid end calculation" );
 
       size_t j( jbegin );
       Iterator left( begin(i) + jbegin );
-      ConstIterator_t<MT2> right( (~rhs).begin(i) + jbegin );
+      ConstIterator_t<MT2> right( (*rhs).begin(i) + jbegin );
 
       for( ; (j+SIMDSIZE*3UL) < jpos; j+=SIMDSIZE*4UL ) {
          left.store( left.load() + right.load() ); left += SIMDSIZE; right += SIMDSIZE;
@@ -2894,8 +2888,8 @@ inline void Submatrix<MT,unaligned,false,true,CSAs...>::addAssign( const DenseMa
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT2 );
 
-   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( columns() == (*rhs).columns(), "Invalid number of columns" );
 
    constexpr size_t block( BLOCK_SIZE );
 
@@ -2905,7 +2899,7 @@ inline void Submatrix<MT,unaligned,false,true,CSAs...>::addAssign( const DenseMa
          const size_t jend( ( columns()<(jj+block) )?( columns() ):( jj+block ) );
          for( size_t i=ii; i<iend; ++i ) {
             for( size_t j=jj; j<jend; ++j ) {
-               matrix_(row()+i,column()+j) += (~rhs)(i,j);
+               matrix_(row()+i,column()+j) += (*rhs)(i,j);
             }
          }
       }
@@ -2932,11 +2926,11 @@ template< typename MT       // Type of the dense matrix
 template< typename MT2 >    // Type of the right-hand side sparse matrix
 inline void Submatrix<MT,unaligned,false,true,CSAs...>::addAssign( const SparseMatrix<MT2,false>& rhs )
 {
-   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( columns() == (*rhs).columns(), "Invalid number of columns" );
 
    for( size_t i=0UL; i<rows(); ++i )
-      for( ConstIterator_t<MT2> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
+      for( ConstIterator_t<MT2> element=(*rhs).begin(i); element!=(*rhs).end(i); ++element )
          matrix_(row()+i,column()+element->index()) += element->value();
 }
 /*! \endcond */
@@ -2962,11 +2956,11 @@ inline void Submatrix<MT,unaligned,false,true,CSAs...>::addAssign( const SparseM
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT2 );
 
-   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( columns() == (*rhs).columns(), "Invalid number of columns" );
 
    for( size_t j=0UL; j<columns(); ++j )
-      for( ConstIterator_t<MT2> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
+      for( ConstIterator_t<MT2> element=(*rhs).begin(j); element!=(*rhs).end(j); ++element )
          matrix_(row()+element->index(),column()+j) += element->value();
 }
 /*! \endcond */
@@ -2991,24 +2985,24 @@ template< typename MT2 >    // Type of the right-hand side dense matrix
 inline auto Submatrix<MT,unaligned,false,true,CSAs...>::subAssign( const DenseMatrix<MT2,false>& rhs )
    -> DisableIf_t< VectorizedSubAssign_v<MT2> >
 {
-   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( columns() == (*rhs).columns(), "Invalid number of columns" );
 
-   const size_t jpos( columns() & size_t(-2) );
-   BLAZE_INTERNAL_ASSERT( ( columns() - ( columns() % 2UL ) ) == jpos, "Invalid end calculation" );
+   const size_t jpos( prevMultiple( columns(), 2UL ) );
+   BLAZE_INTERNAL_ASSERT( jpos <= columns(), "Invalid end calculation" );
 
    for( size_t i=0UL; i<rows(); ++i )
    {
       if( IsDiagonal_v<MT2> ) {
-         matrix_(row()+i,column()+i) -= (~rhs)(i,i);
+         matrix_(row()+i,column()+i) -= (*rhs)(i,i);
       }
       else {
          for( size_t j=0UL; j<jpos; j+=2UL ) {
-            matrix_(row()+i,column()+j    ) -= (~rhs)(i,j    );
-            matrix_(row()+i,column()+j+1UL) -= (~rhs)(i,j+1UL);
+            matrix_(row()+i,column()+j    ) -= (*rhs)(i,j    );
+            matrix_(row()+i,column()+j+1UL) -= (*rhs)(i,j+1UL);
          }
          if( jpos < columns() ) {
-            matrix_(row()+i,column()+jpos) -= (~rhs)(i,jpos);
+            matrix_(row()+i,column()+jpos) -= (*rhs)(i,jpos);
          }
       }
    }
@@ -3037,25 +3031,25 @@ inline auto Submatrix<MT,unaligned,false,true,CSAs...>::subAssign( const DenseMa
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
-   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( columns() == (*rhs).columns(), "Invalid number of columns" );
 
    for( size_t i=0UL; i<rows(); ++i )
    {
       const size_t jbegin( ( IsUpper_v<MT2> )
-                           ?( ( IsStrictlyUpper_v<MT2> ? i+1UL : i ) & size_t(-SIMDSIZE) )
+                           ?( prevMultiple( ( IsStrictlyUpper_v<MT2> ? i+1UL : i ), SIMDSIZE ) )
                            :( 0UL ) );
       const size_t jend  ( ( IsLower_v<MT2> )
                            ?( IsStrictlyLower_v<MT2> ? i : i+1UL )
                            :( columns() ) );
       BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
-      const size_t jpos( jend & size_t(-SIMDSIZE) );
-      BLAZE_INTERNAL_ASSERT( ( jend - ( jend % (SIMDSIZE) ) ) == jpos, "Invalid end calculation" );
+      const size_t jpos( prevMultiple( jend, SIMDSIZE ) );
+      BLAZE_INTERNAL_ASSERT( jpos <= jend, "Invalid end calculation" );
 
       size_t j( jbegin );
       Iterator left( begin(i) + jbegin );
-      ConstIterator_t<MT2> right( (~rhs).begin(i) + jbegin );
+      ConstIterator_t<MT2> right( (*rhs).begin(i) + jbegin );
 
       for( ; (j+SIMDSIZE*3UL) < jpos; j+=SIMDSIZE*4UL ) {
          left.store( left.load() - right.load() ); left += SIMDSIZE; right += SIMDSIZE;
@@ -3094,8 +3088,8 @@ inline void Submatrix<MT,unaligned,false,true,CSAs...>::subAssign( const DenseMa
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT2 );
 
-   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( columns() == (*rhs).columns(), "Invalid number of columns" );
 
    constexpr size_t block( BLOCK_SIZE );
 
@@ -3105,7 +3099,7 @@ inline void Submatrix<MT,unaligned,false,true,CSAs...>::subAssign( const DenseMa
          const size_t jend( ( columns()<(jj+block) )?( columns() ):( jj+block ) );
          for( size_t i=ii; i<iend; ++i ) {
             for( size_t j=jj; j<jend; ++j ) {
-               matrix_(row()+i,column()+j) -= (~rhs)(i,j);
+               matrix_(row()+i,column()+j) -= (*rhs)(i,j);
             }
          }
       }
@@ -3132,11 +3126,11 @@ template< typename MT       // Type of the dense matrix
 template< typename MT2 >    // Type of the right-hand side sparse matrix
 inline void Submatrix<MT,unaligned,false,true,CSAs...>::subAssign( const SparseMatrix<MT2,false>& rhs )
 {
-   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( columns() == (*rhs).columns(), "Invalid number of columns" );
 
    for( size_t i=0UL; i<rows(); ++i )
-      for( ConstIterator_t<MT2> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
+      for( ConstIterator_t<MT2> element=(*rhs).begin(i); element!=(*rhs).end(i); ++element )
          matrix_(row()+i,column()+element->index()) -= element->value();
 }
 /*! \endcond */
@@ -3162,11 +3156,11 @@ inline void Submatrix<MT,unaligned,false,true,CSAs...>::subAssign( const SparseM
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT2 );
 
-   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( columns() == (*rhs).columns(), "Invalid number of columns" );
 
    for( size_t j=0UL; j<columns(); ++j )
-      for( ConstIterator_t<MT2> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
+      for( ConstIterator_t<MT2> element=(*rhs).begin(j); element!=(*rhs).end(j); ++element )
          matrix_(row()+element->index(),column()+j) -= element->value();
 }
 /*! \endcond */
@@ -3191,19 +3185,19 @@ template< typename MT2 >    // Type of the right-hand side dense matrix
 inline auto Submatrix<MT,unaligned,false,true,CSAs...>::schurAssign( const DenseMatrix<MT2,false>& rhs )
    -> DisableIf_t< VectorizedSchurAssign_v<MT2> >
 {
-   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( columns() == (*rhs).columns(), "Invalid number of columns" );
 
-   const size_t jpos( columns() & size_t(-2) );
-   BLAZE_INTERNAL_ASSERT( ( columns() - ( columns() % 2UL ) ) == jpos, "Invalid end calculation" );
+   const size_t jpos( prevMultiple( columns(), 2UL ) );
+   BLAZE_INTERNAL_ASSERT( jpos <= columns(), "Invalid end calculation" );
 
    for( size_t i=0UL; i<rows(); ++i ) {
       for( size_t j=0UL; j<jpos; j+=2UL ) {
-         matrix_(row()+i,column()+j    ) *= (~rhs)(i,j    );
-         matrix_(row()+i,column()+j+1UL) *= (~rhs)(i,j+1UL);
+         matrix_(row()+i,column()+j    ) *= (*rhs)(i,j    );
+         matrix_(row()+i,column()+j+1UL) *= (*rhs)(i,j+1UL);
       }
       if( jpos < columns() ) {
-         matrix_(row()+i,column()+jpos) *= (~rhs)(i,jpos);
+         matrix_(row()+i,column()+jpos) *= (*rhs)(i,jpos);
       }
    }
 }
@@ -3231,17 +3225,17 @@ inline auto Submatrix<MT,unaligned,false,true,CSAs...>::schurAssign( const Dense
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
-   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( columns() == (*rhs).columns(), "Invalid number of columns" );
 
    for( size_t i=0UL; i<rows(); ++i )
    {
-      const size_t jpos( columns() & size_t(-SIMDSIZE) );
-      BLAZE_INTERNAL_ASSERT( ( columns() - ( columns() % (SIMDSIZE) ) ) == jpos, "Invalid end calculation" );
+      const size_t jpos( prevMultiple( columns(), SIMDSIZE ) );
+      BLAZE_INTERNAL_ASSERT( jpos <= columns(), "Invalid end calculation" );
 
       size_t j( 0UL );
       Iterator left( begin(i) );
-      ConstIterator_t<MT2> right( (~rhs).begin(i) );
+      ConstIterator_t<MT2> right( (*rhs).begin(i) );
 
       for( ; (j+SIMDSIZE*3UL) < jpos; j+=SIMDSIZE*4UL ) {
          left.store( left.load() * right.load() ); left += SIMDSIZE; right += SIMDSIZE;
@@ -3280,8 +3274,8 @@ inline void Submatrix<MT,unaligned,false,true,CSAs...>::schurAssign( const Dense
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT2 );
 
-   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( columns() == (*rhs).columns(), "Invalid number of columns" );
 
    constexpr size_t block( BLOCK_SIZE );
 
@@ -3291,7 +3285,7 @@ inline void Submatrix<MT,unaligned,false,true,CSAs...>::schurAssign( const Dense
          const size_t jend( ( columns()<(jj+block) )?( columns() ):( jj+block ) );
          for( size_t i=ii; i<iend; ++i ) {
             for( size_t j=jj; j<jend; ++j ) {
-               matrix_(row()+i,column()+j) *= (~rhs)(i,j);
+               matrix_(row()+i,column()+j) *= (*rhs)(i,j);
             }
          }
       }
@@ -3320,14 +3314,14 @@ inline void Submatrix<MT,unaligned,false,true,CSAs...>::schurAssign( const Spars
 {
    using blaze::reset;
 
-   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( columns() == (*rhs).columns(), "Invalid number of columns" );
 
    for( size_t i=0UL; i<rows(); ++i )
    {
       size_t j( 0UL );
 
-      for( ConstIterator_t<MT2> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element ) {
+      for( ConstIterator_t<MT2> element=(*rhs).begin(i); element!=(*rhs).end(i); ++element ) {
          for( ; j<element->index(); ++j )
             reset( matrix_(row()+i,column()+j) );
          matrix_(row()+i,column()+j) *= element->value();
@@ -3364,14 +3358,14 @@ inline void Submatrix<MT,unaligned,false,true,CSAs...>::schurAssign( const Spars
 
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT2 );
 
-   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( columns() == (*rhs).columns(), "Invalid number of columns" );
 
    for( size_t j=0UL; j<columns(); ++j )
    {
       size_t i( 0UL );
 
-      for( ConstIterator_t<MT2> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element ) {
+      for( ConstIterator_t<MT2> element=(*rhs).begin(j); element!=(*rhs).end(j); ++element ) {
          for( ; i<element->index(); ++i )
             reset( matrix_(row()+i,column()+j) );
          matrix_(row()+i,column()+j) *= element->value();
@@ -3431,7 +3425,9 @@ class Submatrix<MT,unaligned,true,true,CSAs...>
    //! Type of this Submatrix instance.
    using This = Submatrix<MT,unaligned,true,true,CSAs...>;
 
-   using BaseType      = DenseMatrix<This,true>;        //!< Base type of this Submatrix instance.
+   //! Base type of this Submatrix instance.
+   using BaseType = View< DenseMatrix<This,true> >;
+
    using ViewedType    = MT;                            //!< The type viewed by this Submatrix instance.
    using ResultType    = SubmatrixTrait_t<MT,CSAs...>;  //!< Result type for expression template evaluations.
    using OppositeType  = OppositeType_t<ResultType>;    //!< Result type with opposite storage order for expression template evaluations.
@@ -3666,7 +3662,12 @@ class Submatrix<MT,unaligned,true,true,CSAs...>
       // result in erroneous results and/or in compilation errors.
       */
       inline void store( const SIMDType& value ) const {
-         storeu( value );
+         if( isAligned_ ) {
+            storea( value );
+         }
+         else {
+            storeu( value );
+         }
       }
       //*******************************************************************************************
 
@@ -3698,12 +3699,7 @@ class Submatrix<MT,unaligned,true,true,CSAs...>
       // might result in erroneous results and/or in compilation errors.
       */
       inline void storeu( const SIMDType& value ) const {
-         if( isAligned_ ) {
-            iterator_.storea( value );
-         }
-         else {
-            iterator_.storeu( value );
-         }
+         iterator_.storeu( value );
       }
       //*******************************************************************************************
 
@@ -3878,6 +3874,9 @@ class Submatrix<MT,unaligned,true,true,CSAs...>
 
    //! Compilation switch for the expression template assignment strategy.
    static constexpr bool smpAssignable = MT::smpAssignable;
+
+   //! Compilation switch for the expression template evaluation strategy.
+   static constexpr bool compileTimeArgs = DataType::compileTimeArgs;
    //**********************************************************************************************
 
    //**Constructors********************************************************************************
@@ -3998,9 +3997,7 @@ class Submatrix<MT,unaligned,true,true,CSAs...>
    //! Helper variable template for the explicit application of the SFINAE principle.
    template< typename MT2 >
    static constexpr bool VectorizedAddAssign_v =
-      ( useOptimizedKernels &&
-        simdEnabled && MT2::simdEnabled &&
-        IsSIMDCombinable_v< ElementType, ElementType_t<MT2> > &&
+      ( VectorizedAssign_v<MT2> &&
         HasSIMDAdd_v< ElementType, ElementType_t<MT2> > &&
         !IsDiagonal_v<MT2> );
    //**********************************************************************************************
@@ -4009,9 +4006,7 @@ class Submatrix<MT,unaligned,true,true,CSAs...>
    //! Helper variable template for the explicit application of the SFINAE principle.
    template< typename MT2 >
    static constexpr bool VectorizedSubAssign_v =
-      ( useOptimizedKernels &&
-        simdEnabled && MT2::simdEnabled &&
-        IsSIMDCombinable_v< ElementType, ElementType_t<MT2> > &&
+      ( VectorizedAssign_v<MT2> &&
         HasSIMDSub_v< ElementType, ElementType_t<MT2> > &&
         !IsDiagonal_v<MT2> );
    //**********************************************************************************************
@@ -4020,9 +4015,7 @@ class Submatrix<MT,unaligned,true,true,CSAs...>
    //! Helper variable template for the explicit application of the SFINAE principle.
    template< typename MT2 >
    static constexpr bool VectorizedSchurAssign_v =
-      ( useOptimizedKernels &&
-        simdEnabled && MT2::simdEnabled &&
-        IsSIMDCombinable_v< ElementType, ElementType_t<MT2> > &&
+      ( VectorizedAssign_v<MT2> &&
         HasSIMDMult_v< ElementType, ElementType_t<MT2> > );
    //**********************************************************************************************
 
@@ -4168,10 +4161,11 @@ template< typename... RSAs >  // Runtime submatrix arguments
 inline Submatrix<MT,unaligned,true,true,CSAs...>::Submatrix( MT& matrix, RSAs... args )
    : DataType  ( args... )  // Base class initialization
    , matrix_   ( matrix  )  // The matrix containing the submatrix
-   , isAligned_( simdEnabled && matrix.data() != nullptr && checkAlignment( data() ) &&
-                 ( columns() < 2UL || ( matrix.spacing() & size_t(-SIMDSIZE) ) == 0UL ) )
+   , isAligned_( simdEnabled && IsContiguous_v<MT> &&
+                 matrix.data() != nullptr && checkAlignment( data() ) &&
+                 ( columns() < 2UL || ( matrix.spacing() % SIMDSIZE ) == 0UL ) )
 {
-   if( !Contains_v< TypeList<RSAs...>, Unchecked > ) {
+   if( isChecked( args... ) ) {
       if( ( row() + rows() > matrix_.rows() ) || ( column() + columns() > matrix_.columns() ) ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid submatrix specification" );
       }
@@ -4640,7 +4634,7 @@ inline Submatrix<MT,unaligned,true,true,CSAs...>&
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( rhs.canAlias( &matrix_ ) ) {
+   if( rhs.canAlias( this ) ) {
       const ResultType tmp( rhs );
       smpAssign( left, tmp );
    }
@@ -4680,12 +4674,12 @@ inline Submatrix<MT,unaligned,true,true,CSAs...>&
 {
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_t<MT2> );
 
-   if( rows() != (~rhs).rows() || columns() != (~rhs).columns() ) {
+   if( rows() != (*rhs).rows() || columns() != (*rhs).columns() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
    using Right = If_t< IsRestricted_v<MT>, CompositeType_t<MT2>, const MT2& >;
-   Right right( ~rhs );
+   Right right( *rhs );
 
    if( !tryAssign( matrix_, right, row(), column() ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
@@ -4693,16 +4687,16 @@ inline Submatrix<MT,unaligned,true,true,CSAs...>&
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( IsReference_v<Right> && right.canAlias( &matrix_ ) ) {
+   if( IsReference_v<Right> && right.canAlias( this ) ) {
       const ResultType_t<MT2> tmp( right );
       if( IsSparseMatrix_v<MT2> )
          reset();
-      smpAssign( left, tmp );
+      smpAssign( left, transIf< IsSymmetric_v<This> >( tmp ) );
    }
    else {
       if( IsSparseMatrix_v<MT2> )
          reset();
-      smpAssign( left, right );
+      smpAssign( left, transIf< IsSymmetric_v<This> >( right ) );
    }
 
    BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
@@ -4743,23 +4737,22 @@ inline auto Submatrix<MT,unaligned,true,true,CSAs...>::operator+=( const Matrix<
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( AddType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( AddType );
 
-   if( rows() != (~rhs).rows() || columns() != (~rhs).columns() ) {
+   if( rows() != (*rhs).rows() || columns() != (*rhs).columns() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
-   if( !tryAddAssign( matrix_, ~rhs, row(), column() ) ) {
+   if( !tryAddAssign( matrix_, *rhs, row(), column() ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
    }
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( ( ( IsSymmetric_v<MT> || IsHermitian_v<MT> ) && hasOverlap() ) ||
-       (~rhs).canAlias( &matrix_ ) ) {
-      const AddType tmp( *this + (~rhs) );
-      smpAssign( left, tmp );
+   if( ( ( IsSymmetric_v<MT> || IsHermitian_v<MT> ) && hasOverlap() ) || (*rhs).canAlias( this ) ) {
+      const AddType tmp( *this + (*rhs) );
+      smpAssign( left, transIf< IsSymmetric_v<This> >( tmp ) );
    }
    else {
-      smpAddAssign( left, ~rhs );
+      smpAddAssign( left, transIf< IsSymmetric_v<This> >( *rhs ) );
    }
 
    BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
@@ -4800,11 +4793,11 @@ inline auto Submatrix<MT,unaligned,true,true,CSAs...>::operator+=( const Matrix<
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( AddType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( AddType );
 
-   if( rows() != (~rhs).rows() || columns() != (~rhs).columns() ) {
+   if( rows() != (*rhs).rows() || columns() != (*rhs).columns() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
-   const AddType tmp( *this + (~rhs) );
+   const AddType tmp( *this + (*rhs) );
 
    if( !tryAssign( matrix_, tmp, row(), column() ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
@@ -4812,7 +4805,7 @@ inline auto Submatrix<MT,unaligned,true,true,CSAs...>::operator+=( const Matrix<
 
    decltype(auto) left( derestrict( *this ) );
 
-   smpAssign( left, tmp );
+   smpAssign( left, transIf< IsSymmetric_v<This> >( tmp ) );
 
    BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
 
@@ -4852,23 +4845,22 @@ inline auto Submatrix<MT,unaligned,true,true,CSAs...>::operator-=( const Matrix<
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( SubType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SubType );
 
-   if( rows() != (~rhs).rows() || columns() != (~rhs).columns() ) {
+   if( rows() != (*rhs).rows() || columns() != (*rhs).columns() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
-   if( !trySubAssign( matrix_, ~rhs, row(), column() ) ) {
+   if( !trySubAssign( matrix_, *rhs, row(), column() ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
    }
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( ( ( IsSymmetric_v<MT> || IsHermitian_v<MT> ) && hasOverlap() ) ||
-       (~rhs).canAlias( &matrix_ ) ) {
-      const SubType tmp( *this - (~rhs ) );
-      smpAssign( left, tmp );
+   if( ( ( IsSymmetric_v<MT> || IsHermitian_v<MT> ) && hasOverlap() ) || (*rhs).canAlias( this ) ) {
+      const SubType tmp( *this - (*rhs ) );
+      smpAssign( left, transIf< IsSymmetric_v<This> >( tmp ) );
    }
    else {
-      smpSubAssign( left, ~rhs );
+      smpSubAssign( left, transIf< IsSymmetric_v<This> >( *rhs ) );
    }
 
    BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
@@ -4909,11 +4901,11 @@ inline auto Submatrix<MT,unaligned,true,true,CSAs...>::operator-=( const Matrix<
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( SubType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SubType );
 
-   if( rows() != (~rhs).rows() || columns() != (~rhs).columns() ) {
+   if( rows() != (*rhs).rows() || columns() != (*rhs).columns() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
-   const SubType tmp( *this - (~rhs) );
+   const SubType tmp( *this - (*rhs) );
 
    if( !tryAssign( matrix_, tmp, row(), column() ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
@@ -4921,7 +4913,7 @@ inline auto Submatrix<MT,unaligned,true,true,CSAs...>::operator-=( const Matrix<
 
    decltype(auto) left( derestrict( *this ) );
 
-   smpAssign( left, tmp );
+   smpAssign( left, transIf< IsSymmetric_v<This> >( tmp ) );
 
    BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
 
@@ -4960,25 +4952,24 @@ inline auto Submatrix<MT,unaligned,true,true,CSAs...>::operator%=( const Matrix<
 
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SchurType );
 
-   if( rows() != (~rhs).rows() || columns() != (~rhs).columns() ) {
+   if( rows() != (*rhs).rows() || columns() != (*rhs).columns() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
-   if( !trySchurAssign( matrix_, ~rhs, row(), column() ) ) {
+   if( !trySchurAssign( matrix_, *rhs, row(), column() ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
    }
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( ( ( IsSymmetric_v<MT> || IsHermitian_v<MT> ) && hasOverlap() ) ||
-       (~rhs).canAlias( &matrix_ ) ) {
-      const SchurType tmp( *this % (~rhs) );
+   if( ( ( IsSymmetric_v<MT> || IsHermitian_v<MT> ) && hasOverlap() ) || (*rhs).canAlias( this ) ) {
+      const SchurType tmp( *this % (*rhs) );
       if( IsSparseMatrix_v<SchurType> )
          reset();
-      smpAssign( left, tmp );
+      smpAssign( left, transIf< IsSymmetric_v<This> >( tmp ) );
    }
    else {
-      smpSchurAssign( left, ~rhs );
+      smpSchurAssign( left, transIf< IsSymmetric_v<This> >( *rhs ) );
    }
 
    BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
@@ -5018,11 +5009,11 @@ inline auto Submatrix<MT,unaligned,true,true,CSAs...>::operator%=( const Matrix<
 
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SchurType );
 
-   if( rows() != (~rhs).rows() || columns() != (~rhs).columns() ) {
+   if( rows() != (*rhs).rows() || columns() != (*rhs).columns() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
-   const SchurType tmp( *this % (~rhs) );
+   const SchurType tmp( *this % (*rhs) );
 
    if( !tryAssign( matrix_, tmp, row(), column() ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
@@ -5034,7 +5025,7 @@ inline auto Submatrix<MT,unaligned,true,true,CSAs...>::operator%=( const Matrix<
       reset();
    }
 
-   smpAssign( left, tmp );
+   smpAssign( left, transIf< IsSymmetric_v<This> >( tmp ) );
 
    BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
 
@@ -5130,7 +5121,7 @@ template< typename MT       // Type of the dense matrix
         , size_t... CSAs >  // Compile time submatrix arguments
 inline size_t Submatrix<MT,unaligned,true,true,CSAs...>::capacity( size_t j ) const noexcept
 {
-   UNUSED_PARAMETER( j );
+   MAYBE_UNUSED( j );
 
    BLAZE_USER_ASSERT( j < columns(), "Invalid column access index" );
 
@@ -5443,7 +5434,7 @@ template< typename MT       // Type of the dense matrix
 template< typename Other >  // Data type of the foreign expression
 inline bool Submatrix<MT,unaligned,true,true,CSAs...>::canAlias( const Other* alias ) const noexcept
 {
-   return matrix_.isAliased( alias );
+   return matrix_.isAliased( &unview( *alias ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -5495,7 +5486,7 @@ template< typename MT       // Type of the dense matrix
 template< typename Other >  // Data type of the foreign expression
 inline bool Submatrix<MT,unaligned,true,true,CSAs...>::isAliased( const Other* alias ) const noexcept
 {
-   return matrix_.isAliased( alias );
+   return matrix_.isAliased( &unview( *alias ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -5658,7 +5649,6 @@ BLAZE_ALWAYS_INLINE typename Submatrix<MT,unaligned,true,true,CSAs...>::SIMDType
 
    BLAZE_INTERNAL_ASSERT( i < rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( i + SIMDSIZE <= rows(), "Invalid row access index" );
-   BLAZE_INTERNAL_ASSERT( i % SIMDSIZE == 0UL, "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( j < columns(), "Invalid column access index" );
 
    return matrix_.loadu( row()+i, column()+j );
@@ -5756,7 +5746,6 @@ BLAZE_ALWAYS_INLINE void
 
    BLAZE_INTERNAL_ASSERT( i < rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( i + SIMDSIZE <= rows(), "Invalid row access index" );
-   BLAZE_INTERNAL_ASSERT( i % SIMDSIZE == 0UL, "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( j < columns(), "Invalid column access index" );
 
    matrix_.storeu( row()+i, column()+j, value );
@@ -5821,19 +5810,19 @@ template< typename MT2 >    // Type of the right-hand side dense matrix
 inline auto Submatrix<MT,unaligned,true,true,CSAs...>::assign( const DenseMatrix<MT2,true>& rhs )
    -> DisableIf_t< VectorizedAssign_v<MT2> >
 {
-   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( columns() == (*rhs).columns(), "Invalid number of columns" );
 
-   const size_t ipos( rows() & size_t(-2) );
-   BLAZE_INTERNAL_ASSERT( ( rows() - ( rows() % 2UL ) ) == ipos, "Invalid end calculation" );
+   const size_t ipos( prevMultiple( rows(), 2UL ) );
+   BLAZE_INTERNAL_ASSERT( ipos <= rows(), "Invalid end calculation" );
 
    for( size_t j=0UL; j<columns(); ++j ) {
       for( size_t i=0UL; i<ipos; i+=2UL ) {
-         matrix_(row()+i    ,column()+j) = (~rhs)(i    ,j);
-         matrix_(row()+i+1UL,column()+j) = (~rhs)(i+1UL,j);
+         matrix_(row()+i    ,column()+j) = (*rhs)(i    ,j);
+         matrix_(row()+i+1UL,column()+j) = (*rhs)(i+1UL,j);
       }
       if( ipos < rows() ) {
-         matrix_(row()+ipos,column()+j) = (~rhs)(ipos,j);
+         matrix_(row()+ipos,column()+j) = (*rhs)(ipos,j);
       }
    }
 }
@@ -5861,21 +5850,21 @@ inline auto Submatrix<MT,unaligned,true,true,CSAs...>::assign( const DenseMatrix
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
-   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( columns() == (*rhs).columns(), "Invalid number of columns" );
 
-   const size_t ipos( rows() & size_t(-SIMDSIZE) );
-   BLAZE_INTERNAL_ASSERT( ( rows() - ( rows() % (SIMDSIZE) ) ) == ipos, "Invalid end calculation" );
+   const size_t ipos( prevMultiple( rows(), SIMDSIZE ) );
+   BLAZE_INTERNAL_ASSERT( ipos <= rows(), "Invalid end calculation" );
 
    if( useStreaming && isAligned_ &&
        rows()*columns() > ( cacheSize / ( sizeof(ElementType) * 3UL ) ) &&
-       !(~rhs).isAliased( &matrix_ ) )
+       !(*rhs).isAliased( this ) )
    {
       for( size_t j=0UL; j<columns(); ++j )
       {
          size_t i( 0UL );
          Iterator left( begin(j) );
-         ConstIterator_t<MT2> right( (~rhs).begin(j) );
+         ConstIterator_t<MT2> right( (*rhs).begin(j) );
 
          for( ; i<ipos; i+=SIMDSIZE ) {
             left.stream( right.load() ); left += SIMDSIZE; right += SIMDSIZE;
@@ -5891,7 +5880,7 @@ inline auto Submatrix<MT,unaligned,true,true,CSAs...>::assign( const DenseMatrix
       {
          size_t i( 0UL );
          Iterator left( begin(j) );
-         ConstIterator_t<MT2> right( (~rhs).begin(j) );
+         ConstIterator_t<MT2> right( (*rhs).begin(j) );
 
          for( ; (i+SIMDSIZE*3UL) < ipos; i+=SIMDSIZE*4UL ) {
             left.store( right.load() ); left += SIMDSIZE; right += SIMDSIZE;
@@ -5931,8 +5920,8 @@ inline void Submatrix<MT,unaligned,true,true,CSAs...>::assign( const DenseMatrix
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT2 );
 
-   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( columns() == (*rhs).columns(), "Invalid number of columns" );
 
    constexpr size_t block( BLOCK_SIZE );
 
@@ -5942,7 +5931,7 @@ inline void Submatrix<MT,unaligned,true,true,CSAs...>::assign( const DenseMatrix
          const size_t iend( ( rows()<(ii+block) )?( rows() ):( ii+block ) );
          for( size_t j=jj; j<jend; ++j ) {
             for( size_t i=ii; i<iend; ++i ) {
-               matrix_(row()+i,column()+j) = (~rhs)(i,j);
+               matrix_(row()+i,column()+j) = (*rhs)(i,j);
             }
          }
       }
@@ -5969,11 +5958,11 @@ template< typename MT       // Type of the dense matrix
 template< typename MT2 >    // Type of the right-hand side sparse matrix
 inline void Submatrix<MT,unaligned,true,true,CSAs...>::assign( const SparseMatrix<MT2,true>& rhs )
 {
-   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( columns() == (*rhs).columns(), "Invalid number of columns" );
 
    for( size_t j=0UL; j<columns(); ++j )
-      for( ConstIterator_t<MT2> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
+      for( ConstIterator_t<MT2> element=(*rhs).begin(j); element!=(*rhs).end(j); ++element )
          matrix_(row()+element->index(),column()+j) = element->value();
 }
 /*! \endcond */
@@ -5999,11 +5988,11 @@ inline void Submatrix<MT,unaligned,true,true,CSAs...>::assign( const SparseMatri
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT2 );
 
-   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( columns() == (*rhs).columns(), "Invalid number of columns" );
 
    for( size_t i=0UL; i<rows(); ++i )
-      for( ConstIterator_t<MT2> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
+      for( ConstIterator_t<MT2> element=(*rhs).begin(i); element!=(*rhs).end(i); ++element )
          matrix_(row()+i,column()+element->index()) = element->value();
 }
 /*! \endcond */
@@ -6028,24 +6017,24 @@ template< typename MT2 >    // Type of the right-hand side dense matrix
 inline auto Submatrix<MT,unaligned,true,true,CSAs...>::addAssign( const DenseMatrix<MT2,true>& rhs )
    -> DisableIf_t< VectorizedAddAssign_v<MT2> >
 {
-   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( columns() == (*rhs).columns(), "Invalid number of columns" );
 
-   const size_t ipos( rows() & size_t(-2) );
-   BLAZE_INTERNAL_ASSERT( ( rows() - ( rows() % 2UL ) ) == ipos, "Invalid end calculation" );
+   const size_t ipos( prevMultiple( rows(), 2UL ) );
+   BLAZE_INTERNAL_ASSERT( ipos <= rows(), "Invalid end calculation" );
 
    for( size_t j=0UL; j<columns(); ++j )
    {
       if( IsDiagonal_v<MT2> ) {
-         matrix_(row()+j,column()+j) += (~rhs)(j,j);
+         matrix_(row()+j,column()+j) += (*rhs)(j,j);
       }
       else {
          for( size_t i=0UL; i<ipos; i+=2UL ) {
-            matrix_(row()+i    ,column()+j) += (~rhs)(i    ,j);
-            matrix_(row()+i+1UL,column()+j) += (~rhs)(i+1UL,j);
+            matrix_(row()+i    ,column()+j) += (*rhs)(i    ,j);
+            matrix_(row()+i+1UL,column()+j) += (*rhs)(i+1UL,j);
          }
          if( ipos < rows() ) {
-            matrix_(row()+ipos,column()+j) += (~rhs)(ipos,j);
+            matrix_(row()+ipos,column()+j) += (*rhs)(ipos,j);
          }
       }
    }
@@ -6074,25 +6063,25 @@ inline auto Submatrix<MT,unaligned,true,true,CSAs...>::addAssign( const DenseMat
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
-   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( columns() == (*rhs).columns(), "Invalid number of columns" );
 
    for( size_t j=0UL; j<columns(); ++j )
    {
       const size_t ibegin( ( IsLower_v<MT> )
-                           ?( ( IsStrictlyLower_v<MT> ? j+1UL : j ) & size_t(-SIMDSIZE) )
+                           ?( prevMultiple( ( IsStrictlyLower_v<MT> ? j+1UL : j ), SIMDSIZE ) )
                            :( 0UL ) );
       const size_t iend  ( ( IsUpper_v<MT> )
                            ?( IsStrictlyUpper_v<MT> ? j : j+1UL )
                            :( rows() ) );
       BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
 
-      const size_t ipos( iend & size_t(-SIMDSIZE) );
-      BLAZE_INTERNAL_ASSERT( ( iend - ( iend % (SIMDSIZE) ) ) == ipos, "Invalid end calculation" );
+      const size_t ipos( prevMultiple( iend, SIMDSIZE ) );
+      BLAZE_INTERNAL_ASSERT( ipos <= iend, "Invalid end calculation" );
 
       size_t i( ibegin );
       Iterator left( begin(j) + ibegin );
-      ConstIterator_t<MT2> right( (~rhs).begin(j) + ibegin );
+      ConstIterator_t<MT2> right( (*rhs).begin(j) + ibegin );
 
       for( ; (i+SIMDSIZE*3UL) < ipos; i+=SIMDSIZE*4UL ) {
          left.store( left.load() + right.load() ); left += SIMDSIZE; right += SIMDSIZE;
@@ -6131,8 +6120,8 @@ inline void Submatrix<MT,unaligned,true,true,CSAs...>::addAssign( const DenseMat
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT2 );
 
-   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( columns() == (*rhs).columns(), "Invalid number of columns" );
 
    constexpr size_t block( BLOCK_SIZE );
 
@@ -6142,7 +6131,7 @@ inline void Submatrix<MT,unaligned,true,true,CSAs...>::addAssign( const DenseMat
          const size_t iend( ( rows()<(ii+block) )?( rows() ):( ii+block ) );
          for( size_t j=jj; j<jend; ++j ) {
             for( size_t i=ii; i<iend; ++i ) {
-               matrix_(row()+i,column()+j) += (~rhs)(i,j);
+               matrix_(row()+i,column()+j) += (*rhs)(i,j);
             }
          }
       }
@@ -6169,11 +6158,11 @@ template< typename MT       // Type of the dense matrix
 template< typename MT2 >    // Type of the right-hand side sparse matrix
 inline void Submatrix<MT,unaligned,true,true,CSAs...>::addAssign( const SparseMatrix<MT2,true>& rhs )
 {
-   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( columns() == (*rhs).columns(), "Invalid number of columns" );
 
    for( size_t j=0UL; j<columns(); ++j )
-      for( ConstIterator_t<MT2> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
+      for( ConstIterator_t<MT2> element=(*rhs).begin(j); element!=(*rhs).end(j); ++element )
          matrix_(row()+element->index(),column()+j) += element->value();
 }
 /*! \endcond */
@@ -6199,11 +6188,11 @@ inline void Submatrix<MT,unaligned,true,true,CSAs...>::addAssign( const SparseMa
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT2 );
 
-   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( columns() == (*rhs).columns(), "Invalid number of columns" );
 
    for( size_t i=0UL; i<rows(); ++i )
-      for( ConstIterator_t<MT2> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
+      for( ConstIterator_t<MT2> element=(*rhs).begin(i); element!=(*rhs).end(i); ++element )
          matrix_(row()+i,column()+element->index()) += element->value();
 }
 /*! \endcond */
@@ -6228,24 +6217,24 @@ template< typename MT2 >    // Type of the right-hand side dense matrix
 inline auto Submatrix<MT,unaligned,true,true,CSAs...>::subAssign( const DenseMatrix<MT2,true>& rhs )
    -> DisableIf_t< VectorizedSubAssign_v<MT2> >
 {
-   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( columns() == (*rhs).columns(), "Invalid number of columns" );
 
-   const size_t ipos( rows() & size_t(-2) );
-   BLAZE_INTERNAL_ASSERT( ( rows() - ( rows() % 2UL ) ) == ipos, "Invalid end calculation" );
+   const size_t ipos( prevMultiple( rows(), 2UL ) );
+   BLAZE_INTERNAL_ASSERT( ipos <= rows(), "Invalid end calculation" );
 
    for( size_t j=0UL; j<columns(); ++j )
    {
       if( IsDiagonal_v<MT2> ) {
-         matrix_(row()+j,column()+j) -= (~rhs)(j,j);
+         matrix_(row()+j,column()+j) -= (*rhs)(j,j);
       }
       else {
          for( size_t i=0UL; i<ipos; i+=2UL ) {
-            matrix_(row()+i    ,column()+j) -= (~rhs)(i    ,j);
-            matrix_(row()+i+1UL,column()+j) -= (~rhs)(i+1UL,j);
+            matrix_(row()+i    ,column()+j) -= (*rhs)(i    ,j);
+            matrix_(row()+i+1UL,column()+j) -= (*rhs)(i+1UL,j);
          }
          if( ipos < rows() ) {
-            matrix_(row()+ipos,column()+j) -= (~rhs)(ipos,j);
+            matrix_(row()+ipos,column()+j) -= (*rhs)(ipos,j);
          }
       }
    }
@@ -6274,25 +6263,25 @@ inline auto Submatrix<MT,unaligned,true,true,CSAs...>::subAssign( const DenseMat
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
-   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( columns() == (*rhs).columns(), "Invalid number of columns" );
 
    for( size_t j=0UL; j<columns(); ++j )
    {
       const size_t ibegin( ( IsLower_v<MT> )
-                           ?( ( IsStrictlyLower_v<MT> ? j+1UL : j ) & size_t(-SIMDSIZE) )
+                           ?( prevMultiple( ( IsStrictlyLower_v<MT> ? j+1UL : j ), SIMDSIZE ) )
                            :( 0UL ) );
       const size_t iend  ( ( IsUpper_v<MT> )
                            ?( IsStrictlyUpper_v<MT> ? j : j+1UL )
                            :( rows() ) );
       BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
 
-      const size_t ipos( iend & size_t(-SIMDSIZE) );
-      BLAZE_INTERNAL_ASSERT( ( iend - ( iend % (SIMDSIZE) ) ) == ipos, "Invalid end calculation" );
+      const size_t ipos( prevMultiple( iend, SIMDSIZE ) );
+      BLAZE_INTERNAL_ASSERT( ipos <= iend, "Invalid end calculation" );
 
       size_t i( ibegin );
       Iterator left( begin(j) + ibegin );
-      ConstIterator_t<MT2> right( (~rhs).begin(j) + ibegin );
+      ConstIterator_t<MT2> right( (*rhs).begin(j) + ibegin );
 
       for( ; (i+SIMDSIZE*3UL) < ipos; i+=SIMDSIZE*4UL ) {
          left.store( left.load() - right.load() ); left += SIMDSIZE; right += SIMDSIZE;
@@ -6331,8 +6320,8 @@ inline void Submatrix<MT,unaligned,true,true,CSAs...>::subAssign( const DenseMat
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT2 );
 
-   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( columns() == (*rhs).columns(), "Invalid number of columns" );
 
    constexpr size_t block( BLOCK_SIZE );
 
@@ -6342,7 +6331,7 @@ inline void Submatrix<MT,unaligned,true,true,CSAs...>::subAssign( const DenseMat
          const size_t iend( ( rows()<(ii+block) )?( rows() ):( ii+block ) );
          for( size_t j=jj; j<jend; ++j ) {
             for( size_t i=ii; i<iend; ++i ) {
-               matrix_(row()+i,column()+j) -= (~rhs)(i,j);
+               matrix_(row()+i,column()+j) -= (*rhs)(i,j);
             }
          }
       }
@@ -6369,11 +6358,11 @@ template< typename MT       // Type of the dense matrix
 template< typename MT2 >    // Type of the right-hand side sparse matrix
 inline void Submatrix<MT,unaligned,true,true,CSAs...>::subAssign( const SparseMatrix<MT2,true>& rhs )
 {
-   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( columns() == (*rhs).columns(), "Invalid number of columns" );
 
    for( size_t j=0UL; j<columns(); ++j )
-      for( ConstIterator_t<MT2> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
+      for( ConstIterator_t<MT2> element=(*rhs).begin(j); element!=(*rhs).end(j); ++element )
          matrix_(row()+element->index(),column()+j) -= element->value();
 }
 /*! \endcond */
@@ -6399,11 +6388,11 @@ inline void Submatrix<MT,unaligned,true,true,CSAs...>::subAssign( const SparseMa
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT2 );
 
-   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( columns() == (*rhs).columns(), "Invalid number of columns" );
 
    for( size_t i=0UL; i<rows(); ++i )
-      for( ConstIterator_t<MT2> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
+      for( ConstIterator_t<MT2> element=(*rhs).begin(i); element!=(*rhs).end(i); ++element )
          matrix_(row()+i,column()+element->index()) -= element->value();
 }
 /*! \endcond */
@@ -6428,19 +6417,19 @@ template< typename MT2 >    // Type of the right-hand side dense matrix
 inline auto Submatrix<MT,unaligned,true,true,CSAs...>::schurAssign( const DenseMatrix<MT2,true>& rhs )
    -> DisableIf_t< VectorizedSchurAssign_v<MT2> >
 {
-   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( columns() == (*rhs).columns(), "Invalid number of columns" );
 
-   const size_t ipos( rows() & size_t(-2) );
-   BLAZE_INTERNAL_ASSERT( ( rows() - ( rows() % 2UL ) ) == ipos, "Invalid end calculation" );
+   const size_t ipos( prevMultiple( rows(), 2UL ) );
+   BLAZE_INTERNAL_ASSERT( ipos <= rows(), "Invalid end calculation" );
 
    for( size_t j=0UL; j<columns(); ++j ) {
       for( size_t i=0UL; i<ipos; i+=2UL ) {
-         matrix_(row()+i    ,column()+j) *= (~rhs)(i    ,j);
-         matrix_(row()+i+1UL,column()+j) *= (~rhs)(i+1UL,j);
+         matrix_(row()+i    ,column()+j) *= (*rhs)(i    ,j);
+         matrix_(row()+i+1UL,column()+j) *= (*rhs)(i+1UL,j);
       }
       if( ipos < rows() ) {
-         matrix_(row()+ipos,column()+j) *= (~rhs)(ipos,j);
+         matrix_(row()+ipos,column()+j) *= (*rhs)(ipos,j);
       }
    }
 }
@@ -6469,17 +6458,17 @@ inline auto Submatrix<MT,unaligned,true,true,CSAs...>::schurAssign( const DenseM
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
-   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( columns() == (*rhs).columns(), "Invalid number of columns" );
 
    for( size_t j=0UL; j<columns(); ++j )
    {
-      const size_t ipos( rows() & size_t(-SIMDSIZE) );
-      BLAZE_INTERNAL_ASSERT( ( rows() - ( rows() % (SIMDSIZE) ) ) == ipos, "Invalid end calculation" );
+      const size_t ipos( prevMultiple( rows(), SIMDSIZE ) );
+      BLAZE_INTERNAL_ASSERT( ipos <= rows(), "Invalid end calculation" );
 
       size_t i( 0UL );
       Iterator left( begin(j) );
-      ConstIterator_t<MT2> right( (~rhs).begin(j) );
+      ConstIterator_t<MT2> right( (*rhs).begin(j) );
 
       for( ; (i+SIMDSIZE*3UL) < ipos; i+=SIMDSIZE*4UL ) {
          left.store( left.load() * right.load() ); left += SIMDSIZE; right += SIMDSIZE;
@@ -6518,8 +6507,8 @@ inline void Submatrix<MT,unaligned,true,true,CSAs...>::schurAssign( const DenseM
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT2 );
 
-   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( columns() == (*rhs).columns(), "Invalid number of columns" );
 
    constexpr size_t block( BLOCK_SIZE );
 
@@ -6529,7 +6518,7 @@ inline void Submatrix<MT,unaligned,true,true,CSAs...>::schurAssign( const DenseM
          const size_t iend( ( rows()<(ii+block) )?( rows() ):( ii+block ) );
          for( size_t j=jj; j<jend; ++j ) {
             for( size_t i=ii; i<iend; ++i ) {
-               matrix_(row()+i,column()+j) *= (~rhs)(i,j);
+               matrix_(row()+i,column()+j) *= (*rhs)(i,j);
             }
          }
       }
@@ -6558,14 +6547,14 @@ inline void Submatrix<MT,unaligned,true,true,CSAs...>::schurAssign( const Sparse
 {
    using blaze::reset;
 
-   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( columns() == (*rhs).columns(), "Invalid number of columns" );
 
    for( size_t j=0UL; j<columns(); ++j )
    {
       size_t i( 0UL );
 
-      for( ConstIterator_t<MT2> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element ) {
+      for( ConstIterator_t<MT2> element=(*rhs).begin(j); element!=(*rhs).end(j); ++element ) {
          for( ; i<element->index(); ++i )
             reset( matrix_(row()+i,column()+j) );
          matrix_(row()+i,column()+j) *= element->value();
@@ -6602,14 +6591,14 @@ inline void Submatrix<MT,unaligned,true,true,CSAs...>::schurAssign( const Sparse
 
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT2 );
 
-   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( columns() == (*rhs).columns(), "Invalid number of columns" );
 
    for( size_t i=0UL; i<rows(); ++i )
    {
       size_t j( 0UL );
 
-      for( ConstIterator_t<MT2> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element ) {
+      for( ConstIterator_t<MT2> element=(*rhs).begin(i); element!=(*rhs).end(i); ++element ) {
          for( ; j<element->index(); ++j )
             reset( matrix_(row()+i,column()+j) );
          matrix_(row()+i,column()+j) *= element->value();
@@ -6669,7 +6658,9 @@ class Submatrix<MT,aligned,false,true,CSAs...>
    //! Type of this Submatrix instance.
    using This = Submatrix<MT,aligned,false,true,CSAs...>;
 
-   using BaseType      = DenseMatrix<This,false>;       //!< Base type of this Submatrix instance.
+   //! Base type of this Submatrix instance.
+   using BaseType = View< DenseMatrix<This,false> >;
+
    using ViewedType    = MT;                            //!< The type viewed by this Submatrix instance.
    using ResultType    = SubmatrixTrait_t<MT,CSAs...>;  //!< Result type for expression template evaluations.
    using OppositeType  = OppositeType_t<ResultType>;    //!< Result type with opposite storage order for expression template evaluations.
@@ -6704,6 +6695,9 @@ class Submatrix<MT,aligned,false,true,CSAs...>
 
    //! Compilation switch for the expression template assignment strategy.
    static constexpr bool smpAssignable = MT::smpAssignable;
+
+   //! Compilation switch for the expression template evaluation strategy.
+   static constexpr bool compileTimeArgs = DataType::compileTimeArgs;
    //**********************************************************************************************
 
    //**Constructors********************************************************************************
@@ -6824,9 +6818,7 @@ class Submatrix<MT,aligned,false,true,CSAs...>
    //! Helper variable template for the explicit application of the SFINAE principle.
    template< typename MT2 >
    static constexpr bool VectorizedAddAssign_v =
-      ( useOptimizedKernels &&
-        simdEnabled && MT2::simdEnabled &&
-        IsSIMDCombinable_v< ElementType, ElementType_t<MT2> > &&
+      ( VectorizedAssign_v<MT2> &&
         HasSIMDAdd_v< ElementType, ElementType_t<MT2> > &&
         !IsDiagonal_v<MT2> );
    //**********************************************************************************************
@@ -6835,9 +6827,7 @@ class Submatrix<MT,aligned,false,true,CSAs...>
    //! Helper variable template for the explicit application of the SFINAE principle.
    template< typename MT2 >
    static constexpr bool VectorizedSubAssign_v =
-      ( useOptimizedKernels &&
-        simdEnabled && MT2::simdEnabled &&
-        IsSIMDCombinable_v< ElementType, ElementType_t<MT2> > &&
+      ( VectorizedAssign_v<MT2> &&
         HasSIMDSub_v< ElementType, ElementType_t<MT2> > &&
         !IsDiagonal_v<MT2> );
    //**********************************************************************************************
@@ -6846,9 +6836,7 @@ class Submatrix<MT,aligned,false,true,CSAs...>
    //! Helper variable template for the explicit application of the SFINAE principle.
    template< typename MT2 >
    static constexpr bool VectorizedSchurAssign_v =
-      ( useOptimizedKernels &&
-        simdEnabled && MT2::simdEnabled &&
-        IsSIMDCombinable_v< ElementType, ElementType_t<MT2> > &&
+      ( VectorizedAssign_v<MT2> &&
         HasSIMDMult_v< ElementType, ElementType_t<MT2> > );
    //**********************************************************************************************
 
@@ -6988,21 +6976,25 @@ inline Submatrix<MT,aligned,false,true,CSAs...>::Submatrix( MT& matrix, RSAs... 
    : DataType( args... )  // Base class initialization
    , matrix_ ( matrix  )  // The matrix containing the submatrix
 {
-   if( !Contains_v< TypeList<RSAs...>, Unchecked > ) {
+   if( isChecked( args... ) )
+   {
       if( ( row() + rows() > matrix_.rows() ) || ( column() + columns() > matrix_.columns() ) ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid submatrix specification" );
       }
-      if( ( simdEnabled && matrix_.data() != nullptr && !checkAlignment( data() ) ) ||
-          ( rows() > 1UL && matrix_.spacing() % SIMDSIZE != 0UL ) ) {
+
+      if( simdEnabled && IsContiguous_v<MT> &&
+          ( !checkAlignment( data() ) ||
+            ( rows() > 1UL && matrix_.spacing() % SIMDSIZE != 0UL ) ) ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid submatrix alignment" );
       }
    }
-   else {
+   else
+   {
       BLAZE_USER_ASSERT( row()    + rows()    <= matrix_.rows()   , "Invalid submatrix specification" );
       BLAZE_USER_ASSERT( column() + columns() <= matrix_.columns(), "Invalid submatrix specification" );
 
-      BLAZE_USER_ASSERT( !simdEnabled || matrix_.data() == nullptr || checkAlignment( data() ), "Invalid submatrix alignment" );
-      BLAZE_USER_ASSERT( rows() <= 1UL || matrix_.spacing() % SIMDSIZE == 0UL, "Invalid submatrix alignment" );
+      BLAZE_USER_ASSERT( !simdEnabled || !IsContiguous_v<MT> || checkAlignment( data() ), "Invalid submatrix alignment" );
+      BLAZE_USER_ASSERT( !simdEnabled || !IsContiguous_v<MT> || rows() <= 1UL || matrix_.spacing() % SIMDSIZE == 0UL, "Invalid submatrix alignment" );
    }
 }
 /*! \endcond */
@@ -7485,7 +7477,7 @@ inline Submatrix<MT,aligned,false,true,CSAs...>&
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( rhs.canAlias( &matrix_ ) ) {
+   if( rhs.canAlias( this ) ) {
       const ResultType tmp( rhs );
       smpAssign( left, tmp );
    }
@@ -7525,12 +7517,12 @@ inline Submatrix<MT,aligned,false,true,CSAs...>&
 {
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_t<MT2> );
 
-   if( rows() != (~rhs).rows() || columns() != (~rhs).columns() ) {
+   if( rows() != (*rhs).rows() || columns() != (*rhs).columns() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
    using Right = If_t< IsRestricted_v<MT>, CompositeType_t<MT2>, const MT2& >;
-   Right right( ~rhs );
+   Right right( *rhs );
 
    if( !tryAssign( matrix_, right, row(), column() ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
@@ -7538,16 +7530,16 @@ inline Submatrix<MT,aligned,false,true,CSAs...>&
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( IsReference_v<Right> && right.canAlias( &matrix_ ) ) {
+   if( IsReference_v<Right> && right.canAlias( this ) ) {
       const ResultType_t<MT2> tmp( right );
       if( IsSparseMatrix_v<MT2> )
          reset();
-      smpAssign( left, tmp );
+      smpAssign( left, transIf< IsSymmetric_v<This> >( tmp ) );
    }
    else {
       if( IsSparseMatrix_v<MT2> )
          reset();
-      smpAssign( left, right );
+      smpAssign( left, transIf< IsSymmetric_v<This> >( right ) );
    }
 
    BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
@@ -7588,23 +7580,22 @@ inline auto Submatrix<MT,aligned,false,true,CSAs...>::operator+=( const Matrix<M
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( AddType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( AddType );
 
-   if( rows() != (~rhs).rows() || columns() != (~rhs).columns() ) {
+   if( rows() != (*rhs).rows() || columns() != (*rhs).columns() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
-   if( !tryAddAssign( matrix_, ~rhs, row(), column() ) ) {
+   if( !tryAddAssign( matrix_, *rhs, row(), column() ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
    }
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( ( ( IsSymmetric_v<MT> || IsHermitian_v<MT> ) && hasOverlap() ) ||
-       (~rhs).canAlias( &matrix_ ) ) {
-      const AddType tmp( *this + (~rhs) );
-      smpAssign( left, tmp );
+   if( ( ( IsSymmetric_v<MT> || IsHermitian_v<MT> ) && hasOverlap() ) || (*rhs).canAlias( this ) ) {
+      const AddType tmp( *this + (*rhs) );
+      smpAssign( left, transIf< IsSymmetric_v<This> >( tmp ) );
    }
    else {
-      smpAddAssign( left, ~rhs );
+      smpAddAssign( left, transIf< IsSymmetric_v<This> >( *rhs ) );
    }
 
    BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
@@ -7645,11 +7636,11 @@ inline auto Submatrix<MT,aligned,false,true,CSAs...>::operator+=( const Matrix<M
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( AddType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( AddType );
 
-   if( rows() != (~rhs).rows() || columns() != (~rhs).columns() ) {
+   if( rows() != (*rhs).rows() || columns() != (*rhs).columns() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
-   const AddType tmp( *this + (~rhs) );
+   const AddType tmp( *this + (*rhs) );
 
    if( !tryAssign( matrix_, tmp, row(), column() ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
@@ -7657,7 +7648,7 @@ inline auto Submatrix<MT,aligned,false,true,CSAs...>::operator+=( const Matrix<M
 
    decltype(auto) left( derestrict( *this ) );
 
-   smpAssign( left, tmp );
+   smpAssign( left, transIf< IsSymmetric_v<This> >( tmp ) );
 
    BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
 
@@ -7697,23 +7688,22 @@ inline auto Submatrix<MT,aligned,false,true,CSAs...>::operator-=( const Matrix<M
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( SubType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SubType );
 
-   if( rows() != (~rhs).rows() || columns() != (~rhs).columns() ) {
+   if( rows() != (*rhs).rows() || columns() != (*rhs).columns() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
-   if( !trySubAssign( matrix_, ~rhs, row(), column() ) ) {
+   if( !trySubAssign( matrix_, *rhs, row(), column() ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
    }
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( ( ( IsSymmetric_v<MT> || IsHermitian_v<MT> ) && hasOverlap() ) ||
-       (~rhs).canAlias( &matrix_ ) ) {
-      const SubType tmp( *this - (~rhs ) );
-      smpAssign( left, tmp );
+   if( ( ( IsSymmetric_v<MT> || IsHermitian_v<MT> ) && hasOverlap() ) || (*rhs).canAlias( this ) ) {
+      const SubType tmp( *this - (*rhs ) );
+      smpAssign( left, transIf< IsSymmetric_v<This> >( tmp ) );
    }
    else {
-      smpSubAssign( left, ~rhs );
+      smpSubAssign( left, transIf< IsSymmetric_v<This> >( *rhs ) );
    }
 
    BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
@@ -7754,11 +7744,11 @@ inline auto Submatrix<MT,aligned,false,true,CSAs...>::operator-=( const Matrix<M
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( SubType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SubType );
 
-   if( rows() != (~rhs).rows() || columns() != (~rhs).columns() ) {
+   if( rows() != (*rhs).rows() || columns() != (*rhs).columns() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
-   const SubType tmp( *this - (~rhs) );
+   const SubType tmp( *this - (*rhs) );
 
    if( !tryAssign( matrix_, tmp, row(), column() ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
@@ -7766,7 +7756,7 @@ inline auto Submatrix<MT,aligned,false,true,CSAs...>::operator-=( const Matrix<M
 
    decltype(auto) left( derestrict( *this ) );
 
-   smpAssign( left, tmp );
+   smpAssign( left, transIf< IsSymmetric_v<This> >( tmp ) );
 
    BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
 
@@ -7805,25 +7795,24 @@ inline auto Submatrix<MT,aligned,false,true,CSAs...>::operator%=( const Matrix<M
 
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SchurType );
 
-   if( rows() != (~rhs).rows() || columns() != (~rhs).columns() ) {
+   if( rows() != (*rhs).rows() || columns() != (*rhs).columns() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
-   if( !trySchurAssign( matrix_, ~rhs, row(), column() ) ) {
+   if( !trySchurAssign( matrix_, *rhs, row(), column() ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
    }
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( ( ( IsSymmetric_v<MT> || IsHermitian_v<MT> ) && hasOverlap() ) ||
-       (~rhs).canAlias( &matrix_ ) ) {
-      const SchurType tmp( *this % (~rhs) );
+   if( ( ( IsSymmetric_v<MT> || IsHermitian_v<MT> ) && hasOverlap() ) || (*rhs).canAlias( this ) ) {
+      const SchurType tmp( *this % (*rhs) );
       if( IsSparseMatrix_v<SchurType> )
          reset();
-      smpAssign( left, tmp );
+      smpAssign( left, transIf< IsSymmetric_v<This> >( tmp ) );
    }
    else {
-      smpSchurAssign( left, ~rhs );
+      smpSchurAssign( left, transIf< IsSymmetric_v<This> >( *rhs ) );
    }
 
    BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
@@ -7863,11 +7852,11 @@ inline auto Submatrix<MT,aligned,false,true,CSAs...>::operator%=( const Matrix<M
 
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SchurType );
 
-   if( rows() != (~rhs).rows() || columns() != (~rhs).columns() ) {
+   if( rows() != (*rhs).rows() || columns() != (*rhs).columns() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
-   const SchurType tmp( *this % (~rhs) );
+   const SchurType tmp( *this % (*rhs) );
 
    if( !tryAssign( matrix_, tmp, row(), column() ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
@@ -7879,7 +7868,7 @@ inline auto Submatrix<MT,aligned,false,true,CSAs...>::operator%=( const Matrix<M
       reset();
    }
 
-   smpAssign( left, tmp );
+   smpAssign( left, transIf< IsSymmetric_v<This> >( tmp ) );
 
    BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
 
@@ -7982,7 +7971,7 @@ template< typename MT       // Type of the dense matrix
         , size_t... CSAs >  // Compile time submatrix arguments
 inline size_t Submatrix<MT,aligned,false,true,CSAs...>::capacity( size_t i ) const noexcept
 {
-   UNUSED_PARAMETER( i );
+   MAYBE_UNUSED( i );
 
    BLAZE_USER_ASSERT( i < rows(), "Invalid row access index" );
 
@@ -8305,7 +8294,7 @@ template< typename MT       // Type of the dense matrix
 template< typename Other >  // Data type of the foreign expression
 inline bool Submatrix<MT,aligned,false,true,CSAs...>::canAlias( const Other* alias ) const noexcept
 {
-   return matrix_.isAliased( alias );
+   return matrix_.isAliased( &unview( *alias ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -8357,7 +8346,7 @@ template< typename MT       // Type of the dense matrix
 template< typename Other >  // Data type of the foreign expression
 inline bool Submatrix<MT,aligned,false,true,CSAs...>::isAliased( const Other* alias ) const noexcept
 {
-   return matrix_.isAliased( alias );
+   return matrix_.isAliased( &unview( *alias ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -8521,7 +8510,6 @@ BLAZE_ALWAYS_INLINE typename Submatrix<MT,aligned,false,true,CSAs...>::SIMDType
    BLAZE_INTERNAL_ASSERT( i < rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( j < columns(), "Invalid column access index" );
    BLAZE_INTERNAL_ASSERT( j + SIMDSIZE <= columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( j % SIMDSIZE == 0UL, "Invalid column access index" );
 
    return matrix_.loadu( row()+i, column()+j );
 }
@@ -8619,7 +8607,6 @@ BLAZE_ALWAYS_INLINE void
    BLAZE_INTERNAL_ASSERT( i < rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( j < columns(), "Invalid column access index" );
    BLAZE_INTERNAL_ASSERT( j + SIMDSIZE <= columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( j % SIMDSIZE == 0UL, "Invalid column access index" );
 
    matrix_.storeu( row()+i, column()+j, value );
 }
@@ -8681,19 +8668,19 @@ template< typename MT2 >    // Type of the right-hand side dense matrix
 inline auto Submatrix<MT,aligned,false,true,CSAs...>::assign( const DenseMatrix<MT2,false>& rhs )
    -> DisableIf_t< VectorizedAssign_v<MT2> >
 {
-   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( columns() == (*rhs).columns(), "Invalid number of columns" );
 
-   const size_t jpos( columns() & size_t(-2) );
-   BLAZE_INTERNAL_ASSERT( ( columns() - ( columns() % 2UL ) ) == jpos, "Invalid end calculation" );
+   const size_t jpos( prevMultiple( columns(), 2UL ) );
+   BLAZE_INTERNAL_ASSERT( jpos <= columns(), "Invalid end calculation" );
 
    for( size_t i=0UL; i<rows(); ++i ) {
       for( size_t j=0UL; j<jpos; j+=2UL ) {
-         matrix_(row()+i,column()+j    ) = (~rhs)(i,j    );
-         matrix_(row()+i,column()+j+1UL) = (~rhs)(i,j+1UL);
+         matrix_(row()+i,column()+j    ) = (*rhs)(i,j    );
+         matrix_(row()+i,column()+j+1UL) = (*rhs)(i,j+1UL);
       }
       if( jpos < columns() ) {
-         matrix_(row()+i,column()+jpos) = (~rhs)(i,jpos);
+         matrix_(row()+i,column()+jpos) = (*rhs)(i,jpos);
       }
    }
 }
@@ -8721,21 +8708,21 @@ inline auto Submatrix<MT,aligned,false,true,CSAs...>::assign( const DenseMatrix<
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
-   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( columns() == (*rhs).columns(), "Invalid number of columns" );
 
-   const size_t jpos( columns() & size_t(-SIMDSIZE) );
-   BLAZE_INTERNAL_ASSERT( ( columns() - ( columns() % (SIMDSIZE) ) ) == jpos, "Invalid end calculation" );
+   const size_t jpos( prevMultiple( columns(), SIMDSIZE ) );
+   BLAZE_INTERNAL_ASSERT( jpos <= columns(), "Invalid end calculation" );
 
    if( useStreaming &&
        rows()*columns() > ( cacheSize / ( sizeof(ElementType) * 3UL ) ) &&
-       !(~rhs).isAliased( &matrix_ ) )
+       !(*rhs).isAliased( this ) )
    {
       for( size_t i=0UL; i<rows(); ++i )
       {
          size_t j( 0UL );
          Iterator left( begin(i) );
-         ConstIterator_t<MT2> right( (~rhs).begin(i) );
+         ConstIterator_t<MT2> right( (*rhs).begin(i) );
 
          for( ; j<jpos; j+=SIMDSIZE ) {
             left.stream( right.load() ); left += SIMDSIZE; right += SIMDSIZE;
@@ -8751,7 +8738,7 @@ inline auto Submatrix<MT,aligned,false,true,CSAs...>::assign( const DenseMatrix<
       {
          size_t j( 0UL );
          Iterator left( begin(i) );
-         ConstIterator_t<MT2> right( (~rhs).begin(i) );
+         ConstIterator_t<MT2> right( (*rhs).begin(i) );
 
          for( ; (j+SIMDSIZE*3UL) < jpos; j+=SIMDSIZE*4UL ) {
             left.store( right.load() ); left += SIMDSIZE; right += SIMDSIZE;
@@ -8791,8 +8778,8 @@ inline void Submatrix<MT,aligned,false,true,CSAs...>::assign( const DenseMatrix<
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT2 );
 
-   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( columns() == (*rhs).columns(), "Invalid number of columns" );
 
    constexpr size_t block( BLOCK_SIZE );
 
@@ -8802,7 +8789,7 @@ inline void Submatrix<MT,aligned,false,true,CSAs...>::assign( const DenseMatrix<
          const size_t jend( ( columns()<(jj+block) )?( columns() ):( jj+block ) );
          for( size_t i=ii; i<iend; ++i ) {
             for( size_t j=jj; j<jend; ++j ) {
-               matrix_(row()+i,column()+j) = (~rhs)(i,j);
+               matrix_(row()+i,column()+j) = (*rhs)(i,j);
             }
          }
       }
@@ -8829,11 +8816,11 @@ template< typename MT       // Type of the dense matrix
 template< typename MT2 >    // Type of the right-hand side sparse matrix
 inline void Submatrix<MT,aligned,false,true,CSAs...>::assign( const SparseMatrix<MT2,false>& rhs )
 {
-   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( columns() == (*rhs).columns(), "Invalid number of columns" );
 
    for( size_t i=0UL; i<rows(); ++i )
-      for( ConstIterator_t<MT2> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
+      for( ConstIterator_t<MT2> element=(*rhs).begin(i); element!=(*rhs).end(i); ++element )
          matrix_(row()+i,column()+element->index()) = element->value();
 }
 /*! \endcond */
@@ -8859,11 +8846,11 @@ inline void Submatrix<MT,aligned,false,true,CSAs...>::assign( const SparseMatrix
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT2 );
 
-   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( columns() == (*rhs).columns(), "Invalid number of columns" );
 
    for( size_t j=0UL; j<columns(); ++j )
-      for( ConstIterator_t<MT2> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
+      for( ConstIterator_t<MT2> element=(*rhs).begin(j); element!=(*rhs).end(j); ++element )
          matrix_(row()+element->index(),column()+j) = element->value();
 }
 /*! \endcond */
@@ -8888,24 +8875,24 @@ template< typename MT2 >    // Type of the right-hand side dense matrix
 inline auto Submatrix<MT,aligned,false,true,CSAs...>::addAssign( const DenseMatrix<MT2,false>& rhs )
    -> DisableIf_t< VectorizedAddAssign_v<MT2> >
 {
-   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( columns() == (*rhs).columns(), "Invalid number of columns" );
 
-   const size_t jpos( columns() & size_t(-2) );
-   BLAZE_INTERNAL_ASSERT( ( columns() - ( columns() % 2UL ) ) == jpos, "Invalid end calculation" );
+   const size_t jpos( prevMultiple( columns(), 2UL ) );
+   BLAZE_INTERNAL_ASSERT( jpos <= columns(), "Invalid end calculation" );
 
    for( size_t i=0UL; i<rows(); ++i )
    {
       if( IsDiagonal_v<MT2> ) {
-         matrix_(row()+i,column()+i) += (~rhs)(i,i);
+         matrix_(row()+i,column()+i) += (*rhs)(i,i);
       }
       else {
          for( size_t j=0UL; j<jpos; j+=2UL ) {
-            matrix_(row()+i,column()+j    ) += (~rhs)(i,j    );
-            matrix_(row()+i,column()+j+1UL) += (~rhs)(i,j+1UL);
+            matrix_(row()+i,column()+j    ) += (*rhs)(i,j    );
+            matrix_(row()+i,column()+j+1UL) += (*rhs)(i,j+1UL);
          }
          if( jpos < columns() ) {
-            matrix_(row()+i,column()+jpos) += (~rhs)(i,jpos);
+            matrix_(row()+i,column()+jpos) += (*rhs)(i,jpos);
          }
       }
    }
@@ -8934,25 +8921,25 @@ inline auto Submatrix<MT,aligned,false,true,CSAs...>::addAssign( const DenseMatr
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
-   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( columns() == (*rhs).columns(), "Invalid number of columns" );
 
    for( size_t i=0UL; i<rows(); ++i )
    {
       const size_t jbegin( ( IsUpper_v<MT2> )
-                           ?( ( IsStrictlyUpper_v<MT2> ? i+1UL : i ) & size_t(-SIMDSIZE) )
+                           ?( prevMultiple( ( IsStrictlyUpper_v<MT2> ? i+1UL : i ), SIMDSIZE ) )
                            :( 0UL ) );
       const size_t jend  ( ( IsLower_v<MT2> )
                            ?( IsStrictlyLower_v<MT2> ? i : i+1UL )
                            :( columns() ) );
       BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
-      const size_t jpos( jend & size_t(-SIMDSIZE) );
-      BLAZE_INTERNAL_ASSERT( ( jend - ( jend % (SIMDSIZE) ) ) == jpos, "Invalid end calculation" );
+      const size_t jpos( prevMultiple( jend, SIMDSIZE ) );
+      BLAZE_INTERNAL_ASSERT( jpos <= jend, "Invalid end calculation" );
 
       size_t j( jbegin );
       Iterator left( begin(i) + jbegin );
-      ConstIterator_t<MT2> right( (~rhs).begin(i) + jbegin );
+      ConstIterator_t<MT2> right( (*rhs).begin(i) + jbegin );
 
       for( ; (j+SIMDSIZE*3UL) < jpos; j+=SIMDSIZE*4UL ) {
          left.store( left.load() + right.load() ); left += SIMDSIZE; right += SIMDSIZE;
@@ -8991,8 +8978,8 @@ inline void Submatrix<MT,aligned,false,true,CSAs...>::addAssign( const DenseMatr
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT2 );
 
-   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( columns() == (*rhs).columns(), "Invalid number of columns" );
 
    constexpr size_t block( BLOCK_SIZE );
 
@@ -9002,7 +8989,7 @@ inline void Submatrix<MT,aligned,false,true,CSAs...>::addAssign( const DenseMatr
          const size_t jend( ( columns()<(jj+block) )?( columns() ):( jj+block ) );
          for( size_t i=ii; i<iend; ++i ) {
             for( size_t j=jj; j<jend; ++j ) {
-               matrix_(row()+i,column()+j) += (~rhs)(i,j);
+               matrix_(row()+i,column()+j) += (*rhs)(i,j);
             }
          }
       }
@@ -9029,11 +9016,11 @@ template< typename MT       // Type of the dense matrix
 template< typename MT2 >    // Type of the right-hand side sparse matrix
 inline void Submatrix<MT,aligned,false,true,CSAs...>::addAssign( const SparseMatrix<MT2,false>& rhs )
 {
-   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( columns() == (*rhs).columns(), "Invalid number of columns" );
 
    for( size_t i=0UL; i<rows(); ++i )
-      for( ConstIterator_t<MT2> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
+      for( ConstIterator_t<MT2> element=(*rhs).begin(i); element!=(*rhs).end(i); ++element )
          matrix_(row()+i,column()+element->index()) += element->value();
 }
 /*! \endcond */
@@ -9059,11 +9046,11 @@ inline void Submatrix<MT,aligned,false,true,CSAs...>::addAssign( const SparseMat
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT2 );
 
-   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( columns() == (*rhs).columns(), "Invalid number of columns" );
 
    for( size_t j=0UL; j<columns(); ++j )
-      for( ConstIterator_t<MT2> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
+      for( ConstIterator_t<MT2> element=(*rhs).begin(j); element!=(*rhs).end(j); ++element )
          matrix_(row()+element->index(),column()+j) += element->value();
 }
 /*! \endcond */
@@ -9088,24 +9075,24 @@ template< typename MT2 >    // Type of the right-hand side dense matrix
 inline auto Submatrix<MT,aligned,false,true,CSAs...>::subAssign( const DenseMatrix<MT2,false>& rhs )
    -> DisableIf_t< VectorizedSubAssign_v<MT2> >
 {
-   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( columns() == (*rhs).columns(), "Invalid number of columns" );
 
-   const size_t jpos( columns() & size_t(-2) );
-   BLAZE_INTERNAL_ASSERT( ( columns() - ( columns() % 2UL ) ) == jpos, "Invalid end calculation" );
+   const size_t jpos( prevMultiple( columns(), 2UL ) );
+   BLAZE_INTERNAL_ASSERT( jpos <= columns(), "Invalid end calculation" );
 
    for( size_t i=0UL; i<rows(); ++i )
    {
       if( IsDiagonal_v<MT2> ) {
-         matrix_(row()+i,column()+i) -= (~rhs)(i,i);
+         matrix_(row()+i,column()+i) -= (*rhs)(i,i);
       }
       else {
          for( size_t j=0UL; j<jpos; j+=2UL ) {
-            matrix_(row()+i,column()+j    ) -= (~rhs)(i,j    );
-            matrix_(row()+i,column()+j+1UL) -= (~rhs)(i,j+1UL);
+            matrix_(row()+i,column()+j    ) -= (*rhs)(i,j    );
+            matrix_(row()+i,column()+j+1UL) -= (*rhs)(i,j+1UL);
          }
          if( jpos < columns() ) {
-            matrix_(row()+i,column()+jpos) -= (~rhs)(i,jpos);
+            matrix_(row()+i,column()+jpos) -= (*rhs)(i,jpos);
          }
       }
    }
@@ -9134,25 +9121,25 @@ inline auto Submatrix<MT,aligned,false,true,CSAs...>::subAssign( const DenseMatr
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
-   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( columns() == (*rhs).columns(), "Invalid number of columns" );
 
    for( size_t i=0UL; i<rows(); ++i )
    {
       const size_t jbegin( ( IsUpper_v<MT2> )
-                           ?( ( IsStrictlyUpper_v<MT2> ? i+1UL : i ) & size_t(-SIMDSIZE) )
+                           ?( prevMultiple( ( IsStrictlyUpper_v<MT2> ? i+1UL : i ), SIMDSIZE ) )
                            :( 0UL ) );
       const size_t jend  ( ( IsLower_v<MT2> )
                            ?( IsStrictlyLower_v<MT2> ? i : i+1UL )
                            :( columns() ) );
       BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
-      const size_t jpos( jend & size_t(-SIMDSIZE) );
-      BLAZE_INTERNAL_ASSERT( ( jend - ( jend % (SIMDSIZE) ) ) == jpos, "Invalid end calculation" );
+      const size_t jpos( prevMultiple( jend, SIMDSIZE ) );
+      BLAZE_INTERNAL_ASSERT( jpos <= jend, "Invalid end calculation" );
 
       size_t j( jbegin );
       Iterator left( begin(i) + jbegin );
-      ConstIterator_t<MT2> right( (~rhs).begin(i) + jbegin );
+      ConstIterator_t<MT2> right( (*rhs).begin(i) + jbegin );
 
       for( ; (j+SIMDSIZE*3UL) < jpos; j+=SIMDSIZE*4UL ) {
          left.store( left.load() - right.load() ); left += SIMDSIZE; right += SIMDSIZE;
@@ -9191,8 +9178,8 @@ inline void Submatrix<MT,aligned,false,true,CSAs...>::subAssign( const DenseMatr
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT2 );
 
-   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( columns() == (*rhs).columns(), "Invalid number of columns" );
 
    constexpr size_t block( BLOCK_SIZE );
 
@@ -9202,7 +9189,7 @@ inline void Submatrix<MT,aligned,false,true,CSAs...>::subAssign( const DenseMatr
          const size_t jend( ( columns()<(jj+block) )?( columns() ):( jj+block ) );
          for( size_t i=ii; i<iend; ++i ) {
             for( size_t j=jj; j<jend; ++j ) {
-               matrix_(row()+i,column()+j) -= (~rhs)(i,j);
+               matrix_(row()+i,column()+j) -= (*rhs)(i,j);
             }
          }
       }
@@ -9229,11 +9216,11 @@ template< typename MT       // Type of the dense matrix
 template< typename MT2 >    // Type of the right-hand side sparse matrix
 inline void Submatrix<MT,aligned,false,true,CSAs...>::subAssign( const SparseMatrix<MT2,false>& rhs )
 {
-   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( columns() == (*rhs).columns(), "Invalid number of columns" );
 
    for( size_t i=0UL; i<rows(); ++i )
-      for( ConstIterator_t<MT2> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
+      for( ConstIterator_t<MT2> element=(*rhs).begin(i); element!=(*rhs).end(i); ++element )
          matrix_(row()+i,column()+element->index()) -= element->value();
 }
 /*! \endcond */
@@ -9259,11 +9246,11 @@ inline void Submatrix<MT,aligned,false,true,CSAs...>::subAssign( const SparseMat
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT2 );
 
-   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( columns() == (*rhs).columns(), "Invalid number of columns" );
 
    for( size_t j=0UL; j<columns(); ++j )
-      for( ConstIterator_t<MT2> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
+      for( ConstIterator_t<MT2> element=(*rhs).begin(j); element!=(*rhs).end(j); ++element )
          matrix_(row()+element->index(),column()+j) -= element->value();
 }
 /*! \endcond */
@@ -9288,19 +9275,19 @@ template< typename MT2 >    // Type of the right-hand side dense matrix
 inline auto Submatrix<MT,aligned,false,true,CSAs...>::schurAssign( const DenseMatrix<MT2,false>& rhs )
    -> DisableIf_t< VectorizedSchurAssign_v<MT2> >
 {
-   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( columns() == (*rhs).columns(), "Invalid number of columns" );
 
-   const size_t jpos( columns() & size_t(-2) );
-   BLAZE_INTERNAL_ASSERT( ( columns() - ( columns() % 2UL ) ) == jpos, "Invalid end calculation" );
+   const size_t jpos( prevMultiple( columns(), 2UL ) );
+   BLAZE_INTERNAL_ASSERT( jpos <= columns(), "Invalid end calculation" );
 
    for( size_t i=0UL; i<rows(); ++i ) {
       for( size_t j=0UL; j<jpos; j+=2UL ) {
-         matrix_(row()+i,column()+j    ) *= (~rhs)(i,j    );
-         matrix_(row()+i,column()+j+1UL) *= (~rhs)(i,j+1UL);
+         matrix_(row()+i,column()+j    ) *= (*rhs)(i,j    );
+         matrix_(row()+i,column()+j+1UL) *= (*rhs)(i,j+1UL);
       }
       if( jpos < columns() ) {
-         matrix_(row()+i,column()+jpos) *= (~rhs)(i,jpos);
+         matrix_(row()+i,column()+jpos) *= (*rhs)(i,jpos);
       }
    }
 }
@@ -9328,17 +9315,17 @@ inline auto Submatrix<MT,aligned,false,true,CSAs...>::schurAssign( const DenseMa
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
-   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( columns() == (*rhs).columns(), "Invalid number of columns" );
 
    for( size_t i=0UL; i<rows(); ++i )
    {
-      const size_t jpos( columns() & size_t(-SIMDSIZE) );
-      BLAZE_INTERNAL_ASSERT( ( columns() - ( columns() % (SIMDSIZE) ) ) == jpos, "Invalid end calculation" );
+      const size_t jpos( prevMultiple( columns(), SIMDSIZE ) );
+      BLAZE_INTERNAL_ASSERT( jpos <= columns(), "Invalid end calculation" );
 
       size_t j( 0UL );
       Iterator left( begin(i) );
-      ConstIterator_t<MT2> right( (~rhs).begin(i) );
+      ConstIterator_t<MT2> right( (*rhs).begin(i) );
 
       for( ; (j+SIMDSIZE*3UL) < jpos; j+=SIMDSIZE*4UL ) {
          left.store( left.load() * right.load() ); left += SIMDSIZE; right += SIMDSIZE;
@@ -9377,8 +9364,8 @@ inline void Submatrix<MT,aligned,false,true,CSAs...>::schurAssign( const DenseMa
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT2 );
 
-   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( columns() == (*rhs).columns(), "Invalid number of columns" );
 
    constexpr size_t block( BLOCK_SIZE );
 
@@ -9388,7 +9375,7 @@ inline void Submatrix<MT,aligned,false,true,CSAs...>::schurAssign( const DenseMa
          const size_t jend( ( columns()<(jj+block) )?( columns() ):( jj+block ) );
          for( size_t i=ii; i<iend; ++i ) {
             for( size_t j=jj; j<jend; ++j ) {
-               matrix_(row()+i,column()+j) *= (~rhs)(i,j);
+               matrix_(row()+i,column()+j) *= (*rhs)(i,j);
             }
          }
       }
@@ -9417,14 +9404,14 @@ inline void Submatrix<MT,aligned,false,true,CSAs...>::schurAssign( const SparseM
 {
    using blaze::reset;
 
-   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( columns() == (*rhs).columns(), "Invalid number of columns" );
 
    for( size_t i=0UL; i<rows(); ++i )
    {
       size_t j( 0UL );
 
-      for( ConstIterator_t<MT2> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element ) {
+      for( ConstIterator_t<MT2> element=(*rhs).begin(i); element!=(*rhs).end(i); ++element ) {
          for( ; j<element->index(); ++j )
             reset( matrix_(row()+i,column()+j) );
          matrix_(row()+i,column()+j) *= element->value();
@@ -9461,14 +9448,14 @@ inline void Submatrix<MT,aligned,false,true,CSAs...>::schurAssign( const SparseM
 
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT2 );
 
-   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( columns() == (*rhs).columns(), "Invalid number of columns" );
 
    for( size_t j=0UL; j<columns(); ++j )
    {
       size_t i( 0UL );
 
-      for( ConstIterator_t<MT2> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element ) {
+      for( ConstIterator_t<MT2> element=(*rhs).begin(j); element!=(*rhs).end(j); ++element ) {
          for( ; i<element->index(); ++i )
             reset( matrix_(row()+i,column()+j) );
          matrix_(row()+element->index(),column()+j) *= element->value();
@@ -9528,7 +9515,9 @@ class Submatrix<MT,aligned,true,true,CSAs...>
    //! Type of this Submatrix instance.
    using This = Submatrix<MT,aligned,true,true,CSAs...>;
 
-   using BaseType      = DenseMatrix<This,true>;        //!< Base type of this Submatrix instance.
+   //! Base type of this Submatrix instance.
+   using BaseType = View< DenseMatrix<This,true> >;
+
    using ViewedType    = MT;                            //!< The type viewed by this Submatrix instance.
    using ResultType    = SubmatrixTrait_t<MT,CSAs...>;  //!< Result type for expression template evaluations.
    using OppositeType  = OppositeType_t<ResultType>;    //!< Result type with opposite storage order for expression template evaluations.
@@ -9563,6 +9552,9 @@ class Submatrix<MT,aligned,true,true,CSAs...>
 
    //! Compilation switch for the expression template assignment strategy.
    static constexpr bool smpAssignable = MT::smpAssignable;
+
+   //! Compilation switch for the expression template evaluation strategy.
+   static constexpr bool compileTimeArgs = DataType::compileTimeArgs;
    //**********************************************************************************************
 
    //**Constructors********************************************************************************
@@ -9683,9 +9675,7 @@ class Submatrix<MT,aligned,true,true,CSAs...>
    //! Helper variable template for the explicit application of the SFINAE principle.
    template< typename MT2 >
    static constexpr bool VectorizedAddAssign_v =
-      ( useOptimizedKernels &&
-        simdEnabled && MT2::simdEnabled &&
-        IsSIMDCombinable_v< ElementType, ElementType_t<MT2> > &&
+      ( VectorizedAssign_v<MT2> &&
         HasSIMDAdd_v< ElementType, ElementType_t<MT2> > &&
         !IsDiagonal_v<MT2> );
    //**********************************************************************************************
@@ -9694,9 +9684,7 @@ class Submatrix<MT,aligned,true,true,CSAs...>
    //! Helper variable template for the explicit application of the SFINAE principle.
    template< typename MT2 >
    static constexpr bool VectorizedSubAssign_v =
-      ( useOptimizedKernels &&
-        simdEnabled && MT2::simdEnabled &&
-        IsSIMDCombinable_v< ElementType, ElementType_t<MT2> > &&
+      ( VectorizedAssign_v<MT2> &&
         HasSIMDSub_v< ElementType, ElementType_t<MT2> > &&
         !IsDiagonal_v<MT2> );
    //**********************************************************************************************
@@ -9705,9 +9693,7 @@ class Submatrix<MT,aligned,true,true,CSAs...>
    //! Helper variable template for the explicit application of the SFINAE principle.
    template< typename MT2 >
    static constexpr bool VectorizedSchurAssign_v =
-      ( useOptimizedKernels &&
-        simdEnabled && MT2::simdEnabled &&
-        IsSIMDCombinable_v< ElementType, ElementType_t<MT2> > &&
+      ( VectorizedAssign_v<MT2> &&
         HasSIMDMult_v< ElementType, ElementType_t<MT2> > );
    //**********************************************************************************************
 
@@ -9847,23 +9833,25 @@ inline Submatrix<MT,aligned,true,true,CSAs...>::Submatrix( MT& matrix, RSAs... a
    : DataType( args... )  // Base class initialization
    , matrix_ ( matrix  )  // The matrix containing the submatrix
 {
-   if( !Contains_v< TypeList<RSAs...>, Unchecked > )
+   if( isChecked( args... ) )
    {
       if( ( row() + rows() > matrix_.rows() ) || ( column() + columns() > matrix_.columns() ) ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid submatrix specification" );
       }
 
-      if( ( simdEnabled && matrix_.data() != nullptr && !checkAlignment( data() ) ) ||
-          ( columns() > 1UL && matrix_.spacing() % SIMDSIZE != 0UL ) ) {
+      if( simdEnabled && IsContiguous_v<MT> &&
+          ( !checkAlignment( data() ) ||
+            ( columns() > 1UL && matrix_.spacing() % SIMDSIZE != 0UL ) ) ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid submatrix alignment" );
       }
    }
-   else {
-      BLAZE_INTERNAL_ASSERT( row()    + rows()    <= matrix_.rows()   , "Invalid submatrix specification" );
-      BLAZE_INTERNAL_ASSERT( column() + columns() <= matrix_.columns(), "Invalid submatrix specification" );
+   else
+   {
+      BLAZE_USER_ASSERT( row()    + rows()    <= matrix_.rows()   , "Invalid submatrix specification" );
+      BLAZE_USER_ASSERT( column() + columns() <= matrix_.columns(), "Invalid submatrix specification" );
 
-      BLAZE_INTERNAL_ASSERT( !simdEnabled || matrix_.data() == nullptr || checkAlignment( data() ), "Invalid submatrix alignment" );
-      BLAZE_INTERNAL_ASSERT( columns() <= 1UL || matrix_.spacing() % SIMDSIZE == 0UL, "Invalid submatrix alignment" );
+      BLAZE_USER_ASSERT( !simdEnabled || !IsContiguous_v<MT> || checkAlignment( data() ), "Invalid submatrix alignment" );
+      BLAZE_USER_ASSERT( !simdEnabled || !IsContiguous_v<MT> || columns() <= 1UL || matrix_.spacing() % SIMDSIZE == 0UL, "Invalid submatrix alignment" );
    }
 }
 /*! \endcond */
@@ -10325,7 +10313,7 @@ inline Submatrix<MT,aligned,true,true,CSAs...>&
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( rhs.canAlias( &matrix_ ) ) {
+   if( rhs.canAlias( this ) ) {
       const ResultType tmp( rhs );
       smpAssign( left, tmp );
    }
@@ -10364,12 +10352,12 @@ inline Submatrix<MT,aligned,true,true,CSAs...>&
 {
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_t<MT2> );
 
-   if( rows() != (~rhs).rows() || columns() != (~rhs).columns() ) {
+   if( rows() != (*rhs).rows() || columns() != (*rhs).columns() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
    using Right = If_t< IsRestricted_v<MT>, CompositeType_t<MT2>, const MT2& >;
-   Right right( ~rhs );
+   Right right( *rhs );
 
    if( !tryAssign( matrix_, right, row(), column() ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
@@ -10377,16 +10365,16 @@ inline Submatrix<MT,aligned,true,true,CSAs...>&
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( IsReference_v<Right> && right.canAlias( &matrix_ ) ) {
+   if( IsReference_v<Right> && right.canAlias( this ) ) {
       const ResultType_t<MT2> tmp( right );
       if( IsSparseMatrix_v<MT2> )
          reset();
-      smpAssign( left, tmp );
+      smpAssign( left, transIf< IsSymmetric_v<This> >( tmp ) );
    }
    else {
       if( IsSparseMatrix_v<MT2> )
          reset();
-      smpAssign( left, right );
+      smpAssign( left, transIf< IsSymmetric_v<This> >( right ) );
    }
 
    BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
@@ -10427,23 +10415,22 @@ inline auto Submatrix<MT,aligned,true,true,CSAs...>::operator+=( const Matrix<MT
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( AddType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( AddType );
 
-   if( rows() != (~rhs).rows() || columns() != (~rhs).columns() ) {
+   if( rows() != (*rhs).rows() || columns() != (*rhs).columns() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
-   if( !tryAddAssign( matrix_, ~rhs, row(), column() ) ) {
+   if( !tryAddAssign( matrix_, *rhs, row(), column() ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
    }
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( ( ( IsSymmetric_v<MT> || IsHermitian_v<MT> ) && hasOverlap() ) ||
-       (~rhs).canAlias( &matrix_ ) ) {
-      const AddType tmp( *this + (~rhs) );
-      smpAssign( left, tmp );
+   if( ( ( IsSymmetric_v<MT> || IsHermitian_v<MT> ) && hasOverlap() ) || (*rhs).canAlias( this ) ) {
+      const AddType tmp( *this + (*rhs) );
+      smpAssign( left, transIf< IsSymmetric_v<This> >( tmp ) );
    }
    else {
-      smpAddAssign( left, ~rhs );
+      smpAddAssign( left, transIf< IsSymmetric_v<This> >( *rhs ) );
    }
 
    BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
@@ -10484,11 +10471,11 @@ inline auto Submatrix<MT,aligned,true,true,CSAs...>::operator+=( const Matrix<MT
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( AddType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( AddType );
 
-   if( rows() != (~rhs).rows() || columns() != (~rhs).columns() ) {
+   if( rows() != (*rhs).rows() || columns() != (*rhs).columns() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
-   const AddType tmp( *this + (~rhs) );
+   const AddType tmp( *this + (*rhs) );
 
    if( !tryAssign( matrix_, tmp, row(), column() ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
@@ -10496,7 +10483,7 @@ inline auto Submatrix<MT,aligned,true,true,CSAs...>::operator+=( const Matrix<MT
 
    decltype(auto) left( derestrict( *this ) );
 
-   smpAssign( left, tmp );
+   smpAssign( left, transIf< IsSymmetric_v<This> >( tmp ) );
 
    BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
 
@@ -10536,23 +10523,22 @@ inline auto Submatrix<MT,aligned,true,true,CSAs...>::operator-=( const Matrix<MT
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( SubType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SubType );
 
-   if( rows() != (~rhs).rows() || columns() != (~rhs).columns() ) {
+   if( rows() != (*rhs).rows() || columns() != (*rhs).columns() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
-   if( !trySubAssign( matrix_, ~rhs, row(), column() ) ) {
+   if( !trySubAssign( matrix_, *rhs, row(), column() ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
    }
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( ( ( IsSymmetric_v<MT> || IsHermitian_v<MT> ) && hasOverlap() ) ||
-       (~rhs).canAlias( &matrix_ ) ) {
-      const SubType tmp( *this - (~rhs ) );
-      smpAssign( left, tmp );
+   if( ( ( IsSymmetric_v<MT> || IsHermitian_v<MT> ) && hasOverlap() ) || (*rhs).canAlias( this ) ) {
+      const SubType tmp( *this - (*rhs ) );
+      smpAssign( left, transIf< IsSymmetric_v<This> >( tmp ) );
    }
    else {
-      smpSubAssign( left, ~rhs );
+      smpSubAssign( left, transIf< IsSymmetric_v<This> >( *rhs ) );
    }
 
    BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
@@ -10593,11 +10579,11 @@ inline auto Submatrix<MT,aligned,true,true,CSAs...>::operator-=( const Matrix<MT
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( SubType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SubType );
 
-   if( rows() != (~rhs).rows() || columns() != (~rhs).columns() ) {
+   if( rows() != (*rhs).rows() || columns() != (*rhs).columns() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
-   const SubType tmp( *this - (~rhs) );
+   const SubType tmp( *this - (*rhs) );
 
    if( !tryAssign( matrix_, tmp, row(), column() ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
@@ -10605,7 +10591,7 @@ inline auto Submatrix<MT,aligned,true,true,CSAs...>::operator-=( const Matrix<MT
 
    decltype(auto) left( derestrict( *this ) );
 
-   smpAssign( left, tmp );
+   smpAssign( left, transIf< IsSymmetric_v<This> >( tmp ) );
 
    BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
 
@@ -10644,25 +10630,24 @@ inline auto Submatrix<MT,aligned,true,true,CSAs...>::operator%=( const Matrix<MT
 
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SchurType );
 
-   if( rows() != (~rhs).rows() || columns() != (~rhs).columns() ) {
+   if( rows() != (*rhs).rows() || columns() != (*rhs).columns() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
-   if( !trySchurAssign( matrix_, ~rhs, row(), column() ) ) {
+   if( !trySchurAssign( matrix_, *rhs, row(), column() ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
    }
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( ( ( IsSymmetric_v<MT> || IsHermitian_v<MT> ) && hasOverlap() ) ||
-       (~rhs).canAlias( &matrix_ ) ) {
-      const SchurType tmp( *this % (~rhs) );
+   if( ( ( IsSymmetric_v<MT> || IsHermitian_v<MT> ) && hasOverlap() ) || (*rhs).canAlias( this ) ) {
+      const SchurType tmp( *this % (*rhs) );
       if( IsSparseMatrix_v<SchurType> )
          reset();
-      smpAssign( left, tmp );
+      smpAssign( left, transIf< IsSymmetric_v<This> >( tmp ) );
    }
    else {
-      smpSchurAssign( left, ~rhs );
+      smpSchurAssign( left, transIf< IsSymmetric_v<This> >( *rhs ) );
    }
 
    BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
@@ -10702,11 +10687,11 @@ inline auto Submatrix<MT,aligned,true,true,CSAs...>::operator%=( const Matrix<MT
 
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SchurType );
 
-   if( rows() != (~rhs).rows() || columns() != (~rhs).columns() ) {
+   if( rows() != (*rhs).rows() || columns() != (*rhs).columns() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
-   const SchurType tmp( *this % (~rhs) );
+   const SchurType tmp( *this % (*rhs) );
 
    if( !tryAssign( matrix_, tmp, row(), column() ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
@@ -10718,7 +10703,7 @@ inline auto Submatrix<MT,aligned,true,true,CSAs...>::operator%=( const Matrix<MT
       reset();
    }
 
-   smpAssign( left, tmp );
+   smpAssign( left, transIf< IsSymmetric_v<This> >( tmp ) );
 
    BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
 
@@ -10814,7 +10799,7 @@ template< typename MT       // Type of the dense matrix
         , size_t... CSAs >  // Compile time submatrix arguments
 inline size_t Submatrix<MT,aligned,true,true,CSAs...>::capacity( size_t j ) const noexcept
 {
-   UNUSED_PARAMETER( j );
+   MAYBE_UNUSED( j );
 
    BLAZE_USER_ASSERT( j < columns(), "Invalid column access index" );
 
@@ -11127,7 +11112,7 @@ template< typename MT       // Type of the dense matrix
 template< typename Other >  // Data type of the foreign expression
 inline bool Submatrix<MT,aligned,true,true,CSAs...>::canAlias( const Other* alias ) const noexcept
 {
-   return matrix_.isAliased( alias );
+   return matrix_.isAliased( &unview( *alias ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -11179,7 +11164,7 @@ template< typename MT       // Type of the dense matrix
 template< typename Other >  // Data type of the foreign expression
 inline bool Submatrix<MT,aligned,true,true,CSAs...>::isAliased( const Other* alias ) const noexcept
 {
-   return matrix_.isAliased( alias );
+   return matrix_.isAliased( &unview( *alias ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -11339,7 +11324,6 @@ BLAZE_ALWAYS_INLINE typename Submatrix<MT,aligned,true,true,CSAs...>::SIMDType
 
    BLAZE_INTERNAL_ASSERT( i < rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( i + SIMDSIZE <= rows(), "Invalid row access index" );
-   BLAZE_INTERNAL_ASSERT( i % SIMDSIZE == 0UL, "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( j < columns(), "Invalid column access index" );
 
    return matrix_.loadu( row()+i, column()+j );
@@ -11434,7 +11418,6 @@ BLAZE_ALWAYS_INLINE void
 
    BLAZE_INTERNAL_ASSERT( i < rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( i + SIMDSIZE <= rows(), "Invalid row access index" );
-   BLAZE_INTERNAL_ASSERT( i % SIMDSIZE == 0UL, "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( j < columns(), "Invalid column access index" );
 
    matrix_.storeu( row()+i, column()+j, value );
@@ -11496,19 +11479,19 @@ template< typename MT2 >   // Type of the right-hand side dense matrix
 inline auto Submatrix<MT,aligned,true,true,CSAs...>::assign( const DenseMatrix<MT2,true>& rhs )
    -> DisableIf_t< VectorizedAssign_v<MT2> >
 {
-   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( columns() == (*rhs).columns(), "Invalid number of columns" );
 
-   const size_t ipos( rows() & size_t(-2) );
-   BLAZE_INTERNAL_ASSERT( ( rows() - ( rows() % 2UL ) ) == ipos, "Invalid end calculation" );
+   const size_t ipos( prevMultiple( rows(), 2UL ) );
+   BLAZE_INTERNAL_ASSERT( ipos <= rows(), "Invalid end calculation" );
 
    for( size_t j=0UL; j<columns(); ++j ) {
       for( size_t i=0UL; i<ipos; i+=2UL ) {
-         matrix_(row()+i    ,column()+j) = (~rhs)(i    ,j);
-         matrix_(row()+i+1UL,column()+j) = (~rhs)(i+1UL,j);
+         matrix_(row()+i    ,column()+j) = (*rhs)(i    ,j);
+         matrix_(row()+i+1UL,column()+j) = (*rhs)(i+1UL,j);
       }
       if( ipos < rows() ) {
-         matrix_(row()+ipos,column()+j) = (~rhs)(ipos,j);
+         matrix_(row()+ipos,column()+j) = (*rhs)(ipos,j);
       }
    }
 }
@@ -11536,21 +11519,21 @@ inline auto Submatrix<MT,aligned,true,true,CSAs...>::assign( const DenseMatrix<M
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
-   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( columns() == (*rhs).columns(), "Invalid number of columns" );
 
-   const size_t ipos( rows() & size_t(-SIMDSIZE) );
-   BLAZE_INTERNAL_ASSERT( ( rows() - ( rows() % (SIMDSIZE) ) ) == ipos, "Invalid end calculation" );
+   const size_t ipos( prevMultiple( rows(), SIMDSIZE ) );
+   BLAZE_INTERNAL_ASSERT( ipos <= rows(), "Invalid end calculation" );
 
    if( useStreaming &&
        rows()*columns() > ( cacheSize / ( sizeof(ElementType) * 3UL ) ) &&
-       !(~rhs).isAliased( &matrix_ ) )
+       !(*rhs).isAliased( this ) )
    {
       for( size_t j=0UL; j<columns(); ++j )
       {
          size_t i( 0UL );
          Iterator left( begin(j) );
-         ConstIterator_t<MT2> right( (~rhs).begin(j) );
+         ConstIterator_t<MT2> right( (*rhs).begin(j) );
 
          for( ; i<ipos; i+=SIMDSIZE ) {
             left.stream( right.load() ); left += SIMDSIZE; right += SIMDSIZE;
@@ -11566,7 +11549,7 @@ inline auto Submatrix<MT,aligned,true,true,CSAs...>::assign( const DenseMatrix<M
       {
          size_t i( 0UL );
          Iterator left( begin(j) );
-         ConstIterator_t<MT2> right( (~rhs).begin(j) );
+         ConstIterator_t<MT2> right( (*rhs).begin(j) );
 
          for( ; (i+SIMDSIZE*3UL) < ipos; i+=SIMDSIZE*4UL ) {
             left.store( right.load() ); left += SIMDSIZE; right += SIMDSIZE;
@@ -11606,8 +11589,8 @@ inline void Submatrix<MT,aligned,true,true,CSAs...>::assign( const DenseMatrix<M
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT2 );
 
-   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( columns() == (*rhs).columns(), "Invalid number of columns" );
 
    constexpr size_t block( BLOCK_SIZE );
 
@@ -11617,7 +11600,7 @@ inline void Submatrix<MT,aligned,true,true,CSAs...>::assign( const DenseMatrix<M
          const size_t iend( ( rows()<(ii+block) )?( rows() ):( ii+block ) );
          for( size_t j=jj; j<jend; ++j ) {
             for( size_t i=ii; i<iend; ++i ) {
-               matrix_(row()+i,column()+j) = (~rhs)(i,j);
+               matrix_(row()+i,column()+j) = (*rhs)(i,j);
             }
          }
       }
@@ -11644,11 +11627,11 @@ template< typename MT       // Type of the dense matrix
 template< typename MT2 >    // Type of the right-hand side sparse matrix
 inline void Submatrix<MT,aligned,true,true,CSAs...>::assign( const SparseMatrix<MT2,true>& rhs )
 {
-   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( columns() == (*rhs).columns(), "Invalid number of columns" );
 
    for( size_t j=0UL; j<columns(); ++j )
-      for( ConstIterator_t<MT2> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
+      for( ConstIterator_t<MT2> element=(*rhs).begin(j); element!=(*rhs).end(j); ++element )
          matrix_(row()+element->index(),column()+j) = element->value();
 }
 /*! \endcond */
@@ -11674,11 +11657,11 @@ inline void Submatrix<MT,aligned,true,true,CSAs...>::assign( const SparseMatrix<
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT2 );
 
-   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( columns() == (*rhs).columns(), "Invalid number of columns" );
 
    for( size_t i=0UL; i<rows(); ++i )
-      for( ConstIterator_t<MT2> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
+      for( ConstIterator_t<MT2> element=(*rhs).begin(i); element!=(*rhs).end(i); ++element )
          matrix_(row()+i,column()+element->index()) = element->value();
 }
 /*! \endcond */
@@ -11703,24 +11686,24 @@ template< typename MT2 >    // Type of the right-hand side dense matrix
 inline auto Submatrix<MT,aligned,true,true,CSAs...>::addAssign( const DenseMatrix<MT2,true>& rhs )
    -> DisableIf_t< VectorizedAddAssign_v<MT2> >
 {
-   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( columns() == (*rhs).columns(), "Invalid number of columns" );
 
-   const size_t ipos( rows() & size_t(-2) );
-   BLAZE_INTERNAL_ASSERT( ( rows() - ( rows() % 2UL ) ) == ipos, "Invalid end calculation" );
+   const size_t ipos( prevMultiple( rows(), 2UL ) );
+   BLAZE_INTERNAL_ASSERT( ipos <= rows(), "Invalid end calculation" );
 
    for( size_t j=0UL; j<columns(); ++j )
    {
       if( IsDiagonal_v<MT2> ) {
-         matrix_(row()+j,column()+j) += (~rhs)(j,j);
+         matrix_(row()+j,column()+j) += (*rhs)(j,j);
       }
       else {
          for( size_t i=0UL; i<ipos; i+=2UL ) {
-            matrix_(row()+i    ,column()+j) += (~rhs)(i    ,j);
-            matrix_(row()+i+1UL,column()+j) += (~rhs)(i+1UL,j);
+            matrix_(row()+i    ,column()+j) += (*rhs)(i    ,j);
+            matrix_(row()+i+1UL,column()+j) += (*rhs)(i+1UL,j);
          }
          if( ipos < rows() ) {
-            matrix_(row()+ipos,column()+j) += (~rhs)(ipos,j);
+            matrix_(row()+ipos,column()+j) += (*rhs)(ipos,j);
          }
       }
    }
@@ -11749,25 +11732,25 @@ inline auto Submatrix<MT,aligned,true,true,CSAs...>::addAssign( const DenseMatri
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
-   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( columns() == (*rhs).columns(), "Invalid number of columns" );
 
    for( size_t j=0UL; j<columns(); ++j )
    {
       const size_t ibegin( ( IsLower_v<MT> )
-                           ?( ( IsStrictlyLower_v<MT> ? j+1UL : j ) & size_t(-SIMDSIZE) )
+                           ?( prevMultiple( ( IsStrictlyLower_v<MT> ? j+1UL : j ), SIMDSIZE ) )
                            :( 0UL ) );
       const size_t iend  ( ( IsUpper_v<MT> )
                            ?( IsStrictlyUpper_v<MT> ? j : j+1UL )
                            :( rows() ) );
       BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
 
-      const size_t ipos( iend & size_t(-SIMDSIZE) );
-      BLAZE_INTERNAL_ASSERT( ( iend - ( iend % (SIMDSIZE) ) ) == ipos, "Invalid end calculation" );
+      const size_t ipos( prevMultiple( iend, SIMDSIZE ) );
+      BLAZE_INTERNAL_ASSERT( ipos <= iend, "Invalid end calculation" );
 
       size_t i( ibegin );
       Iterator left( begin(j) + ibegin );
-      ConstIterator_t<MT2> right( (~rhs).begin(j) + ibegin );
+      ConstIterator_t<MT2> right( (*rhs).begin(j) + ibegin );
 
       for( ; (i+SIMDSIZE*3UL) < ipos; i+=SIMDSIZE*4UL ) {
          left.store( left.load() + right.load() ); left += SIMDSIZE; right += SIMDSIZE;
@@ -11806,8 +11789,8 @@ inline void Submatrix<MT,aligned,true,true,CSAs...>::addAssign( const DenseMatri
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT2 );
 
-   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( columns() == (*rhs).columns(), "Invalid number of columns" );
 
    constexpr size_t block( BLOCK_SIZE );
 
@@ -11817,7 +11800,7 @@ inline void Submatrix<MT,aligned,true,true,CSAs...>::addAssign( const DenseMatri
          const size_t iend( ( rows()<(ii+block) )?( rows() ):( ii+block ) );
          for( size_t j=jj; j<jend; ++j ) {
             for( size_t i=ii; i<iend; ++i ) {
-               matrix_(row()+i,column()+j) += (~rhs)(i,j);
+               matrix_(row()+i,column()+j) += (*rhs)(i,j);
             }
          }
       }
@@ -11844,11 +11827,11 @@ template< typename MT       // Type of the dense matrix
 template< typename MT2 >    // Type of the right-hand side sparse matrix
 inline void Submatrix<MT,aligned,true,true,CSAs...>::addAssign( const SparseMatrix<MT2,true>& rhs )
 {
-   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( columns() == (*rhs).columns(), "Invalid number of columns" );
 
    for( size_t j=0UL; j<columns(); ++j )
-      for( ConstIterator_t<MT2> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
+      for( ConstIterator_t<MT2> element=(*rhs).begin(j); element!=(*rhs).end(j); ++element )
          matrix_(row()+element->index(),column()+j) += element->value();
 }
 /*! \endcond */
@@ -11874,11 +11857,11 @@ inline void Submatrix<MT,aligned,true,true,CSAs...>::addAssign( const SparseMatr
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT2 );
 
-   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( columns() == (*rhs).columns(), "Invalid number of columns" );
 
    for( size_t i=0UL; i<rows(); ++i )
-      for( ConstIterator_t<MT2> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
+      for( ConstIterator_t<MT2> element=(*rhs).begin(i); element!=(*rhs).end(i); ++element )
          matrix_(row()+i,column()+element->index()) += element->value();
 }
 /*! \endcond */
@@ -11903,24 +11886,24 @@ template< typename MT2 >    // Type of the right-hand side dense matrix
 inline auto Submatrix<MT,aligned,true,true,CSAs...>::subAssign( const DenseMatrix<MT2,true>& rhs )
    -> DisableIf_t< VectorizedSubAssign_v<MT2> >
 {
-   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( columns() == (*rhs).columns(), "Invalid number of columns" );
 
-   const size_t ipos( rows() & size_t(-2) );
-   BLAZE_INTERNAL_ASSERT( ( rows() - ( rows() % 2UL ) ) == ipos, "Invalid end calculation" );
+   const size_t ipos( prevMultiple( rows(), 2UL ) );
+   BLAZE_INTERNAL_ASSERT( ipos <= rows(), "Invalid end calculation" );
 
    for( size_t j=0UL; j<columns(); ++j )
    {
       if( IsDiagonal_v<MT2> ) {
-         matrix_(row()+j,column()+j) -= (~rhs)(j,j);
+         matrix_(row()+j,column()+j) -= (*rhs)(j,j);
       }
       else {
          for( size_t i=0UL; i<ipos; i+=2UL ) {
-            matrix_(row()+i    ,column()+j) -= (~rhs)(i    ,j);
-            matrix_(row()+i+1UL,column()+j) -= (~rhs)(i+1UL,j);
+            matrix_(row()+i    ,column()+j) -= (*rhs)(i    ,j);
+            matrix_(row()+i+1UL,column()+j) -= (*rhs)(i+1UL,j);
          }
          if( ipos < rows() ) {
-            matrix_(row()+ipos,column()+j) -= (~rhs)(ipos,j);
+            matrix_(row()+ipos,column()+j) -= (*rhs)(ipos,j);
          }
       }
    }
@@ -11949,25 +11932,25 @@ inline auto Submatrix<MT,aligned,true,true,CSAs...>::subAssign( const DenseMatri
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
-   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( columns() == (*rhs).columns(), "Invalid number of columns" );
 
    for( size_t j=0UL; j<columns(); ++j )
    {
       const size_t ibegin( ( IsLower_v<MT> )
-                           ?( ( IsStrictlyLower_v<MT> ? j+1UL : j ) & size_t(-SIMDSIZE) )
+                           ?( prevMultiple( ( IsStrictlyLower_v<MT> ? j+1UL : j ), SIMDSIZE ) )
                            :( 0UL ) );
       const size_t iend  ( ( IsUpper_v<MT> )
                            ?( IsStrictlyUpper_v<MT> ? j : j+1UL )
                            :( rows() ) );
       BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
 
-      const size_t ipos( iend & size_t(-SIMDSIZE) );
-      BLAZE_INTERNAL_ASSERT( ( iend - ( iend % (SIMDSIZE) ) ) == ipos, "Invalid end calculation" );
+      const size_t ipos( prevMultiple( iend, SIMDSIZE ) );
+      BLAZE_INTERNAL_ASSERT( ipos <= iend, "Invalid end calculation" );
 
       size_t i( ibegin );
       Iterator left( begin(j) + ibegin );
-      ConstIterator_t<MT2> right( (~rhs).begin(j) + ibegin );
+      ConstIterator_t<MT2> right( (*rhs).begin(j) + ibegin );
 
       for( ; (i+SIMDSIZE*3UL) < ipos; i+=SIMDSIZE*4UL ) {
          left.store( left.load() - right.load() ); left += SIMDSIZE; right += SIMDSIZE;
@@ -12006,8 +11989,8 @@ inline void Submatrix<MT,aligned,true,true,CSAs...>::subAssign( const DenseMatri
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT2 );
 
-   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( columns() == (*rhs).columns(), "Invalid number of columns" );
 
    constexpr size_t block( BLOCK_SIZE );
 
@@ -12017,7 +12000,7 @@ inline void Submatrix<MT,aligned,true,true,CSAs...>::subAssign( const DenseMatri
          const size_t iend( ( rows()<(ii+block) )?( rows() ):( ii+block ) );
          for( size_t j=jj; j<jend; ++j ) {
             for( size_t i=ii; i<iend; ++i ) {
-               matrix_(row()+i,column()+j) -= (~rhs)(i,j);
+               matrix_(row()+i,column()+j) -= (*rhs)(i,j);
             }
          }
       }
@@ -12044,11 +12027,11 @@ template< typename MT       // Type of the dense matrix
 template< typename MT2 >    // Type of the right-hand side sparse matrix
 inline void Submatrix<MT,aligned,true,true,CSAs...>::subAssign( const SparseMatrix<MT2,true>& rhs )
 {
-   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( columns() == (*rhs).columns(), "Invalid number of columns" );
 
    for( size_t j=0UL; j<columns(); ++j )
-      for( ConstIterator_t<MT2> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
+      for( ConstIterator_t<MT2> element=(*rhs).begin(j); element!=(*rhs).end(j); ++element )
          matrix_(row()+element->index(),column()+j) -= element->value();
 }
 /*! \endcond */
@@ -12074,11 +12057,11 @@ inline void Submatrix<MT,aligned,true,true,CSAs...>::subAssign( const SparseMatr
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT2 );
 
-   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( columns() == (*rhs).columns(), "Invalid number of columns" );
 
    for( size_t i=0UL; i<rows(); ++i )
-      for( ConstIterator_t<MT2> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
+      for( ConstIterator_t<MT2> element=(*rhs).begin(i); element!=(*rhs).end(i); ++element )
          matrix_(row()+i,column()+element->index()) -= element->value();
 }
 /*! \endcond */
@@ -12103,19 +12086,19 @@ template< typename MT2 >    // Type of the right-hand side dense matrix
 inline auto Submatrix<MT,aligned,true,true,CSAs...>::schurAssign( const DenseMatrix<MT2,true>& rhs )
    -> DisableIf_t< VectorizedSchurAssign_v<MT2> >
 {
-   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( columns() == (*rhs).columns(), "Invalid number of columns" );
 
-   const size_t ipos( rows() & size_t(-2) );
-   BLAZE_INTERNAL_ASSERT( ( rows() - ( rows() % 2UL ) ) == ipos, "Invalid end calculation" );
+   const size_t ipos( prevMultiple( rows(), 2UL ) );
+   BLAZE_INTERNAL_ASSERT( ipos <= rows(), "Invalid end calculation" );
 
    for( size_t j=0UL; j<columns(); ++j ) {
       for( size_t i=0UL; i<ipos; i+=2UL ) {
-         matrix_(row()+i    ,column()+j) *= (~rhs)(i    ,j);
-         matrix_(row()+i+1UL,column()+j) *= (~rhs)(i+1UL,j);
+         matrix_(row()+i    ,column()+j) *= (*rhs)(i    ,j);
+         matrix_(row()+i+1UL,column()+j) *= (*rhs)(i+1UL,j);
       }
       if( ipos < rows() ) {
-         matrix_(row()+ipos,column()+j) *= (~rhs)(ipos,j);
+         matrix_(row()+ipos,column()+j) *= (*rhs)(ipos,j);
       }
    }
 }
@@ -12144,17 +12127,17 @@ inline auto Submatrix<MT,aligned,true,true,CSAs...>::schurAssign( const DenseMat
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
-   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( columns() == (*rhs).columns(), "Invalid number of columns" );
 
    for( size_t j=0UL; j<columns(); ++j )
    {
-      const size_t ipos( rows() & size_t(-SIMDSIZE) );
-      BLAZE_INTERNAL_ASSERT( ( rows() - ( rows() % (SIMDSIZE) ) ) == ipos, "Invalid end calculation" );
+      const size_t ipos( prevMultiple( rows(), SIMDSIZE ) );
+      BLAZE_INTERNAL_ASSERT( ipos <= rows(), "Invalid end calculation" );
 
       size_t i( 0UL );
       Iterator left( begin(j) );
-      ConstIterator_t<MT2> right( (~rhs).begin(j) );
+      ConstIterator_t<MT2> right( (*rhs).begin(j) );
 
       for( ; (i+SIMDSIZE*3UL) < ipos; i+=SIMDSIZE*4UL ) {
          left.store( left.load() * right.load() ); left += SIMDSIZE; right += SIMDSIZE;
@@ -12193,8 +12176,8 @@ inline void Submatrix<MT,aligned,true,true,CSAs...>::schurAssign( const DenseMat
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT2 );
 
-   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( columns() == (*rhs).columns(), "Invalid number of columns" );
 
    constexpr size_t block( BLOCK_SIZE );
 
@@ -12204,7 +12187,7 @@ inline void Submatrix<MT,aligned,true,true,CSAs...>::schurAssign( const DenseMat
          const size_t iend( ( rows()<(ii+block) )?( rows() ):( ii+block ) );
          for( size_t j=jj; j<jend; ++j ) {
             for( size_t i=ii; i<iend; ++i ) {
-               matrix_(row()+i,column()+j) *= (~rhs)(i,j);
+               matrix_(row()+i,column()+j) *= (*rhs)(i,j);
             }
          }
       }
@@ -12233,14 +12216,14 @@ inline void Submatrix<MT,aligned,true,true,CSAs...>::schurAssign( const SparseMa
 {
    using blaze::reset;
 
-   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( columns() == (*rhs).columns(), "Invalid number of columns" );
 
    for( size_t j=0UL; j<columns(); ++j )
    {
       size_t i( 0UL );
 
-      for( ConstIterator_t<MT2> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element ) {
+      for( ConstIterator_t<MT2> element=(*rhs).begin(j); element!=(*rhs).end(j); ++element ) {
          for( ; i<element->index(); ++i )
             reset( matrix_(row()+i,column()+j) );
          matrix_(row()+i,column()+j) *= element->value();
@@ -12277,14 +12260,14 @@ inline void Submatrix<MT,aligned,true,true,CSAs...>::schurAssign( const SparseMa
 
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT2 );
 
-   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( columns() == (*rhs).columns(), "Invalid number of columns" );
 
    for( size_t i=0UL; i<rows(); ++i )
    {
       size_t j( 0UL );
 
-      for( ConstIterator_t<MT2> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element ) {
+      for( ConstIterator_t<MT2> element=(*rhs).begin(i); element!=(*rhs).end(i); ++element ) {
          for( ; j<element->index(); ++j )
             reset( matrix_(row()+i,column()+j) );
          matrix_(row()+i,column()+j) *= element->value();

@@ -3,7 +3,7 @@
 //  \file blaze/math/expressions/DVecDVecInnerExpr.h
 //  \brief Header file for the dense vector/dense vector inner product expression
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -43,15 +43,16 @@
 #include <blaze/math/Aliases.h>
 #include <blaze/math/Exception.h>
 #include <blaze/math/expressions/DenseVector.h>
+#include <blaze/math/shims/PrevMultiple.h>
 #include <blaze/math/SIMD.h>
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/typetraits/HasSIMDAdd.h>
 #include <blaze/math/typetraits/HasSIMDMult.h>
 #include <blaze/math/typetraits/IsPadded.h>
 #include <blaze/math/typetraits/IsSIMDCombinable.h>
+#include <blaze/system/MacroDisable.h>
 #include <blaze/system/Optimizations.h>
 #include <blaze/util/Assert.h>
-#include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/FunctionTrace.h>
 #include <blaze/util/Types.h>
@@ -121,9 +122,9 @@ struct DVecDVecInnerExprHelper
 */
 template< typename VT1    // Type of the left-hand side dense vector
         , typename VT2 >  // Type of the right-hand side dense vector
-inline DisableIf_t< DVecDVecInnerExprHelper<VT1,VT2>::value
-                  , const MultTrait_t< ElementType_t<VT1>, ElementType_t<VT2> > >
-   dvecdvecinner( const DenseVector<VT1,true>& lhs, const DenseVector<VT2,false>& rhs )
+inline auto dvecdvecinner( const DenseVector<VT1,true>& lhs, const DenseVector<VT2,false>& rhs )
+   -> DisableIf_t< DVecDVecInnerExprHelper<VT1,VT2>::value
+                 , const MultTrait_t< ElementType_t<VT1>, ElementType_t<VT2> > >
 {
    using CT1      = CompositeType_t<VT1>;
    using CT2      = CompositeType_t<VT2>;
@@ -131,12 +132,12 @@ inline DisableIf_t< DVecDVecInnerExprHelper<VT1,VT2>::value
    using ET2      = ElementType_t<VT2>;
    using MultType = MultTrait_t<ET1,ET2>;
 
-   BLAZE_INTERNAL_ASSERT( (~lhs).size() == (~rhs).size(), "Invalid vector sizes" );
+   BLAZE_INTERNAL_ASSERT( (*lhs).size() == (*rhs).size(), "Invalid vector sizes" );
 
-   if( (~lhs).size() == 0UL ) return MultType();
+   if( (*lhs).size() == 0UL ) return MultType();
 
-   CT1 left ( ~lhs );
-   CT2 right( ~rhs );
+   CT1 left ( *lhs );
+   CT2 right( *rhs );
 
    MultType sp( left[0UL] * right[0UL] );
    size_t i( 1UL );
@@ -177,9 +178,9 @@ inline DisableIf_t< DVecDVecInnerExprHelper<VT1,VT2>::value
 */
 template< typename VT1    // Type of the left-hand side dense vector
         , typename VT2 >  // Type of the right-hand side dense vector
-inline EnableIf_t< DVecDVecInnerExprHelper<VT1,VT2>::value
-                 , const MultTrait_t< ElementType_t<VT1>, ElementType_t<VT2> > >
-   dvecdvecinner( const DenseVector<VT1,true>& lhs, const DenseVector<VT2,false>& rhs )
+inline auto dvecdvecinner( const DenseVector<VT1,true>& lhs, const DenseVector<VT2,false>& rhs )
+   -> EnableIf_t< DVecDVecInnerExprHelper<VT1,VT2>::value
+                , const MultTrait_t< ElementType_t<VT1>, ElementType_t<VT2> > >
 {
    using CT1      = CompositeType_t<VT1>;
    using CT2      = CompositeType_t<VT2>;
@@ -189,20 +190,20 @@ inline EnableIf_t< DVecDVecInnerExprHelper<VT1,VT2>::value
    using ET2      = ElementType_t<VT2>;
    using MultType = MultTrait_t<ET1,ET2>;
 
-   BLAZE_INTERNAL_ASSERT( (~lhs).size() == (~rhs).size(), "Invalid vector sizes" );
+   BLAZE_INTERNAL_ASSERT( (*lhs).size() == (*rhs).size(), "Invalid vector sizes" );
 
-   if( (~lhs).size() == 0UL ) return MultType();
+   if( (*lhs).size() == 0UL ) return MultType();
 
-   CT1 left ( ~lhs );
-   CT2 right( ~rhs );
+   CT1 left ( *lhs );
+   CT2 right( *rhs );
 
    constexpr size_t SIMDSIZE = SIMDTrait<MultType>::size;
-   constexpr bool remainder( !usePadding || !IsPadded_v<XT1> || !IsPadded_v<XT2> );
+   constexpr bool remainder( !IsPadded_v<XT1> || !IsPadded_v<XT2> );
 
    const size_t N( left.size() );
 
-   const size_t ipos( ( remainder )?( N & size_t(-SIMDSIZE) ):( N ) );
-   BLAZE_INTERNAL_ASSERT( !remainder || ( N - ( N % SIMDSIZE ) ) == ipos, "Invalid end calculation" );
+   const size_t ipos( remainder ? prevMultiple( N, SIMDSIZE ): N );
+   BLAZE_INTERNAL_ASSERT( ipos <= N, "Invalid end calculation" );
 
    SIMDTrait_t<MultType> xmm1, xmm2, xmm3, xmm4;
    size_t i( 0UL );
@@ -266,11 +267,11 @@ inline decltype(auto)
 {
    BLAZE_FUNCTION_TRACE;
 
-   if( (~lhs).size() != (~rhs).size() ) {
+   if( (*lhs).size() != (*rhs).size() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   return dvecdvecinner( ~lhs, ~rhs );
+   return dvecdvecinner( *lhs, *rhs );
 }
 //*************************************************************************************************
 

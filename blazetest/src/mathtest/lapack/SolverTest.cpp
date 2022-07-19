@@ -3,7 +3,7 @@
 //  \file src/mathtest/lapack/SolverTest.cpp
 //  \brief Source file for the LAPACK solver test
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -41,6 +41,10 @@
 #include <iostream>
 #include <blaze/util/Complex.h>
 #include <blazetest/mathtest/lapack/SolverTest.h>
+
+#ifdef BLAZE_USE_HPX_THREADS
+#  include <hpx/hpx_main.hpp>
+#endif
 
 
 namespace blazetest {

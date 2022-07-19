@@ -3,7 +3,7 @@
 //  \file blaze/math/adaptors/unilowermatrix/BaseTemplate.h
 //  \brief Header file for the implementation of the base template of the UniLowerMatrix
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -68,8 +68,12 @@ namespace blaze {
 // can be specified via the first template parameter:
 
    \code
+   namespace blaze {
+
    template< typename MT, bool SO, bool DF >
    class UniLowerMatrix;
+
+   } // namespace blaze
    \endcode
 
 //  - MT: specifies the type of the matrix to be adapted. UniLowerMatrix can be used with any

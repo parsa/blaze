@@ -3,7 +3,7 @@
 //  \file blaze/util/typetraits/Any.h
 //  \brief Header file for the Any type trait
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -60,7 +60,7 @@ namespace blaze {
 // at least one of the given types \a Ts. If the expression
 
    \code
-   Or< TypeTrait<Ts>... >::value
+   Or_t< TypeTrait<Ts>... >::value
    \endcode
 
 // evaluates to \a true, the \a value member constant is set to \a true, the nested type definition
@@ -81,7 +81,7 @@ template< template< typename > class TypeTrait  // Type trait to be evaluated on
         , typename T2                           // Type of the second mandatory operand
         , typename... Ts >                      // Types of the optional operands
 struct Any
-   : public BoolConstant< Or< TypeTrait<T1>, TypeTrait<T2>, TypeTrait<Ts>... >::value >
+   : public BoolConstant< Or_t< TypeTrait<T1>, TypeTrait<T2>, TypeTrait<Ts>... >::value >
 {};
 //*************************************************************************************************
 

@@ -3,7 +3,7 @@
 //  \file blaze/math/expressions/DVecTransposer.h
 //  \brief Header file for the dense vector transposer
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -50,10 +50,12 @@
 #include <blaze/math/typetraits/HasConstDataAccess.h>
 #include <blaze/math/typetraits/HasMutableDataAccess.h>
 #include <blaze/math/typetraits/IsAligned.h>
+#include <blaze/math/typetraits/IsContiguous.h>
 #include <blaze/math/typetraits/IsPadded.h>
 #include <blaze/math/typetraits/MaxSize.h>
 #include <blaze/math/typetraits/Size.h>
 #include <blaze/system/Inline.h>
+#include <blaze/system/MacroDisable.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/Types.h>
 
@@ -80,6 +82,7 @@ class DVecTransposer
  public:
    //**Type definitions****************************************************************************
    using This           = DVecTransposer<VT,TF>;     //!< Type of this DVecTransposer instance.
+   using BaseType       = DenseVector<This,TF>;      //!< Base type of this DVecTransposer instance.
    using ResultType     = TransposeType_t<VT>;       //!< Result type for expression template evaluations.
    using TransposeType  = ResultType_t<VT>;          //!< Transpose type for expression template evaluations.
    using ElementType    = ElementType_t<VT>;         //!< Type of the vector elements.
@@ -464,7 +467,7 @@ class DVecTransposer
    {
       BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( VT2, TF );
 
-      dv_.assign( trans( ~rhs ) );
+      dv_.assign( trans( *rhs ) );
    }
    //**********************************************************************************************
 
@@ -484,7 +487,7 @@ class DVecTransposer
    {
       BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( VT2, TF );
 
-      dv_.addAssign( trans( ~rhs ) );
+      dv_.addAssign( trans( *rhs ) );
    }
    //**********************************************************************************************
 
@@ -504,7 +507,7 @@ class DVecTransposer
    {
       BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( VT2, TF );
 
-      dv_.subAssign( trans( ~rhs ) );
+      dv_.subAssign( trans( *rhs ) );
    }
    //**********************************************************************************************
 
@@ -524,7 +527,7 @@ class DVecTransposer
    {
       BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( VT2, TF );
 
-      dv_.multAssign( trans( ~rhs ) );
+      dv_.multAssign( trans( *rhs ) );
    }
    //**********************************************************************************************
 
@@ -544,7 +547,7 @@ class DVecTransposer
    {
       BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( VT2, TF );
 
-      dv_.divAssign( trans( ~rhs ) );
+      dv_.divAssign( trans( *rhs ) );
    }
    //**********************************************************************************************
 
@@ -571,24 +574,6 @@ class DVecTransposer
 //  GLOBAL OPERATORS
 //
 //=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Resetting the dense vector contained in a DVecTransposer.
-// \ingroup dense_vector_expression
-//
-// \param v The dense vector to be resetted.
-// \return void
-*/
-template< typename VT  // Type of the dense vector
-        , bool TF >    // Transpose flag
-inline void reset( DVecTransposer<VT,TF>& v )
-{
-   v.reset();
-}
-/*! \endcond */
-//*************************************************************************************************
-
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
@@ -693,6 +678,24 @@ struct HasMutableDataAccess< DVecTransposer<VT,TF> >
 template< typename VT, bool TF >
 struct IsAligned< DVecTransposer<VT,TF> >
    : public IsAligned<VT>
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  ISCONTIGUOUS SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename VT, bool TF >
+struct IsContiguous< DVecTransposer<VT,TF> >
+   : public IsContiguous<VT>
 {};
 /*! \endcond */
 //*************************************************************************************************

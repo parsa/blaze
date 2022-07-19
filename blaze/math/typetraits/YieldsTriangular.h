@@ -3,7 +3,7 @@
 //  \file blaze/math/typetraits/YieldsTriangular.h
 //  \brief Header file for the YieldsTriangular type trait
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -112,7 +112,7 @@ struct YieldsTriangular< const volatile OP, MT, MTs... >
 
 //*************************************************************************************************
 /*!\brief Auxiliary variable template for the YieldsTriangular type trait.
-// \ingroup type_traits
+// \ingroup math_type_traits
 //
 // The YieldsTriangular_v variable template provides a convenient shortcut to access the nested
 // \a value of the YieldsTriangular class template. For instance, given the operation \a OP and

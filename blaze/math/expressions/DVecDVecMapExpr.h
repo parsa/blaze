@@ -3,7 +3,7 @@
 //  \file blaze/math/expressions/DVecDVecMapExpr.h
 //  \brief Header file for the dense vector/dense vector map expression
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -51,28 +51,40 @@
 #include <blaze/math/expressions/DenseVector.h>
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/expressions/VecVecMapExpr.h>
+#include <blaze/math/functors/And.h>
 #include <blaze/math/functors/Atan2.h>
+#include <blaze/math/functors/Bitand.h>
+#include <blaze/math/functors/Bitor.h>
+#include <blaze/math/functors/Bitxor.h>
 #include <blaze/math/functors/Hypot.h>
+#include <blaze/math/functors/Join.h>
+#include <blaze/math/functors/MakePair.h>
 #include <blaze/math/functors/Max.h>
 #include <blaze/math/functors/Min.h>
+#include <blaze/math/functors/Or.h>
 #include <blaze/math/functors/Pow.h>
+#include <blaze/math/functors/ShiftLV.h>
+#include <blaze/math/functors/ShiftRV.h>
 #include <blaze/math/shims/Serial.h>
 #include <blaze/math/SIMD.h>
 #include <blaze/math/traits/MapTrait.h>
+#include <blaze/math/typetraits/HasLoad.h>
 #include <blaze/math/typetraits/IsAligned.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsPadded.h>
+#include <blaze/math/typetraits/IsPaddingEnabled.h>
+#include <blaze/math/typetraits/IsSIMDEnabled.h>
+#include <blaze/math/typetraits/IsVector.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
+#include <blaze/system/HostDevice.h>
 #include <blaze/system/Inline.h>
+#include <blaze/system/MacroDisable.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/FunctionTrace.h>
 #include <blaze/util/IntegralConstant.h>
 #include <blaze/util/mpl/If.h>
-#include <blaze/util/Template.h>
 #include <blaze/util/Types.h>
-#include <blaze/util/typetraits/HasMember.h>
-#include <blaze/util/typetraits/IsSame.h>
 
 
 namespace blaze {
@@ -108,22 +120,15 @@ class DVecDVecMapExpr
    using RN2 = ReturnType_t<VT2>;     //!< Return type of the right-hand side dense vector expression.
    using CT1 = CompositeType_t<VT1>;  //!< Composite type of the left-hand side dense vector expression.
    using CT2 = CompositeType_t<VT2>;  //!< Composite type of the right-hand side dense vector expression.
-
-   //! Definition of the HasSIMDEnabled type trait.
-   BLAZE_CREATE_HAS_DATA_OR_FUNCTION_MEMBER_TYPE_TRAIT( HasSIMDEnabled, simdEnabled );
-
-   //! Definition of the HasLoad type trait.
-   BLAZE_CREATE_HAS_DATA_OR_FUNCTION_MEMBER_TYPE_TRAIT( HasLoad, load );
    //**********************************************************************************************
 
    //**Serial evaluation strategy******************************************************************
    //! Compilation switch for the serial evaluation strategy of the map expression.
-   /*! The \a useAssign compile time constant expression represents a compilation switch for
-       the serial evaluation strategy of the map expression. In case either of the two dense
-       vector operands requires an intermediate evaluation, \a useAssign will be set to 1 and
-       the addition expression will be evaluated via the \a assign function family. Otherwise
-       \a useAssign will be set to 0 and the expression will be evaluated via the subscript
-       operator. */
+   /*! The \a useAssign compile time constant expression represents a compilation switch for the
+       serial evaluation strategy of the map expression. In case either of the two dense vector
+       operands requires an intermediate evaluation, \a useAssign will be set to \a true and the
+       map expression will be evaluated via the \a assign function family. Otherwise \a useAssign
+       will be set to \a false and the expression will be evaluated via the subscript operator. */
    static constexpr bool useAssign = ( RequiresEvaluation_v<VT1> || RequiresEvaluation_v<VT2> );
 
    /*! \cond BLAZE_INTERNAL */
@@ -138,32 +143,26 @@ class DVecDVecMapExpr
    //! Helper variable template for the explicit application of the SFINAE principle.
    /*! This variable template is a helper for the selection of the parallel evaluation strategy.
        In case at least one of the two dense vector operands is not SMP assignable and at least
-       one of the two operands requires an intermediate evaluation, the variable is set to 1 and
-       the expression specific evaluation strategy is selected. Otherwise the variable is set to
-       0 and the default strategy is chosen. */
+       one of the two operands requires an intermediate evaluation, the variable is set to \a true
+       and the expression specific evaluation strategy is selected. Otherwise the variable is set
+       to \a false and the default strategy is chosen. */
    template< typename VT >
    static constexpr bool UseSMPAssign_v =
       ( ( !VT1::smpAssignable || !VT2::smpAssignable ) && useAssign );
    /*! \endcond */
    //**********************************************************************************************
 
-   //**SIMD support detection**********************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   //! Helper structure for the detection of the SIMD capabilities of the given custom operation.
-   struct UseSIMDEnabledFlag {
-      static constexpr bool test( bool (*fnc)() ) { return fnc(); }
-      static constexpr bool test( bool b ) { return b; }
-      static constexpr bool value = test( OP::BLAZE_TEMPLATE simdEnabled<ET1,ET2> );
-   };
-   /*! \endcond */
-   //**********************************************************************************************
-
  public:
    //**Type definitions****************************************************************************
-   using This          = DVecDVecMapExpr<VT1,VT2,OP,TF>;  //!< Type of this DVecDVecMapExpr instance.
-   using ResultType    = MapTrait_t<RT1,RT2,OP>;          //!< Result type for expression template evaluations.
-   using TransposeType = TransposeType_t<ResultType>;     //!< Transpose type for expression template evaluations.
-   using ElementType   = ElementType_t<ResultType>;       //!< Resulting element type.
+   //! Type of this DVecDVecMapExpr instance.
+   using This = DVecDVecMapExpr<VT1,VT2,OP,TF>;
+
+   //! Base type of this DVecDVecMapExpr instance.
+   using BaseType = VecVecMapExpr< DenseVector<This,TF> >;
+
+   using ResultType    = MapTrait_t<RT1,RT2,OP>;       //!< Result type for expression template evaluations.
+   using TransposeType = TransposeType_t<ResultType>;  //!< Transpose type for expression template evaluations.
+   using ElementType   = ElementType_t<ResultType>;    //!< Resulting element type.
 
    //! Return type for expression template evaluations.
    using ReturnType = decltype( std::declval<OP>()( std::declval<RN1>(), std::declval<RN2>() ) );
@@ -177,7 +176,7 @@ class DVecDVecMapExpr
    //! Composite type of the right-hand side dense vector expression.
    using RightOperand = If_t< IsExpression_v<VT2>, const VT2, const VT2& >;
 
-   //! Data type of the custom unary operation.
+   //! Data type of the custom binary operation.
    using Operation = OP;
 
    //! Type for the assignment of the left-hand side dense vector operand.
@@ -219,12 +218,12 @@ class DVecDVecMapExpr
       //
       // \param left Iterator to the initial left-hand side element.
       // \param right Iterator to the initial right-hand side element.
-      // \param op The custom unary operation.
+      // \param op The custom binary operation.
       */
-      explicit inline ConstIterator( LeftIteratorType left, RightIteratorType right, OP op )
-         : left_ ( left  )  // Iterator to the current left-hand side element
-         , right_( right )  // Iterator to the current right-hand side element
-         , op_   ( op    )  // The custom unary operation
+      inline ConstIterator( LeftIteratorType left, RightIteratorType right, OP op )
+         : left_ ( left  )          // Iterator to the current left-hand side element
+         , right_( right )          // Iterator to the current right-hand side element
+         , op_   ( std::move(op) )  // The custom binary operation
       {}
       //*******************************************************************************************
 
@@ -234,7 +233,7 @@ class DVecDVecMapExpr
       // \param inc The increment of the iterator.
       // \return The incremented iterator.
       */
-      inline ConstIterator& operator+=( size_t inc ) {
+      inline BLAZE_DEVICE_CALLABLE ConstIterator& operator+=( size_t inc ) {
          left_  += inc;
          right_ += inc;
          return *this;
@@ -247,7 +246,7 @@ class DVecDVecMapExpr
       // \param dec The decrement of the iterator.
       // \return The decremented iterator.
       */
-      inline ConstIterator& operator-=( size_t dec ) {
+      inline BLAZE_DEVICE_CALLABLE ConstIterator& operator-=( size_t dec ) {
          left_  -= dec;
          right_ -= dec;
          return *this;
@@ -259,7 +258,7 @@ class DVecDVecMapExpr
       //
       // \return Reference to the incremented iterator.
       */
-      inline ConstIterator& operator++() {
+      inline BLAZE_DEVICE_CALLABLE ConstIterator& operator++() {
          ++left_;
          ++right_;
          return *this;
@@ -271,7 +270,7 @@ class DVecDVecMapExpr
       //
       // \return The previous position of the iterator.
       */
-      inline const ConstIterator operator++( int ) {
+      inline BLAZE_DEVICE_CALLABLE const ConstIterator operator++( int ) {
          return ConstIterator( left_++, right_++, op_ );
       }
       //*******************************************************************************************
@@ -281,7 +280,7 @@ class DVecDVecMapExpr
       //
       // \return Reference to the decremented iterator.
       */
-      inline ConstIterator& operator--() {
+      inline BLAZE_DEVICE_CALLABLE ConstIterator& operator--() {
          --left_;
          --right_;
          return *this;
@@ -293,7 +292,7 @@ class DVecDVecMapExpr
       //
       // \return The previous position of the iterator.
       */
-      inline const ConstIterator operator--( int ) {
+      inline BLAZE_DEVICE_CALLABLE const ConstIterator operator--( int ) {
          return ConstIterator( left_--, right_--, op_ );
       }
       //*******************************************************************************************
@@ -435,7 +434,7 @@ class DVecDVecMapExpr
       //**Member variables*************************************************************************
       LeftIteratorType  left_;   //!< Iterator to the current left-hand side element.
       RightIteratorType right_;  //!< Iterator to the current right-hand side element.
-      OP                op_;     //!< The custom unary operation.
+      OP                op_;     //!< The custom binary operation.
       //*******************************************************************************************
    };
    //**********************************************************************************************
@@ -444,7 +443,7 @@ class DVecDVecMapExpr
    //! Compilation switch for the expression template evaluation strategy.
    static constexpr bool simdEnabled =
       ( VT1::simdEnabled && VT2::simdEnabled &&
-        If_t< HasSIMDEnabled_v<OP>, UseSIMDEnabledFlag, HasLoad<OP> >::value );
+        If_t< HasSIMDEnabled_v<OP>, GetSIMDEnabled<OP,ET1,ET2>, HasLoad<OP> >::value );
 
    //! Compilation switch for the expression template assignment strategy.
    static constexpr bool smpAssignable = ( VT1::smpAssignable && VT2::smpAssignable );
@@ -456,16 +455,16 @@ class DVecDVecMapExpr
    //**********************************************************************************************
 
    //**Constructor*********************************************************************************
-   /*!\brief Constructor for the DVecMapExpr class.
+   /*!\brief Constructor for the DVecDVecMapExpr class.
    //
    // \param lhs The left-hand side dense vector operand of the map expression.
    // \param rhs The right-hand side dense vector operand of the map expression.
-   // \param op The custom unary operation.
+   // \param op The custom binary operation.
    */
-   explicit inline DVecDVecMapExpr( const VT1& lhs, const VT2& rhs, OP op ) noexcept
-      : lhs_( lhs )  // Left-hand side dense vector of the map expression
-      , rhs_( rhs )  // Right-hand side dense vector of the map expression
-      , op_ ( op  )  // The custom unary operation
+   inline DVecDVecMapExpr( const VT1& lhs, const VT2& rhs, OP op ) noexcept
+      : lhs_( lhs )            // Left-hand side dense vector of the map expression
+      , rhs_( rhs )            // Right-hand side dense vector of the map expression
+      , op_ ( std::move(op) )  // The custom binary operation
    {}
    //**********************************************************************************************
 
@@ -618,7 +617,7 @@ class DVecDVecMapExpr
    //**Member variables****************************************************************************
    LeftOperand  lhs_;  //!< Left-hand side dense vector of the map expression.
    RightOperand rhs_;  //!< Right-hand side dense vector of the map expression.
-   Operation    op_;   //!< The custom unary operation.
+   Operation    op_;   //!< The custom binary operation.
    //**********************************************************************************************
 
    //**Assignment to dense vectors*****************************************************************
@@ -636,12 +635,12 @@ class DVecDVecMapExpr
    // operands requires an intermediate evaluation.
    */
    template< typename VT >  // Type of the target dense vector
-   friend inline EnableIf_t< UseAssign_v<VT> >
-      assign( DenseVector<VT,TF>& lhs, const DVecDVecMapExpr& rhs )
+   friend inline auto assign( DenseVector<VT,TF>& lhs, const DVecDVecMapExpr& rhs )
+      -> EnableIf_t< UseAssign_v<VT> >
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       LT x( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side dense vector operand
       RT y( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side dense vector operand
@@ -649,7 +648,7 @@ class DVecDVecMapExpr
       BLAZE_INTERNAL_ASSERT( x.size() == rhs.lhs_.size() , "Invalid vector size" );
       BLAZE_INTERNAL_ASSERT( y.size() == rhs.rhs_.size() , "Invalid vector size" );
 
-      assign( ~lhs, map( x, y, rhs.op_ ) );
+      assign( *lhs, map( x, y, rhs.op_ ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -669,8 +668,8 @@ class DVecDVecMapExpr
    // operands requires an intermediate evaluation.
    */
    template< typename VT >  // Type of the target sparse vector
-   friend inline EnableIf_t< UseAssign_v<VT> >
-      assign( SparseVector<VT,TF>& lhs, const DVecDVecMapExpr& rhs )
+   friend inline auto assign( SparseVector<VT,TF>& lhs, const DVecDVecMapExpr& rhs )
+      -> EnableIf_t< UseAssign_v<VT> >
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -678,10 +677,10 @@ class DVecDVecMapExpr
       BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType, TF );
       BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       const ResultType tmp( serial( rhs ) );
-      assign( ~lhs, tmp );
+      assign( *lhs, tmp );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -701,12 +700,12 @@ class DVecDVecMapExpr
    // either of the two operands requires an intermediate evaluation.
    */
    template< typename VT >  // Type of the target dense vector
-   friend inline EnableIf_t< UseAssign_v<VT> >
-      addAssign( DenseVector<VT,TF>& lhs, const DVecDVecMapExpr& rhs )
+   friend inline auto addAssign( DenseVector<VT,TF>& lhs, const DVecDVecMapExpr& rhs )
+      -> EnableIf_t< UseAssign_v<VT> >
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       LT x( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side dense vector operand
       RT y( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side dense vector operand
@@ -714,7 +713,7 @@ class DVecDVecMapExpr
       BLAZE_INTERNAL_ASSERT( x.size() == rhs.lhs_.size() , "Invalid vector size" );
       BLAZE_INTERNAL_ASSERT( y.size() == rhs.rhs_.size() , "Invalid vector size" );
 
-      addAssign( ~lhs, map( x, y, rhs.op_ ) );
+      addAssign( *lhs, map( x, y, rhs.op_ ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -738,12 +737,12 @@ class DVecDVecMapExpr
    // either of the two operands requires an intermediate evaluation.
    */
    template< typename VT >  // Type of the target dense vector
-   friend inline EnableIf_t< UseAssign_v<VT> >
-      subAssign( DenseVector<VT,TF>& lhs, const DVecDVecMapExpr& rhs )
+   friend inline auto subAssign( DenseVector<VT,TF>& lhs, const DVecDVecMapExpr& rhs )
+      -> EnableIf_t< UseAssign_v<VT> >
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       LT x( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side dense vector operand
       RT y( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side dense vector operand
@@ -751,7 +750,7 @@ class DVecDVecMapExpr
       BLAZE_INTERNAL_ASSERT( x.size() == rhs.lhs_.size() , "Invalid vector size" );
       BLAZE_INTERNAL_ASSERT( y.size() == rhs.rhs_.size() , "Invalid vector size" );
 
-      subAssign( ~lhs, map( x, y, rhs.op_ ) );
+      subAssign( *lhs, map( x, y, rhs.op_ ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -775,12 +774,12 @@ class DVecDVecMapExpr
    // of the two operands requires an intermediate evaluation.
    */
    template< typename VT >  // Type of the target dense vector
-   friend inline EnableIf_t< UseAssign_v<VT> >
-      multAssign( DenseVector<VT,TF>& lhs, const DVecDVecMapExpr& rhs )
+   friend inline auto multAssign( DenseVector<VT,TF>& lhs, const DVecDVecMapExpr& rhs )
+      -> EnableIf_t< UseAssign_v<VT> >
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       LT x( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side dense vector operand
       RT y( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side dense vector operand
@@ -788,7 +787,7 @@ class DVecDVecMapExpr
       BLAZE_INTERNAL_ASSERT( x.size() == rhs.lhs_.size() , "Invalid vector size" );
       BLAZE_INTERNAL_ASSERT( y.size() == rhs.rhs_.size() , "Invalid vector size" );
 
-      multAssign( ~lhs, map( x, y, rhs.op_ ) );
+      multAssign( *lhs, map( x, y, rhs.op_ ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -812,12 +811,12 @@ class DVecDVecMapExpr
    // either of the two operands requires an intermediate evaluation.
    */
    template< typename VT >  // Type of the target dense vector
-   friend inline EnableIf_t< UseAssign_v<VT> >
-      divAssign( DenseVector<VT,TF>& lhs, const DVecDVecMapExpr& rhs )
+   friend inline auto divAssign( DenseVector<VT,TF>& lhs, const DVecDVecMapExpr& rhs )
+      -> EnableIf_t< UseAssign_v<VT> >
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       LT x( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side dense vector operand
       RT y( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side dense vector operand
@@ -825,7 +824,7 @@ class DVecDVecMapExpr
       BLAZE_INTERNAL_ASSERT( x.size() == rhs.lhs_.size() , "Invalid vector size" );
       BLAZE_INTERNAL_ASSERT( y.size() == rhs.rhs_.size() , "Invalid vector size" );
 
-      divAssign( ~lhs, map( x, y, rhs.op_ ) );
+      divAssign( *lhs, map( x, y, rhs.op_ ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -849,12 +848,12 @@ class DVecDVecMapExpr
    // specific parallel evaluation strategy is selected.
    */
    template< typename VT >  // Type of the target dense vector
-   friend inline EnableIf_t< UseSMPAssign_v<VT> >
-      smpAssign( DenseVector<VT,TF>& lhs, const DVecDVecMapExpr& rhs )
+   friend inline auto smpAssign( DenseVector<VT,TF>& lhs, const DVecDVecMapExpr& rhs )
+      -> EnableIf_t< UseSMPAssign_v<VT> >
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       LT x( rhs.lhs_ );  // Evaluation of the left-hand side dense vector operand
       RT y( rhs.rhs_ );  // Evaluation of the right-hand side dense vector operand
@@ -862,7 +861,7 @@ class DVecDVecMapExpr
       BLAZE_INTERNAL_ASSERT( x.size() == rhs.lhs_.size() , "Invalid vector size" );
       BLAZE_INTERNAL_ASSERT( y.size() == rhs.rhs_.size() , "Invalid vector size" );
 
-      smpAssign( ~lhs, map( x, y, rhs.op_ ) );
+      smpAssign( *lhs, map( x, y, rhs.op_ ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -882,8 +881,8 @@ class DVecDVecMapExpr
    // specific parallel evaluation strategy is selected.
    */
    template< typename VT >  // Type of the target sparse vector
-   friend inline EnableIf_t< UseSMPAssign_v<VT> >
-      smpAssign( SparseVector<VT,TF>& lhs, const DVecDVecMapExpr& rhs )
+   friend inline auto smpAssign( SparseVector<VT,TF>& lhs, const DVecDVecMapExpr& rhs )
+      -> EnableIf_t< UseSMPAssign_v<VT> >
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -891,10 +890,10 @@ class DVecDVecMapExpr
       BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType, TF );
       BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       const ResultType tmp( rhs );
-      smpAssign( ~lhs, tmp );
+      smpAssign( *lhs, tmp );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -915,12 +914,12 @@ class DVecDVecMapExpr
    // expression specific parallel evaluation strategy is selected.
    */
    template< typename VT >  // Type of the target dense vector
-   friend inline EnableIf_t< UseSMPAssign_v<VT> >
-      smpAddAssign( DenseVector<VT,TF>& lhs, const DVecDVecMapExpr& rhs )
+   friend inline auto smpAddAssign( DenseVector<VT,TF>& lhs, const DVecDVecMapExpr& rhs )
+      -> EnableIf_t< UseSMPAssign_v<VT> >
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       LT x( rhs.lhs_ );  // Evaluation of the left-hand side dense vector operand
       RT y( rhs.rhs_ );  // Evaluation of the right-hand side dense vector operand
@@ -928,7 +927,7 @@ class DVecDVecMapExpr
       BLAZE_INTERNAL_ASSERT( x.size() == rhs.lhs_.size() , "Invalid vector size" );
       BLAZE_INTERNAL_ASSERT( y.size() == rhs.rhs_.size() , "Invalid vector size" );
 
-      smpAddAssign( ~lhs, map( x, y, rhs.op_ ) );
+      smpAddAssign( *lhs, map( x, y, rhs.op_ ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -953,12 +952,12 @@ class DVecDVecMapExpr
    // expression specific parallel evaluation strategy is selected.
    */
    template< typename VT >  // Type of the target dense vector
-   friend inline EnableIf_t< UseSMPAssign_v<VT> >
-      smpSubAssign( DenseVector<VT,TF>& lhs, const DVecDVecMapExpr& rhs )
+   friend inline auto smpSubAssign( DenseVector<VT,TF>& lhs, const DVecDVecMapExpr& rhs )
+      -> EnableIf_t< UseSMPAssign_v<VT> >
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       LT x( rhs.lhs_ );  // Evaluation of the left-hand side dense vector operand
       RT y( rhs.rhs_ );  // Evaluation of the right-hand side dense vector operand
@@ -966,7 +965,7 @@ class DVecDVecMapExpr
       BLAZE_INTERNAL_ASSERT( x.size() == rhs.lhs_.size() , "Invalid vector size" );
       BLAZE_INTERNAL_ASSERT( y.size() == rhs.rhs_.size() , "Invalid vector size" );
 
-      smpSubAssign( ~lhs, map( x, y, rhs.op_ ) );
+      smpSubAssign( *lhs, map( x, y, rhs.op_ ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -991,12 +990,12 @@ class DVecDVecMapExpr
    // expression specific parallel evaluation strategy is selected.
    */
    template< typename VT >  // Type of the target dense vector
-   friend inline EnableIf_t< UseSMPAssign_v<VT> >
-      smpMultAssign( DenseVector<VT,TF>& lhs, const DVecDVecMapExpr& rhs )
+   friend inline auto smpMultAssign( DenseVector<VT,TF>& lhs, const DVecDVecMapExpr& rhs )
+      -> EnableIf_t< UseSMPAssign_v<VT> >
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       LT x( rhs.lhs_ );  // Evaluation of the left-hand side dense vector operand
       RT y( rhs.rhs_ );  // Evaluation of the right-hand side dense vector operand
@@ -1004,7 +1003,7 @@ class DVecDVecMapExpr
       BLAZE_INTERNAL_ASSERT( x.size() == rhs.lhs_.size() , "Invalid vector size" );
       BLAZE_INTERNAL_ASSERT( y.size() == rhs.rhs_.size() , "Invalid vector size" );
 
-      smpMultAssign( ~lhs, map( x, y, rhs.op_ ) );
+      smpMultAssign( *lhs, map( x, y, rhs.op_ ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -1029,12 +1028,12 @@ class DVecDVecMapExpr
    // the expression specific parallel evaluation strategy is selected.
    */
    template< typename VT >  // Type of the target dense vector
-   friend inline EnableIf_t< UseSMPAssign_v<VT> >
-      smpDivAssign( DenseVector<VT,TF>& lhs, const DVecDVecMapExpr& rhs )
+   friend inline auto smpDivAssign( DenseVector<VT,TF>& lhs, const DVecDVecMapExpr& rhs )
+      -> EnableIf_t< UseSMPAssign_v<VT> >
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       LT x( rhs.lhs_ );  // Evaluation of the left-hand side dense vector operand
       RT y( rhs.rhs_ );  // Evaluation of the right-hand side dense vector operand
@@ -1042,7 +1041,7 @@ class DVecDVecMapExpr
       BLAZE_INTERNAL_ASSERT( x.size() == rhs.lhs_.size() , "Invalid vector size" );
       BLAZE_INTERNAL_ASSERT( y.size() == rhs.rhs_.size() , "Invalid vector size" );
 
-      smpDivAssign( ~lhs, map( x, y, rhs.op_ ) );
+      smpDivAssign( *lhs, map( x, y, rhs.op_ ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -1072,8 +1071,8 @@ class DVecDVecMapExpr
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Evaluates the given binary operation on each single element of the dense vectors
-//        \a lhs and \a rhs.
+/*!\brief Elementwise evaluation of the given binary operation on each single element of the
+//        dense vectors \a lhs and \a rhs.
 // \ingroup dense_vector
 //
 // \param lhs The left-hand side dense vector operand.
@@ -1082,7 +1081,7 @@ class DVecDVecMapExpr
 // \return The binary operation applied to each single element of \a lhs and \a rhs.
 // \exception std::invalid_argument Vector sizes do not match.
 //
-// The \a map() function evaluates the given binary operation on each element of the input
+// The \a map() function evaluates the given binary operation on each single element of the input
 // vectors \a lhs and \a rhs. The function returns an expression representing this operation.\n
 // The following example demonstrates the use of the \a map() function:
 
@@ -1091,6 +1090,9 @@ class DVecDVecMapExpr
    // ... Resizing and initialization
    c = map( a, b, []( double x, double y ){ return std::min( x, y ); } );
    \endcode
+
+// In case the current sizes of the two given vectors don't match, a \a std::invalid_argument
+// is thrown.
 */
 template< typename VT1   // Type of the left-hand side dense vector
         , typename VT2   // Type of the right-hand side dense vector
@@ -1101,12 +1103,166 @@ inline decltype(auto)
 {
    BLAZE_FUNCTION_TRACE;
 
-   if( (~lhs).size() != (~rhs).size() ) {
+   if( (*lhs).size() != (*rhs).size() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
    using ReturnType = const DVecDVecMapExpr<VT1,VT2,OP,TF>;
-   return ReturnType( ~lhs, ~rhs, op );
+   return ReturnType( *lhs, *rhs, std::move(op) );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Elementwise evaluation of the given ternary operation on each single element of the
+//        dense vectors \a dv1, \a dv2, and \a dv3.
+// \ingroup dense_vector
+//
+// \param dv1 The first dense vector operand.
+// \param dv2 The second dense vector operand.
+// \param dv3 The third dense vector operand.
+// \param op The custom, ternary operation.
+// \return The ternary operation applied to each single element of the three vectors.
+// \exception std::invalid_argument Vector sizes do not match.
+//
+// The \a map() function evaluates the given ternary operation on each single element of the
+// input vectors \a dv1, \a dv2, and \a dv3. The function returns an expression representing
+// this operation.\n
+// In case the current sizes of the three given vectors don't match, a \a std::invalid_argument
+// is thrown.
+*/
+template< typename VT1   // Type of the first dense vector
+        , typename VT2   // Type of the second dense vector
+        , typename VT3   // Type of the third dense vector
+        , bool TF        // Transpose flag
+        , typename OP >  // Type of the custom operation
+inline decltype(auto)
+   map( const DenseVector<VT1,TF>& dv1, const DenseVector<VT2,TF>& dv2,
+        const DenseVector<VT3,TF>& dv3, OP op )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   const MakePair mp{};
+   return map( map( map( *dv1, *dv2, mp ), *dv3, mp ), join( std::move(op) ) );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Elementwise evaluation of the given 4-ary operation on each single element of the
+//        dense vectors \a dv1, \a dv2, \a dv3, and \a dv4.
+// \ingroup dense_vector
+//
+// \param dv1 The first dense vector operand.
+// \param dv2 The second dense vector operand.
+// \param dv3 The third dense vector operand.
+// \param dv4 The fourth dense vector operand.
+// \param op The custom, 4-ary operation.
+// \return The 4-ary operation applied to each single element of the four vectors.
+// \exception std::invalid_argument Vector sizes do not match.
+//
+// The \a map() function evaluates the given 4-ary operation on each single element of the input
+// vectors \a dv1, \a dv2, \a dv3, and \a dv4. The function returns an expression representing
+// this operation.\n
+// In case the current sizes of the four given vectors don't match, a \a std::invalid_argument
+// is thrown.
+*/
+template< typename VT1   // Type of the first dense vector
+        , typename VT2   // Type of the second dense vector
+        , typename VT3   // Type of the third dense vector
+        , typename VT4   // Type of the fourth dense vector
+        , bool TF        // Transpose flag
+        , typename OP >  // Type of the custom operation
+inline decltype(auto)
+   map( const DenseVector<VT1,TF>& dv1, const DenseVector<VT2,TF>& dv2,
+        const DenseVector<VT3,TF>& dv3, const DenseVector<VT4,TF>& dv4, OP op )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   const MakePair mp{};
+   return map( map( map( map( *dv1, *dv2, mp ), *dv3, mp ), *dv4, mp ), join( std::move(op) ) );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Elementwise evaluation of the given 5-ary operation on each single element of the
+//        dense vectors \a dv1, \a dv2, \a dv3, \a dv4, and \a dv5.
+// \ingroup dense_vector
+//
+// \param dv1 The first dense vector operand.
+// \param dv2 The second dense vector operand.
+// \param dv3 The third dense vector operand.
+// \param dv4 The fourth dense vector operand.
+// \param dv5 The fifth dense vector operand.
+// \param op The custom, 5-ary operation.
+// \return The 5-ary operation applied to each single element of the five vectors.
+// \exception std::invalid_argument Vector sizes do not match.
+//
+// The \a map() function evaluates the given 5-ary operation on each single element of the input
+// vectors \a dv1, \a dv2, \a dv3, \a dv4, and \a dv5. The function returns an expression
+// representing this operation.\n
+// In case the current sizes of the five given vectors don't match, a \a std::invalid_argument
+// is thrown.
+*/
+template< typename VT1   // Type of the first dense vector
+        , typename VT2   // Type of the second dense vector
+        , typename VT3   // Type of the third dense vector
+        , typename VT4   // Type of the fourth dense vector
+        , typename VT5   // Type of the fifth dense vector
+        , bool TF        // Transpose flag
+        , typename OP >  // Type of the custom operation
+inline decltype(auto)
+   map( const DenseVector<VT1,TF>& dv1, const DenseVector<VT2,TF>& dv2,
+        const DenseVector<VT3,TF>& dv3, const DenseVector<VT4,TF>& dv4,
+        const DenseVector<VT5,TF>& dv5, OP op )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   const MakePair mp{};
+   return map( map( map( map( map( *dv1, *dv2, mp ), *dv3, mp ), *dv4, mp ), *dv5, mp ), join( std::move(op) ) );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Elementwise evaluation of the given 6-ary operation on each single element of the
+//        dense vectors \a dv1, \a dv2, \a dv3, \a dv4, \a dv5, and \a dv6.
+// \ingroup dense_vector
+//
+// \param dv1 The first dense vector operand.
+// \param dv2 The second dense vector operand.
+// \param dv3 The third dense vector operand.
+// \param dv4 The fourth dense vector operand.
+// \param dv5 The fifth dense vector operand.
+// \param dv6 The sixth dense vector operand.
+// \param op The custom, 6-ary operation.
+// \return The 6-ary operation applied to each single element of the six vectors.
+// \exception std::invalid_argument Vector sizes do not match.
+//
+// The \a map() function evaluates the given 6-ary operation on each single element of the
+// input vectors \a dv1, \a dv2, \a dv3, \a dv4, \a dv5, and \a dv6. The function returns an
+// expression representing this operation.\n
+// In case the current sizes of the six given vectors don't match, a \a std::invalid_argument
+// is thrown.
+*/
+template< typename VT1   // Type of the first dense vector
+        , typename VT2   // Type of the second dense vector
+        , typename VT3   // Type of the third dense vector
+        , typename VT4   // Type of the fourth dense vector
+        , typename VT5   // Type of the fifth dense vector
+        , typename VT6   // Type of the sixth dense vector
+        , bool TF        // Transpose flag
+        , typename OP >  // Type of the custom operation
+inline decltype(auto)
+   map( const DenseVector<VT1,TF>& dv1, const DenseVector<VT2,TF>& dv2,
+        const DenseVector<VT3,TF>& dv3, const DenseVector<VT4,TF>& dv4,
+        const DenseVector<VT5,TF>& dv5, const DenseVector<VT6,TF>& dv6, OP op )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   const MakePair mp{};
+   return map( map( map( map( map( map( *dv1, *dv2, mp ), *dv3, mp ), *dv4, mp ), *dv5, mp ), *dv6, mp ), join( std::move(op) ) );
 }
 //*************************************************************************************************
 
@@ -1118,6 +1274,7 @@ inline decltype(auto)
 // \param lhs The left-hand side dense vector operand.
 // \param rhs The right-hand side dense vector operand.
 // \return The resulting dense vector.
+// \exception std::invalid_argument Vector sizes do not match.
 //
 // This function computes the componentwise minimum of the two dense vectors \a lhs and \a rhs.
 // The function returns an expression representing this operation.\n
@@ -1128,6 +1285,9 @@ inline decltype(auto)
    // ... Resizing and initialization
    c = min( a, b );
    \endcode
+
+// In case the current sizes of the two given vectors don't match, a \a std::invalid_argument
+// is thrown.
 */
 template< typename VT1  // Type of the left-hand side dense vector
         , typename VT2  // Type of the right-hand side dense vector
@@ -1137,7 +1297,7 @@ inline decltype(auto)
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( ~lhs, ~rhs, Min() );
+   return map( *lhs, *rhs, Min() );
 }
 //*************************************************************************************************
 
@@ -1149,6 +1309,7 @@ inline decltype(auto)
 // \param lhs The left-hand side dense vector operand.
 // \param rhs The right-hand side dense vector operand.
 // \return The resulting dense vector.
+// \exception std::invalid_argument Vector sizes do not match.
 //
 // This function computes the componentwise maximum of the two dense vectors \a lhs and \a rhs.
 // The function returns an expression representing this operation.\n
@@ -1159,6 +1320,9 @@ inline decltype(auto)
    // ... Resizing and initialization
    c = max( a, b );
    \endcode
+
+// In case the current sizes of the two given vectors don't match, a \a std::invalid_argument
+// is thrown.
 */
 template< typename VT1  // Type of the left-hand side dense vector
         , typename VT2  // Type of the right-hand side dense vector
@@ -1168,7 +1332,7 @@ inline decltype(auto)
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( ~lhs, ~rhs, Max() );
+   return map( *lhs, *rhs, Max() );
 }
 //*************************************************************************************************
 
@@ -1180,6 +1344,7 @@ inline decltype(auto)
 // \param lhs The left-hand side dense vector operand.
 // \param rhs The right-hand side dense vector operand.
 // \return The resulting dense vector
+// \exception std::invalid_argument Vector sizes do not match.
 //
 // The \a hypot() function computes the componentwise hypotenous for the two dense vectors
 // \a lhs and \a rhs. The function returns an expression representing this operation.\n
@@ -1190,6 +1355,9 @@ inline decltype(auto)
    // ... Resizing and initialization
    c = hypot( a, b );
    \endcode
+
+// In case the current sizes of the two given vectors don't match, a \a std::invalid_argument
+// is thrown.
 */
 template< typename VT1  // Type of the left-hand side dense vector
         , typename VT2  // Type of the right-hand side dense vector
@@ -1199,7 +1367,7 @@ inline decltype(auto)
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( ~lhs, ~rhs, Hypot() );
+   return map( *lhs, *rhs, Hypot() );
 }
 //*************************************************************************************************
 
@@ -1211,6 +1379,7 @@ inline decltype(auto)
 // \param lhs The left-hand side dense vector operand.
 // \param rhs The right-hand side dense vector operand.
 // \return The resulting dense vector
+// \exception std::invalid_argument Vector sizes do not match.
 //
 // The \a pow() function computes the componentwise exponential value for the two dense vectors
 // \a lhs and \a rhs. The function returns an expression representing this operation.\n
@@ -1221,6 +1390,9 @@ inline decltype(auto)
    // ... Resizing and initialization
    c = pow( a, b );
    \endcode
+
+// In case the current sizes of the two given vectors don't match, a \a std::invalid_argument
+// is thrown.
 */
 template< typename VT1  // Type of the left-hand side dense vector
         , typename VT2  // Type of the right-hand side dense vector
@@ -1230,7 +1402,7 @@ inline decltype(auto)
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( ~lhs, ~rhs, Pow() );
+   return map( *lhs, *rhs, Pow() );
 }
 //*************************************************************************************************
 
@@ -1242,6 +1414,7 @@ inline decltype(auto)
 // \param lhs The left-hand side dense vector operand.
 // \param rhs The right-hand side dense vector operand.
 // \return The resulting dense vector.
+// \exception std::invalid_argument Vector sizes do not match.
 //
 // This function computes the multi-valued inverse tangent of the two dense vectors \a lhs and
 // \a rhs. The function returns an expression representing this operation.\n
@@ -1252,6 +1425,9 @@ inline decltype(auto)
    // ... Resizing and initialization
    c = atan2( a, b );
    \endcode
+
+// In case the current sizes of the two given vectors don't match, a \a std::invalid_argument
+// is thrown.
 */
 template< typename VT1  // Type of the left-hand side dense vector
         , typename VT2  // Type of the right-hand side dense vector
@@ -1261,7 +1437,364 @@ inline decltype(auto)
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( ~lhs, ~rhs, Atan2() );
+   return map( *lhs, *rhs, Atan2() );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Elementwise conditional selection of values from the dense vectors \a lhs and \a rhs.
+// \ingroup dense_vector
+//
+// \param cond The dense vector containing the selection conditions.
+// \param lhs The true-case dense vector.
+// \param rhs The false-case dense vector.
+// \return The resulting dense vector.
+// \exception std::invalid_argument Vector sizes do not match.
+//
+// This function performs an elementwise conditional selection of values from the two given dense
+// vectors \a lhs and \a rhs. In case an element in the \a cond vector evaluates to \a true, the
+// according element of \a lhs is selected, in case the \a cond element evaluates to \a false, the
+// according element of \a rhs is selected. The function returns an expression representing this
+// operation.\n
+// The following example demonstrates the use of the \a selec() function:
+
+   \code
+   blaze::DynamicVector<bool> cond{ true, false, true false };
+   blaze::DynamicVector<int> a{ 1, -1, 1, -1 };
+   blaze::DynamicVector<int> b{ -2, 2, -2, 2 };
+   blaze::DynamicVector<int> c;
+   // ... Resizing and initialization
+
+   c = select( cond, a, b );  // Results in ( 1, 2, 1, 2 )
+   \endcode
+
+// In case the current sizes of the three given vectors don't match, a \a std::invalid_argument
+// is thrown.
+*/
+template< typename VT1  // Type of the conditional dense vector
+        , typename VT2  // Type of the true-case dense vector
+        , typename VT3  // Type of the false-case dense vector
+        , bool TF >     // Transpose flag
+inline decltype(auto)
+   select( const DenseVector<VT1,TF>& cond, const DenseVector<VT2,TF>& lhs, const DenseVector<VT3,TF>& rhs )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return map( cond, lhs, rhs, []( bool c, const auto& a, const auto& b ) { return c ? a : b; } );
+}
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  GLOBAL BINARY ARITHMETIC OPERATORS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*!\brief Left-shift operator for the elementwise left-shift of a dense vector.
+// \ingroup dense_vector
+//
+// \param lhs The left-hand side dense vector to be shifted.
+// \param rhs The right-hand side dense vector of bits to shift.
+// \return The left-shifted dense vector.
+// \exception std::invalid_argument Vector sizes do not match.
+//
+// This operator represents the elementwise left-shift of a given dense vector:
+
+   \code
+   blaze::DynamicVector<unsigned int> a, b, c;
+   // ... Resizing and initialization
+   c = a << b;
+   \endcode
+
+// In case the current sizes of the two given vectors don't match, a \a std::invalid_argument
+// is thrown.
+*/
+template< typename VT1  // Type of the left-hand side dense vector
+        , typename VT2  // Type of the right-hand side dense vector
+        , bool TF >     // Transpose flag
+inline decltype(auto)
+   operator<<( const DenseVector<VT1,TF>& lhs, const DenseVector<VT2,TF>& rhs )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return map( *lhs, *rhs, ShiftLV() );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Right-shift operator for the elementwise right-shift of a dense vector.
+// \ingroup dense_vector
+//
+// \param lhs The left-hand side dense vector to be shifted.
+// \param rhs The right-hand side dense vector of bits to shift.
+// \return The right-shifted dense vector.
+// \exception std::invalid_argument Vector sizes do not match.
+//
+// This operator represents the elementwise right-shift of a given dense vector:
+
+   \code
+   blaze::DynamicVector<unsigned int> a, b, c;
+   // ... Resizing and initialization
+   c = a >> b;
+   \endcode
+
+// In case the current sizes of the two given vectors don't match, a \a std::invalid_argument
+// is thrown.
+*/
+template< typename VT1  // Type of the left-hand side dense vector
+        , typename VT2  // Type of the right-hand side dense vector
+        , bool TF >     // Transpose flag
+inline decltype(auto)
+   operator>>( const DenseVector<VT1,TF>& lhs, const DenseVector<VT2,TF>& rhs )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return map( *lhs, *rhs, ShiftRV() );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Bitwise AND operator for two dense vectors.
+// \ingroup dense_vector
+//
+// \param lhs The left-hand side dense vector for the bitwise AND operation.
+// \param rhs The right-hand side dense vector for the bitwise AND operation.
+// \return The resulting dense vector.
+// \exception std::invalid_argument Vector sizes do not match.
+//
+// This operator represents the bitwise AND of the given two dense vectors:
+
+   \code
+   blaze::DynamicVector<unsigned int> a, b, c;
+   // ... Resizing and initialization
+   c = a & b;
+   \endcode
+
+// In case the current sizes of the two given vectors don't match, a \a std::invalid_argument
+// is thrown.
+*/
+template< typename VT1  // Type of the left-hand side dense vector
+        , typename VT2  // Type of the right-hand side dense vector
+        , bool TF >     // Transpose flag
+inline decltype(auto)
+   operator&( const DenseVector<VT1,TF>& lhs, const DenseVector<VT2,TF>& rhs )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return map( *lhs, *rhs, Bitand() );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Bitwise OR operator for two dense vectors.
+// \ingroup dense_vector
+//
+// \param lhs The left-hand side dense vector for the bitwise OR operation.
+// \param rhs The right-hand side dense vector for the bitwise OR operation.
+// \return The resulting dense vector.
+// \exception std::invalid_argument Vector sizes do not match.
+//
+// This operator represents the bitwise OR of the given two dense vectors:
+
+   \code
+   blaze::DynamicVector<unsigned int> a, b, c;
+   // ... Resizing and initialization
+   c = a | b;
+   \endcode
+
+// In case the current sizes of the two given vectors don't match, a \a std::invalid_argument
+// is thrown.
+*/
+template< typename VT1  // Type of the left-hand side dense vector
+        , typename VT2  // Type of the right-hand side dense vector
+        , bool TF >     // Transpose flag
+inline decltype(auto)
+   operator|( const DenseVector<VT1,TF>& lhs, const DenseVector<VT2,TF>& rhs )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return map( *lhs, *rhs, Bitor() );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Bitwise XOR operator for two dense vectors.
+// \ingroup dense_vector
+//
+// \param lhs The left-hand side dense vector for the bitwise XOR operation.
+// \param rhs The right-hand side dense vector for the bitwise XOR operation.
+// \return The resulting dense vector.
+// \exception std::invalid_argument Vector sizes do not match.
+//
+// This operator represents the bitwise XOR of the given two dense vectors:
+
+   \code
+   blaze::DynamicVector<unsigned int> a, b, c;
+   // ... Resizing and initialization
+   c = a ^ b;
+   \endcode
+
+// In case the current sizes of the two given vectors don't match, a \a std::invalid_argument
+// is thrown.
+*/
+template< typename VT1  // Type of the left-hand side dense vector
+        , typename VT2  // Type of the right-hand side dense vector
+        , bool TF >     // Transpose flag
+inline decltype(auto)
+   operator^( const DenseVector<VT1,TF>& lhs, const DenseVector<VT2,TF>& rhs )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return map( *lhs, *rhs, Bitxor() );
+}
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  GLOBAL RESTRUCTURING BINARY ARITHMETIC OPERATORS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Left-shift operator for the elementwise left-shift of an elementwise left-shift expression
+//        (\f$ \vec{a}=\vec{b}\ll\vec{c}\ll\vec{d} \f$).
+// \ingroup dense_vector
+//
+// \param lhs The left-hand side left-shift expression to be shifted.
+// \param rhs The right-hand side dense vector of bits to shift.
+// \return The left-shifted dense vector.
+// \exception std::invalid_argument Vector sizes do not match.
+//
+// This function implements a performance optimized treatment of the elementwise left-shift
+// operation on an elementwise left-shift expression.
+*/
+template< typename VT1  // Type of the left-hand side dense vector
+        , typename VT2  // Type of the middle dense vector
+        , typename VT3  // Type of the right-hand side dense vector
+        , bool TF >     // Transpose flag
+inline decltype(auto)
+   operator<<( const DVecDVecMapExpr<VT1,VT2,ShiftLV,TF>& lhs, const DenseVector<VT3,TF>& rhs )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return map( lhs.leftOperand(), lhs.rightOperand() + (*rhs), lhs.operation() );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Right-shift operator for the elementwise right-shift of an elementwise right-shift
+//        expression (\f$ \vec{a}=\vec{b}\gg\vec{c}\gg\vec{d} \f$).
+// \ingroup dense_vector
+//
+// \param lhs The left-hand side right-shift expression to be shifted.
+// \param rhs The right-hand side dense vector of bits to shift.
+// \return The right-shifted dense vector.
+// \exception std::invalid_argument Vector sizes do not match.
+//
+// This function implements a performance optimized treatment of the elementwise right-shift
+// operation on an elementwise right-shift expression.
+*/
+template< typename VT1  // Type of the left-hand side dense vector
+        , typename VT2  // Type of the middle dense vector
+        , typename VT3  // Type of the right-hand side dense vector
+        , bool TF >     // Transpose flag
+inline decltype(auto)
+   operator>>( const DVecDVecMapExpr<VT1,VT2,ShiftRV,TF>& lhs, const DenseVector<VT3,TF>& rhs )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return map( lhs.leftOperand(), lhs.rightOperand() + (*rhs), lhs.operation() );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  GLOBAL BINARY LOGICAL OPERATORS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*!\brief Logical AND operator for two dense vectors.
+// \ingroup dense_vector
+//
+// \param lhs The left-hand side dense vector for the logical AND operation.
+// \param rhs The right-hand side dense vector for the logical AND operation.
+// \return The resulting dense vector.
+// \exception std::invalid_argument Vector sizes do not match.
+//
+// This operator represents the logical AND of the given two dense vectors:
+
+   \code
+   blaze::DynamicVector<bool> a, b, c;
+   // ... Resizing and initialization
+   c = a && b;
+   \endcode
+
+// In case the current sizes of the two given vectors don't match, a \a std::invalid_argument
+// is thrown.
+*/
+template< typename VT1  // Type of the left-hand side dense vector
+        , typename VT2  // Type of the right-hand side dense vector
+        , bool TF >     // Transpose flag
+inline decltype(auto)
+   operator&&( const DenseVector<VT1,TF>& lhs, const DenseVector<VT2,TF>& rhs )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return map( *lhs, *rhs, And{} );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Logical OR operator for two dense vectors.
+// \ingroup dense_vector
+//
+// \param lhs The left-hand side dense vector for the logical OR operation.
+// \param rhs The right-hand side dense vector for the logical OR operation.
+// \return The resulting dense vector.
+// \exception std::invalid_argument Vector sizes do not match.
+//
+// This operator represents the logical OR of the given two dense vectors:
+
+   \code
+   blaze::DynamicVector<bool> a, b, c;
+   // ... Resizing and initialization
+   c = a || b;
+   \endcode
+
+// In case the current sizes of the two given vectors don't match, a \a std::invalid_argument
+// is thrown.
+*/
+template< typename VT1  // Type of the left-hand side dense vector
+        , typename VT2  // Type of the right-hand side dense vector
+        , bool TF >     // Transpose flag
+inline decltype(auto)
+   operator||( const DenseVector<VT1,TF>& lhs, const DenseVector<VT2,TF>& rhs )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return map( *lhs, *rhs, Or{} );
 }
 //*************************************************************************************************
 
@@ -1296,7 +1829,7 @@ struct IsAligned< DVecDVecMapExpr<VT1,VT2,OP,TF> >
 /*! \cond BLAZE_INTERNAL */
 template< typename VT1, typename VT2, typename OP, bool TF >
 struct IsPadded< DVecDVecMapExpr<VT1,VT2,OP,TF> >
-   : public BoolConstant< IsPadded_v<VT1> && IsPadded_v<VT2> >
+   : public BoolConstant< IsPadded_v<VT1> && IsPadded_v<VT2> && IsPaddingEnabled_v<OP> >
 {};
 /*! \endcond */
 //*************************************************************************************************

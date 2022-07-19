@@ -3,7 +3,7 @@
 //  \file blaze/math/expressions/SVecScalarMultExpr.h
 //  \brief Header file for the sparse vector/scalar multiplication expression
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -44,31 +44,34 @@
 #include <utility>
 #include <blaze/math/Aliases.h>
 #include <blaze/math/constraints/RequiresEvaluation.h>
+#include <blaze/math/constraints/Scalar.h>
 #include <blaze/math/constraints/SparseVector.h>
 #include <blaze/math/constraints/TransposeFlag.h>
+#include <blaze/math/constraints/Zero.h>
 #include <blaze/math/Exception.h>
 #include <blaze/math/expressions/Computation.h>
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/expressions/SparseVector.h>
 #include <blaze/math/expressions/VecScalarMultExpr.h>
+#include <blaze/math/shims/Invert.h>
+#include <blaze/math/shims/IsZero.h>
 #include <blaze/math/shims/Serial.h>
 #include <blaze/math/sparse/ValueIndexPair.h>
 #include <blaze/math/traits/MultTrait.h>
-#include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsExpression.h>
-#include <blaze/math/typetraits/IsInvertible.h>
+#include <blaze/math/typetraits/IsScalar.h>
 #include <blaze/math/typetraits/IsTemporary.h>
+#include <blaze/math/typetraits/IsZero.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
 #include <blaze/math/typetraits/UnderlyingBuiltin.h>
+#include <blaze/system/MacroDisable.h>
 #include <blaze/util/Assert.h>
-#include <blaze/util/constraints/FloatingPoint.h>
-#include <blaze/util/constraints/Numeric.h>
 #include <blaze/util/constraints/SameType.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/FunctionTrace.h>
+#include <blaze/util/MaybeUnused.h>
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/Types.h>
-#include <blaze/util/typetraits/IsNumeric.h>
 #include <blaze/util/typetraits/RemoveReference.h>
 
 
@@ -147,10 +150,15 @@ class SVecScalarMultExpr
 
  public:
    //**Type definitions****************************************************************************
-   using This          = SVecScalarMultExpr<VT,ST,TF>;  //!< Type of this SVecScalarMultExpr instance.
-   using ResultType    = MultTrait_t<RT,ST>;            //!< Result type for expression template evaluations.
-   using TransposeType = TransposeType_t<ResultType>;   //!< Transpose type for expression template evaluations.
-   using ElementType   = ElementType_t<ResultType>;     //!< Resulting element type.
+   //! Type of this SVecScalarMultExpr instance.
+   using This = SVecScalarMultExpr<VT,ST,TF>;
+
+   //! Base type of this SVecScalarMultExpr instance.
+   using BaseType = VecScalarMultExpr< SparseVector<This,TF> >;
+
+   using ResultType    = MultTrait_t<RT,ST>;           //!< Result type for expression template evaluations.
+   using TransposeType = TransposeType_t<ResultType>;  //!< Transpose type for expression template evaluations.
+   using ElementType   = ElementType_t<ResultType>;    //!< Resulting element type.
 
    //! Return type for expression template evaluations.
    using ReturnType = const If_t< returnExpr, ExprReturnType, ElementType >;
@@ -304,7 +312,7 @@ class SVecScalarMultExpr
    // \param vector The left-hand side sparse vector of the multiplication expression.
    // \param scalar The right-hand side scalar of the multiplication expression.
    */
-   explicit inline SVecScalarMultExpr( const VT& vector, ST scalar ) noexcept
+   inline SVecScalarMultExpr( const VT& vector, ST scalar ) noexcept
       : vector_( vector )  // Left-hand side sparse vector of the multiplication expression
       , scalar_( scalar )  // Right-hand side scalar of the multiplication expression
    {}
@@ -478,15 +486,15 @@ class SVecScalarMultExpr
    // operand requires an intermediate evaluation.
    */
    template< typename VT2 >  // Type of the target dense vector
-   friend inline EnableIf_t< UseAssign_v<VT2> >
-      assign( DenseVector<VT2,TF>& lhs, const SVecScalarMultExpr& rhs )
+   friend inline auto assign( DenseVector<VT2,TF>& lhs, const SVecScalarMultExpr& rhs )
+      -> EnableIf_t< UseAssign_v<VT2> >
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      assign( ~lhs, rhs.vector_ );
-      (~lhs) *= rhs.scalar_;
+      assign( *lhs, rhs.vector_ );
+      (*lhs) *= rhs.scalar_;
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -506,15 +514,15 @@ class SVecScalarMultExpr
    // operand requires an intermediate evaluation.
    */
    template< typename VT2 >  // Type of the target sparse vector
-   friend inline EnableIf_t< UseAssign_v<VT2> >
-      assign( SparseVector<VT2,TF>& lhs, const SVecScalarMultExpr& rhs )
+   friend inline auto assign( SparseVector<VT2,TF>& lhs, const SVecScalarMultExpr& rhs )
+      -> EnableIf_t< UseAssign_v<VT2> >
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      assign( ~lhs, rhs.vector_ );
-      (~lhs) *= rhs.scalar_;
+      assign( *lhs, rhs.vector_ );
+      (*lhs) *= rhs.scalar_;
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -534,8 +542,8 @@ class SVecScalarMultExpr
    // operand requires an intermediate evaluation.
    */
    template< typename VT2 >  // Type of the target dense vector
-   friend inline EnableIf_t< UseAssign_v<VT2> >
-      addAssign( DenseVector<VT2,TF>& lhs, const SVecScalarMultExpr& rhs )
+   friend inline auto addAssign( DenseVector<VT2,TF>& lhs, const SVecScalarMultExpr& rhs )
+      -> EnableIf_t< UseAssign_v<VT2> >
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -543,10 +551,10 @@ class SVecScalarMultExpr
       BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType, TF );
       BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       const ResultType tmp( serial( rhs ) );
-      addAssign( ~lhs, tmp );
+      addAssign( *lhs, tmp );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -570,8 +578,8 @@ class SVecScalarMultExpr
    // operand requires an intermediate evaluation.
    */
    template< typename VT2 >  // Type of the target dense vector
-   friend inline EnableIf_t< UseAssign_v<VT2> >
-      subAssign( DenseVector<VT2,TF>& lhs, const SVecScalarMultExpr& rhs )
+   friend inline auto subAssign( DenseVector<VT2,TF>& lhs, const SVecScalarMultExpr& rhs )
+      -> EnableIf_t< UseAssign_v<VT2> >
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -579,10 +587,10 @@ class SVecScalarMultExpr
       BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType, TF );
       BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       const ResultType tmp( serial( rhs ) );
-      subAssign( ~lhs, tmp );
+      subAssign( *lhs, tmp );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -606,8 +614,8 @@ class SVecScalarMultExpr
    // vector operand requires an intermediate evaluation.
    */
    template< typename VT2 >  // Type of the target dense vector
-   friend inline EnableIf_t< UseAssign_v<VT2> >
-      multAssign( DenseVector<VT2,TF>& lhs, const SVecScalarMultExpr& rhs )
+   friend inline auto multAssign( DenseVector<VT2,TF>& lhs, const SVecScalarMultExpr& rhs )
+      -> EnableIf_t< UseAssign_v<VT2> >
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -615,10 +623,10 @@ class SVecScalarMultExpr
       BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType, TF );
       BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       const ResultType tmp( serial( rhs ) );
-      multAssign( ~lhs, tmp );
+      multAssign( *lhs, tmp );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -650,8 +658,8 @@ class SVecScalarMultExpr
    // expression specific parallel evaluation strategy is selected.
    */
    template< typename VT2 >  // Type of the target dense vector
-   friend inline EnableIf_t< UseSMPAssign_v<VT2> >
-      smpAddAssign( DenseVector<VT2,TF>& lhs, const SVecScalarMultExpr& rhs )
+   friend inline auto smpAddAssign( DenseVector<VT2,TF>& lhs, const SVecScalarMultExpr& rhs )
+      -> EnableIf_t< UseSMPAssign_v<VT2> >
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -659,10 +667,10 @@ class SVecScalarMultExpr
       BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType, TF );
       BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       const ResultType tmp( rhs );
-      smpAddAssign( ~lhs, tmp );
+      smpAddAssign( *lhs, tmp );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -686,8 +694,8 @@ class SVecScalarMultExpr
    // expression specific parallel evaluation strategy is selected.
    */
    template< typename VT2 >  // Type of the target dense vector
-   friend inline EnableIf_t< UseSMPAssign_v<VT2> >
-      smpSubAssign( DenseVector<VT2,TF>& lhs, const SVecScalarMultExpr& rhs )
+   friend inline auto smpSubAssign( DenseVector<VT2,TF>& lhs, const SVecScalarMultExpr& rhs )
+      -> EnableIf_t< UseSMPAssign_v<VT2> >
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -695,10 +703,10 @@ class SVecScalarMultExpr
       BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType, TF );
       BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       const ResultType tmp( rhs );
-      smpSubAssign( ~lhs, tmp );
+      smpSubAssign( *lhs, tmp );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -722,8 +730,8 @@ class SVecScalarMultExpr
    // expression specific parallel evaluation strategy is selected.
    */
    template< typename VT2 >  // Type of the target dense vector
-   friend inline EnableIf_t< UseSMPAssign_v<VT2> >
-      smpMultAssign( DenseVector<VT2,TF>& lhs, const SVecScalarMultExpr& rhs )
+   friend inline auto smpMultAssign( DenseVector<VT2,TF>& lhs, const SVecScalarMultExpr& rhs )
+      -> EnableIf_t< UseSMPAssign_v<VT2> >
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -731,10 +739,10 @@ class SVecScalarMultExpr
       BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType, TF );
       BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       const ResultType tmp( rhs );
-      smpMultAssign( ~lhs, tmp );
+      smpMultAssign( *lhs, tmp );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -747,7 +755,8 @@ class SVecScalarMultExpr
    /*! \cond BLAZE_INTERNAL */
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE( VT );
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( VT, TF );
-   BLAZE_CONSTRAINT_MUST_BE_NUMERIC_TYPE( ST );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_ZERO_TYPE( VT );
+   BLAZE_CONSTRAINT_MUST_BE_SCALAR_TYPE( ST );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ST, RightOperand );
    /*! \endcond */
    //**********************************************************************************************
@@ -788,7 +797,7 @@ inline decltype(auto) operator-( const SparseVector<VT,TF>& sv )
 
    using ScalarType = UnderlyingBuiltin_t<VT>;
    using ReturnType = const SVecScalarMultExpr<VT,ScalarType,TF>;
-   return ReturnType( ~sv, ScalarType(-1) );
+   return ReturnType( *sv, ScalarType(-1) );
 }
 //*************************************************************************************************
 
@@ -800,6 +809,71 @@ inline decltype(auto) operator-( const SparseVector<VT,TF>& sv )
 //  GLOBAL BINARY ARITHMETIC OPERATORS
 //
 //=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Backend implementation of the multiplication between a sparse vector and a scalar value
+//        (\f$ \vec{a}=\vec{b}*s \f$).
+// \ingroup sparse_vector
+//
+// \param vec The left-hand side sparse vector for the multiplication.
+// \param scalar The right-hand side scalar value for the multiplication.
+// \return The scaled result vector.
+//
+// This function implements a performance optimized treatment of the multiplication between a
+// sparse vector and a scalar value.
+*/
+template< typename VT  // Type of the left-hand side sparse vector
+        , bool TF      // Transpose flag of the left-hand side sparse vector
+        , typename ST  // Type of the right-hand side scalar
+        , DisableIf_t< IsZero_v<VT> >* = nullptr >
+inline const SVecScalarMultExpr< VT, MultTrait_t< UnderlyingBuiltin_t<VT>, ST >, TF >
+   svecscalarmult( const SparseVector<VT,TF>& vec, ST scalar )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   using ScalarType = MultTrait_t< UnderlyingBuiltin_t<VT>, ST >;
+   using ReturnType = const SVecScalarMultExpr<VT,ScalarType,TF>;
+   return ReturnType( *vec, scalar );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Backend implementation of the multiplication between a zero vector and a scalar value
+//        (\f$ \vec{a}=\vec{b}*s \f$).
+// \ingroup sparse_vector
+//
+// \param vec The left-hand side zero vector for the multiplication.
+// \param scalar The right-hand side scalar value for the multiplication.
+// \return The resulting zero vector.
+//
+// This function implements a performance optimized treatment of the multiplication between a
+// zero vector and a scalar value. It returns a zero vector.
+*/
+template< typename VT  // Type of the left-hand side sparse vector
+        , bool TF      // Transpose flag of the left-hand side sparse vector
+        , typename ST  // Type of the right-hand side scalar
+        , EnableIf_t< IsZero_v<VT> >* = nullptr >
+inline decltype(auto)
+   svecscalarmult( const SparseVector<VT,TF>& vec, ST scalar )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   MAYBE_UNUSED( scalar );
+
+   using ReturnType = const MultTrait_t< ResultType_t<VT>, ST >;
+
+   BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ReturnType, TF );
+   BLAZE_CONSTRAINT_MUST_BE_ZERO_TYPE( ReturnType );
+
+   return ReturnType( (*vec).size() );
+}
+/*! \endcond */
+//*************************************************************************************************
+
 
 //*************************************************************************************************
 /*!\brief Multiplication operator for the multiplication of a sparse vector and a scalar value
@@ -825,14 +899,12 @@ inline decltype(auto) operator-( const SparseVector<VT,TF>& sv )
 template< typename VT  // Type of the left-hand side sparse vector
         , typename ST  // Type of the right-hand side scalar
         , bool TF      // Transpose flag
-        , EnableIf_t< IsNumeric_v<ST> >* = nullptr >
+        , EnableIf_t< IsScalar_v<ST> >* = nullptr >
 inline decltype(auto) operator*( const SparseVector<VT,TF>& vec, ST scalar )
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ScalarType = MultTrait_t< UnderlyingBuiltin_t<VT>, ST >;
-   using ReturnType = const SVecScalarMultExpr<VT,ScalarType,TF>;
-   return ReturnType( ~vec, scalar );
+   return svecscalarmult( *vec, scalar );
 }
 //*************************************************************************************************
 
@@ -861,14 +933,12 @@ inline decltype(auto) operator*( const SparseVector<VT,TF>& vec, ST scalar )
 template< typename ST  // Type of the left-hand side scalar
         , typename VT  // Type of the right-hand side sparse vector
         , bool TF      // Transpose flag
-        , EnableIf_t< IsNumeric_v<ST> >* = nullptr >
+        , EnableIf_t< IsScalar_v<ST> >* = nullptr >
 inline decltype(auto) operator*( ST scalar, const SparseVector<VT,TF>& vec )
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ScalarType = MultTrait_t< ST, UnderlyingBuiltin_t<VT> >;
-   using ReturnType = const SVecScalarMultExpr<VT,ScalarType,TF>;
-   return ReturnType( ~vec, scalar );
+   return svecscalarmult( *vec, scalar );
 }
 //*************************************************************************************************
 
@@ -903,545 +973,14 @@ template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
 inline decltype(auto) normalize( const SparseVector<VT,TF>& vec )
 {
-   using ElementType = ElementType_t<VT>;
+   BLAZE_CONSTRAINT_MUST_BE_SCALAR_TYPE( ElementType_t<VT> );
 
-   BLAZE_CONSTRAINT_MUST_BE_FLOATING_POINT_TYPE( ElementType );
+   const auto len ( length( *vec ) );
+   auto ilen( !isZero(len) ? inv(len) : len );
 
-   const ElementType len ( length( ~vec ) );
-   const ElementType ilen( ( len != ElementType(0) )?( ElementType(1) / len ):( 0 ) );
-
-   using ReturnType = const SVecScalarMultExpr<VT,ElementType,TF>;
-   return ReturnType( ~vec, ilen );
+   using ReturnType = const SVecScalarMultExpr<VT,decltype(ilen),TF>;
+   return ReturnType( *vec, ilen );
 }
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  GLOBAL RESTRUCTURING UNARY ARITHMETIC OPERATORS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Unary minus operator for the negation of a sparse vector-scalar multiplication
-//        (\f$ \vec{a} = -(\vec{b} * s) \f$).
-// \ingroup sparse_vector
-//
-// \param sv The sparse vector-scalar multiplication to be negated.
-// \return The negation of the sparse vector-scalar multiplication.
-//
-// This operator implements a performance optimized treatment of the negation of a sparse vector-
-// scalar multiplication expression.
-*/
-template< typename VT  // Type of the sparse vector
-        , typename ST  // Type of the scalar
-        , bool TF >    // Transpose flag
-inline decltype(auto) operator-( const SVecScalarMultExpr<VT,ST,TF>& sv )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   using ReturnType = const SVecScalarMultExpr<VT,ST,TF>;
-   return ReturnType( sv.leftOperand(), -sv.rightOperand() );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  GLOBAL RESTRUCTURING BINARY ARITHMETIC OPERATORS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Multiplication operator for the multiplication of a sparse vector-scalar multiplication
-//        expression and a scalar value (\f$ \vec{a}=(\vec{b}*s1)*s2 \f$).
-// \ingroup sparse_vector
-//
-// \param vec The left-hand side sparse vector-scalar multiplication.
-// \param scalar The right-hand side scalar value for the multiplication.
-// \return The scaled result vector.
-//
-// This operator implements a performance optimized treatment of the multiplication of a
-// sparse vector-scalar multiplication expression and a scalar value.
-*/
-template< typename VT   // Type of the sparse vector of the left-hand side expression
-        , typename ST1  // Type of the scalar of the left-hand side expression
-        , bool TF       // Transpose flag of the sparse vector
-        , typename ST2  // Type of the right-hand side scalar
-        , EnableIf_t< IsNumeric_v<ST2> >* = nullptr >
-inline decltype(auto) operator*( const SVecScalarMultExpr<VT,ST1,TF>& vec, ST2 scalar )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   return vec.leftOperand() * ( vec.rightOperand() * scalar );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Multiplication operator for the multiplication of a sparse vector-scalar multiplication
-//        expression and a scalar value (\f$ \vec{a}=s2*(\vec{b}*s1) \f$).
-// \ingroup sparse_vector
-//
-// \param scalar The left-hand side scalar value for the multiplication.
-// \param vec The right-hand side sparse vector-scalar multiplication.
-// \return The scaled result vector.
-//
-// This operator implements a performance optimized treatment of the multiplication of a
-// scalar value and a sparse vector-scalar multiplication expression.
-*/
-template< typename ST1  // Type of the left-hand side scalar
-        , typename VT   // Type of the sparse vector of the right-hand side expression
-        , typename ST2  // Type of the scalar of the right-hand side expression
-        , bool TF       // Transpose flag of the sparse vector
-        , EnableIf_t< IsNumeric_v<ST1> >* = nullptr >
-inline decltype(auto) operator*( ST1 scalar, const SVecScalarMultExpr<VT,ST2,TF>& vec )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   return vec.leftOperand() * ( scalar * vec.rightOperand() );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Division operator for the division of a dense vector-scalar multiplication
-//        expression by a scalar value (\f$ \vec{a}=(\vec{b}*s1)/s2 \f$).
-// \ingroup dense_vector
-//
-// \param vec The left-hand side dense vector-scalar multiplication.
-// \param scalar The right-hand side scalar value for the division.
-// \return The scaled result vector.
-//
-// This operator implements a performance optimized treatment of the division of a
-// dense vector-scalar multiplication expression by a scalar value.
-*/
-template< typename VT   // Type of the dense vector of the left-hand side expression
-        , typename ST1  // Type of the scalar of the left-hand side expression
-        , bool TF       // Transpose flag of the dense vector
-        , typename ST2  // Type of the right-hand side scalar
-        , EnableIf_t< IsNumeric_v<ST2> && ( IsInvertible_v<ST1> || IsInvertible_v<ST2> ) >* = nullptr >
-inline decltype(auto) operator/( const SVecScalarMultExpr<VT,ST1,TF>& vec, ST2 scalar )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   return vec.leftOperand() * ( vec.rightOperand() / scalar );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Multiplication operator for the multiplication of a sparse vector-scalar multiplication
-//        expression and a dense vector (\f$ \vec{a}=(\vec{b}*s1)*\vec{c} \f$).
-// \ingroup sparse_vector
-//
-// \param lhs The left-hand side sparse vector-scalar multiplication.
-// \param rhs The right-hand side dense vector.
-// \return The scaled result vector.
-//
-// This operator implements the performance optimized treatment of the multiplication of a
-// sparse vector-scalar multiplication and a dense vector. It restructures the expression
-// \f$ \vec{a}=(\vec{b}*s1)*\vec{c} \f$ to the expression \f$ \vec{a}=(\vec{b}*\vec{c})*s1 \f$.
-*/
-template< typename VT1    // Type of the sparse vector of the left-hand side expression
-        , typename ST     // Type of the scalar of the left-hand side expression
-        , bool TF         // Transpose flag of the dense vectors
-        , typename VT2 >  // Type of the right-hand side dense vector
-inline decltype(auto)
-   operator*( const SVecScalarMultExpr<VT1,ST,TF>& lhs, const DenseVector<VT2,TF>& rhs )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   return ( lhs.leftOperand() * (~rhs) ) * lhs.rightOperand();
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Multiplication operator for the multiplication of a dense vector and a sparse vector-
-//        scalar multiplication expression (\f$ \vec{a}=\vec{b}*(\vec{c}*s1) \f$).
-// \ingroup sparse_vector
-//
-// \param lhs The left-hand side dense vector.
-// \param rhs The right-hand side sparse vector-scalar multiplication.
-// \return The scaled result vector.
-//
-// This operator implements the performance optimized treatment of the multiplication of a
-// dense vector and a sparse vector-scalar multiplication. It restructures the expression
-// \f$ \vec{a}=\vec{b}*(\vec{c}*s1) \f$ to the expression \f$ \vec{a}=(\vec{b}*\vec{c})*s1 \f$.
-*/
-template< typename VT1   // Type of the left-hand side dense vector
-        , bool TF        // Transpose flag of the dense vectors
-        , typename VT2   // Type of the sparse vector of the right-hand side expression
-        , typename ST >  // Type of the scalar of the right-hand side expression
-inline decltype(auto)
-   operator*( const DenseVector<VT1,TF>& lhs, const SVecScalarMultExpr<VT2,ST,TF>& rhs )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   return ( (~lhs) * rhs.leftOperand() ) * rhs.rightOperand();
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Multiplication operator for the outer product of a sparse vector-scalar multiplication
-//        expression and a dense vector (\f$ A=(\vec{b}*s1)*\vec{c}^T \f$).
-// \ingroup sparse_matrix
-//
-// \param lhs The left-hand side sparse vector-scalar multiplication.
-// \param rhs The right-hand side dense vector.
-// \return The scaled result matrix.
-//
-// This operator implements the performance optimized treatment of the outer product of a
-// sparse vector-scalar multiplication and a dense vector. It restructures the expression
-// \f$ A=(\vec{b}*s1)*\vec{c}^T \f$ to the expression \f$ A=(\vec{b}*\vec{c}^T)*s1 \f$.
-*/
-template< typename VT1    // Type of the sparse vector of the left-hand side expression
-        , typename ST     // Type of the scalar of the left-hand side expression
-        , typename VT2 >  // Type of the right-hand side dense vector
-inline decltype(auto)
-   operator*( const SVecScalarMultExpr<VT1,ST,false>& lhs, const DenseVector<VT2,true>& rhs )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   return ( lhs.leftOperand() * (~rhs) ) * lhs.rightOperand();
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Multiplication operator for the outer product of a dense vector and a sparse vector-
-//        scalar multiplication expression (\f$ A=\vec{b}*(\vec{c}^T*s1) \f$).
-// \ingroup sparse_matrix
-//
-// \param lhs The left-hand side dense vector.
-// \param rhs The right-hand side sparse vector-scalar multiplication.
-// \return The scaled result matrix.
-//
-// This operator implements the performance optimized treatment of the outer product of a
-// dense vector and a sparse vector-scalar multiplication. It restructures the expression
-// \f$ A=\vec{b}*(\vec{c}^T*s1) \f$ to the expression \f$ A=(\vec{b}*\vec{c}^T)*s1 \f$.
-*/
-template< typename VT1   // Type of the left-hand side dense vector
-        , typename VT2   // Type of the sparse vector of the right-hand side expression
-        , typename ST >  // Type of the scalar of the right-hand side expression
-inline decltype(auto)
-   operator*( const DenseVector<VT1,false>& lhs, const SVecScalarMultExpr<VT2,ST,true>& rhs )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   return ( (~lhs) * rhs.leftOperand() ) * rhs.rightOperand();
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Multiplication operator for the multiplication of a sparse vector-scalar multiplication
-//        expression and a sparse vector (\f$ \vec{a}=(\vec{b}*s1)*\vec{c} \f$).
-// \ingroup sparse_vector
-//
-// \param lhs The left-hand side sparse vector-scalar multiplication.
-// \param rhs The right-hand side sparse vector.
-// \return The scaled result vector.
-//
-// This operator implements the performance optimized treatment of the multiplication of a
-// sparse vector-scalar multiplication and a sparse vector. It restructures the expression
-// \f$ \vec{a}=(\vec{b}*s1)*\vec{c} \f$ to the expression \f$ \vec{a}=(\vec{b}*\vec{c})*s1 \f$.
-*/
-template< typename VT1    // Type of the sparse vector of the left-hand side expression
-        , typename ST     // Type of the scalar of the left-hand side expression
-        , bool TF         // Transpose flag of the vectors
-        , typename VT2 >  // Type of the right-hand side sparse vector
-inline decltype(auto)
-   operator*( const SVecScalarMultExpr<VT1,ST,TF>& lhs, const SparseVector<VT2,TF>& rhs )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   return ( lhs.leftOperand() * (~rhs) ) * lhs.rightOperand();
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Multiplication operator for the multiplication of a sparse vector and a sparse vector-
-//        scalar multiplication expression (\f$ \vec{a}=\vec{b}*(\vec{c}*s1) \f$).
-// \ingroup sparse_vector
-//
-// \param lhs The left-hand side sparse vector.
-// \param rhs The right-hand side sparse vector-scalar multiplication.
-// \return The scaled result vector.
-//
-// This operator implements the performance optimized treatment of the multiplication of a
-// sparse vector and a sparse vector-scalar multiplication. It restructures the expression
-// \f$ \vec{a}=\vec{b}*(\vec{c}*s1) \f$ to the expression \f$ \vec{a}=(\vec{b}*\vec{c})*s1 \f$.
-*/
-template< typename VT1   // Type of the left-hand side sparse vector
-        , bool TF        // Transpose flag of the vectors
-        , typename VT2   // Type of the sparse vector of the right-hand side expression
-        , typename ST >  // Type of the scalar of the right-hand side expression
-inline decltype(auto)
-   operator*( const SparseVector<VT1,TF>& lhs, const SVecScalarMultExpr<VT2,ST,TF>& rhs )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   return ( (~lhs) * rhs.leftOperand() ) * rhs.rightOperand();
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Multiplication operator for the multiplication of two sparse vector-scalar
-//        multiplication expressions (\f$ \vec{a}=(\vec{b}*s1)*(\vec{c}*s2) \f$).
-// \ingroup sparse_vector
-//
-// \param lhs The left-hand side sparse vector-scalar multiplication.
-// \param rhs The right-hand side sparse vector-scalar multiplication.
-// \return The scaled result vector.
-//
-// This operator implements the performance optimized treatment of the multiplication of
-// two sparse vector-scalar multiplication expressions. It restructures the expression
-// \f$ \vec{a}=(\vec{b}*s1)*(\vec{c}*s2) \f$ to the expression \f$ \vec{a}=(\vec{b}*\vec{c})*(s1*s2) \f$.
-*/
-template< typename VT1    // Type of the sparse vector of the left-hand side expression
-        , typename ST1    // Type of the scalar of the left-hand side expression
-        , bool TF         // Transpose flag of the sparse vectors
-        , typename VT2    // Type of the sparse vector of the right-hand side expression
-        , typename ST2 >  // Type of the scalar of the right-hand side expression
-inline decltype(auto)
-   operator*( const SVecScalarMultExpr<VT1,ST1,TF>& lhs, const SVecScalarMultExpr<VT2,ST2,TF>& rhs )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   return ( lhs.leftOperand() * rhs.leftOperand() ) * ( lhs.rightOperand() * rhs.rightOperand() );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Multiplication operator for the outer product of a sparse vector-scalar multiplication
-//        expression and a sparse vector (\f$ A=(\vec{b}*s1)*\vec{c}^T \f$).
-// \ingroup sparse_matrix
-//
-// \param lhs The left-hand side sparse vector-scalar multiplication.
-// \param rhs The right-hand side sparse vector.
-// \return The scaled result matrix.
-//
-// This operator implements the performance optimized treatment of the outer product of a
-// sparse vector-scalar multiplication and a sparse vector. It restructures the expression
-// \f$ A=(\vec{b}*s1)*\vec{c}^T \f$ to the expression \f$ A=(\vec{b}*\vec{c}^T)*s1 \f$.
-*/
-template< typename VT1    // Type of the sparse vector of the left-hand side expression
-        , typename ST     // Type of the scalar of the left-hand side expression
-        , typename VT2 >  // Type of the right-hand side sparse vector
-inline decltype(auto)
-   operator*( const SVecScalarMultExpr<VT1,ST,false>& lhs, const SparseVector<VT2,true>& rhs )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   return ( lhs.leftOperand() * (~rhs) ) * lhs.rightOperand();
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Multiplication operator for the outer product of a sparse vector and a sparse vector-
-//        scalar multiplication expression (\f$ A=\vec{b}*(\vec{c}^T*s1) \f$).
-// \ingroup sparse_matrix
-//
-// \param lhs The left-hand side sparse vector.
-// \param rhs The right-hand side sparse vector-scalar multiplication.
-// \return The scaled result matrix.
-//
-// This operator implements the performance optimized treatment of the outer product of a
-// sparse vector and a sparse vector-scalar multiplication. It restructures the expression
-// \f$ A=\vec{b}*(\vec{c}^T*s1) \f$ to the expression \f$ A=(\vec{b}*\vec{c}^T)*s1 \f$.
-*/
-template< typename VT1   // Type of the left-hand side sparse vector
-        , typename VT2   // Type of the sparse vector of the right-hand side expression
-        , typename ST >  // Type of the scalar of the right-hand side expression
-inline decltype(auto)
-   operator*( const SparseVector<VT1,false>& lhs, const SVecScalarMultExpr<VT2,ST,true>& rhs )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   return ( (~lhs) * rhs.leftOperand() ) * rhs.rightOperand();
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Multiplication operator for the outer product of two a sparse vector-scalar
-//        multiplication expressions (\f$ A=(\vec{b}*s1)*(\vec{c}^T*s2) \f$).
-// \ingroup sparse_matrix
-//
-// \param lhs The left-hand side sparse vector-scalar multiplication.
-// \param rhs The right-hand side sparse vector-scalar multiplication.
-// \return The scaled result matrix.
-//
-// This operator implements the performance optimized treatment of the outer product
-// of two sparse vector-scalar multiplications. It restructures the expression
-// \f$ A=(\vec{b}*s1)*(\vec{c}^T*s2) \f$ to the expression \f$ A=(\vec{b}*\vec{c}^T)*(s1*s2) \f$.
-*/
-template< typename VT1    // Type of the sparse vector of the left-hand side expression
-        , typename ST1    // Type of the scalar of the left-hand side expression
-        , typename VT2    // Type of the sparse vector of the right-hand side expression
-        , typename ST2 >  // Type of the scalar of the right-hand side expression
-inline decltype(auto)
-   operator*( const SVecScalarMultExpr<VT1,ST1,false>& lhs, const SVecScalarMultExpr<VT2,ST2,true>& rhs )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   return ( lhs.leftOperand() * rhs.leftOperand() ) * ( lhs.rightOperand() * rhs.rightOperand() );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Multiplication operator for the multiplication of a dense matrix and a sparse
-//        vector-scalar multiplication expression (\f$ \vec{a}=B*(\vec{c}*s1) \f$).
-// \ingroup dense_vector
-//
-// \param lhs The left-hand side dense matrix.
-// \param rhs The right-hand side sparse vector-scalar multiplication.
-// \return The scaled result vector.
-//
-// This operator implements the performance optimized treatment of the multiplication of a
-// dense matrix and a sparse vector-scalar multiplication. It restructures the expression
-// \f$ \vec{a}=B*(\vec{c}*s1) \f$ to the expression \f$ \vec{a}=(B*\vec{c})*s1 \f$.
-*/
-template< typename MT    // Type of the left-hand side dense matrix
-        , bool SO        // Storage order of the left-hand side dense matrix
-        , typename VT    // Type of the sparse vector of the right-hand side expression
-        , typename ST >  // Type of the scalar of the right-hand side expression
-inline decltype(auto)
-   operator*( const DenseMatrix<MT,SO>& mat, const SVecScalarMultExpr<VT,ST,false>& vec )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   return ( (~mat) * vec.leftOperand() ) * vec.rightOperand();
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Multiplication operator for the multiplication of a transpose sparse vector-scalar
-//        multiplication expression and a dense matrix (\f$ \vec{a}^T=(\vec{b}^T*s1)*C \f$).
-// \ingroup dense_vector
-//
-// \param lhs The left-hand side transpose sparse vector-scalar multiplication.
-// \param rhs The right-hand side dense matrix.
-// \return The scaled result vector.
-//
-// This operator implements the performance optimized treatment of the multiplication of a
-// transpose sparse vector-scalar multiplication and a dense matrix. It restructures the
-// expression \f$ \vec{a}^T=(\vec{b}^T*s1)*C \f$ to the expression \f$ \vec{a}^T=(\vec{b}^T*C)*s1 \f$.
-*/
-template< typename VT  // Type of the sparse vector of the left-hand side expression
-        , typename ST  // Type of the scalar of the left-hand side expression
-        , typename MT  // Type of the right-hand side dense matrix
-        , bool SO >    // Storage order of the right-hand side dense matrix
-inline decltype(auto)
-   operator*( const SVecScalarMultExpr<VT,ST,true>& vec, const DenseMatrix<MT,SO>& mat )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   return ( vec.leftOperand() * (~mat) ) * vec.rightOperand();
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Multiplication operator for the multiplication of a sparse matrix and a sparse
-//        vector-scalar multiplication expression (\f$ \vec{a}=B*(\vec{c}*s1) \f$).
-// \ingroup sparse_vector
-//
-// \param lhs The left-hand side sparse matrix.
-// \param rhs The right-hand side sparse vector-scalar multiplication.
-// \return The scaled result vector.
-//
-// This operator implements the performance optimized treatment of the multiplication of a
-// sparse matrix and a sparse vector-scalar multiplication. It restructures the expression
-// \f$ \vec{a}=B*(\vec{c}*s1) \f$ to the expression \f$ \vec{a}=(B*\vec{c})*s1 \f$.
-*/
-template< typename MT    // Type of the left-hand side sparse matrix
-        , bool SO        // Storage order of the left-hand side sparse matrix
-        , typename VT    // Type of the sparse vector of the right-hand side expression
-        , typename ST >  // Type of the scalar of the right-hand side expression
-inline decltype(auto)
-   operator*( const SparseMatrix<MT,SO>& mat, const SVecScalarMultExpr<VT,ST,false>& vec )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   return ( (~mat) * vec.leftOperand() ) * vec.rightOperand();
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Multiplication operator for the multiplication of a transpose sparse vector-scalar
-//        multiplication expression and a sparse matrix (\f$ \vec{a}^T=(\vec{b}^T*s1)*C \f$).
-// \ingroup sparse_vector
-//
-// \param lhs The left-hand side transpose sparse vector-scalar multiplication.
-// \param rhs The right-hand side sparse matrix.
-// \return The scaled result vector.
-//
-// This operator implements the performance optimized treatment of the multiplication of a
-// transpose sparse vector-scalar multiplication and a sparse matrix. It restructures the
-// expression \f$ \vec{a}^T=(\vec{b}^T*s1)*C \f$ to the expression \f$ \vec{a}^T=(\vec{b}^T*C)*s1 \f$.
-*/
-template< typename VT  // Type of the sparse vector of the left-hand side expression
-        , typename ST  // Type of the scalar of the left-hand side expression
-        , typename MT  // Type of the right-hand side sparse matrix
-        , bool SO >    // Storage order of the right-hand side sparse matrix
-inline decltype(auto)
-   operator*( const SVecScalarMultExpr<VT,ST,true>& vec, const SparseMatrix<MT,SO>& mat )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   return ( vec.leftOperand() * (~mat) ) * vec.rightOperand();
-}
-/*! \endcond */
 //*************************************************************************************************
 
 } // namespace blaze

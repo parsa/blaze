@@ -3,7 +3,7 @@
 //  \file blaze/math/views/columns/BaseTemplate.h
 //  \brief Header file for the implementation of the Columns base template
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -63,7 +63,7 @@ template< typename MT                          // Type of the matrix
         , bool SO = IsColumnMajorMatrix_v<MT>  // Storage order
         , bool DF = IsDenseMatrix_v<MT>        // Density flag
         , bool SF = IsSymmetric_v<MT>          // Symmetry flag
-        , size_t... CCAs >                     // Compile time column arguments
+        , typename... CCAs >                   // Compile time column arguments
 class Columns
 {};
 /*! \endcond */
@@ -86,8 +86,8 @@ class Columns
 // The Columns_ alias declaration represents a convenient shortcut for the specification of the
 // non-derived template arguments of the Columns class template.
 */
-template< typename MT       // Type of the matrix
-        , size_t... CCAs >  // Compile time column arguments
+template< typename MT         // Type of the matrix
+        , typename... CCAs >  // Compile time column arguments
 using Columns_ = Columns< MT
                         , IsColumnMajorMatrix_v<MT>
                         , IsDenseMatrix_v<MT>

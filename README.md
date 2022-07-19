@@ -5,7 +5,7 @@
 The **Blaze** library offers ...
 
   * ... **high performance** through the integration of BLAS libraries and manually tuned HPC math kernels
-  * ... **vectorization** by SSE, SSE2, SSE3, SSSE3, SSE4, AVX, AVX2, AVX-512, FMA, and SVML
+  * ... **vectorization** by SSE, SSE2, SSE3, SSSE3, SSE4, AVX, AVX2, AVX-512, FMA, SVML and SLEEF
   * ... **parallel execution** by OpenMP, HPX, C++11 threads and Boost threads
   * ... the **intuitive** and **easy to use** API of a domain specific language
   * ... **unified arithmetic** with dense and sparse vectors and matrices
@@ -19,15 +19,17 @@ Get an impression of the clear but powerful syntax of **Blaze** in the [Getting 
 ## Download ##
 
 ![white20x120.jpg](https://bitbucket.org/blaze-lib/blaze/wiki/images/white20x120.jpg)
-[![blaze-3.4.jpg](https://bitbucket.org/blaze-lib/blaze/wiki/images/blaze-3.4.jpg)](https://bitbucket.org/blaze-lib/blaze/downloads/blaze-3.4.tar.gz)
+[![blaze-3.8.jpg](https://bitbucket.org/blaze-lib/blaze/wiki/images/blaze-3.8.jpg)](https://bitbucket.org/blaze-lib/blaze/downloads/blaze-3.8.1.tar.gz)
 ![white40x120.jpg](https://bitbucket.org/blaze-lib/blaze/wiki/images/white40x120.jpg)
-[![blaze-docu-3.4.jpg](https://bitbucket.org/blaze-lib/blaze/wiki/images/blaze-docu-3.4.jpg)](https://bitbucket.org/blaze-lib/blaze/downloads/blaze-docu-3.4.tar.gz)
+[![blaze-docu-3.8.jpg](https://bitbucket.org/blaze-lib/blaze/wiki/images/blaze-docu-3.8.jpg)](https://bitbucket.org/blaze-lib/blaze/downloads/blaze-docu-3.8.1.tar.gz)
 
 Older releases of **Blaze** can be found in the [downloads](https://bitbucket.org/blaze-lib/blaze/downloads) section or in our [release archive](https://bitbucket.org/blaze-lib/blaze/wiki/Release Archive).
 
 ----
 
 ## Blaze Projects ##
+
+[Blaze CUDA](https://github.com/STEllAR-GROUP/blaze_cuda): Add CUDA capabilities to the **Blaze** library (Jules Pénuchot)
 
 [blaze_tensor](https://github.com/STEllAR-GROUP/blaze_tensor): An implementation of 3D tensors for the **Blaze** library (Stellar Group)
 
@@ -39,70 +41,42 @@ Older releases of **Blaze** can be found in the [downloads](https://bitbucket.or
 
 ## News ##
 
-**25.11.2018**: We are proud to announce a new **Blaze** project: [blaze_tensor](https://github.com/STEllAR-GROUP/blaze_tensor)
-provides an implementation of **Blaze**-style 3D tensors. A big thank you to the Stellar Group!
+**15.8.2020**: We are very happy to announce the release of **Blaze** 3.8. Again, we have extended the library with a number of amazing new features:
 
-**21.8.2018**: On time for [CppCon 2018](https://cppcon.org) and [SC18](https://sc18.supercomputing.org), we finally release **Blaze** 3.4! In **Blaze** 3.4 we have focused on internal improvements and refactorings, which will prove invaluable on our way forward. However, also this release comes with several useful new features. Most remarkable is the implementation of vector and matrix reduction operations. The ```sum()```, ```prod()```, ```min()``` and ```max()``` functions provide shortcuts to the most common reduction operations:
+* Introduction of the [```isinf()```](https://bitbucket.org/blaze-lib/blaze/wiki/Vector%20Operations#!isinf) and [```isfinite()```](https://bitbucket.org/blaze-lib/blaze/wiki/Vector%20Operations#!isinf) functions
+* Introduction of [groups/tags for vectors and matrices](https://bitbucket.org/blaze-lib/blaze/wiki/Grouping-Tagging)
+* Introduction of the [```repeat()```](https://bitbucket.org/blaze-lib/blaze/wiki/Vector%20Operations#!repeat) function for vectors and matrices
+* Introduction of allocators for [```DynamicVector```](https://bitbucket.org/blaze-lib/blaze/wiki/Vector%20Types#!dynamicvector) and [```DynamicMatrix```](https://bitbucket.org/blaze-lib/blaze/wiki/Matrix%20Types#!dynamicmatrix)
+* Extended support for [custom data types](https://bitbucket.org/blaze-lib/blaze/wiki/Vector%20and%20Matrix%20Customization#!custom-data-types)
 
-```
-#!c++
-blaze::DynamicVector<double> a;
-blaze::CompressedVector<int> b;
-// ... Resizing and initialization
+We hope that you enjoy this new release!
 
-const double totalsum  = sum ( a );
-const int    totalprod = prod( b );
-const double totalmin  = min ( a );
-const int    totalmax  = max ( b );
-```
+**23.2.2020**: Today we are very proud to release **Blaze** 3.7. This release is packed with a long list of new features and improvements:
 
-```
-#!c++
-blaze::DynamicMatrix<double> A;
-blaze::CompressedMatrix<int> B;
-// ... Resizing and initialization
+* Introduction of [vector generators](https://bitbucket.org/blaze-lib/blaze/wiki/Vector%20Operations#!vector-generators) and [matrix generators](https://bitbucket.org/blaze-lib/blaze/wiki/Matrix%20Operations#!matrix-generators)
+* Introduction of the [dense matrix exponential](https://bitbucket.org/blaze-lib/blaze/wiki/Matrix%20Operations#!matrix-exponential)
+* Introduction of the [```solve()```](https://bitbucket.org/blaze-lib/blaze/wiki/Matrix%20Operations#!linear-systems) function for dense linear systems
+* Support for 64-bit BLAS and LAPACK libraries
+* Enable instance-specific alignment and padding configuration for [```StaticVector```](https://bitbucket.org/blaze-lib/blaze/wiki/Vector%20Types#!staticvector), [```HybridVector```](https://bitbucket.org/blaze-lib/blaze/wiki/Vector%20Types#!hybridvector), [```StaticMatrix```](https://bitbucket.org/blaze-lib/blaze/wiki/Matrix%20Types#!staticmatrix), and [```HybridMatrix```](https://bitbucket.org/blaze-lib/blaze/wiki/Matrix%20Types#!hybridmatrix)
+* ```constexpr```ification of [```HybridVector```](https://bitbucket.org/blaze-lib/blaze/wiki/Vector%20Types#!hybridvector) and [```HybridMatrix```](https://bitbucket.org/blaze-lib/blaze/wiki/Matrix%20Types#!hybridmatrix)
+* Introduction of [outer sum](https://bitbucket.org/blaze-lib/blaze/wiki/Addition#!outer-sum), [outer difference](https://bitbucket.org/blaze-lib/blaze/wiki/Subtraction#!outer-difference), and [outer quotient](https://bitbucket.org/blaze-lib/blaze/wiki/Vector-Vector%20Division#!outer-quotient) operations
+* Introduction of [N-ary ```map()```](https://bitbucket.org/blaze-lib/blaze/wiki/Vector%20Operations#!map-foreach) operations for dense vectors and matrices (up to ```N<=6```)
+* Introduction of the [```select()```](https://bitbucket.org/blaze-lib/blaze/wiki/Vector%20Operations#!select) function for dense vectors and matrices
+* Introduction of the [```rank()```](https://bitbucket.org/blaze-lib/blaze/wiki/Matrix%20Operations#!rank) function for dense matrices
+* Introduction of the [```declunilow()```](https://bitbucket.org/blaze-lib/blaze/wiki/Matrix%20Operations#!declunilow) and [```decluniupp()```](https://bitbucket.org/blaze-lib/blaze/wiki/Matrix%20Operations#!decluniupp) functions
+* Introduction of the [```declstrlow()```](https://bitbucket.org/blaze-lib/blaze/wiki/Matrix%20Operations#!declstrlow) and [```declstrupp()```](https://bitbucket.org/blaze-lib/blaze/wiki/Matrix%20Operations#!declstrupp) functions
+* Introduction of the [```nosimd()```](https://bitbucket.org/blaze-lib/blaze/wiki/Vector%20Operations#!nosimd) function for vectors and matrices
+* Introduction of the [```noalias()```](https://bitbucket.org/blaze-lib/blaze/wiki/Vector%20Operations#!noalias) function for vectors and matrices
+* Introduction of the [```isPositiveDefinite()```](https://bitbucket.org/blaze-lib/blaze/wiki/Matrix%20Operations#!ispositivedefinite) function for dense matrices
+* Introduction of the [```eigen()```](https://bitbucket.org/blaze-lib/blaze/wiki/Matrix%20Operations#!eigenvalueseigenvectors) expression
+* Introduction of the [```svd()```](https://bitbucket.org/blaze-lib/blaze/wiki/Matrix%20Operations#!singular-valuessingular-vectors) expression
+* Introduction of a ```std::array``` constructor for all [dense vectors](https://bitbucket.org/blaze-lib/blaze/wiki/Vector%20Operations#!array-construction) and [dense matrices](https://bitbucket.org/blaze-lib/blaze/wiki/Matrix%20Operations#!array-construction)
+* Introduction of [```min()```](https://bitbucket.org/blaze-lib/blaze/wiki/Vector%20Operations#!min-max) and [```max()```](https://bitbucket.org/blaze-lib/blaze/wiki/Vector%20Operations#!min-max) overloads for vector/scalar and matrix/scalar operations
+* Optimizations of the dense matrix/dense vector multiplication kernels
+* Optimizations of the dense matrix/dense matrix multiplication kernels
+* Extended support for C++17 [class template argument deduction (CTAD)](https://en.cppreference.com/w/cpp/language/class_template_argument_deduction)
 
-double totalsum( 0 );
-blaze::DynamicVector<int,columnVector> rowprod;
-blaze::DynamicVector<int,rowVector> colmin;
-int totalmax( 0 );
-
-totalsum = sum( A );
-rowprod  = prod<rowwise>( B );
-colmin   = min<columnwise>( A );
-totalmax = max( B );
-```
-
-Note that via the ```blaze::rowwise``` and ```blaze::columnwise``` flags it is possible to perform row-wise and column-wise matrix reduction operations, respectively. In addition, it is possible to formulate custom reduction operations:
-
-```
-#!c++
-blaze::DynamicVector<double> a;
-blaze::CompressedVector<int> b;
-// ... Resizing and initialization
-
-const double totalsum1 = reduce( a, blaze::Add() );
-const double totalsum2 = reduce( b, []( double a, double b ){ return a + b; } );
-```
-
-```
-#!c++
-blaze::DynamicMatrix<double> A;
-blaze::CompressedMatrix<int> B;
-// ... Resizing and initialization
-
-const double totalsum1 = reduce( A, blaze::Add() );
-const double totalsum2 = reduce( B, []( int a, int b ){ return a + b; } );
-
-blaze::DynamicVector<double,rowVector> colsum;
-blaze::DynamicVector<int,columnVector> rowsum;
-colsum = reduce<columnwise>( A, []( double a, double b ){ return a + b; } );
-rowsum = reduce<rowwise>( B, blaze::Add() );
-```
-
-Please note that in **Blaze** 3.4 we make unrestricted use of [variable templates](https://en.cppreference.com/w/cpp/language/variable_template). Unfortunately, compiler support for variable templates is not perfect yet and we have encountered various problems, especially with older compilers, which we supported up to **Blaze** 3.3. In order to being able to move forward and in order to benefit from variable templates, from as of today **Blaze** will no longer provide support for compilers without complete support for variable templates.
-
-We hope you enjoy this amazing new release of **Blaze**!
+We hope that these new additions and improvements enable you to get even more out of **Blaze**. Enjoy!
 
 ----
 
@@ -112,10 +86,53 @@ We hope you enjoy this amazing new release of **Blaze**!
 * [Getting Started](https://bitbucket.org/blaze-lib/blaze/wiki/Getting Started)
 * [Vectors](https://bitbucket.org/blaze-lib/blaze/wiki/Vectors)
     * [Vector Types](https://bitbucket.org/blaze-lib/blaze/wiki/Vector Types)
+        * [Dense Vectors](https://bitbucket.org/blaze-lib/blaze/wiki/Vector Types#!dense-vectors)
+        * [Sparse Vectors](https://bitbucket.org/blaze-lib/blaze/wiki/Vector Types#!sparse-vectors)
     * [Vector Operations](https://bitbucket.org/blaze-lib/blaze/wiki/Vector Operations)
+        * [Constructors](https://bitbucket.org/blaze-lib/blaze/wiki/Vector Operations#!constructors)
+        * [Assignment](https://bitbucket.org/blaze-lib/blaze/wiki/Vector Operations#!assignment)
+        * [Element Access](https://bitbucket.org/blaze-lib/blaze/wiki/Vector Operations#!element-access)
+        * [Element Insertion](https://bitbucket.org/blaze-lib/blaze/wiki/Vector Operations#!element-insertion)
+        * [Element Removal](https://bitbucket.org/blaze-lib/blaze/wiki/Vector Operations#!element-removal)
+        * [Element Lookup](https://bitbucket.org/blaze-lib/blaze/wiki/Vector Operations#!element-lookup)
+        * [Non-Modifying Operations](https://bitbucket.org/blaze-lib/blaze/wiki/Vector Operations#!non-modifying-operations)
+        * [Modifying Operations](https://bitbucket.org/blaze-lib/blaze/wiki/Vector Operations#!modifying-operations)
+        * [Arithmetic Operations](https://bitbucket.org/blaze-lib/blaze/wiki/Vector Operations#!arithmetic-operations)
+        * [Reduction Operations](https://bitbucket.org/blaze-lib/blaze/wiki/Vector Operations#!reduction-operations)
+        * [Norms](https://bitbucket.org/blaze-lib/blaze/wiki/Vector Operations#!norms)
+        * [Scalar Expansion](https://bitbucket.org/blaze-lib/blaze/wiki/Vector Operations#!scalar-expansion)
+        * [Vector Expansion](https://bitbucket.org/blaze-lib/blaze/wiki/Vector Operations#!vector-expansion)
+        * [Vector Repetition](https://bitbucket.org/blaze-lib/blaze/wiki/Vector Operations#!vector-repetition)
+        * [Statistic Operations](https://bitbucket.org/blaze-lib/blaze/wiki/Vector Operations#!statistic-operations)
+        * [Declaration Operations](https://bitbucket.org/blaze-lib/blaze/wiki/Vector Operations#!declaration-operations)
+        * [Vector Generators](https://bitbucket.org/blaze-lib/blaze/wiki/Vector Operations#!vector-generators)
 * [Matrices](https://bitbucket.org/blaze-lib/blaze/wiki/Matrices)
     * [Matrix Types](https://bitbucket.org/blaze-lib/blaze/wiki/Matrix Types)
+        * [Dense Matrices](https://bitbucket.org/blaze-lib/blaze/wiki/Matrix Types#!dense-matrices)
+        * [Sparse Matrices](https://bitbucket.org/blaze-lib/blaze/wiki/Matrix Types#!sparse-matrices)
     * [Matrix Operations](https://bitbucket.org/blaze-lib/blaze/wiki/Matrix Operations)
+        * [Constructors](https://bitbucket.org/blaze-lib/blaze/wiki/Matrix Operations#!constructors)
+        * [Assignment](https://bitbucket.org/blaze-lib/blaze/wiki/Matrix Operations#!assignment)
+        * [Element Access](https://bitbucket.org/blaze-lib/blaze/wiki/Matrix Operations#!element-access)
+        * [Element Insertion](https://bitbucket.org/blaze-lib/blaze/wiki/Matrix Operations#!element-insertion)
+        * [Element Removal](https://bitbucket.org/blaze-lib/blaze/wiki/Matrix Operations#!element-removal)
+        * [Element Lookup](https://bitbucket.org/blaze-lib/blaze/wiki/Matrix Operations#!element-lookup)
+        * [Non-Modifying Operations](https://bitbucket.org/blaze-lib/blaze/wiki/Matrix Operations#!non-modifying-operations)
+        * [Modifying Operations](https://bitbucket.org/blaze-lib/blaze/wiki/Matrix Operations#!modifying-operations)
+        * [Arithmetic Operations](https://bitbucket.org/blaze-lib/blaze/wiki/Matrix Operations#!arithmetic-operations)
+        * [Reduction Operations](https://bitbucket.org/blaze-lib/blaze/wiki/Matrix Operations#!reduction-operations)
+        * [Norms](https://bitbucket.org/blaze-lib/blaze/wiki/Matrix Operations#!norms)
+        * [Scalar Expansion](https://bitbucket.org/blaze-lib/blaze/wiki/Matrix Operations#!scalar-expansion)
+        * [Matrix Repetition](https://bitbucket.org/blaze-lib/blaze/wiki/Matrix Operations#!matrix-repetition)
+        * [Statistic Operations](https://bitbucket.org/blaze-lib/blaze/wiki/Matrix Operations#!statistic-operations)
+        * [Declaration Operations](https://bitbucket.org/blaze-lib/blaze/wiki/Matrix Operations#!declaration-operations)
+        * [Matrix Generators](https://bitbucket.org/blaze-lib/blaze/wiki/Matrix Operations#!matrix-generators)
+        * [Matrix Inversion](https://bitbucket.org/blaze-lib/blaze/wiki/Matrix Operations#!matrix-inversion)
+        * [Matrix Exponential](https://bitbucket.org/blaze-lib/blaze/wiki/Matrix Operations#!matrix-exponential)
+        * [Matrix Decomposition](https://bitbucket.org/blaze-lib/blaze/wiki/Matrix Operations#!matrix-decomposition)
+        * [Linear Systems](https://bitbucket.org/blaze-lib/blaze/wiki/Matrix Operations#!linear-systems)
+        * [Eigenvalues/Eigenvectors](https://bitbucket.org/blaze-lib/blaze/wiki/Matrix Operations#!eigenvalueseigenvectors)
+        * [Singular Values/Singular Vectors](https://bitbucket.org/blaze-lib/blaze/wiki/Matrix Operations#!singular-valuessingular-vectors)
 * [Adaptors](https://bitbucket.org/blaze-lib/blaze/wiki/Adaptors)
     * [Symmetric Matrices](https://bitbucket.org/blaze-lib/blaze/wiki/Symmetric Matrices)
     * [Hermitian Matrices](https://bitbucket.org/blaze-lib/blaze/wiki/Hermitian Matrices)
@@ -138,16 +155,27 @@ We hope you enjoy this amazing new release of **Blaze**!
         * [Inner Product / Scalar Product / Dot Product](https://bitbucket.org/blaze-lib/blaze/wiki/Vector-Vector Multiplication#!inner-product-scalar-product-dot-product)
         * [Outer Product](https://bitbucket.org/blaze-lib/blaze/wiki/Vector-Vector Multiplication#!outer-product)
         * [Cross Product](https://bitbucket.org/blaze-lib/blaze/wiki/Vector-Vector Multiplication#!cross-product)
+        * [Kronecker Product](https://bitbucket.org/blaze-lib/blaze/wiki/Vector-Vector Multiplication#!kronecker-product)
     * [Vector/Vector Division](https://bitbucket.org/blaze-lib/blaze/wiki/Vector-Vector Division)
     * [Matrix/Vector Multiplication](https://bitbucket.org/blaze-lib/blaze/wiki/Matrix-Vector Multiplication)
     * [Matrix/Matrix Multiplication](https://bitbucket.org/blaze-lib/blaze/wiki/Matrix-Matrix Multiplication)
         * [Schur Product](https://bitbucket.org/blaze-lib/blaze/wiki/Matrix-Matrix Multiplication#!componentwise-multiplication-schur-product)
         * [Matrix Product](https://bitbucket.org/blaze-lib/blaze/wiki/Matrix-Matrix Multiplication#!matrix-product)
+        * [Kronecker Product](https://bitbucket.org/blaze-lib/blaze/wiki/Matrix-Matrix Multiplication#!kronecker-product)
+* [Bitwise Operations](https://bitbucket.org/blaze-lib/blaze/wiki/Arithmetic Operations)
+    * [Bitwise Shift](https://bitbucket.org/blaze-lib/blaze/wiki/Bitwise Shift)
+    * [Bitwise AND](https://bitbucket.org/blaze-lib/blaze/wiki/Bitwise AND)
+    * [Bitwise OR](https://bitbucket.org/blaze-lib/blaze/wiki/Bitwise OR)
+    * [Bitwise XOR](https://bitbucket.org/blaze-lib/blaze/wiki/Bitwise XOR)
+* [Logical Operations](https://bitbucket.org/blaze-lib/blaze/wiki/Arithmetic Operations)
+    * [Logical NOT](https://bitbucket.org/blaze-lib/blaze/wiki/Logical NOT)
+    * [Logical AND](https://bitbucket.org/blaze-lib/blaze/wiki/Logical AND)
+    * [Logical OR](https://bitbucket.org/blaze-lib/blaze/wiki/Logical OR)
 * [Shared-Memory Parallelization](https://bitbucket.org/blaze-lib/blaze/wiki/Shared Memory Parallelization)
-    * [OpenMP Parallelization](https://bitbucket.org/blaze-lib/blaze/wiki/OpenMP Parallelization)
+    * [HPX Parallelization](https://bitbucket.org/blaze-lib/blaze/wiki/HPX Parallelization)
     * [C++11 Thread Parallelization](https://bitbucket.org/blaze-lib/blaze/wiki/Cpp Thread Parallelization)
     * [Boost Thread Parallelization](https://bitbucket.org/blaze-lib/blaze/wiki/Boost Thread Parallelization)
-    * [HPX Parallelization](https://bitbucket.org/blaze-lib/blaze/wiki/HPX Parallelization)
+    * [OpenMP Parallelization](https://bitbucket.org/blaze-lib/blaze/wiki/OpenMP Parallelization)
     * [Serial Execution](https://bitbucket.org/blaze-lib/blaze/wiki/Serial Execution)
 * [Serialization](https://bitbucket.org/blaze-lib/blaze/wiki/Serialization)
     * [Vector Serialization](https://bitbucket.org/blaze-lib/blaze/wiki/Vector Serialization)
@@ -158,6 +186,7 @@ We hope you enjoy this amazing new release of **Blaze**!
         * [Custom Data Members](https://bitbucket.org/blaze-lib/blaze/wiki/Vector and Matrix Customization#!custom-data-members)
         * [Custom Operations](https://bitbucket.org/blaze-lib/blaze/wiki/Vector and Matrix Customization#!custom-operations)
         * [Custom Data Types](https://bitbucket.org/blaze-lib/blaze/wiki/Vector and Matrix Customization#!custom-data-types)
+    * [Grouping/Tagging](https://bitbucket.org/blaze-lib/blaze/wiki/Grouping-Tagging)
     * [Error Reporting Customization](https://bitbucket.org/blaze-lib/blaze/wiki/Error Reporting Customization)
 * [BLAS Functions](https://bitbucket.org/blaze-lib/blaze/wiki/BLAS Functions)
 * [LAPACK Functions](https://bitbucket.org/blaze-lib/blaze/wiki/LAPACK Functions)
@@ -168,6 +197,7 @@ We hope you enjoy this amazing new release of **Blaze**!
 * [Blaze References](https://bitbucket.org/blaze-lib/blaze/wiki/Blaze References)
 * [Blazemark: The Blaze Benchmark Suite](https://bitbucket.org/blaze-lib/blaze/wiki/Blazemark)
 * [Benchmarks/Performance Results](https://bitbucket.org/blaze-lib/blaze/wiki/Benchmarks)
+* [Release Archive](https://bitbucket.org/blaze-lib/blaze/wiki/Release Archive)
 
 ----
 
@@ -185,7 +215,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 
 ## Compiler Compatibility ##
 
-**Blaze** supports the C++14 standard and is compatible with a wide range of C++ compilers. In fact, **Blaze** is constantly tested with the GNU compiler collection (version 6.0 through 7.2), the Clang compiler (version 5.0 through 6.0), and Visual C++ 2017 (Win64 only). Other compilers are not explicitly tested, but might work with a high probability.
+**Blaze** supports the C++14 standard and is compatible with a wide range of C++ compilers. In fact, **Blaze** is constantly tested with the GNU compiler collection (version 6.0 through 10.2), the Clang compiler (version 5.0 through 10.0), and Visual C++ 2017 (Win64 only). Other compilers are not explicitly tested, but might work with a high probability.
 
 If you are looking for a C++98 compatible math library you might consider using an older release of **Blaze**. Until the release 2.6 **Blaze** was written in C++-98 and constantly tested with the GNU compiler collection (version 4.5 through 5.0), the Intel C++ compiler (12.1, 13.1, 14.0, 15.0), the Clang compiler (version 3.4 through 3.7), and Visual C++ 2010, 2012, 2013, and 2015 (Win64 only).
 
@@ -233,3 +263,9 @@ Darcy Beurle -- Integration of **Blaze** into the Compiler Explorer
 Robert Schumacher -- CMake fixes
 
 Jan Rudolph -- CMake fixes
+
+Mikhail Katliar -- LAPACK extensions
+
+Daniel Baker -- Integration of Sleef
+
+Thijs Withaar -- LAPACK extensions

@@ -3,7 +3,7 @@
 //  \file src/clike/SMatDVecMult.cpp
 //  \brief Source file for the C-like sparse matrix/dense vector multiplication kernel
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -81,8 +81,8 @@ double smatdvecmult( size_t N, size_t F, size_t steps )
    size_t counter( 0 );
 
    for( size_t i=0UL; i<N; ++i ) {
-      ::blaze::Indices indices( 0UL, N-1UL, F );
-      for( ::blaze::Indices::ConstIterator it=indices.begin(); it!=indices.end(); ++it ) {
+      ::blaze::Indices<size_t> indices( 0UL, N-1UL, F );
+      for( auto it=indices.begin(); it!=indices.end(); ++it ) {
          value[counter] = ::blaze::rand<element_t>();
          index[counter] = *it;
          ++counter;

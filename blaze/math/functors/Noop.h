@@ -3,7 +3,7 @@
 //  \file blaze/math/functors/Noop.h
 //  \brief Header file for the Noop functor
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -40,7 +40,9 @@
 // Includes
 //*************************************************************************************************
 
+#include <utility>
 #include <blaze/math/constraints/SIMDPack.h>
+#include <blaze/system/HostDevice.h>
 #include <blaze/system/Inline.h>
 
 
@@ -59,22 +61,15 @@ namespace blaze {
 struct Noop
 {
    //**********************************************************************************************
-   /*!\brief Default constructor of the Noop functor.
-   */
-   explicit inline Noop()
-   {}
-   //**********************************************************************************************
-
-   //**********************************************************************************************
    /*!\brief Returns the given object/value without modifications.
    //
    // \param a The given object/value.
    // \return The given object/value without modifications.
    */
    template< typename T >
-   BLAZE_ALWAYS_INLINE decltype(auto) operator()( const T& a ) const
+   BLAZE_ALWAYS_INLINE BLAZE_DEVICE_CALLABLE decltype(auto) operator()( T&& a ) const
    {
-      return a;
+      return std::forward<T>( a );
    }
    //**********************************************************************************************
 
@@ -85,6 +80,14 @@ struct Noop
    */
    template< typename T >
    static constexpr bool simdEnabled() { return true; }
+   //**********************************************************************************************
+
+   //**********************************************************************************************
+   /*!\brief Returns whether the operation supports padding, i.e. whether it can deal with zeros.
+   //
+   // \return \a true in case padding is supported, \a false if not.
+   */
+   static constexpr bool paddingEnabled() { return true; }
    //**********************************************************************************************
 
    //**********************************************************************************************

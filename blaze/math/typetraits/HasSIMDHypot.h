@@ -3,7 +3,7 @@
 //  \file blaze/math/typetraits/HasSIMDHypot.h
 //  \brief Header file for the HasSIMDHypot type trait
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -42,10 +42,10 @@
 
 #include <blaze/system/Vectorization.h>
 #include <blaze/util/IntegralConstant.h>
-#include <blaze/util/typetraits/Decay.h>
 #include <blaze/util/typetraits/IsDouble.h>
 #include <blaze/util/typetraits/IsFloat.h>
 #include <blaze/util/typetraits/IsSame.h>
+#include <blaze/util/typetraits/RemoveCVRef.h>
 
 
 namespace blaze {
@@ -66,7 +66,8 @@ template< typename T1    // Type of the left-hand side operand
 using HasSIMDHypotHelper =
    BoolConstant< IsSame_v<T1,T2> &&
                  ( IsFloat_v<T1> || IsDouble_v<T1> ) &&
-                 bool( BLAZE_SVML_MODE ) &&
+                 ( bool( BLAZE_SVML_MODE    ) ||
+                   bool( BLAZE_SLEEF_MODE ) ) &&
                  ( bool( BLAZE_SSE_MODE     ) ||
                    bool( BLAZE_AVX_MODE     ) ||
                    bool( BLAZE_MIC_MODE     ) ||
@@ -99,14 +100,14 @@ using HasSIMDHypotHelper =
 template< typename T1    // Type of the left-hand side operand
         , typename T2 >  // Type of the right-hand side operand
 struct HasSIMDHypot
-   : public BoolConstant< HasSIMDHypotHelper< Decay_t<T1>, Decay_t<T2> >::value >
+   : public BoolConstant< HasSIMDHypotHelper< RemoveCVRef_t<T1>, RemoveCVRef_t<T2> >::value >
 {};
 //*************************************************************************************************
 
 
 //*************************************************************************************************
 /*!\brief Auxiliary variable template for the HasSIMDHypot type trait.
-// \ingroup type_traits
+// \ingroup math_type_traits
 //
 // The HasSIMDHypot_v variable template provides a convenient shortcut to access the nested
 // \a value of the HasSIMDHypot class template. For instance, given the types \a T1 and \a T2

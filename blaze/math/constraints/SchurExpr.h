@@ -3,7 +3,7 @@
 //  \file blaze/math/constraints/SchurExpr.h
 //  \brief Constraint on the data type
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -97,8 +97,8 @@ namespace blaze {
 /*!\brief Constraint on the data type.
 // \ingroup math_constraints
 //
-// In case the given data types \a T1 and \a T2 do not form a valid matrix/matrix addition,
-// a compilation error is created.
+// In case the given data types \a T1 and \a T2 do not form a valid Schur product, a compilation
+// error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_FORM_VALID_SCHUREXPR(T1,T2) \
    static_assert( ::blaze::IsMatrix_v<T1> && \
@@ -109,7 +109,7 @@ namespace blaze {
                   ( ( ::blaze::Size_v<T1,1UL> == -1L ) || \
                     ( ::blaze::Size_v<T2,1UL> == -1L ) || \
                     ( ::blaze::Size_v<T1,1UL> == ::blaze::Size_v<T2,1UL> ) ) \
-                , "Invalid matrix/matrix addition expression detected" )
+                , "Invalid matrix/matrix Schur product expression detected" )
 //*************************************************************************************************
 
 } // namespace blaze

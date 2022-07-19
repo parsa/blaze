@@ -3,7 +3,7 @@
 //  \file blaze/math/adaptors/uppermatrix/Sparse.h
 //  \brief UpperMatrix specialization for sparse matrices
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -46,7 +46,7 @@
 #include <blaze/math/adaptors/uppermatrix/BaseTemplate.h>
 #include <blaze/math/adaptors/uppermatrix/UpperProxy.h>
 #include <blaze/math/Aliases.h>
-#include <blaze/math/constraints/Expression.h>
+#include <blaze/math/constraints/Computation.h>
 #include <blaze/math/constraints/Hermitian.h>
 #include <blaze/math/constraints/Lower.h>
 #include <blaze/math/constraints/Resizable.h>
@@ -54,12 +54,13 @@
 #include <blaze/math/constraints/Static.h>
 #include <blaze/math/constraints/StorageOrder.h>
 #include <blaze/math/constraints/Symmetric.h>
+#include <blaze/math/constraints/Transformation.h>
 #include <blaze/math/constraints/Upper.h>
+#include <blaze/math/constraints/View.h>
 #include <blaze/math/dense/InitializerMatrix.h>
 #include <blaze/math/Exception.h>
 #include <blaze/math/expressions/SparseMatrix.h>
 #include <blaze/math/InitializerList.h>
-#include <blaze/math/shims/Clear.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/sparse/SparseMatrix.h>
 #include <blaze/math/typetraits/IsComputation.h>
@@ -71,7 +72,6 @@
 #include <blaze/util/constraints/Pointer.h>
 #include <blaze/util/constraints/Reference.h>
 #include <blaze/util/constraints/Volatile.h>
-#include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/StaticAssert.h>
 #include <blaze/util/Types.h>
@@ -113,6 +113,7 @@ class UpperMatrix<MT,SO,false>
    using OppositeType   = UpperMatrix<OT,!SO,false>;  //!< Result type with opposite storage order for expression template evaluations.
    using TransposeType  = LowerMatrix<TT,!SO,false>;  //!< Transpose type for expression template evaluations.
    using ElementType    = ET;                         //!< Type of the matrix elements.
+   using TagType        = TagType_t<MT>;              //!< Tag type of this UpperMatrix instance.
    using ReturnType     = ReturnType_t<MT>;           //!< Return type for expression template evaluations.
    using CompositeType  = const This&;                //!< Data type for composite expression templates.
    using Reference      = UpperProxy<MT>;             //!< Reference to a non-constant matrix value.
@@ -150,11 +151,11 @@ class UpperMatrix<MT,SO,false>
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit inline UpperMatrix();
+            inline UpperMatrix();
    explicit inline UpperMatrix( size_t n );
-   explicit inline UpperMatrix( size_t n, size_t nonzeros );
-   explicit inline UpperMatrix( size_t n, const std::vector<size_t>& nonzeros );
-   explicit inline UpperMatrix( initializer_list< initializer_list<ElementType> > list );
+            inline UpperMatrix( size_t n, size_t nonzeros );
+            inline UpperMatrix( size_t n, const std::vector<size_t>& nonzeros );
+            inline UpperMatrix( initializer_list< initializer_list<ElementType> > list );
 
    inline UpperMatrix( const UpperMatrix& m );
    inline UpperMatrix( UpperMatrix&& m ) noexcept;
@@ -244,8 +245,8 @@ class UpperMatrix<MT,SO,false>
    inline void   shrinkToFit();
    inline void   swap( UpperMatrix& m ) noexcept;
 
-   static inline constexpr size_t maxNonZeros() noexcept;
-   static inline constexpr size_t maxNonZeros( size_t n ) noexcept;
+   static constexpr size_t maxNonZeros() noexcept;
+   static constexpr size_t maxNonZeros( size_t n ) noexcept;
    //@}
    //**********************************************************************************************
 
@@ -326,9 +327,6 @@ class UpperMatrix<MT,SO,false>
    //**********************************************************************************************
 
    //**Friend declarations*************************************************************************
-   template< bool RF, typename MT2, bool SO2, bool DF2 >
-   friend bool isDefault( const UpperMatrix<MT2,SO2,DF2>& m );
-
    template< typename MT2, bool SO2, bool DF2 >
    friend MT2& derestrict( UpperMatrix<MT2,SO2,DF2>& m );
    //**********************************************************************************************
@@ -339,7 +337,9 @@ class UpperMatrix<MT,SO,false>
    BLAZE_CONSTRAINT_MUST_NOT_BE_POINTER_TYPE         ( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_CONST                ( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_VOLATILE             ( MT );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_EXPRESSION_TYPE      ( MT );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_VIEW_TYPE            ( MT );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE     ( MT );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_TRANSFORMATION_TYPE  ( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_HERMITIAN_MATRIX_TYPE( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_LOWER_MATRIX_TYPE    ( MT );
@@ -533,7 +533,7 @@ template< typename MT   // Type of the adapted sparse matrix
 template< typename MT2  // Type of the foreign matrix
         , bool SO2 >    // Storage order of the foreign matrix
 inline UpperMatrix<MT,SO,false>::UpperMatrix( const Matrix<MT2,SO2>& m )
-   : matrix_( ~m )  // The adapted sparse matrix
+   : matrix_( *m )  // The adapted sparse matrix
 {
    if( !IsUpper_v<MT2> && !isUpper( matrix_ ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid setup of upper matrix" );
@@ -947,11 +947,11 @@ template< typename MT2  // Type of the right-hand side matrix
 inline auto UpperMatrix<MT,SO,false>::operator=( const Matrix<MT2,SO2>& rhs )
    -> DisableIf_t< IsComputation_v<MT2>, UpperMatrix& >
 {
-   if( !IsUpper_v<MT2> && !isUpper( ~rhs ) ) {
+   if( !IsUpper_v<MT2> && !isUpper( *rhs ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to upper matrix" );
    }
 
-   matrix_ = declupp( ~rhs );
+   matrix_ = declupp( *rhs );
 
    if( !IsUpper_v<MT2> )
       resetLower();
@@ -985,15 +985,15 @@ template< typename MT2  // Type of the right-hand side matrix
 inline auto UpperMatrix<MT,SO,false>::operator=( const Matrix<MT2,SO2>& rhs )
    -> EnableIf_t< IsComputation_v<MT2>, UpperMatrix& >
 {
-   if( !IsSquare_v<MT2> && !isSquare( ~rhs ) ) {
+   if( !IsSquare_v<MT2> && !isSquare( *rhs ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to upper matrix" );
    }
 
    if( IsUpper_v<MT2> ) {
-      matrix_ = ~rhs;
+      matrix_ = *rhs;
    }
    else {
-      MT tmp( ~rhs );
+      MT tmp( *rhs );
 
       if( !isUpper( tmp ) ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to upper matrix" );
@@ -1034,11 +1034,11 @@ template< typename MT2  // Type of the right-hand side matrix
 inline auto UpperMatrix<MT,SO,false>::operator+=( const Matrix<MT2,SO2>& rhs )
    -> DisableIf_t< IsComputation_v<MT2>, UpperMatrix& >
 {
-   if( !IsUpper_v<MT2> && !isUpper( ~rhs ) ) {
+   if( !IsUpper_v<MT2> && !isUpper( *rhs ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to upper matrix" );
    }
 
-   matrix_ += declupp( ~rhs );
+   matrix_ += declupp( *rhs );
 
    if( !IsUpper_v<MT2> )
       resetLower();
@@ -1072,15 +1072,15 @@ template< typename MT2  // Type of the right-hand side matrix
 inline auto UpperMatrix<MT,SO,false>::operator+=( const Matrix<MT2,SO2>& rhs )
    -> EnableIf_t< IsComputation_v<MT2>, UpperMatrix& >
 {
-   if( IsSquare_v<MT2> && !isSquare( ~rhs ) ) {
+   if( IsSquare_v<MT2> && !isSquare( *rhs ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to upper matrix" );
    }
 
    if( IsUpper_v<MT2> ) {
-      matrix_ += ~rhs;
+      matrix_ += *rhs;
    }
    else {
-      const ResultType_t<MT2> tmp( ~rhs );
+      const ResultType_t<MT2> tmp( *rhs );
 
       if( !isUpper( tmp ) ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to upper matrix" );
@@ -1121,11 +1121,11 @@ template< typename MT2  // Type of the right-hand side matrix
 inline auto UpperMatrix<MT,SO,false>::operator-=( const Matrix<MT2,SO2>& rhs )
    -> DisableIf_t< IsComputation_v<MT2>, UpperMatrix& >
 {
-   if( !IsUpper_v<MT2> && !isUpper( ~rhs ) ) {
+   if( !IsUpper_v<MT2> && !isUpper( *rhs ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to upper matrix" );
    }
 
-   matrix_ -= declupp( ~rhs );
+   matrix_ -= declupp( *rhs );
 
    if( !IsUpper_v<MT2> )
       resetLower();
@@ -1159,15 +1159,15 @@ template< typename MT2  // Type of the right-hand side matrix
 inline auto UpperMatrix<MT,SO,false>::operator-=( const Matrix<MT2,SO2>& rhs )
    -> EnableIf_t< IsComputation_v<MT2>, UpperMatrix& >
 {
-   if( !IsSquare_v<MT2> && !isSquare( ~rhs ) ) {
+   if( !IsSquare_v<MT2> && !isSquare( *rhs ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to upper matrix" );
    }
 
    if( IsUpper_v<MT2> ) {
-      matrix_ -= ~rhs;
+      matrix_ -= *rhs;
    }
    else {
-      const ResultType_t<MT2> tmp( ~rhs );
+      const ResultType_t<MT2> tmp( *rhs );
 
       if( !isUpper( tmp ) ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to upper matrix" );
@@ -1206,11 +1206,11 @@ template< typename MT2  // Type of the right-hand side matrix
 inline auto UpperMatrix<MT,SO,false>::operator%=( const Matrix<MT2,SO2>& rhs )
    -> UpperMatrix&
 {
-   if( !IsSquare_v<MT2> && !isSquare( ~rhs ) ) {
+   if( !IsSquare_v<MT2> && !isSquare( *rhs ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to upper matrix" );
    }
 
-   matrix_ %= ~rhs;
+   matrix_ %= *rhs;
 
    if( !IsUpper_v<MT2> )
       resetLower();
@@ -1391,9 +1391,10 @@ template< typename MT  // Type of the adapted sparse matrix
         , bool SO >    // Storage order of the adapted sparse matrix
 inline void UpperMatrix<MT,SO,false>::clear()
 {
-   using blaze::clear;
+   matrix_.clear();
 
-   clear( matrix_ );
+   BLAZE_INTERNAL_ASSERT( matrix_.rows()    == 0UL, "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( matrix_.columns() == 0UL, "Invalid number of columns" );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1568,7 +1569,7 @@ inline void UpperMatrix<MT,SO,false>::swap( UpperMatrix& m ) noexcept
 */
 template< typename MT  // Type of the adapted dense matrix
         , bool SO >    // Storage order of the adapted dense matrix
-inline constexpr size_t UpperMatrix<MT,SO,false>::maxNonZeros() noexcept
+constexpr size_t UpperMatrix<MT,SO,false>::maxNonZeros() noexcept
 {
    BLAZE_CONSTRAINT_MUST_BE_STATIC_TYPE( MT );
 
@@ -1590,7 +1591,7 @@ inline constexpr size_t UpperMatrix<MT,SO,false>::maxNonZeros() noexcept
 */
 template< typename MT  // Type of the adapted dense matrix
         , bool SO >    // Storage order of the adapted dense matrix
-inline constexpr size_t UpperMatrix<MT,SO,false>::maxNonZeros( size_t n ) noexcept
+constexpr size_t UpperMatrix<MT,SO,false>::maxNonZeros( size_t n ) noexcept
 {
    return ( ( n + 1UL ) * n ) / 2UL;
 }
@@ -1608,13 +1609,15 @@ template< typename MT  // Type of the adapted dense matrix
         , bool SO >    // Storage order of the adapted dense matrix
 inline void UpperMatrix<MT,SO,false>::resetLower()
 {
+   using blaze::erase;
+
    if( SO ) {
       for( size_t j=0UL; j<columns(); ++j )
-         matrix_.erase( j, matrix_.upperBound( j, j ), matrix_.end( j ) );
+         erase( matrix_, j, matrix_.upperBound( j, j ), matrix_.end( j ) );
    }
    else {
       for( size_t i=1UL; i<rows(); ++i )
-         matrix_.erase( i, matrix_.begin( i ), matrix_.lowerBound( i, i ) );
+         erase( matrix_, i, matrix_.begin( i ), matrix_.lowerBound( i, i ) );
    }
 }
 /*! \endcond */
@@ -1802,7 +1805,9 @@ template< typename MT  // Type of the adapted sparse matrix
         , bool SO >    // Storage order of the adapted sparse matrix
 inline void UpperMatrix<MT,SO,false>::erase( size_t i, size_t j )
 {
-   matrix_.erase( i, j );
+   using blaze::erase;
+
+   erase( matrix_, i, j );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1825,7 +1830,9 @@ template< typename MT  // Type of the adapted sparse matrix
 inline typename UpperMatrix<MT,SO,false>::Iterator
    UpperMatrix<MT,SO,false>::erase( size_t i, Iterator pos )
 {
-   return matrix_.erase( i, pos );
+   using blaze::erase;
+
+   return erase( matrix_, i, pos );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1849,7 +1856,9 @@ template< typename MT  // Type of the adapted sparse matrix
 inline typename UpperMatrix<MT,SO,false>::Iterator
    UpperMatrix<MT,SO,false>::erase( size_t i, Iterator first, Iterator last )
 {
-   return matrix_.erase( i, first, last );
+   using blaze::erase;
+
+   return erase( matrix_, i, first, last );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1882,7 +1891,9 @@ template< typename MT      // Type of the adapted sparse matrix
 template< typename Pred >  // Type of the unary predicate
 inline void UpperMatrix<MT,SO,false>::erase( Pred predicate )
 {
-   matrix_.erase( predicate );
+   using blaze::erase;
+
+   erase( matrix_, predicate );
 
    BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );
 }
@@ -1923,7 +1934,9 @@ template< typename MT      // Type of the adapted sparse matrix
 template< typename Pred >  // Type of the unary predicate
 inline void UpperMatrix<MT,SO,false>::erase( size_t i, Iterator first, Iterator last, Pred predicate )
 {
-   matrix_.erase( i, first, last, predicate );
+   using blaze::erase;
+
+   erase( matrix_, i, first, last, predicate );
 
    BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );
 }

@@ -3,7 +3,7 @@
 //  \file src/main/Mat3Vec3Mult.cpp
 //  \brief Source file for the 3-dimensional matrix/vector multiplication benchmark
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -55,6 +55,7 @@
 #include <blazemark/blaze/Mat3Vec3Mult.h>
 #include <blazemark/blitz/Mat3Vec3Mult.h>
 #include <blazemark/boost/Mat3Vec3Mult.h>
+#include <blazemark/clike/Mat3Vec3Mult.h>
 #include <blazemark/eigen/Mat3Vec3Mult.h>
 #include <blazemark/flens/Mat3Vec3Mult.h>
 #include <blazemark/mtl/Mat3Vec3Mult.h>
@@ -146,7 +147,7 @@ void estimateSteps( Run& run )
       timer.start();
       for( size_t step=0UL, i=0UL; step<steps; ++step, ++i ) {
          if( i == N ) i = 0UL;
-         b[i] = A[i] * a[i];
+         b[i] = noalias( A[i] * a[i] );
       }
       timer.end();
       wct = timer.last();
@@ -213,6 +214,17 @@ void mat3vec3mult( std::vector<Run>& runs, Benchmarks benchmarks )
                slowSize = run->getSize();
          }
          else run->setSteps( 1UL );
+      }
+   }
+
+   if( benchmarks.runClike ) {
+      std::cout << "   C-like implementation [MFlop/s]:\n";
+      for( std::vector<Run>::iterator run=runs.begin(); run!=runs.end(); ++run ) {
+         const size_t N    ( run->getNumber() );
+         const size_t steps( run->getSteps()  );
+         run->setClikeResult( blazemark::clike::mat3vec3mult( N, steps ) );
+         const double mflops( run->getFlops() * steps / run->getClikeResult() / 1E6 );
+         std::cout << "     " << std::setw(12) << N << mflops << std::endl;
       }
    }
 

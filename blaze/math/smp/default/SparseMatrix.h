@@ -3,7 +3,7 @@
 //  \file blaze/math/smp/default/SparseMatrix.h
 //  \brief Header file for the default sparse matrix SMP implementation
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -59,20 +59,20 @@ namespace blaze {
 /*!\name Sparse matrix SMP functions */
 //@{
 template< typename MT1, bool SO1, typename MT2, bool SO2 >
-inline EnableIf_t< IsSparseMatrix_v<MT1> >
-   smpAssign( Matrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs );
+auto smpAssign( Matrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs )
+   -> EnableIf_t< IsSparseMatrix_v<MT1> >;
 
 template< typename MT1, bool SO1, typename MT2, bool SO2 >
-inline EnableIf_t< IsSparseMatrix_v<MT1> >
-   smpAddAssign( Matrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs );
+auto smpAddAssign( Matrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs )
+   -> EnableIf_t< IsSparseMatrix_v<MT1> >;
 
 template< typename MT1, bool SO1, typename MT2, bool SO2 >
-inline EnableIf_t< IsSparseMatrix_v<MT1> >
-   smpSubAssign( Matrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs );
+auto smpSubAssign( Matrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs )
+   -> EnableIf_t< IsSparseMatrix_v<MT1> >;
 
 template< typename MT1, bool SO1, typename MT2, bool SO2 >
-inline EnableIf_t< IsSparseMatrix_v<MT1> >
-   smpSchurAssign( Matrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs );
+auto smpSchurAssign( Matrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs )
+   -> EnableIf_t< IsSparseMatrix_v<MT1> >;
 //@}
 //*************************************************************************************************
 
@@ -95,15 +95,15 @@ template< typename MT1  // Type of the left-hand side sparse matrix
         , bool SO1      // Storage order of the left-hand side sparse matrix
         , typename MT2  // Type of the right-hand side matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
-inline EnableIf_t< IsSparseMatrix_v<MT1> >
-   smpAssign( Matrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs )
+inline auto smpAssign( Matrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs )
+   -> EnableIf_t< IsSparseMatrix_v<MT1> >
 {
    BLAZE_FUNCTION_TRACE;
 
-   BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( (*lhs).columns() == (*rhs).columns(), "Invalid number of columns" );
 
-   assign( ~lhs, ~rhs );
+   assign( *lhs, *rhs );
 }
 //*************************************************************************************************
 
@@ -126,15 +126,15 @@ template< typename MT1  // Type of the left-hand side sparse matrix
         , bool SO1      // Storage order of the left-hand side sparse matrix
         , typename MT2  // Type of the right-hand side matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
-inline EnableIf_t< IsSparseMatrix_v<MT1> >
-   smpAddAssign( Matrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs )
+inline auto smpAddAssign( Matrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs )
+   -> EnableIf_t< IsSparseMatrix_v<MT1> >
 {
    BLAZE_FUNCTION_TRACE;
 
-   BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( (*lhs).columns() == (*rhs).columns(), "Invalid number of columns" );
 
-   addAssign( ~lhs, ~rhs );
+   addAssign( *lhs, *rhs );
 }
 //*************************************************************************************************
 
@@ -157,15 +157,15 @@ template< typename MT1  // Type of the left-hand side sparse matrix
         , bool SO1      // Storage order of the left-hand side sparse matrix
         , typename MT2  // Type of the right-hand side matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
-inline EnableIf_t< IsSparseMatrix_v<MT1> >
-   smpSubAssign( Matrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs )
+inline auto smpSubAssign( Matrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs )
+   -> EnableIf_t< IsSparseMatrix_v<MT1> >
 {
    BLAZE_FUNCTION_TRACE;
 
-   BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( (*lhs).columns() == (*rhs).columns(), "Invalid number of columns" );
 
-   subAssign( ~lhs, ~rhs );
+   subAssign( *lhs, *rhs );
 }
 //*************************************************************************************************
 
@@ -189,15 +189,15 @@ template< typename MT1  // Type of the left-hand side sparse matrix
         , bool SO1      // Storage order of the left-hand side sparse matrix
         , typename MT2  // Type of the right-hand side matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
-inline EnableIf_t< IsSparseMatrix_v<MT1> >
-   smpSchurAssign( Matrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs )
+inline auto smpSchurAssign( Matrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs )
+   -> EnableIf_t< IsSparseMatrix_v<MT1> >
 {
    BLAZE_FUNCTION_TRACE;
 
-   BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( (*lhs).columns() == (*rhs).columns(), "Invalid number of columns" );
 
-   schurAssign( ~lhs, ~rhs );
+   schurAssign( *lhs, *rhs );
 }
 //*************************************************************************************************
 

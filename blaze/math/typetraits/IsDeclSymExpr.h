@@ -3,7 +3,7 @@
 //  \file blaze/math/typetraits/IsDeclSymExpr.h
 //  \brief Header file for the IsDeclSymExpr type trait class
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -42,8 +42,7 @@
 
 #include <utility>
 #include <blaze/math/expressions/DeclSymExpr.h>
-#include <blaze/util/FalseType.h>
-#include <blaze/util/TrueType.h>
+#include <blaze/util/IntegralConstant.h>
 
 
 namespace blaze {
@@ -56,28 +55,13 @@ namespace blaze {
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Auxiliary helper struct for the IsDeclSymExpr type trait.
+/*!\brief Auxiliary helper functions for the IsDeclSymExpr type trait.
 // \ingroup math_type_traits
 */
-template< typename T >
-struct IsDeclSymExprHelper
-{
- private:
-   //**********************************************************************************************
-   template< typename MT >
-   static TrueType test( const DeclSymExpr<MT>& );
+template< typename MT >
+TrueType isDeclSymExpr_backend( const volatile DeclSymExpr<MT>* );
 
-   template< typename MT >
-   static TrueType test( const volatile DeclSymExpr<MT>& );
-
-   static FalseType test( ... );
-   //**********************************************************************************************
-
- public:
-   //**********************************************************************************************
-   using Type = decltype( test( std::declval<T&>() ) );
-   //**********************************************************************************************
-};
+FalseType isDeclSymExpr_backend( ... );
 /*! \endcond */
 //*************************************************************************************************
 
@@ -95,14 +79,27 @@ struct IsDeclSymExprHelper
 */
 template< typename T >
 struct IsDeclSymExpr
-   : public IsDeclSymExprHelper<T>::Type
+   : public decltype( isDeclSymExpr_backend( std::declval<T*>() ) )
 {};
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Specialization of the IsDeclSymExpr type trait for references.
+// \ingroup math_type_traits
+*/
+template< typename T >
+struct IsDeclSymExpr<T&>
+   : public FalseType
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Auxiliary variable template for the IsDeclSymExpr type trait.
-// \ingroup type_traits
+// \ingroup math_type_traits
 //
 // The IsDeclSymExpr_v variable template provides a convenient shortcut to access the nested
 // \a value of the IsDeclSymExpr class template. For instance, given the type \a T the

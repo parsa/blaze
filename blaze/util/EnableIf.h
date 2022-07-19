@@ -3,7 +3,7 @@
 //  \file blaze/util/EnableIf.h
 //  \brief Header file for the EnableIf class template
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -136,6 +136,43 @@ struct EnableIf<false,T>
 template< bool Condition     // Compile time condition
         , typename T=void >  // The type to be instantiated
 using EnableIf_t = typename EnableIf<Condition,T>::Type;
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Auxiliary type for the EnableIf class template.
+// \ingroup util
+//
+// The DisableIf alias declaration provides a convenient shortcut for negated SFINAE conditions.
+// For instance, given the type \a T the following two type definitions are identical:
+
+   \code
+   using Type1 = typename EnableIf< !IsBuiltin_v<T> >::Type;
+   using Type2 = typename DisableIf< IsBuiltin_v<T> >::Type;
+   \endcode
+*/
+template< bool Condition     // Compile time condition
+        , typename T=void >  // The type to be instantiated
+using DisableIf = EnableIf<!Condition,T>;
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Auxiliary type for the EnableIf class template.
+// \ingroup util
+//
+// The DisableIf_t alias declaration provides a convenient shortcut to access the nested \a Type
+// of the negated EnableIf class template. For instance, given the type \a T the following two
+// type definitions are identical:
+
+   \code
+   using Type1 = typename EnableIf< !IsBuiltin_v<T> >::Type;
+   using Type2 = DisableIf_t< IsBuiltin_v<T> >;
+   \endcode
+*/
+template< bool Condition     // Compile time condition
+        , typename T=void >  // The type to be instantiated
+using DisableIf_t = typename EnableIf<!Condition,T>::Type;
 //*************************************************************************************************
 
 } // namespace blaze

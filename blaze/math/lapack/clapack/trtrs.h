@@ -3,7 +3,7 @@
 //  \file blaze/math/lapack/clapack/trtrs.h
 //  \brief Header file for the CLAPACK trtrs wrapper functions
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -40,8 +40,10 @@
 // Includes
 //*************************************************************************************************
 
+#include <blaze/math/blas/Types.h>
 #include <blaze/util/Complex.h>
 #include <blaze/util/StaticAssert.h>
+#include <blaze/util/Types.h>
 
 
 //=================================================================================================
@@ -55,10 +57,22 @@
 #if !defined(INTEL_MKL_VERSION)
 extern "C" {
 
-void strtrs_( char* uplo, char* trans, char* diag, int* n, int* nrhs, float*  A, int* lda, float*  B, int* ldb, int* info );
-void dtrtrs_( char* uplo, char* trans, char* diag, int* n, int* nrhs, double* A, int* lda, double* B, int* ldb, int* info );
-void ctrtrs_( char* uplo, char* trans, char* diag, int* n, int* nrhs, float*  A, int* lda, float*  B, int* ldb, int* info );
-void ztrtrs_( char* uplo, char* trans, char* diag, int* n, int* nrhs, double* A, int* lda, double* B, int* ldb, int* info );
+void strtrs_( char* uplo, char* trans, char* diag, blaze::blas_int_t* n, blaze::blas_int_t* nrhs,
+              float* A, blaze::blas_int_t* lda, float* B, blaze::blas_int_t* ldb,
+              blaze::blas_int_t* info, blaze::fortran_charlen_t nuplo,
+              blaze::fortran_charlen_t ntrans, blaze::fortran_charlen_t ndiag );
+void dtrtrs_( char* uplo, char* trans, char* diag, blaze::blas_int_t* n, blaze::blas_int_t* nrhs,
+              double* A, blaze::blas_int_t* lda, double* B, blaze::blas_int_t* ldb,
+              blaze::blas_int_t* info, blaze::fortran_charlen_t nuplo,
+              blaze::fortran_charlen_t ntrans, blaze::fortran_charlen_t ndiag );
+void ctrtrs_( char* uplo, char* trans, char* diag, blaze::blas_int_t* n, blaze::blas_int_t* nrhs,
+              float* A, blaze::blas_int_t* lda, float* B, blaze::blas_int_t* ldb,
+              blaze::blas_int_t* info, blaze::fortran_charlen_t nuplo,
+              blaze::fortran_charlen_t ntrans, blaze::fortran_charlen_t ndiag );
+void ztrtrs_( char* uplo, char* trans, char* diag, blaze::blas_int_t* n, blaze::blas_int_t* nrhs,
+              double* A, blaze::blas_int_t* lda, double* B, blaze::blas_int_t* ldb,
+              blaze::blas_int_t* info, blaze::fortran_charlen_t nuplo,
+              blaze::fortran_charlen_t ntrans, blaze::fortran_charlen_t ndiag );
 
 }
 #endif
@@ -79,17 +93,21 @@ namespace blaze {
 //*************************************************************************************************
 /*!\name LAPACK triangular substitution functions (trtrs) */
 //@{
-inline void trtrs( char uplo, char trans, char diag, int n, int nrhs, const float* A,
-                   int lda, float* B, int ldb, int* info );
+void trtrs( char uplo, char trans, char diag, blas_int_t n, blas_int_t nrhs,
+            const float* A, blas_int_t lda, float* B, blas_int_t ldb,
+            blas_int_t* info );
 
-inline void trtrs( char uplo, char trans, char diag, int n, int nrhs, const double* A,
-                   int lda, double* B, int ldb, int* info );
+void trtrs( char uplo, char trans, char diag, blas_int_t n, blas_int_t nrhs,
+            const double* A, blas_int_t lda, double* B, blas_int_t ldb,
+            blas_int_t* info );
 
-inline void trtrs( char uplo, char trans, char diag, int n, int nrhs, const complex<float>* A,
-                   int lda, complex<float>* B, int ldb, int* info );
+void trtrs( char uplo, char trans, char diag, blas_int_t n, blas_int_t nrhs,
+            const complex<float>* A, blas_int_t lda, complex<float>* B,
+            blas_int_t ldb, blas_int_t* info );
 
-inline void trtrs( char uplo, char trans, char diag, int n, int nrhs, const complex<double>* A,
-                   int lda, complex<double>* B, int ldb, int* info );
+void trtrs( char uplo, char trans, char diag, blas_int_t n, blas_int_t nrhs,
+            const complex<double>* A, blas_int_t lda, complex<double>* B,
+            blas_int_t ldb, blas_int_t* info );
 //@}
 //*************************************************************************************************
 
@@ -134,14 +152,19 @@ inline void trtrs( char uplo, char trans, char diag, int n, int nrhs, const comp
 // is available and linked to the executable. Otherwise a call to this function will result in a
 // linker error.
 */
-inline void trtrs( char uplo, char trans, char diag, int n, int nrhs, const float* A, int lda,
-                   float* B, int ldb, int* info )
+inline void trtrs( char uplo, char trans, char diag, blas_int_t n, blas_int_t nrhs,
+                   const float* A, blas_int_t lda, float* B, blas_int_t ldb,
+                   blas_int_t* info )
 {
 #if defined(INTEL_MKL_VERSION)
-   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( int ) );
+   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( blas_int_t ) );
 #endif
 
-   strtrs_( &uplo, &trans, &diag, &n, &nrhs, const_cast<float*>( A ), &lda, B, &ldb, info );
+   strtrs_( &uplo, &trans, &diag, &n, &nrhs, const_cast<float*>( A ), &lda, B, &ldb, info
+#if !defined(INTEL_MKL_VERSION)
+          , blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1)
+#endif
+          );
 }
 //*************************************************************************************************
 
@@ -186,14 +209,19 @@ inline void trtrs( char uplo, char trans, char diag, int n, int nrhs, const floa
 // is available and linked to the executable. Otherwise a call to this function will result in a
 // linker error.
 */
-inline void trtrs( char uplo, char trans, char diag, int n, int nrhs, const double* A, int lda,
-                   double* B, int ldb, int* info )
+inline void trtrs( char uplo, char trans, char diag, blas_int_t n, blas_int_t nrhs,
+                   const double* A, blas_int_t lda, double* B, blas_int_t ldb,
+                   blas_int_t* info )
 {
 #if defined(INTEL_MKL_VERSION)
-   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( int ) );
+   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( blas_int_t ) );
 #endif
 
-   dtrtrs_( &uplo, &trans, &diag, &n, &nrhs, const_cast<double*>( A ), &lda, B, &ldb, info );
+   dtrtrs_( &uplo, &trans, &diag, &n, &nrhs, const_cast<double*>( A ), &lda, B, &ldb, info
+#if !defined(INTEL_MKL_VERSION)
+          , blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1)
+#endif
+          );
 }
 //*************************************************************************************************
 
@@ -238,20 +266,26 @@ inline void trtrs( char uplo, char trans, char diag, int n, int nrhs, const doub
 // is available and linked to the executable. Otherwise a call to this function will result in a
 // linker error.
 */
-inline void trtrs( char uplo, char trans, char diag, int n, int nrhs, const complex<float>* A,
-                   int lda, complex<float>* B, int ldb, int* info )
+inline void trtrs( char uplo, char trans, char diag, blas_int_t n, blas_int_t nrhs,
+                   const complex<float>* A, blas_int_t lda, complex<float>* B,
+                   blas_int_t ldb, blas_int_t* info )
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<float> ) == 2UL*sizeof( float ) );
 
 #if defined(INTEL_MKL_VERSION)
-   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( int ) );
+   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( blas_int_t ) );
+   BLAZE_STATIC_ASSERT( sizeof( MKL_Complex8 ) == sizeof( complex<float> ) );
    using ET = MKL_Complex8;
 #else
    using ET = float;
 #endif
 
    ctrtrs_( &uplo, &trans, &diag, &n, &nrhs, const_cast<ET*>( reinterpret_cast<const ET*>( A ) ),
-            &lda, reinterpret_cast<ET*>( B ), &ldb, info );
+            &lda, reinterpret_cast<ET*>( B ), &ldb, info
+#if !defined(INTEL_MKL_VERSION)
+          , blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1)
+#endif
+          );
 }
 //*************************************************************************************************
 
@@ -296,20 +330,26 @@ inline void trtrs( char uplo, char trans, char diag, int n, int nrhs, const comp
 // is available and linked to the executable. Otherwise a call to this function will result in a
 // linker error.
 */
-inline void trtrs( char uplo, char trans, char diag, int n, int nrhs, const complex<double>* A,
-                   int lda, complex<double>* B, int ldb, int* info )
+inline void trtrs( char uplo, char trans, char diag, blas_int_t n, blas_int_t nrhs,
+                   const complex<double>* A, blas_int_t lda, complex<double>* B,
+                   blas_int_t ldb, blas_int_t* info )
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<double> ) == 2UL*sizeof( double ) );
 
 #if defined(INTEL_MKL_VERSION)
-   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( int ) );
+   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( blas_int_t ) );
+   BLAZE_STATIC_ASSERT( sizeof( MKL_Complex16 ) == sizeof( complex<double> ) );
    using ET = MKL_Complex16;
 #else
    using ET = double;
 #endif
 
    ztrtrs_( &uplo, &trans, &diag, &n, &nrhs, const_cast<ET*>( reinterpret_cast<const ET*>( A ) ),
-            &lda, reinterpret_cast<ET*>( B ), &ldb, info );
+            &lda, reinterpret_cast<ET*>( B ), &ldb, info
+#if !defined(INTEL_MKL_VERSION)
+          , blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1)
+#endif
+          );
 }
 //*************************************************************************************************
 

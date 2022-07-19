@@ -3,7 +3,7 @@
 //  \file blaze/math/lapack/syevx.h
 //  \brief Header file for the LAPACK symmetric matrix eigenvalue functions (syevx)
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -51,7 +51,6 @@
 #include <blaze/math/expressions/DenseMatrix.h>
 #include <blaze/math/expressions/DenseVector.h>
 #include <blaze/math/lapack/clapack/syevx.h>
-#include <blaze/math/typetraits/IsResizable.h>
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Builtin.h>
@@ -72,18 +71,18 @@ namespace blaze {
 /*!\name LAPACK symmetric matrix eigenvalue functions (syevx) */
 //@{
 template< typename MT, bool SO, typename VT, bool TF >
-inline size_t syevx( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& w, char uplo );
+size_t syevx( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& w, char uplo );
 
 template< typename MT, bool SO, typename VT, bool TF, typename ST >
-inline size_t syevx( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& w, char uplo, ST low, ST upp );
+size_t syevx( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& w, char uplo, ST low, ST upp );
 
 template< typename MT1, bool SO1, typename VT, bool TF, typename MT2, bool SO2 >
-inline size_t syevx( DenseMatrix<MT1,SO1>& A, DenseVector<VT,TF>& w,
-                     DenseMatrix<MT2,SO2>& Z, char uplo );
+size_t syevx( DenseMatrix<MT1,SO1>& A, DenseVector<VT,TF>& w,
+              DenseMatrix<MT2,SO2>& Z, char uplo );
 
 template< typename MT1, bool SO1, typename VT, bool TF, typename MT2, bool SO2, typename ST >
-inline size_t syevx( DenseMatrix<MT1,SO1>& A, DenseVector<VT,TF>& w,
-                     DenseMatrix<MT2,SO2>& Z, char uplo, ST low, ST upp );
+size_t syevx( DenseMatrix<MT1,SO1>& A, DenseVector<VT,TF>& w,
+              DenseMatrix<MT2,SO2>& Z, char uplo, ST low, ST upp );
 //@}
 //*************************************************************************************************
 
@@ -117,34 +116,35 @@ template< typename MT    // Type of the matrix A
         , bool TF        // Transpose flag of the vector w
         , typename ST >  // Type of the scalar boundary values
 inline size_t syevx_backend( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& w,
-                             char uplo, char range, ST vl, ST vu, int il, int iu )
+                             char uplo, char range, ST vl, ST vu,
+                             blas_int_t il, blas_int_t iu )
 {
-   BLAZE_INTERNAL_ASSERT( isSquare( ~A ), "Invalid non-square matrix detected" );
-   BLAZE_INTERNAL_ASSERT( range != 'A' || (~w).size() == (~A).rows(), "Invalid vector dimension detected" );
-   BLAZE_INTERNAL_ASSERT( range != 'V' || (~w).size() == (~A).rows(), "Invalid vector dimension detected" );
-   BLAZE_INTERNAL_ASSERT( range != 'I' || (~w).size() == size_t( iu-il+1 ), "Invalid vector dimension detected" );
+   BLAZE_INTERNAL_ASSERT( isSquare( *A ), "Invalid non-square matrix detected" );
+   BLAZE_INTERNAL_ASSERT( range != 'A' || (*w).size() == (*A).rows(), "Invalid vector dimension detected" );
+   BLAZE_INTERNAL_ASSERT( range != 'V' || (*w).size() == (*A).rows(), "Invalid vector dimension detected" );
+   BLAZE_INTERNAL_ASSERT( range != 'I' || (*w).size() == size_t( iu-il+1 ), "Invalid vector dimension detected" );
 
    using ET = ElementType_t<MT>;
 
    BLAZE_CONSTRAINT_MUST_BE_BUILTIN_TYPE( ET );
 
-   int n   ( numeric_cast<int>( (~A).rows() ) );
-   int lda ( numeric_cast<int>( (~A).spacing() ) );
-   int m   ( 0 );
-   int info( 0 );
+   blas_int_t n   ( numeric_cast<blas_int_t>( (*A).rows() ) );
+   blas_int_t lda ( numeric_cast<blas_int_t>( (*A).spacing() ) );
+   blas_int_t m   ( 0 );
+   blas_int_t info( 0 );
 
-   int lwork( 12*n + 2 );
+   blas_int_t lwork( 12*n + 2 );
    const std::unique_ptr<ET[]>  work ( new ET[lwork] );
-   const std::unique_ptr<int[]> iwork( new int[12*n] );
-   const std::unique_ptr<int[]> ifail( new int[n] );
+   const std::unique_ptr<blas_int_t[]> iwork( new blas_int_t[12*n] );
+   const std::unique_ptr<blas_int_t[]> ifail( new blas_int_t[n] );
 
-   syevx( 'N', range, uplo, n, (~A).data(), lda, vl, vu, il, iu, ET(0), &m,
-          (~w).data(), nullptr, 1, work.get(), lwork, iwork.get(), ifail.get(), &info );
+   syevx( 'N', range, uplo, n, (*A).data(), lda, vl, vu, il, iu, ET(0), &m,
+          (*w).data(), nullptr, 1, work.get(), lwork, iwork.get(), ifail.get(), &info );
 
    const size_t num( numeric_cast<size_t>( m ) );
 
    BLAZE_INTERNAL_ASSERT( info >= 0, "Invalid argument for eigenvalue computation" );
-   BLAZE_INTERNAL_ASSERT( num <= (~w).size(), "Invalid number of eigenvalues detected" );
+   BLAZE_INTERNAL_ASSERT( num <= (*w).size(), "Invalid number of eigenvalues detected" );
 
    if( info > 0 ) {
       BLAZE_THROW_LAPACK_ERROR( "Eigenvalue computation failed" );
@@ -233,9 +233,9 @@ inline size_t syevx( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& w, char uplo )
 
    using ET = ElementType_t<MT>;
 
-   const size_t N( (~A).rows() );
+   const size_t N( (*A).rows() );
 
-   if( !isSquare( ~A ) ) {
+   if( !isSquare( *A ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid non-square matrix provided" );
    }
 
@@ -243,13 +243,13 @@ inline size_t syevx( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& w, char uplo )
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid uplo argument provided" );
    }
 
-   resize( ~w, N, false );
+   resize( *w, N, false );
 
    if( N == 0UL ) {
       return 0;
    }
 
-   return syevx_backend( ~A, ~w, uplo, 'A', ET(), ET(), 0, 0 );
+   return syevx_backend( *A, *w, uplo, 'A', ET(), ET(), 0, 0 );
 }
 //*************************************************************************************************
 
@@ -360,7 +360,7 @@ inline size_t syevx( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& w, char uplo, ST
    BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<VT> );
    BLAZE_CONSTRAINT_MUST_BE_BUILTIN_TYPE( ElementType_t<VT> );
 
-   if( !isSquare( ~A ) ) {
+   if( !isSquare( *A ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid non-square matrix provided" );
    }
 
@@ -376,26 +376,26 @@ inline size_t syevx( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& w, char uplo, ST
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid index range provided" );
    }
 
-   const size_t N( (~A).rows() );
+   const size_t N( (*A).rows() );
    const size_t num( IsFloatingPoint_v<ST> ? N : size_t( upp - low ) + 1UL );
 
    if( !IsFloatingPoint_v<ST> && num > N ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid index range provided" );
    }
 
-   resize( ~w, num, false );
+   resize( *w, num, false );
 
    if( N == 0UL ) {
       return 0;
    }
 
-   const char range( IsFloatingPoint_v<ST> ? 'V' : 'I' );
-   const ST   vl   ( IsFloatingPoint_v<ST> ? low : ST() );
-   const ST   vu   ( IsFloatingPoint_v<ST> ? upp : ST() );
-   const int  il   ( IsFloatingPoint_v<ST> ? 0 : numeric_cast<int>( low ) );
-   const int  iu   ( IsFloatingPoint_v<ST> ? 0 : numeric_cast<int>( upp ) );
+   const char       range( IsFloatingPoint_v<ST> ? 'V' : 'I' );
+   const ST         vl   ( IsFloatingPoint_v<ST> ? low : ST() );
+   const ST         vu   ( IsFloatingPoint_v<ST> ? upp : ST() );
+   const blas_int_t il   ( IsFloatingPoint_v<ST> ? 0 : numeric_cast<blas_int_t>( low ) );
+   const blas_int_t iu   ( IsFloatingPoint_v<ST> ? 0 : numeric_cast<blas_int_t>( upp ) );
 
-   return syevx_backend( ~A, ~w, uplo, range, vl, vu, il, iu );
+   return syevx_backend( *A, *w, uplo, range, vl, vu, il, iu );
 }
 //*************************************************************************************************
 
@@ -433,39 +433,39 @@ template< typename MT1   // Type of the matrix A
         , typename ST >  // Type of the scalar boundary values
 inline size_t syevx_backend( DenseMatrix<MT1,SO1>& A, DenseVector<VT,TF>& w,
                              DenseMatrix<MT2,SO2>& Z, char uplo, char range,
-                             ST vl, ST vu, int il, int iu )
+                             ST vl, ST vu, blas_int_t il, blas_int_t iu )
 {
-   BLAZE_INTERNAL_ASSERT( isSquare( ~A ), "Invalid non-square matrix detected" );
-   BLAZE_INTERNAL_ASSERT( range != 'A' || (~w).size() == (~A).rows(), "Invalid vector dimension detected" );
-   BLAZE_INTERNAL_ASSERT( range != 'V' || (~w).size() == (~A).rows(), "Invalid vector dimension detected" );
-   BLAZE_INTERNAL_ASSERT( range != 'I' || (~w).size() == size_t( iu-il+1 ), "Invalid vector dimension detected" );
-   BLAZE_INTERNAL_ASSERT( SO2  || (~Z).rows()    == (~w).size(), "Invalid matrix dimension detected" );
-   BLAZE_INTERNAL_ASSERT( SO2  || (~Z).columns() == (~A).rows(), "Invalid matrix dimension detected" );
-   BLAZE_INTERNAL_ASSERT( !SO2 || (~Z).rows()    == (~A).rows(), "Invalid matrix dimension detected" );
-   BLAZE_INTERNAL_ASSERT( !SO2 || (~Z).columns() == (~w).size(), "Invalid matrix dimension detected" );
+   BLAZE_INTERNAL_ASSERT( isSquare( *A ), "Invalid non-square matrix detected" );
+   BLAZE_INTERNAL_ASSERT( range != 'A' || (*w).size() == (*A).rows(), "Invalid vector dimension detected" );
+   BLAZE_INTERNAL_ASSERT( range != 'V' || (*w).size() == (*A).rows(), "Invalid vector dimension detected" );
+   BLAZE_INTERNAL_ASSERT( range != 'I' || (*w).size() == size_t( iu-il+1 ), "Invalid vector dimension detected" );
+   BLAZE_INTERNAL_ASSERT( SO2  || (*Z).rows()    == (*w).size(), "Invalid matrix dimension detected" );
+   BLAZE_INTERNAL_ASSERT( SO2  || (*Z).columns() == (*A).rows(), "Invalid matrix dimension detected" );
+   BLAZE_INTERNAL_ASSERT( !SO2 || (*Z).rows()    == (*A).rows(), "Invalid matrix dimension detected" );
+   BLAZE_INTERNAL_ASSERT( !SO2 || (*Z).columns() == (*w).size(), "Invalid matrix dimension detected" );
 
    using ET = ElementType_t<MT1>;
 
    BLAZE_CONSTRAINT_MUST_BE_BUILTIN_TYPE( ET );
 
-   int n   ( numeric_cast<int>( (~A).rows() ) );
-   int lda ( numeric_cast<int>( (~A).spacing() ) );
-   int m   ( 0 );
-   int ldz ( numeric_cast<int>( (~Z).spacing() ) );
-   int info( 0 );
+   blas_int_t n   ( numeric_cast<blas_int_t>( (*A).rows() ) );
+   blas_int_t lda ( numeric_cast<blas_int_t>( (*A).spacing() ) );
+   blas_int_t m   ( 0 );
+   blas_int_t ldz ( numeric_cast<blas_int_t>( (*Z).spacing() ) );
+   blas_int_t info( 0 );
 
-   int lwork( 12*n + 2 );
+   blas_int_t lwork( 12*n + 2 );
    const std::unique_ptr<ET[]>  work ( new ET[lwork] );
-   const std::unique_ptr<int[]> iwork( new int[12*n] );
-   const std::unique_ptr<int[]> ifail( new int[n] );
+   const std::unique_ptr<blas_int_t[]> iwork( new blas_int_t[12*n] );
+   const std::unique_ptr<blas_int_t[]> ifail( new blas_int_t[n] );
 
-   syevx( 'N', range, uplo, n, (~A).data(), lda, vl, vu, il, iu, ET(0), &m,
-          (~w).data(), (~Z).data(), ldz, work.get(), lwork, iwork.get(), ifail.get(), &info );
+   syevx( 'N', range, uplo, n, (*A).data(), lda, vl, vu, il, iu, ET(0), &m,
+          (*w).data(), (*Z).data(), ldz, work.get(), lwork, iwork.get(), ifail.get(), &info );
 
    const size_t num( numeric_cast<size_t>( m ) );
 
    BLAZE_INTERNAL_ASSERT( info >= 0, "Invalid argument for eigenvalue computation" );
-   BLAZE_INTERNAL_ASSERT( num <= (~w).size(), "Invalid number of eigenvalues detected" );
+   BLAZE_INTERNAL_ASSERT( num <= (*w).size(), "Invalid number of eigenvalues detected" );
 
    if( info > 0 ) {
       BLAZE_THROW_LAPACK_ERROR( "Eigenvalue computation failed" );
@@ -571,9 +571,9 @@ inline size_t syevx( DenseMatrix<MT1,SO1>& A, DenseVector<VT,TF>& w,
 
    using ET = ElementType_t<MT1>;
 
-   const size_t N( (~A).rows() );
+   const size_t N( (*A).rows() );
 
-   if( !isSquare( ~A ) ) {
+   if( !isSquare( *A ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid non-square matrix provided" );
    }
 
@@ -581,14 +581,14 @@ inline size_t syevx( DenseMatrix<MT1,SO1>& A, DenseVector<VT,TF>& w,
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid uplo argument provided" );
    }
 
-   resize( ~w, N, false );
-   resize( ~Z, N, N, false );
+   resize( *w, N, false );
+   resize( *Z, N, N, false );
 
    if( N == 0UL ) {
       return 0;
    }
 
-   return syevx_backend( ~A, ~w, ~Z, uplo, 'A', ET(), ET(), 0, 0 );
+   return syevx_backend( *A, *w, *Z, uplo, 'A', ET(), ET(), 0, 0 );
 }
 //*************************************************************************************************
 
@@ -719,7 +719,7 @@ inline size_t syevx( DenseMatrix<MT1,SO1>& A, DenseVector<VT,TF>& w,
    BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<MT2> );
    BLAZE_CONSTRAINT_MUST_BE_BUILTIN_TYPE( ElementType_t<MT2> );
 
-   if( !isSquare( ~A ) ) {
+   if( !isSquare( *A ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid non-square matrix provided" );
    }
 
@@ -735,28 +735,28 @@ inline size_t syevx( DenseMatrix<MT1,SO1>& A, DenseVector<VT,TF>& w,
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid index range provided" );
    }
 
-   const size_t N( (~A).rows() );
+   const size_t N( (*A).rows() );
    const size_t num( IsFloatingPoint_v<ST> ? N : size_t( upp - low ) + 1UL );
 
    if( !IsFloatingPoint_v<ST> && num > N ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid index range provided" );
    }
 
-   resize( ~w, num, false );
-   resize( ~Z, ( IsRowMajorMatrix_v<MT2> ? num : N ),
+   resize( *w, num, false );
+   resize( *Z, ( IsRowMajorMatrix_v<MT2> ? num : N ),
            ( IsRowMajorMatrix_v<MT2> ? N : num ), false );
 
    if( N == 0UL ) {
       return 0;
    }
 
-   const char range( IsFloatingPoint_v<ST> ? 'V' : 'I' );
-   const ST   vl   ( IsFloatingPoint_v<ST> ? low : ST() );
-   const ST   vu   ( IsFloatingPoint_v<ST> ? upp : ST() );
-   const int  il   ( IsFloatingPoint_v<ST> ? 0 : numeric_cast<int>( low ) );
-   const int  iu   ( IsFloatingPoint_v<ST> ? 0 : numeric_cast<int>( upp ) );
+   const char       range( IsFloatingPoint_v<ST> ? 'V' : 'I' );
+   const ST         vl   ( IsFloatingPoint_v<ST> ? low : ST() );
+   const ST         vu   ( IsFloatingPoint_v<ST> ? upp : ST() );
+   const blas_int_t il   ( IsFloatingPoint_v<ST> ? 0 : numeric_cast<blas_int_t>( low ) );
+   const blas_int_t iu   ( IsFloatingPoint_v<ST> ? 0 : numeric_cast<blas_int_t>( upp ) );
 
-   return syevx_backend( ~A, ~w, ~Z, uplo, range, vl, vu, il, iu );
+   return syevx_backend( *A, *w, *Z, uplo, range, vl, vu, il, iu );
 }
 //*************************************************************************************************
 

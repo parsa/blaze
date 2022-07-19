@@ -3,7 +3,7 @@
 //  \file src/main/TVec6TMat6Mult.cpp
 //  \brief Source file for the 6D transpose vector/transpose matrix multiplication benchmark
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -144,7 +144,7 @@ void estimateSteps( Run& run )
       timer.start();
       for( size_t step=0UL, i=0UL; step<steps; ++step, ++i ) {
          if( i == N ) i = 0UL;
-         b[i] = a[i] * A[i];
+         b[i] = noalias( a[i] * A[i] );
       }
       timer.end();
       wct = timer.last();

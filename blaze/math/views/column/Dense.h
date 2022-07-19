@@ -3,7 +3,7 @@
 //  \file blaze/math/views/column/Dense.h
 //  \brief Column specialization for dense matrices
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -61,6 +61,8 @@
 #include <blaze/math/InitializerList.h>
 #include <blaze/math/shims/Clear.h>
 #include <blaze/math/shims/IsDefault.h>
+#include <blaze/math/shims/PrevMultiple.h>
+#include <blaze/math/shims/Reset.h>
 #include <blaze/math/SIMD.h>
 #include <blaze/math/traits/ColumnTrait.h>
 #include <blaze/math/traits/CrossTrait.h>
@@ -92,15 +94,11 @@
 #include <blaze/util/constraints/Pointer.h>
 #include <blaze/util/constraints/Reference.h>
 #include <blaze/util/constraints/Vectorizable.h>
-#include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/mpl/If.h>
-#include <blaze/util/TrueType.h>
-#include <blaze/util/TypeList.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsConst.h>
 #include <blaze/util/typetraits/IsReference.h>
-#include <blaze/util/typetraits/RemoveReference.h>
 
 
 namespace blaze {
@@ -137,7 +135,9 @@ class Column<MT,true,true,SF,CCAs...>
    //! Type of this Column instance.
    using This = Column<MT,true,true,SF,CCAs...>;
 
-   using BaseType      = DenseVector<This,false>;      //!< Base type of this Column instance.
+   //! Base type of this Column instance.
+   using BaseType = View< DenseVector<This,false> >;
+
    using ViewedType    = MT;                           //!< The type viewed by this Column instance.
    using ResultType    = ColumnTrait_t<MT,CCAs...>;    //!< Result type for expression template evaluations.
    using TransposeType = TransposeType_t<ResultType>;  //!< Transpose type for expression template evaluations.
@@ -171,6 +171,9 @@ class Column<MT,true,true,SF,CCAs...>
 
    //! Compilation switch for the expression template assignment strategy.
    static constexpr bool smpAssignable = MT::smpAssignable;
+
+   //! Compilation switch for the expression template evaluation strategy.
+   static constexpr bool compileTimeArgs = DataType::compileTimeArgs;
    //**********************************************************************************************
 
    //**Constructors********************************************************************************
@@ -261,9 +264,7 @@ class Column<MT,true,true,SF,CCAs...>
    //! Helper variable template for the explicit application of the SFINAE principle.
    template< typename VT >
    static constexpr bool VectorizedAddAssign_v =
-      ( useOptimizedKernels &&
-        simdEnabled && VT::simdEnabled &&
-        IsSIMDCombinable_v< ElementType, ElementType_t<VT> > &&
+      ( VectorizedAssign_v<VT> &&
         HasSIMDAdd_v< ElementType, ElementType_t<VT> > );
    //**********************************************************************************************
 
@@ -271,9 +272,7 @@ class Column<MT,true,true,SF,CCAs...>
    //! Helper variable template for the explicit application of the SFINAE principle.
    template< typename VT >
    static constexpr bool VectorizedSubAssign_v =
-      ( useOptimizedKernels &&
-        simdEnabled && VT::simdEnabled &&
-        IsSIMDCombinable_v< ElementType, ElementType_t<VT> > &&
+      ( VectorizedAssign_v<VT> &&
         HasSIMDSub_v< ElementType, ElementType_t<VT> > );
    //**********************************************************************************************
 
@@ -281,9 +280,7 @@ class Column<MT,true,true,SF,CCAs...>
    //! Helper variable template for the explicit application of the SFINAE principle.
    template< typename VT >
    static constexpr bool VectorizedMultAssign_v =
-      ( useOptimizedKernels &&
-        simdEnabled && VT::simdEnabled &&
-        IsSIMDCombinable_v< ElementType, ElementType_t<VT> > &&
+      ( VectorizedAssign_v<VT> &&
         HasSIMDMult_v< ElementType, ElementType_t<VT> > );
    //**********************************************************************************************
 
@@ -291,9 +288,7 @@ class Column<MT,true,true,SF,CCAs...>
    //! Helper variable template for the explicit application of the SFINAE principle.
    template< typename VT >
    static constexpr bool VectorizedDivAssign_v =
-      ( useOptimizedKernels &&
-        simdEnabled && VT::simdEnabled &&
-        IsSIMDCombinable_v< ElementType, ElementType_t<VT> > &&
+      ( VectorizedAssign_v<VT> &&
         HasSIMDDiv_v< ElementType, ElementType_t<VT> > );
    //**********************************************************************************************
 
@@ -425,7 +420,7 @@ inline Column<MT,true,true,SF,CCAs...>::Column( MT& matrix, RCAs... args )
    : DataType( args... )  // Base class initialization
    , matrix_ ( matrix  )  // The matrix containing the column
 {
-   if( !Contains_v< TypeList<RCAs...>, Unchecked > ) {
+   if( isChecked( args... ) ) {
       if( matrix_.columns() <= column() ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid column access index" );
       }
@@ -831,7 +826,7 @@ inline Column<MT,true,true,SF,CCAs...>&
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( IsExpression_v<MT> && rhs.canAlias( &matrix_ ) ) {
+   if( IsExpression_v<MT> && rhs.canAlias( this ) ) {
       const ResultType tmp( rhs );
       smpAssign( left, tmp );
    }
@@ -871,12 +866,12 @@ inline Column<MT,true,true,SF,CCAs...>&
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( ResultType_t<VT> );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_t<VT> );
 
-   if( size() != (~rhs).size() ) {
+   if( size() != (*rhs).size() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
    using Right = If_t< IsRestricted_v<MT>, CompositeType_t<VT>, const VT& >;
-   Right right( ~rhs );
+   Right right( *rhs );
 
    if( !tryAssign( matrix_, right, 0UL, column() ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
@@ -884,7 +879,7 @@ inline Column<MT,true,true,SF,CCAs...>&
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( IsReference_v<Right> && right.canAlias( &matrix_ ) ) {
+   if( IsReference_v<Right> && right.canAlias( this ) ) {
       const ResultType_t<VT> tmp( right );
       smpAssign( left, tmp );
    }
@@ -926,12 +921,12 @@ inline Column<MT,true,true,SF,CCAs...>&
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( ResultType_t<VT> );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_t<VT> );
 
-   if( size() != (~rhs).size() ) {
+   if( size() != (*rhs).size() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
    using Right = If_t< IsRestricted_v<MT>, CompositeType_t<VT>, const VT& >;
-   Right right( ~rhs );
+   Right right( *rhs );
 
    if( !tryAddAssign( matrix_, right, 0UL, column() ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
@@ -939,7 +934,7 @@ inline Column<MT,true,true,SF,CCAs...>&
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( IsReference_v<Right> && right.canAlias( &matrix_ ) ) {
+   if( IsReference_v<Right> && right.canAlias( this ) ) {
       const ResultType_t<VT> tmp( right );
       smpAddAssign( left, tmp );
    }
@@ -979,12 +974,12 @@ inline Column<MT,true,true,SF,CCAs...>&
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( ResultType_t<VT> );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_t<VT> );
 
-   if( size() != (~rhs).size() ) {
+   if( size() != (*rhs).size() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
    using Right = If_t< IsRestricted_v<MT>, CompositeType_t<VT>, const VT& >;
-   Right right( ~rhs );
+   Right right( *rhs );
 
    if( !trySubAssign( matrix_, right, 0UL, column() ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
@@ -992,7 +987,7 @@ inline Column<MT,true,true,SF,CCAs...>&
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( IsReference_v<Right> && right.canAlias( &matrix_ ) ) {
+   if( IsReference_v<Right> && right.canAlias( this ) ) {
       const ResultType_t<VT> tmp( right );
       smpSubAssign( left, tmp );
    }
@@ -1031,12 +1026,12 @@ inline Column<MT,true,true,SF,CCAs...>&
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( ResultType_t<VT> );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_t<VT> );
 
-   if( size() != (~rhs).size() ) {
+   if( size() != (*rhs).size() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
    using Right = If_t< IsRestricted_v<MT>, CompositeType_t<VT>, const VT& >;
-   Right right( ~rhs );
+   Right right( *rhs );
 
    if( !tryMultAssign( matrix_, right, 0UL, column() ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
@@ -1044,7 +1039,7 @@ inline Column<MT,true,true,SF,CCAs...>&
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( IsReference_v<Right> && right.canAlias( &matrix_ ) ) {
+   if( IsReference_v<Right> && right.canAlias( this ) ) {
       const ResultType_t<VT> tmp( right );
       smpMultAssign( left, tmp );
    }
@@ -1082,12 +1077,12 @@ inline Column<MT,true,true,SF,CCAs...>&
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( ResultType_t<VT> );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_t<VT> );
 
-   if( size() != (~rhs).size() ) {
+   if( size() != (*rhs).size() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
    using Right = If_t< IsRestricted_v<MT>, CompositeType_t<VT>, const VT& >;
-   Right right( ~rhs );
+   Right right( *rhs );
 
    if( !tryDivAssign( matrix_, right, 0UL, column() ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
@@ -1095,7 +1090,7 @@ inline Column<MT,true,true,SF,CCAs...>&
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( IsReference_v<Right> && right.canAlias( &matrix_ ) ) {
+   if( IsReference_v<Right> && right.canAlias( this ) ) {
       const ResultType_t<VT> tmp( right );
       smpDivAssign( left, tmp );
    }
@@ -1142,11 +1137,11 @@ inline Column<MT,true,true,SF,CCAs...>&
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( CrossType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( CrossType );
 
-   if( size() != 3UL || (~rhs).size() != 3UL ) {
+   if( size() != 3UL || (*rhs).size() != 3UL ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid vector size for cross product" );
    }
 
-   const CrossType right( *this % (~rhs) );
+   const CrossType right( *this % (*rhs) );
 
    if( !tryAssign( matrix_, right, 0UL, column() ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
@@ -1373,7 +1368,7 @@ template< typename MT       // Type of the dense matrix
 template< typename Other >  // Data type of the foreign expression
 inline bool Column<MT,true,true,SF,CCAs...>::canAlias( const Other* alias ) const noexcept
 {
-   return matrix_.isAliased( alias );
+   return matrix_.isAliased( &unview( *alias ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1400,7 +1395,7 @@ template< typename MT2       // Data type of the foreign dense column
 inline bool
    Column<MT,true,true,SF,CCAs...>::canAlias( const Column<MT2,SO2,true,SF2,CCAs2...>* alias ) const noexcept
 {
-   return matrix_.isAliased( alias->matrix_ ) && ( column() == alias->column() );
+   return matrix_.isAliased( &alias->matrix_ ) && ( column() == alias->column() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1423,7 +1418,7 @@ template< typename MT       // Type of the dense matrix
 template< typename Other >  // Data type of the foreign expression
 inline bool Column<MT,true,true,SF,CCAs...>::isAliased( const Other* alias ) const noexcept
 {
-   return matrix_.isAliased( alias );
+   return matrix_.isAliased( &unview( *alias ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1695,15 +1690,17 @@ template< typename VT >     // Type of the right-hand side dense vector
 inline auto Column<MT,true,true,SF,CCAs...>::assign( const DenseVector<VT,false>& rhs )
    -> DisableIf_t< VectorizedAssign_v<VT> >
 {
-   BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
+   BLAZE_INTERNAL_ASSERT( size() == (*rhs).size(), "Invalid vector sizes" );
 
-   const size_t ipos( (~rhs).size() & size_t(-2) );
+   const size_t ipos( prevMultiple( (*rhs).size(), 2UL ) );
+   BLAZE_INTERNAL_ASSERT( ipos <= (*rhs).size(), "Invalid end calculation" );
+
    for( size_t i=0UL; i<ipos; i+=2UL ) {
-      matrix_(i    ,column()) = (~rhs)[i    ];
-      matrix_(i+1UL,column()) = (~rhs)[i+1UL];
+      matrix_(i    ,column()) = (*rhs)[i    ];
+      matrix_(i+1UL,column()) = (*rhs)[i+1UL];
    }
-   if( ipos < (~rhs).size() )
-      matrix_(ipos,column()) = (~rhs)[ipos];
+   if( ipos < (*rhs).size() )
+      matrix_(ipos,column()) = (*rhs)[ipos];
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1730,20 +1727,20 @@ inline auto Column<MT,true,true,SF,CCAs...>::assign( const DenseVector<VT,false>
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
-   BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
+   BLAZE_INTERNAL_ASSERT( size() == (*rhs).size(), "Invalid vector sizes" );
 
    constexpr bool remainder( !IsPadded_v<MT> || !IsPadded_v<VT> );
 
    const size_t rows( size() );
 
-   const size_t ipos( ( remainder )?( rows & size_t(-SIMDSIZE) ):( rows ) );
-   BLAZE_INTERNAL_ASSERT( !remainder || ( rows - ( rows % (SIMDSIZE) ) ) == ipos, "Invalid end calculation" );
+   const size_t ipos( remainder ? prevMultiple( rows, SIMDSIZE ) : rows );
+   BLAZE_INTERNAL_ASSERT( ipos <= rows, "Invalid end calculation" );
 
    size_t i( 0UL );
    Iterator left( begin() );
-   ConstIterator_t<VT> right( (~rhs).begin() );
+   ConstIterator_t<VT> right( (*rhs).begin() );
 
-   if( useStreaming && rows > ( cacheSize/( sizeof(ElementType) * 3UL ) ) && !(~rhs).isAliased( this ) )
+   if( useStreaming && rows > ( cacheSize/( sizeof(ElementType) * 3UL ) ) && !(*rhs).isAliased( this ) )
    {
       for( ; i<ipos; i+=SIMDSIZE ) {
          left.stream( right.load() ); left += SIMDSIZE; right += SIMDSIZE;
@@ -1790,9 +1787,9 @@ template< typename MT       // Type of the dense matrix
 template< typename VT >     // Type of the right-hand side sparse vector
 inline void Column<MT,true,true,SF,CCAs...>::assign( const SparseVector<VT,false>& rhs )
 {
-   BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
+   BLAZE_INTERNAL_ASSERT( size() == (*rhs).size(), "Invalid vector sizes" );
 
-   for( ConstIterator_t<VT> element=(~rhs).begin(); element!=(~rhs).end(); ++element )
+   for( ConstIterator_t<VT> element=(*rhs).begin(); element!=(*rhs).end(); ++element )
       matrix_(element->index(),column()) = element->value();
 }
 /*! \endcond */
@@ -1818,15 +1815,17 @@ template< typename VT >     // Type of the right-hand side dense vector
 inline auto Column<MT,true,true,SF,CCAs...>::addAssign( const DenseVector<VT,false>& rhs )
    -> DisableIf_t< VectorizedAddAssign_v<VT> >
 {
-   BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
+   BLAZE_INTERNAL_ASSERT( size() == (*rhs).size(), "Invalid vector sizes" );
 
-   const size_t ipos( (~rhs).size() & size_t(-2) );
+   const size_t ipos( prevMultiple( (*rhs).size(), 2UL ) );
+   BLAZE_INTERNAL_ASSERT( ipos <= (*rhs).size(), "Invalid end calculation" );
+
    for( size_t i=0UL; i<ipos; i+=2UL ) {
-      matrix_(i    ,column()) += (~rhs)[i    ];
-      matrix_(i+1UL,column()) += (~rhs)[i+1UL];
+      matrix_(i    ,column()) += (*rhs)[i    ];
+      matrix_(i+1UL,column()) += (*rhs)[i+1UL];
    }
-   if( ipos < (~rhs).size() )
-      matrix_(ipos,column()) += (~rhs)[ipos];
+   if( ipos < (*rhs).size() )
+      matrix_(ipos,column()) += (*rhs)[ipos];
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1853,18 +1852,18 @@ inline auto Column<MT,true,true,SF,CCAs...>::addAssign( const DenseVector<VT,fal
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
-   BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
+   BLAZE_INTERNAL_ASSERT( size() == (*rhs).size(), "Invalid vector sizes" );
 
    constexpr bool remainder( !IsPadded_v<MT> || !IsPadded_v<VT> );
 
    const size_t rows( size() );
 
-   const size_t ipos( ( remainder )?( rows & size_t(-SIMDSIZE) ):( rows ) );
-   BLAZE_INTERNAL_ASSERT( !remainder || ( rows - ( rows % (SIMDSIZE) ) ) == ipos, "Invalid end calculation" );
+   const size_t ipos( remainder ? prevMultiple( rows, SIMDSIZE ) : rows );
+   BLAZE_INTERNAL_ASSERT( ipos <= rows, "Invalid end calculation" );
 
    size_t i( 0UL );
    Iterator left( begin() );
-   ConstIterator_t<VT> right( (~rhs).begin() );
+   ConstIterator_t<VT> right( (*rhs).begin() );
 
    for( ; (i+SIMDSIZE*3UL) < ipos; i+=SIMDSIZE*4UL ) {
       left.store( left.load() + right.load() ); left += SIMDSIZE; right += SIMDSIZE;
@@ -1901,9 +1900,9 @@ template< typename MT       // Type of the dense matrix
 template< typename VT >     // Type of the right-hand side sparse vector
 inline void Column<MT,true,true,SF,CCAs...>::addAssign( const SparseVector<VT,false>& rhs )
 {
-   BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
+   BLAZE_INTERNAL_ASSERT( size() == (*rhs).size(), "Invalid vector sizes" );
 
-   for( ConstIterator_t<VT> element=(~rhs).begin(); element!=(~rhs).end(); ++element )
+   for( ConstIterator_t<VT> element=(*rhs).begin(); element!=(*rhs).end(); ++element )
       matrix_(element->index(),column()) += element->value();
 }
 /*! \endcond */
@@ -1929,15 +1928,17 @@ template< typename VT >     // Type of the right-hand side dense vector
 inline auto Column<MT,true,true,SF,CCAs...>::subAssign( const DenseVector<VT,false>& rhs )
    -> DisableIf_t< VectorizedSubAssign_v<VT> >
 {
-   BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
+   BLAZE_INTERNAL_ASSERT( size() == (*rhs).size(), "Invalid vector sizes" );
 
-   const size_t ipos( (~rhs).size() & size_t(-2) );
+   const size_t ipos( prevMultiple( (*rhs).size(), 2UL ) );
+   BLAZE_INTERNAL_ASSERT( ipos <= (*rhs).size(), "Invalid end calculation" );
+
    for( size_t i=0UL; i<ipos; i+=2UL ) {
-      matrix_(i    ,column()) -= (~rhs)[i    ];
-      matrix_(i+1UL,column()) -= (~rhs)[i+1UL];
+      matrix_(i    ,column()) -= (*rhs)[i    ];
+      matrix_(i+1UL,column()) -= (*rhs)[i+1UL];
    }
-   if( ipos < (~rhs).size() )
-      matrix_(ipos,column()) -= (~rhs)[ipos];
+   if( ipos < (*rhs).size() )
+      matrix_(ipos,column()) -= (*rhs)[ipos];
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1964,18 +1965,18 @@ inline auto Column<MT,true,true,SF,CCAs...>::subAssign( const DenseVector<VT,fal
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
-   BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
+   BLAZE_INTERNAL_ASSERT( size() == (*rhs).size(), "Invalid vector sizes" );
 
    constexpr bool remainder( !IsPadded_v<MT> || !IsPadded_v<VT> );
 
    const size_t rows( size() );
 
-   const size_t ipos( ( remainder )?( rows & size_t(-SIMDSIZE) ):( rows ) );
-   BLAZE_INTERNAL_ASSERT( !remainder || ( rows - ( rows % (SIMDSIZE) ) ) == ipos, "Invalid end calculation" );
+   const size_t ipos( remainder ? prevMultiple( rows, SIMDSIZE ) : rows );
+   BLAZE_INTERNAL_ASSERT( ipos <= rows, "Invalid end calculation" );
 
    size_t i( 0UL );
    Iterator left( begin() );
-   ConstIterator_t<VT> right( (~rhs).begin() );
+   ConstIterator_t<VT> right( (*rhs).begin() );
 
    for( ; (i+SIMDSIZE*3UL) < ipos; i+=SIMDSIZE*4UL ) {
       left.store( left.load() - right.load() ); left += SIMDSIZE; right += SIMDSIZE;
@@ -2012,9 +2013,9 @@ template< typename MT       // Type of the dense matrix
 template< typename VT >     // Type of the right-hand side sparse vector
 inline void Column<MT,true,true,SF,CCAs...>::subAssign( const SparseVector<VT,false>& rhs )
 {
-   BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
+   BLAZE_INTERNAL_ASSERT( size() == (*rhs).size(), "Invalid vector sizes" );
 
-   for( ConstIterator_t<VT> element=(~rhs).begin(); element!=(~rhs).end(); ++element )
+   for( ConstIterator_t<VT> element=(*rhs).begin(); element!=(*rhs).end(); ++element )
       matrix_(element->index(),column()) -= element->value();
 }
 /*! \endcond */
@@ -2040,15 +2041,17 @@ template< typename VT >     // Type of the right-hand side dense vector
 inline auto Column<MT,true,true,SF,CCAs...>::multAssign( const DenseVector<VT,false>& rhs )
    -> DisableIf_t< VectorizedMultAssign_v<VT> >
 {
-   BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
+   BLAZE_INTERNAL_ASSERT( size() == (*rhs).size(), "Invalid vector sizes" );
 
-   const size_t ipos( (~rhs).size() & size_t(-2) );
+   const size_t ipos( prevMultiple( (*rhs).size(), 2UL ) );
+   BLAZE_INTERNAL_ASSERT( ipos <= (*rhs).size(), "Invalid end calculation" );
+
    for( size_t i=0UL; i<ipos; i+=2UL ) {
-      matrix_(i    ,column()) *= (~rhs)[i    ];
-      matrix_(i+1UL,column()) *= (~rhs)[i+1UL];
+      matrix_(i    ,column()) *= (*rhs)[i    ];
+      matrix_(i+1UL,column()) *= (*rhs)[i+1UL];
    }
-   if( ipos < (~rhs).size() )
-      matrix_(ipos,column()) *= (~rhs)[ipos];
+   if( ipos < (*rhs).size() )
+      matrix_(ipos,column()) *= (*rhs)[ipos];
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -2075,18 +2078,18 @@ inline auto Column<MT,true,true,SF,CCAs...>::multAssign( const DenseVector<VT,fa
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
-   BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
+   BLAZE_INTERNAL_ASSERT( size() == (*rhs).size(), "Invalid vector sizes" );
 
    constexpr bool remainder( !IsPadded_v<MT> || !IsPadded_v<VT> );
 
    const size_t rows( size() );
 
-   const size_t ipos( ( remainder )?( rows & size_t(-SIMDSIZE) ):( rows ) );
-   BLAZE_INTERNAL_ASSERT( !remainder || ( rows - ( rows % (SIMDSIZE) ) ) == ipos, "Invalid end calculation" );
+   const size_t ipos( remainder ? prevMultiple( rows, SIMDSIZE ) : rows );
+   BLAZE_INTERNAL_ASSERT( ipos <= rows, "Invalid end calculation" );
 
    size_t i( 0UL );
    Iterator left( begin() );
-   ConstIterator_t<VT> right( (~rhs).begin() );
+   ConstIterator_t<VT> right( (*rhs).begin() );
 
    for( ; (i+SIMDSIZE*3UL) < ipos; i+=SIMDSIZE*4UL ) {
       left.store( left.load() * right.load() ); left += SIMDSIZE; right += SIMDSIZE;
@@ -2125,11 +2128,11 @@ inline void Column<MT,true,true,SF,CCAs...>::multAssign( const SparseVector<VT,f
 {
    using blaze::reset;
 
-   BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
+   BLAZE_INTERNAL_ASSERT( size() == (*rhs).size(), "Invalid vector sizes" );
 
    size_t i( 0UL );
 
-   for( ConstIterator_t<VT> element=(~rhs).begin(); element!=(~rhs).end(); ++element ) {
+   for( ConstIterator_t<VT> element=(*rhs).begin(); element!=(*rhs).end(); ++element ) {
       const size_t index( element->index() );
       for( ; i<index; ++i )
          reset( matrix_(i,column()) );
@@ -2164,15 +2167,17 @@ template< typename VT >     // Type of the right-hand side dense vector
 inline auto Column<MT,true,true,SF,CCAs...>::divAssign( const DenseVector<VT,false>& rhs )
    -> DisableIf_t< VectorizedDivAssign_v<VT> >
 {
-   BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
+   BLAZE_INTERNAL_ASSERT( size() == (*rhs).size(), "Invalid vector sizes" );
 
-   const size_t ipos( (~rhs).size() & size_t(-2) );
+   const size_t ipos( prevMultiple( (*rhs).size(), 2UL ) );
+   BLAZE_INTERNAL_ASSERT( ipos <= (*rhs).size(), "Invalid end calculation" );
+
    for( size_t i=0UL; i<ipos; i+=2UL ) {
-      matrix_(i    ,column()) /= (~rhs)[i    ];
-      matrix_(i+1UL,column()) /= (~rhs)[i+1UL];
+      matrix_(i    ,column()) /= (*rhs)[i    ];
+      matrix_(i+1UL,column()) /= (*rhs)[i+1UL];
    }
-   if( ipos < (~rhs).size() )
-      matrix_(ipos,column()) /= (~rhs)[ipos];
+   if( ipos < (*rhs).size() )
+      matrix_(ipos,column()) /= (*rhs)[ipos];
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -2199,16 +2204,16 @@ inline auto Column<MT,true,true,SF,CCAs...>::divAssign( const DenseVector<VT,fal
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
-   BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
+   BLAZE_INTERNAL_ASSERT( size() == (*rhs).size(), "Invalid vector sizes" );
 
    const size_t rows( size() );
 
-   const size_t ipos( rows & size_t(-SIMDSIZE) );
-   BLAZE_INTERNAL_ASSERT( ( rows - ( rows % (SIMDSIZE) ) ) == ipos, "Invalid end calculation" );
+   const size_t ipos( prevMultiple( rows, SIMDSIZE ) );
+   BLAZE_INTERNAL_ASSERT( ipos <= rows, "Invalid end calculation" );
 
    size_t i( 0UL );
    Iterator left( begin() );
-   ConstIterator_t<VT> right( (~rhs).begin() );
+   ConstIterator_t<VT> right( (*rhs).begin() );
 
    for( ; (i+SIMDSIZE*3UL) < ipos; i+=SIMDSIZE*4UL ) {
       left.store( left.load() / right.load() ); left += SIMDSIZE; right += SIMDSIZE;
@@ -2264,7 +2269,9 @@ class Column<MT,false,true,false,CCAs...>
    //! Type of this Column instance.
    using This = Column<MT,false,true,false,CCAs...>;
 
-   using BaseType      = DenseVector<This,false>;      //!< Base type of this Column instance.
+   //! Base type of this Column instance.
+   using BaseType = View< DenseVector<This,false> >;
+
    using ViewedType    = MT;                           //!< The type viewed by this Column instance.
    using ResultType    = ColumnTrait_t<MT,CCAs...>;    //!< Result type for expression template evaluations.
    using TransposeType = TransposeType_t<ResultType>;  //!< Transpose type for expression template evaluations.
@@ -2626,6 +2633,9 @@ class Column<MT,false,true,false,CCAs...>
 
    //! Compilation switch for the expression template assignment strategy.
    static constexpr bool smpAssignable = MT::smpAssignable;
+
+   //! Compilation switch for the expression template evaluation strategy.
+   static constexpr bool compileTimeArgs = DataType::compileTimeArgs;
    //**********************************************************************************************
 
    //**Constructors********************************************************************************
@@ -2787,7 +2797,7 @@ inline Column<MT,false,true,false,CCAs...>::Column( MT& matrix, RCAs... args )
    : DataType( args... )  // Base class initialization
    , matrix_ ( matrix  )  // The matrix containing the column
 {
-   if( !Contains_v< TypeList<RCAs...>, Unchecked > ) {
+   if( isChecked( args... ) ) {
       if( matrix_.columns() <= column() ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid column access index" );
       }
@@ -3178,7 +3188,7 @@ inline Column<MT,false,true,false,CCAs...>&
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( IsExpression_v<MT> && rhs.canAlias( &matrix_ ) ) {
+   if( IsExpression_v<MT> && rhs.canAlias( this ) ) {
       const ResultType tmp( rhs );
       smpAssign( left, tmp );
    }
@@ -3218,12 +3228,12 @@ inline Column<MT,false,true,false,CCAs...>&
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
 
-   if( size() != (~rhs).size() ) {
+   if( size() != (*rhs).size() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
    using Right = If_t< IsRestricted_v<MT>, CompositeType_t<VT>, const VT& >;
-   Right right( ~rhs );
+   Right right( *rhs );
 
    if( !tryAssign( matrix_, right, 0UL, column() ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
@@ -3231,7 +3241,7 @@ inline Column<MT,false,true,false,CCAs...>&
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( IsReference_v<Right> && right.canAlias( &matrix_ ) ) {
+   if( IsReference_v<Right> && right.canAlias( this ) ) {
       const ResultType tmp( right );
       smpAssign( left, tmp );
    }
@@ -3272,12 +3282,12 @@ inline Column<MT,false,true,false,CCAs...>&
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( ResultType_t<VT> );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_t<VT> );
 
-   if( size() != (~rhs).size() ) {
+   if( size() != (*rhs).size() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
    using Right = If_t< IsRestricted_v<MT>, CompositeType_t<VT>, const VT& >;
-   Right right( ~rhs );
+   Right right( *rhs );
 
    if( !tryAddAssign( matrix_, right, 0UL, column() ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
@@ -3285,7 +3295,7 @@ inline Column<MT,false,true,false,CCAs...>&
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( IsReference_v<Right> && right.canAlias( &matrix_ ) ) {
+   if( IsReference_v<Right> && right.canAlias( this ) ) {
       const ResultType_t<VT> tmp( right );
       smpAddAssign( left, tmp );
    }
@@ -3324,12 +3334,12 @@ inline Column<MT,false,true,false,CCAs...>&
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( ResultType_t<VT> );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_t<VT> );
 
-   if( size() != (~rhs).size() ) {
+   if( size() != (*rhs).size() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
    using Right = If_t< IsRestricted_v<MT>, CompositeType_t<VT>, const VT& >;
-   Right right( ~rhs );
+   Right right( *rhs );
 
    if( !trySubAssign( matrix_, right, 0UL, column() ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
@@ -3337,7 +3347,7 @@ inline Column<MT,false,true,false,CCAs...>&
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( IsReference_v<Right> && right.canAlias( &matrix_ ) ) {
+   if( IsReference_v<Right> && right.canAlias( this ) ) {
       const ResultType_t<VT> tmp( right );
       smpSubAssign( left, tmp );
    }
@@ -3375,12 +3385,12 @@ inline Column<MT,false,true,false,CCAs...>&
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( ResultType_t<VT> );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_t<VT> );
 
-   if( size() != (~rhs).size() ) {
+   if( size() != (*rhs).size() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
    using Right = If_t< IsRestricted_v<MT>, CompositeType_t<VT>, const VT& >;
-   Right right( ~rhs );
+   Right right( *rhs );
 
    if( !tryMultAssign( matrix_, right, 0UL, column() ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
@@ -3388,7 +3398,7 @@ inline Column<MT,false,true,false,CCAs...>&
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( IsReference_v<Right> && right.canAlias( &matrix_ ) ) {
+   if( IsReference_v<Right> && right.canAlias( this ) ) {
       const ResultType_t<VT> tmp( right );
       smpMultAssign( left, tmp );
    }
@@ -3425,12 +3435,12 @@ inline Column<MT,false,true,false,CCAs...>&
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( ResultType_t<VT> );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_t<VT> );
 
-   if( size() != (~rhs).size() ) {
+   if( size() != (*rhs).size() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
    using Right = If_t< IsRestricted_v<MT>, CompositeType_t<VT>, const VT& >;
-   Right right( ~rhs );
+   Right right( *rhs );
 
    if( !tryDivAssign( matrix_, right, 0UL, column() ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
@@ -3438,7 +3448,7 @@ inline Column<MT,false,true,false,CCAs...>&
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( IsReference_v<Right> && right.canAlias( &matrix_ ) ) {
+   if( IsReference_v<Right> && right.canAlias( this ) ) {
       const ResultType_t<VT> tmp( right );
       smpDivAssign( left, tmp );
    }
@@ -3484,11 +3494,11 @@ inline Column<MT,false,true,false,CCAs...>&
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( CrossType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( CrossType );
 
-   if( size() != 3UL || (~rhs).size() != 3UL ) {
+   if( size() != 3UL || (*rhs).size() != 3UL ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid vector size for cross product" );
    }
 
-   const CrossType right( *this % (~rhs) );
+   const CrossType right( *this % (*rhs) );
 
    if( !tryAssign( matrix_, right, 0UL, column() ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
@@ -3727,7 +3737,7 @@ template< typename MT       // Type of the dense matrix
 template< typename Other >  // Data type of the foreign expression
 inline bool Column<MT,false,true,false,CCAs...>::canAlias( const Other* alias ) const noexcept
 {
-   return matrix_.isAliased( alias );
+   return matrix_.isAliased( &unview( *alias ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -3775,7 +3785,7 @@ template< typename MT       // Type of the dense matrix
 template< typename Other >  // Data type of the foreign expression
 inline bool Column<MT,false,true,false,CCAs...>::isAliased( const Other* alias ) const noexcept
 {
-   return matrix_.isAliased( alias );
+   return matrix_.isAliased( &unview( *alias ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -3865,15 +3875,17 @@ template< typename MT       // Type of the dense matrix
 template< typename VT >     // Type of the right-hand side dense vector
 inline void Column<MT,false,true,false,CCAs...>::assign( const DenseVector<VT,false>& rhs )
 {
-   BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
+   BLAZE_INTERNAL_ASSERT( size() == (*rhs).size(), "Invalid vector sizes" );
 
-   const size_t ipos( (~rhs).size() & size_t(-2) );
+   const size_t ipos( prevMultiple( (*rhs).size(), 2UL ) );
+   BLAZE_INTERNAL_ASSERT( ipos <= (*rhs).size(), "Invalid end calculation" );
+
    for( size_t i=0UL; i<ipos; i+=2UL ) {
-      matrix_(i    ,column()) = (~rhs)[i    ];
-      matrix_(i+1UL,column()) = (~rhs)[i+1UL];
+      matrix_(i    ,column()) = (*rhs)[i    ];
+      matrix_(i+1UL,column()) = (*rhs)[i+1UL];
    }
-   if( ipos < (~rhs).size() )
-      matrix_(ipos,column()) = (~rhs)[ipos];
+   if( ipos < (*rhs).size() )
+      matrix_(ipos,column()) = (*rhs)[ipos];
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -3896,9 +3908,9 @@ template< typename MT       // Type of the dense matrix
 template< typename VT >     // Type of the right-hand side sparse vector
 inline void Column<MT,false,true,false,CCAs...>::assign( const SparseVector<VT,false>& rhs )
 {
-   BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
+   BLAZE_INTERNAL_ASSERT( size() == (*rhs).size(), "Invalid vector sizes" );
 
-   for( ConstIterator_t<VT> element=(~rhs).begin(); element!=(~rhs).end(); ++element )
+   for( ConstIterator_t<VT> element=(*rhs).begin(); element!=(*rhs).end(); ++element )
       matrix_(element->index(),column()) = element->value();
 }
 /*! \endcond */
@@ -3922,15 +3934,17 @@ template< typename MT       // Type of the dense matrix
 template< typename VT >     // Type of the right-hand side dense vector
 inline void Column<MT,false,true,false,CCAs...>::addAssign( const DenseVector<VT,false>& rhs )
 {
-   BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
+   BLAZE_INTERNAL_ASSERT( size() == (*rhs).size(), "Invalid vector sizes" );
 
-   const size_t ipos( (~rhs).size() & size_t(-2) );
+   const size_t ipos( prevMultiple( (*rhs).size(), 2UL ) );
+   BLAZE_INTERNAL_ASSERT( ipos <= (*rhs).size(), "Invalid end calculation" );
+
    for( size_t i=0UL; i<ipos; i+=2UL ) {
-      matrix_(i    ,column()) += (~rhs)[i    ];
-      matrix_(i+1UL,column()) += (~rhs)[i+1UL];
+      matrix_(i    ,column()) += (*rhs)[i    ];
+      matrix_(i+1UL,column()) += (*rhs)[i+1UL];
    }
-   if( ipos < (~rhs).size() )
-      matrix_(ipos,column()) += (~rhs)[ipos];
+   if( ipos < (*rhs).size() )
+      matrix_(ipos,column()) += (*rhs)[ipos];
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -3953,9 +3967,9 @@ template< typename MT       // Type of the dense matrix
 template< typename VT >     // Type of the right-hand side sparse vector
 inline void Column<MT,false,true,false,CCAs...>::addAssign( const SparseVector<VT,false>& rhs )
 {
-   BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
+   BLAZE_INTERNAL_ASSERT( size() == (*rhs).size(), "Invalid vector sizes" );
 
-   for( ConstIterator_t<VT> element=(~rhs).begin(); element!=(~rhs).end(); ++element )
+   for( ConstIterator_t<VT> element=(*rhs).begin(); element!=(*rhs).end(); ++element )
       matrix_(element->index(),column()) += element->value();
 }
 /*! \endcond */
@@ -3979,15 +3993,17 @@ template< typename MT       // Type of the dense matrix
 template< typename VT >     // Type of the right-hand side dense vector
 inline void Column<MT,false,true,false,CCAs...>::subAssign( const DenseVector<VT,false>& rhs )
 {
-   BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
+   BLAZE_INTERNAL_ASSERT( size() == (*rhs).size(), "Invalid vector sizes" );
 
-   const size_t ipos( (~rhs).size() & size_t(-2) );
+   const size_t ipos( prevMultiple( (*rhs).size(), 2UL ) );
+   BLAZE_INTERNAL_ASSERT( ipos <= (*rhs).size(), "Invalid end calculation" );
+
    for( size_t i=0UL; i<ipos; i+=2UL ) {
-      matrix_(i    ,column()) -= (~rhs)[i    ];
-      matrix_(i+1UL,column()) -= (~rhs)[i+1UL];
+      matrix_(i    ,column()) -= (*rhs)[i    ];
+      matrix_(i+1UL,column()) -= (*rhs)[i+1UL];
    }
-   if( ipos < (~rhs).size() )
-      matrix_(ipos,column()) -= (~rhs)[ipos];
+   if( ipos < (*rhs).size() )
+      matrix_(ipos,column()) -= (*rhs)[ipos];
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -4010,9 +4026,9 @@ template< typename MT       // Type of the dense matrix
 template< typename VT >     // Type of the right-hand side sparse vector
 inline void Column<MT,false,true,false,CCAs...>::subAssign( const SparseVector<VT,false>& rhs )
 {
-   BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
+   BLAZE_INTERNAL_ASSERT( size() == (*rhs).size(), "Invalid vector sizes" );
 
-   for( ConstIterator_t<VT> element=(~rhs).begin(); element!=(~rhs).end(); ++element )
+   for( ConstIterator_t<VT> element=(*rhs).begin(); element!=(*rhs).end(); ++element )
       matrix_(element->index(),column()) -= element->value();
 }
 /*! \endcond */
@@ -4036,15 +4052,17 @@ template< typename MT       // Type of the dense matrix
 template< typename VT >     // Type of the right-hand side dense vector
 inline void Column<MT,false,true,false,CCAs...>::multAssign( const DenseVector<VT,false>& rhs )
 {
-   BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
+   BLAZE_INTERNAL_ASSERT( size() == (*rhs).size(), "Invalid vector sizes" );
 
-   const size_t ipos( (~rhs).size() & size_t(-2) );
+   const size_t ipos( prevMultiple( (*rhs).size(), 2UL ) );
+   BLAZE_INTERNAL_ASSERT( ipos <= (*rhs).size(), "Invalid end calculation" );
+
    for( size_t i=0UL; i<ipos; i+=2UL ) {
-      matrix_(i    ,column()) *= (~rhs)[i    ];
-      matrix_(i+1UL,column()) *= (~rhs)[i+1UL];
+      matrix_(i    ,column()) *= (*rhs)[i    ];
+      matrix_(i+1UL,column()) *= (*rhs)[i+1UL];
    }
-   if( ipos < (~rhs).size() )
-      matrix_(ipos,column()) *= (~rhs)[ipos];
+   if( ipos < (*rhs).size() )
+      matrix_(ipos,column()) *= (*rhs)[ipos];
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -4069,11 +4087,11 @@ inline void Column<MT,false,true,false,CCAs...>::multAssign( const SparseVector<
 {
    using blaze::reset;
 
-   BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
+   BLAZE_INTERNAL_ASSERT( size() == (*rhs).size(), "Invalid vector sizes" );
 
    size_t i( 0UL );
 
-   for( ConstIterator_t<VT> element=(~rhs).begin(); element!=(~rhs).end(); ++element ) {
+   for( ConstIterator_t<VT> element=(*rhs).begin(); element!=(*rhs).end(); ++element ) {
       const size_t index( element->index() );
       for( ; i<index; ++i )
          reset( matrix_(i,column()) );
@@ -4106,15 +4124,17 @@ template< typename MT       // Type of the dense matrix
 template< typename VT >     // Type of the right-hand side dense vector
 inline void Column<MT,false,true,false,CCAs...>::divAssign( const DenseVector<VT,false>& rhs )
 {
-   BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
+   BLAZE_INTERNAL_ASSERT( size() == (*rhs).size(), "Invalid vector sizes" );
 
-   const size_t ipos( (~rhs).size() & size_t(-2) );
+   const size_t ipos( prevMultiple( (*rhs).size(), 2UL ) );
+   BLAZE_INTERNAL_ASSERT( ipos <= (*rhs).size(), "Invalid end calculation" );
+
    for( size_t i=0UL; i<ipos; i+=2UL ) {
-      matrix_(i    ,column()) /= (~rhs)[i    ];
-      matrix_(i+1UL,column()) /= (~rhs)[i+1UL];
+      matrix_(i    ,column()) /= (*rhs)[i    ];
+      matrix_(i+1UL,column()) /= (*rhs)[i+1UL];
    }
-   if( ipos < (~rhs).size() )
-      matrix_(ipos,column()) /= (~rhs)[ipos];
+   if( ipos < (*rhs).size() )
+      matrix_(ipos,column()) /= (*rhs)[ipos];
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -4157,7 +4177,9 @@ class Column<MT,false,true,true,CCAs...>
    //! Type of this Column instance.
    using This = Column<MT,false,true,true,CCAs...>;
 
-   using BaseType      = DenseVector<This,false>;      //!< Base type of this Column instance.
+   //! Base type of this Column instance.
+   using BaseType = View< DenseVector<This,false> >;
+
    using ViewedType    = MT;                           //!< The type viewed by this Column instance.
    using ResultType    = ColumnTrait_t<MT,CCAs...>;    //!< Result type for expression template evaluations.
    using TransposeType = TransposeType_t<ResultType>;  //!< Transpose type for expression template evaluations.
@@ -4191,6 +4213,9 @@ class Column<MT,false,true,true,CCAs...>
 
    //! Compilation switch for the expression template assignment strategy.
    static constexpr bool smpAssignable = MT::smpAssignable;
+
+   //! Compilation switch for the expression template evaluation strategy.
+   static constexpr bool compileTimeArgs = DataType::compileTimeArgs;
    //**********************************************************************************************
 
    //**Constructors********************************************************************************
@@ -4281,9 +4306,7 @@ class Column<MT,false,true,true,CCAs...>
    //! Helper variable template for the explicit application of the SFINAE principle.
    template< typename VT >
    static constexpr bool VectorizedAddAssign_v =
-      ( useOptimizedKernels &&
-        simdEnabled && VT::simdEnabled &&
-        IsSIMDCombinable_v< ElementType, ElementType_t<VT> > &&
+      ( VectorizedAssign_v<VT> &&
         HasSIMDAdd_v< ElementType, ElementType_t<VT> > );
    //**********************************************************************************************
 
@@ -4291,9 +4314,7 @@ class Column<MT,false,true,true,CCAs...>
    //! Helper variable template for the explicit application of the SFINAE principle.
    template< typename VT >
    static constexpr bool VectorizedSubAssign_v =
-      ( useOptimizedKernels &&
-        simdEnabled && VT::simdEnabled &&
-        IsSIMDCombinable_v< ElementType, ElementType_t<VT> > &&
+      ( VectorizedAssign_v<VT> &&
         HasSIMDSub_v< ElementType, ElementType_t<VT> > );
    //**********************************************************************************************
 
@@ -4301,9 +4322,7 @@ class Column<MT,false,true,true,CCAs...>
    //! Helper variable template for the explicit application of the SFINAE principle.
    template< typename VT >
    static constexpr bool VectorizedMultAssign_v =
-      ( useOptimizedKernels &&
-        simdEnabled && VT::simdEnabled &&
-        IsSIMDCombinable_v< ElementType, ElementType_t<VT> > &&
+      ( VectorizedAssign_v<VT> &&
         HasSIMDMult_v< ElementType, ElementType_t<VT> > );
    //**********************************************************************************************
 
@@ -4311,9 +4330,7 @@ class Column<MT,false,true,true,CCAs...>
    //! Helper variable template for the explicit application of the SFINAE principle.
    template< typename VT >
    static constexpr bool VectorizedDivAssign_v =
-      ( useOptimizedKernels &&
-        simdEnabled && VT::simdEnabled &&
-        IsSIMDCombinable_v< ElementType, ElementType_t<VT> > &&
+      ( VectorizedAssign_v<VT> &&
         HasSIMDDiv_v< ElementType, ElementType_t<VT> > );
    //**********************************************************************************************
 
@@ -4445,7 +4462,7 @@ inline Column<MT,false,true,true,CCAs...>::Column( MT& matrix, RCAs... args )
    : DataType( args... )  // Base class initialization
    , matrix_ ( matrix  )  // The matrix containing the column
 {
-   if( !Contains_v< TypeList<RCAs...>, Unchecked > ) {
+   if( isChecked( args... ) ) {
       if( matrix_.columns() <= column() ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid column access index" );
       }
@@ -4832,7 +4849,7 @@ inline Column<MT,false,true,true,CCAs...>&
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( IsExpression_v<MT> && rhs.canAlias( &matrix_ ) ) {
+   if( IsExpression_v<MT> && rhs.canAlias( this ) ) {
       const ResultType tmp( rhs );
       smpAssign( left, tmp );
    }
@@ -4871,12 +4888,12 @@ inline Column<MT,false,true,true,CCAs...>&
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( ResultType_t<VT> );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_t<VT> );
 
-   if( size() != (~rhs).size() ) {
+   if( size() != (*rhs).size() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
    using Right = If_t< IsRestricted_v<MT>, CompositeType_t<VT>, const VT& >;
-   Right right( ~rhs );
+   Right right( *rhs );
 
    if( !tryAssign( matrix_, right, 0UL, column() ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
@@ -4884,7 +4901,7 @@ inline Column<MT,false,true,true,CCAs...>&
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( IsReference_v<Right> && right.canAlias( &matrix_ ) ) {
+   if( IsReference_v<Right> && right.canAlias( this ) ) {
       const ResultType_t<VT> tmp( right );
       smpAssign( left, tmp );
    }
@@ -4925,12 +4942,12 @@ inline Column<MT,false,true,true,CCAs...>&
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( ResultType_t<VT> );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_t<VT> );
 
-   if( size() != (~rhs).size() ) {
+   if( size() != (*rhs).size() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
    using Right = If_t< IsRestricted_v<MT>, CompositeType_t<VT>, const VT& >;
-   Right right( ~rhs );
+   Right right( *rhs );
 
    if( !tryAddAssign( matrix_, right, 0UL, column() ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
@@ -4938,7 +4955,7 @@ inline Column<MT,false,true,true,CCAs...>&
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( IsReference_v<Right> && right.canAlias( &matrix_ ) ) {
+   if( IsReference_v<Right> && right.canAlias( this ) ) {
       const ResultType_t<VT> tmp( right );
       smpAddAssign( left, tmp );
    }
@@ -4977,12 +4994,12 @@ inline Column<MT,false,true,true,CCAs...>&
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( ResultType_t<VT> );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_t<VT> );
 
-   if( size() != (~rhs).size() ) {
+   if( size() != (*rhs).size() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
    using Right = If_t< IsRestricted_v<MT>, CompositeType_t<VT>, const VT& >;
-   Right right( ~rhs );
+   Right right( *rhs );
 
    if( !trySubAssign( matrix_, right, 0UL, column() ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
@@ -4990,7 +5007,7 @@ inline Column<MT,false,true,true,CCAs...>&
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( IsReference_v<Right> && right.canAlias( &matrix_ ) ) {
+   if( IsReference_v<Right> && right.canAlias( this ) ) {
       const ResultType_t<VT> tmp( right );
       smpSubAssign( left, tmp );
    }
@@ -5028,12 +5045,12 @@ inline Column<MT,false,true,true,CCAs...>&
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( ResultType_t<VT> );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_t<VT> );
 
-   if( size() != (~rhs).size() ) {
+   if( size() != (*rhs).size() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
    using Right = If_t< IsRestricted_v<MT>, CompositeType_t<VT>, const VT& >;
-   Right right( ~rhs );
+   Right right( *rhs );
 
    if( !tryMultAssign( matrix_, right, 0UL, column() ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
@@ -5041,7 +5058,7 @@ inline Column<MT,false,true,true,CCAs...>&
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( IsReference_v<Right> && right.canAlias( &matrix_ ) ) {
+   if( IsReference_v<Right> && right.canAlias( this ) ) {
       const ResultType_t<VT> tmp( right );
       smpMultAssign( left, tmp );
    }
@@ -5078,12 +5095,12 @@ inline Column<MT,false,true,true,CCAs...>&
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( ResultType_t<VT> );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_t<VT> );
 
-   if( size() != (~rhs).size() ) {
+   if( size() != (*rhs).size() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
    using Right = If_t< IsRestricted_v<MT>, CompositeType_t<VT>, const VT& >;
-   Right right( ~rhs );
+   Right right( *rhs );
 
    if( !tryDivAssign( matrix_, right, 0UL, column() ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
@@ -5091,7 +5108,7 @@ inline Column<MT,false,true,true,CCAs...>&
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( IsReference_v<Right> && right.canAlias( &matrix_ ) ) {
+   if( IsReference_v<Right> && right.canAlias( this ) ) {
       const ResultType_t<VT> tmp( right );
       smpDivAssign( left, tmp );
    }
@@ -5137,11 +5154,11 @@ inline Column<MT,false,true,true,CCAs...>&
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( CrossType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( CrossType );
 
-   if( size() != 3UL || (~rhs).size() != 3UL ) {
+   if( size() != 3UL || (*rhs).size() != 3UL ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid vector size for cross product" );
    }
 
-   const CrossType right( *this % (~rhs) );
+   const CrossType right( *this % (*rhs) );
 
    if( !tryAssign( matrix_, right, 0UL, column() ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
@@ -5359,7 +5376,7 @@ template< typename MT       // Type of the dense matrix
 template< typename Other >  // Data type of the foreign expression
 inline bool Column<MT,false,true,true,CCAs...>::canAlias( const Other* alias ) const noexcept
 {
-   return matrix_.isAliased( alias );
+   return matrix_.isAliased( &unview( *alias ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -5385,7 +5402,7 @@ template< typename MT2       // Data type of the foreign dense column
 inline bool
    Column<MT,false,true,true,CCAs...>::canAlias( const Column<MT2,SO2,true,SF2,CCAs2...>* alias ) const noexcept
 {
-   return matrix_.isAliased( alias->matrix_ ) && ( column() == alias->column() );
+   return matrix_.isAliased( &alias->matrix_ ) && ( column() == alias->column() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -5407,7 +5424,7 @@ template< typename MT       // Type of the dense matrix
 template< typename Other >  // Data type of the foreign expression
 inline bool Column<MT,false,true,true,CCAs...>::isAliased( const Other* alias ) const noexcept
 {
-   return matrix_.isAliased( alias );
+   return matrix_.isAliased( &unview( *alias ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -5668,15 +5685,17 @@ template< typename VT >     // Type of the right-hand side dense vector
 inline auto Column<MT,false,true,true,CCAs...>::assign( const DenseVector<VT,false>& rhs )
    -> DisableIf_t< VectorizedAssign_v<VT> >
 {
-   BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
+   BLAZE_INTERNAL_ASSERT( size() == (*rhs).size(), "Invalid vector sizes" );
 
-   const size_t jpos( (~rhs).size() & size_t(-2) );
+   const size_t jpos( prevMultiple( (*rhs).size(), 2UL ) );
+   BLAZE_INTERNAL_ASSERT( jpos <= (*rhs).size(), "Invalid end calculation" );
+
    for( size_t j=0UL; j<jpos; j+=2UL ) {
-      matrix_(column(),j    ) = (~rhs)[j    ];
-      matrix_(column(),j+1UL) = (~rhs)[j+1UL];
+      matrix_(column(),j    ) = (*rhs)[j    ];
+      matrix_(column(),j+1UL) = (*rhs)[j+1UL];
    }
-   if( jpos < (~rhs).size() )
-      matrix_(column(),jpos) = (~rhs)[jpos];
+   if( jpos < (*rhs).size() )
+      matrix_(column(),jpos) = (*rhs)[jpos];
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -5702,20 +5721,20 @@ inline auto Column<MT,false,true,true,CCAs...>::assign( const DenseVector<VT,fal
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
-   BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
+   BLAZE_INTERNAL_ASSERT( size() == (*rhs).size(), "Invalid vector sizes" );
 
    constexpr bool remainder( !IsPadded_v<MT> || !IsPadded_v<VT> );
 
    const size_t columns( size() );
 
-   const size_t jpos( ( remainder )?( columns & size_t(-SIMDSIZE) ):( columns ) );
-   BLAZE_INTERNAL_ASSERT( !remainder || ( columns - ( columns % (SIMDSIZE) ) ) == jpos, "Invalid end calculation" );
+   const size_t jpos( remainder ? prevMultiple( columns, SIMDSIZE ) : columns );
+   BLAZE_INTERNAL_ASSERT( jpos <= columns, "Invalid end calculation" );
 
    size_t j( 0UL );
    Iterator left( begin() );
-   ConstIterator_t<VT> right( (~rhs).begin() );
+   ConstIterator_t<VT> right( (*rhs).begin() );
 
-   if( useStreaming && columns > ( cacheSize/( sizeof(ElementType) * 3UL ) ) && !(~rhs).isAliased( this ) )
+   if( useStreaming && columns > ( cacheSize/( sizeof(ElementType) * 3UL ) ) && !(*rhs).isAliased( this ) )
    {
       for( ; j<jpos; j+=SIMDSIZE ) {
          left.stream( right.load() ); left += SIMDSIZE; right += SIMDSIZE;
@@ -5761,9 +5780,9 @@ template< typename MT       // Type of the dense matrix
 template< typename VT >     // Type of the right-hand side sparse vector
 inline void Column<MT,false,true,true,CCAs...>::assign( const SparseVector<VT,false>& rhs )
 {
-   BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
+   BLAZE_INTERNAL_ASSERT( size() == (*rhs).size(), "Invalid vector sizes" );
 
-   for( ConstIterator_t<VT> element=(~rhs).begin(); element!=(~rhs).end(); ++element )
+   for( ConstIterator_t<VT> element=(*rhs).begin(); element!=(*rhs).end(); ++element )
       matrix_(column(),element->index()) = element->value();
 }
 /*! \endcond */
@@ -5788,15 +5807,17 @@ template< typename VT >     // Type of the right-hand side dense vector
 inline auto Column<MT,false,true,true,CCAs...>::addAssign( const DenseVector<VT,false>& rhs )
    -> DisableIf_t< VectorizedAddAssign_v<VT> >
 {
-   BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
+   BLAZE_INTERNAL_ASSERT( size() == (*rhs).size(), "Invalid vector sizes" );
 
-   const size_t jpos( (~rhs).size() & size_t(-2) );
+   const size_t jpos( prevMultiple( (*rhs).size(), 2UL ) );
+   BLAZE_INTERNAL_ASSERT( jpos <= (*rhs).size(), "Invalid end calculation" );
+
    for( size_t j=0UL; j<jpos; j+=2UL ) {
-      matrix_(column(),j    ) += (~rhs)[j    ];
-      matrix_(column(),j+1UL) += (~rhs)[j+1UL];
+      matrix_(column(),j    ) += (*rhs)[j    ];
+      matrix_(column(),j+1UL) += (*rhs)[j+1UL];
    }
-   if( jpos < (~rhs).size() )
-      matrix_(column(),jpos) += (~rhs)[jpos];
+   if( jpos < (*rhs).size() )
+      matrix_(column(),jpos) += (*rhs)[jpos];
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -5822,18 +5843,18 @@ inline auto Column<MT,false,true,true,CCAs...>::addAssign( const DenseVector<VT,
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
-   BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
+   BLAZE_INTERNAL_ASSERT( size() == (*rhs).size(), "Invalid vector sizes" );
 
    constexpr bool remainder( !IsPadded_v<MT> || !IsPadded_v<VT> );
 
    const size_t columns( size() );
 
-   const size_t jpos( ( remainder )?( columns & size_t(-SIMDSIZE) ):( columns ) );
-   BLAZE_INTERNAL_ASSERT( !remainder || ( columns - ( columns % (SIMDSIZE) ) ) == jpos, "Invalid end calculation" );
+   const size_t jpos( remainder ? prevMultiple( columns, SIMDSIZE ) : columns );
+   BLAZE_INTERNAL_ASSERT( jpos <= columns, "Invalid end calculation" );
 
    size_t j( 0UL );
    Iterator left( begin() );
-   ConstIterator_t<VT> right( (~rhs).begin() );
+   ConstIterator_t<VT> right( (*rhs).begin() );
 
    for( ; (j+SIMDSIZE*3UL) < jpos; j+=SIMDSIZE*4UL ) {
       left.store( left.load() + right.load() ); left += SIMDSIZE; right += SIMDSIZE;
@@ -5869,9 +5890,9 @@ template< typename MT       // Type of the dense matrix
 template< typename VT >     // Type of the right-hand side sparse vector
 inline void Column<MT,false,true,true,CCAs...>::addAssign( const SparseVector<VT,false>& rhs )
 {
-   BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
+   BLAZE_INTERNAL_ASSERT( size() == (*rhs).size(), "Invalid vector sizes" );
 
-   for( ConstIterator_t<VT> element=(~rhs).begin(); element!=(~rhs).end(); ++element )
+   for( ConstIterator_t<VT> element=(*rhs).begin(); element!=(*rhs).end(); ++element )
       matrix_(column(),element->index()) += element->value();
 }
 /*! \endcond */
@@ -5896,15 +5917,17 @@ template< typename VT >     // Type of the right-hand side dense vector
 inline auto Column<MT,false,true,true,CCAs...>::subAssign( const DenseVector<VT,false>& rhs )
    -> DisableIf_t< VectorizedSubAssign_v<VT> >
 {
-   BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
+   BLAZE_INTERNAL_ASSERT( size() == (*rhs).size(), "Invalid vector sizes" );
 
-   const size_t jpos( (~rhs).size() & size_t(-2) );
+   const size_t jpos( prevMultiple( (*rhs).size(), 2UL ) );
+   BLAZE_INTERNAL_ASSERT( jpos <= (*rhs).size(), "Invalid end calculation" );
+
    for( size_t j=0UL; j<jpos; j+=2UL ) {
-      matrix_(column(),j    ) -= (~rhs)[j    ];
-      matrix_(column(),j+1UL) -= (~rhs)[j+1UL];
+      matrix_(column(),j    ) -= (*rhs)[j    ];
+      matrix_(column(),j+1UL) -= (*rhs)[j+1UL];
    }
-   if( jpos < (~rhs).size() )
-      matrix_(column(),jpos) -= (~rhs)[jpos];
+   if( jpos < (*rhs).size() )
+      matrix_(column(),jpos) -= (*rhs)[jpos];
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -5930,18 +5953,18 @@ inline auto Column<MT,false,true,true,CCAs...>::subAssign( const DenseVector<VT,
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
-   BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
+   BLAZE_INTERNAL_ASSERT( size() == (*rhs).size(), "Invalid vector sizes" );
 
    constexpr bool remainder( !IsPadded_v<MT> || !IsPadded_v<VT> );
 
    const size_t columns( size() );
 
-   const size_t jpos( ( remainder )?( columns & size_t(-SIMDSIZE) ):( columns ) );
-   BLAZE_INTERNAL_ASSERT( !remainder || ( columns - ( columns % (SIMDSIZE) ) ) == jpos, "Invalid end calculation" );
+   const size_t jpos( remainder ? prevMultiple( columns, SIMDSIZE ) : columns );
+   BLAZE_INTERNAL_ASSERT( jpos <= columns, "Invalid end calculation" );
 
    size_t j( 0UL );
    Iterator left( begin() );
-   ConstIterator_t<VT> right( (~rhs).begin() );
+   ConstIterator_t<VT> right( (*rhs).begin() );
 
    for( ; (j+SIMDSIZE*3UL) < jpos; j+=SIMDSIZE*4UL ) {
       left.store( left.load() - right.load() ); left += SIMDSIZE; right += SIMDSIZE;
@@ -5977,9 +6000,9 @@ template< typename MT       // Type of the dense matrix
 template< typename VT >     // Type of the right-hand side sparse vector
 inline void Column<MT,false,true,true,CCAs...>::subAssign( const SparseVector<VT,false>& rhs )
 {
-   BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
+   BLAZE_INTERNAL_ASSERT( size() == (*rhs).size(), "Invalid vector sizes" );
 
-   for( ConstIterator_t<VT> element=(~rhs).begin(); element!=(~rhs).end(); ++element )
+   for( ConstIterator_t<VT> element=(*rhs).begin(); element!=(*rhs).end(); ++element )
       matrix_(column(),element->index()) -= element->value();
 }
 /*! \endcond */
@@ -6004,15 +6027,17 @@ template< typename VT >     // Type of the right-hand side dense vector
 inline auto Column<MT,false,true,true,CCAs...>::multAssign( const DenseVector<VT,false>& rhs )
    -> DisableIf_t< VectorizedMultAssign_v<VT> >
 {
-   BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
+   BLAZE_INTERNAL_ASSERT( size() == (*rhs).size(), "Invalid vector sizes" );
 
-   const size_t jpos( (~rhs).size() & size_t(-2) );
+   const size_t jpos( prevMultiple( (*rhs).size(), 2UL ) );
+   BLAZE_INTERNAL_ASSERT( jpos <= (*rhs).size(), "Invalid end calculation" );
+
    for( size_t j=0UL; j<jpos; j+=2UL ) {
-      matrix_(column(),j    ) *= (~rhs)[j    ];
-      matrix_(column(),j+1UL) *= (~rhs)[j+1UL];
+      matrix_(column(),j    ) *= (*rhs)[j    ];
+      matrix_(column(),j+1UL) *= (*rhs)[j+1UL];
    }
-   if( jpos < (~rhs).size() )
-      matrix_(column(),jpos) *= (~rhs)[jpos];
+   if( jpos < (*rhs).size() )
+      matrix_(column(),jpos) *= (*rhs)[jpos];
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -6038,18 +6063,18 @@ inline auto Column<MT,false,true,true,CCAs...>::multAssign( const DenseVector<VT
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
-   BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
+   BLAZE_INTERNAL_ASSERT( size() == (*rhs).size(), "Invalid vector sizes" );
 
    constexpr bool remainder( !IsPadded_v<MT> || !IsPadded_v<VT> );
 
    const size_t columns( size() );
 
-   const size_t jpos( ( remainder )?( columns & size_t(-SIMDSIZE) ):( columns ) );
-   BLAZE_INTERNAL_ASSERT( !remainder || ( columns - ( columns % (SIMDSIZE) ) ) == jpos, "Invalid end calculation" );
+   const size_t jpos( remainder ? prevMultiple( columns, SIMDSIZE ) : columns );
+   BLAZE_INTERNAL_ASSERT( jpos <= columns, "Invalid end calculation" );
 
    size_t j( 0UL );
    Iterator left( begin() );
-   ConstIterator_t<VT> right( (~rhs).begin() );
+   ConstIterator_t<VT> right( (*rhs).begin() );
 
    for( ; (j+SIMDSIZE*3UL) < jpos; j+=SIMDSIZE*4UL ) {
       left.store( left.load() * right.load() ); left += SIMDSIZE; right += SIMDSIZE;
@@ -6087,11 +6112,11 @@ inline void Column<MT,false,true,true,CCAs...>::multAssign( const SparseVector<V
 {
    using blaze::reset;
 
-   BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
+   BLAZE_INTERNAL_ASSERT( size() == (*rhs).size(), "Invalid vector sizes" );
 
    size_t j( 0UL );
 
-   for( ConstIterator_t<VT> element=(~rhs).begin(); element!=(~rhs).end(); ++element ) {
+   for( ConstIterator_t<VT> element=(*rhs).begin(); element!=(*rhs).end(); ++element ) {
       const size_t index( element->index() );
       for( ; j<index; ++j )
          reset( matrix_(column(),j) );
@@ -6125,15 +6150,17 @@ template< typename VT >     // Type of the right-hand side dense vector
 inline auto Column<MT,false,true,true,CCAs...>::divAssign( const DenseVector<VT,false>& rhs )
    -> DisableIf_t< VectorizedDivAssign_v<VT> >
 {
-   BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
+   BLAZE_INTERNAL_ASSERT( size() == (*rhs).size(), "Invalid vector sizes" );
 
-   const size_t jpos( (~rhs).size() & size_t(-2) );
+   const size_t jpos( prevMultiple( (*rhs).size(), 2UL ) );
+   BLAZE_INTERNAL_ASSERT( jpos <= (*rhs).size(), "Invalid end calculation" );
+
    for( size_t j=0UL; j<jpos; j+=2UL ) {
-      matrix_(column(),j    ) /= (~rhs)[j    ];
-      matrix_(column(),j+1UL) /= (~rhs)[j+1UL];
+      matrix_(column(),j    ) /= (*rhs)[j    ];
+      matrix_(column(),j+1UL) /= (*rhs)[j+1UL];
    }
-   if( jpos < (~rhs).size() )
-      matrix_(column(),jpos) /= (~rhs)[jpos];
+   if( jpos < (*rhs).size() )
+      matrix_(column(),jpos) /= (*rhs)[jpos];
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -6159,16 +6186,16 @@ inline auto Column<MT,false,true,true,CCAs...>::divAssign( const DenseVector<VT,
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
-   BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
+   BLAZE_INTERNAL_ASSERT( size() == (*rhs).size(), "Invalid vector sizes" );
 
    const size_t columns( size() );
 
-   const size_t jpos( columns & size_t(-SIMDSIZE) );
-   BLAZE_INTERNAL_ASSERT( ( columns - ( columns % (SIMDSIZE) ) ) == jpos, "Invalid end calculation" );
+   const size_t jpos( prevMultiple( columns, SIMDSIZE ) );
+   BLAZE_INTERNAL_ASSERT( jpos <= columns, "Invalid end calculation" );
 
    size_t j( 0UL );
    Iterator left( begin() );
-   ConstIterator_t<VT> right( (~rhs).begin() );
+   ConstIterator_t<VT> right( (*rhs).begin() );
 
    for( ; (j+SIMDSIZE*3UL) < jpos; j+=SIMDSIZE*4UL ) {
       left.store( left.load() / right.load() ); left += SIMDSIZE; right += SIMDSIZE;

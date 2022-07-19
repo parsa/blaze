@@ -3,7 +3,7 @@
 //  \file blaze/math/smp/hpx/Functions.h
 //  \brief Header file for the HPX-based SMP utility functions
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -40,7 +40,12 @@
 // Includes
 //*************************************************************************************************
 
+#include <hpx/config.hpp>
+#if HPX_VERSION_FULL >= 0x010500
+#include <hpx/runtime.hpp>
+#else
 #include <hpx/runtime/get_os_thread_count.hpp>
+#endif
 
 #include <blaze/math/Exception.h>
 #include <blaze/system/Inline.h>

@@ -3,7 +3,7 @@
 //  \file blaze/math/views/columns/Dense.h
 //  \brief Columns specialization for dense matrices
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -58,6 +58,7 @@
 #include <blaze/math/expressions/DenseMatrix.h>
 #include <blaze/math/expressions/View.h>
 #include <blaze/math/InitializerList.h>
+#include <blaze/math/shims/PrevMultiple.h>
 #include <blaze/math/shims/Reset.h>
 #include <blaze/math/SIMD.h>
 #include <blaze/math/traits/AddTrait.h>
@@ -70,14 +71,12 @@
 #include <blaze/math/typetraits/HasSIMDSub.h>
 #include <blaze/math/typetraits/IsDiagonal.h>
 #include <blaze/math/typetraits/IsExpression.h>
-#include <blaze/math/typetraits/IsHermitian.h>
 #include <blaze/math/typetraits/IsLower.h>
 #include <blaze/math/typetraits/IsRestricted.h>
 #include <blaze/math/typetraits/IsSIMDCombinable.h>
 #include <blaze/math/typetraits/IsSparseMatrix.h>
 #include <blaze/math/typetraits/IsStrictlyLower.h>
 #include <blaze/math/typetraits/IsStrictlyUpper.h>
-#include <blaze/math/typetraits/IsSymmetric.h>
 #include <blaze/math/typetraits/IsUpper.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
 #include <blaze/math/views/Check.h>
@@ -92,15 +91,12 @@
 #include <blaze/util/constraints/Pointer.h>
 #include <blaze/util/constraints/Reference.h>
 #include <blaze/util/constraints/Vectorizable.h>
-#include <blaze/util/DecltypeAuto.h>
-#include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
+#include <blaze/util/MaybeUnused.h>
 #include <blaze/util/mpl/If.h>
-#include <blaze/util/TypeList.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsConst.h>
 #include <blaze/util/typetraits/IsReference.h>
-#include <blaze/util/Unused.h>
 
 
 namespace blaze {
@@ -119,9 +115,9 @@ namespace blaze {
 // This specialization of Columns adapts the class template to the requirements of column-major
 // dense matrices.
 */
-template< typename MT       // Type of the dense matrix
-        , bool SF           // Symmetry flag
-        , size_t... CCAs >  // Compile time column arguments
+template< typename MT         // Type of the dense matrix
+        , bool SF             // Symmetry flag
+        , typename... CCAs >  // Compile time column arguments
 class Columns<MT,true,true,SF,CCAs...>
    : public View< DenseMatrix< Columns<MT,true,true,SF,CCAs...>, true > >
    , private ColumnsData<CCAs...>
@@ -130,6 +126,10 @@ class Columns<MT,true,true,SF,CCAs...>
    //**Type definitions****************************************************************************
    using DataType = ColumnsData<CCAs...>;                 //!< The type of the ColumnsData base class.
    using Operand  = If_t< IsExpression_v<MT>, MT, MT& >;  //!< Composite data type of the dense matrix expression.
+   //**********************************************************************************************
+
+   //**Compile time flags**************************************************************************
+   using DataType::N;  //!< Number of compile time indices.
    //**********************************************************************************************
 
    //**********************************************************************************************
@@ -144,9 +144,11 @@ class Columns<MT,true,true,SF,CCAs...>
    //! Type of this Columns instance.
    using This = Columns<MT,true,true,SF,CCAs...>;
 
-   using BaseType      = DenseMatrix<This,true>;       //!< Base type of this Columns instance.
+   //! Base type of this Columns instance.
+   using BaseType = View< DenseMatrix<This,true> >;
+
    using ViewedType    = MT;                           //!< The type viewed by this Columns instance.
-   using ResultType    = ColumnsTrait_t<MT,CCAs...>;   //!< Result type for expression template evaluations.
+   using ResultType    = ColumnsTrait_t<MT,N>;         //!< Result type for expression template evaluations.
    using OppositeType  = OppositeType_t<ResultType>;   //!< Result type with opposite storage order for expression template evaluations.
    using TransposeType = TransposeType_t<ResultType>;  //!< Transpose type for expression template evaluations.
    using ElementType   = ElementType_t<MT>;            //!< Type of the column elements.
@@ -179,6 +181,9 @@ class Columns<MT,true,true,SF,CCAs...>
 
    //! Compilation switch for the expression template assignment strategy.
    static constexpr bool smpAssignable = MT::smpAssignable;
+
+   //! Compilation switch for the expression template evaluation strategy.
+   static constexpr bool compileTimeArgs = DataType::compileTimeArgs;
    //**********************************************************************************************
 
    //**Constructors********************************************************************************
@@ -300,9 +305,7 @@ class Columns<MT,true,true,SF,CCAs...>
    //! Helper variable template for the explicit application of the SFINAE principle.
    template< typename MT2 >
    static constexpr bool VectorizedAddAssign_v =
-      ( useOptimizedKernels &&
-        simdEnabled && MT2::simdEnabled &&
-        IsSIMDCombinable_v< ElementType, ElementType_t<MT2> > &&
+      ( VectorizedAssign_v<MT2> &&
         HasSIMDAdd_v< ElementType, ElementType_t<MT2> > &&
         !IsDiagonal_v<MT2> );
    //**********************************************************************************************
@@ -311,9 +314,7 @@ class Columns<MT,true,true,SF,CCAs...>
    //! Helper variable template for the explicit application of the SFINAE principle.
    template< typename MT2 >
    static constexpr bool VectorizedSubAssign_v =
-      ( useOptimizedKernels &&
-        simdEnabled && MT2::simdEnabled &&
-        IsSIMDCombinable_v< ElementType, ElementType_t<MT2> > &&
+      ( VectorizedAssign_v<MT2> &&
         HasSIMDSub_v< ElementType, ElementType_t<MT2> > &&
         !IsDiagonal_v<MT2> );
    //**********************************************************************************************
@@ -322,9 +323,7 @@ class Columns<MT,true,true,SF,CCAs...>
    //! Helper variable template for the explicit application of the SFINAE principle.
    template< typename MT2 >
    static constexpr bool VectorizedSchurAssign_v =
-      ( useOptimizedKernels &&
-        simdEnabled && MT2::simdEnabled &&
-        IsSIMDCombinable_v< ElementType, ElementType_t<MT2> > &&
+      ( VectorizedAssign_v<MT2> &&
         HasSIMDMult_v< ElementType, ElementType_t<MT2> > );
    //**********************************************************************************************
 
@@ -340,13 +339,13 @@ class Columns<MT,true,true,SF,CCAs...>
    template< typename Other >
    inline bool canAlias( const Other* alias ) const noexcept;
 
-   template< typename MT2, bool SO2, bool SF2, size_t... CCAs2 >
+   template< typename MT2, bool SO2, bool SF2, typename... CCAs2 >
    inline bool canAlias( const Columns<MT2,SO2,true,SF2,CCAs2...>* alias ) const noexcept;
 
    template< typename Other >
    inline bool isAliased( const Other* alias ) const noexcept;
 
-   template< typename MT2, bool SO2, bool SF2, size_t... CCAs2 >
+   template< typename MT2, bool SO2, bool SF2, typename... CCAs2 >
    inline bool isAliased( const Columns<MT2,SO2,true,SF2,CCAs2...>* alias ) const noexcept;
 
    inline bool isAligned   () const noexcept;
@@ -413,7 +412,7 @@ class Columns<MT,true,true,SF,CCAs...>
    //**********************************************************************************************
 
    //**Friend declarations*************************************************************************
-   template< typename MT2, bool SO2, bool DF2, bool SF2, size_t... CCAs2 > friend class Columns;
+   template< typename MT2, bool SO2, bool DF2, bool SF2, typename... CCAs2 > friend class Columns;
    //**********************************************************************************************
 
    //**Compile time checks*************************************************************************
@@ -454,13 +453,13 @@ class Columns<MT,true,true,SF,CCAs...>
 */
 template< typename MT         // Type of the dense matrix
         , bool SF             // Symmetry flag
-        , size_t... CCAs >    // Compile time column arguments
+        , typename... CCAs >  // Compile time column arguments
 template< typename... RCAs >  // Runtime column arguments
 inline Columns<MT,true,true,SF,CCAs...>::Columns( MT& matrix, RCAs... args )
    : DataType( args... )  // Base class initialization
    , matrix_ ( matrix  )  // The matrix containing the columns
 {
-   if( !Contains_v< TypeList<RCAs...>, Unchecked > ) {
+   if( isChecked( args... ) ) {
       for( size_t j=0UL; j<columns(); ++j ) {
          if( matrix_.columns() <= idx(j) ) {
             BLAZE_THROW_INVALID_ARGUMENT( "Invalid column access index" );
@@ -491,9 +490,9 @@ inline Columns<MT,true,true,SF,CCAs...>::Columns( MT& matrix, RCAs... args )
 // This function only performs an index check in case BLAZE_USER_ASSERT() is active. In contrast,
 // the at() function is guaranteed to perform a check of the given access indices.
 */
-template< typename MT       // Type of the dense matrix
-        , bool SF           // Symmetry flag
-        , size_t... CCAs >  // Compile time column arguments
+template< typename MT         // Type of the dense matrix
+        , bool SF             // Symmetry flag
+        , typename... CCAs >  // Compile time column arguments
 inline typename Columns<MT,true,true,SF,CCAs...>::Reference
    Columns<MT,true,true,SF,CCAs...>::operator()( size_t i, size_t j )
 {
@@ -517,9 +516,9 @@ inline typename Columns<MT,true,true,SF,CCAs...>::Reference
 // This function only performs an index check in case BLAZE_USER_ASSERT() is active. In contrast,
 // the at() function is guaranteed to perform a check of the given access indices.
 */
-template< typename MT       // Type of the dense matrix
-        , bool SF           // Symmetry flag
-        , size_t... CCAs >  // Compile time column arguments
+template< typename MT         // Type of the dense matrix
+        , bool SF             // Symmetry flag
+        , typename... CCAs >  // Compile time column arguments
 inline typename Columns<MT,true,true,SF,CCAs...>::ConstReference
    Columns<MT,true,true,SF,CCAs...>::operator()( size_t i, size_t j ) const
 {
@@ -544,9 +543,9 @@ inline typename Columns<MT,true,true,SF,CCAs...>::ConstReference
 // In contrast to the function call operator this function always performs a check of the given
 // access indices.
 */
-template< typename MT       // Type of the dense matrix
-        , bool SF           // Symmetry flag
-        , size_t... CCAs >  // Compile time column arguments
+template< typename MT         // Type of the dense matrix
+        , bool SF             // Symmetry flag
+        , typename... CCAs >  // Compile time column arguments
 inline typename Columns<MT,true,true,SF,CCAs...>::Reference
    Columns<MT,true,true,SF,CCAs...>::at( size_t i, size_t j )
 {
@@ -574,9 +573,9 @@ inline typename Columns<MT,true,true,SF,CCAs...>::Reference
 // In contrast to the function call operator this function always performs a check of the given
 // access indices.
 */
-template< typename MT       // Type of the dense matrix
-        , bool SF           // Symmetry flag
-        , size_t... CCAs >  // Compile time column arguments
+template< typename MT         // Type of the dense matrix
+        , bool SF             // Symmetry flag
+        , typename... CCAs >  // Compile time column arguments
 inline typename Columns<MT,true,true,SF,CCAs...>::ConstReference
    Columns<MT,true,true,SF,CCAs...>::at( size_t i, size_t j ) const
 {
@@ -602,9 +601,9 @@ inline typename Columns<MT,true,true,SF,CCAs...>::ConstReference
 // that you can NOT assume that all matrix elements lie adjacent to each other! The underlying
 // matrix may use techniques such as padding to improve the alignment of the data.
 */
-template< typename MT       // Type of the dense matrix
-        , bool SF           // Symmetry flag
-        , size_t... CCAs >  // Compile time column arguments
+template< typename MT         // Type of the dense matrix
+        , bool SF             // Symmetry flag
+        , typename... CCAs >  // Compile time column arguments
 inline typename Columns<MT,true,true,SF,CCAs...>::Pointer
    Columns<MT,true,true,SF,CCAs...>::data() noexcept
 {
@@ -624,9 +623,9 @@ inline typename Columns<MT,true,true,SF,CCAs...>::Pointer
 // that you can NOT assume that all matrix elements lie adjacent to each other! The underlying
 // matrix may use techniques such as padding to improve the alignment of the data.
 */
-template< typename MT       // Type of the dense matrix
-        , bool SF           // Symmetry flag
-        , size_t... CCAs >  // Compile time column arguments
+template< typename MT         // Type of the dense matrix
+        , bool SF             // Symmetry flag
+        , typename... CCAs >  // Compile time column arguments
 inline typename Columns<MT,true,true,SF,CCAs...>::ConstPointer
    Columns<MT,true,true,SF,CCAs...>::data() const noexcept
 {
@@ -645,9 +644,9 @@ inline typename Columns<MT,true,true,SF,CCAs...>::ConstPointer
 //
 // This function returns a pointer to the internal storage for the elements in column \a j.
 */
-template< typename MT       // Type of the dense matrix
-        , bool SF           // Symmetry flag
-        , size_t... CCAs >  // Compile time column arguments
+template< typename MT         // Type of the dense matrix
+        , bool SF             // Symmetry flag
+        , typename... CCAs >  // Compile time column arguments
 inline typename Columns<MT,true,true,SF,CCAs...>::Pointer
    Columns<MT,true,true,SF,CCAs...>::data( size_t j ) noexcept
 {
@@ -666,9 +665,9 @@ inline typename Columns<MT,true,true,SF,CCAs...>::Pointer
 //
 // This function returns a pointer to the internal storage for the elements in column \a j.
 */
-template< typename MT       // Type of the dense matrix
-        , bool SF           // Symmetry flag
-        , size_t... CCAs >  // Compile time column arguments
+template< typename MT         // Type of the dense matrix
+        , bool SF             // Symmetry flag
+        , typename... CCAs >  // Compile time column arguments
 inline typename Columns<MT,true,true,SF,CCAs...>::ConstPointer
    Columns<MT,true,true,SF,CCAs...>::data( size_t j ) const noexcept
 {
@@ -687,9 +686,9 @@ inline typename Columns<MT,true,true,SF,CCAs...>::ConstPointer
 //
 // This function returns an iterator to the first non-zero element of column \a j.
 */
-template< typename MT       // Type of the dense matrix
-        , bool SF           // Symmetry flag
-        , size_t... CCAs >  // Compile time column arguments
+template< typename MT         // Type of the dense matrix
+        , bool SF             // Symmetry flag
+        , typename... CCAs >  // Compile time column arguments
 inline typename Columns<MT,true,true,SF,CCAs...>::Iterator
    Columns<MT,true,true,SF,CCAs...>::begin( size_t j )
 {
@@ -709,9 +708,9 @@ inline typename Columns<MT,true,true,SF,CCAs...>::Iterator
 //
 // This function returns an iterator to the first non-zero element of column \a j.
 */
-template< typename MT       // Type of the dense matrix
-        , bool SF           // Symmetry flag
-        , size_t... CCAs >  // Compile time column arguments
+template< typename MT         // Type of the dense matrix
+        , bool SF             // Symmetry flag
+        , typename... CCAs >  // Compile time column arguments
 inline typename Columns<MT,true,true,SF,CCAs...>::ConstIterator
    Columns<MT,true,true,SF,CCAs...>::begin( size_t j ) const
 {
@@ -731,9 +730,9 @@ inline typename Columns<MT,true,true,SF,CCAs...>::ConstIterator
 //
 // This function returns an iterator to the first non-zero element of column \a j.
 */
-template< typename MT       // Type of the dense matrix
-        , bool SF           // Symmetry flag
-        , size_t... CCAs >  // Compile time column arguments
+template< typename MT         // Type of the dense matrix
+        , bool SF             // Symmetry flag
+        , typename... CCAs >  // Compile time column arguments
 inline typename Columns<MT,true,true,SF,CCAs...>::ConstIterator
    Columns<MT,true,true,SF,CCAs...>::cbegin( size_t j ) const
 {
@@ -753,9 +752,9 @@ inline typename Columns<MT,true,true,SF,CCAs...>::ConstIterator
 //
 // This function returns an iterator just past the last non-zero element of column \a j.
 */
-template< typename MT       // Type of the dense matrix
-        , bool SF           // Symmetry flag
-        , size_t... CCAs >  // Compile time column arguments
+template< typename MT         // Type of the dense matrix
+        , bool SF             // Symmetry flag
+        , typename... CCAs >  // Compile time column arguments
 inline typename Columns<MT,true,true,SF,CCAs...>::Iterator
    Columns<MT,true,true,SF,CCAs...>::end( size_t j )
 {
@@ -775,9 +774,9 @@ inline typename Columns<MT,true,true,SF,CCAs...>::Iterator
 //
 // This function returns an iterator just past the last non-zero element of column \a j.
 */
-template< typename MT       // Type of the dense matrix
-        , bool SF           // Symmetry flag
-        , size_t... CCAs >  // Compile time column arguments
+template< typename MT         // Type of the dense matrix
+        , bool SF             // Symmetry flag
+        , typename... CCAs >  // Compile time column arguments
 inline typename Columns<MT,true,true,SF,CCAs...>::ConstIterator
    Columns<MT,true,true,SF,CCAs...>::end( size_t j ) const
 {
@@ -797,9 +796,9 @@ inline typename Columns<MT,true,true,SF,CCAs...>::ConstIterator
 //
 // This function returns an iterator just past the last non-zero element of column \a j.
 */
-template< typename MT       // Type of the dense matrix
-        , bool SF           // Symmetry flag
-        , size_t... CCAs >  // Compile time column arguments
+template< typename MT         // Type of the dense matrix
+        , bool SF             // Symmetry flag
+        , typename... CCAs >  // Compile time column arguments
 inline typename Columns<MT,true,true,SF,CCAs...>::ConstIterator
    Columns<MT,true,true,SF,CCAs...>::cend( size_t j ) const
 {
@@ -829,9 +828,9 @@ inline typename Columns<MT,true,true,SF,CCAs...>::ConstIterator
 // that in case the underlying dense matrix is a lower/upper matrix only lower/upper and diagonal
 // elements of the underlying matrix are modified.
 */
-template< typename MT       // Type of the dense matrix
-        , bool SF           // Symmetry flag
-        , size_t... CCAs >  // Compile time column arguments
+template< typename MT         // Type of the dense matrix
+        , bool SF             // Symmetry flag
+        , typename... CCAs >  // Compile time column arguments
 inline Columns<MT,true,true,SF,CCAs...>&
    Columns<MT,true,true,SF,CCAs...>::operator=( const ElementType& rhs )
 {
@@ -861,9 +860,9 @@ inline Columns<MT,true,true,SF,CCAs...>&
 // exception is thrown. Also, if the underlying matrix \a MT is restricted and the assignment
 // would violate an invariant of the matrix, a \a std::invalid_argument exception is thrown.
 */
-template< typename MT       // Type of the dense matrix
-        , bool SF           // Symmetry flag
-        , size_t... CCAs >  // Compile time column arguments
+template< typename MT         // Type of the dense matrix
+        , bool SF             // Symmetry flag
+        , typename... CCAs >  // Compile time column arguments
 inline Columns<MT,true,true,SF,CCAs...>&
    Columns<MT,true,true,SF,CCAs...>::operator=( initializer_list< initializer_list<ElementType> > list )
 {
@@ -883,7 +882,7 @@ inline Columns<MT,true,true,SF,CCAs...>&
       }
    }
 
-   BLAZE_DECLTYPE_AUTO( left, derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
    size_t i( 0UL );
 
    for( const auto& rowList : list ) {
@@ -919,9 +918,9 @@ inline Columns<MT,true,true,SF,CCAs...>&
 // triangular, or symmetric matrix and the assignment would violate its lower, upper, or
 // symmetry property, respectively, a \a std::invalid_argument exception is thrown.
 */
-template< typename MT       // Type of the dense matrix
-        , bool SF           // Symmetry flag
-        , size_t... CCAs >  // Compile time column arguments
+template< typename MT         // Type of the dense matrix
+        , bool SF             // Symmetry flag
+        , typename... CCAs >  // Compile time column arguments
 inline Columns<MT,true,true,SF,CCAs...>&
    Columns<MT,true,true,SF,CCAs...>::operator=( const Columns& rhs )
 {
@@ -931,7 +930,7 @@ inline Columns<MT,true,true,SF,CCAs...>&
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
 
-   if( this == &rhs || ( &matrix_ == &rhs.matrix_ && idces() == rhs.idces() ) )
+   if( this == &rhs || ( &matrix_ == &rhs.matrix_ && compareIndices( *this, rhs ) ) )
       return *this;
 
    if( rows() != rhs.rows() || columns() != rhs.columns() ) {
@@ -946,9 +945,9 @@ inline Columns<MT,true,true,SF,CCAs...>&
       }
    }
 
-   BLAZE_DECLTYPE_AUTO( left, derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
 
-   if( rhs.canAlias( &matrix_ ) ) {
+   if( rhs.canAlias( this ) ) {
       const ResultType tmp( rhs );
       smpAssign( left, tmp );
    }
@@ -979,11 +978,11 @@ inline Columns<MT,true,true,SF,CCAs...>&
 // and the assignment would violate its lower, upper, or symmetry property, respectively, a
 // \a std::invalid_argument exception is thrown.
 */
-template< typename MT       // Type of the dense matrix
-        , bool SF           // Symmetry flag
-        , size_t... CCAs >  // Compile time column arguments
-template< typename MT2      // Type of the right-hand side matrix
-        , bool SO2 >        // Storage order of the right-hand side matrix
+template< typename MT         // Type of the dense matrix
+        , bool SF             // Symmetry flag
+        , typename... CCAs >  // Compile time column arguments
+template< typename MT2        // Type of the right-hand side matrix
+        , bool SO2 >          // Storage order of the right-hand side matrix
 inline Columns<MT,true,true,SF,CCAs...>&
    Columns<MT,true,true,SF,CCAs...>::operator=( const Matrix<MT2,SO2>& rhs )
 {
@@ -992,12 +991,12 @@ inline Columns<MT,true,true,SF,CCAs...>&
 
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_t<MT2> );
 
-   if( rows() != (~rhs).rows() || columns() != (~rhs).columns() ) {
+   if( rows() != (*rhs).rows() || columns() != (*rhs).columns() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
    using Right = If_t< IsRestricted_v<MT>, CompositeType_t<MT2>, const MT2& >;
-   Right right( ~rhs );
+   Right right( *rhs );
 
    if( IsRestricted_v<MT> ) {
       for( size_t j=0UL; j<columns(); ++j ) {
@@ -1007,13 +1006,13 @@ inline Columns<MT,true,true,SF,CCAs...>&
       }
    }
 
-   BLAZE_DECLTYPE_AUTO( left, derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
 
    if( IsSparseMatrix_v<MT2> ) {
       reset();
    }
 
-   if( IsReference_v<Right> && right.canAlias( &matrix_ ) ) {
+   if( IsReference_v<Right> && right.canAlias( this ) ) {
       const ResultType_t<MT2> tmp( right );
       smpAssign( left, tmp );
    }
@@ -1043,11 +1042,11 @@ inline Columns<MT,true,true,SF,CCAs...>&
 // symmetric matrix and the assignment would violate its lower, upper, or symmetry property,
 // respectively, a \a std::invalid_argument exception is thrown.
 */
-template< typename MT       // Type of the dense matrix
-        , bool SF           // Symmetry flag
-        , size_t... CCAs >  // Compile time column arguments
-template< typename MT2      // Type of the right-hand side matrix
-        , bool SO2 >        // Storage order of the right-hand side matrix
+template< typename MT         // Type of the dense matrix
+        , bool SF             // Symmetry flag
+        , typename... CCAs >  // Compile time column arguments
+template< typename MT2        // Type of the right-hand side matrix
+        , bool SO2 >          // Storage order of the right-hand side matrix
 inline auto Columns<MT,true,true,SF,CCAs...>::operator+=( const Matrix<MT2,SO2>& rhs )
    -> DisableIf_t< EnforceEvaluation_v<MT,MT2>, Columns& >
 {
@@ -1063,26 +1062,26 @@ inline auto Columns<MT,true,true,SF,CCAs...>::operator+=( const Matrix<MT2,SO2>&
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( AddType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( AddType );
 
-   if( rows() != (~rhs).rows() || columns() != (~rhs).columns() ) {
+   if( rows() != (*rhs).rows() || columns() != (*rhs).columns() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
    if( IsRestricted_v<MT> ) {
       for( size_t j=0UL; j<columns(); ++j ) {
-         if( !tryAddAssign( column( matrix_, idx(j), unchecked ), column( ~rhs, j, unchecked ), 0UL ) ) {
+         if( !tryAddAssign( column( matrix_, idx(j), unchecked ), column( *rhs, j, unchecked ), 0UL ) ) {
             BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
          }
       }
    }
 
-   BLAZE_DECLTYPE_AUTO( left, derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
 
-   if( (~rhs).canAlias( &matrix_ ) ) {
-      const AddType tmp( *this + (~rhs) );
+   if( (*rhs).canAlias( this ) ) {
+      const AddType tmp( *this + (*rhs) );
       smpAssign( left, tmp );
    }
    else {
-      smpAddAssign( left, ~rhs );
+      smpAddAssign( left, *rhs );
    }
 
    BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
@@ -1107,11 +1106,11 @@ inline auto Columns<MT,true,true,SF,CCAs...>::operator+=( const Matrix<MT2,SO2>&
 // symmetric matrix and the assignment would violate its lower, upper, or symmetry property,
 // respectively, a \a std::invalid_argument exception is thrown.
 */
-template< typename MT       // Type of the dense matrix
-        , bool SF           // Symmetry flag
-        , size_t... CCAs >  // Compile time column arguments
-template< typename MT2      // Type of the right-hand side matrix
-        , bool SO2 >        // Storage order of the right-hand side matrix
+template< typename MT         // Type of the dense matrix
+        , bool SF             // Symmetry flag
+        , typename... CCAs >  // Compile time column arguments
+template< typename MT2        // Type of the right-hand side matrix
+        , bool SO2 >          // Storage order of the right-hand side matrix
 inline auto Columns<MT,true,true,SF,CCAs...>::operator+=( const Matrix<MT2,SO2>& rhs )
    -> EnableIf_t< EnforceEvaluation_v<MT,MT2>, Columns& >
 {
@@ -1127,11 +1126,11 @@ inline auto Columns<MT,true,true,SF,CCAs...>::operator+=( const Matrix<MT2,SO2>&
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( AddType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( AddType );
 
-   if( rows() != (~rhs).rows() || columns() != (~rhs).columns() ) {
+   if( rows() != (*rhs).rows() || columns() != (*rhs).columns() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
-   const AddType tmp( *this + (~rhs) );
+   const AddType tmp( *this + (*rhs) );
 
    if( IsRestricted_v<MT> ) {
       for( size_t j=0UL; j<columns(); ++j ) {
@@ -1141,7 +1140,7 @@ inline auto Columns<MT,true,true,SF,CCAs...>::operator+=( const Matrix<MT2,SO2>&
       }
    }
 
-   BLAZE_DECLTYPE_AUTO( left, derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
 
    smpAssign( left, tmp );
 
@@ -1167,11 +1166,11 @@ inline auto Columns<MT,true,true,SF,CCAs...>::operator+=( const Matrix<MT2,SO2>&
 // symmetric matrix and the assignment would violate its lower, upper, or symmetry property,
 // respectively, a \a std::invalid_argument exception is thrown.
 */
-template< typename MT       // Type of the dense matrix
-        , bool SF           // Symmetry flag
-        , size_t... CCAs >  // Compile time column arguments
-template< typename MT2      // Type of the right-hand side matrix
-        , bool SO2 >        // Storage order of the right-hand side matrix
+template< typename MT         // Type of the dense matrix
+        , bool SF             // Symmetry flag
+        , typename... CCAs >  // Compile time column arguments
+template< typename MT2        // Type of the right-hand side matrix
+        , bool SO2 >          // Storage order of the right-hand side matrix
 inline auto Columns<MT,true,true,SF,CCAs...>::operator-=( const Matrix<MT2,SO2>& rhs )
    -> DisableIf_t< EnforceEvaluation_v<MT,MT2>, Columns& >
 {
@@ -1187,26 +1186,26 @@ inline auto Columns<MT,true,true,SF,CCAs...>::operator-=( const Matrix<MT2,SO2>&
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( SubType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SubType );
 
-   if( rows() != (~rhs).rows() || columns() != (~rhs).columns() ) {
+   if( rows() != (*rhs).rows() || columns() != (*rhs).columns() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
    if( IsRestricted_v<MT> ) {
       for( size_t j=0UL; j<columns(); ++j ) {
-         if( !trySubAssign( column( matrix_, idx(j), unchecked ), column( ~rhs, j, unchecked ), 0UL ) ) {
+         if( !trySubAssign( column( matrix_, idx(j), unchecked ), column( *rhs, j, unchecked ), 0UL ) ) {
             BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
          }
       }
    }
 
-   BLAZE_DECLTYPE_AUTO( left, derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
 
-   if( (~rhs).canAlias( &matrix_ ) ) {
-      const SubType tmp( *this - (~rhs ) );
+   if( (*rhs).canAlias( this ) ) {
+      const SubType tmp( *this - (*rhs ) );
       smpAssign( left, tmp );
    }
    else {
-      smpSubAssign( left, ~rhs );
+      smpSubAssign( left, *rhs );
    }
 
    BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
@@ -1231,11 +1230,11 @@ inline auto Columns<MT,true,true,SF,CCAs...>::operator-=( const Matrix<MT2,SO2>&
 // symmetric matrix and the assignment would violate its lower, upper, or symmetry property,
 // respectively, a \a std::invalid_argument exception is thrown.
 */
-template< typename MT       // Type of the dense matrix
-        , bool SF           // Symmetry flag
-        , size_t... CCAs >  // Compile time column arguments
-template< typename MT2      // Type of the right-hand side matrix
-        , bool SO2 >        // Storage order of the right-hand side matrix
+template< typename MT         // Type of the dense matrix
+        , bool SF             // Symmetry flag
+        , typename... CCAs >  // Compile time column arguments
+template< typename MT2        // Type of the right-hand side matrix
+        , bool SO2 >          // Storage order of the right-hand side matrix
 inline auto Columns<MT,true,true,SF,CCAs...>::operator-=( const Matrix<MT2,SO2>& rhs )
    -> EnableIf_t< EnforceEvaluation_v<MT,MT2>, Columns& >
 {
@@ -1251,11 +1250,11 @@ inline auto Columns<MT,true,true,SF,CCAs...>::operator-=( const Matrix<MT2,SO2>&
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( SubType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SubType );
 
-   if( rows() != (~rhs).rows() || columns() != (~rhs).columns() ) {
+   if( rows() != (*rhs).rows() || columns() != (*rhs).columns() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
-   const SubType tmp( *this - (~rhs) );
+   const SubType tmp( *this - (*rhs) );
 
    if( IsRestricted_v<MT> ) {
       for( size_t j=0UL; j<columns(); ++j ) {
@@ -1265,7 +1264,7 @@ inline auto Columns<MT,true,true,SF,CCAs...>::operator-=( const Matrix<MT2,SO2>&
       }
    }
 
-   BLAZE_DECLTYPE_AUTO( left, derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
 
    smpAssign( left, tmp );
 
@@ -1291,11 +1290,11 @@ inline auto Columns<MT,true,true,SF,CCAs...>::operator-=( const Matrix<MT2,SO2>&
 // symmetric matrix and the assignment would violate its lower, upper, or symmetry property,
 // respectively, a \a std::invalid_argument exception is thrown.
 */
-template< typename MT       // Type of the dense matrix
-        , bool SF           // Symmetry flag
-        , size_t... CCAs >  // Compile time column arguments
-template< typename MT2      // Type of the right-hand side matrix
-        , bool SO2 >        // Storage order of the right-hand side matrix
+template< typename MT         // Type of the dense matrix
+        , bool SF             // Symmetry flag
+        , typename... CCAs >  // Compile time column arguments
+template< typename MT2        // Type of the right-hand side matrix
+        , bool SO2 >          // Storage order of the right-hand side matrix
 inline auto Columns<MT,true,true,SF,CCAs...>::operator%=( const Matrix<MT2,SO2>& rhs )
    -> DisableIf_t< EnforceEvaluation_v<MT,MT2>, Columns& >
 {
@@ -1310,28 +1309,28 @@ inline auto Columns<MT,true,true,SF,CCAs...>::operator%=( const Matrix<MT2,SO2>&
 
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SchurType );
 
-   if( rows() != (~rhs).rows() || columns() != (~rhs).columns() ) {
+   if( rows() != (*rhs).rows() || columns() != (*rhs).columns() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
    if( IsRestricted_v<MT> ) {
       for( size_t j=0UL; j<columns(); ++j ) {
-         if( !tryMultAssign( column( matrix_, idx(j), unchecked ), column( ~rhs, j, unchecked ), 0UL ) ) {
+         if( !tryMultAssign( column( matrix_, idx(j), unchecked ), column( *rhs, j, unchecked ), 0UL ) ) {
             BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
          }
       }
    }
 
-   BLAZE_DECLTYPE_AUTO( left, derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
 
-   if( (~rhs).canAlias( &matrix_ ) ) {
-      const SchurType tmp( *this % (~rhs) );
+   if( (*rhs).canAlias( this ) ) {
+      const SchurType tmp( *this % (*rhs) );
       if( IsSparseMatrix_v<SchurType> )
          reset();
       smpAssign( left, tmp );
    }
    else {
-      smpSchurAssign( left, ~rhs );
+      smpSchurAssign( left, *rhs );
    }
 
    BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
@@ -1356,11 +1355,11 @@ inline auto Columns<MT,true,true,SF,CCAs...>::operator%=( const Matrix<MT2,SO2>&
 // symmetric matrix and the assignment would violate its lower, upper, or symmetry property,
 // respectively, a \a std::invalid_argument exception is thrown.
 */
-template< typename MT       // Type of the dense matrix
-        , bool SF           // Symmetry flag
-        , size_t... CCAs >  // Compile time column arguments
-template< typename MT2      // Type of the right-hand side matrix
-        , bool SO2 >        // Storage order of the right-hand side matrix
+template< typename MT         // Type of the dense matrix
+        , bool SF             // Symmetry flag
+        , typename... CCAs >  // Compile time column arguments
+template< typename MT2        // Type of the right-hand side matrix
+        , bool SO2 >          // Storage order of the right-hand side matrix
 inline auto Columns<MT,true,true,SF,CCAs...>::operator%=( const Matrix<MT2,SO2>& rhs )
    -> EnableIf_t< EnforceEvaluation_v<MT,MT2>, Columns& >
 {
@@ -1375,11 +1374,11 @@ inline auto Columns<MT,true,true,SF,CCAs...>::operator%=( const Matrix<MT2,SO2>&
 
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SchurType );
 
-   if( rows() != (~rhs).rows() || columns() != (~rhs).columns() ) {
+   if( rows() != (*rhs).rows() || columns() != (*rhs).columns() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
-   const SchurType tmp( *this % (~rhs) );
+   const SchurType tmp( *this % (*rhs) );
 
    if( IsRestricted_v<MT> ) {
       for( size_t j=0UL; j<columns(); ++j ) {
@@ -1389,7 +1388,7 @@ inline auto Columns<MT,true,true,SF,CCAs...>::operator%=( const Matrix<MT2,SO2>&
       }
    }
 
-   BLAZE_DECLTYPE_AUTO( left, derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
 
    if( IsSparseMatrix_v<SchurType> ) {
       reset();
@@ -1419,9 +1418,9 @@ inline auto Columns<MT,true,true,SF,CCAs...>::operator%=( const Matrix<MT2,SO2>&
 //
 // \return The matrix containing the columns.
 */
-template< typename MT       // Type of the dense matrix
-        , bool SF           // Symmetry flag
-        , size_t... CCAs >  // Compile time column arguments
+template< typename MT         // Type of the dense matrix
+        , bool SF             // Symmetry flag
+        , typename... CCAs >  // Compile time column arguments
 inline MT& Columns<MT,true,true,SF,CCAs...>::operand() noexcept
 {
    return matrix_;
@@ -1436,9 +1435,9 @@ inline MT& Columns<MT,true,true,SF,CCAs...>::operand() noexcept
 //
 // \return The matrix containing the columns.
 */
-template< typename MT       // Type of the dense matrix
-        , bool SF           // Symmetry flag
-        , size_t... CCAs >  // Compile time column arguments
+template< typename MT         // Type of the dense matrix
+        , bool SF             // Symmetry flag
+        , typename... CCAs >  // Compile time column arguments
 inline const MT& Columns<MT,true,true,SF,CCAs...>::operand() const noexcept
 {
    return matrix_;
@@ -1453,9 +1452,9 @@ inline const MT& Columns<MT,true,true,SF,CCAs...>::operand() const noexcept
 //
 // \return The number of rows of the column selection.
 */
-template< typename MT       // Type of the dense matrix
-        , bool SF           // Symmetry flag
-        , size_t... CCAs >  // Compile time column arguments
+template< typename MT         // Type of the dense matrix
+        , bool SF             // Symmetry flag
+        , typename... CCAs >  // Compile time column arguments
 inline size_t Columns<MT,true,true,SF,CCAs...>::rows() const noexcept
 {
    return matrix_.rows();
@@ -1473,9 +1472,9 @@ inline size_t Columns<MT,true,true,SF,CCAs...>::rows() const noexcept
 // This function returns the spacing between the beginning of two columns, i.e. the total number
 // of elements of a column.
 */
-template< typename MT       // Type of the dense matrix
-        , bool SF           // Symmetry flag
-        , size_t... CCAs >  // Compile time column arguments
+template< typename MT         // Type of the dense matrix
+        , bool SF             // Symmetry flag
+        , typename... CCAs >  // Compile time column arguments
 inline size_t Columns<MT,true,true,SF,CCAs...>::spacing() const noexcept
 {
    return matrix_.spacing();
@@ -1490,9 +1489,9 @@ inline size_t Columns<MT,true,true,SF,CCAs...>::spacing() const noexcept
 //
 // \return The capacity of the dense column selection.
 */
-template< typename MT       // Type of the dense matrix
-        , bool SF           // Symmetry flag
-        , size_t... CCAs >  // Compile time column arguments
+template< typename MT         // Type of the dense matrix
+        , bool SF             // Symmetry flag
+        , typename... CCAs >  // Compile time column arguments
 inline size_t Columns<MT,true,true,SF,CCAs...>::capacity() const noexcept
 {
    return rows() * columns();
@@ -1510,12 +1509,12 @@ inline size_t Columns<MT,true,true,SF,CCAs...>::capacity() const noexcept
 //
 // This function returns the current capacity of the specified column.
 */
-template< typename MT       // Type of the dense matrix
-        , bool SF           // Symmetry flag
-        , size_t... CCAs >  // Compile time column arguments
+template< typename MT         // Type of the dense matrix
+        , bool SF             // Symmetry flag
+        , typename... CCAs >  // Compile time column arguments
 inline size_t Columns<MT,true,true,SF,CCAs...>::capacity( size_t j ) const noexcept
 {
-   UNUSED_PARAMETER( j );
+   MAYBE_UNUSED( j );
 
    BLAZE_USER_ASSERT( j < columns(), "Invalid column access index" );
 
@@ -1531,9 +1530,9 @@ inline size_t Columns<MT,true,true,SF,CCAs...>::capacity( size_t j ) const noexc
 //
 // \return The number of non-zero elements in the dense column selection.
 */
-template< typename MT       // Type of the dense matrix
-        , bool SF           // Symmetry flag
-        , size_t... CCAs >  // Compile time column arguments
+template< typename MT         // Type of the dense matrix
+        , bool SF             // Symmetry flag
+        , typename... CCAs >  // Compile time column arguments
 inline size_t Columns<MT,true,true,SF,CCAs...>::nonZeros() const
 {
    size_t nonzeros( 0UL );
@@ -1557,9 +1556,9 @@ inline size_t Columns<MT,true,true,SF,CCAs...>::nonZeros() const
 //
 // This function returns the current number of non-zero elements in the specified column.
 */
-template< typename MT       // Type of the dense matrix
-        , bool SF           // Symmetry flag
-        , size_t... CCAs >  // Compile time column arguments
+template< typename MT         // Type of the dense matrix
+        , bool SF             // Symmetry flag
+        , typename... CCAs >  // Compile time column arguments
 inline size_t Columns<MT,true,true,SF,CCAs...>::nonZeros( size_t j ) const
 {
    BLAZE_USER_ASSERT( j < columns(), "Invalid column access index" );
@@ -1576,9 +1575,9 @@ inline size_t Columns<MT,true,true,SF,CCAs...>::nonZeros( size_t j ) const
 //
 // \return void
 */
-template< typename MT       // Type of the dense matrix
-        , bool SF           // Symmetry flag
-        , size_t... CCAs >  // Compile time column arguments
+template< typename MT         // Type of the dense matrix
+        , bool SF             // Symmetry flag
+        , typename... CCAs >  // Compile time column arguments
 inline void Columns<MT,true,true,SF,CCAs...>::reset()
 {
    for( size_t j=0UL; j<columns(); ++j ) {
@@ -1598,9 +1597,9 @@ inline void Columns<MT,true,true,SF,CCAs...>::reset()
 //
 // This function resets the values in the specified column to their default value.
 */
-template< typename MT       // Type of the dense matrix
-        , bool SF           // Symmetry flag
-        , size_t... CCAs >  // Compile time column arguments
+template< typename MT         // Type of the dense matrix
+        , bool SF             // Symmetry flag
+        , typename... CCAs >  // Compile time column arguments
 inline void Columns<MT,true,true,SF,CCAs...>::reset( size_t j )
 {
    matrix_.reset( idx(j) );
@@ -1630,9 +1629,9 @@ inline void Columns<MT,true,true,SF,CCAs...>::reset( size_t j )
 // columns. Also, the function fails if the invariants of an underlying, restricted matrix are
 // violated. In all cases, a \a std::logic_error is thrown.
 */
-template< typename MT       // Type of the dense matrix
-        , bool SF           // Symmetry flag
-        , size_t... CCAs >  // Compile time column arguments
+template< typename MT         // Type of the dense matrix
+        , bool SF             // Symmetry flag
+        , typename... CCAs >  // Compile time column arguments
 inline Columns<MT,true,true,SF,CCAs...>&
    Columns<MT,true,true,SF,CCAs...>::transpose()
 {
@@ -1653,7 +1652,7 @@ inline Columns<MT,true,true,SF,CCAs...>&
       }
    }
 
-   BLAZE_DECLTYPE_AUTO( left, derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
 
    smpAssign( left, tmp );
 
@@ -1676,9 +1675,9 @@ inline Columns<MT,true,true,SF,CCAs...>&
 // columns. Also, the function fails if the invariants of an underlying, restricted matrix are
 // violated. In all cases, a \a std::logic_error is thrown.
 */
-template< typename MT       // Type of the dense matrix
-        , bool SF           // Symmetry flag
-        , size_t... CCAs >  // Compile time column arguments
+template< typename MT         // Type of the dense matrix
+        , bool SF             // Symmetry flag
+        , typename... CCAs >  // Compile time column arguments
 inline Columns<MT,true,true,SF,CCAs...>&
    Columns<MT,true,true,SF,CCAs...>::ctranspose()
 {
@@ -1699,7 +1698,7 @@ inline Columns<MT,true,true,SF,CCAs...>&
       }
    }
 
-   BLAZE_DECLTYPE_AUTO( left, derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
 
    smpAssign( left, tmp );
 
@@ -1722,10 +1721,10 @@ inline Columns<MT,true,true,SF,CCAs...>&
 // scale a column selection on a lower or upper unitriangular matrix. The attempt to scale such
 // a column selection results in a compile time error!
 */
-template< typename MT       // Type of the dense matrix
-        , bool SF           // Symmetry flag
-        , size_t... CCAs >  // Compile time column arguments
-template< typename Other >  // Data type of the scalar value
+template< typename MT         // Type of the dense matrix
+        , bool SF             // Symmetry flag
+        , typename... CCAs >  // Compile time column arguments
+template< typename Other >    // Data type of the scalar value
 inline Columns<MT,true,true,SF,CCAs...>&
    Columns<MT,true,true,SF,CCAs...>::scale( const Other& scalar )
 {
@@ -1769,13 +1768,13 @@ inline Columns<MT,true,true,SF,CCAs...>&
 // contrast to the isAliased() function this function is allowed to use compile time expressions
 // to optimize the evaluation.
 */
-template< typename MT       // Type of the dense matrix
-        , bool SF           // Symmetry flag
-        , size_t... CCAs >  // Compile time column arguments
-template< typename Other >  // Data type of the foreign expression
+template< typename MT         // Type of the dense matrix
+        , bool SF             // Symmetry flag
+        , typename... CCAs >  // Compile time column arguments
+template< typename Other >    // Data type of the foreign expression
 inline bool Columns<MT,true,true,SF,CCAs...>::canAlias( const Other* alias ) const noexcept
 {
-   return matrix_.isAliased( alias );
+   return matrix_.isAliased( &unview( *alias ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1793,13 +1792,13 @@ inline bool Columns<MT,true,true,SF,CCAs...>::canAlias( const Other* alias ) con
 // contrast to the isAliased() function this function is allowed to use compile time expressions
 // to optimize the evaluation.
 */
-template< typename MT        // Type of the dense matrix
-        , bool SF            // Symmetry flag
-        , size_t... CCAs >   // Compile time column arguments
-template< typename MT2       // Data type of the foreign dense column selection
-        , bool SO2           // Storage order of the foreign dense column selection
-        , bool SF2           // Symmetry flag of the foreign dense column selection
-        , size_t... CCAs2 >  // Compile time column arguments of the foreign dense column selection
+template< typename MT          // Type of the dense matrix
+        , bool SF              // Symmetry flag
+        , typename... CCAs >   // Compile time column arguments
+template< typename MT2         // Data type of the foreign dense column selection
+        , bool SO2             // Storage order of the foreign dense column selection
+        , bool SF2             // Symmetry flag of the foreign dense column selection
+        , typename... CCAs2 >  // Compile time column arguments of the foreign dense column selection
 inline bool
    Columns<MT,true,true,SF,CCAs...>::canAlias( const Columns<MT2,SO2,true,SF2,CCAs2...>* alias ) const noexcept
 {
@@ -1820,13 +1819,13 @@ inline bool
 // contrast to the canAlias() function this function is not allowed to use compile time expressions
 // to optimize the evaluation.
 */
-template< typename MT       // Type of the dense matrix
-        , bool SF           // Symmetry flag
-        , size_t... CCAs >  // Compile time column arguments
-template< typename Other >  // Data type of the foreign expression
+template< typename MT         // Type of the dense matrix
+        , bool SF             // Symmetry flag
+        , typename... CCAs >  // Compile time column arguments
+template< typename Other >    // Data type of the foreign expression
 inline bool Columns<MT,true,true,SF,CCAs...>::isAliased( const Other* alias ) const noexcept
 {
-   return matrix_.isAliased( alias );
+   return matrix_.isAliased( &unview( *alias ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1844,13 +1843,13 @@ inline bool Columns<MT,true,true,SF,CCAs...>::isAliased( const Other* alias ) co
 // contrast to the canAlias() function this function is not allowed to use compile time expressions
 // to optimize the evaluation.
 */
-template< typename MT        // Type of the dense matrix
-        , bool SF            // Symmetry flag
-        , size_t... CCAs >   // Compile time column arguments
-template< typename MT2       // Data type of the foreign dense column selection
-        , bool SO2           // Storage order of the foreign dense column selection
-        , bool SF2           // Symmetry flag of the foreign dense column selection
-        , size_t... CCAs2 >  // Compile time column arguments of the foreign dense column selection
+template< typename MT          // Type of the dense matrix
+        , bool SF              // Symmetry flag
+        , typename... CCAs >   // Compile time column arguments
+template< typename MT2         // Data type of the foreign dense column selection
+        , bool SO2             // Storage order of the foreign dense column selection
+        , bool SF2             // Symmetry flag of the foreign dense column selection
+        , typename... CCAs2 >  // Compile time column arguments of the foreign dense column selection
 inline bool
    Columns<MT,true,true,SF,CCAs...>::isAliased( const Columns<MT2,SO2,true,SF2,CCAs2...>* alias ) const noexcept
 {
@@ -1870,9 +1869,9 @@ inline bool
 // in memory, i.e. whether the beginning and the end of the dense column selection are guaranteed
 // to conform to the alignment restrictions of the element type \a Type.
 */
-template< typename MT       // Type of the dense matrix
-        , bool SF           // Symmetry flag
-        , size_t... CCAs >  // Compile time column arguments
+template< typename MT         // Type of the dense matrix
+        , bool SF             // Symmetry flag
+        , typename... CCAs >  // Compile time column arguments
 inline bool Columns<MT,true,true,SF,CCAs...>::isAligned() const noexcept
 {
    return matrix_.isAligned();
@@ -1892,9 +1891,9 @@ inline bool Columns<MT,true,true,SF,CCAs...>::isAligned() const noexcept
 // information, this function additionally provides runtime information (as for instance the
 // current number of rows and/or columns of the dense column selection).
 */
-template< typename MT       // Type of the dense matrix
-        , bool SF           // Symmetry flag
-        , size_t... CCAs >  // Compile time column arguments
+template< typename MT         // Type of the dense matrix
+        , bool SF             // Symmetry flag
+        , typename... CCAs >  // Compile time column arguments
 inline bool Columns<MT,true,true,SF,CCAs...>::canSMPAssign() const noexcept
 {
    return ( rows() * columns() > SMP_DMATASSIGN_THRESHOLD );
@@ -1918,9 +1917,9 @@ inline bool Columns<MT,true,true,SF,CCAs...>::canSMPAssign() const noexcept
 // for the performance optimized evaluation of expression templates. Calling this function
 // explicitly might result in erroneous results and/or in compilation errors.
 */
-template< typename MT       // Type of the dense matrix
-        , bool SF           // Symmetry flag
-        , size_t... CCAs >  // Compile time column arguments
+template< typename MT         // Type of the dense matrix
+        , bool SF             // Symmetry flag
+        , typename... CCAs >  // Compile time column arguments
 BLAZE_ALWAYS_INLINE typename Columns<MT,true,true,SF,CCAs...>::SIMDType
    Columns<MT,true,true,SF,CCAs...>::load( size_t i, size_t j ) const noexcept
 {
@@ -1945,9 +1944,9 @@ BLAZE_ALWAYS_INLINE typename Columns<MT,true,true,SF,CCAs...>::SIMDType
 // internally for the performance optimized evaluation of expression templates. Calling this
 // function explicitly might result in erroneous results and/or in compilation errors.
 */
-template< typename MT       // Type of the dense matrix
-        , bool SF           // Symmetry flag
-        , size_t... CCAs >  // Compile time column arguments
+template< typename MT         // Type of the dense matrix
+        , bool SF             // Symmetry flag
+        , typename... CCAs >  // Compile time column arguments
 BLAZE_ALWAYS_INLINE typename Columns<MT,true,true,SF,CCAs...>::SIMDType
    Columns<MT,true,true,SF,CCAs...>::loada( size_t i, size_t j ) const noexcept
 {
@@ -1972,9 +1971,9 @@ BLAZE_ALWAYS_INLINE typename Columns<MT,true,true,SF,CCAs...>::SIMDType
 // is used internally for the performance optimized evaluation of expression templates. Calling
 // this function explicitly might result in erroneous results and/or in compilation errors.
 */
-template< typename MT       // Type of the dense matrix
-        , bool SF           // Symmetry flag
-        , size_t... CCAs >  // Compile time column arguments
+template< typename MT         // Type of the dense matrix
+        , bool SF             // Symmetry flag
+        , typename... CCAs >  // Compile time column arguments
 BLAZE_ALWAYS_INLINE typename Columns<MT,true,true,SF,CCAs...>::SIMDType
    Columns<MT,true,true,SF,CCAs...>::loadu( size_t i, size_t j ) const noexcept
 {
@@ -2000,9 +1999,9 @@ BLAZE_ALWAYS_INLINE typename Columns<MT,true,true,SF,CCAs...>::SIMDType
 // for the performance optimized evaluation of expression templates. Calling this function
 // explicitly might result in erroneous results and/or in compilation errors.
 */
-template< typename MT       // Type of the dense matrix
-        , bool SF           // Symmetry flag
-        , size_t... CCAs >  // Compile time column arguments
+template< typename MT         // Type of the dense matrix
+        , bool SF             // Symmetry flag
+        , typename... CCAs >  // Compile time column arguments
 BLAZE_ALWAYS_INLINE void
    Columns<MT,true,true,SF,CCAs...>::store( size_t i, size_t j, const SIMDType& value ) noexcept
 {
@@ -2028,9 +2027,9 @@ BLAZE_ALWAYS_INLINE void
 // internally for the performance optimized evaluation of expression templates. Calling this
 // function explicitly might result in erroneous results and/or in compilation errors.
 */
-template< typename MT       // Type of the dense matrix
-        , bool SF           // Symmetry flag
-        , size_t... CCAs >  // Compile time column arguments
+template< typename MT         // Type of the dense matrix
+        , bool SF             // Symmetry flag
+        , typename... CCAs >  // Compile time column arguments
 BLAZE_ALWAYS_INLINE void
    Columns<MT,true,true,SF,CCAs...>::storea( size_t i, size_t j, const SIMDType& value ) noexcept
 {
@@ -2056,9 +2055,9 @@ BLAZE_ALWAYS_INLINE void
 // is used internally for the performance optimized evaluation of expression templates. Calling
 // this function explicitly might result in erroneous results and/or in compilation errors.
 */
-template< typename MT       // Type of the dense matrix
-        , bool SF           // Symmetry flag
-        , size_t... CCAs >  // Compile time column arguments
+template< typename MT         // Type of the dense matrix
+        , bool SF             // Symmetry flag
+        , typename... CCAs >  // Compile time column arguments
 BLAZE_ALWAYS_INLINE void
    Columns<MT,true,true,SF,CCAs...>::storeu( size_t i, size_t j, const SIMDType& value ) noexcept
 {
@@ -2084,9 +2083,9 @@ BLAZE_ALWAYS_INLINE void
 // It is used internally for the performance optimized evaluation of expression templates. Calling
 // this function explicitly might result in erroneous results and/or in compilation errors.
 */
-template< typename MT       // Type of the dense matrix
-        , bool SF           // Symmetry flag
-        , size_t... CCAs >  // Compile time column arguments
+template< typename MT         // Type of the dense matrix
+        , bool SF             // Symmetry flag
+        , typename... CCAs >  // Compile time column arguments
 BLAZE_ALWAYS_INLINE void
    Columns<MT,true,true,SF,CCAs...>::stream( size_t i, size_t j, const SIMDType& value ) noexcept
 {
@@ -2108,30 +2107,30 @@ BLAZE_ALWAYS_INLINE void
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT       // Type of the dense matrix
-        , bool SF           // Symmetry flag
-        , size_t... CCAs >  // Compile time column arguments
-template< typename MT2 >    // Type of the right-hand side dense matrix
+template< typename MT         // Type of the dense matrix
+        , bool SF             // Symmetry flag
+        , typename... CCAs >  // Compile time column arguments
+template< typename MT2 >      // Type of the right-hand side dense matrix
 inline auto Columns<MT,true,true,SF,CCAs...>::assign( const DenseMatrix<MT2,true>& rhs )
    -> DisableIf_t< VectorizedAssign_v<MT2> >
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_HERMITIAN_MATRIX_TYPE( MT );
 
-   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( columns() == (*rhs).columns(), "Invalid number of columns" );
 
-   const size_t ipos( rows() & size_t(-2) );
-   BLAZE_INTERNAL_ASSERT( ( rows() - ( rows() % 2UL ) ) == ipos, "Invalid end calculation" );
+   const size_t ipos( prevMultiple( rows(), 2UL ) );
+   BLAZE_INTERNAL_ASSERT( ipos <= rows(), "Invalid end calculation" );
 
    for( size_t j=0UL; j<columns(); ++j ) {
       const size_t index( idx(j) );
       for( size_t i=0UL; i<ipos; i+=2UL ) {
-         matrix_(i    ,index) = (~rhs)(i    ,j);
-         matrix_(i+1UL,index) = (~rhs)(i+1UL,j);
+         matrix_(i    ,index) = (*rhs)(i    ,j);
+         matrix_(i+1UL,index) = (*rhs)(i+1UL,j);
       }
       if( ipos < rows() ) {
-         matrix_(ipos,index) = (~rhs)(ipos,j);
+         matrix_(ipos,index) = (*rhs)(ipos,j);
       }
    }
 }
@@ -2151,10 +2150,10 @@ inline auto Columns<MT,true,true,SF,CCAs...>::assign( const DenseMatrix<MT2,true
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT       // Type of the dense matrix
-        , bool SF           // Symmetry flag
-        , size_t... CCAs >  // Compile time column arguments
-template< typename MT2 >    // Type of the right-hand side dense matrix
+template< typename MT         // Type of the dense matrix
+        , bool SF             // Symmetry flag
+        , typename... CCAs >  // Compile time column arguments
+template< typename MT2 >      // Type of the right-hand side dense matrix
 inline auto Columns<MT,true,true,SF,CCAs...>::assign( const DenseMatrix<MT2,true>& rhs )
    -> EnableIf_t< VectorizedAssign_v<MT2> >
 {
@@ -2163,21 +2162,21 @@ inline auto Columns<MT,true,true,SF,CCAs...>::assign( const DenseMatrix<MT2,true
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
-   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( columns() == (*rhs).columns(), "Invalid number of columns" );
 
-   const size_t ipos( rows() & size_t(-SIMDSIZE) );
-   BLAZE_INTERNAL_ASSERT( ( rows() - ( rows() % (SIMDSIZE) ) ) == ipos, "Invalid end calculation" );
+   const size_t ipos( prevMultiple( rows(), SIMDSIZE ) );
+   BLAZE_INTERNAL_ASSERT( ipos <= rows(), "Invalid end calculation" );
 
    if( useStreaming &&
        rows()*columns() > ( cacheSize / ( sizeof(ElementType) * 3UL ) ) &&
-       !(~rhs).isAliased( &matrix_ ) )
+       !(*rhs).isAliased( this ) )
    {
       for( size_t j=0UL; j<columns(); ++j )
       {
          size_t i( 0UL );
          Iterator left( begin(j) );
-         ConstIterator_t<MT2> right( (~rhs).begin(j) );
+         ConstIterator_t<MT2> right( (*rhs).begin(j) );
 
          for( ; i<ipos; i+=SIMDSIZE ) {
             left.stream( right.load() ); left += SIMDSIZE; right += SIMDSIZE;
@@ -2193,7 +2192,7 @@ inline auto Columns<MT,true,true,SF,CCAs...>::assign( const DenseMatrix<MT2,true
       {
          size_t i( 0UL );
          Iterator left( begin(j) );
-         ConstIterator_t<MT2> right( (~rhs).begin(j) );
+         ConstIterator_t<MT2> right( (*rhs).begin(j) );
 
          for( ; (i+SIMDSIZE*3UL) < ipos; i+=SIMDSIZE*4UL ) {
             left.store( right.load() ); left += SIMDSIZE; right += SIMDSIZE;
@@ -2226,10 +2225,10 @@ inline auto Columns<MT,true,true,SF,CCAs...>::assign( const DenseMatrix<MT2,true
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT       // Type of the dense matrix
-        , bool SF           // Symmetry flag
-        , size_t... CCAs >  // Compile time column arguments
-template< typename MT2 >    // Type of the right-hand side dense matrix
+template< typename MT         // Type of the dense matrix
+        , bool SF             // Symmetry flag
+        , typename... CCAs >  // Compile time column arguments
+template< typename MT2 >      // Type of the right-hand side dense matrix
 inline void Columns<MT,true,true,SF,CCAs...>::assign( const DenseMatrix<MT2,false>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
@@ -2237,22 +2236,24 @@ inline void Columns<MT,true,true,SF,CCAs...>::assign( const DenseMatrix<MT2,fals
 
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT2 );
 
-   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( columns() == (*rhs).columns(), "Invalid number of columns" );
 
    constexpr size_t block( BLOCK_SIZE );
 
    if( rows() < block && columns() < block )
    {
-      const size_t ipos( (~rhs).rows() & size_t(-2) );
+      const size_t ipos( prevMultiple( (*rhs).rows(), 2UL ) );
+      BLAZE_INTERNAL_ASSERT( ipos <= (*rhs).rows(), "Invalid end calculation" );
+
       for( size_t j=0UL; j<columns(); ++j ) {
          const size_t index( idx(j) );
          for( size_t i=0UL; i<ipos; i+=2UL ) {
-            matrix_(i    ,index) = (~rhs)(i    ,j);
-            matrix_(i+1UL,index) = (~rhs)(i+1UL,j);
+            matrix_(i    ,index) = (*rhs)(i    ,j);
+            matrix_(i+1UL,index) = (*rhs)(i+1UL,j);
          }
-         if( ipos < (~rhs).rows() ) {
-            matrix_(ipos,index) = (~rhs)(ipos,j);
+         if( ipos < (*rhs).rows() ) {
+            matrix_(ipos,index) = (*rhs)(ipos,j);
          }
       }
    }
@@ -2265,7 +2266,7 @@ inline void Columns<MT,true,true,SF,CCAs...>::assign( const DenseMatrix<MT2,fals
             for( size_t j=jj; j<jend; ++j ) {
                const size_t index( idx(j) );
                for( size_t i=ii; i<iend; ++i ) {
-                  matrix_(i,index) = (~rhs)(i,j);
+                  matrix_(i,index) = (*rhs)(i,j);
                }
             }
          }
@@ -2288,21 +2289,21 @@ inline void Columns<MT,true,true,SF,CCAs...>::assign( const DenseMatrix<MT2,fals
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT       // Type of the dense matrix
-        , bool SF           // Symmetry flag
-        , size_t... CCAs >  // Compile time column arguments
-template< typename MT2 >    // Type of the right-hand side sparse matrix
+template< typename MT         // Type of the dense matrix
+        , bool SF             // Symmetry flag
+        , typename... CCAs >  // Compile time column arguments
+template< typename MT2 >      // Type of the right-hand side sparse matrix
 inline void Columns<MT,true,true,SF,CCAs...>::assign( const SparseMatrix<MT2,true>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_HERMITIAN_MATRIX_TYPE( MT );
 
-   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( columns() == (*rhs).columns(), "Invalid number of columns" );
 
    for( size_t j=0UL; j<columns(); ++j ) {
       const size_t index( idx(j) );
-      for( ConstIterator_t<MT2> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
+      for( ConstIterator_t<MT2> element=(*rhs).begin(j); element!=(*rhs).end(j); ++element )
          matrix_(element->index(),index) = element->value();
    }
 }
@@ -2322,10 +2323,10 @@ inline void Columns<MT,true,true,SF,CCAs...>::assign( const SparseMatrix<MT2,tru
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT       // Type of the dense matrix
-        , bool SF           // Symmetry flag
-        , size_t... CCAs >  // Compile time column arguments
-template< typename MT2 >    // Type of the right-hand side sparse matrix
+template< typename MT         // Type of the dense matrix
+        , bool SF             // Symmetry flag
+        , typename... CCAs >  // Compile time column arguments
+template< typename MT2 >      // Type of the right-hand side sparse matrix
 inline void Columns<MT,true,true,SF,CCAs...>::assign( const SparseMatrix<MT2,false>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
@@ -2333,11 +2334,11 @@ inline void Columns<MT,true,true,SF,CCAs...>::assign( const SparseMatrix<MT2,fal
 
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT2 );
 
-   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( columns() == (*rhs).columns(), "Invalid number of columns" );
 
    for( size_t i=0UL; i<rows(); ++i ) {
-      for( ConstIterator_t<MT2> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
+      for( ConstIterator_t<MT2> element=(*rhs).begin(i); element!=(*rhs).end(i); ++element )
          matrix_(i,idx(element->index())) = element->value();
    }
 }
@@ -2357,35 +2358,35 @@ inline void Columns<MT,true,true,SF,CCAs...>::assign( const SparseMatrix<MT2,fal
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT       // Type of the dense matrix
-        , bool SF           // Symmetry flag
-        , size_t... CCAs >  // Compile time column arguments
-template< typename MT2 >    // Type of the right-hand side dense matrix
+template< typename MT         // Type of the dense matrix
+        , bool SF             // Symmetry flag
+        , typename... CCAs >  // Compile time column arguments
+template< typename MT2 >      // Type of the right-hand side dense matrix
 inline auto Columns<MT,true,true,SF,CCAs...>::addAssign( const DenseMatrix<MT2,true>& rhs )
    -> DisableIf_t< VectorizedAddAssign_v<MT2> >
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_HERMITIAN_MATRIX_TYPE( MT );
 
-   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( columns() == (*rhs).columns(), "Invalid number of columns" );
 
-   const size_t ipos( rows() & size_t(-2) );
-   BLAZE_INTERNAL_ASSERT( ( rows() - ( rows() % 2UL ) ) == ipos, "Invalid end calculation" );
+   const size_t ipos( prevMultiple( rows(), 2UL ) );
+   BLAZE_INTERNAL_ASSERT( ipos <= rows(), "Invalid end calculation" );
 
    for( size_t j=0UL; j<columns(); ++j )
    {
       const size_t index( idx(j) );
       if( IsDiagonal_v<MT2> ) {
-         matrix_(j,index) += (~rhs)(j,j);
+         matrix_(j,index) += (*rhs)(j,j);
       }
       else {
          for( size_t i=0UL; i<ipos; i+=2UL ) {
-            matrix_(i    ,index) += (~rhs)(i    ,j);
-            matrix_(i+1UL,index) += (~rhs)(i+1UL,j);
+            matrix_(i    ,index) += (*rhs)(i    ,j);
+            matrix_(i+1UL,index) += (*rhs)(i+1UL,j);
          }
          if( ipos < rows() ) {
-            matrix_(ipos,index) += (~rhs)(ipos,j);
+            matrix_(ipos,index) += (*rhs)(ipos,j);
          }
       }
    }
@@ -2406,10 +2407,10 @@ inline auto Columns<MT,true,true,SF,CCAs...>::addAssign( const DenseMatrix<MT2,t
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT       // Type of the dense matrix
-        , bool SF           // Symmetry flag
-        , size_t... CCAs >  // Compile time column arguments
-template< typename MT2 >    // Type of the right-hand side dense matrix
+template< typename MT         // Type of the dense matrix
+        , bool SF             // Symmetry flag
+        , typename... CCAs >  // Compile time column arguments
+template< typename MT2 >      // Type of the right-hand side dense matrix
 inline auto Columns<MT,true,true,SF,CCAs...>::addAssign( const DenseMatrix<MT2,true>& rhs )
    -> EnableIf_t< VectorizedAddAssign_v<MT2> >
 {
@@ -2418,25 +2419,25 @@ inline auto Columns<MT,true,true,SF,CCAs...>::addAssign( const DenseMatrix<MT2,t
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
-   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( columns() == (*rhs).columns(), "Invalid number of columns" );
 
    for( size_t j=0UL; j<columns(); ++j )
    {
       const size_t ibegin( ( IsLower_v<MT2> )
-                           ?( ( IsStrictlyLower_v<MT2> ? j+1UL : j ) & size_t(-SIMDSIZE) )
+                           ?( prevMultiple( ( IsStrictlyLower_v<MT2> ? j+1UL : j ), SIMDSIZE ) )
                            :( 0UL ) );
       const size_t iend  ( ( IsUpper_v<MT2> )
                            ?( IsStrictlyUpper_v<MT2> ? j : j+1UL )
                            :( rows() ) );
       BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
 
-      const size_t ipos( iend & size_t(-SIMDSIZE) );
-      BLAZE_INTERNAL_ASSERT( ( iend - ( iend % (SIMDSIZE) ) ) == ipos, "Invalid end calculation" );
+      const size_t ipos( prevMultiple( iend, SIMDSIZE ) );
+      BLAZE_INTERNAL_ASSERT( ipos <= iend, "Invalid end calculation" );
 
       size_t i( ibegin );
       Iterator left( begin(j) + ibegin );
-      ConstIterator_t<MT2> right( (~rhs).begin(j) + ibegin );
+      ConstIterator_t<MT2> right( (*rhs).begin(j) + ibegin );
 
       for( ; (i+SIMDSIZE*3UL) < ipos; i+=SIMDSIZE*4UL ) {
          left.store( left.load() + right.load() ); left += SIMDSIZE; right += SIMDSIZE;
@@ -2468,10 +2469,10 @@ inline auto Columns<MT,true,true,SF,CCAs...>::addAssign( const DenseMatrix<MT2,t
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT       // Type of the dense matrix
-        , bool SF           // Symmetry flag
-        , size_t... CCAs >  // Compile time column arguments
-template< typename MT2 >    // Type of the right-hand side dense matrix
+template< typename MT         // Type of the dense matrix
+        , bool SF             // Symmetry flag
+        , typename... CCAs >  // Compile time column arguments
+template< typename MT2 >      // Type of the right-hand side dense matrix
 inline void Columns<MT,true,true,SF,CCAs...>::addAssign( const DenseMatrix<MT2,false>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
@@ -2479,22 +2480,24 @@ inline void Columns<MT,true,true,SF,CCAs...>::addAssign( const DenseMatrix<MT2,f
 
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT2 );
 
-   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( columns() == (*rhs).columns(), "Invalid number of columns" );
 
    constexpr size_t block( BLOCK_SIZE );
 
    if( rows() < block && columns() < block )
    {
-      const size_t ipos( (~rhs).rows() & size_t(-2) );
+      const size_t ipos( prevMultiple( (*rhs).rows(), 2UL ) );
+      BLAZE_INTERNAL_ASSERT( ipos <= (*rhs).rows(), "Invalid end calculation" );
+
       for( size_t j=0UL; j<columns(); ++j ) {
          const size_t index( idx(j) );
          for( size_t i=0UL; i<ipos; i+=2UL ) {
-            matrix_(i    ,index) += (~rhs)(i    ,j);
-            matrix_(i+1UL,index) += (~rhs)(i+1UL,j);
+            matrix_(i    ,index) += (*rhs)(i    ,j);
+            matrix_(i+1UL,index) += (*rhs)(i+1UL,j);
          }
-         if( ipos < (~rhs).rows() )
-            matrix_(ipos,index) += (~rhs)(ipos,j);
+         if( ipos < (*rhs).rows() )
+            matrix_(ipos,index) += (*rhs)(ipos,j);
       }
    }
    else
@@ -2506,7 +2509,7 @@ inline void Columns<MT,true,true,SF,CCAs...>::addAssign( const DenseMatrix<MT2,f
             for( size_t j=jj; j<jend; ++j ) {
                const size_t index( idx(j) );
                for( size_t i=ii; i<iend; ++i ) {
-                  matrix_(i,index) += (~rhs)(i,j);
+                  matrix_(i,index) += (*rhs)(i,j);
                }
             }
          }
@@ -2529,21 +2532,21 @@ inline void Columns<MT,true,true,SF,CCAs...>::addAssign( const DenseMatrix<MT2,f
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT       // Type of the dense matrix
-        , bool SF           // Symmetry flag
-        , size_t... CCAs >  // Compile time column arguments
-template< typename MT2 >    // Type of the right-hand side sparse matrix
+template< typename MT         // Type of the dense matrix
+        , bool SF             // Symmetry flag
+        , typename... CCAs >  // Compile time column arguments
+template< typename MT2 >      // Type of the right-hand side sparse matrix
 inline void Columns<MT,true,true,SF,CCAs...>::addAssign( const SparseMatrix<MT2,true>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_HERMITIAN_MATRIX_TYPE( MT );
 
-   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( columns() == (*rhs).columns(), "Invalid number of columns" );
 
    for( size_t j=0UL; j<columns(); ++j ) {
       const size_t index( idx(j) );
-      for( ConstIterator_t<MT2> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
+      for( ConstIterator_t<MT2> element=(*rhs).begin(j); element!=(*rhs).end(j); ++element )
          matrix_(element->index(),index) += element->value();
    }
 }
@@ -2563,10 +2566,10 @@ inline void Columns<MT,true,true,SF,CCAs...>::addAssign( const SparseMatrix<MT2,
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT       // Type of the dense matrix
-        , bool SF           // Symmetry flag
-        , size_t... CCAs >  // Compile time column arguments
-template< typename MT2 >    // Type of the right-hand side sparse matrix
+template< typename MT         // Type of the dense matrix
+        , bool SF             // Symmetry flag
+        , typename... CCAs >  // Compile time column arguments
+template< typename MT2 >      // Type of the right-hand side sparse matrix
 inline void Columns<MT,true,true,SF,CCAs...>::addAssign( const SparseMatrix<MT2,false>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
@@ -2574,11 +2577,11 @@ inline void Columns<MT,true,true,SF,CCAs...>::addAssign( const SparseMatrix<MT2,
 
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT2 );
 
-   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( columns() == (*rhs).columns(), "Invalid number of columns" );
 
    for( size_t i=0UL; i<rows(); ++i ) {
-      for( ConstIterator_t<MT2> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
+      for( ConstIterator_t<MT2> element=(*rhs).begin(i); element!=(*rhs).end(i); ++element )
          matrix_(i,idx(element->index())) += element->value();
    }
 }
@@ -2598,36 +2601,36 @@ inline void Columns<MT,true,true,SF,CCAs...>::addAssign( const SparseMatrix<MT2,
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT       // Type of the dense matrix
-        , bool SF           // Symmetry flag
-        , size_t... CCAs >  // Compile time column arguments
-template< typename MT2 >    // Type of the right-hand side dense matrix
+template< typename MT         // Type of the dense matrix
+        , bool SF             // Symmetry flag
+        , typename... CCAs >  // Compile time column arguments
+template< typename MT2 >      // Type of the right-hand side dense matrix
 inline auto Columns<MT,true,true,SF,CCAs...>::subAssign( const DenseMatrix<MT2,true>& rhs )
    -> DisableIf_t< VectorizedSubAssign_v<MT2> >
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_HERMITIAN_MATRIX_TYPE( MT );
 
-   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( columns() == (*rhs).columns(), "Invalid number of columns" );
 
-   const size_t ipos( rows() & size_t(-2) );
-   BLAZE_INTERNAL_ASSERT( ( rows() - ( rows() % 2UL ) ) == ipos, "Invalid end calculation" );
+   const size_t ipos( prevMultiple( rows(), 2UL ) );
+   BLAZE_INTERNAL_ASSERT( ipos <= rows(), "Invalid end calculation" );
 
    for( size_t j=0UL; j<columns(); ++j )
    {
       const size_t index( idx(j) );
 
       if( IsDiagonal_v<MT2> ) {
-         matrix_(j,index) -= (~rhs)(j,j);
+         matrix_(j,index) -= (*rhs)(j,j);
       }
       else {
          for( size_t i=0UL; i<ipos; i+=2UL ) {
-            matrix_(i    ,index) -= (~rhs)(i    ,j);
-            matrix_(i+1UL,index) -= (~rhs)(i+1UL,j);
+            matrix_(i    ,index) -= (*rhs)(i    ,j);
+            matrix_(i+1UL,index) -= (*rhs)(i+1UL,j);
          }
          if( ipos < rows() ) {
-            matrix_(ipos,index) -= (~rhs)(ipos,j);
+            matrix_(ipos,index) -= (*rhs)(ipos,j);
          }
       }
    }
@@ -2648,10 +2651,10 @@ inline auto Columns<MT,true,true,SF,CCAs...>::subAssign( const DenseMatrix<MT2,t
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT       // Type of the dense matrix
-        , bool SF           // Symmetry flag
-        , size_t... CCAs >  // Compile time column arguments
-template< typename MT2 >    // Type of the right-hand side dense matrix
+template< typename MT         // Type of the dense matrix
+        , bool SF             // Symmetry flag
+        , typename... CCAs >  // Compile time column arguments
+template< typename MT2 >      // Type of the right-hand side dense matrix
 inline auto Columns<MT,true,true,SF,CCAs...>::subAssign( const DenseMatrix<MT2,true>& rhs )
    -> EnableIf_t< VectorizedSubAssign_v<MT2> >
 {
@@ -2660,25 +2663,25 @@ inline auto Columns<MT,true,true,SF,CCAs...>::subAssign( const DenseMatrix<MT2,t
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
-   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( columns() == (*rhs).columns(), "Invalid number of columns" );
 
    for( size_t j=0UL; j<columns(); ++j )
    {
       const size_t ibegin( ( IsLower_v<MT2> )
-                           ?( ( IsStrictlyLower_v<MT2> ? j+1UL : j ) & size_t(-SIMDSIZE) )
+                           ?( prevMultiple( ( IsStrictlyLower_v<MT2> ? j+1UL : j ), SIMDSIZE ) )
                            :( 0UL ) );
       const size_t iend  ( ( IsUpper_v<MT2> )
                            ?( IsStrictlyUpper_v<MT2> ? j : j+1UL )
                            :( rows() ) );
       BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
 
-      const size_t ipos( iend & size_t(-SIMDSIZE) );
-      BLAZE_INTERNAL_ASSERT( ( iend - ( iend % (SIMDSIZE) ) ) == ipos, "Invalid end calculation" );
+      const size_t ipos( prevMultiple( iend, SIMDSIZE ) );
+      BLAZE_INTERNAL_ASSERT( ipos <= iend, "Invalid end calculation" );
 
       size_t i( ibegin );
       Iterator left( begin(j) + ibegin );
-      ConstIterator_t<MT2> right( (~rhs).begin(j) + ibegin );
+      ConstIterator_t<MT2> right( (*rhs).begin(j) + ibegin );
 
       for( ; (i+SIMDSIZE*3UL) < ipos; i+=SIMDSIZE*4UL ) {
          left.store( left.load() - right.load() ); left += SIMDSIZE; right += SIMDSIZE;
@@ -2710,10 +2713,10 @@ inline auto Columns<MT,true,true,SF,CCAs...>::subAssign( const DenseMatrix<MT2,t
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT       // Type of the dense matrix
-        , bool SF           // Symmetry flag
-        , size_t... CCAs >  // Compile time column arguments
-template< typename MT2 >    // Type of the right-hand side dense matrix
+template< typename MT         // Type of the dense matrix
+        , bool SF             // Symmetry flag
+        , typename... CCAs >  // Compile time column arguments
+template< typename MT2 >      // Type of the right-hand side dense matrix
 inline void Columns<MT,true,true,SF,CCAs...>::subAssign( const DenseMatrix<MT2,false>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
@@ -2721,22 +2724,24 @@ inline void Columns<MT,true,true,SF,CCAs...>::subAssign( const DenseMatrix<MT2,f
 
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT2 );
 
-   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( columns() == (*rhs).columns(), "Invalid number of columns" );
 
    constexpr size_t block( BLOCK_SIZE );
 
    if( rows() < block && columns() < block )
    {
-      const size_t ipos( (~rhs).rows() & size_t(-2) );
+      const size_t ipos( prevMultiple( (*rhs).rows(), 2UL ) );
+      BLAZE_INTERNAL_ASSERT( ipos <= (*rhs).rows(), "Invalid end calculation" );
+
       for( size_t j=0UL; j<columns(); ++j ) {
          const size_t index( idx(j) );
          for( size_t i=0UL; i<ipos; i+=2UL ) {
-            matrix_(i    ,index) -= (~rhs)(i    ,j);
-            matrix_(i+1UL,index) -= (~rhs)(i+1UL,j);
+            matrix_(i    ,index) -= (*rhs)(i    ,j);
+            matrix_(i+1UL,index) -= (*rhs)(i+1UL,j);
          }
-         if( ipos < (~rhs).rows() )
-            matrix_(ipos,index) -= (~rhs)(ipos,j);
+         if( ipos < (*rhs).rows() )
+            matrix_(ipos,index) -= (*rhs)(ipos,j);
       }
    }
    else
@@ -2748,7 +2753,7 @@ inline void Columns<MT,true,true,SF,CCAs...>::subAssign( const DenseMatrix<MT2,f
             for( size_t j=jj; j<jend; ++j ) {
                const size_t index( idx(j) );
                for( size_t i=ii; i<iend; ++i ) {
-                  matrix_(i,index) -= (~rhs)(i,j);
+                  matrix_(i,index) -= (*rhs)(i,j);
                }
             }
          }
@@ -2771,21 +2776,21 @@ inline void Columns<MT,true,true,SF,CCAs...>::subAssign( const DenseMatrix<MT2,f
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT       // Type of the dense matrix
-        , bool SF           // Symmetry flag
-        , size_t... CCAs >  // Compile time column arguments
-template< typename MT2 >    // Type of the right-hand side sparse matrix
+template< typename MT         // Type of the dense matrix
+        , bool SF             // Symmetry flag
+        , typename... CCAs >  // Compile time column arguments
+template< typename MT2 >      // Type of the right-hand side sparse matrix
 inline void Columns<MT,true,true,SF,CCAs...>::subAssign( const SparseMatrix<MT2,true>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_HERMITIAN_MATRIX_TYPE( MT );
 
-   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( columns() == (*rhs).columns(), "Invalid number of columns" );
 
    for( size_t j=0UL; j<columns(); ++j ) {
       const size_t index( idx(j) );
-      for( ConstIterator_t<MT2> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
+      for( ConstIterator_t<MT2> element=(*rhs).begin(j); element!=(*rhs).end(j); ++element )
          matrix_(element->index(),index) -= element->value();
    }
 }
@@ -2805,10 +2810,10 @@ inline void Columns<MT,true,true,SF,CCAs...>::subAssign( const SparseMatrix<MT2,
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT       // Type of the dense matrix
-        , bool SF           // Symmetry flag
-        , size_t... CCAs >  // Compile time column arguments
-template< typename MT2 >    // Type of the right-hand side sparse matrix
+template< typename MT         // Type of the dense matrix
+        , bool SF             // Symmetry flag
+        , typename... CCAs >  // Compile time column arguments
+template< typename MT2 >      // Type of the right-hand side sparse matrix
 inline void Columns<MT,true,true,SF,CCAs...>::subAssign( const SparseMatrix<MT2,false>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
@@ -2816,11 +2821,11 @@ inline void Columns<MT,true,true,SF,CCAs...>::subAssign( const SparseMatrix<MT2,
 
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT2 );
 
-   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( columns() == (*rhs).columns(), "Invalid number of columns" );
 
    for( size_t i=0UL; i<rows(); ++i ) {
-      for( ConstIterator_t<MT2> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
+      for( ConstIterator_t<MT2> element=(*rhs).begin(i); element!=(*rhs).end(i); ++element )
          matrix_(i,idx(element->index())) -= element->value();
    }
 }
@@ -2840,30 +2845,30 @@ inline void Columns<MT,true,true,SF,CCAs...>::subAssign( const SparseMatrix<MT2,
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT       // Type of the dense matrix
-        , bool SF           // Symmetry flag
-        , size_t... CCAs >  // Compile time column arguments
-template< typename MT2 >    // Type of the right-hand side dense matrix
+template< typename MT         // Type of the dense matrix
+        , bool SF             // Symmetry flag
+        , typename... CCAs >  // Compile time column arguments
+template< typename MT2 >      // Type of the right-hand side dense matrix
 inline auto Columns<MT,true,true,SF,CCAs...>::schurAssign( const DenseMatrix<MT2,true>& rhs )
    -> DisableIf_t< VectorizedSchurAssign_v<MT2> >
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_HERMITIAN_MATRIX_TYPE( MT );
 
-   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( columns() == (*rhs).columns(), "Invalid number of columns" );
 
-   const size_t ipos( rows() & size_t(-2) );
-   BLAZE_INTERNAL_ASSERT( ( rows() - ( rows() % 2UL ) ) == ipos, "Invalid end calculation" );
+   const size_t ipos( prevMultiple( rows(), 2UL ) );
+   BLAZE_INTERNAL_ASSERT( ipos <= rows(), "Invalid end calculation" );
 
    for( size_t j=0UL; j<columns(); ++j ) {
       const size_t index( idx(j) );
       for( size_t i=0UL; i<ipos; i+=2UL ) {
-         matrix_(i    ,index) *= (~rhs)(i    ,j);
-         matrix_(i+1UL,index) *= (~rhs)(i+1UL,j);
+         matrix_(i    ,index) *= (*rhs)(i    ,j);
+         matrix_(i+1UL,index) *= (*rhs)(i+1UL,j);
       }
       if( ipos < rows() ) {
-         matrix_(ipos,index) *= (~rhs)(ipos,j);
+         matrix_(ipos,index) *= (*rhs)(ipos,j);
       }
    }
 }
@@ -2884,10 +2889,10 @@ inline auto Columns<MT,true,true,SF,CCAs...>::schurAssign( const DenseMatrix<MT2
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT       // Type of the dense matrix
-        , bool SF           // Symmetry flag
-        , size_t... CCAs >  // Compile time column arguments
-template< typename MT2 >    // Type of the right-hand side dense matrix
+template< typename MT         // Type of the dense matrix
+        , bool SF             // Symmetry flag
+        , typename... CCAs >  // Compile time column arguments
+template< typename MT2 >      // Type of the right-hand side dense matrix
 inline auto Columns<MT,true,true,SF,CCAs...>::schurAssign( const DenseMatrix<MT2,true>& rhs )
    -> EnableIf_t< VectorizedSchurAssign_v<MT2> >
 {
@@ -2896,17 +2901,17 @@ inline auto Columns<MT,true,true,SF,CCAs...>::schurAssign( const DenseMatrix<MT2
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
-   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( columns() == (*rhs).columns(), "Invalid number of columns" );
 
    for( size_t j=0UL; j<columns(); ++j )
    {
-      const size_t ipos( rows() & size_t(-SIMDSIZE) );
-      BLAZE_INTERNAL_ASSERT( ( rows() - ( rows() % (SIMDSIZE) ) ) == ipos, "Invalid end calculation" );
+      const size_t ipos( prevMultiple( rows(), SIMDSIZE ) );
+      BLAZE_INTERNAL_ASSERT( ipos <= rows(), "Invalid end calculation" );
 
       size_t i( 0UL );
       Iterator left( begin(j) );
-      ConstIterator_t<MT2> right( (~rhs).begin(j) );
+      ConstIterator_t<MT2> right( (*rhs).begin(j) );
 
       for( ; (i+SIMDSIZE*3UL) < ipos; i+=SIMDSIZE*4UL ) {
          left.store( left.load() * right.load() ); left += SIMDSIZE; right += SIMDSIZE;
@@ -2938,10 +2943,10 @@ inline auto Columns<MT,true,true,SF,CCAs...>::schurAssign( const DenseMatrix<MT2
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT       // Type of the dense matrix
-        , bool SF           // Symmetry flag
-        , size_t... CCAs >  // Compile time column arguments
-template< typename MT2 >    // Type of the right-hand side dense matrix
+template< typename MT         // Type of the dense matrix
+        , bool SF             // Symmetry flag
+        , typename... CCAs >  // Compile time column arguments
+template< typename MT2 >      // Type of the right-hand side dense matrix
 inline void Columns<MT,true,true,SF,CCAs...>::schurAssign( const DenseMatrix<MT2,false>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
@@ -2949,22 +2954,24 @@ inline void Columns<MT,true,true,SF,CCAs...>::schurAssign( const DenseMatrix<MT2
 
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT2 );
 
-   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( columns() == (*rhs).columns(), "Invalid number of columns" );
 
    constexpr size_t block( BLOCK_SIZE );
 
    if( rows() < block && columns() < block )
    {
-      const size_t ipos( (~rhs).rows() & size_t(-2) );
+      const size_t ipos( prevMultiple( (*rhs).rows(), 2UL ) );
+      BLAZE_INTERNAL_ASSERT( ipos <= (*rhs).rows(), "Invalid end calculation" );
+
       for( size_t j=0UL; j<columns(); ++j ) {
          const size_t index( idx(j) );
          for( size_t i=0UL; i<ipos; i+=2UL ) {
-            matrix_(i    ,index) *= (~rhs)(i    ,j);
-            matrix_(i+1UL,index) *= (~rhs)(i+1UL,j);
+            matrix_(i    ,index) *= (*rhs)(i    ,j);
+            matrix_(i+1UL,index) *= (*rhs)(i+1UL,j);
          }
-         if( ipos < (~rhs).rows() )
-            matrix_(ipos,index) *= (~rhs)(ipos,j);
+         if( ipos < (*rhs).rows() )
+            matrix_(ipos,index) *= (*rhs)(ipos,j);
       }
    }
    else
@@ -2976,7 +2983,7 @@ inline void Columns<MT,true,true,SF,CCAs...>::schurAssign( const DenseMatrix<MT2
             for( size_t j=jj; j<jend; ++j ) {
                const size_t index( idx(j) );
                for( size_t i=ii; i<iend; ++i ) {
-                  matrix_(i,index) *= (~rhs)(i,j);
+                  matrix_(i,index) *= (*rhs)(i,j);
                }
             }
          }
@@ -2999,10 +3006,10 @@ inline void Columns<MT,true,true,SF,CCAs...>::schurAssign( const DenseMatrix<MT2
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT       // Type of the dense matrix
-        , bool SF           // Symmetry flag
-        , size_t... CCAs >  // Compile time column arguments
-template< typename MT2 >    // Type of the right-hand side sparse matrix
+template< typename MT         // Type of the dense matrix
+        , bool SF             // Symmetry flag
+        , typename... CCAs >  // Compile time column arguments
+template< typename MT2 >      // Type of the right-hand side sparse matrix
 inline void Columns<MT,true,true,SF,CCAs...>::schurAssign( const SparseMatrix<MT2,true>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
@@ -3010,15 +3017,15 @@ inline void Columns<MT,true,true,SF,CCAs...>::schurAssign( const SparseMatrix<MT
 
    using blaze::reset;
 
-   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( columns() == (*rhs).columns(), "Invalid number of columns" );
 
    for( size_t j=0UL; j<columns(); ++j )
    {
       const size_t index( idx(j) );
       size_t i( 0UL );
 
-      for( ConstIterator_t<MT2> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element ) {
+      for( ConstIterator_t<MT2> element=(*rhs).begin(j); element!=(*rhs).end(j); ++element ) {
          for( ; i<element->index(); ++i )
             reset( matrix_(i,index) );
          matrix_(i,index) *= element->value();
@@ -3046,10 +3053,10 @@ inline void Columns<MT,true,true,SF,CCAs...>::schurAssign( const SparseMatrix<MT
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT       // Type of the dense matrix
-        , bool SF           // Symmetry flag
-        , size_t... CCAs >  // Compile time column arguments
-template< typename MT2 >    // Type of the right-hand side sparse matrix
+template< typename MT         // Type of the dense matrix
+        , bool SF             // Symmetry flag
+        , typename... CCAs >  // Compile time column arguments
+template< typename MT2 >      // Type of the right-hand side sparse matrix
 inline void Columns<MT,true,true,SF,CCAs...>::schurAssign( const SparseMatrix<MT2,false>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
@@ -3059,14 +3066,14 @@ inline void Columns<MT,true,true,SF,CCAs...>::schurAssign( const SparseMatrix<MT
 
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT2 );
 
-   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( columns() == (*rhs).columns(), "Invalid number of columns" );
 
    for( size_t i=0UL; i<rows(); ++i )
    {
       size_t j( 0UL );
 
-      for( ConstIterator_t<MT2> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element ) {
+      for( ConstIterator_t<MT2> element=(*rhs).begin(i); element!=(*rhs).end(i); ++element ) {
          for( ; j<element->index(); ++j )
             reset( matrix_(i,idx(j)) );
          matrix_(i,idx(j)) *= element->value();
@@ -3102,8 +3109,8 @@ inline void Columns<MT,true,true,SF,CCAs...>::schurAssign( const SparseMatrix<MT
 // This specialization of Columns adapts the class template to the requirements of general
 // row-major dense matrices.
 */
-template< typename MT       // Type of the dense matrix
-        , size_t... CCAs >  // Compile time column arguments
+template< typename MT         // Type of the dense matrix
+        , typename... CCAs >  // Compile time column arguments
 class Columns<MT,false,true,false,CCAs...>
    : public View< DenseMatrix< Columns<MT,false,true,false,CCAs...>, true > >
    , private ColumnsData<CCAs...>
@@ -3112,6 +3119,10 @@ class Columns<MT,false,true,false,CCAs...>
    //**Type definitions****************************************************************************
    using DataType = ColumnsData<CCAs...>;                 //!< The type of the ColumnsData base class.
    using Operand  = If_t< IsExpression_v<MT>, MT, MT& >;  //!< Composite data type of the dense matrix expression.
+   //**********************************************************************************************
+
+   //**Compile time flags**************************************************************************
+   using DataType::N;  //!< Number of compile time indices.
    //**********************************************************************************************
 
    //**********************************************************************************************
@@ -3126,9 +3137,11 @@ class Columns<MT,false,true,false,CCAs...>
    //! Type of this Columns instance.
    using This = Columns<MT,false,true,false,CCAs...>;
 
-   using BaseType      = DenseMatrix<This,true>;       //!< Base type of this Columns instance.
+   //! Base type of this Columns instance.
+   using BaseType = View< DenseMatrix<This,true> >;
+
    using ViewedType    = MT;                           //!< The type viewed by this Columns instance.
-   using ResultType    = ColumnsTrait_t<MT,CCAs...>;   //!< Result type for expression template evaluations.
+   using ResultType    = ColumnsTrait_t<MT,N>;         //!< Result type for expression template evaluations.
    using OppositeType  = OppositeType_t<ResultType>;   //!< Result type with opposite storage order for expression template evaluations.
    using TransposeType = TransposeType_t<ResultType>;  //!< Transpose type for expression template evaluations.
    using ElementType   = ElementType_t<MT>;            //!< Type of the column elements.
@@ -3489,6 +3502,9 @@ class Columns<MT,false,true,false,CCAs...>
 
    //! Compilation switch for the expression template assignment strategy.
    static constexpr bool smpAssignable = MT::smpAssignable;
+
+   //! Compilation switch for the expression template evaluation strategy.
+   static constexpr bool compileTimeArgs = DataType::compileTimeArgs;
    //**********************************************************************************************
 
    //**Constructors********************************************************************************
@@ -3602,13 +3618,13 @@ class Columns<MT,false,true,false,CCAs...>
    template< typename Other >
    inline bool canAlias( const Other* alias ) const noexcept;
 
-   template< typename MT2, bool SO2, bool SF2, size_t... CCAs2 >
+   template< typename MT2, bool SO2, bool SF2, typename... CCAs2 >
    inline bool canAlias( const Columns<MT2,SO2,true,SF2,CCAs2...>* alias ) const noexcept;
 
    template< typename Other >
    inline bool isAliased( const Other* alias ) const noexcept;
 
-   template< typename MT2, bool SO2, bool SF2, size_t... CCAs2 >
+   template< typename MT2, bool SO2, bool SF2, typename... CCAs2 >
    inline bool isAliased( const Columns<MT2,SO2,true,SF2,CCAs2...>* alias ) const noexcept;
 
    inline bool isAligned   () const noexcept;
@@ -3645,7 +3661,7 @@ class Columns<MT,false,true,false,CCAs...>
    //**********************************************************************************************
 
    //**Friend declarations*************************************************************************
-   template< typename MT2, bool SO2, bool DF2, bool SF2, size_t... CCAs2 > friend class Columns;
+   template< typename MT2, bool SO2, bool DF2, bool SF2, typename... CCAs2 > friend class Columns;
    //**********************************************************************************************
 
    //**Compile time checks*************************************************************************
@@ -3686,13 +3702,13 @@ class Columns<MT,false,true,false,CCAs...>
 // providing the optional \a blaze::unchecked argument.
 */
 template< typename MT         // Type of the dense matrix
-        , size_t... CCAs >    // Compile time column arguments
+        , typename... CCAs >  // Compile time column arguments
 template< typename... RCAs >  // Runtime column arguments
 inline Columns<MT,false,true,false,CCAs...>::Columns( MT& matrix, RCAs... args )
    : DataType( args... )  // Base class initialization
    , matrix_ ( matrix  )  // The matrix containing the columns
 {
-   if( !Contains_v< TypeList<RCAs...>, Unchecked > ) {
+   if( isChecked( args... ) ) {
       for( size_t j=0UL; j<columns(); ++j ) {
          if( matrix_.columns() <= idx(j) ) {
             BLAZE_THROW_INVALID_ARGUMENT( "Invalid column access index" );
@@ -3723,8 +3739,8 @@ inline Columns<MT,false,true,false,CCAs...>::Columns( MT& matrix, RCAs... args )
 // This function only performs an index check in case BLAZE_USER_ASSERT() is active. In contrast,
 // the at() function is guaranteed to perform a check of the given access indices.
 */
-template< typename MT       // Type of the dense matrix
-        , size_t... CCAs >  // Compile time column arguments
+template< typename MT         // Type of the dense matrix
+        , typename... CCAs >  // Compile time column arguments
 inline typename Columns<MT,false,true,false,CCAs...>::Reference
    Columns<MT,false,true,false,CCAs...>::operator()( size_t i, size_t j )
 {
@@ -3748,8 +3764,8 @@ inline typename Columns<MT,false,true,false,CCAs...>::Reference
 // This function only performs an index check in case BLAZE_USER_ASSERT() is active. In contrast,
 // the at() function is guaranteed to perform a check of the given access indices.
 */
-template< typename MT       // Type of the dense matrix
-        , size_t... CCAs >  // Compile time column arguments
+template< typename MT         // Type of the dense matrix
+        , typename... CCAs >  // Compile time column arguments
 inline typename Columns<MT,false,true,false,CCAs...>::ConstReference
    Columns<MT,false,true,false,CCAs...>::operator()( size_t i, size_t j ) const
 {
@@ -3774,8 +3790,8 @@ inline typename Columns<MT,false,true,false,CCAs...>::ConstReference
 // In contrast to the function call operator this function always performs a check of the given
 // access indices.
 */
-template< typename MT       // Type of the dense matrix
-        , size_t... CCAs >  // Compile time column arguments
+template< typename MT         // Type of the dense matrix
+        , typename... CCAs >  // Compile time column arguments
 inline typename Columns<MT,false,true,false,CCAs...>::Reference
    Columns<MT,false,true,false,CCAs...>::at( size_t i, size_t j )
 {
@@ -3803,8 +3819,8 @@ inline typename Columns<MT,false,true,false,CCAs...>::Reference
 // In contrast to the function call operator this function always performs a check of the given
 // access indices.
 */
-template< typename MT       // Type of the dense matrix
-        , size_t... CCAs >  // Compile time column arguments
+template< typename MT         // Type of the dense matrix
+        , typename... CCAs >  // Compile time column arguments
 inline typename Columns<MT,false,true,false,CCAs...>::ConstReference
    Columns<MT,false,true,false,CCAs...>::at( size_t i, size_t j ) const
 {
@@ -3830,8 +3846,8 @@ inline typename Columns<MT,false,true,false,CCAs...>::ConstReference
 // that you can NOT assume that all matrix elements lie adjacent to each other! The underlying
 // matrix may use techniques such as padding to improve the alignment of the data.
 */
-template< typename MT       // Type of the dense matrix
-        , size_t... CCAs >  // Compile time column arguments
+template< typename MT         // Type of the dense matrix
+        , typename... CCAs >  // Compile time column arguments
 inline typename Columns<MT,false,true,false,CCAs...>::Pointer
    Columns<MT,false,true,false,CCAs...>::data() noexcept
 {
@@ -3851,8 +3867,8 @@ inline typename Columns<MT,false,true,false,CCAs...>::Pointer
 // that you can NOT assume that all matrix elements lie adjacent to each other! The underlying
 // matrix may use techniques such as padding to improve the alignment of the data.
 */
-template< typename MT       // Type of the dense matrix
-        , size_t... CCAs >  // Compile time column arguments
+template< typename MT         // Type of the dense matrix
+        , typename... CCAs >  // Compile time column arguments
 inline typename Columns<MT,false,true,false,CCAs...>::ConstPointer
    Columns<MT,false,true,false,CCAs...>::data() const noexcept
 {
@@ -3871,8 +3887,8 @@ inline typename Columns<MT,false,true,false,CCAs...>::ConstPointer
 //
 // This function returns a pointer to the internal storage for the elements in column \a j.
 */
-template< typename MT       // Type of the dense matrix
-        , size_t... CCAs >  // Compile time column arguments
+template< typename MT         // Type of the dense matrix
+        , typename... CCAs >  // Compile time column arguments
 inline typename Columns<MT,false,true,false,CCAs...>::Pointer
    Columns<MT,false,true,false,CCAs...>::data( size_t j ) noexcept
 {
@@ -3891,8 +3907,8 @@ inline typename Columns<MT,false,true,false,CCAs...>::Pointer
 //
 // This function returns a pointer to the internal storage for the elements in column \a j.
 */
-template< typename MT       // Type of the dense matrix
-        , size_t... CCAs >  // Compile time column arguments
+template< typename MT         // Type of the dense matrix
+        , typename... CCAs >  // Compile time column arguments
 inline typename Columns<MT,false,true,false,CCAs...>::ConstPointer
    Columns<MT,false,true,false,CCAs...>::data( size_t j ) const noexcept
 {
@@ -3911,8 +3927,8 @@ inline typename Columns<MT,false,true,false,CCAs...>::ConstPointer
 //
 // This function returns an iterator to the first non-zero element of column \a j.
 */
-template< typename MT       // Type of the dense matrix
-        , size_t... CCAs >  // Compile time column arguments
+template< typename MT         // Type of the dense matrix
+        , typename... CCAs >  // Compile time column arguments
 inline typename Columns<MT,false,true,false,CCAs...>::Iterator
    Columns<MT,false,true,false,CCAs...>::begin( size_t j )
 {
@@ -3932,8 +3948,8 @@ inline typename Columns<MT,false,true,false,CCAs...>::Iterator
 //
 // This function returns an iterator to the first non-zero element of column \a j.
 */
-template< typename MT       // Type of the dense matrix
-        , size_t... CCAs >  // Compile time column arguments
+template< typename MT         // Type of the dense matrix
+        , typename... CCAs >  // Compile time column arguments
 inline typename Columns<MT,false,true,false,CCAs...>::ConstIterator
    Columns<MT,false,true,false,CCAs...>::begin( size_t j ) const
 {
@@ -3953,8 +3969,8 @@ inline typename Columns<MT,false,true,false,CCAs...>::ConstIterator
 //
 // This function returns an iterator to the first non-zero element of column \a j.
 */
-template< typename MT       // Type of the dense matrix
-        , size_t... CCAs >  // Compile time column arguments
+template< typename MT         // Type of the dense matrix
+        , typename... CCAs >  // Compile time column arguments
 inline typename Columns<MT,false,true,false,CCAs...>::ConstIterator
    Columns<MT,false,true,false,CCAs...>::cbegin( size_t j ) const
 {
@@ -3974,8 +3990,8 @@ inline typename Columns<MT,false,true,false,CCAs...>::ConstIterator
 //
 // This function returns an iterator just past the last non-zero element of column \a j.
 */
-template< typename MT       // Type of the dense matrix
-        , size_t... CCAs >  // Compile time column arguments
+template< typename MT         // Type of the dense matrix
+        , typename... CCAs >  // Compile time column arguments
 inline typename Columns<MT,false,true,false,CCAs...>::Iterator
    Columns<MT,false,true,false,CCAs...>::end( size_t j )
 {
@@ -3995,8 +4011,8 @@ inline typename Columns<MT,false,true,false,CCAs...>::Iterator
 //
 // This function returns an iterator just past the last non-zero element of column \a j.
 */
-template< typename MT       // Type of the dense matrix
-        , size_t... CCAs >  // Compile time column arguments
+template< typename MT         // Type of the dense matrix
+        , typename... CCAs >  // Compile time column arguments
 inline typename Columns<MT,false,true,false,CCAs...>::ConstIterator
    Columns<MT,false,true,false,CCAs...>::end( size_t j ) const
 {
@@ -4016,8 +4032,8 @@ inline typename Columns<MT,false,true,false,CCAs...>::ConstIterator
 //
 // This function returns an iterator just past the last non-zero element of column \a j.
 */
-template< typename MT       // Type of the dense matrix
-        , size_t... CCAs >  // Compile time column arguments
+template< typename MT         // Type of the dense matrix
+        , typename... CCAs >  // Compile time column arguments
 inline typename Columns<MT,false,true,false,CCAs...>::ConstIterator
    Columns<MT,false,true,false,CCAs...>::cend( size_t j ) const
 {
@@ -4047,8 +4063,8 @@ inline typename Columns<MT,false,true,false,CCAs...>::ConstIterator
 // that in case the underlying dense matrix is a lower/upper matrix only lower/upper and diagonal
 // elements of the underlying matrix are modified.
 */
-template< typename MT       // Type of the dense matrix
-        , size_t... CCAs >  // Compile time column arguments
+template< typename MT         // Type of the dense matrix
+        , typename... CCAs >  // Compile time column arguments
 inline Columns<MT,false,true,false,CCAs...>&
    Columns<MT,false,true,false,CCAs...>::operator=( const ElementType& rhs )
 {
@@ -4078,8 +4094,8 @@ inline Columns<MT,false,true,false,CCAs...>&
 // exception is thrown. Also, if the underlying matrix \a MT is restricted and the assignment
 // would violate an invariant of the matrix, a \a std::invalid_argument exception is thrown.
 */
-template< typename MT       // Type of the dense matrix
-        , size_t... CCAs >  // Compile time column arguments
+template< typename MT         // Type of the dense matrix
+        , typename... CCAs >  // Compile time column arguments
 inline Columns<MT,false,true,false,CCAs...>&
    Columns<MT,false,true,false,CCAs...>::operator=( initializer_list< initializer_list<ElementType> > list )
 {
@@ -4099,7 +4115,7 @@ inline Columns<MT,false,true,false,CCAs...>&
       }
    }
 
-   BLAZE_DECLTYPE_AUTO( left, derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
    size_t i( 0UL );
 
    for( const auto& rowList : list ) {
@@ -4135,8 +4151,8 @@ inline Columns<MT,false,true,false,CCAs...>&
 // triangular, or symmetric matrix and the assignment would violate its lower, upper, or
 // symmetry property, respectively, a \a std::invalid_argument exception is thrown.
 */
-template< typename MT       // Type of the dense matrix
-        , size_t... CCAs >  // Compile time column arguments
+template< typename MT         // Type of the dense matrix
+        , typename... CCAs >  // Compile time column arguments
 inline Columns<MT,false,true,false,CCAs...>&
    Columns<MT,false,true,false,CCAs...>::operator=( const Columns& rhs )
 {
@@ -4146,7 +4162,7 @@ inline Columns<MT,false,true,false,CCAs...>&
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
 
-   if( this == &rhs || ( &matrix_ == &rhs.matrix_ && idces() == rhs.idces() ) )
+   if( this == &rhs || ( &matrix_ == &rhs.matrix_ && compareIndices( *this, rhs ) ) )
       return *this;
 
    if( rows() != rhs.rows() || columns() != rhs.columns() ) {
@@ -4161,9 +4177,9 @@ inline Columns<MT,false,true,false,CCAs...>&
       }
    }
 
-   BLAZE_DECLTYPE_AUTO( left, derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
 
-   if( rhs.canAlias( &matrix_ ) ) {
+   if( rhs.canAlias( this ) ) {
       const ResultType tmp( rhs );
       smpAssign( left, tmp );
    }
@@ -4194,10 +4210,10 @@ inline Columns<MT,false,true,false,CCAs...>&
 // and the assignment would violate its lower, upper, or symmetry property, respectively, a
 // \a std::invalid_argument exception is thrown.
 */
-template< typename MT       // Type of the dense matrix
-        , size_t... CCAs >  // Compile time column arguments
-template< typename MT2      // Type of the right-hand side matrix
-        , bool SO2 >        // Storage order of the right-hand side matrix
+template< typename MT         // Type of the dense matrix
+        , typename... CCAs >  // Compile time column arguments
+template< typename MT2        // Type of the right-hand side matrix
+        , bool SO2 >          // Storage order of the right-hand side matrix
 inline Columns<MT,false,true,false,CCAs...>&
    Columns<MT,false,true,false,CCAs...>::operator=( const Matrix<MT2,SO2>& rhs )
 {
@@ -4206,12 +4222,12 @@ inline Columns<MT,false,true,false,CCAs...>&
 
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_t<MT2> );
 
-   if( rows() != (~rhs).rows() || columns() != (~rhs).columns() ) {
+   if( rows() != (*rhs).rows() || columns() != (*rhs).columns() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
    using Right = If_t< IsRestricted_v<MT>, CompositeType_t<MT2>, const MT2& >;
-   Right right( ~rhs );
+   Right right( *rhs );
 
    if( IsRestricted_v<MT> ) {
       for( size_t j=0UL; j<columns(); ++j ) {
@@ -4221,13 +4237,13 @@ inline Columns<MT,false,true,false,CCAs...>&
       }
    }
 
-   BLAZE_DECLTYPE_AUTO( left, derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
 
    if( IsSparseMatrix_v<MT2> ) {
       reset();
    }
 
-   if( IsReference_v<Right> && right.canAlias( &matrix_ ) ) {
+   if( IsReference_v<Right> && right.canAlias( this ) ) {
       const ResultType_t<MT2> tmp( right );
       smpAssign( left, tmp );
    }
@@ -4257,10 +4273,10 @@ inline Columns<MT,false,true,false,CCAs...>&
 // symmetric matrix and the assignment would violate its lower, upper, or symmetry property,
 // respectively, a \a std::invalid_argument exception is thrown.
 */
-template< typename MT       // Type of the dense matrix
-        , size_t... CCAs >  // Compile time column arguments
-template< typename MT2      // Type of the right-hand side matrix
-        , bool SO2 >        // Storage order of the right-hand side matrix
+template< typename MT         // Type of the dense matrix
+        , typename... CCAs >  // Compile time column arguments
+template< typename MT2        // Type of the right-hand side matrix
+        , bool SO2 >          // Storage order of the right-hand side matrix
 inline auto Columns<MT,false,true,false,CCAs...>::operator+=( const Matrix<MT2,SO2>& rhs )
    -> DisableIf_t< EnforceEvaluation_v<MT,MT2>, Columns& >
 {
@@ -4276,26 +4292,26 @@ inline auto Columns<MT,false,true,false,CCAs...>::operator+=( const Matrix<MT2,S
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( AddType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( AddType );
 
-   if( rows() != (~rhs).rows() || columns() != (~rhs).columns() ) {
+   if( rows() != (*rhs).rows() || columns() != (*rhs).columns() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
    if( IsRestricted_v<MT> ) {
       for( size_t j=0UL; j<columns(); ++j ) {
-         if( !tryAddAssign( column( matrix_, idx(j), unchecked ), column( ~rhs, j, unchecked ), 0UL ) ) {
+         if( !tryAddAssign( column( matrix_, idx(j), unchecked ), column( *rhs, j, unchecked ), 0UL ) ) {
             BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
          }
       }
    }
 
-   BLAZE_DECLTYPE_AUTO( left, derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
 
-   if( (~rhs).canAlias( &matrix_ ) ) {
-      const AddType tmp( *this + (~rhs) );
+   if( (*rhs).canAlias( this ) ) {
+      const AddType tmp( *this + (*rhs) );
       smpAssign( left, tmp );
    }
    else {
-      smpAddAssign( left, ~rhs );
+      smpAddAssign( left, *rhs );
    }
 
    BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
@@ -4320,10 +4336,10 @@ inline auto Columns<MT,false,true,false,CCAs...>::operator+=( const Matrix<MT2,S
 // symmetric matrix and the assignment would violate its lower, upper, or symmetry property,
 // respectively, a \a std::invalid_argument exception is thrown.
 */
-template< typename MT       // Type of the dense matrix
-        , size_t... CCAs >  // Compile time column arguments
-template< typename MT2      // Type of the right-hand side matrix
-        , bool SO2 >        // Storage order of the right-hand side matrix
+template< typename MT         // Type of the dense matrix
+        , typename... CCAs >  // Compile time column arguments
+template< typename MT2        // Type of the right-hand side matrix
+        , bool SO2 >          // Storage order of the right-hand side matrix
 inline auto Columns<MT,false,true,false,CCAs...>::operator+=( const Matrix<MT2,SO2>& rhs )
    -> EnableIf_t< EnforceEvaluation_v<MT,MT2>, Columns& >
 {
@@ -4339,11 +4355,11 @@ inline auto Columns<MT,false,true,false,CCAs...>::operator+=( const Matrix<MT2,S
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( AddType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( AddType );
 
-   if( rows() != (~rhs).rows() || columns() != (~rhs).columns() ) {
+   if( rows() != (*rhs).rows() || columns() != (*rhs).columns() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
-   const AddType tmp( *this + (~rhs) );
+   const AddType tmp( *this + (*rhs) );
 
    if( IsRestricted_v<MT> ) {
       for( size_t j=0UL; j<columns(); ++j ) {
@@ -4353,7 +4369,7 @@ inline auto Columns<MT,false,true,false,CCAs...>::operator+=( const Matrix<MT2,S
       }
    }
 
-   BLAZE_DECLTYPE_AUTO( left, derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
 
    smpAssign( left, tmp );
 
@@ -4379,10 +4395,10 @@ inline auto Columns<MT,false,true,false,CCAs...>::operator+=( const Matrix<MT2,S
 // symmetric matrix and the assignment would violate its lower, upper, or symmetry property,
 // respectively, a \a std::invalid_argument exception is thrown.
 */
-template< typename MT       // Type of the dense matrix
-        , size_t... CCAs >  // Compile time column arguments
-template< typename MT2      // Type of the right-hand side matrix
-        , bool SO2 >        // Storage order of the right-hand side matrix
+template< typename MT         // Type of the dense matrix
+        , typename... CCAs >  // Compile time column arguments
+template< typename MT2        // Type of the right-hand side matrix
+        , bool SO2 >          // Storage order of the right-hand side matrix
 inline auto Columns<MT,false,true,false,CCAs...>::operator-=( const Matrix<MT2,SO2>& rhs )
    -> DisableIf_t< EnforceEvaluation_v<MT,MT2>, Columns& >
 {
@@ -4398,26 +4414,26 @@ inline auto Columns<MT,false,true,false,CCAs...>::operator-=( const Matrix<MT2,S
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( SubType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SubType );
 
-   if( rows() != (~rhs).rows() || columns() != (~rhs).columns() ) {
+   if( rows() != (*rhs).rows() || columns() != (*rhs).columns() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
    if( IsRestricted_v<MT> ) {
       for( size_t j=0UL; j<columns(); ++j ) {
-         if( !trySubAssign( column( matrix_, idx(j), unchecked ), column( ~rhs, j, unchecked ), 0UL ) ) {
+         if( !trySubAssign( column( matrix_, idx(j), unchecked ), column( *rhs, j, unchecked ), 0UL ) ) {
             BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
          }
       }
    }
 
-   BLAZE_DECLTYPE_AUTO( left, derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
 
-   if( (~rhs).canAlias( &matrix_ ) ) {
-      const SubType tmp( *this - (~rhs ) );
+   if( (*rhs).canAlias( this ) ) {
+      const SubType tmp( *this - (*rhs ) );
       smpAssign( left, tmp );
    }
    else {
-      smpSubAssign( left, ~rhs );
+      smpSubAssign( left, *rhs );
    }
 
    BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
@@ -4442,10 +4458,10 @@ inline auto Columns<MT,false,true,false,CCAs...>::operator-=( const Matrix<MT2,S
 // symmetric matrix and the assignment would violate its lower, upper, or symmetry property,
 // respectively, a \a std::invalid_argument exception is thrown.
 */
-template< typename MT       // Type of the dense matrix
-        , size_t... CCAs >  // Compile time column arguments
-template< typename MT2      // Type of the right-hand side matrix
-        , bool SO2 >        // Storage order of the right-hand side matrix
+template< typename MT         // Type of the dense matrix
+        , typename... CCAs >  // Compile time column arguments
+template< typename MT2        // Type of the right-hand side matrix
+        , bool SO2 >          // Storage order of the right-hand side matrix
 inline auto Columns<MT,false,true,false,CCAs...>::operator-=( const Matrix<MT2,SO2>& rhs )
    -> EnableIf_t< EnforceEvaluation_v<MT,MT2>, Columns& >
 {
@@ -4461,11 +4477,11 @@ inline auto Columns<MT,false,true,false,CCAs...>::operator-=( const Matrix<MT2,S
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( SubType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SubType );
 
-   if( rows() != (~rhs).rows() || columns() != (~rhs).columns() ) {
+   if( rows() != (*rhs).rows() || columns() != (*rhs).columns() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
-   const SubType tmp( *this - (~rhs) );
+   const SubType tmp( *this - (*rhs) );
 
    if( IsRestricted_v<MT> ) {
       for( size_t j=0UL; j<columns(); ++j ) {
@@ -4475,7 +4491,7 @@ inline auto Columns<MT,false,true,false,CCAs...>::operator-=( const Matrix<MT2,S
       }
    }
 
-   BLAZE_DECLTYPE_AUTO( left, derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
 
    smpAssign( left, tmp );
 
@@ -4501,10 +4517,10 @@ inline auto Columns<MT,false,true,false,CCAs...>::operator-=( const Matrix<MT2,S
 // symmetric matrix and the assignment would violate its lower, upper, or symmetry property,
 // respectively, a \a std::invalid_argument exception is thrown.
 */
-template< typename MT       // Type of the dense matrix
-        , size_t... CCAs >  // Compile time column arguments
-template< typename MT2      // Type of the right-hand side matrix
-        , bool SO2 >        // Storage order of the right-hand side matrix
+template< typename MT         // Type of the dense matrix
+        , typename... CCAs >  // Compile time column arguments
+template< typename MT2        // Type of the right-hand side matrix
+        , bool SO2 >          // Storage order of the right-hand side matrix
 inline auto Columns<MT,false,true,false,CCAs...>::operator%=( const Matrix<MT2,SO2>& rhs )
    -> DisableIf_t< EnforceEvaluation_v<MT,MT2>, Columns& >
 {
@@ -4519,28 +4535,28 @@ inline auto Columns<MT,false,true,false,CCAs...>::operator%=( const Matrix<MT2,S
 
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SchurType );
 
-   if( rows() != (~rhs).rows() || columns() != (~rhs).columns() ) {
+   if( rows() != (*rhs).rows() || columns() != (*rhs).columns() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
    if( IsRestricted_v<MT> ) {
       for( size_t j=0UL; j<columns(); ++j ) {
-         if( !tryMultAssign( column( matrix_, idx(j), unchecked ), column( ~rhs, j, unchecked ), 0UL ) ) {
+         if( !tryMultAssign( column( matrix_, idx(j), unchecked ), column( *rhs, j, unchecked ), 0UL ) ) {
             BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
          }
       }
    }
 
-   BLAZE_DECLTYPE_AUTO( left, derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
 
-   if( (~rhs).canAlias( &matrix_ ) ) {
-      const SchurType tmp( *this % (~rhs) );
+   if( (*rhs).canAlias( this ) ) {
+      const SchurType tmp( *this % (*rhs) );
       if( IsSparseMatrix_v<SchurType> )
          reset();
       smpAssign( left, tmp );
    }
    else {
-      smpSchurAssign( left, ~rhs );
+      smpSchurAssign( left, *rhs );
    }
 
    BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
@@ -4565,10 +4581,10 @@ inline auto Columns<MT,false,true,false,CCAs...>::operator%=( const Matrix<MT2,S
 // symmetric matrix and the assignment would violate its lower, upper, or symmetry property,
 // respectively, a \a std::invalid_argument exception is thrown.
 */
-template< typename MT       // Type of the dense matrix
-        , size_t... CCAs >  // Compile time column arguments
-template< typename MT2      // Type of the right-hand side matrix
-        , bool SO2 >        // Storage order of the right-hand side matrix
+template< typename MT         // Type of the dense matrix
+        , typename... CCAs >  // Compile time column arguments
+template< typename MT2        // Type of the right-hand side matrix
+        , bool SO2 >          // Storage order of the right-hand side matrix
 inline auto Columns<MT,false,true,false,CCAs...>::operator%=( const Matrix<MT2,SO2>& rhs )
    -> EnableIf_t< EnforceEvaluation_v<MT,MT2>, Columns& >
 {
@@ -4583,11 +4599,11 @@ inline auto Columns<MT,false,true,false,CCAs...>::operator%=( const Matrix<MT2,S
 
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SchurType );
 
-   if( rows() != (~rhs).rows() || columns() != (~rhs).columns() ) {
+   if( rows() != (*rhs).rows() || columns() != (*rhs).columns() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
-   const SchurType tmp( *this % (~rhs) );
+   const SchurType tmp( *this % (*rhs) );
 
    if( IsRestricted_v<MT> ) {
       for( size_t j=0UL; j<columns(); ++j ) {
@@ -4597,7 +4613,7 @@ inline auto Columns<MT,false,true,false,CCAs...>::operator%=( const Matrix<MT2,S
       }
    }
 
-   BLAZE_DECLTYPE_AUTO( left, derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
 
    if( IsSparseMatrix_v<SchurType> ) {
       reset();
@@ -4627,8 +4643,8 @@ inline auto Columns<MT,false,true,false,CCAs...>::operator%=( const Matrix<MT2,S
 //
 // \return The matrix containing the columns.
 */
-template< typename MT       // Type of the dense matrix
-        , size_t... CCAs >  // Compile time column arguments
+template< typename MT         // Type of the dense matrix
+        , typename... CCAs >  // Compile time column arguments
 inline MT& Columns<MT,false,true,false,CCAs...>::operand() noexcept
 {
    return matrix_;
@@ -4643,8 +4659,8 @@ inline MT& Columns<MT,false,true,false,CCAs...>::operand() noexcept
 //
 // \return The matrix containing the columns.
 */
-template< typename MT       // Type of the dense matrix
-        , size_t... CCAs >  // Compile time column arguments
+template< typename MT         // Type of the dense matrix
+        , typename... CCAs >  // Compile time column arguments
 inline const MT& Columns<MT,false,true,false,CCAs...>::operand() const noexcept
 {
    return matrix_;
@@ -4659,8 +4675,8 @@ inline const MT& Columns<MT,false,true,false,CCAs...>::operand() const noexcept
 //
 // \return The number of rows of the column selection.
 */
-template< typename MT       // Type of the dense matrix
-        , size_t... CCAs >  // Compile time column arguments
+template< typename MT         // Type of the dense matrix
+        , typename... CCAs >  // Compile time column arguments
 inline size_t Columns<MT,false,true,false,CCAs...>::rows() const noexcept
 {
    return matrix_.rows();
@@ -4678,11 +4694,11 @@ inline size_t Columns<MT,false,true,false,CCAs...>::rows() const noexcept
 // This function returns the spacing between the beginning of two columns, i.e. the total number
 // of elements of a column.
 */
-template< typename MT       // Type of the dense matrix
-        , size_t... CCAs >  // Compile time column arguments
+template< typename MT         // Type of the dense matrix
+        , typename... CCAs >  // Compile time column arguments
 inline size_t Columns<MT,false,true,false,CCAs...>::spacing() const noexcept
 {
-   return matrix_.spacing();
+   return matrix_.rows();
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -4694,8 +4710,8 @@ inline size_t Columns<MT,false,true,false,CCAs...>::spacing() const noexcept
 //
 // \return The capacity of the dense column selection.
 */
-template< typename MT       // Type of the dense matrix
-        , size_t... CCAs >  // Compile time column arguments
+template< typename MT         // Type of the dense matrix
+        , typename... CCAs >  // Compile time column arguments
 inline size_t Columns<MT,false,true,false,CCAs...>::capacity() const noexcept
 {
    return rows() * columns();
@@ -4713,11 +4729,11 @@ inline size_t Columns<MT,false,true,false,CCAs...>::capacity() const noexcept
 //
 // This function returns the current capacity of the specified column.
 */
-template< typename MT       // Type of the dense matrix
-        , size_t... CCAs >  // Compile time column arguments
+template< typename MT         // Type of the dense matrix
+        , typename... CCAs >  // Compile time column arguments
 inline size_t Columns<MT,false,true,false,CCAs...>::capacity( size_t j ) const noexcept
 {
-   UNUSED_PARAMETER( j );
+   MAYBE_UNUSED( j );
 
    BLAZE_USER_ASSERT( j < columns(), "Invalid column access index" );
 
@@ -4733,8 +4749,8 @@ inline size_t Columns<MT,false,true,false,CCAs...>::capacity( size_t j ) const n
 //
 // \return The number of non-zero elements in the dense column selection.
 */
-template< typename MT       // Type of the dense matrix
-        , size_t... CCAs >  // Compile time column arguments
+template< typename MT         // Type of the dense matrix
+        , typename... CCAs >  // Compile time column arguments
 inline size_t Columns<MT,false,true,false,CCAs...>::nonZeros() const
 {
    size_t nonzeros( 0UL );
@@ -4758,8 +4774,8 @@ inline size_t Columns<MT,false,true,false,CCAs...>::nonZeros() const
 //
 // This function returns the current number of non-zero elements in the specified column.
 */
-template< typename MT       // Type of the dense matrix
-        , size_t... CCAs >  // Compile time column arguments
+template< typename MT         // Type of the dense matrix
+        , typename... CCAs >  // Compile time column arguments
 inline size_t Columns<MT,false,true,false,CCAs...>::nonZeros( size_t j ) const
 {
    BLAZE_USER_ASSERT( j < columns(), "Invalid column access index" );
@@ -4784,8 +4800,8 @@ inline size_t Columns<MT,false,true,false,CCAs...>::nonZeros( size_t j ) const
 //
 // \return void
 */
-template< typename MT       // Type of the dense matrix
-        , size_t... CCAs >  // Compile time column arguments
+template< typename MT         // Type of the dense matrix
+        , typename... CCAs >  // Compile time column arguments
 inline void Columns<MT,false,true,false,CCAs...>::reset()
 {
    for( size_t j=0UL; j<columns(); ++j ) {
@@ -4805,8 +4821,8 @@ inline void Columns<MT,false,true,false,CCAs...>::reset()
 //
 // This function resets the values in the specified column to their default value.
 */
-template< typename MT       // Type of the dense matrix
-        , size_t... CCAs >  // Compile time column arguments
+template< typename MT         // Type of the dense matrix
+        , typename... CCAs >  // Compile time column arguments
 inline void Columns<MT,false,true,false,CCAs...>::reset( size_t j )
 {
    using blaze::reset;
@@ -4841,8 +4857,8 @@ inline void Columns<MT,false,true,false,CCAs...>::reset( size_t j )
 // columns. Also, the function fails if the invariants of an underlying, restricted matrix are
 // violated. In all cases, a \a std::logic_error is thrown.
 */
-template< typename MT       // Type of the dense matrix
-        , size_t... CCAs >  // Compile time column arguments
+template< typename MT         // Type of the dense matrix
+        , typename... CCAs >  // Compile time column arguments
 inline Columns<MT,false,true,false,CCAs...>&
    Columns<MT,false,true,false,CCAs...>::transpose()
 {
@@ -4863,7 +4879,7 @@ inline Columns<MT,false,true,false,CCAs...>&
       }
    }
 
-   BLAZE_DECLTYPE_AUTO( left, derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
 
    smpAssign( left, tmp );
 
@@ -4886,8 +4902,8 @@ inline Columns<MT,false,true,false,CCAs...>&
 // columns. Also, the function fails if the invariants of an underlying, restricted matrix are
 // violated. In all cases, a \a std::logic_error is thrown.
 */
-template< typename MT       // Type of the dense matrix
-        , size_t... CCAs >  // Compile time column arguments
+template< typename MT         // Type of the dense matrix
+        , typename... CCAs >  // Compile time column arguments
 inline Columns<MT,false,true,false,CCAs...>&
    Columns<MT,false,true,false,CCAs...>::ctranspose()
 {
@@ -4908,7 +4924,7 @@ inline Columns<MT,false,true,false,CCAs...>&
       }
    }
 
-   BLAZE_DECLTYPE_AUTO( left, derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
 
    smpAssign( left, tmp );
 
@@ -4931,9 +4947,9 @@ inline Columns<MT,false,true,false,CCAs...>&
 // scale a column selection on a lower or upper unitriangular matrix. The attempt to scale such
 // a column selection results in a compile time error!
 */
-template< typename MT       // Type of the dense matrix
-        , size_t... CCAs >  // Compile time column arguments
-template< typename Other >  // Data type of the scalar value
+template< typename MT         // Type of the dense matrix
+        , typename... CCAs >  // Compile time column arguments
+template< typename Other >    // Data type of the scalar value
 inline Columns<MT,false,true,false,CCAs...>&
    Columns<MT,false,true,false,CCAs...>::scale( const Other& scalar )
 {
@@ -4977,12 +4993,12 @@ inline Columns<MT,false,true,false,CCAs...>&
 // contrast to the isAliased() function this function is allowed to use compile time expressions
 // to optimize the evaluation.
 */
-template< typename MT       // Type of the dense matrix
-        , size_t... CCAs >  // Compile time column arguments
-template< typename Other >  // Data type of the foreign expression
+template< typename MT         // Type of the dense matrix
+        , typename... CCAs >  // Compile time column arguments
+template< typename Other >    // Data type of the foreign expression
 inline bool Columns<MT,false,true,false,CCAs...>::canAlias( const Other* alias ) const noexcept
 {
-   return matrix_.isAliased( alias );
+   return matrix_.isAliased( &unview( *alias ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -5000,12 +5016,12 @@ inline bool Columns<MT,false,true,false,CCAs...>::canAlias( const Other* alias )
 // contrast to the isAliased() function this function is allowed to use compile time expressions
 // to optimize the evaluation.
 */
-template< typename MT        // Type of the dense matrix
-        , size_t... CCAs >   // Compile time column arguments
-template< typename MT2       // Data type of the foreign dense column selection
-        , bool SO2           // Storage order of the foreign dense column selection
-        , bool SF2           // Symmetry flag of the foreign dense column selection
-        , size_t... CCAs2 >  // Compile time column arguments of the foreign dense column selection
+template< typename MT          // Type of the dense matrix
+        , typename... CCAs >   // Compile time column arguments
+template< typename MT2         // Data type of the foreign dense column selection
+        , bool SO2             // Storage order of the foreign dense column selection
+        , bool SF2             // Symmetry flag of the foreign dense column selection
+        , typename... CCAs2 >  // Compile time column arguments of the foreign dense column selection
 inline bool
    Columns<MT,false,true,false,CCAs...>::canAlias( const Columns<MT2,SO2,true,SF2,CCAs2...>* alias ) const noexcept
 {
@@ -5026,12 +5042,12 @@ inline bool
 // contrast to the canAlias() function this function is not allowed to use compile time expressions
 // to optimize the evaluation.
 */
-template< typename MT       // Type of the dense matrix
-        , size_t... CCAs >  // Compile time column arguments
-template< typename Other >  // Data type of the foreign expression
+template< typename MT         // Type of the dense matrix
+        , typename... CCAs >  // Compile time column arguments
+template< typename Other >    // Data type of the foreign expression
 inline bool Columns<MT,false,true,false,CCAs...>::isAliased( const Other* alias ) const noexcept
 {
-   return matrix_.isAliased( alias );
+   return matrix_.isAliased( &unview( *alias ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -5049,12 +5065,12 @@ inline bool Columns<MT,false,true,false,CCAs...>::isAliased( const Other* alias 
 // contrast to the canAlias() function this function is not allowed to use compile time expressions
 // to optimize the evaluation.
 */
-template< typename MT        // Type of the dense matrix
-        , size_t... CCAs >   // Compile time column arguments
-template< typename MT2       // Data type of the foreign dense column selection
-        , bool SO2           // Storage order of the foreign dense column selection
-        , bool SF2           // Symmetry flag of the foreign dense column selection
-        , size_t... CCAs2 >  // Compile time column arguments of the foreign dense column selection
+template< typename MT          // Type of the dense matrix
+        , typename... CCAs >   // Compile time column arguments
+template< typename MT2         // Data type of the foreign dense column selection
+        , bool SO2             // Storage order of the foreign dense column selection
+        , bool SF2             // Symmetry flag of the foreign dense column selection
+        , typename... CCAs2 >  // Compile time column arguments of the foreign dense column selection
 inline bool
    Columns<MT,false,true,false,CCAs...>::isAliased( const Columns<MT2,SO2,true,SF2,CCAs2...>* alias ) const noexcept
 {
@@ -5074,8 +5090,8 @@ inline bool
 // in memory, i.e. whether the beginning and the end of the dense column selection are guaranteed
 // to conform to the alignment restrictions of the element type \a Type.
 */
-template< typename MT       // Type of the dense matrix
-        , size_t... CCAs >  // Compile time column arguments
+template< typename MT         // Type of the dense matrix
+        , typename... CCAs >  // Compile time column arguments
 inline bool Columns<MT,false,true,false,CCAs...>::isAligned() const noexcept
 {
    return false;
@@ -5095,8 +5111,8 @@ inline bool Columns<MT,false,true,false,CCAs...>::isAligned() const noexcept
 // information, this function additionally provides runtime information (as for instance the
 // current number of rows and/or columns of the dense column selection).
 */
-template< typename MT       // Type of the dense matrix
-        , size_t... CCAs >  // Compile time column arguments
+template< typename MT         // Type of the dense matrix
+        , typename... CCAs >  // Compile time column arguments
 inline bool Columns<MT,false,true,false,CCAs...>::canSMPAssign() const noexcept
 {
    return ( rows() * columns() > SMP_DMATASSIGN_THRESHOLD );
@@ -5117,28 +5133,28 @@ inline bool Columns<MT,false,true,false,CCAs...>::canSMPAssign() const noexcept
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT       // Type of the dense matrix
-        , size_t... CCAs >  // Compile time column arguments
-template< typename MT2 >    // Type of the right-hand side dense matrix
+template< typename MT         // Type of the dense matrix
+        , typename... CCAs >  // Compile time column arguments
+template< typename MT2 >      // Type of the right-hand side dense matrix
 inline void Columns<MT,false,true,false,CCAs...>::assign( const DenseMatrix<MT2,true>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_HERMITIAN_MATRIX_TYPE( MT );
 
-   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( columns() == (*rhs).columns(), "Invalid number of columns" );
 
-   const size_t ipos( rows() & size_t(-2) );
-   BLAZE_INTERNAL_ASSERT( ( rows() - ( rows() % 2UL ) ) == ipos, "Invalid end calculation" );
+   const size_t ipos( prevMultiple( rows(), 2UL ) );
+   BLAZE_INTERNAL_ASSERT( ipos <= rows(), "Invalid end calculation" );
 
    for( size_t j=0UL; j<columns(); ++j ) {
       const size_t index( idx(j) );
       for( size_t i=0UL; i<ipos; i+=2UL ) {
-         matrix_(i    ,index) = (~rhs)(i    ,j);
-         matrix_(i+1UL,index) = (~rhs)(i+1UL,j);
+         matrix_(i    ,index) = (*rhs)(i    ,j);
+         matrix_(i+1UL,index) = (*rhs)(i+1UL,j);
       }
       if( ipos < rows() ) {
-         matrix_(ipos,index) = (~rhs)(ipos,j);
+         matrix_(ipos,index) = (*rhs)(ipos,j);
       }
    }
 }
@@ -5158,9 +5174,9 @@ inline void Columns<MT,false,true,false,CCAs...>::assign( const DenseMatrix<MT2,
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT       // Type of the dense matrix
-        , size_t... CCAs >  // Compile time column arguments
-template< typename MT2 >    // Type of the right-hand side dense matrix
+template< typename MT         // Type of the dense matrix
+        , typename... CCAs >  // Compile time column arguments
+template< typename MT2 >      // Type of the right-hand side dense matrix
 inline void Columns<MT,false,true,false,CCAs...>::assign( const DenseMatrix<MT2,false>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
@@ -5168,22 +5184,24 @@ inline void Columns<MT,false,true,false,CCAs...>::assign( const DenseMatrix<MT2,
 
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT2 );
 
-   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( columns() == (*rhs).columns(), "Invalid number of columns" );
 
    constexpr size_t block( BLOCK_SIZE );
 
    if( rows() < block && columns() < block )
    {
-      const size_t ipos( (~rhs).rows() & size_t(-2) );
+      const size_t ipos( prevMultiple( (*rhs).rows(), 2UL ) );
+      BLAZE_INTERNAL_ASSERT( ipos <= (*rhs).rows(), "Invalid end calculation" );
+
       for( size_t j=0UL; j<columns(); ++j ) {
          const size_t index( idx(j) );
          for( size_t i=0UL; i<ipos; i+=2UL ) {
-            matrix_(i    ,index) = (~rhs)(i    ,j);
-            matrix_(i+1UL,index) = (~rhs)(i+1UL,j);
+            matrix_(i    ,index) = (*rhs)(i    ,j);
+            matrix_(i+1UL,index) = (*rhs)(i+1UL,j);
          }
-         if( ipos < (~rhs).rows() ) {
-            matrix_(ipos,index) = (~rhs)(ipos,j);
+         if( ipos < (*rhs).rows() ) {
+            matrix_(ipos,index) = (*rhs)(ipos,j);
          }
       }
    }
@@ -5196,7 +5214,7 @@ inline void Columns<MT,false,true,false,CCAs...>::assign( const DenseMatrix<MT2,
             for( size_t j=jj; j<jend; ++j ) {
                const size_t index( idx(j) );
                for( size_t i=ii; i<iend; ++i ) {
-                  matrix_(i,index) = (~rhs)(i,j);
+                  matrix_(i,index) = (*rhs)(i,j);
                }
             }
          }
@@ -5219,20 +5237,20 @@ inline void Columns<MT,false,true,false,CCAs...>::assign( const DenseMatrix<MT2,
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT       // Type of the dense matrix
-        , size_t... CCAs >  // Compile time column arguments
-template< typename MT2 >    // Type of the right-hand side sparse matrix
+template< typename MT         // Type of the dense matrix
+        , typename... CCAs >  // Compile time column arguments
+template< typename MT2 >      // Type of the right-hand side sparse matrix
 inline void Columns<MT,false,true,false,CCAs...>::assign( const SparseMatrix<MT2,true>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_HERMITIAN_MATRIX_TYPE( MT );
 
-   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( columns() == (*rhs).columns(), "Invalid number of columns" );
 
    for( size_t j=0UL; j<columns(); ++j ) {
       const size_t index( idx(j) );
-      for( ConstIterator_t<MT2> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
+      for( ConstIterator_t<MT2> element=(*rhs).begin(j); element!=(*rhs).end(j); ++element )
          matrix_(element->index(),index) = element->value();
    }
 }
@@ -5252,9 +5270,9 @@ inline void Columns<MT,false,true,false,CCAs...>::assign( const SparseMatrix<MT2
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT       // Type of the dense matrix
-        , size_t... CCAs >  // Compile time column arguments
-template< typename MT2 >    // Type of the right-hand side sparse matrix
+template< typename MT         // Type of the dense matrix
+        , typename... CCAs >  // Compile time column arguments
+template< typename MT2 >      // Type of the right-hand side sparse matrix
 inline void Columns<MT,false,true,false,CCAs...>::assign( const SparseMatrix<MT2,false>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
@@ -5262,11 +5280,11 @@ inline void Columns<MT,false,true,false,CCAs...>::assign( const SparseMatrix<MT2
 
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT2 );
 
-   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( columns() == (*rhs).columns(), "Invalid number of columns" );
 
    for( size_t i=0UL; i<rows(); ++i ) {
-      for( ConstIterator_t<MT2> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
+      for( ConstIterator_t<MT2> element=(*rhs).begin(i); element!=(*rhs).end(i); ++element )
          matrix_(i,idx(element->index())) = element->value();
    }
 }
@@ -5286,33 +5304,33 @@ inline void Columns<MT,false,true,false,CCAs...>::assign( const SparseMatrix<MT2
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT       // Type of the dense matrix
-        , size_t... CCAs >  // Compile time column arguments
-template< typename MT2 >    // Type of the right-hand side dense matrix
+template< typename MT         // Type of the dense matrix
+        , typename... CCAs >  // Compile time column arguments
+template< typename MT2 >      // Type of the right-hand side dense matrix
 inline void Columns<MT,false,true,false,CCAs...>::addAssign( const DenseMatrix<MT2,true>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_HERMITIAN_MATRIX_TYPE( MT );
 
-   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( columns() == (*rhs).columns(), "Invalid number of columns" );
 
-   const size_t ipos( rows() & size_t(-2) );
-   BLAZE_INTERNAL_ASSERT( ( rows() - ( rows() % 2UL ) ) == ipos, "Invalid end calculation" );
+   const size_t ipos( prevMultiple( rows(), 2UL ) );
+   BLAZE_INTERNAL_ASSERT( ipos <= rows(), "Invalid end calculation" );
 
    for( size_t j=0UL; j<columns(); ++j )
    {
       const size_t index( idx(j) );
       if( IsDiagonal_v<MT2> ) {
-         matrix_(j,index) += (~rhs)(j,j);
+         matrix_(j,index) += (*rhs)(j,j);
       }
       else {
          for( size_t i=0UL; i<ipos; i+=2UL ) {
-            matrix_(i    ,index) += (~rhs)(i    ,j);
-            matrix_(i+1UL,index) += (~rhs)(i+1UL,j);
+            matrix_(i    ,index) += (*rhs)(i    ,j);
+            matrix_(i+1UL,index) += (*rhs)(i+1UL,j);
          }
          if( ipos < rows() ) {
-            matrix_(ipos,index) += (~rhs)(ipos,j);
+            matrix_(ipos,index) += (*rhs)(ipos,j);
          }
       }
    }
@@ -5333,9 +5351,9 @@ inline void Columns<MT,false,true,false,CCAs...>::addAssign( const DenseMatrix<M
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT       // Type of the dense matrix
-        , size_t... CCAs >  // Compile time column arguments
-template< typename MT2 >    // Type of the right-hand side dense matrix
+template< typename MT         // Type of the dense matrix
+        , typename... CCAs >  // Compile time column arguments
+template< typename MT2 >      // Type of the right-hand side dense matrix
 inline void Columns<MT,false,true,false,CCAs...>::addAssign( const DenseMatrix<MT2,false>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
@@ -5343,22 +5361,24 @@ inline void Columns<MT,false,true,false,CCAs...>::addAssign( const DenseMatrix<M
 
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT2 );
 
-   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( columns() == (*rhs).columns(), "Invalid number of columns" );
 
    constexpr size_t block( BLOCK_SIZE );
 
    if( rows() < block && columns() < block )
    {
-      const size_t ipos( (~rhs).rows() & size_t(-2) );
+      const size_t ipos( prevMultiple( (*rhs).rows(), 2UL ) );
+      BLAZE_INTERNAL_ASSERT( ipos <= (*rhs).rows(), "Invalid end calculation" );
+
       for( size_t j=0UL; j<columns(); ++j ) {
          const size_t index( idx(j) );
          for( size_t i=0UL; i<ipos; i+=2UL ) {
-            matrix_(i    ,index) += (~rhs)(i    ,j);
-            matrix_(i+1UL,index) += (~rhs)(i+1UL,j);
+            matrix_(i    ,index) += (*rhs)(i    ,j);
+            matrix_(i+1UL,index) += (*rhs)(i+1UL,j);
          }
-         if( ipos < (~rhs).rows() )
-            matrix_(ipos,index) += (~rhs)(ipos,j);
+         if( ipos < (*rhs).rows() )
+            matrix_(ipos,index) += (*rhs)(ipos,j);
       }
    }
    else
@@ -5370,7 +5390,7 @@ inline void Columns<MT,false,true,false,CCAs...>::addAssign( const DenseMatrix<M
             for( size_t j=jj; j<jend; ++j ) {
                const size_t index( idx(j) );
                for( size_t i=ii; i<iend; ++i ) {
-                  matrix_(i,index) += (~rhs)(i,j);
+                  matrix_(i,index) += (*rhs)(i,j);
                }
             }
          }
@@ -5393,20 +5413,20 @@ inline void Columns<MT,false,true,false,CCAs...>::addAssign( const DenseMatrix<M
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT       // Type of the dense matrix
-        , size_t... CCAs >  // Compile time column arguments
-template< typename MT2 >    // Type of the right-hand side sparse matrix
+template< typename MT         // Type of the dense matrix
+        , typename... CCAs >  // Compile time column arguments
+template< typename MT2 >      // Type of the right-hand side sparse matrix
 inline void Columns<MT,false,true,false,CCAs...>::addAssign( const SparseMatrix<MT2,true>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_HERMITIAN_MATRIX_TYPE( MT );
 
-   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( columns() == (*rhs).columns(), "Invalid number of columns" );
 
    for( size_t j=0UL; j<columns(); ++j ) {
       const size_t index( idx(j) );
-      for( ConstIterator_t<MT2> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
+      for( ConstIterator_t<MT2> element=(*rhs).begin(j); element!=(*rhs).end(j); ++element )
          matrix_(element->index(),index) += element->value();
    }
 }
@@ -5426,9 +5446,9 @@ inline void Columns<MT,false,true,false,CCAs...>::addAssign( const SparseMatrix<
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT       // Type of the dense matrix
-        , size_t... CCAs >  // Compile time column arguments
-template< typename MT2 >    // Type of the right-hand side sparse matrix
+template< typename MT         // Type of the dense matrix
+        , typename... CCAs >  // Compile time column arguments
+template< typename MT2 >      // Type of the right-hand side sparse matrix
 inline void Columns<MT,false,true,false,CCAs...>::addAssign( const SparseMatrix<MT2,false>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
@@ -5436,11 +5456,11 @@ inline void Columns<MT,false,true,false,CCAs...>::addAssign( const SparseMatrix<
 
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT2 );
 
-   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( columns() == (*rhs).columns(), "Invalid number of columns" );
 
    for( size_t i=0UL; i<rows(); ++i ) {
-      for( ConstIterator_t<MT2> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
+      for( ConstIterator_t<MT2> element=(*rhs).begin(i); element!=(*rhs).end(i); ++element )
          matrix_(i,idx(element->index())) += element->value();
    }
 }
@@ -5460,34 +5480,34 @@ inline void Columns<MT,false,true,false,CCAs...>::addAssign( const SparseMatrix<
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT       // Type of the dense matrix
-        , size_t... CCAs >  // Compile time column arguments
-template< typename MT2 >    // Type of the right-hand side dense matrix
+template< typename MT         // Type of the dense matrix
+        , typename... CCAs >  // Compile time column arguments
+template< typename MT2 >      // Type of the right-hand side dense matrix
 inline void Columns<MT,false,true,false,CCAs...>::subAssign( const DenseMatrix<MT2,true>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_HERMITIAN_MATRIX_TYPE( MT );
 
-   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( columns() == (*rhs).columns(), "Invalid number of columns" );
 
-   const size_t ipos( rows() & size_t(-2) );
-   BLAZE_INTERNAL_ASSERT( ( rows() - ( rows() % 2UL ) ) == ipos, "Invalid end calculation" );
+   const size_t ipos( prevMultiple( rows(), 2UL ) );
+   BLAZE_INTERNAL_ASSERT( ipos <= rows(), "Invalid end calculation" );
 
    for( size_t j=0UL; j<columns(); ++j )
    {
       const size_t index( idx(j) );
 
       if( IsDiagonal_v<MT2> ) {
-         matrix_(j,index) -= (~rhs)(j,j);
+         matrix_(j,index) -= (*rhs)(j,j);
       }
       else {
          for( size_t i=0UL; i<ipos; i+=2UL ) {
-            matrix_(i    ,index) -= (~rhs)(i    ,j);
-            matrix_(i+1UL,index) -= (~rhs)(i+1UL,j);
+            matrix_(i    ,index) -= (*rhs)(i    ,j);
+            matrix_(i+1UL,index) -= (*rhs)(i+1UL,j);
          }
          if( ipos < rows() ) {
-            matrix_(ipos,index) -= (~rhs)(ipos,j);
+            matrix_(ipos,index) -= (*rhs)(ipos,j);
          }
       }
    }
@@ -5508,9 +5528,9 @@ inline void Columns<MT,false,true,false,CCAs...>::subAssign( const DenseMatrix<M
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT       // Type of the dense matrix
-        , size_t... CCAs >  // Compile time column arguments
-template< typename MT2 >    // Type of the right-hand side dense matrix
+template< typename MT         // Type of the dense matrix
+        , typename... CCAs >  // Compile time column arguments
+template< typename MT2 >      // Type of the right-hand side dense matrix
 inline void Columns<MT,false,true,false,CCAs...>::subAssign( const DenseMatrix<MT2,false>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
@@ -5518,22 +5538,24 @@ inline void Columns<MT,false,true,false,CCAs...>::subAssign( const DenseMatrix<M
 
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT2 );
 
-   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( columns() == (*rhs).columns(), "Invalid number of columns" );
 
    constexpr size_t block( BLOCK_SIZE );
 
    if( rows() < block && columns() < block )
    {
-      const size_t ipos( (~rhs).rows() & size_t(-2) );
+      const size_t ipos( prevMultiple( (*rhs).rows(), 2UL ) );
+      BLAZE_INTERNAL_ASSERT( ipos <= (*rhs).rows(), "Invalid end calculation" );
+
       for( size_t j=0UL; j<columns(); ++j ) {
          const size_t index( idx(j) );
          for( size_t i=0UL; i<ipos; i+=2UL ) {
-            matrix_(i    ,index) -= (~rhs)(i    ,j);
-            matrix_(i+1UL,index) -= (~rhs)(i+1UL,j);
+            matrix_(i    ,index) -= (*rhs)(i    ,j);
+            matrix_(i+1UL,index) -= (*rhs)(i+1UL,j);
          }
-         if( ipos < (~rhs).rows() )
-            matrix_(ipos,index) -= (~rhs)(ipos,j);
+         if( ipos < (*rhs).rows() )
+            matrix_(ipos,index) -= (*rhs)(ipos,j);
       }
    }
    else
@@ -5545,7 +5567,7 @@ inline void Columns<MT,false,true,false,CCAs...>::subAssign( const DenseMatrix<M
             for( size_t j=jj; j<jend; ++j ) {
                const size_t index( idx(j) );
                for( size_t i=ii; i<iend; ++i ) {
-                  matrix_(i,index) -= (~rhs)(i,j);
+                  matrix_(i,index) -= (*rhs)(i,j);
                }
             }
          }
@@ -5568,20 +5590,20 @@ inline void Columns<MT,false,true,false,CCAs...>::subAssign( const DenseMatrix<M
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT       // Type of the dense matrix
-        , size_t... CCAs >  // Compile time column arguments
-template< typename MT2 >    // Type of the right-hand side sparse matrix
+template< typename MT         // Type of the dense matrix
+        , typename... CCAs >  // Compile time column arguments
+template< typename MT2 >      // Type of the right-hand side sparse matrix
 inline void Columns<MT,false,true,false,CCAs...>::subAssign( const SparseMatrix<MT2,true>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_HERMITIAN_MATRIX_TYPE( MT );
 
-   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( columns() == (*rhs).columns(), "Invalid number of columns" );
 
    for( size_t j=0UL; j<columns(); ++j ) {
       const size_t index( idx(j) );
-      for( ConstIterator_t<MT2> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
+      for( ConstIterator_t<MT2> element=(*rhs).begin(j); element!=(*rhs).end(j); ++element )
          matrix_(element->index(),index) -= element->value();
    }
 }
@@ -5601,9 +5623,9 @@ inline void Columns<MT,false,true,false,CCAs...>::subAssign( const SparseMatrix<
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT       // Type of the dense matrix
-        , size_t... CCAs >  // Compile time column arguments
-template< typename MT2 >    // Type of the right-hand side sparse matrix
+template< typename MT         // Type of the dense matrix
+        , typename... CCAs >  // Compile time column arguments
+template< typename MT2 >      // Type of the right-hand side sparse matrix
 inline void Columns<MT,false,true,false,CCAs...>::subAssign( const SparseMatrix<MT2,false>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
@@ -5611,11 +5633,11 @@ inline void Columns<MT,false,true,false,CCAs...>::subAssign( const SparseMatrix<
 
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT2 );
 
-   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( columns() == (*rhs).columns(), "Invalid number of columns" );
 
    for( size_t i=0UL; i<rows(); ++i ) {
-      for( ConstIterator_t<MT2> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
+      for( ConstIterator_t<MT2> element=(*rhs).begin(i); element!=(*rhs).end(i); ++element )
          matrix_(i,idx(element->index())) -= element->value();
    }
 }
@@ -5635,28 +5657,28 @@ inline void Columns<MT,false,true,false,CCAs...>::subAssign( const SparseMatrix<
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT       // Type of the dense matrix
-        , size_t... CCAs >  // Compile time column arguments
-template< typename MT2 >    // Type of the right-hand side dense matrix
+template< typename MT         // Type of the dense matrix
+        , typename... CCAs >  // Compile time column arguments
+template< typename MT2 >      // Type of the right-hand side dense matrix
 inline void Columns<MT,false,true,false,CCAs...>::schurAssign( const DenseMatrix<MT2,true>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_HERMITIAN_MATRIX_TYPE( MT );
 
-   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( columns() == (*rhs).columns(), "Invalid number of columns" );
 
-   const size_t ipos( rows() & size_t(-2) );
-   BLAZE_INTERNAL_ASSERT( ( rows() - ( rows() % 2UL ) ) == ipos, "Invalid end calculation" );
+   const size_t ipos( prevMultiple( rows(), 2UL ) );
+   BLAZE_INTERNAL_ASSERT( ipos <= rows(), "Invalid end calculation" );
 
    for( size_t j=0UL; j<columns(); ++j ) {
       const size_t index( idx(j) );
       for( size_t i=0UL; i<ipos; i+=2UL ) {
-         matrix_(i    ,index) *= (~rhs)(i    ,j);
-         matrix_(i+1UL,index) *= (~rhs)(i+1UL,j);
+         matrix_(i    ,index) *= (*rhs)(i    ,j);
+         matrix_(i+1UL,index) *= (*rhs)(i+1UL,j);
       }
       if( ipos < rows() ) {
-         matrix_(ipos,index) *= (~rhs)(ipos,j);
+         matrix_(ipos,index) *= (*rhs)(ipos,j);
       }
    }
 }
@@ -5676,9 +5698,9 @@ inline void Columns<MT,false,true,false,CCAs...>::schurAssign( const DenseMatrix
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT       // Type of the dense matrix
-        , size_t... CCAs >  // Compile time column arguments
-template< typename MT2 >    // Type of the right-hand side dense matrix
+template< typename MT         // Type of the dense matrix
+        , typename... CCAs >  // Compile time column arguments
+template< typename MT2 >      // Type of the right-hand side dense matrix
 inline void Columns<MT,false,true,false,CCAs...>::schurAssign( const DenseMatrix<MT2,false>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
@@ -5686,22 +5708,24 @@ inline void Columns<MT,false,true,false,CCAs...>::schurAssign( const DenseMatrix
 
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT2 );
 
-   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( columns() == (*rhs).columns(), "Invalid number of columns" );
 
    constexpr size_t block( BLOCK_SIZE );
 
    if( rows() < block && columns() < block )
    {
-      const size_t ipos( (~rhs).rows() & size_t(-2) );
+      const size_t ipos( prevMultiple( (*rhs).rows(), 2UL ) );
+      BLAZE_INTERNAL_ASSERT( ipos <= (*rhs).rows(), "Invalid end calculation" );
+
       for( size_t j=0UL; j<columns(); ++j ) {
          const size_t index( idx(j) );
          for( size_t i=0UL; i<ipos; i+=2UL ) {
-            matrix_(i    ,index) *= (~rhs)(i    ,j);
-            matrix_(i+1UL,index) *= (~rhs)(i+1UL,j);
+            matrix_(i    ,index) *= (*rhs)(i    ,j);
+            matrix_(i+1UL,index) *= (*rhs)(i+1UL,j);
          }
-         if( ipos < (~rhs).rows() )
-            matrix_(ipos,index) *= (~rhs)(ipos,j);
+         if( ipos < (*rhs).rows() )
+            matrix_(ipos,index) *= (*rhs)(ipos,j);
       }
    }
    else
@@ -5713,7 +5737,7 @@ inline void Columns<MT,false,true,false,CCAs...>::schurAssign( const DenseMatrix
             for( size_t j=jj; j<jend; ++j ) {
                const size_t index( idx(j) );
                for( size_t i=ii; i<iend; ++i ) {
-                  matrix_(i,index) *= (~rhs)(i,j);
+                  matrix_(i,index) *= (*rhs)(i,j);
                }
             }
          }
@@ -5736,9 +5760,9 @@ inline void Columns<MT,false,true,false,CCAs...>::schurAssign( const DenseMatrix
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT       // Type of the dense matrix
-        , size_t... CCAs >  // Compile time column arguments
-template< typename MT2 >    // Type of the right-hand side sparse matrix
+template< typename MT         // Type of the dense matrix
+        , typename... CCAs >  // Compile time column arguments
+template< typename MT2 >      // Type of the right-hand side sparse matrix
 inline void Columns<MT,false,true,false,CCAs...>::schurAssign( const SparseMatrix<MT2,true>& rhs )
 {
    using blaze::reset;
@@ -5746,15 +5770,15 @@ inline void Columns<MT,false,true,false,CCAs...>::schurAssign( const SparseMatri
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_HERMITIAN_MATRIX_TYPE( MT );
 
-   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( columns() == (*rhs).columns(), "Invalid number of columns" );
 
    for( size_t j=0UL; j<columns(); ++j )
    {
       const size_t index( idx(j) );
       size_t i( 0UL );
 
-      for( ConstIterator_t<MT2> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element ) {
+      for( ConstIterator_t<MT2> element=(*rhs).begin(j); element!=(*rhs).end(j); ++element ) {
          for( ; i<element->index(); ++i )
             reset( matrix_(i,index) );
          matrix_(i,index) *= element->value();
@@ -5782,9 +5806,9 @@ inline void Columns<MT,false,true,false,CCAs...>::schurAssign( const SparseMatri
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT       // Type of the dense matrix
-        , size_t... CCAs >  // Compile time column arguments
-template< typename MT2 >    // Type of the right-hand side sparse matrix
+template< typename MT         // Type of the dense matrix
+        , typename... CCAs >  // Compile time column arguments
+template< typename MT2 >      // Type of the right-hand side sparse matrix
 inline void Columns<MT,false,true,false,CCAs...>::schurAssign( const SparseMatrix<MT2,false>& rhs )
 {
    using blaze::reset;
@@ -5794,14 +5818,14 @@ inline void Columns<MT,false,true,false,CCAs...>::schurAssign( const SparseMatri
 
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT2 );
 
-   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( columns() == (*rhs).columns(), "Invalid number of columns" );
 
    for( size_t i=0UL; i<rows(); ++i )
    {
       size_t j( 0UL );
 
-      for( ConstIterator_t<MT2> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element ) {
+      for( ConstIterator_t<MT2> element=(*rhs).begin(i); element!=(*rhs).end(i); ++element ) {
          for( ; j<element->index(); ++j )
             reset( matrix_(i,idx(j)) );
          matrix_(i,idx(j)) *= element->value();
@@ -5837,8 +5861,8 @@ inline void Columns<MT,false,true,false,CCAs...>::schurAssign( const SparseMatri
 // This specialization of Columns adapts the class template to the requirements of symmetric
 // row-major dense matrices.
 */
-template< typename MT       // Type of the dense matrix
-        , size_t... CCAs >  // Compile time column arguments
+template< typename MT         // Type of the dense matrix
+        , typename... CCAs >  // Compile time column arguments
 class Columns<MT,false,true,true,CCAs...>
    : public View< DenseMatrix< Columns<MT,false,true,true,CCAs...>, true > >
    , private ColumnsData<CCAs...>
@@ -5849,14 +5873,20 @@ class Columns<MT,false,true,true,CCAs...>
    using Operand  = If_t< IsExpression_v<MT>, MT, MT& >;  //!< Composite data type of the dense matrix expression.
    //**********************************************************************************************
 
+   //**Compile time flags**************************************************************************
+   using DataType::N;  //!< Number of compile time indices.
+   //**********************************************************************************************
+
  public:
    //**Type definitions****************************************************************************
    //! Type of this Columns instance.
    using This = Columns<MT,false,true,true,CCAs...>;
 
-   using BaseType      = DenseMatrix<This,true>;       //!< Base type of this Columns instance.
+   //! Base type of this Columns instance.
+   using BaseType = View< DenseMatrix<This,true> >;
+
    using ViewedType    = MT;                           //!< The type viewed by this Columns instance.
-   using ResultType    = ColumnsTrait_t<MT,CCAs...>;   //!< Result type for expression template evaluations.
+   using ResultType    = ColumnsTrait_t<MT,N>;         //!< Result type for expression template evaluations.
    using OppositeType  = OppositeType_t<ResultType>;   //!< Result type with opposite storage order for expression template evaluations.
    using TransposeType = TransposeType_t<ResultType>;  //!< Transpose type for expression template evaluations.
    using ElementType   = ElementType_t<MT>;            //!< Type of the column elements.
@@ -5889,6 +5919,9 @@ class Columns<MT,false,true,true,CCAs...>
 
    //! Compilation switch for the expression template assignment strategy.
    static constexpr bool smpAssignable = MT::smpAssignable;
+
+   //! Compilation switch for the expression template evaluation strategy.
+   static constexpr bool compileTimeArgs = DataType::compileTimeArgs;
    //**********************************************************************************************
 
    //**Constructors********************************************************************************
@@ -5965,13 +5998,13 @@ class Columns<MT,false,true,true,CCAs...>
    template< typename Other >
    inline bool canAlias( const Other* alias ) const noexcept;
 
-   template< typename MT2, bool SO2, bool SF2, size_t... CCAs2 >
+   template< typename MT2, bool SO2, bool SF2, typename... CCAs2 >
    inline bool canAlias( const Columns<MT2,SO2,true,SF2,CCAs2...>* alias ) const noexcept;
 
    template< typename Other >
    inline bool isAliased( const Other* alias ) const noexcept;
 
-   template< typename MT2, bool SO2, bool SF2, size_t... CCAs2 >
+   template< typename MT2, bool SO2, bool SF2, typename... CCAs2 >
    inline bool isAliased( const Columns<MT2,SO2,true,SF2,CCAs2...>* alias ) const noexcept;
 
    inline bool isAligned   () const noexcept;
@@ -5992,7 +6025,7 @@ class Columns<MT,false,true,true,CCAs...>
    //**********************************************************************************************
 
    //**Friend declarations*************************************************************************
-   template< typename MT2, bool SO2, bool DF2, bool SF2, size_t... CCAs2 > friend class Columns;
+   template< typename MT2, bool SO2, bool DF2, bool SF2, typename... CCAs2 > friend class Columns;
    //**********************************************************************************************
 
    //**Compile time checks*************************************************************************
@@ -6033,13 +6066,13 @@ class Columns<MT,false,true,true,CCAs...>
 // providing the optional \a blaze::unchecked argument.
 */
 template< typename MT         // Type of the dense matrix
-        , size_t... CCAs >    // Compile time column arguments
+        , typename... CCAs >  // Compile time column arguments
 template< typename... RCAs >  // Runtime column arguments
 inline Columns<MT,false,true,true,CCAs...>::Columns( MT& matrix, RCAs... args )
    : DataType( args... )  // Base class initialization
    , matrix_ ( matrix  )  // The matrix containing the columns
 {
-   if( !Contains_v< TypeList<RCAs...>, Unchecked > ) {
+   if( isChecked( args... ) ) {
       for( size_t j=0UL; j<columns(); ++j ) {
          if( matrix_.columns() <= idx(j) ) {
             BLAZE_THROW_INVALID_ARGUMENT( "Invalid column access index" );
@@ -6070,8 +6103,8 @@ inline Columns<MT,false,true,true,CCAs...>::Columns( MT& matrix, RCAs... args )
 // This function only performs an index check in case BLAZE_USER_ASSERT() is active. In contrast,
 // the at() function is guaranteed to perform a check of the given access indices.
 */
-template< typename MT       // Type of the dense matrix
-        , size_t... CCAs >  // Compile time column arguments
+template< typename MT         // Type of the dense matrix
+        , typename... CCAs >  // Compile time column arguments
 inline typename Columns<MT,false,true,true,CCAs...>::Reference
    Columns<MT,false,true,true,CCAs...>::operator()( size_t i, size_t j )
 {
@@ -6095,8 +6128,8 @@ inline typename Columns<MT,false,true,true,CCAs...>::Reference
 // This function only performs an index check in case BLAZE_USER_ASSERT() is active. In contrast,
 // the at() function is guaranteed to perform a check of the given access indices.
 */
-template< typename MT       // Type of the dense matrix
-        , size_t... CCAs >  // Compile time column arguments
+template< typename MT         // Type of the dense matrix
+        , typename... CCAs >  // Compile time column arguments
 inline typename Columns<MT,false,true,true,CCAs...>::ConstReference
    Columns<MT,false,true,true,CCAs...>::operator()( size_t i, size_t j ) const
 {
@@ -6121,8 +6154,8 @@ inline typename Columns<MT,false,true,true,CCAs...>::ConstReference
 // In contrast to the function call operator this function always performs a check of the given
 // access indices.
 */
-template< typename MT       // Type of the dense matrix
-        , size_t... CCAs >  // Compile time column arguments
+template< typename MT         // Type of the dense matrix
+        , typename... CCAs >  // Compile time column arguments
 inline typename Columns<MT,false,true,true,CCAs...>::Reference
    Columns<MT,false,true,true,CCAs...>::at( size_t i, size_t j )
 {
@@ -6150,8 +6183,8 @@ inline typename Columns<MT,false,true,true,CCAs...>::Reference
 // In contrast to the function call operator this function always performs a check of the given
 // access indices.
 */
-template< typename MT       // Type of the dense matrix
-        , size_t... CCAs >  // Compile time column arguments
+template< typename MT         // Type of the dense matrix
+        , typename... CCAs >  // Compile time column arguments
 inline typename Columns<MT,false,true,true,CCAs...>::ConstReference
    Columns<MT,false,true,true,CCAs...>::at( size_t i, size_t j ) const
 {
@@ -6177,8 +6210,8 @@ inline typename Columns<MT,false,true,true,CCAs...>::ConstReference
 // that you can NOT assume that all matrix elements lie adjacent to each other! The underlying
 // matrix may use techniques such as padding to improve the alignment of the data.
 */
-template< typename MT       // Type of the dense matrix
-        , size_t... CCAs >  // Compile time column arguments
+template< typename MT         // Type of the dense matrix
+        , typename... CCAs >  // Compile time column arguments
 inline typename Columns<MT,false,true,true,CCAs...>::Pointer
    Columns<MT,false,true,true,CCAs...>::data() noexcept
 {
@@ -6198,8 +6231,8 @@ inline typename Columns<MT,false,true,true,CCAs...>::Pointer
 // that you can NOT assume that all matrix elements lie adjacent to each other! The underlying
 // matrix may use techniques such as padding to improve the alignment of the data.
 */
-template< typename MT       // Type of the dense matrix
-        , size_t... CCAs >  // Compile time column arguments
+template< typename MT         // Type of the dense matrix
+        , typename... CCAs >  // Compile time column arguments
 inline typename Columns<MT,false,true,true,CCAs...>::ConstPointer
    Columns<MT,false,true,true,CCAs...>::data() const noexcept
 {
@@ -6218,8 +6251,8 @@ inline typename Columns<MT,false,true,true,CCAs...>::ConstPointer
 //
 // This function returns a pointer to the internal storage for the elements in column \a j.
 */
-template< typename MT       // Type of the dense matrix
-        , size_t... CCAs >  // Compile time column arguments
+template< typename MT         // Type of the dense matrix
+        , typename... CCAs >  // Compile time column arguments
 inline typename Columns<MT,false,true,true,CCAs...>::Pointer
    Columns<MT,false,true,true,CCAs...>::data( size_t j ) noexcept
 {
@@ -6238,8 +6271,8 @@ inline typename Columns<MT,false,true,true,CCAs...>::Pointer
 //
 // This function returns a pointer to the internal storage for the elements in column \a j.
 */
-template< typename MT       // Type of the dense matrix
-        , size_t... CCAs >  // Compile time column arguments
+template< typename MT         // Type of the dense matrix
+        , typename... CCAs >  // Compile time column arguments
 inline typename Columns<MT,false,true,true,CCAs...>::ConstPointer
    Columns<MT,false,true,true,CCAs...>::data( size_t j ) const noexcept
 {
@@ -6258,8 +6291,8 @@ inline typename Columns<MT,false,true,true,CCAs...>::ConstPointer
 //
 // This function returns an iterator to the first non-zero element of column \a j.
 */
-template< typename MT       // Type of the dense matrix
-        , size_t... CCAs >  // Compile time column arguments
+template< typename MT         // Type of the dense matrix
+        , typename... CCAs >  // Compile time column arguments
 inline typename Columns<MT,false,true,true,CCAs...>::Iterator
    Columns<MT,false,true,true,CCAs...>::begin( size_t j )
 {
@@ -6279,8 +6312,8 @@ inline typename Columns<MT,false,true,true,CCAs...>::Iterator
 //
 // This function returns an iterator to the first non-zero element of column \a j.
 */
-template< typename MT       // Type of the dense matrix
-        , size_t... CCAs >  // Compile time column arguments
+template< typename MT         // Type of the dense matrix
+        , typename... CCAs >  // Compile time column arguments
 inline typename Columns<MT,false,true,true,CCAs...>::ConstIterator
    Columns<MT,false,true,true,CCAs...>::begin( size_t j ) const
 {
@@ -6300,8 +6333,8 @@ inline typename Columns<MT,false,true,true,CCAs...>::ConstIterator
 //
 // This function returns an iterator to the first non-zero element of column \a j.
 */
-template< typename MT       // Type of the dense matrix
-        , size_t... CCAs >  // Compile time column arguments
+template< typename MT         // Type of the dense matrix
+        , typename... CCAs >  // Compile time column arguments
 inline typename Columns<MT,false,true,true,CCAs...>::ConstIterator
    Columns<MT,false,true,true,CCAs...>::cbegin( size_t j ) const
 {
@@ -6321,8 +6354,8 @@ inline typename Columns<MT,false,true,true,CCAs...>::ConstIterator
 //
 // This function returns an iterator just past the last non-zero element of column \a j.
 */
-template< typename MT       // Type of the dense matrix
-        , size_t... CCAs >  // Compile time column arguments
+template< typename MT         // Type of the dense matrix
+        , typename... CCAs >  // Compile time column arguments
 inline typename Columns<MT,false,true,true,CCAs...>::Iterator
    Columns<MT,false,true,true,CCAs...>::end( size_t j )
 {
@@ -6342,8 +6375,8 @@ inline typename Columns<MT,false,true,true,CCAs...>::Iterator
 //
 // This function returns an iterator just past the last non-zero element of column \a j.
 */
-template< typename MT       // Type of the dense matrix
-        , size_t... CCAs >  // Compile time column arguments
+template< typename MT         // Type of the dense matrix
+        , typename... CCAs >  // Compile time column arguments
 inline typename Columns<MT,false,true,true,CCAs...>::ConstIterator
    Columns<MT,false,true,true,CCAs...>::end( size_t j ) const
 {
@@ -6363,8 +6396,8 @@ inline typename Columns<MT,false,true,true,CCAs...>::ConstIterator
 //
 // This function returns an iterator just past the last non-zero element of column \a j.
 */
-template< typename MT       // Type of the dense matrix
-        , size_t... CCAs >  // Compile time column arguments
+template< typename MT         // Type of the dense matrix
+        , typename... CCAs >  // Compile time column arguments
 inline typename Columns<MT,false,true,true,CCAs...>::ConstIterator
    Columns<MT,false,true,true,CCAs...>::cend( size_t j ) const
 {
@@ -6394,8 +6427,8 @@ inline typename Columns<MT,false,true,true,CCAs...>::ConstIterator
 // that in case the underlying dense matrix is a lower/upper matrix only lower/upper and diagonal
 // elements of the underlying matrix are modified.
 */
-template< typename MT       // Type of the dense matrix
-        , size_t... CCAs >  // Compile time column arguments
+template< typename MT         // Type of the dense matrix
+        , typename... CCAs >  // Compile time column arguments
 inline Columns<MT,false,true,true,CCAs...>&
    Columns<MT,false,true,true,CCAs...>::operator=( const ElementType& rhs )
 {
@@ -6423,8 +6456,8 @@ inline Columns<MT,false,true,true,CCAs...>&
 //
 // \return The matrix containing the columns.
 */
-template< typename MT       // Type of the dense matrix
-        , size_t... CCAs >  // Compile time column arguments
+template< typename MT         // Type of the dense matrix
+        , typename... CCAs >  // Compile time column arguments
 inline MT& Columns<MT,false,true,true,CCAs...>::operand() noexcept
 {
    return matrix_;
@@ -6439,8 +6472,8 @@ inline MT& Columns<MT,false,true,true,CCAs...>::operand() noexcept
 //
 // \return The matrix containing the columns.
 */
-template< typename MT       // Type of the dense matrix
-        , size_t... CCAs >  // Compile time column arguments
+template< typename MT         // Type of the dense matrix
+        , typename... CCAs >  // Compile time column arguments
 inline const MT& Columns<MT,false,true,true,CCAs...>::operand() const noexcept
 {
    return matrix_;
@@ -6455,8 +6488,8 @@ inline const MT& Columns<MT,false,true,true,CCAs...>::operand() const noexcept
 //
 // \return The number of rows of the column selection.
 */
-template< typename MT       // Type of the dense matrix
-        , size_t... CCAs >  // Compile time column arguments
+template< typename MT         // Type of the dense matrix
+        , typename... CCAs >  // Compile time column arguments
 inline size_t Columns<MT,false,true,true,CCAs...>::rows() const noexcept
 {
    return matrix_.rows();
@@ -6474,8 +6507,8 @@ inline size_t Columns<MT,false,true,true,CCAs...>::rows() const noexcept
 // This function returns the spacing between the beginning of two columns, i.e. the total number
 // of elements of a column.
 */
-template< typename MT       // Type of the dense matrix
-        , size_t... CCAs >  // Compile time column arguments
+template< typename MT         // Type of the dense matrix
+        , typename... CCAs >  // Compile time column arguments
 inline size_t Columns<MT,false,true,true,CCAs...>::spacing() const noexcept
 {
    return matrix_.spacing();
@@ -6490,8 +6523,8 @@ inline size_t Columns<MT,false,true,true,CCAs...>::spacing() const noexcept
 //
 // \return The capacity of the dense column selection.
 */
-template< typename MT       // Type of the dense matrix
-        , size_t... CCAs >  // Compile time column arguments
+template< typename MT         // Type of the dense matrix
+        , typename... CCAs >  // Compile time column arguments
 inline size_t Columns<MT,false,true,true,CCAs...>::capacity() const noexcept
 {
    return rows() * columns();
@@ -6509,11 +6542,11 @@ inline size_t Columns<MT,false,true,true,CCAs...>::capacity() const noexcept
 //
 // This function returns the current capacity of the specified column.
 */
-template< typename MT       // Type of the dense matrix
-        , size_t... CCAs >  // Compile time column arguments
+template< typename MT         // Type of the dense matrix
+        , typename... CCAs >  // Compile time column arguments
 inline size_t Columns<MT,false,true,true,CCAs...>::capacity( size_t j ) const noexcept
 {
-   UNUSED_PARAMETER( j );
+   MAYBE_UNUSED( j );
 
    BLAZE_USER_ASSERT( j < columns(), "Invalid column access index" );
 
@@ -6529,8 +6562,8 @@ inline size_t Columns<MT,false,true,true,CCAs...>::capacity( size_t j ) const no
 //
 // \return The number of non-zero elements in the dense column selection.
 */
-template< typename MT       // Type of the dense matrix
-        , size_t... CCAs >  // Compile time column arguments
+template< typename MT         // Type of the dense matrix
+        , typename... CCAs >  // Compile time column arguments
 inline size_t Columns<MT,false,true,true,CCAs...>::nonZeros() const
 {
    size_t nonzeros( 0UL );
@@ -6554,8 +6587,8 @@ inline size_t Columns<MT,false,true,true,CCAs...>::nonZeros() const
 //
 // This function returns the current number of non-zero elements in the specified column.
 */
-template< typename MT       // Type of the dense matrix
-        , size_t... CCAs >  // Compile time column arguments
+template< typename MT         // Type of the dense matrix
+        , typename... CCAs >  // Compile time column arguments
 inline size_t Columns<MT,false,true,true,CCAs...>::nonZeros( size_t j ) const
 {
    BLAZE_USER_ASSERT( j < columns(), "Invalid column access index" );
@@ -6572,8 +6605,8 @@ inline size_t Columns<MT,false,true,true,CCAs...>::nonZeros( size_t j ) const
 //
 // \return void
 */
-template< typename MT       // Type of the dense matrix
-        , size_t... CCAs >  // Compile time column arguments
+template< typename MT         // Type of the dense matrix
+        , typename... CCAs >  // Compile time column arguments
 inline void Columns<MT,false,true,true,CCAs...>::reset()
 {
    for( size_t j=0UL; j<columns(); ++j ) {
@@ -6593,8 +6626,8 @@ inline void Columns<MT,false,true,true,CCAs...>::reset()
 //
 // This function resets the values in the specified column to their default value.
 */
-template< typename MT       // Type of the dense matrix
-        , size_t... CCAs >  // Compile time column arguments
+template< typename MT         // Type of the dense matrix
+        , typename... CCAs >  // Compile time column arguments
 inline void Columns<MT,false,true,true,CCAs...>::reset( size_t j )
 {
    matrix_.reset( idx(j) );
@@ -6620,12 +6653,12 @@ inline void Columns<MT,false,true,true,CCAs...>::reset( size_t j )
 // contrast to the isAliased() function this function is allowed to use compile time expressions
 // to optimize the evaluation.
 */
-template< typename MT       // Type of the dense matrix
-        , size_t... CCAs >  // Compile time column arguments
-template< typename Other >  // Data type of the foreign expression
+template< typename MT         // Type of the dense matrix
+        , typename... CCAs >  // Compile time column arguments
+template< typename Other >    // Data type of the foreign expression
 inline bool Columns<MT,false,true,true,CCAs...>::canAlias( const Other* alias ) const noexcept
 {
-   return matrix_.isAliased( alias );
+   return matrix_.isAliased( &unview( *alias ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -6643,12 +6676,12 @@ inline bool Columns<MT,false,true,true,CCAs...>::canAlias( const Other* alias ) 
 // contrast to the isAliased() function this function is allowed to use compile time expressions
 // to optimize the evaluation.
 */
-template< typename MT        // Type of the dense matrix
-        , size_t... CCAs >   // Compile time column arguments
-template< typename MT2       // Data type of the foreign dense column selection
-        , bool SO2           // Storage order of the foreign dense column selection
-        , bool SF2           // Symmetry flag of the foreign dense column selection
-        , size_t... CCAs2 >  // Compile time column arguments of the foreign dense column selection
+template< typename MT          // Type of the dense matrix
+        , typename... CCAs >   // Compile time column arguments
+template< typename MT2         // Data type of the foreign dense column selection
+        , bool SO2             // Storage order of the foreign dense column selection
+        , bool SF2             // Symmetry flag of the foreign dense column selection
+        , typename... CCAs2 >  // Compile time column arguments of the foreign dense column selection
 inline bool
    Columns<MT,false,true,true,CCAs...>::canAlias( const Columns<MT2,SO2,true,SF2,CCAs2...>* alias ) const noexcept
 {
@@ -6669,12 +6702,12 @@ inline bool
 // contrast to the canAlias() function this function is not allowed to use compile time expressions
 // to optimize the evaluation.
 */
-template< typename MT       // Type of the dense matrix
-        , size_t... CCAs >  // Compile time column arguments
-template< typename Other >  // Data type of the foreign expression
+template< typename MT         // Type of the dense matrix
+        , typename... CCAs >  // Compile time column arguments
+template< typename Other >    // Data type of the foreign expression
 inline bool Columns<MT,false,true,true,CCAs...>::isAliased( const Other* alias ) const noexcept
 {
-   return matrix_.isAliased( alias );
+   return matrix_.isAliased( &unview( *alias ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -6692,12 +6725,12 @@ inline bool Columns<MT,false,true,true,CCAs...>::isAliased( const Other* alias )
 // contrast to the canAlias() function this function is not allowed to use compile time expressions
 // to optimize the evaluation.
 */
-template< typename MT        // Type of the dense matrix
-        , size_t... CCAs >   // Compile time column arguments
-template< typename MT2       // Data type of the foreign dense column selection
-        , bool SO2           // Storage order of the foreign dense column selection
-        , bool SF2           // Symmetry flag of the foreign dense column selection
-        , size_t... CCAs2 >  // Compile time column arguments of the foreign dense column selection
+template< typename MT          // Type of the dense matrix
+        , typename... CCAs >   // Compile time column arguments
+template< typename MT2         // Data type of the foreign dense column selection
+        , bool SO2             // Storage order of the foreign dense column selection
+        , bool SF2             // Symmetry flag of the foreign dense column selection
+        , typename... CCAs2 >  // Compile time column arguments of the foreign dense column selection
 inline bool
    Columns<MT,false,true,true,CCAs...>::isAliased( const Columns<MT2,SO2,true,SF2,CCAs2...>* alias ) const noexcept
 {
@@ -6717,8 +6750,8 @@ inline bool
 // in memory, i.e. whether the beginning and the end of the dense column selection are guaranteed
 // to conform to the alignment restrictions of the element type \a Type.
 */
-template< typename MT       // Type of the dense matrix
-        , size_t... CCAs >  // Compile time column arguments
+template< typename MT         // Type of the dense matrix
+        , typename... CCAs >  // Compile time column arguments
 inline bool Columns<MT,false,true,true,CCAs...>::isAligned() const noexcept
 {
    return matrix_.isAligned();
@@ -6738,8 +6771,8 @@ inline bool Columns<MT,false,true,true,CCAs...>::isAligned() const noexcept
 // information, this function additionally provides runtime information (as for instance the
 // current number of rows and/or columns of the dense column selection).
 */
-template< typename MT       // Type of the dense matrix
-        , size_t... CCAs >  // Compile time column arguments
+template< typename MT         // Type of the dense matrix
+        , typename... CCAs >  // Compile time column arguments
 inline bool Columns<MT,false,true,true,CCAs...>::canSMPAssign() const noexcept
 {
    return ( rows() * columns() > SMP_DMATASSIGN_THRESHOLD );
@@ -6763,8 +6796,8 @@ inline bool Columns<MT,false,true,true,CCAs...>::canSMPAssign() const noexcept
 // for the performance optimized evaluation of expression templates. Calling this function
 // explicitly might result in erroneous results and/or in compilation errors.
 */
-template< typename MT       // Type of the dense matrix
-        , size_t... CCAs >  // Compile time column arguments
+template< typename MT         // Type of the dense matrix
+        , typename... CCAs >  // Compile time column arguments
 BLAZE_ALWAYS_INLINE typename Columns<MT,false,true,true,CCAs...>::SIMDType
    Columns<MT,false,true,true,CCAs...>::load( size_t i, size_t j ) const noexcept
 {
@@ -6789,8 +6822,8 @@ BLAZE_ALWAYS_INLINE typename Columns<MT,false,true,true,CCAs...>::SIMDType
 // internally for the performance optimized evaluation of expression templates. Calling this
 // function explicitly might result in erroneous results and/or in compilation errors.
 */
-template< typename MT       // Type of the dense matrix
-        , size_t... CCAs >  // Compile time column arguments
+template< typename MT         // Type of the dense matrix
+        , typename... CCAs >  // Compile time column arguments
 BLAZE_ALWAYS_INLINE typename Columns<MT,false,true,true,CCAs...>::SIMDType
    Columns<MT,false,true,true,CCAs...>::loada( size_t i, size_t j ) const noexcept
 {
@@ -6815,8 +6848,8 @@ BLAZE_ALWAYS_INLINE typename Columns<MT,false,true,true,CCAs...>::SIMDType
 // is used internally for the performance optimized evaluation of expression templates. Calling
 // this function explicitly might result in erroneous results and/or in compilation errors.
 */
-template< typename MT       // Type of the dense matrix
-        , size_t... CCAs >  // Compile time column arguments
+template< typename MT         // Type of the dense matrix
+        , typename... CCAs >  // Compile time column arguments
 BLAZE_ALWAYS_INLINE typename Columns<MT,false,true,true,CCAs...>::SIMDType
    Columns<MT,false,true,true,CCAs...>::loadu( size_t i, size_t j ) const noexcept
 {

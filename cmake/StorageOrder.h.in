@@ -3,7 +3,7 @@
 //  \file blaze/config/StorageOrder.h
 //  \brief Configuration of the default storage order for all matrices of the Blaze library
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -49,7 +49,7 @@
    StaticMatrix<double,3UL,3UL> B;
    \endcode
 
-// Valid settings for the defaultStorageOrder are blaze::rowMajor and blaze::columnMajor.
+// Valid settings for the BLAZE_DEFAULT_STORAGE_ORDER are blaze::rowMajor and blaze::columnMajor.
 //
 // \note It is possible to specify the default storage order via command line or by defining
 // this symbol manually before including any Blaze header file:

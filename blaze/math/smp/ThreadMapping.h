@@ -3,7 +3,7 @@
 //  \file blaze/math/smp/ThreadMapping.h
 //  \brief Header file for the SMP thread mapping functionality
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -81,8 +81,8 @@ template< typename MT  // Type of the matrix
         , bool SO >    // Storage order of the matrix
 ThreadMapping createThreadMapping( size_t threads, const Matrix<MT,SO>& A )
 {
-   const size_t M( (~A).rows()    );
-   const size_t N( (~A).columns() );
+   const size_t M( (*A).rows()    );
+   const size_t N( (*A).columns() );
 
    if( M > N || ( M == N && !SO ) )
    {

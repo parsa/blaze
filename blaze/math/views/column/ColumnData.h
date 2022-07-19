@@ -3,7 +3,7 @@
 //  \file blaze/math/views/column/ColumnData.h
 //  \brief Header file for the implementation of the ColumnData class template
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -40,8 +40,8 @@
 // Includes
 //*************************************************************************************************
 
+#include <blaze/util/MaybeUnused.h>
 #include <blaze/util/Types.h>
-#include <blaze/util/Unused.h>
 
 
 namespace blaze {
@@ -61,7 +61,7 @@ namespace blaze {
 // number of compile time column arguments.
 */
 template< size_t... CCAs >  // Compile time column arguments
-struct ColumnData
+class ColumnData
 {};
 //*************************************************************************************************
 
@@ -83,9 +83,18 @@ struct ColumnData
 // time column arguments.
 */
 template<>
-struct ColumnData<>
+class ColumnData<>
 {
  public:
+   //**Compile time flags**************************************************************************
+   //! Compilation flag for compile time optimization.
+   /*! The \a compileTimeArgs compilation flag indicates whether the view has been created by
+       means of compile time arguments and whether these arguments can be queried at compile
+       time. In that case, the \a compileTimeArgs compilation flag is set to \a true, otherwise
+       it is set to \a false. */
+   static constexpr bool compileTimeArgs = false;
+   //**********************************************************************************************
+
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
@@ -140,7 +149,7 @@ template< typename... RCAs >  // Optional column arguments
 inline ColumnData<>::ColumnData( size_t index, RCAs... args )
    : column_( index )  // The index of the column in the matrix
 {
-   UNUSED_PARAMETER( args... );
+   MAYBE_UNUSED( args... );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -177,9 +186,18 @@ inline size_t ColumnData<>::column() const noexcept
 // compile time column argument.
 */
 template< size_t I >   // Compile time column index
-struct ColumnData<I>
+class ColumnData<I>
 {
  public:
+   //**Compile time flags**************************************************************************
+   //! Compilation flag for compile time optimization.
+   /*! The \a compileTimeArgs compilation flag indicates whether the view has been created by
+       means of compile time arguments and whether these arguments can be queried at compile
+       time. In that case, the \a compileTimeArgs compilation flag is set to \a true, otherwise
+       it is set to \a false. */
+   static constexpr bool compileTimeArgs = true;
+   //**********************************************************************************************
+
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
@@ -207,7 +225,7 @@ struct ColumnData<I>
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-   static inline constexpr size_t column() noexcept;
+   static constexpr size_t column() noexcept;
    //@}
    //**********************************************************************************************
 };
@@ -225,7 +243,7 @@ template< size_t I >          // Compile time column index
 template< typename... RCAs >  // Optional column arguments
 inline ColumnData<I>::ColumnData( RCAs... args )
 {
-   UNUSED_PARAMETER( args... );
+   MAYBE_UNUSED( args... );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -238,7 +256,7 @@ inline ColumnData<I>::ColumnData( RCAs... args )
 // \return The index of the column.
 */
 template< size_t I >  // Compile time column index
-inline constexpr size_t ColumnData<I>::column() noexcept
+constexpr size_t ColumnData<I>::column() noexcept
 {
    return I;
 }

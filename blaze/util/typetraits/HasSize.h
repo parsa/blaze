@@ -3,7 +3,7 @@
 //  \file blaze/util/typetraits/HasSize.h
 //  \brief Header file for the HasSize type trait
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -57,7 +57,7 @@ namespace blaze {
 // \ingroup type_traits
 //
 // This class offers the possibility to test the size of a type at compile time. If the type
-// \a T is exactly \a Size bytes large, the \a value member constant is set to \a true, the
+// \a T is exactly \a S bytes large, the \a value member constant is set to \a true, the
 // nested type definition \a Type is \a TrueType, and the class derives from \a TrueType.
 // Otherwise \a value is set to \a false, \a Type is \a FalseType, and the class derives from
 // \a FalseType.
@@ -71,9 +71,9 @@ namespace blaze {
    blaze::HasSize<unsigned char,4>           // Is derived from FalseType
    \endcode
 */
-template< typename T, size_t Size >
+template< typename T, size_t S >
 struct HasSize
-   : public BoolConstant< sizeof( T ) == Size >
+   : public BoolConstant< sizeof( T ) == S >
 {};
 //*************************************************************************************************
 
@@ -86,12 +86,12 @@ struct HasSize
 // This class ia a partial specialization of the HasSize template for the type \a void. This
 // specialization assumes that an object of type \a void has a size of 0. Therefore \a value
 // is set to \a true, \a Type is \a TrueType, and the class derives from \a TrueType only if the
-// \a Size template argument is 0. Otherwise \a value is set to \a false, \a Type is \a FalseType,
+// \a S template argument is 0. Otherwise \a value is set to \a false, \a Type is \a FalseType,
 // and the class derives from \a FalseType.
 */
-template< size_t Size >
-struct HasSize<void,Size>
-   : public BoolConstant< 0 == Size >
+template< size_t S >
+struct HasSize<void,S>
+   : public BoolConstant< 0 == S >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -105,12 +105,12 @@ struct HasSize<void,Size>
 // This class ia a partial specialization of the HasSize template for constant \a void. This
 // specialization assumes that an object of type \a void has a size of 0. Therefore \a value
 // is set to \a true, \a Type is \a TrueType, and the class derives from \a TrueType only if
-// the \a Size template argument is 0. Otherwise \a value is set to \a false, \a Type is
+// the \a S template argument is 0. Otherwise \a value is set to \a false, \a Type is
 // \a FalseType, and the class derives from \a FalseType.
 */
-template< size_t Size >
-struct HasSize<const void,Size>
-   : public BoolConstant< 0 == Size >
+template< size_t S >
+struct HasSize<const void,S>
+   : public BoolConstant< 0 == S >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -124,12 +124,12 @@ struct HasSize<const void,Size>
 // This class ia a partial specialization of the HasSize template for volatile \a void. This
 // specialization assumes that an object of type \a void has a size of 0. Therefore \a value
 // is set to \a true, \a Type is \a TrueType, and the class derives from \a TrueType only if
-// the \a Size template argument is 0. Otherwise \a value is set to \a false, \a Type is
+// the \a S template argument is 0. Otherwise \a value is set to \a false, \a Type is
 // \a FalseType, and the class derives from \a FalseType.
 */
-template< size_t Size >
-struct HasSize<volatile void,Size>
-   : public BoolConstant< 0 == Size >
+template< size_t S >
+struct HasSize<volatile void,S>
+   : public BoolConstant< 0 == S >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -143,12 +143,12 @@ struct HasSize<volatile void,Size>
 // This class ia a partial specialization of the HasSize template for constant volatile \a void.
 // This specialization assumes that an object of type \a void has a size of 0. Therefore \a value
 // is set to \a true, \a Type is \a TrueType, and the class derives from \a TrueType only if the
-// \a Size template argument is 0. Otherwise \a value is set to \a false, \a Type is \a FalseType,
+// \a S template argument is 0. Otherwise \a value is set to \a false, \a Type is \a FalseType,
 // and the class derives from \a FalseType.
 */
-template< size_t Size >
-struct HasSize<const volatile void,Size>
-   : public BoolConstant< 0 == Size >
+template< size_t S >
+struct HasSize<const volatile void,S>
+   : public BoolConstant< 0 == S >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -167,8 +167,8 @@ struct HasSize<const volatile void,Size>
    constexpr bool value2 = blaze::HasSize_v<T,8UL>;
    \endcode
 */
-template< typename T, size_t Size >
-constexpr bool HasSize_v = HasSize<T,Size>::value;
+template< typename T, size_t S >
+constexpr bool HasSize_v = HasSize<T,S>::value;
 //*************************************************************************************************
 
 

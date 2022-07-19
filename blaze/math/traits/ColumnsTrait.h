@@ -3,7 +3,7 @@
 //  \file blaze/math/traits/ColumnsTrait.h
 //  \brief Header file for the columns trait
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -41,7 +41,6 @@
 //*************************************************************************************************
 
 #include <utility>
-#include <blaze/util/InvalidType.h>
 #include <blaze/util/Types.h>
 
 
@@ -55,7 +54,7 @@ namespace blaze {
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename, size_t... > struct ColumnsTrait;
+template< typename, size_t > struct ColumnsTrait;
 template< typename, size_t, typename = void > struct ColumnsTraitEval1;
 template< typename, size_t, typename = void > struct ColumnsTraitEval2;
 /*! \endcond */
@@ -64,17 +63,8 @@ template< typename, size_t, typename = void > struct ColumnsTraitEval2;
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< size_t... CCAs, typename T >
-auto evalColumnsTrait( T& )
-   -> typename ColumnsTraitEval1<T,sizeof...(CCAs)>::Type;
-
-template< size_t... CCAs, typename T >
-auto evalColumnsTrait( const T& )
-   -> typename ColumnsTrait<T,CCAs...>::Type;
-
-template< size_t... CCAs, typename T >
-auto evalColumnsTrait( const volatile T& )
-   -> typename ColumnsTrait<T,CCAs...>::Type;
+template< size_t N, typename T >
+auto evalColumnsTrait( const volatile T& ) -> ColumnsTraitEval1<T,N>;
 /*! \endcond */
 //*************************************************************************************************
 
@@ -85,12 +75,11 @@ auto evalColumnsTrait( const volatile T& )
 //
 // \section columnstrait_general General
 //
-// The ColumnsTrait class template offers the possibility to select the resulting data type
-// when creating a view on a set of columns of a dense or sparse matrix. ColumnsTrait defines
-// the nested type \a Type, which represents the resulting data type of the columns operation.
-// In case the given data type is not a dense or sparse matrix type, the resulting data type
-// \a Type is set to \a INVALID_TYPE. Note that \a const and \a volatile qualifiers and
-// reference modifiers are generally ignored.
+// The ColumnsTrait class template offers the possibility to select the resulting data type when
+// creating a view on a set of columns of a dense or sparse matrix. In case the given type \a MT
+// is a dense or sparse matrix type, ColumnsTrait defines the nested type \a Type, which represents
+// the resulting data type of the columns operation. Otherwise there is no nested type \a Type.
+// Note that \a const and \a volatile qualifiers and reference modifiers are generally ignored.
 //
 //
 // \section columnstrait_specializations Creating custom specializations
@@ -100,8 +89,8 @@ auto evalColumnsTrait( const volatile T& )
 // The following example shows the according specialization for the DynamicMatrix class template:
 
    \code
-   template< typename T1, bool SO, size_t... CCAs >
-   struct ColumnsTrait< DynamicMatrix<T1,SO>, CCAs... >
+   template< typename T1, bool SO, size_t N >
+   struct ColumnsTrait< DynamicMatrix<T1,SO>, N >
    {
       using Type = DynamicMatrix<T1,true>;
    };
@@ -118,24 +107,18 @@ auto evalColumnsTrait( const volatile T& )
 
    // Definition of the columns type of a column-major dynamic matrix
    using MatrixType1 = blaze::DynamicMatrix<int,columnMajor>;
-   using ResultType1 = typename blaze::ColumnsTrait<MatrixType1>::Type;
+   using ResultType1 = typename blaze::ColumnsTrait<MatrixType1,0UL>::Type;
 
-   // Definition of the columns type for the 1st and 3rd column of a row-major static matrix
+   // Definition of the columns type for two columns of a row-major static matrix
    using MatrixType2 = blaze::StaticMatrix<int,4UL,3UL,rowMajor>;
-   using ResultType2 = typename blaze::ColumnsTrait<MatrixType2,1UL,3UL>::Type;
+   using ResultType2 = typename blaze::ColumnsTrait<MatrixType2,2UL>::Type;
    \endcode
 */
-template< typename MT       // Type of the matrix
-        , size_t... CCAs >  // Compile time column arguments
+template< typename MT  // Type of the matrix
+        , size_t N >   // Number of compile time indices
 struct ColumnsTrait
-{
- public:
-   //**********************************************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   using Type = decltype( evalColumnsTrait<CCAs...>( std::declval<MT&>() ) );
-   /*! \endcond */
-   //**********************************************************************************************
-};
+   : public decltype( evalColumnsTrait<N>( std::declval<MT&>() ) )
+{};
 //*************************************************************************************************
 
 
@@ -152,9 +135,9 @@ struct ColumnsTrait
    using Type2 = blaze::ColumnsTrait_t<MT>;
    \endcode
 */
-template< typename MT       // Type of the matrix
-        , size_t... CCAs >  // Compile time column arguments
-using ColumnsTrait_t = typename ColumnsTrait<MT,CCAs...>::Type;
+template< typename MT  // Type of the matrix
+        , size_t N >   // Number of compile time indices
+using ColumnsTrait_t = typename ColumnsTrait<MT,N>::Type;
 //*************************************************************************************************
 
 
@@ -164,15 +147,11 @@ using ColumnsTrait_t = typename ColumnsTrait<MT,CCAs...>::Type;
 // \ingroup math_traits
 */
 template< typename MT  // Type of the matrix
-        , size_t N     // Number of columns
+        , size_t N     // Number of compile time indices
         , typename >   // Restricting condition
 struct ColumnsTraitEval1
-{
- public:
-   //**********************************************************************************************
-   using Type = typename ColumnsTraitEval2<MT,N>::Type;
-   //**********************************************************************************************
-};
+   : public ColumnsTraitEval2<MT,N>
+{};
 /*! \endcond */
 //*************************************************************************************************
 
@@ -183,15 +162,10 @@ struct ColumnsTraitEval1
 // \ingroup math_traits
 */
 template< typename MT  // Type of the matrix
-        , size_t N     // Number of columns
+        , size_t N     // Number of compile time indices
         , typename >   // Restricting condition
 struct ColumnsTraitEval2
-{
- public:
-   //**********************************************************************************************
-   using Type = INVALID_TYPE;
-   //**********************************************************************************************
-};
+{};
 /*! \endcond */
 //*************************************************************************************************
 

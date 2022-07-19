@@ -3,7 +3,7 @@
 //  \file blaze/math/typetraits/HasSIMDRound.h
 //  \brief Header file for the HasSIMDRound type trait
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -41,9 +41,10 @@
 //*************************************************************************************************
 
 #include <blaze/system/Vectorization.h>
-#include <blaze/util/EnableIf.h>
 #include <blaze/util/IntegralConstant.h>
-#include <blaze/util/typetraits/Decay.h>
+#include <blaze/util/typetraits/IsDouble.h>
+#include <blaze/util/typetraits/IsFloat.h>
+#include <blaze/util/typetraits/RemoveCVRef.h>
 
 
 namespace blaze {
@@ -97,14 +98,14 @@ using HasSIMDRoundHelper =
 */
 template< typename T >  // Type of the operand
 struct HasSIMDRound
-   : public BoolConstant< HasSIMDRoundHelper< Decay_t<T> >::value >
+   : public BoolConstant< HasSIMDRoundHelper< RemoveCVRef_t<T> >::value >
 {};
 //*************************************************************************************************
 
 
 //*************************************************************************************************
 /*!\brief Auxiliary variable template for the HasSIMDRound type trait.
-// \ingroup type_traits
+// \ingroup math_type_traits
 //
 // The HasSIMDRound_v variable template provides a convenient shortcut to access the nested
 // \a value of the HasSIMDRound class template. For instance, given the type \a T the following

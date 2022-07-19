@@ -3,7 +3,7 @@
 //  \file blaze/math/simd/Max.h
 //  \brief Header file for the SIMD max functionality
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -41,8 +41,10 @@
 //*************************************************************************************************
 
 #include <blaze/math/simd/BasicTypes.h>
+#include <blaze/math/typetraits/IsSIMDPack.h>
 #include <blaze/system/Inline.h>
 #include <blaze/system/Vectorization.h>
+#include <blaze/util/IntegralConstant.h>
 
 
 namespace blaze {
@@ -66,15 +68,15 @@ namespace blaze {
 BLAZE_ALWAYS_INLINE const SIMDint8 max( const SIMDint8& a, const SIMDint8& b ) noexcept
 #if BLAZE_AVX512BW_MODE
 {
-   return _mm512_max_epi8( (~a).value, (~b).value );
+   return _mm512_max_epi8( (*a).value, (*b).value );
 }
 #elif BLAZE_AVX2_MODE
 {
-   return _mm256_max_epi8( (~a).value, (~b).value );
+   return _mm256_max_epi8( (*a).value, (*b).value );
 }
 #elif BLAZE_SSE4_MODE
 {
-   return _mm_max_epi8( (~a).value, (~b).value );
+   return _mm_max_epi8( (*a).value, (*b).value );
 }
 #else
 = delete;
@@ -95,15 +97,15 @@ BLAZE_ALWAYS_INLINE const SIMDint8 max( const SIMDint8& a, const SIMDint8& b ) n
 BLAZE_ALWAYS_INLINE const SIMDuint8 max( const SIMDuint8& a, const SIMDuint8& b ) noexcept
 #if BLAZE_AVX512BW_MODE
 {
-   return _mm512_max_epu8( (~a).value, (~b).value );
+   return _mm512_max_epu8( (*a).value, (*b).value );
 }
 #elif BLAZE_AVX2_MODE
 {
-   return _mm256_max_epu8( (~a).value, (~b).value );
+   return _mm256_max_epu8( (*a).value, (*b).value );
 }
 #elif BLAZE_SSE2_MODE
 {
-   return _mm_max_epu8( (~a).value, (~b).value );
+   return _mm_max_epu8( (*a).value, (*b).value );
 }
 #else
 = delete;
@@ -132,15 +134,15 @@ BLAZE_ALWAYS_INLINE const SIMDuint8 max( const SIMDuint8& a, const SIMDuint8& b 
 BLAZE_ALWAYS_INLINE const SIMDint16 max( const SIMDint16& a, const SIMDint16& b ) noexcept
 #if BLAZE_AVX512BW_MODE
 {
-   return _mm512_max_epi16( (~a).value, (~b).value );
+   return _mm512_max_epi16( (*a).value, (*b).value );
 }
 #elif BLAZE_AVX2_MODE
 {
-   return _mm256_max_epi16( (~a).value, (~b).value );
+   return _mm256_max_epi16( (*a).value, (*b).value );
 }
 #elif BLAZE_SSE2_MODE
 {
-   return _mm_max_epi16( (~a).value, (~b).value );
+   return _mm_max_epi16( (*a).value, (*b).value );
 }
 #else
 = delete;
@@ -161,15 +163,15 @@ BLAZE_ALWAYS_INLINE const SIMDint16 max( const SIMDint16& a, const SIMDint16& b 
 BLAZE_ALWAYS_INLINE const SIMDuint16 max( const SIMDuint16& a, const SIMDuint16& b ) noexcept
 #if BLAZE_AVX512BW_MODE
 {
-   return _mm512_max_epu16( (~a).value, (~b).value );
+   return _mm512_max_epu16( (*a).value, (*b).value );
 }
 #elif BLAZE_AVX2_MODE
 {
-   return _mm256_max_epu16( (~a).value, (~b).value );
+   return _mm256_max_epu16( (*a).value, (*b).value );
 }
 #elif BLAZE_SSE4_MODE
 {
-   return _mm_max_epu16( (~a).value, (~b).value );
+   return _mm_max_epu16( (*a).value, (*b).value );
 }
 #else
 = delete;
@@ -198,15 +200,15 @@ BLAZE_ALWAYS_INLINE const SIMDuint16 max( const SIMDuint16& a, const SIMDuint16&
 BLAZE_ALWAYS_INLINE const SIMDint32 max( const SIMDint32& a, const SIMDint32& b ) noexcept
 #if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
 {
-   return _mm512_max_epi32( (~a).value, (~b).value );
+   return _mm512_max_epi32( (*a).value, (*b).value );
 }
 #elif BLAZE_AVX2_MODE
 {
-   return _mm256_max_epi32( (~a).value, (~b).value );
+   return _mm256_max_epi32( (*a).value, (*b).value );
 }
 #elif BLAZE_SSE4_MODE
 {
-   return _mm_max_epi32( (~a).value, (~b).value );
+   return _mm_max_epi32( (*a).value, (*b).value );
 }
 #else
 = delete;
@@ -227,15 +229,15 @@ BLAZE_ALWAYS_INLINE const SIMDint32 max( const SIMDint32& a, const SIMDint32& b 
 BLAZE_ALWAYS_INLINE const SIMDuint32 max( const SIMDuint32& a, const SIMDuint32& b ) noexcept
 #if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
 {
-   return _mm512_max_epu32( (~a).value, (~b).value );
+   return _mm512_max_epu32( (*a).value, (*b).value );
 }
 #elif BLAZE_AVX2_MODE
 {
-   return _mm256_max_epu32( (~a).value, (~b).value );
+   return _mm256_max_epu32( (*a).value, (*b).value );
 }
 #elif BLAZE_SSE4_MODE
 {
-   return _mm_max_epu32( (~a).value, (~b).value );
+   return _mm_max_epu32( (*a).value, (*b).value );
 }
 #else
 = delete;
@@ -267,15 +269,15 @@ BLAZE_ALWAYS_INLINE const SIMDfloat
    max( const SIMDf32<T1>& a, const SIMDf32<T2>& b ) noexcept
 #if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
 {
-   return _mm512_max_ps( (~a).eval().value, (~b).eval().value );
+   return _mm512_max_ps( (*a).eval().value, (*b).eval().value );
 }
 #elif BLAZE_AVX_MODE
 {
-   return _mm256_max_ps( (~a).eval().value, (~b).eval().value );
+   return _mm256_max_ps( (*a).eval().value, (*b).eval().value );
 }
 #elif BLAZE_SSE_MODE
 {
-   return _mm_max_ps( (~a).eval().value, (~b).eval().value );
+   return _mm_max_ps( (*a).eval().value, (*b).eval().value );
 }
 #else
 = delete;
@@ -307,15 +309,15 @@ BLAZE_ALWAYS_INLINE const SIMDdouble
    max( const SIMDf64<T1>& a, const SIMDf64<T2>& b ) noexcept
 #if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
 {
-   return _mm512_max_pd( (~a).eval().value, (~b).eval().value );
+   return _mm512_max_pd( (*a).eval().value, (*b).eval().value );
 }
 #elif BLAZE_AVX_MODE
 {
-   return _mm256_max_pd( (~a).eval().value, (~b).eval().value );
+   return _mm256_max_pd( (*a).eval().value, (*b).eval().value );
 }
 #elif BLAZE_SSE2_MODE
 {
-   return _mm_max_pd( (~a).eval().value, (~b).eval().value );
+   return _mm_max_pd( (*a).eval().value, (*b).eval().value );
 }
 #else
 = delete;

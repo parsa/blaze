@@ -3,7 +3,7 @@
 //  \file src/blaze/SMatTrans.cpp
 //  \brief Source file for the Blaze sparse matrix transpose kernel
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -77,13 +77,13 @@ double smattrans( size_t N, size_t F, size_t steps )
 
    init( A, F );
 
-   B = trans( A );
+   B = noalias( trans( A ) );
 
    for( size_t rep=0UL; rep<reps; ++rep )
    {
       timer.start();
       for( size_t step=0UL; step<steps; ++step ) {
-         B = trans( A );
+         B = noalias( trans( A ) );
       }
       timer.end();
 

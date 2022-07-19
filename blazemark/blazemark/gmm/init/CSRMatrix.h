@@ -3,7 +3,7 @@
 //  \file blazemark/gmm/init/CSRMatrix.h
 //  \brief Header file for the GMM++ row-major sparse matrix initialization functions
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -102,8 +102,8 @@ void init( ::gmm::csr_matrix<Type>& m, size_t nonzeros )
    else
    {
       for( size_t i=0UL; i<M; ++i ) {
-         ::blaze::Indices indices( 0UL, N-1UL, nonzeros );
-         for( ::blaze::Indices::ConstIterator it=indices.begin(); it!=indices.end(); ++it ) {
+         ::blaze::Indices<size_t> indices( 0UL, N-1UL, nonzeros );
+         for( auto it=indices.begin(); it!=indices.end(); ++it ) {
             tmp(i,*it) = ::blaze::rand<Type>( 0, 10 );
          }
       }
