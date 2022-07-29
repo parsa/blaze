@@ -2666,10 +2666,10 @@ bool isPositiveDefinite( const DenseMatrix<MT,SO>& dm )
 
    RemoveAdaptor_t< ResultType_t<MT> > L( *dm );
 
-   char uplo( IsRowMajorMatrix_v<MT> ? 'U' : 'L' );
-   int  n   ( numeric_cast<int>( (*L).rows()    ) );
-   int  lda ( numeric_cast<int>( (*L).spacing() ) );
-   int  info( 0 );
+   char       uplo( IsRowMajorMatrix_v<MT> ? 'U' : 'L' );
+   blas_int_t n   ( numeric_cast<blas_int_t>( (*L).rows()   ) );
+   blas_int_t lda ( numeric_cast<blas_int_t>( (*L).spacing()) );
+   blas_int_t info( 0 );
 
    potrf( uplo, n, (*L).data(), lda, &info );
 
