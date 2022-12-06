@@ -88,7 +88,7 @@ BLAZE_ALWAYS_INLINE const If_t< IsSigned_v<T>, SIMDint8, SIMDuint8 >
                          , v31, v30, v29, v28, v27, v26, v25, v24, v23, v22, v21, v20, v19, v18, v17, v16
                          , v15, v14, v13, v12, v11, v10, v9, v8, v7, v6, v5, v4, v3, v2, v1, v0 );
 }
-#elif BLAZE_AVX_MODE
+#elif BLAZE_AVX2_MODE
 template< typename T >
 BLAZE_ALWAYS_INLINE const If_t< IsSigned_v<T>, SIMDint8, SIMDuint8 >
    setall_epi8( T v0  = 0, T v1  = 0, T v2  = 0, T v3  = 0
@@ -196,7 +196,7 @@ BLAZE_ALWAYS_INLINE const If_t< IsSigned_v<T>, SIMDcint8, SIMDcuint8 >
                          , v3.imag(), v3.real(), v2.imag(), v2.real()
                          , v1.imag(), v1.real(), v0.imag(), v0.real() );
 }
-#elif BLAZE_AVX_MODE
+#elif BLAZE_AVX2_MODE
 template< typename T >
 BLAZE_ALWAYS_INLINE const If_t< IsSigned_v<T>, SIMDcint8, SIMDcuint8 >
    setall_epi8( const complex<T>& v0 = 0, const complex<T>& v1 = 0
@@ -301,7 +301,7 @@ BLAZE_ALWAYS_INLINE const If_t< IsSigned_v<T>, SIMDint16, SIMDuint16 >
    return _mm512_set_epi16( v31, v30, v29, v28, v27, v26, v25, v24, v23, v22, v21, v20, v19, v18, v17, v16
                           , v15, v14, v13, v12, v11, v10, v9, v8, v7, v6, v5, v4, v3, v2, v1, v0 );
 }
-#elif BLAZE_AVX_MODE
+#elif BLAZE_AVX2_MODE
 template< typename T >
 BLAZE_ALWAYS_INLINE const If_t< IsSigned_v<T>, SIMDint16, SIMDuint16 >
    setall_epi16( T v0  = 0, T v1  = 0, T v2  = 0, T v3  = 0
@@ -386,7 +386,7 @@ BLAZE_ALWAYS_INLINE const If_t< IsSigned_v<T>, SIMDcint16, SIMDcuint16 >
                           , v3.imag(), v3.real(), v2.imag(), v2.real()
                           , v1.imag(), v1.real(), v0.imag(), v0.real() );
 }
-#elif BLAZE_AVX_MODE
+#elif BLAZE_AVX2_MODE
 template< typename T >
 BLAZE_ALWAYS_INLINE const If_t< IsSigned_v<T>, SIMDcint16, SIMDcuint16 >
    setall_epi16( const complex<T>& v0 = 0, const complex<T>& v1 = 0
@@ -474,7 +474,7 @@ BLAZE_ALWAYS_INLINE const If_t< IsSigned_v<T>, SIMDint32, SIMDuint32 >
 {
    return _mm512_set_epi32( v15, v14, v13, v12, v11, v10, v9, v8, v7, v6, v5, v4, v3, v2, v1, v0 );
 }
-#elif BLAZE_AVX_MODE
+#elif BLAZE_AVX2_MODE
 template< typename T >
 BLAZE_ALWAYS_INLINE const If_t< IsSigned_v<T>, SIMDint32, SIMDuint32 >
    setall_epi32( T v0 = 0, T v1 = 0, T v2 = 0, T v3 = 0
@@ -548,7 +548,7 @@ BLAZE_ALWAYS_INLINE const If_t< IsSigned_v<T>, SIMDcint32, SIMDcuint32 >
                           , v3.imag(), v3.real(), v2.imag(), v2.real()
                           , v1.imag(), v1.real(), v0.imag(), v0.real() );
 }
-#elif BLAZE_AVX_MODE
+#elif BLAZE_AVX2_MODE
 template< typename T >
 BLAZE_ALWAYS_INLINE const If_t< IsSigned_v<T>, SIMDcint32, SIMDcuint32 >
    setall_epi32( const complex<T>& v0 = 0, const complex<T>& v1 = 0
@@ -628,7 +628,7 @@ BLAZE_ALWAYS_INLINE const If_t< IsSigned_v<T>, SIMDint64, SIMDuint64 >
 {
    return _mm512_set_epi64( v7, v6, v5, v4, v3, v2, v1, v0 );
 }
-#elif BLAZE_AVX_MODE
+#elif BLAZE_AVX2_MODE
 template< typename T >
 BLAZE_ALWAYS_INLINE const If_t< IsSigned_v<T>, SIMDint64, SIMDuint64 >
    setall_epi64( T v0 = 0, T v1 = 0, T v2 = 0, T v3 = 0 ) noexcept
@@ -697,7 +697,7 @@ BLAZE_ALWAYS_INLINE const If_t< IsSigned_v<T>, SIMDcint64, SIMDcuint64 >
    return _mm512_set_epi64( v3.imag(), v3.real(), v2.imag(), v2.real()
                           , v1.imag(), v1.real(), v0.imag(), v0.real() );
 }
-#elif BLAZE_AVX_MODE
+#elif BLAZE_AVX2_MODE
 template< typename T >
 BLAZE_ALWAYS_INLINE const If_t< IsSigned_v<T>, SIMDcint64, SIMDcuint64 >
    setall_epi64( const complex<T>& v0 = 0, const complex<T>& v1 = 0 ) noexcept
