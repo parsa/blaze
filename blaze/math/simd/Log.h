@@ -95,6 +95,10 @@ BLAZE_ALWAYS_INLINE const SIMDfloat log( const SIMDf32<T>& a ) noexcept
    return Sleef_logf4_u35( (*a).eval().value );
 }
 #  endif
+#elif BLAZE_XSIMD_MODE
+{
+  return SIMDfloat{ xsimd::log( xsimd::batch<float>{ (*a).eval().value } ).data };
+}
 #else
 = delete;
 #endif
@@ -148,6 +152,10 @@ BLAZE_ALWAYS_INLINE const SIMDdouble log( const SIMDf64<T>& a ) noexcept
    return Sleef_logd2_u35( (*a).eval().value );
 }
 #  endif
+#elif BLAZE_XSIMD_MODE
+{
+  return SIMDdouble{ xsimd::log( xsimd::batch<double>{ (*a).eval().value } ).data };
+}
 #else
 = delete;
 #endif

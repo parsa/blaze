@@ -368,6 +368,21 @@
 //*************************************************************************************************
 
 
+//*************************************************************************************************
+/*!\brief Compilation switch for the XSIMD mode.
+// \ingroup system
+//
+// This compilation switch enables/disables the XSIMD mode. In case the XSIMD mode is enabled
+// the Blaze library attempts to vectorize several linear algebra operations by XSIMD intrinsics.
+// In case the XSIMD mode is disabled, the Blaze library chooses default, non-vectorized
+// functionality for the operations.
+*/
+#if BLAZE_USE_VECTORIZATION && BLAZE_USE_XSIMD
+#  define BLAZE_XSIMD_MODE 1
+#else
+#  define BLAZE_XSIMD_MODE 0
+#endif
+//*************************************************************************************************
 
 
 //=================================================================================================
@@ -415,6 +430,10 @@ BLAZE_STATIC_ASSERT( !BLAZE_AVX512DQ_MODE || BLAZE_AVX512F_MODE );
 #  include <emmintrin.h>
 #elif BLAZE_SSE_MODE
 #  include <xmmintrin.h>
+#endif
+
+#if BLAZE_XSIMD_MODE
+#  include <xsimd/xsimd.hpp>
 #endif
 
 #endif

@@ -95,6 +95,10 @@ BLAZE_ALWAYS_INLINE const SIMDfloat atan( const SIMDf32<T>& a ) noexcept
    return Sleef_atanf4_u10( (*a).eval().value );
 }
 #  endif
+#elif BLAZE_XSIMD_MODE
+{
+  return SIMDfloat{ xsimd::atan( xsimd::batch<float>{ (*a).eval().value } ).data };
+}
 #else
 = delete;
 #endif
@@ -148,6 +152,10 @@ BLAZE_ALWAYS_INLINE const SIMDdouble atan( const SIMDf64<T>& a ) noexcept
    return Sleef_atand2_u10( (*a).eval().value );
 }
 #  endif
+#elif BLAZE_XSIMD_MODE
+{
+  return SIMDdouble{ xsimd::atan( xsimd::batch<double>{ (*a).eval().value } ).data };
+}
 #else
 = delete;
 #endif

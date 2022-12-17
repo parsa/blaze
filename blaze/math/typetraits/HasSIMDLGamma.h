@@ -63,7 +63,8 @@ namespace blaze {
 template< typename T >  // Type of the operand
 using HasSIMDLGammaHelper =
    BoolConstant< ( IsFloat_v<T> || IsDouble_v<T> ) &&
-                 bool( BLAZE_SLEEF_MODE ) &&
+                 ( bool( BLAZE_SLEEF_MODE )   ||
+                   bool( BLAZE_XSIMD_MODE ) ) &&
                  ( bool( BLAZE_SSE_MODE     ) ||
                    bool( BLAZE_AVX_MODE     ) ||
                    bool( BLAZE_MIC_MODE     ) ||

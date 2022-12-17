@@ -96,6 +96,10 @@ BLAZE_ALWAYS_INLINE const SIMDfloat erfc( const SIMDf32<T>& a ) noexcept
    return Sleef_erfcf4_u15( (*a).eval().value );
 }
 #  endif
+#elif BLAZE_XSIMD_MODE
+{
+  return SIMDfloat{ xsimd::erfc( xsimd::batch<float>{ (*a).eval().value } ).data };
+}
 #else
 = delete;
 #endif
@@ -150,6 +154,10 @@ BLAZE_ALWAYS_INLINE const SIMDdouble erfc( const SIMDf64<T>& a ) noexcept
    return Sleef_erfcd2_u15( (*a).eval().value );
 }
 #  endif
+#elif BLAZE_XSIMD_MODE
+{
+  return SIMDdouble{ xsimd::erfc( xsimd::batch<double>{ (*a).eval().value } ).data };
+}
 #else
 = delete;
 #endif

@@ -15808,6 +15808,33 @@
    #define BLAZE_USE_SLEEF 1
    #include <blaze/Blaze.h>
    \endcode
+//
+//
+// \n \section xsimd XSIMD
+// <hr>
+//
+// For several complex operations \b Blaze can make use of the XSIMD library for vectorization
+// (https://github.com/xtensor-stack/xsimd). This compilation switch enables/disables the
+// vectorization by means of XSIMD. In case the switch is set to 1, \b Blaze uses XSIMD for
+// instance for the vectorized computation of trigonometric functions
+// (i.e. \c sin(), \c cos(), \c tan(), etc.) and exponential functions
+// (i.e. \c exp(), \c log(), ...).
+
+   \code
+   #define BLAZE_USE_XSIMD 1
+   \endcode
+
+// It is also possible to enable/disable XSIMD vectorization via command line or by defining this
+// symbol manually before including any \b Blaze header file:
+
+   \code
+   g++ ... -DBLAZE_USE_XSIMD=1 ...
+   \endcode
+
+   \code
+   #define BLAZE_USE_XSIMD 1
+   #include <blaze/Blaze.h>
+   \endcode
 
 // \n \section thresholds Thresholds
 // <hr>

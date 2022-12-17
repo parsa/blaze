@@ -95,6 +95,10 @@ BLAZE_ALWAYS_INLINE const SIMDfloat cos( const SIMDf32<T>& a ) noexcept
    return Sleef_cosf4_u10( (*a).eval().value );
 }
 #  endif
+#elif BLAZE_XSIMD_MODE
+{
+  return SIMDfloat{ xsimd::cos( xsimd::batch<float>{ (*a).eval().value } ).data };
+}
 #else
 = delete;
 #endif
@@ -148,6 +152,10 @@ BLAZE_ALWAYS_INLINE const SIMDdouble cos( const SIMDf64<T>& a ) noexcept
    return Sleef_cosd2_u10( (*a).eval().value );
 }
 #  endif
+#elif BLAZE_XSIMD_MODE
+{
+  return SIMDdouble{ xsimd::cos( xsimd::batch<double>{ (*a).eval().value } ).data };
+}
 #else
 = delete;
 #endif

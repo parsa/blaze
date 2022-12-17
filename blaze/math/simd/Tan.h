@@ -95,6 +95,10 @@ BLAZE_ALWAYS_INLINE const SIMDfloat tan( const SIMDf32<T>& a ) noexcept
    return Sleef_tanf4_u10( (*a).eval().value );
 }
 #  endif
+#elif BLAZE_XSIMD_MODE
+{
+  return SIMDfloat{ xsimd::tan( xsimd::batch<float>{ (*a).eval().value } ).data };
+}
 #else
 = delete;
 #endif
@@ -148,6 +152,10 @@ BLAZE_ALWAYS_INLINE const SIMDdouble tan( const SIMDf64<T>& a ) noexcept
    return Sleef_tand2_u10( (*a).eval().value );
 }
 #  endif
+#elif BLAZE_XSIMD_MODE
+{
+  return SIMDdouble{ xsimd::tan( xsimd::batch<double>{ (*a).eval().value } ).data };
+}
 #else
 = delete;
 #endif

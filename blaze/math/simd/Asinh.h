@@ -95,6 +95,10 @@ BLAZE_ALWAYS_INLINE const SIMDfloat asinh( const SIMDf32<T>& a ) noexcept
    return Sleef_asinhf4_u10( (*a).eval().value );
 }
 #  endif
+#elif BLAZE_XSIMD_MODE
+{
+  return SIMDfloat{ xsimd::asinh( xsimd::batch<float>{ (*a).eval().value } ).data };
+}
 #else
 = delete;
 #endif
@@ -148,6 +152,10 @@ BLAZE_ALWAYS_INLINE const SIMDdouble asinh( const SIMDf64<T>& a ) noexcept
    return Sleef_asinhd2_u10( (*a).eval().value );
 }
 #  endif
+#elif BLAZE_XSIMD_MODE
+{
+  return SIMDdouble{ xsimd::asinh( xsimd::batch<double>{ (*a).eval().value } ).data };
+}
 #else
 = delete;
 #endif
