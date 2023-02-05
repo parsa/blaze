@@ -19,9 +19,9 @@ Get an impression of the clear but powerful syntax of **Blaze** in the [Getting 
 ## Download ##
 
 ![white20x120.jpg](https://bitbucket.org/blaze-lib/blaze/wiki/images/white20x120.jpg)
-[![blaze-3.8.jpg](https://bitbucket.org/blaze-lib/blaze/wiki/images/blaze-3.8.jpg)](https://bitbucket.org/blaze-lib/blaze/downloads/blaze-3.8.1.tar.gz)
+[![blaze-3.8.jpg](https://bitbucket.org/blaze-lib/blaze/wiki/images/blaze-3.8.jpg)](https://bitbucket.org/blaze-lib/blaze/downloads/blaze-3.8.2.tar.gz)
 ![white40x120.jpg](https://bitbucket.org/blaze-lib/blaze/wiki/images/white40x120.jpg)
-[![blaze-docu-3.8.jpg](https://bitbucket.org/blaze-lib/blaze/wiki/images/blaze-docu-3.8.jpg)](https://bitbucket.org/blaze-lib/blaze/downloads/blaze-docu-3.8.1.tar.gz)
+[![blaze-docu-3.8.jpg](https://bitbucket.org/blaze-lib/blaze/wiki/images/blaze-docu-3.8.jpg)](https://bitbucket.org/blaze-lib/blaze/downloads/blaze-docu-3.8.2.tar.gz)
 
 Older releases of **Blaze** can be found in the [downloads](https://bitbucket.org/blaze-lib/blaze/downloads) section or in our [release archive](https://bitbucket.org/blaze-lib/blaze/wiki/Release Archive).
 
