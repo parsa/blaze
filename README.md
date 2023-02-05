@@ -29,6 +29,8 @@ Older releases of **Blaze** can be found in the [downloads](https://bitbucket.or
 
 ## Blaze Projects ##
 
+[Blaze Matrix Market](https://github.com/alugowski/fast_matrix_market/blob/main/README.Blaze.md): Add Matrix Market functionality to the **Blaze** library (Adam Lugowski)
+
 [Blaze CUDA](https://github.com/STEllAR-GROUP/blaze_cuda): Add CUDA capabilities to the **Blaze** library (Jules Pénuchot)
 
 [blaze_tensor](https://github.com/STEllAR-GROUP/blaze_tensor): An implementation of 3D tensors for the **Blaze** library (Stellar Group)
