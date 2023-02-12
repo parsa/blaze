@@ -41,6 +41,7 @@
 //*************************************************************************************************
 
 #include <utility>
+#include <blaze/math/Aliases.h>
 #include <blaze/math/typetraits/IsMatrix.h>
 #include <blaze/math/typetraits/IsVector.h>
 #include <blaze/math/typetraits/RemoveAdaptor.h>
@@ -59,7 +60,7 @@ namespace blaze {
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Auxiliary helper for the IsClearable type trait.
+/*!\brief Auxiliary helper for the IsResizable type trait.
 // \ingroup math_type_traits
 */
 template< typename T >
@@ -70,7 +71,7 @@ using Resizable1_t = decltype( std::declval<T&>().resize( std::declval<size_t>()
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Auxiliary helper for the IsClearable type trait.
+/*!\brief Auxiliary helper for the IsResizable type trait.
 // \ingroup math_type_traits
 */
 template< typename T >
@@ -100,8 +101,8 @@ using Resizable2_t = decltype( std::declval<T&>().resize( std::declval<size_t>()
 */
 template< typename T >
 struct IsResizable
-   : public BoolConstant< ( IsVector_v<T> && IsDetected_v< Resizable1_t, RemoveAdaptor_t<T> > ) ||
-                          ( IsMatrix_v<T> && IsDetected_v< Resizable2_t, RemoveAdaptor_t<T> > ) >
+   : public BoolConstant< ( IsVector_v<T> && IsDetected_v< Resizable1_t, RemoveAdaptor_t< ResultType_t<T> > > ) ||
+                          ( IsMatrix_v<T> && IsDetected_v< Resizable2_t, RemoveAdaptor_t< ResultType_t<T> > > ) >
 {};
 //*************************************************************************************************
 
