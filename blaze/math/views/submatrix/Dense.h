@@ -1436,12 +1436,12 @@ inline Submatrix<MT,unaligned,false,true,CSAs...>&
       const ResultType_t<MT2> tmp( right );
       if( IsSparseMatrix_v<MT2> )
          reset();
-      smpAssign( left, transIf< IsSymmetric_v<This> >( tmp ) );
+      smpAssign( left, transIf< IsSymmetric_v<This> && SO2 >( tmp ) );
    }
    else {
       if( IsSparseMatrix_v<MT2> )
          reset();
-      smpAssign( left, transIf< IsSymmetric_v<This> >( right ) );
+      smpAssign( left, transIf< IsSymmetric_v<This> && SO2 >( right ) );
    }
 
    BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
@@ -1494,10 +1494,10 @@ inline auto Submatrix<MT,unaligned,false,true,CSAs...>::operator+=( const Matrix
 
    if( ( ( IsSymmetric_v<MT> || IsHermitian_v<MT> ) && hasOverlap() ) || (*rhs).canAlias( this ) ) {
       const AddType tmp( *this + (*rhs) );
-      smpAssign( left, transIf< IsSymmetric_v<This> >( tmp ) );
+      smpAssign( left, transIf< IsSymmetric_v<This> && SO2 >( tmp ) );
    }
    else {
-      smpAddAssign( left, transIf< IsSymmetric_v<This> >( *rhs ) );
+      smpAddAssign( left, transIf< IsSymmetric_v<This> && SO2 >( *rhs ) );
    }
 
    BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
@@ -1550,7 +1550,7 @@ inline auto Submatrix<MT,unaligned,false,true,CSAs...>::operator+=( const Matrix
 
    decltype(auto) left( derestrict( *this ) );
 
-   smpAssign( left, transIf< IsSymmetric_v<This> >( tmp ) );
+   smpAssign( left, transIf< IsSymmetric_v<This> && SO2 >( tmp ) );
 
    BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
 
@@ -1602,10 +1602,10 @@ inline auto Submatrix<MT,unaligned,false,true,CSAs...>::operator-=( const Matrix
 
    if( ( ( IsSymmetric_v<MT> || IsHermitian_v<MT> ) && hasOverlap() ) || (*rhs).canAlias( this ) ) {
       const SubType tmp( *this - (*rhs ) );
-      smpAssign( left, transIf< IsSymmetric_v<This> >( tmp ) );
+      smpAssign( left, transIf< IsSymmetric_v<This> && SO2 >( tmp ) );
    }
    else {
-      smpSubAssign( left, transIf< IsSymmetric_v<This> >( *rhs ) );
+      smpSubAssign( left, transIf< IsSymmetric_v<This> && SO2 >( *rhs ) );
    }
 
    BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
@@ -1658,7 +1658,7 @@ inline auto Submatrix<MT,unaligned,false,true,CSAs...>::operator-=( const Matrix
 
    decltype(auto) left( derestrict( *this ) );
 
-   smpAssign( left, transIf< IsSymmetric_v<This> >( tmp ) );
+   smpAssign( left, transIf< IsSymmetric_v<This> && SO2 >( tmp ) );
 
    BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
 
@@ -1711,10 +1711,10 @@ inline auto Submatrix<MT,unaligned,false,true,CSAs...>::operator%=( const Matrix
       const SchurType tmp( *this % (*rhs) );
       if( IsSparseMatrix_v<SchurType> )
          reset();
-      smpAssign( left, transIf< IsSymmetric_v<This> >( tmp ) );
+      smpAssign( left, transIf< IsSymmetric_v<This> && SO2 >( tmp ) );
    }
    else {
-      smpSchurAssign( left, transIf< IsSymmetric_v<This> >( *rhs ) );
+      smpSchurAssign( left, transIf< IsSymmetric_v<This> && SO2 >( *rhs ) );
    }
 
    BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
@@ -1770,7 +1770,7 @@ inline auto Submatrix<MT,unaligned,false,true,CSAs...>::operator%=( const Matrix
       reset();
    }
 
-   smpAssign( left, transIf< IsSymmetric_v<This> >( tmp ) );
+   smpAssign( left, transIf< IsSymmetric_v<This> && SO2 >( tmp ) );
 
    BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
 
@@ -3923,31 +3923,31 @@ class Submatrix<MT,unaligned,true,true,CSAs...>
    inline Submatrix& operator=( initializer_list< initializer_list<ElementType> > list );
    inline Submatrix& operator=( const Submatrix& rhs );
 
-   template< typename MT2, bool SO >
-   inline Submatrix& operator=( const Matrix<MT2,SO>& rhs );
+   template< typename MT2, bool SO2 >
+   inline Submatrix& operator=( const Matrix<MT2,SO2>& rhs );
 
-   template< typename MT2, bool SO >
-   inline auto operator+=( const Matrix<MT2,SO>& rhs )
+   template< typename MT2, bool SO2 >
+   inline auto operator+=( const Matrix<MT2,SO2>& rhs )
       -> DisableIf_t< EnforceEvaluation_v<MT,MT2>, Submatrix& >;
 
-   template< typename MT2, bool SO >
-   inline auto operator+=( const Matrix<MT2,SO>& rhs )
+   template< typename MT2, bool SO2 >
+   inline auto operator+=( const Matrix<MT2,SO2>& rhs )
       -> EnableIf_t< EnforceEvaluation_v<MT,MT2>, Submatrix& >;
 
-   template< typename MT2, bool SO >
-   inline auto operator-=( const Matrix<MT2,SO>& rhs )
+   template< typename MT2, bool SO2 >
+   inline auto operator-=( const Matrix<MT2,SO2>& rhs )
       -> DisableIf_t< EnforceEvaluation_v<MT,MT2>, Submatrix& >;
 
-   template< typename MT2, bool SO >
-   inline auto operator-=( const Matrix<MT2,SO>& rhs )
+   template< typename MT2, bool SO2 >
+   inline auto operator-=( const Matrix<MT2,SO2>& rhs )
       -> EnableIf_t< EnforceEvaluation_v<MT,MT2>, Submatrix& >;
 
-   template< typename MT2, bool SO >
-   inline auto operator%=( const Matrix<MT2,SO>& rhs )
+   template< typename MT2, bool SO2 >
+   inline auto operator%=( const Matrix<MT2,SO2>& rhs )
       -> DisableIf_t< EnforceEvaluation_v<MT,MT2>, Submatrix& >;
 
-   template< typename MT2, bool SO >
-   inline auto operator%=( const Matrix<MT2,SO>& rhs )
+   template< typename MT2, bool SO2 >
+   inline auto operator%=( const Matrix<MT2,SO2>& rhs )
       -> EnableIf_t< EnforceEvaluation_v<MT,MT2>, Submatrix& >;
    //@}
    //**********************************************************************************************
@@ -4668,9 +4668,9 @@ inline Submatrix<MT,unaligned,true,true,CSAs...>&
 template< typename MT       // Type of the dense matrix
         , size_t... CSAs >  // Compile time submatrix arguments
 template< typename MT2      // Type of the right-hand side matrix
-        , bool SO >         // Storage order of the right-hand side matrix
+        , bool SO2 >        // Storage order of the right-hand side matrix
 inline Submatrix<MT,unaligned,true,true,CSAs...>&
-   Submatrix<MT,unaligned,true,true,CSAs...>::operator=( const Matrix<MT2,SO>& rhs )
+   Submatrix<MT,unaligned,true,true,CSAs...>::operator=( const Matrix<MT2,SO2>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_t<MT2> );
 
@@ -4691,12 +4691,12 @@ inline Submatrix<MT,unaligned,true,true,CSAs...>&
       const ResultType_t<MT2> tmp( right );
       if( IsSparseMatrix_v<MT2> )
          reset();
-      smpAssign( left, transIf< IsSymmetric_v<This> >( tmp ) );
+      smpAssign( left, transIf< IsSymmetric_v<This> && !SO2 >( tmp ) );
    }
    else {
       if( IsSparseMatrix_v<MT2> )
          reset();
-      smpAssign( left, transIf< IsSymmetric_v<This> >( right ) );
+      smpAssign( left, transIf< IsSymmetric_v<This> && !SO2 >( right ) );
    }
 
    BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
@@ -4724,8 +4724,8 @@ inline Submatrix<MT,unaligned,true,true,CSAs...>&
 template< typename MT       // Type of the dense matrix
         , size_t... CSAs >  // Compile time submatrix arguments
 template< typename MT2      // Type of the right-hand side matrix
-        , bool SO  >        // Storage order of the right-hand side matrix
-inline auto Submatrix<MT,unaligned,true,true,CSAs...>::operator+=( const Matrix<MT2,SO>& rhs )
+        , bool SO2  >       // Storage order of the right-hand side matrix
+inline auto Submatrix<MT,unaligned,true,true,CSAs...>::operator+=( const Matrix<MT2,SO2>& rhs )
    -> DisableIf_t< EnforceEvaluation_v<MT,MT2>, Submatrix& >
 {
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( ResultType );
@@ -4749,10 +4749,10 @@ inline auto Submatrix<MT,unaligned,true,true,CSAs...>::operator+=( const Matrix<
 
    if( ( ( IsSymmetric_v<MT> || IsHermitian_v<MT> ) && hasOverlap() ) || (*rhs).canAlias( this ) ) {
       const AddType tmp( *this + (*rhs) );
-      smpAssign( left, transIf< IsSymmetric_v<This> >( tmp ) );
+      smpAssign( left, transIf< IsSymmetric_v<This> && !SO2 >( tmp ) );
    }
    else {
-      smpAddAssign( left, transIf< IsSymmetric_v<This> >( *rhs ) );
+      smpAddAssign( left, transIf< IsSymmetric_v<This> && !SO2 >( *rhs ) );
    }
 
    BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
@@ -4780,8 +4780,8 @@ inline auto Submatrix<MT,unaligned,true,true,CSAs...>::operator+=( const Matrix<
 template< typename MT       // Type of the dense matrix
         , size_t... CSAs >  // Compile time submatrix arguments
 template< typename MT2      // Type of the right-hand side matrix
-        , bool SO  >        // Storage order of the right-hand side matrix
-inline auto Submatrix<MT,unaligned,true,true,CSAs...>::operator+=( const Matrix<MT2,SO>& rhs )
+        , bool SO2 >        // Storage order of the right-hand side matrix
+inline auto Submatrix<MT,unaligned,true,true,CSAs...>::operator+=( const Matrix<MT2,SO2>& rhs )
    -> EnableIf_t< EnforceEvaluation_v<MT,MT2>, Submatrix& >
 {
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( ResultType );
@@ -4805,7 +4805,7 @@ inline auto Submatrix<MT,unaligned,true,true,CSAs...>::operator+=( const Matrix<
 
    decltype(auto) left( derestrict( *this ) );
 
-   smpAssign( left, transIf< IsSymmetric_v<This> >( tmp ) );
+   smpAssign( left, transIf< IsSymmetric_v<This> && !SO2 >( tmp ) );
 
    BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
 
@@ -4832,8 +4832,8 @@ inline auto Submatrix<MT,unaligned,true,true,CSAs...>::operator+=( const Matrix<
 template< typename MT       // Type of the dense matrix
         , size_t... CSAs >  // Compile time submatrix arguments
 template< typename MT2      // Type of the right-hand side matrix
-        , bool SO >         // Storage order of the right-hand side matrix
-inline auto Submatrix<MT,unaligned,true,true,CSAs...>::operator-=( const Matrix<MT2,SO>& rhs )
+        , bool SO2 >        // Storage order of the right-hand side matrix
+inline auto Submatrix<MT,unaligned,true,true,CSAs...>::operator-=( const Matrix<MT2,SO2>& rhs )
    -> DisableIf_t< EnforceEvaluation_v<MT,MT2>, Submatrix& >
 {
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( ResultType );
@@ -4857,10 +4857,10 @@ inline auto Submatrix<MT,unaligned,true,true,CSAs...>::operator-=( const Matrix<
 
    if( ( ( IsSymmetric_v<MT> || IsHermitian_v<MT> ) && hasOverlap() ) || (*rhs).canAlias( this ) ) {
       const SubType tmp( *this - (*rhs ) );
-      smpAssign( left, transIf< IsSymmetric_v<This> >( tmp ) );
+      smpAssign( left, transIf< IsSymmetric_v<This> && !SO2 >( tmp ) );
    }
    else {
-      smpSubAssign( left, transIf< IsSymmetric_v<This> >( *rhs ) );
+      smpSubAssign( left, transIf< IsSymmetric_v<This> && !SO2 >( *rhs ) );
    }
 
    BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
@@ -4888,8 +4888,8 @@ inline auto Submatrix<MT,unaligned,true,true,CSAs...>::operator-=( const Matrix<
 template< typename MT       // Type of the dense matrix
         , size_t... CSAs >  // Compile time submatrix arguments
 template< typename MT2      // Type of the right-hand side matrix
-        , bool SO >         // Storage order of the right-hand side matrix
-inline auto Submatrix<MT,unaligned,true,true,CSAs...>::operator-=( const Matrix<MT2,SO>& rhs )
+        , bool SO2 >        // Storage order of the right-hand side matrix
+inline auto Submatrix<MT,unaligned,true,true,CSAs...>::operator-=( const Matrix<MT2,SO2>& rhs )
    -> EnableIf_t< EnforceEvaluation_v<MT,MT2>, Submatrix& >
 {
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( ResultType );
@@ -4913,7 +4913,7 @@ inline auto Submatrix<MT,unaligned,true,true,CSAs...>::operator-=( const Matrix<
 
    decltype(auto) left( derestrict( *this ) );
 
-   smpAssign( left, transIf< IsSymmetric_v<This> >( tmp ) );
+   smpAssign( left, transIf< IsSymmetric_v<This> && !SO2 >( tmp ) );
 
    BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
 
@@ -4940,8 +4940,8 @@ inline auto Submatrix<MT,unaligned,true,true,CSAs...>::operator-=( const Matrix<
 template< typename MT       // Type of the dense matrix
         , size_t... CSAs >  // Compile time submatrix arguments
 template< typename MT2      // Type of the right-hand side matrix
-        , bool SO  >        // Storage order of the right-hand side matrix
-inline auto Submatrix<MT,unaligned,true,true,CSAs...>::operator%=( const Matrix<MT2,SO>& rhs )
+        , bool SO2 >        // Storage order of the right-hand side matrix
+inline auto Submatrix<MT,unaligned,true,true,CSAs...>::operator%=( const Matrix<MT2,SO2>& rhs )
    -> DisableIf_t< EnforceEvaluation_v<MT,MT2>, Submatrix& >
 {
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( ResultType );
@@ -4966,10 +4966,10 @@ inline auto Submatrix<MT,unaligned,true,true,CSAs...>::operator%=( const Matrix<
       const SchurType tmp( *this % (*rhs) );
       if( IsSparseMatrix_v<SchurType> )
          reset();
-      smpAssign( left, transIf< IsSymmetric_v<This> >( tmp ) );
+      smpAssign( left, transIf< IsSymmetric_v<This> && !SO2 >( tmp ) );
    }
    else {
-      smpSchurAssign( left, transIf< IsSymmetric_v<This> >( *rhs ) );
+      smpSchurAssign( left, transIf< IsSymmetric_v<This> && !SO2 >( *rhs ) );
    }
 
    BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
@@ -4997,8 +4997,8 @@ inline auto Submatrix<MT,unaligned,true,true,CSAs...>::operator%=( const Matrix<
 template< typename MT       // Type of the dense matrix
         , size_t... CSAs >  // Compile time submatrix arguments
 template< typename MT2      // Type of the right-hand side matrix
-        , bool SO  >        // Storage order of the right-hand side matrix
-inline auto Submatrix<MT,unaligned,true,true,CSAs...>::operator%=( const Matrix<MT2,SO>& rhs )
+        , bool SO2 >        // Storage order of the right-hand side matrix
+inline auto Submatrix<MT,unaligned,true,true,CSAs...>::operator%=( const Matrix<MT2,SO2>& rhs )
    -> EnableIf_t< EnforceEvaluation_v<MT,MT2>, Submatrix& >
 {
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( ResultType );
@@ -5025,7 +5025,7 @@ inline auto Submatrix<MT,unaligned,true,true,CSAs...>::operator%=( const Matrix<
       reset();
    }
 
-   smpAssign( left, transIf< IsSymmetric_v<This> >( tmp ) );
+   smpAssign( left, transIf< IsSymmetric_v<This> && !SO2 >( tmp ) );
 
    BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
 
@@ -6744,31 +6744,31 @@ class Submatrix<MT,aligned,false,true,CSAs...>
    inline Submatrix& operator=( initializer_list< initializer_list<ElementType> > list );
    inline Submatrix& operator=( const Submatrix& rhs );
 
-   template< typename MT2, bool SO >
-   inline Submatrix& operator=( const Matrix<MT2,SO>& rhs );
+   template< typename MT2, bool SO2 >
+   inline Submatrix& operator=( const Matrix<MT2,SO2>& rhs );
 
-   template< typename MT2, bool SO >
-   inline auto operator+=( const Matrix<MT2,SO>& rhs )
+   template< typename MT2, bool SO2 >
+   inline auto operator+=( const Matrix<MT2,SO2>& rhs )
       -> DisableIf_t< EnforceEvaluation_v<MT,MT2>, Submatrix& >;
 
-   template< typename MT2, bool SO >
-   inline auto operator+=( const Matrix<MT2,SO>& rhs )
+   template< typename MT2, bool SO2 >
+   inline auto operator+=( const Matrix<MT2,SO2>& rhs )
       -> EnableIf_t< EnforceEvaluation_v<MT,MT2>, Submatrix& >;
 
-   template< typename MT2, bool SO >
-   inline auto operator-=( const Matrix<MT2,SO>& rhs )
+   template< typename MT2, bool SO2 >
+   inline auto operator-=( const Matrix<MT2,SO2>& rhs )
       -> DisableIf_t< EnforceEvaluation_v<MT,MT2>, Submatrix& >;
 
-   template< typename MT2, bool SO >
-   inline auto operator-=( const Matrix<MT2,SO>& rhs )
+   template< typename MT2, bool SO2 >
+   inline auto operator-=( const Matrix<MT2,SO2>& rhs )
       -> EnableIf_t< EnforceEvaluation_v<MT,MT2>, Submatrix& >;
 
-   template< typename MT2, bool SO >
-   inline auto operator%=( const Matrix<MT2,SO>& rhs )
+   template< typename MT2, bool SO2 >
+   inline auto operator%=( const Matrix<MT2,SO2>& rhs )
       -> DisableIf_t< EnforceEvaluation_v<MT,MT2>, Submatrix& >;
 
-   template< typename MT2, bool SO >
-   inline auto operator%=( const Matrix<MT2,SO>& rhs )
+   template< typename MT2, bool SO2 >
+   inline auto operator%=( const Matrix<MT2,SO2>& rhs )
       -> EnableIf_t< EnforceEvaluation_v<MT,MT2>, Submatrix& >;
    //@}
    //**********************************************************************************************
@@ -7511,9 +7511,9 @@ inline Submatrix<MT,aligned,false,true,CSAs...>&
 template< typename MT       // Type of the dense matrix
         , size_t... CSAs >  // Compile time submatrix arguments
 template< typename MT2      // Type of the right-hand side matrix
-        , bool SO >         // Storage order of the right-hand side matrix
+        , bool SO2 >        // Storage order of the right-hand side matrix
 inline Submatrix<MT,aligned,false,true,CSAs...>&
-   Submatrix<MT,aligned,false,true,CSAs...>::operator=( const Matrix<MT2,SO>& rhs )
+   Submatrix<MT,aligned,false,true,CSAs...>::operator=( const Matrix<MT2,SO2>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_t<MT2> );
 
@@ -7534,12 +7534,12 @@ inline Submatrix<MT,aligned,false,true,CSAs...>&
       const ResultType_t<MT2> tmp( right );
       if( IsSparseMatrix_v<MT2> )
          reset();
-      smpAssign( left, transIf< IsSymmetric_v<This> >( tmp ) );
+      smpAssign( left, transIf< IsSymmetric_v<This> && SO2 >( tmp ) );
    }
    else {
       if( IsSparseMatrix_v<MT2> )
          reset();
-      smpAssign( left, transIf< IsSymmetric_v<This> >( right ) );
+      smpAssign( left, transIf< IsSymmetric_v<This> && SO2 >( right ) );
    }
 
    BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
@@ -7567,8 +7567,8 @@ inline Submatrix<MT,aligned,false,true,CSAs...>&
 template< typename MT       // Type of the dense matrix
         , size_t... CSAs >  // Compile time submatrix arguments
 template< typename MT2      // Type of the right-hand side matrix
-        , bool SO >         // Storage order of the right-hand side matrix
-inline auto Submatrix<MT,aligned,false,true,CSAs...>::operator+=( const Matrix<MT2,SO>& rhs )
+        , bool SO2 >        // Storage order of the right-hand side matrix
+inline auto Submatrix<MT,aligned,false,true,CSAs...>::operator+=( const Matrix<MT2,SO2>& rhs )
    -> DisableIf_t< EnforceEvaluation_v<MT,MT2>, Submatrix& >
 {
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( ResultType );
@@ -7592,10 +7592,10 @@ inline auto Submatrix<MT,aligned,false,true,CSAs...>::operator+=( const Matrix<M
 
    if( ( ( IsSymmetric_v<MT> || IsHermitian_v<MT> ) && hasOverlap() ) || (*rhs).canAlias( this ) ) {
       const AddType tmp( *this + (*rhs) );
-      smpAssign( left, transIf< IsSymmetric_v<This> >( tmp ) );
+      smpAssign( left, transIf< IsSymmetric_v<This> && SO2 >( tmp ) );
    }
    else {
-      smpAddAssign( left, transIf< IsSymmetric_v<This> >( *rhs ) );
+      smpAddAssign( left, transIf< IsSymmetric_v<This> && SO2 >( *rhs ) );
    }
 
    BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
@@ -7623,8 +7623,8 @@ inline auto Submatrix<MT,aligned,false,true,CSAs...>::operator+=( const Matrix<M
 template< typename MT       // Type of the dense matrix
         , size_t... CSAs >  // Compile time submatrix arguments
 template< typename MT2      // Type of the right-hand side matrix
-        , bool SO >         // Storage order of the right-hand side matrix
-inline auto Submatrix<MT,aligned,false,true,CSAs...>::operator+=( const Matrix<MT2,SO>& rhs )
+        , bool SO2 >        // Storage order of the right-hand side matrix
+inline auto Submatrix<MT,aligned,false,true,CSAs...>::operator+=( const Matrix<MT2,SO2>& rhs )
    -> EnableIf_t< EnforceEvaluation_v<MT,MT2>, Submatrix& >
 {
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( ResultType );
@@ -7648,7 +7648,7 @@ inline auto Submatrix<MT,aligned,false,true,CSAs...>::operator+=( const Matrix<M
 
    decltype(auto) left( derestrict( *this ) );
 
-   smpAssign( left, transIf< IsSymmetric_v<This> >( tmp ) );
+   smpAssign( left, transIf< IsSymmetric_v<This> && SO2 >( tmp ) );
 
    BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
 
@@ -7675,8 +7675,8 @@ inline auto Submatrix<MT,aligned,false,true,CSAs...>::operator+=( const Matrix<M
 template< typename MT       // Type of the dense matrix
         , size_t... CSAs >  // Compile time submatrix arguments
 template< typename MT2      // Type of the right-hand side matrix
-        , bool SO >         // Storage order of the right-hand side matrix
-inline auto Submatrix<MT,aligned,false,true,CSAs...>::operator-=( const Matrix<MT2,SO>& rhs )
+        , bool SO2 >        // Storage order of the right-hand side matrix
+inline auto Submatrix<MT,aligned,false,true,CSAs...>::operator-=( const Matrix<MT2,SO2>& rhs )
    -> DisableIf_t< EnforceEvaluation_v<MT,MT2>, Submatrix& >
 {
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( ResultType );
@@ -7700,10 +7700,10 @@ inline auto Submatrix<MT,aligned,false,true,CSAs...>::operator-=( const Matrix<M
 
    if( ( ( IsSymmetric_v<MT> || IsHermitian_v<MT> ) && hasOverlap() ) || (*rhs).canAlias( this ) ) {
       const SubType tmp( *this - (*rhs ) );
-      smpAssign( left, transIf< IsSymmetric_v<This> >( tmp ) );
+      smpAssign( left, transIf< IsSymmetric_v<This> && SO2 >( tmp ) );
    }
    else {
-      smpSubAssign( left, transIf< IsSymmetric_v<This> >( *rhs ) );
+      smpSubAssign( left, transIf< IsSymmetric_v<This> && SO2 >( *rhs ) );
    }
 
    BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
@@ -7731,8 +7731,8 @@ inline auto Submatrix<MT,aligned,false,true,CSAs...>::operator-=( const Matrix<M
 template< typename MT       // Type of the dense matrix
         , size_t... CSAs >  // Compile time submatrix arguments
 template< typename MT2      // Type of the right-hand side matrix
-        , bool SO >         // Storage order of the right-hand side matrix
-inline auto Submatrix<MT,aligned,false,true,CSAs...>::operator-=( const Matrix<MT2,SO>& rhs )
+        , bool SO2 >        // Storage order of the right-hand side matrix
+inline auto Submatrix<MT,aligned,false,true,CSAs...>::operator-=( const Matrix<MT2,SO2>& rhs )
    -> EnableIf_t< EnforceEvaluation_v<MT,MT2>, Submatrix& >
 {
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( ResultType );
@@ -7756,7 +7756,7 @@ inline auto Submatrix<MT,aligned,false,true,CSAs...>::operator-=( const Matrix<M
 
    decltype(auto) left( derestrict( *this ) );
 
-   smpAssign( left, transIf< IsSymmetric_v<This> >( tmp ) );
+   smpAssign( left, transIf< IsSymmetric_v<This> && SO2 >( tmp ) );
 
    BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
 
@@ -7783,8 +7783,8 @@ inline auto Submatrix<MT,aligned,false,true,CSAs...>::operator-=( const Matrix<M
 template< typename MT       // Type of the dense matrix
         , size_t... CSAs >  // Compile time submatrix arguments
 template< typename MT2      // Type of the right-hand side matrix
-        , bool SO >         // Storage order of the right-hand side matrix
-inline auto Submatrix<MT,aligned,false,true,CSAs...>::operator%=( const Matrix<MT2,SO>& rhs )
+        , bool SO2 >        // Storage order of the right-hand side matrix
+inline auto Submatrix<MT,aligned,false,true,CSAs...>::operator%=( const Matrix<MT2,SO2>& rhs )
    -> DisableIf_t< EnforceEvaluation_v<MT,MT2>, Submatrix& >
 {
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( ResultType );
@@ -7809,10 +7809,10 @@ inline auto Submatrix<MT,aligned,false,true,CSAs...>::operator%=( const Matrix<M
       const SchurType tmp( *this % (*rhs) );
       if( IsSparseMatrix_v<SchurType> )
          reset();
-      smpAssign( left, transIf< IsSymmetric_v<This> >( tmp ) );
+      smpAssign( left, transIf< IsSymmetric_v<This> && SO2 >( tmp ) );
    }
    else {
-      smpSchurAssign( left, transIf< IsSymmetric_v<This> >( *rhs ) );
+      smpSchurAssign( left, transIf< IsSymmetric_v<This> && SO2 >( *rhs ) );
    }
 
    BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
@@ -7840,8 +7840,8 @@ inline auto Submatrix<MT,aligned,false,true,CSAs...>::operator%=( const Matrix<M
 template< typename MT       // Type of the dense matrix
         , size_t... CSAs >  // Compile time submatrix arguments
 template< typename MT2      // Type of the right-hand side matrix
-        , bool SO >         // Storage order of the right-hand side matrix
-inline auto Submatrix<MT,aligned,false,true,CSAs...>::operator%=( const Matrix<MT2,SO>& rhs )
+        , bool SO2 >        // Storage order of the right-hand side matrix
+inline auto Submatrix<MT,aligned,false,true,CSAs...>::operator%=( const Matrix<MT2,SO2>& rhs )
    -> EnableIf_t< EnforceEvaluation_v<MT,MT2>, Submatrix& >
 {
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( ResultType );
@@ -7868,7 +7868,7 @@ inline auto Submatrix<MT,aligned,false,true,CSAs...>::operator%=( const Matrix<M
       reset();
    }
 
-   smpAssign( left, transIf< IsSymmetric_v<This> >( tmp ) );
+   smpAssign( left, transIf< IsSymmetric_v<This> && SO2 >( tmp ) );
 
    BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
 
@@ -9601,31 +9601,31 @@ class Submatrix<MT,aligned,true,true,CSAs...>
    inline Submatrix& operator=( initializer_list< initializer_list<ElementType> > list );
    inline Submatrix& operator=( const Submatrix& rhs );
 
-   template< typename MT2, bool SO >
-   inline Submatrix& operator=( const Matrix<MT2,SO>& rhs );
+   template< typename MT2, bool SO2 >
+   inline Submatrix& operator=( const Matrix<MT2,SO2>& rhs );
 
-   template< typename MT2, bool SO >
-   inline auto operator+=( const Matrix<MT2,SO>& rhs )
+   template< typename MT2, bool SO2 >
+   inline auto operator+=( const Matrix<MT2,SO2>& rhs )
       -> DisableIf_t< EnforceEvaluation_v<MT,MT2>, Submatrix& >;
 
-   template< typename MT2, bool SO >
-   inline auto operator+=( const Matrix<MT2,SO>& rhs )
+   template< typename MT2, bool SO2 >
+   inline auto operator+=( const Matrix<MT2,SO2>& rhs )
       -> EnableIf_t< EnforceEvaluation_v<MT,MT2>, Submatrix& >;
 
-   template< typename MT2, bool SO >
-   inline auto operator-=( const Matrix<MT2,SO>& rhs )
+   template< typename MT2, bool SO2 >
+   inline auto operator-=( const Matrix<MT2,SO2>& rhs )
       -> DisableIf_t< EnforceEvaluation_v<MT,MT2>, Submatrix& >;
 
-   template< typename MT2, bool SO >
-   inline auto operator-=( const Matrix<MT2,SO>& rhs )
+   template< typename MT2, bool SO2 >
+   inline auto operator-=( const Matrix<MT2,SO2>& rhs )
       -> EnableIf_t< EnforceEvaluation_v<MT,MT2>, Submatrix& >;
 
-   template< typename MT2, bool SO >
-   inline auto operator%=( const Matrix<MT2,SO>& rhs )
+   template< typename MT2, bool SO2 >
+   inline auto operator%=( const Matrix<MT2,SO2>& rhs )
       -> DisableIf_t< EnforceEvaluation_v<MT,MT2>, Submatrix& >;
 
-   template< typename MT2, bool SO >
-   inline auto operator%=( const Matrix<MT2,SO>& rhs )
+   template< typename MT2, bool SO2 >
+   inline auto operator%=( const Matrix<MT2,SO2>& rhs )
       -> EnableIf_t< EnforceEvaluation_v<MT,MT2>, Submatrix& >;
    //@}
    //**********************************************************************************************
@@ -10346,9 +10346,9 @@ inline Submatrix<MT,aligned,true,true,CSAs...>&
 template< typename MT       // Type of the dense matrix
         , size_t... CSAs >  // Compile time submatrix arguments
 template< typename MT2      // Type of the right-hand side matrix
-        , bool SO >         // Storage order of the right-hand side matrix
+        , bool SO2 >        // Storage order of the right-hand side matrix
 inline Submatrix<MT,aligned,true,true,CSAs...>&
-   Submatrix<MT,aligned,true,true,CSAs...>::operator=( const Matrix<MT2,SO>& rhs )
+   Submatrix<MT,aligned,true,true,CSAs...>::operator=( const Matrix<MT2,SO2>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_t<MT2> );
 
@@ -10369,12 +10369,12 @@ inline Submatrix<MT,aligned,true,true,CSAs...>&
       const ResultType_t<MT2> tmp( right );
       if( IsSparseMatrix_v<MT2> )
          reset();
-      smpAssign( left, transIf< IsSymmetric_v<This> >( tmp ) );
+      smpAssign( left, transIf< IsSymmetric_v<This> && !SO2 >( tmp ) );
    }
    else {
       if( IsSparseMatrix_v<MT2> )
          reset();
-      smpAssign( left, transIf< IsSymmetric_v<This> >( right ) );
+      smpAssign( left, transIf< IsSymmetric_v<This> && !SO2 >( right ) );
    }
 
    BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
@@ -10402,8 +10402,8 @@ inline Submatrix<MT,aligned,true,true,CSAs...>&
 template< typename MT       // Type of the dense matrix
         , size_t... CSAs >  // Compile time submatrix arguments
 template< typename MT2      // Type of the right-hand side matrix
-        , bool SO  >        // Storage order of the right-hand side matrix
-inline auto Submatrix<MT,aligned,true,true,CSAs...>::operator+=( const Matrix<MT2,SO>& rhs )
+        , bool SO2 >        // Storage order of the right-hand side matrix
+inline auto Submatrix<MT,aligned,true,true,CSAs...>::operator+=( const Matrix<MT2,SO2>& rhs )
    -> DisableIf_t< EnforceEvaluation_v<MT,MT2>, Submatrix& >
 {
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( ResultType );
@@ -10427,10 +10427,10 @@ inline auto Submatrix<MT,aligned,true,true,CSAs...>::operator+=( const Matrix<MT
 
    if( ( ( IsSymmetric_v<MT> || IsHermitian_v<MT> ) && hasOverlap() ) || (*rhs).canAlias( this ) ) {
       const AddType tmp( *this + (*rhs) );
-      smpAssign( left, transIf< IsSymmetric_v<This> >( tmp ) );
+      smpAssign( left, transIf< IsSymmetric_v<This> && !SO2 >( tmp ) );
    }
    else {
-      smpAddAssign( left, transIf< IsSymmetric_v<This> >( *rhs ) );
+      smpAddAssign( left, transIf< IsSymmetric_v<This> && !SO2 >( *rhs ) );
    }
 
    BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
@@ -10458,8 +10458,8 @@ inline auto Submatrix<MT,aligned,true,true,CSAs...>::operator+=( const Matrix<MT
 template< typename MT       // Type of the dense matrix
         , size_t... CSAs >  // Compile time submatrix arguments
 template< typename MT2      // Type of the right-hand side matrix
-        , bool SO  >        // Storage order of the right-hand side matrix
-inline auto Submatrix<MT,aligned,true,true,CSAs...>::operator+=( const Matrix<MT2,SO>& rhs )
+        , bool SO2 >        // Storage order of the right-hand side matrix
+inline auto Submatrix<MT,aligned,true,true,CSAs...>::operator+=( const Matrix<MT2,SO2>& rhs )
    -> EnableIf_t< EnforceEvaluation_v<MT,MT2>, Submatrix& >
 {
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( ResultType );
@@ -10483,7 +10483,7 @@ inline auto Submatrix<MT,aligned,true,true,CSAs...>::operator+=( const Matrix<MT
 
    decltype(auto) left( derestrict( *this ) );
 
-   smpAssign( left, transIf< IsSymmetric_v<This> >( tmp ) );
+   smpAssign( left, transIf< IsSymmetric_v<This> && !SO2 >( tmp ) );
 
    BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
 
@@ -10510,8 +10510,8 @@ inline auto Submatrix<MT,aligned,true,true,CSAs...>::operator+=( const Matrix<MT
 template< typename MT       // Type of the dense matrix
         , size_t... CSAs >  // Compile time submatrix arguments
 template< typename MT2      // Type of the right-hand side matrix
-        , bool SO >         // Storage order of the right-hand side matrix
-inline auto Submatrix<MT,aligned,true,true,CSAs...>::operator-=( const Matrix<MT2,SO>& rhs )
+        , bool SO2 >        // Storage order of the right-hand side matrix
+inline auto Submatrix<MT,aligned,true,true,CSAs...>::operator-=( const Matrix<MT2,SO2>& rhs )
    -> DisableIf_t< EnforceEvaluation_v<MT,MT2>, Submatrix& >
 {
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( ResultType );
@@ -10535,10 +10535,10 @@ inline auto Submatrix<MT,aligned,true,true,CSAs...>::operator-=( const Matrix<MT
 
    if( ( ( IsSymmetric_v<MT> || IsHermitian_v<MT> ) && hasOverlap() ) || (*rhs).canAlias( this ) ) {
       const SubType tmp( *this - (*rhs ) );
-      smpAssign( left, transIf< IsSymmetric_v<This> >( tmp ) );
+      smpAssign( left, transIf< IsSymmetric_v<This> && !SO2 >( tmp ) );
    }
    else {
-      smpSubAssign( left, transIf< IsSymmetric_v<This> >( *rhs ) );
+      smpSubAssign( left, transIf< IsSymmetric_v<This> && !SO2 >( *rhs ) );
    }
 
    BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
@@ -10566,8 +10566,8 @@ inline auto Submatrix<MT,aligned,true,true,CSAs...>::operator-=( const Matrix<MT
 template< typename MT       // Type of the dense matrix
         , size_t... CSAs >  // Compile time submatrix arguments
 template< typename MT2      // Type of the right-hand side matrix
-        , bool SO >         // Storage order of the right-hand side matrix
-inline auto Submatrix<MT,aligned,true,true,CSAs...>::operator-=( const Matrix<MT2,SO>& rhs )
+        , bool SO2 >        // Storage order of the right-hand side matrix
+inline auto Submatrix<MT,aligned,true,true,CSAs...>::operator-=( const Matrix<MT2,SO2>& rhs )
    -> EnableIf_t< EnforceEvaluation_v<MT,MT2>, Submatrix& >
 {
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( ResultType );
@@ -10591,7 +10591,7 @@ inline auto Submatrix<MT,aligned,true,true,CSAs...>::operator-=( const Matrix<MT
 
    decltype(auto) left( derestrict( *this ) );
 
-   smpAssign( left, transIf< IsSymmetric_v<This> >( tmp ) );
+   smpAssign( left, transIf< IsSymmetric_v<This> && !SO2 >( tmp ) );
 
    BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
 
@@ -10618,8 +10618,8 @@ inline auto Submatrix<MT,aligned,true,true,CSAs...>::operator-=( const Matrix<MT
 template< typename MT       // Type of the dense matrix
         , size_t... CSAs >  // Compile time submatrix arguments
 template< typename MT2      // Type of the right-hand side matrix
-        , bool SO  >        // Storage order of the right-hand side matrix
-inline auto Submatrix<MT,aligned,true,true,CSAs...>::operator%=( const Matrix<MT2,SO>& rhs )
+        , bool SO2 >        // Storage order of the right-hand side matrix
+inline auto Submatrix<MT,aligned,true,true,CSAs...>::operator%=( const Matrix<MT2,SO2>& rhs )
    -> DisableIf_t< EnforceEvaluation_v<MT,MT2>, Submatrix& >
 {
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( ResultType );
@@ -10644,10 +10644,10 @@ inline auto Submatrix<MT,aligned,true,true,CSAs...>::operator%=( const Matrix<MT
       const SchurType tmp( *this % (*rhs) );
       if( IsSparseMatrix_v<SchurType> )
          reset();
-      smpAssign( left, transIf< IsSymmetric_v<This> >( tmp ) );
+      smpAssign( left, transIf< IsSymmetric_v<This> && !SO2 >( tmp ) );
    }
    else {
-      smpSchurAssign( left, transIf< IsSymmetric_v<This> >( *rhs ) );
+      smpSchurAssign( left, transIf< IsSymmetric_v<This> && !SO2 >( *rhs ) );
    }
 
    BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
@@ -10675,8 +10675,8 @@ inline auto Submatrix<MT,aligned,true,true,CSAs...>::operator%=( const Matrix<MT
 template< typename MT       // Type of the dense matrix
         , size_t... CSAs >  // Compile time submatrix arguments
 template< typename MT2      // Type of the right-hand side matrix
-        , bool SO  >        // Storage order of the right-hand side matrix
-inline auto Submatrix<MT,aligned,true,true,CSAs...>::operator%=( const Matrix<MT2,SO>& rhs )
+        , bool SO2 >        // Storage order of the right-hand side matrix
+inline auto Submatrix<MT,aligned,true,true,CSAs...>::operator%=( const Matrix<MT2,SO2>& rhs )
    -> EnableIf_t< EnforceEvaluation_v<MT,MT2>, Submatrix& >
 {
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( ResultType );
@@ -10703,7 +10703,7 @@ inline auto Submatrix<MT,aligned,true,true,CSAs...>::operator%=( const Matrix<MT
       reset();
    }
 
-   smpAssign( left, transIf< IsSymmetric_v<This> >( tmp ) );
+   smpAssign( left, transIf< IsSymmetric_v<This> && !SO2 >( tmp ) );
 
    BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
 
