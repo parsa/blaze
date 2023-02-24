@@ -734,21 +734,21 @@ class UniUpperMatrix<MT,SO,true>
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-   inline size_t rows() const noexcept;
-   inline size_t columns() const noexcept;
-   inline size_t spacing() const noexcept;
-   inline size_t capacity() const noexcept;
-   inline size_t capacity( size_t i ) const noexcept;
-   inline size_t nonZeros() const;
-   inline size_t nonZeros( size_t i ) const;
-   inline void   reset();
-   inline void   reset( size_t i );
-   inline void   clear();
-          void   resize ( size_t n, bool preserve=true );
-   inline void   extend ( size_t n, bool preserve=true );
-   inline void   reserve( size_t elements );
-   inline void   shrinkToFit();
-   inline void   swap( UniUpperMatrix& m ) noexcept;
+   constexpr size_t rows() const noexcept;
+   constexpr size_t columns() const noexcept;
+   constexpr size_t spacing() const noexcept;
+   constexpr size_t capacity() const noexcept;
+   constexpr size_t capacity( size_t i ) const noexcept;
+   inline    size_t nonZeros() const;
+   inline    size_t nonZeros( size_t i ) const;
+   inline    void   reset();
+   inline    void   reset( size_t i );
+   inline    void   clear();
+             void   resize ( size_t n, bool preserve=true );
+   inline    void   extend ( size_t n, bool preserve=true );
+   inline    void   reserve( size_t elements );
+   inline    void   shrinkToFit();
+   inline    void   swap( UniUpperMatrix& m ) noexcept;
 
    static constexpr size_t maxNonZeros() noexcept;
    static constexpr size_t maxNonZeros( size_t n ) noexcept;
@@ -1989,7 +1989,7 @@ inline auto UniUpperMatrix<MT,SO,true>::operator%=( const Matrix<MT2,SO2>& rhs )
 */
 template< typename MT  // Type of the adapted dense matrix
         , bool SO >    // Storage order of the adapted dense matrix
-inline size_t UniUpperMatrix<MT,SO,true>::rows() const noexcept
+constexpr size_t UniUpperMatrix<MT,SO,true>::rows() const noexcept
 {
    return matrix_.rows();
 }
@@ -2005,7 +2005,7 @@ inline size_t UniUpperMatrix<MT,SO,true>::rows() const noexcept
 */
 template< typename MT  // Type of the adapted dense matrix
         , bool SO >    // Storage order of the adapted dense matrix
-inline size_t UniUpperMatrix<MT,SO,true>::columns() const noexcept
+constexpr size_t UniUpperMatrix<MT,SO,true>::columns() const noexcept
 {
    return matrix_.columns();
 }
@@ -2026,7 +2026,7 @@ inline size_t UniUpperMatrix<MT,SO,true>::columns() const noexcept
 */
 template< typename MT  // Type of the adapted dense matrix
         , bool SO >    // Storage order of the adapted dense matrix
-inline size_t UniUpperMatrix<MT,SO,true>::spacing() const noexcept
+constexpr size_t UniUpperMatrix<MT,SO,true>::spacing() const noexcept
 {
    return matrix_.spacing();
 }
@@ -2042,7 +2042,7 @@ inline size_t UniUpperMatrix<MT,SO,true>::spacing() const noexcept
 */
 template< typename MT  // Type of the adapted dense matrix
         , bool SO >    // Storage order of the adapted dense matrix
-inline size_t UniUpperMatrix<MT,SO,true>::capacity() const noexcept
+constexpr size_t UniUpperMatrix<MT,SO,true>::capacity() const noexcept
 {
    return matrix_.capacity();
 }
@@ -2064,7 +2064,7 @@ inline size_t UniUpperMatrix<MT,SO,true>::capacity() const noexcept
 */
 template< typename MT  // Type of the adapted dense matrix
         , bool SO >    // Storage order of the adapted dense matrix
-inline size_t UniUpperMatrix<MT,SO,true>::capacity( size_t i ) const noexcept
+constexpr size_t UniUpperMatrix<MT,SO,true>::capacity( size_t i ) const noexcept
 {
    return matrix_.capacity(i);
 }
