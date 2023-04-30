@@ -51,10 +51,12 @@
 #include <blaze/math/typetraits/IsAligned.h>
 #include <blaze/math/typetraits/IsContiguous.h>
 #include <blaze/math/typetraits/IsPadded.h>
+#include <blaze/math/typetraits/IsResizable.h>
 #include <blaze/math/typetraits/MaxSize.h>
 #include <blaze/math/typetraits/Size.h>
 #include <blaze/system/Inline.h>
 #include <blaze/util/Assert.h>
+#include <blaze/util/EnableIf.h>
 #include <blaze/util/Types.h>
 
 
@@ -350,7 +352,9 @@ class DMatTransposer
    // \param preserve \a true if the old values of the matrix should be preserved, \a false if not.
    // \return void
    */
-   inline void resize( size_t m, size_t n, bool preserve=true ) {
+   template< typename U = MT, typename = EnableIf_t< IsResizable_v<U> > >
+   inline void resize( size_t m, size_t n, bool preserve=true )
+   {
       dm_.resize( m, n, preserve );
    }
    //**********************************************************************************************
