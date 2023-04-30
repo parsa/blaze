@@ -961,7 +961,7 @@ template< typename VT       // Type of the dense vector
 inline typename Subvector<VT,unaligned,TF,true,CSAs...>::Pointer
    Subvector<VT,unaligned,TF,true,CSAs...>::data() noexcept
 {
-   return vector_.data() + vector_.spacing()*offset();
+   return vector_.data() + offset();
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -981,7 +981,7 @@ template< typename VT       // Type of the dense vector
 inline typename Subvector<VT,unaligned,TF,true,CSAs...>::ConstPointer
    Subvector<VT,unaligned,TF,true,CSAs...>::data() const noexcept
 {
-   return vector_.data() + vector_.spacing()*offset();
+   return vector_.data() + offset();
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -3092,7 +3092,7 @@ template< typename VT       // Type of the dense vector
 inline typename Subvector<VT,aligned,TF,true,CSAs...>::Pointer
    Subvector<VT,aligned,TF,true,CSAs...>::data() noexcept
 {
-   return vector_.data() + vector_.spacing()*offset();
+   return vector_.data() + offset();
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -3112,7 +3112,7 @@ template< typename VT       // Type of the dense vector
 inline typename Subvector<VT,aligned,TF,true,CSAs...>::ConstPointer
    Subvector<VT,aligned,TF,true,CSAs...>::data() const noexcept
 {
-   return vector_.data() + vector_.spacing()*offset();
+   return vector_.data() + offset();
 }
 /*! \endcond */
 //*************************************************************************************************
