@@ -255,8 +255,7 @@ class SMatRepeatExpr
 
  private:
    //**Member variables****************************************************************************
-   Operand sm_;    //!< Sparse matrix of the repeater expression.
-   size_t  reps_;  //!< The number of repetitions.
+   Operand sm_;  //!< Sparse matrix of the repeater expression.
    //**********************************************************************************************
 
    //**Assignment to row-major dense matrices******************************************************

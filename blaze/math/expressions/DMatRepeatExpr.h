@@ -243,8 +243,7 @@ class DMatRepeatExpr
 
  private:
    //**Member variables****************************************************************************
-   Operand dm_;    //!< Dense matrix of the repeater expression.
-   size_t  reps_;  //!< The number of repetitions.
+   Operand dm_;  //!< Dense matrix of the repeater expression.
    //**********************************************************************************************
 
    //**Assignment to row-major dense matrices******************************************************
