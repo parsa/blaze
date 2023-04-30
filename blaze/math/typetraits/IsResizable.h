@@ -41,7 +41,6 @@
 //*************************************************************************************************
 
 #include <utility>
-#include <blaze/math/Aliases.h>
 #include <blaze/math/typetraits/IsMatrix.h>
 #include <blaze/math/typetraits/IsVector.h>
 #include <blaze/math/typetraits/RemoveAdaptor.h>
@@ -101,8 +100,8 @@ using Resizable2_t = decltype( std::declval<T&>().resize( std::declval<size_t>()
 */
 template< typename T >
 struct IsResizable
-   : public BoolConstant< ( IsVector_v<T> && IsDetected_v< Resizable1_t, RemoveAdaptor_t< ResultType_t<T> > > ) ||
-                          ( IsMatrix_v<T> && IsDetected_v< Resizable2_t, RemoveAdaptor_t< ResultType_t<T> > > ) >
+   : public BoolConstant< ( IsVector_v<T> && IsDetected_v< Resizable1_t, RemoveAdaptor_t<T> > ) ||
+                          ( IsMatrix_v<T> && IsDetected_v< Resizable2_t, RemoveAdaptor_t<T> > ) >
 {};
 //*************************************************************************************************
 
