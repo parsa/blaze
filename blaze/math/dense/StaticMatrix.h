@@ -995,6 +995,11 @@ inline StaticMatrix<Type,M,N,SO,AF,PF,Tag>::StaticMatrix( const Matrix<MT,SO2>& 
 
    BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<MT> );
 
+   constexpr size_t OtherRows = Size_v<MT,0UL>;
+   constexpr size_t OtherColumns = Size_v<MT,1UL>;
+   BLAZE_STATIC_ASSERT_MSG( OtherRows == -1 || OtherRows == M, "Invalid setup of static matrix" );
+   BLAZE_STATIC_ASSERT_MSG( OtherColumns == -1 || OtherColumns == N, "Invalid setup of static matrix" );
+
    if( (*m).rows() != M || (*m).columns() != N ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid setup of static matrix" );
    }
@@ -4281,6 +4286,11 @@ inline StaticMatrix<Type,M,N,true,AF,PF,Tag>::StaticMatrix( const Matrix<MT,SO>&
    using blaze::clear;
 
    BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<MT> );
+
+   constexpr size_t OtherRows = Size_v<MT,0UL>;
+   constexpr size_t OtherColumns = Size_v<MT,1UL>;
+   BLAZE_STATIC_ASSERT_MSG( OtherRows == -1 || OtherRows == M, "Invalid setup of static matrix" );
+   BLAZE_STATIC_ASSERT_MSG( OtherColumns == -1 || OtherColumns == N, "Invalid setup of static matrix" );
 
    if( (*m).rows() != M || (*m).columns() != N ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid setup of static matrix" );
