@@ -91,7 +91,7 @@ inline byte_t* alignedAllocate( size_t size, size_t alignment )
    if( raw == nullptr ) {
 #else
    alignment = ( alignment < sizeof(void*) ? sizeof(void*) : alignment );
-   if( posix_memalign( &raw, alignment, size ) ) {
+   if( size > 0U && posix_memalign( &raw, alignment, size ) ) {
 #endif
       BLAZE_THROW_BAD_ALLOC;
    }
