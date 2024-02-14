@@ -898,9 +898,6 @@ inline StaticVector<Type,N,TF,AF,PF,Tag>::StaticVector( const Vector<VT,TF>& v )
 
    BLAZE_CONSTRAINT_MUST_BE_SAME_TAG( Tag, TagType_t<VT> );
 
-   constexpr size_t OtherSize = Size_v<VT,0UL>;
-   BLAZE_STATIC_ASSERT_MSG( OtherSize == -1 || OtherSize == N, "Invalid setup of static vector" );
-
    if( (*v).size() != N ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid setup of static vector" );
    }
