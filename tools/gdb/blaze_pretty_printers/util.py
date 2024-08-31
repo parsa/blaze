@@ -7,7 +7,7 @@ import re
 
 def stripType(type):
 	"""Returns type with references, qualifiers, and typedefs removed"""
-	
+
 	if type.code == gdb.TYPE_CODE_REF:
 		type = type.target()
 
@@ -20,9 +20,9 @@ def templateParams(type):
 	The gdb extension does not support value template arguments -- need to extract them by hand.
 	"""
 
-	m = re.match('[\w:]+<(.*)>', type.tag)
+	m = re.match(r'[\w:]+<(.*)>', type.tag)
 	if m:
-		template_params = re.findall('[\w:]+(?:<.*>)?', m[1])
+		template_params = re.findall(r'[\w:]+(?:<.*>)?', m[1])
 		template_params = [x.replace(" ", "") for x in template_params]
 		return template_params
 	else:
