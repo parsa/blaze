@@ -48,6 +48,7 @@
 #include <blaze/math/functors/Mult.h>
 #include <blaze/math/shims/PrevMultiple.h>
 #include <blaze/math/SIMD.h>
+#include <blaze/math/traits/ReduceTrait.h>
 #include <blaze/math/typetraits/HasLoad.h>
 #include <blaze/math/typetraits/IsPadded.h>
 #include <blaze/math/typetraits/IsSIMDEnabled.h>
