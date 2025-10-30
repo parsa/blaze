@@ -223,16 +223,16 @@ struct SIMDTraitBase<float>
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Specialization of the SIMDTraitBase class template for 'complex<float>'.
+/*!\brief Specialization of the SIMDTraitBase class template for 'blas_float_complex'.
 // \ingroup simd
 */
 template<>
-struct SIMDTraitBase< complex<float> >
+struct SIMDTraitBase< blas_float_complex >
 {
    using Type = SIMDcfloat;
    static constexpr size_t size = Type::size;
 
-   BLAZE_STATIC_ASSERT( sizeof( complex<float> ) == 2UL*sizeof( float ) );
+   BLAZE_STATIC_ASSERT( sizeof( blas_float_complex ) == 2UL*sizeof( float ) );
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -255,16 +255,16 @@ struct SIMDTraitBase<double>
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Specialization of the SIMDTraitBase class template for 'complex<double>'.
+/*!\brief Specialization of the SIMDTraitBase class template for 'blas_double_complex'.
 // \ingroup simd
 */
 template<>
-struct SIMDTraitBase< complex<double> >
+struct SIMDTraitBase< blas_double_complex >
 {
    using Type = SIMDcdouble;
    static constexpr size_t size = Type::size;
 
-   BLAZE_STATIC_ASSERT( sizeof( complex<double> ) == 2UL*sizeof( double ) );
+   BLAZE_STATIC_ASSERT( sizeof( blas_double_complex ) == 2UL*sizeof( double ) );
 };
 /*! \endcond */
 //*************************************************************************************************

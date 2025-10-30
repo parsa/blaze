@@ -94,22 +94,22 @@ EigenvalueTest::EigenvalueTest()
    // Single precision complex tests
    //=====================================================================================
 
-   //testGeev < complex<float> >();
-   //testGges < complex<float> >();
-   //testHeev < complex<float> >();
-   //testHeevd< complex<float> >();
-   //testHeevx< complex<float> >();
+   //testGeev < blas_float_complex >();
+   //testGges < blas_float_complex >();
+   //testHeev < blas_float_complex >();
+   //testHeevd< blas_float_complex >();
+   //testHeevx< blas_float_complex >();
 
 
    //=====================================================================================
    // Double precision complex tests
    //=====================================================================================
 
-   testGeev < complex<double> >();
-   testGges < complex<double> >();
-   testHeev < complex<double> >();
-   testHeevd< complex<double> >();
-   testHeevx< complex<double> >();
+   testGeev < blas_double_complex >();
+   testGges < blas_double_complex >();
+   testHeev < blas_double_complex >();
+   testHeevd< blas_double_complex >();
+   testHeevx< blas_double_complex >();
 }
 //*************************************************************************************************
 

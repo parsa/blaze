@@ -86,8 +86,8 @@ void potri( DenseMatrix<MT,SO>& A, char uplo );
 // positive-definite matrices that have already been factorized by the potrf() functions. The
 // resulting symmetric inverse of the given matrix \a A is stored either in the lower part of
 // \a A (\a uplo = \c 'L') or in the upper part (\a uplo = \c 'U'). Note that the function only
-// works for general, non-adapted matrices with \c float, \c double, \c complex<float>, or
-// \c complex<double> element type. The attempt to call the function with adaptors or matrices
+// works for general, non-adapted matrices with \c float, \c double, \c blas_float_complex, or
+// \c blas_double_complex element type. The attempt to call the function with adaptors or matrices
 // of any other element type results in a compile time error!
 //
 // The function fails if ...

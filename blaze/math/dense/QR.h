@@ -163,8 +163,8 @@ inline auto qr_backend( MT1& A, const ElementType_t<MT1>* tau )
    assert( A == Q * R );
    \endcode
 
-// \note This function only works for matrices with \c float, \c double, \c complex<float>, or
-// \c complex<double> element type. The attempt to call the function with matrices of any other
+// \note This function only works for matrices with \c float, \c double, \c blas_float_complex, or
+// \c blas_double_complex element type. The attempt to call the function with matrices of any other
 // element type results in a compile time error!
 //
 // \note This function can only be used if a fitting LAPACK library is available and linked to

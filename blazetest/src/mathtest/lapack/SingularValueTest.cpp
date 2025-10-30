@@ -91,18 +91,18 @@ SingularValueTest::SingularValueTest()
    // Single precision complex tests
    //=====================================================================================
 
-   //testGesvd < complex<float> >();
-   //testGesdd < complex<float> >();
-   //testGesvdx< complex<float> >();
+   //testGesvd < blas_float_complex >();
+   //testGesdd < blas_float_complex >();
+   //testGesvdx< blas_float_complex >();
 
 
    //=====================================================================================
    // Double precision complex tests
    //=====================================================================================
 
-   testGesvd < complex<double> >();
-   testGesdd < complex<double> >();
-   testGesvdx< complex<double> >();
+   testGesvd < blas_double_complex >();
+   testGesdd < blas_double_complex >();
+   testGesvdx< blas_double_complex >();
 }
 //*************************************************************************************************
 

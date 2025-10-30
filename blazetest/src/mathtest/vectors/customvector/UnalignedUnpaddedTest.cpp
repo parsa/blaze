@@ -1689,7 +1689,7 @@ void UnalignedUnpaddedTest::testScaling()
       using blaze::unpadded;
       using blaze::rowVector;
 
-      using cplx = complex<float>;
+      using cplx = blas_float_complex;
       using UnalignedUnpadded = blaze::CustomVector<cplx,unaligned,unpadded,rowVector>;
       std::unique_ptr<cplx[],blaze::ArrayDelete> memory( new cplx[2UL] );
       UnalignedUnpadded vec( memory.get(), 2UL );

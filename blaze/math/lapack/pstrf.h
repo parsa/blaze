@@ -88,7 +88,7 @@ blas_int_t pstrf( DenseMatrix<MT,SO>& A, char uplo, blas_int_t* piv, ST tol );
 // This function performs the dense matrix Cholesky decomposition of a symmetric positive
 // semi-definite \a n-by-\a n matrix based on the LAPACK pstrf() functions. Note that
 // the function only works for general, non-adapted matrices with \c float, \c double,
-// \c complex<float>, or \c complex<double> element type. The attempt to call the function
+// \c blas_float_complex, or \c blas_double_complex element type. The attempt to call the function
 // with any adapted matrix or matrices of any other element type results in a compile time
 // error!\n
 //

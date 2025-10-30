@@ -76,8 +76,8 @@ ElementType_t<VT1> dotu( const DenseVector<VT1,TF1>& x, const DenseVector<VT2,TF
 // \return The result of the dot product computation.
 //
 // This function performs the dense vector dot product based on the BLAS dotu() functions. Note
-// that the function only works for vectors with \c float, \c double, \c complex<float>, or
-// \c complex<double> element type. The attempt to call the function with vectors of any other
+// that the function only works for vectors with \c float, \c double, \c blas_float_complex, or
+// \c blas_double_complex element type. The attempt to call the function with vectors of any other
 // element type results in a compile time error.
 //
 // \note This function can only be used if a fitting BLAS library, which supports this function,

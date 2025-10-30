@@ -63,11 +63,11 @@ float dotu( blas_int_t n, const float* x, blas_int_t incX, const float* y, blas_
 
 double dotu( blas_int_t n, const double* x, blas_int_t incX, const double* y, blas_int_t incY );
 
-complex<float> dotu( blas_int_t n, const complex<float>* x, blas_int_t incX,
-                     const complex<float>* y, blas_int_t incY );
+blas_float_complex dotu( blas_int_t n, const blas_float_complex* x, blas_int_t incX,
+                     const blas_float_complex* y, blas_int_t incY );
 
-complex<double> dotu( blas_int_t n, const complex<double>* x, blas_int_t incX,
-                      const complex<double>* y, blas_int_t incY );
+blas_double_complex dotu( blas_int_t n, const blas_double_complex* x, blas_int_t incX,
+                      const blas_double_complex* y, blas_int_t incY );
 
 #endif
 //@}
@@ -150,17 +150,17 @@ inline double dotu( blas_int_t n, const double* x, blas_int_t incX, const double
 // is available and linked to the executable. Otherwise a call to this function will result in a
 // linker error.
 */
-inline complex<float> dotu( blas_int_t n, const complex<float>* x, blas_int_t incX,
-                            const complex<float>* y, blas_int_t incY )
+inline blas_float_complex dotu( blas_int_t n, const blas_float_complex* x, blas_int_t incX,
+                            const blas_float_complex* y, blas_int_t incY )
 {
-   BLAZE_STATIC_ASSERT( sizeof( complex<float> ) == 2UL*sizeof( float ) );
+   BLAZE_STATIC_ASSERT( sizeof( blas_float_complex ) == 2UL*sizeof( float ) );
 
-   complex<float> tmp;
+   blas_float_complex tmp;
 
 #ifdef OPENBLAS_VERSION
    cblas_cdotu_sub( n, reinterpret_cast<const float*>( x ), incX,
                     reinterpret_cast<const float*>( y ), incY,
-                    reinterpret_cast<openblas_complex_float*>( &tmp ) );
+                    reinterpret_cast<openblas_float_complex_float*>( &tmp ) );
 #else
    cblas_cdotu_sub( n, reinterpret_cast<const float*>( x ), incX,
                     reinterpret_cast<const float*>( y ), incY, &tmp );
@@ -192,17 +192,17 @@ inline complex<float> dotu( blas_int_t n, const complex<float>* x, blas_int_t in
 // is available and linked to the executable. Otherwise a call to this function will result in a
 // linker error.
 */
-inline complex<double> dotu( blas_int_t n, const complex<double>* x, blas_int_t incX,
-                             const complex<double>* y, blas_int_t incY )
+inline blas_double_complex dotu( blas_int_t n, const blas_double_complex* x, blas_int_t incX,
+                             const blas_double_complex* y, blas_int_t incY )
 {
-   BLAZE_STATIC_ASSERT( sizeof( complex<double> ) == 2UL*sizeof( double ) );
+   BLAZE_STATIC_ASSERT( sizeof( blas_double_complex ) == 2UL*sizeof( double ) );
 
-   complex<double> tmp;
+   blas_double_complex tmp;
 
 #ifdef OPENBLAS_VERSION
    cblas_zdotu_sub( n, reinterpret_cast<const double*>( x ), incX,
                     reinterpret_cast<const double*>( y ), incY,
-                    reinterpret_cast<openblas_complex_double*>( &tmp ) );
+                    reinterpret_cast<openblas_float_complex_double*>( &tmp ) );
 #else
    cblas_zdotu_sub( n, reinterpret_cast<const double*>( x ), incX,
                     reinterpret_cast<const double*>( y ), incY, &tmp );

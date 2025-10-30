@@ -117,7 +117,7 @@ FalseType isSIMDPack_backend( ... );
    blaze::IsSIMDPack< volatile SIMDint >          // Is derived from TrueType
    blaze::IsSIMDPack< int >::value                // Evaluates to 0
    blaze::IsSIMDPack< const double >::Type        // Results in FalseType
-   blaze::IsSIMDPack< volatile complex<double> >  // Is derived from FalseType
+   blaze::IsSIMDPack< volatile blas_double_complex >  // Is derived from FalseType
    \endcode
 */
 template< typename T >

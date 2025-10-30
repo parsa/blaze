@@ -99,7 +99,7 @@ using HasSIMDSignHelper =
    blaze::HasSIMDSign< double >               // Is derived from TrueType
    blaze::HasSIMDSign< unsigned int >::value  // Evaluates to 0
    blaze::HasSIMDSign< long double >::Type    // Results in FalseType
-   blaze::HasSIMDSign< complex<float> >       // Is derived from FalseType
+   blaze::HasSIMDSign< blas_float_complex >       // Is derived from FalseType
    \endcode
 */
 template< typename T >  // Type of the operand

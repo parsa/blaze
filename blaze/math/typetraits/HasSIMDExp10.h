@@ -91,7 +91,7 @@ using HasSIMDExp10Helper =
    blaze::HasSIMDExp10< const double >         // Is derived from TrueType
    blaze::HasSIMDExp10< unsigned int >::value  // Evaluates to 0
    blaze::HasSIMDExp10< long double >::Type    // Results in FalseType
-   blaze::HasSIMDExp10< complex<double> >      // Is derived from FalseType
+   blaze::HasSIMDExp10< blas_double_complex >      // Is derived from FalseType
    \endcode
 */
 template< typename T >  // Type of the operand

@@ -75,7 +75,7 @@ using LessThan_t = decltype( std::declval<T1>() < std::declval<T2>() );
    blaze::HasLessThan< int, int >::value                       // Evaluates to 1
    blaze::HasLessThan< const std::string, std::string >::Type  // Results in TrueType
    blaze::HasLessThan< volatile int*, int* >                   // Is derived from TrueType
-   blaze::HasLessThan< int, blaze::complex<float> >::value     // Evaluates to 0
+   blaze::HasLessThan< int, blaze::blas_float_complex >::value     // Evaluates to 0
    blaze::HasLessThan< std::string, int >::Type                // Results in FalseType
    blaze::HasLessThan< int*, std::string* >                    // Is derived from FalseType
    \endcode

@@ -90,11 +90,11 @@ void gesv( blas_int_t n, blas_int_t nrhs, float* A, blas_int_t lda,
 void gesv( blas_int_t n, blas_int_t nrhs, double* A, blas_int_t lda,
            blas_int_t* ipiv, double* B, blas_int_t ldb, blas_int_t* info );
 
-void gesv( blas_int_t n, blas_int_t nrhs, complex<float>* A, blas_int_t lda,
-           blas_int_t* ipiv, complex<float>* B, blas_int_t ldb, blas_int_t* info );
+void gesv( blas_int_t n, blas_int_t nrhs, blas_float_complex* A, blas_int_t lda,
+           blas_int_t* ipiv, blas_float_complex* B, blas_int_t ldb, blas_int_t* info );
 
-void gesv( blas_int_t n, blas_int_t nrhs, complex<double>* A, blas_int_t lda,
-           blas_int_t* ipiv, complex<double>* B, blas_int_t ldb, blas_int_t* info );
+void gesv( blas_int_t n, blas_int_t nrhs, blas_double_complex* A, blas_int_t lda,
+           blas_int_t* ipiv, blas_double_complex* B, blas_int_t ldb, blas_int_t* info );
 //@}
 //*************************************************************************************************
 
@@ -252,14 +252,14 @@ inline void gesv( blas_int_t n, blas_int_t nrhs, double* A, blas_int_t lda,
 // is available and linked to the executable. Otherwise a call to this function will result in a
 // linker error.
 */
-inline void gesv( blas_int_t n, blas_int_t nrhs, complex<float>* A, blas_int_t lda,
-                  blas_int_t* ipiv, complex<float>* B, blas_int_t ldb, blas_int_t* info )
+inline void gesv( blas_int_t n, blas_int_t nrhs, blas_float_complex* A, blas_int_t lda,
+                  blas_int_t* ipiv, blas_float_complex* B, blas_int_t ldb, blas_int_t* info )
 {
-   BLAZE_STATIC_ASSERT( sizeof( complex<float> ) == 2UL*sizeof( float ) );
+   BLAZE_STATIC_ASSERT( sizeof( blas_float_complex ) == 2UL*sizeof( float ) );
 
 #if defined(INTEL_MKL_VERSION)
    BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( blas_int_t ) );
-   BLAZE_STATIC_ASSERT( sizeof( MKL_Complex8 ) == sizeof( complex<float> ) );
+   BLAZE_STATIC_ASSERT( sizeof( MKL_Complex8 ) == sizeof( blas_float_complex ) );
    using ET = MKL_Complex8;
 #else
    using ET = float;
@@ -314,14 +314,14 @@ inline void gesv( blas_int_t n, blas_int_t nrhs, complex<float>* A, blas_int_t l
 // is available and linked to the executable. Otherwise a call to this function will result in a
 // linker error.
 */
-inline void gesv( blas_int_t n, blas_int_t nrhs, complex<double>* A, blas_int_t lda,
-                  blas_int_t* ipiv, complex<double>* B, blas_int_t ldb, blas_int_t* info )
+inline void gesv( blas_int_t n, blas_int_t nrhs, blas_double_complex* A, blas_int_t lda,
+                  blas_int_t* ipiv, blas_double_complex* B, blas_int_t ldb, blas_int_t* info )
 {
-   BLAZE_STATIC_ASSERT( sizeof( complex<double> ) == 2UL*sizeof( double ) );
+   BLAZE_STATIC_ASSERT( sizeof( blas_double_complex ) == 2UL*sizeof( double ) );
 
 #if defined(INTEL_MKL_VERSION)
    BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( blas_int_t ) );
-   BLAZE_STATIC_ASSERT( sizeof( MKL_Complex16 ) == sizeof( complex<double> ) );
+   BLAZE_STATIC_ASSERT( sizeof( MKL_Complex16 ) == sizeof( blas_double_complex ) );
    using ET = MKL_Complex16;
 #else
    using ET = double;

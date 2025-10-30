@@ -68,12 +68,12 @@ void trmv( CBLAS_ORDER order, CBLAS_UPLO uplo, CBLAS_TRANSPOSE transA,
            double* x, blas_int_t incX );
 
 void trmv( CBLAS_ORDER order, CBLAS_UPLO uplo, CBLAS_TRANSPOSE transA,
-           CBLAS_DIAG diag, blas_int_t n, const complex<float>* A,
-           blas_int_t lda, complex<float>* x, blas_int_t incX );
+           CBLAS_DIAG diag, blas_int_t n, const blas_float_complex* A,
+           blas_int_t lda, blas_float_complex* x, blas_int_t incX );
 
 void trmv( CBLAS_ORDER order, CBLAS_UPLO uplo, CBLAS_TRANSPOSE transA,
-           CBLAS_DIAG diag, blas_int_t n, const complex<double>* A,
-           blas_int_t lda, complex<double>* x, blas_int_t incX );
+           CBLAS_DIAG diag, blas_int_t n, const blas_double_complex* A,
+           blas_int_t lda, blas_double_complex* x, blas_int_t incX );
 
 #endif
 //@}
@@ -173,10 +173,10 @@ inline void trmv( CBLAS_ORDER order, CBLAS_UPLO uplo, CBLAS_TRANSPOSE transA,
 // linker error.
 */
 inline void trmv( CBLAS_ORDER order, CBLAS_UPLO uplo, CBLAS_TRANSPOSE transA,
-                  CBLAS_DIAG diag, blas_int_t n, const complex<float>* A,
-                  blas_int_t lda, complex<float>* x, blas_int_t incX )
+                  CBLAS_DIAG diag, blas_int_t n, const blas_float_complex* A,
+                  blas_int_t lda, blas_float_complex* x, blas_int_t incX )
 {
-   BLAZE_STATIC_ASSERT( sizeof( complex<float> ) == 2UL*sizeof( float ) );
+   BLAZE_STATIC_ASSERT( sizeof( blas_float_complex ) == 2UL*sizeof( float ) );
 
    cblas_ctrmv( order, uplo, transA, diag, n, reinterpret_cast<const float*>( A ),
                 lda, reinterpret_cast<float*>( x ), incX );
@@ -210,10 +210,10 @@ inline void trmv( CBLAS_ORDER order, CBLAS_UPLO uplo, CBLAS_TRANSPOSE transA,
 // linker error.
 */
 inline void trmv( CBLAS_ORDER order, CBLAS_UPLO uplo, CBLAS_TRANSPOSE transA,
-                  CBLAS_DIAG diag, blas_int_t n, const complex<double>* A,
-                  blas_int_t lda, complex<double>* x, blas_int_t incX )
+                  CBLAS_DIAG diag, blas_int_t n, const blas_double_complex* A,
+                  blas_int_t lda, blas_double_complex* x, blas_int_t incX )
 {
-   BLAZE_STATIC_ASSERT( sizeof( complex<double> ) == 2UL*sizeof( double ) );
+   BLAZE_STATIC_ASSERT( sizeof( blas_double_complex ) == 2UL*sizeof( double ) );
 
    cblas_ztrmv( order, uplo, transA, diag, n, reinterpret_cast<const double*>( A ),
                 lda, reinterpret_cast<double*>( x ), incX );

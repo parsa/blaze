@@ -274,7 +274,7 @@ inline auto gges_backend( DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B,
 // vectors \a alpha, \a beta, which are resized to the correct size (if possible and necessary).
 //
 // Note that this function can only be used for general, non-adapted matrices with \c float,
-// \c double, \c complex<float>, or \c complex<double> element type. The attempt to call the
+// \c double, \c blas_float_complex, or \c blas_double_complex element type. The attempt to call the
 // function with any adapted matrix or matrices of any other element type results in a compile
 // time error!
 //
@@ -300,7 +300,7 @@ inline auto gges_backend( DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B,
    DynamicMatrix<double,rowMajor> B( 5UL, 5UL );  // The second general matrix
    // ... Initialization
 
-   DynamicVector<complex<double>,columnVector> alpha( 5UL );  // The vector for the eigenvalue numerators
+   DynamicVector<blas_double_complex,columnVector> alpha( 5UL );  // The vector for the eigenvalue numerators
    DynamicVector<double,columnVector> beta( 5UL );            // The vector for the eigenvalue denominators
 
    gges( A, B, alpha, beta );
@@ -403,7 +403,7 @@ inline void gges( DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B,
 // arguments.
 //
 // Note that this function can only be used for general, non-adapted matrices with \c float,
-// \c double, \c complex<float>, or \c complex<double> element type. The attempt to call the
+// \c double, \c blas_float_complex, or \c blas_double_complex element type. The attempt to call the
 // function with any adapted matrix or matrices of any other element type results in a compile
 // time error!
 //
@@ -433,7 +433,7 @@ inline void gges( DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B,
       return *alphar > 0.0;
    };
 
-   DynamicVector<complex<double>,columnVector> alpha( 5UL );  // The vector for the eigenvalue numerators
+   DynamicVector<blas_double_complex,columnVector> alpha( 5UL );  // The vector for the eigenvalue numerators
    DynamicVector<double,columnVector> beta( 5UL );            // The vector for the eigenvalue denominators
 
    gges( A, B, alpha, beta, select );
@@ -713,7 +713,7 @@ inline auto gges_backend( DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B,
 // vectors \a alpha, \a beta, which are resized to the correct size (if possible and necessary).
 //
 // Note that this function can only be used for general, non-adapted matrices with \c float,
-// \c double, \c complex<float>, or \c complex<double> element type. The attempt to call the
+// \c double, \c blas_float_complex, or \c blas_double_complex element type. The attempt to call the
 // function with any adapted matrix or matrices of any other element type results in a compile
 // time error!
 //
@@ -741,7 +741,7 @@ inline auto gges_backend( DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B,
    DynamicMatrix<double,rowMajor> B( 5UL, 5UL );  // The second general matrix
    // ... Initialization
 
-   DynamicVector<complex<double>,columnVector> alpha( 5UL );  // The vector for the eigenvalue numerators
+   DynamicVector<blas_double_complex,columnVector> alpha( 5UL );  // The vector for the eigenvalue numerators
    DynamicVector<double,columnVector> beta( 5UL );            // The vector for the eigenvalue denominators
    DynamicMatrix<double,columnVector> VSL( 5UL, 5UL );        // The matrix for the left Schur vectors
    DynamicMatrix<double,columnVector> VSR( 5UL, 5UL );        // The matrix for the right Schur vectors
@@ -880,7 +880,7 @@ inline void gges( DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B,
 // accept two pointers to complex arguments.
 //
 // Note that this function can only be used for general, non-adapted matrices with \c float,
-// \c double, \c complex<float>, or \c complex<double> element type. The attempt to call the
+// \c double, \c blas_float_complex, or \c blas_double_complex element type. The attempt to call the
 // function with any adapted matrix or matrices of any other element type results in a compile
 // time error!
 //
@@ -912,7 +912,7 @@ inline void gges( DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B,
       return *alphar > 0.0;
    };
 
-   DynamicVector<complex<double>,columnVector> alpha( 5UL );  // The vector for the eigenvalue numerators
+   DynamicVector<blas_double_complex,columnVector> alpha( 5UL );  // The vector for the eigenvalue numerators
    DynamicVector<double,columnVector> beta( 5UL );            // The vector for the eigenvalue denominators
    DynamicMatrix<double,columnVector> VSL( 5UL, 5UL );        // The matrix for the left Schur vectors
    DynamicMatrix<double,columnVector> VSR( 5UL, 5UL );        // The matrix for the right Schur vectors

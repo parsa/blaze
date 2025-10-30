@@ -91,7 +91,7 @@ using HasSIMDCoshHelper =
    blaze::HasSIMDCosh< const double >         // Is derived from TrueType
    blaze::HasSIMDCosh< unsigned int >::value  // Evaluates to 0
    blaze::HasSIMDCosh< long double >::Type    // Results in FalseType
-   blaze::HasSIMDCosh< complex<double> >      // Is derived from FalseType
+   blaze::HasSIMDCosh< blas_double_complex >      // Is derived from FalseType
    \endcode
 */
 template< typename T >  // Type of the operand

@@ -118,7 +118,7 @@ namespace blaze {
    \code
    // Serialization
    {
-      blaze::CompressedMatrix< blaze::DynamicMatrix< blaze::complex<double> > > mat;
+      blaze::CompressedMatrix< blaze::DynamicMatrix< blaze::blas_double_complex > > mat;
 
       // ... Resizing and initialization
 
@@ -131,7 +131,7 @@ namespace blaze {
 
    // Deserialization
    {
-      blaze::CompressedMatrix< blaze::DynamicMatrix< blaze::complex<double> > > mat;
+      blaze::CompressedMatrix< blaze::DynamicMatrix< blaze::blas_double_complex > > mat;
 
       // Creating an archive that reads from the file "matrix.blaze"
       blaze::Archive<std::ofstream> archive( "matrix.blaze" );

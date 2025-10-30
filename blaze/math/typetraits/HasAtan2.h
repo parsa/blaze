@@ -94,10 +94,10 @@ struct HasAtan2Helper< T1, T2, Void_t< decltype( atan2( std::declval<T1>(), std:
 
    \code
    blaze::HasAtan2< int, int >::value                         // Evaluates to 1
-   blaze::HasAtan2< complex<float>, complex<float> >::Type    // Results in TrueType
+   blaze::HasAtan2< blas_float_complex, blas_float_complex >::Type    // Results in TrueType
    blaze::HasAtan2< DynamicVector<int>, DynamicVector<int> >  // Is derived from TrueType
-   blaze::HasAtan2< int, complex<float> >::value              // Evaluates to 0
-   blaze::HasAtan2< complex<int>, complex<float> >::Type      // Results in FalseType
+   blaze::HasAtan2< int, blas_float_complex >::value              // Evaluates to 0
+   blaze::HasAtan2< complex<int>, blas_float_complex >::Type      // Results in FalseType
    blaze::HasAtan2< DynamicMatrix<int>, DynamicVector<int> >  // Is derived from FalseType
    \endcode
 */

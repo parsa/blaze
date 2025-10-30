@@ -70,14 +70,14 @@ void gemm( CBLAS_ORDER order, CBLAS_TRANSPOSE transA, CBLAS_TRANSPOSE transB,
            blas_int_t ldc );
 
 void gemm( CBLAS_ORDER order, CBLAS_TRANSPOSE transA, CBLAS_TRANSPOSE transB,
-           blas_int_t m, blas_int_t n, blas_int_t k, complex<float> alpha,
-           const complex<float>* A, blas_int_t lda, const complex<float>* B,
-           blas_int_t ldb, complex<float> beta, complex<float>* C, blas_int_t ldc );
+           blas_int_t m, blas_int_t n, blas_int_t k, blas_float_complex alpha,
+           const blas_float_complex* A, blas_int_t lda, const blas_float_complex* B,
+           blas_int_t ldb, blas_float_complex beta, blas_float_complex* C, blas_int_t ldc );
 
 void gemm( CBLAS_ORDER order, CBLAS_TRANSPOSE transA, CBLAS_TRANSPOSE transB,
-           blas_int_t m, blas_int_t n, blas_int_t k, complex<double> alpha,
-           const complex<double>* A, blas_int_t lda, const complex<double>* B,
-           blas_int_t ldb, complex<double> beta, complex<double>* C, blas_int_t ldc );
+           blas_int_t m, blas_int_t n, blas_int_t k, blas_double_complex alpha,
+           const blas_double_complex* A, blas_int_t lda, const blas_double_complex* B,
+           blas_int_t ldb, blas_double_complex beta, blas_double_complex* C, blas_int_t ldc );
 
 #endif
 //@}
@@ -194,11 +194,11 @@ inline void gemm( CBLAS_ORDER order, CBLAS_TRANSPOSE transA, CBLAS_TRANSPOSE tra
 // linker error.
 */
 inline void gemm( CBLAS_ORDER order, CBLAS_TRANSPOSE transA, CBLAS_TRANSPOSE transB,
-                  blas_int_t m, blas_int_t n, blas_int_t k, complex<float> alpha,
-                  const complex<float>* A, blas_int_t lda, const complex<float>* B,
-                  blas_int_t ldb, complex<float> beta, complex<float>* C, blas_int_t ldc )
+                  blas_int_t m, blas_int_t n, blas_int_t k, blas_float_complex alpha,
+                  const blas_float_complex* A, blas_int_t lda, const blas_float_complex* B,
+                  blas_int_t ldb, blas_float_complex beta, blas_float_complex* C, blas_int_t ldc )
 {
-   BLAZE_STATIC_ASSERT( sizeof( complex<float> ) == 2UL*sizeof( float ) );
+   BLAZE_STATIC_ASSERT( sizeof( blas_float_complex ) == 2UL*sizeof( float ) );
 
    cblas_cgemm( order, transA, transB, m, n, k, reinterpret_cast<const float*>( &alpha ),
                 reinterpret_cast<const float*>( A ), lda, reinterpret_cast<const float*>( B ),
@@ -238,11 +238,11 @@ inline void gemm( CBLAS_ORDER order, CBLAS_TRANSPOSE transA, CBLAS_TRANSPOSE tra
 // linker error.
 */
 inline void gemm( CBLAS_ORDER order, CBLAS_TRANSPOSE transA, CBLAS_TRANSPOSE transB,
-                  blas_int_t m, blas_int_t n, blas_int_t k, complex<double> alpha,
-                  const complex<double>* A, blas_int_t lda, const complex<double>* B,
-                  blas_int_t ldb, complex<double> beta, complex<double>* C, blas_int_t ldc )
+                  blas_int_t m, blas_int_t n, blas_int_t k, blas_double_complex alpha,
+                  const blas_double_complex* A, blas_int_t lda, const blas_double_complex* B,
+                  blas_int_t ldb, blas_double_complex beta, blas_double_complex* C, blas_int_t ldc )
 {
-   BLAZE_STATIC_ASSERT( sizeof( complex<double> ) == 2UL*sizeof( double ) );
+   BLAZE_STATIC_ASSERT( sizeof( blas_double_complex ) == 2UL*sizeof( double ) );
 
    cblas_zgemm( order, transA, transB, m, n, k, reinterpret_cast<const double*>( &alpha ),
                 reinterpret_cast<const double*>( A ), lda, reinterpret_cast<const double*>( B ),

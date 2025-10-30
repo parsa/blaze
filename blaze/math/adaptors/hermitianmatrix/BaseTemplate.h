@@ -105,13 +105,13 @@ namespace blaze {
    blaze::HermitianMatrix< blaze::HybridMatrix<float,4UL,4UL,columnMajor> B;
 
    // Definition of a resizable row-major dense Hermitian matrix based on DynamicMatrix
-   blaze::HermitianMatrix< blaze::DynamicMatrix<std::complex<double>,rowMajor> > C;
+   blaze::HermitianMatrix< blaze::DynamicMatrix<std::blas_double_complex,rowMajor> > C;
 
    // Definition of a fixed-size row-major dense diagonal matrix based on CustomMatrix
    blaze::HermitianMatrix< blaze::CustomMatrix<double,unaligned,unpadded,rowMajor> > D;
 
    // Definition of a compressed row-major single precision complex Hermitian matrix
-   blaze::HermitianMatrix< blaze::CompressedMatrix<std::complex<float>,rowMajor> > E;
+   blaze::HermitianMatrix< blaze::CompressedMatrix<std::blas_float_complex,rowMajor> > E;
    \endcode
 
 // The storage order of a Hermitian matrix is depending on the storage order of the adapted matrix
@@ -151,8 +151,8 @@ namespace blaze {
 	SymmetricMatrix< DynamicMatrix<double> > B;  // Both Hermitian and symmetric
 
 	// The following two matrices will behave differently
-	HermitianMatrix< DynamicMatrix< complex<double> > > C;  // Only Hermitian
-	SymmetricMatrix< DynamicMatrix< complex<double> > > D;  // Only symmetric
+	HermitianMatrix< DynamicMatrix< blas_double_complex > > C;  // Only Hermitian
+	SymmetricMatrix< DynamicMatrix< blas_double_complex > > D;  // Only symmetric
 
 	// Block-structured Hermitian matrices are not allowed
 	HermitianMatrix< DynamicMatrix< DynamicVector<double> > > E;  // Compilation error!
@@ -182,7 +182,7 @@ namespace blaze {
    using blaze::rowMajor;
 
    // Default constructed, default initialized, row-major 3x3 Hermitian dynamic matrix
-   HermitianMatrix< DynamicMatrix<std::complex<double>,rowMajor> > A( 3 );
+   HermitianMatrix< DynamicMatrix<std::blas_double_complex,rowMajor> > A( 3 );
 
    // Resizing the matrix to 5x5
    A.resize( 5 );
@@ -200,10 +200,10 @@ namespace blaze {
    using blaze::columnMajor;
 
    // Correct setup of a fixed size column-major 3x3 Hermitian static matrix
-   HermitianMatrix< StaticMatrix<std::complex<float>,3UL,3UL,columnMajor> > A;
+   HermitianMatrix< StaticMatrix<std::blas_float_complex,3UL,3UL,columnMajor> > A;
 
    // Compilation error: the provided matrix type is not a square matrix type
-   HermitianMatrix< StaticMatrix<std::complex<float>,3UL,4UL,columnMajor> > B;
+   HermitianMatrix< StaticMatrix<std::blas_float_complex,3UL,4UL,columnMajor> > B;
    \endcode
 
 // \n \subsection hermitianmatrix_hermitian The Hermitian Property is Always Enforced!
@@ -224,7 +224,7 @@ namespace blaze {
    using blaze::HermitianMatrix;
    using blaze::rowMajor;
 
-	using cplx = std::complex<double>;
+	using cplx = std::blas_double_complex;
 
    // Default constructed, row-major 3x3 Hermitian compressed matrix
    HermitianMatrix< CompressedMatrix<cplx,rowMajor> > A( 3 );
@@ -291,7 +291,7 @@ namespace blaze {
    using blaze::HermitianMatrix;
    using blaze::rowMajor;
 
-	using cplx = std::complex<double>;
+	using cplx = std::blas_double_complex;
 
    // Setup of the Hermitian matrix
    //
@@ -343,7 +343,7 @@ namespace blaze {
    using blaze::DynamicMatrix;
    using blaze::HermtianMatrix;
 
-	using cplx = std::complex<double>;
+	using cplx = std::blas_double_complex;
 
    // Setup of the Hermitian matrix
    //
@@ -378,7 +378,7 @@ namespace blaze {
    using blaze::DynamicMatrix;
    using blaze::HermitianMatrix;
 
-	std::complex<double>  cplx;
+	std::blas_double_complex  cplx;
 
    // Setup of two default 4x4 Hermitian matrices
    HermitianMatrix< DynamicMatrix<cplx> > A1( 4 ), A2( 4 );
@@ -450,7 +450,7 @@ namespace blaze {
    using blaze::rowMajor;
    using blaze::columnMajor;
 
-	using cplx = complex<float>;
+	using cplx = blas_float_complex;
 
    DynamicMatrix<cplx,rowMajor> A( 3, 3 );
    CompressedMatrix<cplx,rowMajor> B( 3, 3 );
@@ -585,7 +585,7 @@ namespace blaze {
    using blaze::DynamicMatrix;
    using blaze::HermitianMatrix;
 
-   HermitianMatrix< DynamicMatrix< complex<double> > > A, C;
+   HermitianMatrix< DynamicMatrix< blas_double_complex > > A, C;
    DynamicMatrix<double> B;
 
    B = A;  // Only read-access to the Hermitian matrix; no performance penalty

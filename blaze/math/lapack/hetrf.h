@@ -85,8 +85,8 @@ void hetrf( DenseMatrix<MT,SO>& A, char uplo, blas_int_t* ipiv );
 //
 // This function performs the dense matrix decomposition of a Hermitian indefinite matrix based
 // on the LAPACK hetrf() functions, which use the Bunch-Kaufman diagonal pivoting method. Note
-// that the function only works for general, non-adapted matrices with \c complex<float> or
-// \c complex<double> element type. The attempt to call the function with any adapted matrix
+// that the function only works for general, non-adapted matrices with \c blas_float_complex or
+// \c blas_double_complex element type. The attempt to call the function with any adapted matrix
 // or matrices of any other element type results in a compile time error!\n
 //
 // The decomposition has the form

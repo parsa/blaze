@@ -87,7 +87,7 @@ void trtri( DenseMatrix<MT,SO>& A, char uplo, char diag );
 // This function performs the dense matrix inversion based on the LAPACK trtri() functions for
 // a lower triangular (\a uplo = \c 'L') or upper triangular (\a uplo = \a 'U') matrix. Note
 // that the function only works for general, non-adapted matrices with \c float, \c double,
-// \c complex<float>, or \c complex<double> element type. The attempt to call the function with
+// \c blas_float_complex, or \c blas_double_complex element type. The attempt to call the function with
 // adaptors or matrices of any other element type results in a compile time error!
 //
 // The function fails if ...

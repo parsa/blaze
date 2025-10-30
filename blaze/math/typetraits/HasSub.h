@@ -94,10 +94,10 @@ struct HasSubHelper< T1, T2, Void_t< decltype( std::declval<T1>() - std::declval
 
    \code
    blaze::HasSub< int, int >::value                         // Evaluates to 1
-   blaze::HasSub< complex<float>, complex<float> >::Type    // Results in TrueType
+   blaze::HasSub< blas_float_complex, blas_float_complex >::Type    // Results in TrueType
    blaze::HasSub< DynamicVector<int>, DynamicVector<int> >  // Is derived from TrueType
-   blaze::HasSub< int, complex<float> >::value              // Evaluates to 0
-   blaze::HasSub< complex<int>, complex<float> >::Type      // Results in FalseType
+   blaze::HasSub< int, blas_float_complex >::value              // Evaluates to 0
+   blaze::HasSub< complex<int>, blas_float_complex >::Type      // Results in FalseType
    blaze::HasSub< DynamicMatrix<int>, DynamicVector<int> >  // Is derived from FalseType
    \endcode
 */

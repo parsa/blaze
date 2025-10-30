@@ -141,11 +141,11 @@ void DenseTest::testGeneral()
       }
 
       {
-         test_ = "svd( DenseMatrix, DenseVector ) (complex<double>)";
+         test_ = "svd( DenseMatrix, DenseVector ) (blas_double_complex)";
 
-         DynamicMatrix<complex<double>,columnMajor> A1( 8UL, 5UL );
+         DynamicMatrix<blas_double_complex,columnMajor> A1( 8UL, 5UL );
          randomize( A1 );
-         DynamicMatrix<complex<double>,rowMajor> A2( A1 );
+         DynamicMatrix<blas_double_complex,rowMajor> A2( A1 );
 
          DynamicVector<double,rowVector> s1;
          DynamicVector<double,rowVector> s2;
@@ -220,23 +220,23 @@ void DenseTest::testGeneral()
       }
 
       {
-         test_ = "svd( DenseMatrix, DenseMatrix, DenseVector, DenseMatrix ) (complex<double>)";
+         test_ = "svd( DenseMatrix, DenseMatrix, DenseVector, DenseMatrix ) (blas_double_complex)";
 
-         testMatrixRandom<complex<double>, columnMajor>();
-         testMatrixRandom<complex<double>, rowMajor>();
+         testMatrixRandom<blas_double_complex, columnMajor>();
+         testMatrixRandom<blas_double_complex, rowMajor>();
 
-         DynamicMatrix<complex<double>,columnMajor> A1( 8UL, 5UL );
+         DynamicMatrix<blas_double_complex,columnMajor> A1( 8UL, 5UL );
          randomize( A1 );
-         DynamicMatrix<complex<double>,rowMajor> A2( A1 );
+         DynamicMatrix<blas_double_complex,rowMajor> A2( A1 );
 
          DynamicVector<double,rowVector> s1;
          DynamicVector<double,rowVector> s2;
 
-         DynamicMatrix<complex<double>,columnMajor> U1;
-         DynamicMatrix<complex<double>,columnMajor> V1;
+         DynamicMatrix<blas_double_complex,columnMajor> U1;
+         DynamicMatrix<blas_double_complex,columnMajor> V1;
 
-         DynamicMatrix<complex<double>,rowMajor> U2;
-         DynamicMatrix<complex<double>,rowMajor> V2;
+         DynamicMatrix<blas_double_complex,rowMajor> U2;
+         DynamicMatrix<blas_double_complex,rowMajor> V2;
 
          svd( A1, U1, s1, V1 );
          svd( A2, U2, s2, V2 );
@@ -303,11 +303,11 @@ void DenseTest::testGeneral()
       }
 
       {
-         test_ = "svd( DenseMatrix, DenseVector, double, double ) (complex<double>)";
+         test_ = "svd( DenseMatrix, DenseVector, double, double ) (blas_double_complex)";
 
-         DynamicMatrix<complex<double>,columnMajor> A1( 8UL, 5UL );
+         DynamicMatrix<blas_double_complex,columnMajor> A1( 8UL, 5UL );
          randomize( A1 );
-         DynamicMatrix<complex<double>,rowMajor> A2( A1 );
+         DynamicMatrix<blas_double_complex,rowMajor> A2( A1 );
 
          DynamicVector<double,rowVector> s1;
          DynamicVector<double,rowVector> s2;
@@ -358,11 +358,11 @@ void DenseTest::testGeneral()
       }
 
       {
-         test_ = "svd( DenseMatrix, DenseVector, int, int ) (complex<double>)";
+         test_ = "svd( DenseMatrix, DenseVector, int, int ) (blas_double_complex)";
 
-         DynamicMatrix<complex<double>,columnMajor> A1( 8UL, 5UL );
+         DynamicMatrix<blas_double_complex,columnMajor> A1( 8UL, 5UL );
          randomize( A1 );
-         DynamicMatrix<complex<double>,rowMajor> A2( A1 );
+         DynamicMatrix<blas_double_complex,rowMajor> A2( A1 );
 
          DynamicVector<double,rowVector> s1;
          DynamicVector<double,rowVector> s2;
@@ -423,20 +423,20 @@ void DenseTest::testGeneral()
       }
 
       {
-         test_ = "svd( DenseMatrix, DenseMatrix, DenseVector, DenseMatrix, double, double ) (complex<double>)";
+         test_ = "svd( DenseMatrix, DenseMatrix, DenseVector, DenseMatrix, double, double ) (blas_double_complex)";
 
-         DynamicMatrix<complex<double>,columnMajor> A1( 8UL, 5UL );
+         DynamicMatrix<blas_double_complex,columnMajor> A1( 8UL, 5UL );
          randomize( A1 );
-         DynamicMatrix<complex<double>,rowMajor> A2( A1 );
+         DynamicMatrix<blas_double_complex,rowMajor> A2( A1 );
 
          DynamicVector<double,rowVector> s1;
          DynamicVector<double,rowVector> s2;
 
-         DynamicMatrix<complex<double>,columnMajor> U1;
-         DynamicMatrix<complex<double>,columnMajor> V1;
+         DynamicMatrix<blas_double_complex,columnMajor> U1;
+         DynamicMatrix<blas_double_complex,columnMajor> V1;
 
-         DynamicMatrix<complex<double>,rowMajor> U2;
-         DynamicMatrix<complex<double>,rowMajor> V2;
+         DynamicMatrix<blas_double_complex,rowMajor> U2;
+         DynamicMatrix<blas_double_complex,rowMajor> V2;
 
          svd( A1, U1, s1, V1, 0.0, 0.5 );
          svd( A2, U2, s2, V2, 0.0, 0.5 );
@@ -498,20 +498,20 @@ void DenseTest::testGeneral()
       }
 
       {
-         test_ = "svd( DenseMatrix, DenseMatrix, DenseVector, DenseMatrix, int, int ) (complex<double>)";
+         test_ = "svd( DenseMatrix, DenseMatrix, DenseVector, DenseMatrix, int, int ) (blas_double_complex)";
 
-         DynamicMatrix<complex<double>,columnMajor> A1( 8UL, 5UL );
+         DynamicMatrix<blas_double_complex,columnMajor> A1( 8UL, 5UL );
          randomize( A1 );
-         DynamicMatrix<complex<double>,rowMajor> A2( A1 );
+         DynamicMatrix<blas_double_complex,rowMajor> A2( A1 );
 
          DynamicVector<double,rowVector> s1;
          DynamicVector<double,rowVector> s2;
 
-         DynamicMatrix<complex<double>,columnMajor> U1;
-         DynamicMatrix<complex<double>,columnMajor> V1;
+         DynamicMatrix<blas_double_complex,columnMajor> U1;
+         DynamicMatrix<blas_double_complex,columnMajor> V1;
 
-         DynamicMatrix<complex<double>,rowMajor> U2;
-         DynamicMatrix<complex<double>,rowMajor> V2;
+         DynamicMatrix<blas_double_complex,rowMajor> U2;
+         DynamicMatrix<blas_double_complex,rowMajor> V2;
 
          svd( A1, U1, s1, V1, 0, 1 );
          svd( A2, U2, s2, V2, 0, 1 );

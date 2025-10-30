@@ -88,7 +88,7 @@ void gemm( DenseMatrix<MT1,SO1>& C, const DenseMatrix<MT2,SO2>& A,
 //
 // This function performs the dense matrix/dense matrix multiplication based on the BLAS
 // gemm() functions. Note that the function only works for matrices with \c float, \c double,
-// \c complex<float>, and \c complex<double> element type. The attempt to call the function
+// \c blas_float_complex, and \c blas_double_complex element type. The attempt to call the function
 // with matrices of any other element type results in a compile time error.
 //
 // \note This function can only be used if a fitting BLAS library, which supports this function,

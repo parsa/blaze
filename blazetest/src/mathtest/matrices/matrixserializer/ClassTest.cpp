@@ -164,7 +164,7 @@ void ClassTest::testRandomMatrices()
    }
 
    {
-      blaze::StaticMatrix<blaze::complex<float>,13UL,7UL,blaze::rowMajor> src;
+      blaze::StaticMatrix<blaze::blas_float_complex,13UL,7UL,blaze::rowMajor> src;
       randomize( src );
       runAllTests<13UL,7UL>( src );
    }
@@ -193,7 +193,7 @@ void ClassTest::testRandomMatrices()
    }
 
    {
-      blaze::StaticMatrix<blaze::complex<float>,13UL,7UL,blaze::columnMajor> src;
+      blaze::StaticMatrix<blaze::blas_float_complex,13UL,7UL,blaze::columnMajor> src;
       randomize( src );
       runAllTests<13UL,7UL>( src );
    }
@@ -222,7 +222,7 @@ void ClassTest::testRandomMatrices()
    }
 
    {
-      blaze::DynamicMatrix<blaze::complex<float>,blaze::rowMajor> src( 13UL, 7UL );
+      blaze::DynamicMatrix<blaze::blas_float_complex,blaze::rowMajor> src( 13UL, 7UL );
       randomize( src );
       runAllTests<13UL,7UL>( src );
    }
@@ -251,7 +251,7 @@ void ClassTest::testRandomMatrices()
    }
 
    {
-      blaze::DynamicMatrix<blaze::complex<float>,blaze::columnMajor> src( 13UL, 7UL );
+      blaze::DynamicMatrix<blaze::blas_float_complex,blaze::columnMajor> src( 13UL, 7UL );
       randomize( src );
       runAllTests<13UL,7UL>( src );
    }
@@ -280,7 +280,7 @@ void ClassTest::testRandomMatrices()
    }
 
    {
-      blaze::CompressedMatrix<blaze::complex<float>,blaze::rowMajor> src( 13UL, 7UL );
+      blaze::CompressedMatrix<blaze::blas_float_complex,blaze::rowMajor> src( 13UL, 7UL );
       randomize( src );
       runAllTests<13UL,7UL>( src );
    }
@@ -309,7 +309,7 @@ void ClassTest::testRandomMatrices()
    }
 
    {
-      blaze::CompressedMatrix<blaze::complex<float>,blaze::columnMajor> src( 13UL, 7UL );
+      blaze::CompressedMatrix<blaze::blas_float_complex,blaze::columnMajor> src( 13UL, 7UL );
       randomize( src );
       runAllTests<13UL,7UL>( src );
    }

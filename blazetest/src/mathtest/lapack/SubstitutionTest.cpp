@@ -93,22 +93,22 @@ SubstitutionTest::SubstitutionTest()
    // Single precision complex tests
    //=====================================================================================
 
-   //testGetrs< complex<float> >();
-   //testSytrs< complex<float> >();
-   //testHetrs< complex<float> >();
-   //testPotrs< complex<float> >();
-   //testTrtrs< complex<float> >();
+   //testGetrs< blas_float_complex >();
+   //testSytrs< blas_float_complex >();
+   //testHetrs< blas_float_complex >();
+   //testPotrs< blas_float_complex >();
+   //testTrtrs< blas_float_complex >();
 
 
    //=====================================================================================
    // Double precision complex tests
    //=====================================================================================
 
-   testGetrs< complex<double> >();
-   testSytrs< complex<double> >();
-   testHetrs< complex<double> >();
-   testPotrs< complex<double> >();
-   testTrtrs< complex<double> >();
+   testGetrs< blas_double_complex >();
+   testSytrs< blas_double_complex >();
+   testHetrs< blas_double_complex >();
+   testPotrs< blas_double_complex >();
+   testTrtrs< blas_double_complex >();
 }
 //*************************************************************************************************
 

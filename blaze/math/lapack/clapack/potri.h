@@ -89,9 +89,9 @@ void potri( char uplo, blas_int_t n, float* A, blas_int_t lda, blas_int_t* info 
 
 void potri( char uplo, blas_int_t n, double* A, blas_int_t lda, blas_int_t* info );
 
-void potri( char uplo, blas_int_t n, complex<float>* A, blas_int_t lda, blas_int_t* info );
+void potri( char uplo, blas_int_t n, blas_float_complex* A, blas_int_t lda, blas_int_t* info );
 
-void potri( char uplo, blas_int_t n, complex<double>* A, blas_int_t lda, blas_int_t* info );
+void potri( char uplo, blas_int_t n, blas_double_complex* A, blas_int_t lda, blas_int_t* info );
 //@}
 //*************************************************************************************************
 
@@ -219,13 +219,13 @@ inline void potri( char uplo, blas_int_t n, double* A, blas_int_t lda, blas_int_
 // is available and linked to the executable. Otherwise a call to this function will result in a
 // linker error.
 */
-inline void potri( char uplo, blas_int_t n, complex<float>* A, blas_int_t lda, blas_int_t* info )
+inline void potri( char uplo, blas_int_t n, blas_float_complex* A, blas_int_t lda, blas_int_t* info )
 {
-   BLAZE_STATIC_ASSERT( sizeof( complex<float> ) == 2UL*sizeof( float ) );
+   BLAZE_STATIC_ASSERT( sizeof( blas_float_complex ) == 2UL*sizeof( float ) );
 
 #if defined(INTEL_MKL_VERSION)
    BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( blas_int_t ) );
-   BLAZE_STATIC_ASSERT( sizeof( MKL_Complex8 ) == sizeof( complex<float> ) );
+   BLAZE_STATIC_ASSERT( sizeof( MKL_Complex8 ) == sizeof( blas_float_complex ) );
    using ET = MKL_Complex8;
 #else
    using ET = float;
@@ -271,13 +271,13 @@ inline void potri( char uplo, blas_int_t n, complex<float>* A, blas_int_t lda, b
 // is available and linked to the executable. Otherwise a call to this function will result in a
 // linker error.
 */
-inline void potri( char uplo, blas_int_t n, complex<double>* A, blas_int_t lda, blas_int_t* info )
+inline void potri( char uplo, blas_int_t n, blas_double_complex* A, blas_int_t lda, blas_int_t* info )
 {
-   BLAZE_STATIC_ASSERT( sizeof( complex<double> ) == 2UL*sizeof( double ) );
+   BLAZE_STATIC_ASSERT( sizeof( blas_double_complex ) == 2UL*sizeof( double ) );
 
 #if defined(INTEL_MKL_VERSION)
    BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( blas_int_t ) );
-   BLAZE_STATIC_ASSERT( sizeof( MKL_Complex16 ) == sizeof( complex<double> ) );
+   BLAZE_STATIC_ASSERT( sizeof( MKL_Complex16 ) == sizeof( blas_double_complex ) );
    using ET = MKL_Complex16;
 #else
    using ET = double;

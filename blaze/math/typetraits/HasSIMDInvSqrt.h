@@ -90,7 +90,7 @@ using HasSIMDInvSqrtHelper =
    blaze::HasSIMDInvSqrt< const double >         // Is derived from TrueType
    blaze::HasSIMDInvSqrt< unsigned int >::value  // Evaluates to 0
    blaze::HasSIMDInvSqrt< long double >::Type    // Results in FalseType
-   blaze::HasSIMDInvSqrt< complex<double> >      // Is derived from FalseType
+   blaze::HasSIMDInvSqrt< blas_double_complex >      // Is derived from FalseType
    \endcode
 */
 template< typename T >  // Type of the operand

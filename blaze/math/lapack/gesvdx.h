@@ -305,7 +305,7 @@ inline auto gesvdx_backend( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& s,
 // correct size (if possible and necessary).
 //
 // Note that this function can only be used for general, non-adapted matrices with \c float,
-// \c double, \c complex<float>, or \c complex<double> element type. The attempt to call the
+// \c double, \c blas_float_complex, or \c blas_double_complex element type. The attempt to call the
 // function with any adapted matrix or matrices of any other element type results in a compile
 // time error!
 //
@@ -406,7 +406,7 @@ inline size_t gesvdx( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& s )
 // or expected to be a min(\a m,\a n)-dimensional vector.
 //
 // Note that this function can only be used for general, non-adapted matrices with \c float,
-// \c double, \c complex<float>, or \c complex<double> element type. The attempt to call the
+// \c double, \c blas_float_complex, or \c blas_double_complex element type. The attempt to call the
 // function with any adapted matrix or matrices of any other element type results in a compile
 // time error!
 //
@@ -778,7 +778,7 @@ inline auto gesvdx_backend( DenseMatrix<MT1,SO>& A, DenseMatrix<MT2,SO>& U, Dens
 // correct dimensions (if possible and necessary).
 //
 // Note that this function can only be used for general, non-adapted matrices with \c float,
-// \c double, \c complex<float>, or \c complex<double> element type. The attempt to call the
+// \c double, \c blas_float_complex, or \c blas_double_complex element type. The attempt to call the
 // function with any adapted matrix or matrices of any other element type results in a compile
 // time error!
 //
@@ -895,7 +895,7 @@ inline size_t gesvdx( DenseMatrix<MT1,SO>& A, DenseMatrix<MT2,SO>& U, DenseVecto
 // \a m-by-min(\a m,\a n) matrix.
 //
 // Note that this function can only be used for general, non-adapted matrices with \c float,
-// \c double, \c complex<float>, or \c complex<double> element type. The attempt to call the
+// \c double, \c blas_float_complex, or \c blas_double_complex element type. The attempt to call the
 // function with any adapted matrix or matrices of any other element type results in a compile
 // time error!
 //
@@ -1283,7 +1283,7 @@ inline auto gesvdx_backend( DenseMatrix<MT1,SO>& A, DenseVector<VT,TF>& s, Dense
 // \a V are resized to the correct dimensions (if possible and necessary).
 //
 // Note that this function can only be used for general, non-adapted matrices with \c float,
-// \c double, \c complex<float>, or \c complex<double> element type. The attempt to call the
+// \c double, \c blas_float_complex, or \c blas_double_complex element type. The attempt to call the
 // function with any adapted matrix or matrices of any other element type results in a compile
 // time error!
 //
@@ -1400,7 +1400,7 @@ inline size_t gesvdx( DenseMatrix<MT1,SO>& A, DenseVector<VT,TF>& s, DenseMatrix
 // min(\a m,\a n)-by-\a n matrix.
 //
 // Note that this function can only be used for general, non-adapted matrices with \c float,
-// \c double, \c complex<float>, or \c complex<double> element type. The attempt to call the
+// \c double, \c blas_float_complex, or \c blas_double_complex element type. The attempt to call the
 // function with any adapted matrix or matrices of any other element type results in a compile
 // time error!
 //
@@ -1832,7 +1832,7 @@ inline auto gesvdx_backend( DenseMatrix<MT1,SO>& A, DenseMatrix<MT2,SO>& U, Dens
 // (if possible and necessary).
 //
 // Note that this function can only be used for general, non-adapted matrices with \c float,
-// \c double, \c complex<float>, or \c complex<double> element type. The attempt to call the
+// \c double, \c blas_float_complex, or \c blas_double_complex element type. The attempt to call the
 // function with any adapted matrix or matrices of any other element type results in a compile
 // time error!
 //
@@ -1964,7 +1964,7 @@ inline size_t gesvdx( DenseMatrix<MT1,SO>& A, DenseMatrix<MT2,SO>& U,
 // matrix.
 //
 // Note that this function can only be used for general, non-adapted matrices with \c float,
-// \c double, \c complex<float>, or \c complex<double> element type. The attempt to call the
+// \c double, \c blas_float_complex, or \c blas_double_complex element type. The attempt to call the
 // function with any adapted matrix or matrices of any other element type results in a compile
 // time error!
 //

@@ -92,7 +92,7 @@ void ung2l( DenseMatrix<MT,SO>& A, const ElementType_t<MT>* tau );
    using blaze::DynamicMatrix;
    using blaze::columnMajor;
 
-   using cplx = complex<double>;
+   using cplx = blas_double_complex;
 
    DynamicMatrix<cplx,columnMajor> A;
    DynamicVector<cplx> tau;

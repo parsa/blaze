@@ -357,16 +357,16 @@ BLAZE_ALWAYS_INLINE void stream( float* address, const SIMDf32<T>& value ) noexc
 
 
 //*************************************************************************************************
-/*!\brief Aligned, non-temporal store of a vector of 'complex<float>' values.
+/*!\brief Aligned, non-temporal store of a vector of 'blas_float_complex' values.
 // \ingroup simd
 //
 // \param address The target address.
-// \param value The 'complex<float>' vector to be streamed.
+// \param value The 'blas_float_complex' vector to be streamed.
 // \return void
 */
-BLAZE_ALWAYS_INLINE void stream( complex<float>* address, const SIMDcfloat& value ) noexcept
+BLAZE_ALWAYS_INLINE void stream( blas_float_complex* address, const SIMDcfloat& value ) noexcept
 {
-   BLAZE_STATIC_ASSERT  ( sizeof( complex<float> ) == 2UL*sizeof( float ) );
+   BLAZE_STATIC_ASSERT  ( sizeof( blas_float_complex ) == 2UL*sizeof( float ) );
    BLAZE_INTERNAL_ASSERT( checkAlignment( address ), "Invalid alignment detected" );
 
 #if BLAZE_AVX512F_MODE
@@ -421,16 +421,16 @@ BLAZE_ALWAYS_INLINE void stream( double* address, const SIMDf64<T>& value ) noex
 
 
 //*************************************************************************************************
-/*!\brief Aligned, non-temporal store of a vector of 'complex<double>' values.
+/*!\brief Aligned, non-temporal store of a vector of 'blas_double_complex' values.
 // \ingroup simd
 //
 // \param address The target address.
-// \param value The 'complex<double>' vector to be streamed.
+// \param value The 'blas_double_complex' vector to be streamed.
 // \return void
 */
-BLAZE_ALWAYS_INLINE void stream( complex<double>* address, const SIMDcdouble& value ) noexcept
+BLAZE_ALWAYS_INLINE void stream( blas_double_complex* address, const SIMDcdouble& value ) noexcept
 {
-   BLAZE_STATIC_ASSERT  ( sizeof( complex<double> ) == 2UL*sizeof( double ) );
+   BLAZE_STATIC_ASSERT  ( sizeof( blas_double_complex ) == 2UL*sizeof( double ) );
    BLAZE_INTERNAL_ASSERT( checkAlignment( address ), "Invalid alignment detected" );
 
 #if BLAZE_AVX512F_MODE

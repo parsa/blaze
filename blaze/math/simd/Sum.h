@@ -356,7 +356,7 @@ BLAZE_ALWAYS_INLINE float sum( const SIMDfloat& a ) noexcept
 // \param a The vector to be summed up.
 // \return The sum of all vector elements.
 */
-BLAZE_ALWAYS_INLINE const complex<float> sum( const SIMDcfloat& a ) noexcept
+BLAZE_ALWAYS_INLINE const blas_float_complex sum( const SIMDcfloat& a ) noexcept
 {
 #if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
    return a[0] + a[1] + a[2] + a[3] + a[4] + a[5] + a[6] + a[7];
@@ -409,7 +409,7 @@ BLAZE_ALWAYS_INLINE double sum( const SIMDdouble& a ) noexcept
 // \param a The vector to be summed up.
 // \return The sum of all vector elements.
 */
-BLAZE_ALWAYS_INLINE const complex<double> sum( const SIMDcdouble& a ) noexcept
+BLAZE_ALWAYS_INLINE const blas_double_complex sum( const SIMDcdouble& a ) noexcept
 {
 #if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
    return a[0] + a[1] + a[2] + a[3];

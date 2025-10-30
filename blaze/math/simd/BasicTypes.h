@@ -1153,7 +1153,7 @@ struct SIMDcfloat
 {
    using This      = SIMDcfloat;
    using BaseType  = SIMDcf32<This>;
-   using ValueType = complex<float>;
+   using ValueType = blas_float_complex;
 
 #if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
    using IntrinsicType = __m512;
@@ -1297,7 +1297,7 @@ struct SIMDcdouble
 {
    using This      = SIMDcdouble;
    using BaseType  = SIMDcf64<This>;
-   using ValueType = complex<double>;
+   using ValueType = blas_double_complex;
 
 #if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
    using IntrinsicType = __m512d;

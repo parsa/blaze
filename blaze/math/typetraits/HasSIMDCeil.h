@@ -88,7 +88,7 @@ using HasSIMDCeilHelper =
    blaze::HasSIMDCeil< const double >         // Is derived from TrueType
    blaze::HasSIMDCeil< unsigned int >::value  // Evaluates to 0
    blaze::HasSIMDCeil< long double >::Type    // Results in FalseType
-   blaze::HasSIMDCeil< complex<double> >      // Is derived from FalseType
+   blaze::HasSIMDCeil< blas_double_complex >      // Is derived from FalseType
    \endcode
 */
 template< typename T >  // Type of the operand

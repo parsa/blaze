@@ -93,22 +93,22 @@ SolverTest::SolverTest()
    // Single precision complex tests
    //=====================================================================================
 
-   //testGesv< complex<float> >();
-   //testSysv< complex<float> >();
-   //testHesv< complex<float> >();
-   //testPosv< complex<float> >();
-   //testTrsv< complex<float> >();
+   //testGesv< blas_float_complex >();
+   //testSysv< blas_float_complex >();
+   //testHesv< blas_float_complex >();
+   //testPosv< blas_float_complex >();
+   //testTrsv< blas_float_complex >();
 
 
    //=====================================================================================
    // Double precision complex tests
    //=====================================================================================
 
-   testGesv< complex<double> >();
-   testSysv< complex<double> >();
-   testHesv< complex<double> >();
-   testPosv< complex<double> >();
-   testTrsv< complex<double> >();
+   testGesv< blas_double_complex >();
+   testSysv< blas_double_complex >();
+   testHesv< blas_double_complex >();
+   testPosv< blas_double_complex >();
+   testTrsv< blas_double_complex >();
 }
 //*************************************************************************************************
 

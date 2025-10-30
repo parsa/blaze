@@ -91,7 +91,7 @@ void trmv( DenseVector<VT,true>& x, const DenseMatrix<MT,SO>& A, CBLAS_UPLO uplo
 //
 // This function performs the multiplication of a triangular matrix by a vector based on the BLAS
 // trmv() functions. Note that the function only works for vectors and matrices with \c float,
-// \c double, \c complex<float>, or \c complex<double> element type. The attempt to call the
+// \c double, \c blas_float_complex, or \c blas_double_complex element type. The attempt to call the
 // function with vectors and matrices of any other element type results in a compile time error.
 //
 // \note This function can only be used if a fitting BLAS library, which supports this function,
@@ -138,7 +138,7 @@ inline void trmv( DenseVector<VT,false>& x, const DenseMatrix<MT,SO>& A, CBLAS_U
 //
 // This function performs the multiplication of a vector and a triangular matrix based on the BLAS
 // trmv() functions. Note that the function only works for vectors and matrices with \c float,
-// \c double, \c complex<float>, or \c complex<double> element type. The attempt to call the
+// \c double, \c blas_float_complex, or \c blas_double_complex element type. The attempt to call the
 // function with vectors and matrices of any other element type results in a compile time error.
 //
 // \note This function can only be used if a fitting BLAS library, which supports this function,

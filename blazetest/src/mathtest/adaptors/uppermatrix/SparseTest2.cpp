@@ -387,12 +387,12 @@ void SparseTest::testScaling()
 
       using blaze::complex;
 
-      blaze::UpperMatrix< blaze::CompressedMatrix<complex<float>,blaze::rowMajor> > upper( 2UL );
-      upper(0,0) = complex<float>( 1.0F, 0.0F );
-      upper(0,1) = complex<float>( 2.0F, 0.0F );
-      upper(1,1) = complex<float>( 4.0F, 0.0F );
+      blaze::UpperMatrix< blaze::CompressedMatrix<blas_float_complex,blaze::rowMajor> > upper( 2UL );
+      upper(0,0) = blas_float_complex( 1.0F, 0.0F );
+      upper(0,1) = blas_float_complex( 2.0F, 0.0F );
+      upper(1,1) = blas_float_complex( 4.0F, 0.0F );
 
-      upper.scale( complex<float>( 3.0F, 0.0F ) );
+      upper.scale( blas_float_complex( 3.0F, 0.0F ) );
 
       checkRows    ( upper, 2UL );
       checkColumns ( upper, 2UL );
@@ -401,8 +401,8 @@ void SparseTest::testScaling()
       checkNonZeros( upper, 0UL, 2UL );
       checkNonZeros( upper, 1UL, 1UL );
 
-      if( upper(0,0) != complex<float>( 3.0F, 0.0F ) || upper(0,1) != complex<float>(  6.0F, 0.0F ) ||
-          upper(1,0) != complex<float>( 0.0F, 0.0F ) || upper(1,1) != complex<float>( 12.0F, 0.0F ) ) {
+      if( upper(0,0) != blas_float_complex( 3.0F, 0.0F ) || upper(0,1) != blas_float_complex(  6.0F, 0.0F ) ||
+          upper(1,0) != blas_float_complex( 0.0F, 0.0F ) || upper(1,1) != blas_float_complex( 12.0F, 0.0F ) ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Scale operation failed\n"
@@ -685,12 +685,12 @@ void SparseTest::testScaling()
 
       using blaze::complex;
 
-      blaze::UpperMatrix< blaze::CompressedMatrix<complex<float>,blaze::columnMajor> > upper( 2UL );
-      upper(0,0) = complex<float>( 1.0F, 0.0F );
-      upper(0,1) = complex<float>( 2.0F, 0.0F );
-      upper(1,1) = complex<float>( 4.0F, 0.0F );
+      blaze::UpperMatrix< blaze::CompressedMatrix<blas_float_complex,blaze::columnMajor> > upper( 2UL );
+      upper(0,0) = blas_float_complex( 1.0F, 0.0F );
+      upper(0,1) = blas_float_complex( 2.0F, 0.0F );
+      upper(1,1) = blas_float_complex( 4.0F, 0.0F );
 
-      upper.scale( complex<float>( 3.0F, 0.0F ) );
+      upper.scale( blas_float_complex( 3.0F, 0.0F ) );
 
       checkRows    ( upper, 2UL );
       checkColumns ( upper, 2UL );
@@ -699,8 +699,8 @@ void SparseTest::testScaling()
       checkNonZeros( upper, 0UL, 1UL );
       checkNonZeros( upper, 1UL, 2UL );
 
-      if( upper(0,0) != complex<float>( 3.0F, 0.0F ) || upper(0,1) != complex<float>(  6.0F, 0.0F ) ||
-          upper(1,0) != complex<float>( 0.0F, 0.0F ) || upper(1,1) != complex<float>( 12.0F, 0.0F ) ) {
+      if( upper(0,0) != blas_float_complex( 3.0F, 0.0F ) || upper(0,1) != blas_float_complex(  6.0F, 0.0F ) ||
+          upper(1,0) != blas_float_complex( 0.0F, 0.0F ) || upper(1,1) != blas_float_complex( 12.0F, 0.0F ) ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Scale operation failed\n"

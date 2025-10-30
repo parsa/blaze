@@ -101,14 +101,14 @@ void geev( char jobvl, char jobvr, blas_int_t n, double* A, blas_int_t lda,
            double* wr, double* wi, double* VL, blas_int_t ldvl, double* VR, blas_int_t ldvr,
            double* work, blas_int_t lwork, blas_int_t* info );
 
-void geev( char jobvl, char jobvr, blas_int_t n, complex<float>* A, blas_int_t lda,
-           complex<float>* w, complex<float>* VL, blas_int_t ldvl, complex<float>* VR,
-           blas_int_t ldvr, complex<float>* work, blas_int_t lwork, float* rwork,
+void geev( char jobvl, char jobvr, blas_int_t n, blas_float_complex* A, blas_int_t lda,
+           blas_float_complex* w, blas_float_complex* VL, blas_int_t ldvl, blas_float_complex* VR,
+           blas_int_t ldvr, blas_float_complex* work, blas_int_t lwork, float* rwork,
            blas_int_t* info );
 
-void geev( char jobvl, char jobvr, blas_int_t n, complex<double>* A, blas_int_t lda,
-           complex<double>* w, complex<double>* VL, blas_int_t ldvl, complex<double>* VR,
-           blas_int_t ldvr, complex<double>* work, blas_int_t lwork, double* rwork,
+void geev( char jobvl, char jobvr, blas_int_t n, blas_double_complex* A, blas_int_t lda,
+           blas_double_complex* w, blas_double_complex* VL, blas_int_t ldvl, blas_double_complex* VR,
+           blas_int_t ldvr, blas_double_complex* work, blas_int_t lwork, double* rwork,
            blas_int_t* info );
 //@}
 //*************************************************************************************************
@@ -334,16 +334,16 @@ inline void geev( char jobvl, char jobvr, blas_int_t n, double* A, blas_int_t ld
 // is available and linked to the executable. Otherwise a call to this function will result in a
 // linker error.
 */
-inline void geev( char jobvl, char jobvr, blas_int_t n, complex<float>* A, blas_int_t lda,
-                  complex<float>* w, complex<float>* VL, blas_int_t ldvl, complex<float>* VR,
-                  blas_int_t ldvr, complex<float>* work, blas_int_t lwork, float* rwork,
+inline void geev( char jobvl, char jobvr, blas_int_t n, blas_float_complex* A, blas_int_t lda,
+                  blas_float_complex* w, blas_float_complex* VL, blas_int_t ldvl, blas_float_complex* VR,
+                  blas_int_t ldvr, blas_float_complex* work, blas_int_t lwork, float* rwork,
                   blas_int_t* info )
 {
-   BLAZE_STATIC_ASSERT( sizeof( complex<float> ) == 2UL*sizeof( float ) );
+   BLAZE_STATIC_ASSERT( sizeof( blas_float_complex ) == 2UL*sizeof( float ) );
 
 #if defined(INTEL_MKL_VERSION)
    BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( blas_int_t ) );
-   BLAZE_STATIC_ASSERT( sizeof( MKL_Complex8 ) == sizeof( complex<float> ) );
+   BLAZE_STATIC_ASSERT( sizeof( MKL_Complex8 ) == sizeof( blas_float_complex ) );
    using ET = MKL_Complex8;
 #else
    using ET = float;
@@ -422,16 +422,16 @@ inline void geev( char jobvl, char jobvr, blas_int_t n, complex<float>* A, blas_
 // is available and linked to the executable. Otherwise a call to this function will result in a
 // linker error.
 */
-inline void geev( char jobvl, char jobvr, blas_int_t n, complex<double>* A, blas_int_t lda,
-                  complex<double>* w, complex<double>* VL, blas_int_t ldvl, complex<double>* VR,
-                  blas_int_t ldvr, complex<double>* work, blas_int_t lwork, double* rwork,
+inline void geev( char jobvl, char jobvr, blas_int_t n, blas_double_complex* A, blas_int_t lda,
+                  blas_double_complex* w, blas_double_complex* VL, blas_int_t ldvl, blas_double_complex* VR,
+                  blas_int_t ldvr, blas_double_complex* work, blas_int_t lwork, double* rwork,
                   blas_int_t* info )
 {
-   BLAZE_STATIC_ASSERT( sizeof( complex<double> ) == 2UL*sizeof( double ) );
+   BLAZE_STATIC_ASSERT( sizeof( blas_double_complex ) == 2UL*sizeof( double ) );
 
 #if defined(INTEL_MKL_VERSION)
    BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( blas_int_t ) );
-   BLAZE_STATIC_ASSERT( sizeof( MKL_Complex16 ) == sizeof( complex<double> ) );
+   BLAZE_STATIC_ASSERT( sizeof( MKL_Complex16 ) == sizeof( blas_double_complex ) );
    using ET = MKL_Complex16;
 #else
    using ET = double;

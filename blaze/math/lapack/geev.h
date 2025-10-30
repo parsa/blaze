@@ -220,7 +220,7 @@ inline auto geev_backend( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& w )
 // consecutively with the eigenvalue having the positive imaginary part first.
 //
 // Note that this function can only be used for general, non-adapted matrices with \c float,
-// \c double, \c complex<float>, or \c complex<double> element type. The attempt to call the
+// \c double, \c blas_float_complex, or \c blas_double_complex element type. The attempt to call the
 // function with any adapted matrix or matrices of any other element type results in a compile
 // time error!
 //
@@ -243,7 +243,7 @@ inline auto geev_backend( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& w )
    DynamicMatrix<double,rowMajor> A( 5UL, 5UL );  // The general matrix A
    // ... Initialization
 
-   DynamicVector<complex<double>,columnVector> w( 5UL );  // The vector for the complex eigenvalues
+   DynamicVector<blas_double_complex,columnVector> w( 5UL );  // The vector for the complex eigenvalues
 
    geev( A, w );
    \endcode
@@ -476,7 +476,7 @@ inline auto geev_backend( DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& VL, Den
 // to have Euclidean norm equal to 1 and largest component real.
 //
 // Note that this function can only be used for general, non-adapted matrices with \c float,
-// \c double, \c complex<float>, or \c complex<double> element type. The attempt to call the
+// \c double, \c blas_float_complex, or \c blas_double_complex element type. The attempt to call the
 // function with any adapted matrix or matrices of any other element type results in a compile
 // time error!
 //
@@ -500,8 +500,8 @@ inline auto geev_backend( DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& VL, Den
    DynamicMatrix<double,rowMajor> A( 5UL, 5UL );  // The general matrix A
    // ... Initialization
 
-   DynamicMatrix<complex<double>,rowMajor> VL( 5UL, 5UL );  // The matrix for the left eigenvectors
-   DynamicVector<complex<double>,columnVector> w( 5UL );    // The vector for the complex eigenvalues
+   DynamicMatrix<blas_double_complex,rowMajor> VL( 5UL, 5UL );  // The matrix for the left eigenvectors
+   DynamicVector<blas_double_complex,columnVector> w( 5UL );    // The vector for the complex eigenvalues
 
    geev( A, VL, w );
    \endcode
@@ -744,7 +744,7 @@ inline auto geev_backend( DenseMatrix<MT1,SO1>& A, DenseVector<VT,TF>& w, DenseM
 // to have Euclidean norm equal to 1 and largest component real.
 //
 // Note that this function can only be used for general, non-adapted matrices with \c float,
-// \c double, \c complex<float>, or \c complex<double> element type. The attempt to call the
+// \c double, \c blas_float_complex, or \c blas_double_complex element type. The attempt to call the
 // function with any adapted matrix or matrices of any other element type results in a compile
 // time error!
 //
@@ -768,8 +768,8 @@ inline auto geev_backend( DenseMatrix<MT1,SO1>& A, DenseVector<VT,TF>& w, DenseM
    DynamicMatrix<double,rowMajor> A( 5UL, 5UL );  // The general matrix A
    // ... Initialization
 
-   DynamicVector<complex<double>,columnVector> w( 5UL );    // The vector for the complex eigenvalues
-   DynamicMatrix<complex<double>,rowMajor> VR( 5UL, 5UL );  // The matrix for the right eigenvectors
+   DynamicVector<blas_double_complex,columnVector> w( 5UL );    // The vector for the complex eigenvalues
+   DynamicMatrix<blas_double_complex,rowMajor> VR( 5UL, 5UL );  // The matrix for the right eigenvectors
 
    geev( A, w, VR );
    \endcode
@@ -1034,7 +1034,7 @@ inline auto geev_backend( DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& VL,
 // norm equal to 1 and largest component real.
 //
 // Note that this function can only be used for general, non-adapted matrices with \c float,
-// \c double, \c complex<float>, or \c complex<double> element type. The attempt to call the
+// \c double, \c blas_float_complex, or \c blas_double_complex element type. The attempt to call the
 // function with any adapted matrix or matrices of any other element type results in a compile
 // time error!
 //
@@ -1059,9 +1059,9 @@ inline auto geev_backend( DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& VL,
    DynamicMatrix<double,rowMajor> A( 5UL, 5UL );  // The general matrix A
    // ... Initialization
 
-   DynamicMatrix<complex<double>,rowMajor> VL( 5UL, 5UL );  // The matrix for the left eigenvectors
-   DynamicVector<complex<double>,columnVector> w( 5UL );    // The vector for the complex eigenvalues
-   DynamicMatrix<complex<double>,rowMajor> VR( 5UL, 5UL );  // The matrix for the right eigenvectors
+   DynamicMatrix<blas_double_complex,rowMajor> VL( 5UL, 5UL );  // The matrix for the left eigenvectors
+   DynamicVector<blas_double_complex,columnVector> w( 5UL );    // The vector for the complex eigenvalues
+   DynamicMatrix<blas_double_complex,rowMajor> VR( 5UL, 5UL );  // The matrix for the right eigenvectors
 
    geev( A, VL, w, VR );
    \endcode

@@ -105,14 +105,14 @@ void gesdd( char jobz, blas_int_t m, blas_int_t n, double* A, blas_int_t lda,
             double* s, double* U, blas_int_t ldu, double* V, blas_int_t ldv,
             double* work, blas_int_t lwork, blas_int_t* iwork, blas_int_t* info );
 
-void gesdd( char jobz, blas_int_t m, blas_int_t n, complex<float>* A, blas_int_t lda,
-            float* s, complex<float>* U, blas_int_t ldu, complex<float>* V, blas_int_t ldv,
-            complex<float>* work, blas_int_t lwork, float* rwork, blas_int_t* iwork,
+void gesdd( char jobz, blas_int_t m, blas_int_t n, blas_float_complex* A, blas_int_t lda,
+            float* s, blas_float_complex* U, blas_int_t ldu, blas_float_complex* V, blas_int_t ldv,
+            blas_float_complex* work, blas_int_t lwork, float* rwork, blas_int_t* iwork,
             blas_int_t* info );
 
-void gesdd( char jobz, blas_int_t m, blas_int_t n, complex<double>* A, blas_int_t lda,
-            double* s, complex<double>* U, blas_int_t ldu, complex<double>* V, blas_int_t ldv,
-            complex<double>* work, blas_int_t lwork, double* rwork, blas_int_t* iwork,
+void gesdd( char jobz, blas_int_t m, blas_int_t n, blas_double_complex* A, blas_int_t lda,
+            double* s, blas_double_complex* U, blas_int_t ldu, blas_double_complex* V, blas_int_t ldv,
+            blas_double_complex* work, blas_int_t lwork, double* rwork, blas_int_t* iwork,
             blas_int_t* info );
 //@}
 //*************************************************************************************************
@@ -345,16 +345,16 @@ inline void gesdd( char jobz, blas_int_t m, blas_int_t n, double* A, blas_int_t 
 // is available and linked to the executable. Otherwise a call to this function will result in a
 // linker error.
 */
-inline void gesdd( char jobz, blas_int_t m, blas_int_t n, complex<float>* A, blas_int_t lda,
-                   float* s, complex<float>* U, blas_int_t ldu, complex<float>* V, blas_int_t ldv,
-                   complex<float>* work, blas_int_t lwork, float* rwork, blas_int_t* iwork,
+inline void gesdd( char jobz, blas_int_t m, blas_int_t n, blas_float_complex* A, blas_int_t lda,
+                   float* s, blas_float_complex* U, blas_int_t ldu, blas_float_complex* V, blas_int_t ldv,
+                   blas_float_complex* work, blas_int_t lwork, float* rwork, blas_int_t* iwork,
                    blas_int_t* info )
 {
-   BLAZE_STATIC_ASSERT( sizeof( complex<float> ) == 2UL*sizeof( float ) );
+   BLAZE_STATIC_ASSERT( sizeof( blas_float_complex ) == 2UL*sizeof( float ) );
 
 #if defined(INTEL_MKL_VERSION)
    BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( blas_int_t ) );
-   BLAZE_STATIC_ASSERT( sizeof( MKL_Complex8 ) == sizeof( complex<float> ) );
+   BLAZE_STATIC_ASSERT( sizeof( MKL_Complex8 ) == sizeof( blas_float_complex ) );
    using ET = MKL_Complex8;
 #else
    using ET = float;
@@ -436,16 +436,16 @@ inline void gesdd( char jobz, blas_int_t m, blas_int_t n, complex<float>* A, bla
 // is available and linked to the executable. Otherwise a call to this function will result in a
 // linker error.
 */
-inline void gesdd( char jobz, blas_int_t m, blas_int_t n, complex<double>* A, blas_int_t lda,
-                   double* s, complex<double>* U, blas_int_t ldu, complex<double>* V, blas_int_t ldv,
-                   complex<double>* work, blas_int_t lwork, double* rwork, blas_int_t* iwork,
+inline void gesdd( char jobz, blas_int_t m, blas_int_t n, blas_double_complex* A, blas_int_t lda,
+                   double* s, blas_double_complex* U, blas_int_t ldu, blas_double_complex* V, blas_int_t ldv,
+                   blas_double_complex* work, blas_int_t lwork, double* rwork, blas_int_t* iwork,
                    blas_int_t* info )
 {
-   BLAZE_STATIC_ASSERT( sizeof( complex<double> ) == 2UL*sizeof( double ) );
+   BLAZE_STATIC_ASSERT( sizeof( blas_double_complex ) == 2UL*sizeof( double ) );
 
 #if defined(INTEL_MKL_VERSION)
    BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( blas_int_t ) );
-   BLAZE_STATIC_ASSERT( sizeof( MKL_Complex16 ) == sizeof( complex<double> ) );
+   BLAZE_STATIC_ASSERT( sizeof( MKL_Complex16 ) == sizeof( blas_double_complex ) );
    using ET = MKL_Complex16;
 #else
    using ET = double;

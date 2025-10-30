@@ -94,10 +94,10 @@ struct HasPowHelper< T1, T2, Void_t< decltype( pow( std::declval<T1>(), std::dec
 
    \code
    blaze::HasPow< int, int >::value                         // Evaluates to 1
-   blaze::HasPow< complex<float>, complex<float> >::Type    // Results in TrueType
+   blaze::HasPow< blas_float_complex, blas_float_complex >::Type    // Results in TrueType
    blaze::HasPow< DynamicVector<int>, DynamicVector<int> >  // Is derived from TrueType
-   blaze::HasPow< int, complex<float> >::value              // Evaluates to 0
-   blaze::HasPow< complex<int>, complex<float> >::Type      // Results in FalseType
+   blaze::HasPow< int, blas_float_complex >::value              // Evaluates to 0
+   blaze::HasPow< complex<int>, blas_float_complex >::Type      // Results in FalseType
    blaze::HasPow< DynamicMatrix<int>, DynamicVector<int> >  // Is derived from FalseType
    \endcode
 */

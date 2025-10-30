@@ -91,7 +91,7 @@ using HasSIMDLogHelper =
    blaze::HasSIMDLog< const double >         // Is derived from TrueType
    blaze::HasSIMDLog< unsigned int >::value  // Evaluates to 0
    blaze::HasSIMDLog< long double >::Type    // Results in FalseType
-   blaze::HasSIMDLog< complex<double> >      // Is derived from FalseType
+   blaze::HasSIMDLog< blas_double_complex >      // Is derived from FalseType
    \endcode
 */
 template< typename T >  // Type of the operand

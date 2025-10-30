@@ -2076,7 +2076,7 @@ inline typename HermitianMatrix<MT,SO,false>::Iterator
    using blaze::HermitianMatrix;
    using blaze::rowMajor;
 
-   using cplx = std::complex<double>;
+   using cplx = std::blas_double_complex;
 
    // Setup of the Hermitian matrix
    //

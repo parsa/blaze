@@ -100,7 +100,7 @@ struct HasSIMDConjHelper< complex<T> >
    \code
    blaze::HasSIMDConj< int >::value             // Evaluates to 1
    blaze::HasSIMDConj< double >::Type           // Results in TrueType
-   blaze::HasSIMDConj< complex<float> >         // Is derived from TrueType
+   blaze::HasSIMDConj< blas_float_complex >         // Is derived from TrueType
    blaze::HasSIMDConj< complex<bool> >::value   // Evaluates to 0
    blaze::HasSIMDConj< complex<int> >::Type     // Results in FalseType
    blaze::HasSIMDConj< complex<unsigned int> >  // Is derived from FalseType

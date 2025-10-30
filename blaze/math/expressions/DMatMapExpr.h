@@ -1454,7 +1454,7 @@ inline decltype(auto) round( const DenseMatrix<MT,SO>& dm )
 // The following example demonstrates the use of the \a conj() function:
 
    \code
-   blaze::DynamicMatrix< complex<double> > A, B;
+   blaze::DynamicMatrix< blas_double_complex > A, B;
    // ... Resizing and initialization
    B = conj( A );
    \endcode
@@ -1483,7 +1483,7 @@ inline decltype(auto) conj( const DenseMatrix<MT,SO>& dm )
 // The following example demonstrates the use of the \a ctrans() function:
 
    \code
-   blaze::DynamicMatrix< complex<double> > A, B;
+   blaze::DynamicMatrix< blas_double_complex > A, B;
    // ... Resizing and initialization
    B = ctrans( A );
    \endcode
@@ -2588,7 +2588,7 @@ inline decltype(auto) round( const DMatMapExpr<MT,Round,SO>& dm )
 // original dense matrix:
 
    \code
-   blaze::DynamicMatrix< complex<double> > A, B;
+   blaze::DynamicMatrix< blas_double_complex > A, B;
    // ... Resizing and initialization
    B = conj( conj( A ) );
    \endcode
@@ -2618,7 +2618,7 @@ inline decltype(auto) conj( const DMatMapExpr<MT,Conj,SO>& dm )
 // transpose of the dense matrix:
 
    \code
-   blaze::DynamicMatrix< complex<double> > A, B;
+   blaze::DynamicMatrix< blas_double_complex > A, B;
    // ... Resizing and initialization
    B = conj( ctrans( A ) );
    \endcode

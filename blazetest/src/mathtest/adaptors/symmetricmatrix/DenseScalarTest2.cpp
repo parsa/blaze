@@ -378,12 +378,12 @@ void DenseScalarTest::testScaling()
 
       using blaze::complex;
 
-      blaze::SymmetricMatrix< blaze::DynamicMatrix<complex<float>,blaze::rowMajor> > sym( 2UL );
-      sym(0,0) = complex<float>( 1.0F, 0.0F );
-      sym(0,1) = complex<float>( 2.0F, 0.0F );
-      sym(1,1) = complex<float>( 4.0F, 0.0F );
+      blaze::SymmetricMatrix< blaze::DynamicMatrix<blas_float_complex,blaze::rowMajor> > sym( 2UL );
+      sym(0,0) = blas_float_complex( 1.0F, 0.0F );
+      sym(0,1) = blas_float_complex( 2.0F, 0.0F );
+      sym(1,1) = blas_float_complex( 4.0F, 0.0F );
 
-      sym.scale( complex<float>( 3.0F, 0.0F ) );
+      sym.scale( blas_float_complex( 3.0F, 0.0F ) );
 
       checkRows    ( sym, 2UL );
       checkColumns ( sym, 2UL );
@@ -392,8 +392,8 @@ void DenseScalarTest::testScaling()
       checkNonZeros( sym, 0UL, 2UL );
       checkNonZeros( sym, 1UL, 2UL );
 
-      if( sym(0,0) != complex<float>( 3.0F, 0.0F ) || sym(0,1) != complex<float>(  6.0F, 0.0F ) ||
-          sym(1,0) != complex<float>( 6.0F, 0.0F ) || sym(1,1) != complex<float>( 12.0F, 0.0F ) ) {
+      if( sym(0,0) != blas_float_complex( 3.0F, 0.0F ) || sym(0,1) != blas_float_complex(  6.0F, 0.0F ) ||
+          sym(1,0) != blas_float_complex( 6.0F, 0.0F ) || sym(1,1) != blas_float_complex( 12.0F, 0.0F ) ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Scale operation failed\n"
@@ -670,12 +670,12 @@ void DenseScalarTest::testScaling()
 
       using blaze::complex;
 
-      blaze::SymmetricMatrix< blaze::DynamicMatrix<complex<float>,blaze::columnMajor> > sym( 2UL );
-      sym(0,0) = complex<float>( 1.0F, 0.0F );
-      sym(0,1) = complex<float>( 2.0F, 0.0F );
-      sym(1,1) = complex<float>( 4.0F, 0.0F );
+      blaze::SymmetricMatrix< blaze::DynamicMatrix<blas_float_complex,blaze::columnMajor> > sym( 2UL );
+      sym(0,0) = blas_float_complex( 1.0F, 0.0F );
+      sym(0,1) = blas_float_complex( 2.0F, 0.0F );
+      sym(1,1) = blas_float_complex( 4.0F, 0.0F );
 
-      sym.scale( complex<float>( 3.0F, 0.0F ) );
+      sym.scale( blas_float_complex( 3.0F, 0.0F ) );
 
       checkRows    ( sym, 2UL );
       checkColumns ( sym, 2UL );
@@ -684,8 +684,8 @@ void DenseScalarTest::testScaling()
       checkNonZeros( sym, 0UL, 2UL );
       checkNonZeros( sym, 1UL, 2UL );
 
-      if( sym(0,0) != complex<float>( 3.0F, 0.0F ) || sym(0,1) != complex<float>(  6.0F, 0.0F ) ||
-          sym(1,0) != complex<float>( 6.0F, 0.0F ) || sym(1,1) != complex<float>( 12.0F, 0.0F ) ) {
+      if( sym(0,0) != blas_float_complex( 3.0F, 0.0F ) || sym(0,1) != blas_float_complex(  6.0F, 0.0F ) ||
+          sym(1,0) != blas_float_complex( 6.0F, 0.0F ) || sym(1,1) != blas_float_complex( 12.0F, 0.0F ) ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Scale operation failed\n"

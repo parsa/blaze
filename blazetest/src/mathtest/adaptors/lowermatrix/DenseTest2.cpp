@@ -1285,12 +1285,12 @@ void DenseTest::testScaling()
 
       using blaze::complex;
 
-      blaze::LowerMatrix< blaze::DynamicMatrix<complex<float>,blaze::rowMajor> > lower( 2UL );
-      lower(0,0) = complex<float>( 1.0F, 0.0F );
-      lower(1,0) = complex<float>( 2.0F, 0.0F );
-      lower(1,1) = complex<float>( 4.0F, 0.0F );
+      blaze::LowerMatrix< blaze::DynamicMatrix<blas_float_complex,blaze::rowMajor> > lower( 2UL );
+      lower(0,0) = blas_float_complex( 1.0F, 0.0F );
+      lower(1,0) = blas_float_complex( 2.0F, 0.0F );
+      lower(1,1) = blas_float_complex( 4.0F, 0.0F );
 
-      lower.scale( complex<float>( 3.0F, 0.0F ) );
+      lower.scale( blas_float_complex( 3.0F, 0.0F ) );
 
       checkRows    ( lower, 2UL );
       checkColumns ( lower, 2UL );
@@ -1299,8 +1299,8 @@ void DenseTest::testScaling()
       checkNonZeros( lower, 0UL, 1UL );
       checkNonZeros( lower, 1UL, 2UL );
 
-      if( lower(0,0) != complex<float>( 3.0F, 0.0F ) || lower(0,1) != complex<float>(  0.0F, 0.0F ) ||
-          lower(1,0) != complex<float>( 6.0F, 0.0F ) || lower(1,1) != complex<float>( 12.0F, 0.0F ) ) {
+      if( lower(0,0) != blas_float_complex( 3.0F, 0.0F ) || lower(0,1) != blas_float_complex(  0.0F, 0.0F ) ||
+          lower(1,0) != blas_float_complex( 6.0F, 0.0F ) || lower(1,1) != blas_float_complex( 12.0F, 0.0F ) ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Scale operation failed\n"
@@ -1583,12 +1583,12 @@ void DenseTest::testScaling()
 
       using blaze::complex;
 
-      blaze::LowerMatrix< blaze::DynamicMatrix<complex<float>,blaze::columnMajor> > lower( 2UL );
-      lower(0,0) = complex<float>( 1.0F, 0.0F );
-      lower(1,0) = complex<float>( 2.0F, 0.0F );
-      lower(1,1) = complex<float>( 4.0F, 0.0F );
+      blaze::LowerMatrix< blaze::DynamicMatrix<blas_float_complex,blaze::columnMajor> > lower( 2UL );
+      lower(0,0) = blas_float_complex( 1.0F, 0.0F );
+      lower(1,0) = blas_float_complex( 2.0F, 0.0F );
+      lower(1,1) = blas_float_complex( 4.0F, 0.0F );
 
-      lower.scale( complex<float>( 3.0F, 0.0F ) );
+      lower.scale( blas_float_complex( 3.0F, 0.0F ) );
 
       checkRows    ( lower, 2UL );
       checkColumns ( lower, 2UL );
@@ -1597,8 +1597,8 @@ void DenseTest::testScaling()
       checkNonZeros( lower, 0UL, 2UL );
       checkNonZeros( lower, 1UL, 1UL );
 
-      if( lower(0,0) != complex<float>( 3.0F, 0.0F ) || lower(0,1) != complex<float>(  0.0F, 0.0F ) ||
-          lower(1,0) != complex<float>( 6.0F, 0.0F ) || lower(1,1) != complex<float>( 12.0F, 0.0F ) ) {
+      if( lower(0,0) != blas_float_complex( 3.0F, 0.0F ) || lower(0,1) != blas_float_complex(  0.0F, 0.0F ) ||
+          lower(1,0) != blas_float_complex( 6.0F, 0.0F ) || lower(1,1) != blas_float_complex( 12.0F, 0.0F ) ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Scale operation failed\n"

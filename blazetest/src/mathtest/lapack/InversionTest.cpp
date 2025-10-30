@@ -93,21 +93,21 @@ InversionTest::InversionTest()
    // Single precision complex tests
    //=====================================================================================
 
-   //testSytri< complex<float> >();
-   //testHetri< complex<float> >();
-   //testPotri< complex<float> >();
-   //testTrtri< complex<float> >();
+   //testSytri< blas_float_complex >();
+   //testHetri< blas_float_complex >();
+   //testPotri< blas_float_complex >();
+   //testTrtri< blas_float_complex >();
 
 
    //=====================================================================================
    // Double precision complex tests
    //=====================================================================================
 
-   testGetri< complex<double> >();
-   testSytri< complex<double> >();
-   testHetri< complex<double> >();
-   testPotri< complex<double> >();
-   testTrtri< complex<double> >();
+   testGetri< blas_double_complex >();
+   testSytri< blas_double_complex >();
+   testHetri< blas_double_complex >();
+   testPotri< blas_double_complex >();
+   testTrtri< blas_double_complex >();
 }
 //*************************************************************************************************
 

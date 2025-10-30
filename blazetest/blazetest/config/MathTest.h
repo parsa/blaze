@@ -427,8 +427,8 @@
 // addition:
 
    \code
-   blaze::DynamicVector< complex<double>, false > a, b;
-   blaze::DynamicVector< complex<double>, true > c;
+   blaze::DynamicVector< blas_double_complex, false > a, b;
+   blaze::DynamicVector< blas_double_complex, true > c;
    c = ctrans( a + b );  // Conjugate transpose vector addition
    \endcode
 
@@ -501,7 +501,7 @@
 // addition:
 
    \code
-   blaze::DynamicVector< complex<double> > a, b, c;
+   blaze::DynamicVector< blas_double_complex > a, b, c;
    c = conj( a + b );  // Complex conjugate vector addition
    \endcode
 
@@ -620,7 +620,7 @@
 //   - 2: The inversion tests are included in the compilation process and executed
 //
 // \note In case the inversion tests are activated both \a TypeA and \a TypeB must be set to
-// BLAS compatible data types (i.e. float, double, complex<float>, or complex<double>).
+// BLAS compatible data types (i.e. float, double, blas_float_complex, or blas_double_complex).
 //
 // \note It is possible to specify this compilation switch via command line or by defining this
 // symbol manually before including any Blazetest header file:

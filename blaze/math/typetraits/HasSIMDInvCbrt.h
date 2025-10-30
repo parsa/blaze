@@ -89,7 +89,7 @@ using HasSIMDInvCbrtHelper =
    blaze::HasSIMDInvCbrt< const double >         // Is derived from TrueType
    blaze::HasSIMDInvCbrt< unsigned int >::value  // Evaluates to 0
    blaze::HasSIMDInvCbrt< long double >::Type    // Results in FalseType
-   blaze::HasSIMDInvCbrt< complex<double> >      // Is derived from FalseType
+   blaze::HasSIMDInvCbrt< blas_double_complex >      // Is derived from FalseType
    \endcode
 */
 template< typename T >  // Type of the operand

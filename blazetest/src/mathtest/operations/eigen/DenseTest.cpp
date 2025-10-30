@@ -136,8 +136,8 @@ void DenseTest::testGeneral()
       DynamicMatrix<double,columnMajor> A2( A1 );
 
       {
-         DynamicVector<complex<double>,rowVector> w1;
-         DynamicVector<complex<double>,rowVector> w2;
+         DynamicVector<blas_double_complex,rowVector> w1;
+         DynamicVector<blas_double_complex,rowVector> w2;
 
          eigen( A1, w1 );
          eigen( A2, w2 );
@@ -155,8 +155,8 @@ void DenseTest::testGeneral()
       }
 
       {
-         DynamicVector<complex<double>,rowVector> w1;
-         DynamicVector<complex<double>,rowVector> w2;
+         DynamicVector<blas_double_complex,rowVector> w1;
+         DynamicVector<blas_double_complex,rowVector> w2;
 
          eigen( trans( A1 ), w1 );
          eigen( trans( A2 ), w2 );
@@ -175,15 +175,15 @@ void DenseTest::testGeneral()
    }
 
    {
-      test_ = "eigen( DenseMatrix, DenseVector ) (general, complex<double>)";
+      test_ = "eigen( DenseMatrix, DenseVector ) (general, blas_double_complex)";
 
-      DynamicMatrix<complex<double>,rowMajor> A1( 5UL, 5UL );
+      DynamicMatrix<blas_double_complex,rowMajor> A1( 5UL, 5UL );
       randomize( A1 );
-      DynamicMatrix<complex<double>,columnMajor> A2( A1 );
+      DynamicMatrix<blas_double_complex,columnMajor> A2( A1 );
 
       {
-         DynamicVector<complex<double>,rowVector> w1;
-         DynamicVector<complex<double>,rowVector> w2;
+         DynamicVector<blas_double_complex,rowVector> w1;
+         DynamicVector<blas_double_complex,rowVector> w2;
 
          eigen( A1, w1 );
          eigen( A2, w2 );
@@ -201,8 +201,8 @@ void DenseTest::testGeneral()
       }
 
       {
-         DynamicVector<complex<double>,rowVector> w1;
-         DynamicVector<complex<double>,rowVector> w2;
+         DynamicVector<blas_double_complex,rowVector> w1;
+         DynamicVector<blas_double_complex,rowVector> w2;
 
          eigen( trans( A1 ), w1 );
          eigen( trans( A2 ), w2 );
@@ -235,11 +235,11 @@ void DenseTest::testGeneral()
       DynamicMatrix<double,columnMajor> A2( A );
 
       {
-         DynamicVector<complex<double>,rowVector> w1;
-         DynamicVector<complex<double>,rowVector> w2;
+         DynamicVector<blas_double_complex,rowVector> w1;
+         DynamicVector<blas_double_complex,rowVector> w2;
 
-         DynamicMatrix<complex<double>,rowMajor>    V1;
-         DynamicMatrix<complex<double>,columnMajor> V2;
+         DynamicMatrix<blas_double_complex,rowMajor>    V1;
+         DynamicMatrix<blas_double_complex,columnMajor> V2;
 
          eigen( A1, w1, V1 );
          eigen( A2, w2, V2 );
@@ -265,11 +265,11 @@ void DenseTest::testGeneral()
       }
 
       {
-         DynamicVector<complex<double>,rowVector> w1;
-         DynamicVector<complex<double>,rowVector> w2;
+         DynamicVector<blas_double_complex,rowVector> w1;
+         DynamicVector<blas_double_complex,rowVector> w2;
 
-         DynamicMatrix<complex<double>,rowMajor>    V1;
-         DynamicMatrix<complex<double>,columnMajor> V2;
+         DynamicMatrix<blas_double_complex,rowMajor>    V1;
+         DynamicMatrix<blas_double_complex,columnMajor> V2;
 
          eigen( trans( A1 ), w1, V1 );
          eigen( trans( A2 ), w2, V2 );
@@ -296,20 +296,20 @@ void DenseTest::testGeneral()
    }
 
    {
-      test_ = "eigen( DenseMatrix, DenseVector, DenseMatrix ) (general, complex<double>)";
+      test_ = "eigen( DenseMatrix, DenseVector, DenseMatrix ) (general, blas_double_complex)";
 
-      DynamicMatrix<complex<double>,rowMajor> A( 5UL, 5UL );
+      DynamicMatrix<blas_double_complex,rowMajor> A( 5UL, 5UL );
       randomize( A );
 
-      DynamicMatrix<complex<double>,rowMajor>    A1( A );
-      DynamicMatrix<complex<double>,columnMajor> A2( A );
+      DynamicMatrix<blas_double_complex,rowMajor>    A1( A );
+      DynamicMatrix<blas_double_complex,columnMajor> A2( A );
 
       {
-         DynamicVector<complex<double>,rowVector> w1;
-         DynamicVector<complex<double>,rowVector> w2;
+         DynamicVector<blas_double_complex,rowVector> w1;
+         DynamicVector<blas_double_complex,rowVector> w2;
 
-         DynamicMatrix<complex<double>,rowMajor>    V1;
-         DynamicMatrix<complex<double>,columnMajor> V2;
+         DynamicMatrix<blas_double_complex,rowMajor>    V1;
+         DynamicMatrix<blas_double_complex,columnMajor> V2;
 
          eigen( A1, w1, V1 );
          eigen( A2, w2, V2 );
@@ -335,11 +335,11 @@ void DenseTest::testGeneral()
       }
 
       {
-         DynamicVector<complex<double>,rowVector> w1;
-         DynamicVector<complex<double>,rowVector> w2;
+         DynamicVector<blas_double_complex,rowVector> w1;
+         DynamicVector<blas_double_complex,rowVector> w2;
 
-         DynamicMatrix<complex<double>,rowMajor>    V1;
-         DynamicMatrix<complex<double>,columnMajor> V2;
+         DynamicMatrix<blas_double_complex,rowMajor>    V1;
+         DynamicMatrix<blas_double_complex,columnMajor> V2;
 
          eigen( trans( A1 ), w1, V1 );
          eigen( trans( A2 ), w2, V2 );
@@ -448,15 +448,15 @@ void DenseTest::testSymmetric()
    }
 
    {
-      test_ = "eigen( DenseMatrix, DenseVector ) (symmetric, complex<double>)";
+      test_ = "eigen( DenseMatrix, DenseVector ) (symmetric, blas_double_complex)";
 
-      SymmetricMatrix< DynamicMatrix<complex<double>,rowMajor> > A1( 5UL );
+      SymmetricMatrix< DynamicMatrix<blas_double_complex,rowMajor> > A1( 5UL );
       randomize( A1 );
-      SymmetricMatrix< DynamicMatrix<complex<double>,columnMajor> > A2( A1 );
+      SymmetricMatrix< DynamicMatrix<blas_double_complex,columnMajor> > A2( A1 );
 
       {
-         DynamicVector<complex<double>,rowVector> w1;
-         DynamicVector<complex<double>,rowVector> w2;
+         DynamicVector<blas_double_complex,rowVector> w1;
+         DynamicVector<blas_double_complex,rowVector> w2;
 
          eigen( A1, w1 );
          eigen( A2, w2 );
@@ -474,8 +474,8 @@ void DenseTest::testSymmetric()
       }
 
       {
-         DynamicVector<complex<double>,rowVector> w1;
-         DynamicVector<complex<double>,rowVector> w2;
+         DynamicVector<blas_double_complex,rowVector> w1;
+         DynamicVector<blas_double_complex,rowVector> w2;
 
          eigen( trans( A1 ), w1 );
          eigen( trans( A2 ), w2 );
@@ -569,20 +569,20 @@ void DenseTest::testSymmetric()
    }
 
    {
-      test_ = "eigen( DenseMatrix, DenseVector, DenseMatrix ) (symmetric, complex<double>)";
+      test_ = "eigen( DenseMatrix, DenseVector, DenseMatrix ) (symmetric, blas_double_complex)";
 
-      SymmetricMatrix< DynamicMatrix<complex<double>,rowMajor> > A( 5UL );
+      SymmetricMatrix< DynamicMatrix<blas_double_complex,rowMajor> > A( 5UL );
       randomize( A );
 
-      SymmetricMatrix< DynamicMatrix<complex<double>,rowMajor> >    A1( A );
-      SymmetricMatrix< DynamicMatrix<complex<double>,columnMajor> > A2( A );
+      SymmetricMatrix< DynamicMatrix<blas_double_complex,rowMajor> >    A1( A );
+      SymmetricMatrix< DynamicMatrix<blas_double_complex,columnMajor> > A2( A );
 
       {
-         DynamicVector<complex<double>,rowVector> w1;
-         DynamicVector<complex<double>,rowVector> w2;
+         DynamicVector<blas_double_complex,rowVector> w1;
+         DynamicVector<blas_double_complex,rowVector> w2;
 
-         DynamicMatrix<complex<double>,rowMajor>    V1;
-         DynamicMatrix<complex<double>,columnMajor> V2;
+         DynamicMatrix<blas_double_complex,rowMajor>    V1;
+         DynamicMatrix<blas_double_complex,columnMajor> V2;
 
          eigen( A1, w1, V1 );
          eigen( A2, w2, V2 );
@@ -608,11 +608,11 @@ void DenseTest::testSymmetric()
       }
 
       {
-         DynamicVector<complex<double>,rowVector> w1;
-         DynamicVector<complex<double>,rowVector> w2;
+         DynamicVector<blas_double_complex,rowVector> w1;
+         DynamicVector<blas_double_complex,rowVector> w2;
 
-         DynamicMatrix<complex<double>,rowMajor>    V1;
-         DynamicMatrix<complex<double>,columnMajor> V2;
+         DynamicMatrix<blas_double_complex,rowMajor>    V1;
+         DynamicMatrix<blas_double_complex,columnMajor> V2;
 
          eigen( trans( A1 ), w1, V1 );
          eigen( trans( A2 ), w2, V2 );
@@ -721,11 +721,11 @@ void DenseTest::testHermitian()
    }
 
    {
-      test_ = "eigen( DenseMatrix, DenseVector ) (Hermitian, complex<double>)";
+      test_ = "eigen( DenseMatrix, DenseVector ) (Hermitian, blas_double_complex)";
 
-      HermitianMatrix< DynamicMatrix<complex<double>,rowMajor> > A1( 5UL );
+      HermitianMatrix< DynamicMatrix<blas_double_complex,rowMajor> > A1( 5UL );
       randomize( A1 );
-      HermitianMatrix< DynamicMatrix<complex<double>,columnMajor> > A2( A1 );
+      HermitianMatrix< DynamicMatrix<blas_double_complex,columnMajor> > A2( A1 );
 
       {
          DynamicVector<double,rowVector> w1;
@@ -842,20 +842,20 @@ void DenseTest::testHermitian()
    }
 
    {
-      test_ = "eigen( DenseMatrix, DenseVector, DenseMatrix ) (Hermitian, complex<double>)";
+      test_ = "eigen( DenseMatrix, DenseVector, DenseMatrix ) (Hermitian, blas_double_complex)";
 
-      HermitianMatrix< DynamicMatrix<complex<double>,rowMajor> > A( 5UL );
+      HermitianMatrix< DynamicMatrix<blas_double_complex,rowMajor> > A( 5UL );
       randomize( A );
 
-      HermitianMatrix< DynamicMatrix<complex<double>,rowMajor> >    A1( A );
-      HermitianMatrix< DynamicMatrix<complex<double>,columnMajor> > A2( A );
+      HermitianMatrix< DynamicMatrix<blas_double_complex,rowMajor> >    A1( A );
+      HermitianMatrix< DynamicMatrix<blas_double_complex,columnMajor> > A2( A );
 
       {
          DynamicVector<double,rowVector> w1;
          DynamicVector<double,rowVector> w2;
 
-         DynamicMatrix<complex<double>,rowMajor>    V1;
-         DynamicMatrix<complex<double>,columnMajor> V2;
+         DynamicMatrix<blas_double_complex,rowMajor>    V1;
+         DynamicMatrix<blas_double_complex,columnMajor> V2;
 
          eigen( A1, w1, V1 );
          eigen( A2, w2, V2 );
@@ -884,8 +884,8 @@ void DenseTest::testHermitian()
          DynamicVector<double,rowVector> w1;
          DynamicVector<double,rowVector> w2;
 
-         DynamicMatrix<complex<double>,rowMajor>    V1;
-         DynamicMatrix<complex<double>,columnMajor> V2;
+         DynamicMatrix<blas_double_complex,rowMajor>    V1;
+         DynamicMatrix<blas_double_complex,columnMajor> V2;
 
          eigen( trans( A1 ), w1, V1 );
          eigen( trans( A2 ), w2, V2 );
@@ -994,15 +994,15 @@ void DenseTest::testLower()
    }
 
    {
-      test_ = "eigen( DenseMatrix, DenseVector ) (lower, complex<double>)";
+      test_ = "eigen( DenseMatrix, DenseVector ) (lower, blas_double_complex)";
 
-      LowerMatrix< DynamicMatrix<complex<double>,rowMajor> > A1( 5UL );
+      LowerMatrix< DynamicMatrix<blas_double_complex,rowMajor> > A1( 5UL );
       randomize( A1 );
-      LowerMatrix< DynamicMatrix<complex<double>,columnMajor> > A2( A1 );
+      LowerMatrix< DynamicMatrix<blas_double_complex,columnMajor> > A2( A1 );
 
       {
-         DynamicVector<complex<double>,rowVector> w1;
-         DynamicVector<complex<double>,rowVector> w2;
+         DynamicVector<blas_double_complex,rowVector> w1;
+         DynamicVector<blas_double_complex,rowVector> w2;
 
          eigen( A1, w1 );
          eigen( A2, w2 );
@@ -1020,8 +1020,8 @@ void DenseTest::testLower()
       }
 
       {
-         DynamicVector<complex<double>,rowVector> w1;
-         DynamicVector<complex<double>,rowVector> w2;
+         DynamicVector<blas_double_complex,rowVector> w1;
+         DynamicVector<blas_double_complex,rowVector> w2;
 
          eigen( trans( A1 ), w1 );
          eigen( trans( A2 ), w2 );
@@ -1054,11 +1054,11 @@ void DenseTest::testLower()
       LowerMatrix< DynamicMatrix<double,columnMajor> > A2( A );
 
       {
-         DynamicVector<complex<double>,rowVector> w1;
-         DynamicVector<complex<double>,rowVector> w2;
+         DynamicVector<blas_double_complex,rowVector> w1;
+         DynamicVector<blas_double_complex,rowVector> w2;
 
-         DynamicMatrix<complex<double>,rowMajor>    V1;
-         DynamicMatrix<complex<double>,columnMajor> V2;
+         DynamicMatrix<blas_double_complex,rowMajor>    V1;
+         DynamicMatrix<blas_double_complex,columnMajor> V2;
 
          eigen( A1, w1, V1 );
          eigen( A2, w2, V2 );
@@ -1084,11 +1084,11 @@ void DenseTest::testLower()
       }
 
       {
-         DynamicVector<complex<double>,rowVector> w1;
-         DynamicVector<complex<double>,rowVector> w2;
+         DynamicVector<blas_double_complex,rowVector> w1;
+         DynamicVector<blas_double_complex,rowVector> w2;
 
-         DynamicMatrix<complex<double>,rowMajor>    V1;
-         DynamicMatrix<complex<double>,columnMajor> V2;
+         DynamicMatrix<blas_double_complex,rowMajor>    V1;
+         DynamicMatrix<blas_double_complex,columnMajor> V2;
 
          eigen( trans( A1 ), w1, V1 );
          eigen( trans( A2 ), w2, V2 );
@@ -1115,20 +1115,20 @@ void DenseTest::testLower()
    }
 
    {
-      test_ = "eigen( DenseMatrix, DenseVector, DenseMatrix ) (lower, complex<double>)";
+      test_ = "eigen( DenseMatrix, DenseVector, DenseMatrix ) (lower, blas_double_complex)";
 
-      LowerMatrix< DynamicMatrix<complex<double>,rowMajor> > A( 5UL );
+      LowerMatrix< DynamicMatrix<blas_double_complex,rowMajor> > A( 5UL );
       randomize( A );
 
-      LowerMatrix< DynamicMatrix<complex<double>,rowMajor> >    A1( A );
-      LowerMatrix< DynamicMatrix<complex<double>,columnMajor> > A2( A );
+      LowerMatrix< DynamicMatrix<blas_double_complex,rowMajor> >    A1( A );
+      LowerMatrix< DynamicMatrix<blas_double_complex,columnMajor> > A2( A );
 
       {
-         DynamicVector<complex<double>,rowVector> w1;
-         DynamicVector<complex<double>,rowVector> w2;
+         DynamicVector<blas_double_complex,rowVector> w1;
+         DynamicVector<blas_double_complex,rowVector> w2;
 
-         DynamicMatrix<complex<double>,rowMajor>    V1;
-         DynamicMatrix<complex<double>,columnMajor> V2;
+         DynamicMatrix<blas_double_complex,rowMajor>    V1;
+         DynamicMatrix<blas_double_complex,columnMajor> V2;
 
          eigen( A1, w1, V1 );
          eigen( A2, w2, V2 );
@@ -1154,11 +1154,11 @@ void DenseTest::testLower()
       }
 
       {
-         DynamicVector<complex<double>,rowVector> w1;
-         DynamicVector<complex<double>,rowVector> w2;
+         DynamicVector<blas_double_complex,rowVector> w1;
+         DynamicVector<blas_double_complex,rowVector> w2;
 
-         DynamicMatrix<complex<double>,rowMajor>    V1;
-         DynamicMatrix<complex<double>,columnMajor> V2;
+         DynamicMatrix<blas_double_complex,rowMajor>    V1;
+         DynamicMatrix<blas_double_complex,columnMajor> V2;
 
          eigen( trans( A1 ), w1, V1 );
          eigen( trans( A2 ), w2, V2 );
@@ -1267,15 +1267,15 @@ void DenseTest::testUpper()
    }
 
    {
-      test_ = "eigen( DenseMatrix, DenseVector ) (upper, complex<double>)";
+      test_ = "eigen( DenseMatrix, DenseVector ) (upper, blas_double_complex)";
 
-      UpperMatrix< DynamicMatrix<complex<double>,rowMajor> > A1( 5UL );
+      UpperMatrix< DynamicMatrix<blas_double_complex,rowMajor> > A1( 5UL );
       randomize( A1 );
-      UpperMatrix< DynamicMatrix<complex<double>,columnMajor> > A2( A1 );
+      UpperMatrix< DynamicMatrix<blas_double_complex,columnMajor> > A2( A1 );
 
       {
-         DynamicVector<complex<double>,rowVector> w1;
-         DynamicVector<complex<double>,rowVector> w2;
+         DynamicVector<blas_double_complex,rowVector> w1;
+         DynamicVector<blas_double_complex,rowVector> w2;
 
          eigen( A1, w1 );
          eigen( A2, w2 );
@@ -1293,8 +1293,8 @@ void DenseTest::testUpper()
       }
 
       {
-         DynamicVector<complex<double>,rowVector> w1;
-         DynamicVector<complex<double>,rowVector> w2;
+         DynamicVector<blas_double_complex,rowVector> w1;
+         DynamicVector<blas_double_complex,rowVector> w2;
 
          eigen( trans( A1 ), w1 );
          eigen( trans( A2 ), w2 );
@@ -1327,11 +1327,11 @@ void DenseTest::testUpper()
       UpperMatrix< DynamicMatrix<double,columnMajor> > A2( A );
 
       {
-         DynamicVector<complex<double>,rowVector> w1;
-         DynamicVector<complex<double>,rowVector> w2;
+         DynamicVector<blas_double_complex,rowVector> w1;
+         DynamicVector<blas_double_complex,rowVector> w2;
 
-         DynamicMatrix<complex<double>,rowMajor>    V1;
-         DynamicMatrix<complex<double>,columnMajor> V2;
+         DynamicMatrix<blas_double_complex,rowMajor>    V1;
+         DynamicMatrix<blas_double_complex,columnMajor> V2;
 
          eigen( A1, w1, V1 );
          eigen( A2, w2, V2 );
@@ -1357,11 +1357,11 @@ void DenseTest::testUpper()
       }
 
       {
-         DynamicVector<complex<double>,rowVector> w1;
-         DynamicVector<complex<double>,rowVector> w2;
+         DynamicVector<blas_double_complex,rowVector> w1;
+         DynamicVector<blas_double_complex,rowVector> w2;
 
-         DynamicMatrix<complex<double>,rowMajor>    V1;
-         DynamicMatrix<complex<double>,columnMajor> V2;
+         DynamicMatrix<blas_double_complex,rowMajor>    V1;
+         DynamicMatrix<blas_double_complex,columnMajor> V2;
 
          eigen( trans( A1 ), w1, V1 );
          eigen( trans( A2 ), w2, V2 );
@@ -1388,20 +1388,20 @@ void DenseTest::testUpper()
    }
 
    {
-      test_ = "eigen( DenseMatrix, DenseVector, DenseMatrix ) (upper, complex<double>)";
+      test_ = "eigen( DenseMatrix, DenseVector, DenseMatrix ) (upper, blas_double_complex)";
 
-      UpperMatrix< DynamicMatrix<complex<double>,rowMajor> > A( 5UL );
+      UpperMatrix< DynamicMatrix<blas_double_complex,rowMajor> > A( 5UL );
       randomize( A );
 
-      UpperMatrix< DynamicMatrix<complex<double>,rowMajor> >    A1( A );
-      UpperMatrix< DynamicMatrix<complex<double>,columnMajor> > A2( A );
+      UpperMatrix< DynamicMatrix<blas_double_complex,rowMajor> >    A1( A );
+      UpperMatrix< DynamicMatrix<blas_double_complex,columnMajor> > A2( A );
 
       {
-         DynamicVector<complex<double>,rowVector> w1;
-         DynamicVector<complex<double>,rowVector> w2;
+         DynamicVector<blas_double_complex,rowVector> w1;
+         DynamicVector<blas_double_complex,rowVector> w2;
 
-         DynamicMatrix<complex<double>,rowMajor>    V1;
-         DynamicMatrix<complex<double>,columnMajor> V2;
+         DynamicMatrix<blas_double_complex,rowMajor>    V1;
+         DynamicMatrix<blas_double_complex,columnMajor> V2;
 
          eigen( A1, w1, V1 );
          eigen( A2, w2, V2 );
@@ -1427,11 +1427,11 @@ void DenseTest::testUpper()
       }
 
       {
-         DynamicVector<complex<double>,rowVector> w1;
-         DynamicVector<complex<double>,rowVector> w2;
+         DynamicVector<blas_double_complex,rowVector> w1;
+         DynamicVector<blas_double_complex,rowVector> w2;
 
-         DynamicMatrix<complex<double>,rowMajor>    V1;
-         DynamicMatrix<complex<double>,columnMajor> V2;
+         DynamicMatrix<blas_double_complex,rowMajor>    V1;
+         DynamicMatrix<blas_double_complex,columnMajor> V2;
 
          eigen( trans( A1 ), w1, V1 );
          eigen( trans( A2 ), w2, V2 );
@@ -1540,15 +1540,15 @@ void DenseTest::testDiagonal()
    }
 
    {
-      test_ = "eigen( DenseMatrix, DenseVector ) (diagonal, complex<double>)";
+      test_ = "eigen( DenseMatrix, DenseVector ) (diagonal, blas_double_complex)";
 
-      DiagonalMatrix< DynamicMatrix<complex<double>,rowMajor> > A1( 5UL );
+      DiagonalMatrix< DynamicMatrix<blas_double_complex,rowMajor> > A1( 5UL );
       randomize( A1 );
-      DiagonalMatrix< DynamicMatrix<complex<double>,columnMajor> > A2( A1 );
+      DiagonalMatrix< DynamicMatrix<blas_double_complex,columnMajor> > A2( A1 );
 
       {
-         DynamicVector<complex<double>,rowVector> w1;
-         DynamicVector<complex<double>,rowVector> w2;
+         DynamicVector<blas_double_complex,rowVector> w1;
+         DynamicVector<blas_double_complex,rowVector> w2;
 
          eigen( A1, w1 );
          eigen( A2, w2 );
@@ -1566,8 +1566,8 @@ void DenseTest::testDiagonal()
       }
 
       {
-         DynamicVector<complex<double>,rowVector> w1;
-         DynamicVector<complex<double>,rowVector> w2;
+         DynamicVector<blas_double_complex,rowVector> w1;
+         DynamicVector<blas_double_complex,rowVector> w2;
 
          eigen( trans( A1 ), w1 );
          eigen( trans( A2 ), w2 );
@@ -1603,8 +1603,8 @@ void DenseTest::testDiagonal()
          DynamicVector<double,rowVector> w1;
          DynamicVector<double,rowVector> w2;
 
-         DynamicMatrix<complex<double>,rowMajor>    V1;
-         DynamicMatrix<complex<double>,columnMajor> V2;
+         DynamicMatrix<blas_double_complex,rowMajor>    V1;
+         DynamicMatrix<blas_double_complex,columnMajor> V2;
 
          eigen( A1, w1, V1 );
          eigen( A2, w2, V2 );
@@ -1633,8 +1633,8 @@ void DenseTest::testDiagonal()
          DynamicVector<double,rowVector> w1;
          DynamicVector<double,rowVector> w2;
 
-         DynamicMatrix<complex<double>,rowMajor>    V1;
-         DynamicMatrix<complex<double>,columnMajor> V2;
+         DynamicMatrix<blas_double_complex,rowMajor>    V1;
+         DynamicMatrix<blas_double_complex,columnMajor> V2;
 
          eigen( trans( A1 ), w1, V1 );
          eigen( trans( A2 ), w2, V2 );
@@ -1661,20 +1661,20 @@ void DenseTest::testDiagonal()
    }
 
    {
-      test_ = "eigen( DenseMatrix, DenseVector, DenseMatrix ) (diagonal, complex<double>)";
+      test_ = "eigen( DenseMatrix, DenseVector, DenseMatrix ) (diagonal, blas_double_complex)";
 
-      DiagonalMatrix< DynamicMatrix<complex<double>,rowMajor> > A( 5UL );
+      DiagonalMatrix< DynamicMatrix<blas_double_complex,rowMajor> > A( 5UL );
       randomize( A );
 
-      DiagonalMatrix< DynamicMatrix<complex<double>,rowMajor> >    A1( A );
-      DiagonalMatrix< DynamicMatrix<complex<double>,columnMajor> > A2( A );
+      DiagonalMatrix< DynamicMatrix<blas_double_complex,rowMajor> >    A1( A );
+      DiagonalMatrix< DynamicMatrix<blas_double_complex,columnMajor> > A2( A );
 
       {
-         DynamicVector<complex<double>,rowVector> w1;
-         DynamicVector<complex<double>,rowVector> w2;
+         DynamicVector<blas_double_complex,rowVector> w1;
+         DynamicVector<blas_double_complex,rowVector> w2;
 
-         DynamicMatrix<complex<double>,rowMajor>    V1;
-         DynamicMatrix<complex<double>,columnMajor> V2;
+         DynamicMatrix<blas_double_complex,rowMajor>    V1;
+         DynamicMatrix<blas_double_complex,columnMajor> V2;
 
          eigen( A1, w1, V1 );
          eigen( A2, w2, V2 );
@@ -1700,11 +1700,11 @@ void DenseTest::testDiagonal()
       }
 
       {
-         DynamicVector<complex<double>,rowVector> w1;
-         DynamicVector<complex<double>,rowVector> w2;
+         DynamicVector<blas_double_complex,rowVector> w1;
+         DynamicVector<blas_double_complex,rowVector> w2;
 
-         DynamicMatrix<complex<double>,rowMajor>    V1;
-         DynamicMatrix<complex<double>,columnMajor> V2;
+         DynamicMatrix<blas_double_complex,rowMajor>    V1;
+         DynamicMatrix<blas_double_complex,columnMajor> V2;
 
          eigen( trans( A1 ), w1, V1 );
          eigen( trans( A2 ), w2, V2 );

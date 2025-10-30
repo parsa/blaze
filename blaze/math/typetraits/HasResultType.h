@@ -67,7 +67,7 @@ namespace blaze {
    blaze::HasResultType< volatile DynamicMatrix<double> >     // Is derived from TrueType
    blaze::HasResultType< int >::value                         // Evaluates to 0
    blaze::HasResultType< const double >::Type                 // Results in FalseType
-   blaze::HasResultType< volatile complex<float> >            // Is derived from FalseType
+   blaze::HasResultType< volatile blas_float_complex >            // Is derived from FalseType
    \endcode
 */
 template< typename T >

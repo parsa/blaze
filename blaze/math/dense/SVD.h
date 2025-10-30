@@ -118,8 +118,8 @@ inline size_t svd( const DenseMatrix<MT1,SO>& A, DenseMatrix<MT2,SO>& U,
    svd( A, s );
    \endcode
 
-// \note This function only works for matrices with \c float, \c double, \c complex<float>, or
-// \c complex<double> element type. The attempt to call the function with matrices of any other
+// \note This function only works for matrices with \c float, \c double, \c blas_float_complex, or
+// \c blas_double_complex element type. The attempt to call the function with matrices of any other
 // element type results in a compile time error!
 //
 // \note This function can only be used if a fitting LAPACK library is available and linked to
@@ -209,8 +209,8 @@ inline void svd( const DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& s )
    svd( A, U, s, V );
    \endcode
 
-// \note This function only works for matrices with \c float, \c double, \c complex<float>, or
-// \c complex<double> element type. The attempt to call the function with matrices of any other
+// \note This function only works for matrices with \c float, \c double, \c blas_float_complex, or
+// \c blas_double_complex element type. The attempt to call the function with matrices of any other
 // element type results in a compile time error!
 //
 // \note This function can only be used if a fitting LAPACK library is available and linked to
@@ -329,8 +329,8 @@ inline void svd( const DenseMatrix<MT1,SO>& A, DenseMatrix<MT2,SO>& U,
    svd( A, s, 0, 2 );
    \endcode
 
-// \note This function only works for matrices with \c float, \c double, \c complex<float>, or
-// \c complex<double> element type. The attempt to call the function with matrices of any other
+// \note This function only works for matrices with \c float, \c double, \c blas_float_complex, or
+// \c blas_double_complex element type. The attempt to call the function with matrices of any other
 // element type results in a compile time error!
 //
 // \note This function can only be used if a fitting LAPACK library is available and linked to
@@ -445,8 +445,8 @@ inline size_t svd( const DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& s, ST low, S
    svd( A, U, s, V, 0, 2 );
    \endcode
 
-// \note This function only works for matrices with \c float, \c double, \c complex<float>, or
-// \c complex<double> element type. The attempt to call the function with matrices of any other
+// \note This function only works for matrices with \c float, \c double, \c blas_float_complex, or
+// \c blas_double_complex element type. The attempt to call the function with matrices of any other
 // element type results in a compile time error!
 //
 // \note This function can only be used if a fitting LAPACK library is available and linked to

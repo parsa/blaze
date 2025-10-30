@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
 //  \file src/mathtest/simd/ComplexFloat.cpp
-//  \brief Source file for the SIMD operation test for 'complex<float>'
+//  \brief Source file for the SIMD operation test for 'blas_float_complex'
 //
 //  Copyright (C) 2012-2020 Klaus Iglberger - All Rights Reserved
 //
@@ -52,11 +52,11 @@
 //*************************************************************************************************
 int main()
 {
-   std::cout << "   Running SIMD test for 'complex<float>'..." << std::endl;
+   std::cout << "   Running SIMD test for 'blas_float_complex'..." << std::endl;
 
    try
    {
-      RUN_SIMD_OPERATION_TEST( blaze::complex<float> );
+      RUN_SIMD_OPERATION_TEST( blaze::blas_float_complex );
    }
    catch( std::exception& ex ) {
       std::cerr << "\n\n ERROR DETECTED during SIMD operation:\n"

@@ -98,7 +98,7 @@ struct HasMinHelper< T1, T2, Void_t< decltype( min( std::declval<T1>(), std::dec
    blaze::HasMin< float, double >::Type                     // Results in TrueType
    blaze::HasMin< DynamicVector<int>, DynamicVector<int> >  // Is derived from TrueType
    blaze::HasMin< int, unsigned int >::value                // Evaluates to 0
-   blaze::HasMin< complex<float>, complex<float> >::Type    // Results in FalseType
+   blaze::HasMin< blas_float_complex, blas_float_complex >::Type    // Results in FalseType
    blaze::HasMin< DynamicMatrix<int>, DynamicVector<int> >  // Is derived from FalseType
    \endcode
 */

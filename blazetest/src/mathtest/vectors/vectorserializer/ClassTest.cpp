@@ -164,7 +164,7 @@ void ClassTest::testRandomVectors()
    }
 
    {
-      blaze::StaticVector<blaze::complex<float>,13UL> src;
+      blaze::StaticVector<blaze::blas_float_complex,13UL> src;
       randomize( src );
       runAllTests<13UL>( src );
    }
@@ -193,7 +193,7 @@ void ClassTest::testRandomVectors()
    }
 
    {
-      blaze::DynamicVector< blaze::complex<float> > src( 13UL );
+      blaze::DynamicVector< blaze::blas_float_complex > src( 13UL );
       randomize( src );
       runAllTests<13UL>( src );
    }
@@ -222,7 +222,7 @@ void ClassTest::testRandomVectors()
    }
 
    {
-      blaze::CompressedVector< blaze::complex<float> > src( 13UL );
+      blaze::CompressedVector< blaze::blas_float_complex > src( 13UL );
       randomize( src );
       runAllTests<13UL>( src );
    }

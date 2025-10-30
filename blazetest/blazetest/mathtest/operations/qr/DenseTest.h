@@ -106,8 +106,8 @@ class DenseTest
    //**********************************************************************************************
 
    //**Type definitions****************************************************************************
-   using cfloat  = blaze::complex<float>;   //!< Single precision complex test type.
-   using cdouble = blaze::complex<double>;  //!< Double precision complex test type.
+   using cfloat  = blaze::blas_float_complex;   //!< Single precision complex test type.
+   using cdouble = blaze::blas_double_complex;  //!< Double precision complex test type.
    //**********************************************************************************************
 
    //**Member variables****************************************************************************

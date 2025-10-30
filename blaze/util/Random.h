@@ -107,9 +107,9 @@ namespace blaze {
    // ranges are provided, the real part is created in the first range and the imaginary part
    // is created in the second range. The last example demonstrates this by restricting the
    // real part to the range [2..3] and the imaginary part to the range [1..5].
-   complex<float> c1 = rand< complex<float> >();
-   complex<float> c2 = rand< complex<float> >( 1.0F, 4.0F );
-   complex<float> c3 = rand< complex<float> >( 2.0F, 3.0F, 1.0F, 5.0F );
+   blas_float_complex c1 = rand< blas_float_complex >();
+   blas_float_complex c2 = rand< blas_float_complex >( 1.0F, 4.0F );
+   blas_float_complex c3 = rand< blas_float_complex >( 2.0F, 3.0F, 1.0F, 5.0F );
    \endcode
 
 // \note In order to reproduce certain series of random numbers, the seed of the random number

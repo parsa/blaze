@@ -98,13 +98,13 @@ BLAZE_ALWAYS_INLINE constexpr decltype(auto) inv( T a ) noexcept( IsBuiltin_v<T>
 //
 // \note A division by zero is only checked by an user assert.
 */
-BLAZE_ALWAYS_INLINE constexpr complex<float> inv( const complex<float>& a ) noexcept
+BLAZE_ALWAYS_INLINE constexpr blas_float_complex inv( const blas_float_complex& a ) noexcept
 {
    const float abs( pow2( real(a) ) + pow2( imag(a) ) );
    BLAZE_USER_ASSERT( abs != 0.0F, "Division by zero detected" );
 
    const float iabs( 1.0F / abs );
-   return complex<float>( iabs*real(a), -iabs*imag(a) );
+   return blas_float_complex( iabs*real(a), -iabs*imag(a) );
 }
 //*************************************************************************************************
 
@@ -122,13 +122,13 @@ BLAZE_ALWAYS_INLINE constexpr complex<float> inv( const complex<float>& a ) noex
 //
 // \note A division by zero is only checked by an user assert.
 */
-BLAZE_ALWAYS_INLINE constexpr complex<double> inv( const complex<double>& a ) noexcept
+BLAZE_ALWAYS_INLINE constexpr blas_double_complex inv( const blas_double_complex& a ) noexcept
 {
    const double abs( pow2( real(a) ) + pow2( imag(a) ) );
    BLAZE_USER_ASSERT( abs != 0.0, "Division by zero detected" );
 
    const double iabs( 1.0 / abs );
-   return complex<double>( iabs*real(a), -iabs*imag(a) );
+   return blas_double_complex( iabs*real(a), -iabs*imag(a) );
 }
 //*************************************************************************************************
 
@@ -238,7 +238,7 @@ BLAZE_ALWAYS_INLINE void invert( long double& a ) noexcept
 //
 // \note A division by zero is only checked by an user assert.
 */
-BLAZE_ALWAYS_INLINE void invert( complex<float>& a ) noexcept
+BLAZE_ALWAYS_INLINE void invert( blas_float_complex& a ) noexcept
 {
    a = inv( a );
 }
@@ -258,7 +258,7 @@ BLAZE_ALWAYS_INLINE void invert( complex<float>& a ) noexcept
 //
 // \note A division by zero is only checked by an user assert.
 */
-BLAZE_ALWAYS_INLINE void invert( complex<double>& a ) noexcept
+BLAZE_ALWAYS_INLINE void invert( blas_double_complex& a ) noexcept
 {
    a = inv( a );
 }

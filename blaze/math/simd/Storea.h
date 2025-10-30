@@ -383,20 +383,20 @@ BLAZE_ALWAYS_INLINE void storea( float* address, const SIMDf32<T>& value ) noexc
 
 
 //*************************************************************************************************
-/*!\brief Aligned store of a vector of 'complex<float>' values.
+/*!\brief Aligned store of a vector of 'blas_float_complex' values.
 // \ingroup simd
 //
 // \param address The target address.
-// \param value The 'complex<float>' vector to be stored.
+// \param value The 'blas_float_complex' vector to be stored.
 // \return void
 //
-// This function stores a vector of 'complex<float>' values. The given address must be aligned
+// This function stores a vector of 'blas_float_complex' values. The given address must be aligned
 // according to the enabled instruction set (16-byte alignment in case of SSE, 32-byte alignment
 // in case of AVX, and 64-byte alignment in case of AVX-512/MIC).
 */
-BLAZE_ALWAYS_INLINE void storea( complex<float>* address, const SIMDcfloat& value ) noexcept
+BLAZE_ALWAYS_INLINE void storea( blas_float_complex* address, const SIMDcfloat& value ) noexcept
 {
-   BLAZE_STATIC_ASSERT  ( sizeof( complex<float> ) == 2UL*sizeof( float ) );
+   BLAZE_STATIC_ASSERT  ( sizeof( blas_float_complex ) == 2UL*sizeof( float ) );
    BLAZE_INTERNAL_ASSERT( checkAlignment( address ), "Invalid alignment detected" );
 
 #if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
@@ -451,20 +451,20 @@ BLAZE_ALWAYS_INLINE void storea( double* address, const SIMDf64<T>& value ) noex
 
 
 //*************************************************************************************************
-/*!\brief Aligned store of a vector of 'complex<double>' values.
+/*!\brief Aligned store of a vector of 'blas_double_complex' values.
 // \ingroup simd
 //
 // \param address The target address.
-// \param value The 'complex<double>' vector to be stored.
+// \param value The 'blas_double_complex' vector to be stored.
 // \return void
 //
-// This function stores a vector of 'complex<double>' values. The given address must be aligned
+// This function stores a vector of 'blas_double_complex' values. The given address must be aligned
 // according to the enabled instruction set (16-byte alignment in case of SSE, 32-byte alignment
 // in case of AVX, and 64-byte alignment in case of AVX-512/MIC).
 */
-BLAZE_ALWAYS_INLINE void storea( complex<double>* address, const SIMDcdouble& value ) noexcept
+BLAZE_ALWAYS_INLINE void storea( blas_double_complex* address, const SIMDcdouble& value ) noexcept
 {
-   BLAZE_STATIC_ASSERT  ( sizeof( complex<double> ) == 2UL*sizeof( double ) );
+   BLAZE_STATIC_ASSERT  ( sizeof( blas_double_complex ) == 2UL*sizeof( double ) );
    BLAZE_INTERNAL_ASSERT( checkAlignment( address ), "Invalid alignment detected" );
 
 #if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE

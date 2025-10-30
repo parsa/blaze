@@ -114,7 +114,7 @@ namespace blaze {
    \code
    // Serialization
    {
-      blaze::CompressedVector< blaze::DynamicVector< blaze::complex<double> > > vec;
+      blaze::CompressedVector< blaze::DynamicVector< blaze::blas_double_complex > > vec;
 
       // ... Resizing and initialization
 
@@ -127,7 +127,7 @@ namespace blaze {
 
    // Deserialization
    {
-      blaze::CompressedVector< blaze::DynamicVector< blaze::complex<double> > > vec;
+      blaze::CompressedVector< blaze::DynamicVector< blaze::blas_double_complex > > vec;
 
       // Creating an archive that reads from the file "vector.blaze"
       blaze::Archive<std::ofstream> archive( "vector.blaze" );

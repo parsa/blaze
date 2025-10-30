@@ -1603,9 +1603,9 @@ void ClassTest::testSingleSolve()
       // .../StaticVector
       {
          {
-            using T1 = SymmetricMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using T2 = StaticVector<complex<double>,4UL,columnVector>;
-            using RT = StaticVector<complex<double>,4UL,columnVector>;
+            using T1 = SymmetricMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using T2 = StaticVector<blas_double_complex,4UL,columnVector>;
+            using RT = StaticVector<blas_double_complex,4UL,columnVector>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -1613,9 +1613,9 @@ void ClassTest::testSingleSolve()
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
          {
-            using T1 = SymmetricMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using T2 = StaticVector<complex<double>,4UL,columnVector>;
-            using RT = StaticVector<complex<double>,4UL,columnVector>;
+            using T1 = SymmetricMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using T2 = StaticVector<blas_double_complex,4UL,columnVector>;
+            using RT = StaticVector<blas_double_complex,4UL,columnVector>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -1623,9 +1623,9 @@ void ClassTest::testSingleSolve()
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
          {
-            using T1 = SymmetricMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using T2 = StaticVector<complex<double>,4UL,rowVector>;
-            using RT = StaticVector<complex<double>,4UL,rowVector>;
+            using T1 = SymmetricMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using T2 = StaticVector<blas_double_complex,4UL,rowVector>;
+            using RT = StaticVector<blas_double_complex,4UL,rowVector>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -1633,9 +1633,9 @@ void ClassTest::testSingleSolve()
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
          {
-            using T1 = SymmetricMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using T2 = StaticVector<complex<double>,4UL,rowVector>;
-            using RT = StaticVector<complex<double>,4UL,rowVector>;
+            using T1 = SymmetricMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using T2 = StaticVector<blas_double_complex,4UL,rowVector>;
+            using RT = StaticVector<blas_double_complex,4UL,rowVector>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -1647,9 +1647,9 @@ void ClassTest::testSingleSolve()
       // .../HybridVector
       {
          {
-            using T1 = SymmetricMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using T2 = HybridVector<complex<double>,6UL,columnVector>;
-            using RT = HybridVector<complex<double>,6UL,columnVector>;
+            using T1 = SymmetricMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using T2 = HybridVector<blas_double_complex,6UL,columnVector>;
+            using RT = HybridVector<blas_double_complex,6UL,columnVector>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -1657,9 +1657,9 @@ void ClassTest::testSingleSolve()
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
          {
-            using T1 = SymmetricMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using T2 = HybridVector<complex<double>,6UL,columnVector>;
-            using RT = HybridVector<complex<double>,6UL,columnVector>;
+            using T1 = SymmetricMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using T2 = HybridVector<blas_double_complex,6UL,columnVector>;
+            using RT = HybridVector<blas_double_complex,6UL,columnVector>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -1667,9 +1667,9 @@ void ClassTest::testSingleSolve()
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
          {
-            using T1 = SymmetricMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using T2 = HybridVector<complex<double>,6UL,rowVector>;
-            using RT = HybridVector<complex<double>,6UL,rowVector>;
+            using T1 = SymmetricMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using T2 = HybridVector<blas_double_complex,6UL,rowVector>;
+            using RT = HybridVector<blas_double_complex,6UL,rowVector>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -1677,9 +1677,9 @@ void ClassTest::testSingleSolve()
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
          {
-            using T1 = SymmetricMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using T2 = HybridVector<complex<double>,6UL,rowVector>;
-            using RT = HybridVector<complex<double>,6UL,rowVector>;
+            using T1 = SymmetricMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using T2 = HybridVector<blas_double_complex,6UL,rowVector>;
+            using RT = HybridVector<blas_double_complex,6UL,rowVector>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -1691,9 +1691,9 @@ void ClassTest::testSingleSolve()
       // .../DynamicVector
       {
          {
-            using T1 = SymmetricMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using T2 = DynamicVector<complex<double>,columnVector>;
-            using RT = DynamicVector<complex<double>,columnVector>;
+            using T1 = SymmetricMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using T2 = DynamicVector<blas_double_complex,columnVector>;
+            using RT = DynamicVector<blas_double_complex,columnVector>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -1701,9 +1701,9 @@ void ClassTest::testSingleSolve()
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
          {
-            using T1 = SymmetricMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using T2 = DynamicVector<complex<double>,columnVector>;
-            using RT = DynamicVector<complex<double>,columnVector>;
+            using T1 = SymmetricMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using T2 = DynamicVector<blas_double_complex,columnVector>;
+            using RT = DynamicVector<blas_double_complex,columnVector>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -1711,9 +1711,9 @@ void ClassTest::testSingleSolve()
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
          {
-            using T1 = SymmetricMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using T2 = DynamicVector<complex<double>,rowVector>;
-            using RT = DynamicVector<complex<double>,rowVector>;
+            using T1 = SymmetricMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using T2 = DynamicVector<blas_double_complex,rowVector>;
+            using RT = DynamicVector<blas_double_complex,rowVector>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -1721,9 +1721,9 @@ void ClassTest::testSingleSolve()
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
          {
-            using T1 = SymmetricMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using T2 = DynamicVector<complex<double>,rowVector>;
-            using RT = DynamicVector<complex<double>,rowVector>;
+            using T1 = SymmetricMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using T2 = DynamicVector<blas_double_complex,rowVector>;
+            using RT = DynamicVector<blas_double_complex,rowVector>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -1735,9 +1735,9 @@ void ClassTest::testSingleSolve()
       // .../CustomVector
       {
          {
-            using T1 = SymmetricMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using T2 = CustomVector<complex<double>,unaligned,unpadded,columnVector>;
-            using RT = DynamicVector<complex<double>,columnVector>;
+            using T1 = SymmetricMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using T2 = CustomVector<blas_double_complex,unaligned,unpadded,columnVector>;
+            using RT = DynamicVector<blas_double_complex,columnVector>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -1745,9 +1745,9 @@ void ClassTest::testSingleSolve()
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
          {
-            using T1 = SymmetricMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using T2 = CustomVector<complex<double>,unaligned,unpadded,columnVector>;
-            using RT = DynamicVector<complex<double>,columnVector>;
+            using T1 = SymmetricMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using T2 = CustomVector<blas_double_complex,unaligned,unpadded,columnVector>;
+            using RT = DynamicVector<blas_double_complex,columnVector>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -1755,9 +1755,9 @@ void ClassTest::testSingleSolve()
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
          {
-            using T1 = SymmetricMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using T2 = CustomVector<complex<double>,unaligned,unpadded,rowVector>;
-            using RT = DynamicVector<complex<double>,rowVector>;
+            using T1 = SymmetricMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using T2 = CustomVector<blas_double_complex,unaligned,unpadded,rowVector>;
+            using RT = DynamicVector<blas_double_complex,rowVector>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -1765,9 +1765,9 @@ void ClassTest::testSingleSolve()
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
          {
-            using T1 = SymmetricMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using T2 = CustomVector<complex<double>,unaligned,unpadded,rowVector>;
-            using RT = DynamicVector<complex<double>,rowVector>;
+            using T1 = SymmetricMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using T2 = CustomVector<blas_double_complex,unaligned,unpadded,rowVector>;
+            using RT = DynamicVector<blas_double_complex,rowVector>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -1779,9 +1779,9 @@ void ClassTest::testSingleSolve()
       // .../UniformVector
       {
          {
-            using T1 = SymmetricMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using T2 = UniformVector<complex<double>,columnVector>;
-            using RT = DynamicVector<complex<double>,columnVector>;
+            using T1 = SymmetricMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using T2 = UniformVector<blas_double_complex,columnVector>;
+            using RT = DynamicVector<blas_double_complex,columnVector>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -1789,9 +1789,9 @@ void ClassTest::testSingleSolve()
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
          {
-            using T1 = SymmetricMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using T2 = UniformVector<complex<double>,columnVector>;
-            using RT = DynamicVector<complex<double>,columnVector>;
+            using T1 = SymmetricMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using T2 = UniformVector<blas_double_complex,columnVector>;
+            using RT = DynamicVector<blas_double_complex,columnVector>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -1799,9 +1799,9 @@ void ClassTest::testSingleSolve()
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
          {
-            using T1 = SymmetricMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using T2 = UniformVector<complex<double>,rowVector>;
-            using RT = DynamicVector<complex<double>,rowVector>;
+            using T1 = SymmetricMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using T2 = UniformVector<blas_double_complex,rowVector>;
+            using RT = DynamicVector<blas_double_complex,rowVector>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -1809,9 +1809,9 @@ void ClassTest::testSingleSolve()
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
          {
-            using T1 = SymmetricMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using T2 = UniformVector<complex<double>,rowVector>;
-            using RT = DynamicVector<complex<double>,rowVector>;
+            using T1 = SymmetricMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using T2 = UniformVector<blas_double_complex,rowVector>;
+            using RT = DynamicVector<blas_double_complex,rowVector>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -1823,9 +1823,9 @@ void ClassTest::testSingleSolve()
       // .../InitializerVector
       {
          {
-            using T1 = SymmetricMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using T2 = InitializerVector<complex<double>,columnVector>;
-            using RT = DynamicVector<complex<double>,columnVector>;
+            using T1 = SymmetricMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using T2 = InitializerVector<blas_double_complex,columnVector>;
+            using RT = DynamicVector<blas_double_complex,columnVector>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -1833,9 +1833,9 @@ void ClassTest::testSingleSolve()
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
          {
-            using T1 = SymmetricMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using T2 = InitializerVector<complex<double>,columnVector>;
-            using RT = DynamicVector<complex<double>,columnVector>;
+            using T1 = SymmetricMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using T2 = InitializerVector<blas_double_complex,columnVector>;
+            using RT = DynamicVector<blas_double_complex,columnVector>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -1843,9 +1843,9 @@ void ClassTest::testSingleSolve()
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
          {
-            using T1 = SymmetricMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using T2 = InitializerVector<complex<double>,rowVector>;
-            using RT = DynamicVector<complex<double>,rowVector>;
+            using T1 = SymmetricMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using T2 = InitializerVector<blas_double_complex,rowVector>;
+            using RT = DynamicVector<blas_double_complex,rowVector>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -1853,9 +1853,9 @@ void ClassTest::testSingleSolve()
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
          {
-            using T1 = SymmetricMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using T2 = InitializerVector<complex<double>,rowVector>;
-            using RT = DynamicVector<complex<double>,rowVector>;
+            using T1 = SymmetricMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using T2 = InitializerVector<blas_double_complex,rowVector>;
+            using RT = DynamicVector<blas_double_complex,rowVector>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -2137,9 +2137,9 @@ void ClassTest::testSingleSolve()
       // .../StaticVector
       {
          {
-            using T1 = HermitianMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using T2 = StaticVector<complex<double>,4UL,columnVector>;
-            using RT = StaticVector<complex<double>,4UL,columnVector>;
+            using T1 = HermitianMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using T2 = StaticVector<blas_double_complex,4UL,columnVector>;
+            using RT = StaticVector<blas_double_complex,4UL,columnVector>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -2147,9 +2147,9 @@ void ClassTest::testSingleSolve()
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
          {
-            using T1 = HermitianMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using T2 = StaticVector<complex<double>,4UL,columnVector>;
-            using RT = StaticVector<complex<double>,4UL,columnVector>;
+            using T1 = HermitianMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using T2 = StaticVector<blas_double_complex,4UL,columnVector>;
+            using RT = StaticVector<blas_double_complex,4UL,columnVector>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -2157,9 +2157,9 @@ void ClassTest::testSingleSolve()
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
          {
-            using T1 = HermitianMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using T2 = StaticVector<complex<double>,4UL,rowVector>;
-            using RT = StaticVector<complex<double>,4UL,rowVector>;
+            using T1 = HermitianMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using T2 = StaticVector<blas_double_complex,4UL,rowVector>;
+            using RT = StaticVector<blas_double_complex,4UL,rowVector>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -2167,9 +2167,9 @@ void ClassTest::testSingleSolve()
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
          {
-            using T1 = HermitianMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using T2 = StaticVector<complex<double>,4UL,rowVector>;
-            using RT = StaticVector<complex<double>,4UL,rowVector>;
+            using T1 = HermitianMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using T2 = StaticVector<blas_double_complex,4UL,rowVector>;
+            using RT = StaticVector<blas_double_complex,4UL,rowVector>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -2181,9 +2181,9 @@ void ClassTest::testSingleSolve()
       // .../HybridVector
       {
          {
-            using T1 = HermitianMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using T2 = HybridVector<complex<double>,6UL,columnVector>;
-            using RT = HybridVector<complex<double>,6UL,columnVector>;
+            using T1 = HermitianMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using T2 = HybridVector<blas_double_complex,6UL,columnVector>;
+            using RT = HybridVector<blas_double_complex,6UL,columnVector>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -2191,9 +2191,9 @@ void ClassTest::testSingleSolve()
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
          {
-            using T1 = HermitianMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using T2 = HybridVector<complex<double>,6UL,columnVector>;
-            using RT = HybridVector<complex<double>,6UL,columnVector>;
+            using T1 = HermitianMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using T2 = HybridVector<blas_double_complex,6UL,columnVector>;
+            using RT = HybridVector<blas_double_complex,6UL,columnVector>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -2201,9 +2201,9 @@ void ClassTest::testSingleSolve()
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
          {
-            using T1 = HermitianMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using T2 = HybridVector<complex<double>,6UL,rowVector>;
-            using RT = HybridVector<complex<double>,6UL,rowVector>;
+            using T1 = HermitianMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using T2 = HybridVector<blas_double_complex,6UL,rowVector>;
+            using RT = HybridVector<blas_double_complex,6UL,rowVector>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -2211,9 +2211,9 @@ void ClassTest::testSingleSolve()
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
          {
-            using T1 = HermitianMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using T2 = HybridVector<complex<double>,6UL,rowVector>;
-            using RT = HybridVector<complex<double>,6UL,rowVector>;
+            using T1 = HermitianMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using T2 = HybridVector<blas_double_complex,6UL,rowVector>;
+            using RT = HybridVector<blas_double_complex,6UL,rowVector>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -2225,9 +2225,9 @@ void ClassTest::testSingleSolve()
       // .../DynamicVector
       {
          {
-            using T1 = HermitianMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using T2 = DynamicVector<complex<double>,columnVector>;
-            using RT = DynamicVector<complex<double>,columnVector>;
+            using T1 = HermitianMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using T2 = DynamicVector<blas_double_complex,columnVector>;
+            using RT = DynamicVector<blas_double_complex,columnVector>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -2235,9 +2235,9 @@ void ClassTest::testSingleSolve()
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
          {
-            using T1 = HermitianMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using T2 = DynamicVector<complex<double>,columnVector>;
-            using RT = DynamicVector<complex<double>,columnVector>;
+            using T1 = HermitianMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using T2 = DynamicVector<blas_double_complex,columnVector>;
+            using RT = DynamicVector<blas_double_complex,columnVector>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -2245,9 +2245,9 @@ void ClassTest::testSingleSolve()
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
          {
-            using T1 = HermitianMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using T2 = DynamicVector<complex<double>,rowVector>;
-            using RT = DynamicVector<complex<double>,rowVector>;
+            using T1 = HermitianMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using T2 = DynamicVector<blas_double_complex,rowVector>;
+            using RT = DynamicVector<blas_double_complex,rowVector>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -2255,9 +2255,9 @@ void ClassTest::testSingleSolve()
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
          {
-            using T1 = HermitianMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using T2 = DynamicVector<complex<double>,rowVector>;
-            using RT = DynamicVector<complex<double>,rowVector>;
+            using T1 = HermitianMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using T2 = DynamicVector<blas_double_complex,rowVector>;
+            using RT = DynamicVector<blas_double_complex,rowVector>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -2269,9 +2269,9 @@ void ClassTest::testSingleSolve()
       // .../CustomVector
       {
          {
-            using T1 = HermitianMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using T2 = CustomVector<complex<double>,unaligned,unpadded,columnVector>;
-            using RT = DynamicVector<complex<double>,columnVector>;
+            using T1 = HermitianMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using T2 = CustomVector<blas_double_complex,unaligned,unpadded,columnVector>;
+            using RT = DynamicVector<blas_double_complex,columnVector>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -2279,9 +2279,9 @@ void ClassTest::testSingleSolve()
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
          {
-            using T1 = HermitianMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using T2 = CustomVector<complex<double>,unaligned,unpadded,columnVector>;
-            using RT = DynamicVector<complex<double>,columnVector>;
+            using T1 = HermitianMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using T2 = CustomVector<blas_double_complex,unaligned,unpadded,columnVector>;
+            using RT = DynamicVector<blas_double_complex,columnVector>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -2289,9 +2289,9 @@ void ClassTest::testSingleSolve()
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
          {
-            using T1 = HermitianMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using T2 = CustomVector<complex<double>,unaligned,unpadded,rowVector>;
-            using RT = DynamicVector<complex<double>,rowVector>;
+            using T1 = HermitianMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using T2 = CustomVector<blas_double_complex,unaligned,unpadded,rowVector>;
+            using RT = DynamicVector<blas_double_complex,rowVector>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -2299,9 +2299,9 @@ void ClassTest::testSingleSolve()
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
          {
-            using T1 = HermitianMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using T2 = CustomVector<complex<double>,unaligned,unpadded,rowVector>;
-            using RT = DynamicVector<complex<double>,rowVector>;
+            using T1 = HermitianMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using T2 = CustomVector<blas_double_complex,unaligned,unpadded,rowVector>;
+            using RT = DynamicVector<blas_double_complex,rowVector>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -2313,9 +2313,9 @@ void ClassTest::testSingleSolve()
       // .../UniformVector
       {
          {
-            using T1 = HermitianMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using T2 = UniformVector<complex<double>,columnVector>;
-            using RT = DynamicVector<complex<double>,columnVector>;
+            using T1 = HermitianMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using T2 = UniformVector<blas_double_complex,columnVector>;
+            using RT = DynamicVector<blas_double_complex,columnVector>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -2323,9 +2323,9 @@ void ClassTest::testSingleSolve()
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
          {
-            using T1 = HermitianMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using T2 = UniformVector<complex<double>,columnVector>;
-            using RT = DynamicVector<complex<double>,columnVector>;
+            using T1 = HermitianMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using T2 = UniformVector<blas_double_complex,columnVector>;
+            using RT = DynamicVector<blas_double_complex,columnVector>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -2333,9 +2333,9 @@ void ClassTest::testSingleSolve()
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
          {
-            using T1 = HermitianMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using T2 = UniformVector<complex<double>,rowVector>;
-            using RT = DynamicVector<complex<double>,rowVector>;
+            using T1 = HermitianMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using T2 = UniformVector<blas_double_complex,rowVector>;
+            using RT = DynamicVector<blas_double_complex,rowVector>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -2343,9 +2343,9 @@ void ClassTest::testSingleSolve()
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
          {
-            using T1 = HermitianMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using T2 = UniformVector<complex<double>,rowVector>;
-            using RT = DynamicVector<complex<double>,rowVector>;
+            using T1 = HermitianMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using T2 = UniformVector<blas_double_complex,rowVector>;
+            using RT = DynamicVector<blas_double_complex,rowVector>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -2357,9 +2357,9 @@ void ClassTest::testSingleSolve()
       // .../InitializerVector
       {
          {
-            using T1 = HermitianMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using T2 = InitializerVector<complex<double>,columnVector>;
-            using RT = DynamicVector<complex<double>,columnVector>;
+            using T1 = HermitianMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using T2 = InitializerVector<blas_double_complex,columnVector>;
+            using RT = DynamicVector<blas_double_complex,columnVector>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -2367,9 +2367,9 @@ void ClassTest::testSingleSolve()
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
          {
-            using T1 = HermitianMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using T2 = InitializerVector<complex<double>,columnVector>;
-            using RT = DynamicVector<complex<double>,columnVector>;
+            using T1 = HermitianMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using T2 = InitializerVector<blas_double_complex,columnVector>;
+            using RT = DynamicVector<blas_double_complex,columnVector>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -2377,9 +2377,9 @@ void ClassTest::testSingleSolve()
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
          {
-            using T1 = HermitianMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using T2 = InitializerVector<complex<double>,rowVector>;
-            using RT = DynamicVector<complex<double>,rowVector>;
+            using T1 = HermitianMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using T2 = InitializerVector<blas_double_complex,rowVector>;
+            using RT = DynamicVector<blas_double_complex,rowVector>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -2387,9 +2387,9 @@ void ClassTest::testSingleSolve()
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
          {
-            using T1 = HermitianMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using T2 = InitializerVector<complex<double>,rowVector>;
-            using RT = DynamicVector<complex<double>,rowVector>;
+            using T1 = HermitianMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using T2 = InitializerVector<blas_double_complex,rowVector>;
+            using RT = DynamicVector<blas_double_complex,rowVector>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -4044,9 +4044,9 @@ void ClassTest::testMultiSolve()
       // .../SymmetricMatrix<DynamicMatrix> (complex)
       {
          {
-            using T1 = StaticMatrix<complex<double>,3UL,3UL,rowMajor>;
-            using T2 = SymmetricMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using RT = DynamicMatrix<complex<double>,rowMajor>;
+            using T1 = StaticMatrix<blas_double_complex,3UL,3UL,rowMajor>;
+            using T2 = SymmetricMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using RT = DynamicMatrix<blas_double_complex,rowMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -4054,9 +4054,9 @@ void ClassTest::testMultiSolve()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = StaticMatrix<complex<double>,3UL,3UL,rowMajor>;
-            using T2 = SymmetricMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using RT = DynamicMatrix<complex<double>,columnMajor>;
+            using T1 = StaticMatrix<blas_double_complex,3UL,3UL,rowMajor>;
+            using T2 = SymmetricMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using RT = DynamicMatrix<blas_double_complex,columnMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -4064,9 +4064,9 @@ void ClassTest::testMultiSolve()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = StaticMatrix<complex<double>,3UL,3UL,columnMajor>;
-            using T2 = SymmetricMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using RT = DynamicMatrix<complex<double>,rowMajor>;
+            using T1 = StaticMatrix<blas_double_complex,3UL,3UL,columnMajor>;
+            using T2 = SymmetricMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using RT = DynamicMatrix<blas_double_complex,rowMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -4074,9 +4074,9 @@ void ClassTest::testMultiSolve()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = StaticMatrix<complex<double>,3UL,3UL,columnMajor>;
-            using T2 = SymmetricMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using RT = DynamicMatrix<complex<double>,columnMajor>;
+            using T1 = StaticMatrix<blas_double_complex,3UL,3UL,columnMajor>;
+            using T2 = SymmetricMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using RT = DynamicMatrix<blas_double_complex,columnMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -4176,9 +4176,9 @@ void ClassTest::testMultiSolve()
       // .../HermitianMatrix<DynamicMatrix> (Hermitian)
       {
          {
-            using T1 = StaticMatrix<complex<double>,3UL,3UL,rowMajor>;
-            using T2 = HermitianMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using RT = DynamicMatrix<complex<double>,rowMajor>;
+            using T1 = StaticMatrix<blas_double_complex,3UL,3UL,rowMajor>;
+            using T2 = HermitianMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using RT = DynamicMatrix<blas_double_complex,rowMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -4186,9 +4186,9 @@ void ClassTest::testMultiSolve()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = StaticMatrix<complex<double>,3UL,3UL,rowMajor>;
-            using T2 = HermitianMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using RT = DynamicMatrix<complex<double>,columnMajor>;
+            using T1 = StaticMatrix<blas_double_complex,3UL,3UL,rowMajor>;
+            using T2 = HermitianMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using RT = DynamicMatrix<blas_double_complex,columnMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -4196,9 +4196,9 @@ void ClassTest::testMultiSolve()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = StaticMatrix<complex<double>,3UL,3UL,columnMajor>;
-            using T2 = HermitianMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using RT = DynamicMatrix<complex<double>,rowMajor>;
+            using T1 = StaticMatrix<blas_double_complex,3UL,3UL,columnMajor>;
+            using T2 = HermitianMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using RT = DynamicMatrix<blas_double_complex,rowMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -4206,9 +4206,9 @@ void ClassTest::testMultiSolve()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = StaticMatrix<complex<double>,3UL,3UL,columnMajor>;
-            using T2 = HermitianMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using RT = DynamicMatrix<complex<double>,columnMajor>;
+            using T1 = StaticMatrix<blas_double_complex,3UL,3UL,columnMajor>;
+            using T2 = HermitianMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using RT = DynamicMatrix<blas_double_complex,columnMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -4819,9 +4819,9 @@ void ClassTest::testMultiSolve()
       // .../SymmetricMatrix<DynamicMatrix> (complex)
       {
          {
-            using T1 = HybridMatrix<complex<double>,5UL,7UL,rowMajor>;
-            using T2 = SymmetricMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using RT = DynamicMatrix<complex<double>,rowMajor>;
+            using T1 = HybridMatrix<blas_double_complex,5UL,7UL,rowMajor>;
+            using T2 = SymmetricMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using RT = DynamicMatrix<blas_double_complex,rowMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -4829,9 +4829,9 @@ void ClassTest::testMultiSolve()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = HybridMatrix<complex<double>,5UL,7UL,rowMajor>;
-            using T2 = SymmetricMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using RT = DynamicMatrix<complex<double>,columnMajor>;
+            using T1 = HybridMatrix<blas_double_complex,5UL,7UL,rowMajor>;
+            using T2 = SymmetricMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using RT = DynamicMatrix<blas_double_complex,columnMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -4839,9 +4839,9 @@ void ClassTest::testMultiSolve()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = HybridMatrix<complex<double>,5UL,7UL,columnMajor>;
-            using T2 = SymmetricMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using RT = DynamicMatrix<complex<double>,rowMajor>;
+            using T1 = HybridMatrix<blas_double_complex,5UL,7UL,columnMajor>;
+            using T2 = SymmetricMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using RT = DynamicMatrix<blas_double_complex,rowMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -4849,9 +4849,9 @@ void ClassTest::testMultiSolve()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = HybridMatrix<complex<double>,5UL,7UL,columnMajor>;
-            using T2 = SymmetricMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using RT = DynamicMatrix<complex<double>,columnMajor>;
+            using T1 = HybridMatrix<blas_double_complex,5UL,7UL,columnMajor>;
+            using T2 = SymmetricMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using RT = DynamicMatrix<blas_double_complex,columnMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -4951,9 +4951,9 @@ void ClassTest::testMultiSolve()
       // .../HermitianMatrix<DynamicMatrix> (Hermitian)
       {
          {
-            using T1 = HybridMatrix<complex<double>,5UL,7UL,rowMajor>;
-            using T2 = HermitianMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using RT = DynamicMatrix<complex<double>,rowMajor>;
+            using T1 = HybridMatrix<blas_double_complex,5UL,7UL,rowMajor>;
+            using T2 = HermitianMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using RT = DynamicMatrix<blas_double_complex,rowMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -4961,9 +4961,9 @@ void ClassTest::testMultiSolve()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = HybridMatrix<complex<double>,5UL,7UL,rowMajor>;
-            using T2 = HermitianMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using RT = DynamicMatrix<complex<double>,columnMajor>;
+            using T1 = HybridMatrix<blas_double_complex,5UL,7UL,rowMajor>;
+            using T2 = HermitianMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using RT = DynamicMatrix<blas_double_complex,columnMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -4971,9 +4971,9 @@ void ClassTest::testMultiSolve()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = HybridMatrix<complex<double>,5UL,7UL,columnMajor>;
-            using T2 = HermitianMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using RT = DynamicMatrix<complex<double>,rowMajor>;
+            using T1 = HybridMatrix<blas_double_complex,5UL,7UL,columnMajor>;
+            using T2 = HermitianMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using RT = DynamicMatrix<blas_double_complex,rowMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -4981,9 +4981,9 @@ void ClassTest::testMultiSolve()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = HybridMatrix<complex<double>,5UL,7UL,columnMajor>;
-            using T2 = HermitianMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using RT = DynamicMatrix<complex<double>,columnMajor>;
+            using T1 = HybridMatrix<blas_double_complex,5UL,7UL,columnMajor>;
+            using T2 = HermitianMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using RT = DynamicMatrix<blas_double_complex,columnMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -5594,9 +5594,9 @@ void ClassTest::testMultiSolve()
       // .../SymmetricMatrix<DynamicMatrix> (complex)
       {
          {
-            using T1 = DynamicMatrix<complex<double>,rowMajor>;
-            using T2 = SymmetricMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using RT = DynamicMatrix<complex<double>,rowMajor>;
+            using T1 = DynamicMatrix<blas_double_complex,rowMajor>;
+            using T2 = SymmetricMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using RT = DynamicMatrix<blas_double_complex,rowMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -5604,9 +5604,9 @@ void ClassTest::testMultiSolve()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = DynamicMatrix<complex<double>,rowMajor>;
-            using T2 = SymmetricMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using RT = DynamicMatrix<complex<double>,columnMajor>;
+            using T1 = DynamicMatrix<blas_double_complex,rowMajor>;
+            using T2 = SymmetricMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using RT = DynamicMatrix<blas_double_complex,columnMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -5614,9 +5614,9 @@ void ClassTest::testMultiSolve()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = DynamicMatrix<complex<double>,columnMajor>;
-            using T2 = SymmetricMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using RT = DynamicMatrix<complex<double>,rowMajor>;
+            using T1 = DynamicMatrix<blas_double_complex,columnMajor>;
+            using T2 = SymmetricMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using RT = DynamicMatrix<blas_double_complex,rowMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -5624,9 +5624,9 @@ void ClassTest::testMultiSolve()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = DynamicMatrix<complex<double>,columnMajor>;
-            using T2 = SymmetricMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using RT = DynamicMatrix<complex<double>,columnMajor>;
+            using T1 = DynamicMatrix<blas_double_complex,columnMajor>;
+            using T2 = SymmetricMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using RT = DynamicMatrix<blas_double_complex,columnMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -5726,9 +5726,9 @@ void ClassTest::testMultiSolve()
       // .../HermitianMatrix<DynamicMatrix> (Hermitian)
       {
          {
-            using T1 = DynamicMatrix<complex<double>,rowMajor>;
-            using T2 = HermitianMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using RT = DynamicMatrix<complex<double>,rowMajor>;
+            using T1 = DynamicMatrix<blas_double_complex,rowMajor>;
+            using T2 = HermitianMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using RT = DynamicMatrix<blas_double_complex,rowMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -5736,9 +5736,9 @@ void ClassTest::testMultiSolve()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = DynamicMatrix<complex<double>,rowMajor>;
-            using T2 = HermitianMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using RT = DynamicMatrix<complex<double>,columnMajor>;
+            using T1 = DynamicMatrix<blas_double_complex,rowMajor>;
+            using T2 = HermitianMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using RT = DynamicMatrix<blas_double_complex,columnMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -5746,9 +5746,9 @@ void ClassTest::testMultiSolve()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = DynamicMatrix<complex<double>,columnMajor>;
-            using T2 = HermitianMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using RT = DynamicMatrix<complex<double>,rowMajor>;
+            using T1 = DynamicMatrix<blas_double_complex,columnMajor>;
+            using T2 = HermitianMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using RT = DynamicMatrix<blas_double_complex,rowMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -5756,9 +5756,9 @@ void ClassTest::testMultiSolve()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = DynamicMatrix<complex<double>,columnMajor>;
-            using T2 = HermitianMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using RT = DynamicMatrix<complex<double>,columnMajor>;
+            using T1 = DynamicMatrix<blas_double_complex,columnMajor>;
+            using T2 = HermitianMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using RT = DynamicMatrix<blas_double_complex,columnMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -6369,9 +6369,9 @@ void ClassTest::testMultiSolve()
       // .../SymmetricMatrix<DynamicMatrix> (complex)
       {
          {
-            using T1 = CustomMatrix<complex<double>,unaligned,unpadded,rowMajor>;
-            using T2 = SymmetricMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using RT = DynamicMatrix<complex<double>,rowMajor>;
+            using T1 = CustomMatrix<blas_double_complex,unaligned,unpadded,rowMajor>;
+            using T2 = SymmetricMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using RT = DynamicMatrix<blas_double_complex,rowMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -6379,9 +6379,9 @@ void ClassTest::testMultiSolve()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = CustomMatrix<complex<double>,unaligned,unpadded,rowMajor>;
-            using T2 = SymmetricMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using RT = DynamicMatrix<complex<double>,columnMajor>;
+            using T1 = CustomMatrix<blas_double_complex,unaligned,unpadded,rowMajor>;
+            using T2 = SymmetricMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using RT = DynamicMatrix<blas_double_complex,columnMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -6389,9 +6389,9 @@ void ClassTest::testMultiSolve()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = CustomMatrix<complex<double>,unaligned,unpadded,columnMajor>;
-            using T2 = SymmetricMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using RT = DynamicMatrix<complex<double>,rowMajor>;
+            using T1 = CustomMatrix<blas_double_complex,unaligned,unpadded,columnMajor>;
+            using T2 = SymmetricMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using RT = DynamicMatrix<blas_double_complex,rowMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -6399,9 +6399,9 @@ void ClassTest::testMultiSolve()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = CustomMatrix<complex<double>,unaligned,unpadded,columnMajor>;
-            using T2 = SymmetricMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using RT = DynamicMatrix<complex<double>,columnMajor>;
+            using T1 = CustomMatrix<blas_double_complex,unaligned,unpadded,columnMajor>;
+            using T2 = SymmetricMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using RT = DynamicMatrix<blas_double_complex,columnMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -6501,9 +6501,9 @@ void ClassTest::testMultiSolve()
       // .../HermitianMatrix<DynamicMatrix> (Hermitian)
       {
          {
-            using T1 = CustomMatrix<complex<double>,unaligned,unpadded,rowMajor>;
-            using T2 = HermitianMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using RT = DynamicMatrix<complex<double>,rowMajor>;
+            using T1 = CustomMatrix<blas_double_complex,unaligned,unpadded,rowMajor>;
+            using T2 = HermitianMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using RT = DynamicMatrix<blas_double_complex,rowMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -6511,9 +6511,9 @@ void ClassTest::testMultiSolve()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = CustomMatrix<complex<double>,unaligned,unpadded,rowMajor>;
-            using T2 = HermitianMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using RT = DynamicMatrix<complex<double>,columnMajor>;
+            using T1 = CustomMatrix<blas_double_complex,unaligned,unpadded,rowMajor>;
+            using T2 = HermitianMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using RT = DynamicMatrix<blas_double_complex,columnMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -6521,9 +6521,9 @@ void ClassTest::testMultiSolve()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = CustomMatrix<complex<double>,unaligned,unpadded,columnMajor>;
-            using T2 = HermitianMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using RT = DynamicMatrix<complex<double>,rowMajor>;
+            using T1 = CustomMatrix<blas_double_complex,unaligned,unpadded,columnMajor>;
+            using T2 = HermitianMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using RT = DynamicMatrix<blas_double_complex,rowMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -6531,9 +6531,9 @@ void ClassTest::testMultiSolve()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = CustomMatrix<complex<double>,unaligned,unpadded,columnMajor>;
-            using T2 = HermitianMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using RT = DynamicMatrix<complex<double>,columnMajor>;
+            using T1 = CustomMatrix<blas_double_complex,unaligned,unpadded,columnMajor>;
+            using T2 = HermitianMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using RT = DynamicMatrix<blas_double_complex,columnMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -7014,9 +7014,9 @@ void ClassTest::testMultiSolve()
       // .../SymmetricMatrix<DynamicMatrix> (complex)
       {
          {
-            using T1 = InitializerMatrix<complex<double>>;
-            using T2 = SymmetricMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using RT = DynamicMatrix<complex<double>,rowMajor>;
+            using T1 = InitializerMatrix<blas_double_complex>;
+            using T2 = SymmetricMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using RT = DynamicMatrix<blas_double_complex,rowMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -7024,9 +7024,9 @@ void ClassTest::testMultiSolve()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = InitializerMatrix<complex<double>>;
-            using T2 = SymmetricMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using RT = DynamicMatrix<complex<double>,columnMajor>;
+            using T1 = InitializerMatrix<blas_double_complex>;
+            using T2 = SymmetricMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using RT = DynamicMatrix<blas_double_complex,columnMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -7086,9 +7086,9 @@ void ClassTest::testMultiSolve()
       // .../HermitianMatrix<DynamicMatrix> (Hermitian)
       {
          {
-            using T1 = InitializerMatrix<complex<double>>;
-            using T2 = HermitianMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using RT = DynamicMatrix<complex<double>,rowMajor>;
+            using T1 = InitializerMatrix<blas_double_complex>;
+            using T2 = HermitianMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using RT = DynamicMatrix<blas_double_complex,rowMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -7096,9 +7096,9 @@ void ClassTest::testMultiSolve()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = InitializerMatrix<complex<double>>;
-            using T2 = HermitianMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using RT = DynamicMatrix<complex<double>,columnMajor>;
+            using T1 = InitializerMatrix<blas_double_complex>;
+            using T2 = HermitianMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using RT = DynamicMatrix<blas_double_complex,columnMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -7968,9 +7968,9 @@ void ClassTest::testMultiSolve()
       // .../StaticMatrix
       {
          {
-            using T1 = SymmetricMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using T2 = StaticMatrix<complex<double>,5UL,7UL,rowMajor>;
-            using RT = StaticMatrix<complex<double>,5UL,7UL,rowMajor>;
+            using T1 = SymmetricMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using T2 = StaticMatrix<blas_double_complex,5UL,7UL,rowMajor>;
+            using RT = StaticMatrix<blas_double_complex,5UL,7UL,rowMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -7978,9 +7978,9 @@ void ClassTest::testMultiSolve()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = SymmetricMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using T2 = StaticMatrix<complex<double>,5UL,7UL,columnMajor>;
-            using RT = StaticMatrix<complex<double>,5UL,7UL,columnMajor>;
+            using T1 = SymmetricMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using T2 = StaticMatrix<blas_double_complex,5UL,7UL,columnMajor>;
+            using RT = StaticMatrix<blas_double_complex,5UL,7UL,columnMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -7988,9 +7988,9 @@ void ClassTest::testMultiSolve()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = SymmetricMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using T2 = StaticMatrix<complex<double>,5UL,7UL,rowMajor>;
-            using RT = StaticMatrix<complex<double>,5UL,7UL,rowMajor>;
+            using T1 = SymmetricMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using T2 = StaticMatrix<blas_double_complex,5UL,7UL,rowMajor>;
+            using RT = StaticMatrix<blas_double_complex,5UL,7UL,rowMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -7998,9 +7998,9 @@ void ClassTest::testMultiSolve()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = SymmetricMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using T2 = StaticMatrix<complex<double>,5UL,7UL,columnMajor>;
-            using RT = StaticMatrix<complex<double>,5UL,7UL,columnMajor>;
+            using T1 = SymmetricMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using T2 = StaticMatrix<blas_double_complex,5UL,7UL,columnMajor>;
+            using RT = StaticMatrix<blas_double_complex,5UL,7UL,columnMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -8012,9 +8012,9 @@ void ClassTest::testMultiSolve()
       // .../HybridMatrix
       {
          {
-            using T1 = SymmetricMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using T2 = HybridMatrix<complex<double>,8UL,6UL,rowMajor>;
-            using RT = HybridMatrix<complex<double>,8UL,6UL,rowMajor>;
+            using T1 = SymmetricMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using T2 = HybridMatrix<blas_double_complex,8UL,6UL,rowMajor>;
+            using RT = HybridMatrix<blas_double_complex,8UL,6UL,rowMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -8022,9 +8022,9 @@ void ClassTest::testMultiSolve()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = SymmetricMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using T2 = HybridMatrix<complex<double>,8UL,6UL,columnMajor>;
-            using RT = HybridMatrix<complex<double>,8UL,6UL,columnMajor>;
+            using T1 = SymmetricMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using T2 = HybridMatrix<blas_double_complex,8UL,6UL,columnMajor>;
+            using RT = HybridMatrix<blas_double_complex,8UL,6UL,columnMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -8032,9 +8032,9 @@ void ClassTest::testMultiSolve()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = SymmetricMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using T2 = HybridMatrix<complex<double>,8UL,6UL,rowMajor>;
-            using RT = HybridMatrix<complex<double>,8UL,6UL,rowMajor>;
+            using T1 = SymmetricMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using T2 = HybridMatrix<blas_double_complex,8UL,6UL,rowMajor>;
+            using RT = HybridMatrix<blas_double_complex,8UL,6UL,rowMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -8042,9 +8042,9 @@ void ClassTest::testMultiSolve()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = SymmetricMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using T2 = HybridMatrix<complex<double>,8UL,6UL,columnMajor>;
-            using RT = HybridMatrix<complex<double>,8UL,6UL,columnMajor>;
+            using T1 = SymmetricMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using T2 = HybridMatrix<blas_double_complex,8UL,6UL,columnMajor>;
+            using RT = HybridMatrix<blas_double_complex,8UL,6UL,columnMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -8056,9 +8056,9 @@ void ClassTest::testMultiSolve()
       // .../DynamicMatrix
       {
          {
-            using T1 = SymmetricMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using T2 = DynamicMatrix<complex<double>,rowMajor>;
-            using RT = DynamicMatrix<complex<double>,rowMajor>;
+            using T1 = SymmetricMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using T2 = DynamicMatrix<blas_double_complex,rowMajor>;
+            using RT = DynamicMatrix<blas_double_complex,rowMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -8066,9 +8066,9 @@ void ClassTest::testMultiSolve()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = SymmetricMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using T2 = DynamicMatrix<complex<double>,columnMajor>;
-            using RT = DynamicMatrix<complex<double>,columnMajor>;
+            using T1 = SymmetricMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using T2 = DynamicMatrix<blas_double_complex,columnMajor>;
+            using RT = DynamicMatrix<blas_double_complex,columnMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -8076,9 +8076,9 @@ void ClassTest::testMultiSolve()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = SymmetricMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using T2 = DynamicMatrix<complex<double>,rowMajor>;
-            using RT = DynamicMatrix<complex<double>,rowMajor>;
+            using T1 = SymmetricMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using T2 = DynamicMatrix<blas_double_complex,rowMajor>;
+            using RT = DynamicMatrix<blas_double_complex,rowMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -8086,9 +8086,9 @@ void ClassTest::testMultiSolve()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = SymmetricMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using T2 = DynamicMatrix<complex<double>,columnMajor>;
-            using RT = DynamicMatrix<complex<double>,columnMajor>;
+            using T1 = SymmetricMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using T2 = DynamicMatrix<blas_double_complex,columnMajor>;
+            using RT = DynamicMatrix<blas_double_complex,columnMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -8100,9 +8100,9 @@ void ClassTest::testMultiSolve()
       // .../CustomMatrix
       {
          {
-            using T1 = SymmetricMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using T2 = CustomMatrix<complex<double>,unaligned,unpadded,rowMajor>;
-            using RT = DynamicMatrix<complex<double>,rowMajor>;
+            using T1 = SymmetricMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using T2 = CustomMatrix<blas_double_complex,unaligned,unpadded,rowMajor>;
+            using RT = DynamicMatrix<blas_double_complex,rowMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -8110,9 +8110,9 @@ void ClassTest::testMultiSolve()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = SymmetricMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using T2 = CustomMatrix<complex<double>,unaligned,unpadded,columnMajor>;
-            using RT = DynamicMatrix<complex<double>,columnMajor>;
+            using T1 = SymmetricMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using T2 = CustomMatrix<blas_double_complex,unaligned,unpadded,columnMajor>;
+            using RT = DynamicMatrix<blas_double_complex,columnMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -8120,9 +8120,9 @@ void ClassTest::testMultiSolve()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = SymmetricMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using T2 = CustomMatrix<complex<double>,unaligned,unpadded,rowMajor>;
-            using RT = DynamicMatrix<complex<double>,rowMajor>;
+            using T1 = SymmetricMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using T2 = CustomMatrix<blas_double_complex,unaligned,unpadded,rowMajor>;
+            using RT = DynamicMatrix<blas_double_complex,rowMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -8130,9 +8130,9 @@ void ClassTest::testMultiSolve()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = SymmetricMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using T2 = CustomMatrix<complex<double>,unaligned,unpadded,columnMajor>;
-            using RT = DynamicMatrix<complex<double>,columnMajor>;
+            using T1 = SymmetricMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using T2 = CustomMatrix<blas_double_complex,unaligned,unpadded,columnMajor>;
+            using RT = DynamicMatrix<blas_double_complex,columnMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -8144,9 +8144,9 @@ void ClassTest::testMultiSolve()
       // .../UniformMatrix
       {
          {
-            using T1 = SymmetricMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using T2 = UniformMatrix<complex<double>,rowMajor>;
-            using RT = DynamicMatrix<complex<double>,rowMajor>;
+            using T1 = SymmetricMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using T2 = UniformMatrix<blas_double_complex,rowMajor>;
+            using RT = DynamicMatrix<blas_double_complex,rowMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -8154,9 +8154,9 @@ void ClassTest::testMultiSolve()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = SymmetricMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using T2 = UniformMatrix<complex<double>,columnMajor>;
-            using RT = DynamicMatrix<complex<double>,columnMajor>;
+            using T1 = SymmetricMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using T2 = UniformMatrix<blas_double_complex,columnMajor>;
+            using RT = DynamicMatrix<blas_double_complex,columnMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -8164,9 +8164,9 @@ void ClassTest::testMultiSolve()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = SymmetricMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using T2 = UniformMatrix<complex<double>,rowMajor>;
-            using RT = DynamicMatrix<complex<double>,rowMajor>;
+            using T1 = SymmetricMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using T2 = UniformMatrix<blas_double_complex,rowMajor>;
+            using RT = DynamicMatrix<blas_double_complex,rowMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -8174,9 +8174,9 @@ void ClassTest::testMultiSolve()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = SymmetricMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using T2 = UniformMatrix<complex<double>,columnMajor>;
-            using RT = DynamicMatrix<complex<double>,columnMajor>;
+            using T1 = SymmetricMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using T2 = UniformMatrix<blas_double_complex,columnMajor>;
+            using RT = DynamicMatrix<blas_double_complex,columnMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -8188,9 +8188,9 @@ void ClassTest::testMultiSolve()
       // .../InitializerMatrix
       {
          {
-            using T1 = SymmetricMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using T2 = InitializerMatrix<complex<double>>;
-            using RT = DynamicMatrix<complex<double>,rowMajor>;
+            using T1 = SymmetricMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using T2 = InitializerMatrix<blas_double_complex>;
+            using RT = DynamicMatrix<blas_double_complex,rowMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -8198,9 +8198,9 @@ void ClassTest::testMultiSolve()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = SymmetricMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using T2 = InitializerMatrix<complex<double>>;
-            using RT = DynamicMatrix<complex<double>,rowMajor>;
+            using T1 = SymmetricMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using T2 = InitializerMatrix<blas_double_complex>;
+            using RT = DynamicMatrix<blas_double_complex,rowMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -8212,9 +8212,9 @@ void ClassTest::testMultiSolve()
       // .../SymmetricMatrix<DynamicMatrix> (complex)
       {
          {
-            using T1 = SymmetricMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using T2 = SymmetricMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using RT = DynamicMatrix<complex<double>,rowMajor>;
+            using T1 = SymmetricMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using T2 = SymmetricMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using RT = DynamicMatrix<blas_double_complex,rowMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -8222,9 +8222,9 @@ void ClassTest::testMultiSolve()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = SymmetricMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using T2 = SymmetricMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using RT = DynamicMatrix<complex<double>,columnMajor>;
+            using T1 = SymmetricMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using T2 = SymmetricMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using RT = DynamicMatrix<blas_double_complex,columnMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -8232,9 +8232,9 @@ void ClassTest::testMultiSolve()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = SymmetricMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using T2 = SymmetricMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using RT = DynamicMatrix<complex<double>,rowMajor>;
+            using T1 = SymmetricMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using T2 = SymmetricMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using RT = DynamicMatrix<blas_double_complex,rowMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -8242,9 +8242,9 @@ void ClassTest::testMultiSolve()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = SymmetricMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using T2 = SymmetricMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using RT = DynamicMatrix<complex<double>,columnMajor>;
+            using T1 = SymmetricMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using T2 = SymmetricMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using RT = DynamicMatrix<blas_double_complex,columnMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -8256,9 +8256,9 @@ void ClassTest::testMultiSolve()
       // .../SymmetricMatrix<UniformMatrix>
       {
          {
-            using T1 = SymmetricMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using T2 = SymmetricMatrix< UniformMatrix<complex<double>,rowMajor> >;
-            using RT = DynamicMatrix<complex<double>,rowMajor>;
+            using T1 = SymmetricMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using T2 = SymmetricMatrix< UniformMatrix<blas_double_complex,rowMajor> >;
+            using RT = DynamicMatrix<blas_double_complex,rowMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -8266,9 +8266,9 @@ void ClassTest::testMultiSolve()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = SymmetricMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using T2 = SymmetricMatrix< UniformMatrix<complex<double>,columnMajor> >;
-            using RT = DynamicMatrix<complex<double>,columnMajor>;
+            using T1 = SymmetricMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using T2 = SymmetricMatrix< UniformMatrix<blas_double_complex,columnMajor> >;
+            using RT = DynamicMatrix<blas_double_complex,columnMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -8276,9 +8276,9 @@ void ClassTest::testMultiSolve()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = SymmetricMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using T2 = SymmetricMatrix< UniformMatrix<complex<double>,rowMajor> >;
-            using RT = DynamicMatrix<complex<double>,rowMajor>;
+            using T1 = SymmetricMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using T2 = SymmetricMatrix< UniformMatrix<blas_double_complex,rowMajor> >;
+            using RT = DynamicMatrix<blas_double_complex,rowMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -8286,9 +8286,9 @@ void ClassTest::testMultiSolve()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = SymmetricMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using T2 = SymmetricMatrix< UniformMatrix<complex<double>,columnMajor> >;
-            using RT = DynamicMatrix<complex<double>,columnMajor>;
+            using T1 = SymmetricMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using T2 = SymmetricMatrix< UniformMatrix<blas_double_complex,columnMajor> >;
+            using RT = DynamicMatrix<blas_double_complex,columnMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -8300,9 +8300,9 @@ void ClassTest::testMultiSolve()
       // .../HermitianMatrix<DynamicMatrix> (symmetric)
       {
          {
-            using T1 = SymmetricMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using T2 = HermitianMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using RT = DynamicMatrix<complex<double>,rowMajor>;
+            using T1 = SymmetricMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using T2 = HermitianMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using RT = DynamicMatrix<blas_double_complex,rowMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -8310,9 +8310,9 @@ void ClassTest::testMultiSolve()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = SymmetricMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using T2 = HermitianMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using RT = DynamicMatrix<complex<double>,columnMajor>;
+            using T1 = SymmetricMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using T2 = HermitianMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using RT = DynamicMatrix<blas_double_complex,columnMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -8320,9 +8320,9 @@ void ClassTest::testMultiSolve()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = SymmetricMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using T2 = HermitianMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using RT = DynamicMatrix<complex<double>,rowMajor>;
+            using T1 = SymmetricMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using T2 = HermitianMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using RT = DynamicMatrix<blas_double_complex,rowMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -8330,9 +8330,9 @@ void ClassTest::testMultiSolve()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = SymmetricMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using T2 = HermitianMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using RT = DynamicMatrix<complex<double>,columnMajor>;
+            using T1 = SymmetricMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using T2 = HermitianMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using RT = DynamicMatrix<blas_double_complex,columnMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -8344,9 +8344,9 @@ void ClassTest::testMultiSolve()
       // .../HermitianMatrix<DynamicMatrix> (Hermitian)
       {
          {
-            using T1 = SymmetricMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using T2 = HermitianMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using RT = DynamicMatrix<complex<double>,rowMajor>;
+            using T1 = SymmetricMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using T2 = HermitianMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using RT = DynamicMatrix<blas_double_complex,rowMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -8354,9 +8354,9 @@ void ClassTest::testMultiSolve()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = SymmetricMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using T2 = HermitianMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using RT = DynamicMatrix<complex<double>,columnMajor>;
+            using T1 = SymmetricMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using T2 = HermitianMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using RT = DynamicMatrix<blas_double_complex,columnMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -8364,9 +8364,9 @@ void ClassTest::testMultiSolve()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = SymmetricMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using T2 = HermitianMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using RT = DynamicMatrix<complex<double>,rowMajor>;
+            using T1 = SymmetricMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using T2 = HermitianMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using RT = DynamicMatrix<blas_double_complex,rowMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -8374,9 +8374,9 @@ void ClassTest::testMultiSolve()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = SymmetricMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using T2 = HermitianMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using RT = DynamicMatrix<complex<double>,columnMajor>;
+            using T1 = SymmetricMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using T2 = HermitianMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using RT = DynamicMatrix<blas_double_complex,columnMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -8388,9 +8388,9 @@ void ClassTest::testMultiSolve()
       // .../LowerMatrix<DynamicMatrix>
       {
          {
-            using T1 = SymmetricMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using T2 = LowerMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using RT = DynamicMatrix<complex<double>,rowMajor>;
+            using T1 = SymmetricMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using T2 = LowerMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using RT = DynamicMatrix<blas_double_complex,rowMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -8398,9 +8398,9 @@ void ClassTest::testMultiSolve()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = SymmetricMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using T2 = LowerMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using RT = DynamicMatrix<complex<double>,columnMajor>;
+            using T1 = SymmetricMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using T2 = LowerMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using RT = DynamicMatrix<blas_double_complex,columnMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -8408,9 +8408,9 @@ void ClassTest::testMultiSolve()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = SymmetricMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using T2 = LowerMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using RT = DynamicMatrix<complex<double>,rowMajor>;
+            using T1 = SymmetricMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using T2 = LowerMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using RT = DynamicMatrix<blas_double_complex,rowMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -8418,9 +8418,9 @@ void ClassTest::testMultiSolve()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = SymmetricMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using T2 = LowerMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using RT = DynamicMatrix<complex<double>,columnMajor>;
+            using T1 = SymmetricMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using T2 = LowerMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using RT = DynamicMatrix<blas_double_complex,columnMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -8432,9 +8432,9 @@ void ClassTest::testMultiSolve()
       // .../UniLowerMatrix<DynamicMatrix>
       {
          {
-            using T1 = SymmetricMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using T2 = UniLowerMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using RT = DynamicMatrix<complex<double>,rowMajor>;
+            using T1 = SymmetricMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using T2 = UniLowerMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using RT = DynamicMatrix<blas_double_complex,rowMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -8442,9 +8442,9 @@ void ClassTest::testMultiSolve()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = SymmetricMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using T2 = UniLowerMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using RT = DynamicMatrix<complex<double>,columnMajor>;
+            using T1 = SymmetricMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using T2 = UniLowerMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using RT = DynamicMatrix<blas_double_complex,columnMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -8452,9 +8452,9 @@ void ClassTest::testMultiSolve()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = SymmetricMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using T2 = UniLowerMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using RT = DynamicMatrix<complex<double>,rowMajor>;
+            using T1 = SymmetricMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using T2 = UniLowerMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using RT = DynamicMatrix<blas_double_complex,rowMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -8462,9 +8462,9 @@ void ClassTest::testMultiSolve()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = SymmetricMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using T2 = UniLowerMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using RT = DynamicMatrix<complex<double>,columnMajor>;
+            using T1 = SymmetricMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using T2 = UniLowerMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using RT = DynamicMatrix<blas_double_complex,columnMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -8476,9 +8476,9 @@ void ClassTest::testMultiSolve()
       // .../StrictlyLowerMatrix<DynamicMatrix>
       {
          {
-            using T1 = SymmetricMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using T2 = StrictlyLowerMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using RT = DynamicMatrix<complex<double>,rowMajor>;
+            using T1 = SymmetricMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using T2 = StrictlyLowerMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using RT = DynamicMatrix<blas_double_complex,rowMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -8486,9 +8486,9 @@ void ClassTest::testMultiSolve()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = SymmetricMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using T2 = StrictlyLowerMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using RT = DynamicMatrix<complex<double>,columnMajor>;
+            using T1 = SymmetricMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using T2 = StrictlyLowerMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using RT = DynamicMatrix<blas_double_complex,columnMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -8496,9 +8496,9 @@ void ClassTest::testMultiSolve()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = SymmetricMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using T2 = StrictlyLowerMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using RT = DynamicMatrix<complex<double>,rowMajor>;
+            using T1 = SymmetricMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using T2 = StrictlyLowerMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using RT = DynamicMatrix<blas_double_complex,rowMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -8506,9 +8506,9 @@ void ClassTest::testMultiSolve()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = SymmetricMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using T2 = StrictlyLowerMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using RT = DynamicMatrix<complex<double>,columnMajor>;
+            using T1 = SymmetricMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using T2 = StrictlyLowerMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using RT = DynamicMatrix<blas_double_complex,columnMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -8520,9 +8520,9 @@ void ClassTest::testMultiSolve()
       // .../UpperMatrix<DynamicMatrix>
       {
          {
-            using T1 = SymmetricMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using T2 = UpperMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using RT = DynamicMatrix<complex<double>,rowMajor>;
+            using T1 = SymmetricMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using T2 = UpperMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using RT = DynamicMatrix<blas_double_complex,rowMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -8530,9 +8530,9 @@ void ClassTest::testMultiSolve()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = SymmetricMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using T2 = UpperMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using RT = DynamicMatrix<complex<double>,columnMajor>;
+            using T1 = SymmetricMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using T2 = UpperMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using RT = DynamicMatrix<blas_double_complex,columnMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -8540,9 +8540,9 @@ void ClassTest::testMultiSolve()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = SymmetricMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using T2 = UpperMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using RT = DynamicMatrix<complex<double>,rowMajor>;
+            using T1 = SymmetricMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using T2 = UpperMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using RT = DynamicMatrix<blas_double_complex,rowMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -8550,9 +8550,9 @@ void ClassTest::testMultiSolve()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = SymmetricMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using T2 = UpperMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using RT = DynamicMatrix<complex<double>,columnMajor>;
+            using T1 = SymmetricMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using T2 = UpperMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using RT = DynamicMatrix<blas_double_complex,columnMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -8564,9 +8564,9 @@ void ClassTest::testMultiSolve()
       // .../UniUpperMatrix<DynamicMatrix>
       {
          {
-            using T1 = SymmetricMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using T2 = UniUpperMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using RT = DynamicMatrix<complex<double>,rowMajor>;
+            using T1 = SymmetricMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using T2 = UniUpperMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using RT = DynamicMatrix<blas_double_complex,rowMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -8574,9 +8574,9 @@ void ClassTest::testMultiSolve()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = SymmetricMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using T2 = UniUpperMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using RT = DynamicMatrix<complex<double>,columnMajor>;
+            using T1 = SymmetricMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using T2 = UniUpperMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using RT = DynamicMatrix<blas_double_complex,columnMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -8584,9 +8584,9 @@ void ClassTest::testMultiSolve()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = SymmetricMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using T2 = UniUpperMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using RT = DynamicMatrix<complex<double>,rowMajor>;
+            using T1 = SymmetricMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using T2 = UniUpperMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using RT = DynamicMatrix<blas_double_complex,rowMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -8594,9 +8594,9 @@ void ClassTest::testMultiSolve()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = SymmetricMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using T2 = UniUpperMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using RT = DynamicMatrix<complex<double>,columnMajor>;
+            using T1 = SymmetricMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using T2 = UniUpperMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using RT = DynamicMatrix<blas_double_complex,columnMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -8608,9 +8608,9 @@ void ClassTest::testMultiSolve()
       // .../StrictlyUpperMatrix<DynamicMatrix>
       {
          {
-            using T1 = SymmetricMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using T2 = StrictlyUpperMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using RT = DynamicMatrix<complex<double>,rowMajor>;
+            using T1 = SymmetricMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using T2 = StrictlyUpperMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using RT = DynamicMatrix<blas_double_complex,rowMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -8618,9 +8618,9 @@ void ClassTest::testMultiSolve()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = SymmetricMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using T2 = StrictlyUpperMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using RT = DynamicMatrix<complex<double>,columnMajor>;
+            using T1 = SymmetricMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using T2 = StrictlyUpperMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using RT = DynamicMatrix<blas_double_complex,columnMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -8628,9 +8628,9 @@ void ClassTest::testMultiSolve()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = SymmetricMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using T2 = StrictlyUpperMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using RT = DynamicMatrix<complex<double>,rowMajor>;
+            using T1 = SymmetricMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using T2 = StrictlyUpperMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using RT = DynamicMatrix<blas_double_complex,rowMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -8638,9 +8638,9 @@ void ClassTest::testMultiSolve()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = SymmetricMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using T2 = StrictlyUpperMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using RT = DynamicMatrix<complex<double>,columnMajor>;
+            using T1 = SymmetricMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using T2 = StrictlyUpperMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using RT = DynamicMatrix<blas_double_complex,columnMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -8652,9 +8652,9 @@ void ClassTest::testMultiSolve()
       // .../DiagonalMatrix<DynamicMatrix>
       {
          {
-            using T1 = SymmetricMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using T2 = DiagonalMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using RT = DynamicMatrix<complex<double>,rowMajor>;
+            using T1 = SymmetricMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using T2 = DiagonalMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using RT = DynamicMatrix<blas_double_complex,rowMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -8662,9 +8662,9 @@ void ClassTest::testMultiSolve()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = SymmetricMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using T2 = DiagonalMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using RT = DynamicMatrix<complex<double>,columnMajor>;
+            using T1 = SymmetricMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using T2 = DiagonalMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using RT = DynamicMatrix<blas_double_complex,columnMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -8672,9 +8672,9 @@ void ClassTest::testMultiSolve()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = SymmetricMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using T2 = DiagonalMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using RT = DynamicMatrix<complex<double>,rowMajor>;
+            using T1 = SymmetricMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using T2 = DiagonalMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using RT = DynamicMatrix<blas_double_complex,rowMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -8682,9 +8682,9 @@ void ClassTest::testMultiSolve()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = SymmetricMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using T2 = DiagonalMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using RT = DynamicMatrix<complex<double>,columnMajor>;
+            using T1 = SymmetricMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using T2 = DiagonalMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using RT = DynamicMatrix<blas_double_complex,columnMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -9386,9 +9386,9 @@ void ClassTest::testMultiSolve()
       // .../StaticMatrix
       {
          {
-            using T1 = HermitianMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using T2 = StaticMatrix<complex<double>,5UL,7UL,rowMajor>;
-            using RT = StaticMatrix<complex<double>,5UL,7UL,rowMajor>;
+            using T1 = HermitianMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using T2 = StaticMatrix<blas_double_complex,5UL,7UL,rowMajor>;
+            using RT = StaticMatrix<blas_double_complex,5UL,7UL,rowMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -9396,9 +9396,9 @@ void ClassTest::testMultiSolve()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = HermitianMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using T2 = StaticMatrix<complex<double>,5UL,7UL,columnMajor>;
-            using RT = StaticMatrix<complex<double>,5UL,7UL,columnMajor>;
+            using T1 = HermitianMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using T2 = StaticMatrix<blas_double_complex,5UL,7UL,columnMajor>;
+            using RT = StaticMatrix<blas_double_complex,5UL,7UL,columnMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -9406,9 +9406,9 @@ void ClassTest::testMultiSolve()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = HermitianMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using T2 = StaticMatrix<complex<double>,5UL,7UL,rowMajor>;
-            using RT = StaticMatrix<complex<double>,5UL,7UL,rowMajor>;
+            using T1 = HermitianMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using T2 = StaticMatrix<blas_double_complex,5UL,7UL,rowMajor>;
+            using RT = StaticMatrix<blas_double_complex,5UL,7UL,rowMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -9416,9 +9416,9 @@ void ClassTest::testMultiSolve()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = HermitianMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using T2 = StaticMatrix<complex<double>,5UL,7UL,columnMajor>;
-            using RT = StaticMatrix<complex<double>,5UL,7UL,columnMajor>;
+            using T1 = HermitianMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using T2 = StaticMatrix<blas_double_complex,5UL,7UL,columnMajor>;
+            using RT = StaticMatrix<blas_double_complex,5UL,7UL,columnMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -9430,9 +9430,9 @@ void ClassTest::testMultiSolve()
       // .../HybridMatrix
       {
          {
-            using T1 = HermitianMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using T2 = HybridMatrix<complex<double>,8UL,6UL,rowMajor>;
-            using RT = HybridMatrix<complex<double>,8UL,6UL,rowMajor>;
+            using T1 = HermitianMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using T2 = HybridMatrix<blas_double_complex,8UL,6UL,rowMajor>;
+            using RT = HybridMatrix<blas_double_complex,8UL,6UL,rowMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -9440,9 +9440,9 @@ void ClassTest::testMultiSolve()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = HermitianMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using T2 = HybridMatrix<complex<double>,8UL,6UL,columnMajor>;
-            using RT = HybridMatrix<complex<double>,8UL,6UL,columnMajor>;
+            using T1 = HermitianMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using T2 = HybridMatrix<blas_double_complex,8UL,6UL,columnMajor>;
+            using RT = HybridMatrix<blas_double_complex,8UL,6UL,columnMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -9450,9 +9450,9 @@ void ClassTest::testMultiSolve()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = HermitianMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using T2 = HybridMatrix<complex<double>,8UL,6UL,rowMajor>;
-            using RT = HybridMatrix<complex<double>,8UL,6UL,rowMajor>;
+            using T1 = HermitianMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using T2 = HybridMatrix<blas_double_complex,8UL,6UL,rowMajor>;
+            using RT = HybridMatrix<blas_double_complex,8UL,6UL,rowMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -9460,9 +9460,9 @@ void ClassTest::testMultiSolve()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = HermitianMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using T2 = HybridMatrix<complex<double>,8UL,6UL,columnMajor>;
-            using RT = HybridMatrix<complex<double>,8UL,6UL,columnMajor>;
+            using T1 = HermitianMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using T2 = HybridMatrix<blas_double_complex,8UL,6UL,columnMajor>;
+            using RT = HybridMatrix<blas_double_complex,8UL,6UL,columnMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -9474,9 +9474,9 @@ void ClassTest::testMultiSolve()
       // .../DynamicMatrix
       {
          {
-            using T1 = HermitianMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using T2 = DynamicMatrix<complex<double>,rowMajor>;
-            using RT = DynamicMatrix<complex<double>,rowMajor>;
+            using T1 = HermitianMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using T2 = DynamicMatrix<blas_double_complex,rowMajor>;
+            using RT = DynamicMatrix<blas_double_complex,rowMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -9484,9 +9484,9 @@ void ClassTest::testMultiSolve()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = HermitianMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using T2 = DynamicMatrix<complex<double>,columnMajor>;
-            using RT = DynamicMatrix<complex<double>,columnMajor>;
+            using T1 = HermitianMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using T2 = DynamicMatrix<blas_double_complex,columnMajor>;
+            using RT = DynamicMatrix<blas_double_complex,columnMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -9494,9 +9494,9 @@ void ClassTest::testMultiSolve()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = HermitianMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using T2 = DynamicMatrix<complex<double>,rowMajor>;
-            using RT = DynamicMatrix<complex<double>,rowMajor>;
+            using T1 = HermitianMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using T2 = DynamicMatrix<blas_double_complex,rowMajor>;
+            using RT = DynamicMatrix<blas_double_complex,rowMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -9504,9 +9504,9 @@ void ClassTest::testMultiSolve()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = HermitianMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using T2 = DynamicMatrix<complex<double>,columnMajor>;
-            using RT = DynamicMatrix<complex<double>,columnMajor>;
+            using T1 = HermitianMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using T2 = DynamicMatrix<blas_double_complex,columnMajor>;
+            using RT = DynamicMatrix<blas_double_complex,columnMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -9518,9 +9518,9 @@ void ClassTest::testMultiSolve()
       // .../CustomMatrix
       {
          {
-            using T1 = HermitianMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using T2 = CustomMatrix<complex<double>,unaligned,unpadded,rowMajor>;
-            using RT = DynamicMatrix<complex<double>,rowMajor>;
+            using T1 = HermitianMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using T2 = CustomMatrix<blas_double_complex,unaligned,unpadded,rowMajor>;
+            using RT = DynamicMatrix<blas_double_complex,rowMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -9528,9 +9528,9 @@ void ClassTest::testMultiSolve()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = HermitianMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using T2 = CustomMatrix<complex<double>,unaligned,unpadded,columnMajor>;
-            using RT = DynamicMatrix<complex<double>,columnMajor>;
+            using T1 = HermitianMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using T2 = CustomMatrix<blas_double_complex,unaligned,unpadded,columnMajor>;
+            using RT = DynamicMatrix<blas_double_complex,columnMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -9538,9 +9538,9 @@ void ClassTest::testMultiSolve()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = HermitianMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using T2 = CustomMatrix<complex<double>,unaligned,unpadded,rowMajor>;
-            using RT = DynamicMatrix<complex<double>,rowMajor>;
+            using T1 = HermitianMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using T2 = CustomMatrix<blas_double_complex,unaligned,unpadded,rowMajor>;
+            using RT = DynamicMatrix<blas_double_complex,rowMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -9548,9 +9548,9 @@ void ClassTest::testMultiSolve()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = HermitianMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using T2 = CustomMatrix<complex<double>,unaligned,unpadded,columnMajor>;
-            using RT = DynamicMatrix<complex<double>,columnMajor>;
+            using T1 = HermitianMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using T2 = CustomMatrix<blas_double_complex,unaligned,unpadded,columnMajor>;
+            using RT = DynamicMatrix<blas_double_complex,columnMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -9562,9 +9562,9 @@ void ClassTest::testMultiSolve()
       // .../UniformMatrix
       {
          {
-            using T1 = HermitianMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using T2 = UniformMatrix<complex<double>,rowMajor>;
-            using RT = DynamicMatrix<complex<double>,rowMajor>;
+            using T1 = HermitianMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using T2 = UniformMatrix<blas_double_complex,rowMajor>;
+            using RT = DynamicMatrix<blas_double_complex,rowMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -9572,9 +9572,9 @@ void ClassTest::testMultiSolve()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = HermitianMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using T2 = UniformMatrix<complex<double>,columnMajor>;
-            using RT = DynamicMatrix<complex<double>,columnMajor>;
+            using T1 = HermitianMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using T2 = UniformMatrix<blas_double_complex,columnMajor>;
+            using RT = DynamicMatrix<blas_double_complex,columnMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -9582,9 +9582,9 @@ void ClassTest::testMultiSolve()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = HermitianMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using T2 = UniformMatrix<complex<double>,rowMajor>;
-            using RT = DynamicMatrix<complex<double>,rowMajor>;
+            using T1 = HermitianMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using T2 = UniformMatrix<blas_double_complex,rowMajor>;
+            using RT = DynamicMatrix<blas_double_complex,rowMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -9592,9 +9592,9 @@ void ClassTest::testMultiSolve()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = HermitianMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using T2 = UniformMatrix<complex<double>,columnMajor>;
-            using RT = DynamicMatrix<complex<double>,columnMajor>;
+            using T1 = HermitianMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using T2 = UniformMatrix<blas_double_complex,columnMajor>;
+            using RT = DynamicMatrix<blas_double_complex,columnMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -9606,9 +9606,9 @@ void ClassTest::testMultiSolve()
       // .../InitializerMatrix
       {
          {
-            using T1 = HermitianMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using T2 = InitializerMatrix<complex<double>>;
-            using RT = DynamicMatrix<complex<double>,rowMajor>;
+            using T1 = HermitianMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using T2 = InitializerMatrix<blas_double_complex>;
+            using RT = DynamicMatrix<blas_double_complex,rowMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -9616,9 +9616,9 @@ void ClassTest::testMultiSolve()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = HermitianMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using T2 = InitializerMatrix<complex<double>>;
-            using RT = DynamicMatrix<complex<double>,rowMajor>;
+            using T1 = HermitianMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using T2 = InitializerMatrix<blas_double_complex>;
+            using RT = DynamicMatrix<blas_double_complex,rowMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -9630,9 +9630,9 @@ void ClassTest::testMultiSolve()
       // .../SymmetricMatrix<DynamicMatrix> (complex)
       {
          {
-            using T1 = HermitianMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using T2 = SymmetricMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using RT = DynamicMatrix<complex<double>,rowMajor>;
+            using T1 = HermitianMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using T2 = SymmetricMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using RT = DynamicMatrix<blas_double_complex,rowMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -9640,9 +9640,9 @@ void ClassTest::testMultiSolve()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = HermitianMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using T2 = SymmetricMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using RT = DynamicMatrix<complex<double>,columnMajor>;
+            using T1 = HermitianMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using T2 = SymmetricMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using RT = DynamicMatrix<blas_double_complex,columnMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -9650,9 +9650,9 @@ void ClassTest::testMultiSolve()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = HermitianMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using T2 = SymmetricMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using RT = DynamicMatrix<complex<double>,rowMajor>;
+            using T1 = HermitianMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using T2 = SymmetricMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using RT = DynamicMatrix<blas_double_complex,rowMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -9660,9 +9660,9 @@ void ClassTest::testMultiSolve()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = HermitianMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using T2 = SymmetricMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using RT = DynamicMatrix<complex<double>,columnMajor>;
+            using T1 = HermitianMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using T2 = SymmetricMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using RT = DynamicMatrix<blas_double_complex,columnMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -9674,9 +9674,9 @@ void ClassTest::testMultiSolve()
       // .../SymmetricMatrix<UniformMatrix>
       {
          {
-            using T1 = HermitianMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using T2 = SymmetricMatrix< UniformMatrix<complex<double>,rowMajor> >;
-            using RT = DynamicMatrix<complex<double>,rowMajor>;
+            using T1 = HermitianMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using T2 = SymmetricMatrix< UniformMatrix<blas_double_complex,rowMajor> >;
+            using RT = DynamicMatrix<blas_double_complex,rowMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -9684,9 +9684,9 @@ void ClassTest::testMultiSolve()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = HermitianMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using T2 = SymmetricMatrix< UniformMatrix<complex<double>,columnMajor> >;
-            using RT = DynamicMatrix<complex<double>,columnMajor>;
+            using T1 = HermitianMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using T2 = SymmetricMatrix< UniformMatrix<blas_double_complex,columnMajor> >;
+            using RT = DynamicMatrix<blas_double_complex,columnMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -9694,9 +9694,9 @@ void ClassTest::testMultiSolve()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = HermitianMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using T2 = SymmetricMatrix< UniformMatrix<complex<double>,rowMajor> >;
-            using RT = DynamicMatrix<complex<double>,rowMajor>;
+            using T1 = HermitianMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using T2 = SymmetricMatrix< UniformMatrix<blas_double_complex,rowMajor> >;
+            using RT = DynamicMatrix<blas_double_complex,rowMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -9704,9 +9704,9 @@ void ClassTest::testMultiSolve()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = HermitianMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using T2 = SymmetricMatrix< UniformMatrix<complex<double>,columnMajor> >;
-            using RT = DynamicMatrix<complex<double>,columnMajor>;
+            using T1 = HermitianMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using T2 = SymmetricMatrix< UniformMatrix<blas_double_complex,columnMajor> >;
+            using RT = DynamicMatrix<blas_double_complex,columnMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -9718,9 +9718,9 @@ void ClassTest::testMultiSolve()
       // .../HermitianMatrix<DynamicMatrix> (Hermitian)
       {
          {
-            using T1 = HermitianMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using T2 = HermitianMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using RT = DynamicMatrix<complex<double>,rowMajor>;
+            using T1 = HermitianMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using T2 = HermitianMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using RT = DynamicMatrix<blas_double_complex,rowMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -9728,9 +9728,9 @@ void ClassTest::testMultiSolve()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = HermitianMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using T2 = HermitianMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using RT = DynamicMatrix<complex<double>,columnMajor>;
+            using T1 = HermitianMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using T2 = HermitianMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using RT = DynamicMatrix<blas_double_complex,columnMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -9738,9 +9738,9 @@ void ClassTest::testMultiSolve()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = HermitianMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using T2 = HermitianMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using RT = DynamicMatrix<complex<double>,rowMajor>;
+            using T1 = HermitianMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using T2 = HermitianMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using RT = DynamicMatrix<blas_double_complex,rowMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -9748,9 +9748,9 @@ void ClassTest::testMultiSolve()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = HermitianMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using T2 = HermitianMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using RT = DynamicMatrix<complex<double>,columnMajor>;
+            using T1 = HermitianMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using T2 = HermitianMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using RT = DynamicMatrix<blas_double_complex,columnMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -9762,9 +9762,9 @@ void ClassTest::testMultiSolve()
       // .../LowerMatrix<DynamicMatrix>
       {
          {
-            using T1 = HermitianMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using T2 = LowerMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using RT = DynamicMatrix<complex<double>,rowMajor>;
+            using T1 = HermitianMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using T2 = LowerMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using RT = DynamicMatrix<blas_double_complex,rowMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -9772,9 +9772,9 @@ void ClassTest::testMultiSolve()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = HermitianMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using T2 = LowerMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using RT = DynamicMatrix<complex<double>,columnMajor>;
+            using T1 = HermitianMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using T2 = LowerMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using RT = DynamicMatrix<blas_double_complex,columnMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -9782,9 +9782,9 @@ void ClassTest::testMultiSolve()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = HermitianMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using T2 = LowerMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using RT = DynamicMatrix<complex<double>,rowMajor>;
+            using T1 = HermitianMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using T2 = LowerMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using RT = DynamicMatrix<blas_double_complex,rowMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -9792,9 +9792,9 @@ void ClassTest::testMultiSolve()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = HermitianMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using T2 = LowerMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using RT = DynamicMatrix<complex<double>,columnMajor>;
+            using T1 = HermitianMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using T2 = LowerMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using RT = DynamicMatrix<blas_double_complex,columnMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -9806,9 +9806,9 @@ void ClassTest::testMultiSolve()
       // .../UniLowerMatrix<DynamicMatrix>
       {
          {
-            using T1 = HermitianMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using T2 = UniLowerMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using RT = DynamicMatrix<complex<double>,rowMajor>;
+            using T1 = HermitianMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using T2 = UniLowerMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using RT = DynamicMatrix<blas_double_complex,rowMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -9816,9 +9816,9 @@ void ClassTest::testMultiSolve()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = HermitianMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using T2 = UniLowerMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using RT = DynamicMatrix<complex<double>,columnMajor>;
+            using T1 = HermitianMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using T2 = UniLowerMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using RT = DynamicMatrix<blas_double_complex,columnMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -9826,9 +9826,9 @@ void ClassTest::testMultiSolve()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = HermitianMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using T2 = UniLowerMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using RT = DynamicMatrix<complex<double>,rowMajor>;
+            using T1 = HermitianMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using T2 = UniLowerMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using RT = DynamicMatrix<blas_double_complex,rowMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -9836,9 +9836,9 @@ void ClassTest::testMultiSolve()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = HermitianMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using T2 = UniLowerMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using RT = DynamicMatrix<complex<double>,columnMajor>;
+            using T1 = HermitianMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using T2 = UniLowerMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using RT = DynamicMatrix<blas_double_complex,columnMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -9850,9 +9850,9 @@ void ClassTest::testMultiSolve()
       // .../StrictlyLowerMatrix<DynamicMatrix>
       {
          {
-            using T1 = HermitianMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using T2 = StrictlyLowerMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using RT = DynamicMatrix<complex<double>,rowMajor>;
+            using T1 = HermitianMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using T2 = StrictlyLowerMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using RT = DynamicMatrix<blas_double_complex,rowMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -9860,9 +9860,9 @@ void ClassTest::testMultiSolve()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = HermitianMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using T2 = StrictlyLowerMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using RT = DynamicMatrix<complex<double>,columnMajor>;
+            using T1 = HermitianMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using T2 = StrictlyLowerMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using RT = DynamicMatrix<blas_double_complex,columnMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -9870,9 +9870,9 @@ void ClassTest::testMultiSolve()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = HermitianMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using T2 = StrictlyLowerMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using RT = DynamicMatrix<complex<double>,rowMajor>;
+            using T1 = HermitianMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using T2 = StrictlyLowerMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using RT = DynamicMatrix<blas_double_complex,rowMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -9880,9 +9880,9 @@ void ClassTest::testMultiSolve()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = HermitianMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using T2 = StrictlyLowerMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using RT = DynamicMatrix<complex<double>,columnMajor>;
+            using T1 = HermitianMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using T2 = StrictlyLowerMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using RT = DynamicMatrix<blas_double_complex,columnMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -9894,9 +9894,9 @@ void ClassTest::testMultiSolve()
       // .../UpperMatrix<DynamicMatrix>
       {
          {
-            using T1 = HermitianMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using T2 = UpperMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using RT = DynamicMatrix<complex<double>,rowMajor>;
+            using T1 = HermitianMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using T2 = UpperMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using RT = DynamicMatrix<blas_double_complex,rowMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -9904,9 +9904,9 @@ void ClassTest::testMultiSolve()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = HermitianMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using T2 = UpperMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using RT = DynamicMatrix<complex<double>,columnMajor>;
+            using T1 = HermitianMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using T2 = UpperMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using RT = DynamicMatrix<blas_double_complex,columnMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -9914,9 +9914,9 @@ void ClassTest::testMultiSolve()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = HermitianMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using T2 = UpperMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using RT = DynamicMatrix<complex<double>,rowMajor>;
+            using T1 = HermitianMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using T2 = UpperMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using RT = DynamicMatrix<blas_double_complex,rowMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -9924,9 +9924,9 @@ void ClassTest::testMultiSolve()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = HermitianMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using T2 = UpperMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using RT = DynamicMatrix<complex<double>,columnMajor>;
+            using T1 = HermitianMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using T2 = UpperMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using RT = DynamicMatrix<blas_double_complex,columnMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -9938,9 +9938,9 @@ void ClassTest::testMultiSolve()
       // .../UniUpperMatrix<DynamicMatrix>
       {
          {
-            using T1 = HermitianMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using T2 = UniUpperMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using RT = DynamicMatrix<complex<double>,rowMajor>;
+            using T1 = HermitianMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using T2 = UniUpperMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using RT = DynamicMatrix<blas_double_complex,rowMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -9948,9 +9948,9 @@ void ClassTest::testMultiSolve()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = HermitianMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using T2 = UniUpperMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using RT = DynamicMatrix<complex<double>,columnMajor>;
+            using T1 = HermitianMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using T2 = UniUpperMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using RT = DynamicMatrix<blas_double_complex,columnMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -9958,9 +9958,9 @@ void ClassTest::testMultiSolve()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = HermitianMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using T2 = UniUpperMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using RT = DynamicMatrix<complex<double>,rowMajor>;
+            using T1 = HermitianMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using T2 = UniUpperMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using RT = DynamicMatrix<blas_double_complex,rowMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -9968,9 +9968,9 @@ void ClassTest::testMultiSolve()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = HermitianMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using T2 = UniUpperMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using RT = DynamicMatrix<complex<double>,columnMajor>;
+            using T1 = HermitianMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using T2 = UniUpperMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using RT = DynamicMatrix<blas_double_complex,columnMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -9982,9 +9982,9 @@ void ClassTest::testMultiSolve()
       // .../StrictlyUpperMatrix<DynamicMatrix>
       {
          {
-            using T1 = HermitianMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using T2 = StrictlyUpperMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using RT = DynamicMatrix<complex<double>,rowMajor>;
+            using T1 = HermitianMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using T2 = StrictlyUpperMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using RT = DynamicMatrix<blas_double_complex,rowMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -9992,9 +9992,9 @@ void ClassTest::testMultiSolve()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = HermitianMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using T2 = StrictlyUpperMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using RT = DynamicMatrix<complex<double>,columnMajor>;
+            using T1 = HermitianMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using T2 = StrictlyUpperMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using RT = DynamicMatrix<blas_double_complex,columnMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -10002,9 +10002,9 @@ void ClassTest::testMultiSolve()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = HermitianMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using T2 = StrictlyUpperMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using RT = DynamicMatrix<complex<double>,rowMajor>;
+            using T1 = HermitianMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using T2 = StrictlyUpperMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using RT = DynamicMatrix<blas_double_complex,rowMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -10012,9 +10012,9 @@ void ClassTest::testMultiSolve()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = HermitianMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using T2 = StrictlyUpperMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using RT = DynamicMatrix<complex<double>,columnMajor>;
+            using T1 = HermitianMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using T2 = StrictlyUpperMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using RT = DynamicMatrix<blas_double_complex,columnMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -10026,9 +10026,9 @@ void ClassTest::testMultiSolve()
       // .../DiagonalMatrix<DynamicMatrix>
       {
          {
-            using T1 = HermitianMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using T2 = DiagonalMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using RT = DynamicMatrix<complex<double>,rowMajor>;
+            using T1 = HermitianMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using T2 = DiagonalMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using RT = DynamicMatrix<blas_double_complex,rowMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -10036,9 +10036,9 @@ void ClassTest::testMultiSolve()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = HermitianMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using T2 = DiagonalMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using RT = DynamicMatrix<complex<double>,columnMajor>;
+            using T1 = HermitianMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using T2 = DiagonalMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using RT = DynamicMatrix<blas_double_complex,columnMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -10046,9 +10046,9 @@ void ClassTest::testMultiSolve()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = HermitianMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using T2 = DiagonalMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using RT = DynamicMatrix<complex<double>,rowMajor>;
+            using T1 = HermitianMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using T2 = DiagonalMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using RT = DynamicMatrix<blas_double_complex,rowMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -10056,9 +10056,9 @@ void ClassTest::testMultiSolve()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = HermitianMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using T2 = DiagonalMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using RT = DynamicMatrix<complex<double>,columnMajor>;
+            using T1 = HermitianMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using T2 = DiagonalMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using RT = DynamicMatrix<blas_double_complex,columnMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -10361,9 +10361,9 @@ void ClassTest::testMultiSolve()
       // .../SymmetricMatrix<DynamicMatrix> (complex)
       {
          {
-            using T1 = LowerMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using T2 = SymmetricMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using RT = DynamicMatrix<complex<double>,rowMajor>;
+            using T1 = LowerMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using T2 = SymmetricMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using RT = DynamicMatrix<blas_double_complex,rowMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -10371,9 +10371,9 @@ void ClassTest::testMultiSolve()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = LowerMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using T2 = SymmetricMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using RT = DynamicMatrix<complex<double>,columnMajor>;
+            using T1 = LowerMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using T2 = SymmetricMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using RT = DynamicMatrix<blas_double_complex,columnMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -10381,9 +10381,9 @@ void ClassTest::testMultiSolve()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = LowerMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using T2 = SymmetricMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using RT = DynamicMatrix<complex<double>,rowMajor>;
+            using T1 = LowerMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using T2 = SymmetricMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using RT = DynamicMatrix<blas_double_complex,rowMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -10391,9 +10391,9 @@ void ClassTest::testMultiSolve()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = LowerMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using T2 = SymmetricMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using RT = DynamicMatrix<complex<double>,columnMajor>;
+            using T1 = LowerMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using T2 = SymmetricMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using RT = DynamicMatrix<blas_double_complex,columnMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -10493,9 +10493,9 @@ void ClassTest::testMultiSolve()
       // .../HermitianMatrix<DynamicMatrix> (Hermitian)
       {
          {
-            using T1 = LowerMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using T2 = HermitianMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using RT = DynamicMatrix<complex<double>,rowMajor>;
+            using T1 = LowerMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using T2 = HermitianMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using RT = DynamicMatrix<blas_double_complex,rowMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -10503,9 +10503,9 @@ void ClassTest::testMultiSolve()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = LowerMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using T2 = HermitianMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using RT = DynamicMatrix<complex<double>,columnMajor>;
+            using T1 = LowerMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using T2 = HermitianMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using RT = DynamicMatrix<blas_double_complex,columnMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -10513,9 +10513,9 @@ void ClassTest::testMultiSolve()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = LowerMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using T2 = HermitianMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using RT = DynamicMatrix<complex<double>,rowMajor>;
+            using T1 = LowerMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using T2 = HermitianMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using RT = DynamicMatrix<blas_double_complex,rowMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -10523,9 +10523,9 @@ void ClassTest::testMultiSolve()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = LowerMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using T2 = HermitianMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using RT = DynamicMatrix<complex<double>,columnMajor>;
+            using T1 = LowerMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using T2 = HermitianMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using RT = DynamicMatrix<blas_double_complex,columnMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -11136,9 +11136,9 @@ void ClassTest::testMultiSolve()
       // .../SymmetricMatrix<DynamicMatrix> (complex)
       {
          {
-            using T1 = UniLowerMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using T2 = SymmetricMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using RT = DynamicMatrix<complex<double>,rowMajor>;
+            using T1 = UniLowerMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using T2 = SymmetricMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using RT = DynamicMatrix<blas_double_complex,rowMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -11146,9 +11146,9 @@ void ClassTest::testMultiSolve()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = UniLowerMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using T2 = SymmetricMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using RT = DynamicMatrix<complex<double>,columnMajor>;
+            using T1 = UniLowerMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using T2 = SymmetricMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using RT = DynamicMatrix<blas_double_complex,columnMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -11156,9 +11156,9 @@ void ClassTest::testMultiSolve()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = UniLowerMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using T2 = SymmetricMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using RT = DynamicMatrix<complex<double>,rowMajor>;
+            using T1 = UniLowerMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using T2 = SymmetricMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using RT = DynamicMatrix<blas_double_complex,rowMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -11166,9 +11166,9 @@ void ClassTest::testMultiSolve()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = UniLowerMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using T2 = SymmetricMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using RT = DynamicMatrix<complex<double>,columnMajor>;
+            using T1 = UniLowerMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using T2 = SymmetricMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using RT = DynamicMatrix<blas_double_complex,columnMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -11268,9 +11268,9 @@ void ClassTest::testMultiSolve()
       // .../HermitianMatrix<DynamicMatrix> (Hermitian)
       {
          {
-            using T1 = UniLowerMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using T2 = HermitianMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using RT = DynamicMatrix<complex<double>,rowMajor>;
+            using T1 = UniLowerMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using T2 = HermitianMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using RT = DynamicMatrix<blas_double_complex,rowMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -11278,9 +11278,9 @@ void ClassTest::testMultiSolve()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = UniLowerMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using T2 = HermitianMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using RT = DynamicMatrix<complex<double>,columnMajor>;
+            using T1 = UniLowerMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using T2 = HermitianMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using RT = DynamicMatrix<blas_double_complex,columnMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -11288,9 +11288,9 @@ void ClassTest::testMultiSolve()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = UniLowerMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using T2 = HermitianMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using RT = DynamicMatrix<complex<double>,rowMajor>;
+            using T1 = UniLowerMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using T2 = HermitianMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using RT = DynamicMatrix<blas_double_complex,rowMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -11298,9 +11298,9 @@ void ClassTest::testMultiSolve()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = UniLowerMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using T2 = HermitianMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using RT = DynamicMatrix<complex<double>,columnMajor>;
+            using T1 = UniLowerMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using T2 = HermitianMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using RT = DynamicMatrix<blas_double_complex,columnMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -11911,9 +11911,9 @@ void ClassTest::testMultiSolve()
       // .../SymmetricMatrix<DynamicMatrix> (complex)
       {
          {
-            using T1 = UpperMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using T2 = SymmetricMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using RT = DynamicMatrix<complex<double>,rowMajor>;
+            using T1 = UpperMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using T2 = SymmetricMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using RT = DynamicMatrix<blas_double_complex,rowMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -11921,9 +11921,9 @@ void ClassTest::testMultiSolve()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = UpperMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using T2 = SymmetricMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using RT = DynamicMatrix<complex<double>,columnMajor>;
+            using T1 = UpperMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using T2 = SymmetricMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using RT = DynamicMatrix<blas_double_complex,columnMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -11931,9 +11931,9 @@ void ClassTest::testMultiSolve()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = UpperMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using T2 = SymmetricMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using RT = DynamicMatrix<complex<double>,rowMajor>;
+            using T1 = UpperMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using T2 = SymmetricMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using RT = DynamicMatrix<blas_double_complex,rowMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -11941,9 +11941,9 @@ void ClassTest::testMultiSolve()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = UpperMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using T2 = SymmetricMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using RT = DynamicMatrix<complex<double>,columnMajor>;
+            using T1 = UpperMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using T2 = SymmetricMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using RT = DynamicMatrix<blas_double_complex,columnMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -12043,9 +12043,9 @@ void ClassTest::testMultiSolve()
       // .../HermitianMatrix<DynamicMatrix> (Hermitian)
       {
          {
-            using T1 = UpperMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using T2 = HermitianMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using RT = DynamicMatrix<complex<double>,rowMajor>;
+            using T1 = UpperMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using T2 = HermitianMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using RT = DynamicMatrix<blas_double_complex,rowMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -12053,9 +12053,9 @@ void ClassTest::testMultiSolve()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = UpperMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using T2 = HermitianMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using RT = DynamicMatrix<complex<double>,columnMajor>;
+            using T1 = UpperMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using T2 = HermitianMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using RT = DynamicMatrix<blas_double_complex,columnMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -12063,9 +12063,9 @@ void ClassTest::testMultiSolve()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = UpperMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using T2 = HermitianMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using RT = DynamicMatrix<complex<double>,rowMajor>;
+            using T1 = UpperMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using T2 = HermitianMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using RT = DynamicMatrix<blas_double_complex,rowMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -12073,9 +12073,9 @@ void ClassTest::testMultiSolve()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = UpperMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using T2 = HermitianMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using RT = DynamicMatrix<complex<double>,columnMajor>;
+            using T1 = UpperMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using T2 = HermitianMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using RT = DynamicMatrix<blas_double_complex,columnMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -12686,9 +12686,9 @@ void ClassTest::testMultiSolve()
       // .../SymmetricMatrix<DynamicMatrix> (complex)
       {
          {
-            using T1 = UniUpperMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using T2 = SymmetricMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using RT = DynamicMatrix<complex<double>,rowMajor>;
+            using T1 = UniUpperMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using T2 = SymmetricMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using RT = DynamicMatrix<blas_double_complex,rowMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -12696,9 +12696,9 @@ void ClassTest::testMultiSolve()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = UniUpperMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using T2 = SymmetricMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using RT = DynamicMatrix<complex<double>,columnMajor>;
+            using T1 = UniUpperMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using T2 = SymmetricMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using RT = DynamicMatrix<blas_double_complex,columnMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -12706,9 +12706,9 @@ void ClassTest::testMultiSolve()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = UniUpperMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using T2 = SymmetricMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using RT = DynamicMatrix<complex<double>,rowMajor>;
+            using T1 = UniUpperMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using T2 = SymmetricMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using RT = DynamicMatrix<blas_double_complex,rowMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -12716,9 +12716,9 @@ void ClassTest::testMultiSolve()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = UniUpperMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using T2 = SymmetricMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using RT = DynamicMatrix<complex<double>,columnMajor>;
+            using T1 = UniUpperMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using T2 = SymmetricMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using RT = DynamicMatrix<blas_double_complex,columnMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -12818,9 +12818,9 @@ void ClassTest::testMultiSolve()
       // .../HermitianMatrix<DynamicMatrix> (Hermitian)
       {
          {
-            using T1 = UniUpperMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using T2 = HermitianMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using RT = DynamicMatrix<complex<double>,rowMajor>;
+            using T1 = UniUpperMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using T2 = HermitianMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using RT = DynamicMatrix<blas_double_complex,rowMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -12828,9 +12828,9 @@ void ClassTest::testMultiSolve()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = UniUpperMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using T2 = HermitianMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using RT = DynamicMatrix<complex<double>,columnMajor>;
+            using T1 = UniUpperMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using T2 = HermitianMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using RT = DynamicMatrix<blas_double_complex,columnMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -12838,9 +12838,9 @@ void ClassTest::testMultiSolve()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = UniUpperMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using T2 = HermitianMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using RT = DynamicMatrix<complex<double>,rowMajor>;
+            using T1 = UniUpperMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using T2 = HermitianMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using RT = DynamicMatrix<blas_double_complex,rowMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -12848,9 +12848,9 @@ void ClassTest::testMultiSolve()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = UniUpperMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using T2 = HermitianMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using RT = DynamicMatrix<complex<double>,columnMajor>;
+            using T1 = UniUpperMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using T2 = HermitianMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using RT = DynamicMatrix<blas_double_complex,columnMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -13461,9 +13461,9 @@ void ClassTest::testMultiSolve()
       // .../SymmetricMatrix<DynamicMatrix> (complex)
       {
          {
-            using T1 = DiagonalMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using T2 = SymmetricMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using RT = DynamicMatrix<complex<double>,rowMajor>;
+            using T1 = DiagonalMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using T2 = SymmetricMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using RT = DynamicMatrix<blas_double_complex,rowMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -13471,9 +13471,9 @@ void ClassTest::testMultiSolve()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = DiagonalMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using T2 = SymmetricMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using RT = DynamicMatrix<complex<double>,columnMajor>;
+            using T1 = DiagonalMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using T2 = SymmetricMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using RT = DynamicMatrix<blas_double_complex,columnMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -13481,9 +13481,9 @@ void ClassTest::testMultiSolve()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = DiagonalMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using T2 = SymmetricMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using RT = DynamicMatrix<complex<double>,rowMajor>;
+            using T1 = DiagonalMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using T2 = SymmetricMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using RT = DynamicMatrix<blas_double_complex,rowMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -13491,9 +13491,9 @@ void ClassTest::testMultiSolve()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = DiagonalMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using T2 = SymmetricMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using RT = DynamicMatrix<complex<double>,columnMajor>;
+            using T1 = DiagonalMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using T2 = SymmetricMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using RT = DynamicMatrix<blas_double_complex,columnMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -13593,9 +13593,9 @@ void ClassTest::testMultiSolve()
       // .../HermitianMatrix<DynamicMatrix> (Hermitian)
       {
          {
-            using T1 = DiagonalMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using T2 = HermitianMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using RT = DynamicMatrix<complex<double>,rowMajor>;
+            using T1 = DiagonalMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using T2 = HermitianMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using RT = DynamicMatrix<blas_double_complex,rowMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -13603,9 +13603,9 @@ void ClassTest::testMultiSolve()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = DiagonalMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using T2 = HermitianMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using RT = DynamicMatrix<complex<double>,columnMajor>;
+            using T1 = DiagonalMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using T2 = HermitianMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using RT = DynamicMatrix<blas_double_complex,columnMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -13613,9 +13613,9 @@ void ClassTest::testMultiSolve()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = DiagonalMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using T2 = HermitianMatrix< DynamicMatrix<complex<double>,rowMajor> >;
-            using RT = DynamicMatrix<complex<double>,rowMajor>;
+            using T1 = DiagonalMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using T2 = HermitianMatrix< DynamicMatrix<blas_double_complex,rowMajor> >;
+            using RT = DynamicMatrix<blas_double_complex,rowMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;
@@ -13623,9 +13623,9 @@ void ClassTest::testMultiSolve()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = DiagonalMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using T2 = HermitianMatrix< DynamicMatrix<complex<double>,columnMajor> >;
-            using RT = DynamicMatrix<complex<double>,columnMajor>;
+            using T1 = DiagonalMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using T2 = HermitianMatrix< DynamicMatrix<blas_double_complex,columnMajor> >;
+            using RT = DynamicMatrix<blas_double_complex,columnMajor>;
             static_assert( IsSame_v< SolveTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( solve( std::declval<T1>(), std::declval<T2>() ) ) >;

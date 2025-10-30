@@ -299,7 +299,7 @@ inline auto eigen_backend( const DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& w )
    DynamicMatrix<double,rowMajor> A( 5UL, 5UL );  // The general matrix A
    // ... Initialization
 
-   DynamicVector<complex<double>,columnVector> w( 5UL );  // The vector for the complex eigenvalues
+   DynamicVector<blas_double_complex,columnVector> w( 5UL );  // The vector for the complex eigenvalues
 
    eigen( A, w );
    \endcode
@@ -326,7 +326,7 @@ inline auto eigen_backend( const DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& w )
    using blaze::rowMajor;
    using blaze::columnVector;
 
-   HermitianMatrix< DynamicMatrix<complex<double>,rowMajor> > A( 5UL );  // The Hermitian matrix A
+   HermitianMatrix< DynamicMatrix<blas_double_complex,rowMajor> > A( 5UL );  // The Hermitian matrix A
    // ... Initialization
 
    DynamicVector<double,columnVector> w( 5UL );  // The vector for the real eigenvalues
@@ -334,8 +334,8 @@ inline auto eigen_backend( const DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& w )
    eigen( A, w );
    \endcode
 
-// \note This function only works for matrices with \c float, \c double, \c complex<float>, or
-// \c complex<double> element type. The attempt to call the function with matrices of any other
+// \note This function only works for matrices with \c float, \c double, \c blas_float_complex, or
+// \c blas_double_complex element type. The attempt to call the function with matrices of any other
 // element type results in a compile time error!
 //
 // \note This function can only be used if a fitting LAPACK library is available and linked to
@@ -632,8 +632,8 @@ inline auto eigen_backend( const DenseMatrix<MT1,SO1>& A, DenseVector<VT,TF>& w,
    DynamicMatrix<double,rowMajor> A( 5UL, 5UL );  // The general matrix A
    // ... Initialization
 
-   DynamicVector<complex<double>,columnVector> w( 5UL );   // The vector for the complex eigenvalues
-   DynamicMatrix<complex<double>,rowMajor> V( 5UL, 5UL );  // The matrix for the left eigenvectors
+   DynamicVector<blas_double_complex,columnVector> w( 5UL );   // The vector for the complex eigenvalues
+   DynamicMatrix<blas_double_complex,rowMajor> V( 5UL, 5UL );  // The matrix for the left eigenvectors
 
    eigen( A, w, V );
    \endcode
@@ -661,17 +661,17 @@ inline auto eigen_backend( const DenseMatrix<MT1,SO1>& A, DenseVector<VT,TF>& w,
    using blaze::rowMajor;
    using blaze::columnVector;
 
-   HermitianMatrix< DynamicMatrix<complex<double>,rowMajor> > A( 5UL );  // The Hermitian matrix A
+   HermitianMatrix< DynamicMatrix<blas_double_complex,rowMajor> > A( 5UL );  // The Hermitian matrix A
    // ... Initialization
 
    DynamicVector<double,columnVector>      w( 5UL );       // The vector for the real eigenvalues
-   DynamicMatrix<complex<double>,rowMajor> V( 5UL, 5UL );  // The matrix for the left eigenvectors
+   DynamicMatrix<blas_double_complex,rowMajor> V( 5UL, 5UL );  // The matrix for the left eigenvectors
 
    eigen( A, w, V );
    \endcode
 
-// \note This function only works for matrices with \c float, \c double, \c complex<float>, or
-// \c complex<double> element type. The attempt to call the function with matrices of any other
+// \note This function only works for matrices with \c float, \c double, \c blas_float_complex, or
+// \c blas_double_complex element type. The attempt to call the function with matrices of any other
 // element type results in a compile time error!
 //
 // \note This function can only be used if a fitting LAPACK library is available and linked to

@@ -291,7 +291,7 @@ void OperationTest::testGetAllocator()
 void OperationTest::testHasCompositeType()
 {
    using Type1 = int;
-   using Type2 = blaze::complex<float>;
+   using Type2 = blaze::blas_float_complex;
    using Type3 = blaze::DynamicVector<int>;
    using Type4 = blaze::CompressedVector<int>;
    using Type5 = blaze::DynamicMatrix<int>;
@@ -372,7 +372,7 @@ void OperationTest::testHasCompositeType()
 void OperationTest::testHasResultType()
 {
    using Type1 = int;
-   using Type2 = blaze::complex<float>;
+   using Type2 = blaze::blas_float_complex;
    using Type3 = blaze::DynamicVector<int>;
    using Type4 = blaze::CompressedVector<int>;
    using Type5 = blaze::DynamicMatrix<int>;
@@ -458,7 +458,7 @@ void OperationTest::testIsClearable()
    using blaze::unpadded;
 
    using Type1  = int;
-   using Type2  = blaze::complex<double>;
+   using Type2  = blaze::blas_double_complex;
    using Type3  = blaze::StaticVector<int,5UL,rowVector>;
    using Type4  = blaze::DynamicVector<int,rowVector>;
    using Type5  = blaze::CustomVector<int,unaligned,unpadded,rowVector>;
@@ -634,7 +634,7 @@ void OperationTest::testIsColumnMajorMatrix()
    using Type1 = blaze::DynamicMatrix<double,columnMajor>;
    using Type2 = blaze::CompressedMatrix<int,columnMajor>;
    using Type3 = int;
-   using Type4 = blaze::complex<float>;
+   using Type4 = blaze::blas_float_complex;
    using Type5 = blaze::DynamicVector<double,columnVector>;
    using Type6 = blaze::CompressedVector<int,rowVector>;
    using Type7 = blaze::DynamicMatrix<double,rowMajor>;
@@ -742,7 +742,7 @@ void OperationTest::testIsColumnVector()
    using Type1 = blaze::DynamicVector<double,columnVector>;
    using Type2 = blaze::CompressedVector<int,columnVector>;
    using Type3 = int;
-   using Type4 = blaze::complex<float>;
+   using Type4 = blaze::blas_float_complex;
    using Type5 = blaze::DynamicVector<double,rowVector>;
    using Type6 = blaze::CompressedVector<int,rowVector>;
    using Type7 = blaze::DynamicMatrix<double,rowMajor>;
@@ -846,7 +846,7 @@ void OperationTest::testIsCommutative()
    using MT = blaze::StaticMatrix<int,3UL,3UL>;
 
    using Type1 = double;
-   using Type2 = blaze::complex<double>;
+   using Type2 = blaze::blas_double_complex;
    using Type3 = blaze::DynamicVector<int>;
    using Type4 = blaze::DynamicVector<VT>;
    using Type5 = blaze::DynamicVector<MT>;
@@ -1171,8 +1171,8 @@ void OperationTest::testIsInvertible()
    using Type1  = float;
    using Type2  = double;
    using Type3  = long double;
-   using Type4  = blaze::complex<float>;
-   using Type5  = blaze::complex<double>;
+   using Type4  = blaze::blas_float_complex;
+   using Type5  = blaze::blas_double_complex;
    using Type6  = blaze::complex<long double>;
    using Type7  = blaze::DynamicMatrix<double>;
    using Type8  = int;
@@ -1414,7 +1414,7 @@ void OperationTest::testIsMatrix()
    using Type1 = blaze::DynamicMatrix<double,rowMajor>;
    using Type2 = blaze::CompressedMatrix<int,columnMajor>;
    using Type3 = int;
-   using Type4 = blaze::complex<float>;
+   using Type4 = blaze::blas_float_complex;
    using Type5 = blaze::DynamicVector<double,columnVector>;
    using Type6 = blaze::CompressedVector<int,rowVector>;
 
@@ -1516,7 +1516,7 @@ void OperationTest::testIsResizable()
    using blaze::unpadded;
 
    using Type1  = int;
-   using Type2  = blaze::complex<double>;
+   using Type2  = blaze::blas_double_complex;
    using Type3  = blaze::StaticVector<int,5UL,rowVector>;
    using Type4  = blaze::DynamicVector<int,rowVector>;
    using Type5  = blaze::CustomVector<int,unaligned,unpadded,rowVector>;
@@ -1692,7 +1692,7 @@ void OperationTest::testIsRowMajorMatrix()
    using Type1 = blaze::DynamicMatrix<double,rowMajor>;
    using Type2 = blaze::CompressedMatrix<int,rowMajor>;
    using Type3 = int;
-   using Type4 = blaze::complex<float>;
+   using Type4 = blaze::blas_float_complex;
    using Type5 = blaze::DynamicVector<double,columnVector>;
    using Type6 = blaze::CompressedVector<int,rowVector>;
    using Type7 = blaze::DynamicMatrix<double,columnMajor>;
@@ -1800,7 +1800,7 @@ void OperationTest::testIsRowVector()
    using Type1 = blaze::DynamicVector<double,rowVector>;
    using Type2 = blaze::CompressedVector<int,rowVector>;
    using Type3 = int;
-   using Type4 = blaze::complex<float>;
+   using Type4 = blaze::blas_float_complex;
    using Type5 = blaze::DynamicVector<double,columnVector>;
    using Type6 = blaze::CompressedVector<int,columnVector>;
    using Type7 = blaze::DynamicMatrix<double,rowMajor>;
@@ -1906,7 +1906,7 @@ void OperationTest::testIsScalar()
    using blaze::columnMajor;
 
    using Type1 = int;
-   using Type2 = blaze::complex<float>;
+   using Type2 = blaze::blas_float_complex;
    using Type3 = blaze::DynamicVector<float,columnVector>;
    using Type4 = blaze::CompressedVector<int,rowVector>;
    using Type5 = blaze::DynamicMatrix<double,rowMajor>;
@@ -1992,7 +1992,7 @@ void OperationTest::testIsShrinkable()
    using blaze::unpadded;
 
    using Type1  = int;
-   using Type2  = blaze::complex<double>;
+   using Type2  = blaze::blas_double_complex;
    using Type3  = blaze::StaticVector<int,5UL,rowVector>;
    using Type4  = blaze::DynamicVector<int,rowVector>;
    using Type5  = blaze::CustomVector<int,unaligned,unpadded,rowVector>;
@@ -2854,7 +2854,7 @@ void OperationTest::testIsVector()
    using Type1 = blaze::DynamicVector<float,columnVector>;
    using Type2 = blaze::CompressedVector<int,rowVector>;
    using Type3 = int;
-   using Type4 = blaze::complex<float>;
+   using Type4 = blaze::blas_float_complex;
    using Type5 = blaze::DynamicMatrix<double,rowMajor>;
    using Type6 = blaze::CompressedMatrix<int,columnMajor>;
 
@@ -2999,8 +2999,8 @@ void OperationTest::testMakeComplex()
    using blaze::MakeComplex_t;
    using blaze::complex;
 
-   using fcplx = complex<float>;
-   using dcplx = complex<double>;
+   using fcplx = blas_float_complex;
+   using dcplx = blas_double_complex;
    using lcplx = complex<long double>;
 
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( MakeComplex_t<float      >, fcplx );
@@ -3133,7 +3133,7 @@ void OperationTest::testUnderlyingBuiltin()
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingBuiltin<D* const volatile>::Type, D* );
 
    using Type1 = double;                                    // Built-in data type
-   using Type2 = complex<float>;                            // Complex data type
+   using Type2 = blas_float_complex;                            // Complex data type
    using Type3 = std::vector<double>;                       // Container type
    using Type4 = StaticVector<int,3UL>;                     // Vector with built-in element type
    using Type5 = CompressedVector< DynamicVector<float> >;  // Vector with vector element type
@@ -3228,10 +3228,10 @@ void OperationTest::testUnderlyingElement()
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingElement<B* volatile      >::Type, B* );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingElement<B* const volatile>::Type, B* );
 
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingElement<C                >::Type, complex<float> );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingElement<C const          >::Type, complex<float> );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingElement<C volatile       >::Type, complex<float> );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingElement<C const volatile >::Type, complex<float> );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingElement<C                >::Type, blas_float_complex );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingElement<C const          >::Type, blas_float_complex );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingElement<C volatile       >::Type, blas_float_complex );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingElement<C const volatile >::Type, blas_float_complex );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingElement<C&               >::Type, C& );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingElement<C*               >::Type, C* );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingElement<C* const         >::Type, C* );
@@ -3249,7 +3249,7 @@ void OperationTest::testUnderlyingElement()
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingElement<D* const volatile>::Type, D* );
 
    using Type1 = double;                                    // Built-in data type
-   using Type2 = complex<float>;                            // Complex data type
+   using Type2 = blas_float_complex;                            // Complex data type
    using Type3 = std::vector<double>;                       // Container type
    using Type4 = StaticVector<int,3UL>;                     // Vector with built-in element type
    using Type5 = CompressedVector< DynamicVector<float> >;  // Vector with vector element type
@@ -3344,10 +3344,10 @@ void OperationTest::testUnderlyingNumeric()
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingNumeric<B* volatile      >::Type, B* );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingNumeric<B* const volatile>::Type, B* );
 
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingNumeric<C                >::Type, complex<float> );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingNumeric<C const          >::Type, complex<float> );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingNumeric<C volatile       >::Type, complex<float> );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingNumeric<C const volatile >::Type, complex<float> );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingNumeric<C                >::Type, blas_float_complex );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingNumeric<C const          >::Type, blas_float_complex );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingNumeric<C volatile       >::Type, blas_float_complex );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingNumeric<C const volatile >::Type, blas_float_complex );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingNumeric<C&               >::Type, C& );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingNumeric<C*               >::Type, C* );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingNumeric<C* const         >::Type, C* );
@@ -3365,7 +3365,7 @@ void OperationTest::testUnderlyingNumeric()
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingNumeric<D* const volatile>::Type, D* );
 
    using Type1 = double;                                    // Built-in data type
-   using Type2 = complex<float>;                            // Complex data type
+   using Type2 = blas_float_complex;                            // Complex data type
    using Type3 = std::vector<double>;                       // Container type
    using Type4 = StaticVector<int,3UL>;                     // Vector with built-in element type
    using Type5 = CompressedVector< DynamicVector<float> >;  // Vector with vector element type
@@ -3380,10 +3380,10 @@ void OperationTest::testUnderlyingNumeric()
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingNumeric<Type1* volatile      >::Type, Type1* );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingNumeric<Type1* const volatile>::Type, Type1* );
 
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingNumeric<Type2                >::Type, complex<float> );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingNumeric<Type2 const          >::Type, complex<float> );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingNumeric<Type2 volatile       >::Type, complex<float> );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingNumeric<Type2 const volatile >::Type, complex<float> );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingNumeric<Type2                >::Type, blas_float_complex );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingNumeric<Type2 const          >::Type, blas_float_complex );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingNumeric<Type2 volatile       >::Type, blas_float_complex );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingNumeric<Type2 const volatile >::Type, blas_float_complex );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingNumeric<Type2&               >::Type, Type2& );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingNumeric<Type2*               >::Type, Type2* );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingNumeric<Type2* const         >::Type, Type2* );
@@ -3481,7 +3481,7 @@ void OperationTest::testUnderlyingScalar()
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingScalar<D* const volatile>::Type, D* );
 
    using Type1 = double;                                    // Built-in data type
-   using Type2 = complex<float>;                            // Complex data type
+   using Type2 = blas_float_complex;                            // Complex data type
    using Type3 = std::vector<double>;                       // Container type
    using Type4 = StaticVector<int,3UL>;                     // Vector with built-in element type
    using Type5 = CompressedVector< DynamicVector<float> >;  // Vector with vector element type
@@ -3496,10 +3496,10 @@ void OperationTest::testUnderlyingScalar()
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingScalar<Type1* volatile      >::Type, Type1* );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingScalar<Type1* const volatile>::Type, Type1* );
 
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingScalar<Type2                >::Type, complex<float> );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingScalar<Type2 const          >::Type, complex<float> );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingScalar<Type2 volatile       >::Type, complex<float> );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingScalar<Type2 const volatile >::Type, complex<float> );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingScalar<Type2                >::Type, blas_float_complex );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingScalar<Type2 const          >::Type, blas_float_complex );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingScalar<Type2 volatile       >::Type, blas_float_complex );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingScalar<Type2 const volatile >::Type, blas_float_complex );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingScalar<Type2&               >::Type, Type2& );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingScalar<Type2*               >::Type, Type2* );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingScalar<Type2* const         >::Type, Type2* );

@@ -164,8 +164,8 @@ class SparseComplexTest
    //! Type of the column-major Hermitian matrix.
    using OHT = blaze::HermitianMatrix< blaze::CompressedMatrix<cplx,blaze::columnMajor> >;
 
-   using RHT  = HT::Rebind< complex<double> >::Other;   //!< Rebound row-major Hermitian matrix type.
-   using ORHT = OHT::Rebind< complex<double> >::Other;  //!< Rebound column-major Hermitian matrix type.
+   using RHT  = HT::Rebind< blas_double_complex >::Other;   //!< Rebound row-major Hermitian matrix type.
+   using ORHT = OHT::Rebind< blas_double_complex >::Other;  //!< Rebound column-major Hermitian matrix type.
    //**********************************************************************************************
 
    //**Compile time checks*************************************************************************

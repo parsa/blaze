@@ -60,8 +60,8 @@ namespace blaze {
 // \ingroup math_type_traits
 //
 // This type trait tests whether or not the given template parameter is a data type compatible
-// to the BLAS standard. The BLAS standard supports \c float, \c double, \c complex<float> and
-// \c complex<double> values. If the type is BLAS compatible, the \a value member constant is
+// to the BLAS standard. The BLAS standard supports \c float, \c double, \c blas_float_complex and
+// \c blas_double_complex values. If the type is BLAS compatible, the \a value member constant is
 // set to \a true, the nested type definition \a Type is \a TrueType, and the class derives
 // from \a TrueType. Otherwise \a value is set to \a false, \a Type is \a FalseType, and the
 // class derives from \a FalseType.
@@ -69,7 +69,7 @@ namespace blaze {
    \code
    blaze::IsBLASCompatible< float >::value         // Evaluates to 1
    blaze::IsBLASCompatible< double >::Type         // Results in TrueType
-   blaze::IsBLASCompatible< complex<float> >       // Is derived from TrueType
+   blaze::IsBLASCompatible< blas_float_complex >       // Is derived from TrueType
    blaze::IsBLASCompatible< int >::value           // Evaluates to 0
    blaze::IsBLASCompatible< unsigned long >::Type  // Results in FalseType
    blaze::IsBLASCompatible< long double >          // Is derived from FalseType

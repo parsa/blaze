@@ -85,12 +85,12 @@ namespace blaze {
 //*************************************************************************************************
 /*!\name LAPACK Hermitian matrix eigenvalue functions (heevd) */
 //@{
-void heevd( char jobz, char uplo, blas_int_t n, complex<float>* A, blas_int_t lda,
-            float* w, complex<float>* work, blas_int_t lwork, float* rwork,
+void heevd( char jobz, char uplo, blas_int_t n, blas_float_complex* A, blas_int_t lda,
+            float* w, blas_float_complex* work, blas_int_t lwork, float* rwork,
             blas_int_t lrwork, blas_int_t* iwork, blas_int_t liwork, blas_int_t* info );
 
-void heevd( char jobz, char uplo, blas_int_t n, complex<double>* A, blas_int_t lda,
-            double* w, complex<double>* work, blas_int_t lwork, double* rwork,
+void heevd( char jobz, char uplo, blas_int_t n, blas_double_complex* A, blas_int_t lda,
+            double* w, blas_double_complex* work, blas_int_t lwork, double* rwork,
             blas_int_t lrwork, blas_int_t* iwork, blas_int_t liwork, blas_int_t* info );
 //@}
 //*************************************************************************************************
@@ -140,15 +140,15 @@ void heevd( char jobz, char uplo, blas_int_t n, complex<double>* A, blas_int_t l
 // is available and linked to the executable. Otherwise a call to this function will result in a
 // linker error.
 */
-inline void heevd( char jobz, char uplo, blas_int_t n, complex<float>* A, blas_int_t lda,
-                   float* w, complex<float>* work, blas_int_t lwork, float* rwork,
+inline void heevd( char jobz, char uplo, blas_int_t n, blas_float_complex* A, blas_int_t lda,
+                   float* w, blas_float_complex* work, blas_int_t lwork, float* rwork,
                    blas_int_t lrwork, blas_int_t* iwork, blas_int_t liwork, blas_int_t* info )
 {
-   BLAZE_STATIC_ASSERT( sizeof( complex<float> ) == 2UL*sizeof( float ) );
+   BLAZE_STATIC_ASSERT( sizeof( blas_float_complex ) == 2UL*sizeof( float ) );
 
 #if defined(INTEL_MKL_VERSION)
    BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( blas_int_t ) );
-   BLAZE_STATIC_ASSERT( sizeof( MKL_Complex8 ) == sizeof( complex<float> ) );
+   BLAZE_STATIC_ASSERT( sizeof( MKL_Complex8 ) == sizeof( blas_float_complex ) );
    using ET = MKL_Complex8;
 #else
    using ET = float;
@@ -208,15 +208,15 @@ inline void heevd( char jobz, char uplo, blas_int_t n, complex<float>* A, blas_i
 // is available and linked to the executable. Otherwise a call to this function will result in a
 // linker error.
 */
-inline void heevd( char jobz, char uplo, blas_int_t n, complex<double>* A, blas_int_t lda,
-                   double* w, complex<double>* work, blas_int_t lwork, double* rwork,
+inline void heevd( char jobz, char uplo, blas_int_t n, blas_double_complex* A, blas_int_t lda,
+                   double* w, blas_double_complex* work, blas_int_t lwork, double* rwork,
                    blas_int_t lrwork, blas_int_t* iwork, blas_int_t liwork, blas_int_t* info )
 {
-   BLAZE_STATIC_ASSERT( sizeof( complex<double> ) == 2UL*sizeof( double ) );
+   BLAZE_STATIC_ASSERT( sizeof( blas_double_complex ) == 2UL*sizeof( double ) );
 
 #if defined(INTEL_MKL_VERSION)
    BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( blas_int_t ) );
-   BLAZE_STATIC_ASSERT( sizeof( MKL_Complex16 ) == sizeof( complex<double> ) );
+   BLAZE_STATIC_ASSERT( sizeof( MKL_Complex16 ) == sizeof( blas_double_complex ) );
    using ET = MKL_Complex16;
 #else
    using ET = double;

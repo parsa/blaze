@@ -78,8 +78,8 @@ void axpy( DenseVector<VT1,TF1>& x, const DenseVector<VT2,TF2>& y, ST alpha );
 // \return void
 //
 // This function performs the dense vector axpy product based on the BLAS axpy() functions. Note
-// that the function only works for vectors with \c float, \c double, \c complex<float>, or
-// \c complex<double> element type. The attempt to call the function with vectors of any other
+// that the function only works for vectors with \c float, \c double, \c blas_float_complex, or
+// \c blas_double_complex element type. The attempt to call the function with vectors of any other
 // element type results in a compile time error.
 //
 // \note This function can only be used if a fitting BLAS library, which supports this function,

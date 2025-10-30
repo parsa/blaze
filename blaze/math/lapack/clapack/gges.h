@@ -126,19 +126,19 @@ void gges( char jobvsl, char jobvsr, char sort,
            blas_int_t* bwork, blas_int_t* info );
 
 void gges( char jobvsl, char jobvsr, char sort,
-           blas_int_t (*selctg)( const complex<float>*, const complex<float>* ), blas_int_t n,
-           complex<float>* A, blas_int_t lda, complex<float>* B, blas_int_t ldb,
-           blas_int_t* sdim, complex<float>* alpha, complex<float>* beta,
-           complex<float>* VSL, blas_int_t ldvsl, complex<float>* VSR,
-           blas_int_t ldvsr, complex<float>* work, blas_int_t lwork,
+           blas_int_t (*selctg)( const blas_float_complex*, const blas_float_complex* ), blas_int_t n,
+           blas_float_complex* A, blas_int_t lda, blas_float_complex* B, blas_int_t ldb,
+           blas_int_t* sdim, blas_float_complex* alpha, blas_float_complex* beta,
+           blas_float_complex* VSL, blas_int_t ldvsl, blas_float_complex* VSR,
+           blas_int_t ldvsr, blas_float_complex* work, blas_int_t lwork,
            float* rwork, blas_int_t* bwork, blas_int_t* info );
 
 void gges( char jobvsl, char jobvsr, char sort,
-           blas_int_t (*selctg)( const complex<double>*, const complex<double>* ), blas_int_t n,
-           complex<double>* A, blas_int_t lda, complex<double>* B, blas_int_t ldb,
-           blas_int_t* sdim, complex<double>* alpha, complex<double>* beta,
-           complex<double>* VSL, blas_int_t ldvsl, complex<double>* VSR,
-           blas_int_t ldvsr, complex<double>* work, blas_int_t lwork,
+           blas_int_t (*selctg)( const blas_double_complex*, const blas_double_complex* ), blas_int_t n,
+           blas_double_complex* A, blas_int_t lda, blas_double_complex* B, blas_int_t ldb,
+           blas_int_t* sdim, blas_double_complex* alpha, blas_double_complex* beta,
+           blas_double_complex* VSL, blas_int_t ldvsl, blas_double_complex* VSR,
+           blas_int_t ldvsr, blas_double_complex* work, blas_int_t lwork,
            double* rwork, blas_int_t* bwork, blas_int_t* info );
 //@}
 //*************************************************************************************************
@@ -429,18 +429,18 @@ inline void gges( char jobvsl, char jobvsr, char sort,
 // linker error.
 */
 inline void gges( char jobvsl, char jobvsr, char sort,
-                  blas_int_t (*selctg)( const complex<float>*, const complex<float>* ), blas_int_t n,
-                  complex<float>* A, blas_int_t lda, complex<float>* B, blas_int_t ldb,
-                  blas_int_t* sdim, complex<float>* alpha, complex<float>* beta,
-                  complex<float>* VSL, blas_int_t ldvsl, complex<float>* VSR,
-                  blas_int_t ldvsr, complex<float>* work, blas_int_t lwork,
+                  blas_int_t (*selctg)( const blas_float_complex*, const blas_float_complex* ), blas_int_t n,
+                  blas_float_complex* A, blas_int_t lda, blas_float_complex* B, blas_int_t ldb,
+                  blas_int_t* sdim, blas_float_complex* alpha, blas_float_complex* beta,
+                  blas_float_complex* VSL, blas_int_t ldvsl, blas_float_complex* VSR,
+                  blas_int_t ldvsr, blas_float_complex* work, blas_int_t lwork,
                   float* rwork, blas_int_t* bwork, blas_int_t* info )
 {
-   BLAZE_STATIC_ASSERT( sizeof( complex<float> ) == 2UL*sizeof( float ) );
+   BLAZE_STATIC_ASSERT( sizeof( blas_float_complex ) == 2UL*sizeof( float ) );
 
 #if defined(INTEL_MKL_VERSION)
    BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( blas_int_t ) );
-   BLAZE_STATIC_ASSERT( sizeof( MKL_Complex8 ) == sizeof( complex<float> ) );
+   BLAZE_STATIC_ASSERT( sizeof( MKL_Complex8 ) == sizeof( blas_float_complex ) );
    using ET = MKL_Complex8;
    using Selctg = MKL_INT (*)( const ET*, const ET* );
 #else
@@ -542,18 +542,18 @@ inline void gges( char jobvsl, char jobvsr, char sort,
 // linker error.
 */
 inline void gges( char jobvsl, char jobvsr, char sort,
-                  blas_int_t (*selctg)( const complex<double>*, const complex<double>* ), blas_int_t n,
-                  complex<double>* A, blas_int_t lda, complex<double>* B, blas_int_t ldb,
-                  blas_int_t* sdim, complex<double>* alpha, complex<double>* beta,
-                  complex<double>* VSL, blas_int_t ldvsl, complex<double>* VSR,
-                  blas_int_t ldvsr, complex<double>* work, blas_int_t lwork,
+                  blas_int_t (*selctg)( const blas_double_complex*, const blas_double_complex* ), blas_int_t n,
+                  blas_double_complex* A, blas_int_t lda, blas_double_complex* B, blas_int_t ldb,
+                  blas_int_t* sdim, blas_double_complex* alpha, blas_double_complex* beta,
+                  blas_double_complex* VSL, blas_int_t ldvsl, blas_double_complex* VSR,
+                  blas_int_t ldvsr, blas_double_complex* work, blas_int_t lwork,
                   double* rwork, blas_int_t* bwork, blas_int_t* info )
 {
-   BLAZE_STATIC_ASSERT( sizeof( complex<double> ) == 2UL*sizeof( double ) );
+   BLAZE_STATIC_ASSERT( sizeof( blas_double_complex ) == 2UL*sizeof( double ) );
 
 #if defined(INTEL_MKL_VERSION)
    BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( blas_int_t ) );
-   BLAZE_STATIC_ASSERT( sizeof( MKL_Complex16 ) == sizeof( complex<double> ) );
+   BLAZE_STATIC_ASSERT( sizeof( MKL_Complex16 ) == sizeof( blas_double_complex ) );
    using ET = MKL_Complex16;
    using Selctg = MKL_INT (*)( const ET*, const ET* );
 #else

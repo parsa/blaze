@@ -229,11 +229,11 @@ void ClassTest::testScalarSubtraction()
          static_assert( IsSame_v< SubTrait_t<T1,T2>, RT >, "Non-matching type detected" );
       }
 
-      // .../complex<float>
+      // .../blas_float_complex
       {
          using T1 = float;
-         using T2 = complex<float>;
-         using RT = complex<float>;
+         using T2 = blas_float_complex;
+         using RT = blas_float_complex;
          static_assert( IsSame_v< SubTrait_t<T1,T2>, RT >, "Non-matching type detected" );
       }
    }
@@ -272,30 +272,30 @@ void ClassTest::testScalarSubtraction()
          static_assert( IsSame_v< SubTrait_t<T1,T2>, RT >, "Non-matching type detected" );
       }
 
-      // .../complex<double>
+      // .../blas_double_complex
       {
          using T1 = double;
-         using T2 = complex<double>;
-         using RT = complex<double>;
+         using T2 = blas_double_complex;
+         using RT = blas_double_complex;
          static_assert( IsSame_v< SubTrait_t<T1,T2>, RT >, "Non-matching type detected" );
       }
    }
 
-   // complex<double>/...
+   // blas_double_complex/...
    {
       // .../double
       {
-         using T1 = complex<double>;
+         using T1 = blas_double_complex;
          using T2 = double;
-         using RT = complex<double>;
+         using RT = blas_double_complex;
          static_assert( IsSame_v< SubTrait_t<T1,T2>, RT >, "Non-matching type detected" );
       }
 
-      // .../complex<double>
+      // .../blas_double_complex
       {
-         using T1 = complex<double>;
-         using T2 = complex<double>;
-         using RT = complex<double>;
+         using T1 = blas_double_complex;
+         using T2 = blas_double_complex;
+         using RT = blas_double_complex;
          static_assert( IsSame_v< SubTrait_t<T1,T2>, RT >, "Non-matching type detected" );
       }
    }

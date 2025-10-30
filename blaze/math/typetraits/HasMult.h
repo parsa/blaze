@@ -95,10 +95,10 @@ struct HasMultHelper< T1, T2, Void_t< decltype( std::declval<T1>() * std::declva
 
    \code
    blaze::HasMult< int, int >::value                         // Evaluates to 1
-   blaze::HasMult< complex<float>, complex<float> >::Type    // Results in TrueType
+   blaze::HasMult< blas_float_complex, blas_float_complex >::Type    // Results in TrueType
    blaze::HasMult< DynamicVector<int>, DynamicVector<int> >  // Is derived from TrueType
-   blaze::HasMult< int, complex<float> >::value              // Evaluates to 0
-   blaze::HasMult< complex<int>, complex<float> >::Type      // Results in FalseType
+   blaze::HasMult< int, blas_float_complex >::value              // Evaluates to 0
+   blaze::HasMult< complex<int>, blas_float_complex >::Type      // Results in FalseType
    blaze::HasMult< DynamicMatrix<int>, DynamicVector<int> >  // Is derived from FalseType
    \endcode
 */

@@ -94,7 +94,7 @@ void gemv( DenseVector<VT1,true>& y, const DenseVector<VT2,true>& x,
 //
 // This function performs the dense matrix/dense vector multiplication based on the BLAS gemv()
 // functions. Note that the function only works for vectors and matrices with \c float, \c double,
-// \c complex<float>, or \c complex<double> element type. The attempt to call the function with
+// \c blas_float_complex, or \c blas_double_complex element type. The attempt to call the function with
 // vectors and matrices of any other element type results in a compile time error.
 //
 // \note This function can only be used if a fitting BLAS library, which supports this function,
@@ -147,7 +147,7 @@ inline void gemv( DenseVector<VT1,false>& y, const DenseMatrix<MT1,SO>& A,
 //
 // This function performs the transpose dense vector/dense matrix multiplication based on the
 // BLAS gemv() functions. Note that the function only works for vectors and matrices with \c float,
-// \c double, \c complex<float>, or \c complex<double> element type. The attempt to call the
+// \c double, \c blas_float_complex, or \c blas_double_complex element type. The attempt to call the
 // function with vectors and matrices of any other element type results in a compile time error.
 //
 // \note This function can only be used if a fitting BLAS library, which supports this function,

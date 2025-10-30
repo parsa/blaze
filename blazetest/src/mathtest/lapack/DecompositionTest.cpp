@@ -123,52 +123,52 @@ DecompositionTest::DecompositionTest()
    // Single precision complex tests
    //=====================================================================================
 
-   //testGetrf< complex<float> >();
-   //testSytrf< complex<float> >();
-   //testHetrf< complex<float> >();
-   //testPotrf< complex<float> >();
-   //testGeqrf< complex<float> >();
-   //testUngqr< complex<float> >();
-   //testUng2r< complex<float> >();
-   //testUnmqr< complex<float> >();
-   //testGerqf< complex<float> >();
-   //testUngrq< complex<float> >();
-   //testUngr2< complex<float> >();
-   //testUnmrq< complex<float> >();
-   //testGeqlf< complex<float> >();
-   //testUngql< complex<float> >();
-   //testUng2l< complex<float> >();
-   //testUnmql< complex<float> >();
-   //testGelqf< complex<float> >();
-   //testUnglq< complex<float> >();
-   //testUngl2< complex<float> >();
-   //testUnmlq< complex<float> >();
+   //testGetrf< blas_float_complex >();
+   //testSytrf< blas_float_complex >();
+   //testHetrf< blas_float_complex >();
+   //testPotrf< blas_float_complex >();
+   //testGeqrf< blas_float_complex >();
+   //testUngqr< blas_float_complex >();
+   //testUng2r< blas_float_complex >();
+   //testUnmqr< blas_float_complex >();
+   //testGerqf< blas_float_complex >();
+   //testUngrq< blas_float_complex >();
+   //testUngr2< blas_float_complex >();
+   //testUnmrq< blas_float_complex >();
+   //testGeqlf< blas_float_complex >();
+   //testUngql< blas_float_complex >();
+   //testUng2l< blas_float_complex >();
+   //testUnmql< blas_float_complex >();
+   //testGelqf< blas_float_complex >();
+   //testUnglq< blas_float_complex >();
+   //testUngl2< blas_float_complex >();
+   //testUnmlq< blas_float_complex >();
 
 
    //=====================================================================================
    // Double precision complex tests
    //=====================================================================================
 
-   testGetrf< complex<double> >();
-   testSytrf< complex<double> >();
-   testHetrf< complex<double> >();
-   testPotrf< complex<double> >();
-   testGeqrf< complex<double> >();
-   testUngqr< complex<double> >();
-   testUng2r< complex<double> >();
-   testUnmqr< complex<double> >();
-   testGerqf< complex<double> >();
-   testUngrq< complex<double> >();
-   testUngr2< complex<double> >();
-   testUnmrq< complex<double> >();
-   testGeqlf< complex<double> >();
-   testUngql< complex<double> >();
-   testUng2l< complex<double> >();
-   testUnmql< complex<double> >();
-   testGelqf< complex<double> >();
-   testUnglq< complex<double> >();
-   testUngl2< complex<double> >();
-   testUnmlq< complex<double> >();
+   testGetrf< blas_double_complex >();
+   testSytrf< blas_double_complex >();
+   testHetrf< blas_double_complex >();
+   testPotrf< blas_double_complex >();
+   testGeqrf< blas_double_complex >();
+   testUngqr< blas_double_complex >();
+   testUng2r< blas_double_complex >();
+   testUnmqr< blas_double_complex >();
+   testGerqf< blas_double_complex >();
+   testUngrq< blas_double_complex >();
+   testUngr2< blas_double_complex >();
+   testUnmrq< blas_double_complex >();
+   testGeqlf< blas_double_complex >();
+   testUngql< blas_double_complex >();
+   testUng2l< blas_double_complex >();
+   testUnmql< blas_double_complex >();
+   testGelqf< blas_double_complex >();
+   testUnglq< blas_double_complex >();
+   testUngl2< blas_double_complex >();
+   testUnmlq< blas_double_complex >();
 }
 //*************************************************************************************************
 

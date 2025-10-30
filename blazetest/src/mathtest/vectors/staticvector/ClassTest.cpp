@@ -99,8 +99,8 @@ ClassTest::ClassTest()
    testAlignment< complex<unsigned short> >( "complex<unsigned short>" );
    testAlignment< complex<int>            >( "complex<int>"            );
    testAlignment< complex<unsigned int>   >( "complex<unsigned int>"   );
-   testAlignment< complex<float>          >( "complex<float>"          );
-   testAlignment< complex<double>         >( "complex<double>"         );
+   testAlignment< blas_float_complex          >( "blas_float_complex"          );
+   testAlignment< blas_double_complex         >( "blas_double_complex"         );
 
    testConstructors();
    testAssignment();
@@ -1766,16 +1766,16 @@ void ClassTest::testScaling()
 
       using blaze::complex;
 
-      blaze::StaticVector<complex<float>,2UL,blaze::rowVector> vec;
-      vec[0] = complex<float>( 1.0F, 0.0F );
-      vec[1] = complex<float>( 2.0F, 0.0F );
-      vec.scale( complex<float>( 3.0F, 0.0F ) );
+      blaze::StaticVector<blas_float_complex,2UL,blaze::rowVector> vec;
+      vec[0] = blas_float_complex( 1.0F, 0.0F );
+      vec[1] = blas_float_complex( 2.0F, 0.0F );
+      vec.scale( blas_float_complex( 3.0F, 0.0F ) );
 
       checkSize    ( vec, 2UL );
       checkCapacity( vec, 2UL );
       checkNonZeros( vec, 2UL );
 
-      if( vec[0] != complex<float>( 3.0F, 0.0F ) || vec[1] != complex<float>( 6.0F, 0.0F ) ) {
+      if( vec[0] != blas_float_complex( 3.0F, 0.0F ) || vec[1] != blas_float_complex( 6.0F, 0.0F ) ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Scale operation failed\n"

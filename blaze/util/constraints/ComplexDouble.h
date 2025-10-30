@@ -56,8 +56,8 @@ namespace blaze {
 // \ingroup constraints
 //
 // This compile time constraint checks that the given data type \a T is a double precision
-// complex data type (i.e. \a complex<double>, ignoring the cv-qualifiers). In case \a T is
-// not of type \a complex<double> a compilation error is created.
+// complex data type (i.e. \a blas_double_complex, ignoring the cv-qualifiers). In case \a T is
+// not of type \a blas_double_complex a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_BE_COMPLEX_DOUBLE_TYPE(T) \
    static_assert( ::blaze::IsComplexDouble_v<T>, "Non-double precision complex type detected" )
@@ -77,8 +77,8 @@ namespace blaze {
 // \ingroup constraints
 //
 // This compile time constraint checks that the given data type \a T is not a double precision
-// complex data type (i.e. \a complex<double>, ignoring the cv-qualifiers). In case \a T is of
-// type \a complex<double> a compilation error is created.
+// complex data type (i.e. \a blas_double_complex, ignoring the cv-qualifiers). In case \a T is of
+// type \a blas_double_complex a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_NOT_BE_COMPLEX_DOUBLE_TYPE(T) \
    static_assert( !::blaze::IsComplexDouble_v<T>, "Double precision complex type detected" )

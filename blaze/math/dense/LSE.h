@@ -99,7 +99,7 @@ namespace blaze {
 // \a std::runtime_error exception is thrown.
 //
 // \note This function can only be used for dense matrices with \c float, \c double,
-// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// \c blas_float_complex or \c blas_double_complex element type. The attempt to call the function with
 // matrices of any other element type results in a compile time error!
 */
 template< typename MT1      // Type of the system matrix
@@ -160,7 +160,7 @@ void solve0x0( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& X, const Den
 // is thrown.
 //
 // \note This function can only be used for dense matrices and vector with \c float, \c double,
-// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// \c blas_float_complex or \c blas_double_complex element type. The attempt to call the function with
 // matrices and vectors of any other element type results in a compile time error!
 */
 template< typename MT       // Type of the system matrix
@@ -220,7 +220,7 @@ void solve1x1( const DenseMatrix<MT,SO>& A, DenseVector<VT1,TF1>& x, const Dense
 // \a std::runtime_error exception is thrown.
 //
 // \note This function can only be used for dense matrices with \c float, \c double,
-// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// \c blas_float_complex or \c blas_double_complex element type. The attempt to call the function with
 // matrices of any other element type results in a compile time error!
 */
 template< typename MT1      // Type of the system matrix
@@ -292,7 +292,7 @@ void solve1x1( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& X, const Den
 // is thrown.
 //
 // \note This function can only be used for dense matrices and vector with \c float, \c double,
-// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// \c blas_float_complex or \c blas_double_complex element type. The attempt to call the function with
 // matrices and vectors of any other element type results in a compile time error!
 */
 template< typename MT   // Type of the system matrix
@@ -359,7 +359,7 @@ void solve2x2( const DenseMatrix<MT,SO>& A, DenseVector<VT1,TF1>& x, const Dense
 // exception is thrown.
 //
 // \note This function can only be used for dense matrices and vector with \c float, \c double,
-// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// \c blas_float_complex or \c blas_double_complex element type. The attempt to call the function with
 // matrices and vectors of any other element type results in a compile time error!
 */
 template< typename MT   // Type of the system matrix
@@ -427,7 +427,7 @@ void solve2x2( const DenseMatrix<MT,SO>& A, DenseVector<VT1,TF1>& x, const Dense
 // \a std::runtime_error exception is thrown.
 //
 // \note This function can only be used for dense matrices and vector with \c float, \c double,
-// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// \c blas_float_complex or \c blas_double_complex element type. The attempt to call the function with
 // matrices and vectors of any other element type results in a compile time error!
 */
 template< typename MT   // Type of the system matrix
@@ -489,7 +489,7 @@ void solve2x2( const DenseMatrix<MT,SO>& A, DenseVector<VT1,TF1>& x, const Dense
 // \a std::runtime_error exception is thrown.
 //
 // \note This function can only be used for dense matrices and vector with \c float, \c double,
-// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// \c blas_float_complex or \c blas_double_complex element type. The attempt to call the function with
 // matrices and vectors of any other element type results in a compile time error!
 */
 template< typename MT   // Type of the system matrix
@@ -547,7 +547,7 @@ void solve2x2( const DenseMatrix<MT,SO>& A, DenseVector<VT1,TF1>& x, const Dense
 // \a std::runtime_error exception is thrown.
 //
 // \note This function can only be used for dense matrices and vector with \c float, \c double,
-// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// \c blas_float_complex or \c blas_double_complex element type. The attempt to call the function with
 // matrices and vectors of any other element type results in a compile time error!
 */
 template< typename MT   // Type of the system matrix
@@ -609,7 +609,7 @@ void solve2x2( const DenseMatrix<MT,SO>& A, DenseVector<VT1,TF1>& x, const Dense
 // \a std::runtime_error exception is thrown.
 //
 // \note This function can only be used for dense matrices and vector with \c float, \c double,
-// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// \c blas_float_complex or \c blas_double_complex element type. The attempt to call the function with
 // matrices and vectors of any other element type results in a compile time error!
 */
 template< typename MT   // Type of the system matrix
@@ -666,7 +666,7 @@ void solve2x2( const DenseMatrix<MT,SO>& A, DenseVector<VT1,TF1>& x, const Dense
 // exception is thrown.
 //
 // \note This function can only be used for dense matrices and vector with \c float, \c double,
-// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// \c blas_float_complex or \c blas_double_complex element type. The attempt to call the function with
 // matrices and vectors of any other element type results in a compile time error!
 */
 template< typename MT   // Type of the system matrix
@@ -727,7 +727,7 @@ void solve2x2( const DenseMatrix<MT,SO>& A, DenseVector<VT1,TF1>& x, const Dense
 // \a std::runtime_error exception is thrown.
 //
 // \note This function can only be used for dense matrices and vector with \c float, \c double,
-// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// \c blas_float_complex or \c blas_double_complex element type. The attempt to call the function with
 // matrices and vectors of any other element type results in a compile time error!
 */
 template< typename MT1  // Type of the system matrix
@@ -780,7 +780,7 @@ void solve2x2( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& X, const Den
 // \a std::runtime_error exception is thrown.
 //
 // \note This function can only be used for dense matrices and vector with \c float, \c double,
-// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// \c blas_float_complex or \c blas_double_complex element type. The attempt to call the function with
 // matrices and vectors of any other element type results in a compile time error!
 */
 template< typename MT1  // Type of the system matrix
@@ -852,7 +852,7 @@ void solve2x2( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& X, const Den
 // \a std::runtime_error exception is thrown.
 //
 // \note This function can only be used for dense matrices and vector with \c float, \c double,
-// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// \c blas_float_complex or \c blas_double_complex element type. The attempt to call the function with
 // matrices and vectors of any other element type results in a compile time error!
 */
 template< typename MT1  // Type of the system matrix
@@ -915,7 +915,7 @@ void solve2x2( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& X, const Den
 // \a std::runtime_error exception is thrown.
 //
 // \note This function can only be used for dense matrices and vector with \c float, \c double,
-// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// \c blas_float_complex or \c blas_double_complex element type. The attempt to call the function with
 // matrices and vectors of any other element type results in a compile time error!
 */
 template< typename MT1  // Type of the system matrix
@@ -987,7 +987,7 @@ void solve2x2( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& X, const Den
 // \a std::runtime_error exception is thrown.
 //
 // \note This function can only be used for dense matrices and vector with \c float, \c double,
-// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// \c blas_float_complex or \c blas_double_complex element type. The attempt to call the function with
 // matrices and vectors of any other element type results in a compile time error!
 */
 template< typename MT1  // Type of the system matrix
@@ -1049,7 +1049,7 @@ void solve2x2( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& X, const Den
 // \a std::runtime_error exception is thrown.
 //
 // \note This function can only be used for dense matrices and vector with \c float, \c double,
-// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// \c blas_float_complex or \c blas_double_complex element type. The attempt to call the function with
 // matrices and vectors of any other element type results in a compile time error!
 */
 template< typename MT1  // Type of the system matrix
@@ -1128,7 +1128,7 @@ void solve2x2( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& X, const Den
 // exception is thrown.
 //
 // \note This function can only be used for dense matrices and vector with \c float, \c double,
-// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// \c blas_float_complex or \c blas_double_complex element type. The attempt to call the function with
 // matrices and vectors of any other element type results in a compile time error!
 */
 template< typename MT   // Type of the system matrix
@@ -1204,7 +1204,7 @@ void solve3x3( const DenseMatrix<MT,SO>& A, DenseVector<VT1,TF1>& x, const Dense
 // exception is thrown.
 //
 // \note This function can only be used for dense matrices and vector with \c float, \c double,
-// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// \c blas_float_complex or \c blas_double_complex element type. The attempt to call the function with
 // matrices and vectors of any other element type results in a compile time error!
 */
 template< typename MT   // Type of the system matrix
@@ -1281,7 +1281,7 @@ void solve3x3( const DenseMatrix<MT,SO>& A, DenseVector<VT1,TF1>& x, const Dense
 // \a std::runtime_error exception is thrown.
 //
 // \note This function can only be used for dense matrices and vector with \c float, \c double,
-// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// \c blas_float_complex or \c blas_double_complex element type. The attempt to call the function with
 // matrices and vectors of any other element type results in a compile time error!
 */
 template< typename MT   // Type of the system matrix
@@ -1344,7 +1344,7 @@ void solve3x3( const DenseMatrix<MT,SO>& A, DenseVector<VT1,TF1>& x, const Dense
 // \a std::runtime_error exception is thrown.
 //
 // \note This function can only be used for dense matrices and vector with \c float, \c double,
-// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// \c blas_float_complex or \c blas_double_complex element type. The attempt to call the function with
 // matrices and vectors of any other element type results in a compile time error!
 */
 template< typename MT   // Type of the system matrix
@@ -1403,7 +1403,7 @@ void solve3x3( const DenseMatrix<MT,SO>& A, DenseVector<VT1,TF1>& x, const Dense
 // \a std::runtime_error exception is thrown.
 //
 // \note This function can only be used for dense matrices and vector with \c float, \c double,
-// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// \c blas_float_complex or \c blas_double_complex element type. The attempt to call the function with
 // matrices and vectors of any other element type results in a compile time error!
 */
 template< typename MT   // Type of the system matrix
@@ -1466,7 +1466,7 @@ void solve3x3( const DenseMatrix<MT,SO>& A, DenseVector<VT1,TF1>& x, const Dense
 // \a std::runtime_error exception is thrown.
 //
 // \note This function can only be used for dense matrices and vector with \c float, \c double,
-// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// \c blas_float_complex or \c blas_double_complex element type. The attempt to call the function with
 // matrices and vectors of any other element type results in a compile time error!
 */
 template< typename MT   // Type of the system matrix
@@ -1524,7 +1524,7 @@ void solve3x3( const DenseMatrix<MT,SO>& A, DenseVector<VT1,TF1>& x, const Dense
 // exception is thrown.
 //
 // \note This function can only be used for dense matrices and vector with \c float, \c double,
-// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// \c blas_float_complex or \c blas_double_complex element type. The attempt to call the function with
 // matrices and vectors of any other element type results in a compile time error!
 */
 template< typename MT   // Type of the system matrix
@@ -1586,7 +1586,7 @@ void solve3x3( const DenseMatrix<MT,SO>& A, DenseVector<VT1,TF1>& x, const Dense
 // \a std::runtime_error exception is thrown.
 //
 // \note This function can only be used for dense matrices and vector with \c float, \c double,
-// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// \c blas_float_complex or \c blas_double_complex element type. The attempt to call the function with
 // matrices and vectors of any other element type results in a compile time error!
 */
 template< typename MT1  // Type of the system matrix
@@ -1639,7 +1639,7 @@ void solve3x3( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& X, const Den
 // \a std::runtime_error exception is thrown.
 //
 // \note This function can only be used for dense matrices and vector with \c float, \c double,
-// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// \c blas_float_complex or \c blas_double_complex element type. The attempt to call the function with
 // matrices and vectors of any other element type results in a compile time error!
 */
 template< typename MT1  // Type of the system matrix
@@ -1713,7 +1713,7 @@ void solve3x3( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& X, const Den
 // \a std::runtime_error exception is thrown.
 //
 // \note This function can only be used for dense matrices and vector with \c float, \c double,
-// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// \c blas_float_complex or \c blas_double_complex element type. The attempt to call the function with
 // matrices and vectors of any other element type results in a compile time error!
 */
 template< typename MT1  // Type of the system matrix
@@ -1777,7 +1777,7 @@ void solve3x3( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& X, const Den
 // \a std::runtime_error exception is thrown.
 //
 // \note This function can only be used for dense matrices and vector with \c float, \c double,
-// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// \c blas_float_complex or \c blas_double_complex element type. The attempt to call the function with
 // matrices and vectors of any other element type results in a compile time error!
 */
 template< typename MT1  // Type of the system matrix
@@ -1851,7 +1851,7 @@ void solve3x3( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& X, const Den
 // \a std::runtime_error exception is thrown.
 //
 // \note This function can only be used for dense matrices and vector with \c float, \c double,
-// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// \c blas_float_complex or \c blas_double_complex element type. The attempt to call the function with
 // matrices and vectors of any other element type results in a compile time error!
 */
 template< typename MT1  // Type of the system matrix
@@ -1914,7 +1914,7 @@ void solve3x3( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& X, const Den
 // \a std::runtime_error exception is thrown.
 //
 // \note This function can only be used for dense matrices and vector with \c float, \c double,
-// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// \c blas_float_complex or \c blas_double_complex element type. The attempt to call the function with
 // matrices and vectors of any other element type results in a compile time error!
 */
 template< typename MT1  // Type of the system matrix
@@ -1995,7 +1995,7 @@ void solve3x3( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& X, const Den
 // exception is thrown.
 //
 // \note This function can only be used for dense matrices and vector with \c float, \c double,
-// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// \c blas_float_complex or \c blas_double_complex element type. The attempt to call the function with
 // matrices and vectors of any other element type results in a compile time error!
 */
 template< typename MT   // Type of the system matrix
@@ -2095,7 +2095,7 @@ void solve4x4( const DenseMatrix<MT,SO>& A, DenseVector<VT1,TF1>& x, const Dense
 // exception is thrown.
 //
 // \note This function can only be used for dense matrices and vector with \c float, \c double,
-// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// \c blas_float_complex or \c blas_double_complex element type. The attempt to call the function with
 // matrices and vectors of any other element type results in a compile time error!
 */
 template< typename MT   // Type of the system matrix
@@ -2196,7 +2196,7 @@ void solve4x4( const DenseMatrix<MT,SO>& A, DenseVector<VT1,TF1>& x, const Dense
 // \a std::runtime_error exception is thrown.
 //
 // \note This function can only be used for dense matrices and vector with \c float, \c double,
-// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// \c blas_float_complex or \c blas_double_complex element type. The attempt to call the function with
 // matrices and vectors of any other element type results in a compile time error!
 */
 template< typename MT   // Type of the system matrix
@@ -2260,7 +2260,7 @@ void solve4x4( const DenseMatrix<MT,SO>& A, DenseVector<VT1,TF1>& x, const Dense
 // \a std::runtime_error exception is thrown.
 //
 // \note This function can only be used for dense matrices and vector with \c float, \c double,
-// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// \c blas_float_complex or \c blas_double_complex element type. The attempt to call the function with
 // matrices and vectors of any other element type results in a compile time error!
 */
 template< typename MT   // Type of the system matrix
@@ -2320,7 +2320,7 @@ void solve4x4( const DenseMatrix<MT,SO>& A, DenseVector<VT1,TF1>& x, const Dense
 // \a std::runtime_error exception is thrown.
 //
 // \note This function can only be used for dense matrices and vector with \c float, \c double,
-// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// \c blas_float_complex or \c blas_double_complex element type. The attempt to call the function with
 // matrices and vectors of any other element type results in a compile time error!
 */
 template< typename MT   // Type of the system matrix
@@ -2384,7 +2384,7 @@ void solve4x4( const DenseMatrix<MT,SO>& A, DenseVector<VT1,TF1>& x, const Dense
 // \a std::runtime_error exception is thrown.
 //
 // \note This function can only be used for dense matrices and vector with \c float, \c double,
-// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// \c blas_float_complex or \c blas_double_complex element type. The attempt to call the function with
 // matrices and vectors of any other element type results in a compile time error!
 */
 template< typename MT   // Type of the system matrix
@@ -2443,7 +2443,7 @@ void solve4x4( const DenseMatrix<MT,SO>& A, DenseVector<VT1,TF1>& x, const Dense
 // exception is thrown.
 //
 // \note This function can only be used for dense matrices and vector with \c float, \c double,
-// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// \c blas_float_complex or \c blas_double_complex element type. The attempt to call the function with
 // matrices and vectors of any other element type results in a compile time error!
 */
 template< typename MT   // Type of the system matrix
@@ -2506,7 +2506,7 @@ void solve4x4( const DenseMatrix<MT,SO>& A, DenseVector<VT1,TF1>& x, const Dense
 // \a std::runtime_error exception is thrown.
 //
 // \note This function can only be used for dense matrices and vector with \c float, \c double,
-// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// \c blas_float_complex or \c blas_double_complex element type. The attempt to call the function with
 // matrices and vectors of any other element type results in a compile time error!
 */
 template< typename MT1  // Type of the system matrix
@@ -2559,7 +2559,7 @@ void solve4x4( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& X, const Den
 // \a std::runtime_error exception is thrown.
 //
 // \note This function can only be used for dense matrices and vector with \c float, \c double,
-// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// \c blas_float_complex or \c blas_double_complex element type. The attempt to call the function with
 // matrices and vectors of any other element type results in a compile time error!
 */
 template< typename MT1  // Type of the system matrix
@@ -2635,7 +2635,7 @@ void solve4x4( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& X, const Den
 // \a std::runtime_error exception is thrown.
 //
 // \note This function can only be used for dense matrices and vector with \c float, \c double,
-// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// \c blas_float_complex or \c blas_double_complex element type. The attempt to call the function with
 // matrices and vectors of any other element type results in a compile time error!
 */
 template< typename MT1  // Type of the system matrix
@@ -2700,7 +2700,7 @@ void solve4x4( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& X, const Den
 // \a std::runtime_error exception is thrown.
 //
 // \note This function can only be used for dense matrices and vector with \c float, \c double,
-// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// \c blas_float_complex or \c blas_double_complex element type. The attempt to call the function with
 // matrices and vectors of any other element type results in a compile time error!
 */
 template< typename MT1  // Type of the system matrix
@@ -2776,7 +2776,7 @@ void solve4x4( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& X, const Den
 // \a std::runtime_error exception is thrown.
 //
 // \note This function can only be used for dense matrices and vector with \c float, \c double,
-// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// \c blas_float_complex or \c blas_double_complex element type. The attempt to call the function with
 // matrices and vectors of any other element type results in a compile time error!
 */
 template< typename MT1  // Type of the system matrix
@@ -2840,7 +2840,7 @@ void solve4x4( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& X, const Den
 // \a std::runtime_error exception is thrown.
 //
 // \note This function can only be used for dense matrices and vector with \c float, \c double,
-// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// \c blas_float_complex or \c blas_double_complex element type. The attempt to call the function with
 // matrices and vectors of any other element type results in a compile time error!
 */
 template< typename MT1  // Type of the system matrix
@@ -2923,7 +2923,7 @@ void solve4x4( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& X, const Den
 // exception is thrown.
 //
 // \note This function can only be used for dense matrices and vector with \c float, \c double,
-// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// \c blas_float_complex or \c blas_double_complex element type. The attempt to call the function with
 // matrices and vectors of any other element type results in a compile time error!
 */
 template< typename MT   // Type of the system matrix
@@ -3072,7 +3072,7 @@ void solve5x5( const DenseMatrix<MT,SO>& A, DenseVector<VT1,TF1>& x, const Dense
 // exception is thrown.
 //
 // \note This function can only be used for dense matrices and vector with \c float, \c double,
-// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// \c blas_float_complex or \c blas_double_complex element type. The attempt to call the function with
 // matrices and vectors of any other element type results in a compile time error!
 */
 template< typename MT   // Type of the system matrix
@@ -3222,7 +3222,7 @@ void solve5x5( const DenseMatrix<MT,SO>& A, DenseVector<VT1,TF1>& x, const Dense
 // \a std::runtime_error exception is thrown.
 //
 // \note This function can only be used for dense matrices and vector with \c float, \c double,
-// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// \c blas_float_complex or \c blas_double_complex element type. The attempt to call the function with
 // matrices and vectors of any other element type results in a compile time error!
 */
 template< typename MT   // Type of the system matrix
@@ -3287,7 +3287,7 @@ void solve5x5( const DenseMatrix<MT,SO>& A, DenseVector<VT1,TF1>& x, const Dense
 // \a std::runtime_error exception is thrown.
 //
 // \note This function can only be used for dense matrices and vector with \c float, \c double,
-// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// \c blas_float_complex or \c blas_double_complex element type. The attempt to call the function with
 // matrices and vectors of any other element type results in a compile time error!
 */
 template< typename MT   // Type of the system matrix
@@ -3348,7 +3348,7 @@ void solve5x5( const DenseMatrix<MT,SO>& A, DenseVector<VT1,TF1>& x, const Dense
 // \a std::runtime_error exception is thrown.
 //
 // \note This function can only be used for dense matrices and vector with \c float, \c double,
-// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// \c blas_float_complex or \c blas_double_complex element type. The attempt to call the function with
 // matrices and vectors of any other element type results in a compile time error!
 */
 template< typename MT   // Type of the system matrix
@@ -3413,7 +3413,7 @@ void solve5x5( const DenseMatrix<MT,SO>& A, DenseVector<VT1,TF1>& x, const Dense
 // \a std::runtime_error exception is thrown.
 //
 // \note This function can only be used for dense matrices and vector with \c float, \c double,
-// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// \c blas_float_complex or \c blas_double_complex element type. The attempt to call the function with
 // matrices and vectors of any other element type results in a compile time error!
 */
 template< typename MT   // Type of the system matrix
@@ -3473,7 +3473,7 @@ void solve5x5( const DenseMatrix<MT,SO>& A, DenseVector<VT1,TF1>& x, const Dense
 // exception is thrown.
 //
 // \note This function can only be used for dense matrices and vector with \c float, \c double,
-// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// \c blas_float_complex or \c blas_double_complex element type. The attempt to call the function with
 // matrices and vectors of any other element type results in a compile time error!
 */
 template< typename MT   // Type of the system matrix
@@ -3537,7 +3537,7 @@ void solve5x5( const DenseMatrix<MT,SO>& A, DenseVector<VT1,TF1>& x, const Dense
 // \a std::runtime_error exception is thrown.
 //
 // \note This function can only be used for dense matrices and vector with \c float, \c double,
-// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// \c blas_float_complex or \c blas_double_complex element type. The attempt to call the function with
 // matrices and vectors of any other element type results in a compile time error!
 */
 template< typename MT1  // Type of the system matrix
@@ -3590,7 +3590,7 @@ void solve5x5( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& X, const Den
 // \a std::runtime_error exception is thrown.
 //
 // \note This function can only be used for dense matrices and vector with \c float, \c double,
-// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// \c blas_float_complex or \c blas_double_complex element type. The attempt to call the function with
 // matrices and vectors of any other element type results in a compile time error!
 */
 template< typename MT1  // Type of the system matrix
@@ -3668,7 +3668,7 @@ void solve5x5( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& X, const Den
 // \a std::runtime_error exception is thrown.
 //
 // \note This function can only be used for dense matrices and vector with \c float, \c double,
-// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// \c blas_float_complex or \c blas_double_complex element type. The attempt to call the function with
 // matrices and vectors of any other element type results in a compile time error!
 */
 template< typename MT1  // Type of the system matrix
@@ -3734,7 +3734,7 @@ void solve5x5( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& X, const Den
 // \a std::runtime_error exception is thrown.
 //
 // \note This function can only be used for dense matrices and vector with \c float, \c double,
-// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// \c blas_float_complex or \c blas_double_complex element type. The attempt to call the function with
 // matrices and vectors of any other element type results in a compile time error!
 */
 template< typename MT1  // Type of the system matrix
@@ -3812,7 +3812,7 @@ void solve5x5( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& X, const Den
 // \a std::runtime_error exception is thrown.
 //
 // \note This function can only be used for dense matrices and vector with \c float, \c double,
-// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// \c blas_float_complex or \c blas_double_complex element type. The attempt to call the function with
 // matrices and vectors of any other element type results in a compile time error!
 */
 template< typename MT1  // Type of the system matrix
@@ -3877,7 +3877,7 @@ void solve5x5( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& X, const Den
 // \a std::runtime_error exception is thrown.
 //
 // \note This function can only be used for dense matrices and vector with \c float, \c double,
-// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// \c blas_float_complex or \c blas_double_complex element type. The attempt to call the function with
 // matrices and vectors of any other element type results in a compile time error!
 */
 template< typename MT1  // Type of the system matrix
@@ -3962,7 +3962,7 @@ void solve5x5( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& X, const Den
 // exception is thrown.
 //
 // \note This function can only be used for dense matrices and vector with \c float, \c double,
-// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// \c blas_float_complex or \c blas_double_complex element type. The attempt to call the function with
 // matrices and vectors of any other element type results in a compile time error!
 */
 template< typename MT   // Type of the system matrix
@@ -4212,7 +4212,7 @@ void solve6x6( const DenseMatrix<MT,SO>& A, DenseVector<VT1,TF1>& x, const Dense
 // exception is thrown.
 //
 // \note This function can only be used for dense matrices and vector with \c float, \c double,
-// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// \c blas_float_complex or \c blas_double_complex element type. The attempt to call the function with
 // matrices and vectors of any other element type results in a compile time error!
 */
 template< typename MT   // Type of the system matrix
@@ -4463,7 +4463,7 @@ void solve6x6( const DenseMatrix<MT,SO>& A, DenseVector<VT1,TF1>& x, const Dense
 // \a std::runtime_error exception is thrown.
 //
 // \note This function can only be used for dense matrices and vector with \c float, \c double,
-// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// \c blas_float_complex or \c blas_double_complex element type. The attempt to call the function with
 // matrices and vectors of any other element type results in a compile time error!
 */
 template< typename MT   // Type of the system matrix
@@ -4529,7 +4529,7 @@ void solve6x6( const DenseMatrix<MT,SO>& A, DenseVector<VT1,TF1>& x, const Dense
 // \a std::runtime_error exception is thrown.
 //
 // \note This function can only be used for dense matrices and vector with \c float, \c double,
-// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// \c blas_float_complex or \c blas_double_complex element type. The attempt to call the function with
 // matrices and vectors of any other element type results in a compile time error!
 */
 template< typename MT   // Type of the system matrix
@@ -4591,7 +4591,7 @@ void solve6x6( const DenseMatrix<MT,SO>& A, DenseVector<VT1,TF1>& x, const Dense
 // \a std::runtime_error exception is thrown.
 //
 // \note This function can only be used for dense matrices and vector with \c float, \c double,
-// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// \c blas_float_complex or \c blas_double_complex element type. The attempt to call the function with
 // matrices and vectors of any other element type results in a compile time error!
 */
 template< typename MT   // Type of the system matrix
@@ -4657,7 +4657,7 @@ void solve6x6( const DenseMatrix<MT,SO>& A, DenseVector<VT1,TF1>& x, const Dense
 // \a std::runtime_error exception is thrown.
 //
 // \note This function can only be used for dense matrices and vector with \c float, \c double,
-// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// \c blas_float_complex or \c blas_double_complex element type. The attempt to call the function with
 // matrices and vectors of any other element type results in a compile time error!
 */
 template< typename MT   // Type of the system matrix
@@ -4718,7 +4718,7 @@ void solve6x6( const DenseMatrix<MT,SO>& A, DenseVector<VT1,TF1>& x, const Dense
 // exception is thrown.
 //
 // \note This function can only be used for dense matrices and vector with \c float, \c double,
-// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// \c blas_float_complex or \c blas_double_complex element type. The attempt to call the function with
 // matrices and vectors of any other element type results in a compile time error!
 */
 template< typename MT   // Type of the system matrix
@@ -4783,7 +4783,7 @@ void solve6x6( const DenseMatrix<MT,SO>& A, DenseVector<VT1,TF1>& x, const Dense
 // \a std::runtime_error exception is thrown.
 //
 // \note This function can only be used for dense matrices and vector with \c float, \c double,
-// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// \c blas_float_complex or \c blas_double_complex element type. The attempt to call the function with
 // matrices and vectors of any other element type results in a compile time error!
 */
 template< typename MT1  // Type of the system matrix
@@ -4836,7 +4836,7 @@ void solve6x6( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& X, const Den
 // \a std::runtime_error exception is thrown.
 //
 // \note This function can only be used for dense matrices and vector with \c float, \c double,
-// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// \c blas_float_complex or \c blas_double_complex element type. The attempt to call the function with
 // matrices and vectors of any other element type results in a compile time error!
 */
 template< typename MT1  // Type of the system matrix
@@ -4916,7 +4916,7 @@ void solve6x6( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& X, const Den
 // \a std::runtime_error exception is thrown.
 //
 // \note This function can only be used for dense matrices and vector with \c float, \c double,
-// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// \c blas_float_complex or \c blas_double_complex element type. The attempt to call the function with
 // matrices and vectors of any other element type results in a compile time error!
 */
 template< typename MT1  // Type of the system matrix
@@ -4983,7 +4983,7 @@ void solve6x6( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& X, const Den
 // \a std::runtime_error exception is thrown.
 //
 // \note This function can only be used for dense matrices and vector with \c float, \c double,
-// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// \c blas_float_complex or \c blas_double_complex element type. The attempt to call the function with
 // matrices and vectors of any other element type results in a compile time error!
 */
 template< typename MT1  // Type of the system matrix
@@ -5063,7 +5063,7 @@ void solve6x6( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& X, const Den
 // \a std::runtime_error exception is thrown.
 //
 // \note This function can only be used for dense matrices and vector with \c float, \c double,
-// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// \c blas_float_complex or \c blas_double_complex element type. The attempt to call the function with
 // matrices and vectors of any other element type results in a compile time error!
 */
 template< typename MT1  // Type of the system matrix
@@ -5129,7 +5129,7 @@ void solve6x6( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& X, const Den
 // \a std::runtime_error exception is thrown.
 //
 // \note This function can only be used for dense matrices and vector with \c float, \c double,
-// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// \c blas_float_complex or \c blas_double_complex element type. The attempt to call the function with
 // matrices and vectors of any other element type results in a compile time error!
 */
 template< typename MT1  // Type of the system matrix
@@ -5216,7 +5216,7 @@ void solve6x6( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& X, const Den
 // exception is thrown.
 //
 // \note This function can only be used for dense matrices and vector with \c float, \c double,
-// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// \c blas_float_complex or \c blas_double_complex element type. The attempt to call the function with
 // matrices and vectors of any other element type results in a compile time error!
 */
 template< typename MT   // Type of the system matrix
@@ -5277,7 +5277,7 @@ void solveNxN( const DenseMatrix<MT,SO>& A, DenseVector<VT1,TF1>& x, const Dense
 // exception is thrown.
 //
 // \note This function can only be used for dense matrices and vector with \c float, \c double,
-// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// \c blas_float_complex or \c blas_double_complex element type. The attempt to call the function with
 // matrices and vectors of any other element type results in a compile time error!
 */
 template< typename MT   // Type of the system matrix
@@ -5338,7 +5338,7 @@ void solveNxN( const DenseMatrix<MT,SO>& A, DenseVector<VT1,TF1>& x, const Dense
 // exception is thrown.
 //
 // \note This function can only be used for dense matrices and vector with \c float, \c double,
-// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// \c blas_float_complex or \c blas_double_complex element type. The attempt to call the function with
 // matrices and vectors of any other element type results in a compile time error!
 */
 template< typename MT   // Type of the system matrix
@@ -5400,7 +5400,7 @@ void solveNxN( const DenseMatrix<MT,SO>& A, DenseVector<VT1,TF1>& x, const Dense
 // \a std::runtime_error exception is thrown.
 //
 // \note This function can only be used for dense matrices and vector with \c float, \c double,
-// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// \c blas_float_complex or \c blas_double_complex element type. The attempt to call the function with
 // matrices and vectors of any other element type results in a compile time error!
 */
 template< typename MT   // Type of the system matrix
@@ -5467,7 +5467,7 @@ void solveNxN( const DenseMatrix<MT,SO>& A, DenseVector<VT1,TF1>& x, const Dense
 // \a std::runtime_error exception is thrown.
 //
 // \note This function can only be used for dense matrices and vector with \c float, \c double,
-// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// \c blas_float_complex or \c blas_double_complex element type. The attempt to call the function with
 // matrices and vectors of any other element type results in a compile time error!
 */
 template< typename MT   // Type of the system matrix
@@ -5529,7 +5529,7 @@ void solveNxN( const DenseMatrix<MT,SO>& A, DenseVector<VT1,TF1>& x, const Dense
 // \a std::runtime_error exception is thrown.
 //
 // \note This function can only be used for dense matrices and vector with \c float, \c double,
-// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// \c blas_float_complex or \c blas_double_complex element type. The attempt to call the function with
 // matrices and vectors of any other element type results in a compile time error!
 */
 template< typename MT   // Type of the system matrix
@@ -5596,7 +5596,7 @@ void solveNxN( const DenseMatrix<MT,SO>& A, DenseVector<VT1,TF1>& x, const Dense
 // \a std::runtime_error exception is thrown.
 //
 // \note This function can only be used for dense matrices and vector with \c float, \c double,
-// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// \c blas_float_complex or \c blas_double_complex element type. The attempt to call the function with
 // matrices and vectors of any other element type results in a compile time error!
 */
 template< typename MT   // Type of the system matrix
@@ -5657,7 +5657,7 @@ void solveNxN( const DenseMatrix<MT,SO>& A, DenseVector<VT1,TF1>& x, const Dense
 // exception is thrown.
 //
 // \note This function can only be used for dense matrices and vector with \c float, \c double,
-// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// \c blas_float_complex or \c blas_double_complex element type. The attempt to call the function with
 // matrices and vectors of any other element type results in a compile time error!
 */
 template< typename MT   // Type of the system matrix
@@ -5720,7 +5720,7 @@ void solveNxN( const DenseMatrix<MT,SO>& A, DenseVector<VT1,TF1>& x, const Dense
 // \a std::runtime_error exception is thrown.
 //
 // \note This function can only be used for dense matrices and vector with \c float, \c double,
-// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// \c blas_float_complex or \c blas_double_complex element type. The attempt to call the function with
 // matrices and vectors of any other element type results in a compile time error!
 */
 template< typename MT1  // Type of the system matrix
@@ -5787,7 +5787,7 @@ void solveNxN( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& X, const Den
 // \a std::runtime_error exception is thrown.
 //
 // \note This function can only be used for dense matrices and vector with \c float, \c double,
-// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// \c blas_float_complex or \c blas_double_complex element type. The attempt to call the function with
 // matrices and vectors of any other element type results in a compile time error!
 */
 template< typename MT1  // Type of the system matrix
@@ -5854,7 +5854,7 @@ void solveNxN( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& X, const Den
 // \a std::runtime_error exception is thrown.
 //
 // \note This function can only be used for dense matrices and vector with \c float, \c double,
-// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// \c blas_float_complex or \c blas_double_complex element type. The attempt to call the function with
 // matrices and vectors of any other element type results in a compile time error!
 */
 template< typename MT1  // Type of the system matrix
@@ -5922,7 +5922,7 @@ void solveNxN( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& X, const Den
 // \a std::runtime_error exception is thrown.
 //
 // \note This function can only be used for dense matrices and vector with \c float, \c double,
-// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// \c blas_float_complex or \c blas_double_complex element type. The attempt to call the function with
 // matrices and vectors of any other element type results in a compile time error!
 */
 template< typename MT1  // Type of the system matrix
@@ -5997,7 +5997,7 @@ void solveNxN( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& X, const Den
 // \a std::runtime_error exception is thrown.
 //
 // \note This function can only be used for dense matrices and vector with \c float, \c double,
-// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// \c blas_float_complex or \c blas_double_complex element type. The attempt to call the function with
 // matrices and vectors of any other element type results in a compile time error!
 */
 template< typename MT1  // Type of the system matrix
@@ -6064,7 +6064,7 @@ void solveNxN( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& X, const Den
 // \a std::runtime_error exception is thrown.
 //
 // \note This function can only be used for dense matrices and vector with \c float, \c double,
-// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// \c blas_float_complex or \c blas_double_complex element type. The attempt to call the function with
 // matrices and vectors of any other element type results in a compile time error!
 */
 template< typename MT1  // Type of the system matrix
@@ -6139,7 +6139,7 @@ void solveNxN( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& X, const Den
 // \a std::runtime_error exception is thrown.
 //
 // \note This function can only be used for dense matrices and vector with \c float, \c double,
-// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// \c blas_float_complex or \c blas_double_complex element type. The attempt to call the function with
 // matrices and vectors of any other element type results in a compile time error!
 */
 template< typename MT1  // Type of the system matrix
@@ -6205,7 +6205,7 @@ void solveNxN( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& X, const Den
 // \a std::runtime_error exception is thrown.
 //
 // \note This function can only be used for dense matrices and vector with \c float, \c double,
-// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// \c blas_float_complex or \c blas_double_complex element type. The attempt to call the function with
 // matrices and vectors of any other element type results in a compile time error!
 */
 template< typename MT1  // Type of the system matrix
@@ -6325,7 +6325,7 @@ void solveNxN( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& X, const Den
 // In all failure cases an exception is thrown.
 //
 // \note This function can only be used for dense matrices and vector with \c float, \c double,
-// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// \c blas_float_complex or \c blas_double_complex element type. The attempt to call the function with
 // matrices and vectors of any other element type results in a compile time error!
 //
 // \note This function can only be used if a fitting LAPACK library is available and linked to
@@ -6434,7 +6434,7 @@ void solve( const DenseMatrix<MT,SO>& A, DenseVector<VT1,TF1>& x, const DenseVec
 // In all failure cases an exception is thrown.
 //
 // \note The \c solve() function can only be used for dense matrices with \c float, \c double,
-// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// \c blas_float_complex or \c blas_double_complex element type. The attempt to call the function with
 // matrices of any other element type results in a compile time error!
 //
 // \note This function can only be used if a fitting LAPACK library is available and linked to

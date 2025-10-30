@@ -90,7 +90,7 @@ using HasSIMDLGammaHelper =
    blaze::HasSIMDLGamma< const double >         // Is derived from TrueType
    blaze::HasSIMDLGamma< unsigned int >::value  // Evaluates to 0
    blaze::HasSIMDLGamma< long double >::Type    // Results in FalseType
-   blaze::HasSIMDLGamma< complex<double> >      // Is derived from FalseType
+   blaze::HasSIMDLGamma< blas_double_complex >      // Is derived from FalseType
    \endcode
 */
 template< typename T >  // Type of the operand

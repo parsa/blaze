@@ -95,7 +95,7 @@ using HasSIMDAtan2Helper =
    blaze::HasSIMDAtan2< const double, volatile double >     // Is derived from TrueType
    blaze::HasSIMDAtan2< int, int >::value                   // Evaluates to 0
    blaze::HasSIMDAtan2< long double, long double >::Type    // Results in FalseType
-   blaze::HasSIMDAtan2< complex<double>, complex<double> >  // Is derived from FalseType
+   blaze::HasSIMDAtan2< blas_double_complex, blas_double_complex >  // Is derived from FalseType
    \endcode
 */
 template< typename T1    // Type of the left-hand side operand

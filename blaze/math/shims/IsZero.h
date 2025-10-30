@@ -78,9 +78,9 @@ namespace blaze {
    double d1 = 0.0;                  // isZero( d1 ) returns true
    double d2 = 1E-9;                 // isZero( d2 ) returns true since d2 is below 1E-8
    double d3 = 1.0;                  // isZero( d3 ) returns false
-   complex<double> c1( 0.0, 0.0  );  // isZero( c1 ) returns true
-   complex<double> c2( 0.0, 1E-9 );  // isZero( c2 ) returns true since imag(c2) is below 1E-8
-   complex<double> c3( 1.0, 0.0  );  // isZero( c3 ) returns false
+   blas_double_complex c1( 0.0, 0.0  );  // isZero( c1 ) returns true
+   blas_double_complex c2( 0.0, 1E-9 );  // isZero( c2 ) returns true since imag(c2) is below 1E-8
+   blas_double_complex c3( 1.0, 0.0  );  // isZero( c3 ) returns false
    \endcode
 
 // Optionally, it is possible to switch between relaxed semantics (blaze::relaxed) and strict
@@ -92,9 +92,9 @@ namespace blaze {
    double d1 = 0.0;                  //    true               |    true
    double d2 = 1E-9;                 //    false (not 0.0)    |    true (below 1E-8)
    double d3 = 1.0;                  //    false              |    false
-   complex<double> c1( 0.0, 0.0  );  //    true               |    true
-   complex<double> c2( 0.0, 1E-9 );  //    false              |    true (below 1E-8)
-   complex<double> c3( 1.0, 0.0  );  //    false              |    false
+   blas_double_complex c1( 0.0, 0.0  );  //    true               |    true
+   blas_double_complex c2( 0.0, 1E-9 );  //    false              |    true (below 1E-8)
+   blas_double_complex c3( 1.0, 0.0  );  //    false              |    false
    \endcode
 */
 template< RelaxationFlag RF  // Relaxation flag
@@ -130,9 +130,9 @@ BLAZE_ALWAYS_INLINE bool isZero( const Type& v ) noexcept
    double d1 = 0.0;                  // isZero( d1 ) returns true
    double d2 = 1E-9;                 // isZero( d2 ) returns true since d2 is below 1E-8
    double d3 = 1.0;                  // isZero( d3 ) returns false
-   complex<double> c1( 0.0, 0.0  );  // isZero( c1 ) returns true
-   complex<double> c2( 0.0, 1E-9 );  // isZero( c2 ) returns true since imag(c2) is below 1E-8
-   complex<double> c3( 1.0, 0.0  );  // isZero( c3 ) returns false
+   blas_double_complex c1( 0.0, 0.0  );  // isZero( c1 ) returns true
+   blas_double_complex c2( 0.0, 1E-9 );  // isZero( c2 ) returns true since imag(c2) is below 1E-8
+   blas_double_complex c3( 1.0, 0.0  );  // isZero( c3 ) returns false
    \endcode
 
 // Optionally, it is possible to switch between relaxed semantics (blaze::relaxed) and strict
@@ -144,9 +144,9 @@ BLAZE_ALWAYS_INLINE bool isZero( const Type& v ) noexcept
    double d1 = 0.0;                  //     true              |     true
    double d2 = 1E-9;                 //     false (not 0.0)   |     true (below 1E-8)
    double d3 = 1.0;                  //     false             |     false
-   complex<double> c1( 0.0, 0.0  );  //     true              |     true
-   complex<double> c2( 0.0, 1E-9 );  //     false             |     true (below 1E-8)
-   complex<double> c3( 1.0, 0.0  );  //     false             |     false
+   blas_double_complex c1( 0.0, 0.0  );  //     true              |     true
+   blas_double_complex c2( 0.0, 1E-9 );  //     false             |     true (below 1E-8)
+   blas_double_complex c3( 1.0, 0.0  );  //     false             |     false
    \endcode
 */
 template< typename Type >  // Type of the given value/object

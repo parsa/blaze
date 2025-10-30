@@ -81,7 +81,7 @@ void gelqf( DenseMatrix<MT,SO>& A, ElementType_t<MT>* tau );
 //
 // This function performs the dense matrix LQ decomposition of a general \a m-by-\a n matrix
 // based on the LAPACK gelqf() functions. Note that this function can only be used for general,
-// non-adapted matrices with \c float, \c double, \c complex<float>, or \c complex<double> element
+// non-adapted matrices with \c float, \c double, \c blas_float_complex, or \c blas_double_complex element
 // type. The attempt to call the function with any adapted matrix or matrices of any other element
 // type results in a compile time error!\n
 //

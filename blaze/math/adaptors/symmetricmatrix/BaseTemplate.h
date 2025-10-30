@@ -157,8 +157,8 @@ namespace blaze {
 	HermitianMatrix< DynamicMatrix<double> > B;  // Both Hermitian and symmetric
 
 	// The following two matrices will behave differently
-	SymmetricMatrix< DynamicMatrix< complex<double> > > C;  // Only symmetric
-	HermitianMatrix< DynamicMatrix< complex<double> > > D;  // Only Hermitian
+	SymmetricMatrix< DynamicMatrix< blas_double_complex > > C;  // Only symmetric
+	HermitianMatrix< DynamicMatrix< blas_double_complex > > D;  // Only Hermitian
 
 	// Block-structured Hermitian matrices are not allowed
 	SymmetricMatrix< DynamicMatrix< DynamicVector<double> > > E;  // Block-structured symmetric matrix

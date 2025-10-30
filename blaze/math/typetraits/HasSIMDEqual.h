@@ -110,7 +110,7 @@ struct HasSIMDEqualHelper< float, float >
 {};
 
 template<>
-struct HasSIMDEqualHelper< complex<float>, complex<float> >
+struct HasSIMDEqualHelper< blas_float_complex, blas_float_complex >
    : public BoolConstant< bool( BLAZE_SSE_MODE     ) ||
                           bool( BLAZE_AVX_MODE     ) ||
                           bool( BLAZE_MIC_MODE     ) ||
@@ -126,7 +126,7 @@ struct HasSIMDEqualHelper< double, double >
 {};
 
 template<>
-struct HasSIMDEqualHelper< complex<double>, complex<double> >
+struct HasSIMDEqualHelper< blas_double_complex, blas_double_complex >
    : public BoolConstant< bool( BLAZE_SSE2_MODE    ) ||
                           bool( BLAZE_AVX_MODE     ) ||
                           bool( BLAZE_MIC_MODE     ) ||

@@ -91,7 +91,7 @@ DenseTest::DenseTest()
    using blaze::StrictlyUpperMatrix;
    using blaze::DiagonalMatrix;
 
-   using cplx = blaze::complex<double>;
+   using cplx = blaze::blas_double_complex;
 
 
    //=====================================================================================
@@ -232,11 +232,11 @@ void DenseTest::testSpecific()
       {
          test_ = "Row-major dense matrix exponential ( matexp(ctrans(A)) == ctrans(matexp(A)) )";
 
-         blaze::DynamicMatrix<complex<double>,blaze::rowMajor> A( 9UL, 9UL );
+         blaze::DynamicMatrix<blas_double_complex,blaze::rowMajor> A( 9UL, 9UL );
          randomize( A, -1.0, 1.0 );
 
-         blaze::DynamicMatrix<complex<double>,blaze::rowMajor> B( matexp( ctrans( A ) ) );
-         blaze::DynamicMatrix<complex<double>,blaze::rowMajor> C( ctrans( matexp( A ) ) );
+         blaze::DynamicMatrix<blas_double_complex,blaze::rowMajor> B( matexp( ctrans( A ) ) );
+         blaze::DynamicMatrix<blas_double_complex,blaze::rowMajor> C( ctrans( matexp( A ) ) );
 
          if( B != C ) {
             std::ostringstream oss;
@@ -437,11 +437,11 @@ void DenseTest::testSpecific()
       {
          test_ = "Column-major dense matrix exponential ( matexp(ctrans(A)) == ctrans(matexp(A)) )";
 
-         blaze::DynamicMatrix<complex<double>,blaze::columnMajor> A( 9UL, 9UL );
+         blaze::DynamicMatrix<blas_double_complex,blaze::columnMajor> A( 9UL, 9UL );
          randomize( A, -1.0, 1.0 );
 
-         blaze::DynamicMatrix<complex<double>,blaze::columnMajor> B( matexp( ctrans( A ) ) );
-         blaze::DynamicMatrix<complex<double>,blaze::columnMajor> C( ctrans( matexp( A ) ) );
+         blaze::DynamicMatrix<blas_double_complex,blaze::columnMajor> B( matexp( ctrans( A ) ) );
+         blaze::DynamicMatrix<blas_double_complex,blaze::columnMajor> C( ctrans( matexp( A ) ) );
 
          if( B != C ) {
             std::ostringstream oss;

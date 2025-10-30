@@ -98,7 +98,7 @@ struct HasMaxHelper< T1, T2, Void_t< decltype( max( std::declval<T1>(), std::dec
    blaze::HasMax< float, double >::Type                     // Results in TrueType
    blaze::HasMax< DynamicVector<int>, DynamicVector<int> >  // Is derived from TrueType
    blaze::HasMax< int, unsigned int >::value                // Evaluates to 0
-   blaze::HasMax< complex<float>, complex<float> >::Type    // Results in FalseType
+   blaze::HasMax< blas_float_complex, blas_float_complex >::Type    // Results in FalseType
    blaze::HasMax< DynamicMatrix<int>, DynamicVector<int> >  // Is derived from FalseType
    \endcode
 */

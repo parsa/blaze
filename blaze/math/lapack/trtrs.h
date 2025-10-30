@@ -102,7 +102,7 @@ void trtrs( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B, char uplo, c
 //
 // In this context the triangular system matrix \a A is a \a n-by-\a n matrix and \a x and \a b are
 // n-dimensional vectors. Note that the function only works for general, non-adapted matrices with
-// \c float, \c double, \c complex<float>, or \c complex<double> element type. The attempt to call
+// \c float, \c double, \c blas_float_complex, or \c blas_double_complex element type. The attempt to call
 // the function with adaptors or matrices of any other element type results in a compile time error!
 //
 // If the function exits successfully, the vector \a b contains the solution of the linear system
@@ -248,7 +248,7 @@ inline void trtrs( const DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& b, char uplo
 // In this context the triangular system matrix \a A is a \a n-by-\a n matrix and \a X and
 // \a B are either row-major \a m-by-\a n matrices or column-major \a n-by-\a m matrices. Note
 // that the function only works for general, non-adapted matrices with \c float, \c double,
-// \c complex<float>, or \c complex<double> element type. The attempt to call the function with
+// \c blas_float_complex, or \c blas_double_complex element type. The attempt to call the function with
 // adaptors or matrices of any other element type results in a compile time error!
 //
 // If the function exits successfully, the matrix \a B contains the solutions of the linear system

@@ -89,20 +89,20 @@ OperationTest::OperationTest()
    // Single precision complex tests
    //=====================================================================================
 
-   //testDotu< complex<float> >();
-   //testDotc< complex<float> >();
-   //testAxpy< complex<float> >();
-   //testTrsm< complex<float> >();
+   //testDotu< blas_float_complex >();
+   //testDotc< blas_float_complex >();
+   //testAxpy< blas_float_complex >();
+   //testTrsm< blas_float_complex >();
 
 
    //=====================================================================================
    // Double precision complex tests
    //=====================================================================================
 
-   testDotu< complex<double> >();
-   testDotc< complex<double> >();
-   testAxpy< complex<double> >();
-   testTrsm< complex<double> >();
+   testDotu< blas_double_complex >();
+   testDotc< blas_double_complex >();
+   testAxpy< blas_double_complex >();
+   testTrsm< blas_double_complex >();
 }
 //*************************************************************************************************
 

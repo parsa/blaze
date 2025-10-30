@@ -231,7 +231,7 @@ inline void swap( HermitianMatrix<MT,SO,DF>& a, HermitianMatrix<MT,SO,DF>& b ) n
 // invertible. In this case a \a std::invalid_argument exception is thrown.
 //
 // \note The matrix inversion can only be used for dense matrices with \c float, \c double,
-// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// \c blas_float_complex or \c blas_double_complex element type. The attempt to call the function with
 // matrices of any other element type results in a compile time error!
 //
 // \note This function can only be used if a fitting LAPACK library is available and linked to

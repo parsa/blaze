@@ -68,11 +68,11 @@ namespace blaze {
    \code
    const int i1 = 1;                 // isDivisor( i1 ) returns true
    double    d1 = 0.1;               // isDivisor( d1 ) returns true
-   complex<double> c1( 0.2, -0.1 );  // isDivisor( c1 ) returns true
+   blas_double_complex c1( 0.2, -0.1 );  // isDivisor( c1 ) returns true
 
    const int i2 = 0;                // isDivisor( i2 ) returns false
    double    d2 = 0.0;              // isDivisor( d2 ) returns false
-   complex<double> c2( 0.0, 0.0 );  // isDivisor( c2 ) returns false
+   blas_double_complex c2( 0.0, 0.0 );  // isDivisor( c2 ) returns false
    \endcode
 */
 template< typename Type, EnableIf_t< IsScalar_v<Type> >* = nullptr >

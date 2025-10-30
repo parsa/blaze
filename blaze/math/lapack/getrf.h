@@ -80,7 +80,7 @@ void getrf( DenseMatrix<MT,SO>& A, blas_int_t* ipiv );
 // This function performs the dense matrix LU decomposition of a general \a m-by-\a n matrix based
 // on the LAPACK \c getrf() functions, which use partial pivoting with row/column interchanges.
 // Note that the function only works for general, non-adapted matrices with \c float, \c double,
-// \c complex<float>, or \c complex<double> element type. The attempt to call the function with
+// \c blas_float_complex, or \c blas_double_complex element type. The attempt to call the function with
 // adaptors or matrices of any other element type results in a compile time error!\n
 //
 // In case of a column-major matrix, the resulting decomposition has the form

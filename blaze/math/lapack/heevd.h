@@ -116,7 +116,7 @@ void heevd( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& w, char jobz, char uplo )
    using blaze::rowMajor;
    using blaze::columnVector;
 
-   DynamicMatrix<complex<double>,rowMajor> A( 5UL, 5UL );  // The Hermitian matrix A
+   DynamicMatrix<blas_double_complex,rowMajor> A( 5UL, 5UL );  // The Hermitian matrix A
    // ... Initialization
 
    DynamicVector<double,columnVector> w( 5UL );  // The vector for the real eigenvalues

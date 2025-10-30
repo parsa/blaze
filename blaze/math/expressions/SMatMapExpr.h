@@ -1190,7 +1190,7 @@ inline decltype(auto) round( const SparseMatrix<MT,SO>& sm )
 // The following example demonstrates the use of the \a conj() function:
 
    \code
-   blaze::CompressedMatrix< complex<double> > A, B;
+   blaze::CompressedMatrix< blas_double_complex > A, B;
    // ... Resizing and initialization
    B = conj( A );
    \endcode
@@ -1219,7 +1219,7 @@ inline decltype(auto) conj( const SparseMatrix<MT,SO>& sm )
 // The following example demonstrates the use of the \a ctrans() function:
 
    \code
-   blaze::CompressedMatrix< complex<double> > A, B;
+   blaze::CompressedMatrix< blas_double_complex > A, B;
    // ... Resizing and initialization
    B = ctrans( A );
    \endcode
@@ -2324,7 +2324,7 @@ inline decltype(auto) round( const SMatMapExpr<MT,Round,SO>& sm )
 // original sparse matrix:
 
    \code
-   blaze::CompressedMatrix< complex<double> > A, B;
+   blaze::CompressedMatrix< blas_double_complex > A, B;
    // ... Resizing and initialization
    B = conj( conj( A ) );
    \endcode
@@ -2354,7 +2354,7 @@ inline decltype(auto) conj( const SMatMapExpr<MT,Conj,TF>& sm )
 // transpose of the sparse matrix:
 
    \code
-   blaze::CompressedMatrix< complex<double> > A, B;
+   blaze::CompressedMatrix< blas_double_complex > A, B;
    // ... Resizing and initialization
    B = conj( ctrans( A ) );
    \endcode

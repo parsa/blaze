@@ -82,7 +82,7 @@ ElementType_t<VT1> dotc( const DenseVector<VT1,TF1>& x, const DenseVector<VT2,TF
 //
 // This function performs the dot product of the complex conjugate of a dense vector with another
 // dense vector based on the BLAS dotc() functions. Note that the function only works for vectors
-// with \c float, \c double, \c complex<float>, or \c complex<double> element type. The attempt
+// with \c float, \c double, \c blas_float_complex, or \c blas_double_complex element type. The attempt
 // to call the function with vectors of any other element type results in a compile time error.
 //
 // \note This function can only be used if a fitting BLAS library, which supports this function,

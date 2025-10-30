@@ -69,7 +69,7 @@ namespace blaze {
    \code
    blaze::IsScalar< int >::value                         // Evaluates to 1
    blaze::IsScalar< const double >::Type                 // Results in TrueType
-   blaze::IsScalar< volatile complex<float> >            // Is derived from TrueType
+   blaze::IsScalar< volatile blas_float_complex >            // Is derived from TrueType
    blaze::IsScalar< StaticVector<double,3UL> >::value    // Evaluates to 0
    blaze::IsScalar< const DynamicMatrix<double> >::Type  // Results in FalseType
    blaze::IsScalar< volatile CompressedMatrix<int> >     // Is derived from FalseType

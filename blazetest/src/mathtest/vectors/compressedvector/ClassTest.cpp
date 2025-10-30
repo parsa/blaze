@@ -1077,16 +1077,16 @@ void ClassTest::testScaling()
 
       using blaze::complex;
 
-      blaze::CompressedVector<complex<float>,blaze::rowVector> vec( 2UL, 2UL );
-      vec[0] = complex<float>( 1.0F, 0.0F );
-      vec[1] = complex<float>( 2.0F, 0.0F );
-      vec.scale( complex<float>( 3.0F, 0.0F ) );
+      blaze::CompressedVector<blas_float_complex,blaze::rowVector> vec( 2UL, 2UL );
+      vec[0] = blas_float_complex( 1.0F, 0.0F );
+      vec[1] = blas_float_complex( 2.0F, 0.0F );
+      vec.scale( blas_float_complex( 3.0F, 0.0F ) );
 
       checkSize    ( vec, 2UL );
       checkCapacity( vec, 2UL );
       checkNonZeros( vec, 2UL );
 
-      if( vec[0] != complex<float>( 3.0F, 0.0F ) || vec[1] != complex<float>( 6.0F, 0.0F ) ) {
+      if( vec[0] != blas_float_complex( 3.0F, 0.0F ) || vec[1] != blas_float_complex( 6.0F, 0.0F ) ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Scale operation failed\n"

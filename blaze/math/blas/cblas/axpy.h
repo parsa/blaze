@@ -65,11 +65,11 @@ void axpy( blas_int_t n, float alpha, const float* x, blas_int_t incX,
 void axpy( blas_int_t n, double alpha, const double* x, blas_int_t incX,
            double* y, blas_int_t incY );
 
-void axpy( blas_int_t n, complex<float> alpha, const complex<float>* x, blas_int_t incX,
-           complex<float>* y, blas_int_t incY );
+void axpy( blas_int_t n, blas_float_complex alpha, const blas_float_complex* x, blas_int_t incX,
+           blas_float_complex* y, blas_int_t incY );
 
-void axpy( blas_int_t n, complex<double> alpha, const complex<double>* x, blas_int_t incX,
-           complex<double>* y, blas_int_t incY );
+void axpy( blas_int_t n, blas_double_complex alpha, const blas_double_complex* x, blas_int_t incX,
+           blas_double_complex* y, blas_int_t incY );
 
 #endif
 //@}
@@ -157,10 +157,10 @@ inline void axpy( blas_int_t n, double alpha, const double* x, blas_int_t incX,
 // is available and linked to the executable. Otherwise a call to this function will result in a
 // linker error.
 */
-inline void axpy( blas_int_t n, complex<float> alpha, const complex<float>* x, blas_int_t incX,
-                  complex<float>* y, blas_int_t incY )
+inline void axpy( blas_int_t n, blas_float_complex alpha, const blas_float_complex* x, blas_int_t incX,
+                  blas_float_complex* y, blas_int_t incY )
 {
-   BLAZE_STATIC_ASSERT( sizeof( complex<float> ) == 2UL*sizeof( float ) );
+   BLAZE_STATIC_ASSERT( sizeof( blas_float_complex ) == 2UL*sizeof( float ) );
 
    cblas_caxpy( n, reinterpret_cast<const float*>( &alpha ),
                 reinterpret_cast<const float*>( x ), incX, reinterpret_cast<float*>( y ), incY );
@@ -190,10 +190,10 @@ inline void axpy( blas_int_t n, complex<float> alpha, const complex<float>* x, b
 // is available and linked to the executable. Otherwise a call to this function will result in a
 // linker error.
 */
-inline void axpy( blas_int_t n, complex<double> alpha, const complex<double>* x, blas_int_t incX,
-                  complex<double>* y, blas_int_t incY )
+inline void axpy( blas_int_t n, blas_double_complex alpha, const blas_double_complex* x, blas_int_t incX,
+                  blas_double_complex* y, blas_int_t incY )
 {
-   BLAZE_STATIC_ASSERT( sizeof( complex<double> ) == 2UL*sizeof( double ) );
+   BLAZE_STATIC_ASSERT( sizeof( blas_double_complex ) == 2UL*sizeof( double ) );
 
    cblas_zaxpy( n, reinterpret_cast<const double*>( &alpha ),
                 reinterpret_cast<const double*>( x ), incX, reinterpret_cast<double*>( y ), incY );

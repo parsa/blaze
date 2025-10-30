@@ -69,7 +69,7 @@ namespace blaze {
    \code
    blaze::IsNumeric<int>::value                // Evaluates to 'true' (int is a numeric data type)
    blaze::IsNumeric<const double>::Type        // Results in TrueType (double is a numeric data type)
-   blaze::IsNumeric<volatile complex<float> >  // Is derived from TrueType (complex<float> is a numeric data type)
+   blaze::IsNumeric<volatile blas_float_complex >  // Is derived from TrueType (blas_float_complex is a numeric data type)
    blaze::IsNumeric<void>::value               // Evaluates to 'false' (void is not a numeric data type)
    blaze::IsNumeric<bool>::Type                // Results in FalseType (bool is not a numeric data type)
    blaze::IsNumeric<const bool>                // Is derived from FalseType

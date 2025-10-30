@@ -67,7 +67,7 @@ namespace blaze {
    blaze::HasCompositeType< volatile DynamicMatrix<double> >     // Is derived from TrueType
    blaze::HasCompositeType< int >::value                         // Evaluates to 0
    blaze::HasCompositeType< const double >::Type                 // Results in FalseType
-   blaze::HasCompositeType< volatile complex<float> >            // Is derived from FalseType
+   blaze::HasCompositeType< volatile blas_float_complex >            // Is derived from FalseType
    \endcode
 */
 template< typename T >

@@ -100,8 +100,8 @@ void getrs( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B, char trans,
 //
 // In this context the general system matrix \a A is a \a n-by-\a n matrix that has already been
 // factorized by the getrf() functions and \a x and \a b are n-dimensional vectors. Note that the
-// function only works for general, non-adapted matrices with \c float, \c double, \c complex<float>,
-// or \c complex<double> element type. The attempt to call the function with adaptors or matrices
+// function only works for general, non-adapted matrices with \c float, \c double, \c blas_float_complex,
+// or \c blas_double_complex element type. The attempt to call the function with adaptors or matrices
 // of any other element type results in a compile time error!
 //
 // If the function exits successfully, the vector \a b contains the solution of the linear system
@@ -237,7 +237,7 @@ inline void getrs( const DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& b, char tran
 // In this context the general system matrix \a A is a \a n-by-\a n matrix that has already been
 // factorized by the getrf() functions and \a X and \a B are either row-major \a m-by-\a n
 // matrices or column-major \a n-by-\a m matrices. Note that the function only works for general,
-// non-adapted matrices with \c float, \c double, \c complex<float>, or \c complex<double>
+// non-adapted matrices with \c float, \c double, \c blas_float_complex, or \c blas_double_complex
 // element type. The attempt to call the function with adaptors or matrices of any other
 // element type results in a compile time error!
 //

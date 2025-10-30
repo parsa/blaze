@@ -101,8 +101,8 @@ ClassTest::ClassTest()
    testAlignment< complex<unsigned short> >( "complex<unsigned short>" );
    testAlignment< complex<int>            >( "complex<int>"            );
    testAlignment< complex<unsigned int>   >( "complex<unsigned int>"   );
-   testAlignment< complex<float>          >( "complex<float>"          );
-   testAlignment< complex<double>         >( "complex<double>"         );
+   testAlignment< blas_float_complex          >( "blas_float_complex"          );
+   testAlignment< blas_double_complex         >( "blas_double_complex"         );
 
    testConstructors();
    testAssignment();

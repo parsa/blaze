@@ -178,7 +178,7 @@ inline size_t heevx_backend( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& w,
 // vector \a w. \a w is resized to the correct size (if possible and necessary).
 //
 // Note that this function can only be used for general, non-adapted matrices with \c float,
-// \c double, \c complex<float>, or \c complex<double> element type. The attempt to call the
+// \c double, \c blas_float_complex, or \c blas_double_complex element type. The attempt to call the
 // function with any adapted matrix or matrices of any other element type results in a compile
 // time error!
 //
@@ -199,7 +199,7 @@ inline size_t heevx_backend( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& w,
    using blaze::rowMajor;
    using blaze::columnVector;
 
-   DynamicMatrix<complex<double>,rowMajor> A( 5UL, 5UL );  // The Hermitian matrix A
+   DynamicMatrix<blas_double_complex,rowMajor> A( 5UL, 5UL );  // The Hermitian matrix A
    // ... Initialization
 
    DynamicVector<double,columnVector> w( 5UL );  // The vector for the real eigenvalues
@@ -292,7 +292,7 @@ inline size_t heevx( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& w, char uplo )
 // to be an \a n-dimensional vector.
 //
 // Note that this function can only be used for general, non-adapted matrices with \c float,
-// \c double, \c complex<float>, or \c complex<double> element type. The attempt to call the
+// \c double, \c blas_float_complex, or \c blas_double_complex element type. The attempt to call the
 // function with any adapted matrix or matrices of any other element type results in a compile
 // time error!
 //
@@ -314,7 +314,7 @@ inline size_t heevx( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& w, char uplo )
    using blaze::rowMajor;
    using blaze::columnVector;
 
-   DynamicMatrix<complex<double>,rowMajor> A( 5UL, 5UL );  // The Hermitian matrix A
+   DynamicMatrix<blas_double_complex,rowMajor> A( 5UL, 5UL );  // The Hermitian matrix A
    // ... Initialization
 
    DynamicVector<double,columnVector> w( 5UL );  // The vector for the real eigenvalues
@@ -328,7 +328,7 @@ inline size_t heevx( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& w, char uplo )
    using blaze::rowMajor;
    using blaze::columnVector;
 
-   DynamicMatrix<complex<double>,rowMajor> A( 5UL, 5UL );  // The Hermitian matrix A
+   DynamicMatrix<blas_double_complex,rowMajor> A( 5UL, 5UL );  // The Hermitian matrix A
    // ... Initialization
 
    DynamicVector<double,columnVector> w( 3UL );  // The vector for the real eigenvalues
@@ -508,7 +508,7 @@ inline size_t heevx_backend( DenseMatrix<MT1,SO1>& A, DenseVector<VT,TF>& w,
 // possible and necessary).
 //
 // Note that this function can only be used for general, non-adapted matrices with \c float,
-// \c double, \c complex<float>, or \c complex<double> element type. The attempt to call the
+// \c double, \c blas_float_complex, or \c blas_double_complex element type. The attempt to call the
 // function with any adapted matrix or matrices of any other element type results in a compile
 // time error!
 //
@@ -530,11 +530,11 @@ inline size_t heevx_backend( DenseMatrix<MT1,SO1>& A, DenseVector<VT,TF>& w,
    using blaze::rowMajor;
    using blaze::columnVector;
 
-   DynamicMatrix<complex<double>,rowMajor> A( 5UL, 5UL );  // The Hermitian matrix A
+   DynamicMatrix<blas_double_complex,rowMajor> A( 5UL, 5UL );  // The Hermitian matrix A
    // ... Initialization
 
    DynamicVector<double,columnVector>      w( 5UL );       // The vector for the real eigenvalues
-   DynamicMatrix<complex<double>,rowMajor> Z( 5UL, 5UL );  // The matrix for the complex eigenvectors
+   DynamicMatrix<blas_double_complex,rowMajor> Z( 5UL, 5UL );  // The matrix for the complex eigenvectors
 
    heevx( A, w, 'L' );
    \endcode
@@ -643,7 +643,7 @@ inline size_t heevx( DenseMatrix<MT1,SO1>& A, DenseVector<VT,TF>& w,
 // \a Z is resized (if possible) or expected to be a \a n-by-\a n matrix.
 //
 // Note that this function can only be used for general, non-adapted matrices with \c float,
-// \c double, \c complex<float>, or \c complex<double> element type. The attempt to call the
+// \c double, \c blas_float_complex, or \c blas_double_complex element type. The attempt to call the
 // function with any adapted matrix or matrices of any other element type results in a compile
 // time error!
 //
@@ -665,11 +665,11 @@ inline size_t heevx( DenseMatrix<MT1,SO1>& A, DenseVector<VT,TF>& w,
    using blaze::rowMajor;
    using blaze::columnVector;
 
-   DynamicMatrix<complex<double>,rowMajor> A( 5UL, 5UL );  // The Hermitian matrix A
+   DynamicMatrix<blas_double_complex,rowMajor> A( 5UL, 5UL );  // The Hermitian matrix A
    // ... Initialization
 
    DynamicVector<double,columnVector>      w( 5UL );       // The vector for the real eigenvalues
-   DynamicMatrix<complex<double>,rowMajor> Z( 5UL, 5UL );  // The matrix for the complex eigenvectors
+   DynamicMatrix<blas_double_complex,rowMajor> Z( 5UL, 5UL );  // The matrix for the complex eigenvectors
 
    heevx( A, w, Z, 'L', 1.0, 2.0 );  // Computes all eigenvalues in the interval (1..2]
    \endcode
@@ -680,11 +680,11 @@ inline size_t heevx( DenseMatrix<MT1,SO1>& A, DenseVector<VT,TF>& w,
    using blaze::rowMajor;
    using blaze::columnVector;
 
-   DynamicMatrix<complex<double>,rowMajor> A( 5UL, 5UL );  // The Hermitian matrix A
+   DynamicMatrix<blas_double_complex,rowMajor> A( 5UL, 5UL );  // The Hermitian matrix A
    // ... Initialization
 
    DynamicVector<double,columnVector>      w( 3UL );       // The vector for the real eigenvalues
-   DynamicMatrix<complex<double>,rowMajor> Z( 3UL, 5UL );  // The matrix for the complex eigenvectors
+   DynamicMatrix<blas_double_complex,rowMajor> Z( 3UL, 5UL );  // The matrix for the complex eigenvectors
 
    heevx( A, w, Z, 'L', 0, 2 );  // Computes the first three eigenvalues
    \endcode

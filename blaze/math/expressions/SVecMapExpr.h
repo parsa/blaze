@@ -1107,7 +1107,7 @@ inline decltype(auto) conj( const SparseVector<VT,TF>& sv )
 // The following example demonstrates the use of the \a ctrans() function:
 
    \code
-   blaze::CompressedVector< complex<double> > a, b;
+   blaze::CompressedVector< blas_double_complex > a, b;
    // ... Resizing and initialization
    b = ctrans( a );
    \endcode
@@ -2211,7 +2211,7 @@ inline decltype(auto) round( const SVecMapExpr<VT,Round,TF>& sv )
 // original sparse vector:
 
    \code
-   blaze::CompressedVector< complex<double> > a, b;
+   blaze::CompressedVector< blas_double_complex > a, b;
    // ... Resizing and initialization
    b = conj( conj( a ) );
    \endcode
@@ -2241,7 +2241,7 @@ inline decltype(auto) conj( const SVecMapExpr<VT,Conj,TF>& sv )
 // transpose of the sparse vector:
 
    \code
-   blaze::CompressedVector< complex<double> > a, b;
+   blaze::CompressedVector< blas_double_complex > a, b;
    // ... Resizing and initialization
    b = conj( ctrans( a ) );
    \endcode

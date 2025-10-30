@@ -86,14 +86,14 @@ namespace blaze {
 /*!\name LAPACK functions to multiply Q from a QL decomposition with a matrix (unmql) */
 //@{
 void unmql( char side, char trans, blas_int_t m, blas_int_t n,
-            blas_int_t k, const complex<float>* A, blas_int_t lda,
-            const complex<float>* tau, complex<float>* C, blas_int_t ldc,
-            complex<float>* work, blas_int_t lwork, blas_int_t* info );
+            blas_int_t k, const blas_float_complex* A, blas_int_t lda,
+            const blas_float_complex* tau, blas_float_complex* C, blas_int_t ldc,
+            blas_float_complex* work, blas_int_t lwork, blas_int_t* info );
 
 void unmql( char side, char trans, blas_int_t m, blas_int_t n,
-            blas_int_t k, const complex<double>* A, blas_int_t lda,
-            const complex<double>* tau, complex<double>* C, blas_int_t ldc,
-            complex<double>* work, blas_int_t lwork, blas_int_t* info );
+            blas_int_t k, const blas_double_complex* A, blas_int_t lda,
+            const blas_double_complex* tau, blas_double_complex* C, blas_int_t ldc,
+            blas_double_complex* work, blas_int_t lwork, blas_int_t* info );
 //@}
 //*************************************************************************************************
 
@@ -146,15 +146,15 @@ void unmql( char side, char trans, blas_int_t m, blas_int_t n,
 // linker error.
 */
 inline void unmql( char side, char trans, blas_int_t m, blas_int_t n,
-                   blas_int_t k, const complex<float>* A, blas_int_t lda,
-                   const complex<float>* tau, complex<float>* C, blas_int_t ldc,
-                   complex<float>* work, blas_int_t lwork, blas_int_t* info )
+                   blas_int_t k, const blas_float_complex* A, blas_int_t lda,
+                   const blas_float_complex* tau, blas_float_complex* C, blas_int_t ldc,
+                   blas_float_complex* work, blas_int_t lwork, blas_int_t* info )
 {
-   BLAZE_STATIC_ASSERT( sizeof( complex<float> ) == 2UL*sizeof( float ) );
+   BLAZE_STATIC_ASSERT( sizeof( blas_float_complex ) == 2UL*sizeof( float ) );
 
 #if defined(INTEL_MKL_VERSION)
    BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( blas_int_t ) );
-   BLAZE_STATIC_ASSERT( sizeof( MKL_Complex8 ) == sizeof( complex<float> ) );
+   BLAZE_STATIC_ASSERT( sizeof( MKL_Complex8 ) == sizeof( blas_float_complex ) );
    using ET = MKL_Complex8;
 #else
    using ET = float;
@@ -221,15 +221,15 @@ inline void unmql( char side, char trans, blas_int_t m, blas_int_t n,
 // linker error.
 */
 inline void unmql( char side, char trans, blas_int_t m, blas_int_t n,
-                   blas_int_t k, const complex<double>* A, blas_int_t lda,
-                   const complex<double>* tau, complex<double>* C, blas_int_t ldc,
-                   complex<double>* work, blas_int_t lwork, blas_int_t* info )
+                   blas_int_t k, const blas_double_complex* A, blas_int_t lda,
+                   const blas_double_complex* tau, blas_double_complex* C, blas_int_t ldc,
+                   blas_double_complex* work, blas_int_t lwork, blas_int_t* info )
 {
-   BLAZE_STATIC_ASSERT( sizeof( complex<double> ) == 2UL*sizeof( double ) );
+   BLAZE_STATIC_ASSERT( sizeof( blas_double_complex ) == 2UL*sizeof( double ) );
 
 #if defined(INTEL_MKL_VERSION)
    BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( blas_int_t ) );
-   BLAZE_STATIC_ASSERT( sizeof( MKL_Complex16 ) == sizeof( complex<double> ) );
+   BLAZE_STATIC_ASSERT( sizeof( MKL_Complex16 ) == sizeof( blas_double_complex ) );
    using ET = MKL_Complex16;
 #else
    using ET = double;

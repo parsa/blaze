@@ -167,8 +167,8 @@ namespace blaze {
    // Definition of a custom row vector for aligned, unpadded 'double' arrays
    using AlignedUnpadded = CustomVector<double,aligned,unpadded,rowVector>;
 
-   // Definition of a custom row vector for aligned, padded 'complex<double>' arrays
-   using AlignedPadded = CustomVector<complex<double>,aligned,padded,rowVector>;
+   // Definition of a custom row vector for aligned, padded 'blas_double_complex' arrays
+   using AlignedPadded = CustomVector<blas_double_complex,aligned,padded,rowVector>;
    \endcode
 
 // \n \section customvector_special_properties Special Properties of Custom Vectors

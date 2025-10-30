@@ -91,7 +91,7 @@ using HasSIMDCbrtHelper =
    blaze::HasSIMDCbrt< const double >         // Is derived from TrueType
    blaze::HasSIMDCbrt< unsigned int >::value  // Evaluates to 0
    blaze::HasSIMDCbrt< long double >::Type    // Results in FalseType
-   blaze::HasSIMDCbrt< complex<double> >      // Is derived from FalseType
+   blaze::HasSIMDCbrt< blas_double_complex >      // Is derived from FalseType
    \endcode
 */
 template< typename T >  // Type of the operand

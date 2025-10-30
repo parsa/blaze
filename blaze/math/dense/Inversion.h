@@ -130,7 +130,7 @@ constexpr InversionFlag getInversionFlag() noexcept
 // \a std::runtime_error exception is thrown.
 //
 // \note The matrix inversion can only be used for dense matrices with \c float, \c double,
-// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// \c blas_float_complex or \c blas_double_complex element type. The attempt to call the function with
 // matrices of any other element type results in a compile time error!
 */
 template< typename MT  // Type of the dense matrix
@@ -179,7 +179,7 @@ inline void invertGeneral2x2( DenseMatrix<MT,SO>& dm )
 // this case a \a std::invalid_argument exception is thrown.
 //
 // \note The matrix inversion can only be used for dense matrices with \c float, \c double,
-// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// \c blas_float_complex or \c blas_double_complex element type. The attempt to call the function with
 // matrices of any other element type results in a compile time error!
 */
 template< typename MT  // Type of the dense matrix
@@ -227,7 +227,7 @@ inline void invertSymmetric2x2( DenseMatrix<MT,SO>& dm )
 // this case a \a std::invalid_argument exception is thrown.
 //
 // \note The matrix inversion can only be used for dense matrices with \c float, \c double,
-// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// \c blas_float_complex or \c blas_double_complex element type. The attempt to call the function with
 // matrices of any other element type results in a compile time error!
 */
 template< typename MT  // Type of the dense matrix
@@ -275,7 +275,7 @@ inline void invertHermitian2x2( DenseMatrix<MT,SO>& dm )
 // \a std::invalid_argument exception is thrown.
 //
 // \note The matrix inversion can only be used for dense matrices with \c float, \c double,
-// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// \c blas_float_complex or \c blas_double_complex element type. The attempt to call the function with
 // matrices of any other element type results in a compile time error!
 */
 template< typename MT  // Type of the dense matrix
@@ -319,7 +319,7 @@ inline void invertLower2x2( DenseMatrix<MT,SO>& dm )
 // This function inverts the given unilower dense \f$ 2 \times 2 \f$ matrix via the rule of Sarrus.
 //
 // \note The matrix inversion can only be used for dense matrices with \c float, \c double,
-// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// \c blas_float_complex or \c blas_double_complex element type. The attempt to call the function with
 // matrices of any other element type results in a compile time error!
 */
 template< typename MT  // Type of the dense matrix
@@ -352,7 +352,7 @@ inline void invertUniLower2x2( DenseMatrix<MT,SO>& dm )
 // \a std::invalid_argument exception is thrown.
 //
 // \note The matrix inversion can only be used for dense matrices with \c float, \c double,
-// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// \c blas_float_complex or \c blas_double_complex element type. The attempt to call the function with
 // matrices of any other element type results in a compile time error!
 */
 template< typename MT  // Type of the dense matrix
@@ -396,7 +396,7 @@ inline void invertUpper2x2( DenseMatrix<MT,SO>& dm )
 // This function inverts the given uniupper dense \f$ 2 \times 2 \f$ matrix via the rule of Sarrus.
 //
 // \note The matrix inversion can only be used for dense matrices with \c float, \c double,
-// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// \c blas_float_complex or \c blas_double_complex element type. The attempt to call the function with
 // matrices of any other element type results in a compile time error!
 */
 template< typename MT  // Type of the dense matrix
@@ -429,7 +429,7 @@ inline void invertUniUpper2x2( DenseMatrix<MT,SO>& dm )
 // \a std::invalid_argument exception is thrown.
 //
 // \note The matrix inversion can only be used for dense matrices with \c float, \c double,
-// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// \c blas_float_complex or \c blas_double_complex element type. The attempt to call the function with
 // matrices of any other element type results in a compile time error!
 */
 template< typename MT  // Type of the dense matrix
@@ -475,7 +475,7 @@ inline void invertDiagonal2x2( DenseMatrix<MT,SO>& dm )
 // case a \a std::runtime_error exception is thrown.
 //
 // \note The matrix inversion can only be used for dense matrices with \c float, \c double,
-// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// \c blas_float_complex or \c blas_double_complex element type. The attempt to call the function with
 // matrices of any other element type results in a compile time error!
 //
 // \note This function can only be used if a fitting LAPACK library is available and linked to
@@ -538,7 +538,7 @@ inline void invert2x2( DenseMatrix<MT,SO>& dm )
 // \a std::runtime_error exception is thrown.
 //
 // \note The matrix inversion can only be used for dense matrices with \c float, \c double,
-// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// \c blas_float_complex or \c blas_double_complex element type. The attempt to call the function with
 // matrices of any other element type results in a compile time error!
 */
 template< typename MT  // Type of the dense matrix
@@ -593,7 +593,7 @@ inline void invertGeneral3x3( DenseMatrix<MT,SO>& dm )
 // this case a \a std::invalid_argument exception is thrown.
 //
 // \note The matrix inversion can only be used for dense matrices with \c float, \c double,
-// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// \c blas_float_complex or \c blas_double_complex element type. The attempt to call the function with
 // matrices of any other element type results in a compile time error!
 */
 template< typename MT  // Type of the dense matrix
@@ -646,7 +646,7 @@ inline void invertSymmetric3x3( DenseMatrix<MT,SO>& dm )
 // this case a \a std::invalid_argument exception is thrown.
 //
 // \note The matrix inversion can only be used for dense matrices with \c float, \c double,
-// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// \c blas_float_complex or \c blas_double_complex element type. The attempt to call the function with
 // matrices of any other element type results in a compile time error!
 */
 template< typename MT  // Type of the dense matrix
@@ -699,7 +699,7 @@ inline void invertHermitian3x3( DenseMatrix<MT,SO>& dm )
 // \a std::invalid_argument exception is thrown.
 //
 // \note The matrix inversion can only be used for dense matrices with \c float, \c double,
-// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// \c blas_float_complex or \c blas_double_complex element type. The attempt to call the function with
 // matrices of any other element type results in a compile time error!
 */
 template< typename MT  // Type of the dense matrix
@@ -747,7 +747,7 @@ inline void invertLower3x3( DenseMatrix<MT,SO>& dm )
 // This function inverts the given unilower dense \f$ 3 \times 3 \f$ matrix via the rule of Sarrus.
 //
 // \note The matrix inversion can only be used for dense matrices with \c float, \c double,
-// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// \c blas_float_complex or \c blas_double_complex element type. The attempt to call the function with
 // matrices of any other element type results in a compile time error!
 */
 template< typename MT  // Type of the dense matrix
@@ -785,7 +785,7 @@ inline void invertUniLower3x3( DenseMatrix<MT,SO>& dm )
 // \a std::invalid_argument exception is thrown.
 //
 // \note The matrix inversion can only be used for dense matrices with \c float, \c double,
-// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// \c blas_float_complex or \c blas_double_complex element type. The attempt to call the function with
 // matrices of any other element type results in a compile time error!
 */
 template< typename MT  // Type of the dense matrix
@@ -833,7 +833,7 @@ inline void invertUpper3x3( DenseMatrix<MT,SO>& dm )
 // This function inverts the given uniupper dense \f$ 3 \times 3 \f$ matrix via the rule of Sarrus.
 //
 // \note The matrix inversion can only be used for dense matrices with \c float, \c double,
-// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// \c blas_float_complex or \c blas_double_complex element type. The attempt to call the function with
 // matrices of any other element type results in a compile time error!
 */
 template< typename MT  // Type of the dense matrix
@@ -871,7 +871,7 @@ inline void invertUniUpper3x3( DenseMatrix<MT,SO>& dm )
 // \a std::invalid_argument exception is thrown.
 //
 // \note The matrix inversion can only be used for dense matrices with \c float, \c double,
-// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// \c blas_float_complex or \c blas_double_complex element type. The attempt to call the function with
 // matrices of any other element type results in a compile time error!
 */
 template< typename MT  // Type of the dense matrix
@@ -920,7 +920,7 @@ inline void invertDiagonal3x3( DenseMatrix<MT,SO>& dm )
 // case a \a std::runtime_error exception is thrown.
 //
 // \note The matrix inversion can only be used for dense matrices with \c float, \c double,
-// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// \c blas_float_complex or \c blas_double_complex element type. The attempt to call the function with
 // matrices of any other element type results in a compile time error!
 //
 // \note This function can only be used if a fitting LAPACK library is available and linked to
@@ -983,7 +983,7 @@ inline void invert3x3( DenseMatrix<MT,SO>& dm )
 // \a std::runtime_error exception is thrown.
 //
 // \note The matrix inversion can only be used for dense matrices with \c float, \c double,
-// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// \c blas_float_complex or \c blas_double_complex element type. The attempt to call the function with
 // matrices of any other element type results in a compile time error!
 */
 template< typename MT  // Type of the dense matrix
@@ -1067,7 +1067,7 @@ inline void invertGeneral4x4( DenseMatrix<MT,SO>& dm )
 // this case a \a std::invalid_argument exception is thrown.
 //
 // \note The matrix inversion can only be used for dense matrices with \c float, \c double,
-// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// \c blas_float_complex or \c blas_double_complex element type. The attempt to call the function with
 // matrices of any other element type results in a compile time error!
 */
 template< typename MT  // Type of the dense matrix
@@ -1145,7 +1145,7 @@ inline void invertSymmetric4x4( DenseMatrix<MT,SO>& dm )
 // this case a \a std::invalid_argument exception is thrown.
 //
 // \note The matrix inversion can only be used for dense matrices with \c float, \c double,
-// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// \c blas_float_complex or \c blas_double_complex element type. The attempt to call the function with
 // matrices of any other element type results in a compile time error!
 */
 template< typename MT  // Type of the dense matrix
@@ -1223,7 +1223,7 @@ inline void invertHermitian4x4( DenseMatrix<MT,SO>& dm )
 // \a std::invalid_argument exception is thrown.
 //
 // \note The matrix inversion can only be used for dense matrices with \c float, \c double,
-// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// \c blas_float_complex or \c blas_double_complex element type. The attempt to call the function with
 // matrices of any other element type results in a compile time error!
 */
 template< typename MT  // Type of the dense matrix
@@ -1279,7 +1279,7 @@ inline void invertLower4x4( DenseMatrix<MT,SO>& dm )
 // This function inverts the given unilower dense \f$ 4 \times 4 \f$ matrix via the rule of Sarrus.
 //
 // \note The matrix inversion can only be used for dense matrices with \c float, \c double,
-// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// \c blas_float_complex or \c blas_double_complex element type. The attempt to call the function with
 // matrices of any other element type results in a compile time error!
 */
 template< typename MT  // Type of the dense matrix
@@ -1322,7 +1322,7 @@ inline void invertUniLower4x4( DenseMatrix<MT,SO>& dm )
 // \a std::invalid_argument exception is thrown.
 //
 // \note The matrix inversion can only be used for dense matrices with \c float, \c double,
-// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// \c blas_float_complex or \c blas_double_complex element type. The attempt to call the function with
 // matrices of any other element type results in a compile time error!
 */
 template< typename MT  // Type of the dense matrix
@@ -1378,7 +1378,7 @@ inline void invertUpper4x4( DenseMatrix<MT,SO>& dm )
 // This function inverts the given uniupper dense \f$ 4 \times 4 \f$ matrix via the rule of Sarrus.
 //
 // \note The matrix inversion can only be used for dense matrices with \c float, \c double,
-// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// \c blas_float_complex or \c blas_double_complex element type. The attempt to call the function with
 // matrices of any other element type results in a compile time error!
 */
 template< typename MT  // Type of the dense matrix
@@ -1421,7 +1421,7 @@ inline void invertUniUpper4x4( DenseMatrix<MT,SO>& dm )
 // \a std::invalid_argument exception is thrown.
 //
 // \note The matrix inversion can only be used for dense matrices with \c float, \c double,
-// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// \c blas_float_complex or \c blas_double_complex element type. The attempt to call the function with
 // matrices of any other element type results in a compile time error!
 */
 template< typename MT  // Type of the dense matrix
@@ -1473,7 +1473,7 @@ inline void invertDiagonal4x4( DenseMatrix<MT,SO>& dm )
 // case a \a std::runtime_error exception is thrown.
 //
 // \note The matrix inversion can only be used for dense matrices with \c float, \c double,
-// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// \c blas_float_complex or \c blas_double_complex element type. The attempt to call the function with
 // matrices of any other element type results in a compile time error!
 //
 // \note This function can only be used if a fitting LAPACK library is available and linked to
@@ -1536,7 +1536,7 @@ inline void invert4x4( DenseMatrix<MT,SO>& dm )
 // \a std::runtime_error exception is thrown.
 //
 // \note The matrix inversion can only be used for dense matrices with \c float, \c double,
-// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// \c blas_float_complex or \c blas_double_complex element type. The attempt to call the function with
 // matrices of any other element type results in a compile time error!
 */
 template< typename MT  // Type of the dense matrix
@@ -1676,7 +1676,7 @@ inline void invertGeneral5x5( DenseMatrix<MT,SO>& dm )
 // this case a \a std::invalid_argument exception is thrown.
 //
 // \note The matrix inversion can only be used for dense matrices with \c float, \c double,
-// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// \c blas_float_complex or \c blas_double_complex element type. The attempt to call the function with
 // matrices of any other element type results in a compile time error!
 */
 template< typename MT  // Type of the dense matrix
@@ -1797,7 +1797,7 @@ inline void invertSymmetric5x5( DenseMatrix<MT,SO>& dm )
 // this case a \a std::invalid_argument exception is thrown.
 //
 // \note The matrix inversion can only be used for dense matrices with \c float, \c double,
-// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// \c blas_float_complex or \c blas_double_complex element type. The attempt to call the function with
 // matrices of any other element type results in a compile time error!
 */
 template< typename MT  // Type of the dense matrix
@@ -1918,7 +1918,7 @@ inline void invertHermitian5x5( DenseMatrix<MT,SO>& dm )
 // \a std::invalid_argument exception is thrown.
 //
 // \note The matrix inversion can only be used for dense matrices with \c float, \c double,
-// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// \c blas_float_complex or \c blas_double_complex element type. The attempt to call the function with
 // matrices of any other element type results in a compile time error!
 */
 template< typename MT  // Type of the dense matrix
@@ -1986,7 +1986,7 @@ inline void invertLower5x5( DenseMatrix<MT,SO>& dm )
 // This function inverts the given unilower dense \f$ 5 \times 5 \f$ matrix via the rule of Sarrus.
 //
 // \note The matrix inversion can only be used for dense matrices with \c float, \c double,
-// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// \c blas_float_complex or \c blas_double_complex element type. The attempt to call the function with
 // matrices of any other element type results in a compile time error!
 */
 template< typename MT  // Type of the dense matrix
@@ -2035,7 +2035,7 @@ inline void invertUniLower5x5( DenseMatrix<MT,SO>& dm )
 // \a std::invalid_argument exception is thrown.
 //
 // \note The matrix inversion can only be used for dense matrices with \c float, \c double,
-// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// \c blas_float_complex or \c blas_double_complex element type. The attempt to call the function with
 // matrices of any other element type results in a compile time error!
 */
 template< typename MT  // Type of the dense matrix
@@ -2104,7 +2104,7 @@ inline void invertUpper5x5( DenseMatrix<MT,SO>& dm )
 // This function inverts the given uniupper dense \f$ 5 \times 5 \f$ matrix via the rule of Sarrus.
 //
 // \note The matrix inversion can only be used for dense matrices with \c float, \c double,
-// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// \c blas_float_complex or \c blas_double_complex element type. The attempt to call the function with
 // matrices of any other element type results in a compile time error!
 */
 template< typename MT  // Type of the dense matrix
@@ -2153,7 +2153,7 @@ inline void invertUniUpper5x5( DenseMatrix<MT,SO>& dm )
 // \a std::invalid_argument exception is thrown.
 //
 // \note The matrix inversion can only be used for dense matrices with \c float, \c double,
-// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// \c blas_float_complex or \c blas_double_complex element type. The attempt to call the function with
 // matrices of any other element type results in a compile time error!
 */
 template< typename MT  // Type of the dense matrix
@@ -2207,7 +2207,7 @@ inline void invertDiagonal5x5( DenseMatrix<MT,SO>& dm )
 // case a \a std::runtime_error exception is thrown.
 //
 // \note The matrix inversion can only be used for dense matrices with \c float, \c double,
-// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// \c blas_float_complex or \c blas_double_complex element type. The attempt to call the function with
 // matrices of any other element type results in a compile time error!
 //
 // \note This function can only be used if a fitting LAPACK library is available and linked to
@@ -2270,7 +2270,7 @@ inline void invert5x5( DenseMatrix<MT,SO>& dm )
 // \a std::runtime_error exception is thrown.
 //
 // \note The matrix inversion can only be used for dense matrices with \c float, \c double,
-// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// \c blas_float_complex or \c blas_double_complex element type. The attempt to call the function with
 // matrices of any other element type results in a compile time error!
 */
 template< typename MT  // Type of the dense matrix
@@ -2501,7 +2501,7 @@ inline void invertGeneral6x6( DenseMatrix<MT,SO>& dm )
 // this case a \a std::invalid_argument exception is thrown.
 //
 // \note The matrix inversion can only be used for dense matrices with \c float, \c double,
-// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// \c blas_float_complex or \c blas_double_complex element type. The attempt to call the function with
 // matrices of any other element type results in a compile time error!
 */
 template< typename MT  // Type of the dense matrix
@@ -2712,7 +2712,7 @@ inline void invertSymmetric6x6( DenseMatrix<MT,SO>& dm )
 // this case a \a std::invalid_argument exception is thrown.
 //
 // \note The matrix inversion can only be used for dense matrices with \c float, \c double,
-// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// \c blas_float_complex or \c blas_double_complex element type. The attempt to call the function with
 // matrices of any other element type results in a compile time error!
 */
 template< typename MT  // Type of the dense matrix
@@ -2923,7 +2923,7 @@ inline void invertHermitian6x6( DenseMatrix<MT,SO>& dm )
 // \a std::invalid_argument exception is thrown.
 //
 // \note The matrix inversion can only be used for dense matrices with \c float, \c double,
-// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// \c blas_float_complex or \c blas_double_complex element type. The attempt to call the function with
 // matrices of any other element type results in a compile time error!
 */
 template< typename MT  // Type of the dense matrix
@@ -3004,7 +3004,7 @@ inline void invertLower6x6( DenseMatrix<MT,SO>& dm )
 // This function inverts the given unilower dense \f$ 6 \times 6 \f$ matrix via the rule of Sarrus.
 //
 // \note The matrix inversion can only be used for dense matrices with \c float, \c double,
-// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// \c blas_float_complex or \c blas_double_complex element type. The attempt to call the function with
 // matrices of any other element type results in a compile time error!
 */
 template< typename MT  // Type of the dense matrix
@@ -3061,7 +3061,7 @@ inline void invertUniLower6x6( DenseMatrix<MT,SO>& dm )
 // \a std::invalid_argument exception is thrown.
 //
 // \note The matrix inversion can only be used for dense matrices with \c float, \c double,
-// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// \c blas_float_complex or \c blas_double_complex element type. The attempt to call the function with
 // matrices of any other element type results in a compile time error!
 */
 template< typename MT  // Type of the dense matrix
@@ -3142,7 +3142,7 @@ inline void invertUpper6x6( DenseMatrix<MT,SO>& dm )
 // This function inverts the given uniupper dense \f$ 6 \times 6 \f$ matrix via the rule of Sarrus.
 //
 // \note The matrix inversion can only be used for dense matrices with \c float, \c double,
-// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// \c blas_float_complex or \c blas_double_complex element type. The attempt to call the function with
 // matrices of any other element type results in a compile time error!
 */
 template< typename MT  // Type of the dense matrix
@@ -3199,7 +3199,7 @@ inline void invertUniUpper6x6( DenseMatrix<MT,SO>& dm )
 // \a std::invalid_argument exception is thrown.
 //
 // \note The matrix inversion can only be used for dense matrices with \c float, \c double,
-// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// \c blas_float_complex or \c blas_double_complex element type. The attempt to call the function with
 // matrices of any other element type results in a compile time error!
 */
 template< typename MT  // Type of the dense matrix
@@ -3255,7 +3255,7 @@ inline void invertDiagonal6x6( DenseMatrix<MT,SO>& dm )
 // case a \a std::runtime_error exception is thrown.
 //
 // \note The matrix inversion can only be used for dense matrices with \c float, \c double,
-// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// \c blas_float_complex or \c blas_double_complex element type. The attempt to call the function with
 // matrices of any other element type results in a compile time error!
 //
 // \note This function can only be used if a fitting LAPACK library is available and linked to
@@ -3323,7 +3323,7 @@ inline void invert6x6( DenseMatrix<MT,SO>& dm )
 // In all failure cases an exception is thrown.
 //
 // \note The matrix inversion can only be used for dense matrices with \c float, \c double,
-// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// \c blas_float_complex or \c blas_double_complex element type. The attempt to call the function with
 // matrices of any other element type results in a compile time error!
 //
 // \note This function can only be used if a fitting LAPACK library is available and linked to
@@ -3368,7 +3368,7 @@ inline void invertByLU( DenseMatrix<MT,SO>& dm )
 // In all failure cases an exception is thrown.
 //
 // \note The matrix inversion can only be used for dense matrices with \c float, \c double,
-// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// \c blas_float_complex or \c blas_double_complex element type. The attempt to call the function with
 // matrices of any other element type results in a compile time error!
 //
 // \note This function can only be used if a fitting LAPACK library is available and linked to
@@ -3430,7 +3430,7 @@ inline void invertByLDLT( DenseMatrix<MT,SO>& dm )
 // In all failure cases an exception is thrown.
 //
 // \note The matrix inversion can only be used for dense matrices with \c float, \c double,
-// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// \c blas_float_complex or \c blas_double_complex element type. The attempt to call the function with
 // matrices of any other element type results in a compile time error!
 //
 // \note This function can only be used if a fitting LAPACK library is available and linked to
@@ -3469,7 +3469,7 @@ inline auto invertByLDLH( DenseMatrix<MT,SO>& dm )
 // In all failure cases an exception is thrown.
 //
 // \note The matrix inversion can only be used for dense matrices with \c float, \c double,
-// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// \c blas_float_complex or \c blas_double_complex element type. The attempt to call the function with
 // matrices of any other element type results in a compile time error!
 //
 // \note This function can only be used if a fitting LAPACK library is available and linked to
@@ -3532,7 +3532,7 @@ inline auto invertByLDLH( DenseMatrix<MT,SO>& dm )
 // In all failure cases an exception is thrown.
 //
 // \note The matrix inversion can only be used for dense matrices with \c float, \c double,
-// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// \c blas_float_complex or \c blas_double_complex element type. The attempt to call the function with
 // matrices of any other element type results in a compile time error!
 //
 // \note This function can only be used if a fitting LAPACK library is available and linked to
@@ -3593,7 +3593,7 @@ inline void invertByLLH( DenseMatrix<MT,SO>& dm )
 // In all failure cases an exception is thrown.
 //
 // \note The matrix inversion can only be used for dense matrices with \c float, \c double,
-// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// \c blas_float_complex or \c blas_double_complex element type. The attempt to call the function with
 // matrices of any other element type results in a compile time error!
 //
 // \note This function can only be used if a fitting LAPACK library is available and linked to
@@ -3634,7 +3634,7 @@ inline void invertLowerNxN( DenseMatrix<MT,SO>& dm )
 // In all failure cases an exception is thrown.
 //
 // \note The matrix inversion can only be used for dense matrices with \c float, \c double,
-// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// \c blas_float_complex or \c blas_double_complex element type. The attempt to call the function with
 // matrices of any other element type results in a compile time error!
 //
 // \note This function can only be used if a fitting LAPACK library is available and linked to
@@ -3675,7 +3675,7 @@ inline void invertUniLowerNxN( DenseMatrix<MT,SO>& dm )
 // In all failure cases an exception is thrown.
 //
 // \note The matrix inversion can only be used for dense matrices with \c float, \c double,
-// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// \c blas_float_complex or \c blas_double_complex element type. The attempt to call the function with
 // matrices of any other element type results in a compile time error!
 //
 // \note This function can only be used if a fitting LAPACK library is available and linked to
@@ -3716,7 +3716,7 @@ inline void invertUpperNxN( DenseMatrix<MT,SO>& dm )
 // In all failure cases an exception is thrown.
 //
 // \note The matrix inversion can only be used for dense matrices with \c float, \c double,
-// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// \c blas_float_complex or \c blas_double_complex element type. The attempt to call the function with
 // matrices of any other element type results in a compile time error!
 //
 // \note This function can only be used if a fitting LAPACK library is available and linked to
@@ -3757,7 +3757,7 @@ inline void invertUniUpperNxN( DenseMatrix<MT,SO>& dm )
 // In all failure cases an exception is thrown.
 //
 // \note The matrix inversion can only be used for dense matrices with \c float, \c double,
-// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// \c blas_float_complex or \c blas_double_complex element type. The attempt to call the function with
 // matrices of any other element type results in a compile time error!
 //
 // \note This function can only be used if a fitting LAPACK library is available and linked to
@@ -3800,7 +3800,7 @@ inline void invertDiagonalNxN( DenseMatrix<MT,SO>& dm )
 // case a \a std::runtime_error exception is thrown.
 //
 // \note The matrix inversion can only be used for dense matrices with \c float, \c double,
-// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// \c blas_float_complex or \c blas_double_complex element type. The attempt to call the function with
 // matrices of any other element type results in a compile time error!
 //
 // \note This function can only be used if a fitting LAPACK library is available and linked to
@@ -3878,7 +3878,7 @@ inline void invert( DenseMatrix<MT,SO>& dm );
 // In all failure cases an exception is thrown.
 //
 // \note The matrix inversion can only be used for dense matrices with \c float, \c double,
-// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// \c blas_float_complex or \c blas_double_complex element type. The attempt to call the function with
 // matrices of any other element type results in a compile time error!
 //
 // \note This function can only be used if a fitting LAPACK library is available and linked to
@@ -3925,7 +3925,7 @@ inline void invert( DenseMatrix<MT,SO>& dm )
 // compile time or an exception is thrown.
 //
 // \note The matrix inversion can only be used for dense matrices with \c float, \c double,
-// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// \c blas_float_complex or \c blas_double_complex element type. The attempt to call the function with
 // matrices of any other element type results in a compile time error!
 //
 // \note This function can only be used if a fitting LAPACK library is available and linked to

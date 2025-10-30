@@ -63,7 +63,7 @@ namespace blaze {
 // This type trait tests whether or not the given template parameter is invertible. The
 // type is considered to be invertible if it is a floating point type (\c float, \c double,
 // or <tt>long double</tt>), any other scalar type with a floating point element type (e.g.
-// \c complex<float>, \c complex<double> or <tt>complex<long double></tt>) or any dense matrix
+// \c blas_float_complex, \c blas_double_complex or <tt>complex<long double></tt>) or any dense matrix
 // type with a BLAS compatible element type. If the given type is invertible, the \a value
 // member constant is set to \a true, the nested type definition \a Type is \a TrueType, and
 // the class derives from \a TrueType. Otherwise \a value is set to \a false, \a Type is
@@ -71,7 +71,7 @@ namespace blaze {
 
    \code
    blaze::IsInvertible< float >::value                  // Evaluates to 1
-   blaze::IsInvertible< complex<double> >::Type         // Results in TrueType
+   blaze::IsInvertible< blas_double_complex >::Type         // Results in TrueType
    blaze::IsInvertible< blaze::DynamicMatrix<double> >  // Is derived from TrueType
    blaze::IsInvertible< int >::value                    // Evaluates to 0
    blaze::IsInvertible< complex<int> >::Type            // Results in FalseType

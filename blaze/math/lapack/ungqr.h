@@ -82,8 +82,8 @@ void ungqr( DenseMatrix<MT,SO>& A, const ElementType_t<MT>* tau );
 //
 // This function reconstructs the orthogonal matrix \a Q of a QR decomposition based on the LAPACK
 // ungqr() functions from matrices that have already been QR factorized by the geqrf() functions.
-// Note that this function can only be used for general, non-adapted matrices with \c complex<float>
-// or \c complex<double> element type. The attempt to call the function with any adapted matrix or
+// Note that this function can only be used for general, non-adapted matrices with \c blas_float_complex
+// or \c blas_double_complex element type. The attempt to call the function with any adapted matrix or
 // matrices of any other element type results in a compile time error!\n
 //
 // The \a m-by-min(\a m,\a n) \a Q matrix is stored within the given matrix \a A:
@@ -92,7 +92,7 @@ void ungqr( DenseMatrix<MT,SO>& A, const ElementType_t<MT>* tau );
    using blaze::DynamicMatrix;
    using blaze::columnMajor;
 
-   using cplx = complex<double>;
+   using cplx = blas_double_complex;
 
    DynamicMatrix<cplx,columnMajor> A;
    DynamicVector<cplx> tau;

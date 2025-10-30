@@ -99,11 +99,11 @@ void trsv( char uplo, char trans, char diag, blas_int_t n, const float* A,
 void trsv( char uplo, char trans, char diag, blas_int_t n, const double* A,
            blas_int_t lda, double* x, blas_int_t incX );
 
-void trsv( char uplo, char trans, char diag, blas_int_t n, const complex<float>* A,
-           blas_int_t lda, complex<float>* x, blas_int_t incX );
+void trsv( char uplo, char trans, char diag, blas_int_t n, const blas_float_complex* A,
+           blas_int_t lda, blas_float_complex* x, blas_int_t incX );
 
-void trsv( char uplo, char trans, char diag, blas_int_t n, const complex<double>* A,
-           blas_int_t lda, complex<double>* x, blas_int_t incX );
+void trsv( char uplo, char trans, char diag, blas_int_t n, const blas_double_complex* A,
+           blas_int_t lda, blas_double_complex* x, blas_int_t incX );
 //@}
 //*************************************************************************************************
 
@@ -237,10 +237,10 @@ inline void trsv( char uplo, char trans, char diag, blas_int_t n, const double* 
 // \note The function does not perform any test for singularity or near-singularity. Such tests
 // must be performed prior to calling this function!
 */
-inline void trsv( char uplo, char trans, char diag, blas_int_t n, const complex<float>* A,
-                  blas_int_t lda, complex<float>* x, blas_int_t incX )
+inline void trsv( char uplo, char trans, char diag, blas_int_t n, const blas_float_complex* A,
+                  blas_int_t lda, blas_float_complex* x, blas_int_t incX )
 {
-   BLAZE_STATIC_ASSERT( sizeof( complex<float> ) == 2UL*sizeof( float ) );
+   BLAZE_STATIC_ASSERT( sizeof( blas_float_complex ) == 2UL*sizeof( float ) );
 
    ctrsv_( &uplo, &trans, &diag, &n, const_cast<float*>( reinterpret_cast<const float*>( A ) ),
            &lda, reinterpret_cast<float*>( x ), &incX
@@ -287,10 +287,10 @@ inline void trsv( char uplo, char trans, char diag, blas_int_t n, const complex<
 // \note The function does not perform any test for singularity or near-singularity. Such tests
 // must be performed prior to calling this function!
 */
-inline void trsv( char uplo, char trans, char diag, blas_int_t n, const complex<double>* A,
-                  blas_int_t lda, complex<double>* x, blas_int_t incX )
+inline void trsv( char uplo, char trans, char diag, blas_int_t n, const blas_double_complex* A,
+                  blas_int_t lda, blas_double_complex* x, blas_int_t incX )
 {
-   BLAZE_STATIC_ASSERT( sizeof( complex<double> ) == 2UL*sizeof( double ) );
+   BLAZE_STATIC_ASSERT( sizeof( blas_double_complex ) == 2UL*sizeof( double ) );
 
    ztrsv_( &uplo, &trans, &diag, &n, const_cast<double*>( reinterpret_cast<const double*>( A ) ),
            &lda, reinterpret_cast<double*>( x ), &incX

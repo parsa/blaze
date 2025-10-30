@@ -87,8 +87,8 @@ void hetri( DenseMatrix<MT,SO>& A, char uplo, const blas_int_t* ipiv );
 //
 // This function performs the dense matrix inversion based on the LAPACK hetri() functions for
 // Hermitian indefinite matrices that have already been factorized by the hetrf() functions.
-// Note that the function only works for general, non-adapted matrices with \c complex<float> or
-// \c complex<double> element type. The attempt to call the function with adaptors or matrices
+// Note that the function only works for general, non-adapted matrices with \c blas_float_complex or
+// \c blas_double_complex element type. The attempt to call the function with adaptors or matrices
 // of any other element type results in a compile time error!
 //
 // The function fails if ...

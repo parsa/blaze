@@ -340,13 +340,13 @@ BLAZE_ALWAYS_INLINE const SIMDfloat set( float value ) noexcept
 
 
 //*************************************************************************************************
-/*!\brief Sets all values in the vector to the given \c complex<float> value.
+/*!\brief Sets all values in the vector to the given \c blas_float_complex value.
 // \ingroup simd
 //
-// \param value The given \c complex<float> value.
-// \return The set vector of \c complex<float> values.
+// \param value The given \c blas_float_complex value.
+// \return The set vector of \c blas_float_complex values.
 */
-BLAZE_ALWAYS_INLINE const SIMDcfloat set( const complex<float>& value ) noexcept
+BLAZE_ALWAYS_INLINE const SIMDcfloat set( const blas_float_complex& value ) noexcept
 {
 #if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
    return _mm512_set_ps( value.imag(), value.real(), value.imag(), value.real(),
@@ -361,7 +361,7 @@ BLAZE_ALWAYS_INLINE const SIMDcfloat set( const complex<float>& value ) noexcept
 #else
    return value;
 #endif
-   BLAZE_STATIC_ASSERT( sizeof( complex<float> ) == 2UL*sizeof( float ) );
+   BLAZE_STATIC_ASSERT( sizeof( blas_float_complex ) == 2UL*sizeof( float ) );
 }
 //*************************************************************************************************
 
@@ -397,13 +397,13 @@ BLAZE_ALWAYS_INLINE const SIMDdouble set( double value ) noexcept
 
 
 //*************************************************************************************************
-/*!\brief Sets all values in the vector to the given \c complex<double> value.
+/*!\brief Sets all values in the vector to the given \c blas_double_complex value.
 // \ingroup simd
 //
-// \param value The given \c complex<double> value.
-// \return The set vector of \c complex<double> values.
+// \param value The given \c blas_double_complex value.
+// \return The set vector of \c blas_double_complex values.
 */
-BLAZE_ALWAYS_INLINE const SIMDcdouble set( const complex<double>& value ) noexcept
+BLAZE_ALWAYS_INLINE const SIMDcdouble set( const blas_double_complex& value ) noexcept
 {
 #if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
    return _mm512_set_pd( value.imag(), value.real(), value.imag(), value.real(),
@@ -415,7 +415,7 @@ BLAZE_ALWAYS_INLINE const SIMDcdouble set( const complex<double>& value ) noexce
 #else
    return value;
 #endif
-   BLAZE_STATIC_ASSERT( sizeof( complex<double> ) == 2UL*sizeof( double ) );
+   BLAZE_STATIC_ASSERT( sizeof( blas_double_complex ) == 2UL*sizeof( double ) );
 }
 //*************************************************************************************************
 

@@ -56,7 +56,7 @@ namespace blaze {
 // \ingroup math_constraints
 //
 // In case the given data type \a T is not a BLAS compatible data type (i.e. float, double,
-// complex<float>, or complex<double>), a compilation error is created.
+// blas_float_complex, or blas_double_complex), a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE(T) \
    static_assert( ::blaze::IsBLASCompatible_v<T>, "Non-BLAS compatible type detected" )
@@ -75,8 +75,8 @@ namespace blaze {
 /*!\brief Constraint on the data type.
 // \ingroup math_constraints
 //
-// In case the given data type \a T is a BLAS compatible type (i.e. float, double, complex<float>,
-// or complex<double>), a compilation error is created.
+// In case the given data type \a T is a BLAS compatible type (i.e. float, double, blas_float_complex,
+// or blas_double_complex), a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_NOT_BE_BLAS_COMPATIBLE_TYPE(T) \
    static_assert( !::blaze::IsBLASCompatible_v<T>, "BLAS compatible type detected" )

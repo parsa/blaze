@@ -70,7 +70,7 @@ namespace blaze {
    using VT = StaticVector<int,3UL>;
    using MT = StaticMatrix<int,3UL,3UL>;
 
-   blaze::IsCommutative< double, complex<double> >::value                 // Evaluates to 1
+   blaze::IsCommutative< double, blas_double_complex >::value                 // Evaluates to 1
    blaze::IsCommutative< DynamicVector<int>, DynamicVector<int> >::Type   // Results in TrueType
    blaze::IsCommutative< DynamicMatrix<VT>, DynamicMatrix<VT> >           // Is derived from TrueType
    blaze::IsCommutative< DynamicMatrix<int>, DynamicVector<int> >::value  // Evaluates to 0

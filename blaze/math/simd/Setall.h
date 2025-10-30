@@ -833,10 +833,10 @@ SIMDfloat setall( float v0, Ts... vs ) noexcept
 /*! \cond BLAZE_INTERNAL */
 #if BLAZE_AVX512F_MODE
 BLAZE_ALWAYS_INLINE const SIMDcfloat
-   setall_ps( const complex<float>& v0 = 0.0F, const complex<float>& v1 = 0.0F
-            , const complex<float>& v2 = 0.0F, const complex<float>& v3 = 0.0F
-            , const complex<float>& v4 = 0.0F, const complex<float>& v5 = 0.0F
-            , const complex<float>& v6 = 0.0F, const complex<float>& v7 = 0.0F ) noexcept
+   setall_ps( const blas_float_complex& v0 = 0.0F, const blas_float_complex& v1 = 0.0F
+            , const blas_float_complex& v2 = 0.0F, const blas_float_complex& v3 = 0.0F
+            , const blas_float_complex& v4 = 0.0F, const blas_float_complex& v5 = 0.0F
+            , const blas_float_complex& v6 = 0.0F, const blas_float_complex& v7 = 0.0F ) noexcept
 {
    return _mm512_set_ps( v7.imag(), v7.real(), v6.imag(), v6.real()
                        , v5.imag(), v5.real(), v4.imag(), v4.real()
@@ -845,21 +845,21 @@ BLAZE_ALWAYS_INLINE const SIMDcfloat
 }
 #elif BLAZE_AVX_MODE
 BLAZE_ALWAYS_INLINE const SIMDcfloat
-   setall_ps( const complex<float>& v0 = 0.0F, const complex<float>& v1 = 0.0F
-            , const complex<float>& v2 = 0.0F, const complex<float>& v3 = 0.0F ) noexcept
+   setall_ps( const blas_float_complex& v0 = 0.0F, const blas_float_complex& v1 = 0.0F
+            , const blas_float_complex& v2 = 0.0F, const blas_float_complex& v3 = 0.0F ) noexcept
 {
    return _mm256_set_ps( v3.imag(), v3.real(), v2.imag(), v2.real()
                        , v1.imag(), v1.real(), v0.imag(), v0.real() );
 }
 #elif BLAZE_SSE_MODE
 BLAZE_ALWAYS_INLINE const SIMDcfloat
-   setall_ps( const complex<float>& v0 = 0.0F, const complex<float>& v1 = 0.0F ) noexcept
+   setall_ps( const blas_float_complex& v0 = 0.0F, const blas_float_complex& v1 = 0.0F ) noexcept
 {
    return _mm_set_ps( v1.imag(), v1.real(), v0.imag(), v0.real() );
 }
 #else
 BLAZE_ALWAYS_INLINE const SIMDcfloat
-   setall_ps( const complex<float>& v0 = 0.0F ) noexcept
+   setall_ps( const blas_float_complex& v0 = 0.0F ) noexcept
 {
    return v0;
 }
@@ -869,12 +869,12 @@ BLAZE_ALWAYS_INLINE const SIMDcfloat
 
 
 //*************************************************************************************************
-/*!\brief Sets all values in the vector to the given \c complex<float> values.
+/*!\brief Sets all values in the vector to the given \c blas_float_complex values.
 // \ingroup simd
 //
-// \param v0 The first given \c complex<float> value.
-// \param vs The remaining \c complex<float> values.
-// \return The set vector of \c complex<float> values.
+// \param v0 The first given \c blas_float_complex value.
+// \param vs The remaining \c blas_float_complex values.
+// \return The set vector of \c blas_float_complex values.
 //
 // This function sets the values of a SIMD vector to the given values. Depending on the available
 // SIMD instruction set, the function accepts another maximum number of values:
@@ -890,11 +890,11 @@ BLAZE_ALWAYS_INLINE const SIMDcfloat
 // set to 0.
 */
 template< typename... Ts >
-SIMDcfloat setall( const complex<float>& v0, Ts... vs ) noexcept
+SIMDcfloat setall( const blas_float_complex& v0, Ts... vs ) noexcept
 {
    return setall_ps( v0, vs... );
 
-   BLAZE_STATIC_ASSERT( sizeof( complex<float> ) == 2UL*sizeof( float ) );
+   BLAZE_STATIC_ASSERT( sizeof( blas_float_complex ) == 2UL*sizeof( float ) );
 }
 //*************************************************************************************************
 
@@ -972,27 +972,27 @@ SIMDdouble setall( double v0, Ts... vs ) noexcept
 /*! \cond BLAZE_INTERNAL */
 #if BLAZE_AVX512F_MODE
 BLAZE_ALWAYS_INLINE const SIMDcdouble
-   setall_pd( const complex<double>& v0 = 0.0, const complex<double>& v1 = 0.0
-            , const complex<double>& v2 = 0.0, const complex<double>& v3 = 0.0 ) noexcept
+   setall_pd( const blas_double_complex& v0 = 0.0, const blas_double_complex& v1 = 0.0
+            , const blas_double_complex& v2 = 0.0, const blas_double_complex& v3 = 0.0 ) noexcept
 {
    return _mm512_set_pd( v3.imag(), v3.real(), v2.imag(), v2.real()
                        , v1.imag(), v1.real(), v0.imag(), v0.real() );
 }
 #elif BLAZE_AVX_MODE
 BLAZE_ALWAYS_INLINE const SIMDcdouble
-   setall_pd( const complex<double>& v0 = 0.0, const complex<double>& v1 = 0.0 ) noexcept
+   setall_pd( const blas_double_complex& v0 = 0.0, const blas_double_complex& v1 = 0.0 ) noexcept
 {
    return _mm256_set_pd( v1.imag(), v1.real(), v0.imag(), v0.real() );
 }
 #elif BLAZE_SSE2_MODE
 BLAZE_ALWAYS_INLINE const SIMDcdouble
-   setall_pd( const complex<double>& v0 = 0.0 ) noexcept
+   setall_pd( const blas_double_complex& v0 = 0.0 ) noexcept
 {
    return _mm_set_pd( v0.imag(), v0.real() );
 }
 #else
 BLAZE_ALWAYS_INLINE const SIMDcdouble
-   setall_pd( const complex<double>& v0 = 0.0 ) noexcept
+   setall_pd( const blas_double_complex& v0 = 0.0 ) noexcept
 {
    return v0;
 }
@@ -1002,12 +1002,12 @@ BLAZE_ALWAYS_INLINE const SIMDcdouble
 
 
 //*************************************************************************************************
-/*!\brief Sets all values in the vector to the given \c complex<double> values.
+/*!\brief Sets all values in the vector to the given \c blas_double_complex values.
 // \ingroup simd
 //
-// \param v0 The first given \c complex<double> value.
-// \param vs The remaining \c complex<double> values.
-// \return The set vector of \c complex<double> values.
+// \param v0 The first given \c blas_double_complex value.
+// \param vs The remaining \c blas_double_complex values.
+// \return The set vector of \c blas_double_complex values.
 //
 // This function sets the values of a SIMD vector to the given values. Depending on the available
 // SIMD instruction set, the function accepts another maximum number of values:
@@ -1023,11 +1023,11 @@ BLAZE_ALWAYS_INLINE const SIMDcdouble
 // set to 0.
 */
 template< typename... Ts >
-SIMDcdouble setall( const complex<double>& v0, Ts... vs ) noexcept
+SIMDcdouble setall( const blas_double_complex& v0, Ts... vs ) noexcept
 {
    return setall_pd( v0, vs... );
 
-   BLAZE_STATIC_ASSERT( sizeof( complex<double> ) == 2UL*sizeof( double ) );
+   BLAZE_STATIC_ASSERT( sizeof( blas_double_complex ) == 2UL*sizeof( double ) );
 }
 //*************************************************************************************************
 

@@ -94,10 +94,10 @@ struct HasDivHelper< T1, T2, Void_t< decltype( std::declval<T1>() / std::declval
 
    \code
    blaze::HasDiv< int, int >::value                         // Evaluates to 1
-   blaze::HasDiv< complex<float>, complex<float> >::Type    // Results in TrueType
+   blaze::HasDiv< blas_float_complex, blas_float_complex >::Type    // Results in TrueType
    blaze::HasDiv< DynamicVector<int>, DynamicVector<int> >  // Is derived from TrueType
-   blaze::HasDiv< int, complex<float> >::value              // Evaluates to 0
-   blaze::HasDiv< complex<int>, complex<float> >::Type      // Results in FalseType
+   blaze::HasDiv< int, blas_float_complex >::value              // Evaluates to 0
+   blaze::HasDiv< complex<int>, blas_float_complex >::Type      // Results in FalseType
    blaze::HasDiv< DynamicMatrix<int>, DynamicVector<int> >  // Is derived from FalseType
    \endcode
 */

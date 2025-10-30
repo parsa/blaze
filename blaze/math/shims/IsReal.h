@@ -78,8 +78,8 @@ namespace blaze {
 // part is close to 0 (relaxed semantics):
 
    \code
-   complex<double> c1( 1.0, 0.0 );  // isReal( c1 ) returns true
-   complex<double> c2( 0.0, 1.0 );  // isReal( c2 ) returns false
+   blas_double_complex c1( 1.0, 0.0 );  // isReal( c1 ) returns true
+   blas_double_complex c2( 0.0, 1.0 );  // isReal( c2 ) returns false
    \endcode
 
 // Optionally, it is possible to switch between relaxed semantics (blaze::relaxed) and strict
@@ -88,9 +88,9 @@ namespace blaze {
 
    \code
                                      // isReal<strict>( ... ) | isReal<relaxed>( ... )
-   complex<double> c1( 1.0, 0.0  );  //    true               |    true
-   complex<double> c2( 1.0, 1E-9 );  //    false              |    true (below 1E-8)
-   complex<double> c3( 0.0, 1.0  );  //    false              |    false
+   blas_double_complex c1( 1.0, 0.0  );  //    true               |    true
+   blas_double_complex c2( 1.0, 1E-9 );  //    false              |    true (below 1E-8)
+   blas_double_complex c3( 0.0, 1.0  );  //    false              |    false
    \endcode
 
 // For all other types the function returns \a false.
@@ -141,8 +141,8 @@ BLAZE_ALWAYS_INLINE bool isReal( const complex<Type>& v ) noexcept( IsBuiltin_v<
    int    i = 1;                      // isReal( i ) returns true
    double d = 1.0;                    // isReal( d ) returns true
 
-   complex<double> c1( 1.0, 0.0 );    // isReal( c1 ) returns true
-   complex<double> c2( 0.0, 1.0 );    // isReal( c2 ) returns false
+   blas_double_complex c1( 1.0, 0.0 );    // isReal( c1 ) returns true
+   blas_double_complex c2( 0.0, 1.0 );    // isReal( c2 ) returns false
 
    blaze::DynamicVector<int> vec;     // isReal( vec ) returns false
    blaze::DynamicMatrix<double> mat;  // isReal( mat ) returns false

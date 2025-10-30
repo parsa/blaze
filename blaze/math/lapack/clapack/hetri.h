@@ -83,11 +83,11 @@ namespace blaze {
 //*************************************************************************************************
 /*!\name LAPACK LDLH-based inversion functions (hetri) */
 //@{
-void hetri( char uplo, blas_int_t n, complex<float>* A, blas_int_t lda,
-            const blas_int_t* ipiv, complex<float>* work, blas_int_t* info );
+void hetri( char uplo, blas_int_t n, blas_float_complex* A, blas_int_t lda,
+            const blas_int_t* ipiv, blas_float_complex* work, blas_int_t* info );
 
-void hetri( char uplo, blas_int_t n, complex<double>* A, blas_int_t lda,
-            const blas_int_t* ipiv, complex<double>* work, blas_int_t* info );
+void hetri( char uplo, blas_int_t n, blas_double_complex* A, blas_int_t lda,
+            const blas_int_t* ipiv, blas_double_complex* work, blas_int_t* info );
 //@}
 //*************************************************************************************************
 
@@ -124,14 +124,14 @@ void hetri( char uplo, blas_int_t n, complex<double>* A, blas_int_t lda,
 // is available and linked to the executable. Otherwise a call to this function will result in a
 // linker error.
 */
-inline void hetri( char uplo, blas_int_t n, complex<float>* A, blas_int_t lda,
-                   const blas_int_t* ipiv, complex<float>* work, blas_int_t* info )
+inline void hetri( char uplo, blas_int_t n, blas_float_complex* A, blas_int_t lda,
+                   const blas_int_t* ipiv, blas_float_complex* work, blas_int_t* info )
 {
-   BLAZE_STATIC_ASSERT( sizeof( complex<float> ) == 2UL*sizeof( float ) );
+   BLAZE_STATIC_ASSERT( sizeof( blas_float_complex ) == 2UL*sizeof( float ) );
 
 #if defined(INTEL_MKL_VERSION)
    BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( blas_int_t ) );
-   BLAZE_STATIC_ASSERT( sizeof( MKL_Complex8 ) == sizeof( complex<float> ) );
+   BLAZE_STATIC_ASSERT( sizeof( MKL_Complex8 ) == sizeof( blas_float_complex ) );
    using ET = MKL_Complex8;
 #else
    using ET = float;
@@ -179,14 +179,14 @@ inline void hetri( char uplo, blas_int_t n, complex<float>* A, blas_int_t lda,
 // is available and linked to the executable. Otherwise a call to this function will result in a
 // linker error.
 */
-inline void hetri( char uplo, blas_int_t n, complex<double>* A, blas_int_t lda,
-                   const blas_int_t* ipiv, complex<double>* work, blas_int_t* info )
+inline void hetri( char uplo, blas_int_t n, blas_double_complex* A, blas_int_t lda,
+                   const blas_int_t* ipiv, blas_double_complex* work, blas_int_t* info )
 {
-   BLAZE_STATIC_ASSERT( sizeof( complex<double> ) == 2UL*sizeof( double ) );
+   BLAZE_STATIC_ASSERT( sizeof( blas_double_complex ) == 2UL*sizeof( double ) );
 
 #if defined(INTEL_MKL_VERSION)
    BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( blas_int_t ) );
-   BLAZE_STATIC_ASSERT( sizeof( MKL_Complex16 ) == sizeof( complex<double> ) );
+   BLAZE_STATIC_ASSERT( sizeof( MKL_Complex16 ) == sizeof( blas_double_complex ) );
    using ET = MKL_Complex16;
 #else
    using ET = double;

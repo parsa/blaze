@@ -125,7 +125,7 @@ class OperationTest
    /*! \cond BLAZE_INTERNAL */
    struct A {};
    struct B { using ElementType = int; };
-   struct C { using value_type = blaze::complex<float>; };
+   struct C { using value_type = blaze::blas_float_complex; };
    struct D { using ElementType = double; using value_type = double; };
 
    struct E { static constexpr bool paddingEnabled() { return false; } };

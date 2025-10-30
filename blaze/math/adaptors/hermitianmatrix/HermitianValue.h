@@ -90,7 +90,7 @@ namespace blaze {
 // sparse Hermitian matrix:
 
    \code
-   using cplx = std::complex<double>;
+   using cplx = std::blas_double_complex;
    using Hermitian = blaze::HermitianMatrix< blaze::CompressedMatrix<cplx> >;
 
    // Creating a 3x3 Hermitian dense matrix

@@ -94,10 +94,10 @@ struct HasHypotHelper< T1, T2, Void_t< decltype( hypot( std::declval<T1>(), std:
 
    \code
    blaze::HasHypot< int, int >::value                         // Evaluates to 1
-   blaze::HasHypot< complex<float>, complex<float> >::Type    // Results in TrueType
+   blaze::HasHypot< blas_float_complex, blas_float_complex >::Type    // Results in TrueType
    blaze::HasHypot< DynamicVector<int>, DynamicVector<int> >  // Is derived from TrueType
-   blaze::HasHypot< int, complex<float> >::value              // Evaluates to 0
-   blaze::HasHypot< complex<int>, complex<float> >::Type      // Results in FalseType
+   blaze::HasHypot< int, blas_float_complex >::value              // Evaluates to 0
+   blaze::HasHypot< complex<int>, blas_float_complex >::Type      // Results in FalseType
    blaze::HasHypot< DynamicMatrix<int>, DynamicVector<int> >  // Is derived from FalseType
    \endcode
 */

@@ -221,7 +221,7 @@ inline auto gesdd_backend( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& s )
 // order in the vector \a s, which is resized to the correct size (if possible and necessary).
 //
 // Note that this function can only be used for general, non-adapted matrices with \c float,
-// \c double, \c complex<float>, or \c complex<double> element type. The attempt to call the
+// \c double, \c blas_float_complex, or \c blas_double_complex element type. The attempt to call the
 // function with any adapted matrix or matrices of any other element type results in a compile
 // time error!
 //
@@ -474,7 +474,7 @@ inline auto gesdd_backend( DenseMatrix<MT1,SO>& A, DenseMatrix<MT2,SO>& U,
 //   - \c 'N': No left and right signular vectors are computed; \a U is not referenced.
 //
 // Note that this function can only be used for general, non-adapted matrices with \c float,
-// \c double, \c complex<float>, or \c complex<double> element type. The attempt to call the
+// \c double, \c blas_float_complex, or \c blas_double_complex element type. The attempt to call the
 // function with any adapted matrix or matrices of any other element type results in a compile
 // time error!
 //
@@ -742,7 +742,7 @@ inline auto gesdd_backend( DenseMatrix<MT1,SO>& A, DenseVector<VT,TF>& s,
 //   - \c 'N': No left and right signular vectors are computed; \a V is not referenced.
 //
 // Note that this function can only be used for general, non-adapted matrices with \c float,
-// \c double, \c complex<float>, or \c complex<double> element type. The attempt to call the
+// \c double, \c blas_float_complex, or \c blas_double_complex element type. The attempt to call the
 // function with any adapted matrix or matrices of any other element type results in a compile
 // time error!
 //
@@ -1023,7 +1023,7 @@ inline auto gesdd_backend( DenseMatrix<MT1,SO>& A, DenseMatrix<MT2,SO>& U,
 //             referenced.
 //
 // Note that this function can only be used for general, non-adapted matrices with \c float,
-// \c double, \c complex<float>, or \c complex<double> element type. The attempt to call the
+// \c double, \c blas_float_complex, or \c blas_double_complex element type. The attempt to call the
 // function with any adapted matrix or matrices of any other element type results in a compile
 // time error!
 //

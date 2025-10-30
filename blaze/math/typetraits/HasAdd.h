@@ -94,10 +94,10 @@ struct HasAddHelper< T1, T2, Void_t< decltype( std::declval<T1>() + std::declval
 
    \code
    blaze::HasAdd< int, int >::value                         // Evaluates to 1
-   blaze::HasAdd< complex<float>, complex<float> >::Type    // Results in TrueType
+   blaze::HasAdd< blas_float_complex, blas_float_complex >::Type    // Results in TrueType
    blaze::HasAdd< DynamicVector<int>, DynamicVector<int> >  // Is derived from TrueType
-   blaze::HasAdd< int, complex<float> >::value              // Evaluates to 0
-   blaze::HasAdd< complex<int>, complex<float> >::Type      // Results in FalseType
+   blaze::HasAdd< int, blas_float_complex >::value              // Evaluates to 0
+   blaze::HasAdd< complex<int>, blas_float_complex >::Type      // Results in FalseType
    blaze::HasAdd< DynamicMatrix<int>, DynamicVector<int> >  // Is derived from FalseType
    \endcode
 */

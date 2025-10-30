@@ -66,8 +66,8 @@ namespace blaze {
 // complex conjugate by reversing the sign of the imaginary part:
 
    \code
-   const blaze::complex<double> a( 1.0, 2.0 );
-   const blaze::complex<double> b( conj( a ) );  // Results in ( 1, -2 )
+   const blaze::blas_double_complex a( 1.0, 2.0 );
+   const blaze::blas_double_complex b( conj( a ) );  // Results in ( 1, -2 )
    \endcode
 
 // Values of built-in data type are considered complex numbers with an imaginary part of 0. Thus
@@ -104,7 +104,7 @@ BLAZE_ALWAYS_INLINE constexpr T conj( const T& a ) noexcept
 // complex conjugate by reversing the sign of the imaginary part:
 
    \code
-   blaze::complex<double> a( 1.0, 2.0 );
+   blaze::blas_double_complex a( 1.0, 2.0 );
    conjugate( a );  // Results in ( 1, -2 )
    \endcode
 

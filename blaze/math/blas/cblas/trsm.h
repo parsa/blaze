@@ -68,12 +68,12 @@ void trsm( CBLAS_ORDER order, CBLAS_SIDE side, CBLAS_UPLO uplo, CBLAS_TRANSPOSE 
            blas_int_t lda, double* B, blas_int_t ldb );
 
 void trsm( CBLAS_ORDER order, CBLAS_SIDE side, CBLAS_UPLO uplo, CBLAS_TRANSPOSE transA,
-           CBLAS_DIAG diag, blas_int_t m, blas_int_t n, complex<float> alpha,
-           const complex<float>* A, blas_int_t lda, complex<float>* B, blas_int_t ldb );
+           CBLAS_DIAG diag, blas_int_t m, blas_int_t n, blas_float_complex alpha,
+           const blas_float_complex* A, blas_int_t lda, blas_float_complex* B, blas_int_t ldb );
 
 void trsm( CBLAS_ORDER order, CBLAS_SIDE side, CBLAS_UPLO uplo, CBLAS_TRANSPOSE transA,
-           CBLAS_DIAG diag, blas_int_t m, blas_int_t n, complex<double> alpha,
-           const complex<double>* A, blas_int_t lda, complex<double>* B, blas_int_t ldb );
+           CBLAS_DIAG diag, blas_int_t m, blas_int_t n, blas_double_complex alpha,
+           const blas_double_complex* A, blas_int_t lda, blas_double_complex* B, blas_int_t ldb );
 
 #endif
 //@}
@@ -185,10 +185,10 @@ inline void trsm( CBLAS_ORDER order, CBLAS_SIDE side, CBLAS_UPLO uplo, CBLAS_TRA
 // linker error.
 */
 inline void trsm( CBLAS_ORDER order, CBLAS_SIDE side, CBLAS_UPLO uplo, CBLAS_TRANSPOSE transA,
-                  CBLAS_DIAG diag, blas_int_t m, blas_int_t n, complex<float> alpha,
-                  const complex<float>* A, blas_int_t lda, complex<float>* B, blas_int_t ldb )
+                  CBLAS_DIAG diag, blas_int_t m, blas_int_t n, blas_float_complex alpha,
+                  const blas_float_complex* A, blas_int_t lda, blas_float_complex* B, blas_int_t ldb )
 {
-   BLAZE_STATIC_ASSERT( sizeof( complex<float> ) == 2UL*sizeof( float ) );
+   BLAZE_STATIC_ASSERT( sizeof( blas_float_complex ) == 2UL*sizeof( float ) );
 
    cblas_ctrsm( order, side, uplo, transA, diag, m, n, reinterpret_cast<const float*>( &alpha ),
                 reinterpret_cast<const float*>( A ), lda, reinterpret_cast<float*>( B ), ldb );
@@ -226,10 +226,10 @@ inline void trsm( CBLAS_ORDER order, CBLAS_SIDE side, CBLAS_UPLO uplo, CBLAS_TRA
 // linker error.
 */
 inline void trsm( CBLAS_ORDER order, CBLAS_SIDE side, CBLAS_UPLO uplo, CBLAS_TRANSPOSE transA,
-                  CBLAS_DIAG diag, blas_int_t m, blas_int_t n, complex<double> alpha,
-                  const complex<double>* A, blas_int_t lda, complex<double>* B, blas_int_t ldb )
+                  CBLAS_DIAG diag, blas_int_t m, blas_int_t n, blas_double_complex alpha,
+                  const blas_double_complex* A, blas_int_t lda, blas_double_complex* B, blas_int_t ldb )
 {
-   BLAZE_STATIC_ASSERT( sizeof( complex<double> ) == 2UL*sizeof( double ) );
+   BLAZE_STATIC_ASSERT( sizeof( blas_double_complex ) == 2UL*sizeof( double ) );
 
    cblas_ztrsm( order, side, uplo, transA, diag, m, n, reinterpret_cast<const double*>( &alpha ),
                 reinterpret_cast<const double*>( A ), lda, reinterpret_cast<double*>( B ), ldb );

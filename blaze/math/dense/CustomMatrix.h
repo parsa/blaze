@@ -178,8 +178,8 @@ namespace blaze {
    // Definition of a custom row-major matrix for aligned, unpadded 'double' arrays
    using AlignedUnpadded = CustomMatrix<double,aligned,unpadded,rowMajor>;
 
-   // Definition of a custom column-major matrix for aligned, padded 'complex<double>' arrays
-   using AlignedPadded = CustomMatrix<complex<double>,aligned,padded,columnMajor>;
+   // Definition of a custom column-major matrix for aligned, padded 'blas_double_complex' arrays
+   using AlignedPadded = CustomMatrix<blas_double_complex,aligned,padded,columnMajor>;
    \endcode
 
 // \n \section custommatrix_special_properties Special Properties of Custom Matrices

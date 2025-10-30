@@ -72,13 +72,13 @@ template< typename, typename = void > struct UnderlyingNumericHelper2;
 
    \code
    using Type1 = double;                                    // Built-in data type
-   using Type2 = complex<float>;                            // Complex data type
+   using Type2 = blas_float_complex;                            // Complex data type
    using Type3 = std::vector<short>;                        // std::vector with built-in element type
    using Type4 = StaticVector<int,3UL>;                     // Vector with built-in element type
    using Type5 = CompressedVector< DynamicVector<float> >;  // Vector with vector element type
 
    blaze::UnderlyingScalar< Type1 >::Type  // corresponds to double
-   blaze::UnderlyingScalar< Type2 >::Type  // corresponds to complex<float>
+   blaze::UnderlyingScalar< Type2 >::Type  // corresponds to blas_float_complex
    blaze::UnderlyingScalar< Type3 >::Type  // corresponds to short
    blaze::UnderlyingScalar< Type4 >::Type  // corresponds to int
    blaze::UnderlyingScalar< Type5 >::Type  // corresponds to float

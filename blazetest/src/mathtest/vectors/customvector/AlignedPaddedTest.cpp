@@ -1726,7 +1726,7 @@ void AlignedPaddedTest::testScaling()
       using blaze::padded;
       using blaze::rowVector;
 
-      using cplx = complex<float>;
+      using cplx = blas_float_complex;
       using AlignedPadded = blaze::CustomVector<cplx,aligned,padded,rowVector>;
       std::unique_ptr<cplx[],blaze::Deallocate> memory( blaze::allocate<cplx>( 8UL ) );
       AlignedPadded vec( memory.get(), 2UL, 8UL );

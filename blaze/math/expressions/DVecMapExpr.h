@@ -1456,7 +1456,7 @@ inline decltype(auto) round( const DenseVector<VT,TF>& dv )
 // The following example demonstrates the use of the \a conj() function:
 
    \code
-   blaze::DynamicVector< complex<double> > a, b;
+   blaze::DynamicVector< blas_double_complex > a, b;
    // ... Resizing and initialization
    b = conj( a );
    \endcode
@@ -1485,7 +1485,7 @@ inline decltype(auto) conj( const DenseVector<VT,TF>& dv )
 // The following example demonstrates the use of the \a ctrans() function:
 
    \code
-   blaze::DynamicVector< complex<double> > a, b;
+   blaze::DynamicVector< blas_double_complex > a, b;
    // ... Resizing and initialization
    b = ctrans( a );
    \endcode
@@ -2590,7 +2590,7 @@ inline decltype(auto) round( const DVecMapExpr<VT,Round,TF>& dv )
 // original dense vector:
 
    \code
-   blaze::DynamicVector< complex<double> > a, b;
+   blaze::DynamicVector< blas_double_complex > a, b;
    // ... Resizing and initialization
    b = conj( conj( a ) );
    \endcode
@@ -2620,7 +2620,7 @@ inline decltype(auto) conj( const DVecMapExpr<VT,Conj,TF>& dv )
 // transpose of the dense vector:
 
    \code
-   blaze::DynamicVector< complex<double> > a, b;
+   blaze::DynamicVector< blas_double_complex > a, b;
    // ... Resizing and initialization
    b = conj( ctrans( a ) );
    \endcode

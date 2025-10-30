@@ -71,7 +71,7 @@ template< typename, typename = void > struct UnderlyingBuiltinHelper2;
 
    \code
    using Type1 = double;                                    // Built-in data type
-   using Type2 = complex<float>;                            // Complex data type
+   using Type2 = blas_float_complex;                            // Complex data type
    using Type3 = std::vector<short>;                        // std::vector with built-in element type
    using Type4 = StaticVector<int,3UL>;                     // Vector with built-in element type
    using Type5 = CompressedVector< DynamicVector<float> >;  // Vector with vector element type

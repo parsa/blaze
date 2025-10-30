@@ -111,7 +111,7 @@ struct HasSIMDMultHelper< float, float >
 {};
 
 template<>
-struct HasSIMDMultHelper< complex<float>, complex<float> >
+struct HasSIMDMultHelper< blas_float_complex, blas_float_complex >
    : public BoolConstant< ( bool( BLAZE_SSE3_MODE    ) && !bool( BLAZE_MIC_MODE ) ) ||
                           ( bool( BLAZE_AVX_MODE     ) && !bool( BLAZE_MIC_MODE ) ) ||
                           ( bool( BLAZE_AVX512F_MODE ) && !bool( BLAZE_MIC_MODE ) ) >
@@ -131,7 +131,7 @@ struct HasSIMDMultHelper< double, double >
 {};
 
 template<>
-struct HasSIMDMultHelper< complex<double>, complex<double> >
+struct HasSIMDMultHelper< blas_double_complex, blas_double_complex >
    : public BoolConstant< ( bool( BLAZE_SSE3_MODE    ) && !bool( BLAZE_MIC_MODE ) ) ||
                           ( bool( BLAZE_AVX_MODE     ) && !bool( BLAZE_MIC_MODE ) ) ||
                           ( bool( BLAZE_AVX512F_MODE ) && !bool( BLAZE_MIC_MODE ) ) >
@@ -155,7 +155,7 @@ struct HasSIMDMultHelper< complex<double>, complex<double> >
    \code
    blaze::HasSIMDMult< int, int >::value        // Evaluates to 1
    blaze::HasSIMDMult< double, double >::Type   // Results in TrueType
-   blaze::HasSIMDMult< complex<float>, float >  // Is derived from TrueType
+   blaze::HasSIMDMult< blas_float_complex, float >  // Is derived from TrueType
    blaze::HasSIMDMult< bool, bool >::value      // Evaluates to 0
    blaze::HasSIMDMult< float, int >::Type       // Results in FalseType
    blaze::HasSIMDMult< double, float >          // Is derived from FalseType

@@ -63,8 +63,8 @@ namespace blaze {
 // and the class derives from \a FalseType.
 
    \code
-   blaze::IsComplex< complex<double> >::value      // Evaluates to 'true'
-   blaze::IsComplex< const complex<float> >::Type  // Results in TrueType
+   blaze::IsComplex< blas_double_complex >::value      // Evaluates to 'true'
+   blaze::IsComplex< const blas_float_complex >::Type  // Results in TrueType
    blaze::IsComplex< volatile complex<int> >       // Is derived from TrueType
    blaze::IsComplex< float >::value                // Evaluates to 'false'
    blaze::IsComplex< const double >::Type          // Results in FalseType

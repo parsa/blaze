@@ -2435,7 +2435,7 @@ void UnalignedPaddedTest::testScaling()
       using blaze::unpadded;
       using blaze::rowMajor;
 
-      using cplx = complex<float>;
+      using cplx = blas_float_complex;
       using UnalignedPadded = blaze::CustomMatrix<cplx,unaligned,unpadded,rowMajor>;
       std::unique_ptr<cplx[],blaze::ArrayDelete> memory( new cplx[32UL] );
       UnalignedPadded mat( memory.get(), 2UL, 2UL, 16UL );
@@ -2739,7 +2739,7 @@ void UnalignedPaddedTest::testScaling()
       using blaze::unpadded;
       using blaze::columnMajor;
 
-      using cplx = complex<float>;
+      using cplx = blas_float_complex;
       using UnalignedPadded = blaze::CustomMatrix<cplx,unaligned,unpadded,columnMajor>;
       std::unique_ptr<cplx[],blaze::ArrayDelete> memory( new cplx[32UL] );
       UnalignedPadded mat( memory.get(), 2UL, 2UL, 16UL );

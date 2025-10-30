@@ -56,18 +56,18 @@ namespace blaze {
 /*!\brief Compile time check for single precision complex types.
 // \ingroup type_traits
 //
-// This type trait tests whether or not the given template parameter is of type \c complex<double>.
-// In case the type is \c complex<double> (ignoring the cv-qualifiers), the \a value member
+// This type trait tests whether or not the given template parameter is of type \c blas_double_complex.
+// In case the type is \c blas_double_complex (ignoring the cv-qualifiers), the \a value member
 // constant is set to \a true, the nested type definition \a Type is \a TrueType, and the class
 // derives from \a TrueType. Otherwise \a value is set to \a false, \a Type is \a FalseType, and
 // the class derives from \a FalseType.
 
    \code
-   blaze::IsComplexDouble< complex<double> >::value       // Evaluates to 'true'
-   blaze::IsComplexDouble< const complex<double> >::Type  // Results in TrueType
-   blaze::IsComplexDouble< volatile complex<double> >     // Is derived from TrueType
+   blaze::IsComplexDouble< blas_double_complex >::value       // Evaluates to 'true'
+   blaze::IsComplexDouble< const blas_double_complex >::Type  // Results in TrueType
+   blaze::IsComplexDouble< volatile blas_double_complex >     // Is derived from TrueType
    blaze::IsComplexDouble< double >::value                // Evaluates to 'false'
-   blaze::IsComplexDouble< const complex<float> >::Type   // Results in FalseType
+   blaze::IsComplexDouble< const blas_float_complex >::Type   // Results in FalseType
    blaze::IsComplexDouble< const volatile complex<int> >  // Is derived from FalseType
    \endcode
 */
@@ -80,9 +80,9 @@ struct IsComplexDouble
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-//! Specialization of the IsComplexDouble type trait for the plain 'complex<double>' type.
+//! Specialization of the IsComplexDouble type trait for the plain 'blas_double_complex' type.
 template<>
-struct IsComplexDouble< complex<double> >
+struct IsComplexDouble< blas_double_complex >
    : public TrueType
 {};
 /*! \endcond */
@@ -91,9 +91,9 @@ struct IsComplexDouble< complex<double> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-//! Specialization of the IsComplexDouble type trait for 'const complex<double>'.
+//! Specialization of the IsComplexDouble type trait for 'const blas_double_complex'.
 template<>
-struct IsComplexDouble< const complex<double> >
+struct IsComplexDouble< const blas_double_complex >
    : public TrueType
 {};
 /*! \endcond */
@@ -102,9 +102,9 @@ struct IsComplexDouble< const complex<double> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-//! Specialization of the IsComplexDouble type trait for 'volatile complex<double>'.
+//! Specialization of the IsComplexDouble type trait for 'volatile blas_double_complex'.
 template<>
-struct IsComplexDouble< volatile complex<double> >
+struct IsComplexDouble< volatile blas_double_complex >
    : public TrueType
 {};
 /*! \endcond */
@@ -113,9 +113,9 @@ struct IsComplexDouble< volatile complex<double> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-//! Specialization of the IsComplexDouble type trait for 'const volatile complex<double>'
+//! Specialization of the IsComplexDouble type trait for 'const volatile blas_double_complex'
 template<>
-struct IsComplexDouble< const volatile complex<double> >
+struct IsComplexDouble< const volatile blas_double_complex >
    : public TrueType
 {};
 /*! \endcond */

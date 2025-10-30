@@ -94,7 +94,7 @@ using HasSIMDHypotHelper =
    blaze::HasSIMDHypot< const double, volatile double >     // Is derived from TrueType
    blaze::HasSIMDHypot< int, int >::value                   // Evaluates to 0
    blaze::HasSIMDHypot< long double, long double >::Type    // Results in FalseType
-   blaze::HasSIMDHypot< complex<double>, complex<double> >  // Is derived from FalseType
+   blaze::HasSIMDHypot< blas_double_complex, blas_double_complex >  // Is derived from FalseType
    \endcode
 */
 template< typename T1    // Type of the left-hand side operand

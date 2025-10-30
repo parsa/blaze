@@ -90,7 +90,7 @@ void trmm( DenseMatrix<MT1,SO1>& B, const DenseMatrix<MT2,SO2>& A,
 //
 // This function performs the scaling and multiplication of a triangular matrix by a matrix
 // based on the BLAS trmm() functions. Note that the function only works for matrices with
-// \c float, \c double, \c complex<float>, and \c complex<double> element type. The attempt to
+// \c float, \c double, \c blas_float_complex, and \c blas_double_complex element type. The attempt to
 // call the function with matrices of any other element type results in a compile time error.
 // Also note that matrix \a A is expected to be a square matrix.
 //

@@ -88,23 +88,23 @@ DenseTest::DenseTest()
       testUniUpper < double >( i );
       testDiagonal < double >( i );
 
-      //testGeneral  < complex<float> >( i );
-      //testSymmetric< complex<float> >( i );
-      //testHermitian< complex<float> >( i );
-      //testLower    < complex<float> >( i );
-      //testUniLower < complex<float> >( i );
-      //testUpper    < complex<float> >( i );
-      //testUniUpper < complex<float> >( i );
-      //testDiagonal < complex<float> >( i );
+      //testGeneral  < blas_float_complex >( i );
+      //testSymmetric< blas_float_complex >( i );
+      //testHermitian< blas_float_complex >( i );
+      //testLower    < blas_float_complex >( i );
+      //testUniLower < blas_float_complex >( i );
+      //testUpper    < blas_float_complex >( i );
+      //testUniUpper < blas_float_complex >( i );
+      //testDiagonal < blas_float_complex >( i );
 
-      testGeneral  < complex<double> >( i );
-      testSymmetric< complex<double> >( i );
-      testHermitian< complex<double> >( i );
-      testLower    < complex<double> >( i );
-      testUniLower < complex<double> >( i );
-      testUpper    < complex<double> >( i );
-      testUniUpper < complex<double> >( i );
-      testDiagonal < complex<double> >( i );
+      testGeneral  < blas_double_complex >( i );
+      testSymmetric< blas_double_complex >( i );
+      testHermitian< blas_double_complex >( i );
+      testLower    < blas_double_complex >( i );
+      testUniLower < blas_double_complex >( i );
+      testUpper    < blas_double_complex >( i );
+      testUniUpper < blas_double_complex >( i );
+      testDiagonal < blas_double_complex >( i );
    }
 }
 //*************************************************************************************************

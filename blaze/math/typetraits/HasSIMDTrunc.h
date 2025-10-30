@@ -91,7 +91,7 @@ using HasSIMDTruncHelper =
    blaze::HasSIMDTrunc< const double >         // Is derived from TrueType
    blaze::HasSIMDTrunc< unsigned int >::value  // Evaluates to 0
    blaze::HasSIMDTrunc< long double >::Type    // Results in FalseType
-   blaze::HasSIMDTrunc< complex<double> >      // Is derived from FalseType
+   blaze::HasSIMDTrunc< blas_double_complex >      // Is derived from FalseType
    \endcode
 */
 template< typename T >  // Type of the operand

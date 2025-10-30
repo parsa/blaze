@@ -108,7 +108,7 @@ struct HasSIMDSubHelper< float, float >
 {};
 
 template<>
-struct HasSIMDSubHelper< complex<float>, complex<float> >
+struct HasSIMDSubHelper< blas_float_complex, blas_float_complex >
    : public BoolConstant< bool( BLAZE_SSE_MODE     ) ||
                           bool( BLAZE_AVX_MODE     ) ||
                           bool( BLAZE_MIC_MODE     ) ||
@@ -129,7 +129,7 @@ struct HasSIMDSubHelper< double, double >
 {};
 
 template<>
-struct HasSIMDSubHelper< complex<double>, complex<double> >
+struct HasSIMDSubHelper< blas_double_complex, blas_double_complex >
    : public BoolConstant< bool( BLAZE_SSE2_MODE    ) ||
                           bool( BLAZE_AVX_MODE     ) ||
                           bool( BLAZE_MIC_MODE     ) ||

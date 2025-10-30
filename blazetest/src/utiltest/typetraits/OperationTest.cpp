@@ -440,7 +440,7 @@ void OperationTest::testHasGreaterThan()
    using T1 = HasGreaterThan< int, int >;
    using T2 = HasGreaterThan< const std::string, std::string >;
    using T3 = HasGreaterThan< volatile int*, int* >;
-   using T4 = HasGreaterThan< int, blaze::complex<float> >;
+   using T4 = HasGreaterThan< int, blaze::blas_float_complex >;
    using T5 = HasGreaterThan< std::string, int >;
    using T6 = HasGreaterThan< int*, std::string* >;
 
@@ -470,7 +470,7 @@ void OperationTest::testHasLessThan()
    using T1 = HasLessThan< int, int >;
    using T2 = HasLessThan< const std::string, std::string >;
    using T3 = HasLessThan< volatile int*, int* >;
-   using T4 = HasLessThan< int, blaze::complex<float> >;
+   using T4 = HasLessThan< int, blaze::blas_float_complex >;
    using T5 = HasLessThan< std::string, int >;
    using T6 = HasLessThan< int*, std::string* >;
 
@@ -788,8 +788,8 @@ void OperationTest::testIsComplex()
    using blaze::complex;
    using blaze::IsComplex;
 
-   BLAZE_STATIC_ASSERT( IsComplex< complex<double> >::value == true );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( IsComplex< const complex<float> >::Type, blaze::TrueType );
+   BLAZE_STATIC_ASSERT( IsComplex< blas_double_complex >::value == true );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( IsComplex< const blas_float_complex >::Type, blaze::TrueType );
    BLAZE_CONSTRAINT_MUST_BE_DERIVED_FROM( IsComplex< volatile complex<int> >, blaze::TrueType );
    BLAZE_STATIC_ASSERT( IsComplex< float >::value == false );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( IsComplex< const double >::Type, blaze::FalseType );
@@ -812,11 +812,11 @@ void OperationTest::testIsComplexDouble()
    using blaze::complex;
    using blaze::IsComplexDouble;
 
-   BLAZE_STATIC_ASSERT( IsComplexDouble< complex<double> >::value == true );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( IsComplexDouble< const complex<double> >::Type, blaze::TrueType );
-   BLAZE_CONSTRAINT_MUST_BE_DERIVED_FROM( IsComplexDouble< volatile complex<double> >, blaze::TrueType );
+   BLAZE_STATIC_ASSERT( IsComplexDouble< blas_double_complex >::value == true );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( IsComplexDouble< const blas_double_complex >::Type, blaze::TrueType );
+   BLAZE_CONSTRAINT_MUST_BE_DERIVED_FROM( IsComplexDouble< volatile blas_double_complex >, blaze::TrueType );
    BLAZE_STATIC_ASSERT( IsComplexDouble< double >::value == false );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( IsComplexDouble< const complex<float> >::Type, blaze::FalseType );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( IsComplexDouble< const blas_float_complex >::Type, blaze::FalseType );
    BLAZE_CONSTRAINT_MUST_BE_DERIVED_FROM( IsComplexDouble< const volatile complex<int> >, blaze::FalseType );
 }
 //*************************************************************************************************
@@ -836,11 +836,11 @@ void OperationTest::testIsComplexFloat()
    using blaze::complex;
    using blaze::IsComplexFloat;
 
-   BLAZE_STATIC_ASSERT( IsComplexFloat< complex<float> >::value == true );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( IsComplexFloat< const complex<float> >::Type, blaze::TrueType );
-   BLAZE_CONSTRAINT_MUST_BE_DERIVED_FROM( IsComplexFloat< volatile complex<float> >, blaze::TrueType );
+   BLAZE_STATIC_ASSERT( IsComplexFloat< blas_float_complex >::value == true );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( IsComplexFloat< const blas_float_complex >::Type, blaze::TrueType );
+   BLAZE_CONSTRAINT_MUST_BE_DERIVED_FROM( IsComplexFloat< volatile blas_float_complex >, blaze::TrueType );
    BLAZE_STATIC_ASSERT( IsComplexFloat< float >::value == false );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( IsComplexFloat< const complex<double> >::Type, blaze::FalseType );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( IsComplexFloat< const blas_double_complex >::Type, blaze::FalseType );
    BLAZE_CONSTRAINT_MUST_BE_DERIVED_FROM( IsComplexFloat< const volatile complex<int> >, blaze::FalseType );
 }
 //*************************************************************************************************
@@ -1167,7 +1167,7 @@ void OperationTest::testIsNumeric()
 
    BLAZE_STATIC_ASSERT( IsNumeric<int>::value == true );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( IsNumeric<const double>::Type, blaze::TrueType );
-   BLAZE_CONSTRAINT_MUST_BE_DERIVED_FROM( IsNumeric<volatile complex<float> >, blaze::TrueType );
+   BLAZE_CONSTRAINT_MUST_BE_DERIVED_FROM( IsNumeric<volatile blas_float_complex >, blaze::TrueType );
    BLAZE_STATIC_ASSERT( IsNumeric<void>::value == false );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( IsNumeric<bool>::Type, blaze::FalseType );
    BLAZE_CONSTRAINT_MUST_BE_DERIVED_FROM( IsNumeric<const bool>, blaze::FalseType );

@@ -1144,7 +1144,7 @@ inline HermitianMatrix<MT,SO,true>::HermitianMatrix( const Other (&array)[N][N] 
    using blaze::unaligned;
    using blaze::unpadded;
 
-   using cplx = complex<float>;
+   using cplx = blas_float_complex;
 
    std::vector<cplx> memory( 9UL );
    HermitianMatrix< CustomMatrix<cplx,unaligned,unpadded> > A( memory.data(), 3UL );
@@ -1194,7 +1194,7 @@ inline HermitianMatrix<MT,SO,true>::HermitianMatrix( ElementType* ptr, size_t n 
    using blaze::unaligned;
    using blaze::padded;
 
-   using cplx = complex<float>;
+   using cplx = blas_float_complex;
 
    std::vector<cplx> memory( 24UL );
    HermitianMatrix< CustomMatrix<cplx,unaligned,padded> > A( memory.data(), 3UL, 8UL );
@@ -2411,7 +2411,7 @@ inline void HermitianMatrix<MT,SO,true>::reset()
 // The following example demonstrates this by means of a \f$ 5 \times 5 \f$ Hermitian matrix:
 
    \code
-   blaze::HermitianMatrix< blaze::DynamicMatrix< blaze::complex<double> > > A;
+   blaze::HermitianMatrix< blaze::DynamicMatrix< blaze::blas_double_complex > > A;
 
    // Initializing the Hermitian matrix A to
    //

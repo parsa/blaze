@@ -375,19 +375,19 @@ BLAZE_ALWAYS_INLINE const SIMDfloat loada( const float* address ) noexcept
 
 
 //*************************************************************************************************
-/*!\brief Loads a vector of 'complex<float>' values.
+/*!\brief Loads a vector of 'blas_float_complex' values.
 // \ingroup simd
 //
-// \param address The first 'complex<float>' value to be loaded.
-// \return The loaded vector of 'complex<float>' values.
+// \param address The first 'blas_float_complex' value to be loaded.
+// \return The loaded vector of 'blas_float_complex' values.
 //
-// This function loads a vector of 'complex<float>' values. The given address must be aligned
+// This function loads a vector of 'blas_float_complex' values. The given address must be aligned
 // according to the enabled instruction set (16-byte alignment in case of SSE, 32-byte alignment
 // in case of AVX, and 64-byte alignment in case of AVX-512/MIC).
 */
-BLAZE_ALWAYS_INLINE const SIMDcfloat loada( const complex<float>* address ) noexcept
+BLAZE_ALWAYS_INLINE const SIMDcfloat loada( const blas_float_complex* address ) noexcept
 {
-   BLAZE_STATIC_ASSERT  ( sizeof( complex<float> ) == 2UL*sizeof( float ) );
+   BLAZE_STATIC_ASSERT  ( sizeof( blas_float_complex ) == 2UL*sizeof( float ) );
    BLAZE_INTERNAL_ASSERT( checkAlignment( address ), "Invalid alignment detected" );
 
 #if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
@@ -440,19 +440,19 @@ BLAZE_ALWAYS_INLINE const SIMDdouble loada( const double* address ) noexcept
 
 
 //*************************************************************************************************
-/*!\brief Loads a vector of 'complex<double>' values.
+/*!\brief Loads a vector of 'blas_double_complex' values.
 // \ingroup simd
 //
-// \param address The first 'complex<double>' value to be loaded.
-// \return The loaded vector of 'complex<double>' values.
+// \param address The first 'blas_double_complex' value to be loaded.
+// \return The loaded vector of 'blas_double_complex' values.
 //
-// This function loads a vector of 'complex<double>' values. The given address must be aligned
+// This function loads a vector of 'blas_double_complex' values. The given address must be aligned
 // according to the enabled instruction set (16-byte alignment in case of SSE, 32-byte alignment
 // in case of AVX, and 64-byte alignment in case of AVX-512/MIC).
 */
-BLAZE_ALWAYS_INLINE const SIMDcdouble loada( const complex<double>* address ) noexcept
+BLAZE_ALWAYS_INLINE const SIMDcdouble loada( const blas_double_complex* address ) noexcept
 {
-   BLAZE_STATIC_ASSERT  ( sizeof( complex<double> ) == 2UL*sizeof( double ) );
+   BLAZE_STATIC_ASSERT  ( sizeof( blas_double_complex ) == 2UL*sizeof( double ) );
    BLAZE_INTERNAL_ASSERT( checkAlignment( address ), "Invalid alignment detected" );
 
 #if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE

@@ -97,12 +97,12 @@ void pstrf( char uplo, blas_int_t n, double* A, blas_int_t lda,
             blaze::blas_int_t* piv, blaze::blas_int_t* rank, double tol, double* work,
             blas_int_t* info );
 
-void pstrf( char uplo, blas_int_t n, complex<float>* A, blas_int_t lda,
-            blaze::blas_int_t* piv, blaze::blas_int_t* rank, float tol, complex<float>* work,
+void pstrf( char uplo, blas_int_t n, blas_float_complex* A, blas_int_t lda,
+            blaze::blas_int_t* piv, blaze::blas_int_t* rank, float tol, blas_float_complex* work,
             blas_int_t* info );
 
-void pstrf( char uplo, blas_int_t n, complex<double>* A, blas_int_t lda,
-            blaze::blas_int_t* piv, blaze::blas_int_t* rank, double tol, complex<double>* work,
+void pstrf( char uplo, blas_int_t n, blas_double_complex* A, blas_int_t lda,
+            blaze::blas_int_t* piv, blaze::blas_int_t* rank, double tol, blas_double_complex* work,
             blas_int_t* info );
 //@}
 //*************************************************************************************************
@@ -274,9 +274,9 @@ inline void pstrf( char uplo, blas_int_t n, double* A, blas_int_t lda,
 // is available and linked to the executable. Otherwise a call to this function will result in a
 // linker error.
 */
-inline void pstrf( char uplo, blas_int_t n, complex<float>* A, blas_int_t lda,
+inline void pstrf( char uplo, blas_int_t n, blas_float_complex* A, blas_int_t lda,
                    blaze::blas_int_t* piv, blaze::blas_int_t* rank, float tol,
-                   complex<float>* work, blas_int_t* info )
+                   blas_float_complex* work, blas_int_t* info )
 {
 #if defined(INTEL_MKL_VERSION)
    BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( blas_int_t ) );
@@ -284,7 +284,7 @@ inline void pstrf( char uplo, blas_int_t n, complex<float>* A, blas_int_t lda,
 
 #if defined(INTEL_MKL_VERSION)
    BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( blas_int_t ) );
-   BLAZE_STATIC_ASSERT( sizeof( MKL_Complex8 ) == sizeof( complex<float> ) );
+   BLAZE_STATIC_ASSERT( sizeof( MKL_Complex8 ) == sizeof( blas_float_complex ) );
    using ET = MKL_Complex8;
 #else
    using ET = float;
@@ -344,9 +344,9 @@ inline void pstrf( char uplo, blas_int_t n, complex<float>* A, blas_int_t lda,
 // is available and linked to the executable. Otherwise a call to this function will result in a
 // linker error.
 */
-inline void pstrf( char uplo, blas_int_t n, complex<double>* A, blas_int_t lda,
+inline void pstrf( char uplo, blas_int_t n, blas_double_complex* A, blas_int_t lda,
                    blaze::blas_int_t* piv, blaze::blas_int_t* rank, double tol,
-                   complex<double>* work, blas_int_t* info )
+                   blas_double_complex* work, blas_int_t* info )
 {
 #if defined(INTEL_MKL_VERSION)
    BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( blas_int_t ) );
@@ -354,7 +354,7 @@ inline void pstrf( char uplo, blas_int_t n, complex<double>* A, blas_int_t lda,
 
 #if defined(INTEL_MKL_VERSION)
    BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( blas_int_t ) );
-   BLAZE_STATIC_ASSERT( sizeof( MKL_Complex16 ) == sizeof( complex<double> ) );
+   BLAZE_STATIC_ASSERT( sizeof( MKL_Complex16 ) == sizeof( blas_double_complex ) );
    using ET = MKL_Complex16;
 #else
    using ET = double;

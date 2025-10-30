@@ -94,7 +94,7 @@ using HasSIMDPowHelper =
    blaze::HasSIMDPow< const double >         // Is derived from TrueType
    blaze::HasSIMDPow< unsigned int >::value  // Evaluates to 0
    blaze::HasSIMDPow< long double >::Type    // Results in FalseType
-   blaze::HasSIMDPow< complex<double> >      // Is derived from FalseType
+   blaze::HasSIMDPow< blas_double_complex >      // Is derived from FalseType
    \endcode
 */
 template< typename T1    // Type of the left-hand side operand

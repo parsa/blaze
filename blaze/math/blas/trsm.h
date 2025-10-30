@@ -96,8 +96,8 @@ void trsm( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B,
 //
 // This function solves a triangular system of equations based on the BLAS trsm() functions.
 // During the solution process, vector \a b is overwritten with the resulting vector \a x. Note
-// that the function only works for matrices with \c float, \c double, \c complex<float>, and
-// \c complex<double> element type. The attempt to call the function with matrices of any other
+// that the function only works for matrices with \c float, \c double, \c blas_float_complex, and
+// \c blas_double_complex element type. The attempt to call the function with matrices of any other
 // element type results in a compile time error. Also note that matrix \a A is expected to be a
 // square matrix.
 //
@@ -158,7 +158,7 @@ inline void trsm( const DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& b,
 // This function solves a triangular system of equations with multiple values for the right side
 // based on the BLAS trsm() functions. During the solution process, matrix \a B is overwritten
 // with the resulting matrix \a X. Note that the function only works for matrices with \c float,
-// \c double, \c complex<float>, and \c complex<double> element type. The attempt to call the
+// \c double, \c blas_float_complex, and \c blas_double_complex element type. The attempt to call the
 // function with matrices of any other element type results in a compile time error. Also note
 // that matrix \a A is expected to be a square matrix.
 //

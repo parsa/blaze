@@ -84,7 +84,7 @@ void potrf( DenseMatrix<MT,SO>& A, char uplo );
 //
 // This function performs the dense matrix Cholesky decomposition of a symmetric positive definite
 // matrix based on the LAPACK potrf() functions. Note that the function only works for general,
-// non-adapted matrices with \c float, \c double, \c complex<float>, or \c complex<double> element
+// non-adapted matrices with \c float, \c double, \c blas_float_complex, or \c blas_double_complex element
 // type. The attempt to call the function with any adapted matrix or matrices of any other element
 // type results in a compile time error!\n
 //

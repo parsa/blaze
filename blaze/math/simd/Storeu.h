@@ -374,19 +374,19 @@ BLAZE_ALWAYS_INLINE void storeu( float* address, const SIMDf32<T>& value ) noexc
 
 
 //*************************************************************************************************
-/*!\brief Unaligned store of a vector of 'complex<float>' values.
+/*!\brief Unaligned store of a vector of 'blas_float_complex' values.
 // \ingroup simd
 //
 // \param address The target address.
-// \param value The 'complex<float>' vector to be stored.
+// \param value The 'blas_float_complex' vector to be stored.
 // \return void
 //
-// This function stores a vector of 'complex<float>' values. In contrast to the according
+// This function stores a vector of 'blas_float_complex' values. In contrast to the according
 // \c storea() function, the given address is not required to be properly aligned.
 */
-BLAZE_ALWAYS_INLINE void storeu( complex<float>* address, const SIMDcfloat& value ) noexcept
+BLAZE_ALWAYS_INLINE void storeu( blas_float_complex* address, const SIMDcfloat& value ) noexcept
 {
-   BLAZE_STATIC_ASSERT( sizeof( complex<float> ) == 2UL*sizeof( float ) );
+   BLAZE_STATIC_ASSERT( sizeof( blas_float_complex ) == 2UL*sizeof( float ) );
 
 #if BLAZE_AVX512F_MODE
    _mm512_storeu_ps( address, (*value).value );
@@ -444,19 +444,19 @@ BLAZE_ALWAYS_INLINE void storeu( double* address, const SIMDf64<T>& value ) noex
 
 
 //*************************************************************************************************
-/*!\brief Unaligned store of a vector of 'complex<double>' values.
+/*!\brief Unaligned store of a vector of 'blas_double_complex' values.
 // \ingroup simd
 //
 // \param address The target address.
-// \param value The 'complex<double>' vector to be stored.
+// \param value The 'blas_double_complex' vector to be stored.
 // \return void
 //
-// This function stores a vector of 'complex<double>' values. In contrast to the according
+// This function stores a vector of 'blas_double_complex' values. In contrast to the according
 // \c storea() function, the given address is not required to be properly aligned.
 */
-BLAZE_ALWAYS_INLINE void storeu( complex<double>* address, const SIMDcdouble& value ) noexcept
+BLAZE_ALWAYS_INLINE void storeu( blas_double_complex* address, const SIMDcdouble& value ) noexcept
 {
-   BLAZE_STATIC_ASSERT( sizeof( complex<double> ) == 2UL*sizeof( double ) );
+   BLAZE_STATIC_ASSERT( sizeof( blas_double_complex ) == 2UL*sizeof( double ) );
 
 #if BLAZE_AVX512F_MODE
    _mm512_storeu_pd( address, (*value).value );

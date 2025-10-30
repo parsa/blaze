@@ -75,7 +75,7 @@ using GreaterThan_t = decltype( std::declval<T1>() > std::declval<T2>() );
    blaze::HasGreaterThan< int, int >::value                       // Evaluates to 1
    blaze::HasGreaterThan< const std::string, std::string >::Type  // Results in TrueType
    blaze::HasGreaterThan< volatile int*, int* >                   // Is derived from TrueType
-   blaze::HasGreaterThan< int, blaze::complex<float> >::value     // Evaluates to 0
+   blaze::HasGreaterThan< int, blaze::blas_float_complex >::value     // Evaluates to 0
    blaze::HasGreaterThan< std::string, int >::Type                // Results in FalseType
    blaze::HasGreaterThan< int*, std::string* >                    // Is derived from FalseType
    \endcode

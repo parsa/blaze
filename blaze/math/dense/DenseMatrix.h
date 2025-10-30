@@ -2645,8 +2645,8 @@ bool isIdentity( const DenseMatrix<MT,SO>& dm )
 // However, note that this might require the complete evaluation of the expression, including
 // the generation of a temporary matrix.
 //
-// \note This function only works for matrices with \c float, \c double, \c complex<float>, or
-// \c complex<double> element type. The attempt to call the function with matrices of any other
+// \note This function only works for matrices with \c float, \c double, \c blas_float_complex, or
+// \c blas_double_complex element type. The attempt to call the function with matrices of any other
 // element type results in a compile time error!
 //
 // \note This function can only be used if a fitting LAPACK library is available and linked to
@@ -2703,8 +2703,8 @@ bool isPositiveDefinite( const DenseMatrix<MT,SO>& dm )
    rank( A );
    \endcode
 
-// \note This function only works for matrices with \c float, \c double, \c complex<float>, or
-// \c complex<double> element type. The attempt to call the function with matrices of any other
+// \note This function only works for matrices with \c float, \c double, \c blas_float_complex, or
+// \c blas_double_complex element type. The attempt to call the function with matrices of any other
 // element type results in a compile time error!
 //
 // \note This function can only be used if a fitting LAPACK library is available and linked to

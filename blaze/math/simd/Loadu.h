@@ -375,18 +375,18 @@ BLAZE_ALWAYS_INLINE const SIMDfloat loadu( const float* address ) noexcept
 
 
 //*************************************************************************************************
-/*!\brief Loads a vector of 'complex<float>' values.
+/*!\brief Loads a vector of 'blas_float_complex' values.
 // \ingroup simd
 //
-// \param address The first 'complex<float>' value to be loaded.
-// \return The loaded vector of 'complex<float>' values.
+// \param address The first 'blas_float_complex' value to be loaded.
+// \return The loaded vector of 'blas_float_complex' values.
 //
-// This function loads a vector of 'complex<float>' values. In contrast to the according \c loada()
+// This function loads a vector of 'blas_float_complex' values. In contrast to the according \c loada()
 // function, the given address is not required to be properly aligned.
 */
-BLAZE_ALWAYS_INLINE const SIMDcfloat loadu( const complex<float>* address ) noexcept
+BLAZE_ALWAYS_INLINE const SIMDcfloat loadu( const blas_float_complex* address ) noexcept
 {
-   BLAZE_STATIC_ASSERT( sizeof( complex<float> ) == 2UL*sizeof( float ) );
+   BLAZE_STATIC_ASSERT( sizeof( blas_float_complex ) == 2UL*sizeof( float ) );
 
 #if BLAZE_AVX512F_MODE
    return _mm512_loadu_ps( address );
@@ -445,18 +445,18 @@ BLAZE_ALWAYS_INLINE const SIMDdouble loadu( const double* address ) noexcept
 
 
 //*************************************************************************************************
-/*!\brief Loads a vector of 'complex<double>' values.
+/*!\brief Loads a vector of 'blas_double_complex' values.
 // \ingroup simd
 //
-// \param address The first 'complex<double>' value to be loaded.
-// \return The loaded vector of 'complex<double>' values.
+// \param address The first 'blas_double_complex' value to be loaded.
+// \return The loaded vector of 'blas_double_complex' values.
 //
-// This function loads a vector of 'complex<double>' values. In contrast to the according
+// This function loads a vector of 'blas_double_complex' values. In contrast to the according
 // \c loada() function, the given address is not required to be properly aligned.
 */
-BLAZE_ALWAYS_INLINE const SIMDcdouble loadu( const complex<double>* address ) noexcept
+BLAZE_ALWAYS_INLINE const SIMDcdouble loadu( const blas_double_complex* address ) noexcept
 {
-   BLAZE_STATIC_ASSERT( sizeof( complex<double> ) == 2UL*sizeof( double ) );
+   BLAZE_STATIC_ASSERT( sizeof( blas_double_complex ) == 2UL*sizeof( double ) );
 
 #if BLAZE_AVX512F_MODE
    return _mm512_loadu_pd( address );

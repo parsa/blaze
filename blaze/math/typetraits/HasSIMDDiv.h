@@ -140,7 +140,7 @@ struct HasSIMDDivHelper< double, double >
    \code
    blaze::HasSIMDDiv< float, float >::value    // Evaluates to 1
    blaze::HasSIMDDiv< double, double >::Type   // Results in TrueType
-   blaze::HasSIMDDiv< complex<float>, float >  // Is derived from TrueType
+   blaze::HasSIMDDiv< blas_float_complex, float >  // Is derived from TrueType
    blaze::HasSIMDDiv< int, int >::value        // Evaluates to 0
    blaze::HasSIMDDiv< float, int >::Type       // Results in FalseType
    blaze::HasSIMDDiv< double, float >          // Is derived from FalseType

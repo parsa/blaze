@@ -547,7 +547,7 @@ class DMatExpExpr
    \endcode
 
 // \note The matrix exponential can only be used for dense matrices with \c float, \c double,
-// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// \c blas_float_complex or \c blas_double_complex element type. The attempt to call the function with
 // matrices of any other element type results in a compile time error!
 //
 // \note It is not possible to use any kind of view on the expression object returned by the

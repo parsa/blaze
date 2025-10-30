@@ -107,10 +107,10 @@ struct IsSIMDCombinableHelper<T1,T2>
    \code
    blaze::IsSIMDCombinable< int, unsigned int >::value        // Evaluates to 1
    blaze::IsSIMDCombinable< double, double >::Type            // Results in TrueType
-   blaze::IsSIMDCombinable< complex<float>, complex<float> >  // Is derived from TrueType
+   blaze::IsSIMDCombinable< blas_float_complex, blas_float_complex >  // Is derived from TrueType
    blaze::IsSIMDCombinable< int, float >::value               // Evaluates to 0
    blaze::IsSIMDCombinable< double, float >::Type             // Results in FalseType
-   blaze::IsSIMDCombinable< complex<int>, complex<float> >    // Is derived from FalseType
+   blaze::IsSIMDCombinable< complex<int>, blas_float_complex >    // Is derived from FalseType
    \endcode
 */
 template< typename T1, typename T2, typename... Ts >

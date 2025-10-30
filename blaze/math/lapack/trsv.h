@@ -98,7 +98,7 @@ void trsv( const DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& b, char uplo, char t
 //
 // In this context the positive definite system matrix \a A is a \a n-by-\a n matrix and \a x and
 // \a b are n-dimensional vectors. Note that the function only works for general, non-adapted
-// matrices with \c float, \c double, \c complex<float>, or \c complex<double> element type. The
+// matrices with \c float, \c double, \c blas_float_complex, or \c blas_double_complex element type. The
 // attempt to call the function with adaptors or matrices of any other element type results in a
 // compile time error!
 //
